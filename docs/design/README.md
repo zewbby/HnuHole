@@ -4,7 +4,7 @@
 
 新会话先读[接续说明](HANDOFF.md)。阶段盘点与剩余工作见[设计进度](progress.md)，业务术语见[词汇表](../../CONTEXT.md)。规则继续维护在各模块，进度页只提供交付状态与待决事项索引。
 
-2026-09-26 用户确认新的[认证与隐私架构决策](auth-privacy-architecture-decision.md)：每次注册需完成校邮验证码，日常以私有用户名和独立密码登录；同一精确邮箱同时最多一个有效账号的配额依赖 V 按协议执行。2026-09-27 的[注册与释放协议 v1](auth-privacy-registration-protocol.md)定义公钥导出的资格槽位、持钥证明、未消费资格退役及正式注销释放；仍待数据库/API、恢复体验及独立安全评审。两方共享槽位，串通或共同泄漏时可连接邮箱与账号。
+2026-09-26 用户确认新的[认证与隐私架构决策](auth-privacy-architecture-decision.md)：每次注册需完成校邮验证码，日常以私有用户名和独立密码登录；同一精确邮箱同时最多一个有效账号的配额依赖 V 按协议执行。2026-09-27 的[注册与释放协议 v1](auth-privacy-registration-protocol.md)定义公钥导出的资格槽位、持钥证明、未消费资格退役及正式注销释放；[恢复策略](auth-privacy-recovery-decision.md)与[逻辑数据／API 契约](auth-privacy-data-api-contract.md)也已成稿，仍待生产 OpenAPI／迁移、独立主体运营及安全评审。两方共享槽位，串通或共同泄漏时可连接邮箱与账号。
 
 ## 项目范围
 
