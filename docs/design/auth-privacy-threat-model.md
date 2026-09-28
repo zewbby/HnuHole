@@ -1,6 +1,6 @@
 # Hnuhole 认证隐私跨方威胁模型与审阅门槛
 
-日期：2026-09-28。状态：**实施前内部威胁建模；不是独立安全审计、代码测试或上线批准。** 适用范围为[架构决策](auth-privacy-architecture-decision.md)、[注册／释放协议](auth-privacy-registration-protocol.md)、[独立恢复策略](auth-privacy-recovery-decision.md)和[逻辑数据／API 契约](auth-privacy-data-api-contract.md)。这次审阅发现的规格缺口已写回这些文档；独立 V/C 主体、生产 OpenAPI、迁移、部署、客户端实现与独立评审仍未完成。
+日期：2026-09-28。状态：**实施前内部威胁建模；不是独立安全审计、代码测试或上线批准。** 适用范围为[架构决策](auth-privacy-architecture-decision.md)、[注册／释放协议](auth-privacy-registration-protocol.md)、[独立恢复策略](auth-privacy-recovery-decision.md)和[逻辑数据／API 契约](auth-privacy-data-api-contract.md)。这次审阅发现的规格缺口已写回这些文档；V/C OpenAPI与[迁移设计](auth-privacy-database-migration-design.md)现已成稿；独立主体、实际SQL、部署、客户端实现与独立评审仍未完成。
 
 ## 1. 资产、数据流和信任边界
 
@@ -69,7 +69,7 @@ T03、T07、T08、T09、T12 与严格 Ed25519 验证是本轮发现并修订的*
 
 | 门槛 | 应交付的可核对材料 |
 | --- | --- |
-| G1 协议和数据 | V、C 各自的生产 OpenAPI、固定签名字节向量、严格 Ed25519 公钥／签名负向向量、数据库唯一约束及事务隔离说明 |
+| G1 协议和数据 | 已成稿的[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)及[迁移设计](auth-privacy-database-migration-design.md)；尚须可执行签名字节／严格Ed25519负向向量、实际SQL唯一约束和并发／隔离验证 |
 | G2 并发与故障 | 注册／退役／释放状态机测试、跨桶与时钟回退、超时重放与丢回包、旧恢复证明在锁前失效、重设意图替代、客户端重启后的登出／重设核对、七天截止、媒体清单与处罚交错、签名服务中断、旧备份与旧密钥配置恢复演练 |
 | G3 在线攻击 | 校准后的每邮箱发码与验证预算、设备与网络限速、密码喷洒和用户名探测结果；无法仅凭“统一错误文案”判定不可枚举 |
 | G4 隐私和留存 | V/C 数据字段、日志／WAL／备份保留上限及清理演练、共享运维和云依赖审计、客户端实际包及遥测检查、发布和密钥撤销权限矩阵 |

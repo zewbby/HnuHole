@@ -1,0 +1,825 @@
+openapi: 3.0.3
+info:
+  title: Hnuhole Verifier Authentication API
+  version: 0.1.0-review
+  description: |
+    独立校园邮箱验证方 V 的实施前评审契约。仅用于校园资格注册与配额释放，
+    不是社区方 C 的登录、找回或账号查询接口，也不是独立安全审计或上线批准。
+    与 community-auth-api.yaml 的主机、签名钥、权限、数据库、安装 ID、请求 ID、
+    幂等键、日志和备份独立。V 收完整精确邮箱；C 只收到固定二进制签名资格。
+
+    所有客户端连接须使用内置受信 V 主机的 HTTPS；V 响应不得指定 C 主机。
+    校验未知字段、重复 JSON 键、错误类型、null、超限请求体与未知 query 参数；
+    每个对象禁止额外属性，所有声明的密码学字符串均须严格解码、校验长度和
+    规范无填充 base64url 编码。不得通过 JSON 字段顺序生成签名字节。
+
+    请求编号由 V 每次独立安全随机生成。忽略并丢弃客户端或 C 的 X-Request-ID
+    与 traceparent 等跨方关联头，不能转发到另一方。V-Installation-ID 是仅供 V
+    的随机安装标识，不是账号凭据；不可与 C 的安装 ID 共用，不是抗批量攻击的
+    唯一屏障。邮箱、OTP、完整资格、收据、原幂等键和核对认证头不进入常规日志、
+    遥测或分析 SDK。所有响应，包括错误，均为 Cache-Control: no-store。
+
+    OTP、配额、幂等及收据转换均在 V 权威库内原子完成；安全截止按取得相关锁后
+    现场采样的实际 UTC 时间裁决，不能用事务开始时间。时钟回退、灾备未完成或
+    受信签名钥配置不能证明单调时冻结认证操作。503、连接断开与 SMTP 超时均是
+    结果未知，不能解释为未发出、未签发或已释放。
+
+    每个原操作首次受理即建立唯一 (operation,key_digest) 请求结果行：
+    key_digest = SHA-256(ASCII("HNUHOLE/V-REQUEST-TOMBSTONE/V1") || 0x00 ||
+    originalKey[32])。key_digest 另有本方唯一约束，拒同原键跨操作复用；
+    operation 区分发码与确认；原键与请求材料的绑定另用服务器
+    HMAC，只在可核对窗口内保留。认领、完成及清理均锁同一唯一行并在锁后复核。
+    完整结果到期后原位收缩为 EXPIRED，仅长期保留 operation、key_digest 和
+    EXPIRED，不删除唯一行，并清除请求 HMAC、原键、时间、安装 ID、flow、邮箱、
+    槽位及所有响应材料。此最小摘要锚点没有身份字段，仍须计入长期存储成本。
+    旧 POST 或能力查询凭原键重算摘要命中 EXPIRED 即返回 410 RESULT_EXPIRED，
+    永不再次执行副作用；EXPIRED 只核对能力格式与原键摘要，不再核对已清理的
+    安装 ID／flow 绑定，不作原提交结论。不能先删完整结果再新增墓碑形成竞态空窗。
+    尚在持续退役或其他结果未定的操作不按普通 TTL 收缩，先保持原待办安全核对；
+    收缩只关闭原操作重放能力，不清槽位终态、开放邮箱配额或中止未决退役。
+servers:
+  - url: /
+    description: 必须解析为独立 V HTTPS origin；禁止与 C 共用 origin。
+security: []
+tags:
+  - name: Eligibility
+    description: 校邮 OTP、限时注册资格及本方原请求核对。
+  - name: InternalRelease
+    description: 经环境绑定 mTLS 认证的 C 到 V 正式注销收据投递。
+paths:
+  /api/v1/eligibility/otp-requests:
+    post:
+      operationId: requestEligibilityOtp
+      tags: [Eligibility]
+      summary: 申请校园邮箱验证码
+      description: |
+        此接口无社区账号认证。格式合格的空闲和已占用精确邮箱均使用同形 202
+        响应与通用提示，允许投递时均实际发码，不暴露邮箱配额或账号是否存在。
+        email 不裁空格、不折叠大小写、不删别名，域名仅接受严格 hainanu.edu.cn。
+
+        新发送只在原有六十秒间隔、设备锁定、精确邮箱跨流程预算与独立网络预算
+        均允许时推进。客户端提交时立即开始倒计时；切后台或重开不能重置。
+        设备对该邮箱连续三次错误后锁五分钟，锁定不能因重试延长，期间不能发码。
+        重新发送不清除精确邮箱级风控预算；具体滚动阈值为上线前校准门槛。
+
+        V 在邮件外部副作用之前持久登记原操作，并用幂等邮件投递／可核对状态机
+        防止崩溃重发。同操作重 POST 必须用相同幂等键、email 与 V 安装 ID，
+        只核对或推进原操作，不另发码、不变 flowId、不重置倒计时。
+        原键绑定内容采用与库分离的服务器 HMAC，不保存 OTP 的快速裸散列。
+        同键不同材料返回 IDEMPOTENCY_KEY_REUSED；原结果不可核对时不得换新键。
+        仅持久确认原发送不可再发生或服务商明确未发出时才标 NOT_SENT，并撤销
+        本次新增的等待，原有等待仍保留。邮件延迟或 SMTP 超时不构成此证明。
+      security: []
+      x-max-request-body-bytes: 1024
+      parameters:
+        - $ref: '#/components/parameters/VInstallationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpRequest'
+      responses:
+        '202':
+          description: 原发送请求已持久受理；不证明到达收件箱，空闲和占用地址同形。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpRequestAccepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '410':
+          $ref: '#/components/responses/ResultExpired'
+        '422':
+          $ref: '#/components/responses/EmailInvalid'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/eligibility/otp-request-result:
+    get:
+      operationId: getEligibilityOtpRequestResult
+      tags: [Eligibility]
+      summary: 只读核对原验证码发送请求
+      description: |
+        用原申请随机幂等键作为 OtpRequestResult 专属能力头，另带原 V 安装 ID。
+        只查这一笔请求，不发邮件、不验证 OTP、不返回邮箱或配额，不提供社区权限。
+        原键不能出现在 URL、query、普通日志或发送给 C。
+
+        发起后第四十秒可作一次受限核对，之后遵守返回等待和独立查询限流。
+        ACCEPTED 的 retryAfterSeconds 是原截止的剩余时间，不开始新倒计时。
+        NOT_SENT 只能来自持久、不可反悔的未发送终态及取消外部发送能力的证据；
+        此时才允许用新申请键重发，仍遵守之前已有的等待和风控预算。
+        查询时无记录、尚无外部投递结论或原 POST 仍可能提交均返回 PENDING，
+        不能以无记录的 404 或一次超时声称未发送。客户端此时可重 POST 原 email、
+        原键与原安装 ID 推进同一笔操作；不能一直只查，也不能另键产生并行发送。
+        已知结果超出有界保留期回 410；410 也不是未发送证明。完整结果到期后
+        同一唯一行原位收缩为无身份的 operation/key_digest/EXPIRED 摘要锚点，
+        原键命中仍回 410，不能删除唯一行或重新执行原副作用。
+      security:
+        - otpRequestResultAuth: []
+      parameters:
+        - $ref: '#/components/parameters/VInstallationId'
+      responses:
+        '200':
+          description: 已持久核对的 ACCEPTED 或 NOT_SENT；不含 OTP、邮箱或配额信息。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/OtpRequestResultAccepted'
+                  - $ref: '#/components/schemas/OtpRequestResultNotSent'
+        '202':
+          description: 结果未知；无记录同样返回此状态，不代表原请求未发送。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationPending'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/ResultAuthenticationFailed'
+        '410':
+          $ref: '#/components/responses/ResultExpired'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/eligibility/otp-confirmations:
+    post:
+      operationId: confirmEligibilityOtp
+      tags: [Eligibility]
+      summary: 验证 OTP 并取得限时注册资格
+      description: |
+        此接口只证明校园资格，不建立 C 会话、不恢复旧账号。flowId 仅属于 V，
+        不带给 C；C 只接收返回的 registrationTicket。客户端先生成新 Ed25519
+        bootstrap 密钥与其导出的 slotId；同一槽位续票继续原公钥且必须重新验 OTP。
+        V 拒绝非规范编码、单位元、小阶或非素数阶公钥，并独立重算
+        slotId = SHA-256(ASCII("HNUHOLE/SLOT/V1") || 0x00 || 0x01 || pk_boot[32])。
+
+        OTP 仅同一精确邮箱跨所有 flowId 的最新已成功签发版本可用，五分钟到期；
+        重发成功原子递增该邮箱的全局码版本，使其他 flow 中旧版本不可验证。
+        按当前码跨设备最多十次失败，达到上限废止该码；设备＋精确邮箱连续错计数
+        跨 flowId／重发不重置。三错五分钟锁定和精确邮箱滚动预算同时执行。
+        确认的旧码／过期码不计设备连续错，但所有验证请求仍占受限预算。
+        同键同负载的重放只核对原结果，不再次消费或重复计作新错；不同 OTP、
+        槽位、公钥或收据须使用新确认键，不能更换键绕过设备或邮箱预算。
+
+        邮箱配额、收据与当前槽位是否相符的语义结果只能在最新 OTP 成功后给出。
+        若 releaseReceipt 存在，验证 C 的受信环境绑定钥与 RELEASED/V1 固定域，
+        且只对该 flow 所属精确邮箱的当前槽位生效。已处理旧收据不影响新槽位。
+        无效收据不能开放配额。正常验证、码消费、槽位占用、used_slots 全局唯一、
+        固定 REG_MSG 签名任务与原幂等操作先在同一 SQL 事务提交；HSM 或外部签名
+        不与 SQL 天然原子。事务提交后仅签已固化消息，签名持久化后才能返回票。
+        待签时返回 CONFIRMATION_PENDING，配额已经保留，不得再占第二个槽位。
+        admission_window 锚定 OTP 完成事务裁决点，后台签名不能改成更晚桶；
+        签名延迟到票已过期时只给 422 REVERIFY_REQUIRED，同槽位／公钥重新收码换签。
+
+        私钥丢失、提出新槽位而原地址仍保留未开户旧槽位时，V 在调用 C 之前
+        持久写旧槽位唯一 retire_pending 并阻止旧槽位续票／新槽位签发。
+        只有 C 已提交 RETIRED/RELEASED 收据与当前旧槽位／配额版本相符，
+        V 才原子清旧占用；本次 OTP 仍有效才签新槽位，过期则要求再次收码。
+        C ACTIVE/CLOSED 拒绝退役且无释放收据时保留配额并返回 ELIGIBILITY_RESERVED，
+        不泄露旧账号 ID、用户名、内容或槽位。迟到拒绝不能撤销先处理的真实释放。
+
+        退役结果未知返回 RETIREMENT_PENDING。原确认键重试只推进或核对原待办，
+        不重启退役或换槽位；即使十分钟票据重取窗口结束，后台仍继续此待办。
+        原票最多在首次资格提交后十分钟内且票当前有效时重取，重放不更新窗口；
+        以后必须新 OTP。客户端须保留原字段供同键 POST 核对，GET 不返回完整资格。
+        收到票后客户端严格重算、验固定字段与签名，并核对本地原公钥／槽位。
+      security: []
+      x-max-request-body-bytes: 4096
+      parameters:
+        - $ref: '#/components/parameters/VInstallationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpConfirmation'
+      responses:
+        '200':
+          description: 资格与配额已原子提交；原键十分钟内重放同一票，不延长任何期限。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationTicketResponse'
+        '202':
+          description: 原固定消息待签或旧槽位退役未定，配额仍占用；不签另一槽位资格。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ConfirmationPending'
+                  - $ref: '#/components/schemas/RetirementPending'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/ConfirmationConflict'
+        '410':
+          $ref: '#/components/responses/ResultExpired'
+        '422':
+          $ref: '#/components/responses/ConfirmationInvalid'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/eligibility/otp-confirmation-result:
+    get:
+      operationId: getEligibilityOtpConfirmationResult
+      tags: [Eligibility]
+      summary: 只读核对原 OTP 确认及退役待办
+      description: |
+        OtpConfirmationResult 原确认幂等键与原 flowId／V 安装 ID 只授权核对本操作。
+        不重新校验 OTP、不消费码、不触发新发送，不返回票、签名、公钥、槽位、
+        邮箱或旧账号材料；不能读取社区、登录、重设或取消配额占用。
+        TICKET_AVAILABLE 表示同键 POST 原确认字段仍可取有效原票，不延长十分钟窗口。
+        CONFIRMATION_PENDING 表示槽位与固定签名任务已提交，仍在等待签名持久化，
+        不得以待签或 HSM 故障要求新槽位；准入窗口不会因等待或重试延长。
+        REVERIFY_REQUIRED 表示待办已安全终结但原 OTP 或资格重取窗口已过，须新 OTP，
+        不能解释为邮箱已空闲或允许旧票登录。NOT_COMMITTED 仅能来自本操作已持久
+        拒绝且不再可能提交的终态；暂时无记录为 PENDING，原 POST 仍可能迟到。
+        无记录时可重 POST 相同原字段与原键推进；退役待办用原键核对，不创建新待办。
+        持续的退役待办不按普通结果 TTL 收缩或取消；终结后完整结果到期才原位
+        收缩为 operation/key_digest/EXPIRED。原键命中摘要锚点仍回 410，
+        即使原 flow／安装信息已清除，也只确认结果不可再取，不说明旧资格是否提交。
+      security:
+        - otpConfirmationResultAuth: []
+      parameters:
+        - $ref: '#/components/parameters/VInstallationId'
+        - $ref: '#/components/parameters/OtpFlowId'
+      responses:
+        '200':
+          description: 该原操作的持久无秘密状态；不返回注册资格或邮箱配额。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmationResult'
+        '202':
+          description: 尚无法确定原确认或退役结果，不允许另发新槽位。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/OperationPending'
+                  - $ref: '#/components/schemas/ConfirmationPending'
+                  - $ref: '#/components/schemas/RetirementPending'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/ResultAuthenticationFailed'
+        '410':
+          $ref: '#/components/responses/ResultExpired'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /internal/v1/slot-releases:
+    post:
+      operationId: acknowledgeCommittedSlotRelease
+      tags: [InternalRelease]
+      summary: 处理 C 已提交正式注销收据并持久 ACK
+      description: |
+        此路径仅内部 C 到 V，外部网络及客户端不得访问。security: [] 只表示此处
+        没有 HTTP 认证头；OpenAPI 3.0.3 不能原生表达 mTLS，绝不表示无需认证。
+        网关完成环境绑定 mTLS：
+        校验专属 CA、证书链、有效期／撤销和配置中唯一 C 服务主体 SAN；不可仅凭
+        任意受信客户端证书，也不可相信可伪造的转发证书请求头。V 再验固定
+        RELEASED/V1 收据的 C 全局 key_epoch、环境绑定受信钥和严格 Ed25519 签名。
+        mTLS 不能替代收据验签，签名也不能替代调用方与传输认证。
+
+        收据只包含旧 slot_id，绝无邮箱、账号 ID、设备、请求 ID 或对方幂等键。
+        幂等键为解码后 slot_id＋RELEASED 用途，不另要求客户端 Idempotency-Key。
+        C 只能在真正 CLOSED 与唯一释放 outbox 提交后签收据；V 无法用签名推断
+        C 的 SQL 提交事实，要求诚实 C 及独立事故证据，不能宣称签名即审计证明。
+
+        V 在同一事务验当前配额槽位／版本、释放配额、清在线邮箱关联、
+        写长期无邮箱的 used_slots 与 processed_receipts 终态、终结同槽位退役待办。
+        只有全部持久提交后才回 ACKNOWLEDGED。收到 HTTP 请求或验签成功不是 ACK。
+        已处理旧 RELEASED 收据重复只回 ACK，不释放后来新槽位；若该槽位已按
+        RETIRED 终态处理却又收到 RELEASED，诚实 C 状态机不可能产生此组合，
+        必须返回 RELEASE_RECONCILIATION_REQUIRED，保留原终态、不改新配额，
+        不能把不同用途终态冲突当作正常重复 ACK。
+        收据既未被处理、也找不到可证明的当前旧槽位／终态时回 409 并持续核对，
+        不能以无记录作 ACK 或开放未知配额。C 必须保持 outbox 并以同用途同槽位
+        重试至持久 ACK；503、断连或 ACK 丢失保留原待投递操作。
+      security: []
+      x-mtls-required: true
+      x-allowed-peer: community
+      x-max-request-body-bytes: 1024
+      x-transport-authentication:
+        mode: mutual-tls
+        peer: environment-bound-community-service
+        application-signature-required: true
+        trust-forwarded-certificate-headers: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlotReleaseRequest'
+      responses:
+        '200':
+          description: V 已持久处理此用途和槽位；重复 ACK 不变更较新配额。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotReleaseAcknowledged'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/InternalAuthenticationFailed'
+        '409':
+          $ref: '#/components/responses/ReleaseReconciliationRequired'
+        '422':
+          $ref: '#/components/responses/ReleaseReceiptInvalid'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+components:
+  securitySchemes:
+    otpRequestResultAuth:
+      type: http
+      scheme: OtpRequestResult
+      description: |
+        Authorization: OtpRequestResult <原申请32字节随机幂等键的43字符base64url>。
+        仅核对该 V 安装 ID 的原操作；不是 Bearer，不赋予发码或社区权限。
+    otpConfirmationResultAuth:
+      type: http
+      scheme: OtpConfirmationResult
+      description: |
+        Authorization: OtpConfirmationResult <原确认32字节随机幂等键的43字符base64url>。
+        仅核对原安装 ID／flowId 的原确认及待办，不能以本头取得完整资格。
+  parameters:
+    VInstallationId:
+      name: V-Installation-ID
+      in: header
+      required: true
+      description: |
+        本次 V 流程使用的独立安全随机16字节安装 ID；不能复用 C 安装 ID。
+        同键重试和结果核对必须保持原值，不读取 IMEI 等硬件标识。
+      schema:
+        $ref: '#/components/schemas/Random16'
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: |
+        为本方这一次用户操作预先生成并持久保存的安全随机32字节键，
+        申请、确认分别生成且不传到 C；相同键只能绑定同路径、同安装 ID 与原材料。
+      schema:
+        $ref: '#/components/schemas/Random32'
+    OtpFlowId:
+      name: OTP-Flow-ID
+      in: header
+      required: true
+      description: 原确认的 V 本地不透明 flowId，不发送给 C，不写日志。
+      schema:
+        $ref: '#/components/schemas/Random32'
+  headers:
+    NoStore:
+      description: 敏感成功和错误响应均禁止存储。
+      schema:
+        type: string
+        enum: [no-store]
+    VRequestId:
+      description: V 为每个 HTTP 响应独立生成的随机请求 ID；不复用调用方编号。
+      schema:
+        $ref: '#/components/schemas/Random16'
+    RetryAfter:
+      description: 整数秒，和 JSON 中本次 retryAfterSeconds 一致；不能重置原倒计时。
+      schema:
+        type: string
+        pattern: '^[1-9][0-9]{0,5}$'
+  schemas:
+    Random16:
+      type: string
+      minLength: 22
+      maxLength: 22
+      pattern: '^[A-Za-z0-9_-]{21}[AQgw]$'
+      description: 安全随机16字节的唯一无填充 base64url 编码，严格解码后检查16字节。
+    Random32:
+      type: string
+      minLength: 43
+      maxLength: 43
+      pattern: '^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$'
+      description: 32字节的唯一无填充 base64url 编码；随机 ID 必须来自安全随机数。
+    BootstrapPublicKey:
+      type: string
+      minLength: 43
+      maxLength: 43
+      pattern: '^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$'
+      description: |
+        规范32字节 Ed25519 公钥，必须另查非单位元、非小阶且处于素数阶子群。
+        编码长度与可解码成曲线点本身不足以确认持钥安全。
+    RegistrationTicket:
+      type: string
+      minLength: 208
+      maxLength: 208
+      pattern: '^[A-Za-z0-9_-]{208}$'
+      description: |
+        156字节 registration_ticket_bytes 的无填充 base64url 编码，必须是
+        ASCII("HNUHOLE/REGISTER/V2") || 0x00 || v_key_epoch:u32大端 ||
+        admission_window:u32大端 || slot_id[32] || pk_boot[32] || v_signature[64]。
+        不接受 REGISTER/V1、其他长度、自由扩展或 JSON 对象替代。
+        admission_window=floor(OTP完成时实际UTC Unix秒/1800)，全用户共用，
+        不由客户端传入或 V 按用户挑选。C 创建意图及最终提交都只收本桶／上一桶。
+    ReleaseReceipt:
+      type: string
+      minLength: 160
+      maxLength: 160
+      pattern: '^[A-Za-z0-9_-]{160}$'
+      description: |
+        120字节固定 RELEASED 收据全文的无填充 base64url 编码：
+        ASCII("HNUHOLE/RELEASED/V1") || 0x00 || c_key_epoch:u32大端 ||
+        slot_id[32] || c_signature[64]。不得把 RETIRED 或其他域当 RELEASED。
+    CampusEmail:
+      type: string
+      format: email
+      minLength: 16
+      maxLength: 254
+      pattern: '^[^\x00-\x20\x7F@]+@hainanu[.]edu[.]cn$'
+      description: |
+        完整精确邮箱，后缀必须逐字为 hainanu.edu.cn；禁止空白、控制字符、其他域
+        和子域。前缀别名允许，但须经过真正投递验证；额外完整邮件语法／长度校验
+        在 V 边界执行，不能因 Schema format 未校验而跳过。大小写原样保存和比较，
+        不自动裁空格、折叠大小写或合并别名，不允许邮箱出现在 C 请求。
+    Otp:
+      type: string
+      minLength: 6
+      maxLength: 6
+      pattern: '^[0-9]{6}$'
+      description: 六位 ASCII 十进制数字，保留前导零；不得解析成 JSON number。
+    RemainingSendSeconds:
+      type: integer
+      minimum: 0
+      maximum: 60
+      description: 原正常发送间隔的剩余秒数，重复核对不能重置到六十秒。
+    PendingRetrySeconds:
+      type: integer
+      minimum: 1
+      maximum: 60
+      description: 原待办本次核对前等待；非新发送授权，不替代其他有效锁定或预算。
+    OtpRequest:
+      type: object
+      additionalProperties: false
+      required: [email]
+      properties:
+        email:
+          $ref: '#/components/schemas/CampusEmail'
+    OtpRequestAccepted:
+      type: object
+      additionalProperties: false
+      required: [flowId, retryAfterSeconds]
+      properties:
+        flowId:
+          $ref: '#/components/schemas/Random32'
+        retryAfterSeconds:
+          $ref: '#/components/schemas/RemainingSendSeconds'
+    OtpRequestResultAccepted:
+      type: object
+      additionalProperties: false
+      required: [state, flowId, retryAfterSeconds]
+      properties:
+        state:
+          type: string
+          enum: [ACCEPTED]
+        flowId:
+          $ref: '#/components/schemas/Random32'
+        retryAfterSeconds:
+          $ref: '#/components/schemas/RemainingSendSeconds'
+    OtpRequestResultNotSent:
+      type: object
+      additionalProperties: false
+      required: [state, retryAfterSeconds]
+      properties:
+        state:
+          type: string
+          enum: [NOT_SENT]
+        retryAfterSeconds:
+          $ref: '#/components/schemas/RemainingSendSeconds'
+    OtpConfirmation:
+      type: object
+      additionalProperties: false
+      required: [flowId, otp, slotId, bootstrapPublicKey]
+      properties:
+        flowId:
+          $ref: '#/components/schemas/Random32'
+        otp:
+          $ref: '#/components/schemas/Otp'
+        slotId:
+          $ref: '#/components/schemas/Random32'
+        bootstrapPublicKey:
+          $ref: '#/components/schemas/BootstrapPublicKey'
+        releaseReceipt:
+          $ref: '#/components/schemas/ReleaseReceipt'
+    RegistrationTicketResponse:
+      type: object
+      additionalProperties: false
+      required: [registrationTicket]
+      properties:
+        registrationTicket:
+          $ref: '#/components/schemas/RegistrationTicket'
+    OperationPending:
+      type: object
+      additionalProperties: false
+      required: [state, retryAfterSeconds]
+      properties:
+        state:
+          type: string
+          enum: [PENDING]
+        retryAfterSeconds:
+          $ref: '#/components/schemas/PendingRetrySeconds'
+    RetirementPending:
+      type: object
+      additionalProperties: false
+      required: [state, retryAfterSeconds]
+      properties:
+        state:
+          type: string
+          enum: [RETIREMENT_PENDING]
+        retryAfterSeconds:
+          $ref: '#/components/schemas/PendingRetrySeconds'
+    ConfirmationPending:
+      type: object
+      additionalProperties: false
+      required: [state, retryAfterSeconds]
+      properties:
+        state:
+          type: string
+          enum: [CONFIRMATION_PENDING]
+        retryAfterSeconds:
+          $ref: '#/components/schemas/PendingRetrySeconds'
+    ConfirmationResult:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          type: string
+          enum: [TICKET_AVAILABLE, REVERIFY_REQUIRED, NOT_COMMITTED]
+    SlotReleaseRequest:
+      type: object
+      additionalProperties: false
+      required: [releaseReceipt]
+      properties:
+        releaseReceipt:
+          $ref: '#/components/schemas/ReleaseReceipt'
+    SlotReleaseAcknowledged:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          type: string
+          enum: [ACKNOWLEDGED]
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required: [error, requestId]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum:
+                - REQUEST_INVALID
+                - EMAIL_INVALID
+                - AUTHENTICATION_FAILED
+                - IDEMPOTENCY_KEY_REUSED
+                - OTP_INVALID
+                - OTP_EXPIRED
+                - OTP_REPLACED
+                - OTP_FLOW_INVALID
+                - BOOTSTRAP_KEY_INVALID
+                - SLOT_BINDING_INVALID
+                - ELIGIBILITY_RESERVED
+                - RELEASE_RECEIPT_INVALID
+                - REVERIFY_REQUIRED
+                - RELEASE_RECONCILIATION_REQUIRED
+                - RATE_LIMITED
+                - RESULT_EXPIRED
+                - SERVICE_UNAVAILABLE
+            message:
+              type: string
+              minLength: 1
+              maxLength: 160
+              description: 通用可读提示，不包含邮箱、槽位、账号资料、密钥或风控细节。
+            details:
+              type: object
+              additionalProperties: false
+              properties:
+                retryAfterSeconds:
+                  type: integer
+                  minimum: 1
+                  maximum: 999999
+        requestId:
+          $ref: '#/components/schemas/Random16'
+  responses:
+    BadRequest:
+      description: REQUEST_INVALID；请求结构、编码、重复键、未知字段或请求体过大。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    EmailInvalid:
+      description: EMAIL_INVALID；精确校邮语法／允许域名错误，不包含配额信息。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    IdempotencyConflict:
+      description: IDEMPOTENCY_KEY_REUSED；本方原键绑定了不同路径、安装 ID 或材料。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ConfirmationConflict:
+      description: |
+        IDEMPOTENCY_KEY_REUSED，或有效 OTP 后 ELIGIBILITY_RESERVED。
+        不返回旧账号 ID、用户名、内容或槽位；退役未知必须返回 202，不能返回此冲突。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ConfirmationInvalid:
+      description: |
+        OTP_INVALID、OTP_EXPIRED、OTP_REPLACED、OTP_FLOW_INVALID、BOOTSTRAP_KEY_INVALID、
+        SLOT_BINDING_INVALID、RELEASE_RECEIPT_INVALID 或 REVERIFY_REQUIRED；不说明旧号归属。
+        REVERIFY_REQUIRED 是原操作已完成安全核对但需新 OTP，不再次消费或计原码错误。
+        已确认旧码／过期码免计设备连续错，所有请求仍占受限预算。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ResultAuthenticationFailed:
+      description: AUTHENTICATION_FAILED；能力头缺失／格式无效或原安装／流程不符，同形错误。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ResultExpired:
+      description: |
+        RESULT_EXPIRED；已知原结果超过可核对／票据重取保留窗口。
+        不证明未发送或未签发，不能开放配额、重启待办或重新执行原键副作用。
+        原请求唯一行已原位收缩，只保留 operation、V 域分离 key_digest、EXPIRED；
+        原键重算摘要即可核对本结果，无须已擦除的身份／流程绑定材料。
+        持续退役待办不按普通 TTL 收缩或中止，仍通过原键核对其未决状态。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    RateLimited:
+      description: |
+        RATE_LIMITED；安全 Retry-After，不以地址空闲／占用改变响应。
+        三错锁定时显示原锁定剩余秒数，不延长五分钟，其他邮箱／网络预算仍独立。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ServiceUnavailable:
+      description: |
+        SERVICE_UNAVAILABLE；权威库、签名、时钟信任、灾备或传输状态暂不可确认。
+        结果未知，不能假设未提交或自行重新发码／开放配额，核对或重试本方原操作。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    InternalAuthenticationFailed:
+      description: |
+        AUTHENTICATION_FAILED；实际 mTLS 调用方／环境认证失败。
+        TLS 层拒绝可没有 HTTP 响应；不允许以任意请求头绕过 mTLS。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ReleaseReceiptInvalid:
+      description: RELEASE_RECEIPT_INVALID；固定用途、受信密钥、签名或编码无效，不变更配额。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ReleaseReconciliationRequired:
+      description: |
+        RELEASE_RECONCILIATION_REQUIRED；有效收据无法与当前旧槽位或已处理终态安全核对。
+        不 ACK、不透露邮箱／账号归属；C 保留 outbox，独立证据核对后再重试。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'

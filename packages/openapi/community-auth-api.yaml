@@ -1,0 +1,2033 @@
+openapi: 3.0.3
+info:
+  title: Hnuhole Community Authentication API
+  version: 1.0.0-draft
+  description: 社区认证方C的生产契约评审稿（2026-09-28），未实现、未经过独立安全审计或上线批准。日常认证为私有用户名+密码；学校邮箱、OTP、V
+    flowId/安装ID/幂等键不允许进入任何C请求。V签名资格只给新账号准入，邮箱/资格/释放收据不能找回旧号。本文件与verifier-auth-api.yaml使用不同受信主机、独立权限/密钥/库/日志/编号。所有JSON对象拒绝额外字段、重复键、null替代必填项、非法UTF-8/错误类型和超大体；本版不支持无文档字段或未知版本，所有base64url严格解码、查长度并规范重编码。所有成功/错误/204响应Cache-Control:no-store、C自生成X-Request-ID；不使用认证cookie，CORS只允许固定受信客户端origin，不记录Authorization或秘密请求体。认证类型严格互斥且仅在其专属路径有效，拒绝重复Authorization头、混用方案、query凭据或未声明body。403/401/429不公开账号存在性/邮箱/槽位/其他面具，用户名占用只在有效注册PoP后受限公开。全部截止在权威库最终取得锁后用clock_timestamp()取实际UTC裁决并连续转换，不用事务开始时间。从旧备份恢复/时钟回退/钥撤销状态不明须冻结全部认证与受保护读写，外部可信证据重建后撤旧会话。所有有副作用幂等操作同键同负载原子认领，HMAC绑定值用数据库外独立密钥；并发在途键409
+    OPERATION_PENDING并有界重试，终态保留超过声明的重试窗口。已提交注册/登录只给无秘密错误，重设/凭据管理可无秘密204；令牌及恢复原码绝不重发。request_results首次受理即以(operation,key_digest)建立唯一锚点，key_digest=SHA-256(ASCII("HNUHOLE/C-REQUEST-TOMBSTONE/V1")||0x00||原32字节幂等键)。完整结果到期后原行同事务原位变EXPIRED，清空除operation/key_digest/EXPIRED之外所有字段，永久保留该无身份唯一锚点，不删除后重插。本方key_digest另设唯一约束，拒同原键跨操作复用；EXPIRED只核对规范原键摘要，不再核对已清理的设备/意图绑定，不作原提交结论。closure申请首次提交同事务建立CLOSURE锚点，closureId用独立域HNUHOLE/C-CLOSURE-TOMBSTONE/V1；状态记录有界清理后仅留此锚点。EXPIRED锚点无原ID、时间、账号、slot、安装ID、请求HMAC或原提交结论；迟到原POST仅410
+    RESULT_EXPIRED，绝不能当新请求重执行或重建七天申请。同键首次认领、完成与清理按operation/key_digest串行，取得键锁后复核live/EXPIRED；在途未有持久终态不能按TTL清理。
+servers:
+- url: "/"
+  description: 仅C独立受信API主机；部署时固定HTTPS，不由V或请求改写。
+tags:
+- name: Registration
+  description: 只建立全新账号，不恢复旧号。
+- name: Session
+  description: 单移动会话、恢复、续期和独立撤销。
+- name: Recovery
+  description: 预设独立恢复凭据；不联系V、不自动登录。
+- name: CredentialManagement
+  description: 当前会话与新鲜密码复验后管理本人恢复方式。
+- name: Closure
+  description: 七天缓冲、权威截止与受限状态。
+- name: Internal
+  description: mTLS独立工作负载入口，不对公共客户端开放。
+x-contract-status: preimplementation-security-review-draft
+x-required-deployment-controls:
+- fixed-rp-id-and-origin-allowlist-reviewed-for-native-passkeys
+- separate-public-and-mtls-internal-listeners
+- independent-v-and-c-hosts-identifiers-access-keys-logs-and-backups
+- database-authoritative-account-session-credential-slot-transactions
+- trusted-utc-and-monotonic-key-revocation-disaster-reconciliation
+- all-sensitive-responses-no-store-and-no-secret-logging
+paths:
+  "/api/v1/auth/registration-intents":
+    post:
+      operationId: createRegistrationIntent
+      summary: 建立待开户意图并一次性展示恢复码
+      description: 在C权威数据库裁决点验证受信V密钥、REGISTER/V2固定编码、严格Ed25519公钥、槽位散列及当前/上一30分钟准入桶。未来桶不接受；距桶开始≤60秒仅提示短时重试原票，大偏差按授时故障处理。意图与挑战各32字节，最多10分钟，绑定不可修改的资格全文、用户名、密码验证值、恢复码摘要及C安装ID。不检查并公开用户名占用，不占槽位，不创建账号；成功后不回调V。原恢复码只在此首次201展示，无Idempotency-Key；响应丢失新建意图和新码，旧意图到期，不能重放原文。
+      tags:
+      - Registration
+      security: []
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RegistrationIntentRequest"
+      responses:
+        '201':
+          description: 意图已持久建立；原恢复码只展示一次。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RegistrationIntentResponse"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-retry-semantics: lost-response-create-new-intent-no-secret-replay
+  "/api/v1/auth/registrations":
+    post:
+      operationId: commitRegistration
+      summary: 证明bootstrap私钥并原子开户
+      description: 验证固定PoP消息：HNUHOLE/BOOTSTRAP-POP/V1||0x00||slot[32]||intentId[32]||challenge[32]||SHA-256(ticket全文)[32]。C只从保存的意图读取开户材料，不能接受用户名/密码/资格替换。最终锁内重新检查资格桶、意图10分钟期限、一次性挑战、严格PoP和完整恢复码确认；槽位ABSENT→ACTIVE与退役竞争，一个事务创建账号、恢复码、会话并消费意图。用户名冲突仅在有效PoP后返回USERNAME_UNAVAILABLE，处理意图却不消费槽位；资格过期则废弃意图/恢复码，须重新收码同槽位换签。首次提交201含新会话；已提交相同键只回409
+        REGISTRATION_COMMITTED_LOGIN_REQUIRED，不含令牌或恢复码，用户用密码登录。事务/回包未知只重试原键，不重用已消费证明取得旧号会话。原完整结果已清理时，命中本operation的请求墓碑只回410
+        RESULT_EXPIRED；不重新开户/签发会话，也不能用旧登录请求取消注销。
+      tags:
+      - Registration
+      security: []
+      parameters:
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RegistrationRequest"
+      responses:
+        '201':
+          description: 账号与唯一移动会话已原子提交。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SessionCreated"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+        '410':
+          "$ref": "#/components/responses/Gone"
+      x-retry-semantics: same-key-same-payload-no-session-or-code-replay
+  "/api/v1/auth/sessions":
+    post:
+      operationId: createSession
+      summary: 用户名密码主动登录并接替旧设备
+      description: 不存在用户名、错误密码走同形AUTHENTICATION_FAILED及受控等价计算路径；速率限制不能明显枚举账号。初步验证密码须记录所用密码验证值/凭据版本，最终账号锁内再次确认两者未变，变化就拒绝旧证明并要求全新密码校验，不能把恢复前的旧密码授权套到新版本。在账号锁内现场取UTC时间，拒绝CLOSED、到期FINALIZING及仍有效封禁；早于dueAt的主动成功登录原子取消PENDING_CLOSE并新建唯一移动会话，递增会话代次、撤销旧会话。初始有效期为实际裁决时间+30天，同设备重新登录也接替旧会话；不联系V。首次201含32字节随机token；已提交同键仅409
+        SESSION_CREATED_RETRY_LOGIN，不重发token，客户端新键重新输入/确认密码登录替代不可见会话。后台刷新或恢复查询不是主动登录。原完整结果已清理时，命中本operation的请求墓碑只回410
+        RESULT_EXPIRED；不重新开户/签发会话，也不能用旧登录请求取消注销。
+      tags:
+      - Session
+      security: []
+      parameters:
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SessionCreateRequest"
+      responses:
+        '201':
+          description: 新会话已提交，旧移动会话立即失效。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SessionCreated"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+        '410':
+          "$ref": "#/components/responses/Gone"
+      x-retry-semantics: same-key-no-token-replay-new-key-explicit-login
+  "/api/v1/auth/session":
+    get:
+      operationId: getCurrentSession
+      summary: 恢复当前移动会话
+      description: 每次从权威状态复核token摘要、会话代次、撤销/到期、账号终态及封禁；不能只依靠离线缓存。不是主动登录，不取消注销。有效ACTIVE会话满足静默续期条件时按同一事务延长原token的expiresAt；不换token或会话代次。App启动前先处理持久登出待办，不能把对应旧Bearer当可恢复会话。401时清本地token和导航节点，session_replaced可提示其他设备接替；503/超时保留安全存储token待核对，不误判退出。成功后另拉完整通道目录，不能用旧/部分目录冒充当前目录。
+      tags:
+      - Session
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: 当前有效会话，仅返回本人资料。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SessionResponse"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/session-renewals":
+    post:
+      operationId: renewCurrentSession
+      summary: 为活跃的当前会话静默续期
+      description: 只在用户正在进行正常登录后操作时调用，不按计时器维持长期无使用会话。与所有正常受保护请求采用同一规则：锁内实际时间检查仍有效ACTIVE会话/代次/账号/封禁，剩余≤7天时把expiresAt设为该裁决时间+30天，否则保持原值。原token、会话代次、安装ID和revocationSecret均不变；并发续期再次检查门槛，不能每个重试额外累加30天。PENDING_CLOSE、到期、撤销、替代及封禁不可续；不取消注销，不产生新设备或自动主动登录。无body/Idempotency-Key；503未知可安全重试当前token。服务器无法仅凭Bearer证明真实用户活跃，客户端禁止后台定时续期是本版产品约束。
+      tags:
+      - Session
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: 现有会话截止已核对；未到门槛也返回原截止。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SessionRenewed"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-retry-semantics: atomic-threshold-extension-same-token
+  "/api/v1/auth/devices":
+    get:
+      operationId: getMobileDevices
+      summary: 只读取当前与最近一次被替代移动设备状态
+      description: 只允许当前有效Bearer读取本人设备页，固定当前项CURRENT及可选最近替代项REPLACED。最近替代记录仅30天评审基线，到期不返回历史；登录更新时原子覆盖，不能形成无界设备历史。仅返回角色与必要时间，不提供安装ID、原token、硬件指纹/型号、IP或多设备并行控制。本规则限手机App，不界定电脑管理员会话；读取可按既定活跃规则静默续期，不是主动登录。
+      tags:
+      - Session
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: 最多两类设备状态，本人可见。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeviceList"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/session-revocations":
+    post:
+      operationId: revokeSession
+      summary: 使用独立单向秘密只撤销对应旧会话
+      description: '只接受Authorization: SessionRevoke <43字符>，拒绝Bearer、其他认证和body。revocationSecret=SHA-256(ASCII("HNUHOLE/SESSION-REVOKE/V1")||0x00||token[32])；C查SHA-256(ASCII("HNUHOLE/REVOKE-STORAGE/V1")||0x00||revocationSecret[32])。只能撤销这条会话，不读社区/账号、不撤销后来接替的新会话。客户端先持久登出标记，导出并安全保存秘密，再删Bearer，崩溃重启先处理标记；网络失败只留撤销秘密。规范秘密不论匹配活动/已撤销/已过期或已清理记录均204，只确认该能力没有对应活动会话，不能探测存在性；认证scheme错误401、编码错误400，503为结果未知。不能按本地旧expiresAt清待办，续期可能已提交却丢响应；以服务端204核对完成。收到204前泄漏的旧Bearer仍可能有效，提示本地退出、服务端撤销待确认。'
+      tags:
+      - Session
+      security:
+      - sessionRevoke: []
+      responses:
+        '204':
+          description: 对应会话已不可用；无响应体且可重复。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-retry-semantics: same-secret-only-same-session-revocation
+  "/api/v1/auth/recovery-code-reset-intents":
+    post:
+      operationId: createRecoveryCodeResetIntent
+      summary: 用当前恢复码证明旧号控制权
+      description: 规范恢复码摘要在C内定位账号，忘记用户名不需要邮箱。无效、已用、关闭/到期账号统一401。初步证明后须在账号锁内复核证明所见凭据版本与旧码仍有效；不能把过时证明绑定到新版本。原子废弃前一重设意图、递增重设意图代次，建立最长10分钟的唯一受限意图并一次性展示新恢复码与私有用户名。旧码暂留，直到最终重设才消费；新意图不创建会话、不取消七天注销、不解除处罚。无Idempotency-Key或原码重放；响应丢失用仍有效旧码新建意图，旧意图立即失效。
+      tags:
+      - Recovery
+      security: []
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RecoveryCodeResetRequest"
+      responses:
+        '201':
+          description: 受限重设意图已建立，只有首次展示新码。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PasswordResetIntentResponse"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/passkey-reset-options":
+    post:
+      operationId: createPasskeyResetOptions
+      summary: 取得固定RP的可发现Passkey恢复挑战
+      description: 请求体只能为{}，不接受用户名、邮箱、credentialId或账号ID。生成32字节challenge及challengeId，有效5分钟、不占账号或槽位，userVerification=required，不给allowCredentials。无Idempotency-Key；响应丢失新取选项。RP/origin必须由C部署受信配置固定，环境不共用。
+      tags:
+      - Recovery
+      security: []
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/EmptyRequest"
+      responses:
+        '200':
+          description: 一次性恢复挑战与可发现凭据选项。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PasskeyResetOptionsResponse"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/passkey-reset-intents":
+    post:
+      operationId: createPasskeyResetIntent
+      summary: 验证Passkey assertion后建立受限重设意图
+      description: 严格校验id/rawId相等、已登记凭据、clientDataJSON type=webauthn.get、原challenge、精确受信origin、rpIdHash、UP/UV、crossOrigin缺省或false且无topOrigin、userHandle账号绑定及签名。只按注册COSE算法验签，未知扩展/算法拒绝；同步凭据不能仅因signCount不递增就统一误判失陷，计数/备份异常进入风险策略。有效assertion后仍在账号锁内复核证明所见凭据版本与当前凭据；挑战只能成功消费一次。原子替代旧重设意图并一次性展示新码/用户名，最长10分钟；无普通会话，不取消注销或解除处罚。响应丢失重新取challenge并用仍有效Passkey证明，不能重放assertion或新码。
+      tags:
+      - Recovery
+      security: []
+      requestBody:
+        required: true
+        x-max-bytes: 32768
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PasskeyResetIntentRequest"
+      responses:
+        '201':
+          description: Passkey已证明，唯一受限重设意图已建立。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PasswordResetIntentResponse"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/password-resets":
+    post:
+      operationId: commitPasswordReset
+      summary: 原子重设密码并废止全部旧恢复凭据
+      description: 客户端发送前把原32字节幂等键及resetIntentId写入系统安全存储。最终账号锁下实际时间核对意图≤10分钟、统一凭据版本、唯一活动ID/代次、新恢复码确认与密码策略；过期/废弃/版本改变拒绝。同一事务更换密码/恢复码、消费意图/旧码、撤销全部旧Passkey及会话、递增凭据/会话代次，记录同键非秘密结果至少7天。PENDING_CLOSE时仍未到dueAt可以重设，却不自动取消注销；封禁/禁言/内容归属不变，到期或CLOSED不可重设。首次及已提交同键均204，不发会话或任何新码。超时优先ResetResult查询，禁止静默新密码登录取消注销；只有用户明确主动登录才取消未到期申请。
+      tags:
+      - Recovery
+      security: []
+      parameters:
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PasswordResetRequest"
+      responses:
+        '204':
+          description: 密码重设已提交；重复同键亦无秘密成功。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '410':
+          "$ref": "#/components/responses/Gone"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-retry-semantics: persist-original-key-before-send-query-reset-result-no-secret-replay
+  "/api/v1/auth/password-reset-result":
+    get:
+      operationId: getPasswordResetResult
+      summary: 只核对同键同意图的无秘密重设结果
+      description: '只接受Authorization: ResetResult <原提交43字符幂等键>和Reset-Intent-ID头，不接受Bearer或body。从权威库查询同键/同意图，COMMITTED是持久提交；尚有效、请求在途或无法确定为202
+        PENDING。持久拒绝结果可NOT_COMMITTED；意图过期后须同账号锁下核对未消费且原键无提交才确定NOT_COMMITTED，迟到POST随后须因过期失败。早到404不能证明未来不提交。结果/终态意图最小数据至少7天；410
+        RESULT_EXPIRED仅表示无法核对，不能据此静默登录取消注销。查询只含state，不能返回用户名/账号/码。'
+      tags:
+      - Recovery
+      security:
+      - resetResult: []
+      parameters:
+      - "$ref": "#/components/parameters/ResetIntentIdHeader"
+      responses:
+        '200':
+          description: 同键同意图已有不可变终态。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ResetResult"
+        '202':
+          description: 尚未确定，保留原键/意图并重试。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Retry-After:
+              "$ref": "#/components/headers/RetryAfter"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PendingResult"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '404':
+          "$ref": "#/components/responses/NotFound"
+        '410':
+          "$ref": "#/components/responses/Gone"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/recovery-credentials":
+    get:
+      operationId: listRecoveryCredentials
+      summary: 读取本人恢复凭据的受限清单
+      description: 当前有效Bearer才能读取本人清单；不返回原恢复码、用户名、邮箱、槽位、设备硬件/型号/IP、attestation或同步服务商账户。恢复码始终保留，Passkey最多10条，按createdAt/credentialId稳定排序。只读清单不代替任何正式变更所需的新鲜密码证明。
+      tags:
+      - CredentialManagement
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: 有限大小的本人凭据清单。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RecoveryCredentials"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/recovery-code-rotations":
+    post:
+      operationId: createRecoveryCodeRotation
+      summary: 新鲜密码复验后一次性展示待替换恢复码
+      description: 当前有效会话和正确密码都必需。在账号锁内再次复核密码证明所见凭据版本、会话代次及账号可管理状态。新建最长10分钟轮换意图，绑定账号/当前会话/凭据版本；每账号唯一活动轮换意图，新建废弃旧意图。只存新码摘要并首次201显示原码，旧码尚有效；本阶段不递增凭据版本、不重发码原文。响应丢失重新正确证明密码新建意图。确认阶段才替换，不自动改变密码、Passkey或有效会话。
+      tags:
+      - CredentialManagement
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PasswordVerificationRequest"
+      responses:
+        '201':
+          description: 旧码未替换；新码只在此一次性显示。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RecoveryCodeRotationResponse"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/recovery-code-rotations/{rotationIntentId}/confirmations":
+    post:
+      operationId: confirmRecoveryCodeRotation
+      summary: 确认保存新码后原子轮换
+      description: 当前会话须与创建意图的会话相同。最终账号锁内复核意图有效期、活动ID、凭据版本、会话代次、账号状态以及新码完整确认；原子激活新码、废止旧码、消费意图、递增统一凭据版本，使先前重设意图及全部旧管理挑战失效。密码、Passkey和当前有效会话保持，绝不能移除唯一恢复码。首次/已提交同键均204；超时用原键/原意图确认重试，不展示新码或重发会话。
+      tags:
+      - CredentialManagement
+      security:
+      - bearerAuth: []
+      parameters:
+      - "$ref": "#/components/parameters/RotationIntentId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RecoveryCodeRotationConfirmation"
+      responses:
+        '204':
+          description: 新恢复码已激活，旧码永久失效。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '410':
+          "$ref": "#/components/responses/Gone"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-retry-semantics: same-key-same-intent-no-code-replay
+  "/api/v1/auth/passkey-options":
+    post:
+      operationId: createPasskeyCreationOptions
+      summary: 新鲜密码复验后取得固定RP的Passkey创建选项
+      description: 需要当前会话及正确密码，包括注册后第一次绑定。账号锁内复核证明所见凭据版本、当前会话和可管理状态。挑战有效5分钟，绑定账号、凭据版本、当前会话及固定RP/origin/随机用户句柄；最多10个Passkey。residentKey和userVerification均required，attestation=none，首版只COSE
+        ES256(-7)，不请求扩展。用户name为随机句柄字符串、displayName固定，不向平台同步服务发送邮箱或私有用户名。选项不创建凭据，响应丢失取新选项；任何凭据变更使旧版本挑战失效。
+      tags:
+      - CredentialManagement
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PasswordVerificationRequest"
+      responses:
+        '200':
+          description: 仅用于本次当前账号创建的固定选项。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PasskeyOptionsResponse"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/passkeys":
+    post:
+      operationId: createPasskey
+      summary: 验证创建响应并原子绑定可选Passkey
+      description: 只接受同一有效会话对应、5分钟内的管理challenge；严格验证clientDataJSON、固定origin/type/challenge、rpIdHash、UP/UV、credentialId/rawId和COSE
+        -7公钥，crossOrigin缺省或false且无topOrigin。attestationObject只接受fmt=none和空attStmt，不索取或保留设备attestation/AAGUID。固定选项强制residentKey=required；本响应不单独证明凭据可发现性，移动适配须实际恢复演练。验证不能只凭客户端成功标记；最终账号锁内复核创建密码证明所见凭据版本、会话及账号状态、数量≤10，credentialId全局唯一；登记与消费挑战/递增凭据版本同事务，旧重设/管理挑战失效。首次/已提交同键均204，无会话或原码；可从受限清单核对结果。
+      tags:
+      - CredentialManagement
+      security:
+      - bearerAuth: []
+      parameters:
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        x-max-bytes: 32768
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PasskeyCreateRequest"
+      responses:
+        '204':
+          description: 可选Passkey已绑定；正常会话、密码与恢复码保持。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '410':
+          "$ref": "#/components/responses/Gone"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-retry-semantics: same-key-no-secret-replay
+  "/api/v1/auth/passkey-removal-intents":
+    post:
+      operationId: createPasskeyRemovalIntent
+      summary: 新鲜密码复验并绑定待移除Passkey
+      description: 当前会话及正确密码必需；目标credentialId只能属于本人，错误/他人ID统一404，不透露归属。锁内复核密码证明原凭据版本，建立5分钟意图绑定该credentialId、账号、当前会话和版本。不先移除；DELETE无请求体，通过Credential-Change-ID传递意图ID，密码不得放URL或认证头。响应丢失可用正确密码新建；成功任一凭据变更后旧版本意图失效。
+      tags:
+      - CredentialManagement
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-bytes: 32768
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PasskeyRemovalIntentRequest"
+      responses:
+        '201':
+          description: 受限移除意图已建立，尚未撤销凭据。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PasskeyRemovalIntentResponse"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '404':
+          "$ref": "#/components/responses/NotFound"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/passkeys/{credentialId}":
+    delete:
+      operationId: removePasskey
+      summary: 凭已复验密码的受限意图原子移除本人Passkey
+      description: 只接受Bearer、Credential-Change-ID与Idempotency-Key；不接受body。锁内复核5分钟删除意图、精确credentialId、当前同一会话/代次、凭据版本及账号可管理状态。原子移除目标、消费意图、递增统一凭据版本，使旧重设和管理挑战失效；恢复码始终保留，密码/其他Passkey/当前会话不变。已提交同键即使目标已删亦204；新键其他/已删ID统一404，不泄露他人归属。不能仅用旧会话删除凭据。
+      tags:
+      - CredentialManagement
+      security:
+      - bearerAuth: []
+      parameters:
+      - "$ref": "#/components/parameters/CredentialIdPath"
+      - "$ref": "#/components/parameters/CredentialChangeId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      responses:
+        '204':
+          description: 指定Passkey已撤销，无秘密响应。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '404':
+          "$ref": "#/components/responses/NotFound"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '410':
+          "$ref": "#/components/responses/Gone"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-retry-semantics: same-key-same-removal-intent-204
+  "/api/v1/account-closures":
+    post:
+      operationId: requestAccountClosure
+      summary: 新鲜密码复验后申请七天注销并撤销会话
+      description: 客户端提交前生成并安全保存32字节closureId与status_secret；statusDigest=SHA-256(ASCII("HNUHOLE/CLOSE-STATUS/V1")||0x00||status_secret[32])，服务端不返回秘密。当前会话及正确密码，账号锁内复核初步密码证明所见验证值/凭据版本、会话代次、封禁与当前状态；密码版本已变就拒绝旧证明，禁言允许，仍有效封禁拒绝。closureId是本申请唯一幂等键，绑定原账号和statusDigest，锁内实际UTC时间+7天作为dueAt。同事务进入PENDING_CLOSE、停止未公开任务、撤销全部会话并递增会话代次；重复不重置期限。同ID重试仍须当前有效Bearer，已因本申请撤销时401并用状态能力核对，不接受历史token旁路。超时/早到状态404非未提交证明，不丢原ID/秘密、不换新ID、也不静默登录；暂存Bearer仅安全存储并禁止社区使用，确定后清除。到dueAt不再登录取消，worker迟到为FINALIZING。原申请完整记录清理后，closureId专属墓碑仍阻止重建；相同旧ID的迟到POST仅410
+        RESULT_EXPIRED，不能重新开始七天。
+      tags:
+      - Closure
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ClosureRequest"
+      responses:
+        '202':
+          description: 原申请已持久受理，不等于正式关闭；同申请重试仍为原dueAt。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ClosureAccepted"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+        '410':
+          "$ref": "#/components/responses/Gone"
+      x-retry-semantics: closureId-is-idempotency-key-same-account-same-statusDigest
+  "/api/v1/account-closures/{closureId}":
+    get:
+      operationId: getAccountClosureStatus
+      summary: 用独立秘密读取本次注销状态及已签收据
+      description: '仅Authorization: ClosureStatus <status_secret43字符>，无Bearer/body/query秘密。权威库校验同closureId摘要，只返回受限状态：PENDING、FINALIZING、CANCELLED、CLOSED_RELEASE_PENDING、RELEASED。不返回账号/用户名/处罚原因、不恢复会话或取消申请。dueAt只在PENDING/FINALIZING返回；CANCELLED只返回state并最多保留30天。真正CLOSED提交后才可签RELEASED收据；签名/投递未完CLOSED_RELEASE_PENDING，有已签收据可携给V；V持久ACK后RELEASED，至多30天后清状态秘密。不存在/错误秘密/已清理统一404，不区分；一次早到404仅表示此刻未见已提交记录，不能推断原POST不会提交。状态页不是主动登录。'
+      tags:
+      - Closure
+      security:
+      - closureStatus: []
+      parameters:
+      - "$ref": "#/components/parameters/ClosureIdPath"
+      responses:
+        '200':
+          description: 只读原申请状态，无旧号控制权。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ClosureStatus"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '404':
+          "$ref": "#/components/responses/NotFound"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+  "/internal/v1/slot-retirements":
+    post:
+      operationId: retireUnusedSlot
+      summary: 受信V请求退役尚未开户槽位
+      description: 仅独立内部入口，经双向TLS验证预配置V工作负载证书并验证V固定RETIRE-AUTH/V1签名、受信环境和用途；两者都必需，不接受任何客户端Bearer/SessionRevoke/ResetResult/ClosureStatus。OpenAPI
+        3.0.3不能用原生mutualTLS securityScheme；security=[]只指没有HTTP认证，x-mtls-required必须由部署/验收强制，绝不能开放为匿名公共端点或相信可伪造代理证书头。V调用前已持久写同旧slot唯一退役待办，阻止旧slot续票；C以slot唯一约束与开户竞争。ABSENT→RETIRED与唯一receipt
+        outbox在同一事务先持久提交，HSM仅在提交后依据该终态签RETIRED收据；收据签名/签名服务未就绪则202 RECEIPT_PENDING并有界重试，不返回任何可用于释放的签名。既有RETIRED可以重签同用途/slot，ACTIVE/CLOSED只409
+        SLOT_NOT_RETIRABLE，不给账号/用户名。数据库不可确认为503未知；V持久保持原待办/配额，以同一退役授权重试取得收据再释放。RETIRED终态长期保留且与账号脱钩，不能靠超时释放配额。
+      tags:
+      - Internal
+      security: []
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SlotRetirementRequest"
+      responses:
+        '200':
+          description: 该slot已持久RETIRED，收据可持久处理后放开V当前配额。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SlotRetirementResponse"
+        '202':
+          description: 终态和outbox已提交，尚无可验签收据；V不放开配额。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Retry-After:
+              "$ref": "#/components/headers/RetryAfter"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SlotRetirementPending"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '413':
+          "$ref": "#/components/responses/PayloadTooLarge"
+        '415':
+          "$ref": "#/components/responses/UnsupportedMediaType"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-mtls-required: true
+      x-allowed-peer: eligibility-verifier
+      x-public-exposure: false
+      x-retry-semantics: slot-and-purpose-idempotent-postcommit-signing
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque-session
+      description: 仅32字节随机会话token的43字符规范base64url；不接受JWT/校邮资格/其他能力秘密。
+    sessionRevoke:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 严格SessionRevoke <43字符规范base64url秘密>；只定向撤销绑定旧会话，不可访问社区。
+    resetResult:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 严格ResetResult <原32字节提交幂等键>，另须Reset-Intent-ID；只看一笔无秘密结果。
+    closureStatus:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 严格ClosureStatus <32字节status_secret>；只看同closureId状态和已签收据。
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        "$ref": "#/components/schemas/Base64url32"
+      description: C本方一次用户操作随机32字节；发送前固定、重试共用，同键不同负载409。不能与V共用，也不能记录到日志。请求绑定用数据库外服务器HMAC密钥，不存密码/恢复码快速哈希。作用域为本operation；原完整结果有界清理后仅留域分离键摘要墓碑，旧键410
+        RESULT_EXPIRED，不重新执行，不承诺原提交结论。
+    ResetIntentIdHeader:
+      name: Reset-Intent-ID
+      in: header
+      required: true
+      schema:
+        "$ref": "#/components/schemas/Base64url32"
+      description: 原重设意图ID；与ResetResult原键共同限定一笔无秘密结果，禁止进入日志。
+    CredentialChangeId:
+      name: Credential-Change-ID
+      in: header
+      required: true
+      schema:
+        "$ref": "#/components/schemas/Base64url32"
+      description: 已通过新鲜密码证明的5分钟删除意图ID；不能成为普通社区认证，禁止日志。
+    RotationIntentId:
+      name: rotationIntentId
+      in: path
+      required: true
+      schema:
+        "$ref": "#/components/schemas/Base64url32"
+    CredentialIdPath:
+      name: credentialId
+      in: path
+      required: true
+      schema:
+        "$ref": "#/components/schemas/CredentialId"
+    ClosureIdPath:
+      name: closureId
+      in: path
+      required: true
+      schema:
+        "$ref": "#/components/schemas/Base64url32"
+  headers:
+    NoStore:
+      required: true
+      description: 所有成功、错误和无体响应必须禁止缓存。
+      schema:
+        type: string
+        enum:
+        - no-store
+    RequestId:
+      required: true
+      description: C每次服务端独立生成16字节随机编号；不继承客户端或V编号，不含秘密。
+      schema:
+        "$ref": "#/components/schemas/Base64url16"
+    RetryAfter:
+      required: true
+      description: 有界安全重试秒数，不揭示账号/配额/凭据是否存在。
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 300
+    SessionExpiresAt:
+      required: true
+      description: 此次成功裁决后的当前会话到期UTC时间；不包含token或隐私身份。
+      schema:
+        "$ref": "#/components/schemas/DateTime"
+  schemas:
+    Base64url16:
+      type: string
+      minLength: 22
+      maxLength: 22
+      pattern: "^[A-Za-z0-9_-]{21}[AQgw]$"
+      description: 安全随机16字节，RFC 4648无填充base64url；重编码须与输入相同。
+    Base64url32:
+      type: string
+      minLength: 43
+      maxLength: 43
+      pattern: "^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$"
+      description: 固定32字节，RFC 4648无填充base64url；禁止填充、非零尾位和非规范编码。
+    Base64url64:
+      type: string
+      minLength: 86
+      maxLength: 86
+      pattern: "^[A-Za-z0-9_-]{85}[AQgw]$"
+      description: 固定64字节，RFC 4648无填充base64url；重编码须与输入相同。
+    CredentialId:
+      type: string
+      minLength: 2
+      maxLength: 1364
+      pattern: "^[A-Za-z0-9_-]+$"
+      description: WebAuthn credential ID；解码后1–1023字节，重新编码须相同；id与rawId必须相等。
+    Username:
+      type: string
+      minLength: 6
+      maxLength: 24
+      pattern: "^[a-z][a-z0-9_]{5,23}$"
+      description: 仅C使用的私有登录用户名；只接受规范ASCII小写；不可作为永久账号标识。
+    PasswordInput:
+      type: string
+      minLength: 1
+      maxLength: 512
+      format: password
+      description: 不进入日志。服务端统一NFC；最多2048个UTF-8输入字节、512个输入码点。创建/重设时规范化后为15–128个Unicode码点，并查弱/泄漏/用户名相关密码阻止名单；验证已有密码不得截断或改变既有规范化规则，短密码仅得统一认证失败。
+    RecoveryCodeInput:
+      type: string
+      minLength: 26
+      maxLength: 64
+      pattern: "^[A-Za-z2-7 -]+$"
+      description: 仅忽略ASCII空格与显示分组连字符、统一Base32大小写；处理后须为规范26字符、解码16字节并重编码相同（末尾零位正确）。禁止其他Unicode空白或相似字符。
+    RecoveryCode:
+      type: string
+      minLength: 26
+      maxLength: 26
+      pattern: "^[A-Z2-7]{25}[AEIMQUY4]$"
+      description: 一次性展示的规范128位随机恢复码；原码不持久保存或重放。
+    RegistrationTicket:
+      type: string
+      minLength: 208
+      maxLength: 208
+      pattern: "^[A-Za-z0-9_-]{208}$"
+      description: REGISTER/V2固定二进制全文：ASCII("HNUHOLE/REGISTER/V2")||0x00||v_key_epoch:u32be||admission_window:u32be||slot_id[32]||pk_boot[32]||v_signature[64]，共156字节。未知版本/尾随字段/弱点公钥拒绝；不能使用JWT或JSON对象替代。
+    RetirementAuthorization:
+      type: string
+      minLength: 164
+      maxLength: 164
+      pattern: "^[A-Za-z0-9_-]{164}$"
+      description: RETIRE-AUTH/V1固定授权全文，123字节。域、v_key_epoch和old_slot必须验明；消息只允许退役尚未开户槽位，不承载邮箱。
+    RetirementReceipt:
+      type: string
+      minLength: 159
+      maxLength: 159
+      pattern: "^[A-Za-z0-9_-]{158}[AEIMQUYcgkosw048]$"
+      description: RETIRED/V1固定收据全文，119字节；仅依据已提交RETIRED终态签发。
+    ReleaseReceipt:
+      type: string
+      minLength: 160
+      maxLength: 160
+      pattern: "^[A-Za-z0-9_-]{160}$"
+      description: RELEASED/V1固定收据全文，120字节；仅依据已提交CLOSED终态签发。
+    AccountId:
+      type: string
+      format: uuid
+      description: C内部随机账号ID；仅对本人经认证返回，不是公开平台编号，不与V共享。
+    DateTime:
+      type: string
+      format: date-time
+      description: UTC RFC 3339时间；服务端生成，不接受客户端时间作为截止依据。
+    RegistrationIntentRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        registrationTicket:
+          "$ref": "#/components/schemas/RegistrationTicket"
+        username:
+          "$ref": "#/components/schemas/Username"
+        password:
+          "$ref": "#/components/schemas/PasswordInput"
+        installationId:
+          "$ref": "#/components/schemas/Base64url16"
+      required:
+      - registrationTicket
+      - username
+      - password
+      - installationId
+    RegistrationIntentResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        intentId:
+          "$ref": "#/components/schemas/Base64url32"
+        challenge:
+          "$ref": "#/components/schemas/Base64url32"
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+        recoveryCode:
+          "$ref": "#/components/schemas/RecoveryCode"
+      required:
+      - intentId
+      - challenge
+      - expiresAt
+      - recoveryCode
+    RegistrationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        intentId:
+          "$ref": "#/components/schemas/Base64url32"
+        bootstrapSignature:
+          "$ref": "#/components/schemas/Base64url64"
+        recoveryCodeConfirmation:
+          "$ref": "#/components/schemas/RecoveryCodeInput"
+      required:
+      - intentId
+      - bootstrapSignature
+      - recoveryCodeConfirmation
+    SessionCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        username:
+          "$ref": "#/components/schemas/Username"
+        password:
+          "$ref": "#/components/schemas/PasswordInput"
+        installationId:
+          "$ref": "#/components/schemas/Base64url16"
+      required:
+      - username
+      - password
+      - installationId
+    SessionCreated:
+      type: object
+      additionalProperties: false
+      properties:
+        accountId:
+          "$ref": "#/components/schemas/AccountId"
+        sessionToken:
+          "$ref": "#/components/schemas/Base64url32"
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+      required:
+      - accountId
+      - sessionToken
+      - expiresAt
+    SessionResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        accountId:
+          "$ref": "#/components/schemas/AccountId"
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+        username:
+          "$ref": "#/components/schemas/Username"
+      required:
+      - accountId
+      - expiresAt
+      - username
+    SessionRenewed:
+      type: object
+      additionalProperties: false
+      properties:
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+      required:
+      - expiresAt
+    CurrentDevice:
+      type: object
+      additionalProperties: false
+      properties:
+        role:
+          type: string
+          enum:
+          - CURRENT
+        signedInAt:
+          "$ref": "#/components/schemas/DateTime"
+      required:
+      - role
+      - signedInAt
+    ReplacedDevice:
+      type: object
+      additionalProperties: false
+      properties:
+        role:
+          type: string
+          enum:
+          - REPLACED
+        signedInAt:
+          "$ref": "#/components/schemas/DateTime"
+        replacedAt:
+          "$ref": "#/components/schemas/DateTime"
+      required:
+      - role
+      - signedInAt
+      - replacedAt
+    DeviceList:
+      type: object
+      additionalProperties: false
+      properties:
+        current:
+          "$ref": "#/components/schemas/CurrentDevice"
+        lastReplaced:
+          "$ref": "#/components/schemas/ReplacedDevice"
+      required:
+      - current
+      description: 严格只有当前与最近一次被替代设备两类，最近记录最多保留30天；不返回安装ID、硬件指纹、型号、IP或令牌。
+    RecoveryCodeResetRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        recoveryCode:
+          "$ref": "#/components/schemas/RecoveryCodeInput"
+      required:
+      - recoveryCode
+    PasswordResetIntentResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        resetIntentId:
+          "$ref": "#/components/schemas/Base64url32"
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+        username:
+          "$ref": "#/components/schemas/Username"
+        newRecoveryCode:
+          "$ref": "#/components/schemas/RecoveryCode"
+      required:
+      - resetIntentId
+      - expiresAt
+      - username
+      - newRecoveryCode
+    PasswordResetRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        resetIntentId:
+          "$ref": "#/components/schemas/Base64url32"
+        newPassword:
+          "$ref": "#/components/schemas/PasswordInput"
+        newRecoveryCodeConfirmation:
+          "$ref": "#/components/schemas/RecoveryCodeInput"
+      required:
+      - resetIntentId
+      - newPassword
+      - newRecoveryCodeConfirmation
+    ResetResult:
+      type: object
+      additionalProperties: false
+      properties:
+        state:
+          type: string
+          enum:
+          - COMMITTED
+          - NOT_COMMITTED
+      required:
+      - state
+    PendingResult:
+      type: object
+      additionalProperties: false
+      properties:
+        state:
+          type: string
+          enum:
+          - PENDING
+      required:
+      - state
+    PasswordVerificationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        password:
+          "$ref": "#/components/schemas/PasswordInput"
+      required:
+      - password
+    RecoveryCodeRotationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        rotationIntentId:
+          "$ref": "#/components/schemas/Base64url32"
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+        newRecoveryCode:
+          "$ref": "#/components/schemas/RecoveryCode"
+      required:
+      - rotationIntentId
+      - expiresAt
+      - newRecoveryCode
+    RecoveryCodeRotationConfirmation:
+      type: object
+      additionalProperties: false
+      properties:
+        newRecoveryCodeConfirmation:
+          "$ref": "#/components/schemas/RecoveryCodeInput"
+      required:
+      - newRecoveryCodeConfirmation
+    PasskeySummary:
+      type: object
+      additionalProperties: false
+      properties:
+        credentialId:
+          "$ref": "#/components/schemas/CredentialId"
+        createdAt:
+          "$ref": "#/components/schemas/DateTime"
+        backupEligible:
+          type: boolean
+        backedUp:
+          type: boolean
+      required:
+      - credentialId
+      - createdAt
+      - backupEligible
+      - backedUp
+    RecoveryCredentials:
+      type: object
+      additionalProperties: false
+      properties:
+        recoveryCodeAvailable:
+          type: boolean
+          enum:
+          - true
+        passkeys:
+          type: array
+          minItems: 0
+          maxItems: 10
+          items:
+            "$ref": "#/components/schemas/PasskeySummary"
+      required:
+      - recoveryCodeAvailable
+      - passkeys
+    EmptyRequest:
+      type: object
+      additionalProperties: false
+      properties: {}
+    PasskeyRequestOptions:
+      type: object
+      additionalProperties: false
+      properties:
+        challenge:
+          "$ref": "#/components/schemas/Base64url32"
+        rpId:
+          type: string
+          minLength: 1
+          maxLength: 253
+          description: 部署时固定的受信Hnuhole RP ID；不得取自请求或V响应。
+        timeout:
+          type: integer
+          enum:
+          - 60000
+        userVerification:
+          type: string
+          enum:
+          - required
+      required:
+      - challenge
+      - rpId
+      - timeout
+      - userVerification
+      description: 可发现凭据验证选项，不含allowCredentials或用户名；不请求扩展。
+    PasskeyResetOptionsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        challengeId:
+          "$ref": "#/components/schemas/Base64url32"
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+        publicKey:
+          "$ref": "#/components/schemas/PasskeyRequestOptions"
+      required:
+      - challengeId
+      - expiresAt
+      - publicKey
+    ClientExtensionResults:
+      type: object
+      additionalProperties: false
+      properties: {}
+      description: 本版不请求或接受WebAuthn扩展；只能为{}。
+    AssertionResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        clientDataJSON:
+          type: string
+          minLength: 2
+          maxLength: 4096
+          pattern: "^[A-Za-z0-9_-]+$"
+          description: 无填充base64url，解码后1–3072字节，规范重编码；验证type、challenge、固定origin、crossOrigin。
+        authenticatorData:
+          type: string
+          minLength: 50
+          maxLength: 2731
+          pattern: "^[A-Za-z0-9_-]+$"
+          description: 无填充base64url，解码后37–2048字节；校验rpIdHash、UP/UV、签名计数及备份标志。
+        signature:
+          type: string
+          minLength: 11
+          maxLength: 1366
+          pattern: "^[A-Za-z0-9_-]+$"
+          description: 无填充base64url，解码后8–1024字节；按已登记COSE算法严格验签，ES256为规范DER签名。
+        userHandle:
+          "$ref": "#/components/schemas/Base64url32"
+      required:
+      - clientDataJSON
+      - authenticatorData
+      - signature
+      - userHandle
+    WebAuthnAssertion:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          "$ref": "#/components/schemas/CredentialId"
+        rawId:
+          "$ref": "#/components/schemas/CredentialId"
+        type:
+          type: string
+          enum:
+          - public-key
+        response:
+          "$ref": "#/components/schemas/AssertionResponse"
+        clientExtensionResults:
+          "$ref": "#/components/schemas/ClientExtensionResults"
+      required:
+      - id
+      - rawId
+      - type
+      - response
+      - clientExtensionResults
+    PasskeyResetIntentRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        challengeId:
+          "$ref": "#/components/schemas/Base64url32"
+        webauthnAssertion:
+          "$ref": "#/components/schemas/WebAuthnAssertion"
+      required:
+      - challengeId
+      - webauthnAssertion
+    PasskeyRp:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 253
+          description: 部署时固定的受信RP ID；移动平台关联必须预先审阅。
+        name:
+          type: string
+          enum:
+          - Hnuhole
+      required:
+      - id
+      - name
+    PasskeyUser:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          "$ref": "#/components/schemas/Base64url32"
+        name:
+          "$ref": "#/components/schemas/Base64url32"
+        displayName:
+          type: string
+          enum:
+          - Hnuhole account
+      required:
+      - id
+      - name
+      - displayName
+      description: C随机非邮箱用户句柄；name为同一id的base64url表示，不向同步服务发送私有登录用户名或真实姓名。
+    PasskeyAlgorithm:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          enum:
+          - public-key
+        alg:
+          type: integer
+          enum:
+          - -7
+      required:
+      - type
+      - alg
+      description: 首版仅ES256（COSE -7/P-256）；若要增加算法须另审兼容与验证规则。
+    CredentialDescriptor:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          enum:
+          - public-key
+        id:
+          "$ref": "#/components/schemas/CredentialId"
+      required:
+      - type
+      - id
+    AuthenticatorSelection:
+      type: object
+      additionalProperties: false
+      properties:
+        residentKey:
+          type: string
+          enum:
+          - required
+        requireResidentKey:
+          type: boolean
+          enum:
+          - true
+        userVerification:
+          type: string
+          enum:
+          - required
+      required:
+      - residentKey
+      - requireResidentKey
+      - userVerification
+    PasskeyCreationOptions:
+      type: object
+      additionalProperties: false
+      properties:
+        challenge:
+          "$ref": "#/components/schemas/Base64url32"
+        rp:
+          "$ref": "#/components/schemas/PasskeyRp"
+        user:
+          "$ref": "#/components/schemas/PasskeyUser"
+        pubKeyCredParams:
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            "$ref": "#/components/schemas/PasskeyAlgorithm"
+        timeout:
+          type: integer
+          enum:
+          - 60000
+        excludeCredentials:
+          type: array
+          minItems: 0
+          maxItems: 10
+          items:
+            "$ref": "#/components/schemas/CredentialDescriptor"
+        authenticatorSelection:
+          "$ref": "#/components/schemas/AuthenticatorSelection"
+        attestation:
+          type: string
+          enum:
+          - none
+      required:
+      - challenge
+      - rp
+      - user
+      - pubKeyCredParams
+      - timeout
+      - excludeCredentials
+      - authenticatorSelection
+      - attestation
+    PasskeyOptionsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        challengeId:
+          "$ref": "#/components/schemas/Base64url32"
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+        publicKey:
+          "$ref": "#/components/schemas/PasskeyCreationOptions"
+      required:
+      - challengeId
+      - expiresAt
+      - publicKey
+    AttestationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        clientDataJSON:
+          type: string
+          minLength: 2
+          maxLength: 4096
+          pattern: "^[A-Za-z0-9_-]+$"
+          description: 规范base64url，解码1–3072字节；type=webauthn.create。
+        attestationObject:
+          type: string
+          minLength: 2
+          maxLength: 5462
+          pattern: "^[A-Za-z0-9_-]+$"
+          description: 规范base64url，解码1–4096字节；CBOR须完整且无尾随字节；只接受fmt=none和空attStmt。校验RP、UP/UV、credId、COSE
+            -7、公钥曲线与固定用户句柄。
+        transports:
+          type: array
+          minItems: 0
+          maxItems: 5
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - usb
+            - nfc
+            - ble
+            - internal
+            - hybrid
+      required:
+      - clientDataJSON
+      - attestationObject
+    WebAuthnAttestation:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          "$ref": "#/components/schemas/CredentialId"
+        rawId:
+          "$ref": "#/components/schemas/CredentialId"
+        type:
+          type: string
+          enum:
+          - public-key
+        response:
+          "$ref": "#/components/schemas/AttestationResponse"
+        clientExtensionResults:
+          "$ref": "#/components/schemas/ClientExtensionResults"
+      required:
+      - id
+      - rawId
+      - type
+      - response
+      - clientExtensionResults
+    PasskeyCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        challengeId:
+          "$ref": "#/components/schemas/Base64url32"
+        webauthnAttestation:
+          "$ref": "#/components/schemas/WebAuthnAttestation"
+      required:
+      - challengeId
+      - webauthnAttestation
+    PasskeyRemovalIntentRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        credentialId:
+          "$ref": "#/components/schemas/CredentialId"
+        password:
+          "$ref": "#/components/schemas/PasswordInput"
+      required:
+      - credentialId
+      - password
+    PasskeyRemovalIntentResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        removalIntentId:
+          "$ref": "#/components/schemas/Base64url32"
+        expiresAt:
+          "$ref": "#/components/schemas/DateTime"
+      required:
+      - removalIntentId
+      - expiresAt
+    ClosureRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        password:
+          "$ref": "#/components/schemas/PasswordInput"
+        closureId:
+          "$ref": "#/components/schemas/Base64url32"
+        statusDigest:
+          "$ref": "#/components/schemas/Base64url32"
+      required:
+      - password
+      - closureId
+      - statusDigest
+    ClosureAccepted:
+      type: object
+      additionalProperties: false
+      properties:
+        closureId:
+          "$ref": "#/components/schemas/Base64url32"
+        dueAt:
+          "$ref": "#/components/schemas/DateTime"
+      required:
+      - closureId
+      - dueAt
+    ClosurePendingStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        state:
+          type: string
+          enum:
+          - PENDING
+          - FINALIZING
+        dueAt:
+          "$ref": "#/components/schemas/DateTime"
+      required:
+      - state
+      - dueAt
+    ClosureCancelledStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        state:
+          type: string
+          enum:
+          - CANCELLED
+      required:
+      - state
+    ClosureClosedStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        state:
+          type: string
+          enum:
+          - CLOSED_RELEASE_PENDING
+        releaseReceipt:
+          "$ref": "#/components/schemas/ReleaseReceipt"
+      required:
+      - state
+    ClosureReleasedStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        state:
+          type: string
+          enum:
+          - RELEASED
+        releaseReceipt:
+          "$ref": "#/components/schemas/ReleaseReceipt"
+      required:
+      - state
+      - releaseReceipt
+    ClosureStatus:
+      oneOf:
+      - "$ref": "#/components/schemas/ClosurePendingStatus"
+      - "$ref": "#/components/schemas/ClosureCancelledStatus"
+      - "$ref": "#/components/schemas/ClosureClosedStatus"
+      - "$ref": "#/components/schemas/ClosureReleasedStatus"
+    SlotRetirementRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        retirementAuthorization:
+          "$ref": "#/components/schemas/RetirementAuthorization"
+      required:
+      - retirementAuthorization
+    SlotRetirementResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        retirementReceipt:
+          "$ref": "#/components/schemas/RetirementReceipt"
+      required:
+      - retirementReceipt
+    SlotRetirementPending:
+      type: object
+      additionalProperties: false
+      properties:
+        state:
+          type: string
+          enum:
+          - RECEIPT_PENDING
+        retryAfterSeconds:
+          type: integer
+          minimum: 1
+          maximum: 300
+      required:
+      - state
+      - retryAfterSeconds
+      description: 终态/收据待办已提交，但尚无可验签收据；V保持原配额和退役待办，不签任何新资格。
+    ErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        retryAfterSeconds:
+          type: integer
+          minimum: 1
+          maximum: 300
+      description: 只含安全的重试时间；不能包含邮箱、槽位、账号归属、密码政策字典或任何密钥材料。
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          properties:
+            code:
+              type: string
+              minLength: 1
+              maxLength: 64
+              enum:
+              - MALFORMED_REQUEST
+              - AUTHENTICATION_FAILED
+              - SESSION_INVALID
+              - session_replaced
+              - ACCOUNT_UNAVAILABLE
+              - AUTHORIZATION_FAILED
+              - RESOURCE_NOT_FOUND
+              - IDEMPOTENCY_KEY_REUSED
+              - OPERATION_PENDING
+              - INTENT_INVALID
+              - INTENT_EXPIRED
+              - CHALLENGE_INVALID
+              - CHALLENGE_EXPIRED
+              - CREDENTIAL_STATE_CHANGED
+              - CREDENTIAL_LIMIT_REACHED
+              - CREDENTIAL_ALREADY_REGISTERED
+              - RECOVERY_CODE_CONFIRMATION_FAILED
+              - PASSWORD_POLICY_FAILED
+              - REGISTRATION_TICKET_INVALID
+              - REGISTRATION_TICKET_EXPIRED
+              - REGISTRATION_TICKET_NOT_YET_VALID
+              - SLOT_UNAVAILABLE
+              - USERNAME_UNAVAILABLE
+              - REGISTRATION_COMMITTED_LOGIN_REQUIRED
+              - SESSION_CREATED_RETRY_LOGIN
+              - SLOT_NOT_RETIRABLE
+              - RESULT_EXPIRED
+              - CLOSURE_STATUS_UNAVAILABLE
+              - PAYLOAD_TOO_LARGE
+              - UNSUPPORTED_MEDIA_TYPE
+              - RATE_LIMITED
+              - SERVICE_UNAVAILABLE
+            message:
+              type: string
+              minLength: 1
+              maxLength: 256
+              description: 给用户的通用提示；不得包含其他账号、邮箱、面具或秘密。
+            details:
+              type: object
+              additionalProperties: false
+              properties:
+                retryAfterSeconds:
+                  type: integer
+                  minimum: 1
+                  maximum: 300
+              description: 只含安全的重试时间；不能包含邮箱、槽位、账号归属、密码政策字典或任何密钥材料。
+          required:
+          - code
+          - message
+        requestId:
+          "$ref": "#/components/schemas/Base64url16"
+      required:
+      - error
+      - requestId
+  responses:
+    BadRequest:
+      description: 400 MALFORMED_REQUEST：重复/未知JSON字段、错误类型、null、非规范编码、非法认证组合/请求体。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    Unauthorized:
+      description: 401 AUTHENTICATION_FAILED：未知用户名、错密码、无效/已用恢复码与失效Passkey同形；会话无效/过期/撤销用SESSION_INVALID，被新移动会话接替用session_replaced。不返回账号存在性、归属或其他身份。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    Forbidden:
+      description: 403 仅在有效独立证明后表示当前账号/操作不可用；不含封禁细节、邮箱或其他面具。内部入口不受信证书/工作负载拒绝；mTLS握手失败可以无HTTP响应。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    NotFound:
+      description: 404 RESOURCE_NOT_FOUND：不存在/不属于本人/错误受限秘密同形；早到404不证明原提交未来不会完成。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    Conflict:
+      description: 409 状态冲突、同键不同负载、并发版本变化或操作在途。USERNAME_UNAVAILABLE仅有效注册PoP后返回；注册/登录已提交重试只返回REGISTRATION_COMMITTED_LOGIN_REQUIRED/SESSION_CREATED_RETRY_LOGIN且无token。SLOT_NOT_RETIRABLE只允许内部V/C边界；不得外显旧账号信息。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    Gone:
+      description: 410 INTENT_EXPIRED/CHALLENGE_EXPIRED表示受限操作不可再提交；RESULT_EXPIRED只表示核对数据超出保留期，不能解释为未提交，也不能自动登录取消注销。已清理请求/closureId墓碑命中也只回410
+        RESULT_EXPIRED并拒绝重执行，不区分原结果成功或失败。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    PayloadTooLarge:
+      description: 413 PAYLOAD_TOO_LARGE：请求体超过该端点字节上限；不接受部分解析/截断。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    UnsupportedMediaType:
+      description: 415 UNSUPPORTED_MEDIA_TYPE：有JSON体的端点仅application/json UTF-8；不接受表单或multipart。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    UnprocessableEntity:
+      description: 422 语义/密码策略/码确认/资格失败。REGISTRATION_TICKET_EXPIRED须重新收码同槽位换签；REGISTRATION_TICKET_NOT_YET_VALID仅小于等于60秒桶边界偏差给有界retryAfterSeconds，更大偏差按授时故障处理，不放宽验票窗口。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    RateLimited:
+      description: 429 RATE_LIMITED：有界Retry-After；不能凭凭据是否存在让响应或时间暴露账号/邮箱配额。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+        Retry-After:
+          "$ref": "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"
+    ServiceUnavailable:
+      description: 503 SERVICE_UNAVAILABLE：数据库/签名服务/受信密钥/授时或灾备核对未就绪；结果未知，不得据此判断未提交或放开配额。灾备冻结包括认证、恢复、全部会话校验、受保护读写。
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorBody"

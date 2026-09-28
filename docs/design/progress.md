@@ -1,6 +1,6 @@
 # 设计进度与剩余工作
 
-> **2026-09-28 当前认证阶段：**每次注册校邮收码，用户设置私有用户名和独立密码；日常用用户名和密码登录，不通过邮箱查找旧号。同一精确邮箱地址同时最多一个有效账号的配额依赖 V 按协议执行；正式注销后释放配额，再次收码建立全新账号。旧号找回需事先保存的独立凭据，邮箱验证码不能单独重置。V/C 通过本次资格槽位协调配额；串通或共同泄漏时能连接邮箱与账号。架构见[认证与隐私架构决策](auth-privacy-architecture-decision.md)，注册、退役与释放见[协议 v1](auth-privacy-registration-protocol.md)。[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)与[内部跨方威胁模型](auth-privacy-threat-model.md)已成稿；仍须生产 OpenAPI／迁移、双主体运营与**独立**安全评审，生产认证代码未开始。
+> **2026-09-28 当前认证阶段：**每次注册校邮收码，用户设置私有用户名和独立密码；日常用用户名和密码登录，不通过邮箱查找旧号。同一精确邮箱地址同时最多一个有效账号的配额依赖 V 按协议执行；正式注销后释放配额，再次收码建立全新账号。旧号找回需事先保存的独立凭据，邮箱验证码不能单独重置。V/C 通过本次资格槽位协调配额；串通或共同泄漏时能连接邮箱与账号。架构见[认证与隐私架构决策](auth-privacy-architecture-decision.md)，注册、退役与释放见[协议 v1](auth-privacy-registration-protocol.md)。[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)与[内部跨方威胁模型](auth-privacy-threat-model.md)已成稿；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[迁移设计](auth-privacy-database-migration-design.md)已成稿；仍须契约／实际SQL审阅、双主体运营与**独立**安全评审，生产认证代码未开始。
 
 盘点：2026-09-20。消息身份切换展开 v2、收到的 v2、我发出的正常状态 v1、系统通知失败详情 v1、顶部失败提示 v1、系统通知时间流 v2、举报处理结果详情 v1、违规处理通知详情 v1、申诉待复核详情 v1、结果通过 v1、结果未通过 v1 均已确认。首次申诉 v2、补充材料 v1、私信举报选择原因配色 A v1 已生成待评审。新页逐张试不同黑底配色，用户明确锁色后才统一。直接给图、不附 prompt；用户同意页面定稿就直接制作下一张。已确认不表示已实现或图稿齐全。
 
@@ -20,9 +20,9 @@
 - 本地 Git 已初始化为 `main`，当前开发分支为 `feature/engineering-baseline`；远程 `origin` 已绑定 `https://github.com/zhubaozhenshuai666-lang/HnuHole.git`，并跟踪对应远程分支。
 - 尚未确认：聊天本地加密方案、生产推送供应商、具体云厂商/区域、CI 密钥与发布流程、第一条切片之外的功能顺序。
 - 已建立任务 1 的 Go API、PostgreSQL 迁移/OpenAPI 契约和 Flutter 入口树代码骨架；本机没有 Go/Flutter/Docker 可运行环境，测试与生成链尚未执行。
-- 后续认证切片范围已确定：V 的每次新注册校邮验证与配额、C 的新号创建和用户名密码登录、事先设立的独立恢复方式、服务端会话恢复／退出，以及登录后加载通道；首次注册不自动创建身份，无身份账号仍可浏览。[协议 v1](auth-privacy-registration-protocol.md)、[恢复策略](auth-privacy-recovery-decision.md)及[数据/API 契约](auth-privacy-data-api-contract.md)已成稿，实现仍须等待生产 OpenAPI／迁移、双主体运营及安全评审。
+- 后续认证切片范围已确定：V 的每次新注册校邮验证与配额、C 的新号创建和用户名密码登录、事先设立的独立恢复方式、服务端会话恢复／退出，以及登录后加载通道；首次注册不自动创建身份，无身份账号仍可浏览。[协议 v1](auth-privacy-registration-protocol.md)、[恢复策略](auth-privacy-recovery-decision.md)及[数据/API 契约](auth-privacy-data-api-contract.md)已成稿，实现仍须等待契约／实际SQL审阅、双主体运营及安全评审。
 - 认证主链的行为边界已补齐：账号可无身份浏览；首次公开发言时才创建/选择身份；服务端接受有效发送任务时原子绑定帖内身份，后续主评论和楼中楼回复直接复用；身份设置前保留原操作输入。主动退出保留按账号隔离的本机草稿和文件；恢复 `401` 清令牌与节点，`503`/超时保留本地状态重试；新设备接替旧设备返回 `401/session_replaced` 并保留本地文件。
-- 旧“四接口、验证码确认即恢复旧号”设想已废止。新客户端认证主链须覆盖 V 的验证码申请／确认、C 的新号注册、用户名密码登录、独立凭据恢复、会话恢复／退出；通道目录仍为 `GET /api/v1/channels`。跨方资格、退役与释放的流程见[协议 v1](auth-privacy-registration-protocol.md)，精确调用契约见[数据/API 契约](auth-privacy-data-api-contract.md)，待转为各方 OpenAPI。认证成功后恢复原入口意图；V/C 各自使用本方幂等与重试规则，不能跨方共享幂等键。
+- 旧“四接口、验证码确认即恢复旧号”设想已废止。新客户端认证主链须覆盖 V 的验证码申请／确认、C 的新号注册、用户名密码登录、独立凭据恢复、会话恢复／退出；通道目录仍为 `GET /api/v1/channels`。跨方资格、退役与释放的流程见[协议 v1](auth-privacy-registration-protocol.md)，精确调用契约见[数据/API 契约](auth-privacy-data-api-contract.md)，精确schema见[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)及[C OpenAPI](../../packages/openapi/community-auth-api.yaml)。认证成功后恢复原入口意图；V/C 各自使用本方幂等与重试规则，不能跨方共享幂等键。
 - 2026-09-23 至 2026-09-25 的邮箱唯一登录和稳定匿名凭证方案已被当前决策替代，原始过程仅见[历史 ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)及[第三十二轮](../discussions/2026-09-23-grilling-round32.md)。仍有效的产品规则：生产 V/C 必须实质独立；禁言可申请注销但正式注销后随旧号终止；封禁期间不可注销，缓冲期内新封禁取消申请。当前服务代码尚无发码、验证、账号创建或会话签发实现。
 - 注册验证码申请的邮箱枚举保护已确认：格式和域名合规的申请对配额状态返回相同受理状态及通用提示；验证成功后才可能签发新号资格，不得返回已有账号或恢复旧号。实际投递、时延、限流侧信道及用户名登录枚举风险仍待安全评审。
 - 2026-09-26 用户选定“校园资格与旧号控制权分离”的架构方向：恶意 V 可伪造新资格或阻止注册，但不能只靠邮箱接管已有账号。V 持邮箱→槽位，C 受限认证库持槽位→账号；共同槽位使串通可直接关联。旧 [GPT-6 交接](auth-privacy-gpt6-handoff.md)仅作为问题背景，当前可执行决策见[认证与隐私架构决策](auth-privacy-architecture-decision.md)。
@@ -30,7 +30,9 @@
 
 - 2026-09-27 完成[独立恢复策略](auth-privacy-recovery-decision.md)与[逻辑数据／API 契约](auth-privacy-data-api-contract.md)：恢复码注册前确认，Passkey 可选；全凭据丢失则旧号与同邮箱配额都无法找回。V 当前槽位全局唯一，C 关闭与释放事件共事务；注销状态秘密须申请前保存。仍未实施或通过独立安全评审。
 
-- 2026-09-28 完成[内部跨方威胁模型](auth-privacy-threat-model.md)与规格复核：注册资格升级为限时 `REGISTER/V2`，严格校验持钥公钥；重设意图须原子替代且旧凭据证明在账号锁内复核；注销截止使用取锁后的数据库实际时间，申请后取消尚未公开的任务；登出及重设未知结果有重启后的安全核对路径。灾备还须守住时钟与受信钥单调性。此轮只改文档；生产 OpenAPI／迁移、双主体运营证据、实现及独立审计尚未完成。
+- 2026-09-28 完成[内部跨方威胁模型](auth-privacy-threat-model.md)与规格复核：注册资格升级为限时 `REGISTER/V2`，严格校验持钥公钥；重设意图须原子替代且旧凭据证明在账号锁内复核；注销截止使用取锁后的数据库实际时间，申请后取消尚未公开的任务；登出及重设未知结果有重启后的安全核对路径。灾备还须守住时钟与受信钥单调性。该威胁建模轮次只改文档；当时 OpenAPI／迁移及其他门槛未完成，后续规格进展见下条。
+
+- 2026-09-28 完成[V的5个操作](../../packages/openapi/verifier-auth-api.yaml)、[C的22个操作](../../packages/openapi/community-auth-api.yaml)和[数据库迁移设计](auth-privacy-database-migration-design.md)：固定二进制票据、独立16B安装ID／32B操作键、原结果核对、恢复管理、同令牌续期和内部mTLS边界均有机器可读schema；表约束、锁顺序、签名outbox、留存及演示会话升级顺序已写清。幂等原结果到期原位收缩为无身份永久摘要锚点，迟到旧操作不能重执行。三份OpenAPI通过完整规范静态校验；未创建／执行认证SQL，未写认证代码，未通过独立审计。下一步整理可执行协议向量与独立评审包，核实双主体运营和真实客户端／迁移验收条件。
 
 ## 当前阶段
 
@@ -51,7 +53,7 @@
 
 | 模块 | 已确认主干 | 尚需处理 |
 | --- | --- | --- |
-| [账号](modules/accounts.md) | 每次注册校邮验证、用户名密码登录、恢复码必配与可选 Passkey、资格协议 v1、逻辑数据/API 契约、内部跨方威胁模型、单设备、三十天会话、七天注销 | 生产 OpenAPI／迁移、移动端 Passkey 适配、两组织运营安排、独立安全评审 |
+| [账号](modules/accounts.md) | 每次注册校邮验证、用户名密码登录、恢复码必配与可选 Passkey、资格协议 v1、逻辑数据/API 契约、内部跨方威胁模型、V/C OpenAPI与迁移设计、单设备、三十天会话、七天注销 | 契约／实际SQL审阅、移动端 Passkey 适配、两组织运营安排、独立安全评审 |
 | [身份](modules/identity.md) | 一至三个、服务端接受任务时绑定、同帖主评论/楼中楼回复复用、字符校验及十二字上限、删除范围 | 资料编辑交互、默认头像、输入法实现、图稿 |
 | [导航](modules/navigation.md) | 七通道、默认五通道、两次任务的二维导航树边界 | 内容接入、文字搜索分组排序、历史范围及同步实现、最终树形视觉 |
 | [标签](modules/tags.md) | 通道必选、#标签选填、无中间分类与统一治理；主题屏蔽后续设计 | #标签输入、筛选画面与检索实现 |
