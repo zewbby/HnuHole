@@ -1,6 +1,6 @@
 # 设计进度与剩余工作
 
-> **2026-09-28 当前认证阶段：**每次注册校邮收码，用户设置私有用户名和独立密码；日常用用户名和密码登录，不通过邮箱查找旧号。同一精确邮箱地址同时最多一个有效账号的配额依赖 V 按协议执行；正式注销后释放配额，再次收码建立全新账号。旧号找回需事先保存的独立凭据，邮箱验证码不能单独重置。V/C 通过本次资格槽位协调配额；串通或共同泄漏时能连接邮箱与账号。架构见[认证与隐私架构决策](auth-privacy-architecture-decision.md)，注册、退役与释放见[协议 v1](auth-privacy-registration-protocol.md)。[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)与[内部跨方威胁模型](auth-privacy-threat-model.md)已成稿；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[迁移设计](auth-privacy-database-migration-design.md)已成稿；仍须契约／实际SQL审阅、双主体运营与**独立**安全评审，生产认证代码未开始。
+> **2026-09-28 当前认证阶段：**每次注册校邮收码，用户设置私有用户名和独立密码；日常用用户名和密码登录，不通过邮箱查找旧号。同一精确邮箱地址同时最多一个有效账号的配额依赖 V 按协议执行；正式注销后释放配额，再次收码建立全新账号。旧号找回需事先保存的独立凭据，邮箱验证码不能单独重置。V/C 通过本次资格槽位协调配额；串通或共同泄漏时能连接邮箱与账号。架构见[认证与隐私架构决策](auth-privacy-architecture-decision.md)，注册、退役与释放见[协议 v1](auth-privacy-registration-protocol.md)。[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)与[内部跨方威胁模型](auth-privacy-threat-model.md)已成稿；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[迁移设计](auth-privacy-database-migration-design.md)已成稿；[固定向量与静态复验](auth-privacy-protocol-vectors.md)、[独立评审输入包](auth-privacy-security-review-package.md)已整理；仍须生产库／实际SQL验证、双主体运营与**独立**安全评审，生产认证代码未开始。
 
 盘点：2026-09-20。消息身份切换展开 v2、收到的 v2、我发出的正常状态 v1、系统通知失败详情 v1、顶部失败提示 v1、系统通知时间流 v2、举报处理结果详情 v1、违规处理通知详情 v1、申诉待复核详情 v1、结果通过 v1、结果未通过 v1 均已确认。首次申诉 v2、补充材料 v1、私信举报选择原因配色 A v1 已生成待评审。新页逐张试不同黑底配色，用户明确锁色后才统一。直接给图、不附 prompt；用户同意页面定稿就直接制作下一张。已确认不表示已实现或图稿齐全。
 
@@ -32,7 +32,9 @@
 
 - 2026-09-28 完成[内部跨方威胁模型](auth-privacy-threat-model.md)与规格复核：注册资格升级为限时 `REGISTER/V2`，严格校验持钥公钥；重设意图须原子替代且旧凭据证明在账号锁内复核；注销截止使用取锁后的数据库实际时间，申请后取消尚未公开的任务；登出及重设未知结果有重启后的安全核对路径。灾备还须守住时钟与受信钥单调性。该威胁建模轮次只改文档；当时 OpenAPI／迁移及其他门槛未完成，后续规格进展见下条。
 
-- 2026-09-28 完成[V的5个操作](../../packages/openapi/verifier-auth-api.yaml)、[C的22个操作](../../packages/openapi/community-auth-api.yaml)和[数据库迁移设计](auth-privacy-database-migration-design.md)：固定二进制票据、独立16B安装ID／32B操作键、原结果核对、恢复管理、同令牌续期和内部mTLS边界均有机器可读schema；表约束、锁顺序、签名outbox、留存及演示会话升级顺序已写清。幂等原结果到期原位收缩为无身份永久摘要锚点，迟到旧操作不能重执行。三份OpenAPI通过完整规范静态校验；未创建／执行认证SQL，未写认证代码，未通过独立审计。下一步整理可执行协议向量与独立评审包，核实双主体运营和真实客户端／迁移验收条件。
+- 2026-09-28 完成[V的5个操作](../../packages/openapi/verifier-auth-api.yaml)、[C的22个操作](../../packages/openapi/community-auth-api.yaml)和[数据库迁移设计](auth-privacy-database-migration-design.md)：固定二进制票据、独立16B安装ID／32B操作键、原结果核对、恢复管理、同令牌续期和内部mTLS边界均有机器可读schema；表约束、锁顺序、签名outbox、留存及演示会话升级顺序已写清。幂等原结果到期原位收缩为无身份永久摘要锚点，迟到旧操作不能重执行。三份OpenAPI通过完整规范静态校验；未创建／执行认证SQL，未写认证代码，未通过独立审计。该轮之后的向量与评审包进展见下条；双主体运营和真实客户端／迁移证据仍待核实。
+
+- 2026-09-28 完成[固定协议向量与内部静态复验](auth-privacy-protocol-vectors.md)及[独立安全评审输入包](auth-privacy-security-review-package.md)：8组协议有效签名、3组RFC控制在PyNaCl1.6.2与Node24.11.1/OpenSSL3.5.4中逐字一致，11组错误签名拒绝。4组裸验签弱点反例说明库Verify不能代替公钥准入；明确A/R均规范、非单位元且处于主素数阶子群的项目配置。22组点、规范编码、域分离及时间算术已核对；12组事务案例未执行，独立审计未开始，未写认证代码或SQL。下一步确定实际评审者和V/C运营关系；获实施授权后以最小SQL约束、注册／退役竞争及提交后签名outbox产生真实证据，避免继续只扩文档。
 
 ## 当前阶段
 
@@ -53,7 +55,7 @@
 
 | 模块 | 已确认主干 | 尚需处理 |
 | --- | --- | --- |
-| [账号](modules/accounts.md) | 每次注册校邮验证、用户名密码登录、恢复码必配与可选 Passkey、资格协议 v1、逻辑数据/API 契约、内部跨方威胁模型、V/C OpenAPI与迁移设计、单设备、三十天会话、七天注销 | 契约／实际SQL审阅、移动端 Passkey 适配、两组织运营安排、独立安全评审 |
+| [账号](modules/accounts.md) | 每次注册校邮验证、用户名密码登录、恢复码必配与可选 Passkey、资格协议 v1、逻辑数据/API 契约、内部跨方威胁模型、V/C OpenAPI与迁移设计、固定向量和评审输入包、单设备、三十天会话、七天注销 | 契约／实际SQL审阅、移动端 Passkey 适配、两组织运营安排、独立安全评审 |
 | [身份](modules/identity.md) | 一至三个、服务端接受任务时绑定、同帖主评论/楼中楼回复复用、字符校验及十二字上限、删除范围 | 资料编辑交互、默认头像、输入法实现、图稿 |
 | [导航](modules/navigation.md) | 七通道、默认五通道、两次任务的二维导航树边界 | 内容接入、文字搜索分组排序、历史范围及同步实现、最终树形视觉 |
 | [标签](modules/tags.md) | 通道必选、#标签选填、无中间分类与统一治理；主题屏蔽后续设计 | #标签输入、筛选画面与检索实现 |
@@ -87,6 +89,6 @@
 
 ## 后续工程工作
 
-认证主链已有[注册与释放协议](auth-privacy-registration-protocol.md)、[独立恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据/API 契约](auth-privacy-data-api-contract.md)和[内部跨方威胁模型](auth-privacy-threat-model.md)。接下来将其转成生产 OpenAPI 与迁移设计，取得 V/C 双组织运营及权限隔离证据，再交独立安全评审；门槛满足后才能实现客户端接口与会话状态并接入通道目录。测试环境就绪后执行生成、格式化、单元／集成测试。旧 [ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)不再是实现规范。
+认证主链已有[注册与释放协议](auth-privacy-registration-protocol.md)、[独立恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据/API 契约](auth-privacy-data-api-contract.md)和[内部跨方威胁模型](auth-privacy-threat-model.md)。V/C OpenAPI、迁移设计、固定向量及独立评审输入包现已成稿；下一项应确定真实独立评审者与 V/C 运营候选方，核查权限事实与所选生产库。进入实施须获授权，先在隔离环境验证 SQL 约束、注册／退役终态竞争和提交后签名 outbox，再按门槛扩展客户端和会话实现并接入通道目录。测试环境就绪后执行生成、格式化、单元／集成测试。旧 [ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)不再是实现规范。
 
 随后按任务 2 接入文字内容主链，再安排身份/内容/会话数据关系、可见性和账号去重等验证、联调内测与分发上线。这部分须单独估算，不把设计成熟度当成上线进度。

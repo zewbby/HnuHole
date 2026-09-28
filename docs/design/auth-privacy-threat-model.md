@@ -1,6 +1,6 @@
 # Hnuhole 认证隐私跨方威胁模型与审阅门槛
 
-日期：2026-09-28。状态：**实施前内部威胁建模；不是独立安全审计、代码测试或上线批准。** 适用范围为[架构决策](auth-privacy-architecture-decision.md)、[注册／释放协议](auth-privacy-registration-protocol.md)、[独立恢复策略](auth-privacy-recovery-decision.md)和[逻辑数据／API 契约](auth-privacy-data-api-contract.md)。这次审阅发现的规格缺口已写回这些文档；V/C OpenAPI与[迁移设计](auth-privacy-database-migration-design.md)现已成稿；独立主体、实际SQL、部署、客户端实现与独立评审仍未完成。
+日期：2026-09-28。状态：**实施前内部威胁建模；不是独立安全审计、代码测试或上线批准。** 适用范围为[架构决策](auth-privacy-architecture-decision.md)、[注册／释放协议](auth-privacy-registration-protocol.md)、[独立恢复策略](auth-privacy-recovery-decision.md)和[逻辑数据／API 契约](auth-privacy-data-api-contract.md)。这次审阅发现的规格缺口已写回这些文档；V/C OpenAPI与[迁移设计](auth-privacy-database-migration-design.md)现已成稿；[固定协议向量与内部静态复验](auth-privacy-protocol-vectors.md)和[独立评审输入包](auth-privacy-security-review-package.md)现已整理；所选生产库、独立主体、实际SQL、部署、客户端实现与独立评审仍未完成。
 
 ## 1. 资产、数据流和信任边界
 
@@ -45,7 +45,7 @@ flowchart LR
 | 编号与路径 | 预期结果／剩余风险 | 必须验收的证据 |
 | --- | --- | --- |
 | T01 V 自签新公钥／新槽位建假账号 | 用户已接受：C 无法独立判断新资格真假；**不能**因此把旧号密码重设交给 V | 自造资格可建新号；同一旧账号的密码／恢复凭据和内容不被转移 |
-| T02 V 把用户槽位改绑 V 的公钥；或外部客户端提交单位元／小阶公钥 | C 重算槽位散列并拒绝换绑；V 与 C 均须拒绝弱点公钥及非规范签名，否则 PoP 退化为 bearer | 同槽位不同公钥、单位元／小阶／非素数阶公钥、非规范 `R/S` 的负向向量均失败。严格验签应符合所选 [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032.html) 实现配置 |
+| T02 V 把用户槽位改绑 V 的公钥；或外部客户端提交单位元／小阶公钥 | C 重算槽位散列并拒绝换绑；V 与 C 均须拒绝弱点公钥及非规范签名，否则 PoP 退化为 bearer | 同槽位不同公钥、单位元／小阶／混合阶 A/R、非规范 `R/S` 均须拒绝；验收集合固定为注册协议第 2.1 节项目配置，不由裸库函数自行决定。[向量与库差异](auth-privacy-protocol-vectors.md)已有内部静态证据，所选生产组合仍待实测 |
 | T03 旧邮箱持有人保留未消费资格和私钥，失去邮箱后再开户 | 限时票据把风险压到 OTP 完成后的约三十至六十分钟；超过窗口 C 拒绝，不可仅靠 V 内部 TTL；C 时钟回退会复活旧票，必须先冻结与校时 | 跨桶边界、V 比 C 快数秒的原票短时重试、C 意图创建前和最终提交前过期均测试；灾备时钟回退仍拒旧票 |
 | T04 旧资格重放、并发开户／退役、C 回包丢失 | 槽位终态与 C 原子约束只让一个结果提交；V 退役待办在发 C 请求前持久化，回包丢失不续旧票 | 并发与故障注入后恰有一个 `ACTIVE/RETIRED`；V 不因超时、旧收据或 OTP 到期自行开放配额 |
 | T05 C 释放收据私钥泄漏或退役待办与关闭释放交错 | 伪造收据可错误开放配额，须按密钥失陷事故冻结与核对；真实 `RELEASED` 先到须终结待办，迟到拒绝不得恢复旧配额 | 吊销密钥、冻结受影响操作、核对双号；交错顺序和回包丢失测试 |
@@ -69,7 +69,7 @@ T03、T07、T08、T09、T12 与严格 Ed25519 验证是本轮发现并修订的*
 
 | 门槛 | 应交付的可核对材料 |
 | --- | --- |
-| G1 协议和数据 | 已成稿的[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)及[迁移设计](auth-privacy-database-migration-design.md)；尚须可执行签名字节／严格Ed25519负向向量、实际SQL唯一约束和并发／隔离验证 |
+| G1 协议和数据 | 已成稿的[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)及[迁移设计](auth-privacy-database-migration-design.md)；[固定签名字节／点准入负向向量](auth-privacy-protocol-vectors.md)已内部复验，尚须生产库接受集合、实际SQL唯一约束及并发／隔离运行证据；[评审输入包](auth-privacy-security-review-package.md)定义送审与缺口 |
 | G2 并发与故障 | 注册／退役／释放状态机测试、跨桶与时钟回退、超时重放与丢回包、旧恢复证明在锁前失效、重设意图替代、客户端重启后的登出／重设核对、七天截止、媒体清单与处罚交错、签名服务中断、旧备份与旧密钥配置恢复演练 |
 | G3 在线攻击 | 校准后的每邮箱发码与验证预算、设备与网络限速、密码喷洒和用户名探测结果；无法仅凭“统一错误文案”判定不可枚举 |
 | G4 隐私和留存 | V/C 数据字段、日志／WAL／备份保留上限及清理演练、共享运维和云依赖审计、客户端实际包及遥测检查、发布和密钥撤销权限矩阵 |

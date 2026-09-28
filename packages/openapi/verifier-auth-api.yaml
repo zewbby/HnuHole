@@ -13,6 +13,11 @@ info:
     每个对象禁止额外属性，所有声明的密码学字符串均须严格解码、校验长度和
     规范无填充 base64url 编码。不得通过 JSON 字段顺序生成签名字节。
 
+    所有 Ed25519 验签遵循注册协议第 2.1 节项目配置：bootstrap 和 V/C 公钥 A、
+    签名 R 均须32字节规范曲线编码、非单位元且 [L]P=I；S为32字节小端且0≤S<L。
+    只用 Pure Ed25519 验原始固定正文；不能仅凭裸 Verify 成功接受弱点。
+    固定向量及库差异见 docs/design/auth-privacy-protocol-vectors.md。
+
     请求编号由 V 每次独立安全随机生成。忽略并丢弃客户端或 C 的 X-Request-ID
     与 traceparent 等跨方关联头，不能转发到另一方。V-Installation-ID 是仅供 V
     的随机安装标识，不是账号凭据；不可与 C 的安装 ID 共用，不是抗批量攻击的

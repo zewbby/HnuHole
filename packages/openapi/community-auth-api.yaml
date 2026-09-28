@@ -6,6 +6,7 @@ info:
     flowId/安装ID/幂等键不允许进入任何C请求。V签名资格只给新账号准入，邮箱/资格/释放收据不能找回旧号。本文件与verifier-auth-api.yaml使用不同受信主机、独立权限/密钥/库/日志/编号。所有JSON对象拒绝额外字段、重复键、null替代必填项、非法UTF-8/错误类型和超大体；本版不支持无文档字段或未知版本，所有base64url严格解码、查长度并规范重编码。所有成功/错误/204响应Cache-Control:no-store、C自生成X-Request-ID；不使用认证cookie，CORS只允许固定受信客户端origin，不记录Authorization或秘密请求体。认证类型严格互斥且仅在其专属路径有效，拒绝重复Authorization头、混用方案、query凭据或未声明body。403/401/429不公开账号存在性/邮箱/槽位/其他面具，用户名占用只在有效注册PoP后受限公开。全部截止在权威库最终取得锁后用clock_timestamp()取实际UTC裁决并连续转换，不用事务开始时间。从旧备份恢复/时钟回退/钥撤销状态不明须冻结全部认证与受保护读写，外部可信证据重建后撤旧会话。所有有副作用幂等操作同键同负载原子认领，HMAC绑定值用数据库外独立密钥；并发在途键409
     OPERATION_PENDING并有界重试，终态保留超过声明的重试窗口。已提交注册/登录只给无秘密错误，重设/凭据管理可无秘密204；令牌及恢复原码绝不重发。request_results首次受理即以(operation,key_digest)建立唯一锚点，key_digest=SHA-256(ASCII("HNUHOLE/C-REQUEST-TOMBSTONE/V1")||0x00||原32字节幂等键)。完整结果到期后原行同事务原位变EXPIRED，清空除operation/key_digest/EXPIRED之外所有字段，永久保留该无身份唯一锚点，不删除后重插。本方key_digest另设唯一约束，拒同原键跨操作复用；EXPIRED只核对规范原键摘要，不再核对已清理的设备/意图绑定，不作原提交结论。closure申请首次提交同事务建立CLOSURE锚点，closureId用独立域HNUHOLE/C-CLOSURE-TOMBSTONE/V1；状态记录有界清理后仅留此锚点。EXPIRED锚点无原ID、时间、账号、slot、安装ID、请求HMAC或原提交结论；迟到原POST仅410
     RESULT_EXPIRED，绝不能当新请求重执行或重建七天申请。同键首次认领、完成与清理按operation/key_digest串行，取得键锁后复核live/EXPIRED；在途未有持久终态不能按TTL清理。
+    所有Ed25519验签遵循注册协议第2.1节项目配置：bootstrap和V/C公钥A、签名R均须32字节规范曲线编码、非单位元且[L]P=I；S为32字节小端且0≤S<L。只用Pure Ed25519验原始固定正文，不能仅凭裸Verify成功接受弱点。PoP仅传64字节签名，153字节正文由保存的意图重建；固定向量和库差异见docs/design/auth-privacy-protocol-vectors.md。
 servers:
 - url: "/"
   description: 仅C独立受信API主机；部署时固定HTTPS，不由V或请求改写。
