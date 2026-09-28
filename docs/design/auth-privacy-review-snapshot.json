@@ -1,27 +1,61 @@
 {
   "schemaVersion": "hnuhole-auth-privacy-review-snapshot/v1",
   "sourceRepository": "https://github.com/zewbby/HnuHole",
-  "sourceCommit": "41fba7761035ee5aafb0e3beb55bf7b8d21f539a",
-  "sourceCommitUrl": "https://github.com/zewbby/HnuHole/commit/41fba7761035ee5aafb0e3beb55bf7b8d21f539a",
+  "sourceCommit": "05dc4a4b88797f5532829c1f2953484f7ac86c90",
+  "sourceCommitUrl": "https://github.com/zewbby/HnuHole/commit/05dc4a4b88797f5532829c1f2953484f7ac86c90",
   "scope": "PREIMPLEMENTATION_SPECIFICATION_REVIEW_INPUT",
-  "status": "PREPARED_NOT_ASSIGNED_NOT_EXTERNALLY_DELIVERED",
+  "status": "PREPARED_NO_INDEPENDENT_SIGNOFF",
   "preparedOn": "2026-09-28",
-  "description": "固定提交的公开规格与合成测试数据快照；不包含工作区未提交修改。不是独立审计、运营独立性证明或实施／上线许可。",
-  "operatorEvidence": {
-    "verifierOperator": "NOT_CONFIRMED",
-    "communityOperator": "NOT_CONFIRMED",
-    "independentReviewer": "NOT_IDENTIFIED",
-    "reviewEngagement": "NOT_AUTHORIZED_OR_SENT"
+  "description": "固定提交的认证规格、内部AI交叉评审和公开合成测试数据；不包含工作区未提交修改。不是人类第三方审计、运营独立性证明或实施／上线许可。",
+  "initialReviewSnapshot": {
+    "sourceCommit": "41fba7761035ee5aafb0e3beb55bf7b8d21f539a",
+    "materialCount": 19,
+    "materialListSha256": "ae981779b361b602b8baaa923e6d0ad3ccf4bce3250ea233ad3cbdd324950150",
+    "archiveName": "hnuhole-auth-privacy-spec-41fba77.zip",
+    "archiveSha256": "39b6c9556d0c384af98dc6540a4334ce906206d3ddf1cd851822e8b181ff1fb8",
+    "preservedUnchanged": true
   },
-  "materialCount": 19,
-  "materialListSha256": "ae981779b361b602b8baaa923e6d0ad3ccf4bce3250ea233ad3cbdd324950150",
+  "operatorEvidence": {
+    "verifierMailbox": "USER_REPORTED_AVAILABLE",
+    "verifierServiceBuilt": "NOT_VERIFIED",
+    "verifierOperator": "NOT_CONFIRMED",
+    "communityBackend": "USER_REPORTED_NOT_BUILT",
+    "communityOperator": "NOT_CONFIRMED",
+    "independentHumanReviewer": "NOT_IDENTIFIED",
+    "humanReviewEngagement": "NOT_ASSIGNED_NOT_EXTERNALLY_DELIVERED"
+  },
+  "internalAiReview": {
+    "freshInitialContext": true,
+    "initialSourceCommit": "41fba7761035ee5aafb0e3beb55bf7b8d21f539a",
+    "initialVerdict": "REQUEST_CHANGES",
+    "correctedSpecificationVerdict": "APPROVE_WITH_NOTES",
+    "resolvedFinding": "AI-01_RETIRED_DURABLE_ACK",
+    "reportPath": "docs/design/auth-privacy-ai-cross-review.md",
+    "realServicesOrSqlExecuted": false
+  },
+  "externalAiReview": {
+    "tool": "Claude Code",
+    "cliVersion": "2.1.267",
+    "authorizedInputCommit": "41fba7761035ee5aafb0e3beb55bf7b8d21f539a",
+    "authorizedInputFileCount": 9,
+    "inputBytes": 297239,
+    "inputSha256": "22bc43eb5863cf502d5367dc9c6778b4f8a3ff83a46538a5f5f3d14017062c1e",
+    "requestedEffort": "xhigh",
+    "attemptResult": "NOT_LOGGED_IN_NO_MODEL_REVIEW_RESULT",
+    "processExitCode": 1,
+    "isError": true,
+    "totalCostUsd": 0,
+    "currentDecision": "DEFERRED_BY_USER_USE_SUBAGENT_REVIEW"
+  },
+  "materialCount": 21,
+  "materialListSha256": "29097f36c5310617579163a4a063b24263a3a0410869ca777ea23f4d1f1004f9",
   "materialListDigestEncoding": "SHA-256 of UTF-8 lines <sha256> + two ASCII spaces + <repository-relative path> + LF; sorted by ASCII path; source materials only.",
   "excludedEvidence": [
     "PRODUCTION_LIBRARY_AND_BUILD_VALIDATION",
     "REAL_SERVICES_AND_SQL_TESTS",
     "MOBILE_CLIENT_TESTS",
     "OPERATOR_IDENTITY_AND_PERMISSION_EVIDENCE",
-    "INDEPENDENT_REVIEW_AND_SIGNOFF"
+    "INDEPENDENT_HUMAN_REVIEW_AND_SIGNOFF"
   ],
   "materials": [
     {
@@ -29,133 +63,147 @@
       "byteLength": 5229,
       "sha256": "3d3855791668ca1fa5544bb2f235db7536e42effe6f56b31b7a9090f6fcc489b",
       "gitBlobId": "6df600f92edd2c38e52f5b5f3b4ffaa2a3d72c41",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/CONTEXT.md"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/CONTEXT.md"
     },
     {
       "path": "docs/design/HANDOFF.md",
-      "byteLength": 25816,
-      "sha256": "c2a7ec13be314c252c9cc0f30dd9144f8788440df687014aac0a92fe618b453c",
-      "gitBlobId": "ab3a356399810018ebc0cf30a239fb626d2ecf2c",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/HANDOFF.md"
+      "byteLength": 26513,
+      "sha256": "217c78c7525d964b2884e6e3adcf0c0702adc029a35aa47e3a287023237fda7e",
+      "gitBlobId": "c1638b580675af2c3b481f71c836141e929ed6cf",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/HANDOFF.md"
     },
     {
       "path": "docs/design/README.md",
-      "byteLength": 10575,
-      "sha256": "0bf87e2d7d8ee3fc3dda3a31a2da998df3f0726eea39742e14dc93fa3bfd76ea",
-      "gitBlobId": "c16e83d75a0c4fed190d5386d93731a4263abf35",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/README.md"
+      "byteLength": 10876,
+      "sha256": "b22cdd1a1b4d13af70824fb921bff57199147674f28cd0d9e5275b6c0f15cebb",
+      "gitBlobId": "f0dd4ad8dfc6f03cea10d41fdb639ef3a00a0611",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/README.md"
+    },
+    {
+      "path": "docs/design/auth-privacy-ai-cross-review.md",
+      "byteLength": 7005,
+      "sha256": "1dba4e75ac1ccec74cf7a69a4e83dacdbd706d58291eace5182e2c194c4bbba5",
+      "gitBlobId": "b49289c0582e8c3fcd133b1ea4a29e62da460388",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-ai-cross-review.md"
     },
     {
       "path": "docs/design/auth-privacy-architecture-decision.md",
       "byteLength": 28304,
       "sha256": "ecd12996e0805716448c8b8eb0048bb6bad92e652d405a8e622d9fe63c3b111e",
       "gitBlobId": "582270550bfabec2cfed0d157c7f9122a8c441f6",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/auth-privacy-architecture-decision.md"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-architecture-decision.md"
     },
     {
       "path": "docs/design/auth-privacy-data-api-contract.md",
-      "byteLength": 38054,
-      "sha256": "43f407ce923d02da8ba4d9bccb795939276499bcae809d1f62e387c8e4f2f9c2",
-      "gitBlobId": "bce36a6ae9a13f1ee5934eed2283cbe9d83b6f0a",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/auth-privacy-data-api-contract.md"
+      "byteLength": 40596,
+      "sha256": "27e196478c66f3577a158f99098e6f9c19319f6c1bd52af982d57779a65e7d29",
+      "gitBlobId": "af04a57fb6bdd5652d0dcd8fc24e6293781f6d2f",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-data-api-contract.md"
     },
     {
       "path": "docs/design/auth-privacy-database-migration-design.md",
-      "byteLength": 25978,
-      "sha256": "6322e9b252419ccbc337e8aeecade78031d4994be59bb4fb660d9b8cf9bc1a8e",
-      "gitBlobId": "e88b1544b49697ee7eaf49e96559b6185b46872c",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/auth-privacy-database-migration-design.md"
+      "byteLength": 29249,
+      "sha256": "cd829c9b7e39a1ea218bc79f17ffa9ee7a48bcd919596c72fa4079c008d0d2dc",
+      "gitBlobId": "dfd78f069a0424869e7198ca52a53e84913e4692",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-database-migration-design.md"
     },
     {
       "path": "docs/design/auth-privacy-protocol-vectors.md",
       "byteLength": 9273,
       "sha256": "6f8f7cca3858de323278877090afefbbe24b1acf6b24b13ccee18559c469e630",
       "gitBlobId": "36d3905291a41144bf2db0ebcb66880f153fc532",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/auth-privacy-protocol-vectors.md"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-protocol-vectors.md"
     },
     {
       "path": "docs/design/auth-privacy-recovery-decision.md",
       "byteLength": 11578,
       "sha256": "a185b379ae6f1f823b6538942cae314ff16bf2de78ca6e091f56ac1235662a21",
       "gitBlobId": "ee576e5b3f8150365620c32c00a1a0df38fd9430",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/auth-privacy-recovery-decision.md"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-recovery-decision.md"
     },
     {
       "path": "docs/design/auth-privacy-registration-protocol.md",
-      "byteLength": 22985,
-      "sha256": "90cf3dc4b1759ab45d883b68e7beea97c42732e196e9a17566b57c8d674e40a4",
-      "gitBlobId": "c0b678c0a5cd82f716f9ba5f24d4dbd811741586",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/auth-privacy-registration-protocol.md"
+      "byteLength": 25391,
+      "sha256": "be2126b03d1cbcd22969f54d93dbd76968687ad387dc3458947dcad74c4c2d34",
+      "gitBlobId": "a690fd60c9a3318f209c4b1a6a2ccf51c5ab5c6e",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-registration-protocol.md"
     },
     {
       "path": "docs/design/auth-privacy-security-review-package.md",
-      "byteLength": 16998,
-      "sha256": "d5cf204b1c299f40e7be7db4d41a011297ff7e2dad4e9a1bc155bf9cbd39022a",
-      "gitBlobId": "7b77483cf1c6bc76493e3cff1c296e302b5e2401",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/auth-privacy-security-review-package.md"
+      "byteLength": 19950,
+      "sha256": "1da8c622c2147887925d5e6cb9633939205060d799a090e726c0b90b03bcbc11",
+      "gitBlobId": "e00e177fb7a57025ada2a8335d5821e1a382ffec",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-security-review-package.md"
     },
     {
       "path": "docs/design/auth-privacy-threat-model.md",
       "byteLength": 14254,
       "sha256": "d81fc0e6fb32677586922e5d1176f2949a5f9443827bb8d2c6aa8d26cde888e6",
       "gitBlobId": "e246e5f609774691f15c4dff45acb634fedff515",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/auth-privacy-threat-model.md"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/auth-privacy-threat-model.md"
     },
     {
       "path": "docs/design/modules/accounts.md",
       "byteLength": 37787,
       "sha256": "7cafc9d30bde7905388681fe5f75f9a62a4bdd98a6589ab342f9ca16818afec3",
       "gitBlobId": "9f9580dc3bd7e7561f4be9330a914b7481dc8d40",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/modules/accounts.md"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/modules/accounts.md"
     },
     {
       "path": "docs/design/progress.md",
-      "byteLength": 18614,
-      "sha256": "3d1d6eef535edc7fcb1f8fa13843afe2a2ca5ac83b61f0948b2a58d59a2bbb2e",
-      "gitBlobId": "391d6138d37bdbe70e4c3923319d69eef6b55342",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/docs/design/progress.md"
+      "byteLength": 20384,
+      "sha256": "914b98f4e2a28eca6002ebc86222f493b3d437f730a1918ab235d4dd9d506940",
+      "gitBlobId": "0ca8ed634bc8bcf35353cc4b63c3774a6f165d03",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/docs/design/progress.md"
+    },
+    {
+      "path": "packages/auth-protocol-vectors/retirement-ack-static-verification.json",
+      "byteLength": 1818,
+      "sha256": "39462a3b873700330c742a702522661badb913a8f8d2cb6349a57fe32d24c8e8",
+      "gitBlobId": "284ee3812018b96fe93dd1b8b7e57af6d53ce9cd",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/packages/auth-protocol-vectors/retirement-ack-static-verification.json"
     },
     {
       "path": "packages/auth-protocol-vectors/static-verification-report.json",
       "byteLength": 1993,
       "sha256": "ad6ff0cf687fabf44d82f6489790b20362286585d10cb8a92a93cb123ee1f02d",
       "gitBlobId": "ed71958ecb2f2181130960b76f0801f11e47efb3",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/packages/auth-protocol-vectors/static-verification-report.json"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/packages/auth-protocol-vectors/static-verification-report.json"
     },
     {
       "path": "packages/auth-protocol-vectors/v1.json",
       "byteLength": 45709,
       "sha256": "da913014063f3972dbc15a6c79a87757e7f113ff9cd5911bbb4b42918e5262b1",
       "gitBlobId": "3c9249f1d48fbe417123bd9debc4c7ef467ef748",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/packages/auth-protocol-vectors/v1.json"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/packages/auth-protocol-vectors/v1.json"
     },
     {
       "path": "packages/openapi/README.md",
-      "byteLength": 2970,
-      "sha256": "584a7d287b1888eaa3d6e218e44c9ba5d70329216d231053f5f73236e21578b5",
-      "gitBlobId": "12d0dd46e5a5d015033e534c5c062f68554d4406",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/packages/openapi/README.md"
+      "byteLength": 2997,
+      "sha256": "4e2636f7b09a8a65a3cfef00731065a9e018a85b1275e0d84b8707b703966ad3",
+      "gitBlobId": "7ae9e0249f610535e0261810ef63dc1a81c831d5",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/packages/openapi/README.md"
     },
     {
       "path": "packages/openapi/channel-api.yaml",
       "byteLength": 2704,
       "sha256": "2e4fdd6c3be4d4096eeadf742ec6a9ce60fefae6c211a1fe93b65e2df88de3f0",
       "gitBlobId": "f92f4828c1466109b4598a52a7e976b80136fa77",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/packages/openapi/channel-api.yaml"
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/packages/openapi/channel-api.yaml"
     },
     {
       "path": "packages/openapi/community-auth-api.yaml",
-      "byteLength": 84959,
-      "sha256": "af7e03ca91004bbe3b10a1cd8271ad8e842c48c93dfbbef746950b5d4caf5252",
-      "gitBlobId": "49a8e60e87edc835fd92535e396483c3b1c39b9a",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/packages/openapi/community-auth-api.yaml"
+      "byteLength": 85419,
+      "sha256": "3947536b4bd919e14ed7f7d96b24ae391305fd8cc7a7c073784708e60cda9aa0",
+      "gitBlobId": "a47751487e179e0f970493d8c3cc92188f825663",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/packages/openapi/community-auth-api.yaml"
     },
     {
       "path": "packages/openapi/verifier-auth-api.yaml",
-      "byteLength": 38237,
-      "sha256": "42c84399e7fdec1a3dee60349d012ea554d0b06709a0f47a2ad24d17d8ae41ba",
-      "gitBlobId": "3e55a4493cee01286faffe6eae557fc4918a4128",
-      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/41fba7761035ee5aafb0e3beb55bf7b8d21f539a/packages/openapi/verifier-auth-api.yaml"
+      "byteLength": 45102,
+      "sha256": "14260a035658c9a789d93a6b0a3257917664d59304fb8265b9c23a855a3dad6c",
+      "gitBlobId": "3eab5a0bfe15acffad582cceda13e7a22824edac",
+      "sourceUrl": "https://github.com/zewbby/HnuHole/blob/05dc4a4b88797f5532829c1f2953484f7ac86c90/packages/openapi/verifier-auth-api.yaml"
     }
   ]
 }
