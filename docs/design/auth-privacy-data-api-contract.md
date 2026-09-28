@@ -1,12 +1,14 @@
 # Hnuhole 认证持久状态与 V/C API 契约 v1
 
-日期：2026-09-27。状态：**实施前逻辑数据与 HTTP 契约；未建表、未生成认证 OpenAPI、未实现、未经过独立安全审计。** 本文落实[注册／释放协议](auth-privacy-registration-protocol.md)和[独立恢复策略](auth-privacy-recovery-decision.md)；现有 `packages/openapi/channel-api.yaml` 只有通道目录，不能误作认证接口。下面的路径和字段是后续 OpenAPI／迁移的输入，生产实现前须经独立安全评审。
+日期：2026-09-28。状态：**实施前逻辑数据与 HTTP 契约；未建表、未生成认证 OpenAPI、未实现、未经过独立安全审计。** 本文落实[注册／释放协议](auth-privacy-registration-protocol.md)和[独立恢复策略](auth-privacy-recovery-decision.md)；现有 `packages/openapi/channel-api.yaml` 只有通道目录，不能误作认证接口。下面的路径和字段是后续 OpenAPI／迁移的输入，生产实现前须经独立安全评审。
 
 ## 1. 部署、编码和作用域
 
-V 与 C 是真实独立主体，使用不同 API 主机、部署权限、密钥、数据库、备份、请求编号与幂等键。测试／预发布／生产**各用互不复用的 V 与 C 签名钥**，每个 `key_epoch` 在受信配置中只绑定一个环境和预期对端；v1 固定签名消息没有环境字段，不能靠消息本身隔离环境。客户端只连接内置受信的 V、C 端点，不能由 V 的响应指定 C 地址。C 的认证库与社区业务库可做**同一 PostgreSQL 集群中的不同 schema／数据库角色**；账号状态、有效封禁、槽位、会话和释放 outbox 的权威行必须处于**同一 ACID 事务边界**。若改为两个不能共事务的物理库，须先重新设计一致性证明，不能沿用“原子关闭”承诺。公开内容注销占位是后续可重试投影，不能决定资格释放。
+V 与 C 是真实独立主体，使用不同 API 主机、部署权限、密钥、数据库、备份、请求编号与幂等键。测试／预发布／生产**各用互不复用的 V 与 C 签名钥**，每个 `key_epoch` 在受信配置中只绑定一个环境和预期对端；本协议固定签名消息没有环境字段，不能靠消息本身隔离环境。客户端只连接内置受信的 V、C 端点，不能由 V 的响应指定 C 地址。C 的认证库与社区业务库可做**同一 PostgreSQL 集群中的不同 schema／数据库角色**；账号状态、有效封禁、槽位、会话和释放 outbox 的权威行必须处于**同一 ACID 事务边界**。若改为两个不能共事务的物理库，须先重新设计一致性证明，不能沿用“原子关闭”承诺。公开内容注销占位是后续可重试投影，不能决定资格释放。
 
 HTTP JSON 默认 UTF-8，拒绝未知字段、重复键、错误类型、`null` 替代必填值和过大的请求体。所有 32／64 字节密码学字段使用无填充 base64url，解码后严格检查长度；固定二进制待签消息仍以[注册协议第 2 节](auth-privacy-registration-protocol.md)为准，JSON 字段顺序不参与签名。敏感响应 `Cache-Control: no-store`；邮箱、OTP、密码、恢复码、完整签名资格、持钥证明和会话令牌不进入常规日志、遥测或请求编号。V 与 C 的客户端安装标识分别随机生成，**绝不共用**；C 的标识只用于移动会话。对外错误沿用现有 `{ "error": { "code": "…", "message": "…", "details": … }, "requestId": "…" }` 形状，`details` 不含邮箱、槽位、账号归属或密钥材料。
+
+V/C 的 OTP、`REGISTER/V2`、意图、会话及注销截止均在相应权威库的**最终锁内裁决点**取实际 UTC 时间，不使用请求发起时刻或事务开始时刻。PostgreSQL 须在取得相关锁后用 `clock_timestamp()` 现场取样；`now()`、`CURRENT_TIMESTAMP` 和 `statement_timestamp()` 可早于锁等待结束，不能用于安全截止。裁决点与状态转换连续执行，后续不再做外部阻塞工作。时钟回退或独立授时失效时冻结依赖时间的认证操作，以受保护且不随备份回退的时间高水位校验后再恢复。[PostgreSQL 时间函数说明](https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-CURRENT)
 
 私有登录用户名仅在 C 使用：6–24 个 ASCII 小写字母、数字或下划线，首字符为字母；客户端可把 ASCII 大写转小写后提交，C 以规范小写值做唯一键，不用邮箱或六位平台编号作用户名。用户名不公开展示。正式关闭时清除旧号用户名和密码验证值，允许之后被新账号选用；它**不是永久身份标识**，用户再注册若复用旧用户名可能让 C 从残余日志推断关联，界面推荐新用户名。活动账号和七天缓冲中的用户名仍唯一；用户名冲突仅在已验证注册持钥证明后返回，不能提供公开可用性查询。完全恶意的 V 能自签新资格并持对应私钥尝试候选用户名，故此限制只能降低普通未验证枚举，**不能保证 V 无法枚举用户名是否被占用**；V 仍不会因此自动得知该用户名对应哪个邮箱。
 
@@ -15,7 +17,7 @@ HTTP JSON 默认 UTF-8，拒绝未知字段、重复键、错误类型、`null` 
 | 记录 | 关键字段／约束 | 生命周期 |
 | --- | --- | --- |
 | `email_quota` | 严格校验后的**精确邮箱字节**唯一键；`current_slot` 全局唯一；`pk_boot`、当前资格、版本。不得折叠大小写、别名或去掉空格 | 只保存当前 `RESERVED`；C 已提交的退役／释放收据与当前槽位相同才原子删除 |
-| `used_slots` | `slot_id` 永久唯一，状态 `RESERVED/RETIRED/RELEASED`，不保存邮箱；同槽位仅允许当前原地址／原公钥的重签，已退役或释放的槽位永不再签给任何地址 | v1 资格无固定到期，至少在可能验收旧票的整个时期保留；默认长期 |
+| `used_slots` | `slot_id` 永久唯一，状态 `RESERVED/RETIRED/RELEASED`，不保存邮箱；同槽位仅允许当前原地址／原公钥在**重新验证 OTP 后**签当前窗口资格，已退役或释放的槽位永不再签给任何地址 | 注册票据有界，但当前占用与历史不复用标记仍须长期保留，不能按票据窗口清除 |
 | `otp_flows` | V 随机 `flow_id`、精确邮箱、六位数字码的 `HMAC-SHA256(K_otp, 固定作用域 ∥ flow_id ∥ 最新版本 ∥ OTP)` 验证值、五分钟到期、最新码版本、该 V 专用设备的失败计数／锁定时间，以及**跨设备的流程总失败计数**；`K_otp` 与数据库／备份和幂等 HMAC 密钥分离 | 验证完成或过期后按短期风控窗口清理；绝不复制到 C；更新最新码版本、设备及流程计数、锁定与消费状态须原子进行。每个当前码跨设备最多十次失败，达到上限即废止该码 |
 | `retire_pending` | 按旧 `slot_id` 唯一，关联当前配额行及其版本、固定退役授权、发起时的 OTP 流程与新槽位材料、重试状态；不向 C 发送邮箱 | **调用 C 前持久写入**；存续期间拒绝原槽位续票及新槽位签发。收到 C 同槽位已提交 `RETIRED` 或 `RELEASED` 收据后原子终结；明确不可退役且尚无释放收据则保留旧配额、不签新槽位 |
 | `v_idempotency` | 按 V 本地随机键唯一，含操作与**服务器密钥 HMAC** 的请求绑定值、状态、必要的短期原响应 | 发码和确认各自隔离；退役待办关联的确认键保留至终态，资格原响应最多在十分钟窗口内重取，不延长 OTP 有效期 |
@@ -29,21 +31,29 @@ V 还须按精确邮箱跨 `flow_id` 计数并限制滚动窗口内发码与验�
 
 | 记录 | 关键字段／约束 | 生命周期 |
 | --- | --- | --- |
-| `account_auth` | 随机内部 `account_id`；当前用户名唯一、Argon2id 盐／参数／验证值、统一凭据版本；`ACTIVE/PENDING_CLOSE/CLOSED`、版本、权威封禁状态 | 正式关闭清用户名与密码验证值，保留内容所需的无邮箱内部账号及终态 |
+| `account_auth` | 随机内部 `account_id`；当前用户名唯一、Argon2id 盐／参数／验证值、统一凭据版本、单调重设意图代次及唯一活动意图 ID；`ACTIVE/PENDING_CLOSE/CLOSED`、版本、权威封禁状态 | 正式关闭清用户名与密码验证值，保留内容所需的无邮箱内部账号及终态 |
 | `slot_ledger` | `slot_id` 主键；`ACTIVE(account_id)`、`RETIRED`、`CLOSED`；活动 `account_id` 唯一 | `RETIRED/CLOSED` 不回退；关闭事务即可清除直接 `slot_id→account_id`，保留脱钩终态拒旧票 |
-| `signup_intents` | 随机 32 字节意图 ID 和挑战；不可修改资格、用户名、密码验证值、恢复码摘要、C 专用安装 ID；最多十分钟、状态／尝试计数 | 创建不占槽位；丢码新建意图；过期清敏感材料；已处理挑战不得再用 |
+| `signup_intents` | 随机 32 字节意图 ID 和挑战；不可修改的 `REGISTER/V2` 资格及准入窗口、用户名、密码验证值、恢复码摘要、C 专用安装 ID；最多十分钟、状态／尝试计数 | 创建不占槽位；创建与最终提交都校验准入窗口；丢码新建意图；资格过期则废弃意图／恢复码并重新收码同槽位换签；已处理挑战不得再用 |
 | `recovery_codes`／`passkeys` | 每活动账号当前一份 128 位恢复码摘要，摘要全局唯一；可选 WebAuthn 凭据 ID 全局唯一、公钥、随机用户句柄、UV／计数元数据 | 原码不落库；密码重设时旧码与**全部旧 Passkey**一起废止，凭据版本递增；关闭时废止；原码能在 C 内定位账号 |
-| `reset_intents` | 受限意图、已验证时的账号统一凭据版本、新恢复码摘要、十分钟到期、尝试计数 | 同账号首次合法提交胜；任何先提交的凭据变更都使旧版本意图失效；废弃／过期不消耗旧码，成功事务烧掉旧码、全部旧 Passkey 并撤销会话 |
-| `sessions` | 仅存 32 字节随机令牌的摘要、账号、C 专用安装 ID、签发时会话代次、过期／撤销时间；同账号最多一个有效移动会话 | 登录／注册建新会话时原子递增会话代次并撤销旧会话；认证与业务写均复查会话代次／撤销及账号终态／封禁 |
-| `closure_requests` | 客户端预生成 `closure_id` 与 256 位 `status_secret` 的摘要、账号／申请版本、七天到期；正式关闭后改为仅含槽位与受限状态访问 | 请求提交时撤销会话；取消／封禁后仅保留最多三十天的只读 `CANCELLED` 状态，无账号或封禁原因；释放完成后最多三十天清理状态秘密与记录 |
+| `reset_intents` | 受限意图、在账号锁内再次确认的当前凭据版本与重设意图代次、新恢复码摘要、十分钟到期、尝试计数、活动／废弃／已消费状态 | 新意图创建须在账号锁下复核所证明的旧码或 Passkey **仍是当前凭据且版本未变**，再废弃旧意图、递增代次并成为唯一活动意图；旧证明不得套用新版本。最终提交按凭据版本＋活动 ID／代次双重裁决。废弃／过期不消耗旧码，成功事务烧掉旧码、全部旧 Passkey 并撤销会话 |
+| `sessions` | 仅存 32 字节随机令牌的摘要、独立撤销秘密的摘要、账号、C 专用安装 ID、签发时会话代次、过期／撤销时间；同账号最多一个有效移动会话 | 登录／注册建新会话时原子递增会话代次并撤销旧会话；认证与业务写均复查会话代次／撤销及账号终态／封禁；撤销摘要保留至该令牌过期后的有界重试期 |
+| `closure_requests` | 客户端预生成 `closure_id` 与 256 位 `status_secret` 的摘要、账号／申请版本、由 C 数据库时间确定的 `due_at`；正式关闭后改为仅含槽位与受限状态访问；`closure_id` 唯一且绑定不可修改的原申请 | 请求提交时撤销会话；到期但关闭事务尚未提交时为 `FINALIZING`，不得再认证／恢复／写入；取消／封禁后仅保留最多三十天的只读 `CANCELLED` 状态，无账号或封禁原因；释放完成后最多三十天清理状态秘密与记录 |
 | `receipt_outbox` | `(slot_id, purpose)` 唯一，提交后才签名；只含槽位、用途、签名版本、投递／ACK 状态，不含邮箱或账号 ID | `RETIRED/RELEASED` 可重签同一已提交终态；保留直到 V **持久 ACK**，再按受控短期清理 |
-| `c_idempotency`／`security_events` | 本方请求键、密钥 HMAC 请求绑定值、非秘密结果；受限事件不含邮箱、原密码／码、完整资格或令牌；不得长期保留账号 ID、`closure_id` 与槽位的可连接副本 | 只为故障核对与必要安全运营短期保存；不进入社区业务事件流。上线前须确定并验证关联记录、日志、WAL 与备份的有界期限，独立终态证据不得保留账号—槽位连接 |
+| `c_idempotency`／`security_events` | 本方请求键、密钥 HMAC 请求绑定值、非秘密结果；受限事件不含邮箱、原密码／码、完整资格或令牌；不得长期保留账号 ID、`closure_id` 与槽位的可连接副本 | 重设提交的无秘密结果至少保留七天供缓冲期安全核对，随后按有界期限清理；其他记录只为故障核对与必要安全运营短期保存，不进入社区业务事件流。上线前须确定并验证关联记录、日志、WAL 与备份的上限，独立终态证据不得保留账号—槽位连接 |
 
-现有 `0001_sessions.sql` 只有演示切片会话表，既无账号权威状态，也无单设备唯一性和注销事务边界；不能在该表上直接宣称新认证已满足上述不变量。将来迁移须复核开发夹具与历史会话，不能让夹具成为生产认证旁路。密码与恢复码摘要的输入不能再保存一个**未加密钥的快速“请求哈希”**到幂等表；否则弱密码会多出离线猜测材料，幂等绑定统一使用与库分离的服务器 HMAC 密钥。
+现有 `0001_sessions.sql` 只有演示切片会话表，既无账号权威状态，也无单设备唯一性和注销事务边界；当前 `SessionValidator` 只查令牌本身，不能直接给新受保护业务路由复用为完整终态／封禁授权。现有 `requestID` 中间件还接受客户端给的 `X-Request-ID`，新 V/C 认证链必须改为**各方服务端生成且互不共用**，不得信任客户端或对端提供的关联 ID；这两处都是实现门槛，本轮不改生产代码。将来迁移须复核开发夹具与历史会话，不能让夹具成为生产认证旁路。密码与恢复码摘要的输入不能再保存一个**未加密钥的快速“请求哈希”**到幂等表；否则弱密码会多出离线猜测材料，幂等绑定统一使用与库分离的服务器 HMAC 密钥。
 
-开户事务以唯一 `slot_id` 在 `ABSENT→ACTIVE` 与退役事务的 `ABSENT→RETIRED` 竞争，先持久提交者胜；同时创建账号、恢复凭据、一个移动会话并消费意图／挑战。用户名冲突处理意图但不占槽位。正式注销事务在同一权威库核对账号版本、有效封禁、主动登录取消时序，再把账号和槽位置终态、撤销所有会话、递增会话代次、写唯一释放 outbox；签名和向 V 投递只在事务提交后。密码重设事务校验统一凭据版本，更换密码验证值和恢复码、撤销**全部旧 Passkey 与会话**、递增凭据及会话代次并消费重设意图；并发凭据管理只能有一方提交，正式 `CLOSED` 不可重设。每个受保护读取都须验证当前会话未撤销、代次匹配及账号终态；每个业务写入还须在**同一权威事务的最终授权点**复查这些条件与封禁，并同会话接替、重设及关闭事务串行化：写入先提交则属于撤销前，撤销先提交则写入拒绝。仅凭请求开头的令牌校验或旧令牌离线缓存不能在撤销后继续写入。
+开户事务以唯一 `slot_id` 在 `ABSENT→ACTIVE` 与退役事务的 `ABSENT→RETIRED` 竞争，先持久提交者胜；同时创建账号、恢复凭据、一个移动会话并消费意图／挑战。用户名冲突处理意图但不占槽位。正式注销事务在同一权威库核对账号版本、有效封禁、主动登录取消时序及数据库 `due_at`，再把账号和槽位置终态、撤销所有会话、递增会话代次、写唯一释放 outbox；签名和向 V 投递只在事务提交后。
 
-旧备份恢复必须先冻结 V 的发码确认、注册、退役、释放，以及 C 的**全部认证、凭据恢复、会话校验、受保护读取和业务写入**；不能只冻结新会话创建而继续接受快照里的旧令牌。对照**独立且不可随同回滚的已提交事件／WAL 和对端持久结果**重建账号关闭、槽位终态、密码／恢复凭据版本、会话撤销与释放状态；恢复期间拒绝所有旧会话，核对完成后仍撤销快照中的全部会话，要求用户重新登录。若 V、C 及其提交证据同时回滚，就无法证明旧槽位和凭据状态，必须继续冻结并进行事故处理，不能凭旧快照猜测开放配额或允许旧密码／恢复码。签名钥泄漏与旧票重放仍按[注册协议第 7 节](auth-privacy-registration-protocol.md)处理。
+`PENDING_CLOSE` 的登录、恢复、封禁取消及新业务写入均在持账号锁的最终状态转换时比较**取锁后的实际数据库时间**；PostgreSQL 用 `clock_timestamp()` 现场取样，不能用锁等待前的应用时间、事务起始的 `now()`／`CURRENT_TIMESTAMP` 或语句起始时间。最终锁内判定与状态变更是截止竞态的裁决点，判定后不得再执行会阻塞截止裁决的外部操作；一旦该时点到达 `due_at`，即使关闭 worker 延迟也不得再取消申请或获得旧号访问，关闭提交前状态为 `FINALIZING`。
+
+创建替代重设意图时，在账号锁内重核初步证明所见的统一凭据版本及旧恢复码摘要／Passkey 凭据仍有效，版本或凭据已变就拒绝，不能把旧证明绑定到新版本；再原子废弃旧意图、递增代次。最终密码重设同时校验统一凭据版本与唯一活动意图 ID／代次，更换密码验证值和恢复码、撤销**全部旧 Passkey 与会话**、递增凭据及会话代次并消费重设意图；并发凭据管理只能有一方提交，正式 `CLOSED` 不可重设。
+
+每个受保护读取都须验证当前会话未撤销、代次匹配及账号终态；每个新业务写入还须在**同一权威事务的最终授权点**复查这些条件与封禁，并同会话接替、重设及关闭事务串行化：写入先提交则属于撤销前，撤销先提交则写入拒绝。仅凭请求开头的令牌校验或旧令牌离线缓存不能在撤销后继续写入。
+
+后台发布任务的“服务端已接受”指**客户端请求在事务内完成会话、账号、封禁和身份检查，并持久提交了绑定账号／身份／不可修改内容的任务**；固定图片顺序、大小和内容散列清单，后续上传权限仅允许补齐该任务清单中的原定字节，公开前逐项核对。此后退出、换机接替或密码重设只撤销后续客户端请求权，不倒销该次已授权的任务；worker 只凭已提交任务继续处理，不拿旧 Bearer 再认证。每次真正公开入库时须与账号状态和处罚状态的变更串行化，在取锁后的最终裁决点复查未申请注销、未到期关闭且当前未被禁言／封禁；申请注销或处罚先赢则尚未公开任务取消或转失败，不能等七天到期后再阻断。公开先赢则属于申请或处罚之前，已公开内容按既定注销占位和治理规则处理。失败重试或修改内容是**新客户端请求**，须重新认证与授权。
+
+旧备份恢复必须先冻结 V 的发码确认、注册、退役、释放，以及 C 的**全部认证、凭据恢复、会话校验、受保护读取和业务写入**；不能只冻结新会话创建而继续接受快照里的旧令牌。对照**独立且不可随同回滚的已提交事件／WAL、对端持久结果、单调前进的受信密钥／撤销版本与可信 UTC 时间高水位**重建账号关闭、槽位终态、密码／恢复凭据版本、会话撤销、释放状态和两方签名钥信任列表；独立授时源未校准或时钟倒退时不得恢复 `REGISTER/V2` 验票，避免过期票重新变有效。恢复期间拒绝所有旧会话，核对完成后仍撤销快照中的全部会话，要求用户重新登录。旧配置快照不得重新启用已撤销的 V 注册钥或 C 收据钥。若 V、C 及其提交证据同时回滚，就无法证明旧槽位、凭据与密钥撤销状态，必须继续冻结并进行事故处理，不能凭旧快照猜测开放配额或允许旧密码／恢复码。签名钥泄漏与旧票重放仍按[注册协议第 7 节](auth-privacy-registration-protocol.md)处理。
 
 ## 4. 面向客户端的 HTTP 契约
 
@@ -52,20 +62,26 @@ V 还须按精确邮箱跨 `flow_id` 计数并限制滚动窗口内发码与验�
 | 归属与方法路径 | 输入 | 成功输出／副作用 |
 | --- | --- | --- |
 | V `POST /api/v1/eligibility/otp-requests` | `email`；V 专用 `Idempotency-Key` | `202 {flowId, retryAfterSeconds}`；格式合格的已占用／空闲邮箱同形受理且在允许发送时都实际发码，以便已占用者完成退役或核对；投递按六十秒间隔和限流，是否已注册不在申请响应暴露 |
-| V `POST /api/v1/eligibility/otp-confirmations` | `flowId, otp, slotId, bootstrapPublicKey, releaseReceipt?`；V 专用确认幂等键 | `200 {registrationTicket}`，仅在最新 OTP 成功、邮箱配额安全保留或原槽位合法继续后；若旧未开户槽位需退役，先持久登记退役待办；C 结果未定时为 `202 {state: "RETIREMENT_PENDING", retryAfterSeconds}`，原确认键核对。票据及原公钥须由客户端核对 |
-| C `POST /api/v1/auth/registration-intents` | `registrationTicket, username, password, installationId` | `201 {intentId, challenge, expiresAt, recoveryCode}`；C 验票和公钥散列，生成**一次性显示**恢复码，保存不可改材料；不占槽位、不建账号。响应丢失新建意图，不重放原码 |
-| C `POST /api/v1/auth/registrations` | `intentId, bootstrapSignature, recoveryCodeConfirmation`；C 专用最终提交幂等键 | 首次 `201 {accountId, sessionToken, expiresAt}`；验真实 C 挑战、码确认及全部前置条件后原子开户。已提交的同键重试只给**无令牌**已完成状态，须用用户名密码登录 |
+| V `POST /api/v1/eligibility/otp-confirmations` | `flowId, otp, slotId, bootstrapPublicKey, releaseReceipt?`；V 专用确认幂等键 | `200 {registrationTicket}`，仅在最新 OTP 成功、邮箱配额安全保留或原槽位合法继续后；同槽位续票也必须重新验 OTP 并签当前准入窗口。若旧未开户槽位需退役，先持久登记退役待办；C 结果未定时为 `202 {state: "RETIREMENT_PENDING", retryAfterSeconds}`，原确认键核对。票据及原公钥须由客户端核对 |
+| C `POST /api/v1/auth/registration-intents` | `registrationTicket, username, password, installationId` | `201 {intentId, challenge, expiresAt, recoveryCode}`；C 验 `REGISTER/V2` 签名、严格 Ed25519 公钥与当前／上一准入窗口，生成**一次性显示**恢复码，保存不可改材料；不占槽位、不建账号。响应丢失新建意图，不重放原码 |
+| C `POST /api/v1/auth/registrations` | `intentId, bootstrapSignature, recoveryCodeConfirmation`；C 专用最终提交幂等键 | 首次 `201 {accountId, sessionToken, expiresAt}`；在开户事务中再次验准入窗口、真实 C 挑战、码确认及全部前置条件。资格过期时废弃意图而不占槽位，重新收码换签；已提交的同键重试只给**无令牌**已完成状态，须用用户名密码登录 |
 | C `POST /api/v1/auth/sessions` | `username, password, installationId`；C 专用登录幂等键 | 首次 `201 {accountId, sessionToken, expiresAt}`；原子接替旧移动会话；七天缓冲内成功**主动登录**同时取消注销申请。已提交重试不重发令牌，可用新键重新登录 |
-| C `GET /api/v1/auth/session`、`DELETE /api/v1/auth/session` | 当前不透明 Bearer 令牌 | `GET 200 {accountId, expiresAt, username}`；`DELETE 204` 撤销当前会话且可重复，客户端立即清本地令牌；`401` 清本地令牌，`503` 保留待核对 |
-| C `POST /api/v1/auth/recovery-code-reset-intents` | `recoveryCode` | `201 {resetIntentId, expiresAt, username, newRecoveryCode}`，仅在已验证旧码后展示本账号私有用户名；旧码暂留待消费，响应丢失可用旧码重建并废弃旧意图 |
-| C `POST /api/v1/auth/passkey-reset-options`、`POST /api/v1/auth/passkey-reset-intents` | 前者无用户名，后者为 `challengeId, webauthnAssertion` | 固定 RP 的短期 challenge；有效 discoverable Passkey assertion 后 `201` 返回同形受限意图、私有用户名和一次性新恢复码，不建立普通会话 |
-| C `POST /api/v1/auth/password-resets` | `resetIntentId, newPassword, newRecoveryCodeConfirmation`；C 专用提交幂等键 | `204` 按统一凭据版本原子更换密码／恢复码、烧掉旧码、撤销**全部旧 Passkey 与会话**；重复提交只给无秘密已完成状态；随后正常登录并重新登记 Passkey |
+| C `GET /api/v1/auth/session` | 当前不透明 Bearer 令牌 | `200 {accountId, expiresAt, username}`；令牌失效 `401` 时清本地令牌，`503` 时保留待核对 |
+| C `POST /api/v1/auth/session-revocations` | `Authorization: SessionRevoke <base64url(revocationSecret)>` 专属请求头；不能使用普通 Bearer | `204` 仅撤销此秘密绑定的**那一条**会话且可重复；已撤销或已过期亦给无秘密成功状态，数据库不可用返回 `503`。不能撤销后来接替的新会话，也不能读取社区 |
+| C `POST /api/v1/auth/recovery-code-reset-intents` | `recoveryCode` | `201 {resetIntentId, expiresAt, username, newRecoveryCode}`，仅在账号锁内确认旧码仍有效且证明时的凭据版本未变后展示本账号私有用户名；旧码暂留待消费，响应丢失可用**仍有效的**旧码重建并废弃旧意图 |
+| C `POST /api/v1/auth/passkey-reset-options`、`POST /api/v1/auth/passkey-reset-intents` | 前者无用户名，后者为 `challengeId, webauthnAssertion` | 固定 RP 的短期 challenge；有效 discoverable Passkey assertion 后，须在账号锁内确认该凭据仍有效且证明时的版本未变，才以 `201` 返回同形受限意图、私有用户名和一次性新恢复码，不建立普通会话 |
+| C `POST /api/v1/auth/password-resets` | `resetIntentId, newPassword, newRecoveryCodeConfirmation`；C 专用提交幂等键 | `204` 按统一凭据版本及活动重设意图代次原子更换密码／恢复码、烧掉旧码、撤销**全部旧 Passkey 与会话**；重复提交只给无秘密已完成状态；随后正常登录并重新登记 Passkey；缓冲期内登录会取消注销 |
+| C `GET /api/v1/auth/password-reset-result` | `Authorization: ResetResult <原提交幂等键>` 与 `Reset-Intent-ID: <resetIntentId>` 专属头，不带账号 Bearer 或密码 | `200 {state: "COMMITTED"}` 只确认同键同意图已提交；`202 {state: "PENDING"}` 尚未确定。同键已有持久拒绝结果，或意图过期后在同一账号锁内确认意图未消费且同键无提交，才回 `200 {state: "NOT_COMMITTED"}`；早到 `404` 不是终态。只查这一笔无秘密结果，不能登录或重设；结果至少保留七天，保留期外 `410 RESULT_EXPIRED` 不作提交结论 |
 | C `POST /api/v1/auth/recovery-code-rotations`、`POST /api/v1/auth/passkey-options`、`POST /api/v1/auth/passkeys` | 当前会话＋新鲜密码复验；前者两阶段展示与确认，后两者为标准 WebAuthn 创建选项／结果 | 轮换原码或登记可选 Passkey；正式变更按统一凭据版本原子提交并使旧管理挑战失效；只用会话不能执行；首次注册后也须新鲜密码复验 |
 | C `DELETE /api/v1/auth/passkeys/{credentialId}` | 当前会话＋新鲜密码复验；仅限本账号绑定的凭据 ID | `204` 原子撤销指定 Passkey、递增统一凭据版本；恢复码始终保留为另一条独立恢复途径；不得根据该 ID 向外泄露他人凭据归属 |
-| C `POST /api/v1/account-closures` | 当前会话、`password, closureId, statusDigest`；客户端先在安全存储保存对应随机 256 位 `status_secret` | `202 {closureId, dueAt}`；申请与会话撤销同一事务；服务端**不返回**状态秘密，响应丢失仍可用客户端原秘密核对 |
-| C `GET /api/v1/account-closures/{closureId}` | `Authorization: ClosureStatus <base64url(status_secret)>` 专属请求头；不得放入 URL、query、请求体或社区 Bearer 中间件 | `200 {state, dueAt?, releaseReceipt?}`；只显示 `PENDING/CANCELLED/CLOSED_RELEASE_PENDING/RELEASED`，已签名收据可转交 V；`CANCELLED` 最多可查三十天且不透露原因；无账号资料或取消权 |
+| C `POST /api/v1/account-closures` | 当前会话、`password, closureId, statusDigest`；客户端先在安全存储保存对应随机 256 位 `status_secret` | `202 {closureId, dueAt}`；`closureId` 是本申请唯一幂等键，账号及状态摘要不可变，同 ID 并发提交只允许一个事务胜出、不能重置七天期限；申请与会话撤销同一事务，服务端**不返回**状态秘密 |
+| C `GET /api/v1/account-closures/{closureId}` | `Authorization: ClosureStatus <base64url(status_secret)>` 专属请求头；不得放入 URL、query、请求体或社区 Bearer 中间件 | `200 {state, dueAt?, releaseReceipt?}`；只显示 `PENDING/FINALIZING/CANCELLED/CLOSED_RELEASE_PENDING/RELEASED`，已签名收据可转交 V；`CANCELLED` 最多可查三十天且不透露原因；无账号资料或取消权 |
 
-客户端仅把 V 侧 `registrationTicket` 带给 C，不带邮箱／OTP／V 本地 `flowId` 或幂等键。`bootstrapSignature` 是[固定 PoP 消息](auth-privacy-registration-protocol.md)的 Ed25519 签名；`recoveryCodeConfirmation` 仅可验证意图内已生成的码，不能在最终提交时选择另一恢复凭据。注销状态秘密由客户端**提交前**生成并存入系统安全存储，`statusDigest = SHA-256(ASCII("HNUHOLE/CLOSE-STATUS/V1") || 0x00 || status_secret[32])`；若安全存储不可用，不提交注销申请。C 只存摘要，专属状态认证头仅可查同一 `closureId` 的受限状态和已签收据，不能登录、取消注销或恢复旧号，也不能被任何社区 Bearer 认证路径接受或写入访问日志。响应丢失先用原 `closureId/status_secret` 查询，不能指望从已撤销的普通会话找回状态访问权。
+客户端仅把 V 侧 `registrationTicket` 带给 C，不带邮箱／OTP／V 本地 `flowId` 或幂等键。`bootstrapSignature` 是[固定 PoP 消息](auth-privacy-registration-protocol.md)的 Ed25519 签名；`recoveryCodeConfirmation` 仅可验证意图内已生成的码，不能在最终提交时选择另一恢复凭据。注销状态秘密由客户端**提交前**生成并存入系统安全存储，`statusDigest = SHA-256(ASCII("HNUHOLE/CLOSE-STATUS/V1") || 0x00 || status_secret[32])`；若安全存储不可用，不提交注销申请。C 只存摘要，专属状态认证头仅可从权威库强一致地查同一 `closureId` 的受限状态和已签收据，不能登录、取消注销或恢复旧号，也不能被任何社区 Bearer 认证路径接受或写入访问日志。响应丢失时保留原 `closureId/status_secret`，一次早到的 `404` 只表示**查询时尚无已提交记录**，不能证明原 POST 未来不会提交，也不能丢弃秘密或换新申请 ID；客户端在待确认状态重试原 `closureId/statusDigest` 的认证申请，若旧 Bearer 已撤销则继续用状态页核对，不静默主动登录。为重试而暂存的旧 Bearer 仍是完整社区凭据，必须只放系统安全存储并在客户端禁用其社区用途、取得确定结果后清除；不能把它称为“仅可查看状态”的秘密。原 POST 与重试由全局唯一 ID 串行化，不能生成第二个七天申请。
+
+每条 32 字节随机会话令牌另导出 `revocationSecret = SHA-256(ASCII("HNUHOLE/SESSION-REVOKE/V1") || 0x00 || sessionToken[32])`。C 签发时仅存 `SHA-256(ASCII("HNUHOLE/REVOKE-STORAGE/V1") || 0x00 || revocationSecret[32])` 供定向撤销查找，不另回传撤销原文；客户端点击退出时，**先持久写绑定该旧令牌摘要的登出待完成标记**，再从该 Bearer 导出并安全保存撤销秘密，随后删除可访问社区的 Bearer，最后调用专属撤销接口；标记写入失败就不得显示退出成功。每次 App 启动与任何会话恢复之前必须先检查标记；若崩溃发生在两次安全存储修改之间，先核对本地 Bearer 与标记中的旧令牌摘要匹配，再补导出撤销秘密并清除该旧 Bearer，最后恢复撤销请求，绝不能把它当成可恢复的社区会话；本地转换完成后可另行登录，待办只针对旧令牌，不能清除或撤销后来登录的新令牌。即使网络失败，待办只保留单向导出、不能反推出 Bearer 的撤销秘密；服务器端会话在收到并提交撤销前仍可能被此前外泄的 Bearer 使用，界面须显示“本地已退出，服务器撤销待确认”。撤销记录与标记直到 `204` 或明确已过期才清除，不能改用社区 Bearer 接口重试；普通日志和分析 SDK 不得记录两种秘密。
+
+密码重设结果查询只从权威库读取同键、同意图的无秘密结果，不含账号、用户名或恢复材料；原幂等键与 `Reset-Intent-ID` 均不得记入普通日志。C 在意图过期后取账号锁，若并发 POST 已先提交则返回 `COMMITTED`；若仍未消费且同键无提交则以该锁内实际时间确认 `NOT_COMMITTED`，后到 POST 必须因意图过期被拒。不能在尚有效的意图或锁外查询中把“暂时没有幂等记录”当作未提交。终态意图为这种核对保留最小 ID、归属与状态元数据至少七天，敏感摘要在过期／废弃／关闭后清除；客户端收到确定结果才清理待办。查询超过保留期时明确提示结果不可核对，不能静默登录取消注销。
 
 ## 5. 内部 V/C 消息与错误边界
 
@@ -75,24 +91,25 @@ V 还须按精确邮箱跨 `flow_id` 计数并限制滚动窗口内发码与验�
 | C→V `POST /internal/v1/slot-releases` | 事务提交后固定签名 `RELEASED(slot)`；双方受信传输 | V 验签并对**当前**槽位原子释放，同槽位退役待办一并终结，持久记录处理结果后才 ACK；重复旧收据或迟到退役拒绝不影响新槽位 |
 | V 内部退役收据处理 | C 的 `RETIRED(slot)` 收据与 V 当前精确邮箱槽位相等 | V 持久清旧占用；只有仍有效的新 OTP 会话才能顺带签新槽位，超时则再次收码 |
 
-客户端 `400` 是结构／编码错误，`422` 是本次语义或密码策略错误，`401 AUTHENTICATION_FAILED` 对不存在用户名、错误密码、无效恢复码、失效 Passkey 采用不暴露账号资料的同形错误；有效 OTP 后可返回 `409 ELIGIBILITY_RESERVED`，但不返回旧账号用户名／ID。退役结果未知只返回受限 `202 RETIREMENT_PENDING`，不能签旧票或新票；`409 USERNAME_UNAVAILABLE` 只能在有效注册 PoP 后出现；`409 REGISTRATION_COMMITTED_LOGIN_REQUIRED` 和 `409 SESSION_CREATED_RETRY_LOGIN` 均不含会话令牌。`409 SLOT_NOT_RETIRABLE` 只在内部 V/C 边界可见；`429 RATE_LIMITED` 带安全的 `Retry-After`，不因地址是否占用而改变申请响应；`503` 与超时均不代表事务未提交。禁言、封禁和账号关闭的授权错误不得泄露其他面具或邮箱。登录错误、验证码投递时延、恢复码查找、限流维度都须独立安全评审；统一文案不是完整不可枚举证明。
+客户端 `400` 是结构／编码错误，`422` 是本次语义或密码策略错误，`401 AUTHENTICATION_FAILED` 对不存在用户名、错误密码、无效恢复码、失效 Passkey 采用不暴露账号资料的同形错误；`422 REGISTRATION_TICKET_EXPIRED` 要求重新收码并对同槽位／公钥换签，不允许直接换新槽位或沿用旧意图。下一桶票据在 C 看来尚属未来时回 `422 REGISTRATION_TICKET_NOT_YET_VALID`，仍不建意图；仅距该桶开始不超过六十秒时给有界 `retryAfterSeconds` 并重试**原票**，更大偏差提示校时故障而不要求重新收码，也不因单张票放宽验票窗口。未来超过一桶的票直接拒绝。有效 OTP 后可返回 `409 ELIGIBILITY_RESERVED`，但不返回旧账号用户名／ID。退役结果未知只返回受限 `202 RETIREMENT_PENDING`，不能签旧票或新票；`409 USERNAME_UNAVAILABLE` 只能在有效注册 PoP 后出现，但任何拥有有效校邮资格的普通客户端也可能通过反复尝试猜测全局用户名是否被占用，故“私有用户名”仅指不公开展示，非不可枚举秘密。`409 REGISTRATION_COMMITTED_LOGIN_REQUIRED` 和 `409 SESSION_CREATED_RETRY_LOGIN` 均不含会话令牌。`409 SLOT_NOT_RETIRABLE` 只在内部 V/C 边界可见；`429 RATE_LIMITED` 带安全的 `Retry-After`，不因地址是否占用而改变申请响应；`503` 与超时均不代表事务未提交。禁言、封禁和账号关闭的授权错误不得泄露其他面具或邮箱。登录错误、验证码投递时延、恢复码查找、限流维度都须独立安全评审；统一文案不是完整不可枚举证明。
 
 ## 6. 幂等、未知结果和验收
 
-V 发码、V 确认、C 最终注册、C 登录、C 密码重设各使用**本方独立**随机 `Idempotency-Key`，至少 128 位；重复键与不同请求内容必须拒绝。V 确认的原键可从 `RETIREMENT_PENDING` 转到已提交资格或“需重新收码”，重试只核对原操作，不再次消费 OTP 或重启退役；退役待办即使超过确认键的十分钟重取窗口也继续由 V 后台处理。V 已提交的原资格只在十分钟窗口内可重取；C 的注册／登录／重设已提交时只回无秘密的结果，**不重发会话令牌或新恢复码**。生成一次性恢复码的意图创建刻意采用“响应丢失则新建意图并使旧意图过期／废弃”的规则，不能套用普通响应重放。幂等请求绑定值使用与数据库分离的服务器 HMAC 密钥，避免把密码或恢复码的快速散列变成额外离线攻击材料。外部 C→V 收据以 `slot_id＋purpose` 幂等并须持久 ACK；投递失败时配额保持占用。
+V 发码、V 确认、C 最终注册、C 登录、C 密码重设各使用**本方独立**随机 `Idempotency-Key`，至少 128 位；重复键与不同请求内容必须拒绝。V 确认的原键可从 `RETIREMENT_PENDING` 转到已提交资格或“需重新收码”，重试只核对原操作，不再次消费 OTP 或重启退役；退役待办即使超过确认键的十分钟重取窗口也继续由 V 后台处理。V 已提交的原资格只在十分钟窗口内可重取；C 的注册／登录／重设已提交时只回无秘密的结果，**不重发会话令牌或新恢复码**。客户端在密码重设 POST **发送前**把原随机键和意图 ID 写入系统安全存储，重启后先用仅返回无秘密结果的 `ResetResult` 查询；确定结果后清除待核对记录。早到 `404` 仍不代表未提交，不能因此用新密码静默登录并取消缓冲期注销。生成一次性恢复码的意图创建刻意采用“响应丢失则新建意图并使旧意图过期／废弃”的规则，不能套用普通响应重放。幂等请求绑定值使用与数据库分离的服务器 HMAC 密钥，避免把密码或恢复码的快速散列变成额外离线攻击材料。外部 C→V 收据以 `slot_id＋purpose` 幂等并须持久 ACK；投递失败时配额保持占用。
 
 | 故障或竞态 | 必须观察到的结果 |
 | --- | --- |
 | V 发码状态未知 | 原键核对；第四十秒的受限核对只在明确未发出时才允许新请求，不重置既有倒计时 |
 | V 已保留槽位但确认响应丢失 | 十分钟内原键取同一资格；之后新 OTP，仍有私钥时同槽位续票，私钥丢失先退役 |
+| 注册资格在 C 意图创建或最终开户前过期 | 不建立账号也不放开邮箱配额；用户重新收码，V 对原槽位／公钥签当前窗口资格，C 重新建挑战和恢复码 |
 | V 已持久登记退役待办，C 回包丢失 | 待办阻止旧槽位续票和新资格；V 重试同一旧槽位取得 C 已提交收据，原子清旧配额；新 OTP 过期则再次收码 |
 | 退役待办与正式注销释放并发 | 若 `RELEASED` 先到且当前槽位匹配，V 原子释放并终结待办；C 对退役的 `SLOT_NOT_RETIRABLE` 迟到也不能恢复旧配额或影响新槽位 |
 | C 或 V 从旧备份恢复 | 先冻结全部认证、受保护读取和写入；以独立提交证据及对端结果修复账号／槽位／凭据版本，拒绝并撤销旧会话，完成核对后才恢复服务 |
 | C 意图／新恢复码响应丢失 | 新建意图和新码；旧意图不能成为槽位占用或账号 |
 | C 开户提交但响应丢失 | 旧票、旧证明与原键都不给旧会话；用户名密码登录，最多一个账号 |
 | 登录提交但令牌响应丢失 | 原键只得无令牌结果；新键用用户名密码重新登录并原子替代不可见旧会话 |
-| 恢复提交但响应丢失 | 新密码正常登录；旧码不可再用，可在新鲜密码复验后换发恢复码 |
-| 注销申请响应丢失 | 预存 `closureId/status_secret` 查状态；七天到期与主动登录／新封禁按同一账号权威事务次序裁决 |
+| 恢复提交但响应丢失 | 从安全存储取原幂等键经 `ResetResult` 查询不含秘密的提交结果；`PENDING_CLOSE` 时不得把新密码登录当作静默核对，因为主动登录会取消注销。用户明确选择取消后才能登录；非缓冲期可用新密码正常登录，旧码成功提交后不可再用 |
+| 注销申请响应丢失 | 预存 `closureId/status_secret` 从权威库查状态；早到 `404` 不作未提交证明，不丢秘密、不换 ID，原请求仍可能提交。保留原会话的受保护重试能力，使用相同 `closureId/statusDigest` 重试；若会话已撤销则继续查状态，不静默登录取消。到期与主动登录／新封禁按 `due_at` 和账号锁裁决 |
 | V/C 双方或签名服务中断 | 未取得已提交终态及 V 持久 ACK 前不开放同邮箱新槽位；恢复旧备份先冻结与核对 |
 
 实施验收至少覆盖并发同邮箱、全局重复槽位、双端超时、退役回包丢失、同键不同负载、用户名冲突、旧票／收据重放、HSM 签名失败、V ACK 丢失、恢复码与 Passkey 被盗／响应丢失、忘用户名、凭据版本竞态、会话接替和注销到期竞态。先把本契约转为 V 与 C 各自的 OpenAPI 和数据库迁移，定下关联日志／备份的有界保留与清理办法，再做跨组织集成测试、客户端恢复演练与独立安全评审；此处的设计核查**不是**生产安全批准。
