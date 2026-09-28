@@ -19,6 +19,8 @@
 
 ## 工作位置与讨论方式
 
+认证规格的最新内部评审见[AI 交叉评审记录](auth-privacy-ai-cross-review.md)：初审固定源 `41fba77` 缺少 `RETIRED` 持久 ACK，当前补入 V 的退役收据入口及 outbox／清理／恢复规则；V 当前 6 个操作，C 22 个。用户确认邮箱可用、C 正式后台未建、暂无人类独立评审者；新上下文 subagent 可做 AI 交叉复核，Claude 的九份固定源材料披露已获用户授权，调用获准但本机 CLI 未登录，没有外部评审结果；用户随后决定本轮先不做 Claude，采用已完成的 subagent 规格评审。不能把内部 AI 结论当作 G6 签署或运营独立性证明；当前仍不进入认证编码。
+
 - 后续 UI 工作必须同时使用用户指定的 `ui-ux-pro-max`（项目 `.agents/skills/ui-ux-pro-max/SKILL.md`）和 `frontend-design`（`/Users/zewbao/.codex/skills/frontend-design/SKILL.md`），遵循 [UI 设计与复审流程](ui-quality-workflow.md)。已定稿页面若有明确严重问题可后续重画，先记录证据和优先级，保留旧稿、新版另行评审；本次仅确立流程，未全面审计或重画。首次申诉提交 v2 仍待用户确认。
 - 项目：`C:\Users\Administrator\Desktop\Hnuhole`。读取顺序：本文件 → [模块目录](README.md) → [进度](progress.md) → 本轮涉及模块全文及[讨论档案](../discussions/README.md)。仓库可能覆盖更大父目录，不做无关目录扫描。
 - 用户要求使用 **grill-with-docs**，结合 grilling 与 domain-modeling；docs 是本地设计 Markdown，术语见项目 `CONTEXT.md`。不再机械凑十问，真实未决问题不足十个就少问。

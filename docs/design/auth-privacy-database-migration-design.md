@@ -32,7 +32,7 @@ V 使用独立 PostgreSQL 实例及 `v_auth` schema，由验证方独立拥有�
 | `device_email_limits` | `(installation_id, HMAC(K_limit,email_exact)) PK`；连续错误数、锁定结束时间、预算；K_limit 不在库内 | 设备对该地址三错锁五分钟，重发／重开不清零；锁定重试不续长，锁结束清连续数；邮箱级防批量预算另设 |
 | `mail_outbox` | 本方任务 UUID PK；`flow_id＋code_generation UNIQUE`；收件地址、**短期加密**邮件材料及加密钥版本、投递状态、provider 操作标识 | 投递需原 OTP，故加密任务是明确旁路；任务提交后才发信，完成／过期即擦除可解密正文与地址副本。SMTP 超时保持未知，不记 NOT_SENT |
 | `confirmation_sign_jobs` | 本方任务 UUID PK；`confirmation_key_digest UNIQUE`、固定 REG_MSG、准入桶、quota 版本、状态与签名结果；消息无账号材料 | OTP 与配额提交后才调用签名器。延迟不能改准入桶；过期须新 OTP 同槽位换签。释放后清理与旧邮箱相连的临时任务 |
-| `retire_pending` | `old_slot bytea PK`；当前 quota 的地址／版本、新槽位／公钥、原确认键摘要、固定授权、状态 | 调 C **之前**持久写；待办期间禁止续旧票或签新票；直到 C 终态收据或明确不可退役才能结案 |
+| `retire_pending` | `old_slot bytea PK`；当前 quota 的地址／版本、新槽位／公钥、原确认键摘要／验证准入桶、固定授权、状态 | 调 C **之前**持久写；待办期间禁止续旧票或签新票；直到 C 终态收据或明确不可退役才能结案 |
 | `processed_receipts` | `slot_id PK`、purpose RETIRED/RELEASED、处理终态／版本；无邮箱 | 锁 used_slots 核对用途／终态，释放与登记共事务；异用途冲突不登记成功、不 ACK；同用途重复不清新占用，持久后才 ACK |
 | `request_results` | `(operation,key_digest) PK`；LIVE行有请求HMAC／钥版本、设备、状态、flow引用及有界响应；终态不重执行 | 申请／确认隔离，无记录不判失败；票仅原键十分钟可重取。到期原位收缩EXPIRED，清空关联字段，仅操作／摘要／EXPIRED长期保留，不删唯一锚点 |
 
@@ -46,7 +46,7 @@ V 同一精确邮箱的操作先取事务级 advisory lock。锁键用独立稳�
 | --- | --- | --- |
 | `accounts` | `account_id uuid PK`、唯一六位 platform_number、state ACTIVE/PENDING_CLOSE/CLOSED、账号／凭据／会话／reset／rotation 版本和活动指针；用户名 `text COLLATE "C"`、盐／验证值／参数在 ACTIVE/PENDING_CLOSE 非空、CLOSED 为空 | 小写用户名按部分唯一索引唯一；关闭清用户名／密码／活动指针，只留内容归属所需内部账号及终态 |
 | `account_restrictions` | `account_id PK FK accounts`；权威禁言／封禁状态、有限或永久结束语义、版本 | 所有生效、解除与自动过期逻辑在账号锁下更新；不能让后台处罚投影决定认证权限 |
-| `slot_ledger` | `slot_id bytea PK`；state ACTIVE/RETIRED/CLOSED；`account_id uuid UNIQUE FK accounts` 仅 ACTIVE 非空，其余必须空 | 槽位散列绑定与 PoP 通过后 ABSENT→ACTIVE；退役 ABSENT→RETIRED；关闭 ACTIVE→CLOSED 同时清 account；终态长期不删 |
+| `slot_ledger` | `slot_id bytea PK`；state ACTIVE/RETIRED/CLOSED；`account_id uuid UNIQUE FK accounts` 仅 ACTIVE 非空，其余必须空；`receipt_acknowledged boolean NOT NULL DEFAULT false` | 槽位散列绑定与 PoP 通过后 ABSENT→ACTIVE；退役 ABSENT→RETIRED；关闭 ACTIVE→CLOSED 同时清 account；终态长期不删。ACTIVE 的确认标记须为 false，终态确认仅 false→true，防已清 outbox 被迟到回调复活；标记无身份或时间字段 |
 | `signup_intents` | `intent_id bytea PK`、32B challenge、固定 ticket／准入桶、用户名／密码验证值／恢复摘要、安装 ID、十分钟过期、状态与尝试数 | 创建不占槽位；不存原密码／原码。已处理、过期或废弃即清敏感材料；无会话原文或长期 slot→account 结果副本 |
 | `recovery_codes` | account PK FK、32B code_digest UNIQUE、激活版本 | 是否当前由行存在及摘要匹配决定，普通 Passkey 变更不使原码失效。每账号一份；最终摘要冲突不消费旧凭据／槽位，重建新码意图 |
 | `passkeys` | credential_id bytea PK（1–1023B）、account FK、随机 user_handle32B、公钥／COSE 算法、签名计数、备份标志、创建时间／创建版本 | 行仍存在即仍绑定；创建版本不必等于账号后来版本，普通增删／轮换码保留其他 Passkey。首版 ES256，无 attestation／校邮／用户名；十条上限是资源基线，重设删除全部旧凭据 |
@@ -56,7 +56,7 @@ V 同一精确邮箱的操作先取事务级 advisory lock。锁键用独立稳�
 | `sessions` | token_digest 32B PK、revoke_digest 32B UNIQUE、account FK、安装 ID16B、会话代次、创建／最近活动／有效期／撤销时间 | `UNIQUE(account_id) WHERE revoked_at IS NULL` 限一条未撤销行；新会话先撤旧再插入。过期行虽无效仍先撤再建，不在索引条件用 now() |
 | `recent_device_replacement` | account PK FK；最近被接替安装 ID、登录／接替时间 | 仅设备页有限历史，不存硬件指纹；最多最近一条，三十天评审基线清理 |
 | `closure_requests` | closure ID32B PK、status_digest32B、account FK（仅未正式关闭时）、申请版本／due_at、state、终态 slot（仅关闭后）、必要签收状态 | 同 ID 不能重置期限或替换摘要；每账号至多一条 PENDING，FINALIZING 是过时未关闭的派生显示。取消立即清 account／slot，正式关闭清 account；CANCELLED及释放完成后三十天清状态访问；CLOSED_RELEASE_PENDING不按TTL删除 |
-| `receipt_outbox` | `slot_id PK FK slot_ledger`、purpose、固定消息、签名钥版本／签名、待签／投递／ACK状态 | 无邮箱／账号；受控命令限定 ledger RETIRED→RETIRED、CLOSED→RELEASED，禁止同槽位异用途。只签已提交终态，待签202 RECEIPT_PENDING，无可释放收据；持久 ACK 前保留 |
+| `receipt_outbox` | `slot_id PK FK slot_ledger`、purpose、固定消息、签名钥版本／签名、待签／投递／ACK状态、本地 ACK 提交起点 | 无邮箱／账号；受控命令限定 ledger RETIRED→RETIRED、CLOSED→RELEASED，禁止同槽位异用途。分别投递 V 退役收据／正式释放入口；只签已提交终态，待签202 RECEIPT_PENDING，无可释放收据。C 本地持久记录 V ACK 与单调 ledger 确认标记之前不清理；重签／重复 ACK 不重置清理起点 |
 | `request_results` | `(operation,key_digest) PK`；LIVE行有请求HMAC／钥版本、意图引用、无秘密结果、保留结束时间；EXPIRED仅操作／摘要／状态 | 与业务提交共事务，注册／登录不重放令牌。到期原位清空关联字段而不删锚点；注销首次提交共事务建CLOSURE＋closureId独立域摘要锚点，状态表删后原ID也不能再申请 |
 | `security_events` | 本方事件 ID、受限账户／动作／版本、最小时间；无邮箱、槽位、凭据原文、完整票据 | 用于恢复提醒和事故核对，和普通运营日志隔离；不进入社区公开流，也不向 V 发送恢复事件 |
 
@@ -80,7 +80,9 @@ V 同一精确邮箱的操作先取事务级 advisory lock。锁键用独立稳�
 | --- | --- |
 | V 发码受理 | 地址／设备预算及已有等待检查、全邮箱码代次更新、新 flow／加密邮件 outbox／幂等受理结果共事务。投递任务用同一 provider 幂等身份；无可靠去重的 SMTP 不自动重发结果未知任务 |
 | V OTP 确认 | 最新码／五分钟／三错与十错预算核验、OTP 消费、当前槽位唯一保留、固定准入桶和签名任务／原确认结果共事务；HSM 在提交后签，响应未就绪为 CONFIRMATION_PENDING |
-| V 退役／释放核对 | 先只读按槽位定位地址，再持地址锁重查并比较当前 slot＋quota版本，处理收据、清当前 quota、终结同槽位待办共事务；持久后 ACK。新槽位还需当前有效的新 OTP；不能只靠旧签名任务自动新签 |
+| V 退役／释放核对 | 先严格验签；未处理收据只读按槽位定位地址，再持地址锁重查当前 slot＋quota版本，退役还核对原 retire_pending；处理收据、清旧 quota、写无邮箱终态并终结同槽位待办共事务，持久后 ACK。拉取RETIRED与C推送共用此命令；同用途重复只ACK，异用途或未知映射不ACK、不清新槽位 |
+| V 退役后的原确认续办 | 原确认键保留已完成退役的终态关联；另取地址锁核对保存的old_slot/new_slot/pk_boot、已验证OTP实际有效期与当前quota。仍有效且配额可保留才为原新槽位建待签任务，使用原OTP验证准入桶，不按续办时间延长、不再消费原码；过期需新OTP，其他请求已占新槽位时不清它。迟到pull的202／拒绝／超时不能回退终态、重建待办或误记NOT_COMMITTED |
+| C 收据 ACK | 只接受受信 V 对本次同slot／purpose投递的200 ACKNOWLEDGED；在槽位／outbox锁内同事务将outbox置ACKED并把终态ledger.receipt_acknowledged置true，本地提交才起算清理。重复ACK不延期；迟到signer／投递仅CAS原任务，不UPSERT复活。ACK后再拉取可按永久终态重签响应，不新建已确认事件的outbox |
 | C 开户／退役 | 在槽位锁下用唯一 slot 裁定 ABSENT→ACTIVE/RETIRED；开户同时验限时票、严格公钥、PoP、不可改意图和码确认，创建账号／当前恢复码／唯一会话／无秘密请求结果；退役只写终态与待签收据 |
 | C 主动登录 | 锁内复核密码验证时的凭据版本、账号／封禁与真实截止；仅截止前主动成功登录取消注销；递增会话代次、撤旧、建新、设备替代记录及无令牌重试结果共事务 |
 | C 静默续期 | 只限仍有效、未撤销且代次匹配的同一会话；剩余不超过七天的真实登录后活动可将有效期延到本次实际时间＋三十天。保持原 token/revoke 摘要，不增会话代次，不取消注销；不能续 PENDING_CLOSE/CLOSED 或封禁会话 |
@@ -102,12 +104,15 @@ V/C 各有不用于请求的迁移 owner；运行角色无 DDL、无修改角色
 以下是迁移设计的**有界留存评审基线**，须落实为清理任务、备份策略和验证证据才能用于隐私承诺：
 
 - OTP 原邮件材料发送／过期即擦除；OTP流程及设备／邮箱短期风控最多二十四小时，已确认资格原响应仅十分钟可取。待退役、待释放事件保留到双方终态核对，结案后清除邮箱关联副本；不能因清理 TTL 放配额。
+- C 收据投递材料的受控短期清理从 C 本地持久记录受信 ACK 起算；重复 ACK、签名钥轮换和重签不重置。清投递行／签名不清永久槽位终态及最小 `receipt_acknowledged` 标记；已确认事件不得由迟到回调重新排队。V 放旧配额以其本地收据事务为准，C 尚未收到 ACK 不推翻该已提交事实。
 - C 意图秘密处理完或过期即清；无秘密重设结果与最小意图核对元数据至少七天、评审基线七天清理；其他最终命令完整结果也采用七天；永久原位 EXPIRED 锚点只留操作／域摘要／状态，无原键或关联材料，拒迟到原POST。注销状态清理不删申请ID域摘要锚点；这些长期标记须单独计入容量，不能宣称全部认证状态都有TTL。
 - 最近替代设备三十天；取消的注销状态三十天，释放完成后三十天状态权限清理。会话／撤销摘要保留至其**服务端最终有效期**后七天；不能按客户端旧 expiresAt 清待办，因为未知续期可能已延长。
 - 普通日志不记录认证正文或秘密，诊断关联元数据评审基线最多七天；数据库 WAL 及加密备份分别按七天／十四天的评审基线清理。实际恢复目标或运营规则要求更长保留时，须先更新本设计和用户隐私说明，不暗中保留。
 - C 的脱钩槽位终态与 V 无邮箱的已用槽位／处理收据长期保留；C 内部内容归属账号按既定公开内容保留规则维护。关闭不等于历史备份和用户副本立即删除。
 
 灾备证据必须位于不可随数据库快照回退的独立权限域，维护账号控制版本／关闭事实、槽位终态、受信钥撤销版本及时间高水位；压缩后的独立终态证据不保留 account＋slot共同键、共同事件编号或可直查连接。完整近期 WAL／备份仍可能含旧映射，在上述有界窗口内须计入两库泄漏边界。
+
+C 的独立槽位终态证据同时保护单调 `receipt_acknowledged`；恢复不得把 true 回退 false、重建已确认投递或重置清理期限。若证据仅能确认已 ACK、原本地 ACK 起点不可恢复，清理旧快照带回的已确认投递残留，不从恢复时刻重新计算留存；保留槽位终态。该标记只证明 C 曾确认事件，不替代 V 的 `processed_receipts`、当前配额与独立恢复核对，V 仍按自身证据冻结或放行。C 的 `CLOSED` 状态页在其有界访问期内，可按已提交终态与当前受信钥重签同用途 `RELEASED` 供只读响应；不重建已确认 outbox。HSM 不可用返回 503，不能把已 ACK 状态降为待释放。
 
 **版本证据不等于最新凭据材料。** 恢复到旧快照后，若证据表明凭据版本曾前进但最新密码验证值、恢复摘要／Passkey行无法从可信增量恢复，不能把旧版本重新启用；冻结相关账号并按事故流程核对，不通过邮箱重置。恢复期间全部认证与受保护读写冻结，校时、账号／槽位／凭据／信任策略核对完成后撤销所有快照会话再放行。
 
@@ -130,7 +135,11 @@ M1 未接入新流量时可撤销尚未使用的新表；**一旦消费槽位、
 实际 SQL／实现阶段须提供：全部列类型和局部 CHECK、外键／部分唯一索引、固定锁顺序、应用角色 GRANT／撤权、清理任务及备份策略；并验证至少以下交错：
 
 1. 同邮箱不同 flow／设备重发只让最新码有效；预算不重置，邮件超时不触发第二次无控发送；V 配额提交但 HSM中断只留下同槽位待签任务。
-2. 不存在槽位下注册／退役争唯一终态；开户／用户名冲突／票据到期不误耗配额；C签名服务中断或V ACK丢失不提前释放。
+2. 不存在槽位下注册／退役争唯一终态；开户／用户名冲突／票据到期不误耗配额；C签名服务中断时不先放配额。V未持久处理前不放配额，处理已提交但ACK回包丢失时只保留C outbox重试，不能回滚V事实或清后来新槽位。
+   - 退役pull先完成／push先完成、并行处理、ACK丢失与C收到ACK后未提交崩溃；恰一次旧配额释放，C本地ACK前不清outbox。
+   - 原确认续办、另一个请求先占新槽位，以及迟到pull的202／拒绝；保持原终态和固定意图，不清新槽位、不重新消费旧码或另建退役。
+   - C全局epoch轮换重签、旧签名钥吊销、旧签名投递ACK迟到与signer迟到；先验当前信任，按slot／purpose幂等，单调ACK不回退、不复活已清任务、不延长清理期限。
+   - outbox清理后状态页重签、HSM不可用、灾备仅恢复ACK标记而无起点；不降已确认状态、不恢复被清副本的留存期。
 3. 旧恢复证明在取账号锁前被轮换、新意图替代旧意图、凭据管理与最终重设并发，只保留一套当前凭据；结果查询与迟到提交只得一种终态。
 4. 登录／续期／定向退出／换机／封禁并发；旧撤销秘密不能撤新会话，过期行与活动部分索引不让双会话通过。
 5. 注销提交回包丢失、锁等待越过七天、处罚／公开／关闭交错；没有迟到登录取消，未公开任务不在注销申请后公开。

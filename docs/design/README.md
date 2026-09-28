@@ -6,6 +6,8 @@
 
 2026-09-26 用户确认新的[认证与隐私架构决策](auth-privacy-architecture-decision.md)：每次注册需完成校邮验证码，日常以私有用户名和独立密码登录；同一精确邮箱同时最多一个有效账号的配额依赖 V 按协议执行。2026-09-27 的[注册与释放协议 v1](auth-privacy-registration-protocol.md)定义公钥导出的资格槽位、限时签名资格、持钥证明、未消费资格退役及正式注销释放；[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)和[跨方威胁模型](auth-privacy-threat-model.md)也已成稿。内部威胁建模不等于独立审计；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[数据库迁移设计](auth-privacy-database-migration-design.md)已成稿；[固定签名／编码向量与静态复验](auth-privacy-protocol-vectors.md)及[独立安全评审输入包](auth-privacy-security-review-package.md)也已整理；仍待所选生产库与实际SQL验证、真实独立主体运营证据及独立安全评审。两方共享槽位，串通或共同泄漏时可连接邮箱与账号。
 
+2026-09-28 的[AI 交叉评审记录](auth-privacy-ai-cross-review.md)单列内部规格发现与修正：补齐退役收据的持久 ACK，不改变固定签名帧。人类独立评审、实际服务验收和双主体运营证据仍未完成；邮箱可用与验证服务独立运营分别登记。
+
 ## 项目范围
 
 海南大学校内封闭树洞，首版围绕吐槽、避雷、安利、互助、搭子、科技、情感七个通道组织内容，核心是 behindMask：用可选择的独立身份表达和联系，不暴露不同身份属于同一账号；“想说就说”是使用体验目标。首版是同时支持 iOS 和 Android 的手机 App；网页端和小程序不在首版用户端范围。工程基线已确定为 Flutter/Dart 移动端、Go 服务端和模块化单体后端；Go HTTP、PostgreSQL、REST/OpenAPI 与移动端本地存储基线见 [ADR 0001](../adr/0001-engineering-baseline.md) 和 [ADR 0002](../adr/0002-communication-and-persistence-baseline.md)，分发方式及其余实现细节仍待决定。热度与排行榜纳入设计范围，涵盖大通道热度和各通道内的帖子热榜；具体权重仍待确定。2026-09-19 用户明确“不搞交易”，首版不做交易功能，不设独立商品、订单、支付或交易担保。首版标题手写、搜索按文字检索，不包含模型生成或意图理解功能。这里记录产品设计，不代表功能已经实现。

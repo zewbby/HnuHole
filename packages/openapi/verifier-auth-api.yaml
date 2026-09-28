@@ -51,6 +51,8 @@ tags:
     description: 校邮 OTP、限时注册资格及本方原请求核对。
   - name: InternalRelease
     description: 经环境绑定 mTLS 认证的 C 到 V 正式注销收据投递。
+  - name: InternalRetirement
+    description: 经环境绑定 mTLS 认证的 C 到 V 未开户退役收据投递与持久确认。
 paths:
   /api/v1/eligibility/otp-requests:
     post:
@@ -129,6 +131,9 @@ paths:
         已知结果超出有界保留期回 410；410 也不是未发送证明。完整结果到期后
         同一唯一行原位收缩为无身份的 operation/key_digest/EXPIRED 摘要锚点，
         原键命中仍回 410，不能删除唯一行或重新执行原副作用。
+        410 后可退出已过期旧操作的核对流程，由用户明确发起下一次正常收码；
+        新操作仍核查同一邮箱的原预算、等待、当前 flow 与未决发送，不能把 410
+        当 NOT_SENT 自动补发，也不能在 PENDING 时换键并行发送。
       security:
         - otpRequestResultAuth: []
       parameters:
@@ -392,6 +397,82 @@ paths:
           $ref: '#/components/responses/RateLimited'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+  /internal/v1/slot-retirement-receipts:
+    post:
+      operationId: acknowledgeCommittedSlotRetirement
+      tags: [InternalRetirement]
+      summary: 处理 C 已提交未开户退役收据并持久 ACK
+      description: |
+        仅内部 C 到 V，外部网络及客户端不得访问。环境绑定 mTLS 校验专属 CA、
+        证书链、有效期／撤销及唯一 C 服务主体 SAN；不接受转发证书请求头。
+        security: [] 不是匿名授权。另验固定 RETIRED/V1 收据的 C 全局 key_epoch、
+        环境绑定受信钥和项目严格 Ed25519 配置；不接受 RELEASED 或其他用途。
+        C 只能基于已提交 RETIRED＋receipt_outbox 签名并投递；签名不证明 SQL 提交。
+
+        收据只有固定用途、全局钥版本、旧 slot_id 和签名，无邮箱、账号、设备、
+        请求 ID 或对方幂等键。按解码后的 slot_id＋RETIRED 幂等，不按签名字节或
+        key_epoch 去重；同一已提交终态经轮换重签仍是原操作。
+        首次处理须持地址锁重读当前 quota／版本及同槽位 retire_pending，确认可与
+        原退役待办核对；used_slots 与 processed_receipts 必须无用途冲突。
+        同事务清邮箱到旧槽位的当前占用、写无邮箱的 RETIRED 终态／已处理收据、
+        持久终结原退役待办。全部提交后才返回 ACKNOWLEDGED。
+
+        V 从 C 的 slot-retirements 响应拉取收据，与本路径的 outbox 推送使用同一
+        持久处理命令。任一先成功后，同用途重复仅 ACK，不能清后来新槽位。
+        已处理 RELEASED，或无已处理终态且无法核对当前旧配额／原待办时，返回
+        409 RETIREMENT_RECONCILIATION_REQUIRED，不 ACK、不恢复旧占用或改新配额。
+        push 先完成也保留原确认键的结果关联；迟到 pull 的 202、拒绝或超时不能
+        倒退已提交终态、重建待办或将原操作误记 NOT_COMMITTED。
+
+        收据处理与 ACK 不签新资格。原操作续办另取地址锁，核对原确认键、固定
+        old_slot/new_slot/pk_boot 与仍有效的已验证 OTP，且当前配额仍可保留时才
+        为原新槽位建立保留原 OTP 验证准入桶的签名任务，不按续办时间延长资格；
+        不再次消费旧码。OTP 过期须重新收码，后来请求
+        已占新槽位时不能释放它或另发第二槽位。
+        C 只有收到受信 V 对本次同槽位／用途投递的 200 ACKNOWLEDGED 才记录 ACK；
+        202、409、503、断连或 ACK 丢失均保留同一 outbox 重试。ACK 后清理投递
+        材料也须长期保留 C 的 RETIRED 槽位终态及单调 receipt_acknowledged 标记；
+        C 将 ACKED 与该标记同事务提交后才起算清理期，重复 ACK 不重置起点。
+        迟到 signer／投递回调不得重建已确认或已清理 outbox，不重新开户。
+      security: []
+      x-mtls-required: true
+      x-allowed-peer: community
+      x-max-request-body-bytes: 1024
+      x-transport-authentication:
+        mode: mutual-tls
+        peer: environment-bound-community-service
+        application-signature-required: true
+        trust-forwarded-certificate-headers: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlotRetirementReceiptRequest'
+      responses:
+        '200':
+          description: V 已持久处理此 RETIRED 槽位；拉取先处理或重签重复均只 ACK。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotRetirementAcknowledged'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/InternalAuthenticationFailed'
+        '409':
+          $ref: '#/components/responses/RetirementReconciliationRequired'
+        '422':
+          $ref: '#/components/responses/RetirementReceiptInvalid'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
 components:
   securitySchemes:
     otpRequestResultAuth:
@@ -489,6 +570,16 @@ components:
         120字节固定 RELEASED 收据全文的无填充 base64url 编码：
         ASCII("HNUHOLE/RELEASED/V1") || 0x00 || c_key_epoch:u32大端 ||
         slot_id[32] || c_signature[64]。不得把 RETIRED 或其他域当 RELEASED。
+    RetirementReceipt:
+      type: string
+      minLength: 159
+      maxLength: 159
+      pattern: '^[A-Za-z0-9_-]{158}[AEIMQUYcgkosw048]$'
+      description: |
+        119字节固定 RETIRED 收据全文的规范无填充 base64url 编码：
+        ASCII("HNUHOLE/RETIRED/V1") || 0x00 || c_key_epoch:u32大端 ||
+        slot_id[32] || c_signature[64]。不接受 RELEASED 或其他域；仅依据
+        C 已提交 RETIRED 终态与 outbox 签发，不是资格或旧号恢复凭据。
     CampusEmail:
       type: string
       format: email
@@ -629,6 +720,21 @@ components:
         state:
           type: string
           enum: [ACKNOWLEDGED]
+    SlotRetirementReceiptRequest:
+      type: object
+      additionalProperties: false
+      required: [retirementReceipt]
+      properties:
+        retirementReceipt:
+          $ref: '#/components/schemas/RetirementReceipt'
+    SlotRetirementAcknowledged:
+      type: object
+      additionalProperties: false
+      required: [state]
+      properties:
+        state:
+          type: string
+          enum: [ACKNOWLEDGED]
     ErrorBody:
       type: object
       additionalProperties: false
@@ -656,6 +762,8 @@ components:
                 - RELEASE_RECEIPT_INVALID
                 - REVERIFY_REQUIRED
                 - RELEASE_RECONCILIATION_REQUIRED
+                - RETIREMENT_RECEIPT_INVALID
+                - RETIREMENT_RECONCILIATION_REQUIRED
                 - RATE_LIMITED
                 - RESULT_EXPIRED
                 - SERVICE_UNAVAILABLE
@@ -819,6 +927,31 @@ components:
       description: |
         RELEASE_RECONCILIATION_REQUIRED；有效收据无法与当前旧槽位或已处理终态安全核对。
         不 ACK、不透露邮箱／账号归属；C 保留 outbox，独立证据核对后再重试。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    RetirementReceiptInvalid:
+      description: RETIREMENT_RECEIPT_INVALID；固定 RETIRED 用途、编码、受信钥或签名无效，不变更配额。
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Request-ID:
+          $ref: '#/components/headers/VRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    RetirementReconciliationRequired:
+      description: |
+        RETIREMENT_RECONCILIATION_REQUIRED；有效退役收据无法与当前旧槽位／原待办
+        或已处理 RETIRED 终态安全核对，或存在 RELEASED 用途冲突。不 ACK、
+        不透露邮箱／账号归属；C 保留同一 outbox，按独立证据核对后重试。
       headers:
         Cache-Control:
           $ref: '#/components/headers/NoStore'

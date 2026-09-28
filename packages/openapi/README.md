@@ -3,7 +3,7 @@
 | 契约 | 范围与状态 |
 | --- | --- |
 | [channel-api.yaml](channel-api.yaml) | 当前通道目录切片的接口唯一来源；服务端和客户端据此实现目录 |
-| [verifier-auth-api.yaml](verifier-auth-api.yaml) | 独立验证方 V，5 个操作：OTP申请／确认、原结果核对与内部资格释放；实施前评审稿 |
+| [verifier-auth-api.yaml](verifier-auth-api.yaml) | 独立验证方 V，6 个操作：OTP申请／确认、原结果核对、内部正式释放与退役收据持久确认；实施前评审稿 |
 | [community-auth-api.yaml](community-auth-api.yaml) | 社区方 C，22 个操作：开户、用户名密码登录、会话／设备、独立恢复、凭据管理、注销与内部退役；实施前评审稿 |
 
 三份文件采用 OpenAPI 3.0.3。认证架构和固定签名字节分别以[逻辑契约](../../docs/design/auth-privacy-data-api-contract.md)与[注册协议](../../docs/design/auth-privacy-registration-protocol.md)为准；表约束、事务、留存和升级顺序见[数据库迁移设计](../../docs/design/auth-privacy-database-migration-design.md)。认证接口尚未实现，迁移设计没有执行 SQL。

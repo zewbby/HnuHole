@@ -898,6 +898,10 @@ paths:
         3.0.3不能用原生mutualTLS securityScheme；security=[]只指没有HTTP认证，x-mtls-required必须由部署/验收强制，绝不能开放为匿名公共端点或相信可伪造代理证书头。V调用前已持久写同旧slot唯一退役待办，阻止旧slot续票；C以slot唯一约束与开户竞争。ABSENT→RETIRED与唯一receipt
         outbox在同一事务先持久提交，HSM仅在提交后依据该终态签RETIRED收据；收据签名/签名服务未就绪则202 RECEIPT_PENDING并有界重试，不返回任何可用于释放的签名。既有RETIRED可以重签同用途/slot，ACTIVE/CLOSED只409
         SLOT_NOT_RETIRABLE，不给账号/用户名。数据库不可确认为503未知；V持久保持原待办/配额，以同一退役授权重试取得收据再释放。RETIRED终态长期保留且与账号脱钩，不能靠超时释放配额。
+        C的退役outbox另向V的POST /internal/v1/slot-retirement-receipts推送固定RETIRED收据，
+        直到受信V的持久ACK在C本地提交；HTTP拉取响应送达本身不是ACK。ACK与永久终态的
+        receipt_acknowledged标记同事务提交，重复ACK不重置清理起点，迟到签名/投递不复活任务。
+        已确认事件后续拉取可基于原RETIRED终态重签只读响应，不新建已确认事件的outbox。
       tags:
       - Internal
       security: []
