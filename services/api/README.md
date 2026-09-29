@@ -1,5 +1,7 @@
 # Hnuhole API
 
+认证隐私的实验实现与真实数据库测试位于 [authlab](authlab/README.md)。实验 SQL 不进入下方生产迁移目录，Go 包未接入现有 HTTP 路由。
+
 首条开发切片的 Go API。当前实现先提供认证保护的通道目录接口：
 
 - `GET /api/v1/channels`

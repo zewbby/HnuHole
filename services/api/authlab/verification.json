@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "hnuhole-authprivacy-isolated-validation/v1",
+  "verifiedOn": "2026-09-29",
+  "baselineCommit": "7640b90a39633af41f755b06ad1e23887829e109",
+  "scope": "ISOLATED_PROTOCOL_AND_POSTGRESQL_VALIDATION_SLICE",
+  "runtime": {
+    "go": "go1.27.1 darwin/arm64",
+    "postgresql": "18.6",
+    "edwards25519": "v1.1.0",
+    "pgx": "v5.7.4"
+  },
+  "fullRun": {
+    "workingDirectory": "services/api",
+    "command": "sh authlab/run-isolated.sh",
+    "exitCode": 0,
+    "newDisposableCluster": true,
+    "privateUnixSocketOnly": true,
+    "databaseRolesNonSuperuser": true,
+    "cAndvDatabaseSeparate": true,
+    "goTestRaceCommand": "go test -race -count=1 ./...",
+    "goTestRaceExitCode": 0,
+    "goVetCommand": "go vet ./...",
+    "goVetExitCode": 0,
+    "integrationCases": [
+      "signup_commit_atomic_and_replay_has_no_secrets",
+      "username_conflict_consumes_proof_without_slot",
+      "expired_result_anchor_rejects_late_post",
+      "register_and_retire_compete_for_one_terminal",
+      "unique_index_wait_rechecks_deadline_after_provisional_writes",
+      "same_request_concurrent_replay_never_duplicates_session",
+      "lock_wait_rechecks_intent_expiry_with_database_time",
+      "receipt_ack_loss_retry_and_new_slot_preservation",
+      "same_email_quota_serializes_exact_bytes",
+      "unknown_and_unsigned_receipts_cannot_release",
+      "database_columns_do_not_join_email_or_store_plaintext_secrets"
+    ],
+    "integrationCaseCount": 11,
+    "registrationRetirementRaceIterations": 4,
+    "actualSQLExecuted": true,
+    "protocolClockRollbackCaseSkipped": true
+  },
+  "deadlineNegativeControl": {
+    "scope": "UNIQUE_INDEX_WAIT_DEADLINE_REGRESSION",
+    "mutation": "Remove only final post-write checkSignupDeadline call",
+    "expectedFailureDetected": true,
+    "originalSourceRestored": true,
+    "restoredFocusedTestPassed": true,
+    "negativeExitCode": 1,
+    "positiveExitCode": 0,
+    "sourceSha256": "568f8f91df99adf3b048af97c0eadbaa2d9b67a5d4addd3ee70a5093cc2c4e5e"
+  },
+  "sourceFiles": [
+    {
+      "path": "go.work.sum",
+      "sha256": "b628c1576b252d5074608880604a46ac06dc2086e5b2049d0ea971e97cd839f5"
+    },
+    {
+      "path": "packages/auth-protocol-vectors/v1.json",
+      "sha256": "da913014063f3972dbc15a6c79a87757e7f113ff9cd5911bbb4b42918e5262b1"
+    },
+    {
+      "path": "services/api/authlab/migrations/community/0001_authprivacy_lab.sql",
+      "sha256": "26ab7c571cc75b5035597f97d6678a86ad915d17a0241298c306080ad9eb24d0"
+    },
+    {
+      "path": "services/api/authlab/migrations/verifier/0001_authprivacy_lab.sql",
+      "sha256": "cb9979e60a66265771bc2f7ceef1d2bfa31e663caf93514aa13ac64dbd42c03d"
+    },
+    {
+      "path": "services/api/authlab/run-isolated.sh",
+      "sha256": "27a75d593620bebcb23c94eb2731ad84d55ae3e0b32d43bff6db2ae706224358"
+    },
+    {
+      "path": "services/api/go.mod",
+      "sha256": "64e0a8d03ffe9f2b0bb63e0d158e96da8c4c718a59f919da1092341a858a76a7"
+    },
+    {
+      "path": "services/api/go.sum",
+      "sha256": "2f9ebccc989954b3453a5695d0c7259a58ee049627a8450e7464b5f7be67ea74"
+    },
+    {
+      "path": "services/api/internal/authprivacy/common.go",
+      "sha256": "47272c335e64ee59012d948625fac16af36bbe4795a37ea7228aef7268f8f83f"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community.go",
+      "sha256": "568f8f91df99adf3b048af97c0eadbaa2d9b67a5d4addd3ee70a5093cc2c4e5e"
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox.go",
+      "sha256": "95074a73d2138021590b14bd61d037bd5fdeba377d0b9ce91514183bd1c9660e"
+    },
+    {
+      "path": "services/api/internal/authprivacy/postgres_test.go",
+      "sha256": "f7b3211971b621c16dd055b71abb2d575c2d8db0aa67d1cba577929eb0904067"
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol.go",
+      "sha256": "0793427b595f3972719c2ce9366f3177e74ef821eefbdd4a78dc69ea08c9a021"
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol_test.go",
+      "sha256": "e1a2c7586394b8664528349dd9371148406943f75e2e55399db169f6f65db626"
+    },
+    {
+      "path": "services/api/internal/authprivacy/verifier.go",
+      "sha256": "b55a3443fa5200b0e26e95b4de93bc128188384b95e37e6739c56f8fed1e5a45"
+    }
+  ],
+  "notVerified": [
+    "HTTP_AND_MTLS_TRANSPORT",
+    "OTP_MAIL_AND_CONFIRMATION_CONTINUATION",
+    "LOGIN_RECOVERY_PASSKEY_CLOSURE_SERVICE",
+    "GO_1_22_AND_POSTGRESQL_16_RUNTIME",
+    "TRUSTED_CLOCK_HIGHWATER_AND_DISASTER_RECOVERY",
+    "PRODUCTION_LIMITS_AND_RETENTION",
+    "MOBILE_CLIENT_AND_USER_WALKTHROUGH",
+    "OPERATOR_SEPARATION",
+    "INDEPENDENT_HUMAN_AUDIT"
+  ],
+  "review": {
+    "kind": "INTERNAL_AI_SOURCE_REVIEW",
+    "verdict": "APPROVE_WITH_NON_BLOCKING_NOTES",
+    "testNotesImplemented": true,
+    "humanIndependentAudit": false
+  }
+}

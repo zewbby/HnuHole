@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-09-29 当前实现进展：**用户授权的最小[隔离验证切片](../../services/api/authlab/README.md)已完成：Go 固定协议校验、实验 SQL 约束、原子开户／退役及持久 ACK 已在真实 PostgreSQL 中验证，11 个集成案例、race 和 vet 通过。细节、负向验证及尚未覆盖的范围见[运行报告](auth-privacy-isolated-validation-report.md)。生产路由与迁移未接入；校邮确认／原确认续办、登录恢复、HTTP/mTLS、移动端和生产安全门槛继续待做。
+
 > **2026-09-28 当前认证阶段：**每次注册校邮收码，用户设置私有用户名和独立密码；日常用用户名和密码登录，不通过邮箱查找旧号。同一精确邮箱地址同时最多一个有效账号的配额依赖 V 按协议执行；正式注销后释放配额，再次收码建立全新账号。旧号找回需事先保存的独立凭据，邮箱验证码不能单独重置。V/C 通过本次资格槽位协调配额；串通或共同泄漏时能连接邮箱与账号。架构见[认证与隐私架构决策](auth-privacy-architecture-decision.md)，注册、退役与释放见[协议 v1](auth-privacy-registration-protocol.md)。[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)与[内部跨方威胁模型](auth-privacy-threat-model.md)已成稿；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[迁移设计](auth-privacy-database-migration-design.md)已成稿；[固定向量与静态复验](auth-privacy-protocol-vectors.md)、[独立评审输入包](auth-privacy-security-review-package.md)已整理；仍须生产库／实际SQL验证、双主体运营与**独立**安全评审，生产认证代码未开始。
 
 盘点：2026-09-20。消息身份切换展开 v2、收到的 v2、我发出的正常状态 v1、系统通知失败详情 v1、顶部失败提示 v1、系统通知时间流 v2、举报处理结果详情 v1、违规处理通知详情 v1、申诉待复核详情 v1、结果通过 v1、结果未通过 v1 均已确认。首次申诉 v2、补充材料 v1、私信举报选择原因配色 A v1 已生成待评审。新页逐张试不同黑底配色，用户明确锁色后才统一。直接给图、不附 prompt；用户同意页面定稿就直接制作下一张。已确认不表示已实现或图稿齐全。

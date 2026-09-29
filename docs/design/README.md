@@ -1,5 +1,7 @@
 # 产品设计
 
+认证隐私已进入用户授权的[最小隔离实现验证](auth-privacy-isolated-validation-report.md)，真实 PostgreSQL 的开户／退役与持久 ACK 测试通过。复现入口见[实验 README](../../services/api/authlab/README.md)，完整认证与生产验收仍未完成。
+
 这里是当前设计的统一入口。每项规则只在所属模块维护，跨模块通过链接引用；历史讨论用于追溯，不再作为持续追加的规则总表。
 
 新会话先读[接续说明](HANDOFF.md)。阶段盘点与剩余工作见[设计进度](progress.md)，业务术语见[词汇表](../../CONTEXT.md)。规则继续维护在各模块，进度页只提供交付状态与待决事项索引。
