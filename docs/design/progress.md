@@ -1,6 +1,6 @@
 # 设计进度与剩余工作
 
-> **2026-09-29 第 0 步：**登录＋会话前先完成 Authorization Safety Gate（可信时间、高水位、持久冻结、authorization generation、旧快照恢复与最终事务授权复核）。草案见 [auth-authorization-safety-gate.md](auth-authorization-safety-gate.md)，第 39 轮待确认冻结期访问、解冻权限、允许时钟偏差和证据 TTL；确认后先保护现有注册链路，再进入登录切片。
+> **2026-09-29 第 0 步：**Authorization Safety Gate 设计已在第 39 轮收口：FROZEN 时所有认证读写 fail closed；单个受限恢复角色执行显式恢复，不采用双人控制；允许 5 秒时钟回退抖动；可信证据 TTL 5 分钟。下一步先把 Gate 接入现有注册 CommitSignup 并补时间/灾备故障测试，验收后再进入用户名密码登录＋完整会话管理。
 
 > **2026-09-29 当前实现进展：**用户已授权进入 Phase E。[实验切片](../../services/api/authlab/README.md)在首条数据库验证后加入校邮发码／确认、最新码与预算、退役后的原确认续办、双方 HTTP／mTLS 和注册密码准备。实现、真实 PostgreSQL／TLS 故障验证及剩余门槛见[本轮报告](auth-privacy-eligibility-http-validation-report.md)。生产路由／迁移、用户名密码登录、独立恢复、七天注销、移动端及生产安全验收继续待做。
 
