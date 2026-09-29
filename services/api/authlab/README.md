@@ -1,35 +1,47 @@
-# 认证隐私最小隔离验证
+# 认证隐私隔离实现与验证
 
-用户于 2026-09-28 授权从规格进入最小实现验证。本目录的 SQL 与 `internal/authprivacy` Go 包验证实际 PostgreSQL 的开户／退役竞争和收据持久 ACK。没有接入现有 API 路由、演示会话验证器或生产迁移序列。
+用户已授权进入 Phase E，继续实现校邮确认、退役后的原确认续办和双方 HTTP／mTLS。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；现有 API 主路由、演示认证器和生产 Goose 迁移没有接入这套认证。
 
-## 本轮实现
+交付与证据见[本轮报告](../../../docs/design/auth-privacy-eligibility-http-validation-report.md)；首条数据库切片见[历史报告](../../../docs/design/auth-privacy-isolated-validation-report.md)。`verification.json` 记录提交 `c316372` 的首轮证据，当前实现的记录是 `eligibility-http-verification.json`。
 
-- 固定消息、规范编码、用途和环境绑定受信钥、严格 Ed25519 验签、公钥导出槽位、bootstrap 持钥证明、资格当前／上一准入桶。
-- C 待开户意图、恢复码确认、账号／恢复摘要／初始会话／结果同事务提交；冲突消耗已处理挑战而不误耗槽位，原键重试不返回秘密，永久过期锚点拒重执行。
-- C 开户／退役共用槽位锁；终态与待签 outbox 原子提交，签名器在事务外读取已提交事实。
-- V 精确邮箱配额、预登记退役待办、收据按槽位／用途原子处理；重复旧收据不清新槽位。
-- C 持久 ACK、轮换时的迟到 ACK、签名回调 CAS、有界投递清理，以及不被清除的终态／ACK 标记。
+## 已实现
 
-SQL 使用与原规格相同的 `c_auth`／`v_auth` 名称；位于独立实验迁移目录。不要把这两份部分迁移放入生产 Goose 目录。表结构包含终态保护、结果锚点及跨表约束，相关字段见两侧迁移 README。
+- 严格固定消息／编码、Ed25519、公钥导出槽位、bootstrap 持钥证明、当前／上一准入桶。
+- 校邮精确字节语法、60 秒发送间隔、最新码、五分钟有效期、设备三错锁五分钟、当前码跨流程／设备十次真错，以及独立发码／验证预算。
+- OTP 的独立钥 HMAC、AES-GCM 短期邮件任务；先持久标记外部发送尝试再调用 SMTP。原键不重发，未知 DATA 结果不自动补发。
+- 闲置二十四小时的设备风控与无引用地址元数据有界清理；有效锁、未知投递、配额和未决确认仍保留所需证据，不重置仍有数据的邮箱代次。
+- OTP 消费、配额、原确认／固定准入桶及待签任务同事务提交；签名器在事务外工作，签名持久后才返回资格。
+- 原确认保存旧／新槽位与公钥；推送删退役待办后仍能续办，不再次消费 OTP、不延长原窗口、不清他人新配额。十分钟结果窗口到期后，后台仍处理旧退役，过期资格不能新开户。
+- C 原子开户、恢复码完整确认、初始会话和永久结果锚点；重试不重发会话秘密。密码先统一 NFC，执行长度／本地阻止名单／用户名相关弱密码检查，再以受并发限制的 Argon2id 生成验证值。
+- 双方公共／内部 HTTP 处理器分开；严格有界 JSON／头／能力解析、独立请求 ID、`no-store`；真实 mTLS 证书链、环境与服务 SAN URI、固定目标与禁止重定向。
+- C 收据持久 ACK、迟到 signer／轮换检查、ACK 后清理；已确认终态可只读重签，不复活 outbox 或重启清理时间。
 
-## 运行真实数据库测试
+## 复现
 
-需要已安装的 Go（模块基线 1.22）和 PostgreSQL 16 或更新版本，`go`、`initdb`、`pg_ctl`、`psql` 在 PATH 中。从本目录执行：
+需要 Go（模块基线 1.22）与 PostgreSQL 16 或更新版本，`go`、`initdb`、`pg_ctl`、`psql` 在 PATH 中。从本目录执行：
 
 ```sh
 sh ./run-isolated.sh
 ```
 
-脚本新建临时 PostgreSQL 集群，只监听权限为 0700 的 Unix socket，创建互不拥有对方数据库的非超级用户角色。运行 `go test -race -count=1 ./...` 与 `go vet ./...`，结束后停止并删除这个新集群。不会连接已有开发或生产数据库，不要求 Docker，不安装系统工具。
+脚本新建临时集群，只监听 0700 私有 Unix socket，建立两个非超级用户角色／数据库；运行 `go test -race -count=1 -p 1 ./...` 与 `go vet ./...`，结束后停止并删除这个集群。`-p 1` 防止不同测试包同时重建同一实验 schema。本机实际验证工具为 Go 1.27.1、PostgreSQL 18.6；没有声称已验证 Go 1.22／PostgreSQL 16。
 
-开发调试可提供 `AUTHLAB_C_DSN`、`AUTHLAB_V_DSN`、`AUTHLAB_RUNTIME_TAG` 和明确的 `AUTHLAB_ALLOW_SCHEMA_RESET=1`。集成测试还会检查数据库／角色为 `hnuhole_c` 和 `hnuhole_v`、非超级用户、仅 Unix socket，以及 DSN 中相同的实验 application_name。**测试会重建这两个实验库中的认证 schema。** 未设置两侧 DSN 时集成测试会明确跳过，不能据此报告数据库验证通过。
+开发可提供 `AUTHLAB_C_DSN`、`AUTHLAB_V_DSN`、`AUTHLAB_RUNTIME_TAG` 和 `AUTHLAB_ALLOW_SCHEMA_RESET=1`。测试还检查库／角色为 `hnuhole_c` 与 `hnuhole_v`、非超级用户、Unix socket 及匹配的 application_name。**测试会重建两个实验认证 schema。** 没有 DSN 时数据库案例明确跳过，不能据此报告 SQL 验证通过。
 
-`protocol` 测试读取仓库中的公开合成向量。原生 Go 验签会接受部分弱点反例，项目严格包装器必须拒绝它们。原向量中的时钟回退案例在协议单元测试明确跳过；这一轮没有实现独立灾备证据或可信时间高水位。
+邮件测试只连接本机合成 SMTP；HTTP 测试用临时 CA 与本机 HTTPS 监听器，没有发送真实校园邮件或连接生产服务。
 
-## 本轮边界
+## 接入方式
 
-这是一条未暴露到网络的隔离验证切片。`ReserveAfterQualification` 的调用方应先完成真实 OTP 校验；本轮使用合成资格，不实现校邮、最新码、发信和原确认续办。`PasswordMaterial` 由可信认证入口预先准备，本轮用真实 Argon2id 测试材料验证持久边界，未实现登录入口或完整密码策略。受信收据接收函数直接调用另一数据库命令，尚无 HTTP/mTLS 适配器。
+1. 在不同数据库依序加载各侧实验迁移；这些部分 SQL 不能直接放进生产迁移序列。
+2. 从数据库以外加载不同用途的密钥、版本与环境受信签名钥。`NewEligibility` 拒绝不同用途复用同一钥；HTTP 网络限流钥另行生成，V/C 安装 ID、请求 ID 和幂等键独立。
+3. 为 V 注入 `SMTPProvider`／邮件服务、提交后 `Signer` 和固定 C `PeerClient`。为 C 注入 `NewPasswordPreparer` 的本地常见／泄漏密码名单及明确并发上限；`NewCommunityWithReceiptSigner` 可推动已提交收据，并在 ACK 后只读重签。
+4. `NewVerifierEndpoints`／`NewCommunityEndpoints` 返回 `.Public` 和 `.Internal`，分别挂在公共 HTTPS 与内部 mTLS 监听器；内部使用 `InternalTLSConfig`，URI 身份为 `spiffe://hnuhole/<environment>/<community|verifier>`，还必须正常验证服务器域名与证书链。
+5. 周期性、有界调用 `ResumePendingConfirmations`、`CleanupConfirmations`、`CleanupOTP`，并对 C 未确认 outbox 执行签名与 `DeliverReceipt(..., peer.ReceiveReceipt)`。GET 查询只读，不能代替这些 worker。正式监听器还须设置读取／头／空闲超时及容量。
 
-七天注销、登录接替／恢复、Passkey、移动客户端、生产限流、日志／备份清理策略和灾备放行未实现。本轮数据库中的防回退约束不等于能抵抗整库旧备份恢复。C/V 在本机共享进程和操作者，也不构成真实运营分权证据。
+普通 SMTP 没有可靠幂等或“连接断开后一定未投递”的证明。`DISPATCHING/UNKNOWN` 的原发送不会自动再次调用服务商；未决状态保留并阻止并行新发送，邮件原文在过期后清除。生产前还须提供服务商核对或受控人工处置路径，否则可能长期阻断该地址发码；这项可用性边界是明确保留的。
 
-隔离测试通过后，下一切片是校邮验证及原确认续办／双方 HTTP 适配器，随后再做用户名密码登录与独立恢复；各次交付仍需自己的事务、故障和安全验证。不能据此宣布整套认证已实现或可以上线。
+## 尚未完成
+
+用户名密码登录、独立恢复服务／Passkey、会话接替和七天注销、移动端、安全存储与用户走查、生产路由与迁移均未完成。网络限流是单进程有界预算，生产仍需多副本共享预算、反滥用与 KDF 参数／阻止名单覆盖校准。
+
+可信时钟高水位、独立灾备证据、权限分离、密钥托管／轮换、日志／WAL／备份清理和真实 V/C 运营分权仍是上线门槛。原时钟回退向量明确跳过；SQL 单调约束不能抵抗整库旧快照恢复。本机两个角色不等于两家独立运营方，内部 AI 复核不等于人类第三方审计。

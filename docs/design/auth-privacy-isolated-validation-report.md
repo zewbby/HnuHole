@@ -1,5 +1,7 @@
 # 认证隐私最小隔离实现与验证报告
 
+> 历史报告：固定对应实现提交 `c3163726ad4b7e7172f3652f3fcca91001782f6a`。下列未实现项描述该次交付；后续校邮、原确认续办与 HTTP／mTLS 见[新报告](auth-privacy-eligibility-http-validation-report.md)。
+
 日期：2026-09-29。规格基线：`7640b90a39633af41f755b06ad1e23887829e109`；固定评审输入仍为 `05dc4a4` 的原快照。用户已授权进入最小隔离实现，本报告接续[反馈整改交付报告](auth-privacy-feedback-completion-report.md)。
 
 ## 1. 交付结论

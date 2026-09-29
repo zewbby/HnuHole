@@ -94,8 +94,9 @@ func (c *Community) SignReceipt(ctx context.Context, slot protocol.SlotID, sign 
 }
 
 // ReceiptReceiver is a trusted transport boundary. The isolated lab invokes the
-// verifier DB command directly. A future HTTP adapter must authenticate the
-// environment-bound peer and require that exact request's 200 ACKNOWLEDGED.
+// verifier DB command directly in storage tests; authprivacyhttp.PeerClient
+// authenticates the environment-bound peer and requires the exact request's
+// 200 ACKNOWLEDGED for the network boundary.
 type ReceiptReceiver func(context.Context, string, protocol.Purpose) error
 
 func (c *Community) DeliverReceipt(ctx context.Context, slot protocol.SlotID, receive ReceiptReceiver) error {

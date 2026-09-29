@@ -40,7 +40,8 @@ func (v *VerifierStore) lockAddress(ctx context.Context, tx pgx.Tx, email []byte
 // ReserveAfterQualification is an internal lab storage command using synthetic
 // preverified eligibility. A production adapter must compose OTP consumption
 // and quota reservation in one transaction, not call this after a separate OTP
-// commit. This slice has no mail/OTP endpoint and is not exposed through HTTP.
+// commit. The real eligibility boundary uses ConfirmOTP's combined transaction;
+// this synthetic helper must never be used as a public qualification endpoint.
 func (v *VerifierStore) ReserveAfterQualification(ctx context.Context, email []byte, key protocol.PublicKey) (protocol.SlotID, error) {
 	slot, err := protocol.DeriveSlot(key)
 	if err != nil {
@@ -93,8 +94,9 @@ func (v *VerifierStore) ReserveAfterQualification(ctx context.Context, email []b
 	return slot, tx.Commit(ctx)
 }
 
-// PrepareRetirement persists the old/new binding before calling C. Qualification
-// confirmation/admission-window continuation is deliberately outside this lab.
+// PrepareRetirement is a synthetic lab command with a pre-signed authorization.
+// ConfirmOTP instead persists the original confirmation and fixed signing job
+// before calling the signer or C, so that its admission window survives retries.
 func (v *VerifierStore) PrepareRetirement(ctx context.Context, email []byte, newKey protocol.PublicKey, encodedAuthorization string) error {
 	auth, err := v.verifier.VerifyRetirementAuthorization(encodedAuthorization)
 	if err != nil {

@@ -72,9 +72,12 @@ func newLab(t *testing.T) *lab {
 		pool        *pgxpool.Pool
 		schema, dir string
 	}{{l.cp, "c_auth", "community"}, {l.vp, "v_auth", "verifier"}} {
-		sql, err := os.ReadFile(filepath.Join("..", "..", "authlab", "migrations", spec.dir, "0001_authprivacy_lab.sql"))
+		files, err := filepath.Glob(filepath.Join("..", "..", "authlab", "migrations", spec.dir, "*.sql"))
 		if err != nil {
 			t.Fatal(err)
+		}
+		if len(files) == 0 {
+			t.Fatal("lab migrations absent")
 		}
 		tx, err := spec.pool.Begin(context.Background())
 		if err != nil {
@@ -84,9 +87,16 @@ func newLab(t *testing.T) *lab {
 			_ = tx.Rollback(context.Background())
 			t.Fatal(err)
 		}
-		if _, err = tx.Exec(context.Background(), string(sql)); err != nil {
-			_ = tx.Rollback(context.Background())
-			t.Fatal(err)
+		for _, file := range files {
+			sql, readErr := os.ReadFile(file)
+			if readErr != nil {
+				_ = tx.Rollback(context.Background())
+				t.Fatal(readErr)
+			}
+			if _, err = tx.Exec(context.Background(), string(sql)); err != nil {
+				_ = tx.Rollback(context.Background())
+				t.Fatalf("migration %s: %v", filepath.Base(file), err)
+			}
 		}
 		if err = tx.Commit(context.Background()); err != nil {
 			t.Fatal(err)

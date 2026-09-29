@@ -21,10 +21,11 @@ import (
 )
 
 type Community struct {
-	pool         *pgxpool.Pool
-	verifier     *protocol.Verifier
-	signingEpoch uint32
-	requestKey   [32]byte
+	pool          *pgxpool.Pool
+	verifier      *protocol.Verifier
+	signingEpoch  uint32
+	requestKey    [32]byte
+	receiptSigner Signer
 }
 
 func NewCommunity(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte) (*Community, error) {
@@ -34,9 +35,23 @@ func NewCommunity(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch 
 	return &Community{pool: pool, verifier: verifier, signingEpoch: signingEpoch, requestKey: requestKey}, nil
 }
 
+// NewCommunityWithReceiptSigner additionally enables post-commit receipt work
+// and read-only re-signing after acknowledged delivery material is cleaned.
+func NewCommunityWithReceiptSigner(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte, signer Signer) (*Community, error) {
+	if signer == nil {
+		return nil, errors.New("receipt signer is required")
+	}
+	c, err := NewCommunity(pool, verifier, signingEpoch, requestKey)
+	if err != nil {
+		return nil, err
+	}
+	c.receiptSigner = signer
+	return c, nil
+}
+
 // PasswordMaterial is prepared by the trusted authentication boundary before
 // taking SQL locks. This lab stores Argon2id output, not passwords; it does not
-// expose a public password policy or login endpoint.
+// itself verify passwords or expose a login endpoint.
 type PasswordMaterial struct {
 	Hash              [32]byte
 	Salt              [16]byte
@@ -46,10 +61,23 @@ type PasswordMaterial struct {
 type SignupIntent struct {
 	ID           protocol.IntentID
 	Challenge    protocol.Challenge
+	ExpiresAt    time.Time
 	RecoveryCode string // returned once; never saved as a result or SQL column
 }
 
 var usernamePattern = regexp.MustCompile(`^[a-z][a-z0-9_]{5,23}$`)
+
+// ValidateSignupTicket is a cheap, read-only check before scheduling expensive
+// password work. CreateSignupIntent and CommitSignup still recheck against the
+// database clock at their own authoritative decision points.
+func (c *Community) ValidateSignupTicket(ctx context.Context, encoded string) error {
+	var at time.Time
+	if err := c.pool.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+		return err
+	}
+	_, err := c.verifier.VerifyRegistrationTicket(encoded, at)
+	return err
+}
 
 func (c *Community) CreateSignupIntent(ctx context.Context, encodedTicket, username string, password PasswordMaterial, installation [16]byte) (SignupIntent, error) {
 	var result SignupIntent
@@ -96,7 +124,7 @@ func (c *Community) CreateSignupIntent(ctx context.Context, encodedTicket, usern
 	if err = tx.Commit(ctx); err != nil {
 		return result, err
 	}
-	return SignupIntent{ID: protocol.IntentID(id), Challenge: protocol.Challenge(challenge), RecoveryCode: code}, nil
+	return SignupIntent{ID: protocol.IntentID(id), Challenge: protocol.Challenge(challenge), ExpiresAt: at.Add(10 * time.Minute), RecoveryCode: code}, nil
 }
 
 type SignupRequest struct {
@@ -109,6 +137,8 @@ type SignupRequest struct {
 type SignupResult struct {
 	Created      bool
 	Replay       bool
+	AccountID    uuid.UUID
+	ExpiresAt    time.Time
 	SessionToken [32]byte // only first successful commit returns secrets
 	RevokeSecret [32]byte
 }
@@ -281,6 +311,9 @@ func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (Si
 	// Tokens in this lab use the same capability digest boundary as the spec.
 	tokenHash := sha256.Sum256(token[:])
 	revokeHash := digest("HNUHOLE/REVOKE-STORAGE/V1", revoke[:])
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+		return result, err
+	}
 	if _, err = tx.Exec(ctx, `INSERT INTO c_auth.sessions(token_digest,revoke_digest,account_id,installation_id,session_generation,created_at,last_activity_at,expires_at) VALUES($1,$2,$3,$4,1,$5,$5,$5::timestamptz+interval '30 days')`, tokenHash[:], revokeHash[:], account, installation, at); err != nil {
 		return result, err
 	}
@@ -295,7 +328,7 @@ func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (Si
 	if err = tx.Commit(ctx); err != nil {
 		return result, err
 	}
-	return SignupResult{Created: true, SessionToken: token, RevokeSecret: revoke}, nil
+	return SignupResult{Created: true, AccountID: account, ExpiresAt: at.Add(30 * 24 * time.Hour), SessionToken: token, RevokeSecret: revoke}, nil
 }
 
 func signupReplay(ctx context.Context, tx pgx.Tx, key, mac [32]byte) (SignupResult, bool, error) {

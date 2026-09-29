@@ -1,12 +1,12 @@
 # 产品设计
 
-认证隐私已进入用户授权的[最小隔离实现验证](auth-privacy-isolated-validation-report.md)，真实 PostgreSQL 的开户／退役与持久 ACK 测试通过。复现入口见[实验 README](../../services/api/authlab/README.md)，完整认证与生产验收仍未完成。
+认证隐私已进入用户授权的 Phase E。[本轮隔离实现](auth-privacy-eligibility-http-validation-report.md)接续首条数据库切片，加入校邮确认、退役后的原确认续办和双方 HTTP／mTLS。复现入口见[实验 README](../../services/api/authlab/README.md)，完整认证与生产验收仍未完成。
 
 这里是当前设计的统一入口。每项规则只在所属模块维护，跨模块通过链接引用；历史讨论用于追溯，不再作为持续追加的规则总表。
 
 新会话先读[接续说明](HANDOFF.md)。阶段盘点与剩余工作见[设计进度](progress.md)，业务术语见[词汇表](../../CONTEXT.md)。规则继续维护在各模块，进度页只提供交付状态与待决事项索引。
 
-2026-09-26 用户确认新的[认证与隐私架构决策](auth-privacy-architecture-decision.md)：每次注册需完成校邮验证码，日常以私有用户名和独立密码登录；同一精确邮箱同时最多一个有效账号的配额依赖 V 按协议执行。2026-09-27 的[注册与释放协议 v1](auth-privacy-registration-protocol.md)定义公钥导出的资格槽位、限时签名资格、持钥证明、未消费资格退役及正式注销释放；[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)和[跨方威胁模型](auth-privacy-threat-model.md)也已成稿。内部威胁建模不等于独立审计；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[数据库迁移设计](auth-privacy-database-migration-design.md)已成稿；[固定签名／编码向量与静态复验](auth-privacy-protocol-vectors.md)及[独立安全评审输入包](auth-privacy-security-review-package.md)也已整理；仍待所选生产库与实际SQL验证、真实独立主体运营证据及独立安全评审。两方共享槽位，串通或共同泄漏时可连接邮箱与账号。
+2026-09-26 用户确认新的[认证与隐私架构决策](auth-privacy-architecture-decision.md)：每次注册需完成校邮验证码，日常以私有用户名和独立密码登录；同一精确邮箱同时最多一个有效账号的配额依赖 V 按协议执行。2026-09-27 的[注册与释放协议 v1](auth-privacy-registration-protocol.md)定义公钥导出的资格槽位、限时签名资格、持钥证明、未消费资格退役及正式注销释放；[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)和[跨方威胁模型](auth-privacy-threat-model.md)也已成稿。内部威胁建模不等于独立审计；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[数据库迁移设计](auth-privacy-database-migration-design.md)已成稿；[固定签名／编码向量与静态复验](auth-privacy-protocol-vectors.md)及[独立安全评审输入包](auth-privacy-security-review-package.md)也已整理；隔离 SQL 验证见本轮实现报告；生产迁移／完整链路、真实独立主体运营证据及独立安全评审仍待完成。两方共享槽位，串通或共同泄漏时可连接邮箱与账号。
 
 2026-09-28 的[AI 交叉评审记录](auth-privacy-ai-cross-review.md)单列内部规格发现与修正：补齐退役收据的持久 ACK，不改变固定签名帧。人类独立评审、实际服务验收和双主体运营证据仍未完成；邮箱可用与验证服务独立运营分别登记。
 

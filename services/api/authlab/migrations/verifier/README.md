@@ -1,6 +1,6 @@
 # V 隔离实验迁移
 
-`0001_authprivacy_lab.sql` 在单独、可丢弃的 V 实验数据库中建立 `v_auth`。它只验证配额与回执的持久边界：资格是显式合成的实验输入，没有实现学校邮箱验证码、SMTP、预算、确认签名任务或退役后 OTP 原确认续办。
+在单独、可丢弃的 V 实验数据库中依序执行全部 SQL：`0001_authprivacy_lab.sql` 建立配额与收据边界，`0002_otp.sql` 增加 OTP／邮件任务／预算，`0003_confirmation.sql` 增加原确认与固定签名任务及退役后的续办。实验执行器按文件名排序同事务加载，不能用来覆盖现有数据库。
 
 以一个事务执行完整文件。文件仅含 Up SQL，没有事务包装或 Down；由实验执行器决定是否提交。不可拿它覆盖现有数据库。
 
@@ -25,4 +25,12 @@
 
 Go 命令仍须严格验签并核对受信 C 身份、槽位、公钥散列、原待办及版本。先定位邮箱，再按规范取得地址锁和行锁，不能仅靠上述约束代替业务判断。只有提交成功后才可 ACK；事务里没有 SMTP、HSM 或对端 HTTP。
 
-本实验不提供 OTP 控制权证明、恢复旧号入口、真实密钥托管、可信备份恢复或 V/C 独立运营证明；表拥有者的 DDL 权限也没有作为生产权限模型验收。跨表状态以复合外键和 deferred constraint trigger 表达，依据 [PostgreSQL 约束文档](https://www.postgresql.org/docs/current/ddl-constraints.html)和 [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html)。
+本实验已提供 OTP 确认，但不提供邮箱恢复旧号入口、真实密钥托管、可信备份恢复或 V/C 独立运营证明；表拥有者的 DDL 权限也没有作为生产权限模型验收。跨表状态以复合外键和 deferred constraint trigger 表达，依据 [PostgreSQL 约束文档](https://www.postgresql.org/docs/current/ddl-constraints.html)和 [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html)。
+
+## OTP 与原确认扩展
+
+`otp_email_state`／`otp_flows` 固定邮箱代次与最新码；`otp_code_versions` 保存独立钥 HMAC，以短期识别旧码；`device_email_limits` 与 `otp_budget_events` 分开计设备真错和滚动地址预算。设备与地址的 `last_activity_at` 使用数据库时钟，闲置二十四小时且没有有效锁／生命周期引用时有界清理；仍有配额或未决证据时保留原代次。`mail_outbox` 先提交发送尝试、再接触 SMTP；原文加密，完成／过期即擦除，未知状态不重发。
+
+`otp_confirmations` 持久原确认的旧／新槽位、公钥、OTP 期限及原准入桶，临时退役待办删除不丢这些绑定；`confirmation_sign_jobs` 保存固定消息与签名 CAS。`email_quota.reservation_confirmation_key_digest` 防原续办接管别人后来占用的同地址配额。结果仅原 POST 十分钟可重取，清理后的锚点只留操作／摘要／EXPIRED。未决旧退役继续处理，结果过期不能新签资格。
+
+`confirmation_rejections` 仅为已计数的第三次错误保存原键摘要与不可延长的锁到期时刻，重放按数据库时间计算剩余等待，不再计验证码。原结果过期时同事务删除短期等待记录；不复制邮箱、验证码或安装标识。
