@@ -11,7 +11,17 @@ class HttpChannelRepository implements ChannelRepository {
     required this.baseUri,
     HttpClient? client,
     this.timeout = const Duration(seconds: 12),
-  }) : _client = client ?? HttpClient();
+  }) : _client = client ?? HttpClient() {
+    if (baseUri.scheme != 'https' ||
+        baseUri.host.isEmpty ||
+        baseUri.userInfo.isNotEmpty ||
+        baseUri.hasQuery ||
+        baseUri.hasFragment ||
+        (baseUri.path.isNotEmpty && baseUri.path != '/')) {
+      throw ArgumentError('A fixed HTTPS community origin is required');
+    }
+    _client.connectionTimeout = timeout;
+  }
 
   final Uri baseUri;
   final Duration timeout;
@@ -29,8 +39,11 @@ class HttpChannelRepository implements ChannelRepository {
 
     final requestUri = baseUri.resolve('/api/v1/channels');
     HttpClientResponse response;
+    late HttpClientRequest request;
     try {
-      final request = await _client.getUrl(requestUri).timeout(timeout);
+      request = await _client.getUrl(requestUri).timeout(timeout);
+      request.followRedirects = false;
+      request.maxRedirects = 0;
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
       request.headers.set(
         HttpHeaders.authorizationHeader,
@@ -38,19 +51,47 @@ class HttpChannelRepository implements ChannelRepository {
       );
       response = await request.close().timeout(timeout);
     } on TimeoutException {
-      throw const ChannelRepositoryException(message: 'The channel request timed out');
+      throw const ChannelRepositoryException(
+        message: 'The channel request timed out',
+      );
     } on SocketException catch (error) {
-      throw ChannelRepositoryException(message: 'The channel service is unavailable: $error');
+      throw ChannelRepositoryException(
+        message: 'The channel service is unavailable: $error',
+      );
     }
 
-    final body = await utf8.decoder.bind(response).join();
+    String body;
+    try {
+      body = await (() async {
+        final data = <int>[];
+        await for (final chunk in response.timeout(timeout)) {
+          if (data.length + chunk.length > 262144) {
+            throw const ChannelRepositoryException(
+              message: 'The channel response is too large',
+            );
+          }
+          data.addAll(chunk);
+        }
+        return utf8.decode(data);
+      })().timeout(timeout);
+    } on TimeoutException {
+      request.abort();
+      throw const ChannelRepositoryException(
+        message: 'The channel request timed out',
+      );
+    } on FormatException {
+      throw const ChannelRepositoryException(
+        message: 'The channel response is malformed',
+      );
+    }
     final payload = _decodePayload(body);
     if (response.statusCode != HttpStatus.ok) {
       throw ChannelRepositoryException(
         message: _errorMessage(payload, response.statusCode),
         statusCode: response.statusCode,
         code: _errorField(payload, 'code'),
-        requestId: _errorField(payload, 'request_id') ??
+        requestId:
+            _errorField(payload, 'request_id') ??
             _errorField(payload, 'requestId'),
       );
     }
@@ -64,7 +105,8 @@ class HttpChannelRepository implements ChannelRepository {
       );
     } on FormatException catch (error) {
       throw ChannelRepositoryException(
-        message: 'The channel service returned an invalid directory: ${error.message}',
+        message:
+            'The channel service returned an invalid directory: ${error.message}',
         statusCode: response.statusCode,
         code: 'invalid_channel_directory',
       );
@@ -88,8 +130,8 @@ class HttpChannelRepository implements ChannelRepository {
     final raw = payload is List
         ? payload
         : payload is Map<String, dynamic>
-            ? payload['channels']
-            : null;
+        ? payload['channels']
+        : null;
     if (raw is! List) {
       throw const ChannelRepositoryException(
         message: 'The channel service returned no channel list',
@@ -111,10 +153,6 @@ class HttpChannelRepository implements ChannelRepository {
   }
 
   String _errorMessage(dynamic payload, int statusCode) {
-    final message = _errorField(payload, 'message');
-    if (message != null && message.isNotEmpty) {
-      return message;
-    }
     if (statusCode == 401) {
       return 'The session is no longer valid';
     }

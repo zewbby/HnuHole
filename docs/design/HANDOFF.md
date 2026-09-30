@@ -1,6 +1,8 @@
 # Hnuhole 新会话接续说明
 
-> **2026-09-30 恢复凭据管理隔离实现：**当前分支 `codex/auth-privacy-handoff` 补齐新鲜密码复验恢复码轮换、可选 Passkey 的绑定／可发现恢复／两步移除，以及受限凭据清单。管理权限绑定原凭据版本、同一会话、固定RP策略及Gate代次，最终事务再次复核；普通变更保留其他凭据和当前会话，重设／关闭撤全部旧Passkey。交付与最终验证见[本轮报告](auth-privacy-recovery-credentials-validation-report.md)和[机器记录](../../services/api/authlab/recovery-credentials-verification.json)。下一步进入移动端安全存储、持久结果核对／登出待办及完整认证状态机；生产路由／迁移、真实平台Passkey演练、业务数据清理／通知及生产安全验收继续待做。
+> **2026-09-30 移动端核心认证状态机：**指定分支 `codex/auth-privacy-handoff` 已接入校邮注册、恢复码隐藏后完整确认、密码登录、权威恢复／活跃续期、七天注销和持久结果核对。退出先确认登出标记持久化，再删除Bearer并以独立能力异步定向撤销，旧任务不影响新会话。系统安全存储适配器及Android/iOS工程已加入；完整Dart／TLS／组件回归和Go故障回归见[本轮报告](auth-privacy-mobile-auth-validation-report.md)及[机器记录](../../services/api/authlab/mobile-auth-verification.json)。下一步先做原生构建、真机安全存储故障与真实C/V整链联调，再补设备／凭据管理页面。原生Passkey、生产路由／迁移与业务授权接Gate、注销清理／通知、运营分权及独立安全验收继续待做。
+
+> **2026-09-30 恢复凭据管理隔离实现（历史节点）：**当前分支 `codex/auth-privacy-handoff` 补齐新鲜密码复验恢复码轮换、可选 Passkey 的绑定／可发现恢复／两步移除，以及受限凭据清单。管理权限绑定原凭据版本、同一会话、固定RP策略及Gate代次，最终事务再次复核；普通变更保留其他凭据和当前会话，重设／关闭撤全部旧Passkey。交付与最终验证见[本轮报告](auth-privacy-recovery-credentials-validation-report.md)和[机器记录](../../services/api/authlab/recovery-credentials-verification.json)。下一步进入移动端安全存储、持久结果核对／登出待办及完整认证状态机；生产路由／迁移、真实平台Passkey演练、业务数据清理／通知及生产安全验收继续待做。
 
 > **2026-09-30 恢复码与七天注销隔离实现（历史节点）：**在登录／会话切片之上加入恢复码证明、唯一重设意图、最终密码重设与无秘密结果核对，以及七天注销申请、截止前主动登录取消、到期关闭、受限状态与释放收据。密码重设不登录、不取消注销、不解除处罚；封禁受信命令即时撤会话，迟到封禁不能取消到期申请。新增授权与清理继续经过 Safety Gate。交付范围与证据见[本轮报告](auth-privacy-recovery-closure-validation-report.md)和[机器记录](../../services/api/authlab/recovery-closure-verification.json)。可选 Passkey、恢复码轮换、移动端、业务数据清理／通知和生产接入仍待做。
 
@@ -26,7 +28,7 @@
 - 第四轮：本地 Git + GitHub Actions、Go 单元测试 + Docker PostgreSQL 集成测试、Mailpit + 开发验证适配器、容器化无状态 API + 托管 PostgreSQL + S3 兼容对象存储，已确认；记录见 [ADR 0004](../adr/0004-ci-testing-email-and-deployment.md)。
 - Git/GitHub 目前不是用户熟悉领域；后续会用逐条命令说明提交、分支、推送和查看 Actions，不要求用户凭记忆操作。
 - 本地 Git 已初始化为 `main`，当前开发分支为 `feature/engineering-baseline`；远程 `origin` 已绑定 `https://github.com/zhubaozhenshuai666-lang/HnuHole.git`，并跟踪 `origin/feature/engineering-baseline`。
-- 当前已完成任务 1 的 OpenAPI 契约、PostgreSQL 迁移/七通道种子、认证保护的目录 API、Flutter 无节点入口树和二维可拖动节点骨架；移动端邮箱验证码页面及用户名密码登录尚未实现；注册资格、持钥开户和初始会话已在独立实验包中实现，未接入现有目录 API。当前 Go 会话校验只从不透明会话令牌查社区账号，不含邮箱映射；认证主链须先满足[当前认证架构决策](auth-privacy-architecture-decision.md)的协议与安全评审门槛，不能直接按旧顺序开工。注册不自动创建身份，无身份账号仍可浏览。
+- 当前已完成任务 1 的 OpenAPI 契约、PostgreSQL 迁移/七通道种子、认证保护的目录 API、Flutter 无节点入口树和二维可拖动节点骨架；移动端核心认证状态机已按本页顶部记录接入；注册资格、持钥开户、会话与恢复已在独立实验包实现，现有目录 API 尚未接到新Gate授权。当前 Go 会话校验只从不透明会话令牌查社区账号，不含邮箱映射；认证主链须先满足[当前认证架构决策](auth-privacy-architecture-decision.md)的协议与安全评审门槛，不能直接按旧顺序开工。注册不自动创建身份，无身份账号仍可浏览。
 - **认证主链前置门槛**：V 校邮验证方与 C 社区方须实质独立；V 持邮箱→本次资格槽位，C 受限认证库持槽位→账号，双方串通可直接关联，单侧隔离承诺以分权为前提。每次注册收码；已有账号以私有用户名＋密码登录，仅能用预设独立凭据恢复。[协议 v1](auth-privacy-registration-protocol.md)已规定限时 `REGISTER/V2` 资格、公钥散列绑定、真实 C 挑战、退役／释放及重放拒绝；恢复、数据／API 和[内部威胁建模](auth-privacy-threat-model.md)已成稿；V/C OpenAPI及迁移设计已成稿；固定签名／弱点负向向量已内部复验，评审包已整理；生产迁移／完整链路、两组织运营安排和独立安全评审仍未完成，不得按旧 [ADR 0005](../adr/0005-privacy-preserving-email-authentication.md) 的稳定匿名凭证流程开工。
 
 ## 工作位置与讨论方式

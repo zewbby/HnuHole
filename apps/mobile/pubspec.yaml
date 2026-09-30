@@ -4,12 +4,17 @@ publish_to: none
 version: 0.1.0+1
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=3.13.4 <4.0.0"
+  flutter: ">=3.47.5"
 
 dependencies:
   flutter:
     sdk: flutter
   vector_math: ^2.1.4
+  crypto: 3.0.6
+  cryptography: 2.7.0
+  hnuhole_auth_vault:
+    path: ../../packages/auth_vault
 
 dev_dependencies:
   flutter_test:

@@ -3,12 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../channels/channel.dart';
 import '../channels/channel_repository.dart';
 
-enum ChannelDirectoryStatus {
-  signedOut,
-  loading,
-  ready,
-  failure,
-}
+enum ChannelDirectoryStatus { signedOut, loading, ready, failure }
 
 /// Coordinates authentication state and an all-or-nothing directory load.
 ///
@@ -16,10 +11,11 @@ enum ChannelDirectoryStatus {
 /// for the entry contract: the UI must not present a partial or stale set of
 /// channels as if it were current business data.
 class ChannelDirectoryController extends ChangeNotifier {
-  ChannelDirectoryController({required ChannelRepository repository})
-      : _repository = repository;
+  ChannelDirectoryController({required this._repository});
 
   final ChannelRepository _repository;
+  void Function(String token, String? code)? onSessionUnauthorized;
+  Future<void> Function()? onSessionRetry;
   ChannelDirectoryStatus _status = ChannelDirectoryStatus.signedOut;
   List<Channel> _channels = const <Channel>[];
   ChannelRepositoryException? _error;
@@ -32,10 +28,12 @@ class ChannelDirectoryController extends ChangeNotifier {
   ChannelRepositoryException? get error => _error;
   bool get isAuthenticated => _sessionToken != null;
 
-  /// Starts a fresh directory load after email verification/session setup.
+  /// Starts a fresh directory load after verified account session setup.
   Future<void> setSessionToken(String? token) async {
     final normalized = token?.trim();
-    _sessionToken = normalized == null || normalized.isEmpty ? null : normalized;
+    _sessionToken = normalized == null || normalized.isEmpty
+        ? null
+        : normalized;
     _requestVersion++;
 
     if (_sessionToken == null) {
@@ -45,8 +43,9 @@ class ChannelDirectoryController extends ChangeNotifier {
     await load();
   }
 
-  /// Alias used by authentication adapters after verification succeeds.
-  Future<void> authenticate(String sessionToken) => setSessionToken(sessionToken);
+  /// Alias used by authentication adapters after community authentication succeeds.
+  Future<void> authenticate(String sessionToken) =>
+      setSessionToken(sessionToken);
 
   void signOut() {
     _sessionToken = null;
@@ -54,7 +53,20 @@ class ChannelDirectoryController extends ChangeNotifier {
     _clearToSignedOut();
   }
 
-  Future<void> retry() => load();
+  /// Hide protected data while authority is unavailable, without turning a
+  /// temporary failure into logout or resetting the caller's tree position.
+  void suspend() {
+    _sessionToken = null;
+    _requestVersion++;
+    _status = ChannelDirectoryStatus.failure;
+    _channels = const <Channel>[];
+    _error = const ChannelRepositoryException(message: '会话暂时无法确认，请重试。');
+    _notifyIfAlive();
+  }
+
+  Future<void> retry() => _sessionToken == null && onSessionRetry != null
+      ? onSessionRetry!()
+      : load();
 
   Future<void> load() async {
     final token = _sessionToken;
@@ -85,6 +97,7 @@ class ChannelDirectoryController extends ChangeNotifier {
         return;
       }
       if (error.isUnauthorized) {
+        onSessionUnauthorized?.call(token, error.code);
         _sessionToken = null;
         _clearToSignedOut();
         return;
@@ -100,17 +113,20 @@ class ChannelDirectoryController extends ChangeNotifier {
       _channels = const <Channel>[];
       _status = ChannelDirectoryStatus.failure;
       _error = ChannelRepositoryException(
-        message: 'The channel service returned an invalid directory: ${error.message}',
+        message:
+            'The channel service returned an invalid directory: ${error.message}',
         code: 'invalid_channel_directory',
       );
       _notifyIfAlive();
-    } on Object catch (error) {
+    } on Object {
       if (!_isCurrent(version)) {
         return;
       }
       _channels = const <Channel>[];
       _status = ChannelDirectoryStatus.failure;
-      _error = ChannelRepositoryException(message: 'Unable to load channels: $error');
+      _error = const ChannelRepositoryException(
+        message: 'Unable to load channels',
+      );
       _notifyIfAlive();
     }
   }

@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math_64.dart';
 
 import '../channels/channel.dart';
 
@@ -217,7 +216,7 @@ class _ChannelTreeState extends State<ChannelTree> {
                 ),
                 boxShadow: <BoxShadow>[
                   BoxShadow(
-                    color: accent.withOpacity(selected ? 0.42 : 0.2),
+                    color: accent.withValues(alpha: selected ? 0.42 : 0.2),
                     blurRadius: selected ? 18 : 10,
                     spreadRadius: selected ? 2 : 0,
                   ),

@@ -11,6 +11,8 @@ Thumbs.db
 !.env.example
 
 # Flutter / Dart
+.flutter-plugins-dependencies
+.flutter-plugins
 .dart_tool/
 .packages
 .pub-cache/

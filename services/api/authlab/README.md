@@ -1,5 +1,7 @@
 # 认证隐私隔离实现与验证
 
+移动端本轮交付见[核心认证状态机报告](../../../docs/design/auth-privacy-mobile-auth-validation-report.md)和 `mobile-auth-verification.json`。客户端代码在 `apps/mobile`、原生安全存储在 `packages/auth_vault`；历史服务端记录保留。本轮重新跑完隔离PostgreSQL、直接race与vet，不等于生产／真机验收。
+
 用户已授权进入 Phase E；本隔离切片已实现第 0 步 Authorization Safety Gate、用户名密码登录与服务端会话管理，并继续加入恢复码重设、七天注销和恢复凭据管理。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；现有 API 主路由、演示认证器和生产 Goose 迁移没有接入这套认证。
 
 校邮与 HTTP 切片的交付见[历史报告](../../../docs/design/auth-privacy-eligibility-http-validation-report.md)；首条数据库切片见[更早报告](../../../docs/design/auth-privacy-isolated-validation-report.md)。`verification.json` 固定首轮证据，`eligibility-http-verification.json` 固定上一轮证据；第 0 步另有新记录。
@@ -27,7 +29,7 @@
 - 隔离证据由独立于 PostgreSQL 的签名文件提供；独立签名锚点在授权事务提交前推进，旧库快照、丢失／错误证据、时钟回退或冻结状态均 fail closed。正常与离线 break-glass 恢复均需受限角色签名、显式动作、新代次、新鲜证据和审计；离线证据最多 5 分钟有效。该文件机制只是实验替身，不是生产独立授时与外部锚点部署方案。
 - C 实验迁移 `0003_session_lifecycle.sql` 增加权威封禁状态、会话撤销原因与仅一条最近接替设备记录。密码验证沿用 NFC／Argon2id 64 MiB／3／4、有界工作池；未知用户名也走相同 KDF 路径。登录在账号锁内复核密码材料／凭据版本，Gate 最终裁决后原子递增会话代次、撤旧建新并只保存无令牌幂等结果；原键重试不给令牌。
 - 隔离 C 公共 HTTP 现有注册接口之外新增 `POST /auth/sessions`、`GET /auth/session`、`POST /auth/session-renewals`、`GET /auth/devices` 与 `POST /auth/session-revocations`（完整前缀均为 `/api/v1`）。当前 Bearer 每次从权威账号、封禁、会话代次、撤销／截止和授权代次复核，剩余不超过七天时按同一令牌延至最终可信时间＋三十天；旧设备返回 `401/session_replaced`。独立撤销秘密只撤对应一条会话，重复或记录已清理均 `204`，不读账号或撤新会话。
-- 有界清理将登录请求结果收缩为无身份永久墓碑、在服务端最终到期七天后清会话摘要、三十天后清最近替代设备；调用时仍由 Gate 复核。客户端持久登出待办和安全存储仍须在移动端实现。
+- 有界清理将登录请求结果收缩为无身份永久墓碑、在服务端最终到期七天后清会话摘要、三十天后清最近替代设备；调用时仍由 Gate 复核。客户端持久登出待办与原生安全存储适配器已在本轮移动端切片实现，真机耐久性继续待验。
 - `0004_recovery_reset.sql` 建立重设代次、复合活动意图指针、十分钟恢复意图、无秘密结果引用及最小受限事件。当前恢复码证明后首次展示新码，最终锁内复核版本、活动 ID／代次、Gate 与截止，原子更换密码／恢复码、废止全部已存备用凭据和会话；不自动登录、不取消注销、不解除处罚。恢复码三条端点为 `POST /api/v1/auth/recovery-code-reset-intents`、`POST /api/v1/auth/password-resets`、`GET /api/v1/auth/password-reset-result`。
 - `0005_account_closure.sql` 建立七天截止和最小状态能力。`POST /api/v1/account-closures` 要求当前 Bearer 与新鲜密码，撤全部会话；`GET /api/v1/account-closures/{closureId}` 只接受独立 `ClosureStatus` 秘密。截止前成功主动密码登录原子取消；到期立即拒绝登录／恢复，worker 原子关闭账号、脱钩槽位并建立 RELEASED outbox。封禁受信命令即时撤会话，只有截止前的新封禁取消申请；禁言可注销，正式关闭终止旧号限制。
 - 释放 ACK 在最终 Gate 可信时间下与 ledger／outbox／状态留存起点共事务提交；重复 ACK 不延期。取消状态或持久 ACK 后三十天清状态访问，永久 closureId 锚点拒绝重建申请。密码重设同键重试 `204`，结果查询只返回状态；有界清理先清秘密，再缩结果锚点及删除无引用的终态元数据，受限恢复事件七天清理。未 ACK 状态保留不妨碍八天后收缩原请求 HMAC。

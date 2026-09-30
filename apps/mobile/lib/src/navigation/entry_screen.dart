@@ -5,7 +5,7 @@ import 'channel_directory_controller.dart';
 import 'channel_tree.dart';
 
 /// The entry surface deliberately keeps authentication outside the tree. The
-/// host app calls [onLoginRequested], then passes the verified session token
+/// host app calls [onLoginRequested], then passes the authenticated session token
 /// to [ChannelDirectoryController.setSessionToken].
 class EntryScreen extends StatefulWidget {
   EntryScreen({
@@ -55,7 +55,7 @@ class _EntryScreenState extends State<EntryScreen> {
     if (!mounted) {
       return;
     }
-    if (widget.directory.status != ChannelDirectoryStatus.ready) {
+    if (widget.directory.status == ChannelDirectoryStatus.signedOut) {
       // Position is session-only. Signing out or losing a session must reset
       // it so a later login starts at the fixed initial layout.
       widget.treeSession.clear();
@@ -82,6 +82,9 @@ class _EntryScreenState extends State<EntryScreen> {
                 children: <Widget>[
                   Positioned.fill(
                     child: _TreeShell(
+                      onEntryTap: state == ChannelDirectoryStatus.signedOut
+                          ? widget.onLoginRequested
+                          : null,
                       child: showTree
                           ? ChannelTree(
                               channels: widget.directory.channels,
@@ -89,9 +92,6 @@ class _EntryScreenState extends State<EntryScreen> {
                               onChannelSelected: widget.onChannelSelected,
                             )
                           : const SizedBox.expand(),
-                      onEntryTap: state == ChannelDirectoryStatus.signedOut
-                          ? widget.onLoginRequested
-                          : null,
                     ),
                   ),
                   if (!showTree)
@@ -173,7 +173,7 @@ class _TreeShell extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         border: Border.symmetric(
           horizontal: BorderSide(
-            color: Theme.of(context).dividerColor.withOpacity(0.14),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.14),
           ),
         ),
       ),
@@ -186,7 +186,7 @@ class _TreeShell extends StatelessWidget {
             Center(
               child: Semantics(
                 button: true,
-                label: 'Enter treehole with campus email',
+                label: '登录或注册，进入树洞',
                 child: GestureDetector(
                   onTap: onEntryTap,
                   child: Container(
@@ -269,8 +269,8 @@ class _StatusOverlay extends StatelessWidget {
         return Center(
           child: FilledButton.icon(
             onPressed: directory.isAuthenticated ? null : onLoginRequested,
-            icon: const Icon(Icons.mail_outline),
-            label: const Text('Enter with campus email'),
+            icon: const Icon(Icons.login_rounded),
+            label: const Text('登录或注册'),
           ),
         );
       case ChannelDirectoryStatus.loading:
@@ -310,10 +310,5 @@ class _StatusOverlay extends StatelessWidget {
       case ChannelDirectoryStatus.ready:
         return const SizedBox.shrink();
     }
-
-    // Keep the method total for older Dart analyzers that do not infer enum
-    // exhaustiveness for switch statements.
-    return const SizedBox.shrink();
   }
-
 }
