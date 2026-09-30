@@ -1,8 +1,10 @@
 # 认证隐私隔离实现与验证
 
-用户已授权进入 Phase E，继续实现校邮确认、退役后的原确认续办和双方 HTTP／mTLS。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；现有 API 主路由、演示认证器和生产 Goose 迁移没有接入这套认证。
+用户已授权进入 Phase E；本隔离切片还实现了第 0 步 Authorization Safety Gate。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；现有 API 主路由、演示认证器和生产 Goose 迁移没有接入这套认证。
 
-交付与证据见[本轮报告](../../../docs/design/auth-privacy-eligibility-http-validation-report.md)；首条数据库切片见[历史报告](../../../docs/design/auth-privacy-isolated-validation-report.md)。`verification.json` 记录提交 `c316372` 的首轮证据，当前实现的记录是 `eligibility-http-verification.json`。
+校邮与 HTTP 切片的交付见[历史报告](../../../docs/design/auth-privacy-eligibility-http-validation-report.md)；首条数据库切片见[更早报告](../../../docs/design/auth-privacy-isolated-validation-report.md)。`verification.json` 固定首轮证据，`eligibility-http-verification.json` 固定上一轮证据；第 0 步另有新记录。
+
+第 0 步实现与门槛见[Authorization Safety Gate 交付报告](../../../docs/design/auth-authorization-safety-gate-validation-report.md)，本轮机器记录在 `authorization-safety-gate-verification.json`。历史验证 JSON 保持不改。
 
 ## 已实现
 
@@ -15,6 +17,8 @@
 - C 原子开户、恢复码完整确认、初始会话和永久结果锚点；重试不重发会话秘密。密码先统一 NFC，执行长度／本地阻止名单／用户名相关弱密码检查，再以受并发限制的 Argon2id 生成验证值。
 - 双方公共／内部 HTTP 处理器分开；严格有界 JSON／头／能力解析、独立请求 ID、`no-store`；真实 mTLS 证书链、环境与服务 SAN URI、固定目标与禁止重定向。
 - C 收据持久 ACK、迟到 signer／轮换检查、ACK 后清理；已确认终态可只读重签，不复活 outbox 或重启清理时间。
+- C 新建 `0002_authorization_gate.sql`：默认 FROZEN 的持久 singleton、高水位、证据版本、授权代次及审计；注册意图与初始会话绑定不可变 authorization_generation。所有注册入口（包括重放）先 Snapshot，最终授权事务统一 CommitAuthorized；已有 Bearer 的隔离认证读入口也经同一门禁。
+- 隔离证据由独立于 PostgreSQL 的签名文件提供；独立签名锚点在授权事务提交前推进，旧库快照、丢失／错误证据、时钟回退或冻结状态均 fail closed。正常与离线 break-glass 恢复均需受限角色签名、显式动作、新代次、新鲜证据和审计；离线证据最多 5 分钟有效。该文件机制只是实验替身，不是生产独立授时与外部锚点部署方案。
 
 ## 复现
 
@@ -44,4 +48,4 @@ sh ./run-isolated.sh
 
 用户名密码登录、独立恢复服务／Passkey、会话接替和七天注销、移动端、安全存储与用户走查、生产路由与迁移均未完成。网络限流是单进程有界预算，生产仍需多副本共享预算、反滥用与 KDF 参数／阻止名单覆盖校准。
 
-可信时钟高水位、独立灾备证据、权限分离、密钥托管／轮换、日志／WAL／备份清理和真实 V/C 运营分权仍是上线门槛。原时钟回退向量明确跳过；SQL 单调约束不能抵抗整库旧快照恢复。本机两个角色不等于两家独立运营方，内部 AI 复核不等于人类第三方审计。
+真实独立授时、生产外部锚点与灾备演练、运营权限分离、密钥托管／轮换、日志／WAL／备份清理和真实 V/C 运营分权仍是上线门槛。隔离测试执行了原时钟回退向量；SQL 单调约束本身仍不能抵抗整库旧快照恢复，须依靠库外锚点。本机两个角色不等于两家独立运营方，内部 AI 复核不等于人类第三方审计。

@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "hnuhole-authorization-safety-gate-verification/v1",
+  "verifiedAtUTC": "2026-09-30T01:36:02+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "0409609",
+  "scope": "ISOLATED_AUTHORIZATION_SAFETY_GATE_AND_EXISTING_SIGNUP",
+  "runtime": {
+    "go": "go1.27.1 darwin/arm64",
+    "postgresql": "18.6"
+  },
+  "isolatedRun": {
+    "workingDirectory": "services/api",
+    "command": "sh authlab/run-isolated.sh",
+    "exitCode": 0,
+    "freshDisposableCluster": true,
+    "privateUnixSocketOnly": true,
+    "separateNonSuperuserDatabases": true,
+    "sqlCasesExecuted": true,
+    "existingDatabaseIntegrationCases": 28,
+    "raceCommandWithinScript": "go test -race -count=1 -p 1 ./...",
+    "raceExitCode": 0,
+    "vetCommandWithinScript": "go vet ./...",
+    "vetExitCode": 0,
+    "localSyntheticSMTP": true,
+    "localHTTPSMTLS": true,
+    "gateIntegrationTestFunctions": 9,
+    "oldSnapshotDimensions": [
+      "authorization_generation",
+      "evidence_version",
+      "trusted_high_watermark"
+    ]
+  },
+  "directCommands": [
+    {
+      "command": "go test -race -count=1 -p 1 ./...",
+      "exitCode": 0,
+      "databaseDSNsAbsent": true,
+      "localSMTPAndHTTPTestsExecuted": true,
+      "note": "Succeeded with loopback-listener permission; isolatedRun above executed SQL cases."
+    },
+    {
+      "command": "go vet ./...",
+      "exitCode": 0
+    }
+  ],
+  "sandboxAttempt": {
+    "command": "go test -race -count=1 -p 1 ./...",
+    "exitCode": 1,
+    "reason": "Default sandbox denied local loopback test listeners; command rerun successfully with local listener permission."
+  },
+  "gateIntegrationTests": [
+    "TestAuthorizationGateRollbackBoundaryAndPersistence",
+    "TestAuthorizationGateEvidenceAndReplicaFailures",
+    "TestAuthorizationGateExplicitRecoveryFencesPendingAndBearer",
+    "TestAuthorizationGateOldSnapshotCannotReopen",
+    "TestAuthorizationGateRecoveryRequiresRestrictedSignedAction",
+    "TestAuthorizationGateOfflineBreakGlassExpiresWithoutProvider",
+    "TestAuthorizationGateFinalTransactionFreezeAndRenewal",
+    "TestAuthorizationGateVectorTimeRollback",
+    "TestAuthorizationGatePendingCommandGenerationFence"
+  ],
+  "productionBoundary": {
+    "productionRouterMounted": false,
+    "realIndependentTimeSource": false,
+    "productionExternalAnchor": false,
+    "realDisasterRecoveryDrill": false,
+    "operationalRoleSeparation": false,
+    "independentHumanAudit": false,
+    "usernamePasswordLoginImplemented": false
+  },
+  "sourceFiles": [
+    {
+      "path": "docs/design/auth-authorization-safety-gate.md",
+      "sha256": "bf4f2cb0f5caaa16b06c26e3fd9b033d0143c0cd208c4d91bca9a17327c6c94e"
+    },
+    {
+      "path": "services/api/authlab/migrations/community/0002_authorization_gate.sql",
+      "sha256": "0fbd2bf8ed778be3369ac0e6d0c483b1c9effb0fecf273274966c40d01d219ca"
+    },
+    {
+      "path": "services/api/authlab/run-isolated.sh",
+      "sha256": "719a1ddb96086cf06cec18776abb19173db1b1bcc3f7425f05dc1d1586098f5f"
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_evidence.go",
+      "sha256": "c5dd970989bd17de814a4be49227789ee9e39195a6210f3b59846574a7779fbd"
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_gate.go",
+      "sha256": "d98852a07787107bf1ed487dc43d5d5ad1a748f2ce786460f5527953e0b8f509"
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_gate_test.go",
+      "sha256": "bfa1e170a8d99760c6b84baa6a791e9ad87456923f70576449670a6505cb1fef"
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_session.go",
+      "sha256": "37d1d173f7c5ff563080a79997d105c516ef3c43a3ac69d2cf7af9b5cd6ece17"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community.go",
+      "sha256": "db657395c75142824028ad54512db6855f772794def0da3f5cbc39689862a661"
+    },
+    {
+      "path": "services/api/internal/authprivacy/postgres_test.go",
+      "sha256": "57749488e4398fb90733cd6fcfadcadc7927ad600fdc99492a60384fa731f1a5"
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol_test.go",
+      "sha256": "eb2c1fa28a321562a4ba29e79f7dff1525b5a8e0e989c0fab1d7c98e671b0763"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "sha256": "f196ac4631f1728ef4dcf188dab464ed7c66bb7607d9c747508dba45187d773c"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints_test.go",
+      "sha256": "8a3e4f6cd03d78d1f2968a7d42fe7dd01b3201af0e80ee2a74e2d5507f2a05f3"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+      "sha256": "eda5689326706c9819447818ed9ff009288f77977bd6d6c8b8e716ea8342efed"
+    },
+    {
+      "path": "services/api/go.mod",
+      "sha256": "64e0a8d03ffe9f2b0bb63e0d158e96da8c4c718a59f919da1092341a858a76a7"
+    }
+  ]
+}

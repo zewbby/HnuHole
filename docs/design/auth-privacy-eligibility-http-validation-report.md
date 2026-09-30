@@ -1,5 +1,7 @@
 # 校邮确认、原确认续办与 HTTP／mTLS 交付报告
 
+> 本报告固定 2026-09-29 的历史切片。后续第 0 步 Authorization Safety Gate 已另行[实现与验证](auth-authorization-safety-gate-validation-report.md)；本页“可信时间未实现”等表述仅描述当时状态。
+
 日期：2026-09-29。实现起点：`c3163726ad4b7e7172f3652f3fcca91001782f6a`。本报告接续[首条数据库切片](auth-privacy-isolated-validation-report.md)，对应用户本轮明确授权的三项实现。
 
 ## 1. 编码授权与环节

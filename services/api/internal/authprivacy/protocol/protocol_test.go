@@ -72,11 +72,12 @@ type protocolFixture struct {
 		Decision string `json:"expectedDecision"`
 	} `json:"framingCases"`
 	TimeCases []struct {
-		ID       string `json:"id"`
-		Window   uint32 `json:"ticketWindow"`
-		At       int64  `json:"lockedDecisionUnixSeconds"`
-		Decision string `json:"expectedDecision"`
-		Reason   string `json:"reason"`
+		ID        string `json:"id"`
+		Window    uint32 `json:"ticketWindow"`
+		At        int64  `json:"lockedDecisionUnixSeconds"`
+		Watermark int64  `json:"timeHighWatermarkUnixSeconds"`
+		Decision  string `json:"expectedDecision"`
+		Reason    string `json:"reason"`
 	} `json:"timeCases"`
 	PolicyCases []struct {
 		ID        string  `json:"id"`
@@ -370,7 +371,13 @@ func TestPublicVectorsAdmissionWindowArithmetic(t *testing.T) {
 	for _, vector := range loadFixture(t).TimeCases {
 		t.Run(vector.ID, func(t *testing.T) {
 			if vector.Decision == "FREEZE" {
-				t.Skip("rollback/high-watermark gate belongs to the database caller, not this arithmetic helper")
+				// Window arithmetic alone accepts this ticket. The real PostgreSQL
+				// gate test in authprivacy executes the same fixture and rejects the
+				// rollback; keep that caller boundary explicit instead of skipping it.
+				if vector.Watermark-vector.At <= 5 || ValidateAdmissionWindow(vector.Window, time.Unix(vector.At, 0)) != nil {
+					t.Fatal("rollback fixture must need the authorization gate despite a valid ticket window")
+				}
+				return
 			}
 			err := ValidateAdmissionWindow(vector.Window, time.Unix(vector.At, 0))
 			if (err == nil) != (vector.Decision == "ACCEPT") {

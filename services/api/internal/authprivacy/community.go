@@ -23,25 +23,26 @@ import (
 type Community struct {
 	pool          *pgxpool.Pool
 	verifier      *protocol.Verifier
+	gate          AuthorizationGate
 	signingEpoch  uint32
 	requestKey    [32]byte
 	receiptSigner Signer
 }
 
-func NewCommunity(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte) (*Community, error) {
-	if pool == nil || verifier == nil || requestKey == ([32]byte{}) {
+func NewCommunity(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte, gate AuthorizationGate) (*Community, error) {
+	if pool == nil || verifier == nil || requestKey == ([32]byte{}) || gate == nil {
 		return nil, errors.New("invalid community configuration")
 	}
-	return &Community{pool: pool, verifier: verifier, signingEpoch: signingEpoch, requestKey: requestKey}, nil
+	return &Community{pool: pool, verifier: verifier, gate: gate, signingEpoch: signingEpoch, requestKey: requestKey}, nil
 }
 
 // NewCommunityWithReceiptSigner additionally enables post-commit receipt work
 // and read-only re-signing after acknowledged delivery material is cleaned.
-func NewCommunityWithReceiptSigner(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte, signer Signer) (*Community, error) {
+func NewCommunityWithReceiptSigner(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte, signer Signer, gate AuthorizationGate) (*Community, error) {
 	if signer == nil {
 		return nil, errors.New("receipt signer is required")
 	}
-	c, err := NewCommunity(pool, verifier, signingEpoch, requestKey)
+	c, err := NewCommunity(pool, verifier, signingEpoch, requestKey, gate)
 	if err != nil {
 		return nil, err
 	}
@@ -67,20 +68,27 @@ type SignupIntent struct {
 
 var usernamePattern = regexp.MustCompile(`^[a-z][a-z0-9_]{5,23}$`)
 
-// ValidateSignupTicket is a cheap, read-only check before scheduling expensive
-// password work. CreateSignupIntent and CommitSignup still recheck against the
-// database clock at their own authoritative decision points.
-func (c *Community) ValidateSignupTicket(ctx context.Context, encoded string) error {
-	var at time.Time
-	if err := c.pool.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
-		return err
+// ValidateSignupTicket obtains the generation before scheduling expensive
+// password work. The trusted boundary carries that generation into the intent;
+// it is never accepted from a public request or replaced after password work.
+func (c *Community) ValidateSignupTicket(ctx context.Context, encoded string) (AuthorizationDecision, error) {
+	decision, err := c.gate.Snapshot(ctx)
+	if err != nil {
+		return AuthorizationDecision{}, err
 	}
-	_, err := c.verifier.VerifyRegistrationTicket(encoded, at)
-	return err
+	_, err = c.verifier.VerifyRegistrationTicket(encoded, decision.TrustedAt)
+	return decision, err
 }
 
-func (c *Community) CreateSignupIntent(ctx context.Context, encodedTicket, username string, password PasswordMaterial, installation [16]byte) (SignupIntent, error) {
+func (c *Community) CreateSignupIntent(ctx context.Context, encodedTicket, username string, password PasswordMaterial, installation [16]byte, expectedGeneration uint64) (SignupIntent, error) {
 	var result SignupIntent
+	decision, err := c.gate.Snapshot(ctx)
+	if err != nil {
+		return result, err
+	}
+	if expectedGeneration == 0 || decision.Generation != expectedGeneration {
+		return result, ErrAuthorizationUnavailable
+	}
 	if !usernamePattern.MatchString(username) || password.ParametersVersion < 1 || password.Salt == ([16]byte{}) || password.Hash == ([32]byte{}) {
 		return result, ErrIntentInvalid
 	}
@@ -102,11 +110,8 @@ func (c *Community) CreateSignupIntent(ctx context.Context, encodedTicket, usern
 	if err != nil {
 		return result, err
 	}
-	defer tx.Rollback(ctx)
-	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
-		return result, err
-	}
+	defer c.gate.Abort(ctx, tx)
+	at := decision.TrustedAt
 	ticket, err := c.verifier.VerifyRegistrationTicket(encodedTicket, at)
 	if err != nil {
 		return result, err
@@ -116,12 +121,15 @@ func (c *Community) CreateSignupIntent(ctx context.Context, encodedTicket, usern
 		return result, err
 	}
 	_, err = tx.Exec(ctx, `INSERT INTO c_auth.signup_intents
-	(intent_id,challenge,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,created_at,expires_at,state,attempts)
-	VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$13::timestamptz+interval '10 minutes','OPEN',0)`, id[:], challenge[:], wire, ticket.Slot[:], ticket.BootstrapKey[:], int64(ticket.Window), username, password.Hash[:], password.Salt[:], password.ParametersVersion, codeHash[:], installation[:], at)
+	(intent_id,challenge,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,created_at,expires_at,state,attempts,authorization_generation)
+	VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$13::timestamptz+interval '10 minutes','OPEN',0,$14)`, id[:], challenge[:], wire, ticket.Slot[:], ticket.BootstrapKey[:], int64(ticket.Window), username, password.Hash[:], password.Salt[:], password.ParametersVersion, codeHash[:], installation[:], at, int64(expectedGeneration))
 	if err != nil {
 		return result, err
 	}
-	if err = tx.Commit(ctx); err != nil {
+	if _, err = c.gate.CommitAuthorized(ctx, tx, expectedGeneration, func(final AuthorizationDecision) error {
+		_, e := c.verifier.VerifyRegistrationTicket(encodedTicket, final.TrustedAt)
+		return e
+	}); err != nil {
 		return result, err
 	}
 	return SignupIntent{ID: protocol.IntentID(id), Challenge: protocol.Challenge(challenge), ExpiresAt: at.Add(10 * time.Minute), RecoveryCode: code}, nil
@@ -145,6 +153,10 @@ type SignupResult struct {
 
 func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (SignupResult, error) {
 	var result SignupResult
+	decision, err := c.gate.Snapshot(ctx)
+	if err != nil {
+		return result, err
+	}
 	confirmed, err := recoveryDigest(request.RecoveryCode)
 	if err != nil {
 		return result, err
@@ -162,16 +174,29 @@ func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (Si
 	if err != nil {
 		return result, err
 	}
-	defer tx.Rollback(ctx)
+	defer c.gate.Abort(ctx, tx)
 	// A prior committed request returns only a non-secret outcome. No new
-	// authentication authority is granted by this idempotency replay.
+	// authentication authority is granted by this idempotency replay. It still
+	// checks the current gate at its final response point, including after waits.
+	finishReplay := func(replay SignupResult, replayErr error) (SignupResult, error) {
+		if _, e := c.gate.CommitAuthorized(ctx, tx, decision.Generation); e != nil {
+			return SignupResult{}, e
+		}
+		return replay, replayErr
+	}
 	if replay, found, e := signupReplay(ctx, tx, keyDigest, mac); found || e != nil {
+		if found {
+			return finishReplay(replay, e)
+		}
 		return replay, e
 	}
 	var located []byte
 	if err = tx.QueryRow(ctx, `SELECT slot_id FROM c_auth.signup_intents WHERE intent_id=$1 AND state='OPEN'`, request.IntentID[:]).Scan(&located); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			if replay, found, e := signupReplay(ctx, tx, keyDigest, mac); found || e != nil {
+				if found {
+					return finishReplay(replay, e)
+				}
 				return replay, e
 			}
 			return result, ErrIntentInvalid
@@ -182,26 +207,33 @@ func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (Si
 		return result, err
 	}
 	if replay, found, e := signupReplay(ctx, tx, keyDigest, mac); found || e != nil {
+		if found {
+			return finishReplay(replay, e)
+		}
 		return replay, e
 	}
 	var ticketBytes, challengeBytes, salt, hash, recovery, installation []byte
 	var username string
-	var params int64
+	var params, generation int64
 	var expires time.Time
-	err = tx.QueryRow(ctx, `SELECT ticket,challenge,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,expires_at FROM c_auth.signup_intents WHERE intent_id=$1 AND state='OPEN' FOR UPDATE`, request.IntentID[:]).Scan(&ticketBytes, &challengeBytes, &username, &hash, &salt, &params, &recovery, &installation, &expires)
+	err = tx.QueryRow(ctx, `SELECT ticket,challenge,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,expires_at,authorization_generation FROM c_auth.signup_intents WHERE intent_id=$1 AND state='OPEN' FOR UPDATE`, request.IntentID[:]).Scan(&ticketBytes, &challengeBytes, &username, &hash, &salt, &params, &recovery, &installation, &expires, &generation)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			if replay, found, e := signupReplay(ctx, tx, keyDigest, mac); found || e != nil {
+				if found {
+					return finishReplay(replay, e)
+				}
 				return replay, e
 			}
 			return result, ErrIntentInvalid
 		}
 		return result, err
 	}
-	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
-		return result, err
+	if generation <= 0 || uint64(generation) != decision.Generation {
+		return result, ErrAuthorizationUnavailable
 	}
+	expectedGeneration := uint64(generation)
+	at := decision.TrustedAt
 	if !at.Before(expires) || !hmac.Equal(confirmed[:], recovery) || len(challengeBytes) != 32 {
 		return result, ErrIntentInvalid
 	}
@@ -227,13 +259,12 @@ func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (Si
 		if replay, found, e := signupReplay(ctx, tx, keyDigest, mac); e != nil && (!found || !errors.Is(e, ErrSlotUnavailable)) {
 			return replay, e
 		}
-		if err = c.checkSignupDeadline(ctx, tx, ticketBytes, expires); err != nil {
-			return result, err
-		}
 		if err = clearSignupIntent(ctx, tx, request.IntentID, "ABANDONED"); err != nil {
 			return result, err
 		}
-		if err = tx.Commit(ctx); err != nil {
+		if _, err = c.gate.CommitAuthorized(ctx, tx, expectedGeneration, func(final AuthorizationDecision) error {
+			return c.validateSignupDeadline(ticketBytes, expires, final.TrustedAt)
+		}); err != nil {
 			return result, err
 		}
 		return result, ErrSlotUnavailable
@@ -249,6 +280,9 @@ func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (Si
 	}
 	if command.RowsAffected() != 1 {
 		if replay, found, e := signupReplay(ctx, tx, keyDigest, mac); found || e != nil {
+			if found {
+				return finishReplay(replay, e)
+			}
 			return replay, e
 		}
 		return result, ErrConflict
@@ -273,16 +307,15 @@ func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (Si
 				if _, err = tx.Exec(ctx, `ROLLBACK TO SAVEPOINT signup_account`); err != nil {
 					return result, err
 				}
-				if err = c.checkSignupDeadline(ctx, tx, ticketBytes, expires); err != nil {
-					return result, err
-				}
 				if err = clearSignupIntent(ctx, tx, request.IntentID, "ABANDONED"); err != nil {
 					return result, err
 				}
 				if _, err = tx.Exec(ctx, `UPDATE c_auth.request_results SET result_code='USERNAME_UNAVAILABLE' WHERE key_digest=$1`, keyDigest[:]); err != nil {
 					return result, err
 				}
-				if err = tx.Commit(ctx); err != nil {
+				if _, err = c.gate.CommitAuthorized(ctx, tx, expectedGeneration, func(final AuthorizationDecision) error {
+					return c.validateSignupDeadline(ticketBytes, expires, final.TrustedAt)
+				}); err != nil {
 					return result, err
 				}
 				return result, ErrUsernameTaken
@@ -311,23 +344,25 @@ func (c *Community) CommitSignup(ctx context.Context, request SignupRequest) (Si
 	// Tokens in this lab use the same capability digest boundary as the spec.
 	tokenHash := sha256.Sum256(token[:])
 	revokeHash := digest("HNUHOLE/REVOKE-STORAGE/V1", revoke[:])
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
-		return result, err
-	}
-	if _, err = tx.Exec(ctx, `INSERT INTO c_auth.sessions(token_digest,revoke_digest,account_id,installation_id,session_generation,created_at,last_activity_at,expires_at) VALUES($1,$2,$3,$4,1,$5,$5,$5::timestamptz+interval '30 days')`, tokenHash[:], revokeHash[:], account, installation, at); err != nil {
+	if _, err = tx.Exec(ctx, `INSERT INTO c_auth.sessions(token_digest,revoke_digest,account_id,installation_id,session_generation,created_at,last_activity_at,expires_at,authorization_generation) VALUES($1,$2,$3,$4,1,$5,$5,$5::timestamptz+interval '30 days',$6)`, tokenHash[:], revokeHash[:], account, installation, at, generation); err != nil {
 		return result, err
 	}
 	if err = clearSignupIntent(ctx, tx, request.IntentID, "CONSUMED"); err != nil {
 		return result, err
 	}
-	// Uniqueness/FK waits above can cross an expiry boundary. Re-sample the
-	// database clock after those waits and roll back the entire command if stale.
-	if err = c.checkSignupDeadline(ctx, tx, ticketBytes, expires); err != nil {
+	// All provisional writes and uniqueness/FK waits precede this final gate
+	// decision. A freeze or recovery during those waits rolls back every grant.
+	decision, err = c.gate.CommitAuthorized(ctx, tx, expectedGeneration, func(final AuthorizationDecision) error {
+		if e := c.validateSignupDeadline(ticketBytes, expires, final.TrustedAt); e != nil {
+			return e
+		}
+		_, e := tx.Exec(ctx, `UPDATE c_auth.sessions SET created_at=$2,last_activity_at=$2,expires_at=$2::timestamptz+interval '30 days' WHERE token_digest=$1`, tokenHash[:], final.TrustedAt)
+		return e
+	})
+	if err != nil {
 		return result, err
 	}
-	if err = tx.Commit(ctx); err != nil {
-		return result, err
-	}
+	at = decision.TrustedAt
 	return SignupResult{Created: true, AccountID: account, ExpiresAt: at.Add(30 * 24 * time.Hour), SessionToken: token, RevokeSecret: revoke}, nil
 }
 
@@ -368,11 +403,7 @@ func clearSignupIntent(ctx context.Context, tx pgx.Tx, id protocol.IntentID, sta
 	return err
 }
 
-func (c *Community) checkSignupDeadline(ctx context.Context, tx pgx.Tx, ticket []byte, expires time.Time) error {
-	var at time.Time
-	if err := tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
-		return err
-	}
+func (c *Community) validateSignupDeadline(ticket []byte, expires, at time.Time) error {
 	if !at.Before(expires) {
 		return ErrIntentInvalid
 	}

@@ -2,6 +2,8 @@
 
 `0001_authprivacy_lab.sql` 是认证数据库边界的最小可执行子集，属于 `authlab`，不进入现有 Goose 生产迁移序列，不改动 `services/api/migrations/0001_sessions.sql` 或 `0002_channels.sql`。
 
+`0002_authorization_gate.sql` 在同一隔离库中追加持久授权门禁、恢复审计和注册／会话代次列；旧意图默认代次 0，不能凭迁移自动获得授权。门禁初始为 FROZEN，必须由受限恢复角色带签名证据显式推进代次后开放。此 SQL 不进入生产 Goose 迁移。
+
 ## 执行边界
 
 在单独、可丢弃的 C 实验数据库中，以一个事务执行完整 SQL。文件只含 Up SQL，没有 `BEGIN`、`COMMIT` 或 Down；是否提交由实验执行器决定。`CREATE SCHEMA c_auth` 刻意在已存在同名 schema 时失败，不能拿它重复覆盖既有账号数据。

@@ -1,6 +1,6 @@
 # 产品设计
 
-认证隐私已进入用户授权的 Phase E。[本轮隔离实现](auth-privacy-eligibility-http-validation-report.md)接续首条数据库切片，加入校邮确认、退役后的原确认续办和双方 HTTP／mTLS。复现入口见[实验 README](../../services/api/authlab/README.md)，完整认证与生产验收仍未完成。
+认证隐私已进入用户授权的 Phase E。[第 0 步 Authorization Safety Gate](auth-authorization-safety-gate-validation-report.md)已在隔离实验中保护现有注册与初始会话，接续[校邮确认／HTTP 历史切片](auth-privacy-eligibility-http-validation-report.md)。复现入口见[实验 README](../../services/api/authlab/README.md)；用户名密码登录、完整会话和生产验收仍未完成。
 
 这里是当前设计的统一入口。每项规则只在所属模块维护，跨模块通过链接引用；历史讨论用于追溯，不再作为持续追加的规则总表。
 

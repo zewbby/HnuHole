@@ -33,8 +33,8 @@ type ReceiptProcessor interface {
 }
 
 type CommunityBackend interface {
-	ValidateSignupTicket(context.Context, string) error
-	CreateSignupIntent(context.Context, string, string, authprivacy.PasswordMaterial, [16]byte) (authprivacy.SignupIntent, error)
+	ValidateSignupTicket(context.Context, string) (authprivacy.AuthorizationDecision, error)
+	CreateSignupIntent(context.Context, string, string, authprivacy.PasswordMaterial, [16]byte, uint64) (authprivacy.SignupIntent, error)
 	CommitSignup(context.Context, authprivacy.SignupRequest) (authprivacy.SignupResult, error)
 	RetireUnusedSlot(context.Context, string) (authprivacy.RetirementReply, error)
 }
@@ -620,8 +620,13 @@ func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backe
 			b.bad(w, err)
 			return
 		}
-		if err = backend.ValidateSignupTicket(r.Context(), ticket); err != nil {
+		decision, err := backend.ValidateSignupTicket(r.Context(), ticket)
+		if err != nil {
 			b.communityFailure(w, err, false)
+			return
+		}
+		if decision.Generation == 0 || decision.TrustedAt.IsZero() {
+			b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)
 			return
 		}
 		material, err := passwords.PreparePassword(r.Context(), password, username)
@@ -631,7 +636,7 @@ func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backe
 		}
 		var installation [16]byte
 		copy(installation[:], installationBytes)
-		result, err := backend.CreateSignupIntent(r.Context(), ticket, username, material, installation)
+		result, err := backend.CreateSignupIntent(r.Context(), ticket, username, material, installation, decision.Generation)
 		if err != nil {
 			b.communityFailure(w, err, false)
 			return
@@ -711,6 +716,8 @@ func validRecoveryCode(value string, output bool) bool {
 
 func (b *boundary) communityFailure(w http.ResponseWriter, err error, commit bool) {
 	switch {
+	case errors.Is(err, authprivacy.ErrAuthorizationUnavailable):
+		b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)
 	case errors.Is(err, authprivacy.ErrExpired):
 		b.fail(w, 410, "RESULT_EXPIRED", 0)
 	case errors.Is(err, authprivacy.ErrConflict):

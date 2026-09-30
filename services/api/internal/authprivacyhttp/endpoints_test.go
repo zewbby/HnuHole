@@ -89,13 +89,13 @@ type httpTestCommunity struct {
 	commitError   error
 }
 
-func (f *httpTestCommunity) ValidateSignupTicket(context.Context, string) error {
+func (f *httpTestCommunity) ValidateSignupTicket(context.Context, string) (authprivacy.AuthorizationDecision, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.events = append(f.events, "validate")
-	return f.validateError
+	return authprivacy.AuthorizationDecision{TrustedAt: time.Now(), Generation: 1}, f.validateError
 }
-func (f *httpTestCommunity) CreateSignupIntent(context.Context, string, string, authprivacy.PasswordMaterial, [16]byte) (authprivacy.SignupIntent, error) {
+func (f *httpTestCommunity) CreateSignupIntent(context.Context, string, string, authprivacy.PasswordMaterial, [16]byte, uint64) (authprivacy.SignupIntent, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.events = append(f.events, "intent")

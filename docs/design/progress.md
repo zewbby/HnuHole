@@ -1,6 +1,8 @@
 # 设计进度与剩余工作
 
-> **2026-09-29 第 0 步：**Authorization Safety Gate 设计已在第 39 轮收口：FROZEN 时所有认证读写 fail closed；单个受限恢复角色执行显式恢复，不采用双人控制；允许 5 秒时钟回退抖动；可信证据 TTL 5 分钟。下一步先把 Gate 接入现有注册 CommitSignup 并补时间/灾备故障测试，验收后再进入用户名密码登录＋完整会话管理。
+> **2026-09-30 第 0 步隔离实现：**Authorization Safety Gate 已接入现有 C 注册意图、最终开户与初始会话、隔离认证读入口；含持久冻结、库外签名证据／锚点、可信时间高水位、授权代次及受限签名恢复。5 秒回退／5 分钟证据、旧快照、跨连接和提交途中冻结等故障测试见[本轮报告](auth-authorization-safety-gate-validation-report.md)。第 0 步隔离验收后可进入用户名密码登录＋完整会话管理；生产独立授时、恢复运营、真实灾备、人类审计仍未完成。
+
+> **2026-09-29 第 0 步设计历史：**Authorization Safety Gate 设计在第 39 轮收口：FROZEN 时所有认证读写 fail closed；单个受限恢复角色执行显式恢复，不采用双人控制；允许 5 秒时钟回退抖动；可信证据 TTL 5 分钟。后续实现状态以上方 2026-09-30 记录为准。
 
 > **2026-09-29 当前实现进展：**用户已授权进入 Phase E。[实验切片](../../services/api/authlab/README.md)在首条数据库验证后加入校邮发码／确认、最新码与预算、退役后的原确认续办、双方 HTTP／mTLS 和注册密码准备。实现、真实 PostgreSQL／TLS 故障验证及剩余门槛见[本轮报告](auth-privacy-eligibility-http-validation-report.md)。生产路由／迁移、用户名密码登录、独立恢复、七天注销、移动端及生产安全验收继续待做。
 

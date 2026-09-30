@@ -1,7 +1,7 @@
 # Authorization Safety Gate：可信时间与灾备授权门禁设计
 
 日期：2026-09-29  
-状态：**accepted（2026-09-29）；未实施。** 第 39 轮四项边界均已确认。
+状态：**accepted（2026-09-29）；第 0 步已在隔离认证实验中实施（2026-09-30）。** 第 39 轮四项边界均已确认。实现与验证见[第 0 步交付报告](auth-authorization-safety-gate-validation-report.md)；生产独立授时／外部锚点／灾备演练仍未验收。
 
 ## 1. 目的
 

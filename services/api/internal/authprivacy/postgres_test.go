@@ -22,6 +22,7 @@ import (
 type lab struct {
 	c                                *Community
 	v                                *VerifierStore
+	gate                             *PostgresAuthorizationGate
 	cp, vp                           *pgxpool.Pool
 	vPrivate, cPrivate, cNextPrivate ed25519.PrivateKey
 }
@@ -135,7 +136,8 @@ func newLab(t *testing.T) *lab {
 	if err != nil {
 		t.Fatal(err)
 	}
-	l.c, err = NewCommunity(l.cp, verifier, 1, requestKey)
+	l.gate = newLabGate(t, l.cp)
+	l.c, err = NewCommunity(l.cp, verifier, 1, requestKey, l.gate)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,6 +146,62 @@ func newLab(t *testing.T) *lab {
 		t.Fatal(err)
 	}
 	return l
+}
+
+func newLabGate(t *testing.T, pool *pgxpool.Pool) *PostgresAuthorizationGate {
+	t.Helper()
+	publicEvidence, privateEvidence, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	publicRecovery, privateRecovery, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	publicBreakGlass, _, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, privateAnchor, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	provider := NewFileAuthorizationEvidenceProvider(filepath.Join(dir, "time-evidence.json"))
+	anchor, err := NewFileAuthorizationAnchorStore(filepath.Join(dir, "checkpoint.json"), privateAnchor)
+	if err != nil {
+		t.Fatal(err)
+	}
+	gate, err := NewPostgresAuthorizationGate(AuthorizationGateConfig{
+		Pool: pool, Domain: "hnuhole-authlab-community", Evidence: provider,
+		EvidencePublicKey: publicEvidence, RecoveryPublicKey: publicRecovery,
+		BreakGlassPublicKey: publicBreakGlass, Anchor: anchor, Clock: time.Now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Now().UTC()
+	evidence, err := SignAuthorizationEvidence(privateEvidence, AuthorizationEvidence{
+		Domain: "hnuhole-authlab-community", Version: 1, Generation: 1,
+		IssuedAt: now, TrustedAt: now, ValidUntil: now.Add(authorizationEvidenceTTL),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = provider.Store(context.Background(), evidence); err != nil {
+		t.Fatal(err)
+	}
+	request, err := SignAuthorizationRecovery(privateRecovery, AuthorizationRecoveryRequest{
+		Role: "authorization-recovery", Actor: "isolated-test", Reason: "fresh lab bootstrap",
+		OperationID: "lab-bootstrap", Mode: AuthorizationRecoveryNormal, Evidence: evidence,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = gate.Recover(context.Background(), request); err != nil {
+		t.Fatal(err)
+	}
+	return gate
 }
 
 func (l *lab) ticket(t *testing.T) (protocol.SignedTicket, ed25519.PrivateKey) {
@@ -187,7 +245,11 @@ func (l *lab) intent(t *testing.T, ticket protocol.SignedTicket, private ed25519
 	if _, err := rand.Read(installation[:]); err != nil {
 		t.Fatal(err)
 	}
-	intent, err := l.c.CreateSignupIntent(context.Background(), ticket.Encode(), username, password, installation)
+	decision, err := l.gate.Snapshot(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	intent, err := l.c.CreateSignupIntent(context.Background(), ticket.Encode(), username, password, installation, decision.Generation)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -267,8 +329,8 @@ func shortIntent(t *testing.T, l *lab, ticket protocol.SignedTicket, private ed2
 	if err != nil {
 		t.Fatal(err)
 	}
-	mustExec(t, l.cp, `INSERT INTO c_auth.signup_intents(intent_id,challenge,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,created_at,expires_at,state,attempts)
-	SELECT $1,$2,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,clock_timestamp(),clock_timestamp()+interval '300 milliseconds','OPEN',0 FROM c_auth.signup_intents WHERE intent_id=$3`, id[:], challenge[:], source.ID[:])
+	mustExec(t, l.cp, `INSERT INTO c_auth.signup_intents(intent_id,challenge,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,created_at,expires_at,state,attempts,authorization_generation)
+	SELECT $1,$2,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,clock_timestamp(),clock_timestamp()+interval '300 milliseconds','OPEN',0,authorization_generation FROM c_auth.signup_intents WHERE intent_id=$3`, id[:], challenge[:], source.ID[:])
 	request.IntentID = protocol.IntentID(id)
 	message := protocol.BootstrapMessageBytes(ticket, request.IntentID, protocol.Challenge(challenge))
 	request.Proof = protocol.EncodeCanonicalBase64url(ed25519.Sign(private, message[:]))
@@ -490,8 +552,8 @@ func TestPostgresIsolatedSlice(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		mustExec(t, l.cp, `INSERT INTO c_auth.signup_intents(intent_id,challenge,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,created_at,expires_at,state,attempts)
-		SELECT $1,$2,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,clock_timestamp(),clock_timestamp()+interval '150 milliseconds','OPEN',0 FROM c_auth.signup_intents WHERE intent_id=$3`, shortID[:], shortChallenge[:], intent.ID[:])
+		mustExec(t, l.cp, `INSERT INTO c_auth.signup_intents(intent_id,challenge,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,created_at,expires_at,state,attempts,authorization_generation)
+		SELECT $1,$2,ticket,slot_id,bootstrap_public_key,admission_window,username,password_hash,password_salt,password_params_version,recovery_digest,installation_id,clock_timestamp(),clock_timestamp()+interval '150 milliseconds','OPEN',0,authorization_generation FROM c_auth.signup_intents WHERE intent_id=$3`, shortID[:], shortChallenge[:], intent.ID[:])
 		req.IntentID = protocol.IntentID(shortID)
 		message := protocol.BootstrapMessageBytes(ticket, req.IntentID, protocol.Challenge(shortChallenge))
 		req.Proof = protocol.EncodeCanonicalBase64url(ed25519.Sign(private, message[:]))

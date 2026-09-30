@@ -282,7 +282,7 @@ func e2eNewServices(t *testing.T) *e2eServices {
 			return nil, fmt.Errorf("synthetic signer temporarily unavailable")
 		}
 		return s.cSigner(ctx, epoch, message)
-	})
+	}, e2eAuthorizationGate(t, s.cp))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -358,6 +358,62 @@ func e2eNewServices(t *testing.T) *e2eServices {
 	s.client = &http.Client{Transport: transport, Timeout: 5 * time.Second}
 	t.Cleanup(transport.CloseIdleConnections)
 	return s
+}
+
+func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) *authprivacy.PostgresAuthorizationGate {
+	t.Helper()
+	evidencePublic, evidencePrivate, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	recoveryPublic, recoveryPrivate, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	breakGlassPublic, _, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, anchorPrivate, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	provider := authprivacy.NewFileAuthorizationEvidenceProvider(filepath.Join(dir, "evidence.json"))
+	anchor, err := authprivacy.NewFileAuthorizationAnchorStore(filepath.Join(dir, "anchor.json"), anchorPrivate)
+	if err != nil {
+		t.Fatal(err)
+	}
+	gate, err := authprivacy.NewPostgresAuthorizationGate(authprivacy.AuthorizationGateConfig{
+		Pool: pool, Domain: "hnuhole-e2e-community", Evidence: provider,
+		EvidencePublicKey: evidencePublic, RecoveryPublicKey: recoveryPublic,
+		BreakGlassPublicKey: breakGlassPublic, Anchor: anchor, Clock: time.Now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Now().UTC()
+	evidence, err := authprivacy.SignAuthorizationEvidence(evidencePrivate, authprivacy.AuthorizationEvidence{
+		Domain: "hnuhole-e2e-community", Version: 1, Generation: 1,
+		IssuedAt: now, TrustedAt: now, ValidUntil: now.Add(5 * time.Minute),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := provider.Store(context.Background(), evidence); err != nil {
+		t.Fatal(err)
+	}
+	recovery, err := authprivacy.SignAuthorizationRecovery(recoveryPrivate, authprivacy.AuthorizationRecoveryRequest{
+		Role: "authorization-recovery", Actor: "isolated-https-test", Reason: "fresh e2e bootstrap",
+		OperationID: "e2e-bootstrap", Mode: authprivacy.AuthorizationRecoveryNormal, Evidence: evidence,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := gate.Recover(context.Background(), recovery); err != nil {
+		t.Fatal(err)
+	}
+	return gate
 }
 
 type e2eConfirmation struct {
