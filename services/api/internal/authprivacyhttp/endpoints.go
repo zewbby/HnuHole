@@ -81,6 +81,7 @@ type CommunityOptions struct {
 	Sessions       SessionBackend
 	Recovery       RecoveryBackend
 	Closures       ClosureBackend
+	Credentials    authprivacy.CredentialBackend
 	Passwords      PasswordPreparer
 	InternalPeer   PeerIdentity
 	AllowedOrigins []string
@@ -137,9 +138,12 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if options.Closures == nil {
 		options.Closures, _ = options.Backend.(ClosureBackend)
 	}
+	if options.Credentials == nil {
+		options.Credentials, _ = options.Backend.(authprivacy.CredentialBackend)
+	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
-			b.communityPublic(w, r, options.Backend, options.Sessions, options.Recovery, options.Closures, options.Passwords)
+			b.communityPublic(w, r, options.Backend, options.Sessions, options.Recovery, options.Closures, options.Credentials, options.Passwords)
 		}),
 		Internal: b.wrap(true, func(w http.ResponseWriter, r *http.Request) { b.communityInternal(w, r, options.Backend) }),
 	}, nil
@@ -190,7 +194,7 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				b.fail(w, 401, "AUTHENTICATION_FAILED", 0)
 				return
 			}
-			if hasHeader(r.Header, "Authorization") || hasHeader(r.Header, "Idempotency-Key") || hasHeader(r.Header, "V-Installation-ID") || hasHeader(r.Header, "OTP-Flow-ID") || hasHeader(r.Header, "Origin") {
+			if hasHeader(r.Header, "Authorization") || hasHeader(r.Header, "Idempotency-Key") || hasHeader(r.Header, "V-Installation-ID") || hasHeader(r.Header, "OTP-Flow-ID") || hasHeader(r.Header, "Origin") || hasHeader(r.Header, "Reset-Intent-ID") || hasHeader(r.Header, "Credential-Change-ID") {
 				b.bad(w, errMalformed)
 				return
 			}
@@ -250,6 +254,9 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 	} else {
 		allowed["authorization"] = true
 		allowed["reset-intent-id"] = true
+		if isPasskeyRemovalPath(r.URL.Path) {
+			allowed["credential-change-id"] = true
+		}
 	}
 	for _, name := range strings.Split(requested, ",") {
 		if name = strings.ToLower(strings.TrimSpace(name)); name != "" && !allowed[name] {
@@ -275,10 +282,19 @@ func publicMethod(service Service, path string) string {
 		case "/api/v1/auth/registration-intents", "/api/v1/auth/registrations",
 			"/api/v1/auth/sessions", "/api/v1/auth/session-renewals",
 			"/api/v1/auth/session-revocations", "/api/v1/auth/recovery-code-reset-intents",
-			"/api/v1/auth/password-resets", "/api/v1/account-closures":
+			"/api/v1/auth/password-resets", "/api/v1/account-closures",
+			"/api/v1/auth/recovery-code-rotations", "/api/v1/auth/passkey-options",
+			"/api/v1/auth/passkeys", "/api/v1/auth/passkey-removal-intents",
+			"/api/v1/auth/passkey-reset-options", "/api/v1/auth/passkey-reset-intents":
 			return http.MethodPost
-		case "/api/v1/auth/session", "/api/v1/auth/devices", "/api/v1/auth/password-reset-result":
+		case "/api/v1/auth/session", "/api/v1/auth/devices", "/api/v1/auth/password-reset-result", "/api/v1/auth/recovery-credentials":
 			return http.MethodGet
+		}
+		if isRotationConfirmationPath(path) {
+			return http.MethodPost
+		}
+		if isPasskeyRemovalPath(path) {
+			return http.MethodDelete
 		}
 		if strings.HasPrefix(path, "/api/v1/account-closures/") &&
 			!strings.Contains(strings.TrimPrefix(path, "/api/v1/account-closures/"), "/") {
@@ -324,6 +340,10 @@ func writeJSON(w http.ResponseWriter, status int, body any) {
 }
 
 func (b *boundary) verifierPublic(w http.ResponseWriter, r *http.Request, backend EligibilityBackend) {
+	if hasHeader(r.Header, "Credential-Change-ID") {
+		b.bad(w, errMalformed)
+		return
+	}
 	method := publicMethod(VerifierService, r.URL.Path)
 	if method == "" {
 		b.fail(w, 404, "REQUEST_INVALID", 0)
@@ -625,7 +645,7 @@ var otpPattern = regexp.MustCompile(`^[0-9]{6}$`)
 
 var privateUsername = regexp.MustCompile(`^[a-z][a-z0-9_]{5,23}$`)
 
-func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backend CommunityBackend, sessions SessionBackend, recovery RecoveryBackend, closures ClosureBackend, passwords PasswordPreparer) {
+func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backend CommunityBackend, sessions SessionBackend, recovery RecoveryBackend, closures ClosureBackend, credentials authprivacy.CredentialBackend, passwords PasswordPreparer) {
 	method := publicMethod(CommunityService, r.URL.Path)
 	if method == "" {
 		b.fail(w, 404, "RESOURCE_NOT_FOUND", 0)
@@ -642,6 +662,14 @@ func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backe
 	}
 	if hasHeader(r.Header, "Reset-Intent-ID") && r.URL.Path != "/api/v1/auth/password-reset-result" {
 		b.bad(w, errMalformed)
+		return
+	}
+	if hasHeader(r.Header, "Credential-Change-ID") && !isPasskeyRemovalPath(r.URL.Path) {
+		b.bad(w, errMalformed)
+		return
+	}
+	if isCredentialPath(r.URL.Path) {
+		b.communityCredentialPublic(w, r, credentials, passwords)
 		return
 	}
 	if r.URL.Path == "/api/v1/auth/recovery-code-reset-intents" || r.URL.Path == "/api/v1/auth/password-resets" || r.URL.Path == "/api/v1/auth/password-reset-result" {

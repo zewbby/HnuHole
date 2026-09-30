@@ -430,7 +430,7 @@ func TestRecoveryClosureHTTPRejectsImpossibleAuthorityResponses(t *testing.T) {
 func TestRecoveryClosureHTTPDoesNotExposeAdministrativeRoutes(t *testing.T) {
 	backend, endpoints, pki := newHTTPTestRecoveryClosures(t)
 	server, client := httpTestPublicServer(t, endpoints.Public, pki, CommunityService)
-	for _, path := range []string{"/internal/v1/password-resets", "/internal/v1/account-closures", "/api/v1/account-closures/finalize", "/api/v1/auth/passkey-reset-intents"} {
+	for _, path := range []string{"/internal/v1/password-resets", "/internal/v1/account-closures", "/api/v1/account-closures/finalize"} {
 		response, _, _ := doHTTPTest(t, client, "POST", server.URL+path, `{}`, map[string][]string{"Content-Type": {"application/json"}})
 		if response.StatusCode != 404 && response.StatusCode != 405 {
 			t.Fatalf("administrative route exposed: %s status=%d", path, response.StatusCode)

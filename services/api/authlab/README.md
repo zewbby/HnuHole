@@ -1,14 +1,18 @@
 # 认证隐私隔离实现与验证
 
-用户已授权进入 Phase E；本隔离切片已实现第 0 步 Authorization Safety Gate、用户名密码登录与服务端会话管理，并继续加入恢复码重设和七天注销。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；现有 API 主路由、演示认证器和生产 Goose 迁移没有接入这套认证。
+用户已授权进入 Phase E；本隔离切片已实现第 0 步 Authorization Safety Gate、用户名密码登录与服务端会话管理，并继续加入恢复码重设、七天注销和恢复凭据管理。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；现有 API 主路由、演示认证器和生产 Goose 迁移没有接入这套认证。
 
 校邮与 HTTP 切片的交付见[历史报告](../../../docs/design/auth-privacy-eligibility-http-validation-report.md)；首条数据库切片见[更早报告](../../../docs/design/auth-privacy-isolated-validation-report.md)。`verification.json` 固定首轮证据，`eligibility-http-verification.json` 固定上一轮证据；第 0 步另有新记录。
 
 第 0 步实现与门槛见[Authorization Safety Gate 交付报告](../../../docs/design/auth-authorization-safety-gate-validation-report.md)，机器记录在 `authorization-safety-gate-verification.json`。登录／会话切片见[交付报告](../../../docs/design/auth-privacy-session-lifecycle-validation-report.md)与 `session-lifecycle-verification.json`。历史验证 JSON 保持不改。
 
-恢复码／注销的交付见[本轮报告](../../../docs/design/auth-privacy-recovery-closure-validation-report.md)与 `recovery-closure-verification.json`；这些新增服务和端点仍未接入生产。
+恢复码／注销的交付见[历史报告](../../../docs/design/auth-privacy-recovery-closure-validation-report.md)与 `recovery-closure-verification.json`；这些新增服务和端点仍未接入生产。
+
+恢复凭据管理的交付见[本轮报告](../../../docs/design/auth-privacy-recovery-credentials-validation-report.md)与 `recovery-credentials-verification.json`；包含新鲜密码换码和可选WebAuthn绑定／恢复／移除。
 
 ## 已实现
+
+- 当前会话＋新鲜密码复验恢复码轮换、五分钟Passkey绑定与固定目标移除；固定ES256／UV／可发现选项／none attestation，随机用户句柄，可发现恢复只签受限重设权限。所有提交继续经Gate并推进统一凭据版本。
 
 - 严格固定消息／编码、Ed25519、公钥导出槽位、bootstrap 持钥证明、当前／上一准入桶。
 - 校邮精确字节语法、60 秒发送间隔、最新码、五分钟有效期、设备三错锁五分钟、当前码跨流程／设备十次真错，以及独立发码／验证预算。
@@ -46,14 +50,14 @@ sh ./run-isolated.sh
 
 1. 在不同数据库依序加载各侧实验迁移；这些部分 SQL 不能直接放进生产迁移序列。
 2. 从数据库以外加载不同用途的密钥、版本与环境受信签名钥。`NewEligibility` 拒绝不同用途复用同一钥；HTTP 网络限流钥另行生成，V/C 安装 ID、请求 ID 和幂等键独立。
-3. 为 V 注入 `SMTPProvider`／邮件服务、提交后 `Signer` 和固定 C `PeerClient`。为 C 注入 `NewPasswordPreparer` 的本地常见／泄漏密码名单及明确并发上限；`NewCommunityWithReceiptSigner` 可推动已提交收据，并在 ACK 后只读重签。
+3. C的可选Passkey还须通过 `community.WithWebAuthn(WebAuthnConfig{RPID, Origins})` 注入经审阅的固定HTTPS策略；未注入时拒绝Passkey操作，不能从请求选择RP／origin。测试RP只是合成材料。为 V 注入 `SMTPProvider`／邮件服务、提交后 `Signer` 和固定 C `PeerClient`。为 C 注入 `NewPasswordPreparer` 的本地常见／泄漏密码名单及明确并发上限；`NewCommunityWithReceiptSigner` 可推动已提交收据，并在 ACK 后只读重签。
 4. `NewVerifierEndpoints`／`NewCommunityEndpoints` 返回 `.Public` 和 `.Internal`，分别挂在公共 HTTPS 与内部 mTLS 监听器；内部使用 `InternalTLSConfig`，URI 身份为 `spiffe://hnuhole/<environment>/<community|verifier>`，还必须正常验证服务器域名与证书链。
-5. 周期性、有界调用 `ResumePendingConfirmations`、`CleanupConfirmations`、`CleanupOTP`、C 的 `CleanupSessionResults`、`CleanupOldSessions`、`CleanupRecentDevices`、`CleanupRecoveryState`、`FinalizeDueClosures` 和 `CleanupClosureStatuses`，并对 C 未确认 outbox 执行签名与 `DeliverReceipt(..., peer.ReceiveReceipt)`。GET 查询不能代替这些 worker。正式监听器还须设置读取／头／空闲超时及容量。
+5. 周期性、有界调用 `ResumePendingConfirmations`、`CleanupConfirmations`、`CleanupOTP`、C 的 `CleanupSessionResults`、`CleanupOldSessions`、`CleanupRecentDevices`、`CleanupRecoveryState`、`CleanupCredentialState`、`FinalizeDueClosures` 和 `CleanupClosureStatuses`，并对 C 未确认 outbox 执行签名与 `DeliverReceipt(..., peer.ReceiveReceipt)`。GET 查询不能代替这些 worker。正式监听器还须设置读取／头／空闲超时及容量。
 
 普通 SMTP 没有可靠幂等或“连接断开后一定未投递”的证明。`DISPATCHING/UNKNOWN` 的原发送不会自动再次调用服务商；未决状态保留并阻止并行新发送，邮件原文在过期后清除。生产前还须提供服务商核对或受控人工处置路径，否则可能长期阻断该地址发码；这项可用性边界是明确保留的。
 
 ## 尚未完成
 
-可选 Passkey 绑定／恢复／管理、已登录用户密码复验换码、移动端安全存储／持久核对／登出待办与用户走查、设备通知、业务数据清理投影和生产路由／迁移仍未完成。最小 `passkeys` 实验表只用于重设／关闭全量撤销验证，没有 WebAuthn 验签或绑定能力。处罚授权联动已有受信内部命令，正式审核后台与权限仍待接入。网络限流是单进程有界预算，生产仍需多副本共享预算、反滥用与 KDF 参数／阻止名单覆盖校准。
+移动端安全存储／持久核对／登出待办与用户走查、设备通知、业务数据清理投影和生产路由／迁移仍未完成。Passkey已有隔离密码复验及WebAuthn验证；真实移动平台可发现恢复、域名／原生桥接和同步隐私走查仍待做。处罚授权联动已有受信内部命令，正式审核后台与权限仍待接入。网络限流是单进程有界预算，生产仍需多副本共享预算、反滥用与 KDF 参数／阻止名单覆盖校准。
 
 真实独立授时、生产外部锚点与灾备演练、运营权限分离、密钥托管／轮换、日志／WAL／备份清理和真实 V/C 运营分权仍是上线门槛。隔离测试执行了原时钟回退向量；SQL 单调约束本身仍不能抵抗整库旧快照恢复，须依靠库外锚点。本机两个角色不等于两家独立运营方，内部 AI 复核不等于人类第三方审计。

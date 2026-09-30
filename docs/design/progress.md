@@ -1,6 +1,8 @@
 # 设计进度与剩余工作
 
-> **2026-09-30 恢复码与七天注销隔离实现：**在登录／会话切片之上加入恢复码证明、唯一重设意图、最终密码重设与无秘密结果核对，以及七天注销申请、截止前主动登录取消、到期关闭、受限状态与释放收据。密码重设不登录、不取消注销、不解除处罚；封禁受信命令即时撤会话，迟到封禁不能取消到期申请。新增授权与清理继续经过 Safety Gate。交付范围与证据见[本轮报告](auth-privacy-recovery-closure-validation-report.md)和[机器记录](../../services/api/authlab/recovery-closure-verification.json)。可选 Passkey、恢复码轮换、移动端、业务数据清理／通知和生产接入仍待做。
+> **2026-09-30 恢复凭据管理隔离实现：**当前分支 `codex/auth-privacy-handoff` 补齐新鲜密码复验恢复码轮换、可选 Passkey 的绑定／可发现恢复／两步移除，以及受限凭据清单。管理权限绑定原凭据版本、同一会话、固定RP策略及Gate代次，最终事务再次复核；普通变更保留其他凭据和当前会话，重设／关闭撤全部旧Passkey。交付与最终验证见[本轮报告](auth-privacy-recovery-credentials-validation-report.md)和[机器记录](../../services/api/authlab/recovery-credentials-verification.json)。下一步进入移动端安全存储、持久结果核对／登出待办及完整认证状态机；生产路由／迁移、真实平台Passkey演练、业务数据清理／通知及生产安全验收继续待做。
+
+> **2026-09-30 恢复码与七天注销隔离实现（历史节点）：**在登录／会话切片之上加入恢复码证明、唯一重设意图、最终密码重设与无秘密结果核对，以及七天注销申请、截止前主动登录取消、到期关闭、受限状态与释放收据。密码重设不登录、不取消注销、不解除处罚；封禁受信命令即时撤会话，迟到封禁不能取消到期申请。新增授权与清理继续经过 Safety Gate。交付范围与证据见[本轮报告](auth-privacy-recovery-closure-validation-report.md)和[机器记录](../../services/api/authlab/recovery-closure-verification.json)。可选 Passkey、恢复码轮换、移动端、业务数据清理／通知和生产接入仍待做。
 
 > **2026-09-30 登录与会话隔离实现（历史节点）：**在已落地的 Authorization Safety Gate 上，C 实验包增加用户名密码登录、单设备接替、权威会话恢复／同令牌续期、最近替代设备读取与独立撤销秘密定向退出；有界清理保留幂等墓碑与最终服务端到期后的摘要窗口。[本轮报告](auth-privacy-session-lifecycle-validation-report.md)和[机器记录](../../services/api/authlab/session-lifecycle-verification.json)说明真实 SQL／HTTPS／并发／冻结验证。下一步是独立恢复与七天注销的权威事务、处罚写入口，再接移动端和生产路由／迁移。`PENDING_CLOSE` 登录现先 fail closed，待注销截止模型接入后实现截止前主动取消；生产安全验收仍未完成。
 

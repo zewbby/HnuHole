@@ -329,6 +329,10 @@ func e2eNewServices(t *testing.T) *e2eServices {
 	if err != nil {
 		t.Fatal(err)
 	}
+	s.c, err = s.c.WithWebAuthn(authprivacy.WebAuthnConfig{RPID: "hnuhole.test", Origins: []string{"https://client.hnuhole.test"}})
+	if err != nil {
+		t.Fatal(err)
+	}
 	s.v, err = authprivacy.NewVerifierStore(s.vp, verifier, e2eKey(t))
 	if err != nil {
 		t.Fatal(err)

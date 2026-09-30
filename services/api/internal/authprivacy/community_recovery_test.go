@@ -53,7 +53,7 @@ func TestRecoveryCodeResetRevokesAllOldAuthorityPostgres(t *testing.T) {
 	if _, err = l.c.GetCurrentSession(ctx, initial.SessionToken); err != nil {
 		t.Fatalf("intent creation revoked old session: %v", err)
 	}
-	mustExec(t, l.cp, `INSERT INTO c_auth.passkeys(credential_id,account_id,public_key,created_at) VALUES($1,$2,$3,clock_timestamp())`, []byte{1}, initial.AccountID, []byte{2})
+	mustExec(t, l.cp, `INSERT INTO c_auth.passkeys(credential_id,account_id,public_key,created_at,user_handle,cose_algorithm,sign_count,backup_eligible,backed_up,created_credential_version) VALUES($1,$2,$3,clock_timestamp(),decode(repeat('01',32),'hex'),-7,0,false,false,1)`, []byte{1}, initial.AccountID, []byte{2})
 	request := recoveryTestRequest(t, intent)
 	worker := sessionTestPasswordWorker(t, 2)
 	if err = l.c.CommitPasswordReset(ctx, request, worker); err != nil {
@@ -408,7 +408,7 @@ func TestResetRecoveryDigestCollisionRollsBackEverythingPostgres(t *testing.T) {
 	mustExec(t, l.cp, `INSERT INTO c_auth.reset_intents(intent_id,account_id,credential_version,reset_generation,authorization_generation,state,new_recovery_digest,created_at,expires_at)
 		VALUES($1,$2,1,1,$3,'ACTIVE',$4,clock_timestamp(),clock_timestamp()+interval '9 minutes')`, id[:], initial.AccountID, int64(decision.Generation), collision[:])
 	mustExec(t, l.cp, `UPDATE c_auth.accounts SET reset_generation=1,active_reset_intent_id=$2 WHERE account_id=$1`, initial.AccountID, id[:])
-	mustExec(t, l.cp, `INSERT INTO c_auth.passkeys(credential_id,account_id,public_key,created_at) VALUES($1,$2,$3,clock_timestamp())`, []byte{3}, initial.AccountID, []byte{4})
+	mustExec(t, l.cp, `INSERT INTO c_auth.passkeys(credential_id,account_id,public_key,created_at,user_handle,cose_algorithm,sign_count,backup_eligible,backed_up,created_credential_version) VALUES($1,$2,$3,clock_timestamp(),decode(repeat('01',32),'hex'),-7,0,false,false,1)`, []byte{3}, initial.AccountID, []byte{4})
 	request := recoveryTestRequest(t, PasswordResetIntent{ID: id, NewRecoveryCode: otherCode})
 	if err = l.c.CommitPasswordReset(ctx, request, &fixedRecoveryProcessor{}); !errors.Is(err, ErrConflict) {
 		t.Fatalf("collision did not fail safely: %v", err)

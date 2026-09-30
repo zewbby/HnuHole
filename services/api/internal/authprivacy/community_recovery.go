@@ -149,9 +149,12 @@ func (c *Community) CreateRecoveryCodeResetIntent(ctx context.Context, code stri
 }
 
 // Existing-account lock order is account, restriction, pending closure,
-// reset intents, recovery code/Passkeys, sessions, then request result.
+// reset/management intents and challenges, recovery code/Passkeys, sessions, then results.
 func lockRecoveryRows(ctx context.Context, tx pgx.Tx, account uuid.UUID, all bool) error {
-	queries := []string{`SELECT intent_id FROM c_auth.reset_intents WHERE account_id=$1 AND state='ACTIVE' ORDER BY intent_id FOR UPDATE`}
+	if err := lockCredentialIntents(ctx, tx, account); err != nil {
+		return err
+	}
+	queries := []string{}
 	if all {
 		queries = append(queries, `SELECT code_digest FROM c_auth.recovery_codes WHERE account_id=$1 FOR UPDATE`,
 			`SELECT credential_id FROM c_auth.passkeys WHERE account_id=$1 ORDER BY credential_id FOR UPDATE`,
@@ -374,6 +377,12 @@ func (c *Community) CommitPasswordReset(ctx context.Context, request PasswordRes
 		if !final.TrustedAt.Before(locked.expires) {
 			return ErrResetIntentExpired
 		}
+		if _, e := tx.Exec(ctx, `UPDATE c_auth.reset_intents SET state='CONSUMED',new_recovery_digest=NULL,terminal_at=$2 WHERE intent_id=$1`, request.IntentID[:], final.TrustedAt); e != nil {
+			return e
+		}
+		if e := invalidateCredentialAuthority(ctx, tx, original.account, final.TrustedAt); e != nil {
+			return e
+		}
 		if _, e := tx.Exec(ctx, `UPDATE c_auth.accounts SET password_hash=$2,password_salt=$3,password_params_version=$4,
 			credential_version=$5,session_generation=$6,active_reset_intent_id=NULL WHERE account_id=$1`,
 			original.account, material.Hash[:], material.Salt[:], material.ParametersVersion, version+1, sessionGeneration+1); e != nil {
@@ -386,9 +395,6 @@ func (c *Community) CommitPasswordReset(ctx context.Context, request PasswordRes
 			return e
 		}
 		if _, e := tx.Exec(ctx, `UPDATE c_auth.sessions SET revoked_at=$2,revocation_reason='RECOVERY' WHERE account_id=$1 AND revoked_at IS NULL`, original.account, final.TrustedAt); e != nil {
-			return e
-		}
-		if _, e := tx.Exec(ctx, `UPDATE c_auth.reset_intents SET state='CONSUMED',new_recovery_digest=NULL,terminal_at=$2 WHERE intent_id=$1`, request.IntentID[:], final.TrustedAt); e != nil {
 			return e
 		}
 		_, e := tx.Exec(ctx, `INSERT INTO c_auth.security_events(event_id,account_id,action,credential_version,session_generation,recorded_at)

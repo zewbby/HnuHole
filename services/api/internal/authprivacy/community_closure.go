@@ -429,8 +429,10 @@ func (c *Community) FinalizeDueClosures(ctx context.Context, limit int) (int64, 
 }
 
 func lockClosureDependents(ctx context.Context, tx pgx.Tx, account uuid.UUID) error {
+	if err := lockCredentialIntents(ctx, tx, account); err != nil {
+		return err
+	}
 	for _, sql := range []string{
-		`SELECT intent_id FROM c_auth.reset_intents WHERE account_id=$1 ORDER BY intent_id FOR UPDATE`,
 		`SELECT code_digest FROM c_auth.recovery_codes WHERE account_id=$1 FOR UPDATE`,
 		`SELECT credential_id FROM c_auth.passkeys WHERE account_id=$1 ORDER BY credential_id FOR UPDATE`,
 		`SELECT token_digest FROM c_auth.sessions WHERE account_id=$1 ORDER BY token_digest FOR UPDATE`,
@@ -512,8 +514,7 @@ func (c *Community) finalizeAccountClosure(ctx context.Context, account uuid.UUI
 			return ErrAuthorizationUnavailable
 		}
 		at := final.TrustedAt
-		if _, e := tx.Exec(ctx, `UPDATE c_auth.reset_intents SET state='ABANDONED',new_recovery_digest=NULL,terminal_at=$2
-			WHERE account_id=$1 AND state='ACTIVE'`, account, at); e != nil {
+		if e := invalidateCredentialAuthority(ctx, tx, account, at); e != nil {
 			return e
 		}
 		if _, e := tx.Exec(ctx, `DELETE FROM c_auth.recovery_codes WHERE account_id=$1`, account); e != nil {
@@ -527,7 +528,7 @@ func (c *Community) finalizeAccountClosure(ctx context.Context, account uuid.UUI
 			return e
 		}
 		if _, e := tx.Exec(ctx, `UPDATE c_auth.accounts SET state='CLOSED',username=NULL,password_hash=NULL,password_salt=NULL,
-			password_params_version=NULL,active_reset_intent_id=NULL,credential_version=credential_version+1,
+			password_params_version=NULL,user_handle=NULL,active_rotation_intent_id=NULL,active_reset_intent_id=NULL,credential_version=credential_version+1,
 			reset_generation=reset_generation+1,session_generation=session_generation+1,closure_generation=closure_generation+1
 			WHERE account_id=$1`, account); e != nil {
 			return e
