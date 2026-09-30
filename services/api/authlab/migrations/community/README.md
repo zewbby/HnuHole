@@ -6,6 +6,8 @@
 
 `0003_session_lifecycle.sql` 追加封禁权威行、会话撤销原因及每账号至多一条最近接替设备。账号插入触发器建立默认无封禁行，避免会话授权读取出现缺失限制行；限制版本单调。文件按编号在 `0001`、`0002` 后执行，也不进入生产 Goose 迁移。
 
+`0004_recovery_reset.sql` 追加重设代次、账号归属复合活动指针、十分钟重设意图、重设结果 FK 和最小安全事件。备用 Passkey 表只供全量撤销测试，绑定／验签和完整 WebAuthn 元数据仍待后续迁移。`0005_account_closure.sql` 追加注销申请代次、七天截止、受限状态／首次持久 ACK 留存起点、禁言状态及封禁撤销原因；SQL 约束拒绝空值绕过状态形状。两者仍仅按编号加载到隔离实验库。
+
 ## 执行边界
 
 在单独、可丢弃的 C 实验数据库中，以一个事务执行完整 SQL。文件只含 Up SQL，没有 `BEGIN`、`COMMIT` 或 Down；是否提交由实验执行器决定。`CREATE SCHEMA c_auth` 刻意在已存在同名 schema 时失败，不能拿它重复覆盖既有账号数据。
@@ -21,9 +23,12 @@
 | `signup_intents` | `intent_id/challenge/slot_id/bootstrap_public_key/recovery_digest 32B`，`ticket 156B`，`admission_window`，用户名及密码验证材料，`installation_id 16B`，`created_at/expires_at`，`state OPEN/CONSUMED/EXPIRED/ABANDONED`，`attempts` |
 | `recovery_codes` | `account_id` 主键，全局唯一 `code_digest 32B`，`activation_version` |
 | `sessions` | `token_digest/revoke_digest 32B`，`account_id`，`installation_id 16B`，`session_generation/authorization_generation`，`created_at/last_activity_at/expires_at/revoked_at`，撤销原因 |
-| `account_restrictions` | 每账号一条，`NONE/BANNED`、可空结束时间、单调版本；本切片只读封禁权威状态，处罚写入口仍待实现 |
+| `account_restrictions` | 每账号一条，封禁／禁言状态、可空结束时间、单调版本；隔离受信封禁命令同事务撤会话并按注销截止裁决 |
 | `recent_device_replacement` | 每账号至多一条最近被接替安装标识与签入／替代时间；HTTP 不返回安装标识，三十天后有界清理 |
-| `request_results` | `(operation,key_digest 32B)` 主键，另有 `UNIQUE(key_digest)`；LIVE 的 `request_hmac/hmac_key_version/intent_id/result_code/expires_at`，EXPIRED 全部清空这些可空列 |
+| `request_results` | `(operation,key_digest 32B)` 主键，另有 `UNIQUE(key_digest)`；LIVE 的 `request_hmac/hmac_key_version/intent_id/reset_intent_id/result_code/expires_at`，EXPIRED 全部清空这些可空列 |
+| `reset_intents` | 意图 ID、账号归属、原凭据／重设／授权代次、状态、新恢复摘要、不可延长的十分钟截止与终态时间；每账号一份 ACTIVE |
+| `closure_requests` | 注销 ID／状态摘要、仅 PENDING 有账号／申请代次／截止，CANCELLED 无账号和槽位，关闭后只有终态槽位及 ACK／留存起点 |
+| `security_events` | 最小受限 PASSWORD_RESET 动作、账号及控制版本／时间，无密码、恢复码、邮箱、槽位或令牌 |
 | `receipt_outbox` | `slot_id` 主键，`purpose RETIRED/RELEASED`，`receipt_message`，`signing_key_epoch`，可空 `signature 64B`，`state PENDING_SIGN/READY/ACKED`，可空 `ack_at` |
 
 OPEN 意图不可替换材料或延长期限。消费、过期或废弃时，须同一 UPDATE 清空挑战、票、槽位、公钥、准入桶、用户名、密码材料、恢复摘要和安装 ID；终态意图可删除，但有 LIVE 请求结果引用时先清理该引用。未撤销会话按账号部分唯一，创建新会话须先撤旧会话，不能依赖自然过期解除唯一约束。登录请求结果只存服务器 HMAC 绑定和无秘密结果；到期后原位收缩为永久摘要墓碑。会话摘要保留到服务端最终到期七天后，再由有界清理删除。
@@ -33,7 +38,7 @@ OPEN 意图不可替换材料或延长期限。消费、过期或废弃时，须
 - 槽位和幂等锚点不可删除；槽位终态不能回退，ACTIVE 的账号绑定不能换号，ACK 只能从 false 变为 true。
 - 终态、用途和 outbox 由复合外键与提交时的 deferred constraint trigger 核对。未 ACK 的终态不能缺少 outbox，ledger 与 outbox 的 ACK 必须同事务提交。
 - ACKED outbox 可清理；永久 ledger ACK 防止迟到工作重新插入投递材料。ACK 时间不因重复回调改变。
-- ACTIVE→CLOSED 的释放事实要求原关联账号已 CLOSED 且没有未撤销会话；CLOSED 账号不能重新激活，控制版本不能回退。这只是签名事实防线，没有实现七天注销流程。
+- ACTIVE→CLOSED 的释放事实要求原关联账号已 CLOSED 且没有未撤销会话；CLOSED 账号不能重新激活，控制版本不能回退。七天截止及登录取消由隔离 Go 命令在账号锁和最终 Safety Gate 时间下裁决，SQL 提供终态／释放一致性防线。
 - 密码、恢复码、Bearer、OTP 和 bootstrap 私钥均没有原文列；幂等结果不保存账号或会话秘密响应。
 
 不同事务仍必须按规范锁定 ledger、意图和 outbox，并在取得锁后用实际数据库时间复验窗口。数据库不负责 Ed25519 验签、槽位散列、恢复确认、Argon2 参数校准、认证限流、可信授时或 V ACK 来源；这些由调用层和后续验收验证。表拥有者仍能改 DDL 或禁用触发器；本实验不构成生产最小权限、备份恢复或双运营主体证明。

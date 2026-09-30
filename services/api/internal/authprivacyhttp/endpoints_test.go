@@ -441,7 +441,7 @@ func TestInternalHandlersRejectForwardedOrUnverifiedCertificateMetadata(t *testi
 func TestPublicHandlersDoNotExposeInternalOrOtherAuthRoutes(t *testing.T) {
 	_, endpoints, pki := newHTTPTestCommunity(t)
 	server, client := httpTestPublicServer(t, endpoints.Public, pki, CommunityService)
-	for _, path := range []string{"/internal/v1/slot-retirements", "/api/v1/auth/recovery-code-reset-intents"} {
+	for _, path := range []string{"/internal/v1/slot-retirements", "/api/v1/auth/passkey-reset-intents", "/api/v1/auth/passkey-options"} {
 		response, _, _ := doHTTPTest(t, client, "POST", server.URL+path, `{}`, map[string][]string{"Content-Type": {"application/json"}})
 		if response.StatusCode != 404 {
 			t.Fatal("unimplemented route exposed")

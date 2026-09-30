@@ -152,10 +152,10 @@ func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequ
 	defer c.gate.Abort(ctx, tx)
 	var state, username string
 	var lockedHash, lockedSalt []byte
-	var lockedParams, lockedVersion, sessionGeneration int64
-	err = tx.QueryRow(ctx, `SELECT state,username,password_hash,password_salt,password_params_version,
-		credential_version,session_generation FROM c_auth.accounts WHERE account_id=$1 FOR UPDATE`, account).
-		Scan(&state, &username, &lockedHash, &lockedSalt, &lockedParams, &lockedVersion, &sessionGeneration)
+	var lockedParams, lockedVersion, sessionGeneration, closureGeneration int64
+	err = tx.QueryRow(ctx, `SELECT state,COALESCE(username,''),password_hash,password_salt,COALESCE(password_params_version,0),
+		credential_version,session_generation,closure_generation FROM c_auth.accounts WHERE account_id=$1 FOR UPDATE`, account).
+		Scan(&state, &username, &lockedHash, &lockedSalt, &lockedParams, &lockedVersion, &sessionGeneration, &closureGeneration)
 	if err != nil {
 		return zero, ErrAuthorizationUnavailable
 	}
@@ -167,10 +167,12 @@ func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequ
 	if err != nil {
 		return zero, ErrAuthorizationUnavailable
 	}
-	// The closure due_at authority is not in this isolated slice. A
-	// PENDING_CLOSE account must remain closed to login until that transaction
-	// can atomically decide whether an explicit login may cancel the request.
-	if state != "ACTIVE" || sessionGeneration == math.MaxInt64 {
+	closure, err := lockPendingClosure(ctx, tx, account)
+	if err != nil {
+		return zero, ErrAuthorizationUnavailable
+	}
+	if (state != "ACTIVE" && state != "PENDING_CLOSE") || sessionGeneration == math.MaxInt64 ||
+		(state == "PENDING_CLOSE" && (!closure.found || closure.generation != closureGeneration)) {
 		return zero, ErrAccountUnavailable
 	}
 	var oldDigest, oldInstallation []byte
@@ -181,6 +183,11 @@ func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequ
 		WHERE account_id=$1 AND revoked_at IS NULL FOR UPDATE`, account).
 		Scan(&oldDigest, &oldInstallation, &oldCreated, &oldExpires, &oldGeneration, &oldAuthorizationGeneration)
 	hadOld := err == nil
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return zero, ErrAuthorizationUnavailable
+	}
+	var recentAccount uuid.UUID
+	err = tx.QueryRow(ctx, `SELECT account_id FROM c_auth.recent_device_replacement WHERE account_id=$1 FOR UPDATE`, account).Scan(&recentAccount)
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 		return zero, ErrAuthorizationUnavailable
 	}
@@ -222,6 +229,11 @@ func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequ
 	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
 		if bannedAt(ban, final.TrustedAt) {
 			return ErrAccountUnavailable
+		}
+		if state == "PENDING_CLOSE" {
+			if err := cancelPendingClosure(ctx, tx, account, closure, final.TrustedAt); err != nil {
+				return err
+			}
 		}
 		at := final.TrustedAt
 		expires = at.Add(sessionLifetime)
@@ -468,15 +480,18 @@ func (c *Community) CleanupSessionResults(ctx context.Context, limit int) (int64
 		return 0, ErrAuthorizationUnavailable
 	}
 	defer c.gate.Abort(ctx, tx)
+	keys, err := lockCleanupDigests(ctx, tx, `SELECT key_digest FROM c_auth.request_results
+		WHERE operation='SESSION_CREATE' AND state='LIVE' AND expires_at<=$1
+		ORDER BY key_digest LIMIT $2 FOR UPDATE SKIP LOCKED`, decision.TrustedAt, limit)
+	if err != nil {
+		return 0, ErrAuthorizationUnavailable
+	}
 	var cleaned int64
 	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
-		command, e := tx.Exec(ctx, `WITH due AS (
-			SELECT key_digest FROM c_auth.request_results
-			WHERE operation='SESSION_CREATE' AND state='LIVE' AND expires_at <= $1
-			ORDER BY key_digest LIMIT $2 FOR UPDATE SKIP LOCKED
-		) UPDATE c_auth.request_results SET state='EXPIRED',request_hmac=NULL,
-			hmac_key_version=NULL,intent_id=NULL,result_code=NULL,expires_at=NULL
-			WHERE key_digest IN (SELECT key_digest FROM due)`, final.TrustedAt, limit)
+		command, e := tx.Exec(ctx, `UPDATE c_auth.request_results SET state='EXPIRED',request_hmac=NULL,
+			hmac_key_version=NULL,intent_id=NULL,reset_intent_id=NULL,result_code=NULL,expires_at=NULL
+			WHERE key_digest=ANY($1::bytea[]) AND operation='SESSION_CREATE' AND state='LIVE'
+			AND expires_at<=$2`, keys, final.TrustedAt)
 		if e == nil {
 			cleaned = command.RowsAffected()
 		}
@@ -501,13 +516,15 @@ func (c *Community) CleanupOldSessions(ctx context.Context, limit int) (int64, e
 		return 0, ErrAuthorizationUnavailable
 	}
 	defer c.gate.Abort(ctx, tx)
+	tokens, err := lockCleanupDigests(ctx, tx, `SELECT token_digest FROM c_auth.sessions
+		WHERE expires_at+interval '7 days'<=$1 ORDER BY token_digest LIMIT $2 FOR UPDATE SKIP LOCKED`, decision.TrustedAt, limit)
+	if err != nil {
+		return 0, ErrAuthorizationUnavailable
+	}
 	var cleaned int64
 	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
-		command, e := tx.Exec(ctx, `WITH due AS (
-			SELECT token_digest FROM c_auth.sessions
-			WHERE expires_at + interval '7 days' <= $1
-			ORDER BY token_digest LIMIT $2 FOR UPDATE SKIP LOCKED
-		) DELETE FROM c_auth.sessions WHERE token_digest IN (SELECT token_digest FROM due)`, final.TrustedAt, limit)
+		command, e := tx.Exec(ctx, `DELETE FROM c_auth.sessions WHERE token_digest=ANY($1::bytea[])
+			AND expires_at+interval '7 days'<=$2`, tokens, final.TrustedAt)
 		if e == nil {
 			cleaned = command.RowsAffected()
 		}
@@ -529,20 +546,54 @@ func (c *Community) CleanupRecentDevices(ctx context.Context, limit int) (int64,
 		return 0, ErrAuthorizationUnavailable
 	}
 	defer c.gate.Abort(ctx, tx)
+	rows, err := tx.Query(ctx, `SELECT account_id FROM c_auth.recent_device_replacement
+		WHERE replaced_at+interval '30 days'<=$1 ORDER BY account_id LIMIT $2 FOR UPDATE SKIP LOCKED`, decision.TrustedAt, limit)
+	if err != nil {
+		return 0, ErrAuthorizationUnavailable
+	}
+	accounts := make([]uuid.UUID, 0)
+	for rows.Next() {
+		var account uuid.UUID
+		if err = rows.Scan(&account); err != nil {
+			rows.Close()
+			return 0, ErrAuthorizationUnavailable
+		}
+		accounts = append(accounts, account)
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return 0, ErrAuthorizationUnavailable
+	}
 	var cleaned int64
 	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
-		command, e := tx.Exec(ctx, `WITH due AS (
-			SELECT account_id FROM c_auth.recent_device_replacement
-			WHERE replaced_at + interval '30 days' <= $1
-			ORDER BY account_id LIMIT $2 FOR UPDATE SKIP LOCKED
-		) DELETE FROM c_auth.recent_device_replacement
-			WHERE account_id IN (SELECT account_id FROM due)`, final.TrustedAt, limit)
+		command, e := tx.Exec(ctx, `DELETE FROM c_auth.recent_device_replacement
+			WHERE account_id=ANY($1::uuid[]) AND replaced_at+interval '30 days'<=$2`, accounts, final.TrustedAt)
 		if e == nil {
 			cleaned = command.RowsAffected()
 		}
 		return e
 	})
 	return cleaned, err
+}
+
+// Worker row locks precede the final Gate lock, matching request paths. The
+// callback only mutates these already-locked candidates and rechecks time.
+func lockCleanupDigests(ctx context.Context, tx pgx.Tx, sql string, args ...any) ([][]byte, error) {
+	rows, err := tx.Query(ctx, sql, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	values := make([][]byte, 0)
+	for rows.Next() {
+		var value []byte
+		if err = rows.Scan(&value); err != nil {
+			return nil, err
+		}
+		values = append(values, value)
+	}
+	return values, rows.Err()
 }
 
 // Returning an account ID alone is not a substitute for final transaction

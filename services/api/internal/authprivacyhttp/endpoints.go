@@ -47,6 +47,17 @@ type SessionBackend interface {
 	RevokeSession(context.Context, [32]byte) error
 }
 
+type RecoveryBackend interface {
+	CreateRecoveryCodeResetIntent(context.Context, string) (authprivacy.PasswordResetIntent, error)
+	CommitPasswordReset(context.Context, authprivacy.PasswordResetRequest, authprivacy.PasswordProcessor) error
+	GetPasswordResetResult(context.Context, [32]byte, [32]byte) (string, error)
+}
+
+type ClosureBackend interface {
+	RequestAccountClosure(context.Context, authprivacy.ClosureRequest, authprivacy.PasswordVerifier) (authprivacy.ClosureAccepted, error)
+	GetAccountClosureStatus(context.Context, [32]byte, [32]byte) (authprivacy.ClosureStatus, error)
+}
+
 type PasswordPreparer interface {
 	PreparePassword(context.Context, string, string) (authprivacy.PasswordMaterial, error)
 	authprivacy.PasswordVerifier
@@ -68,6 +79,8 @@ type VerifierOptions struct {
 type CommunityOptions struct {
 	Backend        CommunityBackend
 	Sessions       SessionBackend
+	Recovery       RecoveryBackend
+	Closures       ClosureBackend
 	Passwords      PasswordPreparer
 	InternalPeer   PeerIdentity
 	AllowedOrigins []string
@@ -118,9 +131,15 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if options.Sessions == nil {
 		options.Sessions, _ = options.Backend.(SessionBackend)
 	}
+	if options.Recovery == nil {
+		options.Recovery, _ = options.Backend.(RecoveryBackend)
+	}
+	if options.Closures == nil {
+		options.Closures, _ = options.Backend.(ClosureBackend)
+	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
-			b.communityPublic(w, r, options.Backend, options.Sessions, options.Passwords)
+			b.communityPublic(w, r, options.Backend, options.Sessions, options.Recovery, options.Closures, options.Passwords)
 		}),
 		Internal: b.wrap(true, func(w http.ResponseWriter, r *http.Request) { b.communityInternal(w, r, options.Backend) }),
 	}, nil
@@ -230,6 +249,7 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 		allowed["authorization"] = true
 	} else {
 		allowed["authorization"] = true
+		allowed["reset-intent-id"] = true
 	}
 	for _, name := range strings.Split(requested, ",") {
 		if name = strings.ToLower(strings.TrimSpace(name)); name != "" && !allowed[name] {
@@ -254,9 +274,14 @@ func publicMethod(service Service, path string) string {
 		switch path {
 		case "/api/v1/auth/registration-intents", "/api/v1/auth/registrations",
 			"/api/v1/auth/sessions", "/api/v1/auth/session-renewals",
-			"/api/v1/auth/session-revocations":
+			"/api/v1/auth/session-revocations", "/api/v1/auth/recovery-code-reset-intents",
+			"/api/v1/auth/password-resets", "/api/v1/account-closures":
 			return http.MethodPost
-		case "/api/v1/auth/session", "/api/v1/auth/devices":
+		case "/api/v1/auth/session", "/api/v1/auth/devices", "/api/v1/auth/password-reset-result":
+			return http.MethodGet
+		}
+		if strings.HasPrefix(path, "/api/v1/account-closures/") &&
+			!strings.Contains(strings.TrimPrefix(path, "/api/v1/account-closures/"), "/") {
 			return http.MethodGet
 		}
 	}
@@ -600,7 +625,7 @@ var otpPattern = regexp.MustCompile(`^[0-9]{6}$`)
 
 var privateUsername = regexp.MustCompile(`^[a-z][a-z0-9_]{5,23}$`)
 
-func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backend CommunityBackend, sessions SessionBackend, passwords PasswordPreparer) {
+func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backend CommunityBackend, sessions SessionBackend, recovery RecoveryBackend, closures ClosureBackend, passwords PasswordPreparer) {
 	method := publicMethod(CommunityService, r.URL.Path)
 	if method == "" {
 		b.fail(w, 404, "RESOURCE_NOT_FOUND", 0)
@@ -613,6 +638,18 @@ func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backe
 	}
 	if hasHeader(r.Header, "V-Installation-ID") || hasHeader(r.Header, "OTP-Flow-ID") {
 		b.bad(w, errMalformed)
+		return
+	}
+	if hasHeader(r.Header, "Reset-Intent-ID") && r.URL.Path != "/api/v1/auth/password-reset-result" {
+		b.bad(w, errMalformed)
+		return
+	}
+	if r.URL.Path == "/api/v1/auth/recovery-code-reset-intents" || r.URL.Path == "/api/v1/auth/password-resets" || r.URL.Path == "/api/v1/auth/password-reset-result" {
+		b.communityRecoveryPublic(w, r, recovery, passwords)
+		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/api/v1/account-closures") {
+		b.communityClosurePublic(w, r, closures, passwords)
 		return
 	}
 	if r.URL.Path != "/api/v1/auth/registration-intents" && r.URL.Path != "/api/v1/auth/registrations" {

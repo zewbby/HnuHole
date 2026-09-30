@@ -123,11 +123,15 @@ func (c *Community) DeliverReceipt(ctx context.Context, slot protocol.SlotID, re
 }
 
 func (c *Community) recordACK(ctx context.Context, slot protocol.SlotID, purpose protocol.Purpose) error {
+	decision, err := c.gate.Snapshot(ctx)
+	if err != nil {
+		return err
+	}
 	tx, err := begin(ctx, c.pool)
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	defer c.gate.Abort(ctx, tx)
 	if err = lockSlot(ctx, tx, slot[:]); err != nil {
 		return err
 	}
@@ -140,19 +144,36 @@ func (c *Community) recordACK(ctx context.Context, slot protocol.SlotID, purpose
 		return ErrReconciliation
 	}
 	if acknowledged {
-		return tx.Commit(ctx)
-	}
-	command, err := tx.Exec(ctx, `UPDATE c_auth.receipt_outbox SET state='ACKED',ack_at=clock_timestamp() WHERE slot_id=$1 AND purpose=$2 AND state IN ('PENDING_SIGN','READY')`, slot[:], sqlPurpose(purpose))
-	if err != nil {
+		_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation)
 		return err
 	}
-	if command.RowsAffected() != 1 {
-		return ErrReconciliation
+	if purpose == protocol.PurposeReleased {
+		if _, err = tx.Exec(ctx, `SELECT closure_id FROM c_auth.closure_requests
+			WHERE slot_id=$1 ORDER BY closure_id FOR UPDATE`, slot[:]); err != nil {
+			return err
+		}
 	}
-	if _, err = tx.Exec(ctx, `UPDATE c_auth.slot_ledger SET receipt_acknowledged=true WHERE slot_id=$1`, slot[:]); err != nil {
-		return err
-	}
-	return tx.Commit(ctx)
+	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
+		command, e := tx.Exec(ctx, `UPDATE c_auth.receipt_outbox SET state='ACKED',ack_at=$3
+			WHERE slot_id=$1 AND purpose=$2 AND state IN ('PENDING_SIGN','READY')`, slot[:], sqlPurpose(purpose), final.TrustedAt)
+		if e != nil {
+			return e
+		}
+		if command.RowsAffected() != 1 {
+			return ErrReconciliation
+		}
+		if _, e = tx.Exec(ctx, `UPDATE c_auth.slot_ledger SET receipt_acknowledged=true WHERE slot_id=$1`, slot[:]); e != nil {
+			return e
+		}
+		// Preserve the first trusted ACK time after delivery material is cleaned.
+		// Repeated ACKs and key rotation never restart the status lifetime.
+		if purpose == protocol.PurposeReleased {
+			_, e = tx.Exec(ctx, `UPDATE c_auth.closure_requests SET released_at=COALESCE(released_at,$2)
+				WHERE slot_id=$1 AND state='CLOSED_RELEASE_PENDING'`, slot[:], final.TrustedAt)
+		}
+		return e
+	})
+	return err
 }
 
 func (c *Community) RotateReceiptEpoch(ctx context.Context, slot protocol.SlotID, epoch uint32) error {

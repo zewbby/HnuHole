@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/ed25519"
 	"crypto/rand"
+	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
@@ -230,9 +231,25 @@ func e2eJSON(t *testing.T, client *http.Client, method, endpoint string, body an
 
 func e2eNoContent(t *testing.T, client *http.Client, endpoint string, headers map[string]string) {
 	t.Helper()
-	request, err := http.NewRequest(http.MethodPost, endpoint, nil)
+	e2eNoContentJSON(t, client, endpoint, nil, headers)
+}
+
+func e2eNoContentJSON(t *testing.T, client *http.Client, endpoint string, body any, headers map[string]string) {
+	t.Helper()
+	var input io.Reader
+	if body != nil {
+		encoded, err := json.Marshal(body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		input = bytes.NewReader(encoded)
+	}
+	request, err := http.NewRequest(http.MethodPost, endpoint, input)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if body != nil {
+		request.Header.Set("Content-Type", "application/json")
 	}
 	for key, value := range headers {
 		request.Header.Set(key, value)
@@ -266,6 +283,7 @@ type e2eServices struct {
 	toV              *PeerClient
 	toC              *PeerClient
 	client           *http.Client
+	advanceC         func(time.Duration)
 }
 
 func e2eNewServices(t *testing.T) *e2eServices {
@@ -300,12 +318,14 @@ func e2eNewServices(t *testing.T) *e2eServices {
 	}
 	var cSigningEnabled atomic.Bool
 	s.enableCSigning = func() { cSigningEnabled.Store(true) }
+	cGate, advanceC := e2eAuthorizationGate(t, s.cp)
+	s.advanceC = advanceC
 	s.c, err = authprivacy.NewCommunityWithReceiptSigner(s.cp, verifier, 1, e2eKey(t), func(ctx context.Context, epoch uint32, message []byte) ([]byte, error) {
 		if !cSigningEnabled.Load() {
 			return nil, fmt.Errorf("synthetic signer temporarily unavailable")
 		}
 		return s.cSigner(ctx, epoch, message)
-	}, e2eAuthorizationGate(t, s.cp))
+	}, cGate)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -383,7 +403,7 @@ func e2eNewServices(t *testing.T) *e2eServices {
 	return s
 }
 
-func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) *authprivacy.PostgresAuthorizationGate {
+func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) (*authprivacy.PostgresAuthorizationGate, func(time.Duration)) {
 	t.Helper()
 	evidencePublic, evidencePrivate, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
@@ -407,10 +427,17 @@ func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) *authprivacy.Postgre
 	if err != nil {
 		t.Fatal(err)
 	}
+	var clockMu sync.Mutex
+	var offset time.Duration
+	clockNow := func() time.Time {
+		clockMu.Lock()
+		defer clockMu.Unlock()
+		return time.Now().UTC().Add(offset)
+	}
 	gate, err := authprivacy.NewPostgresAuthorizationGate(authprivacy.AuthorizationGateConfig{
 		Pool: pool, Domain: "hnuhole-e2e-community", Evidence: provider,
 		EvidencePublicKey: evidencePublic, RecoveryPublicKey: recoveryPublic,
-		BreakGlassPublicKey: breakGlassPublic, Anchor: anchor, Clock: time.Now,
+		BreakGlassPublicKey: breakGlassPublic, Anchor: anchor, Clock: clockNow,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -436,7 +463,26 @@ func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) *authprivacy.Postgre
 	if err := gate.Recover(context.Background(), recovery); err != nil {
 		t.Fatal(err)
 	}
-	return gate
+	version := uint64(1)
+	advance := func(delta time.Duration) {
+		t.Helper()
+		clockMu.Lock()
+		offset += delta
+		version++
+		at := time.Now().UTC().Add(offset)
+		clockMu.Unlock()
+		fresh, err := authprivacy.SignAuthorizationEvidence(evidencePrivate, authprivacy.AuthorizationEvidence{
+			Domain: "hnuhole-e2e-community", Version: version, Generation: 1,
+			IssuedAt: at, TrustedAt: at, ValidUntil: at.Add(5 * time.Minute),
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := provider.Store(context.Background(), fresh); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return gate, advance
 }
 
 type e2eConfirmation struct {
@@ -598,6 +644,98 @@ func TestHTTPSPostgresEligibilityAndSignup(t *testing.T) {
 	invalid := e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/session", nil, newBearer, http.StatusUnauthorized)
 	if invalid["error"].(map[string]any)["code"] != "SESSION_INVALID" {
 		t.Fatal("revoked bearer remained valid")
+	}
+	// Recovery uses C's independent credential, then an explicit password
+	// login. Neither the proof nor the reset emits a community session.
+	reset := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/recovery-code-reset-intents",
+		map[string]string{"recoveryCode": intent["recoveryCode"].(string)}, nil, http.StatusCreated)
+	if len(reset) != 4 || reset["username"] != "synthetic_user" {
+		t.Fatal("recovery response leaked extra fields or lost proven username")
+	}
+	resetKey := e2eKey(t)
+	resetHeaders := map[string]string{"Idempotency-Key": protocol.EncodeCanonicalBase64url(resetKey[:])}
+	queryReset := map[string]string{"Authorization": "ResetResult " + resetHeaders["Idempotency-Key"], "Reset-Intent-ID": reset["resetIntentId"].(string)}
+	beforeReset := e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/password-reset-result", nil, queryReset, http.StatusAccepted)
+	if len(beforeReset) != 1 || beforeReset["state"] != "PENDING" {
+		t.Fatal("early result query claimed that a later reset could not commit")
+	}
+	resetBody := map[string]string{"resetIntentId": reset["resetIntentId"].(string),
+		"newPassword": "another independent recovery password phrase", "newRecoveryCodeConfirmation": reset["newRecoveryCode"].(string)}
+	e2eNoContentJSON(t, s.client, s.cPublic.URL+"/api/v1/auth/password-resets", resetBody, resetHeaders)
+	e2eNoContentJSON(t, s.client, s.cPublic.URL+"/api/v1/auth/password-resets", resetBody, resetHeaders)
+	afterReset := e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/password-reset-result", nil, queryReset, http.StatusOK)
+	if len(afterReset) != 1 || afterReset["state"] != "COMMITTED" {
+		t.Fatal("committed result lost or disclosed secrets")
+	}
+	e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/recovery-code-reset-intents",
+		map[string]string{"recoveryCode": intent["recoveryCode"].(string)}, nil, http.StatusUnauthorized)
+	loginBody["password"] = resetBody["newPassword"]
+	loginKey = e2eKey(t)
+	loginHeaders["Idempotency-Key"] = protocol.EncodeCanonicalBase64url(loginKey[:])
+	afterRecovery := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/sessions", loginBody, loginHeaders, http.StatusCreated)
+	if afterRecovery["accountId"] != created["accountId"] {
+		t.Fatal("independent recovery created a different account")
+	}
+	closureID, statusSecret := e2eKey(t), e2eKey(t)
+	statusDigest := sha256.Sum256(append([]byte("HNUHOLE/CLOSE-STATUS/V1\x00"), statusSecret[:]...))
+	closureBody := map[string]string{"password": loginBody["password"], "closureId": protocol.EncodeCanonicalBase64url(closureID[:]),
+		"statusDigest": protocol.EncodeCanonicalBase64url(statusDigest[:])}
+	recoveryBearer := map[string]string{"Authorization": "Bearer " + afterRecovery["sessionToken"].(string)}
+	accepted := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/account-closures", closureBody, recoveryBearer, http.StatusAccepted)
+	if len(accepted) != 2 {
+		t.Fatal("closure response disclosed account or secret")
+	}
+	statusPath := s.cPublic.URL + "/api/v1/account-closures/" + closureBody["closureId"]
+	statusHeaders := map[string]string{"Authorization": "ClosureStatus " + protocol.EncodeCanonicalBase64url(statusSecret[:])}
+	pendingClose := e2eJSON(t, s.client, http.MethodGet, statusPath, nil, statusHeaders, http.StatusOK)
+	if len(pendingClose) != 2 || pendingClose["state"] != "PENDING" || pendingClose["dueAt"] != accepted["dueAt"] {
+		t.Fatal("status capability changed deadline or returned extra fields")
+	}
+	e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/account-closures", closureBody, recoveryBearer, http.StatusUnauthorized)
+	loginKey = e2eKey(t)
+	loginHeaders["Idempotency-Key"] = protocol.EncodeCanonicalBase64url(loginKey[:])
+	cancelledByLogin := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/sessions", loginBody, loginHeaders, http.StatusCreated)
+	cancelled := e2eJSON(t, s.client, http.MethodGet, statusPath, nil, statusHeaders, http.StatusOK)
+	if len(cancelled) != 1 || cancelled["state"] != "CANCELLED" {
+		t.Fatal("explicit login did not atomically cancel closure")
+	}
+	closureID = e2eKey(t)
+	closureBody["closureId"] = protocol.EncodeCanonicalBase64url(closureID[:])
+	currentBearer := map[string]string{"Authorization": "Bearer " + cancelledByLogin["sessionToken"].(string)}
+	e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/account-closures", closureBody, currentBearer, http.StatusAccepted)
+	statusPath = s.cPublic.URL + "/api/v1/account-closures/" + closureBody["closureId"]
+	s.advanceC(7*24*time.Hour + time.Second)
+	finalizing := e2eJSON(t, s.client, http.MethodGet, statusPath, nil, statusHeaders, http.StatusOK)
+	if finalizing["state"] != "FINALIZING" {
+		t.Fatal("worker delay extended account control after closure deadline")
+	}
+	if closed, err := s.c.FinalizeDueClosures(context.Background(), 10); err != nil || closed != 1 {
+		t.Fatalf("closure finalization failed: %d %v", closed, err)
+	}
+	awaitingRelease := e2eJSON(t, s.client, http.MethodGet, statusPath, nil, statusHeaders, http.StatusOK)
+	if len(awaitingRelease) != 1 || awaitingRelease["state"] != "CLOSED_RELEASE_PENDING" {
+		t.Fatal("uncommitted signature was presented as release")
+	}
+	s.enableCSigning()
+	if ready, err := s.c.SignReceipt(context.Background(), ticket.Slot, s.cSigner); err != nil || !ready {
+		t.Fatalf("committed closure receipt failed to sign: %v", err)
+	}
+	if err := s.c.DeliverReceipt(context.Background(), ticket.Slot, s.toV.ReceiveReceipt); err != nil {
+		t.Fatalf("closure release failed across real mTLS: %v", err)
+	}
+	released := e2eJSON(t, s.client, http.MethodGet, statusPath, nil, statusHeaders, http.StatusOK)
+	if len(released) != 2 || released["state"] != "RELEASED" {
+		t.Fatal("durable V ACK did not release closure")
+	}
+	if _, err := protocol.ParseReceipt(released["releaseReceipt"].(string), protocol.PurposeReleased); err != nil {
+		t.Fatal("released status lacked canonical receipt")
+	}
+	var quota, linked int
+	if err := s.vp.QueryRow(context.Background(), `SELECT count(*) FROM v_auth.email_quota WHERE current_slot=$1`, ticket.Slot[:]).Scan(&quota); err != nil || quota != 0 {
+		t.Fatalf("V retained old quota after persistent release: %v", err)
+	}
+	if err := s.cp.QueryRow(context.Background(), `SELECT count(*) FROM c_auth.slot_ledger WHERE slot_id=$1 AND account_id IS NOT NULL`, ticket.Slot[:]).Scan(&linked); err != nil || linked != 0 {
+		t.Fatalf("terminal C ledger retained account-to-slot mapping: %v", err)
 	}
 }
 
