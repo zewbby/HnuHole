@@ -126,6 +126,10 @@ func (f httpTestPasswords) PreparePassword(context.Context, string, string) (aut
 	return authprivacy.PasswordMaterial{Hash: [32]byte{2}, Salt: [16]byte{3}, ParametersVersion: 1}, f.err
 }
 
+func (f httpTestPasswords) VerifyPassword(context.Context, string, authprivacy.PasswordMaterial) (bool, error) {
+	return false, f.err
+}
+
 func httpTestLimits() NetworkLimits {
 	return NetworkLimits{Key: [32]byte{99}, MutationCapacity: 10000, QueryCapacity: 10000, Window: time.Minute, MaxEntries: 100}
 }
@@ -437,7 +441,7 @@ func TestInternalHandlersRejectForwardedOrUnverifiedCertificateMetadata(t *testi
 func TestPublicHandlersDoNotExposeInternalOrOtherAuthRoutes(t *testing.T) {
 	_, endpoints, pki := newHTTPTestCommunity(t)
 	server, client := httpTestPublicServer(t, endpoints.Public, pki, CommunityService)
-	for _, path := range []string{"/internal/v1/slot-retirements", "/api/v1/auth/sessions", "/api/v1/auth/recovery-code-reset-intents"} {
+	for _, path := range []string{"/internal/v1/slot-retirements", "/api/v1/auth/recovery-code-reset-intents"} {
 		response, _, _ := doHTTPTest(t, client, "POST", server.URL+path, `{}`, map[string][]string{"Content-Type": {"application/json"}})
 		if response.StatusCode != 404 {
 			t.Fatal("unimplemented route exposed")

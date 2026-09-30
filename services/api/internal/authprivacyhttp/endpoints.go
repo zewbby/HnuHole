@@ -39,8 +39,17 @@ type CommunityBackend interface {
 	RetireUnusedSlot(context.Context, string) (authprivacy.RetirementReply, error)
 }
 
+type SessionBackend interface {
+	CreateSession(context.Context, authprivacy.SessionCreateRequest, authprivacy.PasswordVerifier) (authprivacy.SessionCreateResult, error)
+	GetCurrentSession(context.Context, [32]byte) (authprivacy.SessionView, error)
+	RenewCurrentSession(context.Context, [32]byte) (time.Time, error)
+	GetDevices(context.Context, [32]byte) (authprivacy.SessionView, error)
+	RevokeSession(context.Context, [32]byte) error
+}
+
 type PasswordPreparer interface {
 	PreparePassword(context.Context, string, string) (authprivacy.PasswordMaterial, error)
+	authprivacy.PasswordVerifier
 }
 
 type Endpoints struct {
@@ -58,6 +67,7 @@ type VerifierOptions struct {
 
 type CommunityOptions struct {
 	Backend        CommunityBackend
+	Sessions       SessionBackend
 	Passwords      PasswordPreparer
 	InternalPeer   PeerIdentity
 	AllowedOrigins []string
@@ -105,9 +115,12 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	if options.Sessions == nil {
+		options.Sessions, _ = options.Backend.(SessionBackend)
+	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
-			b.communityPublic(w, r, options.Backend, options.Passwords)
+			b.communityPublic(w, r, options.Backend, options.Sessions, options.Passwords)
 		}),
 		Internal: b.wrap(true, func(w http.ResponseWriter, r *http.Request) { b.communityInternal(w, r, options.Backend) }),
 	}, nil
@@ -215,6 +228,8 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 		allowed["v-installation-id"] = true
 		allowed["otp-flow-id"] = true
 		allowed["authorization"] = true
+	} else {
+		allowed["authorization"] = true
 	}
 	for _, name := range strings.Split(requested, ",") {
 		if name = strings.ToLower(strings.TrimSpace(name)); name != "" && !allowed[name] {
@@ -235,8 +250,15 @@ func publicMethod(service Service, path string) string {
 		case "/api/v1/eligibility/otp-request-result", "/api/v1/eligibility/otp-confirmation-result":
 			return http.MethodGet
 		}
-	} else if path == "/api/v1/auth/registration-intents" || path == "/api/v1/auth/registrations" {
-		return http.MethodPost
+	} else {
+		switch path {
+		case "/api/v1/auth/registration-intents", "/api/v1/auth/registrations",
+			"/api/v1/auth/sessions", "/api/v1/auth/session-renewals",
+			"/api/v1/auth/session-revocations":
+			return http.MethodPost
+		case "/api/v1/auth/session", "/api/v1/auth/devices":
+			return http.MethodGet
+		}
 	}
 	return ""
 }
@@ -578,7 +600,7 @@ var otpPattern = regexp.MustCompile(`^[0-9]{6}$`)
 
 var privateUsername = regexp.MustCompile(`^[a-z][a-z0-9_]{5,23}$`)
 
-func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backend CommunityBackend, passwords PasswordPreparer) {
+func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backend CommunityBackend, sessions SessionBackend, passwords PasswordPreparer) {
 	method := publicMethod(CommunityService, r.URL.Path)
 	if method == "" {
 		b.fail(w, 404, "RESOURCE_NOT_FOUND", 0)
@@ -589,7 +611,15 @@ func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backe
 		b.fail(w, 405, "MALFORMED_REQUEST", 0)
 		return
 	}
-	if hasHeader(r.Header, "Authorization") || hasHeader(r.Header, "V-Installation-ID") || hasHeader(r.Header, "OTP-Flow-ID") {
+	if hasHeader(r.Header, "V-Installation-ID") || hasHeader(r.Header, "OTP-Flow-ID") {
+		b.bad(w, errMalformed)
+		return
+	}
+	if r.URL.Path != "/api/v1/auth/registration-intents" && r.URL.Path != "/api/v1/auth/registrations" {
+		b.communitySessionPublic(w, r, sessions, passwords)
+		return
+	}
+	if hasHeader(r.Header, "Authorization") {
 		b.bad(w, errMalformed)
 		return
 	}

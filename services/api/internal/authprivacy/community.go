@@ -51,8 +51,8 @@ func NewCommunityWithReceiptSigner(pool *pgxpool.Pool, verifier *protocol.Verifi
 }
 
 // PasswordMaterial is prepared by the trusted authentication boundary before
-// taking SQL locks. This lab stores Argon2id output, not passwords; it does not
-// itself verify passwords or expose a login endpoint.
+// taking SQL locks. The session slice verifies this material through the same
+// bounded Argon2id worker and never stores the submitted password.
 type PasswordMaterial struct {
 	Hash              [32]byte
 	Salt              [16]byte

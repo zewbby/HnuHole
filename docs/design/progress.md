@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-09-30 登录与会话隔离实现：**在已落地的 Authorization Safety Gate 上，C 实验包增加用户名密码登录、单设备接替、权威会话恢复／同令牌续期、最近替代设备读取与独立撤销秘密定向退出；有界清理保留幂等墓碑与最终服务端到期后的摘要窗口。[本轮报告](auth-privacy-session-lifecycle-validation-report.md)和[机器记录](../../services/api/authlab/session-lifecycle-verification.json)说明真实 SQL／HTTPS／并发／冻结验证。下一步是独立恢复与七天注销的权威事务、处罚写入口，再接移动端和生产路由／迁移。`PENDING_CLOSE` 登录现先 fail closed，待注销截止模型接入后实现截止前主动取消；生产安全验收仍未完成。
+
 > **2026-09-30 第 0 步隔离实现：**Authorization Safety Gate 已接入现有 C 注册意图、最终开户与初始会话、隔离认证读入口；含持久冻结、库外签名证据／锚点、可信时间高水位、授权代次及受限签名恢复。5 秒回退／5 分钟证据、旧快照、跨连接和提交途中冻结等故障测试见[本轮报告](auth-authorization-safety-gate-validation-report.md)。第 0 步隔离验收后可进入用户名密码登录＋完整会话管理；生产独立授时、恢复运营、真实灾备、人类审计仍未完成。
 
 > **2026-09-29 第 0 步设计历史：**Authorization Safety Gate 设计在第 39 轮收口：FROZEN 时所有认证读写 fail closed；单个受限恢复角色执行显式恢复，不采用双人控制；允许 5 秒时钟回退抖动；可信证据 TTL 5 分钟。后续实现状态以上方 2026-09-30 记录为准。
@@ -105,6 +107,6 @@
 
 ## 后续工程工作
 
-认证主链已有规则、协议、恢复、数据/API、威胁模型、OpenAPI 和评审材料，并已按用户授权进入隔离实现：槽位／开户／ACK、校邮确认、原确认续办与 HTTP／mTLS 的证据见[本轮报告](auth-privacy-eligibility-http-validation-report.md)。下一切片是用户名密码登录、会话接替／撤销及独立恢复，再串联七天注销和移动端。每次实现提供必要的真实事务／故障验证；生产接入仍须完整迁移、可信灾备、运营权限事实与独立安全验收。旧 [ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)不再是实现规范。
+认证主链已有规则、协议、恢复、数据/API、威胁模型、OpenAPI 和评审材料，并已按用户授权进入隔离实现：槽位／开户／ACK、校邮确认、原确认续办与 HTTP／mTLS 的证据见[资格报告](auth-privacy-eligibility-http-validation-report.md)；登录、会话接替／续期／撤销及 Gate 故障验证见[会话报告](auth-privacy-session-lifecycle-validation-report.md)。下一切片是独立恢复及七天注销的权威事务，再串联处罚写入和移动端。每次实现提供必要的真实事务／故障验证；生产接入仍须完整迁移、可信灾备、运营权限事实与独立安全验收。旧 [ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)不再是实现规范。
 
 随后按任务 2 接入文字内容主链，再安排身份/内容/会话数据关系、可见性和账号去重等验证、联调内测与分发上线。这部分须单独估算，不把设计成熟度当成上线进度。

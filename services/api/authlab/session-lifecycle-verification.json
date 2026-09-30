@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "hnuhole-session-lifecycle-verification/v1",
+  "verifiedAtUTC": "2026-09-30T03:18:03+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "8d3799aaf457a951a8c18e9bb7c45c343a4c3d64",
+  "scope": "ISOLATED_COMMUNITY_USERNAME_PASSWORD_LOGIN_AND_SESSION_LIFECYCLE",
+  "runtime": {
+    "go": "go1.27.1 darwin/arm64",
+    "postgresql": "18.6"
+  },
+  "isolatedRun": {
+    "workingDirectory": "services/api",
+    "command": "sh authlab/run-isolated.sh",
+    "exitCode": 0,
+    "freshDisposableCluster": true,
+    "privateUnixSocketOnly": true,
+    "separateNonSuperuserDatabases": true,
+    "sqlAndHTTPSCasesExecuted": true,
+    "raceCommandWithinScript": "go test -race -count=1 -p 1 ./...",
+    "raceExitCode": 0,
+    "vetCommandWithinScript": "go vet ./...",
+    "vetExitCode": 0
+  },
+  "directCommands": [
+    {
+      "command": "go test -race -count=1 -p 1 ./...",
+      "exitCode": 0,
+      "databaseDSNsAbsent": true,
+      "localSMTPAndHTTPTestsExecuted": true
+    },
+    {
+      "command": "go vet ./...",
+      "exitCode": 0
+    }
+  ],
+  "newDatabaseTests": [
+    "TestSessionLoginReplacementAndRevocationPostgres",
+    "TestSessionRenewalThresholdAndExpiredBearerPostgres",
+    "TestConcurrentLoginsKeepOneMobileSession",
+    "TestSessionProofVersionAndGateFreezeDuringPasswordWork",
+    "TestSessionGateRecoveryInvalidatesBearerAndAllowsFreshLogin",
+    "TestSessionResultCleanupPreservesPermanentTombstone",
+    "TestRealLoginAndRenewalWaitsCannotCrossGateFreeze",
+    "TestSessionAndDeviceRetentionUsesFinalServerExpiry",
+    "TestSessionAuthorityRejectsBannedAndPendingCloseStates",
+    "TestConcurrentRenewalReplacementAndOldRevocation"
+  ],
+  "newHTTPTests": [
+    "TestSessionHTTPRejectsAmbiguousCapabilitiesAndBodies",
+    "TestHTTPSPostgresEligibilityAndSignup (extended session flow)"
+  ],
+  "productionBoundary": {
+    "productionRouterMounted": false,
+    "productionGooseMigrationApplied": false,
+    "independentRecoveryImplemented": false,
+    "closureDeadlineIntegrationImplemented": false,
+    "moderationBanWriterIntegrated": false,
+    "mobileDurableLogoutImplemented": false,
+    "realIndependentTimeSource": false,
+    "productionExternalAnchor": false,
+    "realDisasterRecoveryDrill": false,
+    "independentHumanAudit": false
+  },
+  "sourceFiles": [
+    {
+      "path": "docs/design/HANDOFF.md",
+      "sha256": "8a8ef725dd05f1b17c4891876071b5b74718b4520bdd5e96b586427adfb4c642"
+    },
+    {
+      "path": "docs/design/auth-privacy-session-lifecycle-validation-report.md",
+      "sha256": "c422934c5a094adf1cf7a34a3f0e5d34940d3f8e70e45bff5287dd8d6719320d"
+    },
+    {
+      "path": "docs/design/progress.md",
+      "sha256": "e130dfb9bc2a90a4637e90935223d2d78ef2565fd5e06b0555b31d3a336303c0"
+    },
+    {
+      "path": "services/api/authlab/README.md",
+      "sha256": "fa1a157e994837c501efb803130a62f6df44d0a6af010e11030552df5771e783"
+    },
+    {
+      "path": "services/api/authlab/migrations/community/0003_session_lifecycle.sql",
+      "sha256": "bda8724d8954cf4b102d8d754eccb8c5de8a82c50759802df40a109f9788cdd1"
+    },
+    {
+      "path": "services/api/authlab/migrations/community/README.md",
+      "sha256": "2acb3ebba26a42c50ce9e9968c10498d67ff885071191661ca47d9b3089cd202"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community.go",
+      "sha256": "8a2c72a50aa1f34b7ac338945ec800281637525ac23ef7a5414a9a332950f31f"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_sessions.go",
+      "sha256": "4fc56ebbf4c609a681b072c647494dd95cfbbdeaa7b1761a00cfc147d6defdaa"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_sessions_test.go",
+      "sha256": "71ac15abb08c504e8ba5dce41fe2a3208c0a5de0255d4b8949187ef185d898f4"
+    },
+    {
+      "path": "services/api/internal/authprivacy/password.go",
+      "sha256": "9d817d8f8a18e4ac911dbb350e59fcab71b6c4bd10d0f10a7f92f6822555535e"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "sha256": "80f0c6944d37a32d865d65a5ebe94059321e4523af94cbd1346ec38d38707c4d"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+      "sha256": "c46b5817b0fd95c517bd7a20d7fff1c5ffc5ec8c11e91e8f4086954501dd1d8d"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/session_endpoints.go",
+      "sha256": "026d254dbc47be0caada6b0c7617b697240a8e558d861418cce4e3b0aeef67e2"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/session_endpoints_test.go",
+      "sha256": "d4fc6e7a7198043cabb53483eaaef8229e29c6b7483e4f80ac6bd383ed0e0a34"
+    }
+  ]
+}

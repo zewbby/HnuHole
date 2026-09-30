@@ -29,6 +29,12 @@ func TestPasswordPolicyAndNormalization(t *testing.T) {
 	if string(want) != string(material.Hash[:]) || material.ParametersVersion != 1 {
 		t.Fatal("password material did not use the stored NFC/profile contract")
 	}
+	if valid, err := p.VerifyPassword(context.Background(), norm.NFC.String(password), material); err != nil || !valid {
+		t.Fatalf("stored NFC password did not verify: %v", err)
+	}
+	if valid, err := p.VerifyPassword(context.Background(), password+"!", material); err != nil || valid {
+		t.Fatalf("wrong password verified: %v", err)
+	}
 }
 
 func TestPasswordCapacityAndCancellation(t *testing.T) {

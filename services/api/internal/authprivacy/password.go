@@ -3,6 +3,7 @@ package authprivacy
 import (
 	"context"
 	"crypto/rand"
+	"crypto/subtle"
 	"errors"
 	"strings"
 	"unicode"
@@ -78,6 +79,36 @@ func (p *PasswordPreparer) PreparePassword(ctx context.Context, password, userna
 	}
 	material.ParametersVersion = 1
 	return material, nil
+}
+
+// VerifyPassword uses the same bounded Argon2id workers and NFC profile as
+// registration. Callers also run it for an unknown username with fixed dummy
+// material, so account existence does not select a cheap path.
+func (p *PasswordPreparer) VerifyPassword(ctx context.Context, password string, material PasswordMaterial) (bool, error) {
+	if err := ctx.Err(); err != nil {
+		return false, err
+	}
+	if !utf8.ValidString(password) || len(password) > 2048 || utf8.RuneCountInString(password) > 512 {
+		return false, ErrPasswordPolicy
+	}
+	if material.ParametersVersion != 1 {
+		return false, errors.New("unsupported password parameter version")
+	}
+	select {
+	case p.workers <- struct{}{}:
+		defer func() { <-p.workers }()
+	default:
+		return false, ErrPasswordBusy
+	}
+	input := []byte(norm.NFC.String(password))
+	defer clear(input)
+	derived := argon2.IDKey(input, material.Salt[:], 3, 64*1024, 4, 32)
+	valid := subtle.ConstantTimeCompare(derived, material.Hash[:]) == 1
+	clear(derived)
+	if err := ctx.Err(); err != nil {
+		return false, err
+	}
+	return valid, nil
 }
 
 // Reject the username alone/repeated or padded only with digits, punctuation,

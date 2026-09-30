@@ -1,6 +1,8 @@
 # Hnuhole 新会话接续说明
 
-> **第 0 步隔离实现（2026-09-30）：**`codex/auth-privacy-handoff` 已为现有注册、初始 Session 和隔离认证读入口接入 Authorization Safety Gate：5 秒回退容忍、5 分钟签名证据、持久 FROZEN、高水位、库外签名锚点、授权代次、显式受限恢复与离线 break-glass。注册最终事务复核 Gate，旧快照与跨副本故障有真实 PostgreSQL 测试。[交付报告](auth-authorization-safety-gate-validation-report.md)和[机器记录](../../services/api/authlab/authorization-safety-gate-verification.json)注明实验与生产边界。第 0 步隔离验收后可进入“用户名密码登录＋完整会话管理”实现切片；该切片尚未做。真实授时／库外运营基础设施、生产接入、灾备演练和独立人类审计仍待验收。
+> **登录与会话隔离实现（2026-09-30）：**指定分支 `codex/auth-privacy-handoff` 已在第 0 步 Gate 之上加入私有用户名＋密码登录、单设备接替、权威 Bearer 恢复／同令牌三十天续期、最近替代设备页和独立秘密定向退出。登录、认证读、续期、撤销及清理均在最终事务点经 Gate；并发、冻结、恢复、留存及真实 HTTPS／PostgreSQL 验证见[交付报告](auth-privacy-session-lifecycle-validation-report.md)和[机器记录](../../services/api/authlab/session-lifecycle-verification.json)。这仍是隔离服务端切片。独立恢复／Passkey、七天注销、处罚写入、移动端登出待办及生产接入未做；`PENDING_CLOSE` 登录在注销截止事务接入前 fail closed。生产独立授时、外部锚点、真实灾备与人类独立审计继续待验收。
+
+> **第 0 步隔离实现（2026-09-30，历史节点）：**`codex/auth-privacy-handoff` 已为现有注册、初始 Session 和隔离认证读入口接入 Authorization Safety Gate：5 秒回退容忍、5 分钟签名证据、持久 FROZEN、高水位、库外签名锚点、授权代次、显式受限恢复与离线 break-glass。注册最终事务复核 Gate，旧快照与跨副本故障有真实 PostgreSQL 测试。[交付报告](auth-authorization-safety-gate-validation-report.md)和[机器记录](../../services/api/authlab/authorization-safety-gate-verification.json)注明实验与生产边界。第 0 步完成时登录／会话切片尚未做；其后续进展以上方记录为准。真实授时／库外运营基础设施、生产接入、灾备演练和独立人类审计仍待验收。
 
 > **隔离实现进展（2026-09-29）：**用户已授权进入 Phase E，并明确要求实现校邮确认、退役后的原确认续办及双方 HTTP／mTLS。[实验切片](../../services/api/authlab/README.md)已加入校邮发码／最新码与预算、原子确认／提交后签名、原确认续办、双方独立公共／内部处理器和 mTLS 对端客户端。交付与验证范围见[本轮报告](auth-privacy-eligibility-http-validation-report.md)；首条数据库切片见[历史报告](auth-privacy-isolated-validation-report.md)。尚未接入生产路由／迁移；登录恢复、移动端、可信灾备与运营分权继续待做。“不要编码”是最初架构阶段的要求，已被后续实现授权更新；运营与人类审计是生产放行门槛。
 

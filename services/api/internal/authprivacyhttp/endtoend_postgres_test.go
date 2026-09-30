@@ -228,6 +228,29 @@ func e2eJSON(t *testing.T, client *http.Client, method, endpoint string, body an
 	return result
 }
 
+func e2eNoContent(t *testing.T, client *http.Client, endpoint string, headers map[string]string) {
+	t.Helper()
+	request, err := http.NewRequest(http.MethodPost, endpoint, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for key, value := range headers {
+		request.Header.Set(key, value)
+	}
+	response, err := client.Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer response.Body.Close()
+	if response.StatusCode != 204 || response.Header.Get("Cache-Control") != "no-store" {
+		t.Fatalf("revocation status %d", response.StatusCode)
+	}
+	data, err := io.ReadAll(response.Body)
+	if err != nil || len(data) != 0 {
+		t.Fatal("204 response contained a body")
+	}
+}
+
 // The real PostgreSQL/HTTPS flows are below; all addresses, keys and passwords
 // are synthetic. No real mailbox, credential service or deployed API is used.
 
@@ -515,6 +538,66 @@ func TestHTTPSPostgresEligibilityAndSignup(t *testing.T) {
 	var accounts, sessions int
 	if err := s.cp.QueryRow(context.Background(), `SELECT (SELECT count(*) FROM c_auth.accounts),(SELECT count(*) FROM c_auth.sessions)`).Scan(&accounts, &sessions); err != nil || accounts != 1 || sessions != 1 {
 		t.Fatalf("HTTP replay duplicated transaction: %v", err)
+	}
+	oldToken := created["sessionToken"].(string)
+	oldBearer := map[string]string{"Authorization": "Bearer " + oldToken}
+	current := e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/session", nil, oldBearer, http.StatusOK)
+	if current["accountId"] != created["accountId"] || current["username"] != "synthetic_user" {
+		t.Fatal("registration bearer did not resolve authoritative session")
+	}
+	loginKey := e2eKey(t)
+	loginHeaders := map[string]string{"Idempotency-Key": protocol.EncodeCanonicalBase64url(loginKey[:])}
+	loginInstall := e2eInstallation(t)
+	loginBody := map[string]string{"username": "synthetic_user", "password": "a separate long community password", "installationId": protocol.EncodeCanonicalBase64url(loginInstall[:])}
+	wrong := map[string]string{"username": "synthetic_user", "password": "wrong login password phrase", "installationId": loginBody["installationId"]}
+	failed := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/sessions", wrong, loginHeaders, http.StatusUnauthorized)
+	if failed["error"].(map[string]any)["code"] != "AUTHENTICATION_FAILED" {
+		t.Fatal("wrong password disclosed account state")
+	}
+	loggedIn := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/sessions", loginBody, loginHeaders, http.StatusCreated)
+	if loggedIn["accountId"] != created["accountId"] || loggedIn["sessionToken"] == oldToken {
+		t.Fatal("login did not replace initial session")
+	}
+	loginReplay := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/sessions", loginBody, loginHeaders, http.StatusConflict)
+	if loginReplay["error"].(map[string]any)["code"] != "SESSION_CREATED_RETRY_LOGIN" || loginReplay["sessionToken"] != nil {
+		t.Fatal("login retry disclosed a token")
+	}
+	replaced := e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/session", nil, oldBearer, http.StatusUnauthorized)
+	if replaced["error"].(map[string]any)["code"] != "session_replaced" {
+		t.Fatal("old device did not receive replacement reason")
+	}
+	newToken := loggedIn["sessionToken"].(string)
+	newBearer := map[string]string{"Authorization": "Bearer " + newToken}
+	devices := e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/devices", nil, newBearer, http.StatusOK)
+	if len(devices) != 2 || devices["lastReplaced"] == nil {
+		t.Fatal("device page disclosed more than current and last replacement or lost history")
+	}
+	renewed := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/session-renewals", nil, newBearer, http.StatusOK)
+	if renewed["expiresAt"] != loggedIn["expiresAt"] {
+		t.Fatal("new login extended before renewal threshold")
+	}
+	oldRaw, err := protocol.DecodeCanonicalBase64url(oldToken, 32)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var oldBytes [32]byte
+	copy(oldBytes[:], oldRaw)
+	oldRevoke := authprivacy.SessionRevocationSecret(oldBytes)
+	e2eNoContent(t, s.client, s.cPublic.URL+"/api/v1/auth/session-revocations", map[string]string{"Authorization": "SessionRevoke " + protocol.EncodeCanonicalBase64url(oldRevoke[:])})
+	e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/session", nil, newBearer, http.StatusOK)
+	newRaw, err := protocol.DecodeCanonicalBase64url(newToken, 32)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var newBytes [32]byte
+	copy(newBytes[:], newRaw)
+	newRevoke := authprivacy.SessionRevocationSecret(newBytes)
+	revokeHeader := map[string]string{"Authorization": "SessionRevoke " + protocol.EncodeCanonicalBase64url(newRevoke[:])}
+	e2eNoContent(t, s.client, s.cPublic.URL+"/api/v1/auth/session-revocations", revokeHeader)
+	e2eNoContent(t, s.client, s.cPublic.URL+"/api/v1/auth/session-revocations", revokeHeader)
+	invalid := e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/session", nil, newBearer, http.StatusUnauthorized)
+	if invalid["error"].(map[string]any)["code"] != "SESSION_INVALID" {
+		t.Fatal("revoked bearer remained valid")
 	}
 }
 
