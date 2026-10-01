@@ -1,6 +1,8 @@
 # 认证隐私隔离实现与验证
 
-移动端本轮交付见[核心认证状态机报告](../../../docs/design/auth-privacy-mobile-auth-validation-report.md)和 `mobile-auth-verification.json`。客户端代码在 `apps/mobile`、原生安全存储在 `packages/auth_vault`；历史服务端记录保留。本轮重新跑完隔离PostgreSQL、直接race与vet，不等于生产／真机验收。
+2026-10-01 真实 Flutter→隔离 C/V HTTPS／PostgreSQL 联调与原生存储收尾见[本轮报告](../../../docs/design/auth-privacy-mobile-native-integration-validation-report.md)及 `mobile-native-integration-verification.json`。新增 `run-mobile-isolated.sh` 创建分离 C/V 库，完成后自动停止并删除临时集群。先在 `apps/mobile` 执行 `flutter pub get`，设置 `AUTHLAB_MOBILE_FLUTTER` 为现有 Flutter 可执行文件，再在本目录上级 `services/api` 执行 `sh authlab/run-mobile-isolated.sh`。测试使用产品 Dart 传输和真实处理器／SQL；内存存储替身不证明平台持久性，业务目录未接入。
+
+移动端核心状态机历史交付见[原报告](../../../docs/design/auth-privacy-mobile-auth-validation-report.md)和 `mobile-auth-verification.json`。客户端代码在 `apps/mobile`、原生安全存储在 `packages/auth_vault`；历史验证记录保留。用户要求本轮临时工具、缓存和 APK 收尾删除，并推送远端给另一电脑复验；只保留源码、脚本和小型记录。
 
 用户已授权进入 Phase E；本隔离切片已实现第 0 步 Authorization Safety Gate、用户名密码登录与服务端会话管理，并继续加入恢复码重设、七天注销和恢复凭据管理。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；现有 API 主路由、演示认证器和生产 Goose 迁移没有接入这套认证。
 

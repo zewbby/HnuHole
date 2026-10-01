@@ -284,6 +284,8 @@ type e2eServices struct {
 	toC              *PeerClient
 	client           *http.Client
 	advanceC         func(time.Duration)
+	gate             *authprivacy.PostgresAuthorizationGate
+	recoverC         func() error
 }
 
 func e2eNewServices(t *testing.T) *e2eServices {
@@ -318,8 +320,9 @@ func e2eNewServices(t *testing.T) *e2eServices {
 	}
 	var cSigningEnabled atomic.Bool
 	s.enableCSigning = func() { cSigningEnabled.Store(true) }
-	cGate, advanceC := e2eAuthorizationGate(t, s.cp)
+	cGate, advanceC, recoverC := e2eAuthorizationGateControl(t, s.cp)
 	s.advanceC = advanceC
+	s.gate, s.recoverC = cGate, recoverC
 	s.c, err = authprivacy.NewCommunityWithReceiptSigner(s.cp, verifier, 1, e2eKey(t), func(ctx context.Context, epoch uint32, message []byte) ([]byte, error) {
 		if !cSigningEnabled.Load() {
 			return nil, fmt.Errorf("synthetic signer temporarily unavailable")
@@ -408,6 +411,11 @@ func e2eNewServices(t *testing.T) *e2eServices {
 }
 
 func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) (*authprivacy.PostgresAuthorizationGate, func(time.Duration)) {
+	gate, advance, _ := e2eAuthorizationGateControl(t, pool)
+	return gate, advance
+}
+
+func e2eAuthorizationGateControl(t *testing.T, pool *pgxpool.Pool) (*authprivacy.PostgresAuthorizationGate, func(time.Duration), func() error) {
 	t.Helper()
 	evidencePublic, evidencePrivate, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
@@ -468,6 +476,7 @@ func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) (*authprivacy.Postgr
 		t.Fatal(err)
 	}
 	version := uint64(1)
+	generation := uint64(1)
 	advance := func(delta time.Duration) {
 		t.Helper()
 		clockMu.Lock()
@@ -476,7 +485,7 @@ func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) (*authprivacy.Postgr
 		at := time.Now().UTC().Add(offset)
 		clockMu.Unlock()
 		fresh, err := authprivacy.SignAuthorizationEvidence(evidencePrivate, authprivacy.AuthorizationEvidence{
-			Domain: "hnuhole-e2e-community", Version: version, Generation: 1,
+			Domain: "hnuhole-e2e-community", Version: version, Generation: generation,
 			IssuedAt: at, TrustedAt: at, ValidUntil: at.Add(5 * time.Minute),
 		})
 		if err != nil {
@@ -486,7 +495,32 @@ func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) (*authprivacy.Postgr
 			t.Fatal(err)
 		}
 	}
-	return gate, advance
+	recover := func() error {
+		clockMu.Lock()
+		version++
+		generation++
+		at := time.Now().UTC().Add(offset)
+		clockMu.Unlock()
+		fresh, err := authprivacy.SignAuthorizationEvidence(evidencePrivate, authprivacy.AuthorizationEvidence{
+			Domain: "hnuhole-e2e-community", Version: version, Generation: generation,
+			IssuedAt: at, TrustedAt: at, ValidUntil: at.Add(5 * time.Minute),
+		})
+		if err != nil {
+			return err
+		}
+		if err := provider.Store(context.Background(), fresh); err != nil {
+			return err
+		}
+		command, err := authprivacy.SignAuthorizationRecovery(recoveryPrivate, authprivacy.AuthorizationRecoveryRequest{
+			Role: "authorization-recovery", Actor: "isolated-mobile-test", Reason: "explicit mobile test recovery",
+			OperationID: fmt.Sprintf("mobile-recovery-%d", generation), Mode: authprivacy.AuthorizationRecoveryNormal, Evidence: fresh,
+		})
+		if err != nil {
+			return err
+		}
+		return gate.Recover(context.Background(), command)
+	}
+	return gate, advance, recover
 }
 
 type e2eConfirmation struct {

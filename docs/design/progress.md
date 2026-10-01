@@ -1,6 +1,8 @@
 # 设计进度与剩余工作
 
-> **2026-09-30 移动端核心认证状态机：**指定分支 `codex/auth-privacy-handoff` 已接入校邮注册、恢复码隐藏后完整确认、密码登录、权威恢复／活跃续期、七天注销和持久结果核对。退出先确认登出标记持久化，再删除Bearer并以独立能力异步定向撤销，旧任务不影响新会话。系统安全存储适配器及Android/iOS工程已加入；完整Dart／TLS／组件回归和Go故障回归见[本轮报告](auth-privacy-mobile-auth-validation-report.md)及[机器记录](../../services/api/authlab/mobile-auth-verification.json)。下一步先做原生构建、真机安全存储故障与真实C/V整链联调，再补设备／凭据管理页面。原生Passkey、生产路由／迁移与业务授权接Gate、注销清理／通知、运营分权及独立安全验收继续待做。
+> **2026-10-01 原生存储与真实 C/V 联调：**真实 Flutter→隔离 C/V HTTPS／PostgreSQL 已跑通注册、会话接替／续期、未知结果核对、Gate 冻结／签名恢复和注销释放 ACK。Android 原生／测试编译与测试 APK 已完成，新增 16 项设备故障测试和跨进程探针；iOS 标记同步重试及跨 engine 串行修复，macOS 文件系统回归通过。本机未做设备执行、完整应用构建或 iOS Keychain 验证。用户要求删除大型临时验证运行时、缓存和 APK并推送远端给另一电脑复验，命令与实际证据见[本轮报告](auth-privacy-mobile-native-integration-validation-report.md)及[机器记录](../../services/api/authlab/mobile-native-integration-verification.json)。下一步先补平台验收，再做设备／恢复凭据管理页面和原生Passkey；生产路由授权接Gate、迁移、业务清理／通知及独立安全验收继续待做。
+
+> **2026-09-30 移动端核心认证状态机（历史节点）：**指定分支 `codex/auth-privacy-handoff` 已接入校邮注册、恢复码隐藏后完整确认、密码登录、权威恢复／活跃续期、七天注销和持久结果核对。退出先确认登出标记持久化，再删除Bearer并以独立能力异步定向撤销，旧任务不影响新会话。系统安全存储适配器及Android/iOS工程已加入；完整Dart／TLS／组件回归和Go故障回归见[本轮报告](auth-privacy-mobile-auth-validation-report.md)及[机器记录](../../services/api/authlab/mobile-auth-verification.json)。下一步先做原生构建、真机安全存储故障与真实C/V整链联调，再补设备／凭据管理页面。原生Passkey、生产路由／迁移与业务授权接Gate、注销清理／通知、运营分权及独立安全验收继续待做。
 
 > **2026-09-30 恢复凭据管理隔离实现（历史节点）：**当前分支 `codex/auth-privacy-handoff` 补齐新鲜密码复验恢复码轮换、可选 Passkey 的绑定／可发现恢复／两步移除，以及受限凭据清单。管理权限绑定原凭据版本、同一会话、固定RP策略及Gate代次，最终事务再次复核；普通变更保留其他凭据和当前会话，重设／关闭撤全部旧Passkey。交付与最终验证见[本轮报告](auth-privacy-recovery-credentials-validation-report.md)和[机器记录](../../services/api/authlab/recovery-credentials-verification.json)。下一步进入移动端安全存储、持久结果核对／登出待办及完整认证状态机；生产路由／迁移、真实平台Passkey演练、业务数据清理／通知及生产安全验收继续待做。
 

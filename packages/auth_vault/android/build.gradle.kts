@@ -10,13 +10,21 @@ buildscript {
 plugins { id("com.android.library") }
 android {
     namespace = "org.hnuhole.authvault"
+    testNamespace = "org.hnuhole.authvault.test"
     compileSdk = 36
-    defaultConfig { minSdk = 23 }
+    defaultConfig {
+        minSdk = 23
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
     sourceSets.getByName("main").java.srcDirs("src/main/kotlin")
+}
+dependencies {
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test:runner:1.7.0")
 }
 kotlin {
     compilerOptions { jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17 }

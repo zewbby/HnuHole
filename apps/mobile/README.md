@@ -15,4 +15,8 @@ flutter run --dart-define=AUTH_COMMUNITY_BASE_URL=https://community.example.org 
 
 默认地址为 `.invalid`，需要运行实际隔离 C/V 公共服务。客户端验证固定帧／本地槽位和公钥绑定；权威严格票据验签由 C 执行，TLS 使用系统证书信任，不提供绕过按钮。每组固定端点使用独立安全存储 namespace／scope。
 
-本轮验证使用临时 Flutter 3.47.5 / Dart 3.13.4，完整结果见[交付报告](../../docs/design/auth-privacy-mobile-auth-validation-report.md)。Android/iOS 工程与原生 vault 已加入；本机有 Android SDK／Java，缺完整 Xcode，调试构建因缺NDK 28.2.13676358失败，尚未生成APK／跑真机，也未证明断电落盘或平台备份行为。正式签名未配置。通道后端仍是旧业务路由，尚未接到 authlab 的 Gate 授权；真实客户端→真实 C/V PostgreSQL→目录的整链联调待下一切片。设备／凭据管理页面和原生 Passkey 桥接继续待做，现有数据不会被认证模块删除。
+核心状态机的历史验证见[原报告](../../docs/design/auth-privacy-mobile-auth-validation-report.md)。2026-10-01 已完成真实客户端→隔离 C/V HTTPS／PostgreSQL 的认证联调，含未知结果、Gate 冻结／签名恢复和注销释放 ACK；运行 `services/api/authlab/run-mobile-isolated.sh`，需先 `flutter pub get` 并将 `AUTHLAB_MOBILE_FLUTTER` 设为 Flutter 可执行路径。普通 `flutter test` 不会执行这条联调。
+
+Android 原生及 instrumentation 测试已编译并生成测试库 APK，尚未构建完整应用或执行设备故障测试；缺 NDK 时有显式受限调试入口 `android/prebuilt-debug.init.gradle`，默认／release 构建不改。iOS 标记同步与多 engine 串行修复已加入，本机只做 macOS 文件系统回归和 Swift 语法核对，缺完整 Xcode。正式签名未配置；通道后端仍是旧业务路由，尚未接到 authlab 的 Gate 授权。设备／凭据管理页面与原生 Passkey 继续待做。
+
+用户要求大型临时运行时、专用缓存和生成 APK 收尾删除，只保留源码和小型证据。另一台电脑的完整复验步骤及平台边界见[本轮交付报告](../../docs/design/auth-privacy-mobile-native-integration-validation-report.md)。
