@@ -131,11 +131,11 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 	if database != "hnuhole_"+role || user != "hnuhole_"+role || super || address != nil {
 		t.Fatal("expected private-socket disposable database and non-superuser role")
 	}
-	dir, schema := "community", "c_auth"
+	dir, schema := "migrations", "c_auth"
 	if role == "v" {
-		dir, schema = "verifier", "v_auth"
+		dir, schema = "verifier-migrations", "v_auth"
 	}
-	files, err := filepath.Glob(filepath.Join("..", "..", "authlab", "migrations", dir, "*.sql"))
+	files, err := filepath.Glob(filepath.Join("..", "..", dir, "*.sql"))
 	if err != nil || len(files) == 0 {
 		t.Fatal("missing migrations")
 	}
@@ -147,12 +147,16 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 	if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS `+schema+` CASCADE`); err != nil {
 		t.Fatal(err)
 	}
-	for _, file := range files {
+	if schema == "c_auth" {
+        if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.identity_account_state, public.community_identities, public.sessions, public.channels CASCADE`); err != nil { t.Fatal(err) }
+        if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_community_identity(),public.guard_identity_receipt(),public.check_identity_account_shape() CASCADE`); err != nil { t.Fatal(err) }
+    }
+    for _, file := range files {
 		sql, err := os.ReadFile(file)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err = tx.Exec(context.Background(), string(sql)); err != nil {
+		if _, err = tx.Exec(context.Background(), strings.SplitN(string(sql), "-- +goose Down", 2)[0]); err != nil {
 			t.Fatalf("migration %s: %v", filepath.Base(file), err)
 		}
 	}

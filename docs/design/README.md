@@ -1,8 +1,18 @@
 # 产品设计
 
-认证隐私已进入用户授权的 Phase E。[第 0 步 Authorization Safety Gate](auth-authorization-safety-gate-validation-report.md)已在隔离实验中保护现有注册与初始会话，接续[校邮确认／HTTP 历史切片](auth-privacy-eligibility-http-validation-report.md)。复现入口见[实验 README](../../services/api/authlab/README.md)；用户名密码登录、完整会话和生产验收仍未完成。
+> **2026-10-03 远端接续交付：**用户已授权将当前匿名收口材料、运行时／设备／B02源码与测试提交并推送到 `origin/codex/auth-privacy-handoff`，由另一台机器继续。先读[机器接续入口](auth-privacy-machine-handoff.md)，再按[匿名清单 AC01–AC06](auth-privacy-closure-checklist.md)执行；提交／推送不代表缺口已修复或动态验收通过。下方“未提交／推送”是历史记录，最新交付状态以本次提交及远端结果为准。
+
+> **2026-10-03 匿名分支范围纠正：**本分支以匿名方案及其基础实现收口，停在 B02，不进入 B05/B03 等完整业务片。当前有限缺口和结束条件见[匿名收口清单](auth-privacy-closure-checklist.md)：先补 V 独立 Gate、现有身份的整账号关闭联动，再核对隐私边界、补真实测试链与集中验收。B02继续登记为“基础管理已实现，业务联动待实现”，动态／设备未执行项保持待验；本段覆盖下方历史开发顺序，不改写历史测试证据。
+
+> **2026-10-03 B02身份管理基础：**本人身份列表／创建／改名／删除、默认头像和我的→设置入口已写入；注册零身份仍能浏览，落实最多3个／不能删最后一个、累计创建及六个月／30天限制。全部访问最终Gate／会话／归属复核，账号串行及成功／拒绝终态回执保护未知提交与迟到重试。**基础管理已实现，业务联动待实现；编译、SQL、Flutter和真机验收待执行。**帖内绑定、旧帖／聊天投影随业务模块，自定义头像随媒体实现。见[任务单](identity-management-plan.md)、[报告](identity-management-validation-report.md)、[机器记录](../../services/api/authlab/identity-management-verification.json)和[模块交接](module-acceptance-handoff.md)／[台账](module-acceptance-ledger.json)。后续按[匿名收口清单](auth-privacy-closure-checklist.md)补齐基础缺口并交付，不进入完整发帖／列表业务片；未提交／推送。
+
+2026-10-02 新增[设备与恢复凭据＋原生Passkey任务单](auth-privacy-device-credentials-passkey-plan.md)和[实施／验证报告](auth-privacy-device-credentials-passkey-validation-report.md)。页面、持久原结果核对及两平台桥源码已接；本机只有轻量与共享Swift检查，编译、动态和真机待验，RP／平台关联配置待提供。状态同步[模块交接](module-acceptance-handoff.md)／[台账](module-acceptance-ledger.json)。
+
+认证隐私已进入用户授权的 Phase E。[C/V 开发服务与目录授权计划](auth-privacy-runtime-business-integration-plan.md)的 T0–T6 实施已落盘，包括正式迁移、受限角色、实际入口、持久 worker 与移动端截止衔接；本机缺工具，编译和动态验收未执行。[本轮报告](auth-privacy-runtime-business-integration-validation-report.md)列明已执行检查与待复验项，[实验 README](../../services/api/authlab/README.md)提供 runner。历史原生／隔离联调证据见[原报告](auth-privacy-mobile-native-integration-validation-report.md)，不能证明本次改动通过。V 独立门禁、原生设备与生产安全验收仍待完成。
 
 这里是当前设计的统一入口。每项规则只在所属模块维护，跨模块通过链接引用；历史讨论用于追溯，不再作为持续追加的规则总表。
+
+2026-10-02 用户允许先继续业务开发，再集中按模块验收。完整待验队列、真实测试入口、依赖与平台边界见[分模块测试交接](module-acceptance-handoff.md)及[机器台账](module-acceptance-ledger.json)；[AGENTS.md](../../AGENTS.md)要求每个功能任务结束补充未执行测试与交接。
 
 新会话先读[接续说明](HANDOFF.md)。阶段盘点与剩余工作见[设计进度](progress.md)，业务术语见[词汇表](../../CONTEXT.md)。规则继续维护在各模块，进度页只提供交付状态与待决事项索引。
 

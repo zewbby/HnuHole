@@ -11,13 +11,18 @@ dependencies:
   flutter:
     sdk: flutter
   vector_math: ^2.1.4
+  characters: ^1.4.0
   crypto: 3.0.6
   cryptography: 2.7.0
   hnuhole_auth_vault:
     path: ../../packages/auth_vault
+  hnuhole_auth_passkey:
+    path: ../../packages/auth_passkey
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
   flutter_lints: ^4.0.0
 

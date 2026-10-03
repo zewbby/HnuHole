@@ -1,5 +1,7 @@
 # Hnuhole 校邮资格、开户与槽位释放协议 v1
 
+> **当前状态入口（2026-10-03）：**本文的实施前状态及待填写材料保留形成时的证明范围；认证基础已有后续实现，当前缺口、未执行验收及分支结束条件统一见[匿名收口清单](auth-privacy-closure-checklist.md)与[模块台账](module-acceptance-ledger.json)。不将历史规格状态读作当前全部未实现，也不将现有源码读作验收或生产批准。
+
 日期：2026-09-28。状态：**实施前协议规格；未实现，未经过独立安全审计。** 本文细化[认证与隐私架构决策](auth-privacy-architecture-decision.md)的注册及配额生命周期；密码与独立恢复规则见[恢复决策 v1](auth-privacy-recovery-decision.md)，逻辑数据与接口见[数据与 API 契约 v1](auth-privacy-data-api-contract.md)，内部攻击路径见[跨方威胁模型](auth-privacy-threat-model.md)。本文作为首版协议文档，注册资格的**消息格式已升为 `REGISTER/V2`**；无期限的 `REGISTER/V1` 从未生产使用，必须拒收。V/C OpenAPI 与[数据库迁移设计](auth-privacy-database-migration-design.md)已成稿；生产认证代码仍须等待契约／实际SQL审阅、部署安排和独立安全评审通过。
 
 ## 1. 目标与信任边界

@@ -1,17 +1,59 @@
+# Explicitly same-machine DEV resources. Runtime Go processes run on the host.
 services:
-  postgres:
-    image: postgres:16-alpine
+  community-postgres:
+    image: postgres:16.6-alpine
     environment:
-      POSTGRES_DB: hnuhole
-      POSTGRES_USER: hnuhole
-      POSTGRES_PASSWORD: hnuhole_dev_only
+      POSTGRES_DB: hnuhole_c
+      POSTGRES_USER: hnuhole_c_admin
+      POSTGRES_PASSWORD: ${C_ADMIN_PASSWORD:?provide private development password}
+      AUTH_PARTY: c
+      AUTH_MIGRATOR_PASSWORD: ${C_MIGRATOR_PASSWORD:?provide migration password}
+      AUTH_RUNTIME_PASSWORD: ${C_RUNTIME_PASSWORD:?provide runtime password}
+      AUTH_RECOVERY_PASSWORD: ${C_RECOVERY_PASSWORD:?provide recovery password}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${C_DATABASE_PORT:-55432}:5432"
     volumes:
-      - ./.data/postgres:/var/lib/postgresql/data
-
-  mailpit:
-    image: axllent/mailpit:v1.21
+      - community-dev-data:/var/lib/postgresql/data
+      - ./postgres/init-auth.sh:/docker-entrypoint-initdb.d/10-auth.sh:ro
+    labels:
+      hnuhole.resource: community-development-database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hnuhole_c_admin -d hnuhole_c"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  verifier-postgres:
+    image: postgres:16.6-alpine
+    environment:
+      POSTGRES_DB: hnuhole_v
+      POSTGRES_USER: hnuhole_v_admin
+      POSTGRES_PASSWORD: ${V_ADMIN_PASSWORD:?provide private development password}
+      AUTH_PARTY: v
+      AUTH_MIGRATOR_PASSWORD: ${V_MIGRATOR_PASSWORD:?provide migration password}
+      AUTH_RUNTIME_PASSWORD: ${V_RUNTIME_PASSWORD:?provide runtime password}
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "127.0.0.1:${V_DATABASE_PORT:-55433}:5432"
+    volumes:
+      - verifier-dev-data:/var/lib/postgresql/data
+      - ./postgres/init-auth.sh:/docker-entrypoint-initdb.d/10-auth.sh:ro
+    labels:
+      hnuhole.resource: verifier-development-database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hnuhole_v_admin -d hnuhole_v"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  mailpit:
+    image: axllent/mailpit:v1.21.8
+    ports:
+      - "127.0.0.1:${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "127.0.0.1:${MAILPIT_HTTP_PORT:-8025}:8025"
+    labels:
+      hnuhole.resource: development-mailbox
+volumes:
+  community-dev-data:
+    labels:
+      hnuhole.resource: community-development-data
+  verifier-dev-data:
+    labels:
+      hnuhole.resource: verifier-development-data

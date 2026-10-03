@@ -16,11 +16,13 @@ class AuthScreen extends StatefulWidget {
     required this.sessions,
     required this.flows,
     this.onAuthenticated,
+    this.onManageSecurity,
   });
 
   final AuthSessionController sessions;
   final AuthFlows flows;
   final VoidCallback? onAuthenticated;
+  final VoidCallback? onManageSecurity;
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -62,6 +64,8 @@ class _AuthScreenState extends State<AuthScreen> {
   void dispose() {
     widget.sessions.removeListener(_changed);
     widget.flows.removeListener(_changed);
+    widget.flows.cancelPasskeyRecovery();
+    widget.flows.hideRecoveryCode();
     _countdown?.cancel();
     for (final controller in [
       _username,
@@ -88,7 +92,9 @@ class _AuthScreenState extends State<AuthScreen> {
       _confirmation.clear();
       _otp.clear();
       _email.clear();
-      widget.onAuthenticated?.call();
+      if (ModalRoute.of(context)?.isCurrent ?? false) {
+        widget.onAuthenticated?.call();
+      }
     }
     _authenticated = authenticated;
     setState(() {});
@@ -399,7 +405,9 @@ class _AuthScreenState extends State<AuthScreen> {
       '验证恢复码',
       () => _submit(() => widget.flows.beginCodeReset(_recoveryCode.text)),
     ),
-    const _Notice('Passkey 可选。本客户端暂未开放经过审查的系统 Passkey 桥接，请使用恢复码。'),
+    if (widget.flows.supportsPasskeyRecovery)
+      _secondary('使用 Passkey 恢复', widget.flows.beginPasskeyReset),
+    const _Notice('Passkey 只用于找回旧号。验证后仍需设置新密码、保存并完整确认新恢复码，不会自动登录。'),
     const SizedBox(height: 16),
     const Text('密码、恢复码和全部备用 Passkey 都丢失后，旧号无法找回。不会按邮箱人工重置。'),
   ];
@@ -477,7 +485,8 @@ class _AuthScreenState extends State<AuthScreen> {
         _secondary('已确认取消，清除上次状态', widget.flows.forgetClosureStatus),
       const SizedBox(height: 16),
     ],
-    const _Notice('Passkey 可选。本客户端暂未开放经过审查的系统桥接，恢复码仍可用于独立恢复。'),
+    if (widget.onManageSecurity != null)
+      _secondary('设备与恢复凭据', () async => widget.onManageSecurity!()),
     _button('退出本机', widget.sessions.logout),
     const Divider(height: 40),
     const _Title('申请注销账号', '七天缓冲期内主动登录会撤销申请。申请后退出全部设备，尚未公开的发送任务将取消，已公开内容仍保留。'),

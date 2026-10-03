@@ -1,16 +1,16 @@
 # 认证隐私隔离实现与验证
 
-2026-10-01 真实 Flutter→隔离 C/V HTTPS／PostgreSQL 联调与原生存储收尾见[本轮报告](../../../docs/design/auth-privacy-mobile-native-integration-validation-report.md)及 `mobile-native-integration-verification.json`。新增 `run-mobile-isolated.sh` 创建分离 C/V 库，完成后自动停止并删除临时集群。先在 `apps/mobile` 执行 `flutter pub get`，设置 `AUTHLAB_MOBILE_FLUTTER` 为现有 Flutter 可执行文件，再在本目录上级 `services/api` 执行 `sh authlab/run-mobile-isolated.sh`。测试使用产品 Dart 传输和真实处理器／SQL；内存存储替身不证明平台持久性，业务目录未接入。
+2026-10-01 真实 Flutter→隔离 C/V HTTPS／PostgreSQL 联调与原生存储收尾见[本轮报告](../../../docs/design/auth-privacy-mobile-native-integration-validation-report.md)及 `mobile-native-integration-verification.json`。新增 `run-mobile-isolated.sh` 创建分离 C/V 库，完成后自动停止并删除临时集群。先在 `apps/mobile` 执行 `flutter pub get`，设置 `AUTHLAB_MOBILE_FLUTTER` 为现有 Flutter 可执行文件，再在本目录上级 `services/api` 执行 `sh authlab/run-mobile-isolated.sh`。测试使用产品 Dart 传输和真实处理器／SQL；内存存储替身不证明平台持久性，历史报告的业务目录尚未接入；当前源码已将目录与新认证统一装配，新的实际 cmd runner 尚待工具齐全电脑执行。
 
 移动端核心状态机历史交付见[原报告](../../../docs/design/auth-privacy-mobile-auth-validation-report.md)和 `mobile-auth-verification.json`。客户端代码在 `apps/mobile`、原生安全存储在 `packages/auth_vault`；历史验证记录保留。用户要求本轮临时工具、缓存和 APK 收尾删除，并推送远端给另一电脑复验；只保留源码、脚本和小型记录。
 
-用户已授权进入 Phase E；本隔离切片已实现第 0 步 Authorization Safety Gate、用户名密码登录与服务端会话管理，并继续加入恢复码重设、七天注销和恢复凭据管理。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；现有 API 主路由、演示认证器和生产 Goose 迁移没有接入这套认证。
+用户已授权进入 Phase E；本隔离切片已实现第 0 步 Authorization Safety Gate、用户名密码登录与服务端会话管理，并继续加入恢复码重设、七天注销和恢复凭据管理。代码在 `internal/authprivacy`、`internal/authprivacy/protocol` 与 `internal/authprivacyhttp`。本目录使用独立实验数据库与合成材料；当前 `cmd/api`／`cmd/verifier` 已装配新认证、目录与有界 worker；正式 Goose SQL 是唯一迁移源。此处历史报告的通过记录不证明这些新进程已验收。
 
 校邮与 HTTP 切片的交付见[历史报告](../../../docs/design/auth-privacy-eligibility-http-validation-report.md)；首条数据库切片见[更早报告](../../../docs/design/auth-privacy-isolated-validation-report.md)。`verification.json` 固定首轮证据，`eligibility-http-verification.json` 固定上一轮证据；第 0 步另有新记录。
 
 第 0 步实现与门槛见[Authorization Safety Gate 交付报告](../../../docs/design/auth-authorization-safety-gate-validation-report.md)，机器记录在 `authorization-safety-gate-verification.json`。登录／会话切片见[交付报告](../../../docs/design/auth-privacy-session-lifecycle-validation-report.md)与 `session-lifecycle-verification.json`。历史验证 JSON 保持不改。
 
-恢复码／注销的交付见[历史报告](../../../docs/design/auth-privacy-recovery-closure-validation-report.md)与 `recovery-closure-verification.json`；这些新增服务和端点仍未接入生产。
+恢复码／注销的交付见[历史报告](../../../docs/design/auth-privacy-recovery-closure-validation-report.md)与 `recovery-closure-verification.json`；这些服务已装配到开发入口；生产部署继续在范围外。
 
 恢复凭据管理的交付见[本轮报告](../../../docs/design/auth-privacy-recovery-credentials-validation-report.md)与 `recovery-credentials-verification.json`；包含新鲜密码换码和可选WebAuthn绑定／恢复／移除。
 
@@ -52,7 +52,7 @@ sh ./run-isolated.sh
 
 ## 接入方式
 
-1. 在不同数据库依序加载各侧实验迁移；这些部分 SQL 不能直接放进生产迁移序列。
+1. C 使用 `../migrations`，V 使用 `../verifier-migrations` 的正式 Goose 迁移。旧 `authlab/migrations/*` 只保留历史说明；实验 fixture 在已核对可丢弃库中重建 schema，并截取正式 SQL 的 Up。正式服务不做 DDL。
 2. 从数据库以外加载不同用途的密钥、版本与环境受信签名钥。`NewEligibility` 拒绝不同用途复用同一钥；HTTP 网络限流钥另行生成，V/C 安装 ID、请求 ID 和幂等键独立。
 3. C的可选Passkey还须通过 `community.WithWebAuthn(WebAuthnConfig{RPID, Origins})` 注入经审阅的固定HTTPS策略；未注入时拒绝Passkey操作，不能从请求选择RP／origin。测试RP只是合成材料。为 V 注入 `SMTPProvider`／邮件服务、提交后 `Signer` 和固定 C `PeerClient`。为 C 注入 `NewPasswordPreparer` 的本地常见／泄漏密码名单及明确并发上限；`NewCommunityWithReceiptSigner` 可推动已提交收据，并在 ACK 后只读重签。
 4. `NewVerifierEndpoints`／`NewCommunityEndpoints` 返回 `.Public` 和 `.Internal`，分别挂在公共 HTTPS 与内部 mTLS 监听器；内部使用 `InternalTLSConfig`，URI 身份为 `spiffe://hnuhole/<environment>/<community|verifier>`，还必须正常验证服务器域名与证书链。
@@ -62,6 +62,12 @@ sh ./run-isolated.sh
 
 ## 尚未完成
 
-移动端安全存储／持久核对／登出待办与用户走查、设备通知、业务数据清理投影和生产路由／迁移仍未完成。Passkey已有隔离密码复验及WebAuthn验证；真实移动平台可发现恢复、域名／原生桥接和同步隐私走查仍待做。处罚授权联动已有受信内部命令，正式审核后台与权限仍待接入。网络限流是单进程有界预算，生产仍需多副本共享预算、反滥用与 KDF 参数／阻止名单覆盖校准。
+移动端持久核对／登出待办已有历史回归；设备通知、业务数据清理投影及生产部署仍未完成。Passkey已有隔离密码复验及WebAuthn验证；真实移动平台可发现恢复、域名／原生桥接和同步隐私走查仍待做。处罚授权联动已有受信内部命令，正式审核后台与权限仍待接入。网络限流是单进程有界预算，生产仍需多副本共享预算、反滥用与 KDF 参数／阻止名单覆盖校准。
 
 真实独立授时、生产外部锚点与灾备演练、运营权限分离、密钥托管／轮换、日志／WAL／备份清理和真实 V/C 运营分权仍是上线门槛。隔离测试执行了原时钟回退向量；SQL 单调约束本身仍不能抵抗整库旧快照恢复，须依靠库外锚点。本机两个角色不等于两家独立运营方，内部 AI 复核不等于人类第三方审计。
+
+## 实际 C/V 开发进程验证（本轮新增，尚未执行）
+
+从 `services/api` 执行 `sh authlab/run-runtime-isolated.sh`。脚本要求现有 Go／Goose v3.22.1／Docker Compose v2／psql／Python3／curl，及已缓存 PostgreSQL `16.6-alpine`、Mailpit `v1.21.8` 与 Go modules；缺失即退出，禁止自动下载。它建立唯一 Compose 项目和私有目录，应用唯一正式迁移、分离 owner／runtime／恢复角色，验证权限拒绝与临时七通道升级，启动真实 `cmd/api`、`cmd/verifier`，驱动 `cmd/runtimeprobe`。退出仅销毁本次项目／卷／目录。服务／密钥初始化与 Windows WSL2 步骤见 [API README](../README.md)。
+
+`run-isolated.sh` 和 `run-mobile-isolated.sh` 保留历史 SQL／HTTP 回归的直接 fixture：角色是 disposable schema owner，以便重建、受控故障注入与 Gate 恢复；该结果不证明非 owner runtime 最小权限。只有新 runtime runner 使用真实受限连接。新 runner 尚无本机进程证据，不能按 shell 静态检查视为通过。

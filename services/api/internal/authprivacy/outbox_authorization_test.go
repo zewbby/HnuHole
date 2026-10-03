@@ -73,15 +73,18 @@ func TestReleaseACKCannotCrossFreezeAndRetriesAfterRecoveryPostgres(t *testing.T
 		t.Fatal(err)
 	}
 	defer hold.Rollback(context.Background())
-	if err = lockSlot(ctx, hold, ticket.Slot[:]); err != nil {
-		t.Fatal(err)
-	}
-	var heldState string
-	if err = hold.QueryRow(ctx, `SELECT state FROM c_auth.slot_ledger WHERE slot_id=$1 FOR UPDATE`, ticket.Slot[:]).Scan(&heldState); err != nil {
-		t.Fatal(err)
+	deliveryReached := make(chan struct{})
+	pausedReceiver := func(ctx context.Context, wire string, purpose protocol.Purpose) error {
+		if err := receiver(ctx, wire, purpose); err != nil { return err }
+		if err := lockSlot(ctx, hold, ticket.Slot[:]); err != nil { return err }
+		var heldState string
+		if err := hold.QueryRow(ctx, `SELECT state FROM c_auth.slot_ledger WHERE slot_id=$1 FOR UPDATE`, ticket.Slot[:]).Scan(&heldState); err != nil { return err }
+		close(deliveryReached)
+		return nil
 	}
 	done := make(chan error, 1)
-	go func() { done <- l.c.DeliverReceipt(ctx, ticket.Slot, receiver) }()
+	go func() { done <- l.c.DeliverReceipt(ctx, ticket.Slot, pausedReceiver) }()
+	select { case <-deliveryReached: case err := <-done: t.Fatalf("delivery did not reach the ACK barrier: %v",err); case <-ctx.Done(): t.Fatal("delivery barrier timed out") }
 	waitLock(t, l.cp, "advisory", 1)
 	if count(t, l.vp, `SELECT count(*) FROM v_auth.email_quota WHERE email_exact=$1`, email) != 0 ||
 		count(t, l.vp, `SELECT count(*) FROM v_auth.processed_receipts WHERE slot_id=$1 AND purpose='RELEASED'`, ticket.Slot[:]) != 1 {

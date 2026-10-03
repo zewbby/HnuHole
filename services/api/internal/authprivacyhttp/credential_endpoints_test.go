@@ -29,6 +29,16 @@ type httpTestCredentials struct {
 	registration           authprivacy.PasskeyRegistration
 	remove                 authprivacy.PasskeyRemoval
 	proof                  authprivacy.PasskeyResetProof
+	changeResult           authprivacy.CredentialChangeResult
+	resultID, resultKey    [32]byte
+}
+
+func (f *httpTestCredentials) GetCredentialChangeResult(_ context.Context, bearer, id, key [32]byte) (authprivacy.CredentialChangeResult, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.calls++
+	f.bearer, f.resultID, f.resultKey = bearer, id, key
+	return f.changeResult, f.err
 }
 
 func (f *httpTestCredentials) GetRecoveryCredentials(_ context.Context, bearer [32]byte) (authprivacy.RecoveryCredentials, error) {
@@ -131,13 +141,82 @@ func httpTestCredentialHeaders(path string) map[string][]string {
 	if path != "/api/v1/auth/passkey-reset-options" && path != "/api/v1/auth/passkey-reset-intents" {
 		headers["Authorization"] = []string{"Bearer " + httpTestEncoding(32, 8)}
 	}
-	if path == "/api/v1/auth/passkeys" || isRotationConfirmationPath(path) || isPasskeyRemovalPath(path) {
+	if path == "/api/v1/auth/passkeys" || path == "/api/v1/auth/credential-change-result" || isRotationConfirmationPath(path) || isPasskeyRemovalPath(path) {
 		headers["Idempotency-Key"] = []string{httpTestEncoding(32, 7)}
 	}
-	if isPasskeyRemovalPath(path) {
+	if isPasskeyRemovalPath(path) || path == "/api/v1/auth/credential-change-result" {
 		headers["Credential-Change-ID"] = []string{httpTestEncoding(32, 6)}
 	}
 	return headers
+}
+
+func TestCredentialChangeResultHTTPNoSecretShapeAndCapabilityBindings(t *testing.T) {
+	backend, endpoints, pki := newHTTPTestCredentials(t)
+	server, client := httpTestPublicServer(t, endpoints.Public, pki, CommunityService)
+	path := "/api/v1/auth/credential-change-result"
+	for _, state := range []string{"PENDING", "COMMITTED", "NOT_COMMITTED"} {
+		backend.mu.Lock()
+		backend.changeResult = authprivacy.CredentialChangeResult{State: state, SessionExpiresAt: backend.expires}
+		backend.mu.Unlock()
+		response, body, _ := doHTTPTest(t, client, "GET", server.URL+path, "", httpTestCredentialHeaders(path))
+		if response.StatusCode != 200 || !reflect.DeepEqual(body, map[string]any{"state": state}) || response.Header.Get("Session-Expires-At") != utc(backend.expires) || response.Header.Get("Cache-Control") != "no-store" {
+			t.Fatalf("result response disclosed or lost fields: %d %v", response.StatusCode, body)
+		}
+	}
+	backend.mu.Lock()
+	if backend.resultID != httpTestRecoveryCapability(6) || backend.resultKey != httpTestRecoveryCapability(7) || backend.bearer != httpTestRecoveryCapability(8) || backend.calls != 3 {
+		t.Fatal("original key/intent/session were not bound")
+	}
+	backend.mu.Unlock()
+	for _, tc := range []struct {
+		err error
+		status int
+	}{
+		{authprivacy.ErrAuthorizationUnavailable, 503}, {authprivacy.ErrSessionInvalid, 401},
+		{authprivacy.ErrSessionReplaced, 401}, {authprivacy.ErrCredentialIntentInvalid, 409},
+		{authprivacy.ErrConflict, 409}, {authprivacy.ErrExpired, 410},
+	} {
+		backend.mu.Lock()
+		backend.err = tc.err
+		backend.mu.Unlock()
+		response, body, _ := doHTTPTest(t, client, "GET", server.URL+path, "", httpTestCredentialHeaders(path))
+		if response.StatusCode != tc.status || response.Header.Get("Session-Expires-At") != "" || len(body) != 2 || body["state"] != nil {
+			t.Fatalf("failed query disclosed a conclusion: %d %v", response.StatusCode, body)
+		}
+	}
+}
+
+func TestCredentialChangeResultHTTPRejectsMalformedAndMixedAuthority(t *testing.T) {
+	backend, endpoints, pki := newHTTPTestCredentials(t)
+	server, client := httpTestPublicServer(t, endpoints.Public, pki, CommunityService)
+	path := "/api/v1/auth/credential-change-result"
+	for _, tc := range []struct {
+		name, method, suffix, body string
+		change func(map[string][]string)
+		status int
+	}{
+		{"missing-id", "GET", "", "", func(h map[string][]string) { delete(h, "Credential-Change-ID") }, 400},
+		{"missing-key", "GET", "", "", func(h map[string][]string) { delete(h, "Idempotency-Key") }, 400},
+		{"duplicate-id", "GET", "", "", func(h map[string][]string) { h["Credential-Change-ID"] = []string{httpTestEncoding(32, 6), httpTestEncoding(32, 6)} }, 400},
+		{"duplicate-key", "GET", "", "", func(h map[string][]string) { h["Idempotency-Key"] = []string{httpTestEncoding(32, 7), httpTestEncoding(32, 7)} }, 400},
+		{"padded-key", "GET", "", "", func(h map[string][]string) { h["Idempotency-Key"] = []string{httpTestEncoding(32, 7) + "="} }, 400},
+		{"wrong-capability", "GET", "", "", func(h map[string][]string) { h["Authorization"] = []string{"SessionRevoke " + httpTestEncoding(32, 8)} }, 401},
+		{"mixed-reset", "GET", "", "", func(h map[string][]string) { h["Reset-Intent-ID"] = []string{httpTestEncoding(32, 6)} }, 400},
+		{"mixed-verifier", "GET", "", "", func(h map[string][]string) { h["V-Installation-ID"] = []string{httpTestEncoding(16, 6)} }, 400},
+		{"query", "GET", "?id=ignored", "", nil, 400},
+		{"body", "GET", "", "{}", nil, 400},
+		{"method", "POST", "", "", nil, 405},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			headers := httpTestCredentialHeaders(path)
+			if tc.change != nil { tc.change(headers) }
+			response, _, _ := doHTTPTest(t, client, tc.method, server.URL+path+tc.suffix, tc.body, headers)
+			if response.StatusCode != tc.status { t.Fatalf("malformed result query status=%d want=%d", response.StatusCode, tc.status) }
+		})
+	}
+	backend.mu.Lock()
+	defer backend.mu.Unlock()
+	if backend.calls != 0 { t.Fatal("malformed query reached credential authority") }
 }
 
 func httpTestAttestationBody() string {
@@ -424,7 +503,7 @@ func TestCredentialHTTPRejectsImpossibleAuthorityOptionsAndList(t *testing.T) {
 	}
 }
 
-func TestCredentialHTTPDeleteCORSHeaderIsRestrictedToDeletePath(t *testing.T) {
+func TestCredentialHTTPCORSChangeHeaderIsRestrictedToRemovalAndResult(t *testing.T) {
 	backend, endpoints, pki := newHTTPTestCredentials(t)
 	server, client := httpTestPublicServer(t, endpoints.Public, pki, CommunityService)
 	for _, test := range []struct {
@@ -432,6 +511,7 @@ func TestCredentialHTTPDeleteCORSHeaderIsRestrictedToDeletePath(t *testing.T) {
 		status       int
 	}{
 		{httpTestRemovalPath(), "DELETE", 204},
+		{"/api/v1/auth/credential-change-result", "GET", 204},
 		{"/api/v1/auth/passkeys", "POST", 400},
 		{"/api/v1/auth/session", "GET", 400},
 	} {
@@ -442,8 +522,8 @@ func TestCredentialHTTPDeleteCORSHeaderIsRestrictedToDeletePath(t *testing.T) {
 		if response.StatusCode != test.status {
 			t.Fatalf("mis-scoped CORS header: %s status=%d", test.path, response.StatusCode)
 		}
-		if test.status == 204 && (response.Header.Get("Access-Control-Allow-Methods") != "DELETE" || response.Header.Get("Access-Control-Allow-Origin") != "https://client.hnuhole.test") {
-			t.Fatal("DELETE preflight did not expose fixed allowed origin/method")
+		if test.status == 204 && (response.Header.Get("Access-Control-Allow-Methods") != test.method || response.Header.Get("Access-Control-Allow-Origin") != "https://client.hnuhole.test") {
+			t.Fatal("preflight did not expose fixed allowed origin/method")
 		}
 	}
 	backend.mu.Lock()

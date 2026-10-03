@@ -1,5 +1,17 @@
 # 设计进度与剩余工作
 
+> **2026-10-03 远端接续交付：**用户已授权将当前匿名收口材料、运行时／设备／B02源码与测试提交并推送到 `origin/codex/auth-privacy-handoff`，由另一台机器继续。先读[机器接续入口](auth-privacy-machine-handoff.md)，再按[匿名清单 AC01–AC06](auth-privacy-closure-checklist.md)执行；提交／推送不代表缺口已修复或动态验收通过。下方“未提交／推送”是历史记录，最新交付状态以本次提交及远端结果为准。
+
+> **2026-10-03 匿名分支范围纠正：**本分支以匿名方案及其基础实现收口，停在 B02，不进入 B05/B03 等完整业务片。当前有限缺口和结束条件见[匿名收口清单](auth-privacy-closure-checklist.md)：先补 V 独立 Gate、现有身份的整账号关闭联动，再核对隐私边界、补真实测试链与集中验收。B02继续登记为“基础管理已实现，业务联动待实现”，动态／设备未执行项保持待验；本段覆盖下方历史开发顺序，不改写历史测试证据。
+
+> **2026-10-03 B02身份管理基础：**本人身份列表／创建／改名／删除、默认头像和我的→设置入口已写入；注册零身份仍能浏览，落实最多3个／不能删最后一个、累计创建及六个月／30天限制。全部访问最终Gate／会话／归属复核，账号串行及成功／拒绝终态回执保护未知提交与迟到重试。**基础管理已实现，业务联动待实现；编译、SQL、Flutter和真机验收待执行。**帖内绑定、旧帖／聊天投影随业务模块，自定义头像随媒体实现。见[任务单](identity-management-plan.md)、[报告](identity-management-validation-report.md)、[机器记录](../../services/api/authlab/identity-management-verification.json)和[模块交接](module-acceptance-handoff.md)／[台账](module-acceptance-ledger.json)。后续按[匿名收口清单](auth-privacy-closure-checklist.md)补齐基础缺口并交付，不进入完整发帖／列表业务片；未提交／推送。
+
+> **2026-10-02 设备／恢复凭据／原生Passkey：**当前／最近接替设备及退出、恢复码轮换全量确认与持久结果核对、Android/iOS绑定／两步移除／可发现恢复已写入工作区；runtime固定RP／签名origin已接。真机vault／跨进程与冻结／接替／迟到响应测试源码已补。**编译、动态和设备验收待执行，RP／平台关联配置未提供。**见[任务单](auth-privacy-device-credentials-passkey-plan.md)、[报告](auth-privacy-device-credentials-passkey-validation-report.md)、[模块交接](module-acceptance-handoff.md)／[台账](module-acceptance-ledger.json)。缺工具不停止指定功能开发；源码完成不计验收通过；未提交／推送。
+
+> **2026-10-02 用户决定可先开发后集中分模块验收：**无需等待另一电脑；[模块测试交接](module-acceptance-handoff.md)及[机器台账](module-acceptance-ledger.json)分别列出已有实现的待验／待复验、原生未验、尚未实现业务、安全与生产缺口。[AGENTS.md](../../AGENTS.md)要求每个功能任务结束同步未测项、原因、测试入口和影响模块。动态／设备验收可延期，代码实现不计为验收PASS；可用的必要检查仍按实际执行记录。后续任务照已收口规则开发并持续维护台账，生产放行前完成相关模块及跨模块验收。以下历史“先验收再进入下一片”的顺序已被本项更新，未通过记录不改写。
+
+> **2026-10-02 T0–T6 实施已落盘，验收未完成：**只基于 `codex/auth-privacy-handoff`，按[C/V 开发服务与目录闭环计划](auth-privacy-runtime-business-integration-plan.md)加入正式迁移／受限角色、两个实际服务入口与开发引导工具、持久 worker、C Gate 同事务目录读取／续期、移动端权威截止持久更新和实际 cmd 一次性 runner。记录见[本轮报告](auth-privacy-runtime-business-integration-validation-report.md)及[机器记录](../../services/api/authlab/runtime-business-integration-verification.json)。本机缺 Go／gofmt、Docker／PostgreSQL 与 Flutter，动态命令因缺工具失败，尚未编译／验证 SQL／race／真实链路，也未提交或推送。下一步在现成工具环境完成格式化、生成漂移、全部回归和实际进程 runner，不把历史通过记录外推到本次改动。[第40轮](../discussions/2026-10-01-grilling-round40.md)确认的 V Gate 另片、全新开发库＋临时升级、Windows＋WSL2 及设备并行范围不变；大型运行时未重下，后续顺序以本段为准。
+
 > **2026-10-01 原生存储与真实 C/V 联调：**真实 Flutter→隔离 C/V HTTPS／PostgreSQL 已跑通注册、会话接替／续期、未知结果核对、Gate 冻结／签名恢复和注销释放 ACK。Android 原生／测试编译与测试 APK 已完成，新增 16 项设备故障测试和跨进程探针；iOS 标记同步重试及跨 engine 串行修复，macOS 文件系统回归通过。本机未做设备执行、完整应用构建或 iOS Keychain 验证。用户要求删除大型临时验证运行时、缓存和 APK并推送远端给另一电脑复验，命令与实际证据见[本轮报告](auth-privacy-mobile-native-integration-validation-report.md)及[机器记录](../../services/api/authlab/mobile-native-integration-verification.json)。下一步先补平台验收，再做设备／恢复凭据管理页面和原生Passkey；生产路由授权接Gate、迁移、业务清理／通知及独立安全验收继续待做。
 
 > **2026-09-30 移动端核心认证状态机（历史节点）：**指定分支 `codex/auth-privacy-handoff` 已接入校邮注册、恢复码隐藏后完整确认、密码登录、权威恢复／活跃续期、七天注销和持久结果核对。退出先确认登出标记持久化，再删除Bearer并以独立能力异步定向撤销，旧任务不影响新会话。系统安全存储适配器及Android/iOS工程已加入；完整Dart／TLS／组件回归和Go故障回归见[本轮报告](auth-privacy-mobile-auth-validation-report.md)及[机器记录](../../services/api/authlab/mobile-auth-verification.json)。下一步先做原生构建、真机安全存储故障与真实C/V整链联调，再补设备／凭据管理页面。原生Passkey、生产路由／迁移与业务授权接Gate、注销清理／通知、运营分权及独立安全验收继续待做。

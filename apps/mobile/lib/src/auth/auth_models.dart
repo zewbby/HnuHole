@@ -158,15 +158,18 @@ class RecoveryCodeRotation {
     required this.rotationIntentId,
     required this.expiresAt,
     required this.newRecoveryCode,
+    this.sessionExpiresAt,
   });
   final String rotationIntentId;
   final DateTime expiresAt;
   final String newRecoveryCode;
+  final DateTime? sessionExpiresAt;
 }
 
 class RecoveryCredentialSummary {
-  const RecoveryCredentialSummary({required this.passkeys});
+  const RecoveryCredentialSummary({required this.passkeys, this.sessionExpiresAt});
   final List<PasskeySummary> passkeys;
+  final DateTime? sessionExpiresAt;
 }
 
 class PasskeySummary {
@@ -186,7 +189,47 @@ class PasskeyRemovalIntent {
   const PasskeyRemovalIntent({
     required this.removalIntentId,
     required this.expiresAt,
+    this.sessionExpiresAt,
   });
   final String removalIntentId;
   final DateTime expiresAt;
+  final DateTime? sessionExpiresAt;
+}
+
+/// The server deliberately supplies no installation ID, token, IP or hardware.
+class DeviceDirectory {
+  const DeviceDirectory({
+    required this.currentSignedInAt,
+    required this.sessionExpiresAt,
+    this.lastReplacedSignedInAt,
+    this.lastReplacedAt,
+  });
+  final DateTime currentSignedInAt;
+  final DateTime sessionExpiresAt;
+  final DateTime? lastReplacedSignedInAt, lastReplacedAt;
+}
+
+class PasskeyOptions {
+  const PasskeyOptions({
+    required this.challengeId,
+    required this.expiresAt,
+    required this.publicKey,
+    this.sessionExpiresAt,
+  });
+  final String challengeId;
+  final DateTime expiresAt;
+  final Map<String, dynamic> publicKey;
+  // Discoverable recovery is unauthenticated and has no session metadata.
+  final DateTime? sessionExpiresAt;
+}
+
+enum CredentialChangeState { pending, committed, notCommitted }
+
+class CredentialChangeOutcome {
+  const CredentialChangeOutcome({
+    required this.state,
+    required this.sessionExpiresAt,
+  });
+  final CredentialChangeState state;
+  final DateTime sessionExpiresAt;
 }

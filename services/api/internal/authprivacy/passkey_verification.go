@@ -27,11 +27,13 @@ var (
 )
 
 // WebAuthnConfig is deployment-owned configuration. An HTTP request must never
-// supply the RP ID or extend the origin allowlist. Native origin associations
-// require a separately reviewed adapter; this validator accepts HTTPS origins.
+// supply the RP ID or extend either origin allowlist. Android signing identities
+// are provisioned separately from HTTPS/RP and HTTP CORS configuration. iOS uses
+// the associated RP's HTTPS origin; neither platform is inferred from a request.
 type WebAuthnConfig struct {
-	RPID    string
-	Origins []string
+	RPID           string   `json:"rpId"`
+	Origins        []string `json:"origins"`
+	AndroidOrigins []string `json:"androidOrigins,omitempty"`
 }
 
 type RegistrationResponse struct {
@@ -67,7 +69,7 @@ type WebAuthnValidator struct {
 }
 
 func NewWebAuthnValidator(config WebAuthnConfig) (*WebAuthnValidator, error) {
-	if !validRPID(config.RPID) || len(config.Origins) < 1 || len(config.Origins) > 16 {
+	if !validRPID(config.RPID) || len(config.Origins) < 1 || len(config.Origins) > 16 || len(config.AndroidOrigins) > 16 {
 		return nil, ErrWebAuthnConfiguration
 	}
 	origins := make(map[string]struct{}, len(config.Origins))
@@ -86,6 +88,19 @@ func NewWebAuthnValidator(config WebAuthnConfig) (*WebAuthnValidator, error) {
 				return nil, ErrWebAuthnConfiguration
 			}
 		} else if u.Host != u.Hostname() {
+			return nil, ErrWebAuthnConfiguration
+		}
+		if _, exists := origins[origin]; exists {
+			return nil, ErrWebAuthnConfiguration
+		}
+		origins[origin] = struct{}{}
+	}
+	for _, origin := range config.AndroidOrigins {
+		const prefix = "android:apk-key-hash:"
+		if !strings.HasPrefix(origin, prefix) {
+			return nil, ErrWebAuthnConfiguration
+		}
+		if _, err := webAuthnBytes(strings.TrimPrefix(origin, prefix), 32, 32); err != nil {
 			return nil, ErrWebAuthnConfiguration
 		}
 		if _, exists := origins[origin]; exists {

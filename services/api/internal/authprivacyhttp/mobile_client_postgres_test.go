@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
@@ -55,6 +56,11 @@ func TestMobileClientHTTPSPostgres(t *testing.T) {
 			original.ServeHTTP(recorder, r)
 			faultsMu.Lock()
 			drop := r.Method == http.MethodPost && drops[r.URL.Path]
+			const rotationDrop = "/api/v1/auth/recovery-code-rotations/*/confirmations"
+			if r.Method == http.MethodPost && drops[rotationDrop] && isRotationConfirmationPath(r.URL.Path) {
+				drop = true
+				delete(drops, rotationDrop)
+			}
 			if drop {
 				delete(drops, r.URL.Path)
 			}
@@ -113,6 +119,7 @@ func TestMobileClientHTTPSPostgres(t *testing.T) {
 				"/api/v1/account-closures":         true,
 				"/api/v1/auth/session-revocations": true,
 				"/api/v1/eligibility/otp-requests": true,
+				"/api/v1/auth/recovery-code-rotations/*/confirmations": true,
 			}
 			if !allowed[body["path"]] {
 				w.WriteHeader(http.StatusBadRequest)
@@ -121,6 +128,16 @@ func TestMobileClientHTTPSPostgres(t *testing.T) {
 			faultsMu.Lock()
 			drops[body["path"]] = true
 			faultsMu.Unlock()
+        case "/near-expiry":
+            token, e := protocol.DecodeCanonicalBase64url(body["token"], 32)
+            if e != nil { w.WriteHeader(http.StatusBadRequest); return }
+            decision, e := s.gate.Snapshot(r.Context())
+            if e != nil { w.WriteHeader(http.StatusServiceUnavailable); return }
+            hash := sha256.Sum256(token)
+            expires := decision.TrustedAt.Add(6*24*time.Hour)
+            tag, e := s.cp.Exec(r.Context(), `UPDATE c_auth.sessions SET expires_at=$2 WHERE token_digest=$1 AND revoked_at IS NULL`, hash[:], expires)
+            if e != nil || tag.RowsAffected() != 1 { w.WriteHeader(http.StatusBadRequest); return }
+            result = map[string]string{"expiresAt": utc(expires)}
 		case "/freeze":
 			err = s.gate.Freeze(r.Context(), "isolated mobile transport fault test")
 		case "/recover":

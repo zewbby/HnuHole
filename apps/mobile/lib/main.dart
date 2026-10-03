@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
 
@@ -39,11 +40,20 @@ void main() {
     store: store,
     directory: directory,
   );
+  final passkey = NativePasskeyClient();
+  final management = SecurityManagementController(
+    api: api, store: store, passkey: passkey, sessions: sessions,
+  );
+  final identities = IdentityManagementController(api: api, store: store, sessions: sessions);
   final flows = AuthFlows(
     api: api,
     store: store,
     acceptRegistrationSession: sessions.acceptSession,
     clearCommunityAccess: sessions.clearCommunityAccess,
+    passkeyApi: api,
+    passkey: passkey,
+    sessionAuthorityVersion: () => sessions.authorityVersion,
+    sessionAuthority: sessions,
   );
 
   runApp(
@@ -53,6 +63,9 @@ void main() {
       api: api,
       sessions: sessions,
       flows: flows,
+      management: management,
+      identities: identities,
+      store: store,
     ),
   );
 }
@@ -64,6 +77,9 @@ class _HnuholeApp extends StatefulWidget {
     required this.api,
     required this.sessions,
     required this.flows,
+    required this.management,
+    required this.identities,
+    required this.store,
   });
 
   final ChannelDirectoryController directory;
@@ -71,6 +87,9 @@ class _HnuholeApp extends StatefulWidget {
   final HttpAuthApi api;
   final AuthSessionController sessions;
   final AuthFlows flows;
+  final SecurityManagementController management;
+  final IdentityManagementController identities;
+  final AuthStore store;
 
   @override
   State<_HnuholeApp> createState() => _HnuholeAppState();
@@ -82,6 +101,9 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
       GlobalKey<ScaffoldMessengerState>();
   final _navigatorKey = GlobalKey<NavigatorState>();
   bool _authRouteOpen = false;
+  bool _securityRouteOpen = false;
+  bool _settingsRouteOpen = false;
+  bool _identityRouteOpen = false;
 
   @override
   void initState() {
@@ -124,20 +146,72 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
               sessions: widget.sessions,
               flows: widget.flows,
               onAuthenticated: () => Navigator.of(context).pop(),
+              onManageSecurity: _openSecurity,
             ),
           ),
         )
         .whenComplete(() => _authRouteOpen = false);
   }
 
+  void _openSecurity() {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || _securityRouteOpen) return;
+    if (!widget.sessions.isAuthenticated) {
+      _openAuth();
+      return;
+    }
+    _securityRouteOpen = true;
+    navigator.push(MaterialPageRoute<void>(builder: (context) => SecurityManagementScreen(
+      controller: widget.management,
+      sessions: widget.sessions,
+      onAuthenticationRequired: () {
+        Navigator.of(context).pop();
+        _openAuth();
+      },
+    ))).whenComplete(() => _securityRouteOpen = false);
+  }
+
+  void _openSettings() {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || _settingsRouteOpen) return;
+    if (!widget.sessions.isAuthenticated) {
+      _openAuth();
+      return;
+    }
+    _settingsRouteOpen = true;
+    navigator.push(MaterialPageRoute<void>(builder: (context) => SettingsScreen(
+      onManageIdentity: _openIdentity, onManageSecurity: _openSecurity,
+    ))).whenComplete(() => _settingsRouteOpen = false);
+  }
+
+  void _openIdentity() {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || _identityRouteOpen) return;
+    if (!widget.sessions.isAuthenticated) {
+      _openAuth();
+      return;
+    }
+    _identityRouteOpen = true;
+    navigator.push(MaterialPageRoute<void>(builder: (context) => IdentityManagementScreen(
+      controller: widget.identities, sessions: widget.sessions,
+      onAuthenticationRequired: () {
+        Navigator.of(context).pop();
+        _openAuth();
+      },
+    ))).whenComplete(() => _identityRouteOpen = false);
+  }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.management.dispose();
+    widget.identities.dispose();
     widget.flows.dispose();
     widget.sessions.dispose();
     widget.api.close();
     widget.directory.dispose();
     widget.repository.close();
+    widget.store.dispose();
     super.dispose();
   }
 
@@ -171,7 +245,7 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
         directory: widget.directory,
         treeSession: _treeSession,
         onLoginRequested: _openAuth,
-        onProfilePressed: _openAuth,
+        onProfilePressed: _openSettings,
         onChannelSelected: (channel) {
           _scaffoldMessengerKey.currentState?.showSnackBar(
             SnackBar(content: Text('Open ${channel.displayName}')),

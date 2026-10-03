@@ -1,0 +1,337 @@
+{
+  "schemaVersion": "hnuhole-runtime-business-integration-verification/v1",
+  "recordedAtUTC": "2026-10-01T16:06:31.457821+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+  "headCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+  "workingTreeChangesUncommitted": true,
+  "newCommit": null,
+  "scope": "T0_T6_DEVELOPMENT_CV_RUNTIME_AND_AUTHORIZED_CHANNEL_DIRECTORY",
+  "status": "IMPLEMENTED_IN_WORKING_TREE_DYNAMIC_ACCEPTANCE_PENDING",
+  "platform": {
+    "os": "macOS 26.2",
+    "osBuild": "25C56",
+    "kernel": "Darwin 25.2.0",
+    "architecture": "arm64",
+    "cCompiler": "Apple clang 17.0.0",
+    "xcode": "CommandLineTools only",
+    "python": "3.13.3",
+    "existingYamlPython": "3.12.7",
+    "pyyaml": "6.0.1"
+  },
+  "unavailableTools": [
+    "go",
+    "gofmt",
+    "docker",
+    "initdb",
+    "pg_ctl",
+    "psql",
+    "goose",
+    "sqlc",
+    "oapi-codegen",
+    "flutter",
+    "dart"
+  ],
+  "configuredVersions": {
+    "goMinimum": "1.22",
+    "postgresImage": "postgres:16.6-alpine",
+    "mailpitImage": "axllent/mailpit:v1.21.8",
+    "goose": "v3.22.1",
+    "sqlc": "v1.27.0",
+    "oapiCodegen": "v2.4.1",
+    "openapiSpecValidator": "0.9.0",
+    "actualCompatibilityVerified": false
+  },
+  "commands": [
+    {
+      "workingDirectory": "services/api",
+      "command": "go test -race -count=1 -p 1 ./...",
+      "exitCode": 127,
+      "evidenceSummary": "command not found: go",
+      "classification": "BLOCKED_MISSING_TOOL",
+      "outputSHA256": "025bf64c7bdce1024f03c785adf40427cc39ed808c775e3361bc8dcb3eb77b59"
+    },
+    {
+      "workingDirectory": "services/api",
+      "command": "go vet ./...",
+      "exitCode": 127,
+      "evidenceSummary": "command not found: go",
+      "classification": "BLOCKED_MISSING_TOOL",
+      "outputSHA256": "025bf64c7bdce1024f03c785adf40427cc39ed808c775e3361bc8dcb3eb77b59"
+    },
+    {
+      "workingDirectory": "services/api",
+      "command": "sh authlab/run-isolated.sh",
+      "exitCode": 1,
+      "evidenceSummary": "Missing tool: go",
+      "classification": "BLOCKED_MISSING_TOOL",
+      "outputSHA256": "253f5ffd2342b27e3a23d78ed9f087db100f09e17abbed1066b47a51f70aeada"
+    },
+    {
+      "workingDirectory": "services/api",
+      "command": "sh authlab/run-mobile-isolated.sh",
+      "exitCode": 1,
+      "evidenceSummary": "Missing tool: go",
+      "classification": "BLOCKED_MISSING_TOOL",
+      "outputSHA256": "253f5ffd2342b27e3a23d78ed9f087db100f09e17abbed1066b47a51f70aeada"
+    },
+    {
+      "workingDirectory": "services/api",
+      "command": "sh authlab/run-runtime-isolated.sh",
+      "exitCode": 1,
+      "evidenceSummary": "Missing tool: go",
+      "classification": "BLOCKED_MISSING_TOOL",
+      "outputSHA256": "253f5ffd2342b27e3a23d78ed9f087db100f09e17abbed1066b47a51f70aeada"
+    },
+    {
+      "workingDirectory": "apps/mobile",
+      "command": "flutter analyze",
+      "exitCode": 127,
+      "evidenceSummary": "command not found: flutter",
+      "classification": "BLOCKED_MISSING_TOOL",
+      "outputSHA256": "e16436b5161b218198b2296f5c1c9bbc62ddd053642a6283155e702950731447"
+    },
+    {
+      "workingDirectory": "apps/mobile",
+      "command": "flutter test --reporter expanded",
+      "exitCode": 127,
+      "evidenceSummary": "command not found: flutter",
+      "classification": "BLOCKED_MISSING_TOOL",
+      "outputSHA256": "e16436b5161b218198b2296f5c1c9bbc62ddd053642a6283155e702950731447"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "python3 packages/openapi/check-specs.py",
+      "exitCode": 1,
+      "evidenceSummary": "PyYAML is unavailable in default Python",
+      "classification": "BLOCKED_MISSING_DEPENDENCY"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "/opt/anaconda3/bin/python packages/openapi/check-specs.py",
+      "exitCode": 1,
+      "evidenceSummary": "openapi-spec-validator 0.9.0 is unavailable",
+      "classification": "BLOCKED_MISSING_DEPENDENCY"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "sh packages/openapi/generate-channel.sh",
+      "exitCode": 127,
+      "evidenceSummary": "command not found: oapi-codegen",
+      "classification": "BLOCKED_MISSING_TOOL"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "/opt/anaconda3/bin/python packages/openapi/check-specs.py --yaml-only",
+      "exitCode": 0,
+      "evidenceSummary": "Three specs: YAML/contract structure passed; full validator not included",
+      "classification": "STATIC_ONLY",
+      "outputSHA256": "fc0b49efac29fee7776a26881c7645795fa5c8ea78c0e99968cb4cd6286f2d42"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "git diff --check",
+      "exitCode": 0,
+      "evidenceSummary": "No whitespace errors",
+      "classification": "STATIC_ONLY",
+      "outputSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "sh -n services/api/authlab/run-runtime-isolated.sh; sh -n infra/postgres/init-auth.sh; sh -n packages/openapi/generate-channel.sh; sh -n services/api/authlab/run-isolated.sh; sh -n services/api/authlab/run-mobile-isolated.sh",
+      "exitCode": 0,
+      "evidenceSummary": "All listed scripts parsed",
+      "classification": "STATIC_ONLY"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "Python checks: example JSON, loopback Compose, 0001/0002 HEAD identity, unique Goose Up/Down markers, historical verification JSON",
+      "exitCode": 0,
+      "evidenceSummary": "All structure/identity assertions passed",
+      "classification": "STATIC_ONLY"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "gofmt -l services/api/internal/authprivacy/retirement_http.go services/api/internal/authprivacy/retirement_authorization_test.go",
+      "exitCode": 127,
+      "outputSHA256": "a09cb23b8b5d6840a8086fe6c4c258b6a7a40104f0a575299e71e82c57fe4bd5",
+      "classification": "BLOCKED_MISSING_TOOL"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "sh -n services/api/authlab/run-runtime-isolated.sh && sh -n infra/postgres/init-auth.sh && sh -n packages/openapi/generate-channel.sh && sh -n services/api/authlab/run-isolated.sh && sh -n services/api/authlab/run-mobile-isolated.sh",
+      "exitCode": 0,
+      "outputSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "classification": "STATIC_ONLY"
+    },
+    {
+      "workingDirectory": "services/api",
+      "command": "go test ./internal/authprivacy -run 'TestRetirementTerminalWriteAndReplayRequireFinalGatePostgres|TestAcknowledgedRetirementResignRejectsFreezeAndRecoveryPostgres' -count=1",
+      "exitCode": 127,
+      "outputSHA256": "025bf64c7bdce1024f03c785adf40427cc39ed808c775e3361bc8dcb3eb77b59",
+      "classification": "BLOCKED_MISSING_TOOL"
+    }
+  ],
+  "implementation": {
+    "T0": {
+      "sourcePresent": true,
+      "acceptancePassed": false
+    },
+    "T1": {
+      "sourcePresent": true,
+      "acceptancePassed": false
+    },
+    "T2": {
+      "sourcePresent": true,
+      "acceptancePassed": false
+    },
+    "T3": {
+      "sourcePresent": true,
+      "acceptancePassed": false
+    },
+    "T4": {
+      "sourcePresent": true,
+      "acceptancePassed": false
+    },
+    "T5": {
+      "sourcePresent": true,
+      "acceptancePassed": false
+    },
+    "T6": {
+      "sourcePresent": true,
+      "acceptancePassed": false
+    }
+  },
+  "boundaries": {
+    "goCompiled": false,
+    "gofmtExecuted": false,
+    "goVetPassed": false,
+    "raceExecuted": false,
+    "formalMigrationsExecuted": false,
+    "runtimePrivilegesVerified": false,
+    "upgradeChannelsVerifiedDynamically": false,
+    "actualCmdProcessesExecuted": false,
+    "realSMTPExecuted": false,
+    "realMTLSExecuted": false,
+    "flutterAnalyzed": false,
+    "flutterTestsExecuted": false,
+    "newMobileDirectoryIntegrationExecuted": false,
+    "fullOpenAPIValidationPassed": false,
+    "channelCodeGenerationDriftChecked": false,
+    "go122Postgres16CompatibilityVerified": false,
+    "macOSRuntimeVerified": false,
+    "linuxRuntimeVerified": false,
+    "wsl2RuntimeVerified": false,
+    "nativeAndroidDeviceVerified": false,
+    "nativeIOSVerified": false,
+    "verifierIndependentGateImplemented": false,
+    "productionDeployment": false,
+    "humanIndependentAudit": false
+  },
+  "preservedInitialChanges": [
+    "docs/design/HANDOFF.md",
+    "docs/design/README.md",
+    "docs/design/progress.md",
+    "docs/discussions/README.md",
+    "docs/design/auth-privacy-runtime-business-integration-plan.md",
+    "docs/discussions/2026-10-01-grilling-round40.md"
+  ],
+  "cleanup": {
+    "largeToolsDownloaded": false,
+    "buildCachesCreated": false,
+    "databaseOrContainerCreated": false,
+    "developmentSecretsCreated": false,
+    "unknownDatabasesContacted": false,
+    "committed": false,
+    "pushed": false,
+    "scope": "Only this turn-owned editing scripts and Python cache; no SDK/AVD/user resource deletion"
+  },
+  "sourceSHA256": {
+    "apps/mobile/README.md": "c6637bf67c4cb52ced643a804ef247518fc6d54096679fdc6d70701614910961",
+    "apps/mobile/integration/auth_public_https_postgres_test.dart": "ab62150df21d691faa857d89802ac50a2354a79a744fbf1b97684c7ad33e6559",
+    "apps/mobile/lib/src/auth/auth_session_controller.dart": "a97282749cd4be3c59cc7844564622e8a20c17d86d6f30a298248cad10bead07",
+    "apps/mobile/lib/src/channels/channel_repository.dart": "f395fcb3b83281ad0fc935ca35d4c8ee185dc7fa196f92ce9d7e7bc151ef0b8b",
+    "apps/mobile/lib/src/channels/http_channel_repository.dart": "a74e7c1f0c72a736418ae0c7d5a8e4deef68c6b606199e3a3cde3c125a73072d",
+    "apps/mobile/lib/src/navigation/channel_directory_controller.dart": "1f43b493e3a9a8387af0aedf9aac3ad51c6339a3c47e7232f8e8563a50277b34",
+    "apps/mobile/test/auth_api_test.dart": "0f9a2c88cf3f558d5486898d3e99bd8e25bd16305c00dda7de50d33b32f326bc",
+    "apps/mobile/test/auth_screen_test.dart": "ae749fd5e3ae3e2d6722eda36625cba3bbcbc40803ea8e88cc4eb5bd1e34daf7",
+    "apps/mobile/test/auth_session_controller_test.dart": "569c0411fb46a070405f4b0adb69ff870425a12db50583464fce3cccc680288b",
+    "docs/design/HANDOFF.md": "4de2b3be8443fa29f59aab2015c08d28bc7de74edfd92de321fb172368b369a7",
+    "docs/design/README.md": "2f54fa14d25bfec36b98d77b55c3ce4556dc1dba24f955e9b4e61d60220c9507",
+    "docs/design/auth-privacy-runtime-business-integration-plan.md": "ae9bbf16e820be52d5e83e6c1423e1e2bf3ca9f31685127fcbb5265990807110",
+    "docs/design/progress.md": "3b8b42b952e86fcb0bb7dc1ad9656f8e41b5688b74534b4f8756d03e9fb6c016",
+    "docs/discussions/2026-10-01-grilling-round40.md": "08bb2d804e1fbc5fa95556d6ca1d6e56dafeed0d7d2947da5c1a9355bfe15cd8",
+    "docs/discussions/README.md": "21759c0985f354f0f6a2e21d86744f59442f2d238e0a6cd577e34b3eb424e332",
+    "infra/.env.example": "b59ffee9b6c4bfcb252f86841158db51d4c724cbec29271e06423b1c03771183",
+    "infra/README.md": "ab642b24bdc6e579c69829c322f4d05382232a7bd7d6e7d798a781d32f84f3e6",
+    "infra/docker-compose.yml": "0140b2a12f494d413abeb1ea7914d5be225e9f181207b1c3d19b9267504b30ea",
+    "infra/postgres/grant-community.sql": "d74fd2479844ddc67f20d3c482860e2bfe9e28286bd751ee4f57f38d3adf4754",
+    "infra/postgres/grant-verifier.sql": "bf5908e5bbf1e5e84351681c9b00fe4e3191df22f6817fbd2b314c07fb1d9799",
+    "infra/postgres/init-auth.sh": "dbe6c562e5f46d5b13de340eead4bb03493850339d05617009ba1ca3e347dd7e",
+    "packages/openapi/README.md": "0385860dfdf961b118190748eec8db62384820a587816279d389a2a6ad0e3d0d",
+    "packages/openapi/channel-api.yaml": "a6931f7513b44b81108aef7c5df967c6924ff59e16863415556f7a0925f60a02",
+    "packages/openapi/check-specs.py": "6c8ca24fd2d02d2534e188f53c14fa9f6a717544a38fa30d1bb24a0fb2f73306",
+    "packages/openapi/generate-channel.sh": "5b64ed4407687b1d7b05b8b42d8943a2d28f287e5627553b169d55ee3e975f52",
+    "packages/openapi/requirements-check.txt": "2dcf2f923a4fe9dd75f511b67b8d0edf3a43c25f14ba652358e1f9ef8e4e6651",
+    "services/api/README.md": "964bbd565096bc5a315e05a9b9cea37ebb6f207a72046fc78d473707cf266daa",
+    "services/api/authlab/README.md": "c7d26bd83c60eca086bbdd00e620dc37d7a6eedc2c0a7808985421220ccf60bc",
+    "services/api/authlab/migrations/community/README.md": "cb36334fcc800c1356329d01fdf7e4119e9a658ed48cf1483867cbd098d370c5",
+    "services/api/authlab/migrations/verifier/README.md": "05e3eb9e47611e60690e40db254af113d6a89321ece790946da6bf112c2cd899",
+    "services/api/authlab/run-runtime-isolated.sh": "bd633a0cc78edf95dffc5949387716b9c8a753749a3db0820a3de4d3c7b9c3e8",
+    "services/api/cmd/api/main.go": "5657d78ca2bedc97d8743b18ae04812453fc6a766f7bb64eeb7beba03f761447",
+    "services/api/cmd/authdev/main.go": "266616696edf07a03c76caadbada3cac5aef936bb4a947c74aa991fe546efe11",
+    "services/api/cmd/authdev/main_test.go": "82e27bc56fced67b71c977c95468cb1cae6612ebb121428b2783f84131a56170",
+    "services/api/cmd/runtimeprobe/main.go": "36a4151232a37e7eedde7ee08bfcfc69b8c0c1b0f23070ca4ff2d7288abafa8b",
+    "services/api/cmd/verifier/main.go": "050c68603bd38c77562773c87f07da8d190d03b04e34951ff2c27f4ed8c58984",
+    "services/api/community.config.example.json": "0925b68520eeaa055f2fe3d3d7a3553acf298f1308ab6465c27f1e74f1d2a42b",
+    "services/api/internal/authprivacy/authorization_gate.go": "80a03fcb073a674e08c4f870e200f1e0468aeac0073b5d870e44c451bcabcc60",
+    "services/api/internal/authprivacy/authorization_gate_test.go": "88487faaf4a3a071e69327974110e03245c2cba5e32926a04f963ee5784b972d",
+    "services/api/internal/authprivacy/community.go": "74a5b2eb335c81c2ac59d24effef50f336eb23cd3860b2025cd5980db0eeb19b",
+    "services/api/internal/authprivacy/community_authorized.go": "06f2631a058aff961770093294adcbbf9fa7f79daccb7c05b435fa68a3e010f3",
+    "services/api/internal/authprivacy/community_authorized_test.go": "fce9e54bf03b090e2bdeb0e2ee6193b308bcf751b47dfe26a18c483626a0a31d",
+    "services/api/internal/authprivacy/community_sessions.go": "79b2afe3f62545444e40b4d41bb5d8fc055cc85f7df84c4c73a36b7f408c0fb8",
+    "services/api/internal/authprivacy/eligibility_mail_worker_test.go": "c9ce4e54bc801e14a6c77647f5b826ba3ce320322463fd735f386aa6a3cd9469",
+    "services/api/internal/authprivacy/eligibility_otp.go": "33543a8bc4c4ee3f399a53157f92a67d3a3847ba785c48bbc9506ed1981529ca",
+    "services/api/internal/authprivacy/outbox.go": "d19e8ca2a6699a9a6ec5549be927474f332113d819b728b6dc50d9dffc0b88af",
+    "services/api/internal/authprivacy/outbox_authorization_test.go": "20cf84a5fc30c5d25dce96baccac9b718476c42d021a4650c2870a715946b629",
+    "services/api/internal/authprivacy/outbox_workers_test.go": "0820b55bcfcebd8e5f8afbf668de372129e56bec863b70b08c6206614ee10c9f",
+    "services/api/internal/authprivacy/postgres_test.go": "72321cd744879340b483f94711e10463cab8699c9ef18e636c484aa4c5facf4a",
+    "services/api/internal/authprivacy/retirement_authorization_test.go": "1eea54e3291bf5ddfc7664420b71bcf24af00627724d64af42c973e75f4e77d9",
+    "services/api/internal/authprivacy/retirement_http.go": "5f72e9023c44abe0cf2e227dcf3bd15679305a2dcea1505f748e59e060c74398",
+    "services/api/internal/authprivacy/workers.go": "6f4468dcdc02c503968bfb93d29162f0e6af44245eb9ed16e2711b0703f26078",
+    "services/api/internal/authprivacy/workers_test.go": "72a5eda3261f63c4367b3cab8275e7ad426cc386b10db39a31495515d7bf7438",
+    "services/api/internal/authprivacyhttp/channel_endpoints.go": "2b11bd81fbb659302608d4701a12ad31bf84f29221ce21781035ef1453430836",
+    "services/api/internal/authprivacyhttp/channel_endpoints_test.go": "88ab141145600f7cd7977792eda6b805d8fc3c93094256a537d24cf83dfe384c",
+    "services/api/internal/authprivacyhttp/endpoints.go": "a3d939fefbb4426929cf6cb61ee73d6994bfe18495c8b0133efc877ed45c0024",
+    "services/api/internal/authprivacyhttp/endtoend_postgres_test.go": "e7026be5310556e84da1ecf9b261b8efbe32a7650426d9a255b95681e82a17e6",
+    "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go": "20cf642e741b06662eabda808ba73ab701f4153b9e00b25ff1994e942f0708c2",
+    "services/api/internal/authprivacyruntime/config.go": "b93a4bdf04835a555f552c858e6309c444d1b640d635930bd97943af3c5a3ada",
+    "services/api/internal/authprivacyruntime/server.go": "0acf75ccfe73392996a537f97d0d65ba4ba3bde30069c1e1c2d9a4da4cb355f5",
+    "services/api/internal/channels/postgres.go": "c0e7bf55902f87a20eca33b180108924fbb420024c288b2e89d770cd7d9c327e",
+    "services/api/internal/channels/queries.sql": "b29f945d1a58d49e950cf7aaaa3c4867ce7350f0c98d34502152ecaf11bd2a2b",
+    "services/api/migrations/0003_authprivacy.sql": "51ba4d7835a1fbb33a264c7693a365a6cc1997f77f0825bc68f8dc2e28184278",
+    "services/api/migrations/0004_authorization_gate.sql": "b2c7737c6ef24658bba39aa65e003158ee26d4669d098ba79b8f9562b8ed0101",
+    "services/api/migrations/0005_session_lifecycle.sql": "4dd140ba2724b4bcdd432fe365f086fdd10b25ae65110445d98892a44e4ceb6e",
+    "services/api/migrations/0006_recovery_reset.sql": "4bb9e591c9a0c1774e39de4932e79ef608cfdb7d11674d3bd8fff59db075b730",
+    "services/api/migrations/0007_account_closure.sql": "9fa39a97a027cc32a51fc7955f6ee04332f4803560267e33e6314b9ad2e39094",
+    "services/api/migrations/0008_recovery_credentials.sql": "c5ff5114fa790a86606cc66fd363e69a292bb2f17a8b611f60fddbced8d31fd0",
+    "services/api/migrations/0009_receipt_worker_claim.sql": "2386fe4362eab48c423baf4862d6f621677c665131893e50a70351125fc1bcd7",
+    "services/api/migrations/0010_legacy_fence.sql": "e2e377cda6fea2543e25b8acac010fd9d41d8254ca2142f9aa18984cdf99ad33",
+    "services/api/verifier-migrations/0001_authprivacy.sql": "102d6a2f9faafbdf992bad8e5122323b46bba80d6ed8419d48cc8466cef41fa0",
+    "services/api/verifier-migrations/0002_otp.sql": "204a03451012ba39b08a36c6b39a4a8ef37dede968b7399df9425a1b469ab152",
+    "services/api/verifier-migrations/0003_confirmation.sql": "40e0413282ea541d7195d7c443738631a5627f49bdd0f5c421ff19bf8f870a46",
+    "services/api/verifier.config.example.json": "67804537897501d592ad52b2b37aff9ae30c4615b5392a499a93cd1649d83de3"
+  },
+  "deletedSourceBaselineSHA256": {
+    "services/api/authlab/migrations/community/0001_authprivacy_lab.sql": "26ab7c571cc75b5035597f97d6678a86ad915d17a0241298c306080ad9eb24d0",
+    "services/api/authlab/migrations/community/0002_authorization_gate.sql": "0fbd2bf8ed778be3369ac0e6d0c483b1c9effb0fecf273274966c40d01d219ca",
+    "services/api/authlab/migrations/community/0003_session_lifecycle.sql": "bda8724d8954cf4b102d8d754eccb8c5de8a82c50759802df40a109f9788cdd1",
+    "services/api/authlab/migrations/community/0004_recovery_reset.sql": "d3928ef2ea383ea8ebf5a125037f9423e9fdb5180dffb29f64f8033d79673141",
+    "services/api/authlab/migrations/community/0005_account_closure.sql": "5e219a46e15596a8658f1c9319ee7945b6aaaff2b1acb255df297dd4ceacde6c",
+    "services/api/authlab/migrations/community/0006_recovery_credentials.sql": "b7cd8f711133bb279849913f1668c0ef0b0fd8f74bd6d93c6d9e4575a96ea59e",
+    "services/api/authlab/migrations/verifier/0001_authprivacy_lab.sql": "cb9979e60a66265771bc2f7ceef1d2bfa31e663caf93514aa13ac64dbd42c03d",
+    "services/api/authlab/migrations/verifier/0002_otp.sql": "2a91dacd7394ff2b76767c2a168ce44eddcbe733b84344bb4f279770248869f6",
+    "services/api/authlab/migrations/verifier/0003_confirmation.sql": "182c46cd30e2a3acb9bbeb00ae67e7fef213005a99131b8683e94e192ea9cd76"
+  },
+  "lastStaticCheckDateAsiaShanghai": "2026-10-02"
+}

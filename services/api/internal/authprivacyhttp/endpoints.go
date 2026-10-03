@@ -1,5 +1,5 @@
 // Package authprivacyhttp contains isolated V/C HTTP boundaries. Its public and
-// internal handlers are separate and are not wired to the production router.
+// internal handlers are separate and share the C/V development runtime boundary.
 package authprivacyhttp
 
 import (
@@ -76,7 +76,13 @@ type VerifierOptions struct {
 	Limits         NetworkLimits
 }
 
+type ChannelBackend interface {
+    ListAuthorizedChannels(context.Context, [32]byte) (authprivacy.ChannelDirectory, error)
+}
+
 type CommunityOptions struct {
+    Channels       ChannelBackend
+    Identities     IdentityBackend
 	Backend        CommunityBackend
 	Sessions       SessionBackend
 	Recovery       RecoveryBackend
@@ -129,6 +135,12 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	if options.Channels == nil {
+		options.Channels, _ = options.Backend.(ChannelBackend)
+	}
+	if options.Identities == nil {
+		options.Identities, _ = options.Backend.(IdentityBackend)
+	}
 	if options.Sessions == nil {
 		options.Sessions, _ = options.Backend.(SessionBackend)
 	}
@@ -143,6 +155,14 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
+            if isIdentityPath(r.URL.Path) {
+                b.communityIdentitiesPublic(w, r, options.Identities)
+                return
+            }
+            if r.URL.Path == "/api/v1/channels" {
+                b.communityChannelsPublic(w, r, options.Channels)
+                return
+            }
 			b.communityPublic(w, r, options.Backend, options.Sessions, options.Recovery, options.Closures, options.Credentials, options.Passwords)
 		}),
 		Internal: b.wrap(true, func(w http.ResponseWriter, r *http.Request) { b.communityInternal(w, r, options.Backend) }),
@@ -219,6 +239,7 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 					return
 				}
 				w.Header().Set("Access-Control-Allow-Origin", origin)
+				w.Header().Set("Access-Control-Expose-Headers", "Session-Expires-At, X-Request-ID, Retry-After")
 				w.Header().Set("Vary", "Origin")
 			}
 		}
@@ -241,7 +262,7 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	method, err := singleHeader(r.Header, "Access-Control-Request-Method")
-	if err != nil || method != publicMethod(b.service, r.URL.Path) {
+	if err != nil || !publicMethodAllowed(b.service, r.URL.Path, method) {
 		b.bad(w, errMalformed)
 		return
 	}
@@ -254,7 +275,7 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 	} else {
 		allowed["authorization"] = true
 		allowed["reset-intent-id"] = true
-		if isPasskeyRemovalPath(r.URL.Path) {
+		if isPasskeyRemovalPath(r.URL.Path) || r.URL.Path == "/api/v1/auth/credential-change-result" {
 			allowed["credential-change-id"] = true
 		}
 	}
@@ -267,6 +288,16 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", method)
 	w.Header().Set("Access-Control-Allow-Headers", requested)
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func publicMethodAllowed(service Service, path, method string) bool {
+    if service == CommunityService && isIdentityPath(path) {
+        if path == "/api/v1/identities" { return method == http.MethodGet || method == http.MethodPost }
+        if path == "/api/v1/identity-change-result" { return method == http.MethodGet }
+        if _, err := identityPathID(path); err == nil { return method == http.MethodPatch || method == http.MethodDelete }
+        return false
+    }
+    return method != "" && method == publicMethod(service, path)
 }
 
 func publicMethod(service Service, path string) string {
@@ -287,7 +318,7 @@ func publicMethod(service Service, path string) string {
 			"/api/v1/auth/passkeys", "/api/v1/auth/passkey-removal-intents",
 			"/api/v1/auth/passkey-reset-options", "/api/v1/auth/passkey-reset-intents":
 			return http.MethodPost
-		case "/api/v1/auth/session", "/api/v1/auth/devices", "/api/v1/auth/password-reset-result", "/api/v1/auth/recovery-credentials":
+		case "/api/v1/channels", "/api/v1/auth/session", "/api/v1/auth/devices", "/api/v1/auth/password-reset-result", "/api/v1/auth/recovery-credentials", "/api/v1/auth/credential-change-result":
 			return http.MethodGet
 		}
 		if isRotationConfirmationPath(path) {
@@ -664,7 +695,7 @@ func (b *boundary) communityPublic(w http.ResponseWriter, r *http.Request, backe
 		b.bad(w, errMalformed)
 		return
 	}
-	if hasHeader(r.Header, "Credential-Change-ID") && !isPasskeyRemovalPath(r.URL.Path) {
+	if hasHeader(r.Header, "Credential-Change-ID") && !isPasskeyRemovalPath(r.URL.Path) && r.URL.Path != "/api/v1/auth/credential-change-result" {
 		b.bad(w, errMalformed)
 		return
 	}

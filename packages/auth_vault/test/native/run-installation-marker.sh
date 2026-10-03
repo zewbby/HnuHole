@@ -9,7 +9,7 @@ trap 'rm -rf "$marker_run_dir"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM HUP
 swiftc -module-cache-path "$marker_run_dir/modules" \
-    "$marker_script_dir/../../ios/Classes/AuthInstallationMarker.swift" \
+    "$marker_script_dir/../../ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthInstallationMarker.swift" \
     "$marker_script_dir/installation_marker_test.swift" \
     -o "$marker_run_dir/tests"
 "$marker_run_dir/tests"

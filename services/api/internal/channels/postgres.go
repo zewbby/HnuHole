@@ -3,24 +3,30 @@ package channels
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5"
 )
 
 const listChannelsQuery = `
 SELECT id, code, name, initially_visible, display_order
-FROM channels
+FROM public.channels
 ORDER BY display_order ASC`
 
-type PostgresRepository struct {
-	pool *pgxpool.Pool
+// Queryer exposes only query access; both pgx.Tx and pgxpool.Pool satisfy it.
+// Business callbacks cannot commit or roll back the authorization transaction.
+type Queryer interface {
+    Query(context.Context, string, ...any) (pgx.Rows, error)
 }
 
-func NewPostgresRepository(pool *pgxpool.Pool) *PostgresRepository {
-	return &PostgresRepository{pool: pool}
+type PostgresRepository struct {
+    query Queryer
+}
+
+func NewPostgresRepository(query Queryer) *PostgresRepository {
+	return &PostgresRepository{query: query}
 }
 
 func (r *PostgresRepository) List(ctx context.Context) ([]Channel, error) {
-	rows, err := r.pool.Query(ctx, listChannelsQuery)
+	rows, err := r.query.Query(ctx, listChannelsQuery)
 	if err != nil {
 		return nil, err
 	}

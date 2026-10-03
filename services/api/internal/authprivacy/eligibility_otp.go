@@ -232,7 +232,7 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 		if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
 			return OTPRequestResult{}, err
 		}
-		if expires != nil && !at.Before(*expires) && row.state != "DISPATCHING" && row.state != "UNKNOWN" && row.state != "QUEUED" {
+		if expires != nil && !at.Before(*expires) && row.state != "DISPATCHING" && row.state != "QUEUED" {
 			if err = expireOTPRequestResult(ctx, tx, key); err != nil {
 				return OTPRequestResult{}, err
 			}
@@ -403,7 +403,7 @@ func (e *Eligibility) generateOTP(ctx context.Context, tx pgx.Tx, email []byte, 
 }
 
 func expireOTPRequestResult(ctx context.Context, tx pgx.Tx, key [32]byte) error {
-	if _, err := tx.Exec(ctx, `DELETE FROM v_auth.mail_outbox WHERE key_digest=$1 AND state IN ('SENT','NOT_SENT')`, key[:]); err != nil {
+	if _, err := tx.Exec(ctx, `DELETE FROM v_auth.mail_outbox WHERE key_digest=$1 AND state IN ('SENT','NOT_SENT','UNKNOWN')`, key[:]); err != nil {
 		return err
 	}
 	_, err := tx.Exec(ctx, `UPDATE v_auth.request_results SET state='EXPIRED',request_hmac=NULL,hmac_key_version=NULL,installation_id=NULL,flow_id=NULL,result_code=NULL,expires_at=NULL WHERE key_digest=$1`, key[:])
@@ -444,7 +444,7 @@ func (e *Eligibility) GetOTPRequestResult(ctx context.Context, keyBytes [32]byte
 	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
 		return OTPRequestResult{}, err
 	}
-	if expires != nil && !at.Before(*expires) && row.state != "QUEUED" && row.state != "DISPATCHING" && row.state != "UNKNOWN" {
+	if expires != nil && !at.Before(*expires) && row.state != "QUEUED" && row.state != "DISPATCHING" {
 		return OTPRequestResult{}, ErrExpired
 	}
 	result := otpRequestResult(row, at)
@@ -608,6 +608,12 @@ func (e *Eligibility) verifyOTPInTx(ctx context.Context, tx pgx.Tx, req ConfirmO
 // crash or ambiguous DATA response cannot make a later worker send it again.
 func (e *Eligibility) DispatchMail(ctx context.Context, keyBytes [32]byte) (MailOutcome, error) {
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", keyBytes[:])
+	return e.dispatchMailDigest(ctx, key)
+}
+
+// dispatchMailDigest consumes the persistent digest, never a reconstructed raw
+// idempotency key or a fresh business operation. Only QUEUED may be claimed.
+func (e *Eligibility) dispatchMailDigest(ctx context.Context, key [32]byte) (MailOutcome, error) {
 	var email []byte
 	err := e.store.pool.QueryRow(ctx, `SELECT f.email_exact FROM v_auth.mail_outbox m JOIN v_auth.otp_flows f USING(flow_id) WHERE m.key_digest=$1`, key[:]).Scan(&email)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -671,7 +677,9 @@ func (e *Eligibility) DispatchMail(ctx context.Context, keyBytes [32]byte) (Mail
 	if err = tx.Commit(ctx); err != nil {
 		return MailUnknown, err
 	}
-	outcome, sendErr := e.mail.SendOTP(ctx, row.operation, string(email), code)
+	sendCtx, sendCancel := context.WithTimeout(ctx, 10*time.Second)
+	outcome, sendErr := e.mail.SendOTP(sendCtx, row.operation, string(email), code)
+	sendCancel()
 	for i := range raw {
 		raw[i] = 0
 	}
@@ -709,6 +717,31 @@ func (e *Eligibility) DispatchMail(ctx context.Context, keyBytes [32]byte) (Mail
 		return MailUnknown, err
 	}
 	return outcome, sendErr
+}
+
+// ResumeQueuedMail enumerates at most limit durable jobs. Concurrent workers
+// share the address -> request -> outbox lock order; DISPATCHING and UNKNOWN
+// never appear in the enumeration and cannot be automatically dispatched.
+func (e *Eligibility) ResumeQueuedMail(ctx context.Context, limit int) (int, error) {
+ if limit<1 || limit>500 { return 0,ErrBadRequest }
+ rows,err:=e.store.pool.Query(ctx,`SELECT key_digest FROM v_auth.mail_outbox WHERE state='QUEUED' ORDER BY expires_at,key_digest LIMIT $1`,limit)
+ if err!=nil { return 0,err }
+ var keys [][32]byte
+ for rows.Next() {
+  var raw []byte
+  if err=rows.Scan(&raw); err!=nil || len(raw)!=32 { rows.Close(); return 0,ErrReconciliation }
+  var key [32]byte; copy(key[:],raw); keys=append(keys,key)
+ }
+ err=rows.Err(); rows.Close()
+ if err!=nil { return 0,err }
+ processed:=0
+ for _,key:=range keys {
+  if err=ctx.Err(); err!=nil { return processed,err }
+  _,err=e.dispatchMailDigest(ctx,key)
+  processed++
+  if err!=nil { return processed,err }
+ }
+ return processed,nil
 }
 
 func (e *Eligibility) finishMailInTx(ctx context.Context, tx pgx.Tx, key [32]byte, row otpMailRow, email []byte, outcome MailOutcome) error {
@@ -812,7 +845,7 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 	if err != nil {
 		return err
 	}
-	rows, err = e.store.pool.Query(ctx, `SELECT r.key_digest FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.operation=$1 AND r.state='LIVE' AND r.expires_at<=clock_timestamp() AND m.state IN ('SENT','NOT_SENT') ORDER BY r.expires_at,r.key_digest LIMIT $2`, otpRequestOperation, limit)
+	rows, err = e.store.pool.Query(ctx, `SELECT r.key_digest FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.operation=$1 AND r.state='LIVE' AND r.expires_at<=clock_timestamp() AND m.state IN ('SENT','NOT_SENT','UNKNOWN') ORDER BY r.expires_at,r.key_digest LIMIT $2`, otpRequestOperation, limit)
 	if err != nil {
 		return err
 	}
@@ -838,7 +871,7 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 		}
 		if err = lockVRequest(ctx, tx, key); err == nil {
 			var allowed bool
-			err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.key_digest=$1 AND r.operation=$2 AND r.state='LIVE' AND r.expires_at<=clock_timestamp() AND m.state IN ('SENT','NOT_SENT'))`, key[:], otpRequestOperation).Scan(&allowed)
+			err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.key_digest=$1 AND r.operation=$2 AND r.state='LIVE' AND r.expires_at<=clock_timestamp() AND m.state IN ('SENT','NOT_SENT','UNKNOWN'))`, key[:], otpRequestOperation).Scan(&allowed)
 			if err == nil && allowed {
 				err = expireOTPRequestResult(ctx, tx, key)
 			}

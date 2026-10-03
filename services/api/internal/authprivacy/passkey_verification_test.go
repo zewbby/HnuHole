@@ -11,10 +11,62 @@ import (
 	"encoding/json"
 	"errors"
 	"math/big"
+	"strings"
 	"testing"
 
 	"github.com/fxamacker/cbor/v2"
 )
+
+func TestWebAuthnNativeAndroidOriginsAreExplicitAndCanonical(t *testing.T) {
+	f := newPasskeyTestFixture(t)
+	android := "android:apk-key-hash:" + passkeyEncode(bytes.Repeat([]byte{0x43}, 32))
+	config := WebAuthnConfig{RPID: "example.test", Origins: []string{"https://auth.example.test"}, AndroidOrigins: []string{android}}
+	v, err := NewWebAuthnValidator(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	client := func(kind, origin string) []byte {
+		data, err := json.Marshal(map[string]any{"type": kind, "challenge": passkeyEncode(f.challenge[:]), "origin": origin, "crossOrigin": false})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	registration := f.registration
+	registration.ClientDataJSON = passkeyEncode(client("webauthn.create", android))
+	if _, err := v.VerifyRegistration(registration, f.challenge); err != nil {
+		t.Fatalf("provisioned APK origin rejected: %v", err)
+	}
+	assertion := f.assertion
+	data := client("webauthn.get", android)
+	assertion.ClientDataJSON = passkeyEncode(data)
+	clientHash := sha256.Sum256(data)
+	signed := append(passkeyDecode(t, assertion.AuthenticatorData), clientHash[:]...)
+	signedHash := sha256.Sum256(signed)
+	signature, err := ecdsa.SignASN1(rand.Reader, f.privateKey, signedHash[:])
+	if err != nil {
+		t.Fatal(err)
+	}
+	assertion.Signature = passkeyEncode(signature)
+	if _, err := v.VerifyAssertion(assertion, f.challenge, f.publicKey, f.userHandle); err != nil {
+		t.Fatalf("signed native assertion rejected: %v", err)
+	}
+	if _, err := f.validator.VerifyRegistration(registration, f.challenge); !errors.Is(err, ErrWebAuthnValidation) {
+		t.Fatal("HTTPS-only policy admitted native origin")
+	}
+	for _, origin := range []string{android + "=", "android:apk-key-hash:" + passkeyEncode(bytes.Repeat([]byte{0x44}, 32)), "http://auth.example.test", "https://attacker.example.test"} {
+		registration.ClientDataJSON = passkeyEncode(client("webauthn.create", origin))
+		if _, err := v.VerifyRegistration(registration, f.challenge); !errors.Is(err, ErrWebAuthnValidation) {
+			t.Fatalf("untrusted native origin admitted: %v", err)
+		}
+	}
+	for _, origins := range [][]string{{android, android}, {android + "="}, {"android:apk-key-hash:" + passkeyEncode(bytes.Repeat([]byte{1}, 31))}, {"android:apk-key-hash:" + strings.Repeat("/", 43)}, {"https://auth.example.test"}, make([]string, 17)} {
+		config.AndroidOrigins = origins
+		if _, err := NewWebAuthnValidator(config); !errors.Is(err, ErrWebAuthnConfiguration) {
+			t.Fatal("invalid or unbounded native origin configuration accepted")
+		}
+	}
+}
 
 type passkeyTestFixture struct {
 	validator    *WebAuthnValidator

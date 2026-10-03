@@ -138,7 +138,14 @@ func (g *PostgresAuthorizationGate) inspect(ctx context.Context, row gateRow, an
 	if at.After(e.ValidUntil) {
 		return AuthorizationDecision{}, AuthorizationEvidence{}, false, "EVIDENCE_EXPIRED"
 	}
-	return AuthorizationDecision{TrustedAt: at, Generation: uint64(row.generation)}, e, offline, ""
+	// PostgreSQL persists timestamptz at microsecond precision. Round the
+    // authority point up once for both SQL and the independent checkpoint;
+    // keep the raw clock above for skew and evidence-expiry checks.
+    at = authorizationStoredTime(at)
+    if at.After(e.ValidUntil) {
+        return AuthorizationDecision{}, AuthorizationEvidence{}, false, "EVIDENCE_EXPIRED"
+    }
+    return AuthorizationDecision{TrustedAt: at, Generation: uint64(row.generation)}, e, offline, ""
 }
 
 func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (AuthorizationDecision, error) {
@@ -483,7 +490,11 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 		if highwater.After(newHighwater) {
 			newHighwater = highwater
 		}
-		updated := authorizationAnchor{Domain: g.domain, Generation: e.Generation, Version: e.Version, Highwater: newHighwater}
+		newHighwater = authorizationStoredTime(newHighwater)
+        if newHighwater.After(e.ValidUntil) {
+            return ErrAuthorizationUnavailable
+        }
+        updated := authorizationAnchor{Domain: g.domain, Generation: e.Generation, Version: e.Version, Highwater: newHighwater}
 		if request.Mode == AuthorizationRecoveryBreakGlass {
 			proof := request.Evidence
 			updated.OfflineEvidence = &proof
@@ -504,4 +515,12 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 		return ErrAuthorizationUnavailable
 	}
 	return nil
+}
+
+// authorizationStoredTime uses the same exact timestamp in PostgreSQL and the
+// signed anchor even on platforms whose wall clock exposes nanoseconds.
+func authorizationStoredTime(at time.Time) time.Time {
+    value := at.UTC().Truncate(time.Microsecond)
+    if value.Before(at) { value = value.Add(time.Microsecond) }
+    return value
 }

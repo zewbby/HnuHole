@@ -29,3 +29,19 @@ configured. Reproduction commands and current limits are in the
 [native/integration report](../../docs/design/auth-privacy-mobile-native-integration-validation-report.md).
 Large temporary runtimes, dedicated caches and generated APKs are removed after
 this handoff; test source and small verification records remain in Git.
+
+## iOS Swift Package Manager (2026-10-02)
+
+Both CocoaPods and SwiftPM compile the same canonical sources under
+`ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault`. The prior `ios/Classes`
+paths are relative symlinks for historical source links; neither build manifest
+compiles that alias directory. The SwiftPM product is `hnuhole-auth-vault`,
+with module `hnuhole_auth_vault` and Flutter's generated local
+`../FlutterFramework` dependency. The marker runner uses the canonical path.
+The storage implementation is unchanged by this packaging migration.
+
+Flutter 3.44+ uses SwiftPM by default; this layout follows the
+[official plugin migration guide](https://docs.flutter.dev/packages-and-plugins/swift-package-manager/for-plugin-authors).
+SwiftPM/CocoaPods linking, host RunnerTests imports, full iOS app and Keychain
+tests remain pending in the current Xcode/Flutter environment. The macOS marker
+regression passes only its filesystem checks and cannot validate iOS linking.

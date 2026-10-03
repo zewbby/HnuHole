@@ -1,0 +1,528 @@
+openapi: 3.0.3
+info:
+  title: Hnuhole owner identity management API
+  version: 0.1.0
+  description: B02 foundation; all protected reads/writes use final C Safety Gate
+    transaction. No public identity enumeration.
+servers:
+- url: /
+paths:
+  /api/v1/identities:
+    get:
+      operationId: listOwnIdentities
+      summary: List own retained identities and creation timing
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Final Gate/session-authorized committed response.
+          headers:
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityDirectory'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      description: No query or body. Empty identities are valid after signup; browsing
+        remains available. Stable creation order. nextCreateAt is null before third
+        cumulative creation; afterward six calendar months from latest successful
+        creation in Asia/Shanghai, clamped to month end. Both current count <3 and
+        trusted time >=nextCreateAt are required. renameAvailableAt is null before
+        first successful rename; subsequently successful rename +30 days. Client must
+        persist same-token session deadline before displaying.
+    post:
+      operationId: createOwnIdentity
+      summary: Create one speaking identity
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Final Gate/session-authorized committed response.
+          headers:
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityChange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      parameters:
+      - $ref: '#/components/parameters/ChangeKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NicknameInput'
+      description: Serialized per owner, maximum three retained. First identity marked
+        original. No automatic creation on registration. Successful creation, cumulative
+        counter, cooldown and receipt commit atomically. Failures consume no creation
+        opportunity.
+  /api/v1/identities/{identityId}:
+    parameters:
+    - $ref: '#/components/parameters/IdentityID'
+    patch:
+      operationId: renameOwnIdentity
+      summary: Rename an owned identity
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Final Gate/session-authorized committed response.
+          headers:
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityChange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      parameters:
+      - $ref: '#/components/parameters/ChangeKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NicknameInput'
+      description: Owner-only. First successful rename allowed immediately; subsequent
+        changes require 30 continuous days. Same effective nickname is a no-op and
+        does not consume interval. Avatar upload is deferred to media functionality.
+    delete:
+      operationId: deleteOwnIdentity
+      summary: Delete an owned identity
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Final Gate/session-authorized committed response.
+          headers:
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityChange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      parameters:
+      - $ref: '#/components/parameters/ChangeKey'
+      description: No body. Cannot delete the last retained identity. Preserves stable
+        ID tombstone while clearing nickname. No decrement or cooldown reset. Post
+        binding and deletion projections for posts, failed tasks and local chat are
+        implemented in their corresponding business modules.
+  /api/v1/identity-change-result:
+    get:
+      operationId: getIdentityChangeResult
+      summary: Reconcile an unknown identity mutation
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Final Gate/session-authorized committed response.
+          headers:
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityChange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - $ref: '#/components/parameters/ChangeKey'
+      description: 'No body/query. Receipt lookup is authorized under the same final
+        Gate/session and owner serialization. COMMITTED may refer to a later-deleted
+        identity without exposing profile. REJECTED proves the original intent is
+        terminal and may be cleared. NOT_FOUND is only current absence: retain intent
+        and only retry original key/operation/resource/nickname. Old session, different
+        account or Gate failure must never release pending intent as a confirmed failure.'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical-unpadded-base64url-32-bytes
+  headers:
+    SessionExpiresAt:
+      required: true
+      description: Current session deadline after final C Gate authorization and commit;
+        no token or identity.
+      schema:
+        type: string
+        format: date-time
+        pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$
+    RequestId:
+      required: true
+      description: Server generated C request ID, independent of client and V IDs;
+        equals body requestId on errors.
+      schema:
+        type: string
+        minLength: 22
+        maxLength: 22
+        pattern: ^[A-Za-z0-9_-]{21}[AQgw]$
+    NoStore:
+      required: true
+      description: Every response prohibits caching.
+      schema:
+        type: string
+        enum:
+        - no-store
+    RetryAfter:
+      required: true
+      description: Bounded retry delay in seconds, with no account information.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 300
+  schemas:
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      - requestId
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+              enum:
+              - MALFORMED_REQUEST
+              - AUTHENTICATION_FAILED
+              - SESSION_INVALID
+              - session_replaced
+              - RATE_LIMITED
+              - SERVICE_UNAVAILABLE
+              - IDENTITY_INVALID_NAME
+              - IDENTITY_DUPLICATE_NAME
+              - IDENTITY_LIMIT
+              - IDENTITY_CREATE_COOLDOWN
+              - IDENTITY_RENAME_COOLDOWN
+              - IDENTITY_LAST_REQUIRED
+              - IDENTITY_NOT_FOUND
+              - IDENTITY_CHANGE_CONFLICT
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+              nullable: true
+        requestId:
+          type: string
+          minLength: 22
+          maxLength: 22
+          pattern: ^[A-Za-z0-9_-]{21}[AQgw]$
+    OwnIdentity:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - nickname
+      - avatar
+      - isOriginal
+      - createdAt
+      - renameAvailableAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        nickname:
+          type: string
+          description: NFC effective nickname, 2–12 user-visible clusters; Latin/Han/Hiragana/Katakana/Hangul
+            letters, decimal digits and Unicode punctuation. Case-sensitive owner-only
+            uniqueness. Spaces, controls, emoji and invisibles rejected.
+        avatar:
+          type: string
+          enum:
+          - default-v1
+        isOriginal:
+          type: boolean
+          description: Private owner-only marker for first created identity; never
+            reassigned after deletion.
+        createdAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$
+        renameAvailableAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$
+          nullable: true
+    IdentityDirectory:
+      type: object
+      additionalProperties: false
+      required:
+      - identities
+      - createdCount
+      - nextCreateAt
+      - serverTime
+      properties:
+        identities:
+          type: array
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/OwnIdentity'
+        createdCount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Cumulative committed creations; deletion never decrements.
+        nextCreateAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$
+          nullable: true
+        serverTime:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$
+    IdentityChange:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - identityId
+      - errorCode
+      properties:
+        state:
+          type: string
+          enum:
+          - COMMITTED
+          - NOT_FOUND
+          - REJECTED
+        operation:
+          type: string
+          nullable: true
+          enum:
+          - CREATE
+          - RENAME
+          - DELETE
+          - null
+        identityId:
+          type: string
+          format: uuid
+          nullable: true
+        errorCode:
+          type: string
+          nullable: true
+          enum:
+          - IDENTITY_INVALID_NAME
+          - IDENTITY_DUPLICATE_NAME
+          - IDENTITY_LIMIT
+          - IDENTITY_CREATE_COOLDOWN
+          - IDENTITY_RENAME_COOLDOWN
+          - IDENTITY_LAST_REQUIRED
+          - IDENTITY_NOT_FOUND
+          - null
+      description: COMMITTED requires operation and stable identityId with null errorCode.
+        REJECTED is a durable terminal business rejection with operation, null identityId
+        and errorCode; later retry of the same key cannot succeed. NOT_FOUND is query-only
+        with operation, identityId and errorCode null; absence is a snapshot, not
+        proof a delayed original request cannot commit.
+    NicknameInput:
+      type: object
+      additionalProperties: false
+      required:
+      - nickname
+      properties:
+        nickname:
+          type: string
+          maxLength: 512
+          description: No trimming or case folding; Unicode validation and NFC canonicalization
+            on server. Request body bounded to 1024 bytes.
+  responses:
+    BadRequest:
+      description: Malformed boundary input or IDENTITY_INVALID_NAME; no successful
+        effect.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Unauthorized:
+      description: 401 AUTHENTICATION_FAILED for missing or incorrect Bearer scheme;
+        SESSION_INVALID for invalid, expired, revoked, or invalidated sessions; session_replaced
+        when a new mobile device has replaced this session. Clear only the affected
+        current token and nodes. No account details are returned.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Forbidden:
+      description: 403 AUTHENTICATION_FAILED for a rejected Origin; no account information.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    RateLimited:
+      description: 429 RATE_LIMITED for network rate limiting; preserve the current
+        token and retry after the bounded delay.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ServiceUnavailable:
+      description: Gate frozen/unavailable, evidence or database failure, or unknown
+        commit outcome. Preserve immutable pending intent and reconcile with its original
+        key.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Conflict:
+      description: Quantity/cooldown/duplicate/last identity or idempotency intent
+        conflict; no new successful effect.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    NotFound:
+      description: Identity absent, deleted or owned by another account; identical
+        public result.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+  parameters:
+    ChangeKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: One 16-byte cryptographically random key per immutable owner intent,
+        canonical unpadded base64url. Reuse after timeout, restart and NOT_FOUND;
+        same key with changed operation, resource or effective name is rejected. Receipts
+        persist for account lifetime. Never reuse a key for a new action. Deterministic
+        business rejections are atomically anchored with no identity effect; same-key
+        delayed requests replay the rejection even after resources/timing change.
+      schema:
+        type: string
+        minLength: 22
+        maxLength: 22
+        pattern: ^[A-Za-z0-9_-]{21}[AQgw]$
+    IdentityID:
+      name: identityId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      description: Canonical nonzero UUID; authorization remains owner-only, including
+        deleted records.

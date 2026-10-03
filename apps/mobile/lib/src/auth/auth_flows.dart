@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:crypto/crypto.dart' as hashes;
 import 'package:flutter/foundation.dart';
+import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'auth_api.dart';
 import 'auth_crypto.dart';
 import 'auth_models.dart';
 import 'auth_store.dart';
+import 'credential_management_api.dart';
 import 'auth_state_codec.dart';
 
 enum AuthFlowStatus {
@@ -37,15 +42,39 @@ enum AuthFlowStatus {
 /// ephemeral and never serialized.
 class AuthFlows extends ChangeNotifier {
   AuthFlows({
-    required this._api,
-    required this._store,
-    required this._acceptRegistrationSession,
-    required this._clearCommunityAccess,
+    required AuthApi api,
+    required AuthStore store,
+    required Future<void> Function(AuthSession) acceptRegistrationSession,
+    required void Function() clearCommunityAccess,
+    PasskeyRecoveryApi? passkeyApi,
+    PasskeyClient? passkey,
+    int Function()? sessionAuthorityVersion,
+    Listenable? sessionAuthority,
     DateTime Function()? clock,
-  }) : _clock = clock ?? DateTime.now;
+  }) : _api = api, _store = store,
+       _acceptRegistrationSession = acceptRegistrationSession,
+       _clearCommunityAccess = clearCommunityAccess,
+       _passkeyApi = passkeyApi, _passkey = passkey,
+       _sessionAuthorityVersion = sessionAuthorityVersion ?? (() => 0),
+       _sessionAuthority = sessionAuthority,
+       _clock = clock ?? DateTime.now {
+    _sessionAuthority?.addListener(_sessionAuthorityChanged);
+  }
 
   final AuthApi _api;
   final AuthStore _store;
+  final PasskeyRecoveryApi? _passkeyApi;
+  final PasskeyClient? _passkey;
+  bool get supportsPasskeyRecovery => _passkeyApi != null && _passkey != null;
+  bool _passkeyRecoveryActive = false;
+  int? _passkeyAuthorityVersion, _nativeRecoveryEpoch;
+  final int Function() _sessionAuthorityVersion;
+  final Listenable? _sessionAuthority;
+  void _sessionAuthorityChanged() {
+    if (_passkeyRecoveryActive && _passkeyAuthorityVersion != _sessionAuthorityVersion()) {
+      cancelPasskeyRecovery();
+    }
+  }
   final Future<void> Function(AuthSession) _acceptRegistrationSession;
   final void Function() _clearCommunityAccess;
   final DateTime Function() _clock;
@@ -616,6 +645,96 @@ class AuthFlows extends ChangeNotifier {
     _status = AuthFlowStatus.resetCodeShown;
   });
 
+  /// A discoverable assertion only creates the existing restricted reset
+  /// intent. It never logs in, cancels closure, or bypasses full new-code input.
+  Future<void> beginPasskeyReset() {
+    if (_busy || _disposed) return Future<void>.value();
+    // Route/session cancellation owns the entire workflow, including a blocked
+    // first secure-store read and the initial busy notification. Ownership of a
+    // native sheet starts only at get.
+    _passkeyRecoveryActive = true;
+    _passkeyAuthorityVersion = _sessionAuthorityVersion();
+    return _run((epoch) async {
+      if (!_current(epoch)) return;
+      final authorityVersion = _passkeyAuthorityVersion!;
+      try {
+        final recovery = _passkeyApi;
+        final client = _passkey;
+        if (recovery == null || client == null) {
+          throw const AuthFailure(kind: AuthFailureKind.rejected,
+              code: 'PASSKEY_UNAVAILABLE');
+        }
+        final original = await _store.read();
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        _validateState(original);
+        if (original.pendingReset != null || original.registration?['commit'] != null) {
+          throw const AuthFailure(kind: AuthFailureKind.rejected,
+              code: 'PENDING_CHECK_REQUIRED');
+        }
+        Future<bool> current() async {
+          if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return false;
+          final latest = await _store.read();
+          return _current(epoch) && _sessionAuthorityVersion() == authorityVersion &&
+              latest.session?.token == original.session?.token &&
+              latest.pendingReset == null &&
+              latest.registration?['commit'] == null &&
+              jsonEncode(latest.logouts.map((e) => e.toJson()).toList()) ==
+                  jsonEncode(original.logouts.map((e) => e.toJson()).toList()) &&
+              jsonEncode(latest.pendingClosure) == jsonEncode(original.pendingClosure);
+        }
+        if (!await current()) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        final options = await recovery.createPasskeyResetOptions();
+        if (!await current()) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        _nativeRecoveryEpoch = epoch;
+        late Map<String, dynamic> assertion;
+        try {
+          assertion = await client.get(options.publicKey);
+        } finally {
+          if (_nativeRecoveryEpoch == epoch) _nativeRecoveryEpoch = null;
+        }
+        if (!await current()) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        final result = await recovery.createPasskeyResetIntent(
+            challengeId: options.challengeId, assertion: assertion);
+        if (!await current()) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        _resetIntent = result;
+        _username = result.username;
+        _recoveryCode = result.newRecoveryCode;
+        _status = AuthFlowStatus.resetCodeShown;
+      } on PasskeyFailure catch (failure) {
+        if (!_current(epoch)) return;
+        _errorMessage = failure.code == 'PASSKEY_CANCELLED'
+            ? '已取消 Passkey 验证。你仍可使用恢复码。'
+            : '系统 Passkey 暂不可用，请重试或使用恢复码。';
+      } finally {
+        if (_current(epoch)) {
+          _passkeyRecoveryActive = false;
+          _passkeyAuthorityVersion = null;
+        }
+      }
+    });
+  }
+
+  /// Closing a route invalidates only the in-flight native ceremony; durable
+  /// reset/registration commits remain owned by their original result records.
+  void cancelPasskeyRecovery() {
+    if (!_passkeyRecoveryActive) return;
+    final ownedSheet = _nativeRecoveryEpoch == _epoch;
+    _epoch++;
+    _busy = false;
+    _passkeyRecoveryActive = false;
+    _passkeyAuthorityVersion = null;
+    _nativeRecoveryEpoch = null;
+    final client = _passkey;
+    if (ownedSheet && client is CancellablePasskeyClient) {
+      unawaited(client.cancel().catchError((Object _) {}));
+    }
+    _notify();
+  }
+
   Future<void> commitReset(String newPassword, String confirmation) =>
       _run((epoch) async {
         if (_status != AuthFlowStatus.resetCodeConfirmation ||
@@ -1170,6 +1289,8 @@ class AuthFlows extends ChangeNotifier {
 
   @override
   void dispose() {
+    cancelPasskeyRecovery();
+    _sessionAuthority?.removeListener(_sessionAuthorityChanged);
     _disposed = true;
     _epoch++;
     _recoveryCode = null;

@@ -1,0 +1,23 @@
+package main
+
+import (
+ "context"
+ "flag"
+ "log/slog"
+ "os"
+ "os/signal"
+ "syscall"
+
+ "github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp"
+ "github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyruntime"
+)
+
+func main() {
+ path:=flag.String("config","","private development V JSON configuration")
+ flag.Parse()
+ if *path==""{slog.Error("-config is required");os.Exit(1)}
+ config,err:=authprivacyruntime.LoadConfig(*path,authprivacyhttp.VerifierService)
+ if err!=nil{slog.Error("V configuration rejected","error",err);os.Exit(1)}
+ ctx,stop:=signal.NotifyContext(context.Background(),os.Interrupt,syscall.SIGTERM);defer stop()
+ if err=authprivacyruntime.Run(ctx,config,authprivacyhttp.VerifierService);err!=nil{slog.Error("V stopped","error",err);os.Exit(1)}
+}

@@ -35,6 +35,12 @@ type CodeRotationConfirmation struct {
 	IdempotencyKey              [32]byte
 	NewRecoveryCodeConfirmation string
 }
+// CredentialChangeResult contains no recovery code or WebAuthn proof. The
+// original authenticated session, intent/challenge and opaque key identify it.
+type CredentialChangeResult struct {
+	State            string
+	SessionExpiresAt time.Time
+}
 type PasskeyOptions struct {
 	ChallengeID      [32]byte
 	ExpiresAt        time.Time
@@ -71,7 +77,7 @@ func (c *Community) WithWebAuthn(config WebAuthnConfig) (*Community, error) {
 	}
 	copy := *c
 	copy.webauthn = validator
-	copy.webauthnConfig = WebAuthnConfig{RPID: config.RPID, Origins: append([]string(nil), config.Origins...)}
+	copy.webauthnConfig = WebAuthnConfig{RPID: config.RPID, Origins: append([]string(nil), config.Origins...), AndroidOrigins: append([]string(nil), config.AndroidOrigins...)}
 	return &copy, nil
 }
 
@@ -79,6 +85,7 @@ func (c *Community) WithWebAuthn(config WebAuthnConfig) (*Community, error) {
 // results and exposes only the published response fields.
 type CredentialBackend interface {
 	GetRecoveryCredentials(context.Context, [32]byte) (RecoveryCredentials, error)
+	GetCredentialChangeResult(context.Context, [32]byte, [32]byte, [32]byte) (CredentialChangeResult, error)
 	CreateRecoveryCodeRotation(context.Context, [32]byte, string, PasswordVerifier) (CodeRotationIntent, error)
 	ConfirmRecoveryCodeRotation(context.Context, [32]byte, CodeRotationConfirmation) (time.Time, error)
 	CreatePasskeyOptions(context.Context, [32]byte, string, PasswordVerifier) (PasskeyOptions, error)

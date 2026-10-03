@@ -5,6 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/src/auth/auth_crypto.dart';
 import 'package:hnuhole_mobile/src/auth/auth_models.dart';
 import 'package:hnuhole_mobile/src/auth/http_auth_api.dart';
+import 'package:hnuhole_mobile/src/identity/identity_api.dart';
+import 'package:hnuhole_mobile/src/channels/channel.dart';
+import 'package:hnuhole_mobile/src/channels/channel_repository.dart';
+import 'package:hnuhole_mobile/src/channels/http_channel_repository.dart';
 
 const _account = '01234567-89ab-4def-8123-456789abcdef';
 const _expiry = '2026-10-30T10:00:00Z';
@@ -98,6 +102,7 @@ void main() {
   late _Endpoint community;
   late _Endpoint verifier;
   late HttpAuthApi api;
+  late HttpChannelRepository channels;
 
   setUp(() async {
     community = await _Endpoint.start();
@@ -114,11 +119,189 @@ void main() {
       verifierBaseUri: verifier.uri,
       client: client,
     );
+    channels = HttpChannelRepository(baseUri: community.uri, client: client);
   });
   tearDown(() async {
     api.close();
+    channels.close();
     await community.close();
     await verifier.close();
+  });
+
+  Map<String, Object> directory() => {
+    'channels': [
+      for (var i = 0; i < ChannelDirectory.requiredCodes.length; i++)
+        {
+          'id': '00000000-0000-0000-0000-00000000000${i + 1}',
+          'code': ChannelDirectory.requiredCodes[i],
+          'name': 'Channel ${i + 1}',
+          'initiallyVisible': i < 5,
+          'displayOrder': i + 1,
+        },
+    ],
+  };
+
+  Map<String, Object?> identityDirectory() => {
+    'identities': [{
+      'id': _account, 'nickname': '春风', 'avatar': 'default-v1', 'isOriginal': true,
+      'createdAt': '2026-10-02T10:00:00Z', 'renameAvailableAt': null,
+    }], 'createdCount': 1, 'nextCreateAt': null, 'serverTime': '2026-10-03T10:00:00Z',
+  };
+  Map<String, Object?> identityOutcome({String state = 'COMMITTED',
+    String? operation = 'CREATE', String? id = _account, String? errorCode}) =>
+      {'state': state, 'operation': operation, 'identityId': id, 'errorCode': errorCode};
+
+  test('identity directory allows explicit lifecycle nulls and authoritative expiry', () async {
+    community.respond = (request) => _json(request, 200, identityDirectory(), session: true);
+    final result = await api.identities(_token);
+    expect(result.identities.single.nickname, '春风');
+    expect(result.identities.single.renameAvailableAt, isNull);
+    expect(result.createdCount, 1);
+    expect(result.nextCreateAt, isNull);
+    expect(result.sessionExpiresAt, DateTime.parse(_expiry));
+    expect(community.requests.single.path, '/api/v1/identities');
+    expect(community.requests.single.headers['authorization'], 'Bearer $_token');
+    final empty = {'identities': [], 'createdCount': 0, 'nextCreateAt': null,
+      'serverTime': '2026-10-03T10:00:00Z'};
+    community.respond = (request) => _json(request, 200, empty, session: true);
+    expect((await api.identities(_token)).identities, isEmpty);
+  });
+
+  test('identity mutation wire uses UUID targets key16 and immutable nickname only', () async {
+    final key = AuthCrypto.encode(List<int>.filled(16, 8));
+    for (final operation in IdentityOperation.values) {
+      community.respond = (request) => _json(request, 200,
+        identityOutcome(operation: operation.name.toUpperCase()), session: true);
+      await api.changeIdentity(sessionToken: _token, idempotencyKey: key,
+        operation: operation, identityId: operation == IdentityOperation.create ? null : _account,
+        nickname: operation == IdentityOperation.delete ? null : '春风');
+    }
+    expect(community.requests.map((r) => r.method), ['POST', 'PATCH', 'DELETE']);
+    expect(community.requests.map((r) => r.path),
+      ['/api/v1/identities', '/api/v1/identities/$_account', '/api/v1/identities/$_account']);
+    expect(community.requests.map((r) => r.body), ['{"nickname":"春风"}', '{"nickname":"春风"}', '']);
+    expect(community.requests.every((r) => r.headers['idempotency-key'] == key), isTrue);
+    await expectLater(api.changeIdentity(sessionToken: _token, idempotencyKey: _key,
+      operation: IdentityOperation.create, nickname: '春风'),
+      throwsA(_failure(AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID')));
+    expect(community.requests, hasLength(3));
+  });
+
+  test('identity result is bodyless key16 query and rejects missing terminal field', () async {
+    final key = AuthCrypto.encode(List<int>.filled(16, 8));
+    community.respond = (request) => _json(request, 200,
+      identityOutcome(state: 'NOT_FOUND', operation: null, id: null), session: true);
+    final missing = await api.identityChangeResult(sessionToken: _token, idempotencyKey: key);
+    expect(missing.committed, isFalse);
+    expect(missing.rejected, isFalse);
+    expect(community.requests.single.method, 'GET');
+    expect(community.requests.single.path, '/api/v1/identity-change-result');
+    expect(community.requests.single.body, '');
+    community.respond = (request) => _json(request, 200,
+      identityOutcome(state: 'REJECTED', operation: 'RENAME', id: null,
+        errorCode: 'IDENTITY_DUPLICATE_NAME'), session: true);
+    final rejected = await api.identityChangeResult(sessionToken: _token, idempotencyKey: key);
+    expect(rejected.rejected, isTrue);
+    expect(rejected.operation, IdentityOperation.rename);
+    for (final payload in [
+      identityOutcome()..remove('errorCode'),
+      identityOutcome(state: 'NOT_FOUND', operation: 'CREATE', id: null),
+      identityOutcome(state: 'REJECTED', id: null, errorCode: 'SESSION_INVALID'),
+      identityOutcome(state: 'COMMITTED', errorCode: 'IDENTITY_LIMIT'),
+    ]) {
+      community.respond = (request) => _json(request, 200, payload, session: true);
+      await expectLater(api.identityChangeResult(sessionToken: _token, idempotencyKey: key),
+        throwsA(_failure(AuthFailureKind.invalidResponse)));
+    }
+  });
+
+  test('identity response failure and malformed expiry never indicate committed outcome', () async {
+    final key = AuthCrypto.encode(List<int>.filled(16, 8));
+    community.respond = (request) => _json(request, 200, identityOutcome());
+    await expectLater(api.changeIdentity(sessionToken: _token, idempotencyKey: key,
+      operation: IdentityOperation.create, nickname: '春风'),
+      throwsA(_failure(AuthFailureKind.invalidResponse)));
+    community.respond = (request) => _json(request, 200,
+      identityOutcome(operation: 'DELETE'), session: true);
+    await expectLater(api.changeIdentity(sessionToken: _token, idempotencyKey: key,
+      operation: IdentityOperation.create, nickname: '春风'),
+      throwsA(_failure(AuthFailureKind.invalidResponse)));
+    community.respond = (request) => _json(request, 409, _error('IDENTITY_LAST_REQUIRED'));
+    await expectLater(api.changeIdentity(sessionToken: _token, idempotencyKey: key,
+      operation: IdentityOperation.delete, identityId: _account),
+      throwsA(_failure(AuthFailureKind.rejected, status: 409, code: 'IDENTITY_LAST_REQUIRED')));
+  });
+
+  test('identity directory validates default avatar unique owners and byte valid long graphemes', () async {
+    final payload = identityDirectory();
+    final items = payload['identities'] as List<Map<String, Object?>>;
+    items.single['nickname'] = 'a${List.filled(245, '\u0301').join()}b';
+    community.respond = (request) => _json(request, 200, payload, session: true);
+    expect((await api.identities(_token)).identities.single.nickname, items.single['nickname']);
+    for (final bad in ['unknown-avatar', null]) {
+      items.single['avatar'] = bad;
+      await expectLater(api.identities(_token), throwsA(_failure(AuthFailureKind.invalidResponse)));
+    }
+  });
+
+  test('directory TLS response carries complete nodes and authoritative deadline', () async {
+    community.respond = (request) => _json(request, 200, directory(), session: true);
+    final result = await channels.loadChannels(sessionToken: _token);
+    expect(result.channels, hasLength(7));
+    expect(result.expiresAt, DateTime.parse(_expiry));
+    expect(community.requests.single.path, '/api/v1/channels');
+    expect(community.requests.single.headers['authorization'], 'Bearer $_token');
+  });
+
+  test('directory rejects missing ambiguous or invalid authoritative deadline', () async {
+    for (final expiry in <String?>[
+      null,
+      '2026-10-30T10:00:00+00:00',
+      '2026-02-30T10:00:00Z',
+      '2026-10-30T10:00:00Z,2026-10-31T10:00:00Z',
+      'not-a-deadline',
+    ]) {
+      community.respond = (request) async {
+        if (expiry != null) request.response.headers.set('Session-Expires-At', expiry);
+        await _json(request, 200, directory());
+      };
+      await expectLater(
+        channels.loadChannels(sessionToken: _token),
+        throwsA(isA<ChannelRepositoryException>().having(
+          (e) => e.code, 'code', 'invalid_channel_directory',
+        )),
+      );
+    }
+  });
+
+  test('directory rejects partial nodes even with a valid deadline', () async {
+    community.respond = (request) => _json(request, 200, {'channels': <Object>[]}, session: true);
+    await expectLater(
+      channels.loadChannels(sessionToken: _token),
+      throwsA(isA<ChannelRepositoryException>().having(
+        (e) => e.code, 'code', 'invalid_channel_directory',
+      )),
+    );
+  });
+
+  test('directory parses wrapper status code and top-level request ID over TLS', () async {
+    for (final entry in {
+      400: 'MALFORMED_REQUEST',
+      401: 'session_replaced',
+      403: 'AUTHENTICATION_FAILED',
+      429: 'RATE_LIMITED',
+      503: 'SERVICE_UNAVAILABLE',
+    }.entries) {
+      community.respond = (request) => _json(request, entry.key, _error(entry.value));
+      await expectLater(
+        channels.loadChannels(sessionToken: _token),
+        throwsA(isA<ChannelRepositoryException>()
+            .having((e) => e.statusCode, 'status', entry.key)
+            .having((e) => e.code, 'code', entry.value)
+            .having((e) => e.isUnauthorized, 'unauthorized', entry.key == 401)
+            .having((e) => e.requestId, 'request ID', AuthCrypto.encode(List<int>.filled(16, 10)))),
+      );
+    }
   });
 
   test('only fixed independent HTTPS origins are accepted', () {
@@ -417,6 +600,7 @@ void main() {
     () async {
       final credential = AuthCrypto.encode([1, 2, 3, 4]);
       community.respond = (r) async {
+        r.response.headers.set('Session-Expires-At', _expiry);
         if (r.uri.path.endsWith('recovery-credentials')) {
           await _json(r, 200, {
             'recoveryCodeAvailable': true,
@@ -475,6 +659,176 @@ void main() {
       expect(deletion.headers['idempotency-key'], _flow);
     },
   );
+
+  test('device list has only current and recent roles plus authoritative session metadata', () async {
+    community.respond = (r) => _json(r, 200, {
+      'current': {'role': 'CURRENT', 'signedInAt': '2026-10-02T00:00:00Z'},
+      'lastReplaced': {'role': 'REPLACED', 'signedInAt': '2026-10-01T00:00:00Z',
+        'replacedAt': '2026-10-02T00:00:00Z'},
+    }, session: true);
+    final result = await api.devices(_token);
+    expect(result.sessionExpiresAt, DateTime.parse(_expiry));
+    expect(result.lastReplacedAt, DateTime.utc(2026, 10, 2));
+    expect(community.requests.single.headers['authorization'], 'Bearer $_token');
+    expect(community.requests.single.body, isEmpty);
+    community.respond = (r) => _json(r, 200, {
+      'current': {'role': 'CURRENT', 'signedInAt': _expiry, 'installationId': _cInstallation},
+    }, session: true);
+    await expectLater(api.devices(_token), throwsA(_failure(AuthFailureKind.invalidResponse)));
+  });
+
+  test('credential result queries original intent and key without resending any secret', () async {
+    const states = {
+      'PENDING': CredentialChangeState.pending,
+      'COMMITTED': CredentialChangeState.committed,
+      'NOT_COMMITTED': CredentialChangeState.notCommitted,
+    };
+    for (final state in states.entries) {
+      community.respond = (r) => _json(r, 200, {'state': state.key}, session: true);
+      final result = await api.credentialChangeResult(
+        sessionToken: _token, changeId: _flow, idempotencyKey: _key,
+      );
+      expect(result.state, state.value);
+      expect(result.sessionExpiresAt, DateTime.parse(_expiry));
+    }
+    expect(community.requests, hasLength(3));
+    final request = community.requests.first;
+    expect(request.method, 'GET');
+    expect(request.path, '/api/v1/auth/credential-change-result');
+    expect(request.body, isEmpty);
+    expect(request.headers['authorization'], 'Bearer $_token');
+    expect(request.headers['credential-change-id'], _flow);
+    expect(request.headers['idempotency-key'], _key);
+    community.respond = (r) => _json(r, 202, {'state': 'PENDING'}, session: true);
+    await expectLater(api.credentialChangeResult(
+      sessionToken: _token, changeId: _flow, idempotencyKey: _key,
+    ), throwsA(_failure(AuthFailureKind.invalidResponse, status: 202)));
+  });
+
+  test('management success without authoritative metadata remains unknown', () async {
+    community.respond = (r) => _json(r, 200, {
+      'recoveryCodeAvailable': true, 'passkeys': [],
+    });
+    await expectLater(api.recoveryCredentials(_token),
+      throwsA(_failure(AuthFailureKind.invalidResponse)));
+    community.respond = (r) async {
+      r.response.statusCode = 204;
+      await r.response.close();
+    };
+    await expectLater(api.removePasskey(sessionToken: _token,
+      credentialId: AuthCrypto.encode([1, 2, 3]), removalIntentId: _flow,
+      idempotencyKey: _key), throwsA(_failure(AuthFailureKind.invalidResponse)));
+  });
+
+  Map<String, Object> creationOptions() => {
+    'challenge': _key,
+    'rp': {'id': community.uri.host, 'name': 'Hnuhole'},
+    'user': {'id': _flow, 'name': _flow, 'displayName': 'Hnuhole account'},
+    'pubKeyCredParams': [{'type': 'public-key', 'alg': -7}],
+    'timeout': 60000, 'excludeCredentials': [],
+    'authenticatorSelection': {'residentKey': 'required',
+      'requireResidentKey': true, 'userVerification': 'required'},
+    'attestation': 'none',
+  };
+  Map<String, dynamic> nativeAttestation() {
+    final credential = AuthCrypto.encode([1, 2, 3, 4]);
+    return {'id': credential, 'rawId': credential, 'type': 'public-key',
+      'response': {'clientDataJSON': AuthCrypto.encode([1]),
+        'attestationObject': AuthCrypto.encode([1]), 'transports': ['internal']},
+      'clientExtensionResults': <String, Object>{}};
+  }
+
+  test('Passkey binding carries reviewed C options and one exact native response', () async {
+    community.respond = (r) async {
+      if (r.uri.path.endsWith('passkey-options')) {
+        await _json(r, 200, {'challengeId': _flow, 'expiresAt': _expiry,
+          'publicKey': creationOptions()}, session: true);
+      } else {
+        r.response.headers.set('Session-Expires-At', _expiry);
+        r.response.statusCode = 204;
+        await r.response.close();
+      }
+    };
+    final options = await api.createPasskeyCreationOptions(
+      sessionToken: _token, password: 'fresh password',
+    );
+    expect(options.sessionExpiresAt, DateTime.parse(_expiry));
+    expect(options.publicKey['attestation'], 'none');
+    expect(() => options.publicKey['attestation'] = 'direct', throwsUnsupportedError);
+    expect(jsonDecode(community.requests.single.body), {'password': 'fresh password'});
+    final native = nativeAttestation();
+    expect(await api.registerPasskey(sessionToken: _token, challengeId: options.challengeId,
+      attestation: native, idempotencyKey: _key), DateTime.parse(_expiry));
+    expect(jsonDecode(community.requests.last.body), {
+      'challengeId': _flow, 'webauthnAttestation': native,
+    });
+    expect(community.requests.last.headers['idempotency-key'], _key);
+  });
+
+  test('Passkey options reject foreign RP and weaker verification before native ceremony', () async {
+    for (final mutation in <void Function(Map<String, Object>)>[
+      (m) => m['rp'] = {'id': 'elsewhere.invalid', 'name': 'Hnuhole'},
+      (m) => m['attestation'] = 'direct',
+      (m) => m['authenticatorSelection'] = {'residentKey': 'preferred',
+        'requireResidentKey': false, 'userVerification': 'required'},
+      (m) => m['pubKeyCredParams'] = [{'type': 'public-key', 'alg': -257}],
+      (m) => m['user'] = {'id': _flow, 'name': 'private_user', 'displayName': 'Hnuhole account'},
+      (m) => m['extensions'] = {'unreviewed': true},
+    ]) {
+      final publicKey = creationOptions();
+      mutation(publicKey);
+      community.respond = (r) => _json(r, 200, {
+        'challengeId': _flow, 'expiresAt': _expiry, 'publicKey': publicKey,
+      }, session: true);
+      await expectLater(api.createPasskeyCreationOptions(sessionToken: _token,
+        password: 'fresh password'), throwsA(_failure(AuthFailureKind.invalidResponse)));
+    }
+  });
+
+  test('discoverable Passkey recovery sends no identity hint or bearer', () async {
+    final credential = AuthCrypto.encode([1, 2, 3, 4]);
+    final assertion = <String, dynamic>{'id': credential, 'rawId': credential,
+      'type': 'public-key', 'response': {
+        'clientDataJSON': AuthCrypto.encode([1]),
+        'authenticatorData': AuthCrypto.encode(List<int>.filled(37, 0)),
+        'signature': AuthCrypto.encode(List<int>.filled(8, 0)), 'userHandle': _key,
+      }, 'clientExtensionResults': <String, Object>{}};
+    community.respond = (r) {
+      if (r.uri.path.endsWith('passkey-reset-options')) {
+        return _json(r, 200, {'challengeId': _flow, 'expiresAt': _expiry,
+          'publicKey': {'challenge': _key, 'rpId': community.uri.host,
+            'timeout': 60000, 'userVerification': 'required'}});
+      }
+      return _json(r, 201, {'resetIntentId': _flow, 'expiresAt': _expiry,
+        'username': 'private_user', 'newRecoveryCode': _code});
+    };
+    final options = await api.createPasskeyResetOptions();
+    expect(options.sessionExpiresAt, isNull);
+    final result = await api.createPasskeyResetIntent(
+      challengeId: options.challengeId, assertion: assertion,
+    );
+    expect(result.resetIntentId, _flow);
+    expect(jsonDecode(community.requests.first.body), <String, Object>{});
+    expect(jsonDecode(community.requests.last.body), {
+      'challengeId': _flow, 'webauthnAssertion': assertion,
+    });
+    expect(community.requests.every((r) => !r.headers.containsKey('authorization')), isTrue);
+    expect(community.requests.every((r) => !r.headers.containsKey('idempotency-key')), isTrue);
+    expect(verifier.requests, isEmpty);
+  });
+
+  test('native payload with duplicate identity or extension is rejected before POST', () async {
+    final native = nativeAttestation()..['rawId'] = _flow;
+    await expectLater(api.registerPasskey(sessionToken: _token, challengeId: _flow,
+      attestation: native, idempotencyKey: _key),
+      throwsA(_failure(AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID')));
+    expect(community.requests, isEmpty);
+    final extension = nativeAttestation()..['clientExtensionResults'] = {'unreviewed': true};
+    await expectLater(api.registerPasskey(sessionToken: _token, challengeId: _flow,
+      attestation: extension, idempotencyKey: _key),
+      throwsA(_failure(AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID')));
+    expect(community.requests, isEmpty);
+  });
 
   test(
     'untrusted certificate is rejected before a credential body reaches server',

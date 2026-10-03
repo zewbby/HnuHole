@@ -28,13 +28,14 @@ String sessionTokenDigest(String token) => AuthCrypto.encode(
 /// revocation capability is still active, including an unknown prior renewal.
 class AuthSessionController extends ChangeNotifier {
   AuthSessionController({
-    required this._api,
-    required this._store,
-    required this._directory,
-  }) {
+    required AuthApi api,
+    required AuthStore store,
+    required ChannelDirectoryController directory,
+  }) : _api = api, _store = store, _directory = directory {
     _store.addListener(_storeChanged);
     _directory.onSessionUnauthorized = _directoryUnauthorized;
     _directory.onSessionRetry = retry;
+    _directory.onSessionMetadata = _persistDirectoryExpiry;
   }
   final AuthApi _api;
   final AuthStore _store;
@@ -55,6 +56,29 @@ class AuthSessionController extends ChangeNotifier {
   bool get isAuthenticated =>
       _status == AuthStatus.authenticated && _authorizedToken != null;
   bool get hasPendingLogout => _store.current?.logouts.isNotEmpty ?? false;
+  int get authorityVersion => _operation;
+
+  bool isCurrentToken(String token) =>
+      !_disposed && isAuthenticated && _authorizedToken == token &&
+      _usable(_store.current ?? const AuthState())?.token == token;
+
+  void sessionUnauthorized(String token, String? code) =>
+      _directoryUnauthorized(token, code);
+
+  Future<bool> persistSessionMetadata(
+    String token, DateTime expiresAt, bool Function() isCurrent,
+  ) => _persistDirectoryExpiry(token, expiresAt, isCurrent);
+
+  /// A protected management read cannot leave prior community data exposed
+  /// after the service reports that authorization is unavailable.
+  void sessionUnavailable(String token) {
+    if (!isCurrentToken(token)) return;
+    _operation++;
+    _suspend();
+    _status = AuthStatus.unavailable;
+    _error = '暂时无法核对会话，请恢复服务后重试。';
+    _notify();
+  }
 
   SessionRecord? _usable(AuthState state) {
     final record = state.session;
@@ -276,6 +300,7 @@ class AuthSessionController extends ChangeNotifier {
   Future<void> login(String username, String password) async {
     if (_busy) return;
     final fence = ++_operation;
+    _suspend();
     _busy = true;
     _error = null;
     _notify();
@@ -319,6 +344,8 @@ class AuthSessionController extends ChangeNotifier {
   }
 
   Future<void> acceptSession(AuthSession session) async {
+    _operation++;
+    _suspend();
     final state = await _store.read();
     if (state.pendingClosure != null || state.pendingReset != null) {
       await _queueOrphan(session.sessionToken);
@@ -364,6 +391,8 @@ class AuthSessionController extends ChangeNotifier {
 
   Future<void> logout() async {
     if (_busy) return;
+    _operation++;
+    _suspend();
     _busy = true;
     _error = null;
     _notify();
@@ -498,6 +527,49 @@ class AuthSessionController extends ChangeNotifier {
     });
   }
 
+  Future<bool> _persistDirectoryExpiry(
+    String token,
+    DateTime expiresAt,
+    bool Function() isCurrent,
+  ) async {
+    final fence = _operation;
+    bool permitted() =>
+        !_disposed &&
+        fence == _operation &&
+        isCurrent() &&
+        _authorizedToken == token &&
+        _usable(_store.current ?? const AuthState())?.token == token;
+    if (!permitted()) return false;
+    var changed = false;
+    final state = await _store.update((s) {
+      final record = _usable(s);
+      if (record == null || record.token != token || !permitted()) return s;
+      changed = true;
+      // A response committed earlier may arrive after a concurrent renewal.
+      final deadline = record.expiresAt.isAfter(expiresAt)
+          ? record.expiresAt
+          : expiresAt;
+      return s.copyWith(
+        session: SessionRecord(
+          token: token,
+          accountId: record.accountId,
+          expiresAt: deadline,
+          approvedPendingResetId: record.approvedPendingResetId,
+        ),
+      );
+    });
+    if (!changed || !permitted()) return false;
+    final view = _currentSession;
+    if (view == null) return false;
+    _currentSession = CurrentSession(
+      accountId: view.accountId,
+      username: view.username,
+      expiresAt: state.session!.expiresAt,
+    );
+    _notify();
+    return permitted();
+  }
+
   void _notify() {
     if (!_disposed) notifyListeners();
   }
@@ -509,6 +581,7 @@ class AuthSessionController extends ChangeNotifier {
     _store.removeListener(_storeChanged);
     _directory.onSessionUnauthorized = null;
     _directory.onSessionRetry = null;
+    _directory.onSessionMetadata = null;
     super.dispose();
   }
 }

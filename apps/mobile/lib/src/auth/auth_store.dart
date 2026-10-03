@@ -127,12 +127,19 @@ class AuthState {
     this.registration,
     this.pendingReset,
     this.pendingClosure,
+    this.pendingCredentialChange,
+    this.identityChanges = const {},
+    this.identityDrafts = const {},
     this.cInstallationId,
     this.vInstallationId,
   });
   final SessionRecord? session;
   final List<LogoutTask> logouts;
   final Map<String, dynamic>? registration, pendingReset, pendingClosure;
+  final Map<String, dynamic>? pendingCredentialChange;
+  /// Origin-scoped, per-account immutable operation anchors survive logout.
+  final Map<String, dynamic> identityChanges;
+  final Map<String, dynamic> identityDrafts;
   final String? cInstallationId, vInstallationId;
   AuthState copyWith({
     SessionRecord? session,
@@ -144,6 +151,10 @@ class AuthState {
     bool clearPendingReset = false,
     Map<String, dynamic>? pendingClosure,
     bool clearPendingClosure = false,
+    Map<String, dynamic>? pendingCredentialChange,
+    bool clearPendingCredentialChange = false,
+    Map<String, dynamic>? identityChanges,
+    Map<String, dynamic>? identityDrafts,
     String? cInstallationId,
     String? vInstallationId,
   }) => AuthState(
@@ -154,6 +165,11 @@ class AuthState {
     pendingClosure: clearPendingClosure
         ? null
         : pendingClosure ?? this.pendingClosure,
+    pendingCredentialChange: clearPendingCredentialChange
+        ? null
+        : pendingCredentialChange ?? this.pendingCredentialChange,
+    identityChanges: identityChanges ?? this.identityChanges,
+    identityDrafts: identityDrafts ?? this.identityDrafts,
     cInstallationId: cInstallationId ?? this.cInstallationId,
     vInstallationId: vInstallationId ?? this.vInstallationId,
   );
@@ -165,6 +181,9 @@ class AuthState {
     'registration': registration,
     'pendingReset': pendingReset,
     'pendingClosure': pendingClosure,
+    'pendingCredentialChange': pendingCredentialChange,
+    'identityChanges': identityChanges,
+    'identityDrafts': identityDrafts,
     'cInstallationId': cInstallationId,
     'vInstallationId': vInstallationId,
   };
@@ -177,6 +196,9 @@ class AuthState {
       'registration',
       'pendingReset',
       'pendingClosure',
+      'pendingCredentialChange',
+      'identityChanges',
+      'identityDrafts',
       'cInstallationId',
       'vInstallationId',
     });
@@ -211,10 +233,16 @@ class AuthState {
     final registration = _optionalObject(m['registration']);
     final pendingReset = _optionalObject(m['pendingReset']);
     final pendingClosure = _optionalObject(m['pendingClosure']);
+    final pendingCredentialChange = _optionalObject(m['pendingCredentialChange']);
+    final identityChanges = _optionalObject(m['identityChanges']) ?? <String, dynamic>{};
+    final identityDrafts = _optionalObject(m['identityDrafts']) ?? <String, dynamic>{};
     AuthWorkflowCodec.validate(
       registration: registration,
       pendingReset: pendingReset,
       pendingClosure: pendingClosure,
+      pendingCredentialChange: pendingCredentialChange,
+      identityChanges: identityChanges,
+      identityDrafts: identityDrafts,
       cInstallationId: c,
       vInstallationId: v,
     );
@@ -226,6 +254,9 @@ class AuthState {
       registration: _frozenMap(registration),
       pendingReset: _frozenMap(pendingReset),
       pendingClosure: _frozenMap(pendingClosure),
+      pendingCredentialChange: _frozenMap(pendingCredentialChange),
+      identityChanges: _frozenMap(identityChanges)!,
+      identityDrafts: _frozenMap(identityDrafts)!,
       cInstallationId: c,
       vInstallationId: v,
     );

@@ -28,12 +28,12 @@ class HttpChannelRepository implements ChannelRepository {
   final HttpClient _client;
 
   @override
-  Future<List<Channel>> loadChannels({required String sessionToken}) async {
+  Future<ChannelDirectoryResult> loadChannels({required String sessionToken}) async {
     if (sessionToken.trim().isEmpty) {
       throw const ChannelRepositoryException(
         message: 'A session token is required',
         statusCode: 401,
-        code: 'unauthorized',
+        code: 'AUTHENTICATION_FAILED',
       );
     }
 
@@ -90,16 +90,16 @@ class HttpChannelRepository implements ChannelRepository {
         message: _errorMessage(payload, response.statusCode),
         statusCode: response.statusCode,
         code: _errorField(payload, 'code'),
-        requestId:
-            _errorField(payload, 'request_id') ??
-            _errorField(payload, 'requestId'),
+        requestId: _requestId(payload, response.headers),
       );
     }
 
     final rawChannels = _channelList(payload);
     try {
-      return ChannelDirectory.validate(
-        rawChannels
+      final expiresAt = _sessionExpiry(response.headers);
+      return ChannelDirectoryResult(
+        expiresAt: expiresAt,
+        channels: rawChannels
             .map((item) => Channel.fromJson(item))
             .toList(growable: false),
       );
@@ -115,6 +115,31 @@ class HttpChannelRepository implements ChannelRepository {
 
   void close() => _client.close(force: true);
 
+  DateTime _sessionExpiry(HttpHeaders headers) {
+    final values = headers['session-expires-at'];
+    if (values == null || values.length != 1) {
+      throw const FormatException('Missing or ambiguous session deadline');
+    }
+    final value = values.single;
+    if (!RegExp(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$')
+        .hasMatch(value)) {
+      throw const FormatException('Invalid UTC session deadline');
+    }
+    final parsed = DateTime.parse(value);
+    if (!parsed.isUtc ||
+        parsed.toIso8601String().substring(0, 19) != value.substring(0, 19)) {
+      throw const FormatException('Invalid session deadline calendar date');
+    }
+    return parsed;
+  }
+
+  String? _requestId(dynamic payload, HttpHeaders headers) {
+    final value = payload is Map ? payload['requestId'] : null;
+    if (value is String && value.isNotEmpty) return value;
+    final values = headers['x-request-id'];
+    return values != null && values.length == 1 ? values.single : null;
+  }
+
   dynamic _decodePayload(String body) {
     if (body.trim().isEmpty) {
       return const <String, dynamic>{};
@@ -127,9 +152,7 @@ class HttpChannelRepository implements ChannelRepository {
   }
 
   List<Map<String, dynamic>> _channelList(dynamic payload) {
-    final raw = payload is List
-        ? payload
-        : payload is Map<String, dynamic>
+    final raw = payload is Map<String, dynamic> && payload.length == 1
         ? payload['channels']
         : null;
     if (raw is! List) {

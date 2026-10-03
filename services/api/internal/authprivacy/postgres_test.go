@@ -72,8 +72,8 @@ func newLab(t *testing.T) *lab {
 	for _, spec := range []struct {
 		pool        *pgxpool.Pool
 		schema, dir string
-	}{{l.cp, "c_auth", "community"}, {l.vp, "v_auth", "verifier"}} {
-		files, err := filepath.Glob(filepath.Join("..", "..", "authlab", "migrations", spec.dir, "*.sql"))
+	}{{l.cp, "c_auth", "migrations"}, {l.vp, "v_auth", "verifier-migrations"}} {
+		files, err := filepath.Glob(filepath.Join("..", "..", spec.dir, "*.sql"))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -88,13 +88,17 @@ func newLab(t *testing.T) *lab {
 			_ = tx.Rollback(context.Background())
 			t.Fatal(err)
 		}
-		for _, file := range files {
+		if spec.schema == "c_auth" {
+			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.community_identities, public.identity_account_state, public.sessions, public.channels CASCADE`); err != nil { t.Fatal(err) }
+			if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(), public.guard_community_identity(), public.guard_identity_receipt(), public.check_identity_account_shape()`); err != nil { t.Fatal(err) }
+        }
+        for _, file := range files {
 			sql, readErr := os.ReadFile(file)
 			if readErr != nil {
 				_ = tx.Rollback(context.Background())
 				t.Fatal(readErr)
 			}
-			if _, err = tx.Exec(context.Background(), string(sql)); err != nil {
+			if _, err = tx.Exec(context.Background(), strings.SplitN(string(sql), "-- +goose Down", 2)[0]); err != nil {
 				_ = tx.Rollback(context.Background())
 				t.Fatalf("migration %s: %v", filepath.Base(file), err)
 			}
@@ -656,16 +660,19 @@ func TestPostgresIsolatedSlice(t *testing.T) {
 		if _, err = l.v.ReserveAfterQualification(ctx, email, newTicket.BootstrapKey); err != nil {
 			t.Fatal(err)
 		}
-		// A late valid ACK is for the same terminal fact, even if the local job
-		// rotated while that request was in flight.
+		// A receipt already processed by V remains a durable terminal fact.
+		// Local ACK CAS rejects the superseded epoch; the current job retries
+		// the same slot/purpose without releasing a later reservation.
 		if err = l.c.DeliverReceipt(ctx, ticket.Slot, func(ctx context.Context, wire string, purpose protocol.Purpose) error {
 			if e := l.v.ProcessReceipt(ctx, wire, purpose); e != nil {
 				return e
 			}
 			return l.c.RotateReceiptEpoch(ctx, ticket.Slot, 2)
-		}); err != nil {
-			t.Fatal(err)
+		}); !errors.Is(err, ErrReceiptPending) {
+			t.Fatalf("superseded epoch accepted a late ACK: %v", err)
 		}
+		if _, err = l.c.SignReceipt(ctx, ticket.Slot, func(_ context.Context, _ uint32, message []byte) ([]byte, error) { return ed25519.Sign(l.cNextPrivate, message), nil }); err != nil { t.Fatal(err) }
+		if err = l.c.DeliverReceipt(ctx, ticket.Slot, l.v.ProcessReceipt); err != nil { t.Fatal(err) }
 		if count(t, l.vp, `SELECT count(*) FROM v_auth.email_quota WHERE email_exact=$1 AND current_slot=$2`, email, newTicket.Slot[:]) != 1 {
 			t.Fatal("old receipt cleared later reservation")
 		}

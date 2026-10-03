@@ -2,34 +2,27 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 import 'package:hnuhole_mobile/src/auth/auth_crypto.dart';
 import 'package:hnuhole_mobile/src/auth/auth_flows.dart';
 import 'package:hnuhole_mobile/src/auth/auth_models.dart';
 import 'package:hnuhole_mobile/src/auth/auth_session_controller.dart';
 import 'package:hnuhole_mobile/src/auth/auth_store.dart';
+import 'package:hnuhole_mobile/src/auth/security_management_controller.dart';
 import 'package:hnuhole_mobile/src/auth/http_auth_api.dart';
-import 'package:hnuhole_mobile/src/channels/channel.dart';
-import 'package:hnuhole_mobile/src/channels/channel_repository.dart';
+import 'package:hnuhole_mobile/src/channels/http_channel_repository.dart';
 import 'package:hnuhole_mobile/src/navigation/channel_directory_controller.dart';
 
 /// Only the native persistence port is replaced. Every authentication request
 /// traverses the shipped Dart transport, real Go TLS handler, and two real DBs.
-/// This does not certify Keychain/Keystore durability or business directories.
+/// Directory requests use the shipped transport and real C Gate transaction.
+/// This does not certify Keychain/Keystore durability.
 class _LabVault implements AuthVault {
   String? value;
   @override
   Future<String?> read() async => value;
   @override
   Future<void> write(String next) async => value = next;
-}
-
-class _UnavailableBusinessDirectory implements ChannelRepository {
-  @override
-  Future<List<Channel>> loadChannels({required String sessionToken}) async =>
-      throw const ChannelRepositoryException(
-        message: 'Business API is outside the isolated authentication lab.',
-        statusCode: 503,
-      );
 }
 
 void main() {
@@ -57,9 +50,15 @@ void main() {
         timeout: const Duration(seconds: 20),
       );
       final control = HttpClient(context: trust);
+      final repository = HttpChannelRepository(
+        baseUri: Uri.parse(config['communityOrigin'] as String),
+        client: HttpClient(context: trust),
+        timeout: const Duration(seconds: 20),
+      );
       addTearDown(() {
         api.close();
         control.close(force: true);
+        repository.close();
       });
       Future<Map<String, dynamic>> fixture(
         String action, [
@@ -88,7 +87,7 @@ void main() {
       final vault = _LabVault();
       var store = AuthStore(vault, scope: 'isolated-real-CV-test');
       var directory = ChannelDirectoryController(
-        repository: _UnavailableBusinessDirectory(),
+        repository: repository,
       );
       var sessions = AuthSessionController(
         api: api,
@@ -117,7 +116,7 @@ void main() {
         store.dispose();
         store = AuthStore(vault, scope: 'isolated-real-CV-test');
         directory = ChannelDirectoryController(
-          repository: _UnavailableBusinessDirectory(),
+          repository: repository,
         );
         sessions = AuthSessionController(
           api: api,
@@ -153,15 +152,75 @@ void main() {
       await flows.createRegistration(username, password);
       expect(flows.status, AuthFlowStatus.registrationCodeShown);
       final originalCode = flows.recoveryCode!;
+      var currentRecoveryCode = originalCode;
       flows.hideRecoveryCode();
       expect(flows.recoveryCode, isNull);
       await flows.commitRegistration(originalCode);
       expect(flows.status, AuthFlowStatus.registrationComplete);
       expect(sessions.isAuthenticated, isTrue);
+      expect(directory.status, ChannelDirectoryStatus.ready);
+      expect(directory.channels, hasLength(7));
+      final durableSession = AuthState.parse(
+        jsonDecode(vault.value!) as Map<String, dynamic>,
+        store.scope,
+      ).session!;
+      expect(durableSession.expiresAt, sessions.currentSession!.expiresAt);
+      expect(durableSession.token, store.current!.session!.token);
       expect(store.current!.registration, isNull);
       final signupToken = store.current!.session!.token;
+      final nearExpiry = await fixture('near-expiry', {'token': signupToken});
+      final priorDeadline = DateTime.parse(nearExpiry['expiresAt'] as String);
+      await directory.load();
+      expect(directory.status, ChannelDirectoryStatus.ready);
+      expect(directory.channels, hasLength(7));
+      final renewedDeadline = store.current!.session!.expiresAt;
+      expect(renewedDeadline.isAfter(priorDeadline.add(const Duration(days: 23))), isTrue);
+      expect((await api.currentSession(signupToken)).expiresAt, renewedDeadline);
+      final persistedRenewal = AuthState.parse(
+        jsonDecode(vault.value!) as Map<String, dynamic>,
+        store.scope,
+      ).session!;
+      expect(persistedRenewal.token, signupToken);
+      expect(persistedRenewal.expiresAt, renewedDeadline);
+      await restartClient();
+      expect(store.current!.session!.token, signupToken);
+      expect(store.current!.session!.expiresAt, renewedDeadline);
+      expect(directory.status, ChannelDirectoryStatus.ready);
+      expect(directory.channels, hasLength(7));
       final expiry = await api.renewSession(signupToken);
       expect(expiry.isBefore(store.current!.session!.expiresAt), isFalse);
+
+      // Real transport/SQL plus one intentionally lost final response. Native
+      // Passkey is not invoked in this headless scenario and is tested apart.
+      SecurityManagementController managerForCurrentStore() => SecurityManagementController(
+        api: api, store: store, sessions: sessions, passkey: NativePasskeyClient(),
+      );
+      var manager = managerForCurrentStore();
+      addTearDown(() => manager.dispose());
+      await manager.load();
+      expect(manager.status, SecurityManagementStatus.ready);
+      expect(manager.devices!.currentSignedInAt.isAfter(DateTime.utc(2026)), isTrue);
+      expect(manager.credentials!.passkeys, isEmpty);
+      await manager.beginRecoveryCodeRotation(password);
+      expect(manager.status, SecurityManagementStatus.rotationCodeShown);
+      currentRecoveryCode = manager.recoveryCode!;
+      manager.hideRecoveryCode();
+      expect(manager.recoveryCode, isNull);
+      expect(vault.value, isNot(contains(currentRecoveryCode)));
+      await fixture('drop-next', {'path': '/api/v1/auth/recovery-code-rotations/*/confirmations'});
+      await manager.confirmRecoveryCodeRotation(currentRecoveryCode);
+      expect(manager.status, SecurityManagementStatus.pending);
+      final rotationKey = store.current!.pendingCredentialChange!['key'];
+      expect(vault.value, isNot(contains(currentRecoveryCode)));
+      manager.dispose();
+      await restartClient();
+      manager = managerForCurrentStore();
+      await manager.load();
+      expect(manager.status, SecurityManagementStatus.committed);
+      expect(store.current!.pendingCredentialChange!['key'], rotationKey);
+      await manager.acknowledgeResult();
+      expect(manager.status, SecurityManagementStatus.ready);
+      expect(store.current!.pendingCredentialChange, isNull);
 
       final secondSession = await api.login(
         username: username,
@@ -178,6 +237,8 @@ void main() {
       await sessions.retry();
       expect(sessions.status, AuthStatus.signedOut);
       expect(store.current!.session, isNull);
+      expect(manager.devices, isNull);
+      expect(manager.credentials, isNull);
       await sessions.acceptSession(secondSession);
       expect(sessions.isAuthenticated, isTrue);
 
@@ -199,6 +260,12 @@ void main() {
       expect(sessions.isAuthenticated, isTrue);
       final beforeFreezeToken = store.current!.session!.token;
       await fixture('freeze');
+      manager.dispose();
+      manager = managerForCurrentStore();
+      await manager.load();
+      expect(manager.status, SecurityManagementStatus.unavailable);
+      expect(manager.devices, isNull);
+      expect(manager.credentials, isNull);
       await sessions.retry();
       expect(sessions.status, AuthStatus.unavailable);
       expect(store.current!.session!.token == beforeFreezeToken, isTrue);
@@ -210,7 +277,7 @@ void main() {
       await sessions.login(username, password);
       expect(sessions.isAuthenticated, isTrue);
 
-      await flows.beginCodeReset(originalCode);
+      await flows.beginCodeReset(currentRecoveryCode);
       expect(flows.status, AuthFlowStatus.resetCodeShown);
       final newCode = flows.recoveryCode!;
       flows.hideRecoveryCode();

@@ -1,5 +1,7 @@
 # Hnuhole 认证与匿名隐私架构决策
 
+> **当前状态入口（2026-10-03）：**本文的实施前状态及待填写材料保留形成时的证明范围；认证基础已有后续实现，当前缺口、未执行验收及分支结束条件统一见[匿名收口清单](auth-privacy-closure-checklist.md)与[模块台账](module-acceptance-ledger.json)。不将历史规格状态读作当前全部未实现，也不将现有源码读作验收或生产批准。
+
 日期：2026-09-26。基于 `codex/auth-privacy-handoff` @ `680f863` 及本轮用户最终确定的入口：**每次创建账号都验证学校邮箱验证码；日常只用私有用户名和密码登录；同一精确邮箱地址同时最多一个有效账号。**
 
 修订：2026-09-28。状态：**架构决策＋实施前协议规格；尚未实施或经过独立安全审计。** 注册、取消未消费资格与释放的固定字段及状态机见[协议 v1](auth-privacy-registration-protocol.md)；[独立恢复策略](auth-privacy-recovery-decision.md)、[数据/API 契约](auth-privacy-data-api-contract.md)与[跨方威胁模型](auth-privacy-threat-model.md)补齐实施前规格和审阅门槛；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[数据库迁移设计](auth-privacy-database-migration-design.md)已成稿。旧 ADR 0005 和账号模块中的“邮箱验证码唯一登录”已被本决策替代。

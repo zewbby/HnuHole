@@ -420,35 +420,49 @@ func (c *Community) RetireSlot(ctx context.Context, encodedAuthorization string)
 	if err != nil {
 		return err
 	}
-	tx, err := begin(ctx, c.pool)
+	decision, err := c.gate.Snapshot(ctx)
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
-	if err = lockSlot(ctx, tx, auth.Slot[:]); err != nil {
-		return err
+	return c.retireAuthorizedSlot(ctx, auth.Slot, decision)
+}
+
+// retireAuthorizedSlot receives the verified slot and original Gate decision.
+// Replays and new permanent terminal facts share the same final fence.
+func (c *Community) retireAuthorizedSlot(ctx context.Context, slot protocol.SlotID, decision AuthorizationDecision) error {
+	tx, err := begin(ctx, c.pool)
+	if err != nil {
+		return ErrAuthorizationUnavailable
+	}
+	defer c.gate.Abort(ctx, tx)
+	if err = lockSlot(ctx, tx, slot[:]); err != nil {
+		return ErrAuthorizationUnavailable
 	}
 	var state string
-	err = tx.QueryRow(ctx, `SELECT state FROM c_auth.slot_ledger WHERE slot_id=$1 FOR UPDATE`, auth.Slot[:]).Scan(&state)
+	err = tx.QueryRow(ctx, `SELECT state FROM c_auth.slot_ledger WHERE slot_id=$1 FOR UPDATE`, slot[:]).Scan(&state)
 	if err == nil {
-		if state == "RETIRED" {
-			return tx.Commit(ctx)
-		}
-		return ErrSlotUnavailable
-	}
-	if !errors.Is(err, pgx.ErrNoRows) {
+		_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(AuthorizationDecision) error {
+			if state != "RETIRED" {
+				return ErrSlotUnavailable
+			}
+			return nil
+		})
 		return err
 	}
-	receipt := protocol.Receipt{Purpose: protocol.PurposeRetired, Epoch: c.signingEpoch, Slot: auth.Slot}
+	if !errors.Is(err, pgx.ErrNoRows) {
+		return ErrAuthorizationUnavailable
+	}
+	receipt := protocol.Receipt{Purpose: protocol.PurposeRetired, Epoch: c.signingEpoch, Slot: slot}
 	message, err := receipt.MessageBytes()
 	if err != nil {
 		return err
 	}
-	if _, err = tx.Exec(ctx, `INSERT INTO c_auth.slot_ledger(slot_id,state) VALUES($1,'RETIRED')`, auth.Slot[:]); err != nil {
-		return err
-	}
-	if _, err = tx.Exec(ctx, `INSERT INTO c_auth.receipt_outbox(slot_id,purpose,receipt_message,signing_key_epoch,state) VALUES($1,'RETIRED',$2,$3,'PENDING_SIGN')`, auth.Slot[:], message, int64(c.signingEpoch)); err != nil {
-		return err
-	}
-	return tx.Commit(ctx)
+	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(AuthorizationDecision) error {
+		if _, e := tx.Exec(ctx, `INSERT INTO c_auth.slot_ledger(slot_id,state) VALUES($1,'RETIRED')`, slot[:]); e != nil {
+			return e
+		}
+		_, e := tx.Exec(ctx, `INSERT INTO c_auth.receipt_outbox(slot_id,purpose,receipt_message,signing_key_epoch,state) VALUES($1,'RETIRED',$2,$3,'PENDING_SIGN')`, slot[:], message, int64(c.signingEpoch))
+		return e
+	})
+	return err
 }

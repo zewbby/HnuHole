@@ -49,6 +49,7 @@ class Api implements AuthApi {
   AuthFailure? readFailure, revokeFailure, renewalFailure;
   Completer<CurrentSession>? readWait;
   Completer<DateTime>? renewWait;
+  Completer<AuthSession>? loginWait;
   int logins = 0;
   Completer<void>? revokeWait;
   DateTime expiry = DateTime.now().toUtc().add(const Duration(days: 5));
@@ -73,6 +74,7 @@ class Api implements AuthApi {
     required String idempotencyKey,
   }) async {
     logins++;
+    if (loginWait != null) return loginWait!.future;
     return AuthSession(
       accountId: account,
       sessionToken: newToken,
@@ -104,16 +106,35 @@ class Api implements AuthApi {
 class Channels implements ChannelRepository {
   final tokens = <String>[];
   ChannelRepositoryException? failure;
+  ChannelDirectoryResult? result;
+  Completer<ChannelDirectoryResult>? wait;
   @override
-  Future<List<Channel>> loadChannels({required String sessionToken}) async {
+  Future<ChannelDirectoryResult> loadChannels({required String sessionToken}) async {
     tokens.add(sessionToken);
     if (failure != null) throw failure!;
+    if (wait != null) return wait!.future;
+    if (result != null) return result!;
     throw const ChannelRepositoryException(
       message: 'isolated directory unavailable',
       statusCode: 503,
     );
   }
 }
+
+ChannelDirectoryResult directoryResult(DateTime expiresAt) =>
+    ChannelDirectoryResult(
+      expiresAt: expiresAt,
+      channels: [
+        for (var i = 0; i < ChannelDirectory.requiredCodes.length; i++)
+          Channel(
+            id: '00000000-0000-0000-0000-00000000000${i + 1}',
+            code: ChannelDirectory.requiredCodes[i],
+            name: 'Channel ${i + 1}',
+            initiallyVisible: i < 5,
+            displayOrder: i + 1,
+          ),
+      ],
+    );
 
 Future<
   ({
@@ -147,6 +168,132 @@ setup(MemoryVault vault, {AuthState? initial}) async {
 }
 
 void main() {
+  test('directory deadline is durable before any node is published', () async {
+    final vault = MemoryVault();
+    final f = await setup(vault, initial: AuthState(session: record(oldToken)));
+    final deadline = DateTime.utc(2031, 1, 2, 3, 4, 5);
+    f.channels.result = directoryResult(deadline);
+    var published = false;
+    f.directory.addListener(() {
+      if (f.directory.status != ChannelDirectoryStatus.ready) return;
+      published = true;
+      final durable = AuthState.parse(jsonDecode(vault.value!), f.store.scope);
+      expect(durable.session!.expiresAt, deadline);
+      expect(f.sessions.currentSession!.expiresAt, deadline);
+    });
+    await f.sessions.start();
+    expect(published, isTrue);
+    expect(f.directory.channels, hasLength(7));
+    expect(f.store.current!.session!.token, oldToken);
+  });
+  test('metadata write failure hides nodes and invalidates authority', () async {
+    final vault = MemoryVault();
+    final f = await setup(vault, initial: AuthState(session: record(oldToken)));
+    f.channels.result = directoryResult(DateTime.utc(2031));
+    // The first write restores /auth/session metadata; the next stores the
+    // committed business deadline. Fail after that deadline reached storage.
+    vault.failAt = vault.writes + 2;
+    vault.commitBeforeFailure = true;
+    await f.sessions.start();
+    expect(f.store.current, isNull);
+    expect(f.sessions.status, AuthStatus.storageFailure);
+    expect(f.sessions.isAuthenticated, isFalse);
+    expect(f.directory.channels, isEmpty);
+    expect(f.directory.status, ChannelDirectoryStatus.failure);
+  });
+  test('late directory cannot update a replacement token or publish nodes', () async {
+    final f = await setup(MemoryVault(), initial: AuthState(session: record(oldToken)));
+    final waiting = Completer<ChannelDirectoryResult>();
+    f.channels.wait = waiting;
+    final loading = f.sessions.start();
+    while (f.channels.tokens.isEmpty) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    final replacement = record(newToken, expiry: DateTime.utc(2030));
+    await f.store.update((s) => s.copyWith(session: replacement));
+    waiting.complete(directoryResult(DateTime.utc(2031)));
+    await loading;
+    expect(f.store.current!.session!.token, newToken);
+    expect(f.store.current!.session!.expiresAt, replacement.expiresAt);
+    expect(f.directory.channels, isEmpty);
+  });
+  test('late directory after durable logout marker cannot resurrect access', () async {
+    final f = await setup(MemoryVault(), initial: AuthState(session: record(oldToken)));
+    final waiting = Completer<ChannelDirectoryResult>();
+    f.channels.wait = waiting;
+    final loading = f.sessions.start();
+    while (f.channels.tokens.isEmpty) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    await f.store.update((s) => s.copyWith(
+      logouts: [LogoutTask(tokenDigest: sessionTokenDigest(oldToken))],
+    ));
+    waiting.complete(directoryResult(DateTime.utc(2031)));
+    await loading;
+    expect(f.store.current!.session!.expiresAt, f.api.expiry);
+    expect(f.sessions.isAuthenticated, isFalse);
+    expect(f.directory.channels, isEmpty);
+  });
+  test('later directory request fences an older response for the same token', () async {
+    final f = await setup(MemoryVault(), initial: AuthState(session: record(oldToken)));
+    final waiting = Completer<ChannelDirectoryResult>();
+    f.channels.wait = waiting;
+    final older = f.sessions.start();
+    while (f.channels.tokens.isEmpty) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    f.channels.wait = null;
+    final latest = DateTime.utc(2032);
+    f.channels.result = directoryResult(latest);
+    await f.directory.load();
+    waiting.complete(directoryResult(DateTime.utc(2031)));
+    await older;
+    expect(f.store.current!.session!.expiresAt, latest);
+    expect(f.directory.status, ChannelDirectoryStatus.ready);
+    expect(f.directory.channels, hasLength(7));
+  });
+  test('login in flight fences a late directory for the old token', () async {
+    final f = await setup(MemoryVault(), initial: AuthState(session: record(oldToken)));
+    await f.sessions.start();
+    final waiting = Completer<ChannelDirectoryResult>();
+    f.channels.wait = waiting;
+    final directoryRequest = f.directory.load();
+    f.api.loginWait = Completer<AuthSession>();
+    final login = f.sessions.login('private_user', 'a-long-password');
+    while (f.api.logins == 0) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    waiting.complete(directoryResult(DateTime.utc(2031)));
+    await directoryRequest;
+    expect(f.store.current!.session!.expiresAt, f.api.expiry);
+    expect(f.directory.channels, isEmpty);
+    expect(f.sessions.isAuthenticated, isFalse);
+    f.channels.wait = null;
+    f.api.loginWait!.complete(AuthSession(
+      accountId: account,
+      sessionToken: newToken,
+      expiresAt: f.api.expiry,
+    ));
+    await login;
+    expect(f.store.current!.session!.token, newToken);
+  });
+  test('directory 503 and network failure retain durable token with no nodes', () async {
+    for (final failure in [
+      const ChannelRepositoryException(message: 'frozen', statusCode: 503, code: 'SERVICE_UNAVAILABLE'),
+      const ChannelRepositoryException(message: 'network unavailable'),
+      const ChannelRepositoryException(message: 'malformed', statusCode: 400, code: 'MALFORMED_REQUEST'),
+      const ChannelRepositoryException(message: 'origin rejected', statusCode: 403, code: 'AUTHENTICATION_FAILED'),
+      const ChannelRepositoryException(message: 'rate limited', statusCode: 429, code: 'RATE_LIMITED'),
+    ]) {
+      final f = await setup(MemoryVault(), initial: AuthState(session: record(oldToken)));
+      f.channels.failure = failure;
+      await f.sessions.start();
+      expect(f.store.current!.session!.token, oldToken);
+      expect(f.directory.status, ChannelDirectoryStatus.failure);
+      expect(f.directory.channels, isEmpty);
+      expect(f.directory.error!.statusCode, failure.statusCode);
+    }
+  });
   test(
     'stored expiry never bypasses server, including expired local metadata',
     () async {

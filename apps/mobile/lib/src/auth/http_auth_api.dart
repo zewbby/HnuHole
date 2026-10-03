@@ -5,10 +5,12 @@ import 'dart:io';
 import 'auth_api.dart';
 import 'auth_crypto.dart';
 import 'auth_models.dart';
+import 'credential_management_api.dart';
+import '../identity/identity_api.dart';
 
 /// Fixed HTTPS origins, no redirects, cookies, telemetry or cross-party headers.
 /// The caller owns durable original keys; this transport never retries a POST.
-class HttpAuthApi implements AuthApi {
+class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryApi, IdentityApi {
   HttpAuthApi({
     required this.communityBaseUri,
     required this.verifierBaseUri,
@@ -47,6 +49,131 @@ class HttpAuthApi implements AuthApi {
   }
 
   void close() => _client.close(force: true);
+
+  @override
+  Future<IdentityDirectory> identities(String sessionToken) async {
+    final r = await _send(false, 'GET', '/api/v1/identities',
+      headers: _capability('Bearer', sessionToken), expected: {200}, allowNull: true);
+    return _model(() {
+      final m = _record(r.body, {'identities', 'createdCount', 'nextCreateAt', 'serverTime'},
+        nullable: {'nextCreateAt'});
+      final items = m['identities'];
+      if (items is! List || items.length > 3) {
+        throw const FormatException('Invalid identity list');
+      }
+      final ids = <String>{}, names = <String>{};
+      var originals = 0;
+      final serverTime = _date(m, 'serverTime');
+      final identities = items.map((raw) {
+        final item = _record(raw, {'id', 'nickname', 'avatar', 'isOriginal',
+          'createdAt', 'renameAvailableAt'}, nullable: {'renameAvailableAt'});
+        final id = _identityId(_text(item, 'id'));
+        final nickname = _text(item, 'nickname', maxLength: 512);
+        if (utf8.encode(nickname).length > 512) {
+          throw const FormatException('Invalid identity nickname size');
+        }
+        final original = item['isOriginal'];
+        final created = _date(item, 'createdAt');
+        if (original is! bool || item['avatar'] != 'default-v1' ||
+            !ids.add(id) || !names.add(nickname) || created.isAfter(serverTime)) {
+          throw const FormatException('Invalid identity record');
+        }
+        if (original) originals++;
+        return ManagedIdentity(id: id, nickname: nickname, avatar: 'default-v1',
+          isOriginal: original, createdAt: created,
+          renameAvailableAt: item['renameAvailableAt'] == null
+              ? null : _date(item, 'renameAvailableAt'));
+      }).toList(growable: false);
+      final count = _integer(m, 'createdCount', identities.length, 2147483647);
+      if (originals > 1 || (count == 0) != identities.isEmpty ||
+          (count < 3 && m['nextCreateAt'] != null)) {
+        throw const FormatException('Invalid identity lifecycle metadata');
+      }
+      return IdentityDirectory(identities: List.unmodifiable(identities),
+        createdCount: count, serverTime: serverTime,
+        nextCreateAt: m['nextCreateAt'] == null ? null : _date(m, 'nextCreateAt'),
+        sessionExpiresAt: _managementExpiry(r));
+    });
+  }
+
+  @override
+  Future<IdentityChangeOutcome> changeIdentity({required String sessionToken,
+    required String idempotencyKey, required IdentityOperation operation,
+    String? identityId, String? nickname}) async {
+    if ((operation == IdentityOperation.create) != (identityId == null) ||
+        (operation == IdentityOperation.delete) != (nickname == null) ||
+        nickname != null && (nickname.isEmpty || utf8.encode(nickname).length > 512)) {
+      throw const AuthFailure(kind: AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID');
+    }
+    if (identityId != null) {
+      try {
+        _identityId(identityId);
+      } on FormatException {
+        throw const AuthFailure(kind: AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID');
+      }
+    }
+    final r = await _send(false, switch (operation) {
+      IdentityOperation.create => 'POST', IdentityOperation.rename => 'PATCH',
+      IdentityOperation.delete => 'DELETE',
+    }, identityId == null ? '/api/v1/identities' : '/api/v1/identities/$identityId',
+      headers: {..._capability('Bearer', sessionToken),
+        'Idempotency-Key': _bytes(idempotencyKey, 16)},
+      body: nickname == null ? null : {'nickname': nickname},
+      expected: {200}, allowNull: true);
+    final outcome = _model(() => _identityOutcome(r));
+    if (!outcome.committed || outcome.operation != operation ||
+        identityId != null && outcome.identityId != identityId) {
+      throw const AuthFailure(kind: AuthFailureKind.invalidResponse);
+    }
+    return outcome;
+  }
+
+  @override
+  Future<IdentityChangeOutcome> identityChangeResult({required String sessionToken,
+    required String idempotencyKey}) async {
+    final r = await _send(false, 'GET', '/api/v1/identity-change-result',
+      headers: {..._capability('Bearer', sessionToken),
+        'Idempotency-Key': _bytes(idempotencyKey, 16)},
+      expected: {200}, allowNull: true);
+    return _model(() => _identityOutcome(r));
+  }
+
+  static String _identityId(String id) {
+    if (!RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
+        .hasMatch(id)) throw const FormatException('Invalid identity ID');
+    return id;
+  }
+
+  IdentityChangeOutcome _identityOutcome(_Reply r) {
+    final m = _record(r.body, {'state', 'operation', 'identityId', 'errorCode'},
+      nullable: {'operation', 'identityId', 'errorCode'});
+    if (m['state'] == 'NOT_FOUND' && m['operation'] == null &&
+        m['identityId'] == null && m['errorCode'] == null) {
+      return IdentityChangeOutcome(committed: false, sessionExpiresAt: _managementExpiry(r));
+    }
+    if (m['state'] != 'COMMITTED' && m['state'] != 'REJECTED') {
+      throw const FormatException('Invalid identity outcome');
+    }
+    final operation = switch (m['operation']) {
+      'CREATE' => IdentityOperation.create, 'RENAME' => IdentityOperation.rename,
+      'DELETE' => IdentityOperation.delete,
+      _ => throw const FormatException('Invalid identity operation'),
+    };
+    if (m['state'] == 'REJECTED' && m['identityId'] == null &&
+        _identityRejections.contains(m['errorCode'])) {
+      return IdentityChangeOutcome(committed: false, operation: operation,
+        errorCode: m['errorCode'] as String, sessionExpiresAt: _managementExpiry(r));
+    }
+    if (m['state'] != 'COMMITTED' || m['errorCode'] != null) {
+      throw const FormatException('Invalid identity outcome metadata');
+    }
+    return IdentityChangeOutcome(committed: true, operation: operation,
+      identityId: _identityId(_text(m, 'identityId')),
+      sessionExpiresAt: _managementExpiry(r));
+  }
+  static const _identityRejections = {'IDENTITY_INVALID_NAME', 'IDENTITY_DUPLICATE_NAME',
+    'IDENTITY_LIMIT', 'IDENTITY_CREATE_COOLDOWN', 'IDENTITY_RENAME_COOLDOWN',
+    'IDENTITY_LAST_REQUIRED', 'IDENTITY_NOT_FOUND'};
 
   @override
   Future<AuthSession> login({
@@ -519,6 +646,45 @@ class HttpAuthApi implements AuthApi {
     });
   }
 
+  @override
+  Future<DeviceDirectory> devices(String sessionToken) async {
+    final r = await _send(
+      false,
+      'GET',
+      '/api/v1/auth/devices',
+      headers: _capability('Bearer', sessionToken),
+      expected: {200},
+    );
+    return _model(() {
+      final m = _record(r.body, {'current'}, optional: {'lastReplaced'});
+      final current = _record(m['current'], {'role', 'signedInAt'});
+      if (current['role'] != 'CURRENT') {
+        throw const FormatException('Invalid current device role');
+      }
+      DateTime? signedIn, replaced;
+      if (m.containsKey('lastReplaced')) {
+        final recent = _record(m['lastReplaced'], {
+          'role', 'signedInAt', 'replacedAt',
+        });
+        if (recent['role'] != 'REPLACED') {
+          throw const FormatException('Invalid replaced device role');
+        }
+        signedIn = _date(recent, 'signedInAt');
+        replaced = _date(recent, 'replacedAt');
+        if (replaced.isBefore(signedIn)) {
+          throw const FormatException('Invalid replaced device times');
+        }
+      }
+      return DeviceDirectory(
+        currentSignedInAt: _date(current, 'signedInAt'),
+        lastReplacedSignedInAt: signedIn,
+        lastReplacedAt: replaced,
+        sessionExpiresAt: _managementExpiry(r),
+      );
+    });
+  }
+
+  @override
   Future<RecoveryCredentialSummary> recoveryCredentials(
     String sessionToken,
   ) async {
@@ -560,10 +726,14 @@ class HttpAuthApi implements AuthApi {
             );
           })
           .toList(growable: false);
-      return RecoveryCredentialSummary(passkeys: List.unmodifiable(passkeys));
+      return RecoveryCredentialSummary(
+        passkeys: List.unmodifiable(passkeys),
+        sessionExpiresAt: _managementExpiry(r),
+      );
     });
   }
 
+  @override
   Future<RecoveryCodeRotation> createRecoveryCodeRotation({
     required String sessionToken,
     required String password,
@@ -587,18 +757,20 @@ class HttpAuthApi implements AuthApi {
         rotationIntentId: _encoded(m, 'rotationIntentId', 32),
         expiresAt: _date(m, 'expiresAt'),
         newRecoveryCode: _recoveryCode(m, 'newRecoveryCode'),
+        sessionExpiresAt: _managementExpiry(r),
       );
     });
   }
 
-  Future<void> confirmRecoveryCodeRotation({
+  @override
+  Future<DateTime> confirmRecoveryCodeRotation({
     required String sessionToken,
     required String rotationIntentId,
     required String newRecoveryCodeConfirmation,
     required String idempotencyKey,
   }) async {
     _recoveryInput(newRecoveryCodeConfirmation);
-    await _send(
+    final r = await _send(
       false,
       'POST',
       '/api/v1/auth/recovery-code-rotations/${_bytes(rotationIntentId, 32)}/confirmations',
@@ -609,8 +781,10 @@ class HttpAuthApi implements AuthApi {
       },
       expected: {204},
     );
+    return _model(() => _managementExpiry(r));
   }
 
+  @override
   Future<PasskeyRemovalIntent> createPasskeyRemovalIntent({
     required String sessionToken,
     required String credentialId,
@@ -631,17 +805,19 @@ class HttpAuthApi implements AuthApi {
       return PasskeyRemovalIntent(
         removalIntentId: _encoded(m, 'removalIntentId', 32),
         expiresAt: _date(m, 'expiresAt'),
+        sessionExpiresAt: _managementExpiry(r),
       );
     });
   }
 
-  Future<void> removePasskey({
+  @override
+  Future<DateTime> removePasskey({
     required String sessionToken,
     required String credentialId,
     required String removalIntentId,
     required String idempotencyKey,
   }) async {
-    await _send(
+    final r = await _send(
       false,
       'DELETE',
       '/api/v1/auth/passkeys/${_bytes(credentialId, null, maxBytes: 1023)}',
@@ -652,6 +828,114 @@ class HttpAuthApi implements AuthApi {
       },
       expected: {204},
     );
+    return _model(() => _managementExpiry(r));
+  }
+
+  @override
+  Future<PasskeyOptions> createPasskeyCreationOptions({
+    required String sessionToken,
+    required String password,
+  }) async {
+    _passwordInput(password);
+    final r = await _send(
+      false, 'POST', '/api/v1/auth/passkey-options',
+      headers: _capability('Bearer', sessionToken),
+      body: {'password': password},
+      expected: {200},
+    );
+    return _model(() => _passkeyOptions(r, creation: true));
+  }
+
+  @override
+  Future<DateTime> registerPasskey({
+    required String sessionToken,
+    required String challengeId,
+    required Map<String, dynamic> attestation,
+    required String idempotencyKey,
+  }) async {
+    _nativeCredential(attestation, creation: true);
+    final r = await _send(
+      false, 'POST', '/api/v1/auth/passkeys',
+      headers: {
+        ..._capability('Bearer', sessionToken),
+        ..._keyHeader(idempotencyKey),
+      },
+      body: {
+        'challengeId': _bytes(challengeId, 32),
+        'webauthnAttestation': attestation,
+      },
+      maxRequestBytes: 32768,
+      expected: {204},
+    );
+    return _model(() => _managementExpiry(r));
+  }
+
+  @override
+  Future<CredentialChangeOutcome> credentialChangeResult({
+    required String sessionToken,
+    required String changeId,
+    required String idempotencyKey,
+  }) async {
+    final r = await _send(
+      false, 'GET', '/api/v1/auth/credential-change-result',
+      headers: {
+        ..._capability('Bearer', sessionToken),
+        ..._keyHeader(idempotencyKey),
+        'Credential-Change-ID': _bytes(changeId, 32),
+      },
+      expected: {200},
+    );
+    return _model(() {
+      final m = _record(r.body, {'state'});
+      final state = switch (_text(m, 'state')) {
+        'PENDING' => CredentialChangeState.pending,
+        'COMMITTED' => CredentialChangeState.committed,
+        'NOT_COMMITTED' => CredentialChangeState.notCommitted,
+        _ => throw const FormatException('Invalid credential change state'),
+      };
+      return CredentialChangeOutcome(
+        state: state,
+        sessionExpiresAt: _managementExpiry(r),
+      );
+    });
+  }
+
+  @override
+  Future<PasskeyOptions> createPasskeyResetOptions() async {
+    final r = await _send(
+      false, 'POST', '/api/v1/auth/passkey-reset-options',
+      body: {},
+      expected: {200},
+    );
+    return _model(() => _passkeyOptions(r, creation: false));
+  }
+
+  @override
+  Future<PasswordResetIntent> createPasskeyResetIntent({
+    required String challengeId,
+    required Map<String, dynamic> assertion,
+  }) async {
+    _nativeCredential(assertion, creation: false);
+    final r = await _send(
+      false, 'POST', '/api/v1/auth/passkey-reset-intents',
+      body: {
+        'challengeId': _bytes(challengeId, 32),
+        'webauthnAssertion': assertion,
+      },
+      maxRequestBytes: 32768,
+      expected: {201},
+    );
+    return _model(() {
+      final m = _record(r.body, {
+        'resetIntentId', 'expiresAt', 'username', 'newRecoveryCode',
+      });
+      return PasswordResetIntent(
+        resetIntentId: _encoded(m, 'resetIntentId', 32),
+        expiresAt: _date(m, 'expiresAt'),
+        username: _username(m),
+        newRecoveryCode: _recoveryCode(m, 'newRecoveryCode'),
+      );
+    });
   }
 
   Map<String, String> _keyHeader(String key) => {
@@ -671,6 +955,8 @@ class HttpAuthApi implements AuthApi {
     String path, {
     Map<String, Object>? body,
     Map<String, String> headers = const {},
+    int maxRequestBytes = 8192,
+    bool allowNull = false,
     required Set<int> expected,
   }) async {
     HttpClientRequest? active;
@@ -694,7 +980,7 @@ class HttpAuthApi implements AuthApi {
         }
         if (body != null) {
           final bytes = utf8.encode(jsonEncode(body));
-          if (bytes.length > 8192) {
+          if (bytes.length > maxRequestBytes) {
             throw const AuthFailure(
               kind: AuthFailureKind.rejected,
               code: 'CLIENT_INPUT_INVALID',
@@ -744,7 +1030,7 @@ class HttpAuthApi implements AuthApi {
                       'utf-8')) {
             throw const FormatException('Invalid authentication response type');
           }
-          payload = _StrictJson(utf8.decode(bytes, allowMalformed: false))
+          payload = _StrictJson(utf8.decode(bytes, allowMalformed: false), allowNull: allowNull)
               .decode();
         }
         if (!expected.contains(status)) {
@@ -841,6 +1127,7 @@ class HttpAuthApi implements AuthApi {
     'EMAIL_INVALID',
     'AUTHENTICATION_FAILED',
     'IDEMPOTENCY_KEY_REUSED',
+    'IDEMPOTENCY_CONFLICT',
     'OTP_INVALID',
     'OTP_EXPIRED',
     'OTP_REPLACED',
@@ -883,6 +1170,14 @@ class HttpAuthApi implements AuthApi {
     'CLOSURE_STATUS_UNAVAILABLE',
     'PAYLOAD_TOO_LARGE',
     'UNSUPPORTED_MEDIA_TYPE',
+    'IDENTITY_INVALID_NAME',
+    'IDENTITY_DUPLICATE_NAME',
+    'IDENTITY_LIMIT',
+    'IDENTITY_CREATE_COOLDOWN',
+    'IDENTITY_RENAME_COOLDOWN',
+    'IDENTITY_LAST_REQUIRED',
+    'IDENTITY_NOT_FOUND',
+    'IDENTITY_CHANGE_CONFLICT',
   };
 
   T _model<T>(T Function() parse) {
@@ -914,17 +1209,162 @@ class HttpAuthApi implements AuthApi {
     }
   }
 
+  DateTime _managementExpiry(_Reply r) {
+    final value = r.sessionExpiry;
+    if (value == null) {
+      throw const FormatException('Missing session expiry metadata');
+    }
+    return _parseDate(value);
+  }
+
+  PasskeyOptions _passkeyOptions(_Reply r, {required bool creation}) {
+    final m = _record(r.body, {'challengeId', 'expiresAt', 'publicKey'});
+    final options = _record(
+      m['publicKey'],
+      creation
+          ? {
+              'challenge', 'rp', 'user', 'pubKeyCredParams', 'timeout',
+              'excludeCredentials', 'authenticatorSelection', 'attestation',
+            }
+          : {'challenge', 'rpId', 'timeout', 'userVerification'},
+    );
+    _encoded(options, 'challenge', 32);
+    if (options['timeout'] != 60000) {
+      throw const FormatException('Invalid Passkey timeout');
+    }
+    if (creation) {
+      final rp = _record(options['rp'], {'id', 'name'});
+      _passkeyRp(_text(rp, 'id', maxLength: 253));
+      final user = _record(options['user'], {'id', 'name', 'displayName'});
+      final userId = _encoded(user, 'id', 32);
+      final params = options['pubKeyCredParams'];
+      if (rp['name'] != 'Hnuhole' ||
+          user['name'] != userId ||
+          user['displayName'] != 'Hnuhole account' ||
+          params is! List || params.length != 1) {
+        throw const FormatException('Invalid Passkey account options');
+      }
+      final algorithm = _record(params.single, {'type', 'alg'});
+      final selection = _record(options['authenticatorSelection'], {
+        'residentKey', 'requireResidentKey', 'userVerification',
+      });
+      if (algorithm['type'] != 'public-key' || algorithm['alg'] != -7 ||
+          selection['residentKey'] != 'required' ||
+          selection['requireResidentKey'] != true ||
+          selection['userVerification'] != 'required' ||
+          options['attestation'] != 'none') {
+        throw const FormatException('Invalid Passkey security policy');
+      }
+      final exclusions = options['excludeCredentials'];
+      if (exclusions is! List || exclusions.length > 10) {
+        throw const FormatException('Invalid Passkey exclusion list');
+      }
+      final ids = <String>{};
+      for (final value in exclusions) {
+        final descriptor = _record(value, {'type', 'id'});
+        if (descriptor['type'] != 'public-key' ||
+            !ids.add(_variableBytes(descriptor, 'id', 1023))) {
+          throw const FormatException('Invalid Passkey exclusion descriptor');
+        }
+      }
+    } else {
+      _passkeyRp(_text(options, 'rpId', maxLength: 253));
+      if (options['userVerification'] != 'required') {
+        throw const FormatException('Passkey verification is required');
+      }
+    }
+    return PasskeyOptions(
+      challengeId: _encoded(m, 'challengeId', 32),
+      expiresAt: _date(m, 'expiresAt'),
+      publicKey: _freezeJsonMap(options),
+      sessionExpiresAt: creation ? _managementExpiry(r) : null,
+    );
+  }
+
+  void _passkeyRp(String rp) {
+    final host = communityBaseUri.host.toLowerCase();
+    if (rp != rp.toLowerCase() ||
+        !RegExp(r'^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$').hasMatch(rp) ||
+        rp.contains('..') ||
+        (host != rp && !host.endsWith('.$rp'))) {
+      throw const FormatException('Passkey RP is outside the community origin');
+    }
+  }
+
+  static Map<String, dynamic> _freezeJsonMap(Map<String, Object?> value) =>
+      Map<String, dynamic>.unmodifiable(value.map((key, item) => MapEntry(
+        key,
+        item is Map<String, Object?>
+            ? _freezeJsonMap(item)
+            : item is List
+            ? List<Object?>.unmodifiable(item.map((entry) =>
+                entry is Map<String, Object?> ? _freezeJsonMap(entry) : entry))
+            : item,
+      )));
+
+  static void _nativeCredential(
+    Map<String, dynamic> credential, {required bool creation}
+  ) {
+    try {
+      final m = _record(credential, {
+        'id', 'rawId', 'type', 'response', 'clientExtensionResults',
+      });
+      final id = _variableBytes(m, 'id', 1023);
+      if (m['rawId'] != id || m['type'] != 'public-key') {
+        throw const FormatException('Invalid native credential identity');
+      }
+      _record(m['clientExtensionResults'], {});
+      final response = _record(
+        m['response'],
+        creation
+            ? {'clientDataJSON', 'attestationObject'}
+            : {'clientDataJSON', 'authenticatorData', 'signature', 'userHandle'},
+        optional: creation ? {'transports'} : {},
+      );
+      _variableBytes(response, 'clientDataJSON', 3072);
+      if (creation) {
+        _variableBytes(response, 'attestationObject', 4096);
+        if (response.containsKey('transports')) {
+          final transports = response['transports'];
+          if (transports is! List || transports.length > 5 ||
+              transports.toSet().length != transports.length ||
+              transports.any((value) =>
+                  !{'usb', 'nfc', 'ble', 'internal', 'hybrid'}.contains(value))) {
+            throw const FormatException('Invalid native transports');
+          }
+        }
+      } else {
+        final authData = AuthCrypto.decode(
+          _variableBytes(response, 'authenticatorData', 2048),
+        );
+        final signature = AuthCrypto.decode(
+          _variableBytes(response, 'signature', 1024),
+        );
+        if (authData.length < 37 || signature.length < 8) {
+          throw const FormatException('Invalid native assertion length');
+        }
+        _encoded(response, 'userHandle', 32);
+      }
+    } on FormatException {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'CLIENT_INPUT_INVALID',
+      );
+    }
+  }
+
   static Map<String, Object?> _record(
     Object? raw,
     Set<String> required, {
     Set<String> optional = const {},
+    Set<String> nullable = const {},
   }) {
     if (raw is! Map<String, Object?> ||
         !required.every(raw.containsKey) ||
         raw.keys.any(
           (key) => !required.contains(key) && !optional.contains(key),
         ) ||
-        raw.values.any((value) => value == null)) {
+        raw.entries.any((entry) => entry.value == null && !nullable.contains(entry.key))) {
       throw const FormatException('Invalid response object');
     }
     return raw;
@@ -1070,7 +1510,8 @@ class _Reply {
 /// jsonDecode alone silently overwrites duplicate object keys. This bounded
 /// reader rejects them before typed response validation and consumes all input.
 class _StrictJson {
-  _StrictJson(this.input);
+  _StrictJson(this.input, {this.allowNull = false});
+  final bool allowNull;
   final String input;
   int at = 0;
   Object? decode() {
@@ -1134,6 +1575,10 @@ class _StrictJson {
       return false;
     }
     if (input.startsWith('null', at)) {
+      if (allowNull) {
+        at += 4;
+        return null;
+      }
       throw const FormatException('Null JSON value');
     }
     final match = RegExp(r'-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?')

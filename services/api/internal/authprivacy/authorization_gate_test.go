@@ -74,7 +74,7 @@ func newGateControl(t *testing.T) *gateControl {
 	if err != nil {
 		t.Fatal(err)
 	}
-	clock := &gateTestClock{at: time.Now().UTC()}
+	clock := &gateTestClock{at: time.Now().UTC().Truncate(time.Microsecond)}
 	cfg := AuthorizationGateConfig{
 		Pool: l.cp, Domain: "controlled-lab-c", Evidence: provider,
 		EvidencePublicKey: ep, RecoveryPublicKey: rp, BreakGlassPublicKey: bp,
@@ -606,4 +606,21 @@ func TestAuthorizationGatePendingCommandGenerationFence(t *testing.T) {
 	if err := c.gate.Abort(ctx, stale); err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestGateNanosecondClockPersistsIdenticalSQLAndAnchorTimePostgres(t *testing.T) {
+    control := newGateControl(t)
+    ctx := context.Background()
+    control.clock.set(control.clock.now().Add(123*time.Nanosecond))
+    first, err := control.gate.Snapshot(ctx)
+    if err != nil { t.Fatal(err) }
+    if first.TrustedAt.Nanosecond()%1000 != 0 || first.TrustedAt.Before(control.clock.now()) {
+        t.Fatal("authority time was truncated below clock or cannot persist exactly")
+    }
+    second, err := control.gate.Snapshot(ctx)
+    if err != nil || !second.TrustedAt.Equal(first.TrustedAt) {
+        t.Fatalf("SQL and external checkpoint disagreed after nanosecond clock: %v", err)
+    }
+    control.clock.set(control.clock.now().Add(time.Nanosecond))
+    if _, err := control.gate.Snapshot(ctx); err != nil { t.Fatal(err) }
 }

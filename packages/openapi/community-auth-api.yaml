@@ -540,6 +540,45 @@ paths:
           "$ref": "#/components/responses/RateLimited"
         '503':
           "$ref": "#/components/responses/ServiceUnavailable"
+  "/api/v1/auth/credential-change-result":
+    get:
+      operationId: getCredentialChangeResult
+      summary: 使用原会话和原操作标识无秘密核对凭据变更
+      description: 支持恢复码轮换、Passkey绑定和移除。Credential-Change-ID是原轮换/移除意图ID或原绑定challengeId；Idempotency-Key是提交前持久保存的原32字节键。必须仍是创建意图的同一有效Bearer会话，最终事务按原Gate代次再核对账号、会话、归属。COMMITTED只来自绑定相同ID/操作/原会话的持久提交结果；PENDING只代表已知意图仍可提交，之后仍可能提交；NOT_COMMITTED只来自已知且已不可逆终止的意图，过期活动意图在同一授权事务中清除证明并终止后才返回。缺失瞬态记录、未知ID或不同键的已消费意图绝不能推断NOT_COMMITTED。完整提交结果保留8天，到期同事务转为永久无身份EXPIRED墓碑并返回410，不承诺原结论。接口不返回密码、恢复码、WebAuthn proof或新会话；进程重启只需安全存储原ID/键/会话栅栏核对，无需持久化原恢复码或attestation。冻结503、会话接替/代次失效401不产生成功结论。无请求body/query，当前会话截止先持久更新再发布管理结果。
+      tags:
+      - CredentialManagement
+      security:
+      - bearerAuth: []
+      parameters:
+      - "$ref": "#/components/parameters/CredentialChangeId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      responses:
+        '200':
+          description: 已知操作的无秘密核对状态。
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Session-Expires-At:
+              "$ref": "#/components/headers/SessionExpiresAt"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CredentialChangeResult"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '410':
+          "$ref": "#/components/responses/Gone"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-retry-semantics: original-session-id-key-read-only-no-secrets-no-missing-result-inference
   "/api/v1/auth/recovery-code-rotations":
     post:
       operationId: createRecoveryCodeRotation
@@ -588,7 +627,7 @@ paths:
     post:
       operationId: confirmRecoveryCodeRotation
       summary: 确认保存新码后原子轮换
-      description: 当前会话须与创建意图的会话相同。最终账号锁内复核意图有效期、活动ID、凭据版本、会话代次、账号状态以及新码完整确认；原子激活新码、废止旧码、消费意图、递增统一凭据版本，使先前重设意图及全部旧管理挑战失效。密码、Passkey和当前有效会话保持，绝不能移除唯一恢复码。首次/已提交同键均204；超时用原键/原意图确认重试，不展示新码或重发会话。
+      description: 当前会话须与创建意图的会话相同。最终账号锁内复核意图有效期、活动ID、凭据版本、会话代次、账号状态以及新码完整确认；原子激活新码、废止旧码、消费意图、递增统一凭据版本，使先前重设意图及全部旧管理挑战失效。密码、Passkey和当前有效会话保持，绝不能移除唯一恢复码。首次/已提交同键均204；提交前持久保存原意图ID/键/会话栅栏，超时或进程重启通过credential-change-result无秘密核对，不持久保存新码原文；完整确认时仍可用原键/原意图重试，不重展示新码或重发会话。
       tags:
       - CredentialManagement
       security:
@@ -1001,7 +1040,7 @@ components:
       required: true
       schema:
         "$ref": "#/components/schemas/Base64url32"
-      description: 已通过新鲜密码证明的5分钟删除意图ID；不能成为普通社区认证，禁止日志。
+      description: 删除请求为已通过新鲜密码证明的5分钟删除意图ID；结果核对为原轮换/移除意图ID或绑定challengeId。不能成为普通社区认证，禁止日志。
     RotationIntentId:
       name: rotationIntentId
       in: path
@@ -1371,6 +1410,18 @@ components:
       - createdAt
       - backupEligible
       - backedUp
+    CredentialChangeResult:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      properties:
+        state:
+          type: string
+          enum:
+          - PENDING
+          - COMMITTED
+          - NOT_COMMITTED
     RecoveryCredentials:
       type: object
       additionalProperties: false

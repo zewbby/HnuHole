@@ -2,7 +2,16 @@ import 'channel.dart';
 
 /// The only data boundary used by the entry tree.
 abstract interface class ChannelRepository {
-  Future<List<Channel>> loadChannels({required String sessionToken});
+  Future<ChannelDirectoryResult> loadChannels({required String sessionToken});
+}
+
+/// A complete directory and the deadline committed by C for this same token.
+class ChannelDirectoryResult {
+  ChannelDirectoryResult({required List<Channel> channels, required this.expiresAt})
+    : channels = ChannelDirectory.validate(channels);
+
+  final List<Channel> channels;
+  final DateTime expiresAt;
 }
 
 class ChannelRepositoryException implements Exception {

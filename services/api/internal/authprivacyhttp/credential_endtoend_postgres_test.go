@@ -89,6 +89,23 @@ func e2eCredential204(t *testing.T, s *e2eServices, method, path string, body an
 	}
 }
 
+func e2eCredentialResult(t *testing.T, s *e2eServices, bearer, id, key, state string) {
+	t.Helper()
+	request, err := http.NewRequest("GET", s.cPublic.URL+"/api/v1/auth/credential-change-result", nil)
+	if err != nil { t.Fatal(err) }
+	request.Header.Set("Authorization", bearer)
+	request.Header.Set("Credential-Change-ID", id)
+	request.Header.Set("Idempotency-Key", key)
+	response, err := s.client.Do(request)
+	if err != nil { t.Fatal(err) }
+	defer response.Body.Close()
+	var result map[string]string
+	if err = json.NewDecoder(io.LimitReader(response.Body, 1024)).Decode(&result); err != nil || response.StatusCode != 200 || len(result) != 1 || result["state"] != state || response.Header.Get("Cache-Control") != "no-store" {
+		t.Fatalf("HTTPS/SQL reconciliation state=%s want=%s status=%d err=%v", result["state"], state, response.StatusCode, err)
+	}
+	if _, err = time.Parse(time.RFC3339Nano, response.Header.Get("Session-Expires-At")); err != nil { t.Fatal("result omitted authoritative session expiry") }
+}
+
 func e2ePasskeyAttestation(t *testing.T, options map[string]any, key *ecdsa.PrivateKey, credential []byte) map[string]any {
 	t.Helper()
 	publicKey := options["publicKey"].(map[string]any)
@@ -157,7 +174,9 @@ func TestHTTPSPostgresRecoveryCredentialManagement(t *testing.T) {
 	rotationHeaders := map[string]string{"Authorization": bearer["Authorization"], "Idempotency-Key": protocol.EncodeCanonicalBase64url(rotationKey[:])}
 	confirmation := map[string]string{"newRecoveryCodeConfirmation": rotation["newRecoveryCode"].(string)}
 	rotationPath := rotationPrefix + rotation["rotationIntentId"].(string) + "/confirmations"
+	e2eCredentialResult(t, s, bearer["Authorization"], rotation["rotationIntentId"].(string), rotationHeaders["Idempotency-Key"], "PENDING")
 	e2eCredential204(t, s, "POST", rotationPath, confirmation, rotationHeaders)
+	e2eCredentialResult(t, s, bearer["Authorization"], rotation["rotationIntentId"].(string), rotationHeaders["Idempotency-Key"], "COMMITTED")
 	e2eCredential204(t, s, "POST", rotationPath, confirmation, rotationHeaders)
 	e2eJSON(t, s.client, "POST", s.cPublic.URL+"/api/v1/auth/recovery-code-reset-intents", map[string]string{"recoveryCode": oldCode}, nil, 401)
 	e2eJSON(t, s.client, "POST", s.cPublic.URL+"/api/v1/auth/recovery-code-reset-intents", map[string]string{"recoveryCode": rotation["newRecoveryCode"].(string)}, nil, 201)
@@ -173,6 +192,7 @@ func TestHTTPSPostgresRecoveryCredentialManagement(t *testing.T) {
 	registrationKey := e2eKey(t)
 	registrationHeaders := map[string]string{"Authorization": bearer["Authorization"], "Idempotency-Key": protocol.EncodeCanonicalBase64url(registrationKey[:])}
 	e2eCredential204(t, s, "POST", "/api/v1/auth/passkeys", attestation, registrationHeaders)
+	e2eCredentialResult(t, s, bearer["Authorization"], options["challengeId"].(string), registrationHeaders["Idempotency-Key"], "COMMITTED")
 	e2eCredential204(t, s, "POST", "/api/v1/auth/passkeys", attestation, registrationHeaders)
 	list = e2eJSON(t, s.client, "GET", s.cPublic.URL+"/api/v1/auth/recovery-credentials", nil, bearer, 200)
 	passkeys := list["passkeys"].([]any)
@@ -191,6 +211,7 @@ func TestHTTPSPostgresRecoveryCredentialManagement(t *testing.T) {
 	removalHeaders := map[string]string{"Authorization": bearer["Authorization"], "Idempotency-Key": protocol.EncodeCanonicalBase64url(removalKey[:]), "Credential-Change-ID": removal["removalIntentId"].(string)}
 	removalPath := passkeyPrefix + protocol.EncodeCanonicalBase64url(credential[:])
 	e2eCredential204(t, s, "DELETE", removalPath, nil, removalHeaders)
+	e2eCredentialResult(t, s, bearer["Authorization"], removal["removalIntentId"].(string), removalHeaders["Idempotency-Key"], "COMMITTED")
 	e2eCredential204(t, s, "DELETE", removalPath, nil, removalHeaders)
 	newKey := e2eKey(t)
 	removalHeaders["Idempotency-Key"] = protocol.EncodeCanonicalBase64url(newKey[:])

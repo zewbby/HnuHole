@@ -34,7 +34,7 @@ func isPasskeyRemovalPath(path string) bool {
 
 func isCredentialPath(path string) bool {
 	switch path {
-	case "/api/v1/auth/recovery-credentials", "/api/v1/auth/recovery-code-rotations", "/api/v1/auth/passkey-options",
+	case "/api/v1/auth/recovery-credentials", "/api/v1/auth/credential-change-result", "/api/v1/auth/recovery-code-rotations", "/api/v1/auth/passkey-options",
 		"/api/v1/auth/passkeys", "/api/v1/auth/passkey-removal-intents", "/api/v1/auth/passkey-reset-options", "/api/v1/auth/passkey-reset-intents":
 		return true
 	}
@@ -182,8 +182,9 @@ func (b *boundary) communityCredentialPublic(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	mutation := r.URL.Path == "/api/v1/auth/passkeys" || isRotationConfirmationPath(r.URL.Path) || isPasskeyRemovalPath(r.URL.Path)
+	resultQuery := r.URL.Path == "/api/v1/auth/credential-change-result"
 	var key [32]byte
-	if mutation {
+	if mutation || resultQuery {
 		raw, err := headerBytes(r.Header, "Idempotency-Key", 32)
 		if err != nil {
 			b.bad(w, err)
@@ -195,6 +196,26 @@ func (b *boundary) communityCredentialPublic(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	switch {
+	case resultQuery:
+		raw, err := headerBytes(r.Header, "Credential-Change-ID", 32)
+		if err != nil || noBodyOrQuery(r) != nil {
+			b.bad(w, errMalformed)
+			return
+		}
+		var id [32]byte
+		copy(id[:], raw)
+		result, err := backend.GetCredentialChangeResult(r.Context(), bearer, id, key)
+		if err != nil {
+			b.credentialFailure(w, err)
+			return
+		}
+		if result.State != "PENDING" && result.State != "COMMITTED" && result.State != "NOT_COMMITTED" {
+			b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)
+			return
+		}
+		if b.credentialExpiry(w, result.SessionExpiresAt) {
+			writeJSON(w, 200, map[string]string{"state": result.State})
+		}
 	case r.URL.Path == "/api/v1/auth/recovery-credentials":
 		if noBodyOrQuery(r) != nil {
 			b.bad(w, errMalformed)

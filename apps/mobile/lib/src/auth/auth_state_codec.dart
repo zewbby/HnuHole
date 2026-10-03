@@ -9,9 +9,83 @@ class AuthWorkflowCodec {
     Map<String, dynamic>? registration,
     Map<String, dynamic>? pendingReset,
     Map<String, dynamic>? pendingClosure,
+    Map<String, dynamic>? pendingCredentialChange,
+    Map<String, dynamic>? identityChanges,
+    Map<String, dynamic>? identityDrafts,
     String? cInstallationId,
     String? vInstallationId,
   }) {
+    if (identityDrafts != null) {
+      if (identityDrafts.length > 32) throw const FormatException('Too many identity drafts');
+      for (final entry in identityDrafts.entries) {
+        if (!_uuid(entry.key)) throw const FormatException('Invalid identity draft owner');
+        final draft = _optionalMap(entry.value);
+        if (draft == null) throw const FormatException('Missing identity draft');
+        _fields(draft, {'v', 'username', 'nickname'}, {'v', 'username', 'nickname'});
+        _version(draft);
+        final nickname = draft['nickname'];
+        if (!RegExp(r'^[a-z][a-z0-9_]{5,23}$').hasMatch(_string(draft, 'username')) ||
+            nickname is! String || utf8.encode(nickname).length > 512) {
+          throw const FormatException('Invalid identity draft');
+        }
+      }
+    }
+    if (identityChanges != null) {
+      if (identityChanges.length > 32) {
+        throw const FormatException('Too many unresolved identity owners');
+      }
+      for (final entry in identityChanges.entries) {
+        if (!_uuid(entry.key)) throw const FormatException('Invalid identity owner');
+        final change = _optionalMap(entry.value);
+        if (change == null) throw const FormatException('Missing identity intent');
+        _fields(change, {'v', 'key', 'username', 'operation', 'identityId', 'nickname', 'state'},
+          {'v', 'key', 'username', 'operation', 'state'});
+        _version(change);
+        _encoded(change, 'key', 16);
+        _state(change, {'UNKNOWN', 'COMMITTED'});
+        if (!RegExp(r'^[a-z][a-z0-9_]{5,23}$').hasMatch(_string(change, 'username')) ||
+            !{'CREATE', 'RENAME', 'DELETE'}.contains(change['operation'])) {
+          throw const FormatException('Invalid identity intent');
+        }
+        if ((change['operation'] == 'CREATE') != !change.containsKey('identityId') ||
+            (change['operation'] == 'DELETE') != !change.containsKey('nickname')) {
+          throw const FormatException('Invalid identity intent shape');
+        }
+        if (change.containsKey('identityId') && !_uuid(_string(change, 'identityId'))) {
+          throw const FormatException('Invalid identity target');
+        }
+        if (change.containsKey('nickname') && utf8.encode(_string(change, 'nickname')).length > 512) {
+          throw const FormatException('Invalid identity name');
+        }
+      }
+    }
+    if (pendingCredentialChange != null) {
+      final change = pendingCredentialChange;
+      _fields(change, {
+        'v', 'kind', 'intentId', 'key', 'accountId', 'originalTokenDigest',
+        'state', 'credentialId',
+      }, {
+        'v', 'kind', 'intentId', 'key', 'accountId', 'originalTokenDigest',
+        'state',
+      });
+      _version(change);
+      if (!{'ROTATION', 'PASSKEY_BINDING', 'PASSKEY_REMOVAL'}.contains(change['kind'])) {
+        throw const FormatException('Invalid credential operation');
+      }
+      _state(change, {'UNKNOWN', 'EXPIRED', 'COMMITTED', 'NOT_COMMITTED'});
+      _encoded(change, 'intentId', 32);
+      _encoded(change, 'key', 32);
+      _encoded(change, 'originalTokenDigest', 32);
+      if (!RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
+          .hasMatch(_string(change, 'accountId'))) {
+        throw const FormatException('Invalid credential account');
+      }
+      if (change['kind'] == 'PASSKEY_REMOVAL') {
+        AuthCrypto.decode(_string(change, 'credentialId'), maxBytes: 1023);
+      } else if (change.containsKey('credentialId')) {
+        throw const FormatException('Unexpected credential operation target');
+      }
+    }
     if (registration != null) {
       _fields(
         registration,
@@ -192,6 +266,10 @@ class AuthWorkflowCodec {
       throw const FormatException('Unsupported workflow version');
     }
   }
+
+  static bool _uuid(String value) => RegExp(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+  ).hasMatch(value);
 
   static void _state(Map<String, dynamic> value, Set<String> allowed) {
     if (!allowed.contains(value['state'])) {

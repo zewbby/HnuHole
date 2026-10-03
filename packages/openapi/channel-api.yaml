@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: Hnuhole API
-  version: 0.1.0
-  description: Authenticated API contract for the first development slice.
+  version: 0.2.0
+  description: C Gate authorized complete channel directory and committed session deadline.
 servers:
   - url: /
 paths:
@@ -10,18 +10,38 @@ paths:
     get:
       operationId: listChannels
       summary: List the channel directory
-      description: Returns the complete server-owned channel directory in stable order.
+      description: >-
+        Returns the complete server-owned channel directory in stable order only after
+        the C authorization transaction commits. Session-Expires-At is the authoritative
+        UTC deadline committed for this same Bearer token; a successful foreground
+        request may renew a still-valid session with at most seven days remaining to
+        the final trusted decision time plus thirty days. Concurrent renewals do not
+        accumulate time. A client must durably store the deadline for its still-current
+        token and request before publishing nodes. No query string is accepted.
       security:
         - bearerAuth: []
       responses:
         '200':
           description: Complete channel directory.
+          headers:
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChannelListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
 components:
@@ -29,7 +49,36 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: opaque-session
+      bearerFormat: canonical-unpadded-base64url-32-bytes
+  headers:
+    SessionExpiresAt:
+      required: true
+      description: Current session deadline after final C Gate authorization and commit; no token or identity.
+      schema:
+        type: string
+        format: date-time
+        pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$'
+    RequestId:
+      required: true
+      description: Server generated C request ID, independent of client and V IDs; equals body requestId on errors.
+      schema:
+        type: string
+        minLength: 22
+        maxLength: 22
+        pattern: '^[A-Za-z0-9_-]{21}[AQgw]$'
+    NoStore:
+      required: true
+      description: Every response prohibits caching.
+      schema:
+        type: string
+        enum: [no-store]
+    RetryAfter:
+      required: true
+      description: Bounded retry delay in seconds, with no account information.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 300
   schemas:
     Channel:
       type: object
@@ -84,6 +133,14 @@ components:
           properties:
             code:
               type: string
+              enum:
+                - MALFORMED_REQUEST
+                - AUTHENTICATION_FAILED
+                - SESSION_INVALID
+                - session_replaced
+                - RATE_LIMITED
+                - SERVICE_UNAVAILABLE
+                - CHANNEL_DIRECTORY_UNAVAILABLE
             message:
               type: string
             details:
@@ -92,15 +149,71 @@ components:
               nullable: true
         requestId:
           type: string
+          minLength: 22
+          maxLength: 22
+          pattern: '^[A-Za-z0-9_-]{21}[AQgw]$'
   responses:
+    BadRequest:
+      description: 400 MALFORMED_REQUEST for noncanonical Bearer capabilities or any raw query string.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
     Unauthorized:
-      description: The session is missing, invalid, expired, or revoked.
+      description: >-
+        401 AUTHENTICATION_FAILED for missing or incorrect Bearer scheme;
+        SESSION_INVALID for invalid, expired, revoked, or invalidated sessions;
+        session_replaced when a new mobile device has replaced this session.
+        Clear only the affected current token and nodes. No account details are returned.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Forbidden:
+      description: 403 AUTHENTICATION_FAILED for a rejected Origin; no account information.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    RateLimited:
+      description: 429 RATE_LIMITED for network rate limiting; preserve the current token and retry after the bounded delay.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorBody'
     ServiceUnavailable:
-      description: The channel directory could not be read or validated.
+      description: >-
+        503 SERVICE_UNAVAILABLE for C Gate, evidence, anchor, database or unknown commit outcome;
+        CHANNEL_DIRECTORY_UNAVAILABLE when the complete seven-channel directory cannot
+        be read or validated. Preserve a safely persisted token, hide all nodes and permit
+        a foreground retry. The result does not prove whether renewal committed.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
       content:
         application/json:
           schema:

@@ -1,0 +1,380 @@
+{
+  "schemaVersion": "hnuhole-identity-management-verification/v1",
+  "recordedOn": "2026-10-03",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+  "workingTreeUncommitted": true,
+  "taskPlan": "docs/design/identity-management-plan.md",
+  "report": "docs/design/identity-management-validation-report.md",
+  "implementationState": "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING",
+  "implementationLabel": "基础管理已实现，业务联动待实现",
+  "moduleAcceptancePassed": false,
+  "sqlTestsExecuted": false,
+  "flutterTestsExecuted": false,
+  "deviceTestsExecuted": false,
+  "compileExecuted": false,
+  "sourceReview": {
+    "result": "NO_REMAINING_MATERIAL_FINDINGS_IN_SOURCE",
+    "independentAgent": true,
+    "scope": "Internal source review only; not dynamic, native or independent human security acceptance"
+  },
+  "checks": [
+    {
+      "id": "go-race",
+      "command": "go test -race -count=1 -p 1 ./...",
+      "workingDirectory": "services/api",
+      "result": "BLOCKED",
+      "exitCode": 127,
+      "proofScope": "NOT_RUN: Go tool absent; no compiler, race or SQL evidence",
+      "output": "zsh:1: command not found: go\n",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "flutter-tests",
+      "command": "flutter test --reporter expanded",
+      "workingDirectory": "apps/mobile",
+      "result": "BLOCKED",
+      "exitCode": 127,
+      "proofScope": "NOT_RUN: Flutter absent; no test executed",
+      "output": "zsh:1: command not found: flutter\n",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "flutter-analyze",
+      "command": "flutter analyze",
+      "workingDirectory": "apps/mobile",
+      "result": "BLOCKED",
+      "exitCode": 127,
+      "proofScope": "NOT_RUN: Flutter absent; no analysis executed",
+      "output": "zsh:1: command not found: flutter\n",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "openapi-full",
+      "command": "/opt/anaconda3/bin/python packages/openapi/check-specs.py",
+      "workingDirectory": ".",
+      "result": "BLOCKED",
+      "exitCode": 1,
+      "proofScope": "Full OpenAPI validity not established: missing locked validator dependency",
+      "output": "Traceback (most recent call last):\n  File \"/opt/anaconda3/lib/python3.12/importlib/metadata/__init__.py\", line 397, in from_name\n    return next(cls.discover(name=name))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nStopIteration\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/zewbao/Desktop/workspace/Hnuhole/remote-auth-privacy-handoff/packages/openapi/check-specs.py\", line 120, in <module>\n    main()\n  File \"/Users/zewbao/Desktop/workspace/Hnuhole/remote-auth-privacy-handoff/packages/openapi/check-specs.py\", line 82, in main\n    if importlib.metadata.version(\"openapi-spec-validator\") != \"0.9.0\":\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.12/importlib/metadata/__init__.py\", line 889, in version\n    return distribution(distribution_name).version\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.12/importlib/metadata/__init__.py\", line 862, in distribution\n    return Distribution.from_name(distribution_name)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.12/importlib/metadata/__init__.py\", line 399, in from_name\n    raise PackageNotFoundError(name)\nimportlib.metadata.PackageNotFoundError: No package metadata was found for openapi-spec-validator\n",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "runtime-shell",
+      "command": "sh -n services/api/authlab/run-runtime-isolated.sh services/api/authlab/run-isolated.sh",
+      "workingDirectory": ".",
+      "result": "PASS",
+      "exitCode": 0,
+      "proofScope": "Shell syntax only, no database/runtime execution",
+      "output": "",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "source-consistency",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 - (inline seven-code and fixture/grant/runtime assertions)",
+      "workingDirectory": ".",
+      "result": "PASS",
+      "exitCode": 0,
+      "proofScope": "Source text consistency only; not compiler or database behavior",
+      "output": "PASS: seven terminal rejection codes and migration/fixture/grant/runtime source references agree",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "handoff-consistency",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/check-identity-handoff.py",
+      "workingDirectory": ".",
+      "result": "FAIL",
+      "exitCode": 1,
+      "proofScope": "Module status/path/link/source fingerprint plus B02 text hygiene; not runtime acceptance",
+      "output": "Traceback (most recent call last):\n  File \"/Users/zewbao/Desktop/workspace/Hnuhole/remote-auth-privacy-handoff/tools/check-identity-handoff.py\", line 68, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/zewbao/Desktop/workspace/Hnuhole/remote-auth-privacy-handoff/tools/check-identity-handoff.py\", line 57, in main\n    assert (path.parent / target).exists(), (doc, target)\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\nAssertionError: ('HANDOFF.md', '../../UI产品图/私信聊天-长按对方图片-配色M-v1.png')\n",
+      "repair": "Narrowed link verification to B02-added artifacts; historical UI images outside checkout are excluded. Fresh scoped check passed.",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "diff",
+      "command": "git diff --check",
+      "workingDirectory": ".",
+      "result": "PASS",
+      "exitCode": 0,
+      "proofScope": "Tracked patch whitespace only",
+      "output": "",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "openapi-yaml",
+      "command": "/opt/anaconda3/bin/python packages/openapi/check-specs.py --yaml-only",
+      "workingDirectory": ".",
+      "result": "PASS",
+      "exitCode": 0,
+      "proofScope": "Four YAML specs, local references and contract structure only",
+      "output": "channel-api.yaml: YAML/contract structure passed\ncommunity-auth-api.yaml: YAML/contract structure passed\nidentity-api.yaml: YAML/contract structure passed\nverifier-auth-api.yaml: YAML/contract structure passed\n",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    },
+    {
+      "id": "handoff-consistency",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/check-identity-handoff.py",
+      "workingDirectory": ".",
+      "result": "PASS",
+      "exitCode": 0,
+      "proofScope": "B02 paths/status/links, all listed B02 text hygiene, source/dependency-lock fingerprint; not runtime acceptance",
+      "output": "PASS: stable module IDs, B02 paths/status, document links and source fingerprint (230 files)\nScope: bookkeeping only; no compilation, SQL, Flutter or device acceptance.\n",
+      "sourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316"
+    }
+  ],
+  "notRunAcceptance": [
+    {
+      "result": "NOT_RUN",
+      "scope": "Go compilation/gofmt/vet/race and pure identity rules",
+      "reason": "Go/gofmt missing"
+    },
+    {
+      "result": "NOT_RUN",
+      "scope": "Formal migration10→11, PostgreSQL concurrency, final Gate/session timing, receipt replays, TLS/SQL",
+      "reason": "Go/PostgreSQL/Docker/Goose missing; only disposable known-owned databases may be used"
+    },
+    {
+      "result": "NOT_RUN",
+      "scope": "Flutter analyze and 35 identity controller/API/formatter/widget cases plus existing auth/security regression",
+      "reason": "Flutter/Dart missing"
+    },
+    {
+      "result": "NOT_RUN",
+      "scope": "Android/iOS IME, accessibility, small-screen/large text, vault failures, real process kill and same-account draft/intent restore",
+      "reason": "Mobile platform environment absent; memory vault/object recreation source does not prove native persistence"
+    }
+  ],
+  "pendingImplementation": [
+    "B05/B07 public-action restoration, post binding and recent-speaking default",
+    "B06/B07/B10 deleted-content placeholders and private post/failed-task projection",
+    "B08/B09 chat, record and private-note cleanup",
+    "B11 forced profile reset and rename exceptions",
+    "Media custom avatar upload registration/moderation"
+  ],
+  "resourceCleanup": {
+    "createdDatabases": false,
+    "createdServiceProcesses": false,
+    "downloadedToolchains": false,
+    "createdKeysOrAPKs": false,
+    "retained": "Source, test source and small sanitized verification metadata only"
+  },
+  "sourceFingerprint": {
+    "sha256": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
+    "presentFileCount": 230,
+    "roots": [
+      "services/api",
+      "apps/mobile",
+      "packages/auth_vault",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "infra",
+      "packages/auth_passkey",
+      "tools"
+    ],
+    "includedSuffixes": [
+      ".dart",
+      ".entitlements",
+      ".go",
+      ".gradle",
+      ".json",
+      ".kt",
+      ".kts",
+      ".mod",
+      ".pbxproj",
+      ".plist",
+      ".podspec",
+      ".properties",
+      ".py",
+      ".sh",
+      ".sql",
+      ".sum",
+      ".swift",
+      ".txt",
+      ".xcconfig",
+      ".xcscheme",
+      ".xcworkspacedata",
+      ".xml",
+      ".yaml",
+      ".yml",
+      ".lock"
+    ],
+    "includedAdditionalNames": [
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
+    "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+  },
+  "sourcePaths": [
+    "services/api/internal/authprivacy/community_identities.go",
+    "services/api/internal/authprivacy/identity_rules.go",
+    "services/api/migrations/0011_identity_management.sql",
+    "services/api/internal/authprivacyhttp/identity_endpoints.go",
+    "services/api/internal/authprivacyhttp/endpoints.go",
+    "services/api/internal/authprivacyruntime/server.go",
+    "infra/postgres/grant-community.sql",
+    "packages/openapi/identity-api.yaml",
+    "packages/openapi/check-specs.py",
+    "apps/mobile/lib/main.dart",
+    "apps/mobile/lib/hnuhole_mobile.dart",
+    "apps/mobile/lib/src/auth/http_auth_api.dart",
+    "apps/mobile/lib/src/auth/auth_store.dart",
+    "apps/mobile/lib/src/auth/auth_state_codec.dart",
+    "apps/mobile/lib/src/identity/identity_api.dart",
+    "apps/mobile/lib/src/identity/identity_management_controller.dart",
+    "apps/mobile/lib/src/identity/identity_management_screen.dart",
+    "apps/mobile/lib/src/identity/identity_name_formatter.dart",
+    "apps/mobile/lib/src/identity/identity_name_ranges.dart",
+    "apps/mobile/lib/src/identity/settings_screen.dart",
+    "apps/mobile/pubspec.yaml",
+    "apps/mobile/pubspec.lock"
+  ],
+  "testPaths": [
+    "services/api/internal/authprivacy/identity_rules_test.go",
+    "services/api/internal/authprivacy/community_identities_test.go",
+    "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
+    "services/api/internal/authprivacy/postgres_test.go",
+    "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+    "apps/mobile/test/auth_api_test.dart",
+    "apps/mobile/test/identity_management_controller_test.dart",
+    "apps/mobile/test/identity_management_screen_test.dart",
+    "apps/mobile/test/identity_name_formatter_test.dart",
+    "apps/mobile/test/identity_test_support.dart"
+  ],
+  "affectedModules": [
+    "A00",
+    "A01",
+    "A02",
+    "A03",
+    "A05",
+    "A06",
+    "A07",
+    "A08",
+    "A09",
+    "A11",
+    "A12",
+    "A13",
+    "N01",
+    "N02",
+    "N03",
+    "B01",
+    "B02",
+    "B03",
+    "B10"
+  ],
+  "crossModuleScenes": [
+    "X01",
+    "X02",
+    "X03",
+    "X04",
+    "X05",
+    "X08"
+  ],
+  "retainedTestSourceCaseCounts": {
+    "services/api/internal/authprivacy/identity_rules_test.go": 3,
+    "services/api/internal/authprivacy/community_identities_test.go": 11,
+    "services/api/internal/authprivacyhttp/identity_endpoints_test.go": 2,
+    "apps/mobile/test/identity_management_controller_test.dart": 18,
+    "apps/mobile/test/identity_name_formatter_test.dart": 5,
+    "apps/mobile/test/identity_management_screen_test.dart": 7,
+    "apps/mobile/test/auth_api_test.dart (B02 additions)": 5
+  },
+  "testCountsArePassCounts": false,
+  "pendingTestHarnessExtensions": [
+    "Actual non-owner C runtimeprobe identity mutation/result sequence",
+    "Real Dart -> HTTPS -> SQL B02 identity CRUD/unknown-result sequence"
+  ],
+  "sourceFingerprintHistory": [
+    {
+      "sourceFingerprint": {
+        "sha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+        "presentFileCount": 230,
+        "roots": [
+          "services/api",
+          "apps/mobile",
+          "packages/auth_vault",
+          "packages/openapi",
+          "packages/auth-protocol-vectors",
+          "infra",
+          "packages/auth_passkey",
+          "tools"
+        ],
+        "includedSuffixes": [
+          ".dart",
+          ".entitlements",
+          ".go",
+          ".gradle",
+          ".json",
+          ".kt",
+          ".kts",
+          ".mod",
+          ".pbxproj",
+          ".plist",
+          ".podspec",
+          ".properties",
+          ".py",
+          ".sh",
+          ".sql",
+          ".sum",
+          ".swift",
+          ".txt",
+          ".xcconfig",
+          ".xcscheme",
+          ".xcworkspacedata",
+          ".xml",
+          ".yaml",
+          ".yml",
+          ".lock"
+        ],
+        "includedAdditionalNames": [
+          ".env.example"
+        ],
+        "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
+        "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
+        "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+      },
+      "checkIds": [
+        "go-race",
+        "flutter-tests",
+        "flutter-analyze",
+        "openapi-full",
+        "runtime-shell",
+        "source-consistency",
+        "handoff-consistency",
+        "diff",
+        "openapi-yaml",
+        "handoff-consistency"
+      ],
+      "reason": "Preserve exact original B02 checks before whitespace-only remote packaging adjustment"
+    }
+  ],
+  "remoteHandoffPackaging": {
+    "recordedOn": "2026-10-03",
+    "originalSourceFingerprintSha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+    "sourceFingerprintSha256": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
+    "onlySourceChange": "Remove one blank line at EOF in infra/postgres/grant-verifier.sql",
+    "applicationBehaviorChanged": false,
+    "dynamicAcceptanceExecuted": false,
+    "initialStagedDiffCheck": "FAIL: new blank line at EOF; repaired",
+    "checks": [
+      {
+        "command": "git diff --cached --check",
+        "result": "PASS",
+        "exitCode": 0,
+        "proofScope": "Staged whitespace only; initial EOF blank line FAIL repaired"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/check-identity-handoff.py",
+        "result": "PASS",
+        "exitCode": 0,
+        "proofScope": "B02 source fingerprint, stable statuses, paths and links; no application acceptance"
+      },
+      {
+        "command": "/opt/anaconda3/bin/python packages/openapi/check-specs.py --yaml-only",
+        "result": "PASS",
+        "exitCode": 0,
+        "proofScope": "Four YAML/contracts and local refs; not complete OpenAPI validator"
+      }
+    ]
+  }
+}

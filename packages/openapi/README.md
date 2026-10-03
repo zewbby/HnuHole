@@ -3,10 +3,13 @@
 | 契约 | 范围与状态 |
 | --- | --- |
 | [channel-api.yaml](channel-api.yaml) | 当前通道目录切片的接口唯一来源；服务端和客户端据此实现目录 |
+| [identity-api.yaml](identity-api.yaml) | B02本人身份列表／创建／改名／删除与账号归属幂等结果核对；业务联动随对应模块实现 |
 | [verifier-auth-api.yaml](verifier-auth-api.yaml) | 独立验证方 V，6 个操作：OTP申请／确认、原结果核对、内部正式释放与退役收据持久确认；实施前评审稿 |
 | [community-auth-api.yaml](community-auth-api.yaml) | 社区方 C，22 个操作：开户、用户名密码登录、会话／设备、独立恢复、凭据管理、注销与内部退役；实施前评审稿 |
 
-三份文件采用 OpenAPI 3.0.3。认证架构和固定签名字节分别以[逻辑契约](../../docs/design/auth-privacy-data-api-contract.md)与[注册协议](../../docs/design/auth-privacy-registration-protocol.md)为准；表约束、事务、留存和升级顺序见[数据库迁移设计](../../docs/design/auth-privacy-database-migration-design.md)。认证接口尚未实现，迁移设计没有执行 SQL。
+四份文件采用 OpenAPI 3.0.3。认证架构和固定签名字节分别以[逻辑契约](../../docs/design/auth-privacy-data-api-contract.md)与[注册协议](../../docs/design/auth-privacy-registration-protocol.md)为准；表约束、事务、留存和升级顺序见[数据库迁移设计](../../docs/design/auth-privacy-database-migration-design.md)。认证隔离实现和本次运行时实施范围见[实施计划](../../docs/design/auth-privacy-runtime-business-integration-plan.md)。
+
+目录 `200` body 仍为 `{channels:[…]}`、七记录与五字段。增加必需 `Session-Expires-At`、`X-Request-ID`、`Cache-Control: no-store`，错误统一为 `error:{code,message,details?}`＋顶层 `requestId`；公共边界的 400／403／429 与会话 401／服务或目录 503 均列入契约。只有最终授权事务提交成功后才能发送截止和目录；客户端持久写截止后发布节点。缺失或非法截止不能当作目录成功。
 
 ## 安全约束的表达
 
@@ -18,15 +21,19 @@ V/C 使用真实独立 HTTPS origin。`servers: /` 只是相对部署位置，�
 
 ## 校验与生成
 
-本次三份文件通过 `openapi-spec-validator 0.9.0` 完整规范检查；另检查 YAML 重复键、本地引用、操作 ID、严格对象与字节编码。校验工具仅装在临时目录，没有加入项目依赖。后续 CI 工具包应锁版本，并运行等价的验证步骤：
+历史三份文件曾通过 `openapi-spec-validator 0.9.0` 完整规范检查；本次改动的实际验证状态应以运行时交付报告为准。锁定 Python 校验依赖见 `requirements-check.txt`；脚本拒绝重复 YAML 键和缺失本地引用，并核对目录五字段、七记录以及各响应必需 header。用已有工具环境执行：
 
-```python
-from pathlib import Path
-import yaml
-from openapi_spec_validator import validate_spec
-
-for spec in Path("packages/openapi").glob("*-api.yaml"):
-    validate_spec(yaml.safe_load(spec.read_text()))
+```sh
+python packages/openapi/check-specs.py
+# 只有 PyYAML 6.0.1 时可先检查结构；此项不能代替 OpenAPI 完整校验
+python packages/openapi/check-specs.py --yaml-only
 ```
 
-此片段校验规范结构；CI 还须启用重复键拒绝、域与字节负向向量和语义约束检查。工具链就绪后用 `oapi-codegen` 生成 Go 类型／接口并核对客户端；生成文件不提交，规则见 `.gitignore`。静态校验不等于实现测试或独立安全审计。
+目录生成固定使用 `oapi-codegen v2.4.1`，由已有安装或 `OAPI_CODEGEN` 指定可执行文件；脚本不下载工具。只生成目录类型与 chi-server 接口到被忽略的 `packages/openapi/generated/channel-api.gen.go`。本地生成后保存该文件，后续 `--check` 重生成到私有临时目录并逐字比较，可发现本地契约与生成物漂移；此文件不提交，CI 每次从契约重新生成并做 HTTP 契约回归。
+
+```sh
+sh packages/openapi/generate-channel.sh
+sh packages/openapi/generate-channel.sh --check
+```
+
+原始日期、规范能力字节、最终授权事务和 Dart 持久 fence 由实现测试验证。生成／静态校验不等于实现测试或独立安全审计；工具缺失时须明确列为未执行，不使用未锁定 latest。

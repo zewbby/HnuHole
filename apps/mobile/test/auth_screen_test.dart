@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -23,7 +24,7 @@ class _Vault implements AuthVault {
 
 class _Channels implements ChannelRepository {
   @override
-  Future<List<Channel>> loadChannels({required String sessionToken}) async => [
+  Future<ChannelDirectoryResult> loadChannels({required String sessionToken}) async => ChannelDirectoryResult(expiresAt: _expiry, channels: [
     for (var i = 0; i < ChannelDirectory.requiredCodes.length; i++)
       Channel(
         id: 'channel-$i',
@@ -32,7 +33,7 @@ class _Channels implements ChannelRepository {
         initiallyVisible: i < 5,
         displayOrder: i,
       ),
-  ];
+  ]);
 }
 
 class _Api implements AuthApi {
@@ -272,6 +273,29 @@ Future<void> _seedEligibility(_Harness h) async {
 }
 
 void main() {
+  testWidgets('restoring a covered auth route cannot pop the management route above it', (tester) async {
+    final h = _Harness();
+    await h.sessions.start();
+    final navigator = GlobalKey<NavigatorState>();
+    var callbacks = 0;
+    await tester.pumpWidget(MaterialApp(navigatorKey: navigator,
+      home: AuthScreen(sessions: h.sessions, flows: h.flows,
+        onAuthenticated: () { callbacks++; navigator.currentState!.pop(); })));
+    unawaited(navigator.currentState!.push(MaterialPageRoute<void>(builder: (_) =>
+      const Scaffold(body: Text('management remains open')))));
+    await tester.pumpAndSettle();
+    await h.sessions.acceptSession(AuthSession(accountId: _account,
+      sessionToken: h.api.token, expiresAt: _expiry));
+    await tester.pumpAndSettle();
+    h.sessions.sessionUnavailable(h.api.token);
+    await tester.pumpAndSettle();
+    await h.sessions.retry();
+    await tester.pumpAndSettle();
+    expect(h.sessions.isAuthenticated, isTrue);
+    expect(find.text('management remains open'), findsOneWidget);
+    expect(callbacks, 0);
+    await h.finish(tester);
+  });
   testWidgets('existing account uses password login without V', (tester) async {
     final h = _Harness();
     await h.mount(tester);
