@@ -1,0 +1,270 @@
+{
+  "schemaVersion": "hnuhole-identity-runtime-test-verification/v1",
+  "recordedOn": "2026-10-03",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
+  "sourceFingerprint": {
+    "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+    "presentFileCount": 232
+  },
+  "workingTreeUncommitted": true,
+  "scope": "Go/SQL and actual C/V process validation; Flutter/device pending; AC01/AC02 implementation absent",
+  "sqlTestsExecuted": true,
+  "flutterTestsExecuted": false,
+  "goCompileExecuted": true,
+  "deviceTestsExecuted": false,
+  "moduleAcceptancePassed": false,
+  "newTestPaths": [
+    "services/api/cmd/runtimeprobe/identities.go",
+    "apps/mobile/integration/identity_https_scenarios.dart"
+  ],
+  "scenarios": {
+    "R03": [
+      "zero identity browsing",
+      "identity create/rename/delete",
+      "same-key receipt replay and changed-payload conflict",
+      "last-identity rejection receipt",
+      "creation count/cooldown survives deletion",
+      "privacy field allowlist",
+      "actual C/V restart keeps profile and receipt",
+      "Gate freeze 503 and old-generation session 401",
+      "new session queries original receipt",
+      "upgrade 10 to 11 preserves account and channels without creating identities",
+      "missing identity tables and required DML reject startup"
+    ],
+    "R05": [
+      "lost CREATE/PATCH/DELETE response after real handler and SQL",
+      "same-key reconciliation after client object reconstruction",
+      "session replacement hides profile and original receipt can be queried by later same-account session",
+      "lost terminal rejection remains rejected",
+      "failed creation does not consume quota"
+    ]
+  },
+  "checks": [
+    {
+      "id": "go-sql-race-vet",
+      "command": "sh authlab/run-isolated.sh",
+      "workingDirectory": "services/api",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "go test -race -count=1 -p 1 ./... and go vet ./... with marked disposable C/V PostgreSQL DSNs; real SQL tests ran. Opt-in Flutter subprocess skipped.",
+      "outputSummary": {
+        "cmd/authdev": "PASS",
+        "internal/authprivacy": "PASS (192.589s)",
+        "internal/authprivacy/protocol": "PASS",
+        "internal/authprivacyhttp": "PASS (11.339s)",
+        "internal/authprivacyruntime": "PASS"
+      },
+      "revisionScope": "Before startup type fix; affected runtime separately retested below; auth/HTTP/protocol application behavior unchanged."
+    },
+    {
+      "id": "runtime-r03",
+      "command": "sh authlab/run-runtime-isolated.sh",
+      "workingDirectory": "services/api",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Actual non-owner C/V cmd processes, HTTPS/mTLS, Mailpit, formal C11/V3 Goose migration and rollback/role negatives; B02 CRUD, receipts, freeze/recovery, actual services restart, upgrade10-to-11",
+      "phasesPassed": [
+        "lifecycle",
+        "identities",
+        "threshold",
+        "restart",
+        "frozen",
+        "recovered",
+        "closure"
+      ],
+      "outputSummary": {
+        "actualCmdLifecycle": "passed",
+        "formalMigrationAndRoles": "passed",
+        "upgradeChannelsPreserved": "passed",
+        "identityUpgrade10To11": "passed",
+        "identityMissingSchemaAndDml": "passed",
+        "identityCrudReceiptsAndRestart": "passed"
+      }
+    },
+    {
+      "id": "runtime-fix-race-vet",
+      "command": "go test -race -count=1 ./internal/authprivacyruntime ./cmd/runtimeprobe; go vet ./internal/authprivacyruntime ./cmd/runtimeprobe",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Matched regression after actual startup query fix; real process proof is R03"
+    },
+    {
+      "id": "openapi-full",
+      "command": "python3 packages/openapi/check-specs.py",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "All four specs, pinned validator0.9.0/PyYAML6.0.1"
+    },
+    {
+      "id": "python-regression",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tools/tests -v",
+      "result": "PASS",
+      "exitCode": 0,
+      "testsPassed": 5,
+      "scope": "Association generator only; no native Passkey proof"
+    },
+    {
+      "id": "flutter-analysis-tests",
+      "command": "flutter analyze; flutter test --reporter expanded; sh authlab/run-mobile-isolated.sh",
+      "result": "BLOCKED",
+      "reason": "Flutter/Dart absent from WSL normal/root/interactive PATH and common directories; existing Docker images contain no Flutter. User asked for installed path/container command; no SDK downloaded"
+    },
+    {
+      "id": "native-device",
+      "result": "BLOCKED",
+      "reason": "No device/RP/signing/Team association evidence; iOS needs complete Xcode environment"
+    },
+    {
+      "id": "generation",
+      "result": "NOT_RUN",
+      "reason": "sqlc/oapi-codegen absent; OpenAPI validation/Go compilation do not prove generation drift checks"
+    },
+    {
+      "id": "handoff-consistency",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/check-identity-handoff.py",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Evidence flags/path/link/source fingerprint; does not execute app tests"
+    },
+    {
+      "id": "runtime-shell",
+      "command": "sh -n services/api/authlab/run-runtime-isolated.sh",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Shell syntax"
+    },
+    {
+      "id": "diff",
+      "command": "git diff --check",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Patch whitespace"
+    }
+  ],
+  "remaining": [
+    "Flutter analyze/tests and real Dart-to-SQL R05 execution",
+    "Android/iOS vault/process and app builds",
+    "Passkey RP/signing/Team associations",
+    "sqlc/oapi-codegen generation checks",
+    "AC01 V Gate implementation absent",
+    "AC02 identity whole-account closure implementation absent",
+    "P02-P06 production and independent review"
+  ],
+  "cleanup": "PASS: runners removed their own transient PostgreSQL clusters, C/V/evidence processes, private material and uniquely named Docker project volumes. This session-specific Go/Goose build/module and Python validator caches were deleted after validation. Existing system Go/PG, cached Docker images, user SDKs/caches and unrelated volumes were preserved. Source checkouts retained.",
+  "attemptHistory": [
+    {
+      "scope": "AC04 test-source additions and available static regression only; no AC01/AC02 implementation",
+      "sourceFingerprint": {
+        "sha256": "fd12bcea26bb1240fc3e24982b07fae5e010e0e571cc185c49234b3528550704",
+        "presentFileCount": 232
+      },
+      "checks": [
+        {
+          "id": "baseline-handoff",
+          "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/check-identity-handoff.py",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Remote baseline bookkeeping, 230 source files"
+        },
+        {
+          "id": "openapi-yaml",
+          "command": "python3 packages/openapi/check-specs.py --yaml-only",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Four YAML specs, local references and contract structure only"
+        },
+        {
+          "id": "python-regression",
+          "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tools/tests -v",
+          "result": "PASS",
+          "exitCode": 0,
+          "testsPassed": 5,
+          "scope": "Association generator only; no platform/device proof"
+        },
+        {
+          "id": "runtime-shell",
+          "command": "sh -n services/api/authlab/run-runtime-isolated.sh",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Shell syntax only"
+        },
+        {
+          "id": "diff",
+          "command": "git diff --check",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Tracked patch whitespace"
+        },
+        {
+          "id": "openapi-full",
+          "command": "python3 packages/openapi/check-specs.py",
+          "result": "BLOCKED",
+          "exitCode": 1,
+          "reason": "openapi-spec-validator 0.9.0 absent"
+        },
+        {
+          "id": "sql-runner",
+          "command": "sh services/api/authlab/run-isolated.sh",
+          "result": "BLOCKED",
+          "exitCode": 1,
+          "reason": "Missing tool: go; no SQL tests started"
+        },
+        {
+          "id": "runtime-runner",
+          "command": "sh services/api/authlab/run-runtime-isolated.sh",
+          "result": "BLOCKED",
+          "exitCode": 1,
+          "reason": "Missing tool: go; no actual service or database created"
+        },
+        {
+          "id": "go-race-vet",
+          "command": "go test -race -count=1 -p 1 ./...; go vet ./...",
+          "result": "NOT_RUN",
+          "reason": "Go absent; permission to prepare tools pending"
+        },
+        {
+          "id": "flutter-analysis-tests",
+          "command": "flutter analyze; flutter test --reporter expanded; sh services/api/authlab/run-mobile-isolated.sh",
+          "result": "NOT_RUN",
+          "reason": "Flutter/Dart absent; permission to prepare tools pending"
+        }
+      ],
+      "sqlTestsExecuted": false,
+      "flutterTestsExecuted": false
+    },
+    {
+      "id": "go-official-proxy",
+      "result": "BLOCKED",
+      "reason": "proxy.golang.org timeout; goproxy.cn retry retains go.sum verification"
+    },
+    {
+      "id": "runtime-initializer-permission",
+      "result": "FAIL",
+      "reason": "Private clone umask made init-auth.sh owner-only; container user could not execute",
+      "repair": "Restore public source initializer to 0755; no generated key/config permissions changed",
+      "retest": "runtime-r03 PASS"
+    },
+    {
+      "id": "runtime-startup-parameter-type",
+      "result": "FAIL",
+      "reason": "PostgreSQL could not infer $1 in variadic format(%I.%I,$1,required_table.table_name)",
+      "repair": "Explicit $1::text in all three required DML checks shared by C/V",
+      "retest": "runtime-r03 and runtime-fix-race-vet PASS"
+    }
+  ],
+  "actualCmdTestsExecuted": true,
+  "tools": {
+    "go": "1.22.2",
+    "postgresSqlRunner": "16.15",
+    "postgresDockerRuntime": "16.6-alpine",
+    "goose": "v3.22.1, PostgreSQL driver, task-local build",
+    "mailpit": "v1.21.8",
+    "PyYAML": "6.0.1",
+    "openapiSpecValidator": "0.9.0",
+    "flutter": "NOT_FOUND",
+    "dart": "NOT_FOUND"
+  },
+  "sourceVersionNote": "Final fingerprint includes bookkeeping/checker and redacted diagnostic edits made after dynamic tests; app Go/SQL/migrations/Dart scenarios match tested scope; no new app behavior after R03."
+}

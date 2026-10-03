@@ -20,6 +20,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -55,7 +56,8 @@ func TestMobileClientHTTPSPostgres(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			original.ServeHTTP(recorder, r)
 			faultsMu.Lock()
-			drop := r.Method == http.MethodPost && drops[r.URL.Path]
+			mutation := r.Method == http.MethodPost || r.Method == http.MethodPatch || r.Method == http.MethodDelete
+			drop := mutation && drops[r.URL.Path]
 			const rotationDrop = "/api/v1/auth/recovery-code-rotations/*/confirmations"
 			if r.Method == http.MethodPost && drops[rotationDrop] && isRotationConfirmationPath(r.URL.Path) {
 				drop = true
@@ -67,7 +69,8 @@ func TestMobileClientHTTPSPostgres(t *testing.T) {
 			faultsMu.Unlock()
 			if drop {
 				// The operation already finished through the real handler. Only its
-				// response is lost, so reconciliation tests a committed unknown result.
+				// response is lost; reconciliation must distinguish a committed result
+				// from a terminal business rejection without executing a new intent.
 				conn, _, err := w.(http.Hijacker).Hijack()
 				if err != nil {
 					t.Error("could not inject lost response")
@@ -115,29 +118,44 @@ func TestMobileClientHTTPSPostgres(t *testing.T) {
 			result = map[string]any{"code": code, "mailCalls": calls}
 		case "/drop-next":
 			allowed := map[string]bool{
-				"/api/v1/auth/password-resets":     true,
-				"/api/v1/account-closures":         true,
-				"/api/v1/auth/session-revocations": true,
-				"/api/v1/eligibility/otp-requests": true,
+				"/api/v1/auth/password-resets":                         true,
+				"/api/v1/account-closures":                             true,
+				"/api/v1/identities":                                   true,
+				"/api/v1/auth/session-revocations":                     true,
+				"/api/v1/eligibility/otp-requests":                     true,
 				"/api/v1/auth/recovery-code-rotations/*/confirmations": true,
 			}
-			if !allowed[body["path"]] {
+			identityResource := strings.HasPrefix(body["path"], identitiesPath+"/")
+			if identityResource {
+				_, pathErr := identityPathID(body["path"])
+				identityResource = pathErr == nil
+			}
+			if !allowed[body["path"]] && !identityResource {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
 			faultsMu.Lock()
 			drops[body["path"]] = true
 			faultsMu.Unlock()
-        case "/near-expiry":
-            token, e := protocol.DecodeCanonicalBase64url(body["token"], 32)
-            if e != nil { w.WriteHeader(http.StatusBadRequest); return }
-            decision, e := s.gate.Snapshot(r.Context())
-            if e != nil { w.WriteHeader(http.StatusServiceUnavailable); return }
-            hash := sha256.Sum256(token)
-            expires := decision.TrustedAt.Add(6*24*time.Hour)
-            tag, e := s.cp.Exec(r.Context(), `UPDATE c_auth.sessions SET expires_at=$2 WHERE token_digest=$1 AND revoked_at IS NULL`, hash[:], expires)
-            if e != nil || tag.RowsAffected() != 1 { w.WriteHeader(http.StatusBadRequest); return }
-            result = map[string]string{"expiresAt": utc(expires)}
+		case "/near-expiry":
+			token, e := protocol.DecodeCanonicalBase64url(body["token"], 32)
+			if e != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			decision, e := s.gate.Snapshot(r.Context())
+			if e != nil {
+				w.WriteHeader(http.StatusServiceUnavailable)
+				return
+			}
+			hash := sha256.Sum256(token)
+			expires := decision.TrustedAt.Add(6 * 24 * time.Hour)
+			tag, e := s.cp.Exec(r.Context(), `UPDATE c_auth.sessions SET expires_at=$2 WHERE token_digest=$1 AND revoked_at IS NULL`, hash[:], expires)
+			if e != nil || tag.RowsAffected() != 1 {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			result = map[string]string{"expiresAt": utc(expires)}
 		case "/freeze":
 			err = s.gate.Freeze(r.Context(), "isolated mobile transport fault test")
 		case "/recover":

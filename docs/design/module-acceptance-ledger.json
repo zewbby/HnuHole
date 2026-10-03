@@ -3,8 +3,8 @@
   "recordedOn": "2026-10-03",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/auth-privacy-handoff",
-  "baselineHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
-  "workingTreeContainsUncommittedImplementation": false,
+  "baselineHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
+  "workingTreeContainsUncommittedImplementation": true,
   "workflow": "ANONYMITY_BRANCH_CLOSURE_WITH_EXPLICIT_DEFERRED_ACCEPTANCE",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
@@ -12,24 +12,17 @@
   "userReportedFunctionalCompletion": [
     "A11"
   ],
-  "dynamicTestsExecutedInThisInventory": false,
+  "dynamicTestsExecutedInThisInventory": true,
   "toolAvailabilityCheckedOn": "2026-10-03",
   "missingTools": [
-    "go",
-    "gofmt",
-    "docker",
-    "initdb",
-    "pg_ctl",
-    "psql",
-    "goose",
-    "sqlc",
-    "oapi-codegen",
     "flutter",
-    "dart"
+    "dart",
+    "sqlc",
+    "oapi-codegen"
   ],
   "sourceFingerprint": {
-    "sha256": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
-    "presentFileCount": 230,
+    "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+    "presentFileCount": 232,
     "roots": [
       "services/api",
       "apps/mobile",
@@ -181,7 +174,9 @@
             "flutter-analyze"
           ]
         }
-      ]
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A01",
@@ -232,7 +227,9 @@
       "testPaths": [
         "services/api/internal/authprivacy/community_identities_test.go",
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
-      ]
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A02",
@@ -318,7 +315,9 @@
           ]
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A03",
@@ -401,7 +400,9 @@
           ]
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A04",
@@ -413,7 +414,9 @@
         "R02",
         "R03"
       ],
-      "note": "历史隔离通过；当前worker/正式迁移待复验；V独立Gate未实现"
+      "note": "历史隔离通过；当前worker/正式迁移待复验；V独立Gate未实现",
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A05",
@@ -499,7 +502,9 @@
           ]
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A06",
@@ -586,7 +591,9 @@
           ]
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A07",
@@ -674,7 +681,9 @@
           ]
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A08",
@@ -765,7 +774,9 @@
         "AC02",
         "AC03",
         "AC05"
-      ]
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A09",
@@ -860,7 +871,9 @@
           ]
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A10",
@@ -872,7 +885,9 @@
         "R02",
         "R03"
       ],
-      "note": "新增摘要worker/claim/Gate/CAS当前未动态验收"
+      "note": "新增摘要worker/claim/Gate/CAS当前未动态验收",
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A11",
@@ -958,7 +973,9 @@
           ]
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "A12",
@@ -1133,7 +1150,9 @@
       "anonymityClosureGapIds": [
         "AC04",
         "AC05"
-      ]
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
     },
     {
       "id": "N01",
@@ -1499,11 +1518,14 @@
       "name": "预设身份与帖内身份",
       "implementationState": "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING",
       "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
+        "R02",
+        "R03",
+        "R05",
         "R10"
       ],
-      "note": "基础管理已实现，业务联动待实现；轻量检查不等于编译／SQL／Flutter／设备通过。 2026-10-03匿名收口盘点：现有身份尚未接入整账号正式关闭生命周期，见AC02；不因此改写基础管理源码状态或历史通过证据。",
+      "note": "基础管理服务端SQL/race/HTTPS及非owner实际进程通过；Flutter/设备仍阻塞，业务联动和现有身份整账号关闭AC02未实现，不登记整模块PASS。历史原版本结果保留。",
       "priorTaskRecords": [
         {
           "note": "仅设计规则，无实际业务API/表/客户端流程",
@@ -1513,7 +1535,7 @@
       "taskPlan": "docs/design/identity-management-plan.md",
       "report": "docs/design/identity-management-validation-report.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -1525,9 +1547,9 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Provide Flutter executable/container and run R04/R05/R10; then native device/process checks. AC01/AC02 remain implementation tasks.",
       "foundationImplementationState": "SOURCE_IMPLEMENTED",
-      "foundationAcceptanceState": "PENDING_DYNAMIC_ACCEPTANCE",
+      "foundationAcceptanceState": "BACKEND_SQL_RUNTIME_PASSED_CLIENT_DEVICE_PENDING",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_identities.go",
         "services/api/internal/authprivacy/identity_rules.go",
@@ -1562,7 +1584,9 @@
         "apps/mobile/test/identity_management_controller_test.dart",
         "apps/mobile/test/identity_management_screen_test.dart",
         "apps/mobile/test/identity_name_formatter_test.dart",
-        "apps/mobile/test/identity_test_support.dart"
+        "apps/mobile/test/identity_test_support.dart",
+        "services/api/cmd/runtimeprobe/identities.go",
+        "apps/mobile/integration/identity_https_scenarios.dart"
       ],
       "relatedModules": [
         "A01",
@@ -1578,9 +1602,9 @@
         "B11"
       ],
       "pendingReasons": [
-        "缺Go／gofmt、Flutter／Dart、Docker／PostgreSQL／Goose，动态与设备验收按用户指令延期",
-        "完整OpenAPI validator缺锁定依赖",
-        "业务联动及媒体功能尚未实现，不能登记为只差测试"
+        "Flutter/Dart path/container not found; R05 and analyze/tests pending",
+        "Native/device and Passkey association evidence absent",
+        "AC02 identity whole-account closure and subsequent business integration not implemented"
       ],
       "pendingImplementation": [
         "B05/B07：首次公开动作创建／选择后恢复原输入及原子帖内绑定、最近发言默认身份",
@@ -1593,19 +1617,20 @@
         "diff",
         "openapi-yaml",
         "source-consistency",
-        "handoff-consistency"
-      ],
-      "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
+        "handoff-consistency",
+        "go-sql-race-vet",
+        "runtime-r03",
+        "runtime-fix-race-vet",
         "openapi-full"
       ],
-      "testedWorkingTreeSourceFingerprint": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
-      "pendingTestHarnessExtensions": [
-        "现有R03 runtimeprobe未扩展B02身份CRUD／核对序列，实际非owner cmd场景需补",
-        "现有R05 Dart＋SQL fixture未扩展B02身份操作；真实移动客户端和数据库合同场景需补，TLS客户端替身与Go真实HTTPS/SQL不能代证"
+      "blockedChecks": [
+        "flutter-tests",
+        "flutter-analyze",
+        "real-dart-sql",
+        "native-device"
       ],
+      "testedWorkingTreeSourceFingerprint": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+      "pendingTestHarnessExtensions": [],
       "anonymityClosureGapIds": [
         "AC02",
         "AC03",
@@ -1618,7 +1643,9 @@
           "proofScope": "Original B02 static checks; no dynamic acceptance"
         }
       ],
-      "testedWorkingTreeProofScope": "Remote packaging bookkeeping/static checks only; functional tests still NOT_RUN"
+      "testedWorkingTreeProofScope": "Go SQL/race and actual non-owner C/V runtime passed; Flutter/device pending; startup fix separately retested; no full B02 module pass",
+      "latestTestSourceStatus": "AC04_B02_R03_PASSED_R05_SOURCE_ADDED_EXECUTION_BLOCKED",
+      "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json"
     },
     {
       "id": "B03",
@@ -2136,6 +2163,57 @@
       "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source.",
       "supersededOn": "2026-10-03",
       "reason": "Remove one trailing blank line in grant-verifier.sql during remote handoff packaging; no SQL behavior change"
+    },
+    {
+      "recordedOn": "2026-10-03",
+      "scope": "Remote handoff baseline before AC04 test additions",
+      "sourceFingerprint": {
+        "sha256": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
+        "presentFileCount": 230,
+        "roots": [
+          "services/api",
+          "apps/mobile",
+          "packages/auth_vault",
+          "packages/openapi",
+          "packages/auth-protocol-vectors",
+          "infra",
+          "packages/auth_passkey",
+          "tools"
+        ],
+        "includedSuffixes": [
+          ".dart",
+          ".entitlements",
+          ".go",
+          ".gradle",
+          ".json",
+          ".kt",
+          ".kts",
+          ".mod",
+          ".pbxproj",
+          ".plist",
+          ".podspec",
+          ".properties",
+          ".py",
+          ".sh",
+          ".sql",
+          ".sum",
+          ".swift",
+          ".txt",
+          ".xcconfig",
+          ".xcscheme",
+          ".xcworkspacedata",
+          ".xml",
+          ".yaml",
+          ".yml",
+          ".lock"
+        ],
+        "includedAdditionalNames": [
+          ".env.example"
+        ],
+        "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
+        "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
+        "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+      }
     }
   ],
   "workflowHistory": [
@@ -2283,5 +2361,7 @@
     ],
     "sourceFingerprintSha256": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
     "stagedDiffCheckInitialResult": "FAIL: new blank line at EOF in infra/postgres/grant-verifier.sql; repaired before commit"
-  }
+  },
+  "workingTreeUncommitted": true,
+  "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json"
 }

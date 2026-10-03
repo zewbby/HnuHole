@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'identity_https_scenarios.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 import 'package:hnuhole_mobile/src/auth/auth_crypto.dart';
@@ -189,6 +191,11 @@ void main() {
       expect(directory.channels, hasLength(7));
       final expiry = await api.renewSession(signupToken);
       expect(expiry.isBefore(store.current!.session!.expiresAt), isFalse);
+
+      await verifyIdentityHttpsScenarios(api: api, store: () => store,
+        sessions: () => sessions, restartClient: restartClient,
+        fixture: (action, body) => fixture(action, body),
+        username: username, password: password);
 
       // Real transport/SQL plus one intentionally lost final response. Native
       // Passkey is not invoked in this headless scenario and is tested apart.

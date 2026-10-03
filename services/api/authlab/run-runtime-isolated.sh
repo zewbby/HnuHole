@@ -24,6 +24,23 @@ runtime_cleanup() {
  for runtime_pid in "$runtime_evidence_pid" "$runtime_c_pid" "$runtime_v_pid"; do
   if [ -n "$runtime_pid" ]; then kill "$runtime_pid" 2>/dev/null || true; wait "$runtime_pid" 2>/dev/null || true; fi
  done
+ if [ "$runtime_status" -ne 0 ]; then
+  docker compose -p "$runtime_project" -f "$runtime_compose" logs --no-color --tail 25 >"$runtime_dir/docker-failure.log" 2>/dev/null || true
+  python3 - "$runtime_dir/docker-failure.log" <<'PY'
+import os,pathlib,sys
+path=pathlib.Path(sys.argv[1])
+text=path.read_text(errors='replace')
+for name in ('c.log','v.log'):
+ service_log=path.parent/name
+ if service_log.is_file(): text += '\n'+service_log.read_text(errors='replace')[-4096:]
+for key in ('C_ADMIN_PASSWORD','C_MIGRATOR_PASSWORD','C_RUNTIME_PASSWORD','C_RECOVERY_PASSWORD','V_ADMIN_PASSWORD','V_MIGRATOR_PASSWORD','V_RUNTIME_PASSWORD'):
+ value=os.environ.get(key)
+ if value: text=text.replace(value,'[REDACTED]')
+for line in text.splitlines():
+ if any(term in line.lower() for term in ('error','fatal','denied','init-auth','not found','unbound','syntax','failed','absent','rejected')):
+  print(line,file=sys.stderr)
+PY
+ fi
  # This project name was uniquely allocated by THIS invocation only.
  docker compose -p "$runtime_project" -f "$runtime_compose" down -v --remove-orphans >/dev/null 2>&1 || true
  rm -rf "$runtime_dir"
@@ -75,6 +92,17 @@ docker compose -p "$runtime_project" -f "$runtime_compose" up -d --pull never --
 if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/schema-negative.log" 2>&1; then echo 'Missing schema startup unexpectedly accepted' >&2; exit 1; fi
 runtime_c_migrator="postgres://hnuhole_c_migrator@127.0.0.1:$C_DATABASE_PORT/hnuhole_c?sslmode=disable&options=-c%20role%3Dhnuhole_c_owner"
 runtime_v_migrator="postgres://hnuhole_v_migrator@127.0.0.1:$V_DATABASE_PORT/hnuhole_v?sslmode=disable&options=-c%20role%3Dhnuhole_v_owner"
+PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migrator" up-to 10 >/dev/null
+# Apply the existing grants except the three not-yet-created B02 tables so the
+# startup negative actually exercises version 10, rather than absent grants.
+python3 - "$runtime_repo_dir/infra/postgres/grant-community.sql" "$runtime_dir/grant-pre-identity.sql" <<'PY'
+import pathlib,sys
+source=pathlib.Path(sys.argv[1]).read_text()
+pathlib.Path(sys.argv[2]).write_text('\n'.join(line for line in source.splitlines()
+ if not any(table in line for table in ('public.identity_account_state','public.community_identities','public.identity_change_receipts')))+'\n')
+PY
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_dir/grant-pre-identity.sql" >/dev/null
+if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/identity-version-negative.log" 2>&1; then echo 'Pre-identity schema startup unexpectedly accepted' >&2; exit 1; fi
 PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migrator" up >/dev/null
 PGPASSWORD=$V_MIGRATOR_PASSWORD goose -dir verifier-migrations postgres "$runtime_v_migrator" up >/dev/null
 # Second invocation must be a no-op, preserving seed identities.
@@ -82,6 +110,18 @@ PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migra
 PGPASSWORD=$V_MIGRATOR_PASSWORD goose -dir verifier-migrations postgres "$runtime_v_migrator" up >/dev/null
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_repo_dir/infra/postgres/grant-community.sql" >/dev/null
 PGPASSWORD=$V_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_v_migrator" -f "$runtime_repo_dir/infra/postgres/grant-verifier.sql" >/dev/null
+# Each negative is restored before the next case; no weakened grants persist.
+for runtime_identity_table in community_identities identity_account_state identity_change_receipts; do
+ PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c "ALTER TABLE public.$runtime_identity_table RENAME TO identity_temporarily_absent" >/dev/null
+ if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/identity-table-negative.log" 2>&1; then echo 'Missing identity table startup unexpectedly accepted' >&2; exit 1; fi
+ PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c "ALTER TABLE public.identity_temporarily_absent RENAME TO $runtime_identity_table" >/dev/null
+ for runtime_identity_privilege in SELECT INSERT UPDATE; do
+  if [ "$runtime_identity_table" = identity_change_receipts ] && [ "$runtime_identity_privilege" = UPDATE ]; then continue; fi
+  PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c "REVOKE $runtime_identity_privilege ON public.$runtime_identity_table FROM hnuhole_c_runtime" >/dev/null
+  if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/identity-dml-negative.log" 2>&1; then echo 'Missing identity DML startup unexpectedly accepted' >&2; exit 1; fi
+  PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c "GRANT $runtime_identity_privilege ON public.$runtime_identity_table TO hnuhole_c_runtime" >/dev/null
+ done
+done
 # PG16 NOINHERIT membership still permits SET ROLE: startup must reject it.
 PGPASSWORD=$C_ADMIN_PASSWORD psql -X -v ON_ERROR_STOP=1 "postgres://hnuhole_c_admin@127.0.0.1:$C_DATABASE_PORT/hnuhole_c?sslmode=disable" -c 'GRANT hnuhole_c_owner TO hnuhole_c_runtime WITH INHERIT FALSE' >/dev/null
 if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/owner-member-negative.log" 2>&1; then echo 'NOINHERIT owner member startup unexpectedly accepted' >&2; exit 1; fi
@@ -121,7 +161,21 @@ PGPASSWORD=$C_ADMIN_PASSWORD psql -X -v ON_ERROR_STOP=1 "postgres://hnuhole_c_ad
 runtime_upgrade="postgres://hnuhole_c_migrator@127.0.0.1:$C_DATABASE_PORT/hnuhole_upgrade?sslmode=disable&options=-c%20role%3Dhnuhole_c_owner"
 PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_upgrade" up-to 2 >/dev/null
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM public.channels ORDER BY id) TO STDOUT CSV' >"$runtime_dir/channels-before.csv"
+PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_upgrade" up-to 10 >/dev/null
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" >/dev/null <<'SQL'
+INSERT INTO c_auth.accounts(account_id,platform_number,username,password_hash,password_salt,password_params_version)
+VALUES('00000000-0000-4000-8000-000000000010','654321','upgrade_fixture',decode(repeat('ab',32),'hex'),decode(repeat('cd',16),'hex'),1);
+SQL
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM c_auth.accounts ORDER BY account_id) TO STDOUT CSV' >"$runtime_dir/accounts-before.csv"
 PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_upgrade" up >/dev/null
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM c_auth.accounts ORDER BY account_id) TO STDOUT CSV' >"$runtime_dir/accounts-after.csv"
+cmp "$runtime_dir/accounts-before.csv" "$runtime_dir/accounts-after.csv"
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" >/dev/null <<'SQL'
+DO $$ BEGIN
+ IF (SELECT count(*) FROM public.community_identities)<>0 OR (SELECT count(*) FROM public.identity_account_state)<>0
+  OR (SELECT count(*) FROM public.identity_change_receipts)<>0 THEN RAISE EXCEPTION 'upgrade fabricated identities'; END IF;
+END $$;
+SQL
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM public.channels ORDER BY id) TO STDOUT CSV' >"$runtime_dir/channels-after.csv"
 cmp "$runtime_dir/channels-before.csv" "$runtime_dir/channels-after.csv"
 # A deliberately failing COPY of the sole official 0003 Up belongs only to a
@@ -189,6 +243,7 @@ test "$runtime_peer_status" = 405
 # A separate development operator renews evidence; stopping it lets TTL expire.
 "$runtime_dir/authdev" watch -operator "$runtime_material/operator/operator.json" >"$runtime_dir/evidence.log" 2>&1 & runtime_evidence_pid=$!
 runtime_probe lifecycle
+runtime_probe identities
 runtime_probe threshold
 runtime_stop
 runtime_start
@@ -209,4 +264,4 @@ sleep 2
 runtime_expired_ready=$(curl -sS -o /dev/null -w '%{http_code}' --cacert "$runtime_material/dev-ca.pem" "https://127.0.0.1:$runtime_c_port/health/ready")
 test "$runtime_expired_ready" = 503
 runtime_stop
-printf '%s\n' '{"actualCmdLifecycle":"passed","formalMigrationAndRoles":"passed","upgradeChannelsPreserved":"passed","cleanup":"this invocation project and private directory only"}'
+printf '%s\n' '{"actualCmdLifecycle":"passed","formalMigrationAndRoles":"passed","upgradeChannelsPreserved":"passed","identityUpgrade10To11":"passed","identityMissingSchemaAndDml":"passed","identityCrudReceiptsAndRestart":"passed","cleanup":"this invocation project and private directory only"}'

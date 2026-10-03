@@ -38,8 +38,9 @@ def main():
     assert len(modules) == ledger["moduleCount"] == len({m["id"] for m in modules})
     identity = next(m for m in modules if m["id"] == "B02")
     assert identity["implementationState"] == "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING"
-    assert identity["currentResult"] == "NOT_RUN"
-    assert identity["executedEvidenceIsModulePass"] is False
+    assert identity["currentResult"] in ledger["resultDefinitions"]
+    assert identity["executedEvidenceIsModulePass"] == evidence["moduleAcceptancePassed"]
+    assert (identity["currentResult"] == "PASS") == evidence["moduleAcceptancePassed"]
     for name in ("sourcePaths", "testPaths"):
         for relative in identity[name]:
             assert (ROOT / relative).is_file(), relative
@@ -68,10 +69,20 @@ def main():
     actual = source_snapshot(ledger["sourceFingerprint"])
     assert actual["sha256"] == ledger["sourceFingerprint"]["sha256"] == evidence["sourceFingerprint"]["sha256"] == identity["testedWorkingTreeSourceFingerprint"]
     assert actual["presentFileCount"] == ledger["sourceFingerprint"]["presentFileCount"]
-    assert evidence["sqlTestsExecuted"] is False and evidence["flutterTestsExecuted"] is False
-    assert evidence["moduleAcceptancePassed"] is False
+    for flag in ("sqlTestsExecuted", "flutterTestsExecuted", "deviceTestsExecuted", "compileExecuted", "moduleAcceptancePassed"):
+        assert type(evidence[flag]) is bool, flag
+    if evidence["moduleAcceptancePassed"]:
+        assert all(evidence[flag] for flag in ("sqlTestsExecuted", "flutterTestsExecuted", "deviceTestsExecuted", "compileExecuted"))
+    latest = json.loads((ROOT / evidence["latestValidationEvidence"]).read_text())
+    assert latest["sourceFingerprint"]["sha256"] == actual["sha256"]
+    for flag in ("sqlTestsExecuted", "flutterTestsExecuted", "deviceTestsExecuted", "moduleAcceptancePassed"):
+        assert latest[flag] == evidence[flag], flag
+    if evidence["sqlTestsExecuted"]:
+        assert any(check["id"] == "go-sql-race-vet" and check["result"] == "PASS" for check in latest["checks"])
+    if evidence["compileExecuted"]:
+        assert latest["goCompileExecuted"] is True
     print(f"PASS: stable module IDs, B02 paths/status, document links and source fingerprint ({actual['presentFileCount']} files)")
-    print("Scope: bookkeeping only; no compilation, SQL, Flutter or device acceptance.")
+    print("Scope: bookkeeping only; this checker does not execute compilation, SQL, Flutter or device acceptance.")
 
 
 if __name__ == "__main__":

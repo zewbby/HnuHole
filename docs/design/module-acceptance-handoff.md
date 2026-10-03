@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-03 本机接续验证（最新）：**从远端codex/auth-privacy-handoff的87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc拉取。AC04的B02 R03/R05测试源码已补；**Go全量SQL/race/vet、四份OpenAPI完整校验及R03实际非owner C/V HTTPS/mTLS进程验收通过**。R03覆盖身份CRUD、成功和拒绝回执、实际服务重启、Gate冻结/恢复后新会话核对、迁移10→11及缺表/缺DML拒绝。实际启动发现权限检查format()参数未指定类型，已补$1::text并通过实际进程和匹配race/vet复验。Go位于WSL /usr/lib/go-1.22/bin；PG/Docker可用，固定Goose仅在本次临时目录构建。**Flutter/Dart入口未找到，R05真实Dart→SQL及设备/原生Passkey仍BLOCKED/NOT_RUN，B02整模块未PASS。**AC01 V Gate、AC02身份整账号关闭仍未实现。逐项结果、失败修复/复验和源码摘要见[接续测试记录](../../services/api/authlab/identity-runtime-test-verification.json)。下方旧机器/版本和缺Go/未补B02测试链描述是历史状态。
+
 > **2026-10-03 远端接续交付：**用户已授权将当前匿名收口材料、运行时／设备／B02源码与测试提交并推送到 `origin/codex/auth-privacy-handoff`，由另一台机器继续。先读[机器接续入口](auth-privacy-machine-handoff.md)，再按[匿名清单 AC01–AC06](auth-privacy-closure-checklist.md)执行；提交／推送不代表缺口已修复或动态验收通过。下方“未提交／推送”是历史记录，最新交付状态以本次提交及远端结果为准。
 
 > **2026-10-03 匿名分支范围纠正：**本分支以匿名方案及其基础实现收口，停在 B02，不进入 B05/B03 等完整业务片。当前有限缺口和结束条件见[匿名收口清单](auth-privacy-closure-checklist.md)：先补 V 独立 Gate、现有身份的整账号关闭联动，再核对隐私边界、补真实测试链与集中验收。B02继续登记为“基础管理已实现，业务联动待实现”，动态／设备未执行项保持待验；本段覆盖下方历史开发顺序，不改写历史测试证据。
@@ -466,3 +468,11 @@ B02尚未实现项：B05/B07首次公开操作创建／选择后恢复输入及�
 开始验收时可直接交接：
 
 > 只在 `codex/auth-privacy-handoff`，先核对当前代码／台账与工具。按 `docs/design/module-acceptance-handoff.md` 的模块及依赖验证本次指定范围，优先复用同机已有工具，使用明确归属的一次性库。记录真实边界、命令、SHA／指纹、PASS/FAIL/BLOCKED/SKIP及缺失场景，修复后复验受影响模块；普通无DSN／无Flutter的退出0不算链路通过。验完更新小型证据、模块台账、HANDOFF／progress，清理自己的临时数据与产物；未实现模块先开发，不能直接勾验收。
+
+### 2026-10-03 AC04缺失测试源码接续
+
+R03沿用 `sh services/api/authlab/run-runtime-isolated.sh`，无新增module参数。`runtimeprobe/identities.go`经过实际C/V公共HTTPS和受限runtime角色；注册零身份仍可浏览，同键重放／冲突、改名冷却、最后一个身份拒绝、删除不重置累计创建、字段allowlist、实际服务重启和Gate恢复后新会话回执均有明确断言。runner增加三个身份表的缺表及各必需DML负向启动、版本10拒绝和10→11升级账号／七通道保持；本次R03实际执行通过；Flutter和真机不由R03代证。
+
+R05沿用 `sh services/api/authlab/run-mobile-isolated.sh`。新 `identity_https_scenarios.dart` 使用正式Dart传输／controller与SQL，Go fixture仅在真实handler完成后丢弃响应。CREATE、PATCH、DELETE和最后一个身份拒绝均核对原回执；会话接替时隐藏旧资料并以同账号新会话恢复原意图。vault仍为内存，restartClient仅重建对象，不能记作真实app杀进程／安全存储通过。
+
+A01/A02/A13/B02和X01/X02/X03/X04/X05/X08需要执行对应当前回归；身份关闭和V Gate尚未实现，不由这次测试增补代证。实际已执行与阻塞原因、基线／源码摘要见[接续测试记录](../../services/api/authlab/identity-runtime-test-verification.json)。

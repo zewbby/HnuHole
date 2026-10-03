@@ -3,17 +3,17 @@
   "recordedOn": "2026-10-03",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/auth-privacy-handoff",
-  "baselineHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+  "baselineHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
   "workingTreeUncommitted": true,
   "taskPlan": "docs/design/identity-management-plan.md",
   "report": "docs/design/identity-management-validation-report.md",
   "implementationState": "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING",
   "implementationLabel": "基础管理已实现，业务联动待实现",
   "moduleAcceptancePassed": false,
-  "sqlTestsExecuted": false,
+  "sqlTestsExecuted": true,
   "flutterTestsExecuted": false,
   "deviceTestsExecuted": false,
-  "compileExecuted": false,
+  "compileExecuted": true,
   "sourceReview": {
     "result": "NO_REMAINING_MATERIAL_FINDINGS_IN_SOURCE",
     "independentAgent": true,
@@ -159,8 +159,8 @@
     "retained": "Source, test source and small sanitized verification metadata only"
   },
   "sourceFingerprint": {
-    "sha256": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
-    "presentFileCount": 230,
+    "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+    "presentFileCount": 232,
     "roots": [
       "services/api",
       "apps/mobile",
@@ -346,6 +346,57 @@
         "handoff-consistency"
       ],
       "reason": "Preserve exact original B02 checks before whitespace-only remote packaging adjustment"
+    },
+    {
+      "recordedOn": "2026-10-03",
+      "scope": "Remote handoff baseline before AC04 test additions",
+      "sourceFingerprint": {
+        "sha256": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
+        "presentFileCount": 230,
+        "roots": [
+          "services/api",
+          "apps/mobile",
+          "packages/auth_vault",
+          "packages/openapi",
+          "packages/auth-protocol-vectors",
+          "infra",
+          "packages/auth_passkey",
+          "tools"
+        ],
+        "includedSuffixes": [
+          ".dart",
+          ".entitlements",
+          ".go",
+          ".gradle",
+          ".json",
+          ".kt",
+          ".kts",
+          ".mod",
+          ".pbxproj",
+          ".plist",
+          ".podspec",
+          ".properties",
+          ".py",
+          ".sh",
+          ".sql",
+          ".sum",
+          ".swift",
+          ".txt",
+          ".xcconfig",
+          ".xcscheme",
+          ".xcworkspacedata",
+          ".xml",
+          ".yaml",
+          ".yml",
+          ".lock"
+        ],
+        "includedAdditionalNames": [
+          ".env.example"
+        ],
+        "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
+        "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
+        "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+      }
     }
   ],
   "remoteHandoffPackaging": {
@@ -376,5 +427,16 @@
         "proofScope": "Four YAML/contracts and local refs; not complete OpenAPI validator"
       }
     ]
-  }
+  },
+  "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+  "executionFlagHistory": [
+    {
+      "sqlTestsExecuted": false,
+      "flutterTestsExecuted": false,
+      "deviceTestsExecuted": false,
+      "compileExecuted": false,
+      "moduleAcceptancePassed": false
+    }
+  ],
+  "currentAcceptanceScope": "Backend foundation SQL/actual runtime passed; Flutter/device and business integration pending. Historical checks retain original fingerprints."
 }
