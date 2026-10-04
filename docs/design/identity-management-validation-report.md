@@ -1,62 +1,38 @@
-# B02身份管理基础：实施与验收交接
+# 身份管理验证与剩余验收
 
-> **2026-10-03 本机接续验证（最新）：**从远端codex/auth-privacy-handoff的87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc拉取。AC04的B02 R03/R05测试源码已补；**Go全量SQL/race/vet、四份OpenAPI完整校验及R03实际非owner C/V HTTPS/mTLS进程验收通过**。R03覆盖身份CRUD、成功和拒绝回执、实际服务重启、Gate冻结/恢复后新会话核对、迁移10→11及缺表/缺DML拒绝。实际启动发现权限检查format()参数未指定类型，已补$1::text并通过实际进程和匹配race/vet复验。Go位于WSL /usr/lib/go-1.22/bin；PG/Docker可用，固定Goose仅在本次临时目录构建。**Flutter/Dart入口未找到，R05真实Dart→SQL及设备/原生Passkey仍BLOCKED/NOT_RUN，B02整模块未PASS。**AC01 V Gate、AC02身份整账号关闭仍未实现。逐项结果、失败修复/复验和源码摘要见[接续测试记录](../../services/api/authlab/identity-runtime-test-verification.json)。下方旧机器/版本和缺Go/未补B02测试链描述是历史状态。
+日期：2026-10-04（Asia/Shanghai）。分支 `codex/auth-privacy-handoff`，远端基线 `d624ea30943a2b12096c20dbeefd844ba0e5e840`。实现任务见[身份计划](identity-management-plan.md)，最新源码摘要与命令结果见[验证记录](../../services/api/authlab/identity-runtime-test-verification.json)，历史原版本检查见[身份机器记录](../../services/api/authlab/identity-management-verification.json)。
 
-日期：2026-10-03（Asia/Shanghai）。任务单：[I1–I4](identity-management-plan.md)。本片登记目标为 **基础管理已实现，业务联动待实现**；完整动态验收另行登记，源码完成不等于验收通过。
+## 当前结论
 
-## 实现边界
+基础身份管理的后端SQL／实际服务、客户端Dart和真实Dart→SQL场景已取得运行证据；Android构建、原生vault和共享认证跨进程验证通过。**B02仍为基础管理已实现、业务联动待实现，整模块BLOCKED。**身份整账号关闭AC02未实现，原生身份草稿／输入法／无障碍矩阵未验，不能以共享AuthStore探针代证。
 
-在 `codex/auth-privacy-handoff` 的 `/Users/zewbao/Desktop/workspace/Hnuhole/remote-auth-privacy-handoff` 继续开发，HEAD仍为 `3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e`，保留原认证／设备工作区改动，未提交／推送。当前源码指纹、真实命令输出和测试入口见[机器记录](../../services/api/authlab/identity-management-verification.json)，旧报告的证据不改写。
+| 检查 | 结果与范围 |
+| --- | --- |
+| Go全量SQL／race／vet | PASS，一次性C/V PostgreSQL库；没有以无DSN跳过计通过 |
+| R03实际cmd | PASS，非owner权限、HTTPS/mTLS、正式迁移、升级10→11、身份CRUD／原回执／重启、冻结／恢复和缺表／缺DML拒绝启动 |
+| R04 mobile | PASS，分析无问题；175项单元／controller／widget，含身份35项及共享认证／安全管理回归 |
+| R05真实Dart＋SQL | PASS，身份CREATE/PATCH/DELETE提交后丢响应、同键核对、客户端对象重建、会话接替、终态拒绝与配额；vault为内存替身 |
+| R07 Android | PASS，完整ARM64 app与两个插件；API36模拟器vault16项和3组正常／提交前／同步后中断探针 |
+| R08 Passkey | PASS，Dart9项和Android codec5项；真实系统ceremony仍BLOCKED |
+| R09 Flutter原生共享状态 | PASS，write/read两个不同PID，退出标记／原凭据key跨进程保留，启动不调用授权API；API为专用替身 |
+| 契约／生成／交接 | PASS，四份OpenAPI完整校验、固定sqlc/oapi生成与本地baseline比较、生成Go编译／vet、5项关联生成器测试、台账／指纹／链接和补丁检查 |
 
-| 范围 | 实现位置 | 待验边界 |
-| --- | --- | --- |
-| 本人列表／创建／改名／删除与默认头像 | `services/api/internal/authprivacy/community_identities.go`、`identity_rules.go`、迁移 `0011_identity_management.sql` | Go编译、真实SQL／race未执行 |
-| 全部访问经最终Gate／会话／归属／可信时间复核 | 账号→限制→会话→Gate锁顺序，业务读写在最终授权回调内；`identity_endpoints.go` 仅序列化本人字段 | 冻结、接替、过期、禁言／封禁与异常提交验收待执行 |
-| 资源并发与原意图核对 | 账号行锁串行化；效果与成功或拒绝终态回执原子提交；永久账号归属键摘要／意图HMAC | 真实并发／丢响应／迟到请求／跨账号同键待执行 |
-| 移动端设置入口、列表和编辑 | `apps/mobile/lib/src/identity`、`main.dart`，我的→设置→身份管理 | Flutter分析、API／controller／widget和真机验收未执行 |
-| 持久待核对操作与会话失效 | origin隔离vault内按accountId＋username保存不可变操作；同Bearer截止先持久再展示；authorityVersion及请求代次过滤迟到结果 | 本机对象重建测试不代证真实进程；杀进程／安全存储失败／账号切换仍需真机证据 |
+## 本轮修复
 
-注册不自动建身份，无身份不影响目录浏览。当前最多保留三个，不能删除最后一个；累计成功创建计数不因删除减少。第三次累计创建后开始六个月间隔，每次成功创建重新计时；按上海日历加六个月并夹紧目标月末，保留原时分秒。昵称NFC归一、大小写敏感、同账号判重；二至十二可见字符，输入法组合结束后过滤非法字符和截断。创建不启动改名等待；首次成功改名后等待满30天。同名改名是无副作用成功，不重置时间。默认头像标识固定 `default-v1`，用户可不上传头像直接建立身份。
+两处页面括号遗漏导致编译失败；补齐后通过分析和Android编译。安全管理页只在controller未加载时自动load，避免重复异步加载。取消围栏测试在实际持久边界同步触发，不再使用延迟microtask错过边界。widget异步crypto／storage操作在runAsync内通过真实按钮执行并等待完成。Passkey负向响应夹具使用动态值Map，让缺失userHandle验证真正到达校验器。
 
-独立复核发现“先查不到回执→重试确定拒绝→原请求迟到成功”的窗口，因此确定业务拒绝也绑定原键并成为不可重执行的终态。查询 `COMMITTED`／`REJECTED` 可结案；`NOT_FOUND`只证明当前无回执，不能当作旧请求永不执行，继续保留原意图并只用同键重试。失败不消耗创建机会或改名时间，但已终结的操作键不能用于新意图。SQL／Gate／未知提交故障不记录假拒绝。
+第一次Flutter设备read阶段失败：默认drive清理会卸载app，删除write阶段数据。新增两阶段启动脚本使用keep-app-running后显式force-stop，再安装相同签名的read APK；不同PID的最终复验通过。失败原因与复验保留，不修改产品存储来迎合测试。
 
-删除保留稳定ID、归属和删除时刻并清除昵称／头像；原始身份标记不转移。列表不暴露其他账号或已删除资料。帖内绑定、发送任务、旧帖占位与本人列表移除、聊天／备注清理均随B05/B06/B07/B08/B09/B10实现；本片删除确认说明既定业务影响，不据此声称投影已实现。自定义头像上传／审核登记到后续媒体功能，审核员强制重置昵称与改名例外随B11治理实现。首次发帖／评论创建身份后恢复原输入也随发送模块接入。
+## 尚未验与未实现
 
-## 实际检查与未执行项
+- AC01 V独立Gate、AC02身份整账号关闭生命周期未实现；与后续帖内绑定、旧内容／私聊投影、治理、媒体上传分别登记。
+- B02物理设备IME、无障碍、小屏大字平台矩阵和身份专属草稿／意图跨进程恢复未执行。已有widget布局测试通过，只证明相应Flutter测试范围。
+- iOS完整app／Keychain／进程探针缺macOS完整Xcode；两平台系统Passkey缺RP、发布签名、Team与关联部署。
+- Android物理设备硬件安全等级、锁屏／OEM／完整备份矩阵未验。模拟器原生故障注入覆盖的精确范围以测试源码／最新记录为准。
+- AC03与P02–P06隐私／生产／独立审计继续待执行，生产未放行。
 
-只使用现有工具，未下载Go／Flutter／数据库工具或大型缓存，未创建数据库、私钥、APK或服务进程。
+## 接续与资源
 
-- YAML／本地引用／身份契约字段与必需header结构通过，覆盖四份OpenAPI；此项不等于完整规范或实现验收。
-- `git diff --check` 和文档／台账／路径一致性检查的最终结果及命令输出以机器记录为准。
-- 完整OpenAPI校验缺 `openapi-spec-validator 0.9.0`，记 `BLOCKED`；校验未实际完成。
-- Go／gofmt、Flutter／Dart、Docker／PostgreSQL／Goose缺失，编译、格式化、SQL、race、真实HTTPS联调和移动端测试记 `NOT_RUN`；相应工具启动尝试另记 `BLOCKED`。
-- Android／iOS小屏大字、无障碍、输入法、真实安全存储及进程重启未执行；不以源码或内存vault代证。
+环境安装、各runner和原生两阶段命令见[本机环境](local-test-environment.md)；总体范围见[匿名清单](auth-privacy-closure-checklist.md)、[模块交接](module-acceptance-handoff.md)和[台账](module-acceptance-ledger.json)。所有测试源码保留；缓存清理后复验需重新pub get及获取wrapper。工具SDK／JDK／AVD配置按用户选择留在D盘，测试产物／缓存／临时库清理状态以最新机器记录为准。
 
-## 保留测试与复验命令
-
-服务端纯规则入口 `identity_rules_test.go`；真实SQL入口 `community_identities_test.go`；真实TLS替身／HTTPS＋SQL入口 `authprivacyhttp/identity_endpoints_test.go`。移动端测试文件在[机器记录](../../services/api/authlab/identity-management-verification.json)和[台账](module-acceptance-ledger.json)列出。全部保留源码：3个Go纯规则函数、11个SQL函数、2个HTTP函数，以及35个Dart案例；这些数量不是通过数。现存依赖锁定文件纳入本片指纹。
-
-先格式化新增Go/Dart，固定被测指纹；复用已确认归属的全新一次性开发／升级库。现有runner会reset schema，不能传未知或真实用户DSN；WSL2使用Linux文件系统。没有 `--module` 新参数。
-
-```sh
-# 仓库根：锁定既有校验环境
-python packages/openapi/check-specs.py
-
-# services/api：Go编译／规则／所有回归；无DSN的SKIP不计SQL通过
-go test -race -count=1 -p 1 ./...
-go vet ./...
-sh authlab/run-isolated.sh
-sh authlab/run-runtime-isolated.sh
-
-# apps/mobile：先用现成Flutter运行pub get，再执行全部聚焦和共享认证回归
-flutter analyze
-flutter test --reporter expanded
-```
-
-现有R03的runtimeprobe和R05的Dart＋SQL fixture尚未扩展B02身份操作序列；动态验收时需补实际非owner cmd身份CRUD／原核对、真实Dart＋SQL场景，不能用原认证runner通过代证B02。Go真实HTTPS／SQL与Dart TLS替身源码已保留，分别验证对应边界。
-
-SQL验收至少包括：零身份浏览；同账号大小写／NFC判重与不同账号同名；2→3并发创建、2→1并发删除、同时同名改名；删建累计阈值；月末／闰年／精确六个月及30天边界；失败机会不消耗；跨账号资源与同键独立；成功／拒绝回执重放、改payload冲突、迟到旧请求不复活；新会话查询旧意图；在账号锁等待中冻结／接替／过期。运行时验迁移10→11、非owner权限、缺表／缺DML就绪拒绝、升级数据保持和重启。
-
-移动端验：空状态与默认头像；三名额／冷却日期／改名日期；合法输入保留、非法提示、最大12与IME；退出编辑保留同机输入；丢响应、重启原键核对、拒绝终态后新操作、查询缺记录仅同键重试；截止持久失败不发布；401／503／账号切换／后台恢复和迟到响应；弹层旧身份资料在会话变化后消失；删除确认包含昵称／头像／创建日期与既定影响。涉及业务投影的验收明确留到对应模块。
-
-共享AuthStore／HTTP路由／运行时迁移变化重新打开A00/A01/A02/A03/A05/A06/A07/A08/A09/A11/A12/A13、N01/N02/N03、B01/B03/B10的相应当前回归，不覆盖历史SHA证据。跨模块X01/X02/X03/X04/X05/X08先验基础；X06已有受限会话源码场景，完整公开任务／关闭清理仍依赖帖子／聊天／治理，X07投影随业务验收。2026-10-03 用户纠正分支范围，下一步改为[匿名收口清单](auth-privacy-closure-checklist.md)；现有身份尚未接入整账号正式关闭的生命周期单列AC02，不能以延后帖子／聊天投影代替该项。该盘点不改变本片源码指纹和未执行验收结果。
+历史检查保留当时命令、失败、版本及摘要；旧缺工具结果在机器记录的历史部分，不描述当前测试结论。

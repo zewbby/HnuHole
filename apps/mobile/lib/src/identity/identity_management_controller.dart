@@ -17,8 +17,8 @@ enum IdentityManagementStatus {
 /// receipt never proves the original request cannot still arrive: all retries
 /// query first and reuse the exact original key, resource and nickname.
 class IdentityManagementController extends ChangeNotifier {
-  IdentityManagementController({required IdentityApi api, required AuthStore store,
-    required AuthSessionController sessions}) : _api = api, _store = store, _sessions = sessions {
+  IdentityManagementController({required this._api, required this._store,
+    required AuthSessionController sessions}) : _sessions = sessions {
     _observedAuthority = sessions.authorityVersion;
     _observedToken = _active()?.token;
     _store.addListener(_authorityChanged);
@@ -55,13 +55,17 @@ class IdentityManagementController extends ChangeNotifier {
     if (_disposed || record == null || username == null || hasPending ||
         _directory?.identities.isEmpty != true ||
         IdentityNameFormatter.filterCharacters(nickname) != nickname ||
-        utf8.encode(nickname).length > 512) return false;
+        utf8.encode(nickname).length > 512) {
+      return false;
+    }
     var saved = false;
     try {
       await _store.update((latest) {
         if (_disposed || authority != _sessions.authorityVersion ||
             _active()?.token != record.token || _active()?.accountId != record.accountId ||
-            _sessions.username != username || latest.identityChanges.containsKey(record.accountId)) return latest;
+            _sessions.username != username || latest.identityChanges.containsKey(record.accountId)) {
+          return latest;
+        }
         saved = true;
         return latest.copyWith(identityDrafts: {...latest.identityDrafts, record.accountId:
           {'v': 1, 'username': username, 'nickname': nickname}});
@@ -86,7 +90,9 @@ class IdentityManagementController extends ChangeNotifier {
       await _store.update((latest) {
         if (_disposed || authority != _sessions.authorityVersion ||
             _active()?.token != record.token || _active()?.accountId != record.accountId ||
-            latest.identityChanges.containsKey(record.accountId)) return latest;
+            latest.identityChanges.containsKey(record.accountId)) {
+          return latest;
+        }
         final drafts = Map<String, dynamic>.from(latest.identityDrafts)..remove(record.accountId);
         saved = true;
         return latest.copyWith(identityDrafts: drafts);

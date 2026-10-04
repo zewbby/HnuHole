@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
@@ -23,8 +22,8 @@ Map<String, dynamic> createOptions() => {
 };
 Map<String, dynamic> credential({bool create = false}) => {
   'id': encoded(16), 'rawId': encoded(16), 'type': 'public-key',
-  'response': create ? {'clientDataJSON': encoded(40), 'attestationObject': encoded(100)} :
-      {'clientDataJSON': encoded(40), 'authenticatorData': encoded(37), 'signature': encoded(72), 'userHandle': encoded(32, 9)},
+  'response': create ? <String, dynamic>{'clientDataJSON': encoded(40), 'attestationObject': encoded(100)} :
+      <String, dynamic>{'clientDataJSON': encoded(40), 'authenticatorData': encoded(37), 'signature': encoded(72), 'userHandle': encoded(32, 9)},
   'clientExtensionResults': <String, dynamic>{},
 };
 Matcher fails(String code) => throwsA(isA<PasskeyFailure>().having((value) => value.code, 'code', code));

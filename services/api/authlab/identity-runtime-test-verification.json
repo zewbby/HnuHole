@@ -1,19 +1,19 @@
 {
   "schemaVersion": "hnuhole-identity-runtime-test-verification/v1",
-  "recordedOn": "2026-10-03",
+  "recordedOn": "2026-10-04",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/auth-privacy-handoff",
-  "baselineHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
+  "baselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
   "sourceFingerprint": {
-    "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
-    "presentFileCount": 232
+    "sha256": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+    "presentFileCount": 237
   },
   "workingTreeUncommitted": true,
-  "scope": "Go/SQL and actual C/V process validation; Flutter/device pending; AC01/AC02 implementation absent",
+  "scope": "Current Go SQL/race/vet and actual C/V processes; full Dart regression, real Dart HTTPS/SQL, Android emulator native persistence and app builds. No full B02/platform/production acceptance.",
   "sqlTestsExecuted": true,
-  "flutterTestsExecuted": false,
+  "flutterTestsExecuted": true,
   "goCompileExecuted": true,
-  "deviceTestsExecuted": false,
+  "deviceTestsExecuted": true,
   "moduleAcceptancePassed": false,
   "newTestPaths": [
     "services/api/cmd/runtimeprobe/identities.go",
@@ -45,26 +45,25 @@
     {
       "id": "go-sql-race-vet",
       "command": "sh authlab/run-isolated.sh",
-      "workingDirectory": "services/api",
       "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Full go test -race -count=1 -p 1 ./... and go vet with runner-owned disposable PostgreSQL clusters; opt-in Flutter subprocess is executed separately as R05.",
       "exitCode": 0,
-      "scope": "go test -race -count=1 -p 1 ./... and go vet ./... with marked disposable C/V PostgreSQL DSNs; real SQL tests ran. Opt-in Flutter subprocess skipped.",
+      "workingDirectory": "services/api",
       "outputSummary": {
-        "cmd/authdev": "PASS",
-        "internal/authprivacy": "PASS (192.589s)",
-        "internal/authprivacy/protocol": "PASS",
-        "internal/authprivacyhttp": "PASS (11.339s)",
-        "internal/authprivacyruntime": "PASS"
-      },
-      "revisionScope": "Before startup type fix; affected runtime separately retested below; auth/HTTP/protocol application behavior unchanged."
+        "internal/authprivacy": "PASS (191.915s)",
+        "internal/authprivacyhttp": "PASS (37.200s)",
+        "internal/authprivacyruntime": "PASS (1.011s)",
+        "generatedChannels": "COMPILE/VET PASS; no test files"
+      }
     },
     {
       "id": "runtime-r03",
       "command": "sh authlab/run-runtime-isolated.sh",
-      "workingDirectory": "services/api",
       "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Actual non-owner C/V cmd processes, HTTPS/mTLS, Mailpit, formal migrations/roles, B02 CRUD/receipts/restart, upgrade10-to-11 and Gate freeze/recovery.",
       "exitCode": 0,
-      "scope": "Actual non-owner C/V cmd processes, HTTPS/mTLS, Mailpit, formal C11/V3 Goose migration and rollback/role negatives; B02 CRUD, receipts, freeze/recovery, actual services restart, upgrade10-to-11",
       "phasesPassed": [
         "lifecycle",
         "identities",
@@ -73,86 +72,173 @@
         "frozen",
         "recovered",
         "closure"
-      ],
-      "outputSummary": {
-        "actualCmdLifecycle": "passed",
-        "formalMigrationAndRoles": "passed",
-        "upgradeChannelsPreserved": "passed",
-        "identityUpgrade10To11": "passed",
-        "identityMissingSchemaAndDml": "passed",
-        "identityCrudReceiptsAndRestart": "passed"
-      }
+      ]
     },
     {
-      "id": "runtime-fix-race-vet",
-      "command": "go test -race -count=1 ./internal/authprivacyruntime ./cmd/runtimeprobe; go vet ./internal/authprivacyruntime ./cmd/runtimeprobe",
+      "id": "flutter-analysis-tests",
+      "command": "flutter analyze; flutter test --reporter expanded",
       "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "All current mobile Dart unit/controller/widget cases on Windows and WSL; final button-wiring repair rerun on Windows. No physical device acceptance.",
       "exitCode": 0,
-      "scope": "Matched regression after actual startup query fix; real process proof is R03"
+      "testsPassed": 175,
+      "analysis": "No issues found"
+    },
+    {
+      "id": "real-dart-sql-r05",
+      "command": "sh authlab/run-mobile-isolated.sh",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Real Dart HTTPS and C/V handler/PostgreSQL fixture including B02 unknown-result/reconciliation/session replacement. In-memory vault and same-process client reconstruction; separate native proof below.",
+      "exitCode": 0,
+      "dartTestsPassed": 1,
+      "goTest": "TestMobileClientHTTPSPostgres",
+      "durationSeconds": 21.52
+    },
+    {
+      "id": "android-app-build",
+      "command": "flutter build apk --debug --target-platform android-arm64",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Complete standard Android app and both native plugins compiled in WSL; ARM64 build is separate from x86_64 emulator integration APKs.",
+      "exitCode": 0
+    },
+    {
+      "id": "android-native-build",
+      "command": "./gradlew --no-daemon :hnuhole_auth_vault:assembleDebugAndroidTest :hnuhole_auth_passkey:assembleDebugAndroidTest",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Both native instrumentation APKs compiled in WSL; BUILD SUCCESSFUL.",
+      "exitCode": 0
+    },
+    {
+      "id": "android-vault-device",
+      "command": "tools/run-android-vault-probes.ps1 -DeviceId emulator-5554 -TestApk <owned test APK>",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Real Android Keystore/filesystem in Google APIs API36 x86_64 emulator: 16 native tests and 3 explicit two-process pairs (normal, kill-before-replace, kill-after-sync). Intentional process crashes require passing read follow-up.",
+      "exitCode": 0,
+      "nativeTestsPassed": 16,
+      "processPairsPassed": 3
+    },
+    {
+      "id": "passkey-dart",
+      "command": "flutter analyze; flutter test --reporter expanded",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Standalone auth_passkey package policy, response validation, cancellation and fail-closed cases. Not a real credential ceremony.",
+      "exitCode": 0,
+      "testsPassed": 9,
+      "analysis": "No issues found"
+    },
+    {
+      "id": "passkey-android-codec",
+      "command": "adb -s emulator-5554 shell am instrument -w -e class org.hnuhole.authpasskey.PasskeyCodecTest org.hnuhole.authpasskey.test/androidx.test.runner.AndroidJUnitRunner",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Native codec/ownership on API36 emulator, no system provider registration/recovery.",
+      "exitCode": 0,
+      "testsPassed": 5
+    },
+    {
+      "id": "flutter-android-process",
+      "command": "tools/run-android-auth-process-test.ps1 -DeviceId emulator-5554 -WriteApk <write> -ReadApk <read>",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Real Flutter app/vault and distinct PIDs 5499/5593: original credential key and logout fence survive; startup does not call currentSession. Authorization API is a dedicated owned substitute, not SQL/device full end-to-end.",
+      "exitCode": 0,
+      "businessTestsPerPhase": 2,
+      "phasesPassed": [
+        "write",
+        "read"
+      ],
+      "distinctProcessIds": [
+        5499,
+        5593
+      ]
+    },
+    {
+      "id": "generation",
+      "command": "sqlc generate; go test ./internal/channels/...; go vet ./internal/channels/...; sh packages/openapi/generate-channel.sh; sh packages/openapi/generate-channel.sh --check",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Pinned sqlc1.27.0/oapi-codegen2.4.1 generation and generated Go compile/vet; comparison is an ignored local baseline, not committed-output CI drift validation.",
+      "exitCode": 0
     },
     {
       "id": "openapi-full",
       "command": "python3 packages/openapi/check-specs.py",
       "result": "PASS",
-      "exitCode": 0,
-      "scope": "All four specs, pinned validator0.9.0/PyYAML6.0.1"
+      "recordedOn": "2026-10-04",
+      "scope": "All four specs with validator0.9.0/PyYAML6.0.1.",
+      "exitCode": 0
     },
     {
       "id": "python-regression",
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tools/tests -v",
       "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "Association generator source tests only, not deployed platform associations.",
       "exitCode": 0,
-      "testsPassed": 5,
-      "scope": "Association generator only; no native Passkey proof"
-    },
-    {
-      "id": "flutter-analysis-tests",
-      "command": "flutter analyze; flutter test --reporter expanded; sh authlab/run-mobile-isolated.sh",
-      "result": "BLOCKED",
-      "reason": "Flutter/Dart absent from WSL normal/root/interactive PATH and common directories; existing Docker images contain no Flutter. User asked for installed path/container command; no SDK downloaded"
-    },
-    {
-      "id": "native-device",
-      "result": "BLOCKED",
-      "reason": "No device/RP/signing/Team association evidence; iOS needs complete Xcode environment"
-    },
-    {
-      "id": "generation",
-      "result": "NOT_RUN",
-      "reason": "sqlc/oapi-codegen absent; OpenAPI validation/Go compilation do not prove generation drift checks"
+      "testsPassed": 5
     },
     {
       "id": "handoff-consistency",
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/check-identity-handoff.py",
       "result": "PASS",
-      "exitCode": 0,
-      "scope": "Evidence flags/path/link/source fingerprint; does not execute app tests"
-    },
-    {
-      "id": "runtime-shell",
-      "command": "sh -n services/api/authlab/run-runtime-isolated.sh",
-      "result": "PASS",
-      "exitCode": 0,
-      "scope": "Shell syntax"
+      "recordedOn": "2026-10-04",
+      "scope": "Source fingerprints, evidence flags, stable module IDs, B02 files/status and documentation links only.",
+      "exitCode": 0
     },
     {
       "id": "diff",
-      "command": "git diff --check",
+      "command": "git diff --check; git diff --cached --check",
       "result": "PASS",
-      "exitCode": 0,
-      "scope": "Patch whitespace"
+      "recordedOn": "2026-10-04",
+      "scope": "Source and staged patch whitespace only.",
+      "exitCode": 0
+    },
+    {
+      "id": "windows-gradle",
+      "result": "BLOCKED",
+      "recordedOn": "2026-10-04",
+      "reason": "Windows Gradle fails before project execution: Unable to establish loopback connection / UnixDomainSockets Invalid argument: connect; Java17 and IPv4 option did not fix. WSL builds PASS."
+    },
+    {
+      "id": "ios-native",
+      "result": "BLOCKED",
+      "recordedOn": "2026-10-04",
+      "reason": "Windows/WSL has no macOS/full Xcode/iOS target."
+    },
+    {
+      "id": "native-passkey-ceremony",
+      "result": "BLOCKED",
+      "recordedOn": "2026-10-04",
+      "reason": "RP domain, release signing identity, iOS Team and association deployment absent; codec tests do not prove provider ceremony."
+    },
+    {
+      "id": "physical-device-matrix",
+      "result": "NOT_RUN",
+      "recordedOn": "2026-10-04",
+      "reason": "Only owned API36 emulator used; hardware security, lockscreen, OEM, complete backup and B02 IME/accessibility/identity-specific process matrix not run."
+    },
+    {
+      "id": "cleanup",
+      "result": "PASS",
+      "recordedOn": "2026-10-04",
+      "scope": "PASS: all task downloads, pub/Gradle/Go/pip caches, APKs, logs, generated files, AVD runtime disks/snapshots, duplicate WSL checkout and task debug material removed. Runner-owned PostgreSQL clusters and Docker project containers/volumes absent; no global prune. User-authorized installed Flutter/Android/JDK/pinned tools/validator and AVD configuration retained. WSL deleted files and TRIM completed; TRIM total is not treated as task bytes freed.",
+      "dFreeIncreaseBytes": 13464690688
     }
   ],
   "remaining": [
-    "Flutter analyze/tests and real Dart-to-SQL R05 execution",
-    "Android/iOS vault/process and app builds",
-    "Passkey RP/signing/Team associations",
-    "sqlc/oapi-codegen generation checks",
-    "AC01 V Gate implementation absent",
+    "iOS full build/Keychain/cross-process and both platform Passkey ceremony/association deployment",
+    "Physical Android lockscreen/OEM/hardware security/complete backup matrix; B02 IME/accessibility and identity-specific draft/process scenarios",
+    "AC01 V independent Gate implementation absent",
     "AC02 identity whole-account closure implementation absent",
+    "AC03 bounded privacy/log/production review and later business projections",
     "P02-P06 production and independent review"
   ],
-  "cleanup": "PASS: runners removed their own transient PostgreSQL clusters, C/V/evidence processes, private material and uniquely named Docker project volumes. This session-specific Go/Goose build/module and Python validator caches were deleted after validation. Existing system Go/PG, cached Docker images, user SDKs/caches and unrelated volumes were preserved. Source checkouts retained.",
+  "cleanup": "PASS: all task downloads, pub/Gradle/Go/pip caches, APKs, logs, generated files, AVD runtime disks/snapshots, duplicate WSL checkout and task debug material removed. Runner-owned PostgreSQL clusters and Docker project containers/volumes absent; no global prune. User-authorized installed Flutter/Android/JDK/pinned tools/validator and AVD configuration retained. WSL deleted files and TRIM completed; TRIM total is not treated as task bytes freed.",
   "attemptHistory": [
     {
       "scope": "AC04 test-source additions and available static regression only; no AC01/AC02 implementation",
@@ -252,19 +338,204 @@
       "reason": "PostgreSQL could not infer $1 in variadic format(%I.%I,$1,required_table.table_name)",
       "repair": "Explicit $1::text in all three required DML checks shared by C/V",
       "retest": "runtime-r03 and runtime-fix-race-vet PASS"
+    },
+    {
+      "recordedOn": "2026-10-03",
+      "baselineHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
+      "sourceFingerprint": {
+        "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+        "presentFileCount": 232
+      },
+      "scope": "Go/SQL and actual C/V process validation; Flutter/device pending; AC01/AC02 implementation absent",
+      "sqlTestsExecuted": true,
+      "flutterTestsExecuted": false,
+      "goCompileExecuted": true,
+      "deviceTestsExecuted": false,
+      "moduleAcceptancePassed": false,
+      "checks": [
+        {
+          "id": "go-sql-race-vet",
+          "command": "sh authlab/run-isolated.sh",
+          "workingDirectory": "services/api",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "go test -race -count=1 -p 1 ./... and go vet ./... with marked disposable C/V PostgreSQL DSNs; real SQL tests ran. Opt-in Flutter subprocess skipped.",
+          "outputSummary": {
+            "cmd/authdev": "PASS",
+            "internal/authprivacy": "PASS (192.589s)",
+            "internal/authprivacy/protocol": "PASS",
+            "internal/authprivacyhttp": "PASS (11.339s)",
+            "internal/authprivacyruntime": "PASS"
+          },
+          "revisionScope": "Before startup type fix; affected runtime separately retested below; auth/HTTP/protocol application behavior unchanged."
+        },
+        {
+          "id": "runtime-r03",
+          "command": "sh authlab/run-runtime-isolated.sh",
+          "workingDirectory": "services/api",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Actual non-owner C/V cmd processes, HTTPS/mTLS, Mailpit, formal C11/V3 Goose migration and rollback/role negatives; B02 CRUD, receipts, freeze/recovery, actual services restart, upgrade10-to-11",
+          "phasesPassed": [
+            "lifecycle",
+            "identities",
+            "threshold",
+            "restart",
+            "frozen",
+            "recovered",
+            "closure"
+          ],
+          "outputSummary": {
+            "actualCmdLifecycle": "passed",
+            "formalMigrationAndRoles": "passed",
+            "upgradeChannelsPreserved": "passed",
+            "identityUpgrade10To11": "passed",
+            "identityMissingSchemaAndDml": "passed",
+            "identityCrudReceiptsAndRestart": "passed"
+          }
+        },
+        {
+          "id": "runtime-fix-race-vet",
+          "command": "go test -race -count=1 ./internal/authprivacyruntime ./cmd/runtimeprobe; go vet ./internal/authprivacyruntime ./cmd/runtimeprobe",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Matched regression after actual startup query fix; real process proof is R03"
+        },
+        {
+          "id": "openapi-full",
+          "command": "python3 packages/openapi/check-specs.py",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "All four specs, pinned validator0.9.0/PyYAML6.0.1"
+        },
+        {
+          "id": "python-regression",
+          "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tools/tests -v",
+          "result": "PASS",
+          "exitCode": 0,
+          "testsPassed": 5,
+          "scope": "Association generator only; no native Passkey proof"
+        },
+        {
+          "id": "flutter-analysis-tests",
+          "command": "flutter analyze; flutter test --reporter expanded; sh authlab/run-mobile-isolated.sh",
+          "result": "BLOCKED",
+          "reason": "Flutter/Dart absent from WSL normal/root/interactive PATH and common directories; existing Docker images contain no Flutter. User asked for installed path/container command; no SDK downloaded"
+        },
+        {
+          "id": "native-device",
+          "result": "BLOCKED",
+          "reason": "No device/RP/signing/Team association evidence; iOS needs complete Xcode environment"
+        },
+        {
+          "id": "generation",
+          "result": "NOT_RUN",
+          "reason": "sqlc/oapi-codegen absent; OpenAPI validation/Go compilation do not prove generation drift checks"
+        },
+        {
+          "id": "handoff-consistency",
+          "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/check-identity-handoff.py",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Evidence flags/path/link/source fingerprint; does not execute app tests"
+        },
+        {
+          "id": "runtime-shell",
+          "command": "sh -n services/api/authlab/run-runtime-isolated.sh",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Shell syntax"
+        },
+        {
+          "id": "diff",
+          "command": "git diff --check",
+          "result": "PASS",
+          "exitCode": 0,
+          "scope": "Patch whitespace"
+        }
+      ],
+      "remaining": [
+        "Flutter analyze/tests and real Dart-to-SQL R05 execution",
+        "Android/iOS vault/process and app builds",
+        "Passkey RP/signing/Team associations",
+        "sqlc/oapi-codegen generation checks",
+        "AC01 V Gate implementation absent",
+        "AC02 identity whole-account closure implementation absent",
+        "P02-P06 production and independent review"
+      ],
+      "cleanup": "PASS: runners removed their own transient PostgreSQL clusters, C/V/evidence processes, private material and uniquely named Docker project volumes. This session-specific Go/Goose build/module and Python validator caches were deleted after validation. Existing system Go/PG, cached Docker images, user SDKs/caches and unrelated volumes were preserved. Source checkouts retained."
     }
   ],
   "actualCmdTestsExecuted": true,
   "tools": {
+    "environmentRoot": "D:\\zewbbyTest\\Hnuhole-env",
+    "wslDistribution": "Ubuntu-24.04",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "java": "Microsoft17.0.20.1+1",
+    "androidApi": 36,
+    "androidBuildTools": "36.0.0",
+    "ndk": "28.2.13676358",
+    "emulator": "37.2.12",
+    "gradle": "9.3.1",
     "go": "1.22.2",
-    "postgresSqlRunner": "16.15",
-    "postgresDockerRuntime": "16.6-alpine",
-    "goose": "v3.22.1, PostgreSQL driver, task-local build",
-    "mailpit": "v1.21.8",
-    "PyYAML": "6.0.1",
-    "openapiSpecValidator": "0.9.0",
-    "flutter": "NOT_FOUND",
-    "dart": "NOT_FOUND"
+    "postgres": "16.15",
+    "goose": "v3.22.1",
+    "sqlc": "v1.27.0",
+    "oapiCodegen": "v2.4.1"
   },
-  "sourceVersionNote": "Final fingerprint includes bookkeeping/checker and redacted diagnostic edits made after dynamic tests; app Go/SQL/migrations/Dart scenarios match tested scope; no new app behavior after R03."
+  "sourceVersionNote": "Final fingerprint includes bookkeeping/checker and redacted diagnostic edits made after dynamic tests; app Go/SQL/migrations/Dart scenarios match tested scope; no new app behavior after R03.",
+  "failuresAndRepairs": [
+    {
+      "failure": "Two mobile page builds had unmatched closing parentheses.",
+      "repair": "Closed the widget constructors, reran analyzer, full suite and Android builds."
+    },
+    {
+      "failure": "Widget FakeAsync/async storage waits and cancellation scheduleMicrotask did not reach intended durable boundary.",
+      "repair": "Use real async button actions and await settlement; cancel synchronously at the owned durable seam. Final175 pass."
+    },
+    {
+      "failure": "Passkey negative fixture inferred Map<String,String> and rejected null before validator.",
+      "repair": "Explicit Map<String,dynamic> response fixtures; all9 pass."
+    },
+    {
+      "failure": "Initial read-phase device test failed with missing persisted PID record.",
+      "cause": "Flutter drive default stop uninstalls app after write phase.",
+      "repair": "Keep app installed using --keep-app-running and explicitly force-stop between phases; write/read both pass with distinct PIDs."
+    }
+  ],
+  "cleanupEvidence": {
+    "dFreeAfterBytes": 25357815808,
+    "result": "PASS",
+    "avdRuntimeStateRemoved": true,
+    "recordedOn": "2026-10-04",
+    "dFreeBeforeBytes": 11893125120,
+    "environmentRetained": true,
+    "removedPaths": [
+      "downloads",
+      "pub-cache-linux",
+      "pub-cache-windows",
+      "gradle-cache",
+      "go-modules-linux",
+      "pip-cache",
+      "test-artifacts",
+      "android-commandline-staging",
+      "linux\\android-sdk-staging",
+      "android-user\\cache",
+      "android-user\\bin",
+      "android-user\\cli",
+      "android-user\\avd",
+      "android-sdk\\.temp",
+      "linux\\android-sdk\\.temp",
+      "emulator-stdout.log",
+      "emulator-stderr.log",
+      "emulator-test-stdout.log",
+      "emulator-test-stderr.log"
+    ],
+    "dFreeIncreaseBytes": 13464690688,
+    "wslTaskCheckoutAbsent": true,
+    "wslTaskBuildCacheAbsent": true,
+    "dockerTaskProjectAbsent": true,
+    "wslTrimExecuted": true
+  }
 }

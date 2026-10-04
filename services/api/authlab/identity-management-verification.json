@@ -1,9 +1,9 @@
 {
   "schemaVersion": "hnuhole-identity-management-verification/v1",
-  "recordedOn": "2026-10-03",
+  "recordedOn": "2026-10-04",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/auth-privacy-handoff",
-  "baselineHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
+  "baselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
   "workingTreeUncommitted": true,
   "taskPlan": "docs/design/identity-management-plan.md",
   "report": "docs/design/identity-management-validation-report.md",
@@ -11,8 +11,8 @@
   "implementationLabel": "基础管理已实现，业务联动待实现",
   "moduleAcceptancePassed": false,
   "sqlTestsExecuted": true,
-  "flutterTestsExecuted": false,
-  "deviceTestsExecuted": false,
+  "flutterTestsExecuted": true,
+  "deviceTestsExecuted": true,
   "compileExecuted": true,
   "sourceReview": {
     "result": "NO_REMAINING_MATERIAL_FINDINGS_IN_SOURCE",
@@ -124,24 +124,19 @@
   ],
   "notRunAcceptance": [
     {
-      "result": "NOT_RUN",
-      "scope": "Go compilation/gofmt/vet/race and pure identity rules",
-      "reason": "Go/gofmt missing"
+      "result": "BLOCKED",
+      "scope": "iOS build/Keychain/platform Passkey ceremony",
+      "reason": "Full Xcode and RP/signing/Team associations absent"
     },
     {
       "result": "NOT_RUN",
-      "scope": "Formal migration10→11, PostgreSQL concurrency, final Gate/session timing, receipt replays, TLS/SQL",
-      "reason": "Go/PostgreSQL/Docker/Goose missing; only disposable known-owned databases may be used"
+      "scope": "B02 IME/accessibility and identity-specific native draft/process matrix; physical Android/OEM/hardware/backup matrix",
+      "reason": "Current native probes cover shared AuthStore on API36 emulator only"
     },
     {
       "result": "NOT_RUN",
-      "scope": "Flutter analyze and 35 identity controller/API/formatter/widget cases plus existing auth/security regression",
-      "reason": "Flutter/Dart missing"
-    },
-    {
-      "result": "NOT_RUN",
-      "scope": "Android/iOS IME, accessibility, small-screen/large text, vault failures, real process kill and same-account draft/intent restore",
-      "reason": "Mobile platform environment absent; memory vault/object recreation source does not prove native persistence"
+      "scope": "AC01/AC02 and later business projections",
+      "reason": "Implementation absent; not a missing tool issue"
     }
   ],
   "pendingImplementation": [
@@ -152,15 +147,15 @@
     "Media custom avatar upload registration/moderation"
   ],
   "resourceCleanup": {
-    "createdDatabases": false,
-    "createdServiceProcesses": false,
-    "downloadedToolchains": false,
-    "createdKeysOrAPKs": false,
-    "retained": "Source, test source and small sanitized verification metadata only"
+    "status": "PASS",
+    "installedEnvironmentRetainedByUser": true,
+    "sourceAndSanitizedMetadataRetained": true,
+    "description": "PASS: all task downloads, pub/Gradle/Go/pip caches, APKs, logs, generated files, AVD runtime disks/snapshots, duplicate WSL checkout and task debug material removed. Runner-owned PostgreSQL clusters and Docker project containers/volumes absent; no global prune. User-authorized installed Flutter/Android/JDK/pinned tools/validator and AVD configuration retained. WSL deleted files and TRIM completed; TRIM total is not treated as task bytes freed.",
+    "dFreeIncreaseBytes": 13464690688
   },
   "sourceFingerprint": {
-    "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
-    "presentFileCount": 232,
+    "sha256": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+    "presentFileCount": 237,
     "roots": [
       "services/api",
       "apps/mobile",
@@ -179,11 +174,13 @@
       ".json",
       ".kt",
       ".kts",
+      ".lock",
       ".mod",
       ".pbxproj",
       ".plist",
       ".podspec",
       ".properties",
+      ".ps1",
       ".py",
       ".sh",
       ".sql",
@@ -195,8 +192,7 @@
       ".xcworkspacedata",
       ".xml",
       ".yaml",
-      ".yml",
-      ".lock"
+      ".yml"
     ],
     "includedAdditionalNames": [
       ".env.example"
@@ -280,10 +276,7 @@
     "apps/mobile/test/auth_api_test.dart (B02 additions)": 5
   },
   "testCountsArePassCounts": false,
-  "pendingTestHarnessExtensions": [
-    "Actual non-owner C runtimeprobe identity mutation/result sequence",
-    "Real Dart -> HTTPS -> SQL B02 identity CRUD/unknown-result sequence"
-  ],
+  "pendingTestHarnessExtensions": [],
   "sourceFingerprintHistory": [
     {
       "sourceFingerprint": {
@@ -397,6 +390,57 @@
         "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
         "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
       }
+    },
+    {
+      "recordedOn": "2026-10-03",
+      "sourceFingerprint": {
+        "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+        "presentFileCount": 232,
+        "roots": [
+          "services/api",
+          "apps/mobile",
+          "packages/auth_vault",
+          "packages/openapi",
+          "packages/auth-protocol-vectors",
+          "infra",
+          "packages/auth_passkey",
+          "tools"
+        ],
+        "includedSuffixes": [
+          ".dart",
+          ".entitlements",
+          ".go",
+          ".gradle",
+          ".json",
+          ".kt",
+          ".kts",
+          ".mod",
+          ".pbxproj",
+          ".plist",
+          ".podspec",
+          ".properties",
+          ".py",
+          ".sh",
+          ".sql",
+          ".sum",
+          ".swift",
+          ".txt",
+          ".xcconfig",
+          ".xcscheme",
+          ".xcworkspacedata",
+          ".xml",
+          ".yaml",
+          ".yml",
+          ".lock"
+        ],
+        "includedAdditionalNames": [
+          ".env.example"
+        ],
+        "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
+        "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
+        "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+      },
+      "reason": "Preserve prior backend validation snapshot before current mobile/environment validation."
     }
   ],
   "remoteHandoffPackaging": {
@@ -436,7 +480,89 @@
       "deviceTestsExecuted": false,
       "compileExecuted": false,
       "moduleAcceptancePassed": false
+    },
+    {
+      "recordedOn": "2026-10-03",
+      "sourceFingerprint": {
+        "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+        "presentFileCount": 232,
+        "roots": [
+          "services/api",
+          "apps/mobile",
+          "packages/auth_vault",
+          "packages/openapi",
+          "packages/auth-protocol-vectors",
+          "infra",
+          "packages/auth_passkey",
+          "tools"
+        ],
+        "includedSuffixes": [
+          ".dart",
+          ".entitlements",
+          ".go",
+          ".gradle",
+          ".json",
+          ".kt",
+          ".kts",
+          ".mod",
+          ".pbxproj",
+          ".plist",
+          ".podspec",
+          ".properties",
+          ".py",
+          ".sh",
+          ".sql",
+          ".sum",
+          ".swift",
+          ".txt",
+          ".xcconfig",
+          ".xcscheme",
+          ".xcworkspacedata",
+          ".xml",
+          ".yaml",
+          ".yml",
+          ".lock"
+        ],
+        "includedAdditionalNames": [
+          ".env.example"
+        ],
+        "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
+        "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
+        "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+      },
+      "sqlTestsExecuted": true,
+      "flutterTestsExecuted": false,
+      "deviceTestsExecuted": false,
+      "compileExecuted": true,
+      "moduleAcceptancePassed": false,
+      "notRunAcceptance": [
+        {
+          "result": "NOT_RUN",
+          "scope": "Go compilation/gofmt/vet/race and pure identity rules",
+          "reason": "Go/gofmt missing"
+        },
+        {
+          "result": "NOT_RUN",
+          "scope": "Formal migration10→11, PostgreSQL concurrency, final Gate/session timing, receipt replays, TLS/SQL",
+          "reason": "Go/PostgreSQL/Docker/Goose missing; only disposable known-owned databases may be used"
+        },
+        {
+          "result": "NOT_RUN",
+          "scope": "Flutter analyze and 35 identity controller/API/formatter/widget cases plus existing auth/security regression",
+          "reason": "Flutter/Dart missing"
+        },
+        {
+          "result": "NOT_RUN",
+          "scope": "Android/iOS IME, accessibility, small-screen/large text, vault failures, real process kill and same-account draft/intent restore",
+          "reason": "Mobile platform environment absent; memory vault/object recreation source does not prove native persistence"
+        }
+      ],
+      "pendingTestHarnessExtensions": [
+        "Actual non-owner C runtimeprobe identity mutation/result sequence",
+        "Real Dart -> HTTPS -> SQL B02 identity CRUD/unknown-result sequence"
+      ],
+      "currentAcceptanceScope": "Backend foundation SQL/actual runtime passed; Flutter/device and business integration pending. Historical checks retain original fingerprints."
     }
   ],
-  "currentAcceptanceScope": "Backend foundation SQL/actual runtime passed; Flutter/device and business integration pending. Historical checks retain original fingerprints."
+  "currentAcceptanceScope": "Current Go SQL/race/vet and actual C/V processes; full Dart regression, real Dart HTTPS/SQL, Android emulator native persistence and app builds. No full B02/platform/production acceptance."
 }

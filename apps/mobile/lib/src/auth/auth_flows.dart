@@ -42,21 +42,16 @@ enum AuthFlowStatus {
 /// ephemeral and never serialized.
 class AuthFlows extends ChangeNotifier {
   AuthFlows({
-    required AuthApi api,
-    required AuthStore store,
-    required Future<void> Function(AuthSession) acceptRegistrationSession,
-    required void Function() clearCommunityAccess,
-    PasskeyRecoveryApi? passkeyApi,
-    PasskeyClient? passkey,
+    required this._api,
+    required this._store,
+    required this._acceptRegistrationSession,
+    required this._clearCommunityAccess,
+    this._passkeyApi,
+    this._passkey,
     int Function()? sessionAuthorityVersion,
-    Listenable? sessionAuthority,
+    this._sessionAuthority,
     DateTime Function()? clock,
-  }) : _api = api, _store = store,
-       _acceptRegistrationSession = acceptRegistrationSession,
-       _clearCommunityAccess = clearCommunityAccess,
-       _passkeyApi = passkeyApi, _passkey = passkey,
-       _sessionAuthorityVersion = sessionAuthorityVersion ?? (() => 0),
-       _sessionAuthority = sessionAuthority,
+  }) : _sessionAuthorityVersion = sessionAuthorityVersion ?? (() => 0),
        _clock = clock ?? DateTime.now {
     _sessionAuthority?.addListener(_sessionAuthorityChanged);
   }

@@ -142,8 +142,10 @@ class IdentityTestFixture {
     IdentityTestApi? api}) async {
     final storage = vault ?? IdentityTestVault();
     final store = AuthStore(storage);
-    if (initialize) await store.update((s) => s.copyWith(session: SessionRecord(
+    if (initialize) {
+      await store.update((s) => s.copyWith(session: SessionRecord(
       token: identityTestToken, accountId: identityTestAccount, expiresAt: identityTestExpiry)));
+    }
     final sessionApi = IdentityTestSessionApi();
     final directory = ChannelDirectoryController(repository: IdentityTestChannels());
     final sessions = AuthSessionController(api: sessionApi, store: store, directory: directory);

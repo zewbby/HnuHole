@@ -1,9 +1,9 @@
 {
   "schemaVersion": "hnuhole-module-acceptance-ledger/v1",
-  "recordedOn": "2026-10-03",
+  "recordedOn": "2026-10-04",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/auth-privacy-handoff",
-  "baselineHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
+  "baselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
   "workingTreeContainsUncommittedImplementation": true,
   "workflow": "ANONYMITY_BRANCH_CLOSURE_WITH_EXPLICIT_DEFERRED_ACCEPTANCE",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
@@ -13,16 +13,13 @@
     "A11"
   ],
   "dynamicTestsExecutedInThisInventory": true,
-  "toolAvailabilityCheckedOn": "2026-10-03",
+  "toolAvailabilityCheckedOn": "2026-10-04",
   "missingTools": [
-    "flutter",
-    "dart",
-    "sqlc",
-    "oapi-codegen"
+    "macOS/full Xcode and iOS device target"
   ],
   "sourceFingerprint": {
-    "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
-    "presentFileCount": 232,
+    "sha256": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+    "presentFileCount": 237,
     "roots": [
       "services/api",
       "apps/mobile",
@@ -41,11 +38,13 @@
       ".json",
       ".kt",
       ".kts",
+      ".lock",
       ".mod",
       ".pbxproj",
       ".plist",
       ".podspec",
       ".properties",
+      ".ps1",
       ".py",
       ".sh",
       ".sql",
@@ -57,8 +56,7 @@
       ".xcworkspacedata",
       ".xml",
       ".yaml",
-      ".yml",
-      ".lock"
+      ".yml"
     ],
     "includedAdditionalNames": [
       ".env.example"
@@ -81,18 +79,18 @@
       "name": "工具、编译、协议与契约生成",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R00",
         "R01",
         "R08",
         "R10"
       ],
-      "note": "源码和生成器已更新；YAML-only/语法/空白通过，完整validator缺依赖；编译/格式/生成待验。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: generation, openapi-full, python-regression, flutter-analysis-tests, android-app-build. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -102,7 +100,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "packages/openapi/community-auth-api.yaml",
         "tools/configure-passkey-associations.py",
@@ -116,7 +114,7 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A02",
@@ -139,18 +137,16 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "boundedChecksPassed": [
-        "diff",
-        "openapi-yaml",
-        "source-consistency",
-        "handoff-consistency"
+        "generation",
+        "openapi-full",
+        "python-regression",
+        "flutter-analysis-tests",
+        "android-app-build"
       ],
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -173,32 +169,72 @@
             "go-race",
             "flutter-analyze"
           ]
+        },
+        {
+          "note": "源码和生成器已更新；YAML-only/语法/空白通过，完整validator缺依赖；编译/格式/生成待验。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [
+            "diff",
+            "openapi-yaml",
+            "source-consistency",
+            "handoff-consistency"
+          ],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A01",
       "name": "正式迁移、权限与旧认证退役",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R03",
         "R10"
       ],
-      "note": "正式迁移/非owner/升级首次动态待验 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "priorTaskRecords": [
         {
           "note": "正式迁移/非owner/升级首次动态待验",
           "currentResult": "NOT_RUN"
+        },
+        {
+          "note": "正式迁移/非owner/升级首次动态待验 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
       "taskPlan": "docs/design/identity-management-plan.md",
       "report": "docs/design/identity-management-validation-report.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -210,14 +246,14 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
-      "boundedChecksPassed": [],
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
       "sourcePaths": [
         "services/api/migrations/0011_identity_management.sql",
@@ -229,24 +265,27 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "pendingReasons": [
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+      ]
     },
     {
       "id": "A02",
       "name": "C/V实际服务、配置与HTTPS/mTLS",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03",
         "R10"
       ],
-      "note": "已接显式可信WebAuthn配置、C装配和authdev参数；省略禁用、V拒配置；真实非owner cmd未验。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -256,7 +295,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "services/api/internal/authprivacyruntime/config.go",
         "services/api/internal/authprivacyruntime/server.go",
@@ -271,8 +310,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期",
-        "用户暂无固定RP、平台签名身份与关联部署；可配置源码已保留"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -295,12 +333,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -313,29 +348,52 @@
           "blockedChecks": [
             "go-race"
           ]
+        },
+        {
+          "note": "已接显式可信WebAuthn配置、C装配和authdev参数；省略禁用、V拒配置；真实非owner cmd未验。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期",
+            "用户暂无固定RP、平台签名身份与关联部署；可配置源码已保留"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A03",
       "name": "C Safety Gate与显式恢复",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03",
         "R05",
         "R10"
       ],
-      "note": "新凭据结果读取/终止事务仍走最终Gate与generation；冻结、锁等待及旧记录回归待SQL实跑。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -345,7 +403,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_credential_result.go",
         "services/api/internal/authprivacy/community_identities.go",
@@ -357,7 +415,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -380,12 +438,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -398,32 +453,78 @@
           "blockedChecks": [
             "go-race"
           ]
+        },
+        {
+          "note": "新凭据结果读取/终止事务仍走最终Gate与generation；冻结、锁等待及旧记录回归待SQL实跑。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A04",
       "name": "V OTP、资格、配额与退役续办",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03"
       ],
-      "note": "历史隔离通过；当前worker/正式迁移待复验；V独立Gate未实现",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "priorTaskRecords": [
+        {
+          "note": "历史隔离通过；当前worker/正式迁移待复验；V独立Gate未实现",
+          "currentResult": "NOT_RUN",
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
+        }
+      ],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+      "executedEvidenceIsModulePass": false,
+      "workingTreeUncommitted": true,
+      "blockedChecks": [
+        "AC01-AC02-production-boundaries"
+      ],
+      "pendingReasons": [
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+      ],
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion."
     },
     {
       "id": "A05",
       "name": "C注册、密码准备与槽位事实",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03",
@@ -431,11 +532,11 @@
         "R05",
         "R10"
       ],
-      "note": "共享AuthFlows构造/持久模型/认证路由变化，注册默认行为需重开Flutter和SQL完整回归。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -445,7 +546,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_state_codec.dart",
@@ -459,7 +560,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -482,12 +583,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -500,18 +598,40 @@
           "blockedChecks": [
             "go-race"
           ]
+        },
+        {
+          "note": "共享AuthFlows构造/持久模型/认证路由变化，注册默认行为需重开Flutter和SQL完整回归。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A06",
       "name": "密码登录、接替、认证、续期与退出",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03",
@@ -520,11 +640,11 @@
         "R09",
         "R10"
       ],
-      "note": "设备管理及主动退出已接原会话；新登录开始/接替/退出围栏影响共享会话控制器，动态待验。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -534,7 +654,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_session_controller.dart",
         "apps/mobile/lib/src/auth/security_management_controller.dart",
@@ -548,7 +668,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -571,12 +691,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -589,18 +706,40 @@
           "blockedChecks": [
             "go-race"
           ]
+        },
+        {
+          "note": "设备管理及主动退出已接原会话；新登录开始/接替/退出围栏影响共享会话控制器，动态待验。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A07",
       "name": "独立恢复与密码重设",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03",
@@ -609,11 +748,11 @@
         "R09",
         "R10"
       ],
-      "note": "原生可发现证明接受限密码重设；首读/通知/native/HTTP取消及登录开始围栏已补，不自动登录/取消注销。11个恢复测试源码未执行。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -623,7 +762,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -637,7 +776,7 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -660,12 +799,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -679,18 +815,40 @@
             "flutter-focused",
             "flutter-analyze"
           ]
+        },
+        {
+          "note": "原生可发现证明接受限密码重设；首读/通知/native/HTTP取消及登录开始围栏已补，不自动登录/取消注销。11个恢复测试源码未执行。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A08",
       "name": "七天注销、处罚联动、关闭与释放",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03",
@@ -698,11 +856,11 @@
         "R05",
         "R10"
       ],
-      "note": "本片未改注销服务端规则；共享AuthFlows/认证页路由需复验注销核对和持久状态不被原生恢复取消。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。 2026-10-03匿名收口盘点：现有身份尚未接入整账号正式关闭生命周期，见AC02；不因此改写基础管理源码状态或历史通过证据。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -712,7 +870,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_screen.dart",
@@ -726,7 +884,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -749,12 +907,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -767,23 +922,45 @@
           "blockedChecks": [
             "go-race"
           ]
+        },
+        {
+          "note": "本片未改注销服务端规则；共享AuthFlows/认证页路由需复验注销核对和持久状态不被原生恢复取消。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。 2026-10-03匿名收口盘点：现有身份尚未接入整账号正式关闭生命周期，见AC02；不因此改写基础管理源码状态或历史通过证据。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "anonymityClosureGapIds": [
         "AC02",
         "AC03",
         "AC05"
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A09",
       "name": "恢复凭据管理与WebAuthn服务端",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R01",
         "R02",
@@ -792,7 +969,7 @@
         "R09",
         "R10"
       ],
-      "note": "服务端管理原结果查询、规范原生origin及可选runtime WebAuthn装配源码完成；12个新增Go Test函数/SQL及真实cmd待验；配置身份未提供。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "relatedModules": [
         "A00",
         "A02",
@@ -814,7 +991,7 @@
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -824,7 +1001,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_credential_result.go",
         "services/api/internal/authprivacy/passkey_verification.go",
@@ -845,18 +1022,14 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期",
-        "用户暂无固定RP、平台签名身份与关联部署；可配置源码已保留"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -869,32 +1042,79 @@
           "blockedChecks": [
             "go-race"
           ]
+        },
+        {
+          "note": "服务端管理原结果查询、规范原生origin及可选runtime WebAuthn装配源码完成；12个新增Go Test函数/SQL及真实cmd待验；配置身份未提供。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期",
+            "用户暂无固定RP、平台签名身份与关联部署；可配置源码已保留"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A10",
       "name": "后台任务、SMTP、收据与清理",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03"
       ],
-      "note": "新增摘要worker/claim/Gate/CAS当前未动态验收",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "priorTaskRecords": [
+        {
+          "note": "新增摘要worker/claim/Gate/CAS当前未动态验收",
+          "currentResult": "NOT_RUN",
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
+        }
+      ],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+      "executedEvidenceIsModulePass": false,
+      "workingTreeUncommitted": true,
+      "blockedChecks": [
+        "AC01-AC02-production-boundaries"
+      ],
+      "pendingReasons": [
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+      ],
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion."
     },
     {
       "id": "A11",
       "name": "真实目录最终授权与续期",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
         "R03",
@@ -902,11 +1122,11 @@
         "R05",
         "R10"
       ],
-      "note": "目录服务端规则未由本片重写；共享Session/controller初始化与authorityVersion变化，Gate冻结/接替目录回归需重开。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -916,7 +1136,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_session_controller.dart",
         "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
@@ -930,7 +1150,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -953,12 +1173,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -971,29 +1188,51 @@
           "blockedChecks": [
             "go-race"
           ]
+        },
+        {
+          "note": "目录服务端规则未由本片重写；共享Session/controller初始化与authorityVersion变化，Gate冻结/接替目录回归需重开。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03"
+      ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A12",
       "name": "Flutter认证与目录持久状态",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R04",
         "R05",
         "R09",
         "R10"
       ],
-      "note": "持久pendingCredentialChange只存原ID/键/账号/旧token摘要；原会话核对、权威截止先持久、同步取消围栏已补；Dart与设备待验。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: flutter-analysis-tests, real-dart-sql-r05, flutter-android-process. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -1003,7 +1242,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_models.dart",
         "apps/mobile/lib/src/auth/auth_state_codec.dart",
@@ -1015,10 +1254,13 @@
         "apps/mobile/test/security_management_controller_test.dart",
         "apps/mobile/test/passkey_recovery_flow_test.dart",
         "apps/mobile/test/auth_api_test.dart",
-        "apps/mobile/test/identity_management_controller_test.dart"
+        "apps/mobile/test/identity_management_controller_test.dart",
+        "apps/mobile/test_driver/auth_security_test.dart",
+        "tools/run-android-auth-process-test.ps1",
+        "tools/run-android-vault-probes.ps1"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -1041,12 +1283,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "physical-device-matrix"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -1060,27 +1299,51 @@
             "flutter-focused",
             "flutter-analyze"
           ]
+        },
+        {
+          "note": "持久pendingCredentialChange只存原ID/键/账号/旧token摘要；原会话核对、权威截止先持久、同步取消围栏已补；Dart与设备待验。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [
+        "flutter-analysis-tests",
+        "real-dart-sql-r05",
+        "flutter-android-process"
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "A13",
       "name": "真实HTTPS/PG及实际cmd综合链路",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R03",
         "R05",
         "R09",
         "R10"
       ],
-      "note": "真实HTTPS/PG fixture新增管理/轮换提交后丢响应/原结果核对/接替/冻结；仍使用内存vault和同进程重建，未执行。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03, real-dart-sql-r05, flutter-android-process. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -1090,7 +1353,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -1103,7 +1366,7 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -1126,12 +1389,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "AC01-AC02-production-boundaries"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -1144,32 +1404,56 @@
           "blockedChecks": [
             "go-race"
           ]
+        },
+        {
+          "note": "真实HTTPS/PG fixture新增管理/轮换提交后丢响应/原结果核对/接替/冻结；仍使用内存vault和同进程重建，未执行。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE",
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "go-sql-race-vet",
+        "runtime-r03",
+        "real-dart-sql-r05",
+        "flutter-android-process"
+      ],
       "anonymityClosureGapIds": [
         "AC04",
         "AC05"
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BACKEND_CHECKS_PASS_NOT_FULL_MODULE_ACCEPTANCE"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "N01",
       "name": "Android安全存储与完整app",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R07",
         "R09",
         "R10"
       ],
-      "note": "真实Android vault设备integration_test及显式不同PID两进程probe源码已有；标准app/16项设备/外驱probe均未执行。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: android-app-build, android-native-build, android-vault-device, flutter-android-process. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -1179,7 +1463,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -1189,10 +1473,13 @@
       "testPaths": [
         "apps/mobile/integration_test/auth_security_device_test.dart",
         "apps/mobile/test/identity_management_controller_test.dart",
-        "apps/mobile/test/auth_api_test.dart"
+        "apps/mobile/test/auth_api_test.dart",
+        "apps/mobile/test_driver/auth_security_test.dart",
+        "tools/run-android-auth-process-test.ps1",
+        "tools/run-android-vault-probes.ps1"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
       ],
       "relatedModules": [
         "A00",
@@ -1214,7 +1501,7 @@
       ],
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -1224,32 +1511,54 @@
           "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
           "testedWorkingTreeSourceFingerprint": "c82c587abb219f4296c18ce7898d3421204b0664e47b0a6718c636518df6618e",
           "currentResult": "BLOCKED"
+        },
+        {
+          "note": "真实Android vault设备integration_test及显式不同PID两进程probe源码已有；标准app/16项设备/外驱probe均未执行。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": [],
+      "boundedChecksPassed": [
+        "android-app-build",
+        "android-native-build",
+        "android-vault-device",
+        "flutter-android-process"
+      ],
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
-      ]
+        "physical-device-matrix"
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "N02",
       "name": "iOS安全存储与完整app",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R06",
         "R09",
         "R10"
       ],
-      "note": "同源SwiftPM/CocoaPods打包和真实Keychain RunnerTests/两XCTest进程probe源码已补；macOS marker/Swift parse通过，不代证iOS链接、Keychain或完整app。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: none on iOS. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -1259,7 +1568,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift",
         "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift",
@@ -1275,7 +1584,7 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "macOS/full Xcode and iOS target unavailable; no current iOS runtime validation"
       ],
       "relatedModules": [
         "A00",
@@ -1299,12 +1608,9 @@
       "executedEvidenceIsModulePass": false,
       "boundedChecksPassed": [],
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "ios-native"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -1323,21 +1629,41 @@
           "blockedChecks": [
             "xcode-environment"
           ]
+        },
+        {
+          "note": "同源SwiftPM/CocoaPods打包和真实Keychain RunnerTests/两XCTest进程probe源码已补；macOS marker/Swift parse通过，不代证iOS链接、Keychain或完整app。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
-      ]
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BLOCKED_NO_CURRENT_IOS_EXECUTION"
     },
     {
       "id": "N03",
       "name": "Android/iOS原生Passkey桥",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R08",
         "R09",
         "R10"
       ],
-      "note": "Android Credential Manager/iOS AuthenticationServices create/get/cancel及受限恢复源码完成；共享Swift/生成器通过，原生类型/链接/真实sheet待验，用户暂无RP/签名/Team配置。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: passkey-dart, android-native-build, passkey-android-codec. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "relatedModules": [
         "A00",
         "A02",
@@ -1359,7 +1685,7 @@
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -1369,7 +1695,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "packages/auth_passkey/lib/hnuhole_auth_passkey.dart",
         "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt",
@@ -1389,13 +1715,16 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期",
-        "用户暂无固定RP、平台签名身份与关联部署；可配置源码已保留"
+        "RP/signing/Team associations and actual provider ceremony absent"
       ],
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
-      "boundedChecksPassed": [],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "boundedChecksPassed": [
+        "passkey-dart",
+        "android-native-build",
+        "passkey-android-codec"
+      ],
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -1411,21 +1740,39 @@
             "native-syntax",
             "podspec-syntax"
           ]
+        },
+        {
+          "note": "Android Credential Manager/iOS AuthenticationServices create/get/cancel及受限恢复源码完成；共享Swift/生成器通过，原生类型/链接/真实sheet待验，用户暂无RP/签名/Team配置。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期",
+            "用户暂无固定RP、平台签名身份与关联部署；可配置源码已保留"
+          ],
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
-      ]
+        "native-passkey-ceremony"
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "B01",
       "name": "账号安全管理页面",
       "implementationState": "PRESENT",
       "acceptanceState": "PENDING_CURRENT_REVISION",
-      "currentResult": "NOT_RUN",
+      "currentResult": "BLOCKED",
       "verificationEntries": [
         "R04",
         "R05",
@@ -1433,11 +1780,11 @@
         "R09",
         "R10"
       ],
-      "note": "设备/退出/密码复验/一次展示隐藏后完整确认/轮换和绑定移除/持久结果核对源码完成。controller28场景、widget4、恢复11、嵌套路由1源码；未编译、验收待执行。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "2026-10-04 executed scoped checks: flutter-analysis-tests, real-dart-sql-r05, flutter-android-process. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -1447,7 +1794,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/credential_management_api.dart",
         "apps/mobile/lib/src/auth/security_management_controller.dart",
@@ -1466,8 +1813,7 @@
         "apps/mobile/test/identity_management_controller_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期",
-        "用户暂无固定RP、平台签名身份与关联部署；可配置源码已保留"
+        "RP/signing/Team associations and actual provider ceremony absent"
       ],
       "relatedModules": [
         "A00",
@@ -1490,12 +1836,9 @@
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
-        "go-race",
-        "flutter-tests",
-        "flutter-analyze",
-        "openapi-full"
+        "native-passkey-ceremony"
       ],
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -1509,9 +1852,34 @@
             "flutter-focused",
             "flutter-analyze"
           ]
+        },
+        {
+          "note": "设备/退出/密码复验/一次展示隐藏后完整确认/轮换和绑定移除/持久结果核对源码完成。controller28场景、widget4、恢复11、嵌套路由1源码；未编译、验收待执行。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "currentResult": "NOT_RUN",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期",
+            "用户暂无固定RP、平台签名身份与关联部署；可配置源码已保留"
+          ],
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "boundedChecksPassed": []
+      "boundedChecksPassed": [
+        "flutter-analysis-tests",
+        "real-dart-sql-r05",
+        "flutter-android-process"
+      ],
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "B02",
@@ -1525,17 +1893,46 @@
         "R05",
         "R10"
       ],
-      "note": "基础管理服务端SQL/race/HTTPS及非owner实际进程通过；Flutter/设备仍阻塞，业务联动和现有身份整账号关闭AC02未实现，不登记整模块PASS。历史原版本结果保留。",
+      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03, flutter-analysis-tests, real-dart-sql-r05. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
       "priorTaskRecords": [
         {
           "note": "仅设计规则，无实际业务API/表/客户端流程",
           "currentResult": "NOT_RUN"
+        },
+        {
+          "note": "基础管理服务端SQL/race/HTTPS及非owner实际进程通过；Flutter/设备仍阻塞，业务联动和现有身份整账号关闭AC02未实现，不登记整模块PASS。历史原版本结果保留。",
+          "currentResult": "BLOCKED",
+          "testedHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
+          "testedWorkingTreeSourceFingerprint": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+          "boundedChecksPassed": [
+            "diff",
+            "openapi-yaml",
+            "source-consistency",
+            "handoff-consistency",
+            "go-sql-race-vet",
+            "runtime-r03",
+            "runtime-fix-race-vet",
+            "openapi-full"
+          ],
+          "blockedChecks": [
+            "flutter-tests",
+            "flutter-analyze",
+            "real-dart-sql",
+            "native-device"
+          ],
+          "pendingReasons": [
+            "Flutter/Dart path/container not found; R05 and analyze/tests pending",
+            "Native/device and Passkey association evidence absent",
+            "AC02 identity whole-account closure and subsequent business integration not implemented"
+          ],
+          "recordedOn": "2026-10-03",
+          "proofScope": "Historical state preserved before current validation."
         }
       ],
       "taskPlan": "docs/design/identity-management-plan.md",
       "report": "docs/design/identity-management-validation-report.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
-      "testedHeadCommit": "87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc",
+      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
       "workingTreeUncommitted": true,
       "crossModuleScenes": [
         "X01",
@@ -1547,9 +1944,9 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "Provide Flutter executable/container and run R04/R05/R10; then native device/process checks. AC01/AC02 remain implementation tasks.",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "foundationImplementationState": "SOURCE_IMPLEMENTED",
-      "foundationAcceptanceState": "BACKEND_SQL_RUNTIME_PASSED_CLIENT_DEVICE_PENDING",
+      "foundationAcceptanceState": "BACKEND_DART_SQL_PASSED_ANDROID_SHARED_AUTHSTORE_BOUNDED",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_identities.go",
         "services/api/internal/authprivacy/identity_rules.go",
@@ -1602,9 +1999,9 @@
         "B11"
       ],
       "pendingReasons": [
-        "Flutter/Dart path/container not found; R05 and analyze/tests pending",
-        "Native/device and Passkey association evidence absent",
-        "AC02 identity whole-account closure and subsequent business integration not implemented"
+        "AC02 identity whole-account closure and subsequent business integration not implemented",
+        "B02 device IME/accessibility/identity-specific process matrix not run; Android shared auth persistence passed",
+        "iOS/native Passkey associations remain blocked"
       ],
       "pendingImplementation": [
         "B05/B07：首次公开动作创建／选择后恢复原输入及原子帖内绑定、最近发言默认身份",
@@ -1614,22 +2011,15 @@
         "后续媒体：自定义头像上传登记／审核"
       ],
       "boundedChecksPassed": [
-        "diff",
-        "openapi-yaml",
-        "source-consistency",
-        "handoff-consistency",
         "go-sql-race-vet",
         "runtime-r03",
-        "runtime-fix-race-vet",
-        "openapi-full"
+        "flutter-analysis-tests",
+        "real-dart-sql-r05"
       ],
       "blockedChecks": [
-        "flutter-tests",
-        "flutter-analyze",
-        "real-dart-sql",
-        "native-device"
+        "physical-device-matrix"
       ],
-      "testedWorkingTreeSourceFingerprint": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "pendingTestHarnessExtensions": [],
       "anonymityClosureGapIds": [
         "AC02",
@@ -1643,9 +2033,11 @@
           "proofScope": "Original B02 static checks; no dynamic acceptance"
         }
       ],
-      "testedWorkingTreeProofScope": "Go SQL/race and actual non-owner C/V runtime passed; Flutter/device pending; startup fix separately retested; no full B02 module pass",
-      "latestTestSourceStatus": "AC04_B02_R03_PASSED_R05_SOURCE_ADDED_EXECUTION_BLOCKED",
-      "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json"
+      "testedWorkingTreeProofScope": "Current Go SQL/race/vet and actual C/V processes; full Dart regression, real Dart HTTPS/SQL, Android emulator native persistence and app builds. No full B02/platform/production acceptance.",
+      "latestTestSourceStatus": "AC04_B02_R03_R05_EXECUTED_PASS",
+      "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
     },
     {
       "id": "B03",
@@ -2214,6 +2606,57 @@
         "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
         "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
       }
+    },
+    {
+      "recordedOn": "2026-10-03",
+      "sourceFingerprint": {
+        "sha256": "2a739f9bc7d91646750fef0957de0a3845febc3e0741603747631cda8e3624b0",
+        "presentFileCount": 232,
+        "roots": [
+          "services/api",
+          "apps/mobile",
+          "packages/auth_vault",
+          "packages/openapi",
+          "packages/auth-protocol-vectors",
+          "infra",
+          "packages/auth_passkey",
+          "tools"
+        ],
+        "includedSuffixes": [
+          ".dart",
+          ".entitlements",
+          ".go",
+          ".gradle",
+          ".json",
+          ".kt",
+          ".kts",
+          ".mod",
+          ".pbxproj",
+          ".plist",
+          ".podspec",
+          ".properties",
+          ".py",
+          ".sh",
+          ".sql",
+          ".sum",
+          ".swift",
+          ".txt",
+          ".xcconfig",
+          ".xcscheme",
+          ".xcworkspacedata",
+          ".xml",
+          ".yaml",
+          ".yml",
+          ".lock"
+        ],
+        "includedAdditionalNames": [
+          ".env.example"
+        ],
+        "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
+        "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
+        "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+      },
+      "reason": "Preserve previous backend-only evidence; current suffix list adds PowerShell test/environment scripts."
     }
   ],
   "workflowHistory": [
@@ -2224,11 +2667,11 @@
     }
   ],
   "anonymityBranchClosure": {
-    "recordedOn": "2026-10-03",
+    "recordedOn": "2026-10-04",
     "checklist": "docs/design/auth-privacy-closure-checklist.md",
-    "inventoryOnly": true,
-    "applicationSourceChangedInInventory": false,
-    "dynamicTestsExecutedInInventory": false,
+    "inventoryOnly": false,
+    "applicationSourceChangedInInventory": true,
+    "dynamicTestsExecutedInInventory": true,
     "fullBusinessSlicesPaused": [
       "B05",
       "B03",
@@ -2288,20 +2731,21 @@
       {
         "id": "AC04",
         "name": "B02实际进程与真实客户端测试链",
-        "implementationOrEvidenceState": "TEST_HARNESS_INCOMPLETE",
-        "currentResult": "NOT_RUN",
+        "implementationOrEvidenceState": "EXISTING_B02_R03_R05_PASS_NEW_AC01_AC02_SCENARIOS_PENDING",
+        "currentResult": "PASS",
         "moduleIds": [
           "A01",
           "A02",
           "A13",
           "B02"
-        ]
+        ],
+        "proofScope": "Existing B02 foundation R03/R05 only; future AC01/AC02 implementation tests remain pending."
       },
       {
         "id": "AC05",
         "name": "当前版本集中及原生验收",
-        "implementationOrEvidenceState": "ACCEPTANCE_NOT_RUN",
-        "currentResult": "NOT_RUN",
+        "implementationOrEvidenceState": "GO_DART_ANDROID_BOUNDED_PASS_IOS_PASSKEY_PHYSICAL_PENDING",
+        "currentResult": "BLOCKED",
         "moduleIds": [
           "A00",
           "A01",
@@ -2327,9 +2771,10 @@
       {
         "id": "AC06",
         "name": "交接状态统一与最终交付",
-        "implementationOrEvidenceState": "FINALIZATION_PENDING",
-        "currentResult": "NOT_RUN",
-        "moduleIds": []
+        "implementationOrEvidenceState": "TEST_DOCUMENTATION_AND_SOURCE_DELIVERY",
+        "currentResult": "PASS",
+        "moduleIds": [],
+        "proofScope": "Current test repair/environment/docs delivery only; anonymity/production acceptance not closed."
       }
     ],
     "productionEvidenceStillPending": [
@@ -2339,9 +2784,100 @@
       "P05",
       "P06"
     ],
-    "sourceDeliveryClosed": false,
+    "sourceDeliveryClosed": true,
     "acceptanceClosed": false,
-    "productionApproved": false
+    "productionApproved": false,
+    "historicalInventory": {
+      "recordedOn": "2026-10-03",
+      "inventoryOnly": true,
+      "dynamicTestsExecutedInInventory": false,
+      "gaps": [
+        {
+          "id": "AC01",
+          "name": "V独立Safety Gate",
+          "implementationOrEvidenceState": "NOT_IMPLEMENTED",
+          "currentResult": "NOT_RUN",
+          "moduleIds": [
+            "P01",
+            "A01",
+            "A02",
+            "A04",
+            "A10"
+          ]
+        },
+        {
+          "id": "AC02",
+          "name": "已有身份整账号正式关闭生命周期",
+          "implementationOrEvidenceState": "NOT_INTEGRATED",
+          "currentResult": "NOT_RUN",
+          "moduleIds": [
+            "A08",
+            "B02"
+          ]
+        },
+        {
+          "id": "AC03",
+          "name": "当前隐私边界核对及后续业务契约",
+          "implementationOrEvidenceState": "REVIEW_NOT_RUN",
+          "currentResult": "NOT_RUN",
+          "moduleIds": [
+            "A01",
+            "A02",
+            "A04",
+            "A05",
+            "A08",
+            "A12",
+            "B02"
+          ]
+        },
+        {
+          "id": "AC04",
+          "name": "B02实际进程与真实客户端测试链",
+          "implementationOrEvidenceState": "TEST_HARNESS_INCOMPLETE",
+          "currentResult": "NOT_RUN",
+          "moduleIds": [
+            "A01",
+            "A02",
+            "A13",
+            "B02"
+          ]
+        },
+        {
+          "id": "AC05",
+          "name": "当前版本集中及原生验收",
+          "implementationOrEvidenceState": "ACCEPTANCE_NOT_RUN",
+          "currentResult": "NOT_RUN",
+          "moduleIds": [
+            "A00",
+            "A01",
+            "A02",
+            "A03",
+            "A04",
+            "A05",
+            "A06",
+            "A07",
+            "A08",
+            "A09",
+            "A10",
+            "A11",
+            "A12",
+            "A13",
+            "N01",
+            "N02",
+            "N03",
+            "B01",
+            "B02"
+          ]
+        },
+        {
+          "id": "AC06",
+          "name": "交接状态统一与最终交付",
+          "implementationOrEvidenceState": "FINALIZATION_PENDING",
+          "currentResult": "NOT_RUN",
+          "moduleIds": []
+        }
+      ]
+    }
   },
   "handoffDelivery": {
     "recordedOn": "2026-10-03",
@@ -2360,8 +2896,18 @@
       "infra/postgres/grant-verifier.sql: removed one blank line at EOF; SQL behavior unchanged"
     ],
     "sourceFingerprintSha256": "2250e28cba7f501f598174cbbe19f59d0f075f63ae23ecb42f7e940716a99aa5",
-    "stagedDiffCheckInitialResult": "FAIL: new blank line at EOF in infra/postgres/grant-verifier.sql; repaired before commit"
+    "stagedDiffCheckInitialResult": "FAIL: new blank line at EOF in infra/postgres/grant-verifier.sql; repaired before commit",
+    "currentTestDelivery": {
+      "recordedOn": "2026-10-04",
+      "branch": "codex/auth-privacy-handoff",
+      "baselineCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
+      "scope": "Verified tests, environment source scripts, documentation/status and cleanup; no production release. Delivery commit is the commit containing this record.",
+      "sourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+      "userAuthorizedPush": true,
+      "cleanupPassed": true
+    }
   },
   "workingTreeUncommitted": true,
-  "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json"
+  "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+  "cleanupEvidence": "services/api/authlab/identity-runtime-test-verification.json#cleanupEvidence"
 }

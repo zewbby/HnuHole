@@ -28,10 +28,10 @@ String sessionTokenDigest(String token) => AuthCrypto.encode(
 /// revocation capability is still active, including an unknown prior renewal.
 class AuthSessionController extends ChangeNotifier {
   AuthSessionController({
-    required AuthApi api,
-    required AuthStore store,
-    required ChannelDirectoryController directory,
-  }) : _api = api, _store = store, _directory = directory {
+    required this._api,
+    required this._store,
+    required this._directory,
+  }) {
     _store.addListener(_storeChanged);
     _directory.onSessionUnauthorized = _directoryUnauthorized;
     _directory.onSessionRetry = retry;

@@ -140,7 +140,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
 
   static String _identityId(String id) {
     if (!RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
-        .hasMatch(id)) throw const FormatException('Invalid identity ID');
+        .hasMatch(id)) {
+      throw const FormatException('Invalid identity ID');
+    }
     return id;
   }
 

@@ -315,10 +315,10 @@ void main() {
     }
     final old = const AuthState().toJson('test')..remove('identityChanges');
     expect(AuthState.parse(old, 'test').identityChanges, isEmpty);
-    final draft = AuthState(identityDrafts: {identityTestAccount:
+    const draft = AuthState(identityDrafts: {identityTestAccount:
       {'v': 1, 'username': 'private_user', 'nickname': '春'}});
     expect(AuthState.parse(draft.toJson('test'), 'test').identityDrafts[identityTestAccount]['nickname'], '春');
-    expect(() => AuthState.parse(AuthState(identityDrafts: {identityTestAccount:
+    expect(() => AuthState.parse(const AuthState(identityDrafts: {identityTestAccount:
       {'v': 1, 'username': 'private_user', 'nickname': '春', 'password': 'secret'}})
       .toJson('test'), 'test'), throwsFormatException);
   });

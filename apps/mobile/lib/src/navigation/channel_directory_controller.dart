@@ -11,8 +11,7 @@ enum ChannelDirectoryStatus { signedOut, loading, ready, failure }
 /// for the entry contract: the UI must not present a partial or stale set of
 /// channels as if it were current business data.
 class ChannelDirectoryController extends ChangeNotifier {
-  ChannelDirectoryController({required ChannelRepository repository})
-      : _repository = repository;
+  ChannelDirectoryController({required this._repository});
 
   final ChannelRepository _repository;
   void Function(String token, String? code)? onSessionUnauthorized;

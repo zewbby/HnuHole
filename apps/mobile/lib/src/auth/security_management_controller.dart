@@ -34,14 +34,11 @@ enum CredentialChangeKind { rotation, passkeyBinding, passkeyRemoval }
 /// and native ceremony responses are never saved or retried automatically.
 class SecurityManagementController extends ChangeNotifier {
   SecurityManagementController({
-    required CredentialManagementApi api,
-    required AuthStore store,
-    required PasskeyClient passkey,
-    required AuthSessionController sessions,
-  }) : _api = api,
-       _store = store,
-       _passkey = passkey,
-       _sessions = sessions {
+    required this._api,
+    required this._store,
+    required this._passkey,
+    required this._sessions,
+  }) {
     _observedToken = _activeRecord()?.token;
     _store.addListener(_authorityChanged);
     _sessions.addListener(_authorityChanged);
@@ -83,12 +80,16 @@ class SecurityManagementController extends ChangeNotifier {
     final state = _store.current;
     final record = state?.session;
     if (state == null || record == null ||
-        !_sessions.isCurrentToken(record.token)) return null;
+        !_sessions.isCurrentToken(record.token)) {
+      return null;
+    }
     final digest = sessionTokenDigest(record.token);
     if (state.logouts.any((entry) => entry.tokenDigest == digest) ||
         state.pendingReset?['state'] == 'UNKNOWN' ||
         state.pendingReset?['state'] == 'EXPIRED' ||
-        state.pendingClosure?['state'] == 'UNKNOWN') return null;
+        state.pendingClosure?['state'] == 'UNKNOWN') {
+      return null;
+    }
     return record;
   }
 
@@ -184,7 +185,9 @@ class SecurityManagementController extends ChangeNotifier {
   /// dropped before the input field is made available and cannot be shown twice.
   void hideRecoveryCode() {
     if (_busy || _status != SecurityManagementStatus.rotationCodeShown ||
-        _rotation == null) return;
+        _rotation == null) {
+      return;
+    }
     final previous = _rotation!;
     _rotation = RecoveryCodeRotation(
       rotationIntentId: previous.rotationIntentId,
@@ -395,7 +398,9 @@ class SecurityManagementController extends ChangeNotifier {
     var saved = false;
     await _store.update((latest) {
       if (!_current(epoch, record) || latest.session?.token != record.token ||
-          latest.pendingCredentialChange?['key'] != pending['key']) return latest;
+          latest.pendingCredentialChange?['key'] != pending['key']) {
+        return latest;
+      }
       saved = true;
       return latest.copyWith(pendingCredentialChange: next);
     });
@@ -422,7 +427,9 @@ class SecurityManagementController extends ChangeNotifier {
   Future<void> acknowledgeResult() => _run((epoch, record) async {
     final pending = _store.current!.pendingCredentialChange;
     if (pending == null ||
-        !{'COMMITTED', 'NOT_COMMITTED'}.contains(pending['state'])) return;
+        !{'COMMITTED', 'NOT_COMMITTED'}.contains(pending['state'])) {
+      return;
+    }
     await _clearPending(epoch, record, pending);
     if (_current(epoch, record)) await _loadDirectory(epoch, record);
   });
@@ -433,7 +440,9 @@ class SecurityManagementController extends ChangeNotifier {
   Future<void> abandonPending() => _run((epoch, record) async {
     final pending = _store.current!.pendingCredentialChange;
     if (pending == null ||
-        (_belongs(pending, record) && pending['state'] != 'EXPIRED')) return;
+        (_belongs(pending, record) && pending['state'] != 'EXPIRED')) {
+      return;
+    }
     await _clearPending(epoch, record, pending);
     if (_current(epoch, record)) await _loadDirectory(epoch, record);
   });
@@ -442,7 +451,9 @@ class SecurityManagementController extends ChangeNotifier {
     int epoch, SessionRecord record, Map<String, dynamic> pending,
   ) => _store.update((latest) {
     if (!_current(epoch, record) ||
-        latest.pendingCredentialChange?['key'] != pending['key']) return latest;
+        latest.pendingCredentialChange?['key'] != pending['key']) {
+      return latest;
+    }
     return latest.copyWith(clearPendingCredentialChange: true);
   }).then<void>((_) {});
 
@@ -566,7 +577,9 @@ class SecurityManagementController extends ChangeNotifier {
         try {
           await _store.update((latest) {
             if (!_current(epoch, record!) ||
-                latest.pendingCredentialChange?['key'] != pending['key']) return latest;
+                latest.pendingCredentialChange?['key'] != pending['key']) {
+              return latest;
+            }
             return latest.copyWith(pendingCredentialChange: {
               ...pending, 'state': 'EXPIRED',
             });
