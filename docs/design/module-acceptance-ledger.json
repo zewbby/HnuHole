@@ -4,7 +4,7 @@
   "timeZone": "Asia/Shanghai",
   "branch": "codex/auth-privacy-handoff",
   "baselineHeadCommit": "faf557db4d74ecb2c202fd1349f1bf8fa64e6133",
-  "workingTreeContainsUncommittedImplementation": true,
+  "workingTreeContainsUncommittedImplementation": false,
   "workflow": "ANONYMITY_BRANCH_CLOSURE_WITH_EXPLICIT_DEFERRED_ACCEPTANCE",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
@@ -3417,13 +3417,15 @@
       "cleanupPassed": true
     },
     "currentAC01Evidence": "services/api/authlab/verifier-safety-gate-verification.json",
-    "currentAC01Uncommitted": true,
+    "currentAC01Uncommitted": false,
     "currentAC02Evidence": "services/api/authlab/identity-account-closure-verification.json",
-    "currentAC02Uncommitted": true,
+    "currentAC02Uncommitted": false,
     "currentAC03Evidence": "services/api/authlab/privacy-boundary-verification.json",
-    "currentAC03Uncommitted": true
+    "currentAC03Uncommitted": false,
+    "currentImplementationCommit": "8db630f66bfc87cc05164aaae95b02b0d884d09a",
+    "currentImplementationPushVerified": true
   },
-  "workingTreeUncommitted": true,
+  "workingTreeUncommitted": false,
   "latestValidationEvidence": "services/api/authlab/privacy-boundary-verification.json",
   "cleanupEvidence": "services/api/authlab/privacy-boundary-verification.json#cleanup",
   "historicalBaselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
@@ -3810,5 +3812,20 @@
       "checkoutNewlineConversions": 164
     }
   },
-  "latestClientRegressionEvidence": "services/api/authlab/privacy-boundary-verification.json"
+  "latestClientRegressionEvidence": "services/api/authlab/privacy-boundary-verification.json",
+  "publicationDelivery": {
+    "recordedOn": "2026-10-05",
+    "verifiedAtUTC": "2026-10-05T02:09:07.329744+00:00",
+    "branch": "codex/auth-privacy-handoff",
+    "remote": "origin",
+    "implementationCommit": "8db630f66bfc87cc05164aaae95b02b0d884d09a",
+    "remoteImplementationCommit": "8db630f66bfc87cc05164aaae95b02b0d884d09a",
+    "implementationPushVerified": true,
+    "dynamicTestsRerunForPublication": false,
+    "scope": "AC01/AC02/AC03 implementation and scoped evidence; following delivery documentation preserves test-time snapshots",
+    "gitBlobNewlineEquivalenceVerified": true,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false
+  },
+  "workingTreeStatusNote": "Source implementation is committed and its push verified; test-time uncommitted flags inside AC records remain historical provenance. This delivery metadata is committed separately; use git status for live checkout state."
 }

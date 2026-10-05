@@ -415,5 +415,19 @@
     "gitBlobComparison": "PASS",
     "scope": "Each staged source file equals tested bytes or only Git CRLF-to-LF conversion; no application edits or dynamic test rerun",
     "originalTestFingerprintRetained": true
+  },
+  "publication": {
+    "recordedOn": "2026-10-05",
+    "verifiedAtUTC": "2026-10-05T02:09:07.329744+00:00",
+    "branch": "codex/auth-privacy-handoff",
+    "remote": "origin",
+    "implementationCommit": "8db630f66bfc87cc05164aaae95b02b0d884d09a",
+    "remoteImplementationCommit": "8db630f66bfc87cc05164aaae95b02b0d884d09a",
+    "implementationPushVerified": true,
+    "dynamicTestsRerunForPublication": false,
+    "scope": "AC01/AC02/AC03 implementation and scoped evidence; following delivery documentation preserves test-time snapshots",
+    "gitBlobNewlineEquivalenceVerified": true,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false
   }
 }
