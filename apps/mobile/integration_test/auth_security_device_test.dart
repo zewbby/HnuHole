@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 
+import 'identity_device_scenarios.dart';
+
 const _account = '00000000-0000-4000-8000-000000000001';
 String _bytes(int n, int value) => AuthCrypto.encode(List.filled(n, value));
 
@@ -61,6 +63,7 @@ void main() {
 
   const phase = String.fromEnvironment('AUTH_DEVICE_PHASE');
   const namespace = String.fromEnvironment('AUTH_DEVICE_NAMESPACE');
+  registerIdentityDeviceScenarios(phase, namespace, native);
   testWidgets('external process restart keeps logout fence and original credential result', (tester) async {
     expect(RegExp(r'^native\.security\.test\.[A-Za-z0-9_-]{1,80}$').hasMatch(namespace), isTrue,
       reason: 'Use the same unique test namespace for both runs');

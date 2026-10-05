@@ -91,7 +91,11 @@ func TestMobileClientHTTPSPostgres(t *testing.T) {
 		t.Fatal(err)
 	}
 	encodedToken := base64.RawURLEncoding.EncodeToString(controlToken[:])
+	var closureSnapshot mobileClosureSnapshot
+	var closureMu sync.Mutex
 	control := e2eServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		closureMu.Lock()
+		defer closureMu.Unlock()
 		w.Header().Set("Cache-Control", "no-store")
 		if r.Header.Get("Authorization") != "LabControl "+encodedToken {
 			w.WriteHeader(http.StatusForbidden)
@@ -160,6 +164,30 @@ func TestMobileClientHTTPSPostgres(t *testing.T) {
 			err = s.gate.Freeze(r.Context(), "isolated mobile transport fault test")
 		case "/recover":
 			err = s.recoverC()
+		case "/freeze-verifier":
+			err = s.vGate.Freeze(r.Context(), "isolated mobile verifier fault test")
+		case "/recover-verifier":
+			err = s.recoverV()
+		case "/capture-identities":
+			closureSnapshot, err = captureMobileClosure(r.Context(), s.cp, body["token"])
+		case "/identities-unchanged":
+			err = closureSnapshot.unchanged(r.Context(), s.cp, body["state"])
+		case "/identities-finalized":
+			err = closureSnapshot.finalized(r.Context(), s.cp, body["closureId"])
+		case "/new-account-identities":
+			err = closureSnapshot.newAccount(r.Context(), s.cp, body["accountId"], body["closureId"])
+		case "/advance-verifier-after-closure":
+			// Align the independent signed V clock after C's seven-day fixture
+			// advance. No database deadline or Gate row is rewritten.
+			s.advanceV(7*24*time.Hour + time.Second)
+		case "/finalize-again":
+			var count int64
+			count, err = s.c.FinalizeDueClosures(r.Context(), 10)
+			if err == nil && count != 0 {
+				t.Error("repeated finalization committed an already closed account")
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
 		case "/finalize":
 			// This changes the signed trusted-clock fixture, never SQL deadlines.
 			s.advanceC(7*24*time.Hour + time.Second)

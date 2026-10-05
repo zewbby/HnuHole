@@ -3,23 +3,23 @@
   "recordedOn": "2026-10-05",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/auth-privacy-handoff",
-  "baselineHeadCommit": "faf557db4d74ecb2c202fd1349f1bf8fa64e6133",
-  "workingTreeContainsUncommittedImplementation": false,
+  "baselineHeadCommit": "cbc99b010ba23bba42f76e2523269e3952b14392",
+  "workingTreeContainsUncommittedImplementation": true,
   "workflow": "ANONYMITY_BRANCH_CLOSURE_WITH_EXPLICIT_DEFERRED_ACCEPTANCE",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
-  "baselineEvidence": "services/api/authlab/privacy-boundary-verification.json",
+  "baselineEvidence": "services/api/authlab/platform-acceptance-verification.json",
   "userReportedFunctionalCompletion": [
     "A11"
   ],
-  "dynamicTestsExecutedInThisInventory": true,
-  "toolAvailabilityCheckedOn": "2026-10-04",
+  "dynamicTestsExecutedInThisInventory": false,
+  "toolAvailabilityCheckedOn": "2026-10-05",
   "missingTools": [
     "macOS/full Xcode and iOS device target"
   ],
   "sourceFingerprint": {
-    "sha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
-    "presentFileCount": 219,
+    "sha256": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
+    "presentFileCount": 284,
     "roots": [
       "services/api",
       "infra",
@@ -31,7 +31,16 @@
       "apps/mobile/pubspec.yaml",
       "apps/mobile/pubspec.lock",
       "packages/auth_vault",
-      "packages/auth_passkey"
+      "packages/auth_passkey",
+      "apps/mobile/android",
+      "apps/mobile/ios",
+      "apps/mobile/integration_test",
+      "apps/mobile/test_driver",
+      "tools/run-android-auth-process-test.ps1",
+      "tools/run-android-vault-probes.ps1",
+      "tools/env-hnuhole-windows.ps1",
+      "tools/env-hnuhole-wsl.sh",
+      "tools/check-identity-handoff.py"
     ],
     "includedSuffixes": [
       ".go",
@@ -59,7 +68,12 @@
       ".pbxproj",
       ".h",
       ".m",
-      ".mm"
+      ".mm",
+      ".gradle",
+      ".png",
+      ".storyboard",
+      ".xcscheme",
+      ".xcworkspacedata"
     ],
     "includedAdditionalNames": [
       ".gitattributes",
@@ -69,7 +83,7 @@
     ],
     "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
     "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
-    "appliesTo": "Current AC03 backend, mobile logic/tests and vault/Passkey source boundary review; each check retains its executed scope, no native platform revalidation"
+    "appliesTo": "AC05 Android complete app build, native codec/vault and explicitly bounded emulator/Flutter probes; backend source retained as context, no new SQL run"
   },
   "resultDefinitions": {
     "PASS": "Actual required evidence recorded for the tested revision and scope",
@@ -106,7 +120,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "packages/openapi/community-auth-api.yaml",
         "tools/configure-passkey-associations.py",
@@ -228,7 +242,36 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "currentAC05Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "BLOCKED",
+        "fullModuleAcceptancePassed": false,
+        "scopedAndroidEvidenceAvailable": true,
+        "evidence": "services/api/authlab/platform-acceptance-verification.json",
+        "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+        "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A01",
@@ -278,7 +321,7 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "boundedChecksPassed": [
         "go-sql-race-vet",
@@ -326,7 +369,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A02",
@@ -353,7 +416,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "services/api/internal/authprivacyruntime/config.go",
         "services/api/internal/authprivacyruntime/server.go",
@@ -459,7 +522,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A03",
@@ -487,7 +570,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_credential_result.go",
         "services/api/internal/authprivacy/community_identities.go",
@@ -589,7 +672,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A04",
@@ -627,7 +730,7 @@
       "pendingReasons": [
         "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "currentAC01Regression": {
         "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
         "fullModuleAcceptancePassed": false,
@@ -653,7 +756,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A05",
@@ -682,7 +805,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_state_codec.dart",
@@ -777,7 +900,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A06",
@@ -807,7 +950,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_session_controller.dart",
         "apps/mobile/lib/src/auth/security_management_controller.dart",
@@ -911,7 +1054,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A07",
@@ -941,7 +1104,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -1026,6 +1189,18 @@
         "fullModuleAcceptancePassed": false,
         "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
         "currentResult": "PASS"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
       }
     },
     {
@@ -1057,7 +1232,7 @@
         "X07",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_screen.dart",
@@ -1175,7 +1350,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A09",
@@ -1223,7 +1418,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_credential_result.go",
         "services/api/internal/authprivacy/passkey_verification.go",
@@ -1308,7 +1503,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A10",
@@ -1346,7 +1561,7 @@
       "pendingReasons": [
         "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "currentAC01Regression": {
         "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
         "fullModuleAcceptancePassed": false,
@@ -1372,7 +1587,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A11",
@@ -1401,7 +1636,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_session_controller.dart",
         "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
@@ -1496,7 +1731,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A12",
@@ -1524,7 +1779,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_models.dart",
         "apps/mobile/lib/src/auth/auth_state_codec.dart",
@@ -1618,7 +1873,36 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "currentAC05Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "BLOCKED",
+        "fullModuleAcceptancePassed": false,
+        "scopedAndroidEvidenceAvailable": true,
+        "evidence": "services/api/authlab/platform-acceptance-verification.json",
+        "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+        "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "A13",
@@ -1646,7 +1930,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -1755,7 +2039,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "N01",
@@ -1782,7 +2086,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -1860,7 +2164,28 @@
         "physical-device-matrix"
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "currentAC05Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "BLOCKED",
+        "fullModuleAcceptancePassed": false,
+        "scopedAndroidEvidenceAvailable": true,
+        "evidence": "services/api/authlab/platform-acceptance-verification.json",
+        "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+        "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "N02",
@@ -1887,7 +2212,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift",
         "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift",
@@ -1969,7 +2294,28 @@
         }
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BLOCKED_NO_CURRENT_IOS_EXECUTION"
+      "latestScopedResult": "BLOCKED_NO_CURRENT_IOS_EXECUTION",
+      "currentAC05Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "BLOCKED",
+        "fullModuleAcceptancePassed": false,
+        "scopedAndroidEvidenceAvailable": false,
+        "evidence": "services/api/authlab/platform-acceptance-verification.json",
+        "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+        "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "N03",
@@ -2014,7 +2360,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "packages/auth_passkey/lib/hnuhole_auth_passkey.dart",
         "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt",
@@ -2084,7 +2430,28 @@
         "native-passkey-ceremony"
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "currentAC05Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "BLOCKED",
+        "fullModuleAcceptancePassed": false,
+        "scopedAndroidEvidenceAvailable": true,
+        "evidence": "services/api/authlab/platform-acceptance-verification.json",
+        "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+        "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B01",
@@ -2113,7 +2480,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/credential_management_api.dart",
         "apps/mobile/lib/src/auth/security_management_controller.dart",
@@ -2209,7 +2576,36 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "currentAC05Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "BLOCKED",
+        "fullModuleAcceptancePassed": false,
+        "scopedAndroidEvidenceAvailable": true,
+        "evidence": "services/api/authlab/platform-acceptance-verification.json",
+        "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+        "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B02",
@@ -2223,7 +2619,7 @@
         "R05",
         "R10"
       ],
-      "note": "AC02 identity account-close lifecycle implemented and current backend R01/R02/R03 passed; historical mobile evidence retains its own revision. Entire B02 remains BLOCKED: business consumers and device matrix incomplete.",
+      "note": "AC01-AC03 foundation and new AC04 V Gate/identity closure real Dart scenarios pass. Entire B02 remains BLOCKED: business consumers and device matrix incomplete.",
       "priorTaskRecords": [
         {
           "note": "仅设计规则，无实际业务API/表/客户端流程",
@@ -2276,7 +2672,7 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
       "foundationImplementationState": "SOURCE_IMPLEMENTED",
       "foundationAcceptanceState": "BACKEND_FOUNDATION_AND_AC02_PASS_HISTORICAL_MOBILE_SCOPED",
       "sourcePaths": [
@@ -2324,7 +2720,12 @@
         "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
         "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go",
-        "services/api/internal/authprivacy/privacy_boundary_postgres_test.go"
+        "services/api/internal/authprivacy/privacy_boundary_postgres_test.go",
+        "apps/mobile/integration/verifier_gate_https_scenarios.dart",
+        "apps/mobile/integration/auth_public_https_postgres_test.dart",
+        "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go",
+        "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
+        "apps/mobile/integration_test/identity_device_scenarios.dart"
       ],
       "relatedModules": [
         "A01",
@@ -2360,7 +2761,7 @@
       "blockedChecks": [
         "physical-device-matrix"
       ],
-      "testedWorkingTreeSourceFingerprint": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+      "testedWorkingTreeSourceFingerprint": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
       "pendingTestHarnessExtensions": [],
       "anonymityClosureGapIds": [
         "AC02",
@@ -2411,13 +2812,74 @@
           "appliesTo": "AC02 backend and protocol working-tree snapshot including AC01; historical platform and AC01 evidence retain their own fingerprints.",
           "recordedOn": "2026-10-04",
           "snapshotStatus": "HISTORICAL_AC02_VERIFIED_SOURCE_BEFORE_AC03"
+        },
+        {
+          "sha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+          "presentFileCount": 219,
+          "roots": [
+            "services/api",
+            "infra",
+            "packages/openapi",
+            "packages/auth-protocol-vectors",
+            "apps/mobile/lib",
+            "apps/mobile/test",
+            "apps/mobile/integration",
+            "apps/mobile/pubspec.yaml",
+            "apps/mobile/pubspec.lock",
+            "packages/auth_vault",
+            "packages/auth_passkey"
+          ],
+          "includedSuffixes": [
+            ".go",
+            ".sql",
+            ".sh",
+            ".mod",
+            ".sum",
+            ".json",
+            ".yaml",
+            ".yml",
+            ".lock",
+            ".py",
+            ".ps1",
+            ".txt",
+            ".dart",
+            ".kt",
+            ".swift",
+            ".kts",
+            ".xml",
+            ".plist",
+            ".entitlements",
+            ".podspec",
+            ".properties",
+            ".xcconfig",
+            ".pbxproj",
+            ".h",
+            ".m",
+            ".mm"
+          ],
+          "includedAdditionalNames": [
+            ".gitattributes",
+            "go.work",
+            "go.work.sum",
+            ".env.example"
+          ],
+          "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+          "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+          "appliesTo": "Current AC03 backend, mobile logic/tests and vault/Passkey source boundary review; each check retains its executed scope, no native platform revalidation",
+          "snapshotStatus": "HISTORICAL_AC03_BEFORE_AC04"
+        },
+        {
+          "sha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+          "recordedOn": "2026-10-05",
+          "evidence": "services/api/authlab/privacy-regression-verification.json",
+          "scope": "AC04 bounded backend/Dart SQL regression; native platform separate"
         }
       ],
-      "testedWorkingTreeProofScope": "Current AC02 backend working tree only; original B02 mobile/platform source and results retain historical evidence",
-      "latestTestSourceStatus": "AC02_BACKEND_TESTS_AND_R03_EXECUTED_PASS_R05_HISTORICAL",
-      "latestValidationEvidence": "services/api/authlab/privacy-boundary-verification.json",
-      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
-      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "testedWorkingTreeProofScope": "AC04 backend and real Dart handler SQL scenarios, with native/full business acceptance pending",
+      "latestTestSourceStatus": "AC04_R01_R02_R03_FLUTTER_R05_EXECUTED_PASS",
+      "latestValidationEvidence": "services/api/authlab/platform-acceptance-verification.json",
+      "latestScopedEvidence": "services/api/authlab/privacy-regression-verification.json",
+      "latestScopedResult": "AC04_FOUNDATION_REGRESSION_PASS_FULL_MODULE_BLOCKED",
       "currentAC01Regression": {
         "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
         "fullModuleAcceptancePassed": false,
@@ -2446,7 +2908,36 @@
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
       "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
-      "testedWorkingTreeSourceFingerprintScope": "AC03 bounded backend/mobile privacy and current regression; no full B02/native/production pass"
+      "testedWorkingTreeSourceFingerprintScope": "AC04 scoped regression only",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "currentAC05Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "BLOCKED",
+        "fullModuleAcceptancePassed": false,
+        "scopedAndroidEvidenceAvailable": true,
+        "evidence": "services/api/authlab/platform-acceptance-verification.json",
+        "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+        "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B03",
@@ -2473,7 +2964,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
@@ -2529,7 +3020,19 @@
         "flutter-tests",
         "flutter-analyze",
         "openapi-full"
-      ]
+      ],
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。"
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B04",
@@ -2538,7 +3041,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "七通道目录见A11；标签/筛选尚未实现"
+      "note": "七通道目录见A11；标签/筛选尚未实现",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B05",
@@ -2547,7 +3056,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计规则，后续需本地业务/媒体与持久任务"
+      "note": "仅设计规则，后续需本地业务/媒体与持久任务",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B06",
@@ -2556,7 +3071,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计规则，无完整业务实现"
+      "note": "仅设计规则，无完整业务实现",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B07",
@@ -2565,7 +3086,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计规则，无完整业务实现"
+      "note": "仅设计规则，无完整业务实现",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B08",
@@ -2574,7 +3101,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计/图稿，消息入口未接线"
+      "note": "仅设计/图稿，消息入口未接线",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B09",
@@ -2583,7 +3116,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计规则，无聊天/本地业务存储/投递实现"
+      "note": "仅设计规则，无聊天/本地业务存储/投递实现",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B10",
@@ -2610,7 +3149,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/identity/settings_screen.dart",
@@ -2665,7 +3204,19 @@
         "flutter-tests",
         "flutter-analyze",
         "openapi-full"
-      ]
+      ],
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。"
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B11",
@@ -2674,7 +3225,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "C restrictions仅认证限制基础，不等于完整治理"
+      "note": "C restrictions仅认证限制基础，不等于完整治理",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "B12",
@@ -2683,7 +3240,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "尚无实现；权重/衰减等真实设计决策仍未收口"
+      "note": "尚无实现；权重/衰减等真实设计决策仍未收口",
+      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "P01",
@@ -2724,7 +3287,7 @@
         "services/api/authlab/run-runtime-isolated.sh",
         "services/api/cmd/runtimeprobe/verifier_gate.go"
       ],
-      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "nextAcceptance": "保留AC01及AC04的V Gate开发证据；变更Gate／迁移／授权时回归R01/R02/R03及受影响R05，实际授时／锚点运营与灾备证据归P02/P03。",
       "currentAC02Regression": {
         "currentResult": "PASS",
         "fullModuleAcceptancePassed": false,
@@ -2744,7 +3307,27 @@
       },
       "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
       "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
-      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "currentAC04Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-regression-verification.json",
+        "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+        "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+      },
+      "nextAcceptanceHistory": [
+        {
+          "recordedOn": "2026-10-05",
+          "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+          "value": "Use currentAC04 coverage and evidence; remaining platform checks belong to AC05. Future business consumers need implementation before X06/X07 full acceptance."
+        }
+      ],
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "P02",
@@ -2753,7 +3336,13 @@
       "acceptanceState": "PENDING_OPERATIONAL_EVIDENCE",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "同机开发材料不能证明生产双主体与独立信任"
+      "note": "同机开发材料不能证明生产双主体与独立信任",
+      "nextAcceptance": "按最终报告取得真实运营／发布／灾备或人类独立评审证据；本地开发测试和AI核对不能代证生产。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "P03",
@@ -2762,7 +3351,13 @@
       "acceptanceState": "PENDING_OPERATIONAL_EVIDENCE",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "规格/隔离测试不代证真实灾备和WAL/日志/备份清理"
+      "note": "规格/隔离测试不代证真实灾备和WAL/日志/备份清理",
+      "nextAcceptance": "按最终报告取得真实运营／发布／灾备或人类独立评审证据；本地开发测试和AI核对不能代证生产。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "P04",
@@ -2771,7 +3366,13 @@
       "acceptanceState": "PENDING_OPERATIONAL_EVIDENCE",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "本地基础存在，生产多副本/容量/侧信道未校准"
+      "note": "本地基础存在，生产多副本/容量/侧信道未校准",
+      "nextAcceptance": "按最终报告取得真实运营／发布／灾备或人类独立评审证据；本地开发测试和AI核对不能代证生产。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "P05",
@@ -2780,7 +3381,13 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "无GitHub Actions工作流；正式签名/端点/供应商实际集成未配置或未验"
+      "note": "无GitHub Actions工作流；正式签名/端点/供应商实际集成未配置或未验",
+      "nextAcceptance": "按最终报告取得真实运营／发布／灾备或人类独立评审证据；本地开发测试和AI核对不能代证生产。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     },
     {
       "id": "P06",
@@ -2789,7 +3396,13 @@
       "acceptanceState": "PENDING_OPERATIONAL_EVIDENCE",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "未取得真实独立人类评审与最终代码结论"
+      "note": "未取得真实独立人类评审与最终代码结论",
+      "nextAcceptance": "按最终报告取得真实运营／发布／灾备或人类独立评审证据；本地开发测试和AI核对不能代证生产。",
+      "currentAC06Handoff": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/final-handoff-verification.json",
+        "scope": "Source/status/proof mapping only; does not change functional module result"
+      }
     }
   ],
   "inventoryScope": "dynamicTestsExecutedInThisInventory=false describes the original inventory only; current feature checks below are separate",
@@ -2853,10 +3466,11 @@
       }
     ],
     "snapshotStatus": "HISTORICAL_B02_FEATURE_SNAPSHOT",
-    "currentEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-    "currentBackendEvidence": "services/api/authlab/privacy-boundary-verification.json",
-    "snapshotNote": "Old sqlTestsExecuted/flutterTestsExecuted/deviceTestsExecuted and nextStep remain historical B02 snapshot fields. Original platform evidence stays currentEvidence; latest bounded backend/mobile checks are currentAC03.",
-    "currentClientRegressionEvidence": "services/api/authlab/privacy-boundary-verification.json"
+    "currentEvidence": "services/api/authlab/platform-acceptance-verification.json",
+    "currentBackendEvidence": "services/api/authlab/privacy-regression-verification.json",
+    "snapshotNote": "Historical B02 feature snapshot only: old false SQL/Flutter/device fields are not current unverified claims. Current backend is currentAC04, platform is currentAC05, delivery is currentAC06; full B02 remains BLOCKED.",
+    "currentClientRegressionEvidence": "services/api/authlab/platform-acceptance-verification.json",
+    "currentHandoffEvidence": "services/api/authlab/final-handoff-verification.json"
   },
   "featureHistory": [
     {
@@ -3161,6 +3775,61 @@
       "appliesTo": "AC02 backend and protocol working-tree snapshot including AC01; historical platform and AC01 evidence retain their own fingerprints.",
       "recordedOn": "2026-10-04",
       "snapshotStatus": "HISTORICAL_AC02_VERIFIED_SOURCE_BEFORE_AC03"
+    },
+    {
+      "sha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+      "presentFileCount": 219,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "Current AC03 backend, mobile logic/tests and vault/Passkey source boundary review; each check retains its executed scope, no native platform revalidation",
+      "snapshotStatus": "HISTORICAL_AC03_BEFORE_AC04"
     }
   ],
   "workflowHistory": [
@@ -3173,9 +3842,9 @@
   "anonymityBranchClosure": {
     "recordedOn": "2026-10-05",
     "checklist": "docs/design/auth-privacy-closure-checklist.md",
-    "inventoryOnly": false,
-    "applicationSourceChangedInInventory": true,
-    "dynamicTestsExecutedInInventory": true,
+    "inventoryOnly": true,
+    "applicationSourceChangedInInventory": false,
+    "dynamicTestsExecutedInInventory": false,
     "fullBusinessSlicesPaused": [
       "B05",
       "B03",
@@ -3241,7 +3910,7 @@
       {
         "id": "AC04",
         "name": "B02实际进程与真实客户端测试链",
-        "implementationOrEvidenceState": "CURRENT_AC01_AC02_AC03_BACKEND_AND_FLUTTER_R05_PASS_PLATFORM_PENDING",
+        "implementationOrEvidenceState": "FOUNDATION_SCENE_COVERAGE_AND_REAL_DART_GATE_CLOSURE_REGRESSION_PASS",
         "currentResult": "PASS",
         "moduleIds": [
           "A01",
@@ -3249,12 +3918,13 @@
           "A13",
           "B02"
         ],
-        "proofScope": "Current backend/new privacy tests/R03 plus 179 Flutter tests and R05 PASS; native/physical/B02 future consumer matrix remains open"
+        "proofScope": "AC04_FOUNDATION_COVERAGE_AND_NEW_REAL_DART_GATE_CLOSURE_SCENARIOS; native and future business consumers remain separate",
+        "evidence": "services/api/authlab/privacy-regression-verification.json"
       },
       {
         "id": "AC05",
         "name": "当前版本集中及原生验收",
-        "implementationOrEvidenceState": "GO_DART_ANDROID_BOUNDED_PASS_IOS_PASSKEY_PHYSICAL_PENDING",
+        "implementationOrEvidenceState": "BOUNDED_ANDROID_EMULATOR_PASS_PLATFORM_MATRIX_BLOCKED",
         "currentResult": "BLOCKED",
         "moduleIds": [
           "A00",
@@ -3276,15 +3946,18 @@
           "N03",
           "B01",
           "B02"
-        ]
+        ],
+        "evidence": "services/api/authlab/platform-acceptance-verification.json",
+        "proofScope": "Current Android build/native/adapter/device probe evidence only; iOS, system ceremony, physical/backup and full actual-C/V app pending"
       },
       {
         "id": "AC06",
         "name": "交接状态统一与最终交付",
-        "implementationOrEvidenceState": "TEST_DOCUMENTATION_AND_SOURCE_DELIVERY",
+        "implementationOrEvidenceState": "LOCAL_HANDOFF_COMPLETE_REMOTE_PUBLICATION_PENDING",
         "currentResult": "PASS",
         "moduleIds": [],
-        "proofScope": "Current test repair/environment/docs delivery only; anonymity/production acceptance not closed."
+        "proofScope": "Local source/evidence/document delivery only; no functional, remote-publication or production approval",
+        "evidence": "services/api/authlab/final-handoff-verification.json"
       }
     ],
     "productionEvidenceStillPending": [
@@ -3387,7 +4060,13 @@
           "moduleIds": []
         }
       ]
-    }
+    },
+    "currentTask": "AC06",
+    "currentRegressionEvidence": "services/api/authlab/final-handoff-verification.json",
+    "localSourceHandoffClosed": true,
+    "sourceDeliveryScope": "REMOTE_PUBLICATION_PENDING",
+    "currentBackendEvidence": "services/api/authlab/privacy-regression-verification.json",
+    "currentPlatformEvidence": "services/api/authlab/platform-acceptance-verification.json"
   },
   "handoffDelivery": {
     "recordedOn": "2026-10-03",
@@ -3423,11 +4102,20 @@
     "currentAC03Evidence": "services/api/authlab/privacy-boundary-verification.json",
     "currentAC03Uncommitted": false,
     "currentImplementationCommit": "8db630f66bfc87cc05164aaae95b02b0d884d09a",
-    "currentImplementationPushVerified": true
+    "currentImplementationPushVerified": true,
+    "currentAC04Evidence": "services/api/authlab/privacy-regression-verification.json",
+    "currentAC04Uncommitted": true,
+    "currentLocalDelivery": {
+      "recordedOn": "2026-10-05",
+      "scope": "AC06_LOCAL_REVIEWABLE_MATERIAL_REMOTE_PENDING",
+      "evidence": "services/api/authlab/final-handoff-verification.json",
+      "remotePublished": false,
+      "productionApproved": false
+    }
   },
-  "workingTreeUncommitted": false,
-  "latestValidationEvidence": "services/api/authlab/privacy-boundary-verification.json",
-  "cleanupEvidence": "services/api/authlab/privacy-boundary-verification.json#cleanup",
+  "workingTreeUncommitted": true,
+  "latestValidationEvidence": "services/api/authlab/final-handoff-verification.json",
+  "cleanupEvidence": "services/api/authlab/final-handoff-verification.json#cleanup",
   "historicalBaselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
   "historicalBaselineEvidence": "services/api/authlab/runtime-business-integration-verification.json",
   "historicalSourceFingerprint": {
@@ -3478,7 +4166,7 @@
     "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
     "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
   },
-  "latestMobileValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+  "latestMobileValidationEvidence": "services/api/authlab/platform-acceptance-verification.json",
   "currentAC01": {
     "plan": "docs/design/auth-verifier-safety-gate-plan.md",
     "report": "docs/design/auth-verifier-safety-gate-validation-report.md",
@@ -3810,9 +4498,10 @@
       "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
       "appliesTo": "Git text blobs equivalent to the original tested snapshot by CRLF-to-LF only; protocol vector remains byte-exact",
       "checkoutNewlineConversions": 164
-    }
+    },
+    "snapshotNote": "Original AC03 evidence/fingerprint retained. Latest AC04 scoped regression is currentAC04; historical native proof is not rebound."
   },
-  "latestClientRegressionEvidence": "services/api/authlab/privacy-boundary-verification.json",
+  "latestClientRegressionEvidence": "services/api/authlab/platform-acceptance-verification.json",
   "publicationDelivery": {
     "recordedOn": "2026-10-05",
     "verifiedAtUTC": "2026-10-05T02:09:07.329744+00:00",
@@ -3827,5 +4516,750 @@
     "fullAnonymityClosurePassed": false,
     "productionApproved": false
   },
-  "workingTreeStatusNote": "Source implementation is committed and its push verified; test-time uncommitted flags inside AC records remain historical provenance. This delivery metadata is committed separately; use git status for live checkout state."
+  "workingTreeStatusNote": "AC04/AC05/AC06 local material remains uncommitted; historical AC01-AC03 publicationDelivery is unchanged. Current source snapshot is distinct from baseline HEAD. Full acceptance and production remain open.",
+  "currentAC04": {
+    "recordedOn": "2026-10-05",
+    "implementationState": "TEST_SCENARIOS_IMPLEMENTED",
+    "currentResult": "PASS",
+    "scopedBackendAcceptancePassed": true,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false,
+    "sourceFingerprint": {
+      "sha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+      "presentFileCount": 221,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "AC04 foundation scenario coverage and listed backend/actual-cmd/Dart handler SQL checks; native platform and future business consumers not accepted"
+    },
+    "gitBlobSourceFingerprint": {
+      "sha256": "0accb5883465ca486d2c6b0fb61137342f970f1144e9cb65b7e0eff7befbfaaf",
+      "presentFileCount": 221,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "Executed WSL Linux source: CRLF-to-LF only relative to Windows; protocol fixture remains byte exact"
+    },
+    "plan": "docs/design/auth-privacy-regression-plan.md",
+    "report": "docs/design/auth-privacy-regression-validation-report.md",
+    "affectedModules": [
+      "A00",
+      "A01",
+      "A02",
+      "A03",
+      "A04",
+      "A05",
+      "A06",
+      "A08",
+      "A09",
+      "A10",
+      "A11",
+      "A12",
+      "A13",
+      "B01",
+      "B02",
+      "P01"
+    ],
+    "crossModuleScenes": [
+      "X02",
+      "X06",
+      "X07"
+    ],
+    "notRun": [
+      {
+        "scope": "AC05 Android/iOS complete app, native vault, system Passkey, physical device and B02 IME/accessibility/identity draft matrix",
+        "result": "NOT_RUN",
+        "reason": "This task is AC04 test-chain coverage; iOS tools/device and RP/platform associations remain missing. Prior Android evidence keeps its original revision.",
+        "entry": "docs/design/module-acceptance-handoff.md R07/R09/R10"
+      },
+      {
+        "scope": "B05-B11 public post/comment/chat/moderation projections and local chat/note/search cleanup X06/X07",
+        "result": "NOT_RUN",
+        "reason": "Business consumers are not implemented; only existing foundation/closure and pure projection are tested.",
+        "entry": "docs/design/auth-privacy-business-contract.md"
+      },
+      {
+        "scope": "P02-P06 production separation, backup/WAL/log retention, DR, side channel calibration, release integrations and independent human audit",
+        "result": "NOT_RUN",
+        "reason": "Local self-created test environment does not supply production or independent human evidence.",
+        "entry": "docs/design/auth-privacy-closure-checklist.md"
+      },
+      {
+        "scope": "R00 full OpenAPI validator and generated-code drift",
+        "result": "NOT_RUN",
+        "reason": "No public schema or generator inputs changed in AC04; prior proof is retained at its tested revision.",
+        "entry": "packages/openapi/README.md"
+      },
+      {
+        "scope": "Opt-in TestMobileClientHTTPSPostgres in R01",
+        "result": "SKIP",
+        "reason": "R01 deliberately does not request Flutter; R05 separately executes this exact Go test with Flutter and SQL.",
+        "entry": "services/api/authlab/run-mobile-isolated.sh"
+      }
+    ],
+    "nextStep": "AC05 current-platform/device evidence; AC06 final handoff. No automatic business expansion or deployment.",
+    "evidence": "services/api/authlab/privacy-regression-verification.json",
+    "workingTreeUncommitted": true,
+    "cleanupPassed": true,
+    "handoffCheckerPassed": true
+  },
+  "currentAC05": {
+    "recordedOn": "2026-10-05",
+    "implementationState": "TEST_SCENARIOS_IMPLEMENTED_PLATFORM_MATRIX_BLOCKED",
+    "currentResult": "BLOCKED",
+    "scopedBackendAcceptancePassed": false,
+    "scopedAndroidAcceptancePassed": true,
+    "fullDeviceMatrixPassed": false,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false,
+    "sourceFingerprint": {
+      "sha256": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
+      "presentFileCount": 284,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey",
+        "apps/mobile/android",
+        "apps/mobile/ios",
+        "apps/mobile/integration_test",
+        "apps/mobile/test_driver",
+        "tools/run-android-auth-process-test.ps1",
+        "tools/run-android-vault-probes.ps1",
+        "tools/env-hnuhole-windows.ps1",
+        "tools/env-hnuhole-wsl.sh",
+        "tools/check-identity-handoff.py"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm",
+        ".gradle",
+        ".png",
+        ".storyboard",
+        ".xcscheme",
+        ".xcworkspacedata"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "AC05 Android complete app build, native codec/vault and explicitly bounded emulator/Flutter probes; backend source retained as context, no new SQL run"
+    },
+    "gitBlobSourceFingerprint": {
+      "sha256": "3592e3569638284ca2f1fe3951c999882abd02b6c50c9019f427af97f69ff173",
+      "presentFileCount": 284,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey",
+        "apps/mobile/android",
+        "apps/mobile/ios",
+        "apps/mobile/integration_test",
+        "apps/mobile/test_driver",
+        "tools/run-android-auth-process-test.ps1",
+        "tools/run-android-vault-probes.ps1",
+        "tools/env-hnuhole-windows.ps1",
+        "tools/env-hnuhole-wsl.sh",
+        "tools/check-identity-handoff.py"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm",
+        ".gradle",
+        ".png",
+        ".storyboard",
+        ".xcscheme",
+        ".xcworkspacedata"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "Git text CRLF-to-LF equivalence only; protocol fixture and binary assets exact"
+    },
+    "plan": "docs/design/auth-privacy-platform-acceptance-plan.md",
+    "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+    "notRun": [
+      {
+        "id": "R06-ios",
+        "result": "BLOCKED",
+        "scope": "Full iOS build/link, Keychain/two-process and AuthenticationServices",
+        "reason": "No macOS/full Xcode, signed target or device.",
+        "entry": "apps/mobile/ios/RunnerTests/RunnerTests.swift; module R06/R09"
+      },
+      {
+        "id": "system-passkey",
+        "result": "BLOCKED",
+        "scope": "Actual system Passkey binding/removal/discoverable recovery and negative matrix",
+        "reason": "No actual RP, approved Android signature/origin and association deployment found in repo/local material; Apple Team/Bundle/associated domains absent. External deployment not independently inventoried.",
+        "entry": "packages/auth_passkey/README.md; tools/configure-passkey-associations.py; module R08/R09"
+      },
+      {
+        "id": "physical-device",
+        "result": "NOT_RUN",
+        "scope": "Physical/OEM IME, lock-screen, hardware and accessibility-service matrix",
+        "reason": "Only API36 emulator available; injected composing/scaling/semantics do not prove OEM keyboard or TalkBack.",
+        "entry": "docs/design/module-acceptance-handoff.md R09/R10"
+      },
+      {
+        "id": "backup-lifecycle",
+        "result": "NOT_RUN",
+        "scope": "System backup/restore, cross-device and actual uninstall/reinstall lifecycle",
+        "reason": "Native sidecar/key-removal injections are not system backup/restore evidence.",
+        "entry": "docs/design/module-acceptance-handoff.md N01/N02/R09"
+      },
+      {
+        "id": "device-actual-cv",
+        "result": "NOT_RUN",
+        "scope": "Complete mobile App -> actual C/V -> SQL",
+        "reason": "This device probe has explicit test APIs. AC04 R03 actual cmd and R05 Dart/handler/SQL prove different boundaries.",
+        "entry": "services/api/authlab/run-runtime-isolated.sh; services/api/authlab/run-mobile-isolated.sh; R09 integration needs real TLS/RP/device endpoints"
+      },
+      {
+        "id": "backend-current",
+        "result": "NOT_RUN",
+        "scope": "AC05 Go/SQL/race/vet and actual C/V rerun",
+        "reason": "No product/backend/schema/auth changes in AC05; retained AC04 tests remain at original fingerprint, not promoted to current platform PASS.",
+        "entry": "services/api/authlab/privacy-regression-verification.json"
+      },
+      {
+        "id": "business-production",
+        "result": "NOT_RUN",
+        "scope": "Future business consumers and production P02-P06",
+        "reason": "Consumers not implemented; local self-created evidence is not production separation/DR/independent audit.",
+        "entry": "docs/design/auth-privacy-business-contract.md; auth-privacy-closure-checklist.md"
+      }
+    ],
+    "nextStep": "AC06 final evidence/handoff consolidation; preserve platform blockers, no automatic business expansion",
+    "evidence": "services/api/authlab/platform-acceptance-verification.json",
+    "affectedModules": [
+      "A00",
+      "A12",
+      "N01",
+      "N02",
+      "N03",
+      "B01",
+      "B02"
+    ],
+    "crossModuleScenes": [
+      "X04",
+      "X05",
+      "X08"
+    ],
+    "workingTreeUncommitted": true,
+    "cleanupPassed": true,
+    "handoffCheckerPassed": true
+  },
+  "closureStateHistory": [
+    {
+      "recordedOn": "2026-10-05",
+      "checklist": "docs/design/auth-privacy-closure-checklist.md",
+      "inventoryOnly": false,
+      "applicationSourceChangedInInventory": false,
+      "dynamicTestsExecutedInInventory": true,
+      "fullBusinessSlicesPaused": [
+        "B05",
+        "B03",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "B10",
+        "B11",
+        "B12"
+      ],
+      "foundationModulesRemainInScope": [
+        "B01",
+        "B02",
+        "A11",
+        "A12"
+      ],
+      "gaps": [
+        {
+          "id": "AC01",
+          "name": "V独立Safety Gate",
+          "implementationOrEvidenceState": "IMPLEMENTED_BACKEND_ACCEPTANCE_PASS",
+          "currentResult": "PASS",
+          "moduleIds": [
+            "P01",
+            "A01",
+            "A02",
+            "A04",
+            "A10"
+          ],
+          "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+          "proofScope": "Development V Gate, affected backend regression and listed actual C/V process scenarios; production boundaries separate"
+        },
+        {
+          "id": "AC02",
+          "name": "已有身份整账号正式关闭生命周期",
+          "implementationOrEvidenceState": "IMPLEMENTED_BACKEND_ACCEPTANCE_PASS",
+          "currentResult": "PASS",
+          "moduleIds": [
+            "A08",
+            "B02"
+          ],
+          "evidence": "services/api/authlab/identity-account-closure-verification.json",
+          "proofScope": "Current identity formal-close lifecycle, pure independent projection contract and listed backend tests; post/chat consumers, platform and production remain separate"
+        },
+        {
+          "id": "AC03",
+          "name": "当前隐私边界核对及后续业务契约",
+          "implementationOrEvidenceState": "BOUNDED_PRIVACY_AUDIT_AND_CONTRACTS_IMPLEMENTED_PASS",
+          "currentResult": "PASS",
+          "moduleIds": [
+            "A01",
+            "A02",
+            "A04",
+            "A05",
+            "A08",
+            "A12",
+            "B02"
+          ],
+          "evidence": "services/api/authlab/privacy-boundary-verification.json",
+          "proofScope": "Current data/roles/HTTP/client persistence/diagnostics source and negative tests; future business and production independent audit not integrated/proven"
+        },
+        {
+          "id": "AC04",
+          "name": "B02实际进程与真实客户端测试链",
+          "implementationOrEvidenceState": "FOUNDATION_SCENE_COVERAGE_AND_REAL_DART_GATE_CLOSURE_REGRESSION_PASS",
+          "currentResult": "PASS",
+          "moduleIds": [
+            "A01",
+            "A02",
+            "A13",
+            "B02"
+          ],
+          "proofScope": "AC04_FOUNDATION_COVERAGE_AND_NEW_REAL_DART_GATE_CLOSURE_SCENARIOS; native and future business consumers remain separate",
+          "evidence": "services/api/authlab/privacy-regression-verification.json"
+        },
+        {
+          "id": "AC05",
+          "name": "当前版本集中及原生验收",
+          "implementationOrEvidenceState": "GO_DART_ANDROID_BOUNDED_PASS_IOS_PASSKEY_PHYSICAL_PENDING",
+          "currentResult": "BLOCKED",
+          "moduleIds": [
+            "A00",
+            "A01",
+            "A02",
+            "A03",
+            "A04",
+            "A05",
+            "A06",
+            "A07",
+            "A08",
+            "A09",
+            "A10",
+            "A11",
+            "A12",
+            "A13",
+            "N01",
+            "N02",
+            "N03",
+            "B01",
+            "B02"
+          ]
+        },
+        {
+          "id": "AC06",
+          "name": "交接状态统一与最终交付",
+          "implementationOrEvidenceState": "TEST_DOCUMENTATION_AND_SOURCE_DELIVERY",
+          "currentResult": "PASS",
+          "moduleIds": [],
+          "proofScope": "Current test repair/environment/docs delivery only; anonymity/production acceptance not closed."
+        }
+      ],
+      "productionEvidenceStillPending": [
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06"
+      ],
+      "sourceDeliveryClosed": false,
+      "acceptanceClosed": false,
+      "productionApproved": false,
+      "historicalInventory": {
+        "recordedOn": "2026-10-03",
+        "inventoryOnly": true,
+        "dynamicTestsExecutedInInventory": false,
+        "gaps": [
+          {
+            "id": "AC01",
+            "name": "V独立Safety Gate",
+            "implementationOrEvidenceState": "NOT_IMPLEMENTED",
+            "currentResult": "NOT_RUN",
+            "moduleIds": [
+              "P01",
+              "A01",
+              "A02",
+              "A04",
+              "A10"
+            ]
+          },
+          {
+            "id": "AC02",
+            "name": "已有身份整账号正式关闭生命周期",
+            "implementationOrEvidenceState": "NOT_INTEGRATED",
+            "currentResult": "NOT_RUN",
+            "moduleIds": [
+              "A08",
+              "B02"
+            ]
+          },
+          {
+            "id": "AC03",
+            "name": "当前隐私边界核对及后续业务契约",
+            "implementationOrEvidenceState": "REVIEW_NOT_RUN",
+            "currentResult": "NOT_RUN",
+            "moduleIds": [
+              "A01",
+              "A02",
+              "A04",
+              "A05",
+              "A08",
+              "A12",
+              "B02"
+            ]
+          },
+          {
+            "id": "AC04",
+            "name": "B02实际进程与真实客户端测试链",
+            "implementationOrEvidenceState": "TEST_HARNESS_INCOMPLETE",
+            "currentResult": "NOT_RUN",
+            "moduleIds": [
+              "A01",
+              "A02",
+              "A13",
+              "B02"
+            ]
+          },
+          {
+            "id": "AC05",
+            "name": "当前版本集中及原生验收",
+            "implementationOrEvidenceState": "ACCEPTANCE_NOT_RUN",
+            "currentResult": "NOT_RUN",
+            "moduleIds": [
+              "A00",
+              "A01",
+              "A02",
+              "A03",
+              "A04",
+              "A05",
+              "A06",
+              "A07",
+              "A08",
+              "A09",
+              "A10",
+              "A11",
+              "A12",
+              "A13",
+              "N01",
+              "N02",
+              "N03",
+              "B01",
+              "B02"
+            ]
+          },
+          {
+            "id": "AC06",
+            "name": "交接状态统一与最终交付",
+            "implementationOrEvidenceState": "FINALIZATION_PENDING",
+            "currentResult": "NOT_RUN",
+            "moduleIds": []
+          }
+        ]
+      },
+      "currentTask": "AC04",
+      "currentRegressionEvidence": "services/api/authlab/privacy-regression-verification.json"
+    }
+  ],
+  "currentAC06": {
+    "recordedOn": "2026-10-05",
+    "implementationState": "LOCAL_HANDOFF_COMPLETE",
+    "currentResult": "PASS",
+    "deliveryAcceptancePassed": true,
+    "scopedBackendAcceptancePassed": false,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false,
+    "sourceFingerprint": {
+      "sha256": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
+      "presentFileCount": 284,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey",
+        "apps/mobile/android",
+        "apps/mobile/ios",
+        "apps/mobile/integration_test",
+        "apps/mobile/test_driver",
+        "tools/run-android-auth-process-test.ps1",
+        "tools/run-android-vault-probes.ps1",
+        "tools/env-hnuhole-windows.ps1",
+        "tools/env-hnuhole-wsl.sh",
+        "tools/check-identity-handoff.py"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm",
+        ".gradle",
+        ".png",
+        ".storyboard",
+        ".xcscheme",
+        ".xcworkspacedata"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "AC05 Android complete app build, native codec/vault and explicitly bounded emulator/Flutter probes; backend source retained as context, no new SQL run"
+    },
+    "plan": "docs/design/auth-privacy-final-handoff-plan.md",
+    "report": "docs/design/auth-privacy-final-handoff-report.md",
+    "evidence": "services/api/authlab/final-handoff-verification.json",
+    "workingTreeUncommitted": true,
+    "remoteDeliveryResult": "NOT_RUN",
+    "affectedModules": [
+      "A00",
+      "A01",
+      "A02",
+      "A03",
+      "A04",
+      "A05",
+      "A06",
+      "A07",
+      "A08",
+      "A09",
+      "A10",
+      "A11",
+      "A12",
+      "A13",
+      "N01",
+      "N02",
+      "N03",
+      "B01",
+      "B02",
+      "B03",
+      "B04",
+      "B05",
+      "B06",
+      "B07",
+      "B08",
+      "B09",
+      "B10",
+      "B11",
+      "B12",
+      "P01",
+      "P02",
+      "P03",
+      "P04",
+      "P05",
+      "P06"
+    ],
+    "dynamicTestsRerunForAC06": false,
+    "nextStep": "Provide required RP/platform/device/operational evidence; publish current local material only on current user authorization; business slices remain paused",
+    "handoffCheckerPassed": true,
+    "cleanupPassed": true
+  },
+  "latestBackendValidationEvidence": "services/api/authlab/privacy-regression-verification.json",
+  "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN"
 }

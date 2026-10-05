@@ -1,5 +1,7 @@
 # Hnuhole 认证与匿名隐私架构决策
 
+> **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
+
 > **2026-10-05 当前实现入口：**匿名基础按 AC01／AC02／AC03 推进。本文原日期中的“实施前／未实现／未核对”等状态是历史设计快照；当前源码、隐私核对和诊断差异见 [AC03任务单](auth-privacy-boundary-plan.md)、[验证报告](auth-privacy-boundary-validation-report.md) 与 [业务接入契约](auth-privacy-business-contract.md)，实际检查结果以报告及机器台账为准。既定共享槽位串通边界与生产分权／灾备／独立审计门槛继续有效。
 
 > **当前状态入口（2026-10-03）：**本文的实施前状态及待填写材料保留形成时的证明范围；认证基础已有后续实现，当前缺口、未执行验收及分支结束条件统一见[匿名收口清单](auth-privacy-closure-checklist.md)与[模块台账](module-acceptance-ledger.json)。不将历史规格状态读作当前全部未实现，也不将现有源码读作验收或生产批准。

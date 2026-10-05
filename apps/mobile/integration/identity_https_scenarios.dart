@@ -9,7 +9,7 @@ import 'package:hnuhole_mobile/src/identity/identity_management_controller.dart'
 
 /// Real Dart transport -> Go HTTPS handler -> SQL. The caller's in-memory vault
 /// survives object reconstruction; this does not prove native/process durability.
-Future<void> verifyIdentityHttpsScenarios({
+Future<String> verifyIdentityHttpsScenarios({
   required HttpAuthApi api,
   required AuthStore Function() store,
   required AuthSessionController Function() sessions,
@@ -122,6 +122,7 @@ Future<void> verifyIdentityHttpsScenarios({
     await manager.load();
     expect(manager.directory!.createdCount, 3);
     expect(manager.directory!.identities, hasLength(2));
+    return createKey;
   } finally {
     manager.dispose();
   }

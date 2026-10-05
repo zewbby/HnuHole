@@ -1,5 +1,15 @@
 # 分模块验收与测试交接
 
+> **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
+
+> **2026-10-05 AC05 当前交付：**当前完整 Android arm64 App、两个 instrumentation APK、模拟器 vault16项与3组跨进程、Passkey Dart9／Android codec5、Flutter真实原生双进程均PASS；新增身份草稿恢复／组合输入／账号隔离和原意图核对，write/read PID 7062／7189。Flutter分析及179项、四份OpenAPI本轮PASS。AC05整项和B02整模块仍BLOCKED：iOS／系统Passkey／物理设备／系统备份与完整App→实际C/V尚无完整证据。见[AC05报告](auth-privacy-platform-acceptance-validation-report.md)、[任务单](auth-privacy-platform-acceptance-plan.md)和[机器记录](../../services/api/authlab/platform-acceptance-verification.json)。保留AC04原指纹与证明范围；下一步AC06最终交接，不扩展完整业务片。本轮未提交／推送／部署。
+
+下方记录按原日期与版本理解；当前平台范围和阻塞以台账 currentAC05 为准，后端回归保留 currentAC04。
+
+> **2026-10-05 AC04 当前交付：**基于已推送 `cbc99b0`，补齐真实 Dart→HTTPS handler→SQL 的 V 独立冻结／恢复旧 OTP 围栏、身份关闭资料／永久历史和同邮箱新账号隔离场景；修正 R03 普通重启测试的授权事务停机时序，应用逻辑／公开 API／迁移未变。完整 Go／SQL／race／vet、R03 实际 C/V、Flutter 分析及179项测试、R05 均 PASS。覆盖、失败修复与精确范围见[AC04报告](auth-privacy-regression-validation-report.md)、[任务单](auth-privacy-regression-plan.md)和[机器记录](../../services/api/authlab/privacy-regression-verification.json)。B02整模块仍BLOCKED；下一步AC05平台验收，再AC06最终收口。本轮未提交／推送／部署。
+
+下方 AC01–AC03 和平台记录保留原版本与证明范围；当前回归入口为台账 currentAC04，历史“未实现／未执行”不代表本轮状态。
+
 > **2026-10-05 Git远端交付：**AC01／AC02／AC03源码、测试和小型证据已提交至 [8db630f](https://github.com/zewbby/HnuHole/commit/8db630f66bfc87cc05164aaae95b02b0d884d09a)，并普通推送到 `origin/codex/auth-privacy-handoff`；远端提交号已核验一致。本段是随后补充的交付记录。下方“未提交／未推送”及机器记录的uncommitted字段保留测试时快照，当前交付状态见台账publicationDelivery／Git提交历史。原测试摘要保留；额外Git文本摘要只允许CRLF→LF换行转换，协议向量仍逐字节核验。发布本次Git提交没有重新执行动态测试，也不代表部署、B02整模块验收或生产批准。
 
 > **2026-10-05 AC03 当前交付：**当前数据／角色／HTTP／客户端持久状态及日志已完成有范围核对，修复应用错误／HTTP、PostgreSQL普通错误和移动端通道诊断三项差异；后续匿名业务契约已固定。完整Go／SQL／race／vet、R03实际C/V角色／日志与AC01／AC02回归、Flutter analyze与179项测试、R05真实Dart→HTTPS→SQL均PASS。见 [AC03报告](auth-privacy-boundary-validation-report.md)、[三步任务单](auth-privacy-boundary-plan.md)、[后续契约](auth-privacy-business-contract.md)及[机器记录](../../services/api/authlab/privacy-boundary-verification.json)。B02整模块继续BLOCKED，公共内容／聊天／管理消费者尚未实现，原生设备／生产证据单列。未提交／推送／部署。
@@ -15,6 +25,15 @@
 以下原有 2026-10-04 平台交付及更早记录保留其原版本和范围；其中“AC01 未实现”和工具未执行等字段描述历史状态，当前 AC01 以上述证据为准。
 
 > **2026-10-04 最新验证与环境交付：**基于远端 `codex/auth-privacy-handoff` 的 `d624ea30943a2b12096c20dbeefd844ba0e5e840`。Flutter分析与175项mobile测试、真实Dart→HTTPS→PostgreSQL R05、Android完整app构建、16项vault＋3组跨进程探针、9项Passkey Dart／5项Android codec和真实Flutter双进程共享AuthStore探针均PASS；Go/SQL/race/vet、R03实际C/V进程及完整OpenAPI已在本轮复验。环境与可复验命令见[本机环境](local-test-environment.md)，精确证明范围／失败修复见[最新记录](../../services/api/authlab/identity-runtime-test-verification.json)。**B02整模块仍BLOCKED：AC01 V Gate、AC02身份整账号关闭尚未实现，iOS、真实Passkey ceremony和物理设备／B02设备矩阵仍未验。**用户要求保留D盘工具环境、删除全部测试缓存和临时产物，完成后直接推送对应分支。
+
+## AC05 当前模块映射与复验入口
+
+- N01／A12／B01：R07 标准完整 App 和 native vault16＋3组、R09 Flutter真实原生双进程通过；[设备入口](../../apps/mobile/integration_test/auth_security_device_test.dart)保留原凭据操作键与登出围栏。Keystore／故障注入和模拟器进程边界不代证 OEM 锁屏、系统备份和真实卸载重装。
+- B02／A12／N01：新增[身份设备场景](../../apps/mobile/integration_test/identity_device_scenarios.dart)，R09／R10 验证首次合法昵称草稿、组合输入不覆盖持久草稿、账号隔离及原键结果核对，映射 X04／X05／X08。授权和身份 API 为测试提供者；完整 App→实际 C/V 与物理 IME／辅助服务仍未验，未来公开业务消费者仍未实现。
+- N03／B01／A09：R08 Dart9项和 Android codec5项本轮通过；系统 Passkey 仍 BLOCKED。实际 RP、Android 发布签名／origin与 assetlinks、Apple Team／Bundle及 AASA／关联域需要提供并部署；codec 不代表系统绑定／恢复。
+- N02：R06／R09 仍 BLOCKED，无 macOS／完整 Xcode与iOS设备，本轮未执行原生构建、Keychain、双进程或 AuthenticationServices。保留旧 marker／codec 原版本范围。
+
+准确构建和探针命令见[平台报告](auth-privacy-platform-acceptance-validation-report.md)、[本机环境](local-test-environment.md)和[机器记录](../../services/api/authlab/platform-acceptance-verification.json)。跨进程 runner 新增可选 `-PubCache <专用缓存绝对路径>`，两APK使用同一 namespace／签名，保留应用后显式 force-stop，不能中途卸载或清数据。源码指纹包含 Android／iOS／设备测试与资源；旧 AC04 后端指纹不重写为当前全平台通过。
 
 ## 历史记录与验收目录
 
@@ -521,3 +540,11 @@ A01/A02/A13/B02和X01/X02/X03/X04/X05/X08需要执行对应当前回归；身份
 当前Windows Flutter3.47.5/Dart3.13.4 `flutter analyze --no-pub` 无问题、`flutter test --no-pub` 179项PASS（4项新增于auth_api_test.dart）；WSL R05 `sh services/api/authlab/run-mobile-isolated.sh` 当前真实Dart→HTTPS handler→隔离C/V SQL PASS。两条runner从services/api或用实际路径调用，未添加不存在的module选项。命令环境使用[既有D盘/WSL工具](local-test-environment.md)，数据库全部自建一次性；对外公开DTO尚无消费者，不能把本人接口负向测试代作公众内容测试。
 
 未执行：R07/R09/R10 Android/iOS原生、系统Passkey、物理设备/B02矩阵本轮未重跑；iOS构建/Keychain和实际ceremony仍缺工具/设备/平台配置。B05–B11帖子/聊天/治理调用者及本地聊天/备注/搜索清理尚未实现，无现成完整业务验收入口，需未来模块先实现再补X06/X07。P02–P06真实分权、生产代理/邮件/日志/备份与灾备、独立人类审计需要生产环境/真实主体，当前fixture不能代证。B02继续BLOCKED；后续仅按用户指定AC04集中场景与AC05平台推进，不进入完整业务片。
+
+## 2026-10-05 AC04 测试交接
+
+任务单、测试源码与12组关键场景映射见[AC04报告](auth-privacy-regression-validation-report.md)和[任务单](auth-privacy-regression-plan.md)。基线cbc99b0，当前修改未提交；最新raw／Linux换行摘要和真实执行结果见[机器记录](../../services/api/authlab/privacy-regression-verification.json)。
+
+R01完整Go／一次性SQL／race、R02 vet、R03实际非owner C/V／C12V4迁移升级／冻结恢复／旧快照／身份关闭与同邮箱注册、Linux Flutter analyze及179项测试、R05真实Dart＋HTTPS handler＋SQL均PASS。R05新增V冻结请求／确认／结果拒绝与旧代OTP失效、身份缓冲／取消不变、正式擦除和永久回执保持、重复终结、旧Bearer拒绝及新账号原键NOT_FOUND。R03普通重启在持有两侧一次性Gate行锁、当前授权完成后停机；任意授权中断仍可能安全冻结，需要显式恢复。
+
+影响P01、A00/A01/A02/A03/A04/A05/A06/A08/A09/A10/A11/A12/A13、B01/B02；X02及X06/X07仅当前基础边界。R01主动SKIP opt-in移动测试，R05另跑取得证据。R00契约／生成未跑（输入未变）；R07/R09/R10原生、系统Passkey、物理设备与B02矩阵未跑，iOS／平台关联仍缺配置设备；入口沿用本文件runner表。B05–B11消费者未实现，生产P02–P06仍缺外部事实与独立审计。下一验收为AC05；B02仍BLOCKED。

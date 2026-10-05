@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'identity_https_scenarios.dart';
+import 'verifier_gate_https_scenarios.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
@@ -12,6 +13,7 @@ import 'package:hnuhole_mobile/src/auth/auth_session_controller.dart';
 import 'package:hnuhole_mobile/src/auth/auth_store.dart';
 import 'package:hnuhole_mobile/src/auth/security_management_controller.dart';
 import 'package:hnuhole_mobile/src/auth/http_auth_api.dart';
+import 'package:hnuhole_mobile/src/identity/identity_api.dart';
 import 'package:hnuhole_mobile/src/channels/http_channel_repository.dart';
 import 'package:hnuhole_mobile/src/navigation/channel_directory_controller.dart';
 
@@ -192,7 +194,11 @@ void main() {
       final expiry = await api.renewSession(signupToken);
       expect(expiry.isBefore(store.current!.session!.expiresAt), isFalse);
 
-      await verifyIdentityHttpsScenarios(api: api, store: () => store,
+      await verifyVerifierGateHttpsScenarios(api: api,
+        communityToken: store.current!.session!.token,
+        fixture: (action, body) => fixture(action, body));
+
+      final identityReceiptKey = await verifyIdentityHttpsScenarios(api: api, store: () => store,
         sessions: () => sessions, restartClient: restartClient,
         fixture: (action, body) => fixture(action, body),
         username: username, password: password);
@@ -306,6 +312,12 @@ void main() {
       await sessions.login(username, resetPassword);
       expect(sessions.isAuthenticated, isTrue);
 
+      final closingToken = store.current!.session!.token;
+      final closingAccount = store.current!.session!.accountId;
+      final closingIdentities = await api.identities(closingToken);
+      expect((await api.identityChangeResult(sessionToken: closingToken,
+        idempotencyKey: identityReceiptKey)).committed, isTrue);
+      await fixture('capture-identities', {'token': closingToken});
       await fixture('drop-next', {'path': '/api/v1/account-closures'});
       await flows.requestClosure(resetPassword);
       expect(flows.status, AuthFlowStatus.closureUnknown);
@@ -319,14 +331,26 @@ void main() {
       expect(store.current!.pendingClosure!['originalBearer'], isNull);
       expect(store.current!.pendingClosure!['closureId'], closureId);
       expect(store.current!.pendingClosure!['statusSecret'], closureSecret);
+      await fixture('identities-unchanged', {'state': 'PENDING_CLOSE'});
       await sessions.login(username, resetPassword);
       expect(sessions.isAuthenticated, isTrue);
       await flows.reconcileClosure();
       expect(flows.status, AuthFlowStatus.closureCancelled);
+      await fixture('identities-unchanged', {'state': 'ACTIVE'});
       await flows.forgetClosureStatus();
       await flows.requestClosure(resetPassword);
       expect(flows.status, AuthFlowStatus.closurePending);
+      final finalClosureId = store.current!.pendingClosure!['closureId'] as String;
+      await fixture('identities-unchanged', {'state': 'PENDING_CLOSE'});
       await fixture('finalize');
+      await fixture('identities-finalized', {'closureId': finalClosureId});
+      await fixture('finalize-again');
+      await fixture('identities-finalized', {'closureId': finalClosureId});
+      await expectLater(api.identities(closingToken), throwsA(
+        isA<AuthFailure>().having((e) => e.unauthorized, 'closed bearer', true)));
+      await expectLater(api.identityChangeResult(sessionToken: closingToken,
+        idempotencyKey: identityReceiptKey), throwsA(
+        isA<AuthFailure>().having((e) => e.unauthorized, 'closed receipt access', true)));
       await flows.reconcileClosure();
       expect(flows.status, AuthFlowStatus.closureClosedReleasePending);
       await fixture('deliver-release', {'slotId': slot});
@@ -336,6 +360,47 @@ void main() {
       expect(sessions.isAuthenticated, isFalse);
       await sessions.login(username, resetPassword);
       expect(sessions.isAuthenticated, isFalse);
+
+      // Register the same exact V address with new bootstrap material after
+      // release. C's finalizer advanced seven days; align V's signed fixture
+      // clock, without changing any SQL deadline or resurrecting an old flow.
+      await flows.forgetClosureStatus();
+      await fixture('advance-verifier-after-closure');
+      clientClock = clientClock.add(const Duration(days: 7, seconds: 1));
+      await flows.requestOtp(email);
+      expect(flows.status, AuthFlowStatus.otpRequested);
+      final returnMail = await fixture('otp', {'email': email});
+      await flows.confirmOtp(returnMail['code'] as String);
+      expect(flows.status, AuthFlowStatus.eligibilityReady);
+      await flows.createRegistration('synthetic_return', password);
+      expect(flows.status, AuthFlowStatus.registrationCodeShown);
+      final returnCode = flows.recoveryCode!;
+      flows.hideRecoveryCode();
+      await flows.commitRegistration(returnCode);
+      expect(flows.status, AuthFlowStatus.registrationComplete);
+      expect(sessions.isAuthenticated, isTrue);
+      final returned = store.current!.session!;
+      expect(returned.accountId, isNot(closingAccount));
+      final empty = await api.identities(returned.token);
+      expect(empty.identities, isEmpty);
+      expect(empty.createdCount, 0);
+      expect(empty.nextCreateAt, isNull);
+      final oldReceipt = await api.identityChangeResult(sessionToken: returned.token,
+        idempotencyKey: identityReceiptKey);
+      expect(oldReceipt.committed, isFalse);
+      expect(oldReceipt.rejected, isFalse);
+      expect(oldReceipt.identityId, isNull);
+      final first = await api.changeIdentity(sessionToken: returned.token,
+        idempotencyKey: AuthCrypto.randomEncoded(16),
+        operation: IdentityOperation.create, nickname: '海风');
+      expect(first.committed, isTrue);
+      expect(closingIdentities.identities.map((i) => i.id), isNot(contains(first.identityId)));
+      final independent = await api.identities(returned.token);
+      expect(independent.createdCount, 1);
+      expect(independent.identities.single.isOriginal, isTrue);
+      expect(independent.nextCreateAt, isNull);
+      await fixture('new-account-identities', {'accountId': returned.accountId,
+        'closureId': finalClosureId});
     },
     timeout: const Timeout(Duration(minutes: 4)),
   );

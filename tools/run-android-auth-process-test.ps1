@@ -2,11 +2,13 @@ param(
     [Parameter(Mandatory)][string]$DeviceId,
     [Parameter(Mandatory)][string]$WriteApk,
     [Parameter(Mandatory)][string]$ReadApk,
-    [string]$EnvironmentRoot = 'D:\zewbbyTest\Hnuhole-env'
+    [string]$EnvironmentRoot = 'D:\zewbbyTest\Hnuhole-env',
+    [string]$PubCache
 )
 
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'env-hnuhole-windows.ps1') -EnvironmentRoot $EnvironmentRoot
+if ($PubCache) { $env:PUB_CACHE = $PubCache }
 $adb = Join-Path $env:ANDROID_HOME 'platform-tools\adb.exe'
 $mobile = Join-Path (Split-Path $PSScriptRoot) 'apps\mobile'
 Push-Location $mobile

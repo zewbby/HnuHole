@@ -18,13 +18,22 @@ chmod 700 "$runtime_dir"
 runtime_project="hnuhole-runtime-$(basename "$runtime_dir" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9')"
 runtime_compose="$runtime_repo_dir/infra/docker-compose.yml"
 runtime_c_pid=;runtime_v_pid=;runtime_evidence_pid=;runtime_v_evidence_pid=
+runtime_c_stop_lock_pid=;runtime_v_stop_lock_pid=
 runtime_cleanup() {
  runtime_status=$?
  trap - EXIT INT TERM HUP
- for runtime_pid in "$runtime_evidence_pid" "$runtime_v_evidence_pid" "$runtime_c_pid" "$runtime_v_pid"; do
+ for runtime_pid in "$runtime_evidence_pid" "$runtime_v_evidence_pid" "$runtime_c_pid" "$runtime_v_pid" "$runtime_c_stop_lock_pid" "$runtime_v_stop_lock_pid"; do
   if [ -n "$runtime_pid" ]; then kill "$runtime_pid" 2>/dev/null || true; wait "$runtime_pid" 2>/dev/null || true; fi
  done
  if [ "$runtime_status" -ne 0 ]; then
+  # Emit only Gate status and fixed freeze categories from THIS disposable
+  # cluster. Profiles, capabilities, SQL errors and operator reasons stay private.
+  if [ -n "${runtime_c_migrator:-}" ] && [ -n "${C_MIGRATOR_PASSWORD:-}" ]; then
+   PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -qAt "$runtime_c_migrator" -c "SELECT 'C_GATE|'||gate_state||'|'||authorization_generation||'|'||CASE WHEN freeze_reason IS NULL THEN 'NONE' WHEN freeze_reason IN ('SNAPSHOT_OR_ANCHOR_MISMATCH','TIME_ROLLBACK','EVIDENCE_UNAVAILABLE','EVIDENCE_INVALID_OR_EXPIRED','EVIDENCE_EXPIRED','ANCHOR_WRITE_FAILURE','INDEPENDENT_ANCHOR_FROZEN') THEN freeze_reason ELSE 'OPERATOR_OR_OTHER' END FROM c_auth.authorization_gate" 2>/dev/null || true
+  fi
+  if [ -n "${runtime_v_migrator:-}" ] && [ -n "${V_MIGRATOR_PASSWORD:-}" ]; then
+   PGPASSWORD=$V_MIGRATOR_PASSWORD psql -X -qAt "$runtime_v_migrator" -c "SELECT 'V_GATE|'||gate_state||'|'||authorization_generation||'|'||CASE WHEN freeze_reason IS NULL THEN 'NONE' WHEN freeze_reason IN ('SNAPSHOT_OR_ANCHOR_MISMATCH','TIME_ROLLBACK','EVIDENCE_UNAVAILABLE','EVIDENCE_INVALID_OR_EXPIRED','EVIDENCE_EXPIRED','ANCHOR_WRITE_FAILURE','INDEPENDENT_ANCHOR_FROZEN') THEN freeze_reason ELSE 'OPERATOR_OR_OTHER' END FROM v_auth.authorization_gate" 2>/dev/null || true
+  fi
   docker compose -p "$runtime_project" -f "$runtime_compose" logs --no-color --tail 25 >"$runtime_dir/docker-failure.log" 2>/dev/null || true
   python3 - "$runtime_dir/docker-failure.log" <<'PY'
 import os,pathlib,sys
@@ -326,9 +335,35 @@ runtime_start() {
  "$runtime_dir/verifier" -config "$runtime_material/v.json" >"$runtime_dir/v.log" 2>&1 & runtime_v_pid=$!
 }
 runtime_stop() {
+ # Ordinary restart must stop between authorization commits. SIGTERM during
+ # an anchor-before-SQL write can legitimately require explicit recovery;
+ # cancellation must not turn this preservation rehearsal into a flaky test.
+ # Hold both disposable Gate rows after prior commits finish. New operations
+ # then wait before touching either anchor and are cancelled by shutdown.
+ mkfifo "$runtime_dir/stop-c.pipe" "$runtime_dir/stop-v.pipe"
+ PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -qAt -v ON_ERROR_STOP=1 "$runtime_c_migrator" <"$runtime_dir/stop-c.pipe" >"$runtime_dir/stop-c.private" 2>&1 & runtime_c_stop_lock_pid=$!
+ PGPASSWORD=$V_MIGRATOR_PASSWORD psql -X -qAt -v ON_ERROR_STOP=1 "$runtime_v_migrator" <"$runtime_dir/stop-v.pipe" >"$runtime_dir/stop-v.private" 2>&1 & runtime_v_stop_lock_pid=$!
+ exec 3>"$runtime_dir/stop-c.pipe"
+ exec 4>"$runtime_dir/stop-v.pipe"
+ printf 'BEGIN;\nSELECT singleton_id FROM c_auth.authorization_gate FOR UPDATE;\n\\! touch %s\n' "$runtime_dir/stop-c-held" >&3
+ printf 'BEGIN;\nSELECT singleton_id FROM v_auth.authorization_gate FOR UPDATE;\n\\! touch %s\n' "$runtime_dir/stop-v-held" >&4
+ runtime_stop_attempt=0
+ while [ ! -f "$runtime_dir/stop-c-held" ] || [ ! -f "$runtime_dir/stop-v-held" ]; do
+  kill -0 "$runtime_c_stop_lock_pid";kill -0 "$runtime_v_stop_lock_pid"
+  runtime_stop_attempt=$((runtime_stop_attempt+1))
+  if [ "$runtime_stop_attempt" -ge 100 ]; then echo 'Disposable restart Gate quiescence timed out' >&2;return 1;fi
+  sleep 0.1
+ done
  kill "$runtime_c_pid" "$runtime_v_pid"
  wait "$runtime_c_pid"; wait "$runtime_v_pid"
  runtime_c_pid=;runtime_v_pid=
+ printf 'ROLLBACK;\n\\q\n' >&3
+ printf 'ROLLBACK;\n\\q\n' >&4
+ exec 3>&-
+ exec 4>&-
+ wait "$runtime_c_stop_lock_pid";wait "$runtime_v_stop_lock_pid"
+ runtime_c_stop_lock_pid=;runtime_v_stop_lock_pid=
+ rm "$runtime_dir/stop-c.pipe" "$runtime_dir/stop-v.pipe" "$runtime_dir/stop-c-held" "$runtime_dir/stop-v-held"
 }
 runtime_health() {
  runtime_attempt=0

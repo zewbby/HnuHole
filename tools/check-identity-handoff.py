@@ -34,7 +34,8 @@ def source_snapshot(config, normalize_checkout=False):
         # Git text checkout can use CRLF while committed blobs use LF. The
         # protocol fixture has an exact byte hash and must never use this
         # equivalence fallback; its eol=lf attribute is mandatory.
-        if normalize_checkout and relative != "packages/auth-protocol-vectors/v1.json":
+        if (normalize_checkout and relative != "packages/auth-protocol-vectors/v1.json"
+                and path.suffix not in (".png", ".jpg", ".jpeg", ".jar")):
             data = data.replace(b"\r\n", b"\n")
         result.update(hashlib.sha256(data).digest())
     return {"sha256": result.hexdigest(), "presentFileCount": len(selected)}
@@ -135,7 +136,7 @@ def main():
 
     selected_name, selected_record = "historical B02", None
     scoped = {}
-    for name in ("currentAC01", "currentAC02", "currentAC03"):
+    for name in ("currentAC01", "currentAC02", "currentAC03", "currentAC04", "currentAC05"):
         if name in ledger:
             record = ledger[name]
             validated = scoped_record(name, record, ledger["resultDefinitions"])
@@ -177,6 +178,33 @@ def main():
                 if "evidence" in regression:
                     assert regression["evidence"] == ledger[name]["evidence"], (module["id"], name)
 
+    if "currentAC04" in scoped:
+        coverage = scoped["currentAC04"]["coverage"]
+        assert len(coverage) == len({scene["id"] for scene in coverage}), "AC04 duplicate scene IDs"
+        passed_runners = {check["id"] for check in scoped["currentAC04"]["checks"]
+                          if check["result"] == "PASS" and check.get("exitCode") == 0}
+        for scene in coverage:
+            assert set(scene["moduleIds"]) <= module_ids, scene["id"]
+            assert set(scene["evidenceRunners"]) <= passed_runners, scene["id"]
+            path = ROOT / scene["testPath"]
+            assert path.is_file(), scene["testPath"]
+            content = path.read_text(encoding="utf-8")
+            for function in scene["testFunctions"]:
+                assert re.search(r"func " + re.escape(function) + r"\(", content), (scene["id"], function)
+
+    if "currentAC05" in scoped:
+        platform = scoped["currentAC05"]
+        assert platform["currentResult"] == "BLOCKED", "AC05 outstanding platform matrix"
+        assert platform["scopedBackendAcceptancePassed"] is False
+        if platform["scopedAndroidAcceptancePassed"]:
+            for check_id in platform["androidAcceptanceCheckIds"]:
+                assert any(check["id"] == check_id and check["result"] == "PASS"
+                           and check.get("exitCode") == 0 for check in platform["checks"]), check_id
+        assert platform["fullDeviceMatrixPassed"] is False
+        for scene in platform["coverage"]:
+            assert set(scene["moduleIds"]) <= module_ids, scene["id"]
+            assert (ROOT / scene["testPath"]).is_file(), scene["testPath"]
+
     allowed = {"identity-management-plan.md", "identity-management-validation-report.md",
                "../../services/api/authlab/identity-management-verification.json",
                "module-acceptance-handoff.md", "module-acceptance-ledger.json"}
@@ -211,7 +239,7 @@ def main():
                 if "://" not in target and not target.startswith("#"):
                     assert (path.parent / target.split("#", 1)[0]).exists(), (report, target)
     print(f"PASS: stable module IDs, historical B02 evidence/status, AC handoff links and {selected_name} source fingerprint ({actual['presentFileCount']} files)")
-    print("B02 remains BLOCKED; scoped backend PASS does not approve full anonymity closure or production.")
+    print("B02 remains BLOCKED; scoped backend/Android PASS does not approve full anonymity closure or production.")
     print("Scope: bookkeeping only; this checker does not execute compilation, SQL, Flutter or device acceptance.")
 
 
