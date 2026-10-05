@@ -85,7 +85,7 @@ docker compose -p "$DEV_AUTH_PROJECT" -f ../../infra/docker-compose.yml stop
 
 Mailpit SMTP为literal `127.0.0.1:1025`，仅此地址允许无STARTTLS；邮箱UI `http://127.0.0.1:8025`。OTP生成、加密排队与真实SMTP使用已有状态机；未知DATA结果不会自动重投。仅开发操作员在Mailpit UI读取合成测试邮件；C／公共API无取码接口，`cmd/runtimeprobe` 内只读Mailpit latest/raw并验证唯一合成收件人，且要求隔离marker和私有目录，永不打印码。
 
-V本片直接信任PostgreSQL `clock_timestamp()`：`eligibility_otp.go` 的发码／60s等待／预算／锁／验证／投递claim与材料清理、`eligibility_confirmation.go` 的资格时窗／签名落库／原确认／退役续办与清理，以及 `verifier.go` 的配额／收据裁决。恢复旧V快照可能回退这些事实；V独立Gate另片，C Gate不是V灾备安全证明。
+AC01 已为 V 装配独立 `v_auth` Gate：`eligibility_otp.go` 的发码／等待／预算／锁／验证／投递claim与清理、`eligibility_confirmation.go` 的资格时窗／签名落库／原确认／退役续办与清理，以及 `verifier.go` 的配额／收据裁决均使用可信时间与最终事务授权。V 证据、库外锚点、代次、受限恢复角色和连接池独立于 C；恢复使旧 pending 作业失效。实施与证明边界见 [AC01方案](../../docs/design/auth-verifier-safety-gate-plan.md)和[验证报告](../../docs/design/auth-verifier-safety-gate-validation-report.md)。开发文件锚点不代证生产独立授时／库外存储／灾备运营。
 
 WSL2的服务与文件保持WSL所属；Docker published ports必须能从WSL literal loopback连接，先用psql和curl核对当前Docker集成。Android模拟器的10.0.2.2或真实设备LAN访问需要单独显式的HTTPS开发入口、匹配SAN／origin与平台信任步骤；当前生成的loopback证书不代表设备已验收。不要为此开放整个PG／SMTP／Mailpit／内部mTLS。
 
@@ -108,4 +108,6 @@ GOTOOLCHAIN=local GOPROXY=off go vet ./...
 
 本人身份 API 接入相同 C runtime 和最终 Safety Gate：`GET/POST /api/v1/identities`、`PATCH/DELETE /api/v1/identities/{id}`，原结果 `GET /api/v1/identity-change-result`。变更及核对使用独立16字节规范base64url `Idempotency-Key`（与32字节认证操作键不同）；全部成功响应携带同Bearer权威 `Session-Expires-At`。仅本人列表；默认头像 `default-v1`，自定义上传后续媒体实现。
 
-正式迁移11保留累计创建、稳定删除墓碑以及账号归属成功／拒绝终态回执。runtime最小版本11并检查表／非owner／必要DML。每个新意图用新键；超时、丢响应、`NOT_FOUND`只重试原键和原参数；`COMMITTED`与`REJECTED`为永久终态，拒绝不消耗创建或改名机会。详见[契约](../../packages/openapi/identity-api.yaml)、[本片报告](../../docs/design/identity-management-validation-report.md)。保留真实SQL及TLS测试源码；当前未运行Go／SQL，帖内绑定和删除后的帖子／聊天投影尚未实现。
+正式迁移11保留累计创建、稳定删除墓碑以及账号归属成功／拒绝终态回执；迁移12接入身份整账号正式关闭。runtime最小版本12并检查表／非owner／必要DML及关闭shape触发器。每个新意图用新键；超时、丢响应、`NOT_FOUND`只重试原键和原参数；`COMMITTED`与`REJECTED`为永久终态，拒绝不消耗创建或改名机会。详见[契约](../../packages/openapi/identity-api.yaml)、[身份报告](../../docs/design/identity-management-validation-report.md)和[AC02本轮报告](../../docs/design/auth-identity-account-closure-validation-report.md)。当前服务端SQL／race／vet与实际C/V R03通过；客户端／设备历史结果保留原版本，帖内绑定和帖子／聊天投影调用仍未实现。
+
+七天缓冲和取消保留身份资料；最终C Gate关闭事务同时擦除全部活动身份的昵称、头像及改名时间，用最终可信时间建立墓碑，不等待V释放ACK。原累计创建状态、已有删除墓碑和成功／拒绝回执保持不变；零身份关闭不自动创建身份，CLOSED不得恢复活动身份。身份生命周期DML只支持现有显式READ COMMITTED事务，其他隔离级别由延迟约束拒绝。旧CLOSED遗留资料升级修复只使用已持久Gate高水位的维护marker，证据不足则迁移失败，不冒称原关闭时间。纯注销投影仅含身份级opaque token、统一头像键和状态；没有新增任意身份查询接口，编号界面格式与真实内容／聊天调用留对应业务片。

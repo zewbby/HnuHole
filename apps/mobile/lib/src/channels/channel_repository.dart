@@ -7,8 +7,10 @@ abstract interface class ChannelRepository {
 
 /// A complete directory and the deadline committed by C for this same token.
 class ChannelDirectoryResult {
-  ChannelDirectoryResult({required List<Channel> channels, required this.expiresAt})
-    : channels = ChannelDirectory.validate(channels);
+  ChannelDirectoryResult({
+    required List<Channel> channels,
+    required this.expiresAt,
+  }) : channels = ChannelDirectory.validate(channels);
 
   final List<Channel> channels;
   final DateTime expiresAt;
@@ -30,8 +32,5 @@ class ChannelRepositoryException implements Exception {
   bool get isUnauthorized => statusCode == 401;
 
   @override
-  String toString() {
-    final suffix = requestId == null ? '' : ' (request $requestId)';
-    return 'ChannelRepositoryException: $message$suffix';
-  }
+  String toString() => 'ChannelRepositoryException(status: $statusCode)';
 }

@@ -437,6 +437,8 @@ func lockClosureDependents(ctx context.Context, tx pgx.Tx, account uuid.UUID) er
 		`SELECT credential_id FROM c_auth.passkeys WHERE account_id=$1 ORDER BY credential_id FOR UPDATE`,
 		`SELECT token_digest FROM c_auth.sessions WHERE account_id=$1 ORDER BY token_digest FOR UPDATE`,
 		`SELECT account_id FROM c_auth.recent_device_replacement WHERE account_id=$1 FOR UPDATE`,
+		`SELECT account_id FROM public.identity_account_state WHERE account_id=$1 FOR UPDATE`,
+		`SELECT identity_id FROM public.community_identities WHERE account_id=$1 ORDER BY identity_id FOR UPDATE`,
 	} {
 		rows, err := tx.Query(ctx, sql, account)
 		if err != nil {
@@ -531,6 +533,13 @@ func (c *Community) finalizeAccountClosure(ctx context.Context, account uuid.UUI
 			password_params_version=NULL,user_handle=NULL,active_rotation_intent_id=NULL,active_reset_intent_id=NULL,credential_version=credential_version+1,
 			reset_generation=reset_generation+1,session_generation=session_generation+1,closure_generation=closure_generation+1
 			WHERE account_id=$1`, account); e != nil {
+			return e
+		}
+		// Formal closure erases every remaining identity profile at the same
+		// authority point as CLOSED and its release outbox. Existing tombstones,
+		// cumulative creation counters and permanent change receipts survive.
+		if _, e := tx.Exec(ctx, `UPDATE public.community_identities SET nickname=NULL,avatar=NULL,
+			last_renamed_at=NULL,deleted_at=$2 WHERE account_id=$1 AND deleted_at IS NULL`, account, at); e != nil {
 			return e
 		}
 		if _, e := tx.Exec(ctx, `UPDATE c_auth.account_restrictions SET ban_state='NONE',ban_ends_at=NULL,

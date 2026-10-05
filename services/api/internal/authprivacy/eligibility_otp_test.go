@@ -86,7 +86,7 @@ func otpVerifyForTest(t *testing.T, e *Eligibility, req ConfirmOTPRequest) (OTPV
 	if err != nil {
 		return OTPVerification{}, err
 	}
-	tx, err := begin(ctx, e.store.pool)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -376,7 +376,7 @@ func TestOTPMailEncryptedBeforeCommitAndErasedAfterSending(t *testing.T) {
 		t.Fatal(err)
 	}
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", req.Key[:])
-	tx, err := begin(ctx, e.store.pool)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -417,7 +417,7 @@ func TestOTPCleanupPreservesGenerationAndExpiredAnchor(t *testing.T) {
 	job, _ := random32()
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", req.Key[:])
 	mac := requestMAC(e.config.RequestHMACKey, []byte("HNUHOLE/V-OTP-REQUEST/V1"), []byte(req.Email), req.InstallationID[:])
-	tx, err := begin(ctx, e.store.pool)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}

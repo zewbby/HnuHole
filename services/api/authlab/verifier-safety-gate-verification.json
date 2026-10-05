@@ -1,0 +1,215 @@
+{
+  "schemaVersion": "hnuhole-verifier-safety-gate-verification/v1",
+  "recordedOn": "2026-10-04",
+  "timeZone": "Asia/Shanghai",
+  "verifiedAtUTC": "2026-10-04T16:04:46.0592254+08:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "faf557db4d74ecb2c202fd1349f1bf8fa64e6133",
+  "uncommittedWorkingTree": true,
+  "scope": "AC01_V_INDEPENDENT_GATE_BACKEND_AND_AFFECTED_C_V_REGRESSION",
+  "implementationState": "IMPLEMENTED",
+  "currentResult": "PASS",
+  "fullAnonymityClosurePassed": false,
+  "productionApproved": false,
+  "sourceFingerprint": {
+    "sha256": "5174c37ea08db8d4944ef1e0b9058de3f6461b4b9061ebcd26c5612922eb0aad",
+    "presentFileCount": 128,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique source paths from git ls-files; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "AC01 backend and protocol source snapshot, including uncommitted files; historical mobile evidence is separate."
+  },
+  "testedSnapshotMatchesWorkspaceBytes": true,
+  "runtime": {
+    "mailImage": "axllent/mailpit:v1.21.8",
+    "isolatedPostgresql": "16.15",
+    "goose": "v3.22.1",
+    "go": "go1.22.2 linux/amd64",
+    "runtimePostgresImage": "postgres:16.6-alpine"
+  },
+  "checks": [
+    {
+      "sqlCasesExecuted": true,
+      "exitCode": 0,
+      "privateDisposableCluster": true,
+      "id": "R01",
+      "result": "PASS",
+      "scope": "All existing backend packages and new V Gate tests; protected non-superuser C/V SQL fixtures",
+      "command": "sh authlab/run-isolated.sh -> go test -race -count=1 -p 1 ./..."
+    },
+    {
+      "command": "sh authlab/run-isolated.sh -> go vet ./...",
+      "exitCode": 0,
+      "id": "R02",
+      "result": "PASS"
+    },
+    {
+      "summary": {
+        "actualCmdLifecycle": "passed",
+        "formalMigrationAndRoles": "passed",
+        "upgradeChannelsPreserved": "passed",
+        "identityUpgrade10To11": "passed",
+        "identityMissingSchemaAndDml": "passed",
+        "identityCrudReceiptsAndRestart": "passed",
+        "verifierGateUpgrade3To4": "passed",
+        "verifierGateFreezeRestartAndRecovery": "passed",
+        "verifierOldSnapshotBlocked": "passed",
+        "verifierOldGenerationOtpBlocked": "passed",
+        "verifierIndependentEvidenceExpiry": "passed",
+        "cleanup": "this invocation project and private directory only"
+      },
+      "actualCAndVProcesses": true,
+      "formalMigrations": true,
+      "restrictedRoles": true,
+      "exitCode": 0,
+      "result": "PASS",
+      "command": "sh authlab/run-runtime-isolated.sh",
+      "id": "R03"
+    },
+    {
+      "result": "PASS",
+      "id": "SOURCE",
+      "scope": "Byte-identical Windows workspace and Linux tested source manifest",
+      "fileCount": 128
+    },
+    {
+      "result": "PASS",
+      "exitCode": 0,
+      "id": "FOCUSED",
+      "scope": "Temporary filtered harness using the existing private-cluster setup; initial failures and V/HTTP safety cases before final full regression"
+    }
+  ],
+  "sqlPackageResults": [
+    "ok github.com/zhubaozhenshuai666-lang/HnuHole/services/api/cmd/authdev 1.116s",
+    "ok github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy 255.925s",
+    "ok github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol 1.144s",
+    "ok github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp 21.038s",
+    "ok github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyruntime 1.010s"
+  ],
+  "coreAndBusinessTopLevelTestFunctions": [
+    "TestAuthorizationGateSchemaWhitelist",
+    "TestVerifierGateRollbackBoundaryRestartAndIndependencePostgres",
+    "TestVerifierGateEvidenceAndReplicaFailuresPostgres",
+    "TestVerifierGateCompleteGateSnapshotCannotReopenPostgres",
+    "TestVerifierGateFinalCommitAndPendingGenerationPostgres",
+    "TestVerifierGateRefreshWithSingleConnectionBusinessPoolPostgres",
+    "TestVerifierGateRecoveryWaitRechecksEvidencePostgres",
+    "TestVerifierGateRestrictedRecoveryAndReplayPostgres",
+    "TestVerifierGateEvidenceProviderWaitUsesFinalClockPostgres",
+    "TestVerifierGateOfflineBreakGlassExpiresPostgres",
+    "TestVerifierRequiresIndependentGate",
+    "TestVerifierGateRefreshRemainsAvailableWhenBusinessPoolIsFull",
+    "TestVerifierFrozenProtectsOTPResultsMailReceiptsAndCleanup",
+    "TestVerifierGateIsIndependentOfCommunityFreeze",
+    "TestVerifierLateSignatureCannotCrossFreezeOrRecovery",
+    "TestVerifierLateSMTPResultCannotReopenClaimAfterRecovery",
+    "TestVerifierLateRetirementReplyCannotContinueOldQualification",
+    "TestVerifierAddressLockWaitCannotCrossRecoveryGeneration",
+    "TestVerifierMailClaimChecksExpiryAtFinalAuthorityPoint",
+    "TestVerifierConfirmationChecksOTPExpiryAtFinalAuthorityPoint"
+  ],
+  "coreAndBusinessTopLevelTestFunctionCount": 20,
+  "additionalHTTPTestFunctions": [
+    "TestHTTPSPostgresVerifierGateIndependentFreezeAndRecovery",
+    "TestHTTPSPostgresCommunityFreezeDoesNotFreezeVerifier"
+  ],
+  "correctedInitialFailures": [
+    {
+      "repair": "Scoped declaration fixed",
+      "issue": "New recovery test local err variable undeclared",
+      "retest": "Final full R01/R02 PASS",
+      "check": "compile"
+    },
+    {
+      "repair": "Setup binds current trusted V generation; all original safety assertions retained",
+      "issue": "Expired retirement fixture used legacy generation zero",
+      "retest": "Focused and full R01 PASS",
+      "check": "SQL"
+    },
+    {
+      "repair": "Use actual transactionid lock barrier",
+      "issue": "Recovery wait test observed advisory instead of transactionid row-lock wait",
+      "retest": "Focused and full R01 PASS",
+      "check": "SQL"
+    },
+    {
+      "repair": "Pin LF in .gitattributes; original published SHA256 restored without changing vector contents or expected hash",
+      "issue": "Windows checkout changed v1.json byte-exact fixture to CRLF",
+      "retest": "Focused and full R01 PASS",
+      "check": "protocol vectors"
+    },
+    {
+      "repair": "Expect 422 OTP_EXPIRED after reopening; frozen remains 503",
+      "issue": "Old OTP after recovery assertion expected 503 instead of existing invalid OTP contract",
+      "retest": "Focused/full R01 and R03 PASS",
+      "check": "HTTP"
+    }
+  ],
+  "semantics": {
+    "externalEffectsCanBeRecalled": false,
+    "legacyPendingMayRebind": false,
+    "alreadyIssuedProtocolTicketsRevokedByVRecovery": false,
+    "alreadyCommittedReceiptsRemainFacts": true,
+    "legacyPendingGeneration": 0,
+    "uncertainSMTPAutomaticallyRetried": false
+  },
+  "proofBoundaries": [
+    "V schema logical snapshot restore keeps external anchor; not physical full-database/WAL disaster recovery",
+    "File evidence/anchor are development infrastructure, not production independent time or storage",
+    "No new Flutter/Android/iOS/Passkey/physical-device/full-real-app evidence",
+    "AC02 and AC03 unimplemented in this task; B02 overall remains BLOCKED"
+  ],
+  "notRun": [
+    {
+      "result": "NOT_RUN",
+      "scope": "R05 real Dart client regression",
+      "reason": "No mobile code or public wire contract changed; current backend R01/R03 only; previous R05 evidence retains original revision"
+    },
+    {
+      "result": "NOT_RUN",
+      "scope": "Android/iOS/system Passkey/physical devices",
+      "reason": "Outside AC01 backend execution; prior platform gaps and scoped evidence retained"
+    },
+    {
+      "result": "NOT_RUN",
+      "scope": "P02/P03/P06 production independence/real DR/independent human audit",
+      "reason": "External operational evidence not supplied by development fixtures"
+    }
+  ],
+  "cleanup": {
+    "currentResult": "PASS",
+    "installedToolsAndExistingImagesRetained": true,
+    "privateSqlClusters": "Removed by successful scoped runner cleanup traps",
+    "runnerDockerProjects": "Both exact invocation projects checked separately: no remaining containers or volumes",
+    "taskCacheAndSourceCopy": "Removed exact owned WSL source/module/build caches and logs, empty preparation orphan and local ignored task helper directory; absence verified",
+    "dockerDesktopTemporarilyStartedThenStopped": true,
+    "globalPrunePerformed": false
+  },
+  "committed": false,
+  "pushed": false
+}

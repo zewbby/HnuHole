@@ -2,6 +2,9 @@
 services:
   community-postgres:
     image: postgres:16.6-alpine
+    # Ordinary errors can echo bound inputs even with TERSE verbosity. Keep
+    # development SQL diagnostics to PANIC; application errors use fixed labels.
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_min_messages=panic", "-c", "log_min_error_statement=panic", "-c", "log_error_verbosity=terse", "-c", "log_parameter_max_length=0", "-c", "log_parameter_max_length_on_error=0", "-c", "log_min_duration_statement=-1", "-c", "log_min_duration_sample=-1", "-c", "log_transaction_sample_rate=0", "-c", "log_duration=off"]
     environment:
       POSTGRES_DB: hnuhole_c
       POSTGRES_USER: hnuhole_c_admin
@@ -24,6 +27,7 @@ services:
       retries: 30
   verifier-postgres:
     image: postgres:16.6-alpine
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_min_messages=panic", "-c", "log_min_error_statement=panic", "-c", "log_error_verbosity=terse", "-c", "log_parameter_max_length=0", "-c", "log_parameter_max_length_on_error=0", "-c", "log_min_duration_statement=-1", "-c", "log_min_duration_sample=-1", "-c", "log_transaction_sample_rate=0", "-c", "log_duration=off"]
     environment:
       POSTGRES_DB: hnuhole_v
       POSTGRES_USER: hnuhole_v_admin
@@ -31,6 +35,7 @@ services:
       AUTH_PARTY: v
       AUTH_MIGRATOR_PASSWORD: ${V_MIGRATOR_PASSWORD:?provide migration password}
       AUTH_RUNTIME_PASSWORD: ${V_RUNTIME_PASSWORD:?provide runtime password}
+      AUTH_RECOVERY_PASSWORD: ${V_RECOVERY_PASSWORD:?provide recovery password}
     ports:
       - "127.0.0.1:${V_DATABASE_PORT:-55433}:5432"
     volumes:

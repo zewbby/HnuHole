@@ -23,6 +23,7 @@ type lab struct {
 	c                                *Community
 	v                                *VerifierStore
 	gate                             *PostgresAuthorizationGate
+	vGate                            *PostgresAuthorizationGate
 	cp, vp                           *pgxpool.Pool
 	vPrivate, cPrivate, cNextPrivate ed25519.PrivateKey
 }
@@ -89,10 +90,14 @@ func newLab(t *testing.T) *lab {
 			t.Fatal(err)
 		}
 		if spec.schema == "c_auth" {
-			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.community_identities, public.identity_account_state, public.sessions, public.channels CASCADE`); err != nil { t.Fatal(err) }
-			if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(), public.guard_community_identity(), public.guard_identity_receipt(), public.check_identity_account_shape()`); err != nil { t.Fatal(err) }
-        }
-        for _, file := range files {
+			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.community_identities, public.identity_account_state, public.sessions, public.channels CASCADE`); err != nil {
+				t.Fatal(err)
+			}
+			if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(), public.guard_community_identity(), public.guard_identity_receipt(), public.check_identity_account_shape() CASCADE`); err != nil {
+				t.Fatal(err)
+			}
+		}
+		for _, file := range files {
 			sql, readErr := os.ReadFile(file)
 			if readErr != nil {
 				_ = tx.Rollback(context.Background())
@@ -141,11 +146,12 @@ func newLab(t *testing.T) *lab {
 		t.Fatal(err)
 	}
 	l.gate = newLabGate(t, l.cp)
+	l.vGate = newLabGateForSchema(t, l.vp, "v_auth")
 	l.c, err = NewCommunity(l.cp, verifier, 1, requestKey, l.gate)
 	if err != nil {
 		t.Fatal(err)
 	}
-	l.v, err = NewVerifierStore(l.vp, verifier, lockKey)
+	l.v, err = NewVerifierStore(l.vp, verifier, lockKey, l.vGate)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -154,6 +160,27 @@ func newLab(t *testing.T) *lab {
 
 func newLabGate(t *testing.T, pool *pgxpool.Pool) *PostgresAuthorizationGate {
 	t.Helper()
+	return newLabGateForSchema(t, pool, "c_auth")
+}
+
+func newLabGateForSchema(t *testing.T, pool *pgxpool.Pool, schema string) *PostgresAuthorizationGate {
+	t.Helper()
+	domain := "hnuhole-authlab-community"
+	if schema == "v_auth" {
+		domain = "hnuhole-authlab-verifier"
+		// V refreshes trusted time while a business transaction is open. Keep
+		// that refresh on a bounded, independent pool so business saturation
+		// cannot prevent the transaction holding its locks from progressing.
+		config := pool.Config().Copy()
+		config.MaxConns = 2
+		config.MinConns = 0
+		gatePool, err := pgxpool.NewWithConfig(context.Background(), config)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(gatePool.Close)
+		pool = gatePool
+	}
 	publicEvidence, privateEvidence, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		t.Fatal(err)
@@ -177,7 +204,7 @@ func newLabGate(t *testing.T, pool *pgxpool.Pool) *PostgresAuthorizationGate {
 		t.Fatal(err)
 	}
 	gate, err := NewPostgresAuthorizationGate(AuthorizationGateConfig{
-		Pool: pool, Domain: "hnuhole-authlab-community", Evidence: provider,
+		Pool: pool, Schema: schema, Domain: domain, Evidence: provider,
 		EvidencePublicKey: publicEvidence, RecoveryPublicKey: publicRecovery,
 		BreakGlassPublicKey: publicBreakGlass, Anchor: anchor, Clock: time.Now,
 	})
@@ -186,7 +213,7 @@ func newLabGate(t *testing.T, pool *pgxpool.Pool) *PostgresAuthorizationGate {
 	}
 	now := time.Now().UTC()
 	evidence, err := SignAuthorizationEvidence(privateEvidence, AuthorizationEvidence{
-		Domain: "hnuhole-authlab-community", Version: 1, Generation: 1,
+		Domain: domain, Version: 1, Generation: 1,
 		IssuedAt: now, TrustedAt: now, ValidUntil: now.Add(authorizationEvidenceTTL),
 	})
 	if err != nil {
@@ -671,8 +698,14 @@ func TestPostgresIsolatedSlice(t *testing.T) {
 		}); !errors.Is(err, ErrReceiptPending) {
 			t.Fatalf("superseded epoch accepted a late ACK: %v", err)
 		}
-		if _, err = l.c.SignReceipt(ctx, ticket.Slot, func(_ context.Context, _ uint32, message []byte) ([]byte, error) { return ed25519.Sign(l.cNextPrivate, message), nil }); err != nil { t.Fatal(err) }
-		if err = l.c.DeliverReceipt(ctx, ticket.Slot, l.v.ProcessReceipt); err != nil { t.Fatal(err) }
+		if _, err = l.c.SignReceipt(ctx, ticket.Slot, func(_ context.Context, _ uint32, message []byte) ([]byte, error) {
+			return ed25519.Sign(l.cNextPrivate, message), nil
+		}); err != nil {
+			t.Fatal(err)
+		}
+		if err = l.c.DeliverReceipt(ctx, ticket.Slot, l.v.ProcessReceipt); err != nil {
+			t.Fatal(err)
+		}
 		if count(t, l.vp, `SELECT count(*) FROM v_auth.email_quota WHERE email_exact=$1 AND current_slot=$2`, email, newTicket.Slot[:]) != 1 {
 			t.Fatal("old receipt cleared later reservation")
 		}

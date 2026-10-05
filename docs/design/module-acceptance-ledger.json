@@ -1,14 +1,14 @@
 {
   "schemaVersion": "hnuhole-module-acceptance-ledger/v1",
-  "recordedOn": "2026-10-04",
+  "recordedOn": "2026-10-05",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/auth-privacy-handoff",
-  "baselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
+  "baselineHeadCommit": "faf557db4d74ecb2c202fd1349f1bf8fa64e6133",
   "workingTreeContainsUncommittedImplementation": true,
   "workflow": "ANONYMITY_BRANCH_CLOSURE_WITH_EXPLICIT_DEFERRED_ACCEPTANCE",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
-  "baselineEvidence": "services/api/authlab/runtime-business-integration-verification.json",
+  "baselineEvidence": "services/api/authlab/privacy-boundary-verification.json",
   "userReportedFunctionalCompletion": [
     "A11"
   ],
@@ -18,52 +18,58 @@
     "macOS/full Xcode and iOS device target"
   ],
   "sourceFingerprint": {
-    "sha256": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
-    "presentFileCount": 237,
+    "sha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+    "presentFileCount": 219,
     "roots": [
       "services/api",
-      "apps/mobile",
-      "packages/auth_vault",
+      "infra",
       "packages/openapi",
       "packages/auth-protocol-vectors",
-      "infra",
-      "packages/auth_passkey",
-      "tools"
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey"
     ],
     "includedSuffixes": [
-      ".dart",
-      ".entitlements",
       ".go",
-      ".gradle",
-      ".json",
-      ".kt",
-      ".kts",
-      ".lock",
+      ".sql",
+      ".sh",
       ".mod",
-      ".pbxproj",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
       ".plist",
+      ".entitlements",
       ".podspec",
       ".properties",
-      ".ps1",
-      ".py",
-      ".sh",
-      ".sql",
-      ".sum",
-      ".swift",
-      ".txt",
       ".xcconfig",
-      ".xcscheme",
-      ".xcworkspacedata",
-      ".xml",
-      ".yaml",
-      ".yml"
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm"
     ],
     "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
       ".env.example"
     ],
-    "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
-    "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
-    "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Current AC03 backend, mobile logic/tests and vault/Passkey source boundary review; each check retains its executed scope, no native platform revalidation"
   },
   "resultDefinitions": {
     "PASS": "Actual required evidence recorded for the tested revision and scope",
@@ -100,7 +106,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "packages/openapi/community-auth-api.yaml",
         "tools/configure-passkey-associations.py",
@@ -114,7 +120,7 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A02",
@@ -195,8 +201,34 @@
           "proofScope": "Historical state preserved before current validation."
         }
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A01",
@@ -246,7 +278,7 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "boundedChecksPassed": [
         "go-sql-race-vet",
@@ -264,11 +296,37 @@
         "services/api/internal/authprivacy/community_identities_test.go",
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
-      ]
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
+      ],
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A02",
@@ -295,7 +353,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "services/api/internal/authprivacyruntime/config.go",
         "services/api/internal/authprivacyruntime/server.go",
@@ -310,7 +368,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -374,8 +432,34 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A03",
@@ -403,7 +487,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_credential_result.go",
         "services/api/internal/authprivacy/community_identities.go",
@@ -415,7 +499,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -478,8 +562,34 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A04",
@@ -492,8 +602,8 @@
         "R03"
       ],
       "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
       "priorTaskRecords": [
         {
           "note": "历史隔离通过；当前worker/正式迁移待复验；V独立Gate未实现",
@@ -515,9 +625,35 @@
         "AC01-AC02-production-boundaries"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion."
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A05",
@@ -546,7 +682,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_state_codec.dart",
@@ -560,7 +696,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -623,8 +759,25 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/verifier-safety-gate-verification.json",
+      "latestScopedResult": "AC01_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A06",
@@ -654,7 +807,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_session_controller.dart",
         "apps/mobile/lib/src/auth/security_management_controller.dart",
@@ -668,7 +821,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -731,8 +884,34 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A07",
@@ -762,7 +941,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -776,7 +955,7 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -840,8 +1019,14 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/verifier-safety-gate-verification.json",
+      "latestScopedResult": "AC01_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      }
     },
     {
       "id": "A08",
@@ -868,23 +1053,32 @@
         "X03",
         "X04",
         "X05",
+        "X06",
+        "X07",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_screen.dart",
+        "services/api/internal/authprivacy/community_closure.go",
         "services/api/internal/authprivacy/community_identities.go",
-        "services/api/internal/authprivacyhttp/endpoints.go"
+        "services/api/internal/authprivacy/community_identity_projection.go",
+        "services/api/internal/authprivacyhttp/endpoints.go",
+        "services/api/migrations/0012_identity_account_closure.sql"
       ],
       "testPaths": [
         "apps/mobile/test/auth_flows_test.dart",
         "apps/mobile/test/auth_screen_test.dart",
+        "services/api/authlab/run-runtime-isolated.sh",
+        "services/api/cmd/runtimeprobe/identity_closure.go",
         "services/api/internal/authprivacy/community_identities_test.go",
+        "services/api/internal/authprivacy/community_identity_closure_test.go",
+        "services/api/internal/authprivacy/identity_closure_migration_test.go",
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -952,8 +1146,36 @@
         "AC03",
         "AC05"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC02Plan": "docs/design/auth-identity-account-closure-plan.md",
+      "currentAC02Report": "docs/design/auth-identity-account-closure-validation-report.md",
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A09",
@@ -1001,7 +1223,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_credential_result.go",
         "services/api/internal/authprivacy/passkey_verification.go",
@@ -1022,7 +1244,7 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "reopenedForTask": "docs/design/identity-management-plan.md",
       "executedEvidenceIsModulePass": false,
@@ -1068,8 +1290,25 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/verifier-safety-gate-verification.json",
+      "latestScopedResult": "AC01_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A10",
@@ -1082,8 +1321,8 @@
         "R03"
       ],
       "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
       "priorTaskRecords": [
         {
           "note": "新增摘要worker/claim/Gate/CAS当前未动态验收",
@@ -1105,9 +1344,35 @@
         "AC01-AC02-production-boundaries"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion."
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A11",
@@ -1136,7 +1401,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_session_controller.dart",
         "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
@@ -1150,7 +1415,7 @@
         "services/api/internal/authprivacyhttp/identity_endpoints_test.go"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -1213,8 +1478,25 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/verifier-safety-gate-verification.json",
+      "latestScopedResult": "AC01_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A12",
@@ -1242,7 +1524,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_models.dart",
         "apps/mobile/lib/src/auth/auth_state_codec.dart",
@@ -1260,7 +1542,7 @@
         "tools/run-android-vault-probes.ps1"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -1325,7 +1607,18 @@
         "flutter-android-process"
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "A13",
@@ -1353,7 +1646,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -1366,7 +1659,7 @@
         "apps/mobile/test/auth_api_test.dart"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -1435,8 +1728,34 @@
         "AC04",
         "AC05"
       ],
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "N01",
@@ -1463,7 +1782,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -1479,7 +1798,7 @@
         "tools/run-android-vault-probes.ps1"
       ],
       "pendingReasons": [
-        "Full platform/production matrix and unimplemented AC01/AC02 boundaries remain; current PASS only covers listed checks"
+        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
       "relatedModules": [
         "A00",
@@ -1568,7 +1887,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift",
         "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift",
@@ -1695,7 +2014,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use docs/design/local-test-environment.md; AC01/AC02 backend acceptance passed; continue AC03 review within the closure checklist. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
       "sourcePaths": [
         "packages/auth_passkey/lib/hnuhole_auth_passkey.dart",
         "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt",
@@ -1794,7 +2113,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/credential_management_api.dart",
         "apps/mobile/lib/src/auth/security_management_controller.dart",
@@ -1879,7 +2198,18 @@
         "flutter-android-process"
       ],
       "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "B02",
@@ -1893,7 +2223,7 @@
         "R05",
         "R10"
       ],
-      "note": "2026-10-04 executed scoped checks: go-sql-race-vet, runtime-r03, flutter-analysis-tests, real-dart-sql-r05. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
+      "note": "AC02 identity account-close lifecycle implemented and current backend R01/R02/R03 passed; historical mobile evidence retains its own revision. Entire B02 remains BLOCKED: business consumers and device matrix incomplete.",
       "priorTaskRecords": [
         {
           "note": "仅设计规则，无实际业务API/表/客户端流程",
@@ -1940,50 +2270,61 @@
         "X03",
         "X04",
         "X05",
+        "X06",
+        "X07",
         "X08"
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "Use docs/design/local-test-environment.md; implement AC01/AC02 before their acceptance. Complete iOS, actual Passkey ceremony and remaining physical-device/B02 matrix as applicable; no full business expansion.",
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
       "foundationImplementationState": "SOURCE_IMPLEMENTED",
-      "foundationAcceptanceState": "BACKEND_DART_SQL_PASSED_ANDROID_SHARED_AUTHSTORE_BOUNDED",
+      "foundationAcceptanceState": "BACKEND_FOUNDATION_AND_AC02_PASS_HISTORICAL_MOBILE_SCOPED",
       "sourcePaths": [
-        "services/api/internal/authprivacy/community_identities.go",
-        "services/api/internal/authprivacy/identity_rules.go",
-        "services/api/migrations/0011_identity_management.sql",
-        "services/api/internal/authprivacyhttp/identity_endpoints.go",
-        "services/api/internal/authprivacyhttp/endpoints.go",
-        "services/api/internal/authprivacyruntime/server.go",
-        "infra/postgres/grant-community.sql",
-        "packages/openapi/identity-api.yaml",
-        "packages/openapi/check-specs.py",
-        "apps/mobile/lib/main.dart",
         "apps/mobile/lib/hnuhole_mobile.dart",
-        "apps/mobile/lib/src/auth/http_auth_api.dart",
-        "apps/mobile/lib/src/auth/auth_store.dart",
+        "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/auth/auth_state_codec.dart",
+        "apps/mobile/lib/src/auth/auth_store.dart",
+        "apps/mobile/lib/src/auth/http_auth_api.dart",
         "apps/mobile/lib/src/identity/identity_api.dart",
         "apps/mobile/lib/src/identity/identity_management_controller.dart",
         "apps/mobile/lib/src/identity/identity_management_screen.dart",
         "apps/mobile/lib/src/identity/identity_name_formatter.dart",
         "apps/mobile/lib/src/identity/identity_name_ranges.dart",
         "apps/mobile/lib/src/identity/settings_screen.dart",
+        "apps/mobile/pubspec.lock",
         "apps/mobile/pubspec.yaml",
-        "apps/mobile/pubspec.lock"
+        "infra/postgres/grant-community.sql",
+        "packages/openapi/check-specs.py",
+        "packages/openapi/identity-api.yaml",
+        "services/api/internal/authprivacy/community_closure.go",
+        "services/api/internal/authprivacy/community_identities.go",
+        "services/api/internal/authprivacy/community_identity_projection.go",
+        "services/api/internal/authprivacy/identity_rules.go",
+        "services/api/internal/authprivacyhttp/endpoints.go",
+        "services/api/internal/authprivacyhttp/identity_endpoints.go",
+        "services/api/internal/authprivacyruntime/server.go",
+        "services/api/migrations/0011_identity_management.sql",
+        "services/api/migrations/0012_identity_account_closure.sql"
       ],
       "testPaths": [
-        "services/api/internal/authprivacy/identity_rules_test.go",
-        "services/api/internal/authprivacy/community_identities_test.go",
-        "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
-        "services/api/internal/authprivacy/postgres_test.go",
-        "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+        "apps/mobile/integration/identity_https_scenarios.dart",
         "apps/mobile/test/auth_api_test.dart",
         "apps/mobile/test/identity_management_controller_test.dart",
         "apps/mobile/test/identity_management_screen_test.dart",
         "apps/mobile/test/identity_name_formatter_test.dart",
         "apps/mobile/test/identity_test_support.dart",
+        "services/api/authlab/run-runtime-isolated.sh",
         "services/api/cmd/runtimeprobe/identities.go",
-        "apps/mobile/integration/identity_https_scenarios.dart"
+        "services/api/cmd/runtimeprobe/identity_closure.go",
+        "services/api/internal/authprivacy/community_identities_test.go",
+        "services/api/internal/authprivacy/community_identity_closure_test.go",
+        "services/api/internal/authprivacy/identity_closure_migration_test.go",
+        "services/api/internal/authprivacy/identity_rules_test.go",
+        "services/api/internal/authprivacy/postgres_test.go",
+        "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+        "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
+        "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go",
+        "services/api/internal/authprivacy/privacy_boundary_postgres_test.go"
       ],
       "relatedModules": [
         "A01",
@@ -1999,7 +2340,7 @@
         "B11"
       ],
       "pendingReasons": [
-        "AC02 identity whole-account closure and subsequent business integration not implemented",
+        "AC02 identity account-close backend passed; post/comment/chat projection and cleanup business consumers remain unimplemented",
         "B02 device IME/accessibility/identity-specific process matrix not run; Android shared auth persistence passed",
         "iOS/native Passkey associations remain blocked"
       ],
@@ -2019,7 +2360,7 @@
       "blockedChecks": [
         "physical-device-matrix"
       ],
-      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+      "testedWorkingTreeSourceFingerprint": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
       "pendingTestHarnessExtensions": [],
       "anonymityClosureGapIds": [
         "AC02",
@@ -2031,13 +2372,81 @@
         {
           "sha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
           "proofScope": "Original B02 static checks; no dynamic acceptance"
+        },
+        {
+          "sha256": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+          "proofScope": "Historical B02 platform/source snapshot retained before current AC02 backend fingerprint"
+        },
+        {
+          "sha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d",
+          "presentFileCount": 133,
+          "roots": [
+            "services/api",
+            "infra",
+            "packages/openapi",
+            "packages/auth-protocol-vectors"
+          ],
+          "includedSuffixes": [
+            ".go",
+            ".sql",
+            ".sh",
+            ".mod",
+            ".sum",
+            ".json",
+            ".yaml",
+            ".yml",
+            ".lock",
+            ".py",
+            ".ps1",
+            ".txt"
+          ],
+          "includedAdditionalNames": [
+            ".gitattributes",
+            "go.work",
+            "go.work.sum",
+            ".env.example"
+          ],
+          "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+          "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+          "appliesTo": "AC02 backend and protocol working-tree snapshot including AC01; historical platform and AC01 evidence retain their own fingerprints.",
+          "recordedOn": "2026-10-04",
+          "snapshotStatus": "HISTORICAL_AC02_VERIFIED_SOURCE_BEFORE_AC03"
         }
       ],
-      "testedWorkingTreeProofScope": "Current Go SQL/race/vet and actual C/V processes; full Dart regression, real Dart HTTPS/SQL, Android emulator native persistence and app builds. No full B02/platform/production acceptance.",
-      "latestTestSourceStatus": "AC04_B02_R03_R05_EXECUTED_PASS",
-      "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-      "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING"
+      "testedWorkingTreeProofScope": "Current AC02 backend working tree only; original B02 mobile/platform source and results retain historical evidence",
+      "latestTestSourceStatus": "AC02_BACKEND_TESTS_AND_R03_EXECUTED_PASS_R05_HISTORICAL",
+      "latestValidationEvidence": "services/api/authlab/privacy-boundary-verification.json",
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC02Plan": "docs/design/auth-identity-account-closure-plan.md",
+      "currentAC02Report": "docs/design/auth-identity-account-closure-validation-report.md",
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+      "testedWorkingTreeSourceFingerprintScope": "AC03 bounded backend/mobile privacy and current regression; no full B02/native/production pass"
     },
     {
       "id": "B03",
@@ -2279,14 +2688,63 @@
     {
       "id": "P01",
       "name": "V独立Safety Gate",
-      "implementationState": "NOT_STARTED",
-      "acceptanceState": "NOT_READY_IMPLEMENTATION",
-      "currentResult": "NOT_RUN",
-      "verificationEntries": [],
-      "note": "已确认另片；V当前直接使用DB时间，无独立可信灾备门禁",
+      "implementationState": "IMPLEMENTED",
+      "acceptanceState": "SCOPED_BACKEND_ACCEPTANCE_PASS",
+      "currentResult": "PASS",
+      "verificationEntries": [
+        "R01",
+        "R02",
+        "R03"
+      ],
+      "note": "V independent Gate implemented and development backend evidence passed; production time/anchor/real DR/human audit remain P02/P03/P06.",
       "anonymityClosureGapIds": [
         "AC01"
-      ]
+      ],
+      "currentAC01Regression": {
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "currentResult": "PASS"
+      },
+      "latestScopedEvidence": "services/api/authlab/identity-account-closure-verification.json",
+      "latestScopedResult": "AC02_BACKEND_PASS_FULL_MODULE_GAPS_REMAIN",
+      "sourceFiles": [
+        "services/api/internal/authprivacy/authorization_gate.go",
+        "services/api/internal/authprivacy/verifier.go",
+        "services/api/internal/authprivacy/eligibility_otp.go",
+        "services/api/internal/authprivacy/eligibility_confirmation.go",
+        "services/api/verifier-migrations/0004_authorization_gate.sql",
+        "services/api/internal/authprivacyruntime/server.go",
+        "services/api/cmd/authdev/main.go"
+      ],
+      "testFiles": [
+        "services/api/internal/authprivacy/verifier_gate_test.go",
+        "services/api/internal/authprivacy/verifier_gate_business_test.go",
+        "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+        "services/api/authlab/run-runtime-isolated.sh",
+        "services/api/cmd/runtimeprobe/verifier_gate.go"
+      ],
+      "nextAcceptance": "Use currentAC03 and its listed R01/R02/R03/Flutter/R05 evidence; complete only authorized remaining platform/scenario work. B05-B11 callers remain unimplemented; production requires independent evidence.",
+      "currentAC02Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+        "plan": "docs/design/auth-identity-account-closure-plan.md",
+        "report": "docs/design/auth-identity-account-closure-validation-report.md",
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+      },
+      "currentAC03Regression": {
+        "recordedOn": "2026-10-05",
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+        "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+      },
+      "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+      "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+      "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md"
     },
     {
       "id": "P02",
@@ -2393,7 +2851,12 @@
         "nextStep": "B05文本发帖＋B03帖子列表；之后B06详情＋B07评论，再消息／私聊／治理。基础动态验收具备工具后按R10集中执行。",
         "supersededBy": "User scope correction"
       }
-    ]
+    ],
+    "snapshotStatus": "HISTORICAL_B02_FEATURE_SNAPSHOT",
+    "currentEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+    "currentBackendEvidence": "services/api/authlab/privacy-boundary-verification.json",
+    "snapshotNote": "Old sqlTestsExecuted/flutterTestsExecuted/deviceTestsExecuted and nextStep remain historical B02 snapshot fields. Original platform evidence stays currentEvidence; latest bounded backend/mobile checks are currentAC03.",
+    "currentClientRegressionEvidence": "services/api/authlab/privacy-boundary-verification.json"
   },
   "featureHistory": [
     {
@@ -2657,6 +3120,47 @@
         "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
       },
       "reason": "Preserve previous backend-only evidence; current suffix list adds PowerShell test/environment scripts."
+    },
+    {
+      "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+      "presentFileCount": 128,
+      "proofScope": "Historical AC01 backend working tree before AC02",
+      "sha256": "5174c37ea08db8d4944ef1e0b9058de3f6461b4b9061ebcd26c5612922eb0aad"
+    },
+    {
+      "sha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d",
+      "presentFileCount": 133,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "AC02 backend and protocol working-tree snapshot including AC01; historical platform and AC01 evidence retain their own fingerprints.",
+      "recordedOn": "2026-10-04",
+      "snapshotStatus": "HISTORICAL_AC02_VERIFIED_SOURCE_BEFORE_AC03"
     }
   ],
   "workflowHistory": [
@@ -2667,7 +3171,7 @@
     }
   ],
   "anonymityBranchClosure": {
-    "recordedOn": "2026-10-04",
+    "recordedOn": "2026-10-05",
     "checklist": "docs/design/auth-privacy-closure-checklist.md",
     "inventoryOnly": false,
     "applicationSourceChangedInInventory": true,
@@ -2693,31 +3197,35 @@
       {
         "id": "AC01",
         "name": "V独立Safety Gate",
-        "implementationOrEvidenceState": "NOT_IMPLEMENTED",
-        "currentResult": "NOT_RUN",
+        "implementationOrEvidenceState": "IMPLEMENTED_BACKEND_ACCEPTANCE_PASS",
+        "currentResult": "PASS",
         "moduleIds": [
           "P01",
           "A01",
           "A02",
           "A04",
           "A10"
-        ]
+        ],
+        "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+        "proofScope": "Development V Gate, affected backend regression and listed actual C/V process scenarios; production boundaries separate"
       },
       {
         "id": "AC02",
         "name": "已有身份整账号正式关闭生命周期",
-        "implementationOrEvidenceState": "NOT_INTEGRATED",
-        "currentResult": "NOT_RUN",
+        "implementationOrEvidenceState": "IMPLEMENTED_BACKEND_ACCEPTANCE_PASS",
+        "currentResult": "PASS",
         "moduleIds": [
           "A08",
           "B02"
-        ]
+        ],
+        "evidence": "services/api/authlab/identity-account-closure-verification.json",
+        "proofScope": "Current identity formal-close lifecycle, pure independent projection contract and listed backend tests; post/chat consumers, platform and production remain separate"
       },
       {
         "id": "AC03",
         "name": "当前隐私边界核对及后续业务契约",
-        "implementationOrEvidenceState": "REVIEW_NOT_RUN",
-        "currentResult": "NOT_RUN",
+        "implementationOrEvidenceState": "BOUNDED_PRIVACY_AUDIT_AND_CONTRACTS_IMPLEMENTED_PASS",
+        "currentResult": "PASS",
         "moduleIds": [
           "A01",
           "A02",
@@ -2726,12 +3234,14 @@
           "A08",
           "A12",
           "B02"
-        ]
+        ],
+        "evidence": "services/api/authlab/privacy-boundary-verification.json",
+        "proofScope": "Current data/roles/HTTP/client persistence/diagnostics source and negative tests; future business and production independent audit not integrated/proven"
       },
       {
         "id": "AC04",
         "name": "B02实际进程与真实客户端测试链",
-        "implementationOrEvidenceState": "EXISTING_B02_R03_R05_PASS_NEW_AC01_AC02_SCENARIOS_PENDING",
+        "implementationOrEvidenceState": "CURRENT_AC01_AC02_AC03_BACKEND_AND_FLUTTER_R05_PASS_PLATFORM_PENDING",
         "currentResult": "PASS",
         "moduleIds": [
           "A01",
@@ -2739,7 +3249,7 @@
           "A13",
           "B02"
         ],
-        "proofScope": "Existing B02 foundation R03/R05 only; future AC01/AC02 implementation tests remain pending."
+        "proofScope": "Current backend/new privacy tests/R03 plus 179 Flutter tests and R05 PASS; native/physical/B02 future consumer matrix remains open"
       },
       {
         "id": "AC05",
@@ -2784,7 +3294,7 @@
       "P05",
       "P06"
     ],
-    "sourceDeliveryClosed": true,
+    "sourceDeliveryClosed": false,
     "acceptanceClosed": false,
     "productionApproved": false,
     "historicalInventory": {
@@ -2905,9 +3415,400 @@
       "sourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "userAuthorizedPush": true,
       "cleanupPassed": true
-    }
+    },
+    "currentAC01Evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+    "currentAC01Uncommitted": true,
+    "currentAC02Evidence": "services/api/authlab/identity-account-closure-verification.json",
+    "currentAC02Uncommitted": true,
+    "currentAC03Evidence": "services/api/authlab/privacy-boundary-verification.json",
+    "currentAC03Uncommitted": true
   },
   "workingTreeUncommitted": true,
-  "latestValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json",
-  "cleanupEvidence": "services/api/authlab/identity-runtime-test-verification.json#cleanupEvidence"
+  "latestValidationEvidence": "services/api/authlab/privacy-boundary-verification.json",
+  "cleanupEvidence": "services/api/authlab/privacy-boundary-verification.json#cleanup",
+  "historicalBaselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
+  "historicalBaselineEvidence": "services/api/authlab/runtime-business-integration-verification.json",
+  "historicalSourceFingerprint": {
+    "sha256": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+    "presentFileCount": 237,
+    "roots": [
+      "services/api",
+      "apps/mobile",
+      "packages/auth_vault",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "infra",
+      "packages/auth_passkey",
+      "tools"
+    ],
+    "includedSuffixes": [
+      ".dart",
+      ".entitlements",
+      ".go",
+      ".gradle",
+      ".json",
+      ".kt",
+      ".kts",
+      ".lock",
+      ".mod",
+      ".pbxproj",
+      ".plist",
+      ".podspec",
+      ".properties",
+      ".ps1",
+      ".py",
+      ".sh",
+      ".sql",
+      ".sum",
+      ".swift",
+      ".txt",
+      ".xcconfig",
+      ".xcscheme",
+      ".xcworkspacedata",
+      ".xml",
+      ".yaml",
+      ".yml"
+    ],
+    "includedAdditionalNames": [
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; excluded ignored/generated files and Markdown",
+    "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
+  },
+  "latestMobileValidationEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+  "currentAC01": {
+    "plan": "docs/design/auth-verifier-safety-gate-plan.md",
+    "report": "docs/design/auth-verifier-safety-gate-validation-report.md",
+    "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+    "implementationState": "IMPLEMENTED",
+    "currentResult": "PASS",
+    "scopedBackendAcceptancePassed": true,
+    "fullAnonymityClosurePassed": false,
+    "sourceFingerprint": {
+      "sha256": "5174c37ea08db8d4944ef1e0b9058de3f6461b4b9061ebcd26c5612922eb0aad",
+      "presentFileCount": 128,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique source paths from git ls-files; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "AC01 backend and protocol source snapshot, including uncommitted files; historical mobile evidence is separate."
+    },
+    "notRun": [
+      {
+        "result": "NOT_RUN",
+        "scope": "R05 real Dart client regression",
+        "reason": "No mobile code or public wire contract changed; current backend R01/R03 only; previous R05 evidence retains original revision"
+      },
+      {
+        "result": "NOT_RUN",
+        "scope": "Android/iOS/system Passkey/physical devices",
+        "reason": "Outside AC01 backend execution; prior platform gaps and scoped evidence retained"
+      },
+      {
+        "result": "NOT_RUN",
+        "scope": "P02/P03/P06 production independence/real DR/independent human audit",
+        "reason": "External operational evidence not supplied by development fixtures"
+      }
+    ],
+    "nextStep": "AC02 existing identity account-close integration, then AC03; no full business expansion",
+    "cleanupEvidence": "services/api/authlab/verifier-safety-gate-verification.json#cleanup",
+    "cleanupPassed": true,
+    "snapshotStatus": "HISTORICAL_AC01_VERIFIED_SOURCE_BEFORE_AC02",
+    "snapshotNote": "Original AC01 version/fingerprint preserved; current affected backend regression and source fingerprint are in currentAC02."
+  },
+  "currentAC02": {
+    "plan": "docs/design/auth-identity-account-closure-plan.md",
+    "report": "docs/design/auth-identity-account-closure-validation-report.md",
+    "evidence": "services/api/authlab/identity-account-closure-verification.json",
+    "implementationState": "IMPLEMENTED",
+    "currentResult": "PASS",
+    "scopedBackendAcceptancePassed": true,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false,
+    "sourceFingerprint": {
+      "sha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d",
+      "presentFileCount": 133,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "AC02 backend and protocol working-tree snapshot including AC01; historical platform and AC01 evidence retain their own fingerprints."
+    },
+    "affectedModules": [
+      "A00",
+      "A01",
+      "A02",
+      "A03",
+      "A04",
+      "A06",
+      "A08",
+      "A10",
+      "A13",
+      "B02",
+      "P01"
+    ],
+    "crossModuleScenes": [
+      "X02",
+      "X06",
+      "X07"
+    ],
+    "notRun": [
+      {
+        "scope": "R05 real Dart client and Flutter/platform regression",
+        "result": "NOT_RUN",
+        "reason": "No mobile source or public wire contract changed; current backend full R01/R03 evidence only; historical mobile evidence retains revision",
+        "entry": "services/api/authlab/run-mobile-isolated.sh"
+      },
+      {
+        "scope": "Post/comment/chat and local chat/private-note/search cleanup X06/X07 full integration",
+        "result": "NOT_RUN",
+        "reason": "Business consumers are not implemented and remain outside this AC02 foundation task",
+        "entry": "Future B05-B11 implementations"
+      },
+      {
+        "scope": "Android/iOS/system Passkey/physical devices",
+        "result": "NOT_RUN",
+        "reason": "Outside AC02 backend acceptance; listed platform gaps remain",
+        "entry": "docs/design/module-acceptance-handoff.md R07/R09/R10"
+      },
+      {
+        "scope": "P02/P03/P06 real independent operations/physical DR/independent human audit",
+        "result": "NOT_RUN",
+        "reason": "External production evidence cannot be supplied by development fixtures",
+        "entry": "docs/design/auth-privacy-closure-checklist.md"
+      }
+    ],
+    "nextStep": "AC03 privacy boundary review; future business and platform integration remain explicit; no full business expansion",
+    "workingTreeUncommitted": true,
+    "cleanupEvidence": "services/api/authlab/identity-account-closure-verification.json#cleanup",
+    "cleanupPassed": true,
+    "handoffCheckerPassed": true,
+    "snapshotStatus": "HISTORICAL_AC02_VERIFIED_SOURCE_BEFORE_AC03",
+    "snapshotNote": "Original AC02 tests/fingerprint preserved; current affected backend/mobile regression and source bytes are in currentAC03."
+  },
+  "currentAC03": {
+    "recordedOn": "2026-10-05",
+    "implementationState": "IMPLEMENTED",
+    "currentResult": "PASS",
+    "scopedBackendAcceptancePassed": true,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false,
+    "sourceFingerprint": {
+      "sha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+      "presentFileCount": 219,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "Current AC03 backend, mobile logic/tests and vault/Passkey source boundary review; each check retains its executed scope, no native platform revalidation"
+    },
+    "affectedModules": [
+      "A00",
+      "A01",
+      "A02",
+      "A03",
+      "A04",
+      "A05",
+      "A06",
+      "A08",
+      "A09",
+      "A10",
+      "A11",
+      "A12",
+      "A13",
+      "B01",
+      "B02",
+      "P01"
+    ],
+    "crossModuleScenes": [
+      "X02",
+      "X06",
+      "X07"
+    ],
+    "notRun": [
+      {
+        "scope": "B05-B11 public post/comment/chat/moderation consumers and local chat/private-note/search cleanup X06/X07",
+        "result": "NOT_RUN",
+        "reason": "Actual business callers not implemented; current branch fixes foundation and contracts only",
+        "entry": "docs/design/auth-privacy-business-contract.md"
+      },
+      {
+        "scope": "Android/iOS/native vault/system Passkey/physical-device B02 matrix",
+        "result": "NOT_RUN",
+        "reason": "Current Flutter/R05 is not native-platform revalidation; iOS/full ceremonies and physical-device gaps remain",
+        "entry": "docs/design/module-acceptance-handoff.md R07/R09/R10"
+      },
+      {
+        "scope": "P02-P06 production operations/logs/proxy/mail/DR/side-channel calibration/independent human audit",
+        "result": "NOT_RUN",
+        "reason": "External production evidence cannot be supplied by local same-machine fixtures or source review",
+        "entry": "docs/design/auth-privacy-closure-checklist.md"
+      },
+      {
+        "scope": "Full OpenAPI validator",
+        "result": "NOT_RUN",
+        "reason": "No OpenAPI wire schema changed in AC03; current HTTP negative/DTO checks executed, historical validator proof retained at its original revision",
+        "entry": "tools/env-hnuhole-wsl.sh and existing packages/openapi validator commands"
+      }
+    ],
+    "plan": "docs/design/auth-privacy-boundary-plan.md",
+    "report": "docs/design/auth-privacy-boundary-validation-report.md",
+    "evidence": "services/api/authlab/privacy-boundary-verification.json",
+    "businessContract": "docs/design/auth-privacy-business-contract.md",
+    "nextStep": "AC04 affected scenario consolidation and AC05 platform matrix as authorized; no full business expansion",
+    "workingTreeUncommitted": true,
+    "cleanupEvidence": "services/api/authlab/privacy-boundary-verification.json#cleanup",
+    "cleanupPassed": true,
+    "handoffCheckerPassed": true,
+    "gitBlobSourceFingerprint": {
+      "sha256": "bc73ba27fdb4fc252d731023928fea4aae8d3309e84753c57c0150d6f8b811e9",
+      "presentFileCount": 219,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "Git text blobs equivalent to the original tested snapshot by CRLF-to-LF only; protocol vector remains byte-exact",
+      "checkoutNewlineConversions": 164
+    }
+  },
+  "latestClientRegressionEvidence": "services/api/authlab/privacy-boundary-verification.json"
 }

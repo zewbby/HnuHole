@@ -1,5 +1,17 @@
 # 分模块验收与测试交接
 
+> **2026-10-05 AC03 当前交付：**当前数据／角色／HTTP／客户端持久状态及日志已完成有范围核对，修复应用错误／HTTP、PostgreSQL普通错误和移动端通道诊断三项差异；后续匿名业务契约已固定。完整Go／SQL／race／vet、R03实际C/V角色／日志与AC01／AC02回归、Flutter analyze与179项测试、R05真实Dart→HTTPS→SQL均PASS。见 [AC03报告](auth-privacy-boundary-validation-report.md)、[三步任务单](auth-privacy-boundary-plan.md)、[后续契约](auth-privacy-business-contract.md)及[机器记录](../../services/api/authlab/privacy-boundary-verification.json)。B02整模块继续BLOCKED，公共内容／聊天／管理消费者尚未实现，原生设备／生产证据单列。未提交／推送／部署。
+
+以下 AC02／AC01及更早记录保留原日期、摘要和证明范围；“AC03未实施”等仅描述历史版本。currentFeature旧SQL／Flutter等字段明确保留为历史快照；本轮结果见currentAC03，历史平台不代证当前native验收。
+
+> **2026-10-04 AC02 当前交付：**在保留 AC01 的工作区中，整账号正式关闭与身份联动已实现，完整服务端 SQL／race／vet 和 R03 实际 C/V 验收均 PASS。正式关闭原子擦除活动身份资料，保留累计状态、已有墓碑和永久回执；11→12 前向升级、受限角色、冻结／并发／回滚及同邮箱新账号独立历史取得本轮证据。详见 [AC02报告](auth-identity-account-closure-validation-report.md)、[实施任务单](auth-identity-account-closure-plan.md)及[机器记录](../../services/api/authlab/identity-account-closure-verification.json)。AC03 尚未实施；B02 整模块仍 BLOCKED，帖子／聊天业务调用、客户端／设备与生产缺口单列。未提交／推送／部署。
+
+以下 AC01 及更早交付保留原日期、源码摘要与证明范围；“AC02 未实现”等表述仅描述历史版本。当前服务端版本以 AC02 记录为准，历史平台结果不能代证当前回归。
+
+> **2026-10-04 AC01 交付（历史版本）：**基于 `faf557d` 的本次工作区已实现 V 独立 Gate，最终完整 Go／SQL／race／vet 和 R03 实际 C/V 进程验收均 PASS。V 正式迁移 3→4、独立状态／材料／连接池、受限恢复角色、最终资格事务、后台外部调用代次复核和旧 V schema 快照阻断均已接通。详见 [AC01报告](auth-verifier-safety-gate-validation-report.md)、[实施方案](auth-verifier-safety-gate-plan.md)及[机器证据](../../services/api/authlab/verifier-safety-gate-verification.json)。AC02／AC03 尚未实施；B02 整模块仍 BLOCKED，平台与生产门槛单列。本次改动尚未提交／推送。
+
+以下原有 2026-10-04 平台交付及更早记录保留其原版本和范围；其中“AC01 未实现”和工具未执行等字段描述历史状态，当前 AC01 以上述证据为准。
+
 > **2026-10-04 最新验证与环境交付：**基于远端 `codex/auth-privacy-handoff` 的 `d624ea30943a2b12096c20dbeefd844ba0e5e840`。Flutter分析与175项mobile测试、真实Dart→HTTPS→PostgreSQL R05、Android完整app构建、16项vault＋3组跨进程探针、9项Passkey Dart／5项Android codec和真实Flutter双进程共享AuthStore探针均PASS；Go/SQL/race/vet、R03实际C/V进程及完整OpenAPI已在本轮复验。环境与可复验命令见[本机环境](local-test-environment.md)，精确证明范围／失败修复见[最新记录](../../services/api/authlab/identity-runtime-test-verification.json)。**B02整模块仍BLOCKED：AC01 V Gate、AC02身份整账号关闭尚未实现，iOS、真实Passkey ceremony和物理设备／B02设备矩阵仍未验。**用户要求保留D盘工具环境、删除全部测试缓存和临时产物，完成后直接推送对应分支。
 
 ## 历史记录与验收目录
@@ -482,3 +494,28 @@ R03沿用 `sh services/api/authlab/run-runtime-isolated.sh`，无新增module参
 R05沿用 `sh services/api/authlab/run-mobile-isolated.sh`。新 `identity_https_scenarios.dart` 使用正式Dart传输／controller与SQL，Go fixture仅在真实handler完成后丢弃响应。CREATE、PATCH、DELETE和最后一个身份拒绝均核对原回执；会话接替时隐藏旧资料并以同账号新会话恢复原意图。vault仍为内存，restartClient仅重建对象，不能记作真实app杀进程／安全存储通过。
 
 A01/A02/A13/B02和X01/X02/X03/X04/X05/X08需要执行对应当前回归；身份关闭和V Gate尚未实现，不由这次测试增补代证。实际已执行与阻塞原因、基线／源码摘要见[接续测试记录](../../services/api/authlab/identity-runtime-test-verification.json)。
+
+## AC02 当前服务端交接：身份整账号正式关闭
+
+任务单：[AC02实施](auth-identity-account-closure-plan.md)。报告：[本轮验证](auth-identity-account-closure-validation-report.md)。机器证据：[固定源码与实际结果](../../services/api/authlab/identity-account-closure-verification.json)。基线 `faf557d` 含未提交 AC01/AC02；当前服务端 133 文件摘要 `300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d`。
+
+| 模块／场景 | 实现位置 | 本轮实际执行与边界 |
+| --- | --- | --- |
+| A08、B02；X02/X06关闭基础 | `internal/authprivacy/community_closure.go`；`migrations/0012_identity_account_closure.sql` | 最终 C Gate 同事务关闭账号／撤凭据／擦活动身份／写释放 outbox；七天缓冲、登录或封禁取消不提前擦除。累计状态、已删墓碑与永久回执保留。R01 SQL/race＋R02 vet PASS；新增 `community_identity_closure_test.go`、`identity_closure_migration_test.go` 共12个顶层用例覆盖0/1/3、4worker、两序CREATE/RENAME竞态、全事务故障、冻结／旧代、RC双删约束和其他隔离拒绝。 |
+| A00/A13、A08/B02升级与真实流程 | `internal/authprivacyruntime/server.go`、`cmd/runtimeprobe/identity_closure.go`、`cmd/runtimeprobe/main.go`、`authlab/run-runtime-isolated.sh` | R03 实际 C/V cmd、正式11→12／受限角色 PASS；旧11／缺失禁用触发器拒绝；ACTIVE/PENDING及旧墓碑／counter/receipt保持、legacy CLOSED资料前向修复；实际HTTPS＋Mailpit同邮箱新资格、新账号零身份与新建首身份不继承旧历史。时间等待采用明确专属fixture，非七天／60秒实时间验收。 |
+| B02纯投影；X07部分契约 | `internal/authprivacy/community_identity_projection.go` | 纯函数有限3字段，独立全长身份token／统一头像键／闭号优先，R01/R03纯契约断言 PASS；没有公开帖子／聊天投影接口或业务资源reader，不能登记业务联动完成。 |
+| A01/A02/A03/A04/A06/A10/P01受影响基础 | 既有认证／会话／双侧Gate／释放源码与相同完整runner | 本轮完整SQL/race/vet及原R03基础回归 PASS；旧AC01证据保留128文件版本，不替代当前133文件。历史客户端／设备结果保留其原版本。 |
+
+当前未执行：R05、Flutter、Android/iOS、系统Passkey和物理设备，因为本片未改移动端源码或公开wire contract，仍需最终匿名收口时按影响范围补验；环境与现有入口见[本机环境](local-test-environment.md)及本文 R05/R07/R09/R10。帖子／评论／聊天和本人本地聊天／私人备注／搜索清理缺完整业务调用者，属于待开发而非只差测试；X06/X07整场景未PASS。AC03隐私／日志与后续契约核对仍NOT_RUN，生产P02/P03/P06另待真实运营／灾备／人类审计。下一收口项为AC03；B02整模块继续BLOCKED，不启动一般业务片。
+
+## 2026-10-05 AC03 测试交接
+
+任务单：[AC03三步计划](auth-privacy-boundary-plan.md)。对应A00/A01/A02/A03/A04/A05/A06/A08/A09/A10/A11/A12/A13、B01/B02、P01；跨模块X02/X06/X07，后续B05–B11不实施。被测版本为faf557d基线的未提交AC03工作区，219文件摘要及实际命令见[机器记录](../../services/api/authlab/privacy-boundary-verification.json)，保留旧AC01／AC02／平台记录。
+
+新增实现位于`services/api/internal/authprivacyruntime/diagnostics.go`、`database_diagnostics.go`与实际server/cmd入口；开发PG日志选项位于`infra/docker-compose.yml`及R01/R05 runner；移动诊断修复位于`apps/mobile/lib/src/channels/{http_channel_repository,channel_repository}.dart`及`src/navigation/channel_directory_controller.dart`。后续DTO／占位／发送任务受理绑定／身份对私信／管理恢复合约见[接入契约](auth-privacy-business-contract.md)，未集成调用者明确列NOT_RUN。
+
+实际执行：R01 `sh services/api/authlab/run-isolated.sh` 内完整Go SQL/race与R02 vet PASS；R03 `sh services/api/authlab/run-runtime-isolated.sh` 实际cmd／正式迁移／受限角色矩阵／unsafe日志配置启动拒绝／真实PG及应用日志探针与AC01／AC02回归PASS。新增Go测试位于`privacy_boundary_postgres_test.go`、HTTP `privacy_boundary_test.go`／`identity_privacy_postgres_test.go`、runtime `diagnostics_test.go`／`database_diagnostics_test.go`（均在各internal包）；新增角色SQL和日志探针位于`authlab/privacy-role-audit.sql`及`privacy-diagnostics-canary.py`。
+
+当前Windows Flutter3.47.5/Dart3.13.4 `flutter analyze --no-pub` 无问题、`flutter test --no-pub` 179项PASS（4项新增于auth_api_test.dart）；WSL R05 `sh services/api/authlab/run-mobile-isolated.sh` 当前真实Dart→HTTPS handler→隔离C/V SQL PASS。两条runner从services/api或用实际路径调用，未添加不存在的module选项。命令环境使用[既有D盘/WSL工具](local-test-environment.md)，数据库全部自建一次性；对外公开DTO尚无消费者，不能把本人接口负向测试代作公众内容测试。
+
+未执行：R07/R09/R10 Android/iOS原生、系统Passkey、物理设备/B02矩阵本轮未重跑；iOS构建/Keychain和实际ceremony仍缺工具/设备/平台配置。B05–B11帖子/聊天/治理调用者及本地聊天/备注/搜索清理尚未实现，无现成完整业务验收入口，需未来模块先实现再补X06/X07。P02–P06真实分权、生产代理/邮件/日志/备份与灾备、独立人类审计需要生产环境/真实主体，当前fixture不能代证。B02继续BLOCKED；后续仅按用户指定AC04集中场景与AC05平台推进，不进入完整业务片。

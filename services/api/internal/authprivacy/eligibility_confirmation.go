@@ -34,21 +34,22 @@ type confirmationAnchor struct {
 }
 
 type confirmationRecord struct {
-	Key          [32]byte
-	Flow         [32]byte
-	Install      [16]byte
-	Email        []byte
-	NewSlot      protocol.SlotID
-	BootstrapKey protocol.PublicKey
-	OldSlot      []byte
-	OldVersion   *int64
-	VerifiedAt   time.Time
-	OTPExpiresAt time.Time
-	Window       uint32
-	Epoch        uint32
-	State        string
-	CommittedAt  *time.Time
-	ReplayUntil  *time.Time
+	Key                     [32]byte
+	Flow                    [32]byte
+	Install                 [16]byte
+	Email                   []byte
+	NewSlot                 protocol.SlotID
+	BootstrapKey            protocol.PublicKey
+	OldSlot                 []byte
+	OldVersion              *int64
+	VerifiedAt              time.Time
+	OTPExpiresAt            time.Time
+	Window                  uint32
+	Epoch                   uint32
+	State                   string
+	CommittedAt             *time.Time
+	ReplayUntil             *time.Time
+	AuthorizationGeneration uint64
 }
 
 type confirmationQuerier interface {
@@ -66,14 +67,14 @@ func readConfirmationAnchor(ctx context.Context, q confirmationQuerier, key [32]
 }
 
 func readConfirmation(ctx context.Context, q confirmationQuerier, key [32]byte, lock bool) (confirmationRecord, error) {
-	query := `SELECT flow_id,installation_id,email_exact,new_slot,new_bootstrap_public_key,old_slot,old_quota_version,verified_at,verified_otp_expires_at,admission_window,signing_key_epoch,state,qualification_committed_at,ticket_replay_until FROM v_auth.otp_confirmations WHERE confirmation_key_digest=$1`
+	query := `SELECT flow_id,installation_id,email_exact,new_slot,new_bootstrap_public_key,old_slot,old_quota_version,verified_at,verified_otp_expires_at,admission_window,signing_key_epoch,state,qualification_committed_at,ticket_replay_until,authorization_generation FROM v_auth.otp_confirmations WHERE confirmation_key_digest=$1`
 	if lock {
 		query += ` FOR UPDATE`
 	}
 	r := confirmationRecord{Key: key}
 	var flow, install, slot, public []byte
 	var window, epoch int64
-	err := q.QueryRow(ctx, query, key[:]).Scan(&flow, &install, &r.Email, &slot, &public, &r.OldSlot, &r.OldVersion, &r.VerifiedAt, &r.OTPExpiresAt, &window, &epoch, &r.State, &r.CommittedAt, &r.ReplayUntil)
+	err := q.QueryRow(ctx, query, key[:]).Scan(&flow, &install, &r.Email, &slot, &public, &r.OldSlot, &r.OldVersion, &r.VerifiedAt, &r.OTPExpiresAt, &window, &epoch, &r.State, &r.CommittedAt, &r.ReplayUntil, &r.AuthorizationGeneration)
 	if err != nil {
 		return r, err
 	}
@@ -117,6 +118,9 @@ func (e *Eligibility) ConfirmOTP(ctx context.Context, req ConfirmOTPRequest) (Co
 	if req.Key == ([32]byte{}) || req.FlowID == ([32]byte{}) || req.InstallationID == ([16]byte{}) || !validOTPShape(req.OTP) {
 		return ConfirmationResult{}, ErrBadRequest
 	}
+	if _, err := e.store.gate.Snapshot(ctx); err != nil {
+		return ConfirmationResult{}, err
+	}
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", req.Key[:])
 	mac := confirmationMAC(e, req)
 	// A permanent expired anchor wins even if its flow or private bindings have
@@ -142,7 +146,7 @@ func (e *Eligibility) ConfirmOTP(ctx context.Context, req ConfirmOTPRequest) (Co
 	if err != nil {
 		return ConfirmationResult{}, err
 	}
-	tx, err := begin(ctx, e.store.pool)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		return ConfirmationResult{}, err
 	}
@@ -167,7 +171,7 @@ func (e *Eligibility) ConfirmOTP(ctx context.Context, req ConfirmOTPRequest) (Co
 		return ConfirmationResult{}, err
 	}
 	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return ConfirmationResult{}, err
 	}
 	verified, err := e.verifyOTPInTx(ctx, tx, req, at)
@@ -211,7 +215,7 @@ func (e *Eligibility) ConfirmOTP(ctx context.Context, req ConfirmOTPRequest) (Co
 	if !bytes.Equal(email, verified.Email) || verified.FlowID != req.FlowID || !verified.VerifiedAt.Before(verified.ExpiresAt) || verified.VerifiedAt.Unix() < 0 || verified.VerifiedAt.Unix()/1800 > math.MaxUint32 {
 		return ConfirmationResult{}, ErrOTPFlowInvalid
 	}
-	r := confirmationRecord{Key: key, Flow: req.FlowID, Install: req.InstallationID, Email: email, NewSlot: slot, BootstrapKey: req.BootstrapPublicKey, VerifiedAt: verified.VerifiedAt, OTPExpiresAt: verified.ExpiresAt, Window: uint32(verified.VerifiedAt.Unix() / 1800), Epoch: e.config.RegistrationEpoch}
+	r := confirmationRecord{Key: key, Flow: req.FlowID, Install: req.InstallationID, Email: email, NewSlot: slot, BootstrapKey: req.BootstrapPublicKey, VerifiedAt: verified.VerifiedAt, OTPExpiresAt: verified.ExpiresAt, Window: uint32(verified.VerifiedAt.Unix() / 1800), Epoch: e.config.RegistrationEpoch, AuthorizationGeneration: verifierGeneration(tx)}
 	if _, err = tx.Exec(ctx, `SAVEPOINT qualification_decision`); err != nil {
 		return ConfirmationResult{}, err
 	}
@@ -285,7 +289,7 @@ func (e *Eligibility) ConfirmOTP(ctx context.Context, req ConfirmOTPRequest) (Co
 		copy(old[:], r.OldSlot)
 		authorization := protocol.Authorization{Epoch: r.Epoch, Slot: old}
 		message := authorization.MessageBytes()
-		_, err = tx.Exec(ctx, `INSERT INTO v_auth.retire_pending(old_slot,email_exact,quota_version,new_slot,new_bootstrap_public_key,retirement_authorization,state,confirmation_key_digest,authorization_message,signing_key_epoch) VALUES($1,$2,$3,$4,$5,NULL,'PENDING',$6,$7,$8)`, r.OldSlot, r.Email, quotaVersion, r.NewSlot[:], r.BootstrapKey[:], key[:], message[:], int64(r.Epoch))
+		_, err = tx.Exec(ctx, `INSERT INTO v_auth.retire_pending(old_slot,email_exact,quota_version,new_slot,new_bootstrap_public_key,retirement_authorization,state,confirmation_key_digest,authorization_message,signing_key_epoch,authorization_generation) VALUES($1,$2,$3,$4,$5,NULL,'PENDING',$6,$7,$8,$9)`, r.OldSlot, r.Email, quotaVersion, r.NewSlot[:], r.BootstrapKey[:], key[:], message[:], int64(r.Epoch), int64(r.AuthorizationGeneration))
 	} else {
 		err = e.queueConfirmationSignature(ctx, tx, r, quotaVersion)
 	}
@@ -295,11 +299,19 @@ func (e *Eligibility) ConfirmOTP(ctx context.Context, req ConfirmOTPRequest) (Co
 		}
 		return ConfirmationResult{}, err
 	}
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return ConfirmationResult{}, err
 	}
 	if !at.Before(r.OTPExpiresAt) || protocol.ValidateAdmissionWindow(r.Window, at) != nil {
 		return e.commitReverifyDecision(ctx, tx, req, key, mac, verified.VerifiedAt)
+	}
+	if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+		if !d.TrustedAt.Before(r.OTPExpiresAt) || protocol.ValidateAdmissionWindow(r.Window, d.TrustedAt) != nil {
+			return ErrReverifyRequired
+		}
+		return nil
+	}); err != nil {
+		return ConfirmationResult{}, err
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return ConfirmationResult{}, err
@@ -331,7 +343,7 @@ func authenticateConfirmationAnchor(a confirmationAnchor, mac [32]byte) error {
 }
 
 func insertConfirmation(ctx context.Context, tx pgx.Tx, r confirmationRecord) error {
-	_, err := tx.Exec(ctx, `INSERT INTO v_auth.otp_confirmations(confirmation_key_digest,flow_id,installation_id,email_exact,new_slot,new_bootstrap_public_key,old_slot,old_quota_version,verified_at,verified_otp_expires_at,admission_window,signing_key_epoch,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`, r.Key[:], r.Flow[:], r.Install[:], r.Email, r.NewSlot[:], r.BootstrapKey[:], r.OldSlot, r.OldVersion, r.VerifiedAt, r.OTPExpiresAt, int64(r.Window), int64(r.Epoch), r.State)
+	_, err := tx.Exec(ctx, `INSERT INTO v_auth.otp_confirmations(confirmation_key_digest,flow_id,installation_id,email_exact,new_slot,new_bootstrap_public_key,old_slot,old_quota_version,verified_at,verified_otp_expires_at,admission_window,signing_key_epoch,state,authorization_generation) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`, r.Key[:], r.Flow[:], r.Install[:], r.Email, r.NewSlot[:], r.BootstrapKey[:], r.OldSlot, r.OldVersion, r.VerifiedAt, r.OTPExpiresAt, int64(r.Window), int64(r.Epoch), r.State, int64(r.AuthorizationGeneration))
 	return err
 }
 
@@ -356,7 +368,7 @@ func (e *Eligibility) reserveConfirmationSlot(ctx context.Context, tx pgx.Tx, r 
 
 func (e *Eligibility) queueConfirmationSignature(ctx context.Context, tx pgx.Tx, r confirmationRecord, quotaVersion int64) error {
 	var at time.Time
-	if err := tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err := verifierTrustedAt(ctx, tx, &at); err != nil {
 		return err
 	}
 	// The completed OTP decision fixes the window. Waiting on a reservation or
@@ -365,7 +377,7 @@ func (e *Eligibility) queueConfirmationSignature(ctx context.Context, tx pgx.Tx,
 		return ErrReverifyRequired
 	}
 	message := (protocol.Ticket{Epoch: r.Epoch, Window: r.Window, Slot: r.NewSlot, BootstrapKey: r.BootstrapKey}).MessageBytes()
-	_, err := tx.Exec(ctx, `INSERT INTO v_auth.confirmation_sign_jobs(confirmation_key_digest,slot_id,quota_version,signing_key_epoch,reg_message,state) VALUES($1,$2,$3,$4,$5,'PENDING_SIGN')`, r.Key[:], r.NewSlot[:], quotaVersion, int64(r.Epoch), message[:])
+	_, err := tx.Exec(ctx, `INSERT INTO v_auth.confirmation_sign_jobs(confirmation_key_digest,slot_id,quota_version,signing_key_epoch,reg_message,state,authorization_generation) VALUES($1,$2,$3,$4,$5,'PENDING_SIGN',$6)`, r.Key[:], r.NewSlot[:], quotaVersion, int64(r.Epoch), message[:], int64(r.AuthorizationGeneration))
 	if err != nil {
 		return err
 	}
@@ -425,21 +437,22 @@ func (e *Eligibility) processPresentedRelease(ctx context.Context, tx pgx.Tx, em
 }
 
 type confirmationSignJob struct {
-	Message      []byte
-	Signature    []byte
-	State        string
-	QuotaVersion int64
-	Epoch        uint32
+	Message                 []byte
+	Signature               []byte
+	State                   string
+	QuotaVersion            int64
+	Epoch                   uint32
+	AuthorizationGeneration uint64
 }
 
 func readConfirmationSignJob(ctx context.Context, q confirmationQuerier, key [32]byte, lock bool) (confirmationSignJob, error) {
-	query := `SELECT reg_message,signature,state,quota_version,signing_key_epoch FROM v_auth.confirmation_sign_jobs WHERE confirmation_key_digest=$1`
+	query := `SELECT reg_message,signature,state,quota_version,signing_key_epoch,authorization_generation FROM v_auth.confirmation_sign_jobs WHERE confirmation_key_digest=$1`
 	if lock {
 		query += ` FOR UPDATE`
 	}
 	var j confirmationSignJob
 	var epoch int64
-	err := q.QueryRow(ctx, query, key[:]).Scan(&j.Message, &j.Signature, &j.State, &j.QuotaVersion, &epoch)
+	err := q.QueryRow(ctx, query, key[:]).Scan(&j.Message, &j.Signature, &j.State, &j.QuotaVersion, &epoch, &j.AuthorizationGeneration)
 	if err != nil {
 		return j, err
 	}
@@ -451,7 +464,7 @@ func readConfirmationSignJob(ctx context.Context, q confirmationQuerier, key [32
 }
 
 func (e *Eligibility) lockConfirmation(ctx context.Context, original confirmationRecord) (pgx.Tx, confirmationAnchor, confirmationRecord, error) {
-	tx, err := begin(ctx, e.store.pool)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		return nil, confirmationAnchor{}, confirmationRecord{}, err
 	}
@@ -479,10 +492,13 @@ func (e *Eligibility) lockConfirmation(ctx context.Context, original confirmatio
 	if a.Operation != confirmationOperation || !bytes.Equal(original.Email, r.Email) {
 		return fail(ErrReconciliation)
 	}
+	if r.AuthorizationGeneration == 0 || r.AuthorizationGeneration != verifierGeneration(tx) || original.AuthorizationGeneration != r.AuthorizationGeneration {
+		return fail(ErrReverifyRequired)
+	}
 	return tx, a, r, nil
 }
 
-func (e *Eligibility) cachedConfirmationError(ctx context.Context, key [32]byte, code *string) error {
+func (e *Eligibility) cachedConfirmationError(ctx context.Context, key [32]byte, code *string, at time.Time) error {
 	if code == nil {
 		return ErrReconciliation
 	}
@@ -493,8 +509,8 @@ func (e *Eligibility) cachedConfirmationError(ctx context.Context, key [32]byte,
 		// This is a permanently rejected operation, not permission to retry its
 		// OTP. Compute only the original lock's remaining duration. Even after
 		// flow erasure, replay never extends the lock or evaluates the OTP again.
-		var until, at time.Time
-		err := e.store.pool.QueryRow(ctx, `SELECT retry_until,clock_timestamp() FROM v_auth.confirmation_rejections WHERE confirmation_key_digest=$1`, key[:]).Scan(&until, &at)
+		var until time.Time
+		err := e.store.pool.QueryRow(ctx, `SELECT retry_until FROM v_auth.confirmation_rejections WHERE confirmation_key_digest=$1`, key[:]).Scan(&until)
 		if errors.Is(err, pgx.ErrNoRows) {
 			// Cleanup can have atomically erased the detail and expired the
 			// permanent anchor since driveConfirmation's initial snapshot.
@@ -521,33 +537,47 @@ func (e *Eligibility) advanceConfirmation(ctx context.Context, key [32]byte) (Co
 }
 
 func (e *Eligibility) driveConfirmation(ctx context.Context, key [32]byte, worker bool) (ConfirmationResult, error) {
-	a, err := readConfirmationAnchor(ctx, e.store.pool, key, false)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		return ConfirmationResult{}, err
 	}
-	r, err := readConfirmation(ctx, e.store.pool, key, false)
+	defer tx.Rollback(ctx)
+	a, err := readConfirmationAnchor(ctx, tx, key, false)
+	if err != nil {
+		return ConfirmationResult{}, err
+	}
+	r, err := readConfirmation(ctx, tx, key, false)
 	if errors.Is(err, pgx.ErrNoRows) {
 		if a.State == "EXPIRED" {
 			return ConfirmationResult{}, ErrExpired
 		}
 		var at time.Time
-		if err = e.store.pool.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+		if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 			return ConfirmationResult{}, err
 		}
 		if a.ExpiresAt == nil || !at.Before(*a.ExpiresAt) {
 			return ConfirmationResult{}, ErrExpired
 		}
-		return ConfirmationResult{}, e.cachedConfirmationError(ctx, key, a.Code)
+		if err = tx.Commit(ctx); err != nil {
+			return ConfirmationResult{}, err
+		}
+		return ConfirmationResult{}, e.cachedConfirmationError(ctx, key, a.Code, at)
 	}
 	if err != nil {
 		return ConfirmationResult{}, err
 	}
 	var at time.Time
-	if err = e.store.pool.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return ConfirmationResult{}, err
 	}
 	if (a.State == "EXPIRED" || !at.Before(r.VerifiedAt.Add(10*time.Minute))) && !(worker && r.State == "RETIREMENT_PENDING") {
 		return ConfirmationResult{}, ErrExpired
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return ConfirmationResult{}, err
+	}
+	if r.AuthorizationGeneration == 0 || r.AuthorizationGeneration != verifierGeneration(tx) {
+		return ConfirmationResult{}, ErrReverifyRequired
 	}
 	switch r.State {
 	case "RETIREMENT_PENDING":
@@ -606,10 +636,13 @@ func (e *Eligibility) confirmationTicketPreflight(ctx context.Context, tx pgx.Tx
 		return j, time.Time{}, err
 	}
 	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return j, at, err
 	}
 	message := (protocol.Ticket{Epoch: r.Epoch, Window: r.Window, Slot: r.NewSlot, BootstrapKey: r.BootstrapKey}).MessageBytes()
+	if j.AuthorizationGeneration == 0 || j.AuthorizationGeneration != verifierGeneration(tx) || j.AuthorizationGeneration != r.AuthorizationGeneration {
+		return j, at, ErrReverifyRequired
+	}
 	if !bytes.Equal(j.Message, message[:]) || j.Epoch != r.Epoch {
 		return j, at, ErrReconciliation
 	}
@@ -618,6 +651,17 @@ func (e *Eligibility) confirmationTicketPreflight(ctx context.Context, tx pgx.Tx
 			return j, at, err
 		}
 		return j, at, ErrReverifyRequired
+	}
+	if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+		if d.Generation != r.AuthorizationGeneration {
+			return ErrAuthorizationUnavailable
+		}
+		if r.ReplayUntil == nil || !d.TrustedAt.Before(*r.ReplayUntil) || protocol.ValidateAdmissionWindow(r.Window, d.TrustedAt) != nil {
+			return ErrReverifyRequired
+		}
+		return nil
+	}); err != nil {
+		return j, at, err
 	}
 	return j, at, nil
 }
@@ -667,7 +711,13 @@ func (e *Eligibility) signConfirmation(ctx context.Context, original confirmatio
 	}
 	// This exact message was durably queued with OTP consumption and quota
 	// reservation. Neither retry nor the signer can choose a new admission time.
+	if err = e.store.checkExternalGeneration(ctx, r.AuthorizationGeneration); err != nil {
+		return ConfirmationResult{}, err
+	}
 	signature, err := e.signer(ctx, j.Epoch, append([]byte(nil), j.Message...))
+	if gateErr := e.store.checkExternalGeneration(ctx, r.AuthorizationGeneration); gateErr != nil {
+		return ConfirmationResult{}, gateErr
+	}
 	if err != nil {
 		return ConfirmationResult{State: "CONFIRMATION_PENDING", RetryAfterSeconds: 1}, nil
 	}
@@ -699,7 +749,7 @@ func (e *Eligibility) signConfirmation(ctx context.Context, original confirmatio
 		return ConfirmationResult{}, ErrReconciliation
 	}
 	if j.State == "PENDING_SIGN" {
-		if _, err = tx.Exec(ctx, `UPDATE v_auth.confirmation_sign_jobs SET state='READY',signature=$2 WHERE confirmation_key_digest=$1 AND state='PENDING_SIGN'`, r.Key[:], signature); err != nil {
+		if _, err = tx.Exec(ctx, `UPDATE v_auth.confirmation_sign_jobs SET state='READY',signature=$2 WHERE confirmation_key_digest=$1 AND state='PENDING_SIGN' AND authorization_generation=$3`, r.Key[:], signature, int64(r.AuthorizationGeneration)); err != nil {
 			return ConfirmationResult{}, err
 		}
 		if _, err = tx.Exec(ctx, `UPDATE v_auth.otp_confirmations SET state='TICKET_AVAILABLE' WHERE confirmation_key_digest=$1`, r.Key[:]); err != nil {
@@ -738,7 +788,7 @@ func (e *Eligibility) settleOriginalRetirement(ctx context.Context, tx pgx.Tx, r
 			return r, false, err
 		}
 		var at time.Time
-		if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+		if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 			return r, false, err
 		}
 		if !allowQualification || !at.Before(r.OTPExpiresAt) || !at.Before(r.VerifiedAt.Add(10*time.Minute)) || protocol.ValidateAdmissionWindow(r.Window, at) != nil {
@@ -784,7 +834,7 @@ func (e *Eligibility) settleOriginalRetirement(ctx context.Context, tx pgx.Tx, r
 		}
 		// Recheck after all uniqueness/FK waits. A proof that was fresh before a
 		// competing slot insert must not create a reservation after its expiry.
-		if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+		if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 			return r, false, err
 		}
 		if !at.Before(r.OTPExpiresAt) || !at.Before(r.VerifiedAt.Add(10*time.Minute)) || protocol.ValidateAdmissionWindow(r.Window, at) != nil {
@@ -796,6 +846,14 @@ func (e *Eligibility) settleOriginalRetirement(ctx context.Context, tx pgx.Tx, r
 			}
 			r.State = "REVERIFY_REQUIRED"
 			return r, true, nil
+		}
+		if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+			if !d.TrustedAt.Before(r.OTPExpiresAt) || !d.TrustedAt.Before(r.VerifiedAt.Add(10*time.Minute)) || protocol.ValidateAdmissionWindow(r.Window, d.TrustedAt) != nil {
+				return ErrReverifyRequired
+			}
+			return nil
+		}); err != nil {
+			return r, false, err
 		}
 		r.State = "CONFIRMATION_PENDING"
 		return r, true, nil
@@ -813,7 +871,7 @@ func (e *Eligibility) settleOriginalRetirement(ctx context.Context, tx pgx.Tx, r
 		return r, false, ErrReconciliation
 	}
 	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return r, false, err
 	}
 	if err = e.setConfirmationTerminal(ctx, tx, r, "ELIGIBILITY_RESERVED", at); err != nil {
@@ -875,13 +933,17 @@ func (e *Eligibility) driveOriginalRetirement(ctx context.Context, original conf
 	}
 	var message, authorization, owner []byte
 	var epoch int64
-	err = tx.QueryRow(ctx, `SELECT authorization_message,retirement_authorization,confirmation_key_digest,signing_key_epoch FROM v_auth.retire_pending WHERE old_slot=$1 FOR UPDATE`, r.OldSlot).Scan(&message, &authorization, &owner, &epoch)
+	var pendingGeneration uint64
+	err = tx.QueryRow(ctx, `SELECT authorization_message,retirement_authorization,confirmation_key_digest,signing_key_epoch,authorization_generation FROM v_auth.retire_pending WHERE old_slot=$1 FOR UPDATE`, r.OldSlot).Scan(&message, &authorization, &owner, &epoch, &pendingGeneration)
 	if err != nil {
 		return ConfirmationResult{}, err
 	}
 	var old protocol.SlotID
 	copy(old[:], r.OldSlot)
 	expected := (protocol.Authorization{Epoch: r.Epoch, Slot: old}).MessageBytes()
+	if pendingGeneration == 0 || pendingGeneration != r.AuthorizationGeneration {
+		return ConfirmationResult{}, ErrReverifyRequired
+	}
 	if !bytes.Equal(owner, r.Key[:]) || !bytes.Equal(message, expected[:]) || epoch != int64(r.Epoch) {
 		return ConfirmationResult{}, ErrReconciliation
 	}
@@ -889,6 +951,9 @@ func (e *Eligibility) driveOriginalRetirement(ctx context.Context, original conf
 		return ConfirmationResult{}, err
 	}
 	if len(authorization) == 0 {
+		if err = e.store.checkExternalGeneration(ctx, r.AuthorizationGeneration); err != nil {
+			return ConfirmationResult{}, err
+		}
 		signature, signErr := e.signer(ctx, r.Epoch, append([]byte(nil), message...))
 		if signErr != nil {
 			result, _, err = e.finishRetirementStep(ctx, r, false)
@@ -918,7 +983,7 @@ func (e *Eligibility) driveOriginalRetirement(ctx context.Context, original conf
 				return ConfirmationResult{}, err
 			}
 			if len(stored) == 0 {
-				if _, err = tx.Exec(ctx, `UPDATE v_auth.retire_pending SET retirement_authorization=$3 WHERE old_slot=$1 AND confirmation_key_digest=$2 AND retirement_authorization IS NULL`, r.OldSlot, r.Key[:], authorization); err != nil {
+				if _, err = tx.Exec(ctx, `UPDATE v_auth.retire_pending SET retirement_authorization=$3 WHERE old_slot=$1 AND confirmation_key_digest=$2 AND retirement_authorization IS NULL AND authorization_generation=$4`, r.OldSlot, r.Key[:], authorization, int64(r.AuthorizationGeneration)); err != nil {
 					return ConfirmationResult{}, err
 				}
 			} else {
@@ -939,7 +1004,13 @@ func (e *Eligibility) driveOriginalRetirement(ctx context.Context, original conf
 	if verifyErr != nil || verified.Slot != old || verified.Epoch != r.Epoch {
 		return ConfirmationResult{}, ErrReconciliation
 	}
+	if err = e.store.checkExternalGeneration(ctx, r.AuthorizationGeneration); err != nil {
+		return ConfirmationResult{}, err
+	}
 	reply, peerErr := e.retirePeer.RetireUnusedSlot(ctx, protocol.EncodeCanonicalBase64url(authorization))
+	if err = e.store.checkExternalGeneration(ctx, r.AuthorizationGeneration); err != nil {
+		return ConfirmationResult{}, err
+	}
 	if peerErr == nil && reply.Receipt != "" {
 		receipt, receiptErr := e.store.verifier.VerifyReceipt(reply.Receipt, protocol.PurposeRetired)
 		if receiptErr != nil || receipt.Slot != old {
@@ -962,16 +1033,24 @@ func (e *Eligibility) driveOriginalRetirement(ctx context.Context, original conf
 // GetOTPConfirmationResult is strictly read-only: it neither calls a signer or
 // C nor consumes an OTP, reserves a slot, advances a job, or expires an anchor.
 // The full signed ticket is available only by replaying the original POST body.
-func (e *Eligibility) GetOTPConfirmationResult(ctx context.Context, rawKey, flow [32]byte, installation [16]byte) (ConfirmationResult, error) {
+func (e *Eligibility) GetOTPConfirmationResult(ctx context.Context, rawKey, flow [32]byte, installation [16]byte) (result ConfirmationResult, resultErr error) {
 	if rawKey == ([32]byte{}) || flow == ([32]byte{}) || installation == ([16]byte{}) {
 		return ConfirmationResult{}, ErrBadRequest
 	}
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", rawKey[:])
-	tx, err := e.store.pool.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly})
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		return ConfirmationResult{}, err
 	}
 	defer tx.Rollback(ctx)
+	defer func() {
+		if resultErr == nil {
+			if err := tx.Commit(ctx); err != nil {
+				result = ConfirmationResult{}
+				resultErr = err
+			}
+		}
+	}()
 	a, err := readConfirmationAnchor(ctx, tx, key, false)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return ConfirmationResult{State: "PENDING", RetryAfterSeconds: 1}, nil
@@ -986,11 +1065,19 @@ func (e *Eligibility) GetOTPConfirmationResult(ctx context.Context, rawKey, flow
 		return ConfirmationResult{}, ErrResultAuthentication
 	}
 	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return ConfirmationResult{}, err
 	}
 	if a.ExpiresAt == nil || !at.Before(*a.ExpiresAt) {
 		return ConfirmationResult{}, ErrExpired
+	}
+	if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+		if a.ExpiresAt == nil || !d.TrustedAt.Before(*a.ExpiresAt) {
+			return ErrExpired
+		}
+		return nil
+	}); err != nil {
+		return ConfirmationResult{}, err
 	}
 	r, err := readConfirmation(ctx, tx, key, false)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -998,6 +1085,9 @@ func (e *Eligibility) GetOTPConfirmationResult(ctx context.Context, rawKey, flow
 	}
 	if err != nil {
 		return ConfirmationResult{}, err
+	}
+	if r.AuthorizationGeneration != verifierGeneration(tx) && r.State != "TICKET_AVAILABLE" {
+		return ConfirmationResult{State: "REVERIFY_REQUIRED"}, nil
 	}
 	switch r.State {
 	case "RETIREMENT_PENDING":
@@ -1060,7 +1150,7 @@ func (e *Eligibility) ResumePendingConfirmations(ctx context.Context, limit int)
 	if limit < 1 || limit > 1000 {
 		return 0, ErrBadRequest
 	}
-	rows, err := e.store.pool.Query(ctx, `SELECT confirmation_key_digest FROM v_auth.otp_confirmations WHERE state IN ('RETIREMENT_PENDING','CONFIRMATION_PENDING') ORDER BY verified_at,confirmation_key_digest LIMIT $1`, limit)
+	rows, err := e.store.queryCandidates(ctx, `SELECT confirmation_key_digest FROM v_auth.otp_confirmations WHERE state IN ('RETIREMENT_PENDING','CONFIRMATION_PENDING') AND authorization_generation=(SELECT authorization_generation FROM v_auth.authorization_gate WHERE singleton_id=1) ORDER BY verified_at,confirmation_key_digest LIMIT $1`, limit)
 	if err != nil {
 		return 0, err
 	}
@@ -1103,7 +1193,7 @@ func (e *Eligibility) CleanupConfirmations(ctx context.Context, limit int) (int,
 	if limit < 1 || limit > 1000 {
 		return 0, ErrBadRequest
 	}
-	rows, err := e.store.pool.Query(ctx, `SELECT rr.key_digest,oc.email_exact FROM v_auth.request_results rr LEFT JOIN v_auth.otp_confirmations oc ON oc.confirmation_key_digest=rr.key_digest WHERE rr.operation=$1 AND ((rr.state='LIVE' AND rr.expires_at <= clock_timestamp()) OR (rr.state='EXPIRED' AND oc.confirmation_key_digest IS NOT NULL AND (oc.flow_id IS NOT NULL OR NOT EXISTS(SELECT 1 FROM v_auth.retire_pending rp WHERE rp.confirmation_key_digest=oc.confirmation_key_digest)))) ORDER BY rr.key_digest LIMIT $2`, confirmationOperation, limit)
+	rows, err := e.store.queryCandidates(ctx, `SELECT rr.key_digest,oc.email_exact FROM v_auth.request_results rr LEFT JOIN v_auth.otp_confirmations oc ON oc.confirmation_key_digest=rr.key_digest WHERE rr.operation=$1 AND ((rr.state='LIVE' AND rr.expires_at <= {trusted_at}) OR (rr.state='EXPIRED' AND oc.confirmation_key_digest IS NOT NULL AND (oc.flow_id IS NOT NULL OR NOT EXISTS(SELECT 1 FROM v_auth.retire_pending rp WHERE rp.confirmation_key_digest=oc.confirmation_key_digest)))) ORDER BY rr.key_digest LIMIT $2`, confirmationOperation, limit)
 	if err != nil {
 		return 0, err
 	}
@@ -1133,7 +1223,7 @@ func (e *Eligibility) CleanupConfirmations(ctx context.Context, limit int) (int,
 	}
 	processed := 0
 	for _, c := range candidates {
-		tx, beginErr := begin(ctx, e.store.pool)
+		tx, beginErr := e.store.beginAuthorized(ctx)
 		if beginErr != nil {
 			return processed, beginErr
 		}
@@ -1152,7 +1242,7 @@ func (e *Eligibility) CleanupConfirmations(ctx context.Context, limit int) (int,
 				return err
 			}
 			var at time.Time
-			if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+			if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 				return err
 			}
 			if a.Operation != confirmationOperation || (a.State == "LIVE" && (a.ExpiresAt == nil || at.Before(*a.ExpiresAt))) {

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import '../auth/auth_crypto.dart';
 import 'channel.dart';
 import 'channel_repository.dart';
 
@@ -28,7 +29,9 @@ class HttpChannelRepository implements ChannelRepository {
   final HttpClient _client;
 
   @override
-  Future<ChannelDirectoryResult> loadChannels({required String sessionToken}) async {
+  Future<ChannelDirectoryResult> loadChannels({
+    required String sessionToken,
+  }) async {
     if (sessionToken.trim().isEmpty) {
       throw const ChannelRepositoryException(
         message: 'A session token is required',
@@ -54,9 +57,11 @@ class HttpChannelRepository implements ChannelRepository {
       throw const ChannelRepositoryException(
         message: 'The channel request timed out',
       );
-    } on SocketException catch (error) {
-      throw ChannelRepositoryException(
-        message: 'The channel service is unavailable: $error',
+    } on IOException {
+      // Socket/TLS/HTTP exception strings can contain request values or
+      // endpoint diagnostics. Retain only a safe transport classification.
+      throw const ChannelRepositoryException(
+        message: 'The channel service is unavailable',
       );
     }
 
@@ -83,13 +88,18 @@ class HttpChannelRepository implements ChannelRepository {
       throw const ChannelRepositoryException(
         message: 'The channel response is malformed',
       );
+    } on IOException {
+      request.abort();
+      throw const ChannelRepositoryException(
+        message: 'The channel service is unavailable',
+      );
     }
     final payload = _decodePayload(body);
     if (response.statusCode != HttpStatus.ok) {
       throw ChannelRepositoryException(
         message: _errorMessage(payload, response.statusCode),
         statusCode: response.statusCode,
-        code: _errorField(payload, 'code'),
+        code: _errorCode(payload),
         requestId: _requestId(payload, response.headers),
       );
     }
@@ -103,10 +113,9 @@ class HttpChannelRepository implements ChannelRepository {
             .map((item) => Channel.fromJson(item))
             .toList(growable: false),
       );
-    } on FormatException catch (error) {
+    } on FormatException {
       throw ChannelRepositoryException(
-        message:
-            'The channel service returned an invalid directory: ${error.message}',
+        message: 'The channel service returned an invalid directory',
         statusCode: response.statusCode,
         code: 'invalid_channel_directory',
       );
@@ -135,9 +144,16 @@ class HttpChannelRepository implements ChannelRepository {
 
   String? _requestId(dynamic payload, HttpHeaders headers) {
     final value = payload is Map ? payload['requestId'] : null;
-    if (value is String && value.isNotEmpty) return value;
     final values = headers['x-request-id'];
-    return values != null && values.length == 1 ? values.single : null;
+    if (values == null || values.length != 1) return null;
+    final header = values.single;
+    try {
+      AuthCrypto.decode(header, bytes: 16);
+      if (value != null && (value is! String || value != header)) return null;
+      return header;
+    } on FormatException {
+      return null;
+    }
   }
 
   dynamic _decodePayload(String body) {
@@ -185,12 +201,31 @@ class HttpChannelRepository implements ChannelRepository {
     return 'The channel service returned HTTP $statusCode';
   }
 
-  String? _errorField(dynamic payload, String key) {
+  String? _errorCode(dynamic payload) {
     if (payload is! Map) {
       return null;
     }
     final error = payload['error'];
-    final value = error is Map ? error[key] : payload[key];
-    return value is String ? value : null;
+    final value = error is Map ? error['code'] : payload['code'];
+    return value is String && _errorCodes.contains(value) ? value : null;
   }
+
+  // Keep the current C directory/session contract without copying arbitrary
+  // server fields into diagnostic objects or session-controller callbacks.
+  static const _errorCodes = {
+    'MALFORMED_REQUEST',
+    'PAYLOAD_TOO_LARGE',
+    'UNSUPPORTED_MEDIA_TYPE',
+    'AUTHENTICATION_FAILED',
+    'SESSION_INVALID',
+    'session_replaced',
+    'ACCOUNT_UNAVAILABLE',
+    'CREDENTIAL_STATE_CHANGED',
+    'SESSION_CREATED_RETRY_LOGIN',
+    'IDEMPOTENCY_KEY_REUSED',
+    'RESULT_EXPIRED',
+    'RATE_LIMITED',
+    'SERVICE_UNAVAILABLE',
+    'CHANNEL_DIRECTORY_UNAVAILABLE',
+  };
 }

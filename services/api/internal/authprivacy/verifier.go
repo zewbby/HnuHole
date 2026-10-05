@@ -7,11 +7,15 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"errors"
+	"fmt"
+	"reflect"
 	"strings"
+	"time"
 	"unicode"
 	"unicode/utf8"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol"
 )
@@ -20,13 +24,152 @@ type VerifierStore struct {
 	pool           *pgxpool.Pool
 	verifier       *protocol.Verifier
 	addressLockKey [32]byte
+	gate           AuthorizationGate
 }
 
-func NewVerifierStore(pool *pgxpool.Pool, verifier *protocol.Verifier, lockKey [32]byte) (*VerifierStore, error) {
-	if pool == nil || verifier == nil || lockKey == ([32]byte{}) {
+func NewVerifierStore(pool *pgxpool.Pool, verifier *protocol.Verifier, lockKey [32]byte, gate AuthorizationGate) (*VerifierStore, error) {
+	if pool == nil || verifier == nil || lockKey == ([32]byte{}) || gate == nil || (reflect.ValueOf(gate).Kind() == reflect.Pointer && reflect.ValueOf(gate).IsNil()) {
 		return nil, errors.New("invalid verifier configuration")
 	}
-	return &VerifierStore{pool: pool, verifier: verifier, addressLockKey: lockKey}, nil
+	if postgresGate, ok := gate.(*PostgresAuthorizationGate); ok && postgresGate.schema != "v_auth" {
+		return nil, errors.New("verifier requires an independent v_auth gate")
+	}
+	if postgresGate, ok := gate.(*PostgresAuthorizationGate); ok && postgresGate.pool == pool {
+		return nil, errors.New("verifier gate refresh requires a separate bounded pool")
+	}
+	return &VerifierStore{pool: pool, verifier: verifier, addressLockKey: lockKey, gate: gate}, nil
+}
+
+// Every V transaction takes its generation before acquiring any business lock.
+// Commit always rechecks the gate in that same transaction. Abort also persists
+// a freeze discovered during a failed operation, rather than rolling it away.
+type verifierAuthorizationTx struct {
+	pgx.Tx
+	gate     AuthorizationGate
+	decision AuthorizationDecision
+	checks   []func(AuthorizationDecision) error
+}
+
+func (v *VerifierStore) beginAuthorized(ctx context.Context) (pgx.Tx, error) {
+	decision, err := v.gate.Snapshot(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tx, err := begin(ctx, v.pool)
+	if err != nil {
+		return nil, err
+	}
+	return &verifierAuthorizationTx{Tx: tx, gate: v.gate, decision: decision}, nil
+}
+
+func (t *verifierAuthorizationTx) Commit(ctx context.Context) error {
+	_, err := t.gate.CommitAuthorized(ctx, t.Tx, t.decision.Generation, t.checks...)
+	return err
+}
+
+func (t *verifierAuthorizationTx) Rollback(ctx context.Context) error {
+	return t.gate.Abort(ctx, t.Tx)
+}
+
+func verifierGeneration(tx pgx.Tx) uint64 {
+	if t, ok := tx.(*verifierAuthorizationTx); ok {
+		return t.decision.Generation
+	}
+	return 0
+}
+
+func verifierTrustedAt(ctx context.Context, tx pgx.Tx, at *time.Time) error {
+	t, ok := tx.(*verifierAuthorizationTx)
+	if !ok {
+		return ErrAuthorizationUnavailable
+	}
+	// V takes the gate row only at final Commit. This independent refresh
+	// therefore cannot self-lock or hold the gate across later business waits.
+	// Final validators still receive the final authority time under that lock.
+	decision, err := t.gate.Snapshot(ctx)
+	if err == nil && decision.Generation != t.decision.Generation {
+		err = ErrAuthorizationUnavailable
+	}
+	if err == nil {
+		*at = decision.TrustedAt
+	}
+	return err
+}
+
+// trustedSQLTime is a bound parameter supplied by the V gate, never a SQL clock
+// function. This small template keeps worker predicates and updates on the same
+// authority time while retaining their existing numbered argument lists.
+const trustedSQLTime = "{trusted_at}"
+
+func bindVerifierTime(sql string, args []any, at time.Time) (string, []any) {
+	if !strings.Contains(sql, trustedSQLTime) {
+		return sql, args
+	}
+	return strings.ReplaceAll(sql, trustedSQLTime, fmt.Sprintf("$%d::timestamptz", len(args)+1)), append(args, at)
+}
+
+func (t *verifierAuthorizationTx) timedSQL(ctx context.Context, sql string, args []any) (string, []any, error) {
+	if !strings.Contains(sql, trustedSQLTime) {
+		return sql, args, nil
+	}
+	var at time.Time
+	if err := verifierTrustedAt(ctx, t, &at); err != nil {
+		return "", nil, err
+	}
+	sql, args = bindVerifierTime(sql, args, at)
+	return sql, args, nil
+}
+
+func (t *verifierAuthorizationTx) Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
+	sql, args, err := t.timedSQL(ctx, sql, args)
+	if err != nil {
+		return pgconn.CommandTag{}, err
+	}
+	return t.Tx.Exec(ctx, sql, args...)
+}
+
+func (t *verifierAuthorizationTx) Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
+	sql, args, err := t.timedSQL(ctx, sql, args)
+	if err != nil {
+		return nil, err
+	}
+	return t.Tx.Query(ctx, sql, args...)
+}
+
+type verifierErrorRow struct{ err error }
+
+func (r verifierErrorRow) Scan(...any) error { return r.err }
+
+func (t *verifierAuthorizationTx) QueryRow(ctx context.Context, sql string, args ...any) pgx.Row {
+	sql, args, err := t.timedSQL(ctx, sql, args)
+	if err != nil {
+		return verifierErrorRow{err}
+	}
+	return t.Tx.QueryRow(ctx, sql, args...)
+}
+
+// Candidate enumeration is only a hint. Each candidate is rechecked and
+// committed by beginAuthorized under its own business locks.
+func (v *VerifierStore) queryCandidates(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
+	decision, err := v.gate.Snapshot(ctx)
+	if err != nil {
+		return nil, err
+	}
+	sql, args = bindVerifierTime(sql, args, decision.TrustedAt)
+	return v.pool.Query(ctx, sql, args...)
+}
+
+func (v *VerifierStore) execAuthorized(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
+	tx, err := v.beginAuthorized(ctx)
+	if err != nil {
+		return pgconn.CommandTag{}, err
+	}
+	defer tx.Rollback(ctx)
+	tag, err := tx.Exec(ctx, sql, args...)
+	if err != nil {
+		return tag, err
+	}
+	return tag, tx.Commit(ctx)
 }
 
 func (v *VerifierStore) lockAddress(ctx context.Context, tx pgx.Tx, email []byte) error {
@@ -51,7 +194,7 @@ func (v *VerifierStore) ReserveAfterQualification(ctx context.Context, email []b
 	if !utf8.Valid(email) || strings.Count(s, "@") != 1 || !strings.HasSuffix(s, "@hainanu.edu.cn") || len(s) == len("@hainanu.edu.cn") || strings.IndexFunc(s, unicode.IsSpace) >= 0 {
 		return slot, ErrIntentInvalid
 	}
-	tx, err := begin(ctx, v.pool)
+	tx, err := v.beginAuthorized(ctx)
 	if err != nil {
 		return slot, err
 	}
@@ -113,7 +256,7 @@ func (v *VerifierStore) PrepareRetirement(ctx context.Context, email []byte, new
 	if err != nil {
 		return err
 	}
-	tx, err := begin(ctx, v.pool)
+	tx, err := v.beginAuthorized(ctx)
 	if err != nil {
 		return err
 	}
@@ -137,8 +280,12 @@ func (v *VerifierStore) PrepareRetirement(ctx context.Context, email []byte, new
 		return ErrReconciliation
 	}
 	var boundNew, boundKey []byte
-	err = tx.QueryRow(ctx, `SELECT new_slot,new_bootstrap_public_key FROM v_auth.retire_pending WHERE old_slot=$1 FOR UPDATE`, current).Scan(&boundNew, &boundKey)
+	var pendingGeneration uint64
+	err = tx.QueryRow(ctx, `SELECT new_slot,new_bootstrap_public_key,authorization_generation FROM v_auth.retire_pending WHERE old_slot=$1 FOR UPDATE`, current).Scan(&boundNew, &boundKey, &pendingGeneration)
 	if err == nil {
+		if pendingGeneration == 0 || pendingGeneration != verifierGeneration(tx) {
+			return ErrAuthorizationUnavailable
+		}
 		if !bytes.Equal(boundNew, newSlot[:]) || !bytes.Equal(boundKey, newKey[:]) {
 			return ErrConflict
 		}
@@ -147,7 +294,7 @@ func (v *VerifierStore) PrepareRetirement(ctx context.Context, email []byte, new
 	if !errors.Is(err, pgx.ErrNoRows) {
 		return err
 	}
-	_, err = tx.Exec(ctx, `INSERT INTO v_auth.retire_pending(old_slot,email_exact,quota_version,new_slot,new_bootstrap_public_key,retirement_authorization,state) VALUES($1,$2,$3,$4,$5,$6,'PENDING')`, current, email, version, newSlot[:], newKey[:], wire)
+	_, err = tx.Exec(ctx, `INSERT INTO v_auth.retire_pending(old_slot,email_exact,quota_version,new_slot,new_bootstrap_public_key,retirement_authorization,state,authorization_generation) VALUES($1,$2,$3,$4,$5,$6,'PENDING',$7)`, current, email, version, newSlot[:], newKey[:], wire, int64(verifierGeneration(tx)))
 	if err != nil {
 		return err
 	}
@@ -167,7 +314,7 @@ func (v *VerifierStore) ProcessReceipt(ctx context.Context, encoded string, purp
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 		return err
 	}
-	tx, err := begin(ctx, v.pool)
+	tx, err := v.beginAuthorized(ctx)
 	if err != nil {
 		return err
 	}
@@ -232,4 +379,27 @@ func (v *VerifierStore) ProcessReceipt(ctx context.Context, encoded string, purp
 		return err
 	}
 	return tx.Commit(ctx)
+}
+
+// External work is outside database locks. Its fixed durable generation is
+// checked immediately before and after external effects, then again by the
+// transaction that records their result. Recovery never rebinds an old job.
+func (v *VerifierStore) checkExternalGeneration(ctx context.Context, expected uint64) error {
+	decision, err := v.gate.Snapshot(ctx)
+	if err != nil {
+		return err
+	}
+	if expected == 0 || decision.Generation != expected {
+		return ErrAuthorizationUnavailable
+	}
+	return nil
+}
+
+func verifierFinalCheck(tx pgx.Tx, check func(AuthorizationDecision) error) error {
+	t, ok := tx.(*verifierAuthorizationTx)
+	if !ok || check == nil {
+		return ErrAuthorizationUnavailable
+	}
+	t.checks = append(t.checks, check)
+	return nil
 }

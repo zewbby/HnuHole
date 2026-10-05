@@ -1,0 +1,419 @@
+{
+  "schemaVersion": "hnuhole-privacy-boundary-verification/v1",
+  "recordedOn": "2026-10-05",
+  "startedOn": "2026-10-04",
+  "timeZone": "Asia/Shanghai",
+  "verifiedAtUTC": "2026-10-05T01:54:56.311024+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "faf557db4d74ecb2c202fd1349f1bf8fa64e6133",
+  "uncommittedWorkingTree": true,
+  "scope": "AC03_CURRENT_DATA_ROLES_API_CLIENT_DIAGNOSTICS_AND_FUTURE_CONTRACTS",
+  "implementationState": "IMPLEMENTED",
+  "currentResult": "PASS",
+  "scopedBackendAcceptancePassed": true,
+  "fullAnonymityClosurePassed": false,
+  "moduleAcceptancePassed": false,
+  "productionApproved": false,
+  "sourceFingerprint": {
+    "sha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+    "presentFileCount": 219,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Current AC03 backend, mobile logic/tests and vault/Passkey source boundary review; each check retains its executed scope, no native platform revalidation"
+  },
+  "testedSnapshotMatchesWorkspaceBytes": true,
+  "previousAC01Evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+  "previousAC02Evidence": "services/api/authlab/identity-account-closure-verification.json",
+  "historicalPlatformEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+  "plan": "docs/design/auth-privacy-boundary-plan.md",
+  "report": "docs/design/auth-privacy-boundary-validation-report.md",
+  "businessContract": "docs/design/auth-privacy-business-contract.md",
+  "affectedModules": [
+    "A00",
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "B01",
+    "B02",
+    "P01"
+  ],
+  "crossModuleScenes": [
+    "X02",
+    "X06",
+    "X07"
+  ],
+  "runtime": {
+    "go": "go1.22.2 linux/amd64",
+    "isolatedPostgresql": "16.15",
+    "runtimePostgresqlImage": "postgres:16.6-alpine",
+    "mailImage": "axllent/mailpit:v1.21.8",
+    "goose": "v3.22.1",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "environment": "Existing Windows and Ubuntu-24.04 WSL tools; owned Linux source/module/build/pub caches; existing Windows SDK"
+  },
+  "checks": [
+    {
+      "id": "compile",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "go test -run '^$' ./...",
+      "scope": "AC03 Go compilation only"
+    },
+    {
+      "id": "R01",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-isolated.sh -> go test -race -count=1 -p 1 ./...",
+      "scope": "Final full backend tests in generated private-socket C/V PostgreSQL, after canary and test-buffer repairs"
+    },
+    {
+      "id": "R02",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-isolated.sh -> go vet ./...",
+      "scope": "Final complete Go static vet from same successful runner"
+    },
+    {
+      "id": "R03",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-runtime-isolated.sh",
+      "scope": "Actual C/V cmd, formal C12/V4 migrations, non-owner role matrix, unsafe effective log setting refusal, PostgreSQL/process log canaries and existing AC01/AC02 lifecycle regression"
+    },
+    {
+      "id": "FlutterAnalyze",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter --no-version-check analyze --no-pub",
+      "scope": "Current Windows mobile full analysis; no issues"
+    },
+    {
+      "id": "FlutterTests",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter --no-version-check test --no-pub",
+      "testCount": 179,
+      "scope": "Current mobile unit/widget/TLS tests; four new diagnostics tests; not device/native acceptance"
+    },
+    {
+      "id": "R05",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-mobile-isolated.sh",
+      "scope": "Linux real Dart -> public HTTPS handlers -> actual disposable C/V SQL plus current PostgreSQL diagnostic canary; separate from actual cmd R03"
+    },
+    {
+      "id": "source-snapshot",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "All 219 selected Windows/WSL files byte-identical; canonical ordered fingerprint; no final application source changes after checks"
+    },
+    {
+      "id": "handoff",
+      "result": "PASS",
+      "command": "python tools/check-identity-handoff.py",
+      "scope": "Current AC03 and retained AC01/AC02/B02 bookkeeping and source bytes only",
+      "exitCode": 0
+    },
+    {
+      "id": "diff",
+      "result": "PASS",
+      "command": "git diff --check",
+      "scope": "Whitespace only",
+      "exitCode": 0
+    }
+  ],
+  "newGoTestFunctions": [
+    {
+      "name": "TestPrivacySchemaPartyBoundaryPostgres",
+      "path": "services/api/internal/authprivacy/privacy_boundary_postgres_test.go"
+    },
+    {
+      "name": "TestPrivacySeededPartyRowsPostgres",
+      "path": "services/api/internal/authprivacy/privacy_boundary_postgres_test.go"
+    },
+    {
+      "name": "TestPrivacyDatabaseDiagnosticsPostgres",
+      "path": "services/api/internal/authprivacy/privacy_boundary_postgres_test.go"
+    },
+    {
+      "name": "TestPrivacyBoundaryDoesNotJoinPublicAndPeerDiagnostics",
+      "path": "services/api/internal/authprivacyhttp/privacy_boundary_test.go"
+    },
+    {
+      "name": "TestPrivacyBoundaryErrorsNeverEchoSensitiveInputs",
+      "path": "services/api/internal/authprivacyhttp/privacy_boundary_test.go"
+    },
+    {
+      "name": "TestRealHTTPSIdentityPrivacyIsAccountScopedPostgres",
+      "path": "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go"
+    },
+    {
+      "name": "TestProcessDiagnosticsExcludeUntrustedErrors",
+      "path": "services/api/internal/authprivacyruntime/diagnostics_test.go"
+    },
+    {
+      "name": "TestHTTPPanicDiagnosticExcludesRequestAndPanicMaterial",
+      "path": "services/api/internal/authprivacyruntime/diagnostics_test.go"
+    },
+    {
+      "name": "TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings",
+      "path": "services/api/internal/authprivacyruntime/database_diagnostics_test.go"
+    }
+  ],
+  "newGoTestFunctionCount": 9,
+  "newMobileTestCount": 4,
+  "privacyConclusions": {
+    "communityEmailOrEmailHashFound": false,
+    "verifierCommunityAccountOrProfileFound": false,
+    "sharedSlotCollusionBoundaryPreserved": true,
+    "currentOwnIdentityApiScopeVerified": true,
+    "serverAndClientInstallationIdsSeparate": true,
+    "threeDiagnosticsGapsFixed": [
+      "raw process and default net/http errors",
+      "ordinary PostgreSQL SQL/error diagnostics",
+      "mobile channel transport/server diagnostic reflection"
+    ],
+    "futureBusinessConsumersIntegrated": false,
+    "independentHumanAuditPerformed": false
+  },
+  "runtimeSummary": {
+    "privacyRoleMatrix": "passed",
+    "privacyUnsafeDatabaseDiagnosticsRejected": "passed",
+    "privacyRealProcessAndPostgresLogs": "passed",
+    "actualCmdLifecycle": "passed",
+    "formalMigrationAndRoles": "passed",
+    "identityClosureUpgrade11To12": "passed",
+    "identityClosureAndSameEmailNewAccount": "passed",
+    "verifierGateFreezeRestartAndRecovery": "passed",
+    "verifierOldSnapshotBlocked": "passed",
+    "verifierIndependentEvidenceExpiry": "passed"
+  },
+  "failedAttemptsAndRepairs": [
+    {
+      "scope": "Windows pub lock resolution",
+      "result": "FAIL",
+      "exitCode": 65,
+      "cause": "Default pub host disagreed with existing mirror lockfile",
+      "repair": "Existing pub.flutter-io.cn host; enforce-lockfile succeeded, no dependency or lockfile changes"
+    },
+    {
+      "scope": "Initial WSL command wrappers",
+      "result": "FAIL",
+      "cause": "Unquoted inherited PATH and final CR byte in streamed script",
+      "repair": "Saved owned LF scripts; final runner exit codes used"
+    },
+    {
+      "scope": "First Flutter analysis",
+      "result": "FAIL",
+      "exitCode": 1,
+      "cause": "Two new-code lint infos",
+      "repair": "const and braces; final analysis and 179 tests PASS"
+    },
+    {
+      "scope": "First backend SQL/race attempt",
+      "result": "FAIL",
+      "exitCode": 1,
+      "cause": "New panic-test buffer read raced with HTTP writer; long SQL canary was truncated in constraint DETAIL",
+      "repair": "Wait for server.Close before reading buffer; bounded short sentinel; focused race/canary and final full suite PASS"
+    },
+    {
+      "scope": "Second backend attempt and early R05 canary",
+      "result": "FAIL",
+      "exitCode": 1,
+      "cause": "Already compiled long-canary test still had the overly strict positive assertion",
+      "repair": "Current short-canary source rebuilt; final R05/full backend PASS"
+    },
+    {
+      "scope": "Linux online dependency resolver",
+      "result": "SKIP",
+      "cause": "Unchanged resolving stage; stopped only process whose cwd and pub arguments matched owned task workspace",
+      "repair": "Reused this run Windows hosted dependencies, offline enforce-lockfile PASS; no SDK download"
+    },
+    {
+      "scope": "Initial handoff generator/checker",
+      "result": "FAIL",
+      "exitCode": 1,
+      "cause": "Historical top-level fingerprint history uses nested records; AC03 current pointer had not yet been written",
+      "repair": "Preserved nested history and updated AC03 pointer; checker PASS"
+    }
+  ],
+  "notRun": [
+    {
+      "scope": "B05-B11 public post/comment/chat/moderation consumers and local chat/private-note/search cleanup X06/X07",
+      "result": "NOT_RUN",
+      "reason": "Actual business callers not implemented; current branch fixes foundation and contracts only",
+      "entry": "docs/design/auth-privacy-business-contract.md"
+    },
+    {
+      "scope": "Android/iOS/native vault/system Passkey/physical-device B02 matrix",
+      "result": "NOT_RUN",
+      "reason": "Current Flutter/R05 is not native-platform revalidation; iOS/full ceremonies and physical-device gaps remain",
+      "entry": "docs/design/module-acceptance-handoff.md R07/R09/R10"
+    },
+    {
+      "scope": "P02-P06 production operations/logs/proxy/mail/DR/side-channel calibration/independent human audit",
+      "result": "NOT_RUN",
+      "reason": "External production evidence cannot be supplied by local same-machine fixtures or source review",
+      "entry": "docs/design/auth-privacy-closure-checklist.md"
+    },
+    {
+      "scope": "Full OpenAPI validator",
+      "result": "NOT_RUN",
+      "reason": "No OpenAPI wire schema changed in AC03; current HTTP negative/DTO checks executed, historical validator proof retained at its original revision",
+      "entry": "tools/env-hnuhole-wsl.sh and existing packages/openapi validator commands"
+    }
+  ],
+  "cleanup": {
+    "result": "PASS",
+    "reason": "Owned WSL directory/caches/private logs removed; actual cmd/PG runners self-cleaned; exact Docker project resources and current Windows caches/generated Flutter artifacts verified absent",
+    "ownedMarker": "01a104dd-ae87-7733-83ef-0f7be5f5862a",
+    "preserve": "Source/tests/small sanitized records; pre-existing D tools/SDK/AVD/Docker images; no global prune",
+    "verifiedAtUTC": "2026-10-05T02:00:26.267637+00:00",
+    "ownedWSLPath": "/var/tmp/hnuhole-ac03-01a104dd",
+    "ownedDockerProject": "hnuhole-runtime-hnuholeruntimesmnatz",
+    "ownedProcessCheckPassed": true,
+    "dockerProjectResourcesAbsent": true,
+    "windowsCachesAbsent": true,
+    "wslWorkspaceAbsent": true,
+    "cleanupRepair": "Go module directories were read-only; completed partial deletion after changing permissions only on directories under the proven owned root",
+    "dockerDesktopStopAttempt": "CLI reported Docker Desktop not running; no unrelated running containers or task-owned Docker resources"
+  },
+  "handoffChecker": {
+    "path": "tools/check-identity-handoff.py",
+    "sha256": "5341b5f6b9ed1fbedcc460271a90d52ac73f5d6a14626c425ef1445abe5907bc",
+    "result": "PASS",
+    "scope": "Separate bookkeeping checker outside application fingerprint"
+  },
+  "goCompileExecuted": true,
+  "sqlTestsExecuted": true,
+  "flutterTestsExecuted": true,
+  "flutterAnalyzeExecuted": true,
+  "deviceTestsExecuted": false,
+  "fullOpenapiValidatorExecuted": false,
+  "backendPackageResults": {
+    "cmd/authdev": "PASS 1.123s",
+    "internal/authprivacy": "PASS 301.161s",
+    "internal/authprivacy/protocol": "PASS 1.144s",
+    "internal/authprivacyhttp": "PASS 24.625s",
+    "internal/authprivacyruntime": "PASS 1.013s"
+  },
+  "gitBlobSourceFingerprint": {
+    "sha256": "bc73ba27fdb4fc252d731023928fea4aae8d3309e84753c57c0150d6f8b811e9",
+    "presentFileCount": 219,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Git text blobs equivalent to the original tested snapshot by CRLF-to-LF only; protocol vector remains byte-exact",
+    "checkoutNewlineConversions": 164
+  },
+  "publicationPreparation": {
+    "recordedOn": "2026-10-05",
+    "gitBlobComparison": "PASS",
+    "scope": "Each staged source file equals tested bytes or only Git CRLF-to-LF conversion; no application edits or dynamic test rerun",
+    "originalTestFingerprintRetained": true
+  }
+}

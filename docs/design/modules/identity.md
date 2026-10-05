@@ -165,3 +165,7 @@
 
 - 2026-09-10 用户将预设身份上限改为总共三个（含原始身份），随后明确修正为“一个帖子理应只能选择一个身份”，撤回同帖换身份和各身份分别点赞的方案。当前按 MASK-02 固定同帖身份，点赞按[帖子详情 LIKE-ACCOUNT-01](post-detail.md)执行；按身份隔离私信与消息页切换收件身份继续适用。
 - [初期需求记录](../../discussions/2026-09-06-hainanu-treehole.md)、[按帖面具讨论](../../discussions/2026-09-08-post-contact-design.md)及[旧身份弹框讨论](../../discussions/2026-09-09-first-send-identity-preview.md)只用于追溯被替代方案。
+
+## 匿名基础与后续接入
+
+当前 AC01／AC02／AC03 的实现和核对结果见 [隐私边界报告](../auth-privacy-boundary-validation-report.md)。后续业务必须遵守 [匿名业务接入契约](../auth-privacy-business-contract.md)，包括最终发送任务受理时的账号＋帖子绑定、按身份对隔离和各身份独立注销占位；公共内容／聊天／管理消费者尚未集成，不能由当前本人身份管理或纯投影代证。

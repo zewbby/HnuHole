@@ -148,10 +148,14 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 		t.Fatal(err)
 	}
 	if schema == "c_auth" {
-        if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.identity_account_state, public.community_identities, public.sessions, public.channels CASCADE`); err != nil { t.Fatal(err) }
-        if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_community_identity(),public.guard_identity_receipt(),public.check_identity_account_shape() CASCADE`); err != nil { t.Fatal(err) }
-    }
-    for _, file := range files {
+		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.identity_account_state, public.community_identities, public.sessions, public.channels CASCADE`); err != nil {
+			t.Fatal(err)
+		}
+		if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_community_identity(),public.guard_identity_receipt(),public.check_identity_account_shape() CASCADE`); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, file := range files {
 		sql, err := os.ReadFile(file)
 		if err != nil {
 			t.Fatal(err)
@@ -290,6 +294,9 @@ type e2eServices struct {
 	advanceC         func(time.Duration)
 	gate             *authprivacy.PostgresAuthorizationGate
 	recoverC         func() error
+	vGate            *authprivacy.PostgresAuthorizationGate
+	advanceV         func(time.Duration)
+	recoverV         func() error
 }
 
 func e2eNewServices(t *testing.T) *e2eServices {
@@ -340,7 +347,16 @@ func e2eNewServices(t *testing.T) *e2eServices {
 	if err != nil {
 		t.Fatal(err)
 	}
-	s.v, err = authprivacy.NewVerifierStore(s.vp, verifier, e2eKey(t))
+	vGatePoolConfig := s.vp.Config()
+	vGatePoolConfig.MaxConns = 4
+	vGatePool, err := pgxpool.NewWithConfig(context.Background(), vGatePoolConfig)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(vGatePool.Close)
+	vGate, advanceV, recoverV := e2eAuthorizationGateControlFor(t, vGatePool, "v_auth")
+	s.vGate, s.advanceV, s.recoverV = vGate, advanceV, recoverV
+	s.v, err = authprivacy.NewVerifierStore(s.vp, verifier, e2eKey(t), vGate)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -420,7 +436,15 @@ func e2eAuthorizationGate(t *testing.T, pool *pgxpool.Pool) (*authprivacy.Postgr
 }
 
 func e2eAuthorizationGateControl(t *testing.T, pool *pgxpool.Pool) (*authprivacy.PostgresAuthorizationGate, func(time.Duration), func() error) {
+	return e2eAuthorizationGateControlFor(t, pool, "c_auth")
+}
+
+func e2eAuthorizationGateControlFor(t *testing.T, pool *pgxpool.Pool, schema string) (*authprivacy.PostgresAuthorizationGate, func(time.Duration), func() error) {
 	t.Helper()
+	domain := "hnuhole-e2e-community"
+	if schema == "v_auth" {
+		domain = "hnuhole-e2e-verifier"
+	}
 	evidencePublic, evidencePrivate, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		t.Fatal(err)
@@ -451,7 +475,7 @@ func e2eAuthorizationGateControl(t *testing.T, pool *pgxpool.Pool) (*authprivacy
 		return time.Now().UTC().Add(offset)
 	}
 	gate, err := authprivacy.NewPostgresAuthorizationGate(authprivacy.AuthorizationGateConfig{
-		Pool: pool, Domain: "hnuhole-e2e-community", Evidence: provider,
+		Pool: pool, Schema: schema, Domain: domain, Evidence: provider,
 		EvidencePublicKey: evidencePublic, RecoveryPublicKey: recoveryPublic,
 		BreakGlassPublicKey: breakGlassPublic, Anchor: anchor, Clock: clockNow,
 	})
@@ -460,7 +484,7 @@ func e2eAuthorizationGateControl(t *testing.T, pool *pgxpool.Pool) (*authprivacy
 	}
 	now := time.Now().UTC()
 	evidence, err := authprivacy.SignAuthorizationEvidence(evidencePrivate, authprivacy.AuthorizationEvidence{
-		Domain: "hnuhole-e2e-community", Version: 1, Generation: 1,
+		Domain: domain, Version: 1, Generation: 1,
 		IssuedAt: now, TrustedAt: now, ValidUntil: now.Add(5 * time.Minute),
 	})
 	if err != nil {
@@ -489,7 +513,7 @@ func e2eAuthorizationGateControl(t *testing.T, pool *pgxpool.Pool) (*authprivacy
 		at := time.Now().UTC().Add(offset)
 		clockMu.Unlock()
 		fresh, err := authprivacy.SignAuthorizationEvidence(evidencePrivate, authprivacy.AuthorizationEvidence{
-			Domain: "hnuhole-e2e-community", Version: version, Generation: generation,
+			Domain: domain, Version: version, Generation: generation,
 			IssuedAt: at, TrustedAt: at, ValidUntil: at.Add(5 * time.Minute),
 		})
 		if err != nil {
@@ -506,7 +530,7 @@ func e2eAuthorizationGateControl(t *testing.T, pool *pgxpool.Pool) (*authprivacy
 		at := time.Now().UTC().Add(offset)
 		clockMu.Unlock()
 		fresh, err := authprivacy.SignAuthorizationEvidence(evidencePrivate, authprivacy.AuthorizationEvidence{
-			Domain: "hnuhole-e2e-community", Version: version, Generation: generation,
+			Domain: domain, Version: version, Generation: generation,
 			IssuedAt: at, TrustedAt: at, ValidUntil: at.Add(5 * time.Minute),
 		})
 		if err != nil {
@@ -853,5 +877,57 @@ func TestHTTPSPostgresRetirementPushAndOriginalContinuation(t *testing.T) {
 	var recreated int
 	if err := s.cp.QueryRow(context.Background(), `SELECT count(*) FROM c_auth.receipt_outbox`).Scan(&recreated); err != nil || recreated != 0 {
 		t.Fatalf("read-only re-sign resurrected outbox: %v", err)
+	}
+}
+
+func TestHTTPSPostgresVerifierGateIndependentFreezeAndRecovery(t *testing.T) {
+	s := e2eNewServices(t)
+	original := s.confirmation(t, "synthetic-v-gate-stale@hainanu.edu.cn")
+	ctx := context.Background()
+	if err := s.vGate.Freeze(ctx, "ISOLATED_V_FREEZE"); err != nil {
+		t.Fatal(err)
+	}
+	s.submit(t, original, http.StatusServiceUnavailable)
+	if decision, err := s.gate.Snapshot(ctx); err != nil || decision.Generation != 1 {
+		t.Fatalf("V freeze affected independent C Gate: %v", err)
+	}
+	installation, key := e2eInstallation(t), e2eKey(t)
+	e2eJSON(t, s.client, http.MethodPost, s.vPublic.URL+"/api/v1/eligibility/otp-requests", map[string]string{"email": "synthetic-v-frozen@hainanu.edu.cn"}, map[string]string{"V-Installation-ID": protocol.EncodeCanonicalBase64url(installation[:]), "Idempotency-Key": protocol.EncodeCanonicalBase64url(key[:])}, http.StatusServiceUnavailable)
+	if err := s.recoverV(); err != nil {
+		t.Fatal(err)
+	}
+	rejected := s.submit(t, original, http.StatusUnprocessableEntity)
+	if rejected["error"].(map[string]any)["code"] != "OTP_EXPIRED" {
+		t.Fatal("old V generation was not expired")
+	}
+	var quotas int
+	if err := s.vp.QueryRow(ctx, `SELECT count(*) FROM v_auth.email_quota WHERE current_slot=$1`, original.slot[:]).Scan(&quotas); err != nil || quotas != 0 {
+		t.Fatalf("old V generation obtained a quota: %v", err)
+	}
+	fresh := s.confirmation(t, "synthetic-v-gate-fresh@hainanu.edu.cn")
+	s.submit(t, fresh, http.StatusOK)
+	if decision, err := s.vGate.Snapshot(ctx); err != nil || decision.Generation != 2 {
+		t.Fatalf("V explicit recovery did not advance generation: %v", err)
+	}
+	if decision, err := s.gate.Snapshot(ctx); err != nil || decision.Generation != 1 {
+		t.Fatalf("V recovery affected C generation: %v", err)
+	}
+}
+
+func TestHTTPSPostgresCommunityFreezeDoesNotFreezeVerifier(t *testing.T) {
+	s := e2eNewServices(t)
+	if err := s.gate.Freeze(context.Background(), "ISOLATED_C_FREEZE"); err != nil {
+		t.Fatal(err)
+	}
+	fresh := s.confirmation(t, "synthetic-independent-v@hainanu.edu.cn")
+	confirmed := s.submit(t, fresh, http.StatusOK)
+	ticket, ok := confirmed["registrationTicket"].(string)
+	if !ok {
+		t.Fatal("independent V did not return a ticket")
+	}
+	installation := e2eInstallation(t)
+	e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/registration-intents", map[string]string{"registrationTicket": ticket, "username": "independent_gate", "password": "independent long community password phrase", "installationId": protocol.EncodeCanonicalBase64url(installation[:])}, nil, http.StatusServiceUnavailable)
+	if decision, err := s.vGate.Snapshot(context.Background()); err != nil || decision.Generation != 1 {
+		t.Fatalf("C freeze affected independent V Gate: %v", err)
 	}
 }

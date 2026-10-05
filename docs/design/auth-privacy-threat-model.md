@@ -1,5 +1,7 @@
 # Hnuhole 认证隐私跨方威胁模型与审阅门槛
 
+> **2026-10-05 当前实现入口：**匿名基础按 AC01／AC02／AC03 推进。本文原日期中的“实施前／未实现／未核对”等状态是历史设计快照；当前源码、隐私核对和诊断差异见 [AC03任务单](auth-privacy-boundary-plan.md)、[验证报告](auth-privacy-boundary-validation-report.md) 与 [业务接入契约](auth-privacy-business-contract.md)，实际检查结果以报告及机器台账为准。既定共享槽位串通边界与生产分权／灾备／独立审计门槛继续有效。
+
 日期：2026-09-28。状态：**实施前内部威胁建模；不是独立安全审计、代码测试或上线批准。** 适用范围为[架构决策](auth-privacy-architecture-decision.md)、[注册／释放协议](auth-privacy-registration-protocol.md)、[独立恢复策略](auth-privacy-recovery-decision.md)和[逻辑数据／API 契约](auth-privacy-data-api-contract.md)。这次审阅发现的规格缺口已写回这些文档；V/C OpenAPI与[迁移设计](auth-privacy-database-migration-design.md)现已成稿；[固定协议向量与内部静态复验](auth-privacy-protocol-vectors.md)和[独立评审输入包](auth-privacy-security-review-package.md)现已整理；所选生产库、独立主体、实际SQL、部署、客户端实现与独立评审仍未完成。
 
 ## 1. 资产、数据流和信任边界

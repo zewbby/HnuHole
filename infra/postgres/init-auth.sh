@@ -14,11 +14,13 @@ SELECT format('REVOKE ALL ON DATABASE %I FROM PUBLIC', :'db') \gexec
 SELECT format('GRANT CONNECT ON DATABASE %I TO %I,%I', :'db', 'hnuhole_' || :'party' || '_migrator', 'hnuhole_' || :'party' || '_runtime') \gexec
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 SQL
+psql -X -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \
+ -v party="$AUTH_PARTY" -v db="$POSTGRES_DB" -v recovery_password="$AUTH_RECOVERY_PASSWORD" >/dev/null <<'SQL'
+SELECT format('CREATE ROLE %I LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD %L', 'hnuhole_' || :'party' || '_recovery', :'recovery_password') \gexec
+SELECT format('GRANT CONNECT ON DATABASE %I TO %I', :'db', 'hnuhole_' || :'party' || '_recovery') \gexec
+SQL
 if [ "$AUTH_PARTY" = c ]; then
- psql -X -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \
-  -v db="$POSTGRES_DB" -v recovery_password="$AUTH_RECOVERY_PASSWORD" >/dev/null <<'SQL'
-CREATE ROLE hnuhole_c_recovery LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD :'recovery_password';
+ psql -X -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" >/dev/null <<'SQL'
 CREATE ROLE hnuhole_business NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
-SELECT format('GRANT CONNECT ON DATABASE %I TO hnuhole_c_recovery', :'db') \gexec
 SQL
 fi

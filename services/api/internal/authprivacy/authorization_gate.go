@@ -34,7 +34,10 @@ type AuthorizationGate interface {
 }
 
 type AuthorizationGateConfig struct {
-	Pool                *pgxpool.Pool
+	Pool *pgxpool.Pool
+	// Schema selects the party's independent gate. Empty preserves the C default.
+	// Only c_auth and v_auth are accepted because the value becomes an SQL identifier.
+	Schema              string
 	Domain              string
 	Evidence            AuthorizationEvidenceProvider
 	EvidencePublicKey   ed25519.PublicKey
@@ -46,6 +49,7 @@ type AuthorizationGateConfig struct {
 
 type PostgresAuthorizationGate struct {
 	pool                *pgxpool.Pool
+	schema              string
 	domain              string
 	evidence            AuthorizationEvidenceProvider
 	evidencePublicKey   ed25519.PublicKey
@@ -56,13 +60,19 @@ type PostgresAuthorizationGate struct {
 }
 
 func NewPostgresAuthorizationGate(c AuthorizationGateConfig) (*PostgresAuthorizationGate, error) {
+	if c.Schema == "" {
+		c.Schema = "c_auth"
+	}
+	if c.Schema != "c_auth" && c.Schema != "v_auth" {
+		return nil, errors.New("invalid authorization gate schema")
+	}
 	if c.Pool == nil || c.Domain == "" || len(c.Domain) > 128 || c.Evidence == nil || c.Anchor == nil ||
 		len(c.EvidencePublicKey) != ed25519.PublicKeySize || len(c.RecoveryPublicKey) != ed25519.PublicKeySize ||
 		len(c.BreakGlassPublicKey) != ed25519.PublicKeySize || c.Clock == nil {
 		return nil, errors.New("invalid authorization gate configuration")
 	}
 	return &PostgresAuthorizationGate{
-		pool: c.Pool, domain: c.Domain, evidence: c.Evidence,
+		pool: c.Pool, schema: c.Schema, domain: c.Domain, evidence: c.Evidence,
 		evidencePublicKey:   append(ed25519.PublicKey(nil), c.EvidencePublicKey...),
 		recoveryPublicKey:   append(ed25519.PublicKey(nil), c.RecoveryPublicKey...),
 		breakGlassPublicKey: append(ed25519.PublicKey(nil), c.BreakGlassPublicKey...),
@@ -77,10 +87,10 @@ type gateRow struct {
 	version    int64
 }
 
-func readGateRow(ctx context.Context, tx pgx.Tx) (gateRow, error) {
+func (g *PostgresAuthorizationGate) readGateRow(ctx context.Context, tx pgx.Tx) (gateRow, error) {
 	var r gateRow
 	err := tx.QueryRow(ctx, `SELECT gate_state,authorization_generation,trusted_high_watermark,evidence_version
-		FROM c_auth.authorization_gate WHERE singleton_id=1 FOR UPDATE`).Scan(&r.state, &r.generation, &r.highwater, &r.version)
+		FROM `+g.schema+`.authorization_gate WHERE singleton_id=1 FOR UPDATE`).Scan(&r.state, &r.generation, &r.highwater, &r.version)
 	return r, err
 }
 
@@ -124,6 +134,12 @@ func (g *PostgresAuthorizationGate) inspect(ctx context.Context, row gateRow, an
 		}
 		signed, key, offline = *anchor.OfflineEvidence, g.breakGlassPublicKey, true
 	}
+	// Evidence retrieval can wait on its provider. Re-sample after that wait;
+	// neither its elapsed time nor a rollback may inherit the pre-call clock.
+	now = g.clock().UTC()
+	if now.Before(row.highwater.Add(-authorizationSkew)) {
+		return AuthorizationDecision{}, AuthorizationEvidence{}, false, "TIME_ROLLBACK"
+	}
 	e, err := g.verifyEvidence(signed, now, key)
 	if err != nil || e.Generation != uint64(row.generation) || e.Version < uint64(row.version) {
 		return AuthorizationDecision{}, AuthorizationEvidence{}, false, "EVIDENCE_INVALID_OR_EXPIRED"
@@ -139,13 +155,13 @@ func (g *PostgresAuthorizationGate) inspect(ctx context.Context, row gateRow, an
 		return AuthorizationDecision{}, AuthorizationEvidence{}, false, "EVIDENCE_EXPIRED"
 	}
 	// PostgreSQL persists timestamptz at microsecond precision. Round the
-    // authority point up once for both SQL and the independent checkpoint;
-    // keep the raw clock above for skew and evidence-expiry checks.
-    at = authorizationStoredTime(at)
-    if at.After(e.ValidUntil) {
-        return AuthorizationDecision{}, AuthorizationEvidence{}, false, "EVIDENCE_EXPIRED"
-    }
-    return AuthorizationDecision{TrustedAt: at, Generation: uint64(row.generation)}, e, offline, ""
+	// authority point up once for both SQL and the independent checkpoint;
+	// keep the raw clock above for skew and evidence-expiry checks.
+	at = authorizationStoredTime(at)
+	if at.After(e.ValidUntil) {
+		return AuthorizationDecision{}, AuthorizationEvidence{}, false, "EVIDENCE_EXPIRED"
+	}
+	return AuthorizationDecision{TrustedAt: at, Generation: uint64(row.generation)}, e, offline, ""
 }
 
 func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (AuthorizationDecision, error) {
@@ -154,7 +170,7 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
 	defer tx.Rollback(ctx)
-	row, err := readGateRow(ctx, tx)
+	row, err := g.readGateRow(ctx, tx)
 	if err != nil {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
@@ -183,7 +199,7 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 			reason = "ANCHOR_WRITE_FAILURE"
 			return err
 		}
-		_, err := tx.Exec(ctx, `UPDATE c_auth.authorization_gate SET trusted_high_watermark=$1,
+		_, err := tx.Exec(ctx, `UPDATE `+g.schema+`.authorization_gate SET trusted_high_watermark=$1,
 			evidence_version=$2,evidence_issued_at=$3,evidence_valid_until=$4
 			WHERE singleton_id=1`, decision.TrustedAt, int64(e.Version), e.IssuedAt, e.ValidUntil)
 		return err
@@ -197,7 +213,7 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 	}
 	if reason != "" {
 		if row.state == "OPEN" {
-			if err = freezeGateRow(ctx, tx, row, reason, g.clock().UTC()); err != nil {
+			if err = g.freezeGateRow(ctx, tx, row, reason, g.clock().UTC()); err != nil {
 				return AuthorizationDecision{}, ErrAuthorizationUnavailable
 			}
 		}
@@ -212,14 +228,14 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 	return decision, nil
 }
 
-func freezeGateRow(ctx context.Context, tx pgx.Tx, row gateRow, reason string, at time.Time) error {
+func (g *PostgresAuthorizationGate) freezeGateRow(ctx context.Context, tx pgx.Tx, row gateRow, reason string, at time.Time) error {
 	if row.state == "FROZEN" {
 		return nil
 	}
-	if _, err := tx.Exec(ctx, `UPDATE c_auth.authorization_gate SET gate_state='FROZEN',freeze_reason=$1,frozen_at=$2 WHERE singleton_id=1`, reason, at); err != nil {
+	if _, err := tx.Exec(ctx, `UPDATE `+g.schema+`.authorization_gate SET gate_state='FROZEN',freeze_reason=$1,frozen_at=$2 WHERE singleton_id=1`, reason, at); err != nil {
 		return err
 	}
-	_, err := tx.Exec(ctx, `INSERT INTO c_auth.authorization_gate_audit(event_kind,authorization_generation,evidence_version,actor,reason,operation_id,recorded_at)
+	_, err := tx.Exec(ctx, `INSERT INTO `+g.schema+`.authorization_gate_audit(event_kind,authorization_generation,evidence_version,actor,reason,operation_id,recorded_at)
 		VALUES('FREEZE',$1,$2,'authorization-gate',$3,$4,$5)`, row.generation, row.version, reason, uuid.NewString(), at)
 	return err
 }
@@ -228,7 +244,7 @@ func freezeGateRow(ctx context.Context, tx pgx.Tx, row gateRow, reason string, a
 // It intentionally does not advance the external checkpoint: ordinary
 // validation errors following a read-only recheck must not force recovery.
 func (g *PostgresAuthorizationGate) RecheckForCommit(ctx context.Context, tx pgx.Tx, expected uint64) (AuthorizationDecision, error) {
-	row, err := readGateRow(ctx, tx)
+	row, err := g.readGateRow(ctx, tx)
 	if err != nil {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
@@ -256,7 +272,7 @@ func (g *PostgresAuthorizationGate) RecheckForCommit(ctx context.Context, tx pgx
 // is durably advanced before the SQL commit. If SQL fails, the next request
 // detects the ahead checkpoint and requires explicit recovery.
 func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx.Tx, expected uint64, validate ...func(AuthorizationDecision) error) (AuthorizationDecision, error) {
-	row, err := readGateRow(ctx, tx)
+	row, err := g.readGateRow(ctx, tx)
 	if err != nil || expected == 0 || row.generation < 0 || uint64(row.generation) != expected {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
@@ -291,7 +307,7 @@ func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx
 			reason = "ANCHOR_WRITE_FAILURE"
 			return err
 		}
-		_, err := tx.Exec(ctx, `UPDATE c_auth.authorization_gate SET trusted_high_watermark=$1,
+		_, err := tx.Exec(ctx, `UPDATE `+g.schema+`.authorization_gate SET trusted_high_watermark=$1,
 			evidence_version=$2,evidence_issued_at=$3,evidence_valid_until=$4 WHERE singleton_id=1`,
 			decision.TrustedAt, int64(e.Version), e.IssuedAt, e.ValidUntil)
 		return err
@@ -326,7 +342,7 @@ func (g *PostgresAuthorizationGate) persistExternalFreeze(ctx context.Context) e
 		return ErrAuthorizationUnavailable
 	}
 	defer tx.Rollback(ctx)
-	row, err := readGateRow(ctx, tx)
+	row, err := g.readGateRow(ctx, tx)
 	if err != nil {
 		return ErrAuthorizationUnavailable
 	}
@@ -343,7 +359,7 @@ func (g *PostgresAuthorizationGate) persistExternalFreeze(ctx context.Context) e
 	if !frozen {
 		return tx.Commit(ctx)
 	}
-	if err = freezeGateRow(ctx, tx, row, "INDEPENDENT_ANCHOR_FROZEN", g.clock().UTC()); err != nil {
+	if err = g.freezeGateRow(ctx, tx, row, "INDEPENDENT_ANCHOR_FROZEN", g.clock().UTC()); err != nil {
 		return ErrAuthorizationUnavailable
 	}
 	return tx.Commit(ctx)
@@ -359,7 +375,7 @@ func (g *PostgresAuthorizationGate) Freeze(ctx context.Context, reason string) e
 		return ErrAuthorizationUnavailable
 	}
 	defer tx.Rollback(ctx)
-	row, err := readGateRow(ctx, tx)
+	row, err := g.readGateRow(ctx, tx)
 	if err != nil {
 		return ErrAuthorizationUnavailable
 	}
@@ -372,7 +388,7 @@ func (g *PostgresAuthorizationGate) Freeze(ctx context.Context, reason string) e
 	}); err != nil {
 		return ErrAuthorizationUnavailable
 	}
-	if err = freezeGateRow(ctx, tx, row, reason, g.clock().UTC()); err != nil {
+	if err = g.freezeGateRow(ctx, tx, row, reason, g.clock().UTC()); err != nil {
 		return ErrAuthorizationUnavailable
 	}
 	return tx.Commit(ctx)
@@ -446,11 +462,24 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 		return ErrAuthorizationUnavailable
 	}
 	defer tx.Rollback(ctx)
-	row, err := readGateRow(ctx, tx)
+	row, err := g.readGateRow(ctx, tx)
 	if err != nil {
 		return ErrAuthorizationUnavailable
 	}
 	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+		// Recovery may have waited for the shared row or the independent lock.
+		// A pre-lock sample cannot authorize reopening after its evidence expires.
+		if request.Mode == AuthorizationRecoveryNormal {
+			current, currentErr := g.evidence.Current(ctx)
+			if currentErr != nil || !equalSignedAuthorizationEvidence(current, request.Evidence) {
+				return ErrAuthorizationUnavailable
+			}
+		}
+		now = g.clock().UTC()
+		e, err = g.verifyEvidence(request.Evidence, now, evidenceKey)
+		if err != nil {
+			return ErrAuthorizationUnavailable
+		}
 		if !exists && row.generation != 0 && request.Mode != AuthorizationRecoveryBreakGlass {
 			return ErrAuthorizationUnavailable
 		}
@@ -473,11 +502,11 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 			return ErrAuthorizationUnavailable
 		}
 		if row.state == "OPEN" {
-			if err := freezeGateRow(ctx, tx, row, "RECOVERY_REQUIRES_FENCE", now); err != nil {
+			if err := g.freezeGateRow(ctx, tx, row, "RECOVERY_REQUIRES_FENCE", now); err != nil {
 				return err
 			}
 		}
-		if _, err := tx.Exec(ctx, `INSERT INTO c_auth.authorization_gate_audit
+		if _, err := tx.Exec(ctx, `INSERT INTO `+g.schema+`.authorization_gate_audit
 			(event_kind,authorization_generation,evidence_version,actor,reason,operation_id,mode,recorded_at)
 			VALUES('RECOVER',$1,$2,$3,$4,$5,$6,$7)`, int64(e.Generation), int64(e.Version), request.Actor,
 			request.Reason, request.OperationID, string(request.Mode), now); err != nil {
@@ -491,10 +520,10 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 			newHighwater = highwater
 		}
 		newHighwater = authorizationStoredTime(newHighwater)
-        if newHighwater.After(e.ValidUntil) {
-            return ErrAuthorizationUnavailable
-        }
-        updated := authorizationAnchor{Domain: g.domain, Generation: e.Generation, Version: e.Version, Highwater: newHighwater}
+		if newHighwater.After(e.ValidUntil) {
+			return ErrAuthorizationUnavailable
+		}
+		updated := authorizationAnchor{Domain: g.domain, Generation: e.Generation, Version: e.Version, Highwater: newHighwater}
 		if request.Mode == AuthorizationRecoveryBreakGlass {
 			proof := request.Evidence
 			updated.OfflineEvidence = &proof
@@ -502,7 +531,7 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 		if err := g.anchor.writeLocked(updated); err != nil {
 			return err
 		}
-		_, err := tx.Exec(ctx, `UPDATE c_auth.authorization_gate SET gate_state='OPEN',authorization_generation=$1,
+		_, err := tx.Exec(ctx, `UPDATE `+g.schema+`.authorization_gate SET gate_state='OPEN',authorization_generation=$1,
 			trusted_high_watermark=$2,evidence_version=$3,evidence_issued_at=$4,evidence_valid_until=$5,
 			freeze_reason=NULL,opened_at=$6 WHERE singleton_id=1`, int64(e.Generation), newHighwater,
 			int64(e.Version), e.IssuedAt, e.ValidUntil, now)
@@ -520,7 +549,9 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 // authorizationStoredTime uses the same exact timestamp in PostgreSQL and the
 // signed anchor even on platforms whose wall clock exposes nanoseconds.
 func authorizationStoredTime(at time.Time) time.Time {
-    value := at.UTC().Truncate(time.Microsecond)
-    if value.Before(at) { value = value.Add(time.Microsecond) }
-    return value
+	value := at.UTC().Truncate(time.Microsecond)
+	if value.Before(at) {
+		value = value.Add(time.Microsecond)
+	}
+	return value
 }

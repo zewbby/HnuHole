@@ -222,3 +222,7 @@
 ## 设计图与来源
 
 登录界面尚无确认的独立图稿。来源：[需求记录 AUTH-01 / ACCESS-01](../../discussions/2026-09-06-hainanu-treehole.md)。
+
+## 匿名基础与后续接入
+
+当前 AC01／AC02／AC03 的实现和核对结果见 [隐私边界报告](../auth-privacy-boundary-validation-report.md)。后续业务必须遵守 [匿名业务接入契约](../auth-privacy-business-contract.md)，包括最终发送任务受理时的账号＋帖子绑定、按身份对隔离和各身份独立注销占位；公共内容／聊天／管理消费者尚未集成，不能由当前本人身份管理或纯投影代证。

@@ -16,13 +16,15 @@ class ChannelDirectoryController extends ChangeNotifier {
   final ChannelRepository _repository;
   void Function(String token, String? code)? onSessionUnauthorized;
   Future<void> Function()? onSessionRetry;
+
   /// Returns true only after this deadline is durably stored for the same
   /// authorized token. The fence must also be checked inside the store queue.
   Future<bool> Function(
     String token,
     DateTime expiresAt,
     bool Function() isCurrent,
-  )? onSessionMetadata;
+  )?
+  onSessionMetadata;
   ChannelDirectoryStatus _status = ChannelDirectoryStatus.signedOut;
   List<Channel> _channels = const <Channel>[];
   ChannelRepositoryException? _error;
@@ -134,15 +136,14 @@ class ChannelDirectoryController extends ChangeNotifier {
       _status = ChannelDirectoryStatus.failure;
       _error = error;
       _notifyIfAlive();
-    } on FormatException catch (error) {
+    } on FormatException {
       if (!_isCurrent(version, token)) {
         return;
       }
       _channels = const <Channel>[];
       _status = ChannelDirectoryStatus.failure;
-      _error = ChannelRepositoryException(
-        message:
-            'The channel service returned an invalid directory: ${error.message}',
+      _error = const ChannelRepositoryException(
+        message: 'The channel service returned an invalid directory',
         code: 'invalid_channel_directory',
       );
       _notifyIfAlive();

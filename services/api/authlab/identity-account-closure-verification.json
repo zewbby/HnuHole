@@ -1,0 +1,235 @@
+{
+  "schemaVersion": "hnuhole-identity-account-closure-verification/v1",
+  "recordedOn": "2026-10-04",
+  "timeZone": "Asia/Shanghai",
+  "verifiedAtUTC": "2026-10-04T22:15:57.6243922+08:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "faf557db4d74ecb2c202fd1349f1bf8fa64e6133",
+  "uncommittedWorkingTree": true,
+  "scope": "AC02_ACCOUNT_CLOSE_IDENTITY_BACKEND_AND_AFFECTED_C_V_REGRESSION",
+  "implementationState": "IMPLEMENTED",
+  "currentResult": "PASS",
+  "fullAnonymityClosurePassed": false,
+  "productionApproved": false,
+  "sourceFingerprint": {
+    "sha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d",
+    "presentFileCount": 133,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "AC02 backend and protocol working-tree snapshot including AC01; historical platform and AC01 evidence retain their own fingerprints."
+  },
+  "testedSnapshotMatchesWorkspaceBytes": true,
+  "previousAC01Evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+  "runtime": {
+    "go": "go1.22.2 linux/amd64",
+    "isolatedPostgresql": "16.15",
+    "runtimePostgresqlImage": "postgres:16.6-alpine",
+    "mailImage": "axllent/mailpit:v1.21.8",
+    "goose": "v3.22.1",
+    "environment": "Existing Ubuntu-24.04 WSL tools; dedicated Linux source/module/build caches"
+  },
+  "checks": [
+    {
+      "id": "compile",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "go test -run '^$' ./...",
+      "scope": "Final AC02 compilation only; does not execute SQL scenarios"
+    },
+    {
+      "id": "R01",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-isolated.sh -> go test -race -count=1 -p 1 ./...",
+      "scope": "Full server tests against generated private-socket C/V databases and non-superuser roles",
+      "packageResults": [
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/cmd/authdev\t1.129s",
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy\t275.028s",
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol\t1.151s",
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp\t21.810s",
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyruntime\t1.011s"
+      ]
+    },
+    {
+      "id": "R02",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "go vet ./... inside successful authlab/run-isolated.sh",
+      "scope": "Full service static vet"
+    },
+    {
+      "id": "R03",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-runtime-isolated.sh",
+      "scope": "Actual C/V cmds, formal migrations, restricted roles, HTTPS/mTLS and Mailpit; existing AC01 retained",
+      "summary": {
+        "actualCmdLifecycle": "passed",
+        "formalMigrationAndRoles": "passed",
+        "upgradeChannelsPreserved": "passed",
+        "identityUpgrade10To11": "passed",
+        "identityClosureUpgrade11To12": "passed",
+        "identityLegacyClosedProfileRepair": "passed",
+        "identityClosureTriggerBoundary": "passed",
+        "identityMissingSchemaAndDml": "passed",
+        "identityCrudReceiptsAndRestart": "passed",
+        "identityClosureAndSameEmailNewAccount": "passed",
+        "inactiveProjectionPureContract": "passed",
+        "verifierGateUpgrade3To4": "passed",
+        "verifierGateFreezeRestartAndRecovery": "passed",
+        "verifierOldSnapshotBlocked": "passed",
+        "verifierOldGenerationOtpBlocked": "passed",
+        "verifierIndependentEvidenceExpiry": "passed",
+        "cleanup": "this invocation project and private directory only"
+      }
+    },
+    {
+      "id": "source-byte-comparison",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "All 133 fingerprinted Windows/WSL files identical after preserving Go-produced checksum metadata"
+    },
+    {
+      "id": "handoff",
+      "result": "PASS",
+      "scope": "Stable module IDs, current canonical source fingerprint, current/historical evidence boundaries and document links only",
+      "exitCode": 0,
+      "command": "PYTHONDONTWRITEBYTECODE=1 python tools/check-identity-handoff.py"
+    },
+    {
+      "id": "diff",
+      "result": "PASS",
+      "scope": "Final source/docs/evidence whitespace check",
+      "exitCode": 0,
+      "command": "git diff --check"
+    }
+  ],
+  "newTopLevelTests": [
+    "TestIdentityFormalClosureZeroOneAndThreePostgres",
+    "TestIdentityClosureCancellationPreservesProfilesPostgres",
+    "TestIdentityClosureMultipleWorkersCommitOncePostgres",
+    "TestIdentityMutationAndClosureSerializePostgres",
+    "TestIdentityClosureSQLFaultRollsBackEveryBoundaryPostgres",
+    "TestIdentityClosureWaiterRejectsFreezeAndOldGenerationPostgres",
+    "TestIdentityClosedAccountReturnHasIndependentHistoryPostgres",
+    "TestIdentityClosureConstraintSerializesDirectDeletionPostgres",
+    "TestInactiveIdentityProjectionHasNoAccountLinks",
+    "TestIdentityClosureMigrationRepairsLegacyProfilesPostgres",
+    "TestIdentityClosureMigrationRejectsInsufficientTrustedWatermarkPostgres",
+    "TestIdentityClosureConstraintRejectsUnsupportedIsolationPostgres"
+  ],
+  "newTopLevelTestCount": 12,
+  "semantics": {
+    "pendingCloseProfilesUnchanged": true,
+    "formalClosedProfilesErasedBeforeVerifierAck": true,
+    "existingDeletedTombstonesUnchanged": true,
+    "cumulativeCountersUnchanged": true,
+    "permanentCommittedAndRejectedReceiptsUnchanged": true,
+    "syntheticUserDeleteReceiptsCreated": false,
+    "closedAccountsActiveIdentityCount": 0,
+    "uninitializedAccountsRemainZeroIdentity": true,
+    "inactiveProjectionFieldCount": 3,
+    "placeholderDerivedFromIdentityOnly": true,
+    "accountClosedOverridesIdentityDeleted": true,
+    "newAccountInheritsIdentityHistory": false,
+    "identityMutationIsolation": "READ COMMITTED; others rejected by deferred constraint"
+  },
+  "proofBoundaries": [
+    "Pure inactive projection has no public post/chat lookup or integrated business consumer; UI number/avatar design remains pending",
+    "Legacy CLOSED profile migration uses persisted Gate high watermark as a maintenance marker, not reconstructed original closure time",
+    "R03 due request and original-email resend wait are marked synthetic fixtures; not seven-day/sixty-second real-time acceptance",
+    "R03 upgrades use a fixed synthetic prior checkpoint 2026-10-04T00:00:00Z; not production trusted-time evidence",
+    "No new R05/Flutter/Android/iOS/Passkey/physical-device/full-real-app evidence",
+    "AC03 unimplemented; B02 business projection and device matrix remain incomplete"
+  ],
+  "preparationAdjustments": [
+    {
+      "issue": "Go regenerated go.work.sum in the actual test copy",
+      "initialResult": "Source byte comparison found only go.work.sum differed",
+      "repair": "Preserved test-produced workspace checksums; go.mod/go.sum and application source did not change",
+      "finalResult": "All 133 files identical; fingerprint reflects actual tested bytes"
+    },
+    {
+      "finalResult": "Canonical current digest 300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d",
+      "repair": "Use canonical Unicode code-point ordering for current AC02 digest; tested per-file bytes unchanged",
+      "scope": "Fingerprint metadata only; no application or dependency version change",
+      "issue": "PowerShell cultural path sorting and Python canonical path sorting produced different aggregate hashes for the same 133 files"
+    }
+  ],
+  "notRun": [
+    {
+      "scope": "R05 real Dart client and Flutter/platform regression",
+      "result": "NOT_RUN",
+      "reason": "No mobile source or public wire contract changed; current backend full R01/R03 evidence only; historical mobile evidence retains revision",
+      "entry": "services/api/authlab/run-mobile-isolated.sh"
+    },
+    {
+      "scope": "Post/comment/chat and local chat/private-note/search cleanup X06/X07 full integration",
+      "result": "NOT_RUN",
+      "reason": "Business consumers are not implemented and remain outside this AC02 foundation task",
+      "entry": "Future B05-B11 implementations"
+    },
+    {
+      "scope": "Android/iOS/system Passkey/physical devices",
+      "result": "NOT_RUN",
+      "reason": "Outside AC02 backend acceptance; listed platform gaps remain",
+      "entry": "docs/design/module-acceptance-handoff.md R07/R09/R10"
+    },
+    {
+      "scope": "P02/P03/P06 real independent operations/physical DR/independent human audit",
+      "result": "NOT_RUN",
+      "reason": "External production evidence cannot be supplied by development fixtures",
+      "entry": "docs/design/auth-privacy-closure-checklist.md"
+    }
+  ],
+  "cleanup": {
+    "currentResult": "PASS",
+    "privateSqlClusters": "Removed by successful scoped runner cleanup traps",
+    "runnerDockerProjects": "Exact R03 project checked: no containers or volumes remain",
+    "taskCacheAndSourceCopy": "Owned WSL source/module/build caches and logs removed; local ignored AC02 helper directory removed; absence verified",
+    "installedToolsAndExistingImagesRetained": true,
+    "dockerDesktopTemporarilyStartedThenStopped": true,
+    "globalPrunePerformed": false
+  },
+  "committed": false,
+  "pushed": false,
+  "handoffInitialAttempts": [
+    {
+      "repair": "Compare historical records independently and current pointer with selected AC02",
+      "reason": "Checker still compared current B02 latestValidationEvidence with historical runtime pointer",
+      "result": "FAIL"
+    },
+    {
+      "repair": "Current AC02 canonical ordering adopted; all 133 tested bytes unchanged",
+      "reason": "Aggregate path ordering differed between PowerShell and Python",
+      "result": "FAIL"
+    }
+  ],
+  "handoffCheckerSha256": "bc9a0c9abb6229f4189faba5e596962ddabfbe2fed65283d5fedb4f160c5c1fd"
+}

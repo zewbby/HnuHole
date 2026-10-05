@@ -80,7 +80,7 @@ func (e *Eligibility) lookupOTPFlowEmail(ctx context.Context, flow [32]byte) ([]
 
 func (e *Eligibility) lockOTPDevice(ctx context.Context, tx pgx.Tx, installation [16]byte, email []byte, at time.Time) (int, *time.Time, error) {
 	d := e.deviceEmailDigest(email)
-	_, err := tx.Exec(ctx, `INSERT INTO v_auth.device_email_limits(installation_id,email_digest) VALUES($1,$2) ON CONFLICT DO NOTHING`, installation[:], d[:])
+	_, err := tx.Exec(ctx, `INSERT INTO v_auth.device_email_limits(installation_id,email_digest,last_activity_at) VALUES($1,$2,$3) ON CONFLICT DO NOTHING`, installation[:], d[:], at)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -90,7 +90,7 @@ func (e *Eligibility) lockOTPDevice(ctx context.Context, tx pgx.Tx, installation
 	if err != nil {
 		return 0, nil, err
 	}
-	if _, err = tx.Exec(ctx, `UPDATE v_auth.device_email_limits SET last_activity_at=clock_timestamp() WHERE installation_id=$1 AND email_digest=$2`, installation[:], d[:]); err != nil {
+	if _, err = tx.Exec(ctx, `UPDATE v_auth.device_email_limits SET last_activity_at={trusted_at} WHERE installation_id=$1 AND email_digest=$2`, installation[:], d[:]); err != nil {
 		return 0, nil, err
 	}
 	if locked != nil && !at.Before(*locked) {
@@ -131,16 +131,17 @@ type otpMailRow struct {
 	email, encrypted, nonce     []byte
 	keyVersion                  *int64
 	expires, wait, previousWait time.Time
+	authorizationGeneration     uint64
 }
 
 func readOTPMail(ctx context.Context, tx pgx.Tx, key [32]byte, lock bool) (otpMailRow, error) {
 	var row otpMailRow
 	var operation, flow []byte
-	sql := `SELECT operation_id,flow_id,state,email_exact,ciphertext,nonce,encryption_key_version,expires_at,send_wait_until,previous_send_wait_until FROM v_auth.mail_outbox WHERE key_digest=$1`
+	sql := `SELECT operation_id,flow_id,state,email_exact,ciphertext,nonce,encryption_key_version,expires_at,send_wait_until,previous_send_wait_until,authorization_generation FROM v_auth.mail_outbox WHERE key_digest=$1`
 	if lock {
 		sql += ` FOR UPDATE`
 	}
-	err := tx.QueryRow(ctx, sql, key[:]).Scan(&operation, &flow, &row.state, &row.email, &row.encrypted, &row.nonce, &row.keyVersion, &row.expires, &row.wait, &row.previousWait)
+	err := tx.QueryRow(ctx, sql, key[:]).Scan(&operation, &flow, &row.state, &row.email, &row.encrypted, &row.nonce, &row.keyVersion, &row.expires, &row.wait, &row.previousWait, &row.authorizationGeneration)
 	if err == nil {
 		copy(row.operation[:], operation)
 		copy(row.flow[:], flow)
@@ -195,7 +196,7 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 	}
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", req.Key[:])
 	mac := requestMAC(e.config.RequestHMACKey, []byte("HNUHOLE/V-OTP-REQUEST/V1"), []byte(req.Email), req.InstallationID[:])
-	tx, err := begin(ctx, e.store.pool)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		return OTPRequestResult{}, err
 	}
@@ -229,7 +230,7 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 			return OTPRequestResult{}, readErr
 		}
 		var at time.Time
-		if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+		if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 			return OTPRequestResult{}, err
 		}
 		if expires != nil && !at.Before(*expires) && row.state != "DISPATCHING" && row.state != "QUEUED" {
@@ -239,6 +240,9 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 			if err = tx.Commit(ctx); err != nil {
 				return OTPRequestResult{}, err
 			}
+			return OTPRequestResult{}, ErrExpired
+		}
+		if row.authorizationGeneration == 0 || row.authorizationGeneration != verifierGeneration(tx) {
 			return OTPRequestResult{}, ErrExpired
 		}
 		result := OTPRequestResult{State: "ACCEPTED", FlowID: row.flow, RetryAfterSeconds: min(60, remainingSeconds(row.wait, at))}
@@ -254,10 +258,10 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 		return OTPRequestResult{}, err
 	}
 	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return OTPRequestResult{}, err
 	}
-	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.otp_email_state(email_exact,send_wait_until) VALUES($1,$2) ON CONFLICT DO NOTHING`, []byte(req.Email), at); err != nil {
+	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.otp_email_state(email_exact,send_wait_until,last_activity_at) VALUES($1,$2,$2) ON CONFLICT DO NOTHING`, []byte(req.Email), at); err != nil {
 		return OTPRequestResult{}, err
 	}
 	var generation int64
@@ -271,7 +275,7 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 		return OTPRequestResult{}, err
 	}
 	// Sample again after the device and email rows have actually been locked.
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return OTPRequestResult{}, err
 	}
 	_, locked, err = e.lockOTPDevice(ctx, tx, req.InstallationID, []byte(req.Email), at)
@@ -328,19 +332,27 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 	if _, err = tx.Exec(ctx, `UPDATE v_auth.otp_code_versions SET state='REPLACED' WHERE email_exact=$1 AND state='ACTIVE'`, []byte(req.Email)); err != nil {
 		return OTPRequestResult{}, err
 	}
-	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.otp_flows(flow_id,email_exact,installation_id,code_generation,state,created_at,expires_at) VALUES($1,$2,$3,$4,'ACTIVE',$5,$6)`, flow[:], []byte(req.Email), req.InstallationID[:], generation, at, expiresAt); err != nil {
+	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.otp_flows(flow_id,email_exact,installation_id,code_generation,state,created_at,expires_at,authorization_generation) VALUES($1,$2,$3,$4,'ACTIVE',$5,$6,$7)`, flow[:], []byte(req.Email), req.InstallationID[:], generation, at, expiresAt, int64(verifierGeneration(tx))); err != nil {
 		return OTPRequestResult{}, err
 	}
 	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.otp_code_versions(email_exact,code_generation,flow_id,code_hmac,otp_key_version,state,expires_at,retain_until) VALUES($1,$2,$3,$4,$5,'ACTIVE',$6::timestamptz,$6::timestamptz+interval '5 minutes')`, []byte(req.Email), generation, flow[:], codeMAC[:], e.config.OTPKeyVersion, expiresAt); err != nil {
 		return OTPRequestResult{}, err
 	}
-	if _, err = tx.Exec(ctx, `UPDATE v_auth.otp_email_state SET code_generation=$1,latest_flow_id=$2,send_wait_until=$3,last_activity_at=clock_timestamp() WHERE email_exact=$4`, generation, flow[:], wait, []byte(req.Email)); err != nil {
+	if _, err = tx.Exec(ctx, `UPDATE v_auth.otp_email_state SET code_generation=$1,latest_flow_id=$2,send_wait_until=$3,last_activity_at={trusted_at} WHERE email_exact=$4`, generation, flow[:], wait, []byte(req.Email)); err != nil {
 		return OTPRequestResult{}, err
 	}
 	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.request_results(operation,key_digest,state,request_hmac,hmac_key_version,installation_id,flow_id,result_code,expires_at) VALUES($1,$2,'LIVE',$3,$4,$5,$6,'ACCEPTED',$7::timestamptz+interval '10 minutes')`, otpRequestOperation, key[:], mac[:], e.config.HMACKeyVersion, req.InstallationID[:], flow[:], at); err != nil {
 		return OTPRequestResult{}, err
 	}
-	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.mail_outbox(operation_id,key_digest,flow_id,state,email_exact,ciphertext,nonce,encryption_key_version,expires_at,send_wait_until,previous_send_wait_until) VALUES($1,$2,$3,'QUEUED',$4,$5,$6,$7,$8,$9,$10)`, job[:], key[:], flow[:], []byte(req.Email), encrypted, nonce, e.config.MailEncryptionKeyVersion, expiresAt, wait, previousWait); err != nil {
+	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.mail_outbox(operation_id,key_digest,flow_id,state,email_exact,ciphertext,nonce,encryption_key_version,expires_at,send_wait_until,previous_send_wait_until,authorization_generation) VALUES($1,$2,$3,'QUEUED',$4,$5,$6,$7,$8,$9,$10,$11)`, job[:], key[:], flow[:], []byte(req.Email), encrypted, nonce, e.config.MailEncryptionKeyVersion, expiresAt, wait, previousWait, int64(verifierGeneration(tx))); err != nil {
+		return OTPRequestResult{}, err
+	}
+	if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+		if !d.TrustedAt.Before(expiresAt) {
+			return ErrOTPExpired
+		}
+		return nil
+	}); err != nil {
 		return OTPRequestResult{}, err
 	}
 	if err = tx.Commit(ctx); err != nil {
@@ -410,13 +422,21 @@ func expireOTPRequestResult(ctx context.Context, tx pgx.Tx, key [32]byte) error 
 	return err
 }
 
-func (e *Eligibility) GetOTPRequestResult(ctx context.Context, keyBytes [32]byte, installation [16]byte) (OTPRequestResult, error) {
+func (e *Eligibility) GetOTPRequestResult(ctx context.Context, keyBytes [32]byte, installation [16]byte) (result OTPRequestResult, resultErr error) {
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", keyBytes[:])
-	tx, err := begin(ctx, e.store.pool)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		return OTPRequestResult{}, err
 	}
 	defer tx.Rollback(ctx)
+	defer func() {
+		if resultErr == nil {
+			if err := tx.Commit(ctx); err != nil {
+				result = OTPRequestResult{}
+				resultErr = err
+			}
+		}
+	}()
 	if err = lockVRequest(ctx, tx, key); err != nil {
 		return OTPRequestResult{}, err
 	}
@@ -441,15 +461,29 @@ func (e *Eligibility) GetOTPRequestResult(ctx context.Context, keyBytes [32]byte
 		return OTPRequestResult{}, err
 	}
 	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return OTPRequestResult{}, err
 	}
 	if expires != nil && !at.Before(*expires) && row.state != "QUEUED" && row.state != "DISPATCHING" {
 		return OTPRequestResult{}, ErrExpired
 	}
-	result := otpRequestResult(row, at)
-	if err = tx.Commit(ctx); err != nil {
-		return OTPRequestResult{}, err
+	if expires != nil && row.state != "QUEUED" && row.state != "DISPATCHING" {
+		if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+			if !d.TrustedAt.Before(*expires) {
+				return ErrExpired
+			}
+			return nil
+		}); err != nil {
+			return OTPRequestResult{}, err
+		}
+	}
+	result = otpRequestResult(row, at)
+	if row.authorizationGeneration != verifierGeneration(tx) {
+		if row.state == "QUEUED" {
+			result.FlowID = [32]byte{}
+			result.State = "NOT_SENT"
+			result.RetryAfterSeconds = 0
+		}
 	}
 	return result, nil
 }
@@ -460,12 +494,16 @@ func (e *Eligibility) verifyOTPInTx(ctx context.Context, tx pgx.Tx, req ConfirmO
 	var result OTPVerification
 	var email, originalInstall []byte
 	var originalGeneration int64
-	err := tx.QueryRow(ctx, `SELECT email_exact,installation_id,code_generation FROM v_auth.otp_flows WHERE flow_id=$1 FOR UPDATE`, req.FlowID[:]).Scan(&email, &originalInstall, &originalGeneration)
+	var authorizationGeneration uint64
+	err := tx.QueryRow(ctx, `SELECT email_exact,installation_id,code_generation,authorization_generation FROM v_auth.otp_flows WHERE flow_id=$1 FOR UPDATE`, req.FlowID[:]).Scan(&email, &originalInstall, &originalGeneration, &authorizationGeneration)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return result, ErrOTPFlowInvalid
 	}
 	if err != nil {
 		return result, err
+	}
+	if authorizationGeneration == 0 || authorizationGeneration != verifierGeneration(tx) {
+		return result, ErrOTPExpired
 	}
 	if !hmac.Equal(originalInstall, req.InstallationID[:]) {
 		return result, ErrOTPFlowInvalid
@@ -485,14 +523,14 @@ func (e *Eligibility) verifyOTPInTx(ctx context.Context, tx pgx.Tx, req ConfirmO
 		return result, err
 	}
 	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return result, err
 	}
 	consecutive, locked, err := e.lockOTPDevice(ctx, tx, req.InstallationID, email, at)
 	if err != nil {
 		return result, err
 	}
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return result, err
 	}
 	consecutive, locked, err = e.lockOTPDevice(ctx, tx, req.InstallationID, email, at)
@@ -546,7 +584,7 @@ func (e *Eligibility) verifyOTPInTx(ctx context.Context, tx pgx.Tx, req ConfirmO
 	if err = rows.Err(); err != nil {
 		return result, err
 	}
-	if _, err = tx.Exec(ctx, `UPDATE v_auth.otp_email_state SET last_activity_at=clock_timestamp() WHERE email_exact=$1`, email); err != nil {
+	if _, err = tx.Exec(ctx, `UPDATE v_auth.otp_email_state SET last_activity_at={trusted_at} WHERE email_exact=$1`, email); err != nil {
 		return result, err
 	}
 	result.AttemptCounted = true
@@ -568,6 +606,17 @@ func (e *Eligibility) verifyOTPInTx(ctx context.Context, tx pgx.Tx, req ConfirmO
 		}
 		d := e.deviceEmailDigest(email)
 		if _, err = tx.Exec(ctx, `UPDATE v_auth.device_email_limits SET consecutive_errors=0,locked_until=NULL WHERE installation_id=$1 AND email_digest=$2`, req.InstallationID[:], d[:]); err != nil {
+			return result, err
+		}
+		if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+			if d.Generation != authorizationGeneration {
+				return ErrAuthorizationUnavailable
+			}
+			if !d.TrustedAt.Before(expires) {
+				return ErrOTPExpired
+			}
+			return nil
+		}); err != nil {
 			return result, err
 		}
 		return OTPVerification{Email: email, FlowID: req.FlowID, Generation: generation, ExpiresAt: expires, VerifiedAt: at, AttemptCounted: true}, nil
@@ -614,6 +663,9 @@ func (e *Eligibility) DispatchMail(ctx context.Context, keyBytes [32]byte) (Mail
 // dispatchMailDigest consumes the persistent digest, never a reconstructed raw
 // idempotency key or a fresh business operation. Only QUEUED may be claimed.
 func (e *Eligibility) dispatchMailDigest(ctx context.Context, key [32]byte) (MailOutcome, error) {
+	if _, err := e.store.gate.Snapshot(ctx); err != nil {
+		return MailUnknown, err
+	}
 	var email []byte
 	err := e.store.pool.QueryRow(ctx, `SELECT f.email_exact FROM v_auth.mail_outbox m JOIN v_auth.otp_flows f USING(flow_id) WHERE m.key_digest=$1`, key[:]).Scan(&email)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -622,7 +674,7 @@ func (e *Eligibility) dispatchMailDigest(ctx context.Context, key [32]byte) (Mai
 	if err != nil {
 		return MailUnknown, err
 	}
-	tx, err := begin(ctx, e.store.pool)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		return MailUnknown, err
 	}
@@ -647,10 +699,10 @@ func (e *Eligibility) dispatchMailDigest(ctx context.Context, key [32]byte) (Mai
 		return MailUnknown, tx.Commit(ctx)
 	}
 	var at time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &at); err != nil {
 		return MailUnknown, err
 	}
-	if !at.Before(row.expires) {
+	if row.authorizationGeneration == 0 || row.authorizationGeneration != verifierGeneration(tx) || !at.Before(row.expires) {
 		if err = e.finishMailInTx(ctx, tx, key, row, email, MailNotSent); err != nil {
 			return MailUnknown, err
 		}
@@ -671,11 +723,37 @@ func (e *Eligibility) dispatchMailDigest(ctx context.Context, key [32]byte) (Mai
 	if len(code) != 6 || strings.IndexFunc(code, func(r rune) bool { return r < '0' || r > '9' }) >= 0 {
 		return MailUnknown, errors.New("invalid mail code material")
 	}
-	if _, err = tx.Exec(ctx, `UPDATE v_auth.mail_outbox SET state='DISPATCHING' WHERE key_digest=$1 AND state='QUEUED'`, key[:]); err != nil {
+	if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+		if !d.TrustedAt.Before(row.expires) {
+			return ErrExpired
+		}
+		return nil
+	}); err != nil {
+		return MailUnknown, err
+	}
+	if _, err = tx.Exec(ctx, `UPDATE v_auth.mail_outbox SET state='DISPATCHING' WHERE key_digest=$1 AND state='QUEUED' AND authorization_generation=$2`, key[:], int64(row.authorizationGeneration)); err != nil {
 		return MailUnknown, err
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return MailUnknown, err
+	}
+	currentGate, gateErr := e.store.gate.Snapshot(ctx)
+	if gateErr != nil || currentGate.Generation != row.authorizationGeneration {
+		for i := range raw {
+			raw[i] = 0
+		}
+		if gateErr == nil {
+			gateErr = ErrAuthorizationUnavailable
+		}
+		return MailUnknown, gateErr
+	}
+	if !currentGate.TrustedAt.Before(row.expires) {
+		for i := range raw {
+			raw[i] = 0
+		}
+		// The durable claim prevents retry. Cleanup settles/erases the claim;
+		// it never dispatches a code that expired while this refresh waited.
+		return MailUnknown, ErrOTPExpired
 	}
 	sendCtx, sendCancel := context.WithTimeout(ctx, 10*time.Second)
 	outcome, sendErr := e.mail.SendOTP(sendCtx, row.operation, string(email), code)
@@ -692,7 +770,7 @@ func (e *Eligibility) dispatchMailDigest(ctx context.Context, key [32]byte) (Mai
 	}
 	finalCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 	defer cancel()
-	final, err := begin(finalCtx, e.store.pool)
+	final, err := e.store.beginAuthorized(finalCtx)
 	if err != nil {
 		return MailUnknown, err
 	}
@@ -706,6 +784,9 @@ func (e *Eligibility) dispatchMailDigest(ctx context.Context, key [32]byte) (Mai
 	current, err := readOTPMail(finalCtx, final, key, true)
 	if err != nil {
 		return MailUnknown, err
+	}
+	if current.authorizationGeneration != row.authorizationGeneration || verifierGeneration(final) != row.authorizationGeneration {
+		return MailUnknown, ErrAuthorizationUnavailable
 	}
 	if current.state != "DISPATCHING" {
 		return MailUnknown, final.Commit(finalCtx)
@@ -723,29 +804,45 @@ func (e *Eligibility) dispatchMailDigest(ctx context.Context, key [32]byte) (Mai
 // share the address -> request -> outbox lock order; DISPATCHING and UNKNOWN
 // never appear in the enumeration and cannot be automatically dispatched.
 func (e *Eligibility) ResumeQueuedMail(ctx context.Context, limit int) (int, error) {
- if limit<1 || limit>500 { return 0,ErrBadRequest }
- rows,err:=e.store.pool.Query(ctx,`SELECT key_digest FROM v_auth.mail_outbox WHERE state='QUEUED' ORDER BY expires_at,key_digest LIMIT $1`,limit)
- if err!=nil { return 0,err }
- var keys [][32]byte
- for rows.Next() {
-  var raw []byte
-  if err=rows.Scan(&raw); err!=nil || len(raw)!=32 { rows.Close(); return 0,ErrReconciliation }
-  var key [32]byte; copy(key[:],raw); keys=append(keys,key)
- }
- err=rows.Err(); rows.Close()
- if err!=nil { return 0,err }
- processed:=0
- for _,key:=range keys {
-  if err=ctx.Err(); err!=nil { return processed,err }
-  _,err=e.dispatchMailDigest(ctx,key)
-  processed++
-  if err!=nil { return processed,err }
- }
- return processed,nil
+	if limit < 1 || limit > 500 {
+		return 0, ErrBadRequest
+	}
+	rows, err := e.store.queryCandidates(ctx, `SELECT key_digest FROM v_auth.mail_outbox WHERE state='QUEUED' ORDER BY expires_at,key_digest LIMIT $1`, limit)
+	if err != nil {
+		return 0, err
+	}
+	var keys [][32]byte
+	for rows.Next() {
+		var raw []byte
+		if err = rows.Scan(&raw); err != nil || len(raw) != 32 {
+			rows.Close()
+			return 0, ErrReconciliation
+		}
+		var key [32]byte
+		copy(key[:], raw)
+		keys = append(keys, key)
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return 0, err
+	}
+	processed := 0
+	for _, key := range keys {
+		if err = ctx.Err(); err != nil {
+			return processed, err
+		}
+		_, err = e.dispatchMailDigest(ctx, key)
+		processed++
+		if err != nil {
+			return processed, err
+		}
+	}
+	return processed, nil
 }
 
 func (e *Eligibility) finishMailInTx(ctx context.Context, tx pgx.Tx, key [32]byte, row otpMailRow, email []byte, outcome MailOutcome) error {
-	if _, err := tx.Exec(ctx, `UPDATE v_auth.mail_outbox SET state=$1,email_exact=NULL,ciphertext=NULL,nonce=NULL,encryption_key_version=NULL WHERE key_digest=$2`, string(outcome), key[:]); err != nil {
+	if _, err := tx.Exec(ctx, `UPDATE v_auth.mail_outbox SET state=$1,email_exact=NULL,ciphertext=NULL,nonce=NULL,encryption_key_version=NULL WHERE key_digest=$2 AND authorization_generation=$3`, string(outcome), key[:], int64(row.authorizationGeneration)); err != nil {
 		return err
 	}
 	if outcome == MailNotSent {
@@ -779,7 +876,7 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 	if limit < 1 || limit > 500 {
 		return ErrBadRequest
 	}
-	rows, err := e.store.pool.Query(ctx, `SELECT m.key_digest,f.email_exact FROM v_auth.mail_outbox m JOIN v_auth.otp_flows f USING(flow_id) WHERE m.state IN ('QUEUED','DISPATCHING') AND m.expires_at<=clock_timestamp() ORDER BY m.expires_at,m.key_digest LIMIT $1`, limit)
+	rows, err := e.store.queryCandidates(ctx, `SELECT m.key_digest,f.email_exact FROM v_auth.mail_outbox m JOIN v_auth.otp_flows f USING(flow_id) WHERE m.state IN ('QUEUED','DISPATCHING') AND m.expires_at<={trusted_at} ORDER BY m.expires_at,m.key_digest LIMIT $1`, limit)
 	if err != nil {
 		return err
 	}
@@ -803,7 +900,7 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 		return err
 	}
 	for _, job := range jobs {
-		tx, err := begin(ctx, e.store.pool)
+		tx, err := e.store.beginAuthorized(ctx)
 		if err != nil {
 			return err
 		}
@@ -818,7 +915,7 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 			}
 			if err == nil {
 				var at time.Time
-				err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&at)
+				err = verifierTrustedAt(ctx, tx, &at)
 				if err == nil && !at.Before(row.expires) && (row.state == "QUEUED" || row.state == "DISPATCHING") {
 					outcome := MailNotSent
 					if row.state == "DISPATCHING" {
@@ -837,15 +934,15 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 			return err
 		}
 	}
-	_, err = e.store.pool.Exec(ctx, `DELETE FROM v_auth.otp_code_versions WHERE (email_exact,code_generation) IN (SELECT email_exact,code_generation FROM v_auth.otp_code_versions WHERE retain_until<=clock_timestamp() ORDER BY retain_until,email_exact,code_generation LIMIT $1)`, limit)
+	_, err = e.store.execAuthorized(ctx, `DELETE FROM v_auth.otp_code_versions WHERE (email_exact,code_generation) IN (SELECT email_exact,code_generation FROM v_auth.otp_code_versions WHERE retain_until<={trusted_at} ORDER BY retain_until,email_exact,code_generation LIMIT $1)`, limit)
 	if err != nil {
 		return err
 	}
-	_, err = e.store.pool.Exec(ctx, `DELETE FROM v_auth.otp_budget_events WHERE event_id IN (SELECT event_id FROM v_auth.otp_budget_events WHERE (kind='SEND' AND occurred_at<=clock_timestamp()-interval '1 hour') OR (kind='VERIFY' AND occurred_at<=clock_timestamp()-interval '10 minutes') ORDER BY event_id LIMIT $1)`, limit)
+	_, err = e.store.execAuthorized(ctx, `DELETE FROM v_auth.otp_budget_events WHERE event_id IN (SELECT event_id FROM v_auth.otp_budget_events WHERE (kind='SEND' AND occurred_at<={trusted_at}-interval '1 hour') OR (kind='VERIFY' AND occurred_at<={trusted_at}-interval '10 minutes') ORDER BY event_id LIMIT $1)`, limit)
 	if err != nil {
 		return err
 	}
-	rows, err = e.store.pool.Query(ctx, `SELECT r.key_digest FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.operation=$1 AND r.state='LIVE' AND r.expires_at<=clock_timestamp() AND m.state IN ('SENT','NOT_SENT','UNKNOWN') ORDER BY r.expires_at,r.key_digest LIMIT $2`, otpRequestOperation, limit)
+	rows, err = e.store.queryCandidates(ctx, `SELECT r.key_digest FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.operation=$1 AND r.state='LIVE' AND r.expires_at<={trusted_at} AND m.state IN ('SENT','NOT_SENT','UNKNOWN') ORDER BY r.expires_at,r.key_digest LIMIT $2`, otpRequestOperation, limit)
 	if err != nil {
 		return err
 	}
@@ -865,13 +962,13 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 		return err
 	}
 	for _, key := range keys {
-		tx, err := begin(ctx, e.store.pool)
+		tx, err := e.store.beginAuthorized(ctx)
 		if err != nil {
 			return err
 		}
 		if err = lockVRequest(ctx, tx, key); err == nil {
 			var allowed bool
-			err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.key_digest=$1 AND r.operation=$2 AND r.state='LIVE' AND r.expires_at<=clock_timestamp() AND m.state IN ('SENT','NOT_SENT','UNKNOWN'))`, key[:], otpRequestOperation).Scan(&allowed)
+			err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.key_digest=$1 AND r.operation=$2 AND r.state='LIVE' AND r.expires_at<={trusted_at} AND m.state IN ('SENT','NOT_SENT','UNKNOWN'))`, key[:], otpRequestOperation).Scan(&allowed)
 			if err == nil && allowed {
 				err = expireOTPRequestResult(ctx, tx, key)
 			}
@@ -885,7 +982,7 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 			return err
 		}
 	}
-	rows, err = e.store.pool.Query(ctx, `SELECT f.flow_id,f.email_exact FROM v_auth.otp_flows f WHERE f.expires_at+interval '5 minutes'<=clock_timestamp() AND NOT EXISTS(SELECT 1 FROM v_auth.otp_code_versions c WHERE c.flow_id=f.flow_id) AND NOT EXISTS(SELECT 1 FROM v_auth.mail_outbox m WHERE m.flow_id=f.flow_id) ORDER BY f.expires_at,f.flow_id LIMIT $1`, limit)
+	rows, err = e.store.queryCandidates(ctx, `SELECT f.flow_id,f.email_exact FROM v_auth.otp_flows f WHERE f.expires_at+interval '5 minutes'<={trusted_at} AND NOT EXISTS(SELECT 1 FROM v_auth.otp_code_versions c WHERE c.flow_id=f.flow_id) AND NOT EXISTS(SELECT 1 FROM v_auth.mail_outbox m WHERE m.flow_id=f.flow_id) ORDER BY f.expires_at,f.flow_id LIMIT $1`, limit)
 	if err != nil {
 		return err
 	}
@@ -909,14 +1006,14 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 		return err
 	}
 	for _, flow := range flows {
-		tx, err := begin(ctx, e.store.pool)
+		tx, err := e.store.beginAuthorized(ctx)
 		if err != nil {
 			return err
 		}
 		if err = e.store.lockAddress(ctx, tx, flow.email); err == nil {
 			_, err = tx.Exec(ctx, `UPDATE v_auth.otp_email_state SET latest_flow_id=NULL WHERE email_exact=$1 AND latest_flow_id=$2`, flow.email, flow.id[:])
 			if err == nil {
-				_, err = tx.Exec(ctx, `DELETE FROM v_auth.otp_flows WHERE flow_id=$1 AND expires_at+interval '5 minutes'<=clock_timestamp() AND NOT EXISTS(SELECT 1 FROM v_auth.otp_code_versions c WHERE c.flow_id=$1) AND NOT EXISTS(SELECT 1 FROM v_auth.mail_outbox m WHERE m.flow_id=$1)`, flow.id[:])
+				_, err = tx.Exec(ctx, `DELETE FROM v_auth.otp_flows WHERE flow_id=$1 AND expires_at+interval '5 minutes'<={trusted_at} AND NOT EXISTS(SELECT 1 FROM v_auth.otp_code_versions c WHERE c.flow_id=$1) AND NOT EXISTS(SELECT 1 FROM v_auth.mail_outbox m WHERE m.flow_id=$1)`, flow.id[:])
 			}
 		}
 		if err == nil {
@@ -930,11 +1027,11 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 	}
 	// Device row locks synchronize cleanup with lockOTPDevice. An active lock
 	// survives even if a historical timestamp was already older than 24 hours.
-	_, err = e.store.pool.Exec(ctx, `DELETE FROM v_auth.device_email_limits WHERE (installation_id,email_digest) IN (SELECT installation_id,email_digest FROM v_auth.device_email_limits WHERE last_activity_at<=clock_timestamp()-interval '24 hours' AND (locked_until IS NULL OR locked_until<=clock_timestamp()) ORDER BY last_activity_at,installation_id,email_digest LIMIT $1 FOR UPDATE SKIP LOCKED) AND last_activity_at<=clock_timestamp()-interval '24 hours' AND (locked_until IS NULL OR locked_until<=clock_timestamp())`, limit)
+	_, err = e.store.execAuthorized(ctx, `DELETE FROM v_auth.device_email_limits WHERE (installation_id,email_digest) IN (SELECT installation_id,email_digest FROM v_auth.device_email_limits WHERE last_activity_at<={trusted_at}-interval '24 hours' AND (locked_until IS NULL OR locked_until<={trusted_at}) ORDER BY last_activity_at,installation_id,email_digest LIMIT $1 FOR UPDATE SKIP LOCKED) AND last_activity_at<={trusted_at}-interval '24 hours' AND (locked_until IS NULL OR locked_until<={trusted_at})`, limit)
 	if err != nil {
 		return err
 	}
-	rows, err = e.store.pool.Query(ctx, `SELECT s.email_exact FROM v_auth.otp_email_state s WHERE s.last_activity_at<=clock_timestamp()-interval '24 hours' AND s.send_wait_until<=clock_timestamp() AND s.latest_flow_id IS NULL AND NOT EXISTS(SELECT 1 FROM v_auth.email_quota q WHERE q.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.retire_pending p WHERE p.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_flows f WHERE f.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_budget_events b WHERE b.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_confirmations c WHERE c.email_exact=s.email_exact) ORDER BY s.last_activity_at,s.email_exact LIMIT $1`, limit)
+	rows, err = e.store.queryCandidates(ctx, `SELECT s.email_exact FROM v_auth.otp_email_state s WHERE s.last_activity_at<={trusted_at}-interval '24 hours' AND s.send_wait_until<={trusted_at} AND s.latest_flow_id IS NULL AND NOT EXISTS(SELECT 1 FROM v_auth.email_quota q WHERE q.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.retire_pending p WHERE p.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_flows f WHERE f.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_budget_events b WHERE b.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_confirmations c WHERE c.email_exact=s.email_exact) ORDER BY s.last_activity_at,s.email_exact LIMIT $1`, limit)
 	if err != nil {
 		return err
 	}
@@ -952,14 +1049,14 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 		return err
 	}
 	for _, email := range emails {
-		tx, err := begin(ctx, e.store.pool)
+		tx, err := e.store.beginAuthorized(ctx)
 		if err != nil {
 			return err
 		}
 		if err = e.store.lockAddress(ctx, tx, email); err == nil {
 			// Recheck after the address lock: a concurrent request, reservation,
 			// or retirement must prevent removal and generation restart.
-			_, err = tx.Exec(ctx, `DELETE FROM v_auth.otp_email_state s WHERE s.email_exact=$1 AND s.last_activity_at<=clock_timestamp()-interval '24 hours' AND s.send_wait_until<=clock_timestamp() AND s.latest_flow_id IS NULL AND NOT EXISTS(SELECT 1 FROM v_auth.email_quota q WHERE q.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.retire_pending p WHERE p.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_flows f WHERE f.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_budget_events b WHERE b.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_confirmations c WHERE c.email_exact=s.email_exact)`, email)
+			_, err = tx.Exec(ctx, `DELETE FROM v_auth.otp_email_state s WHERE s.email_exact=$1 AND s.last_activity_at<={trusted_at}-interval '24 hours' AND s.send_wait_until<={trusted_at} AND s.latest_flow_id IS NULL AND NOT EXISTS(SELECT 1 FROM v_auth.email_quota q WHERE q.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.retire_pending p WHERE p.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_flows f WHERE f.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_budget_events b WHERE b.email_exact=s.email_exact) AND NOT EXISTS(SELECT 1 FROM v_auth.otp_confirmations c WHERE c.email_exact=s.email_exact)`, email)
 		}
 		if err == nil {
 			err = tx.Commit(ctx)

@@ -36,12 +36,15 @@ type probe struct {
 	statePath     string
 }
 type state struct {
-	Username           string    `json:"username"`
-	Password           string    `json:"password"`
-	Token              string    `json:"token"`
-	ExpiresAt          time.Time `json:"expiresAt"`
-	IdentityID         string    `json:"identityId,omitempty"`
-	IdentityReceiptKey string    `json:"identityReceiptKey,omitempty"`
+	Email                       string            `json:"email,omitempty"`
+	Username                    string            `json:"username"`
+	Password                    string            `json:"password"`
+	Token                       string            `json:"token"`
+	ExpiresAt                   time.Time         `json:"expiresAt"`
+	IdentityID                  string            `json:"identityId,omitempty"`
+	IdentityReceiptKey          string            `json:"identityReceiptKey,omitempty"`
+	VerifierConfirmationBody    map[string]string `json:"verifierConfirmationBody,omitempty"`
+	VerifierConfirmationHeaders map[string]string `json:"verifierConfirmationHeaders,omitempty"`
 }
 
 func main() {
@@ -50,7 +53,7 @@ func main() {
 	ca := flag.String("ca", "", "development trust root PEM")
 	mailpit := flag.String("mailpit", "", "isolated Mailpit loopback origin")
 	statePath := flag.String("state", "", "private disposable state file")
-	phase := flag.String("phase", "lifecycle", "lifecycle, identities, threshold, restart, frozen, recovered, closure")
+	phase := flag.String("phase", "lifecycle", "lifecycle, identities, threshold, restart, frozen, recovered, closure, verifier-stage, verifier-frozen, verifier-recovered")
 	flag.Parse()
 	if os.Getenv("AUTHRUNTIME_ISOLATED") != "1" || flag.NArg() != 0 {
 		die(errors.New("runtimeprobe requires explicitly isolated development runner"))
@@ -266,6 +269,15 @@ func (p *probe) run(ctx context.Context, phase string) error {
 		return err
 	}
 	switch phase {
+	case "verifier-stage":
+		if err = p.verifierStage(ctx, &s); err != nil {
+			return err
+		}
+		return p.save(s)
+	case "verifier-frozen":
+		return p.verifierFrozen(ctx, s)
+	case "verifier-recovered":
+		return p.verifierRecovered(ctx, s)
 	case "identities":
 		if err = p.identities(ctx, &s); err != nil {
 			return err
@@ -324,6 +336,7 @@ func (p *probe) lifecycle(ctx context.Context) (state, error) {
 	s.Username = fmt.Sprintf("probe_%x", sum[:6])
 	s.Password = "isolated runtime independent long password 2026!"
 	email := fmt.Sprintf("runtime-%x@hainanu.edu.cn", sum[:8])
+	s.Email = email
 	installation, err := randomCapability(16)
 	if err != nil {
 		return s, err
@@ -581,6 +594,10 @@ func (p *probe) closure(ctx context.Context, s state) error {
 		return err
 	}
 	defer pool.Close()
+	identitiesBefore, err := p.captureIdentityClosure(ctx, pool, s)
+	if err != nil {
+		return err
+	}
 	id, err := randomCapability(32)
 	if err != nil {
 		return err
@@ -606,6 +623,9 @@ func (p *probe) closure(ctx context.Context, s state) error {
 	if err != nil || due.Before(time.Now().Add(6*24*time.Hour)) || due.After(time.Now().Add(8*24*time.Hour)) {
 		return errors.New("real closure did not establish seven-day deadline")
 	}
+	if err = p.identityClosureUnchanged(ctx, pool, identitiesBefore, "PENDING_CLOSE"); err != nil {
+		return err
+	}
 	if _, err = p.directory(ctx, s.Token, 401); err != nil {
 		return err
 	}
@@ -616,6 +636,12 @@ func (p *probe) closure(ctx context.Context, s state) error {
 	status, _, err := p.request(ctx, "GET", p.c, "/api/v1/account-closures/"+id, nil, map[string]string{"Authorization": "ClosureStatus " + secretText}, 200)
 	if err != nil || status["state"] != "CANCELLED" {
 		return errors.New("active password login did not cancel pending closure")
+	}
+	if err = p.identityClosureUnchanged(ctx, pool, identitiesBefore, "ACTIVE"); err != nil {
+		return err
+	}
+	if err = p.identitySnapshot(ctx, s); err != nil {
+		return err
 	}
 	// A separate already-due synthetic request exercises the deadline worker
 	// without waiting seven days or modifying the real request's immutable due.
@@ -663,7 +689,10 @@ func (p *probe) closure(ctx context.Context, s state) error {
 			if err != nil || !acknowledged {
 				return errors.New("release response preceded durable local ACK")
 			}
-			return nil
+			if err = p.identityClosureFinalized(ctx, pool, identitiesBefore, fixtureBytes, s); err != nil {
+				return err
+			}
+			return p.identityClosureReturn(ctx, pool, identitiesBefore, s.Email)
 		}
 		select {
 		case <-ctx.Done():

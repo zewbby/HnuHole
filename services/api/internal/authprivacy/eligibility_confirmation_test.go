@@ -254,17 +254,18 @@ func TestConfirmationCleanupPreservesExpiredRetirementUntilSettled(t *testing.T)
 	}
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", rawKey[:])
 	req := ConfirmOTPRequest{Key: rawKey, FlowID: flow, InstallationID: installation, OTP: "123456", SlotID: newTicket.Slot, BootstrapPublicKey: newTicket.BootstrapKey}
-	tx, err := begin(ctx, l.vp)
+	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer tx.Rollback(ctx)
 	var verifiedAt time.Time
-	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()-interval '11 minutes'`).Scan(&verifiedAt); err != nil {
+	if err = verifierTrustedAt(ctx, tx, &verifiedAt); err != nil {
 		t.Fatal(err)
 	}
+	verifiedAt = verifiedAt.Add(-11 * time.Minute)
 	version := int64(1)
-	r := confirmationRecord{Key: key, Flow: flow, Install: installation, Email: email, OldSlot: old.Slot[:], OldVersion: &version, NewSlot: newTicket.Slot, BootstrapKey: newTicket.BootstrapKey, VerifiedAt: verifiedAt, OTPExpiresAt: verifiedAt.Add(5 * time.Minute), Window: uint32(verifiedAt.Unix() / 1800), Epoch: 1, State: "RETIREMENT_PENDING"}
+	r := confirmationRecord{Key: key, Flow: flow, Install: installation, Email: email, OldSlot: old.Slot[:], OldVersion: &version, NewSlot: newTicket.Slot, BootstrapKey: newTicket.BootstrapKey, VerifiedAt: verifiedAt, OTPExpiresAt: verifiedAt.Add(5 * time.Minute), Window: uint32(verifiedAt.Unix() / 1800), Epoch: 1, State: "RETIREMENT_PENDING", AuthorizationGeneration: verifierGeneration(tx)}
 	mac := confirmationMAC(e, req)
 	if err = e.insertConfirmationAnchor(ctx, tx, req, key, mac, r.State, verifiedAt); err != nil {
 		t.Fatal(err)
@@ -273,7 +274,7 @@ func TestConfirmationCleanupPreservesExpiredRetirementUntilSettled(t *testing.T)
 		t.Fatal(err)
 	}
 	message := (protocol.Authorization{Epoch: 1, Slot: old.Slot}).MessageBytes()
-	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.retire_pending(old_slot,email_exact,quota_version,new_slot,new_bootstrap_public_key,retirement_authorization,state,confirmation_key_digest,authorization_message,signing_key_epoch) VALUES($1,$2,1,$3,$4,NULL,'PENDING',$5,$6,1)`, old.Slot[:], email, newTicket.Slot[:], newTicket.BootstrapKey[:], key[:], message[:]); err != nil {
+	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.retire_pending(old_slot,email_exact,quota_version,new_slot,new_bootstrap_public_key,retirement_authorization,state,confirmation_key_digest,authorization_message,signing_key_epoch,authorization_generation) VALUES($1,$2,1,$3,$4,NULL,'PENDING',$5,$6,1,$7)`, old.Slot[:], email, newTicket.Slot[:], newTicket.BootstrapKey[:], key[:], message[:], int64(verifierGeneration(tx))); err != nil {
 		t.Fatal(err)
 	}
 	if err = tx.Commit(ctx); err != nil {

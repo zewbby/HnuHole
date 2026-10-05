@@ -16,7 +16,7 @@ import (
 
 // AuthorizationEvidence is a signed, independently held time/recovery sample.
 // File providers and signers are test infrastructure, not production time or
-// independent operator services. Domain binds a sample to one C auth domain.
+// independent operator services. Domain binds a sample to one party's auth domain.
 type AuthorizationEvidence struct {
 	Domain     string    `json:"domain"`
 	Version    uint64    `json:"version"`
