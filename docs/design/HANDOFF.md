@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-08 F1-13两行弹窗：**用户明确框内仅两行，第一行“确认删除这篇草稿？”，第二行左“取消”、右“确认”。当前[删除确认v4](ui-reviews/my-draft-delete-confirm-v4.md)按该文案出图，白色居中框／厚重文字／亮朱红确认；具体标题和无法恢复说明已从框内移除，删除仍不可恢复，取消保留。PERSONAL-DRAFT-DELETE-01已同步，v1—v3保留历史，其他我的两图未改。仍10 FINAL＋3 DRAFT＋9未画，新图待评审，业务及平台NOT_RUN。
+
 > **2026-10-08 F1-13当前改稿：**用户对亮色底部删除面板要求“用弹窗吧，别用这种”，现改为[居中弹窗v3](ui-reviews/my-draft-delete-confirm-v3.md)：白色弹窗、目标草稿标题、无法恢复提示，左取消／右亮朱红删除草稿。底部面板v1／v2保留历史，PERSONAL-DRAFT-DELETE-01已按新指令同步，其他我的两图不改。当前仍10 FINAL＋3 DRAFT＋9未出图，新弹窗待评审；业务／平台NOT_RUN。下方底部面板描述按历史理解。
 
 > **2026-10-08 F1身份三态定稿／我的三页出图：**用户明确“身份选择的定稿 然后先画 我的”，F1-08选择v1／F1-09尚无身份v1／F1-10失效v2正式归档，见[定稿记录](ui-reviews/post-identity-and-save-states-v1.md)。随后F1-11[本人混排](ui-drafts/my-content-mixed-v1.png)、F1-12[空态](ui-drafts/my-content-empty-v1.png)、F1-13[草稿删除确认](ui-drafts/my-draft-delete-confirm-v2.png)已出图，见[本批评审](ui-reviews/my-content-states-v1.md)，均DRAFT／待用户评审；删除按钮按用户反馈由暗砖红改亮朱红v2。当前10 FINAL＋3 DRAFT＋9未出图，共22页。本人归档保留自己的帖子／收藏帖子页签，草稿／任务／正式帖同列表；未公开项无点赞，草稿删除按既有底部确认规则，保存失败仍为正式居中弹框。白色框架及暗灰蓝方向连贯，未自动定稿新图或全局主题。本轮仅图稿与文档，Flutter社区业务未实现、动态及平台NOT_RUN，不改模块验收台账。以下旧计数保留历史状态。
