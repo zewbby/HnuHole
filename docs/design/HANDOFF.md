@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-08 项目UI技能：**用户提供frontend-design压缩包已安装至本工作树`.agents/skills/`；另固定ui-ux-pro-max和Impeccable的GitHub版本，新增hnuhole-ui-craft入口。见[来源及验证](project-ui-skills.md)与[画图工作流](ui-quality-workflow.md)。以后从规则／真实图稿出发，内部设计卡→单张PNG→看图复审→用户定稿→Flutter映射；营销hero推荐不得代替手机产品设计。本轮仅安装、技能验证、检索试跑及流程编写，未画新图、未实现社区代码、未执行设备验收。
+
 > **2026-10-08 Flutter社区并行计划：**用户授权三个独立任务并行，本工作树 `codex/community-flutter-pages` 只承担第3项。见[前端实施计划](community-flutter-pages-plan.md)：文字编辑／确认、最新列表／正文详情、同机草稿与发布任务混排。已核对产品规则及深色v2参考图，未实现入口按用户授权隐藏；新页面图稿待评审，后端契约及认证候选待固定。本轮仅计划，代码未实现，业务验收全部NOT_RUN。原认证与社区后端分别在自己的工作树推进，下方认证记录保持历史证明范围。
 
 > **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。

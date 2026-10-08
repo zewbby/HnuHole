@@ -2,6 +2,8 @@
 
 ## 工作入口
 
+- 本项目 UI 设计／出图／评审任务使用项目级 `.agents/skills/hnuhole-ui-craft/SKILL.md`，结合 frontend-design、ui-ux-pro-max 及 Impeccable 的适用参考；先读 `docs/design/ui-quality-workflow.md` 和对应模块及实际图稿。外部技能不覆盖用户指令与已定业务，网页营销模式不能机械用于手机社区。技能来源见 `docs/design/project-ui-skills.md`。
+
 - 开始任务先读 [HANDOFF](docs/design/HANDOFF.md)、当前任务单／实施计划及相关产品模块；不要从历史对话猜测最新规则。
 - 当前认证与业务接入工作只基于 `codex/auth-privacy-handoff`，除非用户另行指定。先核对仓库根目录、分支及工作区，保留已有未提交改动，不在外层父仓库误操作。
 - 当前开发与验收顺序以用户最新指令及HANDOFF为准：本分支只做匿名方案及基础实现收口，按 `docs/design/auth-privacy-closure-checklist.md` 的 AC01–AC06推进，完整B05/B03等业务片暂停。开发先行、集中按模块动态／设备验收的安排仍有效，但不扩大任务范围。另一台机器接续先读 `docs/design/auth-privacy-machine-handoff.md`。
