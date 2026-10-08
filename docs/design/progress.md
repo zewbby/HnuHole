@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-08 F1第一类结构通过、白色框架保留：**用户明确通过[v6正常／空／首次加载失败](ui-reviews/channel-feed-v6.md)布局，并澄清整体保持白色，仅将原有蓝色UI元素调暗、偏灰。最新[v9三图](ui-reviews/channel-feed-v9.md)为该方向的待评审稿：`channel-feed-populated-v9.png`、`channel-feed-empty-v9.png`、`channel-feed-error-v9.png`；状态LAYOUT_APPROVED／COLOR_AWAITING_USER_REVIEW。v7整页林绿与v8整页暗蓝均已废弃，不作为当前配色。图片／纯文字双列、点赞数、通道名、搜索、紧凑工具栏和底栏保持；“首页”回导航树，中央加号新建当前通道帖子，热榜仍由搜索进入。其余五类19张尚未出图，Flutter社区文字切片代码未实现、业务验收NOT_RUN，无平台验收证据；本轮不改模块台账。下方旧稿和隐藏策略按历史版本理解。
+
 > **2026-10-08 F1视觉改稿：**原通道列表v1方向被否定；当前先评审[正常列表v3](ui-reviews/channel-feed-v3.md)的浅色双列与强对比卡片，未确认定稿。新版空／失败状态依正常图方向再同步，其余类别未出图；无Flutter或设备验收。
 
 > **2026-10-08 F1页面设计启动：**第一类3／3张v1草图已生成并保存，分别为最新列表、空通道、首次加载失败；[评审记录](ui-reviews/channel-feed-v1.md)。待用户评审，不计定稿或功能PASS，其余19张尚未出图。
