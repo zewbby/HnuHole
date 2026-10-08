@@ -2,7 +2,7 @@
 
 日期：2026-10-08（Asia/Shanghai）。分支：`codex/community-text-posting`。
 
-状态：`T2_SERVER_IMPLEMENTED / MOBILE_AND_FULL_SLICE_ACCEPTANCE_PENDING`。范围及下列Q0–Q2已由用户确认；T1形成[后端设计](community-text-posting-backend-design.md)、[API清单](community-text-posting-api.md)、[OpenAPI](../../packages/openapi/post-api.yaml)及[ADR0006](../adr/0006-text-post-command-publication-boundary.md)，并已提交推送为`1b7fe2e`。T2实现14操作C服务端、正式迁移0013／权限、停止代次与worker；实际检查和未验范围见[T2报告](community-text-posting-t2-report.md)及[机器记录](community-text-posting-t2-verification.json)。T1原静态证据保留；手机／存储／完整模块及生产未通过，T2未提交／推送／部署。
+状态：`T2_SERVER_IMPLEMENTED / MOBILE_AND_FULL_SLICE_ACCEPTANCE_PENDING`。范围及下列Q0–Q2已由用户确认；T1形成[后端设计](community-text-posting-backend-design.md)、[API清单](community-text-posting-api.md)、[OpenAPI](../../packages/openapi/post-api.yaml)及[ADR0006](../adr/0006-text-post-command-publication-boundary.md)，并已提交推送为`1b7fe2e`。T2实现14操作C服务端、正式迁移0013／权限、停止代次与worker；实际检查和未验范围见[T2报告](community-text-posting-t2-report.md)及[机器记录](community-text-posting-t2-verification.json)。T1原静态证据保留；手机／存储／完整模块及生产未通过，T2源码提交`0644f5a`已推送，未部署。
 
 ## 1. 目标与明确边界
 
@@ -133,4 +133,4 @@ CP01／CP02／CP05–CP13／CP15在T2取得列明服务端证据；页面、草�
 - 模块沿用 B02/B03/B05/B06/B10 和受影响 A/N、X06/X07；B07–B09/B11/B12及首版媒体／标签仍待开发，完整模块不能因为本片PASS而全部改PASS。
 - 只提交源码、测试源码和小型脱敏记录；清理本片明确创建的临时资源。保留认证会话的全部环境及用户数据。
 - 主要风险：认证候选未发布带来的整合变化；业务本机存储与Android验证；生命周期hooks和停止代次必须同事务生效；Unicode16跨端计数及12位随机占位编号。T1已固定方案，实际SQL／跨端／设备证据仍待取得。
-- 当前用户授权T2；T1已提交／推送，T2仍未提交／推送。后续Git交付和部署遵循当次授权，服务端完成不构成部署授权。
+- 当前用户授权T2；T1已提交／推送，T2源码提交`0644f5a`已推送。后续Git交付和部署遵循当次授权，服务端完成不构成部署授权。

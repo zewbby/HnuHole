@@ -5466,7 +5466,7 @@
   "latestClientRegressionEvidence": "services/api/authlab/platform-acceptance-verification.json",
   "publicationDelivery": {
     "recordedOn": "2026-10-05",
-    "verifiedAtUTC": "2026-10-05T02:09:07.329744+00:00",
+    "verifiedAtUTC": "2026-10-05T10:09:07.329744+08:00",
     "branch": "codex/auth-privacy-handoff",
     "remote": "origin",
     "implementationCommit": "8db630f66bfc87cc05164aaae95b02b0d884d09a",
@@ -6322,8 +6322,8 @@
   "currentCommunityTextT2": {
     "recordedOn": "2026-10-08",
     "branch": "codex/community-text-posting",
-    "headCommit": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a",
-    "workingTreeUncommitted": true,
+    "headCommit": "0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3",
+    "workingTreeUncommitted": false,
     "status": "T2_SERVER_IMPLEMENTED_BACKEND_SCOPED_CHECKS_PASS_MOBILE_FULL_SLICE_PENDING",
     "plan": "docs/design/community-text-posting-plan.md",
     "report": "docs/design/community-text-posting-t2-report.md",
@@ -6424,8 +6424,15 @@
     "nextStep": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate",
     "gitDelivery": {
       "T1": "PUSHED_1b7fe2e",
-      "T2": "NOT_COMMITTED_NOT_PUSHED",
-      "deployed": false
-    }
+      "T2": "PUSHED_0644f5a",
+      "sourceCommit": "0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3",
+      "branch": "codex/community-text-posting",
+      "remote": "https://github.com/zewbby/HnuHole",
+      "sourceCommitUrl": "https://github.com/zewbby/HnuHole/commit/0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3",
+      "confirmedOn": "2026-10-08",
+      "deployed": false,
+      "scope": "用户授权提交推送；源码提交已推送，验收状态与测试基线按原记录保留。"
+    },
+    "testedBaseHeadCommit": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a"
   }
 }

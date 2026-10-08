@@ -1,6 +1,6 @@
 # 文字社区 T2 服务端交付与验证
 
-日期：2026-10-08（Asia/Shanghai）。工作树 `C:/Users/Administrator/.codex/worktrees/community-text-posting/HnuHole`，分支 `codex/community-text-posting`，HEAD `1b7fe2e7214c460ab023cffb9c6d7f875607ff2a`，认证源码基线 `0eff47a21cd4f4ab1636b4468f7d5df9769a264f`。T1已推送；本轮T2为未提交工作区，不代表GitHub交付或部署。
+日期：2026-10-08（Asia/Shanghai）。工作树 `C:/Users/Administrator/.codex/worktrees/community-text-posting/HnuHole`，分支 `codex/community-text-posting`，测试快照的Git基线为 `1b7fe2e7214c460ab023cffb9c6d7f875607ff2a`，认证源码基线 `0eff47a21cd4f4ab1636b4468f7d5df9769a264f`。用户授权后，T2源码、测试及验收交接已推送为[提交0644f5a](https://github.com/zewbby/HnuHole/commit/0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3)，新增说明性注释和提交说明使用中文。旧测试基线及源码指纹保持原证明范围；本轮未部署。
 
 T2已实现文字闭环的服务端：当前Bearer访问，受理时固定帖内身份，后台最终公开，原命令核对与封印，任务取消／失败重试／隐藏，通道最新列表、正文详情、本人列表与作者删除。客户端页面、本机草稿和业务存储由独立Flutter任务负责；本报告不能作为完整手机闭环或上线批准。机器结果与当前源码指纹见[总记录](community-text-posting-t2-verification.json)，schema／受限角色专项见[记录](../../services/api/authlab/community-text-post-schema-verification.json)，最终HTTP整包见[记录](../../services/api/authlab/community-text-post-http-verification.json)，实际C/V进程见[记录](../../services/api/authlab/community-text-posting-t2-runtime-verification.json)。
 

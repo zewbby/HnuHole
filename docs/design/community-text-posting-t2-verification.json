@@ -4,7 +4,7 @@
   "branch": "codex/community-text-posting",
   "headCommit": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a",
   "authBaselineCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-  "workingTreeUncommitted": true,
+  "workingTreeUncommitted": false,
   "status": "T2_SERVER_IMPLEMENTED_BACKEND_SCOPED_CHECKS_PASS_MOBILE_FULL_SLICE_PENDING",
   "sourceFingerprint": {
     "algorithm": "Sorted repoPath UTF8, NUL, raw SHA256(file bytes), then aggregate SHA256; Go/SQL/sh/mod/sum/yaml/py CRLF normalized to LF; protocol JSON and Unicode/licence TXT exact bytes",
@@ -379,8 +379,14 @@
   "wholeCP01toCP15Passed": false,
   "gitDelivery": {
     "T1": "PUSHED_1b7fe2e",
-    "T2": "NOT_COMMITTED_NOT_PUSHED",
-    "deployed": false
+    "T2": "PUSHED_0644f5a",
+    "sourceCommit": "0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3",
+    "branch": "codex/community-text-posting",
+    "remote": "https://github.com/zewbby/HnuHole",
+    "sourceCommitUrl": "https://github.com/zewbby/HnuHole/commit/0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3",
+    "confirmedOn": "2026-10-08",
+    "deployed": false,
+    "scope": "用户授权提交推送；源码提交已推送，验收状态与测试基线按原记录保留。"
   },
   "failureAndRepair": [
     {
@@ -469,5 +475,7 @@
       ],
       "unchangedAuthSqlWorkerReusedWithOriginalVersionEvidence": true
     }
-  }
+  },
+  "verificationSnapshotWasUncommitted": true,
+  "headCommitMeaning": "测试快照基于T1的HEAD；当前Git交付版本见gitDelivery.sourceCommit，不用新提交改写旧测试版本。"
 }
