@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-08 F1视觉改稿：**原通道列表v1方向被否定；当前先评审[正常列表v3](ui-reviews/channel-feed-v3.md)的浅色双列与强对比卡片，未确认定稿。新版空／失败状态依正常图方向再同步，其余类别未出图；无Flutter或设备验收。
+
 > **2026-10-08 F1页面设计启动：**第一类3／3张v1草图已生成并保存，分别为最新列表、空通道、首次加载失败；[评审记录](ui-reviews/channel-feed-v1.md)。待用户评审，不计定稿或功能PASS，其余19张尚未出图。
 
 > **2026-10-08 UI能力补齐：**项目级frontend-design／ui-ux-pro-max／Impeccable及hnuhole-ui-craft已安装，四份技能结构验证通过；[UI工作流](ui-quality-workflow.md)已具体化中文排版、视觉克制、状态真实性和逐页PNG复审。来源及试跑边界见[技能记录](project-ui-skills.md)。没有新图或社区功能证据，不改变模块验收结论。
