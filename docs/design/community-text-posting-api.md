@@ -1,6 +1,6 @@
-# 文字发布 API 与前端对齐清单（T1）
+# 文字发布 API 与前端对齐清单（T1契约／T2服务端）
 
-日期：2026-10-08，设计版 `0.1.0-design`。接口尚未实现；唯一机器契约为 [post-api.yaml](../../packages/openapi/post-api.yaml)，状态、数据约束、锁顺序和清理见[后端设计](community-text-posting-backend-design.md)。本文件不提供不存在的curl/runner命令。
+日期：2026-10-08，契约版 `0.1.0`。14个操作已在T2接入C服务端；唯一机器契约为 [post-api.yaml](../../packages/openapi/post-api.yaml)，状态、数据约束、锁顺序和清理见[后端设计](community-text-posting-backend-design.md)。实际命令与证明范围见[T2报告](community-text-posting-t2-report.md)，移动端整合与设备验收仍待T4。T1原静态证据按原版本保留。
 
 ## 1. 路由与职责
 

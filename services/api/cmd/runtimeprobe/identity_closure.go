@@ -315,5 +315,5 @@ func (p *probe) identityClosureReturn(ctx context.Context, pool *pgxpool.Pool, b
 	if current.Counter != before.Counter || current.Receipts != before.Receipts {
 		return errors.New("new registration rewrote old permanent identity history")
 	}
-	return nil
+	return p.postClosureReturned(ctx, pool, before.Account.String(), token)
 }

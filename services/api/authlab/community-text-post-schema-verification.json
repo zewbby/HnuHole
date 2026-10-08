@@ -1,0 +1,60 @@
+{
+  "recordedAt": "2026-10-08T14:54:21+08:00",
+  "branch": "codex/community-text-posting",
+  "status": "PASS",
+  "scope": "T2 SQL schema/guards/precise C runtime grants and party boundaries only",
+  "execution": {
+    "host": "WSL2 Ubuntu-24.04",
+    "workingDirectory": "/tmp/hnuhole-community-t2-schema-source/services/api",
+    "postgres": "16; disposable private socket; no external DSN; automatically stopped and removed",
+    "go": "1.22; race detector enabled",
+    "commands": [
+      "sh authlab/run-post-schema-isolated.sh",
+      "go vet ./internal/authprivacy"
+    ],
+    "goTestResult": "9 top-level TestPostSchema tests and 4 lifecycle subtests PASS; package duration 23.296s",
+    "vet": "PASS"
+  },
+  "coverage": [
+    "permanent fixed account/post identity bindings and compact receipts reject rewrites/deletes",
+    "accepted text only allows irreversible whole-payload erasure",
+    "terminal attempts require terminalAt and cannot revive; cross-account FK rejects ownership mistakes",
+    "historical identities backfill independent 12-character RFC4648 base32 labels; subsequent identity creation under restricted runtime atomically gets a label",
+    "disabled lifecycle hook rejected at startup",
+    "old writers requesting closure, activating mute/ban, or closing an account with a task reject without same-transaction stop event; complete hook transactions succeed",
+    "restricted C runtime lacks DELETE/TRUNCATE/DDL and immutable column UPDATE; required INSERT/UPDATE omissions and extra immutable-input UPDATE rejected by checker",
+    "exact c_posts 12-relation inventory; no C email/OTP/mail columns, no V community posts/account/identity columns, no SECURITY DEFINER or foreign bridge",
+    "protocol key commitments immutable; singleton cannot replace or delete",
+    "identity deletion requires task terminalization, hidden private entry and cleanup record"
+  ],
+  "notRun": [
+    {
+      "item": "formal Goose 12-to-13 upgrade with real cmd runtime and HTTP",
+      "reason": "separate root/runtime-agent runner owns this evidence; raw migrations here do not substitute"
+    },
+    {
+      "item": "large historical-account closure capacity, multi-year receipt/stop event capacity",
+      "reason": "P04 production capacity evidence remains outside focused schema fixture"
+    },
+    {
+      "item": "Flutter app/device/full platform acceptance",
+      "reason": "schema-only scope; frontend independent task"
+    },
+    {
+      "item": "final auth candidate integration and production operations",
+      "reason": "root handoff retains dependency and production boundary"
+    }
+  ],
+  "sourcesSha256": {
+    "services/api/migrations/0013_community_text_posts.sql": "35274cba859c0d51fc7805e341ea3880d12ee7f67eedad96f9841c915f1344fe",
+    "infra/postgres/grant-community.sql": "43730771407c0da3739c9acd1a05c09d6f22ea25e8ba877c8e2a8fd5090e0d5c",
+    "services/api/internal/authprivacy/community_posts_schema.go": "f8f3ad9fbb18c4737d776b213fceca1f92767e0fea0058dd018c090acbf2d5d6",
+    "services/api/internal/authprivacy/community_posts_schema_test.go": "6cef4d414fd06747e5acb1e06f2c8062300996c40321650e5de29311a1d17100",
+    "services/api/authlab/run-post-schema-isolated.sh": "c73fb432842c8d62f88f08c935c8e9012df4fba0f997a6f6b762e40ae8c944c1"
+  },
+  "review": {
+    "scope": "read-only review of community_posts.go, community_posts_lifecycle.go, community_posts_read.go versus migration guards",
+    "result": "account-first serialization, final-Gate reads/publication, original-session-independent worker, stop event timing and cleanup/public text preservation match current design; root confirmed background protocol commitment checks",
+    "remaining": "historical account rows remain a separate capacity boundary; live 128-task cap is not proof of bounded lifetime history"
+  }
+}

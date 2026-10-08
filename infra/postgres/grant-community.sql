@@ -38,3 +38,32 @@ REVOKE INSERT ON c_auth.authorization_gate FROM hnuhole_c_runtime;
 -- PostgreSQL row-locking requires UPDATE on at least one column; event content is never edited.
 GRANT UPDATE(event_id) ON c_auth.security_events TO hnuhole_c_runtime;
 GRANT INSERT ON c_auth.security_events TO hnuhole_c_runtime;
+
+-- 文字发布与认证共享最终事务，但 C runtime 只有逐表／逐列 DML。
+-- business 与 recovery 角色不能取得正文、任务、命令回执或 stop event。
+REVOKE ALL ON SCHEMA c_posts FROM PUBLIC,hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+REVOKE ALL ON ALL TABLES IN SCHEMA c_posts FROM PUBLIC,hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+REVOKE ALL ON ALL SEQUENCES IN SCHEMA c_posts FROM PUBLIC,hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+REVOKE ALL ON ALL FUNCTIONS IN SCHEMA c_posts FROM PUBLIC,hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+GRANT USAGE ON SCHEMA c_posts TO hnuhole_c_runtime;
+GRANT SELECT ON c_posts.schema_meta,c_posts.protocol_keys,c_posts.account_publication_control,c_posts.publication_stop_events,
+    c_posts.identity_public_labels,c_posts.posts,c_posts.post_identity_bindings,c_posts.publication_tasks,
+    c_posts.publication_attempts,c_posts.attempt_contents,c_posts.command_receipts,c_posts.payload_cleanup
+    TO hnuhole_c_runtime;
+GRANT INSERT ON c_posts.protocol_keys,c_posts.account_publication_control,c_posts.publication_stop_events,c_posts.identity_public_labels,
+    c_posts.posts,c_posts.post_identity_bindings,c_posts.publication_tasks,c_posts.publication_attempts,
+    c_posts.attempt_contents,c_posts.command_receipts,c_posts.payload_cleanup TO hnuhole_c_runtime;
+GRANT UPDATE(stop_generation,last_public_identity_id,last_public_at,last_public_ordinal)
+    ON c_posts.account_publication_control TO hnuhole_c_runtime;
+GRANT UPDATE(visibility,published_attempt_version,published_at,publication_ordinal,deleted_at)
+    ON c_posts.posts TO hnuhole_c_runtime;
+GRANT UPDATE(latest_attempt_version,owner_visible) ON c_posts.publication_tasks TO hnuhole_c_runtime;
+GRANT UPDATE(state,terminal_at,failure_code) ON c_posts.publication_attempts TO hnuhole_c_runtime;
+-- guard_content 仅接受一次整份擦除；授予这些列也不能改写已授权文字。
+GRANT UPDATE(title,body,erased_at) ON c_posts.attempt_contents TO hnuhole_c_runtime;
+-- 仅账号正式关闭后的墓碑收缩可通过 guard_receipt；原始结果不可改写。
+GRANT UPDATE(owner_account_id,outcome,task_id,post_id,attempt_version,task_state,error_code)
+    ON c_posts.command_receipts TO hnuhole_c_runtime;
+GRANT UPDATE(state) ON c_posts.payload_cleanup TO hnuhole_c_runtime;
+GRANT USAGE ON SEQUENCE c_posts.publication_ordinal_seq,c_posts.acceptance_ordinal_seq TO hnuhole_c_runtime;
+GRANT EXECUTE ON FUNCTION c_posts.allocate_identity_label(uuid) TO hnuhole_c_runtime;

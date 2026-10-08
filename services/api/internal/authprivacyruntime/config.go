@@ -33,28 +33,36 @@ type GateConfig struct {
 	AnchorKeyFile           string `json:"anchorKeyFile"`
 }
 
+// 文字功能须显式提供三份独立用途密钥；旧认证配置不会自动开启新接口。
+type PostsConfig struct {
+	CommandKeyFile     string `json:"commandKeyFile"`
+	FingerprintKeyFile string `json:"fingerprintKeyFile"`
+	CursorKeyFile      string `json:"cursorKeyFile"`
+}
+
 type Config struct {
-	Environment             string      `json:"environment"`
-	DatabaseURL             string      `json:"databaseUrl"`
-	DatabasePasswordFile    string      `json:"databasePasswordFile"`
-	PublicListen            string      `json:"publicListen"`
-	InternalListen          string      `json:"internalListen"`
-	PublicOrigin            string      `json:"publicOrigin"`
-	PeerOrigin              string      `json:"peerOrigin"`
-	AllowedOrigins          []string    `json:"allowedOrigins"`
-	AllowDevelopmentNetwork bool        `json:"allowDevelopmentNetwork"`
-	CAFile                  string      `json:"caFile"`
-	PublicCertificateFile   string      `json:"publicCertificateFile"`
-	PublicKeyFile           string      `json:"publicKeyFile"`
-	InternalCertificateFile string      `json:"internalCertificateFile"`
-	InternalKeyFile         string      `json:"internalKeyFile"`
-	NetworkKeyFile          string      `json:"networkKeyFile"`
-	SigningKeyFile          string      `json:"signingKeyFile"`
-	TrustedCommunityKeyFile string      `json:"trustedCommunityKeyFile"`
-	TrustedVerifierKeyFile  string      `json:"trustedVerifierKeyFile"`
-	RequestKeyFile          string      `json:"requestKeyFile,omitempty"`
-	PasswordBlocklistFile   string      `json:"passwordBlocklistFile,omitempty"`
-	Gate                    *GateConfig `json:"gate,omitempty"`
+	Environment             string       `json:"environment"`
+	DatabaseURL             string       `json:"databaseUrl"`
+	DatabasePasswordFile    string       `json:"databasePasswordFile"`
+	PublicListen            string       `json:"publicListen"`
+	InternalListen          string       `json:"internalListen"`
+	PublicOrigin            string       `json:"publicOrigin"`
+	PeerOrigin              string       `json:"peerOrigin"`
+	AllowedOrigins          []string     `json:"allowedOrigins"`
+	AllowDevelopmentNetwork bool         `json:"allowDevelopmentNetwork"`
+	CAFile                  string       `json:"caFile"`
+	PublicCertificateFile   string       `json:"publicCertificateFile"`
+	PublicKeyFile           string       `json:"publicKeyFile"`
+	InternalCertificateFile string       `json:"internalCertificateFile"`
+	InternalKeyFile         string       `json:"internalKeyFile"`
+	NetworkKeyFile          string       `json:"networkKeyFile"`
+	SigningKeyFile          string       `json:"signingKeyFile"`
+	TrustedCommunityKeyFile string       `json:"trustedCommunityKeyFile"`
+	TrustedVerifierKeyFile  string       `json:"trustedVerifierKeyFile"`
+	RequestKeyFile          string       `json:"requestKeyFile,omitempty"`
+	PasswordBlocklistFile   string       `json:"passwordBlocklistFile,omitempty"`
+	Gate                    *GateConfig  `json:"gate,omitempty"`
+	Posts                   *PostsConfig `json:"posts,omitempty"`
 	// Exactly four public Gate purpose keys from the other party, in evidence,
 	// recovery, break-glass, anchor order. No counterpart private material.
 	PeerGatePublicKeyFiles  []string                    `json:"peerGatePublicKeyFiles"`
@@ -126,6 +134,10 @@ func (c Config) Validate(service authprivacyhttp.Service) error {
 		return errors.New("only explicitly dev C/V configuration is supported")
 	}
 	if err := c.validateWebAuthn(service); err != nil {
+		return err
+	}
+	postPaths, err := c.postKeyFiles(service)
+	if err != nil {
 		return err
 	}
 	if c.PublicListen == c.InternalListen {
@@ -232,6 +244,7 @@ func (c Config) Validate(service authprivacyhttp.Service) error {
 	}
 	if service == authprivacyhttp.CommunityService {
 		paths = append(paths, c.RequestKeyFile)
+		paths = append(paths, postPaths...)
 		if c.PasswordBlocklistFile == "" {
 			return errors.New("C requires a password blocklist")
 		}
@@ -244,22 +257,8 @@ func (c Config) Validate(service authprivacyhttp.Service) error {
 			return err
 		}
 	}
-	for _, p := range paths {
-		size := 32
-		if p == c.SigningKeyFile || c.Gate != nil && p == c.Gate.AnchorKeyFile {
-			size = 64
-		}
-		b, e := c.Read(p, true, size)
-		if e != nil || len(b) != size {
-			return errors.New("missing or invalid purpose key")
-		}
-		if bytes.Equal(b, make([]byte, size)) || seen[string(b)] {
-			return errors.New("zero or reused purpose key")
-		}
-		seen[string(b)] = true
-		if size == 64 && !bytes.Equal(ed25519.NewKeyFromSeed(b[:32]), b) {
-			return errors.New("invalid Ed25519 private key")
-		}
+	if err = c.validatePurposeKeys(paths, seen); err != nil {
+		return err
 	}
 	cp, err := c.PublicKey(c.TrustedCommunityKeyFile)
 	if err != nil {
@@ -318,6 +317,45 @@ func (c Config) Validate(service authprivacyhttp.Service) error {
 	}
 	_, err = c.Read(c.DatabasePasswordFile, true, 1024)
 	return err
+}
+
+// postKeyFiles 保留旧配置的显式关闭状态；不能由网络 origin 隐式启用文字功能。
+func (c Config) postKeyFiles(service authprivacyhttp.Service) ([]string, error) {
+	if c.Posts == nil {
+		return nil, nil
+	}
+	if service != authprivacyhttp.CommunityService {
+		return nil, errors.New("V must not possess C text posting keys")
+	}
+	paths := []string{c.Posts.CommandKeyFile, c.Posts.FingerprintKeyFile, c.Posts.CursorKeyFile}
+	for _, path := range paths {
+		if path == "" {
+			return nil, errors.New("C text posting requires all three purpose keys")
+		}
+	}
+	return paths, nil
+}
+
+// 所有私有用途密钥用同一集合查重，帖子密钥不得复用认证或签名材料。
+func (c Config) validatePurposeKeys(paths []string, seen map[string]bool) error {
+	for _, p := range paths {
+		size := 32
+		if p == c.SigningKeyFile || c.Gate != nil && p == c.Gate.AnchorKeyFile {
+			size = 64
+		}
+		b, e := c.Read(p, true, size)
+		if e != nil || len(b) != size {
+			return errors.New("missing or invalid purpose key")
+		}
+		if bytes.Equal(b, make([]byte, size)) || seen[string(b)] {
+			return errors.New("zero or reused purpose key")
+		}
+		seen[string(b)] = true
+		if size == 64 && !bytes.Equal(ed25519.NewKeyFromSeed(b[:32]), b) {
+			return errors.New("invalid Ed25519 private key")
+		}
+	}
+	return nil
 }
 
 // An omitted policy leaves Passkey endpoints fail closed. A native deployment

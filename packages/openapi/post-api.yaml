@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: Hnuhole text posting API
-  version: 0.1.0-design
-  description: T1 contract only; no posts handler currently implements these operations. Every access
+  version: 0.1.0
+  description: T2 C server implements these operations; mobile integration and production acceptance remain separate. Every access
     requires a current C Bearer and a final C Safety Gate transaction. Account identity comes from that
     transaction, never from client selectors. Public content and own task/capability DTOs are separate
     closed allowlists. Command acceptance and asynchronous publication are different durable facts. Absent
@@ -13,7 +13,7 @@ info:
 servers:
 - url: /
   description: Existing independent C HTTPS origin, never V or a caller-selected origin.
-x-contract-status: design-only-not-implemented
+x-contract-status: server-implemented-mobile-integration-pending
 x-design-document: ../../docs/design/community-text-posting-api.md
 x-final-authorization: C Gate, current session generation/status/deadline, resource ownership
 paths:

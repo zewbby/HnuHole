@@ -1,0 +1,473 @@
+{
+  "schemaVersion": "hnuhole-community-text-t2-verification/v1",
+  "recordedAt": "2026-10-08T15:19:03.003796+08:00",
+  "branch": "codex/community-text-posting",
+  "headCommit": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a",
+  "authBaselineCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "workingTreeUncommitted": true,
+  "status": "T2_SERVER_IMPLEMENTED_BACKEND_SCOPED_CHECKS_PASS_MOBILE_FULL_SLICE_PENDING",
+  "sourceFingerprint": {
+    "algorithm": "Sorted repoPath UTF8, NUL, raw SHA256(file bytes), then aggregate SHA256; Go/SQL/sh/mod/sum/yaml/py CRLF normalized to LF; protocol JSON and Unicode/licence TXT exact bytes",
+    "fileCount": 165,
+    "sha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+    "files": {
+      "go.work": "78d8b0f4b172634eb0b78eb103f9c37e57f85bbe963bb7a45b024912e24a62e9",
+      "go.work.sum": "5dcf4729b59d80ee9a985040afd6bd5ffa95668c99e358d3c382edc9fe154c71",
+      "infra/docker-compose.yml": "276c296a69db0a60c91a6bd45feabeded3ae0a0e6eca8bf0820d8038a255c5dd",
+      "infra/postgres/grant-community.sql": "43348ded5c1227f367b1968d3087989fb2763b94e587ab36f486423193f28c10",
+      "infra/postgres/grant-verifier.sql": "ef7552db2f46355ea7d5f67b3f8c802c4c9540e07d82094965c0d78873a8693e",
+      "infra/postgres/init-auth.sh": "92c6d4f60007a1b1a400a1046d7165090038e46310ed6bcd75c10420652a0212",
+      "packages/openapi/channel-api.yaml": "a6931f7513b44b81108aef7c5df967c6924ff59e16863415556f7a0925f60a02",
+      "packages/openapi/check-specs.py": "72bb7b37b65305ebcd9d73a2e5899c31850fd576084b185774f5909a89a9f2ba",
+      "packages/openapi/community-auth-api.yaml": "86dbac36cd6bc1a15602f0937da6eb92d3d681355fd4ad5f4aa7e3c7e426b1d6",
+      "packages/openapi/generate-channel.sh": "5b64ed4407687b1d7b05b8b42d8943a2d28f287e5627553b169d55ee3e975f52",
+      "packages/openapi/identity-api.yaml": "398f50e2c7d5e6b2b5166780c50a0e6d199f5fa358d3b4629a42218c8bd252b3",
+      "packages/openapi/post-api.yaml": "4270a18b4bdb0fa094f18d12b22fa199abab5fd35a6728e24f8509734f586b09",
+      "packages/openapi/requirements-check.txt": "645e46028bd946fa2e11d2d82c2aac48cbe1f0be7e757ee498543b8e4fd8401c",
+      "packages/openapi/verifier-auth-api.yaml": "14260a035658c9a789d93a6b0a3257917664d59304fb8265b9c23a855a3dad6c",
+      "packages/post-protocol-vectors/post-command-v1.json": "208e48240f36305788ca0138acde71e8fc9dc84dcc380215a8a5fe48d7ef80a3",
+      "services/api/authlab/privacy-diagnostics-canary.py": "be3dceb351f4b202ad6b1a75f918a75f1e14a56d956cc0cc486205691fc904d0",
+      "services/api/authlab/privacy-role-audit.sql": "e99a0c49dcb85ec9a8a27cfd292f786eeb4d8fef64a12f0d3091368029c32da8",
+      "services/api/authlab/run-isolated.sh": "f44baf4171c91760c6da3b3a132babbe0e31fae44e2fb3d0a0e6cdadc62b39ff",
+      "services/api/authlab/run-mobile-isolated.sh": "a19f3f4527cd3dbec489955cc1dc4c71c9ea473090f65cc9bb50759800fdfcef",
+      "services/api/authlab/run-post-schema-isolated.sh": "c73fb432842c8d62f88f08c935c8e9012df4fba0f997a6f6b762e40ae8c944c1",
+      "services/api/authlab/run-runtime-isolated.sh": "af0e013175178c6ff1015dd17f873851f46c950990086f8569520a6516c60c64",
+      "services/api/cmd/api/main.go": "488b5398f8ff2d78e7c1b78c31e23b79326fb63d724d020561a5c52ff06c2a93",
+      "services/api/cmd/authdev/main.go": "083df3b07f8d4c6b5457d8f21340fcc2ddafeb176425d26f1a2602e748fdd725",
+      "services/api/cmd/authdev/main_test.go": "d8c42d9d8b7f8b393db23fc60d24629eab6e5682f3dd2ad5e38d7c128abae21f",
+      "services/api/cmd/runtimeprobe/identities.go": "13541e04f49d5a3e589748d644abdcab00faded09f6c01168e23defcb77a8ff9",
+      "services/api/cmd/runtimeprobe/identity_closure.go": "00f4ae15b16d833f5412d2734b865b9b907603f5854405d77703179d59233076",
+      "services/api/cmd/runtimeprobe/main.go": "f5fa7132258bc7b1f594e4780eb458deda4bd1547e37074f42ce91b7c253958c",
+      "services/api/cmd/runtimeprobe/posts.go": "c9ffbea6e8c4333319cc802c7201807d858d3a13799080b3e367feef44f00f06",
+      "services/api/cmd/runtimeprobe/verifier_gate.go": "cd3de8842a576427b3f2b32ef9d181848f83c6ea3ef7bcadb80e6f703cf35ad4",
+      "services/api/cmd/verifier/main.go": "2c2e502366b6eb0797d44137184cbaa9f98657cf21e3589bd88fd5a4317654a3",
+      "services/api/go.mod": "228555413dbb87a647fabd317189f4d6f5722a2d52a8865e191b093afa44b2d0",
+      "services/api/go.sum": "72f63e347d14c2f82805462d632aedaf5232cbf4d091fa9e8529443cf5c8cc34",
+      "services/api/internal/auth/postgres.go": "40cb4c626577ec88d869b84660405b9f4afa694d8b0012a5cc8dcf5a35484bf7",
+      "services/api/internal/authprivacy/authorization_evidence.go": "6cdb21169a3d1eb4c83c7c89e1a136a9ef14c8bd0525b6c28d2dfaa68dd6ecdc",
+      "services/api/internal/authprivacy/authorization_gate.go": "fe169653b70f76b0c092e7378f6e1e665daf620fa3522b5161bd0ee128b1f7d1",
+      "services/api/internal/authprivacy/authorization_gate_test.go": "88487faaf4a3a071e69327974110e03245c2cba5e32926a04f963ee5784b972d",
+      "services/api/internal/authprivacy/common.go": "47272c335e64ee59012d948625fac16af36bbe4795a37ea7228aef7268f8f83f",
+      "services/api/internal/authprivacy/community.go": "9c0168e38e2c747a4a4f698c9af4a1c129bd1f0498fda770eaa0f3be866045a7",
+      "services/api/internal/authprivacy/community_authorized.go": "06f2631a058aff961770093294adcbbf9fa7f79daccb7c05b435fa68a3e010f3",
+      "services/api/internal/authprivacy/community_authorized_test.go": "fce9e54bf03b090e2bdeb0e2ee6193b308bcf751b47dfe26a18c483626a0a31d",
+      "services/api/internal/authprivacy/community_closure.go": "1b43cc9b096fb3084ad0b5b320d2a01b4e9e8c8f1e999e075d2ff40003f3a799",
+      "services/api/internal/authprivacy/community_closure_test.go": "e0ccbd7da39f02f0e41f26913d29aafc538e231a1e73536ed72d30fff824f49e",
+      "services/api/internal/authprivacy/community_credential_cleanup.go": "06040b7dde029e458f4c97a5d12409f4c34c1b6d24f7d7f1b6dfb6ea4c3ac860",
+      "services/api/internal/authprivacy/community_credential_result.go": "416a2735f8fabfe6df4fa53a8dbf9e2ccd126774422a6cc1258380795e84bed3",
+      "services/api/internal/authprivacy/community_credential_result_test.go": "9954207658cfd9f75ab085719a2b591f8275f1e381e99a74568efb77af9b9e7a",
+      "services/api/internal/authprivacy/community_credentials.go": "a5d89292a8f359400676bee7c404178a2c8be71951a769f74e2ac1fbfaf9017e",
+      "services/api/internal/authprivacy/community_credentials_test.go": "e4fda722bcb71f7f0e08e0d2345db62d6a05ce0ba43297f8ad86dd4243468607",
+      "services/api/internal/authprivacy/community_identities.go": "0ee67c7158250418d9ef5163b83a33769c8947a5f5da3169f4d163438134f48b",
+      "services/api/internal/authprivacy/community_identities_test.go": "087a78e96a009694f79ba444a8846e76c095c90b6c58bcb1967d4249fda394df",
+      "services/api/internal/authprivacy/community_identity_closure_test.go": "5ea05ccdcb3b68517117102e9797d12faeb602182abb5fdd3dbe3188f5e4c31c",
+      "services/api/internal/authprivacy/community_identity_projection.go": "e4b8fc160393f18794b5bb56633f960a2175e8400ec080026e3c31c49003767a",
+      "services/api/internal/authprivacy/community_passkey_recovery.go": "616fc12e5708a971ff50e36a72d0d1ff64f7b86b8f407b30bceb159cc82a02a5",
+      "services/api/internal/authprivacy/community_passkeys.go": "cf911bb9827a5a7920daf46c0c5d413422f1ceb389a8b96cce8b1a062d10b697",
+      "services/api/internal/authprivacy/community_posts.go": "78f2f1798cfcc441c30ed473d338e9d0e8ae8a15ce2a8734609b87f67e20e26b",
+      "services/api/internal/authprivacy/community_posts_lifecycle.go": "bf458764debf40c5b788f18e6736ba1e09bd6685a5ae2c32a861a9cd8a8dcd24",
+      "services/api/internal/authprivacy/community_posts_read.go": "eaf95bb2d6721e51b4163eb027179926002b6f4460817aa54d47315d5a6e6086",
+      "services/api/internal/authprivacy/community_posts_schema.go": "f8f3ad9fbb18c4737d776b213fceca1f92767e0fea0058dd018c090acbf2d5d6",
+      "services/api/internal/authprivacy/community_posts_schema_test.go": "6cef4d414fd06747e5acb1e06f2c8062300996c40321650e5de29311a1d17100",
+      "services/api/internal/authprivacy/community_posts_test.go": "6d2f38a8fa7f8576d8e019b0b12dccc214d5742c384e83ca6387ff5c95b84a66",
+      "services/api/internal/authprivacy/community_recovery.go": "abdfaf73a9074ce60f438d67b9db1cf6f8d0cf0749cf492e27b12a8a2cc8d53f",
+      "services/api/internal/authprivacy/community_recovery_test.go": "c405f73c8f822099dc1ff580afaa67a87ba849789752b7be10f196dc5919ebe3",
+      "services/api/internal/authprivacy/community_sessions.go": "79b2afe3f62545444e40b4d41bb5d8fc055cc85f7df84c4c73a36b7f408c0fb8",
+      "services/api/internal/authprivacy/community_sessions_test.go": "71ac15abb08c504e8ba5dce41fe2a3208c0a5de0255d4b8949187ef185d898f4",
+      "services/api/internal/authprivacy/credential_types.go": "764d3dcab4ce0c854f9db16ae18f0604527c87190b0b32b3d05b9f45088e7a1a",
+      "services/api/internal/authprivacy/eligibility_confirmation.go": "d4104e60a49030cb85217417accedf3abb088b2d7b43bc46776cb4558f027398",
+      "services/api/internal/authprivacy/eligibility_confirmation_test.go": "8c298bb9ca854ef67f7c761d2ebbc5f772f536a06bd479aa1841b6a6adad3996",
+      "services/api/internal/authprivacy/eligibility_mail_worker_test.go": "c9ce4e54bc801e14a6c77647f5b826ba3ce320322463fd735f386aa6a3cd9469",
+      "services/api/internal/authprivacy/eligibility_otp.go": "064b0883a3180b62180b6f109592506406f0747217cd735fd28cfc87782bf5f4",
+      "services/api/internal/authprivacy/eligibility_otp_test.go": "ea37c59775db4fafa46efa2575a36524f2f3cb7529c308e759f39b02ffa1ff7d",
+      "services/api/internal/authprivacy/eligibility_types.go": "acec7f9cb07c119b7f15c5c13cbc2de574fe1bb2890646b456915eede659e17f",
+      "services/api/internal/authprivacy/identity_closure_migration_test.go": "0fefc2f4c9fe9e6d7caaede614f0b04001143fbbd2eba8b93e7e9513973402b9",
+      "services/api/internal/authprivacy/identity_rules.go": "4c2c1278822cccf7036e737fecc441b49fd9e1cbd51ee618a6bccd37c44e3439",
+      "services/api/internal/authprivacy/identity_rules_test.go": "77f0680381fd79897da316189496a44f3d3e868603fc7590ee0d36997ab37aaf",
+      "services/api/internal/authprivacy/mail.go": "3a001f7fcc8b6d8401feb0291c1e4b19a3bc2c0004c38c304f585e238be035e6",
+      "services/api/internal/authprivacy/mail_test.go": "6d2c3db202d0604ffe4e1bb1f6b521228be2d54ca0b503ed9ab06150381a8301",
+      "services/api/internal/authprivacy/outbox.go": "d19e8ca2a6699a9a6ec5549be927474f332113d819b728b6dc50d9dffc0b88af",
+      "services/api/internal/authprivacy/outbox_authorization_test.go": "20cf84a5fc30c5d25dce96baccac9b718476c42d021a4650c2870a715946b629",
+      "services/api/internal/authprivacy/outbox_workers_test.go": "0820b55bcfcebd8e5f8afbf668de372129e56bec863b70b08c6206614ee10c9f",
+      "services/api/internal/authprivacy/passkey_verification.go": "32a5db80a5a8e05690560b60b53daf5edbddb86068e99de0b645e9afa3a07dc8",
+      "services/api/internal/authprivacy/passkey_verification_test.go": "1d7ac065bdc3c9715ee827a739197459a295a2cbe41bd9c4663b347914d12fbe",
+      "services/api/internal/authprivacy/password.go": "9d817d8f8a18e4ac911dbb350e59fcab71b6c4bd10d0f10a7f92f6822555535e",
+      "services/api/internal/authprivacy/password_test.go": "99bec8834a9a123e3d290e6293fbb22cfed30b80dc260260f3c884e4dec01bd5",
+      "services/api/internal/authprivacy/postgres_test.go": "f6b571aaffe4f0f2e79c352013c068e94c062d28b3bb465b9f5492e8530b9cc8",
+      "services/api/internal/authprivacy/privacy_boundary_postgres_test.go": "a2fa626a1a48b937354f8bf2277d2c71a7ccda6806af513e9630e8c9a88ce791",
+      "services/api/internal/authprivacy/protocol/protocol.go": "0793427b595f3972719c2ce9366f3177e74ef821eefbdd4a78dc69ea08c9a021",
+      "services/api/internal/authprivacy/protocol/protocol_test.go": "eb2c1fa28a321562a4ba29e79f7dff1525b5a8e0e989c0fab1d7c98e671b0763",
+      "services/api/internal/authprivacy/retirement_authorization_test.go": "1eea54e3291bf5ddfc7664420b71bcf24af00627724d64af42c973e75f4e77d9",
+      "services/api/internal/authprivacy/retirement_http.go": "5f72e9023c44abe0cf2e227dcf3bd15679305a2dcea1505f748e59e060c74398",
+      "services/api/internal/authprivacy/verifier.go": "44be3c0c946e4a26d222322567ad9a697565a6961f587cc882f9f5e1bed8026a",
+      "services/api/internal/authprivacy/verifier_gate_business_test.go": "a7e631c194acfe275b8d5c3afef05da76872eadc9370b4ff71c67e6961f4f67f",
+      "services/api/internal/authprivacy/verifier_gate_test.go": "badc951f5cc27592ea009d00a5e4a0fcc8ed1f067349b25758fff38fa8814013",
+      "services/api/internal/authprivacy/workers.go": "fac2b15263dbf3ba3e635aeeae7c025032935ed3f58006da0bca0bc702e46209",
+      "services/api/internal/authprivacy/workers_test.go": "72a5eda3261f63c4367b3cab8275e7ad426cc386b10db39a31495515d7bf7438",
+      "services/api/internal/authprivacyhttp/channel_endpoints.go": "2b11bd81fbb659302608d4701a12ad31bf84f29221ce21781035ef1453430836",
+      "services/api/internal/authprivacyhttp/channel_endpoints_test.go": "88ab141145600f7cd7977792eda6b805d8fc3c93094256a537d24cf83dfe384c",
+      "services/api/internal/authprivacyhttp/credential_endpoints.go": "f3724306c80d0dc1600e7a3e5821251befd313ed7cdf8668dd7c21dda4dbfa47",
+      "services/api/internal/authprivacyhttp/credential_endpoints_test.go": "d1bdcbb1807f1212dcd0936c46b44885f24f73740eb8631594bbc9ddc373e5f9",
+      "services/api/internal/authprivacyhttp/credential_endtoend_postgres_test.go": "cc62273647dafbca381691117f7e4caa0d1ec4c2c0885f8eb9464b01f7accd91",
+      "services/api/internal/authprivacyhttp/endpoints.go": "fffd269f0875652a4af345e587b50a1bd39159d3d5a789893c348d94dcd0422d",
+      "services/api/internal/authprivacyhttp/endpoints_test.go": "831f615fd4d5f9422dea4cb70853982432b5e0d99656f804328288a8a94c8168",
+      "services/api/internal/authprivacyhttp/endtoend_postgres_test.go": "6b6ff6db3c298b7ed2d5cb6ae8012d456aa9831fde40f4e8f9ff383782208536",
+      "services/api/internal/authprivacyhttp/identity_endpoints.go": "c96a49d1c700cda55a91d61827a3369ea55b54a2ce77cb8d4fc2e37b8764cc1d",
+      "services/api/internal/authprivacyhttp/identity_endpoints_test.go": "9e84431478b63f82fa028ca0a96749813ea2a113085a6ae74fac73d537b0fa7e",
+      "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go": "94bce40edbca8a14464d35a86e7a9c0e80c20735b4320d41b11a16529ad294fb",
+      "services/api/internal/authprivacyhttp/limits.go": "2b136295f2709df194bb285357823f1651d6838c4e6d99e0880d5e58ba51559e",
+      "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go": "ce5bc58799430eb6b8477b6e76742b0a793d7ec8d42f6852506d7c653c488b4a",
+      "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go": "5f4bdfa8750181d26f64f263cae0537bb0dcd4dcbecb42bf06a68f5c41583e2b",
+      "services/api/internal/authprivacyhttp/peer.go": "d416fd6f1fdc0d021e757306e9b9918dc91398d0b28a4e7115014751f39e33f3",
+      "services/api/internal/authprivacyhttp/peer_test.go": "a00f474a07906d16f65c69927b06c16ba8037d519db8e68e71f8f2483fcdbacf",
+      "services/api/internal/authprivacyhttp/posts_endpoints.go": "9530ebe14b11a3812399e17f3b271750ebbf96ec4b0759f2e97b7f5a7adfd9a0",
+      "services/api/internal/authprivacyhttp/posts_endpoints_test.go": "9e602b31baede16c9a9891e93d5616ae77256eac1f373f69183a80fb2824e210",
+      "services/api/internal/authprivacyhttp/posts_postgres_test.go": "57a691d558b2c626f39d5f460c1aafc4f911f3fb43af050ffc141f8c9b89c632",
+      "services/api/internal/authprivacyhttp/privacy_boundary_test.go": "d2fa80d0ee401a0dbf27e78b1afa2bcdba8bfeb395bec6cc0014f59542c82423",
+      "services/api/internal/authprivacyhttp/recovery_closure_endpoints.go": "a6a30af25921e1155625ea17048f43f1178cdf0fcf90c934ab49efff62301ddf",
+      "services/api/internal/authprivacyhttp/recovery_closure_endpoints_test.go": "1ee0300a62df1aa041c880c93f5b59e5950a927f9cae51265186e045f408770b",
+      "services/api/internal/authprivacyhttp/session_endpoints.go": "026d254dbc47be0caada6b0c7617b697240a8e558d861418cce4e3b0aeef67e2",
+      "services/api/internal/authprivacyhttp/session_endpoints_test.go": "d4fc6e7a7198043cabb53483eaaef8229e29c6b7483e4f80ac6bd383ed0e0a34",
+      "services/api/internal/authprivacyhttp/strict.go": "296658f575bc2c50b638483e1bfafe9e3fbb6cbb00fa326841868943db559832",
+      "services/api/internal/authprivacyhttp/strict_test.go": "4acf13871b2d3be5654bc1a1d5576abbd79740c2901f2e00ecec1c90f75a5aab",
+      "services/api/internal/authprivacyhttp/tls.go": "16e4d99ba30b50e6cba71eb1c9dcc385ae0440edceac53e42d90353d34b95022",
+      "services/api/internal/authprivacyhttp/tls_test.go": "336b99fa5c58efa8fb432609ed766d2d4590b1b69b54caab2cde456355656222",
+      "services/api/internal/authprivacyruntime/config.go": "b28c69bc7849bb648d8be5eaed827cf0fc8c5d22e88d74712840956cd4b0bf85",
+      "services/api/internal/authprivacyruntime/database_diagnostics.go": "427fbfedb46e72b343c5b773108cf2bc0c91775a2bce05875a02014612febad9",
+      "services/api/internal/authprivacyruntime/database_diagnostics_test.go": "e738d8df24b5d05a418f261adbc0aef0a3e2cef0c85bb46a8cc5342c13723a27",
+      "services/api/internal/authprivacyruntime/diagnostics.go": "ed35c61b16cd307510ede20b7b799e6ccac60d54679f5f57dd6a0cbfeb7a241c",
+      "services/api/internal/authprivacyruntime/diagnostics_test.go": "b5d7b2f65f8ebb77f85cecd3078a7bc0f7243384f990afa14eda75df5afd0e32",
+      "services/api/internal/authprivacyruntime/posts_config_test.go": "69e48733ee72d262f676acaa4e43c1834afbb47e52cc05e425aea43c04aba0c3",
+      "services/api/internal/authprivacyruntime/server.go": "2a27b939816950148cd8462efc813eb26e8ac64f17dddc89b57f9f1f8ff98cab",
+      "services/api/internal/authprivacyruntime/webauthn_config_test.go": "2e52b965f628f3324197c14f6b7c4dba559bf1cb245cc96798b612564d6bad34",
+      "services/api/internal/channels/catalog.go": "e6e7d77eceb95618f114f3363fec39bc5bb737b57f2e2f60eecb267e0de6cfc5",
+      "services/api/internal/channels/model.go": "be97830c533480ca63ed00f3fc5bd197cde9637f8ca7e728270a50efcb887225",
+      "services/api/internal/channels/postgres.go": "c0e7bf55902f87a20eca33b180108924fbb420024c288b2e89d770cd7d9c327e",
+      "services/api/internal/channels/queries.sql": "b29f945d1a58d49e950cf7aaaa3c4867ce7350f0c98d34502152ecaf11bd2a2b",
+      "services/api/internal/channels/service.go": "2c0a444fa7594201b77049da55691f17cf7a7472e748b803f9c57db81f88b487",
+      "services/api/internal/httpapi/router.go": "445b563df96f63c9269c36533064408a33809b665f9e6e065dfb4b2d98447c4b",
+      "services/api/internal/posts/content.go": "d71f4fc9866b07da8988ac87cc0a5c099492b0aef39e7989fe7c0119b4637f9a",
+      "services/api/internal/posts/content_test.go": "e9038547a798024a862a899c3deea08f3e1b9810a576486d224763aa5a267378",
+      "services/api/internal/posts/cursor.go": "b5572233a452785625693644338d5eaf8ecaa4fe764af28cdeaa057fc90898c6",
+      "services/api/internal/posts/cursor_test.go": "24b92f454d6fc6270a227a1aa111e952b252ce31335f4e4027b9a8dd7a9fe70c",
+      "services/api/internal/posts/model.go": "27778d75a4a2eb81f1c901ba1153f4aab4e9e60cea477d76f430a43f72c8786d",
+      "services/api/internal/posts/model_test.go": "a90b515cdc4a9800c562970c9d9991eaf22c84a0ceb9367f856e84e60b68b2e9",
+      "services/api/internal/posts/protocol.go": "fc649c4282fc521858671eead359875b3f22b402143c46535f36a8c7db3fc384",
+      "services/api/internal/posts/protocol_test.go": "390062fade0e0419e97e859175bdc45dd9caf45e74863da1b7e2fe70cd00260d",
+      "services/api/internal/posts/testdata/GraphemeBreakTest-16.0.0.txt": "ee2b9354d270ac061b29f09662cafea06341d77e704b8cc6bd72aaeeda363cb5",
+      "services/api/internal/posts/testdata/LICENSE-UNICODE.txt": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+      "services/api/internal/posts/unicode16.go": "0ca2f4007e03fd362948a920624af2beeed53357cca3150c7467a6ff58c42522",
+      "services/api/migrations/0001_sessions.sql": "8b011adf71047a1de622a6f9809c4a78eaf305304e5ee536fa2b5a67092dc720",
+      "services/api/migrations/0002_channels.sql": "4b7d6429acb31be315f1546710c8136e0bee48bf2cd1021a385c5710f9b54504",
+      "services/api/migrations/0003_authprivacy.sql": "51ba4d7835a1fbb33a264c7693a365a6cc1997f77f0825bc68f8dc2e28184278",
+      "services/api/migrations/0004_authorization_gate.sql": "b2c7737c6ef24658bba39aa65e003158ee26d4669d098ba79b8f9562b8ed0101",
+      "services/api/migrations/0005_session_lifecycle.sql": "4dd140ba2724b4bcdd432fe365f086fdd10b25ae65110445d98892a44e4ceb6e",
+      "services/api/migrations/0006_recovery_reset.sql": "4bb9e591c9a0c1774e39de4932e79ef608cfdb7d11674d3bd8fff59db075b730",
+      "services/api/migrations/0007_account_closure.sql": "9fa39a97a027cc32a51fc7955f6ee04332f4803560267e33e6314b9ad2e39094",
+      "services/api/migrations/0008_recovery_credentials.sql": "c5ff5114fa790a86606cc66fd363e69a292bb2f17a8b611f60fddbced8d31fd0",
+      "services/api/migrations/0009_receipt_worker_claim.sql": "2386fe4362eab48c423baf4862d6f621677c665131893e50a70351125fc1bcd7",
+      "services/api/migrations/0010_legacy_fence.sql": "e2e377cda6fea2543e25b8acac010fd9d41d8254ca2142f9aa18984cdf99ad33",
+      "services/api/migrations/0011_identity_management.sql": "eb49fc3b43ff47febfa1682021d48b2b64a5e09e1de65d97b73ef1c90bc0889b",
+      "services/api/migrations/0012_identity_account_closure.sql": "4cf0979531530f053cb365fa01eaddfb1c925b1c03c1e019382751d2a0d78f0d",
+      "services/api/migrations/0013_community_text_posts.sql": "35274cba859c0d51fc7805e341ea3880d12ee7f67eedad96f9841c915f1344fe",
+      "services/api/sqlc.yaml": "b7bd3aa2d96f7367216102f4615380c1960ec70b923c32b4b914b0fb29b0c85a",
+      "services/api/verifier-migrations/0001_authprivacy.sql": "102d6a2f9faafbdf992bad8e5122323b46bba80d6ed8419d48cc8466cef41fa0",
+      "services/api/verifier-migrations/0002_otp.sql": "204a03451012ba39b08a36c6b39a4a8ef37dede968b7399df9425a1b469ab152",
+      "services/api/verifier-migrations/0003_confirmation.sql": "40e0413282ea541d7195d7c443738631a5627f49bdd0f5c421ff19bf8f870a46",
+      "services/api/verifier-migrations/0004_authorization_gate.sql": "72fff9927f88d5546a8571b53f94b353f5e22e64fdc74c2fe352b013ed78f132",
+      "tools/check-community-text-contract.py": "c26ca7ed6a6b1807d3a4b8339a0df5022782671f139e103102e85650aae3f3e3"
+    },
+    "excluded": "Verification JSON, Markdown reports and handoff/ledger, artifacts and caches"
+  },
+  "checks": {
+    "fullGoSqlRace": {
+      "result": "PASS",
+      "command": "GOWORK=off sh authlab/run-isolated.sh (cwd Linux snapshot services/api)",
+      "underlyingCommand": "go test -race -count=1 -p 1 ./...",
+      "exitCode": 0,
+      "packageSeconds": {
+        "cmd/authdev": "1.129",
+        "internal/authprivacy": "408.149",
+        "internal/authprivacy/protocol": "1.151",
+        "internal/authprivacyhttp": "49.728",
+        "internal/authprivacyruntime": "1.034",
+        "internal/posts": "1.026"
+      },
+      "scope": "Full suite snapshot before final missing-channel HTTP error projection repair; unchanged auth/SQL/worker source retains current coverage; affected HTTP whole package independently rerun with real SQL/race and runtime probe compiled/executed again",
+      "testedSourceFingerprintSha256": "e915e71c27dbe941b38170bc85132c49d125ed3fa57de9028dbbe976a31d3b13"
+    },
+    "fullGoVet": {
+      "result": "PASS",
+      "command": "go vet -mod=readonly ./...",
+      "exitCode": 0,
+      "scope": "Current final snapshot go vet -mod=readonly ./... passed; HTTP and runtime agents also vet their final snapshots",
+      "testedSourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22"
+    },
+    "postSqlScenarios": {
+      "result": "PASS",
+      "topLevelTests": 15,
+      "file": "services/api/internal/authprivacy/community_posts_test.go",
+      "tests": [
+        "TestPostAtomicAcceptanceOriginalReceiptAndWorkerPostgres",
+        "TestPostUnknownSealAndDelayedCommandPostgres",
+        "TestPostConcurrentReplayAndSealPostgres",
+        "TestPostRejectedFactOwnershipAndSessionReplacementPostgres",
+        "TestPostCancelPublicationRaceAndCleanupPostgres",
+        "TestPostMuteExpiryAndExplicitRetryPostgres",
+        "TestPostClosureCancellationNeverRevivesAttemptPostgres",
+        "TestPostIdentityDeleteProjectionOwnershipAndHiddenTaskPostgres",
+        "TestPostFormalClosureIndependentCodesAndExpiredFactsPostgres",
+        "TestPostCeilingPaginationAndCursorIsolationPostgres",
+        "TestPostGateFreezeAndStaleSessionFinalAuthorizationPostgres",
+        "TestPostBanExpiryAndHideNeverRestoreTaskPostgres",
+        "TestPostTaskCursorRetryCeilingPostgres",
+        "TestPostProtocolKeysCannotLoseHistoricalDomainPostgres",
+        "TestPostBudgetAndLiveTaskLimitPostgres"
+      ],
+      "scope": "Immutable acceptance/replay/seal, concurrency, ownership/current session, cancel/publication, mute/ban/closure stop and explicit retry, identity/delete/closure projections, ceiling cursors, protocol-key freeze/recovery, 120-per-minute and128-live cap"
+    },
+    "schemaRestrictedRuntime": {
+      "result": "PASS",
+      "topLevelTests": 9,
+      "lifecycleSubtests": 4,
+      "packageSeconds": 23.296,
+      "evidence": "services/api/authlab/community-text-post-schema-verification.json"
+    },
+    "httpUnitAndTlsPostgres": {
+      "result": "PASS",
+      "httpUnitTopLevelTests": 12,
+      "tlsPostgresTopLevelTests": 2,
+      "operationsCovered": 14,
+      "files": [
+        "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+        "services/api/internal/authprivacyhttp/posts_postgres_test.go"
+      ],
+      "scope": "Current 12 posts unit and 2 real HTTPS/PG main tests included in complete HTTP SQL/race package rerun; schema role privileges separately verified; historical focused time retained with original scope",
+      "currentWholeHttpPackageSeconds": 39.349,
+      "evidence": "services/api/authlab/community-text-post-http-verification.json",
+      "historicalBefore404Repair": {
+        "httpUnitTopLevelTests": 11,
+        "tlsPostgresTopLevelTests": 2,
+        "focusedPackageSeconds": 8.306
+      }
+    },
+    "runtimeR03": {
+      "result": "PASS",
+      "phaseCount": 15,
+      "httpsRequests": 151,
+      "textOperationsCovered": 12,
+      "evidence": "services/api/authlab/community-text-posting-t2-runtime-verification.json",
+      "normalizedProductionSourceSHA256": "3d778acfcc8b8bae12a44ac68a873c9b47e2b70a9ae43dbcbe3e2cd8b7d87a3f",
+      "scope": "Actual C/V cmds, worker, Mailpit, 12-to13 Goose migration, non-owner roles, restart, freezes/restores, privacy/log checks; excludes RETRY/HIDE actual cmd and mobile"
+    },
+    "unicode16": {
+      "result": "PASS",
+      "officialGraphemeCases": 1093,
+      "sharedFramingVectors": 9,
+      "sharedGraphemeVectors": 7,
+      "scope": "Go only, exact original text and UAX29 revision45 Unicode16; fixture independent from library"
+    },
+    "openapiFull": {
+      "result": "PASS",
+      "specifications": 5,
+      "command": "python -B packages/openapi/check-specs.py",
+      "tooling": "Existing WSL Python3.12 PYTHONPATH=/mnt/d/zewbbyTest/Hnuhole-env/linux/python-validation; PyYAML6.0.1 and openapi-spec-validator0.9.0; -B read-only dependencies"
+    },
+    "staticContract": {
+      "result": "PASS",
+      "operations": 14,
+      "framingVectors": 9,
+      "command": "python -B tools/check-community-text-contract.py",
+      "scope": "Static only, not proof of SQL/HTTP/mobile"
+    },
+    "diffWhitespace": {
+      "result": "PASS",
+      "command": "git -c core.safecrlf=false diff --check"
+    },
+    "currentHttpSqlRace": {
+      "result": "PASS",
+      "packageSeconds": 39.349,
+      "mainTestsPassed": 69,
+      "testEventsPassed": 371,
+      "evidence": "services/api/authlab/community-text-post-http-verification.json",
+      "scope": "Current complete HTTP package including final404 read/409 create delta; MobileClient runner SKIP"
+    },
+    "finalSourceAndHandoffConsistency": {
+      "result": "PASS",
+      "sqlRaceSnapshotDelta": [
+        "services/api/cmd/runtimeprobe/posts.go",
+        "services/api/internal/authprivacyhttp/posts_endpoints.go",
+        "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+        "services/api/internal/authprivacyhttp/posts_postgres_test.go"
+      ],
+      "scope": "Unchanged auth/SQL/worker matches full SQL/race snapshot; final HTTP delta matches actual complete HTTP SQL/race evidence; runtime probe tested by current R03; all current service source matches final whole-vet snapshot; file hashes, module scope flags and artifact links consistent"
+    }
+  },
+  "skips": [
+    {
+      "test": "TestPostSchemaRestrictedRuntimePrivilegesPostgres",
+      "runner": "full run-isolated.sh",
+      "result": "SKIP",
+      "reason": "AUTHLAB_POSTS_RUNTIME_DSN not supplied by this runner",
+      "separateProof": "PASS in run-post-schema-isolated.sh with real restricted role"
+    },
+    {
+      "test": "TestMobileClientHTTPSPostgres",
+      "runner": "full run-isolated.sh",
+      "result": "SKIP",
+      "reason": "AUTHLAB_MOBILE_FLUTTER unset; mobile subprocess not requested",
+      "separateProof": "NOT_RUN for T2 posts chain"
+    }
+  ],
+  "notRun": [
+    {
+      "id": "T3-client",
+      "result": "NOT_RUN",
+      "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+      "requiredEnvironment": "Flutter branch and real native business persistence",
+      "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+    },
+    {
+      "id": "T4-fixed-auth-mobile-chain",
+      "result": "NOT_RUN",
+      "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+      "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+      "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+    },
+    {
+      "id": "native-platform",
+      "result": "NOT_RUN",
+      "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+      "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+      "next": "Cross-process and actual App persistence/backup validation"
+    },
+    {
+      "id": "P03-P04-production",
+      "result": "NOT_RUN",
+      "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+      "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+      "next": "Production checklist and historical lifecycle capacity tests"
+    },
+    {
+      "id": "R03-RETRY-HIDE",
+      "result": "NOT_RUN",
+      "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+      "requiredEnvironment": "Actual C/V cmd test fixture",
+      "next": "Optional broaden R03 during T4; not a missing backend implementation"
+    }
+  ],
+  "affectedModules": [
+    "B02",
+    "B03",
+    "B05",
+    "B06",
+    "B10",
+    "A01",
+    "A03",
+    "A06",
+    "A08",
+    "A10",
+    "A12",
+    "A13",
+    "N01"
+  ],
+  "crossModuleScenarios": [
+    "X06",
+    "X07"
+  ],
+  "fullModuleAcceptancePassed": false,
+  "wholeCP01toCP15Passed": false,
+  "gitDelivery": {
+    "T1": "PUSHED_1b7fe2e",
+    "T2": "NOT_COMMITTED_NOT_PUSHED",
+    "deployed": false
+  },
+  "failureAndRepair": [
+    {
+      "result": "FAIL",
+      "problem": "Accepted first internal TaskState differed from immutable receipt decode",
+      "repair": "Both initial acceptance and retry use ACCEPTED; full race/SQL replay tests pass"
+    },
+    {
+      "result": "FAIL",
+      "problem": "Public cursor set LastID and task cursor set LastOrdinal, violating codec branch allowlist",
+      "repair": "Each branch fills only correct positioning fields; public/task ceiling tests pass"
+    },
+    {
+      "result": "FAIL",
+      "problem": "Test fixtures tried last identity deletion or original session after Gate recovery",
+      "repair": "Preserve another identity and re-login current auth generation; no product rules relaxed"
+    },
+    {
+      "result": "FAIL",
+      "problem": "R03 probe incorrectly expected200 for CREATE",
+      "repair": "Use202 and rerun whole R03 to exit0; initial fixture cleaned"
+    },
+    {
+      "result": "FAIL",
+      "problem": "Canonical nonexistent channel GET mapped POST_CHANNEL_UNAVAILABLE404 to503 because CREATE uses409 for same code",
+      "repair": "Keep read404 and durable CREATE rejection409; unit, current whole HTTP SQL/race and actual cmd R03 all reverified"
+    }
+  ],
+  "cleanup": {
+    "isolatedSqlClusterStoppedRemoved": true,
+    "runtimeOwnedContainersAfterRun": 0,
+    "rootSnapshotAndPrivateCachesRemoved": true,
+    "windowsTemporaryHelperCleanup": {
+      "result": "PASS",
+      "reason": "用户手动删除后，本会话逐项核对七个原路径均不存在；之前自动审批拒绝保留为历史。",
+      "directory": "C:/Users/Administrator/AppData/Local/Temp",
+      "retainedFiles": [],
+      "scope": "Small helper scripts outside the repository; no database, secret, APK, large log or build cache retained by this item",
+      "historicalAutomaticDeletionResult": "BLOCKED_BY_POLICY",
+      "removedBy": "用户手动删除，本会话只读复核",
+      "verifiedAbsentFiles": [
+        "hnuhole-t2-root-sync.sh",
+        "hnuhole-t2-root-full.sh",
+        "hnuhole-t2-record.py",
+        "hnuhole-t2-final-check.py",
+        "hnuhole-t2-final-vet.sh",
+        "hnuhole-t2-cleanup.py",
+        "hnuhole-t2-final-sanity.py"
+      ]
+    },
+    "otherTaskEnvironmentTouched": false,
+    "scope": "Only invocation-owned temporary fixtures/materials/snapshots/caches; existing SDK/AVD and original auth/device environment preserved",
+    "rootTemporaryPathsVerifiedAbsent": [
+      "/tmp/hnuhole-community-t2-source",
+      "/tmp/hnuhole-community-t2-final-vet-source",
+      "/tmp/hnuhole-community-t2-root-gocache",
+      "/tmp/hnuhole-community-t2-protocol-gomodcache",
+      "/tmp/hnuhole-community-t2-focused.log",
+      "/tmp/hnuhole-community-t2-full.log"
+    ]
+  },
+  "sourceRevisions": {
+    "fullSuiteBeforeFinalHttp404Repair": {
+      "sourceFingerprintSha256": "e915e71c27dbe941b38170bc85132c49d125ed3fa57de9028dbbe976a31d3b13",
+      "changedFilesInFinalSnapshot": {
+        "services/api/cmd/runtimeprobe/posts.go": {
+          "before": "6450d076bd9dc4443934c62c9067966ebfa17a9bb6d843f03cc39eb63f859eba",
+          "after": "c9ffbea6e8c4333319cc802c7201807d858d3a13799080b3e367feef44f00f06"
+        },
+        "services/api/internal/authprivacyhttp/posts_endpoints.go": {
+          "before": "095c3377e4ee768ef56f78e3f515c952f73f96d02b2bbc2bf4afa31c801aa035",
+          "after": "9530ebe14b11a3812399e17f3b271750ebbf96ec4b0759f2e97b7f5a7adfd9a0"
+        },
+        "services/api/internal/authprivacyhttp/posts_endpoints_test.go": {
+          "before": "457430cafc8f76f3d74ecbc531a67a61a8074ec0385eaf684096d30d6009a4a6",
+          "after": "9e602b31baede16c9a9891e93d5616ae77256eac1f373f69183a80fb2824e210"
+        },
+        "services/api/internal/authprivacyhttp/posts_postgres_test.go": {
+          "before": "95336cb38e33826fead1def3da74be9dfd01527e3521276d176ff24f7558797a",
+          "after": "57a691d558b2c626f39d5f460c1aafc4f911f3fb43af050ffc141f8c9b89c632"
+        }
+      },
+      "currentDeltaEvidence": [
+        "services/api/authlab/community-text-post-http-verification.json",
+        "services/api/authlab/community-text-posting-t2-runtime-verification.json"
+      ],
+      "unchangedAuthSqlWorkerReusedWithOriginalVersionEvidence": true
+    }
+  }
+}

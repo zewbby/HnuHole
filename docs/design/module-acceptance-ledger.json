@@ -389,6 +389,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -692,6 +766,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -1074,6 +1222,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -1370,6 +1592,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -1607,6 +1903,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -1902,6 +2272,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "NOT_RUN",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "No posts local persistence/full App test on this branch",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -2059,6 +2503,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -2185,6 +2703,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "NOT_RUN",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "No posts local persistence/full App test on this branch",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -2610,7 +3202,7 @@
     {
       "id": "B02",
       "name": "预设身份与帖内身份",
-      "implementationState": "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING",
+      "implementationState": "FOUNDATION_AND_TEXT_POST_BINDING_IMPLEMENTED_OTHER_BUSINESS_PENDING",
       "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
       "currentResult": "BLOCKED",
       "verificationEntries": [
@@ -2937,6 +3529,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -3032,6 +3698,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -3052,8 +3792,8 @@
     {
       "id": "B05",
       "name": "新建帖子、草稿与发布任务",
-      "implementationState": "NOT_STARTED",
-      "acceptanceState": "NOT_READY_IMPLEMENTATION",
+      "implementationState": "PARTIAL",
+      "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
       "note": "仅设计规则，后续需本地业务/媒体与持久任务",
@@ -3062,13 +3802,87 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
       "id": "B06",
       "name": "帖子详情、赞藏与分享",
-      "implementationState": "NOT_STARTED",
-      "acceptanceState": "NOT_READY_IMPLEMENTATION",
+      "implementationState": "PARTIAL",
+      "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
       "note": "仅设计规则，无完整业务实现",
@@ -3077,6 +3891,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -3216,6 +4104,80 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityTextT2": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "plan": "docs/design/community-text-posting-plan.md",
+        "report": "docs/design/community-text-posting-t2-report.md",
+        "evidence": "docs/design/community-text-posting-t2-verification.json",
+        "sourceFingerprintSha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22",
+        "scope": "T2 server/SQL/HTTP/actual cmd listed scenarios only; client/device/production separate",
+        "notRun": [
+          {
+            "id": "T3-client",
+            "result": "NOT_RUN",
+            "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+            "requiredEnvironment": "Flutter branch and real native business persistence",
+            "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+          },
+          {
+            "id": "T4-fixed-auth-mobile-chain",
+            "result": "NOT_RUN",
+            "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+            "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+            "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+          },
+          {
+            "id": "native-platform",
+            "result": "NOT_RUN",
+            "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+            "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+            "next": "Cross-process and actual App persistence/backup validation"
+          },
+          {
+            "id": "P03-P04-production",
+            "result": "NOT_RUN",
+            "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+            "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+            "next": "Production checklist and historical lifecycle capacity tests"
+          },
+          {
+            "id": "R03-RETRY-HIDE",
+            "result": "NOT_RUN",
+            "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+            "requiredEnvironment": "Actual C/V cmd test fixture",
+            "next": "Optional broaden R03 during T4; not a missing backend implementation"
+          }
+        ],
+        "sourcePaths": [
+          "services/api/internal/posts/",
+          "services/api/internal/authprivacy/community_posts.go",
+          "services/api/internal/authprivacy/community_posts_lifecycle.go",
+          "services/api/internal/authprivacy/community_posts_read.go",
+          "services/api/internal/authprivacy/community_posts_schema.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints.go",
+          "services/api/internal/authprivacyruntime/config.go",
+          "services/api/internal/authprivacyruntime/server.go",
+          "services/api/migrations/0013_community_text_posts.sql",
+          "infra/postgres/grant-community.sql"
+        ],
+        "testPaths": [
+          "services/api/internal/authprivacy/community_posts_test.go",
+          "services/api/internal/authprivacy/community_posts_schema_test.go",
+          "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+          "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+          "services/api/internal/authprivacyruntime/posts_config_test.go",
+          "services/api/authlab/run-post-schema-isolated.sh",
+          "services/api/authlab/run-isolated.sh",
+          "services/api/authlab/run-runtime-isolated.sh",
+          "services/api/cmd/runtimeprobe/posts.go"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
       }
     },
     {
@@ -5260,8 +6222,8 @@
     "handoffCheckerPassed": true,
     "cleanupPassed": true
   },
-  "latestBackendValidationEvidence": "services/api/authlab/privacy-regression-verification.json",
-  "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN",
+  "latestBackendValidationEvidence": "docs/design/community-text-posting-t2-verification.json",
+  "currentInventoryScope": "T2_SERVER_CHECKS_ONLY_MOBILE_FULL_MODULE_AND_PRODUCTION_PENDING; earlier top-level auth snapshots retained",
   "currentCommunityTextT1": {
     "recordedOn": "2026-10-08",
     "timeZone": "Asia/Shanghai",
@@ -5356,5 +6318,114 @@
     "parallelOwner": "codex/community-flutter-pages owns Flutter UI and business local persistence; backend contract only here",
     "nextStep": "T2 backend S1-S4; Flutter UI/local persistence separate; T4 requires fixed auth candidate and isolated integration/device window",
     "remoteDeliveryResult": "NOT_RUN"
+  },
+  "currentCommunityTextT2": {
+    "recordedOn": "2026-10-08",
+    "branch": "codex/community-text-posting",
+    "headCommit": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a",
+    "workingTreeUncommitted": true,
+    "status": "T2_SERVER_IMPLEMENTED_BACKEND_SCOPED_CHECKS_PASS_MOBILE_FULL_SLICE_PENDING",
+    "plan": "docs/design/community-text-posting-plan.md",
+    "report": "docs/design/community-text-posting-t2-report.md",
+    "evidence": "docs/design/community-text-posting-t2-verification.json",
+    "sourceFingerprint": {
+      "algorithm": "Sorted repoPath UTF8, NUL, raw SHA256(file bytes), then aggregate SHA256; Go/SQL/sh/mod/sum/yaml/py CRLF normalized to LF; protocol JSON and Unicode/licence TXT exact bytes",
+      "fileCount": 165,
+      "sha256": "78a12342bb9d3110aaacb5a84a7b939a666e4b81342582d487fefd6ef27bfd22"
+    },
+    "actualResults": {
+      "fullGoSqlRace": "PASS",
+      "fullGoVet": "PASS",
+      "postSqlScenarios": "PASS",
+      "schemaRestrictedRuntime": "PASS",
+      "httpUnitAndTlsPostgres": "PASS",
+      "runtimeR03": "PASS",
+      "unicode16": "PASS",
+      "openapiFull": "PASS",
+      "staticContract": "PASS",
+      "diffWhitespace": "PASS",
+      "currentHttpSqlRace": "PASS"
+    },
+    "skips": [
+      {
+        "test": "TestPostSchemaRestrictedRuntimePrivilegesPostgres",
+        "runner": "full run-isolated.sh",
+        "result": "SKIP",
+        "reason": "AUTHLAB_POSTS_RUNTIME_DSN not supplied by this runner",
+        "separateProof": "PASS in run-post-schema-isolated.sh with real restricted role"
+      },
+      {
+        "test": "TestMobileClientHTTPSPostgres",
+        "runner": "full run-isolated.sh",
+        "result": "SKIP",
+        "reason": "AUTHLAB_MOBILE_FLUTTER unset; mobile subprocess not requested",
+        "separateProof": "NOT_RUN for T2 posts chain"
+      }
+    ],
+    "notRun": [
+      {
+        "id": "T3-client",
+        "result": "NOT_RUN",
+        "reason": "Separate Flutter task; UI, drafts, Drift/SQLite, native business vault/noBackup not implemented by this branch",
+        "requiredEnvironment": "Flutter branch and real native business persistence",
+        "next": "Deliver T3 and align OpenAPI0.1.0/Unicode16 vectors"
+      },
+      {
+        "id": "T4-fixed-auth-mobile-chain",
+        "result": "NOT_RUN",
+        "reason": "Current auth acceptance candidate increment not integrated; no Dart/full App posts chain executed",
+        "requiredEnvironment": "Fixed auth candidate, disposable C/V environment, Flutter/Android device window",
+        "next": "Integrate and regress affected auth/worker/lifecycle boundaries; lost-response/process/storage-fault scenarios"
+      },
+      {
+        "id": "native-platform",
+        "result": "NOT_RUN",
+        "reason": "No posts-specific Android/native-storage/system-backup/iOS evidence",
+        "requiredEnvironment": "Independent Android real device and macOS/Xcode/iOS",
+        "next": "Cross-process and actual App persistence/backup validation"
+      },
+      {
+        "id": "P03-P04-production",
+        "result": "NOT_RUN",
+        "reason": "No production independent security, capacity, monitoring, cleanup seven-day SLA, backup/WAL/restore evidence; permanent lifetime history not bounded by128 live tasks",
+        "requiredEnvironment": "Independent operators, reviewed production time/anchor/backup systems and capacity workload",
+        "next": "Production checklist and historical lifecycle capacity tests"
+      },
+      {
+        "id": "R03-RETRY-HIDE",
+        "result": "NOT_RUN",
+        "reason": "Actual cmd runner covers12/14 operations; RETRY/HIDE covered by real SQL and TLS-handler tests only",
+        "requiredEnvironment": "Actual C/V cmd test fixture",
+        "next": "Optional broaden R03 during T4; not a missing backend implementation"
+      }
+    ],
+    "affectedModules": [
+      "B02",
+      "B03",
+      "B05",
+      "B06",
+      "B10",
+      "A01",
+      "A03",
+      "A06",
+      "A08",
+      "A10",
+      "A12",
+      "A13",
+      "N01"
+    ],
+    "crossModuleScenarios": [
+      "X06",
+      "X07"
+    ],
+    "moduleAcceptancePromotedToPass": false,
+    "authRuntimeModified": true,
+    "historicalAuthAndT1EvidenceRetained": true,
+    "nextStep": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate",
+    "gitDelivery": {
+      "T1": "PUSHED_1b7fe2e",
+      "T2": "NOT_COMMITTED_NOT_PUSHED",
+      "deployed": false
+    }
   }
 }

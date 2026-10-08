@@ -233,6 +233,9 @@ func (c *Community) RequestAccountClosure(ctx context.Context, request ClosureRe
 			return ErrConflict
 		}
 		result = ClosureAccepted{ID: request.ID, DueAt: final.TrustedAt.Add(closureWaitingPeriod)}
+		if e := c.stopPostPublication(ctx, tx, account, "REQUEST_CLOSURE", final.TrustedAt); e != nil {
+			return e
+		}
 		if _, e := tx.Exec(ctx, `UPDATE c_auth.accounts SET state='PENDING_CLOSE',closure_generation=$2,
 			session_generation=$3 WHERE account_id=$1`, account, closureGeneration+1, sessionGeneration+1); e != nil {
 			return e
@@ -538,6 +541,9 @@ func (c *Community) finalizeAccountClosure(ctx context.Context, account uuid.UUI
 		// Formal closure erases every remaining identity profile at the same
 		// authority point as CLOSED and its release outbox. Existing tombstones,
 		// cumulative creation counters and permanent change receipts survive.
+		if e := c.closePostAccount(ctx, tx, account, at); e != nil {
+			return e
+		}
 		if _, e := tx.Exec(ctx, `UPDATE public.community_identities SET nickname=NULL,avatar=NULL,
 			last_renamed_at=NULL,deleted_at=$2 WHERE account_id=$1 AND deleted_at IS NULL`, account, at); e != nil {
 			return e
@@ -638,6 +644,9 @@ func (c *Community) ApplyAccountBan(ctx context.Context, account uuid.UUID, expe
 		}
 		if state == "PENDING_CLOSE" && (!p.found || p.generation != closureGeneration) {
 			return ErrAccountUnavailable
+		}
+		if e := c.stopPostPublication(ctx, tx, account, "BAN", final.TrustedAt); e != nil {
+			return e
 		}
 		if _, e := tx.Exec(ctx, `UPDATE c_auth.account_restrictions SET ban_state='BANNED',ban_ends_at=$2,version=version+1
 			WHERE account_id=$1`, account, endsAt); e != nil {

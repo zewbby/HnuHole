@@ -14,6 +14,12 @@
 
 恢复凭据管理的交付见[本轮报告](../../../docs/design/auth-privacy-recovery-credentials-validation-report.md)与 `recovery-credentials-verification.json`；包含新鲜密码换码和可选WebAuthn绑定／恢复／移除。
 
+## 文字业务T2复验
+
+独立 `codex/community-text-posting` 已接入14个文字操作、迁移0013与发布worker。源码／测试／版本及精确PASS、SKIP和NOT_RUN见[报告](../../../docs/design/community-text-posting-t2-report.md)和[总记录](../../../docs/design/community-text-posting-t2-verification.json)。使用本任务Linux副本及独立缓存：`sh authlab/run-isolated.sh`检查完整Go／SQL／race／vet；`sh authlab/run-post-schema-isolated.sh`提供精确非owner权限与schema证据；`sh authlab/run-runtime-isolated.sh`执行实际C/V及posts／restart阶段。没有模块筛选参数，不把无DSN普通测试当SQLPASS。
+
+`authdev init`的新C配置生成三份独立材料，`posts`字段含`commandKeyFile`、`fingerprintKeyFile`、`cursorKeyFile`。已有配置省略该字段时posts关闭；启用必须完整0013及权限，V禁止持有帖子材料。永久两份防重钥承诺在首次合法访问的最终Gate事务内建立；已有历史承诺丢失或错配会冻结。不要为解决启动失败重新生成旧用途钥或清除永久回执。开发密钥和Gate材料仍只放runner私有目录，不能提交。
+
 ## 已实现
 
 - 当前会话＋新鲜密码复验恢复码轮换、五分钟Passkey绑定与固定目标移除；固定ES256／UV／可发现选项／none attestation，随机用户句柄，可发现恢复只签受限重设权限。所有提交继续经Gate并推进统一凭据版本。

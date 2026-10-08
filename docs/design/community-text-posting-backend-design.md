@@ -2,7 +2,7 @@
 
 日期：2026-10-08。分支 `codex/community-text-posting`，源码基线 `0eff47a21cd4f4ab1636b4468f7d5df9769a264f`。
 
-状态：设计产物；以下表、字段、接口和授权包装尚未实现。实际范围见[计划](community-text-posting-plan.md)，HTTP 唯一来源为 [post-api.yaml](../../packages/openapi/post-api.yaml)，调用与恢复说明见[API说明](community-text-posting-api.md)。认证验收的最终候选尚未接入。本会话承担后端契约／事务／迁移设计，Flutter 页面、UI评审和业务本机状态由独立 `codex/community-flutter-pages` 任务实现；这里只规定前端必须满足的接入边界。
+状态：T1设计已由T2实现，源码及当前验证范围见[T2报告](community-text-posting-t2-report.md)；T1原静态证据按原版本保留。实际范围见[计划](community-text-posting-plan.md)，HTTP 唯一来源为 [post-api.yaml](../../packages/openapi/post-api.yaml)，调用与恢复说明见[API说明](community-text-posting-api.md)。认证验收的最终候选尚未接入。本会话承担后端；Flutter 页面、UI评审和业务本机状态由独立 `codex/community-flutter-pages` 任务实现。
 
 ## 1. 领域关系与两个成功时点
 
@@ -52,6 +52,7 @@ flowchart LR
 | publication_tasks | task_id PK、post_id UNIQUE、owner_account_id、identity_id、channel_id、latest_attempt_version、owner_visible | 归属/身份/通道不可变且与binding一致；仅FAILED可由本人hide；无客户端owner selector |
 | publication_attempts | task_id＋version PK、accepted_stop_generation、state、accepted_at、acceptance_ordinal、terminal_at、failure_code、content_ref | version递增；acceptance_ordinal全局唯一且在Gate内分配；ACCEPTED→PUBLISHED/FAILED/CANCELLED；终态不可倒退；同task最多一个非终态attempt和至多一次PUBLISHED |
 | attempt_contents | task_id＋version PK/FK、title、body、request_digest、erased_at | 原文在受理后不可改，只能按精确不可逆erase规则清除；重试新增attempt，不UPDATE原文字 |
+| protocol_keys（T2补充） | singleton=1、version=1、command_tag、fingerprint_tag | 永久固定两份防重用途密钥承诺；只INSERT/SELECT，不能替换或丢历史承诺后重绑定 |
 | command_receipts | key_digest PK、owner_account_id nullable、operation、intent_fingerprint、outcome、task_id/post_id、attempt_version、error_code、committed_at | account＋key域唯一，operation包含在fingerprint，不能跨operation复用同ID；ACCEPTED/COMMITTED/REJECTED/NOT_ACCEPTED不可改为无记录或重执行 |
 | payload_cleanup | resource key PK、cause、requested_at、due_at、state | erase与清理队列同事务；有界worker，无正文／Bearer／私钥日志 |
 

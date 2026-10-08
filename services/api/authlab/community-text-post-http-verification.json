@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-08T07:12:38.839601+00:00",
+  "version": {
+    "gitHead": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a",
+    "workingTree": "uncommitted",
+    "shaAlgorithm": "SHA-256",
+    "newlineNormalization": "none; exact Linux test snapshot bytes"
+  },
+  "scope": "Current HTTP delta: complete authprivacyhttp package against disposable PostgreSQL with race; no replacement of prior authprivacy full-suite evidence.",
+  "environment": {
+    "host": "WSL2 Ubuntu-24.04",
+    "go": "go1.22.2 linux/amd64",
+    "postgres": "16",
+    "database": "Private-socket disposable C/V; non-superuser owner fixture; no external mailbox/device/database used.",
+    "runnerBase": "services/api/authlab/run-isolated.sh",
+    "cleanup": "Runner EXIT trap stops and removes private PG fixture."
+  },
+  "checks": {
+    "httpPackageSqlRace": {
+      "status": "PASS",
+      "command": "go test -mod=readonly -race -count=1 -json ./internal/authprivacyhttp",
+      "packageSeconds": 39.349,
+      "passedMainTests": 69,
+      "passedTestEventsIncludingSubtests": 371,
+      "skip": [
+        {
+          "test": "TestMobileClientHTTPSPostgres",
+          "reason": "=== RUN   TestMobileClientHTTPSPostgres\n    mobile_client_postgres_test.go:38: mobile HTTPS/PostgreSQL runner not requested\n--- SKIP: TestMobileClientHTTPSPostgres (0.00s)"
+        }
+      ]
+    },
+    "httpPackageVet": {
+      "status": "PASS",
+      "command": "go vet -mod=readonly ./internal/authprivacyhttp"
+    }
+  },
+  "postCoverage": {
+    "unitMainTests": [
+      "TestPostHTTPAllFourteenOperations",
+      "TestPostHTTPRejectsMalformedCreateBeforeBackend",
+      "TestPostHTTPMaintenanceBodiesAreSmallAndClosed",
+      "TestPostHTTPListQueriesAreCanonicalAndBounded",
+      "TestPostHTTPHeadersAndMethodsRejectAmbiguity",
+      "TestPostHTTPRejectedMutationAndQueryAreDifferentFacts",
+      "TestPostHTTPBackendErrorsHaveFixedPublicBodies",
+      "TestPostHTTPNeverSerializesArbitraryBackendRows",
+      "TestPostHTTPResponseInvariantsAreEnforced",
+      "TestPostHTTPPublishedTaskCanReconcilePublicContent",
+      "TestPostHTTPMissingChannelReadAndCreateHaveDistinctStatuses",
+      "TestPostHTTPNetworkOverloadAndCORS"
+    ],
+    "unitMainTestCount": 12,
+    "tlsPostMainTests": [
+      "TestRealHTTPSPostAcceptancePublicationReadAndDeletePostgres",
+      "TestRealHTTPSPostStopsRetryHideCancelAndSealPostgres"
+    ],
+    "httpOperations": 14,
+    "currentDelta": [
+      "GET /api/v1/channels/{canonicalMissingId}/posts -> 404 POST_CHANNEL_UNAVAILABLE",
+      "PUT CREATE with same unavailable channel -> 409 POST_CHANNEL_UNAVAILABLE durable rejection"
+    ],
+    "currentDeltaProof": "Unit TestPostHTTPMissingChannelReadAndCreateHaveDistinctStatuses and actual HTTPS->PG TestRealHTTPSPostAcceptancePublicationReadAndDeletePostgres"
+  },
+  "httpSourceAndTestSha256": {
+    "services/api/internal/authprivacyhttp/channel_endpoints.go": "f82c7a4f26c913fb0eeeba7b890bee86003904147bbe31661beca36050e63711",
+    "services/api/internal/authprivacyhttp/channel_endpoints_test.go": "125352fd82e1547a228314ee79cd35f1654b0495fdf373bcdc7058f6a995d7c7",
+    "services/api/internal/authprivacyhttp/credential_endpoints.go": "64c7255f4f38169e2e0a5a9be1b91da54e2569832b7add55a6e7302a1991235c",
+    "services/api/internal/authprivacyhttp/credential_endpoints_test.go": "24745af61fac3151cde2b8c853abbb25daa5648a56dbc2a5e2d2cef89f63a90e",
+    "services/api/internal/authprivacyhttp/credential_endtoend_postgres_test.go": "2efc14adfc6b98bc7bfdf61e126341343c66ebfdde97d0cd74e8f03a8f298447",
+    "services/api/internal/authprivacyhttp/endpoints.go": "fffd269f0875652a4af345e587b50a1bd39159d3d5a789893c348d94dcd0422d",
+    "services/api/internal/authprivacyhttp/endpoints_test.go": "97779ff2ff84057aadb24faf63d3eb1a2b2e2d590344d94089f356f36a3c9b1b",
+    "services/api/internal/authprivacyhttp/endtoend_postgres_test.go": "dda2acf3f54c4e60fd7a57ad62b69b2fe12cec09773a9def8f0f28d4acc7e363",
+    "services/api/internal/authprivacyhttp/identity_endpoints.go": "c276745d549a17f87f07da00a1b1575155f6ac23e029f8998f3a91ebe35fafbc",
+    "services/api/internal/authprivacyhttp/identity_endpoints_test.go": "6a6189510a3398c7610f3c65e49b37e939e5a620cca74b8760f2f80f84fed5d0",
+    "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go": "fa45bc2773fbf9d0a07e9b28d9db438481acea718b8c156340e791dfc5f72b1b",
+    "services/api/internal/authprivacyhttp/limits.go": "57009a4924b2e7348f8dc71edaa51a2d556afad9ebf22dd54f448c317b08b114",
+    "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go": "03ee2ebd35cfd35af1c6c6b009811a9d1ee30ebf0cd63bb55f2b29512b428bcd",
+    "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go": "03f4b783ff246f868d3e1a57459783eed2270bb25dadc3a8a39384cd83cdb4b9",
+    "services/api/internal/authprivacyhttp/peer.go": "ddb27e573e3f5ab453288d55b0300a440bf30256de72e269195af7f1f5a39fff",
+    "services/api/internal/authprivacyhttp/peer_test.go": "2bc399dbbb25d7081e3fe6894ea2ec37fee9d2e92b72cd7ab4bb9c3525b229ee",
+    "services/api/internal/authprivacyhttp/posts_endpoints.go": "9530ebe14b11a3812399e17f3b271750ebbf96ec4b0759f2e97b7f5a7adfd9a0",
+    "services/api/internal/authprivacyhttp/posts_endpoints_test.go": "9e602b31baede16c9a9891e93d5616ae77256eac1f373f69183a80fb2824e210",
+    "services/api/internal/authprivacyhttp/posts_postgres_test.go": "57a691d558b2c626f39d5f460c1aafc4f911f3fb43af050ffc141f8c9b89c632",
+    "services/api/internal/authprivacyhttp/privacy_boundary_test.go": "b271438fb13ced6962249ee3118556c16da831f68cc4f5c314a002b927546626",
+    "services/api/internal/authprivacyhttp/recovery_closure_endpoints.go": "52f07a93cc29f4831c6c0db2c32fe6bef7008a4aa1a7d5f0bfe62c2dbabc0812",
+    "services/api/internal/authprivacyhttp/recovery_closure_endpoints_test.go": "c4445bfceb3c43452c6145d609f05f3e035b5339a25c7b150b8feaf81b0f9faa",
+    "services/api/internal/authprivacyhttp/session_endpoints.go": "bb3e2d55d865b3765b953ca4c31a1db1a503c1c21b80444d530bc19e88a4fef2",
+    "services/api/internal/authprivacyhttp/session_endpoints_test.go": "8a4145c45a0ba73b8d3b89f5c079cfcf5999b96a60976fd0417edb82a6545069",
+    "services/api/internal/authprivacyhttp/strict.go": "071400fd5110cc0a6a368b3f7c7bd85e8f22e5d3a51f616f3a68360905b07cbc",
+    "services/api/internal/authprivacyhttp/strict_test.go": "22626de1e8cf7e35649e8f702a89cd90e947a59723c9bddeb14bb1803f5bf8da",
+    "services/api/internal/authprivacyhttp/tls.go": "7f7eb363351198b82a9b54bc222bec729c3d9ebf1e458c2a2d560075d37df0b5",
+    "services/api/internal/authprivacyhttp/tls_test.go": "0f668bccd3c49aa5bd406cfcd56e39813a6d9d1e79d503de5ccd4b39cfb8fac9"
+  },
+  "dependencySourceAndMigrationSha256": {
+    "services/api/internal/authprivacy/authorization_evidence.go": "c9fd38c4ae9581b3004f2ba3c24f41f8d3915e68dc048d23cd76055658ff6806",
+    "services/api/internal/authprivacy/authorization_gate.go": "632f02c0a4263e934a1dbf85579b8acf20d2acc3e576c259a5f02be37c6337e9",
+    "services/api/internal/authprivacy/common.go": "53e2d771e847336b0bb329dafb1ffacb3d73d026f8634d4125628d40c472d480",
+    "services/api/internal/authprivacy/community.go": "136d92823f1302df3fea4b0adbad3b0e6d21132b842e9932fc5ece1e0a65d219",
+    "services/api/internal/authprivacy/community_authorized.go": "d2526827d6810724cd76f7c69d7a3d54552961387f03e3d3c5c917d3feaff8d3",
+    "services/api/internal/authprivacy/community_closure.go": "25ceec8b20f67b6f55b3bebe736f89d6ee25bd0edda4795d89ba65ee5294b545",
+    "services/api/internal/authprivacy/community_credential_cleanup.go": "90b012792278f80211985e1f3cf33f70efea15aa608b5beea2678a4c3d08aa52",
+    "services/api/internal/authprivacy/community_credential_result.go": "9e4a8e5850d32048a7c883fb59e2d01135cb2b33f91a0f783cf5b9666bdbf890",
+    "services/api/internal/authprivacy/community_credentials.go": "fd1945199ac3c1c027075131fcafd504bbbc9861dfe2c341eaadd49f209e3036",
+    "services/api/internal/authprivacy/community_identities.go": "fa87e6d94a278d814de212181854cac00b9b10b0c195f6b57a2450d66a25a080",
+    "services/api/internal/authprivacy/community_identity_projection.go": "31e4f58bfe342b34901e4c433cb73c1b673ec4484a914c7a5cea31cd3cb65378",
+    "services/api/internal/authprivacy/community_passkey_recovery.go": "3d3c8a31d68b19634acd01c0da921604c9ce8c6a6cf46fc2c9d332d46ce8091a",
+    "services/api/internal/authprivacy/community_passkeys.go": "c9f26a7eae8791dea1fe3294e27c8d20573516cac0900616dd6f88184b98d62a",
+    "services/api/internal/authprivacy/community_posts.go": "78f2f1798cfcc441c30ed473d338e9d0e8ae8a15ce2a8734609b87f67e20e26b",
+    "services/api/internal/authprivacy/community_posts_lifecycle.go": "bf458764debf40c5b788f18e6736ba1e09bd6685a5ae2c32a861a9cd8a8dcd24",
+    "services/api/internal/authprivacy/community_posts_read.go": "eaf95bb2d6721e51b4163eb027179926002b6f4460817aa54d47315d5a6e6086",
+    "services/api/internal/authprivacy/community_posts_schema.go": "f8f3ad9fbb18c4737d776b213fceca1f92767e0fea0058dd018c090acbf2d5d6",
+    "services/api/internal/authprivacy/community_recovery.go": "577d8e3e62a271a86b65d499115c93556957712d1393c93d2d2ceadca7302c5d",
+    "services/api/internal/authprivacy/community_sessions.go": "67a63a8c71889b1823d479f8f688c905d475b4fe3fccd500b14a34262147381a",
+    "services/api/internal/authprivacy/credential_types.go": "e2438775dc8cdc43d39e5abe7e34f0d6ce67afe76a3fc28676774134c03aad5c",
+    "services/api/internal/authprivacy/eligibility_confirmation.go": "26db29ea3cd05186d1296799271efd2ba30320684dc49b14d92dc3382a77f17e",
+    "services/api/internal/authprivacy/eligibility_otp.go": "cb761a306c89de3951237a66efdf069599f15e414c73f01db029202b9c5fb403",
+    "services/api/internal/authprivacy/eligibility_types.go": "06fff050a6ad788e18120d5fd5c56a3da93ff907d56e6c4d8aa1f4ac8e4c4d24",
+    "services/api/internal/authprivacy/identity_rules.go": "fb2b594854f755bf0e3c5f28b640b71d6129479084a61245bfd1f7cef10751e9",
+    "services/api/internal/authprivacy/mail.go": "cb67e196cb55596c1e8e780bec8b8d23c92592d39177c512c62dc7dc5c01a907",
+    "services/api/internal/authprivacy/outbox.go": "e848118c423007e0a796402f7390eea25dbc0f8881edc7536e8fe2785101fb1c",
+    "services/api/internal/authprivacy/passkey_verification.go": "6c11f57663a251c4f4bbb8bbb1f5c5dd64b051d5920a214c810c274e4b575e44",
+    "services/api/internal/authprivacy/password.go": "e53363399f3eff4998ece514f8387ad859a3577bd48ab1dbb57159ea541881e5",
+    "services/api/internal/authprivacy/protocol/protocol.go": "99d718ac131f5cba195342167433e3c520914d095f2ec2e780a42f9c790ed091",
+    "services/api/internal/authprivacy/retirement_http.go": "e7a55ba548975e7b20dbb4187195d34d5d227b1015a81fd51cb80b489f65b44f",
+    "services/api/internal/authprivacy/verifier.go": "8fe47e634d861353ad4df61c4e4ad90ad5b619827c3507e8b0b343810872e68a",
+    "services/api/internal/authprivacy/workers.go": "1cbb36e5df07afd7b0589c2f06a75174eb12cd18c905feef3085a635a58027c2",
+    "services/api/internal/posts/content.go": "d71f4fc9866b07da8988ac87cc0a5c099492b0aef39e7989fe7c0119b4637f9a",
+    "services/api/internal/posts/content_test.go": "e9038547a798024a862a899c3deea08f3e1b9810a576486d224763aa5a267378",
+    "services/api/internal/posts/cursor.go": "b5572233a452785625693644338d5eaf8ecaa4fe764af28cdeaa057fc90898c6",
+    "services/api/internal/posts/cursor_test.go": "24b92f454d6fc6270a227a1aa111e952b252ce31335f4e4027b9a8dd7a9fe70c",
+    "services/api/internal/posts/model.go": "27778d75a4a2eb81f1c901ba1153f4aab4e9e60cea477d76f430a43f72c8786d",
+    "services/api/internal/posts/model_test.go": "a90b515cdc4a9800c562970c9d9991eaf22c84a0ceb9367f856e84e60b68b2e9",
+    "services/api/internal/posts/protocol.go": "fc649c4282fc521858671eead359875b3f22b402143c46535f36a8c7db3fc384",
+    "services/api/internal/posts/protocol_test.go": "390062fade0e0419e97e859175bdc45dd9caf45e74863da1b7e2fe70cd00260d",
+    "services/api/internal/posts/unicode16.go": "0ca2f4007e03fd362948a920624af2beeed53357cca3150c7467a6ff58c42522",
+    "services/api/migrations/0001_sessions.sql": "105affdbf4c7506459670a26785e71c807e090602a09e701cc752484676fefd6",
+    "services/api/migrations/0002_channels.sql": "9aa34c99cddb714105de563ee6420f7bba4f1b394fc2c5b11d4485589d6988ea",
+    "services/api/migrations/0003_authprivacy.sql": "b2db1e6cf10bfadb4e9b9fc17eb1fa4f42dc6147463307f618f25267c5f68569",
+    "services/api/migrations/0004_authorization_gate.sql": "b66ccd36b6883914b38c20e3e3af5b4989e11502a3f505da09c886368b43ac42",
+    "services/api/migrations/0005_session_lifecycle.sql": "933b629de0b4b956968456c99d40a3dc6b8effe6176043c94473d7cd79737f00",
+    "services/api/migrations/0006_recovery_reset.sql": "a5481b66014ad51862f1abaf581e8c47af4d2a182e899d2c38555b19a0fc9a8b",
+    "services/api/migrations/0007_account_closure.sql": "c70b1a9a7f4667f4e2d48f4645ba4d08a81dd009d02afc636c261c08410a6144",
+    "services/api/migrations/0008_recovery_credentials.sql": "c161059fb29abf99dde3ef512d3dd77d4a0ea6a6ed94160bcaa764defad520a8",
+    "services/api/migrations/0009_receipt_worker_claim.sql": "fc33b4a3b9395a76699fdf211f3947b6d14195ddb4473434bd272851c991353b",
+    "services/api/migrations/0010_legacy_fence.sql": "44516c25222efa3eb31c69304204ca5cfd2092dd1972006b76b707f4b36d1752",
+    "services/api/migrations/0011_identity_management.sql": "2a9e7216f35a790a774dc3c095d8c9c56ea76042ab4a31852c4b45deddcda47c",
+    "services/api/migrations/0012_identity_account_closure.sql": "4e3af983a7722fae5965a51164bdb668adca80c52bfce7a05612b22d1235e549",
+    "services/api/migrations/0013_community_text_posts.sql": "35274cba859c0d51fc7805e341ea3880d12ee7f67eedad96f9841c915f1344fe",
+    "services/api/verifier-migrations/0001_authprivacy.sql": "b6f87f81df4ec3e1af837477074ec4919ab96e3cb7d436293ce55e4363d6b4be",
+    "services/api/verifier-migrations/0002_otp.sql": "df25770f47d26a4a5ab60c68f65ee20b2f74fb92538e849558ad03d80f06144d",
+    "services/api/verifier-migrations/0003_confirmation.sql": "19c158f8320d356e0fb8f6ca9c97cfa60d1053443e631debb7de1930365f7e22",
+    "services/api/verifier-migrations/0004_authorization_gate.sql": "0ce1ab9a2d8bcfc006b5184977de4edc69b590d99ea032f7006f1d2892b8b003",
+    "services/api/go.mod": "228555413dbb87a647fabd317189f4d6f5722a2d52a8865e191b093afa44b2d0",
+    "services/api/go.sum": "72f63e347d14c2f82805462d632aedaf5232cbf4d091fa9e8529443cf5c8cc34"
+  },
+  "limits": [
+    "Does not prove non-owner cmd runtime; current R03 records separately.",
+    "Does not prove Dart/mobile/physical-device/native business storage or production acceptance."
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "recordedAtUTC": "2026-10-08T07:14:45.593733+00:00",
+  "result": "PASS",
+  "runner": "services/api/authlab/run-runtime-isolated.sh",
+  "exitCode": 0,
+  "tooling": {
+    "environment": "Ubuntu-24.04 WSL2 Linux filesystem",
+    "go": "1.22.2",
+    "postgres": "cached postgres:16.6-alpine",
+    "goose": "existing v3.22.1",
+    "mailpit": "cached axllent/mailpit:v1.21.8",
+    "dependencyNetwork": "GOPROXY=off; no tool/image download"
+  },
+  "sourceSnapshot": {
+    "gitBase": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a",
+    "uncommitted": true,
+    "normalizedSourceSHA256": "3d778acfcc8b8bae12a44ac68a873c9b47e2b70a9ae43dbcbe3e2cd8b7d87a3f",
+    "sourceFileCount": 92,
+    "definition": "SHA256 of sorted repoPath TAB SHA256(CRLF-to-LF bytes) LF; API production Go, module locks, formal migrations, infra, and runtime privacy harness",
+    "filesDifferentFromCurrentWorktree": []
+  },
+  "phases": [
+    {
+      "httpsRequests": 17,
+      "phase": "lifecycle",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 15,
+      "phase": "identities",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 42,
+      "phase": "posts",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 2,
+      "phase": "threshold",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 4,
+      "phase": "restart",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 5,
+      "phase": "posts-restart",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 1,
+      "phase": "verifier-stage",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 3,
+      "phase": "verifier-frozen",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 3,
+      "phase": "verifier-frozen",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 3,
+      "phase": "verifier-recovered",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 3,
+      "phase": "verifier-frozen",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 3,
+      "phase": "verifier-recovered",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 4,
+      "phase": "frozen",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 13,
+      "phase": "recovered",
+      "result": "passed"
+    },
+    {
+      "httpsRequests": 33,
+      "phase": "closure",
+      "result": "passed"
+    }
+  ],
+  "totalHTTPSRequests": 151,
+  "runtimeAssertions": {
+    "privacyRoleMatrix": "passed",
+    "privacyUnsafeDatabaseDiagnosticsRejected": "passed",
+    "privacyRealProcessAndPostgresLogs": "passed",
+    "actualCmdLifecycle": "passed",
+    "formalMigrationAndRoles": "passed",
+    "upgradeChannelsPreserved": "passed",
+    "identityUpgrade10To11": "passed",
+    "identityClosureUpgrade11To12": "passed",
+    "identityLegacyClosedProfileRepair": "passed",
+    "identityClosureTriggerBoundary": "passed",
+    "identityMissingSchemaAndDml": "passed",
+    "identityCrudReceiptsAndRestart": "passed",
+    "identityClosureAndSameEmailNewAccount": "passed",
+    "inactiveProjectionPureContract": "passed",
+    "textUpgrade12To13": "passed",
+    "textMissingSchemaAndRequiredDml": "passed",
+    "textExcessPrivilegeAndReusedKeyRejected": "passed",
+    "textActualHttpsWorkerSqlAndRestart": "passed",
+    "textUnknownSealAndDurableContentRejection": "passed",
+    "textClosureProjectionAndNewAccountIsolation": "passed",
+    "verifierGateUpgrade3To4": "passed",
+    "verifierGateFreezeRestartAndRecovery": "passed",
+    "verifierOldSnapshotBlocked": "passed",
+    "verifierOldGenerationOtpBlocked": "passed",
+    "verifierIndependentEvidenceExpiry": "passed",
+    "cleanup": "this invocation project and private directory only"
+  },
+  "focusedChecks": {
+    "ordinaryGoTests": "PASS: authprivacyruntime/cmd/runtimeprobe/cmd/authdev on final snapshot",
+    "race": "PASS: same final snapshot; runtimeprobe has no unit tests",
+    "vet": "PASS: same final snapshot",
+    "shellSyntax": "PASS"
+  },
+  "textHttpOperationsCovered": [
+    "CREATE",
+    "GET_ORIGINAL_COMMAND",
+    "SEAL",
+    "COMPOSER_CONTEXT",
+    "TASK_LIST",
+    "TASK_DETAIL",
+    "CANCEL",
+    "CHANNEL_FEED",
+    "PUBLIC_DETAIL",
+    "OWN_POST_LIST",
+    "OWN_CAPABILITIES",
+    "DELETE_POST"
+  ],
+  "notCoveredByThisRunner": [
+    "RETRY/HIDE actual cmd HTTP flow",
+    "Dart/Flutter/full mobile App and native business storage",
+    "production deployment or independent security/operations acceptance"
+  ],
+  "syntheticBoundaries": [
+    "R03 advances one marked synthetic account closure dueAt; it records same-transaction publication stop and preserves all schema guards",
+    "SQL read confirms unique task/binding/publication; all create/query/cancel/seal/delete effects enter actual public HTTPS and C final Gate",
+    "schema negative cases and forward upgrades only touch this invocation disposable databases"
+  ],
+  "failureAndRepair": [
+    {
+      "result": "FAIL",
+      "scope": "first posts probe used 200 for CREATE/replay, while contract/handler use 202",
+      "repair": "probe expected status corrected; full runner rerun to exit 0; old isolated project cleaned"
+    },
+    {
+      "finding": "final review found unavailable channel GET 404 projected as 503 through shared CREATE 409 mapping",
+      "repair": "HTTP preserves allowlisted POST_CHANNEL_UNAVAILABLE 404/409 status; probe adds canonical missing-channel 404 and strict public error/header assertions",
+      "verification": "PASS: this complete R03 run exit 0 on final matching snapshot; HTTP agent separately owns HTTP SQL-race evidence"
+    }
+  ],
+  "cleanup": {
+    "runnerTrapCompleted": true,
+    "ownedContainerCountAfterRun": 0,
+    "ownedLinuxSnapshotAndBuildCacheRemoved": true,
+    "largeRawLogsRemoved": true,
+    "scope": "only invocation marked Docker project, processes and private materials; existing SDKs/caches/other fixtures untouched"
+  },
+  "historicalRuns": [
+    {
+      "recordedAtUTC": "2026-10-08T06:58:36.665140+00:00",
+      "result": "PASS",
+      "exitCode": 0,
+      "sourceSnapshot": {
+        "gitBase": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a",
+        "uncommitted": true,
+        "normalizedSourceSHA256": "ca4dfc283fe5f0b3f3e75a21d45bd07c10c380d9c93da2caa4b7739088479060",
+        "sourceFileCount": 92,
+        "definition": "SHA256 of sorted repoPath TAB SHA256(CRLF-to-LF bytes) LF; API production Go, module locks, formal migrations, infra, and runtime privacy harness"
+      },
+      "totalHTTPSRequests": 142,
+      "postsPhaseHTTPSRequests": 34,
+      "scope": "historical snapshot before missing-channel HTTP error projection fix; does not substitute current-source evidence"
+    }
+  ],
+  "requestCountNote": "The missing-channel read adds one request. Seven additional publication polls and one additional closure poll explain the remaining change from 142 to 151; no extra business mutation commands were added.",
+  "additionalTextAssertions": {
+    "missingCanonicalChannelGET404": "PASS",
+    "strictPublicUnavailableChannelErrorDTO": "PASS",
+    "missingChannelFailureHasNoRenewalOrServerTimeHeaders": "PASS"
+  }
+}

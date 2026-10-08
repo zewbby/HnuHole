@@ -77,12 +77,13 @@ type VerifierOptions struct {
 }
 
 type ChannelBackend interface {
-    ListAuthorizedChannels(context.Context, [32]byte) (authprivacy.ChannelDirectory, error)
+	ListAuthorizedChannels(context.Context, [32]byte) (authprivacy.ChannelDirectory, error)
 }
 
 type CommunityOptions struct {
-    Channels       ChannelBackend
-    Identities     IdentityBackend
+	Posts          PostBackend
+	Channels       ChannelBackend
+	Identities     IdentityBackend
 	Backend        CommunityBackend
 	Sessions       SessionBackend
 	Recovery       RecoveryBackend
@@ -138,6 +139,9 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if options.Channels == nil {
 		options.Channels, _ = options.Backend.(ChannelBackend)
 	}
+	if options.Posts == nil {
+		options.Posts, _ = options.Backend.(PostBackend)
+	}
 	if options.Identities == nil {
 		options.Identities, _ = options.Backend.(IdentityBackend)
 	}
@@ -155,14 +159,18 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
-            if isIdentityPath(r.URL.Path) {
-                b.communityIdentitiesPublic(w, r, options.Identities)
-                return
-            }
-            if r.URL.Path == "/api/v1/channels" {
-                b.communityChannelsPublic(w, r, options.Channels)
-                return
-            }
+			if isPostPath(r.URL.Path) {
+				b.communityPostsPublic(w, r, options.Posts)
+				return
+			}
+			if isIdentityPath(r.URL.Path) {
+				b.communityIdentitiesPublic(w, r, options.Identities)
+				return
+			}
+			if r.URL.Path == "/api/v1/channels" {
+				b.communityChannelsPublic(w, r, options.Channels)
+				return
+			}
 			b.communityPublic(w, r, options.Backend, options.Sessions, options.Recovery, options.Closures, options.Credentials, options.Passwords)
 		}),
 		Internal: b.wrap(true, func(w http.ResponseWriter, r *http.Request) { b.communityInternal(w, r, options.Backend) }),
@@ -229,7 +237,11 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				return
 			}
 			if retry > 0 {
-				b.fail(w, 429, "RATE_LIMITED", retry)
+				if b.service == CommunityService && isPostPath(r.URL.Path) {
+					b.postFail(w, 429, "RATE_LIMITED", retry)
+				} else {
+					b.fail(w, 429, "RATE_LIMITED", retry)
+				}
 				return
 			}
 			if hasHeader(r.Header, "Origin") {
@@ -239,11 +251,11 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 					return
 				}
 				w.Header().Set("Access-Control-Allow-Origin", origin)
-				w.Header().Set("Access-Control-Expose-Headers", "Session-Expires-At, X-Request-ID, Retry-After")
+				w.Header().Set("Access-Control-Expose-Headers", "Session-Expires-At, Server-Time, X-Request-ID, Retry-After")
 				w.Header().Set("Vary", "Origin")
 			}
 		}
-		if r.URL.RawQuery != "" || r.URL.ForceQuery {
+		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !allowsPostListQuery(r))) {
 			b.bad(w, errMalformed)
 			return
 		}
@@ -291,13 +303,23 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 }
 
 func publicMethodAllowed(service Service, path, method string) bool {
-    if service == CommunityService && isIdentityPath(path) {
-        if path == "/api/v1/identities" { return method == http.MethodGet || method == http.MethodPost }
-        if path == "/api/v1/identity-change-result" { return method == http.MethodGet }
-        if _, err := identityPathID(path); err == nil { return method == http.MethodPatch || method == http.MethodDelete }
-        return false
-    }
-    return method != "" && method == publicMethod(service, path)
+	if service == CommunityService && isPostPath(path) {
+		route, err := parsePostRoute(path)
+		return err == nil && route.allows(method)
+	}
+	if service == CommunityService && isIdentityPath(path) {
+		if path == "/api/v1/identities" {
+			return method == http.MethodGet || method == http.MethodPost
+		}
+		if path == "/api/v1/identity-change-result" {
+			return method == http.MethodGet
+		}
+		if _, err := identityPathID(path); err == nil {
+			return method == http.MethodPatch || method == http.MethodDelete
+		}
+		return false
+	}
+	return method != "" && method == publicMethod(service, path)
 }
 
 func publicMethod(service Service, path string) string {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""T1 static invariants and framing vectors; no database or business handler test."""
+"""文字契约静态约束及摘要向量；不能代替数据库或业务handler验收。"""
 import hashlib
 import json
 from pathlib import Path
@@ -89,7 +89,7 @@ def public_fields(spec, node, seen=None):
 
 def main():
     spec = yaml.load((ROOT / "packages/openapi/post-api.yaml").read_text(encoding="utf-8"), Loader=UniqueKeysLoader)
-    assert spec["x-contract-status"] == "design-only-not-implemented"
+    assert spec["x-contract-status"] == "server-implemented-mobile-integration-pending"
     assert spec["x-max-json-body-bytes"] == 262144
     traverse(spec, spec)
     operations = []

@@ -2,7 +2,7 @@
 
 日期：2026-10-08（Asia/Shanghai）。分支：`codex/community-text-posting`。
 
-状态：`T1_DESIGN_COMPLETE / BUSINESS_IMPLEMENTATION_NOT_STARTED`。范围及下列 Q1/Q2 已由用户确认；T1 已形成[后端事务设计](community-text-posting-backend-design.md)、[API接入清单](community-text-posting-api.md)、[OpenAPI](../../packages/openapi/post-api.yaml)及[ADR 0006](../adr/0006-text-post-command-publication-boundary.md)。静态检查及未验项见[T1报告](community-text-posting-t1-report.md)。本轮没有实现业务代码，没有运行业务验收，也不改变现有模块的通过状态。
+状态：`T2_SERVER_IMPLEMENTED / MOBILE_AND_FULL_SLICE_ACCEPTANCE_PENDING`。范围及下列Q0–Q2已由用户确认；T1形成[后端设计](community-text-posting-backend-design.md)、[API清单](community-text-posting-api.md)、[OpenAPI](../../packages/openapi/post-api.yaml)及[ADR0006](../adr/0006-text-post-command-publication-boundary.md)，并已提交推送为`1b7fe2e`。T2实现14操作C服务端、正式迁移0013／权限、停止代次与worker；实际检查和未验范围见[T2报告](community-text-posting-t2-report.md)及[机器记录](community-text-posting-t2-verification.json)。T1原静态证据保留；手机／存储／完整模块及生产未通过，T2未提交／推送／部署。
 
 ## 1. 目标与明确边界
 
@@ -73,7 +73,7 @@ Q0–Q2 已形成共享理解，产品规则同步至 post-composer 和 identity
 - 删除作者自己的帖子停止其公开可见性，读旧详情或旧游标不能泄露删除正文；不新增回收站、编辑历史或恢复接口。举报证据、评论等未来消费者另外实现。
 - 正式关闭获权威终态后清理本片旧账号本地数据；401／临时冻结／普通退出不能等同于注销而删除草稿。新账号不得继承旧草稿、任务或帖内身份。
 
-## 6. 领域模型、接口与源码落点（T1设计完成，业务尚未实现）
+## 6. 领域模型、接口与源码落点（T1契约／T2服务端）
 
 | 模型 | 权威边界／要求 |
 |---|---|
@@ -84,11 +84,11 @@ Q0–Q2 已形成共享理解，产品规则同步至 post-composer 和 identity
 | 本机草稿 | 按环境＋账号隔离；持久文字和编辑上下文；与已受理任务区别清楚 |
 | 公共身份投影 | 活动资料或身份级独立占位；与本人管理 DTO 完全分开 |
 
-T1已产出OpenAPI和事务／状态表，共14个操作：创建发布命令、原结果核对及封印、本人任务列表／详情／取消／失败重试／隐藏、通道feed、帖子详情、本人帖子列表、本人删除权能、作者删除与权威默认身份context。路径、错误和DTO已设计，尚无handler或可执行SQL迁移。
+T1产出OpenAPI和事务／状态表，共14个操作：创建发布命令、原结果核对及封印、本人任务列表／详情／取消／失败重试／隐藏、通道feed、帖子详情、本人帖子列表、本人删除权能、作者删除与权威默认身份context。T2已实现handler／最终Gate事务／worker、迁移0013及精确受限权限，实际范围见T2报告；Flutter路径仍由并行任务交付。
 
 本地沿用Drift/SQLite业务持久化，不把正文、所有草稿和发送队列塞进认证AuthStore单一文档。SQLite不存Bearer／密码／恢复码；任务环境与账号归属必须准确。T1规定独立原生vault namespace托管业务密钥、SQLite认证加密payload及noBackup要求；具体依赖、原生备份范围与验证由Flutter任务固定。这里没有实现客户端存储或改变认证vault schema。
 
-拟新增：`services/api/internal/posts/`、posts HTTP 边界及 SQL 迁移、`packages/openapi/post-api.yaml`、`apps/mobile/lib/src/posts/`、`apps/mobile/lib/src/storage/` 与对应测试。这些都是计划路径。触及现有 `authprivacy`／HTTP runtime／worker／主入口／授予权限时记录受影响认证模块。
+服务端已新增 `services/api/internal/posts/`、posts HTTP／authprivacy业务边界、SQL迁移0013及对应测试，更新runtime／worker／入口／权限；完整源码与测试落点见T2报告。`apps/mobile/lib/src/posts/`和`src/storage/`为Flutter任务路径，本工作树不据此冒称客户端实现。
 
 ## 7. 六个实施阶段与退出条件
 
@@ -96,7 +96,7 @@ T1已产出OpenAPI和事务／状态表，共14个操作：创建发布命令、
 |---|---|---|
 | T0 计划／需求 | 本文、术语表、Q1/Q2答复和范围对齐 | 未决产品问题有明确记录；确认共享理解后才开始代码 |
 | T1 契约／事务设计 | OpenAPI、状态机、模型约束、授权／锁顺序、分页／回执／失败重试／业务存储接入边界；页面结构由Flutter任务负责 | 已完成设计与静态检查；关键UNKNOWN封印、停止代次及严格DTO明确；动态实现待T2/T3 |
-| T2 服务端 | 正式迁移／最小权限；受理与绑定、worker公开、核对／取消／重试、feed／详情／本人列表／删除 | 真实一次性PG中证明唯一绑定、无重复公开、并发终态和拒绝；不是只有CRUD |
+| T2 服务端 | 已实现正式迁移／最小权限；受理与绑定、worker公开、核对／取消／重试、feed／详情／本人列表／删除 | 实际一次性PG／HTTPS及C/V cmd证据见T2报告；唯一绑定、原结果与并发终态已验证；完整App和生产另验 |
 | T3 Flutter | 真实通道导航、编辑／确认／身份返回、业务SQLite、我的混排与核对、详情及返回位置 | 分析与单元/widget通过；重启／存储故障源码齐全；内存替身结果仅记相应范围 |
 | T4 认证候选整合／真实链路 | 接入认证最终提交；实际C/V＋SQL＋Dart故障链、完整Android App＋原生业务存储 | 有版本匹配的设备与跨进程证据；共享边界变化重开认证回归；有条件时在独立设备／明确窗口验，不能抢认证测试环境 |
 | T5 收口 | 源码／测试／脱敏报告；四份总交接更新；未验项和未来模块边界 | 本片必需项通过才称闭环验收完成；未具备条件时交付实现与明确NOT_RUN/BLOCKED；不代称生产上线 |
@@ -123,7 +123,7 @@ T1已产出OpenAPI和事务／状态表，共14个操作：创建发布命令、
 | CP14 | 真实同机业务SQLite跨进程、账号切换／退出／临时冻结／正式关闭的数据保留与清理 | A12/N01/B05/B10 |
 | CP15 | 正式迁移升级和受限角色；实际HTTPS／cmd／SQL／App；共享授权回归 | A01/A02/A13/B03/B05/B06 |
 
-CP01–CP15业务验收全部 `NOT_RUN`，没有现成帖子runner。已有R01/R03/R05只能证明它实际覆盖的认证范围；T2/T4必须新增本片fixture和场景并更新受影响runner。禁止发明 `--module posts` 或用旧PASS代验本片。T1实际通过的是完整OpenAPI规范与专项静态契约／摘要向量检查，不能代证这些业务场景。
+CP01／CP02／CP05–CP13／CP15在T2取得列明服务端证据；页面、草稿、存储／设备部分及CP03／CP04／CP14仍NOT_RUN，完整CP不能整体改PASS。R01与新增schema runner、本轮R03及真实HTTPS帖子测试的精确范围见T2报告；R05／真实Dart手机链尚未执行本片。禁止发明 `--module posts` 或用旧PASS代验本片，T1静态结果保留原范围。
 
 已有入口：契约校验／生成按 `packages/openapi/README.md`；服务端一次性SQL按 `services/api/authlab/run-isolated.sh`，实际进程按 `run-runtime-isolated.sh`，真实Dart按 `run-mobile-isolated.sh`。执行前核对脚本要求、现成工具和归属，使用本片独立fixture；新增业务存在后再写确切命令和退出码。Go race/vet、Flutter分析及测试、标准Android构建依变更范围执行；iOS另列，不以Android证据通过。
 
@@ -133,4 +133,4 @@ CP01–CP15业务验收全部 `NOT_RUN`，没有现成帖子runner。已有R01/R
 - 模块沿用 B02/B03/B05/B06/B10 和受影响 A/N、X06/X07；B07–B09/B11/B12及首版媒体／标签仍待开发，完整模块不能因为本片PASS而全部改PASS。
 - 只提交源码、测试源码和小型脱敏记录；清理本片明确创建的临时资源。保留认证会话的全部环境及用户数据。
 - 主要风险：认证候选未发布带来的整合变化；业务本机存储与Android验证；生命周期hooks和停止代次必须同事务生效；Unicode16跨端计数及12位随机占位编号。T1已固定方案，实际SQL／跨端／设备证据仍待取得。
-- 当前用户授权T1及此前分支创建／推送；本轮设计文件未提交或推送。后续提交、推送、部署遵循当次授权，设计完成不构成部署授权。
+- 当前用户授权T2；T1已提交／推送，T2仍未提交／推送。后续Git交付和部署遵循当次授权，服务端完成不构成部署授权。

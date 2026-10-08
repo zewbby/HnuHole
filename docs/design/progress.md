@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-08 文字片 T2：**服务端14操作、正式SQL／最小权限、最终C Gate事务与发布worker已实现；HTTP14操作与真实SQL／受限角色专项、最终实际C/V R03（15阶段／151次HTTPS）取得本轮证据。全量Go原被测快照与最终HTTP 404修复整包复验分开记录，当前全服务端vet通过。详细结果、版本、未执行场景和命令见[T2报告](community-text-posting-t2-report.md)与[总记录](community-text-posting-t2-verification.json)。原T1设计与认证历史记录保留；T1`1b7fe2e`已推送，T2未提交／推送／部署。Flutter页面／本机存储在独立任务，T4仍待认证最终候选及Dart／App／设备真实链路；不能据服务端通过把完整B02/B03/B05/B06/B10、全体CP或生产改成PASS。P03/P04及未开发功能另列。
+
 > **2026-10-08 文字片 T1：**`codex/community-text-posting` 的[计划](community-text-posting-plan.md)、[后端设计](community-text-posting-backend-design.md)、[API／前端对齐清单](community-text-posting-api.md)与[OpenAPI](../../packages/openapi/post-api.yaml)已收口，状态 `T1_DESIGN_COMPLETE / BUSINESS_IMPLEMENTATION_NOT_STARTED`。五份OpenAPI及14操作／9组摘要向量专项静态检查PASS，详情见[T1报告](community-text-posting-t1-report.md)。下一步T2服务端（初估52–80有效工时）；Flutter页面和业务本机状态由独立并行任务推进。T4仍等待认证固定候选及真实链路证据。无新增业务handler或SQL迁移，CP01–CP15均NOT_RUN，完整B03/B05/B06/B10及生产不改PASS，原认证方后续验收增量不在本工作树；本轮设计未提交／推送。
 
 > **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
