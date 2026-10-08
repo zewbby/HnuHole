@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-08 F1第一类出图：**按用户要求一次交付通道最新列表／暂无帖子／首次加载失败三张v1 PNG，见[图稿与复审](ui-reviews/channel-feed-v1.md)。全部为DRAFT／待用户评审，尚未确认页面或全局配色；没有Flutter实现或动态验收证据。下一步先收取三图反馈。
+
 > **2026-10-08 项目UI技能：**用户提供frontend-design压缩包已安装至本工作树`.agents/skills/`；另固定ui-ux-pro-max和Impeccable的GitHub版本，新增hnuhole-ui-craft入口。见[来源及验证](project-ui-skills.md)与[画图工作流](ui-quality-workflow.md)。以后从规则／真实图稿出发，内部设计卡→单张PNG→看图复审→用户定稿→Flutter映射；营销hero推荐不得代替手机产品设计。本轮仅安装、技能验证、检索试跑及流程编写，未画新图、未实现社区代码、未执行设备验收。
 
 > **2026-10-08 Flutter社区并行计划：**用户授权三个独立任务并行，本工作树 `codex/community-flutter-pages` 只承担第3项。见[前端实施计划](community-flutter-pages-plan.md)：文字编辑／确认、最新列表／正文详情、同机草稿与发布任务混排。已核对产品规则及深色v2参考图，未实现入口按用户授权隐藏；新页面图稿待评审，后端契约及认证候选待固定。本轮仅计划，代码未实现，业务验收全部NOT_RUN。原认证与社区后端分别在自己的工作树推进，下方认证记录保持历史证明范围。

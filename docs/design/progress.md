@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-08 F1页面设计启动：**第一类3／3张v1草图已生成并保存，分别为最新列表、空通道、首次加载失败；[评审记录](ui-reviews/channel-feed-v1.md)。待用户评审，不计定稿或功能PASS，其余19张尚未出图。
+
 > **2026-10-08 UI能力补齐：**项目级frontend-design／ui-ux-pro-max／Impeccable及hnuhole-ui-craft已安装，四份技能结构验证通过；[UI工作流](ui-quality-workflow.md)已具体化中文排版、视觉克制、状态真实性和逐页PNG复审。来源及试跑边界见[技能记录](project-ui-skills.md)。没有新图或社区功能证据，不改变模块验收结论。
 
 > **2026-10-08 Flutter社区第3项：**[实施计划](community-flutter-pages-plan.md)已完成规则／图稿阅读及Q1决策，状态PLAN_READY／IMPLEMENTATION_NOT_STARTED。当前分支 `codex/community-flutter-pages`；先逐页补设计，按后端固定契约推进业务状态及SQLite，再接认证候选进行真实链路与Android验收。没有业务代码或测试证据，不改变既有模块验收结果；完整评论／赞藏／搜索等另行开发。功能里程碑结束按AGENTS更新四份交接。
