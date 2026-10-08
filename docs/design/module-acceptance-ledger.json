@@ -5261,5 +5261,100 @@
     "cleanupPassed": true
   },
   "latestBackendValidationEvidence": "services/api/authlab/privacy-regression-verification.json",
-  "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN"
+  "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN",
+  "currentCommunityTextT1": {
+    "recordedOn": "2026-10-08",
+    "timeZone": "Asia/Shanghai",
+    "branch": "codex/community-text-posting",
+    "baselineHeadCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+    "workingTreeUncommitted": true,
+    "status": "T1_DESIGN_COMPLETE_BUSINESS_IMPLEMENTATION_NOT_STARTED",
+    "plan": "docs/design/community-text-posting-plan.md",
+    "backendDesign": "docs/design/community-text-posting-backend-design.md",
+    "contract": "packages/openapi/post-api.yaml",
+    "apiGuide": "docs/design/community-text-posting-api.md",
+    "testSource": [
+      "tools/check-community-text-contract.py",
+      "packages/openapi/check-specs.py",
+      "packages/post-protocol-vectors/post-command-v1.json"
+    ],
+    "report": "docs/design/community-text-posting-t1-report.md",
+    "evidence": "docs/design/community-text-posting-t1-verification.json",
+    "sourceFingerprint": {
+      "sha256": "c57813370cda9b096026d9b998a9af687a2a844ee289452484adc1bf9ba04e0d",
+      "fileCount": 18,
+      "scope": "Design/spec/vector/checker inputs only; full file list in evidence"
+    },
+    "actualResults": {
+      "fiveOpenapiSpecifications": "PASS",
+      "fourteenOperationStaticContract": "PASS",
+      "nineReferenceDigestVectors": "PASS",
+      "businessCP01toCP15": "NOT_RUN",
+      "goDartGraphemeConformance": "NOT_RUN",
+      "sqlHttpDeviceProduction": "NOT_RUN"
+    },
+    "notRun": [
+      {
+        "test": "CP01-CP15 business acceptance",
+        "result": "NOT_RUN",
+        "reason": "T1 design only; no posts handlers/fixture yet",
+        "next": "T2 SQL/HTTP and Flutter implementation; T4 integrated device chain"
+      },
+      {
+        "test": "Go/Dart digest and Unicode16 grapheme conformance",
+        "result": "NOT_RUN",
+        "reason": "Shared 9 digest and 7 grapheme expected cases are design data; actual Go/Dart implementation not present"
+      },
+      {
+        "test": "Go/SQL/race/vet and migration/limited-role upgrade",
+        "result": "NOT_RUN",
+        "reason": "No executable business code or SQL migration in T1; use task-owned disposable WSL database after T2"
+      },
+      {
+        "test": "Flutter/SQLite/Android/iOS and native business vault/noBackup",
+        "result": "NOT_RUN",
+        "reason": "Parallel Flutter task scope; no current device evidence for this slice; iOS needs its own environment"
+      },
+      {
+        "test": "Current auth candidate integration and lifecycle hooks",
+        "result": "NOT_RUN",
+        "reason": "Auth final candidate not delivered; shared runtime remains unchanged in T1"
+      },
+      {
+        "test": "Independent security, capacity, backup and production restore",
+        "result": "NOT_RUN",
+        "reason": "No production evidence in a design/static check"
+      }
+    ],
+    "affectedModules": [
+      "B02",
+      "B03",
+      "B05",
+      "B06",
+      "B10",
+      "A01",
+      "A03",
+      "A06",
+      "A08",
+      "A10",
+      "A12",
+      "A13",
+      "N01"
+    ],
+    "crossModuleScenarios": [
+      "X06",
+      "X07"
+    ],
+    "moduleAcceptancePromotedToPass": false,
+    "authRuntimeModified": false,
+    "historicalAuthEvidenceRetained": true,
+    "implementationPathsNotYetPresent": [
+      "services/api/internal/posts/",
+      "posts HTTP handler",
+      "executable posts SQL migration"
+    ],
+    "parallelOwner": "codex/community-flutter-pages owns Flutter UI and business local persistence; backend contract only here",
+    "nextStep": "T2 backend S1-S4; Flutter UI/local persistence separate; T4 requires fixed auth candidate and isolated integration/device window",
+    "remoteDeliveryResult": "NOT_RUN"
+  }
 }

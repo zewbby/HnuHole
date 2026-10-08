@@ -1,5 +1,22 @@
 # 分模块验收与测试交接
 
+> **2026-10-08 文字业务 T1（独立分支设计）：**`codex/community-text-posting` 基于 `0eff47a`，已完成[任务计划](community-text-posting-plan.md)所列服务端契约／事务设计。真实产物为[后端设计](community-text-posting-backend-design.md)、[API说明](community-text-posting-api.md)、[post-api](../../packages/openapi/post-api.yaml)、[ADR 0006](../adr/0006-text-post-command-publication-boundary.md)、[共享向量](../../packages/post-protocol-vectors/post-command-v1.json)及[专项checker](../../tools/check-community-text-contract.py)。没有posts handler、Go／Dart业务实现或可执行迁移。检查结果见[T1报告](community-text-posting-t1-report.md)与[小型机器记录](community-text-posting-t1-verification.json)，台账独立字段为 `currentCommunityTextT1`；下方认证快照和旧SHA证据保持原范围。
+
+## 文字 T1 的当前证据与下一验收步骤
+
+| 范围 | 本轮结果与限度 | 下一步骤 |
+|---|---|---|
+| 五份OpenAPI、14个posts操作 | PASS：规范、重复键／本地引用、必需header、严格公开DTO、UNKNOWN／封印、固定身份重试和字数元数据 | T2实际HTTP与数据库实现按契约验，不能靠生成／静态通过 |
+| 9组command framing／SHA256 | PASS：Python参考生成字节与固定摘要；Go／Dart执行NOT_RUN | 两端读取同一JSON；补Unicode16字素边界、非法编码和超限场景 |
+| B03／B05／B06／B10 | 只完成文字片设计；CP01–CP15业务NOT_RUN，无对应业务runner | T2补迁移／权限／SQL并发／cmd故障fixture，Flutter任务补页面／SQLite；T4实际完整链路 |
+| B02＋A01／A03／A06／A08／A10／A13 | 本轮未修改认证源码，不拿旧PASS代证未来hook；共享联动测试NOT_RUN | T2接入身份删除／正式关闭／申请关闭／禁言封禁停止代次和最终授权；重开相关模块当前回归，映射CP05–12／15及X06/X07 |
+| A12／N01与业务本机数据 | 本会话未实现Flutter业务存储，CP03／04／14 NOT_RUN | 独立Flutter任务固定vault namespace／加密SQLite／noBackup，实际跨进程及手机App验证；iOS另列 |
+| 生产 | NOT_RUN：本片没有独立安全、容量、备份／恢复或运营证据 | 生产门槛单列，不以T1或后续开发库PASS批准上线 |
+
+本轮复用了现成Windows Python与WSL `Ubuntu-24.04` 的 `D:/zewbbyTest/Hnuhole-env/linux/python-validation`，没有装工具、启动服务或操作数据库。现有R01/R03/R05无posts筛选参数；尚无帖子handler，不能发明业务命令。本轮不执行Go／SQL／race／vet、Dart／Flutter或设备验收的原因是T1纯设计与并行责任范围。T2动态环境只用明确归属的一次性开发／升级库、WSL2 Linux服务和独立Gate，最终认证候选仍为T4依赖。
+
+本轮设计未提交／推送；模块整体状态不改PASS。下一入口为后端设计S1–S4实施拆分与CP01–CP15清单。下方历史认证交付继续按原日期、版本和证明范围阅读。
+
 > **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
 
 > **2026-10-05 AC05 当前交付：**当前完整 Android arm64 App、两个 instrumentation APK、模拟器 vault16项与3组跨进程、Passkey Dart9／Android codec5、Flutter真实原生双进程均PASS；新增身份草稿恢复／组合输入／账号隔离和原意图核对，write/read PID 7062／7189。Flutter分析及179项、四份OpenAPI本轮PASS。AC05整项和B02整模块仍BLOCKED：iOS／系统Passkey／物理设备／系统备份与完整App→实际C/V尚无完整证据。见[AC05报告](auth-privacy-platform-acceptance-validation-report.md)、[任务单](auth-privacy-platform-acceptance-plan.md)和[机器记录](../../services/api/authlab/platform-acceptance-verification.json)。保留AC04原指纹与证明范围；下一步AC06最终交接，不扩展完整业务片。本轮未提交／推送／部署。

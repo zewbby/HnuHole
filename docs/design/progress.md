@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-08 文字片 T1：**`codex/community-text-posting` 的[计划](community-text-posting-plan.md)、[后端设计](community-text-posting-backend-design.md)、[API／前端对齐清单](community-text-posting-api.md)与[OpenAPI](../../packages/openapi/post-api.yaml)已收口，状态 `T1_DESIGN_COMPLETE / BUSINESS_IMPLEMENTATION_NOT_STARTED`。五份OpenAPI及14操作／9组摘要向量专项静态检查PASS，详情见[T1报告](community-text-posting-t1-report.md)。下一步T2服务端（初估52–80有效工时）；Flutter页面和业务本机状态由独立并行任务推进。T4仍等待认证固定候选及真实链路证据。无新增业务handler或SQL迁移，CP01–CP15均NOT_RUN，完整B03/B05/B06/B10及生产不改PASS，原认证方后续验收增量不在本工作树；本轮设计未提交／推送。
+
 > **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
 
 > **2026-10-05 AC05 当前交付：**当前完整 Android arm64 App、两个 instrumentation APK、模拟器 vault16项与3组跨进程、Passkey Dart9／Android codec5、Flutter真实原生双进程均PASS；新增身份草稿恢复／组合输入／账号隔离和原意图核对，write/read PID 7062／7189。Flutter分析及179项、四份OpenAPI本轮PASS。AC05整项和B02整模块仍BLOCKED：iOS／系统Passkey／物理设备／系统备份与完整App→实际C/V尚无完整证据。见[AC05报告](auth-privacy-platform-acceptance-validation-report.md)、[任务单](auth-privacy-platform-acceptance-plan.md)和[机器记录](../../services/api/authlab/platform-acceptance-verification.json)。保留AC04原指纹与证明范围；下一步AC06最终交接，不扩展完整业务片。本轮未提交／推送／部署。

@@ -6,8 +6,9 @@
 | [identity-api.yaml](identity-api.yaml) | B02本人身份列表／创建／改名／删除与账号归属幂等结果核对；业务联动随对应模块实现 |
 | [verifier-auth-api.yaml](verifier-auth-api.yaml) | 独立验证方 V，6 个操作：OTP申请／确认、原结果核对、内部正式释放与退役收据持久确认；实施前评审稿 |
 | [community-auth-api.yaml](community-auth-api.yaml) | 社区方 C，22 个操作：开户、用户名密码登录、会话／设备、独立恢复、凭据管理、注销与内部退役；实施前评审稿 |
+| [post-api.yaml](post-api.yaml) | T1文字发布设计契约，14个操作：发布／核对／封印、默认身份、本人任务维护、feed／详情／本人帖子与作者删除；尚无handler或可执行迁移 |
 
-四份文件采用 OpenAPI 3.0.3。认证架构和固定签名字节分别以[逻辑契约](../../docs/design/auth-privacy-data-api-contract.md)与[注册协议](../../docs/design/auth-privacy-registration-protocol.md)为准；表约束、事务、留存和升级顺序见[数据库迁移设计](../../docs/design/auth-privacy-database-migration-design.md)。认证隔离实现和本次运行时实施范围见[实施计划](../../docs/design/auth-privacy-runtime-business-integration-plan.md)。
+五份文件采用OpenAPI 3.0.3。认证架构和固定签名字节分别以[逻辑契约](../../docs/design/auth-privacy-data-api-contract.md)与[注册协议](../../docs/design/auth-privacy-registration-protocol.md)为准；表约束、事务、留存和升级顺序见[数据库迁移设计](../../docs/design/auth-privacy-database-migration-design.md)。认证隔离实现和本次运行时实施范围见[实施计划](../../docs/design/auth-privacy-runtime-business-integration-plan.md)。文字业务的事务／停止代次见[后端设计](../../docs/design/community-text-posting-backend-design.md)，操作字节与跨端要求见[API说明](../../docs/design/community-text-posting-api.md)。
 
 目录 `200` body 仍为 `{channels:[…]}`、七记录与五字段。增加必需 `Session-Expires-At`、`X-Request-ID`、`Cache-Control: no-store`，错误统一为 `error:{code,message,details?}`＋顶层 `requestId`；公共边界的 400／403／429 与会话 401／服务或目录 503 均列入契约。只有最终授权事务提交成功后才能发送截止和目录；客户端持久写截止后发布节点。缺失或非法截止不能当作目录成功。
 
@@ -27,6 +28,12 @@ V/C 使用真实独立 HTTPS origin。`servers: /` 只是相对部署位置，�
 python packages/openapi/check-specs.py
 # 只有 PyYAML 6.0.1 时可先检查结构；此项不能代替 OpenAPI 完整校验
 python packages/openapi/check-specs.py --yaml-only
+```
+
+文字契约另有专项静态检查，验证严格公共DTO、UNKNOWN／封印及固定身份重试边界、必需header、字数元数据和9组摘要向量。需要已有PyYAML；不下载库，不代表Go／Dart字素算法或实际业务通过。本轮实际结果及环境命令见[T1报告](../../docs/design/community-text-posting-t1-report.md)。
+
+```sh
+python -B tools/check-community-text-contract.py
 ```
 
 目录生成固定使用 `oapi-codegen v2.4.1`，由已有安装或 `OAPI_CODEGEN` 指定可执行文件；脚本不下载工具。只生成目录类型与 chi-server 接口到被忽略的 `packages/openapi/generated/channel-api.gen.go`。本地生成后保存该文件，后续 `--check` 重生成到私有临时目录并逐字比较，可发现本地契约与生成物漂移；此文件不提交，CI 每次从契约重新生成并做 HTTP 契约回归。

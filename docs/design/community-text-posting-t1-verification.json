@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "hnuhole-community-text-t1-verification/v1",
+  "recordedOn": "2026-10-08",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/community-text-posting",
+  "baselineHeadCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "workingTreeUncommitted": true,
+  "status": "T1_DESIGN_COMPLETE_BUSINESS_IMPLEMENTATION_NOT_STARTED",
+  "scope": "Design contracts and static reference checks only; no posts handler, executable SQL migration or Go/Dart business implementation",
+  "sourceFingerprint": {
+    "algorithm": "Sort relative paths by Unicode code-point; concatenate UTF8(path), NUL, raw SHA256(bytes), then SHA256",
+    "fileCount": 18,
+    "sha256": "c57813370cda9b096026d9b998a9af687a2a844ee289452484adc1bf9ba04e0d",
+    "files": {
+      "GLOSSARY.md": "9256f1131985c4ee1d6ecda946a3a5a9b68e9dce96a06ffb61f65f2dc3d73f3b",
+      "docs/adr/0006-text-post-command-publication-boundary.md": "d9a7518ad7d4fd7d2dbe20898ac27f44cab9ebe31af34f76f8531d42b216616e",
+      "docs/design/auth-privacy-business-contract.md": "3e48d18462d391725700c6aa5314537580548c6468481cffb73a216ad07b0071",
+      "docs/design/community-text-posting-api.md": "eee9185af71046a294a7d07f9d507bffb87a5cf28ecc78352a918ecce729bf41",
+      "docs/design/community-text-posting-backend-design.md": "afebdc6a2a9a871ceb222644eac636c6deedf2f7428b60f5be20045480c40eda",
+      "docs/design/community-text-posting-plan.md": "167e3b22dd88632855c8a4a7c4eeafee0d4fa38fe9bfe196ddb555732a10fc24",
+      "docs/design/modules/identity.md": "c542f725e697f1a5b3b1657589fd64255f37d27ce946e635aba264abe3858e36",
+      "docs/design/modules/post-composer.md": "11b47edf826c5584fe50d73d6d458cb8d5e56fa75a5d221d7b2d3d301e991e5e",
+      "packages/openapi/README.md": "e52305658292e8bc405d0b8363c710943eb1821eb4e2d40894c08d5cc57d1bba",
+      "packages/openapi/channel-api.yaml": "a6931f7513b44b81108aef7c5df967c6924ff59e16863415556f7a0925f60a02",
+      "packages/openapi/check-specs.py": "af7f783a7150d6a2665feccf6b3550baf47d593998e56f5598da378f0753c10d",
+      "packages/openapi/community-auth-api.yaml": "86dbac36cd6bc1a15602f0937da6eb92d3d681355fd4ad5f4aa7e3c7e426b1d6",
+      "packages/openapi/identity-api.yaml": "398f50e2c7d5e6b2b5166780c50a0e6d199f5fa358d3b4629a42218c8bd252b3",
+      "packages/openapi/post-api.yaml": "c17d699895fb8ad8db71d6f5a7021a6937ef63f94686223633f5b1c8bfaa36f3",
+      "packages/openapi/verifier-auth-api.yaml": "14260a035658c9a789d93a6b0a3257917664d59304fb8265b9c23a855a3dad6c",
+      "packages/post-protocol-vectors/README.md": "1f4e4745a219a6409f176f51d68ed4822cad904922e0f3a8cafdd81d69c2f205",
+      "packages/post-protocol-vectors/post-command-v1.json": "208e48240f36305788ca0138acde71e8fc9dc84dcc380215a8a5fe48d7ef80a3",
+      "tools/check-community-text-contract.py": "634f0dfc487d69d0cb7572c4460ee90d9f61ba1129e8ce0d662130c89fb0f1ba"
+    },
+    "excluded": "Report, this evidence JSON and aggregate handoff/ledger documents avoid self-reference; auth runtime source not changed"
+  },
+  "checks": {
+    "openapiFullValidation": {
+      "result": "PASS",
+      "environment": "WSL Ubuntu-24.04; existing python-validation; PyYAML 6.0.1 and openapi-spec-validator 0.9.0",
+      "command": "wsl -d Ubuntu-24.04 -e sh -lc 'cd /mnt/c/Users/Administrator/.codex/worktrees/community-text-posting/HnuHole && PYTHONPATH=/mnt/d/zewbbyTest/Hnuhole-env/linux/python-validation python3 -B packages/openapi/check-specs.py'",
+      "exitCode": 0,
+      "specifications": [
+        "channel-api.yaml",
+        "community-auth-api.yaml",
+        "identity-api.yaml",
+        "post-api.yaml",
+        "verifier-auth-api.yaml"
+      ]
+    },
+    "postStaticInvariants": {
+      "result": "PASS",
+      "command": "python -B tools/check-community-text-contract.py",
+      "exitCode": 0,
+      "operationCount": 14,
+      "framingVectorCount": 9,
+      "graphemeAlgorithmExecuted": false,
+      "coverage": [
+        "strict YAML references/duplicate keys",
+        "protected operations and required headers",
+        "closed public DTOs",
+        "UNKNOWN/seal and retry invariants",
+        "Unicode16/grapheme/byte limit metadata",
+        "reference framing and SHA256",
+        "seal response excludes query uncertainty; maintenance mutation responses restrict their own operation"
+      ]
+    },
+    "gitWhitespace": {
+      "result": "PASS",
+      "command": "git diff --check",
+      "exitCode": 0,
+      "scope": "tracked changes; new-file whitespace checked separately in final document check"
+    },
+    "documentLinksAndNewFileWhitespace": {
+      "result": "PASS",
+      "exitCode": 0,
+      "documentCount": 11,
+      "localLinkCount": 80,
+      "changedFileWhitespaceCount": 19,
+      "scope": "New design/readme documents and latest aggregate entries only; includes untracked files; final 18-file fingerprint matches"
+    },
+    "ledgerHistoryPreservation": {
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "All parsed prior ledger fields exactly equal HEAD snapshot after removing currentCommunityTextT1; history not reclassified"
+    }
+  },
+  "notRun": [
+    {
+      "test": "CP01-CP15 business acceptance",
+      "result": "NOT_RUN",
+      "reason": "T1 design only; no posts handlers/fixture yet",
+      "next": "T2 SQL/HTTP and Flutter implementation; T4 integrated device chain"
+    },
+    {
+      "test": "Go/Dart digest and Unicode16 grapheme conformance",
+      "result": "NOT_RUN",
+      "reason": "Shared 9 digest and 7 grapheme expected cases are design data; actual Go/Dart implementation not present"
+    },
+    {
+      "test": "Go/SQL/race/vet and migration/limited-role upgrade",
+      "result": "NOT_RUN",
+      "reason": "No executable business code or SQL migration in T1; use task-owned disposable WSL database after T2"
+    },
+    {
+      "test": "Flutter/SQLite/Android/iOS and native business vault/noBackup",
+      "result": "NOT_RUN",
+      "reason": "Parallel Flutter task scope; no current device evidence for this slice; iOS needs its own environment"
+    },
+    {
+      "test": "Current auth candidate integration and lifecycle hooks",
+      "result": "NOT_RUN",
+      "reason": "Auth final candidate not delivered; shared runtime remains unchanged in T1"
+    },
+    {
+      "test": "Independent security, capacity, backup and production restore",
+      "result": "NOT_RUN",
+      "reason": "No production evidence in a design/static check"
+    }
+  ],
+  "affectedModules": [
+    "B02",
+    "B03",
+    "B05",
+    "B06",
+    "B10",
+    "A01",
+    "A03",
+    "A06",
+    "A08",
+    "A10",
+    "A12",
+    "A13",
+    "N01"
+  ],
+  "crossModuleScenarios": [
+    "X06",
+    "X07"
+  ],
+  "report": "docs/design/community-text-posting-t1-report.md",
+  "nextStep": "T2 backend S1-S4; Flutter UI/local persistence separate; T4 requires fixed auth candidate and isolated integration/device window",
+  "remoteDeliveryResult": "NOT_RUN",
+  "businessDynamicTestsExecuted": false,
+  "moduleAcceptancePromotedToPass": false,
+  "environmentActions": "Reused installed Python validation tools; no dependency install, service/database/device operation; no new key/APK/log/cache artifact"
+}
