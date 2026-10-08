@@ -50,6 +50,7 @@ class AuthFlows extends ChangeNotifier {
     this._passkey,
     int Function()? sessionAuthorityVersion,
     this._sessionAuthority,
+    this._onAccountClosed,
     DateTime Function()? clock,
   }) : _sessionAuthorityVersion = sessionAuthorityVersion ?? (() => 0),
        _clock = clock ?? DateTime.now {
@@ -66,12 +67,15 @@ class AuthFlows extends ChangeNotifier {
   final int Function() _sessionAuthorityVersion;
   final Listenable? _sessionAuthority;
   void _sessionAuthorityChanged() {
-    if (_passkeyRecoveryActive && _passkeyAuthorityVersion != _sessionAuthorityVersion()) {
+    if (_passkeyRecoveryActive &&
+        _passkeyAuthorityVersion != _sessionAuthorityVersion()) {
       cancelPasskeyRecovery();
     }
   }
+
   final Future<void> Function(AuthSession) _acceptRegistrationSession;
   final void Function() _clearCommunityAccess;
+  final Future<void> Function(String accountId)? _onAccountClosed;
   final DateTime Function() _clock;
   AuthFlowStatus _status = AuthFlowStatus.idle;
   AuthFailure? _error;
@@ -112,6 +116,7 @@ class AuthFlows extends ChangeNotifier {
     }
     if (closure != null) {
       _restoreClosure(closure);
+      await _cleanClosedBusinessData(closure);
       return;
     }
     final registration = state.registration;
@@ -656,32 +661,51 @@ class AuthFlows extends ChangeNotifier {
         final recovery = _passkeyApi;
         final client = _passkey;
         if (recovery == null || client == null) {
-          throw const AuthFailure(kind: AuthFailureKind.rejected,
-              code: 'PASSKEY_UNAVAILABLE');
+          throw const AuthFailure(
+            kind: AuthFailureKind.rejected,
+            code: 'PASSKEY_UNAVAILABLE',
+          );
         }
         final original = await _store.read();
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         _validateState(original);
-        if (original.pendingReset != null || original.registration?['commit'] != null) {
-          throw const AuthFailure(kind: AuthFailureKind.rejected,
-              code: 'PENDING_CHECK_REQUIRED');
+        if (original.pendingReset != null ||
+            original.registration?['commit'] != null) {
+          throw const AuthFailure(
+            kind: AuthFailureKind.rejected,
+            code: 'PENDING_CHECK_REQUIRED',
+          );
         }
         Future<bool> current() async {
-          if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return false;
+          if (!_current(epoch) ||
+              _sessionAuthorityVersion() != authorityVersion) {
+            return false;
+          }
           final latest = await _store.read();
-          return _current(epoch) && _sessionAuthorityVersion() == authorityVersion &&
+          return _current(epoch) &&
+              _sessionAuthorityVersion() == authorityVersion &&
               latest.session?.token == original.session?.token &&
               latest.pendingReset == null &&
               latest.registration?['commit'] == null &&
               jsonEncode(latest.logouts.map((e) => e.toJson()).toList()) ==
-                  jsonEncode(original.logouts.map((e) => e.toJson()).toList()) &&
-              jsonEncode(latest.pendingClosure) == jsonEncode(original.pendingClosure);
+                  jsonEncode(
+                    original.logouts.map((e) => e.toJson()).toList(),
+                  ) &&
+              jsonEncode(latest.pendingClosure) ==
+                  jsonEncode(original.pendingClosure);
         }
+
         if (!await current()) return;
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         final options = await recovery.createPasskeyResetOptions();
         if (!await current()) return;
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         _nativeRecoveryEpoch = epoch;
         late Map<String, dynamic> assertion;
         try {
@@ -690,11 +714,17 @@ class AuthFlows extends ChangeNotifier {
           if (_nativeRecoveryEpoch == epoch) _nativeRecoveryEpoch = null;
         }
         if (!await current()) return;
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         final result = await recovery.createPasskeyResetIntent(
-            challengeId: options.challengeId, assertion: assertion);
+          challengeId: options.challengeId,
+          assertion: assertion,
+        );
         if (!await current()) return;
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         _resetIntent = result;
         _username = result.username;
         _recoveryCode = result.newRecoveryCode;
@@ -877,6 +907,8 @@ class AuthFlows extends ChangeNotifier {
           'statusSecret': secret,
           'statusDigest': digest,
           'originalBearer': token,
+          // 只用于本机业务清理，不出现在任何公共请求或作者资料中。
+          'originalAccountId': state.session!.accountId,
           'state': 'UNKNOWN',
         },
       );
@@ -967,10 +999,20 @@ class AuthFlows extends ChangeNotifier {
   });
 
   Future<void> forgetClosureStatus() => _run((epoch) async {
+    final state = await _store.read();
+    _validateState(state);
+    final closure = state.pendingClosure;
+    if (closure != null) await _cleanClosedBusinessData(closure);
     await _store.update((latest) {
       final pending = latest.pendingClosure;
       if (pending == null) {
         return latest;
+      }
+      if (pending['closureId'] != closure?['closureId']) {
+        throw const AuthFailure(
+          kind: AuthFailureKind.rejected,
+          code: 'PENDING_CHECK_REQUIRED',
+        );
       }
       if (pending['state'] != 'CANCELLED' && pending['state'] != 'RELEASED') {
         throw const AuthFailure(
@@ -1147,6 +1189,18 @@ class AuthFlows extends ChangeNotifier {
       }
       return latest.copyWith(pendingClosure: next);
     });
+    final recorded = _store.current?.pendingClosure;
+    if (recorded?['closureId'] == id) await _cleanClosedBusinessData(recorded!);
+  }
+
+  Future<void> _cleanClosedBusinessData(Map<String, dynamic> closure) async {
+    if (_onAccountClosed == null ||
+        !{'CLOSED_RELEASE_PENDING', 'RELEASED'}.contains(closure['state'])) {
+      return;
+    }
+    final original = closure['originalAccountId'];
+    // 历史记录没有归属时不猜当前账号，避免清掉后来登录的新账号数据。
+    if (original is String) await _onAccountClosed(original);
   }
 
   void _restoreClosure(Map<String, dynamic> pending) {

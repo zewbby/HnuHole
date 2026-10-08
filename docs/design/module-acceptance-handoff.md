@@ -1,5 +1,27 @@
 # 分模块验收与测试交接
 
+> **2026-10-08 文字业务 T3（Flutter与本机状态）：**用户本轮授权本会话实际实现页面、14操作HTTP客户端、持久发布状态与独立加密业务SQLite／原生业务vault边界。基线`0879dfd`，T3未提交／推送／部署；原并行任务当前产品图审核，未提供本轮实现。真实源码、命令、证据与NOT_RUN见[T3报告](community-text-posting-t3-report.md)和[总记录](community-text-posting-t3-verification.json)，台账用 `currentCommunityTextT3`。本轮存储22项实盘、闭号11项与Kotlin6文件直接编译有列明证据；最终Flutter分析与279项mobile测试PASS，新增100项分层测试及额外1项渲染／3图布局核对PASS，不据此改完整模块PASS。旧T1/T2／认证结果保留原版本；auth codec、closure回调及native vault已改，当前原生设备／完整App回归重新打开。
+
+## 文字 T3 当前模块映射与下一验收步骤
+
+| 模块／场景 | 本轮实现与真实测试位置 | 当前证据及未执行项 |
+|---|---|---|
+| B02／CP01/08/10 | `apps/mobile/lib/src/posts/post_controller.dart`／`post_screens.dart`；`post_controller_test.dart`／`post_screens_test.dart` | 有效身份选择、零身份设置返回及固定重试；最终controller/widget结果见总记录。真实身份API、设备IME及认证最终候选NOT_RUN |
+| B03／CP02/13 | 同上；`main.dart`通道入口；`http_post_api.dart`／`post_api_test.dart` | 最新标题卡片、分页／锚点、无未实现入口；loopback TLS不代证实际C。设备导航／滚动、热榜／搜索仍未验或未实现 |
+| B05／CP02–09 | controller／screens／`post_protocol.dart`／`storage/post_store.dart`；`post_*`测试 | 多草稿、原命令持久、核对／seal／cancel／retry／hide已有实现；存储22项真实SQLitePASS。实际C/V故障链、完整App及原生跨进程NOT_RUN，图片／标签未开发 |
+| B06／CP10–13 | `post_screens.dart`详情／删除；controller及models／HTTP测试 | 正文与作者投影提示、authority遮蔽和删除确认；最终替身/widget结果列总记录。真实身份变化、删除生命周期及完整设备链NOT_RUN |
+| B10／CP03/06–08/14 | 个人混排、草稿恢复／删除、任务核对；controller／screens／storage测试 | 实盘关闭重开与CAS已证；真实平台跨进程、实际本人资格和闭号设备清理NOT_RUN |
+| A01/A03／CP09/15 | `http_post_api.dart`、controller；`post_api_test.dart`／controller测试 | Bearer／成功截止先持久、旧authority响应阻断；最终C Gate／真实服务授权本轮NOT_RUN，旧T2证据不冒称新App通过 |
+| A06／CP05–08 | `post_store.dart`、controller、protocol；存储／controller测试 | 原键／摘要、不可变意图、UNKNOWN不成草稿、原子维护锚点；原生杀进程及实际C故障链NOT_RUN |
+| A08/A10／CP10/11/14 | `auth_flows.dart`／`auth_state_codec.dart`、业务store；`post_closure_cleanup_test.dart` | 11项本机闭号／35项聚焦Dart回归PASS；fake AuthVault／AuthApi不代证真实关闭worker，设备／iOS清理NOT_RUN |
+| A12/N01／CP03/04/14 | `post_store.dart`；`packages/auth_vault/`原生业务方法与`AndroidBusinessStorageTest.kt` | 22项Linux真实SQLite与Kotlin生产／测试6文件编译PASS；BusinessKeyVault内存替身。Android5项业务instrumentation、原生跨进程、备份／恢复、完整APK及iOSNOT_RUN；共享vault变化重开旧设备回归 |
+| A13／CP12/15 | `post_api.dart`／models／HTTP adapter／对应tests | 14操作严格客户端契约及loopback TLS测试源码；最终结果由总记录确认。实际C/V→SQL→Dart／完整AppNOT_RUN |
+| X06/X07 | 严格公共作者／本人任务分隔、独立占位、原账号闭号清理 | 全部业务消费者、独立隐私／权限审查与生产NOT_RUN；不以单个DTO或替身通过宣传系统匿名性 |
+
+T3测试环境为现成WSL Flutter3.47.5／Dart3.13.4及本片专用pub cache；实盘SQLite来自现成系统库3.45.1，独立loader软链仅用于Linux测试，Android/iOS仍默认bundled依赖。完整命令与无工具／未依赖整合的原因见T3报告；不发明 `--module posts`。证据文件为 `community-text-posting-t3-verification.json` 与当前模块台账，最终数量、版本、清理和PNG实际查看结果以当前总记录为准。
+
+下一步先固定认证最终候选并核对本轮共享codec／闭号／vault变化，再在明确归属的独立服务和设备窗口执行实际C/V→SQL→Dart故障链、完整App、native业务存储跨进程／备份恢复。iOS需要完整Xcode／设备。P03/P04生产容量、清理SLA、WAL／恢复、独立授时／锚点／运营证据另验。旧Android和认证历史PASS不自动更新为T3通过；所有完整B模块、全体CP、产品视觉和生产状态均保持各自未验边界。
+
 > **2026-10-08 文字业务 T2（服务端）：**B02帖内绑定及独立占位、B03最新feed、B05受理／原命令核对／封印／取消／retry／hide、B06正文详情及作者删除、B10本人帖子／任务服务端已实现。A01/A03/A06/A08/A10/A13共享边界重新打开本轮回归；A12/N01客户端及认证最终候选整合仍NOT_RUN。源码／测试落点、实际结果、版本、命令和环境详见[T2报告](community-text-posting-t2-report.md)、[总记录](community-text-posting-t2-verification.json)，台账按模块登记 `currentCommunityTextT2`。SQL／HTTP／正式升级／角色和R03都是本轮范围，旧认证设备证据保持原版本；完整B模块、全体CP和生产未通过。下一步T3对齐与T4真实Dart／App／原生业务持久联调，所需环境为固定认证候选和独立设备窗口。T1已推送，T2源码提交`0644f5a`已推送，未部署。
 
 > **2026-10-08 文字业务 T1（独立分支设计）：**`codex/community-text-posting` 基于 `0eff47a`，已完成[任务计划](community-text-posting-plan.md)所列服务端契约／事务设计。真实产物为[后端设计](community-text-posting-backend-design.md)、[API说明](community-text-posting-api.md)、[post-api](../../packages/openapi/post-api.yaml)、[ADR 0006](../adr/0006-text-post-command-publication-boundary.md)、[共享向量](../../packages/post-protocol-vectors/post-command-v1.json)及[专项checker](../../tools/check-community-text-contract.py)。没有posts handler、Go／Dart业务实现或可执行迁移。检查结果见[T1报告](community-text-posting-t1-report.md)与[小型机器记录](community-text-posting-t1-verification.json)，台账独立字段为 `currentCommunityTextT1`；下方认证快照和旧SHA证据保持原范围。

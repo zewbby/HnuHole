@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-08 文字片 T3：**本会话按“做T3”已实现Flutter页面、HTTP适配、持久发布状态机和独立加密业务SQLite／原生业务vault接入；并行任务转为产品图审核，未提供本轮实现代码。当前基线`0879dfd`，T3未提交／推送／部署。存储实盘22项、闭号11项及Android生产／测试6文件直接Kotlin编译有分层证据；最终Flutter分析与279项mobile测试PASS，API14／controller22／widget16项及3图布局检查PASS，视觉未获最终批准。详见[T3报告](community-text-posting-t3-report.md)、[总记录](community-text-posting-t3-verification.json)及[模块交接](module-acceptance-handoff.md)。共享认证codec、closure清理回调和native vault变化使当前设备回归重开；下一步T4固定认证候选、真实C/V→SQL→Dart／完整App、业务SQLite原生跨进程及iOS／备份恢复。完整B02/B03/B05/B06/B10、全体CP和生产不改PASS，原T1/T2／认证历史证明范围保持。
+
 > **2026-10-08 文字片 T2：**服务端14操作、正式SQL／最小权限、最终C Gate事务与发布worker已实现；HTTP14操作与真实SQL／受限角色专项、最终实际C/V R03（15阶段／151次HTTPS）取得本轮证据。全量Go原被测快照与最终HTTP 404修复整包复验分开记录，当前全服务端vet通过。详细结果、版本、未执行场景和命令见[T2报告](community-text-posting-t2-report.md)与[总记录](community-text-posting-t2-verification.json)。原T1设计与认证历史记录保留；T1`1b7fe2e`已推送，T2源码提交`0644f5a`已推送，未部署。Flutter页面／本机存储在独立任务，T4仍待认证最终候选及Dart／App／设备真实链路；不能据服务端通过把完整B02/B03/B05/B06/B10、全体CP或生产改成PASS。P03/P04及未开发功能另列。
 
 > **2026-10-08 文字片 T1：**`codex/community-text-posting` 的[计划](community-text-posting-plan.md)、[后端设计](community-text-posting-backend-design.md)、[API／前端对齐清单](community-text-posting-api.md)与[OpenAPI](../../packages/openapi/post-api.yaml)已收口，状态 `T1_DESIGN_COMPLETE / BUSINESS_IMPLEMENTATION_NOT_STARTED`。五份OpenAPI及14操作／9组摘要向量专项静态检查PASS，详情见[T1报告](community-text-posting-t1-report.md)。下一步T2服务端（初估52–80有效工时）；Flutter页面和业务本机状态由独立并行任务推进。T4仍等待认证固定候选及真实链路证据。无新增业务handler或SQL迁移，CP01–CP15均NOT_RUN，完整B03/B05/B06/B10及生产不改PASS，原认证方后续验收增量不在本工作树；本轮设计未提交／推送。

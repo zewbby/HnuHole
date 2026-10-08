@@ -2,7 +2,7 @@
 
 日期：2026-10-08（Asia/Shanghai）。分支：`codex/community-text-posting`。
 
-状态：`T2_SERVER_IMPLEMENTED / MOBILE_AND_FULL_SLICE_ACCEPTANCE_PENDING`。范围及下列Q0–Q2已由用户确认；T1形成[后端设计](community-text-posting-backend-design.md)、[API清单](community-text-posting-api.md)、[OpenAPI](../../packages/openapi/post-api.yaml)及[ADR0006](../adr/0006-text-post-command-publication-boundary.md)，并已提交推送为`1b7fe2e`。T2实现14操作C服务端、正式迁移0013／权限、停止代次与worker；实际检查和未验范围见[T2报告](community-text-posting-t2-report.md)及[机器记录](community-text-posting-t2-verification.json)。T1原静态证据保留；手机／存储／完整模块及生产未通过，T2源码提交`0644f5a`已推送，未部署。
+状态：`T3_CLIENT_IMPLEMENTED / CLIENT_LAYER_CHECKS_PASS / T4_FULL_SLICE_ACCEPTANCE_PENDING`。范围及下列Q0–Q2已由用户确认；T1形成[后端设计](community-text-posting-backend-design.md)、[API清单](community-text-posting-api.md)、[OpenAPI](../../packages/openapi/post-api.yaml)及[ADR0006](../adr/0006-text-post-command-publication-boundary.md)，并已提交推送为`1b7fe2e`。T2实现14操作C服务端、正式迁移0013／权限、停止代次与worker，源码`0644f5a`已推送，当前开发基线为交接提交`0879dfd`。用户现已授权本会话“做T3”，Flutter页面、客户端契约、持久发布状态和独立加密业务SQLite／原生namespace已实现，详见[T3报告](community-text-posting-t3-report.md)及[总记录](community-text-posting-t3-verification.json)。最终Flutter分析与279项mobile测试及3图布局检查PASS，产品视觉另待确认，完整App／原生跨进程／真实C/V和生产未通过；T3未提交／推送／部署。T1/T2旧证据保持原范围。
 
 ## 1. 目标与明确边界
 
@@ -30,7 +30,7 @@
 - 不从旧 `httpapi`／legacy sessions 接入内容。当前 C 业务授权入口在 `authprivacy`；`withAuthorizedSession` 是既有目录读取范例，`withIdentitySession` 是身份最终事务范例，不能不看语义就当通用内容事务调用。
 - PostgreSQL、服务和 Gate 文件位于本任务独立 WSL2 Linux 工作目录。迁移编号在认证候选接入时核对，不预占可能发生冲突的固定编号。
 - 每个实施里程碑在本分支更新模块交接、台账、HANDOFF 和 progress；最终整合时合并认证方的新记录，保留旧证明范围。
-- 用户已启动并行任务：本会话负责服务端契约、状态、授权、迁移及帖子链路；Flutter页面／UI图与业务本机状态归独立 `codex/community-flutter-pages` 任务。双方以post-api及共享向量对齐；本分支不重复实现页面、不借用认证验收环境。
+- T1/T2当时按后端／Flutter并行责任规划，旧报告保留该事实。用户最新“做T3”授权后，本会话实际实现Flutter页面、HTTP客户端、持久业务状态与SQLite／native namespace；独立 `codex/community-flutter-pages` 任务当前负责产品图审核，未提供本轮实现代码。产品视觉仍待最终确认，本会话以当前post-api及共享向量开发和分层验证，不借用认证验收环境。
 
 ## 4. 需求决策记录
 
@@ -84,24 +84,24 @@ Q0–Q2 已形成共享理解，产品规则同步至 post-composer 和 identity
 | 本机草稿 | 按环境＋账号隔离；持久文字和编辑上下文；与已受理任务区别清楚 |
 | 公共身份投影 | 活动资料或身份级独立占位；与本人管理 DTO 完全分开 |
 
-T1产出OpenAPI和事务／状态表，共14个操作：创建发布命令、原结果核对及封印、本人任务列表／详情／取消／失败重试／隐藏、通道feed、帖子详情、本人帖子列表、本人删除权能、作者删除与权威默认身份context。T2已实现handler／最终Gate事务／worker、迁移0013及精确受限权限，实际范围见T2报告；Flutter路径仍由并行任务交付。
+T1产出OpenAPI和事务／状态表，共14个操作：创建发布命令、原结果核对及封印、本人任务列表／详情／取消／失败重试／隐藏、通道feed、帖子详情、本人帖子列表、本人删除权能、作者删除与权威默认身份context。T2已实现handler／最终Gate事务／worker、迁移0013及精确受限权限，实际范围见T2报告；T3本会话已实现Flutter客户端路径，精确分层证据见T3报告，实际C/V到完整App待T4。
 
-本地沿用Drift/SQLite业务持久化，不把正文、所有草稿和发送队列塞进认证AuthStore单一文档。SQLite不存Bearer／密码／恢复码；任务环境与账号归属必须准确。T1规定独立原生vault namespace托管业务密钥、SQLite认证加密payload及noBackup要求；具体依赖、原生备份范围与验证由Flutter任务固定。这里没有实现客户端存储或改变认证vault schema。
+本地沿用Drift/SQLite业务持久化，不把正文、所有草稿和发送队列塞进认证AuthStore单一文档。SQLite不存Bearer／密码／恢复码；任务环境与账号归属必须准确。T3固定Drift2.35.2／sqlite3 Dart3.7.0／characters1.4.1，实现独立原生vault namespace、认证加密payload和noBackup路径；Linux实盘结果不代证手机原生备份。共享auth workflow codec新增可选的私有originalAccountId，正式闭号原账号清理有持久重试标识；native认证read/write原语义保持，当前设备共享回归重新打开。
 
-服务端已新增 `services/api/internal/posts/`、posts HTTP／authprivacy业务边界、SQL迁移0013及对应测试，更新runtime／worker／入口／权限；完整源码与测试落点见T2报告。`apps/mobile/lib/src/posts/`和`src/storage/`为Flutter任务路径，本工作树不据此冒称客户端实现。
+服务端已新增 `services/api/internal/posts/`、posts HTTP／authprivacy业务边界、SQL迁移0013及对应测试，更新runtime／worker／入口／权限；完整源码与测试落点见T2报告。T3实际源码为 `apps/mobile/lib/src/posts/`、`src/storage/`、`main.dart`及`packages/auth_vault/`业务边界，对应 `apps/mobile/test/post_*_test.dart`；实现、实际测试和平台NOT_RUN分别登记，不据此冒称完整App或生产通过。
 
 ## 7. 六个实施阶段与退出条件
 
 | 阶段 | 交付 | 退出条件 |
 |---|---|---|
 | T0 计划／需求 | 本文、术语表、Q1/Q2答复和范围对齐 | 未决产品问题有明确记录；确认共享理解后才开始代码 |
-| T1 契约／事务设计 | OpenAPI、状态机、模型约束、授权／锁顺序、分页／回执／失败重试／业务存储接入边界；页面结构由Flutter任务负责 | 已完成设计与静态检查；关键UNKNOWN封印、停止代次及严格DTO明确；动态实现待T2/T3 |
+| T1 契约／事务设计 | OpenAPI、状态机、模型约束、授权／锁顺序、分页／回执／失败重试／业务存储接入边界；保留当时并行页面规划 | 已完成设计与静态检查；原证明范围保留，T2/T3实现与动态结果分别见各自报告 |
 | T2 服务端 | 已实现正式迁移／最小权限；受理与绑定、worker公开、核对／取消／重试、feed／详情／本人列表／删除 | 实际一次性PG／HTTPS及C/V cmd证据见T2报告；唯一绑定、原结果与并发终态已验证；完整App和生产另验 |
-| T3 Flutter | 真实通道导航、编辑／确认／身份返回、业务SQLite、我的混排与核对、详情及返回位置 | 分析与单元/widget通过；重启／存储故障源码齐全；内存替身结果仅记相应范围 |
+| T3 Flutter | 本会话已实现通道导航、编辑／确认／身份返回、独立加密业务SQLite、我的混排与核对、详情及返回位置 | 分层聚焦证据见T3报告；最终分析、279项mobile与3图布局检查PASS，产品图待确认；实际原生／完整App待T4 |
 | T4 认证候选整合／真实链路 | 接入认证最终提交；实际C/V＋SQL＋Dart故障链、完整Android App＋原生业务存储 | 有版本匹配的设备与跨进程证据；共享边界变化重开认证回归；有条件时在独立设备／明确窗口验，不能抢认证测试环境 |
 | T5 收口 | 源码／测试／脱敏报告；四份总交接更新；未验项和未来模块边界 | 本片必需项通过才称闭环验收完成；未具备条件时交付实现与明确NOT_RUN/BLOCKED；不代称生产上线 |
 
-依赖：T0 → T1 → T2／T3 → T4 → T5。用户已启动后端／Flutter并行任务，两者按同一契约推进。子代理可做当前任务的审查，不另行创建用户聊天或擅自发消息。后端T2初估52–80有效工时，拆分见后端设计；认证固定候选及设备窗口另列，不把认证任务的10月19日目标当作本片发布日期。
+依赖：T0 → T1 → T2／T3 → T4 → T5。当前本会话完成T2并按最新指令实施T3，并行任务只承担产品图审核；双方沿同一契约与用户已定Q0–Q2。子代理可做当前任务实现／审查，不另行创建用户聊天或擅自发消息。后端T2原预算保留为历史估算；认证固定候选及设备窗口另列，不把认证任务的10月19日目标当作本片发布日期。
 
 ## 8. 固定验收清单
 
@@ -123,7 +123,7 @@ T1产出OpenAPI和事务／状态表，共14个操作：创建发布命令、原
 | CP14 | 真实同机业务SQLite跨进程、账号切换／退出／临时冻结／正式关闭的数据保留与清理 | A12/N01/B05/B10 |
 | CP15 | 正式迁移升级和受限角色；实际HTTPS／cmd／SQL／App；共享授权回归 | A01/A02/A13/B03/B05/B06 |
 
-CP01／CP02／CP05–CP13／CP15在T2取得列明服务端证据；页面、草稿、存储／设备部分及CP03／CP04／CP14仍NOT_RUN，完整CP不能整体改PASS。R01与新增schema runner、本轮R03及真实HTTPS帖子测试的精确范围见T2报告；R05／真实Dart手机链尚未执行本片。禁止发明 `--module posts` 或用旧PASS代验本片，T1静态结果保留原范围。
+CP01／CP02／CP05–CP13／CP15在T2取得列明服务端证据；T3新增页面、草稿、持久核对与闭号清理的分层证据，存储22项实盘及闭号11项PASS，最终controller/widget/API范围由T3总记录确认。CP14真实原生跨进程、CP15完整App到实际服务及设备／生产部分仍NOT_RUN，完整CP不能整体改PASS。R01／schema／R03的精确范围保持T2原版本；R05本片业务Dart手机链尚未接入执行。禁止发明 `--module posts` 或用旧PASS代验新共享边界，T1静态结果保持原范围。
 
 已有入口：契约校验／生成按 `packages/openapi/README.md`；服务端一次性SQL按 `services/api/authlab/run-isolated.sh`，实际进程按 `run-runtime-isolated.sh`，真实Dart按 `run-mobile-isolated.sh`。执行前核对脚本要求、现成工具和归属，使用本片独立fixture；新增业务存在后再写确切命令和退出码。Go race/vet、Flutter分析及测试、标准Android构建依变更范围执行；iOS另列，不以Android证据通过。
 
@@ -132,5 +132,5 @@ CP01／CP02／CP05–CP13／CP15在T2取得列明服务端证据；页面、草�
 - 报告区分：设计完成、实现完成、静态检查、真实SQL／进程／Dart、Android设备、生产。所有结果标明源码提交／未提交摘要及实际证明范围。
 - 模块沿用 B02/B03/B05/B06/B10 和受影响 A/N、X06/X07；B07–B09/B11/B12及首版媒体／标签仍待开发，完整模块不能因为本片PASS而全部改PASS。
 - 只提交源码、测试源码和小型脱敏记录；清理本片明确创建的临时资源。保留认证会话的全部环境及用户数据。
-- 主要风险：认证候选未发布带来的整合变化；业务本机存储与Android验证；生命周期hooks和停止代次必须同事务生效；Unicode16跨端计数及12位随机占位编号。T1已固定方案，实际SQL／跨端／设备证据仍待取得。
-- 当前用户授权T2；T1已提交／推送，T2源码提交`0644f5a`已推送。后续Git交付和部署遵循当次授权，服务端完成不构成部署授权。
+- 主要风险：认证最终候选未接入带来的共享边界变化；业务原生跨进程、Android/iOS与备份恢复；产品视觉批准；生产历史容量、清理SLA和WAL／恢复。T2实际SQL及T3分层证据不能替代固定版本的完整App／设备／独立安全证明。
+- 当前用户授权T3实现；T1及T2源码`0644f5a`已推送，当前基线`0879dfd`。T3未提交／推送／部署，后续Git交付和部署遵循当次授权，代码完成不构成发布授权。

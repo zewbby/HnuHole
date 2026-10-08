@@ -1,6 +1,6 @@
-# 文字发布 API 与前端对齐清单（T1契约／T2服务端）
+# 文字发布 API 与前端对齐清单（T1契约／T2服务端／T3客户端）
 
-日期：2026-10-08，契约版 `0.1.0`。14个操作已在T2接入C服务端；唯一机器契约为 [post-api.yaml](../../packages/openapi/post-api.yaml)，状态、数据约束、锁顺序和清理见[后端设计](community-text-posting-backend-design.md)。实际命令与证明范围见[T2报告](community-text-posting-t2-report.md)，移动端整合与设备验收仍待T4。T1原静态证据按原版本保留。
+日期：2026-10-08，契约版 `0.1.0`。14个操作已在T2接入C服务端，T3本会话已实现Flutter严格DTO／HTTP适配、业务持久和页面接入；唯一机器契约仍为 [post-api.yaml](../../packages/openapi/post-api.yaml)，状态、数据约束、锁顺序和清理见[后端设计](community-text-posting-backend-design.md)。实际版本、分层命令与结果见[T2报告](community-text-posting-t2-report.md)和[T3报告](community-text-posting-t3-report.md)。T3最终Flutter分析与279项mobile测试PASS，实际C/V→SQL→Dart／完整App／设备验收待T4，T1静态及T2服务端证据按原版本保留。产品图审核独立，客户端已有实现不表示视觉获最终批准。
 
 ## 1. 路由与职责
 

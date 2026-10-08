@@ -1,0 +1,365 @@
+{
+  "schemaVersion": "hnuhole-community-text-t3-verification/v1",
+  "recordedAt": "2026-10-08T16:41:04.135262+08:00",
+  "branch": "codex/community-text-posting",
+  "headCommit": "0879dfda1df075e752d8e168c30aa25bf342445f",
+  "T2SourceCommit": "0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3",
+  "authBaselineCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "workingTreeUncommitted": true,
+  "status": "T3_IMPLEMENTED_CLIENT_SCOPED_CHECKS_PASS_T4_FULL_SLICE_PENDING",
+  "sourceFingerprint": {
+    "algorithm": "sorted UTF8 repoPath + NUL + raw file SHA256 bytes then aggregate SHA256; exact working-tree bytes, no normalization",
+    "fileCount": 76,
+    "sha256": "b94f67ff1b4103c09dbfff192443870a43adc4c0fc2f830feafd5104b4ea0aea",
+    "files": {
+      "apps/mobile/lib/hnuhole_mobile.dart": "8f84a4d29b51394c2d741e0296e7e624c2c07ffd844fa6048b024bc73fa4de22",
+      "apps/mobile/lib/main.dart": "9dda245f6e55cb4a55cfd67f17b806303fc008c486cd615b5f0a5411eb6c70b3",
+      "apps/mobile/lib/src/auth/auth_api.dart": "104bac53581b263b9f9f4fcc9458987c3d26949372184f941d196e8920a3ac7a",
+      "apps/mobile/lib/src/auth/auth_crypto.dart": "0cc142b815f3de3093744a37a5a298b84d2478105de547efb9f67b0bd1ac08b7",
+      "apps/mobile/lib/src/auth/auth_flows.dart": "388e9f955a1524e5a084aeeaa8831e8bd3bbd16621a544b6aee2d9519a2a0349",
+      "apps/mobile/lib/src/auth/auth_models.dart": "71ebf515f07a07a5811c623dc2d93de50b57e62ecb96739373bb931e55cd6da4",
+      "apps/mobile/lib/src/auth/auth_screen.dart": "34733070fdb81c111d7f80b258df38e8fcdaf3573fe4fafa4a4835698394cf5b",
+      "apps/mobile/lib/src/auth/auth_session_controller.dart": "ddadbff18d753138bde0d6d6721fdffd4e71dbbe6a052db2a7f61e84f66e7ff9",
+      "apps/mobile/lib/src/auth/auth_state_codec.dart": "f8fd1771a3ca7b7046386cd61fc26414688d9bb65a91c3ac14dbf1924474b1e1",
+      "apps/mobile/lib/src/auth/auth_store.dart": "70ac344b75985c6fcd5f8ccdfed1d90421875a20f18b85f8534bf1428f7b3b48",
+      "apps/mobile/lib/src/auth/credential_management_api.dart": "80ed220e24cb27ad9d4fa196fc7e0fde8bb179fa24be81e36f4bc7e77638d833",
+      "apps/mobile/lib/src/auth/http_auth_api.dart": "50ca4896938ea790c2128f5564f23d9dc427f6c8ccb42ac19eabbae18b767356",
+      "apps/mobile/lib/src/auth/security_management_controller.dart": "40ca3408c84214e6bf4a79abe7b1ec13eef1177dd97bab9f79744e957527615d",
+      "apps/mobile/lib/src/auth/security_management_screen.dart": "c7eed942acd7dfb2daf62c9f2f293cd7fb62ad329d49a6fea42440544f066490",
+      "apps/mobile/lib/src/channels/channel.dart": "ac2be24606f540d19a19fe429b643eff5d51b2766c4a4ec420fb6abb47b57438",
+      "apps/mobile/lib/src/channels/channel_repository.dart": "85285e17f928a9b0fdf60bc223b14aa277d7c46ff65ebe6bc2d9ef0559738b35",
+      "apps/mobile/lib/src/channels/http_channel_repository.dart": "6f0eda32abc384d78c80eb6b2f560ae299ef7458c998320d027c5d5499f09706",
+      "apps/mobile/lib/src/identity/identity_api.dart": "44af45ccc417132788bd87ada418c99e2580195b7365c97de5c8b477b3902ab0",
+      "apps/mobile/lib/src/identity/identity_management_controller.dart": "4a32b0f249d2fbd810cbb5a90e429459cb4393ec8c1d62533c71166380ac51e0",
+      "apps/mobile/lib/src/identity/identity_management_screen.dart": "5c78dec462e6231950e982bafed25eabe1bcd12be9337a6e53b8ac0d1ab41241",
+      "apps/mobile/lib/src/identity/identity_name_formatter.dart": "ae737ac38446a265da53b79259e55f72e068687081411c97f45c758974d937cd",
+      "apps/mobile/lib/src/identity/identity_name_ranges.dart": "27ae187b5a50760003e4c557841d4f2343879e0a54edcab9779b70ecce367772",
+      "apps/mobile/lib/src/identity/settings_screen.dart": "b8b14a090c8d0b0eaf171e4e28b1804b8cf96422ed45bb898da46b0280ae65b0",
+      "apps/mobile/lib/src/navigation/channel_directory_controller.dart": "999fc131efc22890b6940f9f7d3775bdf853812956dce3af4f58f1c17480ff94",
+      "apps/mobile/lib/src/navigation/channel_tree.dart": "ef6bfcab7f1ec46e3d03e1dddfde8f53fdd598b2c9e227c58d0227d137440abd",
+      "apps/mobile/lib/src/navigation/entry_screen.dart": "b35aabe2224168c7e17b6012cb52cfedb6c51076533a6ee78685842ba87e0723",
+      "apps/mobile/lib/src/posts/http_post_api.dart": "be3ba00c3c83378c73bacd2bc2d178b7ac1a56f240a6a69fbd2d47eeefbec5ef",
+      "apps/mobile/lib/src/posts/post_api.dart": "18258abde12c3de567102c435d05a10891b85cd7d1678624ec0791e9887bfcdc",
+      "apps/mobile/lib/src/posts/post_controller.dart": "c8ce6f71087a95dcea7a774cad9cc1a1607321916015f19334b06729507838bf",
+      "apps/mobile/lib/src/posts/post_models.dart": "c4133991ca2c61c097aef19235b5e65fb8b4733336ed9a7d15145ddc8ae47704",
+      "apps/mobile/lib/src/posts/post_protocol.dart": "afab051109ed6715d179285c5a14d68cea3977ddb19b5556f4b3c0355cac871b",
+      "apps/mobile/lib/src/posts/post_screens.dart": "c219a439eff470943180fb2190bc5e0f3885f0946fec846a0bbfddab236bc48b",
+      "apps/mobile/lib/src/posts/post_theme.dart": "e175fac1d5656a3afca28faa9cf5e543f88a3fd51680f4b105e16f4d8eb16ddb",
+      "apps/mobile/lib/src/storage/post_store.dart": "1dfad997838a05c7a99a5f6e822349d7ca40c39208cd1156e1d5ad06d577f5e4",
+      "apps/mobile/pubspec.lock": "4b4d321af79c98183702f77bd8fffdb58c169debbf878d8eb10a84786e194cd7",
+      "apps/mobile/pubspec.yaml": "562be19adfb9dea9057655b753ae354e10df452eb469b842f9c553fea759718f",
+      "apps/mobile/test/auth_api_test.dart": "83f8f82005390ef2cd0014dfa7fe392083f875cf075166e43b9748a2549a2f88",
+      "apps/mobile/test/auth_crypto_test.dart": "654baa6acfafc2101681350a3377fa4199236e8defe14243f139e22db8734af8",
+      "apps/mobile/test/auth_flows_test.dart": "157abb29708c0ffa712b420a7b33648301d557de910a1922348d9afe7bc3005f",
+      "apps/mobile/test/auth_screen_test.dart": "0e44f4b18c589bdd7101a12947f9ef661b07c4a9647e7fbed3606179f25044ff",
+      "apps/mobile/test/auth_session_controller_test.dart": "0d4e6888ea3bef74025f1770c442fd907ea46eb03a3396052c2122dd5d25a717",
+      "apps/mobile/test/auth_vault_test.dart": "56737b67d820b1f481cf94d2144d478d5340f9208557b92f06b317a1f0f2d4a7",
+      "apps/mobile/test/identity_management_controller_test.dart": "f62d4598967bdea62ba470bc9863973cb58fa13c4474b69c2cfe9364c9b59698",
+      "apps/mobile/test/identity_management_screen_test.dart": "9b2b6c638864e414b9274f45373e774d85adbc106de61be2be47ae54afe4f1c9",
+      "apps/mobile/test/identity_name_formatter_test.dart": "2dad857bd739b64a14313f3a7efeb618df420f7bf72daf7d79b2bcbe7429543a",
+      "apps/mobile/test/identity_test_support.dart": "4b0b597459b2c34a73e1fa15964bd964a96f45b8f36584abf7935868afc9b491",
+      "apps/mobile/test/passkey_recovery_flow_test.dart": "498b13903d4cf8e4d4666e31c5abb349cc68e3068bbec3c553709b1636077d17",
+      "apps/mobile/test/post_api_test.dart": "f4c52c4e5396a0fe273a7a873439b38bd461c21fefa7312166c0a67e4ea6f8d1",
+      "apps/mobile/test/post_closure_cleanup_test.dart": "a03e4824307bf3d4127451f3b2d8fbda4c3ac5964f3bdf9123b65728abef7011",
+      "apps/mobile/test/post_controller_test.dart": "dd899bb5cf2286cdc44f281ea00f5c00de9c3eb56055f03b9dfdbece7873abc0",
+      "apps/mobile/test/post_models_test.dart": "03d9a4e69a422f61554415bb46309b0551fb84c1c948c344872071bbd3fc358f",
+      "apps/mobile/test/post_protocol_test.dart": "c62cf93f7e667b4084f86731f33c8923a9f3258d49b14f303778a99be7950ca7",
+      "apps/mobile/test/post_screens_test.dart": "b2d836d5675c9ed6e275a94563c3a89122616c329e546aead100e2cde3a6919a",
+      "apps/mobile/test/post_storage_test.dart": "6a4b4a33bada5202bd52f9aaf67674ab4575aa49211fc74b4a899853c4e30c3b",
+      "apps/mobile/test/security_management_controller_test.dart": "a13364a25c2a33ba0125dadba4c31e79ad93d4265d6d44f5c002eac2e3c9e743",
+      "apps/mobile/test/security_management_screen_test.dart": "e0f56cf4e18e0904f303dc009d9e481b12e02e7d3a4245df46deb87fad6a0ea3",
+      "packages/auth_vault/android/build.gradle.kts": "864c7c46092a98f939e93489587483e169a11d99432b139680636b13f2511c39",
+      "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidAuthVaultTest.kt": "946b10aa7a001607c84c22f527e5f8d56428b26a755238e55a685529dc3422a9",
+      "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt": "e1d6ee34645436ec3e90a56bad27a881a37b0c8691d82e45c0705304b59b1f32",
+      "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AuthVaultProcessRestartTest.kt": "66605928dfc162b97cdaa568e7e2c5ce28775a89c9f06dfb4742a8c4067c0eac",
+      "packages/auth_vault/android/src/main/AndroidManifest.xml": "a39f2408db4c26b383b69e5b705580e63a70567317b166f4663078ab0912ad0c",
+      "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt": "3172e41250125ff655104af2ee1141de165a1ebe159e33ffae5ba059be77b9ec",
+      "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidBusinessStorage.kt": "080ca793ed8d278815f2a599ed5c54592992aa32f0faa4f3fcff64bba5464caf",
+      "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt": "fca407109c6a7730cc27ca821bd420ecde4e08d67a9f123fe54ef9683e7ec250",
+      "packages/auth_vault/ios/Classes/AuthInstallationMarker.swift": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881",
+      "packages/auth_vault/ios/Classes/AuthVaultPlugin.swift": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe",
+      "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift": "ef15f00fb190811ab77f9a8678e0c0e952fe060f621d7f34dd39857ecf93a6f0",
+      "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthInstallationMarker.swift": "191929d0187faf5659a213cb3f0a035802ae62f5d5173b63845ebb24a9a1317e",
+      "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift": "bf1f4249c9621ce26ecdcc36479d3d28eeb34112e19af1dad8f09cba7527b3a3",
+      "packages/auth_vault/lib/hnuhole_auth_vault.dart": "65d556a095c295b9bd9731c55d174410b787d638b50b4d0863c237be9770990d",
+      "packages/auth_vault/pubspec.lock": "82ac7167cec72c4a4eb095e0ce8f67b681257ce2f312cba4ba885d220c4f2201",
+      "packages/auth_vault/pubspec.yaml": "d3aa5fa5ff50c1004a8edcd2c2729e2c65a4f11dd4026aa9aca78591bc55d908",
+      "packages/auth_vault/test/native/installation_marker_test.swift": "ee38ad22f59bae4c6ab9d72e21f9da9a1a18628adaf19099d6845fc740f26a24",
+      "packages/openapi/post-api.yaml": "4270a18b4bdb0fa094f18d12b22fa199abab5fd35a6728e24f8509734f586b09",
+      "packages/post-protocol-vectors/post-command-v1.json": "208e48240f36305788ca0138acde71e8fc9dc84dcc380215a8a5fe48d7ef80a3",
+      "services/api/internal/posts/testdata/GraphemeBreakTest-16.0.0.txt": "ee2b9354d270ac061b29f09662cafea06341d77e704b8cc6bd72aaeeda363cb5"
+    }
+  },
+  "environment": {
+    "host": "Windows/WSL Ubuntu-24.04",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "sqlite": "3.45.1",
+    "characters": "1.4.1",
+    "drift": "2.35.2",
+    "sqlite3Dart": "3.7.0",
+    "taskPubCache": "/tmp/hnuhole-community-t3-pub",
+    "linuxSqliteLoader": "/tmp/hnuhole-community-t3-sqlite-test-lib/libsqlite3.so",
+    "androidIosBundledSqlite": "NOT_RUN",
+    "sharedAuthAcceptanceResourcesUsed": false
+  },
+  "checks": [
+    {
+      "id": "flutter-analyze",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter analyze --no-pub",
+      "details": "当前完整mobile分析No issues found"
+    },
+    {
+      "id": "mobile-full-test",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter test --no-pub --reporter json",
+      "details": "最终同源码mobile279/279项，exit0；新增100项＋原179项回归",
+      "countsEvidence": "docs/design/community-text-posting-t3-test-summary.json",
+      "tests": 279,
+      "success": 279
+    },
+    {
+      "id": "post-api",
+      "result": "PASS",
+      "tests": 14,
+      "details": "loopback真实TLS＋测试响应；全部14操作适配，非实际C/V/PG"
+    },
+    {
+      "id": "post-models",
+      "result": "PASS",
+      "tests": 7,
+      "details": "严格公开/本人DTO；非全系统匿名证明"
+    },
+    {
+      "id": "post-protocol",
+      "result": "PASS",
+      "tests": 8,
+      "unicodeCases": 1093,
+      "framingVectors": 9,
+      "graphemeVectors": 7
+    },
+    {
+      "id": "post-controller",
+      "result": "PASS",
+      "tests": 22,
+      "details": "真实Linux实盘SQLite＋替身PostApi/AuthVault/业务keyvault；关闭重开，不等于手机跨进程"
+    },
+    {
+      "id": "post-storage",
+      "result": "PASS",
+      "tests": 22,
+      "sqliteVersion": "3.45.1",
+      "details": "真实SQLite、双连接CAS/闭号墓碑、SQL写故障、密文/AAD/缺钥/压缩；keyvault替身"
+    },
+    {
+      "id": "post-closure-cleanup",
+      "result": "PASS",
+      "tests": 11,
+      "details": "AuthFlows/codec和替身AuthVault/API；35项含旧auth_flows/auth_vault聚焦回归"
+    },
+    {
+      "id": "post-widgets",
+      "result": "PASS",
+      "tests": 16,
+      "details": "替身controller，真实Flutter widget；非native keyboard/server"
+    },
+    {
+      "id": "post-ui-render",
+      "result": "PASS",
+      "tests": 1,
+      "logicalSize": [
+        390,
+        844
+      ],
+      "pixelRatio": 2,
+      "details": "实际Flutter渲染3图，root与UI代理均view_image；字体仅测试读取现成微软雅黑/SDK icons；非产品视觉批准"
+    },
+    {
+      "id": "android-kotlin-direct-compile",
+      "result": "PASS",
+      "exitCode": 0,
+      "productionFiles": 3,
+      "instrumentationFiles": 3,
+      "kotlin": "2.4.0",
+      "androidSdk": 36,
+      "details": "直接现成CLI编译无warning，非Gradle APK或设备执行，临时输出已清理"
+    },
+    {
+      "id": "git-diff-check",
+      "result": "PASS",
+      "exitCode": 0,
+      "details": "最终源码及交接git diff --check"
+    },
+    {
+      "id": "source-fingerprint-check",
+      "result": "PASS",
+      "files": 76,
+      "sha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9"
+    },
+    {
+      "id": "T3-local-document-links",
+      "result": "PASS",
+      "details": "本轮新增T3链接存在；HANDOFF8条既有历史产品PNG在此worktree缺失，历史保留",
+      "historicalMissing": [
+        {
+          "file": "HANDOFF.md",
+          "target": "../../UI产品图/私信聊天-长按对方图片-配色M-v1.png"
+        },
+        {
+          "file": "HANDOFF.md",
+          "target": "../../UI产品图/私信聊天-首发身份选择-配色L-v2.png"
+        },
+        {
+          "file": "HANDOFF.md",
+          "target": "../../UI产品图/消息身份切换-展开-v2.png"
+        },
+        {
+          "file": "HANDOFF.md",
+          "target": "../../UI产品图/消息首页-正常状态-v1.png"
+        },
+        {
+          "file": "HANDOFF.md",
+          "target": "../../UI产品图/读帖子页面.png"
+        },
+        {
+          "file": "HANDOFF.md",
+          "target": "../../UI产品图/进入帖子后上拉评论页面.png"
+        },
+        {
+          "file": "HANDOFF.md",
+          "target": "../../UI产品图/读帖子上拉评论流程图.png"
+        },
+        {
+          "file": "HANDOFF.md",
+          "target": "../../UI产品图/回复输入状态.png"
+        }
+      ]
+    }
+  ],
+  "notRun": [
+    {
+      "id": "T4-fixed-auth-and-real-post-chain",
+      "result": "NOT_RUN",
+      "reason": "当前认证验收增量候选未固定/整合；本轮未跑帖子实际C/V→PostgreSQL→Dart/完整App，帖子Dart故障runner需补",
+      "requiredEnvironment": "固定认证候选＋本任务一次性WSL C/V库/Gate/HTTPS＋独立设备窗口",
+      "next": "核对共享边界差异，在services/api/authlab/run-mobile-isolated.sh框架补帖子链"
+    },
+    {
+      "id": "android-native-business-storage",
+      "result": "NOT_RUN",
+      "reason": "5项新instrumentation有源码及编译，未在设备执行；未构建完整Gradle APK",
+      "requiredEnvironment": "独立Android设备/模拟器、业务scope、完整App和测试APK",
+      "next": "真实跨进程/杀进程/锁屏/低磁盘/备份恢复/卸载重装；共享auth vault旧16/3回归"
+    },
+    {
+      "id": "ios-native-business-storage",
+      "result": "NOT_RUN",
+      "reason": "无macOS/Xcode/iOS，Swift及Keychain/marker/SQLite业务链未编译运行",
+      "requiredEnvironment": "macOS/Xcode/iOS设备与实际Flutter App",
+      "next": "完整SwiftPM/CocoaPods链接、ThisDeviceOnly和noBackup、闭号marker、跨进程/恢复"
+    },
+    {
+      "id": "product-visual-approval",
+      "result": "NOT_RUN",
+      "reason": "仅既有5张列表/编辑产品图可作参考，确认/任务/My/详情视觉仍在独立任务审核",
+      "requiredEnvironment": "用户在产品图审核任务的最终确认",
+      "next": "按新确认校准实际页面，不将本轮布局检查计为批准"
+    },
+    {
+      "id": "P03-P04-production",
+      "result": "NOT_RUN",
+      "reason": "无独立安全/匿名审查、历史容量、7天应用清理SLA、监控、WAL/备份/恢复、授时/锚点/运营证据",
+      "requiredEnvironment": "独立运营/安全人员和经审查的生产环境",
+      "next": "单独生产门槛验收"
+    }
+  ],
+  "renderEvidence": {
+    "docs/design/evidence/community-text-posting-t3/channel-list.png": {
+      "sha256": "84d762698a52444130e64d66d9d86f402aba9a58e70dcb5aa5673340c6abbaf4",
+      "bytes": 116364
+    },
+    "docs/design/evidence/community-text-posting-t3/personal-posts.png": {
+      "sha256": "a19df014e99fb7ac621efc40ce75bf62f45564296cc709641bca8cf1d4ee0b45",
+      "bytes": 62520
+    },
+    "docs/design/evidence/community-text-posting-t3/text-editor.png": {
+      "sha256": "ea0f7c6c7b06a8ad75e86724b57fb73df6a4a8be62d280749dce864d7b9697bc",
+      "bytes": 77755
+    }
+  },
+  "affectedModules": [
+    "B02",
+    "B03",
+    "B05",
+    "B06",
+    "B10",
+    "A01",
+    "A03",
+    "A06",
+    "A08",
+    "A10",
+    "A12",
+    "A13",
+    "N01"
+  ],
+  "crossModuleScenarios": [
+    "X06",
+    "X07"
+  ],
+  "fullModuleAcceptancePassed": false,
+  "fullCPAcceptancePassed": false,
+  "historicalT1T2AuthEvidenceRetained": true,
+  "sharedClientNativeRegressionReopened": true,
+  "gitDelivery": {
+    "T1": "PUSHED_1b7fe2e",
+    "T2": "PUSHED_0644f5a",
+    "T3": "UNCOMMITTED_UNPUSHED",
+    "deployed": false
+  },
+  "cleanup": {
+    "result": "PASS",
+    "testDatabases": "测试自建temp并自行清理",
+    "kotlinTemporaryOutputs": "已清理，helper确认不存在",
+    "smallRenderEvidence": "保留docs/design/evidence/community-text-posting-t3三张共256639字节脱敏布局图；原SDK/AVD/认证环境/用户数据未动",
+    "remainingOwned": [],
+    "removed": [
+      {
+        "path": "/tmp/hnuhole-community-t3-pub",
+        "existed": true,
+        "removed": true
+      },
+      {
+        "path": "/tmp/hnuhole-community-t3-sqlite-test-lib",
+        "existed": true,
+        "removed": true
+      },
+      {
+        "path": "/tmp/hnuhole-community-t3-full-tests.jsonl",
+        "existed": true,
+        "removed": true
+      },
+      {
+        "path": "/mnt/c/Users/Administrator/.codex/worktrees/community-text-posting/HnuHole/apps/mobile/build",
+        "existed": true,
+        "removed": true
+      },
+      {
+        "path": "/mnt/c/Users/Administrator/.codex/worktrees/community-text-posting/HnuHole/apps/mobile/.dart_tool",
+        "existed": true,
+        "removed": true
+      },
+      {
+        "path": "/mnt/c/Users/Administrator/.codex/worktrees/community-text-posting/HnuHole/apps/mobile/.flutter-plugins-dependencies",
+        "existed": true,
+        "removed": true
+      },
+      {
+        "path": "/mnt/c/Users/Administrator/.codex/tmp/hnuhole-community-t3-ui-render",
+        "removed": true
+      }
+    ]
+  }
+}

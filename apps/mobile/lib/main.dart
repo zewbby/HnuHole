@@ -40,11 +40,31 @@ void main() {
     store: store,
     directory: directory,
   );
+  final postApi = HttpPostApi(communityBaseUri: communityBaseUri);
+  final posts = PostController(
+    api: postApi,
+    sessions: sessions,
+    authStore: store,
+    identities: api,
+    openStore: (accountId) =>
+        PostStore.openNative(environment: storageScope, accountId: accountId),
+    purgeStore: (accountId) => PostStore.purgeNativeClosedAccount(
+      environment: storageScope,
+      accountId: accountId,
+    ),
+  );
   final passkey = NativePasskeyClient();
   final management = SecurityManagementController(
-    api: api, store: store, passkey: passkey, sessions: sessions,
+    api: api,
+    store: store,
+    passkey: passkey,
+    sessions: sessions,
   );
-  final identities = IdentityManagementController(api: api, store: store, sessions: sessions);
+  final identities = IdentityManagementController(
+    api: api,
+    store: store,
+    sessions: sessions,
+  );
   final flows = AuthFlows(
     api: api,
     store: store,
@@ -54,6 +74,7 @@ void main() {
     passkey: passkey,
     sessionAuthorityVersion: () => sessions.authorityVersion,
     sessionAuthority: sessions,
+    onAccountClosed: posts.purgeClosedAccount,
   );
 
   runApp(
@@ -66,6 +87,8 @@ void main() {
       management: management,
       identities: identities,
       store: store,
+      posts: posts,
+      postApi: postApi,
     ),
   );
 }
@@ -80,6 +103,8 @@ class _HnuholeApp extends StatefulWidget {
     required this.management,
     required this.identities,
     required this.store,
+    required this.posts,
+    required this.postApi,
   });
 
   final ChannelDirectoryController directory;
@@ -90,6 +115,8 @@ class _HnuholeApp extends StatefulWidget {
   final SecurityManagementController management;
   final IdentityManagementController identities;
   final AuthStore store;
+  final PostController posts;
+  final HttpPostApi postApi;
 
   @override
   State<_HnuholeApp> createState() => _HnuholeAppState();
@@ -104,6 +131,8 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
   bool _securityRouteOpen = false;
   bool _settingsRouteOpen = false;
   bool _identityRouteOpen = false;
+  bool _personalRouteOpen = false;
+  String? _channelRouteId;
 
   @override
   void initState() {
@@ -161,14 +190,20 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
       return;
     }
     _securityRouteOpen = true;
-    navigator.push(MaterialPageRoute<void>(builder: (context) => SecurityManagementScreen(
-      controller: widget.management,
-      sessions: widget.sessions,
-      onAuthenticationRequired: () {
-        Navigator.of(context).pop();
-        _openAuth();
-      },
-    ))).whenComplete(() => _securityRouteOpen = false);
+    navigator
+        .push(
+          MaterialPageRoute<void>(
+            builder: (context) => SecurityManagementScreen(
+              controller: widget.management,
+              sessions: widget.sessions,
+              onAuthenticationRequired: () {
+                Navigator.of(context).pop();
+                _openAuth();
+              },
+            ),
+          ),
+        )
+        .whenComplete(() => _securityRouteOpen = false);
   }
 
   void _openSettings() {
@@ -179,12 +214,19 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
       return;
     }
     _settingsRouteOpen = true;
-    navigator.push(MaterialPageRoute<void>(builder: (context) => SettingsScreen(
-      onManageIdentity: _openIdentity, onManageSecurity: _openSecurity,
-    ))).whenComplete(() => _settingsRouteOpen = false);
+    navigator
+        .push(
+          MaterialPageRoute<void>(
+            builder: (context) => SettingsScreen(
+              onManageIdentity: _openIdentity,
+              onManageSecurity: _openSecurity,
+            ),
+          ),
+        )
+        .whenComplete(() => _settingsRouteOpen = false);
   }
 
-  void _openIdentity() {
+  Future<void> _openIdentity() async {
     final navigator = _navigatorKey.currentState;
     if (navigator == null || _identityRouteOpen) return;
     if (!widget.sessions.isAuthenticated) {
@@ -192,13 +234,106 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
       return;
     }
     _identityRouteOpen = true;
-    navigator.push(MaterialPageRoute<void>(builder: (context) => IdentityManagementScreen(
-      controller: widget.identities, sessions: widget.sessions,
-      onAuthenticationRequired: () {
-        Navigator.of(context).pop();
-        _openAuth();
-      },
-    ))).whenComplete(() => _identityRouteOpen = false);
+    final account = widget.posts.accountId;
+    final authority = widget.posts.authorityVersion;
+    String identitySnapshot() =>
+        widget.identities.directory?.identities
+            .map(
+              (identity) =>
+                  '${identity.id}:${identity.nickname}:${identity.avatar}',
+            )
+            .join('|') ??
+        '';
+    final before = identitySnapshot();
+    await navigator
+        .push(
+          MaterialPageRoute<void>(
+            builder: (context) => IdentityManagementScreen(
+              controller: widget.identities,
+              sessions: widget.sessions,
+              onAuthenticationRequired: () {
+                Navigator.of(context).pop();
+                _openAuth();
+              },
+            ),
+          ),
+        )
+        .whenComplete(() => _identityRouteOpen = false);
+    if (widget.posts.accountId == account &&
+        widget.posts.authorityVersion == authority &&
+        before != identitySnapshot()) {
+      // 身份管理返回后读取当前投影；选择／创建身份仍不会自动发帖。
+      await widget.posts.refreshPersonalProjections();
+      await widget.posts.refreshKnownPosts();
+    }
+  }
+
+  void _openPersonal() {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || _personalRouteOpen) return;
+    if (!widget.sessions.isAuthenticated) {
+      _openAuth();
+      return;
+    }
+    _personalRouteOpen = true;
+    final account = widget.posts.accountId;
+    final authority = widget.posts.authorityVersion;
+    navigator
+        .push(
+          MaterialPageRoute<void>(
+            builder: (_) => PersonalPostsScreen(
+              controller: widget.posts,
+              channelNames: {
+                for (final channel in widget.directory.channels)
+                  channel.id: channel.displayName,
+              },
+              onManageIdentities: _openIdentity,
+              onAuthenticationRequired: _openAuth,
+              onOpenSettings: _openSettings,
+              onPublishedToChannel: (channelId) {
+                if (widget.posts.accountId != account ||
+                    widget.posts.authorityVersion != authority) {
+                  return;
+                }
+                final channel = widget.directory.channels
+                    .where((item) => item.id == channelId)
+                    .firstOrNull;
+                if (channel == null) return;
+                if (_channelRouteId == channelId) {
+                  navigator.popUntil(
+                    (route) => route.settings.name == 'channel:$channelId',
+                  );
+                } else {
+                  navigator.popUntil((route) => route.isFirst);
+                  _openChannel(channel);
+                }
+              },
+            ),
+          ),
+        )
+        .whenComplete(() => _personalRouteOpen = false);
+  }
+
+  void _openChannel(Channel channel) {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || !widget.sessions.isAuthenticated) return;
+    _channelRouteId = channel.id;
+    final route = MaterialPageRoute<void>(
+      settings: RouteSettings(name: 'channel:${channel.id}'),
+      builder: (_) => ChannelPostsScreen(
+        controller: widget.posts,
+        channel: channel,
+        onManageIdentities: _openIdentity,
+        onAuthenticationRequired: _openAuth,
+        onOpenPersonal: _openPersonal,
+      ),
+    );
+    navigator.push(route).whenComplete(() {
+      if (_channelRouteId == channel.id &&
+          widget.posts.currentChannelId == channel.id) {
+        _channelRouteId = null;
+      }
+    });
   }
 
   @override
@@ -207,6 +342,8 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
     widget.management.dispose();
     widget.identities.dispose();
     widget.flows.dispose();
+    widget.posts.dispose();
+    widget.postApi.close();
     widget.sessions.dispose();
     widget.api.close();
     widget.directory.dispose();
@@ -245,12 +382,8 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
         directory: widget.directory,
         treeSession: _treeSession,
         onLoginRequested: _openAuth,
-        onProfilePressed: _openSettings,
-        onChannelSelected: (channel) {
-          _scaffoldMessengerKey.currentState?.showSnackBar(
-            SnackBar(content: Text('Open ${channel.displayName}')),
-          );
-        },
+        onProfilePressed: _openPersonal,
+        onChannelSelected: _openChannel,
       ),
     );
   }

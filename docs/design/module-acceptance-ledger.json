@@ -321,7 +321,7 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
       "boundedChecksPassed": [
         "go-sql-race-vet",
@@ -463,6 +463,36 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "新增Bearer posts入口和metadata持久，真实Gate/生产另验",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/posts/http_post_api.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_api_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -644,7 +674,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_credential_result.go",
         "services/api/internal/authprivacy/community_identities.go",
@@ -840,6 +870,36 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "当前authority/归属围栏，loopback/替身非最终C事务",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/posts/http_post_api.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_api_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -1098,7 +1158,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_session_controller.dart",
         "apps/mobile/lib/src/auth/security_management_controller.dart",
@@ -1296,6 +1356,36 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "持久原key/digest、原结果恢复，native跨进程与实际C故障链另验",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/storage/post_store.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_storage_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -1454,7 +1544,7 @@
         "X07",
         "X08"
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_screen.dart",
@@ -1666,6 +1756,38 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "原账号closed私有owner/codec与业务清理hook；共享平台回归重开",
+        "sourcePaths": [
+          "apps/mobile/lib/src/auth/auth_flows.dart",
+          "apps/mobile/lib/src/auth/auth_state_codec.dart",
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/storage/post_store.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_closure_cleanup_test.dart",
+          "apps/mobile/test/post_storage_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": true,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -1857,7 +1979,7 @@
       "pendingReasons": [
         "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "currentAC01Regression": {
         "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
         "fullModuleAcceptancePassed": false,
@@ -1977,6 +2099,37 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "非终态不清、原账号close墓碑/迟到forget guard；实际关闭worker待验",
+        "sourcePaths": [
+          "apps/mobile/lib/src/auth/auth_flows.dart",
+          "apps/mobile/lib/src/auth/auth_state_codec.dart",
+          "apps/mobile/lib/src/posts/post_controller.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_closure_cleanup_test.dart",
+          "apps/mobile/test/post_controller_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": true,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -2149,7 +2302,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_models.dart",
         "apps/mobile/lib/src/auth/auth_state_codec.dart",
@@ -2346,6 +2499,36 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "加密独立SQLite/业务keyvault/noBackup源代码；原生存储和备份回归重开",
+        "sourcePaths": [
+          "apps/mobile/lib/src/storage/post_store.dart",
+          "packages/auth_vault/"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_storage_test.dart",
+          "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": true,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -2374,7 +2557,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "sourcePaths": [
         "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -2577,6 +2760,38 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "14操作严格客户端DTO/摘要/固定origin；实际服务全链待验",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/http_post_api.dart",
+          "apps/mobile/lib/src/posts/post_models.dart",
+          "apps/mobile/lib/src/posts/post_protocol.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_api_test.dart",
+          "apps/mobile/test/post_models_test.dart",
+          "apps/mobile/test/post_protocol_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -2604,7 +2819,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "sourcePaths": [
         "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -2777,6 +2992,36 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "Drift实盘/CAS/SQL故障/密文AAD/缺钥拒绝/闭号，native回归重开",
+        "sourcePaths": [
+          "apps/mobile/lib/src/storage/post_store.dart",
+          "packages/auth_vault/"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_storage_test.dart",
+          "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": true,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -3202,7 +3447,7 @@
     {
       "id": "B02",
       "name": "预设身份与帖内身份",
-      "implementationState": "FOUNDATION_AND_TEXT_POST_BINDING_IMPLEMENTED_OTHER_BUSINESS_PENDING",
+      "implementationState": "PARTIAL",
       "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
       "currentResult": "BLOCKED",
       "verificationEntries": [
@@ -3211,7 +3456,7 @@
         "R05",
         "R10"
       ],
-      "note": "AC01-AC03 foundation and new AC04 V Gate/identity closure real Dart scenarios pass. Entire B02 remains BLOCKED: business consumers and device matrix incomplete.",
+      "note": "确认页身份设置/选择返回及固定重试，controller/widget；完整身份业务待验；当前文字切片实现完成，完整模块不等于已验收",
       "priorTaskRecords": [
         {
           "note": "仅设计规则，无实际业务API/表/客户端流程",
@@ -3264,7 +3509,7 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "foundationImplementationState": "SOURCE_IMPLEMENTED",
       "foundationAcceptanceState": "BACKEND_FOUNDATION_AND_AC02_PASS_HISTORICAL_MOBILE_SCOPED",
       "sourcePaths": [
@@ -3603,6 +3848,36 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "确认页身份设置/选择返回及固定重试，controller/widget；完整身份业务待验",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/posts/post_screens.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -3616,7 +3891,7 @@
         "R05",
         "R10"
       ],
-      "note": "本片只改我的/认证路由入口和共享目录controller构造；导航/feed/搜索仍为部分实现，嵌套路由1项不代证完整树交互。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+      "note": "通道最新/feed分页/权威顺序合并/返回锚点，UI与controller；热榜搜索待开发；当前文字切片实现完成，完整模块不等于已验收",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
@@ -3630,7 +3905,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
@@ -3772,6 +4047,39 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "通道最新/feed分页/权威顺序合并/返回锚点，UI与controller；热榜搜索待开发",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/posts/post_screens.dart",
+          "apps/mobile/lib/main.dart",
+          "apps/mobile/lib/src/posts/http_post_api.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart",
+          "apps/mobile/test/post_api_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -3796,8 +4104,8 @@
       "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计规则，后续需本地业务/媒体与持久任务",
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "note": "文字编辑确认、多草稿、原意图持久、UNKNOWN核对/seal/cancel/retry/hide，100项新增层级测试；媒体标签待开发；当前文字切片实现完成，完整模块不等于已验收",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -3876,6 +4184,40 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "文字编辑确认、多草稿、原意图持久、UNKNOWN核对/seal/cancel/retry/hide，100项新增层级测试；媒体标签待开发",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/posts/post_screens.dart",
+          "apps/mobile/lib/src/storage/post_store.dart",
+          "apps/mobile/lib/src/posts/post_protocol.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart",
+          "apps/mobile/test/post_storage_test.dart",
+          "apps/mobile/test/post_protocol_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -3885,8 +4227,8 @@
       "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计规则，无完整业务实现",
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "note": "正文/当前作者投影/删除权能/authority遮蔽；真实生命周期与评论另验；当前文字切片实现完成，完整模块不等于已验收",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -3965,6 +4307,40 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "正文/当前作者投影/删除权能/authority遮蔽；真实生命周期与评论另验",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/posts/post_screens.dart",
+          "apps/mobile/lib/src/posts/http_post_api.dart",
+          "apps/mobile/lib/src/posts/post_models.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart",
+          "apps/mobile/test/post_api_test.dart",
+          "apps/mobile/test/post_models_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -4023,7 +4399,7 @@
         "R05",
         "R10"
       ],
-      "note": "我的→设置→身份管理／账号安全入口已实现；本人帖子／收藏、顶部身份联动、黑名单／通知设置尚未完整实现。动态验收NOT_RUN。",
+      "note": "草稿/任务/正式帖混排、同机实盘恢复、最小内容管理；完整个人模块待验；当前文字切片实现完成，完整模块不等于已验收",
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "services/api/authlab/identity-management-verification.json",
       "report": "docs/design/identity-management-validation-report.md",
@@ -4037,7 +4413,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/identity/settings_screen.dart",
@@ -4178,6 +4554,38 @@
           "X07"
         ],
         "nextAcceptance": "T3 Flutter delivery then T4 fixed auth candidate/Dart/full App/native business state; P03/P04 separate"
+      },
+      "currentCommunityTextT3": {
+        "result": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "report": "docs/design/community-text-posting-t3-report.md",
+        "evidence": "docs/design/community-text-posting-t3-verification.json",
+        "sourceFingerprintSha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9",
+        "scope": "草稿/任务/正式帖混排、同机实盘恢复、最小内容管理；完整个人模块待验",
+        "sourcePaths": [
+          "apps/mobile/lib/src/posts/post_controller.dart",
+          "apps/mobile/lib/src/posts/post_screens.dart",
+          "apps/mobile/lib/src/storage/post_store.dart"
+        ],
+        "testPaths": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart",
+          "apps/mobile/test/post_storage_test.dart"
+        ],
+        "crossModuleScenes": [
+          "X06",
+          "X07"
+        ],
+        "nextAcceptance": "T4固定认证候选＋实际C/V/SQL/Dart/完整App、native跨进程/备份/iOS；生产另验",
+        "sharedPlatformRegressionRequired": false,
+        "notRunIds": [
+          "T4-fixed-auth-and-real-post-chain",
+          "android-native-business-storage",
+          "ios-native-business-storage",
+          "product-visual-approval",
+          "P03-P04-production"
+        ],
+        "notRunReference": "docs/design/community-text-posting-t3-verification.json#notRun"
       }
     },
     {
@@ -6434,5 +6842,236 @@
       "scope": "用户授权提交推送；源码提交已推送，验收状态与测试基线按原记录保留。"
     },
     "testedBaseHeadCommit": "1b7fe2e7214c460ab023cffb9c6d7f875607ff2a"
+  },
+  "currentCommunityTextT3": {
+    "schemaVersion": "hnuhole-community-text-t3-verification/v1",
+    "recordedAt": "2026-10-08T16:41:04.135262+08:00",
+    "branch": "codex/community-text-posting",
+    "headCommit": "0879dfda1df075e752d8e168c30aa25bf342445f",
+    "T2SourceCommit": "0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3",
+    "authBaselineCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+    "workingTreeUncommitted": true,
+    "status": "T3_IMPLEMENTED_CLIENT_SCOPED_CHECKS_PASS_T4_FULL_SLICE_PENDING",
+    "environment": {
+      "host": "Windows/WSL Ubuntu-24.04",
+      "flutter": "3.47.5",
+      "dart": "3.13.4",
+      "sqlite": "3.45.1",
+      "characters": "1.4.1",
+      "drift": "2.35.2",
+      "sqlite3Dart": "3.7.0",
+      "taskPubCache": "/tmp/hnuhole-community-t3-pub",
+      "linuxSqliteLoader": "/tmp/hnuhole-community-t3-sqlite-test-lib/libsqlite3.so",
+      "androidIosBundledSqlite": "NOT_RUN",
+      "sharedAuthAcceptanceResourcesUsed": false
+    },
+    "notRun": [
+      {
+        "id": "T4-fixed-auth-and-real-post-chain",
+        "result": "NOT_RUN",
+        "reason": "当前认证验收增量候选未固定/整合；本轮未跑帖子实际C/V→PostgreSQL→Dart/完整App，帖子Dart故障runner需补",
+        "requiredEnvironment": "固定认证候选＋本任务一次性WSL C/V库/Gate/HTTPS＋独立设备窗口",
+        "next": "核对共享边界差异，在services/api/authlab/run-mobile-isolated.sh框架补帖子链"
+      },
+      {
+        "id": "android-native-business-storage",
+        "result": "NOT_RUN",
+        "reason": "5项新instrumentation有源码及编译，未在设备执行；未构建完整Gradle APK",
+        "requiredEnvironment": "独立Android设备/模拟器、业务scope、完整App和测试APK",
+        "next": "真实跨进程/杀进程/锁屏/低磁盘/备份恢复/卸载重装；共享auth vault旧16/3回归"
+      },
+      {
+        "id": "ios-native-business-storage",
+        "result": "NOT_RUN",
+        "reason": "无macOS/Xcode/iOS，Swift及Keychain/marker/SQLite业务链未编译运行",
+        "requiredEnvironment": "macOS/Xcode/iOS设备与实际Flutter App",
+        "next": "完整SwiftPM/CocoaPods链接、ThisDeviceOnly和noBackup、闭号marker、跨进程/恢复"
+      },
+      {
+        "id": "product-visual-approval",
+        "result": "NOT_RUN",
+        "reason": "仅既有5张列表/编辑产品图可作参考，确认/任务/My/详情视觉仍在独立任务审核",
+        "requiredEnvironment": "用户在产品图审核任务的最终确认",
+        "next": "按新确认校准实际页面，不将本轮布局检查计为批准"
+      },
+      {
+        "id": "P03-P04-production",
+        "result": "NOT_RUN",
+        "reason": "无独立安全/匿名审查、历史容量、7天应用清理SLA、监控、WAL/备份/恢复、授时/锚点/运营证据",
+        "requiredEnvironment": "独立运营/安全人员和经审查的生产环境",
+        "next": "单独生产门槛验收"
+      }
+    ],
+    "affectedModules": [
+      "B02",
+      "B03",
+      "B05",
+      "B06",
+      "B10",
+      "A01",
+      "A03",
+      "A06",
+      "A08",
+      "A10",
+      "A12",
+      "A13",
+      "N01"
+    ],
+    "crossModuleScenarios": [
+      "X06",
+      "X07"
+    ],
+    "fullModuleAcceptancePassed": false,
+    "fullCPAcceptancePassed": false,
+    "historicalT1T2AuthEvidenceRetained": true,
+    "sharedClientNativeRegressionReopened": true,
+    "gitDelivery": {
+      "T1": "PUSHED_1b7fe2e",
+      "T2": "PUSHED_0644f5a",
+      "T3": "UNCOMMITTED_UNPUSHED",
+      "deployed": false
+    },
+    "plan": "docs/design/community-text-posting-plan.md",
+    "report": "docs/design/community-text-posting-t3-report.md",
+    "evidence": "docs/design/community-text-posting-t3-verification.json",
+    "sourceFingerprintSha256": "b94f67ff1b4103c09dbfff192443870a43adc4c0fc2f830feafd5104b4ea0aea",
+    "checks": [
+      {
+        "id": "flutter-analyze",
+        "result": "PASS",
+        "exitCode": 0,
+        "command": "flutter analyze --no-pub",
+        "details": "当前完整mobile分析No issues found"
+      },
+      {
+        "id": "mobile-full-test",
+        "result": "PASS",
+        "exitCode": 0,
+        "command": "flutter test --no-pub --reporter json",
+        "details": "最终同源码mobile279/279项，exit0；新增100项＋原179项回归",
+        "countsEvidence": "docs/design/community-text-posting-t3-test-summary.json",
+        "tests": 279,
+        "success": 279
+      },
+      {
+        "id": "post-api",
+        "result": "PASS",
+        "tests": 14,
+        "details": "loopback真实TLS＋测试响应；全部14操作适配，非实际C/V/PG"
+      },
+      {
+        "id": "post-models",
+        "result": "PASS",
+        "tests": 7,
+        "details": "严格公开/本人DTO；非全系统匿名证明"
+      },
+      {
+        "id": "post-protocol",
+        "result": "PASS",
+        "tests": 8,
+        "unicodeCases": 1093,
+        "framingVectors": 9,
+        "graphemeVectors": 7
+      },
+      {
+        "id": "post-controller",
+        "result": "PASS",
+        "tests": 22,
+        "details": "真实Linux实盘SQLite＋替身PostApi/AuthVault/业务keyvault；关闭重开，不等于手机跨进程"
+      },
+      {
+        "id": "post-storage",
+        "result": "PASS",
+        "tests": 22,
+        "sqliteVersion": "3.45.1",
+        "details": "真实SQLite、双连接CAS/闭号墓碑、SQL写故障、密文/AAD/缺钥/压缩；keyvault替身"
+      },
+      {
+        "id": "post-closure-cleanup",
+        "result": "PASS",
+        "tests": 11,
+        "details": "AuthFlows/codec和替身AuthVault/API；35项含旧auth_flows/auth_vault聚焦回归"
+      },
+      {
+        "id": "post-widgets",
+        "result": "PASS",
+        "tests": 16,
+        "details": "替身controller，真实Flutter widget；非native keyboard/server"
+      },
+      {
+        "id": "post-ui-render",
+        "result": "PASS",
+        "tests": 1,
+        "logicalSize": [
+          390,
+          844
+        ],
+        "pixelRatio": 2,
+        "details": "实际Flutter渲染3图，root与UI代理均view_image；字体仅测试读取现成微软雅黑/SDK icons；非产品视觉批准"
+      },
+      {
+        "id": "android-kotlin-direct-compile",
+        "result": "PASS",
+        "exitCode": 0,
+        "productionFiles": 3,
+        "instrumentationFiles": 3,
+        "kotlin": "2.4.0",
+        "androidSdk": 36,
+        "details": "直接现成CLI编译无warning，非Gradle APK或设备执行，临时输出已清理"
+      },
+      {
+        "id": "git-diff-check",
+        "result": "PASS",
+        "exitCode": 0,
+        "details": "最终源码及交接git diff --check"
+      },
+      {
+        "id": "source-fingerprint-check",
+        "result": "PASS",
+        "files": 76,
+        "sha256": "4e4850bdf864d867af10dc5b4f65c2764bc0c0ca94119ee0f29631629a5665f9"
+      },
+      {
+        "id": "T3-local-document-links",
+        "result": "PASS",
+        "details": "本轮新增T3链接存在；HANDOFF8条既有历史产品PNG在此worktree缺失，历史保留",
+        "historicalMissing": [
+          {
+            "file": "HANDOFF.md",
+            "target": "../../UI产品图/私信聊天-长按对方图片-配色M-v1.png"
+          },
+          {
+            "file": "HANDOFF.md",
+            "target": "../../UI产品图/私信聊天-首发身份选择-配色L-v2.png"
+          },
+          {
+            "file": "HANDOFF.md",
+            "target": "../../UI产品图/消息身份切换-展开-v2.png"
+          },
+          {
+            "file": "HANDOFF.md",
+            "target": "../../UI产品图/消息首页-正常状态-v1.png"
+          },
+          {
+            "file": "HANDOFF.md",
+            "target": "../../UI产品图/读帖子页面.png"
+          },
+          {
+            "file": "HANDOFF.md",
+            "target": "../../UI产品图/进入帖子后上拉评论页面.png"
+          },
+          {
+            "file": "HANDOFF.md",
+            "target": "../../UI产品图/读帖子上拉评论流程图.png"
+          },
+          {
+            "file": "HANDOFF.md",
+            "target": "../../UI产品图/回复输入状态.png"
+          }
+        ]
+      }
+    ],
+    "cleanupEvidence": "docs/design/community-text-posting-t3-verification.json#cleanup",
+    "cleanupResult": "PASS"
   }
 }

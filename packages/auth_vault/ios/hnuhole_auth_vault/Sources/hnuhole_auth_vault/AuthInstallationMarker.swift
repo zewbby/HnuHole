@@ -37,8 +37,8 @@ internal struct SystemAuthInstallationFileSystem: AuthInstallationFileSystem {
 
 internal enum AuthInstallationFailure: Error { case unavailable }
 
-// Keychain may survive uninstall. This non-secret, backup-excluded marker
-// distinguishes an installation; it must be durable before Keychain access.
+// Keychain 可能在卸载后保留。这个不含秘密且排除备份的 marker 用来区分安装实例；
+// 访问 Keychain 前必须先保证 marker 已持久化。
 internal enum AuthInstallationMarker {
     static func ensure(directory: URL, namespace: String,
                        fileSystem: AuthInstallationFileSystem = SystemAuthInstallationFileSystem(),
@@ -55,8 +55,8 @@ internal enum AuthInstallationMarker {
             try removePreviousState()
             try fileSystem.writeMarker(marker)
         }
-        // A previous write may have produced this file without completing the
-        // durable acknowledgment. Reconfirm it before all Keychain access.
+        // 上一次写入可能已经生成文件，但尚未完成持久化确认。
+        // 所有 Keychain 访问前都要重新确认它。
 
         try fileSystem.excludeFromBackup(marker)
         try fileSystem.synchronize(marker)

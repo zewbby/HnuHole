@@ -2,7 +2,7 @@
 
 日期：2026-10-08。分支 `codex/community-text-posting`，源码基线 `0eff47a21cd4f4ab1636b4468f7d5df9769a264f`。
 
-状态：T1设计已由T2实现，源码及当前验证范围见[T2报告](community-text-posting-t2-report.md)；T1原静态证据按原版本保留。实际范围见[计划](community-text-posting-plan.md)，HTTP 唯一来源为 [post-api.yaml](../../packages/openapi/post-api.yaml)，调用与恢复说明见[API说明](community-text-posting-api.md)。认证验收的最终候选尚未接入。本会话承担后端；Flutter 页面、UI评审和业务本机状态由独立 `codex/community-flutter-pages` 任务实现。
+状态：T1服务端设计已由T2实现，源码及验证范围见[T2报告](community-text-posting-t2-report.md)；用户最新授权本会话实施T3，Flutter页面、HTTP适配、持久业务状态及独立加密SQLite／native namespace已有实际源码，精确范围见[T3报告](community-text-posting-t3-report.md)。T1/T2原证据按原版本保留。实际范围见[计划](community-text-posting-plan.md)，HTTP 唯一来源仍为 [post-api.yaml](../../packages/openapi/post-api.yaml)，调用与恢复说明见[API说明](community-text-posting-api.md)。原并行 `codex/community-flutter-pages` 任务当前承担产品图审核，未提供本轮实现；视觉未获最终批准。认证最终候选及实际C/V→Dart／完整App／平台整合仍待T4。
 
 ## 1. 领域关系与两个成功时点
 
@@ -154,7 +154,9 @@ runtime角色只授需要的SELECT/INSERT和明确UPDATE/函数执行；新schem
 
 恢复旧快照必须沿既有C Gate冻结规则，尤其stop epoch、command封印、latest version和PUBLISHED事实不能回退再发布。后台不能因receipt不存在重建历史任务；库外锚点与签名恢复的生产事实不由本片测试代证。
 
-## 9. Flutter接入契约与依赖（不实现客户端）
+## 9. Flutter接入契约与依赖（T1设计，T3实现边界）
+
+下列为T1固定接入约束，T3已按当前源码落实。实际固定依赖为Drift2.35.2／sqlite3 Dart3.7.0／characters1.4.1；SDK对1.4.0的约束差异及Linux system SQLite测试环境见T3报告。共享认证codec、闭号回调与原生vault装配已经变化，当前平台回归重开；内存vault／loopback TLS／Linux实盘结果不代证设备安全存储和完整App。T3未提交／推送／部署，最终全量与PNG结果待总记录收尾。
 
 - environment＋account隔离，Bearer只在现认证vault；正文/草稿/command待办用独立业务SQLite，不塞认证AuthStore大文档。业务加密钥用独立原生vault namespace、绑定环境/账号，SQLite payload认证加密且noBackup；具体Drift依赖及原生备份范围由Flutter计划固定并验证。
 - 发布前必须持久 original commandId、operation、exact payload、digest、logical item和identity；写盘失败不能离开画成处理中。跨进程先恢复原结果，不把UNKNOWN转换为可换身份草稿。

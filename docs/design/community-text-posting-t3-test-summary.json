@@ -1,0 +1,27 @@
+{
+  "exitCode": 0,
+  "tests": 279,
+  "success": 279,
+  "failures": [],
+  "files": {
+    "auth_api_test.dart": 38,
+    "auth_crypto_test.dart": 7,
+    "auth_flows_test.dart": 19,
+    "auth_screen_test.dart": 10,
+    "auth_session_controller_test.dart": 27,
+    "auth_vault_test.dart": 5,
+    "identity_management_controller_test.dart": 18,
+    "identity_management_screen_test.dart": 7,
+    "identity_name_formatter_test.dart": 5,
+    "passkey_recovery_flow_test.dart": 11,
+    "post_api_test.dart": 14,
+    "post_closure_cleanup_test.dart": 11,
+    "post_controller_test.dart": 22,
+    "post_models_test.dart": 7,
+    "post_protocol_test.dart": 8,
+    "post_screens_test.dart": 16,
+    "post_storage_test.dart": 22,
+    "security_management_controller_test.dart": 28,
+    "security_management_screen_test.dart": 4
+  }
+}
