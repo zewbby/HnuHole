@@ -1902,6 +1902,20 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityFlutterF2": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "designState": "COMPLETE",
+        "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+        "result": "NOT_RUN",
+        "staticResult": "PASS",
+        "evidence": "docs/design/community-flutter-f2-verification.json",
+        "design": "docs/design/community-flutter-f2-design.md",
+        "contractLock": "docs/design/community-flutter-f2-lock.json",
+        "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+        "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
+        "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
       }
     },
     {
@@ -2185,6 +2199,20 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityFlutterF2": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "designState": "COMPLETE",
+        "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+        "result": "NOT_RUN",
+        "staticResult": "PASS",
+        "evidence": "docs/design/community-flutter-f2-verification.json",
+        "design": "docs/design/community-flutter-f2-design.md",
+        "contractLock": "docs/design/community-flutter-f2-lock.json",
+        "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+        "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
+        "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
       }
     },
     {
@@ -2937,6 +2965,20 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityFlutterF2": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "designState": "COMPLETE",
+        "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+        "result": "NOT_RUN",
+        "staticResult": "PASS",
+        "evidence": "docs/design/community-flutter-f2-verification.json",
+        "design": "docs/design/community-flutter-f2-design.md",
+        "contractLock": "docs/design/community-flutter-f2-lock.json",
+        "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+        "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
+        "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
       }
     },
     {
@@ -3032,6 +3074,20 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityFlutterF2": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "designState": "COMPLETE",
+        "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+        "result": "NOT_RUN",
+        "staticResult": "PASS",
+        "evidence": "docs/design/community-flutter-f2-verification.json",
+        "design": "docs/design/community-flutter-f2-design.md",
+        "contractLock": "docs/design/community-flutter-f2-lock.json",
+        "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+        "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
+        "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
       }
     },
     {
@@ -3062,6 +3118,20 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityFlutterF2": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "designState": "COMPLETE",
+        "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+        "result": "NOT_RUN",
+        "staticResult": "PASS",
+        "evidence": "docs/design/community-flutter-f2-verification.json",
+        "design": "docs/design/community-flutter-f2-design.md",
+        "contractLock": "docs/design/community-flutter-f2-lock.json",
+        "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+        "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
+        "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
       }
     },
     {
@@ -3077,6 +3147,20 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityFlutterF2": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "designState": "COMPLETE",
+        "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+        "result": "NOT_RUN",
+        "staticResult": "PASS",
+        "evidence": "docs/design/community-flutter-f2-verification.json",
+        "design": "docs/design/community-flutter-f2-design.md",
+        "contractLock": "docs/design/community-flutter-f2-lock.json",
+        "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+        "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
+        "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
       }
     },
     {
@@ -3216,6 +3300,20 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentCommunityFlutterF2": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "designState": "COMPLETE",
+        "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+        "result": "NOT_RUN",
+        "staticResult": "PASS",
+        "evidence": "docs/design/community-flutter-f2-verification.json",
+        "design": "docs/design/community-flutter-f2-design.md",
+        "contractLock": "docs/design/community-flutter-f2-lock.json",
+        "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+        "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
+        "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
       }
     },
     {
@@ -5261,5 +5359,32 @@
     "cleanupPassed": true
   },
   "latestBackendValidationEvidence": "services/api/authlab/privacy-regression-verification.json",
-  "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN"
+  "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN",
+  "currentCommunityFlutterF2": {
+    "recordedOn": "2026-10-09",
+    "branch": "codex/community-flutter-pages",
+    "designState": "COMPLETE",
+    "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+    "result": "NOT_RUN",
+    "staticResult": "PASS",
+    "evidence": "docs/design/community-flutter-f2-verification.json",
+    "design": "docs/design/community-flutter-f2-design.md",
+    "contractLock": "docs/design/community-flutter-f2-lock.json",
+    "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+    "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
+    "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later",
+    "affectedModules": [
+      "A12",
+      "N01",
+      "B02",
+      "B03",
+      "B05",
+      "B06",
+      "B10"
+    ],
+    "crossModuleScenarios": [
+      "X06",
+      "X07"
+    ]
+  }
 }

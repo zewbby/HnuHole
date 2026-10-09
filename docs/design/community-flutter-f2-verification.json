@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "hnuhole-community-flutter-f2-verification/v1",
+  "recordedOn": "2026-10-09",
+  "branch": "codex/community-flutter-pages",
+  "frontendF1Commit": "0fa944f68b0a46e08be757913f24f8c235731b7f",
+  "upstreamContractCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+  "designState": "COMPLETE",
+  "implementationState": "NOT_STARTED_ON_FRONTEND_BRANCH",
+  "staticChecks": [
+    {
+      "id": "f2-contract-design-check",
+      "command": "python tools/check-community-flutter-f2.py",
+      "result": "PASS",
+      "observed": {
+        "result": "PASS",
+        "scope": "Pinned Git snapshots, local references, dependency lock, schema design syntax and unchanged F1 assets only",
+        "sourceReferences": 32,
+        "contractSnapshots": 2,
+        "operations": 14,
+        "dependencies": 5,
+        "schemaTables": 3,
+        "applicationTests": "NOT_RUN",
+        "driftRuntimeTests": "NOT_RUN",
+        "deviceTests": "NOT_RUN",
+        "fullOpenApiValidator": "NOT_RUN"
+      }
+    },
+    {
+      "id": "git-diff-check",
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "functionalResult": "NOT_RUN",
+  "platformResult": "NOT_RUN",
+  "scope": "F2 pinned contract and local storage design only; no upstream dynamic proof adopted",
+  "affectedModules": [
+    "A12",
+    "N01",
+    "B02",
+    "B03",
+    "B05",
+    "B06",
+    "B10"
+  ],
+  "crossModuleScenarios": [
+    "X06",
+    "X07"
+  ],
+  "notRun": [
+    {
+      "id": "Flutter analyze/test and Dart protocol conformance",
+      "reason": "F2 does not import application implementation; execute on F3 source version"
+    },
+    {
+      "id": "True Drift file/database migration/AEAD/native vault",
+      "reason": "Only pinned schema design; runtime checks belong to F3-F5"
+    },
+    {
+      "id": "Actual C/V HTTPS/SQL/main App/physical Android/iOS",
+      "reason": "F2 design only; final auth candidate and independent runtime acceptance required"
+    },
+    {
+      "id": "Full OpenAPI validator",
+      "reason": "This round validates YAML/internal refs/14 operations and exact released blob only; no full validator invoked"
+    }
+  ],
+  "nextStep": "F3 selective pinned domain/storage import and F1 screen integration, with future-schema guard and upstream delete-reconciliation regression",
+  "sourceSha256": {
+    "docs/design/community-flutter-f2-design.md": "bfe8244731ec5840691c848481f4bf63c5bc9915ea51834a44911895335c8770",
+    "docs/design/community-flutter-f2-lock.json": "749fd6f62676757b2ef7342eb19069e07e750f9c576e5d6d8a9f4eae7bc15f9e",
+    "docs/design/schemas/community-posts-local-v1.sql": "ff7c70a21197f5fcfc1f2beb1d0143b0e41bb619b6ae5aeb96bd269fe0fcdad3",
+    "tools/check-community-flutter-f2.py": "0d3ecd74333eff47fd06e680c3ee1028795392b089cd6c98a2b22e951118971a",
+    "packages/openapi/post-api.yaml": "4270a18b4bdb0fa094f18d12b22fa199abab5fd35a6728e24f8509734f586b09",
+    "packages/post-protocol-vectors/post-command-v1.json": "928160e58630a2b4540df0dd054aae4a33698607b59a44cce630e2392b42f787",
+    "packages/post-protocol-vectors/README.md": "3bd25cc115bc2570caf7ef4fe0ce77ebdb990f421652f559b8530a0092bca6d7"
+  },
+  "requiredF3Corrections": [
+    "Reject future schema before read/write without resetting v1",
+    "Use random retry-buffer row keys and safely preserve legacy command/content links",
+    "Apply deletion-command reconciliation fix after upstream commit or equivalent regression",
+    "Validate fixed configured environment without changing existing scope bytes"
+  ]
+}

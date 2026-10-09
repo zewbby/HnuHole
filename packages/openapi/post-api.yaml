@@ -1,0 +1,1559 @@
+openapi: 3.0.3
+info:
+  title: Hnuhole text posting API
+  version: 0.1.0
+  description: T2 C server implements these operations; mobile integration and production acceptance remain separate. Every access
+    requires a current C Bearer and a final C Safety Gate transaction. Account identity comes from that
+    transaction, never from client selectors. Public content and own task/capability DTOs are separate
+    closed allowlists. Command acceptance and asynchronous publication are different durable facts. Absent
+    command results are UNKNOWN_NOT_OBSERVED; only a serialized seal proves NOT_ACCEPTED. HTTP timeout/503/401
+    and client cancellation do not prove failure. Reject unknown fields/query parameters, duplicate JSON
+    keys/headers, invalid UTF-8, invalid scalar values, noncanonical IDs and bodies over the declared
+    limit. JSON is application/json. All responses prohibit caching and secret/body logging.
+servers:
+- url: /
+  description: Existing independent C HTTPS origin, never V or a caller-selected origin.
+x-contract-status: server-implemented-mobile-integration-pending
+x-design-document: ../../docs/design/community-text-posting-api.md
+x-final-authorization: C Gate, current session generation/status/deadline, resource ownership
+paths:
+  /api/v1/post-commands/{commandId}:
+    parameters:
+    - $ref: '#/components/parameters/CommandID'
+    put:
+      operationId: acceptTextPostCommand
+      summary: Atomically accept a new text post and its fixed speaking identity
+      description: This immutable CREATE command atomically allocates postId, taskId, attempt 1, the account+post
+        identity binding and its ACCEPTED receipt. Validation rejection creates no binding or task. Same
+        account/key/digest replays the original receipt; different operation/resource/payload returns
+        COMMAND_CONFLICT. Any new intent uses a fresh random commandId. Safe exact replay requires a current
+        valid session. Identity/default selection alone is not acceptance. Accepted content is immutable;
+        a worker publishes it in a later final Gate transaction. 202 is not publication.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-bytes: 262144
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostInput'
+      responses:
+        '202':
+          $ref: '#/components/responses/CreateCommandAccepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    get:
+      operationId: getOwnPostCommandResult
+      summary: Reconcile the original account-scoped immutable command
+      description: Query-only, no body/query parameters. An absent key returns 200 UNKNOWN_NOT_OBSERVED,
+        never a terminal rejection or permission to create a different command. The original command may
+        still be delayed/in flight. ACCEPTED is its original receipt, not the latest task state; use the
+        returned taskId to inspect that state. Results include no raw title/body or secrets. Cross-account
+        keys cannot reveal another account's command existence.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/CommandObserved'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/post-commands/{commandId}/seal:
+    parameters:
+    - $ref: '#/components/parameters/CommandID'
+    post:
+      operationId: sealUnobservedPostCommand
+      summary: Close the original intent against delayed acceptance
+      description: Uses the original operation and SHA-256 requestDigest persisted before sending. This
+        control request shares the original account/key lock; it has no fresh key and is not publication/cancellation.
+        If absent, atomically record a permanent NOT_ACCEPTED seal for that operation/digest; delayed
+        originals cannot execute. If a matching terminal receipt already exists, return it without changing
+        it. A digest/operation mismatch returns COMMAND_CONFLICT. If CREATE/RETRY was already accepted,
+        reconcile/cancel that task with a separate CANCEL command. Unknown or lost seal responses must
+        be reconciled with the same original key.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SealInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/CommandSealedOrPreviouslyObserved'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/post-tasks:
+    get:
+      operationId: listOwnPendingAndFailedPostTasks
+      summary: List this account's visible pending and failed cards
+      description: Latest effective ACCEPTED and visible FAILED attempts only. PUBLISHED uses me/posts;
+        CANCELLED/hidden/deleted-identity tasks have no list entry. Reconciliation remains independent.
+        Sort by latest acceptedAt DESC, taskId DESC (serverSortAt); successful explicit retry advances
+        acceptedAt, terminal failure itself does not move the card. Current posting-stop epoch is applied
+        even before worker materializes failure. The first page captures a separate committed acceptance_ordinal
+        ceiling. Only the current latest attempt at or below that ceiling is eligible; retry assigns a
+        newer ordinal, so it may disappear from old paging until refresh. Do not return obsolete attempt
+        text.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/PageLimit'
+      responses:
+        '200':
+          $ref: '#/components/responses/OwnTasksListed'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/post-tasks/{taskId}:
+    parameters:
+    - $ref: '#/components/parameters/TaskID'
+    get:
+      operationId: getOwnPostTask
+      summary: Inspect the authoritative latest attempt and available private content
+      description: Only the owning current account can read this task. Unknown or foreign tasks return
+        identical TASK_NOT_FOUND. Hidden/purged/cancelled tasks may expose only authoritative metadata
+        with contentAvailable=false and content=null; clients cannot restore a hidden failure card. A
+        null body does not undo acceptance. Freeze/replaced/expired sessions cannot read even cached private
+        content as an authorized server response. New login to the same account may reconcile.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/OwnTaskRead'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/post-tasks/{taskId}/cancel:
+    parameters:
+    - $ref: '#/components/parameters/TaskID'
+    post:
+      operationId: cancelOwnPostTask
+      summary: Race cancellation against final publication
+      description: New immutable CANCEL command; require the observed latest attemptVersion. Under the
+        same account/task locks, ACCEPTED becomes CANCELLED only if this transaction wins. PUBLISHED/FAILED/CANCELLED
+        produce a durable no-op receipt reflecting the authoritative state. Already published success
+        remains success. Version conflict is durably REJECTED, not cancellation. Exact replay returns
+        the old command fact even if a later task action changed current state.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/CommandKey'
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttemptVersionInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/CancelCommandCommitted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/post-tasks/{taskId}/retry:
+    parameters:
+    - $ref: '#/components/parameters/TaskID'
+    post:
+      operationId: retryOwnFailedPostTask
+      summary: Accept a new immutable attempt on the same post, channel and identity
+      description: New immutable RETRY command, only for visible effective FAILED latest attempts with
+        available content and active original identity/current posting permission. Input cannot select
+        identity or channel. Compare expectedAttemptVersion under account lock; allocate exactly one next
+        attempt for same logical task and post with immutable revised title/body and current posting-stop
+        generation. An old stopped attempt never revives. Query/seal unknown original first; do not retry
+        UNKNOWN as failure. A receipt replay is historical acceptance, not latest state.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/CommandKey'
+      requestBody:
+        required: true
+        x-max-bytes: 262144
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RetryInput'
+      responses:
+        '202':
+          $ref: '#/components/responses/RetryCommandAccepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/post-tasks/{taskId}/hide:
+    parameters:
+    - $ref: '#/components/parameters/TaskID'
+    post:
+      operationId: hideOwnFailedPostTask
+      summary: Permanently remove a confirmed failed card from the own list
+      description: New immutable HIDE_TASK command, only latest FAILED and matching version. Does not
+        erase the acceptance receipt or identity binding. The failure card cannot be restored or retried
+        after hiding. ACCEPTED or unknown tasks cannot be hidden. This is not deletion of a public post,
+        and creates no failure card.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/CommandKey'
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttemptVersionInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/HideCommandCommitted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/channels/{channelId}/posts:
+    parameters:
+    - $ref: '#/components/parameters/ChannelID'
+    get:
+      operationId: listLatestChannelPosts
+      summary: Read only visible published title cards in one channel
+      description: Read only current authorized PUBLISHED cards, never private tasks or body previews.
+        First page captures committed publication ordinal ceiling; later pages exclude newer publications.
+        Order publishedAt DESC, publicationOrdinal DESC. Encrypted authenticated cursor binds caller account,
+        channel, scope, ceiling/last tuple/pageSize and 30-minute trusted expiry; no cross-scope use.
+        READ COMMITTED public JOIN occurs inside final Gate callback, with no foreign row locks. Current
+        deletion and author lifecycle win over cursor snapshot.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/PageLimit'
+      responses:
+        '200':
+          $ref: '#/components/responses/FeedRead'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/posts/{postId}:
+    parameters:
+    - $ref: '#/components/parameters/PostID'
+    get:
+      operationId: getPublishedPost
+      summary: Read a visible published text post with current author projection
+      description: No own capabilities or owner selector. Unknown/unpublished/deleted/nonvisible post
+        returns identical POST_NOT_FOUND, with no original title/body/author. Inactive authors show one
+        independent stable identity-level short code and unified avatar; pending closure retains current
+        active presentation.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/PostRead'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/posts:
+    get:
+      operationId: listOwnPublishedPosts
+      summary: List published posts of this account's still-active identities
+      description: Authoritative own list, separate from public feed and own task list. Identity deletion
+        removes its old posts from this list, but does not delete publicly visible content or the original
+        account's minimal delete capability. No draft upload/cloud synchronization. Same snapshot/order
+        scheme with account-bound cursor; cannot reuse a feed or another account's cursor.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/PageLimit'
+      responses:
+        '200':
+          $ref: '#/components/responses/OwnPublishedPosts'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/posts/{postId}/capabilities:
+    parameters:
+    - $ref: '#/components/parameters/PostID'
+    get:
+      operationId: getOwnPostCapabilities
+      summary: Return minimal private capabilities for an owned visible published post
+      description: Unknown/nonvisible/foreign posts return identical POST_NOT_FOUND. The original account
+        may delete its post even after the speaking identity was deleted; new accounts, including those
+        using the same email, never inherit ownership. canEdit is false in this text slice. This DTO is
+        never embedded in public posts. The returned capability is a view, not a reusable authorization
+        grant; DELETE checks final Gate/session/resource permissions again.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/CapabilitiesRead'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/posts/{postId}/delete:
+    parameters:
+    - $ref: '#/components/parameters/PostID'
+    post:
+      operationId: deleteOwnPublishedPost
+      summary: Atomically stop exposing the owned published post
+      description: Immutable DELETE_POST command with no body/query. The session-owned original account
+        alone may delete. First effect and COMMITTED receipt are atomic. Exact replay returns the same
+        fact despite visibility already being removed. A fresh command for an owned already-deleted post
+        is an idempotent success; unknown/unpublished/foreign resources return the same POST_NOT_FOUND
+        rejection. Readers/old cursors never receive deleted title/body/author. No restore or edit.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/CommandKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/DeleteCommandCommitted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/post-composer-context:
+    get:
+      operationId: getOwnPostComposerContext
+      summary: Read own authoritative default posting identity
+      description: No body or query. Successful public activity only updates the default. Zero identities
+        require setup; deleted default with multiple retained identities requires selection; a single
+        retained identity can be displayed directly. Combine with own identity directory for current presentation.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ComposerContextResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical-unpadded-base64url-32-bytes
+  parameters:
+    CommandID:
+      name: commandId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/CommandKey'
+    CommandKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: One cryptographically random 16-byte commandId, canonical unpadded base64url, in the
+        same account-scoped namespace as CREATE/query/seal. Persist immutable operation/payload/digest
+        before sending. Never reuse for another operation.
+      schema:
+        $ref: '#/components/schemas/CommandKey'
+    PostID:
+      name: postId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceID'
+    TaskID:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceID'
+    ChannelID:
+      name: channelId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceID'
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque authenticated versioned cursor; absent starts a new snapshot. Invalid/scope-mismatched/expired
+        is CURSOR_INVALID.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 1024
+        pattern: ^[A-Za-z0-9_-]+$
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Cursor binds the limit too; do not change it between pages.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+  headers:
+    SessionExpiresAt:
+      required: true
+      description: Current same-Bearer UTC deadline after final authorization and commit. Successful foreground
+        calls may renew by existing C policy; exact replays never extend a replaced/invalid session. Persist
+        before publishing state.
+      schema:
+        $ref: '#/components/schemas/UTCDateTime'
+    RequestId:
+      required: true
+      description: Independent server-generated C request ID, equals error requestId.
+      schema:
+        $ref: '#/components/schemas/CommandKey'
+    NoStore:
+      required: true
+      schema:
+        type: string
+        enum:
+        - no-store
+    RetryAfter:
+      required: true
+      description: Bounded retry delay in seconds, no account information.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 300
+    ServerTime:
+      required: true
+      description: Final C Gate trusted UTC time for this committed response; not an access capability.
+      schema:
+        $ref: '#/components/schemas/UTCDateTime'
+  schemas:
+    ResourceID:
+      type: string
+      format: uuid
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      description: Canonical nonzero opaque UUID; possession never grants ownership.
+    CommandKey:
+      type: string
+      minLength: 22
+      maxLength: 22
+      pattern: ^[A-Za-z0-9_-]{21}[AQgw]$
+    UTCDateTime:
+      type: string
+      format: date-time
+      pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$
+    AttemptVersion:
+      type: integer
+      format: int64
+      minimum: 1
+      maximum: 2147483647
+      description: Per-task latest monotone version 1..2147483647; versions serialize safely in Dart/JSON.
+        Commands compare observed version, replays return original fact.
+    Title:
+      type: string
+      minLength: 1
+      description: Original Unicode scalar text counted as Unicode 16.0 extended grapheme clusters. Spaces,
+        punctuation, TAB/CR/LF count; CRLF is one cluster. No trim, NFC or nickname character ban. At
+        least one scalar outside White_Space and Default_Ignorable is required. Invalid UTF-8/surrogates/NUL
+        and C0/C1 except TAB/CR/LF are rejected. Runtime grapheme and byte validation required; JSON Schema
+        length is not grapheme count.
+      x-max-grapheme-clusters: 15
+      x-max-utf8-bytes: 4096
+      x-unicode-version: 16.0.0
+    Body:
+      type: string
+      minLength: 1
+      description: Original Unicode scalar text counted as Unicode 16.0 extended grapheme clusters. Spaces,
+        punctuation, TAB/CR/LF count; CRLF is one cluster. No trim, NFC or nickname character ban. At
+        least one scalar outside White_Space and Default_Ignorable is required. Invalid UTF-8/surrogates/NUL
+        and C0/C1 except TAB/CR/LF are rejected. Runtime grapheme and byte validation required; JSON Schema
+        length is not grapheme count.
+      x-max-grapheme-clusters: 3000
+      x-max-utf8-bytes: 65536
+      x-unicode-version: 16.0.0
+    CreatePostInput:
+      type: object
+      additionalProperties: false
+      required:
+      - channelId
+      - identityId
+      - title
+      - body
+      properties:
+        channelId:
+          $ref: '#/components/schemas/ResourceID'
+        identityId:
+          $ref: '#/components/schemas/ResourceID'
+        title:
+          $ref: '#/components/schemas/Title'
+        body:
+          $ref: '#/components/schemas/Body'
+    RetryInput:
+      type: object
+      additionalProperties: false
+      required:
+      - expectedAttemptVersion
+      - title
+      - body
+      properties:
+        expectedAttemptVersion:
+          $ref: '#/components/schemas/AttemptVersion'
+        title:
+          $ref: '#/components/schemas/Title'
+        body:
+          $ref: '#/components/schemas/Body'
+    AttemptVersionInput:
+      type: object
+      additionalProperties: false
+      required:
+      - expectedAttemptVersion
+      properties:
+        expectedAttemptVersion:
+          $ref: '#/components/schemas/AttemptVersion'
+    SealInput:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      - requestDigest
+      properties:
+        operation:
+          $ref: '#/components/schemas/CommandOperation'
+        requestDigest:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+          description: SHA-256 lowercase hex of the exact framed original operation/path/payload; not
+            JSON.stringify bytes or an authentication credential.
+    CommandOperation:
+      type: string
+      enum:
+      - CREATE
+      - RETRY
+      - CANCEL
+      - DELETE_POST
+      - HIDE_TASK
+    CommandResult:
+      oneOf:
+      - $ref: '#/components/schemas/UnknownCommandResult'
+      - $ref: '#/components/schemas/AcceptedPublishCommand'
+      - $ref: '#/components/schemas/CommittedCancelCommand'
+      - $ref: '#/components/schemas/CommittedDeleteCommand'
+      - $ref: '#/components/schemas/CommittedHideCommand'
+      - $ref: '#/components/schemas/RejectedCommandResult'
+      - $ref: '#/components/schemas/SealedCommandResult'
+      - $ref: '#/components/schemas/ExpiredCommandResult'
+    UnknownCommandResult:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      properties:
+        state:
+          type: string
+          enum:
+          - UNKNOWN_NOT_OBSERVED
+    AcceptedPublishCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - taskId
+      - postId
+      - attemptVersion
+      properties:
+        state:
+          type: string
+          enum:
+          - ACCEPTED
+        operation:
+          type: string
+          enum:
+          - CREATE
+          - RETRY
+        taskId:
+          $ref: '#/components/schemas/ResourceID'
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+        attemptVersion:
+          $ref: '#/components/schemas/AttemptVersion'
+    CommittedCancelCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - taskId
+      - attemptVersion
+      - taskState
+      properties:
+        state:
+          type: string
+          enum:
+          - COMMITTED
+        operation:
+          type: string
+          enum:
+          - CANCEL
+        taskId:
+          $ref: '#/components/schemas/ResourceID'
+        attemptVersion:
+          $ref: '#/components/schemas/AttemptVersion'
+        taskState:
+          type: string
+          enum:
+          - CANCELLED
+          - PUBLISHED
+          - FAILED
+          description: State at this command's committed arbitration, not a promise about later task actions.
+    CommittedDeleteCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - postId
+      properties:
+        state:
+          type: string
+          enum:
+          - COMMITTED
+        operation:
+          type: string
+          enum:
+          - DELETE_POST
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+    CommittedHideCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - taskId
+      - attemptVersion
+      properties:
+        state:
+          type: string
+          enum:
+          - COMMITTED
+        operation:
+          type: string
+          enum:
+          - HIDE_TASK
+        taskId:
+          $ref: '#/components/schemas/ResourceID'
+        attemptVersion:
+          $ref: '#/components/schemas/AttemptVersion'
+    RejectedCommandResult:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - errorCode
+      properties:
+        state:
+          type: string
+          enum:
+          - REJECTED
+        operation:
+          $ref: '#/components/schemas/CommandOperation'
+        errorCode:
+          $ref: '#/components/schemas/BusinessRejectionCode'
+    SealedCommandResult:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - reason
+      properties:
+        state:
+          type: string
+          enum:
+          - NOT_ACCEPTED
+        operation:
+          $ref: '#/components/schemas/CommandOperation'
+        reason:
+          type: string
+          enum:
+          - COMMAND_SEALED
+    ExpiredCommandResult:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      properties:
+        state:
+          type: string
+          enum:
+          - RESULT_EXPIRED
+          description: A permanent prevention anchor exists but its former outcome is unavailable; never
+            re-execute this command or infer nonacceptance.
+    BusinessRejectionCode:
+      type: string
+      enum:
+      - POST_CONTENT_INVALID
+      - POST_IDENTITY_UNAVAILABLE
+      - POST_CHANNEL_UNAVAILABLE
+      - POSTING_RESTRICTED
+      - ACCOUNT_CLOSING
+      - TASK_NOT_FOUND
+      - TASK_NOT_RETRYABLE
+      - TASK_NOT_HIDEABLE
+      - TASK_VERSION_CONFLICT
+      - POST_NOT_FOUND
+    TaskState:
+      type: string
+      enum:
+      - ACCEPTED
+      - PUBLISHED
+      - FAILED
+      - CANCELLED
+      description: Effective server latest attempt state; UNKNOWN is exclusively client uncertainty. A
+        persistent stop-generation mismatch yields irreversible FAILED even before bounded worker materialization.
+        Terminal attempts never change state.
+    FailureCode:
+      type: string
+      nullable: true
+      enum:
+      - PUBLICATION_FAILED
+      - PUBLISHING_STOPPED
+      - IDENTITY_INACTIVE
+      - null
+    OwnTaskSummary:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - postId
+      - channelId
+      - identityId
+      - attemptVersion
+      - state
+      - acceptedAt
+      - failureCode
+      - visible
+      - contentAvailable
+      - canRetry
+      - serverSortAt
+      - terminalAt
+      - canCancel
+      - canHide
+      properties:
+        taskId:
+          $ref: '#/components/schemas/ResourceID'
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+        channelId:
+          $ref: '#/components/schemas/ResourceID'
+        identityId:
+          $ref: '#/components/schemas/ResourceID'
+        attemptVersion:
+          $ref: '#/components/schemas/AttemptVersion'
+        state:
+          $ref: '#/components/schemas/TaskState'
+        acceptedAt:
+          $ref: '#/components/schemas/UTCDateTime'
+        failureCode:
+          $ref: '#/components/schemas/FailureCode'
+        visible:
+          type: boolean
+          description: Whether this task may be presented as a pending/failed own card; hidden cards cannot
+            be reconstructed by result lookup.
+        contentAvailable:
+          type: boolean
+        canRetry:
+          type: boolean
+          description: Informational own view only, false unless latest FAILED and current identity/permissions/content
+            permit; retry revalidates.
+        serverSortAt:
+          $ref: '#/components/schemas/UTCDateTime'
+          description: Exactly the latest acceptedAt; retry updates it, failure materialization does not.
+            Stable task order is descending serverSortAt then taskId.
+        terminalAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Null for effective ACCEPTED; otherwise immutable trusted terminal time. A derived
+            stop uses the first stop event after the accepted generation, never observation time or a
+            later punishment. Identity deletion first materializes prior stop outcomes before terminating
+            remaining ACCEPTED attempts.
+        canCancel:
+          type: boolean
+          description: Informational latest ACCEPTED maintenance permission, revalidated by command.
+        canHide:
+          type: boolean
+          description: Informational latest FAILED and visible maintenance permission, revalidated by
+            command.
+    OwnTaskContent:
+      type: object
+      additionalProperties: false
+      required:
+      - title
+      - body
+      properties:
+        title:
+          $ref: '#/components/schemas/Title'
+        body:
+          $ref: '#/components/schemas/Body'
+    OwnTaskDetail:
+      type: object
+      additionalProperties: false
+      required:
+      - task
+      - content
+      properties:
+        task:
+          $ref: '#/components/schemas/OwnTaskSummary'
+        content:
+          type: object
+          nullable: true
+          additionalProperties: false
+          required:
+          - title
+          - body
+          properties:
+            title:
+              $ref: '#/components/schemas/Title'
+            body:
+              $ref: '#/components/schemas/Body'
+          description: Latest immutable attempt text only when available/authorized; null when hidden/purged/cancelled.
+            Never another attempt or ordinary draft.
+    OwnTaskList:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextCursor
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/OwnTaskDetail'
+        nextCursor:
+          $ref: '#/components/schemas/NullableCursor'
+    PublicAuthor:
+      oneOf:
+      - $ref: '#/components/schemas/ActivePublicAuthor'
+      - $ref: '#/components/schemas/InactivePublicAuthor'
+    ActivePublicAuthor:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - nickname
+      - avatar
+      properties:
+        state:
+          type: string
+          enum:
+          - ACTIVE
+        nickname:
+          type: string
+          minLength: 1
+          maxLength: 512
+          description: Current authorized identity nickname, not the accepted-time snapshot.
+        avatar:
+          type: string
+          enum:
+          - default-v1
+    InactivePublicAuthor:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - shortCode
+      - avatar
+      properties:
+        state:
+          type: string
+          enum:
+          - DELETED
+          - ACCOUNT_CLOSED
+        shortCode:
+          type: string
+          minLength: 12
+          maxLength: 12
+          pattern: ^[A-Z2-7]{12}$
+          description: Stable uniformly random identity-level 60-bit code with database uniqueness/collision
+            retry; no account relation, timestamp, sequential number or truncated UUID. Render 注销身份 ·
+            code.
+        avatar:
+          type: string
+          enum:
+          - inactive-v1
+    PublicPostCard:
+      type: object
+      additionalProperties: false
+      required:
+      - postId
+      - channelId
+      - title
+      - author
+      - publishedAt
+      properties:
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+        channelId:
+          $ref: '#/components/schemas/ResourceID'
+        title:
+          $ref: '#/components/schemas/Title'
+        author:
+          $ref: '#/components/schemas/PublicAuthor'
+        publishedAt:
+          $ref: '#/components/schemas/UTCDateTime'
+    PublicPost:
+      type: object
+      additionalProperties: false
+      required:
+      - postId
+      - channelId
+      - title
+      - body
+      - author
+      - publishedAt
+      properties:
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+        channelId:
+          $ref: '#/components/schemas/ResourceID'
+        title:
+          $ref: '#/components/schemas/Title'
+        body:
+          $ref: '#/components/schemas/Body'
+        author:
+          $ref: '#/components/schemas/PublicAuthor'
+        publishedAt:
+          $ref: '#/components/schemas/UTCDateTime'
+    PublicPostResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - post
+      properties:
+        post:
+          $ref: '#/components/schemas/PublicPost'
+    FeedPage:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextCursor
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/PublicPostCard'
+        nextCursor:
+          $ref: '#/components/schemas/NullableCursor'
+    NullableCursor:
+      type: string
+      nullable: true
+      minLength: 1
+      maxLength: 1024
+      pattern: ^[A-Za-z0-9_-]+$
+    OwnPostCapabilities:
+      type: object
+      additionalProperties: false
+      required:
+      - postId
+      - canDelete
+      - canEdit
+      properties:
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+        canDelete:
+          type: boolean
+          enum:
+          - true
+        canEdit:
+          type: boolean
+          enum:
+          - false
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      - requestId
+      properties:
+        requestId:
+          $ref: '#/components/schemas/CommandKey'
+        error:
+          type: object
+          additionalProperties: false
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+              enum:
+              - MALFORMED_REQUEST
+              - AUTHENTICATION_FAILED
+              - SESSION_INVALID
+              - session_replaced
+              - AUTHORIZATION_UNAVAILABLE
+              - SERVICE_UNAVAILABLE
+              - RATE_LIMITED
+              - PAYLOAD_TOO_LARGE
+              - UNSUPPORTED_MEDIA_TYPE
+              - CURSOR_INVALID
+              - COMMAND_CONFLICT
+              - COMMAND_SEALED
+              - RESULT_EXPIRED
+              - POST_CONTENT_INVALID
+              - POST_IDENTITY_UNAVAILABLE
+              - POST_CHANNEL_UNAVAILABLE
+              - POSTING_RESTRICTED
+              - ACCOUNT_CLOSING
+              - TASK_NOT_FOUND
+              - TASK_NOT_RETRYABLE
+              - TASK_NOT_HIDEABLE
+              - TASK_VERSION_CONFLICT
+              - POST_NOT_FOUND
+            message:
+              type: string
+              minLength: 1
+              maxLength: 256
+              description: Fixed bounded safe message, no raw database/transport error, text, identity/account
+                detail or request key.
+    OwnPostCard:
+      type: object
+      additionalProperties: false
+      required:
+      - post
+      - serverSortAt
+      properties:
+        post:
+          $ref: '#/components/schemas/PublicPostCard'
+        serverSortAt:
+          $ref: '#/components/schemas/UTCDateTime'
+    OwnPostPage:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextCursor
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/OwnPostCard'
+        nextCursor:
+          $ref: '#/components/schemas/NullableCursor'
+    ComposerContext:
+      type: object
+      additionalProperties: false
+      required:
+      - selectionState
+      - defaultIdentityId
+      properties:
+        selectionState:
+          type: string
+          enum:
+          - INITIAL_SETUP_REQUIRED
+          - DEFAULT_AVAILABLE
+          - SELECTION_REQUIRED
+        defaultIdentityId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Null unless DEFAULT_AVAILABLE; current own identity derived from successful public
+            activity, never merely selection or acceptance.
+    SealResult:
+      oneOf:
+      - $ref: '#/components/schemas/AcceptedPublishCommand'
+      - $ref: '#/components/schemas/CommittedCancelCommand'
+      - $ref: '#/components/schemas/CommittedDeleteCommand'
+      - $ref: '#/components/schemas/CommittedHideCommand'
+      - $ref: '#/components/schemas/RejectedCommandResult'
+      - $ref: '#/components/schemas/SealedCommandResult'
+      - $ref: '#/components/schemas/ExpiredCommandResult'
+  responses:
+    CommandObserved:
+      description: Authorized committed command observation, including query-only uncertainty or a winning
+        seal.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommandResult'
+    OwnTasksListed:
+      description: Final-authorized own visible task cards and account-bound cursor.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OwnTaskList'
+    OwnTaskRead:
+      description: Final-authorized latest task state and separately available private payload.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OwnTaskDetail'
+    FeedRead:
+      description: Final-authorized visible title cards; no body excerpt or viewer/owner metadata.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FeedPage'
+    PostRead:
+      description: Final-authorized visible published post and current public author projection.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicPostResponse'
+    CapabilitiesRead:
+      description: Final-authorized minimal current account capabilities; no other identities or account
+        selector.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OwnPostCapabilities'
+    BadRequest:
+      description: Invalid boundary input or cursor; no authoritative conclusion about an earlier in-flight
+        original command.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Unauthorized:
+      description: Missing/malformed Bearer, invalid/expired/revoked session, or session_replaced. Clear
+        only current affected auth fence, retain original account-scoped intent; do not treat as failed
+        publication or erase drafts.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Forbidden:
+      description: Rejected Origin or current posting/account restriction; durable business rejection
+        is observable by original key when one was recorded, never inferred solely from HTTP status.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    NotFound:
+      description: Identical unknown/foreign/nonvisible resource result; no owner, other identity, hidden
+        body or existence clue. Command queries never use this for absence.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Conflict:
+      description: Durable business rejection, stale latest attempt, conflicting immutable key/digest,
+        or a sealed original; no new effect. Reconcile the original key. Sealed matching replay returns
+        COMMAND_SEALED; query proves NOT_ACCEPTED.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    PayloadTooLarge:
+      description: Bounded bytes exceeded, not proof about an earlier command attempt.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    UnsupportedMediaType:
+      description: Require declared application/json for body operations; no request payload logged.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    RateLimited:
+      description: Bounded network/command quota; preserve intent and obey Retry-After, not a failed publication
+        state.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ServiceUnavailable:
+      description: Gate frozen/unavailable, database/evidence failure or unknown commit outcome. Never
+        retry under a new command or downgrade to FAILED; query or seal the immutable original after recovery.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    OwnPublishedPosts:
+      description: Current own published posts only while sending identity retained.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OwnPostPage'
+    ComposerContextResponse:
+      description: Authoritative own composer default; no posting effect.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ComposerContext'
+    CommandSealedOrPreviouslyObserved:
+      description: 'Final seal transaction committed: NOT_ACCEPTED or the matching durable previous command
+        fact. Never UNKNOWN_NOT_OBSERVED; lost control responses still require reconciliation.'
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SealResult'
+    CancelCommandCommitted:
+      description: CANCEL/DELETE_POST/HIDE_TASK receipt after final authorized commit; not necessarily
+        a successful cancellation.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommittedCancelCommand'
+    DeleteCommandCommitted:
+      description: CANCEL/DELETE_POST/HIDE_TASK receipt after final authorized commit; not necessarily
+        a successful cancellation.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommittedDeleteCommand'
+    HideCommandCommitted:
+      description: CANCEL/DELETE_POST/HIDE_TASK receipt after final authorized commit; not necessarily
+        a successful cancellation.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommittedHideCommand'
+    CreateCommandAccepted:
+      description: Original CREATE/RETRY acceptance receipt; task publication is still separately authoritative.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/AcceptedPublishCommand'
+            - type: object
+              properties:
+                operation:
+                  type: string
+                  enum:
+                  - CREATE
+    RetryCommandAccepted:
+      description: Original CREATE/RETRY acceptance receipt; task publication is still separately authoritative.
+      headers:
+        Session-Expires-At:
+          $ref: '#/components/headers/SessionExpiresAt'
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Server-Time:
+          $ref: '#/components/headers/ServerTime'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/AcceptedPublishCommand'
+            - type: object
+              properties:
+                operation:
+                  type: string
+                  enum:
+                  - RETRY
+x-max-json-body-bytes: 262144
