@@ -1,5 +1,7 @@
 # Flutter 社区文字发帖与浏览页面实施计划
 
+> **最新确认依据：**2026-10-09用户附F1-19／20／21三张图片明确“要这三张”，[三图均为本次明确批准](ui-reviews/post-detail-selected-final.md)，附件与现有正式文件字节一致；下方依无意见规则归档为此前历史依据。图稿范围、数量及删除成功直接返回来源页规则不变。
+
 日期：2026-10-08建立，2026-10-09更新（Asia/Shanghai）。分支：`codex/community-flutter-pages`；起点 `0eff47a21cd4f4ab1636b4468f7d5df9769a264f`。
 
 状态：`PLAN_READY / IMPLEMENTATION_NOT_STARTED`。本轮为计划，不实现业务代码。Q1 已按用户授权选择方便实现的方案，技术契约待后端固定；全部业务验收为 `NOT_RUN`。认证分支、后端工作树、原设备与服务环境均独立保留。
