@@ -1,89 +1,27 @@
 {
   "schemaVersion": "hnuhole-module-acceptance-ledger/v1",
-  "recordedOn": "2026-10-05",
+  "recordedOn": "2026-10-09",
   "timeZone": "Asia/Shanghai",
-  "branch": "codex/auth-privacy-handoff",
-  "baselineHeadCommit": "cbc99b010ba23bba42f76e2523269e3952b14392",
-  "workingTreeContainsUncommittedImplementation": true,
-  "workflow": "ANONYMITY_BRANCH_CLOSURE_WITH_EXPLICIT_DEFERRED_ACCEPTANCE",
+  "branch": "codex/community-flutter-pages",
+  "baselineHeadCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+  "workingTreeContainsUncommittedImplementation": false,
+  "workflow": "PARALLEL_COMMUNITY_FRONTEND_F3_SCOPE",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
   "baselineEvidence": "services/api/authlab/platform-acceptance-verification.json",
   "userReportedFunctionalCompletion": [
     "A11"
   ],
-  "dynamicTestsExecutedInThisInventory": false,
+  "dynamicTestsExecutedInThisInventory": true,
   "toolAvailabilityCheckedOn": "2026-10-05",
   "missingTools": [
     "macOS/full Xcode and iOS device target"
   ],
   "sourceFingerprint": {
-    "sha256": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
-    "presentFileCount": 284,
-    "roots": [
-      "services/api",
-      "infra",
-      "packages/openapi",
-      "packages/auth-protocol-vectors",
-      "apps/mobile/lib",
-      "apps/mobile/test",
-      "apps/mobile/integration",
-      "apps/mobile/pubspec.yaml",
-      "apps/mobile/pubspec.lock",
-      "packages/auth_vault",
-      "packages/auth_passkey",
-      "apps/mobile/android",
-      "apps/mobile/ios",
-      "apps/mobile/integration_test",
-      "apps/mobile/test_driver",
-      "tools/run-android-auth-process-test.ps1",
-      "tools/run-android-vault-probes.ps1",
-      "tools/env-hnuhole-windows.ps1",
-      "tools/env-hnuhole-wsl.sh",
-      "tools/check-identity-handoff.py"
-    ],
-    "includedSuffixes": [
-      ".go",
-      ".sql",
-      ".sh",
-      ".mod",
-      ".sum",
-      ".json",
-      ".yaml",
-      ".yml",
-      ".lock",
-      ".py",
-      ".ps1",
-      ".txt",
-      ".dart",
-      ".kt",
-      ".swift",
-      ".kts",
-      ".xml",
-      ".plist",
-      ".entitlements",
-      ".podspec",
-      ".properties",
-      ".xcconfig",
-      ".pbxproj",
-      ".h",
-      ".m",
-      ".mm",
-      ".gradle",
-      ".png",
-      ".storyboard",
-      ".xcscheme",
-      ".xcworkspacedata"
-    ],
-    "includedAdditionalNames": [
-      ".gitattributes",
-      "go.work",
-      "go.work.sum",
-      ".env.example"
-    ],
-    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
-    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
-    "appliesTo": "AC05 Android complete app build, native codec/vault and explicitly bounded emulator/Flutter probes; backend source retained as context, no new SQL run"
+    "sha256": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+    "presentFileCount": 92,
+    "evidence": "docs/design/community-flutter-f3-source-fingerprint.json",
+    "scope": "Current92 frontend/native source files, normalized CRLF→LF; broad hash coverage does not mean native runtime was tested"
   },
   "resultDefinitions": {
     "PASS": "Actual required evidence recorded for the tested revision and scope",
@@ -1757,20 +1695,21 @@
       "id": "A12",
       "name": "Flutter认证与目录持久状态",
       "implementationState": "PRESENT",
-      "acceptanceState": "PENDING_CURRENT_REVISION",
+      "acceptanceState": "PENDING_CURRENT_F3_INTEGRATION_AND_PLATFORM",
       "currentResult": "BLOCKED",
       "verificationEntries": [
-        "R04",
-        "R05",
-        "R09",
-        "R10"
+        "F3-C01",
+        "F3-C03",
+        "F3-C04",
+        "F3-C05",
+        "F3-C06"
       ],
-      "note": "2026-10-04 executed scoped checks: flutter-analysis-tests, real-dart-sql-r05, flutter-android-process. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
-      "taskPlan": "docs/design/identity-management-plan.md",
-      "evidence": "services/api/authlab/identity-management-verification.json",
-      "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
-      "workingTreeUncommitted": true,
+      "note": "F3文字切片实现完成；本分支分析、host单元/widget及真实SQLite子范围PASS。真实C/V/SQL、最终认证与原生设备未验，未来业务尚未实现，整模块未PASS。原版本记录见priorTaskRecords及历史证据。",
+      "taskPlan": "docs/design/community-flutter-pages-plan.md",
+      "evidence": "docs/design/community-flutter-f3-verification.json",
+      "report": "docs/design/community-flutter-f3-report.md",
+      "testedHeadCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X01",
         "X02",
@@ -1779,25 +1718,27 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
       "sourcePaths": [
-        "apps/mobile/lib/src/auth/auth_models.dart",
-        "apps/mobile/lib/src/auth/auth_state_codec.dart",
-        "apps/mobile/lib/src/auth/auth_store.dart",
-        "apps/mobile/lib/src/auth/auth_session_controller.dart",
-        "apps/mobile/lib/src/auth/http_auth_api.dart"
+        "apps/mobile/lib/main.dart",
+        "apps/mobile/lib/src/config/mobile_environment.dart",
+        "apps/mobile/lib/src/posts/post_controller.dart",
+        "apps/mobile/lib/src/storage/post_store.dart",
+        "apps/mobile/lib/src/auth/auth_flows.dart",
+        "apps/mobile/lib/src/auth/auth_state_codec.dart"
       ],
       "testPaths": [
-        "apps/mobile/test/security_management_controller_test.dart",
-        "apps/mobile/test/passkey_recovery_flow_test.dart",
-        "apps/mobile/test/auth_api_test.dart",
-        "apps/mobile/test/identity_management_controller_test.dart",
-        "apps/mobile/test_driver/auth_security_test.dart",
-        "tools/run-android-auth-process-test.ps1",
-        "tools/run-android-vault-probes.ps1"
+        "apps/mobile/test/auth_session_controller_test.dart",
+        "apps/mobile/test/auth_flows_test.dart",
+        "apps/mobile/test/mobile_environment_test.dart",
+        "apps/mobile/test/post_controller_test.dart",
+        "apps/mobile/test/post_storage_test.dart",
+        "apps/mobile/test/post_closure_cleanup_test.dart"
       ],
       "pendingReasons": [
-        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
+        "F3 only; final auth candidate and real integration still independent",
+        "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+        "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
       ],
       "relatedModules": [
         "A00",
@@ -1817,12 +1758,12 @@
         "B03",
         "B10"
       ],
-      "reopenedForTask": "docs/design/identity-management-plan.md",
+      "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
       "executedEvidenceIsModulePass": false,
       "blockedChecks": [
         "physical-device-matrix"
       ],
-      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+      "testedWorkingTreeSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -1854,6 +1795,125 @@
           ],
           "recordedOn": "2026-10-03",
           "proofScope": "Historical state preserved before current validation."
+        },
+        {
+          "id": "A12",
+          "name": "Flutter认证与目录持久状态",
+          "implementationState": "PRESENT",
+          "acceptanceState": "PENDING_CURRENT_REVISION",
+          "currentResult": "BLOCKED",
+          "verificationEntries": [
+            "R04",
+            "R05",
+            "R09",
+            "R10"
+          ],
+          "note": "2026-10-04 executed scoped checks: flutter-analysis-tests, real-dart-sql-r05, flutter-android-process. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
+          "taskPlan": "docs/design/identity-management-plan.md",
+          "evidence": "services/api/authlab/identity-management-verification.json",
+          "report": "docs/design/identity-management-validation-report.md",
+          "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
+          "workingTreeUncommitted": true,
+          "crossModuleScenes": [
+            "X01",
+            "X02",
+            "X03",
+            "X04",
+            "X05",
+            "X08"
+          ],
+          "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+          "sourcePaths": [
+            "apps/mobile/lib/src/auth/auth_models.dart",
+            "apps/mobile/lib/src/auth/auth_state_codec.dart",
+            "apps/mobile/lib/src/auth/auth_store.dart",
+            "apps/mobile/lib/src/auth/auth_session_controller.dart",
+            "apps/mobile/lib/src/auth/http_auth_api.dart"
+          ],
+          "testPaths": [
+            "apps/mobile/test/security_management_controller_test.dart",
+            "apps/mobile/test/passkey_recovery_flow_test.dart",
+            "apps/mobile/test/auth_api_test.dart",
+            "apps/mobile/test/identity_management_controller_test.dart",
+            "apps/mobile/test_driver/auth_security_test.dart",
+            "tools/run-android-auth-process-test.ps1",
+            "tools/run-android-vault-probes.ps1"
+          ],
+          "pendingReasons": [
+            "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
+          ],
+          "relatedModules": [
+            "A00",
+            "A02",
+            "A03",
+            "A05",
+            "A06",
+            "A07",
+            "A08",
+            "A09",
+            "A11",
+            "A13",
+            "N01",
+            "N02",
+            "N03",
+            "B01",
+            "B03",
+            "B10"
+          ],
+          "reopenedForTask": "docs/design/identity-management-plan.md",
+          "executedEvidenceIsModulePass": false,
+          "blockedChecks": [
+            "physical-device-matrix"
+          ],
+          "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+          "boundedChecksPassed": [
+            "flutter-analysis-tests",
+            "real-dart-sql-r05",
+            "flutter-android-process"
+          ],
+          "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+          "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+          "currentAC03Regression": {
+            "recordedOn": "2026-10-05",
+            "currentResult": "PASS",
+            "fullModuleAcceptancePassed": false,
+            "evidence": "services/api/authlab/privacy-boundary-verification.json",
+            "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+            "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+          },
+          "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+          "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+          "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+          "currentAC04Regression": {
+            "recordedOn": "2026-10-05",
+            "currentResult": "PASS",
+            "fullModuleAcceptancePassed": false,
+            "evidence": "services/api/authlab/privacy-regression-verification.json",
+            "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+            "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+          },
+          "currentAC05Regression": {
+            "recordedOn": "2026-10-05",
+            "currentResult": "BLOCKED",
+            "fullModuleAcceptancePassed": false,
+            "scopedAndroidEvidenceAvailable": true,
+            "evidence": "services/api/authlab/platform-acceptance-verification.json",
+            "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+            "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+          },
+          "nextAcceptanceHistory": [
+            {
+              "recordedOn": "2026-10-05",
+              "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+              "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+            }
+          ],
+          "currentAC06Handoff": {
+            "result": "PASS",
+            "evidence": "services/api/authlab/final-handoff-verification.json",
+            "scope": "Source/status/proof mapping only; does not change functional module result"
+          },
+          "archivedForTask": "docs/design/community-flutter-pages-plan.md"
         }
       ],
       "boundedChecksPassed": [
@@ -1916,6 +1976,36 @@
         "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
         "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
         "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
+      },
+      "currentCommunityFlutterF3": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "implementationState": "F3_TEXT_SLICE_COMPLETE",
+        "scopedResult": "PASS",
+        "fullModuleResult": "NOT_RUN",
+        "testsPassed": 308,
+        "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+        "testedSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+        "evidence": "docs/design/community-flutter-f3-verification.json",
+        "report": "docs/design/community-flutter-f3-report.md",
+        "taskPlan": "docs/design/community-flutter-pages-plan.md",
+        "actualRenderReview": "docs/design/ui-reviews/community-flutter-f3-ui-review.md",
+        "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+        "unexecutedReasons": [
+          "F3 only; final auth candidate and real integration still independent",
+          "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+          "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+        ],
+        "coverage": "原账号／当前authority围栏、主导航、固定环境scope、闭号原owner及SQLite持久状态；host回归PASS，完整原生存储未验",
+        "testReferences": [
+          "apps/mobile/test/auth_session_controller_test.dart",
+          "apps/mobile/test/auth_flows_test.dart",
+          "apps/mobile/test/mobile_environment_test.dart",
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_storage_test.dart",
+          "apps/mobile/test/post_closure_cleanup_test.dart"
+        ],
+        "testCountNote": "308 is the one shared mobile run, not308 independent tests for this module; per-file counts and scopes are in test-summary and machine record."
       }
     },
     {
@@ -2079,19 +2169,21 @@
       "id": "N01",
       "name": "Android安全存储与完整app",
       "implementationState": "PRESENT",
-      "acceptanceState": "PENDING_CURRENT_REVISION",
+      "acceptanceState": "PENDING_CURRENT_F3_INTEGRATION_AND_PLATFORM",
       "currentResult": "BLOCKED",
       "verificationEntries": [
-        "R07",
-        "R09",
-        "R10"
+        "F3-C01",
+        "F3-C03",
+        "F3-C04",
+        "F3-C05",
+        "F3-C06"
       ],
-      "note": "2026-10-04 executed scoped checks: android-app-build, android-native-build, android-vault-device, flutter-android-process. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
-      "taskPlan": "docs/design/identity-management-plan.md",
-      "evidence": "services/api/authlab/identity-management-verification.json",
-      "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
-      "workingTreeUncommitted": true,
+      "note": "F3文字切片实现完成；本分支分析、host单元/widget及真实SQLite子范围PASS。真实C/V/SQL、最终认证与原生设备未验，未来业务尚未实现，整模块未PASS。原版本记录见priorTaskRecords及历史证据。",
+      "taskPlan": "docs/design/community-flutter-pages-plan.md",
+      "evidence": "docs/design/community-flutter-f3-verification.json",
+      "report": "docs/design/community-flutter-f3-report.md",
+      "testedHeadCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X01",
         "X02",
@@ -2100,23 +2192,24 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
       "sourcePaths": [
+        "apps/mobile/lib/src/storage/post_store.dart",
+        "packages/auth_vault/lib/hnuhole_auth_vault.dart",
+        "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidBusinessStorage.kt",
         "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
-        "apps/mobile/lib/src/auth/auth_store.dart",
-        "apps/mobile/lib/src/auth/auth_state_codec.dart",
-        "apps/mobile/lib/src/auth/http_auth_api.dart"
+        "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift"
       ],
       "testPaths": [
-        "apps/mobile/integration_test/auth_security_device_test.dart",
-        "apps/mobile/test/identity_management_controller_test.dart",
-        "apps/mobile/test/auth_api_test.dart",
-        "apps/mobile/test_driver/auth_security_test.dart",
-        "tools/run-android-auth-process-test.ps1",
-        "tools/run-android-vault-probes.ps1"
+        "apps/mobile/test/post_storage_test.dart",
+        "apps/mobile/test/post_closure_cleanup_test.dart",
+        "apps/mobile/test/auth_vault_test.dart",
+        "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt"
       ],
       "pendingReasons": [
-        "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
+        "F3 only; final auth candidate and real integration still independent",
+        "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+        "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
       ],
       "relatedModules": [
         "A00",
@@ -2136,9 +2229,9 @@
         "B03",
         "B10"
       ],
-      "reopenedForTask": "docs/design/identity-management-plan.md",
+      "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
       "executedEvidenceIsModulePass": false,
-      "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+      "testedWorkingTreeSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -2166,6 +2259,104 @@
           ],
           "recordedOn": "2026-10-03",
           "proofScope": "Historical state preserved before current validation."
+        },
+        {
+          "id": "N01",
+          "name": "Android安全存储与完整app",
+          "implementationState": "PRESENT",
+          "acceptanceState": "PENDING_CURRENT_REVISION",
+          "currentResult": "BLOCKED",
+          "verificationEntries": [
+            "R07",
+            "R09",
+            "R10"
+          ],
+          "note": "2026-10-04 executed scoped checks: android-app-build, android-native-build, android-vault-device, flutter-android-process. Full module acceptance remains pending; exact proof scope and historical evidence are in the latest record.",
+          "taskPlan": "docs/design/identity-management-plan.md",
+          "evidence": "services/api/authlab/identity-management-verification.json",
+          "report": "docs/design/identity-management-validation-report.md",
+          "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
+          "workingTreeUncommitted": true,
+          "crossModuleScenes": [
+            "X01",
+            "X02",
+            "X03",
+            "X04",
+            "X05",
+            "X08"
+          ],
+          "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+          "sourcePaths": [
+            "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
+            "apps/mobile/lib/src/auth/auth_store.dart",
+            "apps/mobile/lib/src/auth/auth_state_codec.dart",
+            "apps/mobile/lib/src/auth/http_auth_api.dart"
+          ],
+          "testPaths": [
+            "apps/mobile/integration_test/auth_security_device_test.dart",
+            "apps/mobile/test/identity_management_controller_test.dart",
+            "apps/mobile/test/auth_api_test.dart",
+            "apps/mobile/test_driver/auth_security_test.dart",
+            "tools/run-android-auth-process-test.ps1",
+            "tools/run-android-vault-probes.ps1"
+          ],
+          "pendingReasons": [
+            "AC01/AC02 backend acceptance passed; AC03 review and full platform/production evidence remain. Each PASS covers only the listed checks."
+          ],
+          "relatedModules": [
+            "A00",
+            "A02",
+            "A03",
+            "A05",
+            "A06",
+            "A07",
+            "A08",
+            "A09",
+            "A11",
+            "A12",
+            "A13",
+            "N02",
+            "N03",
+            "B01",
+            "B03",
+            "B10"
+          ],
+          "reopenedForTask": "docs/design/identity-management-plan.md",
+          "executedEvidenceIsModulePass": false,
+          "testedWorkingTreeSourceFingerprint": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+          "boundedChecksPassed": [
+            "android-app-build",
+            "android-native-build",
+            "android-vault-device",
+            "flutter-android-process"
+          ],
+          "blockedChecks": [
+            "physical-device-matrix"
+          ],
+          "latestScopedEvidence": "services/api/authlab/identity-runtime-test-verification.json",
+          "latestScopedResult": "BOUNDED_CHECKS_PASS_FULL_ACCEPTANCE_PENDING",
+          "currentAC05Regression": {
+            "recordedOn": "2026-10-05",
+            "currentResult": "BLOCKED",
+            "fullModuleAcceptancePassed": false,
+            "scopedAndroidEvidenceAvailable": true,
+            "evidence": "services/api/authlab/platform-acceptance-verification.json",
+            "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+            "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+          },
+          "nextAcceptanceHistory": [
+            {
+              "recordedOn": "2026-10-05",
+              "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+              "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+            }
+          ],
+          "currentAC06Handoff": {
+            "result": "PASS",
+            "evidence": "services/api/authlab/final-handoff-verification.json",
+            "scope": "Source/status/proof mapping only; does not change functional module result"
+          },
+          "archivedForTask": "docs/design/community-flutter-pages-plan.md"
         }
       ],
       "boundedChecksPassed": [
@@ -2213,6 +2404,34 @@
         "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
         "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
         "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
+      },
+      "currentCommunityFlutterF3": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "implementationState": "F3_TEXT_SLICE_COMPLETE",
+        "scopedResult": "PASS",
+        "fullModuleResult": "NOT_RUN",
+        "testsPassed": 308,
+        "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+        "testedSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+        "evidence": "docs/design/community-flutter-f3-verification.json",
+        "report": "docs/design/community-flutter-f3-report.md",
+        "taskPlan": "docs/design/community-flutter-pages-plan.md",
+        "actualRenderReview": "docs/design/ui-reviews/community-flutter-f3-ui-review.md",
+        "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+        "unexecutedReasons": [
+          "F3 only; final auth candidate and real integration still independent",
+          "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+          "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+        ],
+        "coverage": "真实SQLite三表v1／future拒绝、AAD／CAS／legacy迁移、独立vault MethodChannel；Android lock与iOS只源码，native7 NOT_RUN",
+        "testReferences": [
+          "apps/mobile/test/post_storage_test.dart",
+          "apps/mobile/test/post_closure_cleanup_test.dart",
+          "apps/mobile/test/auth_vault_test.dart",
+          "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt"
+        ],
+        "testCountNote": "308 is the one shared mobile run, not308 independent tests for this module; per-file counts and scopes are in test-summary and machine record."
       }
     },
     {
@@ -2638,16 +2857,17 @@
     {
       "id": "B02",
       "name": "预设身份与帖内身份",
-      "implementationState": "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING",
-      "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
+      "implementationState": "PARTIAL",
+      "acceptanceState": "PENDING_CURRENT_F3_INTEGRATION_AND_PLATFORM",
       "currentResult": "BLOCKED",
       "verificationEntries": [
-        "R02",
-        "R03",
-        "R05",
-        "R10"
+        "F3-C01",
+        "F3-C03",
+        "F3-C04",
+        "F3-C05",
+        "F3-C06"
       ],
-      "note": "AC01-AC03 foundation and new AC04 V Gate/identity closure real Dart scenarios pass. Entire B02 remains BLOCKED: business consumers and device matrix incomplete.",
+      "note": "F3文字切片实现完成；本分支分析、host单元/widget及真实SQLite子范围PASS。真实C/V/SQL、最终认证与原生设备未验，未来业务尚未实现，整模块未PASS。原版本记录见priorTaskRecords及历史证据。",
       "priorTaskRecords": [
         {
           "note": "仅设计规则，无实际业务API/表/客户端流程",
@@ -2681,13 +2901,311 @@
           ],
           "recordedOn": "2026-10-03",
           "proofScope": "Historical state preserved before current validation."
+        },
+        {
+          "id": "B02",
+          "name": "预设身份与帖内身份",
+          "implementationState": "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING",
+          "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
+          "currentResult": "BLOCKED",
+          "verificationEntries": [
+            "R02",
+            "R03",
+            "R05",
+            "R10"
+          ],
+          "note": "AC01-AC03 foundation and new AC04 V Gate/identity closure real Dart scenarios pass. Entire B02 remains BLOCKED: business consumers and device matrix incomplete.",
+          "taskPlan": "docs/design/identity-management-plan.md",
+          "report": "docs/design/identity-management-validation-report.md",
+          "evidence": "services/api/authlab/identity-management-verification.json",
+          "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
+          "workingTreeUncommitted": true,
+          "crossModuleScenes": [
+            "X01",
+            "X02",
+            "X03",
+            "X04",
+            "X05",
+            "X06",
+            "X07",
+            "X08"
+          ],
+          "executedEvidenceIsModulePass": false,
+          "reopenedForTask": "docs/design/identity-management-plan.md",
+          "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+          "foundationImplementationState": "SOURCE_IMPLEMENTED",
+          "foundationAcceptanceState": "BACKEND_FOUNDATION_AND_AC02_PASS_HISTORICAL_MOBILE_SCOPED",
+          "sourcePaths": [
+            "apps/mobile/lib/hnuhole_mobile.dart",
+            "apps/mobile/lib/main.dart",
+            "apps/mobile/lib/src/auth/auth_state_codec.dart",
+            "apps/mobile/lib/src/auth/auth_store.dart",
+            "apps/mobile/lib/src/auth/http_auth_api.dart",
+            "apps/mobile/lib/src/identity/identity_api.dart",
+            "apps/mobile/lib/src/identity/identity_management_controller.dart",
+            "apps/mobile/lib/src/identity/identity_management_screen.dart",
+            "apps/mobile/lib/src/identity/identity_name_formatter.dart",
+            "apps/mobile/lib/src/identity/identity_name_ranges.dart",
+            "apps/mobile/lib/src/identity/settings_screen.dart",
+            "apps/mobile/pubspec.lock",
+            "apps/mobile/pubspec.yaml",
+            "infra/postgres/grant-community.sql",
+            "packages/openapi/check-specs.py",
+            "packages/openapi/identity-api.yaml",
+            "services/api/internal/authprivacy/community_closure.go",
+            "services/api/internal/authprivacy/community_identities.go",
+            "services/api/internal/authprivacy/community_identity_projection.go",
+            "services/api/internal/authprivacy/identity_rules.go",
+            "services/api/internal/authprivacyhttp/endpoints.go",
+            "services/api/internal/authprivacyhttp/identity_endpoints.go",
+            "services/api/internal/authprivacyruntime/server.go",
+            "services/api/migrations/0011_identity_management.sql",
+            "services/api/migrations/0012_identity_account_closure.sql"
+          ],
+          "testPaths": [
+            "apps/mobile/integration/identity_https_scenarios.dart",
+            "apps/mobile/test/auth_api_test.dart",
+            "apps/mobile/test/identity_management_controller_test.dart",
+            "apps/mobile/test/identity_management_screen_test.dart",
+            "apps/mobile/test/identity_name_formatter_test.dart",
+            "apps/mobile/test/identity_test_support.dart",
+            "services/api/authlab/run-runtime-isolated.sh",
+            "services/api/cmd/runtimeprobe/identities.go",
+            "services/api/cmd/runtimeprobe/identity_closure.go",
+            "services/api/internal/authprivacy/community_identities_test.go",
+            "services/api/internal/authprivacy/community_identity_closure_test.go",
+            "services/api/internal/authprivacy/identity_closure_migration_test.go",
+            "services/api/internal/authprivacy/identity_rules_test.go",
+            "services/api/internal/authprivacy/postgres_test.go",
+            "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+            "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
+            "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go",
+            "services/api/internal/authprivacy/privacy_boundary_postgres_test.go",
+            "apps/mobile/integration/verifier_gate_https_scenarios.dart",
+            "apps/mobile/integration/auth_public_https_postgres_test.dart",
+            "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go",
+            "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
+            "apps/mobile/integration_test/identity_device_scenarios.dart"
+          ],
+          "relatedModules": [
+            "A01",
+            "A03",
+            "A06",
+            "A12",
+            "B05",
+            "B06",
+            "B07",
+            "B08",
+            "B09",
+            "B10",
+            "B11"
+          ],
+          "pendingReasons": [
+            "AC02 identity account-close backend passed; post/comment/chat projection and cleanup business consumers remain unimplemented",
+            "B02 device IME/accessibility/identity-specific process matrix not run; Android shared auth persistence passed",
+            "iOS/native Passkey associations remain blocked"
+          ],
+          "pendingImplementation": [
+            "B05/B07：首次公开动作创建／选择后恢复原输入及原子帖内绑定、最近发言默认身份",
+            "B06/B07/B10：删除身份后的旧内容占位、本人旧帖／失败帖列表投影",
+            "B08/B09：聊天框／记录／私人备注与失败任务清理",
+            "B11：审核员资料重置、改名例外及处罚联动",
+            "后续媒体：自定义头像上传登记／审核"
+          ],
+          "boundedChecksPassed": [
+            "go-sql-race-vet",
+            "runtime-r03",
+            "flutter-analysis-tests",
+            "real-dart-sql-r05"
+          ],
+          "blockedChecks": [
+            "physical-device-matrix"
+          ],
+          "testedWorkingTreeSourceFingerprint": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
+          "pendingTestHarnessExtensions": [],
+          "anonymityClosureGapIds": [
+            "AC02",
+            "AC03",
+            "AC04",
+            "AC05"
+          ],
+          "sourceFingerprintHistory": [
+            {
+              "sha256": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+              "proofScope": "Original B02 static checks; no dynamic acceptance"
+            },
+            {
+              "sha256": "e444735e0dd885006d15f70d2671595872af2852209a5fc5469ec2e2467bf4c0",
+              "proofScope": "Historical B02 platform/source snapshot retained before current AC02 backend fingerprint"
+            },
+            {
+              "sha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d",
+              "presentFileCount": 133,
+              "roots": [
+                "services/api",
+                "infra",
+                "packages/openapi",
+                "packages/auth-protocol-vectors"
+              ],
+              "includedSuffixes": [
+                ".go",
+                ".sql",
+                ".sh",
+                ".mod",
+                ".sum",
+                ".json",
+                ".yaml",
+                ".yml",
+                ".lock",
+                ".py",
+                ".ps1",
+                ".txt"
+              ],
+              "includedAdditionalNames": [
+                ".gitattributes",
+                "go.work",
+                "go.work.sum",
+                ".env.example"
+              ],
+              "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+              "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+              "appliesTo": "AC02 backend and protocol working-tree snapshot including AC01; historical platform and AC01 evidence retain their own fingerprints.",
+              "recordedOn": "2026-10-04",
+              "snapshotStatus": "HISTORICAL_AC02_VERIFIED_SOURCE_BEFORE_AC03"
+            },
+            {
+              "sha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+              "presentFileCount": 219,
+              "roots": [
+                "services/api",
+                "infra",
+                "packages/openapi",
+                "packages/auth-protocol-vectors",
+                "apps/mobile/lib",
+                "apps/mobile/test",
+                "apps/mobile/integration",
+                "apps/mobile/pubspec.yaml",
+                "apps/mobile/pubspec.lock",
+                "packages/auth_vault",
+                "packages/auth_passkey"
+              ],
+              "includedSuffixes": [
+                ".go",
+                ".sql",
+                ".sh",
+                ".mod",
+                ".sum",
+                ".json",
+                ".yaml",
+                ".yml",
+                ".lock",
+                ".py",
+                ".ps1",
+                ".txt",
+                ".dart",
+                ".kt",
+                ".swift",
+                ".kts",
+                ".xml",
+                ".plist",
+                ".entitlements",
+                ".podspec",
+                ".properties",
+                ".xcconfig",
+                ".pbxproj",
+                ".h",
+                ".m",
+                ".mm"
+              ],
+              "includedAdditionalNames": [
+                ".gitattributes",
+                "go.work",
+                "go.work.sum",
+                ".env.example"
+              ],
+              "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+              "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+              "appliesTo": "Current AC03 backend, mobile logic/tests and vault/Passkey source boundary review; each check retains its executed scope, no native platform revalidation",
+              "snapshotStatus": "HISTORICAL_AC03_BEFORE_AC04"
+            },
+            {
+              "sha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+              "recordedOn": "2026-10-05",
+              "evidence": "services/api/authlab/privacy-regression-verification.json",
+              "scope": "AC04 bounded backend/Dart SQL regression; native platform separate"
+            }
+          ],
+          "testedWorkingTreeProofScope": "AC04 backend and real Dart handler SQL scenarios, with native/full business acceptance pending",
+          "latestTestSourceStatus": "AC04_R01_R02_R03_FLUTTER_R05_EXECUTED_PASS",
+          "latestValidationEvidence": "services/api/authlab/platform-acceptance-verification.json",
+          "latestScopedEvidence": "services/api/authlab/privacy-regression-verification.json",
+          "latestScopedResult": "AC04_FOUNDATION_REGRESSION_PASS_FULL_MODULE_BLOCKED",
+          "currentAC01Regression": {
+            "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
+            "fullModuleAcceptancePassed": false,
+            "evidence": "services/api/authlab/verifier-safety-gate-verification.json",
+            "currentResult": "PASS"
+          },
+          "currentAC02Regression": {
+            "currentResult": "PASS",
+            "fullModuleAcceptancePassed": false,
+            "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V/identity closure scenarios only; X06/X07 future business consumers remain unimplemented",
+            "plan": "docs/design/auth-identity-account-closure-plan.md",
+            "report": "docs/design/auth-identity-account-closure-validation-report.md",
+            "evidence": "services/api/authlab/identity-account-closure-verification.json",
+            "sourceFingerprintSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+          },
+          "currentAC02Plan": "docs/design/auth-identity-account-closure-plan.md",
+          "currentAC02Report": "docs/design/auth-identity-account-closure-validation-report.md",
+          "currentAC03Regression": {
+            "recordedOn": "2026-10-05",
+            "currentResult": "PASS",
+            "fullModuleAcceptancePassed": false,
+            "evidence": "services/api/authlab/privacy-boundary-verification.json",
+            "sourceFingerprintSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661",
+            "proofScope": "Listed current backend/HTTP/privacy/Flutter/R05 checks only; native/system/business/production boundaries separate"
+          },
+          "currentAC03Plan": "docs/design/auth-privacy-boundary-plan.md",
+          "currentAC03Report": "docs/design/auth-privacy-boundary-validation-report.md",
+          "currentAC03BusinessContract": "docs/design/auth-privacy-business-contract.md",
+          "testedWorkingTreeSourceFingerprintScope": "AC04 scoped regression only",
+          "currentAC04Regression": {
+            "recordedOn": "2026-10-05",
+            "currentResult": "PASS",
+            "fullModuleAcceptancePassed": false,
+            "evidence": "services/api/authlab/privacy-regression-verification.json",
+            "sourceFingerprintSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+            "proofScope": "AC04 listed R01/R02/R03/R05 and 179 Flutter tests; native/future business/production not accepted"
+          },
+          "currentAC05Regression": {
+            "recordedOn": "2026-10-05",
+            "currentResult": "BLOCKED",
+            "fullModuleAcceptancePassed": false,
+            "scopedAndroidEvidenceAvailable": true,
+            "evidence": "services/api/authlab/platform-acceptance-verification.json",
+            "report": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+            "scope": "Only listed current Android emulator/build/adapter checks PASS; iOS, system ceremony and full physical matrix pending"
+          },
+          "nextAcceptanceHistory": [
+            {
+              "recordedOn": "2026-10-05",
+              "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+              "value": "AC06 consolidate exact scoped evidence and platform blockers; R06/R08/R09/R10 remaining matrix requires macOS/iOS, actual RP/signatures/association and physical devices. Business consumers need implementation before acceptance."
+            }
+          ],
+          "currentAC06Handoff": {
+            "result": "PASS",
+            "evidence": "services/api/authlab/final-handoff-verification.json",
+            "scope": "Source/status/proof mapping only; does not change functional module result"
+          },
+          "archivedForTask": "docs/design/community-flutter-pages-plan.md"
         }
       ],
-      "taskPlan": "docs/design/identity-management-plan.md",
-      "report": "docs/design/identity-management-validation-report.md",
-      "evidence": "services/api/authlab/identity-management-verification.json",
-      "testedHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
-      "workingTreeUncommitted": true,
+      "taskPlan": "docs/design/community-flutter-pages-plan.md",
+      "report": "docs/design/community-flutter-f3-report.md",
+      "evidence": "docs/design/community-flutter-f3-verification.json",
+      "testedHeadCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X01",
         "X02",
@@ -2699,61 +3217,25 @@
         "X08"
       ],
       "executedEvidenceIsModulePass": false,
-      "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "保留AC04后端与AC05列明Android范围；按最终报告补本模块涉及的iOS／系统Passkey／物理设备／备份／完整App→实际C/V缺口。改共享边界后做受影响回归，不重复开发已完成AC01–AC03。",
+      "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
+      "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
       "foundationImplementationState": "SOURCE_IMPLEMENTED",
       "foundationAcceptanceState": "BACKEND_FOUNDATION_AND_AC02_PASS_HISTORICAL_MOBILE_SCOPED",
       "sourcePaths": [
-        "apps/mobile/lib/hnuhole_mobile.dart",
-        "apps/mobile/lib/main.dart",
-        "apps/mobile/lib/src/auth/auth_state_codec.dart",
-        "apps/mobile/lib/src/auth/auth_store.dart",
-        "apps/mobile/lib/src/auth/http_auth_api.dart",
-        "apps/mobile/lib/src/identity/identity_api.dart",
-        "apps/mobile/lib/src/identity/identity_management_controller.dart",
-        "apps/mobile/lib/src/identity/identity_management_screen.dart",
-        "apps/mobile/lib/src/identity/identity_name_formatter.dart",
-        "apps/mobile/lib/src/identity/identity_name_ranges.dart",
-        "apps/mobile/lib/src/identity/settings_screen.dart",
-        "apps/mobile/pubspec.lock",
-        "apps/mobile/pubspec.yaml",
-        "infra/postgres/grant-community.sql",
-        "packages/openapi/check-specs.py",
-        "packages/openapi/identity-api.yaml",
-        "services/api/internal/authprivacy/community_closure.go",
-        "services/api/internal/authprivacy/community_identities.go",
-        "services/api/internal/authprivacy/community_identity_projection.go",
-        "services/api/internal/authprivacy/identity_rules.go",
-        "services/api/internal/authprivacyhttp/endpoints.go",
-        "services/api/internal/authprivacyhttp/identity_endpoints.go",
-        "services/api/internal/authprivacyruntime/server.go",
-        "services/api/migrations/0011_identity_management.sql",
-        "services/api/migrations/0012_identity_account_closure.sql"
+        "apps/mobile/lib/src/posts/post_models.dart",
+        "apps/mobile/lib/src/posts/http_post_api.dart",
+        "apps/mobile/lib/src/posts/post_controller.dart",
+        "apps/mobile/lib/src/posts/post_screens.dart",
+        "apps/mobile/lib/src/auth/auth_flows.dart"
       ],
       "testPaths": [
-        "apps/mobile/integration/identity_https_scenarios.dart",
-        "apps/mobile/test/auth_api_test.dart",
+        "apps/mobile/test/post_models_test.dart",
+        "apps/mobile/test/post_api_test.dart",
+        "apps/mobile/test/post_controller_test.dart",
+        "apps/mobile/test/post_screens_test.dart",
+        "apps/mobile/test/post_closure_cleanup_test.dart",
         "apps/mobile/test/identity_management_controller_test.dart",
-        "apps/mobile/test/identity_management_screen_test.dart",
-        "apps/mobile/test/identity_name_formatter_test.dart",
-        "apps/mobile/test/identity_test_support.dart",
-        "services/api/authlab/run-runtime-isolated.sh",
-        "services/api/cmd/runtimeprobe/identities.go",
-        "services/api/cmd/runtimeprobe/identity_closure.go",
-        "services/api/internal/authprivacy/community_identities_test.go",
-        "services/api/internal/authprivacy/community_identity_closure_test.go",
-        "services/api/internal/authprivacy/identity_closure_migration_test.go",
-        "services/api/internal/authprivacy/identity_rules_test.go",
-        "services/api/internal/authprivacy/postgres_test.go",
-        "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
-        "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
-        "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go",
-        "services/api/internal/authprivacy/privacy_boundary_postgres_test.go",
-        "apps/mobile/integration/verifier_gate_https_scenarios.dart",
-        "apps/mobile/integration/auth_public_https_postgres_test.dart",
-        "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go",
-        "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
-        "apps/mobile/integration_test/identity_device_scenarios.dart"
+        "apps/mobile/test/identity_management_screen_test.dart"
       ],
       "relatedModules": [
         "A01",
@@ -2769,9 +3251,9 @@
         "B11"
       ],
       "pendingReasons": [
-        "AC02 identity account-close backend passed; post/comment/chat projection and cleanup business consumers remain unimplemented",
-        "B02 device IME/accessibility/identity-specific process matrix not run; Android shared auth persistence passed",
-        "iOS/native Passkey associations remain blocked"
+        "F3 only; final auth candidate and real integration still independent",
+        "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+        "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
       ],
       "pendingImplementation": [
         "B05/B07：首次公开动作创建／选择后恢复原输入及原子帖内绑定、最近发言默认身份",
@@ -2789,7 +3271,7 @@
       "blockedChecks": [
         "physical-device-matrix"
       ],
-      "testedWorkingTreeSourceFingerprint": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
+      "testedWorkingTreeSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
       "pendingTestHarnessExtensions": [],
       "anonymityClosureGapIds": [
         "AC02",
@@ -2979,25 +3461,58 @@
         "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
         "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
         "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
+      },
+      "currentCommunityFlutterF3": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "implementationState": "F3_TEXT_SLICE_COMPLETE",
+        "scopedResult": "PASS",
+        "fullModuleResult": "NOT_RUN",
+        "testsPassed": 308,
+        "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+        "testedSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+        "evidence": "docs/design/community-flutter-f3-verification.json",
+        "report": "docs/design/community-flutter-f3-report.md",
+        "taskPlan": "docs/design/community-flutter-pages-plan.md",
+        "actualRenderReview": "docs/design/ui-reviews/community-flutter-f3-ui-review.md",
+        "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+        "unexecutedReasons": [
+          "F3 only; final auth candidate and real integration still independent",
+          "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+          "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+        ],
+        "coverage": "客户端身份选择／失效重选、固定帖内身份重试、公开作者严格投影与最小私有capability；真实身份／账号关闭消费者联动仍待F4",
+        "testReferences": [
+          "apps/mobile/test/post_models_test.dart",
+          "apps/mobile/test/post_api_test.dart",
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart",
+          "apps/mobile/test/post_closure_cleanup_test.dart",
+          "apps/mobile/test/identity_management_controller_test.dart",
+          "apps/mobile/test/identity_management_screen_test.dart"
+        ],
+        "testCountNote": "308 is the one shared mobile run, not308 independent tests for this module; per-file counts and scopes are in test-summary and machine record."
       }
     },
     {
       "id": "B03",
       "name": "入口导航、通道feed与文字搜索",
       "implementationState": "PARTIAL",
-      "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
+      "acceptanceState": "PENDING_CURRENT_F3_INTEGRATION_AND_PLATFORM",
       "currentResult": "NOT_RUN",
       "verificationEntries": [
-        "R04",
-        "R05",
-        "R10"
+        "F3-C01",
+        "F3-C03",
+        "F3-C04",
+        "F3-C05",
+        "F3-C06"
       ],
-      "note": "本片只改我的/认证路由入口和共享目录controller构造；导航/feed/搜索仍为部分实现，嵌套路由1项不代证完整树交互。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
-      "taskPlan": "docs/design/identity-management-plan.md",
-      "evidence": "services/api/authlab/identity-management-verification.json",
-      "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
-      "workingTreeUncommitted": true,
+      "note": "F3文字切片实现完成；本分支分析、host单元/widget及真实SQLite子范围PASS。真实C/V/SQL、最终认证与原生设备未验，未来业务尚未实现，整模块未PASS。原版本记录见priorTaskRecords及历史证据。",
+      "taskPlan": "docs/design/community-flutter-pages-plan.md",
+      "evidence": "docs/design/community-flutter-f3-verification.json",
+      "report": "docs/design/community-flutter-f3-report.md",
+      "testedHeadCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X01",
         "X02",
@@ -3006,23 +3521,23 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
       "sourcePaths": [
-        "apps/mobile/lib/main.dart",
-        "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
-        "apps/mobile/lib/src/identity/settings_screen.dart",
-        "apps/mobile/lib/src/auth/auth_store.dart",
-        "apps/mobile/lib/src/auth/auth_state_codec.dart",
-        "apps/mobile/lib/src/auth/http_auth_api.dart"
+        "apps/mobile/lib/src/posts/post_models.dart",
+        "apps/mobile/lib/src/posts/http_post_api.dart",
+        "apps/mobile/lib/src/posts/post_controller.dart",
+        "apps/mobile/lib/src/posts/post_screens.dart"
       ],
       "testPaths": [
-        "apps/mobile/test/auth_screen_test.dart",
-        "apps/mobile/test/identity_management_screen_test.dart",
-        "apps/mobile/test/identity_management_controller_test.dart",
-        "apps/mobile/test/auth_api_test.dart"
+        "apps/mobile/test/post_models_test.dart",
+        "apps/mobile/test/post_api_test.dart",
+        "apps/mobile/test/post_controller_test.dart",
+        "apps/mobile/test/post_screens_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "F3 only; final auth candidate and real integration still independent",
+        "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+        "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
       ],
       "relatedModules": [
         "A00",
@@ -3042,9 +3557,9 @@
         "B01",
         "B10"
       ],
-      "reopenedForTask": "docs/design/identity-management-plan.md",
+      "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
       "executedEvidenceIsModulePass": false,
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -3054,6 +3569,91 @@
           "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
           "testedWorkingTreeSourceFingerprint": "c82c587abb219f4296c18ce7898d3421204b0664e47b0a6718c636518df6618e",
           "currentResult": "BLOCKED"
+        },
+        {
+          "id": "B03",
+          "name": "入口导航、通道feed与文字搜索",
+          "implementationState": "PARTIAL",
+          "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
+          "currentResult": "NOT_RUN",
+          "verificationEntries": [
+            "R04",
+            "R05",
+            "R10"
+          ],
+          "note": "本片只改我的/认证路由入口和共享目录controller构造；导航/feed/搜索仍为部分实现，嵌套路由1项不代证完整树交互。 B02新增迁移／HTTP／AuthStore字段／设置路由，相关当前回归重新待验；历史证据保留。",
+          "taskPlan": "docs/design/identity-management-plan.md",
+          "evidence": "services/api/authlab/identity-management-verification.json",
+          "report": "docs/design/identity-management-validation-report.md",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "workingTreeUncommitted": true,
+          "crossModuleScenes": [
+            "X01",
+            "X02",
+            "X03",
+            "X04",
+            "X05",
+            "X08"
+          ],
+          "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+          "sourcePaths": [
+            "apps/mobile/lib/main.dart",
+            "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
+            "apps/mobile/lib/src/identity/settings_screen.dart",
+            "apps/mobile/lib/src/auth/auth_store.dart",
+            "apps/mobile/lib/src/auth/auth_state_codec.dart",
+            "apps/mobile/lib/src/auth/http_auth_api.dart"
+          ],
+          "testPaths": [
+            "apps/mobile/test/auth_screen_test.dart",
+            "apps/mobile/test/identity_management_screen_test.dart",
+            "apps/mobile/test/identity_management_controller_test.dart",
+            "apps/mobile/test/auth_api_test.dart"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "relatedModules": [
+            "A00",
+            "A02",
+            "A03",
+            "A05",
+            "A06",
+            "A07",
+            "A08",
+            "A09",
+            "A11",
+            "A12",
+            "A13",
+            "N01",
+            "N02",
+            "N03",
+            "B01",
+            "B10"
+          ],
+          "reopenedForTask": "docs/design/identity-management-plan.md",
+          "executedEvidenceIsModulePass": false,
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "nextAcceptanceHistory": [
+            {
+              "recordedOn": "2026-10-05",
+              "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+              "value": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。"
+            }
+          ],
+          "currentAC06Handoff": {
+            "result": "PASS",
+            "evidence": "services/api/authlab/final-handoff-verification.json",
+            "scope": "Source/status/proof mapping only; does not change functional module result"
+          },
+          "archivedForTask": "docs/design/community-flutter-pages-plan.md"
         }
       ],
       "boundedChecksPassed": [],
@@ -3088,6 +3688,34 @@
         "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
         "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
         "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
+      },
+      "currentCommunityFlutterF3": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "implementationState": "F3_TEXT_SLICE_COMPLETE",
+        "scopedResult": "PASS",
+        "fullModuleResult": "NOT_RUN",
+        "testsPassed": 308,
+        "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+        "testedSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+        "evidence": "docs/design/community-flutter-f3-verification.json",
+        "report": "docs/design/community-flutter-f3-report.md",
+        "taskPlan": "docs/design/community-flutter-pages-plan.md",
+        "actualRenderReview": "docs/design/ui-reviews/community-flutter-f3-ui-review.md",
+        "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+        "unexecutedReasons": [
+          "F3 only; final auth candidate and real integration still independent",
+          "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+          "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+        ],
+        "coverage": "文字latest feed分页／cursor／来源锚点、删除／迟到页围栏及自然高度双列；真实服务端feed与未来媒体／筛选不在本片",
+        "testReferences": [
+          "apps/mobile/test/post_models_test.dart",
+          "apps/mobile/test/post_api_test.dart",
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart"
+        ],
+        "testCountNote": "308 is the one shared mobile run, not308 independent tests for this module; per-file counts and scopes are in test-summary and machine record."
       }
     },
     {
@@ -3108,12 +3736,18 @@
     {
       "id": "B05",
       "name": "新建帖子、草稿与发布任务",
-      "implementationState": "NOT_STARTED",
-      "acceptanceState": "NOT_READY_IMPLEMENTATION",
+      "implementationState": "PARTIAL",
+      "acceptanceState": "PENDING_CURRENT_F3_INTEGRATION_AND_PLATFORM",
       "currentResult": "NOT_RUN",
-      "verificationEntries": [],
-      "note": "仅设计规则，后续需本地业务/媒体与持久任务",
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "verificationEntries": [
+        "F3-C01",
+        "F3-C03",
+        "F3-C04",
+        "F3-C05",
+        "F3-C06"
+      ],
+      "note": "F3文字切片实现完成；本分支分析、host单元/widget及真实SQLite子范围PASS。真实C/V/SQL、最终认证与原生设备未验，未来业务尚未实现，整模块未PASS。原版本记录见priorTaskRecords及历史证据。",
+      "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -3132,17 +3766,98 @@
         "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
         "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
         "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
-      }
+      },
+      "priorTaskRecords": [
+        {
+          "id": "B05",
+          "name": "新建帖子、草稿与发布任务",
+          "implementationState": "NOT_STARTED",
+          "acceptanceState": "NOT_READY_IMPLEMENTATION",
+          "currentResult": "NOT_RUN",
+          "verificationEntries": [],
+          "note": "仅设计规则，后续需本地业务/媒体与持久任务",
+          "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+          "currentAC06Handoff": {
+            "result": "PASS",
+            "evidence": "services/api/authlab/final-handoff-verification.json",
+            "scope": "Source/status/proof mapping only; does not change functional module result"
+          },
+          "archivedForTask": "docs/design/community-flutter-pages-plan.md"
+        }
+      ],
+      "currentCommunityFlutterF3": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "implementationState": "F3_TEXT_SLICE_COMPLETE",
+        "scopedResult": "PASS",
+        "fullModuleResult": "NOT_RUN",
+        "testsPassed": 308,
+        "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+        "testedSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+        "evidence": "docs/design/community-flutter-f3-verification.json",
+        "report": "docs/design/community-flutter-f3-report.md",
+        "taskPlan": "docs/design/community-flutter-pages-plan.md",
+        "actualRenderReview": "docs/design/ui-reviews/community-flutter-f3-ui-review.md",
+        "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+        "unexecutedReasons": [
+          "F3 only; final auth candidate and real integration still independent",
+          "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+          "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+        ],
+        "coverage": "文字编辑／两步确认、字符／摘要、先持久原意图、三层状态／seal／retry及单次真实PUBLISHED notice；SQL事务/Gate与原生杀进程未验",
+        "testReferences": [
+          "apps/mobile/test/post_protocol_test.dart",
+          "apps/mobile/test/post_api_test.dart",
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart",
+          "apps/mobile/test/post_storage_test.dart"
+        ],
+        "testCountNote": "308 is the one shared mobile run, not308 independent tests for this module; per-file counts and scopes are in test-summary and machine record."
+      },
+      "taskPlan": "docs/design/community-flutter-pages-plan.md",
+      "report": "docs/design/community-flutter-f3-report.md",
+      "evidence": "docs/design/community-flutter-f3-verification.json",
+      "testedHeadCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+      "testedWorkingTreeSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+      "workingTreeUncommitted": false,
+      "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
+      "executedEvidenceIsModulePass": false,
+      "sourcePaths": [
+        "apps/mobile/lib/src/posts/post_protocol.dart",
+        "apps/mobile/lib/src/posts/post_models.dart",
+        "apps/mobile/lib/src/posts/http_post_api.dart",
+        "apps/mobile/lib/src/posts/post_controller.dart",
+        "apps/mobile/lib/src/posts/post_screens.dart",
+        "apps/mobile/lib/src/storage/post_store.dart"
+      ],
+      "testPaths": [
+        "apps/mobile/test/post_protocol_test.dart",
+        "apps/mobile/test/post_api_test.dart",
+        "apps/mobile/test/post_controller_test.dart",
+        "apps/mobile/test/post_screens_test.dart",
+        "apps/mobile/test/post_storage_test.dart"
+      ],
+      "pendingReasons": [
+        "F3 only; final auth candidate and real integration still independent",
+        "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+        "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+      ]
     },
     {
       "id": "B06",
       "name": "帖子详情、赞藏与分享",
-      "implementationState": "NOT_STARTED",
-      "acceptanceState": "NOT_READY_IMPLEMENTATION",
+      "implementationState": "PARTIAL",
+      "acceptanceState": "PENDING_CURRENT_F3_INTEGRATION_AND_PLATFORM",
       "currentResult": "NOT_RUN",
-      "verificationEntries": [],
-      "note": "仅设计规则，无完整业务实现",
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "verificationEntries": [
+        "F3-C01",
+        "F3-C03",
+        "F3-C04",
+        "F3-C05",
+        "F3-C06"
+      ],
+      "note": "F3文字切片实现完成；本分支分析、host单元/widget及真实SQLite子范围PASS。真实C/V/SQL、最终认证与原生设备未验，未来业务尚未实现，整模块未PASS。原版本记录见priorTaskRecords及历史证据。",
+      "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -3161,7 +3876,78 @@
         "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
         "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
         "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
-      }
+      },
+      "priorTaskRecords": [
+        {
+          "id": "B06",
+          "name": "帖子详情、赞藏与分享",
+          "implementationState": "NOT_STARTED",
+          "acceptanceState": "NOT_READY_IMPLEMENTATION",
+          "currentResult": "NOT_RUN",
+          "verificationEntries": [],
+          "note": "仅设计规则，无完整业务实现",
+          "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+          "currentAC06Handoff": {
+            "result": "PASS",
+            "evidence": "services/api/authlab/final-handoff-verification.json",
+            "scope": "Source/status/proof mapping only; does not change functional module result"
+          },
+          "archivedForTask": "docs/design/community-flutter-pages-plan.md"
+        }
+      ],
+      "currentCommunityFlutterF3": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "implementationState": "F3_TEXT_SLICE_COMPLETE",
+        "scopedResult": "PASS",
+        "fullModuleResult": "NOT_RUN",
+        "testsPassed": 308,
+        "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+        "testedSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+        "evidence": "docs/design/community-flutter-f3-verification.json",
+        "report": "docs/design/community-flutter-f3-report.md",
+        "taskPlan": "docs/design/community-flutter-pages-plan.md",
+        "actualRenderReview": "docs/design/ui-reviews/community-flutter-f3-ui-review.md",
+        "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+        "unexecutedReasons": [
+          "F3 only; final auth candidate and real integration still independent",
+          "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+          "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+        ],
+        "coverage": "正文详情／独立注销投影、private owner capability及DELETE原结果核对／写盘先行／直接返回；评论与真实授权SQL尚未验",
+        "testReferences": [
+          "apps/mobile/test/post_models_test.dart",
+          "apps/mobile/test/post_api_test.dart",
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart"
+        ],
+        "testCountNote": "308 is the one shared mobile run, not308 independent tests for this module; per-file counts and scopes are in test-summary and machine record."
+      },
+      "taskPlan": "docs/design/community-flutter-pages-plan.md",
+      "report": "docs/design/community-flutter-f3-report.md",
+      "evidence": "docs/design/community-flutter-f3-verification.json",
+      "testedHeadCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+      "testedWorkingTreeSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+      "workingTreeUncommitted": false,
+      "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
+      "executedEvidenceIsModulePass": false,
+      "sourcePaths": [
+        "apps/mobile/lib/src/posts/post_models.dart",
+        "apps/mobile/lib/src/posts/http_post_api.dart",
+        "apps/mobile/lib/src/posts/post_controller.dart",
+        "apps/mobile/lib/src/posts/post_screens.dart"
+      ],
+      "testPaths": [
+        "apps/mobile/test/post_models_test.dart",
+        "apps/mobile/test/post_api_test.dart",
+        "apps/mobile/test/post_controller_test.dart",
+        "apps/mobile/test/post_screens_test.dart"
+      ],
+      "pendingReasons": [
+        "F3 only; final auth candidate and real integration still independent",
+        "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+        "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+      ]
     },
     {
       "id": "B07",
@@ -3212,19 +3998,21 @@
       "id": "B10",
       "name": "我的、个人内容与设置",
       "implementationState": "PARTIAL",
-      "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
+      "acceptanceState": "PENDING_CURRENT_F3_INTEGRATION_AND_PLATFORM",
       "currentResult": "NOT_RUN",
       "verificationEntries": [
-        "R04",
-        "R05",
-        "R10"
+        "F3-C01",
+        "F3-C03",
+        "F3-C04",
+        "F3-C05",
+        "F3-C06"
       ],
-      "note": "我的→设置→身份管理／账号安全入口已实现；本人帖子／收藏、顶部身份联动、黑名单／通知设置尚未完整实现。动态验收NOT_RUN。",
-      "taskPlan": "docs/design/identity-management-plan.md",
-      "evidence": "services/api/authlab/identity-management-verification.json",
-      "report": "docs/design/identity-management-validation-report.md",
-      "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
-      "workingTreeUncommitted": true,
+      "note": "F3文字切片实现完成；本分支分析、host单元/widget及真实SQLite子范围PASS。真实C/V/SQL、最终认证与原生设备未验，未来业务尚未实现，整模块未PASS。原版本记录见priorTaskRecords及历史证据。",
+      "taskPlan": "docs/design/community-flutter-pages-plan.md",
+      "evidence": "docs/design/community-flutter-f3-verification.json",
+      "report": "docs/design/community-flutter-f3-report.md",
+      "testedHeadCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X01",
         "X02",
@@ -3233,22 +4021,23 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
-        "apps/mobile/lib/src/identity/settings_screen.dart",
-        "apps/mobile/lib/src/auth/auth_store.dart",
-        "apps/mobile/lib/src/auth/auth_state_codec.dart",
-        "apps/mobile/lib/src/auth/http_auth_api.dart"
+        "apps/mobile/lib/src/posts/post_controller.dart",
+        "apps/mobile/lib/src/posts/post_screens.dart",
+        "apps/mobile/lib/src/storage/post_store.dart"
       ],
       "testPaths": [
-        "apps/mobile/test/security_management_screen_test.dart",
-        "apps/mobile/test/identity_management_screen_test.dart",
-        "apps/mobile/test/identity_management_controller_test.dart",
-        "apps/mobile/test/auth_api_test.dart"
+        "apps/mobile/test/post_controller_test.dart",
+        "apps/mobile/test/post_screens_test.dart",
+        "apps/mobile/test/post_storage_test.dart",
+        "apps/mobile/test/post_closure_cleanup_test.dart"
       ],
       "pendingReasons": [
-        "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+        "F3 only; final auth candidate and real integration still independent",
+        "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+        "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
       ],
       "relatedModules": [
         "A00",
@@ -3268,9 +4057,9 @@
         "B01",
         "B03"
       ],
-      "reopenedForTask": "docs/design/identity-management-plan.md",
+      "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
       "executedEvidenceIsModulePass": false,
-      "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+      "testedWorkingTreeSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
       "priorTaskRecords": [
         {
           "taskPlan": "docs/design/auth-privacy-device-credentials-passkey-plan.md",
@@ -3280,6 +4069,90 @@
           "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
           "testedWorkingTreeSourceFingerprint": "c82c587abb219f4296c18ce7898d3421204b0664e47b0a6718c636518df6618e",
           "currentResult": "BLOCKED"
+        },
+        {
+          "id": "B10",
+          "name": "我的、个人内容与设置",
+          "implementationState": "PARTIAL",
+          "acceptanceState": "NOT_READY_FULL_MODULE_IMPLEMENTATION",
+          "currentResult": "NOT_RUN",
+          "verificationEntries": [
+            "R04",
+            "R05",
+            "R10"
+          ],
+          "note": "我的→设置→身份管理／账号安全入口已实现；本人帖子／收藏、顶部身份联动、黑名单／通知设置尚未完整实现。动态验收NOT_RUN。",
+          "taskPlan": "docs/design/identity-management-plan.md",
+          "evidence": "services/api/authlab/identity-management-verification.json",
+          "report": "docs/design/identity-management-validation-report.md",
+          "testedHeadCommit": "3edf8c4c2f888f3d0cf9783d6ea358e2ab30383e",
+          "workingTreeUncommitted": true,
+          "crossModuleScenes": [
+            "X01",
+            "X02",
+            "X03",
+            "X04",
+            "X05",
+            "X08"
+          ],
+          "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+          "sourcePaths": [
+            "apps/mobile/lib/main.dart",
+            "apps/mobile/lib/src/identity/settings_screen.dart",
+            "apps/mobile/lib/src/auth/auth_store.dart",
+            "apps/mobile/lib/src/auth/auth_state_codec.dart",
+            "apps/mobile/lib/src/auth/http_auth_api.dart"
+          ],
+          "testPaths": [
+            "apps/mobile/test/security_management_screen_test.dart",
+            "apps/mobile/test/identity_management_screen_test.dart",
+            "apps/mobile/test/identity_management_controller_test.dart",
+            "apps/mobile/test/auth_api_test.dart"
+          ],
+          "pendingReasons": [
+            "缺Go/Flutter及相应数据库/平台验收环境；按用户指令继续开发、集中验收延期"
+          ],
+          "relatedModules": [
+            "A00",
+            "A02",
+            "A03",
+            "A05",
+            "A06",
+            "A07",
+            "A08",
+            "A09",
+            "A11",
+            "A12",
+            "A13",
+            "N01",
+            "N02",
+            "N03",
+            "B01",
+            "B03"
+          ],
+          "reopenedForTask": "docs/design/identity-management-plan.md",
+          "executedEvidenceIsModulePass": false,
+          "testedWorkingTreeSourceFingerprint": "852689f404c8ef3396c6ed4149ada5f06c98e3aea86dfa6b3f7d9d1d16ce0316",
+          "boundedChecksPassed": [],
+          "blockedChecks": [
+            "go-race",
+            "flutter-tests",
+            "flutter-analyze",
+            "openapi-full"
+          ],
+          "nextAcceptanceHistory": [
+            {
+              "recordedOn": "2026-10-05",
+              "scope": "BEFORE_AC06_STATUS_CONSOLIDATION",
+              "value": "固定源码指纹后按R00/R01与R10完成编译、正式迁移／非owner、SQL、HTTP、Flutter共享认证与原生持久回归；不以旧SHA或替身代证。"
+            }
+          ],
+          "currentAC06Handoff": {
+            "result": "PASS",
+            "evidence": "services/api/authlab/final-handoff-verification.json",
+            "scope": "Source/status/proof mapping only; does not change functional module result"
+          },
+          "archivedForTask": "docs/design/community-flutter-pages-plan.md"
         }
       ],
       "boundedChecksPassed": [],
@@ -3314,6 +4187,34 @@
         "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
         "scope": "F2 contract/state/storage design only; historical module implementation/acceptance fields remain unchanged",
         "requiredRegression": "F3 selective import, future-schema guard, random retry row key with legacy mapping, stale authority callbacks, scoped key/purge faults and deletion reconciliation; actual F4/F5 acceptance later"
+      },
+      "currentCommunityFlutterF3": {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/community-flutter-pages",
+        "implementationState": "F3_TEXT_SLICE_COMPLETE",
+        "scopedResult": "PASS",
+        "fullModuleResult": "NOT_RUN",
+        "testsPassed": 308,
+        "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+        "testedSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+        "evidence": "docs/design/community-flutter-f3-verification.json",
+        "report": "docs/design/community-flutter-f3-report.md",
+        "taskPlan": "docs/design/community-flutter-pages-plan.md",
+        "actualRenderReview": "docs/design/ui-reviews/community-flutter-f3-ui-review.md",
+        "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+        "unexecutedReasons": [
+          "F3 only; final auth candidate and real integration still independent",
+          "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+          "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
+        ],
+        "coverage": "本人帖子／多草稿／pending／failed／unknown混排、FAILED直达固定身份编辑、成功回原channel及清缓存；收藏／通知等尚未实现",
+        "testReferences": [
+          "apps/mobile/test/post_controller_test.dart",
+          "apps/mobile/test/post_screens_test.dart",
+          "apps/mobile/test/post_storage_test.dart",
+          "apps/mobile/test/post_closure_cleanup_test.dart"
+        ],
+        "testCountNote": "308 is the one shared mobile run, not308 independent tests for this module; per-file counts and scopes are in test-summary and machine record."
       }
     },
     {
@@ -3505,70 +4406,41 @@
   ],
   "inventoryScope": "dynamicTestsExecutedInThisInventory=false describes the original inventory only; current feature checks below are separate",
   "currentFeature": {
-    "plan": "docs/design/identity-management-plan.md",
-    "report": "docs/design/identity-management-validation-report.md",
-    "evidence": "services/api/authlab/identity-management-verification.json",
-    "implementation": "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING",
+    "plan": "docs/design/community-flutter-pages-plan.md",
+    "report": "docs/design/community-flutter-f3-report.md",
+    "evidence": "docs/design/community-flutter-f3-verification.json",
+    "implementation": "F3_TEXT_SLICE_COMPLETE",
     "moduleAcceptancePassed": false,
     "affectedModules": [
-      "A00",
-      "A01",
-      "A02",
-      "A03",
-      "A05",
-      "A06",
-      "A07",
-      "A08",
-      "A09",
-      "A11",
       "A12",
-      "A13",
       "N01",
-      "N02",
-      "N03",
-      "B01",
       "B02",
       "B03",
+      "B05",
+      "B06",
       "B10"
     ],
     "crossModuleScenes": [
-      "X01",
-      "X02",
-      "X03",
-      "X04",
-      "X05",
-      "X08"
+      "X06",
+      "X07"
     ],
     "executedCheckIds": [
-      "diff",
-      "openapi-yaml",
-      "source-consistency",
-      "runtime-shell",
-      "go-race",
-      "flutter-tests",
-      "flutter-analyze",
-      "openapi-full",
-      "handoff-consistency"
+      "F3-C01",
+      "F3-C02",
+      "F3-C03",
+      "F3-C04",
+      "F3-C05",
+      "F3-C06"
     ],
     "executedChecksAreFullModuleAcceptance": false,
     "sqlTestsExecuted": false,
-    "flutterTestsExecuted": false,
+    "sqliteFileTestsExecuted": true,
+    "flutterTestsExecuted": true,
     "deviceTestsExecuted": false,
     "fullOpenapiValidatorDependencyAvailable": false,
-    "nextStep": "按匿名收口清单AC01–AC06补V独立Gate、已有身份关闭生命周期、隐私契约和真实测试链，集中验收后固定交付；不进入B05/B03完整业务片。",
-    "nextStepHistory": [
-      {
-        "recordedOn": "2026-10-03",
-        "nextStep": "B05文本发帖＋B03帖子列表；之后B06详情＋B07评论，再消息／私聊／治理。基础动态验收具备工具后按R10集中执行。",
-        "supersededBy": "User scope correction"
-      }
-    ],
-    "snapshotStatus": "HISTORICAL_B02_FEATURE_SNAPSHOT",
-    "currentEvidence": "services/api/authlab/platform-acceptance-verification.json",
-    "currentBackendEvidence": "services/api/authlab/privacy-regression-verification.json",
-    "snapshotNote": "Historical B02 feature snapshot only: old false SQL/Flutter/device fields are not current unverified claims. Current backend is currentAC04, platform is currentAC05, delivery is currentAC06; full B02 remains BLOCKED.",
-    "currentClientRegressionEvidence": "services/api/authlab/platform-acceptance-verification.json",
-    "currentHandoffEvidence": "services/api/authlab/final-handoff-verification.json"
+    "nextStep": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+    "snapshotStatus": "CURRENT_F3_SCOPED_PROOF",
+    "snapshotNote": "Prior auth feature/fields are preserved in featureHistory and module priorTaskRecords; old PASS does not prove this SHA."
   },
   "featureHistory": [
     {
@@ -3633,6 +4505,72 @@
       "nextStep": "工具具备后按R00/R01→R02/R03→R04/R05→R07/R09记录真正验收；系统Passkey先确定并部署实际关联。",
       "fullXcodeAvailable": false,
       "fullOpenapiValidatorDependencyAvailable": false
+    },
+    {
+      "plan": "docs/design/identity-management-plan.md",
+      "report": "docs/design/identity-management-validation-report.md",
+      "evidence": "services/api/authlab/identity-management-verification.json",
+      "implementation": "FOUNDATION_IMPLEMENTED_BUSINESS_INTEGRATION_PENDING",
+      "moduleAcceptancePassed": false,
+      "affectedModules": [
+        "A00",
+        "A01",
+        "A02",
+        "A03",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A11",
+        "A12",
+        "A13",
+        "N01",
+        "N02",
+        "N03",
+        "B01",
+        "B02",
+        "B03",
+        "B10"
+      ],
+      "crossModuleScenes": [
+        "X01",
+        "X02",
+        "X03",
+        "X04",
+        "X05",
+        "X08"
+      ],
+      "executedCheckIds": [
+        "diff",
+        "openapi-yaml",
+        "source-consistency",
+        "runtime-shell",
+        "go-race",
+        "flutter-tests",
+        "flutter-analyze",
+        "openapi-full",
+        "handoff-consistency"
+      ],
+      "executedChecksAreFullModuleAcceptance": false,
+      "sqlTestsExecuted": false,
+      "flutterTestsExecuted": false,
+      "deviceTestsExecuted": false,
+      "fullOpenapiValidatorDependencyAvailable": false,
+      "nextStep": "按匿名收口清单AC01–AC06补V独立Gate、已有身份关闭生命周期、隐私契约和真实测试链，集中验收后固定交付；不进入B05/B03完整业务片。",
+      "nextStepHistory": [
+        {
+          "recordedOn": "2026-10-03",
+          "nextStep": "B05文本发帖＋B03帖子列表；之后B06详情＋B07评论，再消息／私聊／治理。基础动态验收具备工具后按R10集中执行。",
+          "supersededBy": "User scope correction"
+        }
+      ],
+      "snapshotStatus": "HISTORICAL_B02_FEATURE_SNAPSHOT",
+      "currentEvidence": "services/api/authlab/platform-acceptance-verification.json",
+      "currentBackendEvidence": "services/api/authlab/privacy-regression-verification.json",
+      "snapshotNote": "Historical B02 feature snapshot only: old false SQL/Flutter/device fields are not current unverified claims. Current backend is currentAC04, platform is currentAC05, delivery is currentAC06; full B02 remains BLOCKED.",
+      "currentClientRegressionEvidence": "services/api/authlab/platform-acceptance-verification.json",
+      "currentHandoffEvidence": "services/api/authlab/final-handoff-verification.json"
     }
   ],
   "sourceFingerprintHistory": [
@@ -3928,6 +4866,74 @@
       "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
       "appliesTo": "Current AC03 backend, mobile logic/tests and vault/Passkey source boundary review; each check retains its executed scope, no native platform revalidation",
       "snapshotStatus": "HISTORICAL_AC03_BEFORE_AC04"
+    },
+    {
+      "sha256": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
+      "presentFileCount": 284,
+      "roots": [
+        "services/api",
+        "infra",
+        "packages/openapi",
+        "packages/auth-protocol-vectors",
+        "apps/mobile/lib",
+        "apps/mobile/test",
+        "apps/mobile/integration",
+        "apps/mobile/pubspec.yaml",
+        "apps/mobile/pubspec.lock",
+        "packages/auth_vault",
+        "packages/auth_passkey",
+        "apps/mobile/android",
+        "apps/mobile/ios",
+        "apps/mobile/integration_test",
+        "apps/mobile/test_driver",
+        "tools/run-android-auth-process-test.ps1",
+        "tools/run-android-vault-probes.ps1",
+        "tools/env-hnuhole-windows.ps1",
+        "tools/env-hnuhole-wsl.sh",
+        "tools/check-identity-handoff.py"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm",
+        ".gradle",
+        ".png",
+        ".storyboard",
+        ".xcscheme",
+        ".xcworkspacedata"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        "go.work",
+        "go.work.sum",
+        ".env.example"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "AC05 Android complete app build, native codec/vault and explicitly bounded emulator/Flutter probes; backend source retained as context, no new SQL run"
     }
   ],
   "workflowHistory": [
@@ -5359,7 +6365,7 @@
     "cleanupPassed": true
   },
   "latestBackendValidationEvidence": "services/api/authlab/privacy-regression-verification.json",
-  "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN",
+  "currentInventoryScope": "Current F3 frontend scoped host/file/widget checks; historical auth/backend/device proof preserved by original SHA",
   "currentCommunityFlutterF2": {
     "recordedOn": "2026-10-09",
     "branch": "codex/community-flutter-pages",
@@ -5385,6 +6391,34 @@
     "crossModuleScenarios": [
       "X06",
       "X07"
+    ]
+  },
+  "historicalPreF3InventorySnapshot": {
+    "recordedOn": "2026-10-05",
+    "branch": "codex/auth-privacy-handoff",
+    "baselineHeadCommit": "cbc99b010ba23bba42f76e2523269e3952b14392",
+    "workflow": "ANONYMITY_BRANCH_CLOSURE_WITH_EXPLICIT_DEFERRED_ACCEPTANCE",
+    "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN",
+    "workingTreeContainsUncommittedImplementation": true
+  },
+  "currentCommunityFlutterF3": {
+    "recordedOn": "2026-10-09",
+    "branch": "codex/community-flutter-pages",
+    "implementationState": "F3_TEXT_SLICE_COMPLETE",
+    "scopedResult": "PASS",
+    "fullModuleResult": "NOT_RUN",
+    "testsPassed": 308,
+    "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+    "testedSourceFingerprint": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+    "evidence": "docs/design/community-flutter-f3-verification.json",
+    "report": "docs/design/community-flutter-f3-report.md",
+    "taskPlan": "docs/design/community-flutter-pages-plan.md",
+    "actualRenderReview": "docs/design/ui-reviews/community-flutter-f3-ui-review.md",
+    "nextAcceptance": "F4 exact final auth candidate integration and current frontend SHA real HTTPS/C/V/Postgres/Gate; F5 current APK native7,platform andphysicalUX",
+    "unexecutedReasons": [
+      "F3 only; final auth candidate and real integration still independent",
+      "No current APK/native/device run in this phase; Android shared CLOSED lock changed",
+      "Missing macOS/full Xcode/iOS target; physical UX and system fonts not verified"
     ]
   }
 }

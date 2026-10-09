@@ -1,0 +1,141 @@
+{
+  "counts": {
+    "PASS": 308
+  },
+  "byTestFile": {
+    "test/auth_api_test.dart": {
+      "PASS": 38
+    },
+    "test/auth_crypto_test.dart": {
+      "PASS": 7
+    },
+    "test/auth_flows_test.dart": {
+      "PASS": 19
+    },
+    "test/auth_screen_test.dart": {
+      "PASS": 10
+    },
+    "test/auth_session_controller_test.dart": {
+      "PASS": 27
+    },
+    "test/auth_vault_test.dart": {
+      "PASS": 5
+    },
+    "test/identity_management_controller_test.dart": {
+      "PASS": 18
+    },
+    "test/identity_management_screen_test.dart": {
+      "PASS": 7
+    },
+    "test/identity_name_formatter_test.dart": {
+      "PASS": 5
+    },
+    "test/mobile_environment_test.dart": {
+      "PASS": 2
+    },
+    "test/passkey_recovery_flow_test.dart": {
+      "PASS": 11
+    },
+    "test/post_api_test.dart": {
+      "PASS": 14
+    },
+    "test/post_closure_cleanup_test.dart": {
+      "PASS": 11
+    },
+    "test/post_controller_test.dart": {
+      "PASS": 34
+    },
+    "test/post_models_test.dart": {
+      "PASS": 7
+    },
+    "test/post_protocol_test.dart": {
+      "PASS": 8
+    },
+    "test/post_screens_test.dart": {
+      "PASS": 23
+    },
+    "test/post_storage_test.dart": {
+      "PASS": 30
+    },
+    "test/security_management_controller_test.dart": {
+      "PASS": 28
+    },
+    "test/security_management_screen_test.dart": {
+      "PASS": 4
+    }
+  },
+  "renders": [
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/channel-empty.png",
+      "sha256": "008cca9025e0cb144c323be9e46c8a756b9740b680ad723c6ffd0c8387554a0e",
+      "bytes": 41160
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/channel-first-failure.png",
+      "sha256": "905ba691baf665a801d7220d1eb11608063b5fbd867cfd401ba3b91fc7e5b035",
+      "bytes": 43556
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/channel-list.png",
+      "sha256": "2dc9a271d80b2d0c22e70497331f7861d05028fb3171da69aa09cd4e65297803",
+      "bytes": 117679
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/channel-publication-success.png",
+      "sha256": "61489b9f08e75786e32863d6960ed4c78f0dedd3646deb0ea427052e72c43cc2",
+      "bytes": 120266
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/draft-delete-confirm.png",
+      "sha256": "d170256a1c1562c6de944ba9c097498ba018449b6d646ec20374d8c06b618dc6",
+      "bytes": 64432
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/draft-save-failed.png",
+      "sha256": "0b6ca4e5bd0975a9352767d7e8d2d7a6d3fd4a60e1a95875d3a6ebc77429a017",
+      "bytes": 84203
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/failed-draft-editor.png",
+      "sha256": "9ace93626c016eb4ddd9f2b8cec1d754bd6fba64181a95ee06ac1a4517a0420f",
+      "bytes": 94477
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/identity-selection.png",
+      "sha256": "14a610aceb64f8ffca7f2e142b8837835f31726c7933cc84e48347dc110f9e9f",
+      "bytes": 60003
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/personal-empty.png",
+      "sha256": "86f3bca9686c54cfe8af03053430425954fb7eeac285bb1e23c40931fee50047",
+      "bytes": 58596
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/personal-posts.png",
+      "sha256": "977019b0856e9986aa402881e2aa4adbed73bd7a0e86958c9c7274bafc825588",
+      "bytes": 123555
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/post-delete-confirm.png",
+      "sha256": "94cc18e1eaeb3c0864b8a12a91978bce3e91b569fb2320aa61690810b011c8a3",
+      "bytes": 83238
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/post-detail.png",
+      "sha256": "0ba49d44dbe8fa8375bf425cf3da9027b8db64bc4025770355800e6fc8f05cc5",
+      "bytes": 72047
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/publish-confirm.png",
+      "sha256": "74f0252737b459c71a0390ce4fb3c82d9735f0920040b29e5d3060d09dc402f3",
+      "bytes": 48219
+    },
+    {
+      "path": "docs/design/ui-reviews/f3-flutter-render/text-editor.png",
+      "sha256": "f36f21aacdeb21cc04a5d2a9db3cc1c754e47c97d276452dfb3fda7bc788f9ca",
+      "bytes": 78416
+    }
+  ],
+  "durationMilliseconds": 26709,
+  "countingRule": "Visible testDone events; hidden load/setup/teardown events excluded. 14 frames are produced inside one of the 23 screens tests."
+}

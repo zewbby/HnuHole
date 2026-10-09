@@ -1,5 +1,7 @@
 # Flutter 社区文字发帖与浏览页面实施计划
 
+> **2026-10-09 F3 当前交付：**文字页面、主导航、controller与加密SQLite状态已完成，源码`eb6c914`；[实现报告](community-flutter-f3-report.md)、[机器记录](community-flutter-f3-verification.json)和[实际Flutter复审](ui-reviews/community-flutter-f3-ui-review.md)固定当前证据。完整mobile分析0问题、308项PASS（SQLite30／controller34／screens23含14帧）；F1正式图未改。补未来版本拒绝、旧retry随机迁移、删除丢响应／切账号围栏及Android闭号多engine临界区。真实C/V／SQL整合、Android原生7项／构建／跨进程／设备、iOS及物理UX仍NOT_RUN；下一阶段F4固定最终认证候选，F5另行平台验收。scoped PASS不代证整模块或生产通过；下方F2及认证旧结果均为历史版本。
+
 > **2026-10-09 F2契约／存储设计完成：**见[F2设计](community-flutter-f2-design.md)、[版本锁](community-flutter-f2-lock.json)及[静态记录](community-flutter-f2-verification.json)。基于已发布后端514a944固定14操作、命令/任务/客户端未知三层状态、精确摘要与seal/cancel/retry/delete语义；保持Drift/加密SQLite三表v1、独立业务key和环境/账号scope原字节规则。正式F1资产未改；本轮未导入业务代码、未执行Flutter/SQL/设备验收，不把后端未提交T4或历史PASS移入本分支。F3按锁选择复用源码，补未来schema拒写及删除核对回归，F4仍待最终认证候选。
 
 > **2026-10-09用户纠正／撤回重复改版：**用户明确“这种布局我上面不是已经定稿过了吗”，[刚生成的正常网格v3已撤回](ui-reviews/my-content-aligned-v3.md)。“我的”正常态沿用已定稿本人列表版式，不另做网格、不再列为待评审；F1-11记为已定布局复用，F1-14为定稿通道列表复用，F1-22为删除成功直接返回。当前19个正式PNG场景＋2个已定版式复用场景＋1个无单页返回动作，原22场景已收口，无需继续画图。正式PNG均未修改；Flutter业务／平台NOT_RUN。此前候选／缺口计数为历史。
@@ -8,7 +10,7 @@
 
 日期：2026-10-08建立，2026-10-09更新（Asia/Shanghai）。分支：`codex/community-flutter-pages`；起点 `0eff47a21cd4f4ab1636b4468f7d5df9769a264f`。
 
-状态：`F2_DESIGN_COMPLETE / F3_IMPLEMENTATION_PENDING`。F1已收口，F2按514a944固定契约与存储；本分支业务实现尚未开始，全部业务验收为 `NOT_RUN`。认证分支、后端工作树、原设备与服务环境均独立保留。
+状态：`F3_IMPLEMENTATION_COMPLETE / F3_SCOPED_CHECKS_PASS / F4_INTEGRATION_PENDING`。F1/F2已收口，文字片源码已完成并有本分支host／SQLite／widget运行证据；完整系统／平台验收仍为`NOT_RUN`。认证分支、后端工作树、原设备与服务环境均独立保留。
 
 F1最新决定：2026-10-09用户认可[F1-19统一缩略图正常阅读v2](ui-reviews/post-detail-normal-v2.md)，随后要求“画完剩下的”。[F1-20身份停用／F1-21本人删除确认](ui-reviews/post-detail-states-v1.md)已展示并按既定无意见规则归档；用户取消F1-22独立已删除页，确认且删除成功直接返回上一级来源页。原22个设计场景均已有处理：21个页面场景已有设计（19正式PNG＋F1-11／14两已定版式复用场景），F1-22为无需独立图的返回动作。没有尚未绘制的独立页面；旧已删除图保留历史，不是当前交付或默认路由。用户最新纠正已明确“我的”布局定稿；F1-11正常态复用该布局，F1-14返回复用通道列表，二者不再列为绘图候选。
 
@@ -131,7 +133,7 @@ F2和后端T1共同固定：业务敏感payload保护、独立原生vault namesp
 | F0 规则与计划 | 本文、图稿核对、决策记录 | Q1确认；缺失图与未验项如实登记；不声称代码完成 |
 | F1 页面设计 | 六类22张；完整列表→编辑→确认及身份→我的任务状态→详情适配，用户指定批次优先 | 用户确认对应新稿；错误／空／键盘状态说明齐全；图稿与代码范围分别登记 |
 | F2 契约与存储 | 已完成：[设计](community-flutter-f2-design.md)、[锁定清单](community-flutter-f2-lock.json) | 14操作、三层状态、v1与密钥／账号环境策略已定；已发布依赖候选固定，F3解析／运行待验 |
-| F3 页面与状态实现 | controller、repository、页面、SQLite、单元及widget源码 | 分析／聚焦测试通过；真实文件库持久性测试；网络fake证明范围单列 |
+| F3 页面与状态实现 | 已完成：[源码／报告](community-flutter-f3-report.md)、[308项记录](community-flutter-f3-verification.json) | 分析0问题、真实SQLite30、controller34、screens23及14实际帧PASS；网络替身及平台未验范围单列 |
 | F4 主App集成 | 认证候选、后端契约及接口接入、导航与生命周期 | 当前SHA实际HTTPS→C/V→SQL链验证；受影响认证回归；不占原验收环境 |
 | F5 平台与交接 | Android完整App、原生业务存储／跨进程证据及报告 | 必需项有匹配版本证据；未执行项明确；四文件更新并清理自建临时资源 |
 
@@ -156,7 +158,7 @@ F2和后端T1共同固定：业务敏感payload保护、独立原生vault namesp
 | FP13 | 小屏／大字／键盘／安全区／读屏／焦点／48dp触控／实测对比度 | render/widget/device；B03/B05/B06/B10 |
 | FP14 | 当前契约版本＋认证候选的完整App与共享授权回归 | 实际C/V/SQL/App；A01/A02/A13及B模块 |
 
-全部初始 `NOT_RUN`；尚无本片测试源码或runner，实施时建立确切入口。现有Flutter分析与test命令只证明实际运行范围；现有R03/R05不自动覆盖社区，也不发明 `--module posts`。本片新增runner后在交接登记真实命令、设备、源码SHA及版本证据。工具缺失不自动下载大型SDK或重建缓存。
+此前为初始`NOT_RUN`；现F3源码和`tools/run-community-flutter-f3-linux.sh`已建立，FP01–FP13的host／SQLite／widget子范围见[F3记录](community-flutter-f3-verification.json)，各项真实系统／设备层与FP14仍NOT_RUN。现有Flutter分析与test命令只证明实际运行范围；现有R03/R05不自动覆盖社区，也不发明 `--module posts`。本片新增runner后在交接登记真实命令、设备、源码SHA及版本证据。工具缺失不自动下载大型SDK或重建缓存。
 
 ## 9. 收尾与交接
 

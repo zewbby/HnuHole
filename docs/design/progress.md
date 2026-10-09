@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-09 F3 当前交付：**文字页面、主导航、controller与加密SQLite状态已完成，源码`eb6c914`；[实现报告](community-flutter-f3-report.md)、[机器记录](community-flutter-f3-verification.json)和[实际Flutter复审](ui-reviews/community-flutter-f3-ui-review.md)固定当前证据。完整mobile分析0问题、308项PASS（SQLite30／controller34／screens23含14帧）；F1正式图未改。补未来版本拒绝、旧retry随机迁移、删除丢响应／切账号围栏及Android闭号多engine临界区。真实C/V／SQL整合、Android原生7项／构建／跨进程／设备、iOS及物理UX仍NOT_RUN；下一阶段F4固定最终认证候选，F5另行平台验收。scoped PASS不代证整模块或生产通过；下方F2及认证旧结果均为历史版本。
+
 > **2026-10-09 F2契约／存储设计完成：**见[F2设计](community-flutter-f2-design.md)、[版本锁](community-flutter-f2-lock.json)及[静态记录](community-flutter-f2-verification.json)。基于已发布后端514a944固定14操作、命令/任务/客户端未知三层状态、精确摘要与seal/cancel/retry/delete语义；保持Drift/加密SQLite三表v1、独立业务key和环境/账号scope原字节规则。正式F1资产未改；本轮未导入业务代码、未执行Flutter/SQL/设备验收，不把后端未提交T4或历史PASS移入本分支。F3按锁选择复用源码，补未来schema拒写及删除核对回归，F4仍待最终认证候选。
 
 > **2026-10-09用户纠正／撤回重复改版：**用户明确“这种布局我上面不是已经定稿过了吗”，[刚生成的正常网格v3已撤回](ui-reviews/my-content-aligned-v3.md)。“我的”正常态沿用已定稿本人列表版式，不另做网格、不再列为待评审；F1-11记为已定布局复用，F1-14为定稿通道列表复用，F1-22为删除成功直接返回。当前19个正式PNG场景＋2个已定版式复用场景＋1个无单页返回动作，原22场景已收口，无需继续画图。正式PNG均未修改；Flutter业务／平台NOT_RUN。此前候选／缺口计数为历史。
