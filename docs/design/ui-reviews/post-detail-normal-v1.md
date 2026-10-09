@@ -1,5 +1,7 @@
 # F1-19 正文详情正常页 v1
 
+> **后续修订：**用户要求缩略图同尺寸、点开看原比例，[紧凑方格v2](post-detail-normal-v2.md)已明确批准并正式归档。下方v1保留历史，状态SUPERSEDED；当前默认阅读以v2正式图为准。
+
 日期：2026-10-09。状态：`DRAFT / SHOWN_TO_USER`。图稿：[正文详情正常页v1](../ui-drafts/post-detail-normal-v1.png)，853×1844；工具：内置imagegen。[完整提示词](post-detail-normal-v1-prompt.md)已保存。
 
 ## 依据与用户任务
