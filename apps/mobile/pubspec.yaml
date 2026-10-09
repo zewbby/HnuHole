@@ -11,9 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
   vector_math: ^2.1.4
-  characters: ^1.4.0
+  characters: 1.4.1
   crypto: 3.0.6
   cryptography: 2.7.0
+  drift: 2.35.2
+  sqlite3: 3.7.0
   hnuhole_auth_vault:
     path: ../../packages/auth_vault
   hnuhole_auth_passkey:
@@ -28,3 +30,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+# Linux 实盘测试使用现成系统库；Android/iOS 仍打包官方校验的 SQLite。
+hooks:
+  user_defines:
+    sqlite3:
+      source:
+        linux: system
+        default: sqlite3

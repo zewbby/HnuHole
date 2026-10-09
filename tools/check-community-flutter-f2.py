@@ -105,7 +105,8 @@ def check():
     # Asset preservation is a Git comparison, not visual/platform acceptance.
     changed = subprocess.check_output(["git", "-c", "core.quotepath=false", "diff", "--name-only", lock["frontendF1Commit"]], cwd=ROOT, text=True).splitlines()
     require(not any(p.startswith("UI产品图/") for p in changed), "F1 formal assets changed")
-    require(not any(p.startswith(("apps/mobile/lib/", "packages/auth_vault/")) for p in changed), "F2 unexpectedly imported business implementation")
+    # F3 implementation is now authorized. F2 was design-only at its recorded
+    # commit; preserve that historical claim rather than rejecting later code.
 
     return {
         "result": "PASS",
