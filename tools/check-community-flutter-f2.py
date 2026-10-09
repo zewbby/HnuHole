@@ -38,7 +38,13 @@ def check():
         ).strip()
         require(object_id == item["gitBlob"], "Source object mismatch: " + item["path"])
         if item["copiedToFrontend"]:
-            require((ROOT / item["path"]).read_bytes() == blob, "Snapshot differs from pinned Git bytes: " + item["path"])
+            # Apply the same Git attributes/EOL conversion as staging. A correct
+            # Windows CRLF checkout must not fail this immutable Git-blob check.
+            snapshot_id = subprocess.check_output(
+                ["git", "hash-object", "--path=" + item["path"], str(ROOT / item["path"])],
+                cwd=ROOT, text=True
+            ).strip()
+            require(snapshot_id == item["gitBlob"], "Snapshot differs from pinned Git blob: " + item["path"])
             copied.append(item["path"])
 
     api = yaml.safe_load((ROOT / "packages/openapi/post-api.yaml").read_text(encoding="utf-8"))

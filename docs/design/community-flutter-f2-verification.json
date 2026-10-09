@@ -70,7 +70,7 @@
     "docs/design/community-flutter-f2-design.md": "bfe8244731ec5840691c848481f4bf63c5bc9915ea51834a44911895335c8770",
     "docs/design/community-flutter-f2-lock.json": "749fd6f62676757b2ef7342eb19069e07e750f9c576e5d6d8a9f4eae7bc15f9e",
     "docs/design/schemas/community-posts-local-v1.sql": "ff7c70a21197f5fcfc1f2beb1d0143b0e41bb619b6ae5aeb96bd269fe0fcdad3",
-    "tools/check-community-flutter-f2.py": "0d3ecd74333eff47fd06e680c3ee1028795392b089cd6c98a2b22e951118971a",
+    "tools/check-community-flutter-f2.py": "035b8e6ff66009b6164817e9443d31676fa102dbdaf0e5295836ca7aeefe10cd",
     "packages/openapi/post-api.yaml": "4270a18b4bdb0fa094f18d12b22fa199abab5fd35a6728e24f8509734f586b09",
     "packages/post-protocol-vectors/post-command-v1.json": "928160e58630a2b4540df0dd054aae4a33698607b59a44cce630e2392b42f787",
     "packages/post-protocol-vectors/README.md": "3bd25cc115bc2570caf7ef4fe0ce77ebdb990f421652f559b8530a0092bca6d7"
@@ -80,5 +80,6 @@
     "Use random retry-buffer row keys and safely preserve legacy command/content links",
     "Apply deletion-command reconciliation fix after upstream commit or equivalent regression",
     "Validate fixed configured environment without changing existing scope bytes"
-  ]
+  ],
+  "sourceHashBasis": "Execution working-tree bytes; immutable upstream and contract snapshot identity additionally verified through Git blob IDs and Git EOL filters"
 }
