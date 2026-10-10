@@ -2,6 +2,32 @@
 
 分支 `codex/auth-privacy-handoff`。用户要求停止当前验收，提交全部认证开发、验收及排错工作，交接缓存／测试秘密，远端确认后清理本任务本地缓存。当前入口以本文和 `auth-privacy-machine-transfer-verification.json` 为准，旧文档“缓存保留／未提交”是当时历史状态。
 
+## 最终换机回执（2026-10-11）
+
+- 实现／测试／排错源码已推送：`4c40f9015095ebd84dc2b17e30e6ef7ef159321f`；本次最终回执随分支后续提交。
+- [加密归档 Release](https://github.com/zewbby/HnuHole/releases/tag/auth-machine-handoff-20261010)：7 个归档、22 个加密分片、9,254,048,479 字节。每个远端资产的 SHA-256／大小和本地认证解密／文件内容 SHA-256 均核对通过。完整清单、链接和结果在 [归档验证记录](../../services/api/authlab/auth-machine-cache-archive-verification.json)。归档成员清单与脚本位于加密 transfer-metadata；密钥单独交付。
+- Windows 原始 15,812 文件／10,880,056,025 字节完整保存；只读故障第一轮 WSL 读取有 25,324 错误，该不完整包未作为交付。修复副本后五个任务目录 45,774 文件／9,450,592,080 字节预读和恢复核对成功、错误 0。与故障时可读材料相比的 54 个版本差异另存 recovery-delta，保留最后诊断产物。
+- 数据库包含当前 C/V 两份 pg_dumpall，以及四组开发环境 8 个已停止 PostgreSQL 16.6 卷的 tar.gz 快照。所有内容仅限合成测试数据／测试秘密；不能在未知／正式库执行旧 runner。
+- 已停止本任务 C/V／代理／构建进程，删除 12 个专用容器、8 个专用卷、4 个专用网络和五个 WSL 任务缓存根。原 Ubuntu 文件系统 e2fsck 复查成功，正常以 rw 挂载；Docker Desktop 收尾停止。没有删除整个 Ubuntu／Docker VHD、SDK／AVD、其他项目资源或手机数据。
+- **Windows 文件清理未完成。** 自动审批对临时校验文件和精确任务目录删除均返回 `blocked by policy`，未提供进一步理由；包含文件清单／哈希保护的更窄命令仍被拒绝，未通过其他方式绕过。D 盘原任务缓存已可逆迁移至 C 盘暂存区，约释放 6.6 GB，不等于删除。仍有本机交接暂存目录、仓库 android-matrix／android-fault 缓存及小型 finalize 脚本。
+- [Windows 清理脚本](auth-transfer-local-cleanup-20261010.ps1) 已准备，默认仅核对远端和显示目标；实际删除需用户在原机器手动执行 `-Execute`。脚本语法解析与远端校验、目标预演均通过，删除未运行。单独密钥文件在 `C:/Users/Administrator/Documents/HnuHole-auth-archive-key-20261010.txt`，脚本保留它。先把密钥带到新机器，再处理旧机器副本。
+
+### 新机器恢复命令
+
+先拉取分支最新版并下载 Release 全部 22 个 `.enc` 分片。为下载、拼接、解密和恢复内容准备至少 60 GB 空间，另留 SDK／工具安装空间。Python 需有 `cryptography`；脚本每包先校验分片和完整包、通过 GCM 认证后才允许提取。
+
+PowerShell 示例（路径按新机器修改，解密密钥文件从单独交付取得）：
+
+```powershell
+git clone --branch codex/auth-privacy-handoff https://github.com/zewbby/HnuHole.git
+cd HnuHole
+gh release download auth-machine-handoff-20261010 --repo zewbby/HnuHole --pattern '*.enc' --dir D:\HnuHole-transfer\parts
+python -m pip install cryptography
+python tools/restore-auth-machine-archive.py --manifest services/api/authlab/auth-machine-cache-archive-verification.json --parts-directory D:\HnuHole-transfer\parts --key-file D:\HnuHole-transfer\archive-key.txt --output-directory D:\HnuHole-transfer\restored --extract
+```
+
+未安装 gh 时从 Release 页面下载所有分片，不能漏分片。WSL 缓存要进一步恢复到新机器的 Linux 文件系统；旧路径和构建 overlay 按下文修正。recovery-delta 用 mapping.json 映射 blob，只作故障版本参考，不能自动覆盖完整恢复版本。历史 finalize 脚本会重写交接，禁止盲目重跑。
+
 ## 已完成与尚未通过
 
 - AC01–AC03 已实现并有各自历史运行证据；具体实现、被测版本及影响范围见 closure checklist、模块台账和原机器记录。
@@ -41,3 +67,15 @@
 6. 取得可用实际提供方批准正向后，才集中执行 NI-D01／NI-D02／NI-D03。不能用通用取消、公开 DAL 或直接 FIDO 诊断成功把三项改为 PASS。之后安排两台实体 Android 的 X01／X02、B6收口；iOS设备／macOS及生产门槛单列。
 
 手机主 App 保留 v16 SHA `ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871`，批准隔离 App v17 SHA `7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89`。Google凭据与自动填充已按原备份恢复 vivo；Clash 全局模式需用户在手机恢复原模式。旧服务清理后这些 App 的旧本地测试端点不可用，不代表生产平台已部署。
+
+## 诊断构建镜像残留 overlay
+
+以下只涉及 WSL 专用构建镜像 `/var/tmp/hnuhole-android-live-faults-20261005/repo`，不能覆盖正式 Windows 仓库。诊断 runner 的 finally 首次恢复即遭遇 Errno 30，不能假定镜像已恢复：
+
+- debug Java Activity／Policy 原本不存在；debug manifest 原有 asset_statements，仅新增诊断 Activity。
+- `android/app/build.gradle.kts` 临时改为 acceptance applicationId 并加入 debugCompileOnly；原件在 `matrix/b3b4-build.original`。
+- `android/build.gradle.kts` 临时切换诊断 build 根；以正式仓库版本恢复。
+- main AndroidManifest 的 `.MainActivity` 临时改为完整类名；原件在 `matrix/b3b4-manifest.original`。
+- AuthVaultPlugin.kt 存在此前隔离 IO overlay，以正式仓库文件恢复；AndroidAuthVault.kt 本轮没有语义修改。
+
+四次构建均已结束：75748 离线 coroutine 依赖缺失；60246 CMake 占位失败；28665 debug APK 检查成功但 release init 无 app；9666 修复 included-build guard 后遭遇只读／I/O 故障。host JVM policy test 本轮 NOT_RUN，release 排除没有成功运行证据。复用缓存之前必须先按源码重建镜像。

@@ -23188,5 +23188,18 @@
       },
       "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
     }
+  },
+  "currentMachineTransfer": {
+    "recordedOn": "2026-10-11",
+    "sourceCommit": "4c40f9015095ebd84dc2b17e30e6ef7ef159321f",
+    "handoff": "docs/design/auth-privacy-machine-transfer-20261010.md",
+    "evidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json",
+    "archiveManifest": "services/api/authlab/auth-machine-cache-archive-verification.json",
+    "deliveryResult": "PASS_REMOTE_SOURCE_AND_ENCRYPTED_ASSET_VERIFICATION",
+    "encryptedArchives": 7,
+    "encryptedParts": 22,
+    "cleanupResult": "PARTIAL_WINDOWS_DELETE_BLOCKED_BY_AUTOMATIC_APPROVAL",
+    "functionalAcceptancePromoted": false,
+    "bookkeepingOnly": true
   }
 }
