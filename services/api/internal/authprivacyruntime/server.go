@@ -261,6 +261,24 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 		if err != nil {
 			return err
 		}
+		if c.Posts != nil {
+			commandKey, e := c.Key32(c.Posts.CommandKeyFile)
+			if e != nil {
+				return e
+			}
+			fingerprintKey, e := c.Key32(c.Posts.FingerprintKeyFile)
+			if e != nil {
+				return e
+			}
+			cursorKey, e := c.Key32(c.Posts.CursorKeyFile)
+			if e != nil {
+				return e
+			}
+			community, err = community.WithPosts(ctx, authprivacy.PostConfig{Environment: c.PublicOrigin, KeyKey: commandKey, FingerprintKey: fingerprintKey, CursorKey: cursorKey})
+			if err != nil {
+				return err
+			}
+		}
 		if c.WebAuthn != nil {
 			community, err = community.WithWebAuthn(*c.WebAuthn)
 			if err != nil {

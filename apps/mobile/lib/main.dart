@@ -81,7 +81,7 @@ void main() {
   );
 
   runApp(
-    _HnuholeApp(
+    HnuholeApp(
       directory: directory,
       repository: repository,
       api: api,
@@ -96,8 +96,12 @@ void main() {
   );
 }
 
-class _HnuholeApp extends StatefulWidget {
-  const _HnuholeApp({
+/// The production root used by main and by the real-transport integration test.
+/// Dependencies remain the shipped controllers/adapters; native ports are
+/// replaced only in the host fixture, whose proof does not cover devices.
+class HnuholeApp extends StatefulWidget {
+  const HnuholeApp({
+    super.key,
     required this.directory,
     required this.repository,
     required this.api,
@@ -122,10 +126,10 @@ class _HnuholeApp extends StatefulWidget {
   final HttpPostApi postApi;
 
   @override
-  State<_HnuholeApp> createState() => _HnuholeAppState();
+  State<HnuholeApp> createState() => _HnuholeAppState();
 }
 
-class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
+class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   final ChannelTreeSession _treeSession = ChannelTreeSession();
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -223,6 +227,7 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
             builder: (context) => SettingsScreen(
               onManageIdentity: _openIdentity,
               onManageSecurity: _openSecurity,
+              onManageAccount: _openAuth,
             ),
           ),
         )

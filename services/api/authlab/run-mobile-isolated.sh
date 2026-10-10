@@ -14,6 +14,11 @@ test -x "$AUTHLAB_MOBILE_FLUTTER" || {
     echo "Flutter executable is unavailable" >&2
     exit 1
 }
+MOBILELAB_TEST_PATTERN=${AUTHLAB_MOBILE_TEST_PATTERN:-'^TestMobileClientHTTPSPostgres$'}
+case "$MOBILELAB_TEST_PATTERN" in
+    '^TestMobileClientHTTPSPostgres$'|'^TestF4MainAppHTTPSPostgres$') ;;
+    *) echo "Unknown mobile integration pattern" >&2; exit 2 ;;
+esac
 MOBILELAB_RUN_DIR=$(mktemp -d "${TMPDIR:-/tmp}/hnuhole-mobilelab.XXXXXX")
 case "$MOBILELAB_RUN_DIR" in
     *[!A-Za-z0-9_./-]*) echo "Unsupported temporary path" >&2; exit 1 ;;
@@ -58,4 +63,4 @@ mobilelab_script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$mobilelab_script_dir/.."
 # This server SQL/log assertion precedes the separately bounded Flutter flow.
 go test -count=1 -p 1 -run '^TestPrivacyDatabaseDiagnosticsPostgres$' ./internal/authprivacy
-go test -race -count=1 -p 1 -timeout 8m -v -run '^TestMobileClientHTTPSPostgres$' ./internal/authprivacyhttp
+go test -race -count=1 -p 1 -timeout 8m -v -run "$MOBILELAB_TEST_PATTERN" ./internal/authprivacyhttp

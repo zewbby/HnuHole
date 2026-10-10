@@ -355,6 +355,9 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 			if len(items) <= 1 {
 				return reject("IDENTITY_LAST_REQUIRED")
 			}
+			if e = c.deleteIdentityPostTasks(ctx, tx, account, target.ID, final.TrustedAt); e != nil {
+				return e
+			}
 			// Preserve identity identity/ownership for later post and chat
 			// projections, while removing the private nickname immediately.
 			if _, e = tx.Exec(ctx, `UPDATE public.community_identities SET nickname=NULL,avatar=NULL,last_renamed_at=NULL,deleted_at=$3 WHERE account_id=$1 AND identity_id=$2 AND deleted_at IS NULL`, account, target.ID, final.TrustedAt); e != nil {

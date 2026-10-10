@@ -145,7 +145,7 @@ func initialize(args []string) error {
 			return err
 		}
 	}
-	for _, name := range []string{"c-network.key", "v-network.key", "c-request.key", "v-address-lock.key", "v-otp.key", "v-mail.key", "v-request-hmac.key", "v-limit.key"} {
+	for _, name := range []string{"c-network.key", "v-network.key", "c-request.key", "c-post-command.key", "c-post-fingerprint.key", "c-post-cursor.key", "v-address-lock.key", "v-otp.key", "v-mail.key", "v-request-hmac.key", "v-limit.key"} {
 		if err = randomMaterial(abs, name, false); err != nil {
 			return err
 		}
@@ -242,6 +242,7 @@ func initialize(args []string) error {
 	c.AllowedOrigins = []string{c.PublicOrigin, v.PublicOrigin}
 	v.AllowedOrigins = append([]string(nil), c.AllowedOrigins...)
 	c.RequestKeyFile = "c-request.key"
+	c.Posts = &authprivacyruntime.PostsConfig{CommandKeyFile: "c-post-command.key", FingerprintKeyFile: "c-post-fingerprint.key", CursorKeyFile: "c-post-cursor.key"}
 	c.PasswordBlocklistFile = "dev-password-blocklist.txt"
 	c.WebAuthn = webAuthn
 	c.Gate = &authprivacyruntime.GateConfig{Domain: "hnuhole-c-dev", EvidenceFile: "c-evidence.json", EvidencePublicKeyFile: "c-evidence.pub", RecoveryPublicKeyFile: "c-recovery.pub", BreakGlassPublicKeyFile: "c-breakglass.pub", AnchorFile: "c-anchor.json", AnchorKeyFile: "c-anchor.key"}

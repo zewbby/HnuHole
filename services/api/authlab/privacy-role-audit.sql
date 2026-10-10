@@ -66,6 +66,17 @@ BEGIN
           END IF;
           IF relation.nspname=own_schema AND relation.relname='authorization_gate' AND privilege IN ('INSERT','DELETE') THEN allowed := false; END IF;
           IF relation.nspname=own_schema AND relation.relname='authorization_gate_audit' AND privilege IN ('UPDATE','DELETE') THEN allowed := false; END IF;
+          -- 文字业务仍只归 C runtime；独立恢复与普通 business 不能读任务或正文。
+          IF party='c' AND relation.nspname='c_posts' THEN
+            allowed := (privilege='SELECT' AND relation.relname IN ('schema_meta','protocol_keys','account_publication_control',
+              'publication_stop_events','identity_public_labels','posts','post_identity_bindings',
+              'publication_tasks','publication_attempts','attempt_contents','command_receipts','payload_cleanup'))
+              OR (privilege='INSERT' AND relation.relname IN ('protocol_keys','account_publication_control','publication_stop_events',
+              'identity_public_labels','posts','post_identity_bindings','publication_tasks','publication_attempts',
+              'attempt_contents','command_receipts','payload_cleanup'))
+              OR (privilege='UPDATE' AND relation.relname IN ('account_publication_control','posts','publication_tasks',
+              'publication_attempts','attempt_contents','command_receipts','payload_cleanup'));
+          END IF;
         END IF;
         IF granted AND NOT allowed THEN RAISE EXCEPTION 'operational role acquired noncontract table privilege'; END IF;
       END LOOP;
@@ -77,6 +88,8 @@ BEGIN
       FOREACH privilege IN ARRAY ARRAY['USAGE','SELECT','UPDATE'] LOOP
         allowed := privilege='USAGE' AND relation.nspname=own_schema AND
           (audit_role=runtime_role OR (audit_role=recovery_role AND relation.relname='authorization_gate_audit_event_id_seq'));
+        allowed := allowed OR (party='c' AND audit_role=runtime_role AND privilege='USAGE'
+          AND relation.nspname='c_posts' AND relation.relname IN ('publication_ordinal_seq','acceptance_ordinal_seq'));
         IF has_sequence_privilege(audit_role,relation.oid,privilege) AND NOT allowed THEN RAISE EXCEPTION 'operational role acquired noncontract sequence privilege'; END IF;
       END LOOP;
     END LOOP;

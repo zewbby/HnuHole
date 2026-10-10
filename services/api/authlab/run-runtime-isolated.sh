@@ -109,14 +109,22 @@ PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migra
 python3 - "$runtime_repo_dir/infra/postgres/grant-community.sql" "$runtime_dir/grant-pre-identity.sql" <<'PY'
 import pathlib,sys
 source=pathlib.Path(sys.argv[1]).read_text()
+source=source.split('-- 文字发布与认证共享最终事务',1)[0]
 pathlib.Path(sys.argv[2]).write_text('\n'.join(line for line in source.splitlines()
  if not any(table in line for table in ('public.identity_account_state','public.community_identities','public.identity_change_receipts')))+'\n')
 PY
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_dir/grant-pre-identity.sql" >/dev/null
 if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/identity-version-negative.log" 2>&1; then echo 'Pre-identity schema startup unexpectedly accepted' >&2; exit 1; fi
 PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migrator" up-to 11 >/dev/null
-PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_repo_dir/infra/postgres/grant-community.sql" >/dev/null
+python3 - "$runtime_repo_dir/infra/postgres/grant-community.sql" "$runtime_dir/grant-pre-posts.sql" <<'PY'
+import pathlib,sys
+pathlib.Path(sys.argv[2]).write_text(pathlib.Path(sys.argv[1]).read_text().split('-- 文字发布与认证共享最终事务',1)[0])
+PY
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_dir/grant-pre-posts.sql" >/dev/null
 if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/identity-close-version-negative.log" 2>&1; then echo 'Pre-account-closure schema startup unexpectedly accepted' >&2; exit 1; fi
+PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migrator" up-to 12 >/dev/null
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_dir/grant-pre-posts.sql" >/dev/null
+if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/posts-version-negative.log" 2>&1; then echo 'Pre-text schema startup unexpectedly accepted' >&2; exit 1; fi
 PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migrator" up >/dev/null
 # V version 3 existed without an independent Gate. Apply only its historical
 # grants so the negative proves the actual 3 -> 4 startup requirement.
@@ -145,6 +153,29 @@ PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migra
 PGPASSWORD=$V_MIGRATOR_PASSWORD goose -dir verifier-migrations postgres "$runtime_v_migrator" up >/dev/null
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_repo_dir/infra/postgres/grant-community.sql" >/dev/null
 PGPASSWORD=$V_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_v_migrator" -f "$runtime_repo_dir/infra/postgres/grant-verifier.sql" >/dev/null
+# 文字迁移与最小权限必须由实际 cmd 启动检查拒绝，不能只检查 grant 文件文本。
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c 'ALTER TABLE c_posts.attempt_contents RENAME TO attempt_contents_temporarily_absent' >/dev/null
+if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/posts-table-negative.log" 2>&1; then echo 'Missing text content table startup unexpectedly accepted' >&2; exit 1; fi
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c 'ALTER TABLE c_posts.attempt_contents_temporarily_absent RENAME TO attempt_contents' >/dev/null
+for runtime_post_negative in insert update excess; do
+ case "$runtime_post_negative" in
+  insert) runtime_post_sql='REVOKE INSERT ON c_posts.publication_attempts FROM hnuhole_c_runtime' ;;
+  update) runtime_post_sql='REVOKE UPDATE(state) ON c_posts.publication_attempts FROM hnuhole_c_runtime' ;;
+  excess) runtime_post_sql='GRANT DELETE ON c_posts.command_receipts TO hnuhole_c_runtime' ;;
+ esac
+ PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c "$runtime_post_sql" >/dev/null
+ if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/posts-privilege-negative.log" 2>&1; then echo 'Invalid text DML privileges startup unexpectedly accepted' >&2; exit 1; fi
+ PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_repo_dir/infra/postgres/grant-community.sql" >/dev/null
+done
+python3 - "$runtime_material/c.json" <<'PY'
+import json,pathlib,sys
+config=json.loads(pathlib.Path(sys.argv[1]).read_text())
+config['posts']['cursorKeyFile']=config['posts']['commandKeyFile']
+# 路径仍相对于材料目录解析，因此配置放在同一私有目录。
+path=pathlib.Path(sys.argv[1]).parent/'c-reused-post-key.json'
+path.write_text(json.dumps(config))
+PY
+if "$runtime_dir/community" -config "$runtime_material/c-reused-post-key.json" >"$runtime_dir/posts-key-negative.log" 2>&1; then echo 'Reused text key startup unexpectedly accepted' >&2; exit 1; fi
 # AC03: audit actual runtime/recovery/business roles in each private cluster.
 for runtime_privacy_party in c v; do
  if [ "$runtime_privacy_party" = c ]; then runtime_privacy_service=community-postgres; runtime_privacy_binary=community; else runtime_privacy_service=verifier-postgres; runtime_privacy_binary=verifier; fi
@@ -286,13 +317,30 @@ SQL
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c "\copy (SELECT * FROM public.community_identities WHERE account_id<>'00000000-0000-4000-8000-000000000012'::uuid OR deleted_at IS NOT NULL ORDER BY identity_id) TO STDOUT CSV" >"$runtime_dir/identity-close-profiles-before.csv"
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM public.identity_account_state ORDER BY account_id) TO STDOUT CSV' >"$runtime_dir/identity-close-counters-before.csv"
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM public.identity_change_receipts ORDER BY account_id,change_key_digest) TO STDOUT CSV' >"$runtime_dir/identity-close-receipts-before.csv"
-PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_upgrade" up >/dev/null
+PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_upgrade" up-to 12 >/dev/null
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c "\copy (SELECT * FROM public.community_identities WHERE identity_id<>'10000000-0000-4000-8000-000000000012'::uuid ORDER BY identity_id) TO STDOUT CSV" >"$runtime_dir/identity-close-profiles-after.csv"
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM public.identity_account_state ORDER BY account_id) TO STDOUT CSV' >"$runtime_dir/identity-close-counters-after.csv"
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM public.identity_change_receipts ORDER BY account_id,change_key_digest) TO STDOUT CSV' >"$runtime_dir/identity-close-receipts-after.csv"
 cmp "$runtime_dir/identity-close-profiles-before.csv" "$runtime_dir/identity-close-profiles-after.csv"
 cmp "$runtime_dir/identity-close-counters-before.csv" "$runtime_dir/identity-close-counters-after.csv"
 cmp "$runtime_dir/identity-close-receipts-before.csv" "$runtime_dir/identity-close-receipts-after.csv"
+# 12→13 回填独立公开编号与 publication control，不改认证、身份和永久回执。
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM c_auth.accounts ORDER BY account_id) TO STDOUT CSV' >"$runtime_dir/posts-upgrade-accounts-before.csv"
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM public.community_identities ORDER BY identity_id) TO STDOUT CSV' >"$runtime_dir/posts-upgrade-identities-before.csv"
+PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_upgrade" up >/dev/null
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM c_auth.accounts ORDER BY account_id) TO STDOUT CSV' >"$runtime_dir/posts-upgrade-accounts-after.csv"
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" -c '\copy (SELECT * FROM public.community_identities ORDER BY identity_id) TO STDOUT CSV' >"$runtime_dir/posts-upgrade-identities-after.csv"
+cmp "$runtime_dir/posts-upgrade-accounts-before.csv" "$runtime_dir/posts-upgrade-accounts-after.csv"
+cmp "$runtime_dir/posts-upgrade-identities-before.csv" "$runtime_dir/posts-upgrade-identities-after.csv"
+PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" >/dev/null <<'SQL'
+DO $$ BEGIN
+ IF (SELECT count(*) FROM c_posts.account_publication_control)<>(SELECT count(*) FROM c_auth.accounts)
+  OR (SELECT count(*) FROM c_posts.identity_public_labels)<>(SELECT count(*) FROM public.community_identities)
+  OR EXISTS(SELECT 1 FROM c_posts.identity_public_labels WHERE short_code !~ '^[A-Z2-7]{12}$')
+  OR EXISTS(SELECT 1 FROM c_posts.publication_tasks) OR EXISTS(SELECT 1 FROM c_posts.posts)
+  THEN RAISE EXCEPTION 'text migration backfill or preserved state invalid'; END IF;
+END $$;
+SQL
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_upgrade" >/dev/null <<'SQL'
 DO $$ BEGIN
  IF EXISTS(SELECT 1 FROM public.community_identities i JOIN c_auth.accounts a USING(account_id) WHERE a.state='CLOSED' AND i.deleted_at IS NULL)
@@ -402,11 +450,13 @@ test "$runtime_peer_status" = 405
 "$runtime_dir/authdev" watch -operator "$runtime_material/operator/v-operator.json" >"$runtime_dir/v-evidence.log" 2>&1 & runtime_v_evidence_pid=$!
 runtime_probe lifecycle
 runtime_probe identities
+runtime_probe posts
 runtime_probe threshold
 runtime_stop
 runtime_start
 runtime_health
 runtime_probe restart
+runtime_probe posts-restart
 # Stop V evidence renewal around each explicit recovery/snapshot rehearsal so
 # it cannot race the operator. C continues independently throughout.
 kill "$runtime_v_evidence_pid"
@@ -469,4 +519,4 @@ runtime_stop
 docker compose -p "$runtime_project" -f "$runtime_compose" logs --no-color community-postgres >"$runtime_dir/privacy-pg-c.log"
 docker compose -p "$runtime_project" -f "$runtime_compose" logs --no-color verifier-postgres >"$runtime_dir/privacy-pg-v.log"
 python3 "$runtime_api_dir/authlab/privacy-diagnostics-canary.py" verify "$runtime_dir"
-printf '%s\n' '{"privacyRoleMatrix":"passed","privacyUnsafeDatabaseDiagnosticsRejected":"passed","privacyRealProcessAndPostgresLogs":"passed","actualCmdLifecycle":"passed","formalMigrationAndRoles":"passed","upgradeChannelsPreserved":"passed","identityUpgrade10To11":"passed","identityClosureUpgrade11To12":"passed","identityLegacyClosedProfileRepair":"passed","identityClosureTriggerBoundary":"passed","identityMissingSchemaAndDml":"passed","identityCrudReceiptsAndRestart":"passed","identityClosureAndSameEmailNewAccount":"passed","inactiveProjectionPureContract":"passed","verifierGateUpgrade3To4":"passed","verifierGateFreezeRestartAndRecovery":"passed","verifierOldSnapshotBlocked":"passed","verifierOldGenerationOtpBlocked":"passed","verifierIndependentEvidenceExpiry":"passed","cleanup":"this invocation project and private directory only"}'
+printf '%s\n' '{"privacyRoleMatrix":"passed","privacyUnsafeDatabaseDiagnosticsRejected":"passed","privacyRealProcessAndPostgresLogs":"passed","actualCmdLifecycle":"passed","formalMigrationAndRoles":"passed","upgradeChannelsPreserved":"passed","identityUpgrade10To11":"passed","identityClosureUpgrade11To12":"passed","identityLegacyClosedProfileRepair":"passed","identityClosureTriggerBoundary":"passed","identityMissingSchemaAndDml":"passed","identityCrudReceiptsAndRestart":"passed","identityClosureAndSameEmailNewAccount":"passed","inactiveProjectionPureContract":"passed","textUpgrade12To13":"passed","textMissingSchemaAndRequiredDml":"passed","textExcessPrivilegeAndReusedKeyRejected":"passed","textActualHttpsWorkerSqlAndRestart":"passed","textUnknownSealAndDurableContentRejection":"passed","textClosureProjectionAndNewAccountIsolation":"passed","verifierGateUpgrade3To4":"passed","verifierGateFreezeRestartAndRecovery":"passed","verifierOldSnapshotBlocked":"passed","verifierOldGenerationOtpBlocked":"passed","verifierIndependentEvidenceExpiry":"passed","cleanup":"this invocation project and private directory only"}'

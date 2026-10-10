@@ -148,6 +148,9 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 		t.Fatal(err)
 	}
 	if schema == "c_auth" {
+		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_posts CASCADE`); err != nil {
+			t.Fatal(err)
+		}
 		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.identity_account_state, public.community_identities, public.sessions, public.channels CASCADE`); err != nil {
 			t.Fatal(err)
 		}
@@ -347,6 +350,8 @@ func e2eNewServices(t *testing.T) *e2eServices {
 	if err != nil {
 		t.Fatal(err)
 	}
+	s.c, err = s.c.WithPosts(context.Background(), authprivacy.PostConfig{Environment:"lab",KeyKey:e2eKey(t),FingerprintKey:e2eKey(t),CursorKey:e2eKey(t)})
+	if err != nil { t.Fatal(err) }
 	vGatePoolConfig := s.vp.Config()
 	vGatePoolConfig.MaxConns = 4
 	vGatePool, err := pgxpool.NewWithConfig(context.Background(), vGatePoolConfig)

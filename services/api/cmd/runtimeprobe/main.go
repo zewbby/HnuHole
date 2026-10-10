@@ -34,6 +34,7 @@ type probe struct {
 	c, v, mailpit string
 	https, local  *http.Client
 	statePath     string
+	httpsRequests int
 }
 type state struct {
 	Email                       string            `json:"email,omitempty"`
@@ -45,6 +46,7 @@ type state struct {
 	IdentityReceiptKey          string            `json:"identityReceiptKey,omitempty"`
 	VerifierConfirmationBody    map[string]string `json:"verifierConfirmationBody,omitempty"`
 	VerifierConfirmationHeaders map[string]string `json:"verifierConfirmationHeaders,omitempty"`
+	Posts                       *postProbeState   `json:"posts,omitempty"`
 }
 
 func main() {
@@ -53,7 +55,7 @@ func main() {
 	ca := flag.String("ca", "", "development trust root PEM")
 	mailpit := flag.String("mailpit", "", "isolated Mailpit loopback origin")
 	statePath := flag.String("state", "", "private disposable state file")
-	phase := flag.String("phase", "lifecycle", "lifecycle, identities, threshold, restart, frozen, recovered, closure, verifier-stage, verifier-frozen, verifier-recovered")
+	phase := flag.String("phase", "lifecycle", "lifecycle, identities, posts, posts-restart, threshold, restart, frozen, recovered, closure, verifier-stage, verifier-frozen, verifier-recovered")
 	flag.Parse()
 	if os.Getenv("AUTHRUNTIME_ISOLATED") != "1" || flag.NArg() != 0 {
 		die(errors.New("runtimeprobe requires explicitly isolated development runner"))
@@ -87,7 +89,7 @@ func main() {
 		die(err)
 	}
 	// Small evidence contains no account, mailbox, token, password or OTP.
-	_ = json.NewEncoder(os.Stdout).Encode(map[string]string{"phase": *phase, "result": "passed"})
+	_ = json.NewEncoder(os.Stdout).Encode(map[string]any{"phase": *phase, "result": "passed", "httpsRequests": p.httpsRequests})
 }
 func die(err error) { fmt.Fprintln(os.Stderr, err); os.Exit(1) }
 func localOrigin(raw, scheme string) bool {
@@ -129,6 +131,7 @@ func (p *probe) request(ctx context.Context, method, origin, path string, body a
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}
+	p.httpsRequests++
 	response, err := p.https.Do(req)
 	if err != nil {
 		return nil, nil, errors.New("probe HTTPS transport failed")
@@ -269,6 +272,13 @@ func (p *probe) run(ctx context.Context, phase string) error {
 		return err
 	}
 	switch phase {
+	case "posts":
+		if err = p.posts(ctx, &s); err != nil {
+			return err
+		}
+		return p.save(s)
+	case "posts-restart":
+		return p.postsRestart(ctx, s)
 	case "verifier-stage":
 		if err = p.verifierStage(ctx, &s); err != nil {
 			return err
@@ -305,12 +315,18 @@ func (p *probe) run(ctx context.Context, phase string) error {
 			return err
 		}
 		_, _, err = p.request(ctx, "GET", p.c, identitiesPath, nil, map[string]string{"Authorization": "Bearer " + s.Token}, 503)
-		return err
+		if err != nil {
+			return err
+		}
+		return p.postGateRead(ctx, s, 503)
 	case "recovered":
 		if _, err = p.directory(ctx, s.Token, 401); err != nil {
 			return err
 		}
 		if _, _, err = p.request(ctx, "GET", p.c, identitiesPath, nil, map[string]string{"Authorization": "Bearer " + s.Token}, 401); err != nil {
+			return err
+		}
+		if err = p.postGateRead(ctx, s, 401); err != nil {
 			return err
 		}
 		s, err = p.login(ctx, s)
@@ -319,6 +335,11 @@ func (p *probe) run(ctx context.Context, phase string) error {
 		}
 		if err = p.identitySnapshot(ctx, s); err != nil {
 			return err
+		}
+		if s.Posts != nil {
+			if err = p.postsRestart(ctx, s); err != nil {
+				return err
+			}
 		}
 		return p.save(s)
 	default:
@@ -672,6 +693,10 @@ func (p *probe) closure(ctx context.Context, s state) error {
 	if _, err = tx.Exec(ctx, `INSERT INTO c_auth.closure_requests(closure_id,account_id,status_digest,request_generation,due_at,state)
         VALUES($1,$2::uuid,$3,$4,clock_timestamp()-interval '1 second','PENDING')`, fixtureBytes, account, statusDigest[:], generation); err != nil {
 		return errors.New("cannot insert synthetic due closure")
+	}
+	// 此夹具已有文字任务时，也必须遵守同事务 stop hook，不能绕过正式迁移约束。
+	if err = p.postSyntheticClosureStop(ctx, tx, account); err != nil {
+		return err
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return errors.New("cannot commit due closure fixture")
