@@ -1,0 +1,240 @@
+{
+  "schemaVersion": "hnuhole-community-flutter-f4-verification/v1",
+  "recordedOn": "2026-10-10",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/community-flutter-pages",
+  "implementationCommit": "68d35af745098be0ed52d0d448f290795665afa1",
+  "testedSnapshotBaseCommit": "d44c5ebe83b5fb20727f3d0d040d7ff93364a265",
+  "testedWithUncommittedImplementation": true,
+  "snapshotMatchesImplementationCommit": true,
+  "snapshotMatchScope": "Final main/settings/Dart fixture/Go fixture compared against tested Linux copy;279 committed source text hashes verified. Earlier mobile308/full-server fixture revisions have separate scope below.",
+  "backendCandidate": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+  "authenticationBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "finalAuthenticationCandidate": null,
+  "stage": "F4_PINNED_BASELINE_HOST_SLICE_COMPLETE",
+  "scopedMainResult": "PASS",
+  "finalF4Result": "BLOCKED_DEPENDENCY",
+  "fullModuleAcceptance": "NOT_RUN",
+  "productionApproval": "NOT_RUN",
+  "sourceFingerprint": {
+    "path": "docs/design/community-flutter-f4-source-fingerprint.json",
+    "sha256": "e42251dfc18b1f718cac19e5b86b5aa8c36ce08b019a9c6c7466a0682f411174",
+    "fileCount": 279
+  },
+  "sourceProvenance": "docs/design/community-flutter-f4-lock.json",
+  "report": "docs/design/community-flutter-f4-report.md",
+  "machineHandoff": "docs/design/community-flutter-f4-machine-handoff.md",
+  "plan": "docs/design/community-flutter-f4-plan.md",
+  "environment": {
+    "host": "Windows/WSL2 Ubuntu-24.04 non-root UID1000",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "go": "1.22.2",
+    "postgresql": "16.15",
+    "database": "fresh own C/V PG fixture only; no external DSN",
+    "tls": "actual loopback TLS handlers and internal mTLS; explicit mobile test CA, normal certificate verification",
+    "storage": "actual file SQLite; host auth/key file ports instead of native vaults",
+    "closingScope": "CLOSED_RELEASE_PENDING callback closes/purges SQLite content and records encrypted CLOSED tombstone; host key/file deletion is not tested"
+  },
+  "checks": [
+    {
+      "id": "F4-H01",
+      "result": "PASS",
+      "scope": "生产 HnuholeApp 根页面：真实注册前置后退出，实际登录表单登录并进入通道树",
+      "affectedModules": [
+        "A02",
+        "A03"
+      ]
+    },
+    {
+      "id": "F4-H02",
+      "result": "PASS",
+      "scope": "我的→设置→账号与安全／身份管理，既有账号页面与原身份可达",
+      "affectedModules": [
+        "B02",
+        "B10",
+        "A08"
+      ]
+    },
+    {
+      "id": "F4-H03",
+      "result": "PASS",
+      "scope": "编辑→确认→原身份→提交回包丢失→原通道；原 CREATE commandId/digest 落盘，未知查询不重发",
+      "affectedModules": [
+        "A06",
+        "A12",
+        "B05"
+      ]
+    },
+    {
+      "id": "F4-H04",
+      "result": "PASS",
+      "scope": "两个独立主机 Flutter 进程，恢复同一 SQLite 草稿和原命令；核对服务端任务及固定身份",
+      "affectedModules": [
+        "A12",
+        "N01",
+        "B02",
+        "B05",
+        "B10"
+      ]
+    },
+    {
+      "id": "F4-H05",
+      "result": "PASS",
+      "scope": "真实 worker 公开后列表／我的→正文详情；DELETE 回包丢失，核对同一原命令，写 DELETED 后清正文并返回",
+      "affectedModules": [
+        "B03",
+        "B06",
+        "B10"
+      ]
+    },
+    {
+      "id": "F4-H06",
+      "result": "PASS",
+      "scope": "C 冻结停访问；代次恢复拒绝旧会话，明确重登恢复 A 草稿；新设备接替后 retry 拒绝旧会话",
+      "affectedModules": [
+        "A03",
+        "A06",
+        "A07",
+        "A12"
+      ]
+    },
+    {
+      "id": "F4-H07",
+      "result": "PASS",
+      "scope": "退出 A 后真实注册 B；B 不继承 A 的草稿、待核对项或删除事实；CREATE／DELETE 都只发一次",
+      "affectedModules": [
+        "A12",
+        "N01",
+        "B10"
+      ]
+    },
+    {
+      "id": "F4-H08",
+      "result": "PASS",
+      "scope": "生产注销表单申请 B 注销；可信测试时间前进七天，真实 worker 闭号；SQLite 关闭墓碑拒重开 B，保留 A 草稿",
+      "affectedModules": [
+        "A08",
+        "A12",
+        "N01",
+        "B02",
+        "B10"
+      ]
+    },
+    {
+      "id": "F4-SERVER",
+      "result": "PASS",
+      "command": "tools/run-community-flutter-f4-linux.sh server",
+      "scope": "full Go/owned fresh SQL/race/vet before final fixture edits;6 tested packages, imported production Go/SQL unchanged afterward; opt-in mobile tests skipped here",
+      "currentFinalFixtureVet": "NOT_RUN"
+    },
+    {
+      "id": "F4-MAIN",
+      "result": "PASS",
+      "command": "tools/run-community-flutter-f4-linux.sh integration",
+      "scope": "final actual root/source; Go race wrapper plus2 host Flutter processes;8 checkpoints and independent SQL/count assertions",
+      "counts": {
+        "bindings": 1,
+        "committedResponseDrops": 2,
+        "creates": 1,
+        "deletedPosts": 1,
+        "deletes": 1,
+        "posts": 1,
+        "queryDrops": 2,
+        "tasks": 1
+      }
+    },
+    {
+      "id": "F4-MOBILE-EARLIER",
+      "result": "PASS",
+      "command": "tools/run-community-flutter-f4-linux.sh checks",
+      "scope": "Earlier snapshot before settings account-entry fix; analyzed0 issues,308 PASS/20 files observed; final regression remains BLOCKED",
+      "testsPassed": 308,
+      "isFinalSnapshotProof": false
+    }
+  ],
+  "unexecuted": [
+    {
+      "id": "FP14_FINAL_AUTH",
+      "result": "BLOCKED",
+      "reason": "Auth branch remote and local HEAD still0eff47a; final auth work remains uncommitted in another active chat",
+      "next": "Obtain final auth commit; inspect and reconcile main/auth/session/closure/native/manifest/SQL differences, then rerun current branch checks and actual chain"
+    },
+    {
+      "id": "FINAL_MOBILE_ANALYZE_AND_308",
+      "result": "BLOCKED",
+      "reason": "After final account-settings route addition, rerun stopped before tests: WSL realpath/ln segfault, then writes failed errno30 emergency_ro; raw earlier machine log read errno5",
+      "next": "On new writable Linux environment run runner checks; do not use earlier308 as final full regression"
+    },
+    {
+      "id": "R05_AUTH_REGRESSION_AND_FINAL_VET",
+      "result": "NOT_RUN",
+      "reason": "Final checks batch stopped before auth-regression/final vet; no completed execution evidence",
+      "next": "Run runner auth-regression and go vet on final source"
+    },
+    {
+      "id": "F5_NATIVE_AND_DEVICES",
+      "result": "NOT_RUN",
+      "reason": "Host ports substitute vault; no current APK/native7/cross-process/IME/reader/physical Android/iOS run",
+      "next": "Use existing F5 source and scoped device plan; no SDK/AVD cache copied"
+    },
+    {
+      "id": "ACTUAL_CMD_ROLES_UPGRADE_PRODUCTION",
+      "result": "NOT_RUN",
+      "reason": "Actual HTTPS handler/Gate fixtures with fresh owned PG do not prove deployed cmd/minimum roles/production forward-upgrade/operations",
+      "next": "Run applicable owned runtime/upgrade checks and independent production evidence"
+    },
+    {
+      "id": "AUTO_POLL_AND_NATIVE_BOOTSTRAP",
+      "result": "NOT_RUN",
+      "reason": "Test mounts production HnuholeApp root with host dependencies; pollInterval=0 uses explicit/response-triggered reconciliation; native main() bootstrap not executed",
+      "next": "F5 current full App/native lifecycle validation"
+    }
+  ],
+  "affectedModules": [
+    "A00",
+    "A01",
+    "A02",
+    "A03",
+    "A06",
+    "A07",
+    "A08",
+    "A12",
+    "N01",
+    "B02",
+    "B03",
+    "B05",
+    "B06",
+    "B10"
+  ],
+  "crossModuleScenes": [
+    "X06",
+    "X07"
+  ],
+  "crossModuleProof": "Partial text/closure boundary only; entire X06/X07 not passed",
+  "failureAndRepairNotes": [
+    "Initial host fixture selector/timing assumptions corrected to actual widgets and original SQLite command facts; no content-based correlation",
+    "Gate recovery fixture corrected to existing rule: new generation invalidates old sessions; explicit fresh login",
+    "Actual source navigation gap repaired: My Settings now links existing account/safety page",
+    "Final rerun and cache removal blocked by WSL host filesystem failure; no pass claimed for aborted checks"
+  ],
+  "cleanup": {
+    "result": "BLOCKED",
+    "ownedLinuxRoot": "/tmp/hnuhole-community-flutter-f4-01a11f1a-20261010",
+    "reason": "WSL ext4 emergency_ro; guarded shutil.rmtree returned errno30 Read-only file system",
+    "ownedProcesses": 0,
+    "ownedPostgresDirectories": 0,
+    "windowsTaskCaches": "NOT_CREATED",
+    "sharedSDKAndOtherTaskResources": "PRESERVED",
+    "followUp": "Restore WSL writable filesystem separately, then delete only the owner-checked task root; no global shutdown/remount/prune performed"
+  },
+  "publicationDelivery": {
+    "state": "NORMAL_BRANCH_PUSH",
+    "sourceCommit": "68d35af745098be0ed52d0d448f290795665afa1",
+    "branch": "codex/community-flutter-pages",
+    "remote": "https://github.com/zewbby/HnuHole.git",
+    "handoffCommit": "Use branch Git history; documentation commit follows source commit",
+    "finalRemoteComparison": "Required after this handoff commit; reported in final task response",
+    "deployment": "NOT_RUN"
+  }
+}

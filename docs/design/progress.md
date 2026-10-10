@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-10 F4换机交接：**源码`68d35af`已完成固定后端接入，生产根路由真实HTTPS／独立PG／文件SQLite的8项主机检查PASS，补设置“账号与安全”入口。见[报告](community-flutter-f4-report.md)、[机器记录](community-flutter-f4-verification.json)和[换机入口](community-flutter-f4-machine-handoff.md)。F4最终认证候选／FP14仍BLOCKED；早期mobile0问题／308PASS不代证最终全量，最终checks／R05／vet因WSL emergency_ro未完成。F5原生／设备／iOS未跑。一次性PG与进程已结束，但本任务Linux缓存删除errno30、清理BLOCKED；不带缓存换机，不动其他会话。旧F3及认证记录保留原版本与范围。
+
 > **2026-10-09 F3 当前交付：**文字页面、主导航、controller与加密SQLite状态已完成，源码`eb6c914`；[实现报告](community-flutter-f3-report.md)、[机器记录](community-flutter-f3-verification.json)和[实际Flutter复审](ui-reviews/community-flutter-f3-ui-review.md)固定当前证据。完整mobile分析0问题、308项PASS（SQLite30／controller34／screens23含14帧）；F1正式图未改。补未来版本拒绝、旧retry随机迁移、删除丢响应／切账号围栏及Android闭号多engine临界区。真实C/V／SQL整合、Android原生7项／构建／跨进程／设备、iOS及物理UX仍NOT_RUN；下一阶段F4固定最终认证候选，F5另行平台验收。scoped PASS不代证整模块或生产通过；下方F2及认证旧结果均为历史版本。
 
 > **2026-10-09 F2契约／存储设计完成：**见[F2设计](community-flutter-f2-design.md)、[版本锁](community-flutter-f2-lock.json)及[静态记录](community-flutter-f2-verification.json)。基于已发布后端514a944固定14操作、命令/任务/客户端未知三层状态、精确摘要与seal/cancel/retry/delete语义；保持Drift/加密SQLite三表v1、独立业务key和环境/账号scope原字节规则。正式F1资产未改；本轮未导入业务代码、未执行Flutter/SQL/设备验收，不把后端未提交T4或历史PASS移入本分支。F3按锁选择复用源码，补未来schema拒写及删除核对回归，F4仍待最终认证候选。

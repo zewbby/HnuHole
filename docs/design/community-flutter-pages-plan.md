@@ -1,5 +1,7 @@
 # Flutter 社区文字发帖与浏览页面实施计划
 
+> **2026-10-10 F4换机交接：**源码`68d35af`已完成固定后端接入，生产根路由真实HTTPS／独立PG／文件SQLite的8项主机检查PASS，补设置“账号与安全”入口。见[报告](community-flutter-f4-report.md)、[机器记录](community-flutter-f4-verification.json)和[换机入口](community-flutter-f4-machine-handoff.md)。F4最终认证候选／FP14仍BLOCKED；早期mobile0问题／308PASS不代证最终全量，最终checks／R05／vet因WSL emergency_ro未完成。F5原生／设备／iOS未跑。一次性PG与进程已结束，但本任务Linux缓存删除errno30、清理BLOCKED；不带缓存换机，不动其他会话。旧F3及认证记录保留原版本与范围。
+
 > **2026-10-09 F3 当前交付：**文字页面、主导航、controller与加密SQLite状态已完成，源码`eb6c914`；[实现报告](community-flutter-f3-report.md)、[机器记录](community-flutter-f3-verification.json)和[实际Flutter复审](ui-reviews/community-flutter-f3-ui-review.md)固定当前证据。完整mobile分析0问题、308项PASS（SQLite30／controller34／screens23含14帧）；F1正式图未改。补未来版本拒绝、旧retry随机迁移、删除丢响应／切账号围栏及Android闭号多engine临界区。真实C/V／SQL整合、Android原生7项／构建／跨进程／设备、iOS及物理UX仍NOT_RUN；下一阶段F4固定最终认证候选，F5另行平台验收。scoped PASS不代证整模块或生产通过；下方F2及认证旧结果均为历史版本。
 
 > **2026-10-09 F2契约／存储设计完成：**见[F2设计](community-flutter-f2-design.md)、[版本锁](community-flutter-f2-lock.json)及[静态记录](community-flutter-f2-verification.json)。基于已发布后端514a944固定14操作、命令/任务/客户端未知三层状态、精确摘要与seal/cancel/retry/delete语义；保持Drift/加密SQLite三表v1、独立业务key和环境/账号scope原字节规则。正式F1资产未改；本轮未导入业务代码、未执行Flutter/SQL/设备验收，不把后端未提交T4或历史PASS移入本分支。F3按锁选择复用源码，补未来schema拒写及删除核对回归，F4仍待最终认证候选。
@@ -10,7 +12,7 @@
 
 日期：2026-10-08建立，2026-10-09更新（Asia/Shanghai）。分支：`codex/community-flutter-pages`；起点 `0eff47a21cd4f4ab1636b4468f7d5df9769a264f`。
 
-状态：`F3_IMPLEMENTATION_COMPLETE / F3_SCOPED_CHECKS_PASS / F4_INTEGRATION_PENDING`。F1/F2已收口，文字片源码已完成并有本分支host／SQLite／widget运行证据；完整系统／平台验收仍为`NOT_RUN`。认证分支、后端工作树、原设备与服务环境均独立保留。
+状态：`F3_IMPLEMENTATION_COMPLETE / F4_PINNED_BASELINE_HOST_PASS / F4_FINAL_AUTH_BLOCKED`。最终现状以顶部F4交接与专用机器记录为准，下方F3状态保留历史。F1/F2已收口，文字片源码已完成并有本分支host／SQLite／widget运行证据；完整系统／平台验收仍为`NOT_RUN`。认证分支、后端工作树、原设备与服务环境均独立保留。
 
 F1最新决定：2026-10-09用户认可[F1-19统一缩略图正常阅读v2](ui-reviews/post-detail-normal-v2.md)，随后要求“画完剩下的”。[F1-20身份停用／F1-21本人删除确认](ui-reviews/post-detail-states-v1.md)已展示并按既定无意见规则归档；用户取消F1-22独立已删除页，确认且删除成功直接返回上一级来源页。原22个设计场景均已有处理：21个页面场景已有设计（19正式PNG＋F1-11／14两已定版式复用场景），F1-22为无需独立图的返回动作。没有尚未绘制的独立页面；旧已删除图保留历史，不是当前交付或默认路由。用户最新纠正已明确“我的”布局定稿；F1-11正常态复用该布局，F1-14返回复用通道列表，二者不再列为绘图候选。
 
