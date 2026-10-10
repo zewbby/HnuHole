@@ -24,16 +24,21 @@ class _Vault implements AuthVault {
 
 class _Channels implements ChannelRepository {
   @override
-  Future<ChannelDirectoryResult> loadChannels({required String sessionToken}) async => ChannelDirectoryResult(expiresAt: _expiry, channels: [
-    for (var i = 0; i < ChannelDirectory.requiredCodes.length; i++)
-      Channel(
-        id: 'channel-$i',
-        code: ChannelDirectory.requiredCodes[i],
-        name: ChannelDirectory.requiredCodes[i],
-        initiallyVisible: i < 5,
-        displayOrder: i,
-      ),
-  ]);
+  Future<ChannelDirectoryResult> loadChannels({
+    required String sessionToken,
+  }) async => ChannelDirectoryResult(
+    expiresAt: _expiry,
+    channels: [
+      for (var i = 0; i < ChannelDirectory.requiredCodes.length; i++)
+        Channel(
+          id: 'channel-$i',
+          code: ChannelDirectory.requiredCodes[i],
+          name: ChannelDirectory.requiredCodes[i],
+          initiallyVisible: i < 5,
+          displayOrder: i,
+        ),
+    ],
+  );
 }
 
 class _Api implements AuthApi {
@@ -273,29 +278,90 @@ Future<void> _seedEligibility(_Harness h) async {
 }
 
 void main() {
-  testWidgets('restoring a covered auth route cannot pop the management route above it', (tester) async {
-    final h = _Harness();
-    await h.sessions.start();
-    final navigator = GlobalKey<NavigatorState>();
-    var callbacks = 0;
-    await tester.pumpWidget(MaterialApp(navigatorKey: navigator,
-      home: AuthScreen(sessions: h.sessions, flows: h.flows,
-        onAuthenticated: () { callbacks++; navigator.currentState!.pop(); })));
-    unawaited(navigator.currentState!.push(MaterialPageRoute<void>(builder: (_) =>
-      const Scaffold(body: Text('management remains open')))));
-    await tester.pumpAndSettle();
-    await h.sessions.acceptSession(AuthSession(accountId: _account,
-      sessionToken: h.api.token, expiresAt: _expiry));
-    await tester.pumpAndSettle();
-    h.sessions.sessionUnavailable(h.api.token);
-    await tester.pumpAndSettle();
-    await h.sessions.retry();
-    await tester.pumpAndSettle();
-    expect(h.sessions.isAuthenticated, isTrue);
-    expect(find.text('management remains open'), findsOneWidget);
-    expect(callbacks, 0);
-    await h.finish(tester);
-  });
+  testWidgets(
+    'persisted invalid OTP flow offers explicit continuation without an error or resend',
+    (tester) async {
+      final h = _Harness();
+      await h.flows.requestOtp('Exact@hainanu.edu.cn');
+      final original = (await h.store.read()).registration!;
+      await h.store.update(
+        (state) => state.copyWith(
+          registration: {
+            ...original,
+            'confirmation': {
+              'key': AuthCrypto.randomEncoded(32),
+              'flowId': original['request']['flowId'],
+              'expired': true,
+            },
+          },
+        ),
+      );
+      await h.mount(tester);
+      await _tap(tester, '新注册');
+      expect(h.flows.error, isNull);
+      expect(find.text('结束过期操作，重新收码'), findsOneWidget);
+      expect(find.text('使用原验证码继续确认'), findsNothing);
+      expect(h.api.otpRequests, 1);
+      await _tap(tester, '结束过期操作，重新收码');
+      final resumed = (await h.store.read()).registration!;
+      for (final field in ['seed', 'publicKey', 'slotId']) {
+        expect(resumed[field], original[field]);
+      }
+      expect(resumed['request'], isNull);
+      expect(resumed['confirmation'], isNull);
+      expect(h.api.otpRequests, 1);
+      expect(h.api.registrations, 0);
+      expect(h.sessions.isAuthenticated, isFalse);
+      await h.finish(tester);
+    },
+  );
+  testWidgets(
+    'restoring a covered auth route cannot pop the management route above it',
+    (tester) async {
+      final h = _Harness();
+      await h.sessions.start();
+      final navigator = GlobalKey<NavigatorState>();
+      var callbacks = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          navigatorKey: navigator,
+          home: AuthScreen(
+            sessions: h.sessions,
+            flows: h.flows,
+            onAuthenticated: () {
+              callbacks++;
+              navigator.currentState!.pop();
+            },
+          ),
+        ),
+      );
+      unawaited(
+        navigator.currentState!.push(
+          MaterialPageRoute<void>(
+            builder: (_) =>
+                const Scaffold(body: Text('management remains open')),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await h.sessions.acceptSession(
+        AuthSession(
+          accountId: _account,
+          sessionToken: h.api.token,
+          expiresAt: _expiry,
+        ),
+      );
+      await tester.pumpAndSettle();
+      h.sessions.sessionUnavailable(h.api.token);
+      await tester.pumpAndSettle();
+      await h.sessions.retry();
+      await tester.pumpAndSettle();
+      expect(h.sessions.isAuthenticated, isTrue);
+      expect(find.text('management remains open'), findsOneWidget);
+      expect(callbacks, 0);
+      await h.finish(tester);
+    },
+  );
   testWidgets('existing account uses password login without V', (tester) async {
     final h = _Harness();
     await h.mount(tester);

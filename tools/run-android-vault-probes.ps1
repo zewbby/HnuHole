@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory)][string]$DeviceId,
     [Parameter(Mandatory)][string]$TestApk,
-    [string]$EnvironmentRoot = 'D:\zewbbyTest\Hnuhole-env'
+    [string]$EnvironmentRoot = 'D:\zewbbyTest\Hnuhole-env',
+    [switch]$UseInstalledApk
 )
 
 $ErrorActionPreference = 'Stop'
@@ -9,8 +10,17 @@ $ErrorActionPreference = 'Stop'
 $adb = Join-Path $env:ANDROID_HOME 'platform-tools\adb.exe'
 $runner = 'org.hnuhole.authvault.test/androidx.test.runner.AndroidJUnitRunner'
 $probeClass = 'org.hnuhole.authvault.AuthVaultProcessRestartTest'
-& $adb -s $DeviceId install -r $TestApk
-if ($LASTEXITCODE -ne 0) { throw 'Test APK installation failed' }
+if ($UseInstalledApk) {
+    $installed = (& $adb -s $DeviceId shell pm path org.hnuhole.authvault.test) -join ''
+    $match = [regex]::Match($installed, '^package:(/data/app/[A-Za-z0-9_~./+=-]+/base\.apk)$')
+    if (!$match.Success) { throw 'Expected the installed owned monolithic vault probe APK' }
+    $actual = (& $adb -s $DeviceId shell sha256sum $match.Groups[1].Value) -join ''
+    $expected = (Get-FileHash -LiteralPath $TestApk -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($actual -notmatch "^$expected\s") { throw 'Installed vault probe differs from the reviewed test APK' }
+} else {
+    & $adb -s $DeviceId install --no-streaming -t -r $TestApk
+    if ($LASTEXITCODE -ne 0) { throw 'Test APK installation failed' }
+}
 
 function Invoke-VaultInstrumentation {
     param([string]$TestClass, [string]$Phase, [string]$Namespace, [switch]$Interrupted)

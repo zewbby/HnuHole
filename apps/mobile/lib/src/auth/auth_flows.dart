@@ -66,10 +66,12 @@ class AuthFlows extends ChangeNotifier {
   final int Function() _sessionAuthorityVersion;
   final Listenable? _sessionAuthority;
   void _sessionAuthorityChanged() {
-    if (_passkeyRecoveryActive && _passkeyAuthorityVersion != _sessionAuthorityVersion()) {
+    if (_passkeyRecoveryActive &&
+        _passkeyAuthorityVersion != _sessionAuthorityVersion()) {
       cancelPasskeyRecovery();
     }
   }
+
   final Future<void> Function(AuthSession) _acceptRegistrationSession;
   final void Function() _clearCommunityAccess;
   final DateTime Function() _clock;
@@ -96,6 +98,18 @@ class AuthFlows extends ChangeNotifier {
   String? get resetUsername => _username;
   DateTime? get otpWaitUntil => _otpWaitUntil;
   ClosureStatus? get closureStatus => _closureStatus;
+  bool get canRestartOtpVerification {
+    final state = _store.current;
+    final registration = state?.registration;
+    return state?.session == null &&
+        state?.pendingReset == null &&
+        state?.pendingClosure == null &&
+        registration != null &&
+        registration['commit'] == null &&
+        registration['ticket'] == null &&
+        (_map(registration['request'])?['state'] == 'EXPIRED' ||
+            _map(registration['confirmation'])?['expired'] == true);
+  }
 
   /// Reconstitutes only pending authority checks, never codes or a session.
   Future<void> restorePending() => _run((epoch) async {
@@ -428,14 +442,17 @@ class AuthFlows extends ChangeNotifier {
     }
   });
 
-  /// RESULT_EXPIRED permits an explicit exit from the expired V operation. It
+  /// Expiry or a definitive invalid-flow rejection permits an explicit exit
+  /// from the V operation. It
   /// does not prove NOT_SENT or trigger a new message. The original bootstrap
   /// slot is retained and the next user request is still subject to V budgets.
   Future<void> abandonExpiredOtpOperation() => _run((epoch) async {
-    await _store.update((latest) {
-      final registration = latest.registration;
+    Map<String, dynamic> requireExpired(AuthState state) {
+      _requireNoOtherPending(state);
+      final registration = state.registration;
       if (registration == null ||
           registration['commit'] != null ||
+          registration['ticket'] != null ||
           (_map(registration['request'])?['state'] != 'EXPIRED' &&
               _map(registration['confirmation'])?['expired'] != true)) {
         throw const AuthFailure(
@@ -443,6 +460,18 @@ class AuthFlows extends ChangeNotifier {
           code: 'PENDING_CHECK_REQUIRED',
         );
       }
+      return registration;
+    }
+
+    // Reject an ineligible user action before the store's atomic-write failure
+    // boundary. Recheck under the write queue so concurrent state cannot bypass
+    // C's unknown commit or an existing session/closure/reset.
+    final state = await _store.read();
+    _validateState(state);
+    requireExpired(state);
+    if (!_current(epoch)) return;
+    await _store.update((latest) {
+      final registration = requireExpired(latest);
       final next = Map<String, dynamic>.from(registration)
         ..remove('request')
         ..remove('confirmation')
@@ -656,32 +685,54 @@ class AuthFlows extends ChangeNotifier {
         final recovery = _passkeyApi;
         final client = _passkey;
         if (recovery == null || client == null) {
-          throw const AuthFailure(kind: AuthFailureKind.rejected,
-              code: 'PASSKEY_UNAVAILABLE');
+          throw const AuthFailure(
+            kind: AuthFailureKind.rejected,
+            code: 'PASSKEY_UNAVAILABLE',
+          );
         }
         final original = await _store.read();
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) ||
+            _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         _validateState(original);
-        if (original.pendingReset != null || original.registration?['commit'] != null) {
-          throw const AuthFailure(kind: AuthFailureKind.rejected,
-              code: 'PENDING_CHECK_REQUIRED');
+        if (original.pendingReset != null ||
+            original.registration?['commit'] != null) {
+          throw const AuthFailure(
+            kind: AuthFailureKind.rejected,
+            code: 'PENDING_CHECK_REQUIRED',
+          );
         }
         Future<bool> current() async {
-          if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return false;
+          if (!_current(epoch) ||
+              _sessionAuthorityVersion() != authorityVersion) {
+            return false;
+          }
           final latest = await _store.read();
-          return _current(epoch) && _sessionAuthorityVersion() == authorityVersion &&
+          return _current(epoch) &&
+              _sessionAuthorityVersion() == authorityVersion &&
               latest.session?.token == original.session?.token &&
               latest.pendingReset == null &&
               latest.registration?['commit'] == null &&
               jsonEncode(latest.logouts.map((e) => e.toJson()).toList()) ==
-                  jsonEncode(original.logouts.map((e) => e.toJson()).toList()) &&
-              jsonEncode(latest.pendingClosure) == jsonEncode(original.pendingClosure);
+                  jsonEncode(
+                    original.logouts.map((e) => e.toJson()).toList(),
+                  ) &&
+              jsonEncode(latest.pendingClosure) ==
+                  jsonEncode(original.pendingClosure);
         }
+
         if (!await current()) return;
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) ||
+            _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         final options = await recovery.createPasskeyResetOptions();
         if (!await current()) return;
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) ||
+            _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         _nativeRecoveryEpoch = epoch;
         late Map<String, dynamic> assertion;
         try {
@@ -690,11 +741,19 @@ class AuthFlows extends ChangeNotifier {
           if (_nativeRecoveryEpoch == epoch) _nativeRecoveryEpoch = null;
         }
         if (!await current()) return;
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) ||
+            _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         final result = await recovery.createPasskeyResetIntent(
-            challengeId: options.challengeId, assertion: assertion);
+          challengeId: options.challengeId,
+          assertion: assertion,
+        );
         if (!await current()) return;
-        if (!_current(epoch) || _sessionAuthorityVersion() != authorityVersion) return;
+        if (!_current(epoch) ||
+            _sessionAuthorityVersion() != authorityVersion) {
+          return;
+        }
         _resetIntent = result;
         _username = result.username;
         _recoveryCode = result.newRecoveryCode;
@@ -1031,7 +1090,19 @@ class AuthFlows extends ChangeNotifier {
     try {
       return await call();
     } on AuthFailure catch (failure) {
-      if (failure.resultsExpired && _current(epoch)) {
+      // A definitive V rejection permits explicit verification with the same
+      // bootstrap after a missing/expired flow. It proves no result about C
+      // registration. Keep the original pending operation until the user acts.
+      final flowRejected =
+          confirmation &&
+          failure.kind == AuthFailureKind.rejected &&
+          failure.statusCode == 422 &&
+          const {
+            'OTP_FLOW_INVALID',
+            'OTP_EXPIRED',
+            'REVERIFY_REQUIRED',
+          }.contains(failure.code);
+      if ((failure.resultsExpired || flowRejected) && _current(epoch)) {
         await _store.update((latest) {
           final registration = latest.registration;
           if (registration == null) return latest;

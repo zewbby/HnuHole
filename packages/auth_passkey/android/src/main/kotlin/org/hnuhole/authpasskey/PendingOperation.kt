@@ -4,6 +4,7 @@ package org.hnuhole.authpasskey
 // makes a synchronous or late provider callback harmless.
 internal class PendingOperation<T> {
     private var value: T? = null
+    fun active(): Boolean = value != null
     fun begin(candidate: T): Boolean {
         if (value != null) return false
         value = candidate

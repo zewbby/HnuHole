@@ -8,7 +8,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.security.KeyStore
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +46,25 @@ class AuthVaultProcessRestartTest {
             // bypass Exception rollback instead of reporting a successful run.
             throw AssertionError("Test process kill unexpectedly returned")
         }
-        if (phase == "write") {
+        if (phase == "read-fresh-after-reinstall") {
+            assertFalse(record.baseFile.exists())
+            assertFalse(keys.containsAlias("hnuhole.auth.$namespace"))
+            assertNull(vault.read(namespace))
+        } else if (phase == "read-restored-without-device-key") {
+            assertTrue(record.baseFile.exists())
+            assertFalse(keys.containsAlias("hnuhole.auth.$namespace"))
+            val original = record.baseFile.readBytes()
+            fun rejected(action: () -> Unit) {
+                try { action(); fail("Copied ciphertext cannot grant authority without its device key") }
+                catch (_: Exception) { /* Expected platform crypto rejection. */ }
+            }
+            try {
+                rejected { vault.read(namespace) }
+                rejected { vault.write(namespace, "must not overwrite unknown state") }
+                assertTrue(original.contentEquals(record.baseFile.readBytes()))
+                assertFalse(keys.containsAlias("hnuhole.auth.$namespace"))
+            } finally { record.delete() }
+        } else if (phase == "write") {
             prepare()
             vault.write(namespace, state)
             assertTrue(record.baseFile.exists())

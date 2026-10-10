@@ -4,4 +4,17 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <application>
+        <!-- Owned, nonce-admitted Google API diagnostic only; absent from release.
+             The default prepares a PendingIntent without launching it. -->
+        <activity
+            android:name="org.hnuhole.hnuhole_mobile.GoogleFidoDiagnosticActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|uiMode" />
+        <!-- Development RP and debug signing certificate only. -->
+        <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
+    </application>
 </manifest>

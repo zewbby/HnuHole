@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import json
 import re
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +48,42 @@ def main():
     previous.main()
     ledger_path = ROOT / "docs/design/module-acceptance-ledger.json"
     ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    if "currentAndroidLive" in ledger:
+        # AC06 was frozen before later development and Git publication. Audit
+        # its delivered bytes, not the subsequently changed entrance/ledger.
+        commit = ledger["historicalAC06GitDeliveryCommit"]
+        assert re.fullmatch(r"[0-9a-f]{40}", commit)
+        historical = json.loads(subprocess.check_output(
+            ["git", "show", f"{commit}:{EVIDENCE}"], cwd=ROOT))
+        assert historical["scope"] == "AC06_LOCAL_SOURCE_AND_EVIDENCE_HANDOFF_ONLY"
+        previous.no_full_closure(historical)
+        def historical_matches(path, raw, lf):
+            data = subprocess.check_output(["git", "show", f"{commit}:{path}"], cwd=ROOT)
+            return digest(data) == raw or digest(data.replace(b"\r\n", b"\n")) == lf
+        assert historical_matches("docs/design/module-acceptance-ledger.json",
+                                  historical["ledgerSha256"], historical["ledgerLfSha256"])
+        for item in historical["handoffArtifacts"]:
+            assert historical_matches(item["path"], item["sha256"], item["lfSha256"]), item["path"]
+        for item in historical["retainedEvidence"]:
+            assert matches_text(ROOT / item["path"], item["sha256"], item["lfSha256"]), item["path"]
+        selected = ("currentNonIOS" if "currentNonIOS" in ledger else
+                    "currentAndroidFault" if "currentAndroidFault" in ledger else "currentAndroidLive")
+        live = ledger[selected]
+        current = previous.read_record(live["evidence"])
+        previous.same_snapshot(live["sourceFingerprint"], current["sourceFingerprint"], "Android live")
+        assert current["scope"] == ("NON_IOS_ANONYMOUS_FOUNDATION_DEVELOPMENT_ACCEPTANCE_ONLY"
+                                    if selected == "currentNonIOS" else "ANDROID_ACTUAL_APP_TO_CMD_CV_FAULT_DEVELOPMENT_ONLY"
+                                    if selected == "currentAndroidFault" else "ANDROID_ACTUAL_APP_TO_CMD_CV_DEVELOPMENT_ONLY")
+        assert current["moduleAcceptancePassed"] is False
+        assert current["fullDeviceMatrixPassed"] is False
+        assert current["systemPasskeyPassed"] is False
+        previous.no_full_closure(current)
+        for relative in (live["plan"], live["report"]):
+            check_links(relative)
+            check_tables(relative)
+        print("PASS: published AC06 historical bytes retained; current Android live handoff/source verified")
+        print("Scope: bookkeeping only; device execution follows its actual result; no complete platform or production approval.")
+        return
     current = ledger["currentAC06"]
     record = previous.read_record(EVIDENCE)
     assert current["evidence"] == EVIDENCE

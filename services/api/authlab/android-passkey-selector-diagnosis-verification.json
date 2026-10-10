@@ -1,0 +1,254 @@
+{
+  "schemaVersion": "hnuhole-native-selector-diagnosis/v1",
+  "recordedOn": "2026-10-10",
+  "scope": "READ_ONLY_INSTALLED_SELECTOR_ERROR_PROPAGATION_NOT_FUNCTIONAL_ACCEPTANCE",
+  "requestedReviewer": {
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "ultra",
+    "reviewInterruptedByUsageLimit": true,
+    "primaryContinuedStaticAudit": true
+  },
+  "selectorSnapshot": {
+    "device": "10CEAG17RY003M7",
+    "package": "com.vivo.credentialmanager",
+    "phoneModified": false,
+    "bytes": 36527773,
+    "sha256": "e7f7daa3654e7bcc68dc691c058fb68617fba9270d131add4463f0393e2ebe81",
+    "versionName": "versionName=15.0",
+    "versionCode": "versionCode=10001 minSdk=35 targetSdk=35",
+    "accountsRead": false,
+    "scope": "READ_ONLY_INSTALLED_SELECTOR_APK_STATIC_AUDIT"
+  },
+  "decompiledMethodEvidenceSha256": {
+    "com.vivo.credentialmanager.CredentialSelectorActivity$b.smali.txt": "b94d81f9da731918582f44c22dc6108b98b41afc1f2e987e763f046be87b5a93",
+    "com.vivo.credentialmanager.CredentialSelectorActivity.smali.txt": "89fb35269efc82f853fd70697a9ac41757a5aa14f32f5ed06f97b2e09925e1c5",
+    "com.vivo.credentialmanager.core.ui.PageViewController$d.smali.txt": "71e6bcfd2808ee06fcb2df3f3f2ec3b5319038b2b0f4ceb4fe9122672a83d441",
+    "f1.k.smali.txt": "f770b8209f9c03646e6d5b3e67d1e6c8f051e87e0a8aa10a6a93f98537350b1f"
+  },
+  "confirmedStaticMechanism": {
+    "providerActivityReturn": "PageViewController$d.a(int,Intent) marks only RESULT_OK=-1 as success; other returns produce false result with activity-result-cancel category",
+    "failedEngineReturn": "CredentialSelectorActivity$b.a branches on success; all false values call CredentialSelectorActivity.i",
+    "frameworkResult": "CredentialSelectorActivity.i sends result code 0 with BaseDialogResult only; original provider result code and Intent/error are not propagated",
+    "providerFailureCauseProved": false,
+    "latestRuntimeBranchProved": false
+  },
+  "latestCallbackObservation": {
+    "pid": 18192,
+    "exceptionClass": "androidx.credentials.exceptions.CreateCredentialCancellationException",
+    "messageLength": 27,
+    "messageSha256": "441147bf4d703e3d775b4f626fc6cad60b83807a0a43ed4810084838c17451b5",
+    "matchesPublicFrameworkConstant": true,
+    "publicConstant": "User cancelled the selector",
+    "prototypeObjectCaptureSourceWasNotSeparated": true,
+    "heapFallbackPossible": true,
+    "strictBindingToCallbackParameterEstablished": false,
+    "debuggerTimingMayAffectObservation": true,
+    "humanClickedContinue": true,
+    "humanManualCancelNotInferred": true
+  },
+  "runtimeNativeCounts": {
+    "scope": "POST_RUN_OWNED_NATIVE_COUNTERS_ONLY",
+    "expectedPid": 18192,
+    "counters": {
+      "owned-acceptance-passkey.json": {
+        "pid": 18192,
+        "activityAttached": 1,
+        "nativeBegun": 1,
+        "nativeCreateCancelled": 1,
+        "actualOtherCreateError": 1,
+        "nativeErrored": 1
+      },
+      "owned-acceptance-lifecycle.json": {
+        "pid": 18192,
+        "activityId": 135583422,
+        "orientation": 1,
+        "fontScale": 1,
+        "engineAttached": 1,
+        "activityCreated": 1,
+        "resumed": 2,
+        "paused": 1
+      }
+    },
+    "trustBooleans": {}
+  },
+  "separateLaunchFailure": {
+    "result": "FAIL",
+    "scope": "APP_LAUNCH_ONLY",
+    "nativeCeremonyExecuted": false,
+    "androidExitReason": "FORCE_STOP",
+    "androidExitDescription": "single-cleaner",
+    "pid": 16474,
+    "userCancelInferred": false
+  },
+  "availableLogClassification": {
+    "scope": "READ_ONLY_AVAILABLE_BUFFER_CLASSIFICATION_ONLY",
+    "matchedLines": 206,
+    "eventCategoryCounts": {
+      "selectorEngineReturned": 0,
+      "selectorCancelReturned": 0,
+      "providerActivityCancelled": 0,
+      "providerResultReceived": 0,
+      "syncAccountError": 0,
+      "associationError": 0
+    },
+    "resultCodes": [],
+    "publicTags": [
+      "ActivityTaskManager",
+      "BoundBrokerSvc",
+      "CredManProvService",
+      "GraphicsEnvironment",
+      "ProfileInstaller",
+      "am_freeze",
+      "am_proc_bound",
+      "am_proc_start",
+      "am_pss",
+      "am_unfreeze",
+      "com.fido.client",
+      "input_focus",
+      "input_interaction",
+      "nativeloader",
+      "sysui_multi_action",
+      "wm_activity_launch_time",
+      "wm_add_to_stopping",
+      "wm_create_activity",
+      "wm_destroy_activity",
+      "wm_finish_activity",
+      "wm_on_activity_result_called",
+      "wm_on_create_called",
+      "wm_on_destroy_called",
+      "wm_on_paused_called",
+      "wm_on_resume_called",
+      "wm_on_start_called",
+      "wm_on_stop_called",
+      "wm_on_top_resumed_gained_called",
+      "wm_on_top_resumed_lost_called",
+      "wm_pause_activity",
+      "wm_restart_activity",
+      "wm_resume_activity",
+      "wm_set_resumed_activity"
+    ],
+    "rawBufferStored": false,
+    "proofsStored": false,
+    "accountsStored": false,
+    "upstreamCauseConfirmed": false
+  },
+  "excludedByActualCounters": [
+    "PLUGIN_TIMEOUT",
+    "EXPLICIT_PLUGIN_CANCELLATION",
+    "ACTIVITY_ENGINE_DETACH"
+  ],
+  "sourceAuditExclusions": [
+    "FAILURE_BEFORE_RESPONSE_CODEC",
+    "NO_EVIDENCE_TO_CHANGE_VALIDATED_REQUEST_PARAMETERS_OR_MUTABLE_CONTEXT_WRAPPER"
+  ],
+  "callbackObserver": {
+    "source": "tools/android-passkey-diagnostic/NativeCallbackError.java",
+    "runner": "tools/android-passkey-diagnostic/run.py",
+    "compileResult": "PASS",
+    "executedOnNewCeremony": false,
+    "heapEnumerationRemoved": true,
+    "exceptionSuperclassChecked": true,
+    "argumentVersusLocalSourceSeparated": true,
+    "notAcceptanceEvidence": true
+  },
+  "finalIndependentCounts": {
+    "sql": {
+      "gateState": "OPEN",
+      "generation": 6,
+      "activeAccounts": 6,
+      "closedAccounts": 12,
+      "closedSecretsRemaining": 0,
+      "pendingClosures": 0,
+      "passkeys": 3,
+      "recoveryCodes": 6,
+      "closedPasskeys": 0,
+      "resetIntents": 0,
+      "activeSessions": 4,
+      "closedActiveSessions": 0,
+      "identityReceipts": 15,
+      "closedIdentityProfiles": 0,
+      "activeIdentities": 0
+    },
+    "proxy": {
+      "bindingOptions": 45,
+      "bindingSubmits": 19,
+      "identitySubmits": 15,
+      "closureSubmits": 12,
+      "credentialResultQueries": 43,
+      "identityResultQueries": 1,
+      "resetOptions": 13,
+      "resetIntentSubmits": 2,
+      "heldBindingReplies": 2,
+      "heldIdentityReplies": 5,
+      "releasedBindingReplies": 1,
+      "releasedIdentityReplies": 2,
+      "modifiedRpOptions": 4,
+      "modifiedRpHash": 2,
+      "lastBindingStatus": 204,
+      "lastResetStatus": 401,
+      "lastIdentityStatus": 200,
+      "loginSubmits": 11,
+      "sessionReads": 62,
+      "renewalSubmits": 0,
+      "registrationSubmits": 20,
+      "removalSubmits": 7,
+      "lastRemovalStatus": 204,
+      "proofsStored": false
+    }
+  },
+  "rootCauseConfirmed": false,
+  "originalThreeNegativeFailuresNotReclassified": true,
+  "newSystemCeremonyStartedForStaticAudit": false,
+  "nextRequiredCheck": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
+  "phoneProviderSettingsRestored": true,
+  "temporaryGoogleSettingsRetainedForPendingSetupCheck": false,
+  "rawProofStored": false,
+  "accountNamesStored": false,
+  "sdkOrAvdOrReusableCacheDeleted": false,
+  "sources": [
+    {
+      "url": "https://android.googlesource.com/platform/frameworks/base/+/refs/heads/android15-release/services/credentials/java/com/android/server/credentials/CreateRequestSession.java",
+      "role": "Public selector-cancellation message mapping; OEM runtime equivalence remains an inference."
+    },
+    {
+      "url": "https://developer.android.com/identity/sign-in/credential-manager-troubleshooting-guide",
+      "role": "Generic cancellation can conceal sync-account/other failures; no diagnosis from Chrome search alone."
+    }
+  ],
+  "humanGooglePasswordManagerSetupInspection": {
+    "noFinishSetupPrompt": true,
+    "noVerifyIdentityPrompt": true,
+    "noEncryptedDataUnlockPrompt": true,
+    "actualStoreCreationReadyNotInferred": true
+  },
+  "directGoogleDiagnostic": {
+    "implementation": "DEBUG_ONLY_IMPLEMENTED_BUILD_INCOMPLETE_DEVICE_NOT_RUN",
+    "source": [
+      "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticActivity.java",
+      "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticPolicy.java",
+      "tools/android-passkey-diagnostic/build-google-fido-diagnostic.py",
+      "tools/android-passkey-diagnostic/GoogleFidoDiagnosticPolicyTest.java",
+      "tools/run-google-passkey-diagnostic.py"
+    ],
+    "javaCompile": "PASS",
+    "debugApkAssembled": true,
+    "debugCertificateAndManifestDexChecked": true,
+    "releaseExclusion": "FAIL_INCOMPLETE",
+    "finalBuildManifestProduced": false,
+    "candidateBytes": 673296778,
+    "failures": [
+      "OFFLINE_TRANSITIVE_DEPENDENCY_MISSING",
+      "EMPTY_FLUTTER_CMAKE_PLACEHOLDER",
+      "INCLUDED_BUILD_INIT_WITHOUT_APP",
+      "WSL_EXT4_IO_READ_ONLY_HOST_D_FULL"
+    ],
+    "apiPrepare": "NOT_RUN",
+    "systemUi": "NOT_RUN",
+    "installedOnPhone": false,
+    "actualCSubmission": false,
+    "fixedCaseAcceptancePassed": false,
+    "pythonRunnerSyntax": "PASS",
+    "pythonOptimizedExecutionRejected": true,
+    "guardReview": "COMPLETED_WITH_PENDING_OS_BUILD_VALIDATION"
+  }
+}

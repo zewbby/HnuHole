@@ -21,6 +21,8 @@ C 采用 WebAuthn 可发现凭据：受信的 Hnuhole RP ID／origin 固定配�
 
 同步 Passkey 可以改善换机后的可用性，但用户的系统或同步服务商可能看到 Hnuhole 凭据的存在，且其同步账户的恢复能力影响 Passkey 安全。绑定界面用普通话说明这个隐私取舍；不把 Passkey、恢复码或用户名交给 V。Passkey 服务不可用时恢复码仍可用。此用法参考 [W3C WebAuthn Level 3](https://www.w3.org/TR/webauthn-3/) 与 [NIST 同步认证器说明](https://pages.nist.gov/800-63-4/sp800-63b.html)，不宣称 Hnuhole 已获得任何认证等级。
 
+2026-10-05 Android 真机兼容补充：部署仍只配置 `android:apk-key-hash:<32字节无填充规范base64url>`。vivo 提供方实测把同一已授权证书摘要序列化成无填充标准 Base64；C 只从受信配置推导这个唯一的精确来源别名。两种编码对应同一证书，不新增签名身份、不从请求批准来源；带填充、混合字母表、空白、其他证书及未配置 Android 来源仍拒绝。保留收到的 clientDataJSON 原始字节做验签，绝不改写 origin 后重新散列。RP／UV／challenge／账号与授权事务规则不变。推荐配置编码仍遵循 [Android 官方说明](https://developer.android.com/identity/passkeys/create-passkeys)。当前回归与设备结果见[非 iOS 报告](auth-privacy-non-ios-validation-report.md)。
+
 ## 4. 忘记密码、忘记用户名与轮换
 
 1. 找回入口选择“使用恢复码”或“使用 Passkey”。有效恢复码的摘要在 C 内定位旧账号；可发现 Passkey 在完成有效 assertion 后以随机用户句柄定位旧账号。**先证明凭据，才显示私有用户名或账号状态**；无“输入校邮查用户名”接口。无效、已用、已关闭账号的对外失败提示一致，受多维限速控制。

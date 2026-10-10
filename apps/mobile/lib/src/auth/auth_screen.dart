@@ -387,12 +387,13 @@ class _AuthScreenState extends State<AuthScreen> {
         }),
       if (flow == AuthFlowStatus.otpConfirmationPending) ...[
         _button('核对校邮确认结果', widget.flows.reconcileOtpConfirmation),
-        _secondary('使用原验证码继续确认', () {
-          _validateOtp = true;
-          return _submit(() => widget.flows.confirmOtp(_otp.text));
-        }),
+        if (!widget.flows.canRestartOtpVerification)
+          _secondary('使用原验证码继续确认', () {
+            _validateOtp = true;
+            return _submit(() => widget.flows.confirmOtp(_otp.text));
+          }),
       ],
-      if (widget.flows.error?.resultsExpired == true)
+      if (widget.flows.canRestartOtpVerification)
         _secondary('结束过期操作，重新收码', widget.flows.abandonExpiredOtpOperation),
       const _Notice('如果可以发送，验证码将到达邮箱。投递结果未知时先核对原申请。'),
     ];

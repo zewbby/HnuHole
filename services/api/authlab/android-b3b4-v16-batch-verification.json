@@ -1,0 +1,777 @@
+{
+  "schemaVersion": "hnuhole-b3b4-batch-result/v2",
+  "recordedOn": "2026-10-10",
+  "branch": "codex/auth-privacy-handoff",
+  "result": "FAIL",
+  "scope": "B3_B4_FIXED_ELEVEN_CASES_CUMULATIVE_EACH_OWN_VERSION",
+  "acceptedCaseCount": 8,
+  "failedCaseCount": 3,
+  "notRunCaseCount": 0,
+  "phases": [
+    {
+      "caseId": "NI-C01",
+      "id": "ni-c01",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-C02",
+      "id": "ni-c02",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-c01-control"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-C03",
+      "id": "ni-c03",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-C04",
+      "id": "ni-c04",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-D01",
+      "id": "ni-d01",
+      "result": "FAIL",
+      "reason": "v16 actual client pinned-RP rejection without native start, actual server wrong-RP-hash C422, and original natural-expiry result query without proof replay passed. Native wrong RP returned opaque CreateCredentialCancellationException; no attributable association diagnosis. Full NI-D01 not accepted."
+    },
+    {
+      "caseId": "NI-D02",
+      "id": "ni-d02",
+      "result": "FAIL",
+      "reason": "v16 same-package/same-code approved certificate control actually bound C204. Unapproved certificate returned opaque framework cancellation, no proof submitted and SQL credential count unchanged. Typed/keyword association diagnosis absent; controlled differential alone is not accepted as association cause."
+    },
+    {
+      "caseId": "NI-D03",
+      "id": "ni-d03",
+      "result": "FAIL",
+      "reason": "v16 approved-certificate unassociated package reached actual provider; human confirmed Continue. Opaque framework cancellation, no proof submitted, no credential added. Public HTTPS association and approved control verified, but specific provider association refusal unavailable."
+    },
+    {
+      "caseId": "NI-D04",
+      "id": "ni-d04",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-d04-main"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-D05",
+      "id": "ni-d05",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-d05-main"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence.",
+      "supportingSqlRegression": {
+        "result": "PASS",
+        "verifiedAtUTC": "2026-10-10T06:39:17.048553+00:00",
+        "actualPostgres": true,
+        "race": true,
+        "vet": true,
+        "twoCredentialRemovalAndRemainingCredentialRecovery": true,
+        "physicalTwoKeyEnrollmentClaimed": false,
+        "liveB3B4DatabaseReset": false,
+        "sourceFilesSha256": {
+          "services/api/internal/authprivacy/community_credentials_test.go": "c5380ae9e8f108d8215b5d2185993fe1f83a8e8525c407c47fa696758a811919",
+          "services/api/authlab/run-isolated.sh": "f44baf4171c91760c6da3b3a132babbe0e31fae44e2fb3d0a0e6cdadc62b39ff"
+        },
+        "logSha256": "0d1fad2b4093cbda7e794cc01042085c92f091bf84af8ad8824c6a5708a853f2",
+        "twoKey": true,
+        "failed": false,
+        "packagePassCount": 5,
+        "testPassCount": 249,
+        "skips": []
+      },
+      "proofScope": "Actual phone removal/old assertion/session/recovery-code availability plus actual PostgreSQL two-key retention; not two native enrollments on vivo."
+    },
+    {
+      "caseId": "NI-K01",
+      "id": "ni-k01",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-k01-source",
+        "ni-k01-restart",
+        "ni-k01-fresh",
+        "ni-k01-no-key"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-K02",
+      "id": "ni-k02",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-k02-write-failure",
+        "ni-k02-write-failure-read",
+        "ni-k02-write-unknown",
+        "ni-k02-write-unknown-read"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    }
+  ],
+  "b3ClosureGroupResult": "PASS",
+  "b4GroupResult": "FAIL",
+  "acceptedStageVersions": {
+    "ni-d04-main": {
+      "apkSha256": "92eaa61287b3eaec6ea54feebdcdd898b32edddf7c67dadae9ef2bb26814995d",
+      "pid": 20572,
+      "applicationId": "org.hnuhole.hnuhole_mobile"
+    },
+    "ni-c01-main": {
+      "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+      "pid": 19326,
+      "applicationId": "org.hnuhole.hnuhole_mobile"
+    },
+    "ni-c01-control": {
+      "apkSha256": "cbd1146f313358f2558416f1804b09d35ab75e3c609ffc3320f40ed042164332",
+      "pid": 13692,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-d02-control": {
+      "apkSha256": "8f78809e753bb54d4c60334d7ce3c60ac48efdc99d60e4558ed917ef29c118d1",
+      "pid": 23059,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-d05-main": {
+      "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+      "pid": 11391,
+      "applicationId": "org.hnuhole.hnuhole_mobile"
+    },
+    "ni-k01-source": {
+      "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+      "pid": 10907,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-k01-restart": {
+      "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+      "pid": 31463,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-k01-fresh": {
+      "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+      "pid": 11138,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-k01-no-key": {
+      "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+      "pid": 18921,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-k02-write-failure": {
+      "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+      "pid": 20637,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-k02-write-failure-read": {
+      "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+      "pid": 21631,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-k02-write-unknown": {
+      "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+      "pid": 23203,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    },
+    "ni-k02-write-unknown-read": {
+      "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+      "pid": 24174,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+    }
+  },
+  "currentCandidateApkSha256": {
+    "phone-b3b4.apk": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+    "b3b4-acceptance.apk": "8f78809e753bb54d4c60334d7ce3c60ac48efdc99d60e4558ed917ef29c118d1",
+    "b3b4-bad-signature.apk": "37a2a7d0b976510ebd3fd38675d633898f688364ad899ca1ce7ba004f38a6edb",
+    "b3b4-unassociated.apk": "f35b5f3f14dec48a141b77b04cd51c9efaae3586b88eb3f363625920e9a98901"
+  },
+  "currentIndependentCounts": {
+    "sql": {
+      "gateState": "OPEN",
+      "generation": 6,
+      "activeAccounts": 6,
+      "closedAccounts": 12,
+      "closedSecretsRemaining": 0,
+      "pendingClosures": 0,
+      "passkeys": 3,
+      "recoveryCodes": 6,
+      "closedPasskeys": 0,
+      "resetIntents": 0,
+      "activeSessions": 4,
+      "closedActiveSessions": 0,
+      "identityReceipts": 15,
+      "closedIdentityProfiles": 0,
+      "activeIdentities": 0
+    },
+    "proxy": {
+      "bindingOptions": 38,
+      "bindingSubmits": 19,
+      "identitySubmits": 15,
+      "closureSubmits": 12,
+      "credentialResultQueries": 43,
+      "identityResultQueries": 1,
+      "resetOptions": 13,
+      "resetIntentSubmits": 2,
+      "heldBindingReplies": 2,
+      "heldIdentityReplies": 5,
+      "releasedBindingReplies": 1,
+      "releasedIdentityReplies": 2,
+      "modifiedRpOptions": 4,
+      "modifiedRpHash": 2,
+      "lastBindingStatus": 204,
+      "lastResetStatus": 401,
+      "lastIdentityStatus": 200,
+      "loginSubmits": 10,
+      "sessionReads": 54,
+      "renewalSubmits": 0,
+      "registrationSubmits": 19,
+      "removalSubmits": 7,
+      "lastRemovalStatus": 204,
+      "proofsStored": false
+    }
+  },
+  "currentNegativeVerification": {
+    "result": "FAIL",
+    "caseIds": [
+      "NI-D01",
+      "NI-D02",
+      "NI-D03"
+    ],
+    "provider": "com.vivo.cipherchain",
+    "providerVersion": "2.6.0.3",
+    "framework": "com.vivo.credentialmanager",
+    "frameworkVersion": "15.0",
+    "blocker": "OPAQUE_OEM_CANCELLATION_WITHOUT_ATTRIBUTABLE_ASSOCIATION_DIAGNOSIS",
+    "nativeFailureClass": "CreateCredentialCancellationException",
+    "actualAssociationDiagnosisObserved": false,
+    "approvedControl": {
+      "phase": "ni-d02",
+      "variant": "control",
+      "pid": 23059,
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+      "actualApp": true,
+      "nativeVault": true,
+      "actualCV": true,
+      "physicalImeClaimed": false,
+      "rawProofStored": false,
+      "actualFreshRegistrationAuthenticatedAndAuthRouteClosed": true,
+      "approvedPackageAndCertificateActualBinding": true
+    },
+    "publicAssociation": {
+      "url": "https://zewbby.github.io/.well-known/assetlinks.json",
+      "httpStatus": 200,
+      "documentSha256": "d2f2b65c3da8ce507d19977a273da5928138bc0c55a40d6629a550ce50068a01",
+      "associationMatches": {
+        "phone-b3b4.apk": true,
+        "b3b4-acceptance.apk": true,
+        "b3b4-bad-signature.apk": false,
+        "b3b4-unassociated.apk": false
+      },
+      "privateDataStored": false
+    },
+    "rpPartial": {
+      "pid": 27809,
+      "phase": "ni-d01",
+      "clientPinnedRpRejectedWithoutNativeStart": true,
+      "actualNativeWrongRpAssociationRejected": false,
+      "actualServerWrongRpHashRejected422": true,
+      "originalResultQueriedWithoutProofReplay": true,
+      "rawProofStored": false,
+      "result": "FAIL",
+      "actualFullCaseAcceptancePassed": false,
+      "reason": "OEM returned opaque native cancellation for wrong RP; client/server and original-result boundaries passed."
+    },
+    "wrongSignaturePartial": {
+      "phase": "ni-d02",
+      "variant": "bad-signature",
+      "pid": 31609,
+      "nativeCounters": {
+        "pid": 31609,
+        "activityAttached": 1,
+        "nativeBegun": 1,
+        "nativeCreateCancelled": 1,
+        "actualOtherCreateError": 1,
+        "nativeErrored": 1
+      },
+      "result": "FAIL",
+      "actualFullCaseAcceptancePassed": false,
+      "associationDiagnosisObserved": false,
+      "rawProofStored": false
+    },
+    "missingPackagePartial": {
+      "phase": "ni-d03",
+      "variant": "missing-package",
+      "pid": 3788,
+      "nativeCounters": {
+        "pid": 3788,
+        "activityAttached": 1,
+        "nativeBegun": 1,
+        "nativeCreateCancelled": 1,
+        "actualOtherCreateError": 1,
+        "nativeErrored": 1
+      },
+      "result": "FAIL",
+      "actualFullCaseAcceptancePassed": false,
+      "associationDiagnosisObserved": false,
+      "rawProofStored": false,
+      "humanConfirmedContinue": true
+    },
+    "independentSqlAndProxy": {
+      "ni-d01-main": {
+        "result": "PASS",
+        "phase": "ni-d01",
+        "variant": "main",
+        "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
+        "before": {
+          "sql": {
+            "gateState": "OPEN",
+            "generation": 6,
+            "activeAccounts": 5,
+            "closedAccounts": 12,
+            "closedSecretsRemaining": 0,
+            "pendingClosures": 0,
+            "passkeys": 2,
+            "recoveryCodes": 5,
+            "closedPasskeys": 0,
+            "resetIntents": 0,
+            "activeSessions": 3,
+            "closedActiveSessions": 0,
+            "identityReceipts": 15,
+            "closedIdentityProfiles": 0,
+            "activeIdentities": 0
+          },
+          "proxy": {
+            "bindingOptions": 32,
+            "bindingSubmits": 17,
+            "identitySubmits": 15,
+            "closureSubmits": 12,
+            "credentialResultQueries": 22,
+            "identityResultQueries": 1,
+            "resetOptions": 13,
+            "resetIntentSubmits": 2,
+            "heldBindingReplies": 2,
+            "heldIdentityReplies": 5,
+            "releasedBindingReplies": 1,
+            "releasedIdentityReplies": 2,
+            "modifiedRpOptions": 3,
+            "modifiedRpHash": 1,
+            "lastBindingStatus": 204,
+            "lastResetStatus": 401,
+            "lastIdentityStatus": 200,
+            "loginSubmits": 8,
+            "sessionReads": 49,
+            "renewalSubmits": 0,
+            "registrationSubmits": 18,
+            "removalSubmits": 7,
+            "lastRemovalStatus": 204,
+            "proofsStored": false
+          }
+        },
+        "after": {
+          "sql": {
+            "gateState": "OPEN",
+            "generation": 6,
+            "activeAccounts": 5,
+            "closedAccounts": 12,
+            "closedSecretsRemaining": 0,
+            "pendingClosures": 0,
+            "passkeys": 2,
+            "recoveryCodes": 5,
+            "closedPasskeys": 0,
+            "resetIntents": 0,
+            "activeSessions": 3,
+            "closedActiveSessions": 0,
+            "identityReceipts": 15,
+            "closedIdentityProfiles": 0,
+            "activeIdentities": 0
+          },
+          "proxy": {
+            "bindingOptions": 35,
+            "bindingSubmits": 18,
+            "identitySubmits": 15,
+            "closureSubmits": 12,
+            "credentialResultQueries": 43,
+            "identityResultQueries": 1,
+            "resetOptions": 13,
+            "resetIntentSubmits": 2,
+            "heldBindingReplies": 2,
+            "heldIdentityReplies": 5,
+            "releasedBindingReplies": 1,
+            "releasedIdentityReplies": 2,
+            "modifiedRpOptions": 4,
+            "modifiedRpHash": 2,
+            "lastBindingStatus": 422,
+            "lastResetStatus": 401,
+            "lastIdentityStatus": 200,
+            "loginSubmits": 8,
+            "sessionReads": 50,
+            "renewalSubmits": 0,
+            "registrationSubmits": 18,
+            "removalSubmits": 7,
+            "lastRemovalStatus": 204,
+            "proofsStored": false
+          }
+        },
+        "delta": {
+          "bindingOptions": 3,
+          "bindingSubmits": 1,
+          "identitySubmits": 0,
+          "closureSubmits": 0,
+          "credentialResultQueries": 21,
+          "identityResultQueries": 0,
+          "resetOptions": 0,
+          "resetIntentSubmits": 0,
+          "heldBindingReplies": 0,
+          "heldIdentityReplies": 0,
+          "releasedBindingReplies": 0,
+          "releasedIdentityReplies": 0,
+          "modifiedRpOptions": 1,
+          "modifiedRpHash": 1,
+          "loginSubmits": 0,
+          "sessionReads": 1,
+          "renewalSubmits": 0,
+          "registrationSubmits": 0,
+          "removalSubmits": 0
+        },
+        "sqlReadOnly": true,
+        "proofsStored": false,
+        "actualAppAcceptancePassed": false
+      },
+      "ni-d02-bad-signature": {
+        "result": "PASS",
+        "phase": "ni-d02",
+        "variant": "bad-signature",
+        "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
+        "before": {
+          "sql": {
+            "gateState": "OPEN",
+            "generation": 6,
+            "activeAccounts": 6,
+            "closedAccounts": 12,
+            "closedSecretsRemaining": 0,
+            "pendingClosures": 0,
+            "passkeys": 3,
+            "recoveryCodes": 6,
+            "closedPasskeys": 0,
+            "resetIntents": 0,
+            "activeSessions": 4,
+            "closedActiveSessions": 0,
+            "identityReceipts": 15,
+            "closedIdentityProfiles": 0,
+            "activeIdentities": 0
+          },
+          "proxy": {
+            "bindingOptions": 36,
+            "bindingSubmits": 19,
+            "identitySubmits": 15,
+            "closureSubmits": 12,
+            "credentialResultQueries": 43,
+            "identityResultQueries": 1,
+            "resetOptions": 13,
+            "resetIntentSubmits": 2,
+            "heldBindingReplies": 2,
+            "heldIdentityReplies": 5,
+            "releasedBindingReplies": 1,
+            "releasedIdentityReplies": 2,
+            "modifiedRpOptions": 4,
+            "modifiedRpHash": 2,
+            "lastBindingStatus": 204,
+            "lastResetStatus": 401,
+            "lastIdentityStatus": 200,
+            "loginSubmits": 8,
+            "sessionReads": 51,
+            "renewalSubmits": 0,
+            "registrationSubmits": 19,
+            "removalSubmits": 7,
+            "lastRemovalStatus": 204,
+            "proofsStored": false
+          }
+        },
+        "after": {
+          "sql": {
+            "gateState": "OPEN",
+            "generation": 6,
+            "activeAccounts": 6,
+            "closedAccounts": 12,
+            "closedSecretsRemaining": 0,
+            "pendingClosures": 0,
+            "passkeys": 3,
+            "recoveryCodes": 6,
+            "closedPasskeys": 0,
+            "resetIntents": 0,
+            "activeSessions": 4,
+            "closedActiveSessions": 0,
+            "identityReceipts": 15,
+            "closedIdentityProfiles": 0,
+            "activeIdentities": 0
+          },
+          "proxy": {
+            "bindingOptions": 37,
+            "bindingSubmits": 19,
+            "identitySubmits": 15,
+            "closureSubmits": 12,
+            "credentialResultQueries": 43,
+            "identityResultQueries": 1,
+            "resetOptions": 13,
+            "resetIntentSubmits": 2,
+            "heldBindingReplies": 2,
+            "heldIdentityReplies": 5,
+            "releasedBindingReplies": 1,
+            "releasedIdentityReplies": 2,
+            "modifiedRpOptions": 4,
+            "modifiedRpHash": 2,
+            "lastBindingStatus": 204,
+            "lastResetStatus": 401,
+            "lastIdentityStatus": 200,
+            "loginSubmits": 9,
+            "sessionReads": 52,
+            "renewalSubmits": 0,
+            "registrationSubmits": 19,
+            "removalSubmits": 7,
+            "lastRemovalStatus": 204,
+            "proofsStored": false
+          }
+        },
+        "delta": {
+          "bindingOptions": 1,
+          "bindingSubmits": 0,
+          "identitySubmits": 0,
+          "closureSubmits": 0,
+          "credentialResultQueries": 0,
+          "identityResultQueries": 0,
+          "resetOptions": 0,
+          "resetIntentSubmits": 0,
+          "heldBindingReplies": 0,
+          "heldIdentityReplies": 0,
+          "releasedBindingReplies": 0,
+          "releasedIdentityReplies": 0,
+          "modifiedRpOptions": 0,
+          "modifiedRpHash": 0,
+          "loginSubmits": 1,
+          "sessionReads": 1,
+          "renewalSubmits": 0,
+          "registrationSubmits": 0,
+          "removalSubmits": 0
+        },
+        "sqlReadOnly": true,
+        "proofsStored": false,
+        "actualAppAcceptancePassed": false
+      },
+      "ni-d03-missing-package": {
+        "result": "PASS",
+        "phase": "ni-d03",
+        "variant": "missing-package",
+        "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
+        "before": {
+          "sql": {
+            "gateState": "OPEN",
+            "generation": 6,
+            "activeAccounts": 6,
+            "closedAccounts": 12,
+            "closedSecretsRemaining": 0,
+            "pendingClosures": 0,
+            "passkeys": 3,
+            "recoveryCodes": 6,
+            "closedPasskeys": 0,
+            "resetIntents": 0,
+            "activeSessions": 4,
+            "closedActiveSessions": 0,
+            "identityReceipts": 15,
+            "closedIdentityProfiles": 0,
+            "activeIdentities": 0
+          },
+          "proxy": {
+            "bindingOptions": 37,
+            "bindingSubmits": 19,
+            "identitySubmits": 15,
+            "closureSubmits": 12,
+            "credentialResultQueries": 43,
+            "identityResultQueries": 1,
+            "resetOptions": 13,
+            "resetIntentSubmits": 2,
+            "heldBindingReplies": 2,
+            "heldIdentityReplies": 5,
+            "releasedBindingReplies": 1,
+            "releasedIdentityReplies": 2,
+            "modifiedRpOptions": 4,
+            "modifiedRpHash": 2,
+            "lastBindingStatus": 204,
+            "lastResetStatus": 401,
+            "lastIdentityStatus": 200,
+            "loginSubmits": 9,
+            "sessionReads": 52,
+            "renewalSubmits": 0,
+            "registrationSubmits": 19,
+            "removalSubmits": 7,
+            "lastRemovalStatus": 204,
+            "proofsStored": false
+          }
+        },
+        "after": {
+          "sql": {
+            "gateState": "OPEN",
+            "generation": 6,
+            "activeAccounts": 6,
+            "closedAccounts": 12,
+            "closedSecretsRemaining": 0,
+            "pendingClosures": 0,
+            "passkeys": 3,
+            "recoveryCodes": 6,
+            "closedPasskeys": 0,
+            "resetIntents": 0,
+            "activeSessions": 4,
+            "closedActiveSessions": 0,
+            "identityReceipts": 15,
+            "closedIdentityProfiles": 0,
+            "activeIdentities": 0
+          },
+          "proxy": {
+            "bindingOptions": 38,
+            "bindingSubmits": 19,
+            "identitySubmits": 15,
+            "closureSubmits": 12,
+            "credentialResultQueries": 43,
+            "identityResultQueries": 1,
+            "resetOptions": 13,
+            "resetIntentSubmits": 2,
+            "heldBindingReplies": 2,
+            "heldIdentityReplies": 5,
+            "releasedBindingReplies": 1,
+            "releasedIdentityReplies": 2,
+            "modifiedRpOptions": 4,
+            "modifiedRpHash": 2,
+            "lastBindingStatus": 204,
+            "lastResetStatus": 401,
+            "lastIdentityStatus": 200,
+            "loginSubmits": 10,
+            "sessionReads": 54,
+            "renewalSubmits": 0,
+            "registrationSubmits": 19,
+            "removalSubmits": 7,
+            "lastRemovalStatus": 204,
+            "proofsStored": false
+          }
+        },
+        "delta": {
+          "bindingOptions": 1,
+          "bindingSubmits": 0,
+          "identitySubmits": 0,
+          "closureSubmits": 0,
+          "credentialResultQueries": 0,
+          "identityResultQueries": 0,
+          "resetOptions": 0,
+          "resetIntentSubmits": 0,
+          "heldBindingReplies": 0,
+          "heldIdentityReplies": 0,
+          "releasedBindingReplies": 0,
+          "releasedIdentityReplies": 0,
+          "modifiedRpOptions": 0,
+          "modifiedRpHash": 0,
+          "loginSubmits": 1,
+          "sessionReads": 2,
+          "renewalSubmits": 0,
+          "registrationSubmits": 0,
+          "removalSubmits": 0
+        },
+        "sqlReadOnly": true,
+        "proofsStored": false,
+        "actualAppAcceptancePassed": false
+      }
+    },
+    "approvedIsolatedSignatureRestored": true,
+    "negativeSignatureLeftInstalled": false,
+    "providerLogsAvailable": false,
+    "genericCancellationReclassifiedAsAssociation": false,
+    "rawProofStored": false
+  },
+  "targetSelection": {
+    "result": "PASS",
+    "file": "tools/reveal-android-b3-b4-target.py",
+    "scope": "Live original PID/stage, exact unique synthetic public label, bounded scrolling and selection only; native provider performs UV.",
+    "temporaryXmlOnly": true,
+    "rawAccountListStored": false,
+    "observedTargets": [
+      {
+        "pid": 19326,
+        "stage": "ni-closed-assertion",
+        "expectedCredentialLabel": "HnuHole test e5e1b0ed",
+        "credentialLabelVisible": true,
+        "scrollCount": 1,
+        "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+        "targetBounds": [
+          228,
+          1648,
+          690,
+          1770
+        ],
+        "selectedCredential": true,
+        "authenticated": false,
+        "rawAccountListStored": false,
+        "hostDidNotPerformBiometric": true
+      },
+      {
+        "pid": 19326,
+        "stage": "ni-preflight-assertion",
+        "expectedCredentialLabel": "HnuHole test a87c864d",
+        "credentialLabelVisible": true,
+        "scrollCount": 0,
+        "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+        "targetBounds": [
+          228,
+          1593,
+          690,
+          1715
+        ],
+        "selectedCredential": true,
+        "authenticated": false,
+        "rawAccountListStored": false,
+        "hostDidNotPerformBiometric": true
+      }
+    ]
+  },
+  "otherPasskeyRetentionScope": "Actual phone removal/old assertion/session/recovery-code availability plus unchanged v15 actual PostgreSQL two-key retention; no two native vivo enrollments claimed.",
+  "approvedIsolatedSignatureRestored": true,
+  "mainPackagePreserved": true,
+  "environmentRetained": true,
+  "rawProofStored": false,
+  "manualActionsComplete": true,
+  "currentAutomaticPreparationEvidence": "services/api/authlab/android-b3b4-v16-preparation-verification.json",
+  "automaticPreparationScope": "v16 analysis/four builds/signatures/native12/release13; shared188 and actualSQL249 retain unchanged v15 tested-source scope. Not rerun in this final device batch.",
+  "fixedNonIOSCounts": {
+    "PASS": 19,
+    "FAIL": 3,
+    "BLOCKED": 2,
+    "total": 24
+  },
+  "b1b2HistoricalElevenAcceptedUnchanged": true,
+  "b5SecondPhysicalAndroid": "BLOCKED",
+  "b6FinalRegressionAndDelivery": "NOT_RUN",
+  "ios": "NOT_RUN",
+  "fullNonIOSAcceptancePassed": false,
+  "productionApproved": false,
+  "hnuHoleCommitted": false,
+  "hnuHolePushed": false,
+  "nextRequiredWork": [
+    "NI-D01: client pinned-RP, actual server RP-hash 422 and original natural-expiry reconciliation passed; native wrong-RP association cause remains unproven.",
+    "NI-D02: same-code/same-package approved signature control passed; wrong signature sends no proof, but OEM cancellation does not identify association cause.",
+    "NI-D03: approved certificate and missing package association verified; no proof submitted, but OEM cancellation does not identify association cause.",
+    "Resolve provider-specific diagnostics or run attributable association negatives with a suitable real provider/device; do not repeat the same opaque cancellation or change acceptance criteria."
+  ],
+  "historicalSummary": "services/api/authlab/android-b3b4-v14-batch-verification.json"
+}

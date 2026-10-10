@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "hnuhole-auth-machine-transfer/v1",
+  "recordedOn": "2026-10-10",
+  "userRequest": "Commit and push all auth implementation, acceptance and diagnosis; transfer task caches/test secrets; cleanup after remote verification.",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "repositoryVisibility": "public",
+  "handoff": "docs/design/auth-privacy-machine-transfer-20261010.md",
+  "functionalAcceptancePromoted": false,
+  "b1b2": {
+    "pass": 11
+  },
+  "b3b4": {
+    "pass": 8,
+    "fail": 3,
+    "notRun": 0
+  },
+  "fixedNonIOS24": {
+    "pass": 19,
+    "fail": 3,
+    "blocked": 2
+  },
+  "b6": "NOT_RUN",
+  "ios": "NOT_RUN",
+  "productionPassed": false,
+  "currentEnvironmentFailure": {
+    "hostDFreeBytes": 11141120,
+    "wslUbuntuRootReadOnly": true,
+    "ioErrors": [
+      5,
+      30
+    ],
+    "affectedBuildInterrupted": true,
+    "acceptanceUnchanged": true
+  },
+  "phone": {
+    "mainApkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+    "isolatedApkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+    "diagnosticInstalled": false,
+    "dataCleared": false,
+    "originalProviderAndAutofillRestored": true,
+    "clashModeRestore": "USER_TO_RESTORE_ORIGINAL_MODE"
+  },
+  "diagnostic": {
+    "implementation": "DEBUG_ONLY_IMPLEMENTED_BUILD_INCOMPLETE_DEVICE_NOT_RUN",
+    "source": [
+      "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticActivity.java",
+      "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticPolicy.java",
+      "tools/android-passkey-diagnostic/build-google-fido-diagnostic.py",
+      "tools/android-passkey-diagnostic/GoogleFidoDiagnosticPolicyTest.java",
+      "tools/run-google-passkey-diagnostic.py"
+    ],
+    "javaCompile": "PASS",
+    "debugApkAssembled": true,
+    "debugCertificateAndManifestDexChecked": true,
+    "releaseExclusion": "FAIL_INCOMPLETE",
+    "finalBuildManifestProduced": false,
+    "candidateBytes": 673296778,
+    "failures": [
+      "OFFLINE_TRANSITIVE_DEPENDENCY_MISSING",
+      "EMPTY_FLUTTER_CMAKE_PLACEHOLDER",
+      "INCLUDED_BUILD_INIT_WITHOUT_APP",
+      "WSL_EXT4_IO_READ_ONLY_HOST_D_FULL"
+    ],
+    "apiPrepare": "NOT_RUN",
+    "systemUi": "NOT_RUN",
+    "installedOnPhone": false,
+    "actualCSubmission": false,
+    "fixedCaseAcceptancePassed": false,
+    "pythonRunnerSyntax": "PASS",
+    "pythonOptimizedExecutionRejected": true,
+    "guardReview": "COMPLETED_WITH_PENDING_OS_BUILD_VALIDATION"
+  },
+  "releaseTag": "auth-machine-handoff-20261010",
+  "releaseUrl": "https://github.com/zewbby/HnuHole/releases/tag/auth-machine-handoff-20261010",
+  "archiveManifest": "services/api/authlab/auth-machine-cache-archive-manifest.json",
+  "encryption": "AES-256-GCM; key delivered separately, not public Git",
+  "remotePush": "PENDING",
+  "archiveUpload": "PENDING",
+  "cleanup": "PENDING_AFTER_REMOTE_ASSETS_VERIFIED",
+  "preserved": [
+    "existing SDK/AVD/Flutter/JDK installations",
+    "phone apps and user data",
+    "unrelated projects and unknown Docker volumes",
+    "docs/research/anonymity-first-redesign-proposal-2026-10-06.md (pre-existing unrelated untracked draft)"
+  ]
+}

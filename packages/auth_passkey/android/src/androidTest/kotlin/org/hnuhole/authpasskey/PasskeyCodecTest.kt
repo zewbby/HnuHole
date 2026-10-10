@@ -43,6 +43,16 @@ class PasskeyCodecTest {
         }
         rejects { PasskeyCodec.options(get().put("challenge", encoded(32) + "=").toString(), false) }
     }
+    @Test fun selectedAcceptanceUsesOneCanonicalPublicIdAndKeepsOriginalChallenge() {
+        val request = get()
+        val result = JSONObject(PasskeyCodec.selectedAcceptanceOptions(request.toString(), encoded(16)))
+        assertEquals(request.getString("challenge"), result.getString("challenge"))
+        assertEquals("required", result.getString("userVerification"))
+        assertEquals(1, result.getJSONArray("allowCredentials").length())
+        assertEquals(encoded(16), result.getJSONArray("allowCredentials").getJSONObject(0).getString("id"))
+        rejects { PasskeyCodec.selectedAcceptanceOptions(request.toString(), encoded(16)+"=") }
+        rejects { PasskeyCodec.selectedAcceptanceOptions(request.put("origin", "https://auth.example.invalid").toString(), encoded(16)) }
+    }
     @Test fun responseKeepsSignedBytesAndDropsProviderMetadata() {
         val source = response().put("authenticatorAttachment", "platform")
         source.getJSONObject("response").put("transports", JSONArray().put("internal"))
@@ -71,5 +81,53 @@ class PasskeyCodecTest {
         assertSame(second, pending.take(second))
         assertNull(pending.take(second))
         assertNull(pending.cancel())
+    }
+    @Test fun rejectedResponseDiagnosticDoesNotExposeSignedOrIdentifyingValues() {
+        val missing = response(); missing.getJSONObject("response").put("userHandle", JSONObject.NULL)
+        assertEquals("invalidResponseUserHandleAbsent", PasskeyCodec.rejectedResponseField(missing.toString(), false))
+        rejects { PasskeyCodec.response(missing.toString(), false) }
+        val badHandle = response(); badHandle.getJSONObject("response").put("userHandle", encoded(32, 9) + "==")
+        assertEquals("invalidResponseUserHandleEncoding", PasskeyCodec.rejectedResponseField(badHandle.toString(), false))
+        val envelope = response().put("rawId", encoded(16, 8))
+        assertEquals("invalidResponseEnvelope", PasskeyCodec.rejectedResponseField(envelope.toString(), false))
+        val signature = response(); signature.getJSONObject("response").put("signature", "invalid+encoding=")
+        assertEquals("invalidResponseSignature", PasskeyCodec.rejectedResponseField(signature.toString(), false))
+    }
+    @Test fun providerPaddingNormalizesTransportWithoutChangingSignedBytesOrAcceptingBadPadBits() {
+        val original = response()
+        val padded = JSONObject(original.toString())
+        fun pad(value: String) = value + "=".repeat((4 - value.length % 4) % 4)
+        padded.put("id", pad(original.getString("id")))
+        for (key in listOf("clientDataJSON", "authenticatorData", "signature", "userHandle")) {
+            padded.getJSONObject("response").put(key, pad(original.getJSONObject("response").getString(key)))
+        }
+        val normalized = JSONObject(PasskeyCodec.response(padded.toString(), false))
+        assertEquals(original.getString("id"), normalized.getString("id"))
+        for (key in listOf("clientDataJSON", "authenticatorData", "signature", "userHandle")) {
+            assertEquals(original.getJSONObject("response").getString(key), normalized.getJSONObject("response").getString(key))
+            assertArrayEquals(Base64.decode(original.getJSONObject("response").getString(key), Base64.URL_SAFE),
+                Base64.decode(normalized.getJSONObject("response").getString(key), Base64.URL_SAFE))
+        }
+        val badBits = response(); badBits.getJSONObject("response").put("userHandle", encoded(32, 9).dropLast(1) + "l")
+        rejects { PasskeyCodec.response(badBits.toString(), false) }
+        val badPadding = response(); badPadding.getJSONObject("response").put("signature", encoded(72) + "=")
+        rejects { PasskeyCodec.response(badPadding.toString(), false) }
+        val absent = response(); absent.getJSONObject("response").put("userHandle", JSONObject.NULL)
+        rejects { PasskeyCodec.response(absent.toString(), false) }
+        rejects { PasskeyCodec.options(get().put("challenge", encoded(32) + "=").toString(), false) }
+    }
+    @Test fun acceptanceLabelIsSyntheticAndLeavesAllAuthorizingCreationFieldsExact() {
+        val original = create()
+        val changed = JSONObject(PasskeyCodec.labeledAcceptanceOptions(original.toString(), "HnuHole test 1234abcd"))
+        assertEquals("HnuHole test 1234abcd", changed.getJSONObject("user").getString("displayName"))
+        assertEquals("HnuHole test 1234abcd", changed.getJSONObject("user").getString("name"))
+        val request = androidx.credentials.CreatePublicKeyCredentialRequest(changed.toString())
+        assertEquals("HnuHole test 1234abcd", request.displayInfo.userId.toString())
+        assertEquals("HnuHole test 1234abcd", request.displayInfo.userDisplayName.toString())
+        changed.getJSONObject("user").put("name", original.getJSONObject("user").getString("name"))
+            .put("displayName", "Hnuhole account")
+        assertEquals(original.toString(), changed.toString())
+        rejects { PasskeyCodec.labeledAcceptanceOptions(original.toString(), "real@example.invalid") }
+        rejects { PasskeyCodec.labeledAcceptanceOptions(original.put("origin", "https://auth.example.invalid").toString(), "HnuHole test 1234abcd") }
     }
 }

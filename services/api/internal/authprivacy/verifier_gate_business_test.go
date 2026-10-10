@@ -183,6 +183,45 @@ func TestVerifierGateIsIndependentOfCommunityFreeze(t *testing.T) {
 	}
 }
 
+func TestVerifierUnanchoredOldOTPResultCanEndWithoutAllocatingKeys(t *testing.T) {
+	l, e, mail := newConfirmationTestEligibility(t)
+	control := controlVerifierGate(t, l)
+	ctx := context.Background()
+	req := confirmationFixture(t, l, e, mail, "v-unanchored-result@hainanu.edu.cn")
+	before := count(t, l.vp, `SELECT count(*) FROM v_auth.request_results`)
+	assertState := func(key, flow [32]byte, installation [16]byte, wanted string) {
+		t.Helper()
+		result, err := e.GetOTPConfirmationResult(ctx, key, flow, installation)
+		if err != nil || result.State != wanted || result.RegistrationTicket != "" {
+			t.Fatalf("unanchored result: state=%s wanted=%s err=%v", result.State, wanted, err)
+		}
+	}
+	assertState(req.Key, req.FlowID, req.InstallationID, "PENDING")
+	if err := control.gate.Freeze(ctx, "unconfirmed flow freeze"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := e.GetOTPConfirmationResult(ctx, req.Key, req.FlowID, req.InstallationID); !errors.Is(err, ErrAuthorizationUnavailable) {
+		t.Fatalf("frozen result query authorized: %v", err)
+	}
+	control.recover(t, AuthorizationRecoveryNormal, 3, 3)
+	if _, err := e.ConfirmOTP(ctx, req); !errors.Is(err, ErrOTPExpired) {
+		t.Fatalf("old unconfirmed generation accepted: %v", err)
+	}
+	assertState(req.Key, req.FlowID, req.InstallationID, "REVERIFY_REQUIRED")
+	wrongInstallation := req.InstallationID
+	wrongInstallation[0] ^= 1
+	assertState(req.Key, req.FlowID, wrongInstallation, "PENDING")
+	assertState(req.Key, [32]byte{9}, req.InstallationID, "PENDING")
+	assertState([32]byte{8}, req.FlowID, req.InstallationID, "REVERIFY_REQUIRED")
+	if count(t, l.vp, `SELECT count(*) FROM v_auth.request_results`) != before ||
+		count(t, l.vp, `SELECT count(*) FROM v_auth.otp_confirmations`) != 0 ||
+		count(t, l.vp, `SELECT count(*) FROM v_auth.confirmation_sign_jobs`) != 0 {
+		t.Fatal("result queries allocated keys, qualification or signing jobs")
+	}
+	current := confirmationFixture(t, l, e, mail, "v-current-unanchored@hainanu.edu.cn")
+	assertState(current.Key, current.FlowID, current.InstallationID, "PENDING")
+}
+
 func TestVerifierLateSignatureCannotCrossFreezeOrRecovery(t *testing.T) {
 	for _, recoverGate := range []bool{false, true} {
 		t.Run(map[bool]string{false: "freeze", true: "recovery"}[recoverGate], func(t *testing.T) {

@@ -25,6 +25,10 @@ bin/
 coverage.out
 *.test
 
+# Python tool bytecode
+__pycache__/
+*.py[cod]
+
 # Local infrastructure state
 infra/.data/
 infra/.cache/

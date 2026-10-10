@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "org.hnuhole.hnuhole_mobile",
+      "sha256_cert_fingerprints": [
+        "FD:26:B2:76:CB:17:0B:F0:84:A9:32:D3:B3:91:9B:D3:AA:44:87:43:95:80:99:68:BD:D7:4D:DA:B8:73:89:DC"
+      ]
+    }
+  }
+]

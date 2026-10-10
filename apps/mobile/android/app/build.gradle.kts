@@ -45,3 +45,14 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+// Owned src/debug diagnostic uses the public API already present transitively
+// through credentials-play-services-auth. It is not part of release sources.
+dependencies {
+    // Plugin implementation dependencies already provide the runtime artifacts.
+    // Expose only their public types to src/debug, without changing that graph.
+    debugCompileOnly("com.google.android.gms:play-services-fido:21.0.0") { isTransitive = false }
+    debugCompileOnly("com.google.android.gms:play-services-base:18.5.0") { isTransitive = false }
+    debugCompileOnly("com.google.android.gms:play-services-basement:18.5.0") { isTransitive = false }
+    debugCompileOnly("com.google.android.gms:play-services-tasks:18.2.0") { isTransitive = false }
+}

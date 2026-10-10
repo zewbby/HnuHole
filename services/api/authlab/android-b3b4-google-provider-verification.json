@@ -1,0 +1,236 @@
+{
+  "schemaVersion": "hnuhole-google-provider-comparison/v1",
+  "recordedOn": "2026-10-10",
+  "result": "FAIL",
+  "scope": "SAME_PHYSICAL_VIVO_GOOGLE_POSITIVE_CONTROL_PREREQUISITE_ONLY",
+  "actualPositiveControlPassed": false,
+  "newNegativeCasesExecuted": false,
+  "existingThreeNegativeFailuresNotReclassified": true,
+  "actualGoogleRegistrationActivityWitnessed": {
+    "pid": 23554,
+    "component": "com.google.android.gms/.auth.api.credentials.fido.registration.ui.RegistrationActivity",
+    "source": "Owned wait-android-b3-b4-native.py live stage output"
+  },
+  "prerequisites": {
+    "publicGoogleDalCheck": {
+      "result": "PASS",
+      "verifiedAtUTC": "2026-10-10T14:42:58.218370+00:00",
+      "scope": "PUBLIC_GOOGLE_DAL_SERVICE_ONLY_NOT_PHONE_NATIVE_ACCEPTANCE",
+      "checks": {
+        "approved": {
+          "httpStatus": 200,
+          "linked": true,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+          "certificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+          "responseSha256": "1e2aa7431d90b63ac7d5785c7731dc1308afec51d3422cadebf50544c6bd23ad"
+        },
+        "bad-signature": {
+          "httpStatus": 200,
+          "linked": false,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+          "certificateSha256": "5dbdc59504c81a203bffc3e3ee5ea460e1dc4693897b0975d6981cac13e744ac",
+          "responseSha256": "60f51de75bcb216e19e0786338199cb25602cb569237d81e16afa5c0573552a1"
+        },
+        "missing-package": {
+          "httpStatus": 200,
+          "linked": false,
+          "applicationId": "org.hnuhole.hnuhole_mobile.unassociated",
+          "certificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+          "responseSha256": "60f51de75bcb216e19e0786338199cb25602cb569237d81e16afa5c0573552a1"
+        }
+      },
+      "deviceNativeAcceptancePassed": false,
+      "accountsInspected": false,
+      "proofStored": false
+    },
+    "systemGoogleAccountPresenceChecked": true,
+    "accountNamesExported": false,
+    "chromeSyncEnabledHumanConfirmed": true,
+    "chromeGoogleSearchLiveResultsHumanConfirmed": true,
+    "googlePlayServicesVersion": "26.37.37 (260400-994713346)",
+    "autofillAndCredentialProvidersAlignedForFinalAttempt": true,
+    "proxyGlobalModeHumanConfirmed": true,
+    "googlePasswordManagerSetupInspection": "COMPLETED_NO_SETUP_IDENTITY_OR_ENCRYPTED_UNLOCK_PROMPTS_NOT_STORE_READINESS_PROOF",
+    "newSourceObserverCompiledOnly": true
+  },
+  "attempts": [
+    {
+      "attempt": "attempt-28-v17-google-control-cancelled-before-proof",
+      "pid": 21062,
+      "result": "FAIL",
+      "apkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+      "nativeOutcome": {
+        "pid": 21062,
+        "activityAttached": 1,
+        "nativeBegun": 1,
+        "nativeCreateCancelled": 1,
+        "actualOtherCreateError": 1,
+        "nativeErrored": 1
+      },
+      "bindingSubmitsAtStart": 19,
+      "deviceEvidenceSha256": "22028f87a5538f335ecb937df69067d19362963a44119824999e23ad2d9fef4c",
+      "versionEvidenceSha256": "f890523df8c62d3433952cb77f1c74a08b3e079c317d6e0f489ba8078fdc5757"
+    },
+    {
+      "attempt": "attempt-29-v17-google-synced-control-cancelled",
+      "pid": 23292,
+      "result": "FAIL",
+      "apkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+      "nativeOutcome": {
+        "pid": 23292,
+        "activityAttached": 1,
+        "nativeBegun": 1,
+        "nativeCreateCancelled": 1,
+        "actualOtherCreateError": 1,
+        "nativeErrored": 1
+      },
+      "bindingSubmitsAtStart": 19,
+      "deviceEvidenceSha256": "002931ce63906314ad846c7837c3ca4998902503a66fde58aadf73c7fcc3e7d2",
+      "versionEvidenceSha256": "0a29ed1b5b69efe113123348f4417674580bb1b8fb3cfa90562848f481e6d02f"
+    },
+    {
+      "attempt": "attempt-30-v17-google-ui-diagnosis-cancelled",
+      "pid": 23554,
+      "result": "FAIL",
+      "apkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+      "nativeOutcome": {
+        "pid": 23554,
+        "activityAttached": 1,
+        "nativeBegun": 1,
+        "nativeCreateCancelled": 1,
+        "actualOtherCreateError": 1,
+        "nativeErrored": 1
+      },
+      "bindingSubmitsAtStart": 19,
+      "deviceEvidenceSha256": "ff64c8450d44541291d0375ad2f15b76ed7869e76637d71a95a773260f7cbf52",
+      "versionEvidenceSha256": "6c008bf42d1abf1896fb6b9d29748d76601d1be2a7f904c76dd4cd78694c939b"
+    },
+    {
+      "attempt": "attempt-31-v17-google-autofill-control-cancelled",
+      "pid": 26370,
+      "result": "FAIL",
+      "apkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+      "nativeOutcome": {
+        "pid": 26370,
+        "activityAttached": 1,
+        "nativeBegun": 1,
+        "nativeCreateCancelled": 1,
+        "actualOtherCreateError": 1,
+        "nativeErrored": 1
+      },
+      "bindingSubmitsAtStart": 19,
+      "deviceEvidenceSha256": "4548cd14e19a6126083e861cc24039a8134c98679b4f7b494b666905f974805a",
+      "versionEvidenceSha256": "4f028dc4a9b24c5a848df0a2bfe0b8e43077060026f9ef6c36c4a2fc9f74c81c"
+    },
+    {
+      "attempt": "attempt-32-v17-reconnected-control-cancelled",
+      "pid": 26923,
+      "result": "FAIL",
+      "apkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+      "bindingSubmitsAtStart": 19,
+      "deviceEvidenceSha256": "f96a7974138693a8a7977dbc36df0d9d98c34ec7ff1825450e0fdcb1e0b01848",
+      "versionEvidenceSha256": "84006352bf6ef95235e5e09da1cd6d22dc491b64b0f61810f7ad4fb3e1a5b2dc",
+      "scope": "NATIVE_POSITIVE_CONTROL_ONLY_NO_NEGATIVE_ACCEPTANCE"
+    },
+    {
+      "attempt": "attempt-33-v17-reconnected-callback-diagnosis",
+      "pid": 15039,
+      "result": "FAIL",
+      "apkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+      "bindingSubmitsAtStart": 19,
+      "deviceEvidenceSha256": "10ed179d8efb9eefa002b12439d10c18aac0fd96209b7859a307d36731dc9c81",
+      "versionEvidenceSha256": "074c023b2a4f212cb6e753c61c7f0c7ab2bd8a8bbfd0b390af54c89c3ff73c0a",
+      "scope": "NATIVE_POSITIVE_CONTROL_ONLY_NO_NEGATIVE_ACCEPTANCE"
+    },
+    {
+      "attempt": "v17-global-positive-control",
+      "pid": 18192,
+      "result": "FAIL",
+      "apkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+      "nativeOutcome": {
+        "pid": 18192,
+        "activityAttached": 1,
+        "nativeBegun": 1,
+        "nativeCreateCancelled": 1,
+        "actualOtherCreateError": 1,
+        "nativeErrored": 1
+      },
+      "humanAction": "CONTINUE_CONFIRMED",
+      "proxyGlobalModeHumanConfirmed": true,
+      "bindingSubmitsAtStart": 19,
+      "deviceEvidenceSha256": "97579b3e0da3da3ed7f6471572aa4f666562479b6b3a0287cb060836b65fe783",
+      "versionEvidenceSha256": "0a2bd1023d023b1712d199f23e60dc8e532689b7122037a0720e1ec703142323"
+    }
+  ],
+  "finalIndependentCounts": {
+    "sql": {
+      "gateState": "OPEN",
+      "generation": 6,
+      "activeAccounts": 6,
+      "closedAccounts": 12,
+      "closedSecretsRemaining": 0,
+      "pendingClosures": 0,
+      "passkeys": 3,
+      "recoveryCodes": 6,
+      "closedPasskeys": 0,
+      "resetIntents": 0,
+      "activeSessions": 4,
+      "closedActiveSessions": 0,
+      "identityReceipts": 15,
+      "closedIdentityProfiles": 0,
+      "activeIdentities": 0
+    },
+    "proxy": {
+      "bindingOptions": 45,
+      "bindingSubmits": 19,
+      "identitySubmits": 15,
+      "closureSubmits": 12,
+      "credentialResultQueries": 43,
+      "identityResultQueries": 1,
+      "resetOptions": 13,
+      "resetIntentSubmits": 2,
+      "heldBindingReplies": 2,
+      "heldIdentityReplies": 5,
+      "releasedBindingReplies": 1,
+      "releasedIdentityReplies": 2,
+      "modifiedRpOptions": 4,
+      "modifiedRpHash": 2,
+      "lastBindingStatus": 204,
+      "lastResetStatus": 401,
+      "lastIdentityStatus": 200,
+      "loginSubmits": 11,
+      "sessionReads": 62,
+      "renewalSubmits": 0,
+      "registrationSubmits": 20,
+      "removalSubmits": 7,
+      "lastRemovalStatus": 204,
+      "proofsStored": false
+    }
+  },
+  "originalProviderAndAutofillSettingsRestored": true,
+  "settingsRestoration": {
+    "owner": "HNUHOLE_ANDROID_MATRIX_V1",
+    "device": "10CEAG17RY003M7",
+    "originalSettings": {
+      "credential_service": "com.vivo.cipherchain/com.vivo.cipherchain.credentialmanager.CipherchainCredentialProviderService",
+      "credential_service_primary": "com.vivo.cipherchain/com.vivo.cipherchain.credentialmanager.CipherchainCredentialProviderService"
+    },
+    "temporarySettings": {
+      "credential_service": "com.google.android.gms/com.google.android.gms.auth.api.credentials.credman.service.PasswordAndPasskeyService",
+      "credential_service_primary": "com.google.android.gms/com.google.android.gms.auth.api.credentials.credman.service.PasswordAndPasskeyService"
+    },
+    "mainApkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+    "restored": true,
+    "accountsInspected": false,
+    "credentialsExported": false,
+    "originalAutofillService": "com.vivo.cipherchain/.service.CipChainService",
+    "temporaryAutofillService": "com.google.android.gms/.autofill.service.AutofillService",
+    "resumeCount": 1
+  },
+  "rawProofStored": false,
+  "nativeProviderMessageStored": false,
+  "rootCauseConfirmed": false,
+  "rootCause": "Upstream Google failure remains unconfirmed. Installed OEM selector demonstrably collapses non-success provider returns into framework selector cancellation; latest exact branch attribution remains limited.",
+  "nextRequiredWork": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
+  "currentSelectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json"
+}

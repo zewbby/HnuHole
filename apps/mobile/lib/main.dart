@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
+import 'src/development/app_transport.dart';
 
 void main() {
   final communityBaseUri = Uri.parse(
@@ -19,11 +20,25 @@ void main() {
       defaultValue: 'https://verifier.hnuhole.invalid',
     ),
   );
-  final repository = HttpChannelRepository(baseUri: communityBaseUri);
+  final repository = HttpChannelRepository(
+    baseUri: communityBaseUri,
+    client: createAppHttpClient(
+      community: communityBaseUri,
+      verifier: verifierBaseUri,
+    ),
+  );
   final directory = ChannelDirectoryController(repository: repository);
   final api = HttpAuthApi(
     communityBaseUri: communityBaseUri,
     verifierBaseUri: verifierBaseUri,
+    passkeyRpId: developmentPasskeyRp(
+      community: communityBaseUri,
+      verifier: verifierBaseUri,
+    ),
+    client: createAppHttpClient(
+      community: communityBaseUri,
+      verifier: verifierBaseUri,
+    ),
   );
   final storageScope =
       'hnuhole.isolated.auth.v1|$communityBaseUri|$verifierBaseUri';
@@ -42,9 +57,16 @@ void main() {
   );
   final passkey = NativePasskeyClient();
   final management = SecurityManagementController(
-    api: api, store: store, passkey: passkey, sessions: sessions,
+    api: api,
+    store: store,
+    passkey: passkey,
+    sessions: sessions,
   );
-  final identities = IdentityManagementController(api: api, store: store, sessions: sessions);
+  final identities = IdentityManagementController(
+    api: api,
+    store: store,
+    sessions: sessions,
+  );
   final flows = AuthFlows(
     api: api,
     store: store,
@@ -161,14 +183,20 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
       return;
     }
     _securityRouteOpen = true;
-    navigator.push(MaterialPageRoute<void>(builder: (context) => SecurityManagementScreen(
-      controller: widget.management,
-      sessions: widget.sessions,
-      onAuthenticationRequired: () {
-        Navigator.of(context).pop();
-        _openAuth();
-      },
-    ))).whenComplete(() => _securityRouteOpen = false);
+    navigator
+        .push(
+          MaterialPageRoute<void>(
+            builder: (context) => SecurityManagementScreen(
+              controller: widget.management,
+              sessions: widget.sessions,
+              onAuthenticationRequired: () {
+                Navigator.of(context).pop();
+                _openAuth();
+              },
+            ),
+          ),
+        )
+        .whenComplete(() => _securityRouteOpen = false);
   }
 
   void _openSettings() {
@@ -179,9 +207,17 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
       return;
     }
     _settingsRouteOpen = true;
-    navigator.push(MaterialPageRoute<void>(builder: (context) => SettingsScreen(
-      onManageIdentity: _openIdentity, onManageSecurity: _openSecurity,
-    ))).whenComplete(() => _settingsRouteOpen = false);
+    navigator
+        .push(
+          MaterialPageRoute<void>(
+            builder: (context) => SettingsScreen(
+              onManageIdentity: _openIdentity,
+              onManageSecurity: _openSecurity,
+              onManageAccount: _openAuth,
+            ),
+          ),
+        )
+        .whenComplete(() => _settingsRouteOpen = false);
   }
 
   void _openIdentity() {
@@ -192,13 +228,20 @@ class _HnuholeAppState extends State<_HnuholeApp> with WidgetsBindingObserver {
       return;
     }
     _identityRouteOpen = true;
-    navigator.push(MaterialPageRoute<void>(builder: (context) => IdentityManagementScreen(
-      controller: widget.identities, sessions: widget.sessions,
-      onAuthenticationRequired: () {
-        Navigator.of(context).pop();
-        _openAuth();
-      },
-    ))).whenComplete(() => _identityRouteOpen = false);
+    navigator
+        .push(
+          MaterialPageRoute<void>(
+            builder: (context) => IdentityManagementScreen(
+              controller: widget.identities,
+              sessions: widget.sessions,
+              onAuthenticationRequired: () {
+                Navigator.of(context).pop();
+                _openAuth();
+              },
+            ),
+          ),
+        )
+        .whenComplete(() => _identityRouteOpen = false);
   }
 
   @override

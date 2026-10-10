@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "result": "PASS",
+  "scope": "V17_FIXTURE_BUILD_AND_SIGNATURES_ONLY",
+  "fixtureChange": "Reuse retained association-control account through actual product login; no duplicate registration or pending-operation discard",
+  "analyzeActuallyRun": true,
+  "threeApkBuildsActuallyRun": true,
+  "fourVariantSignaturesVerified": true,
+  "negativeSignatureOnlyPayloadComparisonPassed": true,
+  "sharedFlutter188TestsRerun": false,
+  "sharedGo249TestsRerun": false,
+  "native12TestsRerun": false,
+  "release13TestsRerun": false,
+  "unchangedProductEvidence": "android-b3b4-v16-preparation-verification.json",
+  "physicalAcceptancePassed": false,
+  "rawSecretsStored": false,
+  "apks": [
+    {
+      "fileName": "phone-b3b4.apk",
+      "applicationId": "org.hnuhole.hnuhole_mobile",
+      "apkSha256": "7d83097e0fe696f823885bbcf2fd6ef617d25441bc74ecedb52f816cb29f0f4f",
+      "signingCertificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+      "negativeCertificateApproved": false
+    },
+    {
+      "fileName": "b3b4-acceptance.apk",
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+      "apkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+      "signingCertificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+      "negativeCertificateApproved": false
+    },
+    {
+      "fileName": "b3b4-bad-signature.apk",
+      "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+      "apkSha256": "a7423dc98d61a805b02211cfe5fc79d2256cc5a2e14538ab8414211710c2e775",
+      "signingCertificateSha256": "5dbdc59504c81a203bffc3e3ee5ea460e1dc4693897b0975d6981cac13e744ac",
+      "negativeCertificateApproved": false
+    },
+    {
+      "fileName": "b3b4-unassociated.apk",
+      "applicationId": "org.hnuhole.hnuhole_mobile.unassociated",
+      "apkSha256": "e95baeb2f316ea8349927c2084b2dad6aae2286463f2360b1c0b0ba6016eded1",
+      "signingCertificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+      "negativeCertificateApproved": false
+    }
+  ],
+  "sourceFilesSha256": {
+    "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyCodec.kt": "678b20e0b849e6c2cf49347d1a10259570afdefc9d376162d007fdf59a1ed8cb",
+    "apps/mobile/integration_test/auth_android_b3_b4_device_test.dart": "32a9615cb9d42d325e5afae24491a37ca3ddaff751b529473a8f90dac8ecba55",
+    "apps/mobile/integration_test/owned_auth_device_helpers.dart": "47e1ebc1d3b0d34d1b292a1123c92f679aa53acf06e3a8a54322014702236e33",
+    "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt": "11e7837ab23f57749d8171324495038094a5306df8c2464db64ec6f9899a5f40",
+    "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt": "d9d7f6d4628252dc5748be91e1454a0675e1e981a64cb94000823d6538feb93c",
+    "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PendingOperation.kt": "512a27ad24dbe23f6d9aff9441592680a477767e92a0b19e22d0f130c9ef41b1",
+    "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrors.kt": "6c918e07f575e62f7939c314ca60dee6663c3e761105b126ae3a080b7e2a2d93",
+    "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt": "fb1c0e5232c3033b020564bbc77a078438687b9e88d394952b2c610fe517e8ba",
+    "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt": "bec466d472821b3535b1a5bd00cd599c5787e101d2addbda94b846f93045044f",
+    "tools/run-android-live-device.ps1": "ab383e5cbcdf95e410312e03416a874a5146b5ef6f4af4f7a682f518295607c0",
+    "tools/control-android-b3-b4-device.py": "2b0729381f371661e7580120899d389fac09f1927759f6045db217ce02b309e9",
+    "tools/control-android-b3-b4.py": "a858a20526c9ad966f00e881bb276a1023f7dced7d9940baff96e292de9ea92b",
+    "tools/android-auth-b3-b4-proxy.py": "2b9db447fdfb4f16ec6fbbcbc9c58d884cab396af722a8490a357487014ab42e",
+    "tools/prepare-android-b3-b4-vault-overlay.py": "3d79535552fcc5edfad9813ba2a336ce2ac9350e398999c629580b4cdf8284e3"
+  }
+}
