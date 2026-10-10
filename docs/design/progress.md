@@ -166,3 +166,6 @@
 认证主链已有规则、协议、恢复、数据/API、威胁模型、OpenAPI 和评审材料，并已按用户授权进入隔离实现：槽位／开户／ACK、校邮确认、原确认续办与 HTTP／mTLS 的证据见[资格报告](auth-privacy-eligibility-http-validation-report.md)；登录、会话接替／续期／撤销及 Gate 故障验证见[会话报告](auth-privacy-session-lifecycle-validation-report.md)；恢复码重设、七天注销、截止裁决与受信封禁联动见[恢复／注销报告](auth-privacy-recovery-closure-validation-report.md)。下一切片补齐恢复码轮换与可选 Passkey 的凭据管理，再串联移动端持久待办、设备通知与生产授权。每次实现提供必要的真实事务／故障验证；生产接入仍须完整迁移、可信灾备、运营权限事实与独立安全验收。旧 [ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)不再是实现规范。
 
 随后按任务 2 接入文字内容主链，再安排身份/内容/会话数据关系、可见性和账号去重等验证、联调内测与分发上线。这部分须单独估算，不把设计成熟度当成上线进度。
+
+
+2026-10-10 交付记录：M1源码与交接已推送到 `codex/image-viewer-component`，源码提交 `c500788fa99a571cb67f8c4a663e9e4da2c11411`，已核对远端SHA。后续交接元数据提交以远端分支最新HEAD为准。缓存删除被自动审批检查拒绝（blocked by policy），未执行删除；本任务5个缓存/构建目录共253787594字节仍保留。准确路径和状态见 `image-viewer-m1-cleanup.json`；源码、锁文件和合成测试图片已入库，换机不依赖这些缓存。M1平台关卡仍待执行，正式组件尚未验收。

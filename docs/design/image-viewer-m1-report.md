@@ -43,3 +43,6 @@ gal发布源码 Android 复制原文件字节；Darwin 路径使用 Photos 导�
 
 ## 换机与清理
 优先读 [机器交接](image-viewer-machine-handoff.md)、[计划](image-viewer-component-plan.md)、模块交接和台账。保存原文件为默认，GIF兼容未启用；未借用原vivo匿名App或服务。本次提交/推送经用户明确授权，实际远端SHA以Git历史/交付记录为准。自有pub缓存、两级build/.dart_tool及生成的本机配置在发布交接后清理，实际删除清单记录在机器记录。源码、锁文件、合成fixture和小型证据保留。
+
+
+2026-10-10 交付记录：M1源码与交接已推送到 `codex/image-viewer-component`，源码提交 `c500788fa99a571cb67f8c4a663e9e4da2c11411`，已核对远端SHA。后续交接元数据提交以远端分支最新HEAD为准。缓存删除被自动审批检查拒绝（blocked by policy），未执行删除；本任务5个缓存/构建目录共253787594字节仍保留。准确路径和状态见 `image-viewer-m1-cleanup.json`；源码、锁文件和合成测试图片已入库，换机不依赖这些缓存。M1平台关卡仍待执行，正式组件尚未验收。

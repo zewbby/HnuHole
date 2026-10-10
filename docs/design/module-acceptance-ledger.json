@@ -3856,7 +3856,20 @@
       }
     ],
     "verificationEvidence": "docs/design/image-viewer-m1-verification.json",
-    "machineHandoff": "docs/design/image-viewer-machine-handoff.md"
+    "machineHandoff": "docs/design/image-viewer-machine-handoff.md",
+    "publicationDelivery": {
+      "state": "SOURCE_PUSH_VERIFIED",
+      "sourceDeliveryCommit": "c500788fa99a571cb67f8c4a663e9e4da2c11411",
+      "remote": "https://github.com/zewbby/HnuHole.git",
+      "branch": "codex/image-viewer-component",
+      "remoteShaVerified": true,
+      "followup": "Delivery metadata commit follows; use latest remote branch HEAD."
+    },
+    "cleanupEvidence": {
+      "result": "BLOCKED",
+      "evidence": "docs/design/image-viewer-m1-cleanup.json",
+      "reason": "Automatic approval review rejected PowerShell Remove-Item commands: blocked by policy. No deletion executed."
+    }
   },
   "inventoryScope": "dynamicTestsExecutedInThisInventory=false describes the original inventory only; current feature checks below are separate",
   "currentFeature": {

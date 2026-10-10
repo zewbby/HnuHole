@@ -220,12 +220,49 @@
   ],
   "handoff": "docs/design/image-viewer-machine-handoff.md",
   "publication": {
-    "authorized": true,
-    "state": "PENDING_COMMIT_AND_PUSH"
+    "state": "SOURCE_PUSH_VERIFIED",
+    "sourceDeliveryCommit": "c500788fa99a571cb67f8c4a663e9e4da2c11411",
+    "remote": "https://github.com/zewbby/HnuHole.git",
+    "branch": "codex/image-viewer-component",
+    "remoteShaVerified": true,
+    "followup": "Delivery metadata commit follows; use latest remote branch HEAD."
   },
   "cleanup": {
-    "state": "PENDING_AFTER_FIRST_PUSH",
-    "scope": "ONLY_THIS_TASK_CACHE_BUILD_AND_GENERATED_LOCAL_FILES",
-    "sdkAndOtherTaskCachesPreserved": true
+    "result": "BLOCKED",
+    "reason": "Automatic approval review rejected PowerShell Remove-Item commands: blocked by policy. No deletion executed.",
+    "bytesRetained": 253787594,
+    "targets": [
+      {
+        "bytes": 51192164,
+        "path": "D:\\zewbbyTest\\Hnuhole-image-viewer-m1-20261010",
+        "result": "BLOCKED",
+        "deleted": false
+      },
+      {
+        "bytes": 56348857,
+        "path": "C:\\Users\\Administrator\\.codex\\worktrees\\image-viewer-component\\HnuHole\\packages\\image_viewer\\build",
+        "result": "BLOCKED",
+        "deleted": false
+      },
+      {
+        "bytes": 11448911,
+        "path": "C:\\Users\\Administrator\\.codex\\worktrees\\image-viewer-component\\HnuHole\\packages\\image_viewer\\.dart_tool",
+        "result": "BLOCKED",
+        "deleted": false
+      },
+      {
+        "bytes": 68276187,
+        "path": "C:\\Users\\Administrator\\.codex\\worktrees\\image-viewer-component\\HnuHole\\packages\\image_viewer\\example\\build",
+        "result": "BLOCKED",
+        "deleted": false
+      },
+      {
+        "bytes": 66521475,
+        "path": "C:\\Users\\Administrator\\.codex\\worktrees\\image-viewer-component\\HnuHole\\packages\\image_viewer\\example\\.dart_tool",
+        "result": "BLOCKED",
+        "deleted": false
+      }
+    ],
+    "preserved": "Existing SDKs, other task caches, AVDs, source, fixtures and lock files."
   }
 }

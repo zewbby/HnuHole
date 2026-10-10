@@ -75,3 +75,6 @@ M1退出条件仍需双端技术证据。M2统一接口、错误来源/重试/�
 
 ## 本机清理边界
 只删除本次自有 D:/zewbbyTest/Hnuhole-image-viewer-m1-20261010 缓存和 packages/image_viewer 下本次生成的 build/.dart_tool、本机插件/平台配置。保留现成Flutter/Android/JDK、其他pub/Gradle缓存、AVD、用户数据、其他工作树。实际结果见 image-viewer-m1-verification.json 的 cleanup。下次运行先pub get，Android必要时重新生成被gitignore忽略的wrapper启动文件。
+
+
+2026-10-10 交付记录：M1源码与交接已推送到 `codex/image-viewer-component`，源码提交 `c500788fa99a571cb67f8c4a663e9e4da2c11411`，已核对远端SHA。后续交接元数据提交以远端分支最新HEAD为准。缓存删除被自动审批检查拒绝（blocked by policy），未执行删除；本任务5个缓存/构建目录共253787594字节仍保留。准确路径和状态见 `image-viewer-m1-cleanup.json`；源码、锁文件和合成测试图片已入库，换机不依赖这些缓存。M1平台关卡仍待执行，正式组件尚未验收。
