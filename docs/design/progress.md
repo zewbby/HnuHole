@@ -1,5 +1,9 @@
 # 设计进度与剩余工作
 
+> **2026-10-10 图片组件 M1 宿主交接：**独立 packages/image_viewer 技术样例与两份锁文件已建立；extended_image10.1.0＋gal2.3.3复用路线，当前36项Windows宿主测试、本包/示例分析与Flutter资源编译PASS。严格长图、缩放/切图、动图停播/撤销、保存替身和条件GIF试验有范围证据；没有fork或自研原生桥。二值透明/循环/时序已试验，半透明默认拒绝，GIF兼容未启用。Android原生构建缺Gradle缓存、iOS缺Mac/Xcode；手机技术关按用户要求NOT_RUN。IV01为M1部分实现，M1整体、M2/M3/M4均未完成。用户授权提交/推送对应分支并清理本任务缓存；实际交付SHA及清理结果见[换机交接](image-viewer-machine-handoff.md)、[M1报告](image-viewer-m1-report.md)及[机器记录](image-viewer-m1-verification.json)。下方2026-10-09为规划历史。
+
+> **2026-10-09 图片组件完整交付计划：**采用extended_image查看内核＋gal相册层，保留REUSE_FIRST；正式路线为M1技术难点验证→M2完整独立组件→M3 Android/iOS验收与组件交付→M4帖子/评论/私信接入维护。长图、GIF/动态WebP、回顶后新下拉、异常/生命周期及读屏/大字均为正式交付；小样不能代替成品，双端必需项未验不能称正式完成。iOS原动态WebP失败时评估image库动画GIF兼容，但质量/资源与保存行为仍待实测/选择，不默认转换或长期保存私有原文件。当前仅计划修订，依赖/源码/设备测试未开始，IV01/MIV01–MIV14均NOT_RUN。见[完整计划](image-viewer-component-plan.md)、模块交接/台账及[计划检查](image-viewer-planning-verification.json)；其他任务历史结果保留原版本。
+
 > **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
 
 > **2026-10-05 AC05 当前交付：**当前完整 Android arm64 App、两个 instrumentation APK、模拟器 vault16项与3组跨进程、Passkey Dart9／Android codec5、Flutter真实原生双进程均PASS；新增身份草稿恢复／组合输入／账号隔离和原意图核对，write/read PID 7062／7189。Flutter分析及179项、四份OpenAPI本轮PASS。AC05整项和B02整模块仍BLOCKED：iOS／系统Passkey／物理设备／系统备份与完整App→实际C/V尚无完整证据。见[AC05报告](auth-privacy-platform-acceptance-validation-report.md)、[任务单](auth-privacy-platform-acceptance-plan.md)和[机器记录](../../services/api/authlab/platform-acceptance-verification.json)。保留AC04原指纹与证明范围；下一步AC06最终交接，不扩展完整业务片。本轮未提交／推送／部署。

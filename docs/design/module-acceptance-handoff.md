@@ -1,5 +1,19 @@
 # 分模块验收与测试交接
 
+## IV01：通用图片查看组件（M1 宿主验证，2026-10-10）
+
+- 分支 codex/image-viewer-component，基于0eff47a21cd4f4ab1636b4468f7d5df9769a264f；源码与当前证据按本次指纹核对。
+- 任务单：[完整计划](image-viewer-component-plan.md)。状态：M1本机可执行部分完成／平台技术关未完成；组件为部分实现，M2正式接口与完整产品能力尚未开发。
+- 源码：packages/image_viewer/lib/src/m1_viewer_probe.dart、m1_save_probe.dart、独立example/；测试：test/m1_gesture_lifecycle_test.dart（16项）、m1_save_probe_test.dart（12项）、m1_animation_codec_test.dart（8项）。条件转换与量测在tool/，不接入默认保存。
+- 实际执行：Flutter3.47.5/Dart3.13.4 Windows analyze（包/示例）PASS、36项宿主聚焦测试PASS、示例bundle编译PASS。记录：[逐项测试](image-viewer-m1-host-test-results.json)、[M1机器记录](image-viewer-m1-verification.json)、[报告](image-viewer-m1-report.md)。bundle不包含原生链接；保存测试为通道替身，不代证Photos/MediaStore。
+- 需求Q1/Q2不变；长图适宽顶部、回顶同手势无退出动画、新下拉才能关闭；公开库退出渲染＋Flutter分页物理，维护集中指针资格。没有fork/自研解码器/原生桥。真实多指触摸仍需两端证据。
+- 条件GIF：循环/10ms帧时序和二值透明已试验；半透明默认拒绝、兼容未批准/未启用。桌面12帧样本约20.25倍体积、969ms，进程峰值含VM，不代证手机预算。
+- 未执行：Android原生APK构建BLOCKED（本次Gradle9.3.1/AGP9.1.0/Kotlin2.4.0缓存不存在），iOS构建BLOCKED（无Mac/Xcode）；两端触摸、真实后台、权限拒绝/撤销、保存和系统相册回放NOT_RUN（用户本轮不参与手机）。MIV01–MIV14完整验收仍NOT_RUN，有范围宿主映射见台账。
+- 尚未实现：M2统一接口/输入校验/来源失败重试、稳定ID阅读状态、旋转锚点、正式UI/读屏/大字和受保护来源策略；M4帖子/评论/私信真实入口未接，不记成只差测试。
+- 下一验收：新电脑复现宿主测试，具备工具链后构建专用示例，补M1双端技术关及原格式回放；必要时再决定兼容策略，然后M2/M3/M4。入口：[机器交接](image-viewer-machine-handoff.md)。
+- 影响B06/B07/B09与X05；其他匿名/业务/SQL证据保留原版本。本次没有修改主App或其他工作树。
+- 用户已授权Git提交/推送和删除本任务缓存；仅清理自有pub缓存、build/.dart_tool及本机生成配置，保留锁文件/fixture/源码/小型证据。实际Git与清理结果见机器记录。
+
 > **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
 
 > **2026-10-05 AC05 当前交付：**当前完整 Android arm64 App、两个 instrumentation APK、模拟器 vault16项与3组跨进程、Passkey Dart9／Android codec5、Flutter真实原生双进程均PASS；新增身份草稿恢复／组合输入／账号隔离和原意图核对，write/read PID 7062／7189。Flutter分析及179项、四份OpenAPI本轮PASS。AC05整项和B02整模块仍BLOCKED：iOS／系统Passkey／物理设备／系统备份与完整App→实际C/V尚无完整证据。见[AC05报告](auth-privacy-platform-acceptance-validation-report.md)、[任务单](auth-privacy-platform-acceptance-plan.md)和[机器记录](../../services/api/authlab/platform-acceptance-verification.json)。保留AC04原指纹与证明范围；下一步AC06最终交接，不扩展完整业务片。本轮未提交／推送／部署。

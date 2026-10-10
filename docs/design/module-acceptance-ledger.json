@@ -92,7 +92,7 @@
     "SKIP": "Check explicitly skipped; not a pass",
     "NOT_RUN": "No current module acceptance recorded; shared runner/tool attempts do not imply this module ran"
   },
-  "moduleCount": 35,
+  "moduleCount": 36,
   "modules": [
     {
       "id": "A00",
@@ -3403,8 +3403,461 @@
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
       }
+    },
+    {
+      "id": "IV01",
+      "name": "通用图片查看组件",
+      "implementationState": "PARTIAL_IMPLEMENTATION_M1_PROBE_ONLY",
+      "acceptanceState": "M1_HOST_SCOPE_COMPLETE_PLATFORM_GATES_PENDING",
+      "currentResult": "NOT_RUN",
+      "verificationEntries": [
+        {
+          "id": "MIV01",
+          "result": "NOT_RUN",
+          "hostProbeResult": "NOT_RUN",
+          "scope": "M2输入/来源校验尚未开发",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV02",
+          "result": "NOT_RUN",
+          "hostProbeResult": "PASS",
+          "scope": "仅普通/长图及GIF/WebP选定fixture；EXIF等完整格式矩阵未完成",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV03",
+          "result": "NOT_RUN",
+          "hostProbeResult": "PASS",
+          "scope": "严格长图手势宿主场景；两端触摸NOT_RUN",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV04",
+          "result": "NOT_RUN",
+          "hostProbeResult": "PASS",
+          "scope": "双指/双击/缩放竞争宿主场景；两端触摸NOT_RUN",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV05",
+          "result": "NOT_RUN",
+          "hostProbeResult": "PASS",
+          "scope": "组内/首尾/双向切图；按ID阅读状态尚未开发",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV06",
+          "result": "NOT_RUN",
+          "hostProbeResult": "PASS",
+          "scope": "下拉/取消/测试路由关闭；正式按钮及业务父页未验",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV07",
+          "result": "NOT_RUN",
+          "hostProbeResult": "NOT_RUN",
+          "scope": "正式加载/失败/重试与来源边界尚未开发",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV08",
+          "result": "NOT_RUN",
+          "hostProbeResult": "PASS",
+          "scope": "宿主动图前后台/离页/关闭/撤销；旋转/换组/业务来源尚未开发或未验",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV09",
+          "result": "NOT_RUN",
+          "hostProbeResult": "NOT_RUN",
+          "scope": "Android真实写入/权限/相册回放用户延期",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV10",
+          "result": "NOT_RUN",
+          "hostProbeResult": "NOT_RUN",
+          "scope": "iOS原生/Photos未验，条件GIF仅宿主实验且未批准",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV11",
+          "result": "NOT_RUN",
+          "hostProbeResult": "PASS",
+          "scope": "12项保存通道替身；不代证实际平台写入",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV12",
+          "result": "NOT_RUN",
+          "hostProbeResult": "NOT_RUN",
+          "scope": "正式UI/读屏/大字尚未实现",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV13",
+          "result": "NOT_RUN",
+          "hostProbeResult": "PASS",
+          "scope": "单样本桌面量测与实验超限拒绝；手机预算/产品上限未固定",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        },
+        {
+          "id": "MIV14",
+          "result": "NOT_RUN",
+          "hostProbeResult": "NOT_RUN",
+          "scope": "M4三类业务媒体接入尚未开发",
+          "evidence": "docs/design/image-viewer-m1-verification.json",
+          "formalAcceptanceComplete": false
+        }
+      ],
+      "taskPlan": "docs/design/image-viewer-component-plan.md",
+      "sourcePaths": [
+        "packages/image_viewer/lib/"
+      ],
+      "testPaths": [
+        "packages/image_viewer/test/",
+        "packages/image_viewer/example/integration_test/"
+      ],
+      "pathsStatus": "M1_SOURCE_AND_TESTS_EXIST_NOT_FORMAL_COMPONENT",
+      "crossModuleScenes": [
+        "X05"
+      ],
+      "affectedModules": [
+        "B06",
+        "B07",
+        "B09"
+      ],
+      "note": "2026-10-10：36项宿主测试与分析/bundle有范围PASS，原生构建BLOCKED，手机技术关NOT_RUN；GIF条件转换未批准/未启用。M2/M3/M4未开始。",
+      "nextAcceptance": "按机器交接复现；完整工具链构建专用示例；补两端M1触摸、后台、权限、保存/回放技术关，再M2/M3/M4。",
+      "implementationStrategy": "REUSE_FIRST",
+      "optionalSourcePaths": [
+        "packages/image_viewer/android/",
+        "packages/image_viewer/ios/"
+      ],
+      "optionalPathsReason": "Only for a reproduced gap requiring minimal custom native code; selected plugins own their native implementations.",
+      "deliveryMilestones": [
+        "M1",
+        "M2",
+        "M3",
+        "M4"
+      ],
+      "formalComponentAccepted": false,
+      "businessIntegrationAccepted": false,
+      "stateHistory": [
+        {
+          "id": "IV01",
+          "name": "通用图片查看组件",
+          "implementationState": "NOT_STARTED",
+          "acceptanceState": "PLAN_READY_IMPLEMENTATION_NOT_STARTED",
+          "currentResult": "NOT_RUN",
+          "verificationEntries": [],
+          "taskPlan": "docs/design/image-viewer-component-plan.md",
+          "sourcePaths": [
+            "packages/image_viewer/lib/"
+          ],
+          "testPaths": [
+            "packages/image_viewer/test/",
+            "packages/image_viewer/example/integration_test/"
+          ],
+          "pathsStatus": "PLANNED_NOT_CREATED",
+          "crossModuleScenes": [
+            "X05"
+          ],
+          "affectedModules": [
+            "B06",
+            "B07",
+            "B09"
+          ],
+          "note": "2026-10-09完整交付计划：extended_image+gal为首选路线，版本/兼容/设备尚未验证；Q1/Q2保持。M1技术关→M2完整组件→M3双端验收/交付→M4三类业务接入；小样不代证正式交付。GIF兼容待实测/选择，不默认转换。全部MIV NOT_RUN。",
+          "nextAcceptance": "I1验证严格手势、动图生命周期、双端原格式保存/回放，必要时评估image动画GIF；I2/I3完整封装，I4/I5双端证据，I6真实三类业务接入。MIV01-MIV13全通过才完成组件正式验收，MIV14单列整体接入。",
+          "implementationStrategy": "REUSE_FIRST",
+          "optionalSourcePaths": [
+            "packages/image_viewer/android/",
+            "packages/image_viewer/ios/"
+          ],
+          "optionalPathsReason": "Only for a reproduced gap requiring minimal custom native code; selected plugins own their native implementations.",
+          "deliveryMilestones": [
+            "M1",
+            "M2",
+            "M3",
+            "M4"
+          ],
+          "formalComponentAccepted": false,
+          "businessIntegrationAccepted": false
+        }
+      ],
+      "hostTestEvidence": "docs/design/image-viewer-m1-host-test-results.json",
+      "machineHandoff": "docs/design/image-viewer-machine-handoff.md"
     }
   ],
+  "currentImageViewerPlan": {
+    "recordedOn": "2026-10-10",
+    "branch": "codex/image-viewer-component",
+    "baselineHeadCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+    "moduleId": "IV01",
+    "state": "M1_HOST_SCOPE_COMPLETE_PLATFORM_GATES_PENDING",
+    "plan": "docs/design/image-viewer-component-plan.md",
+    "planningEvidence": "docs/design/image-viewer-planning-verification.json",
+    "decisions": {
+      "Q1": "CONFIRMED_LONG_IMAGE_FIT_WIDTH_TOP_SCROLL_DISMISS_ONLY_AT_TOP",
+      "Q2": "CONFIRMED_ANIMATION_PLAYBACK_AND_ANIMATED_SAVE"
+    },
+    "functionalAcceptanceResult": "NOT_RUN",
+    "componentSourceExists": true,
+    "testSourceExists": true,
+    "independentOf": [
+      "community-text-posting T1/T2",
+      "auth candidate completion",
+      "business SQLite",
+      "post/comment/chat implementation"
+    ],
+    "untouchedContexts": "Other worktrees and their uncommitted changes, databases, devices and services.",
+    "pendingChecks": [
+      "MIV01",
+      "MIV02",
+      "MIV03",
+      "MIV04",
+      "MIV05",
+      "MIV06",
+      "MIV07",
+      "MIV08",
+      "MIV09",
+      "MIV10",
+      "MIV11",
+      "MIV12",
+      "MIV13",
+      "MIV14"
+    ],
+    "reason": "M1 experimental source and 36 host tests exist; native builds blocked by environment, phone gates deferred by user; formal M2/M3/M4 not started.",
+    "historyScope": "Existing auth ledger values are inherited baseline history, not live acceptance of other worktrees.",
+    "planningRevision": 4,
+    "implementationStrategy": "REUSE_FIRST",
+    "originalDecisionsConfirmedOn": "2026-10-08",
+    "librarySelection": {
+      "status": "HOST_SPIKE_VERIFIED_PLATFORM_PENDING",
+      "preferredViewer": "extended_image",
+      "preferredGallerySaver": "gal",
+      "animation": "Flutter built-in image capability",
+      "backupViewer": "photo_view",
+      "dependenciesInstalled": true,
+      "compatibilityTested": true,
+      "platformSaveTested": false,
+      "versionsLocked": true,
+      "conditionalAnimationConverter": "image",
+      "versions": {
+        "extended_image": "10.1.0",
+        "gal": "2.3.3",
+        "path_provider": "2.1.5",
+        "imageExperiment": "4.10.1"
+      },
+      "adapter": "extended_image public APIs plus Flutter public PageView/PageController drag physics",
+      "forkUsed": false
+    },
+    "defaultNativePluginImplementation": false,
+    "deliveryScope": "FULL_COMPONENT_AND_SEPARATE_BUSINESS_INTEGRATION",
+    "milestones": [
+      {
+        "id": "M1",
+        "engineeringStages": [
+          "I1"
+        ],
+        "deliverable": "Technical gates and fixed adaptation/support boundaries",
+        "status": "HOST_SCOPE_COMPLETE_PLATFORM_GATES_PENDING"
+      },
+      {
+        "id": "M2",
+        "engineeringStages": [
+          "I2",
+          "I3"
+        ],
+        "deliverable": "Complete independent component, example and automated tests",
+        "status": "NOT_STARTED"
+      },
+      {
+        "id": "M3",
+        "engineeringStages": [
+          "I4",
+          "I5"
+        ],
+        "deliverable": "Android/iOS acceptance and formal component delivery",
+        "status": "NOT_STARTED"
+      },
+      {
+        "id": "M4",
+        "engineeringStages": [
+          "I6"
+        ],
+        "deliverable": "Post/comment/DM integration and maintenance",
+        "status": "NOT_STARTED_DEPENDENT_ON_BUSINESS_MEDIA_ENTRIES"
+      }
+    ],
+    "formalComponentRequiredChecks": [
+      "MIV01",
+      "MIV02",
+      "MIV03",
+      "MIV04",
+      "MIV05",
+      "MIV06",
+      "MIV07",
+      "MIV08",
+      "MIV09",
+      "MIV10",
+      "MIV11",
+      "MIV12",
+      "MIV13"
+    ],
+    "businessIntegrationRequiredChecks": [
+      "MIV14"
+    ],
+    "formalComponentAccepted": false,
+    "overallBusinessIntegrationAccepted": false,
+    "animationCompatibility": {
+      "default": "ORIGINAL_FILE",
+      "conditionalProposal": "ANIMATED_WEBP_TO_ANIMATED_GIF_IF_IOS_PHOTOS_ORIGINAL_PLAYBACK_FAILS",
+      "status": "EXPERIMENT_PARTLY_VERIFIED_NOT_PRODUCT_APPROVED",
+      "automaticallyEnabled": false,
+      "originalPreservation": "Do not overwrite caller source; no implied permanent private cache or duplicate album writes."
+    },
+    "history": [
+      {
+        "recordedOn": "2026-10-09",
+        "branch": "codex/image-viewer-component",
+        "baselineHeadCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+        "moduleId": "IV01",
+        "state": "PLAN_READY_IMPLEMENTATION_NOT_STARTED",
+        "plan": "docs/design/image-viewer-component-plan.md",
+        "planningEvidence": "docs/design/image-viewer-planning-verification.json",
+        "decisions": {
+          "Q1": "CONFIRMED_LONG_IMAGE_FIT_WIDTH_TOP_SCROLL_DISMISS_ONLY_AT_TOP",
+          "Q2": "CONFIRMED_ANIMATION_PLAYBACK_AND_ANIMATED_SAVE"
+        },
+        "functionalAcceptanceResult": "NOT_RUN",
+        "componentSourceExists": false,
+        "testSourceExists": false,
+        "independentOf": [
+          "community-text-posting T1/T2",
+          "auth candidate completion",
+          "business SQLite",
+          "post/comment/chat implementation"
+        ],
+        "untouchedContexts": "Other worktrees and their uncommitted changes, databases, devices and services.",
+        "pendingChecks": [
+          "MIV01",
+          "MIV02",
+          "MIV03",
+          "MIV04",
+          "MIV05",
+          "MIV06",
+          "MIV07",
+          "MIV08",
+          "MIV09",
+          "MIV10",
+          "MIV11",
+          "MIV12",
+          "MIV13",
+          "MIV14"
+        ],
+        "reason": "Full delivery plan: technical gates, complete independent component, Android/iOS acceptance, then three business integrations. Plan only; no implementation or dependencies installed.",
+        "historyScope": "Existing auth ledger values are inherited baseline history, not live acceptance of other worktrees.",
+        "planningRevision": 3,
+        "implementationStrategy": "REUSE_FIRST",
+        "originalDecisionsConfirmedOn": "2026-10-08",
+        "librarySelection": {
+          "status": "PRIMARY_ROUTE_CONFIRMED_COMPATIBILITY_NOT_VERIFIED",
+          "preferredViewer": "extended_image",
+          "preferredGallerySaver": "gal",
+          "animation": "Flutter built-in image capability",
+          "backupViewer": "photo_view",
+          "dependenciesInstalled": false,
+          "compatibilityTested": false,
+          "platformSaveTested": false,
+          "versionsLocked": false,
+          "conditionalAnimationConverter": "image"
+        },
+        "defaultNativePluginImplementation": false,
+        "deliveryScope": "FULL_COMPONENT_AND_SEPARATE_BUSINESS_INTEGRATION",
+        "milestones": [
+          {
+            "id": "M1",
+            "engineeringStages": [
+              "I1"
+            ],
+            "deliverable": "Technical gates and fixed adaptation/support boundaries",
+            "status": "NOT_STARTED"
+          },
+          {
+            "id": "M2",
+            "engineeringStages": [
+              "I2",
+              "I3"
+            ],
+            "deliverable": "Complete independent component, example and automated tests",
+            "status": "NOT_STARTED"
+          },
+          {
+            "id": "M3",
+            "engineeringStages": [
+              "I4",
+              "I5"
+            ],
+            "deliverable": "Android/iOS acceptance and formal component delivery",
+            "status": "NOT_STARTED"
+          },
+          {
+            "id": "M4",
+            "engineeringStages": [
+              "I6"
+            ],
+            "deliverable": "Post/comment/DM integration and maintenance",
+            "status": "NOT_STARTED_DEPENDENT_ON_BUSINESS_MEDIA_ENTRIES"
+          }
+        ],
+        "formalComponentRequiredChecks": [
+          "MIV01",
+          "MIV02",
+          "MIV03",
+          "MIV04",
+          "MIV05",
+          "MIV06",
+          "MIV07",
+          "MIV08",
+          "MIV09",
+          "MIV10",
+          "MIV11",
+          "MIV12",
+          "MIV13"
+        ],
+        "businessIntegrationRequiredChecks": [
+          "MIV14"
+        ],
+        "formalComponentAccepted": false,
+        "overallBusinessIntegrationAccepted": false,
+        "animationCompatibility": {
+          "default": "ORIGINAL_FILE",
+          "conditionalProposal": "ANIMATED_WEBP_TO_ANIMATED_GIF_IF_IOS_PHOTOS_ORIGINAL_PLAYBACK_FAILS",
+          "status": "PROPOSED_PENDING_VALIDATION_AND_PRODUCT_DECISION",
+          "automaticallyEnabled": false,
+          "originalPreservation": "Do not overwrite caller source; no implied permanent private cache or duplicate album writes."
+        }
+      }
+    ],
+    "verificationEvidence": "docs/design/image-viewer-m1-verification.json",
+    "machineHandoff": "docs/design/image-viewer-machine-handoff.md"
+  },
   "inventoryScope": "dynamicTestsExecutedInThisInventory=false describes the original inventory only; current feature checks below are separate",
   "currentFeature": {
     "plan": "docs/design/identity-management-plan.md",

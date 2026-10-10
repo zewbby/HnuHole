@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-10-10",
+  "timeZone": "Asia/Shanghai",
+  "moduleId": "IV01",
+  "branch": "codex/image-viewer-component",
+  "baselineHeadCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "implementationState": "PARTIAL_IMPLEMENTATION_M1_PROBE_ONLY",
+  "status": "M1_HOST_SCOPE_COMPLETE_PLATFORM_GATES_PENDING",
+  "formalComponentAccepted": false,
+  "businessIntegrationAccepted": false,
+  "phoneRuntimeActionsExecuted": false,
+  "toolchain": {
+    "os": "Windows",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "frameworkRevision": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+    "engineRevision": "af7e796e161ae0bb1ff0758c71a7105418bd9ded"
+  },
+  "sourceFingerprint": {
+    "algorithm": "SHA256_RAW_BYTES",
+    "fileCount": 96,
+    "aggregateSha256": "e0e797a56859690ff4daf5e5aff082609eab2ad69706bd84e7125d5e9333db30",
+    "files": {
+      "packages/image_viewer/README.md": "58f9a3c17af6921eba1e0080247e08d159a91d5689829c02c99486ba2599617d",
+      "packages/image_viewer/analysis_options.yaml": "bc20c54b4cb3122d8c660cae32f4067e7b202b23de2b77f15d4397f21afa7e7c",
+      "packages/image_viewer/example/.gitignore": "0581d23086f7283dc97d2d5bde4f60724f8115f67baa76949596790ab9800dd7",
+      "packages/image_viewer/example/.metadata": "f0f31c5e788ddf35c5468481a572e01780a4cf5b23a55d8be9a503510888ad04",
+      "packages/image_viewer/example/README.md": "6c0368a0610d30cacc50a4dca94a93fdb308e067a3379cfe73a63ef90764a04b",
+      "packages/image_viewer/example/analysis_options.yaml": "fe78d74afc8711c2852cf9f2f5a1e4d787567ec6a1608db15dc81cc18105859b",
+      "packages/image_viewer/example/android/.gitignore": "c9af75dbc2c8aa867476a09426c80b178c4aeed8b9393ae48503eedfa3273d71",
+      "packages/image_viewer/example/android/app/build.gradle.kts": "15264320b3d0922475b6c2380dd4edd865c06c4490edc29b363180b793337e74",
+      "packages/image_viewer/example/android/app/src/debug/AndroidManifest.xml": "b01a4541a8144c15bc617bab7eb267c99fa1476368fbbda5a12cdbf4e316a34c",
+      "packages/image_viewer/example/android/app/src/main/AndroidManifest.xml": "6f0096ff24e7ab9815ba16083b9b2221a2e8f95e7ab1a28ff2d07f07643816b0",
+      "packages/image_viewer/example/android/app/src/main/kotlin/org/hnuhole/image_viewer_m1/MainActivity.kt": "b1cbf458177971eea292f5864760ff274682853cfc1fae454ced90fce3279d80",
+      "packages/image_viewer/example/android/app/src/main/res/drawable-v21/launch_background.xml": "dca312ec77de83e43ef70a825c299b51451247286c29167d62f19165750b8793",
+      "packages/image_viewer/example/android/app/src/main/res/drawable/launch_background.xml": "2df60e2cfbee873ce2858088cf003e6b93498f2f568476da437610467ea1a9d7",
+      "packages/image_viewer/example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef",
+      "packages/image_viewer/example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81",
+      "packages/image_viewer/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa",
+      "packages/image_viewer/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540",
+      "packages/image_viewer/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180",
+      "packages/image_viewer/example/android/app/src/main/res/values-night/styles.xml": "ea763597dc1a84c8034251caee98d7753e0fbf57340ffc94677427de4b537516",
+      "packages/image_viewer/example/android/app/src/main/res/values/styles.xml": "cca15a99b59380a548bf6a890f7ca5380ee509b1f9bbb2f5f9ec3589fa25c2f7",
+      "packages/image_viewer/example/android/app/src/profile/AndroidManifest.xml": "b01a4541a8144c15bc617bab7eb267c99fa1476368fbbda5a12cdbf4e316a34c",
+      "packages/image_viewer/example/android/build.gradle.kts": "218f400e3fff31c9c986a2535dfb974560e1b4d33cc27b7c1fee96a2b7e44454",
+      "packages/image_viewer/example/android/gradle.properties": "7714698de712a7872e371f0dbae626c255fc83ac1c15e52e7cd9fcaa241b5092",
+      "packages/image_viewer/example/android/gradle/wrapper/gradle-wrapper.properties": "594a00250ef7a36609a01f3263bf5ed63963afaf9ca9f82f2cd1de0f6f056383",
+      "packages/image_viewer/example/android/settings.gradle.kts": "092ba880c8d4a07591aafc082f45deedc9afcf60c113a4bb3d13cbe1a1fce9de",
+      "packages/image_viewer/example/assets/fixtures/animation.gif": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "packages/image_viewer/example/assets/fixtures/animation.webp": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139",
+      "packages/image_viewer/example/assets/fixtures/animation_benchmark.webp": "0145845e1b4aff94e1f73841f03b6ea6d5ef0aeeb16bdd3831724d563e42fb46",
+      "packages/image_viewer/example/assets/fixtures/animation_binary.webp": "259c7f65840e440861329dbd35723c04a446ecabbfb21f2283bf5f56d97806f5",
+      "packages/image_viewer/example/assets/fixtures/animation_binary_infinite.webp": "3897796f787092b33333358d146482a4f67759bd97075be6669f305e88d696ed",
+      "packages/image_viewer/example/assets/fixtures/animation_binary_once.webp": "39f08e88ed651f7321a8de9e80e99bd605b4d8eb88b1194e8f7c9fec8bd39fad",
+      "packages/image_viewer/example/assets/fixtures/animation_infinite.gif": "9f0ab897a6b22f6a6a19310462aaf78a776ab8fc05d2cc805889d3e0871df9ed",
+      "packages/image_viewer/example/assets/fixtures/animation_infinite.webp": "e8d714336d16477d76cf01515d61a8e9916babd87ee093434bbd1638ead40e76",
+      "packages/image_viewer/example/assets/fixtures/animation_once.webp": "d73a18998b3325cae6a2c6c9f3ec2b82ac7e78a8e19899d2202c3ace287859be",
+      "packages/image_viewer/example/assets/fixtures/animation_over_limit.webp": "45e67e717cb796bb87deb43430da1f1d3c4c051c01e9c7525b75f7beb84786b1",
+      "packages/image_viewer/example/assets/fixtures/animation_repeat_once.gif": "43a730212cf2cdd0ff3f8e32f5e00ed0032b0e1fa68ed3d594cde76e43f645c8",
+      "packages/image_viewer/example/assets/fixtures/animation_timing.webp": "32a65f932e0330630c78e0e86f0483c17381fc922df3dc99ac18392e3747305b",
+      "packages/image_viewer/example/assets/fixtures/long.png": "69269d9cd174e1be00a84efecc1b9a01b9150ba4dae8b41816359ae13749575b",
+      "packages/image_viewer/example/assets/fixtures/manifest.json": "4674d1d595214b26c4a2d089d347053ad6f32ea94f8f73b4ce123785bdd4e835",
+      "packages/image_viewer/example/assets/fixtures/ordinary.png": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+      "packages/image_viewer/example/integration_test/image_viewer_device_test.dart": "2d0e0637d1f9eff334aaff5c9b7f321735cf743edab256749270d0dbdb46be94",
+      "packages/image_viewer/example/ios/.gitignore": "e85b4db8ba6ed14708e5f7d3c60336e5a3067ce11329b84aa8ba5d98603ee253",
+      "packages/image_viewer/example/ios/Flutter/AppFrameworkInfo.plist": "e51cfa76fca1ae586244b43bf97423577315d2906394c1e7768ef43b8d23e161",
+      "packages/image_viewer/example/ios/Flutter/Debug.xcconfig": "c0d1da54718e75f2028962b689258ecc741abf7cdaed50483aa5225264d0a7d7",
+      "packages/image_viewer/example/ios/Flutter/Release.xcconfig": "c0d1da54718e75f2028962b689258ecc741abf7cdaed50483aa5225264d0a7d7",
+      "packages/image_viewer/example/ios/Runner.xcodeproj/project.pbxproj": "d2e3826887821c3badace634ad40a03a0357ca6c050c8e5c4f5b86d7e9d186d6",
+      "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata": "ac28b35c2b940210bec0fff8e424b07fd0efe9112ab178a10533583f251a386c",
+      "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist": "d557c2c32fc6258ec28981fa45dc847b76c9968beb90a2e26d13ef9c4ea45c30",
+      "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings": "dd64c0308ab2971c456871b990b24a008bdc3ece09833e8dbe9675e33a496e74",
+      "packages/image_viewer/example/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme": "a46c0d064503db8bf9f452b492c61fdf76f9febb8894005fe30b2facec21e550",
+      "packages/image_viewer/example/ios/Runner.xcworkspace/contents.xcworkspacedata": "706a4c812f2a1e220e6785c27580020d58048e2ae4d30d1280f3c43344ce6b38",
+      "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist": "d557c2c32fc6258ec28981fa45dc847b76c9968beb90a2e26d13ef9c4ea45c30",
+      "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings": "dd64c0308ab2971c456871b990b24a008bdc3ece09833e8dbe9675e33a496e74",
+      "packages/image_viewer/example/ios/Runner/AppDelegate.swift": "54a5e98d6c3e8a79413ad50607b83aac8ded8828bc913eda1fe86bb33a66cd5d",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json": "5f8b941b774bde4496d73347c1f79cbdd786bb76fbdab9ed1f3f0cb78a0fb0d3",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png": "7770183009e914112de7d8ef1d235a6a30c5834424858e0d2f8253f6b8d31926",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png": "cab10a0d391ec5bc09ef50ce49e8ad401cee7ef03707ec0923a222c5c2b3d212",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png": "c6e6d3b215ae744a9c391f4c4d44157eff5e739d6ad6c39f9bfa5df66dddd267",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png": "5dee24dc104ac76dc162e42ae0beb163d426bf365562ee28ba7b3ad368559a60",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png": "a9b21eb6f4271385655a8771f76e29eef8c1107d7879cbcfc567e6619d1f716a",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png": "e677d701ffe4af7bc2935098d6b3984cc9ab7ace573e6900955a5535b12410cf",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png": "7c61c42fc7b657d9cf314d32a4ec458f0647c3aaf360be1b9377857266ec2499",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png": "4209a49e44a92ec40a327d3455eb1b1c153ee83d75de1c2be0a12ab18b2ff9de",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png": "836c918cb613249eba0483a6b02fa3df3c1c0a89a315ee4d3b88509b83c7ab73",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png": "41c7d42f6e61f8fe7f30b1ffa2256aecbc9682be06d18c4a3062043e1a2e547c",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png": "5d7e5bdf01b93802bc973345b3a78c038907147625035952a08a115a563b7f81",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json": "fbd112a9f3b541a1d811f71ac8e4fe68b6176687d973a5f4d99b7aa4a722e94e",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md": "853ac958e2416fe2540f6f61165283a3618b71a7ba5f85f65ac41c2158dfcd21",
+      "packages/image_viewer/example/ios/Runner/Base.lproj/LaunchScreen.storyboard": "bc3644fbb251ff1e18de25a4932c927850ae1a025be3dd1447940429633fe4b2",
+      "packages/image_viewer/example/ios/Runner/Base.lproj/Main.storyboard": "dcea4686c02065e56217fd19fcfb73d7509b41872e7486126149d47a18559363",
+      "packages/image_viewer/example/ios/Runner/Info.plist": "520d0002590aa9508d8836d97a2881ba7c74577f7c6fa5e0757e035f884cfd2d",
+      "packages/image_viewer/example/ios/Runner/Runner-Bridging-Header.h": "efe657d8b27f7f8595a0d416bffb33fe7d93bd2869d81f7353b556c439d7a1a7",
+      "packages/image_viewer/example/ios/Runner/SceneDelegate.swift": "edce811c671ca0a6ccb14753e14e16deb0d89a0adf4f1b685e362d87d8f4c366",
+      "packages/image_viewer/example/ios/RunnerTests/RunnerTests.swift": "c0e04141287eb7f9c9f3d31cf5be8cb626a9ea71351206c9121578e8b8f480c3",
+      "packages/image_viewer/example/lib/main.dart": "762caba283d945131f89e79bcf1b75c64c41af10dd39764ae7c23ed1aff5944f",
+      "packages/image_viewer/example/pubspec.lock": "e591e134e35a7f1ff7669dbe84aaf10599a95236ef7ffd3a6bb895b2524f4f73",
+      "packages/image_viewer/example/pubspec.yaml": "bf18e0ca41d0a0bfa16044103deeb6315f5d6e9c676ba14f52f163de11762993",
+      "packages/image_viewer/lib/image_viewer.dart": "882bbd9a1a3632aae110862a579f51865da5740d08a75fe8615df5e935a623c0",
+      "packages/image_viewer/lib/src/m1_save_probe.dart": "353b0469c32f472ff55b6bf2158aa4695849141f288f6f7a6f16ad71bc1b4c12",
+      "packages/image_viewer/lib/src/m1_viewer_probe.dart": "de5ab059580d6a7fd732e0af8bb9d4e67062bf5f9606ae8757943a719db5a5db",
+      "packages/image_viewer/pubspec.lock": "496cd5164c655b95874d5c2dec3faedcb85b0f379e5f3cda9e1489fb548b4594",
+      "packages/image_viewer/pubspec.yaml": "2049d3105b608a7eda6f49ebc74153bfb6e8d314fe37cb77e7e17a9b8f6f3c08",
+      "packages/image_viewer/test/m1_animation_codec_test.dart": "d6a4a20d4731c1fddbb34747f05e682193c81a85dea25d9a5b966df7fe04b272",
+      "packages/image_viewer/test/m1_gesture_lifecycle_test.dart": "aa3db2c2db6a28bd6b33846972c0d6b1e91fce823f62d39e2fdf07899d8c456d",
+      "packages/image_viewer/test/m1_save_probe_test.dart": "9c74eaa07d2f0ee18f8b02dacb9d35d0a8782adbe43a23ed6782413a57234d6f",
+      "packages/image_viewer/tool/collect_test_results.py": "e71ff428ebcb6bd5314ef91dfaee5abaa1faedef42b85be82cf7ff13c3aa0443",
+      "packages/image_viewer/tool/create_fixtures.py": "6febfe9b73afe0261076d82eeb750fb221562e6989c61ac9f93fa86977b42ade",
+      "packages/image_viewer/tool/m1_animation_codec.dart": "176c68bce516748416912fe5b183e5b2f43b79e6201574da9648ad16971b7808",
+      "packages/image_viewer/tool/measure_conversion.dart": "c128019982ab658c394268b391d3775386c264c36ec74503fb0dbc6837fa991c"
+    }
+  },
+  "executedChecks": [
+    {
+      "id": "HOST_ANALYZE",
+      "result": "PASS",
+      "command": "flutter analyze --no-pub",
+      "scope": "package and independent example"
+    },
+    {
+      "id": "HOST_TESTS",
+      "result": "PASS",
+      "command": "flutter test --no-pub --machine --concurrency=1",
+      "cases": 36,
+      "gestureLifecycleCases": 16,
+      "saveMockCases": 12,
+      "animationCases": 8,
+      "evidence": "docs/design/image-viewer-m1-host-test-results.json",
+      "scope": "WINDOWS_FLUTTER_TESTER_NOT_DEVICE"
+    },
+    {
+      "id": "BUNDLE",
+      "result": "PASS",
+      "command": "flutter build bundle --debug --no-pub",
+      "scope": "FLUTTER_KERNEL_ASSETS_NOT_NATIVE_LINKING",
+      "kernelBytes": 54654928,
+      "kernelSha256": "c5abfbf2a57e2a44f96d725b00c6326d5020126e8c8fb9553323e58a058cd184"
+    },
+    {
+      "id": "CONVERSION",
+      "result": "PASS",
+      "scope": "SELECTED_FIXTURE_TECHNICAL_CHECKS_NOT_PRODUCT_QUALITY_APPROVAL",
+      "evidence": "docs/design/image-viewer-m1-animation-analysis.json"
+    },
+    {
+      "id": "BENCHMARK",
+      "result": "PASS",
+      "scope": "ONE_WINDOWS_DART_PROCESS_SAMPLE_NOT_PHONE_BUDGET",
+      "evidence": "docs/design/image-viewer-m1-conversion-benchmark.json"
+    },
+    {
+      "id": "CONFIG_PARSE",
+      "result": "PASS",
+      "scope": "XML_PLIST_PARSE_AND_MINIMAL_PERMISSION_ASSERTIONS_NOT_PLATFORM_BUILD",
+      "androidMainPermissions": [
+        {
+          "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+          "maxSdkVersion": "28"
+        }
+      ],
+      "iosAddOnlyDescriptionPresent": true
+    },
+    {
+      "id": "DEPENDENCY_SOURCE_REVIEW",
+      "result": "PASS",
+      "scope": "LOCKED_PUBLISHED_SOURCE_LICENSE_SDK_API_REVIEW_NOT_NATIVE_LINKING",
+      "evidence": "docs/design/image-viewer-m1-dependency-audit.json"
+    }
+  ],
+  "unexecutedChecks": [
+    {
+      "id": "ANDROID_NATIVE_BUILD",
+      "result": "BLOCKED",
+      "reason": "No existing Gradle9.3.1/AGP9.1.0/Kotlin2.4.0 cache. Large runtime/cache not restored automatically.",
+      "entry": "packages/image_viewer/example: flutter build apk --debug --no-pub"
+    },
+    {
+      "id": "IOS_NATIVE_BUILD",
+      "result": "BLOCKED",
+      "reason": "Windows host lacks macOS/Xcode.",
+      "entry": "Mac example: flutter build ios --debug --no-codesign --no-pub"
+    },
+    {
+      "id": "ANDROID_IPHONE_RUNTIME",
+      "result": "NOT_RUN",
+      "reason": "User requested no phone involvement this round. Real touch, lifecycle, permissions, save and system album playback remain required.",
+      "entry": "packages/image_viewer/example/integration_test/image_viewer_device_test.dart"
+    },
+    {
+      "id": "FORMAL_MIV01_MIV14",
+      "result": "NOT_RUN",
+      "reason": "M1 selected host proofs are partial; M2/M3/M4 not implemented/completed."
+    }
+  ],
+  "conditionalGif": {
+    "productEnabled": false,
+    "productApproved": false,
+    "default": "ORIGINAL_FILE",
+    "binaryAlpha": "VERIFIED_ON_SMALL_FIXTURE",
+    "semiAlpha": "REJECTED_BY_SAFE_PROBE_PENDING_PRODUCT_CHOICE",
+    "timing": "GIF10MS_CUMULATIVE_ROUNDING",
+    "singlePlay": "KNOWN_ENCODER_LOOP_EXTENSION_REMOVAL_GUARDED_BY_SIGNATURE",
+    "forkUsed": false,
+    "budgetsAreExperimentOnly": true
+  },
+  "sourceRisks": [
+    "Gal Darwin file-import API force unwrap is a source-level potential risk, not a reproduced crash. Mock errors do not cover native crashes.",
+    "Actual album playback of animated WebP on iPhone remains unknown.",
+    "Central pointer adaptation needs native touch regression."
+  ],
+  "handoff": "docs/design/image-viewer-machine-handoff.md",
+  "publication": {
+    "authorized": true,
+    "state": "PENDING_COMMIT_AND_PUSH"
+  },
+  "cleanup": {
+    "state": "PENDING_AFTER_FIRST_PUSH",
+    "scope": "ONLY_THIS_TASK_CACHE_BUILD_AND_GENERATED_LOCAL_FILES",
+    "sdkAndOtherTaskCachesPreserved": true
+  }
+}

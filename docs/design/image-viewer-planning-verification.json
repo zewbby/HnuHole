@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "hnuhole-image-viewer-planning/v1",
+  "recordedOn": "2026-10-09",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/image-viewer-component",
+  "baselineHeadCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "scope": "PLAN_REWRITE_FULL_DELIVERY_REUSE_FIRST_ONLY",
+  "planningChecksResult": "PASS",
+  "functionalAcceptanceResult": "NOT_RUN",
+  "implementationStarted": false,
+  "decisions": {
+    "Q1": "CONFIRMED",
+    "Q2": "CONFIRMED"
+  },
+  "componentPackageExists": false,
+  "componentTestsExecuted": false,
+  "platformTestsExecuted": false,
+  "businessIntegrationExecuted": false,
+  "notRunReason": "Plan rewrite only; package/example/test sources do not exist and candidate dependencies were not installed or executed.",
+  "otherWorktreesModifiedByThisTask": false,
+  "checkedFiles": [
+    "docs/design/HANDOFF.md",
+    "docs/design/image-viewer-component-plan.md",
+    "docs/design/image-viewer-planning-verification.json",
+    "docs/design/module-acceptance-handoff.md",
+    "docs/design/module-acceptance-ledger.json",
+    "docs/design/modules/post-detail.md",
+    "docs/design/progress.md"
+  ],
+  "planningRevision": 3,
+  "implementationStrategy": "REUSE_FIRST",
+  "dependenciesInstalled": false,
+  "compatibilityTestsExecuted": false,
+  "selectedLibrariesVerified": false,
+  "libraryCandidates": {
+    "viewer": "extended_image",
+    "gallerySaver": "gal",
+    "animation": "Flutter Image",
+    "backupViewer": "photo_view",
+    "status": "PRIMARY_ROUTE_CONFIRMED_DOCUMENT_REVIEW_ONLY",
+    "conditionalAnimationConverter": "image"
+  },
+  "officialSourcesReviewed": [
+    "https://pub.dev/packages/extended_image",
+    "https://pub.dev/packages/gal",
+    "https://pub.dev/packages/photo_view",
+    "https://api.flutter.dev/flutter/widgets/Image-class.html",
+    "https://pub.dev/packages/image",
+    "https://pub.dev/documentation/image/latest/image/decodeWebP.html",
+    "https://pub.dev/documentation/image/latest/image/encodeGif.html",
+    "https://github.com/brendan-duncan/image/blob/main/lib/src/formats/webp_decoder.dart",
+    "https://github.com/brendan-duncan/image/blob/main/lib/src/formats/gif_encoder.dart",
+    "https://pub.dev/documentation/extended_image/latest/extended_image/ExtendedImageSlidePage-class.html",
+    "https://github.com/fluttercandies/extended_image/blob/master/lib/src/gesture/gesture.dart",
+    "https://github.com/natsuk4ze/gal/wiki/Formats",
+    "https://github.com/natsuk4ze/gal/wiki/Best-Practice",
+    "https://support.apple.com/en-ae/118278"
+  ],
+  "history": [
+    {
+      "schemaVersion": "hnuhole-image-viewer-planning/v1",
+      "recordedOn": "2026-10-08",
+      "timeZone": "Asia/Shanghai",
+      "branch": "codex/image-viewer-component",
+      "baselineHeadCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+      "scope": "PLAN_AND_HANDOFF_ONLY",
+      "planningChecksResult": "PASS",
+      "functionalAcceptanceResult": "NOT_RUN",
+      "implementationStarted": false,
+      "decisions": {
+        "Q1": "CONFIRMED",
+        "Q2": "CONFIRMED"
+      },
+      "componentPackageExists": false,
+      "componentTestsExecuted": false,
+      "platformTestsExecuted": false,
+      "businessIntegrationExecuted": false,
+      "notRunReason": "User requested a plan first; component/example/native adapters/tests do not exist yet.",
+      "skills": {
+        "entryRead": "C:/Users/Administrator/.codex/skills/grill-with-docs/SKILL.md",
+        "fullSkillWorkflowExecuted": false,
+        "reason": "Entry requires unavailable Skill tool and grilling/domain-modeling subskills; used project documentation-led questions."
+      },
+      "otherWorktreesModifiedByThisTask": false,
+      "checks": {
+        "ledgerJson": "PASS",
+        "historicalLedgerUnchanged": "PASS",
+        "stableModuleIdUnique": "PASS",
+        "planLinks": "PASS",
+        "confirmedDecisionsAndNotRunState": "PASS",
+        "documentationOnlyScope": "PASS",
+        "diffAndWhitespace": "PASS"
+      },
+      "checkedFiles": [
+        "docs/design/HANDOFF.md",
+        "docs/design/image-viewer-component-plan.md",
+        "docs/design/image-viewer-planning-verification.json",
+        "docs/design/module-acceptance-handoff.md",
+        "docs/design/module-acceptance-ledger.json",
+        "docs/design/modules/post-detail.md",
+        "docs/design/progress.md"
+      ],
+      "documentSha256": {
+        "docs/design/HANDOFF.md": "4c8189cefe559cdb761d537fae7799948309ae33d4c9782cca0ae5b8d1227bf1",
+        "docs/design/image-viewer-component-plan.md": "3468077c18a41a65d7ab6cf719acc287ca5285293e1329f8259430bfa1bb1f6e",
+        "docs/design/module-acceptance-handoff.md": "e212169e3ec526a46e4caca98d7ba5af3c8ff181b61ae2f82c76f9ba78a04357",
+        "docs/design/module-acceptance-ledger.json": "0d26898e2796142af51bceca8d3eceb1555fc2ac2ce0c16277c39b8329bd8428",
+        "docs/design/modules/post-detail.md": "6550a5dc4b26a6203b08a6c253c034ece56c776c550d111d44c5193a3fe557c1",
+        "docs/design/progress.md": "d9a0ba9dab6b2822c60ddb23a60491d5dd22548f6c830e3b1f3338d98b385843"
+      }
+    },
+    {
+      "schemaVersion": "hnuhole-image-viewer-planning/v1",
+      "recordedOn": "2026-10-09",
+      "timeZone": "Asia/Shanghai",
+      "branch": "codex/image-viewer-component",
+      "baselineHeadCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+      "scope": "PLAN_REWRITE_REUSE_FIRST_ONLY",
+      "planningChecksResult": "PASS",
+      "functionalAcceptanceResult": "NOT_RUN",
+      "implementationStarted": false,
+      "decisions": {
+        "Q1": "CONFIRMED",
+        "Q2": "CONFIRMED"
+      },
+      "componentPackageExists": false,
+      "componentTestsExecuted": false,
+      "platformTestsExecuted": false,
+      "businessIntegrationExecuted": false,
+      "notRunReason": "Plan rewrite only; package/example/test sources do not exist and candidate dependencies were not installed or executed.",
+      "otherWorktreesModifiedByThisTask": false,
+      "checkedFiles": [
+        "docs/design/HANDOFF.md",
+        "docs/design/image-viewer-component-plan.md",
+        "docs/design/image-viewer-planning-verification.json",
+        "docs/design/module-acceptance-handoff.md",
+        "docs/design/module-acceptance-ledger.json",
+        "docs/design/modules/post-detail.md",
+        "docs/design/progress.md"
+      ],
+      "planningRevision": 2,
+      "implementationStrategy": "REUSE_FIRST",
+      "dependenciesInstalled": false,
+      "compatibilityTestsExecuted": false,
+      "selectedLibrariesVerified": false,
+      "libraryCandidates": {
+        "viewer": "extended_image",
+        "gallerySaver": "gal",
+        "animation": "Flutter Image",
+        "backupViewer": "photo_view",
+        "status": "DOCUMENT_REVIEW_ONLY"
+      },
+      "officialSourcesReviewed": [
+        "https://pub.dev/packages/extended_image",
+        "https://pub.dev/packages/gal",
+        "https://pub.dev/packages/photo_view",
+        "https://api.flutter.dev/flutter/widgets/Image-class.html"
+      ],
+      "checks": {
+        "ledgerJson": "PASS",
+        "historicalLedgerAndHandoffUnchanged": "PASS",
+        "confirmedQ1Q2Preserved": "PASS",
+        "reuseFirstRouteConsistent": "PASS",
+        "nativePathsOptional": "PASS",
+        "stableModuleAndSceneIds": "PASS",
+        "localPlanLinks": "PASS",
+        "documentationOnlyScope": "PASS",
+        "diffAndWhitespace": "PASS",
+        "priorPlanningEvidenceRetained": "PASS"
+      },
+      "documentSha256": {
+        "docs/design/HANDOFF.md": "387db65e79d1cc3390734fa10ef8e8b08f1082b48caad1a48002854b8627f3a4",
+        "docs/design/image-viewer-component-plan.md": "eaedd86e0b4028c8b88acc3c8e588e1f6f17eadc03a2a66ad4e5e15b4bf9a06e",
+        "docs/design/module-acceptance-handoff.md": "615ec3cc64b7ab757c56cc91ae8506dda72f0f954c2009f5bcec556ea92a3397",
+        "docs/design/module-acceptance-ledger.json": "7ab8cfec336c5533565b487324895d292027778faf32ac72030a5d00dec6dbe9",
+        "docs/design/modules/post-detail.md": "c4534880c1d91751a1fd927997bd6cf509bfcd3dbef4235dc19e7df15cd25970",
+        "docs/design/progress.md": "4c64b5444b78696b511d972ee1b7bbe2c5ce910d0a52d87db8028e2d7ff1b2b2"
+      }
+    }
+  ],
+  "checks": {
+    "branchAndRoot": "PASS",
+    "ledgerJson": "PASS",
+    "historicalLedgerUnchanged": "PASS",
+    "stableModuleIdUnique": "PASS",
+    "historicalHANDOFFUnchanged": "PASS",
+    "historicalprogressUnchanged": "PASS",
+    "historicalModuleHandoffUnchanged": "PASS",
+    "historicalProductRulesUnchanged": "PASS",
+    "confirmedQ1Q2Preserved": "PASS",
+    "fullMilestonesAndFormalPlatformGates": "PASS",
+    "allStableSceneIds": "PASS",
+    "routeAndStateConsistent": "PASS",
+    "compatibilityProposalNotApprovedOrEnabled": "PASS",
+    "nativeImplementationOptional": "PASS",
+    "priorPlanningEvidenceRetained": "PASS",
+    "implementationAndPlatformsNotRun": "PASS",
+    "localLink:modules/post-detail.md": "PASS",
+    "localLink:modules/comments.md": "PASS",
+    "localLink:modules/messaging.md": "PASS",
+    "localLink:modules/post-composer.md": "PASS",
+    "localLink:ui-quality-workflow.md": "PASS",
+    "localLink:../adr/0001-engineering-baseline.md": "PASS",
+    "localLink:../../AGENTS.md": "PASS",
+    "localLink:module-acceptance-handoff.md": "PASS",
+    "localLink:module-acceptance-ledger.json": "PASS",
+    "localLink:HANDOFF.md": "PASS",
+    "localLink:progress.md": "PASS",
+    "documentationOnlySevenFiles": "PASS",
+    "diffAndWhitespace": "PASS",
+    "whitespace:docs/design/module-acceptance-handoff.md": "PASS",
+    "whitespace:docs/design/image-viewer-component-plan.md": "PASS",
+    "whitespace:docs/design/progress.md": "PASS",
+    "whitespace:docs/design/modules/post-detail.md": "PASS",
+    "whitespace:docs/design/module-acceptance-ledger.json": "PASS",
+    "whitespace:docs/design/image-viewer-planning-verification.json": "PASS",
+    "whitespace:docs/design/HANDOFF.md": "PASS"
+  },
+  "documentSha256": {
+    "docs/design/HANDOFF.md": "ab67328db8dfa97d500465ba256e986c4a01298240f3c288539ff606ee4cc1ce",
+    "docs/design/image-viewer-component-plan.md": "9b8a4d3e95f270a7885e3496322cf3cec5bc91e8e6b70dd95b83e93519475ecc",
+    "docs/design/module-acceptance-handoff.md": "89bcb509d39ecbc4655d0d0b8f4129f9036a251c93fe63b6132bb87cba053e77",
+    "docs/design/module-acceptance-ledger.json": "7d5f7dfcf00b9a4c1af49c12ca5687aebea30c3f515af960f99471ffb10add04",
+    "docs/design/modules/post-detail.md": "a083e17f0c10d6b1d5f6ebeac014b3f353ff6bf8fcc02c88b9a403ceae453196",
+    "docs/design/progress.md": "3fd744704f6f06a9777f1d3c98841c332178c3af5af13c7f197a3cc44c4a62eb"
+  },
+  "deliveryMilestones": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "formalComponentAccepted": false,
+  "overallBusinessIntegrationAccepted": false,
+  "animationCompatibility": {
+    "default": "ORIGINAL_FILE",
+    "conditionalProposal": "ANIMATED_WEBP_TO_ANIMATED_GIF_IF_IOS_PHOTOS_ORIGINAL_PLAYBACK_FAILS",
+    "status": "PROPOSED_PENDING_VALIDATION_AND_PRODUCT_DECISION",
+    "automaticallyEnabled": false,
+    "originalPreservation": "Do not overwrite caller source; no implied permanent private cache or duplicate album writes."
+  },
+  "reviewScope": "Author documentation and floating public source only; locked package sources and project runtime behavior remain unverified."
+}

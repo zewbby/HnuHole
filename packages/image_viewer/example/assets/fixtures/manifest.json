@@ -1,0 +1,191 @@
+{
+  "generator": "Pillow",
+  "fixtures": {
+    "animation.gif": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 2,
+      "bytes": 934,
+      "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c"
+    },
+    "animation.webp": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 2,
+      "bytes": 290,
+      "sha256": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139"
+    },
+    "animation_benchmark.webp": {
+      "width": 320,
+      "height": 180,
+      "frames": 12,
+      "durationsMs": [
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80
+      ],
+      "rawLoop": 2,
+      "bytes": 17006,
+      "sha256": "0145845e1b4aff94e1f73841f03b6ea6d5ef0aeeb16bdd3831724d563e42fb46"
+    },
+    "animation_binary.webp": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 2,
+      "bytes": 188,
+      "sha256": "259c7f65840e440861329dbd35723c04a446ecabbfb21f2283bf5f56d97806f5"
+    },
+    "animation_binary_infinite.webp": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 0,
+      "bytes": 188,
+      "sha256": "3897796f787092b33333358d146482a4f67759bd97075be6669f305e88d696ed"
+    },
+    "animation_binary_once.webp": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 1,
+      "bytes": 188,
+      "sha256": "39f08e88ed651f7321a8de9e80e99bd605b4d8eb88b1194e8f7c9fec8bd39fad"
+    },
+    "animation_infinite.gif": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 0,
+      "bytes": 934,
+      "sha256": "9f0ab897a6b22f6a6a19310462aaf78a776ab8fc05d2cc805889d3e0871df9ed"
+    },
+    "animation_infinite.webp": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 0,
+      "bytes": 290,
+      "sha256": "e8d714336d16477d76cf01515d61a8e9916babd87ee093434bbd1638ead40e76"
+    },
+    "animation_once.webp": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 1,
+      "bytes": 290,
+      "sha256": "d73a18998b3325cae6a2c6c9f3ec2b82ac7e78a8e19899d2202c3ace287859be"
+    },
+    "animation_over_limit.webp": {
+      "width": 1025,
+      "height": 8,
+      "frames": 2,
+      "durationsMs": [
+        80,
+        120
+      ],
+      "rawLoop": 0,
+      "bytes": 140,
+      "sha256": "45e67e717cb796bb87deb43430da1f1d3c4c051c01e9c7525b75f7beb84786b1"
+    },
+    "animation_repeat_once.gif": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 1,
+      "bytes": 934,
+      "sha256": "43a730212cf2cdd0ff3f8e32f5e00ed0032b0e1fa68ed3d594cde76e43f645c8"
+    },
+    "animation_timing.webp": {
+      "width": 96,
+      "height": 72,
+      "frames": 3,
+      "durationsMs": [
+        37,
+        53,
+        87
+      ],
+      "rawLoop": 2,
+      "bytes": 290,
+      "sha256": "32a65f932e0330630c78e0e86f0483c17381fc922df3dc99ac18392e3747305b"
+    },
+    "long.png": {
+      "width": 480,
+      "height": 2400,
+      "frames": 1,
+      "durationsMs": [
+        0
+      ],
+      "rawLoop": null,
+      "bytes": 17659,
+      "sha256": "69269d9cd174e1be00a84efecc1b9a01b9150ba4dae8b41816359ae13749575b"
+    },
+    "ordinary.png": {
+      "width": 640,
+      "height": 480,
+      "frames": 1,
+      "durationsMs": [
+        0
+      ],
+      "rawLoop": null,
+      "bytes": 3656,
+      "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964"
+    }
+  }
+}
