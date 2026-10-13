@@ -1,5 +1,9 @@
 # F4 主 App 集成执行计划
 
+## 2026-10-13 当前接续（下方早期计划与未提交状态为历史）
+
+固定认证d859cb05c772cdf8d8b75e439a2bfedf0414dd46已按用户新指令整合；整合前20文件保存提交7452dadefb52e7b695cdd1079d21083fcb6cae02已正常推送。当前联合主机七stage、mobile320及原生构建PASS，单台Android验收用户明确延期，所有设备用例NOT_RUN；第二台Android、iOS和生产不纳入本輪通过。最终443项源码指纹599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7及命令/失败修复/复验条件详见[20261013联合报告](community-auth-integration-report-20261013.md)、[机器记录](community-auth-integration-20261013.json)、[整合差异](community-flutter-f4-auth-integration-diff-20261012.md)和[设备清单](community-single-android-acceptance-20261013.md)。旧“不得提交/未指定认证/20未提交”的指令与结果仅适用其原日期；本轮用户授权正常提交推送本分支，禁止强推、main合并、Release发布与生产部署。F1–F3不重新开发。
+
 ## 2026-10-12 本轮执行边界与收尾
 
 本轮以实际起始 `4d58116bdde2c1d2d406b965590bc1625a5c7955` 的独立clone接续，改动仅未提交；用户明确禁止本轮提交／推送／合并／部署，覆盖下方历史步骤5。F1–F3页面不重做、不扩业务。详情见 [当前验证报告](community-flutter-f4-validation-report-20261012.md) 和 [机器记录](community-flutter-f4-validation-20261012.json)。

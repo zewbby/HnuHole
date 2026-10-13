@@ -1,3 +1,31 @@
+# 2026-10-13 固定认证候选整合差异
+
+当前用户已明确指定认证 **D=`d859cb05c772cdf8d8b75e439a2bfedf0414dd46`** 用于单台Android范围整合，不再等待第二实体Android。社区整合前成果已审查为20个源码／测试／脱敏交接文件，保存并正常推送 **S=`7452dadefb52e7b695cdd1079d21083fcb6cae02`**；原起点 **C=`4d58116bdde2c1d2d406b965590bc1625a5c7955`**，共同祖先 **B=`0eff47a21cd4f4ab1636b4468f7d5df9769a264f`**。下面2026-10-12静态差异是历史快照，原“最终SHA未指定”已由本次用户指令解除。
+
+D的认证候选边界为固定24项 **22 PASS／0 FAIL／2 BLOCKED**，B6及不需第二实体Android的范围PASS；NI-X01／NI-X02、iOS、生产未通过。389项原产品输入与378项最终源码/工具快照通过固定Git对象核对，三个原交接检查器均在D的独立Git对象副本通过，未改变检查器。iOS Classes路径在Git中为符号链接：Windows原证据记录的是link文本blob；初始Linuxarchive读取了link目标，导致摘要失败。静态材料核对以精确Git blob及独立临时索引复验，未改写旧证据，也不作为iOS执行通过。详细小型外部记录在 `E:/HnuHole-community-f4-20261012/integration-20261013/logs`。
+
+整合采用 `git merge --no-commit --no-ff D` 的三方比较，未整枝覆盖、未访问认证会话变化中的工作树。实际冲突是main/settings和HANDOFF/module handoff/ledger/progress；AuthFlows合并后逐项核对。当前联合主机七stage（mobile320、R05、F4-H01–08、六包server、posts权限、实际cmd/迁移R03、最终vet）及Android构建已PASS，详见[联合报告](community-auth-integration-report-20261013.md)/[机器记录](community-auth-integration-20261013.json)。设备窗口用户明确延期，原生/物理设备实际运行NOT_RUN；整合前mobile311及认证22项保留自己的原版本，不计联合证据。最终整合提交由Git交付回执记录，三方差异的比较SHA仍为本页固定S/D/B。
+
+| 范围 | S→D / B→D审查与本次整合决定 | 联合复验 |
+|---|---|---|
+| main/settings | 保留公开HnuholeApp、MobileEnvironment在开库前校验、社区主导航和“账号与安全”现有布局；候选debug私有CA客户端接入目录、认证及帖子三类请求，RP只由显式合法配置注入；Settings回调仍可选、实际根必定提供 | 完整mobile、F4根路由、原生实际main启动 |
+| AuthFlows | 保留D的显式过期OTP重验、禁止C未知commit/ticket或已有session/reset/closure时重发；保留社区originalAccountId、权威关闭回调、forget并发检查和codec字段 | flows/widget、R05、闭号清理和账号隔离 |
+| session/HTTP | session/store相对B未改；纳入D固定RP、byte-limit、合法大attestation及受信签名digest别名；保留禁止redirect/cookie/POST自动重试和所有帖子HTTP路由 | HTTP／Passkey负向、全Go race、R05 |
+| closure | 社区Dart owner codec／业务purge和服务端帖子stop/receipt/cleanup成组保留，权威正式关闭后清原账号；冻结／退出／未知不清库 | controller／SQLite、真实formal closure SQL、F4-H08 |
+| vault/passkey | 保留社区业务key/path/closed tombstone与多engine临界区，纳入D原生Passkey状态、错误分类及实际进程测试；没有用D不含文字模块的vault覆盖社区扩展 | 两插件分析、Passkey Dart及JVM、Android native7／原生请求与重启 |
+| manifest/build | 保留D的allowBackup=false/fullBackupContent=false及Android12+所有数据域排除，覆盖文字数据库/key；debug诊断Activity及compileOnly固定版本保留，release不能带诊断类或开发入口 | 标准Debug／Release、manifest／DEX边界；OEM跨设备仍不验 |
+| SQL/permissions | D相对B无正式迁移／授权文件增量。保留社区0013、隐私白名单、此前批准的29行最小c_posts授权和锁文件；不回退schema、不放宽权限 | server、真实posts runtime正/负权限、R03实际cmd及旧版本前向升级 |
+| 设备测试入口 | 已有纯认证fixture的root类型、账号tile及My→设置导航适配当前公开社区根；仅测试入口变更，无页面重做。原设备版本不会因此升格为本版PASS | 分析／构建，取得明确设备窗口后按本版清单执行 |
+| 文档/台账 | 两侧原日期／SHA／证据并存；新currentCommunityAuthIntegration重新打开共享回归，旧host311及原认证22项不换绑新指纹 | JSON／链接／最终证据与源码一致性 |
+
+R03增加本任务root runner的 `auth-runtime` 入口，使用既有固定镜像、独立project/动态端口/新C/V库/合成材料和自身trap，不操作其他Docker资源。所有Flutter/Android SDK及JDK复制到E盘上的专用WSL工具目录，bin/cache独立，未调用共享SDK。缺少的普通构建依赖仅按既有锁定版本处理，不删除锁或升级。
+
+本轮终点为固定联合源码的主机回归及单台Android验收；安装／设备占用／App数据影响须在构建与清单可审阅后另获明确确认。第二实体Android、iOS、生产部署、main合并及Release发布均不在本轮通过／发布范围。
+
+---
+
+## 以下为2026-10-12历史差异快照
+
 # F4 认证整合差异清单（只读已提交快照）
 
 日期：2026-10-12（Asia/Shanghai）。状态：**差异审查完成；最终认证整合 SHA 待认证会话明确交付，FP14 仍为 BLOCKED_DEPENDENCY。** 本文没有合并、复制认证未提交代码、改变认证协议或重放认证设备证据。对照仅使用本任务独立 clone 内的 Git 提交对象；本轮社区验证产生的未提交修改不属于此快照比较。

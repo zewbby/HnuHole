@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "hnuhole-b3b4-preparation/v1",
+  "batch": "20261010-v15",
+  "result": "PASS",
+  "verifiedAtUTC": "2026-10-10T06:42:24.935382+00:00",
+  "scope": "AUTOMATIC_PREPARATION_ONLY",
+  "physicalRemainingCasesPassed": false,
+  "acceptedHistoricalCaseCount": 4,
+  "remainingCaseCount": 7,
+  "flutterAnalysis": {
+    "result": "PASS",
+    "logSha256": "ba19822e9f124910424ec8c969a52c103977a5bb96052968809ca8f45aef78ad"
+  },
+  "flutterSharedRegression": {
+    "result": "PASS",
+    "tests": 188,
+    "logSha256": "d127674e78b30814df6a326ec1054e969edf66e75fc59a1c7d6a23525b5fb595"
+  },
+  "sqlRegression": {
+    "result": "PASS",
+    "verifiedAtUTC": "2026-10-10T06:39:17.048553+00:00",
+    "actualPostgres": true,
+    "race": true,
+    "vet": true,
+    "twoCredentialRemovalAndRemainingCredentialRecovery": true,
+    "physicalTwoKeyEnrollmentClaimed": false,
+    "liveB3B4DatabaseReset": false,
+    "sourceFilesSha256": {
+      "services/api/internal/authprivacy/community_credentials_test.go": "c5380ae9e8f108d8215b5d2185993fe1f83a8e8525c407c47fa696758a811919",
+      "services/api/authlab/run-isolated.sh": "f44baf4171c91760c6da3b3a132babbe0e31fae44e2fb3d0a0e6cdadc62b39ff"
+    },
+    "logSha256": "0d1fad2b4093cbda7e794cc01042085c92f091bf84af8ad8824c6a5708a853f2",
+    "twoKey": true,
+    "failed": false,
+    "packagePassCount": 5,
+    "testPassCount": 249,
+    "skips": []
+  },
+  "nativeRegression": {
+    "result": "PASS",
+    "verifiedAtUTC": "2026-10-10T06:40:04.072207+00:00",
+    "device": "emulator-5554",
+    "targetIsEmulator": true,
+    "physicalAcceptancePassed": false,
+    "scope": "CURRENT_NATIVE_CODEC_ERROR_AND_PENDING_OWNERSHIP_REGRESSION_ONLY",
+    "tests": 12,
+    "apkSha256": "875fb9eb93727e4bba4d6237e85d7ed7e750d7f8f29d6154e3ff1b9408672b0d",
+    "logSha256": "cdca90e965d3f2572807b6876b3e4e95c7efc9880124d9766247306b21858bd1",
+    "sourceFilesSha256": {
+      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyCodec.kt": "52a0967c02894cf049b4365ac10f623135dc5dabeaf218f2c7509c19a56bac58",
+      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt": "d9d7f6d4628252dc5748be91e1454a0675e1e981a64cb94000823d6538feb93c",
+      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PendingOperation.kt": "512a27ad24dbe23f6d9aff9441592680a477767e92a0b19e22d0f130c9ef41b1",
+      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrors.kt": "6c918e07f575e62f7939c314ca60dee6663c3e761105b126ae3a080b7e2a2d93",
+      "packages/auth_passkey/android/src/androidTest/kotlin/org/hnuhole/authpasskey/PasskeyCodecTest.kt": "f571cafa4624d67beb13bfe32aab55ab6e0951207cdf2bea91a13ead5f16e9af",
+      "packages/auth_passkey/android/src/androidTest/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrorsTest.kt": "6518c26b024fe04dd06c02cadeaec8ffe33da457ef46cc6161e32f9f91633200"
+    }
+  },
+  "releaseBoundary": {
+    "schemaVersion": "hnuhole-release-boundary/v1",
+    "result": "PASS",
+    "verifiedAtUTC": "2026-10-10T06:40:13.902468+00:00",
+    "apkSha256": "517335750e615827629441fa45d7c30dbbb45fd22cc51142008e6d804e9462fd",
+    "pid": 7128,
+    "device": "emulator-5554",
+    "targetIsEmulator": true,
+    "manifestDebuggable": false,
+    "debugAssetAssociationAbsent": true,
+    "runAsDeniedForRelease": true,
+    "checks": {
+      "actualReleaseMode": true,
+      "variantUnavailable": true,
+      "acceptanceLifecycleUnavailable": true,
+      "acceptanceRecreateUnavailable": true,
+      "acceptanceStateUnavailable": true,
+      "acceptanceLateCallbackUnavailable": true,
+      "acceptanceGetSelectedUnavailable": true,
+      "acceptanceCreationLabelUnavailable": true,
+      "nativeOwnedDriverUnavailable": true,
+      "explicitOwnedTestTrustPresent": true,
+      "developmentCaRejected": true,
+      "developmentRpRejected": true,
+      "normalHttpClientAvailable": true
+    },
+    "originalEmulatorApkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+    "scope": "Dedicated real release probe with owned test signing; no production App distribution approval."
+  },
+  "builds": {
+    "result": "PASS",
+    "scope": "BUILD_AND_CERTIFICATE_ONLY",
+    "actualDeviceAcceptancePassed": false,
+    "apks": [
+      {
+        "fileName": "phone-b3b4.apk",
+        "applicationId": "org.hnuhole.hnuhole_mobile",
+        "apkSha256": "78d50d4772cc5ca70e139a625a021f85553710804bbf03da04ce52761c05b80d",
+        "signingCertificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+        "negativeCertificateApproved": false
+      },
+      {
+        "fileName": "b3b4-acceptance.apk",
+        "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+        "apkSha256": "63a26708f9b86a7b87eba833ee58d0b2e78b234010f65aeb75b8b4e3ab3c1e6f",
+        "signingCertificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+        "negativeCertificateApproved": false
+      },
+      {
+        "fileName": "b3b4-bad-signature.apk",
+        "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+        "apkSha256": "32823c2e6bcbdd8164c5d747450c2d9dccb15c411461ce05084d63b0bc9cf390",
+        "signingCertificateSha256": "5dbdc59504c81a203bffc3e3ee5ea460e1dc4693897b0975d6981cac13e744ac",
+        "negativeCertificateApproved": false
+      },
+      {
+        "fileName": "b3b4-unassociated.apk",
+        "applicationId": "org.hnuhole.hnuhole_mobile.unassociated",
+        "apkSha256": "2ad7779eb0a891dd94b1967ac60ee503445f61c433025830904258675e917898",
+        "signingCertificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+        "negativeCertificateApproved": false
+      }
+    ],
+    "samePackageNegativeOnlySignatureVariable": true,
+    "privateKeyPublished": false,
+    "sourceFilesSha256": {
+      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyCodec.kt": "52a0967c02894cf049b4365ac10f623135dc5dabeaf218f2c7509c19a56bac58",
+      "apps/mobile/integration_test/auth_android_b3_b4_device_test.dart": "cacdd6cad8aff8a4f757f024df744850710c14e98b98d59a10dda82618bc39bf",
+      "apps/mobile/integration_test/owned_auth_device_helpers.dart": "47e1ebc1d3b0d34d1b292a1123c92f679aa53acf06e3a8a54322014702236e33",
+      "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt": "11e7837ab23f57749d8171324495038094a5306df8c2464db64ec6f9899a5f40",
+      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt": "d9d7f6d4628252dc5748be91e1454a0675e1e981a64cb94000823d6538feb93c",
+      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PendingOperation.kt": "512a27ad24dbe23f6d9aff9441592680a477767e92a0b19e22d0f130c9ef41b1",
+      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrors.kt": "6c918e07f575e62f7939c314ca60dee6663c3e761105b126ae3a080b7e2a2d93",
+      "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt": "fb1c0e5232c3033b020564bbc77a078438687b9e88d394952b2c610fe517e8ba",
+      "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt": "bec466d472821b3535b1a5bd00cd599c5787e101d2addbda94b846f93045044f",
+      "tools/run-android-live-device.ps1": "ab383e5cbcdf95e410312e03416a874a5146b5ef6f4af4f7a682f518295607c0",
+      "tools/control-android-b3-b4-device.py": "23749c4b26bc366dec2a15b81a9c728c3c90851fa7a456f97c1048d83617db1a",
+      "tools/control-android-b3-b4.py": "a858a20526c9ad966f00e881bb276a1023f7dced7d9940baff96e292de9ea92b",
+      "tools/android-auth-b3-b4-proxy.py": "2b9db447fdfb4f16ec6fbbcbc9c58d884cab396af722a8490a357487014ab42e",
+      "tools/prepare-android-b3-b4-vault-overlay.py": "3d79535552fcc5edfad9813ba2a336ce2ac9350e398999c629580b4cdf8284e3"
+    },
+    "nativeIOOverlay": {
+      "result": "PREPARED_NOT_RUN",
+      "productionSourceUnchanged": true,
+      "cryptoAndAtomicFileSourceUnchanged": true,
+      "isolatedApplicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+      "faults": [
+        "write-failure",
+        "write-unknown"
+      ],
+      "originalPluginSha256": "8ee7bc7fb419da0f6095fecb6ec29b5207f6cb63b4552f9718a58815c94336f0",
+      "isolatedOverlaySha256": "dd46f0e16d2dc8fc21ce8efda264e3c93da2b1b13ba76904d55735c5627be9de",
+      "boundarySourceSha256": "fb1c0e5232c3033b020564bbc77a078438687b9e88d394952b2c610fe517e8ba"
+    }
+  },
+  "associationPreconditions": {
+    "result": "PASS",
+    "verifiedAtUTC": "2026-10-10T06:38:33.908728+00:00",
+    "scope": "PUBLIC_HTTPS_ASSOCIATION_FILE_PRECONDITION_ONLY",
+    "status": 200,
+    "redirected": false,
+    "contentType": "application/json",
+    "bodySha256": "d2f2b65c3da8ce507d19977a273da5928138bc0c55a40d6629a550ce50068a01",
+    "approvedMainAndIsolatedCertificateListed": true,
+    "wrongCertificateAbsent": true,
+    "unassociatedPackageAbsent": true,
+    "headers": {
+      "cacheControl": "max-age=600",
+      "age": "0"
+    },
+    "providerCacheInvalidated": false,
+    "actualProviderAcceptanceClaimed": false,
+    "publishedNewContent": false
+  },
+  "clock": {
+    "result": "PASS",
+    "maximumOffsetDays": 96,
+    "onlyOwnedB3B4TestBuild": true,
+    "requireActualAssertionPreflight": true,
+    "allowedClosureCycles": [
+      10,
+      11
+    ],
+    "existingClockOffsetPreserved": true,
+    "hostOrPhoneClockChanged": false,
+    "sqlDeadlineEdited": false,
+    "productionSourcesChanged": false,
+    "existingCaEndpointsAndVolumesPreserved": true,
+    "runtimeOperatorTests": "PASS",
+    "vet": "PASS",
+    "recoveredParties": [
+      "c"
+    ],
+    "binariesSha256": {
+      "community": "e1ff97d0d39bb96d676e18c31e56ca9c6f05130fdedc832a77aa8aab550f2394",
+      "verifier": "0b973ca019fd1584fb4a3612a48e42b71bf842c4d9ff8354f2943b5d834d674a",
+      "authdev": "9163f98a61e433fcfe5626ef08f7f7ed7d1dab3fe1af47e5e15429d848124829"
+    }
+  },
+  "phoneMutatedDuringPreparation": false,
+  "manualWindowAuthorized": true
+}

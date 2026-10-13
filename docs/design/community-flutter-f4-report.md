@@ -1,5 +1,9 @@
 # F4 主 App 集成与换机交接报告
 
+## 2026-10-13 当前接续（下方早期计划与未提交状态为历史）
+
+固定认证d859cb05c772cdf8d8b75e439a2bfedf0414dd46已按用户新指令整合；整合前20文件保存提交7452dadefb52e7b695cdd1079d21083fcb6cae02已正常推送。当前联合主机七stage、mobile320及原生构建PASS，单台Android验收用户明确延期，所有设备用例NOT_RUN；第二台Android、iOS和生产不纳入本輪通过。最终443项源码指纹599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7及命令/失败修复/复验条件详见[20261013联合报告](community-auth-integration-report-20261013.md)、[机器记录](community-auth-integration-20261013.json)、[整合差异](community-flutter-f4-auth-integration-diff-20261012.md)和[设备清单](community-single-android-acceptance-20261013.md)。旧“不得提交/未指定认证/20未提交”的指令与结果仅适用其原日期；本轮用户授权正常提交推送本分支，禁止强推、main合并、Release发布与生产部署。F1–F3不重新开发。
+
 > 2026-10-12接续：以下为2026-10-10历史报告。当前起始／HEAD为4d58116bdde2c1d2d406b965590bc1625a5c7955的未提交收尾见 [本轮验证报告](community-flutter-f4-validation-report-20261012.md)／[机器记录](community-flutter-f4-validation-20261012.json)。20文件未提交；最小权限遗漏已获用户确认并修复，之后全mobile311、R05、本轮主机8项、server6包、受限runtime／PostSchema9顶层及4子例、最终vet六stage重跑PASS。当前固定基线主机范围可复验，F4最终仍等待认证整合，手机／iOS未验，授权前FAIL保留历史。旧308及旧8不计本轮。
 
 2026-10-10，分支 `codex/community-flutter-pages`；源码提交 `68d35af745098be0ed52d0d448f290795665afa1`。**固定基线的主机真实链已通过，F4 最终认证联合验收仍为 BLOCKED_DEPENDENCY。** 当前后端固定514a944、认证基线0eff47a；认证会话仍在运行且没有最终提交，不导入其未提交代码或后端未提交T4证据。

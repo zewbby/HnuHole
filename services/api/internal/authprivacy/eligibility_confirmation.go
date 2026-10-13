@@ -1053,6 +1053,34 @@ func (e *Eligibility) GetOTPConfirmationResult(ctx context.Context, rawKey, flow
 	}()
 	a, err := readConfirmationAnchor(ctx, tx, key, false)
 	if errors.Is(err, pgx.ErrNoRows) {
+		// A rejected, uncounted OTP attempt intentionally creates no permanent
+		// key anchor. Its original flow still proves that a late confirmation
+		// cannot grant eligibility after a generation change or expiry. Keep
+		// unknown/current flows PENDING; never infer this from key absence alone.
+		var owner []byte
+		var generation uint64
+		var expires time.Time
+		flowErr := tx.QueryRow(ctx, `SELECT installation_id,authorization_generation,expires_at FROM v_auth.otp_flows WHERE flow_id=$1 FOR SHARE`, flow[:]).Scan(&owner, &generation, &expires)
+		if flowErr != nil && !errors.Is(flowErr, pgx.ErrNoRows) {
+			return ConfirmationResult{}, flowErr
+		}
+		if flowErr == nil && hmac.Equal(owner, installation[:]) {
+			var at time.Time
+			if err = verifierTrustedAt(ctx, tx, &at); err != nil {
+				return ConfirmationResult{}, err
+			}
+			if generation == 0 || generation != verifierGeneration(tx) || !at.Before(expires) {
+				if err = verifierFinalCheck(tx, func(d AuthorizationDecision) error {
+					if generation != 0 && generation == d.Generation && d.TrustedAt.Before(expires) {
+						return ErrAuthorizationUnavailable
+					}
+					return nil
+				}); err != nil {
+					return ConfirmationResult{}, err
+				}
+				return ConfirmationResult{State: "REVERIFY_REQUIRED"}, nil
+			}
+		}
 		return ConfirmationResult{State: "PENDING", RetryAfterSeconds: 1}, nil
 	}
 	if err != nil {

@@ -10,16 +10,31 @@ import '../identity/identity_api.dart';
 
 /// Fixed HTTPS origins, no redirects, cookies, telemetry or cross-party headers.
 /// The caller owns durable original keys; this transport never retries a POST.
-class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryApi, IdentityApi {
+class HttpAuthApi
+    implements
+        AuthApi,
+        CredentialManagementApi,
+        PasskeyRecoveryApi,
+        IdentityApi {
   HttpAuthApi({
     required this.communityBaseUri,
     required this.verifierBaseUri,
     HttpClient? client,
     this.timeout = const Duration(seconds: 12),
     this.maxResponseBytes = 32768,
+    this.passkeyRpId,
   }) : _client = client ?? HttpClient() {
     _validateOrigin(communityBaseUri);
     _validateOrigin(verifierBaseUri);
+    if (passkeyRpId != null &&
+        (passkeyRpId!.length > 253 ||
+            !RegExp(
+              r'^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$',
+            ).hasMatch(passkeyRpId!) ||
+            passkeyRpId!.split('.').any((label) => label.length > 63) ||
+            InternetAddress.tryParse(passkeyRpId!) != null)) {
+      throw ArgumentError('An explicit canonical DNS Passkey RP is required');
+    }
     if (communityBaseUri.origin == verifierBaseUri.origin ||
         timeout <= Duration.zero ||
         maxResponseBytes < 1024 ||
@@ -35,6 +50,10 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
   final Uri verifierBaseUri;
   final Duration timeout;
   final int maxResponseBytes;
+
+  /// Optional application-pinned RP, independent of the HTTPS API transport.
+  /// A server response can never select or expand this configured authority.
+  final String? passkeyRpId;
   final HttpClient _client;
 
   static void _validateOrigin(Uri uri) {
@@ -52,11 +71,20 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
 
   @override
   Future<IdentityDirectory> identities(String sessionToken) async {
-    final r = await _send(false, 'GET', '/api/v1/identities',
-      headers: _capability('Bearer', sessionToken), expected: {200}, allowNull: true);
+    final r = await _send(
+      false,
+      'GET',
+      '/api/v1/identities',
+      headers: _capability('Bearer', sessionToken),
+      expected: {200},
+      allowNull: true,
+    );
     return _model(() {
-      final m = _record(r.body, {'identities', 'createdCount', 'nextCreateAt', 'serverTime'},
-        nullable: {'nextCreateAt'});
+      final m = _record(
+        r.body,
+        {'identities', 'createdCount', 'nextCreateAt', 'serverTime'},
+        nullable: {'nextCreateAt'},
+      );
       final items = m['identities'];
       if (items is! List || items.length > 3) {
         throw const FormatException('Invalid identity list');
@@ -64,64 +92,113 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
       final ids = <String>{}, names = <String>{};
       var originals = 0;
       final serverTime = _date(m, 'serverTime');
-      final identities = items.map((raw) {
-        final item = _record(raw, {'id', 'nickname', 'avatar', 'isOriginal',
-          'createdAt', 'renameAvailableAt'}, nullable: {'renameAvailableAt'});
-        final id = _identityId(_text(item, 'id'));
-        final nickname = _text(item, 'nickname', maxLength: 512);
-        if (utf8.encode(nickname).length > 512) {
-          throw const FormatException('Invalid identity nickname size');
-        }
-        final original = item['isOriginal'];
-        final created = _date(item, 'createdAt');
-        if (original is! bool || item['avatar'] != 'default-v1' ||
-            !ids.add(id) || !names.add(nickname) || created.isAfter(serverTime)) {
-          throw const FormatException('Invalid identity record');
-        }
-        if (original) originals++;
-        return ManagedIdentity(id: id, nickname: nickname, avatar: 'default-v1',
-          isOriginal: original, createdAt: created,
-          renameAvailableAt: item['renameAvailableAt'] == null
-              ? null : _date(item, 'renameAvailableAt'));
-      }).toList(growable: false);
+      final identities = items
+          .map((raw) {
+            final item = _record(
+              raw,
+              {
+                'id',
+                'nickname',
+                'avatar',
+                'isOriginal',
+                'createdAt',
+                'renameAvailableAt',
+              },
+              nullable: {'renameAvailableAt'},
+            );
+            final id = _identityId(_text(item, 'id'));
+            final nickname = _text(item, 'nickname', maxLength: 512);
+            if (utf8.encode(nickname).length > 512) {
+              throw const FormatException('Invalid identity nickname size');
+            }
+            final original = item['isOriginal'];
+            final created = _date(item, 'createdAt');
+            if (original is! bool ||
+                item['avatar'] != 'default-v1' ||
+                !ids.add(id) ||
+                !names.add(nickname) ||
+                created.isAfter(serverTime)) {
+              throw const FormatException('Invalid identity record');
+            }
+            if (original) originals++;
+            return ManagedIdentity(
+              id: id,
+              nickname: nickname,
+              avatar: 'default-v1',
+              isOriginal: original,
+              createdAt: created,
+              renameAvailableAt: item['renameAvailableAt'] == null
+                  ? null
+                  : _date(item, 'renameAvailableAt'),
+            );
+          })
+          .toList(growable: false);
       final count = _integer(m, 'createdCount', identities.length, 2147483647);
-      if (originals > 1 || (count == 0) != identities.isEmpty ||
+      if (originals > 1 ||
+          (count == 0) != identities.isEmpty ||
           (count < 3 && m['nextCreateAt'] != null)) {
         throw const FormatException('Invalid identity lifecycle metadata');
       }
-      return IdentityDirectory(identities: List.unmodifiable(identities),
-        createdCount: count, serverTime: serverTime,
-        nextCreateAt: m['nextCreateAt'] == null ? null : _date(m, 'nextCreateAt'),
-        sessionExpiresAt: _managementExpiry(r));
+      return IdentityDirectory(
+        identities: List.unmodifiable(identities),
+        createdCount: count,
+        serverTime: serverTime,
+        nextCreateAt: m['nextCreateAt'] == null
+            ? null
+            : _date(m, 'nextCreateAt'),
+        sessionExpiresAt: _managementExpiry(r),
+      );
     });
   }
 
   @override
-  Future<IdentityChangeOutcome> changeIdentity({required String sessionToken,
-    required String idempotencyKey, required IdentityOperation operation,
-    String? identityId, String? nickname}) async {
+  Future<IdentityChangeOutcome> changeIdentity({
+    required String sessionToken,
+    required String idempotencyKey,
+    required IdentityOperation operation,
+    String? identityId,
+    String? nickname,
+  }) async {
     if ((operation == IdentityOperation.create) != (identityId == null) ||
         (operation == IdentityOperation.delete) != (nickname == null) ||
-        nickname != null && (nickname.isEmpty || utf8.encode(nickname).length > 512)) {
-      throw const AuthFailure(kind: AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID');
+        nickname != null &&
+            (nickname.isEmpty || utf8.encode(nickname).length > 512)) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'CLIENT_INPUT_INVALID',
+      );
     }
     if (identityId != null) {
       try {
         _identityId(identityId);
       } on FormatException {
-        throw const AuthFailure(kind: AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID');
+        throw const AuthFailure(
+          kind: AuthFailureKind.rejected,
+          code: 'CLIENT_INPUT_INVALID',
+        );
       }
     }
-    final r = await _send(false, switch (operation) {
-      IdentityOperation.create => 'POST', IdentityOperation.rename => 'PATCH',
-      IdentityOperation.delete => 'DELETE',
-    }, identityId == null ? '/api/v1/identities' : '/api/v1/identities/$identityId',
-      headers: {..._capability('Bearer', sessionToken),
-        'Idempotency-Key': _bytes(idempotencyKey, 16)},
+    final r = await _send(
+      false,
+      switch (operation) {
+        IdentityOperation.create => 'POST',
+        IdentityOperation.rename => 'PATCH',
+        IdentityOperation.delete => 'DELETE',
+      },
+      identityId == null
+          ? '/api/v1/identities'
+          : '/api/v1/identities/$identityId',
+      headers: {
+        ..._capability('Bearer', sessionToken),
+        'Idempotency-Key': _bytes(idempotencyKey, 16),
+      },
       body: nickname == null ? null : {'nickname': nickname},
-      expected: {200}, allowNull: true);
+      expected: {200},
+      allowNull: true,
+    );
     final outcome = _model(() => _identityOutcome(r));
-    if (!outcome.committed || outcome.operation != operation ||
+    if (!outcome.committed ||
+        outcome.operation != operation ||
         identityId != null && outcome.identityId != identityId) {
       throw const AuthFailure(kind: AuthFailureKind.invalidResponse);
     }
@@ -129,53 +206,87 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
   }
 
   @override
-  Future<IdentityChangeOutcome> identityChangeResult({required String sessionToken,
-    required String idempotencyKey}) async {
-    final r = await _send(false, 'GET', '/api/v1/identity-change-result',
-      headers: {..._capability('Bearer', sessionToken),
-        'Idempotency-Key': _bytes(idempotencyKey, 16)},
-      expected: {200}, allowNull: true);
+  Future<IdentityChangeOutcome> identityChangeResult({
+    required String sessionToken,
+    required String idempotencyKey,
+  }) async {
+    final r = await _send(
+      false,
+      'GET',
+      '/api/v1/identity-change-result',
+      headers: {
+        ..._capability('Bearer', sessionToken),
+        'Idempotency-Key': _bytes(idempotencyKey, 16),
+      },
+      expected: {200},
+      allowNull: true,
+    );
     return _model(() => _identityOutcome(r));
   }
 
   static String _identityId(String id) {
-    if (!RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
-        .hasMatch(id)) {
+    if (!RegExp(
+      r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+    ).hasMatch(id)) {
       throw const FormatException('Invalid identity ID');
     }
     return id;
   }
 
   IdentityChangeOutcome _identityOutcome(_Reply r) {
-    final m = _record(r.body, {'state', 'operation', 'identityId', 'errorCode'},
-      nullable: {'operation', 'identityId', 'errorCode'});
-    if (m['state'] == 'NOT_FOUND' && m['operation'] == null &&
-        m['identityId'] == null && m['errorCode'] == null) {
-      return IdentityChangeOutcome(committed: false, sessionExpiresAt: _managementExpiry(r));
+    final m = _record(
+      r.body,
+      {'state', 'operation', 'identityId', 'errorCode'},
+      nullable: {'operation', 'identityId', 'errorCode'},
+    );
+    if (m['state'] == 'NOT_FOUND' &&
+        m['operation'] == null &&
+        m['identityId'] == null &&
+        m['errorCode'] == null) {
+      return IdentityChangeOutcome(
+        committed: false,
+        sessionExpiresAt: _managementExpiry(r),
+      );
     }
     if (m['state'] != 'COMMITTED' && m['state'] != 'REJECTED') {
       throw const FormatException('Invalid identity outcome');
     }
     final operation = switch (m['operation']) {
-      'CREATE' => IdentityOperation.create, 'RENAME' => IdentityOperation.rename,
+      'CREATE' => IdentityOperation.create,
+      'RENAME' => IdentityOperation.rename,
       'DELETE' => IdentityOperation.delete,
       _ => throw const FormatException('Invalid identity operation'),
     };
-    if (m['state'] == 'REJECTED' && m['identityId'] == null &&
+    if (m['state'] == 'REJECTED' &&
+        m['identityId'] == null &&
         _identityRejections.contains(m['errorCode'])) {
-      return IdentityChangeOutcome(committed: false, operation: operation,
-        errorCode: m['errorCode'] as String, sessionExpiresAt: _managementExpiry(r));
+      return IdentityChangeOutcome(
+        committed: false,
+        operation: operation,
+        errorCode: m['errorCode'] as String,
+        sessionExpiresAt: _managementExpiry(r),
+      );
     }
     if (m['state'] != 'COMMITTED' || m['errorCode'] != null) {
       throw const FormatException('Invalid identity outcome metadata');
     }
-    return IdentityChangeOutcome(committed: true, operation: operation,
+    return IdentityChangeOutcome(
+      committed: true,
+      operation: operation,
       identityId: _identityId(_text(m, 'identityId')),
-      sessionExpiresAt: _managementExpiry(r));
+      sessionExpiresAt: _managementExpiry(r),
+    );
   }
-  static const _identityRejections = {'IDENTITY_INVALID_NAME', 'IDENTITY_DUPLICATE_NAME',
-    'IDENTITY_LIMIT', 'IDENTITY_CREATE_COOLDOWN', 'IDENTITY_RENAME_COOLDOWN',
-    'IDENTITY_LAST_REQUIRED', 'IDENTITY_NOT_FOUND'};
+
+  static const _identityRejections = {
+    'IDENTITY_INVALID_NAME',
+    'IDENTITY_DUPLICATE_NAME',
+    'IDENTITY_LIMIT',
+    'IDENTITY_CREATE_COOLDOWN',
+    'IDENTITY_RENAME_COOLDOWN',
+    'IDENTITY_LAST_REQUIRED',
+    'IDENTITY_NOT_FOUND',
+  };
 
   @override
   Future<AuthSession> login({
@@ -666,7 +777,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
       DateTime? signedIn, replaced;
       if (m.containsKey('lastReplaced')) {
         final recent = _record(m['lastReplaced'], {
-          'role', 'signedInAt', 'replacedAt',
+          'role',
+          'signedInAt',
+          'replacedAt',
         });
         if (recent['role'] != 'REPLACED') {
           throw const FormatException('Invalid replaced device role');
@@ -840,7 +953,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
   }) async {
     _passwordInput(password);
     final r = await _send(
-      false, 'POST', '/api/v1/auth/passkey-options',
+      false,
+      'POST',
+      '/api/v1/auth/passkey-options',
       headers: _capability('Bearer', sessionToken),
       body: {'password': password},
       expected: {200},
@@ -857,7 +972,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
   }) async {
     _nativeCredential(attestation, creation: true);
     final r = await _send(
-      false, 'POST', '/api/v1/auth/passkeys',
+      false,
+      'POST',
+      '/api/v1/auth/passkeys',
       headers: {
         ..._capability('Bearer', sessionToken),
         ..._keyHeader(idempotencyKey),
@@ -879,7 +996,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
     required String idempotencyKey,
   }) async {
     final r = await _send(
-      false, 'GET', '/api/v1/auth/credential-change-result',
+      false,
+      'GET',
+      '/api/v1/auth/credential-change-result',
       headers: {
         ..._capability('Bearer', sessionToken),
         ..._keyHeader(idempotencyKey),
@@ -905,7 +1024,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
   @override
   Future<PasskeyOptions> createPasskeyResetOptions() async {
     final r = await _send(
-      false, 'POST', '/api/v1/auth/passkey-reset-options',
+      false,
+      'POST',
+      '/api/v1/auth/passkey-reset-options',
       body: {},
       expected: {200},
     );
@@ -919,7 +1040,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
   }) async {
     _nativeCredential(assertion, creation: false);
     final r = await _send(
-      false, 'POST', '/api/v1/auth/passkey-reset-intents',
+      false,
+      'POST',
+      '/api/v1/auth/passkey-reset-intents',
       body: {
         'challengeId': _bytes(challengeId, 32),
         'webauthnAssertion': assertion,
@@ -929,7 +1052,10 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
     );
     return _model(() {
       final m = _record(r.body, {
-        'resetIntentId', 'expiresAt', 'username', 'newRecoveryCode',
+        'resetIntentId',
+        'expiresAt',
+        'username',
+        'newRecoveryCode',
       });
       return PasswordResetIntent(
         resetIntentId: _encoded(m, 'resetIntentId', 32),
@@ -1032,8 +1158,10 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
                       'utf-8')) {
             throw const FormatException('Invalid authentication response type');
           }
-          payload = _StrictJson(utf8.decode(bytes, allowMalformed: false), allowNull: allowNull)
-              .decode();
+          payload = _StrictJson(
+            utf8.decode(bytes, allowMalformed: false),
+            allowNull: allowNull,
+          ).decode();
         }
         if (!expected.contains(status)) {
           throw _httpFailure(status, payload);
@@ -1225,8 +1353,14 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
       m['publicKey'],
       creation
           ? {
-              'challenge', 'rp', 'user', 'pubKeyCredParams', 'timeout',
-              'excludeCredentials', 'authenticatorSelection', 'attestation',
+              'challenge',
+              'rp',
+              'user',
+              'pubKeyCredParams',
+              'timeout',
+              'excludeCredentials',
+              'authenticatorSelection',
+              'attestation',
             }
           : {'challenge', 'rpId', 'timeout', 'userVerification'},
     );
@@ -1243,14 +1377,18 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
       if (rp['name'] != 'Hnuhole' ||
           user['name'] != userId ||
           user['displayName'] != 'Hnuhole account' ||
-          params is! List || params.length != 1) {
+          params is! List ||
+          params.length != 1) {
         throw const FormatException('Invalid Passkey account options');
       }
       final algorithm = _record(params.single, {'type', 'alg'});
       final selection = _record(options['authenticatorSelection'], {
-        'residentKey', 'requireResidentKey', 'userVerification',
+        'residentKey',
+        'requireResidentKey',
+        'userVerification',
       });
-      if (algorithm['type'] != 'public-key' || algorithm['alg'] != -7 ||
+      if (algorithm['type'] != 'public-key' ||
+          algorithm['alg'] != -7 ||
           selection['residentKey'] != 'required' ||
           selection['requireResidentKey'] != true ||
           selection['userVerification'] != 'required' ||
@@ -1284,6 +1422,14 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
   }
 
   void _passkeyRp(String rp) {
+    if (passkeyRpId != null) {
+      if (rp != passkeyRpId) {
+        throw const FormatException(
+          'Passkey RP differs from the configured authority',
+        );
+      }
+      return;
+    }
     final host = communityBaseUri.host.toLowerCase();
     if (rp != rp.toLowerCase() ||
         !RegExp(r'^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$').hasMatch(rp) ||
@@ -1294,22 +1440,36 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
   }
 
   static Map<String, dynamic> _freezeJsonMap(Map<String, Object?> value) =>
-      Map<String, dynamic>.unmodifiable(value.map((key, item) => MapEntry(
-        key,
-        item is Map<String, Object?>
-            ? _freezeJsonMap(item)
-            : item is List
-            ? List<Object?>.unmodifiable(item.map((entry) =>
-                entry is Map<String, Object?> ? _freezeJsonMap(entry) : entry))
-            : item,
-      )));
+      Map<String, dynamic>.unmodifiable(
+        value.map(
+          (key, item) => MapEntry(
+            key,
+            item is Map<String, Object?>
+                ? _freezeJsonMap(item)
+                : item is List
+                ? List<Object?>.unmodifiable(
+                    item.map(
+                      (entry) => entry is Map<String, Object?>
+                          ? _freezeJsonMap(entry)
+                          : entry,
+                    ),
+                  )
+                : item,
+          ),
+        ),
+      );
 
   static void _nativeCredential(
-    Map<String, dynamic> credential, {required bool creation}
-  ) {
+    Map<String, dynamic> credential, {
+    required bool creation,
+  }) {
     try {
       final m = _record(credential, {
-        'id', 'rawId', 'type', 'response', 'clientExtensionResults',
+        'id',
+        'rawId',
+        'type',
+        'response',
+        'clientExtensionResults',
       });
       final id = _variableBytes(m, 'id', 1023);
       if (m['rawId'] != id || m['type'] != 'public-key') {
@@ -1320,7 +1480,12 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
         m['response'],
         creation
             ? {'clientDataJSON', 'attestationObject'}
-            : {'clientDataJSON', 'authenticatorData', 'signature', 'userHandle'},
+            : {
+                'clientDataJSON',
+                'authenticatorData',
+                'signature',
+                'userHandle',
+              },
         optional: creation ? {'transports'} : {},
       );
       _variableBytes(response, 'clientDataJSON', 3072);
@@ -1328,10 +1493,18 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
         _variableBytes(response, 'attestationObject', 4096);
         if (response.containsKey('transports')) {
           final transports = response['transports'];
-          if (transports is! List || transports.length > 5 ||
+          if (transports is! List ||
+              transports.length > 5 ||
               transports.toSet().length != transports.length ||
-              transports.any((value) =>
-                  !{'usb', 'nfc', 'ble', 'internal', 'hybrid'}.contains(value))) {
+              transports.any(
+                (value) => !{
+                  'usb',
+                  'nfc',
+                  'ble',
+                  'internal',
+                  'hybrid',
+                }.contains(value),
+              )) {
             throw const FormatException('Invalid native transports');
           }
         }
@@ -1366,7 +1539,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
         raw.keys.any(
           (key) => !required.contains(key) && !optional.contains(key),
         ) ||
-        raw.entries.any((entry) => entry.value == null && !nullable.contains(entry.key))) {
+        raw.entries.any(
+          (entry) => entry.value == null && !nullable.contains(entry.key),
+        )) {
       throw const FormatException('Invalid response object');
     }
     return raw;
@@ -1403,7 +1578,9 @@ class HttpAuthApi implements AuthApi, CredentialManagementApi, PasskeyRecoveryAp
     String key,
     int maxBytes,
   ) {
-    final v = _text(m, key);
+    // Protocol fields have byte limits; base64url text can legitimately exceed
+    // the ordinary response-string limit. Keep the exact byte bound below.
+    final v = _text(m, key, maxLength: (maxBytes * 4 + 2) ~/ 3);
     AuthCrypto.decode(v, maxBytes: maxBytes);
     return v;
   }

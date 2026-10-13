@@ -100,13 +100,19 @@ func NewWebAuthnValidator(config WebAuthnConfig) (*WebAuthnValidator, error) {
 		if !strings.HasPrefix(origin, prefix) {
 			return nil, ErrWebAuthnConfiguration
 		}
-		if _, err := webAuthnBytes(strings.TrimPrefix(origin, prefix), 32, 32); err != nil {
+		fingerprint, err := webAuthnBytes(strings.TrimPrefix(origin, prefix), 32, 32)
+		if err != nil {
 			return nil, ErrWebAuthnConfiguration
 		}
 		if _, exists := origins[origin]; exists {
 			return nil, ErrWebAuthnConfiguration
 		}
 		origins[origin] = struct{}{}
+		// Some Android providers serialize this same certificate digest using
+		// unpadded standard Base64. Derive that exact alias from trusted config,
+		// never from a request. Do not rewrite clientDataJSON: assertion signatures
+		// authenticate its original bytes. Padding/mixed encodings remain rejected.
+		origins[prefix+base64.RawStdEncoding.EncodeToString(fingerprint)] = struct{}{}
 	}
 	decode, err := (cbor.DecOptions{
 		DupMapKey: cbor.DupMapKeyEnforcedAPF, IndefLength: cbor.IndefLengthForbidden,

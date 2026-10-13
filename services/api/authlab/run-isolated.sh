@@ -1,6 +1,12 @@
 #!/bin/sh
 # Requires an existing Go and PostgreSQL toolchain; never installs system tools.
 set -eu
+# Aggregate package budget on slower owned disks; never permit an unbounded test.
+authlab_test_timeout=${AUTHLAB_TEST_TIMEOUT:-20m}
+case "$authlab_test_timeout" in
+    [1-9]m|1[0-9]m|2[0-9]m|30m) ;;
+    *) echo "Invalid auth lab test timeout (allowed 1m through 30m)" >&2; exit 2 ;;
+esac
 authlab_pg_port=${PGPORT:-5432}
 case "$authlab_pg_port" in
     ''|*[!0-9]*|0*) echo "Invalid auth lab PGPORT" >&2; exit 2 ;;
@@ -61,5 +67,5 @@ export AUTHLAB_POSTGRES_LOG
 export AUTHLAB_ALLOW_SCHEMA_RESET=1
 authlab_script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$authlab_script_dir/.."
-go test -race -count=1 -p 1 ./...
+go test -race -count=1 -timeout="$authlab_test_timeout" -p 1 ./...
 go vet ./...

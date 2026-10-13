@@ -1069,6 +1069,71 @@ void main() {
   }
 
   test(
+    'explicit development RP stays pinned independently of the API origin',
+    () async {
+      api.close();
+      final context = SecurityContext(withTrustedRoots: false)
+        ..setTrustedCertificatesBytes(utf8.encode(_certificate));
+      final client = HttpClient(context: context)
+        ..badCertificateCallback = (certificate, host, port) =>
+            host == '127.0.0.1' &&
+            port == community.server.port &&
+            certificate.pem.trim() == _certificate.trim();
+      api = HttpAuthApi(
+        communityBaseUri: community.uri,
+        verifierBaseUri: verifier.uri,
+        client: client,
+        passkeyRpId: 'zewbby.github.io',
+      );
+      for (final rp in [
+        'zewbby.github.io',
+        community.uri.host,
+        'evil.zewbby.github.io',
+        'zewbby.github.io.evil.invalid',
+      ]) {
+        final options = creationOptions()
+          ..['rp'] = {'id': rp, 'name': 'Hnuhole'};
+        community.respond = (r) => _json(r, 200, {
+          'challengeId': _flow,
+          'expiresAt': _expiry,
+          'publicKey': options,
+        }, session: true);
+        final operation = api.createPasskeyCreationOptions(
+          sessionToken: _token,
+          password: 'fresh password',
+        );
+        if (rp == 'zewbby.github.io') {
+          expect((await operation).publicKey['rp'], {
+            'id': rp,
+            'name': 'Hnuhole',
+          });
+        } else {
+          await expectLater(
+            operation,
+            throwsA(_failure(AuthFailureKind.invalidResponse)),
+          );
+        }
+      }
+      for (final rp in [
+        '127.0.0.1',
+        'UPPER.example',
+        'https://example.com',
+        '-bad.example',
+        'example..com',
+      ]) {
+        expect(
+          () => HttpAuthApi(
+            communityBaseUri: community.uri,
+            verifierBaseUri: verifier.uri,
+            passkeyRpId: rp,
+          ),
+          throwsArgumentError,
+        );
+      }
+    },
+  );
+
+  test(
     'Passkey binding carries reviewed C options and one exact native response',
     () async {
       community.respond = (r) async {
@@ -1149,6 +1214,53 @@ void main() {
         throwsA(_failure(AuthFailureKind.invalidResponse)),
       );
     }
+  });
+
+  test('native credential transport accepts its byte limits and rejects larger proof before POST', () async {
+    community.respond = (r) async {
+      r.response.headers.set('Session-Expires-At', _expiry);
+      r.response.statusCode = 204;
+      await r.response.close();
+    };
+    final native = nativeAttestation();
+    native['response'] = <String, Object>{
+      'clientDataJSON': AuthCrypto.encode(List<int>.filled(3072, 1)),
+      'attestationObject': AuthCrypto.encode(List<int>.filled(4096, 2)),
+    };
+    expect(
+      await api.registerPasskey(
+        sessionToken: _token,
+        challengeId: _flow,
+        attestation: native,
+        idempotencyKey: _key,
+      ),
+      DateTime.parse(_expiry),
+    );
+    expect(community.requests, hasLength(1));
+    for (final field in {
+      'clientDataJSON': 3072,
+      'attestationObject': 4096,
+    }.entries) {
+      final invalid = nativeAttestation();
+      (invalid['response'] as Map<String, Object>)[field.key] =
+          AuthCrypto.encode(List<int>.filled(field.value + 1, 3));
+      await expectLater(
+        api.registerPasskey(
+          sessionToken: _token,
+          challengeId: _flow,
+          attestation: invalid,
+          idempotencyKey: _key,
+        ),
+        throwsA(
+          _failure(AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID'),
+        ),
+      );
+    }
+    expect(
+      community.requests,
+      hasLength(1),
+      reason: 'Oversized native proof must never be transmitted',
+    );
   });
 
   test(

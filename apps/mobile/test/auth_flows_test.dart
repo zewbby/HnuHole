@@ -40,6 +40,7 @@ class Api implements AuthApi {
   Future<ClosureStatus> Function()? onClosureStatus;
   Future<OtpRequestAccepted> Function()? onOtp;
   AuthFailure? otpResultFailure;
+  AuthFailure? confirmationFailure;
   Future<AuthSession> Function()? onRegistration;
   final resetCommits = <Map<String, String>>[];
   final closureRequests = <Map<String, String>>[];
@@ -161,6 +162,7 @@ class Api implements AuthApi {
       'installationId': installationId,
       'key': idempotencyKey,
     });
+    if (confirmationFailure != null) throw confirmationFailure!;
     return OtpConfirmation(
       state: OtpConfirmationState.ticketAvailable,
       registrationTicket: ticket,
@@ -607,6 +609,18 @@ void main() {
       expect(h.api.registrations.length, 1);
       expect((await h.store.read()).registration!['commit'], anchor);
       expect(h.adopted, 0);
+      await h.store.update(
+        (state) => state.copyWith(
+          registration: {
+            ...state.registration!,
+            'request': {...state.registration!['request'], 'state': 'EXPIRED'},
+          },
+        ),
+      );
+      expect(resumed.canRestartOtpVerification, isFalse);
+      await resumed.abandonExpiredOtpOperation();
+      expect(resumed.error!.code, 'PENDING_CHECK_REQUIRED');
+      expect((await h.store.read()).registration!['commit'], anchor);
     },
   );
 
@@ -633,6 +647,75 @@ void main() {
     expect(h.api.otpRequests.length, 2);
     expect(h.api.otpRequests[0]['key'], isNot(h.api.otpRequests[1]['key']));
   });
+
+  test('lost or expired OTP flow resumes explicitly after restart with original bootstrap', () async {
+    for (final code in [
+      'OTP_FLOW_INVALID',
+      'OTP_EXPIRED',
+      'REVERIFY_REQUIRED',
+    ]) {
+      final h = Harness();
+      await h.flows.requestOtp('Exact@hainanu.edu.cn');
+      final original = (await h.store.read()).registration!;
+      h.api.confirmationFailure = AuthFailure(
+        kind: AuthFailureKind.rejected,
+        statusCode: 422,
+        code: code,
+      );
+      await h.flows.confirmOtp('123456');
+      final pending = (await h.store.read()).registration!['confirmation'];
+      expect(pending['expired'], isTrue);
+      expect(h.api.otpRequests.length, 1);
+      h.flows.dispose();
+      final restarted = h.makeFlows();
+      await restarted.restorePending();
+      expect(restarted.canRestartOtpVerification, isTrue);
+      expect(h.api.otpRequests.length, 1);
+      await restarted.abandonExpiredOtpOperation();
+      final resumed = (await h.store.read()).registration!;
+      for (final field in ['seed', 'publicKey', 'slotId']) {
+        expect(resumed[field], original[field]);
+      }
+      expect(resumed['confirmation'], isNull);
+      expect(h.api.otpRequests.length, 1);
+      await restarted.requestOtp('Exact@hainanu.edu.cn');
+      expect(h.api.otpRequests.length, 2);
+      expect(h.api.otpRequests[1]['key'], isNot(h.api.otpRequests[0]['key']));
+      expect(h.api.registrations, isEmpty);
+      expect(h.adopted, 0);
+      restarted.dispose();
+    }
+  });
+
+  test(
+    'unknown timeout or wrong OTP cannot enable verification restart',
+    () async {
+      for (final failure in [
+        const AuthFailure(kind: AuthFailureKind.timeout),
+        const AuthFailure(
+          kind: AuthFailureKind.rejected,
+          statusCode: 503,
+          code: 'OTP_FLOW_INVALID',
+        ),
+        const AuthFailure(
+          kind: AuthFailureKind.rejected,
+          statusCode: 422,
+          code: 'OTP_INVALID',
+        ),
+      ]) {
+        final h = Harness();
+        await h.flows.requestOtp('Exact@hainanu.edu.cn');
+        h.api.confirmationFailure = failure;
+        await h.flows.confirmOtp('123456');
+        final original = (await h.store.read()).registration!['confirmation'];
+        expect(h.flows.canRestartOtpVerification, isFalse);
+        await h.flows.abandonExpiredOtpOperation();
+        expect(h.flows.error!.code, 'PENDING_CHECK_REQUIRED');
+        expect((await h.store.read()).registration!['confirmation'], original);
+        expect(h.api.otpRequests.length, 1);
+      }
+    },
+  );
 
   test('secure workflow codec rejects malformed records before session authority is read', () async {
     final secret = bytes(32, 20);

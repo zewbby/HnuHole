@@ -99,9 +99,15 @@ case "${1:-}" in
   prepare;cd "$TASK_ROOT/source/services/api"
   bash authlab/run-post-schema-isolated.sh > "$TASK_ROOT/posts-privileges.log" 2>&1 || { tail -n 40 "$TASK_ROOT/posts-privileges.log";exit 1; }
   tail -n 16 "$TASK_ROOT/posts-privileges.log";;
+ auth-runtime)
+  prepare
+  cp "$SOURCE/infra/docker-compose.yml" "$TASK_ROOT/source/infra/docker-compose.yml"
+  cd "$TASK_ROOT/source/services/api"
+  bash authlab/run-runtime-isolated.sh > "$TASK_ROOT/auth-runtime.log" 2>&1 || { tail -n 60 "$TASK_ROOT/auth-runtime.log";exit 1; }
+  tail -n 16 "$TASK_ROOT/auth-runtime.log";;
  vet)
   prepare;cd "$TASK_ROOT/source/services/api"
   go vet ./... > "$TASK_ROOT/vet.log" 2>&1 || { cat "$TASK_ROOT/vet.log";exit 1; }
   echo 'Final Go vet completed';;
- *) echo 'Use prepare/format/checks/integration/auth-regression/server/posts-privileges/vet' >&2;exit 2;;
+ *) echo 'Use prepare/format/checks/integration/auth-regression/server/posts-privileges/auth-runtime/vet' >&2;exit 2;;
 esac

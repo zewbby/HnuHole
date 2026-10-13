@@ -1,0 +1,463 @@
+{
+  "recordedOn": "2026-10-13",
+  "timeZone": "Asia/Shanghai",
+  "repository": "https://github.com/zewbby/HnuHole.git",
+  "branch": "codex/community-flutter-pages",
+  "initialHEAD": "4d58116bdde2c1d2d406b965590bc1625a5c7955",
+  "savedAndPushedCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "integrationCommit": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+  "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+  "sourceFileCount": 443,
+  "scope": "Fixed combined-source host regression and Android build; single physical Android explicitly deferred by user",
+  "currentResult": "PARTIAL_DEVICE_DEFERRED_BY_USER",
+  "hostIntegration": "PASS",
+  "standardAndroidBuild": "PASS",
+  "deviceAcceptance": "NOT_RUN_USER_DEFERRED",
+  "testStages": [
+    {
+      "stage": "checks",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-stage.sh checks",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh checks",
+      "startUTC": "2026-10-13T07:17:23Z",
+      "endUTC": "2026-10-13T07:23:01Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "coversFinalProductSource": true,
+      "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\checks.console.log"
+    },
+    {
+      "stage": "auth-regression",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-stage.sh auth-regression",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh auth-regression",
+      "startUTC": "2026-10-13T07:31:58Z",
+      "endUTC": "2026-10-13T07:33:41Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "coversFinalProductSource": true,
+      "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\auth-regression.console.log"
+    },
+    {
+      "stage": "integration",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-stage.sh integration",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh integration",
+      "startUTC": "2026-10-13T07:33:41Z",
+      "endUTC": "2026-10-13T07:34:21Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "coversFinalProductSource": true,
+      "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\integration.console.log"
+    },
+    {
+      "stage": "server",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-stage.sh server",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh server",
+      "startUTC": "2026-10-13T07:51:16Z",
+      "endUTC": "2026-10-13T08:10:52Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "coversFinalProductSource": true,
+      "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\server.console.log"
+    },
+    {
+      "stage": "posts-privileges",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-stage.sh posts-privileges",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh posts-privileges",
+      "startUTC": "2026-10-13T08:10:52Z",
+      "endUTC": "2026-10-13T08:11:53Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "coversFinalProductSource": true,
+      "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\posts-privileges.console.log"
+    },
+    {
+      "stage": "auth-runtime",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-stage.sh auth-runtime",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh auth-runtime",
+      "startUTC": "2026-10-13T08:11:53Z",
+      "endUTC": "2026-10-13T08:13:21Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "coversFinalProductSource": true,
+      "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\auth-runtime.console.log"
+    },
+    {
+      "stage": "vet",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-stage.sh vet",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh vet",
+      "startUTC": "2026-10-13T08:13:21Z",
+      "endUTC": "2026-10-13T08:13:23Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "coversFinalProductSource": true,
+      "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\vet.console.log"
+    }
+  ],
+  "mobile": {
+    "pass": 320,
+    "fail": 0,
+    "skip": 0,
+    "suites": 21,
+    "done": [
+      {
+        "success": true,
+        "type": "done",
+        "time": 40034
+      }
+    ]
+  },
+  "mainRoot": {
+    "assembly": "production HnuholeApp root; actual TLS C/V handlers, independent PG, file SQLite; host vault substitutes",
+    "checkpoints": {
+      "F4-H01": true,
+      "F4-H02": true,
+      "F4-H03": true,
+      "F4-H04": true,
+      "F4-H05": true,
+      "F4-H06": true,
+      "F4-H07": true,
+      "F4-H08": true
+    },
+    "counts": {
+      "bindings": 1,
+      "committedResponseDrops": 2,
+      "creates": 1,
+      "deletedPosts": 1,
+      "deletes": 1,
+      "posts": 1,
+      "queryDrops": 2,
+      "tasks": 1
+    },
+    "finalAuthenticationCandidate": null,
+    "finalF4Result": "BLOCKED_DEPENDENCY",
+    "hostFlutterProcesses": 2,
+    "result": "PASS"
+  },
+  "mainFixtureLegacyProvenanceNote": "The raw fixture predates fixed-auth designation and emits constant null/BLOCKED_DEPENDENCY metadata. It is retained unchanged, not a functional failure. This record independently binds the executed source to saved community S and fixed authentication D with443-file fingerprint; no native/full-app acceptance inferred.",
+  "postSchema": {
+    "topLevelPassed": 9,
+    "lifecycleSubtestsPassed": 4,
+    "failed": 0
+  },
+  "actualRuntime": {
+    "checksPassed": 25,
+    "checks": {
+      "privacyRoleMatrix": "passed",
+      "privacyUnsafeDatabaseDiagnosticsRejected": "passed",
+      "privacyRealProcessAndPostgresLogs": "passed",
+      "actualCmdLifecycle": "passed",
+      "formalMigrationAndRoles": "passed",
+      "upgradeChannelsPreserved": "passed",
+      "identityUpgrade10To11": "passed",
+      "identityClosureUpgrade11To12": "passed",
+      "identityLegacyClosedProfileRepair": "passed",
+      "identityClosureTriggerBoundary": "passed",
+      "identityMissingSchemaAndDml": "passed",
+      "identityCrudReceiptsAndRestart": "passed",
+      "identityClosureAndSameEmailNewAccount": "passed",
+      "inactiveProjectionPureContract": "passed",
+      "textUpgrade12To13": "passed",
+      "textMissingSchemaAndRequiredDml": "passed",
+      "textExcessPrivilegeAndReusedKeyRejected": "passed",
+      "textActualHttpsWorkerSqlAndRestart": "passed",
+      "textUnknownSealAndDurableContentRejection": "passed",
+      "textClosureProjectionAndNewAccountIsolation": "passed",
+      "verifierGateUpgrade3To4": "passed",
+      "verifierGateFreezeRestartAndRecovery": "passed",
+      "verifierOldSnapshotBlocked": "passed",
+      "verifierOldGenerationOtpBlocked": "passed",
+      "verifierIndependentEvidenceExpiry": "passed"
+    },
+    "cleanup": "this invocation project and private directory only",
+    "newIndependentDatabases": true,
+    "knownOtherServicesStopped": false
+  },
+  "pluginHost": {
+    "authPasskeyAnalysis": "PASS",
+    "authVaultAnalysis": "PASS",
+    "passkeyDartTests": 9,
+    "passkeyDartFailed": 0,
+    "vaultDartTests": "NOT_RUN: no independent test directory"
+  },
+  "hostToolGuards": {
+    "testsPassed": 109,
+    "failed": 0,
+    "diagnosticBuildTests": 8,
+    "jvmPolicyChecks": 24,
+    "syntheticRunnerGuards": 17,
+    "actualDeviceTests": 0
+  },
+  "openapi": {
+    "result": "PASS",
+    "specifications": 5
+  },
+  "androidStandard": {
+    "result": "PASS",
+    "standardMain": true,
+    "arm64": true,
+    "builds": [
+      {
+        "mode": "debug",
+        "apk": "/home/hnuhole/hnuhole-community-flutter-f4-20261013/source/apps/mobile/build/app/outputs/flutter-apk/app-debug.apk",
+        "bytes": 84666807,
+        "sha256": "270e92c1ad8e4d117b7ab2c20cf6a9269bb0fa2130ce3a44b88788f643d2f855",
+        "diagnosticDexTypes": [
+          "GoogleFidoDiagnosticActivity",
+          "GoogleFidoDiagnosticPolicy"
+        ],
+        "debugDiagnosticAbsentInRelease": false,
+        "releaseProductionSigned": false,
+        "signatureVerificationExitCode": 0,
+        "sqliteAsset": "lib/arm64-v8a/libsqlite3.so",
+        "sqliteSha256": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
+        "sqliteIsAarch64": true,
+        "productSourceState": "Fixed merged task tree; generated registrant and build modes separated",
+        "deviceInstalledOrRun": false
+      },
+      {
+        "mode": "release",
+        "apk": "/home/hnuhole/hnuhole-community-flutter-f4-20261013/source/apps/mobile/build/app/outputs/flutter-apk/app-release.apk",
+        "bytes": 21016562,
+        "sha256": "089b26aadaffe109299779e4aa789b37fbfa55c036c3eefa19c6029cabadc5d1",
+        "diagnosticDexTypes": [],
+        "debugDiagnosticAbsentInRelease": true,
+        "releaseProductionSigned": false,
+        "signatureVerificationExitCode": 1,
+        "sqliteAsset": "lib/arm64-v8a/libsqlite3.so",
+        "sqliteSha256": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
+        "sqliteIsAarch64": true,
+        "productSourceState": "Fixed merged task tree; generated registrant and build modes separated",
+        "deviceInstalledOrRun": false
+      }
+    ],
+    "mainMobileLockAndPubspecUnchanged": true,
+    "releaseDeployedOrPublished": false
+  },
+  "androidInstrumentation": {
+    "result": "PASS_BUILD_ONLY",
+    "tests": [
+      {
+        "plugin": "hnuhole_auth_vault",
+        "apk": "/home/hnuhole/hnuhole-community-flutter-f4-20261013/source/apps/mobile/build/hnuhole_auth_vault/outputs/apk/androidTest/debug/hnuhole_auth_vault-debug-androidTest.apk",
+        "bytes": 3349089,
+        "sha256": "f0647ffd2bb3658019d46fcbc5c9f1e0167818ee44292fe6c5e9bc9998af5069",
+        "isolatedTestApplicationId": "org.hnuhole.authvault.communityf5.test",
+        "runner": "androidx.test.runner.AndroidJUnitRunner",
+        "signatureVerified": true,
+        "actualInstrumentationTestsRun": false
+      },
+      {
+        "plugin": "hnuhole_auth_passkey",
+        "apk": "/home/hnuhole/hnuhole-community-flutter-f4-20261013/source/apps/mobile/build/hnuhole_auth_passkey/outputs/apk/androidTest/debug/hnuhole_auth_passkey-debug-androidTest.apk",
+        "bytes": 5581002,
+        "sha256": "2e83d38f2141b75537585a881abae99a980aedec362a48b4c1c460a0abb43983",
+        "isolatedTestApplicationId": "org.hnuhole.authpasskey.communityf5.test",
+        "runner": "androidx.test.runner.AndroidJUnitRunner",
+        "signatureVerified": true,
+        "actualInstrumentationTestsRun": false
+      }
+    ],
+    "noDeviceOperation": true
+  },
+  "scopeComparison": {
+    "result": "PASS",
+    "initialJointFingerprint": "1024f71af8962b309d38b2aefdca211c7750a1bca72083eeaebc10b793669b7d",
+    "currentFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+    "changedSinceInitialChecks": [
+      "services/api/authlab/run-isolated.sh",
+      "tools/tests/fixtures/auth-canonical-pubspec-d859cb05.lock",
+      "tools/tests/test-community-f4-runner-isolation.sh",
+      "tools/tests/test_android_b3_b4_signature_contrast.py"
+    ],
+    "mobileGoSqlAndProtocolSourcesUnchanged": true,
+    "productLocksUnchanged": true,
+    "affectedChecksRerun": [
+      "host guards109",
+      "runner guards17",
+      "full server with bounded20m",
+      "posts-privileges/auth-runtime/final-vet follow on final tree"
+    ]
+  },
+  "authenticationCandidateEvidence": {
+    "commit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+    "fixedCounts": {
+      "PASS": 22,
+      "FAIL": 0,
+      "BLOCKED": 2
+    },
+    "currentCombinedDeviceEvidence": false,
+    "originalSourceChecks": [
+      {
+        "script": "check-non-ios-closure.py",
+        "exitCode": 0,
+        "scope": "Fixed authentication commit evidence bookkeeping, not combined-source dynamic regression"
+      },
+      {
+        "script": "check-privacy-closure-handoff.py",
+        "exitCode": 0,
+        "scope": "Fixed authentication commit evidence bookkeeping, not combined-source dynamic regression"
+      },
+      {
+        "script": "check-identity-handoff.py",
+        "exitCode": 0,
+        "scope": "Fixed authentication commit evidence bookkeeping, not combined-source dynamic regression"
+      }
+    ],
+    "symlinkGitBlobMaterialization": "Static source/evidence only, no iOS proof"
+  },
+  "isolation": {
+    "checkout": "E:/HnuHole-community-f4-20261012/repo",
+    "wslDistribution": "HnuHole-Ubuntu-24.04",
+    "wslVhdOnDrive": "E",
+    "taskRoot": "/home/hnuhole/hnuhole-community-flutter-f4-20261013",
+    "dedicatedTools": "/home/hnuhole/community-auth-integration-20261013-tools",
+    "sdkOwner": "community-auth-integration-20261013",
+    "pgPrivateSocketPort": 55443,
+    "authEnvironmentOrCredentialsUsed": false,
+    "sharedSDKInvokedOrWritten": false,
+    "globalPathProxyCertificateSystemChanged": false,
+    "deviceOrAdbUsed": false,
+    "goPackageTestBudget": "20m bounded1m-30m; protocol deadlines and durability/race checks preserved"
+  },
+  "preparationFailures": [
+    {
+      "command": "auth-regression attempt01",
+      "reason": "Private Unix socket path108 bytes exceeds Linux max107",
+      "resolution": "Only owned task path shortened; no source/security/protocol edits",
+      "evidence": "logs/pg-socket-diagnostic.log"
+    },
+    {
+      "command": "host guards attempt01",
+      "reason": "Four fixtures used current community Pub lock with historical auth-only fixed builder",
+      "resolution": "Test-only fixed-D lock fixture and new rejection case; unchanged builder allowlist;109 PASS",
+      "evidence": "logs/host-guard-fixture-fix.json"
+    },
+    {
+      "command": "server attempt01",
+      "reason": "Whole authprivacy package exceeded10m default while current test had run21s, stack in fsync",
+      "resolution": "Bounded20m full package rerun PASS1022.300s; race/count1/p1 and all cases retained",
+      "evidence": "logs/server-timeout-review.json"
+    },
+    {
+      "command": "Android debug attempt01",
+      "reason": "Locked SQLite3.7.0 GitHub arm64 library download timeout",
+      "resolution": "Exact public1.8MB asset downloaded through Windows, package-pinned checksum verified, hook reverified; standard build PASS",
+      "evidence": "logs/sqlite-native-asset.json"
+    },
+    {
+      "command": "Android release attempt01",
+      "reason": "No-pub left debug integration_test registrant in release",
+      "resolution": "Follow candidate handoff: normal release build regenerates plugin registry; lock/pubspec unchanged; PASS",
+      "evidence": "logs/android-release-attempt-01"
+    }
+  ],
+  "remaining": [
+    "User explicitly deferred single-device window; resume only after specific device, time window, install/data-impact and reboot authorization",
+    "Actual native business7/auth vault16/Passkey12 and actual main/device flows NOT_RUN",
+    "New task signature/package has no own public RP association; positive system Passkey not provisioned and cannot reuse authentication signing material",
+    "Second physical Android/iOS/production outside current passed scope"
+  ],
+  "deviceChecklist": "community-single-android-acceptance-20261013.md",
+  "authenticationDiff": "community-flutter-f4-auth-integration-diff-20261012.md",
+  "externalLogRoot": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs",
+  "publication": {
+    "savedCommitPushed": true,
+    "integratedCommitPushed": false,
+    "forcePush": false,
+    "mainMerged": false,
+    "releasePublished": false,
+    "productionDeployed": false
+  },
+  "cleanup": {
+    "disposableHostClusters": "Complete via stage traps",
+    "actualRuntimeOwnProjectAndPrivateDirectory": "Complete via runtime trap",
+    "taskToolsCachesApksSyntheticDeviceMaterial": "Owned resources to be removed after source commit/push because device window was deferred; actual receipt will record completion"
+  },
+  "androidIsolatedCandidate": {
+    "result": "PASS_BUILD_ONLY",
+    "apk": "/home/hnuhole/hnuhole-community-flutter-f4-20261013/device-source/apps/mobile/build/app/outputs/flutter-apk/app-debug.apk",
+    "sha256": "d7bc8906c2ed011ba7bb3009eb0f91e5a0f7ecfc23c0bd6109c1839531abd5a6",
+    "bytes": 84667747,
+    "applicationId": "org.hnuhole.hnuhole_mobile.communityf5",
+    "launchActivity": "org.hnuhole.hnuhole_mobile.MainActivity",
+    "signatureSha256": "5c76424ec1e88c67c516a14078f79f1a78735ef3142fc815d1aeed5700e12a75",
+    "productAndTestInputsCompared": 195,
+    "productSourceMatchesFinalFingerprintExceptApplicationIdOverlay": true,
+    "finalSourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+    "usesOwnFreshDebugSignature": true,
+    "publicLoopbackTlsConfig": {
+      "owner": "community-single-android-20261013",
+      "ports": {
+        "cDatabase": 57553,
+        "vDatabase": 43005,
+        "smtp": 53563,
+        "mailpitHttp": 44421,
+        "communityHttps": 49911,
+        "verifierHttps": 50499,
+        "communityMtls": 55397,
+        "verifierMtls": 33611
+      },
+      "caSha256": "467b2a8a3406fc3b8e03e7a9b574ca897dad2c98e7c78e96a9caf5cf0e1e0d30",
+      "applicationId": "org.hnuhole.hnuhole_mobile.communityf5",
+      "noDatabaseOrServiceStarted": true,
+      "deviceUsed": false,
+      "passkeyPositiveCeremony": "NOT_PROVISIONED: no own public RP/signature association, original authentication signing material not reused"
+    },
+    "phoneUsed": false
+  },
+  "deviceDecision": {
+    "result": "DEFERRED_BY_USER",
+    "instruction": "Do not provide a device window now; commit and push integrated work first, device acceptance remains pending",
+    "adbOrDeviceOperationsExecuted": false,
+    "installationDataClearUninstallRebootExecuted": false,
+    "allDeviceChecklistItems": "NOT_RUN"
+  },
+  "additionalCommands": [
+    {
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-host-guards.sh",
+      "result": "PASS",
+      "scope": "109 host-tool tests and8 diagnostic build tests"
+    },
+    {
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/run-plugin-host-checks.sh",
+      "result": "PASS",
+      "scope": "Two plugin analyzers, Passkey Dart9, OpenAPI5 and JVM policy24"
+    },
+    {
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/build-standard-android.sh",
+      "result": "PASS",
+      "scope": "Final debug ARM64 succeeded; first release attempt failed, final release command below"
+    },
+    {
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/build-standard-release.sh",
+      "result": "PASS",
+      "scope": "Final release ARM64 unsigned build"
+    },
+    {
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/build-native-instrumentation.sh",
+      "result": "PASS",
+      "scope": "Two instrumented APK builds, no device execution"
+    },
+    {
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/integration-20261013/prepare-device-candidate.sh",
+      "result": "PASS",
+      "scope": "Isolated applicationId/source/signature build, no device or service execution"
+    }
+  ],
+  "runnerGuardsCommand": "bash tools/tests/test-community-f4-runner-isolation.sh; synthetic isolation guards only"
+}

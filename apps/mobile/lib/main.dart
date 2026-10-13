@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
+import 'src/development/app_transport.dart';
 
 void main() {
   final communityBaseUri = Uri.parse(
@@ -23,11 +24,25 @@ void main() {
     communityBaseUri: communityBaseUri,
     verifierBaseUri: verifierBaseUri,
   );
-  final repository = HttpChannelRepository(baseUri: communityBaseUri);
+  final repository = HttpChannelRepository(
+    baseUri: communityBaseUri,
+    client: createAppHttpClient(
+      community: communityBaseUri,
+      verifier: verifierBaseUri,
+    ),
+  );
   final directory = ChannelDirectoryController(repository: repository);
   final api = HttpAuthApi(
     communityBaseUri: communityBaseUri,
     verifierBaseUri: verifierBaseUri,
+    passkeyRpId: developmentPasskeyRp(
+      community: communityBaseUri,
+      verifier: verifierBaseUri,
+    ),
+    client: createAppHttpClient(
+      community: communityBaseUri,
+      verifier: verifierBaseUri,
+    ),
   );
   final storageScope = environment.storageScope;
   final storageNamespace = AuthCrypto.domainDigest(
@@ -43,7 +58,13 @@ void main() {
     store: store,
     directory: directory,
   );
-  final postApi = HttpPostApi(communityBaseUri: communityBaseUri);
+  final postApi = HttpPostApi(
+    communityBaseUri: communityBaseUri,
+    client: createAppHttpClient(
+      community: communityBaseUri,
+      verifier: verifierBaseUri,
+    ),
+  );
   final posts = PostController(
     api: postApi,
     sessions: sessions,

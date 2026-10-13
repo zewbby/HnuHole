@@ -48,7 +48,10 @@ def artifacts(rp_id, android_package=None, android_cert_sha256=None,
         android_origins.append('android:apk-key-hash:' + origin_hash)
         canonical = ':'.join(f'{part:02X}' for part in fingerprint)
         result['assetlinks.json'] = [{
-            'relation': ['delegate_permission/common.get_login_creds'],
+            # FIDO2 validators still require handle_all_urls during the
+            # get_login_creds migration described in Google's native-app guide.
+            'relation': ['delegate_permission/common.get_login_creds',
+                         'delegate_permission/common.handle_all_urls'],
             'target': {'namespace': 'android_app', 'package_name': android_package,
                        'sha256_cert_fingerprints': [canonical]},
         }]

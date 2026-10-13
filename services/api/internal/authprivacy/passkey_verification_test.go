@@ -68,6 +68,75 @@ func TestWebAuthnNativeAndroidOriginsAreExplicitAndCanonical(t *testing.T) {
 	}
 }
 
+func TestWebAuthnAndroidBase64AliasKeepsExactCertificateAndSignedBytes(t *testing.T) {
+	f := newPasskeyTestFixture(t)
+	fingerprint := bytes.Repeat([]byte{0xfb, 0xff}, 16)
+	const prefix = "android:apk-key-hash:"
+	canonical := prefix + base64.RawURLEncoding.EncodeToString(fingerprint)
+	standard := prefix + base64.RawStdEncoding.EncodeToString(fingerprint)
+	v, err := NewWebAuthnValidator(WebAuthnConfig{RPID: "example.test", Origins: []string{"https://auth.example.test"}, AndroidOrigins: []string{canonical}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	client := func(kind, origin string) []byte {
+		data, e := json.Marshal(map[string]any{"type": kind, "challenge": passkeyEncode(f.challenge[:]), "origin": origin, "crossOrigin": false})
+		if e != nil {
+			t.Fatal(e)
+		}
+		return data
+	}
+	for _, origin := range []string{canonical, standard} {
+		registration := f.registration
+		registration.ClientDataJSON = passkeyEncode(client("webauthn.create", origin))
+		if _, err := v.VerifyRegistration(registration, f.challenge); err != nil {
+			t.Fatalf("trusted same-certificate encoding rejected: %v", err)
+		}
+		if _, err := f.validator.VerifyRegistration(registration, f.challenge); !errors.Is(err, ErrWebAuthnValidation) {
+			t.Fatal("HTTPS-only trust implicitly accepted native certificate")
+		}
+		assertion := f.assertion
+		data := client("webauthn.get", origin)
+		assertion.ClientDataJSON = passkeyEncode(data)
+		clientHash := sha256.Sum256(data)
+		signed := append(passkeyDecode(t, assertion.AuthenticatorData), clientHash[:]...)
+		signedHash := sha256.Sum256(signed)
+		signature, err := ecdsa.SignASN1(rand.Reader, f.privateKey, signedHash[:])
+		if err != nil {
+			t.Fatal(err)
+		}
+		assertion.Signature = passkeyEncode(signature)
+		if _, err := v.VerifyAssertion(assertion, f.challenge, f.publicKey, f.userHandle); err != nil {
+			t.Fatalf("original signed bytes rejected: %v", err)
+		}
+		other := standard
+		if origin == standard {
+			other = canonical
+		}
+		assertion.ClientDataJSON = passkeyEncode(client("webauthn.get", other))
+		if _, err := v.VerifyAssertion(assertion, f.challenge, f.publicKey, f.userHandle); !errors.Is(err, ErrWebAuthnValidation) {
+			t.Fatal("rewritten origin incorrectly preserved signature authority")
+		}
+	}
+	foreign := append([]byte{}, fingerprint...)
+	foreign[0] ^= 1
+	for _, origin := range []string{
+		prefix + base64.RawURLEncoding.EncodeToString(foreign),
+		prefix + base64.RawStdEncoding.EncodeToString(foreign),
+		canonical + "=", standard + "=", standard + "\n",
+		prefix + strings.Replace(base64.RawStdEncoding.EncodeToString(fingerprint), "/", "_", 1),
+		strings.ToUpper(standard), "https://attacker.example.test",
+	} {
+		registration := f.registration
+		registration.ClientDataJSON = passkeyEncode(client("webauthn.create", origin))
+		if _, err := v.VerifyRegistration(registration, f.challenge); !errors.Is(err, ErrWebAuthnValidation) {
+			t.Fatal("untrusted/noncanonical provider origin accepted")
+		}
+	}
+	if _, err := NewWebAuthnValidator(WebAuthnConfig{RPID: "example.test", Origins: []string{"https://auth.example.test"}, AndroidOrigins: []string{standard}}); !errors.Is(err, ErrWebAuthnConfiguration) {
+		t.Fatal("deployment configuration stopped requiring canonical Base64URL")
+	}
+}
+
 type passkeyTestFixture struct {
 	validator    *WebAuthnValidator
 	privateKey   *ecdsa.PrivateKey

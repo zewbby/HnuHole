@@ -44,6 +44,8 @@ assert os.environ['PGPORT'] == '55439'
 assert os.environ['GOTOOLCHAIN'] == 'local'
 assert os.environ['GOFLAGS'] == '-mod=readonly'
 assert os.environ['GOWORK'] == 'off'
+if sys.argv[1:3] == ['go','test'] and './...' in sys.argv:
+    assert '-timeout=20m' in sys.argv
 if sys.argv[1] == 'pg_ctl' and 'start' in sys.argv:
     options = sys.argv[sys.argv.index('-o')+1]
     assert options.startswith('-p 55439 '), options
@@ -88,6 +90,11 @@ for lower in run-mobile-isolated.sh run-isolated.sh run-post-schema-isolated.sh;
  done
 done
 printf '%s\n' 'PASS malformed and out-of-range lower-runner PGPORT rejected before tools start'
+for invalid_timeout in 0 0m 31m unlimited; do
+ if env PGPORT=55439 AUTHLAB_TEST_TIMEOUT="$invalid_timeout" bash "$fixture/repo/services/api/authlab/run-isolated.sh" > "$fixture/reject.out" 2>&1; then exit 101; fi
+ grep -q 'Invalid auth lab test timeout' "$fixture/reject.out"
+done
+printf '%s\n' 'PASS unbounded and unsupported SQL test timeout rejected before tools start'
 [[ $(cat "$fixture/repo/apps/mobile/pubspec.lock") == synthetic-lock-preserved ]]
 printf '%s\n' 'PASS source lock preserved'
 original_task_root=$F4_TASK_ROOT
