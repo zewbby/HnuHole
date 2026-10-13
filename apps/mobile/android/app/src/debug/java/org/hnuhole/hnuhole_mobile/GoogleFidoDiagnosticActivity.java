@@ -113,7 +113,6 @@ public final class GoogleFidoDiagnosticActivity extends Activity {
     }
 
     private void begin(JSONObject admission) {
-        if (isFinishing() || isDestroyed()) return;
         try {
             runId = admission.getString("runId");
             launch = GoogleFidoDiagnosticPolicy.launchAllowed(admission.getBoolean("launchPendingIntent"),
@@ -128,6 +127,15 @@ public final class GoogleFidoDiagnosticActivity extends Activity {
                 .put("nativeOutcomeUnknown", false)
                 .put("pendingIntentLaunched", false).put("keyguardSecure", keyguard != null && keyguard.isDeviceSecure())
                 .put("actualCSubmission", false).put("fixedCaseAcceptancePassed", false).put("stages", stages);
+            // Admission can finish after this instance is destroyed. Keep a bounded
+            // terminal record so a consumed one-use admission cannot disappear.
+            emit("ADMISSION_COMPLETED", "ADMITTED", null);
+            if (done || isFinishing() || isDestroyed()) {
+                report.put("finished", true);
+                emit("LOCAL_ACTIVITY_DESTROYED", "LOCAL_LIFECYCLE_TERMINATED", null);
+                finishOnce();
+                return;
+            }
             Fido2ApiClient client = Fido.getFido2ApiClient(this);
             emit("UV_CHECK_STARTED", "QUERYING", null);
             armTimeout(30000);
@@ -274,5 +282,14 @@ public final class GoogleFidoDiagnosticActivity extends Activity {
 
     private void armTimeout(long durationMs) { handler.removeCallbacks(timeout); handler.postDelayed(timeout, durationMs); }
     private void finishOnce() { done = true; handler.removeCallbacks(timeout); finish(); }
-    @Override public void onDestroy() { handler.removeCallbacks(timeout); done = true; super.onDestroy(); }
+    @Override public void onDestroy() {
+        if (!done && report != null) {
+            try {
+                report.put("finished", true);
+                // Never infer native completion from local Activity destruction.
+                emit("LOCAL_ACTIVITY_DESTROYED", "LOCAL_LIFECYCLE_TERMINATED", null);
+            } catch (Exception ignored) { /* the prior unfinished record still blocks retry */ }
+        }
+        handler.removeCallbacks(timeout); done = true; super.onDestroy();
+    }
 }

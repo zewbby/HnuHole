@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check current AC handoff and historical B02 evidence, not app behavior."""
 import hashlib
+import importlib.util
 import json
 import re
 import subprocess
@@ -22,7 +23,9 @@ def source_snapshot(config, normalize_checkout=False):
     selected = []
     for relative in paths:
         path = ROOT / relative
-        if not path.is_file() or path.name.endswith("verification.json") or "verification-report" in path.name:
+        if (not path.is_file() or path.name.endswith("verification.json")
+                or ("verification-report" in path.name
+                    and relative not in config.get("includedStaticFixtures", []))):
             continue
         if path.suffix in config["includedSuffixes"] or path.name in config["includedAdditionalNames"]:
             selected.append(relative)
@@ -68,6 +71,12 @@ def no_full_closure(value):
 
 def scoped_record(name, record, result_definitions):
     assert record["currentResult"] in result_definitions, name
+    if name == "currentB6":
+        spec = importlib.util.spec_from_file_location("non_ios_closure", ROOT / "tools/check-non-ios-closure.py")
+        checker = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(checker)
+        evidence, _ = checker.validate_record(ROOT, read_record("docs/design/module-acceptance-ledger.json"), record)
+        return evidence
     assert record["fullAnonymityClosurePassed"] is False, name
     assert record.get("productionApproved", False) is False, name
     assert type(record["scopedBackendAcceptancePassed"]) is bool, name
@@ -144,7 +153,7 @@ def main():
 
     selected_name, selected_record = "historical B02", None
     scoped = {}
-    for name in ("currentAC01", "currentAC02", "currentAC03", "currentAC04", "currentAC05", "currentAndroidLive", "currentAndroidFault", "currentNonIOS"):
+    for name in ("currentAC01", "currentAC02", "currentAC03", "currentAC04", "currentAC05", "currentAndroidLive", "currentAndroidFault", "currentNonIOS", "currentB6"):
         if name in ledger:
             record = ledger[name]
             validated = scoped_record(name, record, ledger["resultDefinitions"])
@@ -312,8 +321,19 @@ def main():
                 assert batch["currentProxySourceActivated"] is True
             # Historical accepted APK/fixture/runner hashes remain immutable;
             # current tooling can advance for the fixed subsequent batches.
-            for relative, sha in batch.get("currentSourceFilesSha256", batch["sourceFilesSha256"]).items():
-                assert hashlib.sha256((ROOT / relative).read_bytes()).hexdigest() == sha, relative
+            if "currentB6" in scoped:
+                # This earlier snapshot retains its tested files, not the
+                # subsequent candidate's host tooling. B6 verifies the whole
+                # retained record's bytes and its separate final inputs.
+                dependency = next(item for item in scoped["currentB6"]["dependencies"]
+                                  if item["id"] == "matrix")
+                assert dependency["path"] == ledger["currentNonIOS"]["evidence"]
+                data = (ROOT / dependency["path"]).read_bytes()
+                assert (hashlib.sha256(data).hexdigest() == dependency["sha256"]
+                        or hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest() == dependency["lfSha256"])
+            else:
+                for relative, sha in batch.get("currentSourceFilesSha256", batch["sourceFilesSha256"]).items():
+                    assert hashlib.sha256((ROOT / relative).read_bytes()).hexdigest() == sha, relative
             for run in batch["completedRegressionProcesses"]:
                 assert run["result"] == "PASS" and run["exitCode"] == 0
                 assert run["newBatchDeviceFixtureCovered"] is False
@@ -354,7 +374,16 @@ def main():
         site = ROOT / domain["sourceDirectory"]
         assert sorted(str(p.relative_to(site)).replace("\\", "/") for p in site.rglob("*") if p.is_file()) == sorted(domain["files"])
         for name, description in domain["files"].items():
-            assert hashlib.sha256((site / name).read_bytes()).hexdigest() == description["sha256"], name
+            data = (site / name).read_bytes()
+            candidates = {hashlib.sha256(data).hexdigest()}
+            if name in {"index.html", "robots.txt"}:
+                # The immutable published versions use CRLF; the checkout
+                # uses LF. Admit only this text line-ending equivalence.
+                # The security association JSON still requires exact bytes.
+                lf = data.replace(b"\r\n", b"\n")
+                candidates.update(hashlib.sha256(value).hexdigest()
+                                  for value in (lf, lf.replace(b"\n", b"\r\n")))
+            assert description["sha256"] in candidates, name
         pids = set()
         for phase in matrix.get("devicePhases", []):
             assert phase["result"] == "PASS" and phase["exitCode"] == 0

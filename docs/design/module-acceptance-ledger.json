@@ -18,77 +18,14 @@
     "macOS/full Xcode and iOS device target"
   ],
   "sourceFingerprint": {
-    "sha256": "350d6a31e45de8628bcdfbae79aa3bbf8a392c99ad0f3765523121990f2a633d",
-    "presentFileCount": 353,
+    "sha256": "b7f556730933cc65c814dd4d4f773c7e9aa64bc8487403bed4995e28134d6906",
+    "presentFileCount": 378,
     "roots": [
+      "apps/mobile",
+      "packages",
       "services/api",
       "infra",
-      "packages/openapi",
-      "packages/auth-protocol-vectors",
-      "apps/mobile/lib",
-      "apps/mobile/test",
-      "apps/mobile/integration",
-      "apps/mobile/pubspec.yaml",
-      "apps/mobile/pubspec.lock",
-      "packages/auth_vault",
-      "packages/auth_passkey",
-      "apps/mobile/android",
-      "apps/mobile/ios",
-      "apps/mobile/integration_test",
-      "apps/mobile/test_driver",
-      "tools/run-android-auth-process-test.ps1",
-      "tools/run-android-vault-probes.ps1",
-      "tools/env-hnuhole-windows.ps1",
-      "tools/env-hnuhole-wsl.sh",
-      "tools/check-identity-handoff.py",
-      "tools/run-auth-device-services.sh",
-      "tools/run-android-live-device.ps1",
-      "tools/check-privacy-closure-handoff.py",
-      "tools/android-auth-fault-proxy.py",
-      "tools/control-android-auth-fault.py",
-      "tools/run-android-vault-transfer.py",
-      "tools/control-android-auth-boundary.py",
-      "tools/run-android-app-storage.py",
-      "tools/run-android-release-boundary.py",
-      "tools/run-android-phone-reboot.ps1",
-      "tools/run-android-otp-continuation.py",
-      "tools/control-android-talkback.py",
-      "tools/prepare-android-closure-clock.py",
-      "tools/control-android-closure.py",
-      "apps/mobile/integration_test/auth_android_batch_device_test.dart",
-      "tools/android-auth-batch-proxy.py",
-      "tools/control-android-batch-proxy.py",
-      "apps/mobile/integration_test/auth_android_b1_b2_device_test.dart",
-      "apps/mobile/integration_test/auth_android_release_boundary.dart",
-      "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt",
-      "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt",
-      "tools/android-auth-b1-b2-proxy.py",
-      "tools/control-android-b1-b2.py",
-      "tools/control-android-b1-b2-device.py",
-      "tools/android-talkback-diagnostic/AndroidTalkBackDiagnostic.java",
-      "tools/android-talkback-diagnostic/run.py",
-      "apps/mobile/integration_test/auth_android_b3_b4_device_test.dart",
-      "tools/android-auth-b3-b4-proxy.py",
-      "tools/control-android-b3-b4.py",
-      "tools/control-android-b3-b4-device.py",
-      "apps/mobile/integration_test/owned_auth_device_helpers.dart",
-      "tools/operate-android-b3-b4-isolated.py",
-      "tools/prepare-android-b3-b4-vault-overlay.py",
-      "tools/start-android-b3-b4-service.py",
-      "tools/keep-android-b3-b4-environment.py",
-      "tools/test-android-b3-b4-proxy.py",
-      "tools/run-android-b3-b4.ps1",
-      "tools/collect-android-b3-b4-acceptance.py",
-      "tools/wait-android-b3-b4-native.py",
-      "tools/update-android-b3-b4-candidate.py",
-      "tools/reveal-android-b3-b4-target.py",
-      "tools/control-android-b3-b4-provider.py",
-      "tools/android-passkey-diagnostic/NativeCallbackError.java",
-      "tools/android-passkey-diagnostic/run.py",
-      "tools/run-google-passkey-diagnostic.py",
-      "tools/restore-auth-machine-archive.py",
-      "tools/android-passkey-diagnostic/build-google-fido-diagnostic.py",
-      "tools/android-passkey-diagnostic/GoogleFidoDiagnosticPolicyTest.java"
+      "tools"
     ],
     "includedSuffixes": [
       ".go",
@@ -127,14 +64,21 @@
     ],
     "includedAdditionalNames": [
       ".gitattributes",
+      ".gitignore",
       "go.work",
       "go.work.sum",
       ".env.example",
+      "AGENTS.md",
+      "gradlew",
+      "gradlew.bat",
       ".nojekyll"
     ],
     "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
     "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
-    "appliesTo": "Machine-transfer current source/handoff; accepted device phases retain their own original APK/source/PID. Debug diagnosis build incomplete; no functional acceptance promoted."
+    "appliesTo": "Final B6 current source and host-tooling snapshot. Actual product tests refer to the separately frozen 389 inputs; historical device versions unchanged.",
+    "includedStaticFixtures": [
+      "packages/auth-protocol-vectors/static-verification-report.json"
+    ]
   },
   "resultDefinitions": {
     "PASS": "Actual required evidence recorded for the tested revision and scope",
@@ -732,7 +676,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -753,6 +705,21 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-D04"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -978,6 +945,17 @@
           "ni-a04"
         ],
         "fullModuleAcceptancePassed": false
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-A01",
+          "NI-A02",
+          "NI-A04"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -1097,7 +1075,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -1118,6 +1104,21 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-C04"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -1341,7 +1342,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -1362,6 +1371,21 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-C04"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -1677,6 +1701,16 @@
           "ni-a04"
         ],
         "fullModuleAcceptancePassed": false
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-A03",
+          "NI-A04"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -1940,7 +1974,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -1961,6 +2003,25 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-U01",
+          "NI-A02",
+          "NI-C01",
+          "NI-D05",
+          "NI-X02"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -2207,7 +2268,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -2228,6 +2297,24 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-C01",
+          "NI-C02",
+          "NI-C03",
+          "NI-C04"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -2519,7 +2606,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -2540,6 +2635,28 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-A01",
+          "NI-A03",
+          "NI-A04",
+          "NI-C01",
+          "NI-C02",
+          "NI-D01",
+          "NI-D02",
+          "NI-D05"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -3237,7 +3354,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -3258,6 +3383,35 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-L01",
+          "NI-L02",
+          "NI-L03",
+          "NI-L04",
+          "NI-U02",
+          "NI-U03",
+          "NI-A03",
+          "NI-A04",
+          "NI-C02",
+          "NI-C03",
+          "NI-C04",
+          "NI-D04",
+          "NI-K01",
+          "NI-K02",
+          "NI-X01"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -3853,7 +4007,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -3874,6 +4036,24 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-L02",
+          "NI-K01",
+          "NI-K02",
+          "NI-X01"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -4288,7 +4468,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -4309,6 +4497,35 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-L01",
+          "NI-L02",
+          "NI-L03",
+          "NI-L04",
+          "NI-U01",
+          "NI-A01",
+          "NI-A02",
+          "NI-A03",
+          "NI-C01",
+          "NI-D01",
+          "NI-D02",
+          "NI-D03",
+          "NI-D04",
+          "NI-D05",
+          "NI-X02"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -4649,7 +4866,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -4670,6 +4895,26 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-L01",
+          "NI-L03",
+          "NI-L04",
+          "NI-U01",
+          "NI-U03",
+          "NI-D05"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -4826,7 +5071,7 @@
       "blockedChecks": [
         "physical-device-matrix"
       ],
-      "testedWorkingTreeSourceFingerprint": "578d28a9f499e9e55d750bd5e088c5d53a9be4bddfaadd3d65ba60e9e7a8dfae",
+      "testedWorkingTreeSourceFingerprint": "b7f556730933cc65c814dd4d4f773c7e9aa64bc8487403bed4995e28134d6906",
       "pendingTestHarnessExtensions": [],
       "anonymityClosureGapIds": [
         "AC02",
@@ -4982,11 +5227,15 @@
         {
           "sha256": "b100c5d3bfc422de114c109487c94aabec61a0e1807da3a4f928db8ada713d0e",
           "proofScope": "Accepted Android fault version before current non-iOS source."
+        },
+        {
+          "sha256": "578d28a9f499e9e55d750bd5e088c5d53a9be4bddfaadd3d65ba60e9e7a8dfae",
+          "scope": "Retained pre-B6 tested version; original dynamic proofs unchanged."
         }
       ],
       "testedWorkingTreeProofScope": "AC04 backend and real Dart handler SQL scenarios, with native/full business acceptance pending",
       "latestTestSourceStatus": "AC04_R01_R02_R03_FLUTTER_R05_EXECUTED_PASS",
-      "latestValidationEvidence": "services/api/authlab/android-matrix-verification.json",
+      "latestValidationEvidence": "services/api/authlab/b6-single-android-20261013-verification.json",
       "latestScopedEvidence": "services/api/authlab/privacy-regression-verification.json",
       "latestScopedResult": "AC04_FOUNDATION_REGRESSION_PASS_FULL_MODULE_BLOCKED",
       "currentAC01Regression": {
@@ -5308,7 +5557,15 @@
         ],
         "unexecutedChecks": [],
         "fullModuleAcceptancePassed": false,
-        "reason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+        "currentFreshContinuationState": "ONGOING_NO_NEW_FIXED_CASE_PASS",
+        "currentFreshContinuationEvidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+        "freshRunUnexecutedChecks": [
+          "NI-D01",
+          "NI-D02",
+          "NI-D03"
+        ],
+        "reason": "Fresh 2026-10-12 continuation remains ONGOING: original Google timeout UNKNOWN retained; one user-authorized fresh VPN retry ended with typed unattributed DATA_ERR(30) and no C proof. Approved full Flutter fixture is built, signed, compact, installed and hash-verified; Google provider verified. Bad-signature artifact retains the exact approved non-signature payload. Initial control stopped before App/native ceremony because fresh WSL runtime had exited; resume01 receipt remains preserved. After a second idle interruption, retained resume02 recovered both C/V from FROZEN generation2/evidence121 to OPEN generation3/evidence122 with the same immutable material, configs, sources and databases; business rows and proxy counters were zero at resume. Exact Windows host watcher guard preserves timeout/cancel UNKNOWN, with25 operator and4 watcher checks passed. Actual approved product control ended FAIL with nativeBegun1/local nativeTimeout1/nativeErrored1; the host watcher correctly refused automated Back. Native outcome remains UNKNOWN and a system credential may exist. Actual SQL has one account and zero passkeys; proxy bindingOptions1/bindingSubmits0, with no C proof. Independent outer vivo selector and parent-observed Google window are separately attributed; HOME navigation does not prove task absence or resolve UNKNOWN. No negative case or provider restoration executed; the bounded relevant Google/network log review is complete with root cause undetermined. Main and independent reports agree; main report13 source-file bytes/hashes and68 referenced lines, plus independent report10 source files and7 referenced lines, passed integrity review only. Same Google UI process registration logs reach TIMED_OUT after53.149s, without request/challenge correlation or product callback. Later VALIDATED/bypassable VPN551 covers GMS UID10172, but does not prove per-socket routing during the ceremony or endpoint reachability. User reports normal Google Password Manager and Play Store device certification; no independent attestation. Original product UNKNOWN/credentialMayExist and guards against blind retry, provider restore and reinstall remain. No new fixed-case PASS; historical eight PASS and three FAIL retain their original versions.",
+        "historicalWindowEndReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
         "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
         "evidence": "services/api/authlab/android-matrix-verification.json#b3b4Verification",
         "acceptedCaseIds": [
@@ -5329,6 +5586,26 @@
         "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
         "selectorDiagnosisEvidence": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
         "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
+      },
+      "b3b4FixedScope20261013": {
+        "result": "PASS",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "acceptedCaseCount": 11,
+        "scope": "Original eight at original versions plus three current direct-provider fixed cases; does not complete the whole module."
+      },
+      "currentB6Regression": {
+        "currentResult": "PASS",
+        "fullModuleAcceptancePassed": false,
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "caseIds": [
+          "NI-U02",
+          "NI-U03",
+          "NI-C01",
+          "NI-C03",
+          "NI-C04",
+          "NI-K02"
+        ],
+        "scope": "Bounded current backend/mobile/native regressions + retained actual device cases; second-device rows remain BLOCKED, iOS/production/future business separate."
       }
     },
     {
@@ -12222,12 +12499,14 @@
         }
       ]
     },
-    "currentTask": "AC05_NON_IOS_INCREMENTAL_ACCEPTANCE",
+    "currentTask": "NON_IOS_B6_SECOND_ANDROID_PENDING",
     "currentRegressionEvidence": "services/api/authlab/android-matrix-verification.json",
     "localSourceHandoffClosed": true,
     "sourceDeliveryScope": "PUBLISHED_AC01_AC06_HISTORY_CURRENT_ANDROID_LIVE_UNCOMMITTED",
     "currentBackendEvidence": "services/api/authlab/privacy-regression-verification.json",
-    "currentPlatformEvidence": "services/api/authlab/android-matrix-verification.json"
+    "currentPlatformEvidence": "services/api/authlab/android-matrix-verification.json",
+    "singleAndroidScopeClosed": true,
+    "currentEvidence": "services/api/authlab/b6-single-android-20261013-verification.json"
   },
   "handoffDelivery": {
     "recordedOn": "2026-10-03",
@@ -12275,7 +12554,7 @@
     }
   },
   "workingTreeUncommitted": true,
-  "latestValidationEvidence": "services/api/authlab/android-matrix-verification.json",
+  "latestValidationEvidence": "services/api/authlab/b6-single-android-20261013-verification.json",
   "cleanupEvidence": "services/api/authlab/final-handoff-verification.json#cleanup",
   "historicalBaselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
   "historicalBaselineEvidence": "services/api/authlab/runtime-business-integration-verification.json",
@@ -12327,7 +12606,7 @@
     "algorithm": "Sort unique existing paths from git ls-files --cached --others --exclude-standard -- <roots>; retain listed suffixes/additional names and exclusions; concatenate UTF8(relative_path), NUL byte, raw SHA256(file bytes), then SHA256 the concatenation.",
     "appliesTo": "Current feature working-tree source snapshot; Markdown and evidence JSON excluded; a HEAD SHA alone does not identify uncommitted source."
   },
-  "latestMobileValidationEvidence": "services/api/authlab/android-matrix-verification.json",
+  "latestMobileValidationEvidence": "services/api/authlab/b6-single-android-20261013-verification.json",
   "currentAC01": {
     "plan": "docs/design/auth-verifier-safety-gate-plan.md",
     "report": "docs/design/auth-verifier-safety-gate-validation-report.md",
@@ -13423,7 +13702,7 @@
     "snapshotStatus": "HISTORICAL_PUBLISHED_AC06_LOCAL_HANDOFF",
     "snapshotNote": "Test-time local PASS and publication NOT_RUN fields are retained snapshots. Published AC04-AC06 implementation is 72ca9e8, delivery note 0eff47a; later Android live changes reopen current handoff."
   },
-  "latestBackendValidationEvidence": "services/api/authlab/privacy-regression-verification.json",
+  "latestBackendValidationEvidence": "services/api/authlab/b6-single-android-20261013-verification.json",
   "currentInventoryScope": "AC06_HANDOFF_ONLY_DYNAMIC_EVIDENCE_RETAINED_NOT_RERUN",
   "historicalAC06GitDeliveryCommit": "72ca9e86274e96e41f385f07fca97496993d3018",
   "currentAndroidLive": {
@@ -13914,14 +14193,14 @@
     },
     "plan": "docs/design/auth-privacy-non-ios-plan.md",
     "report": "docs/design/auth-privacy-non-ios-validation-report.md",
-    "currentHandoffResult": "FAIL",
+    "currentHandoffResult": "B1_B4_FIXED_22_PASS_B6_PASS_SECOND_ANDROID_2_BLOCKED",
     "evidence": "services/api/authlab/android-matrix-verification.json",
-    "currentHandoffScope": "FIXED_B3_B4_EXECUTED_PROVIDER_DIAGNOSIS_BLOCKED",
-    "currentHandoffReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
+    "currentHandoffScope": "SINGLE_ANDROID_NON_IOS_FOUNDATION_COMPLETE_SECOND_ANDROID_PENDING",
+    "currentHandoffReason": "All work that does not require a second physical Android complete. Only NI-X01/NI-X02 remain in the fixed scope.",
     "closurePlan": {
       "path": "docs/design/auth-privacy-non-ios-closure-plan.md",
       "recordedOn": "2026-10-08",
-      "status": "PLANNED_NOT_EXECUTED",
+      "status": "SINGLE_ANDROID_AND_B6_COMPLETE_SECOND_ANDROID_BLOCKED",
       "scope": "FIXED_NON_IOS_ANONYMOUS_FOUNDATION_DEVELOPMENT_ACCEPTANCE",
       "targetDate": "2026-10-19",
       "targetDateConditional": true,
@@ -14034,6 +14313,50 @@
         }
       ],
       "caseStates": {
+        "NI-L01": "PASS",
+        "NI-L02": "PASS",
+        "NI-L03": "PASS",
+        "NI-L04": "PASS",
+        "NI-U01": "PASS",
+        "NI-U02": "PASS",
+        "NI-U03": "PASS",
+        "NI-A01": "PASS",
+        "NI-A02": "PASS",
+        "NI-A03": "PASS",
+        "NI-A04": "PASS",
+        "NI-C01": "PASS",
+        "NI-C02": "PASS",
+        "NI-C03": "PASS",
+        "NI-C04": "PASS",
+        "NI-D01": "PASS",
+        "NI-D02": "PASS",
+        "NI-D03": "PASS",
+        "NI-D04": "PASS",
+        "NI-D05": "PASS",
+        "NI-K01": "PASS",
+        "NI-K02": "PASS",
+        "NI-X01": "BLOCKED",
+        "NI-X02": "BLOCKED"
+      },
+      "externalBlockers": [
+        {
+          "id": "SECOND_PHYSICAL_ANDROID",
+          "caseIds": [
+            "NI-X01",
+            "NI-X02"
+          ],
+          "reason": "User has only vivo S18; OEM transfer and second-physical-device Passkey recovery require their own evidence."
+        }
+      ],
+      "completionRule": "All 24 case records accepted at their actual source/APK/runner versions, no unresolved security-critical defects, final B6 candidate checks and handoff PASS. Missing second-device evidence cannot be waived as full PASS.",
+      "nonIOSDevelopmentAcceptancePassed": false,
+      "notApprovedByThisPlan": [
+        "iOS",
+        "production",
+        "future post/comment/chat consumers",
+        "Git push or external deployment"
+      ],
+      "initialCaseStatesBeforeFixedBatches": {
         "NI-L01": "NOT_RUN",
         "NI-L02": "NOT_RUN",
         "NI-L03": "NOT_RUN",
@@ -14059,23 +14382,15 @@
         "NI-X01": "BLOCKED",
         "NI-X02": "BLOCKED"
       },
-      "externalBlockers": [
-        {
-          "id": "SECOND_PHYSICAL_ANDROID",
-          "caseIds": [
-            "NI-X01",
-            "NI-X02"
-          ],
-          "reason": "User has only vivo S18; OEM transfer and second-physical-device Passkey recovery require their own evidence."
-        }
-      ],
-      "completionRule": "All 24 case records accepted at their actual source/APK/runner versions, no unresolved security-critical defects, final B6 candidate checks and handoff PASS. Missing second-device evidence cannot be waived as full PASS.",
-      "nonIOSDevelopmentAcceptancePassed": false,
-      "notApprovedByThisPlan": [
-        "iOS",
-        "production",
-        "future post/comment/chat consumers",
-        "Git push or external deployment"
+      "b6WithoutSecondAndroidPassed": true,
+      "b6": {
+        "result": "PASS",
+        "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+        "report": "docs/design/auth-privacy-b6-validation-report.md"
+      },
+      "remainingFixedIds": [
+        "NI-X01",
+        "NI-X02"
       ]
     },
     "b1b2Verification": {
@@ -18084,10 +18399,10 @@
       "scope": "ELEVEN_FIXED_VERSIONED_APP_CASES_ONLY"
     },
     "b3b4Verification": {
-      "result": "FAIL",
+      "result": "PASS",
       "implementationState": "ENTRYPOINTS_COMPLETE_ELEVEN_EXECUTED_THREE_NOT_ACCEPTED",
       "fixedCaseCount": 11,
-      "acceptedCaseCount": 8,
+      "acceptedCaseCount": 11,
       "phases": [
         {
           "caseId": "NI-C01",
@@ -18207,18 +18522,14 @@
           "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
         }
       ],
-      "remainingPhases": [
-        "ni-d01",
-        "ni-d02",
-        "ni-d03"
-      ],
-      "actualDeviceAcceptancePassed": false,
+      "remainingPhases": [],
+      "actualDeviceAcceptancePassed": true,
       "fullModuleAcceptancePassed": false,
       "fullNonIOSAcceptancePassed": false,
       "productionApproved": false,
       "privateDiagnosticsRetainedOutsideGit": true,
       "task": "docs/design/auth-privacy-b3-b4-plan.md",
-      "recordedOn": "2026-10-10",
+      "recordedOn": "2026-10-13",
       "sourceFilesSha256": {
         "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyCodec.kt": "678b20e0b849e6c2cf49347d1a10259570afdefc9d376162d007fdf59a1ed8cb",
         "apps/mobile/integration_test/auth_android_b3_b4_device_test.dart": "781f349bdba98b41f56b86aa9760fbfc50faefb098ba63b5b4f398ec8d938036",
@@ -18238,7 +18549,7 @@
         "tools/wait-android-b3-b4-native.py": "462bdcd887fd39cc2134eaef2fbaf02e5f42e9b43ccdce2e0df2b824bbc0b8c2"
       },
       "requiredEnvironment": "Independent owned C/V/SQL/SMTP; vivo S18; isolated APK variants; public test association and human UV.",
-      "nextAcceptance": "On the next machine restore verified encrypted transfer materials into owned directories, repair/rebuild the unaccepted debug diagnostic and verify release exclusion; obtain attributable Google result before another fixed control. No device API was run in the interrupted build.",
+      "nextAcceptance": "B3+B4 fixed scope complete. NI-X01/NI-X02 require a second physical Android; B6 not run; iOS and production remain separate.",
       "preparation": {
         "result": "PASS",
         "scope": "AUTOMATED_PREPARATION_AND_SCOPED_REGRESSION_ONLY",
@@ -21499,12 +21810,7 @@
         "priorLocalSessionAndDraftPreserved": false,
         "serverEvidencePreserved": true
       },
-      "remainingImplementationOrExecution": [
-        "NI-D01: client pinned-RP, actual server RP-hash 422 and original natural-expiry reconciliation passed; native wrong-RP association cause remains unproven.",
-        "NI-D02: same-code/same-package approved signature control passed; wrong signature sends no proof, but OEM cancellation does not identify association cause.",
-        "NI-D03: approved certificate and missing package association verified; no proof submitted, but OEM cancellation does not identify association cause.",
-        "Resolve provider-specific diagnostics or run attributable association negatives with a suitable real provider/device; do not repeat the same opaque cancellation or change acceptance criteria."
-      ],
+      "remainingImplementationOrExecution": [],
       "deviceUpdateHistory": [
         {
           "result": "FAIL",
@@ -21729,8 +22035,8 @@
         "originalClockOffsetNs": 4838407841266632,
         "restartedProxyPid": 99289
       },
-      "currentHandoffReason": "User ended this device window for machine transfer. Eight B3/B4 accepted; three prior executed failures remain. Direct Google debug diagnostic Java/APK build reached compile but release verification and full preparation failed after D-full/WSL read-only I/O; not installed and API/UI NOT_RUN. Original vivo provider/autofill restored. Task caches/test secrets will be encrypted and uploaded before cleanup; see transfer verification.",
-      "failedCaseCount": 3,
+      "currentHandoffReason": "Three missing actual provider diagnoses are now supplied by direct current Google RP validator logs, with real product/SQL evidence. Original SDK-only fixture FAIL results remain unchanged.",
+      "failedCaseCount": 0,
       "notRunCaseCount": 0,
       "currentFinalIndependentCounts": {
         "sql": {
@@ -21777,27 +22083,14 @@
           "proofsStored": false
         }
       },
-      "approvedIsolatedSignatureRestored": {
-        "result": "PASS",
-        "scope": "ISOLATED_PACKAGE_MANAGER_ONLY",
-        "actualFullCaseAcceptancePassed": false,
-        "action": "restore-approved",
-        "device": "10CEAG17RY003M7",
-        "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
-        "mainPackageApkPreserved": true,
-        "mainPackageUninstalled": false,
-        "mainPrivateDataTouched": false,
-        "apkSha256": "705dc4c5de08bc2ac2c60cd2023a836d1c1d3d5b6b26c343dadbc5ff7a3d06b4",
-        "onlyOwnedIsolatedPackageUninstalled": true,
-        "approvedSignatureRestoredAfterNegative": true
-      },
+      "approvedIsolatedSignatureRestored": true,
       "selectedResponseDiagnostic": {
         "result": "BLOCKED",
         "nativeRequestStarted": false,
         "proofSubmitted": false,
         "reason": "VM evaluate compilation service unavailable; attempted debugger attach did not connect. Removed only owned diagnostic forwarding and ended its attachment. No proof or diagnosis fabricated."
       },
-      "currentBatchSummary": "services/api/authlab/android-b3b4-batch-20261010-verification.json",
+      "currentBatchSummary": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
       "nativeRegressionHistory": [
         {
           "result": "PASS",
@@ -22222,462 +22515,491 @@
           "field": "actualExecutionState",
           "value": "V16_BATCH_EXECUTED_PROVIDER_DIAGNOSIS_BLOCKED",
           "snapshotStatus": "HISTORICAL_BEFORE_GOOGLE_PROVIDER_COMPARISON"
+        },
+        {
+          "recordedOn": "2026-10-10",
+          "scope": "PRIOR_8_OF_11_SNAPSHOT",
+          "result": "FAIL",
+          "acceptedCaseCount": 8,
+          "currentNegativeVerification": {
+            "result": "FAIL",
+            "caseIds": [
+              "NI-D01",
+              "NI-D02",
+              "NI-D03"
+            ],
+            "provider": "com.vivo.cipherchain",
+            "providerVersion": "2.6.0.3",
+            "framework": "com.vivo.credentialmanager",
+            "frameworkVersion": "15.0",
+            "blocker": "OPAQUE_OEM_CANCELLATION_WITHOUT_ATTRIBUTABLE_ASSOCIATION_DIAGNOSIS",
+            "nativeFailureClass": "CreateCredentialCancellationException",
+            "actualAssociationDiagnosisObserved": false,
+            "approvedControl": {
+              "phase": "ni-d02",
+              "variant": "control",
+              "pid": 23059,
+              "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
+              "actualApp": true,
+              "nativeVault": true,
+              "actualCV": true,
+              "physicalImeClaimed": false,
+              "rawProofStored": false,
+              "actualFreshRegistrationAuthenticatedAndAuthRouteClosed": true,
+              "approvedPackageAndCertificateActualBinding": true
+            },
+            "publicAssociation": {
+              "url": "https://zewbby.github.io/.well-known/assetlinks.json",
+              "httpStatus": 200,
+              "documentSha256": "d2f2b65c3da8ce507d19977a273da5928138bc0c55a40d6629a550ce50068a01",
+              "associationMatches": {
+                "phone-b3b4.apk": true,
+                "b3b4-acceptance.apk": true,
+                "b3b4-bad-signature.apk": false,
+                "b3b4-unassociated.apk": false
+              },
+              "privateDataStored": false
+            },
+            "rpPartial": {
+              "pid": 27809,
+              "phase": "ni-d01",
+              "clientPinnedRpRejectedWithoutNativeStart": true,
+              "actualNativeWrongRpAssociationRejected": false,
+              "actualServerWrongRpHashRejected422": true,
+              "originalResultQueriedWithoutProofReplay": true,
+              "rawProofStored": false,
+              "result": "FAIL",
+              "actualFullCaseAcceptancePassed": false,
+              "reason": "OEM returned opaque native cancellation for wrong RP; client/server and original-result boundaries passed."
+            },
+            "wrongSignaturePartial": {
+              "phase": "ni-d02",
+              "variant": "bad-signature",
+              "pid": 31609,
+              "nativeCounters": {
+                "pid": 31609,
+                "activityAttached": 1,
+                "nativeBegun": 1,
+                "nativeCreateCancelled": 1,
+                "actualOtherCreateError": 1,
+                "nativeErrored": 1
+              },
+              "result": "FAIL",
+              "actualFullCaseAcceptancePassed": false,
+              "associationDiagnosisObserved": false,
+              "rawProofStored": false
+            },
+            "missingPackagePartial": {
+              "phase": "ni-d03",
+              "variant": "missing-package",
+              "pid": 3788,
+              "nativeCounters": {
+                "pid": 3788,
+                "activityAttached": 1,
+                "nativeBegun": 1,
+                "nativeCreateCancelled": 1,
+                "actualOtherCreateError": 1,
+                "nativeErrored": 1
+              },
+              "result": "FAIL",
+              "actualFullCaseAcceptancePassed": false,
+              "associationDiagnosisObserved": false,
+              "rawProofStored": false,
+              "humanConfirmedContinue": true
+            },
+            "independentSqlAndProxy": {
+              "ni-d01-main": {
+                "result": "PASS",
+                "phase": "ni-d01",
+                "variant": "main",
+                "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
+                "before": {
+                  "sql": {
+                    "gateState": "OPEN",
+                    "generation": 6,
+                    "activeAccounts": 5,
+                    "closedAccounts": 12,
+                    "closedSecretsRemaining": 0,
+                    "pendingClosures": 0,
+                    "passkeys": 2,
+                    "recoveryCodes": 5,
+                    "closedPasskeys": 0,
+                    "resetIntents": 0,
+                    "activeSessions": 3,
+                    "closedActiveSessions": 0,
+                    "identityReceipts": 15,
+                    "closedIdentityProfiles": 0,
+                    "activeIdentities": 0
+                  },
+                  "proxy": {
+                    "bindingOptions": 32,
+                    "bindingSubmits": 17,
+                    "identitySubmits": 15,
+                    "closureSubmits": 12,
+                    "credentialResultQueries": 22,
+                    "identityResultQueries": 1,
+                    "resetOptions": 13,
+                    "resetIntentSubmits": 2,
+                    "heldBindingReplies": 2,
+                    "heldIdentityReplies": 5,
+                    "releasedBindingReplies": 1,
+                    "releasedIdentityReplies": 2,
+                    "modifiedRpOptions": 3,
+                    "modifiedRpHash": 1,
+                    "lastBindingStatus": 204,
+                    "lastResetStatus": 401,
+                    "lastIdentityStatus": 200,
+                    "loginSubmits": 8,
+                    "sessionReads": 49,
+                    "renewalSubmits": 0,
+                    "registrationSubmits": 18,
+                    "removalSubmits": 7,
+                    "lastRemovalStatus": 204,
+                    "proofsStored": false
+                  }
+                },
+                "after": {
+                  "sql": {
+                    "gateState": "OPEN",
+                    "generation": 6,
+                    "activeAccounts": 5,
+                    "closedAccounts": 12,
+                    "closedSecretsRemaining": 0,
+                    "pendingClosures": 0,
+                    "passkeys": 2,
+                    "recoveryCodes": 5,
+                    "closedPasskeys": 0,
+                    "resetIntents": 0,
+                    "activeSessions": 3,
+                    "closedActiveSessions": 0,
+                    "identityReceipts": 15,
+                    "closedIdentityProfiles": 0,
+                    "activeIdentities": 0
+                  },
+                  "proxy": {
+                    "bindingOptions": 35,
+                    "bindingSubmits": 18,
+                    "identitySubmits": 15,
+                    "closureSubmits": 12,
+                    "credentialResultQueries": 43,
+                    "identityResultQueries": 1,
+                    "resetOptions": 13,
+                    "resetIntentSubmits": 2,
+                    "heldBindingReplies": 2,
+                    "heldIdentityReplies": 5,
+                    "releasedBindingReplies": 1,
+                    "releasedIdentityReplies": 2,
+                    "modifiedRpOptions": 4,
+                    "modifiedRpHash": 2,
+                    "lastBindingStatus": 422,
+                    "lastResetStatus": 401,
+                    "lastIdentityStatus": 200,
+                    "loginSubmits": 8,
+                    "sessionReads": 50,
+                    "renewalSubmits": 0,
+                    "registrationSubmits": 18,
+                    "removalSubmits": 7,
+                    "lastRemovalStatus": 204,
+                    "proofsStored": false
+                  }
+                },
+                "delta": {
+                  "bindingOptions": 3,
+                  "bindingSubmits": 1,
+                  "identitySubmits": 0,
+                  "closureSubmits": 0,
+                  "credentialResultQueries": 21,
+                  "identityResultQueries": 0,
+                  "resetOptions": 0,
+                  "resetIntentSubmits": 0,
+                  "heldBindingReplies": 0,
+                  "heldIdentityReplies": 0,
+                  "releasedBindingReplies": 0,
+                  "releasedIdentityReplies": 0,
+                  "modifiedRpOptions": 1,
+                  "modifiedRpHash": 1,
+                  "loginSubmits": 0,
+                  "sessionReads": 1,
+                  "renewalSubmits": 0,
+                  "registrationSubmits": 0,
+                  "removalSubmits": 0
+                },
+                "sqlReadOnly": true,
+                "proofsStored": false,
+                "actualAppAcceptancePassed": false
+              },
+              "ni-d02-bad-signature": {
+                "result": "PASS",
+                "phase": "ni-d02",
+                "variant": "bad-signature",
+                "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
+                "before": {
+                  "sql": {
+                    "gateState": "OPEN",
+                    "generation": 6,
+                    "activeAccounts": 6,
+                    "closedAccounts": 12,
+                    "closedSecretsRemaining": 0,
+                    "pendingClosures": 0,
+                    "passkeys": 3,
+                    "recoveryCodes": 6,
+                    "closedPasskeys": 0,
+                    "resetIntents": 0,
+                    "activeSessions": 4,
+                    "closedActiveSessions": 0,
+                    "identityReceipts": 15,
+                    "closedIdentityProfiles": 0,
+                    "activeIdentities": 0
+                  },
+                  "proxy": {
+                    "bindingOptions": 36,
+                    "bindingSubmits": 19,
+                    "identitySubmits": 15,
+                    "closureSubmits": 12,
+                    "credentialResultQueries": 43,
+                    "identityResultQueries": 1,
+                    "resetOptions": 13,
+                    "resetIntentSubmits": 2,
+                    "heldBindingReplies": 2,
+                    "heldIdentityReplies": 5,
+                    "releasedBindingReplies": 1,
+                    "releasedIdentityReplies": 2,
+                    "modifiedRpOptions": 4,
+                    "modifiedRpHash": 2,
+                    "lastBindingStatus": 204,
+                    "lastResetStatus": 401,
+                    "lastIdentityStatus": 200,
+                    "loginSubmits": 8,
+                    "sessionReads": 51,
+                    "renewalSubmits": 0,
+                    "registrationSubmits": 19,
+                    "removalSubmits": 7,
+                    "lastRemovalStatus": 204,
+                    "proofsStored": false
+                  }
+                },
+                "after": {
+                  "sql": {
+                    "gateState": "OPEN",
+                    "generation": 6,
+                    "activeAccounts": 6,
+                    "closedAccounts": 12,
+                    "closedSecretsRemaining": 0,
+                    "pendingClosures": 0,
+                    "passkeys": 3,
+                    "recoveryCodes": 6,
+                    "closedPasskeys": 0,
+                    "resetIntents": 0,
+                    "activeSessions": 4,
+                    "closedActiveSessions": 0,
+                    "identityReceipts": 15,
+                    "closedIdentityProfiles": 0,
+                    "activeIdentities": 0
+                  },
+                  "proxy": {
+                    "bindingOptions": 37,
+                    "bindingSubmits": 19,
+                    "identitySubmits": 15,
+                    "closureSubmits": 12,
+                    "credentialResultQueries": 43,
+                    "identityResultQueries": 1,
+                    "resetOptions": 13,
+                    "resetIntentSubmits": 2,
+                    "heldBindingReplies": 2,
+                    "heldIdentityReplies": 5,
+                    "releasedBindingReplies": 1,
+                    "releasedIdentityReplies": 2,
+                    "modifiedRpOptions": 4,
+                    "modifiedRpHash": 2,
+                    "lastBindingStatus": 204,
+                    "lastResetStatus": 401,
+                    "lastIdentityStatus": 200,
+                    "loginSubmits": 9,
+                    "sessionReads": 52,
+                    "renewalSubmits": 0,
+                    "registrationSubmits": 19,
+                    "removalSubmits": 7,
+                    "lastRemovalStatus": 204,
+                    "proofsStored": false
+                  }
+                },
+                "delta": {
+                  "bindingOptions": 1,
+                  "bindingSubmits": 0,
+                  "identitySubmits": 0,
+                  "closureSubmits": 0,
+                  "credentialResultQueries": 0,
+                  "identityResultQueries": 0,
+                  "resetOptions": 0,
+                  "resetIntentSubmits": 0,
+                  "heldBindingReplies": 0,
+                  "heldIdentityReplies": 0,
+                  "releasedBindingReplies": 0,
+                  "releasedIdentityReplies": 0,
+                  "modifiedRpOptions": 0,
+                  "modifiedRpHash": 0,
+                  "loginSubmits": 1,
+                  "sessionReads": 1,
+                  "renewalSubmits": 0,
+                  "registrationSubmits": 0,
+                  "removalSubmits": 0
+                },
+                "sqlReadOnly": true,
+                "proofsStored": false,
+                "actualAppAcceptancePassed": false
+              },
+              "ni-d03-missing-package": {
+                "result": "PASS",
+                "phase": "ni-d03",
+                "variant": "missing-package",
+                "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
+                "before": {
+                  "sql": {
+                    "gateState": "OPEN",
+                    "generation": 6,
+                    "activeAccounts": 6,
+                    "closedAccounts": 12,
+                    "closedSecretsRemaining": 0,
+                    "pendingClosures": 0,
+                    "passkeys": 3,
+                    "recoveryCodes": 6,
+                    "closedPasskeys": 0,
+                    "resetIntents": 0,
+                    "activeSessions": 4,
+                    "closedActiveSessions": 0,
+                    "identityReceipts": 15,
+                    "closedIdentityProfiles": 0,
+                    "activeIdentities": 0
+                  },
+                  "proxy": {
+                    "bindingOptions": 37,
+                    "bindingSubmits": 19,
+                    "identitySubmits": 15,
+                    "closureSubmits": 12,
+                    "credentialResultQueries": 43,
+                    "identityResultQueries": 1,
+                    "resetOptions": 13,
+                    "resetIntentSubmits": 2,
+                    "heldBindingReplies": 2,
+                    "heldIdentityReplies": 5,
+                    "releasedBindingReplies": 1,
+                    "releasedIdentityReplies": 2,
+                    "modifiedRpOptions": 4,
+                    "modifiedRpHash": 2,
+                    "lastBindingStatus": 204,
+                    "lastResetStatus": 401,
+                    "lastIdentityStatus": 200,
+                    "loginSubmits": 9,
+                    "sessionReads": 52,
+                    "renewalSubmits": 0,
+                    "registrationSubmits": 19,
+                    "removalSubmits": 7,
+                    "lastRemovalStatus": 204,
+                    "proofsStored": false
+                  }
+                },
+                "after": {
+                  "sql": {
+                    "gateState": "OPEN",
+                    "generation": 6,
+                    "activeAccounts": 6,
+                    "closedAccounts": 12,
+                    "closedSecretsRemaining": 0,
+                    "pendingClosures": 0,
+                    "passkeys": 3,
+                    "recoveryCodes": 6,
+                    "closedPasskeys": 0,
+                    "resetIntents": 0,
+                    "activeSessions": 4,
+                    "closedActiveSessions": 0,
+                    "identityReceipts": 15,
+                    "closedIdentityProfiles": 0,
+                    "activeIdentities": 0
+                  },
+                  "proxy": {
+                    "bindingOptions": 38,
+                    "bindingSubmits": 19,
+                    "identitySubmits": 15,
+                    "closureSubmits": 12,
+                    "credentialResultQueries": 43,
+                    "identityResultQueries": 1,
+                    "resetOptions": 13,
+                    "resetIntentSubmits": 2,
+                    "heldBindingReplies": 2,
+                    "heldIdentityReplies": 5,
+                    "releasedBindingReplies": 1,
+                    "releasedIdentityReplies": 2,
+                    "modifiedRpOptions": 4,
+                    "modifiedRpHash": 2,
+                    "lastBindingStatus": 204,
+                    "lastResetStatus": 401,
+                    "lastIdentityStatus": 200,
+                    "loginSubmits": 10,
+                    "sessionReads": 54,
+                    "renewalSubmits": 0,
+                    "registrationSubmits": 19,
+                    "removalSubmits": 7,
+                    "lastRemovalStatus": 204,
+                    "proofsStored": false
+                  }
+                },
+                "delta": {
+                  "bindingOptions": 1,
+                  "bindingSubmits": 0,
+                  "identitySubmits": 0,
+                  "closureSubmits": 0,
+                  "credentialResultQueries": 0,
+                  "identityResultQueries": 0,
+                  "resetOptions": 0,
+                  "resetIntentSubmits": 0,
+                  "heldBindingReplies": 0,
+                  "heldIdentityReplies": 0,
+                  "releasedBindingReplies": 0,
+                  "releasedIdentityReplies": 0,
+                  "modifiedRpOptions": 0,
+                  "modifiedRpHash": 0,
+                  "loginSubmits": 1,
+                  "sessionReads": 2,
+                  "renewalSubmits": 0,
+                  "registrationSubmits": 0,
+                  "removalSubmits": 0
+                },
+                "sqlReadOnly": true,
+                "proofsStored": false,
+                "actualAppAcceptancePassed": false
+              }
+            },
+            "approvedIsolatedSignatureRestored": true,
+            "negativeSignatureLeftInstalled": false,
+            "providerLogsAvailable": false,
+            "genericCancellationReclassifiedAsAssociation": false,
+            "rawProofStored": false
+          },
+          "currentBatchSummary": "services/api/authlab/android-b3b4-batch-20261010-verification.json"
         }
       ],
       "manualActionsComplete": true,
       "currentNegativeVerification": {
-        "result": "FAIL",
+        "result": "PASS",
         "caseIds": [
           "NI-D01",
           "NI-D02",
           "NI-D03"
         ],
-        "provider": "com.vivo.cipherchain",
-        "providerVersion": "2.6.0.3",
+        "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+        "evidenceSha256": "2b4439ed86066470320f540038b7103e2e19d196954280a50741ff4678a4339a",
+        "provider": "com.google.android.gms",
+        "providerVersion": "26.37.37",
         "framework": "com.vivo.credentialmanager",
         "frameworkVersion": "15.0",
-        "blocker": "OPAQUE_OEM_CANCELLATION_WITHOUT_ATTRIBUTABLE_ASSOCIATION_DIAGNOSIS",
-        "nativeFailureClass": "CreateCredentialCancellationException",
-        "actualAssociationDiagnosisObserved": false,
-        "approvedControl": {
-          "phase": "ni-d02",
-          "variant": "control",
-          "pid": 23059,
-          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance",
-          "actualApp": true,
-          "nativeVault": true,
-          "actualCV": true,
-          "physicalImeClaimed": false,
-          "rawProofStored": false,
-          "actualFreshRegistrationAuthenticatedAndAuthRouteClosed": true,
-          "approvedPackageAndCertificateActualBinding": true
-        },
-        "publicAssociation": {
-          "url": "https://zewbby.github.io/.well-known/assetlinks.json",
-          "httpStatus": 200,
-          "documentSha256": "d2f2b65c3da8ce507d19977a273da5928138bc0c55a40d6629a550ce50068a01",
-          "associationMatches": {
-            "phone-b3b4.apk": true,
-            "b3b4-acceptance.apk": true,
-            "b3b4-bad-signature.apk": false,
-            "b3b4-unassociated.apk": false
-          },
-          "privateDataStored": false
-        },
-        "rpPartial": {
-          "pid": 27809,
-          "phase": "ni-d01",
-          "clientPinnedRpRejectedWithoutNativeStart": true,
-          "actualNativeWrongRpAssociationRejected": false,
-          "actualServerWrongRpHashRejected422": true,
-          "originalResultQueriedWithoutProofReplay": true,
-          "rawProofStored": false,
-          "result": "FAIL",
-          "actualFullCaseAcceptancePassed": false,
-          "reason": "OEM returned opaque native cancellation for wrong RP; client/server and original-result boundaries passed."
-        },
-        "wrongSignaturePartial": {
-          "phase": "ni-d02",
-          "variant": "bad-signature",
-          "pid": 31609,
-          "nativeCounters": {
-            "pid": 31609,
-            "activityAttached": 1,
-            "nativeBegun": 1,
-            "nativeCreateCancelled": 1,
-            "actualOtherCreateError": 1,
-            "nativeErrored": 1
-          },
-          "result": "FAIL",
-          "actualFullCaseAcceptancePassed": false,
-          "associationDiagnosisObserved": false,
-          "rawProofStored": false
-        },
-        "missingPackagePartial": {
-          "phase": "ni-d03",
-          "variant": "missing-package",
-          "pid": 3788,
-          "nativeCounters": {
-            "pid": 3788,
-            "activityAttached": 1,
-            "nativeBegun": 1,
-            "nativeCreateCancelled": 1,
-            "actualOtherCreateError": 1,
-            "nativeErrored": 1
-          },
-          "result": "FAIL",
-          "actualFullCaseAcceptancePassed": false,
-          "associationDiagnosisObserved": false,
-          "rawProofStored": false,
-          "humanConfirmedContinue": true
-        },
-        "independentSqlAndProxy": {
-          "ni-d01-main": {
-            "result": "PASS",
-            "phase": "ni-d01",
-            "variant": "main",
-            "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
-            "before": {
-              "sql": {
-                "gateState": "OPEN",
-                "generation": 6,
-                "activeAccounts": 5,
-                "closedAccounts": 12,
-                "closedSecretsRemaining": 0,
-                "pendingClosures": 0,
-                "passkeys": 2,
-                "recoveryCodes": 5,
-                "closedPasskeys": 0,
-                "resetIntents": 0,
-                "activeSessions": 3,
-                "closedActiveSessions": 0,
-                "identityReceipts": 15,
-                "closedIdentityProfiles": 0,
-                "activeIdentities": 0
-              },
-              "proxy": {
-                "bindingOptions": 32,
-                "bindingSubmits": 17,
-                "identitySubmits": 15,
-                "closureSubmits": 12,
-                "credentialResultQueries": 22,
-                "identityResultQueries": 1,
-                "resetOptions": 13,
-                "resetIntentSubmits": 2,
-                "heldBindingReplies": 2,
-                "heldIdentityReplies": 5,
-                "releasedBindingReplies": 1,
-                "releasedIdentityReplies": 2,
-                "modifiedRpOptions": 3,
-                "modifiedRpHash": 1,
-                "lastBindingStatus": 204,
-                "lastResetStatus": 401,
-                "lastIdentityStatus": 200,
-                "loginSubmits": 8,
-                "sessionReads": 49,
-                "renewalSubmits": 0,
-                "registrationSubmits": 18,
-                "removalSubmits": 7,
-                "lastRemovalStatus": 204,
-                "proofsStored": false
-              }
-            },
-            "after": {
-              "sql": {
-                "gateState": "OPEN",
-                "generation": 6,
-                "activeAccounts": 5,
-                "closedAccounts": 12,
-                "closedSecretsRemaining": 0,
-                "pendingClosures": 0,
-                "passkeys": 2,
-                "recoveryCodes": 5,
-                "closedPasskeys": 0,
-                "resetIntents": 0,
-                "activeSessions": 3,
-                "closedActiveSessions": 0,
-                "identityReceipts": 15,
-                "closedIdentityProfiles": 0,
-                "activeIdentities": 0
-              },
-              "proxy": {
-                "bindingOptions": 35,
-                "bindingSubmits": 18,
-                "identitySubmits": 15,
-                "closureSubmits": 12,
-                "credentialResultQueries": 43,
-                "identityResultQueries": 1,
-                "resetOptions": 13,
-                "resetIntentSubmits": 2,
-                "heldBindingReplies": 2,
-                "heldIdentityReplies": 5,
-                "releasedBindingReplies": 1,
-                "releasedIdentityReplies": 2,
-                "modifiedRpOptions": 4,
-                "modifiedRpHash": 2,
-                "lastBindingStatus": 422,
-                "lastResetStatus": 401,
-                "lastIdentityStatus": 200,
-                "loginSubmits": 8,
-                "sessionReads": 50,
-                "renewalSubmits": 0,
-                "registrationSubmits": 18,
-                "removalSubmits": 7,
-                "lastRemovalStatus": 204,
-                "proofsStored": false
-              }
-            },
-            "delta": {
-              "bindingOptions": 3,
-              "bindingSubmits": 1,
-              "identitySubmits": 0,
-              "closureSubmits": 0,
-              "credentialResultQueries": 21,
-              "identityResultQueries": 0,
-              "resetOptions": 0,
-              "resetIntentSubmits": 0,
-              "heldBindingReplies": 0,
-              "heldIdentityReplies": 0,
-              "releasedBindingReplies": 0,
-              "releasedIdentityReplies": 0,
-              "modifiedRpOptions": 1,
-              "modifiedRpHash": 1,
-              "loginSubmits": 0,
-              "sessionReads": 1,
-              "renewalSubmits": 0,
-              "registrationSubmits": 0,
-              "removalSubmits": 0
-            },
-            "sqlReadOnly": true,
-            "proofsStored": false,
-            "actualAppAcceptancePassed": false
-          },
-          "ni-d02-bad-signature": {
-            "result": "PASS",
-            "phase": "ni-d02",
-            "variant": "bad-signature",
-            "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
-            "before": {
-              "sql": {
-                "gateState": "OPEN",
-                "generation": 6,
-                "activeAccounts": 6,
-                "closedAccounts": 12,
-                "closedSecretsRemaining": 0,
-                "pendingClosures": 0,
-                "passkeys": 3,
-                "recoveryCodes": 6,
-                "closedPasskeys": 0,
-                "resetIntents": 0,
-                "activeSessions": 4,
-                "closedActiveSessions": 0,
-                "identityReceipts": 15,
-                "closedIdentityProfiles": 0,
-                "activeIdentities": 0
-              },
-              "proxy": {
-                "bindingOptions": 36,
-                "bindingSubmits": 19,
-                "identitySubmits": 15,
-                "closureSubmits": 12,
-                "credentialResultQueries": 43,
-                "identityResultQueries": 1,
-                "resetOptions": 13,
-                "resetIntentSubmits": 2,
-                "heldBindingReplies": 2,
-                "heldIdentityReplies": 5,
-                "releasedBindingReplies": 1,
-                "releasedIdentityReplies": 2,
-                "modifiedRpOptions": 4,
-                "modifiedRpHash": 2,
-                "lastBindingStatus": 204,
-                "lastResetStatus": 401,
-                "lastIdentityStatus": 200,
-                "loginSubmits": 8,
-                "sessionReads": 51,
-                "renewalSubmits": 0,
-                "registrationSubmits": 19,
-                "removalSubmits": 7,
-                "lastRemovalStatus": 204,
-                "proofsStored": false
-              }
-            },
-            "after": {
-              "sql": {
-                "gateState": "OPEN",
-                "generation": 6,
-                "activeAccounts": 6,
-                "closedAccounts": 12,
-                "closedSecretsRemaining": 0,
-                "pendingClosures": 0,
-                "passkeys": 3,
-                "recoveryCodes": 6,
-                "closedPasskeys": 0,
-                "resetIntents": 0,
-                "activeSessions": 4,
-                "closedActiveSessions": 0,
-                "identityReceipts": 15,
-                "closedIdentityProfiles": 0,
-                "activeIdentities": 0
-              },
-              "proxy": {
-                "bindingOptions": 37,
-                "bindingSubmits": 19,
-                "identitySubmits": 15,
-                "closureSubmits": 12,
-                "credentialResultQueries": 43,
-                "identityResultQueries": 1,
-                "resetOptions": 13,
-                "resetIntentSubmits": 2,
-                "heldBindingReplies": 2,
-                "heldIdentityReplies": 5,
-                "releasedBindingReplies": 1,
-                "releasedIdentityReplies": 2,
-                "modifiedRpOptions": 4,
-                "modifiedRpHash": 2,
-                "lastBindingStatus": 204,
-                "lastResetStatus": 401,
-                "lastIdentityStatus": 200,
-                "loginSubmits": 9,
-                "sessionReads": 52,
-                "renewalSubmits": 0,
-                "registrationSubmits": 19,
-                "removalSubmits": 7,
-                "lastRemovalStatus": 204,
-                "proofsStored": false
-              }
-            },
-            "delta": {
-              "bindingOptions": 1,
-              "bindingSubmits": 0,
-              "identitySubmits": 0,
-              "closureSubmits": 0,
-              "credentialResultQueries": 0,
-              "identityResultQueries": 0,
-              "resetOptions": 0,
-              "resetIntentSubmits": 0,
-              "heldBindingReplies": 0,
-              "heldIdentityReplies": 0,
-              "releasedBindingReplies": 0,
-              "releasedIdentityReplies": 0,
-              "modifiedRpOptions": 0,
-              "modifiedRpHash": 0,
-              "loginSubmits": 1,
-              "sessionReads": 1,
-              "renewalSubmits": 0,
-              "registrationSubmits": 0,
-              "removalSubmits": 0
-            },
-            "sqlReadOnly": true,
-            "proofsStored": false,
-            "actualAppAcceptancePassed": false
-          },
-          "ni-d03-missing-package": {
-            "result": "PASS",
-            "phase": "ni-d03",
-            "variant": "missing-package",
-            "scope": "OWNED_SQL_AND_PROXY_COUNTS_ONLY",
-            "before": {
-              "sql": {
-                "gateState": "OPEN",
-                "generation": 6,
-                "activeAccounts": 6,
-                "closedAccounts": 12,
-                "closedSecretsRemaining": 0,
-                "pendingClosures": 0,
-                "passkeys": 3,
-                "recoveryCodes": 6,
-                "closedPasskeys": 0,
-                "resetIntents": 0,
-                "activeSessions": 4,
-                "closedActiveSessions": 0,
-                "identityReceipts": 15,
-                "closedIdentityProfiles": 0,
-                "activeIdentities": 0
-              },
-              "proxy": {
-                "bindingOptions": 37,
-                "bindingSubmits": 19,
-                "identitySubmits": 15,
-                "closureSubmits": 12,
-                "credentialResultQueries": 43,
-                "identityResultQueries": 1,
-                "resetOptions": 13,
-                "resetIntentSubmits": 2,
-                "heldBindingReplies": 2,
-                "heldIdentityReplies": 5,
-                "releasedBindingReplies": 1,
-                "releasedIdentityReplies": 2,
-                "modifiedRpOptions": 4,
-                "modifiedRpHash": 2,
-                "lastBindingStatus": 204,
-                "lastResetStatus": 401,
-                "lastIdentityStatus": 200,
-                "loginSubmits": 9,
-                "sessionReads": 52,
-                "renewalSubmits": 0,
-                "registrationSubmits": 19,
-                "removalSubmits": 7,
-                "lastRemovalStatus": 204,
-                "proofsStored": false
-              }
-            },
-            "after": {
-              "sql": {
-                "gateState": "OPEN",
-                "generation": 6,
-                "activeAccounts": 6,
-                "closedAccounts": 12,
-                "closedSecretsRemaining": 0,
-                "pendingClosures": 0,
-                "passkeys": 3,
-                "recoveryCodes": 6,
-                "closedPasskeys": 0,
-                "resetIntents": 0,
-                "activeSessions": 4,
-                "closedActiveSessions": 0,
-                "identityReceipts": 15,
-                "closedIdentityProfiles": 0,
-                "activeIdentities": 0
-              },
-              "proxy": {
-                "bindingOptions": 38,
-                "bindingSubmits": 19,
-                "identitySubmits": 15,
-                "closureSubmits": 12,
-                "credentialResultQueries": 43,
-                "identityResultQueries": 1,
-                "resetOptions": 13,
-                "resetIntentSubmits": 2,
-                "heldBindingReplies": 2,
-                "heldIdentityReplies": 5,
-                "releasedBindingReplies": 1,
-                "releasedIdentityReplies": 2,
-                "modifiedRpOptions": 4,
-                "modifiedRpHash": 2,
-                "lastBindingStatus": 204,
-                "lastResetStatus": 401,
-                "lastIdentityStatus": 200,
-                "loginSubmits": 10,
-                "sessionReads": 54,
-                "renewalSubmits": 0,
-                "registrationSubmits": 19,
-                "removalSubmits": 7,
-                "lastRemovalStatus": 204,
-                "proofsStored": false
-              }
-            },
-            "delta": {
-              "bindingOptions": 1,
-              "bindingSubmits": 0,
-              "identitySubmits": 0,
-              "closureSubmits": 0,
-              "credentialResultQueries": 0,
-              "identityResultQueries": 0,
-              "resetOptions": 0,
-              "resetIntentSubmits": 0,
-              "heldBindingReplies": 0,
-              "heldIdentityReplies": 0,
-              "releasedBindingReplies": 0,
-              "releasedIdentityReplies": 0,
-              "modifiedRpOptions": 0,
-              "modifiedRpHash": 0,
-              "loginSubmits": 1,
-              "sessionReads": 2,
-              "renewalSubmits": 0,
-              "registrationSubmits": 0,
-              "removalSubmits": 0
-            },
-            "sqlReadOnly": true,
-            "proofsStored": false,
-            "actualAppAcceptancePassed": false
-          }
-        },
-        "approvedIsolatedSignatureRestored": true,
-        "negativeSignatureLeftInstalled": false,
-        "providerLogsAvailable": false,
-        "genericCancellationReclassifiedAsAssociation": false,
-        "rawProofStored": false
+        "actualAssociationDiagnosisObserved": true,
+        "rawAppFixtureResults": [
+          "FAIL",
+          "FAIL",
+          "FAIL"
+        ],
+        "rawResultsRewritten": false,
+        "originalProviderSettingsRestored": true
       },
       "batchSummaryHistory": [
         {
@@ -23186,8 +23508,148 @@
           "guardReview": "COMPLETED_WITH_PENDING_OS_BUILD_VALIDATION"
         }
       },
-      "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json"
-    }
+      "machineTransferEvidence": "services/api/authlab/auth-privacy-machine-transfer-verification.json",
+      "freshAcceptedStageEvidence20261013": {
+        "NI-D01": {
+          "result": "PASS",
+          "pid": 8896,
+          "apkSha256": "bb252713ab57ea1f5878c10c78370395f1a1274bdd4b6949b24e5db5b456eb18",
+          "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json"
+        },
+        "NI-D02": {
+          "result": "PASS",
+          "pid": 10532,
+          "apkSha256": "174130ad7c9c5f4ed8e4c31f88c6687aaa6f0a7ed2a1f51855d74a9beee45da0",
+          "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json"
+        },
+        "NI-D03": {
+          "result": "PASS",
+          "pid": 18389,
+          "apkSha256": "5b591abe59246d4b5eb09b40b366f28339bbc9314c73d856dd8e3e19255aedb3",
+          "evidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json"
+        }
+      }
+    },
+    "latestFinalRegressionEvidence": "services/api/authlab/b6-single-android-20261013-verification.json"
+  },
+  "currentFreshB3B4Continuation": {
+    "recordedOn": "2026-10-13",
+    "workState": "B3_B4_11_OF_11_FIXED_BOUNDARIES_ACCEPTED_WITH_DIRECT_PROVIDER_EVIDENCE",
+    "evidence": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+    "archiveKeyAvailable": false,
+    "archivedEnvironmentRestored": false,
+    "freshEnvironmentReady": true,
+    "standaloneDiagnosticPreparePassed": true,
+    "diagnosticNativeOutcomeUnknown": true,
+    "actualCSubmission": true,
+    "productDebugReleaseBoundaryPassed": true,
+    "releaseApkRebuilt": false,
+    "newlyAcceptedCaseCount": 3,
+    "cumulativeAcceptedCaseCount": 11,
+    "remainingCaseIds": [],
+    "historicalEvidencePreserved": true,
+    "businessClosureTotalsChanged": false,
+    "fullB3B4AcceptancePassed": true,
+    "fullNonIOSAcceptancePassed": false,
+    "diagnosticUnknownOriginalPreserved": true,
+    "authorizedNetworkRetryResult": "DATA_ERR_30_UNATTRIBUTED",
+    "authorizedNetworkRetryNativeOutcomeUnknown": false,
+    "retryCount": 1,
+    "actualProductApprovedBuildPassed": true,
+    "productApprovedApkSha256": "bb252713ab57ea1f5878c10c78370395f1a1274bdd4b6949b24e5db5b456eb18",
+    "productApprovedApkBytes": 68199652,
+    "productInstalledAndHashVerified": true,
+    "actualGoogleCredentialProviderVerified": true,
+    "actualPositiveControlPassed": true,
+    "currentRuntimeResumeState": "OPEN_GENERATION_4_ACTUAL_PRODUCT_AND_COUNTS_VERIFIED",
+    "databasesReset": false,
+    "runtimeResumeEvidence": "E:/Hnuhole-env/acceptance-20261012/matrix/b3b4-evidence/retained-runtime-resume-01.private.json",
+    "runtimeResumeEvidenceSha256": "6b680638fdec74f280df8e8ff7a8a6ccc550a2f3378a3a662852e03e520a44cc",
+    "samePrivateImmutableMaterialAndConfigsPreserved": true,
+    "normalGateRecoveryCompleted": true,
+    "gateGenerationsAfterResume": {
+      "c": 2,
+      "v": 2
+    },
+    "sqlBusinessRowsAndProxyCountersRemainZero": false,
+    "runtimeResumeDeviceOrAppActionExecuted": false,
+    "privateKeyHashesPublished": false,
+    "runtimeResume02Evidence": "E:/Hnuhole-env/acceptance-20261012/matrix/b3b4-evidence/retained-runtime-resume-02.private.json",
+    "runtimeResume02EvidenceSha256": "80c7d85eb39ceeb3d392b0c89a8abc0ace58a64c6fb05d616e118f1ba9285ced",
+    "resume01EvidencePreserved": true,
+    "gateGenerationsAfterResume02": {
+      "c": 3,
+      "v": 3
+    },
+    "gateEvidenceVersionsAfterResume02": {
+      "c": 122,
+      "v": 122
+    },
+    "sqlBusinessRowsAndProxyCountersZeroAtResume02": true,
+    "currentProductControlState": "PASS_POST_DAL_FIX",
+    "hostWatcherLocalUnknownGuardApplied": true,
+    "hostWatcherReceiptSha256": "c9c1c279cd65756cdb3990094d1617cf079c7a11d15377dc462b3e9118c28c9f",
+    "hostWatcherGuardedSourceSha256": "5822869004c9157239296e8cac33e5d2e78f22a899915b1b05369233f02f94cb",
+    "productControlEvidence": "E:/Hnuhole-env/acceptance-20261012/matrix/b3b4-evidence/ni-d02-control-unknown-parent.json",
+    "productControlEvidenceSha256": "86a425834801a776e7a9d546f7adfca8ac6a3501d8e370f43af1dfd1b4fda38d",
+    "productNativeOutcomeUnknown": true,
+    "productCredentialMayExist": true,
+    "actualCProofSubmission": true,
+    "negativeCasesExecuted": true,
+    "productUnknownResolved": false,
+    "nativeRootCauseEstablished": true,
+    "providerSettingsRestored": true,
+    "providerRestoreBlockedByProductUnknown": false,
+    "readOnlyGoogleNetworkReviewState": "COMPLETE_ROOT_CAUSE_UNDETERMINED",
+    "readOnlyGoogleNetworkReviewEvidence": "E:/Hnuhole-env/acceptance-20261012/gms-network-20261012-product01/independent-network-attribution.json",
+    "readOnlyGoogleNetworkReviewEvidenceSha256": "f0a78868dabb0cec1bbd3278cc693e381ecf3d61ff1b2e28eeed2107899acad1",
+    "sameGoogleUiProcessRegistrationLogCategory": "TIMED_OUT",
+    "productCallbackCorrelated": false,
+    "requestOrChallengeCorrelated": false,
+    "laterVpnUidCoverageConfirmed": true,
+    "everyGmsSocketVpnRoutingProven": false,
+    "serviceEndpointReachabilityProven": false,
+    "humanReportedGooglePasswordManagerNormal": true,
+    "humanReportedPlayStoreDeviceCertified": true,
+    "independentDeviceAttestationPerformed": false,
+    "readOnlyGoogleNetworkMainReport": "E:/Hnuhole-env/acceptance-20261012/gms-network-20261012-product01/sanitized-network-findings.json",
+    "readOnlyGoogleNetworkMainReportSha256": "f9e43c51458d50c26d1bb59aa33a5f43eaeb9078e046c46b3cbfccbba1bfcbf4",
+    "mainAndIndependentNetworkReportsAgree": true,
+    "mainNetworkReportSourceFileIntegrityCount": 13,
+    "mainNetworkReportReferencedLineIntegrityCount": 68,
+    "networkEvidenceIntegrityOnly": true,
+    "latestSingleProductRetryResult": "FAIL",
+    "latestSingleProductRetryPid": 21565,
+    "latestSingleProductRetryEvidence": "E:\\Hnuhole-env\\acceptance-20261012\\matrix\\b3b4-evidence\\user-one-retry-result.json",
+    "latestSingleProductRetryEvidenceSha256": "e495f7278a292311b8237c966ee79d39a08524fcf661076966a1d7c80d6c356c",
+    "additionalPhoneRetriesStopped": true,
+    "requestedReadOnlyAnalysisModel": "gpt-6-astra",
+    "requestedReadOnlyAnalysisReasoning": "ultra",
+    "postFixApprovedControlResult": "PASS",
+    "postFixApprovedControlPid": 27847,
+    "postFixApprovedControlEvidence": "E:\\Hnuhole-env\\acceptance-20261012\\matrix\\b3b4-evidence\\post-fix-one-retry-result.json",
+    "postFixApprovedControlEvidenceSha256": "d95c494e09b21ae835b6f3bc7cbed9c86184f8dd0a87e4d862f7e084911f94ad",
+    "googleHandleAllUrlsLinked": true,
+    "actualCBindingStatus": 204,
+    "actualSQLPasskeys": 1,
+    "remainingNegativeCases": [],
+    "acceptedCaseCount": 11,
+    "negativeBatchEvidence": "services\\api\\authlab\\android-b3b4-native-negatives-20261013-verification.json",
+    "negativeBatchEvidenceSha256": "2b4439ed86066470320f540038b7103e2e19d196954280a50741ff4678a4339a",
+    "rawAppFixtureResults": [
+      "FAIL",
+      "FAIL",
+      "FAIL"
+    ],
+    "directProviderAssociationResults": [
+      "PASS",
+      "PASS",
+      "PASS"
+    ],
+    "fixedNonIOSAcceptedCaseCount": 22,
+    "fixedNonIOSBlockedCaseCount": 2,
+    "historicalProductUnknownPreserved": true,
+    "historicalProductUnknownResolved": false
   },
   "currentMachineTransfer": {
     "recordedOn": "2026-10-11",
@@ -23201,5 +23663,87 @@
     "cleanupResult": "PARTIAL_WINDOWS_DELETE_BLOCKED_BY_AUTOMATIC_APPROVAL",
     "functionalAcceptancePromoted": false,
     "bookkeepingOnly": true
+  },
+  "updatedOn": "2026-10-13",
+  "currentB6": {
+    "recordedOn": "2026-10-13",
+    "currentResult": "PASS",
+    "scope": "NON_IOS_B6_FINAL_REGRESSION_AND_HANDOFF",
+    "sourceFingerprint": {
+      "sha256": "b7f556730933cc65c814dd4d4f773c7e9aa64bc8487403bed4995e28134d6906",
+      "presentFileCount": 378,
+      "roots": [
+        "apps/mobile",
+        "packages",
+        "services/api",
+        "infra",
+        "tools"
+      ],
+      "includedSuffixes": [
+        ".go",
+        ".sql",
+        ".sh",
+        ".mod",
+        ".sum",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".lock",
+        ".py",
+        ".ps1",
+        ".txt",
+        ".dart",
+        ".kt",
+        ".swift",
+        ".kts",
+        ".xml",
+        ".plist",
+        ".entitlements",
+        ".podspec",
+        ".properties",
+        ".xcconfig",
+        ".pbxproj",
+        ".h",
+        ".m",
+        ".mm",
+        ".gradle",
+        ".png",
+        ".storyboard",
+        ".xcscheme",
+        ".xcworkspacedata",
+        ".html",
+        ".java"
+      ],
+      "includedAdditionalNames": [
+        ".gitattributes",
+        ".gitignore",
+        "go.work",
+        "go.work.sum",
+        ".env.example",
+        "AGENTS.md",
+        "gradlew",
+        "gradlew.bat",
+        ".nojekyll"
+      ],
+      "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+      "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+      "appliesTo": "Final B6 current source and host-tooling snapshot. Actual product tests refer to the separately frozen 389 inputs; historical device versions unchanged.",
+      "includedStaticFixtures": [
+        "packages/auth-protocol-vectors/static-verification-report.json"
+      ]
+    },
+    "gitBlobSourceFingerprint": {
+      "sha256": "b7f556730933cc65c814dd4d4f773c7e9aa64bc8487403bed4995e28134d6906",
+      "presentFileCount": 378
+    },
+    "plan": "docs/design/auth-privacy-non-ios-closure-plan.md",
+    "report": "docs/design/auth-privacy-b6-validation-report.md",
+    "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+    "scopedBackendAcceptancePassed": true,
+    "scopedAndroidAcceptancePassed": true,
+    "b6WithoutSecondAndroidPassed": true,
+    "nonIOSDevelopmentAcceptancePassed": false,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false
   }
 }

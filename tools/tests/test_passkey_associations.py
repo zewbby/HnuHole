@@ -1,6 +1,7 @@
 import base64
 import importlib.util
 import json
+import os
 from pathlib import Path
 import plistlib
 import tempfile
@@ -24,7 +25,9 @@ class PasskeyAssociationTests(unittest.TestCase):
         self.assertEqual(origin, 'android:apk-key-hash:' + base64.urlsafe_b64encode(bytes.fromhex('12' * 32)).decode().rstrip('='))
         fingerprint = values['assetlinks.json'][0]['target']['sha256_cert_fingerprints'][0]
         self.assertEqual(fingerprint, ':'.join(['12'] * 32))
-        self.assertEqual(values['assetlinks.json'][0]['relation'], ['delegate_permission/common.get_login_creds'])
+        self.assertEqual(values['assetlinks.json'][0]['relation'],
+                         ['delegate_permission/common.get_login_creds',
+                          'delegate_permission/common.handle_all_urls'])
         resource = ET.fromstring(values['android-passkey-associations.xml']).find('string')
         self.assertEqual(json.loads(resource.text.replace('\\"', '"')), [{'include': 'https://auth.example.invalid/.well-known/assetlinks.json'}])
         snippet = ET.fromstring(values['android-passkey-manifest-snippet.xml'])
@@ -55,9 +58,12 @@ class PasskeyAssociationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='hnuhole-passkey-associations-') as parent:
             path = Path(parent) / 'new'
             associations.write_new_directory(path, self.values())
-            self.assertEqual(path.stat().st_mode & 0o777, 0o700)
-            for file in path.iterdir():
-                self.assertEqual(file.stat().st_mode & 0o777, 0o600)
+            # POSIX mode bits do not describe Windows ACL permissions. Keep
+            # the serialization/overwrite checks on both platforms.
+            if os.name == 'posix':
+                self.assertEqual(path.stat().st_mode & 0o777, 0o700)
+                for file in path.iterdir():
+                    self.assertEqual(file.stat().st_mode & 0o777, 0o600)
             self.assertEqual(json.loads((path / 'assetlinks.json').read_text()), self.values()['assetlinks.json'])
             self.assertEqual(plistlib.loads((path / 'Runner.Passkey.entitlements').read_bytes()), self.values()['Runner.Passkey.entitlements'])
             previous = (path / 'assetlinks.json').read_bytes()

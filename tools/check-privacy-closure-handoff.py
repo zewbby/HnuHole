@@ -66,22 +66,24 @@ def main():
             assert historical_matches(item["path"], item["sha256"], item["lfSha256"]), item["path"]
         for item in historical["retainedEvidence"]:
             assert matches_text(ROOT / item["path"], item["sha256"], item["lfSha256"]), item["path"]
-        selected = ("currentNonIOS" if "currentNonIOS" in ledger else
+        selected = ("currentB6" if "currentB6" in ledger else "currentNonIOS" if "currentNonIOS" in ledger else
                     "currentAndroidFault" if "currentAndroidFault" in ledger else "currentAndroidLive")
         live = ledger[selected]
         current = previous.read_record(live["evidence"])
         previous.same_snapshot(live["sourceFingerprint"], current["sourceFingerprint"], "Android live")
-        assert current["scope"] == ("NON_IOS_ANONYMOUS_FOUNDATION_DEVELOPMENT_ACCEPTANCE_ONLY"
+        assert current["scope"] == ("NON_IOS_B6_FINAL_REGRESSION_AND_HANDOFF"
+                                    if selected == "currentB6" else "NON_IOS_ANONYMOUS_FOUNDATION_DEVELOPMENT_ACCEPTANCE_ONLY"
                                     if selected == "currentNonIOS" else "ANDROID_ACTUAL_APP_TO_CMD_CV_FAULT_DEVELOPMENT_ONLY"
                                     if selected == "currentAndroidFault" else "ANDROID_ACTUAL_APP_TO_CMD_CV_DEVELOPMENT_ONLY")
         assert current["moduleAcceptancePassed"] is False
         assert current["fullDeviceMatrixPassed"] is False
-        assert current["systemPasskeyPassed"] is False
+        if selected != "currentB6":
+            assert current["systemPasskeyPassed"] is False
         previous.no_full_closure(current)
         for relative in (live["plan"], live["report"]):
             check_links(relative)
             check_tables(relative)
-        print("PASS: published AC06 historical bytes retained; current Android live handoff/source verified")
+        print("PASS: published AC06 historical bytes retained; current scoped Android/B6 handoff/source verified")
         print("Scope: bookkeeping only; device execution follows its actual result; no complete platform or production approval.")
         return
     current = ledger["currentAC06"]

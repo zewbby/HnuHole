@@ -166,6 +166,8 @@ def main():
             if stage=='ni-b3b4-ready':ack(stage)
             elif stage.startswith('ni-native-ended-return-'):
                 state=private('owned-acceptance-passkey.json')
+                assert all(type(state.get(k,0)) is int and state.get(k,0)==0
+                    for k in ('nativeTimeout','nativeCancelled')),'Local native timeout/cancel remains UNKNOWN; preserve provider task'
                 ended=sum(state.get(k,0) for k in ('nativeSucceeded','nativeErrored','nativeCancelled'))
                 assert state.get('pid')==args.pid and ended==state.get('nativeBegun',0)
                 component=top()

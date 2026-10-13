@@ -1,5 +1,9 @@
 # 非 iOS 匿名基础验收当前报告
 
+> **2026-10-13 B6与单台Android范围完成：**完整R01 SQL/race/vet、R03实际C/V的19项检查、R05真实Dart→HTTPS→SQL、三个Flutter包分析、移动端188项与Passkey Dart 9项、标准Android Debug／Release构建、原生vault 16项／Passkey codec及错误分类12项、三组实际跨进程读写和已安装Release 13项边界均PASS。Windows／Linux各108项宿主守卫、诊断构建8项、JVM策略24项及四份OpenAPI通过。固定24项维持22 PASS／0 FAIL／2 BLOCKED；原14阶段及各设备版本保留，原SDK-only三项FAIL与历史UNKNOWN未改写。**不需要第二实体Android的非iOS匿名基础工作已完成，唯一固定缺口为NI-X01／X02；完整非iOS、iOS、生产与未来业务仍未获通过。**原手机三包摘要、原provider／autofill、账号与草稿保留；本轮独立模拟器停止，专用AVD／构建副本／临时APK及原始日志已清理，现成环境与缓存保留。HnuHole仅准备本地可审阅候选，未提交／推送／部署。见[B6报告](auth-privacy-b6-validation-report.md)及[最终分层记录](../../services/api/authlab/b6-single-android-20261013-verification.json)。
+
+下方记录保留原日期、被测版本与证明范围；本轮结论以上述B6入口为准。
+
 > **2026-10-11 换机交接最终回执：**实现、测试和排错源码已推送 4c40f90；7 个加密归档／22 个分片已逐资产核对远端 SHA-256，并通过本地认证解密和文件内容核对。已删除五个任务 WSL 根、12 个专用容器、8 个卷、4 个网络；Windows 缓存／交接暂存副本删除被自动审批拒绝，仍保留，不能宣称全部清空。B3＋B4仍8 PASS／3 FAIL，固定24项19 PASS／3 FAIL／2 BLOCKED；B6／iOS／生产未通过。新机器先读[换机交接](auth-privacy-machine-transfer-20261010.md)及[最终交付和清理实录](../../services/api/authlab/auth-privacy-machine-transfer-verification.json)，解密密钥单独交付。
 
 > **2026-10-10 ultra排错阶段历史快照：**B3＋B4保持8／11 PASS、3项原执行FAIL。用户确认本轮点“继续”，全局代理下Google批准正向仍未取得证明；原生7次失败与一次系统清理器在原生开始前强停分别保留。只读审手机实际vivo选择器v15.0：provider非RESULT_OK返回和内部失败会被统一上报selector取消，原错误信息未传到App。此机制已由安装APK静态代码证实，但Google上游失败根因和本轮精确分支仍未证实；27字符消息摘要仅作佐证，旧JDI原型未区分参数／堆对象，不作为验收证据。ultra子审触及用量上限后由主任务续审。新有界观察器源码已保留并编译，未发起新ceremony；产品APK未改、已通过8项不重验。当前Google凭据／自动填充设置临时保留，等待人工只查看密码管理工具设置，不清数据或登出；验收后须按原备份恢复，Clash全局模式须由用户恢复。固定24项仍19 PASS／3 FAIL／2 BLOCKED，B6／iOS未执行，未提交／推送。见[具体诊断记录](../../services/api/authlab/android-passkey-selector-diagnosis-verification.json)。

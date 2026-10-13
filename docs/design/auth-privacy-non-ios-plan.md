@@ -1,5 +1,9 @@
 # 非 iOS 匿名基础验收任务单
 
+> **2026-10-13 B6与单台Android范围完成：**完整R01 SQL/race/vet、R03实际C/V的19项检查、R05真实Dart→HTTPS→SQL、三个Flutter包分析、移动端188项与Passkey Dart 9项、标准Android Debug／Release构建、原生vault 16项／Passkey codec及错误分类12项、三组实际跨进程读写和已安装Release 13项边界均PASS。Windows／Linux各108项宿主守卫、诊断构建8项、JVM策略24项及四份OpenAPI通过。固定24项维持22 PASS／0 FAIL／2 BLOCKED；原14阶段及各设备版本保留，原SDK-only三项FAIL与历史UNKNOWN未改写。**不需要第二实体Android的非iOS匿名基础工作已完成，唯一固定缺口为NI-X01／X02；完整非iOS、iOS、生产与未来业务仍未获通过。**原手机三包摘要、原provider／autofill、账号与草稿保留；本轮独立模拟器停止，专用AVD／构建副本／临时APK及原始日志已清理，现成环境与缓存保留。HnuHole仅准备本地可审阅候选，未提交／推送／部署。见[B6报告](auth-privacy-b6-validation-report.md)及[最终分层记录](../../services/api/authlab/b6-single-android-20261013-verification.json)。
+
+下方记录保留原日期、被测版本与证明范围；本轮结论以上述B6入口为准。
+
 > **2026-10-08 固定收口计划：**剩余非iOS匿名基础验收统一按[24项／6批次最终计划](auth-privacy-non-ios-closure-plan.md)执行；预算48–64有效工时，目标2026-10-19，前提为持续工作日推进且第二实体Android在10月15日前到位。10月15日核对B1–B4；每批报告固定ID累计结果，不再零散追加“下一步”。24项及最终候选回归／交接通过才可结束非iOS开发验收；缺第二设备不能算完整PASS。iOS、生产及未来业务联动独立，不阻止本分支按其授权范围结束。此为计划，新增项尚未执行。
 
 日期：2026-10-05。用户要求先完成 iOS 以外的部分；仅在 `codex/auth-privacy-handoff` 完成匿名基础 AC01–AC06，不扩展帖子、评论、聊天或生产发布。保留原正常链路、三组故障证据及所有已有未提交实现。用户要求后续复用的环境／缓存／测试包保留。
