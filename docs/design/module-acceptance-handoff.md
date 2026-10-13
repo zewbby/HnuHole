@@ -1,5 +1,30 @@
 # 分模块验收与测试交接
 
+> **2026-10-12 F4 当前固定基线主机范围：PASS，等待最终认证整合。** 用户批准最小 `c_posts` 授权修复后，最终六stage全部重新执行：mobile 分析0问题／20文件311项 PASS、R05 PASS、F4-H01–H08 8项 PASS、Go/SQL/race 6测试包及内置／最终 vet PASS、`posts-privileges` 9个顶层／4个生命周期子用例 PASS，其中真实非 owner C runtime 权限检查 PASS。全部覆盖最后授权修改后的282份未提交运行源码，摘要 `186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46`。详见[本轮报告](community-flutter-f4-validation-report-20261012.md)、[机器记录](community-flutter-f4-validation-20261012.json)、[源码指纹](community-flutter-f4-source-fingerprint-20261012.json)及[固定提交认证差异清单](community-flutter-f4-auth-integration-diff-20261012.md)。授权前FAIL已解决并保留历史证据；最终认证整合 SHA 未指定，F4 final／FP14仍 **BLOCKED_DEPENDENCY**。完整模块、实际部署／旧库升级、原生／手机／iOS及生产未验；本轮不记完整App验收通过。旧308／旧8项及当时R05/vet未执行只保留历史范围，不计入本轮。
+
+## 2026-10-12 当前模块证据与剩余边界
+
+本轮独立 clone 为 `E:/HnuHole-community-f4-20261012/repo`；实际起始与最终 HEAD 均为 `4d58116bdde2c1d2d406b965590bc1625a5c7955`，20份任务文件全部未提交，未推送、合并或部署。运行源码包含既有设置“账号与安全”入口、等价修复的 F4 fixture 两处 lint、runner 隔离修正及5项必要回归；未重新设计 F1–F3 页面、未修改认证协议或新增业务。用户明确批准 `infra/postgres/grant-community.sql` 的最小29行 `c_posts` 授权块，来源为固定后端 `514a944560988e3d8d599e6f9fe9d5d99fe07f88`，原认证授权前缀未变。最终批次为 `2026-10-12T10:33:27Z–10:41:13Z`（上海18:33:27–18:41:13），六stage均在最后代码修改后重跑；每项源码摘要与镜像核对见机器记录。以后修改运行源码须更新指纹并重跑受影响检查。
+
+本轮 runner 在专用 SDK、HOME/缓存、日志、端口和新一次性数据库中执行 `checks`、`auth-regression`、`integration`、`server`、`posts-privileges`、`vet`。完整实际 wrapper 命令和退出码在报告／机器记录，脱敏日志位于 `E:/HnuHole-community-f4-20261012/logs`。没有连接认证数据库、操作设备/ADB或使用认证账号/签名/CA。311项与8项均为最终批次新执行的共享证据，不是每模块重复执行，也未借用旧记录；server 的 mobile opt-in／受限 posts runtime SKIP 分别由 R05/integration 和 `posts-privileges` 独立执行，最终全部PASS。真实 `TestPostSchemaRestrictedRuntimePrivilegesPostgres` 为PASS（0.78秒）；PostSchema9个顶层／4个生命周期子用例均PASS、FAIL0。
+
+授权前 `posts-privileges` 曾因缺 `c_posts` 授权退出1（`community_posts_schema_test.go:234`），历史PARTIAL机器JSON、源码指纹 `4cee5bd2ce8aa660ebc57e04a625b8f74560750137bd69dc87cbbc174c676a6c` 及FAIL日志固定在 `E:/HnuHole-community-f4-20261012/logs/pre-approved-grant-rerun/`。台账保留该失败与修复来源／用户批准；当前 `logs/posts-privileges.log` 属最终PASS批次，不作为旧FAIL证据。此处权限通过证明新库真实受限runtime及business/recovery负权限，不外推为完整实际cmd、Goose旧库升级或生产批准。
+
+| 模块／联动 | 本轮实际证明与源码／测试入口 | 当前未完成及下一验收 |
+|---|---|---|
+| A00 | 全 mobile analyze0／311；Go6测试包 SQL/race、内置及最终 vet；runner16条合成 guard（含非canonical根拒绝前无写入）。`apps/mobile/test`、F4两份 fixture、`tools/tests/test-community-f4-runner-isolation.sh` | guard使用 stub，只证明隔离调度；最终认证及平台未收口，A00完整模块维持 BLOCKED |
+| A01／A02 | fresh PG迁移／schema／TLS handler与生产根接入；实际非owner C runtime正向及business/recovery负权限PASS，PostSchema9顶层／4生命周期子用例PASS。`services/api/internal/authprivacy/community_posts_schema_test.go`、`internal/authprivacyhttp/f4_main_mobile_postgres_test.go`、批准后的 `infra/postgres/grant-community.sql` | 最小复验入口为同独立环境运行 `tools/run-community-flutter-f4-linux.sh posts-privileges`；本次全部六stage已在最后授权修改后重跑。实际部署cmd全角色、Goose旧库前向升级及生产证据仍NOT_RUN，不由fresh schema/handler fixture代证 |
+| A03／A06／A07／A12 | R05真实Dart→TLS C/V handler→PG；F4-H01/03/04/06/07，冻结、代次恢复、旧会话接替和A→B；controller迟到feed/CREATE/DELETE围栏。`auth_public_https_postgres_test.dart`、`post_controller_test.dart`、F4两份fixture | 主机vault为替身；F4-H06的retry是会话核对，不代证帖子RETRY。未来认证main/flows/HTTP整合后重新打开相关回归；完整模块维持BLOCKED |
+| B05／B02；A12 | 新CREATE409原command/digest核对无第二key（客户端故障注入）；新增已受理RETRY丢响应重开，保持原identity/channel/attempt；真实SQL原回执、明确失败重试绑定。`post_controller_test.dart`、`community_posts_test.go`；F4-H03/04实际CREATE=1 | F4固定当前认证基线；认证候选尚未指定最终SHA，原生持久、完整身份消费者与未实现功能不算通过 |
+| B03／B06／B10 | F4-H02/05/07：实际入口、文字列表/详情/本人内容、DELETE丢回包原命令核对，持久DELETED先于清正文返回；controller重开/迟到围栏。`post_controller_test.dart`、`post_screens_test.dart`、F4两份fixture；实际DELETE=1 | scoped证据不提升整模块NOT_RUN；评论/私信/图片/搜索/推送等仍NOT_IMPLEMENTED，布局不重做；native main与生产自动poll未验 |
+| A08／N01／B02／B10；X06/X07部分 | F4-H08真实闭号B清本地SQLite、保留A；新增controller清原rows/index及关闭墓碑，保留后来B会话/草稿/视图；新增SQL `TestPostFormalClosureErasesUnpublishedPayloadsAndPreservesOtherAccountPostgres` 走正式申请→终结→清理，擦未公开title/body、原回执去私有关联、另一账号不变、清理幂等；公开内容按规范保留并显示ACCOUNT_CLOSED | controller清理授权状态夹具先持久移除session，真实AuthFlows由F4-H08另证。主机替身不证明原生key/file删除；永久post/task/binding事实不因闭号全删。X06/X07整场景未PASS；Android业务7项/进程/备份及iOS仍NOT_RUN |
+
+认证比较仅限已提交快照：社区 C=`4d58116bdde2c1d2d406b965590bc1625a5c7955`；共同祖先 B=`0eff47a21cd4f4ab1636b4468f7d5df9769a264f`；发布实现候选 A1=`4c40f9015095ebd84dc2b17e30e6ef7ef159321f`；远端交接候选 A=`976c0048aaa40d9b7f589cb735f3bf9c47571486`。A1/A均没有被明确指定为最终社区整合SHA，本轮只读差异，不合并、不复制未提交认证代码。差异清单覆盖main/settings/AuthFlows/session/HTTP/closure/vault/passkey/manifest/SQL与权限；整合须成组保留原命令、原账号关闭清理、原生业务namespace与锁文件。
+
+下一步等待认证会话明确40位整合SHA及其最终证据，固定实际整合源码后重跑所有相关入口。手机／模拟器／ADB本任务未执行；Android复验需同版源码构建、运行 `AndroidBusinessStorageTest` 七项，再验跨engine/进程、重启/备份、实际main/自动poll、IME/TalkBack/大字/系统字体/命中；iOS需macOS完整Xcode及明确Team/Bundle/签名/目标，复验构建、Keychain/安装marker/业务purge、AuthenticationServices/AASA与物理UX。真实部署cmd全权限、Goose旧库升级与生产独立审计仍单列。台账各模块原BLOCKED/NOT_RUN保持；验收口径为 **当前固定基线在主机范围可复验，等待最终认证整合**，F4最终仍BLOCKED_DEPENDENCY。
+
+## 以下为原日期与版本的历史记录
+
 > **2026-10-10 F4换机交接：**源码`68d35af`已完成固定后端接入，生产根路由真实HTTPS／独立PG／文件SQLite的8项主机检查PASS，补设置“账号与安全”入口。见[报告](community-flutter-f4-report.md)、[机器记录](community-flutter-f4-verification.json)和[换机入口](community-flutter-f4-machine-handoff.md)。F4最终认证候选／FP14仍BLOCKED；早期mobile0问题／308PASS不代证最终全量，最终checks／R05／vet因WSL emergency_ro未完成。F5原生／设备／iOS未跑。一次性PG与进程已结束，但本任务Linux缓存删除errno30、清理BLOCKED；不带缓存换机，不动其他会话。旧F3及认证记录保留原版本与范围。
 
 > **2026-10-09 F3 当前交付：**文字页面、主导航、controller与加密SQLite状态已完成，源码`eb6c914`；[实现报告](community-flutter-f3-report.md)、[机器记录](community-flutter-f3-verification.json)和[实际Flutter复审](ui-reviews/community-flutter-f3-ui-review.md)固定当前证据。完整mobile分析0问题、308项PASS（SQLite30／controller34／screens23含14帧）；F1正式图未改。补未来版本拒绝、旧retry随机迁移、删除丢响应／切账号围栏及Android闭号多engine临界区。真实C/V／SQL整合、Android原生7项／构建／跨进程／设备、iOS及物理UX仍NOT_RUN；下一阶段F4固定最终认证候选，F5另行平台验收。scoped PASS不代证整模块或生产通过；下方F2及认证旧结果均为历史版本。

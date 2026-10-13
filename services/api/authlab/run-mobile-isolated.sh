@@ -2,6 +2,13 @@
 # Test-only Flutter -> public HTTPS C/V -> private disposable PostgreSQL.
 # Toolchains must already exist. No deployed service or system setting is used.
 set -eu
+mobilelab_pg_port=${PGPORT:-5432}
+case "$mobilelab_pg_port" in
+    ''|*[!0-9]*|0*) echo "Invalid mobile lab PGPORT" >&2; exit 2 ;;
+esac
+[ "${#mobilelab_pg_port}" -le 5 ] && [ "$mobilelab_pg_port" -ge 1024 ] && [ "$mobilelab_pg_port" -le 65535 ] || {
+    echo "Invalid mobile lab PGPORT" >&2; exit 2;
+}
 
 for mobilelab_tool in go initdb pg_ctl psql; do
     command -v "$mobilelab_tool" >/dev/null 2>&1 || {
@@ -41,7 +48,7 @@ trap 'exit 143' TERM HUP
 
 initdb -D "$MOBILELAB_RUN_DIR/data" -U authlab_admin -A trust --no-locale -E UTF8 >"$MOBILELAB_RUN_DIR/init.log" 2>&1
 pg_ctl -D "$MOBILELAB_RUN_DIR/data" -l "$MOBILELAB_RUN_DIR/postgres.log" -w start \
-    -o "-c listen_addresses='' -c unix_socket_directories='$MOBILELAB_RUN_DIR/socket' -c unix_socket_permissions=0700 -c shared_memory_type=mmap -c dynamic_shared_memory_type=mmap -c shared_buffers=16MB -c max_connections=40 -c log_statement=none -c log_min_messages=panic -c log_min_error_statement=panic -c log_error_verbosity=terse -c log_parameter_max_length=0 -c log_parameter_max_length_on_error=0 -c log_min_duration_statement=-1 -c log_min_duration_sample=-1 -c log_transaction_sample_rate=0 -c log_duration=off" >/dev/null
+    -o "-p $mobilelab_pg_port -c listen_addresses='' -c unix_socket_directories='$MOBILELAB_RUN_DIR/socket' -c unix_socket_permissions=0700 -c shared_memory_type=mmap -c dynamic_shared_memory_type=mmap -c shared_buffers=16MB -c max_connections=40 -c log_statement=none -c log_min_messages=panic -c log_min_error_statement=panic -c log_error_verbosity=terse -c log_parameter_max_length=0 -c log_parameter_max_length_on_error=0 -c log_min_duration_statement=-1 -c log_min_duration_sample=-1 -c log_transaction_sample_rate=0 -c log_duration=off" >/dev/null
 psql -X -v ON_ERROR_STOP=1 -h "$MOBILELAB_RUN_DIR/socket" -U authlab_admin -d postgres >/dev/null <<'SQL'
 CREATE ROLE hnuhole_c LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
 CREATE ROLE hnuhole_v LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;

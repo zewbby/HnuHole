@@ -527,6 +527,70 @@ func TestPostFormalClosureIndependentCodesAndExpiredFactsPostgres(t *testing.T) 
 	}
 }
 
+func TestPostFormalClosureErasesUnpublishedPayloadsAndPreservesOtherAccountPostgres(t *testing.T) {
+	control := newGateControl(t)
+	l, ctx := control.lab, context.Background()
+	enablePostLab(t, l)
+	owner := sessionTestAccount(t, l, "post_close_payload_owner")
+	other := sessionTestAccount(t, l, "post_close_payload_other")
+	ownerID := identityChange(t, l.c, owner.SessionToken, "CREATE", uuid.Nil, "关闭账号身份").IdentityID
+	otherID := identityChange(t, l.c, other.SessionToken, "CREATE", uuid.Nil, "其他账号身份").IdentityID
+	ownerIntent := postTestIntent(t, l, ownerID)
+	otherIntent := postTestIntent(t, l, otherID)
+	otherIntent.Title, otherIntent.Body = "其他公开标题", "其他账号公开原文"
+	publishedOwner := postTestCommand(t, l, owner.SessionToken, postTestKey(t), ownerIntent)
+	publishedOther := postTestCommand(t, l, other.SessionToken, postTestKey(t), otherIntent)
+	postTestPublish(t, l)
+	ownerIntent.Title, ownerIntent.Body = "未公开私密标题", "关闭时须擦除的未公开原文"
+	otherIntent.Title, otherIntent.Body = "其他待发标题", "其他账号待发原文"
+	pendingOwner := postTestCommand(t, l, owner.SessionToken, postTestKey(t), ownerIntent)
+	pendingOther := postTestCommand(t, l, other.SessionToken, postTestKey(t), otherIntent)
+	request, _ := closureTestRequest(t, owner.SessionToken)
+	closure, err := l.c.RequestAccountClosure(ctx, request, sessionTestPasswordWorker(t, 1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	advanceClosureClock(t, control, closure.DueAt)
+	if n, err := l.c.FinalizeDueClosures(ctx, 10); err != nil || n != 1 {
+		t.Fatal("formal close failed", n, err)
+	}
+	if count(t, l.cp, `SELECT count(*) FROM c_posts.publication_tasks WHERE owner_account_id=$1 AND owner_visible`, owner.AccountID) != 0 ||
+		count(t, l.cp, `SELECT count(*) FROM c_posts.publication_attempts WHERE task_id=$1 AND state='ACCEPTED'`, pendingOwner.TaskID) != 0 {
+		t.Fatal("closed account retained actionable unpublished task")
+	}
+	if count(t, l.cp, `SELECT count(*) FROM c_posts.command_receipts WHERE owner_account_id=$1`, owner.AccountID) != 0 ||
+		count(t, l.cp, `SELECT count(*) FROM c_posts.command_receipts WHERE outcome='RESULT_EXPIRED' AND owner_account_id IS NULL AND task_id IS NULL AND post_id IS NULL AND attempt_version IS NULL AND task_state IS NULL AND error_code IS NULL`) != 2 {
+		t.Fatal("closed command facts retained private owner associations")
+	}
+	if count(t, l.cp, `SELECT count(*) FROM c_posts.payload_cleanup WHERE task_id=$1 AND version=1 AND cause='ACCOUNT_CLOSED' AND state='PENDING'`, pendingOwner.TaskID) != 1 {
+		t.Fatal("formal close did not enqueue unpublished payload erasure")
+	}
+	if n, err := l.c.CleanupPostPayloads(ctx, 100); err != nil || n != 1 {
+		t.Fatal("closed unpublished payload cleanup failed", n, err)
+	}
+	if count(t, l.cp, `SELECT count(*) FROM c_posts.attempt_contents WHERE task_id=$1 AND version=1 AND erased_at IS NOT NULL AND title IS NULL AND body IS NULL`, pendingOwner.TaskID) != 1 ||
+		count(t, l.cp, `SELECT count(*) FROM c_posts.payload_cleanup WHERE task_id=$1 AND version=1 AND state='ERASED'`, pendingOwner.TaskID) != 1 {
+		t.Fatal("closed unpublished plaintext survived cleanup")
+	}
+	// Public posts and permanent binding facts survive formal closure by design.
+	closedPublic := postTestRead(t, l, other.SessionToken, PostQuery{Kind: PostDetail, ID: publishedOwner.PostID}).(posts.PublicPostResponse).Post
+	if closedPublic.Author.State != "ACCOUNT_CLOSED" || closedPublic.Body != postTestIntent(t, l, ownerID).Body {
+		t.Fatal("closure erased surviving public content or failed inactive projection")
+	}
+	otherPublic := postTestRead(t, l, other.SessionToken, PostQuery{Kind: PostDetail, ID: publishedOther.PostID}).(posts.PublicPostResponse).Post
+	otherTask := postTestRead(t, l, other.SessionToken, PostQuery{Kind: PostTaskDetail, ID: pendingOther.TaskID}).(posts.OwnTaskDetail)
+	if otherPublic.Author.State != "ACTIVE" || otherPublic.Body != "其他账号公开原文" || otherTask.Task.State != posts.Accepted || !otherTask.Task.Visible || otherTask.Content == nil || otherTask.Content.Body != otherIntent.Body {
+		t.Fatal("closing account changed another account public or unpublished content")
+	}
+	if count(t, l.cp, `SELECT count(*) FROM c_posts.command_receipts WHERE owner_account_id=$1 AND outcome='ACCEPTED'`, other.AccountID) != 2 ||
+		count(t, l.cp, `SELECT count(*) FROM c_posts.attempt_contents WHERE task_id=$1 AND version=1 AND erased_at IS NULL AND title=$2 AND body=$3`, pendingOther.TaskID, otherIntent.Title, otherIntent.Body) != 1 {
+		t.Fatal("closing account compacted another account private command or payload")
+	}
+	if n, err := l.c.CleanupPostPayloads(ctx, 100); err != nil || n != 0 {
+		t.Fatal("completed cleanup was not idempotent", n, err)
+	}
+}
+
 func TestPostCeilingPaginationAndCursorIsolationPostgres(t *testing.T) {
 	control := newGateControl(t)
 	l, ctx := control.lab, context.Background()

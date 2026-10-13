@@ -1,0 +1,548 @@
+{
+  "recordedOn": "2026-10-12",
+  "timeZone": "Asia/Shanghai",
+  "repository": "https://github.com/zewbby/HnuHole.git",
+  "branch": "codex/community-flutter-pages",
+  "startSHA": "4d58116bdde2c1d2d406b965590bc1625a5c7955",
+  "finalHEAD": "4d58116bdde2c1d2d406b965590bc1625a5c7955",
+  "workingTreeContainsUncommittedChanges": true,
+  "noCommitPushMergeDeploy": true,
+  "checkout": "E:\\HnuHole-community-f4-20261012\\repo",
+  "changedFiles": [
+    {
+      "status": " M",
+      "path": "apps/mobile/integration/f4_main_https_postgres_test.dart"
+    },
+    {
+      "status": " M",
+      "path": "apps/mobile/test/post_controller_test.dart"
+    },
+    {
+      "status": " M",
+      "path": "docs/design/HANDOFF.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/design/community-flutter-f4-machine-handoff.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/design/community-flutter-f4-plan.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/design/community-flutter-f4-report.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/design/module-acceptance-handoff.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/design/module-acceptance-ledger.json"
+    },
+    {
+      "status": " M",
+      "path": "docs/design/progress.md"
+    },
+    {
+      "status": " M",
+      "path": "infra/postgres/grant-community.sql"
+    },
+    {
+      "status": " M",
+      "path": "services/api/authlab/run-isolated.sh"
+    },
+    {
+      "status": " M",
+      "path": "services/api/authlab/run-mobile-isolated.sh"
+    },
+    {
+      "status": " M",
+      "path": "services/api/authlab/run-post-schema-isolated.sh"
+    },
+    {
+      "status": " M",
+      "path": "services/api/internal/authprivacy/community_posts_test.go"
+    },
+    {
+      "status": " M",
+      "path": "tools/run-community-flutter-f4-linux.sh"
+    },
+    {
+      "status": "??",
+      "path": "docs/design/community-flutter-f4-auth-integration-diff-20261012.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/design/community-flutter-f4-source-fingerprint-20261012.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/design/community-flutter-f4-validation-20261012.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/design/community-flutter-f4-validation-report-20261012.md"
+    },
+    {
+      "status": "??",
+      "path": "tools/tests/test-community-f4-runner-isolation.sh"
+    }
+  ],
+  "acceptanceTarget": "当前固定基线在主机范围可复验，等待最终认证整合",
+  "hostClosureResult": "PASS",
+  "currentResult": "BLOCKED_DEPENDENCY",
+  "blockers": [
+    "Authentication session has not explicitly designated the final committed integration SHA; no auth integration or full app/native acceptance is claimed."
+  ],
+  "previousRecordsNotCounted": [
+    "2026-10-10 mobile 308",
+    "2026-10-10 F4-H01-H08 eight host checks"
+  ],
+  "baselineInventory": "E:\\HnuHole-community-f4-20261012\\logs\\baseline-inventory.json",
+  "isolation": {
+    "distribution": "HnuHole-Ubuntu-24.04",
+    "user": "hnuhole",
+    "uid": 1000,
+    "taskRoot": "/home/hnuhole/hnuhole-community-flutter-f4-20261012-01",
+    "taskOwner": "hnuhole-community-flutter-f4-01a11f1a-20261010|/mnt/e/HnuHole-community-f4-20261012/repo",
+    "sdkSourceReadOnly": "/mnt/e/Hnuhole-env/linux/flutter",
+    "sdkCopy": "/home/hnuhole/community-f4-sdk-20261012/flutter",
+    "sdkOwner": "community-f4-20261012 dedicated SDK copy",
+    "sdkRevision": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "sdkDartSHA256": "327991241585ee23f10d8b239a3f8484cb55e5060c665700d19d7e01e62ec94a",
+    "sdkRebuildEvidence": {
+      "result": "PASS",
+      "sourceReadOnly": "/mnt/e/Hnuhole-env/linux/flutter",
+      "dedicatedCopy": "/home/hnuhole/community-f4-sdk-20261012/flutter",
+      "sdkRevision": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+      "sourceAndCopyDartSHA256": "327991241585ee23f10d8b239a3f8484cb55e5060c665700d19d7e01e62ec94a",
+      "cacheCanonicalAndNoSymlinks": true,
+      "sourceInvokedOrModified": false
+    },
+    "goPath": "/usr/lib/go-1.22/bin/go",
+    "goVersion": "1.22.2",
+    "postgresPath": "/usr/lib/postgresql/16/bin",
+    "postgresVersion": "16.15",
+    "sqliteLibrary": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0",
+    "ownedCaches": [
+      "HOME",
+      "XDG_CONFIG_HOME",
+      "XDG_CACHE_HOME",
+      "XDG_DATA_HOME",
+      "XDG_RUNTIME_DIR",
+      "TMPDIR",
+      "GOTMPDIR",
+      "PUB_CACHE",
+      "GOPATH",
+      "GOMODCACHE",
+      "GOCACHE",
+      "GRADLE_USER_HOME"
+    ],
+    "database": "Every SQL stage creates new disposable initdb clusters, C/V databases and synthetic roles; no unknown DSN is accepted; TCP listen disabled, private 0700 socket.",
+    "privateSocketPort": 55432,
+    "httpsPorts": "Go allocates loopback ports dynamically inside each isolated fixture.",
+    "authDatabasesOrCredentialsUsed": false,
+    "phoneEmulatorADBUsed": false,
+    "globalConfigurationChanged": false,
+    "sdkSourceInvokedOrCleaned": false
+  },
+  "lockVerification": [
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "startBlob": "1fadf9bd28d588797e13c178993e52168c3afa4c",
+      "currentCanonicalBlob": "1fadf9bd28d588797e13c178993e52168c3afa4c",
+      "currentRawBlob": "ba508c85de854392599e74d41af17e8a4d595f17",
+      "canonicalTextUnchanged": true,
+      "note": "Windows checkout CRLF; Git-normalized LF text equals starting commit; no lock or dependency edits."
+    },
+    {
+      "path": "services/api/go.mod",
+      "startBlob": "ed1999f9827c4b28179863c1da3a8653c12f8e59",
+      "currentCanonicalBlob": "ed1999f9827c4b28179863c1da3a8653c12f8e59",
+      "currentRawBlob": "dadbaa19744748b5e5e79f4b05c62de6ce3d6236",
+      "canonicalTextUnchanged": true,
+      "note": "Windows checkout CRLF; Git-normalized LF text equals starting commit; no lock or dependency edits."
+    },
+    {
+      "path": "services/api/go.sum",
+      "startBlob": "75d12ffc588902e84a39c4b0b6d4d214be480e7d",
+      "currentCanonicalBlob": "75d12ffc588902e84a39c4b0b6d4d214be480e7d",
+      "currentRawBlob": "d812c91059cf436233d9c4a718c2f02cf0fc6df7",
+      "canonicalTextUnchanged": true,
+      "note": "Windows checkout CRLF; Git-normalized LF text equals starting commit; no lock or dependency edits."
+    }
+  ],
+  "sourceFingerprint": {
+    "path": "community-flutter-f4-source-fingerprint-20261012.json",
+    "sha256": "186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46",
+    "fileCount": 282,
+    "normalizedLF": true
+  },
+  "mirrorVerification": {
+    "result": "PASS",
+    "fileCount": 282,
+    "runtimeMirrorFileCount": 274,
+    "sourceOnlyFiles": [
+      "packages/openapi/channel-api.yaml",
+      "packages/openapi/community-auth-api.yaml",
+      "packages/openapi/generate-channel.sh",
+      "packages/openapi/identity-api.yaml",
+      "packages/openapi/post-api.yaml",
+      "packages/openapi/verifier-auth-api.yaml",
+      "tools/run-community-flutter-f4-linux.sh",
+      "tools/tests/test-community-f4-runner-isolation.sh"
+    ],
+    "sourceOnlyReason": "Runner/guard execute original source; OpenAPI source is included in the broad historical fingerprint but is not a dependency copied or executed by these F4 stages.",
+    "runnerAndGuardExecutedFromOriginalSource": true,
+    "fingerprint": "186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46",
+    "failures": []
+  },
+  "testStages": [
+    {
+      "stage": "checks",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/run-stage.sh checks",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh checks",
+      "startUTC": "2026-10-12T10:33:27Z",
+      "endUTC": "2026-10-12T10:34:01Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "logs": [
+        "E:\\HnuHole-community-f4-20261012\\logs\\checks.console.log",
+        "E:\\HnuHole-community-f4-20261012\\logs\\mobile-tests.jsonl"
+      ],
+      "scope": [
+        "flutter analyze --no-pub: zero issues",
+        "flutter test --no-pub --machine test: 311 visible PASS, 0 FAIL, 0 SKIP; 20 files, 22 hidden loading/setup excluded"
+      ],
+      "coversFinalRunningSource": true,
+      "codeStateBasis": "186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46",
+      "codeCoverageLimit": "The fingerprint identifies the source state, not coverage of every included platform/configuration file; scope above controls what this stage proves."
+    },
+    {
+      "stage": "auth-regression",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/run-stage.sh auth-regression",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh auth-regression",
+      "startUTC": "2026-10-12T10:34:01Z",
+      "endUTC": "2026-10-12T10:35:08Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "logs": [
+        "E:\\HnuHole-community-f4-20261012\\logs\\auth-regression.console.log",
+        "E:\\HnuHole-community-f4-20261012\\logs\\auth-regression.log"
+      ],
+      "scope": [
+        "TestPrivacyDatabaseDiagnosticsPostgres",
+        "TestMobileClientHTTPSPostgres under race, one real Dart composite HTTPS/PG test; host vault substitute"
+      ],
+      "coversFinalRunningSource": true,
+      "codeStateBasis": "186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46",
+      "codeCoverageLimit": "The fingerprint identifies the source state, not coverage of every included platform/configuration file; scope above controls what this stage proves."
+    },
+    {
+      "stage": "integration",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/run-stage.sh integration",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh integration",
+      "startUTC": "2026-10-12T10:35:08Z",
+      "endUTC": "2026-10-12T10:35:27Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "logs": [
+        "E:\\HnuHole-community-f4-20261012\\logs\\integration.console.log",
+        "E:\\HnuHole-community-f4-20261012\\logs\\integration.log"
+      ],
+      "scope": [
+        "TestF4MainAppHTTPSPostgres under race; two host Flutter processes, production root/routes, real HTTPS C/V/Gate/fresh PG, file SQLite",
+        "F4-H01 through F4-H08: all eight current checks PASS; host vault substitutes, pollInterval=0"
+      ],
+      "coversFinalRunningSource": true,
+      "codeStateBasis": "186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46",
+      "codeCoverageLimit": "The fingerprint identifies the source state, not coverage of every included platform/configuration file; scope above controls what this stage proves."
+    },
+    {
+      "stage": "server",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/run-stage.sh server",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh server",
+      "startUTC": "2026-10-12T10:35:27Z",
+      "endUTC": "2026-10-12T10:40:53Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "logs": [
+        "E:\\HnuHole-community-f4-20261012\\logs\\server.console.log",
+        "E:\\HnuHole-community-f4-20261012\\logs\\server.log"
+      ],
+      "scope": [
+        "go test -race -count=1 -p 1 ./...: six test packages PASS",
+        "go vet ./... within the server runner",
+        "SQL closure regression includes formal RequestClosure/Finalize/Cleanup and account isolation"
+      ],
+      "coversFinalRunningSource": true,
+      "codeStateBasis": "186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46",
+      "codeCoverageLimit": "The fingerprint identifies the source state, not coverage of every included platform/configuration file; scope above controls what this stage proves."
+    },
+    {
+      "stage": "posts-privileges",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/run-stage.sh posts-privileges",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh posts-privileges",
+      "startUTC": "2026-10-12T10:40:53Z",
+      "endUTC": "2026-10-12T10:41:11Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "logs": [
+        "E:\\HnuHole-community-f4-20261012\\logs\\posts-privileges.console.log",
+        "E:\\HnuHole-community-f4-20261012\\logs\\posts-privileges.log"
+      ],
+      "scope": [
+        "go test -race -count=1 -p 1 ./internal/authprivacy -run ^TestPostSchema -v",
+        "Nine top-level cases PASS, zero FAIL; four lifecycle subcases PASS",
+        "Real restricted C runtime schema/privilege matrix, identity/label creation and whole-content erasure; immutable mutations, overbroad grants, missing required grants and business/recovery access rejected; raw-Up fixture does not prove deployed cmd or Goose old-database upgrade"
+      ],
+      "coversFinalRunningSource": true,
+      "codeStateBasis": "186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46",
+      "codeCoverageLimit": "The fingerprint identifies the source state, not coverage of every included platform/configuration file; scope above controls what this stage proves."
+    },
+    {
+      "stage": "vet",
+      "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/run-stage.sh vet",
+      "repositoryEntry": "bash tools/run-community-flutter-f4-linux.sh vet",
+      "startUTC": "2026-10-12T10:41:11Z",
+      "endUTC": "2026-10-12T10:41:13Z",
+      "exitCode": 0,
+      "result": "PASS",
+      "logs": [
+        "E:\\HnuHole-community-f4-20261012\\logs\\vet.console.log",
+        "E:\\HnuHole-community-f4-20261012\\logs\\vet.log"
+      ],
+      "scope": [
+        "go vet ./... after all current running-source edits, including the F4 fixture"
+      ],
+      "coversFinalRunningSource": true,
+      "codeStateBasis": "186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46",
+      "codeCoverageLimit": "The fingerprint identifies the source state, not coverage of every included platform/configuration file; scope above controls what this stage proves."
+    }
+  ],
+  "mobile": {
+    "pass": 311,
+    "fail": 0,
+    "skip": 0,
+    "hiddenEventsExcluded": 22,
+    "suiteCount": 20,
+    "bySuite": {
+      "auth_api_test.dart": 38,
+      "auth_crypto_test.dart": 7,
+      "auth_flows_test.dart": 19,
+      "auth_screen_test.dart": 10,
+      "auth_session_controller_test.dart": 27,
+      "auth_vault_test.dart": 5,
+      "identity_management_controller_test.dart": 18,
+      "identity_management_screen_test.dart": 7,
+      "identity_name_formatter_test.dart": 5,
+      "mobile_environment_test.dart": 2,
+      "passkey_recovery_flow_test.dart": 11,
+      "post_api_test.dart": 14,
+      "post_closure_cleanup_test.dart": 11,
+      "post_controller_test.dart": 38,
+      "post_models_test.dart": 7,
+      "post_protocol_test.dart": 8,
+      "post_screens_test.dart": 22,
+      "post_storage_test.dart": 30,
+      "security_management_controller_test.dart": 28,
+      "security_management_screen_test.dart": 4
+    },
+    "done": [
+      {
+        "success": true,
+        "type": "done",
+        "time": 14614
+      }
+    ]
+  },
+  "integration": {
+    "assembly": "production HnuholeApp root; actual TLS C/V handlers, independent PG, file SQLite; host vault substitutes",
+    "checkpoints": {
+      "F4-H01": true,
+      "F4-H02": true,
+      "F4-H03": true,
+      "F4-H04": true,
+      "F4-H05": true,
+      "F4-H06": true,
+      "F4-H07": true,
+      "F4-H08": true
+    },
+    "counts": {
+      "bindings": 1,
+      "committedResponseDrops": 2,
+      "creates": 1,
+      "deletedPosts": 1,
+      "deletes": 1,
+      "posts": 1,
+      "queryDrops": 2,
+      "tasks": 1
+    },
+    "finalAuthenticationCandidate": null,
+    "finalF4Result": "BLOCKED_DEPENDENCY",
+    "hostFlutterProcesses": 2,
+    "result": "PASS"
+  },
+  "finalBatchCommand": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/run-approved-batch.sh",
+  "finalBatchExitCode": 0,
+  "finalBatchResult": "PASS: all six stages rerun after the approved minimal grant source repair",
+  "previousSameRoundBatchArchives": [
+    "E:\\HnuHole-community-f4-20261012\\logs\\pre-canonical-guard-rerun",
+    "E:\\HnuHole-community-f4-20261012\\logs\\pre-approved-grant-rerun"
+  ],
+  "preparationCommandsAfterApproval": [
+    "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/prepare-sdk.sh",
+    "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/prepare-owned-go-cache.sh"
+  ],
+  "runnerGuards": {
+    "result": "PASS",
+    "count": 16,
+    "command": "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/final-source-checks.sh",
+    "log": "E:\\HnuHole-community-f4-20261012\\logs\\runner-isolation-stub-test.log",
+    "scope": "Synthetic executables only, including traversal rejection before any mkdir/owner mutation; does not count as app/SQL acceptance."
+  },
+  "bashSyntax": {
+    "result": "PASS",
+    "log": "E:\\HnuHole-community-f4-20261012\\logs\\bash-syntax.log"
+  },
+  "intentionalUncoveredOrSkippedScopes": [
+    "server does not opt into Flutter mobile tests; R05 and integration separately run them against the current source",
+    "server lacks AUTHLAB_POSTS_RUNTIME_DSN for restricted-role TestPostSchema; the separate posts-privileges stage executes and passes it on the final repaired source",
+    "host key/auth vault substitutes do not prove native key/file deletion, Android/iOS security storage or native passkey",
+    "production root widget tested; actual main() native plugin startup and automatic polling interval are NOT_RUN",
+    "actual deployed cmd/minimum whole-database roles, old-database forward upgrades, production operations and independent audit are NOT_RUN"
+  ],
+  "failedAttempts": [
+    {
+      "stage": "checks attempt 01",
+      "result": "FAIL",
+      "reason": "Two unnecessary_brace_in_string_interps lint errors at F4 Dart fixture 581/584; tests did not start",
+      "resolution": "Equivalent root interpolation edit; final full checks rerun PASS",
+      "logs": "E:\\HnuHole-community-f4-20261012\\logs\\checks-attempt-01"
+    },
+    {
+      "stage": "checks attempt 02",
+      "result": "FAIL",
+      "reason": "Runner edit overlapped shell exit parsing; analysis/test output exists but stage exit 2 is not PASS",
+      "resolution": "Finish runner edits before final full rerun",
+      "logs": "E:\\HnuHole-community-f4-20261012\\logs\\checks-attempt-02"
+    },
+    {
+      "stage": "server attempt 01",
+      "result": "FAIL",
+      "reason": "Locked go-chi/chi/v5@v5.2.1 zip download timeout; tests did not execute",
+      "resolution": "Download exactly the locked version via official proxy on Windows, import only into own GOMODCACHE and verify unchanged go.sum; final full server PASS",
+      "logs": "E:\\HnuHole-community-f4-20261012\\logs\\server-attempt-01",
+      "verification": "E:\\HnuHole-community-f4-20261012\\logs\\locked-go-chi-verified.json"
+    },
+    {
+      "stage": "posts-privileges before grant repair",
+      "result": "FAIL",
+      "reason": "TestPostSchemaRestrictedRuntimePrivilegesPostgres at community_posts_schema_test.go:234; missing c_posts grant block in original community source; reproduced twice",
+      "resolution": "User explicitly approved exact minimal committed backend block; applied only in independent clone; final six stages PASS",
+      "logs": [
+        "E:\\HnuHole-community-f4-20261012\\logs\\posts-privileges-attempt-01",
+        "E:\\HnuHole-community-f4-20261012\\logs\\pre-approved-grant-rerun"
+      ]
+    }
+  ],
+  "grantDefect": {
+    "owner": "Community F4 selective-import omission, not an authentication regression",
+    "currentFile": "infra/postgres/grant-community.sql",
+    "reproductionStage": "posts-privileges",
+    "symptom": "CheckPostSchema SELECT c_posts.schema_meta fails for hnuhole_c_runtime after migration 0013 revoked PUBLIC.",
+    "proposal": {
+      "sourceCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+      "sourcePath": "infra/postgres/grant-community.sql",
+      "baseCommit": "4d58116bdde2c1d2d406b965590bc1625a5c7955",
+      "currentNormalizedSha256": "d1083c6aab3a5febb8136ad7c491ee8a0fe95c1104d477e74a820f0b856b33dc",
+      "proposedSha256": "43348ded5c1227f367b1968d3087989fb2763b94e587ab36f486423193f28c10",
+      "patchSha256": "15e39400c57bd413af82ebbc955911dadbcde324ba10f7a545949f5ec4a82c2e",
+      "authPrefixUnchanged": true,
+      "applied": true,
+      "purpose": "Restore the committed community c_posts least-privilege grants omitted by the F4 selective import; then validate only in a fresh disposable database.",
+      "approvalBoundary": "User explicitly requires confirmation before modifying security configuration.",
+      "approval": "Explicit user reply: 允许应用最小授权补丁并复验",
+      "appliedOnlyToIndependentClone": true,
+      "currentAfterSha256": "43348ded5c1227f367b1968d3087989fb2763b94e587ab36f486423193f28c10"
+    },
+    "patchPath": "E:\\HnuHole-community-f4-20261012\\missing-post-grants.patch",
+    "applied": true,
+    "approval": "Explicit user reply: 允许应用最小授权补丁并复验",
+    "resolutionResult": "PASS: final six-stage rerun on fresh owned SDK/cache/disposable databases",
+    "restrictedRuntimeTopLevelPass": 9,
+    "restrictedRuntimeTopLevelFail": 0,
+    "sourceCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+    "authPrefixUnchanged": true
+  },
+  "authenticationComparison": {
+    "community": "4d58116bdde2c1d2d406b965590bc1625a5c7955",
+    "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+    "implementationCandidate": "4c40f9015095ebd84dc2b17e30e6ef7ef159321f",
+    "handoffCandidate": "976c0048aaa40d9b7f589cb735f3bf9c47571486",
+    "finalDesignatedIntegrationSHA": null,
+    "merged": false,
+    "uncommittedAuthCodeCopied": false,
+    "diff": "community-flutter-f4-auth-integration-diff-20261012.md",
+    "coveredDomains": [
+      "main/settings",
+      "AuthFlows",
+      "session/HTTP",
+      "closure",
+      "native vault/passkey",
+      "manifest",
+      "SQL/permissions"
+    ]
+  },
+  "nativeAndDevice": {
+    "android": {
+      "result": "NOT_RUN",
+      "reason": "User prohibits phone/emulator/ADB in this round",
+      "next": "After fixed auth integration and explicit device/credential authorization: build current APK, run AndroidBusinessStorageTest seven cases; actual main startup/auto-poll, cross-engine/process/reboot/backup, IME/TalkBack/large-text/system-font/48dp matrix."
+    },
+    "ios": {
+      "result": "NOT_RUN",
+      "reason": "No macOS/full Xcode/iOS target and signature environment",
+      "next": "On macOS full Xcode with explicit Team/Bundle/target: build/link, Keychain/install-marker/business purge, cross-process, AuthenticationServices/AASA and physical UX."
+    }
+  },
+  "cleanup": {
+    "result": "PASS",
+    "targets": [
+      {
+        "path": "/tmp/hnuhole-community-flutter-f4-20261012-01",
+        "result": "ABSENT"
+      },
+      {
+        "path": "/home/hnuhole/hnuhole-community-flutter-f4-20261012-01",
+        "ownerVerified": "hnuhole-community-flutter-f4-01a11f1a-20261010|/mnt/e/HnuHole-community-f4-20261012/repo",
+        "filesRemoved": 11412,
+        "bytesRemoved": 588649386,
+        "result": "REMOVED",
+        "existsAfter": false
+      },
+      {
+        "path": "/home/hnuhole/community-f4-sdk-20261012",
+        "ownerVerified": "community-f4-20261012 dedicated SDK copy",
+        "filesRemoved": 18824,
+        "bytesRemoved": 2606300494,
+        "result": "REMOVED",
+        "existsAfter": false
+      }
+    ],
+    "matchingProcessesBefore": [],
+    "stoppedProcesses": [],
+    "sharedResourcesTouched": false,
+    "retained": [
+      "Independent clone, source/tests, proposed SQL patch, small redacted external logs and execution scripts"
+    ],
+    "completedAtUTC": "2026-10-12T10:42:06.526332+00:00",
+    "grantRepairApprovedAndApplied": true
+  },
+  "externalLogRoot": "E:\\HnuHole-community-f4-20261012\\logs",
+  "logManifest": "E:\\HnuHole-community-f4-20261012\\logs\\validation-log-manifest.json"
+}

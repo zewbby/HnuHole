@@ -74,11 +74,13 @@ class _Api implements PostApi {
   PostTask currentTask = _task();
   bool createLost = false,
       retryLost = false,
+      retryAcceptedLost = false,
       cancelUnsent = false,
       deleteUnsent = false,
       deleteLost = false,
       deleted = false;
   PostFailure? queryFailure;
+  PostFailure? createFailure;
   Completer<PostResponse<PostCommandResult>>? createWait;
   Completer<PostResponse<PostsPage<PostCard>>>? feedWait;
   Completer<PostResponse<PostCommandResult>>? queryWait;
@@ -130,6 +132,7 @@ class _Api implements PostApi {
     currentTask = _task(title: title, body: body);
     receipts[commandId] = _accepted();
     if (createWait != null) return createWait!.future;
+    if (createFailure != null) throw createFailure!;
     if (createLost) throw const PostFailure(kind: PostFailureKind.transport);
     return reply(_accepted(), status: 202);
   }
@@ -262,6 +265,9 @@ class _Api implements PostApi {
       version: expectedAttemptVersion + 1,
     );
     receipts[commandId] = result;
+    if (retryAcceptedLost) {
+      throw const PostFailure(kind: PostFailureKind.transport);
+    }
     return reply(result, status: 202);
   }
 
@@ -625,6 +631,45 @@ void main() {
     expect(await f.controller.restoreDraft(editor.id), isNull);
   });
 
+  test('CREATE 409 checks the original command before accepting its existing task and never submits a second key', () async {
+    final api = _Api()
+      ..createFailure = const PostFailure(
+        kind: PostFailureKind.rejected,
+        statusCode: 409,
+        code: 'COMMAND_CONFLICT',
+      )
+      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+    f = await _Fixture.create(api: api);
+    final editor = f.editor(body: ' 原始\r\n正文 ');
+    expect(await f.controller.publish(editor), isTrue);
+    expect(await f.controller.publish(editor), isFalse);
+    await _until(
+      () =>
+          api.creates.length == 1 &&
+          api.queries.isNotEmpty &&
+          !f.controller.busy,
+    );
+    final original = await _entry(f, editor.id);
+    final intent = original.intents.single;
+    expect(original.state, 'submitted');
+    expect(f.controller.personalItems.single.task, isNull);
+    expect(intent.payload['body'], ' 原始\r\n正文 ');
+    api.queryFailure = null;
+    await f.controller.reconcile(editor.id);
+    final verified = await _entry(f, editor.id);
+    expect(verified.state, 'ACCEPTED');
+    expect(verified.intents.single.commandId, intent.commandId);
+    expect(verified.intents.single.digest, intent.digest);
+    expect(
+      api.queries.every((q) => q['commandId'] == intent.commandId),
+      isTrue,
+    );
+    expect(api.creates, hasLength(1));
+    expect(f.controller.personalItems.single.task!.identityId, identityTestId);
+    expect(f.controller.personalItems.single.task!.channelId, _channel);
+    expect(await f.controller.restoreDraft(editor.id), isNull);
+  });
+
   test('ACCEPTED periodically reconciles to public post without another CREATE or duplicate own card', () async {
     final api = _Api()..publishOnRead = 2;
     f = await _Fixture.create(api: api, poll: const Duration(milliseconds: 20));
@@ -964,6 +1009,57 @@ void main() {
     await _until(() => api.retries.length == 1 && !f.controller.busy);
     expect(api.retries.single['version'], 1);
     expect(api.creates, isEmpty);
+  });
+
+  test('accepted RETRY response loss and restart recover the exact command, identity, channel and attempt without retrying again', () async {
+    final api = _Api()
+      ..currentTask = _task(state: PostTaskState.failed)
+      ..retryAcceptedLost = true
+      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+    f = await _Fixture.create(api: api);
+    final editor = (await f.controller.editFailedTask(_taskId))!;
+    editor.title = '受理后的修改';
+    editor.body = ' 原重试\r\n正文 ';
+    expect(await f.controller.publish(editor), isTrue);
+    expect(await f.controller.publish(editor), isFalse);
+    await _until(
+      () =>
+          api.retries.length == 1 &&
+          api.queries.isNotEmpty &&
+          !f.controller.busy,
+    );
+    final original = await _entry(f, editor.id);
+    final intent = original.intents.last;
+    expect(intent.operation, 'RETRY');
+    expect(intent.payload['expectedAttemptVersion'], 1);
+    expect(intent.payload['body'], ' 原重试\r\n正文 ');
+    expect(original.state, 'submitted');
+    expect(original.data['identityId'], identityTestId);
+    expect(original.data['channelId'], _channel);
+    expect(api.currentTask.attemptVersion, 2);
+    api.queryFailure = null;
+    await f.restart();
+    await _until(
+      () => f.controller.personalItems.any(
+        (item) => item.task?.attemptVersion == 2,
+      ),
+    );
+    final restored = await _entry(f, editor.id);
+    expect(restored.state, 'ACCEPTED');
+    expect(restored.intents.last.commandId, intent.commandId);
+    expect(restored.intents.last.digest, intent.digest);
+    expect(restored.intents.last.payload, intent.payload);
+    expect(restored.data['identityId'], identityTestId);
+    expect(restored.data['channelId'], _channel);
+    expect(restored.data['attemptVersion'], 2);
+    expect(
+      api.queries.every((q) => q['commandId'] == intent.commandId),
+      isTrue,
+    );
+    expect(api.retries, hasLength(1));
+    expect(api.creates, isEmpty);
+    expect(await f.controller.editFailedTask(_taskId), isNull);
+    expect(await f.controller.publish(editor), isFalse);
   });
 
   test('UNKNOWN retry blocks new retry editor and second publish from same existing editor', () async {
@@ -1445,6 +1541,74 @@ void main() {
     expect(original.data['body'], '旧账号私密正文');
     expect(original.intents.single.commandId, api.creates.single['commandId']);
     expect(original.state.toUpperCase(), isNot('PUBLISHED'));
+  });
+
+  test('authoritative closure clears the retired current account business rows and command index and permanently refuses reopening', () async {
+    final api = _Api()
+      ..createLost = true
+      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+    f = await _Fixture.create(api: api);
+    final draft = f.editor(title: '关闭前草稿');
+    expect(await f.controller.saveDraft(draft), isTrue);
+    final pending = f.editor(title: '关闭前未知结果');
+    expect(await f.controller.publish(pending), isTrue);
+    await _until(() => api.queries.isNotEmpty && !f.controller.busy);
+    expect(await f.entries(), hasLength(2));
+    // Authority fixture follows closure's durable session removal before
+    // suspending access; the actual AuthFlows request is covered by F4-H08.
+    await f.auth.store.update((state) => state.copyWith(clearSession: true));
+    f.auth.sessions.clearCommunityAccess();
+    expect(f.controller.available, isFalse);
+    await f.controller.purgeClosedAccount(identityTestAccount);
+    expect(f.controller.personalItems, isEmpty);
+    expect(f.controller.feedItems, isEmpty);
+    final db = sqlite3.open(f.file(identityTestAccount).path);
+    try {
+      expect(
+        db.select('SELECT count(*) AS count FROM post_entries').single['count'],
+        0,
+      );
+      expect(
+        db
+            .select('SELECT count(*) AS count FROM post_command_index')
+            .single['count'],
+        0,
+      );
+      expect(
+        db.select('SELECT count(*) AS count FROM post_meta').single['count'],
+        1,
+      );
+    } finally {
+      db.close();
+    }
+    await expectLater(
+      f.open(identityTestAccount),
+      throwsA(isA<PostStorageClosed>()),
+    );
+    expect(api.creates, hasLength(1));
+  });
+
+  test('closing a previous account purges only its scope and preserves the later account session, draft and controller view', () async {
+    f = await _Fixture.create();
+    final original = f.editor(title: '原账号草稿');
+    expect(await f.controller.saveDraft(original), isTrue);
+    await f.switchAccount();
+    final later = f.editor(title: '后来账号草稿');
+    expect(await f.controller.saveDraft(later), isTrue);
+    await f.controller.purgeClosedAccount(identityTestAccount);
+    expect(f.controller.available, isTrue);
+    expect(f.controller.accountId, _otherAccount);
+    expect(f.auth.store.current!.session!.token, identityTestOtherToken);
+    expect(f.controller.personalItems.single.id, later.id);
+    expect(f.controller.personalItems.single.title, '后来账号草稿');
+    expect((await f.entries(_otherAccount)).single.data['title'], '后来账号草稿');
+    expect((await f.controller.restoreDraft(later.id))!.body, later.body);
+    await expectLater(
+      f.open(identityTestAccount),
+      throwsA(isA<PostStorageClosed>()),
+    );
+    expect(f.api.creates, isEmpty);
+    expect(f.api.retries, isEmpty);
   });
 
   test('auth metadata durable-write failure blocks feed disclosure rather than publishing response in memory', () async {

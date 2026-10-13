@@ -1,5 +1,7 @@
 # F4 主 App 集成与换机交接报告
 
+> 2026-10-12接续：以下为2026-10-10历史报告。当前起始／HEAD为4d58116bdde2c1d2d406b965590bc1625a5c7955的未提交收尾见 [本轮验证报告](community-flutter-f4-validation-report-20261012.md)／[机器记录](community-flutter-f4-validation-20261012.json)。20文件未提交；最小权限遗漏已获用户确认并修复，之后全mobile311、R05、本轮主机8项、server6包、受限runtime／PostSchema9顶层及4子例、最终vet六stage重跑PASS。当前固定基线主机范围可复验，F4最终仍等待认证整合，手机／iOS未验，授权前FAIL保留历史。旧308及旧8不计本轮。
+
 2026-10-10，分支 `codex/community-flutter-pages`；源码提交 `68d35af745098be0ed52d0d448f290795665afa1`。**固定基线的主机真实链已通过，F4 最终认证联合验收仍为 BLOCKED_DEPENDENCY。** 当前后端固定514a944、认证基线0eff47a；认证会话仍在运行且没有最终提交，不导入其未提交代码或后端未提交T4证据。
 
 本轮从后端提交逐文件引入40份服务源码、测试、迁移0013和runner，来源见[版本锁](community-flutter-f4-lock.json)。F3页面／持久状态保留。生产 `main()` 与测试共用公开 `HnuholeApp` 根路由；设置新增“账号与安全”入口，解决个人入口改为“我的”后原登录／退出／注销页面不可达的问题。F1正式图片未修改，无重新设计页面。

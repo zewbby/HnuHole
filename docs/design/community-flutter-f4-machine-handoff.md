@@ -1,5 +1,13 @@
 # Flutter社区 F4 换机接续
 
+## 2026-10-12 当前接续入口
+
+本任务独立clone `E:/HnuHole-community-f4-20261012/repo`，起始／HEAD均为 `4d58116bdde2c1d2d406b965590bc1625a5c7955`，改动未提交；不提交／推送／合并／部署。以下2026-10-10正文为历史记录，旧308和旧8不计本轮。当前结果以 [20261012报告](community-flutter-f4-validation-report-20261012.md)、[机器记录](community-flutter-f4-validation-20261012.json)、[认证差异](community-flutter-f4-auth-integration-diff-20261012.md) 为准。
+
+**当前固定基线在主机范围可复验，等待最终认证整合。** 用户确认后补入固定后端514a944最小c_posts授权29行，认证前缀不变。最后修改后六stage全部重跑PASS：分析0／全mobile311、R05、本轮F4主机8项、6包server/SQL/race、真实受限runtime／PostSchema9顶层及4生命周期、最终vet。20文件全未提交；授权前PARTIAL／FAIL日志与机器记录固定保留于logs/pre-approved-grant-rerun。F4最终仍BLOCKED_DEPENDENCY等待明确认证整合SHA，Android／iOS／实际cmd／Goose旧库升级未验。owned PG、SDK副本和缓存已清，未触及共享或认证资源。
+
+root runner现在要求显式独占SDK及 `F4_SDK_OWNER_VALUE` marker，SDK的bin/cache也必须独占；不能直接套用下方历史sharedSDK例子。先只读核对工具，然后只读复制已有Flutter到本任务独占canonical目录，在其父目录建立匹配 `.owner`；F4_TASK_ROOT仅允许已登记HOME或/tmp下专用前缀，创建对应repo owner marker。显式配置Go/PG/SQLite和PGPORT，逐stage checks→auth-regression→integration→server→posts-privileges→vet；完整环境与已执行wrapper、日志位置见新报告。任何不能确认隔离的命令不运行，保留锁文件，认证资源优先。
+
 日期2026-10-10。对应分支 **codex/community-flutter-pages**，源码提交`68d35af745098be0ed52d0d448f290795665afa1`。先读[HANDOFF](HANDOFF.md)、[F4计划](community-flutter-f4-plan.md)、[报告](community-flutter-f4-report.md)、[机器记录](community-flutter-f4-verification.json)与[台账](module-acceptance-ledger.json) currentCommunityFlutterF4。F1—F3已完成，不重复画图或开发既有文字页。
 
 ## 当前已完成和未完成

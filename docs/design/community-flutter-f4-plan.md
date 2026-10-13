@@ -1,5 +1,13 @@
 # F4 主 App 集成执行计划
 
+## 2026-10-12 本轮执行边界与收尾
+
+本轮以实际起始 `4d58116bdde2c1d2d406b965590bc1625a5c7955` 的独立clone接续，改动仅未提交；用户明确禁止本轮提交／推送／合并／部署，覆盖下方历史步骤5。F1–F3页面不重做、不扩业务。详情见 [当前验证报告](community-flutter-f4-validation-report-20261012.md) 和 [机器记录](community-flutter-f4-validation-20261012.json)。
+
+posts-privileges先复现社区授权遗漏，获用户明确确认后仅在本任务SQL源码补入固定514a944文字授权29行。最后修改后六stage全部重跑PASS：全mobile311、R05、本轮F4主机8项、6包server/race、真实受限权限PostSchema9顶层及4生命周期、最终vet；新SDK／缓存／fresh一次性库隔离与最终指纹已核对。授权前FAIL保留历史，旧证据不计本轮；当前host scoped PASS，F4最终BLOCKED_DEPENDENCY等待最终认证SHA，不提交／合并／推送／部署。
+
+认证已提交候选及精确SHA详见 [整合差异清单](community-flutter-f4-auth-integration-diff-20261012.md)，尚无明确最终整合SHA。本轮只比较已提交快照，未合并认证、未复制脏工作树；设备／iOS和实际部署权限／升级／运营不借主机handler结果验收。
+
 日期：2026-10-10（Asia/Shanghai）。分支 `codex/community-flutter-pages`；前端基线 `d44c5ebe83b5fb20727f3d0d040d7ff93364a265`。
 
 当前认证远端仍是 `0eff47a21cd4f4ab1636b4468f7d5df9769a264f`，非 iOS 收口存在未提交变更且继续验收中。后端固定提交 `514a944560988e3d8d599e6f9fe9d5d99fe07f88`。F4 最终认证整合依赖尚未满足；不复制正在变化的认证或 T4 工作树，不用旧版本证据代验当前代码。

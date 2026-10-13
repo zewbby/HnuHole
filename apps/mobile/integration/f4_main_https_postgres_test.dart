@@ -578,10 +578,10 @@ void main() {
             /* actual encrypted SQLite tombstone */
           }
           final preservedA = await PostStore.openFile(
-            File('${root}/${state['accountId']}.sqlite'),
+            File('$root/${state['accountId']}.sqlite'),
             environment: environment.storageScope,
             accountId: state['accountId'] as String,
-            vault: _KeyFile(File('${root}/${state['accountId']}.key')),
+            vault: _KeyFile(File('$root/${state['accountId']}.key')),
           );
           expect(await preservedA.get(state['draftId'] as String), isNotNull);
           await preservedA.close();
