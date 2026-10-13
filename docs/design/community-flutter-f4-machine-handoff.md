@@ -1,8 +1,10 @@
 # Flutter社区 F4 换机接续
 
+> **Git与清理回执：**整合后源码提交`28cee4656edd710d60676a81794c20cd49f45351`（父提交为上述社区保存SHA和固定认证SHA）已正常推送且远端核对一致。此后交接回执仅改文档/台账，443项运行输入未变。三处canonical任务根经owner与进程核对后清理PASS，约11.07GiB逻辑文件、SDK副本/缓存/APK/合成CA及调试私钥均删除，源码、测试、脱敏记录与外部复验脚本保留；不做VHD压缩或全局清理。见[交付回执](community-auth-integration-delivery-20261013.json)。设备仍按用户指令延期，后续须重建独立材料并获得窗口，不能把已删除APK/签名当作可直接安装的制品。
+
 ## 2026-10-13 当前接续（下方早期计划与未提交状态为历史）
 
-固定认证d859cb05c772cdf8d8b75e439a2bfedf0414dd46已按用户新指令整合；整合前20文件保存提交7452dadefb52e7b695cdd1079d21083fcb6cae02已正常推送。当前联合主机七stage、mobile320及原生构建PASS，单台Android验收用户明确延期，所有设备用例NOT_RUN；第二台Android、iOS和生产不纳入本輪通过。最终443项源码指纹599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7及命令/失败修复/复验条件详见[20261013联合报告](community-auth-integration-report-20261013.md)、[机器记录](community-auth-integration-20261013.json)、[整合差异](community-flutter-f4-auth-integration-diff-20261012.md)和[设备清单](community-single-android-acceptance-20261013.md)。旧“不得提交/未指定认证/20未提交”的指令与结果仅适用其原日期；本轮用户授权正常提交推送本分支，禁止强推、main合并、Release发布与生产部署。F1–F3不重新开发。
+固定认证d859cb05c772cdf8d8b75e439a2bfedf0414dd46已按用户新指令整合；整合前20文件保存提交7452dadefb52e7b695cdd1079d21083fcb6cae02已正常推送。当前联合主机七stage、mobile320及原生构建PASS，单台Android验收用户明确延期，所有设备用例NOT_RUN；第二台Android、iOS和生产不纳入本轮通过。最终443项源码指纹599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7及命令/失败修复/复验条件详见[20261013联合报告](community-auth-integration-report-20261013.md)、[机器记录](community-auth-integration-20261013.json)、[整合差异](community-flutter-f4-auth-integration-diff-20261012.md)和[设备清单](community-single-android-acceptance-20261013.md)。旧“不得提交/未指定认证/20未提交”的指令与结果仅适用其原日期；本轮用户授权正常提交推送本分支，禁止强推、main合并、Release发布与生产部署。F1–F3不重新开发。
 
 ## 2026-10-12 当前接续入口
 

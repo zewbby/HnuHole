@@ -4,7 +4,7 @@
   "timeZone": "Asia/Shanghai",
   "branch": "codex/community-flutter-pages",
   "baselineHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
-  "workingTreeContainsUncommittedImplementation": true,
+  "workingTreeContainsUncommittedImplementation": false,
   "workflow": "COMMUNITY_FIXED_AUTH_INTEGRATED_HOST_AND_BUILD_PASS_DEVICE_DEFERRED",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
@@ -48,8 +48,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -555,7 +555,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -774,7 +775,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -786,8 +787,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A01",
@@ -982,8 +988,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "report": "docs/design/community-auth-integration-report-20261013.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -1216,7 +1222,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -1427,7 +1434,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -1439,8 +1446,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A02",
@@ -1457,8 +1469,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -1925,7 +1937,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -2177,7 +2190,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -2189,8 +2202,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A03",
@@ -2208,8 +2226,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -2671,7 +2689,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -2924,7 +2943,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -2936,8 +2955,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A04",
@@ -2965,10 +2989,10 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "testedHeadCommit": null,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
       "testedWorkingTreeSourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "executedEvidenceIsModulePass": false,
-      "workingTreeUncommitted": true,
+      "workingTreeUncommitted": false,
       "blockedChecks": [
         "AC01-AC02-production-boundaries"
       ],
@@ -3124,7 +3148,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -3136,8 +3160,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A05",
@@ -3156,8 +3185,8 @@
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X01",
         "X02",
@@ -3426,7 +3455,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -3438,8 +3467,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A06",
@@ -3459,8 +3493,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -3928,7 +3962,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -4266,7 +4301,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -4278,8 +4313,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A07",
@@ -4299,8 +4339,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -4712,7 +4752,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -5061,7 +5102,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -5073,8 +5114,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A08",
@@ -5093,8 +5139,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -5595,7 +5641,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -5890,7 +5937,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -5902,8 +5949,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A09",
@@ -5941,8 +5993,8 @@
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X01",
         "X02",
@@ -6267,7 +6319,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -6279,8 +6331,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A10",
@@ -6571,8 +6628,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -7250,7 +7307,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -7758,7 +7816,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -7770,8 +7828,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "A13",
@@ -7999,8 +8062,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -8607,7 +8670,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -9086,7 +9150,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -9098,8 +9162,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "N02",
@@ -9264,8 +9333,8 @@
       "taskPlan": "docs/design/identity-management-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X01",
         "X02",
@@ -9593,7 +9662,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -9605,8 +9674,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "B01",
@@ -10717,8 +10791,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "report": "docs/design/community-auth-integration-report-20261013.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -11203,7 +11277,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -11686,7 +11761,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -11698,8 +11773,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "B03",
@@ -11718,8 +11798,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -12261,7 +12341,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -12428,7 +12509,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -12440,8 +12521,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "B04",
@@ -12688,9 +12774,9 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "report": "docs/design/community-auth-integration-report-20261013.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
-      "testedHeadCommit": null,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
       "testedWorkingTreeSourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
-      "workingTreeUncommitted": true,
+      "workingTreeUncommitted": false,
       "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
       "executedEvidenceIsModulePass": false,
       "sourcePaths": [
@@ -12856,7 +12942,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "crossModuleScenes": [
         "X07",
@@ -13046,7 +13133,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -13058,8 +13145,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "B06",
@@ -13286,9 +13378,9 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "report": "docs/design/community-auth-integration-report-20261013.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
-      "testedHeadCommit": null,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
       "testedWorkingTreeSourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
-      "workingTreeUncommitted": true,
+      "workingTreeUncommitted": false,
       "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
       "executedEvidenceIsModulePass": false,
       "sourcePaths": [
@@ -13450,7 +13542,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "crossModuleScenes": [
         "X07",
@@ -13638,7 +13731,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -13650,8 +13743,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "B07",
@@ -13715,8 +13813,8 @@
       "taskPlan": "docs/design/community-flutter-f4-plan.md",
       "evidence": "docs/design/community-auth-integration-20261013.json",
       "report": "docs/design/community-auth-integration-report-20261013.md",
-      "testedHeadCommit": null,
-      "workingTreeUncommitted": true,
+      "testedHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+      "workingTreeUncommitted": false,
       "crossModuleScenes": [
         "X05",
         "X01",
@@ -14263,7 +14361,8 @@
           "cause": "grant-community.sql lacked the c_posts runtime grant block",
           "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
           "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-        }
+        },
+        "recordScope": "Historical pre-integration source scoped evidence; current joint evidence recorded separately"
       },
       "communityFlutterF4History": [
         {
@@ -14441,7 +14540,7 @@
         "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
         "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
         "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-        "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+        "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
         "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
         "hostResult": "PASS",
         "androidBuildResult": "PASS",
@@ -14453,8 +14552,13 @@
         "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
         "sourceFileCount": 443,
         "fullModuleAcceptancePassed": false,
-        "productionApproved": false
-      }
+        "productionApproved": false,
+        "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+        "sourceCommitPushed": true,
+        "cleanup": "PASS_OWN_RESOURCES_DELETED"
+      },
+      "testedSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+      "testedWithUncommittedMergedSourcesWhenExecuted": true
     },
     {
       "id": "B11",
@@ -14680,7 +14784,10 @@
     "restrictedRuntimePrivileges": "PASS",
     "actualCmdAndFormalMigrationRuntime": "PASS_ISOLATED_R03_25_CHECKS",
     "nextStep": "Single Android device window explicitly deferred by user; rebuild isolated materials, confirm device/time/data-impact before device use. Own RP/signature association requires separate approval. Second Android, iOS and production are outside this passed scope.",
-    "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7"
+    "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+    "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+    "allSourceCommittedAndPushed": true,
+    "deviceResult": "NOT_RUN_USER_DEFERRED"
   },
   "featureHistory": [
     {
@@ -21327,11 +21434,12 @@
       "productionApproved": false
     }
   },
-  "workingTreeUncommitted": true,
+  "workingTreeUncommitted": false,
   "latestValidationEvidence": "docs/design/community-auth-integration-20261013.json",
   "cleanupEvidence": {
-    "evidence": "docs/design/community-auth-integration-20261013.json",
-    "scope": "Own clusters/runtime project cleaned via traps; SDK/cache/APK/private synthetic material cleanup pending own-resource receipt"
+    "evidence": "docs/design/community-auth-integration-delivery-20261013.json",
+    "result": "PASS",
+    "scope": "Three verified canonical owned roots, own snapshot tar and native download deleted; private synthetic materials and APKs removed; shared/auth resources untouched"
   },
   "historicalBaselineHeadCommit": "d624ea30943a2b12096c20dbeefd844ba0e5e840",
   "historicalBaselineEvidence": "services/api/authlab/runtime-business-integration-verification.json",
@@ -21721,7 +21829,7 @@
   "latestClientRegressionEvidence": "docs/design/community-flutter-f4-validation-20261012.json",
   "publicationDelivery": {
     "recordedOn": "2026-10-13",
-    "state": "INTEGRATION_COMMIT_AND_PUSH_PENDING",
+    "state": "PASS_NORMAL_BRANCH_PUSH",
     "branch": "codex/community-flutter-pages",
     "startCommit": "4d58116bdde2c1d2d406b965590bc1625a5c7955",
     "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
@@ -21731,9 +21839,15 @@
     "mainMerged": false,
     "releasePublished": false,
     "productionDeployed": false,
-    "userAuthorizedNormalBranchPush": true
+    "userAuthorizedNormalBranchPush": true,
+    "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+    "push": "PASS_NORMAL_FAST_FORWARD",
+    "remoteVerifiedCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+    "allSourceChangesCommitted": true,
+    "documentationReceiptCommitReference": "Documentation-only commit containing this record; final HEAD in external final-delivery.json",
+    "evidence": "docs/design/community-auth-integration-delivery-20261013.json"
   },
-  "workingTreeStatusNote": "Saved/pushed community7452dade; fixed authd859cb05 integrated and independently revalidated. All final host/build inputs match443-file fingerprint. This record is being saved in the merge commit; device explicitly deferred.",
+  "workingTreeStatusNote": "Integrated source28cee465 and saved community7452dade normally pushed; source tree clean at merge delivery,443 final inputs match. Only documentation receipt updates follow; no new product edits or device execution.",
   "currentAC04": {
     "recordedOn": "2026-10-05",
     "implementationState": "TEST_SCENARIOS_IMPLEMENTED",
@@ -22700,7 +22814,8 @@
       "cause": "grant-community.sql lacked the c_posts runtime grant block",
       "repair": "User explicitly approved the minimal +29-line c_posts grant block from committed backend 514a944560988e3d8d599e6f9fe9d5d99fe07f88; prior authentication grant prefix unchanged",
       "revalidation": "All six stages rerun after the last runtime/security edit; actual restricted C runtime test PASS 0.78s, nine PostSchema top-level tests and four lifecycle subtests PASS"
-    }
+    },
+    "recordScope": "Historical 20261012 pre-auth integration host evidence; current source/result in currentCommunityAuthIntegration"
   },
   "publicationDeliveryHistory": [
     {
@@ -23178,7 +23293,9 @@
     "currentResult": "PARTIAL_DEVICE_DEFERRED_BY_USER",
     "scope": "COMMUNITY_FIXED_AUTH_JOINT_HOST_AND_ANDROID_BUILD_PASS_DEVICE_DEFERRED",
     "evidence": "docs/design/community-auth-integration-20261013.json",
-    "reason": "User explicitly deferred the device window and authorized committing/pushing integrated results; no ADB or phone operation executed"
+    "reason": "User explicitly deferred the device window and authorized committing/pushing integrated results; no ADB or phone operation executed",
+    "sourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+    "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7"
   },
   "currentAndroidFault": {
     "recordedOn": "2026-10-05",
@@ -33337,7 +33454,7 @@
     "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
     "authenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
     "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-    "integrationCommitReference": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+    "integrationCommitReference": "28cee4656edd710d60676a81794c20cd49f45351",
     "result": "PARTIAL_DEVICE_DEFERRED_BY_USER",
     "hostResult": "PASS",
     "androidBuildResult": "PASS",
@@ -33349,7 +33466,10 @@
     "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
     "sourceFileCount": 443,
     "fullModuleAcceptancePassed": false,
-    "productionApproved": false
+    "productionApproved": false,
+    "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+    "sourceCommitPushed": true,
+    "cleanup": "PASS_OWN_RESOURCES_DELETED"
   },
   "preIntegrationTaskInventorySnapshot20261013": {
     "currentFeature": {

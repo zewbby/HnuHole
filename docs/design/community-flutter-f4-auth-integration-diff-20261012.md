@@ -4,7 +4,7 @@
 
 D的认证候选边界为固定24项 **22 PASS／0 FAIL／2 BLOCKED**，B6及不需第二实体Android的范围PASS；NI-X01／NI-X02、iOS、生产未通过。389项原产品输入与378项最终源码/工具快照通过固定Git对象核对，三个原交接检查器均在D的独立Git对象副本通过，未改变检查器。iOS Classes路径在Git中为符号链接：Windows原证据记录的是link文本blob；初始Linuxarchive读取了link目标，导致摘要失败。静态材料核对以精确Git blob及独立临时索引复验，未改写旧证据，也不作为iOS执行通过。详细小型外部记录在 `E:/HnuHole-community-f4-20261012/integration-20261013/logs`。
 
-整合采用 `git merge --no-commit --no-ff D` 的三方比较，未整枝覆盖、未访问认证会话变化中的工作树。实际冲突是main/settings和HANDOFF/module handoff/ledger/progress；AuthFlows合并后逐项核对。当前联合主机七stage（mobile320、R05、F4-H01–08、六包server、posts权限、实际cmd/迁移R03、最终vet）及Android构建已PASS，详见[联合报告](community-auth-integration-report-20261013.md)/[机器记录](community-auth-integration-20261013.json)。设备窗口用户明确延期，原生/物理设备实际运行NOT_RUN；整合前mobile311及认证22项保留自己的原版本，不计联合证据。最终整合提交由Git交付回执记录，三方差异的比较SHA仍为本页固定S/D/B。
+整合采用 `git merge --no-commit --no-ff D` 的三方比较，未整枝覆盖、未访问认证会话变化中的工作树。实际冲突是main/settings和HANDOFF/module handoff/ledger/progress；AuthFlows合并后逐项核对。当前联合主机七stage（mobile320、R05、F4-H01–08、六包server、posts权限、实际cmd/迁移R03、最终vet）及Android构建已PASS，详见[联合报告](community-auth-integration-report-20261013.md)/[机器记录](community-auth-integration-20261013.json)。设备窗口用户明确延期，原生/物理设备实际运行NOT_RUN；整合前mobile311及认证22项保留自己的原版本，不计联合证据。整合后源码28cee4656edd710d60676a81794c20cd49f45351已正常推送，见[Git交付回执](community-auth-integration-delivery-20261013.json)；三方差异的比较SHA仍为本页固定S/D/B。
 
 | 范围 | S→D / B→D审查与本次整合决定 | 联合复验 |
 |---|---|---|

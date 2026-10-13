@@ -2,7 +2,7 @@
 
 2026-10-13，Asia/Shanghai，codex/community-flutter-pages。**联合主机回归和原生构建PASS；单台Android设备验收由用户明确延期。**第二实体Android、iOS、生产部署不纳入本轮通过。没有使用手机/ADB，没有部署或发布Release。
 
-原HEAD：4d58116bdde2c1d2d406b965590bc1625a5c7955。20文件已审查、保存并正常推送为7452dadefb52e7b695cdd1079d21083fcb6cae02。固定认证候选：d859cb05c772cdf8d8b75e439a2bfedf0414dd46，共同祖先0eff47a21cd4f4ab1636b4468f7d5df9769a264f。整合使用三方merge，处理main/settings和四份交接冲突，保留社区布局、AuthFlows闭号owner/callback、业务vault、0013及最小权限。没有访问认证变化中工作树或整枝覆盖。精确整合提交以本报告所在merge提交及Git交付回执为准。
+原HEAD：4d58116bdde2c1d2d406b965590bc1625a5c7955。20文件已审查、保存并正常推送为7452dadefb52e7b695cdd1079d21083fcb6cae02。固定认证候选：d859cb05c772cdf8d8b75e439a2bfedf0414dd46，共同祖先0eff47a21cd4f4ab1636b4468f7d5df9769a264f。整合使用三方merge，处理main/settings和四份交接冲突，保留社区布局、AuthFlows闭号owner/callback、业务vault、0013及最小权限。没有访问认证变化中工作树或整枝覆盖。整合后源码提交为28cee4656edd710d60676a81794c20cd49f45351，已正常推送并核对远端；后续仅补入文档/台账回执，运行输入不变。测试执行时HEAD仍为社区保存提交、合并源码未提交，随后逐项摘要核对443项输入与已提交整合源码一致。
 
 [机器记录](community-auth-integration-20261013.json)、[源码指纹](community-auth-integration-source-fingerprint-20261013.json)、[固定SHA差异清单](community-flutter-f4-auth-integration-diff-20261012.md)、[设备清单](community-single-android-acceptance-20261013.md)。最终443项源码/测试/配置输入指纹599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7。平台文件被纳入指纹不代表平台执行；原311和认证22/0/2不计联合运行结果。
 
@@ -57,3 +57,4 @@ C盘开始约3.5GiB余量，后续约3.2GiB；E盘约167GiB起始余量。WSL VH
 新任务签名/包名没有独立公开RP关联。系统Passkey正向需要先准备本任务RP/package/signature关联差异并获明确授权，不复用认证签名或以旧22项/codec替代。第二实体AndroidNI-X01/X02、iOS/macOS/Xcode/签名、生产分权/灾备/审计、Release发布和main合并仍不在本轮通过范围。评论、私信、图片、搜索、推送等未实现业务没有新增。
 
 本轮只保留源码、测试及小型脱敏交接；专用缓存/SDK/APK/测试签名和合成材料的最终清理以机器记录与外部cleanup记录为准，不能将已清缓存作为下轮现成环境。共享SDK、现成工具、认证fresh环境、手机及原数据保留。
+收尾回执：[Git交付与清理记录](community-auth-integration-delivery-20261013.json)。整合前提交7452dadefb52e7b695cdd1079d21083fcb6cae02、整合后源码28cee4656edd710d60676a81794c20cd49f45351均已正常推送；没有并行远端修改、强推或main合并。三处已核canonical/owner的任务根清理PASS，合计约11.07GiB逻辑文件；SDK副本、缓存、APK、合成签名/CA材料、静态候选tar与原生下载已删除，源码与小型证据/外部脚本保留。第一次清理因Go模块缓存只读目录阻止unlink而中断；重核marker/无进程后只给专用树目录恢复owner写/执行位，重试成功，初次记录保留。未清共用SDK、认证目录、未知Docker、设备或全局WSL，没有VHD压缩。之后文档回执提交不改运行输入；最终HEAD以Git历史及外部final-delivery.json为准。单台Android继续NOT_RUN_USER_DEFERRED，第二实体Android、iOS与生产继续不在通过范围。

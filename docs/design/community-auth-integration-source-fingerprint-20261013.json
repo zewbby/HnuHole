@@ -2,7 +2,7 @@
   "recordedOn": "2026-10-13",
   "savedCommunityCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
   "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
-  "sourceState": "Combined working tree; latest edits only bounded full-server runner budget and fixed-auth unit fixture/negative test; App/Go/SQL unchanged after first checks/R05/integration",
+  "sourceState": "Merged sources tested with execution HEAD7452dade and uncommitted merge; normalized443-file input bytes match published merge28cee465. Later receipt edits are documentation-only; no new execution implied.",
   "hashBasis": "SHA256 of source bytes normalized CRLF to LF; included platform/configuration files do not imply platform execution",
   "aggregateRule": "Compact ensure_ascii=false JSON sorted file list, keys path then sha256",
   "fileCount": 443,
@@ -1780,5 +1780,6 @@
       "path": "tools/wait-android-b3-b4-native.py",
       "sha256": "462bdcd887fd39cc2134eaef2fbaf02e5f42e9b43ccdce2e0df2b824bbc0b8c2"
     }
-  ]
+  ],
+  "publishedMatchingProductCommit": "28cee4656edd710d60676a81794c20cd49f45351"
 }

@@ -7,7 +7,7 @@
   "savedAndPushedCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
   "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
   "mergeBase": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
-  "integrationCommit": "Merge commit containing this record; exact SHA recorded in subsequent publication receipt",
+  "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
   "sourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
   "sourceFileCount": 443,
   "scope": "Fixed combined-source host regression and Android build; single physical Android explicitly deferred by user",
@@ -27,7 +27,9 @@
       "coversFinalProductSource": true,
       "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
-      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\checks.console.log"
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\checks.console.log",
+      "executedFingerprint": "1024f71af8962b309d38b2aefdca211c7750a1bca72083eeaebc10b793669b7d",
+      "matchesPublishedFinalProductCommit": "28cee4656edd710d60676a81794c20cd49f45351"
     },
     {
       "stage": "auth-regression",
@@ -40,7 +42,9 @@
       "coversFinalProductSource": true,
       "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
-      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\auth-regression.console.log"
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\auth-regression.console.log",
+      "executedFingerprint": "1024f71af8962b309d38b2aefdca211c7750a1bca72083eeaebc10b793669b7d",
+      "matchesPublishedFinalProductCommit": "28cee4656edd710d60676a81794c20cd49f45351"
     },
     {
       "stage": "integration",
@@ -53,7 +57,9 @@
       "coversFinalProductSource": true,
       "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
-      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\integration.console.log"
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\integration.console.log",
+      "executedFingerprint": "1024f71af8962b309d38b2aefdca211c7750a1bca72083eeaebc10b793669b7d",
+      "matchesPublishedFinalProductCommit": "28cee4656edd710d60676a81794c20cd49f45351"
     },
     {
       "stage": "server",
@@ -66,7 +72,9 @@
       "coversFinalProductSource": true,
       "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
-      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\server.console.log"
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\server.console.log",
+      "executedFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "matchesPublishedFinalProductCommit": "28cee4656edd710d60676a81794c20cd49f45351"
     },
     {
       "stage": "posts-privileges",
@@ -79,7 +87,9 @@
       "coversFinalProductSource": true,
       "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
-      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\posts-privileges.console.log"
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\posts-privileges.console.log",
+      "executedFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "matchesPublishedFinalProductCommit": "28cee4656edd710d60676a81794c20cd49f45351"
     },
     {
       "stage": "auth-runtime",
@@ -92,7 +102,9 @@
       "coversFinalProductSource": true,
       "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
-      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\auth-runtime.console.log"
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\auth-runtime.console.log",
+      "executedFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "matchesPublishedFinalProductCommit": "28cee4656edd710d60676a81794c20cd49f45351"
     },
     {
       "stage": "vet",
@@ -105,7 +117,9 @@
       "coversFinalProductSource": true,
       "finalFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "coverageReason": "Product Dart/Go/SQL/protocol sources unchanged after checks/R05/integration; later bounded server runner and frozen-auth test fixture edits retested by their affected checks, final scope comparison attached",
-      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\vet.console.log"
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs\\vet.console.log",
+      "executedFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
+      "matchesPublishedFinalProductCommit": "28cee4656edd710d60676a81794c20cd49f45351"
     }
   ],
   "mobile": {
@@ -227,7 +241,8 @@
         "sqliteSha256": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
         "sqliteIsAarch64": true,
         "productSourceState": "Fixed merged task tree; generated registrant and build modes separated",
-        "deviceInstalledOrRun": false
+        "deviceInstalledOrRun": false,
+        "artifactRetainedAfterDelivery": false
       },
       {
         "mode": "release",
@@ -242,7 +257,8 @@
         "sqliteSha256": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
         "sqliteIsAarch64": true,
         "productSourceState": "Fixed merged task tree; generated registrant and build modes separated",
-        "deviceInstalledOrRun": false
+        "deviceInstalledOrRun": false,
+        "artifactRetainedAfterDelivery": false
       }
     ],
     "mainMobileLockAndPubspecUnchanged": true,
@@ -259,7 +275,8 @@
         "isolatedTestApplicationId": "org.hnuhole.authvault.communityf5.test",
         "runner": "androidx.test.runner.AndroidJUnitRunner",
         "signatureVerified": true,
-        "actualInstrumentationTestsRun": false
+        "actualInstrumentationTestsRun": false,
+        "artifactRetainedAfterDelivery": false
       },
       {
         "plugin": "hnuhole_auth_passkey",
@@ -269,7 +286,8 @@
         "isolatedTestApplicationId": "org.hnuhole.authpasskey.communityf5.test",
         "runner": "androidx.test.runner.AndroidJUnitRunner",
         "signatureVerified": true,
-        "actualInstrumentationTestsRun": false
+        "actualInstrumentationTestsRun": false,
+        "artifactRetainedAfterDelivery": false
       }
     ],
     "noDeviceOperation": true
@@ -377,16 +395,56 @@
   "externalLogRoot": "E:\\HnuHole-community-f4-20261012\\integration-20261013\\logs",
   "publication": {
     "savedCommitPushed": true,
-    "integratedCommitPushed": false,
+    "integratedCommitPushed": true,
     "forcePush": false,
     "mainMerged": false,
     "releasePublished": false,
-    "productionDeployed": false
+    "productionDeployed": false,
+    "integrationCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+    "normalBranchPushVerifiedCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+    "documentationReceiptCommitReference": "Documentation-only commit containing publication/cleanup update; final HEAD in external final-delivery.json"
   },
   "cleanup": {
     "disposableHostClusters": "Complete via stage traps",
     "actualRuntimeOwnProjectAndPrivateDirectory": "Complete via runtime trap",
-    "taskToolsCachesApksSyntheticDeviceMaterial": "Owned resources to be removed after source commit/push because device window was deferred; actual receipt will record completion"
+    "taskToolsCachesApksSyntheticDeviceMaterial": "PASS_DELETED_OWN_RESOURCES",
+    "receipt": "docs/design/community-auth-integration-delivery-20261013.json",
+    "summary": {
+      "result": "PASS",
+      "startUTC": "2026-10-13T09:11:47.681307+00:00",
+      "endUTC": "2026-10-13T09:11:51.818657+00:00",
+      "repositoryPreserved": "/mnt/e/HnuHole-community-f4-20261012/repo",
+      "privateFixtureSigningAndCaMaterialDeleted": true,
+      "apksDeleted": true,
+      "deviceUsed": false,
+      "sharedSdkOrAuthEnvironmentTouched": false,
+      "unknownServicesStopped": false,
+      "globalWslOrDockerCleanup": false,
+      "deletedLogicalBytesAcrossBothAttempts": 11882867618,
+      "deletedFilesAcrossBothAttempts": 79407,
+      "physicalVhdCompacted": false,
+      "readOnlyCacheResolution": "Only owner directory write/execute bits restored inside three verified disposable roots; no shared SDK/security/global configuration changed",
+      "targets": [
+        {
+          "path": "/home/hnuhole/hnuhole-community-flutter-f4-20261013",
+          "canonicalAndOwnerVerified": true,
+          "absentAfter": true
+        },
+        {
+          "path": "/home/hnuhole/community-auth-integration-20261013-tools",
+          "canonicalAndOwnerVerified": true,
+          "absentAfter": true
+        },
+        {
+          "path": "/home/hnuhole/hnuhole-community-flutter-f4-20261013-auth-snapshot",
+          "canonicalAndOwnerVerified": true,
+          "absentAfter": true
+        }
+      ],
+      "publicSnapshotAndDownloadArtifacts": "Own fixed-auth tar and pinned SQLite library removed; logs and reproduction scripts retained",
+      "rawReceipt": "E:/HnuHole-community-f4-20261012/integration-20261013/logs/cleanup-20261013.json"
+    },
+    "futureRebuildRequired": true
   },
   "androidIsolatedCandidate": {
     "result": "PASS_BUILD_ONLY",
@@ -418,7 +476,9 @@
       "deviceUsed": false,
       "passkeyPositiveCeremony": "NOT_PROVISIONED: no own public RP/signature association, original authentication signing material not reused"
     },
-    "phoneUsed": false
+    "phoneUsed": false,
+    "artifactRetainedAfterDelivery": false,
+    "syntheticSigningAndCaMaterialRetained": false
   },
   "deviceDecision": {
     "result": "DEFERRED_BY_USER",
@@ -459,5 +519,9 @@
       "scope": "Isolated applicationId/source/signature build, no device or service execution"
     }
   ],
-  "runnerGuardsCommand": "bash tools/tests/test-community-f4-runner-isolation.sh; synthetic isolation guards only"
+  "runnerGuardsCommand": "bash tools/tests/test-community-f4-runner-isolation.sh; synthetic isolation guards only",
+  "executionHEAD": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
+  "executedWithUncommittedMergedSources": true,
+  "publishedMatchingProductCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+  "fullAppAcceptancePassed": false
 }
