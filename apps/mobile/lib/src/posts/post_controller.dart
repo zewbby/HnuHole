@@ -1617,6 +1617,9 @@ class PostController extends ChangeNotifier {
         payload: {'postId': postId},
       );
       final entry = await a.store!.createSubmitted(id, intent, data);
+      // Keep the durable deletion in the poll set if its first result read fails.
+      await _refreshLocal(a);
+      if (!_current(a)) return false;
       await _send(a, entry);
       final result = await a.store!.get(id);
       return _current(a) && result?.state == 'DELETED';

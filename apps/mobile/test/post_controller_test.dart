@@ -1293,6 +1293,38 @@ void main() {
     expect(api.ownCursors.last, 'loaded-own-anchor');
   });
 
+  test('lost DELETE and first query recover by polling without another user action', () async {
+    final api = _Api()
+      ..currentTask = _task(state: PostTaskState.published)
+      ..deleteLost = true
+      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+    f = await _Fixture.create(api: api, poll: const Duration(milliseconds: 20));
+    await f.controller.loadFeed(_channel);
+    await f.controller.loadPersonal();
+    expect(await f.controller.deletePost(_postId), isFalse);
+    await _until(() => api.queries.isNotEmpty);
+    final key = api.deletes.single['commandId'];
+    final caps = api.capabilitiesReads;
+    expect(f.controller.isPostDeleted(_postId), isFalse);
+    api.queryFailure = null;
+    // No second delete, loadPersonal, restart or explicit reconcile.
+    await _until(
+      () => f.controller.isPostDeleted(_postId),
+      reason: 'automatic original DELETE query',
+    );
+    expect(api.deletes, hasLength(1));
+    expect(api.queries.every((q) => q['commandId'] == key), isTrue);
+    expect(api.capabilitiesReads, caps);
+    expect(f.controller.feedItems, isEmpty);
+    expect(f.controller.personalItems, isEmpty);
+    expect((await f.entries()).single.state, 'DELETED');
+    await f.switchAccount();
+    await _until(
+      () => f.controller.available && f.controller.accountId == _otherAccount,
+    );
+    expect(f.controller.isPostDeleted(_postId), isFalse);
+  });
+
   test('lost DELETE response reconciles stored original before now404 capability and does not create a second key', () async {
     final api = _Api()
       ..currentTask = _task(state: PostTaskState.published)

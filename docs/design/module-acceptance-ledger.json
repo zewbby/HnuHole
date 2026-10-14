@@ -60,7 +60,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "sourcePaths": [
         "packages/openapi/community-auth-api.yaml",
         "tools/configure-passkey-associations.py",
@@ -805,7 +805,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "A01",
@@ -1014,7 +1028,7 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/identity-management-plan.md",
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "testedWorkingTreeSourceFingerprint": "599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7",
       "boundedChecksPassed": [
         "mobile-analysis-full311",
@@ -1476,7 +1490,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "A02",
@@ -1505,7 +1533,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "sourcePaths": [
         "services/api/internal/authprivacyruntime/config.go",
         "services/api/internal/authprivacyruntime/server.go",
@@ -2244,7 +2272,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "A03",
@@ -3577,7 +3619,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_session_controller.dart",
         "apps/mobile/lib/src/auth/security_management_controller.dart",
@@ -4403,7 +4445,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "A07",
@@ -5255,7 +5311,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_screen.dart",
@@ -6071,7 +6127,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "A09",
@@ -6768,7 +6838,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/config/mobile_environment.dart",
@@ -7982,6 +8052,20 @@
         "checkIds": [
           "NI-X01"
         ]
+      },
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -8222,7 +8306,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "sourcePaths": [
         "apps/mobile/lib/src/storage/post_store.dart",
         "packages/auth_vault/lib/hnuhole_auth_vault.dart",
@@ -9336,6 +9420,20 @@
         "checkIds": [
           "NI-X01"
         ]
+      },
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -10993,7 +11091,7 @@
       ],
       "executedEvidenceIsModulePass": false,
       "reopenedForTask": "docs/design/community-flutter-pages-plan.md",
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "foundationImplementationState": "SOURCE_IMPLEMENTED",
       "foundationAcceptanceState": "BACKEND_FOUNDATION_AND_AC02_PASS_HISTORICAL_MOBILE_SCOPED",
       "sourcePaths": [
@@ -11979,7 +12077,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "B03",
@@ -12010,7 +12122,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "sourcePaths": [
         "apps/mobile/lib/src/posts/post_models.dart",
         "apps/mobile/lib/src/posts/http_post_api.dart",
@@ -12739,7 +12851,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "B04",
@@ -12770,7 +12896,7 @@
         "F3-C06"
       ],
       "note": "2026-10-12 final approved fixed-baseline host scope PASS: analyze0/fullmobile311, R05, F4-H01-H08, six-package SQL/race/embedded vet, real restricted-runtime PostSchema9 plus lifecycle4 and final vet. All rerun after the approved minimal c_posts grant block; final auth/platform/production and full module remain unaccepted. Historical permission FAIL preserved and resolved.",
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -13375,7 +13501,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "B06",
@@ -13391,7 +13531,7 @@
         "F3-C06"
       ],
       "note": "2026-10-12 final approved fixed-baseline host scope PASS: analyze0/fullmobile311, R05, F4-H01-H08, six-package SQL/race/embedded vet, real restricted-runtime PostSchema9 plus lifecycle4 and final vet. All rerun after the approved minimal c_posts grant block; final auth/platform/production and full module remain unaccepted. Historical permission FAIL preserved and resolved.",
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -13985,7 +14125,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "B07",
@@ -14061,7 +14215,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/posts/post_controller.dart",
@@ -14806,7 +14960,21 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage1Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage1-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+        "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "deviceUsed": false,
+        "mobilePassed": 322,
+        "hostRehearsalCheckpoints": 8,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
+      }
     },
     {
       "id": "B11",
@@ -33317,7 +33485,7 @@
     "functionalAcceptancePromoted": false,
     "bookkeepingOnly": true
   },
-  "updatedOn": "2026-10-14",
+  "updatedOn": "2026-10-15",
   "currentB6": {
     "recordedOn": "2026-10-13",
     "currentResult": "PASS",
@@ -33937,7 +34105,10 @@
           "B06",
           "B10"
         ],
-        "blocker": "USER_DEFERRED_DEVICE_WINDOW"
+        "blocker": "USER_DEFERRED_DEVICE_WINDOW",
+        "preparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "preparationReport": "docs/design/community-android-stage1-preparation-20261015.md",
+        "preparationEvidence": "docs/design/community-android-stage1-preparation-20261015.json"
       },
       {
         "id": "CA-T02",
@@ -33991,10 +34162,24 @@
       }
     ],
     "deviceOperationAuthorizedByThisPlanningRequest": false,
-    "newDynamicTestsExecuted": false,
+    "newDynamicTestsExecuted": true,
     "historicalHostAndBuildEvidence": "docs/design/community-auth-integration-20261013.json",
     "priorHostEvidenceScopeChanged": false,
     "fullModuleAcceptancePassed": false,
     "iOSAndProductionIncluded": false
+  },
+  "currentCommunityAndroidStage1Preparation": {
+    "recordedOn": "2026-10-15",
+    "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+    "report": "docs/design/community-android-stage1-preparation-20261015.md",
+    "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
+    "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+    "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+    "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+    "deviceUsed": false,
+    "mobilePassed": 322,
+    "hostRehearsalCheckpoints": 8,
+    "fullModuleOrAppPassed": false,
+    "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
   }
 }

@@ -1,0 +1,323 @@
+{
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/community-flutter-pages",
+  "taskStartHEAD": "01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee",
+  "previousIntegratedProductCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+  "sourceFingerprint": {
+    "fileCount": 450,
+    "sha256": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+    "record": "docs/design/community-android-stage1-source-fingerprint-20261015.json"
+  },
+  "executedWithUncommittedTaskSources": true,
+  "productChanges": [
+    "Register durable DELETE in poll set before send with original authority fence.",
+    "Explicit UI acknowledgement only for C-confirmed CANCELLED via unchanged guarded AuthFlows method."
+  ],
+  "authenticationProtocolNativeSQLGrantsLocksChanged": false,
+  "stages": [
+    {
+      "stage": "checks",
+      "exitCode": 0,
+      "startedUTC": "2026-10-14T18:28:56Z",
+      "endedUTC": "2026-10-14T18:29:22Z",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/final-mobile-regression/checks.console.log",
+      "finalProductScopeCovered": true
+    },
+    {
+      "stage": "auth-regression",
+      "exitCode": 0,
+      "startedUTC": "2026-10-14T18:29:22Z",
+      "endedUTC": "2026-10-14T18:29:56Z",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/final-mobile-regression/auth-regression.console.log",
+      "finalProductScopeCovered": true
+    },
+    {
+      "stage": "integration",
+      "exitCode": 0,
+      "startedUTC": "2026-10-14T18:29:56Z",
+      "endedUTC": "2026-10-14T18:30:32Z",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/final-mobile-regression/integration.console.log",
+      "finalProductScopeCovered": true
+    },
+    {
+      "stage": "server",
+      "exitCode": 0,
+      "startedUTC": "2026-10-14T17:36:51Z",
+      "endedUTC": "2026-10-14T17:58:25Z",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/final-regression/server.console.log",
+      "finalProductScopeCovered": true
+    },
+    {
+      "stage": "posts-privileges",
+      "exitCode": 0,
+      "startedUTC": "2026-10-14T17:58:25Z",
+      "endedUTC": "2026-10-14T17:59:27Z",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/final-regression/posts-privileges.console.log",
+      "finalProductScopeCovered": true
+    },
+    {
+      "stage": "auth-runtime",
+      "exitCode": 0,
+      "startedUTC": "2026-10-14T17:59:27Z",
+      "endedUTC": "2026-10-14T18:00:47Z",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/final-regression/auth-runtime.console.log",
+      "finalProductScopeCovered": true
+    },
+    {
+      "stage": "vet",
+      "exitCode": 0,
+      "startedUTC": "2026-10-14T18:00:47Z",
+      "endedUTC": "2026-10-14T18:00:49Z",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/final-regression/vet.console.log",
+      "finalProductScopeCovered": true
+    }
+  ],
+  "mobile": {
+    "analyzeIssues": 0,
+    "passed": 322,
+    "failed": 0,
+    "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/final-mobile-regression/mobile-tests.jsonl"
+  },
+  "hostTools": {
+    "linuxPassed": 125,
+    "windowsPhoneGuardsPassed": 9,
+    "syntheticVMRoundtrip": true,
+    "adbInvoked": false
+  },
+  "hostRehearsal": {
+    "scope": "HOST_REHEARSAL_NATIVE_PORTS_SUBSTITUTED",
+    "checkpoints": {
+      "HOST-CA-A01": true,
+      "HOST-CA-A02": true,
+      "HOST-CA-A04": true,
+      "HOST-CA-A03": true,
+      "HOST-CA-A05": true,
+      "HOST-CA-A06": true,
+      "HOST-CA-A07": true,
+      "HOST-CA-A10": true
+    },
+    "counters": {
+      "creates": 2,
+      "retries": 1,
+      "deletes": 1,
+      "commandQueries": 11,
+      "droppedQueries": 4,
+      "droppedReplies": 3,
+      "uniqueCreates": 2,
+      "uniqueRetries": 1,
+      "uniqueDeletes": 1,
+      "rawTokensOrProofsStored": false
+    },
+    "sql": {
+      "accounts": 2,
+      "closed": 1,
+      "pendingClose": 0,
+      "posts": 2,
+      "published": 0,
+      "deleted": 1,
+      "attempts": 3,
+      "failed": 2,
+      "bindings": 2,
+      "closedPayloadsRemaining": 0,
+      "closedPrivateReceiptsRemaining": 0,
+      "closedCredentialsRemaining": 0
+    },
+    "manualChineseImeVerified": false,
+    "phoneUsed": false,
+    "actualMainCalled": false,
+    "hostVaultSubstitutes": true,
+    "labName": "stage1-host-lab21",
+    "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/host-stage1.jsonl",
+    "nativePortNote": "Host substitutes file vault/key and idempotent file CLOSED purge callback. Android uses unchanged main/native dependencies."
+  },
+  "artifacts": {
+    "sqlitePinnedInputSha256": "0c2d3bfc8c87abceb21ed72a4bb49964121c5fe1a8ef3848d83ba907d01b6161",
+    "sqliteGradleStrippedApkSha256": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
+    "apks": {
+      "acceptance": {
+        "sha256": "1a7eb7bb8450f0e7918b7602a770ddb4b5429010ea23c0c11471eaf210b70e94",
+        "sizeBytes": 104902126,
+        "certificateSha256": "b92a9ab262aad4e96365bf4f81a44ac9235a5f69cdc9c7ede380c4e5c0e0eb77",
+        "packageVerified": true,
+        "arm64SqliteVerified": true,
+        "apkSignatureVerified": true,
+        "buildMode": "debug"
+      },
+      "normal": {
+        "sha256": "752846ff8bb48c160af90a4cc816a14f1a6cc1bdab549489e411f60ebafed79f",
+        "sizeBytes": 86222031,
+        "certificateSha256": "b92a9ab262aad4e96365bf4f81a44ac9235a5f69cdc9c7ede380c4e5c0e0eb77",
+        "packageVerified": true,
+        "arm64SqliteVerified": true,
+        "apkSignatureVerified": true,
+        "buildMode": "debug"
+      }
+    },
+    "applicationId": "org.hnuhole.hnuhole_mobile.communityf5",
+    "mainActivity": "org.hnuhole.hnuhole_mobile.MainActivity",
+    "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+    "comparedMirrorInputs": 198,
+    "mirrorOverride": "Only applicationId in owned build mirror",
+    "deviceUsed": false,
+    "adbInvoked": false,
+    "sharedSdkInvoked": false,
+    "ownNewDebugSignature": true,
+    "noReleaseOrProductionSigning": true,
+    "standardUnsignedRelease": {
+      "sha256": "3f10f437e9d4170c89458970dea32f8d27a35ee6f854a00411e32664b4cbb9a2",
+      "sizeBytes": 21016562,
+      "applicationId": "org.hnuhole.hnuhole_mobile",
+      "buildMode": "release",
+      "unsignedExpected": true,
+      "debuggable": false,
+      "developmentDefinesSupplied": false,
+      "testAndDiagnosticPluginInDex": false,
+      "comparedProductInputs": 147,
+      "deviceUsed": false,
+      "published": false
+    }
+  },
+  "hostPreflight": {
+    "recordedUTC": "2026-10-14T18:25:55.935950+00:00",
+    "checks": [
+      {
+        "endpoint": "proxy",
+        "status": 200,
+        "windowsLoopbackReachable": true,
+        "tlsVerified": true
+      },
+      {
+        "endpoint": "v",
+        "status": 200,
+        "windowsLoopbackReachable": true,
+        "tlsVerified": true
+      },
+      {
+        "endpoint": "mail",
+        "status": 200,
+        "windowsLoopbackReachable": true,
+        "tlsVerified": false
+      }
+    ],
+    "freshFixtureEmpty": true,
+    "clockOffsetZero": true,
+    "deviceUsed": false,
+    "globalTrustChanged": false,
+    "certificateValidUntilUTC": "2026-10-21T16:43:13+00:00"
+  },
+  "readyManifest": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/device-window/manifest.json",
+  "retention": {
+    "reason": "User requests host work ready so later only device cooperation is needed.",
+    "ownedSDKCachesAPKsFreshSyntheticDeviceFixtureRetained": true,
+    "hostRehearsalLabsRemoved": true,
+    "privateMaterialsOutsideGit": true,
+    "noRealAccountOrDeviceCredentialsCreated": true,
+    "adbKeyCreationRequiresFutureExplicitConsent": true
+  },
+  "coverageNote": "After final auth_screen product change,322/R05/F4 were rerun. Go/SQL/native/locks never changed: fresh server/privileges/runtime/vet cover those bytes. Later scenario-only synchronization and host purge edits are covered by final analyze,lab21 and final acceptance build. Historical320 is not counted.",
+  "remaining": [
+    "CA-A01-A07/A10 actual Android/plugin/IME NOT_RUN: user deferred window.",
+    "Task2 native instrumentation/lifecycle NOT_RUN.",
+    "Task3 own public RP/system Passkey NOT_RUN.",
+    "Task4 two physical Android NI-X01/NI-X02 NOT_RUN.",
+    "iOS/full App or module/production/Release publication excluded."
+  ],
+  "failedAttemptsRetained": [
+    {
+      "case": "DELETE lost reply plus failed first query",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/delete-poll-before-fix.jsonl",
+      "resolved": "Three-line product poll registration; final regression and rehearsal."
+    },
+    {
+      "case": "CANCELLED closure had no UI completion",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/closure-ui-before-fix.jsonl",
+      "resolved": "Explicit server-confirmed UI action; no AuthFlows/protocol change."
+    },
+    {
+      "case": "Unit teardown raced second-scope store activation",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/mobile-regression-fixture-teardown-failed/mobile-tests.jsonl",
+      "resolved": "Wait for actual second scope; final322 PASS."
+    },
+    {
+      "case": "Wrong release no-pub left debug registrant",
+      "log": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/standard-release-first-no-pub-failed.log",
+      "resolved": "Normal locked release regeneration PASS."
+    },
+    {
+      "case": "New scenario navigation/async status and file-port purge setup",
+      "logRange": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/logs/host-stage1-08-failed.jsonl through host-stage1-19-failed.jsonl",
+      "resolved": "Final replay on new lab21; older attempts not counted."
+    },
+    {
+      "case": "Artifact verifier first included non-mobile OpenAPI and compared stripped APK sqlite with raw source",
+      "resolution": "Verify198 mobile/plugin inputs; locked sqlite raw SHA matches merged input and Gradle-stripped SHA matches both APKs. No SQLite change or ABI/signature relaxation."
+    }
+  ],
+  "deviceOperationPerformed": false,
+  "fullModuleOrAppPass": false,
+  "commands": [
+    {
+      "entry": "wsl -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/stage1-preparation-20261014/run-final-regression.sh",
+      "exitCode": 0,
+      "scope": "Seven stages; initial checks321 superseded by final mobile run."
+    },
+    {
+      "entry": "wsl -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/stage1-preparation-20261014/run-final-mobile-regression.sh",
+      "exitCode": 0,
+      "scope": "Final322,R05,F4 after final product edit."
+    },
+    {
+      "entry": "wsl -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/stage1-preparation-20261014/run-host-stage1.sh",
+      "exitCode": 0,
+      "scope": "Final new real-cmd19 host rehearsal."
+    },
+    {
+      "entry": "wsl -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/stage1-preparation-20261014/rebuild-final-apks.sh",
+      "exitCode": 0,
+      "scope": "Final isolated acceptance and normal Debug ARM64."
+    },
+    {
+      "entry": "wsl -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/stage1-preparation-20261014/rerun-standard-release.sh",
+      "exitCode": 0,
+      "scope": "Standard main unsigned Release, no development defines."
+    },
+    {
+      "entry": "wsl -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/stage1-preparation-20261014/verify-final-artifacts.sh",
+      "exitCode": 0,
+      "scope": "Signature/package/ABI/SQLite/mirror byte verification; no ADB."
+    },
+    {
+      "entry": "wsl -d HnuHole-Ubuntu-24.04 -u hnuhole -- bash /mnt/e/HnuHole-community-f4-20261012/stage1-preparation-20261014/run-tools-final.sh",
+      "exitCode": 0,
+      "scope": "125 Linux host tools tests."
+    }
+  ],
+  "capacity": {
+    "cFreeBytes": 19473719296,
+    "eFreeBytes": 156246630400,
+    "windowsPython": "3.9.13",
+    "windowsPythonPath": "E:\\acanda\\python.exe"
+  },
+  "resourceCleanup": {
+    "all21HostLabsRemoved": true,
+    "failedOwnedUnitScratchRemoved": true,
+    "phoneLabRetained": true,
+    "sdkCachesArtifactsRetained": true,
+    "foreignResourceTouched": false
+  },
+  "tools": {
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "go": "1.22.2",
+    "jdk": "17.0.20.1+1",
+    "postgres": "16.15",
+    "sdkToolRoot": "/home/hnuhole/community-android-stage1-20261014-tools",
+    "taskRoot": "/home/hnuhole/hnuhole-community-flutter-f4-s1-20261014",
+    "owner": "community-android-stage1-20261014",
+    "dartBinarySha256": "327991241585ee23f10d8b239a3f8484cb55e5060c665700d19d7e01e62ec94a",
+    "sqlitePinnedInputSha256": "0c2d3bfc8c87abceb21ed72a4bb49964121c5fe1a8ef3848d83ba907d01b6161"
+  }
+}

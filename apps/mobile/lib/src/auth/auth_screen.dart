@@ -574,6 +574,15 @@ class _AuthScreenState extends State<AuthScreen> {
             _selectMode(_AuthMode.login);
           },
         ),
+      if (status == AuthFlowStatus.closureCancelled)
+        _secondary('结束已取消的注销操作', () async {
+          await widget.flows.forgetClosureStatus();
+          if (!mounted) return;
+          _explicitClosureLogin = false;
+          _explicitClosureRecovery = false;
+          _selectMode(_AuthMode.login);
+          await widget.sessions.retry();
+        }),
       if (status == AuthFlowStatus.closurePending)
         _secondary('重设密码，继续保留注销', () async {
           _explicitClosureRecovery = true;

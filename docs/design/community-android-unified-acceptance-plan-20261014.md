@@ -1,5 +1,7 @@
 # 文字社区与认证 Android 统一验收任务单
 
+> **2026-10-15 第一项非手机准备完成：**修复 DELETE 首次核对失败后遗漏 poll 集合，以及 C 确认取消注销后的 UI 完成入口。最后产品修改后 mobile322/R05/F4 通过，真实 server/权限/runtime/vet 通过；新增整段 host 八检查点和最终隔离 Debug/标准未签名 Release 构建通过，实际设备与 IME 仍 NOT_RUN。见[准备报告](community-android-stage1-preparation-20261015.md)和[机器记录](community-android-stage1-preparation-20261015.json)。按用户要求保留专用环境、手机新空库和 APK；未调用 ADB 或创建真实账号/USB key。后续确认设备窗口、隔离包/USB 授权并补真实输入法，任务2–4、iOS和生产分别待验。
+
 日期：2026-10-14，Asia/Shanghai。仓库 zewbby/HnuHole，分支 codex/community-flutter-pages，任务目录 E:/HnuHole-community-f4-20261012/repo。
 
 用户要求：将单机社区流程、原生存储与生命周期、系统Passkey三个任务按顺序保留，再追加双设备验证，统一为一份任务单。**本次只整理计划与交接，没有执行新增测试或使用设备。**此前设备窗口仍为用户延期；新增双设备范围不代表已提供第二台设备、设备窗口或系统设置修改授权。

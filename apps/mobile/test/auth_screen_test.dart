@@ -47,6 +47,7 @@ class _Api implements AuthApi {
   int registrations = 0;
   int resets = 0;
   int revocations = 0;
+  ClosureState closureState = ClosureState.pending;
   bool rejectRevocation = false;
   String? submittedUsername;
   String? submittedConfirmation;
@@ -156,7 +157,10 @@ class _Api implements AuthApi {
   Future<ClosureStatus> closureStatus({
     required String closureId,
     required String statusSecret,
-  }) async => ClosureStatus(state: ClosureState.pending, dueAt: _expiry);
+  }) async => ClosureStatus(
+    state: closureState,
+    dueAt: closureState == ClosureState.pending ? _expiry : null,
+  );
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -529,6 +533,39 @@ void main() {
     expect(find.text('账号已登录'), findsOneWidget);
     await h.finish(tester);
   });
+
+  testWidgets(
+    'only confirmed cancelled closure can return to normal account actions',
+    (tester) async {
+      final h = _Harness();
+      final secret = AuthCrypto.randomEncoded(32);
+      await h.store.update(
+        (state) => state.copyWith(
+          pendingClosure: {
+            'v': 1,
+            'closureId': AuthCrypto.randomEncoded(32),
+            'statusSecret': secret,
+            'statusDigest': AuthCrypto.closureStatusDigest(secret),
+            'state': 'PENDING',
+            'dueAt': _expiry.toIso8601String(),
+          },
+        ),
+      );
+      await h.mount(tester);
+      expect(find.text('结束已取消的注销操作'), findsNothing);
+      expect((await h.store.read()).pendingClosure, isNotNull);
+      h.api.closureState = ClosureState.cancelled;
+      await _tap(tester, '核对注销状态');
+      expect((await h.store.read()).pendingClosure!['state'], 'CANCELLED');
+      await _tap(tester, '结束已取消的注销操作');
+      expect((await h.store.read()).pendingClosure, isNull);
+      expect(h.api.logins, 0);
+      expect(h.sessions.isAuthenticated, isFalse);
+      expect(find.text('新注册'), findsOneWidget);
+      expect(find.byKey(const ValueKey('login-username')), findsOneWidget);
+      await h.finish(tester);
+    },
+  );
 
   testWidgets('failed server revocation shows durable local logout pending', (
     tester,
