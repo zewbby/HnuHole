@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-14 当前统一任务单：**用户将双实体Android验证追加到原三项工作之后，顺序为①单机文字社区流程②原生存储与生命周期③系统Passkey及单机回归④双设备NI-X01/NI-X02。见[四阶段统一任务单](community-android-unified-acceptance-plan-20261014.md)。当前只更新计划/交接，没有新增测试或设备操作；单机窗口仍延期，第二设备与两机窗口尚未确认，RP/package/signature关联须另行准备审批。20261013主机/构建证据和其“排除第二设备”保留为原范围历史；新任务整体须四阶段全部收口才通过，iOS/生产和未实现业务仍独立。
+
 > **Git与清理回执：**整合后源码提交`28cee4656edd710d60676a81794c20cd49f45351`（父提交为上述社区保存SHA和固定认证SHA）已正常推送且远端核对一致。此后交接回执仅改文档/台账，443项运行输入未变。三处canonical任务根经owner与进程核对后清理PASS，约11.07GiB逻辑文件、SDK副本/缓存/APK/合成CA及调试私钥均删除，源码、测试、脱敏记录与外部复验脚本保留；不做VHD压缩或全局清理。见[交付回执](community-auth-integration-delivery-20261013.json)。设备仍按用户指令延期，后续须重建独立材料并获得窗口，不能把已删除APK/签名当作可直接安装的制品。
 
 > **2026-10-13 当前联合结果：主机回归及Android构建PASS，设备验收由用户明确延期，任务为部分完成。**整合前20份任务文件已保存并正常推送为`7452dadefb52e7b695cdd1079d21083fcb6cae02`；以用户指定的已提交认证`d859cb05c772cdf8d8b75e439a2bfedf0414dd46`三方整合，保留既定文字页、关闭清理、业务vault、SQL0013/最小授权及锁。联合源码新执行checks（分析0／mobile320）、R05、F4主机8项、server六包race、posts权限9顶层/4生命周期、实际cmd/正式迁移R03的25断言及最终vet均PASS；原生标准Debug/Release ARM64、两测试APK和隔离设备候选构建PASS，实际设备用例全部NOT_RUN。最后4项runner/宿主夹具修改未改变App/Go产品/SQL/协议，受影响检查已重跑；最终443项输入指纹`599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7`。旧311及认证22/0/2不计联合结果。见[联合报告](community-auth-integration-report-20261013.md)、[机器记录](community-auth-integration-20261013.json)、[固定SHA差异](community-flutter-f4-auth-integration-diff-20261012.md)、[单台Android复验清单](community-single-android-acceptance-20261013.md)。仅正常提交/推送本分支；第二实体Android、iOS、完整模块及生产未验，未用ADB/手机。以下旧日期记录保留原范围，不代表当前交付状态。
