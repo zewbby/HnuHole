@@ -2,7 +2,7 @@
 
 2026-10-15，Asia/Shanghai。结果 **PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN**。用户要求先完成第一项除手机配合外所有工作；本轮没有连接或使用手机、没有调用 ADB。CA-A01–A07/A10 的设备结果仍为 NOT_RUN，任务2–4、iOS和生产分别待验。
 
-起始 HEAD `01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee`；原整合产品 `28cee4656edd710d60676a81794c20cd49f45351`，固定认证 `d859cb05c772cdf8d8b75e439a2bfedf0414dd46`。执行时使用本任务未提交源码，450项规范化输入 SHA256 `713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae`。发布固定 SHA 见 Git 回执，正常推送本分支，不合 main 或发布。
+起始 HEAD `01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee`；原整合产品 `28cee4656edd710d60676a81794c20cd49f45351`，固定认证 `d859cb05c772cdf8d8b75e439a2bfedf0414dd46`。执行时使用本任务未提交源码，450项规范化输入 SHA256 `713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae`。源码提交 `b5accf36b90e27829b6d039cd58a5b9c189a3da8` 已正常推送，450项输入与提交逐字节核对一致；见 [Git 回执](community-android-stage1-delivery-20261015.json)，正常推送本分支，不合 main 或发布。
 
 ## 修复与范围
 

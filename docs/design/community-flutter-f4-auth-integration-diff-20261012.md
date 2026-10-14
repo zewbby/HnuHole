@@ -1,5 +1,7 @@
 # 2026-10-13 固定认证候选整合差异
 
+> **本轮已提交比较快照：**C2=`b5accf36b90e27829b6d039cd58a5b9c189a3da8`，D=`d859cb05c772cdf8d8b75e439a2bfedf0414dd46`，M=`28cee4656edd710d60676a81794c20cd49f45351`。C2 已正常推送且远端一致；下述后续差异固定到 C2，不使用未提交认证源码。
+
 > **2026-10-15 后续差异：**固定认证 D=`d859cb05c772cdf8d8b75e439a2bfedf0414dd46`，已整合产品 M=`28cee4656edd710d60676a81794c20cd49f45351`，本轮起始 P=`01ea1a13b89aac8bf76e5ab7eb20eca4fb2662ee`。相对 M/P，只增加 post_controller 的 DELETE 原结果轮询登记和 auth_screen 对 C 已确认 CANCELLED 的显式完成入口，以及对应测试/验收工具。main/settings、AuthFlows、session/HTTP、closure 协议、原生 vault/passkey、manifest、SQL/权限和锁字节不变。回归与450项输入见[准备报告](community-android-stage1-preparation-20261015.md)，本轮发布固定 SHA 见 Git 回执；未取认证工作树或浮动基线。
 
 当前用户已明确指定认证 **D=`d859cb05c772cdf8d8b75e439a2bfedf0414dd46`** 用于单台Android范围整合，不再等待第二实体Android。社区整合前成果已审查为20个源码／测试／脱敏交接文件，保存并正常推送 **S=`7452dadefb52e7b695cdd1079d21083fcb6cae02`**；原起点 **C=`4d58116bdde2c1d2d406b965590bc1625a5c7955`**，共同祖先 **B=`0eff47a21cd4f4ab1636b4468f7d5df9769a264f`**。下面2026-10-12静态差异是历史快照，原“最终SHA未指定”已由本次用户指令解除。

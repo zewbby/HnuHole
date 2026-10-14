@@ -206,7 +206,17 @@
     "clockOffsetZero": true,
     "deviceUsed": false,
     "globalTrustChanged": false,
-    "certificateValidUntilUTC": "2026-10-21T16:43:13+00:00"
+    "certificateValidUntilUTC": "2026-10-21T16:43:13+00:00",
+    "readyChecks": [
+      {
+        "endpoint": "proxy",
+        "readyStatus": 200
+      },
+      {
+        "endpoint": "v",
+        "readyStatus": 200
+      }
+    ]
   },
   "readyManifest": "E:/HnuHole-community-f4-20261012/stage1-preparation-20261014/device-window/manifest.json",
   "retention": {
@@ -319,5 +329,8 @@
     "owner": "community-android-stage1-20261014",
     "dartBinarySha256": "327991241585ee23f10d8b239a3f8484cb55e5060c665700d19d7e01e62ec94a",
     "sqlitePinnedInputSha256": "0c2d3bfc8c87abceb21ed72a4bb49964121c5fe1a8ef3848d83ba907d01b6161"
-  }
+  },
+  "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+  "sourceInputsMatchPublishedCommit": true,
+  "sourceCommitPushedAndRemoteVerified": true
 }

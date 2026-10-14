@@ -1808,5 +1808,6 @@
       "sha256": "462bdcd887fd39cc2134eaef2fbaf02e5f42e9b43ccdce2e0df2b824bbc0b8c2"
     }
   ],
-  "scope": "Original 443 inputs plus seven new executable/test inputs. Only product DELETE polling and cancelled-closure UI acknowledgement changed; no auth protocol, AuthFlows, session/HTTP, native implementation, manifest, SQL, grants or locks changes. Platform inputs do not imply device acceptance."
+  "scope": "Original 443 inputs plus seven new executable/test inputs. Only product DELETE polling and cancelled-closure UI acknowledgement changed; no auth protocol, AuthFlows, session/HTTP, native implementation, manifest, SQL, grants or locks changes. Platform inputs do not imply device acceptance.",
+  "publishedMatchingSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8"
 }
