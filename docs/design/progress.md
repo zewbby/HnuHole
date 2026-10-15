@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-15 普通网络读屏遗漏已补齐：**实际断开一次列表GET后发现错误不自动朗读，已修复；同包同证书复验中用户确认自动提醒、重新加载恢复、无需重登和原草稿保持均正常。最终mobile334／分析0／R05／F4八项PASS，覆盖最终205输入；TalkBack已代关、转发与业务计数核对恢复。见[补验报告](community-android-talkback-network-retry-20261015.md)/[记录](community-android-talkback-network-retry-20261015.json)。原333项及“列表重试朗读未验”保留为前一版本历史；第三项Passkey、第四项双设备、iOS和生产仍待验，不升级完整模块/App为PASS。
+
 > **2026-10-15 TalkBack补充：PASS_APPROVED_TALKBACK_SCOPE。**通道重复、我的/返回英文、身份选中语义、必填提示自动朗读和中文数字语义语言已修复并由本轮单机限定清单复验；最终mobile333、导航语义4、分析0、R05和F4八项PASS，205输入指纹见[实测报告](community-android-talkback-validation-20261015.md)/[机器记录](community-android-talkback-validation-20261015.json)。一次GET503触发现有登录恢复保护，未误计普通列表重载朗读；原转发恢复、SQL写计数不变，按用户明确请求关闭TalkBack并核对。任务3系统Passkey、任务4双实体、iOS和生产仍独立未验；以下历史“TalkBack关闭未验”保留原版本范围。
 
 > **2026-10-15 当前任务2单机范围通过：**原生35项＋3组进程中断、实际SQLite跨进程/用户整机重启/本地闭号清理PASS；正常App合成A重新正常登录后强停/重启的草稿、身份通道与会话由用户确认。先前旧会话因获准Gate恢复推进代次被拒绝，保留负向观察，不冒充恢复PASS。Windows155＋3 POSIX SKIP／Linux158。见[实测报告](community-android-stage2-device-validation-20261015.md)及[机器记录](community-android-stage2-device-validation-20261015.json)。产品/native/manifest/SQL/锁未改；默认USB隔离守卫保留，仅本轮显式批准既有身份。TalkBack关闭未验；任务3系统Passkey、任务4双实体、iOS和生产仍待验，模块/App不升级整体PASS。以下历史条目保留原日期范围。

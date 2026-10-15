@@ -1,5 +1,7 @@
 # 单台 Android TalkBack 实测与修复
 
+> **2026-10-15 普通网络读屏遗漏已补齐：**实际断开一次列表GET后发现错误不自动朗读，已修复；同包同证书复验中用户确认自动提醒、重新加载恢复、无需重登和原草稿保持均正常。最终mobile334／分析0／R05／F4八项PASS，覆盖最终205输入；TalkBack已代关、转发与业务计数核对恢复。见[补验报告](community-android-talkback-network-retry-20261015.md)/[记录](community-android-talkback-network-retry-20261015.json)。原333项及“列表重试朗读未验”保留为前一版本历史；第三项Passkey、第四项双设备、iOS和生产仍待验，不升级完整模块/App为PASS。
+
 2026-10-15，Asia/Shanghai。结果：**PASS_APPROVED_TALKBACK_SCOPE**，属于任务2补充读屏范围；不升级完整模块或 App 为 PASS。
 
 起点 `436ef294b6f51bc5da186737d0fcd931bcc0e8ef`，固定认证 `d859cb05c772cdf8d8b75e439a2bfedf0414dd46`。最终运行源码为本提交内的源码，205项输入指纹 `62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c`；提交后可用 Git HEAD 与该指纹共同定位，不将旧测试计入本轮。精确机器记录见[JSON](community-android-talkback-validation-20261015.json)。

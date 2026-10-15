@@ -507,6 +507,54 @@ void main() {
     c.dispose();
   });
 
+  testWidgets('列表读取失败向读屏通知错误并保留重新加载操作', (tester) async {
+    final handle = tester.ensureSemantics();
+    final c = _WidgetPosts();
+    try {
+      await tester.pumpWidget(
+        _app(
+          ChannelPostsScreen(
+            controller: c,
+            channel: _channel,
+            onManageIdentities: () async {},
+            onAuthenticationRequired: () {},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      c.failure = '普通网络读取失败';
+      c.notifyListeners();
+      await tester.pump();
+      expect(
+        tester
+            .getSemantics(find.text('暂时无法加载帖子'))
+            .getSemanticsData()
+            .flagsCollection
+            .isLiveRegion,
+        isTrue,
+      );
+      final retry = tester.getSemantics(find.text('重新加载'));
+      expect(
+        retry.getSemanticsData().hasAction(ui.SemanticsAction.tap),
+        isTrue,
+      );
+      final previous = c.reads;
+      tester.binding.renderViews.single.owner!.semanticsOwner!.performAction(
+        retry.id,
+        ui.SemanticsAction.tap,
+      );
+      await tester.pump();
+      expect(c.reads, previous + 1);
+      expect(c.accountId, _accountId);
+      expect(c.available, isTrue);
+      expect(c.publications, 0);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      c.dispose();
+      handle.dispose();
+    }
+  });
+
   testWidgets('空列表与首次失败提供不同状态和真实重试', (tester) async {
     final c = _WidgetPosts();
     await tester.pumpWidget(

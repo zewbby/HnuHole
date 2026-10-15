@@ -254,6 +254,7 @@ class _ChannelPostsScreenState extends State<ChannelPostsScreen> {
     if (c.feedItems.isEmpty && c.feedError != null) {
       return _PageState(
         title: '暂时无法加载帖子',
+        announceTitle: true,
         message: '请稍后重试',
         action: '重新加载',
         onAction: () => c.loadFeed(widget.channel.id),
@@ -2222,11 +2223,13 @@ class _IdentityAvatar extends StatelessWidget {
 class _PageState extends StatelessWidget {
   const _PageState({
     required this.title,
+    this.announceTitle = false,
     this.message,
     this.action,
     this.onAction,
   });
   final String title;
+  final bool announceTitle;
   final String? message, action;
   final VoidCallback? onAction;
   @override
@@ -2236,10 +2239,13 @@ class _PageState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+          Semantics(
+            liveRegion: announceTitle,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            ),
           ),
           if (message != null) ...[
             const SizedBox(height: 12),

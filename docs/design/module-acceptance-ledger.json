@@ -8429,12 +8429,14 @@
       },
       "currentCommunityAndroidTalkBack": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_APPROVED_TALKBACK_SCOPE",
-        "report": "docs/design/community-android-talkback-validation-20261015.md",
-        "evidence": "docs/design/community-android-talkback-validation-20261015.json",
-        "sourceFingerprint": "62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c",
+        "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+        "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+        "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+        "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
-        "nextAcceptance": "task3 approved RP/system Passkey; task4 dual physical Android; iOS/production independent; ordinary transport-error list reload speech not exercised"
+        "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
       }
     },
     {
@@ -9897,12 +9899,14 @@
       },
       "currentCommunityAndroidTalkBack": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_APPROVED_TALKBACK_SCOPE",
-        "report": "docs/design/community-android-talkback-validation-20261015.md",
-        "evidence": "docs/design/community-android-talkback-validation-20261015.json",
-        "sourceFingerprint": "62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c",
+        "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+        "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+        "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+        "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
-        "nextAcceptance": "task3 approved RP/system Passkey; task4 dual physical Android; iOS/production independent; ordinary transport-error list reload speech not exercised"
+        "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
       }
     },
     {
@@ -12626,12 +12630,14 @@
       },
       "currentCommunityAndroidTalkBack": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_APPROVED_TALKBACK_SCOPE",
-        "report": "docs/design/community-android-talkback-validation-20261015.md",
-        "evidence": "docs/design/community-android-talkback-validation-20261015.json",
-        "sourceFingerprint": "62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c",
+        "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+        "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+        "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+        "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
-        "nextAcceptance": "task3 approved RP/system Passkey; task4 dual physical Android; iOS/production independent; ordinary transport-error list reload speech not exercised"
+        "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
       }
     },
     {
@@ -13435,12 +13441,14 @@
       },
       "currentCommunityAndroidTalkBack": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_APPROVED_TALKBACK_SCOPE",
-        "report": "docs/design/community-android-talkback-validation-20261015.md",
-        "evidence": "docs/design/community-android-talkback-validation-20261015.json",
-        "sourceFingerprint": "62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c",
+        "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+        "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+        "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+        "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
-        "nextAcceptance": "task3 approved RP/system Passkey; task4 dual physical Android; iOS/production independent; ordinary transport-error list reload speech not exercised"
+        "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
       }
     },
     {
@@ -14120,12 +14128,14 @@
       },
       "currentCommunityAndroidTalkBack": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_APPROVED_TALKBACK_SCOPE",
-        "report": "docs/design/community-android-talkback-validation-20261015.md",
-        "evidence": "docs/design/community-android-talkback-validation-20261015.json",
-        "sourceFingerprint": "62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c",
+        "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+        "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+        "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+        "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
-        "nextAcceptance": "task3 approved RP/system Passkey; task4 dual physical Android; iOS/production independent; ordinary transport-error list reload speech not exercised"
+        "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
       }
     },
     {
@@ -15640,12 +15650,14 @@
       },
       "currentCommunityAndroidTalkBack": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_APPROVED_TALKBACK_SCOPE",
-        "report": "docs/design/community-android-talkback-validation-20261015.md",
-        "evidence": "docs/design/community-android-talkback-validation-20261015.json",
-        "sourceFingerprint": "62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c",
+        "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+        "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+        "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+        "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
-        "nextAcceptance": "task3 approved RP/system Passkey; task4 dual physical Android; iOS/production independent; ordinary transport-error list reload speech not exercised"
+        "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
       }
     },
     {
@@ -34811,12 +34823,14 @@
         "manualReopenAndReboot": "USER_CONFIRMED",
         "talkbackSupplement": {
           "recordedOn": "2026-10-15",
-          "result": "PASS_APPROVED_TALKBACK_SCOPE",
-          "report": "docs/design/community-android-talkback-validation-20261015.md",
-          "evidence": "docs/design/community-android-talkback-validation-20261015.json",
-          "sourceFingerprint": "62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c",
+          "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+          "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+          "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+          "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+          "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+          "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
           "fullModulePassed": false,
-          "nextAcceptance": "task3 approved RP/system Passkey; task4 dual physical Android; iOS/production independent; ordinary transport-error list reload speech not exercised"
+          "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
         }
       },
       {
@@ -35141,11 +35155,13 @@
   ],
   "currentCommunityAndroidTalkBack": {
     "recordedOn": "2026-10-15",
-    "result": "PASS_APPROVED_TALKBACK_SCOPE",
-    "report": "docs/design/community-android-talkback-validation-20261015.md",
-    "evidence": "docs/design/community-android-talkback-validation-20261015.json",
-    "sourceFingerprint": "62f9860ca60cf6c711f87a9af3a13b7ac5890729962c7293f88fdb6d1275dd4c",
+    "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+    "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+    "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+    "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+    "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+    "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
     "fullModulePassed": false,
-    "nextAcceptance": "task3 approved RP/system Passkey; task4 dual physical Android; iOS/production independent; ordinary transport-error list reload speech not exercised"
+    "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
   }
 }

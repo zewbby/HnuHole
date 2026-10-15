@@ -1,0 +1,1016 @@
+{
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+  "fullModuleOrAppPassed": false,
+  "startHEAD": "eee3fa8089af3832bc6685c373d7656e14433c4e",
+  "branch": "codex/community-flutter-pages",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "previousTalkbackEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+  "device": {
+    "model": "vivo S18",
+    "android": "15",
+    "sdk": 35,
+    "talkback": "17.0.1.926549743",
+    "physicalDevices": 1
+  },
+  "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+  "sourceFingerprintScope": "205 mobile/plugin files normalized LF; Go/SQL unchanged from startHEAD",
+  "sourceFiles": [
+    {
+      "path": "apps/mobile/README.md",
+      "sha256NormalizedLf": "bf292efe0abc763d3660d7e11cd3a392903c598acf9da291c181f4c918fd42a7"
+    },
+    {
+      "path": "apps/mobile/analysis_options.yaml",
+      "sha256NormalizedLf": "8fd2d64e9b2cdd11cc2dbb9a78cb2e4c177cf14575b744c0132c1b0fc0129842"
+    },
+    {
+      "path": "apps/mobile/android/.gitignore",
+      "sha256NormalizedLf": "b027c9de1011765c015e5819bf857c0d75bfcd0886fb01721c091159012e50f1"
+    },
+    {
+      "path": "apps/mobile/android/app/build.gradle.kts",
+      "sha256NormalizedLf": "fb0a0dd4dd07042f6e8e169b4c68a25e685f2393a78010d28670a5753bda805c"
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/AndroidManifest.xml",
+      "sha256NormalizedLf": "f7c485f2ce1470fe985c7e2212533520500e229509bad987d162cf6cd479e580"
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticActivity.java",
+      "sha256NormalizedLf": "87c19fa137043a2290cc5b6306b0d7271f9babfb8ee8891d28497e2792771c33"
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticPolicy.java",
+      "sha256NormalizedLf": "7e727f29ee389c5c383882a1e06b882b9d5d84841e13f69747d387599b942605"
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/res/values/passkey_associations.xml",
+      "sha256NormalizedLf": "31032703453b7defbdec56e19bad8331be06bbab645e185e60f22083bd2679fd"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/AndroidManifest.xml",
+      "sha256NormalizedLf": "bbf5ef5c546167d911a1da3799f506bbd0b5140d4c30123d3982c8011c6ea756"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt",
+      "sha256NormalizedLf": "c22ef1ab372277123863c82a6fb91a2fff2fb71e153006e005b210d989ff66db"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable-v21/launch_background.xml",
+      "sha256NormalizedLf": "7ca6d5cec2169c5a98661a119db23a6f3399c8fef2256ff04f3a642831282478"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable/launch_background.xml",
+      "sha256NormalizedLf": "94433756fe10005ddd6fc55cc5c0b1e9f3c10b66a08ceac795ece6713d34e28a"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "sha256NormalizedLf": "0f8ba640389248ef1042f6ad5e1d227a9cb2289bd806d15deb84889096ecd7ce"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "sha256NormalizedLf": "12bc7f24da8e062aa53882dfa05f1d47cb89977e1e6f37dbc62354c2efd09550"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "sha256NormalizedLf": "e72cd68c4fc86130aa94f3cfa3e5a84afad6ff5a365b25a279ed56059cc3e26a"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "sha256NormalizedLf": "b247895d5083646dfd6a8039e990a59d9cd2ee2476540d0b780e7f0be00f9b72"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "sha256NormalizedLf": "ac28999aa0f66c0855654e8a0a462a8dcbf0255e0ece057ff63865007aa4513e"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values-night/styles.xml",
+      "sha256NormalizedLf": "8c5bad5152f217e837519f9c15211d19f39bd45f5f67faf6dd81cb4b299e518f"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values/styles.xml",
+      "sha256NormalizedLf": "937d7c82f539c72eb94fd3a3773f29b3d3fef1997213c92cb632298cedf4bda9"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/xml/auth_data_extraction_rules.xml",
+      "sha256NormalizedLf": "1ebb983c78f21bda053fe8342dea1bfd2b5f99a47fc7ab26a226455b8ebb3c50"
+    },
+    {
+      "path": "apps/mobile/android/app/src/profile/AndroidManifest.xml",
+      "sha256NormalizedLf": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b"
+    },
+    {
+      "path": "apps/mobile/android/build.gradle.kts",
+      "sha256NormalizedLf": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba"
+    },
+    {
+      "path": "apps/mobile/android/gradle.properties",
+      "sha256NormalizedLf": "c48145a733bf98220d895f8a9d5859645dd46e64d2fc5b06ca66d9bb28bbc61b"
+    },
+    {
+      "path": "apps/mobile/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256NormalizedLf": "5485634483d93f576f699b1a4e127130e28dfe24f24a34ae405db67312594f32"
+    },
+    {
+      "path": "apps/mobile/android/prebuilt-debug.init.gradle",
+      "sha256NormalizedLf": "b45f1cb6db4cf28212507ebfd96a588a63837e65277d19933e2a336b58ca5bbd"
+    },
+    {
+      "path": "apps/mobile/android/settings.gradle.kts",
+      "sha256NormalizedLf": "016759283e88ade6eba92910583feeef88b962839b957aa414296afd2952d122"
+    },
+    {
+      "path": "apps/mobile/integration/auth_public_https_postgres_test.dart",
+      "sha256NormalizedLf": "b3e773f71bc8673fe9733c13d86af19424914e428aaeeddde41342cf60e979d4"
+    },
+    {
+      "path": "apps/mobile/integration/community_stage1_host_test.dart",
+      "sha256NormalizedLf": "5edd1eed4f9bfef22ff7087f83600d12208ba126242e80ca293ac3cc56f949e8"
+    },
+    {
+      "path": "apps/mobile/integration/community_stage1_scenario.dart",
+      "sha256NormalizedLf": "5c410bb1cce724d320ae7738c38cdc5d9f637b771881eb15ee50271b0a64cf82"
+    },
+    {
+      "path": "apps/mobile/integration/f4_main_https_postgres_test.dart",
+      "sha256NormalizedLf": "033bfe7d870814f273c8e6a3dede5ec15915652eb9b02f74862cc84e8ee91e6f"
+    },
+    {
+      "path": "apps/mobile/integration/identity_https_scenarios.dart",
+      "sha256NormalizedLf": "84af996cb24ab47a3e707a6008c802abc8473987f99d9ec0a39c20dd3cee5f79"
+    },
+    {
+      "path": "apps/mobile/integration/native_closed_scope_evidence.dart",
+      "sha256NormalizedLf": "60b2497c6d42660f8ecb63d83e871368a609dc5ecf87df1d33d81a29a987a702"
+    },
+    {
+      "path": "apps/mobile/integration/verifier_gate_https_scenarios.dart",
+      "sha256NormalizedLf": "3e379467c99a0f07b5162c7d52d108b45e714bde229b05b49155a62fa3a14e4b"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_b1_b2_device_test.dart",
+      "sha256NormalizedLf": "8b39a9dd14c0f02ce77d0b7b4d9fb268e1551ee01167c4c5bb9181e9ae43ae1e"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_b3_b4_device_test.dart",
+      "sha256NormalizedLf": "8bc1d19f77ddca760db72506c62d7a6d167015fe2eb2638d629fc20dbc31fe6c"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_batch_device_test.dart",
+      "sha256NormalizedLf": "cfd2c3ceba19a75095835bd8318f42337d8312abc26e881f945540b467a53121"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_boundary_device_test.dart",
+      "sha256NormalizedLf": "ef4104527fbf1eeb55ff64b3064cdb41bf032ddde581ea3767d3a44fe1a55939"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_closure_device_test.dart",
+      "sha256NormalizedLf": "6762fa96ff266640585fe57bde9afaced5a17dab62030eb55bd574e7b230d39c"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_ime_device_test.dart",
+      "sha256NormalizedLf": "f3b1f5d9727a7e59e4d32c32e44bb940f937cd94f7c49d4a60d8571bb6e2854f"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_lifecycle_device_test.dart",
+      "sha256NormalizedLf": "c254b87bb3a9e55844eb65a77a69f8765735c319eac0d00315b7a886d94d8819"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_matrix_device_test.dart",
+      "sha256NormalizedLf": "8d23c10b0031c4c1411c167109875f28728dfb0a9fc27a29324a25b721b5e0e0"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_otp_continuation_device_test.dart",
+      "sha256NormalizedLf": "a1489ee577d56b3cb64ba632b878af24a023fbee2561ecd67f252eb2f49d4831"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_release_boundary.dart",
+      "sha256NormalizedLf": "2f3c1ac751c5c1fbb5159b4fc5da37501862eb7011421e3caac38d5bec34ee63"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_storage_device_test.dart",
+      "sha256NormalizedLf": "4eebfb603984f7835806483aaca3e57db09f0291b3abe4f3a863c316459d6235"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_talkback_device_test.dart",
+      "sha256NormalizedLf": "cb7a2e52a1bb7dc829b91d654468b7143a51b7c261be445083a97ba58517efb1"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_fault_device_test.dart",
+      "sha256NormalizedLf": "73b0b1f3def83490d86aebb5e5f26a5b9127f38661b1c9a2bfa15fef8ed278b8"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_live_device_test.dart",
+      "sha256NormalizedLf": "b434c6ef7f507a942ce0d2e5bdf49e67a470464617bc1be415f8f954b55872d1"
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_security_device_test.dart",
+      "sha256NormalizedLf": "b4231f1ca698da9402f00eab6b4272f77c37350567a78229a479a8f36c0b9805"
+    },
+    {
+      "path": "apps/mobile/integration_test/community_android_stage1_test.dart",
+      "sha256NormalizedLf": "29ad8d545b3f378a03a64dc9d28dd34e541c3cd70f0b35a91661c83c3871f088"
+    },
+    {
+      "path": "apps/mobile/integration_test/community_android_storage_test.dart",
+      "sha256NormalizedLf": "61c583e7ac703fd347ccedbc27d3d0408b92bd207f4ec2a7ad324f4c68605048"
+    },
+    {
+      "path": "apps/mobile/integration_test/identity_device_scenarios.dart",
+      "sha256NormalizedLf": "8c519703e6f6b22ebbcf8e0dee5ed339bd4b8872b6609d2eca80e0d75d2b3c9d"
+    },
+    {
+      "path": "apps/mobile/integration_test/owned_auth_device_helpers.dart",
+      "sha256NormalizedLf": "9076d4ed4e24e442f1a12303540375ca753ba9420e7b919a3f6f5ebd947457ea"
+    },
+    {
+      "path": "apps/mobile/ios/.gitignore",
+      "sha256NormalizedLf": "37380775aeb2499662b7aca80f4ac4c95ae827c3ba2bfa179aa3e9af4812c623"
+    },
+    {
+      "path": "apps/mobile/ios/Flutter/AppFrameworkInfo.plist",
+      "sha256NormalizedLf": "da12038f9b2688a8a26160fea2609fa8fcb11421448c109f09c0f573efe7698d"
+    },
+    {
+      "path": "apps/mobile/ios/Flutter/Debug.xcconfig",
+      "sha256NormalizedLf": "a82d7765b37116ee4821d2cd1d65942febf8032353757ffb0826eabde785b4a6"
+    },
+    {
+      "path": "apps/mobile/ios/Flutter/Release.xcconfig",
+      "sha256NormalizedLf": "a82d7765b37116ee4821d2cd1d65942febf8032353757ffb0826eabde785b4a6"
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/project.pbxproj",
+      "sha256NormalizedLf": "339d8b84e926acf1cae5b3665634d668d951b884c0539dd05e4ea146f86516de"
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "sha256NormalizedLf": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f"
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256NormalizedLf": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542"
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256NormalizedLf": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f"
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+      "sha256NormalizedLf": "9fbce429f56243561dd437a527136c9f9ed77165e3b271b923faf236cfcd0484"
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcworkspace/contents.xcworkspacedata",
+      "sha256NormalizedLf": "46c3c9702ff7c5584e11c954d943cfb6e07fb26e3fbd072ddbc0f388aa352de1"
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256NormalizedLf": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542"
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256NormalizedLf": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/AppDelegate.swift",
+      "sha256NormalizedLf": "451c6d9ba0a2b3ff43092ea349c60fa79a91f1158b915eb29dbdd357cb95d7b8"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "sha256NormalizedLf": "3b1e214f466ffedff74baa5598ad5c4421130eea6bc8d57b8fe23435e8280ae4"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "sha256NormalizedLf": "414ed8460b86b24d092c907ad5c9a1ba4819832d9f64f18b74278efb832c11a5"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "sha256NormalizedLf": "2443daa2a52f2466ac9d37cd589e62ed58a4349e3bab0fe5b97f591629af5806"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "sha256NormalizedLf": "926830088277d66e347f94339fe609f68a4d13822d64744a4acd05c76a573fb5"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "sha256NormalizedLf": "7710d7d75106b4063547d0a607fb442a351c2aa88dfca976f156cd147c95b7f3"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "sha256NormalizedLf": "5cbed6fb0bb8f085c3cba46d522b0640d7892205f01fe3c05ec012d843aa047e"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "sha256NormalizedLf": "5154e89a53bc7bfae447a456e7d286472e4d96e2c751676c0470295e5c505b66"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "sha256NormalizedLf": "b80ed9d018a59a4741798862d5ede169292650942f167a6a451bd6ba936afb41"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "sha256NormalizedLf": "926830088277d66e347f94339fe609f68a4d13822d64744a4acd05c76a573fb5"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "sha256NormalizedLf": "9c5923f048b86b91ccd30a0d39e925ac6a6dfb202f45f941a4ebe2a50ece939c"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "sha256NormalizedLf": "1504cbf5c9d9e328ae90bd1e26d736f2685e5b603539e143d5d556567a4fb325"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "sha256NormalizedLf": "1504cbf5c9d9e328ae90bd1e26d736f2685e5b603539e143d5d556567a4fb325"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "sha256NormalizedLf": "8d8ddf7f2dcd3fdb9f49d708388e13cd953e4b2cdabc32c27256b87e0ce008e8"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "sha256NormalizedLf": "6de7e3b4dd9406d573588ccadc0c3330f972f6d4e115b76b1f7d4a5b1e646184"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "sha256NormalizedLf": "084bf85fb08ad0d82576d69d2d7f57491fab3a735fee66490f376a508c14c098"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "sha256NormalizedLf": "a51b34dc71ddc7a44d4693979e4ef4c00e5a256aa4e27434ac6f91cba8718573"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "sha256NormalizedLf": "ccc7950fd5f5b82067c85f667940a9d59189151460761ece8098ca78daa19469"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "sha256NormalizedLf": "704527a2f52283266843cf46bf0e631c881046e1a88826dde80ff4a2910f7122"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "sha256NormalizedLf": "704527a2f52283266843cf46bf0e631c881046e1a88826dde80ff4a2910f7122"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "sha256NormalizedLf": "704527a2f52283266843cf46bf0e631c881046e1a88826dde80ff4a2910f7122"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+      "sha256NormalizedLf": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "sha256NormalizedLf": "857e61203b3deafb05766d8fcda898b86a7cb6f3d5e385ecc9926c4d698215e9"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Base.lproj/Main.storyboard",
+      "sha256NormalizedLf": "fd367b6c43006d61b730f674970dd48b9f662c8f2264e52ffc1558102a2c9f2d"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Info.plist",
+      "sha256NormalizedLf": "f2e4a941c27d885b3c860720717e10895e3eadaa4c8d29aa3346ed4e7554dda7"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Runner-Bridging-Header.h",
+      "sha256NormalizedLf": "1a8d11d01d1cc92c650c9c9ed35299240052d4683a15a719a2315ef44185e074"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/SceneDelegate.swift",
+      "sha256NormalizedLf": "add68b905971dedfcc0d0b5b7118030de5925ba8c081ad9815463699e3a444ad"
+    },
+    {
+      "path": "apps/mobile/ios/RunnerTests/RunnerTests.swift",
+      "sha256NormalizedLf": "cd497780668b55ef1ba3ec614edaa4a85c1f00d0502df7098e16960c08fb6230"
+    },
+    {
+      "path": "apps/mobile/lib/hnuhole_mobile.dart",
+      "sha256NormalizedLf": "659bda1262a11e3b72bae75f9cf74da097958f6f4504e2d6c50547f00ae3067f"
+    },
+    {
+      "path": "apps/mobile/lib/main.dart",
+      "sha256NormalizedLf": "a2d488a7fa26c9dca1cb811a289e507ab8948a0c6b1721834a58414869ff85f0"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_api.dart",
+      "sha256NormalizedLf": "7b0efde4afdd2af2720ad2dbad8b1ab96ddd417947f1ec817244f74952826ece"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_crypto.dart",
+      "sha256NormalizedLf": "11883f2e1cd067554f8d31f2fa15e92ff93a412388d670c2b04ac93bed1c07bf"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_flows.dart",
+      "sha256NormalizedLf": "eee9d96fc00404e20e662a5d116a0991803db17891aaa05140316802e35a017c"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_models.dart",
+      "sha256NormalizedLf": "84b7f45dd9700bc0b72ece164dcf959e6d36bbb7c4cfed680bdd93f135f72387"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_screen.dart",
+      "sha256NormalizedLf": "34681c4134dc9746992108953fd391a0a30419efd8f50fe7192b88e32fd98ac6"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_session_controller.dart",
+      "sha256NormalizedLf": "04476dfedbc6e9893e19bd0c3188b14863e8524273474ec3b2b7f0e54a322b11"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_state_codec.dart",
+      "sha256NormalizedLf": "7adcac9ec5cf49a7097f19e0420d034edb026b358b7af39de874df4895dca0ba"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_store.dart",
+      "sha256NormalizedLf": "c024d5a587393aacf60dbf4c6da54beabb5dc77ac5efcee5ae955994133f9700"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/credential_management_api.dart",
+      "sha256NormalizedLf": "b8fda81bcda45b9789a2a4c15a65d46a432a82d2deac43323228b2871e36003b"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/http_auth_api.dart",
+      "sha256NormalizedLf": "e3a5a65bd47eeb856c846965e7e2a4122188aab5eadfff7fe7d0e0d234c81b73"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/security_management_controller.dart",
+      "sha256NormalizedLf": "6d5c6f305785dbba3015fbccdae1c933b3dcb8821040f770d6d0f79717b9967f"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/security_management_screen.dart",
+      "sha256NormalizedLf": "1b9de3fba07b55ed477cc7a46fc6b60a32eb2fcfe9c4a46b74b53644f5aaf53b"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/channel.dart",
+      "sha256NormalizedLf": "0f3388192e5ccea98e1c442bfa7dbe234546c96b6851dc5b213bc2434309effb"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/channel_repository.dart",
+      "sha256NormalizedLf": "197d20a241b9499f543634583f04dc5461e4ac6c29705e2329dab173b64a07ab"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/http_channel_repository.dart",
+      "sha256NormalizedLf": "8acebf38e27752ac7b5a7f5e0c13d961bdb1de2d710a52d707ba5ba754fc73a5"
+    },
+    {
+      "path": "apps/mobile/lib/src/config/mobile_environment.dart",
+      "sha256NormalizedLf": "b72271611a72966cbecaf7056311b3ef286d0b34474044d3809b76bfb56b6ef2"
+    },
+    {
+      "path": "apps/mobile/lib/src/development/app_transport.dart",
+      "sha256NormalizedLf": "d2b891b3db409b59604fa8ab1463c831ac892ea2e454043ae55eb924b36a3be6"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_api.dart",
+      "sha256NormalizedLf": "f99fe4086da0e42e3b229741c6d553d9fe7bae17a9778d5c4ea6f5fbd71838c3"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_management_controller.dart",
+      "sha256NormalizedLf": "b6150323b0127eef08999b6e1ecad3b34ca751b6b1c63ffece5311671dd5bab6"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_management_screen.dart",
+      "sha256NormalizedLf": "389abcaf03878873a978a95e8fa043418ac0f916312bfacc6e45c29378346800"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_name_formatter.dart",
+      "sha256NormalizedLf": "6c4a805bed154d25d1cfe25e80ae70c40fba66434553ab4cb7908279fa18f427"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_name_ranges.dart",
+      "sha256NormalizedLf": "fda2068b6dbe1782483d5a43a36b1d380f973603f9f6ab704b29cd02ad537793"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/settings_screen.dart",
+      "sha256NormalizedLf": "16dfe62fc4b0e02ac37de7fb6c89c9f3371e33d7d40a50363d44410f71397185"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
+      "sha256NormalizedLf": "26d48f58234c7c5513f3d7fca178ca701d55112c562e5876a26a85c2f59594f6"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_tree.dart",
+      "sha256NormalizedLf": "3905e0c5603842a28c1f6724532a9bf6f779e197b0b0606444aad2093f8a745c"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/community_material_labels.dart",
+      "sha256NormalizedLf": "405452ff8128fd991d0b136ea2ffbd1e8bbaa1826efb353d662faa28cf8ae912"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/entry_screen.dart",
+      "sha256NormalizedLf": "446b83fa3dcc9286458fd594c18e8ac32cd3184bdb93fa773c200464918600a5"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/http_post_api.dart",
+      "sha256NormalizedLf": "be3ba00c3c83378c73bacd2bc2d178b7ac1a56f240a6a69fbd2d47eeefbec5ef"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_api.dart",
+      "sha256NormalizedLf": "18258abde12c3de567102c435d05a10891b85cd7d1678624ec0791e9887bfcdc"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_controller.dart",
+      "sha256NormalizedLf": "49a72e8f65c87a6fb3e175433a4c8810200bb4149c9b2335003f488204e96724"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_models.dart",
+      "sha256NormalizedLf": "c4133991ca2c61c097aef19235b5e65fb8b4733336ed9a7d15145ddc8ae47704"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_protocol.dart",
+      "sha256NormalizedLf": "afab051109ed6715d179285c5a14d68cea3977ddb19b5556f4b3c0355cac871b"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_screens.dart",
+      "sha256NormalizedLf": "896d5c23a21bbefbaec2ac1634ec83f329d8ca88aecd747a1771d120f9de7393"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_theme.dart",
+      "sha256NormalizedLf": "9ea346bceb94c20652ec4350ca6f25c9f75e3398c1cc1a92bd5c6962cfb4ad11"
+    },
+    {
+      "path": "apps/mobile/lib/src/storage/post_store.dart",
+      "sha256NormalizedLf": "738cf69eba57a628d29270be79720dad8cbf60ce2b25963ed2c7c7c92e87545b"
+    },
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "sha256NormalizedLf": "9609e0f46a13ab53d6dedfb9665b0b7ac7523d20474b42abb77380dbdb4c9261"
+    },
+    {
+      "path": "apps/mobile/pubspec.yaml",
+      "sha256NormalizedLf": "562be19adfb9dea9057655b753ae354e10df452eb469b842f9c553fea759718f"
+    },
+    {
+      "path": "apps/mobile/test/auth_api_test.dart",
+      "sha256NormalizedLf": "9110873194e5e32b6880c66e98bec31a7d775e5528ff4fbeafe134d7e2c0190f"
+    },
+    {
+      "path": "apps/mobile/test/auth_crypto_test.dart",
+      "sha256NormalizedLf": "74593016d9eacae1a601e2948159a576aa53c16b1a3df47353760cfbdb806c1d"
+    },
+    {
+      "path": "apps/mobile/test/auth_flows_test.dart",
+      "sha256NormalizedLf": "c37e84e2d6143f7369f048a103c8b45e7daa572afdc10bbbc0ffeaa80a09d01c"
+    },
+    {
+      "path": "apps/mobile/test/auth_screen_test.dart",
+      "sha256NormalizedLf": "6ccdc77cf34a8d3424bed9fbd36f2a701617edb112264d39351fbd52752aa7ef"
+    },
+    {
+      "path": "apps/mobile/test/auth_session_controller_test.dart",
+      "sha256NormalizedLf": "569c0411fb46a070405f4b0adb69ff870425a12db50583464fce3cccc680288b"
+    },
+    {
+      "path": "apps/mobile/test/auth_vault_test.dart",
+      "sha256NormalizedLf": "bfa51bae2da56ba7e17e3163562987a4e899a95b55fa9dc600a9d0c1e29dcb63"
+    },
+    {
+      "path": "apps/mobile/test/development/app_transport_test.dart",
+      "sha256NormalizedLf": "353ac7398c8af7de678501d4f0f255f35166a45216783948d0b7f7e3416c11f2"
+    },
+    {
+      "path": "apps/mobile/test/identity_management_controller_test.dart",
+      "sha256NormalizedLf": "ad5f9be4e957a21478b599eff2f3b98d7849768e5c6c59cd831cc5385d7e795b"
+    },
+    {
+      "path": "apps/mobile/test/identity_management_screen_test.dart",
+      "sha256NormalizedLf": "f806fcefaafad6615fe852b36f149775f20d2ec997a21f9e08b89349c799a985"
+    },
+    {
+      "path": "apps/mobile/test/identity_name_formatter_test.dart",
+      "sha256NormalizedLf": "39f61b74ff35f77ab227db795a80fcceef114f837bb383d82734886706734781"
+    },
+    {
+      "path": "apps/mobile/test/identity_test_support.dart",
+      "sha256NormalizedLf": "535a1588cbbdb82e024aafb702027ec07234be8d06998bf18cab1a12b2bd09f1"
+    },
+    {
+      "path": "apps/mobile/test/mobile_environment_test.dart",
+      "sha256NormalizedLf": "a1fec6852c291a55aff2a552b709e6102878828ea80282c73c417bc8b13e2379"
+    },
+    {
+      "path": "apps/mobile/test/native_closed_scope_evidence_test.dart",
+      "sha256NormalizedLf": "8e761f6f233ff57f199ba2c4b74278b01903bd43601456271dc00e89ef35077d"
+    },
+    {
+      "path": "apps/mobile/test/passkey_recovery_flow_test.dart",
+      "sha256NormalizedLf": "82d04a1e39c50f1e584ec0c9654e21bf60a4f3b8916dfa07a0ea74bd017c621a"
+    },
+    {
+      "path": "apps/mobile/test/post_api_test.dart",
+      "sha256NormalizedLf": "f4c52c4e5396a0fe273a7a873439b38bd461c21fefa7312166c0a67e4ea6f8d1"
+    },
+    {
+      "path": "apps/mobile/test/post_closure_cleanup_test.dart",
+      "sha256NormalizedLf": "a03e4824307bf3d4127451f3b2d8fbda4c3ac5964f3bdf9123b65728abef7011"
+    },
+    {
+      "path": "apps/mobile/test/post_controller_test.dart",
+      "sha256NormalizedLf": "d306b0522ea24b1c479675596342a1faf91cf2554da8a687aa4b1d7bf79d2d4f"
+    },
+    {
+      "path": "apps/mobile/test/post_models_test.dart",
+      "sha256NormalizedLf": "03d9a4e69a422f61554415bb46309b0551fb84c1c948c344872071bbd3fc358f"
+    },
+    {
+      "path": "apps/mobile/test/post_protocol_test.dart",
+      "sha256NormalizedLf": "fb7d0966d159a539c94e1642a51a15a0536f47294e5a21df5640fe18e51158e0"
+    },
+    {
+      "path": "apps/mobile/test/post_screens_test.dart",
+      "sha256NormalizedLf": "4f784d26768e393087b89f3b4593c72b7a4beef76d589e1fbb2fa0c070483526"
+    },
+    {
+      "path": "apps/mobile/test/post_storage_test.dart",
+      "sha256NormalizedLf": "c0a7589fa51d9d3e617f244a82a8b6e0ccf545807f25a6bb82bf317642e83e23"
+    },
+    {
+      "path": "apps/mobile/test/security_management_controller_test.dart",
+      "sha256NormalizedLf": "7accbc4e1bf50583b4dc62a17357ca0d6f29e8fb92a5df710552c6986dae8ea1"
+    },
+    {
+      "path": "apps/mobile/test/security_management_screen_test.dart",
+      "sha256NormalizedLf": "4b037261d5c25e10822fbb15b62d1c36d24ef4a9e381f98773de1fca41fb9ec1"
+    },
+    {
+      "path": "apps/mobile/test/talkback_semantics_test.dart",
+      "sha256NormalizedLf": "57b5756f69f5b2b2e288de529abac62a063304ac6deaf2f1838ccc101505b201"
+    },
+    {
+      "path": "apps/mobile/test_driver/auth_live_device_driver.dart",
+      "sha256NormalizedLf": "a4cdb7f8eefcf8e84f7308b5b38af68ec133ef929df168d47282e4085f46bcb7"
+    },
+    {
+      "path": "apps/mobile/test_driver/auth_security_test.dart",
+      "sha256NormalizedLf": "a4cdb7f8eefcf8e84f7308b5b38af68ec133ef929df168d47282e4085f46bcb7"
+    },
+    {
+      "path": "packages/auth-protocol-vectors/retirement-ack-static-verification.json",
+      "sha256NormalizedLf": "39462a3b873700330c742a702522661badb913a8f8d2cb6349a57fe32d24c8e8"
+    },
+    {
+      "path": "packages/auth-protocol-vectors/static-verification-report.json",
+      "sha256NormalizedLf": "ad6ff0cf687fabf44d82f6489790b20362286585d10cb8a92a93cb123ee1f02d"
+    },
+    {
+      "path": "packages/auth-protocol-vectors/v1.json",
+      "sha256NormalizedLf": "da913014063f3972dbc15a6c79a87757e7f113ff9cd5911bbb4b42918e5262b1"
+    },
+    {
+      "path": "packages/auth_passkey/.gitignore",
+      "sha256NormalizedLf": "afdc8d6ac5b51de601a9b3616486218761b956696228b066cd8556d37941b675"
+    },
+    {
+      "path": "packages/auth_passkey/README.md",
+      "sha256NormalizedLf": "b92ec31fb7f9cd822ee549a76331ecd02c43591b627f2a747df26232b4323300"
+    },
+    {
+      "path": "packages/auth_passkey/android/build.gradle.kts",
+      "sha256NormalizedLf": "8d1ad5b31d6165951a304d7b3802e112157e18a2cab4de2988719c9faba149d5"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/androidTest/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrorsTest.kt",
+      "sha256NormalizedLf": "6518c26b024fe04dd06c02cadeaec8ffe33da457ef46cc6161e32f9f91633200"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/androidTest/kotlin/org/hnuhole/authpasskey/PasskeyCodecTest.kt",
+      "sha256NormalizedLf": "6303a010b71a9e38ba60e5db316cec9b694eb3f1c1d3a7db4d639794cccedaba"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/AndroidManifest.xml",
+      "sha256NormalizedLf": "343d5be1ac17cdd45d1a2f2ddc616c509290e655869125a9422a96d88aa66066"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt",
+      "sha256NormalizedLf": "4b8bfc676582f2fa250ef0b67ccb79ac98ac62c10873de140c30c8c561125419"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrors.kt",
+      "sha256NormalizedLf": "6c918e07f575e62f7939c314ca60dee6663c3e761105b126ae3a080b7e2a2d93"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyCodec.kt",
+      "sha256NormalizedLf": "c44fdd68077f40483ff95e4a14a00da82f812c56d79ca3e875bb0e583acc6b13"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PendingOperation.kt",
+      "sha256NormalizedLf": "3c22c870f3d9a7a311ca27500d89ca938f1b1e690257d2485ef1997336cfa473"
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey.podspec",
+      "sha256NormalizedLf": "d2808ce9262337c2b3296d8c043468390e69e9ffda7b7ac47a187cc05cfd7aad"
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Package.swift",
+      "sha256NormalizedLf": "c547124ce16c31ef6fe4d08d7e819157a0b896e8689d813555443d906c832be9"
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Sources/hnuhole_auth_passkey/AuthPasskeyPlugin.swift",
+      "sha256NormalizedLf": "58b82fc373100d06a4e26289fbfef90447de9bcc862734e0f0b065a16ad1b7f9"
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Sources/hnuhole_auth_passkey/PasskeyCodec.swift",
+      "sha256NormalizedLf": "2b82618e327451759dc8386f8695af55adf625e8341a924346383407149498ff"
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Sources/hnuhole_auth_passkey/PendingOperation.swift",
+      "sha256NormalizedLf": "94d39ca461b8f5a011c5ca7e16a4b15ee251e3bf60b150655aba02c9cbc3ea16"
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Tests/HnuholePasskeyCodecTests/PasskeyCodecTests.swift",
+      "sha256NormalizedLf": "0ae376faebe78c08d14330505fd7c3fa5e5ebcdf3ea64c1032567f759c05ccff"
+    },
+    {
+      "path": "packages/auth_passkey/lib/hnuhole_auth_passkey.dart",
+      "sha256NormalizedLf": "02c9a0539f06306afc175a8b7fd2c3396fcc5e42a25b60cc9aae310c884f5d27"
+    },
+    {
+      "path": "packages/auth_passkey/pubspec.yaml",
+      "sha256NormalizedLf": "f7acd31d14996ad1bb059e95bbc1453e4c7d3ba6d9894c19d70d1cfbb679d27c"
+    },
+    {
+      "path": "packages/auth_passkey/test/native/PasskeyCodecTest.swift",
+      "sha256NormalizedLf": "4d411eeeef2a13bb65432e86d5d5b1a326b72a42cfac5f94b3553ecad1fc1736"
+    },
+    {
+      "path": "packages/auth_passkey/test/native/run-codec.sh",
+      "sha256NormalizedLf": "a0d2fe1f98acf30cf2fa959e7596c03843e205cec11da25ac4b1a9a41cd94800"
+    },
+    {
+      "path": "packages/auth_passkey/test/native_passkey_client_test.dart",
+      "sha256NormalizedLf": "9e937227637b9c5a5477e75277b5c2697a76e4d2dac7766200b5c52808eb134b"
+    },
+    {
+      "path": "packages/auth_vault/.gitignore",
+      "sha256NormalizedLf": "acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0"
+    },
+    {
+      "path": "packages/auth_vault/README.md",
+      "sha256NormalizedLf": "9813b40e35bbcd74b593e18936ad9986ae1fd7673f402116e1e834fb4e916ce4"
+    },
+    {
+      "path": "packages/auth_vault/android/build.gradle.kts",
+      "sha256NormalizedLf": "7af413a655190a27df0a2960ec78e3947b505d782ce9dd781532e5c70eed4707"
+    },
+    {
+      "path": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidAuthVaultTest.kt",
+      "sha256NormalizedLf": "16bed2bb8b1c29ab4d0ba8dd69ddddaf9ecf529e07276bd639c7dec08993e794"
+    },
+    {
+      "path": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt",
+      "sha256NormalizedLf": "e02fe88e0b3e6a752fdebb95459eda0240168aeb2d7eea7569d9250775ee7f44"
+    },
+    {
+      "path": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AuthVaultProcessRestartTest.kt",
+      "sha256NormalizedLf": "6bcb394e6b637e7dff754db1600cbdee70452186fdbcc782c0e3c1adcf144dc9"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/AndroidManifest.xml",
+      "sha256NormalizedLf": "343d5be1ac17cdd45d1a2f2ddc616c509290e655869125a9422a96d88aa66066"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt",
+      "sha256NormalizedLf": "de874ca6a81c7a905ccd7e30774fe6cb8d6925b0ac386e403ac276b086b678cc"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidBusinessStorage.kt",
+      "sha256NormalizedLf": "c68f30897e124e6cd86d69ba0040d96642ef1cbfae9b6ed07b929dcb43aafb3c"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
+      "sha256NormalizedLf": "d900b2cab0873d85aeab2f95668f70b18667710977d483febed63f27d8560145"
+    },
+    {
+      "path": "packages/auth_vault/ios/Classes/AuthInstallationMarker.swift",
+      "sha256NormalizedLf": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881"
+    },
+    {
+      "path": "packages/auth_vault/ios/Classes/AuthVaultPlugin.swift",
+      "sha256NormalizedLf": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe"
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault.podspec",
+      "sha256NormalizedLf": "e90758dd3f121d91031ce7c5da1eb816fe7ef9a0ec97a0f531bddc119296f5e2"
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift",
+      "sha256NormalizedLf": "dce4b0812fc26456154459943096932b3b7a3a0e14a6ee31d42dd604ee524b3e"
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthInstallationMarker.swift",
+      "sha256NormalizedLf": "db58627647628c2d9653c2551fc08cfa6eb35858eb5cc43ba0f403477134f19a"
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift",
+      "sha256NormalizedLf": "b977c8a771ee7e465b13432e4552b9b0e67ed4d9be795af0df380c778c840fde"
+    },
+    {
+      "path": "packages/auth_vault/lib/hnuhole_auth_vault.dart",
+      "sha256NormalizedLf": "51e27211543fbdc0684fabea16adebfdf8d68e579ca5c366a489524a598fe9a2"
+    },
+    {
+      "path": "packages/auth_vault/pubspec.lock",
+      "sha256NormalizedLf": "89b30ee926d11a020e0e3db68bd55708dcece478ce71ad72f394a6125827e8d5"
+    },
+    {
+      "path": "packages/auth_vault/pubspec.yaml",
+      "sha256NormalizedLf": "d3aa5fa5ff50c1004a8edcd2c2729e2c65a4f11dd4026aa9aca78591bc55d908"
+    },
+    {
+      "path": "packages/auth_vault/test/native/installation_marker_test.swift",
+      "sha256NormalizedLf": "399bb2b7c75780222b1992abe30c2ee81b32b02b9f4ddd804b80078a790cd969"
+    },
+    {
+      "path": "packages/auth_vault/test/native/run-installation-marker.sh",
+      "sha256NormalizedLf": "668585b3b3195cc8520781742d6282192a1fd0fa26b8f61b7a3fd2e465db12a7"
+    },
+    {
+      "path": "packages/post-protocol-vectors/GraphemeBreakTest-16.0.0.txt",
+      "sha256NormalizedLf": "ee2b9354d270ac061b29f09662cafea06341d77e704b8cc6bd72aaeeda363cb5"
+    },
+    {
+      "path": "packages/post-protocol-vectors/README.md",
+      "sha256NormalizedLf": "0f01b7f05d4ab0fb603e9bfd1e2276cb0dbae444eb8ef83e7768fae3c3b85de9"
+    },
+    {
+      "path": "packages/post-protocol-vectors/post-command-v1.json",
+      "sha256NormalizedLf": "928160e58630a2b4540df0dd054aae4a33698607b59a44cce630e2392b42f787"
+    }
+  ],
+  "artifact": {
+    "applicationId": "org.hnuhole.hnuhole_mobile.communityf5",
+    "newApkSha256": "f9a2ea7ed783fc5051743ee220ed3087a204d42aed0ae35b94c81fa09c987a13",
+    "oldApkSha256": "b924f853931ee1cbb70d645cb81e6dce87049d8abfae4d4f4f0afab97b7b2708",
+    "certificateSha256": "b92a9ab262aad4e96365bf4f81a44ac9235a5f69cdc9c7ede380c4e5c0e0eb77",
+    "sameOwnedSigningCertificate": true,
+    "onlyBuildOverlay": "app applicationId, unchanged from original isolated normal APK",
+    "sqlitePackagedSha256": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
+    "lockFilesChanged": false
+  },
+  "manualBeforeFix": {
+    "automaticErrorAnnouncement": false,
+    "fault": "ONE_GET_CHANNEL_POSTS_CONNECTION_DROP",
+    "errorAndRetryTraversable": true,
+    "installedSha256": "b924f853931ee1cbb70d645cb81e6dce87049d8abfae4d4f4f0afab97b7b2708",
+    "recordedUTC": "2026-10-15T06:36:07.5154110Z",
+    "exactUserResponse": "1. 出现\n2. 正确\n3. 进去通道没有自动朗读错误",
+    "result": "FAIL_AUTOMATIC_ERROR_ANNOUNCEMENT",
+    "errorPageAppeared": true,
+    "noWritesInjected": true
+  },
+  "manualAnnouncementAfterFix": {
+    "errorAndRetryTraversable": true,
+    "installedSha256": "f9a2ea7ed783fc5051743ee220ed3087a204d42aed0ae35b94c81fa09c987a13",
+    "result": "USER_CONFIRMED",
+    "exactUserResponse": "正常",
+    "automaticErrorAnnouncement": true,
+    "questionScope": [
+      "不滑动自动读出暂时无法加载帖子",
+      "左右滑动提示及重新加载仍可读"
+    ],
+    "recordedUTC": "2026-10-15T06:37:53.1713174Z"
+  },
+  "manualRetryAfterFix": {
+    "recordedUTC": "2026-10-15T06:38:12.7372617Z",
+    "noReloginRequired": true,
+    "result": "USER_CONFIRMED",
+    "originalDraftPreserved": true,
+    "errorGone": true,
+    "exactUserResponse": "是的，一切正常",
+    "normalListOrEmptyStateRestored": true
+  },
+  "fix": "Only channel-posts initial load error title has liveRegion=true; existing _PageState defaults false; retry/session/HTTP business behavior unchanged",
+  "newRegression": "Error title actual semantic node is a live region; retry semantic tap invokes same channel read, keeps account and does not publish",
+  "host": {
+    "mobile": {
+      "passed": 334,
+      "failed": 0,
+      "skipped": 0
+    },
+    "navigationSemantics": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "analyzerIssues": 0,
+    "R05": "PASS_REAL_HTTPS_DISPOSABLE_POSTGRES",
+    "F4": {
+      "assembly": "production HnuholeApp root; actual TLS C/V handlers, independent PG, file SQLite; host vault substitutes",
+      "checkpoints": {
+        "F4-H01": true,
+        "F4-H02": true,
+        "F4-H03": true,
+        "F4-H04": true,
+        "F4-H05": true,
+        "F4-H06": true,
+        "F4-H07": true,
+        "F4-H08": true
+      },
+      "counts": {
+        "bindings": 1,
+        "committedResponseDrops": 2,
+        "creates": 1,
+        "deletedPosts": 1,
+        "deletes": 1,
+        "posts": 1,
+        "queryDrops": 2,
+        "tasks": 1
+      },
+      "finalAuthenticationCandidate": null,
+      "finalF4Result": "BLOCKED_DEPENDENCY",
+      "hostFlutterProcesses": 2,
+      "result": "PASS"
+    },
+    "coversFinalRuntimeInputs": true
+  },
+  "faults": [
+    {
+      "phase": "transport-fault",
+      "counts": {
+        "injectedListGets": 1,
+        "forwardedListGets": 0,
+        "forwardedWrites": 0
+      },
+      "reverseRestored": true,
+      "proxyStopped": true,
+      "businessSQLAndWriteCountersUnchanged": true
+    },
+    {
+      "phase": "transport-retest",
+      "counts": {
+        "injectedListGets": 1,
+        "forwardedListGets": 0,
+        "forwardedWrites": 0
+      },
+      "reverseRestored": true,
+      "proxyStopped": true,
+      "businessSQLAndWriteCountersUnchanged": true
+    }
+  ],
+  "finalOwnedLab": {
+    "recordedUTC": "2026-10-15T06:38:39.769736+00:00",
+    "tlsVerified": true,
+    "databaseReset": false,
+    "gateRecovery": false,
+    "health": {
+      "c": 200,
+      "v": 200,
+      "proxy": 200
+    },
+    "stats": {
+      "counters": {
+        "creates": 0,
+        "retries": 0,
+        "deletes": 0,
+        "commandQueries": 0,
+        "droppedQueries": 0,
+        "droppedReplies": 0,
+        "uniqueCreates": 0,
+        "uniqueRetries": 0,
+        "uniqueDeletes": 0,
+        "rawTokensOrProofsStored": false
+      },
+      "sql": {
+        "accounts": 2,
+        "closed": 1,
+        "pendingClose": 0,
+        "posts": 2,
+        "published": 0,
+        "deleted": 1,
+        "attempts": 3,
+        "failed": 2,
+        "bindings": 2,
+        "closedPayloadsRemaining": 0,
+        "closedPrivateReceiptsRemaining": 0,
+        "closedCredentialsRemaining": 0
+      }
+    }
+  },
+  "accessibilityRestore": {
+    "result": "PASS_RESTORED_ORIGINAL_ACCESSIBILITY_STATE",
+    "talkbackEnabled": false,
+    "otherServicesPreserved": true,
+    "appDataCleared": false
+  },
+  "historicalFailuresRetained": [
+    "transport-announcement-before-fix.jsonl: expected true, actual false",
+    "mobile-retry-tests.jsonl: broad wrapper did not expose liveRegion on actual error text; assertion retained, placement corrected"
+  ],
+  "notRerun": [
+    "server/posts-privileges/vet: no Go/SQL/permissions changes",
+    "native35/process/reboot: prior fixed-version task2 evidence retained; no native/storage changes"
+  ],
+  "remaining": [
+    "task3 system Passkey with approved own RP/domain/package/signature association",
+    "task4 NI-X01/NI-X02 two physical Android devices",
+    "iOS",
+    "production",
+    "unvisited flows and full framework localization"
+  ],
+  "rawEvidenceRoot": "E:/HnuHole-community-f4-20261012/talkback-validation-20261015",
+  "audioRecorded": false,
+  "uiautomatorUsed": false,
+  "authenticationProtocolGateOrPermissionsChanged": false,
+  "appUninstalledOrDataCleared": false
+}
