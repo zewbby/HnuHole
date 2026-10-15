@@ -9,19 +9,44 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+*.p12
+*.pfx
+*.jks
+*.keystore
+application-local.yml
+application-local.yaml
 
 # Flutter / Dart
+.flutter-plugins-dependencies
+.flutter-plugins
 .dart_tool/
 .packages
 .pub-cache/
 .pub/
 build/
 *.iml
+*.apk
+*.aab
+*.ipa
+
+# Generated files, logs and local worktrees
+node_modules/
+target/
+dist/
+*.class
+*.log
+logs/
+*.tmp
+.worktrees/
 
 # Go
 bin/
 coverage.out
 *.test
+
+# Python tool bytecode
+__pycache__/
+*.py[cod]
 
 # Local infrastructure state
 infra/.data/
