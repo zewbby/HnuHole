@@ -1,5 +1,7 @@
 # 任务2：原生存储与生命周期
 
+> 当前设备入口 **BLOCKED_KEY_ISOLATION**：本机Windows ADB的默认key目录由OS profile API定位；HOME/USERPROFILE/ANDROID_USER_HOME/ANDROID_SDK_HOME与独立server端口均未证明key隔离，ADB_VENDOR_KEYS仅追加。两个runner在读取manifest、写状态、绑定socket和任何ADB调用前阻断，即使全部授权flag为true也不通过；`--plan-only`仍可用。先证明真正独立profile或经验证支持专用key目录的ADB，再由原服务归属方安全释放目标USB并重验摘要/ready/空库。新OS账户、安全配置或共享ADB/key例外须明确变更授权，不自行创建。见[本轮报告](../../docs/design/community-android-device-blocked-20261015.md)。下方执行步骤仅在该阻塞安全解除且授权有效后使用。
+
 当前只完成不接触手机的准备。设备 35 项原生测试、3 组认证进程中断、真实插件跨进程/整机重启，以及实际账号/IME/读屏检查均须在获批窗口执行。构建成功不能代证设备通过。
 
 任务2与任务1顺序执行，不共享账号或业务数据库。任务1的隔离包 `org.hnuhole.hnuhole_mobile.communityf5`、APK、签名、手机待验空库及测试时钟保留。任务2使用独立包、独立新调试签名和合成的本地 fixture：

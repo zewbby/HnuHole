@@ -12,11 +12,19 @@ class PhoneGuardTests(unittest.TestCase):
     def test_release_and_install_each_required(self):
         for flags in [(True,False,True,True),(True,True,False,True),(False,False,False,False),(True,True,True,False)]:
             with self.assertRaises(ValueError):phone.consent(*flags)
+    def test_windows_all_consents_still_block_before_any_manifest_socket_or_command(self):
+        args=types.SimpleNamespace(confirmed_window=True,allow_isolated_install=True,auth_session_released=True,allow_owned_adb_key=True,manifest='not-accessed',device='synthetic-device')
+        with patch.object(phone.sys,'platform','win32'), patch.object(Path,'read_text') as read, patch.object(Path,'write_text') as write, patch.object(phone.socket,'socket') as socket_call, patch.object(phone.subprocess,'run') as command:
+            with self.assertRaisesRegex(ValueError,'BLOCKED_KEY_ISOLATION'):phone.run_phone(args)
+            for call in [read,write,socket_call,command]:call.assert_not_called()
+    def test_windows_environment_helper_cannot_supply_unverified_isolation(self):
+        with patch.object(phone.sys,'platform','win32'):
+            with self.assertRaisesRegex(ValueError,'BLOCKED_KEY_ISOLATION'):phone.adb_environment(Path('synthetic-owned-root'))
     def test_owned_adb_port_and_inherited_foreign_socket_rejected(self):
         for port in [5037,0,True,'30001',65536]:
             with self.assertRaises(ValueError):phone.adb_port(port)
         self.assertEqual(phone.adb_port(30001),30001)
-        with patch.dict(phone.os.environ,{'ADB_SERVER_SOCKET':'tcp:foreign:5037','ANDROID_ADB_SERVER_PORT':'5037','ANDROID_SERIAL':'foreign','ADB_VENDOR_KEYS':'foreign'},clear=False):
+        with patch.object(phone.sys,'platform','linux'), patch.dict(phone.os.environ,{'ADB_SERVER_SOCKET':'tcp:foreign:5037','ANDROID_ADB_SERVER_PORT':'5037','ANDROID_SERIAL':'foreign','ADB_VENDOR_KEYS':'foreign'},clear=False):
             env=phone.adb_environment(Path("owned-task-root"))
             for key in ['ADB_SERVER_SOCKET','ANDROID_ADB_SERVER_PORT','ANDROID_SERIAL','ADB_VENDOR_KEYS']:self.assertNotIn(key,env)
             self.assertEqual(env['USERPROFILE'],str(Path('owned-task-root/adb-home')))

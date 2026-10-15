@@ -808,7 +808,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -818,9 +818,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -1495,7 +1501,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -1505,9 +1511,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -2279,7 +2291,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -2289,9 +2301,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -4454,7 +4472,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -4464,9 +4482,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -6138,7 +6162,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -6148,13 +6172,19 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       },
       "currentCommunityAndroidStage2Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage2-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage2-preparation-20261015.json",
         "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
@@ -6182,9 +6212,15 @@
         "actualAccountIMEAndTalkBack": "NOT_RUN",
         "fullModuleOrAppPassed": false,
         "sop": "tools/community-android-stage2/README.md",
-        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
       }
     },
     {
@@ -8099,7 +8135,7 @@
       },
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -8109,13 +8145,19 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       },
       "currentCommunityAndroidStage2Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage2-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage2-preparation-20261015.json",
         "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
@@ -8143,9 +8185,15 @@
         "actualAccountIMEAndTalkBack": "NOT_RUN",
         "fullModuleOrAppPassed": false,
         "sop": "tools/community-android-stage2/README.md",
-        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
       }
     },
     {
@@ -9503,7 +9551,7 @@
       },
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -9513,13 +9561,19 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       },
       "currentCommunityAndroidStage2Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage2-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage2-preparation-20261015.json",
         "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
@@ -9547,9 +9601,15 @@
         "actualAccountIMEAndTalkBack": "NOT_RUN",
         "fullModuleOrAppPassed": false,
         "sop": "tools/community-android-stage2/README.md",
-        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
       }
     },
     {
@@ -12196,7 +12256,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -12206,9 +12266,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -12972,7 +13038,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -12982,9 +13048,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -13624,7 +13696,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -13634,9 +13706,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -14250,7 +14328,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -14260,9 +14338,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -15087,7 +15171,7 @@
       "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
       "currentCommunityAndroidStage1Preparation": {
         "recordedOn": "2026-10-15",
-        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "result": "BLOCKED_KEY_ISOLATION",
         "report": "docs/design/community-android-stage1-preparation-20261015.md",
         "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
         "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -15097,9 +15181,15 @@
         "mobilePassed": 322,
         "hostRehearsalCheckpoints": 8,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+        "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-        "sourceCommitRemoteVerified": true
+        "sourceCommitRemoteVerified": true,
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceBlocker": {
+          "result": "BLOCKED_KEY_ISOLATION",
+          "evidence": "docs/design/community-android-device-blocked-20261015.json"
+        },
+        "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
       }
     },
     {
@@ -34203,7 +34293,7 @@
     "planningBaselineHEAD": "1a0051297a4f8a046ca41191f1c47ab5d7b5b166",
     "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
     "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
-    "result": "NOT_RUN_DEVICE_ACCEPTANCE",
+    "result": "BLOCKED_KEY_ISOLATION_DEVICE_NOT_RUN",
     "scope": "Single Android community/native/Passkey first, then two physical Android NI-X01 and NI-X02",
     "phases": [
       {
@@ -34231,10 +34321,12 @@
           "B06",
           "B10"
         ],
-        "blocker": "USER_DEFERRED_DEVICE_WINDOW",
-        "preparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "blocker": "BLOCKED_KEY_ISOLATION",
+        "preparationResult": "BLOCKED_KEY_ISOLATION",
         "preparationReport": "docs/design/community-android-stage1-preparation-20261015.md",
-        "preparationEvidence": "docs/design/community-android-stage1-preparation-20261015.json"
+        "preparationEvidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceEvidence": "docs/design/community-android-device-blocked-20261015.json"
       },
       {
         "id": "CA-T02",
@@ -34252,11 +34344,13 @@
           "A12",
           "A08"
         ],
-        "blocker": "USER_DEFERRED_DEVICE_WINDOW",
-        "preparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "blocker": "BLOCKED_KEY_ISOLATION",
+        "preparationResult": "BLOCKED_KEY_ISOLATION",
         "preparationReport": "docs/design/community-android-stage2-preparation-20261015.md",
         "preparationEvidence": "docs/design/community-android-stage2-preparation-20261015.json",
-        "publishedPreparationSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b"
+        "publishedPreparationSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceEvidence": "docs/design/community-android-device-blocked-20261015.json"
       },
       {
         "id": "CA-T03",
@@ -34299,11 +34393,22 @@
     "iOSAndProductionIncluded": false,
     "historicalProductSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
     "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
-    "stage2SourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63"
+    "stage2SourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+    "currentDeviceAttempt": {
+      "recordedOn": "2026-10-15",
+      "result": "BLOCKED_KEY_ISOLATION",
+      "report": "docs/design/community-android-device-blocked-20261015.md",
+      "evidence": "docs/design/community-android-device-blocked-20261015.json",
+      "deviceChecks": "CA-A01–CA-A13 NOT_RUN",
+      "originalAttemptExitCode": 1,
+      "deviceAcceptancePassed": false,
+      "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
+      "deviceWindowReleasedByUser": true
+    }
   },
   "currentCommunityAndroidStage1Preparation": {
     "recordedOn": "2026-10-15",
-    "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+    "result": "BLOCKED_KEY_ISOLATION",
     "report": "docs/design/community-android-stage1-preparation-20261015.md",
     "evidence": "docs/design/community-android-stage1-preparation-20261015.json",
     "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
@@ -34313,13 +34418,26 @@
     "mobilePassed": 322,
     "hostRehearsalCheckpoints": 8,
     "fullModuleOrAppPassed": false,
-    "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+    "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
     "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
-    "sourceCommitRemoteVerified": true
+    "sourceCommitRemoteVerified": true,
+    "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+    "currentDeviceBlocker": {
+      "recordedOn": "2026-10-15",
+      "result": "BLOCKED_KEY_ISOLATION",
+      "report": "docs/design/community-android-device-blocked-20261015.md",
+      "evidence": "docs/design/community-android-device-blocked-20261015.json",
+      "deviceChecks": "CA-A01–CA-A13 NOT_RUN",
+      "originalAttemptExitCode": 1,
+      "deviceAcceptancePassed": false,
+      "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
+      "deviceWindowReleasedByUser": true
+    },
+    "historicalNextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending."
   },
   "currentCommunityAndroidStage2Preparation": {
     "recordedOn": "2026-10-15",
-    "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+    "result": "BLOCKED_KEY_ISOLATION",
     "report": "docs/design/community-android-stage2-preparation-20261015.md",
     "evidence": "docs/design/community-android-stage2-preparation-20261015.json",
     "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
@@ -34347,8 +34465,32 @@
     "actualAccountIMEAndTalkBack": "NOT_RUN",
     "fullModuleOrAppPassed": false,
     "sop": "tools/community-android-stage2/README.md",
-    "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts.",
+    "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
     "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
-    "sourceCommitRemoteVerified": true
+    "sourceCommitRemoteVerified": true,
+    "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+    "currentDeviceBlocker": {
+      "recordedOn": "2026-10-15",
+      "result": "BLOCKED_KEY_ISOLATION",
+      "report": "docs/design/community-android-device-blocked-20261015.md",
+      "evidence": "docs/design/community-android-device-blocked-20261015.json",
+      "deviceChecks": "CA-A01–CA-A13 NOT_RUN",
+      "originalAttemptExitCode": 1,
+      "deviceAcceptancePassed": false,
+      "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
+      "deviceWindowReleasedByUser": true
+    },
+    "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+  },
+  "currentCommunityAndroidDeviceAttempt": {
+    "recordedOn": "2026-10-15",
+    "result": "BLOCKED_KEY_ISOLATION",
+    "report": "docs/design/community-android-device-blocked-20261015.md",
+    "evidence": "docs/design/community-android-device-blocked-20261015.json",
+    "deviceChecks": "CA-A01–CA-A13 NOT_RUN",
+    "originalAttemptExitCode": 1,
+    "deviceAcceptancePassed": false,
+    "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
+    "deviceWindowReleasedByUser": true
   }
 }

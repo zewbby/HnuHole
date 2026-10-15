@@ -18,6 +18,15 @@ imports.loader.exec_module(public_import)
 
 
 class StoragePhoneGuardTests(unittest.TestCase):
+    def test_windows_all_consents_and_all_phases_block_before_manifest_or_side_effects(self):
+        for phase in ['suites', *phone.ORDER]:
+            args = types.SimpleNamespace(confirmed_window=True, allow_isolated_install=True, auth_session_released=True, allow_owned_adb_key=True, allow_owned_force_stop=True, confirmed_manual_reboot=True, phase=phase, device='synthetic-device', manifest='not-accessed')
+            with self.subTest(phase=phase), patch.object(phone.transport.sys, 'platform', 'win32'), patch.object(phone, 'load_manifest') as manifest, patch.object(Path, 'read_text') as read, patch.object(Path, 'write_text') as write, patch.object(phone, 'server_witness') as server, patch.object(phone.socket, 'socket') as socket_call, patch.object(phone.subprocess, 'run') as command:
+                with self.assertRaisesRegex(ValueError, 'BLOCKED_KEY_ISOLATION'):
+                    phone.run_phone(args)
+                for call in [manifest, read, write, server, socket_call, command]:
+                    call.assert_not_called()
+
     def test_each_consent_required_before_manifest_socket_or_adb(self):
         names = ['confirmed_window', 'allow_isolated_install', 'auth_session_released', 'allow_owned_adb_key', 'allow_owned_force_stop']
         for missing in names:
@@ -128,10 +137,11 @@ class StoragePhoneGuardTests(unittest.TestCase):
         args = types.SimpleNamespace(confirmed_window=True, allow_isolated_install=True, auth_session_released=True, allow_owned_adb_key=True, allow_owned_force_stop=True, phase='suites', device='synthetic-physical-id', manifest='not-read', confirmed_manual_reboot=False)
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            with patch.object(phone, 'load_manifest', return_value=(root, {'adbServerPort': 30001, 'adb': 'owned/adb.exe'})), patch.object(phone, 'server_witness', return_value={'pid': 1, 'start': '2', 'exe': 'unknown/adb.exe'}), patch.object(phone.subprocess, 'run') as device:
+            with patch.object(phone.transport.sys, 'platform', 'linux'), patch.object(phone, 'load_manifest', return_value=(root, {'adbServerPort': 30001, 'adb': 'owned/adb.exe'})), patch.object(phone, 'server_witness', return_value={'pid': 1, 'start': '2', 'exe': 'unknown/adb.exe'}) as server, patch.object(phone.subprocess, 'run') as device:
                 with self.assertRaises(ValueError):
                     phone.run_phone(args)
                 device.assert_not_called()
+                server.assert_called_once()
 
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-15 手机窗口当前阻断：BLOCKED_KEY_ISOLATION。**用户已确认 vivo S18、30–45分钟窗口、认证会话释放、隔离包和专用USB key；原stage1实际等待90秒后exit1，未发现目标设备，未安装/启动App、注册或业务写入。Windows环境变量不能证明专用key隔离，已给stage1/2添加不可凭授权flag绕过的前置守卫；CA-A01–13全部NOT_RUN，stage2也阻断。Windows136 PASS＋3 POSIX SKIP、Linux139 PASS仅为host；自有60761 server已按exe/start/port核实后停止，既存5037未动；用户已结束本轮窗口，后续须重新确认。见[本轮报告](community-android-device-blocked-20261015.md)与[脱敏记录](community-android-device-blocked-20261015.json)。历史准备/指纹/APK证据保留原范围；先证明真正独立profile或验证专用key目录的ADB，再由原服务归属方安全释放USB并重验摘要/ready/空库。新增OS账户/安全配置或共享key例外须用户明确变更授权。
+
 > **2026-10-15 CA-T02非手机准备完成：**涉及N01/A12/A08，task1全部450输入与制品/待验空库未变。新增实际vault/PostStore跨进程探针、原生business7/vault16/codec9+errors3与3组认证中断的runner、3隔离新包和手机SOP；mobile322、分析0、Linux136／Windows133＋3POSIX跳过、199项镜像/签名/manifest/DEX/SQLite核对通过。证据见[报告](community-android-stage2-preparation-20261015.md)、[记录](community-android-stage2-preparation-20261015.json)。主机新检查覆盖最终测试/工具，原生35项/实际进程/重启/实际账号/IME/读屏均NOT_RUN，用户未提供手机窗口；原生本地合成清理不代证权威服务端CLOSED。模块/完整App未升级PASS，后续按[四阶段任务单](community-android-unified-acceptance-plan-20261014.md)及[手机SOP](../../tools/community-android-stage2/README.md)继续。
 
 > **2026-10-15 第一项非手机准备完成：**修复 DELETE 首次核对失败后遗漏 poll 集合，以及 C 确认取消注销后的 UI 完成入口。最后产品修改后 mobile322/R05/F4 通过，真实 server/权限/runtime/vet 通过；新增整段 host 八检查点和最终隔离 Debug/标准未签名 Release 构建通过，实际设备与 IME 仍 NOT_RUN。见[准备报告](community-android-stage1-preparation-20261015.md)和[机器记录](community-android-stage1-preparation-20261015.json)。按用户要求保留专用环境、手机新空库和 APK；未调用 ADB 或创建真实账号/USB key。后续确认设备窗口、隔离包/USB 授权并补真实输入法，任务2–4、iOS和生产分别待验。

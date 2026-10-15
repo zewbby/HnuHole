@@ -132,6 +132,7 @@ def owned_server(witness, previous, adb):
 
 def run_phone(args):
     consent(args)  # Before filesystem reads, socket binding, or any ADB call.
+    transport.require_adb_key_isolation()
     if args.phase not in ['suites', *ORDER] or not re.fullmatch(r'[A-Za-z0-9._:-]{1,128}', args.device or ''):
         raise ValueError('explicit phase and device required')
     root, manifest = load_manifest(args.manifest)
@@ -290,6 +291,6 @@ if __name__ == '__main__':
         parser.add_argument('--' + flag, action='store_true')
     args = parser.parse_args()
     if args.plan_only:
-        print('Plan only (no manifest/ADB access): consent -> 7+16+12 native tests + 3 auth process pairs -> write -> read -> optional approved manual reboot/read -> local purge -> closed/new-process. Only task-2 packages; no uninstall, data clear, settings change, or reboot command.')
+        print('Plan only (no manifest/ADB access): Windows device execution is BLOCKED_KEY_ISOLATION until verified independent-profile or dedicated-key-directory ADB isolation; consent flags cannot bypass this guard. Then recheck hashes/ready/empty lab and USB release -> 7+16+12 native tests + 3 auth process pairs -> write -> read -> separately approved manual reboot/read -> purge -> closed/new-process. Only task-2 packages.')
     else:
         run_phone(args)

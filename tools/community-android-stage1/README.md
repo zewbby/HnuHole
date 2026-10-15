@@ -1,5 +1,7 @@
 # 第一项：单机文字社区验收工具
 
+> 当前设备入口 **BLOCKED_KEY_ISOLATION**：本机Windows ADB的默认key目录由OS profile API定位；HOME/USERPROFILE/ANDROID_USER_HOME/ANDROID_SDK_HOME与独立server端口均未证明key隔离，ADB_VENDOR_KEYS仅追加。两个runner在读取manifest、写状态、绑定socket和任何ADB调用前阻断，即使全部授权flag为true也不通过；`--plan-only`仍可用。先证明真正独立profile或经验证支持专用key目录的ADB，再由原服务归属方安全释放目标USB并重验摘要/ready/空库。新OS账户、安全配置或共享ADB/key例外须明确变更授权，不自行创建。见[本轮报告](../../docs/design/community-android-device-blocked-20261015.md)。下方执行步骤仅在该阻塞安全解除且授权有效后使用。
+
 本目录准备实际生产main、真实C/V与正式SQL、原生端口的第一项设备流程。准备阶段不调用手机或ADB。现有主机脚本用替代vault排练相同流程，不能计为设备PASS。
 
 ## 当前工具
@@ -49,7 +51,7 @@ COMMUNITY_STAGE1_HOST_CONFIG="$work/host-config.private.json" flutter test --no-
   --device '<确认的设备ID>' --confirmed-window --allow-isolated-install --auth-session-released --allow-owned-adb-key --launch-manual
 ```
 
-此命令只在确认后运行。现在检查计划可用--plan-only，完全不读设备、不调用ADB。工具检查本任务marker/ADB与支持DLL哈希/两APK哈希、实体ARM64设备、同名包归属；使用本任务非5037的独立ADB server端口并拒绝被占用端口，清除子进程继承的其他会话ADB socket/serial/key变量，将ADB home限定为本任务adb-home；只在获得USB调试key确认后生成新key；只新建自己的reverse/forward映射、不覆盖既有映射。debug VM URI只在内存与App私有witness中处理，不进入公开日志。通过后更新本任务包为同签名normal APK，保存自己的测试数据；不卸载或清除。
+此命令只在确认后运行。现在检查计划可用--plan-only，完全不读设备、不调用ADB。工具检查本任务marker/ADB与支持DLL哈希/两APK哈希、实体ARM64设备、同名包归属；使用本任务非5037的独立ADB server端口并拒绝被占用端口，清除子进程继承的其他会话ADB socket/serial/key变量，历史环境变量方案不能证明Windows key目录已隔离，现由前置守卫阻断；只新建自己的reverse/forward映射、不覆盖既有映射。debug VM URI只在内存与App私有witness中处理，不进入公开日志。通过后更新本任务包为同签名normal APK，保存自己的测试数据；不卸载或清除。
 
 device-started.json为一次运行门闩。失败/中断后先核原结果及本任务SQL，不自动重启或重放注册/发布操作。VM结果只导出checkpoint、布尔值和计数；手机标识使用摘要。日志中的自动通过只覆盖自动流程，task1Result仍为PARTIAL_MANUAL_IME_NOT_RUN，直到现场补真实键盘证据。
 

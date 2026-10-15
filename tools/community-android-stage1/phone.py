@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stage1 consent-gated phone runner; stdlib VM protocol, no shared Flutter SDK."""
-import argparse,base64,hashlib,json,os,re,secrets,socket,struct,subprocess,time
+import argparse,base64,hashlib,json,os,re,secrets,socket,struct,subprocess,sys,time
 from pathlib import Path
 from urllib.parse import urlsplit
 PACKAGE='org.hnuhole.hnuhole_mobile.communityf5'
@@ -90,7 +90,15 @@ def filtered_result(raw):
 def consent(window,install,released,key):
     if not (window and install and released and key):raise ValueError('explicit device window, isolated install, own USB debugging key and auth-session release confirmation required before any ADB call')
 
+def require_adb_key_isolation():
+    # Windows ADB resolves its default key via the OS profile API. HOME and
+    # USERPROFILE overrides do not prove isolation; ADB_VENDOR_KEYS adds keys.
+    # No validated isolated-profile/key-directory mechanism exists here yet.
+    if sys.platform == 'win32':
+        raise ValueError('BLOCKED_KEY_ISOLATION: Windows ADB dedicated key isolation is unproven; environment HOME/USERPROFILE overrides and a dedicated server port are insufficient. A verified independent OS profile or verified ADB dedicated-key-directory support is required before any ADB call. New OS accounts/security configuration or shared-key exceptions require explicit changed authorization.')
+
 def adb_environment(root):
+    require_adb_key_isolation()
     # Own server port; inherited global/other-session sockets are never used.
     env={k:v for k,v in os.environ.items() if k not in
          ('ADB_SERVER_SOCKET','ANDROID_ADB_SERVER_PORT','ANDROID_SERIAL','ADB_VENDOR_KEYS','ANDROID_USER_HOME','ANDROID_SDK_HOME')}
@@ -105,6 +113,7 @@ def adb_port(value):
 
 def run_phone(args):
     consent(args.confirmed_window,args.allow_isolated_install,args.auth_session_released,args.allow_owned_adb_key)
+    require_adb_key_isolation()  # Before manifest access, socket binding or ADB.
     if not re.fullmatch(r'[A-Za-z0-9._:-]{1,128}',args.device or ''):raise ValueError('one explicit device ID required')
     root=Path(args.manifest).resolve().parent;manifest=json.loads(Path(args.manifest).read_text())
     if (root/'.owner').read_text().strip()!='HNUHOLE_COMMUNITY_ANDROID_STAGE1_V1' or manifest['owner']!='HNUHOLE_COMMUNITY_ANDROID_STAGE1_V1' or manifest['applicationId']!=PACKAGE:raise ValueError('owned stage1 manifest required')
@@ -186,5 +195,5 @@ if __name__=='__main__':
     p.add_argument('--confirmed-window',action='store_true');p.add_argument('--allow-isolated-install',action='store_true');p.add_argument('--auth-session-released',action='store_true');p.add_argument('--allow-owned-adb-key',action='store_true');p.add_argument('--launch-manual',action='store_true');p.add_argument('--plan-only',action='store_true')
     args=p.parse_args()
     if args.plan_only:
-        print('Plan: explicit device approval -> hashes/physical ARM64 -> owned reverses -> isolated APK -> authenticated VM result -> optional normal APK/manual IME. No ADB called.')
+        print('Plan only: Windows device execution is BLOCKED_KEY_ISOLATION until a verified independent OS profile or verified dedicated-key-directory ADB is available; consent flags cannot bypass this guard. After authorized isolation and USB release: recheck hashes/ready/empty lab -> physical ARM64 -> owned mappings -> isolated APK -> VM result -> manual IME. No manifest or ADB accessed.')
     else:run_phone(args)
