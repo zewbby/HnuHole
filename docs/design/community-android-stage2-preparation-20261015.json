@@ -436,5 +436,8 @@
   "fullModuleOrAppAccepted": false,
   "deviceAcceptancePassed": false,
   "releasePublished": false,
-  "productionDeployed": false
+  "productionDeployed": false,
+  "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+  "sourceCommitRemoteVerified": true,
+  "deliveryReceipt": "docs/design/community-android-stage2-delivery-20261015.json"
 }

@@ -6182,7 +6182,9 @@
         "actualAccountIMEAndTalkBack": "NOT_RUN",
         "fullModuleOrAppPassed": false,
         "sop": "tools/community-android-stage2/README.md",
-        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts.",
+        "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+        "sourceCommitRemoteVerified": true
       }
     },
     {
@@ -8141,7 +8143,9 @@
         "actualAccountIMEAndTalkBack": "NOT_RUN",
         "fullModuleOrAppPassed": false,
         "sop": "tools/community-android-stage2/README.md",
-        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts.",
+        "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+        "sourceCommitRemoteVerified": true
       }
     },
     {
@@ -9543,7 +9547,9 @@
         "actualAccountIMEAndTalkBack": "NOT_RUN",
         "fullModuleOrAppPassed": false,
         "sop": "tools/community-android-stage2/README.md",
-        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts.",
+        "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+        "sourceCommitRemoteVerified": true
       }
     },
     {
@@ -34249,7 +34255,8 @@
         "blocker": "USER_DEFERRED_DEVICE_WINDOW",
         "preparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
         "preparationReport": "docs/design/community-android-stage2-preparation-20261015.md",
-        "preparationEvidence": "docs/design/community-android-stage2-preparation-20261015.json"
+        "preparationEvidence": "docs/design/community-android-stage2-preparation-20261015.json",
+        "publishedPreparationSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b"
       },
       {
         "id": "CA-T03",
@@ -34340,6 +34347,8 @@
     "actualAccountIMEAndTalkBack": "NOT_RUN",
     "fullModuleOrAppPassed": false,
     "sop": "tools/community-android-stage2/README.md",
-    "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+    "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts.",
+    "publishedSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+    "sourceCommitRemoteVerified": true
   }
 }
