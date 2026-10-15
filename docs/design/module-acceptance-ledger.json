@@ -1,11 +1,11 @@
 {
   "schemaVersion": "hnuhole-module-acceptance-ledger/v1",
-  "recordedOn": "2026-10-14",
+  "recordedOn": "2026-10-15",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/community-flutter-pages",
   "baselineHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
   "workingTreeContainsUncommittedImplementation": false,
-  "workflow": "COMMUNITY_SINGLE_THEN_DUAL_ANDROID_ACCEPTANCE_PLANNED",
+  "workflow": "COMMUNITY_TASK1_TASK2_SCOPED_PASS_TASK3_PARTIAL_TASK4_NOT_RUN",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
   "baselineEvidence": "services/api/authlab/platform-acceptance-verification.json",
@@ -4595,7 +4595,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_store.dart",
@@ -4613,7 +4613,9 @@
         "apps/mobile/test/identity_management_controller_test.dart",
         "apps/mobile/test/auth_api_test.dart",
         "apps/mobile/integration/f4_main_https_postgres_test.dart",
-        "services/api/internal/authprivacyhttp/f4_main_mobile_postgres_test.go"
+        "services/api/internal/authprivacyhttp/f4_main_mobile_postgres_test.go",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_fixture_test.dart",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_post_reset_test.dart"
       ],
       "pendingReasons": [
         "SINGLE_ANDROID_USER_DEFERRED: all actual device/main/native business7/vault16/Passkey12 tests NOT_RUN, own independent package/signature build completed",
@@ -4846,8 +4848,8 @@
         "posts-runtime-privileges-nine-top-level-four-lifecycle",
         "final-vet"
       ],
-      "latestScopedEvidence": "docs/design/community-auth-integration-20261013.json",
-      "latestScopedResult": "PASS_HOST_AND_ANDROID_BUILD_ONLY",
+      "latestScopedEvidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+      "latestScopedResult": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
       "currentAC01Regression": {
         "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
         "fullModuleAcceptancePassed": false,
@@ -5421,6 +5423,23 @@
         "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate.",
         "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
         "sourceCommitRemoteVerified": true
+      },
+      "currentCommunityAndroidStage3Device": {
+        "recordedOn": "2026-10-15",
+        "result": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
+        "report": "docs/design/community-android-stage3-device-validation-20261015.md",
+        "evidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+        "testedStartHEAD": "9dda242b21694af1c4c33f11784958851c805fc4",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "devicePositiveCreateAndDiscoverableRecovery": "PASS",
+        "bindingResponseLossAndOriginalAnchorAcrossProcess": "PASS",
+        "badSignatureProviderRejection": "BLOCKED_NATIVE_TIMEOUT",
+        "unassociatedProviderRejection": "BLOCKED_NATIVE_CANCELLED",
+        "strictPublicHTTPS": "FAIL_HTTP403_CLOUDFLARE1010",
+        "googleAdditionalPositiveBothRelationsLinked": true,
+        "sevenHostStages": "PASS",
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
       }
     },
     {
@@ -6421,7 +6440,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent.",
       "sourcePaths": [
         "services/api/internal/authprivacy/community_credential_result.go",
         "services/api/internal/authprivacy/passkey_verification.go",
@@ -6439,7 +6458,9 @@
         "services/api/internal/authprivacyruntime/webauthn_config_test.go",
         "services/api/cmd/authdev/main_test.go",
         "apps/mobile/test/identity_management_controller_test.dart",
-        "apps/mobile/test/auth_api_test.dart"
+        "apps/mobile/test/auth_api_test.dart",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_fixture_test.dart",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_post_reset_test.dart"
       ],
       "pendingReasons": [
         "SINGLE_ANDROID_USER_DEFERRED: all actual device/main/native business7/vault16/Passkey12 tests NOT_RUN, own independent package/signature build completed",
@@ -6492,8 +6513,8 @@
         "go-sql-race-vet",
         "runtime-r03"
       ],
-      "latestScopedEvidence": "docs/design/community-auth-integration-20261013.json",
-      "latestScopedResult": "PASS_HOST_AND_ANDROID_BUILD_ONLY",
+      "latestScopedEvidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+      "latestScopedResult": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
       "currentAC01Regression": {
         "scope": "R01 full backend SQL/race, R02 vet, R03 listed actual C/V process scenarios only",
         "fullModuleAcceptancePassed": false,
@@ -6804,6 +6825,23 @@
         "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate.",
         "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
         "sourceCommitRemoteVerified": true
+      },
+      "currentCommunityAndroidStage3Device": {
+        "recordedOn": "2026-10-15",
+        "result": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
+        "report": "docs/design/community-android-stage3-device-validation-20261015.md",
+        "evidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+        "testedStartHEAD": "9dda242b21694af1c4c33f11784958851c805fc4",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "devicePositiveCreateAndDiscoverableRecovery": "PASS",
+        "bindingResponseLossAndOriginalAnchorAcrossProcess": "PASS",
+        "badSignatureProviderRejection": "BLOCKED_NATIVE_TIMEOUT",
+        "unassociatedProviderRejection": "BLOCKED_NATIVE_CANCELLED",
+        "strictPublicHTTPS": "FAIL_HTTP403_CLOUDFLARE1010",
+        "googleAdditionalPositiveBothRelationsLinked": true,
+        "sevenHostStages": "PASS",
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
       }
     },
     {
@@ -7107,7 +7145,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Task2 fixed single Android scope PASS; task3 system Passkey where applicable, task4 NI-X01/NI-X02, iOS and production remain separate. TalkBack disabled and untested.",
+      "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent.",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/config/mobile_environment.dart",
@@ -7127,7 +7165,9 @@
         "apps/mobile/test/post_storage_test.dart",
         "apps/mobile/test/post_closure_cleanup_test.dart",
         "apps/mobile/integration/f4_main_https_postgres_test.dart",
-        "services/api/internal/authprivacyhttp/f4_main_mobile_postgres_test.go"
+        "services/api/internal/authprivacyhttp/f4_main_mobile_postgres_test.go",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_fixture_test.dart",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_post_reset_test.dart"
       ],
       "pendingReasons": [
         "SINGLE_ANDROID_USER_DEFERRED: all actual device/main/native business7/vault16/Passkey12 tests NOT_RUN, own independent package/signature build completed",
@@ -7551,8 +7591,8 @@
         "posts-runtime-privileges-nine-top-level-four-lifecycle",
         "final-vet"
       ],
-      "latestScopedEvidence": "docs/design/community-auth-integration-20261013.json",
-      "latestScopedResult": "PASS_HOST_AND_ANDROID_BUILD_ONLY",
+      "latestScopedEvidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+      "latestScopedResult": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
       "currentAC03Regression": {
         "recordedOn": "2026-10-05",
         "currentResult": "PASS",
@@ -8437,6 +8477,23 @@
         "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
         "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
+      },
+      "currentCommunityAndroidStage3Device": {
+        "recordedOn": "2026-10-15",
+        "result": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
+        "report": "docs/design/community-android-stage3-device-validation-20261015.md",
+        "evidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+        "testedStartHEAD": "9dda242b21694af1c4c33f11784958851c805fc4",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "devicePositiveCreateAndDiscoverableRecovery": "PASS",
+        "bindingResponseLossAndOriginalAnchorAcrossProcess": "PASS",
+        "badSignatureProviderRejection": "BLOCKED_NATIVE_TIMEOUT",
+        "unassociatedProviderRejection": "BLOCKED_NATIVE_CANCELLED",
+        "strictPublicHTTPS": "FAIL_HTTP403_CLOUDFLARE1010",
+        "googleAdditionalPositiveBothRelationsLinked": true,
+        "sevenHostStages": "PASS",
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
       }
     },
     {
@@ -8677,7 +8734,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Task2 fixed single Android scope PASS; task3 system Passkey where applicable, task4 NI-X01/NI-X02, iOS and production remain separate. TalkBack disabled and untested.",
+      "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent.",
       "sourcePaths": [
         "apps/mobile/lib/src/storage/post_store.dart",
         "packages/auth_vault/lib/hnuhole_auth_vault.dart",
@@ -8696,7 +8753,9 @@
         "apps/mobile/test/auth_vault_test.dart",
         "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt",
         "apps/mobile/integration/f4_main_https_postgres_test.dart",
-        "services/api/internal/authprivacyhttp/f4_main_mobile_postgres_test.go"
+        "services/api/internal/authprivacyhttp/f4_main_mobile_postgres_test.go",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_fixture_test.dart",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_post_reset_test.dart"
       ],
       "pendingReasons": [
         "SINGLE_ANDROID_USER_DEFERRED: all actual device/main/native business7/vault16/Passkey12 tests NOT_RUN, own independent package/signature build completed",
@@ -9073,8 +9132,8 @@
         "actual-cmd-old-database-Goose-upgrade",
         "production"
       ],
-      "latestScopedEvidence": "docs/design/community-auth-integration-20261013.json",
-      "latestScopedResult": "PASS_HOST_AND_ANDROID_BUILD_ONLY",
+      "latestScopedEvidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+      "latestScopedResult": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
       "currentAC05Regression": {
         "recordedOn": "2026-10-05",
         "currentResult": "BLOCKED",
@@ -9907,6 +9966,23 @@
         "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
         "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
+      },
+      "currentCommunityAndroidStage3Device": {
+        "recordedOn": "2026-10-15",
+        "result": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
+        "report": "docs/design/community-android-stage3-device-validation-20261015.md",
+        "evidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+        "testedStartHEAD": "9dda242b21694af1c4c33f11784958851c805fc4",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "devicePositiveCreateAndDiscoverableRecovery": "PASS",
+        "bindingResponseLossAndOriginalAnchorAcrossProcess": "PASS",
+        "badSignatureProviderRejection": "BLOCKED_NATIVE_TIMEOUT",
+        "unassociatedProviderRejection": "BLOCKED_NATIVE_CANCELLED",
+        "strictPublicHTTPS": "FAIL_HTTP403_CLOUDFLARE1010",
+        "googleAdditionalPositiveBothRelationsLinked": true,
+        "sevenHostStages": "PASS",
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
       }
     },
     {
@@ -10082,7 +10158,7 @@
         "X05",
         "X08"
       ],
-      "nextAcceptance": "Follow the unified four-stage plan: single-device community flows, native storage/lifecycle, system Passkey and affected regressions, then NI-X01/NI-X02 on two physical Android devices. Prepare own RP configuration for review, confirm devices/windows/data impact before any device use; iOS and production stay separate.",
+      "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent.",
       "sourcePaths": [
         "packages/auth_passkey/lib/hnuhole_auth_passkey.dart",
         "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt",
@@ -10099,7 +10175,9 @@
         "packages/auth_passkey/test/native/run-codec.sh",
         "tools/tests/test_passkey_associations.py",
         "apps/mobile/test/identity_management_controller_test.dart",
-        "apps/mobile/test/auth_api_test.dart"
+        "apps/mobile/test/auth_api_test.dart",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_fixture_test.dart",
+        "tools/community-android-stage3/execution-20261015/owned_stage3_post_reset_test.dart"
       ],
       "pendingReasons": [
         "SINGLE_ANDROID_USER_DEFERRED: all actual device/main/native business7/vault16/Passkey12 tests NOT_RUN, own independent package/signature build completed",
@@ -10156,8 +10234,8 @@
       "blockedChecks": [
         "native-passkey-ceremony"
       ],
-      "latestScopedEvidence": "docs/design/community-auth-integration-20261013.json",
-      "latestScopedResult": "PASS_HOST_AND_ANDROID_BUILD_ONLY",
+      "latestScopedEvidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+      "latestScopedResult": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
       "currentAC05Regression": {
         "recordedOn": "2026-10-05",
         "currentResult": "BLOCKED",
@@ -10476,6 +10554,23 @@
         "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate.",
         "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
         "sourceCommitRemoteVerified": true
+      },
+      "currentCommunityAndroidStage3Device": {
+        "recordedOn": "2026-10-15",
+        "result": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
+        "report": "docs/design/community-android-stage3-device-validation-20261015.md",
+        "evidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+        "testedStartHEAD": "9dda242b21694af1c4c33f11784958851c805fc4",
+        "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+        "devicePositiveCreateAndDiscoverableRecovery": "PASS",
+        "bindingResponseLossAndOriginalAnchorAcrossProcess": "PASS",
+        "badSignatureProviderRejection": "BLOCKED_NATIVE_TIMEOUT",
+        "unassociatedProviderRejection": "BLOCKED_NATIVE_CANCELLED",
+        "strictPublicHTTPS": "FAIL_HTTP403_CLOUDFLARE1010",
+        "googleAdditionalPositiveBothRelationsLinked": true,
+        "sevenHostStages": "PASS",
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
       }
     },
     {
@@ -34756,12 +34851,12 @@
     }
   },
   "currentCommunityAndroidUnifiedAcceptance": {
-    "recordedOn": "2026-10-14",
+    "recordedOn": "2026-10-15",
     "plan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
     "planningBaselineHEAD": "1a0051297a4f8a046ca41191f1c47ab5d7b5b166",
-    "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+    "productSourceCommit": "9dda242b21694af1c4c33f11784958851c805fc4",
     "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
-    "result": "PARTIAL_TASK1_AND_TASK2_SCOPED_PASS_TASK3_4_NOT_RUN",
+    "result": "PARTIAL_TASK1_TASK2_SCOPED_PASS_TASK3_PARTIAL_TASK4_NOT_RUN",
     "scope": "Single Android community/native/Passkey first, then two physical Android NI-X01 and NI-X02",
     "phases": [
       {
@@ -34837,7 +34932,7 @@
         "id": "CA-T03",
         "order": 3,
         "name": "System Passkey and single-device regression closure",
-        "result": "NOT_RUN",
+        "result": "PARTIAL",
         "checkIds": [
           "CA-A13"
         ],
@@ -34846,13 +34941,17 @@
           "A07",
           "A09"
         ],
-        "blocker": "OWN_RP_ASSOCIATION_AND_DEVICE_WINDOW_NOT_READY",
+        "blocker": "PROVIDER_NEGATIVE_NOT_DEFINITIVE_AND_STRICT_HTTPS403",
         "preparationResult": "PASS_INDEPENDENT_HOST_PREPARATION_CONFIG_AND_DEVICE_BLOCKED",
         "preparationReport": "docs/design/community-android-stage3-preparation-20261015.md",
         "preparationEvidence": "docs/design/community-android-stage3-preparation-20261015.json",
         "rpPlanSelectedByUser": true,
-        "securityConfigurationApplied": false,
-        "publishedPreparationSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54"
+        "securityConfigurationApplied": true,
+        "publishedPreparationSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
+        "currentDeviceEvidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+        "currentReport": "docs/design/community-android-stage3-device-validation-20261015.md",
+        "devicePositiveResult": "PASS",
+        "currentDeviceWindowEnded": true
       },
       {
         "id": "CA-T04",
@@ -34953,7 +35052,25 @@
       "fullModulePassed": false,
       "deviceSourceFingerprint": "ec7aab83fa4024a578529c3e924c81d614237ee547bd08d0e8f940e8bad7ed73",
       "nextAcceptance": "Keep normal/A session and current owned services/data; stage2-4 and platform/production acceptance remain independent, default stage2 key guard unchanged."
-    }
+    },
+    "currentStage3DeviceAttempt": {
+      "recordedOn": "2026-10-15",
+      "result": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
+      "report": "docs/design/community-android-stage3-device-validation-20261015.md",
+      "evidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+      "testedStartHEAD": "9dda242b21694af1c4c33f11784958851c805fc4",
+      "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+      "devicePositiveCreateAndDiscoverableRecovery": "PASS",
+      "bindingResponseLossAndOriginalAnchorAcrossProcess": "PASS",
+      "badSignatureProviderRejection": "BLOCKED_NATIVE_TIMEOUT",
+      "unassociatedProviderRejection": "BLOCKED_NATIVE_CANCELLED",
+      "strictPublicHTTPS": "FAIL_HTTP403_CLOUDFLARE1010",
+      "googleAdditionalPositiveBothRelationsLinked": true,
+      "sevenHostStages": "PASS",
+      "fullModuleOrAppPassed": false,
+      "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
+    },
+    "stage3ProductSourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631"
   },
   "currentCommunityAndroidStage1Preparation": {
     "recordedOn": "2026-10-15",
@@ -35163,5 +35280,22 @@
     "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
     "fullModulePassed": false,
     "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
+  },
+  "currentCommunityAndroidStage3Device": {
+    "recordedOn": "2026-10-15",
+    "result": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
+    "report": "docs/design/community-android-stage3-device-validation-20261015.md",
+    "evidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+    "testedStartHEAD": "9dda242b21694af1c4c33f11784958851c805fc4",
+    "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+    "devicePositiveCreateAndDiscoverableRecovery": "PASS",
+    "bindingResponseLossAndOriginalAnchorAcrossProcess": "PASS",
+    "badSignatureProviderRejection": "BLOCKED_NATIVE_TIMEOUT",
+    "unassociatedProviderRejection": "BLOCKED_NATIVE_CANCELLED",
+    "strictPublicHTTPS": "FAIL_HTTP403_CLOUDFLARE1010",
+    "googleAdditionalPositiveBothRelationsLinked": true,
+    "sevenHostStages": "PASS",
+    "fullModuleOrAppPassed": false,
+    "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
   }
 }

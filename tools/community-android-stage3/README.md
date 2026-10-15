@@ -1,4 +1,6 @@
-# 第三项：无手机准备与关联审阅
+# 第三项：准备工具与实测交接
+
+> 2026-10-15 后续实测已进行，状态 **PARTIAL**。用户批准的独立RP和额外正向包已落地，真实系统正向创建/可发现恢复及原键跨进程核对PASS；坏签名/未关联的明确拒绝与严格HTTPS403仍阻塞。最终七阶段及mobile334通过。当前入口为[实测报告](../../docs/design/community-android-stage3-device-validation-20261015.md)、[机器记录](../../docs/design/community-android-stage3-device-validation-20261015.json)、[实际执行源码归档](execution-20261015/README.md)和[当前公开关联](../../docs/design/community-android-stage3-applied-20261015/proposal.json)。设备窗口已结束，不再调用ADB；原默认守卫不放宽。**下方是此前无手机准备阶段的原范围，关于未审批/未部署/NOT_RUN的叙述仅适用当时。**
 
 本目录只有本地构建、验证、草案生成与只读公开关联检查入口。没有 ADB、安装、域名登记、部署或安全配置应用入口。产品 Passkey 流程已在固定认证候选中实现，不重做页面。完整待确认范围见 `docs/design/community-android-stage3-rp-proposal-20261015.md`。
 
