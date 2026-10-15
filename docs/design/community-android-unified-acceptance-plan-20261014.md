@@ -1,5 +1,7 @@
 # 文字社区与认证 Android 统一验收任务单
 
+> **2026-10-15 当前任务2单机范围通过：**原生35项＋3组进程中断、实际SQLite跨进程/用户整机重启/本地闭号清理PASS；正常App合成A重新正常登录后强停/重启的草稿、身份通道与会话由用户确认。先前旧会话因获准Gate恢复推进代次被拒绝，保留负向观察，不冒充恢复PASS。Windows155＋3 POSIX SKIP／Linux158。见[实测报告](community-android-stage2-device-validation-20261015.md)及[机器记录](community-android-stage2-device-validation-20261015.json)。产品/native/manifest/SQL/锁未改；默认USB隔离守卫保留，仅本轮显式批准既有身份。TalkBack关闭未验；任务3系统Passkey、任务4双实体、iOS和生产仍待验，模块/App不升级整体PASS。以下历史条目保留原日期范围。
+
 > **2026-10-15 当前任务1实测完成：八自动点PASS＋人工IME USER_CONFIRMED。**真实vivo S18/Android15，中文/换行/emoji与草稿重开由用户对明确清单综合答“一切正确”；原自动PARTIAL记录未改，汇总另存。最终mobile327、分析0，Python Windows144＋3 POSIX SKIP／Linux147；历史失败及修复全过程保留。见[实测报告](community-android-device-validation-20261015.md)与[机器记录](community-android-device-validation-20261015.json)。normal/A会话、当前server/reverse/fixture与专用材料保留。任务2–4、iOS和生产仍独立未验；并行stage3准备保留原范围。
 
 > **2026-10-15 第三项可独立主机准备完成：**七阶段、mobile322、Passkey Dart9、JVM24、Linux148／Windows145＋3POSIX SKIP及3未配置签名对照PASS。用户选定独立RP候选方案继续核实，具体文件/差异见[关联方案](community-android-stage3-rp-proposal-20261015.md)；DNS解析不证明控制权，配置应用/公开部署仍未授权，新独立lab与最终候选重建仍依赖审批。见[准备报告](community-android-stage3-preparation-20261015.md)。无ADB/手机动作；保留并行手机e0c1280及其后工作，不采用未提交USB代码，设备流程按其后固定交付重新确认。任务1–4设备、iOS和生产均未升级通过。
@@ -23,7 +25,7 @@
 | 认证来源 | d859cb05c772cdf8d8b75e439a2bfedf0414dd46 |
 | 已验证运行输入 | 443项，SHA256 599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7 |
 | 主机及构建 | 20261013七stage、mobile320及Android构建PASS；属于对应固定输入的证据 |
-| 单机设备 | CA-A01–07/A10自动PASS＋人工IME USER_CONFIRMED；CA-A08/09/11/12/13仍NOT_RUN |
+| 单机设备 | CA-A01–07/A10自动PASS＋人工IME USER_CONFIRMED；CA-A08/09/11/12本轮PASS；CA-A13仍NOT_RUN |
 | 双设备 | NI-X01／NI-X02尚未执行；第二实体Android与两机窗口未确认 |
 
 已有[联合报告](community-auth-integration-report-20261013.md)、[机器记录](community-auth-integration-20261013.json)、[交付与清理回执](community-auth-integration-delivery-20261013.json)保留原日期与范围。本任务单追加双设备工作，不将旧认证22 PASS／0 FAIL／2 BLOCKED或社区主机结果改写成新设备通过。
@@ -41,7 +43,7 @@
 | 顺序 | 任务 | 固定检查映射 | 当前状态 |
 |---|---|---|---|
 | 1 | 单台Android文字社区全流程 | CA-A01–A07、A10；A06/A08/A12/B02/B03/B05/B06/B10 | PASS：本轮八自动点＋USER_CONFIRMED IME |
-| 2 | 原生存储与生命周期 | CA-A08/A09/A11/A12；N01/A12/A08 | 非手机准备PASS；设备NOT_RUN：BLOCKED_KEY_ISOLATION |
+| 2 | 原生存储与生命周期 | CA-A08/A09/A11/A12；N01/A12/A08 | PASS：35原生项＋3中断对＋实际重开/重启与用户确认 |
 | 3 | 系统Passkey与单机回归收口 | CA-A13；N03/A07/A09，并复核前三阶段受影响检查 | NOT_RUN：独立RP关联及窗口未具备 |
 | 4 | 双实体Android迁移与恢复验证 | NI-X01／NI-X02；N01/A12/A07/N03 | NOT_RUN：第二设备及两机窗口未确认 |
 

@@ -1,8 +1,8 @@
 # 任务2：原生存储与生命周期
 
-> 当前设备入口 **BLOCKED_KEY_ISOLATION**：本机Windows ADB的默认key目录由OS profile API定位；HOME/USERPROFILE/ANDROID_USER_HOME/ANDROID_SDK_HOME与独立server端口均未证明key隔离，ADB_VENDOR_KEYS仅追加。两个runner在读取manifest、写状态、绑定socket和任何ADB调用前阻断，即使全部授权flag为true也不通过；`--plan-only`仍可用。先证明真正独立profile或经验证支持专用key目录的ADB，再由原服务归属方安全释放目标USB并重验摘要/ready/空库。新OS账户、安全配置或共享ADB/key例外须明确变更授权，不自行创建。见[本轮报告](../../docs/design/community-android-device-blocked-20261015.md)。下方执行步骤仅在该阻塞安全解除且授权有效后使用。
+> Windows 默认仍为 **BLOCKED_KEY_ISOLATION**。2026-10-15 用户已明确批准本轮复用既有 USB 身份，stage2 增加显式 `--allow-existing-host-usb-identity`，调用 stage1 的真实 OS profile 逐层 metadata 校验；不读取、复制、hash 或改变 key，不新建默认 key。原有窗口、安装、认证释放和自有包强停授权仍全部必需，所有授权前置于 manifest/socket/ADB。该例外不等于独立 key 已被证明，不能推广到其他会话或设备。历史默认阻断见[报告](../../docs/design/community-android-device-blocked-20261015.md)；本轮结果见[任务2实测](../../docs/design/community-android-stage2-device-validation-20261015.md)。
 
-当前只完成不接触手机的准备。设备 35 项原生测试、3 组认证进程中断、真实插件跨进程/整机重启，以及实际账号/IME/读屏检查均须在获批窗口执行。构建成功不能代证设备通过。
+以下保留原准备步骤和现场 SOP。设备 35 项原生测试、3 组认证进程中断、真实插件跨进程/整机重启，以及实际账号/IME/读屏检查，按每轮实际证据分别登记。构建成功不能代证设备通过。
 
 任务2与任务1顺序执行，不共享账号或业务数据库。任务1的隔离包 `org.hnuhole.hnuhole_mobile.communityf5`、APK、签名、手机待验空库及测试时钟保留。任务2使用独立包、独立新调试签名和合成的本地 fixture：
 
@@ -47,7 +47,7 @@ build.sh 拒绝已有 source，所有 Flutter/Gradle 工作在独立镜像内。
 
 ## 获得手机窗口后
 
-先向用户确认实际实体设备ID、时段、认证会话释放、允许安装上述三个新包/创建本任务 USB 调试 key，以及只强停这三个包。任务1包的强停/重开和**整机重启**分别说明影响并确认；没有确认不执行。预备 manifest 的 `deviceWindowGranted=false` 不是授权。不得卸载、清数据、更换已安装包的签名、修改 provider/同步/备份/安全设置或操作其他 App。
+先向用户确认实际实体设备ID、时段、认证会话释放、允许安装上述三个新包、已验证的 USB 身份使用方式，以及只强停这三个包。Windows 既有 USB 身份例外必须明确获准，不能仅设置 flag。任务1包的强停/重开和**整机重启**分别说明影响并确认；没有确认不执行。预备 manifest 的 `deviceWindowGranted=false` 不是授权。不得卸载、清数据、更换已安装包的签名、修改 provider/同步/备份/安全设置或操作其他 App。
 
 以下 flags 仅能在真实授权后设置；每个阶段的回执保存于 `device-window/device-state.json`。示例 `<设备ID>` 必须替换为已确认的实体 ARM64 Android。
 
@@ -55,6 +55,8 @@ build.sh 拒绝已有 source，所有 Flutter/Gradle 工作在独立镜像内。
 $manifest = 'E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/device-window/manifest.json'
 $device = '<设备ID>'
 $approval = @('--confirmed-window','--allow-isolated-install','--auth-session-released','--allow-owned-adb-key','--allow-owned-force-stop')
+# 仅在用户明确批准本轮复用既有 USB 身份后追加；默认 Windows 路径仍阻断。
+$approval += '--allow-existing-host-usb-identity'
 & E:/acanda/python.exe -B tools/community-android-stage2/phone.py --manifest $manifest --device $device @approval --phase suites
 & E:/acanda/python.exe -B tools/community-android-stage2/phone.py --manifest $manifest --device $device @approval --phase write
 & E:/acanda/python.exe -B tools/community-android-stage2/phone.py --manifest $manifest --device $device @approval --phase read
@@ -66,7 +68,7 @@ $approval = @('--confirmed-window','--allow-isolated-install','--auth-session-re
 
 没有重启许可可略过 `reboot-read` 后继续 purge/closed，但 CA-A09 保持 NOT_RUN；purge 后不能再将 pre-purge 重启项补记通过。需要以后补验须准备另一合成 run，不能清空当前记录盲重试。两个中断 probe 会有意结束**测试包自身进程**，不会强停其他包。
 
-每阶段检查固定 APK/hash、已安装包的归属、专用非 5037 端口和 ADB server 的 PID/启动时刻/可执行文件；清除继承的外部 ADB socket/serial/key，USB key 写在 task2 `adb-home`。只对指定设备执行命令，不调用全局 ADB，不替换已有未知端口或包。实际 VM 结果只导出必要布尔值/计数/PID，不导出 URI、key、密文、正文、token 或原始证明。每阶段开始先落 latch；失败/未知时停止，先审查原结果，不能删 latch 自动重放。
+每阶段检查固定 APK/hash、已安装包的归属、专用非 5037 端口和 ADB server 的 PID/启动时刻/可执行文件；清除继承的外部 ADB socket/serial/key。显式获准的 Windows 例外只复用经 metadata 验证的现存 OS profile，不声称 key 写在 task2 `adb-home`。只对指定设备执行命令，不调用全局 ADB，不替换已有未知端口或包。实际 VM 结果只导出必要布尔值/计数/PID，不导出 URI、key、密文、正文、token 或原始证明。每阶段开始先落 latch；失败/未知时停止，先审查原结果，不能删 latch 自动重放。失败安装只在私有日志记录有界诊断，不复制账号数据。
 
 跨进程探针使用实际 Keystore、业务 vault 和实际打包 SQLite。write 写入 A 草稿/原 commandId-digest-identity-channel 及 B 草稿，read 核对不同原生 PID 和原状态；reboot-read 另核对 boot ID 已变。purge 只对合成 A 调用现有本地 adapter，closed 在新进程核对墓碑、文件擦除与 B/认证记录保留。它不调用 main、不登录、不发送 HTTP、不构造可用账号凭据，**不代证服务端权威闭号或实际账号会话恢复**。
 

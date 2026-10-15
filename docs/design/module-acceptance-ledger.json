@@ -5427,7 +5427,7 @@
       "id": "A08",
       "name": "七天注销、处罚联动、关闭与释放",
       "implementationState": "PRESENT",
-      "acceptanceState": "SCOPED_HOST_AND_BUILD_PASS_SINGLE_AND_DUAL_DEVICE_PENDING",
+      "acceptanceState": "SINGLE_ANDROID_NATIVE_LIFECYCLE_SCOPED_PASS_OTHER_PLATFORM_AND_DUAL_DEVICE_PENDING",
       "currentResult": "BLOCKED",
       "verificationEntries": [
         "R02",
@@ -5452,7 +5452,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+      "nextAcceptance": "Task2 fixed single Android scope PASS; task3 system Passkey where applicable, task4 NI-X01/NI-X02, iOS and production remain separate. TalkBack disabled and untested.",
       "sourcePaths": [
         "apps/mobile/lib/src/auth/auth_flows.dart",
         "apps/mobile/lib/src/auth/auth_screen.dart",
@@ -6348,6 +6348,31 @@
           "evidence": "docs/design/community-android-device-blocked-20261015.json"
         },
         "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+      },
+      "currentCommunityAndroidStage2Device": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+        "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+        "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+        "checkIds": [
+          "CA-A08",
+          "CA-A09",
+          "CA-A11",
+          "CA-A12"
+        ],
+        "nativePassed": 35,
+        "authProcessPairsPassed": 3,
+        "wholePhoneRebootWitnessed": true,
+        "manualReopenAndReboot": "USER_CONFIRMED",
+        "fullModuleOrAppPassed": false,
+        "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+        "sourceControllerHashes": {
+          "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+          "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+          "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+          "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+        },
+        "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
       }
     },
     {
@@ -7057,7 +7082,7 @@
       "id": "A12",
       "name": "Flutter认证与目录持久状态",
       "implementationState": "PRESENT",
-      "acceptanceState": "SCOPED_HOST_AND_BUILD_PASS_SINGLE_AND_DUAL_DEVICE_PENDING",
+      "acceptanceState": "SINGLE_ANDROID_NATIVE_LIFECYCLE_SCOPED_PASS_OTHER_PLATFORM_AND_DUAL_DEVICE_PENDING",
       "currentResult": "BLOCKED",
       "verificationEntries": [
         "F3-C01",
@@ -7082,7 +7107,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+      "nextAcceptance": "Task2 fixed single Android scope PASS; task3 system Passkey where applicable, task4 NI-X01/NI-X02, iOS and production remain separate. TalkBack disabled and untested.",
       "sourcePaths": [
         "apps/mobile/lib/main.dart",
         "apps/mobile/lib/src/config/mobile_environment.dart",
@@ -8376,6 +8401,31 @@
           "evidence": "docs/design/community-android-device-blocked-20261015.json"
         },
         "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+      },
+      "currentCommunityAndroidStage2Device": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+        "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+        "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+        "checkIds": [
+          "CA-A08",
+          "CA-A09",
+          "CA-A11",
+          "CA-A12"
+        ],
+        "nativePassed": 35,
+        "authProcessPairsPassed": 3,
+        "wholePhoneRebootWitnessed": true,
+        "manualReopenAndReboot": "USER_CONFIRMED",
+        "fullModuleOrAppPassed": false,
+        "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+        "sourceControllerHashes": {
+          "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+          "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+          "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+          "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+        },
+        "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
       }
     },
     {
@@ -8591,7 +8641,7 @@
       "id": "N01",
       "name": "Android安全存储与完整app",
       "implementationState": "PRESENT",
-      "acceptanceState": "SCOPED_HOST_AND_BUILD_PASS_SINGLE_AND_DUAL_DEVICE_PENDING",
+      "acceptanceState": "SINGLE_ANDROID_NATIVE_LIFECYCLE_SCOPED_PASS_OTHER_PLATFORM_AND_DUAL_DEVICE_PENDING",
       "currentResult": "BLOCKED",
       "verificationEntries": [
         "F3-C01",
@@ -8616,7 +8666,7 @@
         "X04",
         "X02"
       ],
-      "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
+      "nextAcceptance": "Task2 fixed single Android scope PASS; task3 system Passkey where applicable, task4 NI-X01/NI-X02, iOS and production remain separate. TalkBack disabled and untested.",
       "sourcePaths": [
         "apps/mobile/lib/src/storage/post_store.dart",
         "packages/auth_vault/lib/hnuhole_auth_vault.dart",
@@ -9810,6 +9860,31 @@
           "evidence": "docs/design/community-android-device-blocked-20261015.json"
         },
         "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+      },
+      "currentCommunityAndroidStage2Device": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+        "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+        "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+        "checkIds": [
+          "CA-A08",
+          "CA-A09",
+          "CA-A11",
+          "CA-A12"
+        ],
+        "nativePassed": 35,
+        "authProcessPairsPassed": 3,
+        "wholePhoneRebootWitnessed": true,
+        "manualReopenAndReboot": "USER_CONFIRMED",
+        "fullModuleOrAppPassed": false,
+        "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+        "sourceControllerHashes": {
+          "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+          "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+          "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+          "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+        },
+        "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
       }
     },
     {
@@ -34620,7 +34695,7 @@
     "planningBaselineHEAD": "1a0051297a4f8a046ca41191f1c47ab5d7b5b166",
     "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
     "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
-    "result": "PARTIAL_TASK1_PASS_TASK2_4_NOT_RUN",
+    "result": "PARTIAL_TASK1_AND_TASK2_SCOPED_PASS_TASK3_4_NOT_RUN",
     "scope": "Single Android community/native/Passkey first, then two physical Android NI-X01 and NI-X02",
     "phases": [
       {
@@ -34660,7 +34735,7 @@
         "id": "CA-T02",
         "order": 2,
         "name": "Native storage and lifecycle",
-        "result": "NOT_RUN",
+        "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
         "checkIds": [
           "CA-A08",
           "CA-A09",
@@ -34672,13 +34747,14 @@
           "A12",
           "A08"
         ],
-        "blocker": "BLOCKED_KEY_ISOLATION",
-        "preparationResult": "BLOCKED_KEY_ISOLATION",
+        "blocker": null,
+        "preparationResult": "PASS_PREPARATION_AND_APPROVED_DEVICE_SCOPE",
         "preparationReport": "docs/design/community-android-stage2-preparation-20261015.md",
         "preparationEvidence": "docs/design/community-android-stage2-preparation-20261015.json",
         "publishedPreparationSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
         "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
-        "currentDeviceEvidence": "docs/design/community-android-device-blocked-20261015.json"
+        "currentDeviceEvidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+        "manualReopenAndReboot": "USER_CONFIRMED"
       },
       {
         "id": "CA-T03",
@@ -34730,6 +34806,57 @@
     "stage2SourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
     "currentDeviceAttempt": {
       "recordedOn": "2026-10-15",
+      "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+      "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+      "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+      "checkIds": [
+        "CA-A08",
+        "CA-A09",
+        "CA-A11",
+        "CA-A12"
+      ],
+      "nativePassed": 35,
+      "authProcessPairsPassed": 3,
+      "wholePhoneRebootWitnessed": true,
+      "manualReopenAndReboot": "USER_CONFIRMED",
+      "fullModuleOrAppPassed": false,
+      "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+      "sourceControllerHashes": {
+        "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+        "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+        "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+        "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+      },
+      "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
+    },
+    "stage3ScopedSourceFingerprint": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9",
+    "currentStage2DeviceAttempt": {
+      "recordedOn": "2026-10-15",
+      "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+      "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+      "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+      "checkIds": [
+        "CA-A08",
+        "CA-A09",
+        "CA-A11",
+        "CA-A12"
+      ],
+      "nativePassed": 35,
+      "authProcessPairsPassed": 3,
+      "wholePhoneRebootWitnessed": true,
+      "manualReopenAndReboot": "USER_CONFIRMED",
+      "fullModuleOrAppPassed": false,
+      "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+      "sourceControllerHashes": {
+        "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+        "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+        "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+        "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+      },
+      "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
+    },
+    "priorTask1DeviceAttempt": {
+      "recordedOn": "2026-10-15",
       "result": "PASS_TASK1_SCOPED_DEVICE_AND_USER_CONFIRMED_IME",
       "report": "docs/design/community-android-device-validation-20261015.md",
       "evidence": "docs/design/community-android-device-validation-20261015.json",
@@ -34749,8 +34876,7 @@
       "fullModulePassed": false,
       "deviceSourceFingerprint": "ec7aab83fa4024a578529c3e924c81d614237ee547bd08d0e8f940e8bad7ed73",
       "nextAcceptance": "Keep normal/A session and current owned services/data; stage2-4 and platform/production acceptance remain independent, default stage2 key guard unchanged."
-    },
-    "stage3ScopedSourceFingerprint": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9"
+    }
   },
   "currentCommunityAndroidStage1Preparation": {
     "recordedOn": "2026-10-15",
@@ -34841,25 +34967,28 @@
   },
   "currentCommunityAndroidDeviceAttempt": {
     "recordedOn": "2026-10-15",
-    "result": "PASS_TASK1_SCOPED_DEVICE_AND_USER_CONFIRMED_IME",
-    "report": "docs/design/community-android-device-validation-20261015.md",
-    "evidence": "docs/design/community-android-device-validation-20261015.json",
-    "automaticCheckIds": [
-      "CA-A01",
-      "CA-A02",
-      "CA-A04",
-      "CA-A03",
-      "CA-A05",
-      "CA-A06",
-      "CA-A07",
-      "CA-A10"
+    "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+    "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+    "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+    "checkIds": [
+      "CA-A08",
+      "CA-A09",
+      "CA-A11",
+      "CA-A12"
     ],
-    "automatic": "PASS",
-    "manualIme": "USER_CONFIRMED",
-    "aggregateTask1": "PASS",
-    "fullModulePassed": false,
-    "deviceSourceFingerprint": "ec7aab83fa4024a578529c3e924c81d614237ee547bd08d0e8f940e8bad7ed73",
-    "nextAcceptance": "Keep normal/A session and current owned services/data; stage2-4 and platform/production acceptance remain independent, default stage2 key guard unchanged."
+    "nativePassed": 35,
+    "authProcessPairsPassed": 3,
+    "wholePhoneRebootWitnessed": true,
+    "manualReopenAndReboot": "USER_CONFIRMED",
+    "fullModuleOrAppPassed": false,
+    "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+    "sourceControllerHashes": {
+      "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+      "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+      "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+      "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+    },
+    "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
   },
   "currentCommunityAndroidStage3Preparation": {
     "recordedOn": "2026-10-15",
@@ -34897,5 +35026,54 @@
     "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate.",
     "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
     "sourceCommitRemoteVerified": true
-  }
+  },
+  "currentCommunityAndroidStage2Device": {
+    "recordedOn": "2026-10-15",
+    "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+    "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+    "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+    "checkIds": [
+      "CA-A08",
+      "CA-A09",
+      "CA-A11",
+      "CA-A12"
+    ],
+    "nativePassed": 35,
+    "authProcessPairsPassed": 3,
+    "wholePhoneRebootWitnessed": true,
+    "manualReopenAndReboot": "USER_CONFIRMED",
+    "fullModuleOrAppPassed": false,
+    "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+    "sourceControllerHashes": {
+      "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+      "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+      "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+      "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+    },
+    "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
+  },
+  "communityAndroidDeviceAttemptHistory": [
+    {
+      "recordedOn": "2026-10-15",
+      "result": "PASS_TASK1_SCOPED_DEVICE_AND_USER_CONFIRMED_IME",
+      "report": "docs/design/community-android-device-validation-20261015.md",
+      "evidence": "docs/design/community-android-device-validation-20261015.json",
+      "automaticCheckIds": [
+        "CA-A01",
+        "CA-A02",
+        "CA-A04",
+        "CA-A03",
+        "CA-A05",
+        "CA-A06",
+        "CA-A07",
+        "CA-A10"
+      ],
+      "automatic": "PASS",
+      "manualIme": "USER_CONFIRMED",
+      "aggregateTask1": "PASS",
+      "fullModulePassed": false,
+      "deviceSourceFingerprint": "ec7aab83fa4024a578529c3e924c81d614237ee547bd08d0e8f940e8bad7ed73",
+      "nextAcceptance": "Keep normal/A session and current owned services/data; stage2-4 and platform/production acceptance remain independent, default stage2 key guard unchanged."
+    }
+  ]
 }

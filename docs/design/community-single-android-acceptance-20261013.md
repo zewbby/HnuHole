@@ -1,5 +1,7 @@
 # 联合源码单台Android验收清单
 
+> **2026-10-15 当前任务2单机范围通过：**原生35项＋3组进程中断、实际SQLite跨进程/用户整机重启/本地闭号清理PASS；正常App合成A重新正常登录后强停/重启的草稿、身份通道与会话由用户确认。先前旧会话因获准Gate恢复推进代次被拒绝，保留负向观察，不冒充恢复PASS。Windows155＋3 POSIX SKIP／Linux158。见[实测报告](community-android-stage2-device-validation-20261015.md)及[机器记录](community-android-stage2-device-validation-20261015.json)。产品/native/manifest/SQL/锁未改；默认USB隔离守卫保留，仅本轮显式批准既有身份。TalkBack关闭未验；任务3系统Passkey、任务4双实体、iOS和生产仍待验，模块/App不升级整体PASS。以下历史条目保留原日期范围。
+
 > **2026-10-15 CA-T03主机准备已补齐：**本轮七阶段/mobile322、Passkey Dart9、JVM24及固定快照工具测试通过，独立签名/未配置APK和[RP具体方案](community-android-stage3-rp-proposal-20261015.md)已准备；用户选方案后仅核实DNS/HTTPS，尚无域名控制权/配置/部署授权。见[报告](community-android-stage3-preparation-20261015.md)。CA-A13及其他设备项仍NOT_RUN，不把基线包当作最终已配置候选；先完成新独立lab/重建与手机USB固定交付，再确认窗口。并行未提交USB代码不在本轮覆盖内。
 
 > **2026-10-15 任务1/2准备已具备：**当前两项非手机工作分别见[任务1报告](community-android-stage1-preparation-20261015.md)、[任务2报告](community-android-stage2-preparation-20261015.md)。两套待验制品保留，任务1全部450输入/签名/空库不变；task2有独立35项原生runner与跨进程/重启/本地合成清理探针、3个新隔离包。设备CA-A01–A13仍全部NOT_RUN，无ADB/手机动作；重启与系统设置需分别获准。按[统一四任务](community-android-unified-acceptance-plan-20261014.md)推进，task2本地fixture不代验实际账号/权威CLOSED，实际main恢复和IME/读屏按[手机SOP](../../tools/community-android-stage2/README.md)补证。
@@ -16,18 +18,18 @@
 
 | ID | 操作与证据 | 当前结果 |
 |---|---|---|
-| CA-A01 | 实际main启动；正式目录/auth/post HTTP、Keystore/business key/SQLite/Passkey插件注册，无MissingPlugin或失败后继续访问 | NOT_RUN |
-| CA-A02 | 本任务合成账号正常登录，核实际C/V/Gate/SQL事实；退出后重新登录 | NOT_RUN |
-| CA-A03 | 创建/选择身份，在既定编辑与确认页发布，固定原identityId/channelId | NOT_RUN |
-| CA-A04 | 重复点击只有一次CREATE；丢响应或重开核同一commandId/digest，不另发命令 | NOT_RUN |
-| CA-A05 | 通道列表、正文详情、我的与SQL一致；自动核对和实际中文输入 | NOT_RUN |
-| CA-A06 | 正常删除及DELETE丢响应核原命令，正文清除并返回原列表，无重复副作用 | NOT_RUN |
-| CA-A07 | 退出重进、A/B切换、草稿/未知命令/删除事实隔离，迟到结果不越账号 | NOT_RUN |
-| CA-A08 | 仅强停/重开本任务隔离包，恢复原草稿/命令/绑定，记录新原生进程PID | NOT_RUN |
-| CA-A09 | 获整机重启许可后复验Keystore、业务库与已持久状态；不代证断电/OEM迁移 | NOT_RUN |
-| CA-A10 | 正式申请注销，经原七天期限和普通worker；清未公开载荷/回执关联及本地库/key，闭号墓碑拒重开，另一账号保留 | NOT_RUN |
-| CA-A11 | AndroidBusinessStorageTest原生7项，使用专用namespace及匹配APK | NOT_RUN |
-| CA-A12 | vault认证16项、真实进程恢复、原生Passkey codec/错误分类12项，按本次实际执行计数 | NOT_RUN |
+| CA-A01 | 实际main启动；正式目录/auth/post HTTP、Keystore/business key/SQLite/Passkey插件注册，无MissingPlugin或失败后继续访问 | PASS，任务1固定范围，见其报告 |
+| CA-A02 | 本任务合成账号正常登录，核实际C/V/Gate/SQL事实；退出后重新登录 | PASS，任务1固定范围，见其报告 |
+| CA-A03 | 创建/选择身份，在既定编辑与确认页发布，固定原identityId/channelId | PASS，任务1固定范围，见其报告 |
+| CA-A04 | 重复点击只有一次CREATE；丢响应或重开核同一commandId/digest，不另发命令 | PASS，任务1固定范围，见其报告 |
+| CA-A05 | 通道列表、正文详情、我的与SQL一致；自动核对和实际中文输入 | PASS，任务1固定范围，见其报告 |
+| CA-A06 | 正常删除及DELETE丢响应核原命令，正文清除并返回原列表，无重复副作用 | PASS，任务1固定范围，见其报告 |
+| CA-A07 | 退出重进、A/B切换、草稿/未知命令/删除事实隔离，迟到结果不越账号 | PASS，任务1固定范围，见其报告 |
+| CA-A08 | 仅强停/重开本任务隔离包，恢复原草稿/命令/绑定，记录新原生进程PID | PASS，本轮任务2范围 |
+| CA-A09 | 获整机重启许可后复验Keystore、业务库与已持久状态；不代证断电/OEM迁移 | PASS，本轮任务2范围 |
+| CA-A10 | 正式申请注销，经原七天期限和普通worker；清未公开载荷/回执关联及本地库/key，闭号墓碑拒重开，另一账号保留 | PASS，任务1固定范围，见其报告 |
+| CA-A11 | AndroidBusinessStorageTest原生7项，使用专用namespace及匹配APK | PASS，本轮任务2范围 |
+| CA-A12 | vault认证16项、真实进程恢复、原生Passkey codec/错误分类12项，按本次实际执行计数 | PASS，本轮任务2范围 |
 | CA-A13 | 实际Passkey接口及取消/拒绝边界；系统正向ceremony另需本任务批准RP/package/signature关联和人工窗口，不能以codec或旧22项代证 | NOT_RUN |
 
 同一runner可支持多个ID，不重复计数。未知结果保留原待办；失败重试保留原身份/通道。注销只用本任务新一次性库和合成数据，测试可信时间推进不改SQL期限或绕过worker，不称真实自然等待七天。

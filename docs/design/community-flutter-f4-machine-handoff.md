@@ -1,5 +1,7 @@
 # Flutter社区 F4 换机接续
 
+> **2026-10-15 当前任务2单机范围通过：**原生35项＋3组进程中断、实际SQLite跨进程/用户整机重启/本地闭号清理PASS；正常App合成A重新正常登录后强停/重启的草稿、身份通道与会话由用户确认。先前旧会话因获准Gate恢复推进代次被拒绝，保留负向观察，不冒充恢复PASS。Windows155＋3 POSIX SKIP／Linux158。见[实测报告](community-android-stage2-device-validation-20261015.md)及[机器记录](community-android-stage2-device-validation-20261015.json)。产品/native/manifest/SQL/锁未改；默认USB隔离守卫保留，仅本轮显式批准既有身份。TalkBack关闭未验；任务3系统Passkey、任务4双实体、iOS和生产仍待验，模块/App不升级整体PASS。以下历史条目保留原日期范围。
+
 > **2026-10-15 当前任务1实测完成：八自动点PASS＋人工IME USER_CONFIRMED。**真实vivo S18/Android15，中文/换行/emoji与草稿重开由用户对明确清单综合答“一切正确”；原自动PARTIAL记录未改，汇总另存。最终mobile327、分析0，Python Windows144＋3 POSIX SKIP／Linux147；历史失败及修复全过程保留。见[实测报告](community-android-device-validation-20261015.md)与[机器记录](community-android-device-validation-20261015.json)。normal/A会话、当前server/reverse/fixture与专用材料保留。任务2–4、iOS和生产仍独立未验；并行stage3准备保留原范围。
 
 > **2026-10-15 第三项主机独立准备已收尾：**起始0c8e247，保留并行e0c1280；产品b5accf3、认证d859cb0不变。本轮七阶段/mobile322、Passkey Dart9、JVM24、固定手机守卫快照＋新工具的Linux148／Windows145＋3SKIP通过；199镜像/560签名对照/3基线APK核对。RP方案已由用户选定但仅继续核实，域名控制权与安全配置/公开部署未获准，未创建新RP环境或最终可验候选，未用ADB/手机。457项本轮输入明确排除并行手机4项，后者单独固定e0c1280，不采用其后未提交代码。见[报告](community-android-stage3-preparation-20261015.md)、[记录](community-android-stage3-preparation-20261015.json)、[关联方案](community-android-stage3-rp-proposal-20261015.md)、[工具入口](../../tools/community-android-stage3/README.md)。后续先处理托管/配置审批、独立lab/重建，再按手机会话新的固定USB交付确认设备窗口；任务1/2实际设备、双实体、iOS、生产仍待验。

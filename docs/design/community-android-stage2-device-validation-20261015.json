@@ -1,0 +1,471 @@
+{
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+  "fullModuleOrAppPassed": false,
+  "startHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+  "branch": "codex/community-flutter-pages",
+  "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "checkpoints": {
+    "CA-A08": "PASS_SCOPED",
+    "CA-A09": "PASS_SCOPED",
+    "CA-A11": "PASS_SCOPED",
+    "CA-A12": "PASS_SCOPED"
+  },
+  "device": {
+    "manufacturer": "vivo",
+    "hardwareModel": "V2323A",
+    "androidRelease": "15",
+    "androidSDK": "35",
+    "arm64Abi": "arm64-v8a,armeabi-v7a,armeabi",
+    "bootComplete": "1",
+    "talkbackCurrentlyEnabled": false,
+    "defaultIME": "com.vivo.ai.ime.nex/com.vivo.ai.ime.main.IMEService",
+    "systemSettingsModified": false
+  },
+  "runId": "community-storage-7d5295f66b8efe9d",
+  "originalPreparedFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+  "installedArtifacts": {
+    "storage": {
+      "applicationId": "org.hnuhole.hnuhole_mobile.communityf5.storage",
+      "installedSha256": "a9b698499d2ed6cf61b8ee88e1ccfc16bec8a02a2d686e06aad075d30b42e2ff",
+      "matchesPreparedSignedApk": true,
+      "certificateSha256": "9a9f24d8df422d013c85cdf8e7a9861e22669e4e184013c53d41b38450ee76da"
+    },
+    "vault": {
+      "applicationId": "org.hnuhole.communityf5.storage.vault.test",
+      "installedSha256": "0b4403cfe6bc413a828e7394d609059c56a83f244b534e8a5d989f6274e5daee",
+      "matchesPreparedSignedApk": true,
+      "certificateSha256": "9a9f24d8df422d013c85cdf8e7a9861e22669e4e184013c53d41b38450ee76da"
+    },
+    "passkey": {
+      "applicationId": "org.hnuhole.communityf5.storage.passkey.test",
+      "installedSha256": "9d167a883e460650f4831710c7f83a9ee9cc5ee33ee799b39180d0c8bf79bc4d",
+      "matchesPreparedSignedApk": true,
+      "certificateSha256": "9a9f24d8df422d013c85cdf8e7a9861e22669e4e184013c53d41b38450ee76da"
+    }
+  },
+  "nativeResults": {
+    "suites": {
+      "result": "PASS",
+      "nativeTests": [
+        {
+          "class": "org.hnuhole.authvault.AndroidBusinessStorageTest",
+          "result": "PASS",
+          "count": 7
+        },
+        {
+          "class": "org.hnuhole.authvault.AndroidAuthVaultTest",
+          "result": "PASS",
+          "count": 16
+        },
+        {
+          "class": "org.hnuhole.authpasskey.PasskeyCodecTest",
+          "result": "PASS",
+          "count": 9
+        },
+        {
+          "class": "org.hnuhole.authpasskey.PasskeyAcceptanceErrorsTest",
+          "result": "PASS",
+          "count": 3
+        },
+        {
+          "id": "auth-process-pair-0",
+          "result": "PASS"
+        },
+        {
+          "id": "auth-process-pair-1",
+          "result": "PASS"
+        },
+        {
+          "id": "auth-process-pair-2",
+          "result": "PASS"
+        }
+      ],
+      "suiteCount": 35,
+      "restartPairs": 3,
+      "bootIdHash": "38fdf427a3594b8e24ce444b882f06975f92066f40d3cefc62f0eaccf2a767c1"
+    },
+    "write": {
+      "result": "PASS",
+      "phase": "write",
+      "pid": 17214,
+      "flags": {
+        "durableWritesAcknowledged": true,
+        "realSqliteWithoutPayloadPlaintext": true
+      },
+      "syntheticFixturesOnly": true,
+      "actualMainCalled": false,
+      "systemPasskeyCeremony": false,
+      "manualImeVerified": false,
+      "bootIdHash": "38fdf427a3594b8e24ce444b882f06975f92066f40d3cefc62f0eaccf2a767c1"
+    },
+    "read": {
+      "result": "PASS",
+      "phase": "read",
+      "pid": 19277,
+      "flags": {
+        "draftAndOriginalIntentRestored": true,
+        "nativeAuthRecordPreserved": true,
+        "otherAccountPreserved": true,
+        "realSqliteWithoutPayloadPlaintext": true
+      },
+      "syntheticFixturesOnly": true,
+      "actualMainCalled": false,
+      "systemPasskeyCeremony": false,
+      "manualImeVerified": false,
+      "bootIdHash": "38fdf427a3594b8e24ce444b882f06975f92066f40d3cefc62f0eaccf2a767c1"
+    },
+    "reboot-read": {
+      "result": "PASS",
+      "phase": "reboot-read",
+      "pid": 15787,
+      "flags": {
+        "draftAndOriginalIntentRestored": true,
+        "nativeAuthRecordPreserved": true,
+        "otherAccountPreserved": true,
+        "realSqliteWithoutPayloadPlaintext": true
+      },
+      "syntheticFixturesOnly": true,
+      "actualMainCalled": false,
+      "systemPasskeyCeremony": false,
+      "manualImeVerified": false,
+      "bootIdHash": "ba8f45af8520c5f6b3fab5dcdc38d92944e2d76ea38d9d2aaeb489571a961f6b"
+    },
+    "purge": {
+      "result": "PASS",
+      "phase": "purge",
+      "pid": 17391,
+      "flags": {
+        "nativeAuthRecordPreserved": true,
+        "nativeLocalPurgeCompleted": true,
+        "otherAccountPreserved": true
+      },
+      "syntheticFixturesOnly": true,
+      "actualMainCalled": false,
+      "systemPasskeyCeremony": false,
+      "manualImeVerified": false,
+      "bootIdHash": "ba8f45af8520c5f6b3fab5dcdc38d92944e2d76ea38d9d2aaeb489571a961f6b"
+    },
+    "closed": {
+      "result": "PASS",
+      "phase": "closed",
+      "pid": 19332,
+      "flags": {
+        "closedKeyAndDatabaseFilesAbsent": true,
+        "closedMarkerSurvivesNewProcess": true,
+        "nativeAuthRecordPreserved": true,
+        "otherAccountPreserved": true
+      },
+      "syntheticFixturesOnly": true,
+      "actualMainCalled": false,
+      "systemPasskeyCeremony": false,
+      "manualImeVerified": false,
+      "bootIdHash": "ba8f45af8520c5f6b3fab5dcdc38d92944e2d76ea38d9d2aaeb489571a961f6b"
+    }
+  },
+  "nativeTests": 35,
+  "authProcessInterruptionPairs": 3,
+  "executions": [
+    {
+      "startedUTC": "2026-10-15T05:23:25.836579+00:00",
+      "endedUTC": "2026-10-15T05:25:44.375923+00:00",
+      "phase": "suites",
+      "exitCode": 0,
+      "commandDeviceIdRedacted": [
+        "E:\\acanda\\python.exe",
+        "-B",
+        "E:\\HnuHole-community-f4-20261012\\repo\\tools\\community-android-stage2\\phone.py",
+        "--manifest",
+        "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\device-window\\manifest.json",
+        "--device",
+        "[confirmed-vivo-S18]",
+        "--phase",
+        "suites",
+        "--confirmed-window",
+        "--allow-isolated-install",
+        "--auth-session-released",
+        "--allow-owned-adb-key",
+        "--allow-owned-force-stop",
+        "--allow-existing-host-usb-identity"
+      ]
+    },
+    {
+      "startedUTC": "2026-10-15T05:26:09.282627+00:00",
+      "endedUTC": "2026-10-15T05:26:57.994190+00:00",
+      "phase": "write",
+      "exitCode": 0,
+      "commandDeviceIdRedacted": [
+        "E:\\acanda\\python.exe",
+        "-B",
+        "E:\\HnuHole-community-f4-20261012\\repo\\tools\\community-android-stage2\\phone.py",
+        "--manifest",
+        "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\device-window\\manifest.json",
+        "--device",
+        "[confirmed-vivo-S18]",
+        "--phase",
+        "write",
+        "--confirmed-window",
+        "--allow-isolated-install",
+        "--auth-session-released",
+        "--allow-owned-adb-key",
+        "--allow-owned-force-stop",
+        "--allow-existing-host-usb-identity"
+      ]
+    },
+    {
+      "startedUTC": "2026-10-15T05:27:04.177505+00:00",
+      "endedUTC": "2026-10-15T05:27:49.023943+00:00",
+      "phase": "read",
+      "exitCode": 0,
+      "commandDeviceIdRedacted": [
+        "E:\\acanda\\python.exe",
+        "-B",
+        "E:\\HnuHole-community-f4-20261012\\repo\\tools\\community-android-stage2\\phone.py",
+        "--manifest",
+        "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\device-window\\manifest.json",
+        "--device",
+        "[confirmed-vivo-S18]",
+        "--phase",
+        "read",
+        "--confirmed-window",
+        "--allow-isolated-install",
+        "--auth-session-released",
+        "--allow-owned-adb-key",
+        "--allow-owned-force-stop",
+        "--allow-existing-host-usb-identity"
+      ]
+    },
+    {
+      "startedUTC": "2026-10-15T05:39:47.573884+00:00",
+      "endedUTC": "2026-10-15T05:40:37.163649+00:00",
+      "phase": "reboot-read",
+      "exitCode": 0,
+      "commandDeviceIdRedacted": [
+        "E:\\acanda\\python.exe",
+        "-B",
+        "E:\\HnuHole-community-f4-20261012\\repo\\tools\\community-android-stage2\\phone.py",
+        "--manifest",
+        "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\device-window\\manifest.json",
+        "--device",
+        "[confirmed-vivo-S18]",
+        "--phase",
+        "reboot-read",
+        "--confirmed-window",
+        "--allow-isolated-install",
+        "--auth-session-released",
+        "--allow-owned-adb-key",
+        "--allow-owned-force-stop",
+        "--allow-existing-host-usb-identity",
+        "--confirmed-manual-reboot"
+      ]
+    },
+    {
+      "startedUTC": "2026-10-15T05:42:30.178511+00:00",
+      "endedUTC": "2026-10-15T05:43:10.778832+00:00",
+      "phase": "purge",
+      "exitCode": 0,
+      "commandDeviceIdRedacted": [
+        "E:\\acanda\\python.exe",
+        "-B",
+        "E:\\HnuHole-community-f4-20261012\\repo\\tools\\community-android-stage2\\phone.py",
+        "--manifest",
+        "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\device-window\\manifest.json",
+        "--device",
+        "[confirmed-vivo-S18]",
+        "--phase",
+        "purge",
+        "--confirmed-window",
+        "--allow-isolated-install",
+        "--auth-session-released",
+        "--allow-owned-adb-key",
+        "--allow-owned-force-stop",
+        "--allow-existing-host-usb-identity"
+      ]
+    },
+    {
+      "startedUTC": "2026-10-15T05:43:17.085867+00:00",
+      "endedUTC": "2026-10-15T05:43:57.979905+00:00",
+      "phase": "closed",
+      "exitCode": 0,
+      "commandDeviceIdRedacted": [
+        "E:\\acanda\\python.exe",
+        "-B",
+        "E:\\HnuHole-community-f4-20261012\\repo\\tools\\community-android-stage2\\phone.py",
+        "--manifest",
+        "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\device-window\\manifest.json",
+        "--device",
+        "[confirmed-vivo-S18]",
+        "--phase",
+        "closed",
+        "--confirmed-window",
+        "--allow-isolated-install",
+        "--auth-session-released",
+        "--allow-owned-adb-key",
+        "--allow-owned-force-stop",
+        "--allow-existing-host-usb-identity"
+      ]
+    }
+  ],
+  "wholePhoneReboot": {
+    "byUser": true,
+    "permissionAndCompletionConfirmed": true,
+    "bootIdChanged": true,
+    "automaticRebootCommandUsed": false
+  },
+  "normalApp": {
+    "approvedTask1PackageOnly": true,
+    "sameNormalApkAndDataPreserved": true,
+    "preRecoveryOldSession": {
+      "readOnlySql": {
+        "gateGeneration": 3,
+        "activeAccounts": 1,
+        "sessionsForActiveAccount": 5,
+        "activeAccountSessionsMatchingGate": 0,
+        "activeAccountSessionsFromOldGate": 5
+      },
+      "userObservedAfterRestart": "让我登录或注册",
+      "oldSessionRestore": "NOT_PASS_SECURITY_GENERATION_CHANGED",
+      "noAppDataCleared": true,
+      "storageLossProven": false,
+      "productCodeChanged": false
+    },
+    "freshNormalPasswordLoginToExistingSyntheticA": true,
+    "freshSessionCount": 1,
+    "processReopen": {
+      "mode": "fresh-reopen",
+      "pidBefore": 21892,
+      "pidAfter": 22184,
+      "bootIdHash": "38fdf427a3594b8e24ce444b882f06975f92066f40d3cefc62f0eaccf2a767c1",
+      "normalApkHashVerified": true,
+      "driverExtrasPassed": false,
+      "forceStopOnlyTask1ApprovedPackage": true,
+      "dataClear": false,
+      "actualAccountAndDraftCheck": "PENDING_USER_FACTS"
+    },
+    "afterReboot": {
+      "mode": "after-reboot",
+      "pidBefore": null,
+      "pidAfter": 17161,
+      "bootIdHash": "ba8f45af8520c5f6b3fab5dcdc38d92944e2d76ea38d9d2aaeb489571a961f6b",
+      "normalApkHashVerified": true,
+      "driverExtrasPassed": false,
+      "forceStopOnlyTask1ApprovedPackage": false,
+      "dataClear": false,
+      "actualAccountAndDraftCheck": "PENDING_USER_FACTS"
+    },
+    "manualBeforeReboot": {
+      "checklist": [
+        "original A account restored without another login",
+        "original 输入法验证 draft",
+        "Chinese newline emoji intact",
+        "original identity and channel retained",
+        "channel list loads"
+      ],
+      "observedAfter": "fresh-normal-password-login-and-forced-process-reopen",
+      "exactUserResponse": "正常的",
+      "recordedUTC": "2026-10-15T05:37:45.1343012Z",
+      "automatedTypingUsedAsManualImeEvidence": false,
+      "result": "USER_CONFIRMED"
+    },
+    "manualAfterReboot": {
+      "checklist": [
+        "no additional login after whole-phone reboot",
+        "channel list loads",
+        "original 输入法验证 draft",
+        "Chinese newline emoji intact",
+        "original identity and channel retained"
+      ],
+      "result": "USER_CONFIRMED",
+      "exactUserResponse": "全部正常，内容与重启前一致",
+      "recordedUTC": "2026-10-15T05:42:30.0387953Z"
+    }
+  },
+  "lab": {
+    "sameOwnedProjectAndPersistentVolumesResumed": true,
+    "newDatabaseOrSchemaReset": false,
+    "approvedRecoveryOnlyOwnCAndVGates": true,
+    "oldGenerationSessionsNotRestored": true,
+    "protocolPermissionsAndProductionConfigChanged": false,
+    "finalReadyAndStats": {
+      "recordedUTC": "2026-10-15T05:43:27.339047+00:00",
+      "c": 200,
+      "v": 200,
+      "proxy": 200,
+      "stats": {
+        "counters": {
+          "creates": 0,
+          "retries": 0,
+          "deletes": 0,
+          "commandQueries": 0,
+          "droppedQueries": 0,
+          "droppedReplies": 0,
+          "uniqueCreates": 0,
+          "uniqueRetries": 0,
+          "uniqueDeletes": 0,
+          "rawTokensOrProofsStored": false
+        },
+        "sql": {
+          "accounts": 2,
+          "closed": 1,
+          "pendingClose": 0,
+          "posts": 2,
+          "published": 0,
+          "deleted": 1,
+          "attempts": 3,
+          "failed": 2,
+          "bindings": 2,
+          "closedPayloadsRemaining": 0,
+          "closedPrivateReceiptsRemaining": 0,
+          "closedCredentialsRemaining": 0
+        }
+      },
+      "tlsVerified": true,
+      "databaseReset": false,
+      "approvedGateRecoveryApplied": true
+    }
+  },
+  "hostChecks": {
+    "windows": {
+      "run": 158,
+      "pass": 155,
+      "posixSkip": 3
+    },
+    "linux": {
+      "run": 158,
+      "pass": 158
+    },
+    "focusedStage2Phone": 14,
+    "coverFinalExecutableChanges": true,
+    "mobileGoSevenStagesRerunThisTurn": false,
+    "unchangedProductPriorEvidence": "docs/design/community-android-device-validation-20261015.json"
+  },
+  "sourceCoverage": {
+    "currentControllerNormalizedSha256": {
+      "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+      "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+      "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+      "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+    },
+    "historicalMirrorInputs": 199,
+    "matchingInputsWithOwnedOverlays": 198,
+    "onlyMirrorDifference": "apps/mobile/integration/community_stage1_scenario.dart",
+    "differenceImportedByStorageEntrypoint": false,
+    "productNativeManifestSqlLockInputsChanged": false,
+    "existingSignedApksRebuiltThisTurn": false
+  },
+  "originalRunnerAggregate": "PARTIAL_DEVICE_MANUAL_CHECKS_PENDING; unchanged, aggregate result combines separately recorded manual facts",
+  "limitations": {
+    "talkback": "NOT_RUN; measured disabled; settings not changed",
+    "manualIme": "Prior task1 USER_CONFIRMED evidence retained; this turn checks preserved draft, no fresh manual typing claim",
+    "purge": "Synthetic local adapter cleanup plus native tests; authoritative C CLOSED belongs to unchanged task1 evidence",
+    "systemPasskey": "NOT_RUN, task3",
+    "twoPhysicalAndroids": "NOT_RUN, task4",
+    "iOS": "NOT_RUN",
+    "production": "NOT_RUN"
+  },
+  "externalEvidenceRoot": "/mnt/e/HnuHole-community-f4-20261012/device-validation-stage2-20261015",
+  "delivery": "external git-delivery.json after normal push; no main/Release/production action",
+  "cleanup": "App/data/own lab/server/cache/material retained for authorized continuation; no uninstall or data clear"
+}
