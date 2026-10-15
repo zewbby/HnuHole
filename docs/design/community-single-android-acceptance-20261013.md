@@ -1,5 +1,7 @@
 # 联合源码单台Android验收清单
 
+> **2026-10-15 任务1/2准备已具备：**当前两项非手机工作分别见[任务1报告](community-android-stage1-preparation-20261015.md)、[任务2报告](community-android-stage2-preparation-20261015.md)。两套待验制品保留，任务1全部450输入/签名/空库不变；task2有独立35项原生runner与跨进程/重启/本地合成清理探针、3个新隔离包。设备CA-A01–A13仍全部NOT_RUN，无ADB/手机动作；重启与系统设置需分别获准。按[统一四任务](community-android-unified-acceptance-plan-20261014.md)推进，task2本地fixture不代验实际账号/权威CLOSED，实际main恢复和IME/读屏按[手机SOP](../../tools/community-android-stage2/README.md)补证。
+
 > **2026-10-14 当前统一任务单：**用户将双实体Android验证追加到原三项工作之后，顺序为①单机文字社区流程②原生存储与生命周期③系统Passkey及单机回归④双设备NI-X01/NI-X02。见[四阶段统一任务单](community-android-unified-acceptance-plan-20261014.md)。当前只更新计划/交接，没有新增测试或设备操作；单机窗口仍延期，第二设备与两机窗口尚未确认，RP/package/signature关联须另行准备审批。20261013主机/构建证据和其“排除第二设备”保留为原范围历史；新任务整体须四阶段全部收口才通过，iOS/生产和未实现业务仍独立。
 
 日期2026-10-13。第二实体Android NI-X01/X02、iOS、生产部署不纳入本轮通过。认证d859cb05c772cdf8d8b75e439a2bfedf0414dd46的22/0/2及旧社区311是原版本证据，不能代验联合App。设备结果全部NOT_RUN；用户现已明确回复“暂不提供设备窗口；先提交推送整合成果，设备验收保持待执行”。未使用ADB、安装、强停、清数据、卸载或重启手机。标准及隔离候选APK已构建核对；因设备延期，APK/新调试私钥/合成CA材料在交付后清理，未来需独立重建并重新确认设备窗口与数据影响。

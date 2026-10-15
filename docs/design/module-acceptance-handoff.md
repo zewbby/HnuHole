@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-15 CA-T02非手机准备完成：**涉及N01/A12/A08，task1全部450输入与制品/待验空库未变。新增实际vault/PostStore跨进程探针、原生business7/vault16/codec9+errors3与3组认证中断的runner、3隔离新包和手机SOP；mobile322、分析0、Linux136／Windows133＋3POSIX跳过、199项镜像/签名/manifest/DEX/SQLite核对通过。证据见[报告](community-android-stage2-preparation-20261015.md)、[记录](community-android-stage2-preparation-20261015.json)。主机新检查覆盖最终测试/工具，原生35项/实际进程/重启/实际账号/IME/读屏均NOT_RUN，用户未提供手机窗口；原生本地合成清理不代证权威服务端CLOSED。模块/完整App未升级PASS，后续按[四阶段任务单](community-android-unified-acceptance-plan-20261014.md)及[手机SOP](../../tools/community-android-stage2/README.md)继续。
+
 > **2026-10-15 第一项非手机准备完成：**修复 DELETE 首次核对失败后遗漏 poll 集合，以及 C 确认取消注销后的 UI 完成入口。最后产品修改后 mobile322/R05/F4 通过，真实 server/权限/runtime/vet 通过；新增整段 host 八检查点和最终隔离 Debug/标准未签名 Release 构建通过，实际设备与 IME 仍 NOT_RUN。见[准备报告](community-android-stage1-preparation-20261015.md)和[机器记录](community-android-stage1-preparation-20261015.json)。按用户要求保留专用环境、手机新空库和 APK；未调用 ADB 或创建真实账号/USB key。后续确认设备窗口、隔离包/USB 授权并补真实输入法，任务2–4、iOS和生产分别待验。
 
 > **2026-10-14 当前统一任务单：**用户将双实体Android验证追加到原三项工作之后，顺序为①单机文字社区流程②原生存储与生命周期③系统Passkey及单机回归④双设备NI-X01/NI-X02。见[四阶段统一任务单](community-android-unified-acceptance-plan-20261014.md)。当前只更新计划/交接，没有新增测试或设备操作；单机窗口仍延期，第二设备与两机窗口尚未确认，RP/package/signature关联须另行准备审批。20261013主机/构建证据和其“排除第二设备”保留为原范围历史；新任务整体须四阶段全部收口才通过，iOS/生产和未实现业务仍独立。

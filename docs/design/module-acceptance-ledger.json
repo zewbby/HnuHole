@@ -6151,6 +6151,38 @@
         "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
         "sourceCommitRemoteVerified": true
+      },
+      "currentCommunityAndroidStage2Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage2-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage2-preparation-20261015.json",
+        "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
+        "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "sourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+        "sourceFileCount": 456,
+        "task1All450InputsUnchanged": true,
+        "deviceUsed": false,
+        "adbInvoked": false,
+        "mobilePassed": 322,
+        "linuxHostGuardsPassed": 136,
+        "windowsHostGuardsPassed": 133,
+        "windowsPOSIXSkips": 3,
+        "apkBuildsVerified": 3,
+        "mirrorInputsVerified": 199,
+        "nativeSelectedCounts": [
+          7,
+          16,
+          9,
+          3
+        ],
+        "nativeDeviceResult": "NOT_RUN",
+        "processAndRebootDeviceResult": "NOT_RUN",
+        "actualAccountIMEAndTalkBack": "NOT_RUN",
+        "fullModuleOrAppPassed": false,
+        "sop": "tools/community-android-stage2/README.md",
+        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
       }
     },
     {
@@ -8078,6 +8110,38 @@
         "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
         "sourceCommitRemoteVerified": true
+      },
+      "currentCommunityAndroidStage2Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage2-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage2-preparation-20261015.json",
+        "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
+        "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "sourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+        "sourceFileCount": 456,
+        "task1All450InputsUnchanged": true,
+        "deviceUsed": false,
+        "adbInvoked": false,
+        "mobilePassed": 322,
+        "linuxHostGuardsPassed": 136,
+        "windowsHostGuardsPassed": 133,
+        "windowsPOSIXSkips": 3,
+        "apkBuildsVerified": 3,
+        "mirrorInputsVerified": 199,
+        "nativeSelectedCounts": [
+          7,
+          16,
+          9,
+          3
+        ],
+        "nativeDeviceResult": "NOT_RUN",
+        "processAndRebootDeviceResult": "NOT_RUN",
+        "actualAccountIMEAndTalkBack": "NOT_RUN",
+        "fullModuleOrAppPassed": false,
+        "sop": "tools/community-android-stage2/README.md",
+        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
       }
     },
     {
@@ -9448,6 +9512,38 @@
         "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
         "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
         "sourceCommitRemoteVerified": true
+      },
+      "currentCommunityAndroidStage2Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "report": "docs/design/community-android-stage2-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage2-preparation-20261015.json",
+        "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
+        "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "sourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+        "sourceFileCount": 456,
+        "task1All450InputsUnchanged": true,
+        "deviceUsed": false,
+        "adbInvoked": false,
+        "mobilePassed": 322,
+        "linuxHostGuardsPassed": 136,
+        "windowsHostGuardsPassed": 133,
+        "windowsPOSIXSkips": 3,
+        "apkBuildsVerified": 3,
+        "mirrorInputsVerified": 199,
+        "nativeSelectedCounts": [
+          7,
+          16,
+          9,
+          3
+        ],
+        "nativeDeviceResult": "NOT_RUN",
+        "processAndRebootDeviceResult": "NOT_RUN",
+        "actualAccountIMEAndTalkBack": "NOT_RUN",
+        "fullModuleOrAppPassed": false,
+        "sop": "tools/community-android-stage2/README.md",
+        "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
       }
     },
     {
@@ -34150,7 +34246,10 @@
           "A12",
           "A08"
         ],
-        "blocker": "USER_DEFERRED_DEVICE_WINDOW"
+        "blocker": "USER_DEFERRED_DEVICE_WINDOW",
+        "preparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "preparationReport": "docs/design/community-android-stage2-preparation-20261015.md",
+        "preparationEvidence": "docs/design/community-android-stage2-preparation-20261015.json"
       },
       {
         "id": "CA-T03",
@@ -34192,7 +34291,8 @@
     "fullModuleAcceptancePassed": false,
     "iOSAndProductionIncluded": false,
     "historicalProductSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
-    "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae"
+    "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+    "stage2SourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63"
   },
   "currentCommunityAndroidStage1Preparation": {
     "recordedOn": "2026-10-15",
@@ -34209,5 +34309,37 @@
     "nextAcceptance": "Confirm one physical Android window,auth release,isolated install/data impact and own USB key consent; run prepared driver then actual Chinese IME. Tasks2-4,iOS,production remain pending.",
     "publishedSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
     "sourceCommitRemoteVerified": true
+  },
+  "currentCommunityAndroidStage2Preparation": {
+    "recordedOn": "2026-10-15",
+    "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+    "report": "docs/design/community-android-stage2-preparation-20261015.md",
+    "evidence": "docs/design/community-android-stage2-preparation-20261015.json",
+    "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
+    "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+    "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+    "sourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+    "sourceFileCount": 456,
+    "task1All450InputsUnchanged": true,
+    "deviceUsed": false,
+    "adbInvoked": false,
+    "mobilePassed": 322,
+    "linuxHostGuardsPassed": 136,
+    "windowsHostGuardsPassed": 133,
+    "windowsPOSIXSkips": 3,
+    "apkBuildsVerified": 3,
+    "mirrorInputsVerified": 199,
+    "nativeSelectedCounts": [
+      7,
+      16,
+      9,
+      3
+    ],
+    "nativeDeviceResult": "NOT_RUN",
+    "processAndRebootDeviceResult": "NOT_RUN",
+    "actualAccountIMEAndTalkBack": "NOT_RUN",
+    "fullModuleOrAppPassed": false,
+    "sop": "tools/community-android-stage2/README.md",
+    "nextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
   }
 }

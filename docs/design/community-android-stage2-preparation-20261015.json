@@ -1,0 +1,440 @@
+{
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "recordedUTC": "2026-10-15T02:35:55.086580+00:00",
+  "branch": "codex/community-flutter-pages",
+  "origin": "https://github.com/zewbby/HnuHole.git",
+  "taskStartHEAD": "d686d6582d74de1d0b578815d879be33d14b5695",
+  "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "result": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+  "executedWithUncommittedTaskTestsAndTools": true,
+  "sourceFingerprint": {
+    "fileCount": 456,
+    "sha256": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63"
+  },
+  "sourceFingerprintRecord": "docs/design/community-android-stage2-source-fingerprint-20261015.json",
+  "productAuthNativeManifestSQLGrantsLocksChanged": false,
+  "task1All450InputsUnchanged": true,
+  "stages": [
+    {
+      "id": "locked-pub",
+      "result": "PASS",
+      "command": "flutter pub get --offline --enforce-lockfile",
+      "log": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\logs\\wsl\\pub.log",
+      "coversFinalSource": true
+    },
+    {
+      "id": "format-analyze",
+      "result": "PASS",
+      "command": "dart format integration_test/community_android_storage_test.dart; flutter analyze --no-pub",
+      "issues": 0,
+      "log": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\logs\\wsl\\analyze.log",
+      "coversFinalSource": true
+    },
+    {
+      "id": "mobile",
+      "result": "PASS",
+      "command": "flutter test --no-pub --machine test",
+      "passed": 322,
+      "failed": 0,
+      "skipped": 0,
+      "log": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\logs\\wsl\\mobile-tests.jsonl",
+      "coversFinalProductInputs": true,
+      "doesNotExecuteNewAndroidIntegrationTest": true
+    },
+    {
+      "id": "storage-apk",
+      "result": "PASS",
+      "command": "flutter build apk --debug --no-pub --target-platform android-arm64 --target integration_test/community_android_storage_test.dart --dart-define-from-file=<owned build-config.json>",
+      "log": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\logs\\wsl\\final-app-build.log",
+      "coversFinalSource": true
+    },
+    {
+      "id": "native-test-apks",
+      "result": "PASS",
+      "command": "./gradlew --offline --no-daemon --max-workers=2 :hnuhole_auth_vault:assembleDebugAndroidTest :hnuhole_auth_passkey:assembleDebugAndroidTest",
+      "log": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\logs\\wsl\\instrumentation-build.log",
+      "coversFinalSource": true,
+      "deviceTestResult": "NOT_RUN",
+      "nativeSelectedCounts": [
+        7,
+        16,
+        9,
+        3
+      ],
+      "optInAuthProcessPairs": 3
+    },
+    {
+      "id": "windows-host-guards",
+      "result": "PASS_WITH_PLATFORM_SKIPS",
+      "command": "E:/acanda/python.exe -B -m unittest discover -s tools/tests -p test_*.py -v",
+      "passed": 133,
+      "failed": 0,
+      "skipped": 3,
+      "skipReason": "Existing task1 POSIX owner/permission/symlink checks; all three executed successfully on Linux",
+      "newStage2GuardsPassed": 11,
+      "log": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\logs\\windows-host-tests.log",
+      "coversFinalPythonSource": true
+    },
+    {
+      "id": "linux-host-guards",
+      "result": "PASS",
+      "command": "python3 -B -m unittest discover -s tools/tests -p test_*.py -v",
+      "passed": 136,
+      "failed": 0,
+      "skipped": 0,
+      "newStage2GuardsPassed": 11,
+      "log": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\logs\\linux-host-tests.log",
+      "coversFinalPythonSource": true
+    },
+    {
+      "id": "artifact-admission",
+      "result": "PASS",
+      "command": "bash E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/verify-artifacts.sh (via owned WSL)",
+      "mirrorInputs": 199,
+      "log": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015\\device-window\\artifact-proof.json",
+      "coversFinalSource": true
+    },
+    {
+      "id": "host-plan-and-shell-syntax",
+      "result": "PASS",
+      "commands": [
+        "E:/acanda/python.exe -B tools/community-android-stage2/phone.py --plan-only",
+        "bash -n tools/community-android-stage2/build.sh"
+      ],
+      "adbInvoked": false
+    },
+    {
+      "id": "task1-preservation",
+      "result": "PASS",
+      "facts": {
+        "recordedUTC": "2026-10-15T02:29:44.816363+00:00",
+        "allThreeApksAndPublicAdbHashesVerified": true,
+        "dedicatedAdbPortFreeOnWindows": true,
+        "stage1FilesUnchanged": {
+          "manifest.json": true,
+          "artifact-proof.json": true,
+          "acceptance.apk": true,
+          "normal.apk": true,
+          "standard-unsigned-release.apk": true,
+          "host-endpoints.json": true,
+          "dev-ca.pem": true
+        },
+        "stage1DeviceStarted": false,
+        "stage2DeviceStarted": false,
+        "usbDebugKeysCreated": false,
+        "adbInvoked": false
+      },
+      "lab": {
+        "recordedUTC": "2026-10-15T02:27:06.730323+00:00",
+        "ready": [
+          {
+            "endpoint": "proxy",
+            "readyStatus": 200,
+            "tlsVerified": true
+          },
+          {
+            "endpoint": "v",
+            "readyStatus": 200,
+            "tlsVerified": true
+          }
+        ],
+        "stage1FixtureStillEmpty": true,
+        "clockOffsetZero": true,
+        "publicationNotPaused": true,
+        "counts": {
+          "counters": {
+            "creates": 0,
+            "retries": 0,
+            "deletes": 0,
+            "commandQueries": 0,
+            "droppedQueries": 0,
+            "droppedReplies": 0,
+            "uniqueCreates": 0,
+            "uniqueRetries": 0,
+            "uniqueDeletes": 0,
+            "rawTokensOrProofsStored": false
+          },
+          "sql": {
+            "accounts": 0,
+            "closed": 0,
+            "pendingClose": 0,
+            "posts": 0,
+            "published": 0,
+            "deleted": 0,
+            "attempts": 0,
+            "failed": 0,
+            "bindings": 0,
+            "closedPayloadsRemaining": 0,
+            "closedPrivateReceiptsRemaining": 0,
+            "closedCredentialsRemaining": 0
+          }
+        },
+        "stage2CreatedNoDatabase": true,
+        "adbInvoked": false
+      }
+    }
+  ],
+  "artifactProof": {
+    "result": "PASS_SOURCE_BUILD_MANIFEST_SIGNATURE_ONLY",
+    "sourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+    "comparedMirrorInputs": 199,
+    "task1All450InputsUnchanged": true,
+    "overlays": [
+      "app applicationId",
+      "two testNamespace/testApplicationId pairs",
+      "owned local public Maven repository"
+    ],
+    "apks": {
+      "storage": {
+        "applicationId": "org.hnuhole.hnuhole_mobile.communityf5.storage",
+        "sha256": "a9b698499d2ed6cf61b8ee88e1ccfc16bec8a02a2d686e06aad075d30b42e2ff",
+        "sizeBytes": 85637107,
+        "certificateSha256": "9a9f24d8df422d013c85cdf8e7a9861e22669e4e184013c53d41b38450ee76da",
+        "signatureVerified": true,
+        "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/device-window/storage.apk"
+      },
+      "vault": {
+        "applicationId": "org.hnuhole.communityf5.storage.vault.test",
+        "sha256": "0b4403cfe6bc413a828e7394d609059c56a83f244b534e8a5d989f6274e5daee",
+        "sizeBytes": 3349111,
+        "certificateSha256": "9a9f24d8df422d013c85cdf8e7a9861e22669e4e184013c53d41b38450ee76da",
+        "signatureVerified": true,
+        "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/device-window/vault.apk"
+      },
+      "passkey": {
+        "applicationId": "org.hnuhole.communityf5.storage.passkey.test",
+        "sha256": "9d167a883e460650f4831710c7f83a9ee9cc5ee33ee799b39180d0c8bf79bc4d",
+        "sizeBytes": 5581099,
+        "certificateSha256": "9a9f24d8df422d013c85cdf8e7a9861e22669e4e184013c53d41b38450ee76da",
+        "signatureVerified": true,
+        "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/device-window/passkey.apk"
+      }
+    },
+    "nativeSuiteSourceCounts": [
+      7,
+      16,
+      9,
+      3
+    ],
+    "nativeSuiteDeviceResult": "NOT_RUN",
+    "newDebugCertificateDistinctFromTask1": true,
+    "productBackupAndTransferExclusionsCompiled": true,
+    "sqlitePinnedInputSha256": "0c2d3bfc8c87abceb21ed72a4bb49964121c5fe1a8ef3848d83ba907d01b6161",
+    "adbInvoked": false,
+    "deviceUsed": false,
+    "sharedSdkInvoked": false,
+    "task1SdkCacheReusedSequentially": true,
+    "databasesUsed": false
+  },
+  "isolation": {
+    "windowsRoot": "E:\\HnuHole-community-f4-20261012\\stage2-preparation-20261015",
+    "linuxRoot": "/home/hnuhole/community-android-stage2-20261015",
+    "owner": "HNUHOLE_COMMUNITY_ANDROID_STAGE2_V1",
+    "exclusiveSdk": "/home/hnuhole/community-android-stage1-20261014-tools/flutter",
+    "taskOwnedPubGradleCacheReusedSequentially": true,
+    "newTask2HomeAndSigningIdentity": true,
+    "sharedSdkInvoked": false,
+    "globalConfigurationChanged": false,
+    "largeCachesOnC": false,
+    "createdOrConnectedTestDatabases": false,
+    "publicMavenBlobsImportedBytes": 4493097,
+    "publicSourceCacheModified": false,
+    "dependenciesUpgraded": false,
+    "locksRemoved": false,
+    "adbInvoked": false,
+    "deviceUsed": false,
+    "realCredentialsCreated": false,
+    "usbKeysGenerated": false
+  },
+  "resolvedPreparationFailures": [
+    {
+      "id": "initial-analysis",
+      "status": "RESOLVED",
+      "cause": "New probe const/nullability diagnostics",
+      "resolution": "Corrected only new integration test; analyzer and full mobile then passed"
+    },
+    {
+      "id": "initial-offline-native-dependencies",
+      "status": "RESOLVED",
+      "cause": "Owned Gradle cache lacked pinned AndroidX test dependency artifacts",
+      "resolution": "Read-only copy of existing public blobs to local mirror repository; POM/module unchanged; final Android builds offline PASS"
+    },
+    {
+      "id": "public-import-implementation",
+      "status": "RESOLVED",
+      "cause": "Cache SHA1 folder omitted leading zero; exact ranges/properties/BOM closure needed traversal",
+      "resolution": "Canonical hash check with leading-zero normalization and original metadata traversal; fixture tamper tests PASS; no version rewrite"
+    }
+  ],
+  "unresolvedPreparationFailures": [],
+  "historicalUnchangedProductEvidence": {
+    "report": "docs/design/community-android-stage1-preparation-20261015.json",
+    "mobileR05F4ServerPostsPrivilegesAuthRuntimeVet": "Historical final task1 product input evidence only; not executed anew in task2",
+    "task1SourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae"
+  },
+  "deviceChecks": {
+    "CA-A08": "NOT_RUN",
+    "CA-A09": "NOT_RUN",
+    "CA-A11": "NOT_RUN",
+    "CA-A12": "NOT_RUN",
+    "native35Tests": "NOT_RUN",
+    "auth3ProcessPairs": "NOT_RUN",
+    "actualPluginProcessAndReboot": "NOT_RUN",
+    "actualAccountMainHTTPRestore": "NOT_RUN",
+    "manualChineseIME": "NOT_RUN",
+    "TalkBack": "NOT_RUN",
+    "blocker": "USER_DEFERRED_DEVICE_WINDOW",
+    "unblock": "Confirm physical ARM64 device/window/auth release/isolated packages/own USB key/owned force-stop; separately approve whole-phone reboot and any accessibility setting change"
+  },
+  "pendingOtherTasks": [
+    "CA-T03 real system Passkey with separately approved RP/package/signature association",
+    "CA-T04 two physical Android NI-X01/NI-X02",
+    "iOS",
+    "production",
+    "full module/App acceptance"
+  ],
+  "scopeCautions": [
+    "Synthetic local adapter purge does not prove server authoritative CLOSED",
+    "Storage integration test does not call actual main or mint/login a real account",
+    "Static/compiled backup exclusion does not prove OEM migration",
+    "Codec/error classification does not prove positive system Passkey ceremony",
+    "Device outcomes remain NOT_RUN despite host/build success"
+  ],
+  "retainedResources": {
+    "reason": "User requested all non-phone preparation ready for later direct cooperation",
+    "task1ReadyMaterialsPreserved": true,
+    "task2ReadyMaterialsPreserved": true,
+    "secretsApksCachesExcludedFromGit": true
+  },
+  "initialCapacityBytes": {
+    "C": 19144519680,
+    "E": 156014907392
+  },
+  "latestCapacityBytes": {
+    "C": 19087507456,
+    "E": 154126675968
+  },
+  "logArtifacts": [
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/build.console.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/build.ended",
+      "bytes": 21,
+      "sha256": "0fd324d18a477ddb85847735c6f83ae4e1f14183b73552d3cb6888cfb9ae458f"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/build.exit",
+      "bytes": 1,
+      "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/build.started",
+      "bytes": 21,
+      "sha256": "3b47c7cd468bc43bc2ff1122a8c020e2ec1935e345eeb8ec61772d7c2537294b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/import-public-dependencies.log",
+      "bytes": 5698,
+      "sha256": "7670e04d311ab58de2eb2996ad43091c67a73ba59527c5e1b251da0651922597"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/initial-analyze.ended",
+      "bytes": 21,
+      "sha256": "8db4e61913c969b4d14e05a830ecf39d8e58c4ebbcff909a639b3086ce19092f"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/initial-analyze.exit",
+      "bytes": 1,
+      "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/initial-analyze.started",
+      "bytes": 21,
+      "sha256": "54c856efa56ef90bf8ce935d56da5fa0df427e3376c79ddcb619d530ad74b5c9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/linux-host-tests.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/linux-host-tests.log",
+      "bytes": 25985,
+      "sha256": "0f1cbd92475c8e9d19480d19b96e83f0fa7a3a23f6aba97fe8e227a962640972"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/native-build.console.log",
+      "bytes": 58,
+      "sha256": "729c5f7dcfc34ebd26f34e4a7518bba5856d018a3b9a5e7b15f5e0d52c70aea4"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/native-build.ended",
+      "bytes": 21,
+      "sha256": "34bea1135a53de977dd247673f122dfee7acaea0f17b850e0506b830a7ad46e1"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/native-build.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/native-build.started",
+      "bytes": 21,
+      "sha256": "7defc1155ccdd59304f4538d0016a3e317b619df537318517beb2178c85b9534"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/windows-host-tests.exit",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/windows-host-tests.log",
+      "bytes": 17970,
+      "sha256": "8a010e0582eb690cb7fdccbcd0a4ae5178993b294e9f6bc9cbbb79dfbc5b1aa5"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/wsl/analyze.log",
+      "bytes": 96,
+      "sha256": "47de49902b8c645059612131d1fcdcc035371af96b869255223431b009055b81"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/wsl/app-build.log",
+      "bytes": 536,
+      "sha256": "352c6830deebbd9055901bef49c144c214402cc98de7df6ab42bb9ab2302c524"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/wsl/final-app-build.log",
+      "bytes": 536,
+      "sha256": "79138f0d13bd58f7cba4d60fda2a62e6b8a45cbc3f6399fee7f48d59e26ff97a"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/wsl/format.log",
+      "bytes": 46,
+      "sha256": "1685974b88bd671112e17334bdc2abb8ef350e01ae026547459ec7a8307375ec"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/wsl/instrumentation-build.log",
+      "bytes": 11707,
+      "sha256": "f3d58fac358039141a6e58a0c642dd64f8b264ded5799a914eb7cb1bbbcca42b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/wsl/mobile-tests.jsonl",
+      "bytes": 180727,
+      "sha256": "5300632ab6c3f7b2568ecdb7558a0cb0cc28125a26424b6ef821c7639ec41ed5"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/logs/wsl/pub.log",
+      "bytes": 68,
+      "sha256": "d4cb7a3c68b4133b4f6e58c67ff5bfd13725d8021e930388cdc98da8a575919d"
+    }
+  ],
+  "fullModuleOrAppAccepted": false,
+  "deviceAcceptancePassed": false,
+  "releasePublished": false,
+  "productionDeployed": false
+}

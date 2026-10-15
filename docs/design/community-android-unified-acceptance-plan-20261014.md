@@ -1,5 +1,7 @@
 # 文字社区与认证 Android 统一验收任务单
 
+> **2026-10-15 第二项非手机准备完成：**第一项制品/空库与全部450输入不变；第二项已准备3个独立新签名包、35项原生精确选择及3组认证中断、实际插件SQLite跨进程/本地清理探针。新执行mobile322、分析0、Linux136／Windows133＋3POSIX跳过、199项镜像和制品边界核对通过；设备仍NOT_RUN。见[第二项报告](community-android-stage2-preparation-20261015.md)及[手机SOP](../../tools/community-android-stage2/README.md)。无需重做任务1，按两个现成窗口清单执行；整机重启仍另行许可，任务3/4不因准备完成而通过。
+
 > **2026-10-15 第一项非手机准备完成：**修复 DELETE 首次核对失败后遗漏 poll 集合，以及 C 确认取消注销后的 UI 完成入口。最后产品修改后 mobile322/R05/F4 通过，真实 server/权限/runtime/vet 通过；新增整段 host 八检查点和最终隔离 Debug/标准未签名 Release 构建通过，实际设备与 IME 仍 NOT_RUN。见[准备报告](community-android-stage1-preparation-20261015.md)和[机器记录](community-android-stage1-preparation-20261015.json)。按用户要求保留专用环境、手机新空库和 APK；未调用 ADB 或创建真实账号/USB key。后续确认设备窗口、隔离包/USB 授权并补真实输入法，任务2–4、iOS和生产分别待验。
 
 日期：2026-10-14，Asia/Shanghai。仓库 zewbby/HnuHole，分支 codex/community-flutter-pages，任务目录 E:/HnuHole-community-f4-20261012/repo。
@@ -33,7 +35,7 @@
 | 顺序 | 任务 | 固定检查映射 | 当前状态 |
 |---|---|---|---|
 | 1 | 单台Android文字社区全流程 | CA-A01–A07、A10；A06/A08/A12/B02/B03/B05/B06/B10 | NOT_RUN：窗口延期 |
-| 2 | 原生存储与生命周期 | CA-A08/A09/A11/A12；N01/A12/A08 | NOT_RUN：窗口延期 |
+| 2 | 原生存储与生命周期 | CA-A08/A09/A11/A12；N01/A12/A08 | 非手机准备PASS；设备NOT_RUN：窗口延期 |
 | 3 | 系统Passkey与单机回归收口 | CA-A13；N03/A07/A09，并复核前三阶段受影响检查 | NOT_RUN：独立RP关联及窗口未具备 |
 | 4 | 双实体Android迁移与恢复验证 | NI-X01／NI-X02；N01/A12/A07/N03 | NOT_RUN：第二设备及两机窗口未确认 |
 

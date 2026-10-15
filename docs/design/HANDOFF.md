@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-15 第二项非手机准备完成：**任务1/2无冲突，第一项450项输入、APK/签名及待验空库均保持原状。第二项新增实际插件跨进程/本地清理探针、35项原生测试与3组认证中断的精确 runner，三个独立新包/签名已构建核对。新执行mobile322、分析0、Linux136／Windows133＋3个POSIX跳过；199项镜像、manifest/runner/DEX/SQLite均通过。见[第二项准备报告](community-android-stage2-preparation-20261015.md)、[机器记录](community-android-stage2-preparation-20261015.json)和[手机SOP](../../tools/community-android-stage2/README.md)。未用ADB/手机，设备35项、进程/重启、实际账号与IME/读屏全部NOT_RUN；两项材料按用户要求保留，确认设备窗口后继续。任务3/4、iOS与生产仍分别待验。
+
 > **2026-10-15 第一项非手机准备完成：**修复 DELETE 首次核对失败后遗漏 poll 集合，以及 C 确认取消注销后的 UI 完成入口。最后产品修改后 mobile322/R05/F4 通过，真实 server/权限/runtime/vet 通过；新增整段 host 八检查点和最终隔离 Debug/标准未签名 Release 构建通过，实际设备与 IME 仍 NOT_RUN。见[准备报告](community-android-stage1-preparation-20261015.md)和[机器记录](community-android-stage1-preparation-20261015.json)。按用户要求保留专用环境、手机新空库和 APK；未调用 ADB 或创建真实账号/USB key。后续确认设备窗口、隔离包/USB 授权并补真实输入法，任务2–4、iOS和生产分别待验。
 
 > **2026-10-14 当前统一任务单：**用户将双实体Android验证追加到原三项工作之后，顺序为①单机文字社区流程②原生存储与生命周期③系统Passkey及单机回归④双设备NI-X01/NI-X02。见[四阶段统一任务单](community-android-unified-acceptance-plan-20261014.md)。当前只更新计划/交接，没有新增测试或设备操作；单机窗口仍延期，第二设备与两机窗口尚未确认，RP/package/signature关联须另行准备审批。20261013主机/构建证据和其“排除第二设备”保留为原范围历史；新任务整体须四阶段全部收口才通过，iOS/生产和未实现业务仍独立。

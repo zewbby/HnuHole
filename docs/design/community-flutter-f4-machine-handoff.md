@@ -1,5 +1,7 @@
 # Flutter社区 F4 换机接续
 
+> **2026-10-15 任务2非手机准备已收尾：**起始d686d65，产品仍b5accf3、认证固定d859cb0，task1全部450项输入与制品/空库未改。task2独立App及两个self-target native包已构建签名/manifest/DEX核对，新增实际插件跨进程与合成A本地清理/B保留探针和35项精确测试选择；mobile322、Linux136／Windows133＋3POSIX SKIP、分析0及199项镜像核对通过。设备均NOT_RUN，未调用ADB。见[报告](community-android-stage2-preparation-20261015.md)、[机器记录](community-android-stage2-preparation-20261015.json)、[制品交付](community-android-stage2-delivery-20261015.json)、[手机SOP](../../tools/community-android-stage2/README.md)。E盘与WSL专用材料按用户要求保留；不能将task1旧密钥、删除材料的历史段落当作当前状态，先读顶部两项准备入口。设备窗口、整机重启/系统设置分别须确认；RP/双实体/iOS/生产仍待验。
+
 > **2026-10-15 第一项非手机准备完成：**修复 DELETE 首次核对失败后遗漏 poll 集合，以及 C 确认取消注销后的 UI 完成入口。最后产品修改后 mobile322/R05/F4 通过，真实 server/权限/runtime/vet 通过；新增整段 host 八检查点和最终隔离 Debug/标准未签名 Release 构建通过，实际设备与 IME 仍 NOT_RUN。见[准备报告](community-android-stage1-preparation-20261015.md)和[机器记录](community-android-stage1-preparation-20261015.json)。按用户要求保留专用环境、手机新空库和 APK；未调用 ADB 或创建真实账号/USB key。后续确认设备窗口、隔离包/USB 授权并补真实输入法，任务2–4、iOS和生产分别待验。
 
 > **Git与清理回执：**整合后源码提交`28cee4656edd710d60676a81794c20cd49f45351`（父提交为上述社区保存SHA和固定认证SHA）已正常推送且远端核对一致。此后交接回执仅改文档/台账，443项运行输入未变。三处canonical任务根经owner与进程核对后清理PASS，约11.07GiB逻辑文件、SDK副本/缓存/APK/合成CA及调试私钥均删除，源码、测试、脱敏记录与外部复验脚本保留；不做VHD压缩或全局清理。见[交付回执](community-auth-integration-delivery-20261013.json)。设备仍按用户指令延期，后续须重建独立材料并获得窗口，不能把已删除APK/签名当作可直接安装的制品。
