@@ -6,6 +6,7 @@ import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
 import 'src/development/app_transport.dart';
+import 'src/navigation/community_material_labels.dart';
 
 void main() {
   final communityBaseUri = Uri.parse(
@@ -387,6 +388,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hnuhole',
+      localizationsDelegates: const [CommunityMaterialLabels.delegate],
       scaffoldMessengerKey: _scaffoldMessengerKey,
       navigatorKey: _navigatorKey,
       builder: (context, child) => Listener(
@@ -396,7 +398,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
           // is a user gesture, never a background timer or a build side effect.
           scheduleMicrotask(widget.sessions.onActivity);
         },
-        child: child,
+        child: CommunitySpokenLocale(child: child ?? const SizedBox.shrink()),
       ),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF76AFC8)),

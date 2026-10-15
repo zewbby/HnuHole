@@ -276,6 +276,85 @@ void main() {
     c.dispose();
   });
 
+  testWidgets('空内容下一步向读屏通知必填错误且不发布', (tester) async {
+    final handle = tester.ensureSemantics();
+    final c = _WidgetPosts(), e = editor();
+    try {
+      await tester.pumpWidget(_app(composer(c, e)));
+      await tester.tap(find.text('下一步'));
+      await tester.pumpAndSettle();
+      final error = find.text('请填写标题和正文，标题最多15字，正文最多3000字。');
+      expect(error, findsOneWidget);
+      expect(
+        tester
+            .getSemantics(error)
+            .getSemanticsData()
+            .flagsCollection
+            .isLiveRegion,
+        isTrue,
+      );
+      expect(find.byKey(const ValueKey('post-title-input')), findsOneWidget);
+      expect(find.byKey(const ValueKey('post-body-input')), findsOneWidget);
+      expect(c.publications, 0);
+      await tester.enterText(
+        find.byKey(const ValueKey('post-title-input')),
+        '标题',
+      );
+      await tester.pump();
+      expect(error, findsNothing);
+      expect(c.publications, 0);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      c.dispose();
+      handle.dispose();
+    }
+  });
+
+  testWidgets('身份面板向读屏暴露当前选中项，关闭不改变身份或发布', (tester) async {
+    final handle = tester.ensureSemantics();
+    final c = _WidgetPosts()
+      ..identities = [
+        ManagedIdentity(
+          id: _postId,
+          nickname: '已选身份',
+          avatar: 'default-v1',
+          isOriginal: true,
+          createdAt: _time,
+        ),
+      ];
+    final e = editor()
+      ..title = '标题'
+      ..body = '正文';
+    try {
+      await tester.pumpWidget(_app(composer(c, e)));
+      await tester.tap(find.text('下一步'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('已选身份'));
+      await tester.pumpAndSettle();
+      final choice = find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.byType(ListTile),
+      );
+      expect(choice, findsOneWidget);
+      expect(
+        tester
+            .getSemantics(choice)
+            .getSemanticsData()
+            .flagsCollection
+            .isSelected,
+        ui.Tristate.isTrue,
+      );
+      await tester.tap(find.byTooltip('关闭身份选择'));
+      await tester.pumpAndSettle();
+      expect(e.identityId, _postId);
+      expect(c.publications, 0);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      c.dispose();
+      handle.dispose();
+    }
+  });
+
   testWidgets('零身份进入设置后返回原确认且不自动发布', (tester) async {
     final c = _WidgetPosts(),
         e = editor()

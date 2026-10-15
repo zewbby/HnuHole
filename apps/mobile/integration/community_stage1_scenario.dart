@@ -527,7 +527,7 @@ Future<Map<String, Object>> runCommunityStage1(
     await posts.loadPersonal();
     expect(item(pendingId).state, 'FAILED');
     await home();
-    await tap(find.byTooltip('My content'));
+    await tap(find.byTooltip('我的'));
     await wait(
       () => find.text('单机文字验收').evaluate().isNotEmpty,
       'failed task in personal list',

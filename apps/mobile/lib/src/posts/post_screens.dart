@@ -788,12 +788,15 @@ class _PostComposerScreenState extends State<PostComposerScreen> {
                               if (_validation != null)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 12),
-                                  child: Text(
-                                    _validation!,
-                                    style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .error,
+                                  child: Semantics(
+                                    liveRegion: true,
+                                    child: Text(
+                                      _validation!,
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .error,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -948,6 +951,8 @@ class _PostConfirmScreenState extends State<_PostConfirmScreen> {
                           const SizedBox(height: 12),
                           for (final identity in _identities)
                             ListTile(
+                              selected: widget.editor.identityId == identity.id,
+                              selectedColor: PostTheme.ink,
                               leading: const _IdentityAvatar(),
                               title: Text(identity.nickname),
                               trailing: widget.editor.identityId == identity.id

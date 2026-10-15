@@ -1,5 +1,7 @@
 # 联合源码单台Android验收清单
 
+> **2026-10-15 TalkBack补充：PASS_APPROVED_TALKBACK_SCOPE。**通道重复、我的/返回英文、身份选中语义、必填提示自动朗读和中文数字语义语言已修复并由本轮单机限定清单复验；最终mobile333、导航语义4、分析0、R05和F4八项PASS，205输入指纹见[实测报告](community-android-talkback-validation-20261015.md)/[机器记录](community-android-talkback-validation-20261015.json)。一次GET503触发现有登录恢复保护，未误计普通列表重载朗读；原转发恢复、SQL写计数不变，按用户明确请求关闭TalkBack并核对。任务3系统Passkey、任务4双实体、iOS和生产仍独立未验；以下历史“TalkBack关闭未验”保留原版本范围。
+
 > **2026-10-15 当前任务2单机范围通过：**原生35项＋3组进程中断、实际SQLite跨进程/用户整机重启/本地闭号清理PASS；正常App合成A重新正常登录后强停/重启的草稿、身份通道与会话由用户确认。先前旧会话因获准Gate恢复推进代次被拒绝，保留负向观察，不冒充恢复PASS。Windows155＋3 POSIX SKIP／Linux158。见[实测报告](community-android-stage2-device-validation-20261015.md)及[机器记录](community-android-stage2-device-validation-20261015.json)。产品/native/manifest/SQL/锁未改；默认USB隔离守卫保留，仅本轮显式批准既有身份。TalkBack关闭未验；任务3系统Passkey、任务4双实体、iOS和生产仍待验，模块/App不升级整体PASS。以下历史条目保留原日期范围。
 
 > **2026-10-15 CA-T03主机准备已补齐：**本轮七阶段/mobile322、Passkey Dart9、JVM24及固定快照工具测试通过，独立签名/未配置APK和[RP具体方案](community-android-stage3-rp-proposal-20261015.md)已准备；用户选方案后仅核实DNS/HTTPS，尚无域名控制权/配置/部署授权。见[报告](community-android-stage3-preparation-20261015.md)。CA-A13及其他设备项仍NOT_RUN，不把基线包当作最终已配置候选；先完成新独立lab/重建与手机USB固定交付，再确认窗口。并行未提交USB代码不在本轮覆盖内。
