@@ -5346,7 +5346,9 @@
         "adbInvoked": false,
         "deviceUsed": false,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate."
+        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate.",
+        "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
+        "sourceCommitRemoteVerified": true
       }
     },
     {
@@ -6684,7 +6686,9 @@
         "adbInvoked": false,
         "deviceUsed": false,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate."
+        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate.",
+        "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
+        "sourceCommitRemoteVerified": true
       }
     },
     {
@@ -10246,7 +10250,9 @@
         "adbInvoked": false,
         "deviceUsed": false,
         "fullModuleOrAppPassed": false,
-        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate."
+        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate.",
+        "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
+        "sourceCommitRemoteVerified": true
       }
     },
     {
@@ -34475,7 +34481,8 @@
         "preparationReport": "docs/design/community-android-stage3-preparation-20261015.md",
         "preparationEvidence": "docs/design/community-android-stage3-preparation-20261015.json",
         "rpPlanSelectedByUser": true,
-        "securityConfigurationApplied": false
+        "securityConfigurationApplied": false,
+        "publishedPreparationSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54"
       },
       {
         "id": "CA-T04",
@@ -34637,6 +34644,8 @@
     "adbInvoked": false,
     "deviceUsed": false,
     "fullModuleOrAppPassed": false,
-    "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate."
+    "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate.",
+    "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
+    "sourceCommitRemoteVerified": true
   }
 }

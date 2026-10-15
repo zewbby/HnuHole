@@ -640,5 +640,15 @@
       "bytes": 536,
       "sha256": "8e0de685a6d9ba449d355dffeae2049eb9502bf57ec2e9b7df5385fd85b30353"
     }
+  ],
+  "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
+  "sourceCommitRemoteVerified": true,
+  "deliveryReceipt": "docs/design/community-android-stage3-delivery-20261015.json",
+  "parallelWorktreeChangesPreservedAndExcluded": [
+    "apps/mobile/integration/community_stage1_scenario.dart",
+    "apps/mobile/integration/native_closed_scope_evidence.dart",
+    "apps/mobile/test/native_closed_scope_evidence_test.dart",
+    "tools/community-android-stage1/phone.py",
+    "tools/tests/test_community_android_stage1_phone.py"
   ]
 }
