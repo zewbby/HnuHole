@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-15 当前任务1实测完成：八自动点PASS＋人工IME USER_CONFIRMED。**真实vivo S18/Android15，中文/换行/emoji与草稿重开由用户对明确清单综合答“一切正确”；原自动PARTIAL记录未改，汇总另存。最终mobile327、分析0，Python Windows144＋3 POSIX SKIP／Linux147；历史失败及修复全过程保留。见[实测报告](community-android-device-validation-20261015.md)与[机器记录](community-android-device-validation-20261015.json)。normal/A会话、当前server/reverse/fixture与专用材料保留。任务2–4、iOS和生产仍独立未验；并行stage3准备保留原范围。
+
 > **2026-10-15 CA-T03独立主机准备：**N03/A07/A09新增精确关联方案/审阅文件与9项工具守卫，3个未配置基线/签名对照通过；七阶段/mobile322、Passkey Dart9、JVM24、Linux148／Windows145＋3POSIX SKIP通过。见[报告](community-android-stage3-preparation-20261015.md)、[记录](community-android-stage3-preparation-20261015.json)、[方案](community-android-stage3-rp-proposal-20261015.md)。本轮457输入覆盖未变产品及新工具，手机守卫4项只测e0c1280固定快照，不纳入/覆盖并行未提交工作。域名方案已选，控制权/配置/部署仍待授权，独立环境及最终APK待重建；CA-A13实际系统创建/恢复/拒绝/到期/原键核对均NOT_RUN，任务1/2设备和模块/完整App未通过，不以构建或host证据升级。
 
 > **2026-10-15 手机窗口当前阻断：BLOCKED_KEY_ISOLATION。**用户已确认 vivo S18、30–45分钟窗口、认证会话释放、隔离包和专用USB key；原stage1实际等待90秒后exit1，未发现目标设备，未安装/启动App、注册或业务写入。Windows环境变量不能证明专用key隔离，已给stage1/2添加不可凭授权flag绕过的前置守卫；CA-A01–13全部NOT_RUN，stage2也阻断。Windows136 PASS＋3 POSIX SKIP、Linux139 PASS仅为host；自有60761 server已按exe/start/port核实后停止，既存5037未动；用户已结束本轮窗口，后续须重新确认。见[本轮报告](community-android-device-blocked-20261015.md)与[脱敏记录](community-android-device-blocked-20261015.json)。历史准备/指纹/APK证据保留原范围；先证明真正独立profile或验证专用key目录的ADB，再由原服务归属方安全释放USB并重验摘要/ready/空库。新增OS账户/安全配置或共享key例外须用户明确变更授权。
