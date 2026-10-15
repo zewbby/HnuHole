@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-15 第三项无手机独立准备：**七阶段与mobile322、Passkey Dart9、JVM24、Linux148／Windows145＋3POSIX SKIP通过；3个未配置基线/签名对照、精确关联文件与配置差异已备好。见[报告](community-android-stage3-preparation-20261015.md)、[机器记录](community-android-stage3-preparation-20261015.json)、[用户已选RP方案](community-android-stage3-rp-proposal-20261015.md)。没有应用安全配置/部署或用手机；域名控制权/配置授权、新独立lab与最终候选、实际Passkey/USB/设备均待完成。本轮工具使用已提交e0c1280快照，保留并行未提交USB工作，不能替其验收。完整单机/双机、iOS与生产未升级通过。
+
 > **2026-10-15 手机窗口当前阻断：BLOCKED_KEY_ISOLATION。**用户已确认 vivo S18、30–45分钟窗口、认证会话释放、隔离包和专用USB key；原stage1实际等待90秒后exit1，未发现目标设备，未安装/启动App、注册或业务写入。Windows环境变量不能证明专用key隔离，已给stage1/2添加不可凭授权flag绕过的前置守卫；CA-A01–13全部NOT_RUN，stage2也阻断。Windows136 PASS＋3 POSIX SKIP、Linux139 PASS仅为host；自有60761 server已按exe/start/port核实后停止，既存5037未动；用户已结束本轮窗口，后续须重新确认。见[本轮报告](community-android-device-blocked-20261015.md)与[脱敏记录](community-android-device-blocked-20261015.json)。历史准备/指纹/APK证据保留原范围；先证明真正独立profile或验证专用key目录的ADB，再由原服务归属方安全释放USB并重验摘要/ready/空库。新增OS账户/安全配置或共享key例外须用户明确变更授权。
 
 > **2026-10-15 第二项非手机准备完成：**第一项450项输入、APK/签名/待验空库保持原状；第二项已有独立存储探针、原生35项与3组进程中断 runner、3个隔离APK和手机SOP。新执行mobile322、分析0、Linux136／Windows133＋3个POSIX跳过、199项镜像及签名/manifest/DEX/SQLite核对通过。见[报告](community-android-stage2-preparation-20261015.md)与[记录](community-android-stage2-preparation-20261015.json)。无ADB或手机动作；任务1/2设备项仍NOT_RUN。按用户要求保留两项待验材料，等待窗口及人工IME/重启配合；任务3/4、iOS、生产未通过。

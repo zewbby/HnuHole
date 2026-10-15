@@ -5312,6 +5312,41 @@
         "checkIds": [
           "NI-X02"
         ]
+      },
+      "currentCommunityAndroidStage3Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_INDEPENDENT_HOST_PREPARATION_CONFIG_AND_DEVICE_BLOCKED",
+        "report": "docs/design/community-android-stage3-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage3-preparation-20261015.json",
+        "rpProposal": "docs/design/community-android-stage3-rp-proposal-20261015.md",
+        "reviewBundle": "docs/design/community-android-stage3-review-20261015",
+        "taskStartHEAD": "0c8e2470d6281785ba9e6ff647cfc2aa7fc19cc4",
+        "fixedReviewedSnapshot": "e0c128033682923d519ea99546d72503b085a99e",
+        "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "scopedSourceFingerprint": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9",
+        "scopedSourceFileCount": 457,
+        "parallelPhoneGuardInputsSeparatelyPinned": 4,
+        "parallelUncommittedUsbCodeCopiedOrTested": false,
+        "sevenRegressionStages": "PASS",
+        "mobilePassed": 322,
+        "passkeyDartPassed": 9,
+        "jvmPolicyPassed": 24,
+        "linuxHostPassed": 148,
+        "windowsHostPassed": 145,
+        "windowsPOSIXSkips": 3,
+        "unconfiguredAPKBuildsAndSignatureContrast": 3,
+        "mirrorInputsVerified": 199,
+        "nonSignaturePayloadEntriesEqual": 560,
+        "rpPlanSelectedByUser": true,
+        "domainControlVerified": false,
+        "securityConfigurationApplied": false,
+        "finalConfiguredCandidateReady": false,
+        "actualPasskeyDeviceResult": "NOT_RUN",
+        "adbInvoked": false,
+        "deviceUsed": false,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate."
       }
     },
     {
@@ -6615,7 +6650,42 @@
           "FULL_MODULE_SCOPE: existing limited text features and shared host checks do not prove complete modules or unimplemented business features"
         ]
       },
-      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md"
+      "deviceAcceptancePlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "currentCommunityAndroidStage3Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_INDEPENDENT_HOST_PREPARATION_CONFIG_AND_DEVICE_BLOCKED",
+        "report": "docs/design/community-android-stage3-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage3-preparation-20261015.json",
+        "rpProposal": "docs/design/community-android-stage3-rp-proposal-20261015.md",
+        "reviewBundle": "docs/design/community-android-stage3-review-20261015",
+        "taskStartHEAD": "0c8e2470d6281785ba9e6ff647cfc2aa7fc19cc4",
+        "fixedReviewedSnapshot": "e0c128033682923d519ea99546d72503b085a99e",
+        "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "scopedSourceFingerprint": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9",
+        "scopedSourceFileCount": 457,
+        "parallelPhoneGuardInputsSeparatelyPinned": 4,
+        "parallelUncommittedUsbCodeCopiedOrTested": false,
+        "sevenRegressionStages": "PASS",
+        "mobilePassed": 322,
+        "passkeyDartPassed": 9,
+        "jvmPolicyPassed": 24,
+        "linuxHostPassed": 148,
+        "windowsHostPassed": 145,
+        "windowsPOSIXSkips": 3,
+        "unconfiguredAPKBuildsAndSignatureContrast": 3,
+        "mirrorInputsVerified": 199,
+        "nonSignaturePayloadEntriesEqual": 560,
+        "rpPlanSelectedByUser": true,
+        "domainControlVerified": false,
+        "securityConfigurationApplied": false,
+        "finalConfiguredCandidateReady": false,
+        "actualPasskeyDeviceResult": "NOT_RUN",
+        "adbInvoked": false,
+        "deviceUsed": false,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate."
+      }
     },
     {
       "id": "A10",
@@ -10142,6 +10212,41 @@
         "checkIds": [
           "NI-X02"
         ]
+      },
+      "currentCommunityAndroidStage3Preparation": {
+        "recordedOn": "2026-10-15",
+        "result": "PASS_INDEPENDENT_HOST_PREPARATION_CONFIG_AND_DEVICE_BLOCKED",
+        "report": "docs/design/community-android-stage3-preparation-20261015.md",
+        "evidence": "docs/design/community-android-stage3-preparation-20261015.json",
+        "rpProposal": "docs/design/community-android-stage3-rp-proposal-20261015.md",
+        "reviewBundle": "docs/design/community-android-stage3-review-20261015",
+        "taskStartHEAD": "0c8e2470d6281785ba9e6ff647cfc2aa7fc19cc4",
+        "fixedReviewedSnapshot": "e0c128033682923d519ea99546d72503b085a99e",
+        "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+        "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "scopedSourceFingerprint": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9",
+        "scopedSourceFileCount": 457,
+        "parallelPhoneGuardInputsSeparatelyPinned": 4,
+        "parallelUncommittedUsbCodeCopiedOrTested": false,
+        "sevenRegressionStages": "PASS",
+        "mobilePassed": 322,
+        "passkeyDartPassed": 9,
+        "jvmPolicyPassed": 24,
+        "linuxHostPassed": 148,
+        "windowsHostPassed": 145,
+        "windowsPOSIXSkips": 3,
+        "unconfiguredAPKBuildsAndSignatureContrast": 3,
+        "mirrorInputsVerified": 199,
+        "nonSignaturePayloadEntriesEqual": 560,
+        "rpPlanSelectedByUser": true,
+        "domainControlVerified": false,
+        "securityConfigurationApplied": false,
+        "finalConfiguredCandidateReady": false,
+        "actualPasskeyDeviceResult": "NOT_RUN",
+        "adbInvoked": false,
+        "deviceUsed": false,
+        "fullModuleOrAppPassed": false,
+        "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate."
       }
     },
     {
@@ -34365,7 +34470,12 @@
           "A07",
           "A09"
         ],
-        "blocker": "OWN_RP_ASSOCIATION_AND_DEVICE_WINDOW_NOT_READY"
+        "blocker": "OWN_RP_ASSOCIATION_AND_DEVICE_WINDOW_NOT_READY",
+        "preparationResult": "PASS_INDEPENDENT_HOST_PREPARATION_CONFIG_AND_DEVICE_BLOCKED",
+        "preparationReport": "docs/design/community-android-stage3-preparation-20261015.md",
+        "preparationEvidence": "docs/design/community-android-stage3-preparation-20261015.json",
+        "rpPlanSelectedByUser": true,
+        "securityConfigurationApplied": false
       },
       {
         "id": "CA-T04",
@@ -34404,7 +34514,8 @@
       "deviceAcceptancePassed": false,
       "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
       "deviceWindowReleasedByUser": true
-    }
+    },
+    "stage3ScopedSourceFingerprint": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9"
   },
   "currentCommunityAndroidStage1Preparation": {
     "recordedOn": "2026-10-15",
@@ -34492,5 +34603,40 @@
     "deviceAcceptancePassed": false,
     "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
     "deviceWindowReleasedByUser": true
+  },
+  "currentCommunityAndroidStage3Preparation": {
+    "recordedOn": "2026-10-15",
+    "result": "PASS_INDEPENDENT_HOST_PREPARATION_CONFIG_AND_DEVICE_BLOCKED",
+    "report": "docs/design/community-android-stage3-preparation-20261015.md",
+    "evidence": "docs/design/community-android-stage3-preparation-20261015.json",
+    "rpProposal": "docs/design/community-android-stage3-rp-proposal-20261015.md",
+    "reviewBundle": "docs/design/community-android-stage3-review-20261015",
+    "taskStartHEAD": "0c8e2470d6281785ba9e6ff647cfc2aa7fc19cc4",
+    "fixedReviewedSnapshot": "e0c128033682923d519ea99546d72503b085a99e",
+    "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+    "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+    "scopedSourceFingerprint": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9",
+    "scopedSourceFileCount": 457,
+    "parallelPhoneGuardInputsSeparatelyPinned": 4,
+    "parallelUncommittedUsbCodeCopiedOrTested": false,
+    "sevenRegressionStages": "PASS",
+    "mobilePassed": 322,
+    "passkeyDartPassed": 9,
+    "jvmPolicyPassed": 24,
+    "linuxHostPassed": 148,
+    "windowsHostPassed": 145,
+    "windowsPOSIXSkips": 3,
+    "unconfiguredAPKBuildsAndSignatureContrast": 3,
+    "mirrorInputsVerified": 199,
+    "nonSignaturePayloadEntriesEqual": 560,
+    "rpPlanSelectedByUser": true,
+    "domainControlVerified": false,
+    "securityConfigurationApplied": false,
+    "finalConfiguredCandidateReady": false,
+    "actualPasskeyDeviceResult": "NOT_RUN",
+    "adbInvoked": false,
+    "deviceUsed": false,
+    "fullModuleOrAppPassed": false,
+    "nextAcceptance": "Verify independent hosting/domain control and obtain registration/deployment/security-config approval; provision fresh task3 C/V and rebuild final candidate, then use fixed verified USB handoff and newly confirmed device window. Keep single/dual-device/iOS/production separate."
   }
 }
