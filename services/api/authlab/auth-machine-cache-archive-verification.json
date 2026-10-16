@@ -1,0 +1,315 @@
+{
+  "schemaVersion": "hnuhole-auth-cache-archive/v1",
+  "recordedOn": "2026-10-11",
+  "releaseTag": "auth-machine-handoff-20261010",
+  "releaseUrl": "https://github.com/zewbby/HnuHole/releases/tag/auth-machine-handoff-20261010",
+  "encryption": "AES-256-GCM",
+  "keyDelivery": "Separate private chat/local key file; never public Git or release",
+  "encryptedParts": 22,
+  "encryptedBytes": 9254048479,
+  "verification": "PASS_REMOTE_ASSET_SHA256_AND_LOCAL_AUTHENTICATED_CONTENT_RESTORE",
+  "archives": [
+    {
+      "name": "windows-auth-cache",
+      "bytes": 5322306491,
+      "sha256": "63f05b5260110a7d370ba01a8042185f26ec6d02d30c605ac84283f86e05f96a",
+      "sourceBytes": 10880056025,
+      "files": 15812,
+      "readErrors": 0,
+      "parts": [
+        {
+          "name": "windows-auth-cache.part000.enc",
+          "bytes": 536870912,
+          "sha256": "a5b551dcc280928fb5eec515703e4af029dbe7b3303e971e557ff65aace150d2",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part000.enc",
+          "releaseAssetId": 628355868,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part001.enc",
+          "bytes": 536870912,
+          "sha256": "5ec5a43c13d7fc3a73b55530babbbeda9162c49bea64bd53356f007917c99474",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part001.enc",
+          "releaseAssetId": 628358686,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part002.enc",
+          "bytes": 536870912,
+          "sha256": "5b734bb5d3c9396e3b7ce3aff18fdb0a3ab5c625c96ba298e5b64cb0e5113027",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part002.enc",
+          "releaseAssetId": 628361352,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part003.enc",
+          "bytes": 536870912,
+          "sha256": "361f6a9d54ca6d83c074c554b652cbfdfff6dc24c610eb0598c438b84c416a0e",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part003.enc",
+          "releaseAssetId": 628364836,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part004.enc",
+          "bytes": 536870912,
+          "sha256": "bbd82f8d8a18dbe4294312cdcfce8e071756b41c9cbbcc1b270fd46c698f1960",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part004.enc",
+          "releaseAssetId": 628375759,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part005.enc",
+          "bytes": 536870912,
+          "sha256": "b4eee4c001e8ddd06a9e005feabac0799522268223ef057e24b5207b050f6ca1",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part005.enc",
+          "releaseAssetId": 628361015,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part006.enc",
+          "bytes": 536870912,
+          "sha256": "5a193d69c5934fbef5e65db79ca76642310a022953591d2db67af9191a5ac8d8",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part006.enc",
+          "releaseAssetId": 628372206,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part007.enc",
+          "bytes": 536870912,
+          "sha256": "0d8c576857c7b634ed4e45b0e5413f3127aa3979c866ffa08bde1223a980dc23",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part007.enc",
+          "releaseAssetId": 628391306,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part008.enc",
+          "bytes": 536870912,
+          "sha256": "679f28311c1b1d9f0421c224b79df63e7214200f8425ac747a77d5f5df043f0c",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part008.enc",
+          "releaseAssetId": 628361347,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "windows-auth-cache.part009.enc",
+          "bytes": 490468283,
+          "sha256": "bc9546b889179711cb921c4400f7fe702d195b6aba1dbd682b2f9047a28fa68a",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/windows-auth-cache.part009.enc",
+          "releaseAssetId": 628373055,
+          "remoteDigestVerified": true
+        }
+      ],
+      "restoreVerification": {
+        "decryption": "PASS",
+        "memberContentHashes": "PASS",
+        "files": 15812
+      }
+    },
+    {
+      "name": "wsl-recovered-full",
+      "bytes": 3587905573,
+      "sha256": "2ca20bef7e3f69589c370d772809d9581a79350c16125adff98900cde229b26a",
+      "sourceBytes": 9450592080,
+      "files": 45774,
+      "readErrors": 0,
+      "parts": [
+        {
+          "name": "wsl-recovered-full.part000.enc",
+          "bytes": 536870912,
+          "sha256": "9723ef62d8d95ae4ab664c9ed35f78ce5ebf99cc1ae4d13f821b07223c3137f7",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/wsl-recovered-full.part000.enc",
+          "releaseAssetId": 628393060,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "wsl-recovered-full.part001.enc",
+          "bytes": 536870912,
+          "sha256": "e064f6a944f6c5d1d75a92abfd22d812fceb182360ac8d8d1fa44904b08f1993",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/wsl-recovered-full.part001.enc",
+          "releaseAssetId": 628402971,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "wsl-recovered-full.part002.enc",
+          "bytes": 536870912,
+          "sha256": "aaf3121a93fbbbe2354e2f1afcc1144a3af49c947d82621e1fabd5fac1ae1feb",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/wsl-recovered-full.part002.enc",
+          "releaseAssetId": 628411343,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "wsl-recovered-full.part003.enc",
+          "bytes": 536870912,
+          "sha256": "4eb09cc68e7f790720b0f6ba8f0739cf7904ddc69395352718a25f46825a9947",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/wsl-recovered-full.part003.enc",
+          "releaseAssetId": 628393049,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "wsl-recovered-full.part004.enc",
+          "bytes": 536870912,
+          "sha256": "7c71c5cd482f70f113415e3ea6e233110a29b0994529fdaa6e3f816f25197aa1",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/wsl-recovered-full.part004.enc",
+          "releaseAssetId": 628400320,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "wsl-recovered-full.part005.enc",
+          "bytes": 536870912,
+          "sha256": "c35668394cdb027e3ecf855fc6bcc3b80ede3d6c4a028545c302d34e0cc18ee4",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/wsl-recovered-full.part005.enc",
+          "releaseAssetId": 628393037,
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "wsl-recovered-full.part006.enc",
+          "bytes": 366680101,
+          "sha256": "b995687f192f8ae0d915e2f8ad8ba6f958a361e291a56eb75e40db99d28d25f9",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/wsl-recovered-full.part006.enc",
+          "releaseAssetId": 628402955,
+          "remoteDigestVerified": true
+        }
+      ],
+      "restoreVerification": {
+        "decryption": "PASS",
+        "memberContentHashes": "PASS",
+        "files": 45774,
+        "symbolicLinks": 0
+      }
+    },
+    {
+      "name": "auth-database-snapshots",
+      "bytes": 110262334,
+      "sha256": "46220f87d156d9ecb8c0d66e33b51ea12e74aeb75a8b72fd03acf6637d399b3d",
+      "sourceBytes": 115418539,
+      "files": 12,
+      "readErrors": 0,
+      "parts": [
+        {
+          "name": "auth-database-snapshots.part000.enc",
+          "bytes": 110262334,
+          "sha256": "46220f87d156d9ecb8c0d66e33b51ea12e74aeb75a8b72fd03acf6637d399b3d",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/auth-database-snapshots.part000.enc",
+          "releaseAssetId": 628384944,
+          "remoteDigestVerified": true
+        }
+      ],
+      "restoreVerification": {
+        "decryption": "PASS",
+        "memberContentHashes": "PASS",
+        "files": 12,
+        "symbolicLinks": 0
+      }
+    },
+    {
+      "name": "transfer-support",
+      "bytes": 27930,
+      "sha256": "374b988b95262c1649e2a181ce7c19470f7c267e05c6cfc9f837d08b24007050",
+      "sourceBytes": 73217,
+      "files": 18,
+      "readErrors": 0,
+      "parts": [
+        {
+          "name": "transfer-support.part000.enc",
+          "bytes": 27930,
+          "sha256": "374b988b95262c1649e2a181ce7c19470f7c267e05c6cfc9f837d08b24007050",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/transfer-support.part000.enc",
+          "releaseAssetId": 628361278,
+          "remoteDigestVerified": true
+        }
+      ],
+      "restoreVerification": {
+        "decryption": "PASS",
+        "memberContentHashes": "PASS",
+        "files": 18,
+        "symbolicLinks": 0
+      }
+    },
+    {
+      "name": "wsl-recovery-delta",
+      "bytes": 228573512,
+      "sha256": "b23d9a363a08ba901eaf1f5d3a8bad6eef556621ad96f642cac8c9a79e96d6c1",
+      "sourceBytes": 673945781,
+      "files": 54,
+      "readErrors": 0,
+      "parts": [
+        {
+          "name": "wsl-recovery-delta.part000.enc",
+          "bytes": 228573512,
+          "sha256": "b23d9a363a08ba901eaf1f5d3a8bad6eef556621ad96f642cac8c9a79e96d6c1",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/wsl-recovery-delta.part000.enc",
+          "releaseAssetId": 628398231,
+          "remoteDigestVerified": true
+        }
+      ],
+      "restoreVerification": {
+        "decryption": "PASS",
+        "memberContentHashes": "PASS",
+        "files": 54,
+        "symbolicLinks": 0
+      }
+    },
+    {
+      "name": "transfer-metadata",
+      "bytes": 4967617,
+      "sha256": "fa0c28da97d9de9b2b5488d9003572667aa8a72c0e0b5f49fa5d926158e254b0",
+      "sourceBytes": 27091215,
+      "files": 22,
+      "readErrors": 0,
+      "parts": [
+        {
+          "name": "transfer-metadata.part000.enc",
+          "bytes": 4967617,
+          "sha256": "fa0c28da97d9de9b2b5488d9003572667aa8a72c0e0b5f49fa5d926158e254b0",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/transfer-metadata.part000.enc",
+          "releaseAssetId": 628398456,
+          "remoteDigestVerified": true
+        }
+      ],
+      "restoreVerification": {
+        "decryption": "PASS",
+        "memberContentHashes": "PASS",
+        "files": 22,
+        "symbolicLinks": 0
+      }
+    },
+    {
+      "name": "transfer-final-support",
+      "bytes": 5022,
+      "sha256": "164bd4dcfbf7800ed1b223e5c38bd5516ebdb62e67d01af824e41fd75bcef25c",
+      "sourceBytes": 8918,
+      "files": 2,
+      "readErrors": 0,
+      "parts": [
+        {
+          "name": "transfer-final-support.part000.enc",
+          "bytes": 5022,
+          "sha256": "164bd4dcfbf7800ed1b223e5c38bd5516ebdb62e67d01af824e41fd75bcef25c",
+          "url": "https://github.com/zewbby/HnuHole/releases/download/untagged-56569e0934b1e20eb6e6/transfer-final-support.part000.enc",
+          "releaseAssetId": 628416187,
+          "remoteDigestVerified": true
+        }
+      ],
+      "restoreVerification": {
+        "decryption": "PASS",
+        "memberContentHashes": "PASS",
+        "files": 2,
+        "symbolicLinks": 0
+      }
+    }
+  ],
+  "layout": {
+    "windows-auth-cache": "Windows task root, repo ignored matrix cache, test-signing/android-user-linux. Re-map old paths; preserve existing SDK.",
+    "wsl-recovered-full": "Five journal-recovered var/tmp auth task roots. All file hashes verified; mirrored debug build overlays require restoration.",
+    "auth-database-snapshots": "Current C/V pg_dumpall SQL plus eight stopped PostgreSQL 16.6 raw volume tar.gz snapshots. Test secrets included, use disposable DBs only.",
+    "wsl-recovery-delta": "54 fault-time file mappings with content-addressed blobs, preserving versions differing from the recovered journal copy. Diagnostic APK not installable.",
+    "transfer-metadata": "Private inventories and helpers; historical procedures must not run blindly.",
+    "transfer-support": "Historical android-fault scripts and initial packaging helper.",
+    "transfer-final-support": "Historical finalize-auth-transfer.py; do not rerun, it mutates handoff records."
+  },
+  "supersededPartialArchive": {
+    "name": "wsl-auth-cache",
+    "readErrors": 25324,
+    "uploaded": false,
+    "replacement": "wsl-recovered-full plus wsl-recovery-delta"
+  }
+}

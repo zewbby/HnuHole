@@ -1,0 +1,791 @@
+{
+  "schemaVersion": "hnuhole-b5-two-physical-android/v1",
+  "recordedOn": "2026-10-16",
+  "timeZone": "Asia/Shanghai",
+  "verifiedAtUTC": "2026-10-16T06:15:31.893172+00:00",
+  "scope": "B5_TWO_PHYSICAL_ANDROID_BOUNDED_ACCEPTANCE",
+  "branch": "codex/auth-privacy-handoff",
+  "productBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "productSourceModified": false,
+  "fixturePath": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+  "sourceBuild": {
+    "apkSha256": "65f9ea9749723be9187f6e251b7de70b3318f6b4060305cbcaa2aa31ee40d568",
+    "fixtureSha256": "08e0e9f1f95fdda9208e0a36ab19b011b5f3bf3ceb9859c880431f85aebddc46",
+    "versionCode": 20261016,
+    "approvedCertificateReused": true
+  },
+  "oemBuild": {
+    "apkSha256": "9396864839f59c06d6215c582867c3e9eac3b1a4d3fd0a57cd330a9e78da09ff",
+    "fixtureSha256": "bdfabe3346a33ec4606e410df5067a47bcce6b542651216b96b4fd4a705e3b36",
+    "versionCode": 20261016,
+    "approvedCertificateReused": true
+  },
+  "hostOperatorFinalChangesStaticOnly": true,
+  "currentSourceInputs": [
+    {
+      "path": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+      "lfSha256": "08e0e9f1f95fdda9208e0a36ab19b011b5f3bf3ceb9859c880431f85aebddc46"
+    },
+    {
+      "path": "tools/control-android-b5-device.py",
+      "lfSha256": "98e2f3c09b36898cc01203dc660a4b56998b627cfc1742d438dc49accb26c87b"
+    },
+    {
+      "path": "tools/check-android-b5-evidence.py",
+      "lfSha256": "e2b756156a8fc3ecae99ee45df0454ce9e4ab12729243a5e68cbbdf8922997f7"
+    }
+  ],
+  "unchangedProductRoots": [
+    "apps/mobile/lib",
+    "apps/mobile/android/app/src/main",
+    "packages/auth_passkey/lib",
+    "packages/auth_passkey/android/src/main",
+    "packages/auth_vault/lib",
+    "packages/auth_vault/android/src/main",
+    "services/api/internal",
+    "services/api/cmd",
+    "services/api/migrations"
+  ],
+  "devices": {
+    "source": {
+      "model": "V2323A",
+      "marketingName": "vivo S18",
+      "android": "15",
+      "physical": true
+    },
+    "target": {
+      "model": "RMX3366",
+      "marketingName": "realme GT Master Explorer",
+      "android": "14",
+      "physical": true
+    }
+  },
+  "historicalB6": {
+    "path": "services/api/authlab/b6-single-android-20261013-verification.json",
+    "lfSha256": "c198186f3c9924bbc467869ce8b8454d3c8fc7c42c8a31961598a09efa7711ee",
+    "scope": "Original 2026-10-13 results and 22 accepted case versions remain unchanged; not rerun by B5"
+  },
+  "cases": [
+    {
+      "id": "NI-L01",
+      "result": "PASS",
+      "moduleIds": [
+        "N03",
+        "A12",
+        "B01"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/0",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-L02",
+      "result": "PASS",
+      "moduleIds": [
+        "N01",
+        "N03",
+        "A12"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/1",
+      "apkSha256": "7aed25ebc364286bdac5357f87080673de455cc5a14ec5512e6b909fed769556",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-L03",
+      "result": "PASS",
+      "moduleIds": [
+        "N03",
+        "A12",
+        "B01"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/2",
+      "apkSha256": "7aed25ebc364286bdac5357f87080673de455cc5a14ec5512e6b909fed769556",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-L04",
+      "result": "PASS",
+      "moduleIds": [
+        "N03",
+        "A12",
+        "B01"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/3",
+      "apkSha256": "7aed25ebc364286bdac5357f87080673de455cc5a14ec5512e6b909fed769556",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-U01",
+      "result": "PASS",
+      "moduleIds": [
+        "N03",
+        "A07",
+        "B01"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/4",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-U02",
+      "result": "PASS",
+      "moduleIds": [
+        "A12",
+        "B02"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/5",
+      "apkSha256": "7aed25ebc364286bdac5357f87080673de455cc5a14ec5512e6b909fed769556",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-U03",
+      "result": "PASS",
+      "moduleIds": [
+        "A12",
+        "B01",
+        "B02"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/6",
+      "apkSha256": "468ce414ba7499d4e0882b75dc149771d7bfa8830c78936cffbe174540bedb1f",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-A01",
+      "result": "PASS",
+      "moduleIds": [
+        "A03",
+        "A09",
+        "N03"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/7",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-A02",
+      "result": "PASS",
+      "moduleIds": [
+        "A03",
+        "A07",
+        "N03"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/8",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-A03",
+      "result": "PASS",
+      "moduleIds": [
+        "A06",
+        "A09",
+        "A12",
+        "N03"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/9",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-A04",
+      "result": "PASS",
+      "moduleIds": [
+        "A03",
+        "A06",
+        "A09",
+        "A12"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/10",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-C01",
+      "result": "PASS",
+      "moduleIds": [
+        "A07",
+        "A08",
+        "A09",
+        "B02",
+        "N03"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/0",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "stageVersions": {
+        "ni-c01-main": {
+          "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+          "pid": 19326,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-C02",
+      "result": "PASS",
+      "moduleIds": [
+        "A08",
+        "A09",
+        "A12"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/1",
+      "stageKeys": [
+        "ni-c01-control"
+      ],
+      "stageVersions": {
+        "ni-c01-control": {
+          "apkSha256": "cbd1146f313358f2558416f1804b09d35ab75e3c609ffc3320f40ed042164332",
+          "pid": 13692,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-C03",
+      "result": "PASS",
+      "moduleIds": [
+        "A08",
+        "A12",
+        "B02"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/2",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "stageVersions": {
+        "ni-c01-main": {
+          "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+          "pid": 19326,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-C04",
+      "result": "PASS",
+      "moduleIds": [
+        "A04",
+        "A05",
+        "A08",
+        "A12",
+        "B02"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/3",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "stageVersions": {
+        "ni-c01-main": {
+          "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+          "pid": 19326,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-D01",
+      "result": "PASS",
+      "moduleIds": [
+        "A09",
+        "N03"
+      ],
+      "boundary": "DIRECT_PROVIDER_AND_ACTUAL_PRODUCT_SQL",
+      "dependencyId": "provider-negatives",
+      "pointer": "/cases/0",
+      "apkSha256": "bb252713ab57ea1f5878c10c78370395f1a1274bdd4b6949b24e5db5b456eb18",
+      "historicalVersionRewritten": false,
+      "rawSdkOnlyFixtureResult": "FAIL",
+      "actualProviderRejectionCode": 50152,
+      "currentCandidateApplicability": "Actual provider validator rejection + actual product/APK and independent SQL. SDK cancellation alone remains insufficient."
+    },
+    {
+      "id": "NI-D02",
+      "result": "PASS",
+      "moduleIds": [
+        "A09",
+        "N03"
+      ],
+      "boundary": "DIRECT_PROVIDER_AND_ACTUAL_PRODUCT_SQL",
+      "dependencyId": "provider-negatives",
+      "pointer": "/cases/1",
+      "apkSha256": "174130ad7c9c5f4ed8e4c31f88c6687aaa6f0a7ed2a1f51855d74a9beee45da0",
+      "historicalVersionRewritten": false,
+      "rawSdkOnlyFixtureResult": "FAIL",
+      "actualProviderRejectionCode": 50152,
+      "currentCandidateApplicability": "Actual provider validator rejection + actual product/APK and independent SQL. SDK cancellation alone remains insufficient."
+    },
+    {
+      "id": "NI-D03",
+      "result": "PASS",
+      "moduleIds": [
+        "N03"
+      ],
+      "boundary": "DIRECT_PROVIDER_AND_ACTUAL_PRODUCT_SQL",
+      "dependencyId": "provider-negatives",
+      "pointer": "/cases/2",
+      "apkSha256": "5b591abe59246d4b5eb09b40b366f28339bbc9314c73d856dd8e3e19255aedb3",
+      "historicalVersionRewritten": false,
+      "rawSdkOnlyFixtureResult": "FAIL",
+      "actualProviderRejectionCode": 50152,
+      "currentCandidateApplicability": "Actual provider validator rejection + actual product/APK and independent SQL. SDK cancellation alone remains insufficient."
+    },
+    {
+      "id": "NI-D04",
+      "result": "PASS",
+      "moduleIds": [
+        "A02",
+        "A12",
+        "N03"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/7",
+      "stageKeys": [
+        "ni-d04-main"
+      ],
+      "stageVersions": {
+        "ni-d04-main": {
+          "apkSha256": "92eaa61287b3eaec6ea54feebdcdd898b32edddf7c67dadae9ef2bb26814995d",
+          "pid": 20572,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-D05",
+      "result": "PASS",
+      "moduleIds": [
+        "A07",
+        "A09",
+        "B01",
+        "N03"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/8",
+      "stageKeys": [
+        "ni-d05-main"
+      ],
+      "stageVersions": {
+        "ni-d05-main": {
+          "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+          "pid": 11391,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-K01",
+      "result": "PASS",
+      "moduleIds": [
+        "N01",
+        "A12"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/9",
+      "stageKeys": [
+        "ni-k01-source",
+        "ni-k01-restart",
+        "ni-k01-fresh",
+        "ni-k01-no-key"
+      ],
+      "stageVersions": {
+        "ni-k01-source": {
+          "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+          "pid": 10907,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k01-restart": {
+          "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+          "pid": 31463,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k01-fresh": {
+          "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+          "pid": 11138,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k01-no-key": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 18921,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-K02",
+      "result": "PASS",
+      "moduleIds": [
+        "N01",
+        "A12",
+        "B02"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/10",
+      "stageKeys": [
+        "ni-k02-write-failure",
+        "ni-k02-write-failure-read",
+        "ni-k02-write-unknown",
+        "ni-k02-write-unknown-read"
+      ],
+      "stageVersions": {
+        "ni-k02-write-failure": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 20637,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k02-write-failure-read": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 21631,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k02-write-unknown": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 23203,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k02-write-unknown-read": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 24174,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "result": "PASS",
+      "actualOemTransferCompleted": true,
+      "actualOemApplicationDataTransfer": true,
+      "selectedApplications": 1,
+      "selectedApplicationDataEntries": 1,
+      "selectedPersonalDataEntries": 0,
+      "productNativeCipherNotCopied": true,
+      "fixtureCredentialsNotCopied": true,
+      "targetDidNotAutomaticallyLogin": true,
+      "sourceActualSessionRestoredAndServerVerified": true,
+      "sqlBeforeTargetLaunch": {
+        "accounts": 1,
+        "passkeys": 0,
+        "activeSessions": 1,
+        "activeResets": 0
+      },
+      "sqlAfterActualApp": {
+        "accounts": 1,
+        "passkeys": 0,
+        "activeSessions": 1,
+        "activeResets": 0
+      },
+      "acceptedAtUTC": "2026-10-16T05:43:38.697211+00:00",
+      "id": "NI-X01",
+      "moduleIds": [
+        "N01",
+        "A12"
+      ],
+      "boundary": "TWO_PHYSICAL_ANDROID_ACTUAL_OEM_AND_APP_SQL",
+      "apkSha256": "9396864839f59c06d6215c582867c3e9eac3b1a4d3fd0a57cd330a9e78da09ff",
+      "fixtureSha256": "bdfabe3346a33ec4606e410df5067a47bcce6b542651216b96b4fd4a705e3b36",
+      "historicalVersionRewritten": false
+    },
+    {
+      "id": "NI-X02",
+      "moduleIds": [
+        "A07",
+        "N03"
+      ],
+      "result": "FAIL",
+      "boundary": "TWO_PHYSICAL_ANDROID_NATIVE_RECOVERY_NOT_COMPLETED",
+      "historicalVersionRewritten": false,
+      "sourceNativeCreationAttempts": 1,
+      "sourceBindingCommitted": true,
+      "sourcePid": 32427,
+      "targetNativeGetAttempts": 4,
+      "attempts": [
+        {
+          "number": 1,
+          "targetPid": 19946,
+          "result": "FAIL_NATIVE_TIMEOUT",
+          "nativeBegun": 1,
+          "nativeTimeout": 1,
+          "nativeSucceeded": 0,
+          "nativeErrored": 1,
+          "explicitNewUserAuthorization": false,
+          "providerPreparationRetry": false,
+          "qrObserved": false,
+          "sourceConnectionErrorObserved": false,
+          "userCancellationProven": false,
+          "originalPrivateReceiptSha256": "bc985d43eb6dd03ac91df9448707ff97279d3e6d56359c3ef448b15758c98110"
+        },
+        {
+          "number": 2,
+          "targetPid": 7974,
+          "result": "FAIL_NATIVE_TIMEOUT",
+          "nativeBegun": 1,
+          "nativeTimeout": 1,
+          "nativeSucceeded": 0,
+          "nativeErrored": 1,
+          "explicitNewUserAuthorization": false,
+          "providerPreparationRetry": true,
+          "qrObserved": true,
+          "sourceConnectionErrorObserved": false,
+          "userCancellationProven": false,
+          "originalPrivateReceiptSha256": "e63de4fb530b3557cd396dc8fbdb6ece8074e988b202a0ff559250f367ac62c8"
+        },
+        {
+          "number": 3,
+          "targetPid": 9908,
+          "result": "FAIL_NATIVE_TIMEOUT",
+          "nativeBegun": 1,
+          "nativeTimeout": 1,
+          "nativeSucceeded": 0,
+          "nativeErrored": 1,
+          "explicitNewUserAuthorization": true,
+          "providerPreparationRetry": false,
+          "qrObserved": true,
+          "sourceConnectionErrorObserved": true,
+          "userCancellationProven": false,
+          "originalPrivateReceiptSha256": "5500a0672841f719e6da3072bc8852ac8204154ed365c7ad9431e31aace33e8f"
+        },
+        {
+          "number": 4,
+          "targetPid": 13253,
+          "result": "FAIL_NATIVE_TIMEOUT",
+          "nativeBegun": 1,
+          "nativeTimeout": 1,
+          "nativeSucceeded": 0,
+          "nativeErrored": 1,
+          "explicitNewUserAuthorization": true,
+          "providerPreparationRetry": false,
+          "qrObserved": true,
+          "sourceConnectionErrorObserved": true,
+          "userCancellationProven": false,
+          "originalPrivateReceiptSha256": "cc706990645998da2e81c1201d854ca20d112e197b5f9009cd9227b7b3dc8867"
+        }
+      ],
+      "actualCrossDeviceProofReturned": false,
+      "resetIntentCreated": false,
+      "sqlAfter": {
+        "accounts": 1,
+        "passkeys": 1,
+        "activeSessions": 1,
+        "activeResets": 0
+      },
+      "sourceObservedError": "设备无法连接；确保设备相互靠近，然后重试。",
+      "physicalDistanceRootCauseProven": false,
+      "postProofStages": {
+        "fullNewRecoveryCodeConfirmation": "NOT_RUN",
+        "passwordResetCommit": "NOT_RUN",
+        "resetDoesNotAutoLogin": "NOT_RUN",
+        "oldAuthorityRevocation": "NOT_RUN",
+        "explicitNewPasswordLogin": "NOT_RUN"
+      },
+      "sourceApkSha256": "65f9ea9749723be9187f6e251b7de70b3318f6b4060305cbcaa2aa31ee40d568",
+      "targetApkSha256": "9396864839f59c06d6215c582867c3e9eac3b1a4d3fd0a57cd330a9e78da09ff",
+      "automaticRetryPermitted": false
+    }
+  ],
+  "historicalCaseReferenceResolution": "For unchanged 22 cases, resolve dependency IDs and pointers through historicalB6, retaining each original APK/runner/device version.",
+  "fixedCaseCounts": {
+    "PASS": 23,
+    "FAIL": 1,
+    "BLOCKED": 0,
+    "NOT_RUN": 0
+  },
+  "remainingFixedIds": [
+    "NI-X02"
+  ],
+  "nonIOSDevelopmentAcceptancePassed": false,
+  "fullAnonymityClosurePassed": false,
+  "productionApproved": false,
+  "iosAcceptancePassed": false,
+  "report": "docs/design/auth-privacy-b5-validation-report.md",
+  "handoffDocuments": [
+    "docs/design/HANDOFF.md",
+    "docs/design/progress.md",
+    "docs/design/module-acceptance-handoff.md",
+    "docs/design/auth-privacy-non-ios-closure-plan.md",
+    "docs/design/auth-privacy-platform-acceptance-plan.md",
+    "docs/design/auth-privacy-machine-handoff.md"
+  ],
+  "restoration": {
+    "source": {
+      "exactOriginalProviderSettingsRestored": true,
+      "verifiedAtUTC": "2026-10-16T06:15:31.364532+00:00",
+      "foregroundHybridWindowPresent": false
+    },
+    "target": {
+      "exactOriginalProviderSettingsRestored": true,
+      "verifiedAtUTC": "2026-10-16T06:15:31.770117+00:00",
+      "foregroundHybridWindowPresent": false
+    }
+  },
+  "preservation": {
+    "oldFailuresAndUnknownPreserved": true,
+    "rawProofExported": false,
+    "personalDataTransferred": false,
+    "originalMainAppDataDeleted": false,
+    "testApksAndPrivateStateRetainedForContinuation": true,
+    "reusableEnvironmentRetained": true,
+    "oemUserChangedPowerAndNetworkSettingsOriginalValuesNotCaptured": true
+  },
+  "history": [
+    {
+      "result": "REJECTED",
+      "stage": "OEM attempt 1",
+      "reason": "Fixture synthetic secrets in ordinary files migrated; moved to no_backup and performed a clean second OEM transfer before accepting X01"
+    },
+    {
+      "result": "FAIL_PRE_NATIVE",
+      "stage": "source label preflight",
+      "nativeCalls": 0,
+      "reason": "Fixture label did not match existing protected debug format; fixture fixed without changing product guard"
+    },
+    {
+      "result": "FAIL",
+      "stage": "build setup",
+      "reason": "SDK dev tooling unavailable, then analyzer warning; original receipts retained before corrected analyze/build succeeded"
+    }
+  ],
+  "checks": [
+    {
+      "id": "fixture-dart-analysis",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Actual label-fixed source build; target OEM-v2 retains its own earlier successful build"
+    },
+    {
+      "id": "arm64-build-and-approved-signature",
+      "result": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "final-python-operator-syntax",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Syntax only; post-run UI guard change not device-tested"
+    },
+    {
+      "id": "b5-evidence-handoff-check",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "23/1 derived from frozen B6 plus B5 cases; no device operation executed by this check"
+    }
+  ],
+  "publication": {
+    "committed": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "privateEvidenceReferences": [
+    {
+      "name": "NI-X01-result.json",
+      "sha256": "49d202f5bd12541622baf61c2fd9660d42d1ef5c142f70b92d2b7cf233065888"
+    },
+    {
+      "name": "oem-transfer-result.json",
+      "sha256": "3a7fabd8dcc3fb1a9922e8240b3692bd079ce338e62f2c7d2d75bc5d051dae6c"
+    },
+    {
+      "name": "source-binding-result.json",
+      "sha256": "5617433c713b33b367615c874a0ac3c069327e2ec16b1272f9e5574c19a46e88"
+    },
+    {
+      "name": "target-get-attempt01-result.json",
+      "sha256": "bc985d43eb6dd03ac91df9448707ff97279d3e6d56359c3ef448b15758c98110"
+    },
+    {
+      "name": "target-get-attempt02-result.json",
+      "sha256": "e63de4fb530b3557cd396dc8fbdb6ece8074e988b202a0ff559250f367ac62c8"
+    },
+    {
+      "name": "target-get-attempt03-result.json",
+      "sha256": "5500a0672841f719e6da3072bc8852ac8204154ed365c7ad9431e31aace33e8f"
+    },
+    {
+      "name": "target-get-attempt04-result.json",
+      "sha256": "cc706990645998da2e81c1201d854ca20d112e197b5f9009cd9227b7b3dc8867"
+    },
+    {
+      "name": "provider-settings.json",
+      "sha256": "8cfdb736c9ff05df79abab48b0e421885d18d7868e091921650516592a2d22b9"
+    },
+    {
+      "name": "provider-settings-target.json",
+      "sha256": "1a049dda79e69b72642c28d68d45cdaf6d55c76564c87a975a30db372c3c5f89"
+    }
+  ]
+}

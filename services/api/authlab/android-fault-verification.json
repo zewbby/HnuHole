@@ -1,0 +1,793 @@
+{
+  "schemaVersion": "hnuhole-android-fault-verification/v1",
+  "recordedOn": "2026-10-05",
+  "timeZone": "Asia/Shanghai",
+  "verifiedAtUTC": "2026-10-05T08:48:57.228232+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "scope": "ANDROID_ACTUAL_APP_TO_CMD_CV_FAULT_DEVELOPMENT_ONLY",
+  "uncommittedWorkingTree": true,
+  "implementationState": "BOUNDED_ANDROID_FAULT_SCENES_IMPLEMENTED_AND_ACCEPTED",
+  "currentResult": "BLOCKED",
+  "scopedBackendAcceptancePassed": false,
+  "scopedAndroidFaultAcceptancePassed": true,
+  "moduleAcceptancePassed": false,
+  "fullDeviceMatrixPassed": false,
+  "systemPasskeyPassed": false,
+  "fullAnonymityClosurePassed": false,
+  "productionApproved": false,
+  "plan": "docs/design/auth-privacy-android-fault-plan.md",
+  "report": "docs/design/auth-privacy-android-fault-validation-report.md",
+  "sourceFingerprint": {
+    "sha256": "c8aee2ae8168ec0af0c4a23ef1e3201c4d73bc961b42dcbdf24fb266bd380c51",
+    "presentFileCount": 294,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey",
+      "apps/mobile/android",
+      "apps/mobile/ios",
+      "apps/mobile/integration_test",
+      "apps/mobile/test_driver",
+      "tools/run-android-auth-process-test.ps1",
+      "tools/run-android-vault-probes.ps1",
+      "tools/env-hnuhole-windows.ps1",
+      "tools/env-hnuhole-wsl.sh",
+      "tools/check-identity-handoff.py",
+      "tools/run-auth-device-services.sh",
+      "tools/run-android-live-device.ps1",
+      "tools/check-privacy-closure-handoff.py",
+      "tools/android-auth-fault-proxy.py",
+      "tools/control-android-auth-fault.py"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm",
+      ".gradle",
+      ".png",
+      ".storyboard",
+      ".xcscheme",
+      ".xcworkspacedata"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Current fault App/fixture and runners; seven actual Android phases accepted under r2 APK; post-run evidence checker verified separately. Earlier normal and partial attempts keep their versions."
+  },
+  "gitBlobSourceFingerprint": {
+    "sha256": "41a24370832f1a6f1fd6311fb4b7e92927734deaf26e587111ee2af56870d534",
+    "presentFileCount": 294,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey",
+      "apps/mobile/android",
+      "apps/mobile/ios",
+      "apps/mobile/integration_test",
+      "apps/mobile/test_driver",
+      "tools/run-android-auth-process-test.ps1",
+      "tools/run-android-vault-probes.ps1",
+      "tools/env-hnuhole-windows.ps1",
+      "tools/env-hnuhole-wsl.sh",
+      "tools/check-identity-handoff.py",
+      "tools/run-auth-device-services.sh",
+      "tools/run-android-live-device.ps1",
+      "tools/check-privacy-closure-handoff.py",
+      "tools/android-auth-fault-proxy.py",
+      "tools/control-android-auth-fault.py"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm",
+      ".gradle",
+      ".png",
+      ".storyboard",
+      ".xcscheme",
+      ".xcworkspacedata"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Current fault App/fixture and runners; seven actual Android phases accepted under r2 APK; post-run evidence checker verified separately. Earlier normal and partial attempts keep their versions."
+  },
+  "device": {
+    "model": "vivo S18 / V2323A",
+    "androidVersion": "15",
+    "abi": "arm64-v8a",
+    "physical": true,
+    "serialRetained": false
+  },
+  "priorHappyPathEvidence": "services/api/authlab/android-live-verification.json",
+  "checks": [
+    {
+      "id": "mobile-analysis",
+      "result": "PASS",
+      "scope": "Current r2 fault fixture/native private debug discovery; actual compilation and tests executed",
+      "exitCode": 0,
+      "command": "flutter analyze",
+      "logSha256": "588067db2b14d2b483befefa04e246b3d61124e1fafb5eeb94cf8a8d783f68cf"
+    },
+    {
+      "id": "mobile-tests",
+      "result": "PASS",
+      "scope": "Current r2 fault fixture/native private debug discovery; actual compilation and tests executed",
+      "exitCode": 0,
+      "command": "flutter test --reporter expanded",
+      "testCount": 182,
+      "logSha256": "cdc0cbc5c72aba72359df9f664b515c46eaae483911d4eddcae681707ccab20a"
+    },
+    {
+      "id": "android-apk-build",
+      "result": "PASS",
+      "scope": "Current r2 fault fixture/native private debug discovery; actual compilation and tests executed",
+      "exitCode": 0,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a",
+      "logSha256": "3e87c0711a327b7f9d906c8c77ada6a2719ee57f4b5ff2c0362ee3e6cd499d24"
+    },
+    {
+      "id": "actual-service-startup",
+      "result": "PASS",
+      "scope": "Unchanged actual C/V cmd, formal C12/V4 migrations, restricted roles, independent development Gate readiness with normal CA/hostname verification",
+      "exitCode": 0
+    },
+    {
+      "id": "proxy",
+      "result": "PASS",
+      "scope": "Actual upstream TLS verification, one committed response dropped, two independent logout requests blocked, original receipt lookup and restart retry forwarded",
+      "exitCode": 0
+    },
+    {
+      "id": "sql-readback",
+      "result": "PASS",
+      "scope": "Read-only runtime-role SQL per actual device phase; commit/Gate/session counts verified; contains two isolated synthetic test accounts",
+      "exitCode": 0
+    },
+    {
+      "id": "handoff",
+      "result": "PASS",
+      "scope": "Current module handoff, links, SQL/PID chain, selected 294-file snapshot and published historical AC06 bytes",
+      "exitCode": 0
+    },
+    {
+      "id": "diff",
+      "result": "PASS",
+      "scope": "git diff --check; no whitespace errors",
+      "exitCode": 0
+    },
+    {
+      "id": "device-write",
+      "result": "PASS",
+      "phase": "write",
+      "exitCode": 0,
+      "pid": 10229,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "device-unknown",
+      "result": "PASS",
+      "phase": "unknown",
+      "exitCode": 0,
+      "pid": 10535,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "device-reconcile",
+      "result": "PASS",
+      "phase": "reconcile",
+      "exitCode": 0,
+      "pid": 12328,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "device-frozen",
+      "result": "PASS",
+      "phase": "frozen",
+      "exitCode": 0,
+      "pid": 12825,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "device-recovered",
+      "result": "PASS",
+      "phase": "recovered",
+      "exitCode": 0,
+      "pid": 13052,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "device-offline-logout",
+      "result": "PASS",
+      "phase": "offline-logout",
+      "exitCode": 0,
+      "pid": 13286,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "device-drain",
+      "result": "PASS",
+      "phase": "drain",
+      "exitCode": 0,
+      "pid": 13482,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "runner-negative-guards",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Wrong installed APK / resume digest refused before mutation"
+    },
+    {
+      "id": "native-debug-discovery-guard",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Same real APK with opt-in resolves private authenticated loopback VM; no opt-in writes no file; runner removes private file"
+    }
+  ],
+  "attemptHistory": [
+    {
+      "id": "initial-cluster-startup",
+      "result": "FAIL",
+      "reason": "Disposable postgres source fixture directory unreadable to container user under private setup umask; fixed source directory readability, private material unchanged; runtime attempt cleaned, dependency caches retained"
+    },
+    {
+      "id": "initial-assemble-followup-script",
+      "result": "FAIL",
+      "exitCode": 1,
+      "scope": "Gradle assemble succeeded, but editing an active shell script caused end-of-script input read failure; no APK installed. Separate build-current entry reuses cache and builds final generation-rejection fixture."
+    },
+    {
+      "id": "final-reviewed-apk-install",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "adb --no-streaming returned Success and user confirmed; attach-only runner verifies installed digest before launch",
+      "apkSha256": "4a7660053c62e1fe016d579f267b0f4b4a8c6f6d59e01b9c354b9e9d4a59a675"
+    },
+    {
+      "id": "attempt1-partial-device-execution",
+      "result": "BLOCKED",
+      "apkSha256": "4a7660053c62e1fe016d579f267b0f4b4a8c6f6d59e01b9c354b9e9d4a59a675",
+      "sourceFingerprintSha256": "2b1c05a510649637f9725fbc441ddcdb1d4d334c84149fe23c95e2aef4b51906",
+      "reason": "write and unknown passed; reconcile transport did not expose usable logcat VM URI; later phases were NOT_RUN. S18 dial codes did not open log utility; protected log UI could not be opened by adb. No protected permission bypass.",
+      "devicePhases": {
+        "write": {
+          "phase": "write",
+          "pid": 19807,
+          "actualApp": true,
+          "actualCV": true,
+          "nativeVault": true,
+          "identityCount": 1
+        },
+        "unknown": {
+          "phase": "unknown",
+          "pid": 24582,
+          "priorPid": 19807,
+          "actualApp": true,
+          "actualCV": true,
+          "nativeVault": true,
+          "unknownIntentDurable": true
+        }
+      },
+      "sqlReadback": {
+        "write": {
+          "phase": "write",
+          "sql": {
+            "accounts": 1,
+            "activeIdentities": 1,
+            "committedCreates": 1,
+            "committedRenames": 1,
+            "frozenMutationProfiles": 0,
+            "activeSessions": 1,
+            "revokedSessions": 0,
+            "gateState": "OPEN",
+            "gateGeneration": 1
+          },
+          "proxy": {
+            "forwardedCreates": 1,
+            "droppedCommittedCreates": 0,
+            "blockedRevocations": 0,
+            "forwardedRevocations": 0,
+            "resultQueries": 0
+          }
+        },
+        "unknown": {
+          "phase": "unknown",
+          "sql": {
+            "accounts": 1,
+            "activeIdentities": 2,
+            "committedCreates": 2,
+            "committedRenames": 1,
+            "frozenMutationProfiles": 0,
+            "activeSessions": 1,
+            "revokedSessions": 0,
+            "gateState": "OPEN",
+            "gateGeneration": 1
+          },
+          "proxy": {
+            "forwardedCreates": 2,
+            "droppedCommittedCreates": 1,
+            "blockedRevocations": 0,
+            "forwardedRevocations": 0,
+            "resultQueries": 0
+          }
+        }
+      },
+      "supersededBy": "r2 independently reran all seven phases under one installed APK; fixed final login route wait and opted-in debug-private VM URI transport"
+    },
+    {
+      "id": "r2-reviewed-apk-install-and-run",
+      "result": "PASS",
+      "exitCode": 0,
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a",
+      "scope": "User confirmed update once; installed digest checked, no reinstall across seven independent processes; analyzer/182 tests/APK and real seven-stage runner succeeded"
+    }
+  ],
+  "coverage": [
+    {
+      "id": "unknown-identity-commit-and-restart",
+      "result": "PASS",
+      "moduleIds": [
+        "A00",
+        "A05",
+        "A12",
+        "A13",
+        "N01",
+        "B02"
+      ],
+      "testPath": "apps/mobile/integration_test/auth_fault_device_test.dart",
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "c-gate-app-suspension-and-recovery",
+      "result": "PASS",
+      "moduleIds": [
+        "A01",
+        "A11",
+        "A12",
+        "A13",
+        "B02"
+      ],
+      "testPath": "apps/mobile/integration_test/auth_fault_device_test.dart",
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    },
+    {
+      "id": "offline-logout-and-native-restart-drain",
+      "result": "PASS",
+      "moduleIds": [
+        "A05",
+        "A12",
+        "A13",
+        "N01",
+        "B01"
+      ],
+      "testPath": "apps/mobile/integration_test/auth_fault_device_test.dart",
+      "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a"
+    }
+  ],
+  "sourcePaths": [
+    "tools/run-auth-device-services.sh",
+    "tools/run-android-live-device.ps1",
+    "tools/android-auth-fault-proxy.py",
+    "tools/control-android-auth-fault.py",
+    "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt"
+  ],
+  "testPaths": [
+    "apps/mobile/integration_test/auth_fault_device_test.dart",
+    "apps/mobile/test_driver/auth_live_device_driver.dart"
+  ],
+  "affectedModules": [
+    "A00",
+    "A01",
+    "A05",
+    "A12",
+    "A13",
+    "N01",
+    "B01",
+    "B02",
+    "A11"
+  ],
+  "crossModuleScenes": [
+    "X01",
+    "X02",
+    "X03",
+    "X04",
+    "X08"
+  ],
+  "notRun": [
+    {
+      "id": "system-passkey",
+      "result": "BLOCKED",
+      "reason": "No actual RP/signature association deployment; local USB ordinary credentials do not prove ceremony",
+      "entry": "packages/auth_passkey/README.md"
+    },
+    {
+      "id": "ios",
+      "result": "BLOCKED",
+      "reason": "User reports an available Mac; Xcode/Codex/repository/signing status not yet verified, no iPhone currently available; no iOS build/Keychain/ceremony execution this round",
+      "entry": "docs/design/module-acceptance-handoff.md"
+    },
+    {
+      "id": "device-fault-matrix",
+      "result": "NOT_RUN",
+      "reason": "Current vivo three-group seven-process acceptance passed; lock/uninstall/OS backup/cross-device/OEM input/accessibility matrix not executed",
+      "entry": "docs/design/module-acceptance-handoff.md"
+    },
+    {
+      "id": "long-close-and-gate-device-matrix",
+      "result": "NOT_RUN",
+      "reason": "C Gate freeze/recovery and unknown identity outcome passed on actual App. Seven-day formal close, V Gate device chain and other unlisted failures remain NOT_RUN; AC04 backend evidence stays historical",
+      "entry": "docs/design/auth-privacy-platform-acceptance-plan.md"
+    },
+    {
+      "id": "backend-suite",
+      "result": "NOT_RUN",
+      "reason": "Go/SQL/race/vet and R03/R05 full suites not rerun this round; server source unchanged from published baseline",
+      "entry": "services/api/authlab/privacy-regression-verification.json"
+    },
+    {
+      "id": "production",
+      "result": "BLOCKED",
+      "reason": "Independent parties, recovery/backup and audit evidence remain separate release gates",
+      "entry": "docs/design/auth-privacy-security-review-package.md"
+    },
+    {
+      "id": "release-private-discovery-guard",
+      "result": "NOT_RUN",
+      "reason": "Debuggable/explicit opt-in source guard implemented; real debug opt-in/no-opt-in checked. Actual release APK runtime not separately executed this round",
+      "entry": "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt"
+    }
+  ],
+  "environmentRetention": {
+    "requestedByUser": true,
+    "scope": "Keep reusable environment/caches/test APK until remaining acceptance ends; do not delete after each scene group",
+    "windowsOwnedRoot": "D:/zewbbyTest/Hnuhole-android-live-faults-20261005",
+    "linuxOwnedRoot": "/var/tmp/hnuhole-android-live-faults-20261005",
+    "ownerMarker": "HNUHOLE_ANDROID_LIVE_DEV_V1",
+    "dockerProject": "hnuhole-device-hnuholeandroidlivefaults20261005",
+    "privateMaterialCommitted": false,
+    "currentlyRetained": true,
+    "testAppInstalled": true,
+    "temporaryUsbMappingsRemoved": true,
+    "runtimeProcessesStillRunning": true,
+    "credentialsLocations": "Owned services/material only; private test namespace on device; never committed",
+    "lifetimeNote": "Caches, APK, SDK/AVD retained. Current C/V and proxy remain running. Existing initializer exit trap cleans its disposable DB/private services; do not terminate it as per-scene cleanup. Restart/shutdown requires separate owned runtime preparation; do not treat cached tool availability as live readiness."
+  },
+  "platformPrerequisites": {
+    "rpDomainProvided": false,
+    "httpsHostProvided": false,
+    "macAvailableReportedByUser": true,
+    "macCodexXcodeStatus": "AWAITING_USER_INFO",
+    "iphoneAvailable": false
+  },
+  "publication": {
+    "committed": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "nextStep": "Complete remaining Android fault/device matrix, then Mac/Xcode/iOS and real RP/platform association prerequisites; bounded three groups now PASS. Keep reusable caches/test package. No publication authorization this round.",
+  "devicePhases": {
+    "write": {
+      "phase": "write",
+      "pid": 10229,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "identityCount": 1
+    },
+    "unknown": {
+      "phase": "unknown",
+      "pid": 10535,
+      "priorPid": 10229,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "unknownIntentDurable": true
+    },
+    "reconcile": {
+      "phase": "reconcile",
+      "pid": 12328,
+      "priorPid": 10535,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "originalIntentReconciled": true,
+      "noDuplicateIdentity": true
+    },
+    "frozen": {
+      "phase": "frozen",
+      "pid": 12825,
+      "priorPid": 12328,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "gateRefusedProtectedMutation": true,
+      "nativeSessionPreserved": true
+    },
+    "recovered": {
+      "phase": "recovered",
+      "pid": 13052,
+      "priorPid": 12825,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "authorityRecheckedAfterGateRecovery": true,
+      "oldGenerationSessionRejected": true,
+      "frozenMutationAbsent": true
+    },
+    "offline-logout": {
+      "phase": "offline-logout",
+      "pid": 13286,
+      "priorPid": 13052,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "localBearerCleared": true,
+      "independentLogoutCapabilityDurable": true
+    },
+    "drain": {
+      "phase": "drain",
+      "pid": 13482,
+      "priorPid": 13286,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "logoutRevokedOldSession": true,
+      "passwordLogin": true,
+      "pendingLogoutDrained": true
+    }
+  },
+  "sqlReadback": {
+    "write": {
+      "phase": "write",
+      "sql": {
+        "accounts": 2,
+        "activeIdentities": 3,
+        "committedCreates": 3,
+        "committedRenames": 2,
+        "frozenMutationProfiles": 0,
+        "activeSessions": 1,
+        "revokedSessions": 1,
+        "gateState": "OPEN",
+        "gateGeneration": 1
+      },
+      "proxy": {
+        "forwardedCreates": 1,
+        "droppedCommittedCreates": 0,
+        "blockedRevocations": 0,
+        "forwardedRevocations": 1,
+        "resultQueries": 0
+      }
+    },
+    "unknown": {
+      "phase": "unknown",
+      "sql": {
+        "accounts": 2,
+        "activeIdentities": 4,
+        "committedCreates": 4,
+        "committedRenames": 2,
+        "frozenMutationProfiles": 0,
+        "activeSessions": 1,
+        "revokedSessions": 1,
+        "gateState": "OPEN",
+        "gateGeneration": 1
+      },
+      "proxy": {
+        "forwardedCreates": 2,
+        "droppedCommittedCreates": 1,
+        "blockedRevocations": 0,
+        "forwardedRevocations": 1,
+        "resultQueries": 0
+      }
+    },
+    "reconcile": {
+      "phase": "reconcile",
+      "sql": {
+        "accounts": 2,
+        "activeIdentities": 4,
+        "committedCreates": 4,
+        "committedRenames": 2,
+        "frozenMutationProfiles": 0,
+        "activeSessions": 1,
+        "revokedSessions": 1,
+        "gateState": "OPEN",
+        "gateGeneration": 1
+      },
+      "proxy": {
+        "forwardedCreates": 2,
+        "droppedCommittedCreates": 1,
+        "blockedRevocations": 0,
+        "forwardedRevocations": 1,
+        "resultQueries": 1
+      }
+    },
+    "frozen": {
+      "phase": "frozen",
+      "sql": {
+        "accounts": 2,
+        "activeIdentities": 4,
+        "committedCreates": 4,
+        "committedRenames": 2,
+        "frozenMutationProfiles": 0,
+        "activeSessions": 1,
+        "revokedSessions": 1,
+        "gateState": "FROZEN",
+        "gateGeneration": 1
+      },
+      "proxy": {
+        "forwardedCreates": 3,
+        "droppedCommittedCreates": 1,
+        "blockedRevocations": 0,
+        "forwardedRevocations": 1,
+        "resultQueries": 1
+      }
+    },
+    "recovered": {
+      "phase": "recovered",
+      "sql": {
+        "accounts": 2,
+        "activeIdentities": 4,
+        "committedCreates": 4,
+        "committedRenames": 2,
+        "frozenMutationProfiles": 0,
+        "activeSessions": 1,
+        "revokedSessions": 2,
+        "gateState": "OPEN",
+        "gateGeneration": 2
+      },
+      "proxy": {
+        "forwardedCreates": 3,
+        "droppedCommittedCreates": 1,
+        "blockedRevocations": 0,
+        "forwardedRevocations": 1,
+        "resultQueries": 1
+      }
+    },
+    "offline-logout": {
+      "phase": "offline-logout",
+      "sql": {
+        "accounts": 2,
+        "activeIdentities": 4,
+        "committedCreates": 4,
+        "committedRenames": 2,
+        "frozenMutationProfiles": 0,
+        "activeSessions": 1,
+        "revokedSessions": 2,
+        "gateState": "OPEN",
+        "gateGeneration": 2
+      },
+      "proxy": {
+        "forwardedCreates": 3,
+        "droppedCommittedCreates": 1,
+        "blockedRevocations": 2,
+        "forwardedRevocations": 1,
+        "resultQueries": 1
+      }
+    },
+    "drain": {
+      "phase": "drain",
+      "sql": {
+        "accounts": 2,
+        "activeIdentities": 4,
+        "committedCreates": 4,
+        "committedRenames": 2,
+        "frozenMutationProfiles": 0,
+        "activeSessions": 1,
+        "revokedSessions": 3,
+        "gateState": "OPEN",
+        "gateGeneration": 2
+      },
+      "proxy": {
+        "forwardedCreates": 3,
+        "droppedCommittedCreates": 1,
+        "blockedRevocations": 2,
+        "forwardedRevocations": 2,
+        "resultQueries": 1
+      }
+    }
+  },
+  "proxyMetrics": {
+    "forwardedCreates": 3,
+    "droppedCommittedCreates": 1,
+    "blockedRevocations": 2,
+    "forwardedRevocations": 2,
+    "resultQueries": 1
+  },
+  "apk": {
+    "apkSha256": "d3526b637021d03811ae057cafc5e1124cb865f8e34fe84d79b668180063b28a",
+    "runId": "hnuhole-android-live-faults-20261005-r2",
+    "apkBytes": 100876138
+  },
+  "runId": "hnuhole-android-live-faults-20261005-r2",
+  "deviceRunnerExitCode": 0,
+  "databaseScope": {
+    "kind": "OWNED_DISPOSABLE_DEVELOPMENT_SQL_ONLY",
+    "accountCount": 2,
+    "activeIdentityCount": 4,
+    "explanation": "Retained attempt1 test account has two identities; r2 adds its own two identities. SQL aggregate counts cover both synthetic accounts. Per-account actual API assertion is two identities / two cumulative creates; reconcile SQL delta is zero.",
+    "priorAttemptBaseline": {
+      "accounts": 1,
+      "activeIdentities": 2,
+      "committedCreates": 2,
+      "committedRenames": 1,
+      "frozenMutationProfiles": 0,
+      "activeSessions": 1,
+      "revokedSessions": 0,
+      "gateState": "OPEN",
+      "gateGeneration": 1
+    }
+  },
+  "handoffState": "CURRENT_BOUNDED_LOCAL_HANDOFF_PASS_FULL_PLATFORM_BLOCKED"
+}

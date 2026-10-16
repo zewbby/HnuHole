@@ -1,0 +1,271 @@
+{
+  "schemaVersion": "hnuhole-authprivacy-eligibility-http-validation/v1",
+  "verifiedOn": "2026-09-29",
+  "baselineCommit": "c3163726ad4b7e7172f3652f3fcca91001782f6a",
+  "scope": "ISOLATED_ELIGIBILITY_CONFIRMATION_ORIGINAL_CONTINUATION_AND_HTTP_MTLS",
+  "runtime": {
+    "go": "go1.27.1 darwin/arm64",
+    "postgresql": "18.6",
+    "edwards25519": "v1.1.0",
+    "pgx": "v5.7.4"
+  },
+  "fullRun": {
+    "workingDirectory": "services/api",
+    "command": "sh authlab/run-isolated.sh",
+    "exitCode": 0,
+    "newDisposableCluster": true,
+    "privateUnixSocketOnly": true,
+    "databaseRolesNonSuperuser": true,
+    "cAndvDatabaseSeparate": true,
+    "goTestRaceCommand": "go test -race -count=1 -p 1 ./...",
+    "goTestRaceExitCode": 0,
+    "goVetCommand": "go vet ./...",
+    "goVetExitCode": 0,
+    "actualSQLExecuted": true,
+    "integrationCases": {
+      "foundation": [
+        "signup_commit_atomic_and_replay_has_no_secrets",
+        "username_conflict_consumes_proof_without_slot",
+        "expired_result_anchor_rejects_late_post",
+        "register_and_retire_compete_for_one_terminal",
+        "unique_index_wait_rechecks_deadline_after_provisional_writes",
+        "same_request_concurrent_replay_never_duplicates_session",
+        "lock_wait_rechecks_intent_expiry_with_database_time",
+        "receipt_ack_loss_retry_and_new_slot_preservation",
+        "same_email_quota_serializes_exact_bytes",
+        "unknown_and_unsigned_receipts_cannot_release",
+        "database_columns_do_not_join_email_or_store_plaintext_secrets"
+      ],
+      "otp": [
+        "TestOTPRequestIdempotencyPrivacyAndCooldown",
+        "TestOTPDeviceLockDoesNotExtendAndBlocksResend",
+        "TestOTPLatestGenerationAndConfirmedOldCodeExemption",
+        "TestOTPGlobalTenWrongAcrossDevicesAndFlows",
+        "TestOTPAmbiguousMailFreezesWithoutDuplicate",
+        "TestOTPMailEncryptedBeforeCommitAndErasedAfterSending",
+        "TestOTPCleanupPreservesGenerationAndExpiredAnchor",
+        "TestOTPCleanupTwentyFourHourMetadata"
+      ],
+      "confirmationAndContinuation": [
+        "TestConfirmationAtomicTicketReplayAndReadonlyResult",
+        "TestConfirmationLateHSMCannotPublishReleasedSlot",
+        "TestConfirmationOriginalRetirementContinuesAfterPushedReceipt",
+        "TestConfirmationContinuationDoesNotClearAnotherReservation",
+        "TestConfirmationCleanupPreservesExpiredRetirementUntilSettled",
+        "TestConfirmationRateLimitedReplayPreservesOriginalWait",
+        "TestConfirmationExpiredOriginalLockReplayDoesNotExtendOrRecount"
+      ],
+      "actualHTTPSAndPostgreSQL": [
+        "TestHTTPSPostgresEligibilityAndSignup",
+        "TestHTTPSPostgresRetirementPushAndOriginalContinuation"
+      ]
+    },
+    "integrationCaseCount": 28,
+    "actualSyntheticSMTPWire": true,
+    "actualLocalHTTPSAndMTLSHandshake": true,
+    "realSchoolEmailSent": false,
+    "protocolClockRollbackCaseSkipped": true
+  },
+  "implementedHttpOperations": {
+    "verifier": 6,
+    "community": 3,
+    "total": 9,
+    "publicAndInternalHandlersSeparate": true,
+    "mountedInProductionRouter": false
+  },
+  "review": {
+    "kind": "INTERNAL_AI_SOURCE_CROSS_REVIEW",
+    "humanIndependentAudit": false,
+    "confirmedFindingsResolved": [
+      "POSTGRESQL_TIMESTAMP_PARAMETER_CASTS",
+      "TLS_VERIFYCONNECTION_PHASE",
+      "PURPOSE_SEPARATED_KEYS",
+      "BUDGETED_REJECTION_ANCHORS",
+      "IMMUTABLE_ORIGINAL_OTP_AND_REPLAY_WINDOW",
+      "ORIGINAL_CONTINUATION_QUOTA_OWNER",
+      "SMTP_TLS_CONFIG_AND_TRUST_POOL_COPY",
+      "SMTP_FINAL_DATA_DEFINITE_REJECTION",
+      "BOUNDED_24H_METADATA_CLEANUP",
+      "ORIGINAL_RATE_LIMIT_REPLAY_DEADLINE"
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "docs/design/auth-privacy-data-api-contract.md",
+      "sha256": "27e196478c66f3577a158f99098e6f9c19319f6c1bd52af982d57779a65e7d29"
+    },
+    {
+      "path": "docs/design/auth-privacy-registration-protocol.md",
+      "sha256": "be2126b03d1cbcd22969f54d93dbd76968687ad387dc3458947dcad74c4c2d34"
+    },
+    {
+      "path": "go.work",
+      "sha256": "78d8b0f4b172634eb0b78eb103f9c37e57f85bbe963bb7a45b024912e24a62e9"
+    },
+    {
+      "path": "go.work.sum",
+      "sha256": "b628c1576b252d5074608880604a46ac06dc2086e5b2049d0ea971e97cd839f5"
+    },
+    {
+      "path": "packages/auth-protocol-vectors/v1.json",
+      "sha256": "da913014063f3972dbc15a6c79a87757e7f113ff9cd5911bbb4b42918e5262b1"
+    },
+    {
+      "path": "packages/openapi/community-auth-api.yaml",
+      "sha256": "3947536b4bd919e14ed7f7d96b24ae391305fd8cc7a7c073784708e60cda9aa0"
+    },
+    {
+      "path": "packages/openapi/verifier-auth-api.yaml",
+      "sha256": "14260a035658c9a789d93a6b0a3257917664d59304fb8265b9c23a855a3dad6c"
+    },
+    {
+      "path": "services/api/authlab/migrations/community/0001_authprivacy_lab.sql",
+      "sha256": "26ab7c571cc75b5035597f97d6678a86ad915d17a0241298c306080ad9eb24d0"
+    },
+    {
+      "path": "services/api/authlab/migrations/verifier/0001_authprivacy_lab.sql",
+      "sha256": "cb9979e60a66265771bc2f7ceef1d2bfa31e663caf93514aa13ac64dbd42c03d"
+    },
+    {
+      "path": "services/api/authlab/migrations/verifier/0002_otp.sql",
+      "sha256": "2a91dacd7394ff2b76767c2a168ce44eddcbe733b84344bb4f279770248869f6"
+    },
+    {
+      "path": "services/api/authlab/migrations/verifier/0003_confirmation.sql",
+      "sha256": "182c46cd30e2a3acb9bbeb00ae67e7fef213005a99131b8683e94e192ea9cd76"
+    },
+    {
+      "path": "services/api/authlab/run-isolated.sh",
+      "sha256": "719a1ddb96086cf06cec18776abb19173db1b1bcc3f7425f05dc1d1586098f5f"
+    },
+    {
+      "path": "services/api/go.mod",
+      "sha256": "64e0a8d03ffe9f2b0bb63e0d158e96da8c4c718a59f919da1092341a858a76a7"
+    },
+    {
+      "path": "services/api/go.sum",
+      "sha256": "2f9ebccc989954b3453a5695d0c7259a58ee049627a8450e7464b5f7be67ea74"
+    },
+    {
+      "path": "services/api/internal/authprivacy/common.go",
+      "sha256": "47272c335e64ee59012d948625fac16af36bbe4795a37ea7228aef7268f8f83f"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community.go",
+      "sha256": "7629f6507ab9323981e6e169f510543ecffd2a9dc81e2a985ce6cd812640840c"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_confirmation.go",
+      "sha256": "910311cba5b9b10545c79e3a1e22d0e3737f66e80845e57dfce9d1442c5d477e"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_confirmation_test.go",
+      "sha256": "816048142b84a4d014011b02b85932a6630f93d760b0e89aea4cedb21a9f6518"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_otp.go",
+      "sha256": "e9e31867f68ff10c5c5b7347f3f215f89485487b5766770ca60536bffd693fe7"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_otp_test.go",
+      "sha256": "0a3511b2e3881a440d1e91bd89755d7ad06eaa828561c0545d1c5c8b8764080f"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_types.go",
+      "sha256": "acec7f9cb07c119b7f15c5c13cbc2de574fe1bb2890646b456915eede659e17f"
+    },
+    {
+      "path": "services/api/internal/authprivacy/mail.go",
+      "sha256": "3a001f7fcc8b6d8401feb0291c1e4b19a3bc2c0004c38c304f585e238be035e6"
+    },
+    {
+      "path": "services/api/internal/authprivacy/mail_test.go",
+      "sha256": "6d2c3db202d0604ffe4e1bb1f6b521228be2d54ca0b503ed9ab06150381a8301"
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox.go",
+      "sha256": "fc7bdbb3d1218ec37c8ef37cb1003f47bc95bd89f8e466adb20f0bdfa2d9a113"
+    },
+    {
+      "path": "services/api/internal/authprivacy/password.go",
+      "sha256": "53259bc59e3f077f14e61859322751d81d0fd8dfd985a9c62c32a0e862c78808"
+    },
+    {
+      "path": "services/api/internal/authprivacy/password_test.go",
+      "sha256": "0389bd7aace1972e534a8a1435f2d0334573cca154c12caa625ef83a1ab7f03a"
+    },
+    {
+      "path": "services/api/internal/authprivacy/postgres_test.go",
+      "sha256": "58db0cbaff68d995f31a779a70e1bffea9360c269dee61795e41e94977728f91"
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol.go",
+      "sha256": "0793427b595f3972719c2ce9366f3177e74ef821eefbdd4a78dc69ea08c9a021"
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol_test.go",
+      "sha256": "e1a2c7586394b8664528349dd9371148406943f75e2e55399db169f6f65db626"
+    },
+    {
+      "path": "services/api/internal/authprivacy/retirement_http.go",
+      "sha256": "4f8c12cfb5c71b2dc4c161e0116a671ee98477be6e841912c786069cd6575ec0"
+    },
+    {
+      "path": "services/api/internal/authprivacy/verifier.go",
+      "sha256": "e3a75c45202f2443db4746a8b501a309df844bbbf926248ee95067d07fb985b6"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "sha256": "749de6771ea81355a02a8fef12c91de22512cd3f60f9e70a2007988babee7387"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints_test.go",
+      "sha256": "b31ca042d6764c07b2debc65c279b99b98ea1721ae68ac870c095dd7a20aeb6f"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+      "sha256": "fe808fed34591086f4a9c3e97286e791a21d4c290d89b4ea158e546dfd0069e4"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/limits.go",
+      "sha256": "2b136295f2709df194bb285357823f1651d6838c4e6d99e0880d5e58ba51559e"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/peer.go",
+      "sha256": "d416fd6f1fdc0d021e757306e9b9918dc91398d0b28a4e7115014751f39e33f3"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/peer_test.go",
+      "sha256": "a00f474a07906d16f65c69927b06c16ba8037d519db8e68e71f8f2483fcdbacf"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/strict.go",
+      "sha256": "296658f575bc2c50b638483e1bfafe9e3fbb6cbb00fa326841868943db559832"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/strict_test.go",
+      "sha256": "4acf13871b2d3be5654bc1a1d5576abbd79740c2901f2e00ecec1c90f75a5aab"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/tls.go",
+      "sha256": "16e4d99ba30b50e6cba71eb1c9dcc385ae0440edceac53e42d90353d34b95022"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/tls_test.go",
+      "sha256": "336b99fa5c58efa8fb432609ed766d2d4590b1b69b54caab2cde456355656222"
+    }
+  ],
+  "notVerified": [
+    "LOGIN_RECOVERY_PASSKEY_AND_SEVEN_DAY_CLOSURE_SERVICE",
+    "MOBILE_CLIENT_AND_USER_WALKTHROUGH",
+    "PRODUCTION_ROUTER_MIGRATIONS_AND_REAL_SCHOOL_MAIL_CONFIGURATION",
+    "REAL_SMTP_STARTTLS_PROVIDER_HANDSHAKE",
+    "SMTP_UNKNOWN_DELIVERY_RECONCILIATION",
+    "GO_1_22_AND_POSTGRESQL_16_RUNTIME",
+    "TRUSTED_CLOCK_HIGHWATER_AND_DISASTER_RECOVERY",
+    "MULTI_REPLICA_NETWORK_LIMITS_AND_PRODUCTION_KDF_BLOCKLIST_CALIBRATION",
+    "PRODUCTION_PERMISSIONS_LOG_WAL_AND_BACKUP_RETENTION",
+    "HSM_KEY_LIFECYCLE_AND_OPERATOR_SEPARATION",
+    "INDEPENDENT_HUMAN_AUDIT"
+  ]
+}

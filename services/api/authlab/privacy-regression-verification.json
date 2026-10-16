@@ -1,0 +1,668 @@
+{
+  "schemaVersion": "hnuhole-privacy-regression-verification/v1",
+  "recordedOn": "2026-10-05",
+  "timeZone": "Asia/Shanghai",
+  "verifiedAtUTC": "2026-10-05T02:36:39.586951+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "cbc99b010ba23bba42f76e2523269e3952b14392",
+  "uncommittedWorkingTree": true,
+  "scope": "AC04_FOUNDATION_COVERAGE_AND_NEW_REAL_DART_GATE_CLOSURE_SCENARIOS",
+  "implementationState": "TEST_SCENARIOS_IMPLEMENTED",
+  "currentResult": "PASS",
+  "scopedBackendAcceptancePassed": true,
+  "fullAnonymityClosurePassed": false,
+  "moduleAcceptancePassed": false,
+  "productionApproved": false,
+  "applicationLogicChanged": false,
+  "sourceFingerprint": {
+    "sha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4",
+    "presentFileCount": 221,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "AC04 foundation scenario coverage and listed backend/actual-cmd/Dart handler SQL checks; native platform and future business consumers not accepted"
+  },
+  "gitBlobSourceFingerprint": {
+    "sha256": "0accb5883465ca486d2c6b0fb61137342f970f1144e9cb65b7e0eff7befbfaaf",
+    "presentFileCount": 221,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Executed WSL Linux source: CRLF-to-LF only relative to Windows; protocol fixture remains byte exact"
+  },
+  "testedSources": [
+    "apps/mobile/integration/verifier_gate_https_scenarios.dart",
+    "apps/mobile/integration/auth_public_https_postgres_test.dart",
+    "apps/mobile/integration/identity_https_scenarios.dart",
+    "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go",
+    "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
+    "services/api/authlab/run-runtime-isolated.sh"
+  ],
+  "handoffCheckerSha256": "243ec281df332c5fe782a35b240988a7880357b9425a6d1bba7ffc994ab3ea80",
+  "plan": "docs/design/auth-privacy-regression-plan.md",
+  "report": "docs/design/auth-privacy-regression-validation-report.md",
+  "previousEvidence": "services/api/authlab/privacy-boundary-verification.json",
+  "affectedModules": [
+    "A00",
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "B01",
+    "B02",
+    "P01"
+  ],
+  "crossModuleScenes": [
+    "X02",
+    "X06",
+    "X07"
+  ],
+  "checks": [
+    {
+      "id": "compile",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "go test -run '^$' ./...",
+      "scope": "Compilation only, no SQL/application execution implied"
+    },
+    {
+      "id": "R01",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-isolated.sh -> go test -race -count=1 -p 1 ./...",
+      "scope": "Full Go/SQL/race on self-created private-socket C/V databases; opt-in mobile test skips here and runs separately under R05",
+      "packageSeconds": {
+        "cmd/authdev": 1.121,
+        "internal/authprivacy": 290.437,
+        "internal/authprivacy/protocol": 1.142,
+        "internal/authprivacyhttp": 47.307,
+        "internal/authprivacyruntime": 1.012
+      }
+    },
+    {
+      "id": "R02",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-isolated.sh -> go vet ./...",
+      "scope": "Full Go static vet at the end of the successful R01 runner"
+    },
+    {
+      "id": "R03",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-runtime-isolated.sh",
+      "scope": "Actual non-owner C/V cmd, HTTPS/mTLS, C12/V4 formal migrations and upgrade fixtures, role/log canaries, quiesced ordinary restart, explicit freeze/recovery, old V snapshot and same-email identity closure return"
+    },
+    {
+      "id": "FlutterAnalyze",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter --no-version-check analyze --no-pub",
+      "scope": "Linux current mobile analysis; no issues"
+    },
+    {
+      "id": "FlutterTests",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter --no-version-check test --no-pub --reporter expanded",
+      "testCount": 179,
+      "scope": "Existing mobile unit/widget/TLS suite; not native/platform acceptance"
+    },
+    {
+      "id": "R05",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh authlab/run-mobile-isolated.sh",
+      "scope": "New real Dart V Gate and identity closure/return scenarios, existing auth/identity/security management regression, real HTTPS handlers and disposable C/V SQL, in-memory vault",
+      "goTestSeconds": 22.74
+    },
+    {
+      "id": "runner-syntax",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "sh -n services/api/authlab/run-runtime-isolated.sh",
+      "scope": "POSIX syntax only; dynamic runner separately passed"
+    },
+    {
+      "id": "source-snapshot",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "All 221 WSL files match Windows after permitted CRLF-to-LF only; exact protocol vector bytes unchanged"
+    },
+    {
+      "id": "handoff",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "python tools/check-identity-handoff.py",
+      "scope": "Current AC04/retained history, stable module and scenario IDs, mapped functions and source fingerprint only"
+    },
+    {
+      "id": "diff",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "git diff --check",
+      "scope": "Whitespace only"
+    }
+  ],
+  "notRun": [
+    {
+      "scope": "AC05 Android/iOS complete app, native vault, system Passkey, physical device and B02 IME/accessibility/identity draft matrix",
+      "result": "NOT_RUN",
+      "reason": "This task is AC04 test-chain coverage; iOS tools/device and RP/platform associations remain missing. Prior Android evidence keeps its original revision.",
+      "entry": "docs/design/module-acceptance-handoff.md R07/R09/R10"
+    },
+    {
+      "scope": "B05-B11 public post/comment/chat/moderation projections and local chat/note/search cleanup X06/X07",
+      "result": "NOT_RUN",
+      "reason": "Business consumers are not implemented; only existing foundation/closure and pure projection are tested.",
+      "entry": "docs/design/auth-privacy-business-contract.md"
+    },
+    {
+      "scope": "P02-P06 production separation, backup/WAL/log retention, DR, side channel calibration, release integrations and independent human audit",
+      "result": "NOT_RUN",
+      "reason": "Local self-created test environment does not supply production or independent human evidence.",
+      "entry": "docs/design/auth-privacy-closure-checklist.md"
+    },
+    {
+      "scope": "R00 full OpenAPI validator and generated-code drift",
+      "result": "NOT_RUN",
+      "reason": "No public schema or generator inputs changed in AC04; prior proof is retained at its tested revision.",
+      "entry": "packages/openapi/README.md"
+    },
+    {
+      "scope": "Opt-in TestMobileClientHTTPSPostgres in R01",
+      "result": "SKIP",
+      "reason": "R01 deliberately does not request Flutter; R05 separately executes this exact Go test with Flutter and SQL.",
+      "entry": "services/api/authlab/run-mobile-isolated.sh"
+    }
+  ],
+  "coverage": [
+    {
+      "id": "AC04-V01",
+      "moduleIds": [
+        "P01",
+        "A02",
+        "A04"
+      ],
+      "scope": "V rollback, restart, independent Gate",
+      "testPath": "services/api/internal/authprivacy/verifier_gate_test.go",
+      "testFunctions": [
+        "TestVerifierGateRollbackBoundaryRestartAndIndependencePostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03",
+        "R05"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-V02",
+      "moduleIds": [
+        "P01",
+        "A02"
+      ],
+      "scope": "V old snapshot blocks authorization",
+      "testPath": "services/api/internal/authprivacy/verifier_gate_test.go",
+      "testFunctions": [
+        "TestVerifierGateCompleteGateSnapshotCannotReopenPostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-V03",
+      "moduleIds": [
+        "P01",
+        "A02",
+        "A04"
+      ],
+      "scope": "Final authorization and late external results",
+      "testPath": "services/api/internal/authprivacy/verifier_gate_business_test.go",
+      "testFunctions": [
+        "TestVerifierLateSignatureCannotCrossFreezeOrRecovery",
+        "TestVerifierLateSMTPResultCannotReopenClaimAfterRecovery",
+        "TestVerifierLateRetirementReplyCannotContinueOldQualification",
+        "TestVerifierAddressLockWaitCannotCrossRecoveryGeneration"
+      ],
+      "evidenceRunners": [
+        "R01"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-V04",
+      "moduleIds": [
+        "P01",
+        "A01",
+        "A02"
+      ],
+      "scope": "Gate pool and restricted recovery",
+      "testPath": "services/api/internal/authprivacy/verifier_gate_test.go",
+      "testFunctions": [
+        "TestVerifierGateRefreshWithSingleConnectionBusinessPoolPostgres",
+        "TestVerifierGateRestrictedRecoveryAndReplayPostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-I01",
+      "moduleIds": [
+        "B02",
+        "A06",
+        "A13"
+      ],
+      "scope": "CRUD lost responses, original receipts and session takeover",
+      "testPath": "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
+      "testFunctions": [
+        "TestRealHTTPSIdentityManagementPostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03",
+        "R05"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-I02",
+      "moduleIds": [
+        "B02",
+        "A08"
+      ],
+      "scope": "Zero/one/three identity formal close and cancellation",
+      "testPath": "services/api/internal/authprivacy/community_identity_closure_test.go",
+      "testFunctions": [
+        "TestIdentityFormalClosureZeroOneAndThreePostgres",
+        "TestIdentityClosureCancellationPreservesProfilesPostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03",
+        "R05"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-I03",
+      "moduleIds": [
+        "B02",
+        "A08"
+      ],
+      "scope": "Concurrent close, freeze and rollback",
+      "testPath": "services/api/internal/authprivacy/community_identity_closure_test.go",
+      "testFunctions": [
+        "TestIdentityMutationAndClosureSerializePostgres",
+        "TestIdentityClosureWaiterRejectsFreezeAndOldGenerationPostgres",
+        "TestIdentityClosureSQLFaultRollsBackEveryBoundaryPostgres",
+        "TestIdentityClosureMultipleWorkersCommitOncePostgres"
+      ],
+      "evidenceRunners": [
+        "R01"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-I04",
+      "moduleIds": [
+        "B02",
+        "A01",
+        "A08"
+      ],
+      "scope": "Upgrade preserves history and repairs legacy closed profiles",
+      "testPath": "services/api/internal/authprivacy/identity_closure_migration_test.go",
+      "testFunctions": [
+        "TestIdentityClosureMigrationRepairsLegacyProfilesPostgres",
+        "TestIdentityClosureMigrationRejectsInsufficientTrustedWatermarkPostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-I05",
+      "moduleIds": [
+        "B02",
+        "A08",
+        "A04"
+      ],
+      "scope": "Same-email new account has independent identity history",
+      "testPath": "services/api/internal/authprivacy/community_identity_closure_test.go",
+      "testFunctions": [
+        "TestIdentityClosedAccountReturnHasIndependentHistoryPostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03",
+        "R05"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-P01",
+      "moduleIds": [
+        "B02",
+        "A12"
+      ],
+      "scope": "Own identity API and receipt isolation",
+      "testPath": "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go",
+      "testFunctions": [
+        "TestRealHTTPSIdentityPrivacyIsAccountScopedPostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R05"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-P02",
+      "moduleIds": [
+        "A01",
+        "A02",
+        "A12"
+      ],
+      "scope": "Party data and log boundary",
+      "testPath": "services/api/internal/authprivacy/privacy_boundary_postgres_test.go",
+      "testFunctions": [
+        "TestPrivacySchemaPartyBoundaryPostgres",
+        "TestPrivacySeededPartyRowsPostgres",
+        "TestPrivacyDatabaseDiagnosticsPostgres"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03",
+        "R05"
+      ],
+      "currentResult": "PASS"
+    },
+    {
+      "id": "AC04-P03",
+      "moduleIds": [
+        "B02",
+        "A08"
+      ],
+      "scope": "Inactive placeholders pure contract, no public consumers",
+      "testPath": "services/api/internal/authprivacy/community_identity_closure_test.go",
+      "testFunctions": [
+        "TestInactiveIdentityProjectionHasNoAccountLinks"
+      ],
+      "evidenceRunners": [
+        "R01",
+        "R03"
+      ],
+      "currentResult": "PASS"
+    }
+  ],
+  "runtime": {
+    "go": "1.22.2 linux/amd64",
+    "postgresql": "16.15 isolated; postgres:16.6-alpine runtime",
+    "mailpit": "axllent/mailpit:v1.21.8",
+    "goose": "v3.22.1",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "environment": "Existing Ubuntu-24.04 WSL Linux tools and cached Docker images; invocation-owned source/dependency/build/pub directories"
+  },
+  "attemptHistory": [
+    {
+      "id": "bootstrap-encoding",
+      "result": "FAIL",
+      "reason": "Windows default GBK cannot decode UTF-8 ledger",
+      "repair": "Explicit UTF-8 in temporary preparation script; no application test ran"
+    },
+    {
+      "id": "FlutterAnalyze-initial",
+      "result": "FAIL",
+      "exitCode": 1,
+      "reason": "Return inserted before remaining existing identity cooldown assertions, dead_code warning",
+      "repair": "Return moved after all assertions; final analyze and R05 passed"
+    },
+    {
+      "id": "R03-source-permissions",
+      "result": "FAIL",
+      "exitCode": 1,
+      "reason": "Temporary archive mode 0600 denied container read of init-auth.sh",
+      "repair": "Source archive 0644; private run root/material remains 0700; first project cleaned"
+    },
+    {
+      "id": "R03-unquiesced-restart",
+      "result": "FAIL",
+      "exitCode": 1,
+      "reason": "Expected preserved C session returned 503 after SIGTERM restart",
+      "repair": "Keep failure; investigate Gate category before modifying rehearsal"
+    },
+    {
+      "id": "R03-safe-diagnostics",
+      "result": "FAIL",
+      "exitCode": 1,
+      "reason": "C restart passed, but V stage returned 503; fixed diagnostic C_GATE OPEN/1/NONE, V_GATE FROZEN/1/INDEPENDENT_ANCHOR_FROZEN",
+      "repair": "Ordinary restart now waits for both disposable Gate rows before SIGTERM. Interrupting anchor-before-SQL may legitimately freeze. No runtime auto-recovery or relaxed Gate checks."
+    },
+    {
+      "id": "R03-quiesced-final",
+      "result": "PASS",
+      "exitCode": 0,
+      "reason": "Full runner passed all original security assertions, actual restart, freeze/recovery, old snapshot, role/log/upgrade and closure return stages"
+    }
+  ],
+  "restartProofScope": "Controlled ordinary restart between authorization commits. Interrupted authorization remains fail closed and may require explicit recovery; no promise of uninterrupted session preservation under arbitrary SIGTERM timing.",
+  "cleanup": {
+    "result": "PASS",
+    "ownedLinuxRoot": "/var/tmp/hnuhole-ac04-20261005-cbc99b0",
+    "ownedRootAbsent": true,
+    "ownedDockerProjectsAbsent": true,
+    "scope": "Runner-created PostgreSQL/processes and unique Docker projects cleaned; invocation-owned Linux source, dependencies, build/pub caches, private logs and material deleted. Existing SDK/AVD/images preserved. Windows preparation archive/helpers removed at final handoff."
+  },
+  "nextStep": "AC05 current-platform/device evidence; AC06 final handoff. No automatic business expansion or deployment.",
+  "executedSourceVerification": {
+    "sourceManifestFileCount": 221,
+    "linuxSourcesMatchNormalizedWindows": true,
+    "protocolVectorBytesExact": true,
+    "runtimeStages": [
+      {
+        "phase": "lifecycle",
+        "result": "passed"
+      },
+      {
+        "phase": "identities",
+        "result": "passed"
+      },
+      {
+        "phase": "threshold",
+        "result": "passed"
+      },
+      {
+        "phase": "restart",
+        "result": "passed"
+      },
+      {
+        "phase": "verifier-stage",
+        "result": "passed"
+      },
+      {
+        "phase": "verifier-frozen",
+        "result": "passed"
+      },
+      {
+        "phase": "verifier-frozen",
+        "result": "passed"
+      },
+      {
+        "phase": "verifier-recovered",
+        "result": "passed"
+      },
+      {
+        "phase": "verifier-frozen",
+        "result": "passed"
+      },
+      {
+        "phase": "verifier-recovered",
+        "result": "passed"
+      },
+      {
+        "phase": "frozen",
+        "result": "passed"
+      },
+      {
+        "phase": "recovered",
+        "result": "passed"
+      },
+      {
+        "phase": "closure",
+        "result": "passed"
+      },
+      {
+        "privacyRoleMatrix": "passed",
+        "privacyUnsafeDatabaseDiagnosticsRejected": "passed",
+        "privacyRealProcessAndPostgresLogs": "passed",
+        "actualCmdLifecycle": "passed",
+        "formalMigrationAndRoles": "passed",
+        "upgradeChannelsPreserved": "passed",
+        "identityUpgrade10To11": "passed",
+        "identityClosureUpgrade11To12": "passed",
+        "identityLegacyClosedProfileRepair": "passed",
+        "identityClosureTriggerBoundary": "passed",
+        "identityMissingSchemaAndDml": "passed",
+        "identityCrudReceiptsAndRestart": "passed",
+        "identityClosureAndSameEmailNewAccount": "passed",
+        "inactiveProjectionPureContract": "passed",
+        "verifierGateUpgrade3To4": "passed",
+        "verifierGateFreezeRestartAndRecovery": "passed",
+        "verifierOldSnapshotBlocked": "passed",
+        "verifierOldGenerationOtpBlocked": "passed",
+        "verifierIndependentEvidenceExpiry": "passed",
+        "cleanup": "this invocation project and private directory only"
+      }
+    ],
+    "ownedDockerProjects": [
+      "hnuhole-runtime-hnuholeruntimej6dkkf",
+      "hnuhole-runtime-hnuholeruntimelb3oyr",
+      "hnuhole-runtime-hnuholeruntimepsgwu6",
+      "hnuhole-runtime-hnuholeruntimevylprh"
+    ],
+    "ownedDockerArtifactsAbsent": true,
+    "logHashes": {
+      "R03.log": "62e4f6cba481ccbf213233d1939763313f9ffd666c6f736addf1245b4fc01216",
+      "R03-quiesced.log": "62817070911e5bcda11136f46616b25d3a35c6b20db769c9def6fe5cb2f880d8",
+      "R05.log": "59e139569470c1add109732853922042939018595eb698be7fb1bbc8ea601501",
+      "go-download.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pub-get.log": "8393b784a24029b8ee2529de88bdbfa0c7d0b9f254dd8bf9b5c7b7cfc67766d3",
+      "compile.log": "390c8222387d4c005eb1b9b2415709219df9c5bc572823cbd3f8dbe3ec8136c3",
+      "analyze.log": "c4a838599ed968c4f51b30d73eceab280067318e1035665773797b5566fa7abf",
+      "R01-R02.log": "4b40675e61059f7aa45e8a6ead04fcb95612399e6bac0bde62c05ab0f6391844",
+      "flutter-tests.log": "c1b6b8bade463766979688aaff817a099d3eb29ece5ac4031e06a6bbf2c72b44",
+      "R03-final.log": "bc8dd390f60e9f9d302d4c768f5fe57ce698e52587d935478abb543bd6ed304b",
+      "R03-diagnostic.log": "75b842d165822cb89ddd0833e4a183d1a3e6a3515e9b39068172d4d88b7c2f80",
+      "analyze-final.log": "0febb97030e4d5b3842db4c793a2d1916598343a89a9deee4752e4e2a60253d2"
+    }
+  }
+}

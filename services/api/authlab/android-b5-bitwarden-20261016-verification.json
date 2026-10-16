@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "hnuhole-b5-bitwarden-preflight/v1",
+  "recordedOn": "2026-10-16",
+  "verifiedAtUTC": "2026-10-16T06:38:18.720910+00:00",
+  "scope": "BITWARDEN_NATIVE_PROVIDER_COMPATIBILITY_PREFLIGHT_ONLY",
+  "result": "BLOCKED",
+  "blocker": "TARGET_ROM_MISSING_FRAMEWORK_CREDENTIAL_MANAGER",
+  "devices": {
+    "source": {
+      "model": "V2323A",
+      "sdk": 35,
+      "physical": true,
+      "bitwardenVersion": "2026.9.1 (21929)",
+      "bitwardenProviderServiceInstalled": true,
+      "frameworkCredentialFeaturePresent": true,
+      "frameworkCredentialServiceFound": true,
+      "credentialServiceCheck": "Service credential: found",
+      "testPackageUnchangedSha256": "65f9ea9749723be9187f6e251b7de70b3318f6b4060305cbcaa2aa31ee40d568"
+    },
+    "target": {
+      "model": "RMX3366",
+      "sdk": 34,
+      "physical": true,
+      "bitwardenVersion": "2026.9.1 (21929)",
+      "bitwardenProviderServiceInstalled": true,
+      "frameworkCredentialFeaturePresent": false,
+      "frameworkCredentialServiceFound": false,
+      "credentialServiceCheck": "Service credential: not found",
+      "testPackageUnchangedSha256": "9396864839f59c06d6215c582867c3e9eac3b1a4d3fd0a57cd330a9e78da09ff"
+    }
+  },
+  "sourceFixture": "apps/mobile/integration_test/auth_android_b5_bitwarden_test.dart",
+  "fixtureImplementationState": "Prepared source fixture only; host operator extension not implemented; native execution not started",
+  "sourceBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "fixtureSha256": "43761059746ca811889ae1833a6f90b3a09c9c4bc5c8c2a138be704817ebeabf",
+  "apkSha256": "56ca4b1f5231ff98e5c291f414e32ca31b51732409041296cca60bfd17798303",
+  "actualBuildAndDartAnalysis": "PASS",
+  "apkInstalled": false,
+  "newNativeCreateAttempts": 0,
+  "newNativeGetAttempts": 0,
+  "newPasskeyBindingCommitted": false,
+  "sqlAfter": {
+    "accounts": 1,
+    "passkeys": 1,
+    "activeSessions": 1,
+    "activeResets": 0
+  },
+  "originalProviderSettingsRestored": true,
+  "personalBitwardenVaultReadOrExported": false,
+  "existingGoogleBindingRetained": true,
+  "existingGoogleFailuresRewritten": false,
+  "currentFixedCaseCounts": {
+    "PASS": 23,
+    "FAIL": 1,
+    "BLOCKED": 0,
+    "NOT_RUN": 0
+  },
+  "nonIOSDevelopmentAcceptancePassed": false,
+  "productionApproved": false,
+  "officialSources": [
+    {
+      "url": "https://developer.android.com/reference/android/credentials/CredentialManager",
+      "claim": "Framework CredentialManager requires PackageManager.FEATURE_CREDENTIALS"
+    },
+    {
+      "url": "https://bitwarden.com/help/storing-passkeys/",
+      "claim": "Android passkey use requires compatible system provider integration and Android14+"
+    }
+  ],
+  "remaining": "NI-X02 not accepted. For this Bitwarden native route the second Android needs working framework third-party credential support; no OS upgrade or device replacement performed.",
+  "committed": false,
+  "pushed": false
+}

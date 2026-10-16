@@ -1,0 +1,54 @@
+{
+  "owner": "zewbby",
+  "repository": "zewbby.github.io",
+  "files": {
+    ".nojekyll": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "index.html": {
+      "sha256": "1a34e7aee40c4123de3b2ca3083c4ebdeffa09945471e8b18be8e2e0ed34e95a",
+      "bytes": 288
+    },
+    "robots.txt": {
+      "sha256": "d4f70ba956200e780e6c15c9d5a185c6ab648cdb3b1ff619a4a1ba8f02310248",
+      "bytes": 37
+    },
+    ".well-known/assetlinks.json": {
+      "sha256": "bcc247d9b156a3af2335623ef146056791e20ed09ad19c8a43deccdb45e274c0",
+      "bytes": 346
+    }
+  },
+  "repositoryId": 1405725915,
+  "repositoryCreatedAt": "2026-10-05T12:32:36Z",
+  "commit": "1ff129f5a479c1bbd8cde59a4f0d27e9732fb9a4",
+  "branch": "codex/android-passkey-associations",
+  "pagesUrl": "https://zewbby.github.io/",
+  "pagesStatus": "built",
+  "httpsEnforced": true,
+  "recordedAt": "2026-10-05T12:32:48.524623+00:00",
+  "userApproval": "Create and publish only the prepared public Android test association site",
+  "systemPasskeyCeremony": "NOT_RUN",
+  "publicAssociation": {
+    "httpStatus": 200,
+    "contentType": "application/json",
+    "noRedirect": true,
+    "sha256": "bcc247d9b156a3af2335623ef146056791e20ed09ad19c8a43deccdb45e274c0",
+    "payloadMatches": true,
+    "normalTlsVerification": true
+  },
+  "lastCheckedAt": "2026-10-05T12:34:03.061719+00:00",
+  "schemaVersion": 1,
+  "recordedOn": "2026-10-05",
+  "scope": "PUBLIC_ANDROID_DEBUG_RP_ASSOCIATION_ONLY",
+  "currentResult": "PASS",
+  "sourceDirectory": "infra/passkey/android-debug-test-site",
+  "repositoryUrl": "https://github.com/zewbby/zewbby.github.io",
+  "googleDigitalAssetLinks": {
+    "linked": true,
+    "maxAge": "3599.998665857s"
+  },
+  "fullAnonymityClosurePassed": false,
+  "productionApproved": false,
+  "systemPasskeyPassed": false
+}

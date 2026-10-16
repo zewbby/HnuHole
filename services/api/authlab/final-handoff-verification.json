@@ -1,0 +1,494 @@
+{
+  "schemaVersion": "hnuhole-final-handoff-verification/v1",
+  "recordedOn": "2026-10-05",
+  "timeZone": "Asia/Shanghai",
+  "baselineCommit": "cbc99b010ba23bba42f76e2523269e3952b14392",
+  "branch": "codex/auth-privacy-handoff",
+  "uncommittedWorkingTree": true,
+  "scope": "AC06_LOCAL_SOURCE_AND_EVIDENCE_HANDOFF_ONLY",
+  "implementationState": "LOCAL_HANDOFF_COMPLETE",
+  "currentResult": "PASS",
+  "deliveryAcceptancePassed": true,
+  "scopedBackendAcceptancePassed": false,
+  "dynamicTestsRerunForAC06": false,
+  "fullAnonymityClosurePassed": false,
+  "moduleAcceptancePassed": false,
+  "productionApproved": false,
+  "remoteDeliveryResult": "NOT_RUN",
+  "publication": {
+    "committed": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "sourceFingerprint": {
+    "sha256": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a",
+    "presentFileCount": 284,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey",
+      "apps/mobile/android",
+      "apps/mobile/ios",
+      "apps/mobile/integration_test",
+      "apps/mobile/test_driver",
+      "tools/run-android-auth-process-test.ps1",
+      "tools/run-android-vault-probes.ps1",
+      "tools/env-hnuhole-windows.ps1",
+      "tools/env-hnuhole-wsl.sh",
+      "tools/check-identity-handoff.py"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm",
+      ".gradle",
+      ".png",
+      ".storyboard",
+      ".xcscheme",
+      ".xcworkspacedata"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "AC05 Android complete app build, native codec/vault and explicitly bounded emulator/Flutter probes; backend source retained as context, no new SQL run"
+  },
+  "gitBlobSourceFingerprint": {
+    "sha256": "3592e3569638284ca2f1fe3951c999882abd02b6c50c9019f427af97f69ff173",
+    "presentFileCount": 284,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey",
+      "apps/mobile/android",
+      "apps/mobile/ios",
+      "apps/mobile/integration_test",
+      "apps/mobile/test_driver",
+      "tools/run-android-auth-process-test.ps1",
+      "tools/run-android-vault-probes.ps1",
+      "tools/env-hnuhole-windows.ps1",
+      "tools/env-hnuhole-wsl.sh",
+      "tools/check-identity-handoff.py"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm",
+      ".gradle",
+      ".png",
+      ".storyboard",
+      ".xcscheme",
+      ".xcworkspacedata"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Git text CRLF-to-LF equivalence only; protocol fixture and binary assets exact"
+  },
+  "plan": "docs/design/auth-privacy-final-handoff-plan.md",
+  "report": "docs/design/auth-privacy-final-handoff-report.md",
+  "retainedEvidence": [
+    {
+      "id": "AC01",
+      "path": "services/api/authlab/verifier-safety-gate-verification.json",
+      "sha256": "1fb782457b53040c3bc3357bdc7e3d0e214bc151314cb2d7701689e726804cd7",
+      "lfSha256": "3d37c544fa8c93c3b94f8b9cecf194824964226d2af70935ad3a2782c1c8573f",
+      "result": "PASS",
+      "testedSourceSha256": "5174c37ea08db8d4944ef1e0b9058de3f6461b4b9061ebcd26c5612922eb0aad"
+    },
+    {
+      "id": "AC02",
+      "path": "services/api/authlab/identity-account-closure-verification.json",
+      "sha256": "a651c73fb2ebe7ad265b52bd0e7e083a6653769b64ba26ffc0c560257e9c8f59",
+      "lfSha256": "e39d54739e23216c19c27b118bbe56da948239dd9114b5980d1e2388431532ff",
+      "result": "PASS",
+      "testedSourceSha256": "300d31ce7526c836473fc372bb6309d85944289d28ab86361300f5bd0c7af07d"
+    },
+    {
+      "id": "AC03",
+      "path": "services/api/authlab/privacy-boundary-verification.json",
+      "sha256": "05153e248f3deae0cc5375c2db71926361218a76ca6d1a334644c7a884ad771e",
+      "lfSha256": "05153e248f3deae0cc5375c2db71926361218a76ca6d1a334644c7a884ad771e",
+      "result": "PASS",
+      "testedSourceSha256": "358f1d175245c089c3addf726f8ca60f37f4be52c14ebac8c709b3a2ee8a1661"
+    },
+    {
+      "id": "AC04",
+      "path": "services/api/authlab/privacy-regression-verification.json",
+      "sha256": "300ccfa1d7af5e29a2b8a3828a00788a1604cae8a195d4506bbb01d0a63fe1f3",
+      "lfSha256": "ca96b310bd8957b7340aed57cf0a559fb189838e22dbd86c3a279373d5f132fd",
+      "result": "PASS",
+      "testedSourceSha256": "87d943744a89aa2a8b3be4e1e7f1b0dd0d5a34dff8d6deb93b65e15aa66183a4"
+    },
+    {
+      "id": "AC05",
+      "path": "services/api/authlab/platform-acceptance-verification.json",
+      "sha256": "9e3ff18e83d5b93e93d982df45f2d5f3327a185d3c354a80853a6c2bdc4d25a8",
+      "lfSha256": "9354c1ceaa4ce626d4f254f80fc35b3fb992cbd104db12ea5ec845958b811415",
+      "result": "BLOCKED",
+      "testedSourceSha256": "e86249e98967267d84b5fead776e5cf60dcaf5ae91757be75dae4799e5eeaa4a"
+    }
+  ],
+  "handoffArtifacts": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "80171ff7a794ab35ea6514c2a7f23e8321915e154ee662c376124cd0d41aa37e",
+      "lfSha256": "80171ff7a794ab35ea6514c2a7f23e8321915e154ee662c376124cd0d41aa37e",
+      "bytes": 4443
+    },
+    {
+      "path": "docs/design/HANDOFF.md",
+      "sha256": "4310dd0974c2a44b7b7da7a921f87d8f5b55c07c5b4d0e3df30d9cebc73e6c55",
+      "lfSha256": "4310dd0974c2a44b7b7da7a921f87d8f5b55c07c5b4d0e3df30d9cebc73e6c55",
+      "bytes": 46983
+    },
+    {
+      "path": "docs/design/README.md",
+      "sha256": "bcadc6735161ea1f0068fffbb4d9ba448a1b7c57f7bd0dd59467bbadc7518bd6",
+      "lfSha256": "bcadc6735161ea1f0068fffbb4d9ba448a1b7c57f7bd0dd59467bbadc7518bd6",
+      "bytes": 15227
+    },
+    {
+      "path": "docs/design/auth-identity-account-closure-plan.md",
+      "sha256": "2d1625b23c6051f7803138496b8427bbe508f71300dae6db395081c5ccdb822c",
+      "lfSha256": "2d1625b23c6051f7803138496b8427bbe508f71300dae6db395081c5ccdb822c",
+      "bytes": 2603
+    },
+    {
+      "path": "docs/design/auth-identity-account-closure-validation-report.md",
+      "sha256": "525373d696fc74823296cc575d8be6a4ce0225d1421d34f80a69a4729f97c6d9",
+      "lfSha256": "525373d696fc74823296cc575d8be6a4ce0225d1421d34f80a69a4729f97c6d9",
+      "bytes": 6301
+    },
+    {
+      "path": "docs/design/auth-privacy-ai-cross-review.md",
+      "sha256": "1dba4e75ac1ccec74cf7a69a4e83dacdbd706d58291eace5182e2c194c4bbba5",
+      "lfSha256": "1dba4e75ac1ccec74cf7a69a4e83dacdbd706d58291eace5182e2c194c4bbba5",
+      "bytes": 7005
+    },
+    {
+      "path": "docs/design/auth-privacy-architecture-decision.md",
+      "sha256": "0447968dfbef955494f60bfde8f3a39043d155966b0c4c92f58442c1b249116b",
+      "lfSha256": "0447968dfbef955494f60bfde8f3a39043d155966b0c4c92f58442c1b249116b",
+      "bytes": 29993
+    },
+    {
+      "path": "docs/design/auth-privacy-boundary-plan.md",
+      "sha256": "4cd0f16447ea72d1cc05517ca475ccd960c49aee21ba18f0ab794931c7bde4e7",
+      "lfSha256": "4cd0f16447ea72d1cc05517ca475ccd960c49aee21ba18f0ab794931c7bde4e7",
+      "bytes": 2574
+    },
+    {
+      "path": "docs/design/auth-privacy-boundary-validation-report.md",
+      "sha256": "07e62fb39dc10336cafe32f4d81a8765a8b43105006f644e04afb90950d62cfa",
+      "lfSha256": "07e62fb39dc10336cafe32f4d81a8765a8b43105006f644e04afb90950d62cfa",
+      "bytes": 11317
+    },
+    {
+      "path": "docs/design/auth-privacy-business-contract.md",
+      "sha256": "317d39bafec473152bd4e8c21768613a3e916502125e51d953c873642c232ec9",
+      "lfSha256": "317d39bafec473152bd4e8c21768613a3e916502125e51d953c873642c232ec9",
+      "bytes": 7666
+    },
+    {
+      "path": "docs/design/auth-privacy-closure-checklist.md",
+      "sha256": "8582b259c5e4812f2bb7e6f509bcd4106289ccc33d7e7966ff6f996dde95ea34",
+      "lfSha256": "8582b259c5e4812f2bb7e6f509bcd4106289ccc33d7e7966ff6f996dde95ea34",
+      "bytes": 21800
+    },
+    {
+      "path": "docs/design/auth-privacy-final-handoff-plan.md",
+      "sha256": "b5abfb407ed638340500ea1de8110fde7f7fd1b44b4010a34effa06cd447d7e1",
+      "lfSha256": "b5abfb407ed638340500ea1de8110fde7f7fd1b44b4010a34effa06cd447d7e1",
+      "bytes": 1475
+    },
+    {
+      "path": "docs/design/auth-privacy-final-handoff-report.md",
+      "sha256": "6ce7e2a624462f5c497285db9bbfd5c563051b67efcad03fbe5387974053f597",
+      "lfSha256": "6ce7e2a624462f5c497285db9bbfd5c563051b67efcad03fbe5387974053f597",
+      "bytes": 8644
+    },
+    {
+      "path": "docs/design/auth-privacy-machine-handoff.md",
+      "sha256": "1d84b2888961ef5fe11ae9fac190431850b0c1c1aab08983993a2a6c3c24d58a",
+      "lfSha256": "1d84b2888961ef5fe11ae9fac190431850b0c1c1aab08983993a2a6c3c24d58a",
+      "bytes": 12107
+    },
+    {
+      "path": "docs/design/auth-privacy-platform-acceptance-plan.md",
+      "sha256": "79443c9f345d419651ccb488a6506665aeaed310d82a359d490b5657df0ecf3e",
+      "lfSha256": "79443c9f345d419651ccb488a6506665aeaed310d82a359d490b5657df0ecf3e",
+      "bytes": 1813
+    },
+    {
+      "path": "docs/design/auth-privacy-platform-acceptance-validation-report.md",
+      "sha256": "1a9a92c9cb12d00eb560521b4c7a2fab8c8fab453a8e757e23f81724025a3bc8",
+      "lfSha256": "00e71feebc769f3fd94cc8b1d87e9c84961fa2dde525710bb482fe2528726e36",
+      "bytes": 7465
+    },
+    {
+      "path": "docs/design/auth-privacy-regression-plan.md",
+      "sha256": "6bd46bdb21c18cb1c49069412b83b67666a35cd22e24d37fb9bcbe052c77b02e",
+      "lfSha256": "6bd46bdb21c18cb1c49069412b83b67666a35cd22e24d37fb9bcbe052c77b02e",
+      "bytes": 1539
+    },
+    {
+      "path": "docs/design/auth-privacy-regression-validation-report.md",
+      "sha256": "b03e575a0b8a8fb99898b2a3b176320337f9a05bebe17f8b257f3d4afc7aa1a7",
+      "lfSha256": "34b89d3ec4680976d5eef650e3a1a4cbb11ff0d857144b986973f296147f89a6",
+      "bytes": 8971
+    },
+    {
+      "path": "docs/design/auth-privacy-review-snapshot.json",
+      "sha256": "bb00c6beb8c5a9ad2084a774659d029222fb56a39a1948663bafc10861c0d376",
+      "lfSha256": "621b62fc3a48059a0fe05017446ca50b4ed4e1e686acf3f4166f0eb88fa6b6ce",
+      "bytes": 11185
+    },
+    {
+      "path": "docs/design/auth-privacy-security-review-package.md",
+      "sha256": "c25c38c984f421f2727066147ae352230570b0c5594233bdb5d6f09a0bbf6417",
+      "lfSha256": "c25c38c984f421f2727066147ae352230570b0c5594233bdb5d6f09a0bbf6417",
+      "bytes": 21447
+    },
+    {
+      "path": "docs/design/auth-verifier-safety-gate-plan.md",
+      "sha256": "5e73ef45efe2366577c1597762ea3e9870c186f7f25105230ac728cd2f811d2d",
+      "lfSha256": "5e73ef45efe2366577c1597762ea3e9870c186f7f25105230ac728cd2f811d2d",
+      "bytes": 6420
+    },
+    {
+      "path": "docs/design/auth-verifier-safety-gate-validation-report.md",
+      "sha256": "be94297252e8da35ac6e7c573face4271a20778c53f34b5947e5c8bdba5ffaa8",
+      "lfSha256": "be94297252e8da35ac6e7c573face4271a20778c53f34b5947e5c8bdba5ffaa8",
+      "bytes": 6085
+    },
+    {
+      "path": "docs/design/module-acceptance-handoff.md",
+      "sha256": "d213bda575d2393b7af09d441c78204aec940710c8c9af5db8c5c2b48378c2a9",
+      "lfSha256": "d213bda575d2393b7af09d441c78204aec940710c8c9af5db8c5c2b48378c2a9",
+      "bytes": 73821
+    },
+    {
+      "path": "docs/design/progress.md",
+      "sha256": "345932e4ee81e27de25f5c002793525bb12d107ed6dfffa39dfacdcdd0572d88",
+      "lfSha256": "345932e4ee81e27de25f5c002793525bb12d107ed6dfffa39dfacdcdd0572d88",
+      "bytes": 40086
+    },
+    {
+      "path": "services/api/authlab/identity-account-closure-verification.json",
+      "sha256": "a651c73fb2ebe7ad265b52bd0e7e083a6653769b64ba26ffc0c560257e9c8f59",
+      "lfSha256": "e39d54739e23216c19c27b118bbe56da948239dd9114b5980d1e2388431532ff",
+      "bytes": 10774
+    },
+    {
+      "path": "services/api/authlab/platform-acceptance-verification.json",
+      "sha256": "9e3ff18e83d5b93e93d982df45f2d5f3327a185d3c354a80853a6c2bdc4d25a8",
+      "lfSha256": "9354c1ceaa4ce626d4f254f80fc35b3fb992cbd104db12ea5ec845958b811415",
+      "bytes": 19759
+    },
+    {
+      "path": "services/api/authlab/privacy-boundary-verification.json",
+      "sha256": "05153e248f3deae0cc5375c2db71926361218a76ca6d1a334644c7a884ad771e",
+      "lfSha256": "05153e248f3deae0cc5375c2db71926361218a76ca6d1a334644c7a884ad771e",
+      "bytes": 15919
+    },
+    {
+      "path": "services/api/authlab/privacy-regression-verification.json",
+      "sha256": "300ccfa1d7af5e29a2b8a3828a00788a1604cae8a195d4506bbb01d0a63fe1f3",
+      "lfSha256": "ca96b310bd8957b7340aed57cf0a559fb189838e22dbd86c3a279373d5f132fd",
+      "bytes": 22700
+    },
+    {
+      "path": "services/api/authlab/verifier-safety-gate-verification.json",
+      "sha256": "1fb782457b53040c3bc3357bdc7e3d0e214bc151314cb2d7701689e726804cd7",
+      "lfSha256": "3d37c544fa8c93c3b94f8b9cecf194824964226d2af70935ad3a2782c1c8573f",
+      "bytes": 9009
+    },
+    {
+      "path": "tools/check-privacy-closure-handoff.py",
+      "sha256": "eb7950df0a3062a87a81aec7c22fa26f840215103b20a6de3e18dec2deb58936",
+      "lfSha256": "eb7950df0a3062a87a81aec7c22fa26f840215103b20a6de3e18dec2deb58936",
+      "bytes": 7026
+    }
+  ],
+  "handoffArtifactCount": 30,
+  "handoffArtifactFingerprint": "d4f6a7a24f73aca2f1c99556c7dafe58ad1bf456437da3eec74e9763525bf44f",
+  "ledgerSha256": "30dff0c0369ad6349bd91f74673f10c1d877db6a7cc31512ab57d3057ead74ba",
+  "ledgerLfSha256": "30dff0c0369ad6349bd91f74673f10c1d877db6a7cc31512ab57d3057ead74ba",
+  "checks": [
+    {
+      "id": "prior-handoff",
+      "result": "PASS",
+      "command": "python -B tools/check-identity-handoff.py",
+      "exitCode": 0
+    },
+    {
+      "id": "final-handoff",
+      "result": "PASS",
+      "command": "python -B tools/check-privacy-closure-handoff.py",
+      "exitCode": 0
+    },
+    {
+      "id": "diff",
+      "result": "PASS",
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "id": "cleanup",
+      "result": "PASS",
+      "command": "read-only verification of known task directories",
+      "exitCode": 0
+    },
+    {
+      "id": "implementation-snapshots",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Current AC04 221-file and AC05 284-file input hashes unchanged; no dynamic rerun"
+    }
+  ],
+  "cleanup": {
+    "result": "PASS",
+    "scope": "Read-only check: AC04/AC05 owned temporary roots absent; no service/db/key/APK/cache download created by AC06; installed SDK/AVD preserved. AC06 small scratch files removed after verification.",
+    "windowsKnownRootsAbsent": true,
+    "linuxKnownRootsAbsent": true,
+    "installedSdkAndAvdPreserved": true,
+    "ac06ScratchRemoval": "PASS"
+  },
+  "notRun": [
+    {
+      "id": "R06-ios",
+      "result": "BLOCKED",
+      "scope": "Full iOS build/link, Keychain/two-process and AuthenticationServices",
+      "reason": "No macOS/full Xcode, signed target or device.",
+      "entry": "apps/mobile/ios/RunnerTests/RunnerTests.swift; module R06/R09"
+    },
+    {
+      "id": "system-passkey",
+      "result": "BLOCKED",
+      "scope": "Actual system Passkey binding/removal/discoverable recovery and negative matrix",
+      "reason": "No actual RP, approved Android signature/origin and association deployment found in repo/local material; Apple Team/Bundle/associated domains absent. External deployment not independently inventoried.",
+      "entry": "packages/auth_passkey/README.md; tools/configure-passkey-associations.py; module R08/R09"
+    },
+    {
+      "id": "physical-device",
+      "result": "NOT_RUN",
+      "scope": "Physical/OEM IME, lock-screen, hardware and accessibility-service matrix",
+      "reason": "Only API36 emulator available; injected composing/scaling/semantics do not prove OEM keyboard or TalkBack.",
+      "entry": "docs/design/module-acceptance-handoff.md R09/R10"
+    },
+    {
+      "id": "backup-lifecycle",
+      "result": "NOT_RUN",
+      "scope": "System backup/restore, cross-device and actual uninstall/reinstall lifecycle",
+      "reason": "Native sidecar/key-removal injections are not system backup/restore evidence.",
+      "entry": "docs/design/module-acceptance-handoff.md N01/N02/R09"
+    },
+    {
+      "id": "device-actual-cv",
+      "result": "NOT_RUN",
+      "scope": "Complete mobile App -> actual C/V -> SQL",
+      "reason": "This device probe has explicit test APIs. AC04 R03 actual cmd and R05 Dart/handler/SQL prove different boundaries.",
+      "entry": "services/api/authlab/run-runtime-isolated.sh; services/api/authlab/run-mobile-isolated.sh; R09 integration needs real TLS/RP/device endpoints"
+    },
+    {
+      "id": "backend-current",
+      "result": "NOT_RUN",
+      "scope": "AC05 Go/SQL/race/vet and actual C/V rerun",
+      "reason": "No product/backend/schema/auth changes in AC05; retained AC04 tests remain at original fingerprint, not promoted to current platform PASS.",
+      "entry": "services/api/authlab/privacy-regression-verification.json"
+    },
+    {
+      "id": "business-production",
+      "result": "NOT_RUN",
+      "scope": "Future business consumers and production P02-P06",
+      "reason": "Consumers not implemented; local self-created evidence is not production separation/DR/independent audit.",
+      "entry": "docs/design/auth-privacy-business-contract.md; auth-privacy-closure-checklist.md"
+    },
+    {
+      "id": "AC06-dynamic",
+      "result": "NOT_RUN",
+      "scope": "Go/SQL/race/vet/Flutter/native/independent audit rerun",
+      "reason": "Only documentation and isolated bookkeeping checker changed; all previous implementation/test inputs unchanged. Prior evidence keeps tested fingerprint.",
+      "entry": "docs/design/auth-privacy-final-handoff-report.md"
+    }
+  ],
+  "verifiedAtUTC": "2026-10-05T03:42:44.913198+00:00",
+  "implementationInputsUnchangedFromAC04AndAC05": true,
+  "statusCorrections": [
+    "Closure currentTask/latest pointers and old nextAcceptance reconciled to AC06; historical source/results retained.",
+    "Historical AC05 four-column row was truncated by earlier status replacement; restored the original row from baseline HEAD, current AC05 status remains in current table.",
+    "currentFeature false execution flags remain explicitly historical; AC04 backend, AC05 platform and AC06 delivery have separate current pointers."
+  ]
+}

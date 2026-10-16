@@ -1,0 +1,176 @@
+{
+  "schemaVersion": "hnuhole-auth-machine-transfer/v1",
+  "recordedOn": "2026-10-10",
+  "userRequest": "Commit and push all auth implementation, acceptance and diagnosis; transfer task caches/test secrets; cleanup after remote verification.",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "repositoryVisibility": "public",
+  "handoff": "docs/design/auth-privacy-machine-transfer-20261010.md",
+  "functionalAcceptancePromoted": false,
+  "b1b2": {
+    "pass": 11
+  },
+  "b3b4": {
+    "pass": 8,
+    "fail": 3,
+    "notRun": 0
+  },
+  "fixedNonIOS24": {
+    "pass": 19,
+    "fail": 3,
+    "blocked": 2
+  },
+  "b6": "NOT_RUN",
+  "ios": "NOT_RUN",
+  "productionPassed": false,
+  "currentEnvironmentFailure": {
+    "hostDFreeBytes": 11141120,
+    "wslUbuntuRootReadOnly": true,
+    "ioErrors": [
+      5,
+      30
+    ],
+    "affectedBuildInterrupted": true,
+    "acceptanceUnchanged": true,
+    "recovery": {
+      "originalUbuntuE2fsckFinalReadOnlyCheck": "PASS",
+      "originalUbuntuMountedReadWrite": true,
+      "repairedCopyFileReadErrors": 0,
+      "repairedCopyFiles": 45774,
+      "initialPartialArchiveErrors": 25324,
+      "faultTimeVersionsDifferingFromRecovery": 54,
+      "faultTimeDeltaPreserved": true,
+      "dockerEngineRecoveredForExport": true,
+      "dockerDesktopStoppedAfterCleanup": true,
+      "hostDFreeBytesAfter": 6666747904,
+      "ubuntuUsedAfterCleanup": "3.5G"
+    }
+  },
+  "phone": {
+    "mainApkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+    "isolatedApkSha256": "7c0230c7df2cbcf1fc0074607bc621fe85395c3964308b092bc8e4f9df981f89",
+    "diagnosticInstalled": false,
+    "dataCleared": false,
+    "originalProviderAndAutofillRestored": true,
+    "clashModeRestore": "USER_TO_RESTORE_ORIGINAL_MODE"
+  },
+  "diagnostic": {
+    "implementation": "DEBUG_ONLY_IMPLEMENTED_BUILD_INCOMPLETE_DEVICE_NOT_RUN",
+    "source": [
+      "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticActivity.java",
+      "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticPolicy.java",
+      "tools/android-passkey-diagnostic/build-google-fido-diagnostic.py",
+      "tools/android-passkey-diagnostic/GoogleFidoDiagnosticPolicyTest.java",
+      "tools/run-google-passkey-diagnostic.py"
+    ],
+    "javaCompile": "PASS",
+    "debugApkAssembled": true,
+    "debugCertificateAndManifestDexChecked": true,
+    "releaseExclusion": "FAIL_INCOMPLETE",
+    "finalBuildManifestProduced": false,
+    "candidateBytes": 673296778,
+    "failures": [
+      "OFFLINE_TRANSITIVE_DEPENDENCY_MISSING",
+      "EMPTY_FLUTTER_CMAKE_PLACEHOLDER",
+      "INCLUDED_BUILD_INIT_WITHOUT_APP",
+      "WSL_EXT4_IO_READ_ONLY_HOST_D_FULL"
+    ],
+    "apiPrepare": "NOT_RUN",
+    "systemUi": "NOT_RUN",
+    "installedOnPhone": false,
+    "actualCSubmission": false,
+    "fixedCaseAcceptancePassed": false,
+    "pythonRunnerSyntax": "PASS",
+    "pythonOptimizedExecutionRejected": true,
+    "guardReview": "COMPLETED_WITH_PENDING_OS_BUILD_VALIDATION"
+  },
+  "releaseTag": "auth-machine-handoff-20261010",
+  "releaseUrl": "https://github.com/zewbby/HnuHole/releases/tag/auth-machine-handoff-20261010",
+  "archiveManifest": "services/api/authlab/auth-machine-cache-archive-verification.json",
+  "encryption": "AES-256-GCM; key delivered separately, not public Git",
+  "remotePush": "PASS_SOURCE_VERIFIED_FINAL_RECEIPTS_COMMITTED_WITH_THIS_RECORD",
+  "archiveUpload": "PASS_REMOTE_ASSET_SHA256",
+  "cleanup": "PARTIAL_WINDOWS_FILESYSTEM_DELETE_BLOCKED_BY_AUTOMATIC_APPROVAL",
+  "preserved": [
+    "existing SDK/AVD/Flutter/JDK installations",
+    "phone apps and user data",
+    "unrelated projects and unknown Docker volumes",
+    "docs/research/anonymity-first-redesign-proposal-2026-10-06.md (pre-existing unrelated untracked draft)"
+  ],
+  "completedOn": "2026-10-11",
+  "sourceDeliveryCommit": "4c40f9015095ebd84dc2b17e30e6ef7ef159321f",
+  "encryptedArchives": 7,
+  "encryptedParts": 22,
+  "encryptedBytes": 9254048479,
+  "archiveRestore": "PASS_AUTHENTICATED_DECRYPTION_AND_MEMBER_SHA256",
+  "cleanupDetails": {
+    "ownedProcessesStopped": [
+      103846,
+      112010,
+      112024,
+      114219,
+      114403
+    ],
+    "docker": {
+      "containers": [
+        "hnuhole-device-hnuholeandroidliveb3b420261009-community-postgres-1",
+        "hnuhole-device-hnuholeandroidliveb3b420261009-verifier-postgres-1",
+        "hnuhole-device-hnuholeandroidliveb3b420261009-mailpit-1",
+        "hnuhole-device-hnuholeandroidlivebatch20261007-community-postgres-1",
+        "hnuhole-device-hnuholeandroidlivebatch20261007-verifier-postgres-1",
+        "hnuhole-device-hnuholeandroidlivebatch20261007-mailpit-1",
+        "hnuhole-device-hnuholeandroidliveboundary20261006-community-postgres-1",
+        "hnuhole-device-hnuholeandroidliveboundary20261006-verifier-postgres-1",
+        "hnuhole-device-hnuholeandroidliveboundary20261006-mailpit-1",
+        "hnuhole-device-hnuholeandroidliveclosure20261007-community-postgres-1",
+        "hnuhole-device-hnuholeandroidliveclosure20261007-verifier-postgres-1",
+        "hnuhole-device-hnuholeandroidliveclosure20261007-mailpit-1"
+      ],
+      "volumes": [
+        "hnuhole-device-hnuholeandroidliveb3b420261009_community-dev-data",
+        "hnuhole-device-hnuholeandroidliveb3b420261009_verifier-dev-data",
+        "hnuhole-device-hnuholeandroidlivebatch20261007_community-dev-data",
+        "hnuhole-device-hnuholeandroidlivebatch20261007_verifier-dev-data",
+        "hnuhole-device-hnuholeandroidliveboundary20261006_community-dev-data",
+        "hnuhole-device-hnuholeandroidliveboundary20261006_verifier-dev-data",
+        "hnuhole-device-hnuholeandroidliveclosure20261007_community-dev-data",
+        "hnuhole-device-hnuholeandroidliveclosure20261007_verifier-dev-data"
+      ],
+      "networks": [
+        "hnuhole-device-hnuholeandroidliveb3b420261009_default",
+        "hnuhole-device-hnuholeandroidlivebatch20261007_default",
+        "hnuhole-device-hnuholeandroidliveboundary20261006_default",
+        "hnuhole-device-hnuholeandroidliveclosure20261007_default"
+      ]
+    },
+    "linux": {
+      "result": "PASS",
+      "removedRoots": [
+        "/var/tmp/hnuhole-android-live-faults-20261005",
+        "/var/tmp/hnuhole-android-live-b3-b4-20261009",
+        "/var/tmp/hnuhole-android-live-batch-20261007",
+        "/var/tmp/hnuhole-android-live-closure-20261007",
+        "/var/tmp/hnuhole-android-live-boundary-20261006"
+      ]
+    },
+    "windowsTaskRootMovedTo": "C:/Users/Administrator/Documents/HnuHole-transfer-20261010/staged-original-windows",
+    "windowsDeleted": false,
+    "automaticApprovalRejection": {
+      "action": "Remove verified owned Windows cache and temporary restore files",
+      "reason": "blocked by policy; no more specific reason returned",
+      "attemptedSaferVariant": "Literal file deletion and exact repo cache path with inventory hash guard also rejected"
+    },
+    "remainingWindowsDirectories": [
+      "C:/Users/Administrator/Documents/HnuHole-transfer-20261010",
+      "C:/Users/Administrator/Documents/ChatGPT/HnuHole/infra/.cache/android-matrix",
+      "C:/Users/Administrator/Documents/ChatGPT/HnuHole/infra/.cache/android-fault"
+    ],
+    "remainingSmallCacheFile": "infra/.cache/finalize-auth-transfer.py",
+    "manualCleanupScript": "docs/design/auth-transfer-local-cleanup-20261010.ps1",
+    "manualCleanupScriptExecution": "DRY_RUN_PASS_DELETION_NOT_RUN",
+    "separateKeyFile": "C:/Users/Administrator/Documents/HnuHole-auth-archive-key-20261010.txt",
+    "manualCleanupScriptSyntax": "PASS",
+    "manualCleanupScriptDryRun": "PASS_REMOTE_ALL_22_PART_DIGESTS_AND_EXACT_LOCAL_TARGETS"
+  },
+  "releasePublication": "PASS_PUBLISHED"
+}

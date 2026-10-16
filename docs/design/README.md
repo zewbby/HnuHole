@@ -1,18 +1,36 @@
 # 产品设计
 
+> **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
+
+> **2026-10-03 远端接续交付：**用户已授权将当前匿名收口材料、运行时／设备／B02源码与测试提交并推送到 `origin/codex/auth-privacy-handoff`，由另一台机器继续。先读[机器接续入口](auth-privacy-machine-handoff.md)，再按[匿名清单 AC01–AC06](auth-privacy-closure-checklist.md)执行；提交／推送不代表缺口已修复或动态验收通过。下方“未提交／推送”是历史记录，最新交付状态以本次提交及远端结果为准。
+
+> **2026-10-03 匿名分支范围纠正：**本分支以匿名方案及其基础实现收口，停在 B02，不进入 B05/B03 等完整业务片。当前有限缺口和结束条件见[匿名收口清单](auth-privacy-closure-checklist.md)：先补 V 独立 Gate、现有身份的整账号关闭联动，再核对隐私边界、补真实测试链与集中验收。B02继续登记为“基础管理已实现，业务联动待实现”，动态／设备未执行项保持待验；本段覆盖下方历史开发顺序，不改写历史测试证据。
+
+> **2026-10-03 B02身份管理基础：**本人身份列表／创建／改名／删除、默认头像和我的→设置入口已写入；注册零身份仍能浏览，落实最多3个／不能删最后一个、累计创建及六个月／30天限制。全部访问最终Gate／会话／归属复核，账号串行及成功／拒绝终态回执保护未知提交与迟到重试。**基础管理已实现，业务联动待实现；编译、SQL、Flutter和真机验收待执行。**帖内绑定、旧帖／聊天投影随业务模块，自定义头像随媒体实现。见[任务单](identity-management-plan.md)、[报告](identity-management-validation-report.md)、[机器记录](../../services/api/authlab/identity-management-verification.json)和[模块交接](module-acceptance-handoff.md)／[台账](module-acceptance-ledger.json)。后续按[匿名收口清单](auth-privacy-closure-checklist.md)补齐基础缺口并交付，不进入完整发帖／列表业务片；未提交／推送。
+
+2026-10-02 新增[设备与恢复凭据＋原生Passkey任务单](auth-privacy-device-credentials-passkey-plan.md)和[实施／验证报告](auth-privacy-device-credentials-passkey-validation-report.md)。页面、持久原结果核对及两平台桥源码已接；本机只有轻量与共享Swift检查，编译、动态和真机待验，RP／平台关联配置待提供。状态同步[模块交接](module-acceptance-handoff.md)／[台账](module-acceptance-ledger.json)。
+
+认证隐私已进入用户授权的 Phase E。[C/V 开发服务与目录授权计划](auth-privacy-runtime-business-integration-plan.md)的 T0–T6 实施已落盘，包括正式迁移、受限角色、实际入口、持久 worker 与移动端截止衔接；本机缺工具，编译和动态验收未执行。[本轮报告](auth-privacy-runtime-business-integration-validation-report.md)列明已执行检查与待复验项，[实验 README](../../services/api/authlab/README.md)提供 runner。历史原生／隔离联调证据见[原报告](auth-privacy-mobile-native-integration-validation-report.md)，不能证明本次改动通过。V 独立门禁、原生设备与生产安全验收仍待完成。
+
 这里是当前设计的统一入口。每项规则只在所属模块维护，跨模块通过链接引用；历史讨论用于追溯，不再作为持续追加的规则总表。
+
+2026-10-02 用户允许先继续业务开发，再集中按模块验收。完整待验队列、真实测试入口、依赖与平台边界见[分模块测试交接](module-acceptance-handoff.md)及[机器台账](module-acceptance-ledger.json)；[AGENTS.md](../../AGENTS.md)要求每个功能任务结束补充未执行测试与交接。
 
 新会话先读[接续说明](HANDOFF.md)。阶段盘点与剩余工作见[设计进度](progress.md)，业务术语见[词汇表](../../CONTEXT.md)。规则继续维护在各模块，进度页只提供交付状态与待决事项索引。
 
+2026-09-26 用户确认新的[认证与隐私架构决策](auth-privacy-architecture-decision.md)：每次注册需完成校邮验证码，日常以私有用户名和独立密码登录；同一精确邮箱同时最多一个有效账号的配额依赖 V 按协议执行。2026-09-27 的[注册与释放协议 v1](auth-privacy-registration-protocol.md)定义公钥导出的资格槽位、限时签名资格、持钥证明、未消费资格退役及正式注销释放；[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)和[跨方威胁模型](auth-privacy-threat-model.md)也已成稿。内部威胁建模不等于独立审计；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[数据库迁移设计](auth-privacy-database-migration-design.md)已成稿；[固定签名／编码向量与静态复验](auth-privacy-protocol-vectors.md)及[独立安全评审输入包](auth-privacy-security-review-package.md)也已整理；隔离 SQL 验证见本轮实现报告；生产迁移／完整链路、真实独立主体运营证据及独立安全评审仍待完成。两方共享槽位，串通或共同泄漏时可连接邮箱与账号。
+
+2026-09-28 的[AI 交叉评审记录](auth-privacy-ai-cross-review.md)单列内部规格发现与修正：补齐退役收据的持久 ACK，不改变固定签名帧。人类独立评审、实际服务验收和双主体运营证据仍未完成；邮箱可用与验证服务独立运营分别登记。
+
 ## 项目范围
 
-海南大学校内封闭树洞，围绕吐槽、互助、找搭子、想法与生活分享，核心是 behindMask：用可选择的独立身份表达和联系，不暴露不同身份属于同一账号；“想说就说”是使用体验目标。首版是同时支持 iOS 和 Android 的手机 App；网页端和小程序不在首版用户端范围。工程基线已确定为 Flutter/Dart 移动端、Go 服务端和模块化单体后端；Go HTTP、PostgreSQL、REST/OpenAPI 与移动端本地存储基线见 [ADR 0001](../adr/0001-engineering-baseline.md) 和 [ADR 0002](../adr/0002-communication-and-persistence-baseline.md)，分发方式及其余实现细节仍待决定。热度与排行榜纳入设计范围，涵盖大通道热度和各通道内的帖子热榜；具体权重仍待确定。2026-09-19 用户明确“不搞交易”，首版不做交易功能，不设独立商品、订单、支付或交易担保。首版标题手写、搜索按文字检索，不包含模型生成或意图理解功能。这里记录产品设计，不代表功能已经实现。
+海南大学校内封闭树洞，首版围绕吐槽、避雷、安利、互助、搭子、科技、情感七个通道组织内容，核心是 behindMask：用可选择的独立身份表达和联系，不暴露不同身份属于同一账号；“想说就说”是使用体验目标。首版是同时支持 iOS 和 Android 的手机 App；网页端和小程序不在首版用户端范围。工程基线已确定为 Flutter/Dart 移动端、Go 服务端和模块化单体后端；Go HTTP、PostgreSQL、REST/OpenAPI 与移动端本地存储基线见 [ADR 0001](../adr/0001-engineering-baseline.md) 和 [ADR 0002](../adr/0002-communication-and-persistence-baseline.md)，分发方式及其余实现细节仍待决定。热度与排行榜纳入设计范围，涵盖大通道热度和各通道内的帖子热榜；具体权重仍待确定。2026-09-19 用户明确“不搞交易”，首版不做交易功能，不设独立商品、订单、支付或交易担保。首版标题手写、搜索按文字检索，不包含模型生成或意图理解功能。这里记录产品设计，不代表功能已经实现。
 
 ## 模块目录
 
 | 模块 | 维护范围 | 当前状态 |
 | --- | --- | --- |
-| [账号与访问](modules/accounts.md) | 校邮准入、匿名认证、设备管理、注销 | 固定校园后缀、前缀别名允许；单设备、三十天会话、无周期资格复核 |
+| [账号与访问](modules/accounts.md) | 校邮准入、私有账号认证、设备管理、注销 | 每次注册校邮验证，用户名密码登录；独立凭据恢复、单设备、三十天会话 |
 | [预设身份](modules/identity.md) | 一至三身份、每帖固定、隔离 | 首次昵称必填头像可默认；删除身份清本人聊天备注及明确失败帖 |
 | [入口与导航](modules/navigation.md) | 入口树、通道、列表、搜索与返回 | 有效登录直进树、初始五通道；全局组按最相关／最新匹配帖，同相关度较新优先 |
 | [热度与排行榜](modules/popularity.md) | 通道热度、通道内帖子热榜、排名 | 整五分钟更新、近七天前二十；权重不公开，具体数值待定 |
