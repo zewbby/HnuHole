@@ -4,23 +4,6 @@
 
 当前已从产品设计阶段进入工程方案阶段，首版面向 iOS 与 Android。工程基线已确定为 Flutter/Dart 移动端、Go 服务端和模块化单体后端；仓库采用 monorepo，Go HTTP、PostgreSQL、REST/OpenAPI、服务端会话、移动端本地存储、CI/测试与部署基线已记录，具体云厂商、推送供应商和发布流程仍在后续决策中。
 
-## 帖子图片业务与查看组件（已合并 main）
-
-工作项：独立图片查看组件 → 真实帖子图片业务接入；交付分支 `codex/post-image-integration`，功能与真机记录固定在 `1c8ad33`（修复实现 `fd2e4c0`）。2026-10-16 已通过 [PR #2](https://github.com/zewbby/HnuHole/pull/2) 合并 main，合并提交 `4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398`；来源分支保留。详见 [progress](docs/design/progress.md) 与[合并回执](docs/design/post-image-main-delivery-20261016.json)，未发布或部署。
-
-本任务除 iOS 外的约定范围已完成：
-
-- 独立 `packages/image_viewer`：缩放、长图适宽顶部进入、阅读位置/旋转锚点、手势退出、加载失败重试、生命周期与迟到回调隔离；同一次回顶手势不能退出，全部松手后新下拉才能关闭。
-- 帖子最多九图选取/排序/移除、加密原图草稿与进程恢复、逐项上传/补传/失败编辑重试；真实 Go/C/V/PostgreSQL 联调、完整验证后公开、受保护原图读取及访问失效。
-- 主 App 通道/我的 → 帖子详情 → 查看器接入；Android10/API29+ 原格式保存默认开启，GIF/动态 WebP 不转换、不静默降质；组件不接收账号凭据或建立长期私有图片缓存。
-- vivo S18、Android15/API35 的本轮约定链路真机验收已完成，最终 Debug 包20263116；修复后分析0、相关69项宿主测试、bundle、Android原生构建与验签通过。真实相册保存的九份原字节校验及 Gallery 动画回放有证据，具体范围见 [S18报告](docs/design/post-image-android-device-report.md)、[机器记录](docs/design/post-image-android-device-verification.json)。上轮完整宿主375和后端244保留各自版本，不混算为本轮测试。
-
-合并前 GitHub CI：组件与 mobile 分析均0问题，组件112项、受影响mobile130项、bundle、Go test/build/vet及协作检查通过；锁文件保持原样。CI不代替上述真实设备/SQL证据。
-
-**本任务剩余：iOS。**原始选图适配尚未实现，现有图库路径可能重编码，入口继续关闭；后续需 macOS/Xcode 和 iOS 实机完成原始 JPEG/PNG/GIF/WebP 读取、原生构建、安全存储、权限、保存及相册回放、交互验收。Android通过不代表iOS通过。
-
-另列项目级工作：最大九图资源预算、生产存储/配额/备份与存量升级、评论/私信图片消费者及正式发布，不计作本次帖子图片任务未完成。单台 S18 证据不代表所有机型/相册或完整项目已通过。测试窗口已结束；自己的服务/手机映射已收回，Linux私有库/密钥已清理，Windows专用材料清理被自动审批拦截而保留，详见报告。
-
 ## 新会话接续
 
 继续本项目讨论时先读[接续说明](docs/design/HANDOFF.md)，再按其中索引读取当前模块；不要从历史对话猜测最新规则。
@@ -46,3 +29,29 @@
 - [历史讨论目录](docs/discussions/README.md)
 
 按用户要求优先交付 PNG，设计图的确认范围在各模块内说明。
+
+## 分支一览
+
+| 分支 | 一句话说明 | 进度详情 |
+| --- | --- | --- |
+| `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/auth-privacy-handoff` | 实现认证、匿名隐私边界和相关验收交接。 | [详情](docs/branches/auth-privacy-handoff.md) |
+| `codex/community-text-posting` | 实现文字帖后端、接口及早期客户端闭环。 | [详情](docs/branches/community-text-posting.md) |
+| `codex/community-flutter-pages` | 实现社区页面并推进社区与认证的 Android 验收。 | [详情](docs/branches/community-flutter-pages.md) |
+| `codex/image-viewer-component` | 实现独立图片查看组件和 Android 原格式保存。 | [详情](docs/branches/image-viewer-component.md) |
+| `codex/image-viewer-business-integration` | 为主 App 接入图片查看入口及九图选取上传前端。 | [详情](docs/branches/image-viewer-business-integration.md) |
+| `codex/post-image-media` | 实现帖子九图原字节存储、补传和受保护读取后端。 | [详情](docs/branches/post-image-media.md) |
+| `codex/post-image-integration` | 完成帖子图片前后端联调和主 App Android S18 验收。 | [详情](docs/branches/post-image-integration.md) |
+| `codex/feat/post-image-android` | 将图片业务及其前置实现通过 PR 交付到主线。 | [详情](docs/branches/feat-post-image-android.md) |
+| `codex/chore/collaboration-rules` | 建立分支、提交、PR 审查和协作检查规范。 | [详情](docs/branches/chore-collaboration-rules.md) |
+| `codex/docs/post-image-merge-record` | 补记图片业务合入主线的事实与 iOS 剩余事项。 | [详情](docs/branches/docs-post-image-merge-record.md) |
+| `feature/engineering-baseline` | 确定 Flutter、Go、通信与持久化的工程基线。 | [详情](docs/branches/engineering-baseline.md) |
+| `codex/docs/readme-branch-index` | 将 README 改为分支简表与最近合并摘要。 | [详情](docs/branches/docs-readme-branch-index.md) |
+
+## 最近变动
+
+按合并时间倒序保留最近 5 条；本次核对时共有 3 条已合并 PR。
+
+- 2026-10-16 · [#3](https://github.com/zewbby/HnuHole/pull/3)：补齐图片业务交接记录和 iOS 待办。
+- 2026-10-16 · [#2](https://github.com/zewbby/HnuHole/pull/2)：接入帖子图片业务，完成 Android S18 约定范围验收。
+- 2026-10-15 · [#1](https://github.com/zewbby/HnuHole/pull/1)：统一分支、提交、PR 与协作检查规范。
