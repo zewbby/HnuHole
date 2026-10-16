@@ -35,6 +35,10 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev openssl
       - name: Locked image package dependencies
         working-directory: packages/image_viewer
+        # Match the existing lockfile's hosted source; changing hosts triggers
+        # resolution even when package versions are unchanged.
+        env:
+          PUB_HOSTED_URL: https://pub.flutter-io.cn
         run: flutter pub get --enforce-lockfile
       - name: Image package analysis and host tests
         working-directory: packages/image_viewer
