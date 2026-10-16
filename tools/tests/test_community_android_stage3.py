@@ -4,7 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
 def load(name, file):
@@ -89,6 +89,33 @@ class Stage3PreparationTests(unittest.TestCase):
         checker.validate_response(200, 'application/json; charset=utf-8', body, expected)
         for status, content, raw in [(301, 'application/json', body), (200, 'text/html', body), (200, 'application/json', b'[]'), (200, 'application/json', b' ' * 65537), (200, 'application/json', b'not-json')]:
             with self.assertRaises(ValueError): checker.validate_response(status, content, raw, expected)
+
+    def test_truthful_tool_identifier_keeps_tls_redirect_and_exact_document_checks(self):
+        files = proposal.values(ROOT, self.proof(), proposal.PROPOSED_RP)
+        with tempfile.TemporaryDirectory() as folder:
+            bundle = Path(folder) / 'bundle'
+            proposal.write_new(bundle, files)
+            response = MagicMock()
+            response.status = 200
+            response.headers = {'Content-Type': 'application/json'}
+            response.read.return_value = files['site/.well-known/assetlinks.json'].encode()
+            response.__enter__.return_value = response
+            opener = MagicMock()
+            opener.open.return_value = response
+            with patch.object(checker.urllib.request, 'build_opener', return_value=opener) as build:
+                result = checker.check(bundle, True)
+            request = opener.open.call_args[0][0]
+            self.assertEqual(request.get_header('User-agent'), checker.USER_AGENT)
+            self.assertEqual(request.get_header('Accept'), 'application/json')
+            self.assertEqual(request.full_url, 'https://' + proposal.PROPOSED_RP + '/.well-known/assetlinks.json')
+            self.assertEqual(build.call_args[0][0].proxies, {})
+            self.assertIsInstance(build.call_args[0][1], checker.NoRedirect)
+            context = build.call_args[0][2]._context
+            self.assertTrue(context.check_hostname)
+            self.assertEqual(context.verify_mode, checker.ssl.CERT_REQUIRED)
+            response.read.assert_called_once_with(65537)
+            self.assertFalse(result['providerAcceptanceProved'])
+            self.assertFalse(result['deviceUsed'])
 
 
 if __name__ == '__main__':

@@ -7,6 +7,8 @@ import ssl
 import urllib.request
 from pathlib import Path
 
+USER_AGENT = 'HnuHole-DAL-Checker/1.0 (+https://github.com/zewbby/HnuHole)'
+
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs):
@@ -37,7 +39,8 @@ def check(bundle, confirmed):
     source.associations.validated_rp(rp)
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect(),
                                         urllib.request.HTTPSHandler(context=ssl.create_default_context()))
-    request = urllib.request.Request('https://' + rp + '/.well-known/assetlinks.json', headers={'Accept': 'application/json'})
+    request = urllib.request.Request('https://' + rp + '/.well-known/assetlinks.json',
+                                     headers={'Accept': 'application/json', 'User-Agent': USER_AGENT})
     with opener.open(request, timeout=25) as response:
         body = response.read(65537)
         validate_response(response.status, response.headers.get('Content-Type', ''), body, json.loads(artifact.read_text()))
