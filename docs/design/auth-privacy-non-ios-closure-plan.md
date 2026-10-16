@@ -1,5 +1,11 @@
 # 非 iOS 匿名基础最终收口计划
 
+> **2026-10-16 B5同步恢复收口：**NI-X02已由真我本机同步Passkey完成原生断言、C恢复意图、新密码及完整恢复码确认、无自动登录、旧会话／密码／恢复码401、旧Passkey移除和同号显式新登录。固定 **24／24 PASS**，结合原B6匹配且未变的产品输入，`nonIOSDevelopmentAcceptancePassed=true`。原4次hybrid失败、首个同步成功后夹具失败、未点选的系统超时和Bitwarden ROM阻塞均保留；iOS延期，生产及未来业务仍未通过。真我临时设置已恢复，源机当前Bitwarden设置保留，环境和隔离数据保留，未提交／推送。见[同步最终报告](auth-privacy-b5-sync-validation-report.md)及[机器记录](../../services/api/authlab/android-b5-sync-20261016-verification.json)。
+
+> **2026-10-16 Bitwarden路线预检：**真我RMX3366虽为API34，但实际缺少`android.software.credentials`与系统`credential`服务；已安装Bitwarden只接入普通自动填充，这条原生Passkey路线BLOCKED。新夹具分析／构建PASS，未安装、未新建凭据、未发起认证，两台原设置已恢复。NI-X02仍未通过，固定累计23 PASS／1 FAIL。见[B5报告](auth-privacy-b5-validation-report.md)及[Bitwarden预检记录](../../services/api/authlab/android-b5-bitwarden-20261016-verification.json)。
+
+> **2026-10-16 B5双实体Android实测：**NI-X01官方搬家已PASS；NI-X02已执行但FAIL，真我累计4次原生get均超时，后两次vivo实际提示“设备无法连接”。当前固定24项为 **23 PASS／1 FAIL／0 BLOCKED**，唯一剩余ID为NI-X02，已不再缺第二台手机。没有真实跨设备证明／恢复意图，后续重设与登录链本轮NOT_RUN；两台provider／autofill已按原值恢复，未自动追加重试。既有B6与历史版本记录保留，完整非iOS开发验收、iOS和生产均未通过。隔离包／私有测试状态及可复用环境保留，本轮未提交／推送。见[B5报告](auth-privacy-b5-validation-report.md)及[脱敏记录](../../services/api/authlab/android-b5-20261016-verification.json)。
+
 > **2026-10-13 B6与单台Android范围完成：**完整R01 SQL/race/vet、R03实际C/V的19项检查、R05真实Dart→HTTPS→SQL、三个Flutter包分析、移动端188项与Passkey Dart 9项、标准Android Debug／Release构建、原生vault 16项／Passkey codec及错误分类12项、三组实际跨进程读写和已安装Release 13项边界均PASS。Windows／Linux各108项宿主守卫、诊断构建8项、JVM策略24项及四份OpenAPI通过。固定24项维持22 PASS／0 FAIL／2 BLOCKED；原14阶段及各设备版本保留，原SDK-only三项FAIL与历史UNKNOWN未改写。**不需要第二实体Android的非iOS匿名基础工作已完成，唯一固定缺口为NI-X01／X02；完整非iOS、iOS、生产与未来业务仍未获通过。**原手机三包摘要、原provider／autofill、账号与草稿保留；本轮独立模拟器停止，专用AVD／构建副本／临时APK及原始日志已清理，现成环境与缓存保留。HnuHole仅准备本地可审阅候选，未提交／推送／部署。见[B6报告](auth-privacy-b6-validation-report.md)及[最终分层记录](../../services/api/authlab/b6-single-android-20261013-verification.json)。
 
 下方记录保留原日期、被测版本与证明范围；本轮结论以上述B6入口为准。
@@ -66,8 +72,8 @@
 | NI-D05 | 产品移除某Passkey后，真实系统仍持有该凭据时的恢复assertion被C拒绝；其他凭据与当前会话按契约保留 | 真实系统assertion＋产品移除＋C/SQL；A07/A09/B01/N03 | PASS：保留各自实际版本／边界，见B6逐项映射 |
 | NI-K01 | vivo上的隔离完整产品测试包实际卸载／重装，读取为空、不自动登录；受控旧密文恢复缺钥时产品停止授权。使用与主包相同存储／产品源码，明确变体范围，不卸载保留原草稿的主包 | 实体PackageManager＋Keystore＋实际产品；N01/A12 | PASS：保留各自实际版本／边界，见B6逐项映射 |
 | NI-K02 | 实际App使用原生存储时发生有界写失败／确认未知，不能发布权限；新进程读取只能恢复已持久状态。现有原生探针可作为下层证据，不能单独代证App。禁止填满整个个人手机磁盘 | 实际App＋Android vault＋受控故障；N01/A12 | PASS：保留各自实际版本／边界，见B6逐项映射 |
-| NI-X01 | 第二实体Android通过可用OEM官方搬家路径接收专用测试App；账号token／私有密文／Keystore能力不被复制成可用控制权，不自动登录。两侧行为与搬家机制均记录 | 两实体＋OEM真实工具；N01/A12 | BLOCKED：缺第二实体Android |
-| NI-X02 | 第二实体Android用允许的系统同步或跨设备认证完成真实可发现Passkey恢复，仍需C验证和新凭据完整确认、不自动登录；旧凭据／会话失效按重设契约核对 | 两实体＋真实provider＋C/SQL；A07/N03 | BLOCKED：缺第二实体Android |
+| NI-X01 | 第二实体Android通过可用OEM官方搬家路径接收专用测试App；账号token／私有密文／Keystore能力不被复制成可用控制权，不自动登录。两侧行为与搬家机制均记录 | 两实体＋OEM真实工具；N01/A12 | PASS：2026-10-16 B5实际证据；见同步最终报告 |
+| NI-X02 | 第二实体Android用允许的系统同步或跨设备认证完成真实可发现Passkey恢复，仍需C验证和新凭据完整确认、不自动登录；旧凭据／会话失效按重设契约核对 | 两实体＋真实provider＋C/SQL；A07/N03 | PASS：2026-10-16 B5实际证据；见同步最终报告 |
 
 正式关闭继续使用已审阅的测试构建时钟推进方法，复核原SQL截止恰好七天且未被修改，由正常worker执行；不说成“真实等了七天”。自然持续七天的生产运行演练不新增为本轮开发收口门槛；原challenge的自然到期核对仍按不可变期限等待，不改SQL、不重放证明。
 
