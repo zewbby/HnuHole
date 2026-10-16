@@ -1,0 +1,968 @@
+{
+  "schemaVersion": "hnuhole-auth-protocol-vectors/v1",
+  "specBaselineCommit": "f1b4026af81ab0045de4ce7547e78a9b795bd737",
+  "testOnly": true,
+  "description": "公开的合成测试种子／秘密；只作实施前互操作和负向审阅输入，严禁生产配置。没有服务端／SQL／客户端测试证据。",
+  "sources": [
+    "https://www.rfc-editor.org/rfc/rfc8032.html#section-7.1",
+    "https://www.rfc-editor.org/rfc/rfc4648.html#section-3.5",
+    "https://doc.libsodium.org/advanced/point-arithmetic"
+  ],
+  "conventions": {
+    "bytes": "lowercase hex, no prefix; wire is unpadded canonical base64url",
+    "integerWireEncoding": "unsigned u32 big-endian",
+    "signatureVariant": "Pure Ed25519, sign message bytes directly; never Ed25519ph/ctx or sign(SHA256(message))",
+    "orderLEHex": "edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010",
+    "fieldPrimeLEHex": "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+    "windowSeconds": 1800,
+    "stateCasesExecutionStatus": "DECLARATIVE_ONLY_NOT_EXECUTED_AGAINST_REAL_SERVICES",
+    "pointAcceptanceProfile": "For both public key A and signature point R: canonical 32-byte encoding, on curve, not identity, [L]P = identity; S is canonical little-endian integer < L. Pure Ed25519 equation required. This project profile is stricter than the base RFC.",
+    "bootstrapProofWire": "Only the 64-byte signature is sent as bootstrapSignature; the 153-byte message is reconstructed from the saved intent. There is no 217-byte PoP ticket."
+  },
+  "keys": [
+    {
+      "id": "v_rfc8032_test1",
+      "testSeedHex": "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+    },
+    {
+      "id": "c_rfc8032_test2",
+      "testSeedHex": "4ccd089b28ff96da9db6c346ec114e0f5b8a319f35aba624da8cf6ed4fb8a6fb",
+      "publicKeyHex": "3d4017c3e843895a92b70aa74d1b7ebc9c982ccf2ec4968cc0cd55f12af4660c"
+    },
+    {
+      "id": "bootstrap_rfc8032_test3",
+      "testSeedHex": "c5aa8df43f9f837bedb7442f31dcb7b166d38535076f094b85ce3a2e0b4458f7",
+      "publicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025"
+    },
+    {
+      "id": "attacker_public_test_seed",
+      "testSeedHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "publicKeyHex": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8"
+    }
+  ],
+  "rfc8032Controls": [
+    {
+      "id": "RFC8032_TEST_1",
+      "keyId": "v_rfc8032_test1",
+      "messageHex": "",
+      "signatureHex": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+    },
+    {
+      "id": "RFC8032_TEST_2",
+      "keyId": "c_rfc8032_test2",
+      "messageHex": "72",
+      "signatureHex": "92a009a9f0d4cab8720e820b5f642540a2b27b5416503f8fb3762223ebdb69da085ac1e43e15996e458f3613d0f11d8c387b2eaeb4302aeeb00d291612bb0c00"
+    },
+    {
+      "id": "RFC8032_TEST_3",
+      "keyId": "bootstrap_rfc8032_test3",
+      "messageHex": "af82",
+      "signatureHex": "6291d657deec24024827e69c3abe01a30ce548a284743a445e3680d7db5ac3ac18ff9b538d16f290ae67f760984dc6594a7c15e9716ed28dc027beceea1ec40a"
+    }
+  ],
+  "slotDerivations": [
+    {
+      "id": "SLOT_BOOTSTRAP",
+      "keyId": "bootstrap_rfc8032_test3",
+      "inputHex": "484e55484f4c452f534c4f542f56310001fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "slotIdHex": "7f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374"
+    },
+    {
+      "id": "SLOT_ATTACKER_NEW",
+      "keyId": "attacker_public_test_seed",
+      "inputHex": "484e55484f4c452f534c4f542f5631000103a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+      "slotIdHex": "8927041417e59e7d45f37d645aa1954a42e32b759d418d170f1c40a711f7aea9"
+    }
+  ],
+  "positiveSignatures": [
+    {
+      "id": "SIG_REGISTER_CURRENT",
+      "purpose": "REGISTER/V2",
+      "keyId": "v_rfc8032_test1",
+      "fields": {
+        "vKeyEpoch": 16909060,
+        "admissionWindow": 1000000,
+        "slotIdHex": "7f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374",
+        "bootstrapPublicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025"
+      },
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "5cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a",
+      "messageByteLength": 92,
+      "expectedSignatureValid": true,
+      "signatureBase64url": "XMDjZIQv1ynzI8qO1bvyJNohaTTaFnDQo6mOFDTZlE4FkfNOeCGm5yyWyn_hoiRVyAEx3AEhWC1ObKAjV221Cg",
+      "wireKind": "FIXED_SIGNED_TICKET",
+      "wireBytesHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb9115489080255cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a",
+      "wireBase64url": "SE5VSE9MRS9SRUdJU1RFUi9WMgABAgMEAA9CQH8N_yY3ELGA0TGv5woTb7Rz0ygFKStMcjhclp-9ZwN0_FHNjmIYoaONpH7QAjDwWAgW7RO6MwOsXeuRFUiQgCVcwONkhC_XKfMjyo7Vu_Ik2iFpNNoWcNCjqY4UNNmUTgWR8054IabnLJbKf-GiJFXIATHcASFYLU5soCNXbbUK",
+      "wireByteLength": 156
+    },
+    {
+      "id": "SIG_RETIRE_AUTH",
+      "purpose": "RETIRE-AUTH/V1",
+      "keyId": "v_rfc8032_test1",
+      "fields": {
+        "vKeyEpoch": 16909060,
+        "slotIdHex": "7f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374"
+      },
+      "messageHex": "484e55484f4c452f5245544952452d415554482f563100010203047f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374",
+      "signatureHex": "4bbe6cff41a7152cc1f857a782889773deac3d6992140b1d33a22098eab1893f9af5565a945b9aad63713305a40855e0dba67c128f0e64bfd0a139b0eae2a70d",
+      "messageByteLength": 59,
+      "expectedSignatureValid": true,
+      "signatureBase64url": "S75s_0GnFSzB-FengoiXc96sPWmSFAsdM6IgmOqxiT-a9VZalFuarWNxMwWkCFXg26Z8Eo8OZL_QoTmw6uKnDQ",
+      "wireKind": "FIXED_SIGNED_TICKET",
+      "wireBytesHex": "484e55484f4c452f5245544952452d415554482f563100010203047f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd6703744bbe6cff41a7152cc1f857a782889773deac3d6992140b1d33a22098eab1893f9af5565a945b9aad63713305a40855e0dba67c128f0e64bfd0a139b0eae2a70d",
+      "wireBase64url": "SE5VSE9MRS9SRVRJUkUtQVVUSC9WMQABAgMEfw3_JjcQsYDRMa_nChNvtHPTKAUpK0xyOFyWn71nA3RLvmz_QacVLMH4V6eCiJdz3qw9aZIUCx0zoiCY6rGJP5r1VlqUW5qtY3EzBaQIVeDbpnwSjw5kv9ChObDq4qcN",
+      "wireByteLength": 123
+    },
+    {
+      "id": "SIG_RETIRED",
+      "purpose": "RETIRED/V1",
+      "keyId": "c_rfc8032_test2",
+      "fields": {
+        "cKeyEpoch": 84281096,
+        "slotIdHex": "7f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374"
+      },
+      "messageHex": "484e55484f4c452f524554495245442f563100050607087f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374",
+      "signatureHex": "05122cbc8d4f25ae90161f6fa8355968ea220a755586bac61cd97bdc4eb04620481f1a2e6877606298a00486e54eb5ed16961c72c21e4607e93246f6f7a55205",
+      "messageByteLength": 55,
+      "expectedSignatureValid": true,
+      "signatureBase64url": "BRIsvI1PJa6QFh9vqDVZaOoiCnVVhrrGHNl73E6wRiBIHxouaHdgYpigBIblTrXtFpYccsIeRgfpMkb296VSBQ",
+      "wireKind": "FIXED_SIGNED_TICKET",
+      "wireBytesHex": "484e55484f4c452f524554495245442f563100050607087f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd67037405122cbc8d4f25ae90161f6fa8355968ea220a755586bac61cd97bdc4eb04620481f1a2e6877606298a00486e54eb5ed16961c72c21e4607e93246f6f7a55205",
+      "wireBase64url": "SE5VSE9MRS9SRVRJUkVEL1YxAAUGBwh_Df8mNxCxgNExr-cKE2-0c9MoBSkrTHI4XJafvWcDdAUSLLyNTyWukBYfb6g1WWjqIgp1VYa6xhzZe9xOsEYgSB8aLmh3YGKYoASG5U617RaWHHLCHkYH6TJG9velUgU",
+      "wireByteLength": 119
+    },
+    {
+      "id": "SIG_RELEASED",
+      "purpose": "RELEASED/V1",
+      "keyId": "c_rfc8032_test2",
+      "fields": {
+        "cKeyEpoch": 84281096,
+        "slotIdHex": "7f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374"
+      },
+      "messageHex": "484e55484f4c452f52454c45415345442f563100050607087f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374",
+      "signatureHex": "6b09c19111bda1ca26fe353f19e6f4603cac747cb89f682a680efc7ccc4b20292fdf5770fc1ec03c2153d04216f38d95f85d6aed14df98260282f4ee5e3d3c00",
+      "messageByteLength": 56,
+      "expectedSignatureValid": true,
+      "signatureBase64url": "awnBkRG9ocom_jU_Geb0YDysdHy4n2gqaA78fMxLICkv31dw_B7APCFT0EIW842V-F1q7RTfmCYCgvTuXj08AA",
+      "wireKind": "FIXED_SIGNED_TICKET",
+      "wireBytesHex": "484e55484f4c452f52454c45415345442f563100050607087f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd6703746b09c19111bda1ca26fe353f19e6f4603cac747cb89f682a680efc7ccc4b20292fdf5770fc1ec03c2153d04216f38d95f85d6aed14df98260282f4ee5e3d3c00",
+      "wireBase64url": "SE5VSE9MRS9SRUxFQVNFRC9WMQAFBgcIfw3_JjcQsYDRMa_nChNvtHPTKAUpK0xyOFyWn71nA3RrCcGREb2hyib-NT8Z5vRgPKx0fLifaCpoDvx8zEsgKS_fV3D8HsA8IVPQQhbzjZX4XWrtFN-YJgKC9O5ePTwA",
+      "wireByteLength": 120
+    },
+    {
+      "id": "SIG_BOOTSTRAP_POP",
+      "purpose": "BOOTSTRAP-POP/V1",
+      "keyId": "bootstrap_rfc8032_test3",
+      "fields": {
+        "slotIdHex": "7f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374",
+        "intentIdHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+        "challengeHex": "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f",
+        "registrationTicketSha256Hex": "9b001c96adedd2e0b20db64f7e1ceed4569296914a2a17228c261c8c6b4324f4"
+      },
+      "messageHex": "484e55484f4c452f424f4f5453545241502d504f502f5631007f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f9b001c96adedd2e0b20db64f7e1ceed4569296914a2a17228c261c8c6b4324f4",
+      "signatureHex": "03de4c47becbbf5e8c971bfe13015fd916e69f47dba43480007507595a2d5d556d217fd1cfa7f820a6f8b5b8ff3adb0d0b6c101e40142182e86729cc8c324600",
+      "messageByteLength": 153,
+      "expectedSignatureValid": true,
+      "signatureBase64url": "A95MR77Lv16Mlxv-EwFf2Rbmn0fbpDSAAHUHWVotXVVtIX_Rz6f4IKb4tbj_OtsNC2wQHkAUIYLoZynMjDJGAA",
+      "wireKind": "SIGNATURE_ONLY",
+      "wireBytesHex": "03de4c47becbbf5e8c971bfe13015fd916e69f47dba43480007507595a2d5d556d217fd1cfa7f820a6f8b5b8ff3adb0d0b6c101e40142182e86729cc8c324600",
+      "wireBase64url": "A95MR77Lv16Mlxv-EwFf2Rbmn0fbpDSAAHUHWVotXVVtIX_Rz6f4IKb4tbj_OtsNC2wQHkAUIYLoZynMjDJGAA",
+      "wireByteLength": 64
+    },
+    {
+      "id": "SIG_VALID_BUT_SLOT_KEY_MISMATCH",
+      "purpose": "REGISTER/V2",
+      "keyId": "v_rfc8032_test1",
+      "fields": {
+        "vKeyEpoch": 16909060,
+        "admissionWindow": 1000000,
+        "slotIdHex": "7f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374",
+        "bootstrapPublicKeyHex": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8"
+      },
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd67037403a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+      "signatureHex": "7b92755e8a17b18929a3eb0c075e81038eecf1e2dd92935f75457e76076f50dce578decdecf08af501d54816ceceebc30b47b0d89dad33fcbf4a8764a48c9201",
+      "messageByteLength": 92,
+      "expectedSignatureValid": true,
+      "signatureBase64url": "e5J1XooXsYkpo-sMB16BA47s8eLdkpNfdUV-dgdvUNzleN7N7PCK9QHVSBbOzuvDC0ew2J2tM_y_SodkpIySAQ",
+      "wireKind": "FIXED_SIGNED_TICKET",
+      "wireBytesHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd67037403a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b87b92755e8a17b18929a3eb0c075e81038eecf1e2dd92935f75457e76076f50dce578decdecf08af501d54816ceceebc30b47b0d89dad33fcbf4a8764a48c9201",
+      "wireBase64url": "SE5VSE9MRS9SRUdJU1RFUi9WMgABAgMEAA9CQH8N_yY3ELGA0TGv5woTb7Rz0ygFKStMcjhclp-9ZwN0A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbh7knVeihexiSmj6wwHXoEDjuzx4t2Sk191RX52B29Q3OV43s3s8Ir1AdVIFs7O68MLR7DYna0z_L9Kh2SkjJIB",
+      "wireByteLength": 156
+    },
+    {
+      "id": "SIG_MALICIOUS_V_NEW_QUALIFICATION",
+      "purpose": "REGISTER/V2",
+      "keyId": "v_rfc8032_test1",
+      "fields": {
+        "vKeyEpoch": 16909060,
+        "admissionWindow": 1000000,
+        "slotIdHex": "8927041417e59e7d45f37d645aa1954a42e32b759d418d170f1c40a711f7aea9",
+        "bootstrapPublicKeyHex": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8"
+      },
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42408927041417e59e7d45f37d645aa1954a42e32b759d418d170f1c40a711f7aea903a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+      "signatureHex": "a8c376490850b1c53d2bbff5d4ab809ba97f9e04a00fc6e417ae6416e7f4ca07e614c30c330bcf76705edc6c163d86c72cc11d1286424e289af34fb1698af60e",
+      "messageByteLength": 92,
+      "expectedSignatureValid": true,
+      "signatureBase64url": "qMN2SQhQscU9K7_11KuAm6l_ngSgD8bkF65kFuf0ygfmFMMMMwvPdnBe3GwWPYbHLMEdEoZCTiia80-xaYr2Dg",
+      "wireKind": "FIXED_SIGNED_TICKET",
+      "wireBytesHex": "484e55484f4c452f52454749535445522f56320001020304000f42408927041417e59e7d45f37d645aa1954a42e32b759d418d170f1c40a711f7aea903a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8a8c376490850b1c53d2bbff5d4ab809ba97f9e04a00fc6e417ae6416e7f4ca07e614c30c330bcf76705edc6c163d86c72cc11d1286424e289af34fb1698af60e",
+      "wireBase64url": "SE5VSE9MRS9SRUdJU1RFUi9WMgABAgMEAA9CQIknBBQX5Z59RfN9ZFqhlUpC4yt1nUGNFw8cQKcR966pA6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbiow3ZJCFCxxT0rv_XUq4CbqX-eBKAPxuQXrmQW5_TKB-YUwwwzC892cF7cbBY9hscswR0ShkJOKJrzT7FpivYO",
+      "wireByteLength": 156
+    },
+    {
+      "id": "SIG_LEGACY_VERSION_VALID_SIGNATURE",
+      "purpose": "REGISTER/V1",
+      "keyId": "v_rfc8032_test1",
+      "fields": {
+        "vKeyEpoch": 16909060,
+        "slotIdHex": "7f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374",
+        "bootstrapPublicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025"
+      },
+      "messageHex": "484e55484f4c452f52454749535445522f563100010203047f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "bbf2f9409f80981ea76021d908e892642d5bfeeb6944c2f4ff3dd2534ea5c1ab399372738d4b9b7e22bc724de837a953ed76bc0791c3f39cf7b8f0a0aecadb0b",
+      "messageByteLength": 88,
+      "expectedSignatureValid": true,
+      "signatureBase64url": "u_L5QJ-AmB6nYCHZCOiSZC1b_utpRML0_z3SU06lwas5k3JzjUubfiK8ck3oN6lT7Xa8B5HD85z3uPCgrsrbCw",
+      "wireKind": "FIXED_SIGNED_TICKET",
+      "wireBytesHex": "484e55484f4c452f52454749535445522f563100010203047f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025bbf2f9409f80981ea76021d908e892642d5bfeeb6944c2f4ff3dd2534ea5c1ab399372738d4b9b7e22bc724de837a953ed76bc0791c3f39cf7b8f0a0aecadb0b",
+      "wireBase64url": "SE5VSE9MRS9SRUdJU1RFUi9WMQABAgMEfw3_JjcQsYDRMa_nChNvtHPTKAUpK0xyOFyWn71nA3T8Uc2OYhiho42kftACMPBYCBbtE7ozA6xd65EVSJCAJbvy-UCfgJgep2Ah2QjokmQtW_7raUTC9P890lNOpcGrOZNyc41Lm34ivHJN6DepU-12vAeRw_Oc97jwoK7K2ws",
+      "wireByteLength": 152
+    }
+  ],
+  "negativeSignatures": [
+    {
+      "id": "SIG_MESSAGE_BIT_FLIP",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908024",
+      "signatureHex": "5cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_INVALID"
+    },
+    {
+      "id": "SIG_WRONG_VERIFIER_KEY",
+      "publicKeyHex": "3d4017c3e843895a92b70aa74d1b7ebc9c982ccf2ec4968cc0cd55f12af4660c",
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "5cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_INVALID"
+    },
+    {
+      "id": "SIG_TRUNCATED_63",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "5cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db5",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_LENGTH_INVALID"
+    },
+    {
+      "id": "SIG_EXTENDED_65",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "5cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a00",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_LENGTH_INVALID"
+    },
+    {
+      "id": "SIG_S_EQUALS_L",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "5cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944eedd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_S_NONCANONICAL"
+    },
+    {
+      "id": "SIG_S_PLUS_L",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "5cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944ef264e9ab9284b83f0333c222c09c036ac80131dc0121582d4e6ca023576db51a",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_S_NONCANONICAL"
+    },
+    {
+      "id": "SIG_R_Y_EQUALS_P",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_R_NONCANONICAL"
+    },
+    {
+      "id": "SIG_R_NEGATIVE_ZERO",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "signatureHex": "01000000000000000000000000000000000000000000000000000000000000800591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_R_NONCANONICAL"
+    },
+    {
+      "id": "POP_CHANGED_INTENT",
+      "publicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "messageHex": "484e55484f4c452f424f4f5453545241502d504f502f5631007f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374630dcd2966c4336691125448bbb25b4ff412a49c732db2c8abc1b8581bd710dd202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f9b001c96adedd2e0b20db64f7e1ceed4569296914a2a17228c261c8c6b4324f4",
+      "signatureHex": "03de4c47becbbf5e8c971bfe13015fd916e69f47dba43480007507595a2d5d556d217fd1cfa7f820a6f8b5b8ff3adb0d0b6c101e40142182e86729cc8c324600",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_INVALID"
+    },
+    {
+      "id": "POP_CHANGED_CHALLENGE",
+      "publicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "messageHex": "484e55484f4c452f424f4f5453545241502d504f502f5631007f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f72dbb7336c76780023f83da4c355f2eeea85733b13d3477697917790c12290849b001c96adedd2e0b20db64f7e1ceed4569296914a2a17228c261c8c6b4324f4",
+      "signatureHex": "03de4c47becbbf5e8c971bfe13015fd916e69f47dba43480007507595a2d5d556d217fd1cfa7f820a6f8b5b8ff3adb0d0b6c101e40142182e86729cc8c324600",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_INVALID"
+    },
+    {
+      "id": "POP_CHANGED_TICKET_HASH",
+      "publicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "messageHex": "484e55484f4c452f424f4f5453545241502d504f502f5631007f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f9a01559da5a72eceb6b4df095fa65463c7d75f2b2b7f26e24b393ba3bba1f236",
+      "signatureHex": "03de4c47becbbf5e8c971bfe13015fd916e69f47dba43480007507595a2d5d556d217fd1cfa7f820a6f8b5b8ff3adb0d0b6c101e40142182e86729cc8c324600",
+      "expectedSignatureValid": false,
+      "reason": "SIGNATURE_INVALID"
+    }
+  ],
+  "publicKeyCases": [
+    {
+      "id": "KEY_CANONICAL_VALID",
+      "publicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025",
+      "expectedPublicKeyValid": true,
+      "reason": "CANONICAL_PRIME_ORDER"
+    },
+    {
+      "id": "KEY_IDENTITY",
+      "publicKeyHex": "0100000000000000000000000000000000000000000000000000000000000000",
+      "expectedPublicKeyValid": false,
+      "reason": "IDENTITY"
+    },
+    {
+      "id": "KEY_ORDER_2",
+      "publicKeyHex": "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "expectedPublicKeyValid": false,
+      "reason": "SMALL_ORDER"
+    },
+    {
+      "id": "KEY_ORDER_4",
+      "publicKeyHex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "expectedPublicKeyValid": false,
+      "reason": "SMALL_ORDER"
+    },
+    {
+      "id": "KEY_NEGATIVE_ZERO",
+      "publicKeyHex": "0100000000000000000000000000000000000000000000000000000000000080",
+      "expectedPublicKeyValid": false,
+      "reason": "NONCANONICAL_X_ZERO_SIGN"
+    },
+    {
+      "id": "KEY_NONCANONICAL_Y_P",
+      "publicKeyHex": "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "expectedPublicKeyValid": false,
+      "reason": "NONCANONICAL_Y"
+    },
+    {
+      "id": "KEY_NONCANONICAL_Y_P_PLUS_1",
+      "publicKeyHex": "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "expectedPublicKeyValid": false,
+      "reason": "NONCANONICAL_Y"
+    },
+    {
+      "id": "KEY_MIXED_B_PLUS_ORDER2",
+      "publicKeyHex": "9599999999999999999999999999999999999999999999999999999999999999",
+      "expectedPublicKeyValid": false,
+      "reason": "MIXED_ORDER_2L"
+    },
+    {
+      "id": "KEY_OFF_CURVE_Y_2",
+      "publicKeyHex": "0200000000000000000000000000000000000000000000000000000000000000",
+      "expectedPublicKeyValid": false,
+      "reason": "POINT_NOT_ON_CURVE"
+    },
+    {
+      "id": "KEY_SHORT_31",
+      "publicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb9115489080",
+      "expectedPublicKeyValid": false,
+      "reason": "PUBLIC_KEY_LENGTH_INVALID"
+    },
+    {
+      "id": "KEY_LONG_33",
+      "publicKeyHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb91154890802500",
+      "expectedPublicKeyValid": false,
+      "reason": "PUBLIC_KEY_LENGTH_INVALID"
+    }
+  ],
+  "bareVerifierCounterexamples": [
+    {
+      "id": "LIB_IDENTITY",
+      "publicKeyHex": "0100000000000000000000000000000000000000000000000000000000000000",
+      "messageHex": "484e55484f4c452f4e454741544956452d544553542f563100",
+      "signatureHex": "58666666666666666666666666666666666666666666666666666666666666660100000000000000000000000000000000000000000000000000000000000000",
+      "expectedProtocolDecision": "REJECT",
+      "reason": "reject before Verify: invalid bootstrap public key",
+      "observed": {
+        "PyNaCl": "1.6.2",
+        "rawIsValidPoint": false,
+        "mainSubgroupWorkaround": {
+          "result": false,
+          "exceptionType": "RuntimeError"
+        },
+        "Verify": false,
+        "VerifyExceptionType": "BadSignatureError",
+        "Node": {
+          "version": "v24.11.1",
+          "OpenSSL": "3.5.4",
+          "Verify": true
+        }
+      }
+    },
+    {
+      "id": "LIB_NEGATIVE_ZERO",
+      "publicKeyHex": "0100000000000000000000000000000000000000000000000000000000000080",
+      "messageHex": "484e55484f4c452f4e454741544956452d544553542f563100",
+      "signatureHex": "58666666666666666666666666666666666666666666666666666666666666660100000000000000000000000000000000000000000000000000000000000000",
+      "expectedProtocolDecision": "REJECT",
+      "reason": "reject before Verify: invalid bootstrap public key",
+      "observed": {
+        "PyNaCl": "1.6.2",
+        "rawIsValidPoint": false,
+        "mainSubgroupWorkaround": {
+          "result": false,
+          "exceptionType": "RuntimeError"
+        },
+        "Verify": false,
+        "VerifyExceptionType": "BadSignatureError",
+        "Node": {
+          "version": "v24.11.1",
+          "OpenSSL": "3.5.4",
+          "Verify": true
+        }
+      }
+    },
+    {
+      "id": "LIB_NONCANONICAL_IDENTITY_Y_P_PLUS_1",
+      "publicKeyHex": "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "messageHex": "484e55484f4c452f4e454741544956452d544553542f563100",
+      "signatureHex": "58666666666666666666666666666666666666666666666666666666666666660100000000000000000000000000000000000000000000000000000000000000",
+      "expectedProtocolDecision": "REJECT",
+      "reason": "reject before Verify: invalid bootstrap public key",
+      "observed": {
+        "PyNaCl": "1.6.2",
+        "rawIsValidPoint": false,
+        "mainSubgroupWorkaround": {
+          "result": false,
+          "exceptionType": "RuntimeError"
+        },
+        "Verify": false,
+        "VerifyExceptionType": "BadSignatureError",
+        "Node": {
+          "version": "v24.11.1",
+          "OpenSSL": "3.5.4",
+          "Verify": true
+        }
+      }
+    },
+    {
+      "id": "LIB_MIXED_B_PLUS_ORDER2_EVEN_K",
+      "publicKeyHex": "9599999999999999999999999999999999999999999999999999999999999999",
+      "messageHex": "484e55484f4c452f544553542f4d495845442d544f5253494f4e2f56310000000000",
+      "signatureHex": "586666666666666666666666666666666666666666666666666666666666666693de03b87e76001163b6caef52f1f0d0a26284abc0d9d42bd520c3a59d11000f",
+      "expectedProtocolDecision": "REJECT",
+      "reason": "reject before Verify: pk not in prime-order subgroup",
+      "observed": {
+        "PyNaCl": "1.6.2",
+        "rawIsValidPoint": false,
+        "mainSubgroupWorkaround": {
+          "result": false,
+          "exceptionType": "RuntimeError"
+        },
+        "Verify": true,
+        "Node": {
+          "version": "v24.11.1",
+          "OpenSSL": "3.5.4",
+          "Verify": true
+        }
+      }
+    }
+  ],
+  "protocolPolicyCases": [
+    {
+      "id": "POLICY_NORMAL_REGISTER",
+      "signatureVectorId": "SIG_REGISTER_CURRENT",
+      "expectedDecision": "ACCEPT_FORMAT_BINDING",
+      "reason": "VALID_REGISTER_V2"
+    },
+    {
+      "id": "POLICY_V_REBINDS_SAME_SLOT",
+      "signatureVectorId": "SIG_VALID_BUT_SLOT_KEY_MISMATCH",
+      "expectedDecision": "REJECT",
+      "reason": "SLOT_BINDING_INVALID"
+    },
+    {
+      "id": "POLICY_V_FABRICATES_NEW_QUALIFICATION",
+      "signatureVectorId": "SIG_MALICIOUS_V_NEW_QUALIFICATION",
+      "expectedDecision": "ACCEPT_FORMAT_BINDING",
+      "reason": "MALICIOUS_V_NEW_QUALIFICATION_WITHIN_ACCEPTED_BOUNDARY"
+    },
+    {
+      "id": "POLICY_LEGACY_VALID_SIGNATURE",
+      "signatureVectorId": "SIG_LEGACY_VERSION_VALID_SIGNATURE",
+      "expectedDecision": "REJECT",
+      "reason": "MESSAGE_VERSION_UNSUPPORTED"
+    },
+    {
+      "id": "POLICY_RELEASE_IS_NOT_RETIREMENT",
+      "signatureVectorId": "SIG_RELEASED",
+      "requiredPurpose": "RETIRED/V1",
+      "expectedDecision": "REJECT",
+      "reason": "MESSAGE_PURPOSE_MISMATCH"
+    },
+    {
+      "id": "POLICY_RETIRED_IS_NOT_RELEASE",
+      "signatureVectorId": "SIG_RETIRED",
+      "requiredPurpose": "RELEASED/V1",
+      "expectedDecision": "REJECT",
+      "reason": "MESSAGE_PURPOSE_MISMATCH"
+    },
+    {
+      "id": "POLICY_REVOKED_V_KEY",
+      "signatureVectorId": "SIG_REGISTER_CURRENT",
+      "trustedKeyState": "REVOKED",
+      "expectedDecision": "FREEZE_OR_REJECT",
+      "reason": "TRUSTED_KEY_REVOKED"
+    },
+    {
+      "id": "POLICY_OTHER_ENVIRONMENT",
+      "signatureVectorId": "SIG_REGISTER_CURRENT",
+      "keyEnvironment": "test",
+      "verifierEnvironment": "production",
+      "expectedDecision": "REJECT",
+      "reason": "KEY_ENVIRONMENT_MISMATCH"
+    }
+  ],
+  "base64urlCases": [
+    {
+      "id": "ENC_CANONICAL_16",
+      "wireString": "AAECAwQFBgcICQoLDA0ODw",
+      "expectedDecodedByteLength": 16,
+      "expectedDecision": "ACCEPT",
+      "reason": "CANONICAL_BASE64URL"
+    },
+    {
+      "id": "ENC_CANONICAL_32",
+      "wireString": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+      "expectedDecodedByteLength": 32,
+      "expectedDecision": "ACCEPT",
+      "reason": "CANONICAL_BASE64URL"
+    },
+    {
+      "id": "ENC_CANONICAL_64",
+      "wireString": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0-Pw",
+      "expectedDecodedByteLength": 64,
+      "expectedDecision": "ACCEPT",
+      "reason": "CANONICAL_BASE64URL"
+    },
+    {
+      "id": "ENC_EQUALS_PADDING",
+      "wireString": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+      "expectedDecodedByteLength": 32,
+      "expectedDecision": "REJECT",
+      "reason": "PADDING_FORBIDDEN"
+    },
+    {
+      "id": "ENC_NONZERO_PADDING_BITS",
+      "wireString": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh_",
+      "expectedDecodedByteLength": 32,
+      "expectedDecision": "REJECT",
+      "reason": "NONZERO_PADDING_BITS"
+    },
+    {
+      "id": "ENC_NEWLINE",
+      "wireString": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8\n",
+      "expectedDecodedByteLength": 32,
+      "expectedDecision": "REJECT",
+      "reason": "CHARACTER_FORBIDDEN"
+    },
+    {
+      "id": "ENC_SHORT",
+      "wireString": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh",
+      "expectedDecodedByteLength": 32,
+      "expectedDecision": "REJECT",
+      "reason": "DECODED_LENGTH_INVALID"
+    },
+    {
+      "id": "ENC_STANDARD_PLUS",
+      "wireString": "+AECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+      "expectedDecodedByteLength": 32,
+      "expectedDecision": "REJECT",
+      "reason": "CHARACTER_FORBIDDEN"
+    },
+    {
+      "id": "ENC_STANDARD_SLASH",
+      "wireString": "/AECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+      "expectedDecodedByteLength": 32,
+      "expectedDecision": "REJECT",
+      "reason": "CHARACTER_FORBIDDEN"
+    }
+  ],
+  "framingCases": [
+    {
+      "id": "FRAME_REGISTER_VALID",
+      "purpose": "REGISTER/V2",
+      "signedBytesHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb9115489080255cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a",
+      "expectedDecision": "ACCEPT",
+      "reason": "FIXED_LENGTH"
+    },
+    {
+      "id": "FRAME_REGISTER_TRAILING_BYTE",
+      "purpose": "REGISTER/V2",
+      "signedBytesHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb9115489080255cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a00",
+      "expectedDecision": "REJECT",
+      "reason": "MESSAGE_LENGTH_INVALID"
+    },
+    {
+      "id": "FRAME_REGISTER_MISSING_BYTE",
+      "purpose": "REGISTER/V2",
+      "signedBytesHex": "484e55484f4c452f52454749535445522f56320001020304000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb9115489080255cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db5",
+      "expectedDecision": "REJECT",
+      "reason": "MESSAGE_LENGTH_INVALID"
+    },
+    {
+      "id": "FRAME_U32_LITTLE_ENDIAN",
+      "purpose": "REGISTER/V2",
+      "signedBytesHex": "484e55484f4c452f52454749535445522f56320004030201000f42407f0dff263710b180d131afe70a136fb473d32805292b4c72385c969fbd670374fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb9115489080255cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e0591f34e7821a6e72c96ca7fe1a22455c80131dc0121582d4e6ca023576db50a",
+      "expectedDecision": "REJECT",
+      "reason": "SIGNATURE_INVALID"
+    }
+  ],
+  "timeCases": [
+    {
+      "id": "TIME_CURRENT_BUCKET_START",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1800000000,
+      "expectedDecision": "ACCEPT",
+      "reason": "CURRENT_WINDOW"
+    },
+    {
+      "id": "TIME_CURRENT_BUCKET_LAST_SECOND",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1800001799,
+      "expectedDecision": "ACCEPT",
+      "reason": "CURRENT_WINDOW"
+    },
+    {
+      "id": "TIME_PREVIOUS_BUCKET_FIRST_SECOND",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1800001800,
+      "expectedDecision": "ACCEPT",
+      "reason": "PREVIOUS_WINDOW"
+    },
+    {
+      "id": "TIME_PREVIOUS_BUCKET_LAST_SECOND",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1800003599,
+      "expectedDecision": "ACCEPT",
+      "reason": "PREVIOUS_WINDOW"
+    },
+    {
+      "id": "TIME_EXPIRED_EXACT_NEXT_BOUNDARY",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1800003600,
+      "expectedDecision": "REJECT",
+      "reason": "REGISTRATION_TICKET_EXPIRED"
+    },
+    {
+      "id": "TIME_FUTURE_1_SECOND",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1799999999,
+      "expectedDecision": "REJECT_RETRY_ORIGINAL",
+      "reason": "REGISTRATION_TICKET_NOT_YET_VALID",
+      "retryAfterSeconds": 1
+    },
+    {
+      "id": "TIME_FUTURE_60_SECONDS",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1799999940,
+      "expectedDecision": "REJECT_RETRY_ORIGINAL",
+      "reason": "REGISTRATION_TICKET_NOT_YET_VALID",
+      "retryAfterSeconds": 60
+    },
+    {
+      "id": "TIME_FUTURE_61_SECONDS",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1799999939,
+      "expectedDecision": "REJECT_CLOCK_FAULT",
+      "reason": "REGISTRATION_TICKET_NOT_YET_VALID"
+    },
+    {
+      "id": "TIME_FUTURE_MORE_THAN_ONE_BUCKET",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1799998199,
+      "expectedDecision": "REJECT_CLOCK_FAULT",
+      "reason": "REGISTRATION_TICKET_NOT_YET_VALID"
+    },
+    {
+      "id": "TIME_LOCK_WAIT_CROSSES_EXPIRY",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1800003600,
+      "expectedDecision": "REJECT",
+      "reason": "REGISTRATION_TICKET_EXPIRED",
+      "requestStartUnixSeconds": 1800003599
+    },
+    {
+      "id": "TIME_RESTORE_CLOCK_ROLLBACK",
+      "ticketWindow": 1000000,
+      "lockedDecisionUnixSeconds": 1800000000,
+      "expectedDecision": "FREEZE",
+      "reason": "TIME_TRUST_NOT_MONOTONIC",
+      "timeHighWatermarkUnixSeconds": 1800003600
+    }
+  ],
+  "domainHashes": [
+    {
+      "id": "HASH_RECOVERY",
+      "domain": "HNUHOLE/RECOVERY/V1",
+      "inputHex": "000102030405060708090a0b0c0d0e0f",
+      "digestHex": "7ce080e39fe12c54c85980ed9de99bcc5e1d4743c2d77c55fdf83f95cb15f1a8"
+    },
+    {
+      "id": "HASH_CLOSE_STATUS",
+      "domain": "HNUHOLE/CLOSE-STATUS/V1",
+      "inputHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "digestHex": "390ed4d3d951363f4b6f9281dbe705e9de9e974e47d84f40d70c0810df0c3ecd"
+    },
+    {
+      "id": "HASH_SESSION_REVOKE",
+      "domain": "HNUHOLE/SESSION-REVOKE/V1",
+      "inputHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "digestHex": "616bb1fff11fad01661c102b20140b1b1389213851dff2a5d5b5ca5e44385c49"
+    },
+    {
+      "id": "HASH_V_REQUEST",
+      "domain": "HNUHOLE/V-REQUEST-TOMBSTONE/V1",
+      "inputHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "digestHex": "71f2a6ff1cf7560eb6c0d2d3df08f9e539e8e7b8fb204f63337aee20d3522376"
+    },
+    {
+      "id": "HASH_C_REQUEST",
+      "domain": "HNUHOLE/C-REQUEST-TOMBSTONE/V1",
+      "inputHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "digestHex": "f2592290b198aeab029578eb32d75b54b00ca428bc27bcd802aee8c0df183409"
+    },
+    {
+      "id": "HASH_C_CLOSURE",
+      "domain": "HNUHOLE/C-CLOSURE-TOMBSTONE/V1",
+      "inputHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "digestHex": "c27c388049c4906e03ff5086fc84fb07a76793e4d49b715f32b7be8afbd0f7b4"
+    },
+    {
+      "id": "HASH_REVOKE_STORAGE",
+      "domain": "HNUHOLE/REVOKE-STORAGE/V1",
+      "inputHex": "616bb1fff11fad01661c102b20140b1b1389213851dff2a5d5b5ca5e44385c49",
+      "digestHex": "88d7ba599b6f72cfefd96646d21d36dabdabf90b37219686bcafe0e45eed1f26"
+    }
+  ],
+  "recoveryCodeEncoding": {
+    "raw16ByteHex": "000102030405060708090a0b0c0d0e0f",
+    "base32NoPadding": "AAAQEAYEAUDAOCAJBIFQYDIOB4",
+    "acceptedDisplayExample": "aaaqe ayeau daoca jbifq ydiob 4",
+    "rejectedNonzeroPaddingBits": "AAAQEAYEAUDAOCAJBIFQYDIOBZ"
+  },
+  "stateCases": [
+    {
+      "id": "STATE_SLOT_ABSENT",
+      "inputState": "ABSENT",
+      "operation": "REGISTER",
+      "expectedState": "ACTIVE",
+      "requiredEvidence": "REAL_SQL_UNIQUE_TRANSACTION_PENDING"
+    },
+    {
+      "id": "STATE_SLOT_RETIRED",
+      "inputState": "RETIRED",
+      "operation": "REGISTER",
+      "expectedState": "RETIRED",
+      "expectedDecision": "REJECT",
+      "requiredEvidence": "REAL_SQL_REPLAY_TEST_PENDING"
+    },
+    {
+      "id": "STATE_SLOT_CLOSED",
+      "inputState": "CLOSED",
+      "operation": "REGISTER",
+      "expectedState": "CLOSED",
+      "expectedDecision": "REJECT",
+      "requiredEvidence": "REAL_SQL_REPLAY_TEST_PENDING"
+    },
+    {
+      "id": "STATE_RETIRE_ACTIVE",
+      "inputState": "ACTIVE",
+      "operation": "RETIRE",
+      "expectedState": "ACTIVE",
+      "expectedDecision": "REJECT",
+      "requiredEvidence": "REAL_SQL_RACE_TEST_PENDING"
+    },
+    {
+      "id": "STATE_OLD_RELEASE_NEW_QUOTA",
+      "currentQuotaSlot": "new-slot",
+      "receiptSlot": "old-slot",
+      "expectedDecision": "ACK_ONLY_IF_MATCHING_OLD_TERMINAL",
+      "mustNotChangeCurrentQuota": true,
+      "requiredEvidence": "REAL_V_TRANSACTION_TEST_PENDING"
+    },
+    {
+      "id": "STATE_RECEIPT_CONFLICT",
+      "knownTerminalPurpose": "RETIRED/V1",
+      "incomingPurpose": "RELEASED/V1",
+      "expectedDecision": "REJECT_RECONCILE_NO_ACK",
+      "requiredEvidence": "REAL_V_RECEIPT_TEST_PENDING"
+    },
+    {
+      "id": "STATE_SIGNER_BEFORE_COMMIT",
+      "outboxCommitState": "UNCOMMITTED",
+      "expectedDecision": "NO_EXTERNAL_SIGNATURE",
+      "requiredEvidence": "SIGNER_FAILURE_INJECTION_PENDING"
+    },
+    {
+      "id": "STATE_RELEASE_ACK_LOST",
+      "vCommitState": "COMMITTED",
+      "cAckState": "UNKNOWN",
+      "expectedDecision": "RETRY_SAME_TERMINAL_RECEIPT",
+      "requiredEvidence": "TWO_PARTY_FAULT_TEST_PENDING"
+    },
+    {
+      "id": "STATE_IDEMPOTENCY_EXPIRED",
+      "requestAnchorState": "EXPIRED",
+      "expectedDecision": "HTTP_410_NO_REEXECUTION",
+      "requiredEvidence": "REAL_CLEANUP_RACE_TEST_PENDING"
+    },
+    {
+      "id": "STATE_CLOSURE_LOCK_AFTER_DUE",
+      "requestStartUnixSeconds": 1799999999,
+      "lockedDecisionUnixSeconds": 1800000000,
+      "closureDueUnixSeconds": 1800000000,
+      "expectedDecision": "NO_CANCEL_OR_LOGIN",
+      "requiredEvidence": "REAL_ACCOUNT_LOCK_TEST_PENDING"
+    },
+    {
+      "id": "STATE_CREDENTIAL_VERSION_CHANGED",
+      "proofCredentialVersion": 4,
+      "lockedCredentialVersion": 5,
+      "expectedDecision": "REJECT_OLD_PROOF",
+      "requiredEvidence": "REAL_RESET_AND_MANAGEMENT_RACE_PENDING"
+    },
+    {
+      "id": "STATE_PASSWORD_RESET_RESULT_UNKNOWN",
+      "intentState": "LIVE",
+      "resultRecord": "ABSENT",
+      "expectedDecision": "PENDING_NOT_NOT_COMMITTED",
+      "requiredEvidence": "REAL_RESULT_QUERY_RACE_PENDING"
+    }
+  ],
+  "signaturePointCases": [
+    {
+      "id": "R_CANONICAL_VALID",
+      "pointHex": "5cc0e364842fd729f323ca8ed5bbf224da216934da1670d0a3a98e1434d9944e",
+      "expectedPointValid": true,
+      "reason": "CANONICAL_NONIDENTITY_PRIME_ORDER"
+    },
+    {
+      "id": "R_IDENTITY",
+      "pointHex": "0100000000000000000000000000000000000000000000000000000000000000",
+      "expectedPointValid": false,
+      "reason": "IDENTITY"
+    },
+    {
+      "id": "R_ORDER_2",
+      "pointHex": "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "expectedPointValid": false,
+      "reason": "SMALL_ORDER"
+    },
+    {
+      "id": "R_ORDER_4",
+      "pointHex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "expectedPointValid": false,
+      "reason": "SMALL_ORDER"
+    },
+    {
+      "id": "R_NEGATIVE_ZERO",
+      "pointHex": "0100000000000000000000000000000000000000000000000000000000000080",
+      "expectedPointValid": false,
+      "reason": "NONCANONICAL_X_ZERO_SIGN"
+    },
+    {
+      "id": "R_NONCANONICAL_Y_P",
+      "pointHex": "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "expectedPointValid": false,
+      "reason": "NONCANONICAL_Y"
+    },
+    {
+      "id": "R_NONCANONICAL_Y_P_PLUS_1",
+      "pointHex": "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "expectedPointValid": false,
+      "reason": "NONCANONICAL_Y"
+    },
+    {
+      "id": "R_MIXED_B_PLUS_ORDER2",
+      "pointHex": "9599999999999999999999999999999999999999999999999999999999999999",
+      "expectedPointValid": false,
+      "reason": "MIXED_ORDER_2L"
+    },
+    {
+      "id": "R_OFF_CURVE_Y_2",
+      "pointHex": "0200000000000000000000000000000000000000000000000000000000000000",
+      "expectedPointValid": false,
+      "reason": "POINT_NOT_ON_CURVE"
+    },
+    {
+      "id": "R_SHORT_31",
+      "pointHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb9115489080",
+      "expectedPointValid": false,
+      "reason": "PUBLIC_KEY_LENGTH_INVALID"
+    },
+    {
+      "id": "R_LONG_33",
+      "pointHex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb91154890802500",
+      "expectedPointValid": false,
+      "reason": "PUBLIC_KEY_LENGTH_INVALID"
+    }
+  ],
+  "libraryBehaviorControls": [
+    {
+      "id": "LIB_NONCANONICAL_S_ADD_L",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "",
+      "signatureHex": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901554c8c7872aa064e049dbb3013fbf29380d25bf5f0595bbe24655141438e7a101b",
+      "expectedProtocolDecision": "REJECT",
+      "reason": "reject S integer is not < L",
+      "observed": {
+        "PyNaCl": "1.6.2",
+        "Verify": false,
+        "Node": {
+          "version": "v24.11.1",
+          "OpenSSL": "3.5.4",
+          "Verify": false
+        }
+      }
+    },
+    {
+      "id": "LIB_NONCANONICAL_R_Y_P_PLUS_1",
+      "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "messageHex": "",
+      "signatureHex": "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f5fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b",
+      "expectedProtocolDecision": "REJECT",
+      "reason": "reject R field encoding y >= p",
+      "observed": {
+        "PyNaCl": "1.6.2",
+        "Verify": false,
+        "Node": {
+          "version": "v24.11.1",
+          "OpenSSL": "3.5.4",
+          "Verify": false
+        }
+      }
+    }
+  ],
+  "observations": {
+    "recordedOn": "2026-09-28",
+    "pythonBinding": "PyNaCl 1.6.2",
+    "nodeVersion": "v24.11.1",
+    "opensslVersion": "3.5.4",
+    "scope": "Static fixture regeneration, signature verification, point acceptance, canonical encoding and hash arithmetic only; production library selection, services, SQL, client and deployment tests remain pending.",
+    "underlyingSodiumVersion": "Not inferred from the PyNaCl package version; point validation was measured on this wheel. Official upstream documents a historical <=1.0.20 subgroup bug."
+  }
+}

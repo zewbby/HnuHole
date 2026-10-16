@@ -1,0 +1,2847 @@
+{
+  "schemaVersion": "hnuhole-image-viewer-gallery-identity/v1",
+  "recordedOn": "2026-10-14",
+  "timezone": "Asia/Shanghai",
+  "moduleId": "IV01",
+  "branch": "codex/image-viewer-component",
+  "initialSha": "1852dda029ce12cb257487ab7e9748c24afee57c",
+  "executionHead": "1852dda029ce12cb257487ab7e9748c24afee57c",
+  "finalCommitIdentity": "Owning Git commit plus external entry-publication-receipt.json; no self-referencing SHA",
+  "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo",
+  "testedPackageDigestSha256": "080aa3dcb7c7b96cde5dce05b82aac0b2000fe2b646681128d8000196ffeffa7",
+  "testedPackageManifest": [
+    {
+      "path": "packages/image_viewer/analysis_options.yaml",
+      "sha256": "88a05fea8acb9db6d976dc273cd08a80275f43044479b561a7c1374c653d96a4"
+    },
+    {
+      "path": "packages/image_viewer/example/.gitignore",
+      "sha256": "0581d23086f7283dc97d2d5bde4f60724f8115f67baa76949596790ab9800dd7"
+    },
+    {
+      "path": "packages/image_viewer/example/.metadata",
+      "sha256": "f45c520e51bccacb63e80516da7687639eee917ae215b016261fe70f2f3c5995"
+    },
+    {
+      "path": "packages/image_viewer/example/analysis_options.yaml",
+      "sha256": "92808b5cfd2ab6193a124faa355f0050d4e7c2fbe09c474a4f88f9f02e021711"
+    },
+    {
+      "path": "packages/image_viewer/example/android/.gitignore",
+      "sha256": "c9af75dbc2c8aa867476a09426c80b178c4aeed8b9393ae48503eedfa3273d71"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/build.gradle.kts",
+      "sha256": "cf18df0da67bc1127595b295f68fc0efa7134f4861ffc8ed154575ea2fc82c5d"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/debug/AndroidManifest.xml",
+      "sha256": "b01a4541a8144c15bc617bab7eb267c99fa1476368fbbda5a12cdbf4e316a34c"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/AndroidManifest.xml",
+      "sha256": "b0067e1405d8d0b5dea1061de1fb4d665598889d4791efdd37aac68ba86b53d5"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/kotlin/org/hnuhole/image_viewer_component/MainActivity.kt",
+      "sha256": "c03dbde7093c2c7bc5d983cdb3a35b944ff7bbcae2f6d345ca999af84e85ed4a"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/drawable-v21/launch_background.xml",
+      "sha256": "dca312ec77de83e43ef70a825c299b51451247286c29167d62f19165750b8793"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/drawable/launch_background.xml",
+      "sha256": "2df60e2cfbee873ce2858088cf003e6b93498f2f568476da437610467ea1a9d7"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "sha256": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "sha256": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "sha256": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "sha256": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "sha256": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/values-night/styles.xml",
+      "sha256": "ea763597dc1a84c8034251caee98d7753e0fbf57340ffc94677427de4b537516"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/values/styles.xml",
+      "sha256": "cca15a99b59380a548bf6a890f7ca5380ee509b1f9bbb2f5f9ec3589fa25c2f7"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/nativecheckDebug/AndroidManifest.xml",
+      "sha256": "8c45b13960cb7a1e8517134e464dea9f37d7edc696c44579989b3cfaf2782dc9"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/nativecheckDebug/kotlin/org/hnuhole/image_viewer_component/NativeWebpReplayProbe.kt",
+      "sha256": "57d62f551406cb83a7d730e4c4a8903959e2e569a746adc3872884d95eed3fb6"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/profile/AndroidManifest.xml",
+      "sha256": "b01a4541a8144c15bc617bab7eb267c99fa1476368fbbda5a12cdbf4e316a34c"
+    },
+    {
+      "path": "packages/image_viewer/example/android/build.gradle.kts",
+      "sha256": "218f400e3fff31c9c986a2535dfb974560e1b4d33cc27b7c1fee96a2b7e44454"
+    },
+    {
+      "path": "packages/image_viewer/example/android/gradle.properties",
+      "sha256": "7714698de712a7872e371f0dbae626c255fc83ac1c15e52e7cd9fcaa241b5092"
+    },
+    {
+      "path": "packages/image_viewer/example/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "1d39697ffc15174713e75c803daeaccdbf81c52a9d1546306ef170821a1fd1eb"
+    },
+    {
+      "path": "packages/image_viewer/example/android/settings.gradle.kts",
+      "sha256": "092ba880c8d4a07591aafc082f45deedc9afcf60c113a4bb3d13cbe1a1fce9de"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_benchmark.webp",
+      "sha256": "0145845e1b4aff94e1f73841f03b6ea6d5ef0aeeb16bdd3831724d563e42fb46"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary_infinite.webp",
+      "sha256": "3897796f787092b33333358d146482a4f67759bd97075be6669f305e88d696ed"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary_once.webp",
+      "sha256": "39f08e88ed651f7321a8de9e80e99bd605b4d8eb88b1194e8f7c9fec8bd39fad"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary.webp",
+      "sha256": "259c7f65840e440861329dbd35723c04a446ecabbfb21f2283bf5f56d97806f5"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_infinite.gif",
+      "sha256": "9f0ab897a6b22f6a6a19310462aaf78a776ab8fc05d2cc805889d3e0871df9ed"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_infinite.webp",
+      "sha256": "e8d714336d16477d76cf01515d61a8e9916babd87ee093434bbd1638ead40e76"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_once.webp",
+      "sha256": "d73a18998b3325cae6a2c6c9f3ec2b82ac7e78a8e19899d2202c3ace287859be"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_over_limit.webp",
+      "sha256": "45e67e717cb796bb87deb43430da1f1d3c4c051c01e9c7525b75f7beb84786b1"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_repeat_once.gif",
+      "sha256": "43a730212cf2cdd0ff3f8e32f5e00ed0032b0e1fa68ed3d594cde76e43f645c8"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_replay_slow.webp",
+      "sha256": "f881330695568fd135112d6ce63c547f7fe0773d9c7e18f4b28294fd6ad99be6"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_timing.webp",
+      "sha256": "32a65f932e0330630c78e0e86f0483c17381fc922df3dc99ac18392e3747305b"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation.gif",
+      "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation.webp",
+      "sha256": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/long.png",
+      "sha256": "69269d9cd174e1be00a84efecc1b9a01b9150ba4dae8b41816359ae13749575b"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/manifest.json",
+      "sha256": "d0108abd91d5eb900a81ad53ed1822e5a883fe5685cc0cbe8fe8b1bd202a8600"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/ordinary.png",
+      "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/replay_identity_fast.webp",
+      "sha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/replay_identity_slow.webp",
+      "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75"
+    },
+    {
+      "path": "packages/image_viewer/example/integration_test/image_viewer_component_device_test.dart",
+      "sha256": "823c1dcfa8d39eb3230c77b3a65097733780174b356a52398835bc742f277ac5"
+    },
+    {
+      "path": "packages/image_viewer/example/integration_test/image_viewer_device_test.dart",
+      "sha256": "456c81ca88b8a642af09544374b1e67380692ce0c9cc2d9927e06a91c1a72d57"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/.gitignore",
+      "sha256": "e85b4db8ba6ed14708e5f7d3c60336e5a3067ce11329b84aa8ba5d98603ee253"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/AppFrameworkInfo.plist",
+      "sha256": "e51cfa76fca1ae586244b43bf97423577315d2906394c1e7768ef43b8d23e161"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/Debug.xcconfig",
+      "sha256": "c0d1da54718e75f2028962b689258ecc741abf7cdaed50483aa5225264d0a7d7"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/Release.xcconfig",
+      "sha256": "c0d1da54718e75f2028962b689258ecc741abf7cdaed50483aa5225264d0a7d7"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.pbxproj",
+      "sha256": "d2e3826887821c3badace634ad40a03a0357ca6c050c8e5c4f5b86d7e9d186d6"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "sha256": "ac28b35c2b940210bec0fff8e424b07fd0efe9112ab178a10533583f251a386c"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256": "d557c2c32fc6258ec28981fa45dc847b76c9968beb90a2e26d13ef9c4ea45c30"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256": "dd64c0308ab2971c456871b990b24a008bdc3ece09833e8dbe9675e33a496e74"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+      "sha256": "a46c0d064503db8bf9f452b492c61fdf76f9febb8894005fe30b2facec21e550"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/contents.xcworkspacedata",
+      "sha256": "706a4c812f2a1e220e6785c27580020d58048e2ae4d30d1280f3c43344ce6b38"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256": "d557c2c32fc6258ec28981fa45dc847b76c9968beb90a2e26d13ef9c4ea45c30"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256": "dd64c0308ab2971c456871b990b24a008bdc3ece09833e8dbe9675e33a496e74"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/AppDelegate.swift",
+      "sha256": "54a5e98d6c3e8a79413ad50607b83aac8ded8828bc913eda1fe86bb33a66cd5d"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "sha256": "5f8b941b774bde4496d73347c1f79cbdd786bb76fbdab9ed1f3f0cb78a0fb0d3"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "sha256": "7770183009e914112de7d8ef1d235a6a30c5834424858e0d2f8253f6b8d31926"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "sha256": "cab10a0d391ec5bc09ef50ce49e8ad401cee7ef03707ec0923a222c5c2b3d212"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "sha256": "c6e6d3b215ae744a9c391f4c4d44157eff5e739d6ad6c39f9bfa5df66dddd267"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "sha256": "5dee24dc104ac76dc162e42ae0beb163d426bf365562ee28ba7b3ad368559a60"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "sha256": "a9b21eb6f4271385655a8771f76e29eef8c1107d7879cbcfc567e6619d1f716a"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "sha256": "e677d701ffe4af7bc2935098d6b3984cc9ab7ace573e6900955a5535b12410cf"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "sha256": "7c61c42fc7b657d9cf314d32a4ec458f0647c3aaf360be1b9377857266ec2499"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "sha256": "4209a49e44a92ec40a327d3455eb1b1c153ee83d75de1c2be0a12ab18b2ff9de"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "sha256": "836c918cb613249eba0483a6b02fa3df3c1c0a89a315ee4d3b88509b83c7ab73"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "sha256": "41c7d42f6e61f8fe7f30b1ffa2256aecbc9682be06d18c4a3062043e1a2e547c"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "sha256": "5d7e5bdf01b93802bc973345b3a78c038907147625035952a08a115a563b7f81"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "sha256": "fbd112a9f3b541a1d811f71ac8e4fe68b6176687d973a5f4d99b7aa4a722e94e"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+      "sha256": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "sha256": "bc3644fbb251ff1e18de25a4932c927850ae1a025be3dd1447940429633fe4b2"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Base.lproj/Main.storyboard",
+      "sha256": "dcea4686c02065e56217fd19fcfb73d7509b41872e7486126149d47a18559363"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Info.plist",
+      "sha256": "520d0002590aa9508d8836d97a2881ba7c74577f7c6fa5e0757e035f884cfd2d"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Runner-Bridging-Header.h",
+      "sha256": "efe657d8b27f7f8595a0d416bffb33fe7d93bd2869d81f7353b556c439d7a1a7"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/SceneDelegate.swift",
+      "sha256": "edce811c671ca0a6ccb14753e14e16deb0d89a0adf4f1b685e362d87d8f4c366"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/RunnerTests/RunnerTests.swift",
+      "sha256": "c0e04141287eb7f9c9f3d31cf5be8cb626a9ea71351206c9121578e8b8f480c3"
+    },
+    {
+      "path": "packages/image_viewer/example/lib/component_example.dart",
+      "sha256": "d1b6829d9b8f6ee7d40dbbe7b5a10b8cf00ae2af68717e654fe2c7085d90cdd3"
+    },
+    {
+      "path": "packages/image_viewer/example/lib/main.dart",
+      "sha256": "0bdb424bc3420bec21a64ca0e146b2ceee134288f311905a4b268ee7081ee0ba"
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.lock",
+      "sha256": "9a7de0b094b07456d44016212168f2f5890e5a74d0bf4f708d77db6c51c95a24"
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.yaml",
+      "sha256": "bf18e0ca41d0a0bfa16044103deeb6315f5d6e9c676ba14f52f163de11762993"
+    },
+    {
+      "path": "packages/image_viewer/example/README.md",
+      "sha256": "d2df2b06370559d785b3e49d55ae2dd193f10d80399b2909d895781da3c2251b"
+    },
+    {
+      "path": "packages/image_viewer/example/test/component_example_test.dart",
+      "sha256": "aa6db73bca72519b4f1224c55a8d6fe40fdcb667df55e92d1ec132e82eafd401"
+    },
+    {
+      "path": "packages/image_viewer/lib/image_viewer.dart",
+      "sha256": "956eeeb41ce283a362d4de5ef5d349c0c3293ce43f2d5d9bdd04ff2b13de0e92"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/m1_save_probe.dart",
+      "sha256": "969b5e8cc0b0c791c8736e2a64fcc9a105b041fbd75ab706babea3c0b284eaa0"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/m1_viewer_probe.dart",
+      "sha256": "de5ab059580d6a7fd732e0af8bb9d4e67062bf5f9606ae8757943a719db5a5db"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_controller.dart",
+      "sha256": "85e637c78e3b839a6d4bc357ac7475ea6b3bf9761fd3699fd6ab0934be0fc9a0"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_save.dart",
+      "sha256": "15166f2fb117170845cb0cd25577cf334e8b9d1a1421d9853cad1e8ed2bed497"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_surface.dart",
+      "sha256": "5fe1e9bd61a3f3ccee40c9fdb35cf5776fa3094397574b7c8a2b072dc97d9f16"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer.dart",
+      "sha256": "25fb4fc17f9a4f9e7aaf6151a15ea208d365fa6b85b219bdc45da8290b7eef2e"
+    },
+    {
+      "path": "packages/image_viewer/pubspec.lock",
+      "sha256": "00ac99d693f003b46111d24e18a233741aedfd3501569130d57d731ca192fb81"
+    },
+    {
+      "path": "packages/image_viewer/pubspec.yaml",
+      "sha256": "a13b4d5cea14c77d690aec45f3ebf3afa833cf4bb6e97f53dc421cfaed2ebedf"
+    },
+    {
+      "path": "packages/image_viewer/README.md",
+      "sha256": "906000717dd5fc80353737fb69d897bac6633f5c1b5c34d8a9feaa5d0731f47c"
+    },
+    {
+      "path": "packages/image_viewer/test/m1_animation_codec_test.dart",
+      "sha256": "a3dab3c672f34a85985ff1096bce40a40b7c73839b103703058d9fb84f938c1b"
+    },
+    {
+      "path": "packages/image_viewer/test/m1_gesture_lifecycle_test.dart",
+      "sha256": "aa3db2c2db6a28bd6b33846972c0d6b1e91fce823f62d39e2fdf07899d8c456d"
+    },
+    {
+      "path": "packages/image_viewer/test/m1_save_probe_test.dart",
+      "sha256": "3eb3a87a6b9c7478b6cf05876a9f7c66b96cf7e5b177df421ab95ffdab3d0614"
+    },
+    {
+      "path": "packages/image_viewer/test/viewer_contract_test.dart",
+      "sha256": "0a9cc721dfdc4a0ea2df53ed9e40c999836956b2f864bf85263aaa9ebb11f635"
+    },
+    {
+      "path": "packages/image_viewer/test/viewer_save_test.dart",
+      "sha256": "f38d1923490bd4f60aea169bc0c0cc41cbd0b58811234137394345e732634ff8"
+    },
+    {
+      "path": "packages/image_viewer/tool/collect_test_results.py",
+      "sha256": "e71ff428ebcb6bd5314ef91dfaee5abaa1faedef42b85be82cf7ff13c3aa0443"
+    },
+    {
+      "path": "packages/image_viewer/tool/create_fixtures.py",
+      "sha256": "6febfe9b73afe0261076d82eeb750fb221562e6989c61ac9f93fa86977b42ade"
+    },
+    {
+      "path": "packages/image_viewer/tool/create_replay_control.py",
+      "sha256": "0ca630a7e2c4a2d47ca0df396c4d488bde3eb9c7ae687006eb04ac8a8fd338db"
+    },
+    {
+      "path": "packages/image_viewer/tool/create_replay_identity_controls.py",
+      "sha256": "4bbff966752aaafb434b9d6a9c3b161602623bd1eb03944fef028395c974c5a5"
+    },
+    {
+      "path": "packages/image_viewer/tool/m1_animation_codec.dart",
+      "sha256": "176c68bce516748416912fe5b183e5b2f43b79e6201574da9648ad16971b7808"
+    },
+    {
+      "path": "packages/image_viewer/tool/measure_conversion.dart",
+      "sha256": "c128019982ab658c394268b391d3775386c264c36ec74503fb0dbc6837fa991c"
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "analyze",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer",
+      "startedAtUtc": "2026-10-14T02:54:08.8359724+00:00",
+      "endedAtUtc": "2026-10-14T02:54:16.9112877+00:00",
+      "exitCode": 0,
+      "head": "1852dda029ce12cb257487ab7e9748c24afee57c",
+      "sourceStableDuringCommand": true,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\identity-package-analyze.log"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer",
+      "startedAtUtc": "2026-10-14T02:54:17.0349235+00:00",
+      "endedAtUtc": "2026-10-14T02:54:28.0039164+00:00",
+      "exitCode": 0,
+      "head": "1852dda029ce12cb257487ab7e9748c24afee57c",
+      "sourceStableDuringCommand": true,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\identity-package-tests.log"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "analyze",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T02:54:28.0828345+00:00",
+      "endedAtUtc": "2026-10-14T02:54:33.9147103+00:00",
+      "exitCode": 0,
+      "head": "1852dda029ce12cb257487ab7e9748c24afee57c",
+      "sourceStableDuringCommand": true,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\identity-example-analyze.log"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "test"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T02:54:33.9836045+00:00",
+      "endedAtUtc": "2026-10-14T02:54:38.4869033+00:00",
+      "exitCode": 0,
+      "head": "1852dda029ce12cb257487ab7e9748c24afee57c",
+      "sourceStableDuringCommand": true,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\identity-example-tests.log"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "bundle",
+        "--debug",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T02:54:38.5477446+00:00",
+      "endedAtUtc": "2026-10-14T02:54:42.6805042+00:00",
+      "exitCode": 0,
+      "head": "1852dda029ce12cb257487ab7e9748c24afee57c",
+      "sourceStableDuringCommand": true,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\identity-bundle.log"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub",
+        "--flavor=nativecheck",
+        "--split-per-abi",
+        "--target-platform=android-arm64",
+        "--build-name=0.0.0-webp-identity20261014",
+        "--build-number=20261017",
+        "--dart-define=VIEWER_ENABLE_NATIVE_EXPORT=true"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T02:54:42.7366630+00:00",
+      "endedAtUtc": "2026-10-14T02:55:17.6811377+00:00",
+      "exitCode": 0,
+      "head": "1852dda029ce12cb257487ab7e9748c24afee57c",
+      "sourceStableDuringCommand": true,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\identity-nativecheck-final.log"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub",
+        "--flavor=component",
+        "--split-per-abi",
+        "--target-platform=android-arm64",
+        "--build-name=0.0.0-webp-identity20261014",
+        "--build-number=20261017"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T02:55:17.7741743+00:00",
+      "endedAtUtc": "2026-10-14T02:55:47.4707445+00:00",
+      "exitCode": 0,
+      "head": "1852dda029ce12cb257487ab7e9748c24afee57c",
+      "sourceStableDuringCommand": true,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\identity-component-final.log"
+    }
+  ],
+  "hostPackageTests": {
+    "result": "PASS",
+    "count": 90
+  },
+  "exampleHostTests": {
+    "result": "PASS",
+    "count": 5
+  },
+  "bothAnalyze": "PASS",
+  "bundle": "PASS",
+  "bothAndroidBuildsAndSignatures": "PASS",
+  "apks": [
+    {
+      "flavor": "nativecheck",
+      "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\artifacts\\hnuhole-viewer-nativecheck-identity-20261014.apk",
+      "bytes": 82195691,
+      "sha256": "adbe747b11c3b0d9e0e6c9dd9ebfd1f282451ad3a0f368d9bfcfa5b6cbdab49a",
+      "package": "org.hnuhole.image_viewer_component.nativecheck",
+      "versionName": "0.0.0-webp-identity20261014-nativecheck",
+      "versionCode": 20263017,
+      "minSdk": 24,
+      "targetSdk": 36,
+      "abi": [
+        "arm64-v8a"
+      ],
+      "installed": true,
+      "signatureV2": "PASS",
+      "certificateSha256": "77cc0dd2bc5a71ffbf107ebfa6fdc74f3ca158bcb82548b53b6ae9dd9a421dd5"
+    },
+    {
+      "flavor": "component",
+      "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\artifacts\\hnuhole-viewer-component-identity-20261014.apk",
+      "bytes": 82195423,
+      "sha256": "ac97751d88b2ca65560f4519dbd1a87a08120de0e6adfb8341725243a689ed71",
+      "package": "org.hnuhole.image_viewer_component",
+      "versionName": "0.0.0-webp-identity20261014",
+      "versionCode": 20263017,
+      "minSdk": 24,
+      "targetSdk": 36,
+      "abi": [
+        "arm64-v8a"
+      ],
+      "installed": false,
+      "signatureV2": "PASS",
+      "certificateSha256": "77cc0dd2bc5a71ffbf107ebfa6fdc74f3ca158bcb82548b53b6ae9dd9a421dd5"
+    }
+  ],
+  "currentInstalledComponentVersionCode": 20263014,
+  "currentInstalledNativecheckVersionCode": 20263017,
+  "oldUnlabelledCasesVersionCode": 20263016,
+  "currentLabelledCasesVersionCode": 20263017,
+  "publicApiInputLifecycleAndCoreRuntimeChanged": false,
+  "locksPreserved": true,
+  "allExistingFixtureBytesUnchanged": true,
+  "generatedControls": {
+    "replay_identity_slow.webp": {
+      "width": 192,
+      "height": 144,
+      "frames": 3,
+      "durationsMs": [
+        2000,
+        2000,
+        2000
+      ],
+      "rawLoop": 2,
+      "bytes": 10352,
+      "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75"
+    },
+    "replay_identity_fast.webp": {
+      "width": 192,
+      "height": 144,
+      "frames": 3,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "rawLoop": 0,
+      "bytes": 10030,
+      "sha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988"
+    }
+  },
+  "controlPurpose": "Distinct visible SLOW/FAST plus FRAME1/2/3 and LOOP value; filename alone cannot establish rendered source",
+  "physicalDevice": {
+    "model": "vivo S18",
+    "deviceModel": "V2323A",
+    "api": 35,
+    "android": "15",
+    "abi": "arm64-v8a",
+    "galleryPackage": "com.vivo.gallery",
+    "galleryVersionName": "9.4.6.13",
+    "galleryVersionCode": 9040613,
+    "privateSerialPublished": false
+  },
+  "deviceWindow": "User 现在空闲，可以继续; community priority; ended11:11 local time",
+  "nativeOriginalMediaIntegrity": [
+    {
+      "recordedAt": "2026-10-14T11:00:38.9323538+08:00",
+      "fixture": "replay_identity_slow.webp",
+      "uri": "content://media/external/images/media/1000043705",
+      "owner": "org.hnuhole.image_viewer_component.nativecheck",
+      "mimeType": "image/webp",
+      "bytes": 10352,
+      "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+      "expectedSha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+      "byteIdentical": true
+    },
+    {
+      "recordedAt": "2026-10-14T11:00:42.2783049+08:00",
+      "fixture": "replay_identity_fast.webp",
+      "uri": "content://media/external/images/media/1000043706",
+      "owner": "org.hnuhole.image_viewer_component.nativecheck",
+      "mimeType": "image/webp",
+      "bytes": 10030,
+      "sha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988",
+      "expectedSha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988",
+      "byteIdentical": true
+    }
+  ],
+  "fileIntegrityScope": "Read after real Gal save, before Gallery playback; no claim of another app never modifying files later",
+  "actualNativeSaveEvents": [
+    {
+      "stage": "nativeAccessChecked",
+      "mode": "normal",
+      "granted": true
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "normal",
+      "operation": 1
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "normal",
+      "operation": 1
+    },
+    {
+      "stage": "nativeWriteSucceeded",
+      "mode": "normal",
+      "operation": 1
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "normal",
+      "operation": 1,
+      "fileExists": false,
+      "directoryExists": false
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "normal",
+      "operation": 2
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "normal",
+      "operation": 2
+    },
+    {
+      "stage": "nativeWriteSucceeded",
+      "mode": "normal",
+      "operation": 2
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "normal",
+      "operation": 2,
+      "fileExists": false,
+      "directoryExists": false
+    }
+  ],
+  "actualNativeWritesSucceeded": 2,
+  "settledTemporaryFileAndDirectoryCleanup": "PASS twice",
+  "operatorReplies": [
+    {
+      "reply": "这是original(1)",
+      "verifiedBy": "Detail screenshot Pictures/original(1).webp,290B,96x72"
+    },
+    {
+      "reply": "会",
+      "qualification": "After attempted return actual screenshot shows GIF09:08; invalid target, not WebP PASS"
+    }
+  ],
+  "galleryRecordings": [
+    {
+      "recordedAt": "2026-10-14T10:38:06.3729857+08:00",
+      "case": "finite-identity-direct",
+      "entry": "external",
+      "mediaId": "1000043703",
+      "exactTestUri": "content://media/external/images/media/1000043703",
+      "scope": "Exact owned synthetic media only; no input while recording; no system setting changes",
+      "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\logs\\finite-identity-direct-20261014-103755.mp4",
+      "bytes": 793876,
+      "sha256": "dcfffc4ff5e79a3c60aab431c76abb45109bbf3db2a097b346513d27e054b573",
+      "recordExitCode": 0,
+      "pullExitCode": 0,
+      "exactRemoteRemoved": true,
+      "maxWallSeconds": 10,
+      "operatorOutcome": "PENDING",
+      "result": "FAIL startup; actual detail verifies original(1).webp96x72/290B, red first frame"
+    },
+    {
+      "recordedAt": "2026-10-14T10:40:56.2545876+08:00",
+      "case": "finite-paging-return",
+      "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\logs\\finite-paging-return-20261014-104025.mp4",
+      "bytes": 29348,
+      "sha256": "a18fc31facc5409f94eedd71cb19bfda987f370e759ca1fd57678aae15f17bd8",
+      "remoteRemoved": true,
+      "scope": "Operator navigates known synthetic neighbors only; no automated input; same-file detail verified separately",
+      "operatorOutcome": "PENDING",
+      "result": "INVALID_TARGET: operator 会, later screen is GIF09:08; no same-WebP PASS"
+    },
+    {
+      "recordedAt": "2026-10-14T10:44:55.1934440+08:00",
+      "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\logs\\finite-thumbnail-entry-20261014-104434.mp4",
+      "sha256": "b2fdbc677e7cc2ddda00291bcb4d780e121ee124bb52b50658ac89c0bf779362",
+      "bytes": 259517,
+      "remoteRemoved": true,
+      "action": "Select only observed second white synthetic thumbnail; wait7s without input then own-file detail",
+      "coordinates": [
+        314,
+        2028
+      ],
+      "expectedFile": "Pictures/original (1).webp",
+      "identity": "PENDING detail screenshot inspection",
+      "scope": "System Gallery internal thumbnail selection; no grid or other media navigation",
+      "case": "finite-thumbnail-entry",
+      "result": "INCONCLUSIVE frame identity/timing: original(1).webp details but rapid ongoing colors from identical unlabelled pictures"
+    },
+    {
+      "recordedAt": "2026-10-14T10:47:19.1896320+08:00",
+      "case": "finite-fresh-task",
+      "entry": "external",
+      "mediaId": "1000043703",
+      "exactTestUri": "content://media/external/images/media/1000043703",
+      "scope": "Exact owned synthetic media only; no input while recording; no system setting changes",
+      "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\logs\\finite-fresh-task-20261014-104708.mp4",
+      "bytes": 756340,
+      "sha256": "dc1251729d299407b4dec77a309978311a28a8b0da4c48c45c6478f4c4b99b3c",
+      "recordExitCode": 0,
+      "pullExitCode": 0,
+      "exactRemoteRemoved": true,
+      "maxWallSeconds": 10,
+      "operatorOutcome": "PENDING",
+      "result": "FAIL startup; flags0x18000001, LaunchState WARM, no force-stop/clear; detail verifies original(1).webp"
+    },
+    {
+      "recordedAt": "2026-10-14T11:00:54.4607521+08:00",
+      "case": "labelled-slow-external",
+      "entry": "external",
+      "mediaId": "1000043705",
+      "exactTestUri": "content://media/external/images/media/1000043705",
+      "scope": "Exact owned synthetic media only; no input while recording; no system setting changes",
+      "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\logs\\labelled-slow-external-20261014-110043.mp4",
+      "bytes": 394308,
+      "sha256": "ec84dcebc1f610fa6298fcd38e21e1efa6a909a75f3c8d9c38a9fac6964ca963",
+      "recordExitCode": 0,
+      "pullExitCode": 0,
+      "exactRemoteRemoved": true,
+      "maxWallSeconds": 10,
+      "operatorOutcome": "PENDING",
+      "result": "FAIL startup; visible SLOW2s/FRAME1/LOOP2 remains red"
+    },
+    {
+      "recordedAt": "2026-10-14T11:05:03.1486798+08:00",
+      "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\logs\\labelled-slow-return-20261014-110437.mp4",
+      "sha256": "668ee02c3e0a253969c7d19d6892eaea2b23e622ec581e0ca820d6d2983af1f3",
+      "bytes": 445633,
+      "remoteRemoved": true,
+      "action": "One right swipe previously verified FAST/original(4); now one left swipe back to SLOW, no input14s then detail",
+      "inputKind": "ADB injected single-page swipe, not physical finger",
+      "expectedFile": "Pictures/original (3).webp",
+      "expectedVisibleLabel": "SLOW 2s / LOOP2",
+      "expectedFrameDurationMs": 2000,
+      "expectedRawLoop": 2,
+      "identityAndTimingResult": "PENDING",
+      "case": "labelled-slow-return",
+      "result": "Frame2/3 identity scoped PASS; timing/loop FAIL under screenrecording; SLOW label plus original(3).webp details, fast ongoing cycles beyond required finite duration"
+    }
+  ],
+  "inspectedVisibleEvidence": {
+    "unlabelledBefore": "Pictures/original(1).webp290B red",
+    "unlabelledOperatorAfter": "GIF badge09:08 blue",
+    "labelledFast": "Pictures/original(4).webp10030B192x144, visibleFAST/LOOP0",
+    "labelledReturn": "Pictures/original(3).webp10352B192x144, visibleSLOW2s/LOOP2 and FRAME2green/FRAME3blue"
+  },
+  "galleryExternalFiniteStartup": "FAIL",
+  "galleryIncomingFrame2And3Identity": "PASS scoped",
+  "galleryAllFramesAndTimingAndFiniteEnd": "FAIL",
+  "galleryTimingUnderRecording": {
+    "result": "FAIL",
+    "expectedFrameDurationSeconds": 2,
+    "expectedRawLoop": 2,
+    "nativeStockRepeatCount": 1,
+    "stableNoInputReviewedMediaTimeRange": [
+      2,
+      14
+    ],
+    "observedColorChangesInStableRange": 79,
+    "medianAdjacentChangeSeconds": 0.15015,
+    "medianGreenToGreenSeconds": 0.2997494999999999,
+    "observedColoursInStableLoop": [
+      "blue",
+      "green"
+    ],
+    "continuingChangesAfter24Seconds": true,
+    "redFirstFrameInStableLoop": "NOT_OBSERVED",
+    "noRecorderIndependentTimingRecheck": "NOT_RUN"
+  },
+  "continuousSoftwareVideoReview": {
+    "duration": 25.055989,
+    "frameCallbacks": 320,
+    "wallSeconds": 25.063,
+    "method": "Existing Edge software video decode; continuous playback, actual requestVideoFrameCallback mediaTime; no seeks or phone operations"
+  },
+  "continuousPresentedFrameChanges": [
+    {
+      "mediaTime": 0.018922,
+      "wallSeconds": 0.012800000002980226,
+      "presentedFrames": 2,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 0.074578,
+      "wallSeconds": 0.06270000000298023,
+      "presentedFrames": 3,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 0.174111,
+      "wallSeconds": 0.16280000000298023,
+      "presentedFrames": 6,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 0.375078,
+      "wallSeconds": 0.36270000000298025,
+      "presentedFrames": 18,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 0.473867,
+      "wallSeconds": 0.46280000000298027,
+      "presentedFrames": 24,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 0.673278,
+      "wallSeconds": 0.6627000000029802,
+      "presentedFrames": 36,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 0.772422,
+      "wallSeconds": 0.7627000000029802,
+      "presentedFrames": 42,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 0.839022,
+      "wallSeconds": 0.8294000000029803,
+      "presentedFrames": 46,
+      "color": "other",
+      "rgb": [
+        251,
+        247,
+        246
+      ]
+    },
+    {
+      "mediaTime": 0.855678,
+      "wallSeconds": 0.8460000000029801,
+      "presentedFrames": 47,
+      "color": "red",
+      "rgb": [
+        237,
+        49,
+        36
+      ]
+    },
+    {
+      "mediaTime": 1.088033,
+      "wallSeconds": 1.0794000000029802,
+      "presentedFrames": 61,
+      "color": "green",
+      "rgb": [
+        0,
+        127,
+        10
+      ]
+    },
+    {
+      "mediaTime": 1.187089,
+      "wallSeconds": 1.1794000000029803,
+      "presentedFrames": 67,
+      "color": "blue",
+      "rgb": [
+        2,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 1.385911,
+      "wallSeconds": 1.3794000000029802,
+      "presentedFrames": 79,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 1.486856,
+      "wallSeconds": 1.4793000000029801,
+      "presentedFrames": 85,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 1.688356,
+      "wallSeconds": 1.67930000000298,
+      "presentedFrames": 96,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 1.788956,
+      "wallSeconds": 1.7794000000029804,
+      "presentedFrames": 97,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 1.989144,
+      "wallSeconds": 1.97940000000298,
+      "presentedFrames": 99,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 2.105411,
+      "wallSeconds": 2.07940000000298,
+      "presentedFrames": 100,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 2.303822,
+      "wallSeconds": 2.2960000000029805,
+      "presentedFrames": 102,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 2.403667,
+      "wallSeconds": 2.3960000000029806,
+      "presentedFrames": 103,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 2.602956,
+      "wallSeconds": 2.5960000000029804,
+      "presentedFrames": 105,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 2.702633,
+      "wallSeconds": 2.6960000000029805,
+      "presentedFrames": 106,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 2.902667,
+      "wallSeconds": 2.8960000000029806,
+      "presentedFrames": 108,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 3.0013,
+      "wallSeconds": 2.9960000000029803,
+      "presentedFrames": 109,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 3.200633,
+      "wallSeconds": 3.1960000000029805,
+      "presentedFrames": 111,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 3.299578,
+      "wallSeconds": 3.29590000000298,
+      "presentedFrames": 112,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 3.499544,
+      "wallSeconds": 3.4960000000029803,
+      "presentedFrames": 114,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 3.601111,
+      "wallSeconds": 3.5960000000029804,
+      "presentedFrames": 115,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 3.799556,
+      "wallSeconds": 3.79590000000298,
+      "presentedFrames": 117,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 3.898822,
+      "wallSeconds": 3.89590000000298,
+      "presentedFrames": 118,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 4.098556,
+      "wallSeconds": 4.079300000002981,
+      "presentedFrames": 120,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 4.198167,
+      "wallSeconds": 4.1792000000029805,
+      "presentedFrames": 121,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 4.398344,
+      "wallSeconds": 4.3793000000029805,
+      "presentedFrames": 123,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 4.497178,
+      "wallSeconds": 4.479300000002981,
+      "presentedFrames": 124,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 4.697422,
+      "wallSeconds": 4.6792000000029805,
+      "presentedFrames": 126,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 4.897244,
+      "wallSeconds": 4.77920000000298,
+      "presentedFrames": 127,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 4.996733,
+      "wallSeconds": 4.8793000000029805,
+      "presentedFrames": 128,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 5.096389,
+      "wallSeconds": 4.97920000000298,
+      "presentedFrames": 129,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 5.295889,
+      "wallSeconds": 5.17930000000298,
+      "presentedFrames": 131,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 5.409833,
+      "wallSeconds": 5.27920000000298,
+      "presentedFrames": 132,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 5.610156,
+      "wallSeconds": 5.47920000000298,
+      "presentedFrames": 134,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 5.710067,
+      "wallSeconds": 5.57920000000298,
+      "presentedFrames": 135,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 5.910911,
+      "wallSeconds": 5.77920000000298,
+      "presentedFrames": 137,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 6.010433,
+      "wallSeconds": 5.87920000000298,
+      "presentedFrames": 138,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 6.208333,
+      "wallSeconds": 6.07920000000298,
+      "presentedFrames": 140,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 6.308589,
+      "wallSeconds": 6.1792000000029805,
+      "presentedFrames": 141,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 6.508044,
+      "wallSeconds": 6.37910000000298,
+      "presentedFrames": 143,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 6.608222,
+      "wallSeconds": 6.47920000000298,
+      "presentedFrames": 144,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 6.806889,
+      "wallSeconds": 6.67910000000298,
+      "presentedFrames": 146,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 6.906244,
+      "wallSeconds": 6.7791000000029795,
+      "presentedFrames": 147,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 7.131033,
+      "wallSeconds": 7.07920000000298,
+      "presentedFrames": 149,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 7.247022,
+      "wallSeconds": 7.1792000000029805,
+      "presentedFrames": 150,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 7.445711,
+      "wallSeconds": 7.37910000000298,
+      "presentedFrames": 152,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 7.544678,
+      "wallSeconds": 7.47910000000298,
+      "presentedFrames": 153,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 7.738589,
+      "wallSeconds": 7.67910000000298,
+      "presentedFrames": 155,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 7.843089,
+      "wallSeconds": 7.7791000000029795,
+      "presentedFrames": 156,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 8.042922,
+      "wallSeconds": 7.97910000000298,
+      "presentedFrames": 158,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 8.143544,
+      "wallSeconds": 8.07910000000298,
+      "presentedFrames": 159,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 8.342744,
+      "wallSeconds": 8.279000000002979,
+      "presentedFrames": 161,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 8.442467,
+      "wallSeconds": 8.37910000000298,
+      "presentedFrames": 162,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 8.642844,
+      "wallSeconds": 8.57910000000298,
+      "presentedFrames": 164,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 8.740889,
+      "wallSeconds": 8.67900000000298,
+      "presentedFrames": 165,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 8.958111,
+      "wallSeconds": 8.87910000000298,
+      "presentedFrames": 167,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 9.057256,
+      "wallSeconds": 8.97900000000298,
+      "presentedFrames": 168,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 9.256367,
+      "wallSeconds": 9.179100000002979,
+      "presentedFrames": 170,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 9.354989,
+      "wallSeconds": 9.279000000002979,
+      "presentedFrames": 171,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 9.556589,
+      "wallSeconds": 9.47910000000298,
+      "presentedFrames": 173,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 9.655922,
+      "wallSeconds": 9.57900000000298,
+      "presentedFrames": 174,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 9.837978,
+      "wallSeconds": 9.779000000002979,
+      "presentedFrames": 176,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 9.956222,
+      "wallSeconds": 9.87900000000298,
+      "presentedFrames": 177,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 10.154044,
+      "wallSeconds": 10.07900000000298,
+      "presentedFrames": 179,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 10.2532,
+      "wallSeconds": 10.17900000000298,
+      "presentedFrames": 180,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 10.469222,
+      "wallSeconds": 10.37900000000298,
+      "presentedFrames": 182,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 10.565222,
+      "wallSeconds": 10.47900000000298,
+      "presentedFrames": 183,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 10.769867,
+      "wallSeconds": 10.67900000000298,
+      "presentedFrames": 185,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 10.848378,
+      "wallSeconds": 10.779000000002979,
+      "presentedFrames": 186,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 11.067878,
+      "wallSeconds": 10.97900000000298,
+      "presentedFrames": 188,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 11.1675,
+      "wallSeconds": 11.07900000000298,
+      "presentedFrames": 189,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 11.365122,
+      "wallSeconds": 11.279000000002979,
+      "presentedFrames": 191,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 11.466589,
+      "wallSeconds": 11.37900000000298,
+      "presentedFrames": 192,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 11.6668,
+      "wallSeconds": 11.57900000000298,
+      "presentedFrames": 194,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 11.765811,
+      "wallSeconds": 11.678900000002981,
+      "presentedFrames": 195,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 11.979756,
+      "wallSeconds": 11.87900000000298,
+      "presentedFrames": 197,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 12.078822,
+      "wallSeconds": 11.97890000000298,
+      "presentedFrames": 198,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 12.279233,
+      "wallSeconds": 12.178900000002981,
+      "presentedFrames": 200,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 12.378789,
+      "wallSeconds": 12.27890000000298,
+      "presentedFrames": 201,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 12.579478,
+      "wallSeconds": 12.47890000000298,
+      "presentedFrames": 203,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 12.679589,
+      "wallSeconds": 12.578900000002982,
+      "presentedFrames": 204,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 12.879344,
+      "wallSeconds": 12.77890000000298,
+      "presentedFrames": 206,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 12.976133,
+      "wallSeconds": 12.87890000000298,
+      "presentedFrames": 207,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 13.176944,
+      "wallSeconds": 13.078900000002982,
+      "presentedFrames": 209,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 13.277111,
+      "wallSeconds": 13.178900000002981,
+      "presentedFrames": 210,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 13.4934,
+      "wallSeconds": 13.47890000000298,
+      "presentedFrames": 213,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 13.5932,
+      "wallSeconds": 13.578900000002982,
+      "presentedFrames": 214,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 13.792811,
+      "wallSeconds": 13.77890000000298,
+      "presentedFrames": 216,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 13.892233,
+      "wallSeconds": 13.87890000000298,
+      "presentedFrames": 217,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 14.089756,
+      "wallSeconds": 14.07880000000298,
+      "presentedFrames": 219,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 14.191656,
+      "wallSeconds": 14.178900000002981,
+      "presentedFrames": 220,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 14.389478,
+      "wallSeconds": 14.37890000000298,
+      "presentedFrames": 222,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 14.489944,
+      "wallSeconds": 14.47890000000298,
+      "presentedFrames": 223,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 14.690022,
+      "wallSeconds": 14.678800000002981,
+      "presentedFrames": 225,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 14.789267,
+      "wallSeconds": 14.778800000002981,
+      "presentedFrames": 226,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 14.987833,
+      "wallSeconds": 14.97890000000298,
+      "presentedFrames": 228,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 15.087278,
+      "wallSeconds": 15.07880000000298,
+      "presentedFrames": 229,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 15.3028,
+      "wallSeconds": 15.29550000000298,
+      "presentedFrames": 231,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 15.3992,
+      "wallSeconds": 15.39550000000298,
+      "presentedFrames": 232,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 15.579667,
+      "wallSeconds": 15.56210000000298,
+      "presentedFrames": 234,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 15.680922,
+      "wallSeconds": 15.66210000000298,
+      "presentedFrames": 235,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 15.900756,
+      "wallSeconds": 15.89550000000298,
+      "presentedFrames": 237,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 16.003311,
+      "wallSeconds": 15.99540000000298,
+      "presentedFrames": 238,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 16.202689,
+      "wallSeconds": 16.19540000000298,
+      "presentedFrames": 240,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 16.300389,
+      "wallSeconds": 16.29540000000298,
+      "presentedFrames": 241,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 16.498811,
+      "wallSeconds": 16.49550000000298,
+      "presentedFrames": 244,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 16.599289,
+      "wallSeconds": 16.595400000002982,
+      "presentedFrames": 245,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 16.798822,
+      "wallSeconds": 16.79540000000298,
+      "presentedFrames": 247,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 16.898389,
+      "wallSeconds": 16.89540000000298,
+      "presentedFrames": 248,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 17.114389,
+      "wallSeconds": 17.095400000002982,
+      "presentedFrames": 250,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 17.2137,
+      "wallSeconds": 17.19540000000298,
+      "presentedFrames": 251,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 17.414333,
+      "wallSeconds": 17.39540000000298,
+      "presentedFrames": 253,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 17.512567,
+      "wallSeconds": 17.49540000000298,
+      "presentedFrames": 254,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 17.712011,
+      "wallSeconds": 17.69540000000298,
+      "presentedFrames": 256,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 17.8119,
+      "wallSeconds": 17.795300000002978,
+      "presentedFrames": 257,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 18.008111,
+      "wallSeconds": 17.99540000000298,
+      "presentedFrames": 259,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 18.505889,
+      "wallSeconds": 18.495300000002977,
+      "presentedFrames": 261,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 18.921644,
+      "wallSeconds": 18.91200000000298,
+      "presentedFrames": 264,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 19.026433,
+      "wallSeconds": 19.01200000000298,
+      "presentedFrames": 265,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 19.225822,
+      "wallSeconds": 19.21200000000298,
+      "presentedFrames": 267,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 19.325,
+      "wallSeconds": 19.31200000000298,
+      "presentedFrames": 268,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 19.524856,
+      "wallSeconds": 19.51200000000298,
+      "presentedFrames": 270,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 19.623278,
+      "wallSeconds": 19.61200000000298,
+      "presentedFrames": 271,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 19.801067,
+      "wallSeconds": 19.795300000002978,
+      "presentedFrames": 273,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 19.900222,
+      "wallSeconds": 19.89530000000298,
+      "presentedFrames": 274,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 20.119344,
+      "wallSeconds": 20.11200000000298,
+      "presentedFrames": 276,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 20.218733,
+      "wallSeconds": 20.21190000000298,
+      "presentedFrames": 277,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 20.420689,
+      "wallSeconds": 20.41200000000298,
+      "presentedFrames": 279,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 20.518867,
+      "wallSeconds": 20.51190000000298,
+      "presentedFrames": 280,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 20.718467,
+      "wallSeconds": 20.71190000000298,
+      "presentedFrames": 282,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 20.817156,
+      "wallSeconds": 20.811900000002982,
+      "presentedFrames": 283,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 21.017044,
+      "wallSeconds": 20.91200000000298,
+      "presentedFrames": 284,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 21.136756,
+      "wallSeconds": 21.01190000000298,
+      "presentedFrames": 285,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 21.336089,
+      "wallSeconds": 21.328600000002982,
+      "presentedFrames": 287,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 21.436422,
+      "wallSeconds": 21.42860000000298,
+      "presentedFrames": 288,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 21.634833,
+      "wallSeconds": 21.628600000002983,
+      "presentedFrames": 290,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 21.735,
+      "wallSeconds": 21.72860000000298,
+      "presentedFrames": 291,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 21.935044,
+      "wallSeconds": 21.92850000000298,
+      "presentedFrames": 293,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 22.034867,
+      "wallSeconds": 22.02860000000298,
+      "presentedFrames": 294,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 22.232667,
+      "wallSeconds": 22.22850000000298,
+      "presentedFrames": 296,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 22.332544,
+      "wallSeconds": 22.32850000000298,
+      "presentedFrames": 297,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 22.549578,
+      "wallSeconds": 22.545200000002982,
+      "presentedFrames": 299,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 22.649078,
+      "wallSeconds": 22.64520000000298,
+      "presentedFrames": 300,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 22.848378,
+      "wallSeconds": 22.84520000000298,
+      "presentedFrames": 302,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 22.947467,
+      "wallSeconds": 22.92860000000298,
+      "presentedFrames": 303,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 23.146622,
+      "wallSeconds": 23.12850000000298,
+      "presentedFrames": 305,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 23.245144,
+      "wallSeconds": 23.22850000000298,
+      "presentedFrames": 306,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 23.445711,
+      "wallSeconds": 23.42850000000298,
+      "presentedFrames": 308,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 23.545644,
+      "wallSeconds": 23.52850000000298,
+      "presentedFrames": 309,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 23.744622,
+      "wallSeconds": 23.72850000000298,
+      "presentedFrames": 311,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 23.844111,
+      "wallSeconds": 23.82840000000298,
+      "presentedFrames": 312,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 24.0607,
+      "wallSeconds": 24.045100000002982,
+      "presentedFrames": 314,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 24.160533,
+      "wallSeconds": 24.14510000000298,
+      "presentedFrames": 315,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 24.358467,
+      "wallSeconds": 24.34520000000298,
+      "presentedFrames": 317,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 24.457589,
+      "wallSeconds": 24.44510000000298,
+      "presentedFrames": 318,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 24.657656,
+      "wallSeconds": 24.64510000000298,
+      "presentedFrames": 320,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    },
+    {
+      "mediaTime": 24.757478,
+      "wallSeconds": 24.74510000000298,
+      "presentedFrames": 321,
+      "color": "blue",
+      "rgb": [
+        0,
+        0,
+        252
+      ]
+    },
+    {
+      "mediaTime": 24.956289,
+      "wallSeconds": 24.94510000000298,
+      "presentedFrames": 323,
+      "color": "green",
+      "rgb": [
+        0,
+        128,
+        10
+      ]
+    }
+  ],
+  "visibleLabelMatch": {
+    "method": "Actual system Gallery video, visible SLOW/FAST label matched against inspected own screenshots; color from lower band. Popup/transition rejects low-confidence labels.",
+    "slowMatchedFrameCount": 173,
+    "slowMatchedRange": [
+      1.3,
+      18.5
+    ]
+  },
+  "nativeStockSlowIdentity": {
+    "result": "PASS scoped",
+    "inputSha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+    "repeatCount": 1,
+    "events": [
+      {
+        "stage": "decoded",
+        "fixture": "replay_identity_slow.webp",
+        "bytes": 10352,
+        "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+        "repeatCount": 1,
+        "runningBeforeStart": false
+      },
+      {
+        "stage": "started",
+        "fixture": "replay_identity_slow.webp",
+        "elapsedMs": 7
+      },
+      {
+        "stage": "visibleColor",
+        "fixture": "replay_identity_slow.webp",
+        "color": "red",
+        "elapsedMs": 7
+      },
+      {
+        "stage": "visibleColor",
+        "fixture": "replay_identity_slow.webp",
+        "color": "green",
+        "elapsedMs": 1907
+      },
+      {
+        "stage": "visibleColor",
+        "fixture": "replay_identity_slow.webp",
+        "color": "blue",
+        "elapsedMs": 3825
+      },
+      {
+        "stage": "visibleColor",
+        "fixture": "replay_identity_slow.webp",
+        "color": "red",
+        "elapsedMs": 5876
+      },
+      {
+        "stage": "visibleColor",
+        "fixture": "replay_identity_slow.webp",
+        "color": "green",
+        "elapsedMs": 7935
+      },
+      {
+        "stage": "ended",
+        "fixture": "replay_identity_slow.webp",
+        "elapsedMs": 9822
+      },
+      {
+        "stage": "visibleColor",
+        "fixture": "replay_identity_slow.webp",
+        "color": "blue",
+        "elapsedMs": 9853
+      },
+      {
+        "stage": "observationEnded",
+        "fixture": "replay_identity_slow.webp",
+        "running": false,
+        "elapsedMs": 14005
+      }
+    ],
+    "fastIdentityNativeControl": "NOT_RUN"
+  },
+  "causeAssessment": {
+    "state": "GALLERY_STARTUP_AND_FRAME_TIMING_LOOP_CONFORMANCE_FAILURE_LOCALIZED",
+    "observed": "Saved original bytes correct; actual SLOW Frame2/3 pixels and filename match but Gallery runs fast ongoing loops; same input stock Android respects about2s and finite two plays; fresh external task remains first-frame static",
+    "inference": "Gallery playback initialization and picture-switch animation state/parsing/scheduling suspect; cannot name a private internal function or prove inherited FAST state",
+    "limits": "Only this Gallery/version/device and these fixtures; timing observed under screenrecording; other versions, Gallery full album grid and no-recorder timing not verified"
+  },
+  "nativeSaveProductDefaultEnabled": false,
+  "automaticGifConversion": false,
+  "silentQualityReduction": false,
+  "decoderForkOrProductionBridgeImplemented": false,
+  "authEnvironmentChanged": false,
+  "mainAppIntegrated": false,
+  "deviceEnd": {
+    "endedAt": "2026-10-14T11:11:14.0318226+08:00",
+    "ownServerPid": 33204,
+    "ownServerPort": 5038,
+    "ownServerStopped": true,
+    "sharedServerStartedRestartedOrStopped": false,
+    "keyRemoval": [
+      {
+        "kind": "private",
+        "removed": true
+      },
+      {
+        "kind": "public",
+        "removed": true
+      }
+    ],
+    "deviceOperationsEnded": true,
+    "rawRecordingPolicy": "Private local evidence only; never publish gallery neighbor thumbnails",
+    "priorPublicKeyCleanupCorrection": "Historical correction completed in previous webp-retry-20261014 window; not repeated in this entry retry",
+    "toolAndApkRetention": "Existing isolated E toolchain and task APKs retained outside Git for remaining controlled platform reproduction; no auth/shared resources cleaned"
+  },
+  "settings": {
+    "recordedAt": "2026-10-14T11:11:12.6316016+08:00",
+    "settingsChanged": false,
+    "values": {
+      "font_scale": "1.0",
+      "accelerometer_rotation": "1",
+      "user_rotation": "0",
+      "show_touches": "0",
+      "pointer_location": "0",
+      "accessibility_enabled": "0",
+      "enabled_accessibility_services": ""
+    },
+    "nativeProbeClosed": true
+  },
+  "rawGalleryRecordsPrivateOnly": true,
+  "otherMediaFilesRead": false,
+  "previousEvidence": "docs/design/image-viewer-webp-retry-verification.json",
+  "priorCacheCleanupState": "BLOCKED from previous window; existing own E video-review profile/cache reused, no bypass or new deletion attempt",
+  "unresolved": {
+    "ios": "NOT_RUN; independent Mac/Xcode/device and controlled Photos entry",
+    "legacyPermissionDeny": "NOT_RUN API24-28",
+    "completeInteractionAccessibilityLifecycleMatrix": "NOT_RUN, old scoped evidence retains original APKs",
+    "noRecorderGalleryTimingAndAnotherControlledPlayer": "NOT_RUN; new approved window needed",
+    "MIV13": "NOT_DEVELOPED_NOT_FIXED",
+    "MIV14": "NOT_DEVELOPED_NOT_INTEGRATED"
+  },
+  "formalAndroidComplete": false,
+  "formalDualPlatformComplete": false,
+  "M3Complete": false,
+  "M4Complete": false
+}

@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "hnuhole-recovery-closure-verification/v1",
+  "verifiedAtUTC": "2026-09-30T08:35:49.998172+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "19924b002a5ed789e6078f1d1b0c4b72b356b765",
+  "scope": "ISOLATED_COMMUNITY_RECOVERY_CODE_PASSWORD_RESET_AND_SEVEN_DAY_CLOSURE",
+  "runtime": {
+    "go": "go1.27.1 darwin/arm64",
+    "postgresql": "18.6"
+  },
+  "isolatedRun": {
+    "workingDirectory": "services/api",
+    "command": "sh authlab/run-isolated.sh",
+    "exitCode": 0,
+    "freshDisposableCluster": true,
+    "privateUnixSocketOnly": true,
+    "separateNonSuperuserDatabases": true,
+    "sqlAndHTTPSCasesExecuted": true,
+    "raceCommandWithinScript": "go test -race -count=1 -p 1 ./...",
+    "raceExitCode": 0,
+    "vetCommandWithinScript": "go vet ./...",
+    "vetExitCode": 0
+  },
+  "directCommands": [
+    {
+      "command": "go test -race -count=1 -p 1 ./...",
+      "exitCode": 0,
+      "databaseDSNsAbsent": true,
+      "localSMTPAndHTTPTestsExecuted": true
+    },
+    {
+      "command": "go vet ./...",
+      "exitCode": 0
+    }
+  ],
+  "newDatabaseTests": [
+    "TestRecoveryCodeResetRevokesAllOldAuthorityPostgres",
+    "TestReplacementResetIntentAbandonsPreviousProofPostgres",
+    "TestConcurrentPasswordResetOnlyOneSubmissionCommitsPostgres",
+    "TestResetPasswordWorkCannotCrossCredentialChangeOrFreezePostgres",
+    "TestRecoveryProofAccountLockRecheckPostgres",
+    "TestResetResultExpiryAndPermanentTombstonePostgres",
+    "TestExpiredResetIntentCannotSubmitAfterNotCommittedResultPostgres",
+    "TestRecoveryKeepsBanAndPendingClosurePostgres",
+    "TestPasswordResetMakesPausedOldPasswordLoginFailPostgres",
+    "TestResetRecoveryDigestCollisionRollsBackEverythingPostgres",
+    "TestPendingClosureDeadlineRejectsBothRecoveryStagesPostgres",
+    "TestResetWaitsCannotCrossGateFreezePostgres",
+    "TestRestrictedRecoveryEventsExpireAfterSevenDaysPostgres",
+    "TestClosureRequestCapabilityAndFreshPasswordPostgres",
+    "TestClosureLoginCancellationAndExactDeadlinePostgres",
+    "TestClosureBlockedLoginCannotUseStartTimePostgres",
+    "TestClosureFreezeAndRecoveryFencePostgres",
+    "TestClosureBanCancelsBeforeDeadlineAndRevokesPostgres",
+    "TestClosureReleaseACKAndStatusRetentionPostgres",
+    "TestClosureFinalizerRollbackAndFreezePostgres",
+    "TestConcurrentClosureAndLoginNeverLeaveActivePendingAccountPostgres",
+    "TestClosureInvalidShapesRejectedPostgres",
+    "TestCrossAccountClosureIDsDoNotDeadlockPostgres",
+    "TestConcurrentDeadlineLoginAndFinalizerPostgres",
+    "TestClosureCancelledStatusExpiresWithoutReusingIDPostgres",
+    "TestUnacknowledgedClosureKeepsStatusButClearsRequestBindingPostgres",
+    "TestReleaseACKCannotCrossFreezeAndRetriesAfterRecoveryPostgres"
+  ],
+  "newHTTPTests": [
+    "TestRecoveryClosureHTTPRejectsDuplicateNullAndUnknownMutationFields",
+    "TestRecoveryClosureHTTPRejectsMisScopedAndNoncanonicalCapabilities",
+    "TestRecoveryClosureHTTPRejectsUnexpectedBodiesQueriesAndKeys",
+    "TestRecoveryClosureHTTPSuccessResponsesAreMinimalAndScoped",
+    "TestPasswordResetResultHTTPOnlyReturnsDecisionState",
+    "TestClosureStatusHTTPOnlyReturnsStateDeadlineAndReceipt",
+    "TestRecoveryClosureHTTPAuthorityErrorsRemainSafe",
+    "TestRecoveryClosureHTTPRejectsImpossibleAuthorityResponses",
+    "TestRecoveryClosureHTTPDoesNotExposeAdministrativeRoutes"
+  ],
+  "extendedEndToEndTests": [
+    "TestHTTPSPostgresEligibilityAndSignup"
+  ],
+  "implementedBoundaries": {
+    "recoveryCodePasswordReset": true,
+    "passwordResetResultReconciliation": true,
+    "pendingClosureDeadlineAuthority": true,
+    "explicitLoginCancelsBeforeDeadline": true,
+    "resetNeverCancelsClosureOrCreatesSession": true,
+    "atomicFinalClosureAndReleaseOutbox": true,
+    "trustedBanCommandRevokesSession": true,
+    "releaseACKGateFenceAndAtomicRetention": true,
+    "requestBindingExpiryIndependentOfReleaseStatus": true,
+    "restrictedSecurityEventRetentionDays": 7
+  },
+  "productionBoundary": {
+    "productionRouterMounted": false,
+    "productionGooseMigrationApplied": false,
+    "passkeyRegistrationRecoveryAndManagementImplemented": false,
+    "recoveryCodeRotationImplemented": false,
+    "moderationBackendIntegrated": false,
+    "deviceSecurityNotificationDeliveryImplemented": false,
+    "businessClosureDataProjectionImplemented": false,
+    "mobileDurableLogoutAndResultReconciliationImplemented": false,
+    "realIndependentTimeSource": false,
+    "productionExternalAnchor": false,
+    "realDisasterRecoveryDrill": false,
+    "independentHumanAudit": false
+  },
+  "sourceFiles": [
+    {
+      "path": "docs/design/HANDOFF.md",
+      "sha256": "557248dfb70a0b6cc6d00230b38960a26364952b6a5c2e2cfccc8bdb08c1a68e"
+    },
+    {
+      "path": "docs/design/auth-privacy-recovery-closure-validation-report.md",
+      "sha256": "66bdcc1bbfcf1c362812cc9eac10f5097fa4ecdc1894c6fdd40237f6378f0719"
+    },
+    {
+      "path": "docs/design/progress.md",
+      "sha256": "3c3e1e1d66a6cb9f1deda6145b3c05b98b1420a929c47be59fe823c8900c7599"
+    },
+    {
+      "path": "services/api/authlab/README.md",
+      "sha256": "cf14ea79976e3e1181e9de450bcdd3a5d1bed4774d9d83ab2a7fec351d7e15d1"
+    },
+    {
+      "path": "services/api/authlab/migrations/community/0004_recovery_reset.sql",
+      "sha256": "d3928ef2ea383ea8ebf5a125037f9423e9fdb5180dffb29f64f8033d79673141"
+    },
+    {
+      "path": "services/api/authlab/migrations/community/0005_account_closure.sql",
+      "sha256": "5e219a46e15596a8658f1c9319ee7945b6aaaff2b1acb255df297dd4ceacde6c"
+    },
+    {
+      "path": "services/api/authlab/migrations/community/README.md",
+      "sha256": "a65d29d3ea29ea38834ea5453af6cf74f2ec7074848f237ddfdc170e7a91999a"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_closure.go",
+      "sha256": "601b500fa168e94cd5570d5464b6cd6dad053917a9828c63bbf5fe7c3f57e158"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_closure_test.go",
+      "sha256": "e0ccbd7da39f02f0e41f26913d29aafc538e231a1e73536ed72d30fff824f49e"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_recovery.go",
+      "sha256": "eecfb3d10b9d243b4350bba12d63102a1a6ba622e22d3bb4dff02a140598df58"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_recovery_test.go",
+      "sha256": "c7ef3088f4fee9395f85ad61fc81e8b734f1fce68f8a0bc2f4a545615d0054f6"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_sessions.go",
+      "sha256": "17148389d4db1af9b1886f5b815f81f86f1002d0b025eee2c0cd66287978ae7d"
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox.go",
+      "sha256": "a4fa9ac45d8d754e85615855205f0d5d0326356e84936ca2176e661ee6738e2c"
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox_authorization_test.go",
+      "sha256": "c1703f0144a2f980e532ec32018a7422cdbbde6c28cbb3724e706031f94d51fa"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "sha256": "9c5bc13ae21f749fc969bb1b743f7ce80367161e3dd6a3d485b9f94c7d65a4ef"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints_test.go",
+      "sha256": "c70a7f4ec69d8e8700d0638c97164c2e134e1cf13f3eff0e28c35820fcd7c618"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+      "sha256": "ebc8e453d5d089876f865448b543050f316314023ca2b5ff5d2ffad835571b9b"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/recovery_closure_endpoints.go",
+      "sha256": "a6a30af25921e1155625ea17048f43f1178cdf0fcf90c934ab49efff62301ddf"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/recovery_closure_endpoints_test.go",
+      "sha256": "f33e8d93a8decd495d00c3106f8312141a0c26bb7d71d3f59f87527bd247c8aa"
+    }
+  ]
+}

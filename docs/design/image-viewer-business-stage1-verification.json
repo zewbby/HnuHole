@@ -1,0 +1,463 @@
+{
+  "schemaVersion": "hnuhole-image-viewer-business-stage1/v1",
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/image-viewer-business-integration",
+  "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo",
+  "initialCommunityCommit": "e0c128033682923d519ea99546d72503b085a99e",
+  "reusedViewerCommit": "bd7458ad94b7f9aea377ef060acf1316a6cfc6de",
+  "sourceCommitPolicy": "Source snapshot including first handoff; final HEAD is following documentation delivery commit",
+  "state": "FRONTEND_SEAM_IMPLEMENTED_REAL_MEDIA_DEPENDENCY_BLOCKED",
+  "stage1FrontendImplemented": true,
+  "productionImageBusinessConnected": false,
+  "commentAndMessagePagesImplemented": false,
+  "mainFactoryLoaderDefault": null,
+  "publicContract": {
+    "PostImagesLoader": "Future<PostImages> Function(String postId)",
+    "PostImages": [
+      "postId",
+      "immutable ordered images 0..9",
+      "caller-owned accessGranted ValueListenable<bool>"
+    ],
+    "PostImage": [
+      "authorized thumbnail ImageProvider",
+      "full ViewerItem; unique content ID, source/dimensions/original resolver/saveAllowed"
+    ],
+    "credentialsPassedToViewer": false,
+    "newMediaEndpointInvented": false,
+    "originalFormatUnchanged": true,
+    "androidDefaultSaving": true,
+    "iosDefaultSaving": false,
+    "androidMinSdk": 29,
+    "lateLoadGenerationGuard": true,
+    "revokedGroupAutoRevives": false
+  },
+  "checks": [
+    {
+      "name": "integration-locked-pub",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "pub",
+        "get",
+        "--offline",
+        "--enforce-lockfile"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "result": "PASS",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-15T03:03:23.6978679+00:00",
+      "endedAtUtc": "2026-10-15T03:03:25.4200005+00:00",
+      "sourceManifestSha256": "5d1cb4d5c7d81d8011c1fdd140847c6a6d986e4839b10e0eb830af0b8308c9b1",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\integration-locked-pub.log",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\integration-locked-pub.json"
+    },
+    {
+      "name": "frontend-final-analyze3",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "analyze",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "result": "PASS",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-15T03:08:02.9026849+00:00",
+      "endedAtUtc": "2026-10-15T03:08:10.2219779+00:00",
+      "sourceManifestSha256": "a15ef777828b65a658acafeac8fbe09121210d5ab61a3a1686d46e388ed826c7",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\frontend-final-analyze3.log",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\frontend-final-analyze3.json"
+    },
+    {
+      "name": "frontend-final-actual-page-render",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "--reporter=expanded",
+        "test/post_screens_test.dart",
+        "test/post_images_test.dart"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "result": "PASS",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-15T03:08:10.3122555+00:00",
+      "endedAtUtc": "2026-10-15T03:08:19.8917702+00:00",
+      "sourceManifestSha256": "a15ef777828b65a658acafeac8fbe09121210d5ab61a3a1686d46e388ed826c7",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\frontend-final-actual-page-render.log",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\frontend-final-actual-page-render.json"
+    },
+    {
+      "name": "frontend-final-mobile-regression",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "--reporter=expanded",
+        "test/auth_api_test.dart",
+        "test/auth_crypto_test.dart",
+        "test/auth_flows_test.dart",
+        "test/auth_screen_test.dart",
+        "test/auth_session_controller_test.dart",
+        "test/auth_vault_test.dart",
+        "test/identity_management_controller_test.dart",
+        "test/identity_management_screen_test.dart",
+        "test/identity_name_formatter_test.dart",
+        "test/mobile_environment_test.dart",
+        "test/passkey_recovery_flow_test.dart",
+        "test/post_api_test.dart",
+        "test/post_closure_cleanup_test.dart",
+        "test/post_images_test.dart",
+        "test/post_models_test.dart",
+        "test/post_protocol_test.dart",
+        "test/post_screens_test.dart",
+        "test/post_storage_test.dart",
+        "test/security_management_controller_test.dart",
+        "test/security_management_screen_test.dart"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "result": "PASS",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-15T03:06:57.2332833+00:00",
+      "endedAtUtc": "2026-10-15T03:07:11.6566338+00:00",
+      "sourceManifestSha256": "3ec3a960e57b12acc96421a4c0f282e08c41b24714564ab333581ba1e3effc22",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\frontend-final-mobile-regression.log",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\frontend-final-mobile-regression.json"
+    },
+    {
+      "name": "frontend-final-bundle",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "bundle",
+        "--debug",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "result": "PASS",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-15T03:07:11.7354780+00:00",
+      "endedAtUtc": "2026-10-15T03:07:22.2655898+00:00",
+      "sourceManifestSha256": "3ec3a960e57b12acc96421a4c0f282e08c41b24714564ab333581ba1e3effc22",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\frontend-final-bundle.log",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\frontend-final-bundle.json"
+    },
+    {
+      "name": "integration-mobile-all-tests",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "--reporter=expanded"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "result": "FAIL",
+      "exitCode": 1,
+      "startedAtUtc": "2026-10-15T03:03:25.5466269+00:00",
+      "endedAtUtc": "2026-10-15T03:03:48.1798716+00:00",
+      "sourceManifestSha256": "5d1cb4d5c7d81d8011c1fdd140847c6a6d986e4839b10e0eb830af0b8308c9b1",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\integration-mobile-all-tests.log",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\integration-mobile-all-tests.json"
+    },
+    {
+      "name": "baseline-controller-repro",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "--reporter=expanded",
+        "--plain-name",
+        "SQLite draft edits use durable CAS revision",
+        "test/post_controller_test.dart"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline\\apps\\mobile",
+      "result": "FAIL",
+      "exitCode": 1,
+      "startedAtUtc": "2026-10-15T03:05:05.2775656+00:00",
+      "endedAtUtc": "2026-10-15T03:05:14.6433493+00:00",
+      "sourceManifestSha256": "934b0af644f17ddcc01ac26083a7408d9dd0ae69d8aa3dcee80461d4e715c148",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\baseline-controller-repro.log",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\baseline-controller-repro.json"
+    }
+  ],
+  "focusedWithActualPageRenderTestsPassed": 34,
+  "otherMobileRegressionTestsPassed": 290,
+  "regressionExclusion": "test/post_controller_test.dart (43 tests), explicitly listed other files; not a complete mobile suite PASS",
+  "firstFullMobileRun": {
+    "passed": 300,
+    "failed": 31,
+    "failureLocation": "test/post_controller_test.dart:519 _Fixture.close",
+    "error": "Windows PathAccessException errno32 deleting owned temporary SQLite directory"
+  },
+  "baselineReproduction": {
+    "commit": "e0c128033682923d519ea99546d72503b085a99e",
+    "result": "FAIL_SAME_ERRNO32_FIXTURE_CLEANUP",
+    "test": "SQLite draft edits use durable CAS revision, reopen restores multiple drafts and ignores blank new draft",
+    "independentDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline",
+    "controllerAndStorageSourceModified": false,
+    "scope": "Preexisting baseline failure reproduced; exact retained handle/root cause and cross-platform fix not established"
+  },
+  "visualCheck": {
+    "reference": "UI产品图/帖子详情-正常阅读.png",
+    "referenceViewed": true,
+    "actualRender": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\actual-page-render\\post-detail-images.png",
+    "actualRenderSha256": "880503eef4692207405d69c6c47177ab2124446e346f02ce35576bb8e75fb1b2",
+    "actualRenderViewed": true,
+    "scope": "Real Flutter host detail with synthetic images; equal square thumbnails below body, existing white/slate structure; not pixel equivalence/full designed features or device proof"
+  },
+  "runtimeFiles": [
+    {
+      "path": "apps/mobile/android/app/build.gradle.kts",
+      "sha256": "2f478f9a094da3804c145a86b398280d940a959a89107233e6106c8bd98028e6"
+    },
+    {
+      "path": "apps/mobile/lib/hnuhole_mobile.dart",
+      "sha256": "74d051c3f8bcb7e314400e73061607dc4fb091c2dd1ca16b364ffe628210e72f"
+    },
+    {
+      "path": "apps/mobile/lib/main.dart",
+      "sha256": "f4540d57d6cb6153cf35d12a62eb466af7ed5a635fb75f614d5ba94e05c40a76"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_api.dart",
+      "sha256": "104bac53581b263b9f9f4fcc9458987c3d26949372184f941d196e8920a3ac7a"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_crypto.dart",
+      "sha256": "0cc142b815f3de3093744a37a5a298b84d2478105de547efb9f67b0bd1ac08b7"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_flows.dart",
+      "sha256": "93c3d9f9ecb44abfb5f022c1eabd4fa36809142a1044af73b961cfa5fc373943"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_models.dart",
+      "sha256": "71ebf515f07a07a5811c623dc2d93de50b57e62ecb96739373bb931e55cd6da4"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_screen.dart",
+      "sha256": "74ea99b5ff6cbb12ac9ddce398a1e71fc1674baf67321ec0e288bcf8261d3461"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_session_controller.dart",
+      "sha256": "ddadbff18d753138bde0d6d6721fdffd4e71dbbe6a052db2a7f61e84f66e7ff9"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_state_codec.dart",
+      "sha256": "f8fd1771a3ca7b7046386cd61fc26414688d9bb65a91c3ac14dbf1924474b1e1"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_store.dart",
+      "sha256": "70ac344b75985c6fcd5f8ccdfed1d90421875a20f18b85f8534bf1428f7b3b48"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/credential_management_api.dart",
+      "sha256": "80ed220e24cb27ad9d4fa196fc7e0fde8bb179fa24be81e36f4bc7e77638d833"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/http_auth_api.dart",
+      "sha256": "d64d882401585fd2fb00ed25cd2eebff07a948d10be189cd310206f334301e81"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/security_management_controller.dart",
+      "sha256": "40ca3408c84214e6bf4a79abe7b1ec13eef1177dd97bab9f79744e957527615d"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/security_management_screen.dart",
+      "sha256": "c7eed942acd7dfb2daf62c9f2f293cd7fb62ad329d49a6fea42440544f066490"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/channel_repository.dart",
+      "sha256": "85285e17f928a9b0fdf60bc223b14aa277d7c46ff65ebe6bc2d9ef0559738b35"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/channel.dart",
+      "sha256": "ac2be24606f540d19a19fe429b643eff5d51b2766c4a4ec420fb6abb47b57438"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/http_channel_repository.dart",
+      "sha256": "6f0eda32abc384d78c80eb6b2f560ae299ef7458c998320d027c5d5499f09706"
+    },
+    {
+      "path": "apps/mobile/lib/src/config/mobile_environment.dart",
+      "sha256": "f4ba2e6863a9fcd6953298dac6d3815402806139fdf7cb4130d317be6df0eace"
+    },
+    {
+      "path": "apps/mobile/lib/src/development/app_transport.dart",
+      "sha256": "a7323a2107dca023eab2f768dfab19be15e7bfe268e8adcc15b1bd0eb74f5bbc"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_api.dart",
+      "sha256": "44af45ccc417132788bd87ada418c99e2580195b7365c97de5c8b477b3902ab0"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_management_controller.dart",
+      "sha256": "4a32b0f249d2fbd810cbb5a90e429459cb4393ec8c1d62533c71166380ac51e0"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_management_screen.dart",
+      "sha256": "5c78dec462e6231950e982bafed25eabe1bcd12be9337a6e53b8ac0d1ab41241"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_name_formatter.dart",
+      "sha256": "ae737ac38446a265da53b79259e55f72e068687081411c97f45c758974d937cd"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_name_ranges.dart",
+      "sha256": "27ae187b5a50760003e4c557841d4f2343879e0a54edcab9779b70ecce367772"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/settings_screen.dart",
+      "sha256": "36b6446bcba8d480a40d63057cd275bc4baba94915b508296e39e90e5d5312fe"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
+      "sha256": "999fc131efc22890b6940f9f7d3775bdf853812956dce3af4f58f1c17480ff94"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_tree.dart",
+      "sha256": "ef6bfcab7f1ec46e3d03e1dddfde8f53fdd598b2c9e227c58d0227d137440abd"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/entry_screen.dart",
+      "sha256": "b35aabe2224168c7e17b6012cb52cfedb6c51076533a6ee78685842ba87e0723"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/http_post_api.dart",
+      "sha256": "43f23314adf885b4acf70f8426e54b2472024f1ae53c7913c25a16fa3073909a"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_api.dart",
+      "sha256": "d7f853d01721e30ac5e0c54a6e5444c78d320dd27573e793019ed2a5903b25df"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_controller.dart",
+      "sha256": "3fce05f04ac2e0c081f4ae30a23bf94855baab1d684b0beb7f90f739504e0de9"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_images.dart",
+      "sha256": "af66ee93802cbb4ae8f4a97ab300c05b57b66c778e8b6bddce06fa1891ebda24"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_models.dart",
+      "sha256": "d4c46e59436efab812dba70fb401addf68d742311be82ebcfb0f045282827245"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_protocol.dart",
+      "sha256": "ac039dba7b88903051f4568b06444d32ccfcb88883e0b1078dab218388bcdc05"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_screens.dart",
+      "sha256": "3073ae441499930a71094564e9fd6f064649740673d48992c44bdead4e2bc64e"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_theme.dart",
+      "sha256": "b155e9aac49aa3a3e8eca46441706a50435b2f919ca73ad42d7f07df79afc30c"
+    },
+    {
+      "path": "apps/mobile/lib/src/storage/post_store.dart",
+      "sha256": "4676c2dc186beaaaaadc02ebaf423dcdadcc76b381f0edcc8ad66d41d3d1f038"
+    },
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "sha256": "6381ffe1cd95ece774250e785cd93d716fa1b0a6b8e2fb8b8e0f9b5a7871d3cf"
+    },
+    {
+      "path": "apps/mobile/pubspec.yaml",
+      "sha256": "7a37f2d4359a7ed219d734d3e41b515e19a752c2ca8385c4a9e6aaca87e611a1"
+    }
+  ],
+  "integrationFiles": [
+    {
+      "path": "apps/mobile/lib/src/posts/post_images.dart",
+      "sha256": "af66ee93802cbb4ae8f4a97ab300c05b57b66c778e8b6bddce06fa1891ebda24"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_screens.dart",
+      "sha256": "3073ae441499930a71094564e9fd6f064649740673d48992c44bdead4e2bc64e"
+    },
+    {
+      "path": "apps/mobile/lib/main.dart",
+      "sha256": "f4540d57d6cb6153cf35d12a62eb466af7ed5a635fb75f614d5ba94e05c40a76"
+    },
+    {
+      "path": "apps/mobile/lib/hnuhole_mobile.dart",
+      "sha256": "74d051c3f8bcb7e314400e73061607dc4fb091c2dd1ca16b364ffe628210e72f"
+    },
+    {
+      "path": "apps/mobile/test/post_images_test.dart",
+      "sha256": "6f0bf50d8c89210e7b50e8819dc768552b9c51caa56f19793e745084903ad142"
+    },
+    {
+      "path": "apps/mobile/test/post_screens_test.dart",
+      "sha256": "56b6e187c3e0d269faafaf6b8aaa45f8a64cc441b3049d520dd54f5221e6d9d4"
+    },
+    {
+      "path": "apps/mobile/pubspec.yaml",
+      "sha256": "7a37f2d4359a7ed219d734d3e41b515e19a752c2ca8385c4a9e6aaca87e611a1"
+    },
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "sha256": "6381ffe1cd95ece774250e785cd93d716fa1b0a6b8e2fb8b8e0f9b5a7871d3cf"
+    },
+    {
+      "path": "apps/mobile/android/app/build.gradle.kts",
+      "sha256": "2f478f9a094da3804c145a86b398280d940a959a89107233e6106c8bd98028e6"
+    }
+  ],
+  "packageReuse": {
+    "trackedFileCount": 137,
+    "source": "bd7458ad94b7f9aea377ef060acf1316a6cfc6de",
+    "allViewerFilesUnchanged": true,
+    "oldHostAndS18Evidence": "Retained original versions only; not rerun as phone/integration evidence"
+  },
+  "isolation": {
+    "taskRoot": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015",
+    "sdk": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter",
+    "actualPubCache": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\pub-cache",
+    "actualProfile": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile",
+    "actualTemp": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\temp",
+    "oldRunnerMetadataPubCacheField": "Retained SDK-owner path in raw metadata; actual PUB_CACHE env and app package_config use integration pub-cache",
+    "sharedAuthCommunitySdkModified": false,
+    "communityWorktreeModified": false,
+    "adbUsed": false,
+    "devicesUsed": false,
+    "servicesStartedStoppedOrContacted": false,
+    "realAccountsOrCredentialsUsed": false,
+    "largeToolchainInstalled": false
+  },
+  "remaining": [
+    {
+      "id": "MEDIA_BUSINESS",
+      "state": "NOT_DEVELOPED_EXTERNAL_TASK",
+      "needs": "Real post media contract/upload/storage/protected reads; adapter returns PostImages; inject into bootstrap"
+    },
+    {
+      "id": "COMMENT_DM",
+      "state": "NOT_DEVELOPED",
+      "needs": "Actual pages/models/endpoints before integration"
+    },
+    {
+      "id": "DEVICE_NATIVE_IOS",
+      "state": "NOT_RUN",
+      "needs": "Stage2 scoped native build/device window; no repeat existing TalkBack without affected behavior"
+    },
+    {
+      "id": "WINDOWS_BASELINE_SQLITE",
+      "state": "FAIL_PREEXISTING_REPRODUCED",
+      "needs": "Storage task isolates exact retained handle; independently verify fix or run matching Linux host"
+    }
+  ],
+  "businessIntegrated": false,
+  "formalDualPlatformAccepted": false,
+  "releasePublished": false,
+  "deployed": false,
+  "nextSessionPrompt": "docs/design/image-viewer-media-next-session.md",
+  "sourceCommit": "433145702406dc25a90eed1ccf7b3abf59e54834"
+}

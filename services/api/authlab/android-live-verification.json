@@ -1,0 +1,537 @@
+{
+  "schemaVersion": "hnuhole-android-live-verification/v1",
+  "recordedOn": "2026-10-05",
+  "timeZone": "Asia/Shanghai",
+  "verifiedAtUTC": "2026-10-05T07:17:01.580095+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "0eff47a21cd4f4ab1636b4468f7d5df9769a264f",
+  "uncommittedWorkingTree": true,
+  "scope": "ANDROID_ACTUAL_APP_TO_CMD_CV_DEVELOPMENT_ONLY",
+  "implementationState": "BOUNDED_ANDROID_PHYSICAL_APP_CMD_CV_PASS_PLATFORM_MATRIX_BLOCKED",
+  "currentResult": "BLOCKED",
+  "scopedBackendAcceptancePassed": false,
+  "scopedAndroidLiveAcceptancePassed": true,
+  "fullDeviceMatrixPassed": false,
+  "systemPasskeyPassed": false,
+  "fullAnonymityClosurePassed": false,
+  "moduleAcceptancePassed": false,
+  "productionApproved": false,
+  "sourceFingerprint": {
+    "sha256": "84819bd2fb4d9125069621dbf4b8b266ff4fc4915a13b639f89dad0d044e8adb",
+    "presentFileCount": 291,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey",
+      "apps/mobile/android",
+      "apps/mobile/ios",
+      "apps/mobile/integration_test",
+      "apps/mobile/test_driver",
+      "tools/run-android-auth-process-test.ps1",
+      "tools/run-android-vault-probes.ps1",
+      "tools/env-hnuhole-windows.ps1",
+      "tools/env-hnuhole-wsl.sh",
+      "tools/check-identity-handoff.py",
+      "tools/run-auth-device-services.sh",
+      "tools/run-android-live-device.ps1",
+      "tools/check-privacy-closure-handoff.py"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm",
+      ".gradle",
+      ".png",
+      ".storyboard",
+      ".xcscheme",
+      ".xcworkspacedata"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Current complete debug ARM64 App, explicit development trust, 182 mobile tests and actual vivo S18 App/UI/native vault to cmd C/V/SQL write/read; unchanged backend full suites retain historical AC04 proof."
+  },
+  "gitBlobSourceFingerprint": {
+    "sha256": "447a3cca8663716171eb125a895bb9580f66091e4d53c5e169b29e5d5b09c694",
+    "presentFileCount": 291,
+    "roots": [
+      "services/api",
+      "infra",
+      "packages/openapi",
+      "packages/auth-protocol-vectors",
+      "apps/mobile/lib",
+      "apps/mobile/test",
+      "apps/mobile/integration",
+      "apps/mobile/pubspec.yaml",
+      "apps/mobile/pubspec.lock",
+      "packages/auth_vault",
+      "packages/auth_passkey",
+      "apps/mobile/android",
+      "apps/mobile/ios",
+      "apps/mobile/integration_test",
+      "apps/mobile/test_driver",
+      "tools/run-android-auth-process-test.ps1",
+      "tools/run-android-vault-probes.ps1",
+      "tools/env-hnuhole-windows.ps1",
+      "tools/env-hnuhole-wsl.sh",
+      "tools/check-identity-handoff.py",
+      "tools/run-auth-device-services.sh",
+      "tools/run-android-live-device.ps1",
+      "tools/check-privacy-closure-handoff.py"
+    ],
+    "includedSuffixes": [
+      ".go",
+      ".sql",
+      ".sh",
+      ".mod",
+      ".sum",
+      ".json",
+      ".yaml",
+      ".yml",
+      ".lock",
+      ".py",
+      ".ps1",
+      ".txt",
+      ".dart",
+      ".kt",
+      ".swift",
+      ".kts",
+      ".xml",
+      ".plist",
+      ".entitlements",
+      ".podspec",
+      ".properties",
+      ".xcconfig",
+      ".pbxproj",
+      ".h",
+      ".m",
+      ".mm",
+      ".gradle",
+      ".png",
+      ".storyboard",
+      ".xcscheme",
+      ".xcworkspacedata"
+    ],
+    "includedAdditionalNames": [
+      ".gitattributes",
+      "go.work",
+      "go.work.sum",
+      ".env.example"
+    ],
+    "excludedNames": "*verification.json and names containing verification-report; ignored and Markdown files",
+    "algorithm": "Sort unique relative paths by Unicode code-point order; concatenate UTF8(relative_path), NUL, raw SHA256(file bytes), then SHA256 the concatenation.",
+    "appliesTo": "Git text equivalent by CRLF-to-LF only; protocol fixture and binary assets stay byte-exact."
+  },
+  "plan": "docs/design/auth-privacy-android-live-plan.md",
+  "report": "docs/design/auth-privacy-android-live-validation-report.md",
+  "device": {
+    "model": "vivo S18 / V2323A",
+    "androidVersion": "15",
+    "abi": "arm64-v8a",
+    "physical": true,
+    "serialRetained": false
+  },
+  "transport": {
+    "usbLoopbackForwarding": true,
+    "developmentCaExplicit": true,
+    "defaultTrustNegativeAssertionExecutedInInitialAttempt": true,
+    "systemCaInstalled": false,
+    "certificateBypassUsed": false,
+    "releaseGuardExecuted": false,
+    "defaultTrustNegativeAssertionExecutedInBothAcceptedPhases": true
+  },
+  "checks": [
+    {
+      "id": "mobile-analysis",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter analyze",
+      "scope": "No issues found! (ran in 7.6s)",
+      "logSha256": "228989b07859fb9ce049be2b560e0e8e24b6c86350b83cd16176a469166c2886"
+    },
+    {
+      "id": "mobile-tests",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter test --reporter expanded",
+      "testCount": 182,
+      "scope": "Current unit/controller/widget suite including three development-trust tests",
+      "logSha256": "5e8fbb88b44a2301b2e4ab537c1554c5c1eaf78067dc182173841d36e7e79434"
+    },
+    {
+      "id": "android-apk-build",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "flutter build apk --debug --target-platform android-arm64 --target integration_test/auth_live_device_test.dart --dart-define-from-file=<owned config>",
+      "scope": "Current complete ARM64 debug test APK, independently verified installed digest; no release build approval",
+      "apkSha256": "b14b71af909ca328178326b76b10bd4151f066aa63e816b590e1fd8da660dbd1",
+      "logSha256": "682b38586dd6e85c87cdedc531f7c87c97afc8dfb7915bb819dd76fdd236d1f8"
+    },
+    {
+      "id": "actual-service-startup",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "tools/run-auth-device-services.sh (before final Docker collision guards)",
+      "scope": "Built unchanged actual cmd/api, cmd/verifier and authdev; formal C12/V4 migrations, restricted runtime roles and both Gates recovered; normal CA/hostname readiness 200"
+    },
+    {
+      "id": "sql-readback",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Read-only final counts in this owned disposable database, including preceding failed synthetic attempts; no secret fields retained",
+      "counts": {
+        "synthetic-accounts": 4,
+        "active-identities": 4,
+        "renamed-identities": 3,
+        "committed-creates": 4,
+        "committed-renames": 3,
+        "active-sessions": 1,
+        "revoked-sessions": 4,
+        "reserved-quota": 4
+      }
+    },
+    {
+      "id": "gradle-integrity",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "This round distribution digest equals retained AC05 official digest; no new external checksum lookup",
+      "sha256": "b266d5ff6b90eada6dc3b20cb090e3731302e553a27c5d3e4df1f0d76beaff06"
+    },
+    {
+      "id": "runner-syntax",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Current shell sh -n and PowerShell parser; separate negative guards were dynamically checked without accepting current App phases"
+    },
+    {
+      "id": "installed-apk-mismatch-guard",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "On actual vivo S18, attach-only runner refuses the retained older installed APK before launch; no install/uninstall"
+    },
+    {
+      "id": "docker-project-collision-guard",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "Owned new marker directory resolves to an already existing test project name; current runner refuses before registering cleanup; three original containers remain running; temporary guard folder removed"
+    },
+    {
+      "id": "device-write",
+      "result": "PASS",
+      "scope": "Actual App/main/UI, HTTPS cmd C/V, disposable SQL and native vault; SMTP signup, full recovery confirmation, identity create/rename",
+      "exitCode": 0,
+      "command": "tools/run-android-live-device.ps1 with --use-existing-app",
+      "phase": "write",
+      "pid": 20708
+    },
+    {
+      "id": "device-read",
+      "result": "PASS",
+      "scope": "Actual App/main/UI, HTTPS cmd C/V, disposable SQL and native vault; external process restart, native session/SQL identity restore, actual logout, strict old-token 401 and explicit password login",
+      "exitCode": 0,
+      "command": "tools/run-android-live-device.ps1 with --use-existing-app",
+      "phase": "read",
+      "pid": 21981
+    },
+    {
+      "id": "handoff",
+      "result": "PASS",
+      "scope": "check-privacy-closure-handoff.py and delegated identity checker; current 291-file source, module mapping, links/tables and published AC06 historical bytes verified. Bookkeeping only; functional results are separate checks.",
+      "exitCode": 0
+    },
+    {
+      "id": "diff",
+      "result": "PASS",
+      "scope": "git diff --check; changed/untracked UTF-8 text EOF/trailing whitespace and JSON parse; six historical verification records unchanged.",
+      "exitCode": 0
+    }
+  ],
+  "androidLiveAcceptanceCheckIds": [
+    "android-apk-build",
+    "device-write",
+    "device-read"
+  ],
+  "attemptHistory": [
+    {
+      "id": "initial-streamed-install",
+      "result": "BLOCKED",
+      "reason": "System INSTALL_FAILED_ABORTED / User rejected permissions; no App ran"
+    },
+    {
+      "id": "installed-initial-apk",
+      "result": "PASS",
+      "scope": "One owned debug test App installed with --no-streaming; no full-flow claim",
+      "apkSha256": "8dc8064930695eb1af25eb51920c1c2ed84afc46cc801126a12e88139e9cf66a"
+    },
+    {
+      "id": "redundant-flutter-drive-install",
+      "result": "FAIL",
+      "reason": "Default drive attempted reinstall despite existing App; stopped its owned process; App retained; runner changed to --use-existing-app"
+    },
+    {
+      "id": "initial-device-write",
+      "result": "FAIL",
+      "pid": 24629,
+      "reason": "Fixture matched editor text before returning to identity ListTile; Bad state: No element. SQL proves signup/create only, not rename or cross-process success",
+      "repair": "Wait for ListTile and correct post-login Settings route; current 182 tests/analyze/build pass; device rerun pending"
+    },
+    {
+      "id": "repaired-apk-update",
+      "result": "BLOCKED",
+      "reason": "System rejected one --no-streaming -r update; old package digest independently confirmed still installed"
+    },
+    {
+      "id": "hot-attach-experiment",
+      "result": "FAIL",
+      "reason": "One mistaken forwarded URI, then paused startup attach/hot-restart timeout; no accepted device phases. Experiment helper removed; no reinstall/uninstall"
+    },
+    {
+      "id": "accepted-r2-pair",
+      "result": "FAIL",
+      "installedApkSha256": "9a676037df2f8788724a6809224ca869bf5184e6c94bfbddd402a0a594e8562b",
+      "writeResult": "PASS",
+      "writePid": 28707,
+      "readResult": "FAIL",
+      "readPid": 31758,
+      "reason": "Read restored native session and SQL identity, but next ListTile was looked up before Back route animation completed",
+      "repair": "All tap/input helpers wait for visible route finder; full pair rerun with new isolated synthetic run namespace"
+    },
+    {
+      "id": "accepted-r3-pair",
+      "result": "FAIL",
+      "installedApkSha256": "4f7b5c3c093f267388000acd8caced6530d1f31053785a51f4a8cb63fdd6b07d",
+      "writeResult": "PASS",
+      "writePid": 12065,
+      "readResult": "FAIL",
+      "readPid": 12458,
+      "reason": "Native restore and actual server logout completed, but fixture expected automatic login route; existing signed-out management requires explicit 前往登录",
+      "repair": "Follow actual navigation, wait for enabled buttons and require old token unauthorized; full fresh pair rerun"
+    },
+    {
+      "id": "reviewed-r4-installed-package",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "This r4 adb --no-streaming -r update returned Success; user confirmed, package SHA256 and attach-only runner independently match the reviewed build",
+      "apkSha256": "b14b71af909ca328178326b76b10bd4151f066aa63e816b590e1fd8da660dbd1"
+    }
+  ],
+  "coverage": [
+    {
+      "id": "registration-and-private-tls",
+      "result": "PASS",
+      "moduleIds": [
+        "A01",
+        "A05",
+        "A12",
+        "A13",
+        "N01",
+        "A11"
+      ],
+      "testPath": "apps/mobile/integration_test/auth_live_device_test.dart",
+      "evidenceRunners": [
+        "device-write",
+        "device-read"
+      ]
+    },
+    {
+      "id": "identity-create-rename",
+      "result": "PASS",
+      "moduleIds": [
+        "B02",
+        "A12",
+        "A13"
+      ],
+      "testPath": "apps/mobile/integration_test/auth_live_device_test.dart",
+      "evidenceRunners": [
+        "device-write",
+        "device-read"
+      ]
+    },
+    {
+      "id": "restart-logout-password-login",
+      "result": "PASS",
+      "moduleIds": [
+        "A05",
+        "A12",
+        "A13",
+        "N01",
+        "B01"
+      ],
+      "testPath": "apps/mobile/integration_test/auth_live_device_test.dart",
+      "evidenceRunners": [
+        "device-write",
+        "device-read"
+      ]
+    }
+  ],
+  "notRun": [
+    {
+      "id": "system-passkey",
+      "result": "BLOCKED",
+      "reason": "No actual RP/signature association deployment; local USB ordinary credentials do not prove ceremony",
+      "entry": "packages/auth_passkey/README.md"
+    },
+    {
+      "id": "ios",
+      "result": "BLOCKED",
+      "reason": "No macOS/full Xcode/signed iOS target; no iOS build/Keychain/ceremony execution",
+      "entry": "docs/design/module-acceptance-handoff.md"
+    },
+    {
+      "id": "device-fault-matrix",
+      "result": "NOT_RUN",
+      "reason": "No current hardware/lock/uninstall/OS backup/cross-device/OEM accessibility matrix",
+      "entry": "docs/design/module-acceptance-handoff.md"
+    },
+    {
+      "id": "long-close-and-gate-device-matrix",
+      "result": "NOT_RUN",
+      "reason": "Seven-day formal close and device frozen/recovery/unknown outcome scenarios are not covered by this happy-path test; AC04 backend evidence remains historical",
+      "entry": "docs/design/auth-privacy-platform-acceptance-plan.md"
+    },
+    {
+      "id": "backend-suite",
+      "result": "NOT_RUN",
+      "reason": "Go/SQL/race/vet and R03/R05 full suites not rerun this round; server source unchanged from published baseline",
+      "entry": "services/api/authlab/privacy-regression-verification.json"
+    },
+    {
+      "id": "production",
+      "result": "BLOCKED",
+      "reason": "Independent parties, recovery/backup and audit evidence remain separate release gates",
+      "entry": "docs/design/auth-privacy-security-review-package.md"
+    }
+  ],
+  "testedInputNotes": {
+    "mobileSourcesMatchCurrentRepositoryByLfBytes": true,
+    "actualServiceSourceChanged": false,
+    "finalRunnerSafetyGuardsOnlySyntaxChecked": false,
+    "pastEvidenceFilesRewritten": false,
+    "finalRunnerSafetyGuardsNegativeChecksPassed": true
+  },
+  "cleanup": {
+    "result": "PASS",
+    "reason": "Verified exact paths/OWNER and installed APK digest before cleanup. Owned roots, project containers/volumes/networks, services/watchers, private material, dedicated caches/APKs/logs, download bridge and orphan Flutter logcat children removed. Shared adb server and preexisting tools preserved.",
+    "windowsOwnedRoot": "D:/zewbbyTest/Hnuhole-android-live-20261005",
+    "linuxOwnedRoot": "/var/tmp/hnuhole-android-live-20261005",
+    "ownerMarker": "HNUHOLE_ANDROID_LIVE_DEV_V1",
+    "dockerProject": "hnuhole-device-hnuholeandroidlive20261005",
+    "sdkAvdPreserved": true,
+    "testAppRetained": false,
+    "completedWhileAwaitingDevice": [
+      "Removed failed attach experiment helper and stopped its child processes",
+      "Removed only owned VM/service USB forwarding entries; adb forward/reverse inventory empty",
+      "Stopped owned test App; retained its package/data for authorized continuation",
+      "Removed owned temporary Docker-collision guard folder",
+      "Stopped owned download bridge and one Gradle daemon selected by dedicated GRADLE_USER_HOME"
+    ],
+    "retainedForContinuation": [],
+    "exitCode": 0,
+    "testAppRemoved": true,
+    "linuxOwnedRootAbsent": true,
+    "windowsOwnedRootAbsent": true,
+    "usbForwardReverseEmpty": true,
+    "ownedProcessCleanupPassed": true,
+    "preserved": [
+      "Existing Android SDK/AVD, Linux/Windows Flutter/JDK tools and user data",
+      "Preexisting Android debug.keystore from 2026-10-04",
+      "Shared adb server and unrelated Docker projects"
+    ],
+    "deviceTempPushedApk": "/data/local/tmp/live.apk absent at final inspection; no unknown phone files deleted",
+    "verifiedAtUTC": "2026-10-05T07:30:20.423839+00:00"
+  },
+  "publication": {
+    "committed": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "nextStep": "Current bounded physical flow and local handoff complete. Remaining AC05: actual RP/Android association/system Passkey; macOS/Xcode/signed iOS and Keychain; physical fault/backup/OEM and Gate/close/unknown-outcome scenarios. Current source/evidence uncommitted; no business expansion or production approval.",
+  "sourcePaths": [
+    "apps/mobile/lib/main.dart",
+    "apps/mobile/lib/src/development/app_transport.dart",
+    "tools/run-auth-device-services.sh",
+    "tools/run-android-live-device.ps1"
+  ],
+  "testPaths": [
+    "apps/mobile/integration_test/auth_live_device_test.dart",
+    "apps/mobile/test_driver/auth_live_device_driver.dart",
+    "apps/mobile/test/development/app_transport_test.dart"
+  ],
+  "affectedModules": [
+    "A00",
+    "A01",
+    "A05",
+    "A12",
+    "A13",
+    "N01",
+    "B01",
+    "B02",
+    "A11"
+  ],
+  "crossModuleScenes": [
+    "X01",
+    "X02",
+    "X03",
+    "X04",
+    "X08"
+  ],
+  "devicePhases": {
+    "write": {
+      "phase": "write",
+      "pid": 20708,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "identityCount": 1
+    },
+    "read": {
+      "phase": "read",
+      "pid": 21981,
+      "priorPid": 20708,
+      "actualApp": true,
+      "actualCV": true,
+      "nativeVault": true,
+      "logoutRevokedOldSession": true,
+      "passwordLogin": true,
+      "identityCount": 1
+    }
+  },
+  "testRunNamespace": "hnuhole-android-live-20261005-r4",
+  "deviceRunnerLogSha256": "7afe44ec62f122d92c3747044bb96373a533f99887e83f635dea980c4c1f5138"
+}

@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "hnuhole-b3b4-batch-result/v1",
+  "recordedOn": "2026-10-10",
+  "branch": "codex/auth-privacy-handoff",
+  "result": "FAIL",
+  "scope": "B3_B4_FIXED_ELEVEN_CASES_CUMULATIVE_EACH_OWN_VERSION",
+  "acceptedCaseCount": 4,
+  "failedCaseCount": 7,
+  "notRunCaseCount": 0,
+  "phases": [
+    {
+      "caseId": "NI-C01",
+      "id": "ni-c01",
+      "result": "FAIL",
+      "reason": "Actual binding C204 and normal closure cycles8/9/V ACK completed. Selected native SDK returned success but strict response codec rejected PASSKEY_INVALID_RESPONSE before C proof. Late controller disposed; no further closure cycles allocated."
+    },
+    {
+      "caseId": "NI-C02",
+      "id": "ni-c02",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-c01-control"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-C03",
+      "id": "ni-c03",
+      "result": "FAIL",
+      "reason": "Actual binding C204 and normal closure cycles8/9/V ACK completed. Selected native SDK returned success but strict response codec rejected PASSKEY_INVALID_RESPONSE before C proof. Late controller disposed; no further closure cycles allocated."
+    },
+    {
+      "caseId": "NI-C04",
+      "id": "ni-c04",
+      "result": "FAIL",
+      "reason": "Actual binding C204 and normal closure cycles8/9/V ACK completed. Selected native SDK returned success but strict response codec rejected PASSKEY_INVALID_RESPONSE before C proof. Late controller disposed; no further closure cycles allocated."
+    },
+    {
+      "caseId": "NI-D01",
+      "id": "ni-d01",
+      "result": "FAIL",
+      "reason": "v14 client pinned-RP rejection passed. Wrong native RP produced opaque cancellation; the server-RP-hash ceremony failed before proof submission. No modified RP hash or C422 reached; original-expiry reconciliation was not executed. Full NI-D01 FAIL."
+    },
+    {
+      "caseId": "NI-D02",
+      "id": "ni-d02",
+      "result": "FAIL",
+      "reason": "Current v14 same-package/identical-code approved control bound204; unapproved certificate actual provider returned cancellation after human Continue, no UV and no proof. No typed or keyword association diagnosis; zero new credentials. Cannot accept signature-rejection cause."
+    },
+    {
+      "caseId": "NI-D03",
+      "id": "ni-d03",
+      "result": "FAIL",
+      "reason": "Approved certificate but unassociated exact package reached actual provider. It returned cancellation after Continue, no typed association cause and no C proof; approved v14 control bound204. Failed acceptance retained, not counted as association rejection."
+    },
+    {
+      "caseId": "NI-D04",
+      "id": "ni-d04",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-d04-main"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-D05",
+      "id": "ni-d05",
+      "result": "FAIL",
+      "reason": "v14 first actual binding reached C204 and added one credential. Second create returned framework cancellation; same-credential selection, product removal, rejected recovery assertion and other-credential retention were not executed. Full NI-D05 FAIL. Provider cancellation is not diagnosed as lack of multi-credential support."
+    },
+    {
+      "caseId": "NI-K01",
+      "id": "ni-k01",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-k01-source",
+        "ni-k01-restart",
+        "ni-k01-fresh",
+        "ni-k01-no-key"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    },
+    {
+      "caseId": "NI-K02",
+      "id": "ni-k02",
+      "result": "PASS",
+      "stageKeys": [
+        "ni-k02-write-failure",
+        "ni-k02-write-failure-read",
+        "ni-k02-write-unknown",
+        "ni-k02-write-unknown-read"
+      ],
+      "versionScope": "Each actual stage retains its own APK/source/PID; preparation does not replace device evidence."
+    }
+  ],
+  "currentCandidateApkSha256": {
+    "org.hnuhole.hnuhole_mobile": "22e580d53d30aa808e7195d7e2168b42026983f20df59cd0e962e601f3dd092b",
+    "org.hnuhole.hnuhole_mobile.acceptance": "705dc4c5de08bc2ac2c60cd2023a836d1c1d3d5b6b26c343dadbc5ff7a3d06b4",
+    "org.hnuhole.hnuhole_mobile.acceptance (negative signature)": "ea8565e894f3dc3523a8370767fb0d24c307579c1bb12c4ab6c67a11cf241831",
+    "org.hnuhole.hnuhole_mobile.unassociated": "22355de1c77b8386e3f0e4323ea8b984b53ae47d0c9da6e16d4dace472ef1d0f"
+  },
+  "currentPartialCounts": {
+    "sql": {
+      "gateState": "OPEN",
+      "generation": 5,
+      "activeAccounts": 5,
+      "closedAccounts": 10,
+      "closedSecretsRemaining": 0,
+      "pendingClosures": 0,
+      "passkeys": 3,
+      "closedPasskeys": 0,
+      "resetIntents": 0,
+      "activeSessions": 3,
+      "closedActiveSessions": 0,
+      "identityReceipts": 12,
+      "closedIdentityProfiles": 0,
+      "activeIdentities": 0
+    },
+    "proxy": {
+      "bindingOptions": 21,
+      "bindingSubmits": 9,
+      "identitySubmits": 12,
+      "closureSubmits": 10,
+      "credentialResultQueries": 1,
+      "identityResultQueries": 0,
+      "resetOptions": 4,
+      "resetIntentSubmits": 0,
+      "heldBindingReplies": 2,
+      "heldIdentityReplies": 4,
+      "releasedBindingReplies": 1,
+      "releasedIdentityReplies": 1,
+      "modifiedRpOptions": 2,
+      "modifiedRpHash": 0,
+      "lastBindingStatus": 204,
+      "lastResetStatus": 0,
+      "lastIdentityStatus": 200,
+      "loginSubmits": 6,
+      "sessionReads": 34,
+      "renewalSubmits": 0,
+      "registrationSubmits": 16,
+      "proofsStored": false
+    }
+  },
+  "currentRPPartial": {
+    "pid": 4094,
+    "phase": "ni-d01",
+    "clientPinnedRpRejectedWithoutNativeStart": true,
+    "actualNativeWrongRpAssociationRejected": false,
+    "nativeErrorCategories": {
+      "nativeCreateCancelled": 1,
+      "nativeCreateDomSecurityError": 0,
+      "nativeCreateDomInvalidStateError": 0,
+      "nativeCreateDomNotAllowedError": 0,
+      "nativeCreateOtherDomError": 0,
+      "nativeCreateOtherFrameworkError": 0,
+      "nativeGetNoCredential": 0,
+      "nativeGetCancelled": 0,
+      "nativeGetDomSecurityError": 0,
+      "nativeGetDomNotAllowedError": 0,
+      "nativeGetOtherDomError": 0,
+      "nativeGetOtherFrameworkError": 0,
+      "actualAssociationRejected": 0
+    },
+    "rawProofStored": false
+  },
+  "currentRemovalNativeCounts": {
+    "pid": 6060,
+    "activityAttached": 1,
+    "nativeBegun": 2,
+    "nativeSucceeded": 1,
+    "nativeCreateCancelled": 1,
+    "nativeErrored": 1
+  },
+  "approvedIsolatedSignatureRestored": true,
+  "mainPackagePreserved": true,
+  "environmentRetained": true,
+  "rawProofStored": false,
+  "fullNonIOSAcceptancePassed": false,
+  "productionApproved": false,
+  "currentNativeInstrumentationTests": 9,
+  "currentReleaseGuardChecks": 12,
+  "currentNativeAndReleaseScope": "Owned emulator probes only, not physical fixed-case acceptance",
+  "sharedFlutterTestsScope": "188 historical shared product tests retained with their original unchanged Dart source; no current full device pass implied",
+  "nextRequiredWork": [
+    "Diagnose the actual selected-credential response field using the existing credential before allocating another closure case; v13 SDK success was rejected by codec, exact field not established.",
+    "NI-C01/C03/C04 require a new complete same-process closure/new-registration/late-response run after the response path is proven; disposed historical controllers cannot provide this evidence. No extra automatic closure cycles allocated.",
+    "NI-D01 must reach an actual server RP-hash rejection and original-key expiry query; current v14 had no proof submission.",
+    "NI-D02/D03 need attributable provider association rejection; a good control and generic cancellation alone do not satisfy the fixed plan.",
+    "NI-D05 needs two real credentials then product removal and the same actual removed assertion; second native creation currently failed, cause undiagnosed."
+  ]
+}

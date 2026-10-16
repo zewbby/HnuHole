@@ -1,0 +1,24 @@
+{
+  "recordedOn": "2026-10-15",
+  "branch": "codex/post-image-media",
+  "startingCommit": "e0c128033682923d519ea99546d72503b085a99e",
+  "implementationCommit": "efccade441bfc5d453751a3fac74211b090e8129",
+  "implementationCommitRemoteVerified": true,
+  "frontendReferenceCommit": "a696742f943c1cfe6a5005024dccaf40be752d8f",
+  "sourceFingerprint": "0d75d18f4c64432aed5f676118f0e8d2f843cd048c3c99ed6954df7eac4de00c",
+  "scopedResult": "PASS",
+  "testCounts": {
+    "distinctTopLevelGoTests": 72,
+    "distinctGoTestsIncludingSubtests": 244,
+    "goResults": {
+      "PASS": 244
+    },
+    "pythonTests": 4,
+    "openapiDocuments": 6
+  },
+  "cleanup": "PASS; task caches, synthetic bytes, temporary DB/material and raw logs removed; source retained",
+  "integration": "No frontend/community merge; imageCount, empty-body, media digest and terminal lease must be aligned by frontend host at fixed SHAs",
+  "actualCmdGooseMobileAndroidIOSProduction": "NOT_RUN",
+  "deploymentOrRelease": false,
+  "followingCommitScope": "Documentation receipt only; runtime inputs unchanged"
+}

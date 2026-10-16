@@ -1,0 +1,43 @@
+name: hnuhole_mobile
+description: Hnuhole mobile client.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.13.4 <4.0.0"
+  flutter: ">=3.47.5"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  vector_math: ^2.1.4
+  characters: 1.4.1
+  crypto: 3.0.6
+  cryptography: 2.7.0
+  drift: 2.35.2
+  sqlite3: 3.7.0
+  image_picker: 1.2.4
+  hnuhole_auth_vault:
+    path: ../../packages/auth_vault
+  hnuhole_auth_passkey:
+    path: ../../packages/auth_passkey
+  hnuhole_image_viewer:
+    path: ../../packages/image_viewer
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+# Linux 实盘测试使用现成系统库；Android/iOS 仍打包官方校验的 SQLite。
+hooks:
+  user_defines:
+    sqlite3:
+      source:
+        linux: system
+        default: sqlite3

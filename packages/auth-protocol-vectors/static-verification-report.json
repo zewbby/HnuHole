@@ -1,0 +1,59 @@
+{
+  "fixtureSha256": "da913014063f3972dbc15a6c79a87757e7f113ff9cd5911bbb4b42918e5262b1",
+  "checks": 496,
+  "pythonBinding": "1.6.2",
+  "node": "v24.11.1",
+  "openssl": "3.5.4",
+  "rfcControls": 3,
+  "regeneratedPositiveSignatures": 8,
+  "rejectedInvalidSignatureCases": 11,
+  "pointPolicyCases": 22,
+  "libraryBehaviorCases": 6,
+  "encodingCases": 9,
+  "framingCases": 4,
+  "timeArithmeticCases": 11,
+  "stateCasesActuallyExecuted": 0,
+  "libraryObservations": [
+    {
+      "id": "LIB_IDENTITY",
+      "PyNaClVerify": false,
+      "profileAccept": false,
+      "NodeVerify": true
+    },
+    {
+      "id": "LIB_NEGATIVE_ZERO",
+      "PyNaClVerify": false,
+      "profileAccept": false,
+      "NodeVerify": true
+    },
+    {
+      "id": "LIB_NONCANONICAL_IDENTITY_Y_P_PLUS_1",
+      "PyNaClVerify": false,
+      "profileAccept": false,
+      "NodeVerify": true
+    },
+    {
+      "id": "LIB_MIXED_B_PLUS_ORDER2_EVEN_K",
+      "PyNaClVerify": true,
+      "profileAccept": false,
+      "NodeVerify": true
+    },
+    {
+      "id": "LIB_NONCANONICAL_S_ADD_L",
+      "PyNaClVerify": false,
+      "profileAccept": false,
+      "NodeVerify": false
+    },
+    {
+      "id": "LIB_NONCANONICAL_R_Y_P_PLUS_1",
+      "PyNaClVerify": false,
+      "profileAccept": false,
+      "NodeVerify": false
+    }
+  ],
+  "result": "STATIC_FIXTURE_CHECKS_PASS; PRODUCTION_AND_STATE_TESTS_PENDING",
+  "reportKind": "INTERNAL_STATIC_FIXTURE_CHECK_ONLY",
+  "recordedOn": "2026-09-28",
+  "scope": "内部临时核验器重算公开固定数据；两套库独立派生公钥、签名与验签，点准入使用成熟接口及官方 workaround。496 是核验断言数量，非测试覆盖率或独立审计。数据库、服务、客户端、生产库组合均未运行。",
+  "reproduction": "依据 auth-privacy-protocol-vectors.md 第5节，用所选生产库重新实现消费这些数据的测试；本轮未提交认证或核验器代码。临时核验命令 python3 /private/tmp/hnuhole_verify_auth_vectors.py。"
+}

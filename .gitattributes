@@ -4,4 +4,10 @@
 *.md text eol=lf
 *.yaml text eol=lf
 *.yml text eol=lf
+# Protocol fixture hashes are byte-exact on every development platform.
+packages/auth-protocol-vectors/v1.json text eol=lf
+packages/post-protocol-vectors/media-v1.json text eol=lf
+# Preserve portable project skill scripts and vendored text on Windows.
+.agents/skills/** text eol=lf
+.agents/skills/**/*.cmd text eol=crlf
 .githooks/* text eol=lf

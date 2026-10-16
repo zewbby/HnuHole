@@ -1,6 +1,239 @@
 # 设计进度与剩余工作
 
+> **2026-10-16 合并检查修复：**保留main原协作policy；清理6份继承文件的行尾空格，将两份API测试内嵌TLS私钥改为运行时OpenSSL临时生成并在测试结束删除。仅测试/文档格式变更，产品实现不变；受影响5文件130项实际PASS，产品CI新增Flutter/Go检查。送审快照取最终产品树，不改写既有共享分支历史；GitHub检查与独立审查完成前不记作已合并。
+
+> **2026-10-16 合并交付进行中：**工作项PM01/IV01帖子图片业务，交付源 `codex/post-image-integration`（功能交付1c8ad33、修复fd2e4c0）。本任务除iOS外约定范围已完成；README已列实现、S18证据及iOS原始选图/原生验收剩余。同步main协作规则，使用符合新命名规则的送审快照分支承载相同产品源码，经PR进入main；此时尚未合并、未发布。项目级预算/生产与评论私信另列，既有验证范围不变。
+
+> **2026-10-15 主App帖子图片S18真机联调已完成约定范围：**修复实现 `fd2e4c04f48b29ddda0142660188988c4a655f5f`，分支 `codex/post-image-integration`。实际原生Picker/原图跨进程恢复、九图C/V/SQL上传及缺项补传、失败编辑同任务RETRY、受保护查看、Gal原格式保存与Gallery动画回放、删帖/退出/切账号/迟到隔离取得本轮证据；修复成功核对后残留旧错误提示。最后修改后分析0、相关宿主69、Python守卫15、bundle、Android Debug20263116构建/验签及上机复验PASS。手机窗口结束，系统设置已恢复、自己的App/后端已停、映射已撤；Linux专用私钥/库已清理。Windows清理被自动审批拦截，材料仍保留且私有目录ACL受限，不能写成已清理。iOS原始选图仍未实现，最大资源预算/库存升级/生产与评论私信另列；不重测旧TalkBack、不宣称全模块/双端通过。见[本轮报告](post-image-android-device-report.md)与[机器记录](post-image-android-device-verification.json)。下方旧记录保留各自版本与范围。
+
+> **2026-10-15 主App帖子图片真机验收的非手机准备已完成：**实现 `2eeb19ce87542aed9e0c57874e8d6b3478df946d`，本任务独立kit `E:/Hnuhole-post-media-android-20261015`。新主App/probe两个API29+包构建与验签、分析0、原图宿主10项、离线守卫15项/设备命令守卫4项、专用真实C/V/Goose/受限空PG重启及Windows HTTPS均PASS；自己的后端已停。没有调用ADB或操作手机，PMA01–14全部NOT_RUN，等待另一会话释放；旧组件TalkBack不重测。按用户要求暂留独立APK/签名/空库/工具供直接配合，过期先核就绪清单。见[准备报告](post-image-android-preparation-report.md)、[机器记录](post-image-android-preparation-verification.json)、[集中SOP](../../tools/post-media-android/README.md)。下方旧结果保留原源码和范围。
+
+> **2026-10-15 帖子图片真实前后端联调完成：**联合分支 `codex/post-image-integration`，源码 `31e82df6ad0f8345471705cf78e6e0f463beecfb`（前端075b567＋后端d893378）。真实C/V进程、Goose/受限PG、Flutter生产页面/API/原图草稿/补传/读取/保存resolver，19检查点全部PASS；修复旧上传暂停状态污染新RETRY。当前分析0、完整宿主375（零排除）、后端SQL/race244、Python4/OpenAPI6、编译/vet、Windows bundle与Android原生构建/验签PASS。没有手机或其他会话服务操作；原生业务真机、iOS原始选图、总预算/生产与评论私信另列。见[联合报告](post-image-joint-report.md)和[机器记录](post-image-joint-verification.json)。下方各分支旧记录保留原版本与范围。
+
+> **2026-10-15 帖子选图上传前端已补齐：**实现 `5cd5fdb8f3766bb5ae5840fa7546eda6739fd98c`，最多9图/排序/移除、加密原图草稿、媒体摘要、逐项补传和重启核对已接现有写帖页。最终分析0、完整mobile374项（零排除，含修复后的控制器43项）、bundle及Android API29+原生构建/验签PASS。后端仍固定d893378独立分支，真实C/V/SQL联调和业务手机未验；本轮未操作手机/服务。iOS选图库会重编码原图，原格式选图尚未实现、入口保持关闭，不能只写待验；评论私信/总资源预算另列。见[本轮报告](post-image-composer-report.md)和[机器记录](post-image-composer-verification.json)。下方旧结果保留原版本，不代证当前。
+
+> **2026-10-15 真实帖子图片读取已接线：**前端固定源码 `b5ab3969870daa43b9d40919311d68f1d4cdca61` 对接后端 `d893378a8224b9c7a3b9d2bc9681a6ea508d5587` 契约；main/通道/我的→详情已装配受保护读取、最长60秒租约、逐个内存缓存释放与原格式保存resolver。分析0、聚焦76项、其余315项及bundle PASS；完整Windows控制器文件43项保留已复现SQLite清理故障，未计PASS。两个源分支未合并/部署，本轮没有手机或服务操作；完整C进程/SQL联调、业务原生构建/真机未验，上传UI/原图草稿/补传恢复与评论私信未开发，iOS独立。见[读取接线报告](image-viewer-post-media-read-report.md)和[机器记录](image-viewer-post-media-read-verification.json)。下方旧钩子/组件记录按原版本与范围保留。
+
+> **2026-10-15 图片前端接入阶段1：**独立 `codex/image-viewer-business-integration`，从已提交社区e0c1280接入原图片包bd7458a；现有通道/我的→帖子详情已接图片loader钩子、等尺寸预览和独立查看路由，撤销/删除/迟到与返回位置有宿主证据。生产尚无真实图片接口，评论/私信未开发，MIV14仅部分实现。新会话负责帖子图片业务，不编辑社区验收目录/服务/手机；见[阶段1报告](image-viewer-business-stage1-report.md)、[机器记录](image-viewer-business-stage1-verification.json)和[新会话prompt](image-viewer-media-next-session.md)。分析、聚焦34项、其余290项回归、bundle通过；完整Windows回归的SQLite清理errno32已在未改动基线复现，未冒称全套通过。下方历史各按原版本与范围理解。
+> **2026-10-15 帖子图片后端独立交付：**分支 `codex/post-image-media`，从已提交社区 `e0c128033682923d519ea99546d72503b085a99e` 在独立 clone 实现真实 SQL 原字节存储、最多九张不可变清单、单项短期补传能力、完整验证后原子公开、受保护清单/原图读取与撤销/清理。Go 72个顶层／含子项244 PASS、Python合成图4 PASS、OpenAPI6份、全包编译/vet PASS；宿主替身与真实TLS/SQL/文件系统范围分列，不代表实际cmd/Goose升级/Flutter/设备/iOS/生产通过。只读参考前端 `a696742f943c1cfe6a5005024dccaf40be752d8f`，未修改或合并其工作区；接线前须处理 imageCount/空正文、新媒体摘要、60秒终止租约。PM01/B05/B06仍为后端已实现／宿主与平台待实现或验收，评论/私信只登记未来契约。见[契约与方案](post-image-media-contract.md)、[脱敏证据](post-image-media-verification-20261015.json)；源码固定提交 efccade441bfc5d453751a3fac74211b090e8129 已正常推送并核对远端；见[交付回执](post-image-media-delivery-20261015.json)，不部署、不发布。下方社区与认证证据保留原版本与范围。
+
+> **2026-10-15 手机窗口当前阻断：BLOCKED_KEY_ISOLATION。**用户已确认 vivo S18、30–45分钟窗口、认证会话释放、隔离包和专用USB key；原stage1实际等待90秒后exit1，未发现目标设备，未安装/启动App、注册或业务写入。Windows环境变量不能证明专用key隔离，已给stage1/2添加不可凭授权flag绕过的前置守卫；CA-A01–13全部NOT_RUN，stage2也阻断。Windows136 PASS＋3 POSIX SKIP、Linux139 PASS仅为host；自有60761 server已按exe/start/port核实后停止，既存5037未动；用户已结束本轮窗口，后续须重新确认。见[本轮报告](community-android-device-blocked-20261015.md)与[脱敏记录](community-android-device-blocked-20261015.json)。历史准备/指纹/APK证据保留原范围；先证明真正独立profile或验证专用key目录的ADB，再由原服务归属方安全释放USB并重验摘要/ready/空库。新增OS账户/安全配置或共享key例外须用户明确变更授权。
+
+> **2026-10-15 第二项非手机准备完成：**第一项450项输入、APK/签名/待验空库保持原状；第二项已有独立存储探针、原生35项与3组进程中断 runner、3个隔离APK和手机SOP。新执行mobile322、分析0、Linux136／Windows133＋3个POSIX跳过、199项镜像及签名/manifest/DEX/SQLite核对通过。见[报告](community-android-stage2-preparation-20261015.md)与[记录](community-android-stage2-preparation-20261015.json)。无ADB或手机动作；任务1/2设备项仍NOT_RUN。按用户要求保留两项待验材料，等待窗口及人工IME/重启配合；任务3/4、iOS、生产未通过。
+
+> **2026-10-15 第一项非手机准备完成：**修复 DELETE 首次核对失败后遗漏 poll 集合，以及 C 确认取消注销后的 UI 完成入口。最后产品修改后 mobile322/R05/F4 通过，真实 server/权限/runtime/vet 通过；新增整段 host 八检查点和最终隔离 Debug/标准未签名 Release 构建通过，实际设备与 IME 仍 NOT_RUN。见[准备报告](community-android-stage1-preparation-20261015.md)和[机器记录](community-android-stage1-preparation-20261015.json)。按用户要求保留专用环境、手机新空库和 APK；未调用 ADB 或创建真实账号/USB key。后续确认设备窗口、隔离包/USB 授权并补真实输入法，任务2–4、iOS和生产分别待验。
+
+> **2026-10-14 当前统一任务单：**用户将双实体Android验证追加到原三项工作之后，顺序为①单机文字社区流程②原生存储与生命周期③系统Passkey及单机回归④双设备NI-X01/NI-X02。见[四阶段统一任务单](community-android-unified-acceptance-plan-20261014.md)。当前只更新计划/交接，没有新增测试或设备操作；单机窗口仍延期，第二设备与两机窗口尚未确认，RP/package/signature关联须另行准备审批。20261013主机/构建证据和其“排除第二设备”保留为原范围历史；新任务整体须四阶段全部收口才通过，iOS/生产和未实现业务仍独立。
+
+> **Git与清理回执：**整合后源码提交`28cee4656edd710d60676a81794c20cd49f45351`（父提交为上述社区保存SHA和固定认证SHA）已正常推送且远端核对一致。此后交接回执仅改文档/台账，443项运行输入未变。三处canonical任务根经owner与进程核对后清理PASS，约11.07GiB逻辑文件、SDK副本/缓存/APK/合成CA及调试私钥均删除，源码、测试、脱敏记录与外部复验脚本保留；不做VHD压缩或全局清理。见[交付回执](community-auth-integration-delivery-20261013.json)。设备仍按用户指令延期，后续须重建独立材料并获得窗口，不能把已删除APK/签名当作可直接安装的制品。
+
+> **2026-10-13 当前联合结果：主机回归及Android构建PASS，设备验收由用户明确延期，任务为部分完成。**整合前20份任务文件已保存并正常推送为`7452dadefb52e7b695cdd1079d21083fcb6cae02`；以用户指定的已提交认证`d859cb05c772cdf8d8b75e439a2bfedf0414dd46`三方整合，保留既定文字页、关闭清理、业务vault、SQL0013/最小授权及锁。联合源码新执行checks（分析0／mobile320）、R05、F4主机8项、server六包race、posts权限9顶层/4生命周期、实际cmd/正式迁移R03的25断言及最终vet均PASS；原生标准Debug/Release ARM64、两测试APK和隔离设备候选构建PASS，实际设备用例全部NOT_RUN。最后4项runner/宿主夹具修改未改变App/Go产品/SQL/协议，受影响检查已重跑；最终443项输入指纹`599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7`。旧311及认证22/0/2不计联合结果。见[联合报告](community-auth-integration-report-20261013.md)、[机器记录](community-auth-integration-20261013.json)、[固定SHA差异](community-flutter-f4-auth-integration-diff-20261012.md)、[单台Android复验清单](community-single-android-acceptance-20261013.md)。仅正常提交/推送本分支；第二实体Android、iOS、完整模块及生产未验，未用ADB/手机。以下旧日期记录保留原范围，不代表当前交付状态。
+
+> **2026-10-12 F4当前验证收尾：固定基线主机子范围PASS，等待最终认证整合。**用户确认后已应用固定后端来源的最小`c_posts`授权补丁（仅新增29行，原认证授权前缀不变），并对最终运行代码完整重跑六stage：mobile分析0问题／20测试文件311项非隐藏测试、R05、F4-H01–H08本轮8项、server六测试包race＋内置vet、posts-privileges九个顶层测试（含受限runtime权限）＋四个lifecycle子项、最终vet均PASS。旧308／旧8项不计本轮；授权前权限FAIL及日志／JSON保留在`logs/pre-approved-grant-rerun`历史归档，不是当前未修复失败。见[本轮报告](community-flutter-f4-validation-report-20261012.md)、[本轮机器记录](community-flutter-f4-validation-20261012.json)及[认证整合差异清单](community-flutter-f4-auth-integration-diff-20261012.md)。
+
+> 独立clone为`E:/HnuHole-community-f4-20261012/repo`；起始SHA与当前HEAD均为`4d58116bdde2c1d2d406b965590bc1625a5c7955`，本轮20个修改文件全部未提交，未推送／合并认证／部署。全部最终检查覆盖授权修复后的282份源码／测试／配置文本，指纹为`186915148fa007eaa5fd2692744adf1af05f500df02b54388270f922d68e7d46`；日志在`E:/HnuHole-community-f4-20261012/logs`。最终认证整合SHA仍未指定，F4 final／FP14继续BLOCKED_DEPENDENCY；手机、原生业务vault7项、实际main插件启动／自动poll、跨原生进程／备份、物理UX及iOS未验，实际部署cmd／旧库前向升级／完整App／生产仍未通过。复验步骤与实际清理结果以本轮报告／机器记录为准。以下授权前及更早记录保留原日期、版本与范围，不覆盖本段当前结果。
+
+> **2026-10-12 F4授权前历史快照：PARTIAL／BLOCKED（已由上方批准后复验取代）。**本轮最终mobile分析0问题、20文件311项非隐藏测试、R05、F4-H01–H08重新执行的8项、server六测试包race及最终vet均PASS；旧308／旧8项不计本轮。`posts-privileges` FAIL：`TestPostSchemaRestrictedRuntimePrivilegesPostgres` 报“required text post schema, hooks or privileges absent”，核对发现社区 `infra/postgres/grant-community.sql` 漏掉 `c_posts` 授权。权限补丁尚未应用，需说明安全配置修改范围并等待用户授权，之后在新一次性库重跑受影响权限／server／vet；当前不能登记完整主机范围PASS或完整App验收。见[本轮报告](community-flutter-f4-validation-report-20261012.md)、[本轮机器记录](community-flutter-f4-validation-20261012.json)及[认证整合差异清单](community-flutter-f4-auth-integration-diff-20261012.md)。
+
+> **授权前历史快照续：**本轮独立clone为`E:/HnuHole-community-f4-20261012/repo`；起始SHA与当前HEAD均为`4d58116bdde2c1d2d406b965590bc1625a5c7955`，本轮修改全部未提交，未推送／合并认证／部署。上述已通过检查覆盖最后运行源码修改，权限失败独立保留；日志在`E:/HnuHole-community-f4-20261012/logs`，最终文件／指纹／退出码以本轮机器记录为准。认证已提交快照仅供差异审查，最终用于整合的固定SHA仍未指定，FP14保持BLOCKED_DEPENDENCY。手机、原生业务vault7项、实际main插件启动／自动poll、跨原生进程／备份、物理UX及iOS均未验；复验步骤见本轮报告。验收目标仍为“当前固定基线在主机范围可复验，等待最终认证整合”，本轮因社区权限缺口仅部分完成。下方历史记录保留原日期、版本与范围。
+
+> **2026-10-10 F4换机交接：**源码`68d35af`已完成固定后端接入，生产根路由真实HTTPS／独立PG／文件SQLite的8项主机检查PASS，补设置“账号与安全”入口。见[报告](community-flutter-f4-report.md)、[机器记录](community-flutter-f4-verification.json)和[换机入口](community-flutter-f4-machine-handoff.md)。F4最终认证候选／FP14仍BLOCKED；早期mobile0问题／308PASS不代证最终全量，最终checks／R05／vet因WSL emergency_ro未完成。F5原生／设备／iOS未跑。一次性PG与进程已结束，但本任务Linux缓存删除errno30、清理BLOCKED；不带缓存换机，不动其他会话。旧F3及认证记录保留原版本与范围。
+
+> **2026-10-09 F3 当前交付：**文字页面、主导航、controller与加密SQLite状态已完成，源码`eb6c914`；[实现报告](community-flutter-f3-report.md)、[机器记录](community-flutter-f3-verification.json)和[实际Flutter复审](ui-reviews/community-flutter-f3-ui-review.md)固定当前证据。完整mobile分析0问题、308项PASS（SQLite30／controller34／screens23含14帧）；F1正式图未改。补未来版本拒绝、旧retry随机迁移、删除丢响应／切账号围栏及Android闭号多engine临界区。真实C/V／SQL整合、Android原生7项／构建／跨进程／设备、iOS及物理UX仍NOT_RUN；下一阶段F4固定最终认证候选，F5另行平台验收。scoped PASS不代证整模块或生产通过；下方F2及认证旧结果均为历史版本。
+
+> **2026-10-09 F2契约／存储设计完成：**见[F2设计](community-flutter-f2-design.md)、[版本锁](community-flutter-f2-lock.json)及[静态记录](community-flutter-f2-verification.json)。基于已发布后端514a944固定14操作、命令/任务/客户端未知三层状态、精确摘要与seal/cancel/retry/delete语义；保持Drift/加密SQLite三表v1、独立业务key和环境/账号scope原字节规则。正式F1资产未改；本轮未导入业务代码、未执行Flutter/SQL/设备验收，不把后端未提交T4或历史PASS移入本分支。F3按锁选择复用源码，补未来schema拒写及删除核对回归，F4仍待最终认证候选。
+
+> **2026-10-09用户纠正／撤回重复改版：**用户明确“这种布局我上面不是已经定稿过了吗”，[刚生成的正常网格v3已撤回](ui-reviews/my-content-aligned-v3.md)。“我的”正常态沿用已定稿本人列表版式，不另做网格、不再列为待评审；F1-11记为已定布局复用，F1-14为定稿通道列表复用，F1-22为删除成功直接返回。当前19个正式PNG场景＋2个已定版式复用场景＋1个无单页返回动作，原22场景已收口，无需继续画图。正式PNG均未修改；Flutter业务／平台NOT_RUN。此前候选／缺口计数为历史。
+
+> **2026-10-09 F1全量出图核对：**见[22场景完整清单](ui-reviews/f1-completion-audit.md)。21个页面场景均已有图；本人删除成功直接返回，无独立页。本轮补齐[我的正常列表对齐v3](ui-reviews/my-content-aligned-v3.md)：置顶首位、统一预览框及对齐页脚，新图仍单列候选；已定稿发布状态与详情不替换。当前19有效正式＋1正常列表候选＋1复用列表流程示例＋1返回动作，没有未画独立页。只图稿与文档，Flutter业务／平台NOT_RUN，不改模块台账；下方版本与数量为历史。
+
+> **2026-10-09三图明确定稿补记：**用户“要这三张”明确选中F1-19正常阅读、F1-20身份停用、F1-21本人删除确认，见[确认记录](ui-reviews/post-detail-selected-final.md)。附件与正式文件字节一致，未新增图或改变数量；删除成功仍直接回上一级，F1-22独立页取消。只设计确认，无Flutter实现或平台验收PASS。
+
+> **2026-10-09最新详情收口：**[正常阅读统一缩略图v2](ui-reviews/post-detail-normal-v2.md)经用户明确认可正式定稿；横图／竖图／不同分辨率使用统一预览尺寸，点开看完整原比例。剩余[F1-20—22三场景](ui-reviews/post-detail-states-v1.md)已处理：身份停用／本人删除确认依既定无意见规则归档，删除成功按用户最新指令直接返回上一级，F1-22整页取消、只保留历史。原22个场景均已处理，21个页面场景出图（19有效正式＋2候选／示例），1个为无独立页的返回动作；没有尚未绘制的独立页面。设计完成范围与Flutter实现分开，业务／图片／删除／平台验收NOT_RUN。下方为历史版本与计数。
+
+> **2026-10-09最新四图定稿＋详情开始：**用户明确批准四个附件，F1-15暗蓝通道成功提示、F1-16我的发布中、F1-17失败草稿、F1-18失败编辑已原图归档，[来源与确认范围](ui-reviews/post-publish-feedback-selected-v3.md)可核验。所选本人混排覆盖这两个状态之前的网格候选；正常网格F1-11、返回流程F1-14仍单列候选。应用相应项目UI技能及imagegen完成[F1-19正常详情v1](ui-reviews/post-detail-normal-v1.md)，新图候选已展示。当前16有效正式＋3候选＋3未画，共22场景，已画19场景；余下详情身份停用、本人删除、已删除占位3张。只图稿，不代表业务实现或设备验收，NOT_RUN边界继续保留。下方状态按历史日期理解。
+
+> **2026-10-09当前发布反馈v2：**用户要求发布后直接回原通道，成功上部小黑色浮层，失败存草稿加叹号；本人帖子按新参考改为双列对齐网格。[当前6图与复审](ui-reviews/post-publish-feedback-v2.md)已展示，旧独立状态v1被替代。F1-11原批准保留历史、当前改版重开；当前12有效正式＋6候选，已画18／22，正文详情4页未画。失败重试归属与未知核对规则保留，仅图稿与规则，业务／平台NOT_RUN。下方为此前历史计数。
+
+> **2026-10-09 F1当前13正式＋5新图：**用户无意见即定稿规则已记录，我的混排／空态原图正式归档。[发布任务5张](ui-reviews/post-task-states-v1.md)全部已画并展示，实际应用项目UI技能与imagegen：处理中／结果未知／取消核对／明确失败／修改重试。已画18／22，剩正文详情4张；本批首次交付先展示，后续按用户反馈规则定稿。保留白色框架与暗灰蓝动作。仅设计，业务／平台NOT_RUN，以下旧计数保留历史。
+
+> **2026-10-08 F1当前11正式：**用户将[删除草稿宋体v5](ui-reviews/my-draft-delete-confirm-v5.md)定稿，正式图[我的-删除草稿确认](../../UI产品图/我的-删除草稿确认.png)。22页中13页已画：11正式、2待评审（我的混排／空态）；9未画（任务5／详情4）。已记录后续这类弹框正文优先宋体，取消／确认按钮保持原字体。此为图稿与设计规则，无业务或平台PASS。
+
+> **2026-10-08 F1-13当前v5：**删除草稿弹窗问题行按用户要求缩小并改为宋体，按钮不改；[v5](ui-reviews/my-draft-delete-confirm-v5.md)待评审。我的混排／空态v1不变，进度10正式＋3候选＋9未画；图稿不计实际字体渲染或业务／平台PASS。
+
+> **2026-10-08 F1-13当前v4：**删除草稿确认已按用户原文压为两行居中弹窗：问题“确认删除这篇草稿？”、左取消／右亮朱红确认；[v4](ui-reviews/my-draft-delete-confirm-v4.md)待评审，旧版保留。我的混排及空态未改，计数10正式＋3候选＋9未画；无业务或平台PASS。
+
+> **2026-10-08 F1-13最新候选：**用户要求删除草稿改为弹窗，当前[居中弹窗v3](ui-reviews/my-draft-delete-confirm-v3.md)已出图，保留醒目亮朱红删除动作，左取消／右删除草稿。我的混排与空态v1未改，三页均待评审。总进度仍10正式＋3候选＋9未画；只设计，无新增实现或平台PASS。
+
+> **2026-10-08 F1当前13／22页已出图：**身份三态经用户明确批准，正式文件为[身份选择](../../UI产品图/发帖-身份选择.png)、[尚无身份](../../UI产品图/发帖-尚无身份.png)、[失效重选](../../UI产品图/发帖-身份失效重选.png)。当前10页FINAL（列表3＋编辑确认4＋身份3）、[我的三页](ui-reviews/my-content-states-v1.md)DRAFT（混排／空态／草稿删除确认），9页未出图（任务5＋详情4）。本批待评审后继续任务类；新图不自动定稿。当前只做设计，社区Flutter代码未实现，业务／平台NOT_RUN，不改验收台账。下方旧进度按历史节点理解。
+
+> **2026-10-08 F1当前进度：**用户明确将[草稿保存失败厚重版v3](ui-reviews/post-composer-save-failed-v3.md)正式定稿，正式图[发帖-草稿保存失败](../../UI产品图/发帖-草稿保存失败.png)。22页中已画10页：7页FINAL（通道3页＋编辑与确认4页），3页身份候选待评审；12页未画（我的3、任务5、详情4）。下一步先收口已出图身份三态，再画“我的”类。当前仅设计，社区Flutter代码未实现，业务／平台NOT_RUN，历史计数不代表当前进度。
+
+> **2026-10-08 F1-07最新候选v3：**保存失败已从底部面板改为居中两按钮弹框（左放弃／右重试），用户通过v2布局并要求厚重质感；[v3](ui-reviews/post-composer-save-failed-v3.md)已加强标题、说明文字、控件边界及暗灰蓝动作，视觉待评审。未将布局通过计为整页FINAL，其他身份三图不改。当前6正式＋4候选＋12未出图；代码未实现，业务／平台NOT_RUN。
+
+> **2026-10-08 F1当前10／22页已出图：**F1-06[发布确认](ui-reviews/post-publish-confirm-v1.md)经用户“可以，下一批”正式定稿，正式文件[发帖-发布确认](../../UI产品图/发帖-发布确认.png)。通道三态＋编辑正常／键盘＋发布确认共6页FINAL；本批F1-07保存失败、F1-08身份选择、F1-09无身份、F1-10失效重选共4页DRAFT，见[本批记录](ui-reviews/post-identity-and-save-states-v1.md)。失效页以v2为当前候选，v1保留历史。其余12页未出图：我的3页、发布任务5页、详情4页。确认当前批次后继续“我的”类。本轮仅设计，Flutter社区代码未实现、业务及平台验收NOT_RUN，不改模块台账。下方此前计数按历史节点理解。
+
+> **2026-10-08 F1共5／22张正式定稿：**用户对[键盘状态v1](ui-reviews/post-composer-keyboard-v1.md)明确“这个可以”，F1-05正式定稿，正式图为[发帖-键盘编辑](../../UI产品图/发帖-键盘编辑.png)。当前5张定稿为通道三状态、编辑正常态、键盘状态，配色不自动推广为全局主题。F1-06[发布确认v1](ui-reviews/post-publish-confirm-v1.md)已出图／DRAFT／待评审，产物`docs/design/ui-drafts/post-publish-confirm-v1.png`；从上到下标题／标签／身份、底部固定“确认发布”，无预览和额外确认。第二类正常与键盘已定稿、确认制作中、保存失败1张未画；加上其他四类15张，除制作中的确认外共16张未出图。本轮不写代码，Flutter社区文字切片未实现、业务验收NOT_RUN，不改模块台账或登记代码／平台验收PASS。以下此前记录按历史节点理解。
+
+> **2026-10-08 F1共4／22张正式定稿：**用户看过[文字编辑页v1](ui-reviews/post-composer-edit-v1.md)后明确“可以，我同意这个”，F1-04编辑正常态正式定稿，正式图为[发帖-文字编辑](../../UI产品图/发帖-文字编辑.png)；加上F1-01／F1-02／F1-03通道三状态，共4张定稿，不扩大为全局配色。F1-05[键盘状态v1](ui-reviews/post-composer-keyboard-v1.md)按既有指令继续制作，图稿`docs/design/ui-drafts/post-composer-keyboard-v1.png`，已出图／DRAFT／待评审；其余17张未出图（第二类确认与保存失败2张、其他四类15张）。第二类4张中正常态已定稿，键盘待评审，确认／保存失败未画。本轮不写代码，Flutter社区文字切片未实现、业务验收NOT_RUN；不改模块台账或登记验收PASS。以下出图与确认记录保留历史状态。
+
+> **2026-10-08 F1第一类3／3正式定稿（历史节点）：**用户明确“定稿这三个”，[v9通道三状态](ui-reviews/channel-feed-v9.md)登记F1-01／F1-02／F1-03正式定稿（布局＋本组三状态配色）。正式图为[通道最新列表](../../UI产品图/通道最新列表.png)、[通道暂无帖子](../../UI产品图/通道暂无帖子.png)、[通道首次加载失败](../../UI产品图/通道首次加载失败.png)；白色框架及偏暗偏灰的原蓝色UI仅作为本组定稿，不扩大为全局主题。v6先通过布局、v9生成期间曾待评审；v7林绿与v8整页暗蓝已废弃。图片／纯文字双列、点赞数、通道名、搜索、紧凑工具栏和底栏保持；“首页”回导航树，中央加号新建当前通道帖子，热榜仍由搜索进入。按既有指令继续第二类第一张[文字编辑页v1](ui-reviews/post-composer-edit-v1.md)，产物`docs/design/ui-drafts/post-composer-edit-v1.png`，已出图／DRAFT；其余18张尚未出图。本轮仅图稿与文档，Flutter社区文字切片代码未实现、业务验收NOT_RUN，无平台验收证据；不改模块台账或登记验收PASS。下方旧稿和隐藏策略按历史版本理解。
+
+> **2026-10-08 F1视觉改稿：**原通道列表v1方向被否定；当前先评审[正常列表v3](ui-reviews/channel-feed-v3.md)的浅色双列与强对比卡片，未确认定稿。新版空／失败状态依正常图方向再同步，其余类别未出图；无Flutter或设备验收。
+
+> **2026-10-08 F1页面设计启动：**第一类3／3张v1草图已生成并保存，分别为最新列表、空通道、首次加载失败；[评审记录](ui-reviews/channel-feed-v1.md)。待用户评审，不计定稿或功能PASS，其余19张尚未出图。
+
+> **2026-10-08 UI能力补齐：**项目级frontend-design／ui-ux-pro-max／Impeccable及hnuhole-ui-craft已安装，四份技能结构验证通过；[UI工作流](ui-quality-workflow.md)已具体化中文排版、视觉克制、状态真实性和逐页PNG复审。来源及试跑边界见[技能记录](project-ui-skills.md)。没有新图或社区功能证据，不改变模块验收结论。
+
+> **2026-10-08 Flutter社区第3项：**[实施计划](community-flutter-pages-plan.md)已完成规则／图稿阅读及Q1决策，状态PLAN_READY／IMPLEMENTATION_NOT_STARTED。当前分支 `codex/community-flutter-pages`；先逐页补设计，按后端固定契约推进业务状态及SQLite，再接认证候选进行真实链路与Android验收。没有业务代码或测试证据，不改变既有模块验收结果；完整评论／赞藏／搜索等另行开发。功能里程碑结束按AGENTS更新四份交接。
+
+> **2026-10-13 B6与单台Android范围完成：**完整R01 SQL/race/vet、R03实际C/V的19项检查、R05真实Dart→HTTPS→SQL、三个Flutter包分析、移动端188项与Passkey Dart 9项、标准Android Debug／Release构建、原生vault 16项／Passkey codec及错误分类12项、三组实际跨进程读写和已安装Release 13项边界均PASS。Windows／Linux各108项宿主守卫、诊断构建8项、JVM策略24项及四份OpenAPI通过。固定24项维持22 PASS／0 FAIL／2 BLOCKED；原14阶段及各设备版本保留，原SDK-only三项FAIL与历史UNKNOWN未改写。**不需要第二实体Android的非iOS匿名基础工作已完成，唯一固定缺口为NI-X01／X02；完整非iOS、iOS、生产与未来业务仍未获通过。**原手机三包摘要、原provider／autofill、账号与草稿保留；本轮独立模拟器停止，专用AVD／构建副本／临时APK及原始日志已清理，现成环境与缓存保留。HnuHole仅准备本地可审阅候选，未提交／推送／部署。见[B6报告](auth-privacy-b6-validation-report.md)及[最终分层记录](../../services/api/authlab/b6-single-android-20261013-verification.json)。
+
+下方记录保留原日期、被测版本与证明范围；本轮结论以上述B6入口为准。
+
+> **2026-10-13 B3＋B4固定11项已收口：**原8项保持原版本；本次NI-D01／D02／D03均取得实际Google `50152 RP ID cannot be validated`及RP validator栈。D01客户端固定RP无原生启动、错误RP的HTTPS hostname拒绝、正确RP真实创建后C422、原五分钟期限20次结果核对均有独立证据；D02仅改变签名的同载荷包、D03批准证书的未关联包名均明确拒绝且无证明提交／无新增凭据，相关Google校验流程没有网络错误。批准控制真实C204仍有效。**原SDK-only App脚本三项FAIL原样保留**：vivo回调仍是通用取消，关联计数仍0；本次固定项PASS依据为实际App事实＋Google直接拒绝＋独立SQL，未把通用取消冒充关联诊断，未修改原始结果或放宽接受条件。新增只读证据核验6项、安装守卫26项PASS；守卫仅排除已脱离task／display且finished的last-paused旧指针，仍拒绝活动窗口／UNKNOWN。批准签名测试包和原vivo凭据／autofill设置已恢复，原两个APK摘要未变；历史UNKNOWN保留。累计11／11，固定24项22 PASS／0 FAIL／2 BLOCKED（缺第二实体Android），B6／iOS／生产未通过，HnuHole未提交／推送。见[本轮分层证据](../../services/api/authlab/android-b3b4-native-negatives-20261013-verification.json)。
+
+> **2026-10-13 修复后单次真机重试PASS：**Astra／Ultra只读分析定位Google GMS校验所需的DAL `handle_all_urls`缺失；仅为批准的acceptance20261012包补齐该关系，原两条关联不改，站点提交152a2b0、部署38268212768成功，Google检查已更新为true。生成工具同步补齐两种关系，聚焦5项检查通过；产品APK未变。原vivo S18本次仅发起一次批准控制：PID27847原生成功，用户完成验证，C真实204，SQL Passkey从0增至1，独立App／设备／SQL均PASS。旧两轮失败和PID14444的UNKNOWN均保留，不重放证明。暂停后的原服务按原材料恢复到OPEN第4代；初始严格恢复检查因V过期OTP预算元数据1→0而报FAIL，保留原回执，随后只读核对及实际产品控制通过，未reset／rekey／迁移。此次只完成正向前置，NI-D01／D02错误签名／D03未关联包负向尚未执行，累计仍8／11，固定24项仍19 PASS／3 FAIL／2 BLOCKED，B6／iOS／生产未通过。HnuHole未提交／推送。见[本轮记录](../../services/api/authlab/android-b3b4-fresh-20261012-verification.json)。
+
+> **2026-10-12 单次重试结果：**用户明确要求只重试一次、失败后停止；已用原安装产品包完成一次新的NI-D02批准控制请求，PID21565，实际结果FAIL，未提交C证明、SQL Passkey仍0。上次PID14444的UNKNOWN及credentialMayExist和全部原证据保留于attempt-product-control-01；新请求没有重放旧证明。用户确认点击继续，手机重试已停止。随后用户明确要求GPT-6 Astra／Ultra分析已有证据，当前只读分析进行中。累计仍8／11，三项负向未执行。见[本轮记录](../../services/api/authlab/android-b3b4-fresh-20261012-verification.json)。
+
+> **2026-10-12 原 vivo 接续正在进行：**归档解密密钥已遗失，旧8项保留原APK／源码／设备／SQL证明。新独立C／V／SQL及获批测试DAL已就绪；独立Google准备通过，首次真实窗口超时的UNKNOWN原样保留，用户切换VPN后的唯一新诊断重试明确返回`DATA_ERR(30)`，没有C证明，静态选项审查未证实请求格式缺陷。完整批准Flutter产品包已正常构建、签名及安装（68,199,652字节），实际原生ELF已去调试符号，错误签名包与批准包的558个非签名条目完全一致；Google凭据提供方已核对，旧两个APK未变。产品边界检查通过但未重建Release APK。首次产品控制启动在原生认证前发现WSL运行服务已停止；恢复01已完成并保留独立回执；再次中断后按原材料完成恢复02，C／V均从FROZEN第2代／证据版本121正常恢复到OPEN第3代／证据版本122，恢复时SQL业务表及代理计数仍为0。Windows观察器已加上精确守卫，本地超时／取消及后来的回调均不能将UNKNOWN变为可清理；25项安装守卫和4项观察器守卫测试通过，APK／原生插件／原源码准入未变。首次真实批准产品控制已结束：App PID14444发起1次原生调用后本地超时（nativeTimeout1、nativeErrored1），观察器正确拒绝自动返回，产品原生结果仍UNKNOWN、系统凭据可能存在。SQL实际1个测试账号／0个Passkey，代理bindingOptions1／bindingSubmits0，未向C提交证明；独立观察器记录外层vivo选择器，主任务观察到内部Google注册窗口。人工返回后只按HOME导航到桌面，捕获时后台仍有3行已知原生活动，不能宣称任务消失或UNKNOWN解除。批准控制未通过，负向未执行，提供方因UNKNOWN尚未恢复；本轮相关日志只读审查已结束、根因未定：主脱敏报告与独立报告一致，已分别核对主报告13个源文件及68条引用行、独立报告10个源文件及7条引用行的完整性；这些核对不代替验收。同一Google UI进程注册流程日志约53.15秒后出现`TIMED_OUT`，未建立请求／challenge关联或产品回调，也未确定端点、状态码或网络根因。稍后采集的已验证VPN551覆盖GMS UID10172，但允许绕过，不能证明仪式当时每条连接的路由或服务端点可达。用户只读确认Google密码管理工具正常且无异常提示、Play商店显示设备已通过认证；这些人报不代替独立attestation或凭据创建证明。原产品UNKNOWN／credentialMayExist及禁止盲重试、恢复提供方、重装的守卫继续保留。新NI-D01／D02／D03仍未取得产品PASS。B3＋B4仍8 PASS／3项历史FAIL，固定24项仍19 PASS／3 FAIL／2 BLOCKED，B6／iOS／生产未通过。顺序为D02批准控制→D01→D02错误签名→D03未关联包。见[本轮脱敏记录](../../services/api/authlab/android-b3b4-fresh-20261012-verification.json)。
+
+> **2026-10-11 换机交接最终回执：**实现、测试和排错源码已推送 4c40f90；7 个加密归档／22 个分片已逐资产核对远端 SHA-256，并通过本地认证解密和文件内容核对。已删除五个任务 WSL 根、12 个专用容器、8 个卷、4 个网络；Windows 缓存／交接暂存副本删除被自动审批拒绝，仍保留，不能宣称全部清空。B3＋B4仍8 PASS／3 FAIL，固定24项19 PASS／3 FAIL／2 BLOCKED；B6／iOS／生产未通过。新机器先读[换机交接](auth-privacy-machine-transfer-20261010.md)及[最终交付和清理实录](../../services/api/authlab/auth-privacy-machine-transfer-verification.json)，解密密钥单独交付。
+
+> **2026-10-10 ultra排错阶段历史快照：**B3＋B4保持8／11 PASS、3项原执行FAIL。用户确认本轮点“继续”，全局代理下Google批准正向仍未取得证明；原生7次失败与一次系统清理器在原生开始前强停分别保留。只读审手机实际vivo选择器v15.0：provider非RESULT_OK返回和内部失败会被统一上报selector取消，原错误信息未传到App。此机制已由安装APK静态代码证实，但Google上游失败根因和本轮精确分支仍未证实；27字符消息摘要仅作佐证，旧JDI原型未区分参数／堆对象，不作为验收证据。ultra子审触及用量上限后由主任务续审。新有界观察器源码已保留并编译，未发起新ceremony；产品APK未改、已通过8项不重验。当前Google凭据／自动填充设置临时保留，等待人工只查看密码管理工具设置，不清数据或登出；验收后须按原备份恢复，Clash全局模式须由用户恢复。固定24项仍19 PASS／3 FAIL／2 BLOCKED，B6／iOS未执行，未提交／推送。见[具体诊断记录](../../services/api/authlab/android-passkey-selector-diagnosis-verification.json)。
+
+> **2026-10-10 Google 提供方初轮历史结论（本轮接续见顶部）：**B3＋B4仍为8／11 PASS、3项原执行FAIL。v17修正隔离账号的正常产品登录续办，分析／三包构建／四种签名核对通过；手机批准签名Google正向控制4次均在证明返回前取得原生取消，未新增绑定，新的Google三项负向未执行。系统Google账号存在，用户确认Chrome同步和实时搜索可用；Google远端关联检查批准签名为true、错误签名及未关联包名为false，这些不代证手机拒绝原因。具体根因未确认，不归咎用户，也不把通用取消计为关联拒绝。已恢复原vivo通行密钥及自动填充设置，主包v16与数据保留、隔离包v17保留，可复用环境不清理。固定24项仍19 PASS／3 FAIL／2 BLOCKED；B6和iOS未执行，未提交／推送。下一次须先取得具体原生原因或可用实际提供方的正向控制，禁止原样盲重试。见[Google对照记录](../../services/api/authlab/android-b3b4-google-provider-verification.json)。
+
+
+> **2026-10-10 v16批次历史结束记录（Google重试见顶部）：**B3关闭组4／4通过，B4关联与存储组4／7通过，合计8／11 PASS、3 FAIL、0 NOT_RUN。C01／C03／C04和D05已在v16真实App通过，早期选择超时是历史记录；D05另一凭据保留由未变v15实际SQL证据补充，不宣称vivo双凭据创建。D01客户端固定RP、实际服务端422及原五分钟期限核对通过，原生错误RP与D02错误签名／D03未关联包名均只有OEM通用取消，不能归因为关联拒绝。批准控制组实际C204，负向未新增凭据；三项完整验收仍FAIL。批准隔离签名已恢复，主App／账号／草稿／环境保留，人工窗口已结束，不再自动弹安装、认证或追加关闭。固定24项累计19 PASS／3 FAIL／2缺第二实体Android而BLOCKED；B6未执行，iOS／完整非iOS／生产未通过，未提交／推送。当前细节见[本批脱敏记录](../../services/api/authlab/android-b3b4-batch-20261010-verification.json)。
+
+
+> **2026-10-10 B3＋B4 逐项结果：**固定11项当前接受8项（NI-D04、NI-C01、NI-C03、NI-C04、NI-C02、NI-D05、NI-K01、NI-K02）。每项保留独立App／设备／SQL和启动版本；夹具失败与原成功前置记录保留，不重放证明。本轮11项均已执行；未通过项为NI-D01、NI-D02、NI-D03，具体缺口见本批记录。B1＋B2原11项PASS不改写。用户确认卸载后的旧本机状态不能续用，历史证据及可复用环境保留；完整非iOS／iOS／生产未通过，HnuHole未提交／推送。见[任务单](auth-privacy-b3-b4-plan.md)及矩阵JSON的`b3b4Verification`。
+
+
+> **2026-10-10 B3＋B4 v16早期凭据选择失败历史快照（已被本批结果替代）：**本轮剩余七项新增PASS为0，固定11项累计仍4项原版本PASS／7项FAIL。主包v16已更新并保留账号／草稿；12项原生测试、13项Release边界、当前分析和四包签名构建通过，共享188项及SQL249项沿用v15未变源码的原范围。调试名称已同时设置user.name／displayName，实际账号handle／签名检查未改。用户截图曾出现唯一合成标签，但实际目标断言未完成；同名列表查找和60秒窗口导致超时，失败原版本与原请求保留。定位脚本已改用专用临时XML、按唯一标签有限滚动，不自动选择／认证；尚未取得成功真实定位证据。停止本轮人工窗口，不再自动弹安装或认证，不再推进关闭。先通过实际可辨认目标和同一ID断言预检，才恢复固定项集中验收。环境、手机数据和历史证据保留；未提交／推送。见[当前自动准备范围](../../services/api/authlab/android-b3b4-v16-preparation-verification.json)。
+
+> **2026-10-10 B3＋B4 v15集中验收准备：**当前Flutter分析／188项测试、实际PostgreSQL249项race／vet（无跳过）、模拟器原生12项、独立Release13项、四包签名与公开关联前置核验PASS；这些不代证剩余七项实体验收。C02／D04／K01／K02保留各自原版本PASS，累计仍4／11。正常可发现断言保持真实userHandle／ID检查；合成显示标签只属于受保护调试入口，Release禁用。移除后的旧断言／会话／恢复码在实体测，另一条凭据保留另由实际SQL事务证据覆盖，不宣称vivo连续创建两条。仅允许cycle10草稿／cycle11身份完整关闭，且均须实际断言预检先通过；测试构建96天上限，现有约70天偏移未推进，SQL截止／手机时间不改。用户已授权集中人工窗口；主包更新一次后连续执行，签名／包名对照按固定隔离包切换。环境和历史证据保留；未提交／推送。见[当前自动验证记录](../../services/api/authlab/android-b3b4-v15-preparation-verification.json)。
+
+
+> **2026-10-10 B3＋B4 v14批次实测历史结论：**固定11项累计4项PASS（C02／D04／K01／K02）、7项FAIL，0项NOT_RUN；各项保持自己的版本，整批未通过。批准签名控制组实际绑定C204；错误签名／未关联package只取得通用取消，关联拒绝原因未证实。错误RP客户端拒绝成立，但服务器RP哈希负向未收到证明。移除组第一条真实绑定成功，第二条原生创建失败，尚未执行移除及旧断言。v13关闭／V释放及同邮箱草稿隔离前置完成，但旧断言codec拒绝的具体字段仍未查明，完整C01／C03／C04未通过。SQL已关闭10／待关闭0，已关闭资料／凭据／有效会话残留0。当前分析、模拟器原生9项及独立Release12项PASS；188项保留原范围，不代证实体固定项。批准隔离签名已恢复，主包及环境保留，无新指纹／安装／注销任务。B1＋B2原11项PASS不改写；24项累计15项PASS，7项FAIL，2项缺第二实体Android而BLOCKED。未提交／推送。见[本批脱敏结果](../../services/api/authlab/android-b3b4-batch-20261010-verification.json)。
+
+
+> **2026-10-10 B3＋B4 最后固定批次历史计划：**按用户最新“一次性做完”继续剩余七项，已通过C02／D04／K01／K02保留原版本。用户卸载后须新安装v13和新账号；两次完整关闭明确限于cycle8草稿、cycle9身份／旧凭据，测试构建上限80天，既有偏移不回退，SQL七天截止不改。原8轮及失败记录全部保留，不追加关闭重试。旧代理内存请求已结束并独立归档，累计计数／CA／端点／数据库保持，不能声称旧控制器迟到成功。v13分析188项、原生8项、Release12项保留各自PASS范围；安装尚未开始，实体剩余七项尚未通过。环境保留；未提交／推送。
+
+
+> **2026-10-10 B3＋B4 用户确认卸载：**用户已确认手动卸载App，前述“原因待核实”状态已结束。本机旧会话、草稿和UID钥匙不能续用；已保存的服务端／宿主设备历史证据、测试源码和环境仍保留，C02／D04／K01／K02四项原版本PASS不撤销。其余七项没有因此完成；C01／C03／C04完整旧回调轮次仍FAIL，D01／D05未执行，D02／D03此前通用原生错误仍不能算关联拒绝。v13分析188项／构建／原生8项／Release12项已通过各自范围。后续设备执行须新安装已审阅候选并使用新合成测试账号，不能声称恢复卸载前待办或同进程迟到控制器。8轮关闭预算不再自动增加；当前无安装或系统认证任务，不要求人工指纹。未提交／推送。
+
+
+> **2026-10-10 B3＋B4 当前安装状态阻塞：**接受4／11（NI-C02、NI-D04、NI-K01、NI-K02），均保留自己的实际App／设备／SQL和版本。v13独立指定公开ID的调试验收入口修复已通过Flutter分析、共享188项、三种ARM64包＋仅签名对照、模拟器原生8项及独立Release12项；正常可发现恢复继续拒绝allowCredentials，Release拒绝新验收入口，模拟器与构建不代证vivo固定项。C01／C03／C04前次完整迟到轮次失败保留，8轮关闭额度已用完，不再自动增加。准备更新v13时，vivo连接正常但包管理器找不到主App与隔离App（用户0），只剩原生探针；更新尚未开始，原因正在向用户核实，不推断为主动卸载或清理。B4的D01／D02／D03／D05实际续验等待设备状态确认。环境、数据库、缓存、各版本和历史证据保留；未提交／推送。
+
+
+> **2026-10-10 B3＋B4 逐项结果历史检查点：**固定11项当前接受4项（NI-D04、NI-C02、NI-K01、NI-K02）。每项保留独立App／设备／SQL和启动版本；夹具失败与原成功前置记录保留，不重放证明。剩余固定项继续执行，B1＋B2原11项PASS不改写。服务端证据及可复用环境保留；本机数据按顶部卸载确认理解；完整非iOS／iOS／生产未通过，HnuHole未提交／推送。见[任务单](auth-privacy-b3-b4-plan.md)及矩阵JSON的`b3b4Verification`。
+
+
+> **2026-10-10 B3＋B4 当前独立原生入口修正：**NI-C02已以v12实际同进程首次绑定UNKNOWN、cycle7正常关闭／V释放、同邮箱新注册、迟到原响应及原键查询完整通过，固定项接受4／11（C02、D04、K01、K02）。v12主组cycle5草稿关闭／新注册和cycle6真实绑定／身份关闭已完成，但旧证明选项被产品可发现恢复codec按规则拒绝，未调用系统；C01／C03／C04仍FAIL，旧迟到控制器已结束，不冒称完整通过。8轮测试时钟额度已用完，不再自动增加关闭轮次。当前只修复调试验收的独立指定公开ID入口，产品恢复仍拒绝allowCredentials，挑战／UV／来源和C校验不放宽；补编码测试和Release禁用入口检查，当前原生／Release待重验。观察器只对只读ADB超时重试一次。主账号、草稿、所有版本和环境保留；未提交／推送。
+
+
+> **2026-10-10 B3＋B4 当前凭据选择修复：**已接受NI-D04／K01／K02，共3／11。v11原注册续办、真实绑定C204及身份账号普通worker关闭／V释放已完成；旧凭据系统列表缺少人工可辨认账号标签，用户未认证，原生get失败且C未收到旧证明，C01／C03／C04未接受。v12关闭／移除断言用 allowCredentials 限定本次实际登记的公开凭据ID，仍要求真实系统证明和返回同一ID，服务器校验未放宽；不让用户从重复标签中猜账号。原失败进程的迟到控制器已结束，旧响应保留为历史，另做完整同进程轮次。专用Go测试构建固定8轮／64天上限已经runtime/operator测试和vet，现有约35天偏移、SQL七天截止、真实时间、CA及库保持；只再执行草稿cycle5、身份cycle6与UNKNOWN绑定cycle7，累计约56天，不追加ID或无界重试。共享188项及原生7项／release11项保留原版本范围。环境、账号、草稿和历史APK归档保留；未提交／推送。
+
+
+> **2026-10-10 B3＋B4 注册修复历史快照：**NI-D04／K01／K02三项已有各自实际App、设备、SQL及版本证明。新的草稿账号关闭及V释放已完成，但v9累积用户名26字符被客户端6–24字符规则拒绝，C01／C03／C04仍未接受；失败按版本保留。v11已核对原邮箱实际字段为 registration.request.email，新用户名固定20个合法字符，并保留同精确邮箱的原注册、旧草稿和第4次关闭计数基线，SQL只读复核原七天截止、普通worker清理及V释放后续办，不重新注销或回退／重复推进时钟。当前约28天偏移，专用上限48天；CA／端点／库／主包状态保留。分析、四种ARM64构建及签名对照PASS；共享188项、原生7项和release11项保留原版本／范围。C02完整迟到轮次及D01／D02／D03／D05继续固定执行，泛化原生错误不能算关联拒绝通过。历史APK已按精确摘要移至C盘工作区专用缓存，不清SDK／AVD／构建缓存／数据库；一个从未安装的v10未关联包归档副本因空间不足不完整，已明确记录。未提交／推送。
+
+
+> **2026-10-10 B3＋B4 注册修复历史快照：**NI-D04／K01／K02三项已有各自实际App、设备、SQL及版本证明。新的草稿账号关闭及V释放已完成，但v9累积用户名26字符被客户端6–24字符规则拒绝，C01／C03／C04仍未接受；失败按版本保留。v10将新用户名固定20个合法字符，并保留同精确邮箱的原注册、旧草稿和第4次关闭计数基线，SQL只读复核原七天截止、普通worker清理及V释放后续办，不重新注销或回退／重复推进时钟。当前约28天偏移，专用上限48天；CA／端点／库／主包状态保留。分析、四种ARM64构建及签名对照PASS；共享188项、原生7项和release11项保留原版本／范围。C02完整迟到轮次及D01／D02／D03／D05继续固定执行，泛化原生错误不能算关联拒绝通过。未提交／推送。
+
+
+> **2026-10-10 B3＋B4 早期历史检查点：**用户已明确继续。v9夹具分析、四种ARM64构建及签名对照PASS，批准隔离包更新完成；缺钥错误页补验及K02四阶段先集中执行。共享188项和原生7项／release11项保留原版本与范围，未变源码摘要已核对。专用测试时钟容量已扩至48天，保留约21天偏移，不回退高水位，不改SQL七天截止、主机／手机时间、CA或库。隔离卸载已移除原C02的旧Keystore钥匙，本地只剩历史旧密文，不能恢复为可用UNKNOWN；服务端回执与未释放响应保留，完整迟到回调另做新的同进程轮次。环境／主包／账号及草稿保留；未提交／推送。
+
+
+> **2026-10-09 手机接手历史快照（2026-10-10已续跑）：**主包v8更新成功（APK摘要`0ddf6180d162…`），未卸载／清数据；未启动新验收，未自动点击安装、未代做认证或改变设备安全设置。当前没有本批设备runner／观察器／安装任务。按用户接手要求暂停手机操作；隔离包尚未更新，原C02待办／未释放响应、账号与环境保留。B3＋B4接受数仍为1／11，安装成功不代证固定项PASS。
+
+
+> **2026-10-08 B1＋B2 当前交付：**固定11项已全部接受PASS：NI-L01–L04／NI-U01–U03／NI-A01–A04。每项保留真实App、宿主设备事实与顺序、独立C／SQL及代理计数、启动时APK与源码摘要。覆盖配置变化、Activity／engine销毁与持久恢复、后台取消、新请求期间旧成功／错误回调围栏、真实无可用凭据、大字小屏、TalkBack失败／恢复码确认／UNKNOWN原键核对与终态，以及原生请求期间冻结503、冻结恢复入口拒绝、实际另一设备接替401、主动新登录后新挑战204。TalkBack十轮失败按各自版本保留；独立不抑制辅助服务的诊断证明公开错误节点与焦点链，自动焦点不计人工验收。新进程保留真实手势与人工朗读确认，合成字段只作夹具准备，不代证IME；原辅助设置已恢复。当前候选分析／Flutter188项／ARM64＋x64构建、原生codec／ownership5项、独立release10项guard与交接校验PASS，各自版本和范围保留；旧14阶段不改写。完整非iOS／AC05／B02及生产仍未通过，iOS本轮排除。固定24项累计接受11项，余13项及B6终验不在本次B1＋B2范围。环境、缓存、账号与草稿保留；未提交／推送。见矩阵JSON的`b1b2Verification`及[固定计划](auth-privacy-non-ios-closure-plan.md)。
+
+
+> **2026-10-08 固定收口计划：**剩余非iOS匿名基础验收统一按[24项／6批次最终计划](auth-privacy-non-ios-closure-plan.md)执行；预算48–64有效工时，目标2026-10-19，前提为持续工作日推进且第二实体Android在10月15日前到位。10月15日核对B1–B4；每批报告固定ID累计结果，不再零散追加“下一步”。24项及最终候选回归／交接通过才可结束非iOS开发验收；缺第二设备不能算完整PASS。iOS、生产及未来业务联动独立，不阻止本分支按其授权范围结束。此为计划，新增项尚未执行。
+
+<!-- CURRENT_NON_IOS_START -->
+> **2026-10-08 批量验收交接：**十四个命名实际App阶段已PASS，每项保留自己的APK／夹具／runner摘要、设备PID和代理计数。覆盖真实注册、双端独立草稿／手机主动接替／账号隔离，真实Passkey成功响应丢失与原键跨进程COMMITTED核对，实际provider期间控制器取消与产品返回，C证据过期冻结后的旧会话401／主动登录／明确结束旧UNKNOWN，两次提前成功后的原回执确认与产品移除，未回应原生操作约60秒取消，篡改来源422拒绝及自然到期原键NOT_COMMITTED核对。旧来源拒绝在核对前遇USB及服务中断，仍按原版本保留，未迁成新会话原结果；新的完整负向／核对另有自己的证明。取消／超时后的OEM窗口清理由宿主在原生结果后执行，不宣称自动关闭或任意迟到回调；两秒观察范围保持。对应四组SQL/race/vet、R03十九项、R05及Flutter188项回归PASS，不代证新夹具；新夹具分析／ARM64＋x64构建与设备执行逐项PASS。Activity重建／旋转、原生等待期间Gate／接替、完整关联／签名负向及真实Passkey／未知迟到待办参与关闭仍需补入口和证据。仅有vivo，OEM实体搬家BLOCKED；iOS本轮SKIP；完整AC05／B02及生产继续未通过。工具、环境、缓存、原账号与草稿按用户指令保留；未提交／推送。见[报告](auth-privacy-non-ios-validation-report.md)和[机器记录](../../services/api/authlab/android-matrix-verification.json)。
+> **2026-10-07 非 iOS 匿名基础当前增量：**真实 vivo 系统 Passkey 核心链保留原版本 PASS；同证书来源兼容及 V 无确认锚点核对修复已通过当前 R01完整SQL/race/vet、R03实际C/V及R05真实Dart→HTTPS→SQL回归。新实际App双设备接替与未过期旧代次 OTP 的 V冻结／恢复／原结果核对已PASS；模拟器完整App会话／身份草稿跨进程、卸载重装及受控旧密文缺钥拒绝已PASS，OEM搬家未验。vivo原生vault16项／3组跨进程、Passkey codec5、实际单App备份拒绝、手机→模拟器密文缺钥拒绝及模拟器探针卸载重装已PASS，各自保留APK版本和证明范围。新实际App双设备／V Gate夹具的运行结果逐项见[机器记录](../../services/api/authlab/android-matrix-verification.json)。旧一次性服务被旧退出trap清理后，已修复显式保留模式，实际验证初始化器退出后C/V、双Gate watcher及材料仍在；新端点与合成账号另行验收，原r1/r2/r3结果不迁成新库证据。真实锁屏／解锁、独立计数的手机重启与同会话／草稿恢复，以及独立release原生调试入口／开发信任拒绝已PASS；当前客户端188项与R05增量PASS；过期flow正常十分钟清理后的原键未知核对／主动续办／同密钥新票据四个实际App进程已PASS。真实IME已在vivo现有搜狗键盘上PASS：18次实际编辑事件、10次非折叠组合态，未确认文字未入原生草稿，确认后同会话／中文草稿经PID7275→7968独立进程恢复；初版真实触摸被测试绑定丢弃的夹具失败保留，原输入法已恢复。此次仅修改测试／runner并执行分析、构建与实际IME场景，188项与R01／R03／R05保留原执行范围，未重跑。TalkBack实际导航／取消／返回及新进程同会话／草稿焦点朗读已PASS，原辅助功能已恢复；此次分析／离线构建与实际设备场景PASS，完整188项及R01／R03／R05保留原执行范围。独立Gate／证据测试时钟推进的正式关闭／同邮箱再注册已PASS，零身份草稿和三身份资料／累计历史与原凭据拒绝经实际vivo App验证；SQL七天截止与触发器未改，不代证真实等待七天或未决待办迟到回调。系统Passkey边界及OEM矩阵仍待完成，AC05／B02整项未通过。iOS按用户指令排除，生产单列。见[任务单](auth-privacy-non-ios-plan.md)和[报告](auth-privacy-non-ios-validation-report.md)。工具、缓存和新环境按用户指令保留。HnuHole增量未提交／推送；公开测试关联站点已按授权发布。
+
+> **2026-10-07 批量验收历史快照：**完全访问已启用，原自动审批额度故障已解除；私有配置导出、匹配摘要的实际代理与ARM64＋x64合包构建已PASS。四组完整SQL/race/vet、实际C/V、R05及Flutter188项回归已导出对应源码清单，缓存源码未在执行与采集间变化，并与当前对应后端／客户端源码一致；不代证新增手机夹具。批量实际App已接受八阶段：新账号注册、手机草稿、模拟器独立草稿、手机主动接替恢复、同机账号隔离、真实Passkey绑定响应丢失、独立进程原回执核对、实际provider活动期间控制器取消后产品返回。前七项属于v1包；取消属于触摸修正后的v3包PID18612。取消后系统窗口仍在，验收后宿主关闭；只证明两秒观察窗口内无新增凭据／提交，不宣称系统窗口自动关闭或任意迟到回调。来源负向两次在原生侧失败，没有HTTP证明提交，未计PASS；新增产品移除已有测试Passkey与真实异步等待后接续，原未知结果先核对、不重放证明。历史账号关闭／IME／TalkBack／核心Passkey和各自旧版本保留。仅有vivo S18，OEM实体搬家BLOCKED；iOS本轮SKIP，完整AC05／B02及生产继续未通过。环境／缓存保留；未提交／推送。见[任务单](auth-privacy-non-ios-plan.md)、[报告](auth-privacy-non-ios-validation-report.md)和[机器记录](../../services/api/authlab/android-matrix-verification.json)。
+<!-- CURRENT_NON_IOS_END -->
+> **2026-10-05 Android 异常验收当前结果：**vivo S18 上三组实际 App 故障场景已 PASS，七个独立进程 PID 为 10229／10535／12328／12825／13052／13286／13482。覆盖真实提交响应丢失、原意图重启核对无重复；C Gate 冻结拒绝写与恢复后旧代次令牌拒绝／主动登录；退出先清 Bearer、独立撤销待办持久化和重启排空。Flutter 分析、182 项测试、完整 ARM64 测试包及 runner／调试入口负向检查 PASS。见[任务单](auth-privacy-android-fault-plan.md)、[报告](auth-privacy-android-fault-validation-report.md)、[机器记录](../../services/api/authlab/android-fault-verification.json)。保留历史正常链路与初次部分执行的原版本；本轮复用环境／缓存／测试 App 按用户指令保留，临时 USB 映射已移除。完整 AC05／B02／系统 Passkey／iOS／生产仍 BLOCKED；剩余设备矩阵继续单列。未提交／推送／部署。
+
+> **2026-10-05 Android 真机当前结果：**基于已发布 `0eff47a`，vivo S18上的实际App→HTTPS实际cmd C/V→一次性SQL／原生Keystore基础链已PASS。write/read PID为20708／21981；覆盖测试SMTP注册、恢复码完整确认、身份创建／改名、跨进程会话／身份恢复、退出、旧会话401和点击“前往登录”后的密码登录。Flutter分析、182项测试、完整ARM64测试APK及负向保护PASS。见[任务单](auth-privacy-android-live-plan.md)、[报告](auth-privacy-android-live-validation-report.md)和[记录](../../services/api/authlab/android-live-verification.json)。只连接已安装且摘要匹配的App，阶段间不重装。本轮一次性数据库／服务／私钥／专用缓存／APK及临时测试App已清理，当前本地交接完成；AC05整项／B02／系统Passkey／iOS／完整设备矩阵／生产仍未通过，本轮未提交／推送。
+
+下方AC01–AC06保留原日期与证明范围；AC04–AC06已在72ca9e8发布、0eff47a补交付记录，历史“未提交／未推送”不代表当前Git基线。旧AC06的PASS仅证明原版本地交接；本次源码、真机结果、清理与本地交接另见currentAndroidLive／currentHandoffState，不覆盖旧证据。
+
+> **2026-10-05 AC06 当前交接：**匿名基础源码与本地交接材料已整理，详细结论见[最终交接报告](auth-privacy-final-handoff-report.md)、[AC06任务单](auth-privacy-final-handoff-plan.md)和[最终记录](../../services/api/authlab/final-handoff-verification.json)。后端／真实客户端回归保留AC04原证据，Android模拟器范围保留AC05；AC05整项、B02整模块及生产仍未通过。当前AC04–AC06修改尚未提交／推送，本地交接完成不代表远端已发布。历史规格／AI评审／旧台账按原日期、源码摘要与证明范围理解；下一步补外部平台配置与设备证据，或按当次授权发布当前材料，不自动开发完整业务片。
+
+> **2026-10-05 AC05 当前交付：**当前完整 Android arm64 App、两个 instrumentation APK、模拟器 vault16项与3组跨进程、Passkey Dart9／Android codec5、Flutter真实原生双进程均PASS；新增身份草稿恢复／组合输入／账号隔离和原意图核对，write/read PID 7062／7189。Flutter分析及179项、四份OpenAPI本轮PASS。AC05整项和B02整模块仍BLOCKED：iOS／系统Passkey／物理设备／系统备份与完整App→实际C/V尚无完整证据。见[AC05报告](auth-privacy-platform-acceptance-validation-report.md)、[任务单](auth-privacy-platform-acceptance-plan.md)和[机器记录](../../services/api/authlab/platform-acceptance-verification.json)。保留AC04原指纹与证明范围；下一步AC06最终交接，不扩展完整业务片。本轮未提交／推送／部署。
+
+下方记录按原日期与版本理解；当前平台范围和阻塞以台账 currentAC05 为准，后端回归保留 currentAC04。
+
+> **2026-10-05 AC04 当前交付：**基于已推送 `cbc99b0`，补齐真实 Dart→HTTPS handler→SQL 的 V 独立冻结／恢复旧 OTP 围栏、身份关闭资料／永久历史和同邮箱新账号隔离场景；修正 R03 普通重启测试的授权事务停机时序，应用逻辑／公开 API／迁移未变。完整 Go／SQL／race／vet、R03 实际 C/V、Flutter 分析及179项测试、R05 均 PASS。覆盖、失败修复与精确范围见[AC04报告](auth-privacy-regression-validation-report.md)、[任务单](auth-privacy-regression-plan.md)和[机器记录](../../services/api/authlab/privacy-regression-verification.json)。B02整模块仍BLOCKED；下一步AC05平台验收，再AC06最终收口。本轮未提交／推送／部署。
+
+下方 AC01–AC03 和平台记录保留原版本与证明范围；当前回归入口为台账 currentAC04，历史“未实现／未执行”不代表本轮状态。
+
+> **2026-10-05 Git远端交付：**AC01／AC02／AC03源码、测试和小型证据已提交至 [8db630f](https://github.com/zewbby/HnuHole/commit/8db630f66bfc87cc05164aaae95b02b0d884d09a)，并普通推送到 `origin/codex/auth-privacy-handoff`；远端提交号已核验一致。本段是随后补充的交付记录。下方“未提交／未推送”及机器记录的uncommitted字段保留测试时快照，当前交付状态见台账publicationDelivery／Git提交历史。原测试摘要保留；额外Git文本摘要只允许CRLF→LF换行转换，协议向量仍逐字节核验。发布本次Git提交没有重新执行动态测试，也不代表部署、B02整模块验收或生产批准。
+
+> **2026-10-05 AC03 当前交付：**当前数据／角色／HTTP／客户端持久状态及日志已完成有范围核对，修复应用错误／HTTP、PostgreSQL普通错误和移动端通道诊断三项差异；后续匿名业务契约已固定。完整Go／SQL／race／vet、R03实际C/V角色／日志与AC01／AC02回归、Flutter analyze与179项测试、R05真实Dart→HTTPS→SQL均PASS。见 [AC03报告](auth-privacy-boundary-validation-report.md)、[三步任务单](auth-privacy-boundary-plan.md)、[后续契约](auth-privacy-business-contract.md)及[机器记录](../../services/api/authlab/privacy-boundary-verification.json)。B02整模块继续BLOCKED，公共内容／聊天／管理消费者尚未实现，原生设备／生产证据单列。未提交／推送／部署。
+
+以下 AC02／AC01及更早记录保留原日期、摘要和证明范围；“AC03未实施”等仅描述历史版本。currentFeature旧SQL／Flutter等字段明确保留为历史快照；本轮结果见currentAC03，历史平台不代证当前native验收。
+
+> **2026-10-04 AC02 当前交付：**在保留 AC01 的工作区中，整账号正式关闭与身份联动已实现，完整服务端 SQL／race／vet 和 R03 实际 C/V 验收均 PASS。正式关闭原子擦除活动身份资料，保留累计状态、已有墓碑和永久回执；11→12 前向升级、受限角色、冻结／并发／回滚及同邮箱新账号独立历史取得本轮证据。详见 [AC02报告](auth-identity-account-closure-validation-report.md)、[实施任务单](auth-identity-account-closure-plan.md)及[机器记录](../../services/api/authlab/identity-account-closure-verification.json)。AC03 尚未实施；B02 整模块仍 BLOCKED，帖子／聊天业务调用、客户端／设备与生产缺口单列。未提交／推送／部署。
+
+以下 AC01 及更早交付保留原日期、源码摘要与证明范围；“AC02 未实现”等表述仅描述历史版本。当前服务端版本以 AC02 记录为准，历史平台结果不能代证当前回归。
+
+> **2026-10-04 AC01 交付（历史版本）：**基于 `faf557d` 的本次工作区已实现 V 独立 Gate，最终完整 Go／SQL／race／vet 和 R03 实际 C/V 进程验收均 PASS。V 正式迁移 3→4、独立状态／材料／连接池、受限恢复角色、最终资格事务、后台外部调用代次复核和旧 V schema 快照阻断均已接通。详见 [AC01报告](auth-verifier-safety-gate-validation-report.md)、[实施方案](auth-verifier-safety-gate-plan.md)及[机器证据](../../services/api/authlab/verifier-safety-gate-verification.json)。AC02／AC03 尚未实施；B02 整模块仍 BLOCKED，平台与生产门槛单列。本次改动尚未提交／推送。
+
+以下原有 2026-10-04 平台交付及更早记录保留其原版本和范围；其中“AC01 未实现”和工具未执行等字段描述历史状态，当前 AC01 以上述证据为准。
+
+> **2026-10-04 最新验证与环境交付：**基于远端 `codex/auth-privacy-handoff` 的 `d624ea30943a2b12096c20dbeefd844ba0e5e840`。Flutter分析与175项mobile测试、真实Dart→HTTPS→PostgreSQL R05、Android完整app构建、16项vault＋3组跨进程探针、9项Passkey Dart／5项Android codec和真实Flutter双进程共享AuthStore探针均PASS；Go/SQL/race/vet、R03实际C/V进程及完整OpenAPI已在本轮复验。环境与可复验命令见[本机环境](local-test-environment.md)，精确证明范围／失败修复见[最新记录](../../services/api/authlab/identity-runtime-test-verification.json)。**B02整模块仍BLOCKED：AC01 V Gate、AC02身份整账号关闭尚未实现，iOS、真实Passkey ceremony和物理设备／B02设备矩阵仍未验。**用户要求保留D盘工具环境、删除全部测试缓存和临时产物，完成后直接推送对应分支。
+
+## 历史记录与验收目录
+
+以下记录保留原日期、版本及证明范围；“缺Flutter／未验／未提交”只描述当时状态，现行结果见顶部入口和机器台账。
+
+> **2026-10-03 本机接续验证（历史）：**从远端codex/auth-privacy-handoff的87e603c3f54b2fc08d1501dd3a0d7db5b70d17cc拉取。AC04的B02 R03/R05测试源码已补；**Go全量SQL/race/vet、四份OpenAPI完整校验及R03实际非owner C/V HTTPS/mTLS进程验收通过**。R03覆盖身份CRUD、成功和拒绝回执、实际服务重启、Gate冻结/恢复后新会话核对、迁移10→11及缺表/缺DML拒绝。实际启动发现权限检查format()参数未指定类型，已补$1::text并通过实际进程和匹配race/vet复验。Go位于WSL /usr/lib/go-1.22/bin；PG/Docker可用，固定Goose仅在本次临时目录构建。**Flutter/Dart入口未找到，R05真实Dart→SQL及设备/原生Passkey仍BLOCKED/NOT_RUN，B02整模块未PASS。**AC01 V Gate、AC02身份整账号关闭仍未实现。逐项结果、失败修复/复验和源码摘要见[接续测试记录](../../services/api/authlab/identity-runtime-test-verification.json)。下方旧机器/版本和缺Go/未补B02测试链描述是历史状态。
+
+> **2026-10-03 远端接续交付：**用户已授权将当前匿名收口材料、运行时／设备／B02源码与测试提交并推送到 `origin/codex/auth-privacy-handoff`，由另一台机器继续。先读[机器接续入口](auth-privacy-machine-handoff.md)，再按[匿名清单 AC01–AC06](auth-privacy-closure-checklist.md)执行；提交／推送不代表缺口已修复或动态验收通过。下方“未提交／推送”是历史记录，最新交付状态以本次提交及远端结果为准。
+
+> **2026-10-03 匿名分支范围纠正：**本分支以匿名方案及其基础实现收口，停在 B02，不进入 B05/B03 等完整业务片。当前有限缺口和结束条件见[匿名收口清单](auth-privacy-closure-checklist.md)：先补 V 独立 Gate、现有身份的整账号关闭联动，再核对隐私边界、补真实测试链与集中验收。B02继续登记为“基础管理已实现，业务联动待实现”，动态／设备未执行项保持待验；本段覆盖下方历史开发顺序，不改写历史测试证据。
+
+> **2026-10-03 B02身份管理基础：**本人身份列表／创建／改名／删除、默认头像和我的→设置入口已写入；注册零身份仍能浏览，落实最多3个／不能删最后一个、累计创建及六个月／30天限制。全部访问最终Gate／会话／归属复核，账号串行及成功／拒绝终态回执保护未知提交与迟到重试。**基础管理已实现，业务联动待实现；编译、SQL、Flutter和真机验收待执行。**帖内绑定、旧帖／聊天投影随业务模块，自定义头像随媒体实现。见[任务单](identity-management-plan.md)、[报告](identity-management-validation-report.md)、[机器记录](../../services/api/authlab/identity-management-verification.json)和[模块交接](module-acceptance-handoff.md)／[台账](module-acceptance-ledger.json)。后续按[匿名收口清单](auth-privacy-closure-checklist.md)补齐基础缺口并交付，不进入完整发帖／列表业务片；未提交／推送。
+
+> **2026-10-02 设备／恢复凭据／原生Passkey：**当前／最近接替设备及退出、恢复码轮换全量确认与持久结果核对、Android/iOS绑定／两步移除／可发现恢复已写入工作区；runtime固定RP／签名origin已接。真机vault／跨进程与冻结／接替／迟到响应测试源码已补。**编译、动态和设备验收待执行，RP／平台关联配置未提供。**见[任务单](auth-privacy-device-credentials-passkey-plan.md)、[报告](auth-privacy-device-credentials-passkey-validation-report.md)、[模块交接](module-acceptance-handoff.md)／[台账](module-acceptance-ledger.json)。缺工具不停止指定功能开发；源码完成不计验收通过；未提交／推送。
+
+> **2026-10-02 用户决定可先开发后集中分模块验收：**无需等待另一电脑；[模块测试交接](module-acceptance-handoff.md)及[机器台账](module-acceptance-ledger.json)分别列出已有实现的待验／待复验、原生未验、尚未实现业务、安全与生产缺口。[AGENTS.md](../../AGENTS.md)要求每个功能任务结束同步未测项、原因、测试入口和影响模块。动态／设备验收可延期，代码实现不计为验收PASS；可用的必要检查仍按实际执行记录。后续任务照已收口规则开发并持续维护台账，生产放行前完成相关模块及跨模块验收。以下历史“先验收再进入下一片”的顺序已被本项更新，未通过记录不改写。
+
+> **2026-10-02 T0–T6 实施已落盘，验收未完成：**只基于 `codex/auth-privacy-handoff`，按[C/V 开发服务与目录闭环计划](auth-privacy-runtime-business-integration-plan.md)加入正式迁移／受限角色、两个实际服务入口与开发引导工具、持久 worker、C Gate 同事务目录读取／续期、移动端权威截止持久更新和实际 cmd 一次性 runner。记录见[本轮报告](auth-privacy-runtime-business-integration-validation-report.md)及[机器记录](../../services/api/authlab/runtime-business-integration-verification.json)。本机缺 Go／gofmt、Docker／PostgreSQL 与 Flutter，动态命令因缺工具失败，尚未编译／验证 SQL／race／真实链路，也未提交或推送。下一步在现成工具环境完成格式化、生成漂移、全部回归和实际进程 runner，不把历史通过记录外推到本次改动。[第40轮](../discussions/2026-10-01-grilling-round40.md)确认的 V Gate 另片、全新开发库＋临时升级、Windows＋WSL2 及设备并行范围不变；大型运行时未重下，后续顺序以本段为准。
+
+> **2026-10-01 原生存储与真实 C/V 联调：**真实 Flutter→隔离 C/V HTTPS／PostgreSQL 已跑通注册、会话接替／续期、未知结果核对、Gate 冻结／签名恢复和注销释放 ACK。Android 原生／测试编译与测试 APK 已完成，新增 16 项设备故障测试和跨进程探针；iOS 标记同步重试及跨 engine 串行修复，macOS 文件系统回归通过。本机未做设备执行、完整应用构建或 iOS Keychain 验证。用户要求删除大型临时验证运行时、缓存和 APK并推送远端给另一电脑复验，命令与实际证据见[本轮报告](auth-privacy-mobile-native-integration-validation-report.md)及[机器记录](../../services/api/authlab/mobile-native-integration-verification.json)。下一步先补平台验收，再做设备／恢复凭据管理页面和原生Passkey；生产路由授权接Gate、迁移、业务清理／通知及独立安全验收继续待做。
+
+> **2026-09-30 移动端核心认证状态机（历史节点）：**指定分支 `codex/auth-privacy-handoff` 已接入校邮注册、恢复码隐藏后完整确认、密码登录、权威恢复／活跃续期、七天注销和持久结果核对。退出先确认登出标记持久化，再删除Bearer并以独立能力异步定向撤销，旧任务不影响新会话。系统安全存储适配器及Android/iOS工程已加入；完整Dart／TLS／组件回归和Go故障回归见[本轮报告](auth-privacy-mobile-auth-validation-report.md)及[机器记录](../../services/api/authlab/mobile-auth-verification.json)。下一步先做原生构建、真机安全存储故障与真实C/V整链联调，再补设备／凭据管理页面。原生Passkey、生产路由／迁移与业务授权接Gate、注销清理／通知、运营分权及独立安全验收继续待做。
+
+> **2026-09-30 恢复凭据管理隔离实现（历史节点）：**当前分支 `codex/auth-privacy-handoff` 补齐新鲜密码复验恢复码轮换、可选 Passkey 的绑定／可发现恢复／两步移除，以及受限凭据清单。管理权限绑定原凭据版本、同一会话、固定RP策略及Gate代次，最终事务再次复核；普通变更保留其他凭据和当前会话，重设／关闭撤全部旧Passkey。交付与最终验证见[本轮报告](auth-privacy-recovery-credentials-validation-report.md)和[机器记录](../../services/api/authlab/recovery-credentials-verification.json)。下一步进入移动端安全存储、持久结果核对／登出待办及完整认证状态机；生产路由／迁移、真实平台Passkey演练、业务数据清理／通知及生产安全验收继续待做。
+
+> **2026-09-30 恢复码与七天注销隔离实现（历史节点）：**在登录／会话切片之上加入恢复码证明、唯一重设意图、最终密码重设与无秘密结果核对，以及七天注销申请、截止前主动登录取消、到期关闭、受限状态与释放收据。密码重设不登录、不取消注销、不解除处罚；封禁受信命令即时撤会话，迟到封禁不能取消到期申请。新增授权与清理继续经过 Safety Gate。交付范围与证据见[本轮报告](auth-privacy-recovery-closure-validation-report.md)和[机器记录](../../services/api/authlab/recovery-closure-verification.json)。可选 Passkey、恢复码轮换、移动端、业务数据清理／通知和生产接入仍待做。
+
+> **2026-09-30 登录与会话隔离实现（历史节点）：**在已落地的 Authorization Safety Gate 上，C 实验包增加用户名密码登录、单设备接替、权威会话恢复／同令牌续期、最近替代设备读取与独立撤销秘密定向退出；有界清理保留幂等墓碑与最终服务端到期后的摘要窗口。[本轮报告](auth-privacy-session-lifecycle-validation-report.md)和[机器记录](../../services/api/authlab/session-lifecycle-verification.json)说明真实 SQL／HTTPS／并发／冻结验证。下一步是独立恢复与七天注销的权威事务、处罚写入口，再接移动端和生产路由／迁移。`PENDING_CLOSE` 登录现先 fail closed，待注销截止模型接入后实现截止前主动取消；生产安全验收仍未完成。
+
+> **2026-09-30 第 0 步隔离实现：**Authorization Safety Gate 已接入现有 C 注册意图、最终开户与初始会话、隔离认证读入口；含持久冻结、库外签名证据／锚点、可信时间高水位、授权代次及受限签名恢复。5 秒回退／5 分钟证据、旧快照、跨连接和提交途中冻结等故障测试见[本轮报告](auth-authorization-safety-gate-validation-report.md)。第 0 步隔离验收后可进入用户名密码登录＋完整会话管理；生产独立授时、恢复运营、真实灾备、人类审计仍未完成。
+
+> **2026-09-29 第 0 步设计历史：**Authorization Safety Gate 设计在第 39 轮收口：FROZEN 时所有认证读写 fail closed；单个受限恢复角色执行显式恢复，不采用双人控制；允许 5 秒时钟回退抖动；可信证据 TTL 5 分钟。后续实现状态以上方 2026-09-30 记录为准。
+
+> **2026-09-29 当前实现进展：**用户已授权进入 Phase E。[实验切片](../../services/api/authlab/README.md)在首条数据库验证后加入校邮发码／确认、最新码与预算、退役后的原确认续办、双方 HTTP／mTLS 和注册密码准备。实现、真实 PostgreSQL／TLS 故障验证及剩余门槛见[本轮报告](auth-privacy-eligibility-http-validation-report.md)。生产路由／迁移、用户名密码登录、独立恢复、七天注销、移动端及生产安全验收继续待做。
+
+> **2026-09-28 规格阶段背景：**每次注册校邮收码，用户设置私有用户名和独立密码；日常用用户名和密码登录，不通过邮箱查找旧号。同一精确邮箱地址同时最多一个有效账号的配额依赖 V 按协议执行；正式注销后释放配额，再次收码建立全新账号。旧号找回需事先保存的独立凭据，邮箱验证码不能单独重置。V/C 通过本次资格槽位协调配额；串通或共同泄漏时能连接邮箱与账号。架构见[认证与隐私架构决策](auth-privacy-architecture-decision.md)，注册、退役与释放见[协议 v1](auth-privacy-registration-protocol.md)。[恢复策略](auth-privacy-recovery-decision.md)、[逻辑数据／API 契约](auth-privacy-data-api-contract.md)与[内部跨方威胁模型](auth-privacy-threat-model.md)已成稿；[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../packages/openapi/community-auth-api.yaml)与[迁移设计](auth-privacy-database-migration-design.md)已成稿；[固定向量与静态复验](auth-privacy-protocol-vectors.md)、[独立评审输入包](auth-privacy-security-review-package.md)已整理；仍须生产库／实际SQL验证、双主体运营与**独立**安全评审，生产认证代码未开始。
+
 盘点：2026-09-20。消息身份切换展开 v2、收到的 v2、我发出的正常状态 v1、系统通知失败详情 v1、顶部失败提示 v1、系统通知时间流 v2、举报处理结果详情 v1、违规处理通知详情 v1、申诉待复核详情 v1、结果通过 v1、结果未通过 v1 均已确认。首次申诉 v2、补充材料 v1、私信举报选择原因配色 A v1 已生成待评审。新页逐张试不同黑底配色，用户明确锁色后才统一。直接给图、不附 prompt；用户同意页面定稿就直接制作下一张。已确认不表示已实现或图稿齐全。
+
+## 2026-09-29 认证实现接续
+
+用户已明确授权校邮确认、退役后的原确认续办及双方 HTTP／mTLS。实现与故障验证见[本轮报告](auth-privacy-eligibility-http-validation-report.md)，当前代码和实验迁移均在独立验证目录。此后按 Phase E 继续登录、会话与独立恢复；生产门槛另行验收。
 
 ## 开发阶段（2026-09-23）
 
@@ -8,13 +241,39 @@
 - 已确认工程基线：Flutter + Dart 移动端、Go 服务端、模块化单体后端；记录见 [ADR 0001](../adr/0001-engineering-baseline.md)。
 - 已确认通信与持久化基线：`net/http` + `chi`、PostgreSQL + `pgx`/`sqlc`、REST/JSON + OpenAPI、前台 WebSocket 事件、Drift/SQLite 与系统安全存储；记录见 [ADR 0002](../adr/0002-communication-and-persistence-baseline.md)。
 - 已确认仓库、认证和首条切片：单仓库 monorepo、`goose` + `oapi-codegen`、服务端不透明会话令牌、宿主机 Flutter/Go + Docker Compose 基础设施，以及文字内容主链；记录见 [ADR 0003](../adr/0003-repository-auth-and-first-slice.md)。
+- 首条切片直接实现基础导航树，拆为两次开发任务；未登录只显示树入口外壳，已有账号登录或新账号注册并建立会话后，完整目录校验通过才加载节点；目录失败保留无节点树并可重试；默认无热度时先露出吐槽、避雷、安利、搭子、情感。
+- 首条切片保留可选 `#标签` 字段但暂不实现输入、复用和筛选交互；已发布内容和身份写入服务端数据库，本机草稿写入 Drift/SQLite，重启后须可恢复。
+- 任务 1 的通道目录 API 定为 `GET /api/v1/channels`，采用英文不可变 `code`；迁移、API、客户端加载和树交互四层自动化验收纳入首批测试。代码骨架已建立，但测试和生成链因本机缺少 Go/Flutter/Docker 尚未执行。
+- 通道编码和冷启动顺序已固定为 `vent`、`warning`、`recommendation`、`buddy`、`emotion`、`mutual_help`、`technology`；目录接口成功/未授权/暂不可用分别使用 `200`/`401`/`503`，OpenAPI 源文件为唯一契约。
 - 首版可能超过 10000 用户；该规模不改变 monorepo 决定，容量和运行时扩展另行设计。
 - 已确认 CI、测试、开发验证与部署基线：本地 Git + GitHub Actions、Go 单元测试 + Docker PostgreSQL 集成测试、Mailpit + 开发验证适配器、容器化无状态 API + 托管 PostgreSQL + S3 兼容对象存储；记录见 [ADR 0004](../adr/0004-ci-testing-email-and-deployment.md)。
-- 用户不熟悉 Git/GitHub；后续创建仓库和首次提交会提供逐步操作说明。
+- 用户不熟悉 Git/GitHub；后续提交、推送和 Actions 检查会提供逐步操作说明。
+- 本地 Git 已初始化为 `main`，当前开发分支为 `feature/engineering-baseline`；远程 `origin` 已绑定 `https://github.com/zhubaozhenshuai666-lang/HnuHole.git`，并跟踪对应远程分支。
 - 尚未确认：聊天本地加密方案、生产推送供应商、具体云厂商/区域、CI 密钥与发布流程、第一条切片之外的功能顺序。
-- 当前仍没有客户端、服务端或测试源码；完成工程决策后从零建立可运行骨架。
+- 已建立任务 1 的 Go API、PostgreSQL 迁移/OpenAPI 契约和 Flutter 入口树代码骨架；本机没有 Go/Flutter/Docker 可运行环境，测试与生成链尚未执行。
+- 后续认证切片范围已确定：V 的每次新注册校邮验证与配额、C 的新号创建和用户名密码登录、事先设立的独立恢复方式、服务端会话恢复／退出，以及登录后加载通道；首次注册不自动创建身份，无身份账号仍可浏览。[协议 v1](auth-privacy-registration-protocol.md)、[恢复策略](auth-privacy-recovery-decision.md)及[数据/API 契约](auth-privacy-data-api-contract.md)已成稿，当前已按新规格开展隔离实现；生产接入仍须完整链路验证、双主体运营及安全评审。
+- 认证主链的行为边界已补齐：账号可无身份浏览；首次公开发言时才创建/选择身份；服务端接受有效发送任务时原子绑定帖内身份，后续主评论和楼中楼回复直接复用；身份设置前保留原操作输入。主动退出保留按账号隔离的本机草稿和文件；恢复 `401` 清令牌与节点，`503`/超时保留本地状态重试；新设备接替旧设备返回 `401/session_replaced` 并保留本地文件。
+- 旧“四接口、验证码确认即恢复旧号”设想已废止。新客户端认证主链须覆盖 V 的验证码申请／确认、C 的新号注册、用户名密码登录、独立凭据恢复、会话恢复／退出；通道目录仍为 `GET /api/v1/channels`。跨方资格、退役与释放的流程见[协议 v1](auth-privacy-registration-protocol.md)，精确调用契约见[数据/API 契约](auth-privacy-data-api-contract.md)，精确schema见[V OpenAPI](../../packages/openapi/verifier-auth-api.yaml)及[C OpenAPI](../../packages/openapi/community-auth-api.yaml)。认证成功后恢复原入口意图；V/C 各自使用本方幂等与重试规则，不能跨方共享幂等键。
+- 2026-09-23 至 2026-09-25 的邮箱唯一登录和稳定匿名凭证方案已被当前决策替代，原始过程仅见[历史 ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)及[第三十二轮](../discussions/2026-09-23-grilling-round32.md)。仍有效的产品规则：生产 V/C 必须实质独立；禁言可申请注销但正式注销后随旧号终止；封禁期间不可注销，缓冲期内新封禁取消申请。现有生产服务尚未接入这些认证路由；隔离包已实现发码、确认、账号创建和初始会话签发。
+- 注册验证码申请的邮箱枚举保护已确认：格式和域名合规的申请对配额状态返回相同受理状态及通用提示；验证成功后才可能签发新号资格，不得返回已有账号或恢复旧号。实际投递、时延、限流侧信道及用户名登录枚举风险仍待安全评审。
+- 2026-09-26 用户选定“校园资格与旧号控制权分离”的架构方向：恶意 V 可伪造新资格或阻止注册，但不能只靠邮箱接管已有账号。V 持邮箱→槽位，C 受限认证库持槽位→账号；共同槽位使串通可直接关联。旧 [GPT-6 交接](auth-privacy-gpt6-handoff.md)仅作为问题背景，当前可执行决策见[认证与隐私架构决策](auth-privacy-architecture-decision.md)。
+- 2026-09-27 完成注册、退役与释放的[协议 v1](auth-privacy-registration-protocol.md)：槽位由客户端一次性公钥散列导出，C 验真实挑战的持钥证明；私钥丢失时先退役未开户旧槽位，正式注销后 C 保留最小终态拒旧票重放。协议尚未实施或经过独立安全审计；恢复体验及数据库/API 的规格见下条进展。
+
+- 2026-09-27 完成[独立恢复策略](auth-privacy-recovery-decision.md)与[逻辑数据／API 契约](auth-privacy-data-api-contract.md)：恢复码注册前确认，Passkey 可选；全凭据丢失则旧号与同邮箱配额都无法找回。V 当前槽位全局唯一，C 关闭与释放事件共事务；注销状态秘密须申请前保存。仍未实施或通过独立安全评审。
+
+- 2026-09-28 完成[内部跨方威胁模型](auth-privacy-threat-model.md)与规格复核：注册资格升级为限时 `REGISTER/V2`，严格校验持钥公钥；重设意图须原子替代且旧凭据证明在账号锁内复核；注销截止使用取锁后的数据库实际时间，申请后取消尚未公开的任务；登出及重设未知结果有重启后的安全核对路径。灾备还须守住时钟与受信钥单调性。该威胁建模轮次只改文档；当时 OpenAPI／迁移及其他门槛未完成，后续规格进展见下条。
+
+- 2026-09-28 完成[V的5个操作](../../packages/openapi/verifier-auth-api.yaml)、[C的22个操作](../../packages/openapi/community-auth-api.yaml)和[数据库迁移设计](auth-privacy-database-migration-design.md)：固定二进制票据、独立16B安装ID／32B操作键、原结果核对、恢复管理、同令牌续期和内部mTLS边界均有机器可读schema；表约束、锁顺序、签名outbox、留存及演示会话升级顺序已写清。幂等原结果到期原位收缩为无身份永久摘要锚点，迟到旧操作不能重执行。三份OpenAPI通过完整规范静态校验；未创建／执行认证SQL，未写认证代码，未通过独立审计。该轮之后的向量与评审包进展见下条；双主体运营和真实客户端／迁移证据仍待核实。
+
+- 2026-09-28 完成[固定协议向量与内部静态复验](auth-privacy-protocol-vectors.md)及[独立安全评审输入包](auth-privacy-security-review-package.md)：8组协议有效签名、3组RFC控制在PyNaCl1.6.2与Node24.11.1/OpenSSL3.5.4中逐字一致，11组错误签名拒绝。4组裸验签弱点反例说明库Verify不能代替公钥准入；明确A/R均规范、非单位元且处于主素数阶子群的项目配置。22组点、规范编码、域分离及时间算术已核对；12组事务案例未执行，独立审计未开始，未写认证代码或SQL。下一步确定实际评审者和V/C运营关系；获实施授权后以最小SQL约束、注册／退役竞争及提交后签名outbox产生真实证据，避免继续只扩文档。
+
+- 2026-09-28 将19份认证评审材料锁定为提交 `41fba7761035ee5aafb0e3beb55bf7b8d21f539a` 的[送审快照](auth-privacy-review-snapshot.json)，导出逐文件哈希与压缩包并核验来源；[评审包登记](auth-privacy-security-review-package.md)已填入可自主确认的版本项。用户报告学校邮箱可用；已解释V是验证码与注册配额服务、C是Hnuhole后台、独立评审者是未参与设计的安全工程师或机构。V/C具名运营安排与独立评审仍待确认，不能因有校邮账号即认定V已独立运营。未外部发送、未签署独立结论，未进入认证编码；下一步先明确服务搭建和权限安排，再落实真实评审，新增模板不能补齐这些事实。
 
 ## 当前阶段
+
+- 2026-09-28 将修正后的21份规格／评审材料锁定到 `05dc4a4b88797f5532829c1f2953484f7ac86c90`，形成[新快照清单](auth-privacy-review-snapshot.json)及逐文件摘要／压缩包；旧 `41fba77` 初审快照保留不改。新包包括退役ACK修正、AI交叉评审和本轮接口静态记录；版本登记补充不改已锁定协议或向量。实际SQL／服务和G1–G6缺失证据仍未验收。
+
+- 2026-09-28 根据用户确认登记邮箱可用、C 正式后台未建、暂无人类独立评审者；完成不继承前文的新上下文 subagent 初审并记录[AI 交叉评审](auth-privacy-ai-cross-review.md)。确认并修正 RETIRED 收据缺少 V 持久 ACK 的规格闭环，新增内部退役收据入口，V 当前 6／C 22 个操作；保留原固定签名帧与向量。拉取／推送、原确认续办、重签、单调 ACK、清理与灾备均补入验收。评审 agent 对实际补丁回归复核结论为规格阶段 APPROVE WITH NOTES；三份 OpenAPI 结构及新请求／ACK Schema 已[静态核对](../../packages/auth-protocol-vectors/retirement-ack-static-verification.json)。Claude 九份固定源材料披露已获授权，调用因本机 CLI 未登录失败，没有模型评审结果；用户随后决定本轮先不做 Claude，采用 subagent 规格评审，不再等待外部登录。实际 SQL／服务、独立运营证据和人类第三方结论未验收，本轮未写认证代码。
 
 - 当前新图（2026-09-21）：长按对方图片 M v1 重试生成成功，待评审；黑底灰青，同组两图仅单张选中，菜单删除／举报。无新增业务，额度失败不再是当前阻塞。
 - 最新定稿：首发身份选择 L v2 紧凑弹框，已归档；L v1 大字大框被否决，灰褐不锁全局。J v2 居中撤回＋重编辑已确认，点击直接回填，不自动发送；K 回填图不再制作，替换确认不再提问。重编辑期限与本机临时原文清理仍待细化。
@@ -24,18 +283,18 @@
 - 举报进度旧 E 版只改小图标被否决；C v2 已修订左右聊天，D v1 证据预览已交付。举报进度仍从系统通知进入，不改变提交后返回原页的规则。
 - UI 评审同步检查业务影响；收到的 v2 图稿及对方头像／昵称随整条提醒回原帖已确认，消息与私信模块已同步；身份隔离、未读及固定身份回复规则不变，详见[评审记录](../discussions/2026-09-20-replies-ui-review.md)。
 - 首版标题手写、文字搜索；旧生成和意图理解方案已清理。首版无视频、投票、聊天迁移或交易功能。
-- 邮箱固定后缀、允许前缀别名、禁止空格、区分大小写；资格无周期复核。单设备、三十天会话已定。
+- 注册邮箱固定后缀、允许前缀别名、禁止空格、区分大小写；资格无周期复核。日常用户名密码登录、独立凭据恢复、单设备和三十天会话已定。
 - 发帖可取消上传发布；旧帖编辑退出丢弃修改。评论回复关系可跳转、本人成功滚到评论区域顶部、分页约五十条已定。
 - 离线待收持续保存到本地确认；首次保留图片入口并在发送时限制。热榜整五分钟更新、权重不公开已定。
-- 第二十轮十项已确认：私信不备份导出、未发送文字本地保留、正文可搜、图片可主动保存、推送范围、拉黑在途消息、举报进度、删帖无回收站、通道热度删除口径、浏览量不参与排名。第二十一轮已收口：不做交易、违规昵称头像可重置、下架帖不允许整改重审；分类专项也已收口，当前进入 UI 与交互设计。
+- 第二十轮十项已确认：私信不备份导出、未发送文字本地保留、正文可搜、图片可主动保存、推送范围、拉黑在途消息、举报进度、删帖无回收站、通道热度删除口径、浏览量不参与排名。第二十一轮已收口：不做交易、违规昵称头像可重置、下架帖不允许整改重审；分类专项也已收口。UI 设计暂缓；认证主链当前只推进实施前规格化与安全评审。
 
 ## 模块现状与剩余
 
 | 模块 | 已确认主干 | 尚需处理 |
 | --- | --- | --- |
-| [账号](modules/accounts.md) | 邮箱规则、三次五分钟锁定、单设备、三十天会话、无周期复核、七天注销 | 验证码投递未知的等待参数、续期实现、注销异常及界面 |
-| [身份](modules/identity.md) | 一至三个、每帖固定、首次设置恢复、字符校验及十二字上限、删除范围 | 资料编辑交互、默认头像、输入法实现与图稿 |
-| [导航](modules/navigation.md) | 十通道、文字搜索分组排序、历史范围及注销清理 | 树形交互和图稿、文本匹配算法、同步实现 |
+| [账号](modules/accounts.md) | 每次注册校邮验证、用户名密码登录、恢复码必配与可选 Passkey、资格协议 v1、逻辑数据/API 契约、内部跨方威胁模型、V/C OpenAPI与迁移设计、固定向量和评审输入包、单设备、三十天会话、七天注销 | 契约／实际SQL审阅、移动端 Passkey 适配、两组织运营安排、独立安全评审 |
+| [身份](modules/identity.md) | 一至三个、服务端接受任务时绑定、同帖主评论/楼中楼回复复用、字符校验及十二字上限、删除范围 | 资料编辑交互、默认头像、输入法实现、图稿 |
+| [导航](modules/navigation.md) | 七通道、默认五通道、两次任务的二维导航树边界 | 内容接入、文字搜索分组排序、历史范围及同步实现、最终树形视觉 |
 | [标签](modules/tags.md) | 通道必选、#标签选填、无中间分类与统一治理；主题屏蔽后续设计 | #标签输入、筛选画面与检索实现 |
 | [热度](modules/popularity.md) | 七天前二十、整五分钟刷新、权重不公开、浏览量只展示、通道删除后按有效内容重算 | 权重及衰减值、无数据呈现 |
 | [发帖](modules/post-composer.md) | 标题手写、图片齐全公开、可取消、失败处理、新帖草稿 | 取消/发布并发实现、存储和正式图 |
@@ -48,7 +307,7 @@
 
 ## 继续顺序
 
-第二十二轮业务主干已收口；用户确认屏蔽留到后续版本。UI 由助手自主设计并直接给图，用户看图微调，不附 prompt。当前推进私信举报的原因选择、详情及证据授权，见[评审记录](../discussions/2026-09-20-replies-ui-review.md)。不重问已确认排版、头像点击或已作废的失败混排问题。架构、语言和开发顺序随后讨论。
+第二十二轮业务主干已收口；用户确认屏蔽留到后续版本。UI 讨论暂缓，任务 1 的通道功能骨架可依既有工程决策维护；认证主链须先完成上方的实施前规格化和独立安全评审。旧 UI 评审记录仅用于追溯，不作为当前认证决策依据。
 
 ## 剩余图稿按八组推进
 
@@ -67,6 +326,6 @@
 
 ## 后续工程工作
 
-先用交互原型验证进入通道、发帖回帖、私信、消息、我的这条完整路径及键盘、滚动、返回和身份切换。
+认证主链已有规则、协议、恢复、数据/API、威胁模型、OpenAPI 和评审材料，并已按用户授权进入隔离实现：槽位／开户／ACK、校邮确认、原确认续办与 HTTP／mTLS 的证据见[资格报告](auth-privacy-eligibility-http-validation-report.md)；登录、会话接替／续期／撤销及 Gate 故障验证见[会话报告](auth-privacy-session-lifecycle-validation-report.md)；恢复码重设、七天注销、截止裁决与受信封禁联动见[恢复／注销报告](auth-privacy-recovery-closure-validation-report.md)。下一切片补齐恢复码轮换与可选 Passkey 的凭据管理，再串联移动端持久待办、设备通知与生产授权。每次实现提供必要的真实事务／故障验证；生产接入仍须完整迁移、可信灾备、运营权限事实与独立安全验收。旧 [ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)不再是实现规范。
 
-随后确定技术方案、身份/内容/会话数据关系和接口约定，安排客户端与服务端开发、可见性和账号去重等验证、联调内测与分发上线。这部分须单独估算，不把设计成熟度当成上线进度。
+随后按任务 2 接入文字内容主链，再安排身份/内容/会话数据关系、可见性和账号去重等验证、联调内测与分发上线。这部分须单独估算，不把设计成熟度当成上线进度。

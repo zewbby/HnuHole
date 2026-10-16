@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "hnuhole-mobile-native-integration-verification/v1",
+  "verifiedAtUTC": "2026-10-01T01:03:57.823841+00:00",
+  "branch": "codex/auth-privacy-handoff",
+  "baselineCommit": "95bb54ecade2b547129df71fe2675e54384fcfed",
+  "scope": "MOBILE_REAL_CV_HTTPS_POSTGRES_AND_NATIVE_STORAGE_HANDOFF",
+  "runtime": {
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "go": "go1.27.1 darwin/arm64",
+    "postgresql": "18.6",
+    "androidSDK": "API36; build-tools36.0.0/36.1.0",
+    "androidBuildJava": "17.0.19",
+    "gradle": "9.3.1",
+    "ndkRequired": "28.2.13676358 unavailable",
+    "xcode": "CommandLineTools only"
+  },
+  "commands": [
+    {
+      "workingDirectory": "services/api",
+      "command": "sh authlab/run-isolated.sh",
+      "exitCode": 0,
+      "outputSHA256": "765f5c860a3b5129cfa1f73576385295a41ca8106d6003890687a1f91d3ab06d"
+    },
+    {
+      "workingDirectory": "services/api",
+      "command": "go test -race -count=1 -p 1 ./...",
+      "exitCode": 0,
+      "outputSHA256": "91805e1800e3de1c3f776dc5add4f00fe033438cfbab9981666ac4b6aaf1dc96"
+    },
+    {
+      "workingDirectory": "services/api",
+      "command": "go vet ./...",
+      "exitCode": 0,
+      "outputSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "workingDirectory": "services/api",
+      "command": "AUTHLAB_MOBILE_FLUTTER=<flutter executable> sh authlab/run-mobile-isolated.sh",
+      "exitCode": 0,
+      "outputSHA256": "de47490bfa5d9cdb5de5c512aa1e14f414771b3f75e09024d47125016f5b15a7"
+    },
+    {
+      "workingDirectory": "apps/mobile",
+      "command": "flutter analyze --no-pub",
+      "exitCode": 0,
+      "outputSHA256": "77ba040f55796143220aeae5be547318f1161b0d25a34a107f279e58db154d55"
+    },
+    {
+      "workingDirectory": "apps/mobile",
+      "command": "flutter test --no-pub --reporter expanded",
+      "exitCode": 0,
+      "outputSHA256": "3a4c054b056865e027bccc52326e979bcfed44c9c377510000895af0a272a119"
+    },
+    {
+      "workingDirectory": "apps/mobile/android",
+      "command": "./gradlew --no-daemon --offline -I prebuilt-debug.init.gradle -Ptarget-platform=android-arm64 -Ptarget=lib/main.dart :hnuhole_auth_vault:compileDebugAndroidTestKotlin",
+      "exitCode": 0,
+      "outputSHA256": "21f76acd50476260ec1ad6706784ca233d5a41158ebd1c8bd4dd531bb5b31bc1"
+    },
+    {
+      "workingDirectory": "apps/mobile/android",
+      "command": "./gradlew --no-daemon -I prebuilt-debug.init.gradle -Ptarget-platform=android-arm64 -Ptarget=lib/main.dart :hnuhole_auth_vault:assembleDebugAndroidTest",
+      "exitCode": 0,
+      "outputSHA256": "3ba1d2f5c823ae918bdc944f09578d072e41fbc9b77267c5089ba92fa46b32f3"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "sh packages/auth_vault/test/native/run-installation-marker.sh",
+      "exitCode": 0,
+      "evidence": "PASS: marker retry, directory sync, corruption and reinstall",
+      "scope": "macOS filesystem helper only"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "swiftc -frontend -parse packages/auth_vault/ios/Classes/AuthVaultPlugin.swift packages/auth_vault/ios/Classes/AuthInstallationMarker.swift",
+      "exitCode": 0,
+      "evidence": "syntax only; no iOS typecheck or link"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "ruby -c packages/auth_vault/ios/hnuhole_auth_vault.podspec",
+      "exitCode": 0,
+      "evidence": "Syntax OK"
+    },
+    {
+      "workingDirectory": ".",
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "results": {
+    "flutterTestsPassed": 78,
+    "realMobileAuthenticationChainPassed": 1,
+    "androidInstrumentationTestsPrepared": 16,
+    "androidInstrumentationTestsExecuted": 0,
+    "androidProcessRestartProbesExecuted": 0,
+    "markerRedGreen": {
+      "originalFailure": "existing marker must retry durability confirmation",
+      "repairedHostTestPassed": true,
+      "actualIOSKeychainTest": false
+    }
+  },
+  "isolatedRun": {
+    "privateUnixSocketOnly": true,
+    "freshDisposableCluster": true,
+    "separateNonSuperuserDatabases": true,
+    "realGoHandlersAndProductDartTransport": true,
+    "publicTLSChainAndHostnameValidated": true,
+    "internalMTLS": true,
+    "storagePortInMemoryForDartChain": true
+  },
+  "androidTestAPK": {
+    "bytes": 3337092,
+    "sha256": "ccac66036873593a45da071a94a0a6fe8c9e4351c968a91108334cec7cef2d97",
+    "package": "org.hnuhole.authvault.test",
+    "targetPackage": "org.hnuhole.authvault.test",
+    "fullMobileApp": false,
+    "deletedAfterVerification": true
+  },
+  "boundaries": {
+    "androidNativeAndInstrumentationCompiled": true,
+    "androidTestAPKAssembled": true,
+    "standardAndroidFullAppBuilt": false,
+    "nativeIOSBuilt": false,
+    "nativeDeviceDurabilityVerified": false,
+    "mobileToActualCVPostgresEndToEnd": true,
+    "businessDirectoryIncluded": false,
+    "nativePasskeyBridge": false,
+    "deviceAndCredentialSettingsUI": false,
+    "productionGateBusinessRoutesIntegrated": false,
+    "productionDeployment": false,
+    "humanIndependentAudit": false
+  },
+  "earlierInvalidRun": {
+    "reason": "disk exhaustion during concurrent build/test",
+    "countedAsPassing": false,
+    "finalChecksRunSerially": true
+  },
+  "cleanup": {
+    "status": "complete",
+    "requestedByUser": true,
+    "keepTestSourceAndSmallRecords": true,
+    "userAndroidSDKAndAVDUntouched": true,
+    "completedAtUTC": "2026-10-01T01:06:40.436570+00:00",
+    "removedPaths": [
+      "/private/tmp/hnuhole-authlab-runtime",
+      "/private/tmp/hnuhole-mobile-runtime",
+      "apps/mobile/build",
+      "apps/mobile/.dart_tool",
+      "apps/mobile/android/.gradle",
+      "packages/auth_vault/.dart_tool",
+      "apps/mobile/.flutter-plugins-dependencies",
+      "apps/mobile/android/local.properties",
+      "apps/mobile/android/gradle/wrapper/gradle-wrapper.jar",
+      "apps/mobile/android/gradlew",
+      "apps/mobile/android/gradlew.bat",
+      "apps/mobile/android/hnuhole_mobile_android.iml",
+      "apps/mobile/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java",
+      "apps/mobile/ios/Flutter/Generated.xcconfig",
+      "apps/mobile/ios/Flutter/ephemeral",
+      "apps/mobile/ios/Flutter/flutter_export_environment.sh",
+      "apps/mobile/ios/Runner/GeneratedPluginRegistrant.h",
+      "apps/mobile/ios/Runner/GeneratedPluginRegistrant.m"
+    ],
+    "removedAllocatedBytes": 4300533760,
+    "freeBytesBefore": 846020608,
+    "freeBytesAfter": 4556836864
+  },
+  "sourceSHA256": {
+    "apps/mobile/README.md": "751e16cfb32eb6f0e477b6874f1d3bd2b86abbe7e2be8730245684f49d488c2d",
+    "apps/mobile/android/prebuilt-debug.init.gradle": "b45f1cb6db4cf28212507ebfd96a588a63837e65277d19933e2a336b58ca5bbd",
+    "apps/mobile/integration/auth_public_https_postgres_test.dart": "daa6dd9af3366bf6da3c98e78f79bb280359ea9e001742ed5b29f3c1938a60b1",
+    "apps/mobile/lib/src/auth/auth_flows.dart": "36e9bfa854fe5ca6b1e2c66edcb7a472f788173c6c4e96eb89f5514c966a36fb",
+    "apps/mobile/lib/src/auth/auth_session_controller.dart": "9320067af33b49c7279d6b363a2eef10241fc923313d76eae3367459b4c1fbfb",
+    "apps/mobile/lib/src/auth/auth_store.dart": "25402701bf392dd12159a689d47f9b6eeda661f706ffdefe1bd1f50756b197e0",
+    "apps/mobile/lib/src/auth/http_auth_api.dart": "4a87ccce138ef668be108ee7198ef70e1cac6b653411248f5bfe6572d9c54020",
+    "docs/design/HANDOFF.md": "3f0a9dc9c46a334ede6897f04159ee678d9d81509c0ad908753e06ac4aa7bab3",
+    "docs/design/auth-privacy-mobile-native-integration-validation-report.md": "8031ad0a57bd2b0e809e3d255638dee90f24f419b428b3004b094e2dbed9ede2",
+    "docs/design/progress.md": "6ba427762ff4a292794828cd87369eaaf5fda50673390bf7fac658b1ef6a5680",
+    "packages/auth_vault/README.md": "259bbbaa4a06177e06c80c572d84425ff51fd5875efae80971da2743814b0267",
+    "packages/auth_vault/android/build.gradle.kts": "7af413a655190a27df0a2960ec78e3947b505d782ce9dd781532e5c70eed4707",
+    "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidAuthVaultTest.kt": "16bed2bb8b1c29ab4d0ba8dd69ddddaf9ecf529e07276bd639c7dec08993e794",
+    "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AuthVaultProcessRestartTest.kt": "bfcbd30a532c952b57e770a543cc0b8e729ffc7007086a2110e9878eeab16265",
+    "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt": "da5f028429053fc15edff382282add8e8e8e2f19837eaa266c3e28ace03a12b4",
+    "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt": "8ee7bc7fb419da0f6095fecb6ec29b5207f6cb63b4552f9718a58815c94336f0",
+    "packages/auth_vault/ios/Classes/AuthInstallationMarker.swift": "df90781bf151091622e0e64e7deaa9c2c06c0a91e7b4ddcb4fdcad1afd38bd5f",
+    "packages/auth_vault/ios/Classes/AuthVaultPlugin.swift": "2e37850ca244836aa481063fa25c46474d74c2e0ca9fbb1bebca80793986bc8a",
+    "packages/auth_vault/test/native/installation_marker_test.swift": "399bb2b7c75780222b1992abe30c2ee81b32b02b9f4ddd804b80078a790cd969",
+    "packages/auth_vault/test/native/run-installation-marker.sh": "41cc304c47627f9e01575d84e7f4b6261fe797d0f2d43dd55a64d41cf8cae292",
+    "services/api/authlab/README.md": "6b0832b40aacc8c37b327e20035e696f8a97b8644e87287ca4b64dab2e152d81",
+    "services/api/authlab/run-mobile-isolated.sh": "7bd240beabb3a76d428b424d6bf6e93610ef5f6a327cdca50473506491b1d4c9",
+    "services/api/internal/authprivacyhttp/endtoend_postgres_test.go": "94b19cd407286b60aa523f0b36682f20282f4180e8bb57b414c48bdc24b6e5c6",
+    "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go": "6bbed06e493c9680cf6068e8e283dbaf86002917aa6bc35bdb18c62c2e7b6df0"
+  }
+}

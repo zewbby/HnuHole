@@ -1,0 +1,2424 @@
+{
+  "schema": "hnuhole-post-media-android-device/v1",
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "result": "PASS_SCOPED_ANDROID_BUSINESS_DEVICE",
+  "branch": "codex/post-image-integration",
+  "repository": "E:/Hnuhole-post-media-joint-20261015/repo",
+  "startingHead": "c1b26ea27ce6cf567ab41dc44de8f0700799ea2c",
+  "implementationCommit": "fd2e4c04f48b29ddda0142660188988c4a655f5f",
+  "sourceFingerprint": {
+    "canonicalLfSha256": "3c52dd50b1016516e5355e1de3960533d06f7c77367015205e037739494cdd63",
+    "fileCount": 233
+  },
+  "changedImplementationFiles": [
+    "apps/mobile/lib/src/posts/post_controller.dart",
+    "apps/mobile/test/post_controller_test.dart",
+    "tools/post-media-android/native.init.gradle"
+  ],
+  "criticalSourceSha256": {
+    "apps/mobile/lib/src/posts/post_controller.dart": "97baa6d6b14ab3a663b2c6175e4fe701d6fed7b2992611e6e44e5fb802327746",
+    "apps/mobile/test/post_controller_test.dart": "7181c5f5df026cefe54d70d7629d4e370f3cc86971b1f59878210e32c01b4a64",
+    "tools/post-media-android/native.init.gradle": "bb48bc440a1c2b4cabe71cc7919494d3e6eecbbca7ffcea52ea7f066508ff66f"
+  },
+  "device": {
+    "model": "V2323A",
+    "manufacturer": "vivo",
+    "android": "15",
+    "api": 35,
+    "abis": "arm64-v8a,armeabi-v7a,armeabi",
+    "deviceIdSha256": "557ef20f4d13aaf0605d2de7ec7fe8a6a44cf36e2520607fe2009b134cd774e8",
+    "existingAdbServerOnly": true,
+    "adbServerPort": 34881,
+    "adbProcessStarted": false,
+    "userConfirmedReleasedWindow": true
+  },
+  "apks": {
+    "initialMain": {
+      "versionCode": 20263115,
+      "sha256": "ae589d166734eb1888bc03c41d4cee8f49797ee6969f40cf4abaa6614c48892f",
+      "bytes": 98449172
+    },
+    "probe": {
+      "versionCode": 20263115,
+      "sha256": "af27b986b3be2ca9f74d688daa5b7ffc1cfcfeaccb98e4711fee013aa037b193",
+      "bytes": 100051228
+    },
+    "finalMain": {
+      "versionCode": 20263116,
+      "versionName": "0.1.0-media-android-20263116",
+      "sha256": "451f87f0a19ed920795c9bf7fdd2d89c1adb1fefba62f32d3d2db6c9b5bd257c",
+      "bytes": 98443748,
+      "package": "org.hnuhole.post_media_android",
+      "minSdk": 29,
+      "targetSdk": 36,
+      "engineAbi": "arm64-v8a",
+      "v2SignatureVerified": true,
+      "certificateSha256": "85c8fc2812395423b7d474c226e744e15f65392c770cbadb003af66afed0af8d"
+    }
+  },
+  "checks": [
+    {
+      "command": [
+        "E:\\Hnuhole-post-media-android-20261015\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "--reporter=expanded",
+        "test/post_controller_test.dart",
+        "test/post_composer_media_test.dart",
+        "test/post_media_repository_test.dart"
+      ],
+      "workingDirectory": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T14:45:21.5116806+00:00",
+      "endedAtUtc": "2026-10-15T14:45:41.8958949+00:00",
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-post-media-android-20261015\\logs\\native-window-controller-regression.log",
+      "head": "c1b26ea27ce6cf567ab41dc44de8f0700799ea2c",
+      "result": "PASS",
+      "testCount": 69,
+      "sourceStableDuringCommand": true,
+      "inputDigestSha256": "cbb409fe7bc3abac14fc44e26db78f7c5c6e7fb658ccd92bd234917786b8e7d1",
+      "logSha256": "f828ce2558ac15388fab9f05ea0f16b57232d1cd7b65109a539766fd4dc53bfc"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-post-media-android-20261015\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "analyze",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T14:46:58.3116421+00:00",
+      "endedAtUtc": "2026-10-15T14:47:09.4380027+00:00",
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-post-media-android-20261015\\logs\\native-window-analyze.log",
+      "head": "c1b26ea27ce6cf567ab41dc44de8f0700799ea2c",
+      "result": "PASS",
+      "testCount": null,
+      "sourceStableDuringCommand": true,
+      "inputDigestSha256": "cbb409fe7bc3abac14fc44e26db78f7c5c6e7fb658ccd92bd234917786b8e7d1",
+      "logSha256": "db42e4d46a5a61260a96c211673e5a730f8cc67f407100e1955765fd9cae8f35"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-post-media-android-20261015\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "bundle",
+        "--debug",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T14:48:03.3490846+00:00",
+      "endedAtUtc": "2026-10-15T14:48:15.0013516+00:00",
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-post-media-android-20261015\\logs\\native-window-bundle.log",
+      "head": "c1b26ea27ce6cf567ab41dc44de8f0700799ea2c",
+      "result": "PASS",
+      "testCount": null,
+      "sourceStableDuringCommand": true,
+      "inputDigestSha256": "cbb409fe7bc3abac14fc44e26db78f7c5c6e7fb658ccd92bd234917786b8e7d1",
+      "logSha256": "f2c5d317eb880d28ec236f6fae726002491d329767f1cc9847a1455e0b5c09e8"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-post-media-android-20261015\\gradle-cache\\wrapper\\dists\\gradle-9.3.1-bin\\30eg2jcb8eqk5ro0gq9h8x6ef\\gradle-9.3.1\\bin\\gradle.bat",
+        "--no-daemon",
+        "--max-workers=2",
+        "--offline",
+        "--console=plain",
+        "-I",
+        "E:/Hnuhole-post-media-joint-20261015/repo/tools/post-media-android/native.init.gradle",
+        "-DpostMediaKit=E:/Hnuhole-post-media-android-20261015",
+        "-Dorg.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=768m -Dfile.encoding=UTF-8",
+        "-Pkotlin.compiler.execution.strategy=in-process",
+        "-Ptarget-platform=android-arm64",
+        "-Ptarget=lib/main.dart",
+        "-Pdart-defines=QVVUSF9DT01NVU5JVFlfQkFTRV9VUkw9aHR0cHM6Ly8xMjcuMC4wLjE6NDMwNTc=,QVVUSF9WRVJJRklFUl9CQVNFX1VSTD1odHRwczovLzEyNy4wLjAuMTo0MjE2MQ==,QVVUSF9ERVZfQ0FfQkFTRTY0PUxTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVUpuYWtORFFWTmxaMEYzU1VKQlowbENRVlJCUzBKblozRm9hMnBQVUZGUlJFRnFRVzlOVTFsM1NrRlpSRlpSVVVSRmVERkpZbTVXYjJJeWVHd0tTVWhPYUdKWFZYUmlWMFpxWVVkc2RWcFRRa1ZTVmxsblkyMDVkbVJFUVdWR2R6QjVUbXBGZDAxVVZYZE9lbEUwVFZSS1lVWjNNSGxPYWtWNFRWUlJkd3BPZWxFMVRWUktZVTFEWjNoS2FrRnJRbWRPVmtKQlRWUklWV2gxWkZkb2RtSkhWV2RqTWtaMFdsTXhkRmxYVG05aFZ6VnNTVVZTUmxacFFubGlNamt3Q2sxR2EzZEZkMWxJUzI5YVNYcHFNRU5CVVZsSlMyOWFTWHBxTUVSQlVXTkVVV2RCUlZWeFdqTXlkbWxhVTNSUmJUa3pTSGx4TW1WeVpFOHhOMVl6Vld3S1Z5czBTVXM1ZVZvMFlrWklRMmx3VkM5eVVYaFNjRVExVHpOSE1VUjZURzFKZDNOdmFYWnZOMjVVVEZKTVJqbFRhRXBFVDBsS09WUlJZVTVEVFVWQmR3cEVaMWxFVmxJd1VFRlJTQzlDUVZGRVFXZEZSMDFCT0VkQk1WVmtSWGRGUWk5M1VVWk5RVTFDUVdZNGQwaFJXVVJXVWpCUFFrSlpSVVpPVkdWQ2FqVXJDa2RRVDFsT2FYUkhlbTR2VEZSVldqQkhNRWx4VFVGdlIwTkRjVWRUVFRRNVFrRk5RMEV3YTBGTlJWbERTVkZETkVWQk1HaEtjMEUxY2xCWFExWXpWWFFLYkdWeFZFSjBTM0ZNV2xWT2JqTlBXa0Y0TVM5Nk5XOHZZMEZKYUVGT1RtOTBMelkzUTBSc1dUbExRMGh2ZDB4SVVXSm9hRlZvVWsxQloyWjBWRk51U1FwaVZXWnJTVlJpY0FvdExTMHRMVVZPUkNCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2c9PQ==",
+        "-Ptrack-widget-creation=true",
+        "assembleDebug",
+        "-DpostMediaVersion=20263116"
+      ],
+      "workingDirectory": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\android",
+      "startedAtUtc": "2026-10-15T14:48:54.7926638+00:00",
+      "endedAtUtc": "2026-10-15T14:50:12.2488828+00:00",
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-post-media-android-20261015\\logs\\native-window-main-build.log",
+      "head": "c1b26ea27ce6cf567ab41dc44de8f0700799ea2c",
+      "result": "PASS",
+      "testCount": null,
+      "sourceStableDuringCommand": true,
+      "inputDigestSha256": "cbb409fe7bc3abac14fc44e26db78f7c5c6e7fb658ccd92bd234917786b8e7d1",
+      "logSha256": "bb154f69823d34b98179caae813e8c3dcf5f4ce04f02fbc38823f1efa622b48f"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-post-media-android-20261015\\tools\\android-sdk\\build-tools\\36.0.0\\apksigner.bat",
+        "verify",
+        "--verbose",
+        "--print-certs",
+        "E:/Hnuhole-post-media-android-20261015/artifacts/main-20263116.apk"
+      ],
+      "workingDirectory": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T14:51:09.0374826+00:00",
+      "endedAtUtc": "2026-10-15T14:51:10.0724686+00:00",
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-post-media-android-20261015\\logs\\native-window-apk-signature.log",
+      "head": "c1b26ea27ce6cf567ab41dc44de8f0700799ea2c",
+      "result": "PASS",
+      "testCount": null,
+      "sourceStableDuringCommand": true,
+      "inputDigestSha256": "cbb409fe7bc3abac14fc44e26db78f7c5c6e7fb658ccd92bd234917786b8e7d1",
+      "logSha256": "a2445ebc961e4582d50ec7bb8eae2474063afd4ae8e082a17630cfdf703eb2ba"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-post-media-android-20261015\\tools\\android-sdk\\build-tools\\36.0.0\\aapt.exe",
+        "dump",
+        "badging",
+        "E:/Hnuhole-post-media-android-20261015/artifacts/main-20263116.apk"
+      ],
+      "workingDirectory": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T14:51:09.0625954+00:00",
+      "endedAtUtc": "2026-10-15T14:51:09.7673457+00:00",
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-post-media-android-20261015\\logs\\native-window-apk-identity.log",
+      "head": "c1b26ea27ce6cf567ab41dc44de8f0700799ea2c",
+      "result": "PASS",
+      "testCount": null,
+      "sourceStableDuringCommand": true,
+      "inputDigestSha256": "cbb409fe7bc3abac14fc44e26db78f7c5c6e7fb658ccd92bd234917786b8e7d1",
+      "logSha256": "291c1c0bf1615c698639569d445361f1caf6810436a3f69ca9fedcf9a8d024ee"
+    },
+    {
+      "command": [
+        "E:/acanda/python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/post-media-android/test_preparation.py"
+      ],
+      "result": "PASS",
+      "testCount": 15,
+      "exitCode": 0,
+      "environment": {
+        "POST_MEDIA_PREP_TEST_ROOT": "E:/Hnuhole-post-media-android-20261015/temp/prep-tests-window"
+      },
+      "scope": "host preparation guards; no phone behavior asserted"
+    }
+  ],
+  "cases": [
+    {
+      "id": "PMA01",
+      "result": "PASS",
+      "scope": "实际主App、独立包/签名、Android15/API35、专用C/V原生网络链路"
+    },
+    {
+      "id": "PMA02",
+      "result": "PASS",
+      "scope": "真实PostStore/原生vault/Keystore/no_backup；九原图跨进程、错摘要/异账号拒绝、probe清理；不证明硬件密钥物理擦除"
+    },
+    {
+      "id": "PMA03",
+      "result": "PASS_SCOPED",
+      "scope": "原生Photo Picker取消与选择；本轮没有权限弹窗，权限拒绝分支N/A；不支持API28及以下"
+    },
+    {
+      "id": "PMA04",
+      "result": "PASS_SCOPED",
+      "scope": "九图、仅图正文、真实拖动排序/移除/补选、9/9时添加入口隐藏；未伪称实际选择第十张"
+    },
+    {
+      "id": "PMA05",
+      "result": "PASS_SCOPED",
+      "scope": "杀主App后九原图恢复/原SQL字节对照；选图中断后保留8张、取消旧Picker再补选；未证明每一种OS完成结果重投路径"
+    },
+    {
+      "id": "PMA06",
+      "result": "PASS",
+      "scope": "实际C/V/SQL：九图顺序/长度/SHA与原始清单及真实Gal保存文件逐项一致；8项完成不公开，9项完成才公开"
+    },
+    {
+      "id": "PMA07",
+      "result": "PASS",
+      "scope": "真实CREATE响应丢失/进程重启仍一次原命令；PUT前丢包/成功收据丢失后只重传真正缺项"
+    },
+    {
+      "id": "PMA08",
+      "result": "PASS",
+      "scope": "正式operator短限制使v1失败；原身份/通道/原图编辑RETRY，同任务v2公开；旧未知结果提示修复后上机复验"
+    },
+    {
+      "id": "PMA09",
+      "result": "PASS_SCOPED",
+      "scope": "人工确认主App缩放/平移/长图同手势不退出/抬指新下拉退出；20263116实际WM横竖屏2倍缩放/锚点/前后切图恢复；物理传感器旋转未重复"
+    },
+    {
+      "id": "PMA10",
+      "result": "PASS_SCOPED",
+      "scope": "实际主App/Gal九原格式保存、三连点一次写入、关闭隔离迟到原图；临时目录结算归零。原生写入已派发后的关闭/故意临时文件消失沿用未改组件历史证据，本轮主App不重测"
+    },
+    {
+      "id": "PMA11",
+      "result": "PASS_SCOPED",
+      "scope": "保存原字节一致；Fossify Gallery1.14.0(29)实机无触屏RGB采样：GIF/无限WebP自动动画，有限WebP约2秒/色两轮停蓝；不称vivo默认相册本轮通过"
+    },
+    {
+      "id": "PMA12",
+      "result": "PASS_SCOPED",
+      "scope": "取消后原图草稿保留、删帖9 payload清除与C404、退出旧会话401/迟到隔离、实际第二账号无旧个人内容、实际60秒租约失效；不是完整认证/账号注销专项"
+    },
+    {
+      "id": "PMA13",
+      "result": "PASS_SCOPED",
+      "scope": "用户实际中文IME输入图片真机验收；新业务选择/进度/重试控件语义及可操作状态；按用户指令未重复既有组件TalkBack/大字全套"
+    },
+    {
+      "id": "PMA14",
+      "result": "PASS_SCOPED_OBSERVATION",
+      "scope": "约1MiB九图功能与自有临时目录观察；Debug PSS371611KiB/RSS519860KiB为单点，不证明峰值/泄漏/九张10MiB最大预算"
+    }
+  ],
+  "evidenceRecords": {
+    "device-baseline": {
+      "model": "V2323A",
+      "manufacturer": "vivo",
+      "android": "15",
+      "api": 35,
+      "abis": "arm64-v8a,armeabi-v7a,armeabi",
+      "deviceIdSha256": "557ef20f4d13aaf0605d2de7ec7fe8a6a44cf36e2520607fe2009b134cd774e8",
+      "existingAdbServerOnly": true,
+      "adbServerPort": 34881,
+      "adbProcessStarted": false,
+      "userConfirmedReleasedWindow": true
+    },
+    "probe-media-write": {
+      "result": "PASS",
+      "phase": "media-write",
+      "checks": {
+        "nineOriginalsDurable": true,
+        "multiChunkOriginal": true,
+        "noOriginalHeaderInDatabaseOrSidecars": true,
+        "nativeNoBackupDirectory": true
+      },
+      "pid": 16354,
+      "writePid": 16354,
+      "runId": "post-media-399b3580bba37bbf",
+      "device": true,
+      "nativePostStore": true,
+      "nativeKeystore": true,
+      "pickerOrGalleryProved": false
+    },
+    "probe-media-read": {
+      "result": "PASS",
+      "phase": "media-read",
+      "checks": {
+        "nineOriginalsRecoveredInNewProcess": true,
+        "wrongDigestRejected": true,
+        "otherAccountRejected": true,
+        "noOriginalHeaderInDatabaseOrSidecars": true,
+        "nativeNoBackupDirectory": true
+      },
+      "pid": 17565,
+      "writePid": 16354,
+      "runId": "post-media-399b3580bba37bbf",
+      "device": true,
+      "nativePostStore": true,
+      "nativeKeystore": true,
+      "pickerOrGalleryProved": false
+    },
+    "probe-media-purge": {
+      "result": "PASS",
+      "phase": "media-purge",
+      "checks": {
+        "databaseRemoved": true,
+        "closedNativeVaultAccessRejected": true,
+        "closedNamespaceRejected": true
+      },
+      "pid": 17790,
+      "writePid": 16354,
+      "runId": "post-media-399b3580bba37bbf",
+      "device": true,
+      "nativePostStore": true,
+      "nativeKeystore": true,
+      "pickerOrGalleryProved": false
+    },
+    "installed-artifact-identity": {
+      "main": {
+        "package": "org.hnuhole.post_media_android",
+        "apkSha256": "ae589d166734eb1888bc03c41d4cee8f49797ee6969f40cf4abaa6614c48892f",
+        "matchesPreparedArtifact": true,
+        "versionCode": 20263115
+      },
+      "probe": {
+        "package": "org.hnuhole.post_media_android.probe",
+        "apkSha256": "af27b986b3be2ca9f74d688daa5b7ffc1cfcfeaccb98e4711fee013aa037b193",
+        "matchesPreparedArtifact": true,
+        "versionCode": 20263115
+      }
+    },
+    "phone-original-fixtures": [
+      {
+        "file": "01-ordinary.png",
+        "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+        "onPhoneVerified": true
+      },
+      {
+        "file": "02-photo.jpg",
+        "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+        "onPhoneVerified": true
+      },
+      {
+        "file": "03-exif6.jpg",
+        "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+        "onPhoneVerified": true
+      },
+      {
+        "file": "04-long.png",
+        "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+        "onPhoneVerified": true
+      },
+      {
+        "file": "05-loop.gif",
+        "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+        "onPhoneVerified": true
+      },
+      {
+        "file": "06-finite.webp",
+        "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+        "onPhoneVerified": true
+      },
+      {
+        "file": "07-loop.webp",
+        "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+        "onPhoneVerified": true
+      },
+      {
+        "file": "08-landscape.png",
+        "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+        "onPhoneVerified": true
+      },
+      {
+        "file": "09-square.png",
+        "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+        "onPhoneVerified": true
+      }
+    ],
+    "main-picked-originals": {
+      "id": "oGhNTRqndosadr2x8VeC6Q",
+      "channelId": "5f6f4f88-8f64-4bb2-9d34-000000000001",
+      "identityId": null,
+      "title": "图片真机验收",
+      "body": "",
+      "revision": "16",
+      "persisted": "true",
+      "saved": "true",
+      "mediaBusy": "false",
+      "pickerPending": "false",
+      "mediaError": null,
+      "images": [
+        {
+          "blobId": "e94d2185-af5c-4162-a054-d15976749bc7",
+          "message": null,
+          "selection": {
+            "mediaId": "e5254504-c698-4b58-960d-6d03e41a0adb",
+            "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+            "mimeType": "image/png",
+            "byteLength": "8995",
+            "width": "1200",
+            "height": "600"
+          }
+        },
+        {
+          "blobId": "22397d2d-1b3b-4899-87d1-0749442d41e7",
+          "message": null,
+          "selection": {
+            "mediaId": "9100c0f0-a336-477c-af9c-466d591055d3",
+            "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+            "mimeType": "image/png",
+            "byteLength": "6577",
+            "width": "512",
+            "height": "512"
+          }
+        },
+        {
+          "blobId": "6203dfd0-5746-4eaa-b34e-6d0aeac5c469",
+          "message": null,
+          "selection": {
+            "mediaId": "b0857494-554e-4c8e-8320-48c0f26987b4",
+            "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+            "mimeType": "image/png",
+            "byteLength": "70110",
+            "width": "480",
+            "height": "7200"
+          }
+        },
+        {
+          "blobId": "72c12b25-1986-4cb0-b113-439ddfa3b091",
+          "message": null,
+          "selection": {
+            "mediaId": "72f2175b-da98-4ea4-8ad9-63f7d693add7",
+            "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+            "mimeType": "image/gif",
+            "byteLength": "8216",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "b5f72637-ecc9-4194-b287-e522f53c4895",
+          "message": null,
+          "selection": {
+            "mediaId": "003d4b9f-313c-451c-8015-0b5d3d981d03",
+            "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+            "mimeType": "image/webp",
+            "byteLength": "94306",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "09cfe2aa-ed6e-4137-b997-5a739a4fe87b",
+          "message": null,
+          "selection": {
+            "mediaId": "3965f49d-b0d3-4fb5-9030-6412abd2f29c",
+            "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+            "mimeType": "image/webp",
+            "byteLength": "94306",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "e7be34c1-dfff-4e09-9ef4-160d7a59682f",
+          "message": null,
+          "selection": {
+            "mediaId": "df83f045-1f16-48dc-bd6d-6ea9a3c230bd",
+            "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+            "mimeType": "image/jpeg",
+            "byteLength": "12965",
+            "width": "640",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "9b23c51e-152c-4fd0-8c35-a170aa29108a",
+          "message": null,
+          "selection": {
+            "mediaId": "4ccedee7-c578-4e7d-ad96-92cb441c647f",
+            "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+            "mimeType": "image/jpeg",
+            "byteLength": "16696",
+            "width": "600",
+            "height": "900"
+          }
+        },
+        {
+          "blobId": "e9a62ecc-71c8-4683-9c40-e40ee4732c30",
+          "message": null,
+          "selection": {
+            "mediaId": "30569239-d3f2-44f6-ae47-e147748a7fb3",
+            "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+            "mimeType": "image/png",
+            "byteLength": "696527",
+            "width": "640",
+            "height": "480"
+          }
+        }
+      ]
+    },
+    "main-native-draft-restored": {
+      "id": "oGhNTRqndosadr2x8VeC6Q",
+      "channelId": "5f6f4f88-8f64-4bb2-9d34-000000000001",
+      "identityId": null,
+      "title": "图片真机验收",
+      "body": "",
+      "revision": "16",
+      "persisted": "true",
+      "saved": "true",
+      "mediaBusy": "false",
+      "pickerPending": "false",
+      "mediaError": null,
+      "images": [
+        {
+          "blobId": "e94d2185-af5c-4162-a054-d15976749bc7",
+          "message": null,
+          "selection": {
+            "mediaId": "e5254504-c698-4b58-960d-6d03e41a0adb",
+            "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+            "mimeType": "image/png",
+            "byteLength": "8995",
+            "width": "1200",
+            "height": "600"
+          }
+        },
+        {
+          "blobId": "22397d2d-1b3b-4899-87d1-0749442d41e7",
+          "message": null,
+          "selection": {
+            "mediaId": "9100c0f0-a336-477c-af9c-466d591055d3",
+            "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+            "mimeType": "image/png",
+            "byteLength": "6577",
+            "width": "512",
+            "height": "512"
+          }
+        },
+        {
+          "blobId": "6203dfd0-5746-4eaa-b34e-6d0aeac5c469",
+          "message": null,
+          "selection": {
+            "mediaId": "b0857494-554e-4c8e-8320-48c0f26987b4",
+            "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+            "mimeType": "image/png",
+            "byteLength": "70110",
+            "width": "480",
+            "height": "7200"
+          }
+        },
+        {
+          "blobId": "72c12b25-1986-4cb0-b113-439ddfa3b091",
+          "message": null,
+          "selection": {
+            "mediaId": "72f2175b-da98-4ea4-8ad9-63f7d693add7",
+            "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+            "mimeType": "image/gif",
+            "byteLength": "8216",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "b5f72637-ecc9-4194-b287-e522f53c4895",
+          "message": null,
+          "selection": {
+            "mediaId": "003d4b9f-313c-451c-8015-0b5d3d981d03",
+            "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+            "mimeType": "image/webp",
+            "byteLength": "94306",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "09cfe2aa-ed6e-4137-b997-5a739a4fe87b",
+          "message": null,
+          "selection": {
+            "mediaId": "3965f49d-b0d3-4fb5-9030-6412abd2f29c",
+            "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+            "mimeType": "image/webp",
+            "byteLength": "94306",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "e7be34c1-dfff-4e09-9ef4-160d7a59682f",
+          "message": null,
+          "selection": {
+            "mediaId": "df83f045-1f16-48dc-bd6d-6ea9a3c230bd",
+            "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+            "mimeType": "image/jpeg",
+            "byteLength": "12965",
+            "width": "640",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "9b23c51e-152c-4fd0-8c35-a170aa29108a",
+          "message": null,
+          "selection": {
+            "mediaId": "4ccedee7-c578-4e7d-ad96-92cb441c647f",
+            "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+            "mimeType": "image/jpeg",
+            "byteLength": "16696",
+            "width": "600",
+            "height": "900"
+          }
+        },
+        {
+          "blobId": "e9a62ecc-71c8-4683-9c40-e40ee4732c30",
+          "message": null,
+          "selection": {
+            "mediaId": "30569239-d3f2-44f6-ae47-e147748a7fb3",
+            "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+            "mimeType": "image/png",
+            "byteLength": "696527",
+            "width": "640",
+            "height": "480"
+          }
+        }
+      ]
+    },
+    "main-process-restart": {
+      "previousPid": "18029",
+      "newPid": "20590",
+      "forceStoppedOnlyOwnPackage": true,
+      "appDataCleared": false,
+      "newProcess": true
+    },
+    "native-reorder-cap": {
+      "result": "PASS",
+      "before": [
+        "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+        "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+        "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+        "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+        "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+        "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+        "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+        "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+        "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62"
+      ],
+      "after": [
+        "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+        "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+        "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+        "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+        "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+        "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+        "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+        "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+        "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62"
+      ],
+      "sameStableIds": true,
+      "capAtNine": true
+    },
+    "picker-interrupted-restored": {
+      "result": "PASS",
+      "restored": {
+        "id": "oGhNTRqndosadr2x8VeC6Q",
+        "channelId": "5f6f4f88-8f64-4bb2-9d34-000000000001",
+        "identityId": "5ce40567-6992-480d-ac40-fbfbe9de495d",
+        "title": "图片真机验收",
+        "body": "",
+        "revision": "20",
+        "persisted": "true",
+        "saved": "true",
+        "mediaBusy": "false",
+        "pickerPending": "false",
+        "mediaError": "上次选图被中断，请重新选择；已保存的图片仍保留。",
+        "images": [
+          {
+            "blobId": "22397d2d-1b3b-4899-87d1-0749442d41e7",
+            "message": null,
+            "selection": {
+              "mediaId": "9100c0f0-a336-477c-af9c-466d591055d3",
+              "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+              "mimeType": "image/png",
+              "byteLength": "6577",
+              "width": "512",
+              "height": "512"
+            }
+          },
+          {
+            "blobId": "e94d2185-af5c-4162-a054-d15976749bc7",
+            "message": null,
+            "selection": {
+              "mediaId": "e5254504-c698-4b58-960d-6d03e41a0adb",
+              "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+              "mimeType": "image/png",
+              "byteLength": "8995",
+              "width": "1200",
+              "height": "600"
+            }
+          },
+          {
+            "blobId": "6203dfd0-5746-4eaa-b34e-6d0aeac5c469",
+            "message": null,
+            "selection": {
+              "mediaId": "b0857494-554e-4c8e-8320-48c0f26987b4",
+              "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+              "mimeType": "image/png",
+              "byteLength": "70110",
+              "width": "480",
+              "height": "7200"
+            }
+          },
+          {
+            "blobId": "72c12b25-1986-4cb0-b113-439ddfa3b091",
+            "message": null,
+            "selection": {
+              "mediaId": "72f2175b-da98-4ea4-8ad9-63f7d693add7",
+              "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+              "mimeType": "image/gif",
+              "byteLength": "8216",
+              "width": "480",
+              "height": "480"
+            }
+          },
+          {
+            "blobId": "b5f72637-ecc9-4194-b287-e522f53c4895",
+            "message": null,
+            "selection": {
+              "mediaId": "003d4b9f-313c-451c-8015-0b5d3d981d03",
+              "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+              "mimeType": "image/webp",
+              "byteLength": "94306",
+              "width": "480",
+              "height": "480"
+            }
+          },
+          {
+            "blobId": "09cfe2aa-ed6e-4137-b997-5a739a4fe87b",
+            "message": null,
+            "selection": {
+              "mediaId": "3965f49d-b0d3-4fb5-9030-6412abd2f29c",
+              "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+              "mimeType": "image/webp",
+              "byteLength": "94306",
+              "width": "480",
+              "height": "480"
+            }
+          },
+          {
+            "blobId": "e7be34c1-dfff-4e09-9ef4-160d7a59682f",
+            "message": null,
+            "selection": {
+              "mediaId": "df83f045-1f16-48dc-bd6d-6ea9a3c230bd",
+              "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+              "mimeType": "image/jpeg",
+              "byteLength": "12965",
+              "width": "640",
+              "height": "480"
+            }
+          },
+          {
+            "blobId": "9b23c51e-152c-4fd0-8c35-a170aa29108a",
+            "message": null,
+            "selection": {
+              "mediaId": "4ccedee7-c578-4e7d-ad96-92cb441c647f",
+              "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+              "mimeType": "image/jpeg",
+              "byteLength": "16696",
+              "width": "600",
+              "height": "900"
+            }
+          }
+        ]
+      },
+      "onlyOwnAppStopped": true,
+      "unboundLostSelectionImported": false,
+      "removedFileToReselect": "01-ordinary.png",
+      "systemPickerDismissedBeforeColdLaunch": true
+    },
+    "main-ready-to-publish": {
+      "id": "oGhNTRqndosadr2x8VeC6Q",
+      "channelId": "5f6f4f88-8f64-4bb2-9d34-000000000001",
+      "identityId": "5ce40567-6992-480d-ac40-fbfbe9de495d",
+      "title": "图片真机验收",
+      "body": "",
+      "revision": "27",
+      "persisted": "true",
+      "saved": "true",
+      "mediaBusy": "false",
+      "pickerPending": "false",
+      "mediaError": null,
+      "images": [
+        {
+          "blobId": "22397d2d-1b3b-4899-87d1-0749442d41e7",
+          "message": null,
+          "selection": {
+            "mediaId": "9100c0f0-a336-477c-af9c-466d591055d3",
+            "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+            "mimeType": "image/png",
+            "byteLength": "6577",
+            "width": "512",
+            "height": "512"
+          }
+        },
+        {
+          "blobId": "e94d2185-af5c-4162-a054-d15976749bc7",
+          "message": null,
+          "selection": {
+            "mediaId": "e5254504-c698-4b58-960d-6d03e41a0adb",
+            "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+            "mimeType": "image/png",
+            "byteLength": "8995",
+            "width": "1200",
+            "height": "600"
+          }
+        },
+        {
+          "blobId": "6203dfd0-5746-4eaa-b34e-6d0aeac5c469",
+          "message": null,
+          "selection": {
+            "mediaId": "b0857494-554e-4c8e-8320-48c0f26987b4",
+            "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+            "mimeType": "image/png",
+            "byteLength": "70110",
+            "width": "480",
+            "height": "7200"
+          }
+        },
+        {
+          "blobId": "72c12b25-1986-4cb0-b113-439ddfa3b091",
+          "message": null,
+          "selection": {
+            "mediaId": "72f2175b-da98-4ea4-8ad9-63f7d693add7",
+            "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+            "mimeType": "image/gif",
+            "byteLength": "8216",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "b5f72637-ecc9-4194-b287-e522f53c4895",
+          "message": null,
+          "selection": {
+            "mediaId": "003d4b9f-313c-451c-8015-0b5d3d981d03",
+            "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+            "mimeType": "image/webp",
+            "byteLength": "94306",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "09cfe2aa-ed6e-4137-b997-5a739a4fe87b",
+          "message": null,
+          "selection": {
+            "mediaId": "3965f49d-b0d3-4fb5-9030-6412abd2f29c",
+            "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+            "mimeType": "image/webp",
+            "byteLength": "94306",
+            "width": "480",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "e7be34c1-dfff-4e09-9ef4-160d7a59682f",
+          "message": null,
+          "selection": {
+            "mediaId": "df83f045-1f16-48dc-bd6d-6ea9a3c230bd",
+            "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+            "mimeType": "image/jpeg",
+            "byteLength": "12965",
+            "width": "640",
+            "height": "480"
+          }
+        },
+        {
+          "blobId": "9b23c51e-152c-4fd0-8c35-a170aa29108a",
+          "message": null,
+          "selection": {
+            "mediaId": "4ccedee7-c578-4e7d-ad96-92cb441c647f",
+            "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+            "mimeType": "image/jpeg",
+            "byteLength": "16696",
+            "width": "600",
+            "height": "900"
+          }
+        },
+        {
+          "blobId": "239f970b-6bdf-4e30-926c-f13b121f1777",
+          "message": null,
+          "selection": {
+            "mediaId": "bec52ef9-bef6-456d-ac13-d608a5ce98e5",
+            "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+            "mimeType": "image/png",
+            "byteLength": "696527",
+            "width": "640",
+            "height": "480"
+          }
+        }
+      ]
+    },
+    "create-response-lost-snapshot": {
+      "images": 9,
+      "verified": 0,
+      "erased": 0,
+      "payloads": [],
+      "states": [
+        {
+          "version": 1,
+          "state": "ACCEPTED"
+        }
+      ],
+      "public": 0
+    },
+    "unknown-command-restart": {
+      "oldPid": "21973",
+      "newPid": "22639",
+      "createRequests": 1,
+      "clearData": false
+    },
+    "unknown-restart-stats": {
+      "creates": 1,
+      "puts": {},
+      "preDrops": 11,
+      "postDrops": 1,
+      "readWaiting": false
+    },
+    "eight-verified-not-public": {
+      "images": 9,
+      "verified": 8,
+      "erased": 0,
+      "payloads": [
+        {
+          "mediaId": "9100c0f0-a336-477c-af9c-466d591055d3",
+          "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+          "bytes": 6577,
+          "position": 0,
+          "version": 1
+        },
+        {
+          "mediaId": "b0857494-554e-4c8e-8320-48c0f26987b4",
+          "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+          "bytes": 70110,
+          "position": 2,
+          "version": 1
+        },
+        {
+          "mediaId": "72f2175b-da98-4ea4-8ad9-63f7d693add7",
+          "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+          "bytes": 8216,
+          "position": 3,
+          "version": 1
+        },
+        {
+          "mediaId": "003d4b9f-313c-451c-8015-0b5d3d981d03",
+          "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+          "bytes": 94306,
+          "position": 4,
+          "version": 1
+        },
+        {
+          "mediaId": "3965f49d-b0d3-4fb5-9030-6412abd2f29c",
+          "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+          "bytes": 94306,
+          "position": 5,
+          "version": 1
+        },
+        {
+          "mediaId": "df83f045-1f16-48dc-bd6d-6ea9a3c230bd",
+          "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+          "bytes": 12965,
+          "position": 6,
+          "version": 1
+        },
+        {
+          "mediaId": "4ccedee7-c578-4e7d-ad96-92cb441c647f",
+          "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+          "bytes": 16696,
+          "position": 7,
+          "version": 1
+        },
+        {
+          "mediaId": "bec52ef9-bef6-456d-ac13-d608a5ce98e5",
+          "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+          "bytes": 696527,
+          "position": 8,
+          "version": 1
+        }
+      ],
+      "states": [
+        {
+          "version": 1,
+          "state": "ACCEPTED"
+        }
+      ],
+      "public": 0
+    },
+    "missing-only-retry-stats": {
+      "creates": 1,
+      "puts": {
+        "9100c0f0-a336-477c-af9c-466d591055d3": 1,
+        "e5254504-c698-4b58-960d-6d03e41a0adb": 2,
+        "b0857494-554e-4c8e-8320-48c0f26987b4": 1,
+        "72f2175b-da98-4ea4-8ad9-63f7d693add7": 1,
+        "003d4b9f-313c-451c-8015-0b5d3d981d03": 1,
+        "3965f49d-b0d3-4fb5-9030-6412abd2f29c": 1,
+        "df83f045-1f16-48dc-bd6d-6ea9a3c230bd": 1,
+        "4ccedee7-c578-4e7d-ad96-92cb441c647f": 1,
+        "bec52ef9-bef6-456d-ac13-d608a5ce98e5": 1
+      },
+      "preDrops": 14,
+      "postDrops": 2,
+      "readWaiting": false
+    },
+    "nine-published-sql": {
+      "images": 9,
+      "verified": 9,
+      "erased": 0,
+      "payloads": [
+        {
+          "mediaId": "9100c0f0-a336-477c-af9c-466d591055d3",
+          "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+          "bytes": 6577,
+          "position": 0,
+          "version": 1
+        },
+        {
+          "mediaId": "e5254504-c698-4b58-960d-6d03e41a0adb",
+          "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+          "bytes": 8995,
+          "position": 1,
+          "version": 1
+        },
+        {
+          "mediaId": "b0857494-554e-4c8e-8320-48c0f26987b4",
+          "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+          "bytes": 70110,
+          "position": 2,
+          "version": 1
+        },
+        {
+          "mediaId": "72f2175b-da98-4ea4-8ad9-63f7d693add7",
+          "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+          "bytes": 8216,
+          "position": 3,
+          "version": 1
+        },
+        {
+          "mediaId": "003d4b9f-313c-451c-8015-0b5d3d981d03",
+          "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+          "bytes": 94306,
+          "position": 4,
+          "version": 1
+        },
+        {
+          "mediaId": "3965f49d-b0d3-4fb5-9030-6412abd2f29c",
+          "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+          "bytes": 94306,
+          "position": 5,
+          "version": 1
+        },
+        {
+          "mediaId": "df83f045-1f16-48dc-bd6d-6ea9a3c230bd",
+          "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+          "bytes": 12965,
+          "position": 6,
+          "version": 1
+        },
+        {
+          "mediaId": "4ccedee7-c578-4e7d-ad96-92cb441c647f",
+          "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+          "bytes": 16696,
+          "position": 7,
+          "version": 1
+        },
+        {
+          "mediaId": "bec52ef9-bef6-456d-ac13-d608a5ce98e5",
+          "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+          "bytes": 696527,
+          "position": 8,
+          "version": 1
+        }
+      ],
+      "states": [
+        {
+          "version": 1,
+          "state": "PUBLISHED"
+        }
+      ],
+      "public": 1
+    },
+    "main-native-gallery-originals": {
+      "result": "PASS",
+      "nativeGal": true,
+      "actualMainProtectedResolver": true,
+      "count": 9,
+      "allOriginalHashesAndLengthsMatch": true,
+      "temporaryDirectoriesRemaining": 0,
+      "rows": [
+        {
+          "id": "1000043858",
+          "file": "original (6).png",
+          "mimeType": "image/png",
+          "path": "/storage/emulated/0/Pictures/original (6).png",
+          "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+          "bytes": 6577
+        },
+        {
+          "id": "1000043859",
+          "file": "original (7).png",
+          "mimeType": "image/png",
+          "path": "/storage/emulated/0/Pictures/original (7).png",
+          "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+          "bytes": 8995
+        },
+        {
+          "id": "1000043860",
+          "file": "original (8).png",
+          "mimeType": "image/png",
+          "path": "/storage/emulated/0/Pictures/original (8).png",
+          "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+          "bytes": 70110
+        },
+        {
+          "id": "1000043861",
+          "file": "original (6).gif",
+          "mimeType": "image/gif",
+          "path": "/storage/emulated/0/Pictures/original (6).gif",
+          "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+          "bytes": 8216
+        },
+        {
+          "id": "1000043862",
+          "file": "original (9).webp",
+          "mimeType": "image/webp",
+          "path": "/storage/emulated/0/Pictures/original (9).webp",
+          "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+          "bytes": 94306
+        },
+        {
+          "id": "1000043863",
+          "file": "original (10).webp",
+          "mimeType": "image/webp",
+          "path": "/storage/emulated/0/Pictures/original (10).webp",
+          "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+          "bytes": 94306
+        },
+        {
+          "id": "1000043864",
+          "file": "original (1).jpg",
+          "mimeType": "image/jpeg",
+          "path": "/storage/emulated/0/Pictures/original (1).jpg",
+          "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+          "bytes": 12965
+        },
+        {
+          "id": "1000043865",
+          "file": "original (2).jpg",
+          "mimeType": "image/jpeg",
+          "path": "/storage/emulated/0/Pictures/original (2).jpg",
+          "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+          "bytes": 16696
+        },
+        {
+          "id": "1000043866",
+          "file": "original (9).png",
+          "mimeType": "image/png",
+          "path": "/storage/emulated/0/Pictures/original (9).png",
+          "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+          "bytes": 696527
+        }
+      ]
+    },
+    "main-gallery-animation-observation": [
+      {
+        "source": "05-loop.gif",
+        "savedMediaId": "1000043861",
+        "savedSha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+        "player": "org.fossify.gallery 1.14.0 (29)",
+        "samples": [
+          {
+            "elapsedSeconds": 0.391,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "d15b7f6c8b0c46eb8670b59a8822053fc6a2c93b0273953ecb52a5155e0d49c8"
+          },
+          {
+            "elapsedSeconds": 0.859,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "d15b7f6c8b0c46eb8670b59a8822053fc6a2c93b0273953ecb52a5155e0d49c8"
+          },
+          {
+            "elapsedSeconds": 1.406,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "d15b7f6c8b0c46eb8670b59a8822053fc6a2c93b0273953ecb52a5155e0d49c8"
+          },
+          {
+            "elapsedSeconds": 1.906,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "d15b7f6c8b0c46eb8670b59a8822053fc6a2c93b0273953ecb52a5155e0d49c8"
+          },
+          {
+            "elapsedSeconds": 2.406,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "594416443ee77ac43cadf49bcbe59ba92bd5242db30616778ed24653f917d188"
+          },
+          {
+            "elapsedSeconds": 2.953,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "594416443ee77ac43cadf49bcbe59ba92bd5242db30616778ed24653f917d188"
+          },
+          {
+            "elapsedSeconds": 3.359,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "594416443ee77ac43cadf49bcbe59ba92bd5242db30616778ed24653f917d188"
+          },
+          {
+            "elapsedSeconds": 3.937,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "594416443ee77ac43cadf49bcbe59ba92bd5242db30616778ed24653f917d188"
+          },
+          {
+            "elapsedSeconds": 4.375,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "6b3043777fde1cc842cf14992622bb1975a8ab616c88edd468837b1f898f3d8d"
+          },
+          {
+            "elapsedSeconds": 4.875,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "6b3043777fde1cc842cf14992622bb1975a8ab616c88edd468837b1f898f3d8d"
+          },
+          {
+            "elapsedSeconds": 5.375,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "6b3043777fde1cc842cf14992622bb1975a8ab616c88edd468837b1f898f3d8d"
+          },
+          {
+            "elapsedSeconds": 5.891,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "6b3043777fde1cc842cf14992622bb1975a8ab616c88edd468837b1f898f3d8d"
+          },
+          {
+            "elapsedSeconds": 6.406,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "d15b7f6c8b0c46eb8670b59a8822053fc6a2c93b0273953ecb52a5155e0d49c8"
+          },
+          {
+            "elapsedSeconds": 6.891,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "d15b7f6c8b0c46eb8670b59a8822053fc6a2c93b0273953ecb52a5155e0d49c8"
+          },
+          {
+            "elapsedSeconds": 7.406,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "d15b7f6c8b0c46eb8670b59a8822053fc6a2c93b0273953ecb52a5155e0d49c8"
+          },
+          {
+            "elapsedSeconds": 7.875,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "d15b7f6c8b0c46eb8670b59a8822053fc6a2c93b0273953ecb52a5155e0d49c8"
+          }
+        ],
+        "transitions": [
+          "G",
+          "B",
+          "R",
+          "G"
+        ]
+      },
+      {
+        "source": "06-finite.webp",
+        "savedMediaId": "1000043862",
+        "savedSha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+        "player": "org.fossify.gallery 1.14.0 (29)",
+        "samples": [
+          {
+            "elapsedSeconds": 0.391,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "6b3043777fde1cc842cf14992622bb1975a8ab616c88edd468837b1f898f3d8d"
+          },
+          {
+            "elapsedSeconds": 0.828,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "8de3c49fa605ecd6090140c6aad5db134455280462ef4412335f1a4eb53086cd"
+          },
+          {
+            "elapsedSeconds": 1.328,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "8de3c49fa605ecd6090140c6aad5db134455280462ef4412335f1a4eb53086cd"
+          },
+          {
+            "elapsedSeconds": 1.844,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "8de3c49fa605ecd6090140c6aad5db134455280462ef4412335f1a4eb53086cd"
+          },
+          {
+            "elapsedSeconds": 2.344,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "8de3c49fa605ecd6090140c6aad5db134455280462ef4412335f1a4eb53086cd"
+          },
+          {
+            "elapsedSeconds": 2.828,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "1f32f7aa6e8f43a56ac22d47a1542d9d6951fc39e33414dcfce470b86588ae30"
+          },
+          {
+            "elapsedSeconds": 3.328,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "1f32f7aa6e8f43a56ac22d47a1542d9d6951fc39e33414dcfce470b86588ae30"
+          },
+          {
+            "elapsedSeconds": 3.844,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "1f32f7aa6e8f43a56ac22d47a1542d9d6951fc39e33414dcfce470b86588ae30"
+          },
+          {
+            "elapsedSeconds": 4.312,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "1f32f7aa6e8f43a56ac22d47a1542d9d6951fc39e33414dcfce470b86588ae30"
+          },
+          {
+            "elapsedSeconds": 4.828,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 5.312,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 5.828,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 6.328,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 6.812,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "8de3c49fa605ecd6090140c6aad5db134455280462ef4412335f1a4eb53086cd"
+          },
+          {
+            "elapsedSeconds": 7.344,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "8de3c49fa605ecd6090140c6aad5db134455280462ef4412335f1a4eb53086cd"
+          },
+          {
+            "elapsedSeconds": 7.797,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "8de3c49fa605ecd6090140c6aad5db134455280462ef4412335f1a4eb53086cd"
+          },
+          {
+            "elapsedSeconds": 8.344,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "8de3c49fa605ecd6090140c6aad5db134455280462ef4412335f1a4eb53086cd"
+          },
+          {
+            "elapsedSeconds": 8.812,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "1f32f7aa6e8f43a56ac22d47a1542d9d6951fc39e33414dcfce470b86588ae30"
+          },
+          {
+            "elapsedSeconds": 9.344,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "1f32f7aa6e8f43a56ac22d47a1542d9d6951fc39e33414dcfce470b86588ae30"
+          },
+          {
+            "elapsedSeconds": 9.828,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "1f32f7aa6e8f43a56ac22d47a1542d9d6951fc39e33414dcfce470b86588ae30"
+          },
+          {
+            "elapsedSeconds": 10.312,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "1f32f7aa6e8f43a56ac22d47a1542d9d6951fc39e33414dcfce470b86588ae30"
+          },
+          {
+            "elapsedSeconds": 10.844,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 11.453,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 11.859,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 12.375,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 12.859,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 13.344,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 13.906,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 14.359,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 14.844,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 15.328,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          }
+        ],
+        "transitions": [
+          "R",
+          "G",
+          "B",
+          "R",
+          "G",
+          "B"
+        ]
+      },
+      {
+        "source": "07-loop.webp",
+        "savedMediaId": "1000043863",
+        "savedSha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+        "player": "org.fossify.gallery 1.14.0 (29)",
+        "samples": [
+          {
+            "elapsedSeconds": 0.406,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "76bc4885a787815a349ecb7c401853b63f70ab286be52af77ea1999f0e759376"
+          },
+          {
+            "elapsedSeconds": 0.812,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "ee72a30750ef43a9fc5d33916000a1bc6316bdca1f54f04096910a6ea880e9f8"
+          },
+          {
+            "elapsedSeconds": 1.297,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "ee72a30750ef43a9fc5d33916000a1bc6316bdca1f54f04096910a6ea880e9f8"
+          },
+          {
+            "elapsedSeconds": 1.844,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "ee72a30750ef43a9fc5d33916000a1bc6316bdca1f54f04096910a6ea880e9f8"
+          },
+          {
+            "elapsedSeconds": 2.312,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "ee72a30750ef43a9fc5d33916000a1bc6316bdca1f54f04096910a6ea880e9f8"
+          },
+          {
+            "elapsedSeconds": 2.812,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "0b2648a457daab197e544f9798246d6d6d3b938da5ad4149cb467b4c9b8802b5"
+          },
+          {
+            "elapsedSeconds": 3.297,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "0b2648a457daab197e544f9798246d6d6d3b938da5ad4149cb467b4c9b8802b5"
+          },
+          {
+            "elapsedSeconds": 3.828,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "0b2648a457daab197e544f9798246d6d6d3b938da5ad4149cb467b4c9b8802b5"
+          },
+          {
+            "elapsedSeconds": 4.297,
+            "rgb": [
+              0,
+              128,
+              0
+            ],
+            "color": "G",
+            "screenshotSha256": "0b2648a457daab197e544f9798246d6d6d3b938da5ad4149cb467b4c9b8802b5"
+          },
+          {
+            "elapsedSeconds": 4.828,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "8a1c58d1a78854b9f6afd5d94f08cbbdb46fe1e54cb4c428d2403f60aedcf281"
+          },
+          {
+            "elapsedSeconds": 5.281,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "8a1c58d1a78854b9f6afd5d94f08cbbdb46fe1e54cb4c428d2403f60aedcf281"
+          },
+          {
+            "elapsedSeconds": 5.812,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "8a1c58d1a78854b9f6afd5d94f08cbbdb46fe1e54cb4c428d2403f60aedcf281"
+          },
+          {
+            "elapsedSeconds": 6.297,
+            "rgb": [
+              0,
+              0,
+              255
+            ],
+            "color": "B",
+            "screenshotSha256": "8a1c58d1a78854b9f6afd5d94f08cbbdb46fe1e54cb4c428d2403f60aedcf281"
+          },
+          {
+            "elapsedSeconds": 6.812,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "ee72a30750ef43a9fc5d33916000a1bc6316bdca1f54f04096910a6ea880e9f8"
+          },
+          {
+            "elapsedSeconds": 7.328,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "ee72a30750ef43a9fc5d33916000a1bc6316bdca1f54f04096910a6ea880e9f8"
+          },
+          {
+            "elapsedSeconds": 7.844,
+            "rgb": [
+              255,
+              0,
+              0
+            ],
+            "color": "R",
+            "screenshotSha256": "ee72a30750ef43a9fc5d33916000a1bc6316bdca1f54f04096910a6ea880e9f8"
+          }
+        ],
+        "transitions": [
+          "B",
+          "R",
+          "G",
+          "B",
+          "R"
+        ]
+      }
+    ],
+    "main-gallery-animation-result": {
+      "result": "PASS",
+      "finiteTwoCyclesStoppedBlue": true,
+      "gifAndInfiniteWebpAutoAnimate": true,
+      "noTouchDuringCapture": true,
+      "method": "real device Gallery pixel samples every 0.5 seconds",
+      "observationsFile": "main-gallery-animation-observation.json",
+      "vivoPlayerNotRetested": "Existing 9.4.6.13 finite-WebP defect remains separate; no assumption about newer versions"
+    },
+    "main-gesture-human": {
+      "result": "PASS",
+      "source": "user actual main App gesture observation",
+      "checks": [
+        "pinchZoomAndPan",
+        "sameGestureReturningToTopCannotClose",
+        "allPointersUpThenNewPullCloses"
+      ],
+      "reply": "正常"
+    },
+    "lease-expired-ui": {
+      "result": "PASS",
+      "observed": [
+        {
+          "content-desc": "Back",
+          "class": "android.widget.Button",
+          "bounds": "[12,126][156,270]"
+        },
+        {
+          "content-desc": "吐槽",
+          "class": "android.view.View",
+          "bounds": "[480,161][600,236]"
+        },
+        {
+          "content-desc": "删除帖子",
+          "class": "android.widget.Button",
+          "bounds": "[936,126][1080,270]"
+        },
+        {
+          "content-desc": "图片真机验收",
+          "class": "android.view.View",
+          "bounds": "[60,366][569,489]"
+        },
+        {
+          "content-desc": "MediaS18",
+          "class": "android.view.View",
+          "bounds": "[60,525][359,669]"
+        },
+        {
+          "content-desc": "10月15日 22:38",
+          "class": "android.view.View",
+          "bounds": "[60,711][1020,771]"
+        },
+        {
+          "content-desc": "图片已不可访问",
+          "class": "android.view.View",
+          "bounds": "[390,1038][690,1098]"
+        },
+        {
+          "content-desc": "重新读取图片",
+          "class": "android.widget.Button",
+          "bounds": "[377,1098][703,1242]"
+        },
+        {
+          "content-desc": "暂时无法核对结果，原操作已保留，请稍后核对。",
+          "class": "android.view.View",
+          "bounds": "[60,1362][1020,1422]"
+        }
+      ],
+      "noMemoryImageRemaining": true
+    },
+    "duplicate-save-result": {
+      "result": "PASS",
+      "rapidClicks": 3,
+      "saveOriginalReadHeld": true,
+      "beforeRows": 9,
+      "afterRows": 10,
+      "oneNativeWrite": true
+    },
+    "save-close-late-read-result": {
+      "result": "PASS",
+      "actualProtectedResponseHeld": true,
+      "closedBeforeRelease": true,
+      "noAdditionalNativeSave": true,
+      "noLateSuccessUi": true,
+      "remainingTemporaryDirectories": 0,
+      "scope": "close while protected original resolver pending; native write not yet entered"
+    },
+    "native-stale-error-fixed": {
+      "result": "PASS",
+      "versionCode": 20263116,
+      "sourceCommit": "fd2e4c04f48b29ddda0142660188988c4a655f5f",
+      "actualCreateResponseDropped": true,
+      "matchingTaskAuthoritativelyFailed": true,
+      "oldUnknownResultMessageCleared": true,
+      "requiresAppRestartToClear": false
+    },
+    "retry-v1-failed": {
+      "images": 1,
+      "verified": 0,
+      "erased": 1,
+      "payloads": [],
+      "states": [
+        {
+          "version": 1,
+          "state": "FAILED"
+        }
+      ],
+      "public": 0
+    },
+    "retry-v2-editor-contract": {
+      "id": "ShxyQ6aeIEKgpN2lBvBFHg",
+      "channelId": "5f6f4f88-8f64-4bb2-9d34-000000000001",
+      "identityId": "5ce40567-6992-480d-ac40-fbfbe9de495d",
+      "title": "MEDIA RETRY",
+      "body": "retry-2",
+      "revision": "10",
+      "persisted": "false",
+      "saved": "false",
+      "mediaBusy": "false",
+      "pickerPending": "false",
+      "mediaError": null,
+      "images": [
+        {
+          "blobId": "4aaa0f68-dc20-45f8-81de-bf2ffee935ef",
+          "message": null,
+          "selection": {
+            "mediaId": "d5093fe1-8f55-4abe-b7a8-aedcf37fe545",
+            "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+            "mimeType": "image/png",
+            "byteLength": "696527",
+            "width": "640",
+            "height": "480"
+          }
+        }
+      ],
+      "retryContract": {
+        "isRetry": "true",
+        "taskId": "8a10d25d-4e06-4967-b619-d1cbe28f1f4a",
+        "attemptVersion": "1"
+      }
+    },
+    "retry-v2-sql": {
+      "images": 2,
+      "verified": 1,
+      "erased": 1,
+      "payloads": [
+        {
+          "mediaId": "d5093fe1-8f55-4abe-b7a8-aedcf37fe545",
+          "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+          "bytes": 696527,
+          "position": 0,
+          "version": 2
+        }
+      ],
+      "states": [
+        {
+          "version": 1,
+          "state": "FAILED"
+        },
+        {
+          "version": 2,
+          "state": "PUBLISHED"
+        }
+      ],
+      "public": 1
+    },
+    "retry-content-routing-sql": {
+      "result": "PASS",
+      "sameIdentityAndChannelAsNativeEditor": true,
+      "version": 2,
+      "editedBodyMatches": true
+    },
+    "cancelled-task-sql": {
+      "images": 1,
+      "verified": 0,
+      "erased": 1,
+      "payloads": [],
+      "states": [
+        {
+          "version": 1,
+          "state": "CANCELLED"
+        }
+      ],
+      "public": 0
+    },
+    "cancelled-images-draft-preserved": {
+      "result": "PASS",
+      "originalSelectionRetained": true,
+      "newDraftId": "cancelled-VXIBXPtNRmoc0rddk8m3gg",
+      "oldDraftId": "VXIBXPtNRmoc0rddk8m3gg",
+      "sameOriginalSha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62"
+    },
+    "main-delete-access-late-result": {
+      "result": "PASS",
+      "versionCode": 20263116,
+      "manifestBefore": {
+        "status": 200,
+        "bytes": 6686,
+        "sha256": "a291e3aeb6e26bf0812b04ac0e70bfbd3e94f5a180d756c68ad1583d8becb3df",
+        "cacheControl": "no-store"
+      },
+      "manifestAfter": {
+        "status": 404,
+        "bytes": 141,
+        "sha256": "dd0cd936862c7f0fef3875995aec90040ddecd30164130d2cb05523d8140ee81",
+        "cacheControl": "no-store",
+        "errorCode": "MEDIA_NOT_FOUND"
+      },
+      "originalAfter": {
+        "status": 404,
+        "bytes": 141,
+        "sha256": "95edb0f0f359f573069a419c1737c623cc0fd2d3a53201613b601a3623cc707e",
+        "cacheControl": "no-store",
+        "errorCode": "MEDIA_NOT_FOUND"
+      },
+      "sqlErased": 9,
+      "lateOriginalResponseNotSaved": true,
+      "lateSuccessUiAbsent": true,
+      "alreadySavedGalleryCopiesRetained": true,
+      "accessTokenExportedOrLogged": false
+    },
+    "main-logout-access-late-result": {
+      "result": "PASS",
+      "oldOriginalAfterLogout": {
+        "status": 401,
+        "bytes": 141,
+        "sha256": "598e2cc8b22a2f14f4aef33a0b3e23dc7a0fc636e26919642bd4b269f3c29b58",
+        "cacheControl": "no-store",
+        "errorCode": "SESSION_INVALID"
+      },
+      "accountAndStoreDetached": true,
+      "personalItems": 0,
+      "lateResponseDidNotSave": true,
+      "sessionTokenExportedOrLogged": false
+    },
+    "native-account-switch-result": {
+      "result": "PASS",
+      "newSyntheticAccountRegisteredInActualMainApp": true,
+      "differentAccountScope": true,
+      "oldPersonalItemsVisible": 0,
+      "nativePriorAccountReadRejection": "probe-media-read.json",
+      "source": "actual UI plus read-only current main controller state; no account secrets exported"
+    },
+    "native-account-switch-ui": {
+      "result": "PASS",
+      "oldRouteRequiresReauthentication": true,
+      "newMyContentHasNoOldPostsOrDrafts": true,
+      "labels": [
+        {
+          "content-desc": "Back",
+          "class": "android.widget.Button",
+          "bounds": "[12,126][156,270]"
+        },
+        {
+          "content-desc": "我的",
+          "class": "android.view.View",
+          "bounds": "[480,161][600,236]"
+        },
+        {
+          "content-desc": "设置",
+          "class": "android.widget.Button",
+          "bounds": "[936,126][1080,270]"
+        },
+        {
+          "content-desc": "自己的帖子",
+          "class": "android.view.View",
+          "bounds": "[60,330][334,408]"
+        },
+        {
+          "content-desc": "还没有自己的帖子",
+          "class": "android.view.View",
+          "bounds": "[273,1079][807,1172]"
+        },
+        {
+          "content-desc": "从通道开始，写下第一篇帖子。",
+          "class": "android.view.View",
+          "bounds": "[199,1208][881,1280]"
+        },
+        {
+          "content-desc": "去选择通道",
+          "class": "android.widget.Button",
+          "bounds": "[362,1340][718,1484]"
+        },
+        {
+          "content-desc": "首页",
+          "class": "android.widget.Button",
+          "bounds": "[72,2088][423,2250]"
+        },
+        {
+          "content-desc": "选择通道写帖子",
+          "class": "android.widget.Button",
+          "bounds": "[423,2097][657,2241]"
+        },
+        {
+          "content-desc": "我的",
+          "class": "android.view.View",
+          "bounds": "[657,2103][1008,2235]"
+        }
+      ]
+    },
+    "main-native-rotation-position": {
+      "result": "PASS",
+      "versionCode": 20263116,
+      "method": "actual Android WindowManager user rotation lock1 then restore original lock0; read-only viewer reading witnesses",
+      "physicalSensorRotation": "NOT_REPEATED",
+      "before": {
+        "index": 1,
+        "reading": {
+          "4a7f8bda-d1b5-4557-9433-ed3b8e6ff394": {
+            "zoomFactor": 2.0,
+            "anchor": {
+              "_dx": 0.4999999999999867,
+              "_dy": 0.14877945054471958
+            }
+          }
+        }
+      },
+      "landscape": {
+        "index": 1,
+        "reading": {
+          "4a7f8bda-d1b5-4557-9433-ed3b8e6ff394": {
+            "zoomFactor": 2.0,
+            "anchor": {
+              "_dx": 0.49999999999998673,
+              "_dy": 0.14877945054471958
+            }
+          }
+        }
+      },
+      "portrait": {
+        "index": 1,
+        "reading": {
+          "4a7f8bda-d1b5-4557-9433-ed3b8e6ff394": {
+            "zoomFactor": 2.0,
+            "anchor": {
+              "_dx": 0.4999999999999867,
+              "_dy": 0.14877945054471958
+            }
+          }
+        }
+      },
+      "previousThenNext": {
+        "index": 1,
+        "reading": {
+          "4a7f8bda-d1b5-4557-9433-ed3b8e6ff394": {
+            "zoomFactor": 2.0,
+            "anchor": {
+              "_dx": 0.4999999999999867,
+              "_dy": 0.14877945054471958
+            }
+          },
+          "09fa0ef6-4ab2-43c8-8de5-22fc5e664988": {
+            "zoomFactor": 1.0,
+            "anchor": {
+              "_dx": 0.5,
+              "_dy": 0.5
+            }
+          }
+        }
+      },
+      "zoomAndAnchorPreserved": true,
+      "originalRotationRestored": true,
+      "landscapePixels": [
+        2400,
+        1080
+      ],
+      "portraitPixels": [
+        1080,
+        2400
+      ]
+    },
+    "main-own-resource-observation": {
+      "result": "PASS_SCOPED_OBSERVATION",
+      "meminfoAppSummary": [
+        "Native Heap    43376    43072      292     3587    44840   121208    40309    77413",
+        "Dalvik Heap     2447     2412       12       71     4180    15401     3113    12288",
+        "Native Heap:    43072                          44840",
+        "TOTAL PSS:   371611            TOTAL RSS:   519860       TOTAL SWAP PSS:    19249"
+      ],
+      "ownDataKiB": [
+        "3892\tcache",
+        "2419\tno_backup",
+        "12\tfiles"
+      ],
+      "remainingViewerTempDirectories": [],
+      "systemSettingsRestored": {
+        "font_scale": "1.0",
+        "accelerometer_rotation": "0",
+        "user_rotation": "0",
+        "accessibility_enabled": "0"
+      },
+      "maximumNineByTenMiBResourceBudget": "NOT_RUN_SEPARATE_WORK"
+    },
+    "device-window-last-settings": {
+      "result": "PASS",
+      "settings": {
+        "font_scale": "1.0",
+        "accelerometer_rotation": "0",
+        "user_rotation": "0",
+        "accessibility_enabled": "0"
+      },
+      "talkBackReplayed": false,
+      "onlyTemporaryRotationChangedThenRestored": true,
+      "lastSyntheticSessionLoggedOut": true
+    },
+    "device-window-cleanup": {
+      "result": "PASS",
+      "ownReverseBefore": [
+        [
+          "tcp:43057",
+          "tcp:43057"
+        ],
+        [
+          "tcp:42161",
+          "tcp:42161"
+        ]
+      ],
+      "reverseAfter": [],
+      "ownPackagesStopped": true,
+      "ownTransferredApksAndUiTempRemoved": true,
+      "adbServerStoppedOrRestarted": false,
+      "otherPackagesOrServicesStopped": false,
+      "testPackagesRetained": 2,
+      "syntheticFixtureFolderRetained": true,
+      "ownGalleryTestRowsRetained": 10,
+      "phoneMediaDeleted": false
+    },
+    "backend-prepared-source-fingerprint": {
+      "canonicalLfSha256": "55635bbaac3be7f802a75a99ba3152c26978db9888aa2297df65a3c17439e01e",
+      "fileCount": 232
+    },
+    "owned-backend-stopped": {
+      "state": "STOPPED",
+      "cleanup": {
+        "run": "/home/hnuhole/post-media-joint-android-20261015/run-ea7d665d",
+        "allOwnedProcessesStopped": true,
+        "otherServicesTouched": false,
+        "privateMaterialsRetainedForFailureAnalysis": true
+      }
+    },
+    "final-owned-sql-counts": {
+      "syntheticAccounts": 2,
+      "tasks": 4,
+      "publicPosts": 2,
+      "imageRecords": 14,
+      "verifiedPayloads": 3,
+      "erasedRecords": 11
+    },
+    "main-20263116-installed-identity": {
+      "versionCode": 20263116,
+      "sha256": "451f87f0a19ed920795c9bf7fdd2d89c1adb1fefba62f32d3d2db6c9b5bd257c",
+      "package": "org.hnuhole.post_media_android",
+      "result": "PASS"
+    },
+    "linux-material-cleanup": {
+      "result": "PASS",
+      "removedOwnedLinuxRoot": "/home/hnuhole/post-media-joint-android-20261015",
+      "ownProcessesStoppedBeforeRemoval": true,
+      "privateDatabaseCaGateAndKeysRemoved": true,
+      "initialReadonlyGoModuleDirectoryFailureResolved": true,
+      "onlyOwnedDirectoriesMadeWritable": 1618,
+      "otherRootsTouched": false
+    },
+    "windows-material-cleanup": {
+      "status": "PARTIAL_WINDOWS_CLEANUP_BLOCKED_BY_AUTOMATIC_APPROVAL",
+      "linuxPrivateRootRemoved": true,
+      "backendStopped": true,
+      "phoneWindowReleased": true,
+      "windowsKitRetained": "E:/Hnuhole-post-media-android-20261015",
+      "retainedWindowsMaterials": [
+        "private same-version SDK/Pub/Gradle caches",
+        "debug APKs and test signing key",
+        "private synthetic account/OTP/recovery fixture files and raw screenshots"
+      ],
+      "privateFixtureAcl": "private/profile protected ACL, only current user, SYSTEM and Administrators; read-only verified 2026-10-15",
+      "blockedActions": [
+        "recursive cleanup of verified owned Windows kit SDK/cache directories",
+        "narrower deletion of explicit own credential/test-key/APK files and generated screenshots"
+      ],
+      "reviewMessage": "blocked by policy",
+      "otherTaskResourcesTouched": false,
+      "record": "logs/windows-material-cleanup.json",
+      "rejectedCleanupAttempts": 2,
+      "noFurtherDeletionAfterBothRejections": true
+    }
+  },
+  "evidenceLogsRoot": "E:/Hnuhole-post-media-android-20261015/logs",
+  "retainedDeviceHelperSource": "E:/Hnuhole-post-media-android-20261015/source-tools",
+  "limits": {
+    "completeAndroidHardwareOrGalleryMatrix": false,
+    "completeModuleOrAppAcceptance": false,
+    "iOSOriginalPicker": "NOT_IMPLEMENTED",
+    "iOSNativeAndGallery": "NOT_RUN",
+    "maximumMediaBudget": "NOT_RUN_SEPARATE_WORK",
+    "oldDatabaseUpgrade": "NOT_RUN_SEPARATE_WORK",
+    "productionStorageQuotaWalBackup": "NOT_RUN_SEPARATE_WORK",
+    "commentsAndMessaging": "NOT_IMPLEMENTED",
+    "nativeMainReleaseBuild": "NOT_RUN_THIS_PHASE",
+    "componentTalkBack": "PREVIOUS_HUMAN_PASS_NOT_REPEATED",
+    "componentNativeWriteCloseAndMissingTemporary": "PREVIOUS_UNCHANGED_COMPONENT_EVIDENCE_NOT_REPEATED"
+  },
+  "security": {
+    "onlySyntheticAccountsAndImages": true,
+    "componentCredentialsReceived": false,
+    "tokenExportedOrLogged": false,
+    "operatorHttpProbeUsesOwnSyntheticTokenInMemory": true,
+    "sharedSdkChanged": false,
+    "adbServerStartedStoppedOrRestarted": false,
+    "otherSessionServicesTouched": false,
+    "mainMerged": false,
+    "releasePublished": false,
+    "deployed": false
+  },
+  "hostMaterialCleanup": {
+    "status": "PARTIAL_WINDOWS_CLEANUP_BLOCKED_BY_AUTOMATIC_APPROVAL",
+    "linuxPrivateRootRemoved": true,
+    "backendStopped": true,
+    "phoneWindowReleased": true,
+    "windowsKitRetained": "E:/Hnuhole-post-media-android-20261015",
+    "retainedWindowsMaterials": [
+      "private same-version SDK/Pub/Gradle caches",
+      "debug APKs and test signing key",
+      "private synthetic account/OTP/recovery fixture files and raw screenshots"
+    ],
+    "privateFixtureAcl": "private/profile protected ACL, only current user, SYSTEM and Administrators; read-only verified 2026-10-15",
+    "blockedActions": [
+      "recursive cleanup of verified owned Windows kit SDK/cache directories",
+      "narrower deletion of explicit own credential/test-key/APK files and generated screenshots"
+    ],
+    "reviewMessage": "blocked by policy",
+    "otherTaskResourcesTouched": false,
+    "record": "logs/windows-material-cleanup.json",
+    "rejectedCleanupAttempts": 2,
+    "noFurtherDeletionAfterBothRejections": true
+  },
+  "deliveryPrivacyReview": {
+    "result": "PASS_ADDED_CONTENT",
+    "range": "c1b26ea27ce6cf567ab41dc44de8f0700799ea2c..2f59bb2",
+    "newSensitiveFixtureValueMatches": 0,
+    "wholeDocumentGuardHit": "inherited hardware identifier in unchanged historical ledger entries",
+    "newPlaintextDeviceIdentifierAdded": false,
+    "initialShellDidNotShortCircuitAfterGuardError": true,
+    "reviewedAfterInitialPush": true,
+    "existingOtherTaskHistoryModified": false,
+    "subsequentCommandsUseCheckedSubprocesses": true
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "scope": "WINDOWS_FLUTTER_ENGINE_NOT_IOS_PHOTOS",
+  "imageVersion": "4.10.1",
+  "compatibilityProductEnabled": false,
+  "loopCases": [
+    {
+      "fixture": "animation_binary.webp",
+      "sourceFrames": 3,
+      "gifFrames": 3,
+      "sourceFlutterRepetitionCount": 1,
+      "gifFlutterRepetitionCount": 1,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "result": "PASS"
+    },
+    {
+      "fixture": "animation_binary_infinite.webp",
+      "sourceFrames": 3,
+      "gifFrames": 3,
+      "sourceFlutterRepetitionCount": -1,
+      "gifFlutterRepetitionCount": -1,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "result": "PASS"
+    },
+    {
+      "fixture": "animation_binary_once.webp",
+      "sourceFrames": 3,
+      "gifFrames": 3,
+      "sourceFlutterRepetitionCount": 0,
+      "gifFlutterRepetitionCount": 0,
+      "durationsMs": [
+        80,
+        120,
+        200
+      ],
+      "result": "PASS"
+    }
+  ],
+  "blindConversionLoopGap": {
+    "sourceRepetitions": 1,
+    "naiveRepetitions": 2,
+    "result": "REPRODUCED",
+    "fixedInProbe": true
+  },
+  "timing": {
+    "sourceMs": [
+      37,
+      53,
+      87
+    ],
+    "gifMs": [
+      40,
+      50,
+      90
+    ],
+    "maxCycleDriftMs": 5,
+    "productApproved": false
+  },
+  "quality": {
+    "fixture": "animation.webp",
+    "alphaChangedPixelsPerFrame": [
+      5491,
+      5491,
+      5491
+    ],
+    "meanAbsoluteRgbDifferenceOnBlack": 4.444444444444445,
+    "meanAbsoluteRgbDifferenceOnWhite": 189.79817708333334,
+    "gifBytes": 3202,
+    "sourceBytes": 290,
+    "result": "LOSS_REPRODUCED_PRODUCT_DECISION_REQUIRED"
+  },
+  "safeAlphaPolicy": {
+    "binaryAlpha": "PASS_ON_THREE_FRAME_FIXTURE",
+    "semiAlpha": "REJECTED_PENDING_PRODUCT_DECISION",
+    "defaultProductEnabled": false
+  }
+}

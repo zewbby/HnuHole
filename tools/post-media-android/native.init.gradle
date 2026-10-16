@@ -1,0 +1,25 @@
+// Build-only identity and visible label; no product source or auth package edit.
+def kit = new File(System.getProperty('postMediaKit', '')).canonicalFile
+if (!new File(kit, '.owner').isFile() ||
+    !new File(kit, '.owner').text.trim().equals('HNUHOLE_POST_MEDIA_ANDROID_V1|E:/Hnuhole-post-media-joint-20261015/repo')) {
+  throw new GradleException('Owned post-media Android kit required')
+}
+gradle.beforeProject { p ->
+  if (p.path == ':app' && p.projectDir.canonicalPath.replace('\\','/') ==
+      'E:/Hnuhole-post-media-joint-20261015/repo/apps/mobile/android/app') {
+    p.plugins.withId('com.android.application') {
+      p.extensions.getByName('androidComponents').finalizeDsl { dsl ->
+        def probe = System.getProperty('postMediaProbe', 'false').equals('true')
+        dsl.defaultConfig.applicationId = probe ? 'org.hnuhole.post_media_android.probe' : 'org.hnuhole.post_media_android'
+        def testVersion = System.getProperty('postMediaVersion', '20263115')
+        if (!(testVersion ==~ /[1-9][0-9]{7}/)) {
+          throw new GradleException('Eight-digit test version required')
+        }
+        dsl.defaultConfig.versionCode = Integer.parseInt(testVersion)
+        dsl.defaultConfig.versionName = '0.1.0-media-android-' + testVersion
+        dsl.sourceSets.getByName('debug').manifest.srcFile(new File(kit,
+            probe ? 'private/debug-manifest-probe.xml' : 'private/debug-manifest.xml'))
+      }
+    }
+  }
+}

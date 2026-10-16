@@ -1,0 +1,134 @@
+{
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "result": "BLOCKED_KEY_ISOLATION",
+  "branch": "codex/community-flutter-pages",
+  "taskStartHEAD": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+  "fixStartHEAD": "0c8e2470d6281785ba9e6ff647cfc2aa7fc19cc4",
+  "priorDocOnlyCommitRetained": true,
+  "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "models": {
+    "failureLocalization": "gpt-6-astra",
+    "repairAndVerification": "gpt-6.1-sol",
+    "repairReasoningEffort": "high"
+  },
+  "originalAttempt": {
+    "exitCode": 1,
+    "waitSeconds": 90,
+    "deviceFound": false,
+    "deviceIdHash": "557ef20f4d13aaf0605d2de7ec7fe8a6a44cf36e2520607fe2009b134cd774e8",
+    "adbVersionObserved": "37.0.1-15733141",
+    "ownedServerStarted": true,
+    "ownedServerPID": 75036,
+    "ownedServerPort": 60761,
+    "defaultKeyActuallyRead": "UNKNOWN_NOT_INSPECTED",
+    "usbClaimBySharedServer": "SUSPECTED_NOT_PROVEN",
+    "installedPackages": 0,
+    "appLaunched": false,
+    "registeredAccounts": 0,
+    "businessWrites": 0
+  },
+  "preAttemptHostObservations": {
+    "source": "Parent session tool outputs this turn; not rerun or relabeled as device evidence",
+    "all450SourceInputsVerifiedBeforeGuardFix": true,
+    "apkAndAdbHashesVerified": true,
+    "dedicatedPort60761FreeBeforeAttempt": true,
+    "tlsReady": true,
+    "cReadyHTTP": 200,
+    "vReadyHTTP": 200,
+    "emptyLab": true,
+    "testClockOffset": 0,
+    "stage1HostPhoneGuardsPassed": 9,
+    "originalRunNotStarted": true,
+    "existingLabRecord": "E:/HnuHole-community-f4-20261012/stage2-preparation-20261015/stage1-lab-preservation.json"
+  },
+  "finalHostChecks": {
+    "windowsTestsRun": 139,
+    "windowsPassed": 136,
+    "windowsPOSIXSkips": 3,
+    "linuxTestsPassed": 139,
+    "focusedPhoneTestsPassedEachOS": 23,
+    "windowsAllConsentsBlockedBeforeManifestSocketOrCommand": true,
+    "stage2AllSixPhasesCovered": true,
+    "environmentHelperAlsoBlocked": true,
+    "cli": [
+      {
+        "command": "python -X utf8 -B tools/community-android-stage1/phone.py --manifest not-accessed --plan-only",
+        "exitCode": 0,
+        "expected": true,
+        "adbInvoked": false
+      },
+      {
+        "command": "python -X utf8 -B tools/community-android-stage2/phone.py --plan-only",
+        "exitCode": 0,
+        "expected": true,
+        "adbInvoked": false
+      },
+      {
+        "command": "python -X utf8 -B tools/community-android-stage1/phone.py --manifest not-accessed --device synthetic-device --confirmed-window --allow-isolated-install --auth-session-released --allow-owned-adb-key --launch-manual",
+        "exitCode": 1,
+        "expected": true,
+        "adbInvoked": false
+      },
+      {
+        "command": "python -X utf8 -B tools/community-android-stage2/phone.py --manifest not-accessed --device synthetic-device --phase suites --confirmed-window --allow-isolated-install --auth-session-released --allow-owned-adb-key --allow-owned-force-stop",
+        "exitCode": 1,
+        "expected": true,
+        "adbInvoked": false
+      }
+    ],
+    "deviceAcceptance": false
+  },
+  "artifactsRehashedAfterGuardFix": {
+    "apkSha256": {
+      "acceptance": "1a7eb7bb8450f0e7918b7602a770ddb4b5429010ea23c0c11471eaf210b70e94",
+      "normal": "752846ff8bb48c160af90a4cc816a14f1a6cc1bdab549489e411f60ebafed79f"
+    },
+    "adbSha256": "b4a6b455702684652cccf7b46258b29e653538904359a58fd4931cf3ef286b3f",
+    "adbSupportFilesVerified": true,
+    "originalManifestUnmodified": true,
+    "preparedApksRebuilt": false
+  },
+  "source": {
+    "historicalFingerprintPreserved": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+    "current456InputFingerprint": "e1d19c20f6a861c3d1672cf6343aa70d1f82193fb1098d9242fc352e419172b9",
+    "changedInputPaths": [
+      "tools/community-android-stage1/phone.py",
+      "tools/community-android-stage2/phone.py",
+      "tools/tests/test_community_android_stage1_phone.py",
+      "tools/tests/test_community_android_stage2_phone.py"
+    ],
+    "productDartGoSQLProtocolChanges": false
+  },
+  "ownServerCleanup": {
+    "pid": 75036,
+    "port": 60761,
+    "exeStartPortCommandRechecked": true,
+    "stoppedOnlyOwnPID": true,
+    "processAbsent": true,
+    "portAbsent": true,
+    "sharedServerPreserved": true,
+    "defaultADBCallOrKillServer": false
+  },
+  "deviceChecks": {
+    "CA-A01": "NOT_RUN",
+    "CA-A02": "NOT_RUN",
+    "CA-A03": "NOT_RUN",
+    "CA-A04": "NOT_RUN",
+    "CA-A05": "NOT_RUN",
+    "CA-A06": "NOT_RUN",
+    "CA-A07": "NOT_RUN",
+    "CA-A08": "NOT_RUN",
+    "CA-A09": "NOT_RUN",
+    "CA-A10": "NOT_RUN",
+    "CA-A11": "NOT_RUN",
+    "CA-A12": "NOT_RUN",
+    "CA-A13": "NOT_RUN"
+  },
+  "stage2DeviceResult": "NOT_RUN_BLOCKED_KEY_ISOLATION",
+  "fullAppOrModulePassed": false,
+  "externalLogs": "E:/HnuHole-community-f4-20261012/device-validation-20261015",
+  "nextAcceptance": "Obtain a new confirmed device window/auth release; prove independent OS profile or verified dedicated-key-directory support in ADB; original service owner safely releases target USB; recheck source/APK/ADB hashes, TLS readiness and empty lab/clock0 before any phone flow. New OS accounts/security configuration or shared ADB/key exceptions require explicit changed user authorization. No reboot/uninstall/data clear/global settings authorized.",
+  "deviceWindowReleasedByUser": true
+}

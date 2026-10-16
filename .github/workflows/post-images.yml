@@ -1,0 +1,80 @@
+name: Post images
+
+on:
+  pull_request:
+    paths:
+      - 'apps/mobile/**'
+      - 'packages/image_viewer/**'
+      - 'packages/auth_vault/**'
+      - 'packages/auth_passkey/**'
+      - 'services/api/**'
+      - '.github/workflows/post-images.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: post-images-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      - name: SQLite host dependency
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev openssl
+      - name: Locked image package dependencies
+        working-directory: packages/image_viewer
+        # Match the existing lockfile's hosted source; changing hosts triggers
+        # resolution even when package versions are unchanged.
+        env:
+          PUB_HOSTED_URL: https://pub.flutter-io.cn
+        run: flutter pub get --enforce-lockfile
+      - name: Image package analysis and host tests
+        working-directory: packages/image_viewer
+        run: |
+          flutter analyze --no-pub
+          flutter test --no-pub
+      - name: Locked mobile dependencies
+        working-directory: apps/mobile
+        run: flutter pub get --enforce-lockfile
+      - name: Mobile analysis and affected host tests
+        working-directory: apps/mobile
+        run: |
+          flutter analyze --no-pub
+          flutter test --no-pub test/auth_api_test.dart test/post_api_test.dart test/post_controller_test.dart test/post_composer_media_test.dart test/post_media_repository_test.dart
+          flutter build bundle --debug --no-pub
+      - name: Verify lockfiles were preserved
+        run: git diff --exit-code -- '**/pubspec.lock'
+
+  go-host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: services/api
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - name: Host tests, compilation and vet
+        # SQL suites that require an isolated DSN remain covered by the recorded
+        # real-lab evidence; this host job does not claim native or SQL acceptance.
+        run: |
+          go test -mod=readonly ./...
+          go build -mod=readonly ./...
+          go vet -mod=readonly ./...

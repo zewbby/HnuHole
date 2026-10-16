@@ -1,0 +1,169 @@
+{
+  "android_exif_1.jpg": {
+    "width": 192,
+    "height": 128,
+    "frames": 1,
+    "bytes": 1487,
+    "sha256": "f4ab4302ffa13229a023af5df27663e4df4e4f361c8036fc3c5de7b25477f8f6",
+    "orientation": 1
+  },
+  "android_exif_2.jpg": {
+    "width": 192,
+    "height": 128,
+    "frames": 1,
+    "bytes": 1487,
+    "sha256": "b312746c9ab1d9cea5cde4b7fe36e0120c50ff9df3fa28930b5fbddf3fe90c83",
+    "orientation": 2
+  },
+  "android_exif_3.jpg": {
+    "width": 192,
+    "height": 128,
+    "frames": 1,
+    "bytes": 1487,
+    "sha256": "0eaf27dd42023b8cd9643ab7cf531934b10840e46531999fc58280cb5fb9f3f5",
+    "orientation": 3
+  },
+  "android_exif_4.jpg": {
+    "width": 192,
+    "height": 128,
+    "frames": 1,
+    "bytes": 1487,
+    "sha256": "3e13dd5683311ed86f866a77592afcf3f70855dbab46efdcccea289ee5be1b96",
+    "orientation": 4
+  },
+  "android_exif_5.jpg": {
+    "width": 128,
+    "height": 192,
+    "frames": 1,
+    "bytes": 1487,
+    "sha256": "9b89dbecd521fccce1736f77e33e3df085c5ece564b200a2267751c3790d8e66",
+    "orientation": 5
+  },
+  "android_exif_6.jpg": {
+    "width": 128,
+    "height": 192,
+    "frames": 1,
+    "bytes": 1487,
+    "sha256": "18af2dccae2d484217db08413e6ab31900b9ce6ee0e3da6968164c5bdc0982bb",
+    "orientation": 6
+  },
+  "android_exif_7.jpg": {
+    "width": 128,
+    "height": 192,
+    "frames": 1,
+    "bytes": 1487,
+    "sha256": "3d5ede368d5d702d79a7086b8a443f7a72eb972a23ad59335aa25b566fec0c30",
+    "orientation": 7
+  },
+  "android_exif_8.jpg": {
+    "width": 128,
+    "height": 192,
+    "frames": 1,
+    "bytes": 1487,
+    "sha256": "972458e92cea1891af0e5e8e1f52ffcdfd32ad5bc1fc18e51e835993ece0d633",
+    "orientation": 8
+  },
+  "android_small.png": {
+    "width": 1,
+    "height": 1,
+    "frames": 1,
+    "bytes": 69,
+    "sha256": "3860a1ad1bc01dc58955f25b598ce665cc94e60c5fb8a6029d38ce85ef3babcf"
+  },
+  "android_wide.png": {
+    "width": 2400,
+    "height": 240,
+    "frames": 1,
+    "bytes": 3416,
+    "sha256": "c1a6dbea922a044a65cde57cd5c4ac13204dc800e6903c74a0820247f72ebb07"
+  },
+  "android_static_limit.png": {
+    "width": 3072,
+    "height": 4096,
+    "frames": 1,
+    "bytes": 71296,
+    "sha256": "3686d478923be44179df4979e9503d8ec45278096d2e21325eef89faed4b9add"
+  },
+  "android_long_limit.png": {
+    "width": 480,
+    "height": 16384,
+    "frames": 1,
+    "bytes": 153690,
+    "sha256": "ef2de681f26e2fcce69fb679296fa3dc775d74abe101bacc128b7f4df0bcd6b9"
+  },
+  "android_pixels_over.png": {
+    "width": 3073,
+    "height": 4096,
+    "frames": 1,
+    "bytes": 71247,
+    "sha256": "f805cae3b162c0f298c33d843983de9c8d4b800c4d7d3fa1a2f7ebc5e5e18b28"
+  },
+  "android_dimension_over.png": {
+    "width": 1,
+    "height": 16385,
+    "frames": 1,
+    "bytes": 721,
+    "sha256": "1258299857c6e46012404ce2b8e8e81c9045dc035f8548eba8eb5b3c0a0f7865"
+  },
+  "android_transparent.png": {
+    "width": 192,
+    "height": 128,
+    "frames": 1,
+    "bytes": 349,
+    "sha256": "db4c1b7f3f34c1b58ff2d92ed5feb9f7cdc3c4594709a5c58c17b8c0f72c709e"
+  },
+  "android_animation_limit.webp": {
+    "width": 1024,
+    "height": 1024,
+    "frames": 16,
+    "bytes": 1039684,
+    "sha256": "91b1d800df78176d87a5956b6c3ebe15e39eb2b7e773b709ca3d47bc492d3977",
+    "frameDurationMs": 80,
+    "rawLoop": 0
+  },
+  "android_animation_work_over.webp": {
+    "width": 1024,
+    "height": 1024,
+    "frames": 17,
+    "bytes": 1104462,
+    "sha256": "11c70778093bb63484da4c1a28e1162e355dbc8d0e6161dcca24daa0b5110b74",
+    "frameDurationMs": 80,
+    "rawLoop": 0
+  },
+  "android_frames_limit.webp": {
+    "width": 128,
+    "height": 96,
+    "frames": 120,
+    "bytes": 204672,
+    "sha256": "276521c817df77258ad8128f29a9b4bd507c9301812725a155c1c1f0183244ed",
+    "frameDurationMs": 40,
+    "rawLoop": 0
+  },
+  "android_frames_over.webp": {
+    "width": 128,
+    "height": 96,
+    "frames": 121,
+    "bytes": 204252,
+    "sha256": "842e03836ff9ded7f1126f663e5522b8370b9145dbeb94d48a9498ee3ee11be0",
+    "frameDurationMs": 40,
+    "rawLoop": 0
+  },
+  "android_duration_over.webp": {
+    "width": 128,
+    "height": 96,
+    "frames": 2,
+    "bytes": 3302,
+    "sha256": "2f0e4be04fa7687bdef98a3e5dc652e0a24183817dcb92d15579d128b088f26e",
+    "frameDurationMs": 16000,
+    "rawLoop": 0
+  },
+  "android_gif_slow.gif": {
+    "width": 192,
+    "height": 128,
+    "frames": 3,
+    "bytes": 2892,
+    "sha256": "96478521e9f3ccc23be7b3a90bcf0f788e8b86b394d391bfcdf30c991a734357",
+    "frameDurationMs": 1000,
+    "rawLoop": 2
+  }
+}

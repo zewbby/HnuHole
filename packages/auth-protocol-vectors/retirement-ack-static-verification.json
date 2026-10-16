@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "hnuhole-auth-retirement-ack-static-verification/v1",
+  "verifiedOn": "2026-09-28",
+  "baselineCommit": "41fba7761035ee5aafb0e3beb55bf7b8d21f539a",
+  "scope": "STATIC_OAS_STRUCTURE_AND_SCHEMA_ONLY",
+  "method": "OpenAPI validate_spec; duplicate-key-rejecting PyYAML SafeLoader; local JSON-pointer resolution; Draft4Validator for new request and ACK shapes",
+  "tools": {
+    "PyYAML": "6.0.3",
+    "openapi-spec-validator": "0.9.0",
+    "jsonschema": "4.26.0"
+  },
+  "operations": {
+    "V": 6,
+    "C": 22,
+    "channel": 1
+  },
+  "allThreeOpenApiDocumentsValidated": true,
+  "allLocalReferencesResolved": true,
+  "duplicateYamlKeys": 0,
+  "receiptSchemaSameAcrossParties": true,
+  "requestShapeAccepted": 1,
+  "requestShapeRejected": 11,
+  "requestRejectionCases": [
+    "missing_required_field",
+    "null_request",
+    "null_receipt",
+    "number_receipt",
+    "wrong_purpose_field",
+    "extra_email",
+    "padding",
+    "short_receipt",
+    "noncanonical_last_bits",
+    "extra_byte_encoding",
+    "extra_account"
+  ],
+  "ackShapeAccepted": 1,
+  "ackShapeRejected": 3,
+  "ackRejectionCases": [
+    "missing_state",
+    "not_acknowledged",
+    "extra_slot"
+  ],
+  "acceptedReceiptIsSyntheticEncodingOnly": true,
+  "acceptedReceiptSignatureNotValidated": true,
+  "unchangedVectorSha256": "da913014063f3972dbc15a6c79a87757e7f113ff9cd5911bbb4b42918e5262b1",
+  "realServicesOrSqlExecuted": false,
+  "cryptoVectorsReexecuted": false,
+  "fileSha256": {
+    "packages/openapi/channel-api.yaml": "2e4fdd6c3be4d4096eeadf742ec6a9ce60fefae6c211a1fe93b65e2df88de3f0",
+    "packages/openapi/community-auth-api.yaml": "3947536b4bd919e14ed7f7d96b24ae391305fd8cc7a7c073784708e60cda9aa0",
+    "packages/openapi/verifier-auth-api.yaml": "14260a035658c9a789d93a6b0a3257917664d59304fb8265b9c23a855a3dad6c"
+  }
+}
