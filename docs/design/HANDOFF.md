@@ -1,5 +1,13 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-16 B5 主线整合候选（IN_PROGRESS）：**本轮仅在 `codex/fix/b5-main-integration` 整合，基线为 main `b164762b8cd58da592bf645cc4e2ada738bb79ec`；未 commit、未合并、未发布。保留主线帖子图片、业务存储和账号生命周期实现，只引入缺失的 B5 材料及必要适配。当前候选的测试、构建、独立审查与未验项以[候选报告](auth-privacy-b5-main-integration-report.md)和[候选机器记录](auth-privacy-b5-main-integration-verification.json)为准；此处不提前登记 PASS。
+
+> **历史认证证据独立保留：**B5 来源为 `ea5cc52840f009b02106f928c444e423c6e61b3e`，产品基线仍是 `d859cb05c772cdf8d8b75e439a2bfedf0414dd46`。历史 B6 为 **22 PASS／0 FAIL／2 BLOCKED**；B5 双实体首轮为 **23 PASS／1 FAIL**（NI-X02），随后 Bitwarden 原生路线仍 **BLOCKED**；B5-sync 后续为 **24／24 PASS**。原四次 hybrid 失败、同步成功后夹具失败、用户报告未出现选择／验证页的第六次失败及后续重试均保留在原[首轮报告](auth-privacy-b5-validation-report.md)、[同步报告](auth-privacy-b5-sync-validation-report.md)和三份机器证据中。历史 `nonIOSDevelopmentAcceptancePassed=true` 仅属于原 B5-sync 输入及设备链，不是本候选通过；iOS、生产及未来业务边界不扩张。
+
+> **候选证据规则：**两个 B5 checker 仍在固定 `ea5cc528` 历史副本验证，完整 B6 checker 在固定 `d859cb05` 副本验证；不改历史摘要或降低门槛。候选须记录全部历史 runtime 输入的差异及集合以外新增 runtime 文件，另记三份 B5 夹具由 `_HnuholeApp` 适配 `HnuholeApp` 后的摘要及运行时根组件发现回归。旧 APK／旧夹具结果不代证新候选；当前原生设备回归为 **NOT_RUN**，Dart mock、分析和构建不能替代原生存储与设备验收。
+
+接续本候选时先核对分支、主线漂移及隔离测试占用，再按候选报告完成测试和独立审查。下方主线业务交付与历史日期记录原样保留；它们各自的“当前／本轮”只描述原时点，不覆盖上述候选状态。
+
 > **2026-10-16 图片集成分支已退役：**`codex/post-image-integration` 本地/远端已删除，交付与 iOS 待办保留于[分支详情](../branches/post-image-integration.md)。电脑清理82处约22.52GiB，剩余工具/生成文件/新建清理密钥profile删除被自动审批拒绝；手机41图和5包已清、专用连接已关闭，电脑不得记作全部清理完成。详见[退役回执](../branches/post-image-integration-retirement-20261016.json)。
 
 > **2026-10-16 已合并 main：**PM01/IV01 帖子图片任务经 [PR #2](https://github.com/zewbby/HnuHole/pull/2) 合并，主线提交 `4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398`，送审提交 `2f46700`，来源 `codex/post-image-integration`（f30e8ae）。本任务的独立组件、帖子选图上传、真实前后端联调和 S18 Android 约定范围已交付；本任务功能范围剩余 iOS（原始选图未实现、入口关闭，macOS/Xcode/iPhone 原生与设备验收待完成）。GitHub Flutter 分析0/组件112项/受影响mobile130项/bundle、Go test/build/vet、协作检查均实际PASS；仅宿主CI，不扩充原SQL/手机证据范围。独立agent复审无阻断，不伪造GitHub成员批准。未发布或部署，详情见[合并回执](post-image-main-delivery-20261016.json)。下方旧日期记录保留原时点状态。

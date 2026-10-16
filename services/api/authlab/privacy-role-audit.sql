@@ -67,15 +67,24 @@ BEGIN
           IF relation.nspname=own_schema AND relation.relname='authorization_gate' AND privilege IN ('INSERT','DELETE') THEN allowed := false; END IF;
           IF relation.nspname=own_schema AND relation.relname='authorization_gate_audit' AND privilege IN ('UPDATE','DELETE') THEN allowed := false; END IF;
           -- 文字业务仍只归 C runtime；独立恢复与普通 business 不能读任务或正文。
+          -- 0014 requires image reads and four lifecycle-erasure columns even
+          -- with the image API off. Upload insertion/verification stay separate.
           IF party='c' AND relation.nspname='c_posts' THEN
             allowed := (privilege='SELECT' AND relation.relname IN ('schema_meta','protocol_keys','account_publication_control',
               'publication_stop_events','identity_public_labels','posts','post_identity_bindings',
-              'publication_tasks','publication_attempts','attempt_contents','command_receipts','payload_cleanup'))
+              'publication_tasks','publication_attempts','attempt_contents','command_receipts','payload_cleanup','images'))
               OR (privilege='INSERT' AND relation.relname IN ('protocol_keys','account_publication_control','publication_stop_events',
               'identity_public_labels','posts','post_identity_bindings','publication_tasks','publication_attempts',
               'attempt_contents','command_receipts','payload_cleanup'))
               OR (privilege='UPDATE' AND relation.relname IN ('account_publication_control','posts','publication_tasks',
               'publication_attempts','attempt_contents','command_receipts','payload_cleanup'));
+            IF relation.relname='images' AND privilege='UPDATE' THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a
+                  WHERE a.attrelid=relation.oid AND a.attnum>0 AND NOT a.attisdropped
+                    AND a.attname NOT IN ('payload','erased_at','grant_digest','grant_expires_at')
+                    AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
           END IF;
         END IF;
         IF granted AND NOT allowed THEN RAISE EXCEPTION 'operational role acquired noncontract table privilege'; END IF;

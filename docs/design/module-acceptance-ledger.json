@@ -5519,6 +5519,50 @@
         "checkIds": [
           "NI-X02"
         ]
+      },
+      "historicalAuthB5Integration": {
+        "sourceCommit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+        "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "scope": "HISTORICAL_FIXED_CASES_ONLY_NOT_CURRENT_CANDIDATE_OR_WHOLE_MODULE_ACCEPTANCE",
+        "currentB5Regression": {
+          "recordedOn": "2026-10-16",
+          "caseId": "NI-X02",
+          "result": "FAIL",
+          "scope": "B5 fixed scene only; does not approve the entire module",
+          "evidence": "services/api/authlab/android-b5-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-validation-report.md",
+          "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+          "testSource": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+          "operator": "tools/control-android-b5-device.py",
+          "remaining": "NI-X02 native cross-device connection and complete product reset sequence not passed"
+        },
+        "currentB5BitwardenPreflight": {
+          "recordedOn": "2026-10-16",
+          "result": "BLOCKED",
+          "scope": "BITWARDEN_NATIVE_PROVIDER_COMPATIBILITY_PREFLIGHT_ONLY",
+          "evidence": "services/api/authlab/android-b5-bitwarden-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-validation-report.md",
+          "blocker": "TARGET_ROM_MISSING_FRAMEWORK_CREDENTIAL_MANAGER",
+          "nativeCreateAttempts": 0,
+          "nativeGetAttempts": 0,
+          "apkInstalled": false,
+          "fixturePreparedAndBuilt": true,
+          "hostOperatorPrepared": false,
+          "nonIOSDevelopmentAcceptancePassed": false
+        },
+        "currentB5SyncRegression": {
+          "recordedOn": "2026-10-16",
+          "result": "PASS",
+          "caseIds": [
+            "NI-X02"
+          ],
+          "evidence": "services/api/authlab/android-b5-sync-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-sync-validation-report.md",
+          "scope": "Fixed case only; whole module and production not promoted",
+          "testSource": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+          "hostOperator": "tools/control-android-b5-sync.py",
+          "remainingFixedIds": []
+        }
       }
     },
     {
@@ -8511,6 +8555,36 @@
           "evidence": "docs/design/community-android-device-blocked-20261015.json"
         },
         "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+      },
+      "historicalAuthB5Integration": {
+        "sourceCommit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+        "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "scope": "HISTORICAL_FIXED_CASES_ONLY_NOT_CURRENT_CANDIDATE_OR_WHOLE_MODULE_ACCEPTANCE",
+        "currentB5Regression": {
+          "recordedOn": "2026-10-16",
+          "caseId": "NI-X01",
+          "result": "PASS",
+          "scope": "B5 fixed scene only; does not approve the entire module",
+          "evidence": "services/api/authlab/android-b5-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-validation-report.md",
+          "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+          "testSource": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+          "operator": "tools/control-android-b5-device.py",
+          "remaining": "NI-X02 native cross-device connection and complete product reset sequence not passed"
+        },
+        "currentB5SyncRegression": {
+          "recordedOn": "2026-10-16",
+          "result": "PASS",
+          "caseIds": [
+            "NI-X01"
+          ],
+          "evidence": "services/api/authlab/android-b5-sync-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-sync-validation-report.md",
+          "scope": "Fixed case only; whole module and production not promoted",
+          "testSource": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+          "hostOperator": "tools/control-android-b5-sync.py",
+          "remainingFixedIds": []
+        }
       }
     },
     {
@@ -9982,6 +10056,36 @@
           "evidence": "docs/design/community-android-device-blocked-20261015.json"
         },
         "historicalNextAcceptance": "Confirm physical-device window and own-package install/USB key/force-stop consent; run suites/write/read, separately approved manual reboot/read then local synthetic purge/closed; actual task1 account/main/HTTP and IME/TalkBack remain separate device facts."
+      },
+      "historicalAuthB5Integration": {
+        "sourceCommit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+        "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "scope": "HISTORICAL_FIXED_CASES_ONLY_NOT_CURRENT_CANDIDATE_OR_WHOLE_MODULE_ACCEPTANCE",
+        "currentB5Regression": {
+          "recordedOn": "2026-10-16",
+          "caseId": "NI-X01",
+          "result": "PASS",
+          "scope": "B5 fixed scene only; does not approve the entire module",
+          "evidence": "services/api/authlab/android-b5-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-validation-report.md",
+          "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+          "testSource": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+          "operator": "tools/control-android-b5-device.py",
+          "remaining": "NI-X02 native cross-device connection and complete product reset sequence not passed"
+        },
+        "currentB5SyncRegression": {
+          "recordedOn": "2026-10-16",
+          "result": "PASS",
+          "caseIds": [
+            "NI-X01"
+          ],
+          "evidence": "services/api/authlab/android-b5-sync-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-sync-validation-report.md",
+          "scope": "Fixed case only; whole module and production not promoted",
+          "testSource": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+          "hostOperator": "tools/control-android-b5-sync.py",
+          "remainingFixedIds": []
+        }
       }
     },
     {
@@ -10514,6 +10618,50 @@
         "checkIds": [
           "NI-X02"
         ]
+      },
+      "historicalAuthB5Integration": {
+        "sourceCommit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+        "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+        "scope": "HISTORICAL_FIXED_CASES_ONLY_NOT_CURRENT_CANDIDATE_OR_WHOLE_MODULE_ACCEPTANCE",
+        "currentB5Regression": {
+          "recordedOn": "2026-10-16",
+          "caseId": "NI-X02",
+          "result": "FAIL",
+          "scope": "B5 fixed scene only; does not approve the entire module",
+          "evidence": "services/api/authlab/android-b5-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-validation-report.md",
+          "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+          "testSource": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+          "operator": "tools/control-android-b5-device.py",
+          "remaining": "NI-X02 native cross-device connection and complete product reset sequence not passed"
+        },
+        "currentB5BitwardenPreflight": {
+          "recordedOn": "2026-10-16",
+          "result": "BLOCKED",
+          "scope": "BITWARDEN_NATIVE_PROVIDER_COMPATIBILITY_PREFLIGHT_ONLY",
+          "evidence": "services/api/authlab/android-b5-bitwarden-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-validation-report.md",
+          "blocker": "TARGET_ROM_MISSING_FRAMEWORK_CREDENTIAL_MANAGER",
+          "nativeCreateAttempts": 0,
+          "nativeGetAttempts": 0,
+          "apkInstalled": false,
+          "fixturePreparedAndBuilt": true,
+          "hostOperatorPrepared": false,
+          "nonIOSDevelopmentAcceptancePassed": false
+        },
+        "currentB5SyncRegression": {
+          "recordedOn": "2026-10-16",
+          "result": "PASS",
+          "caseIds": [
+            "NI-X02"
+          ],
+          "evidence": "services/api/authlab/android-b5-sync-20261016-verification.json",
+          "report": "docs/design/auth-privacy-b5-sync-validation-report.md",
+          "scope": "Fixed case only; whole module and production not promoted",
+          "testSource": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+          "hostOperator": "tools/control-android-b5-sync.py",
+          "remainingFixedIds": []
+        }
       }
     },
     {
@@ -37083,5 +37231,176 @@
     "changesAcceptanceScope": false,
     "published": false,
     "deployed": false
+  },
+  "historicalAuthB5Integration": {
+    "recordedOn": "2026-10-16",
+    "sourceCommit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+    "testedProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+    "scope": "HISTORICAL_B5_EVIDENCE_ONLY_NOT_CURRENT_MAIN_OR_CANDIDATE_ACCEPTANCE",
+    "interpretation": "The original currentB5/currentB5Bitwarden/currentB5Sync keys below are verbatim historical ledger entries, not current candidate results. Source input hashes describe historical files even where candidate fixture paths have been adapted. Original reports and verification JSON remain unchanged.",
+    "historicalB6": {
+      "snapshotCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+      "evidence": "services/api/authlab/b6-single-android-20261013-verification.json",
+      "fixedCaseCounts": {
+        "PASS": 22,
+        "FAIL": 0,
+        "BLOCKED": 2,
+        "NOT_RUN": 0
+      },
+      "nonIOSDevelopmentAcceptancePassed": false
+    },
+    "currentB5": {
+      "recordedOn": "2026-10-16",
+      "scope": "B5_TWO_PHYSICAL_ANDROID_BOUNDED_ACCEPTANCE",
+      "currentResult": "FAIL",
+      "evidence": "services/api/authlab/android-b5-20261016-verification.json",
+      "report": "docs/design/auth-privacy-b5-validation-report.md",
+      "plan": "docs/design/auth-privacy-non-ios-closure-plan.md",
+      "fixedCaseCounts": {
+        "PASS": 23,
+        "FAIL": 1,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "remainingFixedIds": [
+        "NI-X02"
+      ],
+      "secondPhysicalAndroidAvailable": true,
+      "nonIOSDevelopmentAcceptancePassed": false,
+      "historicalB6Unmodified": true,
+      "sourceInputs": [
+        {
+          "path": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+          "lfSha256": "08e0e9f1f95fdda9208e0a36ab19b011b5f3bf3ceb9859c880431f85aebddc46"
+        },
+        {
+          "path": "tools/control-android-b5-device.py",
+          "lfSha256": "98e2f3c09b36898cc01203dc660a4b56998b627cfc1742d438dc49accb26c87b"
+        },
+        {
+          "path": "tools/check-android-b5-evidence.py",
+          "lfSha256": "e2b756156a8fc3ecae99ee45df0454ce9e4ab12729243a5e68cbbdf8922997f7"
+        }
+      ],
+      "actualProductSourceModified": false
+    },
+    "currentB5Bitwarden": {
+      "recordedOn": "2026-10-16",
+      "result": "BLOCKED",
+      "scope": "BITWARDEN_NATIVE_PROVIDER_COMPATIBILITY_PREFLIGHT_ONLY",
+      "evidence": "services/api/authlab/android-b5-bitwarden-20261016-verification.json",
+      "report": "docs/design/auth-privacy-b5-validation-report.md",
+      "blocker": "TARGET_ROM_MISSING_FRAMEWORK_CREDENTIAL_MANAGER",
+      "nativeCreateAttempts": 0,
+      "nativeGetAttempts": 0,
+      "apkInstalled": false,
+      "fixturePreparedAndBuilt": true,
+      "hostOperatorPrepared": false,
+      "nonIOSDevelopmentAcceptancePassed": false
+    },
+    "currentB5Sync": {
+      "recordedOn": "2026-10-16",
+      "scope": "FINAL_NON_IOS_FOUNDATION_WITH_TWO_PHYSICAL_ANDROID_SYNC",
+      "currentResult": "PASS",
+      "report": "docs/design/auth-privacy-b5-sync-validation-report.md",
+      "fixedCaseCounts": {
+        "PASS": 24,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "remainingFixedIds": [],
+      "nonIOSDevelopmentAcceptancePassed": true,
+      "fullAnonymityClosurePassed": false,
+      "productionApproved": false,
+      "iosAcceptancePassed": false,
+      "futureBusinessAcceptancePassed": false,
+      "b6RuntimeInputCount": 162,
+      "evidence": "services/api/authlab/android-b5-sync-20261016-verification.json",
+      "sourceInputs": [
+        {
+          "path": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+          "lfSha256": "c18a6fbe3f0eaec878802abc71c488c4abc6e13a694b7b4a7377eeafd95c0c9c"
+        },
+        {
+          "path": "tools/control-android-b5-sync.py",
+          "lfSha256": "dd71b386e24c8a3c5a9463005548bc74bd361d3b241b08423229bd31730b2722"
+        },
+        {
+          "path": "tools/check-android-b5-sync-evidence.py",
+          "lfSha256": "cbed68cc05cc3960caca78690441982a581e91109f7f043f4cf3dfffd91aa06c"
+        }
+      ],
+      "plan": "docs/design/auth-privacy-non-ios-closure-plan.md",
+      "historicalB6AndB5FailuresPreserved": true
+    },
+    "candidateApplicabilityReport": "docs/design/auth-privacy-b5-main-integration-report.md",
+    "candidateVerification": "docs/design/auth-privacy-b5-main-integration-verification.json"
+  },
+  "candidateIntegration": {
+    "recordedOn": "2026-10-16",
+    "task": "B5_INCREMENTAL_INTEGRATION_ON_CURRENT_MAIN",
+    "branch": "codex/fix/b5-main-integration",
+    "baseMainCommit": "b164762b8cd58da592bf645cc4e2ada738bb79ec",
+    "historicalSourceCommit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+    "historicalProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+    "status": "IN_PROGRESS",
+    "report": "docs/design/auth-privacy-b5-main-integration-report.md",
+    "verification": "docs/design/auth-privacy-b5-main-integration-verification.json",
+    "committed": false,
+    "mergedIntoMain": false,
+    "published": false,
+    "implementationStatus": "IN_PROGRESS",
+    "automatedRegressionStatus": "IN_PROGRESS",
+    "independentReviewStatus": "NOT_RUN",
+    "androidNativeDeviceRegressionStatus": "NOT_RUN",
+    "physicalAndroidAcceptanceStatus": "NOT_RUN",
+    "iosAcceptanceStatus": "NOT_RUN",
+    "nonIOSDevelopmentAcceptancePassed": false,
+    "fullAnonymityClosurePassed": false,
+    "productionApproved": false,
+    "futureBusinessAcceptancePassed": false,
+    "historicalPassPromotedToCandidate": false,
+    "oldApkEvidenceAppliedToNewApk": false,
+    "preservedMainFunctionality": [
+      "post image entry and business flow",
+      "originalAccountId-scoped closure cleanup",
+      "independent business vault namespace and alias",
+      "backend account and identity lifecycle publication gates"
+    ],
+    "fixtureAdaptation": {
+      "fromRootType": "_HnuholeApp",
+      "toRootType": "HnuholeApp",
+      "paths": [
+        "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+        "apps/mobile/integration_test/auth_android_b5_bitwarden_test.dart",
+        "apps/mobile/integration_test/auth_android_b5_sync_test.dart"
+      ],
+      "candidateHashesAndRuntimeDiscoveryResults": "docs/design/auth-privacy-b5-main-integration-verification.json",
+      "historicalFixtureBuildEvidenceInherited": false
+    },
+    "reopenedModuleRegressionIds": [
+      "A07",
+      "A08",
+      "A12",
+      "N01",
+      "N03",
+      "B02",
+      "B05",
+      "B06",
+      "B10"
+    ],
+    "nativeDeviceTestsNotRun": [
+      "AndroidAuthVaultTest",
+      "AndroidBusinessStorageTest",
+      "AuthVaultProcessRestartTest"
+    ],
+    "evidenceRules": [
+      "Run complete B6 checker at d859cb05 and both B5 checkers at ea5cc528 with normal Python assertions enabled.",
+      "Do not change historical evidence, checkers, hashes or acceptance flags to pass on the candidate tree.",
+      "Compare all historical runtime inputs and runtime-root additions; record candidate changes separately.",
+      "Host tests, mocks and builds are not native device or physical phone acceptance.",
+      "Actual commands, version scope, failures, blockers and main drift belong in candidate verification."
+    ]
   }
 }

@@ -1,0 +1,1597 @@
+{
+  "schemaVersion": "hnuhole-b5-synced-final-non-ios/v1",
+  "recordedOn": "2026-10-16",
+  "verifiedAtUTC": "2026-10-16T07:08:35.017696+00:00",
+  "timeZone": "Asia/Shanghai",
+  "scope": "FINAL_NON_IOS_FOUNDATION_WITH_TWO_PHYSICAL_ANDROID_SYNC",
+  "currentResult": "PASS",
+  "branch": "codex/auth-privacy-handoff",
+  "productBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "productSourceModified": false,
+  "fixturePath": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+  "build": {
+    "result": "PASS",
+    "fixtureSha256": "a4f4e74c887c46dd06e9ae20e04dcfc80368f9482bd6b0b56ef4f347d893feb2",
+    "apkSha256": "c58b603916370b0bdf863346a176ac9be8bb97387763d848b7dda03e3fd42b85",
+    "apkBytes": 100967744,
+    "approvedCertificateReused": true,
+    "versionCode": 20261016
+  },
+  "currentSourceInputs": [
+    {
+      "path": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+      "lfSha256": "c18a6fbe3f0eaec878802abc71c488c4abc6e13a694b7b4a7377eeafd95c0c9c"
+    },
+    {
+      "path": "tools/control-android-b5-sync.py",
+      "lfSha256": "dd71b386e24c8a3c5a9463005548bc74bd361d3b241b08423229bd31730b2722"
+    },
+    {
+      "path": "tools/check-android-b5-sync-evidence.py",
+      "lfSha256": "cbed68cc05cc3960caca78690441982a581e91109f7f043f4cf3dfffd91aa06c"
+    }
+  ],
+  "unchangedProductRoots": [
+    "apps/mobile/lib",
+    "apps/mobile/android/app/src/main",
+    "packages/auth_passkey/lib",
+    "packages/auth_passkey/android/src/main",
+    "packages/auth_vault/lib",
+    "packages/auth_vault/android/src/main",
+    "services/api/internal",
+    "services/api/cmd",
+    "services/api/migrations"
+  ],
+  "unchangedB6ProductInputs": [
+    {
+      "path": "apps/mobile/android/app/src/main/AndroidManifest.xml",
+      "sha256": "bbf5ef5c546167d911a1da3799f506bbd0b5140d4c30123d3982c8011c6ea756",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt",
+      "sha256": "c22ef1ab372277123863c82a6fb91a2fff2fb71e153006e005b210d989ff66db",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable-v21/launch_background.xml",
+      "sha256": "7ca6d5cec2169c5a98661a119db23a6f3399c8fef2256ff04f3a642831282478",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable/launch_background.xml",
+      "sha256": "94433756fe10005ddd6fc55cc5c0b1e9f3c10b66a08ceac795ece6713d34e28a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "sha256": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "sha256": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "sha256": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "sha256": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "sha256": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values-night/styles.xml",
+      "sha256": "8c5bad5152f217e837519f9c15211d19f39bd45f5f67faf6dd81cb4b299e518f",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values/styles.xml",
+      "sha256": "937d7c82f539c72eb94fd3a3773f29b3d3fef1997213c92cb632298cedf4bda9",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/xml/auth_data_extraction_rules.xml",
+      "sha256": "1ebb983c78f21bda053fe8342dea1bfd2b5f99a47fc7ab26a226455b8ebb3c50",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/hnuhole_mobile.dart",
+      "sha256": "abf493f8fdf323fdf89b3e9391c7443b351ce70485c654467a8bf4e9837ad49e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/main.dart",
+      "sha256": "0e9baa9efab131465b595f7522b031771dbde867e718b5569cfbfa5f6584c6df",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_api.dart",
+      "sha256": "7b0efde4afdd2af2720ad2dbad8b1ab96ddd417947f1ec817244f74952826ece",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_crypto.dart",
+      "sha256": "11883f2e1cd067554f8d31f2fa15e92ff93a412388d670c2b04ac93bed1c07bf",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_flows.dart",
+      "sha256": "8ec7f28e73c9c13c46628acd30cf2457176f2c626f98d2a8a51a4bf389294e9e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_models.dart",
+      "sha256": "84b7f45dd9700bc0b72ece164dcf959e6d36bbb7c4cfed680bdd93f135f72387",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_screen.dart",
+      "sha256": "171bf30a34850855de74013193b513548c79fbf5625a9868c5f4e6a746eb77d5",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_session_controller.dart",
+      "sha256": "04476dfedbc6e9893e19bd0c3188b14863e8524273474ec3b2b7f0e54a322b11",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_state_codec.dart",
+      "sha256": "d224eb83c078a79804effc015fc089d540e029f5a1b0a7361ef347dea465126a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_store.dart",
+      "sha256": "c024d5a587393aacf60dbf4c6da54beabb5dc77ac5efcee5ae955994133f9700",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/credential_management_api.dart",
+      "sha256": "b8fda81bcda45b9789a2a4c15a65d46a432a82d2deac43323228b2871e36003b",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/http_auth_api.dart",
+      "sha256": "e3a5a65bd47eeb856c846965e7e2a4122188aab5eadfff7fe7d0e0d234c81b73",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/security_management_controller.dart",
+      "sha256": "6d5c6f305785dbba3015fbccdae1c933b3dcb8821040f770d6d0f79717b9967f",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/security_management_screen.dart",
+      "sha256": "1b9de3fba07b55ed477cc7a46fc6b60a32eb2fcfe9c4a46b74b53644f5aaf53b",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/channel.dart",
+      "sha256": "0f3388192e5ccea98e1c442bfa7dbe234546c96b6851dc5b213bc2434309effb",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/channel_repository.dart",
+      "sha256": "197d20a241b9499f543634583f04dc5461e4ac6c29705e2329dab173b64a07ab",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/http_channel_repository.dart",
+      "sha256": "8acebf38e27752ac7b5a7f5e0c13d961bdb1de2d710a52d707ba5ba754fc73a5",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/development/app_transport.dart",
+      "sha256": "d2b891b3db409b59604fa8ab1463c831ac892ea2e454043ae55eb924b36a3be6",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_api.dart",
+      "sha256": "f99fe4086da0e42e3b229741c6d553d9fe7bae17a9778d5c4ea6f5fbd71838c3",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_management_controller.dart",
+      "sha256": "b6150323b0127eef08999b6e1ecad3b34ca751b6b1c63ffece5311671dd5bab6",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_management_screen.dart",
+      "sha256": "389abcaf03878873a978a95e8fa043418ac0f916312bfacc6e45c29378346800",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_name_formatter.dart",
+      "sha256": "6c4a805bed154d25d1cfe25e80ae70c40fba66434553ab4cb7908279fa18f427",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_name_ranges.dart",
+      "sha256": "fda2068b6dbe1782483d5a43a36b1d380f973603f9f6ab704b29cd02ad537793",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/settings_screen.dart",
+      "sha256": "e232d8f3ca78d6f0659535053bb1e669952076b6633996b2c475455a345b2fd8",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
+      "sha256": "26d48f58234c7c5513f3d7fca178ca701d55112c562e5876a26a85c2f59594f6",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_tree.dart",
+      "sha256": "af839060c766a31507bd44a006090b95efb64211acf3a20862e29234aa78fe94",
+      "normalization": "RAW"
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/entry_screen.dart",
+      "sha256": "d3b5d99c9a450f35ec400edbec1c8884e2a23db9833d4974915a02ba62fd652a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/AndroidManifest.xml",
+      "sha256": "343d5be1ac17cdd45d1a2f2ddc616c509290e655869125a9422a96d88aa66066",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt",
+      "sha256": "4b8bfc676582f2fa250ef0b67ccb79ac98ac62c10873de140c30c8c561125419",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrors.kt",
+      "sha256": "6c918e07f575e62f7939c314ca60dee6663c3e761105b126ae3a080b7e2a2d93",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyCodec.kt",
+      "sha256": "c44fdd68077f40483ff95e4a14a00da82f812c56d79ca3e875bb0e583acc6b13",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PendingOperation.kt",
+      "sha256": "3c22c870f3d9a7a311ca27500d89ca938f1b1e690257d2485ef1997336cfa473",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_passkey/lib/hnuhole_auth_passkey.dart",
+      "sha256": "02c9a0539f06306afc175a8b7fd2c3396fcc5e42a25b60cc9aae310c884f5d27",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/AndroidManifest.xml",
+      "sha256": "343d5be1ac17cdd45d1a2f2ddc616c509290e655869125a9422a96d88aa66066",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt",
+      "sha256": "da5f028429053fc15edff382282add8e8e8e2f19837eaa266c3e28ace03a12b4",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
+      "sha256": "8ee7bc7fb419da0f6095fecb6ec29b5207f6cb63b4552f9718a58815c94336f0",
+      "normalization": "RAW"
+    },
+    {
+      "path": "packages/auth_vault/lib/hnuhole_auth_vault.dart",
+      "sha256": "aee04641daa8a414d4c7ca6683a73123cc7961673b534104c9efb5a73d4cee10",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/cmd/api/main.go",
+      "sha256": "488b5398f8ff2d78e7c1b78c31e23b79326fb63d724d020561a5c52ff06c2a93",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/cmd/authdev/main.go",
+      "sha256": "cf1467101d3dc39abb6110ff6a41f7c900ae91782721e2d98da441b3626b9d50",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/cmd/authdev/main_test.go",
+      "sha256": "d8c42d9d8b7f8b393db23fc60d24629eab6e5682f3dd2ad5e38d7c128abae21f",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/identities.go",
+      "sha256": "13541e04f49d5a3e589748d644abdcab00faded09f6c01168e23defcb77a8ff9",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/identity_closure.go",
+      "sha256": "e3bc7678fb17832fdaa165db8da538af34ff153445aa264937058f15e0cdaedd",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/main.go",
+      "sha256": "c328ef2fade22f326afeb9a1fb122ebd8d2a827bbfb8efb906607659a37f2ee7",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/verifier_gate.go",
+      "sha256": "cd3de8842a576427b3f2b32ef9d181848f83c6ea3ef7bcadb80e6f703cf35ad4",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/cmd/verifier/main.go",
+      "sha256": "2c2e502366b6eb0797d44137184cbaa9f98657cf21e3589bd88fd5a4317654a3",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/auth/postgres.go",
+      "sha256": "40cb4c626577ec88d869b84660405b9f4afa694d8b0012a5cc8dcf5a35484bf7",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_evidence.go",
+      "sha256": "6cdb21169a3d1eb4c83c7c89e1a136a9ef14c8bd0525b6c28d2dfaa68dd6ecdc",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_gate.go",
+      "sha256": "fe169653b70f76b0c092e7378f6e1e665daf620fa3522b5161bd0ee128b1f7d1",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_gate_test.go",
+      "sha256": "88487faaf4a3a071e69327974110e03245c2cba5e32926a04f963ee5784b972d",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/common.go",
+      "sha256": "47272c335e64ee59012d948625fac16af36bbe4795a37ea7228aef7268f8f83f",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community.go",
+      "sha256": "74a5b2eb335c81c2ac59d24effef50f336eb23cd3860b2025cd5980db0eeb19b",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_authorized.go",
+      "sha256": "06f2631a058aff961770093294adcbbf9fa7f79daccb7c05b435fa68a3e010f3",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_authorized_test.go",
+      "sha256": "fce9e54bf03b090e2bdeb0e2ee6193b308bcf751b47dfe26a18c483626a0a31d",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_closure.go",
+      "sha256": "f03bc75595dea38002648bc5e0aca20786c63e661ec5fe345148806a3adb2544",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_closure_test.go",
+      "sha256": "e0ccbd7da39f02f0e41f26913d29aafc538e231a1e73536ed72d30fff824f49e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credential_cleanup.go",
+      "sha256": "06040b7dde029e458f4c97a5d12409f4c34c1b6d24f7d7f1b6dfb6ea4c3ac860",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credential_result.go",
+      "sha256": "416a2735f8fabfe6df4fa53a8dbf9e2ccd126774422a6cc1258380795e84bed3",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credential_result_test.go",
+      "sha256": "9954207658cfd9f75ab085719a2b591f8275f1e381e99a74568efb77af9b9e7a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credentials.go",
+      "sha256": "a5d89292a8f359400676bee7c404178a2c8be71951a769f74e2ac1fbfaf9017e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credentials_test.go",
+      "sha256": "e4fda722bcb71f7f0e08e0d2345db62d6a05ce0ba43297f8ad86dd4243468607",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_identities.go",
+      "sha256": "ee0f11a715500574ac60507c9d849dd36358436e2a221edcb5b02947c53fbd5f",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_identities_test.go",
+      "sha256": "087a78e96a009694f79ba444a8846e76c095c90b6c58bcb1967d4249fda394df",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_identity_closure_test.go",
+      "sha256": "5ea05ccdcb3b68517117102e9797d12faeb602182abb5fdd3dbe3188f5e4c31c",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_identity_projection.go",
+      "sha256": "e4b8fc160393f18794b5bb56633f960a2175e8400ec080026e3c31c49003767a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_passkey_recovery.go",
+      "sha256": "616fc12e5708a971ff50e36a72d0d1ff64f7b86b8f407b30bceb159cc82a02a5",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_passkeys.go",
+      "sha256": "cf911bb9827a5a7920daf46c0c5d413422f1ceb389a8b96cce8b1a062d10b697",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_recovery.go",
+      "sha256": "abdfaf73a9074ce60f438d67b9db1cf6f8d0cf0749cf492e27b12a8a2cc8d53f",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_recovery_test.go",
+      "sha256": "c405f73c8f822099dc1ff580afaa67a87ba849789752b7be10f196dc5919ebe3",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_sessions.go",
+      "sha256": "79b2afe3f62545444e40b4d41bb5d8fc055cc85f7df84c4c73a36b7f408c0fb8",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_sessions_test.go",
+      "sha256": "71ac15abb08c504e8ba5dce41fe2a3208c0a5de0255d4b8949187ef185d898f4",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/credential_types.go",
+      "sha256": "764d3dcab4ce0c854f9db16ae18f0604527c87190b0b32b3d05b9f45088e7a1a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_confirmation.go",
+      "sha256": "cab61e07d088b47d51eea099a66c0ab5a42b57981b5c66055761b3f30066388c",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_confirmation_test.go",
+      "sha256": "8c298bb9ca854ef67f7c761d2ebbc5f772f536a06bd479aa1841b6a6adad3996",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_mail_worker_test.go",
+      "sha256": "c9ce4e54bc801e14a6c77647f5b826ba3ce320322463fd735f386aa6a3cd9469",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_otp.go",
+      "sha256": "064b0883a3180b62180b6f109592506406f0747217cd735fd28cfc87782bf5f4",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_otp_test.go",
+      "sha256": "ea37c59775db4fafa46efa2575a36524f2f3cb7529c308e759f39b02ffa1ff7d",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_types.go",
+      "sha256": "acec7f9cb07c119b7f15c5c13cbc2de574fe1bb2890646b456915eede659e17f",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/identity_closure_migration_test.go",
+      "sha256": "0fefc2f4c9fe9e6d7caaede614f0b04001143fbbd2eba8b93e7e9513973402b9",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/identity_rules.go",
+      "sha256": "4c2c1278822cccf7036e737fecc441b49fd9e1cbd51ee618a6bccd37c44e3439",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/identity_rules_test.go",
+      "sha256": "77f0680381fd79897da316189496a44f3d3e868603fc7590ee0d36997ab37aaf",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/mail.go",
+      "sha256": "3a001f7fcc8b6d8401feb0291c1e4b19a3bc2c0004c38c304f585e238be035e6",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/mail_test.go",
+      "sha256": "6d2c3db202d0604ffe4e1bb1f6b521228be2d54ca0b503ed9ab06150381a8301",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox.go",
+      "sha256": "d19e8ca2a6699a9a6ec5549be927474f332113d819b728b6dc50d9dffc0b88af",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox_authorization_test.go",
+      "sha256": "20cf84a5fc30c5d25dce96baccac9b718476c42d021a4650c2870a715946b629",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox_workers_test.go",
+      "sha256": "0820b55bcfcebd8e5f8afbf668de372129e56bec863b70b08c6206614ee10c9f",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/passkey_verification.go",
+      "sha256": "cbc3036fc9ef23dcab4a9635d7da91488ac8efa606be496314795a7cc7650861",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/passkey_verification_test.go",
+      "sha256": "1e392be2e8aa019f3aee320cf43bcc2fbe4a8cba94f7bc2870f1ed7947e9a5f2",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/password.go",
+      "sha256": "9d817d8f8a18e4ac911dbb350e59fcab71b6c4bd10d0f10a7f92f6822555535e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/password_test.go",
+      "sha256": "99bec8834a9a123e3d290e6293fbb22cfed30b80dc260260f3c884e4dec01bd5",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/postgres_test.go",
+      "sha256": "6d1df8b384a6e5846dafafd5d53a65fcc12a16a18cd99d94d807b2dd8afe8e2a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/privacy_boundary_postgres_test.go",
+      "sha256": "a2fa626a1a48b937354f8bf2277d2c71a7ccda6806af513e9630e8c9a88ce791",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol.go",
+      "sha256": "0793427b595f3972719c2ce9366f3177e74ef821eefbdd4a78dc69ea08c9a021",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol_test.go",
+      "sha256": "eb2c1fa28a321562a4ba29e79f7dff1525b5a8e0e989c0fab1d7c98e671b0763",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/retirement_authorization_test.go",
+      "sha256": "1eea54e3291bf5ddfc7664420b71bcf24af00627724d64af42c973e75f4e77d9",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/retirement_http.go",
+      "sha256": "5f72e9023c44abe0cf2e227dcf3bd15679305a2dcea1505f748e59e060c74398",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/verifier.go",
+      "sha256": "44be3c0c946e4a26d222322567ad9a697565a6961f587cc882f9f5e1bed8026a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/verifier_gate_business_test.go",
+      "sha256": "91b79c7bf180ccab597e9ca1079b68f819911c3af5776a016e12068b7b84e59c",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/verifier_gate_test.go",
+      "sha256": "badc951f5cc27592ea009d00a5e4a0fcc8ed1f067349b25758fff38fa8814013",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/workers.go",
+      "sha256": "6f4468dcdc02c503968bfb93d29162f0e6af44245eb9ed16e2711b0703f26078",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacy/workers_test.go",
+      "sha256": "72a5eda3261f63c4367b3cab8275e7ad426cc386b10db39a31495515d7bf7438",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/channel_endpoints.go",
+      "sha256": "2b11bd81fbb659302608d4701a12ad31bf84f29221ce21781035ef1453430836",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/channel_endpoints_test.go",
+      "sha256": "88ab141145600f7cd7977792eda6b805d8fc3c93094256a537d24cf83dfe384c",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/credential_endpoints.go",
+      "sha256": "f3724306c80d0dc1600e7a3e5821251befd313ed7cdf8668dd7c21dda4dbfa47",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/credential_endpoints_test.go",
+      "sha256": "d1bdcbb1807f1212dcd0936c46b44885f24f73740eb8631594bbc9ddc373e5f9",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/credential_endtoend_postgres_test.go",
+      "sha256": "cc62273647dafbca381691117f7e4caa0d1ec4c2c0885f8eb9464b01f7accd91",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "sha256": "1cfb7fca66ad9f8e56a0a1db9ccc0ee51e03e3577ed3ac43cb17e3643cea6ce0",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints_test.go",
+      "sha256": "831f615fd4d5f9422dea4cb70853982432b5e0d99656f804328288a8a94c8168",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+      "sha256": "40fe1521e164d85b34464a54701de41fef5cf45e8858e86b4779314e2fc6e7f2",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/identity_endpoints.go",
+      "sha256": "c96a49d1c700cda55a91d61827a3369ea55b54a2ce77cb8d4fc2e37b8764cc1d",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
+      "sha256": "9e84431478b63f82fa028ca0a96749813ea2a113085a6ae74fac73d537b0fa7e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go",
+      "sha256": "94bce40edbca8a14464d35a86e7a9c0e80c20735b4320d41b11a16529ad294fb",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/limits.go",
+      "sha256": "2b136295f2709df194bb285357823f1651d6838c4e6d99e0880d5e58ba51559e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
+      "sha256": "ce5bc58799430eb6b8477b6e76742b0a793d7ec8d42f6852506d7c653c488b4a",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go",
+      "sha256": "5f4bdfa8750181d26f64f263cae0537bb0dcd4dcbecb42bf06a68f5c41583e2b",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/peer.go",
+      "sha256": "d416fd6f1fdc0d021e757306e9b9918dc91398d0b28a4e7115014751f39e33f3",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/peer_test.go",
+      "sha256": "a00f474a07906d16f65c69927b06c16ba8037d519db8e68e71f8f2483fcdbacf",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/privacy_boundary_test.go",
+      "sha256": "d2fa80d0ee401a0dbf27e78b1afa2bcdba8bfeb395bec6cc0014f59542c82423",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/recovery_closure_endpoints.go",
+      "sha256": "a6a30af25921e1155625ea17048f43f1178cdf0fcf90c934ab49efff62301ddf",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/recovery_closure_endpoints_test.go",
+      "sha256": "1ee0300a62df1aa041c880c93f5b59e5950a927f9cae51265186e045f408770b",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/session_endpoints.go",
+      "sha256": "026d254dbc47be0caada6b0c7617b697240a8e558d861418cce4e3b0aeef67e2",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/session_endpoints_test.go",
+      "sha256": "d4fc6e7a7198043cabb53483eaaef8229e29c6b7483e4f80ac6bd383ed0e0a34",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/strict.go",
+      "sha256": "296658f575bc2c50b638483e1bfafe9e3fbb6cbb00fa326841868943db559832",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/strict_test.go",
+      "sha256": "4acf13871b2d3be5654bc1a1d5576abbd79740c2901f2e00ecec1c90f75a5aab",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/tls.go",
+      "sha256": "16e4d99ba30b50e6cba71eb1c9dcc385ae0440edceac53e42d90353d34b95022",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/tls_test.go",
+      "sha256": "336b99fa5c58efa8fb432609ed766d2d4590b1b69b54caab2cde456355656222",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/config.go",
+      "sha256": "ef0395ce20cf294cc2d4db0de2a731e0f540a28f85e5b4d5d804cd0af6e0b3d6",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/database_diagnostics.go",
+      "sha256": "427fbfedb46e72b343c5b773108cf2bc0c91775a2bce05875a02014612febad9",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/database_diagnostics_test.go",
+      "sha256": "e738d8df24b5d05a418f261adbc0aef0a3e2cef0c85bb46a8cc5342c13723a27",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/diagnostics.go",
+      "sha256": "ed35c61b16cd307510ede20b7b799e6ccac60d54679f5f57dd6a0cbfeb7a241c",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/diagnostics_test.go",
+      "sha256": "b5d7b2f65f8ebb77f85cecd3078a7bc0f7243384f990afa14eda75df5afd0e32",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/server.go",
+      "sha256": "97ddfc2feb1787ae649e1c83f8df6314b9f9a61374ad101b12c03b1d7d477877",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/webauthn_config_test.go",
+      "sha256": "2e52b965f628f3324197c14f6b7c4dba559bf1cb245cc96798b612564d6bad34",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/channels/catalog.go",
+      "sha256": "e6e7d77eceb95618f114f3363fec39bc5bb737b57f2e2f60eecb267e0de6cfc5",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/channels/model.go",
+      "sha256": "be97830c533480ca63ed00f3fc5bd197cde9637f8ca7e728270a50efcb887225",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/channels/postgres.go",
+      "sha256": "c0e7bf55902f87a20eca33b180108924fbb420024c288b2e89d770cd7d9c327e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/channels/queries.sql",
+      "sha256": "b29f945d1a58d49e950cf7aaaa3c4867ce7350f0c98d34502152ecaf11bd2a2b",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/channels/service.go",
+      "sha256": "2c0a444fa7594201b77049da55691f17cf7a7472e748b803f9c57db81f88b487",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/internal/httpapi/router.go",
+      "sha256": "445b563df96f63c9269c36533064408a33809b665f9e6e065dfb4b2d98447c4b",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0001_sessions.sql",
+      "sha256": "8b011adf71047a1de622a6f9809c4a78eaf305304e5ee536fa2b5a67092dc720",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0002_channels.sql",
+      "sha256": "4b7d6429acb31be315f1546710c8136e0bee48bf2cd1021a385c5710f9b54504",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0003_authprivacy.sql",
+      "sha256": "51ba4d7835a1fbb33a264c7693a365a6cc1997f77f0825bc68f8dc2e28184278",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0004_authorization_gate.sql",
+      "sha256": "b2c7737c6ef24658bba39aa65e003158ee26d4669d098ba79b8f9562b8ed0101",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0005_session_lifecycle.sql",
+      "sha256": "4dd140ba2724b4bcdd432fe365f086fdd10b25ae65110445d98892a44e4ceb6e",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0006_recovery_reset.sql",
+      "sha256": "4bb9e591c9a0c1774e39de4932e79ef608cfdb7d11674d3bd8fff59db075b730",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0007_account_closure.sql",
+      "sha256": "9fa39a97a027cc32a51fc7955f6ee04332f4803560267e33e6314b9ad2e39094",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0008_recovery_credentials.sql",
+      "sha256": "c5ff5114fa790a86606cc66fd363e69a292bb2f17a8b611f60fddbced8d31fd0",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0009_receipt_worker_claim.sql",
+      "sha256": "2386fe4362eab48c423baf4862d6f621677c665131893e50a70351125fc1bcd7",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0010_legacy_fence.sql",
+      "sha256": "e2e377cda6fea2543e25b8acac010fd9d41d8254ca2142f9aa18984cdf99ad33",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0011_identity_management.sql",
+      "sha256": "eb49fc3b43ff47febfa1682021d48b2b64a5e09e1de65d97b73ef1c90bc0889b",
+      "normalization": "RAW"
+    },
+    {
+      "path": "services/api/migrations/0012_identity_account_closure.sql",
+      "sha256": "4cf0979531530f053cb365fa01eaddfb1c925b1c03c1e019382751d2a0d78f0d",
+      "normalization": "RAW"
+    }
+  ],
+  "b6RuntimeInputCount": 162,
+  "b6RegressionRerun": false,
+  "b6OriginalRegressionApplicableToUnchangedRuntimeInputs": true,
+  "dependencies": [
+    {
+      "id": "b6",
+      "path": "services/api/authlab/b6-single-android-20261013-verification.json",
+      "lfSha256": "c198186f3c9924bbc467869ce8b8454d3c8fc7c42c8a31961598a09efa7711ee"
+    },
+    {
+      "id": "b5-original",
+      "path": "services/api/authlab/android-b5-20261016-verification.json",
+      "lfSha256": "95fe0deee8dad7b3b48ecdc0f4321d0ff4ee9e6ed028c521cf6b6515082296c0"
+    },
+    {
+      "id": "bitwarden-preflight",
+      "path": "services/api/authlab/android-b5-bitwarden-20261016-verification.json",
+      "lfSha256": "f8defc0ed23ccb47a8b3743eba1cd3072e9ed37b51f52b29d2d5ec02f3fa1636"
+    }
+  ],
+  "cases": [
+    {
+      "id": "NI-L01",
+      "result": "PASS",
+      "moduleIds": [
+        "N03",
+        "A12",
+        "B01"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/0",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-L02",
+      "result": "PASS",
+      "moduleIds": [
+        "N01",
+        "N03",
+        "A12"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/1",
+      "apkSha256": "7aed25ebc364286bdac5357f87080673de455cc5a14ec5512e6b909fed769556",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-L03",
+      "result": "PASS",
+      "moduleIds": [
+        "N03",
+        "A12",
+        "B01"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/2",
+      "apkSha256": "7aed25ebc364286bdac5357f87080673de455cc5a14ec5512e6b909fed769556",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-L04",
+      "result": "PASS",
+      "moduleIds": [
+        "N03",
+        "A12",
+        "B01"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/3",
+      "apkSha256": "7aed25ebc364286bdac5357f87080673de455cc5a14ec5512e6b909fed769556",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-U01",
+      "result": "PASS",
+      "moduleIds": [
+        "N03",
+        "A07",
+        "B01"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/4",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-U02",
+      "result": "PASS",
+      "moduleIds": [
+        "A12",
+        "B02"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/5",
+      "apkSha256": "7aed25ebc364286bdac5357f87080673de455cc5a14ec5512e6b909fed769556",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-U03",
+      "result": "PASS",
+      "moduleIds": [
+        "A12",
+        "B01",
+        "B02"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/6",
+      "apkSha256": "468ce414ba7499d4e0882b75dc149771d7bfa8830c78936cffbe174540bedb1f",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-A01",
+      "result": "PASS",
+      "moduleIds": [
+        "A03",
+        "A09",
+        "N03"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/7",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-A02",
+      "result": "PASS",
+      "moduleIds": [
+        "A03",
+        "A07",
+        "N03"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/8",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-A03",
+      "result": "PASS",
+      "moduleIds": [
+        "A06",
+        "A09",
+        "A12",
+        "N03"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/9",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-A04",
+      "result": "PASS",
+      "moduleIds": [
+        "A03",
+        "A06",
+        "A09",
+        "A12"
+      ],
+      "boundary": "B1_B2_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "matrix",
+      "pointer": "/b1b2Verification/phases/10",
+      "apkSha256": "b9b0c005a9e312b0c80fe77fb754a9b8a3b2666ebd9b955fb7087f2a88be6b3c",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Retain the actual historical device/APK/runner boundary; final current shared-source regressions are separate, never a replay of this device phase."
+    },
+    {
+      "id": "NI-C01",
+      "result": "PASS",
+      "moduleIds": [
+        "A07",
+        "A08",
+        "A09",
+        "B02",
+        "N03"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/0",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "stageVersions": {
+        "ni-c01-main": {
+          "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+          "pid": 19326,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-C02",
+      "result": "PASS",
+      "moduleIds": [
+        "A08",
+        "A09",
+        "A12"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/1",
+      "stageKeys": [
+        "ni-c01-control"
+      ],
+      "stageVersions": {
+        "ni-c01-control": {
+          "apkSha256": "cbd1146f313358f2558416f1804b09d35ab75e3c609ffc3320f40ed042164332",
+          "pid": 13692,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-C03",
+      "result": "PASS",
+      "moduleIds": [
+        "A08",
+        "A12",
+        "B02"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/2",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "stageVersions": {
+        "ni-c01-main": {
+          "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+          "pid": 19326,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-C04",
+      "result": "PASS",
+      "moduleIds": [
+        "A04",
+        "A05",
+        "A08",
+        "A12",
+        "B02"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/3",
+      "stageKeys": [
+        "ni-c01-main"
+      ],
+      "stageVersions": {
+        "ni-c01-main": {
+          "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+          "pid": 19326,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-D01",
+      "result": "PASS",
+      "moduleIds": [
+        "A09",
+        "N03"
+      ],
+      "boundary": "DIRECT_PROVIDER_AND_ACTUAL_PRODUCT_SQL",
+      "dependencyId": "provider-negatives",
+      "pointer": "/cases/0",
+      "apkSha256": "bb252713ab57ea1f5878c10c78370395f1a1274bdd4b6949b24e5db5b456eb18",
+      "historicalVersionRewritten": false,
+      "rawSdkOnlyFixtureResult": "FAIL",
+      "actualProviderRejectionCode": 50152,
+      "currentCandidateApplicability": "Actual provider validator rejection + actual product/APK and independent SQL. SDK cancellation alone remains insufficient."
+    },
+    {
+      "id": "NI-D02",
+      "result": "PASS",
+      "moduleIds": [
+        "A09",
+        "N03"
+      ],
+      "boundary": "DIRECT_PROVIDER_AND_ACTUAL_PRODUCT_SQL",
+      "dependencyId": "provider-negatives",
+      "pointer": "/cases/1",
+      "apkSha256": "174130ad7c9c5f4ed8e4c31f88c6687aaa6f0a7ed2a1f51855d74a9beee45da0",
+      "historicalVersionRewritten": false,
+      "rawSdkOnlyFixtureResult": "FAIL",
+      "actualProviderRejectionCode": 50152,
+      "currentCandidateApplicability": "Actual provider validator rejection + actual product/APK and independent SQL. SDK cancellation alone remains insufficient."
+    },
+    {
+      "id": "NI-D03",
+      "result": "PASS",
+      "moduleIds": [
+        "N03"
+      ],
+      "boundary": "DIRECT_PROVIDER_AND_ACTUAL_PRODUCT_SQL",
+      "dependencyId": "provider-negatives",
+      "pointer": "/cases/2",
+      "apkSha256": "5b591abe59246d4b5eb09b40b366f28339bbc9314c73d856dd8e3e19255aedb3",
+      "historicalVersionRewritten": false,
+      "rawSdkOnlyFixtureResult": "FAIL",
+      "actualProviderRejectionCode": 50152,
+      "currentCandidateApplicability": "Actual provider validator rejection + actual product/APK and independent SQL. SDK cancellation alone remains insufficient."
+    },
+    {
+      "id": "NI-D04",
+      "result": "PASS",
+      "moduleIds": [
+        "A02",
+        "A12",
+        "N03"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/7",
+      "stageKeys": [
+        "ni-d04-main"
+      ],
+      "stageVersions": {
+        "ni-d04-main": {
+          "apkSha256": "92eaa61287b3eaec6ea54feebdcdd898b32edddf7c67dadae9ef2bb26814995d",
+          "pid": 20572,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-D05",
+      "result": "PASS",
+      "moduleIds": [
+        "A07",
+        "A09",
+        "B01",
+        "N03"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/8",
+      "stageKeys": [
+        "ni-d05-main"
+      ],
+      "stageVersions": {
+        "ni-d05-main": {
+          "apkSha256": "ac66d81ffb760e17aca0770906b93c18b031bf8ffb9e0733974ef8b65abe5871",
+          "pid": 11391,
+          "applicationId": "org.hnuhole.hnuhole_mobile"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-K01",
+      "result": "PASS",
+      "moduleIds": [
+        "N01",
+        "A12"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/9",
+      "stageKeys": [
+        "ni-k01-source",
+        "ni-k01-restart",
+        "ni-k01-fresh",
+        "ni-k01-no-key"
+      ],
+      "stageVersions": {
+        "ni-k01-source": {
+          "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+          "pid": 10907,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k01-restart": {
+          "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+          "pid": 31463,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k01-fresh": {
+          "apkSha256": "5842baca455d23d9b7d3f9728655101ca7988e1150b3e7161535332793a37207",
+          "pid": 11138,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k01-no-key": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 18921,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "id": "NI-K02",
+      "result": "PASS",
+      "moduleIds": [
+        "N01",
+        "A12",
+        "B02"
+      ],
+      "boundary": "B3_B4_ACTUAL_APP_DEVICE_SQL",
+      "dependencyId": "historical-b3b4",
+      "pointer": "/phases/10",
+      "stageKeys": [
+        "ni-k02-write-failure",
+        "ni-k02-write-failure-read",
+        "ni-k02-write-unknown",
+        "ni-k02-write-unknown-read"
+      ],
+      "stageVersions": {
+        "ni-k02-write-failure": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 20637,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k02-write-failure-read": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 21631,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k02-write-unknown": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 23203,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        },
+        "ni-k02-write-unknown-read": {
+          "apkSha256": "9639f31b55b46cf22d76dc9dc866e117ea7be059795060c02076dafa53a0d991",
+          "pid": 24174,
+          "applicationId": "org.hnuhole.hnuhole_mobile.acceptance"
+        }
+      },
+      "stageEvidenceDependencyId": "matrix",
+      "stageEvidencePointer": "/b3b4Verification/acceptedStageEvidence",
+      "historicalVersionRewritten": false,
+      "currentCandidateApplicability": "Original eight accepted scopes and versions retained. Backend/mobile/native final regressions do not overwrite historical case results."
+    },
+    {
+      "result": "PASS",
+      "actualOemTransferCompleted": true,
+      "actualOemApplicationDataTransfer": true,
+      "selectedApplications": 1,
+      "selectedApplicationDataEntries": 1,
+      "selectedPersonalDataEntries": 0,
+      "productNativeCipherNotCopied": true,
+      "fixtureCredentialsNotCopied": true,
+      "targetDidNotAutomaticallyLogin": true,
+      "sourceActualSessionRestoredAndServerVerified": true,
+      "sqlBeforeTargetLaunch": {
+        "accounts": 1,
+        "passkeys": 0,
+        "activeSessions": 1,
+        "activeResets": 0
+      },
+      "sqlAfterActualApp": {
+        "accounts": 1,
+        "passkeys": 0,
+        "activeSessions": 1,
+        "activeResets": 0
+      },
+      "acceptedAtUTC": "2026-10-16T05:43:38.697211+00:00",
+      "id": "NI-X01",
+      "moduleIds": [
+        "N01",
+        "A12"
+      ],
+      "boundary": "TWO_PHYSICAL_ANDROID_ACTUAL_OEM_AND_APP_SQL",
+      "apkSha256": "9396864839f59c06d6215c582867c3e9eac3b1a4d3fd0a57cd330a9e78da09ff",
+      "fixtureSha256": "bdfabe3346a33ec4606e410df5067a47bcce6b542651216b96b4fd4a705e3b36",
+      "historicalVersionRewritten": false
+    },
+    {
+      "id": "NI-X02",
+      "moduleIds": [
+        "A07",
+        "N03"
+      ],
+      "result": "PASS",
+      "boundary": "TWO_PHYSICAL_ANDROID_SYNCED_NATIVE_PASSKEY_ACTUAL_APP_C_SQL",
+      "historicalVersionRewritten": false,
+      "sourceNativeCreationAttempts": 1,
+      "targetNativeGetAttemptsCumulative": 7,
+      "successfulTargetPid": 8480,
+      "successfulNativeCounters": {
+        "nativeBegun": 1,
+        "nativeSucceeded": 1
+      },
+      "actualSyncedPasskeyOnTarget": true,
+      "actualProductCResetIntent": true,
+      "fullNewRecoveryCodeConfirmation": true,
+      "intentDidNotAutoLogin": true,
+      "resetDidNotAutoLogin": true,
+      "sameAccountRestored": true,
+      "explicitNewPasswordLogin": true,
+      "oldPasskeysAbsent": true,
+      "oldSessionHttpStatus": 401,
+      "oldPasswordHttpStatus": 401,
+      "oldRecoveryCodeHttpStatus": 401,
+      "oldPasskeyAssertionSeparatelyRetested": false,
+      "oldPasskeyRevocationEvidence": "Independent SQL zero keys and actual new-session credential list empty; no separate old native assertion401 claim",
+      "sqlStages": [
+        {
+          "accounts": 1,
+          "passkeys": 1,
+          "activeSessions": 1,
+          "activeResets": 1
+        },
+        {
+          "accounts": 1,
+          "passkeys": 0,
+          "activeSessions": 0,
+          "activeResets": 0
+        },
+        {
+          "accounts": 1,
+          "passkeys": 0,
+          "activeSessions": 1,
+          "activeResets": 0
+        }
+      ],
+      "sourceApkSha256": "65f9ea9749723be9187f6e251b7de70b3318f6b4060305cbcaa2aa31ee40d568",
+      "targetApkSha256": "c58b603916370b0bdf863346a176ac9be8bb97387763d848b7dda03e3fd42b85",
+      "fixtureSha256": "a4f4e74c887c46dd06e9ae20e04dcfc80368f9482bd6b0b56ef4f347d893feb2",
+      "originalOemAcceptedVersionRetained": true
+    }
+  ],
+  "fixedCaseCounts": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0
+  },
+  "remainingFixedIds": [],
+  "nonIOSDevelopmentAcceptancePassed": true,
+  "fullAnonymityClosurePassed": false,
+  "productionApproved": false,
+  "iosAcceptancePassed": false,
+  "futureBusinessAcceptancePassed": false,
+  "iosResult": "SKIP",
+  "productionResult": "NOT_RUN",
+  "futureBusinessResult": "NOT_RUN",
+  "unresolvedSecurityCriticalDefects": [],
+  "devices": {
+    "source": {
+      "model": "V2323A",
+      "marketingName": "vivo S18",
+      "android": "15",
+      "physical": true
+    },
+    "target": {
+      "model": "RMX3366",
+      "marketingName": "realme GT Master Explorer",
+      "android": "14",
+      "physical": true
+    }
+  },
+  "providerRoute": "GOOGLE_PASSWORD_MANAGER_SYNC_NATIVE_ON_SECOND_PHYSICAL_ANDROID",
+  "qrOrHybridUsedForAcceptedRequest": false,
+  "accountIdentifierPublished": false,
+  "rawProofExported": false,
+  "sourceNewPasskeyCreatedForSync": false,
+  "restoration": {
+    "owner": "HNUHOLE_B5_20261016_V1",
+    "result": "PASS_TARGET_ONLY",
+    "targetExactOriginal": true,
+    "sourceProviderWrittenByThisSyncRun": false,
+    "sourceCurrentProviderPreserved": {
+      "credential_service": "com.x8bit.bitwarden/com.x8bit.bitwarden.Autofill.CredentialProviderService:com.vivo.cipherchain/com.vivo.cipherchain.credentialmanager.CipherchainCredentialProviderService",
+      "credential_service_primary": "com.x8bit.bitwarden/com.x8bit.bitwarden.Autofill.CredentialProviderService",
+      "autofill_service": "com.x8bit.bitwarden/com.x8bit.bitwarden.Autofill.AutofillService"
+    },
+    "sourceIsHistoricalVivoOnlySetting": false,
+    "sourceDifferenceFromOlderSnapshotNotOverwritten": true,
+    "googleAccountsNotRemoved": true,
+    "personalVaultNotExported": true,
+    "previouslyTrustedTargetServiceDidNotRequireAnotherConfirmation": true,
+    "recordedAtUTC": "2026-10-16T07:05:59.479485+00:00"
+  },
+  "report": "docs/design/auth-privacy-b5-sync-validation-report.md",
+  "handoffDocuments": [
+    "docs/design/HANDOFF.md",
+    "docs/design/progress.md",
+    "docs/design/module-acceptance-handoff.md",
+    "docs/design/auth-privacy-non-ios-closure-plan.md",
+    "docs/design/auth-privacy-platform-acceptance-plan.md",
+    "docs/design/auth-privacy-machine-handoff.md"
+  ],
+  "publication": {
+    "committed": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "attempts": {
+    "firstThroughFourth": {
+      "historicalEvidence": "services/api/authlab/android-b5-20261016-verification.json",
+      "results": [
+        "FAIL_NATIVE_TIMEOUT",
+        "FAIL_NATIVE_TIMEOUT",
+        "FAIL_NATIVE_TIMEOUT",
+        "FAIL_NATIVE_TIMEOUT"
+      ],
+      "rewritten": false
+    },
+    "fifth": {
+      "targetPid": 3402,
+      "nativeSucceeded": 1,
+      "actualCResetIntent": true,
+      "fixtureFailedBeforeResetCommit": true,
+      "reason": "Unsupported AuthCrypto.randomEncoded(24); fixed only fixture to32",
+      "productGuardRelaxed": false,
+      "proofReplayed": false
+    },
+    "sixth": {
+      "targetPid": 7357,
+      "nativeGetOtherDomError": 1,
+      "nativeSucceeded": 0,
+      "gmsSanitizedObservedError": "[50123] [15] Flow has timed out",
+      "userReportedNoSelectionOrVerification": true,
+      "result": "FAIL",
+      "proofSubmitted": false
+    },
+    "seventh": {
+      "targetPid": 8480,
+      "result": "PASS",
+      "explicitUserRequestedRetry": true,
+      "freshChallenge": true,
+      "originalProofReplayed": false,
+      "localSyncedCredentialSelected": true
+    }
+  },
+  "privateEvidenceReferences": [
+    {
+      "name": "reset-intent-ready-result.json",
+      "sha256": "a8ac5d9848dd557f94fef138407e38da3bb934c73816e067620c30691b161965"
+    },
+    {
+      "name": "reset-committed-result.json",
+      "sha256": "f248e851e2251de185a945955f3fa4ee084b0bfd2e4e976fc3e001077d4528f0"
+    },
+    {
+      "name": "NI-X02-result.json",
+      "sha256": "49d6946eb4f3165defd9a34beadd41d1120c1788752235877c15c2c5bdcd01c6"
+    },
+    {
+      "name": "attempt06-native-result.json",
+      "sha256": "fc66824c1978ce844614b1da93b308f57d73cec3f8e8bf8c9a7b5e152d0e19a2"
+    },
+    {
+      "name": "restoration-result.json",
+      "sha256": "888743d32efed2fb089c00dbfbba65948e717497c5943520bc53c7e4d0195c7e"
+    },
+    {
+      "name": "test-driver-stop-result.json",
+      "sha256": "05f56c435976b478950ccb916d8d62f5dfe96ac4522f37ee5d42a8170a60c4af"
+    }
+  ],
+  "checks": [
+    {
+      "id": "fixture-analysis",
+      "result": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "arm64-build-approved-signature",
+      "result": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "actual-two-android-synced-product-recovery",
+      "result": "PASS",
+      "scope": "Actual App+native provider+C+independentSQL"
+    },
+    {
+      "id": "final-b5-sync-evidence-handoff",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "24 cases, original failures, unchanged162 B6 runtime inputs, no new functional execution by checker"
+    }
+  ],
+  "preservation": {
+    "historicalB6AndB5OriginalFailuresRetained": true,
+    "bitwardenRomBlockerRetained": true,
+    "testAppDataRetained": true,
+    "reusableEnvironmentRetained": true,
+    "originalMainAppDataNotDeleted": true,
+    "googleLoginAccountsNotRemoved": true,
+    "privateSyntheticNewPasswordAndCodeRetainedUnderOwnedAcl": true,
+    "originalOlderApksNotRestored": true,
+    "oemManualPowerNetworkSettingsOriginalValuesUnknown": true,
+    "ownedIsolatedTestDriversStopped": true
+  },
+  "handoffCheckerRepairHistory": [
+    "Initial collector normalized PNG bytes as text; corrected to exact RAW binary bytes and explicit LF text mode. No product/device result changed.",
+    "Initial source check compared LF-normalized test input against raw CRLF build digest; now requires the actual raw digest or exact LF text normalization only. Actual build input and installed APK retained."
+  ]
+}

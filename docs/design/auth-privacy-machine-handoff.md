@@ -1,5 +1,13 @@
 # 匿名分支：另一台机器接续入口
 
+> **2026-10-16 B5 主线整合候选（IN_PROGRESS）：**本轮仅在 `codex/fix/b5-main-integration` 整合，基线为 main `b164762b8cd58da592bf645cc4e2ada738bb79ec`；未 commit、未合并、未发布。保留主线帖子图片、业务存储和账号生命周期实现，只引入缺失的 B5 材料及必要适配。当前候选的测试、构建、独立审查与未验项以[候选报告](auth-privacy-b5-main-integration-report.md)和[候选机器记录](auth-privacy-b5-main-integration-verification.json)为准；此处不提前登记 PASS。
+
+> **历史认证证据独立保留：**B5 来源为 `ea5cc52840f009b02106f928c444e423c6e61b3e`，产品基线仍是 `d859cb05c772cdf8d8b75e439a2bfedf0414dd46`。历史 B6 为 **22 PASS／0 FAIL／2 BLOCKED**；B5 双实体首轮为 **23 PASS／1 FAIL**（NI-X02），随后 Bitwarden 原生路线仍 **BLOCKED**；B5-sync 后续为 **24／24 PASS**。原四次 hybrid 失败、同步成功后夹具失败、用户报告未出现选择／验证页的第六次失败及后续重试均保留在原[首轮报告](auth-privacy-b5-validation-report.md)、[同步报告](auth-privacy-b5-sync-validation-report.md)和三份机器证据中。历史 `nonIOSDevelopmentAcceptancePassed=true` 仅属于原 B5-sync 输入及设备链，不是本候选通过；iOS、生产及未来业务边界不扩张。
+
+> **候选证据规则：**两个 B5 checker 仍在固定 `ea5cc528` 历史副本验证，完整 B6 checker 在固定 `d859cb05` 副本验证；不改历史摘要或降低门槛。候选须记录全部历史 runtime 输入的差异及集合以外新增 runtime 文件，另记三份 B5 夹具由 `_HnuholeApp` 适配 `HnuholeApp` 后的摘要及运行时根组件发现回归。旧 APK／旧夹具结果不代证新候选；当前原生设备回归为 **NOT_RUN**，Dart mock、分析和构建不能替代原生存储与设备验收。
+
+本轮接续目录为 `E:/codexDoucuments/2026-10-16/task-2/HnuHole-b5-candidate`，只允许本地隔离实现、测试及审查准备。原工作区和未推送 `1315f45` 必须保留；不占用原会话端口或手机，不自动重置设备或更改安全设置。历史检查副本的字节复现、失败路径、Git blob 对应关系及候选实际命令统一写入候选报告；下方旧机器地址与操作入口不构成当前执行授权。
+
 > **2026-10-13 B6与单台Android范围完成：**完整R01 SQL/race/vet、R03实际C/V的19项检查、R05真实Dart→HTTPS→SQL、三个Flutter包分析、移动端188项与Passkey Dart 9项、标准Android Debug／Release构建、原生vault 16项／Passkey codec及错误分类12项、三组实际跨进程读写和已安装Release 13项边界均PASS。Windows／Linux各108项宿主守卫、诊断构建8项、JVM策略24项及四份OpenAPI通过。固定24项维持22 PASS／0 FAIL／2 BLOCKED；原14阶段及各设备版本保留，原SDK-only三项FAIL与历史UNKNOWN未改写。**不需要第二实体Android的非iOS匿名基础工作已完成，唯一固定缺口为NI-X01／X02；完整非iOS、iOS、生产与未来业务仍未获通过。**原手机三包摘要、原provider／autofill、账号与草稿保留；本轮独立模拟器停止，专用AVD／构建副本／临时APK及原始日志已清理，现成环境与缓存保留。HnuHole仅准备本地可审阅候选，未提交／推送／部署。见[B6报告](auth-privacy-b6-validation-report.md)及[最终分层记录](../../services/api/authlab/b6-single-android-20261013-verification.json)。
 
 下方记录保留原日期、被测版本与证明范围；本轮结论以上述B6入口为准。
