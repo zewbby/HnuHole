@@ -1,0 +1,1412 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-10-14",
+  "timezone": "Asia/Shanghai",
+  "moduleId": "IV01",
+  "branch": "codex/image-viewer-component",
+  "initialPhaseSha": "7ebce73fbcfbd27c5968cc2813f5eea0ca3590bf",
+  "hostSavedAndNormallyPushedSha": "3287607cb30887f9df02d2b8dd1cd3fbf3a390cc",
+  "androidPreparationSavedAndNormallyPushedSha": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+  "executionHead": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+  "testedPackageDigestSha256": "47386959e21399ea6d951acda3b7b5fd94855a2f712abedab62328cf632d426b",
+  "testedPackageManifest": [
+    {
+      "path": "packages/image_viewer/analysis_options.yaml",
+      "sha256": "88a05fea8acb9db6d976dc273cd08a80275f43044479b561a7c1374c653d96a4"
+    },
+    {
+      "path": "packages/image_viewer/example/.gitignore",
+      "sha256": "0581d23086f7283dc97d2d5bde4f60724f8115f67baa76949596790ab9800dd7"
+    },
+    {
+      "path": "packages/image_viewer/example/.metadata",
+      "sha256": "f45c520e51bccacb63e80516da7687639eee917ae215b016261fe70f2f3c5995"
+    },
+    {
+      "path": "packages/image_viewer/example/analysis_options.yaml",
+      "sha256": "92808b5cfd2ab6193a124faa355f0050d4e7c2fbe09c474a4f88f9f02e021711"
+    },
+    {
+      "path": "packages/image_viewer/example/android/.gitignore",
+      "sha256": "c9af75dbc2c8aa867476a09426c80b178c4aeed8b9393ae48503eedfa3273d71"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/build.gradle.kts",
+      "sha256": "cf18df0da67bc1127595b295f68fc0efa7134f4861ffc8ed154575ea2fc82c5d"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/debug/AndroidManifest.xml",
+      "sha256": "b01a4541a8144c15bc617bab7eb267c99fa1476368fbbda5a12cdbf4e316a34c"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/AndroidManifest.xml",
+      "sha256": "b0067e1405d8d0b5dea1061de1fb4d665598889d4791efdd37aac68ba86b53d5"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/kotlin/org/hnuhole/image_viewer_component/MainActivity.kt",
+      "sha256": "c03dbde7093c2c7bc5d983cdb3a35b944ff7bbcae2f6d345ca999af84e85ed4a"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/drawable-v21/launch_background.xml",
+      "sha256": "dca312ec77de83e43ef70a825c299b51451247286c29167d62f19165750b8793"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/drawable/launch_background.xml",
+      "sha256": "2df60e2cfbee873ce2858088cf003e6b93498f2f568476da437610467ea1a9d7"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "sha256": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "sha256": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "sha256": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "sha256": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "sha256": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/values-night/styles.xml",
+      "sha256": "ea763597dc1a84c8034251caee98d7753e0fbf57340ffc94677427de4b537516"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/values/styles.xml",
+      "sha256": "cca15a99b59380a548bf6a890f7ca5380ee509b1f9bbb2f5f9ec3589fa25c2f7"
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/profile/AndroidManifest.xml",
+      "sha256": "b01a4541a8144c15bc617bab7eb267c99fa1476368fbbda5a12cdbf4e316a34c"
+    },
+    {
+      "path": "packages/image_viewer/example/android/build.gradle.kts",
+      "sha256": "218f400e3fff31c9c986a2535dfb974560e1b4d33cc27b7c1fee96a2b7e44454"
+    },
+    {
+      "path": "packages/image_viewer/example/android/gradle.properties",
+      "sha256": "7714698de712a7872e371f0dbae626c255fc83ac1c15e52e7cd9fcaa241b5092"
+    },
+    {
+      "path": "packages/image_viewer/example/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "1d39697ffc15174713e75c803daeaccdbf81c52a9d1546306ef170821a1fd1eb"
+    },
+    {
+      "path": "packages/image_viewer/example/android/settings.gradle.kts",
+      "sha256": "092ba880c8d4a07591aafc082f45deedc9afcf60c113a4bb3d13cbe1a1fce9de"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_benchmark.webp",
+      "sha256": "0145845e1b4aff94e1f73841f03b6ea6d5ef0aeeb16bdd3831724d563e42fb46"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary_infinite.webp",
+      "sha256": "3897796f787092b33333358d146482a4f67759bd97075be6669f305e88d696ed"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary_once.webp",
+      "sha256": "39f08e88ed651f7321a8de9e80e99bd605b4d8eb88b1194e8f7c9fec8bd39fad"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary.webp",
+      "sha256": "259c7f65840e440861329dbd35723c04a446ecabbfb21f2283bf5f56d97806f5"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_infinite.gif",
+      "sha256": "9f0ab897a6b22f6a6a19310462aaf78a776ab8fc05d2cc805889d3e0871df9ed"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_infinite.webp",
+      "sha256": "e8d714336d16477d76cf01515d61a8e9916babd87ee093434bbd1638ead40e76"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_once.webp",
+      "sha256": "d73a18998b3325cae6a2c6c9f3ec2b82ac7e78a8e19899d2202c3ace287859be"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_over_limit.webp",
+      "sha256": "45e67e717cb796bb87deb43430da1f1d3c4c051c01e9c7525b75f7beb84786b1"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_repeat_once.gif",
+      "sha256": "43a730212cf2cdd0ff3f8e32f5e00ed0032b0e1fa68ed3d594cde76e43f645c8"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_timing.webp",
+      "sha256": "32a65f932e0330630c78e0e86f0483c17381fc922df3dc99ac18392e3747305b"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation.gif",
+      "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation.webp",
+      "sha256": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/long.png",
+      "sha256": "69269d9cd174e1be00a84efecc1b9a01b9150ba4dae8b41816359ae13749575b"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/manifest.json",
+      "sha256": "4674d1d595214b26c4a2d089d347053ad6f32ea94f8f73b4ce123785bdd4e835"
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/ordinary.png",
+      "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964"
+    },
+    {
+      "path": "packages/image_viewer/example/integration_test/image_viewer_component_device_test.dart",
+      "sha256": "823c1dcfa8d39eb3230c77b3a65097733780174b356a52398835bc742f277ac5"
+    },
+    {
+      "path": "packages/image_viewer/example/integration_test/image_viewer_device_test.dart",
+      "sha256": "456c81ca88b8a642af09544374b1e67380692ce0c9cc2d9927e06a91c1a72d57"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/.gitignore",
+      "sha256": "e85b4db8ba6ed14708e5f7d3c60336e5a3067ce11329b84aa8ba5d98603ee253"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/AppFrameworkInfo.plist",
+      "sha256": "e51cfa76fca1ae586244b43bf97423577315d2906394c1e7768ef43b8d23e161"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/Debug.xcconfig",
+      "sha256": "c0d1da54718e75f2028962b689258ecc741abf7cdaed50483aa5225264d0a7d7"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/Release.xcconfig",
+      "sha256": "c0d1da54718e75f2028962b689258ecc741abf7cdaed50483aa5225264d0a7d7"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.pbxproj",
+      "sha256": "d2e3826887821c3badace634ad40a03a0357ca6c050c8e5c4f5b86d7e9d186d6"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "sha256": "ac28b35c2b940210bec0fff8e424b07fd0efe9112ab178a10533583f251a386c"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256": "d557c2c32fc6258ec28981fa45dc847b76c9968beb90a2e26d13ef9c4ea45c30"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256": "dd64c0308ab2971c456871b990b24a008bdc3ece09833e8dbe9675e33a496e74"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+      "sha256": "a46c0d064503db8bf9f452b492c61fdf76f9febb8894005fe30b2facec21e550"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/contents.xcworkspacedata",
+      "sha256": "706a4c812f2a1e220e6785c27580020d58048e2ae4d30d1280f3c43344ce6b38"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256": "d557c2c32fc6258ec28981fa45dc847b76c9968beb90a2e26d13ef9c4ea45c30"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256": "dd64c0308ab2971c456871b990b24a008bdc3ece09833e8dbe9675e33a496e74"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/AppDelegate.swift",
+      "sha256": "54a5e98d6c3e8a79413ad50607b83aac8ded8828bc913eda1fe86bb33a66cd5d"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "sha256": "5f8b941b774bde4496d73347c1f79cbdd786bb76fbdab9ed1f3f0cb78a0fb0d3"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "sha256": "7770183009e914112de7d8ef1d235a6a30c5834424858e0d2f8253f6b8d31926"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "sha256": "cab10a0d391ec5bc09ef50ce49e8ad401cee7ef03707ec0923a222c5c2b3d212"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "sha256": "c6e6d3b215ae744a9c391f4c4d44157eff5e739d6ad6c39f9bfa5df66dddd267"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "sha256": "5dee24dc104ac76dc162e42ae0beb163d426bf365562ee28ba7b3ad368559a60"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "sha256": "a9b21eb6f4271385655a8771f76e29eef8c1107d7879cbcfc567e6619d1f716a"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "sha256": "e677d701ffe4af7bc2935098d6b3984cc9ab7ace573e6900955a5535b12410cf"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "sha256": "7c61c42fc7b657d9cf314d32a4ec458f0647c3aaf360be1b9377857266ec2499"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "sha256": "4209a49e44a92ec40a327d3455eb1b1c153ee83d75de1c2be0a12ab18b2ff9de"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "sha256": "836c918cb613249eba0483a6b02fa3df3c1c0a89a315ee4d3b88509b83c7ab73"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "sha256": "41c7d42f6e61f8fe7f30b1ffa2256aecbc9682be06d18c4a3062043e1a2e547c"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "sha256": "5d7e5bdf01b93802bc973345b3a78c038907147625035952a08a115a563b7f81"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "sha256": "fbd112a9f3b541a1d811f71ac8e4fe68b6176687d973a5f4d99b7aa4a722e94e"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+      "sha256": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "sha256": "bc3644fbb251ff1e18de25a4932c927850ae1a025be3dd1447940429633fe4b2"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Base.lproj/Main.storyboard",
+      "sha256": "dcea4686c02065e56217fd19fcfb73d7509b41872e7486126149d47a18559363"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Info.plist",
+      "sha256": "520d0002590aa9508d8836d97a2881ba7c74577f7c6fa5e0757e035f884cfd2d"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Runner-Bridging-Header.h",
+      "sha256": "efe657d8b27f7f8595a0d416bffb33fe7d93bd2869d81f7353b556c439d7a1a7"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/SceneDelegate.swift",
+      "sha256": "edce811c671ca0a6ccb14753e14e16deb0d89a0adf4f1b685e362d87d8f4c366"
+    },
+    {
+      "path": "packages/image_viewer/example/ios/RunnerTests/RunnerTests.swift",
+      "sha256": "c0e04141287eb7f9c9f3d31cf5be8cb626a9ea71351206c9121578e8b8f480c3"
+    },
+    {
+      "path": "packages/image_viewer/example/lib/component_example.dart",
+      "sha256": "410fbebb378b689d6ca5b5d22b7f4d8fee865f3a92b7fb14be9461a00ac3b5d3"
+    },
+    {
+      "path": "packages/image_viewer/example/lib/main.dart",
+      "sha256": "0bdb424bc3420bec21a64ca0e146b2ceee134288f311905a4b268ee7081ee0ba"
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.lock",
+      "sha256": "9a7de0b094b07456d44016212168f2f5890e5a74d0bf4f708d77db6c51c95a24"
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.yaml",
+      "sha256": "bf18e0ca41d0a0bfa16044103deeb6315f5d6e9c676ba14f52f163de11762993"
+    },
+    {
+      "path": "packages/image_viewer/example/README.md",
+      "sha256": "577045b483d2cc1cfa35b15703998a86a0e064f8f59ef97fdb823f4a7db59af3"
+    },
+    {
+      "path": "packages/image_viewer/example/test/component_example_test.dart",
+      "sha256": "346f19837756454c52b73aece320186af90e126e70fbdfb84d42a892494cec47"
+    },
+    {
+      "path": "packages/image_viewer/lib/image_viewer.dart",
+      "sha256": "956eeeb41ce283a362d4de5ef5d349c0c3293ce43f2d5d9bdd04ff2b13de0e92"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/m1_save_probe.dart",
+      "sha256": "969b5e8cc0b0c791c8736e2a64fcc9a105b041fbd75ab706babea3c0b284eaa0"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/m1_viewer_probe.dart",
+      "sha256": "de5ab059580d6a7fd732e0af8bb9d4e67062bf5f9606ae8757943a719db5a5db"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_controller.dart",
+      "sha256": "85e637c78e3b839a6d4bc357ac7475ea6b3bf9761fd3699fd6ab0934be0fc9a0"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_save.dart",
+      "sha256": "15166f2fb117170845cb0cd25577cf334e8b9d1a1421d9853cad1e8ed2bed497"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_surface.dart",
+      "sha256": "5fe1e9bd61a3f3ccee40c9fdb35cf5776fa3094397574b7c8a2b072dc97d9f16"
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer.dart",
+      "sha256": "25fb4fc17f9a4f9e7aaf6151a15ea208d365fa6b85b219bdc45da8290b7eef2e"
+    },
+    {
+      "path": "packages/image_viewer/pubspec.lock",
+      "sha256": "00ac99d693f003b46111d24e18a233741aedfd3501569130d57d731ca192fb81"
+    },
+    {
+      "path": "packages/image_viewer/pubspec.yaml",
+      "sha256": "a13b4d5cea14c77d690aec45f3ebf3afa833cf4bb6e97f53dc421cfaed2ebedf"
+    },
+    {
+      "path": "packages/image_viewer/README.md",
+      "sha256": "906000717dd5fc80353737fb69d897bac6633f5c1b5c34d8a9feaa5d0731f47c"
+    },
+    {
+      "path": "packages/image_viewer/test/m1_animation_codec_test.dart",
+      "sha256": "a3dab3c672f34a85985ff1096bce40a40b7c73839b103703058d9fb84f938c1b"
+    },
+    {
+      "path": "packages/image_viewer/test/m1_gesture_lifecycle_test.dart",
+      "sha256": "aa3db2c2db6a28bd6b33846972c0d6b1e91fce823f62d39e2fdf07899d8c456d"
+    },
+    {
+      "path": "packages/image_viewer/test/m1_save_probe_test.dart",
+      "sha256": "3eb3a87a6b9c7478b6cf05876a9f7c66b96cf7e5b177df421ab95ffdab3d0614"
+    },
+    {
+      "path": "packages/image_viewer/test/viewer_contract_test.dart",
+      "sha256": "0a9cc721dfdc4a0ea2df53ed9e40c999836956b2f864bf85263aaa9ebb11f635"
+    },
+    {
+      "path": "packages/image_viewer/test/viewer_save_test.dart",
+      "sha256": "f38d1923490bd4f60aea169bc0c0cc41cbd0b58811234137394345e732634ff8"
+    },
+    {
+      "path": "packages/image_viewer/tool/collect_test_results.py",
+      "sha256": "e71ff428ebcb6bd5314ef91dfaee5abaa1faedef42b85be82cf7ff13c3aa0443"
+    },
+    {
+      "path": "packages/image_viewer/tool/create_fixtures.py",
+      "sha256": "6febfe9b73afe0261076d82eeb750fb221562e6989c61ac9f93fa86977b42ade"
+    },
+    {
+      "path": "packages/image_viewer/tool/m1_animation_codec.dart",
+      "sha256": "176c68bce516748416912fe5b183e5b2f43b79e6201574da9648ad16971b7808"
+    },
+    {
+      "path": "packages/image_viewer/tool/measure_conversion.dart",
+      "sha256": "c128019982ab658c394268b391d3775386c264c36ec74503fb0dbc6837fa991c"
+    }
+  ],
+  "modifiedRuntimeFiles": [
+    "packages/image_viewer/lib/src/viewer.dart"
+  ],
+  "modifiedTestFiles": [
+    "packages/image_viewer/test/viewer_contract_test.dart"
+  ],
+  "publicApiAndInputAndLifecycleContractChanged": false,
+  "ownCredentialsAccepted": false,
+  "mainAppIntegrated": false,
+  "locksPreserved": true,
+  "lockFiles": [
+    {
+      "path": "packages/image_viewer/pubspec.lock",
+      "sha256": "00ac99d693f003b46111d24e18a233741aedfd3501569130d57d731ca192fb81"
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.lock",
+      "sha256": "9a7de0b094b07456d44016212168f2f5890e5a74d0bf4f708d77db6c51c95a24"
+    }
+  ],
+  "privateToolRoot": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013",
+  "rawLogRoot": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs",
+  "checks": [
+    {
+      "name": "package-analyze-layout-verified",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "analyze",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer",
+      "startedAtUtc": "2026-10-14T01:03:05.9016244+00:00",
+      "endedAtUtc": "2026-10-14T01:03:15.8120537+00:00",
+      "executionHead": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+      "sourceDigest": "47386959e21399ea6d951acda3b7b5fd94855a2f712abedab62328cf632d426b",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\package-analyze-layout-verified.log",
+      "logSha256": "e6183e6175dc00712412d832903ac5da6ea6ce8129e13f45f470e1b94408aa87"
+    },
+    {
+      "name": "package-host-tests-layout-verified",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer",
+      "startedAtUtc": "2026-10-14T01:04:10.1353506+00:00",
+      "endedAtUtc": "2026-10-14T01:04:21.8021654+00:00",
+      "executionHead": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+      "sourceDigest": "47386959e21399ea6d951acda3b7b5fd94855a2f712abedab62328cf632d426b",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\package-host-tests-layout-verified.log",
+      "logSha256": "f4ee2983175f021d581a2e7a223bad40cbffdd7536dbcc261a0d3abdd9069a89"
+    },
+    {
+      "name": "example-analyze-layout-verified",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "analyze",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T01:04:21.9135769+00:00",
+      "endedAtUtc": "2026-10-14T01:04:28.8942384+00:00",
+      "executionHead": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+      "sourceDigest": "47386959e21399ea6d951acda3b7b5fd94855a2f712abedab62328cf632d426b",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\example-analyze-layout-verified.log",
+      "logSha256": "309ad536145e098f3906e254c9339561e02be0b319d6e1072c11fc0a6983e7ed"
+    },
+    {
+      "name": "example-host-tests-layout-verified",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "test"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T01:04:28.9754598+00:00",
+      "endedAtUtc": "2026-10-14T01:04:33.2477812+00:00",
+      "executionHead": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+      "sourceDigest": "47386959e21399ea6d951acda3b7b5fd94855a2f712abedab62328cf632d426b",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\example-host-tests-layout-verified.log",
+      "logSha256": "9d79ab2cf0d7445f55d5fec591e65cd1026577a920f85b6a851dbfc9aff0e123"
+    },
+    {
+      "name": "example-bundle-layout-verified",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "bundle",
+        "--debug",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T01:04:33.3059417+00:00",
+      "endedAtUtc": "2026-10-14T01:04:37.6727278+00:00",
+      "executionHead": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+      "sourceDigest": "47386959e21399ea6d951acda3b7b5fd94855a2f712abedab62328cf632d426b",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\example-bundle-layout-verified.log",
+      "logSha256": "f2c5d317eb880d28ec236f6fae726002491d329767f1cc9847a1455e0b5c09e8"
+    },
+    {
+      "name": "android-component-layout-final",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub",
+        "--flavor=component",
+        "--split-per-abi",
+        "--target-platform=android-arm64",
+        "--build-name=0.0.0-platform20261014",
+        "--build-number=20261014"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T01:04:37.7303729+00:00",
+      "endedAtUtc": "2026-10-14T01:05:00.3234870+00:00",
+      "executionHead": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+      "sourceDigest": "47386959e21399ea6d951acda3b7b5fd94855a2f712abedab62328cf632d426b",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-component-layout-final.log",
+      "logSha256": "16501b9a5f25e66cb29bee22383629df56865cc7d5d90153b43eab906b83ef4e"
+    },
+    {
+      "name": "android-nativecheck-layout-final",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub",
+        "--flavor=nativecheck",
+        "--split-per-abi",
+        "--target-platform=android-arm64",
+        "--build-name=0.0.0-platform20261014",
+        "--build-number=20261014",
+        "--dart-define=VIEWER_ENABLE_NATIVE_EXPORT=true"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+      "startedAtUtc": "2026-10-14T01:03:16.0800976+00:00",
+      "endedAtUtc": "2026-10-14T01:03:48.4790757+00:00",
+      "executionHead": "a20e5cfad5f469dd44b8de80add14aa37a4af7e0",
+      "sourceDigest": "47386959e21399ea6d951acda3b7b5fd94855a2f712abedab62328cf632d426b",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-nativecheck-layout-final.log",
+      "logSha256": "dedba6f509c8e8f017fb37b888534a3d045ac9be8c651eb5c0f66539f6a1bbe3"
+    }
+  ],
+  "hostPackageTests": 90,
+  "exampleHostTests": 3,
+  "apks": [
+    {
+      "flavor": "component",
+      "package": "org.hnuhole.image_viewer_component",
+      "versionName": "0.0.0-platform20261014",
+      "versionCode": 20263014,
+      "abi": "arm64-v8a",
+      "minSdk": 24,
+      "targetSdk": 36,
+      "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\artifacts\\hnuhole-viewer-component-debug-arm64-20261014.apk",
+      "bytes": 82170311,
+      "sha256": "51c9950f9b723aed012e3b6f08d8232197c67d5445dbc1e52ac2e556779b0e61",
+      "signature": "PASS (v2)",
+      "certificateSha256": "77cc0dd2bc5a71ffbf107ebfa6fdc74f3ca158bcb82548b53b6ae9dd9a421dd5",
+      "actualOwnPackageUpdateResult": "PASS",
+      "installedVersionLog": "component-layout-current-version.log",
+      "nativeExportEnabled": false
+    },
+    {
+      "flavor": "nativecheck",
+      "package": "org.hnuhole.image_viewer_component.nativecheck",
+      "versionName": "0.0.0-platform20261014-nativecheck",
+      "versionCode": 20263014,
+      "abi": "arm64-v8a",
+      "minSdk": 24,
+      "targetSdk": 36,
+      "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\artifacts\\hnuhole-viewer-nativecheck-debug-arm64-20261014.apk",
+      "bytes": 82170687,
+      "sha256": "6c7ad141a519b20adc713cbac000cc87a127f784ef9d93f519e5c9ea8ba3817c",
+      "signature": "PASS (v2)",
+      "certificateSha256": "77cc0dd2bc5a71ffbf107ebfa6fdc74f3ca158bcb82548b53b6ae9dd9a421dd5",
+      "actualOwnPackageUpdateResult": "PASS",
+      "installedVersionLog": "nativecheck-layout-current-version.log",
+      "nativeExportEnabled": true
+    }
+  ],
+  "physicalDevice": {
+    "model": "vivo S18",
+    "reportedModel": "V2323A",
+    "android": "15",
+    "api": 35,
+    "abi": "arm64-v8a",
+    "serialSha256": "557ef20f4d13aaf0605d2de7ec7fe8a6a44cf36e2520607fe2009b134cd774e8",
+    "approval": "Now available, no fixed duration, stop immediately when community needs phone",
+    "gallery": {
+      "package": "com.vivo.gallery",
+      "activeVersionName": "9.4.6.13",
+      "activeVersionCode": 9040613,
+      "systemFallback": "9.3.24.0"
+    },
+    "talkback": {
+      "package": "com.google.android.marvin.talkback",
+      "activeVersionName": "17.0.1.926549743",
+      "activeVersionCode": 60215178
+    }
+  },
+  "oldApkPhysicalEvidencePolicy": "AV02/AV03/AV04 are from actual20263013 APKs, not relabeled as current20263014; surface gesture code unchanged, final host regression rebuilt and passed",
+  "actualAndroidTesterInjected": {
+    "log": "android-component-integration-first.log",
+    "executionSourceDigest": "23f2978ef52e94194f564fbdd0bf63cd21a218c68e598a231ab893fd8075aec0",
+    "passed": 2,
+    "skipped": 1,
+    "physicalFingerProof": false,
+    "nativeSaveSkipped": true,
+    "installerFirstAttempt": "INSTALL_FAILED_ABORTED; Flutter runner removed/reinstalled only this task own component package; original verified manual APK restored afterward"
+  },
+  "cases": [
+    {
+      "id": "AV01",
+      "result": "PASS",
+      "scope": "ordinary/long synthetic images on this Android device only",
+      "subchecks": {
+        "ordinaryFit": "PASS",
+        "longFitWidthStartsTop": "PASS",
+        "nativeSaveDefaultOff": "PASS"
+      },
+      "evidence": [
+        "component-ordinary-settled.png",
+        "component-long-initial.png",
+        "av05-reopened-long-starts-top.png"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV02",
+      "result": "PASS",
+      "scope": "Operator physical pinch/pan/single-to-two-finger/double-tap at original version; not the full touch matrix",
+      "subchecks": {
+        "operatorPhysical": "PASS",
+        "fullMatrix": "NOT_RUN"
+      },
+      "evidence": [
+        "av02-operator-result.json",
+        "av02-physical-retry-interrupted.json"
+      ],
+      "apkVersionCode": 20263013,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV03",
+      "result": "PASS",
+      "scope": "Strict recheck from reading position; physical continuity operator-confirmed, new video has no pointer overlay",
+      "subchecks": {
+        "sameReadingGestureBackTopNoExit": "PASS",
+        "allPointersUpNewPullExits": "PASS",
+        "firstAttemptStrictSequence": "NOT_RUN"
+      },
+      "evidence": [
+        "av03-recheck-operator-result.json",
+        "av03-reading-to-top-physical-recording.json",
+        "av03-completed-caller-home.png"
+      ],
+      "apkVersionCode": 20263013,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV04",
+      "result": "NOT_RUN",
+      "scope": "Rotation matrix incomplete; actual normal-zoom portrait/landscape/portrait at BAND03 passed",
+      "subchecks": {
+        "normalZoomReadingRotation": "PASS",
+        "zoomedRotation": "NOT_RUN",
+        "activeGestureRotation": "NOT_RUN"
+      },
+      "evidence": [
+        "av04-physical-result.json",
+        "av04-portrait-anchor-before.png",
+        "av04-landscape-anchor.png",
+        "av04-portrait-anchor-after.png"
+      ],
+      "apkVersionCode": 20263013,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV05",
+      "result": "PASS",
+      "scope": "ADB input on this physical device; BAND05/06/07 restored exactly after GIF and back, fresh session starts at TOP",
+      "subchecks": {
+        "readingAcrossSelection": "PASS",
+        "exactViewportPixels": "PASS",
+        "freshSessionTop": "PASS",
+        "allZoomGroupCases": "NOT_RUN"
+      },
+      "evidence": [
+        "av05-reading-restoration-result.json",
+        "av05-reading-before.png",
+        "av05-reading-after.png",
+        "av05-reopened-long-starts-top.png"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV06",
+      "result": "PASS",
+      "scope": "Own caller home after OS back and close button (ADB); physical qualified pull at original version",
+      "subchecks": {
+        "systemBack": "PASS",
+        "closeButton": "PASS",
+        "physicalPullOriginalVersion": "PASS",
+        "rapidRepeatedOpenCloseMatrix": "NOT_RUN"
+      },
+      "evidence": [
+        "av06-back-caller-home.png",
+        "av06-button-caller-home.png",
+        "av03-recheck-operator-result.json"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV07",
+      "result": "PASS",
+      "scope": "Actual Android source fault/retry/invalidate via example buttons; synthetic source, no network/account",
+      "subchecks": {
+        "firstFailure": "PASS",
+        "explicitRetry": "PASS",
+        "accessInvalidationReturnsCaller": "PASS"
+      },
+      "evidence": [
+        "av07-real-source-failure.png",
+        "av07-retry-loaded.png",
+        "av07-invalidation-caller-home.png"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV08",
+      "result": "PASS",
+      "scope": "Actual three-second delayed source closed, different long image opened, old result isolated; scoped app log has no disposal error",
+      "subchecks": {
+        "closeBeforeSourceSettles": "PASS",
+        "newDifferentImageUnchanged": "PASS",
+        "scopedRuntimeDisposalErrorAbsent": "PASS"
+      },
+      "evidence": [
+        "av08-open-delayed-ready.json",
+        "av08-close-delayed-ready.json",
+        "av08-open-different-long-ready.json",
+        "av08-long-after-late-source.png",
+        "component-current-runtime-log.log"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV09",
+      "result": "NOT_RUN",
+      "scope": "Foreground animation passed by actual recording; OS background/invisibility/resource matrix remains unverified",
+      "subchecks": {
+        "gifForeground": "PASS",
+        "webpForeground": "PASS",
+        "osBackgroundAndHidden": "NOT_RUN",
+        "fullFormatMatrix": "NOT_RUN"
+      },
+      "evidence": [
+        "av09-actual-foreground-animation-review.json",
+        "gif-viewer-animation-recording.json",
+        "webp-viewer-animation-recording.json"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AV10",
+      "result": "NOT_RUN",
+      "scope": "Large-font and basic TalkBack subchecks passed; error/retry/save announcements and landscape accessibility matrix not fully checked",
+      "subchecks": {
+        "systemFont188LayoutAndPaging": "PASS",
+        "talkbackDirectExploreDisabledSaveReason": "PASS",
+        "talkbackNextAction": "PASS",
+        "fullFeedbackAndLandscapeMatrix": "NOT_RUN"
+      },
+      "evidence": [
+        "av10-large-font-viewer.png",
+        "av10-large-font-switched.png",
+        "av10-talkback-own-viewer-focus.png",
+        "av10-talkback-enabled-during-check.log"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AS01",
+      "result": "SKIP",
+      "scope": "API35 Gal direct write hasAccess=true and no legacy-storage request; API24–28 denial/grant/lifecycle NOT_RUN",
+      "subchecks": {
+        "api35Access": "PASS",
+        "api35Denial": "SKIP",
+        "api24To28DenialGrantAndRetry": "NOT_RUN"
+      },
+      "evidence": [
+        "nativecheck-final-platform-events.log"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AS02",
+      "result": "PASS",
+      "scope": "Real PNG import, byte equality, gallery PNG baseline display, and repaired feedback layout on this device",
+      "subchecks": {
+        "realMediaStore": "PASS",
+        "originalBytes": "PASS",
+        "actualGalleryDisplay": "PASS",
+        "feedbackLayoutAfterFix": "PASS",
+        "feedbackLayoutBeforeFix": "FAIL"
+      },
+      "evidence": [
+        "as02-original-integrity.json",
+        "as02-fixed-integrity.json",
+        "as02-fixed-before-save.png",
+        "as02-fixed-after-save.png",
+        "webp-system-gallery-replay-recording.json"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AS03",
+      "result": "PASS",
+      "scope": "One 934-byte finite-loop GIF; exact original bytes and operator-confirmed system-gallery playback",
+      "subchecks": {
+        "realImportAndBytes": "PASS",
+        "galleryPlayback": "PASS",
+        "fullGifMatrix": "NOT_RUN"
+      },
+      "evidence": [
+        "as03-gif-integrity.json",
+        "as03-gallery-operator-result.json"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AS04",
+      "result": "FAIL",
+      "scope": "Exact original animated WebP preserved; vivo Gallery9.4.6.13 direct ACTION_VIEW does not autoplay until operator drags",
+      "subchecks": {
+        "realImportAndBytes": "PASS",
+        "galleryDirectOpenAutoplay": "FAIL",
+        "galleryPlaybackAfterDrag": "PASS",
+        "formatConversionEnabled": false
+      },
+      "evidence": [
+        "as04-webp-integrity.json",
+        "as04-gallery-operator-result.json",
+        "webp-system-gallery-replay-recording.json"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AS05",
+      "result": "PASS",
+      "scope": "Three ADB taps within injected two-second adapter delay, busy button, one native dispatch and one exact GIF row",
+      "subchecks": {
+        "deduplication": "PASS",
+        "realNativeDispatch": "PASS",
+        "originalBytes": "PASS"
+      },
+      "evidence": [
+        "as05-busy.png",
+        "as05-settled.png",
+        "as05-after-media-rows.json",
+        "as05-deduplicated-gif-integrity.json"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AS06",
+      "result": "PASS",
+      "scope": "Already-dispatched save continues through real Gal after close; new page has no late feedback, one exact GIF and settled cleanup",
+      "subchecks": {
+        "closeAvailable": "PASS",
+        "lateFeedbackIsolated": "PASS",
+        "realWriteContinued": "PASS",
+        "nativeCancellationPromised": false
+      },
+      "evidence": [
+        "as06-close-during-save.json",
+        "as06-new-image-after-late-native.png",
+        "as06-close-race-gif-integrity.json"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AS07",
+      "result": "PASS",
+      "scope": "Two example-owned-file deletions before real Gal; native notSupportedFormat feedback, busy recovers, retry fails again as injected, no extra row",
+      "subchecks": {
+        "nativeFailure": "PASS",
+        "noFalseSuccess": "PASS",
+        "retryAvailable": "PASS",
+        "noExtraMedia": "PASS",
+        "preciseMissingFileDiagnostic": "NOT_RUN"
+      },
+      "evidence": [
+        "as07-native-error-feedback.png",
+        "as07-retry-feedback.png",
+        "as07-retry-owned-media-rows.json"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    },
+    {
+      "id": "AS08",
+      "result": "PASS",
+      "scope": "Real adapter successes/failures/close each settle before own file and directory cleanup; no cross-task filesystem cleanup",
+      "subchecks": {
+        "sevenCurrentNativeOperationsClean": "PASS",
+        "closedWriteStillUsesFile": "PASS"
+      },
+      "evidence": [
+        "nativecheck-final-platform-events.log"
+      ],
+      "apkVersionCode": 20263014,
+      "completeDualPlatformAcceptance": false
+    }
+  ],
+  "originalMediaIntegrity": [
+    {
+      "mediaId": "1000043697",
+      "uri": "content://media/external/images/media/1000043697",
+      "owner": "org.hnuhole.image_viewer_component.nativecheck",
+      "fixture": "ordinary.png",
+      "mimeType": "image/png",
+      "bytes": 3656,
+      "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+      "expectedSha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043698",
+      "uri": "content://media/external/images/media/1000043698",
+      "owner": "org.hnuhole.image_viewer_component.nativecheck",
+      "fixture": "ordinary.png",
+      "mimeType": "image/png",
+      "bytes": 3656,
+      "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+      "expectedSha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043699",
+      "uri": "content://media/external/images/media/1000043699",
+      "owner": "org.hnuhole.image_viewer_component.nativecheck",
+      "fixture": "animation.gif",
+      "mimeType": "image/gif",
+      "bytes": 934,
+      "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "expectedSha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043700",
+      "uri": "content://media/external/images/media/1000043700",
+      "owner": "org.hnuhole.image_viewer_component.nativecheck",
+      "fixture": "animation.webp",
+      "mimeType": "image/webp",
+      "bytes": 290,
+      "sha256": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139",
+      "expectedSha256": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043701",
+      "uri": "content://media/external/images/media/1000043701",
+      "owner": "org.hnuhole.image_viewer_component.nativecheck",
+      "fixture": "animation.gif",
+      "mimeType": "image/gif",
+      "bytes": 934,
+      "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "expectedSha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043702",
+      "uri": "content://media/external/images/media/1000043702",
+      "owner": "org.hnuhole.image_viewer_component.nativecheck",
+      "fixture": "animation.gif",
+      "mimeType": "image/gif",
+      "bytes": 934,
+      "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "expectedSha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "byteIdentical": true
+    }
+  ],
+  "sanitizedCurrentNativeEvents": [
+    {
+      "stage": "nativeAccessChecked",
+      "mode": "normal",
+      "granted": true,
+      "sequence": 0
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "normal",
+      "operation": 1,
+      "sequence": 1
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "normal",
+      "operation": 1,
+      "sequence": 1
+    },
+    {
+      "stage": "nativeWriteSucceeded",
+      "mode": "normal",
+      "operation": 1,
+      "sequence": 1
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "normal",
+      "operation": 1,
+      "fileExists": false,
+      "directoryExists": false,
+      "sequence": 1
+    },
+    {
+      "stage": "nativeAccessChecked",
+      "mode": "normal",
+      "granted": true,
+      "sequence": 1
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "normal",
+      "operation": 2,
+      "sequence": 2
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "normal",
+      "operation": 2,
+      "sequence": 2
+    },
+    {
+      "stage": "nativeWriteSucceeded",
+      "mode": "normal",
+      "operation": 2,
+      "sequence": 2
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "normal",
+      "operation": 2,
+      "fileExists": false,
+      "directoryExists": false,
+      "sequence": 2
+    },
+    {
+      "stage": "nativeAccessChecked",
+      "mode": "normal",
+      "granted": true,
+      "sequence": 2
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "normal",
+      "operation": 3,
+      "sequence": 3
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "normal",
+      "operation": 3,
+      "sequence": 3
+    },
+    {
+      "stage": "nativeWriteSucceeded",
+      "mode": "normal",
+      "operation": 3,
+      "sequence": 3
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "normal",
+      "operation": 3,
+      "fileExists": false,
+      "directoryExists": false,
+      "sequence": 3
+    },
+    {
+      "stage": "nativeAccessChecked",
+      "mode": "delayedAdapter",
+      "granted": true,
+      "sequence": 3
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "delayedAdapter",
+      "operation": 1,
+      "sequence": 4
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "delayedAdapter",
+      "operation": 1,
+      "sequence": 4
+    },
+    {
+      "stage": "nativeWriteSucceeded",
+      "mode": "delayedAdapter",
+      "operation": 1,
+      "sequence": 4
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "delayedAdapter",
+      "operation": 1,
+      "fileExists": false,
+      "directoryExists": false,
+      "sequence": 4
+    },
+    {
+      "stage": "nativeAccessChecked",
+      "mode": "delayedAdapter",
+      "granted": true,
+      "sequence": 4
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "delayedAdapter",
+      "operation": 1,
+      "sequence": 5
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "delayedAdapter",
+      "operation": 1,
+      "sequence": 5
+    },
+    {
+      "stage": "nativeWriteSucceeded",
+      "mode": "delayedAdapter",
+      "operation": 1,
+      "sequence": 5
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "delayedAdapter",
+      "operation": 1,
+      "fileExists": false,
+      "directoryExists": false,
+      "sequence": 5
+    },
+    {
+      "stage": "nativeAccessChecked",
+      "mode": "missingOwnedFile",
+      "granted": true,
+      "sequence": 5
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "missingOwnedFile",
+      "operation": 1,
+      "sequence": 6
+    },
+    {
+      "stage": "ownedFileRemovedBeforeNativeCall",
+      "mode": "missingOwnedFile",
+      "operation": 1,
+      "sequence": 6
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "missingOwnedFile",
+      "operation": 1,
+      "sequence": 6
+    },
+    {
+      "stage": "nativeWriteFailed",
+      "mode": "missingOwnedFile",
+      "operation": 1,
+      "sequence": 6
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "missingOwnedFile",
+      "operation": 1,
+      "fileExists": false,
+      "directoryExists": false,
+      "sequence": 6
+    },
+    {
+      "stage": "nativeAccessChecked",
+      "mode": "missingOwnedFile",
+      "granted": true,
+      "sequence": 6
+    },
+    {
+      "stage": "adapterDispatched",
+      "mode": "missingOwnedFile",
+      "operation": 2,
+      "sequence": 7
+    },
+    {
+      "stage": "ownedFileRemovedBeforeNativeCall",
+      "mode": "missingOwnedFile",
+      "operation": 2,
+      "sequence": 7
+    },
+    {
+      "stage": "nativeWriteCalled",
+      "mode": "missingOwnedFile",
+      "operation": 2,
+      "sequence": 7
+    },
+    {
+      "stage": "nativeWriteFailed",
+      "mode": "missingOwnedFile",
+      "operation": 2,
+      "sequence": 7
+    },
+    {
+      "stage": "settledCleanupObserved",
+      "mode": "missingOwnedFile",
+      "operation": 2,
+      "fileExists": false,
+      "directoryExists": false,
+      "sequence": 7
+    }
+  ],
+  "nativeOperationCounts": {
+    "success": 5,
+    "failure": 2,
+    "settledClean": 7,
+    "ownedMediaCount": 6
+  },
+  "initialOldApkPngNativeSuccess": true,
+  "nativeSaveProductDefaultEnabled": false,
+  "nativeSaveTestGate": "nativecheck flavor AND VIEWER_ENABLE_NATIVE_EXPORT=true",
+  "failuresAndRepairs": [
+    {
+      "issue": "Save feedback Flexible halves viewport and shifts footer",
+      "resultBefore": "FAIL",
+      "fixed": "ConstrainedBox within local LayoutBuilder, short intrinsic feedback and capped scroll region",
+      "evidenceBefore": [
+        "as02-original-save-feedback.png",
+        "save-feedback-layout-before-fix.log"
+      ],
+      "evidenceAfter": [
+        "as02-fixed-after-save.png",
+        "package-host-tests-layout-verified.log"
+      ]
+    },
+    {
+      "issue": "Regression test SemanticsHandle cleanup / deprecated hasFlag",
+      "resultBefore": "FAIL",
+      "fixed": "try/finally disposal and current flagsCollection API",
+      "finalAnalyze": "PASS",
+      "finalHostTests": "90 PASS"
+    },
+    {
+      "issue": "Nativecheck updated APK initial install rejected by system",
+      "resultBefore": "INSTALL_FAILED_ABORTED",
+      "retryAfterUser": "PASS",
+      "automaticUninstallFallback": false
+    },
+    {
+      "issue": "vivo Gallery direct-open animated WebP autoplay",
+      "result": "FAIL",
+      "originalBytes": "PASS",
+      "playbackAfterDrag": "PASS",
+      "engineOrDecoderFork": false
+    }
+  ],
+  "deviceSettings": {
+    "originalFontScale": 1.0,
+    "maximumFontScaleTested": 1.88,
+    "restoredFontScale": 1.0,
+    "restoredDirectionLock": 0,
+    "restoredShowTouches": 0,
+    "restoredPointerLocation": 0,
+    "restoredAccessibilityEnabled": 0,
+    "restoredEnabledServices": "",
+    "userAuthorizedExactVisionAidRestore": {
+      "recordedAt": "2026-10-14T09:30:37.9763958+08:00",
+      "humanExplicitAuthorization": "我没找到关闭的按钮啊？？你给我关了",
+      "originalAccessibilityEnabled": "0",
+      "beforeServices": "com.vivo.visionaid.builtin/com.vivo.visionaid.imagedetect.VisionAidAccessibilityService",
+      "afterAccessibilityEnabled": "0",
+      "afterServices": "",
+      "restored": true,
+      "scope": "Disable exactly the one newly enabled vivo VisionAid service after explicit user request; no other service/process stopped"
+    },
+    "historicalInterruptedTouchOverlay": "Old AV02 recorder interrupted before finally; operator disabled then actual both0 verification recorded; all subsequent recorders change no system settings"
+  },
+  "deviceResources": {
+    "privateAdbPort": 5038,
+    "oneDeviceOnly": true,
+    "privateKeyGeneratedInTask": true,
+    "taskAdbPrivateAndPublicKeyDeletedAfterStop": false,
+    "cleanupReceipt": "E:/Hnuhole-image-viewer-component-20261012/android-20261013/logs/task-scope-cleanup-receipt.json",
+    "sharedAdbRestartedOrStopped": false,
+    "taskServerStop": {
+      "recordedAt": "2026-10-14T09:30:38.0341681+08:00",
+      "ownerPid": 24896,
+      "serverPort": 5038,
+      "stoppedExactlyOwnProcess": true,
+      "sharedAdbStartedOrRestartedOrStopped": false,
+      "deviceOperationsEnded": true,
+      "reason": "Current phone validation complete; return exclusive USB device to community tasks"
+    },
+    "noEmulator": true,
+    "noAuthServicesStopped": true,
+    "keyCleanupCorrection": {
+      "previouslyDeclaredBothDeleted": true,
+      "actualAtPreviousPhaseEnd": "Private deleted; public not deleted per original cleanup receipt",
+      "oldPublicKeyRemovedDuringRetry": true,
+      "correctionEvidence": "docs/design/image-viewer-webp-retry-verification.json"
+    }
+  },
+  "unresolved": {
+    "ios": "NOT_RUN: independent Mac/Xcode/iOS device and controlled save entry absent",
+    "legacyAndroidPermissions": "NOT_RUN: need separate API24–28 authorized device window",
+    "resourceBudget": "NOT_DEVELOPED_NOT_FIXED (MIV13)",
+    "businessIntegration": "NOT_DEVELOPED (MIV14)",
+    "rotationMatrix": "NOT_RUN: zoom and active gesture rotation",
+    "lifecycleMatrix": "NOT_RUN: OS background/invisibility/native activity resource proof",
+    "accessibilityMatrix": "NOT_RUN: feedback announcements and landscape combinations",
+    "webpGalleryAutoplay": "FAIL: exact290-byte file + active vivo Gallery9.4.6.13; no silent conversion"
+  },
+  "formalAndroidComplete": false,
+  "formalDualPlatformComplete": false,
+  "M3Complete": false,
+  "M4Complete": false,
+  "publication": {
+    "authorizedNormalCommitAndPush": true,
+    "origin": "https://github.com/zewbby/HnuHole.git",
+    "branch": "codex/image-viewer-component",
+    "commitIdentity": "Git commit containing this report plus external final-publication-receipt.json; no circular self-hash",
+    "forcePush": false,
+    "mergedMain": false,
+    "releasePublished": false,
+    "deployed": false
+  },
+  "privacy": {
+    "rawDeviceSerialAndVmServiceTokensInGit": false,
+    "keysCachesApksAndRawRecordingsInGit": false,
+    "personalMediaQuery": false,
+    "exactOwnedUrisOnly": true,
+    "galleryRawRecordingMayIncludeGalleryAdjacentThumbnailStrip": "Private local evidence only; not committed/exported"
+  },
+  "laterWebpRetryQualification": {
+    "evidence": "docs/design/image-viewer-webp-retry-verification.json",
+    "oldAfterDragPass": "Operator animation observation only; no same-file identity verification"
+  }
+}

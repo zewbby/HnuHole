@@ -1,0 +1,280 @@
+{
+  "schemaVersion": "hnuhole-community-flutter-f3-source-lock/v1",
+  "recordedOn": "2026-10-09",
+  "branch": "codex/community-flutter-pages",
+  "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+  "frontendF2Commit": "1e8ad1def04d451a9776e833cee6acf119f25948",
+  "sourceReferences": [
+    {
+      "sourcePath": "apps/mobile/lib/hnuhole_mobile.dart",
+      "destinationPath": "apps/mobile/lib/hnuhole_mobile.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "b16bbc55f8d6839fac59089730eb813793c867f2",
+      "sourceSha256": "5a7024f0b0d1ce682ee39f0f8957dc368768d033ef9818ffc646878b2094037a",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/main.dart",
+      "destinationPath": "apps/mobile/lib/main.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "f0332aeeb9f2aae2b8e6fbe2268052abeabc8254",
+      "sourceSha256": "57659ab9a9548bd571c98c3fd182858f03290ee2352f73a2e849ab1d57b7ecc8",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/auth/auth_flows.dart",
+      "destinationPath": "apps/mobile/lib/src/auth/auth_flows.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "3478958688dc1f840a7a86b931fc20ebb2c99d6e",
+      "sourceSha256": "4711b75857a0fae3a939af2a68eb683df93b6e71dffa30d4024a72286e3caf17",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/auth/auth_state_codec.dart",
+      "destinationPath": "apps/mobile/lib/src/auth/auth_state_codec.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "3b8c2a21f8defc152ce7e264f9d579e2b1404c00",
+      "sourceSha256": "7adcac9ec5cf49a7097f19e0420d034edb026b358b7af39de874df4895dca0ba",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/posts/http_post_api.dart",
+      "destinationPath": "apps/mobile/lib/src/posts/http_post_api.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "341bacc021971c412a55413b7684cddcaba1e6cd",
+      "sourceSha256": "be3ba00c3c83378c73bacd2bc2d178b7ac1a56f240a6a69fbd2d47eeefbec5ef",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/posts/post_api.dart",
+      "destinationPath": "apps/mobile/lib/src/posts/post_api.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "b9ffbbc53b3be02b65552c43aa96e6487e2b44f8",
+      "sourceSha256": "18258abde12c3de567102c435d05a10891b85cd7d1678624ec0791e9887bfcdc",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/posts/post_controller.dart",
+      "destinationPath": "apps/mobile/lib/src/posts/post_controller.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "c218abb4c39cbc755a1f9efebfeec2fe556573ab",
+      "sourceSha256": "c8ce6f71087a95dcea7a774cad9cc1a1607321916015f19334b06729507838bf",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/posts/post_models.dart",
+      "destinationPath": "apps/mobile/lib/src/posts/post_models.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "83490869196f5f1b2ec6107fecb82038f9dff308",
+      "sourceSha256": "c4133991ca2c61c097aef19235b5e65fb8b4733336ed9a7d15145ddc8ae47704",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/posts/post_protocol.dart",
+      "destinationPath": "apps/mobile/lib/src/posts/post_protocol.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "5cd67bff17cad07b8ac4b67dcfe1cc66263b768c",
+      "sourceSha256": "afab051109ed6715d179285c5a14d68cea3977ddb19b5556f4b3c0355cac871b",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/posts/post_screens.dart",
+      "destinationPath": "apps/mobile/lib/src/posts/post_screens.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "7dc9253677dd58c6c66d99eabac8994f3d0ed153",
+      "sourceSha256": "c219a439eff470943180fb2190bc5e0f3885f0946fec846a0bbfddab236bc48b",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/posts/post_theme.dart",
+      "destinationPath": "apps/mobile/lib/src/posts/post_theme.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "5fd4ea56a45c91488022df5562bd78ffebb262a5",
+      "sourceSha256": "e175fac1d5656a3afca28faa9cf5e543f88a3fd51680f4b105e16f4d8eb16ddb",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/lib/src/storage/post_store.dart",
+      "destinationPath": "apps/mobile/lib/src/storage/post_store.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "dcea1c8de25d75e2fa6a801833f72f07bf78bd14",
+      "sourceSha256": "1dfad997838a05c7a99a5f6e822349d7ca40c39208cd1156e1d5ad06d577f5e4",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/pubspec.lock",
+      "destinationPath": "apps/mobile/pubspec.lock",
+      "sourceMode": "100644",
+      "sourceGitBlob": "1fadf9bd28d588797e13c178993e52168c3afa4c",
+      "sourceSha256": "9609e0f46a13ab53d6dedfb9665b0b7ac7523d20474b42abb77380dbdb4c9261",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/pubspec.yaml",
+      "destinationPath": "apps/mobile/pubspec.yaml",
+      "sourceMode": "100644",
+      "sourceGitBlob": "0c7b7311facb1624b3f4c819b6301b2bf5978c0d",
+      "sourceSha256": "562be19adfb9dea9057655b753ae354e10df452eb469b842f9c553fea759718f",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/test/post_api_test.dart",
+      "destinationPath": "apps/mobile/test/post_api_test.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "006b750df1c47063bf2c30d83f9407ae37b22bc3",
+      "sourceSha256": "f4c52c4e5396a0fe273a7a873439b38bd461c21fefa7312166c0a67e4ea6f8d1",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/test/post_closure_cleanup_test.dart",
+      "destinationPath": "apps/mobile/test/post_closure_cleanup_test.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "ad97ff740b50e4f9fb7a732524267b34a3e798d3",
+      "sourceSha256": "a03e4824307bf3d4127451f3b2d8fbda4c3ac5964f3bdf9123b65728abef7011",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/test/post_controller_test.dart",
+      "destinationPath": "apps/mobile/test/post_controller_test.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "e37353d59d371c8de81b0b09de1586d220e1cb72",
+      "sourceSha256": "dd899bb5cf2286cdc44f281ea00f5c00de9c3eb56055f03b9dfdbece7873abc0",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/test/post_models_test.dart",
+      "destinationPath": "apps/mobile/test/post_models_test.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "b452aa0c28590d58a91e97fc4836db20264c7a48",
+      "sourceSha256": "03d9a4e69a422f61554415bb46309b0551fb84c1c948c344872071bbd3fc358f",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/test/post_protocol_test.dart",
+      "destinationPath": "apps/mobile/test/post_protocol_test.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "544edd90f84f921ec8807ee86b871f7a38096371",
+      "sourceSha256": "c62cf93f7e667b4084f86731f33c8923a9f3258d49b14f303778a99be7950ca7",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/test/post_screens_test.dart",
+      "destinationPath": "apps/mobile/test/post_screens_test.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "577542416d9b103588531ec569f2b15c64448ac3",
+      "sourceSha256": "b2d836d5675c9ed6e275a94563c3a89122616c329e546aead100e2cde3a6919a",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "apps/mobile/test/post_storage_test.dart",
+      "destinationPath": "apps/mobile/test/post_storage_test.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "ac6506cae89408dad45708e3dbb9461d4c13c46f",
+      "sourceSha256": "6a4b4a33bada5202bd52f9aaf67674ab4575aa49211fc74b4a899853c4e30c3b",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt",
+      "destinationPath": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt",
+      "sourceMode": "100644",
+      "sourceGitBlob": "9e5c1a6c575007ca364eea16c25b6ea4b7f23d3d",
+      "sourceSha256": "e1d6ee34645436ec3e90a56bad27a881a37b0c8691d82e45c0705304b59b1f32",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt",
+      "destinationPath": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt",
+      "sourceMode": "100644",
+      "sourceGitBlob": "28df25d67e8517d10226c4252fb79a1a12723762",
+      "sourceSha256": "de874ca6a81c7a905ccd7e30774fe6cb8d6925b0ac386e403ac276b086b678cc",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidBusinessStorage.kt",
+      "destinationPath": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidBusinessStorage.kt",
+      "sourceMode": "100644",
+      "sourceGitBlob": "69d995e1f55f9f5db434dcef68d6bfc9490b3ec5",
+      "sourceSha256": "080ca793ed8d278815f2a599ed5c54592992aa32f0faa4f3fcff64bba5464caf",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
+      "destinationPath": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
+      "sourceMode": "100644",
+      "sourceGitBlob": "e2815368863becc443ae698a0db4c435e7058b82",
+      "sourceSha256": "1c4495790aac53a2ec531e5b0e75ec99ab19439de5998b6edc49cfea4f0fb08b",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "packages/auth_vault/ios/Classes/AuthInstallationMarker.swift",
+      "destinationPath": "packages/auth_vault/ios/Classes/AuthInstallationMarker.swift",
+      "sourceMode": "120000",
+      "sourceGitBlob": "16df6d2747cf6034bf35b88682d8c20135d6af57",
+      "sourceSha256": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881",
+      "selection": "Existing symlink retained; shared target imported"
+    },
+    {
+      "sourcePath": "packages/auth_vault/ios/Classes/AuthVaultPlugin.swift",
+      "destinationPath": "packages/auth_vault/ios/Classes/AuthVaultPlugin.swift",
+      "sourceMode": "120000",
+      "sourceGitBlob": "418d1d35150f7cc3db0f4bf8ed4b72c9ff8926e6",
+      "sourceSha256": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe",
+      "selection": "Existing symlink retained; shared target imported"
+    },
+    {
+      "sourcePath": "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift",
+      "destinationPath": "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift",
+      "sourceMode": "100644",
+      "sourceGitBlob": "4e71adac2dc3e6fbbe72afcc41acd47e4e8e1a51",
+      "sourceSha256": "dce4b0812fc26456154459943096932b3b7a3a0e14a6ee31d42dd604ee524b3e",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthInstallationMarker.swift",
+      "destinationPath": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthInstallationMarker.swift",
+      "sourceMode": "100644",
+      "sourceGitBlob": "3db34aebc4ae553cb93f5d96710a6e2603939d59",
+      "sourceSha256": "db58627647628c2d9653c2551fc08cfa6eb35858eb5cc43ba0f403477134f19a",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift",
+      "destinationPath": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift",
+      "sourceMode": "100644",
+      "sourceGitBlob": "34342ad310ad07997b7c0ae708068462414c827e",
+      "sourceSha256": "b977c8a771ee7e465b13432e4552b9b0e67ed4d9be795af0df380c778c840fde",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "packages/auth_vault/lib/hnuhole_auth_vault.dart",
+      "destinationPath": "packages/auth_vault/lib/hnuhole_auth_vault.dart",
+      "sourceMode": "100644",
+      "sourceGitBlob": "36e7a4dd031e63c8853abad799ff55af356b3e13",
+      "sourceSha256": "51e27211543fbdc0684fabea16adebfdf8d68e579ca5c366a489524a598fe9a2",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    },
+    {
+      "sourcePath": "services/api/internal/posts/testdata/GraphemeBreakTest-16.0.0.txt",
+      "destinationPath": "packages/post-protocol-vectors/GraphemeBreakTest-16.0.0.txt",
+      "sourceMode": "100644",
+      "sourceGitBlob": "d10c174b6896d3003e037c197d431d06ad91ff92",
+      "sourceSha256": "ee2b9354d270ac061b29f09662cafea06341d77e704b8cc6bd72aaeeda363cb5",
+      "selection": "Selective pinned source import with F3 corrections/review"
+    }
+  ],
+  "newFrontendFiles": [
+    "apps/mobile/lib/src/config/mobile_environment.dart",
+    "apps/mobile/test/mobile_environment_test.dart",
+    "tools/run-community-flutter-f3-linux.sh"
+  ],
+  "corrections": [
+    "v1/future schema guard before persistent PRAGMA",
+    "Legacy retry key transactional remap and encrypted lookup",
+    "Random retry row IDs",
+    "DELETE durable reconciliation and stale-authority fences",
+    "Single authoritative publication notice",
+    "Approved F1 screens/state/actions and text slice",
+    "Android CLOSED read/write/path lock with purge"
+  ],
+  "scope": "Source provenance only; exact tested working source fingerprint is in F3 verification. No backend working tree or historical dynamic PASS imported."
+}

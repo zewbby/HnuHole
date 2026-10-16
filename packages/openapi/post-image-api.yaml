@@ -1,0 +1,1406 @@
+openapi: 3.0.3
+info:
+  title: HnuHole protected post image API
+  version: 0.1.0
+  description: Explicit dev-only postImages configuration. Bearer stays in host transport.
+    Upload capabilities can only complete accepted exact bytes, survive session replacement,
+    expire within 15 minutes and the 24-hour attempt upload deadline, and still require
+    final C Gate/account/identity/stop-generation checks. No query parameters, cookies
+    as auth, redirects, public storage, Range or conditional caches. Duplicate/unknown
+    JSON fields and noncanonical path IDs are rejected. See post-image-media-contract.md
+    for byte framing, limits and production decisions.
+servers:
+- url: /
+paths:
+  /api/v1/posts/{postId}/images:
+    parameters:
+    - name: postId
+      in: path
+      required: true
+      schema: &id001
+        type: string
+        format: uuid
+        pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+    get:
+      operationId: readPostImages
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Authorized result
+          headers: &id002
+            Cache-Control: &id003
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID: &id004
+              required: true
+              schema:
+                type: string
+            Server-Time: &id005
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Retry-After:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 300
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/posts/{postId}/images/{contentVersionId}/original:
+    parameters:
+    - name: postId
+      in: path
+      required: true
+      schema: *id001
+    - name: contentVersionId
+      in: path
+      required: true
+      schema: *id001
+    get:
+      operationId: readPostOriginalImage
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Authorized result
+          headers: *id002
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/gif:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Retry-After:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 300
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/me/post-tasks/{taskId}/attempts/{version}/images:
+    parameters:
+    - name: taskId
+      in: path
+      required: true
+      schema: *id001
+    - name: version
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2147483647
+    get:
+      operationId: readOwnPostImageUploads
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Authorized result
+          headers: *id002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadState'
+        '400':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Retry-After:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 300
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/me/post-tasks/{taskId}/attempts/{version}/images/{mediaId}/upload-grant:
+    parameters:
+    - name: taskId
+      in: path
+      required: true
+      schema: *id001
+    - name: version
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2147483647
+    - name: mediaId
+      in: path
+      required: true
+      schema: *id001
+    post:
+      operationId: issuePostImageUploadGrant
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Authorized result
+          headers: *id002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+        '400':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Retry-After:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 300
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/me/post-tasks/{taskId}/attempts/{version}/images/{mediaId}/bytes:
+    parameters:
+    - name: taskId
+      in: path
+      required: true
+      schema: *id001
+    - name: version
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2147483647
+    - name: mediaId
+      in: path
+      required: true
+      schema: *id001
+    put:
+      operationId: uploadAcceptedPostImageBytes
+      security:
+      - uploadOnly: []
+      responses:
+        '204':
+          description: Exact item stored; not a publication receipt
+          headers:
+            Cache-Control: *id003
+            X-Request-ID: *id004
+            Server-Time: *id005
+        '400':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Retry-After:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 300
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Rejected; never treat timeout/error as a new publish intent
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        x-max-bytes: 10485760
+        content:
+          image/jpeg:
+            schema:
+              type: string
+              format: binary
+          image/png:
+            schema:
+              type: string
+              format: binary
+          image/gif:
+            schema:
+              type: string
+              format: binary
+          image/webp:
+            schema:
+              type: string
+              format: binary
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    uploadOnly:
+      type: http
+      scheme: Upload
+  schemas:
+    Selection:
+      type: object
+      additionalProperties: false
+      required:
+      - mediaId
+      - sha256
+      - byteLength
+      - mimeType
+      - width
+      - height
+      properties:
+        mediaId: *id001
+        sha256:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+        byteLength:
+          type: integer
+          minimum: 1
+          maximum: 10485760
+        mimeType: &id006
+          type: string
+          enum:
+          - image/jpeg
+          - image/png
+          - image/gif
+          - image/webp
+        width:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        height:
+          type: integer
+          minimum: 1
+          maximum: 16384
+      description: Immutable ordered selection; canonical nonzero UUID, maximum 12582912
+        pixels. All declared values are verified against full bytes.
+    Source:
+      type: object
+      additionalProperties: false
+      required:
+      - path
+      - mimeType
+      - byteLength
+      properties:
+        path:
+          type: string
+          pattern: ^/api/v1/posts/[0-9a-f-]{36}/images/[0-9a-f-]{36}/original$
+        mimeType: *id006
+        byteLength:
+          type: integer
+          minimum: 1
+          maximum: 10485760
+    Image:
+      type: object
+      additionalProperties: false
+      required:
+      - mediaId
+      - contentVersionId
+      - position
+      - width
+      - height
+      - pixelWidth
+      - pixelHeight
+      - frames
+      - animated
+      - saveAllowed
+      - thumbnail
+      - full
+      - original
+      properties:
+        mediaId: *id001
+        contentVersionId: *id001
+        position:
+          type: integer
+          minimum: 0
+          maximum: 8
+        width:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        height:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        pixelWidth:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        pixelHeight:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        frames:
+          type: integer
+          minimum: 1
+          maximum: 120
+        animated:
+          type: boolean
+        saveAllowed:
+          type: boolean
+        thumbnail:
+          $ref: '#/components/schemas/Source'
+        full:
+          $ref: '#/components/schemas/Source'
+        original:
+          $ref: '#/components/schemas/Source'
+      description: v1 thumbnail/full/original all reference the same unchanged original.
+        No transcoding or bandwidth-saving thumbnail claim. Pixel dimensions respect
+        EXIF.
+    UploadItem:
+      type: object
+      additionalProperties: false
+      required:
+      - mediaId
+      - sha256
+      - byteLength
+      - mimeType
+      - width
+      - height
+      - position
+      - uploaded
+      properties:
+        mediaId:
+          type: string
+          format: uuid
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+        sha256:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+        byteLength:
+          type: integer
+          minimum: 1
+          maximum: 10485760
+        mimeType:
+          type: string
+          enum:
+          - image/jpeg
+          - image/png
+          - image/gif
+          - image/webp
+        width:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        height:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        position:
+          type: integer
+          minimum: 0
+          maximum: 8
+        uploaded:
+          type: boolean
+      description: Immutable ordered selection; canonical nonzero UUID, maximum 12582912
+        pixels. All declared values are verified against full bytes.
+    Group:
+      type: object
+      additionalProperties: false
+      required:
+      - postId
+      - images
+      - accessValidUntil
+      properties:
+        postId: *id001
+        images:
+          type: array
+          maxItems: 9
+          items:
+            $ref: '#/components/schemas/Image'
+        accessValidUntil:
+          type: string
+          format: date-time
+          description: At most 60 seconds from Server-Time and no later than session
+            expiry. Host revokes terminally on known invalidation or timeout.
+    UploadState:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - postId
+      - attemptVersion
+      - items
+      properties:
+        taskId: *id001
+        postId: *id001
+        attemptVersion:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        items:
+          type: array
+          maxItems: 9
+          items:
+            $ref: '#/components/schemas/UploadItem'
+    Grant:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - mediaId
+      - attemptVersion
+      - uploadToken
+      - expiresAt
+      properties:
+        taskId: *id001
+        mediaId: *id001
+        attemptVersion:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        uploadToken:
+          type: string
+          pattern: ^[A-Za-z0-9_-]{43}$
+          description: Canonical unpadded 32-byte random capability; upload only,
+            never pass to viewer or logs.
+        expiresAt:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      - requestId
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        requestId:
+          type: string
+x-design-document: ../../docs/design/post-image-media-contract.md

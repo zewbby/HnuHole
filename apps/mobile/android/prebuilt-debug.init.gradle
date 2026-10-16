@@ -1,0 +1,71 @@
+import groovy.json.JsonSlurper
+
+// Explicit development-only alternative to the Flutter empty CMake NDK download.
+// Invoke with -I prebuilt-debug.init.gradle. The default/release build is unchanged.
+// We retain the prebuilt engine's debug symbols; no native compilation is skipped.
+// Included Flutter tooling has its own tasks and never packages application libraries.
+if (gradle.parent != null) {
+    return
+}
+
+def permittedTasks = [
+    'assembleDebug',
+    ':app:assembleDebug',
+    ':hnuhole_auth_vault:compileDebugAndroidTestKotlin',
+    ':hnuhole_auth_vault:assembleDebugAndroidTest',
+    ':hnuhole_auth_vault:connectedDebugAndroidTest',
+]
+if (gradle.startParameter.taskNames.isEmpty() ||
+        !gradle.startParameter.taskNames.every { permittedTasks.contains(it) }) {
+    throw new GradleException('Prebuilt-only verification accepts only named debug APK/test tasks')
+}
+
+gradle.beforeProject { project ->
+    project.pluginManager.withPlugin('dev.flutter.flutter-gradle-plugin') {
+        if (project.name != 'app') {
+            throw new GradleException('Unexpected Flutter application')
+        }
+        def appRoot = project.rootDir.parentFile
+        def json = new JsonSlurper()
+        def plugins = json.parse(new File(appRoot, '.flutter-plugins-dependencies'))
+        def androidPlugins = plugins.plugins.android
+        if (androidPlugins.collect { it.name } != ['hnuhole_auth_vault']) {
+            throw new GradleException('Review new Android plugins before using prebuilt-only verification')
+        }
+        def configurationFile = new File(appRoot, '.dart_tool/package_config.json')
+        def packages = json.parse(configurationFile).packages
+        packages.each { dependency ->
+            def dependencyRoot = new File(configurationFile.toURI().resolve(dependency.rootUri))
+            if (new File(dependencyRoot, 'hook/build.dart').exists() ||
+                    new File(dependencyRoot, 'hook/link.dart').exists()) {
+                throw new GradleException('Native asset hooks require the standard NDK build')
+            }
+        }
+
+        def properties = new Properties()
+        new File(project.rootDir, 'local.properties').withInputStream { properties.load(it) }
+        def expected = new File(properties.getProperty('flutter.sdk'),
+                'packages/flutter_tools/gradle/src/main/scripts/CMakeLists.txt').canonicalFile
+        def android = project.extensions.getByName('android')
+        def synthetic = android.externalNativeBuild.cmake.path
+        if (synthetic == null || synthetic.canonicalFile != expected ||
+                !synthetic.readLines().every { it.trim().isEmpty() || it.trim().startsWith('#') }) {
+            throw new GradleException('Refusing to change a real native CMake configuration')
+        }
+        android.externalNativeBuild.cmake.path = null
+        android.packagingOptions.jniLibs.keepDebugSymbols.add('**/*.so')
+    }
+    project.afterEvaluate {
+        def android = project.extensions.findByName('android')
+        if (android != null && (android.externalNativeBuild.cmake.path != null ||
+                android.externalNativeBuild.ndkBuild.path != null)) {
+            throw new GradleException('Native compilation requires the standard NDK build')
+        }
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    if (graph.allTasks.any { it.name.contains('Release') || it.name.contains('Profile') }) {
+        throw new GradleException('Prebuilt-only verification cannot build release/profile artifacts')
+    }
+}

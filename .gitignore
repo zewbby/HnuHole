@@ -3,7 +3,12 @@
 Thumbs.db
 .idea/
 .vscode/
-.agents/
+# Keep project skills versioned; other local agent state remains private.
+.agents/*
+!.agents/skills/
+.agents/skills/**/__pycache__/
+.agents/skills/**/*.pyc
+.agents/skills/impeccable/scripts/.bin/
 
 # Local secrets and environment overrides
 .env

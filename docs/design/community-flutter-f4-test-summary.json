@@ -1,0 +1,75 @@
+{
+  "main": {
+    "assembly": "production HnuholeApp root; actual TLS C/V handlers, independent PG, file SQLite; host vault substitutes",
+    "checkpoints": {
+      "F4-H01": true,
+      "F4-H02": true,
+      "F4-H03": true,
+      "F4-H04": true,
+      "F4-H05": true,
+      "F4-H06": true,
+      "F4-H07": true,
+      "F4-H08": true
+    },
+    "counts": {
+      "bindings": 1,
+      "committedResponseDrops": 2,
+      "creates": 1,
+      "deletedPosts": 1,
+      "deletes": 1,
+      "posts": 1,
+      "queryDrops": 2,
+      "tasks": 1
+    },
+    "finalAuthenticationCandidate": null,
+    "finalF4Result": "BLOCKED_DEPENDENCY",
+    "hostFlutterProcesses": 2,
+    "result": "PASS"
+  },
+  "serverSummary": [
+    "?   \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/cmd/api\t[no test files]",
+    "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/cmd/authdev\t1.139s",
+    "?   \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/cmd/runtimeprobe\t[no test files]",
+    "?   \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/cmd/verifier\t[no test files]",
+    "?   \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/auth\t[no test files]",
+    "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy\t531.489s",
+    "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol\t1.163s",
+    "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp\t39.783s",
+    "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyruntime\t1.031s",
+    "?   \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/channels\t[no test files]",
+    "?   \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/httpapi\t[no test files]",
+    "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/posts\t1.027s"
+  ],
+  "analyzeSummary": [
+    "Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!",
+    "Analyzing mobile...                                             ",
+    "No issues found! (ran in 10.9s)"
+  ],
+  "integrationSummary": [
+    "F4-H02 PASS",
+    "F4-H03 PASS",
+    "00:04 +1: All tests passed!",
+    "Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!",
+    "00:00 +0: loading /tmp/hnuhole-community-flutter-f4-01a11f1a-20261010/source/apps/mobile/integration/f4_main_https_postgres_test.dart",
+    "00:00 +0: F4 production main root, actual transport and durable original command",
+    "F4-H04 PASS",
+    "F4-H05 PASS",
+    "F4-H06 PASS",
+    "F4-H07 PASS",
+    "F4-H08 PASS",
+    "00:08 +1: All tests passed!",
+    "    f4_main_mobile_postgres_test.go:228: F4 current pinned-baseline main/root scoped PASS: map[bindings:1 committedResponseDrops:2 creates:1 deletedPosts:1 deletes:1 posts:1 queryDrops:2 tasks:1]",
+    "--- PASS: TestF4MainAppHTTPSPostgres (41.66s)",
+    "PASS",
+    "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp\t42.680s"
+  ],
+  "earlierMobileRun": {
+    "counts": {
+      "PASS": 308
+    },
+    "testFiles": 20,
+    "scope": "Earlier working snapshot before account-settings route addition; runner checks exit 0, analyze 0 issues observed in this task",
+    "rawMachineLog": "UNAVAILABLE_ON_HANDOFF_INPUT_OUTPUT_ERROR",
+    "finalSnapshotFullMobileRegression": "BLOCKED_HOST_FILESYSTEM"
+  }
+}

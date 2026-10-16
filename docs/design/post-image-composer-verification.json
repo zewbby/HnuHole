@@ -1,0 +1,573 @@
+{
+  "schemaVersion": "hnuhole-post-image-composer/v1",
+  "recordedOn": "2026-10-15",
+  "initialHead": "7c5817a7e3035dc12630e12f730b2e0229712564",
+  "sourceCommit": "5cd5fdb8f3766bb5ae5840fa7546eda6739fd98c",
+  "backendHandoffCommit": "d893378a8224b9c7a3b9d2bc9681a6ea508d5587",
+  "branch": "codex/image-viewer-business-integration",
+  "state": "POST_IMAGE_COMPOSER_IMPLEMENTED_HOST_AND_ANDROID_BUILD_PASS_JOINT_DEVICE_PENDING",
+  "report": "docs/design/post-image-composer-report.md",
+  "evidence": "docs/design/post-image-composer-verification.json",
+  "completeMobileSuite": "PASS_374_ZERO_EXCLUSIONS",
+  "staticAnalysisIssues": 0,
+  "bundle": "PASS",
+  "androidNativeBuild": "PASS",
+  "androidNativePickerDevice": "NOT_RUN",
+  "actualCProcessAndSqlChain": "NOT_RUN",
+  "nativeBusinessDevice": "NOT_RUN",
+  "uploadComposer": "IMPLEMENTED",
+  "iosOriginalPicker": "NOT_DEVELOPED_SUSPENDED_UPSTREAM_REENCODES_ORIGINALS",
+  "commentsAndMessages": "NOT_DEVELOPED",
+  "backendMerged": false,
+  "deviceUsed": false,
+  "timeZone": "Asia/Shanghai",
+  "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo",
+  "completeBusinessIntegrationAccepted": false,
+  "mainMerged": false,
+  "deployed": false,
+  "sourceWasUncommittedDuringChecks": true,
+  "implementationCommits": [
+    "8c5fc522747662e2fbda1475d24af93c363fcffb",
+    "5cd5fdb8f3766bb5ae5840fa7546eda6739fd98c"
+  ],
+  "sourceFilesVerifiedAgainstFinalExecutionManifest": true,
+  "testedInputDigestSha256": "564cd39cf85ed0f90ef45bbff23af08f815eac25b898933f7c2715915471e26a",
+  "testedInputFilesCount": 309,
+  "sourceFiles": [
+    {
+      "path": "apps/mobile/README.md",
+      "sha256": "b4ca1601c2f26b6b4a4c58a448ad11d438a9de20138fc7a5ed6df2d18833cc06"
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Info.plist",
+      "sha256": "38aab01077739fa70db4516be29ab9984100e1fb6b6d878d753e02e4dab3a556"
+    },
+    {
+      "path": "apps/mobile/lib/hnuhole_mobile.dart",
+      "sha256": "01f0aa8fb61a75fbc1e5eeaf596484762649790cf164f24492066c2c26e2c00c"
+    },
+    {
+      "path": "apps/mobile/lib/main.dart",
+      "sha256": "03d3a5d43842d9cad15994437cd07565026ca308c1e76f20dc57c98eb7e7a632"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/http_post_api.dart",
+      "sha256": "41f85805b1dafc48fdc79fb8625d340f1ed298ba81f3ac682c2b4fd8449107d9"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_composer_media.dart",
+      "sha256": "aedcdcd31c0ef79ff0d7e8b9eb62c93d293d1a4c704e64c9ba5e81e1d148bda7"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_composer_photos.dart",
+      "sha256": "cf63efa5d48a18382f56d48b0d861b511cae5b8f2b35396d764509e46dce1406"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_controller.dart",
+      "sha256": "fdf00633140ceaa824d61936f5b70fc2b87392292a76e3848b63d4e788489127"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_photo_picker.dart",
+      "sha256": "9ce28dfe79dbbd20a24f078e7bfd7420bdb458d5c5d02bddd1f108a71cccc62d"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_protocol.dart",
+      "sha256": "9641c2de2a09f48f3b21c91dce030ee1dd09cd958d9818153a8db5f1b4efdd8f"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_screens.dart",
+      "sha256": "a5c1cc17666e5a1b34c97633c09b641b3fd676c107a7b39ee95257553ebfc057"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_upload_api.dart",
+      "sha256": "87eec2c69d6c99444c40cf2327ea2d57d046ae13a17ef91fd898b3762bcd5aaf"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_upload_http.dart",
+      "sha256": "6969685c312174894cd9b3e985b27215d4107da84e90a99d630bdc116bf4e10c"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_upload_models.dart",
+      "sha256": "1a42d957498bfe855039d82df72296b98d749d7df95430d57fcd7d47ace91880"
+    },
+    {
+      "path": "apps/mobile/lib/src/storage/post_media_store.dart",
+      "sha256": "1ab558a7169d043a38efe4b2f39ded321cf9378506d2167c61193952f033266a"
+    },
+    {
+      "path": "apps/mobile/lib/src/storage/post_store.dart",
+      "sha256": "f0ef5a16b25579fe3d9628a2f6b0649c159a275d519f9d61e7c2119b05015e5e"
+    },
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "sha256": "f43dcd761873b53927758f50579af409a8b34cbbcf1d492134a9ac7225c6af37"
+    },
+    {
+      "path": "apps/mobile/pubspec.yaml",
+      "sha256": "558245ea01729cce45da575807c116564e9ae818efe0a235ca45923267380e24"
+    },
+    {
+      "path": "apps/mobile/test/fixtures/oriented-jpeg.b64",
+      "sha256": "5c4857e98cad58491e9b74398a3acaf69ab62843bc4ef5587e1db23501dcf9dd"
+    },
+    {
+      "path": "apps/mobile/test/fixtures/post-media-v1.json",
+      "sha256": "1d5199dd8c5d3abc97f0dd2be262238a5b8b5b17884b01fa005b0afe325b9b0a"
+    },
+    {
+      "path": "apps/mobile/test/post_api_test.dart",
+      "sha256": "cc6d33298367c73b5d59f768b23f8c4693c68f0fb8c256c59f84dbab9cd7c220"
+    },
+    {
+      "path": "apps/mobile/test/post_composer_media_test.dart",
+      "sha256": "e44a393ccba58d2d43f1042819c459a44f0f93dc3bff2656ffce9a91506fabfb"
+    },
+    {
+      "path": "apps/mobile/test/post_composer_photos_test.dart",
+      "sha256": "522db6181cc589af0db1865a8b22cc1f0a33661c8e4295373735bee96bc791c3"
+    },
+    {
+      "path": "apps/mobile/test/post_media_repository_test.dart",
+      "sha256": "e4bdf58f42b66c385ae2ef07534f69914766d2768b6534e32bb28a28a54bb6ac"
+    },
+    {
+      "path": "apps/mobile/test/post_photo_picker_test.dart",
+      "sha256": "56683548af49e043b4b058ce22cfb49f6f9bfd0e67c94c6e6b661d230ff96781"
+    },
+    {
+      "path": "apps/mobile/test/post_protocol_test.dart",
+      "sha256": "5bd269f5f37d51ab45a4585892c56bc202eeb1c9e22f0eb898a83a3d38f2a37b"
+    },
+    {
+      "path": "apps/mobile/test/post_upload_support.dart",
+      "sha256": "2f4e96700a4937a516f5c14158f9335bb7d30aa421266e0234f417a27c3520df"
+    }
+  ],
+  "checks": [
+    {
+      "id": "composer-final3-analyze",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "analyze",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T06:04:14.6180634+00:00",
+      "endedAtUtc": "2026-10-15T06:04:20.9557903+00:00",
+      "exitCode": 0,
+      "sourceStableDuringCommand": true,
+      "executionHead": "8c5fc522747662e2fbda1475d24af93c363fcffb",
+      "sourceDigestSha256": "564cd39cf85ed0f90ef45bbff23af08f815eac25b898933f7c2715915471e26a",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final3-analyze.log",
+      "logSha256": "9af4df6de007d9e61db5c5e531c2b1cffcb14cf367ee70793ca0bb1bb9943714",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final3-analyze.json",
+      "metadataSha256": "acae09cd9809e2967ed8574e68cb58c7c80758d01b905caee35eded3744efa34"
+    },
+    {
+      "id": "composer-final3-all-tests",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "--reporter=expanded"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T06:04:21.0780527+00:00",
+      "endedAtUtc": "2026-10-15T06:04:42.8954530+00:00",
+      "exitCode": 0,
+      "sourceStableDuringCommand": true,
+      "executionHead": "8c5fc522747662e2fbda1475d24af93c363fcffb",
+      "sourceDigestSha256": "564cd39cf85ed0f90ef45bbff23af08f815eac25b898933f7c2715915471e26a",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final3-all-tests.log",
+      "logSha256": "570b802f4b0437aa85242652e26e8305c01b093c5139beeeba1cfe4dfd32e52a",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final3-all-tests.json",
+      "metadataSha256": "05cb18bc79480a25ab52f45b8553885ee85672b7be22738a27af67239812fa91"
+    },
+    {
+      "id": "composer-final3-bundle",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "build",
+        "bundle",
+        "--debug",
+        "--no-pub"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T06:04:42.9735971+00:00",
+      "endedAtUtc": "2026-10-15T06:04:48.3024659+00:00",
+      "exitCode": 0,
+      "sourceStableDuringCommand": true,
+      "executionHead": "8c5fc522747662e2fbda1475d24af93c363fcffb",
+      "sourceDigestSha256": "564cd39cf85ed0f90ef45bbff23af08f815eac25b898933f7c2715915471e26a",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final3-bundle.log",
+      "logSha256": "f2c5d317eb880d28ec236f6fae726002491d329767f1cc9847a1455e0b5c09e8",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final3-bundle.json",
+      "metadataSha256": "2dd68d6d4b044dbc41815354d733af40a03ab149cdbd0312f75e044fb2cd49e7"
+    },
+    {
+      "id": "composer-android-offline-2",
+      "result": "FAIL_MISSING_LOCKED_MAVEN_DEPENDENCY",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gradle-cache\\wrapper\\dists\\gradle-9.3.1-bin\\30eg2jcb8eqk5ro0gq9h8x6ef\\gradle-9.3.1\\bin\\gradle.bat",
+        "--no-daemon",
+        "--max-workers=2",
+        "--offline",
+        "--console=plain",
+        "-I",
+        "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\composer-native.init.gradle",
+        "-Dorg.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=768m -Dfile.encoding=UTF-8",
+        "-Pkotlin.compiler.execution.strategy=in-process",
+        "-Ptarget-platform=android-arm64",
+        "-Ptarget=lib/main.dart",
+        "-Ptrack-widget-creation=true",
+        "assembleDebug"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\android",
+      "startedAtUtc": "2026-10-15T05:51:46.8062725+00:00",
+      "endedAtUtc": "2026-10-15T05:52:37.4066120+00:00",
+      "exitCode": 1,
+      "sourceStableDuringCommand": true,
+      "executionHead": "7c5817a7e3035dc12630e12f730b2e0229712564",
+      "sourceDigestSha256": "6ababba23a0001b30f3d5e2129450b41dc3c93f9dec53cf37a24707efebafa1e",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-android-offline-2.log",
+      "logSha256": "d2bc04aa849ec8f52fdf6c21a9359b94711026f420a9133f1446a236d9d447b1",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-android-offline-2.json",
+      "metadataSha256": "d6d5b8fb2f10a50e3b184e25e13ad6e29c68a281ea7647097595be6f410a71b8"
+    },
+    {
+      "id": "composer-android-final3-build",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gradle-cache\\wrapper\\dists\\gradle-9.3.1-bin\\30eg2jcb8eqk5ro0gq9h8x6ef\\gradle-9.3.1\\bin\\gradle.bat",
+        "--no-daemon",
+        "--max-workers=2",
+        "--offline",
+        "--console=plain",
+        "-I",
+        "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\composer-native.init.gradle",
+        "-Dorg.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=768m -Dfile.encoding=UTF-8",
+        "-Pkotlin.compiler.execution.strategy=in-process",
+        "-Ptarget-platform=android-arm64",
+        "-Ptarget=lib/main.dart",
+        "-Ptrack-widget-creation=true",
+        "assembleDebug"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\android",
+      "startedAtUtc": "2026-10-15T06:04:59.0041919+00:00",
+      "endedAtUtc": "2026-10-15T06:05:43.7235787+00:00",
+      "exitCode": 0,
+      "sourceStableDuringCommand": true,
+      "executionHead": "8c5fc522747662e2fbda1475d24af93c363fcffb",
+      "sourceDigestSha256": "564cd39cf85ed0f90ef45bbff23af08f815eac25b898933f7c2715915471e26a",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-android-final3-build.log",
+      "logSha256": "ca541194ff11cc936bea8ea77a04726915814932333690ca9edc8994a1419755",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-android-final3-build.json",
+      "metadataSha256": "8f47bc7d0253d58b8af1eb1857b948fe096f9decbc43a68fdbe95e9ee1ec7c23"
+    },
+    {
+      "id": "composer-android-final3-manifest",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\android-sdk\\build-tools\\36.0.0\\aapt.exe",
+        "dump",
+        "badging",
+        "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\build\\app\\outputs\\apk\\debug\\app-debug.apk"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T06:06:29.2789085+00:00",
+      "endedAtUtc": "2026-10-15T06:06:29.9051311+00:00",
+      "exitCode": 0,
+      "sourceStableDuringCommand": true,
+      "executionHead": "8c5fc522747662e2fbda1475d24af93c363fcffb",
+      "sourceDigestSha256": "564cd39cf85ed0f90ef45bbff23af08f815eac25b898933f7c2715915471e26a",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-android-final3-manifest.log",
+      "logSha256": "e0324d00f25c9747cf38ba7ddd2b879f7ab27edf9866ec07dff475cf17e3f67b",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-android-final3-manifest.json",
+      "metadataSha256": "71e1c389c260874f63397ba31a6795175361529c879f76b5479555decbf37c12"
+    },
+    {
+      "id": "composer-android-final3-signature",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\android-sdk\\build-tools\\36.0.0\\apksigner.bat",
+        "verify",
+        "--verbose",
+        "--print-certs",
+        "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\build\\app\\outputs\\apk\\debug\\app-debug.apk"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T06:06:29.2832739+00:00",
+      "endedAtUtc": "2026-10-15T06:06:30.3776268+00:00",
+      "exitCode": 0,
+      "sourceStableDuringCommand": true,
+      "executionHead": "8c5fc522747662e2fbda1475d24af93c363fcffb",
+      "sourceDigestSha256": "564cd39cf85ed0f90ef45bbff23af08f815eac25b898933f7c2715915471e26a",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-android-final3-signature.log",
+      "logSha256": "9f222c37e825bbcdecc07a4cd88b25d91090989b7c5bc68b97b4552ab1aa5cd3",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-android-final3-signature.json",
+      "metadataSha256": "4299f689b775497a308bf2783c14b7ccddf5dc78a8d6c9f8c38d9c9de39f28dc"
+    },
+    {
+      "id": "composer-picker-pub",
+      "result": "PASS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "pub",
+        "get"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T05:21:17.7078196+00:00",
+      "endedAtUtc": "2026-10-15T05:21:26.3455605+00:00",
+      "exitCode": 0,
+      "sourceStableDuringCommand": false,
+      "executionHead": "7c5817a7e3035dc12630e12f730b2e0229712564",
+      "sourceDigestSha256": "5c3bd948ee3a302a8cdf688fe42d1b39aa263f0152441bda34aff7f531f98494",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-picker-pub.log",
+      "logSha256": "f04e5fd692ecaa0f67712cbd9ccb01b848c65634172241e02b51fc8344f436a3",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-picker-pub.json",
+      "metadataSha256": "f063facc4234e18a3cac038e745d5b91a38942b2fa77d0642b545514447f9b44"
+    },
+    {
+      "id": "composer-startup-authority-before-fix",
+      "result": "FAIL_LATE_AUTHORITY_RESTORE_REPRODUCED",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "--reporter=expanded",
+        "test/post_composer_media_test.dart"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T06:02:08.0569390+00:00",
+      "endedAtUtc": "2026-10-15T06:02:15.1437274+00:00",
+      "exitCode": 1,
+      "sourceStableDuringCommand": true,
+      "executionHead": "8c5fc522747662e2fbda1475d24af93c363fcffb",
+      "sourceDigestSha256": "596549bcb2d0a205d56e6c0eecb2e9834a49f2a39b51fd8caa8703ad1940de1e",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-startup-authority-before-fix.log",
+      "logSha256": "09bf623bc9e5b06fc66b20450a2f3b8e6770aac793a1ab830243bc229cc7e3a8",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-startup-authority-before-fix.json",
+      "metadataSha256": "cc3debf7c120cf077ed8d7a1aced75086be05e1a0a13a7c24c9959000a615b9b"
+    },
+    {
+      "id": "composer-final2-all-tests",
+      "result": "FAIL_CONCURRENT_UPLOAD_ANNOTATION_CANCEL_CAS",
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+        "--suppress-analytics",
+        "test",
+        "--no-pub",
+        "--reporter=expanded"
+      ],
+      "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile",
+      "startedAtUtc": "2026-10-15T06:02:41.3459143+00:00",
+      "endedAtUtc": "2026-10-15T06:03:02.2156428+00:00",
+      "exitCode": 1,
+      "sourceStableDuringCommand": true,
+      "executionHead": "8c5fc522747662e2fbda1475d24af93c363fcffb",
+      "sourceDigestSha256": "afe9becc052c804878dc9c995473dd3a84ae401340dd7548304463abd1648aeb",
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final2-all-tests.log",
+      "logSha256": "58378d1d6c42210e21058c312b18a27e2feca3fd483ead8d1622bbb2a7c24883",
+      "metadata": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final2-all-tests.json",
+      "metadataSha256": "d963e29fcf2d36f9340ba26ca18b8b87b41eeac998da692210d665978c835a65"
+    }
+  ],
+  "artifact": {
+    "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\build\\app\\outputs\\apk\\debug\\app-debug.apk",
+    "bytes": 98452196,
+    "sha256": "c292a11ac9cac7dda24ecd8fa832f1da81c9a2ea0df9c3b30a4a6b588b2991a0",
+    "package": "org.hnuhole.post_media_check",
+    "versionCode": 20263101,
+    "versionName": "0.1.0-media-composer",
+    "minimumApi": 29,
+    "targetApi": 36,
+    "buildType": "debug",
+    "flutterEngineAbis": [
+      "arm64-v8a"
+    ],
+    "otherPluginLibraryAbis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64"
+    ],
+    "signatureResult": "PASS_APK_V2",
+    "signerCertificateSha256": "2b02d32f963d73b4eb35fe32b685fcb91714df4ffd1b996e911d39abe50725eb",
+    "signingKeyScope": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\.android\\debug.keystore",
+    "identityOverrideScript": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\composer-native.init.gradle",
+    "identityOverrideScriptSha256": "7c28cf1d93c3530615bc18e0f2bc47c9c36302fad10da37693e1c5c792acffad",
+    "installed": false,
+    "launched": false,
+    "device": null,
+    "retention": "REMOVED_AFTER_VERIFICATION: both APK copies and this build debug key removed; rebuild before any future device window, do not assume identical signature"
+  },
+  "render": {
+    "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-final-render\\composer-selected.png",
+    "sha256": "6fe3cfede23de681160904ed972431750ef3586750936f598651f03a16850a22",
+    "pixels": [
+      804,
+      1748
+    ],
+    "kind": "actual Flutter widget render, synthetic images, manually inspected; not device"
+  },
+  "lockfiles": [
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "sha256": "f43dcd761873b53927758f50579af409a8b34cbbcf1d492134a9ac7225c6af37"
+    },
+    {
+      "path": "packages/image_viewer/pubspec.lock",
+      "sha256": "00ac99d693f003b46111d24e18a233741aedfd3501569130d57d731ca192fb81"
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.lock",
+      "sha256": "9a7de0b094b07456d44016212168f2f5890e5a74d0bf4f708d77db6c51c95a24"
+    }
+  ],
+  "dependencyAudit": {
+    "oldEntriesUnchanged": true,
+    "newEntries": {
+      "cross_file": "0.3.5+5",
+      "file_selector_linux": "0.9.4+1",
+      "file_selector_macos": "0.9.5+1",
+      "file_selector_platform_interface": "2.7.0",
+      "file_selector_windows": "0.9.3+6",
+      "flutter_plugin_android_lifecycle": "2.0.35",
+      "flutter_web_plugins": "0.0.0",
+      "image_picker": "1.2.4",
+      "image_picker_android": "0.8.13+25",
+      "image_picker_for_web": "3.1.1",
+      "image_picker_ios": "0.8.13+12",
+      "image_picker_linux": "0.2.2",
+      "image_picker_macos": "0.2.2+1",
+      "image_picker_platform_interface": "2.11.2",
+      "image_picker_windows": "0.2.2",
+      "mime": "2.1.0"
+    },
+    "otherTwoLocksUnchanged": true
+  },
+  "contracts": {
+    "maximumImages": 9,
+    "imageBytesMaximum": 10485760,
+    "formats": [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp"
+    ],
+    "transcoding": false,
+    "automaticQualityLoss": false,
+    "title": "mandatory <=15 graphemes",
+    "body": "<=3000 graphemes; body or ready images required",
+    "draftOriginals": "account/environment encrypted v1 envelope, 256KiB chunks; atomic references and GC",
+    "pickerPathsPersisted": false,
+    "uploadTokensPersisted": false,
+    "pickerLostData": "drain unbound queue, retain prior checkpoint and require reselect; never attach to current account",
+    "commandDigest": "backend media-v1 golden bytes; empty selection keeps text legacy frame",
+    "unknownCommand": "query same key only, no CREATE resubmission",
+    "uploads": "accepted immutable attempt only; query per-item status, fresh grant, serial raw PUT; manual partial retry",
+    "uploadAuthorization": "Upload only, no Bearer; fixed origin, no redirect",
+    "cancel": "stop further work by current intent fence, keep originals as local draft on confirmed user CANCEL",
+    "failureRetry": "fixed original channel and identity; edit media/text with new attempt; missing local original fails closed",
+    "androidMinimumApi": 29,
+    "androidViewerDefaultSaving": true,
+    "iosViewerDefaultSaving": false
+  },
+  "sqliteCloseRegression": {
+    "previousEvidence": "docs/design/image-viewer-post-media-read-verification.json",
+    "rootCause": "concurrent second close returned before first database close completed; Windows cleanup errno32",
+    "fix": "memoized close Future, reject new queued work while closing; await existing queue before actual close",
+    "actual43ControllerTests": "PASS_INCLUDED_IN_374",
+    "priorResultsRewritten": false
+  },
+  "finalRaceFixes": {
+    "startupRestore": "Reproduced FAIL; after awaiting native lost-data drain, recheck authority epoch/account/disposal before assigning old drafts",
+    "cancelAgainstProgress": "Reproduced FAIL; at most three unsent local CAS attempts with same new command key, only while old command/attempt/state remain current; no repeated network command",
+    "finalCompleteMobileSuite": "PASS_374_ZERO_EXCLUSIONS"
+  },
+  "isolation": {
+    "sdk": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter",
+    "pubCache": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\pub-cache",
+    "gradleCache": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gradle-cache",
+    "androidSdk": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\android-sdk",
+    "jdk": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\jdk",
+    "temp": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\temp",
+    "profile": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile",
+    "runner": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\run-host.ps1",
+    "runnerSha256": "a50deb804d1e185c68b79df4eee97eed6c175bc2407e046771a3504910e0bc19",
+    "deviceCommands": false,
+    "otherServicesChanged": false,
+    "globalConfigurationChanged": false,
+    "largeToolchainInstalled": false,
+    "existingSdkUpgraded": false,
+    "downloadGap": "offline missing com.android.tools.build:gradle:8.13.1, resolved pinned Maven dependencies in existing private E cache",
+    "diskFreeBeforeNative": {
+      "C": 17301843968,
+      "E": 147846504448
+    },
+    "secretsAudit": "No new keys/accounts/tokens/picker paths/artifacts in Git; existing synthetic loopback TLS fixture key unchanged"
+  },
+  "pending": [
+    {
+      "id": "COMPOSER-JOINT",
+      "result": "NOT_RUN",
+      "requires": "independent assembly of fixed frontend/backend; own C/V/Gate/SQL migration0014/validator and synthetic data"
+    },
+    {
+      "id": "COMPOSER-ANDROID",
+      "result": "NOT_RUN",
+      "requires": "new API29+ free phone window; real picker bytes/permissions/kill/restart/disk pressure/nine-image complete publication and save"
+    },
+    {
+      "id": "COMPOSER-BUDGET",
+      "result": "NOT_RUN",
+      "requires": "measure total nine-image memory/traffic; production quota/storage/thumbnail decisions"
+    },
+    {
+      "id": "COMPOSER-IOS",
+      "result": "NOT_DEVELOPED",
+      "requires": "original-resource compatible adapter first; Mac/Xcode/iPhone/Photos/VoiceOver after implementation"
+    },
+    {
+      "id": "COMPOSER-OTHER-BUSINESS",
+      "result": "NOT_DEVELOPED",
+      "requires": "comments/messages pages and media business contracts"
+    }
+  ],
+  "cleanup": {
+    "existingSdkAndBuildCachesRetained": true,
+    "recordedOn": "2026-10-15T14:07:12.3244564+08:00",
+    "files": [
+      {
+        "bytes": 98452196,
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\build\\app\\outputs\\apk\\debug\\app-debug.apk",
+        "kind": "private verified APK"
+      },
+      {
+        "bytes": 98452196,
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\build\\app\\outputs\\flutter-apk\\app-debug.apk",
+        "kind": "private verified APK"
+      },
+      {
+        "bytes": 2618,
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\.android\\debug.keystore",
+        "kind": "this build private debug signing material"
+      },
+      {
+        "bytes": 0,
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\.android\\debug.keystore.lock",
+        "kind": "this build private debug signing material"
+      }
+    ],
+    "otherTaskResourcesTouched": false
+  },
+  "gitDeliveryReceipt": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs\\composer-git-delivery.json",
+  "finalHeadPolicy": "Final documentation commit follows fixed source; confirm final local/remote SHA and clean status in gitDeliveryReceipt"
+}

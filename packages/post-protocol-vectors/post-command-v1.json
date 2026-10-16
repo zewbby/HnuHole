@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "hnuhole-post-command-vectors/v1",
+  "scope": "T1 reference framing vectors; Go and Dart conformance NOT_RUN",
+  "cases": [
+    {
+      "id": "create-composed",
+      "operation": "CREATE",
+      "input": {
+        "channelId": "11111111-1111-4111-8111-111111111111",
+        "identityId": "22222222-2222-4222-8222-222222222222",
+        "title": "é",
+        "body": "hello 世界"
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f56310001111111111111411181111111111111112222222222224222822222222222222200000002c3a90000000c68656c6c6f20e4b896e7958c",
+      "requestDigest": "79c6fe222c5b9a61959ec06c98fb0fe557eed75426f2c4cc1a1c637be35bbd8a"
+    },
+    {
+      "id": "create-decomposed",
+      "operation": "CREATE",
+      "input": {
+        "channelId": "11111111-1111-4111-8111-111111111111",
+        "identityId": "22222222-2222-4222-8222-222222222222",
+        "title": "é",
+        "body": "hello 世界"
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f5631000111111111111141118111111111111111222222222222422282222222222222220000000365cc810000000c68656c6c6f20e4b896e7958c",
+      "requestDigest": "4805b66c078ec52c72cd75272c288603af72dfc911540bda195653299fe24362"
+    },
+    {
+      "id": "create-lf",
+      "operation": "CREATE",
+      "input": {
+        "channelId": "11111111-1111-4111-8111-111111111111",
+        "identityId": "22222222-2222-4222-8222-222222222222",
+        "title": "文字",
+        "body": "a\nb"
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f56310001111111111111411181111111111111112222222222224222822222222222222200000006e69687e5ad9700000003610a62",
+      "requestDigest": "779e0d0a1ddc25c95e503cdb8b94181baa1d679ffd303c744e6a4ffe64a3ff8a"
+    },
+    {
+      "id": "create-crlf",
+      "operation": "CREATE",
+      "input": {
+        "channelId": "11111111-1111-4111-8111-111111111111",
+        "identityId": "22222222-2222-4222-8222-222222222222",
+        "title": "文字",
+        "body": "a\r\nb"
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f56310001111111111111411181111111111111112222222222224222822222222222222200000006e69687e5ad9700000004610d0a62",
+      "requestDigest": "e2b4928aa946dba8cb7e7614a035d11b63d2daafc566deea439cfd8eaa75c525"
+    },
+    {
+      "id": "create-emoji",
+      "operation": "CREATE",
+      "input": {
+        "channelId": "11111111-1111-4111-8111-111111111111",
+        "identityId": "22222222-2222-4222-8222-222222222222",
+        "title": "👩‍💻",
+        "body": "👍🏽 🇨🇳"
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f5631000111111111111141118111111111111111222222222222422282222222222222220000000bf09f91a9e2808df09f92bb00000011f09f918df09f8fbd20f09f87a8f09f87b3",
+      "requestDigest": "ed5f19db3037fabaa6521a8c67e2b589652e13eb0e7800bbcf051b96fedadcf0"
+    },
+    {
+      "id": "retry",
+      "operation": "RETRY",
+      "input": {
+        "taskId": "11111111-1111-4111-8111-111111111111",
+        "expectedAttemptVersion": 2,
+        "title": "再试",
+        "body": "same identity and channel"
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f5631000211111111111141118111111111111111000000000000000200000006e5868de8af950000001973616d65206964656e7469747920616e64206368616e6e656c",
+      "requestDigest": "db403574204ca339b61a69c5900efc2a38b763cea3750f6703cdb8da0ddee1ac"
+    },
+    {
+      "id": "cancel",
+      "operation": "CANCEL",
+      "input": {
+        "taskId": "11111111-1111-4111-8111-111111111111",
+        "expectedAttemptVersion": 2
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f56310003111111111111411181111111111111110000000000000002",
+      "requestDigest": "864031e5edde1791bd572bdd331cfc24d1752ecc025b06737b4c39a821318ffb"
+    },
+    {
+      "id": "hide_task",
+      "operation": "HIDE_TASK",
+      "input": {
+        "taskId": "11111111-1111-4111-8111-111111111111",
+        "expectedAttemptVersion": 2
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f56310005111111111111411181111111111111110000000000000002",
+      "requestDigest": "863669480b2dcabcf69a591eaed7c98b5df24c82944733842e632f61059f4a33"
+    },
+    {
+      "id": "delete-post",
+      "operation": "DELETE_POST",
+      "input": {
+        "postId": "22222222-2222-4222-8222-222222222222"
+      },
+      "frameHex": "484e55484f4c452f504f53542d434f4d4d414e442f5631000422222222222242228222222222222222",
+      "requestDigest": "fd6e0dac118b0e822eec7f8006a0282708928552430aff0f5e4702644cb7f7be"
+    }
+  ],
+  "unicodeVersion": "16.0.0",
+  "graphemeCaseScope": "Expected Unicode16 design cases; actual Go/Dart conformance NOT_RUN",
+  "graphemeCases": [
+    {
+      "id": "combined-accent",
+      "text": "é",
+      "expectedClusters": 1
+    },
+    {
+      "id": "emoji-zwj",
+      "text": "👩‍💻",
+      "expectedClusters": 1
+    },
+    {
+      "id": "emoji-modifier",
+      "text": "👍🏽",
+      "expectedClusters": 1
+    },
+    {
+      "id": "two-flags",
+      "text": "🇨🇳🇯🇵",
+      "expectedClusters": 2
+    },
+    {
+      "id": "crlf",
+      "text": "a\r\nb",
+      "expectedClusters": 3
+    },
+    {
+      "id": "spaces-punctuation-lf",
+      "text": "a !\nb",
+      "expectedClusters": 5
+    },
+    {
+      "id": "hangul",
+      "text": "가",
+      "expectedClusters": 1
+    }
+  ]
+}

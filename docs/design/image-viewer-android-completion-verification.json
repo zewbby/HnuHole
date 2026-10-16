@@ -1,0 +1,2511 @@
+{
+  "recordedOn": "2026-10-14",
+  "branch": "codex/image-viewer-component",
+  "worktree": "E:\\Hnuhole-image-viewer-component-20261012\\repo",
+  "initialHead": "d46ccac45f2a39abd8e4075dba6976be949e559c",
+  "headAtTesting": "d46ccac45f2a39abd8e4075dba6976be949e559c",
+  "publication": "Source and evidence are delivered in the containing Git commit; exact final HEAD is reported in final response and git rev-parse HEAD",
+  "androidSupport": {
+    "minimum": "Android10/API29",
+    "older": "SKIP_USER_REMOVED_SUPPORT",
+    "otherBranchesRuntimeNotModified": true
+  },
+  "host": {
+    "packageTests": 108,
+    "exampleTests": 5,
+    "checks": [
+      {
+        "name": "package-analyze",
+        "result": "PASS",
+        "command": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+          "--suppress-analytics",
+          "analyze",
+          "--no-pub"
+        ],
+        "cwd": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer",
+        "startedAt": "2026-10-14T14:35:01.6629903+00:00",
+        "endedAt": "2026-10-14T14:35:09.3950247+00:00",
+        "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-complete19-package-analyze.log",
+        "sourceDigest": "c6a88812da0e750d56f75c1392589ae4dd0ed3927f76ae77040d3a0e99a0b428"
+      },
+      {
+        "name": "package-tests",
+        "result": "PASS",
+        "command": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+          "--suppress-analytics",
+          "test",
+          "--no-pub"
+        ],
+        "cwd": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer",
+        "startedAt": "2026-10-14T14:35:09.4877331+00:00",
+        "endedAt": "2026-10-14T14:35:22.8356518+00:00",
+        "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-complete19-package-tests.log",
+        "sourceDigest": "c6a88812da0e750d56f75c1392589ae4dd0ed3927f76ae77040d3a0e99a0b428"
+      },
+      {
+        "name": "example-analyze",
+        "result": "PASS",
+        "command": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+          "--suppress-analytics",
+          "analyze",
+          "--no-pub"
+        ],
+        "cwd": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+        "startedAt": "2026-10-14T14:35:22.9093994+00:00",
+        "endedAt": "2026-10-14T14:35:28.6233833+00:00",
+        "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-complete19-example-analyze.log",
+        "sourceDigest": "c6a88812da0e750d56f75c1392589ae4dd0ed3927f76ae77040d3a0e99a0b428"
+      },
+      {
+        "name": "example-tests",
+        "result": "PASS",
+        "command": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "test"
+        ],
+        "cwd": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+        "startedAt": "2026-10-14T14:35:28.7103430+00:00",
+        "endedAt": "2026-10-14T14:35:33.9437984+00:00",
+        "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-complete19-example-tests.log",
+        "sourceDigest": "c6a88812da0e750d56f75c1392589ae4dd0ed3927f76ae77040d3a0e99a0b428"
+      },
+      {
+        "name": "bundle",
+        "result": "PASS",
+        "command": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+          "--suppress-analytics",
+          "build",
+          "bundle",
+          "--debug",
+          "--no-pub"
+        ],
+        "cwd": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+        "startedAt": "2026-10-14T14:35:34.0153416+00:00",
+        "endedAt": "2026-10-14T14:35:39.6015548+00:00",
+        "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-complete19-bundle.log",
+        "sourceDigest": "c6a88812da0e750d56f75c1392589ae4dd0ed3927f76ae77040d3a0e99a0b428"
+      },
+      {
+        "name": "component-build",
+        "result": "PASS",
+        "command": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+          "--suppress-analytics",
+          "build",
+          "apk",
+          "--debug",
+          "--no-pub",
+          "--flavor=component",
+          "--split-per-abi",
+          "--target-platform=android-arm64",
+          "--build-name=0.0.0-android-complete20261014",
+          "--build-number=20261019",
+          "--dart-define=VIEWER_ANDROID_DIAGNOSTICS=true"
+        ],
+        "cwd": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+        "startedAt": "2026-10-14T14:35:39.6868886+00:00",
+        "endedAt": "2026-10-14T14:36:16.0748582+00:00",
+        "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-complete19-component-build.log",
+        "sourceDigest": "c6a88812da0e750d56f75c1392589ae4dd0ed3927f76ae77040d3a0e99a0b428"
+      },
+      {
+        "name": "nativecheck-build",
+        "result": "PASS",
+        "command": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\flutter\\bin\\flutter.bat",
+          "--suppress-analytics",
+          "build",
+          "apk",
+          "--debug",
+          "--no-pub",
+          "--flavor=nativecheck",
+          "--split-per-abi",
+          "--target-platform=android-arm64",
+          "--build-name=0.0.0-android-complete20261014",
+          "--build-number=20261019",
+          "--dart-define=VIEWER_ANDROID_DIAGNOSTICS=true",
+          "--dart-define=VIEWER_ENABLE_NATIVE_EXPORT=true"
+        ],
+        "cwd": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example",
+        "startedAt": "2026-10-14T14:36:16.1741858+00:00",
+        "endedAt": "2026-10-14T14:36:49.4970968+00:00",
+        "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\android-complete19-nativecheck-build.log",
+        "sourceDigest": "c6a88812da0e750d56f75c1392589ae4dd0ed3927f76ae77040d3a0e99a0b428"
+      }
+    ],
+    "testedPackageDigest": "c6a88812da0e750d56f75c1392589ae4dd0ed3927f76ae77040d3a0e99a0b428",
+    "testedFiles": [
+      {
+        "path": "packages/image_viewer/analysis_options.yaml",
+        "sha256": "88a05fea8acb9db6d976dc273cd08a80275f43044479b561a7c1374c653d96a4"
+      },
+      {
+        "path": "packages/image_viewer/example/.gitignore",
+        "sha256": "0581d23086f7283dc97d2d5bde4f60724f8115f67baa76949596790ab9800dd7"
+      },
+      {
+        "path": "packages/image_viewer/example/.metadata",
+        "sha256": "f45c520e51bccacb63e80516da7687639eee917ae215b016261fe70f2f3c5995"
+      },
+      {
+        "path": "packages/image_viewer/example/analysis_options.yaml",
+        "sha256": "92808b5cfd2ab6193a124faa355f0050d4e7c2fbe09c474a4f88f9f02e021711"
+      },
+      {
+        "path": "packages/image_viewer/example/android/.gitignore",
+        "sha256": "c9af75dbc2c8aa867476a09426c80b178c4aeed8b9393ae48503eedfa3273d71"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/build.gradle.kts",
+        "sha256": "80085b51c76bd6bf1b9d979cf10935e2a2ae819a5af32fb4378f1a6698c0adcd"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "b01a4541a8144c15bc617bab7eb267c99fa1476368fbbda5a12cdbf4e316a34c"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/AndroidManifest.xml",
+        "sha256": "4e22616232420525ca36e09f6e067fbf8b4fbf297f6772cb8c24a4ad1ada72a7"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/kotlin/org/hnuhole/image_viewer_component/MainActivity.kt",
+        "sha256": "c03dbde7093c2c7bc5d983cdb3a35b944ff7bbcae2f6d345ca999af84e85ed4a"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/drawable-v21/launch_background.xml",
+        "sha256": "dca312ec77de83e43ef70a825c299b51451247286c29167d62f19165750b8793"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/drawable/launch_background.xml",
+        "sha256": "2df60e2cfbee873ce2858088cf003e6b93498f2f568476da437610467ea1a9d7"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+        "sha256": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+        "sha256": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+        "sha256": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+        "sha256": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+        "sha256": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/values-night/styles.xml",
+        "sha256": "ea763597dc1a84c8034251caee98d7753e0fbf57340ffc94677427de4b537516"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/main/res/values/styles.xml",
+        "sha256": "cca15a99b59380a548bf6a890f7ca5380ee509b1f9bbb2f5f9ec3589fa25c2f7"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/nativecheckDebug/AndroidManifest.xml",
+        "sha256": "8c45b13960cb7a1e8517134e464dea9f37d7edc696c44579989b3cfaf2782dc9"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/nativecheckDebug/kotlin/org/hnuhole/image_viewer_component/NativeWebpReplayProbe.kt",
+        "sha256": "57d62f551406cb83a7d730e4c4a8903959e2e569a746adc3872884d95eed3fb6"
+      },
+      {
+        "path": "packages/image_viewer/example/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "b01a4541a8144c15bc617bab7eb267c99fa1476368fbbda5a12cdbf4e316a34c"
+      },
+      {
+        "path": "packages/image_viewer/example/android/build.gradle.kts",
+        "sha256": "218f400e3fff31c9c986a2535dfb974560e1b4d33cc27b7c1fee96a2b7e44454"
+      },
+      {
+        "path": "packages/image_viewer/example/android/gradle.properties",
+        "sha256": "7714698de712a7872e371f0dbae626c255fc83ac1c15e52e7cd9fcaa241b5092"
+      },
+      {
+        "path": "packages/image_viewer/example/android/gradle/wrapper/gradle-wrapper.properties",
+        "sha256": "1d39697ffc15174713e75c803daeaccdbf81c52a9d1546306ef170821a1fd1eb"
+      },
+      {
+        "path": "packages/image_viewer/example/android/settings.gradle.kts",
+        "sha256": "092ba880c8d4a07591aafc082f45deedc9afcf60c113a4bb3d13cbe1a1fce9de"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_acceptance_manifest.json",
+        "sha256": "f35044f2242e5becb6680274804bd781d575f04886f14e290ac9636e33696e36"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_animation_limit.webp",
+        "sha256": "91b1d800df78176d87a5956b6c3ebe15e39eb2b7e773b709ca3d47bc492d3977"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_animation_work_over.webp",
+        "sha256": "11c70778093bb63484da4c1a28e1162e355dbc8d0e6161dcca24daa0b5110b74"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_dimension_over.png",
+        "sha256": "1258299857c6e46012404ce2b8e8e81c9045dc035f8548eba8eb5b3c0a0f7865"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_duration_over.webp",
+        "sha256": "2f0e4be04fa7687bdef98a3e5dc652e0a24183817dcb92d15579d128b088f26e"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_exif_1.jpg",
+        "sha256": "f4ab4302ffa13229a023af5df27663e4df4e4f361c8036fc3c5de7b25477f8f6"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_exif_2.jpg",
+        "sha256": "b312746c9ab1d9cea5cde4b7fe36e0120c50ff9df3fa28930b5fbddf3fe90c83"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_exif_3.jpg",
+        "sha256": "0eaf27dd42023b8cd9643ab7cf531934b10840e46531999fc58280cb5fb9f3f5"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_exif_4.jpg",
+        "sha256": "3e13dd5683311ed86f866a77592afcf3f70855dbab46efdcccea289ee5be1b96"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_exif_5.jpg",
+        "sha256": "9b89dbecd521fccce1736f77e33e3df085c5ece564b200a2267751c3790d8e66"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_exif_6.jpg",
+        "sha256": "18af2dccae2d484217db08413e6ab31900b9ce6ee0e3da6968164c5bdc0982bb"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_exif_7.jpg",
+        "sha256": "3d5ede368d5d702d79a7086b8a443f7a72eb972a23ad59335aa25b566fec0c30"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_exif_8.jpg",
+        "sha256": "972458e92cea1891af0e5e8e1f52ffcdfd32ad5bc1fc18e51e835993ece0d633"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_frames_limit.webp",
+        "sha256": "276521c817df77258ad8128f29a9b4bd507c9301812725a155c1c1f0183244ed"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_frames_over.webp",
+        "sha256": "842e03836ff9ded7f1126f663e5522b8370b9145dbeb94d48a9498ee3ee11be0"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_gif_slow.gif",
+        "sha256": "96478521e9f3ccc23be7b3a90bcf0f788e8b86b394d391bfcdf30c991a734357"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_long_limit.png",
+        "sha256": "ef2de681f26e2fcce69fb679296fa3dc775d74abe101bacc128b7f4df0bcd6b9"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_pixels_over.png",
+        "sha256": "f805cae3b162c0f298c33d843983de9c8d4b800c4d7d3fa1a2f7ebc5e5e18b28"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_small.png",
+        "sha256": "3860a1ad1bc01dc58955f25b598ce665cc94e60c5fb8a6029d38ce85ef3babcf"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_static_limit.png",
+        "sha256": "3686d478923be44179df4979e9503d8ec45278096d2e21325eef89faed4b9add"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_transparent.png",
+        "sha256": "db4c1b7f3f34c1b58ff2d92ed5feb9f7cdc3c4594709a5c58c17b8c0f72c709e"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/android_wide.png",
+        "sha256": "c1a6dbea922a044a65cde57cd5c4ac13204dc800e6903c74a0820247f72ebb07"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_benchmark.webp",
+        "sha256": "0145845e1b4aff94e1f73841f03b6ea6d5ef0aeeb16bdd3831724d563e42fb46"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_binary_infinite.webp",
+        "sha256": "3897796f787092b33333358d146482a4f67759bd97075be6669f305e88d696ed"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_binary_once.webp",
+        "sha256": "39f08e88ed651f7321a8de9e80e99bd605b4d8eb88b1194e8f7c9fec8bd39fad"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_binary.webp",
+        "sha256": "259c7f65840e440861329dbd35723c04a446ecabbfb21f2283bf5f56d97806f5"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_infinite.gif",
+        "sha256": "9f0ab897a6b22f6a6a19310462aaf78a776ab8fc05d2cc805889d3e0871df9ed"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_infinite.webp",
+        "sha256": "e8d714336d16477d76cf01515d61a8e9916babd87ee093434bbd1638ead40e76"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_once.webp",
+        "sha256": "d73a18998b3325cae6a2c6c9f3ec2b82ac7e78a8e19899d2202c3ace287859be"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_over_limit.webp",
+        "sha256": "45e67e717cb796bb87deb43430da1f1d3c4c051c01e9c7525b75f7beb84786b1"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_repeat_once.gif",
+        "sha256": "43a730212cf2cdd0ff3f8e32f5e00ed0032b0e1fa68ed3d594cde76e43f645c8"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_replay_slow.webp",
+        "sha256": "f881330695568fd135112d6ce63c547f7fe0773d9c7e18f4b28294fd6ad99be6"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation_timing.webp",
+        "sha256": "32a65f932e0330630c78e0e86f0483c17381fc922df3dc99ac18392e3747305b"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation.gif",
+        "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/animation.webp",
+        "sha256": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/long.png",
+        "sha256": "69269d9cd174e1be00a84efecc1b9a01b9150ba4dae8b41816359ae13749575b"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/manifest.json",
+        "sha256": "d0108abd91d5eb900a81ad53ed1822e5a883fe5685cc0cbe8fe8b1bd202a8600"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/ordinary.png",
+        "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/replay_identity_fast.webp",
+        "sha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988"
+      },
+      {
+        "path": "packages/image_viewer/example/assets/fixtures/replay_identity_slow.webp",
+        "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75"
+      },
+      {
+        "path": "packages/image_viewer/example/integration_test/image_viewer_component_device_test.dart",
+        "sha256": "823c1dcfa8d39eb3230c77b3a65097733780174b356a52398835bc742f277ac5"
+      },
+      {
+        "path": "packages/image_viewer/example/integration_test/image_viewer_device_test.dart",
+        "sha256": "456c81ca88b8a642af09544374b1e67380692ce0c9cc2d9927e06a91c1a72d57"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/.gitignore",
+        "sha256": "e85b4db8ba6ed14708e5f7d3c60336e5a3067ce11329b84aa8ba5d98603ee253"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Flutter/AppFrameworkInfo.plist",
+        "sha256": "e51cfa76fca1ae586244b43bf97423577315d2906394c1e7768ef43b8d23e161"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Flutter/Debug.xcconfig",
+        "sha256": "c0d1da54718e75f2028962b689258ecc741abf7cdaed50483aa5225264d0a7d7"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Flutter/Release.xcconfig",
+        "sha256": "c0d1da54718e75f2028962b689258ecc741abf7cdaed50483aa5225264d0a7d7"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.pbxproj",
+        "sha256": "d2e3826887821c3badace634ad40a03a0357ca6c050c8e5c4f5b86d7e9d186d6"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+        "sha256": "ac28b35c2b940210bec0fff8e424b07fd0efe9112ab178a10533583f251a386c"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+        "sha256": "d557c2c32fc6258ec28981fa45dc847b76c9968beb90a2e26d13ef9c4ea45c30"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+        "sha256": "dd64c0308ab2971c456871b990b24a008bdc3ece09833e8dbe9675e33a496e74"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+        "sha256": "a46c0d064503db8bf9f452b492c61fdf76f9febb8894005fe30b2facec21e550"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner.xcworkspace/contents.xcworkspacedata",
+        "sha256": "706a4c812f2a1e220e6785c27580020d58048e2ae4d30d1280f3c43344ce6b38"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+        "sha256": "d557c2c32fc6258ec28981fa45dc847b76c9968beb90a2e26d13ef9c4ea45c30"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+        "sha256": "dd64c0308ab2971c456871b990b24a008bdc3ece09833e8dbe9675e33a496e74"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/AppDelegate.swift",
+        "sha256": "54a5e98d6c3e8a79413ad50607b83aac8ded8828bc913eda1fe86bb33a66cd5d"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+        "sha256": "5f8b941b774bde4496d73347c1f79cbdd786bb76fbdab9ed1f3f0cb78a0fb0d3"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "sha256": "7770183009e914112de7d8ef1d235a6a30c5834424858e0d2f8253f6b8d31926"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+        "sha256": "cab10a0d391ec5bc09ef50ce49e8ad401cee7ef03707ec0923a222c5c2b3d212"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+        "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+        "sha256": "c6e6d3b215ae744a9c391f4c4d44157eff5e739d6ad6c39f9bfa5df66dddd267"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+        "sha256": "5dee24dc104ac76dc162e42ae0beb163d426bf365562ee28ba7b3ad368559a60"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+        "sha256": "a9b21eb6f4271385655a8771f76e29eef8c1107d7879cbcfc567e6619d1f716a"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+        "sha256": "e677d701ffe4af7bc2935098d6b3984cc9ab7ace573e6900955a5535b12410cf"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+        "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+        "sha256": "7c61c42fc7b657d9cf314d32a4ec458f0647c3aaf360be1b9377857266ec2499"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+        "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+        "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+        "sha256": "4209a49e44a92ec40a327d3455eb1b1c153ee83d75de1c2be0a12ab18b2ff9de"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+        "sha256": "836c918cb613249eba0483a6b02fa3df3c1c0a89a315ee4d3b88509b83c7ab73"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+        "sha256": "41c7d42f6e61f8fe7f30b1ffa2256aecbc9682be06d18c4a3062043e1a2e547c"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+        "sha256": "5d7e5bdf01b93802bc973345b3a78c038907147625035952a08a115a563b7f81"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+        "sha256": "fbd112a9f3b541a1d811f71ac8e4fe68b6176687d973a5f4d99b7aa4a722e94e"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+        "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+        "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+        "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+        "sha256": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Base.lproj/LaunchScreen.storyboard",
+        "sha256": "bc3644fbb251ff1e18de25a4932c927850ae1a025be3dd1447940429633fe4b2"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Base.lproj/Main.storyboard",
+        "sha256": "dcea4686c02065e56217fd19fcfb73d7509b41872e7486126149d47a18559363"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Info.plist",
+        "sha256": "520d0002590aa9508d8836d97a2881ba7c74577f7c6fa5e0757e035f884cfd2d"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/Runner-Bridging-Header.h",
+        "sha256": "efe657d8b27f7f8595a0d416bffb33fe7d93bd2869d81f7353b556c439d7a1a7"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/Runner/SceneDelegate.swift",
+        "sha256": "edce811c671ca0a6ccb14753e14e16deb0d89a0adf4f1b685e362d87d8f4c366"
+      },
+      {
+        "path": "packages/image_viewer/example/ios/RunnerTests/RunnerTests.swift",
+        "sha256": "c0e04141287eb7f9c9f3d31cf5be8cb626a9ea71351206c9121578e8b8f480c3"
+      },
+      {
+        "path": "packages/image_viewer/example/lib/component_example.dart",
+        "sha256": "d516b91b65cfbd308755ed4ee61f50814b1f51e5fa55f1d2fbee0aeafc84cb73"
+      },
+      {
+        "path": "packages/image_viewer/example/lib/main.dart",
+        "sha256": "0bdb424bc3420bec21a64ca0e146b2ceee134288f311905a4b268ee7081ee0ba"
+      },
+      {
+        "path": "packages/image_viewer/example/pubspec.lock",
+        "sha256": "9a7de0b094b07456d44016212168f2f5890e5a74d0bf4f708d77db6c51c95a24"
+      },
+      {
+        "path": "packages/image_viewer/example/pubspec.yaml",
+        "sha256": "bf18e0ca41d0a0bfa16044103deeb6315f5d6e9c676ba14f52f163de11762993"
+      },
+      {
+        "path": "packages/image_viewer/example/README.md",
+        "sha256": "b98969cfb7150d92fc9b375f3ed5c024c38bed1cc116c4f1f83109f6cb593353"
+      },
+      {
+        "path": "packages/image_viewer/example/test/component_example_test.dart",
+        "sha256": "aa6db73bca72519b4f1224c55a8d6fe40fdcb667df55e92d1ec132e82eafd401"
+      },
+      {
+        "path": "packages/image_viewer/lib/image_viewer.dart",
+        "sha256": "956eeeb41ce283a362d4de5ef5d349c0c3293ce43f2d5d9bdd04ff2b13de0e92"
+      },
+      {
+        "path": "packages/image_viewer/lib/src/m1_save_probe.dart",
+        "sha256": "969b5e8cc0b0c791c8736e2a64fcc9a105b041fbd75ab706babea3c0b284eaa0"
+      },
+      {
+        "path": "packages/image_viewer/lib/src/m1_viewer_probe.dart",
+        "sha256": "de5ab059580d6a7fd732e0af8bb9d4e67062bf5f9606ae8757943a719db5a5db"
+      },
+      {
+        "path": "packages/image_viewer/lib/src/viewer_controller.dart",
+        "sha256": "916fa33d0a8ed26422a847a6ca8b0d060e2c1cc3671994262605e4737787ddfd"
+      },
+      {
+        "path": "packages/image_viewer/lib/src/viewer_resources.dart",
+        "sha256": "35d523389b17bc6aedd167db9839f2810b8d293d8373c02ab5f337450030522c"
+      },
+      {
+        "path": "packages/image_viewer/lib/src/viewer_save.dart",
+        "sha256": "749f4a05fd5a4f0f193ca17d34340775aed0d6b2b7e27da11bdd38c2315dd346"
+      },
+      {
+        "path": "packages/image_viewer/lib/src/viewer_surface.dart",
+        "sha256": "d59763ea9365c116495358c78363bcd08d0c6d1a965a2ed5368bd94f4b20ff6f"
+      },
+      {
+        "path": "packages/image_viewer/lib/src/viewer.dart",
+        "sha256": "3c6ea7dd59f4677dc510d9c2596f13e9cf49e7b596d56dc2bad241fc00146e96"
+      },
+      {
+        "path": "packages/image_viewer/pubspec.lock",
+        "sha256": "00ac99d693f003b46111d24e18a233741aedfd3501569130d57d731ca192fb81"
+      },
+      {
+        "path": "packages/image_viewer/pubspec.yaml",
+        "sha256": "a13b4d5cea14c77d690aec45f3ebf3afa833cf4bb6e97f53dc421cfaed2ebedf"
+      },
+      {
+        "path": "packages/image_viewer/README.md",
+        "sha256": "68b3e3e7e8bf885da031e261f949522f19a76fbf487beedcc9fdd2ec75e528e0"
+      },
+      {
+        "path": "packages/image_viewer/test/m1_animation_codec_test.dart",
+        "sha256": "a3dab3c672f34a85985ff1096bce40a40b7c73839b103703058d9fb84f938c1b"
+      },
+      {
+        "path": "packages/image_viewer/test/m1_gesture_lifecycle_test.dart",
+        "sha256": "aa3db2c2db6a28bd6b33846972c0d6b1e91fce823f62d39e2fdf07899d8c456d"
+      },
+      {
+        "path": "packages/image_viewer/test/m1_save_probe_test.dart",
+        "sha256": "3eb3a87a6b9c7478b6cf05876a9f7c66b96cf7e5b177df421ab95ffdab3d0614"
+      },
+      {
+        "path": "packages/image_viewer/test/viewer_contract_test.dart",
+        "sha256": "62aa9258a533c8e2037c685f7ae75d737e929371e48037d90ba73b47677f200a"
+      },
+      {
+        "path": "packages/image_viewer/test/viewer_resources_test.dart",
+        "sha256": "4faba3182cba443679660e08a2068dd26b4cefa8b13a8db22f3715a079a7e305"
+      },
+      {
+        "path": "packages/image_viewer/test/viewer_save_test.dart",
+        "sha256": "f38d1923490bd4f60aea169bc0c0cc41cbd0b58811234137394345e732634ff8"
+      },
+      {
+        "path": "packages/image_viewer/tool/collect_test_results.py",
+        "sha256": "e71ff428ebcb6bd5314ef91dfaee5abaa1faedef42b85be82cf7ff13c3aa0443"
+      },
+      {
+        "path": "packages/image_viewer/tool/create_android_acceptance_fixtures.py",
+        "sha256": "656e01a08a0f269def87376018ecea4d7b8c01951eb86c9f6acd75b60aba66a8"
+      },
+      {
+        "path": "packages/image_viewer/tool/create_fixtures.py",
+        "sha256": "6febfe9b73afe0261076d82eeb750fb221562e6989c61ac9f93fa86977b42ade"
+      },
+      {
+        "path": "packages/image_viewer/tool/create_replay_control.py",
+        "sha256": "0ca630a7e2c4a2d47ca0df396c4d488bde3eb9c7ae687006eb04ac8a8fd338db"
+      },
+      {
+        "path": "packages/image_viewer/tool/create_replay_identity_controls.py",
+        "sha256": "4bbff966752aaafb434b9d6a9c3b161602623bd1eb03944fef028395c974c5a5"
+      },
+      {
+        "path": "packages/image_viewer/tool/m1_animation_codec.dart",
+        "sha256": "176c68bce516748416912fe5b183e5b2f43b79e6201574da9648ad16971b7808"
+      },
+      {
+        "path": "packages/image_viewer/tool/measure_conversion.dart",
+        "sha256": "c128019982ab658c394268b391d3775386c264c36ec74503fb0dbc6837fa991c"
+      }
+    ],
+    "locks": [
+      {
+        "path": "packages/image_viewer/pubspec.lock",
+        "sha256": "00ac99d693f003b46111d24e18a233741aedfd3501569130d57d731ca192fb81"
+      },
+      {
+        "path": "packages/image_viewer/example/pubspec.lock",
+        "sha256": "9a7de0b094b07456d44016212168f2f5890e5a74d0bf4f708d77db6c51c95a24"
+      }
+    ],
+    "nonDocumentationFilesMatchFinalRuntime": true
+  },
+  "device": {
+    "model": "vivo S18 / V2323A",
+    "android": "15",
+    "api": 35,
+    "deviceIdSha256": "557ef20f4d13aaf0605d2de7ec7fe8a6a44cf36e2520607fe2009b134cd774e8",
+    "serialPublished": false
+  },
+  "apks": [
+    {
+      "flavor": "component",
+      "package": "org.hnuhole.image_viewer_component",
+      "sha256": "fa1d3a24f0c5a232f42f3932acef7af335b29d4ac74e3336fa4e21a0aa514f6a",
+      "bytes": 91994977,
+      "saveEnabled": false,
+      "versionCode": 20263019,
+      "minSdk": 29,
+      "targetSdk": 36,
+      "abi": "arm64-v8a",
+      "debug": true,
+      "signatureV2": "PASS",
+      "certificateSha256": "77cc0dd2bc5a71ffbf107ebfa6fdc74f3ca158bcb82548b53b6ae9dd9a421dd5"
+    },
+    {
+      "flavor": "nativecheck",
+      "package": "org.hnuhole.image_viewer_component.nativecheck",
+      "sha256": "5f7766b5f2661cf2ea429cb74ba8596965439c6523055d7f9e0759f61ab2e827",
+      "bytes": 92011745,
+      "saveEnabled": true,
+      "versionCode": 20263019,
+      "minSdk": 29,
+      "targetSdk": 36,
+      "abi": "arm64-v8a",
+      "debug": true,
+      "signatureV2": "PASS",
+      "certificateSha256": "77cc0dd2bc5a71ffbf107ebfa6fdc74f3ca158bcb82548b53b6ae9dd9a421dd5"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "AV01",
+      "result": "PASS",
+      "scope": "普通/长/宽/小/透明素材、EXIF1–8；Android实际45场景及8幅方向/镜像截图"
+    },
+    {
+      "id": "AV02",
+      "result": "PASS",
+      "scope": "20263018人工多指正常；20263019修复版缩放旋转与双击恢复。完整抬指顺序保留18版本证据，不冒称19全量重跑"
+    },
+    {
+      "id": "AV03",
+      "result": "PASS",
+      "scope": "20263019人工：同一次持续回顶不退出，全部松手后新下拉退出"
+    },
+    {
+      "id": "AV04",
+      "result": "PASS",
+      "scope": "放大旋转缺陷在18复现，19修复并人工/真实状态复验；手指接触期间S18不触发旋转，该物理子项SKIP"
+    },
+    {
+      "id": "AV05",
+      "result": "PASS",
+      "scope": "20263019人工：下一张后返回保留原阅读位置，长图新会话进入顶部"
+    },
+    {
+      "id": "AV06",
+      "result": "PASS",
+      "scope": "20263019六次关闭按钮、六次Android返回均回首页；人工合格下拉退出"
+    },
+    {
+      "id": "AV07",
+      "result": "PASS",
+      "scope": "真实失败页、触摸重试恢复、访问失效退回；旧三秒来源在关闭后不能改变新页面"
+    },
+    {
+      "id": "AV08",
+      "result": "PASS",
+      "scope": "真实迟到来源隔离及关闭终态；示例故障注入，不代证业务授权"
+    },
+    {
+      "id": "AV09",
+      "result": "PASS",
+      "scope": "真实GIF/WebP解码计数：隐藏与后台停止持续解码，允许已在途的一帧；回前台继续"
+    },
+    {
+      "id": "AV10",
+      "result": "PASS",
+      "scope": "系统字体1.88、TalkBack索引/按钮/禁用原因、失败/重试说明及保存成功/失败朗读、横屏布局。TalkBack双击重试未单独取得状态转移证据；普通触摸重试已验"
+    },
+    {
+      "id": "AS01",
+      "result": "PASS",
+      "scope": "API35自身MediaStore写入；新版minSdk29、无旧写入/全图库读取声明；此路径不弹拒绝授权，拒绝子项SKIP；API28以下用户移除支持"
+    },
+    {
+      "id": "AS02",
+      "result": "PASS",
+      "scope": "真实Gal PNG/JPEG/透明PNG原字节一致；普通图保存成功大字反馈"
+    },
+    {
+      "id": "AS03",
+      "result": "PASS",
+      "scope": "原GIF字节一致；Fossify1.14.0实际慢GIF1→2→3三组、末帧停住。约1秒截图采样不承诺毫秒级帧时长"
+    },
+    {
+      "id": "AS04",
+      "result": "PASS",
+      "scope": "原有限/无限WebP字节一致；Fossify1.14.0自动两轮约2秒换帧并停末帧/无限持续变化。vivo9.4.6.13历史FAIL未改写/未修复"
+    },
+    {
+      "id": "AS05",
+      "result": "PASS",
+      "scope": "两秒注入适配器中三次点击只一次派发/写入、一个新媒体项"
+    },
+    {
+      "id": "AS06",
+      "result": "PASS",
+      "scope": "保存中关闭后原生写入继续，旧结果不污染新EXIF页；不能承诺系统取消"
+    },
+    {
+      "id": "AS07",
+      "result": "PASS",
+      "scope": "两次故意删除本操作临时文件后调用真实Gal均失败、可再次操作、无新增媒体；库返回formatUnsupported不证明有效GIF不支持"
+    },
+    {
+      "id": "AS08",
+      "result": "PASS",
+      "scope": "已采集的8次结算观察file/directory=false；最后两次WebP未再采集结算观察，不冒称它们单独通过清理"
+    }
+  ],
+  "resourceSuite": {
+    "versionCode": 20263019,
+    "cases": [
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 52,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 17,
+        "maxBuildUs": 49199,
+        "maxRasterUs": 8677
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_2.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 107,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 10,
+        "maxBuildUs": 45610,
+        "maxRasterUs": 47292
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_3.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 135,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 54887,
+        "maxRasterUs": 2682
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_4.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 165,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 90936,
+        "maxRasterUs": 4309
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_5.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 147,
+        "encodedBytes": 1487,
+        "width": 128,
+        "height": 192,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 62945,
+        "maxRasterUs": 1498
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_6.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 123,
+        "encodedBytes": 1487,
+        "width": 128,
+        "height": 192,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 73995,
+        "maxRasterUs": 4736
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_7.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 118,
+        "encodedBytes": 1487,
+        "width": 128,
+        "height": 192,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 56599,
+        "maxRasterUs": 2463
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_8.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 139,
+        "encodedBytes": 1487,
+        "width": 128,
+        "height": 192,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 90310,
+        "maxRasterUs": 3241
+      },
+      {
+        "stage": "case",
+        "item": "android_transparent.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 132,
+        "encodedBytes": 349,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 91189,
+        "maxRasterUs": 3409
+      },
+      {
+        "stage": "case",
+        "item": "android_small.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 162,
+        "encodedBytes": 69,
+        "width": 1,
+        "height": 1,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 79624,
+        "maxRasterUs": 3407
+      },
+      {
+        "stage": "case",
+        "item": "android_wide.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 185,
+        "encodedBytes": 3416,
+        "width": 2400,
+        "height": 240,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 85734,
+        "maxRasterUs": 3319
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 224,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 60214,
+        "maxRasterUs": 2505
+      },
+      {
+        "stage": "case",
+        "item": "android_long_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 205,
+        "encodedBytes": 153690,
+        "width": 480,
+        "height": 16384,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 4,
+        "maxBuildUs": 67601,
+        "maxRasterUs": 3415
+      },
+      {
+        "stage": "case",
+        "item": "android_animation_limit.webp",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 169,
+        "encodedBytes": 1039684,
+        "width": 1024,
+        "height": 1024,
+        "frameCount": 16,
+        "decodedFrames": 5,
+        "renderedFrames": 10,
+        "maxBuildUs": 50934,
+        "maxRasterUs": 3071
+      },
+      {
+        "stage": "case",
+        "item": "android_frames_limit.webp",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 126,
+        "encodedBytes": 204672,
+        "width": 128,
+        "height": 96,
+        "frameCount": 120,
+        "decodedFrames": 8,
+        "renderedFrames": 10,
+        "maxBuildUs": 63573,
+        "maxRasterUs": 4042
+      },
+      {
+        "stage": "case",
+        "item": "android_pixels_over.png",
+        "result": "PASS",
+        "expectedReject": true,
+        "status": "failed",
+        "failure": "resourceLimit",
+        "readyMs": 87,
+        "encodedBytes": null,
+        "width": null,
+        "height": null,
+        "frameCount": null,
+        "decodedFrames": null,
+        "renderedFrames": 7,
+        "maxBuildUs": 81298,
+        "maxRasterUs": 3598
+      },
+      {
+        "stage": "case",
+        "item": "android_dimension_over.png",
+        "result": "PASS",
+        "expectedReject": true,
+        "status": "failed",
+        "failure": "resourceLimit",
+        "readyMs": 90,
+        "encodedBytes": null,
+        "width": null,
+        "height": null,
+        "frameCount": null,
+        "decodedFrames": null,
+        "renderedFrames": 2,
+        "maxBuildUs": 79222,
+        "maxRasterUs": 2756
+      },
+      {
+        "stage": "case",
+        "item": "android_frames_over.webp",
+        "result": "PASS",
+        "expectedReject": true,
+        "status": "failed",
+        "failure": "resourceLimit",
+        "readyMs": 172,
+        "encodedBytes": null,
+        "width": null,
+        "height": null,
+        "frameCount": null,
+        "decodedFrames": null,
+        "renderedFrames": 4,
+        "maxBuildUs": 86312,
+        "maxRasterUs": 2294
+      },
+      {
+        "stage": "case",
+        "item": "android_duration_over.webp",
+        "result": "PASS",
+        "expectedReject": true,
+        "status": "failed",
+        "failure": "resourceLimit",
+        "readyMs": 131,
+        "encodedBytes": null,
+        "width": null,
+        "height": null,
+        "frameCount": null,
+        "decodedFrames": null,
+        "renderedFrames": 4,
+        "maxBuildUs": 45780,
+        "maxRasterUs": 3235
+      },
+      {
+        "stage": "case",
+        "item": "android_gif_slow.gif",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 148,
+        "encodedBytes": 2892,
+        "width": 192,
+        "height": 128,
+        "frameCount": 3,
+        "decodedFrames": 2,
+        "renderedFrames": 4,
+        "maxBuildUs": 78553,
+        "maxRasterUs": 2886
+      },
+      {
+        "stage": "case",
+        "item": "android_animation_work_over.webp",
+        "result": "PASS",
+        "expectedReject": true,
+        "status": "failed",
+        "failure": "resourceLimit",
+        "readyMs": 151,
+        "encodedBytes": null,
+        "width": null,
+        "height": null,
+        "frameCount": null,
+        "decodedFrames": null,
+        "renderedFrames": 8,
+        "maxBuildUs": 49887,
+        "maxRasterUs": 2568
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 254,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 9,
+        "maxBuildUs": 80580,
+        "maxRasterUs": 3515
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 146,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 81169,
+        "maxRasterUs": 5898
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 267,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 9,
+        "maxBuildUs": 83073,
+        "maxRasterUs": 3068
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 137,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 71699,
+        "maxRasterUs": 2254
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 223,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 93746,
+        "maxRasterUs": 3730
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 177,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 7,
+        "maxBuildUs": 80962,
+        "maxRasterUs": 3103
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 229,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 81367,
+        "maxRasterUs": 2622
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 157,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 7,
+        "maxBuildUs": 79756,
+        "maxRasterUs": 2943
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 228,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 9,
+        "maxBuildUs": 82308,
+        "maxRasterUs": 2735
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 175,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 81652,
+        "maxRasterUs": 3743
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 181,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 10,
+        "maxBuildUs": 73740,
+        "maxRasterUs": 2188
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 237,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 5,
+        "maxBuildUs": 77092,
+        "maxRasterUs": 2948
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 166,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 10,
+        "maxBuildUs": 58722,
+        "maxRasterUs": 3286
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 150,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 7,
+        "maxBuildUs": 72810,
+        "maxRasterUs": 2761
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 183,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 11,
+        "maxBuildUs": 40627,
+        "maxRasterUs": 3885
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 150,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 7,
+        "maxBuildUs": 66984,
+        "maxRasterUs": 4568
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 245,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 74732,
+        "maxRasterUs": 3873
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 154,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 74024,
+        "maxRasterUs": 4030
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 232,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 83215,
+        "maxRasterUs": 3005
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 169,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 9,
+        "maxBuildUs": 47407,
+        "maxRasterUs": 2391
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 255,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 79721,
+        "maxRasterUs": 2560
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 142,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 5,
+        "maxBuildUs": 73854,
+        "maxRasterUs": 2640
+      },
+      {
+        "stage": "case",
+        "item": "android_static_limit.png",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 259,
+        "encodedBytes": 71296,
+        "width": 3072,
+        "height": 4096,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 8,
+        "maxBuildUs": 84088,
+        "maxRasterUs": 2721
+      },
+      {
+        "stage": "case",
+        "item": "android_exif_1.jpg",
+        "result": "PASS",
+        "expectedReject": false,
+        "status": "ready",
+        "failure": null,
+        "readyMs": 157,
+        "encodedBytes": 1487,
+        "width": 192,
+        "height": 128,
+        "frameCount": 1,
+        "decodedFrames": 1,
+        "renderedFrames": 7,
+        "maxBuildUs": 85848,
+        "maxRasterUs": 2971
+      }
+    ],
+    "completion": {
+      "stage": "finished",
+      "passed": 45,
+      "failed": 0,
+      "cases": 45
+    },
+    "baselinePssKiB": 338835,
+    "peakPssKiB": 356219,
+    "peakDeltaMiB": 16.9765625,
+    "lastPssKiB": 340906,
+    "sampleCount": 28,
+    "lastFivePssKiB": [
+      340907,
+      340907,
+      340907,
+      340907,
+      340906
+    ],
+    "debugBuild": true,
+    "releasePerformanceGuarantee": false
+  },
+  "resourceLimits": {
+    "encodedBytes": 16777216,
+    "staticPixels": 12582912,
+    "dimension": 16384,
+    "animationPixels": 1048576,
+    "animationTotalPixels": 16777216,
+    "frames": 120,
+    "frameSeconds": 15,
+    "cycleSeconds": 60,
+    "saveBytes": 16777216
+  },
+  "resourceScope": "Only current source decoded; external provider/source allocation and release/other-device budgets not proven",
+  "animationLifecycle": {
+    "checks": [
+      {
+        "format": "GIF",
+        "result": "PASS",
+        "fixture": "android_gif_slow.gif",
+        "versionCode": 20263019,
+        "pausedAtMs": 261396,
+        "resumedAtMs": 268712,
+        "pausedSamples": 6,
+        "pausedFrameCount": 5,
+        "afterResumeFrameCount": 9,
+        "log": "gif19-lifecycle-events.log",
+        "scope": "Real Android Flutter codec counts; no ongoing background decode, resume continues; not gallery playback"
+      },
+      {
+        "format": "WebP",
+        "result": "PASS",
+        "fixture": "android_frames_limit.webp",
+        "versionCode": 20263019,
+        "pausedAtMs": 96577,
+        "resumedAtMs": 103861,
+        "pausedSamples": 7,
+        "pausedFrameCount": 137,
+        "afterResumeFrameCount": 202,
+        "log": "animation19-background-events.log",
+        "scope": "Real Android Flutter codec counts; no ongoing background decode, resume continues; not gallery playback"
+      }
+    ],
+    "hiddenFourSeconds": "Counts stay 2 for GIF and 29 for WebP; both resume",
+    "webpHiddenLog": "animation19-hidden-events.log"
+  },
+  "rotation": {
+    "versionCode": 20263019,
+    "readingRestore": {
+      "result": "PASS",
+      "operator": "还在原来的位置，没有恢复到顶部",
+      "scope": "Return from next item restores prior position"
+    },
+    "rotationWhilePointerHeld": {
+      "result": "SKIP",
+      "operator": "单指按上去旋转不了",
+      "reason": "This S18 does not rotate while finger contact continues; no physical layout change occurred. Layout/gesture cancellation host regression separately passed."
+    },
+    "strictTopGesture": {
+      "result": "PASS",
+      "operator": "正常",
+      "scope": "Continuous gesture reaching TOP does not exit; a new pull after full release exits"
+    }
+  },
+  "closeCycles": {
+    "versionCode": 20263019,
+    "cycles": 12,
+    "actions": "Six close buttons and six Android back keys; ADB input on physical device, not manual touch",
+    "series": [
+      {
+        "cycle": 1,
+        "pssKiB": 298291
+      },
+      {
+        "cycle": 2,
+        "pssKiB": 296335
+      },
+      {
+        "cycle": 3,
+        "pssKiB": 296411
+      },
+      {
+        "cycle": 4,
+        "pssKiB": 296599
+      },
+      {
+        "cycle": 5,
+        "pssKiB": 297131
+      },
+      {
+        "cycle": 6,
+        "pssKiB": 297583
+      },
+      {
+        "cycle": 7,
+        "pssKiB": 299331
+      },
+      {
+        "cycle": 8,
+        "pssKiB": 300425
+      },
+      {
+        "cycle": 9,
+        "pssKiB": 299717
+      },
+      {
+        "cycle": 10,
+        "pssKiB": 299801
+      },
+      {
+        "cycle": 11,
+        "pssKiB": 309861
+      },
+      {
+        "cycle": 12,
+        "pssKiB": 298561
+      }
+    ],
+    "scope": "12 actual Android open/close cycles; six buttons and six OS back keys, final launcher; bounded debug PSS sample, not release/hardware-wide guarantee",
+    "baselinePssKiB": 288615,
+    "result": "PASS"
+  },
+  "originals": [
+    {
+      "mediaId": "1000043817",
+      "fixture": "ordinary.png",
+      "mimeType": "image/png",
+      "bytes": 3656,
+      "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+      "expectedSha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043818",
+      "fixture": "animation.gif",
+      "mimeType": "image/gif",
+      "bytes": 934,
+      "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "expectedSha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043819",
+      "fixture": "animation.gif",
+      "mimeType": "image/gif",
+      "bytes": 934,
+      "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "expectedSha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043820",
+      "fixture": "android_exif_1.jpg",
+      "mimeType": "image/jpeg",
+      "bytes": 1487,
+      "sha256": "f4ab4302ffa13229a023af5df27663e4df4e4f361c8036fc3c5de7b25477f8f6",
+      "expectedSha256": "f4ab4302ffa13229a023af5df27663e4df4e4f361c8036fc3c5de7b25477f8f6",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043821",
+      "fixture": "android_transparent.png",
+      "mimeType": "image/png",
+      "bytes": 349,
+      "sha256": "db4c1b7f3f34c1b58ff2d92ed5feb9f7cdc3c4594709a5c58c17b8c0f72c709e",
+      "expectedSha256": "db4c1b7f3f34c1b58ff2d92ed5feb9f7cdc3c4594709a5c58c17b8c0f72c709e",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043822",
+      "fixture": "android_gif_slow.gif",
+      "mimeType": "image/gif",
+      "bytes": 2892,
+      "sha256": "96478521e9f3ccc23be7b3a90bcf0f788e8b86b394d391bfcdf30c991a734357",
+      "expectedSha256": "96478521e9f3ccc23be7b3a90bcf0f788e8b86b394d391bfcdf30c991a734357",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043823",
+      "fixture": "replay_identity_slow.webp",
+      "mimeType": "image/webp",
+      "bytes": 10352,
+      "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+      "expectedSha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+      "byteIdentical": true
+    },
+    {
+      "mediaId": "1000043824",
+      "fixture": "replay_identity_fast.webp",
+      "mimeType": "image/webp",
+      "bytes": 10030,
+      "sha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988",
+      "expectedSha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988",
+      "byteIdentical": true
+    }
+  ],
+  "galleryPlayback": [
+    {
+      "fixture": "replay_identity_slow.webp",
+      "player": "Fossify Gallery 1.14.0",
+      "mediaId": "1000043823",
+      "inputAfterOpen": false,
+      "runs": [
+        {
+          "frame": 1,
+          "start": 0.254,
+          "end": 1.176
+        },
+        {
+          "frame": 2,
+          "start": 2.157,
+          "end": 3.187
+        },
+        {
+          "frame": 3,
+          "start": 4.211,
+          "end": 5.199
+        },
+        {
+          "frame": 1,
+          "start": 6.259,
+          "end": 7.244
+        },
+        {
+          "frame": 2,
+          "start": 8.19,
+          "end": 9.279
+        },
+        {
+          "frame": 3,
+          "start": 10.335,
+          "end": 14.907
+        }
+      ],
+      "samples": [
+        {
+          "seconds": 0.254,
+          "frame": 1,
+          "rgb": [
+            255,
+            0,
+            0
+          ],
+          "file": "gallery19-slow-0.png",
+          "sha256": "4eee7cf32b3a86fe990bfe4c6f00a4e275d0631368863f909b59d66e9805e761"
+        },
+        {
+          "seconds": 1.176,
+          "frame": 1,
+          "rgb": [
+            255,
+            0,
+            0
+          ],
+          "file": "gallery19-slow-1.png",
+          "sha256": "2d2d6dd2c77bbed95275e38f20823e514f6b41a9e087678217318c1ba2887516"
+        },
+        {
+          "seconds": 2.157,
+          "frame": 2,
+          "rgb": [
+            0,
+            128,
+            0
+          ],
+          "file": "gallery19-slow-2.png",
+          "sha256": "cfbe3d3c353d28ed5b24e3acae8f90bab9cee1a73116f9a33ec65db41e1d1b5b"
+        },
+        {
+          "seconds": 3.187,
+          "frame": 2,
+          "rgb": [
+            0,
+            128,
+            0
+          ],
+          "file": "gallery19-slow-3.png",
+          "sha256": "cfbe3d3c353d28ed5b24e3acae8f90bab9cee1a73116f9a33ec65db41e1d1b5b"
+        },
+        {
+          "seconds": 4.211,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-slow-4.png",
+          "sha256": "897d878130eddd44c6e40d3100ae367723cbdf645a9dae38ef44b6d4b004f85e"
+        },
+        {
+          "seconds": 5.199,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-slow-5.png",
+          "sha256": "897d878130eddd44c6e40d3100ae367723cbdf645a9dae38ef44b6d4b004f85e"
+        },
+        {
+          "seconds": 6.259,
+          "frame": 1,
+          "rgb": [
+            255,
+            0,
+            0
+          ],
+          "file": "gallery19-slow-6.png",
+          "sha256": "2d2d6dd2c77bbed95275e38f20823e514f6b41a9e087678217318c1ba2887516"
+        },
+        {
+          "seconds": 7.244,
+          "frame": 1,
+          "rgb": [
+            255,
+            0,
+            0
+          ],
+          "file": "gallery19-slow-7.png",
+          "sha256": "2d2d6dd2c77bbed95275e38f20823e514f6b41a9e087678217318c1ba2887516"
+        },
+        {
+          "seconds": 8.19,
+          "frame": 2,
+          "rgb": [
+            0,
+            128,
+            0
+          ],
+          "file": "gallery19-slow-8.png",
+          "sha256": "cfbe3d3c353d28ed5b24e3acae8f90bab9cee1a73116f9a33ec65db41e1d1b5b"
+        },
+        {
+          "seconds": 9.279,
+          "frame": 2,
+          "rgb": [
+            0,
+            128,
+            0
+          ],
+          "file": "gallery19-slow-9.png",
+          "sha256": "cfbe3d3c353d28ed5b24e3acae8f90bab9cee1a73116f9a33ec65db41e1d1b5b"
+        },
+        {
+          "seconds": 10.335,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-slow-10.png",
+          "sha256": "897d878130eddd44c6e40d3100ae367723cbdf645a9dae38ef44b6d4b004f85e"
+        },
+        {
+          "seconds": 11.657,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-slow-11.png",
+          "sha256": "897d878130eddd44c6e40d3100ae367723cbdf645a9dae38ef44b6d4b004f85e"
+        },
+        {
+          "seconds": 13.312,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-slow-12.png",
+          "sha256": "897d878130eddd44c6e40d3100ae367723cbdf645a9dae38ef44b6d4b004f85e"
+        },
+        {
+          "seconds": 14.907,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-slow-13.png",
+          "sha256": "897d878130eddd44c6e40d3100ae367723cbdf645a9dae38ef44b6d4b004f85e"
+        }
+      ],
+      "scope": "Actual full-resolution gallery screenshots; timings have capture-interval uncertainty",
+      "result": "PASS",
+      "sequence": [
+        1,
+        2,
+        3,
+        1,
+        2,
+        3
+      ],
+      "observedTransitionGapsSeconds": [
+        1.903,
+        2.054,
+        2.048,
+        1.931,
+        2.145
+      ],
+      "expected": "Automatic 2-second frames, two rounds, final frame stays"
+    },
+    {
+      "fixture": "android_gif_slow.gif",
+      "player": "Fossify Gallery 1.14.0",
+      "mediaId": "1000043822",
+      "inputAfterOpen": false,
+      "runs": [
+        {
+          "frame": 1,
+          "start": 0.269,
+          "end": 1.184
+        },
+        {
+          "frame": 2,
+          "start": 1.98,
+          "end": 1.98
+        },
+        {
+          "frame": 3,
+          "start": 2.947,
+          "end": 2.947
+        },
+        {
+          "frame": 1,
+          "start": 3.78,
+          "end": 3.78
+        },
+        {
+          "frame": 2,
+          "start": 4.674,
+          "end": 4.674
+        },
+        {
+          "frame": 3,
+          "start": 5.899,
+          "end": 5.899
+        },
+        {
+          "frame": 1,
+          "start": 7.054,
+          "end": 7.054
+        },
+        {
+          "frame": 2,
+          "start": 8.031,
+          "end": 8.031
+        },
+        {
+          "frame": 3,
+          "start": 8.999,
+          "end": 12.369
+        }
+      ],
+      "samples": [
+        {
+          "seconds": 0.269,
+          "frame": 1,
+          "rgb": [
+            0,
+            0,
+            0
+          ],
+          "file": "gallery19-gif-0.png",
+          "sha256": "ac1a5b83d3b7add6041c495f7c5088a897e291ff895f2ea28e12044ebcbb62d5"
+        },
+        {
+          "seconds": 1.184,
+          "frame": 1,
+          "rgb": [
+            0,
+            0,
+            0
+          ],
+          "file": "gallery19-gif-1.png",
+          "sha256": "08d3c228808b0baa45efbfaa98f7cbc35bb4d625f391efc2432781b2e87d9d1f"
+        },
+        {
+          "seconds": 1.98,
+          "frame": 2,
+          "rgb": [
+            73,
+            131,
+            193
+          ],
+          "file": "gallery19-gif-2.png",
+          "sha256": "42ddda03949c141fa7bafd660153a2d5d95bc0fa61042cb0f80ed797bad8123d"
+        },
+        {
+          "seconds": 2.947,
+          "frame": 3,
+          "rgb": [
+            146,
+            6,
+            130
+          ],
+          "file": "gallery19-gif-3.png",
+          "sha256": "e6daf86b0fe9acc4f2c65de1c296e653602699383e4ced32a769b61881844db7"
+        },
+        {
+          "seconds": 3.78,
+          "frame": 1,
+          "rgb": [
+            0,
+            0,
+            0
+          ],
+          "file": "gallery19-gif-4.png",
+          "sha256": "08d3c228808b0baa45efbfaa98f7cbc35bb4d625f391efc2432781b2e87d9d1f"
+        },
+        {
+          "seconds": 4.674,
+          "frame": 2,
+          "rgb": [
+            73,
+            131,
+            193
+          ],
+          "file": "gallery19-gif-5.png",
+          "sha256": "42ddda03949c141fa7bafd660153a2d5d95bc0fa61042cb0f80ed797bad8123d"
+        },
+        {
+          "seconds": 5.899,
+          "frame": 3,
+          "rgb": [
+            146,
+            6,
+            130
+          ],
+          "file": "gallery19-gif-6.png",
+          "sha256": "e6daf86b0fe9acc4f2c65de1c296e653602699383e4ced32a769b61881844db7"
+        },
+        {
+          "seconds": 7.054,
+          "frame": 1,
+          "rgb": [
+            0,
+            0,
+            0
+          ],
+          "file": "gallery19-gif-7.png",
+          "sha256": "08d3c228808b0baa45efbfaa98f7cbc35bb4d625f391efc2432781b2e87d9d1f"
+        },
+        {
+          "seconds": 8.031,
+          "frame": 2,
+          "rgb": [
+            73,
+            131,
+            193
+          ],
+          "file": "gallery19-gif-8.png",
+          "sha256": "42ddda03949c141fa7bafd660153a2d5d95bc0fa61042cb0f80ed797bad8123d"
+        },
+        {
+          "seconds": 8.999,
+          "frame": 3,
+          "rgb": [
+            146,
+            6,
+            130
+          ],
+          "file": "gallery19-gif-9.png",
+          "sha256": "e6daf86b0fe9acc4f2c65de1c296e653602699383e4ced32a769b61881844db7"
+        },
+        {
+          "seconds": 9.985,
+          "frame": 3,
+          "rgb": [
+            146,
+            6,
+            130
+          ],
+          "file": "gallery19-gif-10.png",
+          "sha256": "e6daf86b0fe9acc4f2c65de1c296e653602699383e4ced32a769b61881844db7"
+        },
+        {
+          "seconds": 11.21,
+          "frame": 3,
+          "rgb": [
+            146,
+            6,
+            130
+          ],
+          "file": "gallery19-gif-11.png",
+          "sha256": "e6daf86b0fe9acc4f2c65de1c296e653602699383e4ced32a769b61881844db7"
+        },
+        {
+          "seconds": 12.369,
+          "frame": 3,
+          "rgb": [
+            146,
+            6,
+            130
+          ],
+          "file": "gallery19-gif-12.png",
+          "sha256": "e6daf86b0fe9acc4f2c65de1c296e653602699383e4ced32a769b61881844db7"
+        }
+      ],
+      "scope": "Actual full-resolution gallery screenshots; timings have capture-interval uncertainty",
+      "result": "PASS",
+      "sequence": [
+        1,
+        2,
+        3,
+        1,
+        2,
+        3,
+        1,
+        2,
+        3
+      ],
+      "finiteStopObserved": true,
+      "exactLoopCount": "NOT_RUN_CAPTURE_INTERVAL_TOO_COARSE",
+      "expected": "Original GIF animates and reaches finite final frame; raw bytes/metadata independently verified"
+    },
+    {
+      "fixture": "replay_identity_fast.webp",
+      "player": "Fossify Gallery 1.14.0",
+      "mediaId": "1000043824",
+      "inputAfterOpen": false,
+      "runs": [
+        {
+          "frame": 1,
+          "start": 0.285,
+          "end": 0.285
+        },
+        {
+          "frame": 3,
+          "start": 1.21,
+          "end": 2.188
+        },
+        {
+          "frame": 2,
+          "start": 3.221,
+          "end": 3.221
+        },
+        {
+          "frame": 3,
+          "start": 4.175,
+          "end": 4.175
+        },
+        {
+          "frame": 1,
+          "start": 5.125,
+          "end": 5.125
+        }
+      ],
+      "samples": [
+        {
+          "seconds": 0.285,
+          "frame": 1,
+          "rgb": [
+            255,
+            0,
+            0
+          ],
+          "file": "gallery19-infinite-0.png",
+          "sha256": "16caaecaaf39beb146b584539eb5d404289e18af514526961045d076b389be65"
+        },
+        {
+          "seconds": 1.21,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-infinite-1.png",
+          "sha256": "33343659c4d8a0c32ab5a12ee5d7d3c59c3620bc40c8eb767a41de481b15df52"
+        },
+        {
+          "seconds": 2.188,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-infinite-2.png",
+          "sha256": "33343659c4d8a0c32ab5a12ee5d7d3c59c3620bc40c8eb767a41de481b15df52"
+        },
+        {
+          "seconds": 3.221,
+          "frame": 2,
+          "rgb": [
+            0,
+            128,
+            0
+          ],
+          "file": "gallery19-infinite-3.png",
+          "sha256": "a69026e1b7a9bd628fc3a5ae3e55bf5c631912c206581691d4bf05e4b0970235"
+        },
+        {
+          "seconds": 4.175,
+          "frame": 3,
+          "rgb": [
+            0,
+            0,
+            255
+          ],
+          "file": "gallery19-infinite-4.png",
+          "sha256": "33343659c4d8a0c32ab5a12ee5d7d3c59c3620bc40c8eb767a41de481b15df52"
+        },
+        {
+          "seconds": 5.125,
+          "frame": 1,
+          "rgb": [
+            255,
+            0,
+            0
+          ],
+          "file": "gallery19-infinite-5.png",
+          "sha256": "c8ebdfd208f46365efaa8c5266647060b2913e62a61a8c336d866bd998a589c3"
+        }
+      ],
+      "scope": "Actual full-resolution gallery screenshots; timings have capture-interval uncertainty",
+      "result": "PASS",
+      "expected": "Infinite original WebP continues changing during observation; individual short-frame timing not measurable by these screenshots"
+    }
+  ],
+  "galleryVendorKnownFailure": {
+    "result": "FAIL",
+    "version": "vivo Gallery9.4.6.13",
+    "evidence": "docs/design/image-viewer-gallery-compatibility-verification.json",
+    "scope": "Historical startup/timing/finite-loop failures; not retested or fixed this phase"
+  },
+  "defaultSavingEnabled": false,
+  "remaining": [
+    {
+      "item": "iOS build/Photos/VoiceOver/physical matrix",
+      "result": "NOT_RUN",
+      "reason": "No isolated macOS/Xcode/iPhone window"
+    },
+    {
+      "item": "Release performance and other Android hardware",
+      "result": "NOT_RUN",
+      "reason": "This evidence is S18 debug only; 16MiB encoded maximum not stress-measured on phone"
+    },
+    {
+      "item": "TalkBack retry activation",
+      "result": "NOT_RUN",
+      "reason": "Operator reported normal, but no separate ready transition captured while TalkBack enabled; touch retry verified"
+    },
+    {
+      "item": "Last two WebP cleanup observations",
+      "result": "NOT_RUN",
+      "reason": "New files verified; no later scoped logcat collected before phone release"
+    },
+    {
+      "item": "MIV14 real business integration",
+      "result": "NOT_RUN",
+      "implementation": "NOT_DEVELOPED",
+      "reason": "User explicitly excluded main App/business integration"
+    }
+  ],
+  "deviceWindowEnd": {
+    "endedAt": "2026-10-14T23:42:41.5810220+08:00",
+    "userInstruction": "还需要我手机吗？不需要回复不需要然后继续",
+    "phoneRequired": false,
+    "deviceOperationsEnded": true,
+    "sharedServiceStartedRestartedOrStopped": false,
+    "newAdbKeysCreated": false,
+    "lastVerifiedSettings": {
+      "font_scale": "1.0",
+      "show_touches": "0",
+      "enabled_accessibility_services": "",
+      "accelerometer_rotation": "1",
+      "pointer_location": "0"
+    },
+    "galleryPermissionsChangedThisPhase": false,
+    "galleryPreexistingReadPermissions": "Already granted before this phase opened Gallery; preserved",
+    "testRecordersRunning": false,
+    "scope": "No more device commands; Git and local evidence only"
+  },
+  "rawLogs": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-complete-20261014\\logs",
+  "buildLogs": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs",
+  "formalDualPlatformAccepted": false,
+  "businessIntegrationAccepted": false,
+  "noNativeBridgeOrEngineFork": true,
+  "noReleaseDeployOrMainMerge": true,
+  "sourceCommit": "67a14882621bd95520d7bac9e5407892593a4c5a",
+  "deliveryRecordedOn": "2026-10-15",
+  "diskFreeAtDeliveryBytes": {
+    "C": 19533066240,
+    "E": 157814226944
+  },
+  "changedFiles": [
+    "AGENTS.md",
+    "docs/adr/0001-engineering-baseline.md",
+    "docs/adr/0002-communication-and-persistence-baseline.md",
+    "docs/adr/0003-repository-auth-and-first-slice.md",
+    "docs/adr/0004-ci-testing-email-and-deployment.md",
+    "docs/adr/0005-privacy-preserving-email-authentication.md",
+    "docs/adr/0006-android-platform-support.md",
+    "docs/design/HANDOFF.md",
+    "docs/design/README.md",
+    "docs/design/auth-authorization-safety-gate.md",
+    "docs/design/auth-identity-account-closure-plan.md",
+    "docs/design/auth-privacy-architecture-decision.md",
+    "docs/design/auth-privacy-boundary-plan.md",
+    "docs/design/auth-privacy-business-contract.md",
+    "docs/design/auth-privacy-closure-checklist.md",
+    "docs/design/auth-privacy-data-api-contract.md",
+    "docs/design/auth-privacy-database-migration-design.md",
+    "docs/design/auth-privacy-device-credentials-passkey-plan.md",
+    "docs/design/auth-privacy-platform-acceptance-plan.md",
+    "docs/design/auth-privacy-recovery-decision.md",
+    "docs/design/auth-privacy-registration-protocol.md",
+    "docs/design/auth-privacy-regression-plan.md",
+    "docs/design/auth-privacy-runtime-business-integration-plan.md",
+    "docs/design/auth-privacy-threat-model.md",
+    "docs/design/auth-verifier-safety-gate-plan.md",
+    "docs/design/editable-design.md",
+    "docs/design/identity-management-plan.md",
+    "docs/design/image-viewer-android-checklist.md",
+    "docs/design/image-viewer-android-completion-report.md",
+    "docs/design/image-viewer-android-completion-verification.json",
+    "docs/design/image-viewer-component-plan.md",
+    "docs/design/image-viewer-machine-handoff.md",
+    "docs/design/module-acceptance-handoff.md",
+    "docs/design/module-acceptance-ledger.json",
+    "docs/design/modules/accounts.md",
+    "docs/design/modules/comments.md",
+    "docs/design/modules/identity.md",
+    "docs/design/modules/messages.md",
+    "docs/design/modules/messaging.md",
+    "docs/design/modules/moderation.md",
+    "docs/design/modules/navigation.md",
+    "docs/design/modules/personal.md",
+    "docs/design/modules/popularity.md",
+    "docs/design/modules/post-composer.md",
+    "docs/design/modules/post-detail.md",
+    "docs/design/modules/tags.md",
+    "docs/design/post-detail-dark-final.md",
+    "docs/design/progress.md",
+    "docs/design/ui-design-prompt-template.md",
+    "docs/design/ui-quality-workflow.md",
+    "packages/image_viewer/README.md",
+    "packages/image_viewer/example/README.md",
+    "packages/image_viewer/example/android/app/build.gradle.kts",
+    "packages/image_viewer/example/android/app/src/main/AndroidManifest.xml",
+    "packages/image_viewer/example/assets/fixtures/android_acceptance_manifest.json",
+    "packages/image_viewer/example/assets/fixtures/android_animation_limit.webp",
+    "packages/image_viewer/example/assets/fixtures/android_animation_work_over.webp",
+    "packages/image_viewer/example/assets/fixtures/android_dimension_over.png",
+    "packages/image_viewer/example/assets/fixtures/android_duration_over.webp",
+    "packages/image_viewer/example/assets/fixtures/android_exif_1.jpg",
+    "packages/image_viewer/example/assets/fixtures/android_exif_2.jpg",
+    "packages/image_viewer/example/assets/fixtures/android_exif_3.jpg",
+    "packages/image_viewer/example/assets/fixtures/android_exif_4.jpg",
+    "packages/image_viewer/example/assets/fixtures/android_exif_5.jpg",
+    "packages/image_viewer/example/assets/fixtures/android_exif_6.jpg",
+    "packages/image_viewer/example/assets/fixtures/android_exif_7.jpg",
+    "packages/image_viewer/example/assets/fixtures/android_exif_8.jpg",
+    "packages/image_viewer/example/assets/fixtures/android_frames_limit.webp",
+    "packages/image_viewer/example/assets/fixtures/android_frames_over.webp",
+    "packages/image_viewer/example/assets/fixtures/android_gif_slow.gif",
+    "packages/image_viewer/example/assets/fixtures/android_long_limit.png",
+    "packages/image_viewer/example/assets/fixtures/android_pixels_over.png",
+    "packages/image_viewer/example/assets/fixtures/android_small.png",
+    "packages/image_viewer/example/assets/fixtures/android_static_limit.png",
+    "packages/image_viewer/example/assets/fixtures/android_transparent.png",
+    "packages/image_viewer/example/assets/fixtures/android_wide.png",
+    "packages/image_viewer/example/lib/component_example.dart",
+    "packages/image_viewer/lib/src/viewer.dart",
+    "packages/image_viewer/lib/src/viewer_controller.dart",
+    "packages/image_viewer/lib/src/viewer_resources.dart",
+    "packages/image_viewer/lib/src/viewer_save.dart",
+    "packages/image_viewer/lib/src/viewer_surface.dart",
+    "packages/image_viewer/test/viewer_contract_test.dart",
+    "packages/image_viewer/test/viewer_resources_test.dart",
+    "packages/image_viewer/tool/create_android_acceptance_fixtures.py"
+  ],
+  "cleanup": {
+    "ownApkCopies": "BLOCKED_AUTO_REVIEW",
+    "reviewReason": "blocked by policy; no more specific reason supplied",
+    "includedInGit": false,
+    "noDeletionRetryOrBypass": true,
+    "existingIsolatedToolchainRetainedForFutureRegression": true
+  }
+}

@@ -1,0 +1,339 @@
+{
+  "schemaVersion": "hnuhole-community-flutter-f2-lock/v1",
+  "recordedOn": "2026-10-09",
+  "branch": "codex/community-flutter-pages",
+  "frontendF1Commit": "0fa944f68b0a46e08be757913f24f8c235731b7f",
+  "upstreamBranch": "codex/community-text-posting",
+  "upstreamCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+  "openApiLastChangeCommit": "0644f5ae5ef0c92ae99ed81fd40dac97ed447bc3",
+  "openApiVersion": "0.1.0",
+  "hashBasis": "Exact Git blob bytes, without checkout line-ending conversion",
+  "operations": [
+    {
+      "method": "PUT",
+      "path": "/api/v1/post-commands/{commandId}",
+      "operationId": "acceptTextPostCommand"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/post-commands/{commandId}",
+      "operationId": "getOwnPostCommandResult"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/post-commands/{commandId}/seal",
+      "operationId": "sealUnobservedPostCommand"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/me/post-tasks",
+      "operationId": "listOwnPendingAndFailedPostTasks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/me/post-tasks/{taskId}",
+      "operationId": "getOwnPostTask"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/me/post-tasks/{taskId}/cancel",
+      "operationId": "cancelOwnPostTask"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/me/post-tasks/{taskId}/retry",
+      "operationId": "retryOwnFailedPostTask"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/me/post-tasks/{taskId}/hide",
+      "operationId": "hideOwnFailedPostTask"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/channels/{channelId}/posts",
+      "operationId": "listLatestChannelPosts"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/posts/{postId}",
+      "operationId": "getPublishedPost"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/me/posts",
+      "operationId": "listOwnPublishedPosts"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/me/posts/{postId}/capabilities",
+      "operationId": "getOwnPostCapabilities"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/posts/{postId}/delete",
+      "operationId": "deleteOwnPublishedPost"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/me/post-composer-context",
+      "operationId": "getOwnPostComposerContext"
+    }
+  ],
+  "dependencies": {
+    "characters": {
+      "version": "1.4.1",
+      "sha256": "faf38497bda5ead2a8c7615f4f7939df04333478bf32e4173fcb06d428b5716b"
+    },
+    "crypto": {
+      "version": "3.0.6",
+      "sha256": "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
+    },
+    "cryptography": {
+      "version": "2.7.0",
+      "sha256": "d146b76d33d94548cf035233fbc2f4338c1242fa119013bead807d033fc4ae05"
+    },
+    "drift": {
+      "version": "2.35.2",
+      "sha256": "ef9598e1785c18db37209e8554fc79aff94632209d384ec98984b9e3184af0f7"
+    },
+    "sqlite3": {
+      "version": "3.7.0",
+      "sha256": "cc62d72dbf16bb1f6ae8954b238016de1473e53df060ed0c332eed0a41dd1848"
+    }
+  },
+  "storageSchemaVersion": 1,
+  "sourceReferences": [
+    {
+      "path": "packages/openapi/post-api.yaml",
+      "gitBlob": "66868d40f2ce2486a99fa229e890ab5433a4f920",
+      "sha256": "4270a18b4bdb0fa094f18d12b22fa199abab5fd35a6728e24f8509734f586b09",
+      "copiedToFrontend": true,
+      "role": "contract_snapshot"
+    },
+    {
+      "path": "packages/post-protocol-vectors/post-command-v1.json",
+      "gitBlob": "172fdf6560a5cd0b2822a9656f8aecafa9cffb5d",
+      "sha256": "928160e58630a2b4540df0dd054aae4a33698607b59a44cce630e2392b42f787",
+      "copiedToFrontend": true,
+      "role": "contract_snapshot"
+    },
+    {
+      "path": "packages/post-protocol-vectors/README.md",
+      "gitBlob": "060b1d67d2b68ccfd1cf7ab0c9109991cb91d8d1",
+      "sha256": "1f4e4745a219a6409f176f51d68ed4822cad904922e0f3a8cafdd81d69c2f205",
+      "copiedToFrontend": false,
+      "role": "Upstream historical reference; frontend README is authored for F2"
+    },
+    {
+      "path": "docs/design/community-text-posting-api.md",
+      "gitBlob": "b6d9c85c4e6956757ef948f1674d23e5b829e275",
+      "sha256": "74192b5900bc1211c1e5864f65963214d4e7947b90219dc38482293032f3c3ed",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "docs/design/community-text-posting-backend-design.md",
+      "gitBlob": "36f41150967b51acf494016ae98142d9a8f36ccc",
+      "sha256": "4a8786f1ddf7d64e9a17d90c5cc46361f1921532517005691ca37fb70c5056f8",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_protocol.dart",
+      "gitBlob": "5cd67bff17cad07b8ac4b67dcfe1cc66263b768c",
+      "sha256": "afab051109ed6715d179285c5a14d68cea3977ddb19b5556f4b3c0355cac871b",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_models.dart",
+      "gitBlob": "83490869196f5f1b2ec6107fecb82038f9dff308",
+      "sha256": "c4133991ca2c61c097aef19235b5e65fb8b4733336ed9a7d15145ddc8ae47704",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_api.dart",
+      "gitBlob": "b9ffbbc53b3be02b65552c43aa96e6487e2b44f8",
+      "sha256": "18258abde12c3de567102c435d05a10891b85cd7d1678624ec0791e9887bfcdc",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/http_post_api.dart",
+      "gitBlob": "341bacc021971c412a55413b7684cddcaba1e6cd",
+      "sha256": "be3ba00c3c83378c73bacd2bc2d178b7ac1a56f240a6a69fbd2d47eeefbec5ef",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_controller.dart",
+      "gitBlob": "c218abb4c39cbc755a1f9efebfeec2fe556573ab",
+      "sha256": "c8ce6f71087a95dcea7a774cad9cc1a1607321916015f19334b06729507838bf",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/src/storage/post_store.dart",
+      "gitBlob": "dcea1c8de25d75e2fa6a801833f72f07bf78bd14",
+      "sha256": "1dfad997838a05c7a99a5f6e822349d7ca40c39208cd1156e1d5ad06d577f5e4",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_session_controller.dart",
+      "gitBlob": "3b811e350d19ce2383fdc7e388b8355cb220f923",
+      "sha256": "04476dfedbc6e9893e19bd0c3188b14863e8524273474ec3b2b7f0e54a322b11",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_flows.dart",
+      "gitBlob": "3478958688dc1f840a7a86b931fc20ebb2c99d6e",
+      "sha256": "4711b75857a0fae3a939af2a68eb683df93b6e71dffa30d4024a72286e3caf17",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/lib/main.dart",
+      "gitBlob": "f0332aeeb9f2aae2b8e6fbe2268052abeabc8254",
+      "sha256": "57659ab9a9548bd571c98c3fd182858f03290ee2352f73a2e849ab1d57b7ecc8",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/pubspec.yaml",
+      "gitBlob": "0c7b7311facb1624b3f4c819b6301b2bf5978c0d",
+      "sha256": "562be19adfb9dea9057655b753ae354e10df452eb469b842f9c553fea759718f",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "gitBlob": "1fadf9bd28d588797e13c178993e52168c3afa4c",
+      "sha256": "9609e0f46a13ab53d6dedfb9665b0b7ac7523d20474b42abb77380dbdb4c9261",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/lib/hnuhole_auth_vault.dart",
+      "gitBlob": "36e7a4dd031e63c8853abad799ff55af356b3e13",
+      "sha256": "51e27211543fbdc0684fabea16adebfdf8d68e579ca5c366a489524a598fe9a2",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidBusinessStorage.kt",
+      "gitBlob": "69d995e1f55f9f5db434dcef68d6bfc9490b3ec5",
+      "sha256": "080ca793ed8d278815f2a599ed5c54592992aa32f0faa4f3fcff64bba5464caf",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt",
+      "gitBlob": "28df25d67e8517d10226c4252fb79a1a12723762",
+      "sha256": "de874ca6a81c7a905ccd7e30774fe6cb8d6925b0ac386e403ac276b086b678cc",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
+      "gitBlob": "e2815368863becc443ae698a0db4c435e7058b82",
+      "sha256": "1c4495790aac53a2ec531e5b0e75ec99ab19439de5998b6edc49cfea4f0fb08b",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/ios/Classes/AuthInstallationMarker.swift",
+      "gitBlob": "16df6d2747cf6034bf35b88682d8c20135d6af57",
+      "sha256": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/ios/Classes/AuthVaultPlugin.swift",
+      "gitBlob": "418d1d35150f7cc3db0f4bf8ed4b72c9ff8926e6",
+      "sha256": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/test/post_controller_test.dart",
+      "gitBlob": "e37353d59d371c8de81b0b09de1586d220e1cb72",
+      "sha256": "dd899bb5cf2286cdc44f281ea00f5c00de9c3eb56055f03b9dfdbece7873abc0",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/test/post_protocol_test.dart",
+      "gitBlob": "544edd90f84f921ec8807ee86b871f7a38096371",
+      "sha256": "c62cf93f7e667b4084f86731f33c8923a9f3258d49b14f303778a99be7950ca7",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/test/post_screens_test.dart",
+      "gitBlob": "577542416d9b103588531ec569f2b15c64448ac3",
+      "sha256": "b2d836d5675c9ed6e275a94563c3a89122616c329e546aead100e2cde3a6919a",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/test/post_api_test.dart",
+      "gitBlob": "006b750df1c47063bf2c30d83f9407ae37b22bc3",
+      "sha256": "f4c52c4e5396a0fe273a7a873439b38bd461c21fefa7312166c0a67e4ea6f8d1",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/test/post_closure_cleanup_test.dart",
+      "gitBlob": "ad97ff740b50e4f9fb7a732524267b34a3e798d3",
+      "sha256": "a03e4824307bf3d4127451f3b2d8fbda4c3ac5964f3bdf9123b65728abef7011",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/test/post_models_test.dart",
+      "gitBlob": "b452aa0c28590d58a91e97fc4836db20264c7a48",
+      "sha256": "03d9a4e69a422f61554415bb46309b0551fb84c1c948c344872071bbd3fc358f",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "apps/mobile/test/post_storage_test.dart",
+      "gitBlob": "ac6506cae89408dad45708e3dbb9461d4c13c46f",
+      "sha256": "6a4b4a33bada5202bd52f9aaf67674ab4575aa49211fc74b4a899853c4e30c3b",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift",
+      "gitBlob": "4e71adac2dc3e6fbbe72afcc41acd47e4e8e1a51",
+      "sha256": "dce4b0812fc26456154459943096932b3b7a3a0e14a6ee31d42dd604ee524b3e",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthInstallationMarker.swift",
+      "gitBlob": "3db34aebc4ae553cb93f5d96710a6e2603939d59",
+      "sha256": "db58627647628c2d9653c2551fc08cfa6eb35858eb5cc43ba0f403477134f19a",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift",
+      "gitBlob": "34342ad310ad07997b7c0ae708068462414c827e",
+      "sha256": "b977c8a771ee7e465b13432e4552b9b0e67ed4d9be795af0df380c778c840fde",
+      "copiedToFrontend": false,
+      "role": "F3_reference_only"
+    }
+  ],
+  "excluded": "Uncommitted T4/page acceptance changes and all historical dynamic PASS claims; no business source imported by F2",
+  "requiredF3Corrections": [
+    "Reject future schema before read/write without resetting v1",
+    "Use random retry-buffer row keys and safely preserve legacy command/content links",
+    "Apply deletion-command reconciliation fix after upstream commit or equivalent regression",
+    "Validate fixed configured environment without changing existing scope bytes"
+  ]
+}

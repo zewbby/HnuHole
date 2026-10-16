@@ -1,0 +1,211 @@
+{
+  "schemaVersion": "hnuhole-community-flutter-f3-verification/v1",
+  "recordedOn": "2026-10-09",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/community-flutter-pages",
+  "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+  "testedSnapshotBaseCommit": "1e8ad1def04d451a9776e833cee6acf119f25948",
+  "testedWithUncommittedImplementation": true,
+  "snapshotMatchesImplementationCommit": true,
+  "sourceFingerprint": {
+    "path": "docs/design/community-flutter-f3-source-fingerprint.json",
+    "sha256": "3b6b061167d43e620fc1092df0ba290dabe0c2367ff05d9a4be4c4ab4b002fcf",
+    "fileCount": 92,
+    "hashBasis": "SHA256 of UTF-8 text bytes with CRLF converted to LF; existing symlink entries excluded, their shared targets included"
+  },
+  "sourceProvenance": "docs/design/community-flutter-f3-source-lock.json",
+  "report": "docs/design/community-flutter-f3-report.md",
+  "plan": "docs/design/community-flutter-pages-plan.md",
+  "stage": "F3_IMPLEMENTATION_COMPLETE_SCOPED_CHECKS_PASS",
+  "fullModuleAcceptance": "NOT_RUN",
+  "productionApproval": "NOT_RUN",
+  "environment": {
+    "host": "Windows/WSL2 Ubuntu-24.04",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "dependencies": "Pinned lockfile from514a944; pub.dev package versions/SHA enforced, private cache only; cached reruns offline with same enforce-lockfile",
+    "sqlite": "System libsqlite3.so.0 via task-owned symlink; actual file DB in Linux TMPDIR",
+    "network": "Post HTTP tests use actual loopback TLS with test handlers; controller/widget use fixtures; no real C/V or SQL server",
+    "fonts": "Existing Windows msyh.ttc and simsun.ttc and SDK MaterialIcons, loaded only by screenshot test; no commercial font bundled"
+  },
+  "checks": [
+    {
+      "id": "F3-C01",
+      "result": "PASS",
+      "command": "python tools/check-community-flutter-f2.py",
+      "scope": "32 pinned references, two contract snapshots,14 operations,5 dependencies,v1 DDL,unchanged F1 assets; no full OpenAPI validator"
+    },
+    {
+      "id": "F3-C02",
+      "result": "PASS",
+      "command": "flutter pub get --enforce-lockfile (cached reruns --offline --enforce-lockfile)",
+      "scope": "Dependency resolution with locked versions and SHA; no SDK installation"
+    },
+    {
+      "id": "F3-C03",
+      "result": "PASS",
+      "command": "tools/run-community-flutter-f3-linux.sh format-check",
+      "scope": "21 modified/new Dart files;0 format changes; git diff --cached --check also PASS"
+    },
+    {
+      "id": "F3-C04",
+      "result": "PASS",
+      "command": "tools/run-community-flutter-f3-linux.sh analyze",
+      "scope": "Complete mobile flutter analyze --no-pub;0 issues"
+    },
+    {
+      "id": "F3-C05",
+      "result": "PASS",
+      "command": "tools/run-community-flutter-f3-linux.sh machine",
+      "scope": "Complete mobile flutter test --no-pub --machine test",
+      "testsPassed": 308,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "testFiles": 20,
+      "summary": "docs/design/community-flutter-f3-test-summary.json",
+      "countingRule": "Visible testDone events; hidden load/setup/teardown events excluded. 14 frames are produced inside one of the 23 screens tests."
+    },
+    {
+      "id": "F3-C06",
+      "result": "PASS",
+      "command": "HNUHOLE_UI_RENDER_* fixture fonts/directory with the same machine run",
+      "scope": "14 actual Flutter frames and bounded overlay assertions; root and UI agent visually reviewed final frames; host geometry/states only",
+      "evidence": "docs/design/ui-reviews/community-flutter-f3-ui-review.md"
+    }
+  ],
+  "testFiles": {
+    "test/auth_api_test.dart": {
+      "PASS": 38
+    },
+    "test/auth_crypto_test.dart": {
+      "PASS": 7
+    },
+    "test/auth_flows_test.dart": {
+      "PASS": 19
+    },
+    "test/auth_screen_test.dart": {
+      "PASS": 10
+    },
+    "test/auth_session_controller_test.dart": {
+      "PASS": 27
+    },
+    "test/auth_vault_test.dart": {
+      "PASS": 5
+    },
+    "test/identity_management_controller_test.dart": {
+      "PASS": 18
+    },
+    "test/identity_management_screen_test.dart": {
+      "PASS": 7
+    },
+    "test/identity_name_formatter_test.dart": {
+      "PASS": 5
+    },
+    "test/mobile_environment_test.dart": {
+      "PASS": 2
+    },
+    "test/passkey_recovery_flow_test.dart": {
+      "PASS": 11
+    },
+    "test/post_api_test.dart": {
+      "PASS": 14
+    },
+    "test/post_closure_cleanup_test.dart": {
+      "PASS": 11
+    },
+    "test/post_controller_test.dart": {
+      "PASS": 34
+    },
+    "test/post_models_test.dart": {
+      "PASS": 7
+    },
+    "test/post_protocol_test.dart": {
+      "PASS": 8
+    },
+    "test/post_screens_test.dart": {
+      "PASS": 23
+    },
+    "test/post_storage_test.dart": {
+      "PASS": 30
+    },
+    "test/security_management_controller_test.dart": {
+      "PASS": 28
+    },
+    "test/security_management_screen_test.dart": {
+      "PASS": 4
+    }
+  },
+  "unexecuted": [
+    {
+      "id": "F4",
+      "result": "NOT_RUN",
+      "reason": "This request is F3. Final auth candidate remains independent; no integration of current frontend SHA with real C/V,Postgres,Gate and main App",
+      "next": "Pin final auth candidate and current frontend code, then author/run exact real integration entry; do not reuse upstream T4 as frontend proof"
+    },
+    {
+      "id": "F5-ANDROID",
+      "result": "NOT_RUN",
+      "reason": "No APK/native compile or device execution in this frontend phase; Android shared CLOSED lock/source changed",
+      "testSource": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt",
+      "testCountAuthored": 7,
+      "command": "adb shell am instrument -w -e class org.hnuhole.authvault.AndroidBusinessStorageTest org.hnuhole.authvault.test/androidx.test.runner.AndroidJUnitRunner",
+      "required": "Install current main/instrumentation APKs on task-owned target; test multi-engine native lock, cross-process restore, reboot, backup, lost key,full App"
+    },
+    {
+      "id": "F5-IOS",
+      "result": "NOT_RUN",
+      "reason": "No macOS/full Xcode/iOS target",
+      "required": "Current SPM/CocoaPods build,Keychain,install marker,font/backup/restart acceptance"
+    },
+    {
+      "id": "F5-DEVICE-UX",
+      "result": "NOT_RUN",
+      "reason": "Host synthetic IME/size/textScaler and screenshot fonts do not prove physical input,screen reader,system safe area,touch or device Songti",
+      "required": "Real device IME/large type/landscape/safe area/focus/48dp and fonts"
+    },
+    {
+      "id": "FUTURE-BUSINESS",
+      "result": "NOT_RUN",
+      "implementationState": "NOT_IMPLEMENTED",
+      "scope": "Media,tags/search,comments,likes/favorites,notifications,author editing,full moderation"
+    }
+  ],
+  "issuesResolvedDuringRun": [
+    "Initial mirror URL could not satisfy a pub.dev --enforce-lockfile; reused exact official host/versions/hashes",
+    "Missing Unicode16 fixture path imported from pinned source",
+    "Invalid const Semantics and new lint infos corrected",
+    "DELETE stale-account continuation fences and durable-write failure regression",
+    "Actual frame review fixed AppBar font inheritance and premature overlay sampling; final14 frames replaced prior diagnostic output"
+  ],
+  "affectedModules": [
+    "A12",
+    "N01",
+    "B02",
+    "B03",
+    "B05",
+    "B06",
+    "B10"
+  ],
+  "crossModuleScenarios": [
+    "X06",
+    "X07"
+  ],
+  "cleanup": {
+    "result": "PASS",
+    "target": "/tmp/hnuhole-community-flutter-f3-01a11f1a",
+    "ownerMarker": "hnuhole-community-flutter-f3-01a11f1a",
+    "retained": "Source,tests,small normalized fingerprints/summary and14 sanitized PNGs (~1MB)",
+    "preserved": "Existing SDK,AVD,devices,other chats/processes/databases/user files",
+    "resolvedTargetVerified": true,
+    "ownerMarkerVerified": true,
+    "targetRemovalConfirmed": true,
+    "removed": "Task-owned WSL source snapshot, dependency cache, temporary SQLite files, render intermediates and raw test logs",
+    "verification": "Cleanup checked the exact absolute path and owner marker, required the final successful machine result, then removed the owned task directory; absence confirmed."
+  },
+  "publication": {
+    "authorized": "Existing user instruction to commit/push current frontend branch",
+    "implementationCommit": "eb6c9143d785a01fcc8b141b323accf0fbf812d2",
+    "documentationCommit": "This record is committed together with four handoff updates; final Git remote ref identifies that documentation commit",
+    "deploymentPerformed": false
+  }
+}
