@@ -1,0 +1,13 @@
+# codex/docs/readme-branch-index
+
+将 README 改为分支简表与最近合并摘要。
+
+核对日期：2026-10-16。
+
+## 进度
+
+已移出图片任务长篇记录，创建每个分支的详情入口，并更新后续 README 维护约定。
+
+## 剩余事项
+
+纯文档整理，不修改实现或验收结论；合并进度见 [PR #4](https://github.com/zewbby/HnuHole/pull/4)。
