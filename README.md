@@ -40,19 +40,20 @@
 | `codex/community-flutter-pages` | 实现社区页面并推进社区与认证的 Android 验收。 | [详情](docs/branches/community-flutter-pages.md) |
 | `codex/image-viewer-component` | 实现独立图片查看组件和 Android 原格式保存。 | [详情](docs/branches/image-viewer-component.md) |
 | `codex/image-viewer-business-integration` | 为主 App 接入图片查看入口及九图选取上传前端。 | [详情](docs/branches/image-viewer-business-integration.md) |
-| `codex/post-image-integration` | 完成帖子图片前后端联调和主 App Android S18 验收。 | [详情](docs/branches/post-image-integration.md) |
 | `codex/feat/post-image-android` | 将图片业务及其前置实现通过 PR 交付到主线。 | [详情](docs/branches/feat-post-image-android.md) |
 | `codex/chore/collaboration-rules` | 建立分支、提交、PR 审查和协作检查规范。 | [详情](docs/branches/chore-collaboration-rules.md) |
 | `codex/docs/post-image-merge-record` | 补记图片业务合入主线的事实与 iOS 剩余事项。 | [详情](docs/branches/docs-post-image-merge-record.md) |
 | `feature/engineering-baseline` | 确定 Flutter、Go、通信与持久化的工程基线。 | [详情](docs/branches/engineering-baseline.md) |
 | `codex/docs/readme-branch-index` | 将 README 改为分支简表与最近合并摘要。 | [详情](docs/branches/docs-readme-branch-index.md) |
 
-已合并的历史工作：[帖子图片后端](docs/branches/post-image-media.md)。实现已进入 `main`，详情页保留固定提交与验收证据，不依赖原分支继续存在。
+
+已合并的历史工作：[帖子图片后端](docs/branches/post-image-media.md)、[帖子图片集成](docs/branches/post-image-integration.md)。实现已进入 `main`，详情页保留固定提交与验收证据，不依赖原分支继续存在。
 
 ## 最近变动
 
-按合并时间倒序保留最近 5 条；本次核对时共有 4 条已合并 PR。
+按合并时间倒序保留最近 5 条，每条一句话说明。
 
+- 2026-10-16 · [#5](https://github.com/zewbby/HnuHole/pull/5)：退役帖子图片后端分支，保留历史交接入口。
 - 2026-10-16 · [#4](https://github.com/zewbby/HnuHole/pull/4)：将 README 整理为分支简表与最近合并摘要。
 - 2026-10-16 · [#3](https://github.com/zewbby/HnuHole/pull/3)：补齐图片业务交接记录和 iOS 待办。
 - 2026-10-16 · [#2](https://github.com/zewbby/HnuHole/pull/2)：接入帖子图片业务，完成 Android S18 约定范围验收。
