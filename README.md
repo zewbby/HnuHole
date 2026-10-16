@@ -46,7 +46,6 @@
 | `feature/engineering-baseline` | 确定 Flutter、Go、通信与持久化的工程基线。 | [详情](docs/branches/engineering-baseline.md) |
 | `codex/docs/readme-branch-index` | 将 README 改为分支简表与最近合并摘要。 | [详情](docs/branches/docs-readme-branch-index.md) |
 
-| `codex/docs/retire-post-image-integration` | 记录图片集成分支退役和临时资源清理结果。 | [详情](docs/branches/retire-post-image-integration.md) |
 
 已合并的历史工作：[帖子图片后端](docs/branches/post-image-media.md)、[帖子图片集成](docs/branches/post-image-integration.md)。实现已进入 `main`，详情页保留固定提交与验收证据，不依赖原分支继续存在。
 

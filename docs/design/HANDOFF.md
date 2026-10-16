@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> **2026-10-16 图片集成分支已退役：**`codex/post-image-integration` 本地/远端已删除，交付与 iOS 待办保留于[分支详情](../branches/post-image-integration.md)。电脑清理82处约22.52GiB，剩余工具被自动审批拒绝；手机无现有连接、清理NOT_RUN，均不得记作全部清理完成。详见[退役回执](../branches/post-image-integration-retirement-20261016.json)。
+> **2026-10-16 图片集成分支已退役：**`codex/post-image-integration` 本地/远端已删除，交付与 iOS 待办保留于[分支详情](../branches/post-image-integration.md)。电脑清理82处约22.52GiB，剩余工具/生成文件/新建清理密钥profile删除被自动审批拒绝；手机41图和5包已清、专用连接已关闭，电脑不得记作全部清理完成。详见[退役回执](../branches/post-image-integration-retirement-20261016.json)。
 
 > **2026-10-16 已合并 main：**PM01/IV01 帖子图片任务经 [PR #2](https://github.com/zewbby/HnuHole/pull/2) 合并，主线提交 `4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398`，送审提交 `2f46700`，来源 `codex/post-image-integration`（f30e8ae）。本任务的独立组件、帖子选图上传、真实前后端联调和 S18 Android 约定范围已交付；本任务功能范围剩余 iOS（原始选图未实现、入口关闭，macOS/Xcode/iPhone 原生与设备验收待完成）。GitHub Flutter 分析0/组件112项/受影响mobile130项/bundle、Go test/build/vet、协作检查均实际PASS；仅宿主CI，不扩充原SQL/手机证据范围。独立agent复审无阻断，不伪造GitHub成员批准。未发布或部署，详情见[合并回执](post-image-main-delivery-20261016.json)。下方旧日期记录保留原时点状态。
 
