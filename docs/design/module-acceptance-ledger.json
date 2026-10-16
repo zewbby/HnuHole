@@ -1,6 +1,6 @@
 {
   "schemaVersion": "hnuhole-module-acceptance-ledger/v1",
-  "recordedOn": "2026-10-15",
+  "recordedOn": "2026-10-16",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/post-image-integration",
   "baselineHeadCommit": "075b567ee6093319a0dcb48ab40919aada5cb8f2",
@@ -859,7 +859,17 @@
         "deployed": false,
         "completeModuleAcceptance": false
       },
-      "nextPostMediaAndroidAcceptance": "本轮S18约定范围已验，按post-image-android-device-report.md区分实际/沿用/未验；窗口已结束。iOS原始选图开发、最大资源预算、库存升级/生产及评论私信分别推进；本结果不完成整模块。Windows清理审批阻断需单列，不操作其他任务资源。"
+      "nextPostMediaAndroidAcceptance": "本轮S18约定范围已验，按post-image-android-device-report.md区分实际/沿用/未验；窗口已结束。iOS原始选图开发、最大资源预算、库存升级/生产及评论私信分别推进；本结果不完成整模块。Windows清理审批阻断需单列，不操作其他任务资源。",
+      "postImageMainDelivery20261016": {
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/2",
+        "mergeCommit": "4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398",
+        "reviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+        "result": "MERGED_MAIN_SCOPED_ANDROID_IOS_PENDING",
+        "receipt": "docs/design/post-image-main-delivery-20261016.json",
+        "changesAcceptanceScope": false,
+        "published": false,
+        "deployed": false
+      }
     },
     {
       "id": "A01",
@@ -14336,6 +14346,16 @@
         "mainMerged": false,
         "deployed": false,
         "completeModuleAcceptance": false
+      },
+      "postImageMainDelivery20261016": {
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/2",
+        "mergeCommit": "4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398",
+        "reviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+        "result": "MERGED_MAIN_SCOPED_ANDROID_IOS_PENDING",
+        "receipt": "docs/design/post-image-main-delivery-20261016.json",
+        "changesAcceptanceScope": false,
+        "published": false,
+        "deployed": false
       }
     },
     {
@@ -15125,6 +15145,16 @@
         "mainMerged": false,
         "deployed": false,
         "completeModuleAcceptance": false
+      },
+      "postImageMainDelivery20261016": {
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/2",
+        "mergeCommit": "4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398",
+        "reviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+        "result": "MERGED_MAIN_SCOPED_ANDROID_IOS_PENDING",
+        "receipt": "docs/design/post-image-main-delivery-20261016.json",
+        "changesAcceptanceScope": false,
+        "published": false,
+        "deployed": false
       }
     },
     {
@@ -16106,6 +16136,16 @@
         "mainMerged": false,
         "deployed": false,
         "completeModuleAcceptance": false
+      },
+      "postImageMainDelivery20261016": {
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/2",
+        "mergeCommit": "4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398",
+        "reviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+        "result": "MERGED_MAIN_SCOPED_ANDROID_IOS_PENDING",
+        "receipt": "docs/design/post-image-main-delivery-20261016.json",
+        "changesAcceptanceScope": false,
+        "published": false,
+        "deployed": false
       }
     },
     {
@@ -17413,6 +17453,16 @@
         "mainMerged": false,
         "deployed": false,
         "completeModuleAcceptance": false
+      },
+      "postImageMainDelivery20261016": {
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/2",
+        "mergeCommit": "4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398",
+        "reviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+        "result": "MERGED_MAIN_SCOPED_ANDROID_IOS_PENDING",
+        "receipt": "docs/design/post-image-main-delivery-20261016.json",
+        "changesAcceptanceScope": false,
+        "published": false,
+        "deployed": false
       }
     },
     {
@@ -17592,6 +17642,16 @@
         "mainMerged": false,
         "deployed": false,
         "completeModuleAcceptance": false
+      },
+      "postImageMainDelivery20261016": {
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/2",
+        "mergeCommit": "4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398",
+        "reviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+        "result": "MERGED_MAIN_SCOPED_ANDROID_IOS_PENDING",
+        "receipt": "docs/design/post-image-main-delivery-20261016.json",
+        "changesAcceptanceScope": false,
+        "published": false,
+        "deployed": false
       }
     }
   ],
@@ -37013,5 +37073,15 @@
     "mainMerged": false,
     "deployed": false,
     "completeModuleAcceptance": false
+  },
+  "postImageMainDelivery20261016": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/2",
+    "mergeCommit": "4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398",
+    "reviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+    "result": "MERGED_MAIN_SCOPED_ANDROID_IOS_PENDING",
+    "receipt": "docs/design/post-image-main-delivery-20261016.json",
+    "changesAcceptanceScope": false,
+    "published": false,
+    "deployed": false
   }
 }

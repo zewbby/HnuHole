@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-16 已合并 main：**PM01/IV01 帖子图片任务经 [PR #2](https://github.com/zewbby/HnuHole/pull/2) 合并，主线提交 `4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398`，送审提交 `2f46700`，来源 `codex/post-image-integration`（f30e8ae）。本任务的独立组件、帖子选图上传、真实前后端联调和 S18 Android 约定范围已交付；本任务功能范围剩余 iOS（原始选图未实现、入口关闭，macOS/Xcode/iPhone 原生与设备验收待完成）。GitHub Flutter 分析0/组件112项/受影响mobile130项/bundle、Go test/build/vet、协作检查均实际PASS；仅宿主CI，不扩充原SQL/手机证据范围。独立agent复审无阻断，不伪造GitHub成员批准。未发布或部署，详情见[合并回执](post-image-main-delivery-20261016.json)。下方旧日期记录保留原时点状态。
+
 ## PM01 / IV01 / B05 / B06 / B10：本轮主App Android约定范围
 
 2026-10-15，`codex/post-image-integration`，起点c1b26ea，修复实现fd2e4c04f48b29ddda0142660188988c4a655f5f。单台vivo S18/Android15/API35，独立真实主App包20263115→20263116及probe20263115；用户已释放窗口并实际完成中文输入、Picker和长图手势。原图存储、九图公开/补传、失败同任务RETRY、读取/原格式保存/真实Gallery回放、删除/退出/切账号与迟到隔离的本轮结果见[报告](post-image-android-device-report.md)及[机器记录](post-image-android-device-verification.json)。当前为PASS_SCOPED_ANDROID_BUSINESS_DEVICE，PMA01–14逐项有范围；不更新整模块为全通过。

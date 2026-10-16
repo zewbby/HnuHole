@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-16 已合并 main：**PM01/IV01 帖子图片任务经 [PR #2](https://github.com/zewbby/HnuHole/pull/2) 合并，主线提交 `4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398`，送审提交 `2f46700`，来源 `codex/post-image-integration`（f30e8ae）。本任务的独立组件、帖子选图上传、真实前后端联调和 S18 Android 约定范围已交付；本任务功能范围剩余 iOS（原始选图未实现、入口关闭，macOS/Xcode/iPhone 原生与设备验收待完成）。GitHub Flutter 分析0/组件112项/受影响mobile130项/bundle、Go test/build/vet、协作检查均实际PASS；仅宿主CI，不扩充原SQL/手机证据范围。独立agent复审无阻断，不伪造GitHub成员批准。未发布或部署，详情见[合并回执](post-image-main-delivery-20261016.json)。下方旧日期记录保留原时点状态。
+
 > **2026-10-16 合并检查修复：**保留main原协作policy；清理6份继承文件的行尾空格，将两份API测试内嵌TLS私钥改为运行时OpenSSL临时生成并在测试结束删除。仅测试/文档格式变更，产品实现不变；受影响5文件130项实际PASS，产品CI新增Flutter/Go检查。送审快照取最终产品树，不改写既有共享分支历史；GitHub检查与独立审查完成前不记作已合并。
 
 > **2026-10-16 合并交付进行中：**工作项PM01/IV01帖子图片业务，交付源 `codex/post-image-integration`（功能交付1c8ad33、修复fd2e4c0）。本任务除iOS外约定范围已完成；README已列实现、S18证据及iOS原始选图/原生验收剩余。同步main协作规则，使用符合新命名规则的送审快照分支承载相同产品源码，经PR进入main；此时尚未合并、未发布。项目级预算/生产与评论私信另列，既有验证范围不变。
