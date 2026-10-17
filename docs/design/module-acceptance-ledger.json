@@ -37425,11 +37425,11 @@
     "baseMainCommit": "b164762b8cd58da592bf645cc4e2ada738bb79ec",
     "historicalSourceCommit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
     "historicalProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
-    "status": "VERIFIED_PENDING_MERGE",
+    "status": "MERGED_SCOPED_REGRESSION_PASS",
     "report": "docs/design/auth-privacy-b5-main-integration-report.md",
     "verification": "docs/design/auth-privacy-b5-main-integration-verification.json",
     "committed": true,
-    "mergedIntoMain": false,
+    "mergedIntoMain": true,
     "published": false,
     "implementationStatus": "COMPLETE",
     "automatedRegressionStatus": "PASS",
@@ -37485,6 +37485,8 @@
     ],
     "incrementRegressionPassed": true,
     "pullRequest": 9,
-    "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d"
+    "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+    "mergeCommit": "eff746154a23a48896b420fa358ae481d595a7d8",
+    "mergedOn": "2026-10-17"
   }
 }

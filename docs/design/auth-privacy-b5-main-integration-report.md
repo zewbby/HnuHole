@@ -27,3 +27,7 @@
 iOS、原生设备专项复验、生产及未来业务保持各自门槛。原控制工具的固定机器路径、包名和设备约定属于历史环境，不直接用于当前候选。无部署或发布。
 
 初次 Android 构建因既有 SDK 缺 API 35 失败，补齐后又发现 API 36 副本不完整；之后 JNI 构建发现既有 Linux NDK 的 clang 文件为空，未生成目标库。原失败与诊断日志均保留；只在任务 SDK 安装完整官方平台包和 NDK 后重验，未改共享 SDK、未安装 APK。首次 Release 因 `--no-pub` 跳过构建模式专属插件注册生成，沿用 Debug 注册文件而引用了被 Release 排除的 integration_test；使用普通构建命令自动重新生成后复验，源码与锁文件未改。首次 GitHub SQL 任务的验证器环境故障亦保留；改用系统 Python 创建 venv 并显式隔离 probe 后复验通过，没有放宽产品守卫。最终源码与 Linux 测试副本比对无内容漂移。
+
+## 合并事实
+
+2026-10-17，[PR #9](https://github.com/zewbby/HnuHole/pull/9) 已 Squash Merge 到 main，提交 `eff746154a23a48896b420fa358ae481d595a7d8`。最终送审 head `58e2669a8bf0387815472d75d9c78369064a2759` 的实际 GitHub 检查通过；本地拉取 main 后核对提交一致。实现、历史设备证据、本轮增量回归及发布状态的边界保持不变。
