@@ -98,11 +98,15 @@ jobs:
       - name: Private PostgreSQL and image validator dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-16
+          sudo apt-get install -y postgresql-16 python3-venv
           echo '/usr/lib/postgresql/16/bin' >> "$GITHUB_PATH"
-          python -m venv "$RUNNER_TEMP/post-image-python"
+          # The validator runs with a minimal environment and rejects writable
+          # executables. Use the system interpreter, independent of toolcache
+          # permissions and setup-python's dynamic-loader environment.
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/post-image-python"
           "$RUNNER_TEMP/post-image-python/bin/python" -m pip install -r services/api/media/requirements.txt
           chmod -R go-w services/api/media
+          "$RUNNER_TEMP/post-image-python/bin/python" -I -B services/api/media/validate_image.py --probe
           "$RUNNER_TEMP/post-image-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/post-image-fixtures"
       - name: Restricted-role schema and image lifecycle regression
         working-directory: services/api
