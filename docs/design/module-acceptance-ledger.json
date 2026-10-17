@@ -5563,6 +5563,15 @@
           "hostOperator": "tools/control-android-b5-sync.py",
           "remainingFixedIds": []
         }
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -6527,6 +6536,15 @@
         "mainMerged": false,
         "deployed": false,
         "doesNotCompleteWholeModule": true
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -8585,6 +8603,15 @@
           "hostOperator": "tools/control-android-b5-sync.py",
           "remainingFixedIds": []
         }
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -10086,6 +10113,15 @@
           "hostOperator": "tools/control-android-b5-sync.py",
           "remainingFixedIds": []
         }
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -10662,6 +10698,15 @@
           "hostOperator": "tools/control-android-b5-sync.py",
           "remainingFixedIds": []
         }
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -12850,6 +12895,15 @@
         "mainMerged": false,
         "deployed": false,
         "doesNotCompleteWholeModule": true
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -14504,6 +14558,15 @@
         "changesAcceptanceScope": false,
         "published": false,
         "deployed": false
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -15303,6 +15366,15 @@
         "changesAcceptanceScope": false,
         "published": false,
         "deployed": false
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -16294,6 +16366,15 @@
         "changesAcceptanceScope": false,
         "published": false,
         "deployed": false
+      },
+      "b5MainIntegrationRegression": {
+        "recordedOn": "2026-10-17",
+        "result": "PASS",
+        "scope": "Affected host/real SQL/CV and Android build regressions only; original whole-module status retained",
+        "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+        "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
+        "nativeDeviceAcceptance": "NOT_RUN",
+        "productionApproved": false
       }
     },
     {
@@ -37338,21 +37419,21 @@
     "candidateVerification": "docs/design/auth-privacy-b5-main-integration-verification.json"
   },
   "candidateIntegration": {
-    "recordedOn": "2026-10-16",
+    "recordedOn": "2026-10-17",
     "task": "B5_INCREMENTAL_INTEGRATION_ON_CURRENT_MAIN",
     "branch": "codex/fix/b5-main-integration",
     "baseMainCommit": "b164762b8cd58da592bf645cc4e2ada738bb79ec",
     "historicalSourceCommit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
     "historicalProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
-    "status": "IN_PROGRESS",
+    "status": "VERIFIED_PENDING_MERGE",
     "report": "docs/design/auth-privacy-b5-main-integration-report.md",
     "verification": "docs/design/auth-privacy-b5-main-integration-verification.json",
-    "committed": false,
+    "committed": true,
     "mergedIntoMain": false,
     "published": false,
-    "implementationStatus": "IN_PROGRESS",
-    "automatedRegressionStatus": "IN_PROGRESS",
-    "independentReviewStatus": "NOT_RUN",
+    "implementationStatus": "COMPLETE",
+    "automatedRegressionStatus": "PASS",
+    "independentReviewStatus": "PASS_AFTER_FIX",
     "androidNativeDeviceRegressionStatus": "NOT_RUN",
     "physicalAndroidAcceptanceStatus": "NOT_RUN",
     "iosAcceptanceStatus": "NOT_RUN",
@@ -37401,6 +37482,9 @@
       "Compare all historical runtime inputs and runtime-root additions; record candidate changes separately.",
       "Host tests, mocks and builds are not native device or physical phone acceptance.",
       "Actual commands, version scope, failures, blockers and main drift belong in candidate verification."
-    ]
+    ],
+    "incrementRegressionPassed": true,
+    "pullRequest": 9,
+    "sourceCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d"
   }
 }

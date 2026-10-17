@@ -1,16 +1,20 @@
 {
   "schemaVersion": "hnuhole-b5-main-integration/v1",
-  "task": "B5 incremental integration onto main; uncommitted local review candidate",
+  "task": "B5 incremental main integration with scoped host, actual SQL/CV and Android build validation",
   "branch": "codex/fix/b5-main-integration",
   "baseCommit": "b164762b8cd58da592bf645cc4e2ada738bb79ec",
   "historicalB5Commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
   "historicalB6Commit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
   "publication": {
-    "committed": false,
-    "pushed": false,
-    "pullRequestCreatedOrModified": false,
+    "committed": true,
+    "pushed": true,
+    "pullRequestCreatedOrModified": true,
+    "pullRequest": 9,
+    "codeCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+    "ciFixCommit": "c59d97f45dff839cc073aeb6cecd7fe76804fb13",
     "merged": false,
-    "deployed": false
+    "deployed": false,
+    "deliveryRecord": "docs/branches/fix-b5-main-integration.md"
   },
   "acceptanceScope": {
     "historicalFixedMatrix": "B6 22 PASS/2 BLOCKED; initial B5 23 PASS/1 FAIL; Bitwarden BLOCKED; B5 sync 24 PASS, original revisions only",
@@ -18,7 +22,10 @@
     "candidateNativeDeviceAcceptance": "NOT_RUN",
     "iosAcceptancePassed": false,
     "productionApproved": false,
-    "futureBusinessAcceptancePassed": false
+    "futureBusinessAcceptancePassed": false,
+    "incrementRegressionPassed": true,
+    "nativeDeviceWindowRequiredForThisIncrement": false,
+    "completeCurrentAppAcceptancePassed": false
   },
   "historicalInputComparison": {
     "method": "Exact Git blob bytes; independent of Windows checkout conversion",
@@ -3907,8 +3914,8 @@
   "candidateChangedCodeAndTestInputs": [
     {
       "path": ".github/workflows/post-images.yml",
-      "rawSha256": "9b6d4a66bd4d84dd2c6a12a31a5abb096a717e49b57239260e6bb6088900f9bd",
-      "lfTextSha256": "9b6d4a66bd4d84dd2c6a12a31a5abb096a717e49b57239260e6bb6088900f9bd"
+      "rawSha256": "0220cf0eeea03b5828f25b76213abaacaa74bd8f9492f426a466801871ea3f6b",
+      "lfTextSha256": "0220cf0eeea03b5828f25b76213abaacaa74bd8f9492f426a466801871ea3f6b"
     },
     {
       "path": "README.md",
@@ -4006,7 +4013,7 @@
       "lfTextSha256": "4458a6f0fea9b4bc7dbcdd9b8eb839b92dcfeb6451c76e0cd45234a1931e713a"
     }
   ],
-  "candidateCodeAndTestManifestSha256": "3633bb494cff134242933012d90d88a842c82b2a235bdcf8d6b9473f06ffe18a",
+  "candidateCodeAndTestManifestSha256": "e1dc8fbcf405e35f2abadcc3908cea21a6236ca5350ca132445f8aa1f0fdd51b",
   "historicalFilesPreservedByteForByte": [
     {
       "path": "docs/design/auth-privacy-b5-sync-validation-report.md",
@@ -4077,12 +4084,800 @@
       "deviceExecuted": false
     }
   ],
-  "candidateRegressionResults": [],
+  "candidateRegressionResults": [
+    {
+      "label": "android-b5-fixture",
+      "cwd": "apps/mobile",
+      "command": [
+        "env",
+        "-u",
+        "PUB_HOSTED_URL",
+        "flutter",
+        "build",
+        "apk",
+        "--debug",
+        "--target-platform",
+        "android-arm64",
+        "--target",
+        "integration_test/auth_android_b5_sync_test.dart"
+      ],
+      "startedUtc": "2026-10-17T01:07:48.759609+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-17T01:08:24.865684+00:00",
+      "artifact": {
+        "file": "app-debug.apk",
+        "bytes": 120150409,
+        "sha256": "b6232955a9a7820522f301add25ce77d203355afd4b637030fdfcd4854d344ea",
+        "installed": false
+      },
+      "id": "android-b5-fixture",
+      "result": "PASS",
+      "logSha256": "b13cd10fe201985e87842b8deeb467217d9846d81a4528eb4aa16a7158cb9f70",
+      "logBytes": 525
+    },
+    {
+      "label": "android-debug-api35",
+      "cwd": "apps/mobile",
+      "command": [
+        "flutter",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub",
+        "--target-platform",
+        "android-arm64"
+      ],
+      "startedUtc": "2026-10-17T00:52:22.712542+00:00",
+      "exitCode": 1,
+      "endedUtc": "2026-10-17T00:52:37.985144+00:00",
+      "id": "android-debug-api35",
+      "result": "FAIL",
+      "logSha256": "39e999f9271f9fcdc732762a05345278f6be66130ccbbd3ce34847164ba15e91",
+      "logBytes": 1009
+    },
+    {
+      "label": "android-debug-complete-ndk",
+      "cwd": "apps/mobile",
+      "command": [
+        "flutter",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub",
+        "--target-platform",
+        "android-arm64"
+      ],
+      "startedUtc": "2026-10-17T01:01:10.186942+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-17T01:01:38.823491+00:00",
+      "artifact": {
+        "file": "app-debug.apk",
+        "bytes": 98372188,
+        "sha256": "c9ab03477e801d48b55aa02546d2d28d1c43a66484627340f3d2c14521cbe4e8",
+        "installed": false
+      },
+      "id": "android-debug-complete-ndk",
+      "result": "PASS",
+      "logSha256": "e669d2fa2cf8f4ebfaac2610956c69401a95fe4a443c90644879cc42b3264f5d",
+      "logBytes": 525
+    },
+    {
+      "label": "android-debug-fullsdk",
+      "cwd": "apps/mobile",
+      "command": [
+        "flutter",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub",
+        "--target-platform",
+        "android-arm64"
+      ],
+      "startedUtc": "2026-10-17T00:54:41.734768+00:00",
+      "exitCode": 1,
+      "endedUtc": "2026-10-17T00:58:31.100547+00:00",
+      "id": "android-debug-fullsdk",
+      "result": "FAIL",
+      "logSha256": "40e06a1ba9b1e964a3a243c1c27877f88bd820709e3b3e440d5a4cb12024ab04",
+      "logBytes": 1354
+    },
+    {
+      "label": "android-debug",
+      "cwd": "apps/mobile",
+      "command": [
+        "flutter",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub",
+        "--target-platform",
+        "android-arm64"
+      ],
+      "startedUtc": "2026-10-16T15:13:30.418347+00:00",
+      "exitCode": 1,
+      "endedUtc": "2026-10-16T15:17:59.925610+00:00",
+      "id": "android-debug",
+      "result": "FAIL",
+      "logSha256": "3492362b7e29d92d5c824d9669f11df9d72f1e1e948663263b2629f62f43bc21",
+      "logBytes": 1030,
+      "failureClass": "Existing shared SDK lacked Android API 35; task-local SDK supplementation and later build recorded separately."
+    },
+    {
+      "label": "android-gradle-provider",
+      "cwd": "apps/mobile/android",
+      "command": [
+        "sh",
+        "gradlew",
+        ":app:compileDebugJavaWithJavac",
+        "--stacktrace",
+        "--dry-run",
+        "--no-daemon"
+      ],
+      "startedUtc": "2026-10-17T00:53:20.611561+00:00",
+      "exitCode": 2,
+      "endedUtc": "2026-10-17T00:53:20.626482+00:00",
+      "id": "android-gradle-provider",
+      "result": "FAIL",
+      "logSha256": "21e5941bc71d843a17dac9992d8204305b3da87de4bb4dd42112cbb19b3d0df9",
+      "logBytes": 43
+    },
+    {
+      "label": "android-gradle-stack",
+      "cwd": "apps/mobile/android",
+      "command": [
+        "bash",
+        "gradlew",
+        ":app:compileDebugJavaWithJavac",
+        "--stacktrace",
+        "--dry-run",
+        "--no-daemon"
+      ],
+      "startedUtc": "2026-10-17T00:53:42.846346+00:00",
+      "exitCode": 1,
+      "endedUtc": "2026-10-17T00:53:57.698565+00:00",
+      "id": "android-gradle-stack",
+      "result": "FAIL",
+      "logSha256": "fdc3e964d9d3861fe764aec8cb883002d1be5a6068797fba944aeb64ab621e8f",
+      "logBytes": 27621
+    },
+    {
+      "label": "android-release-cached-regenerated",
+      "cwd": "apps/mobile",
+      "command": [
+        "env",
+        "-u",
+        "PUB_HOSTED_URL",
+        "flutter",
+        "build",
+        "apk",
+        "--release",
+        "--target-platform",
+        "android-arm64"
+      ],
+      "startedUtc": "2026-10-17T01:06:25.344302+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-17T01:07:48.649049+00:00",
+      "artifact": {
+        "file": "app-release.apk",
+        "bytes": 22522856,
+        "sha256": "fb903a84c25d4685e91b4b27a4a18861060897193e665b5e372f05a2e30af78e",
+        "installed": false
+      },
+      "id": "android-release-cached-regenerated",
+      "result": "PASS",
+      "logSha256": "e018bb31f01bb03140f77fe46ce2cf32b7224110546d21fdf4f7b0a4c01a1b40",
+      "logBytes": 536
+    },
+    {
+      "label": "android-release-regenerated-locked-host",
+      "cwd": "apps/mobile",
+      "command": [
+        "env",
+        "-u",
+        "PUB_HOSTED_URL",
+        "flutter",
+        "build",
+        "apk",
+        "--release",
+        "--target-platform",
+        "android-arm64"
+      ],
+      "startedUtc": "2026-10-17T01:04:51.513711+00:00",
+      "exitCode": 241,
+      "endedUtc": "2026-10-17T01:06:24.113396+00:00",
+      "id": "android-release-regenerated-locked-host",
+      "result": "FAIL",
+      "logSha256": "69e11dcd7a9b0366570b5ad924d84589e2db9fdb3d6bd2563852b4aca008d9d7",
+      "logBytes": 77
+    },
+    {
+      "label": "android-release-with-plugin-generation",
+      "cwd": "apps/mobile",
+      "command": [
+        "flutter",
+        "build",
+        "apk",
+        "--release",
+        "--target-platform",
+        "android-arm64"
+      ],
+      "startedUtc": "2026-10-17T01:04:04.529736+00:00",
+      "exitCode": 241,
+      "endedUtc": "2026-10-17T01:04:51.088535+00:00",
+      "id": "android-release-with-plugin-generation",
+      "result": "FAIL",
+      "logSha256": "84b2a8adb5909195f7aeeae1b5f6bb3c3ca1ffc18cf460ba70062e87c45b4eb1",
+      "logBytes": 53
+    },
+    {
+      "label": "android-release",
+      "cwd": "apps/mobile",
+      "command": [
+        "flutter",
+        "build",
+        "apk",
+        "--release",
+        "--no-pub",
+        "--target-platform",
+        "android-arm64"
+      ],
+      "startedUtc": "2026-10-17T01:01:38.954921+00:00",
+      "exitCode": 1,
+      "endedUtc": "2026-10-17T01:02:45.071297+00:00",
+      "id": "android-release",
+      "result": "FAIL",
+      "logSha256": "03216fa3e59cd62fa7f6d070d4a29218686b2803b911e590852240ac0f326e31",
+      "logBytes": 1883
+    },
+    {
+      "label": "auth_passkey-analyze",
+      "cwd": "packages/auth_passkey",
+      "command": [
+        "flutter",
+        "analyze",
+        "--no-pub"
+      ],
+      "startedUtc": "2026-10-16T15:05:59.648365+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:06:01.077455+00:00",
+      "id": "auth_passkey-analyze",
+      "result": "PASS",
+      "logSha256": "4dbacd98e988c707e38eb6ba8b466b328f7ede5ecff5769ff674b27470308d1f",
+      "logBytes": 96
+    },
+    {
+      "label": "auth_passkey-pub",
+      "cwd": "packages/auth_passkey",
+      "command": [
+        "env",
+        "-u",
+        "PUB_HOSTED_URL",
+        "flutter",
+        "pub",
+        "get",
+        "--offline"
+      ],
+      "startedUtc": "2026-10-16T15:05:59.340063+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:05:59.611643+00:00",
+      "id": "auth_passkey-pub",
+      "result": "PASS",
+      "logSha256": "341549be4532b64cc1f3e47b0913cb77a01e4d341911ade2382be4e4431d4721",
+      "logBytes": 627
+    },
+    {
+      "label": "auth_passkey-tests",
+      "cwd": "packages/auth_passkey",
+      "command": [
+        "flutter",
+        "test",
+        "--no-pub",
+        "--reporter",
+        "expanded"
+      ],
+      "startedUtc": "2026-10-16T15:06:01.134162+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:06:08.809618+00:00",
+      "id": "auth_passkey-tests",
+      "result": "PASS",
+      "logSha256": "deda3f64d08d7c713840e359da6e1c498907f204d3347601f2b0979dd63e863f",
+      "logBytes": 748,
+      "testCounts": {
+        "passed": 9,
+        "skipped": 0,
+        "failed": 0
+      }
+    },
+    {
+      "label": "auth_vault-analyze",
+      "cwd": "packages/auth_vault",
+      "command": [
+        "flutter",
+        "analyze",
+        "--no-pub"
+      ],
+      "startedUtc": "2026-10-16T15:06:09.074344+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:06:09.783733+00:00",
+      "id": "auth_vault-analyze",
+      "result": "PASS",
+      "logSha256": "fc6c4885dd6efb3bfea3a6dd4c577facdffcb2940a04b3b20b4442cd265b60be",
+      "logBytes": 96
+    },
+    {
+      "label": "auth_vault-pub",
+      "cwd": "packages/auth_vault",
+      "command": [
+        "env",
+        "-u",
+        "PUB_HOSTED_URL",
+        "flutter",
+        "pub",
+        "get",
+        "--enforce-lockfile"
+      ],
+      "startedUtc": "2026-10-16T15:06:08.848019+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:06:09.038094+00:00",
+      "id": "auth_vault-pub",
+      "result": "PASS",
+      "logSha256": "9e5fdb61fbcbd1fb1aef0bcaccd1dd07130fe0a10566c469f64f21c02e36a209",
+      "logBytes": 241
+    },
+    {
+      "label": "flutter-version",
+      "cwd": ".",
+      "command": [
+        "flutter",
+        "--version"
+      ],
+      "startedUtc": "2026-10-16T15:04:30.869612+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:04:31.105577+00:00",
+      "id": "flutter-version",
+      "result": "PASS",
+      "logSha256": "25c550c97217b25b94628e7e3b8f4cee4e3f8809f235904004cbe447c6312939",
+      "logBytes": 319
+    },
+    {
+      "label": "go-build",
+      "cwd": "services/api",
+      "command": [
+        "go",
+        "build",
+        "-mod=readonly",
+        "./..."
+      ],
+      "startedUtc": "2026-10-16T15:10:24.381467+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:10:25.057066+00:00",
+      "id": "go-build",
+      "result": "PASS",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logBytes": 0
+    },
+    {
+      "label": "go-post-images",
+      "cwd": "services/api",
+      "command": [
+        "sh",
+        "authlab/run-post-images-isolated.sh"
+      ],
+      "startedUtc": "2026-10-16T15:12:25.888749+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:14:03.325460+00:00",
+      "id": "go-post-images",
+      "result": "PASS",
+      "logSha256": "44cef1f467e3113a217c20ac6e064ff277cc5e85e2533ff4c3ac88813b6b931a",
+      "logBytes": 276588,
+      "testCounts": {
+        "pass": 251,
+        "fail": 0,
+        "skip": 0
+      },
+      "terminalLifecycleCases": [
+        "TestPostImagesTextOnlyRuntimeLifecycleErasurePostgres/cancel",
+        "TestPostImagesTextOnlyRuntimeLifecycleErasurePostgres/delete",
+        "TestPostImagesTextOnlyRuntimeLifecycleErasurePostgres/ban",
+        "TestPostImagesTextOnlyRuntimeLifecycleErasurePostgres/identity",
+        "TestPostImagesTextOnlyRuntimeLifecycleErasurePostgres/closure",
+        "TestPostImagesTextOnlyRuntimeLifecycleErasurePostgres/formal-closure"
+      ]
+    },
+    {
+      "label": "go-post-schema",
+      "cwd": "services/api",
+      "command": [
+        "sh",
+        "authlab/run-post-schema-isolated.sh"
+      ],
+      "startedUtc": "2026-10-16T15:12:07.643190+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:12:25.852339+00:00",
+      "id": "go-post-schema",
+      "result": "PASS",
+      "logSha256": "6846aeb7da15c663662fd451ce6cb5d91930267b5e94454e2b2f339c884b5b30",
+      "logBytes": 1903
+    },
+    {
+      "label": "go-r01",
+      "cwd": "services/api",
+      "command": [
+        "sh",
+        "authlab/run-isolated.sh"
+      ],
+      "startedUtc": "2026-10-16T15:03:47.214194+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:10:24.346053+00:00",
+      "id": "go-r01",
+      "result": "PASS",
+      "logSha256": "00a6fec381ae5d7952f285cf6323ae7d7b051a31cae34482cd4949b17907eb4a",
+      "logBytes": 1282
+    },
+    {
+      "label": "go-r03",
+      "cwd": "services/api",
+      "command": [
+        "sh",
+        "authlab/run-runtime-isolated.sh"
+      ],
+      "startedUtc": "2026-10-16T15:14:03.361491+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:14:54.974848+00:00",
+      "id": "go-r03",
+      "result": "PASS",
+      "logSha256": "11eea4ca3b5b74ba317ca98df173d9982dbc6d4a61f69a50354820a81375c4c1",
+      "logBytes": 10198,
+      "checks": {
+        "privacyRoleMatrix": "passed",
+        "privacyImageLifecycleColumnBoundary": "passed",
+        "privacyUnsafeDatabaseDiagnosticsRejected": "passed",
+        "privacyRealProcessAndPostgresLogs": "passed",
+        "actualCmdLifecycle": "passed",
+        "formalMigrationAndRoles": "passed",
+        "upgradeChannelsPreserved": "passed",
+        "identityUpgrade10To11": "passed",
+        "identityClosureUpgrade11To12": "passed",
+        "identityLegacyClosedProfileRepair": "passed",
+        "identityClosureTriggerBoundary": "passed",
+        "identityMissingSchemaAndDml": "passed",
+        "identityCrudReceiptsAndRestart": "passed",
+        "identityClosureAndSameEmailNewAccount": "passed",
+        "inactiveProjectionPureContract": "passed",
+        "textUpgrade12To13": "passed",
+        "textMissingSchemaAndRequiredDml": "passed",
+        "textExcessPrivilegeAndReusedKeyRejected": "passed",
+        "textActualHttpsWorkerSqlAndRestart": "passed",
+        "textUnknownSealAndDurableContentRejection": "passed",
+        "textClosureProjectionAndNewAccountIsolation": "passed",
+        "verifierGateUpgrade3To4": "passed",
+        "verifierGateFreezeRestartAndRecovery": "passed",
+        "verifierOldSnapshotBlocked": "passed",
+        "verifierOldGenerationOtpBlocked": "passed",
+        "verifierIndependentEvidenceExpiry": "passed",
+        "cleanup": "this invocation project and private directory only"
+      }
+    },
+    {
+      "label": "go-version",
+      "cwd": ".",
+      "command": [
+        "go",
+        "version"
+      ],
+      "startedUtc": "2026-10-16T15:03:47.158097+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:03:47.177913+00:00",
+      "id": "go-version",
+      "result": "PASS",
+      "logSha256": "65593ce58a2f4d22e9222d43a2c8330d6e6d2f6257da2f06b80949958c14a4ec",
+      "logBytes": 32
+    },
+    {
+      "label": "image_viewer-analyze",
+      "cwd": "packages/image_viewer",
+      "command": [
+        "flutter",
+        "analyze",
+        "--no-pub"
+      ],
+      "startedUtc": "2026-10-16T15:13:01.656290+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:13:08.721601+00:00",
+      "id": "image_viewer-analyze",
+      "result": "PASS",
+      "logSha256": "0c93bc5ba4fca6a80a62a742e4cf85f2d50ffc5f8f8553ce2dd95a8c8f6edca0",
+      "logBytes": 96
+    },
+    {
+      "label": "image_viewer-pub",
+      "cwd": "packages/image_viewer",
+      "command": [
+        "flutter",
+        "pub",
+        "get",
+        "--enforce-lockfile"
+      ],
+      "startedUtc": "2026-10-16T15:06:09.828296+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:13:01.617586+00:00",
+      "id": "image_viewer-pub",
+      "result": "PASS",
+      "logSha256": "ac7ea2c73f166c22c56001886c4dec9c75c1839b3ba1d4d76b6af54c35afeb60",
+      "logBytes": 630
+    },
+    {
+      "label": "image_viewer-tests",
+      "cwd": "packages/image_viewer",
+      "command": [
+        "flutter",
+        "test",
+        "--no-pub",
+        "--reporter",
+        "expanded"
+      ],
+      "startedUtc": "2026-10-16T15:13:08.762708+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:13:30.369841+00:00",
+      "id": "image_viewer-tests",
+      "result": "PASS",
+      "logSha256": "33be0066fd885d1cc3839d7382546024099e0a0eab3e8440c5104fb4f09bdecb",
+      "logBytes": 19258,
+      "testCounts": {
+        "passed": 112,
+        "skipped": 0,
+        "failed": 0
+      }
+    },
+    {
+      "label": "media-validator",
+      "cwd": "services/api",
+      "command": [
+        "/home/hnuhole/b5-main-merge-20261016/tools/python/bin/python",
+        "-B",
+        "media/test_validator.py",
+        "--fixtures",
+        "/home/hnuhole/b5-main-merge-20261016/fixtures"
+      ],
+      "startedUtc": "2026-10-16T15:12:07.507385+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:12:07.605707+00:00",
+      "id": "media-validator",
+      "result": "PASS",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logBytes": 0
+    },
+    {
+      "label": "mobile-analyze",
+      "cwd": "apps/mobile",
+      "command": [
+        "env",
+        "-u",
+        "PUB_HOSTED_URL",
+        "flutter",
+        "analyze",
+        "--no-pub"
+      ],
+      "startedUtc": "2026-10-16T15:04:40.649599+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:04:49.747338+00:00",
+      "id": "mobile-analyze",
+      "result": "PASS",
+      "logSha256": "c7e46e9012764e3432146df062ab1fd3aa16d0585023d9cac858ad77dc875733",
+      "logBytes": 96
+    },
+    {
+      "label": "mobile-bundle",
+      "cwd": "apps/mobile",
+      "command": [
+        "flutter",
+        "build",
+        "bundle",
+        "--debug",
+        "--no-pub"
+      ],
+      "startedUtc": "2026-10-16T15:05:15.090145+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:05:26.504571+00:00",
+      "id": "mobile-bundle",
+      "result": "PASS",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logBytes": 0
+    },
+    {
+      "label": "mobile-pub-offline-recheck",
+      "cwd": "apps/mobile",
+      "command": [
+        "env",
+        "-u",
+        "PUB_HOSTED_URL",
+        "flutter",
+        "pub",
+        "get",
+        "--offline",
+        "--enforce-lockfile"
+      ],
+      "startedUtc": "2026-10-17T01:06:24.556758+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-17T01:06:25.303807+00:00",
+      "id": "mobile-pub-offline-recheck",
+      "result": "PASS",
+      "logSha256": "4bc611be25a25028689d6cb67628f4d472b9cdb44d7b7a357ccc13aad15ef598",
+      "logBytes": 291
+    },
+    {
+      "label": "mobile-pub",
+      "cwd": "apps/mobile",
+      "command": [
+        "env",
+        "-u",
+        "PUB_HOSTED_URL",
+        "flutter",
+        "pub",
+        "get",
+        "--enforce-lockfile"
+      ],
+      "startedUtc": "2026-10-16T15:04:31.158132+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:04:40.610706+00:00",
+      "id": "mobile-pub",
+      "result": "PASS",
+      "logSha256": "f418ba9376edaa854f1f2709ffbfcc50d0fd069bc4b0475cc34090548d3eca88",
+      "logBytes": 606
+    },
+    {
+      "label": "mobile-tests",
+      "cwd": "apps/mobile",
+      "command": [
+        "flutter",
+        "test",
+        "--no-pub",
+        "--reporter",
+        "expanded"
+      ],
+      "startedUtc": "2026-10-16T15:04:49.787721+00:00",
+      "exitCode": 0,
+      "endedUtc": "2026-10-16T15:05:15.049134+00:00",
+      "id": "mobile-tests",
+      "result": "PASS",
+      "logSha256": "0c3d4d5a89b7f1fefd0e6b4a4836475fed1b6f18b89741d625da8e33b244bf08",
+      "logBytes": 76576,
+      "testCounts": {
+        "passed": 383,
+        "skipped": 0,
+        "failed": 0
+      }
+    }
+  ],
   "nativeBoundaryReview": "Android authentication/business storage implementations inherited from main; namespace/alias/purge source reviewed; host mocks are not native instrumentation or process-restart evidence.",
   "remaining": [
-    "Candidate AndroidAuthVaultTest, AndroidBusinessStorageTest, AuthVaultProcessRestartTest: BLOCKED, no isolated device window; no ADB/phone operations authorized or performed.",
-    "Candidate OEM migration, synced native Passkey and native restoration remain NOT_RUN. Historical 24/24 is not a candidate APK result.",
-    "No automatic complete dual-phone rerun is inferred from 21 hashes; use this path-level impact record and independent review to scope any later native window.",
-    "iOS and production acceptance remain outside this task."
-  ]
+    "Current APK native instrumentation/OEM migration/Passkey ceremonies remain NOT_RUN; no native plugin changes in this increment and independent review did not require another full dual-phone window.",
+    "iOS, complete application acceptance and production approval remain outside this increment."
+  ],
+  "recordedOn": "2026-10-17",
+  "verifiedAtUTC": "2026-10-17T01:08:33.373226+00:00",
+  "requiredChecks": [
+    "mobile-analyze",
+    "mobile-tests",
+    "mobile-bundle",
+    "auth_passkey-analyze",
+    "auth_passkey-tests",
+    "auth_vault-analyze",
+    "image_viewer-analyze",
+    "image_viewer-tests",
+    "go-r01",
+    "go-build",
+    "go-post-schema",
+    "go-post-images",
+    "go-r03",
+    "android-debug-complete-ndk",
+    "mobile-pub-offline-recheck",
+    "android-release-cached-regenerated",
+    "android-b5-fixture"
+  ],
+  "historicalCheckerRerun": [
+    {
+      "label": "b5-original",
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "script": "tools/check-android-b5-evidence.py",
+      "exitCode": 0,
+      "logSha256": "8f109f5e8a0ee38ccfdbfa248013c8a8b7229cf90106267ec9520a9292e27948"
+    },
+    {
+      "label": "b5-sync",
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "script": "tools/check-android-b5-sync-evidence.py",
+      "exitCode": 0,
+      "logSha256": "22f92d5d9299eb87c50e3be3933109d6c469f56a96a782d66e92c62a90ab5335"
+    },
+    {
+      "label": "b6-complete",
+      "commit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+      "script": "tools/check-non-ios-closure.py",
+      "exitCode": 0,
+      "logSha256": "8e8b600ba8f2953e257569712fbb861b1f6555cc821039640fb16fdb076f9502"
+    }
+  ],
+  "ciAtCodeCommit": {
+    "commit": "c59d97f45dff839cc073aeb6cecd7fe76804fb13",
+    "checks": [
+      {
+        "id": 38988007304,
+        "name": "Collaboration",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/38988007304"
+      },
+      {
+        "id": 38988007223,
+        "name": "Post images",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/38988007223"
+      }
+    ],
+    "retainedFailure": {
+      "commit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
+      "runId": 38921922738,
+      "job": "go-postgres",
+      "result": "failure",
+      "reason": "Isolated ProcessValidator could not start using the hosted setup-python interpreter; system-Python venv and explicit isolated probe used in c59d97f. Product guard unchanged."
+    }
+  },
+  "independentReview": {
+    "result": "PASS_AFTER_FIX",
+    "reviewer": "/root/b5_integration_review",
+    "evidence": "docs/design/auth-privacy-b5-integration-review-20261016.md",
+    "finding": "Two adapted B5 fixtures still requested 24-byte randomness; both changed to 32 and rechecked.",
+    "githubMemberApprovalClaimed": false
+  },
+  "pythonHostRegression": [
+    {
+      "command": "python -B -X utf8 -m unittest discover -s tools/tests -p test_android_b3_b4_signature_contrast.py -v",
+      "result": "PASS",
+      "passed": 15
+    },
+    {
+      "command": "python -B -X utf8 -m unittest discover -s tools/tests -p test_collaboration.py -v",
+      "result": "PASS",
+      "passed": 19
+    }
+  ],
+  "finalTestedSourceComparison": {
+    "scope": "apps/packages/services/infra exact test-copy comparison with LF canonicalization of text; historical input hashes unchanged",
+    "inputCount": 598,
+    "drift": [],
+    "manifestSha256": "8abe392854f7ab2c280fb6a1e2ac533259d45028a2d09037aa4da4a8c4fdd389",
+    "portableSummary": "All recorded candidate inputs matched the independently executed Linux source copy."
+  },
+  "androidEnvironmentRecovery": {
+    "originalFailuresRetained": [
+      "android-debug",
+      "android-debug-api35",
+      "android-gradle-provider",
+      "android-gradle-stack",
+      "android-debug-fullsdk",
+      "android-release"
+    ],
+    "missingOrIncompletePackages": [
+      "platforms;android-35",
+      "platforms;android-36",
+      "ndk;28.2.13676358"
+    ],
+    "ndkDiagnosis": "Existing shared and copied Linux NDK clang file was empty; CMake reported linking but emitted no library. Installed complete official NDK in task SDK and preserved failed generated files before retesting.",
+    "sharedSdkModified": false,
+    "taskSdk": "/home/hnuhole/b5-main-merge-20261016/tools/android-sdk",
+    "completeTaskLocalNdk": true,
+    "apkInstalledOrDistributed": false,
+    "releaseGeneratedPluginRecovery": "Flutter 3.47.5 --no-pub also skips mode-specific plugin regeneration: debug GeneratedPluginRegistrant retained integration_test while release Gradle excludes dev plugins. Retried ordinary build commands with default pub/tooling regeneration; original source and lockfiles unchanged.",
+    "stoppedAttempt": {
+      "label": "android-release-with-plugin-generation",
+      "reason": "Inherited image-package mirror differed from mobile lockfile host; stopped only the task pub subprocess and retried with PUB_HOSTED_URL unset, matching the original locked mobile dependency source.",
+      "claimedPass": false
+    },
+    "offlineDependencyPreparation": {
+      "stoppedOnlineAttempt": "android-release-regenerated-locked-host",
+      "reason": "Online dependency query stalled; stopped only task pub subprocess. Official offline --enforce-lockfile resolution passed; refreshed only task lockfile mtime for Flutter cache detection, with lockfile bytes checked unchanged. Ordinary build still performs mode-specific plugin generation.",
+      "enforcedOfflineLabel": "mobile-pub-offline-recheck",
+      "lockContentChanged": false
+    }
+  }
 }

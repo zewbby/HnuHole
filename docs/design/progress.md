@@ -1,6 +1,6 @@
 # 设计进度与剩余工作
 
-> **2026-10-16 B5 主线整合候选（IN_PROGRESS）：**本轮仅在 `codex/fix/b5-main-integration` 整合，基线为 main `b164762b8cd58da592bf645cc4e2ada738bb79ec`；未 commit、未合并、未发布。保留主线帖子图片、业务存储和账号生命周期实现，只引入缺失的 B5 材料及必要适配。当前候选的测试、构建、独立审查与未验项以[候选报告](auth-privacy-b5-main-integration-report.md)和[候选机器记录](auth-privacy-b5-main-integration-verification.json)为准；此处不提前登记 PASS。
+> **2026-10-17 B5 主线增量整合已验证，待合并：**基于 main `b164762` 的 `codex/fix/b5-main-integration` 已推送至 [PR #9](https://github.com/zewbby/HnuHole/pull/9)。保留主线图片/业务存储，只整合 B5 材料、夹具适配与闭号/图片擦除修复。mobile 383、图片组件112、Passkey Dart9、全部分析/bundle、R01 SQL/race/vet、受限角色251个含子项测试、R03实际C/V及 Android Debug/Release/同步夹具构建通过；独立审查发现已修复，代码提交的GitHub检查通过。见[整合报告](auth-privacy-b5-main-integration-report.md)和[机器记录](auth-privacy-b5-main-integration-verification.json)。未合并、未发布；历史24/24不外推为当前候选设备通过。
 
 > **历史认证证据独立保留：**B5 来源为 `ea5cc52840f009b02106f928c444e423c6e61b3e`，产品基线仍是 `d859cb05c772cdf8d8b75e439a2bfedf0414dd46`。历史 B6 为 **22 PASS／0 FAIL／2 BLOCKED**；B5 双实体首轮为 **23 PASS／1 FAIL**（NI-X02），随后 Bitwarden 原生路线仍 **BLOCKED**；B5-sync 后续为 **24／24 PASS**。原四次 hybrid 失败、同步成功后夹具失败、用户报告未出现选择／验证页的第六次失败及后续重试均保留在原[首轮报告](auth-privacy-b5-validation-report.md)、[同步报告](auth-privacy-b5-sync-validation-report.md)和三份机器证据中。历史 `nonIOSDevelopmentAcceptancePassed=true` 仅属于原 B5-sync 输入及设备链，不是本候选通过；iOS、生产及未来业务边界不扩张。
 

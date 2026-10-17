@@ -1,6 +1,6 @@
 # B5 主线增量整合
 
-日期：2026-10-16（Asia/Shanghai）。分支 `codex/fix/b5-main-integration`，基于主线 `b164762b8cd58da592bf645cc4e2ada738bb79ec`，接续用户指定的本地 B5 候选。交付状态见[分支记录](../branches/fix-b5-main-integration.md)；实际命令、源码摘要与结果见[机器记录](auth-privacy-b5-main-integration-verification.json)。
+日期：2026-10-17（Asia/Shanghai）。分支 `codex/fix/b5-main-integration`，基于主线 `b164762b8cd58da592bf645cc4e2ada738bb79ec`，接续用户指定的本地 B5 候选。交付状态见[分支记录](../branches/fix-b5-main-integration.md)；实际命令、源码摘要与结果见[机器记录](auth-privacy-b5-main-integration-verification.json)。
 
 ## 实现
 
@@ -12,7 +12,7 @@
 
 ## 验证与范围
 
-主应用分析、383 项宿主测试与 bundle 已通过；原生 Passkey 包分析及 9 项 Dart 测试、vault 包分析通过。签名构建守卫 15 项、协作工具 19 项通过。完整 SQL/race/vet、受限角色真实 PostgreSQL、R03 实际 C/V、图片组件及 Android 构建正在本任务独立 Linux 工作副本执行，结果汇总到机器记录后才计作通过。
+主应用分析、383 项宿主测试与 bundle 已通过；原生 Passkey 包分析及 9 项 Dart 测试、vault 包分析通过。签名构建守卫 15 项、协作工具 19 项通过。完整 R01 SQL/race/vet、编译、受限角色 schema 及图片回归、R03 实际 C/V 均通过；图片组件分析与112项宿主测试通过；Android ARM64标准 Debug、Release及B5同步夹具构建通过。图片回归记录251个含子项通过事件、零失败/跳过，新六种生命周期全部实际执行。代码提交的 GitHub Flutter、Go、真实SQL及协作检查通过。
 
 [独立审查](auth-privacy-b5-integration-review-20261016.md)发现的两个候选夹具错误已修复并复核。审查未发现其他阻断；本增量未修改主线 Android/Passkey/vault 原生实现，不要求为合并重新跑完整双机窗口。候选原生设备验收仍为 `NOT_RUN`，构建和宿主 mock 不代证原生行为。
 
@@ -25,3 +25,5 @@
 ## 后续边界
 
 iOS、原生设备专项复验、生产及未来业务保持各自门槛。原控制工具的固定机器路径、包名和设备约定属于历史环境，不直接用于当前候选。无部署或发布。
+
+初次 Android 构建因既有 SDK 缺 API 35 失败，补齐后又发现 API 36 副本不完整；之后 JNI 构建发现既有 Linux NDK 的 clang 文件为空，未生成目标库。原失败与诊断日志均保留；只在任务 SDK 安装完整官方平台包和 NDK 后重验，未改共享 SDK、未安装 APK。首次 Release 因 `--no-pub` 跳过构建模式专属插件注册生成，沿用 Debug 注册文件而引用了被 Release 排除的 integration_test；使用普通构建命令自动重新生成后复验，源码与锁文件未改。首次 GitHub SQL 任务的验证器环境故障亦保留；改用系统 Python 创建 venv 并显式隔离 probe 后复验通过，没有放宽产品守卫。最终源码与 Linux 测试副本比对无内容漂移。
