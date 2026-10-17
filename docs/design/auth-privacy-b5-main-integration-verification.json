@@ -12,9 +12,13 @@
     "pullRequest": 9,
     "codeCommit": "c6ab50995cdf7298309228d9708cd6136ad4a70d",
     "ciFixCommit": "c59d97f45dff839cc073aeb6cecd7fe76804fb13",
-    "merged": false,
+    "merged": true,
     "deployed": false,
-    "deliveryRecord": "docs/branches/fix-b5-main-integration.md"
+    "deliveryRecord": "docs/branches/fix-b5-main-integration.md",
+    "mergeCommit": "eff746154a23a48896b420fa358ae481d595a7d8",
+    "mergedOn": "2026-10-17",
+    "mergeMethod": "squash",
+    "finalHeadCommit": "58e2669a8bf0387815472d75d9c78369064a2759"
   },
   "acceptanceScope": {
     "historicalFixedMatrix": "B6 22 PASS/2 BLOCKED; initial B5 23 PASS/1 FAIL; Bitwarden BLOCKED; B5 sync 24 PASS, original revisions only",
@@ -4879,5 +4883,38 @@
       "enforcedOfflineLabel": "mobile-pub-offline-recheck",
       "lockContentChanged": false
     }
+  },
+  "ciAtFinalHead": [
+    {
+      "id": 38989629306,
+      "name": "Collaboration",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 24,
+      "jobs_url": "https://api.github.com/repos/zewbby/HnuHole/actions/runs/38989629306/jobs",
+      "logs_url": "https://api.github.com/repos/zewbby/HnuHole/actions/runs/38989629306/logs",
+      "workflow_id": 385631836,
+      "head_sha": "58e2669a8bf0387815472d75d9c78369064a2759",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/38989629306"
+    },
+    {
+      "id": 38989618611,
+      "name": "Post images",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 5,
+      "jobs_url": "https://api.github.com/repos/zewbby/HnuHole/actions/runs/38989618611/jobs",
+      "logs_url": "https://api.github.com/repos/zewbby/HnuHole/actions/runs/38989618611/logs",
+      "workflow_id": 386134974,
+      "head_sha": "58e2669a8bf0387815472d75d9c78369064a2759",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/38989618611"
+    }
+  ],
+  "mergeVerification": {
+    "githubMerged": true,
+    "mainFetchedAndMatched": true,
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/9",
+    "mergeCommit": "eff746154a23a48896b420fa358ae481d595a7d8",
+    "verifiedAtUTC": "2026-10-17T01:12:22.611186+00:00"
   }
 }

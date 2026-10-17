@@ -36,6 +36,7 @@
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `codex/auth-privacy-handoff` | 实现认证、匿名隐私边界和相关验收交接。 | [详情](docs/branches/auth-privacy-handoff.md) |
+| `codex/docs/b5-integration-merge-record` | 补记 B5 增量进入主线的合并事实和验收边界。 | [详情](docs/branches/docs-b5-integration-merge-record.md) |
 | `codex/fix/b5-main-integration` | 在主线接入 B5 验收增量并修复闭号与图片擦除边界。 | [详情](docs/branches/fix-b5-main-integration.md) |
 | `codex/community-text-posting` | 实现文字帖后端、接口及早期客户端闭环。 | [详情](docs/branches/community-text-posting.md) |
 | `codex/community-flutter-pages` | 实现社区页面并推进社区与认证的 Android 验收。 | [详情](docs/branches/community-flutter-pages.md) |
@@ -54,8 +55,8 @@
 
 按合并时间倒序保留最近 5 条，每条一句话说明。
 
+- 2026-10-17 · [#9](https://github.com/zewbby/HnuHole/pull/9)：接入 B5 验收增量并修复闭号状态及图片生命周期擦除权限。
+- 2026-10-16 · [#6](https://github.com/zewbby/HnuHole/pull/6)：记录图片分支退役和实际资源清理结果。
 - 2026-10-16 · [#5](https://github.com/zewbby/HnuHole/pull/5)：退役帖子图片后端分支，保留历史交接入口。
 - 2026-10-16 · [#4](https://github.com/zewbby/HnuHole/pull/4)：将 README 整理为分支简表与最近合并摘要。
 - 2026-10-16 · [#3](https://github.com/zewbby/HnuHole/pull/3)：补齐图片业务交接记录和 iOS 待办。
-- 2026-10-16 · [#2](https://github.com/zewbby/HnuHole/pull/2)：接入帖子图片业务，完成 Android S18 约定范围验收。
-- 2026-10-15 · [#1](https://github.com/zewbby/HnuHole/pull/1)：统一分支、提交、PR 与协作检查规范。
