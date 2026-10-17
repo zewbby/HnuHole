@@ -36,6 +36,7 @@
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `codex/auth-privacy-handoff` | 实现认证、匿名隐私边界和相关验收交接。 | [详情](docs/branches/auth-privacy-handoff.md) |
+| `codex/fix/b5-main-integration` | 在主线接入 B5 验收增量并修复闭号与图片擦除边界。 | [详情](docs/branches/fix-b5-main-integration.md) |
 | `codex/community-text-posting` | 实现文字帖后端、接口及早期客户端闭环。 | [详情](docs/branches/community-text-posting.md) |
 | `codex/community-flutter-pages` | 实现社区页面并推进社区与认证的 Android 验收。 | [详情](docs/branches/community-flutter-pages.md) |
 | `codex/image-viewer-component` | 实现独立图片查看组件和 Android 原格式保存。 | [详情](docs/branches/image-viewer-component.md) |

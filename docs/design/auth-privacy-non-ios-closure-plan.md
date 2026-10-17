@@ -1,5 +1,13 @@
 # 非 iOS 匿名基础最终收口计划
 
+> **2026-10-17 B5 主线增量整合已验证，待合并：**基于 main `b164762` 的 `codex/fix/b5-main-integration` 已推送至 [PR #9](https://github.com/zewbby/HnuHole/pull/9)。保留主线图片/业务存储，只整合 B5 材料、夹具适配与闭号/图片擦除修复。mobile 383、图片组件112、Passkey Dart9、全部分析/bundle、R01 SQL/race/vet、受限角色251个含子项测试、R03实际C/V及 Android Debug/Release/同步夹具构建通过；独立审查发现已修复，代码提交的GitHub检查通过。见[整合报告](auth-privacy-b5-main-integration-report.md)和[机器记录](auth-privacy-b5-main-integration-verification.json)。未合并、未发布；历史24/24不外推为当前候选设备通过。
+
+> **历史认证证据独立保留：**B5 来源为 `ea5cc52840f009b02106f928c444e423c6e61b3e`，产品基线仍是 `d859cb05c772cdf8d8b75e439a2bfedf0414dd46`。历史 B6 为 **22 PASS／0 FAIL／2 BLOCKED**；B5 双实体首轮为 **23 PASS／1 FAIL**（NI-X02），随后 Bitwarden 原生路线仍 **BLOCKED**；B5-sync 后续为 **24／24 PASS**。原四次 hybrid 失败、同步成功后夹具失败、用户报告未出现选择／验证页的第六次失败及后续重试均保留在原[首轮报告](auth-privacy-b5-validation-report.md)、[同步报告](auth-privacy-b5-sync-validation-report.md)和三份机器证据中。历史 `nonIOSDevelopmentAcceptancePassed=true` 仅属于原 B5-sync 输入及设备链，不是本候选通过；iOS、生产及未来业务边界不扩张。
+
+> **候选证据规则：**两个 B5 checker 仍在固定 `ea5cc528` 历史副本验证，完整 B6 checker 在固定 `d859cb05` 副本验证；不改历史摘要或降低门槛。候选须记录全部历史 runtime 输入的差异及集合以外新增 runtime 文件，另记三份 B5 夹具由 `_HnuholeApp` 适配 `HnuholeApp` 后的摘要及运行时根组件发现回归。旧 APK／旧夹具结果不代证新候选；当前原生设备回归为 **NOT_RUN**，Dart mock、分析和构建不能替代原生存储与设备验收。
+
+下方固定 24 项表保留 B6 时点状态；NI-X01／NI-X02 在历史 B5-sync 已完成，其历史增量见上方报告，不将表内历史 BLOCKED 改写成本候选 PASS。新候选按实际改动确定差异复验，不仅因哈希变化就要求完整双机重做，也不将旧双机证据视为新 APK 实测。
+
 > **2026-10-13 B6与单台Android范围完成：**完整R01 SQL/race/vet、R03实际C/V的19项检查、R05真实Dart→HTTPS→SQL、三个Flutter包分析、移动端188项与Passkey Dart 9项、标准Android Debug／Release构建、原生vault 16项／Passkey codec及错误分类12项、三组实际跨进程读写和已安装Release 13项边界均PASS。Windows／Linux各108项宿主守卫、诊断构建8项、JVM策略24项及四份OpenAPI通过。固定24项维持22 PASS／0 FAIL／2 BLOCKED；原14阶段及各设备版本保留，原SDK-only三项FAIL与历史UNKNOWN未改写。**不需要第二实体Android的非iOS匿名基础工作已完成，唯一固定缺口为NI-X01／X02；完整非iOS、iOS、生产与未来业务仍未获通过。**原手机三包摘要、原provider／autofill、账号与草稿保留；本轮独立模拟器停止，专用AVD／构建副本／临时APK及原始日志已清理，现成环境与缓存保留。HnuHole仅准备本地可审阅候选，未提交／推送／部署。见[B6报告](auth-privacy-b6-validation-report.md)及[最终分层记录](../../services/api/authlab/b6-single-android-20261013-verification.json)。
 
 下方记录保留原日期、被测版本与证明范围；本轮结论以上述B6入口为准。

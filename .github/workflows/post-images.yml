@@ -8,6 +8,8 @@ on:
       - 'packages/auth_vault/**'
       - 'packages/auth_passkey/**'
       - 'services/api/**'
+      - 'infra/postgres/**'
+      - 'tools/tests/test_android_b3_b4_signature_contrast.py'
       - '.github/workflows/post-images.yml'
   workflow_dispatch:
 
@@ -52,7 +54,7 @@ jobs:
         working-directory: apps/mobile
         run: |
           flutter analyze --no-pub
-          flutter test --no-pub test/auth_api_test.dart test/post_api_test.dart test/post_controller_test.dart test/post_composer_media_test.dart test/post_media_repository_test.dart
+          flutter test --no-pub test/auth_api_test.dart test/post_api_test.dart test/post_controller_test.dart test/post_composer_media_test.dart test/post_media_repository_test.dart test/post_closure_cleanup_test.dart test/b5_candidate_root_test.dart
           flutter build bundle --debug --no-pub
       - name: Verify lockfiles were preserved
         run: git diff --exit-code -- '**/pubspec.lock'
@@ -78,3 +80,42 @@ jobs:
           go test -mod=readonly ./...
           go build -mod=readonly ./...
           go vet -mod=readonly ./...
+
+  go-postgres:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Private PostgreSQL and image validator dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 python3-venv
+          echo '/usr/lib/postgresql/16/bin' >> "$GITHUB_PATH"
+          # The validator runs with a minimal environment and rejects writable
+          # executables. Use the system interpreter, independent of toolcache
+          # permissions and setup-python's dynamic-loader environment.
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/post-image-python"
+          "$RUNNER_TEMP/post-image-python/bin/python" -m pip install -r services/api/media/requirements.txt
+          chmod -R go-w services/api/media
+          "$RUNNER_TEMP/post-image-python/bin/python" -I -B services/api/media/validate_image.py --probe
+          "$RUNNER_TEMP/post-image-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/post-image-fixtures"
+      - name: Restricted-role schema and image lifecycle regression
+        working-directory: services/api
+        env:
+          PGPORT: '55434'
+        run: |
+          export POST_MEDIA_PYTHON="$RUNNER_TEMP/post-image-python/bin/python"
+          export POST_MEDIA_FIXTURES="$RUNNER_TEMP/post-image-fixtures"
+          sh authlab/run-post-schema-isolated.sh
+          sh authlab/run-post-images-isolated.sh
+      - name: Signing builder boundary regression
+        run: python -B -m unittest discover -s tools/tests -p test_android_b3_b4_signature_contrast.py -v
