@@ -1,8 +1,20 @@
 # 评论与回复：开发任务范围
 
-创建：2026-10-18，Asia/Shanghai。状态：SCOPED_NOT_IMPLEMENTED，仅完成分支与边界准备。
+创建／接手：2026-10-18，Asia/Shanghai。状态：CORE_HOST_PASS_INTEGRATION_PENDING，独立核心宿主验证通过；完整 B07 尚未完成。
 仓库 zewbby/HnuHole；分支 `codex/feat/comments-replies`；独立目录 `E:/HnuHole-comments-replies-20261018/repo`。
-创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。未执行新产品测试，未计实现或验收通过。
+创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。接手时工作区干净，仓库／分支／远端均已核对；正常合并实时 main `986477b`，整合提交 `79213db`，保留 PR #13 已合入的图片、认证和无障碍成果。原“尚未执行”仅属于范围准备时点。
+
+[Draft PR #17](https://github.com/zewbby/HnuHole/pull/17)；[阶段报告](../design/comments-core-report-20261018.md)／[机器证据](../design/comments-core-verification-20261018.json)。实际被测实现 `cd45a89`，Flutter445／分析0、Go评论50含子项／91%覆盖、7份OpenAPI、Python207含3平台跳过；均只证明独立核心宿主范围。
+
+## 本轮可审查交付与剩余边界
+
+- 独立 Go 评论规则：单图／原文校验、受理身份绑定裁决、不可变原身份与具体目标、四态任务与版本检查、失败重试／放弃、身份删除和稳定前十／前五排序快照。
+- 独立 Dart 核心：临时输入收起／离帖、确认换目标、先 journal 后发送、未知与权威未受理区分、重开核对接口、切账号迟到隔离、删身份去材料、失败通知私有投影。测试适配器不能证明原生加密持久化。
+- [接线契约与精确字节帧](../design/comments-replies-contract.md)、严格 OpenAPI 及负向 fixture 校验；客户端 journal/API 接口与计划 wire DTO 需要后续生产适配。
+- 尚无评论 SQL／HTTP／worker／真实加密 journal／帖子页面／单图上传读取／系统通知接线；未生成评论功能 APK、未操作设备、不把模型或替身结果计为 B07 完整 PASS。
+- main 当前迁移仅至 0014，治理远端范围提交 `5292d2d` 尚无可消费通知实现或 0015。没有创建假前置、缺号迁移或合并整条治理分支。实际 0015 合入后先正常整合 main，再定稿 0016 和真实 SQL／HTTP／权限／生命周期验证。
+
+下方完整任务边界继续适用；独立核心交付不缩减最终 Android 可用链路要求。
 
 ## 目标与本次包含
 

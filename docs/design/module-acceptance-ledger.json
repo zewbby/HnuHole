@@ -13733,6 +13733,12 @@
         "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
         "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
         "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
+      },
+      "commentsCoreConsumer20261018": {
+        "result": "NOT_RUN",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+        "report": "docs/design/comments-core-report-20261018.md",
+        "scope": "仅独立评论核心及设计联动；实际身份/详情/系统通知/治理消费者尚未接入，不升级本模块验收。共享边界变化时重新打开适用回归。"
       }
     },
     {
@@ -16332,17 +16338,28 @@
         "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
         "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
         "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
+      },
+      "commentsCoreConsumer20261018": {
+        "result": "NOT_RUN",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+        "report": "docs/design/comments-core-report-20261018.md",
+        "scope": "仅独立评论核心及设计联动；实际身份/详情/系统通知/治理消费者尚未接入，不升级本模块验收。共享边界变化时重新打开适用回归。"
       }
     },
     {
       "id": "B07",
       "name": "评论与回复",
-      "implementationState": "NOT_STARTED",
-      "acceptanceState": "NOT_READY_IMPLEMENTATION",
-      "currentResult": "NOT_RUN",
-      "verificationEntries": [],
-      "note": "仅设计规则，无完整业务实现",
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "implementationState": "PARTIAL_INDEPENDENT_CORE_ONLY",
+      "acceptanceState": "CORE_HOST_SCOPED_PASS_SQL_HTTP_UI_NATIVE_JOURNAL_NOT_IMPLEMENTED_NOTIFICATIONS_NOT_CONNECTED",
+      "currentResult": "BLOCKED",
+      "verificationEntries": [
+        "B07-CORE-01",
+        "B07-CLIENT-01",
+        "B07-CODEC-01",
+        "B07-CONTRACT-01"
+      ],
+      "note": "2026-10-18 PR17 draft分支独立Go/Dart核心、精确codec与设计契约已实现并宿主验证；没有评论SQL/HTTP/worker/真实加密journal/页面/媒体接线/系统通知，不能将B07或COMMENT-FAIL-ENTRY-01计PASS；未合并或发布。",
+      "nextAcceptance": "治理0015实际进入main后正常整合并核迁移编号，开发0016/最小授权/最终C事务/持久回执/HTTP/生命周期；再接原生journal、评论页面和单图、统一失败通知，最后固定APK与统一设备窗口。无评论真实SQL或原生重开通过事实。",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -16353,6 +16370,32 @@
         "implementation": "NOT_IMPLEMENTED",
         "contractOnly": true,
         "report": "docs/design/post-image-media-contract.md"
+      },
+      "taskPlan": "docs/branches/feat-comments-replies.md",
+      "report": "docs/design/comments-core-report-20261018.md",
+      "evidence": "docs/design/comments-core-verification-20261018.json",
+      "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+      "sourcePaths": [
+        "services/api/internal/comments",
+        "apps/mobile/lib/src/comments",
+        "packages/openapi/comment-api.yaml",
+        "packages/comment-protocol-vectors/v1.json"
+      ],
+      "commentsCore20261018": {
+        "result": "PASS_INDEPENDENT_CORE_ONLY",
+        "testedImplementationCommit": "cd45a893e2aade2a079ee302743f622ee111649e",
+        "sourceFingerprint": "746d3cc21138a00ac6009a3f2e67ccddb10889d524274e10c073be9e14496f45",
+        "flutterTests": 445,
+        "commentGoTestEvents": 50,
+        "commentGoCoveragePercent": 91.0,
+        "openapiSpecifications": 7,
+        "pythonTests": 207,
+        "pythonPlatformSkips": 3,
+        "commentFailEntry01": "NOT_RUN_NOT_CONNECTED",
+        "realSQL": "NOT_RUN_NOT_IMPLEMENTED",
+        "nativeJournal": "NOT_RUN_NOT_IMPLEMENTED",
+        "commentAPK": "NOT_BUILT",
+        "deviceUsed": false
       }
     },
     {
@@ -16368,6 +16411,12 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "commentsCoreConsumer20261018": {
+        "result": "NOT_RUN",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+        "report": "docs/design/comments-core-report-20261018.md",
+        "scope": "仅独立评论核心及设计联动；实际身份/详情/系统通知/治理消费者尚未接入，不升级本模块验收。共享边界变化时重新打开适用回归。"
       }
     },
     {
@@ -17476,7 +17525,13 @@
         "completeModuleAcceptance": false,
         "doesNotCompleteWholeModule": true
       },
-      "nextPostMediaAndroidAcceptance": "PMA01–14，等待其他会话释放；先离线SHA/期限预检，再probe与真实主App原生链路；不复用宿主/旧组件证据冒称当前设备通过。"
+      "nextPostMediaAndroidAcceptance": "PMA01–14，等待其他会话释放；先离线SHA/期限预检，再probe与真实主App原生链路；不复用宿主/旧组件证据冒称当前设备通过。",
+      "commentsCoreConsumer20261018": {
+        "result": "NOT_RUN",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+        "report": "docs/design/comments-core-report-20261018.md",
+        "scope": "仅独立评论核心及设计联动；实际身份/详情/系统通知/治理消费者尚未接入，不升级本模块验收。共享边界变化时重新打开适用回归。"
+      }
     },
     {
       "id": "B12",
@@ -39249,5 +39304,28 @@
     "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
     "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
   },
-  "currentPr13MergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
+  "currentPr13MergeReceipt": "docs/design/community-pr13-main-merge-20261018.json",
+  "commentsCoreWorkItem20261018": {
+    "branch": "codex/feat/comments-replies",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+    "testedImplementationCommit": "cd45a893e2aade2a079ee302743f622ee111649e",
+    "integratedMain": "986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb",
+    "result": "PASS_INDEPENDENT_CORE_ONLY_B07_BLOCKED",
+    "nextMigration": "0016 provisional only after real governance0015 main integration",
+    "futureSharedRegression": [
+      "A00",
+      "A01",
+      "A02",
+      "A03",
+      "A06",
+      "A08",
+      "A10",
+      "A12",
+      "A13",
+      "N01",
+      "X06",
+      "X07"
+    ],
+    "historicalBaselineFieldsPreserved": true
+  }
 }

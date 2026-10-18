@@ -1,0 +1,342 @@
+{
+  "schemaVersion": "hnuhole-comments-core-evidence/v1",
+  "recordedOn": "2026-10-18",
+  "timeZone": "Asia/Shanghai",
+  "task": "B07 comments and replies independent core stage",
+  "branch": "codex/feat/comments-replies",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+  "creationBaseline": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+  "integratedMain": "986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb",
+  "testedImplementationCommit": "cd45a893e2aade2a079ee302743f622ee111649e",
+  "result": "PASS_INDEPENDENT_CORE_ONLY",
+  "fullB07Result": "BLOCKED",
+  "commentFailEntry01": "NOT_RUN_NOT_CONNECTED",
+  "sourceFingerprint": {
+    "algorithm": "SHA256(path-NUL-physicalFileSHA256-LF sorted)",
+    "sha256": "746d3cc21138a00ac6009a3f2e67ccddb10889d524274e10c073be9e14496f45",
+    "fileCount": 22,
+    "files": [
+      {
+        "path": ".github/workflows/comments-core.yml",
+        "sha256": "2e5b76e7c50d1d10a32eb75ed4aa04099748ae39c4baa9671688838dd2aeac1e"
+      },
+      {
+        "path": "apps/mobile/lib/src/comments/comment_api.dart",
+        "sha256": "ca6b53c012d81131c4530ea6105a834f332a99e55a30423bdcb2d01858b6b283"
+      },
+      {
+        "path": "apps/mobile/lib/src/comments/comment_controller.dart",
+        "sha256": "a071c3c2658453e329a9f9cea972dabc0fc9ca4d79482fde62cf312c0202d423"
+      },
+      {
+        "path": "apps/mobile/lib/src/comments/comment_editor.dart",
+        "sha256": "1c35351907193ec8131bf771e606a9959410e77317fcb99c93a69189b2d03b14"
+      },
+      {
+        "path": "apps/mobile/lib/src/comments/comment_models.dart",
+        "sha256": "7f216f6ff8b24fb77d7d6f25c3a9f8878d579ca741d8609da4afc9dcf023d19b"
+      },
+      {
+        "path": "apps/mobile/lib/src/comments/comment_order.dart",
+        "sha256": "a366ce608f8458f179fbe1cfc3129b3a58ade5d62727a8b5e3098f13b9d030a2"
+      },
+      {
+        "path": "apps/mobile/lib/src/comments/comment_protocol.dart",
+        "sha256": "cd91a93874916ce2bab12bde5968f1738856cfe041642f3e8ef6abe0b1a6e7d5"
+      },
+      {
+        "path": "apps/mobile/test/comment_core_test.dart",
+        "sha256": "d01c71c714b576408a020daefbaf3606d36c72a8b3a79ac85ba74da2639e5aa9"
+      },
+      {
+        "path": "apps/mobile/test/comment_protocol_test.dart",
+        "sha256": "022cccae413f6f526ada3188bdb1f6b8c5e0b19db9b596841869a1c9fc2eac0c"
+      },
+      {
+        "path": "packages/comment-protocol-vectors/v1.json",
+        "sha256": "8affbc9790a063786c9667f65c1f72e9c49b1b954b8fe87743205d8503ecc11b"
+      },
+      {
+        "path": "packages/openapi/comment-api.yaml",
+        "sha256": "912229f0096b78dd1c9200f249a6e9ac301fe9ce5919b52d92d9a863f4da9942"
+      },
+      {
+        "path": "services/api/internal/comments/content.go",
+        "sha256": "ed56c1651908ac773cf3cc84614eb0837f94995b42b05d48ba559b345da52341"
+      },
+      {
+        "path": "services/api/internal/comments/model.go",
+        "sha256": "56293fce2fe14a9c0f83c15acdc59f835171c1db2c6f1432e40af97aafd6bca4"
+      },
+      {
+        "path": "services/api/internal/comments/model_test.go",
+        "sha256": "c9d926935322c2543e04504222f74b18d162b27d7ace503489a40f67296060b2"
+      },
+      {
+        "path": "services/api/internal/comments/order.go",
+        "sha256": "b7eaaf647d420f90acd8988fbd489bfe6318ee5c820bb6b621a15d6789a60ed4"
+      },
+      {
+        "path": "services/api/internal/comments/order_test.go",
+        "sha256": "497d64015f1cb8e8fac20850c809750d35e290452242c1e53aebff780ffb7325"
+      },
+      {
+        "path": "services/api/internal/comments/protocol.go",
+        "sha256": "06449e0e3036307fb6e0d2bfeb0b93bb51b7c3312048d185dbd9056ad9667174"
+      },
+      {
+        "path": "services/api/internal/comments/protocol_test.go",
+        "sha256": "55a603e49078849d724139fd87093d344c0384b6eff3f9e84cecb3ae78742fb3"
+      },
+      {
+        "path": "services/api/internal/comments/task.go",
+        "sha256": "a81bcc71d881f48bc322e682433cf9bde8bab00b34de33abc2ce6d4a997d9dd3"
+      },
+      {
+        "path": "services/api/internal/comments/task_test.go",
+        "sha256": "a46204eac1f9e41a2d8fd66728bf2e3e9a79b568155b8b421d7827fe791f5f88"
+      },
+      {
+        "path": "tools/check-comment-contract.py",
+        "sha256": "d98a2de2e4777adcfb72da702b9b320520f6a58feba5aff177ce0614326152ea"
+      },
+      {
+        "path": "tools/tests/test_comment_contract.py",
+        "sha256": "40a1c9e078f8ab4c45fb992800353a129136e049a2df43d408da8b81c7b6e872"
+      }
+    ]
+  },
+  "tools": {
+    "go": "1.22.2 linux/amd64",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "python": "3.12.14",
+    "PyYAML": "6.0.1",
+    "openapi-spec-validator": "0.9.0",
+    "jsonschema": "4.26.0"
+  },
+  "checks": [
+    {
+      "name": "Go service host/race",
+      "command": "go test -mod=readonly -race -count=1 -json ./...",
+      "cwd": "services/api",
+      "result": "PASS_HOST_ONLY",
+      "passedTestEvents": 747,
+      "skippedTestEvents": 266,
+      "databaseDSNsUnset": true,
+      "realSQLClaimed": false
+    },
+    {
+      "name": "Go comments rules and codec",
+      "command": "go test -mod=readonly -race -count=1 -cover ./internal/comments",
+      "cwd": "services/api",
+      "result": "PASS",
+      "passedTestEvents": 50,
+      "coveragePercent": 91.0
+    },
+    {
+      "name": "Go build/vet",
+      "command": "go build -mod=readonly ./...; go vet -mod=readonly ./...",
+      "cwd": "services/api",
+      "result": "PASS"
+    },
+    {
+      "name": "Flutter locked dependencies",
+      "command": "flutter pub get --enforce-lockfile",
+      "cwd": "apps/mobile",
+      "result": "PASS",
+      "pubHostedURL": "https://pub.dev",
+      "vm_service": "15.3.0",
+      "trackedLocksChanged": false
+    },
+    {
+      "name": "Flutter analysis",
+      "command": "flutter analyze --no-pub",
+      "cwd": "apps/mobile",
+      "result": "PASS",
+      "issues": 0
+    },
+    {
+      "name": "Flutter complete host suite",
+      "command": "flutter test --no-pub --reporter json test",
+      "cwd": "apps/mobile",
+      "result": "PASS",
+      "visibleTests": 445,
+      "commentCoreTests": 45,
+      "commentProtocolTests": 5,
+      "sharedProtocolVectors": 12
+    },
+    {
+      "name": "Flutter bundle",
+      "command": "flutter build bundle --debug --no-pub",
+      "cwd": "apps/mobile",
+      "result": "PASS",
+      "androidAPKClaimed": false
+    },
+    {
+      "name": "Complete OpenAPI validation",
+      "command": "python -X utf8 -B packages/openapi/check-specs.py",
+      "result": "PASS",
+      "specifications": 7
+    },
+    {
+      "name": "Comment contract validation",
+      "command": "python -X utf8 -B tools/check-comment-contract.py",
+      "result": "PASS",
+      "commentContractTestMethods": 16
+    },
+    {
+      "name": "Complete Python tools suite",
+      "command": "python -X utf8 -B -m unittest discover -s tools/tests -v",
+      "result": "PASS_WITH_DECLARED_PLATFORM_SKIPS",
+      "tests": 207,
+      "passed": 204,
+      "platformSkipped": 3
+    },
+    {
+      "name": "Independent byte reconstruction",
+      "result": "PASS",
+      "vectors": 12,
+      "implementation": "separate Python uuid/struct/hashlib reconstruction by independent reviewer, no Go/Dart calls"
+    }
+  ],
+  "logs": [
+    {
+      "name": "comment-contract.log",
+      "sha256": "72bf5a83003e1a302a4565f120ba99562ed8337ece76441d09659d8efaa458ac",
+      "bytes": 86
+    },
+    {
+      "name": "copy-flutter.log",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "bytes": 2
+    },
+    {
+      "name": "copy-pub.log",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "bytes": 2
+    },
+    {
+      "name": "dart-format.log",
+      "sha256": "dbf874f674d1ad0054af08cd9fab1161b79d063237b71cde4c0d08ec5fd039fe",
+      "bytes": 702
+    },
+    {
+      "name": "flutter-analyze.log",
+      "sha256": "2b841287fc5eaf31b88857ab4b0293e302bbe12a7d72ce316a94752cadafeec7",
+      "bytes": 202
+    },
+    {
+      "name": "flutter-bundle.log",
+      "sha256": "dd720f25a90c4aaf7e6d9b099c37177b4437f61470e934b3e001f53324c2c819",
+      "bytes": 104
+    },
+    {
+      "name": "flutter-pub.log",
+      "sha256": "0cabd161eec75e7cf6a6d41fd0b703197af4ebbef886d1f71c2427c57fe31dc7",
+      "bytes": 726
+    },
+    {
+      "name": "flutter-tests.jsonl",
+      "sha256": "c4ee35090e135067a70549091bbb6bccd311ab4bfa7649d3b8ec7217a625c6cb",
+      "bytes": 242540
+    },
+    {
+      "name": "go-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "go-comments.log",
+      "sha256": "e8e45e37cde9506ce4076b51537babfe47aec2ab53a6d59850e02f5e457dcd7e",
+      "bytes": 116
+    },
+    {
+      "name": "go-host-first-environment-failure.jsonl",
+      "sha256": "32202337af94adf4a857213060a59cc6207df31b1a8ff4d626352d71b52e71ee",
+      "bytes": 1162547
+    },
+    {
+      "name": "go-host-first-environment-failure.stderr",
+      "sha256": "6dcb1fa3ca108962068cc6a0f0f972c4720e8d4eb3dde79ee7a22f887e476d53",
+      "bytes": 593
+    },
+    {
+      "name": "go-host.jsonl",
+      "sha256": "b55c6539e865f481c5c7e5b0a46b7e101c98977d7bd13b4e31bbf9d66b0dc178",
+      "bytes": 1226234
+    },
+    {
+      "name": "go-host.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "go-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "openapi.log",
+      "sha256": "39054414a1382d201859f8bf979253376f2ebe2b7f1f5ee16becdc33af834116",
+      "bytes": 315
+    },
+    {
+      "name": "python-tools.log",
+      "sha256": "24e3ce9713ec86092c92109cd969b6d4b0371229175e9987c694d70afffb9300",
+      "bytes": 38063
+    }
+  ],
+  "environment": {
+    "ownedRuntimeRoot": "E:/HnuHole-comments-replies-20261018/runtime",
+    "linuxTemporaryRoot": "/home/hnuhole/comments-replies-20261018/runtime",
+    "sharedSDKCacheWritten": false,
+    "databasesCreated": [],
+    "portsCreated": [],
+    "phoneADBOperations": false
+  },
+  "initialFailures": [
+    {
+      "scope": "Go host fixture material permissions",
+      "result": "FAIL_ENVIRONMENT_FIXED",
+      "cause": "Initial TMPDIR/GOTMPDIR under Windows mount did not preserve required Linux key permissions.",
+      "repair": "Use task-owned Linux filesystem temp/cache; rerun complete host/race, build, vet and comments coverage.",
+      "originalLog": "go-host-first-environment-failure.jsonl"
+    },
+    {
+      "scope": "Flutter preliminary dependency resolution",
+      "result": "PRELIMINARY_RUN_NOT_FINAL_EVIDENCE",
+      "cause": "Mirror host switched normal pub resolution to vm_service 15.4.0.",
+      "repair": "Restore original lock, use pub.dev with enforce-lockfile and rerun final complete suite with vm_service 15.3.0."
+    }
+  ],
+  "notImplementedOrNotRun": [
+    "Comment SQL schema/grants/final C transaction/worker and continuous 0015->0016 migration tests",
+    "Live comment HTTP adapter/runtime, command ledger and seal execution",
+    "Production encrypted native task journal, image bytes cleanup and real process-restart recovery",
+    "Post detail comments pane, input/identity management wiring, exact-target locate UI and owner deletion UI",
+    "Comment-owned original image upload/protected reads/lifecycle integration",
+    "Unified system notification integration and COMMENT-FAIL-ENTRY-01",
+    "Comment APK, Android device acceptance and complete B07",
+    "Cross-device Passkey NI-X02 and iOS remain deferred"
+  ],
+  "dependencies": {
+    "governanceBranch": "codex/feat/report-moderation",
+    "lastObservedCommit": "5292d2d",
+    "governanceMigration": "0015 provisional, absent from integrated main",
+    "commentsMigration": "0016 provisional; not added or executed",
+    "notificationProjection": "NOT_CONNECTED"
+  },
+  "review": {
+    "mode": "independent peer agent cross-review plus root integration review",
+    "githubMemberApprovalClaimed": false,
+    "unresolvedCoreBlockingFindings": 0,
+    "report": "docs/design/comments-core-report-20261018.md"
+  },
+  "delivery": {
+    "merged": false,
+    "deployed": false,
+    "draftPR": true,
+    "finalHeadChecks": "Recorded against actual final delivery head in PR body and task runtime/final-head-check.json; this file fixes the tested implementation snapshot without self-referential commits."
+  }
+}
