@@ -393,6 +393,10 @@ func TestCommentTextClosureCleanupWithFeatureDisabledPostgres(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
+	// Legacy post acceptance must not need private comment receipt privileges.
+	if _, e = off.ExecutePostCommand(ctx, owner.SessionToken, postTestKey(t), postTestIntent(t, l, id)); e != nil {
+		t.Fatal("legacy post acceptance required comment feature grants", e)
+	}
 	request, _ := closureTestRequest(t, owner.SessionToken)
 	accepted, e := off.RequestAccountClosure(ctx, request, sessionTestPasswordWorker(t, 1))
 	if e != nil {

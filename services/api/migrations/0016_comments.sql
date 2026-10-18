@@ -86,8 +86,12 @@ CREATE INDEX comment_snapshot_expiry ON c_comments.snapshots(expires_at);
 CREATE FUNCTION c_comments.check_acceptance() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
  IF TG_TABLE_SCHEMA='c_posts' THEN
-  IF NOT EXISTS(SELECT 1 FROM c_posts.posts WHERE post_id=NEW.post_id AND owner_account_id=NEW.account_id)
-   AND NOT EXISTS(SELECT 1 FROM c_comments.tasks t JOIN c_comments.attempts a USING(task_id)
+  -- Separate statements keep the legacy post writer independent of comment
+  -- receipt privileges: SQL permission checks precede boolean short-circuit.
+  IF EXISTS(SELECT 1 FROM c_posts.posts WHERE post_id=NEW.post_id AND owner_account_id=NEW.account_id) THEN
+   RETURN NULL;
+  END IF;
+  IF NOT EXISTS(SELECT 1 FROM c_comments.tasks t JOIN c_comments.attempts a USING(task_id)
     JOIN c_comments.receipts r ON r.task_id=t.task_id AND r.version=a.version
     WHERE t.owner_account_id=NEW.account_id AND t.post_id=NEW.post_id AND t.identity_id=NEW.identity_id
       AND a.version=1 AND a.accepted_at=NEW.bound_at AND r.operation='CREATE' AND r.outcome='ACCEPTED') THEN
