@@ -217,6 +217,7 @@ class Lab:
         cpath = self.root / 'material/c.json'
         c = json.loads(cpath.read_text())
         c['postImages'] = dict(pythonFile=python, validatorFile=str(validator), validatorSHA256=sha(validator))
+        c['moderation'] = True  # Existing main 0015 only; no administrator bootstrap.
         write(cpath, c)
         self.audit()
         self.sql('c', 'GRANT UPDATE(digest) ON c_posts.images TO hnuhole_c_runtime')
@@ -232,6 +233,18 @@ class Lab:
         finally:
             self.sql('c', 'REVOKE UPDATE(digest) ON c_posts.images FROM hnuhole_c_runtime')
         self.audit()
+        self.sql('c', 'GRANT UPDATE(evidence) ON c_moderation.cases TO hnuhole_c_runtime')
+        try:
+            try:
+                self.audit()
+            except RuntimeError:
+                if 'moderation column privilege mismatch' not in (self.root / 'sql-error.private.log').read_text():
+                    raise
+            else:
+                raise RuntimeError('moderation audit accepted immutable evidence UPDATE')
+        finally:
+            self.sql('c', 'REVOKE UPDATE(evidence) ON c_moderation.cases FROM hnuhole_c_runtime')
+        self.audit()
         self.sql('c', 'REVOKE INSERT ON c_posts.images FROM hnuhole_c_runtime')
         try:
             code = self.run([self.root / 'bin/candidate-community', '-config', cpath], 'missing-image-insert', check=False, timeout=25)
@@ -242,6 +255,7 @@ class Lab:
         self.audit()
         self.state['initChecks'] = ['fresh-formal-migrations-and-schema13-snapshot-upgrade',
                                     'restricted-role-matrix-rejects-immutable-image-column-update',
+                                    'restricted-role-matrix-rejects-moderation-evidence-column-update',
                                     'actual-startup-rejects-missing-image-insert-permission']
         self.save()
 
@@ -271,7 +285,7 @@ class Lab:
         self.grants(party)
 
     def grants(self, party, target=None):
-        names = ['grant-community.sql', 'grant-post-images.sql'] if party == 'c' else ['grant-verifier.sql']
+        names = ['grant-community.sql', 'grant-post-images.sql', 'grant-moderation.sql'] if party == 'c' else ['grant-verifier.sql']
         for name in names:
             self.sql(party, (self.source / 'infra/postgres' / name).read_text(), target=target, role='migrator')
 
@@ -352,7 +366,9 @@ class Lab:
         for party in 'cv':
             audit = (self.api / 'authlab/privacy-role-audit.sql').read_text()
             # Preserve the existing role/table/sequence matrix, extending only
-            # the explicit 0014 upload opt-in. No shared audit file is changed.
+            # the explicit 0014 upload opt-in. The exact 0015 matrix is checked
+            # separately below, including every column/function/sequence. No
+            # shared audit or business migration file is changed.
             audit = audit.replace("SET authlab.party TO :'party';", "SET authlab.party TO '" + party + "';")
             old_insert = "'attempt_contents','command_receipts','payload_cleanup'))"
             old_columns = "a.attname NOT IN ('payload','erased_at','grant_digest','grant_expires_at')"
@@ -360,7 +376,15 @@ class Lab:
                 raise RuntimeError('upstream privacy audit changed; review image opt-in explicitly')
             audit = audit.replace(old_insert, "'attempt_contents','command_receipts','payload_cleanup','images'))", 1)
             audit = audit.replace(old_columns, "a.attname NOT IN ('payload','erased_at','grant_digest','grant_expires_at','verified_at','display_width','display_height','frames','cycle_duration_ms','max_frame_duration_ms')")
+            table_selector = "AND c.relkind IN ('r','p','v','m','f')"
+            sequence_selector = "WHERE n.nspname NOT LIKE 'pg_%' AND c.relkind='S'"
+            if audit.count(table_selector) != 1 or audit.count(sequence_selector) != 1:
+                raise RuntimeError('upstream privacy audit selectors changed; review explicit moderation matrix')
+            audit = audit.replace(table_selector, table_selector + " AND n.nspname<>'c_moderation'")
+            audit = audit.replace(sequence_selector, sequence_selector + " AND n.nspname<>'c_moderation'")
             self.sql(party, audit)
+            if party == 'c':
+                self.sql(party, (self.source / 'infra/prerelease/moderation-role-audit.sql').read_text())
             result = self.sql(party, (self.source / 'infra/prerelease/role-audit.sql').read_text().replace('@PARTY@', party))
             if result != 'PASS':
                 raise RuntimeError('restricted-role audit failed')
@@ -368,12 +392,12 @@ class Lab:
     def fingerprint(self):
         result = {}
         for party in 'cv':
-            tables = self.sql(party, "SELECT schemaname||'.'||tablename FROM pg_tables WHERE schemaname IN ('public','c_auth','c_posts','v_auth') ORDER BY 1").splitlines()
+            tables = self.sql(party, "SELECT schemaname||'.'||tablename FROM pg_tables WHERE schemaname NOT LIKE 'pg_%' AND schemaname<>'information_schema' ORDER BY 1").splitlines()
             for table in tables:
                 if not re.fullmatch('[a-z_]+[.][a-z_]+', table):
                     raise RuntimeError('unexpected table identifier')
                 result[party + ':' + table] = self.sql(party, "SELECT COALESCE(json_agg(x ORDER BY x::text),'[]') FROM (SELECT row_to_json(t) x FROM " + table + ' t) q')
-            sequences = self.sql(party, "SELECT schemaname||'.'||sequencename FROM pg_sequences WHERE schemaname IN ('public','c_auth','c_posts','v_auth') ORDER BY 1").splitlines()
+            sequences = self.sql(party, "SELECT schemaname||'.'||sequencename FROM pg_sequences WHERE schemaname NOT LIKE 'pg_%' AND schemaname<>'information_schema' ORDER BY 1").splitlines()
             for sequence in sequences:
                 if not re.fullmatch('[a-z_]+[.][a-z_]+', sequence):
                     raise RuntimeError('unexpected sequence identifier')

@@ -3,6 +3,12 @@
 2026-10-18：本地隔离演练、独立CI后台演练、测试签名Android候选实际构建/验签/摘要核对通过；未合并、未正式发布。结果必须对应精确源码SHA；
 GitHub Actions的Android制品和后台演练证据分开保存，手机验收NOT_RUN。
 
+后续核对main已到`1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1`（PR #18），正式迁移为C0015/V0004。
+本任务已同步，正在新root重跑迁移/权限/恢复/回滚并准备手机包；下方schema14记录保留原SHA。
+环境启用实际合入的`moderation=true`及`grant-moderation.sql`，没有创建管理员或部署管理网页，
+不新增治理业务。新增精确治理表/列/sequence/function权限矩阵和不可变证据列的实际越权负审计，
+备份摘要覆盖全部非系统schema；治理业务端到端范围另按既有CI/实际测试记录，不由文字图片smoke代替。
+
 ## 候选构建
 
 独立 [workflow](../../.github/workflows/android-prerelease.yml) 在相关PR运行，合入main后也可手动指定SHA，
