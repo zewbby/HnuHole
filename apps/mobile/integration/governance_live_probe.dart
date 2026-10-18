@@ -340,7 +340,77 @@ class _Probe {
       reconciled['id'] == submitted['id'] && reconciled['ordinal'] == 1,
       'appeal_receipt_mismatch',
     );
-    return {'appealId': submitted['id'], 'appealRequestId': id};
+    final appealId = _uuid(submitted['id']);
+    step = 'appeal_material_supplements';
+    for (var batch = 1; batch <= 2; batch++) {
+      final materialId = governanceId();
+      final receipt = appealReceipt(
+        await request(
+          owner,
+          'PUT',
+          '/api/v1/appeals/$appealId/materials/$materialId',
+          body: {'description': '合成追加材料 $batch', 'images': <Object>[]},
+        ),
+      );
+      _check(
+        receipt['id'] == appealId && receipt['ordinal'] == 1,
+        'supplement_changed_appeal',
+      );
+      final original = await request(
+        owner,
+        'GET',
+        '/api/v1/appeals/$appealId/material-requests/$materialId',
+      );
+      _check(
+        original['state'] == 'SUBMITTED' &&
+            (original['appeal'] as Map)['id'] == appealId,
+        'supplement_original_not_submitted',
+      );
+    }
+    step = 'appeal_material_pagination';
+    final head = appealReceipt(
+      await request(owner, 'GET', '/api/v1/appeals/$appealId'),
+    );
+    _check(
+      (head['materials'] as List).length == 1,
+      'appeal_head_must_be_one_batch',
+    );
+    final materials = [
+      for (final raw in head['materials'] as List)
+        AppealMaterialPage.material(raw),
+    ];
+    String? cursor = head['nextMaterialsCursor'] as String?;
+    final visited = <String>{};
+    while (cursor != null) {
+      _check(
+        visited.add(cursor) && visited.length <= 3 && cursor.length <= 128,
+        'material_cursor_loop',
+      );
+      final page = AppealMaterialPage.parse(
+        await request(
+          owner,
+          'GET',
+          '/api/v1/appeals/$appealId/materials',
+          query: {'cursor': cursor},
+        ),
+      );
+      materials.addAll(page.items);
+      cursor = page.nextCursor;
+    }
+    _check(
+      materials.length == 3 &&
+          materials.map((m) => m['description']).toSet().containsAll({
+            '合成申诉联调材料',
+            '合成追加材料 1',
+            '合成追加材料 2',
+          }),
+      'material_batches_missing',
+    );
+    return {
+      'appealId': submitted['id'],
+      'appealRequestId': id,
+      'materialBatches': materials.length,
+    };
   }
 
   Future<Map<String, dynamic>> resultPhase() async {
@@ -458,16 +528,17 @@ Future<void> main(List<String> args) async {
     return;
   }
   final phase = args[1], output = File(args[2]);
+  if (File(args[0]).absolute.path == output.absolute.path) {
+    stderr.writeln('Fixture and result must use separate files.');
+    exitCode = 2;
+    return;
+  }
   HttpGovernanceApi? api;
   _Probe? probe;
   try {
     _check(
       {'report', 'appeal', 'result', 'limited'}.contains(phase),
       'invalid_phase',
-    );
-    _check(
-      File(args[0]).absolute.path != output.absolute.path,
-      'output_overwrites_fixture',
     );
     final fixture = _object(
       GovernanceStrictJson(await File(args[0]).readAsString()).decode(),

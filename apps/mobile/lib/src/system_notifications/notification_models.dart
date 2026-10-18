@@ -163,3 +163,42 @@ class LocalCommentFailure {
   final DateTime createdAt;
   String get source => 'LOCAL_COMMENT_TASK';
 }
+
+/// One bounded evidence batch per response. Cursors are opaque and are never
+/// reconstructed from local times or image metadata.
+class AppealMaterialPage {
+  const AppealMaterialPage(this.items, this.nextCursor);
+  final List<Map<String, dynamic>> items;
+  final String? nextCursor;
+  static Map<String, dynamic> material(Object? raw) {
+    final m = PostJson.record(raw, {'description', 'createdAt', 'images'});
+    PostJson.text(m, 'description', maxLength: 2000, allowEmpty: true);
+    PostJson.date(m, 'createdAt');
+    if (m['images'] is! List || (m['images'] as List).length > 6) {
+      throw const FormatException('Invalid material image count');
+    }
+    var total = 0;
+    for (final raw in m['images'] as List) {
+      total += EvidenceImage.parse(raw).bytes.length;
+    }
+    if (total > 8 * 1024 * 1024) {
+      throw const FormatException('Material batch exceeds budget');
+    }
+    return Map<String, dynamic>.from(m);
+  }
+
+  static AppealMaterialPage parse(Object? raw) {
+    final m = PostJson.record(raw, {'items', 'nextCursor'});
+    if (m['items'] is! List || (m['items'] as List).length > 1) {
+      throw const FormatException(
+        'Material page must contain at most one batch',
+      );
+    }
+    return AppealMaterialPage(
+      List.unmodifiable((m['items'] as List).map(material)),
+      m['nextCursor'] == null
+          ? null
+          : PostJson.text(m, 'nextCursor', maxLength: 128),
+    );
+  }
+}

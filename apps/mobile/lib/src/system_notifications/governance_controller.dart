@@ -463,6 +463,33 @@ class GovernanceController extends ChangeNotifier {
     });
   }
 
+  Future<AppealMaterialPage?> readAppealMaterials(
+    String appealId,
+    String cursor,
+  ) async {
+    final a = _capture();
+    try {
+      if (cursor.isEmpty || cursor.length > 128) {
+        throw const FormatException('Invalid material cursor');
+      }
+      final result = await _request(
+        a,
+        'GET',
+        '/api/v1/appeals/${PostProtocol.resourceId(appealId)}/materials',
+        query: {'cursor': cursor},
+      );
+      if (result == null) return null;
+      final page = AppealMaterialPage.parse(result);
+      if (page.nextCursor == cursor) {
+        throw const FormatException('Material cursor did not advance');
+      }
+      return page;
+    } on Object catch (e) {
+      _fail(e, a);
+      return null;
+    }
+  }
+
   Future<bool> submitAppeal(
     String sanctionId,
     String description,
@@ -689,12 +716,15 @@ class GovernanceController extends ChangeNotifier {
       final r = PostJson.record(
         raw,
         {'id', 'sanctionId', 'state', 'ordinal', 'reason', 'materials'},
-        optional: {'caseId', 'version', 'action'},
+        optional: {'caseId', 'version', 'action', 'nextMaterialsCursor'},
       );
       PostJson.id(r, 'id');
       PostJson.id(r, 'sanctionId');
       if (r['caseId'] != null) PostJson.id(r, 'caseId');
       if (r['version'] != null) PostJson.integer(r, 'version', 1, 2147483647);
+      if (r['nextMaterialsCursor'] != null) {
+        PostJson.text(r, 'nextMaterialsCursor', maxLength: 128);
+      }
       if (r['action'] != null &&
           !{
             'TAKEDOWN',
@@ -709,23 +739,12 @@ class GovernanceController extends ChangeNotifier {
           r['ordinal'] is! int ||
           (r['ordinal'] as int) < 1 ||
           (r['ordinal'] as int) > 3 ||
-          r['materials'] is! List) {
+          r['materials'] is! List ||
+          (r['materials'] as List).length > 1) {
         throw const FormatException('Invalid appeal');
       }
       for (final material in r['materials'] as List) {
-        final m = PostJson.record(material, {
-          'description',
-          'createdAt',
-          'images',
-        });
-        PostJson.text(m, 'description', maxLength: 2000, allowEmpty: true);
-        PostJson.date(m, 'createdAt');
-        if (m['images'] is! List || (m['images'] as List).length > 6) {
-          throw const FormatException('Invalid evidence');
-        }
-        for (final image in m['images'] as List) {
-          EvidenceImage.parse(image);
-        }
+        AppealMaterialPage.material(material);
       }
     }
   }

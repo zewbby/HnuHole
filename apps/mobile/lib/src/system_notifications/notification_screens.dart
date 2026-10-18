@@ -426,22 +426,12 @@ class GovernanceResourceView extends StatelessWidget {
           _line('复核说明', r['reason']),
           if (r['state'] == 'PENDING')
             const Text('材料已保留，等待另一名有权限人员复核，不承诺完成时限。'),
-          if (r['materials'] is List)
-            for (final m in r['materials'] as List)
-              if (m is Map) ...[
-                const Divider(),
-                _line('提交时间', m['createdAt']),
-                _line('已提交材料', m['description']),
-                if (m['images'] is List)
-                  Wrap(
-                    spacing: 8,
-                    children: [
-                      for (final image in m['images'] as List)
-                        if (image is Map<String, dynamic>)
-                          _EvidencePreview(raw: image),
-                    ],
-                  ),
-              ],
+          AppealMaterialStream(
+            controller: controller,
+            appealId: route.resourceId,
+            initialMaterials: r['materials'] as List,
+            nextCursor: r['nextMaterialsCursor'] as String?,
+          ),
           if (r['state'] == 'PENDING')
             FilledButton(
               onPressed: () => _form(
@@ -460,6 +450,140 @@ class GovernanceResourceView extends StatelessWidget {
       );
     }
     return const SizedBox.shrink();
+  }
+}
+
+class AppealMaterialStream extends StatefulWidget {
+  const AppealMaterialStream({
+    super.key,
+    required this.controller,
+    required this.appealId,
+    required this.initialMaterials,
+    this.nextCursor,
+  });
+  final GovernanceController controller;
+  final String appealId;
+  final List initialMaterials;
+  final String? nextCursor;
+  @override
+  State<AppealMaterialStream> createState() => _AppealMaterialStreamState();
+}
+
+class _AppealMaterialStreamState extends State<AppealMaterialStream> {
+  late int _authority = widget.controller.authorityVersion;
+  late String? _cursor = widget.nextCursor;
+  final List<Map<String, dynamic>> _following = [];
+  final Set<String> _loaded = {};
+  bool _loading = false;
+  String? _error;
+  int _request = 0;
+  bool get _current =>
+      widget.controller.available &&
+      widget.controller.authorityVersion == _authority;
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_changed);
+  }
+
+  void _changed() {
+    if (!mounted) return;
+    if (!_current) _request++;
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _request++;
+    widget.controller.removeListener(_changed);
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(AppealMaterialStream oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_changed);
+      widget.controller.addListener(_changed);
+    }
+    if (oldWidget.controller != widget.controller ||
+        oldWidget.appealId != widget.appealId ||
+        !identical(oldWidget.initialMaterials, widget.initialMaterials)) {
+      _request++;
+      _authority = widget.controller.authorityVersion;
+      _cursor = widget.nextCursor;
+      _following.clear();
+      _loaded.clear();
+      _loading = false;
+      _error = null;
+    }
+  }
+
+  Future<void> _load() async {
+    final cursor = _cursor;
+    if (!_current || _loading || cursor == null || _loaded.contains(cursor)) {
+      return;
+    }
+    final request = ++_request, appealId = widget.appealId;
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    final page = await widget.controller.readAppealMaterials(appealId, cursor);
+    if (!mounted ||
+        !_current ||
+        request != _request ||
+        appealId != widget.appealId) {
+      return;
+    }
+    setState(() {
+      _loading = false;
+      if (page == null ||
+          page.nextCursor != null && _loaded.contains(page.nextCursor)) {
+        _error = '后续材料暂时无法读取，已显示的材料仍保留。';
+      } else {
+        _loaded.add(cursor);
+        _following.addAll(page.items);
+        _cursor = page.nextCursor;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_current) return const Text('会话已变化，请重新进入后查看材料。');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final raw in [...widget.initialMaterials, ..._following])
+          if (raw is Map) ...[
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text('提交时间：${raw['createdAt']}'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text('已提交材料：${raw['description']}'),
+            ),
+            if (raw['images'] is List)
+              Wrap(
+                spacing: 8,
+                children: [
+                  for (final image in raw['images'] as List)
+                    if (image is Map<String, dynamic>)
+                      _EvidencePreview(raw: image),
+                ],
+              ),
+          ],
+        if (_error != null) Semantics(liveRegion: true, child: Text(_error!)),
+        if (_cursor != null)
+          TextButton(
+            onPressed: _loading ? null : _load,
+            child: Text(_loading ? '读取后续材料中' : '加载后续材料'),
+          ),
+      ],
+    );
   }
 }
 

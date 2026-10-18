@@ -137,7 +137,150 @@ class _Fixture {
   }
 }
 
+void _paginationTests() {
+  test(
+    'appeal material page keeps opaque cursor and rejects repeated cursor',
+    () async {
+      final f = await _Fixture.create();
+      addTearDown(f.dispose);
+      const cursor =
+          '2026-10-18T00:00:00.123456789Z|55555555-5555-4555-8555-555555555555';
+      f.api.respond = (_) async => {
+        'items': [
+          {
+            'description': '追加材料',
+            'createdAt': '2026-10-18T01:00:00Z',
+            'images': <Object>[],
+          },
+        ],
+        'nextCursor': null,
+      };
+      final page = await f.controller.readAppealMaterials(_appeal, cursor);
+      expect(page!.items.single['description'], '追加材料');
+      expect(f.api.calls.single.query, {'cursor': cursor});
+      f.api.respond = (_) async => {'items': <Object>[], 'nextCursor': cursor};
+      expect(await f.controller.readAppealMaterials(_appeal, cursor), isNull);
+    },
+  );
+  test('appeal receipt accepts bounded first batch and following cursor without admin fields', () async {
+    final f = await _Fixture.create();
+    addTearDown(f.dispose);
+    f.api.respond = (_) async => {
+      ..._appealJson(),
+      'nextMaterialsCursor': 'opaque-cursor',
+    };
+    expect(
+      await f.controller.readResource(
+        const NotificationRoute('APPEAL', _appeal),
+      ),
+      isNotNull,
+    );
+    f.api.respond = (_) async => {..._appealJson(), 'platformNumber': '123456'};
+    expect(
+      await f.controller.readResource(
+        const NotificationRoute('APPEAL', _appeal),
+      ),
+      isNull,
+    );
+  });
+  testWidgets(
+    'appeal material pagination appends batches and preserves them on failure',
+    (tester) async {
+      final f = await _Fixture.create();
+      addTearDown(f.dispose);
+      f.api.respond = (call) async {
+        if (call.query?['cursor'] == 'first-cursor') {
+          return {
+            'items': [
+              {
+                'description': '第二批材料',
+                'createdAt': '2026-10-18T01:00:00Z',
+                'images': <Object>[],
+              },
+            ],
+            'nextCursor': 'second-cursor',
+          };
+        }
+        throw const GovernanceFailure(null, 'TRANSPORT', uncertain: true);
+      };
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: AppealMaterialStream(
+                controller: f.controller,
+                appealId: _appeal,
+                initialMaterials: const [
+                  {
+                    'description': '第一批材料',
+                    'createdAt': '2026-10-18T00:00:00Z',
+                    'images': <Object>[],
+                  },
+                ],
+                nextCursor: 'first-cursor',
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('加载后续材料'));
+      await tester.pumpAndSettle();
+      expect(find.text('已提交材料：第一批材料'), findsOneWidget);
+      expect(find.text('已提交材料：第二批材料'), findsOneWidget);
+      await tester.tap(find.text('加载后续材料'));
+      await tester.pumpAndSettle();
+      expect(find.text('已提交材料：第一批材料'), findsOneWidget);
+      expect(find.text('已提交材料：第二批材料'), findsOneWidget);
+      expect(find.text('后续材料暂时无法读取，已显示的材料仍保留。'), findsOneWidget);
+    },
+  );
+  testWidgets('late material page after logout cannot restore old evidence', (
+    tester,
+  ) async {
+    final f = await _Fixture.create();
+    addTearDown(f.dispose);
+    final wait = Completer<Map<String, dynamic>>();
+    f.api.respond = (_) async => wait.future;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: AppealMaterialStream(
+            controller: f.controller,
+            appealId: _appeal,
+            initialMaterials: const [
+              {
+                'description': '原材料',
+                'createdAt': '2026-10-18T00:00:00Z',
+                'images': <Object>[],
+              },
+            ],
+            nextCursor: 'cursor',
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('加载后续材料'));
+    await tester.pump();
+    await f.auth.sessions.logout();
+    wait.complete({
+      'items': [
+        {
+          'description': '不得恢复的材料',
+          'createdAt': '2026-10-18T01:00:00Z',
+          'images': <Object>[],
+        },
+      ],
+      'nextCursor': null,
+    });
+    await tester.pumpAndSettle();
+    expect(find.text('已提交材料：原材料'), findsNothing);
+    expect(find.text('已提交材料：不得恢复的材料'), findsNothing);
+    expect(find.text('会话已变化，请重新进入后查看材料。'), findsOneWidget);
+  });
+}
+
 void main() {
+  _paginationTests();
   test(
     'report intent is durable before request and successful receipt clears it',
     () async {

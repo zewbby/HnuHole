@@ -121,7 +121,22 @@ void main() {
         'postId': post,
       }),
     );
-    return Process.run(Platform.environment['HNUHOLE_PROBE_DART'] ?? 'dart', [
+    var dart = Platform.environment['HNUHOLE_PROBE_DART'];
+    if (dart == null) {
+      final config = File(
+        '${Directory.current.path}/.dart_tool/package_config.json',
+      );
+      final data = jsonDecode(await config.readAsString()) as Map;
+      final flutter = (data['packages'] as List).cast<Map>().singleWhere(
+        (p) => p['name'] == 'flutter',
+      );
+      final root = Directory.fromUri(
+        config.uri.resolve(flutter['rootUri'] as String),
+      ).parent.parent;
+      dart =
+          '${root.path}/bin/cache/dart-sdk/bin/${Platform.isWindows ? 'dart.exe' : 'dart'}';
+    }
+    return Process.run(dart, [
       '--packages=${Directory.current.path}/.dart_tool/package_config.json',
       '${Directory.current.path}/integration/governance_live_probe.dart',
       fixture.path,
