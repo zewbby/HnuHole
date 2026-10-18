@@ -16,6 +16,8 @@ class EntryScreen extends StatefulWidget {
     ChannelTreeSession? treeSession,
     this.onMessagesPressed,
     this.onProfilePressed,
+    this.messagesAvailable = false,
+    this.messagesUnread = false,
   }) : treeSession = treeSession ?? ChannelTreeSession();
 
   final ChannelDirectoryController directory;
@@ -24,6 +26,8 @@ class EntryScreen extends StatefulWidget {
   final ChannelTreeSession treeSession;
   final VoidCallback? onMessagesPressed;
   final VoidCallback? onProfilePressed;
+  final bool messagesAvailable;
+  final bool messagesUnread;
 
   @override
   State<EntryScreen> createState() => _EntryScreenState();
@@ -75,6 +79,8 @@ class _EntryScreenState extends State<EntryScreen> {
             _EntryHeader(
               authenticated: widget.directory.isAuthenticated,
               onMessagesPressed: widget.onMessagesPressed,
+              messagesAvailable: widget.messagesAvailable,
+              messagesUnread: widget.messagesUnread,
               onProfilePressed: widget.onProfilePressed,
             ),
             Expanded(
@@ -115,11 +121,15 @@ class _EntryHeader extends StatelessWidget {
     required this.authenticated,
     this.onMessagesPressed,
     this.onProfilePressed,
+    this.messagesAvailable = false,
+    this.messagesUnread = false,
   });
 
   final bool authenticated;
   final VoidCallback? onMessagesPressed;
   final VoidCallback? onProfilePressed;
+  final bool messagesAvailable;
+  final bool messagesUnread;
 
   @override
   Widget build(BuildContext context) {
@@ -142,11 +152,14 @@ class _EntryHeader extends StatelessWidget {
               ],
             ),
           ),
-          if (authenticated && onMessagesPressed != null)
+          if ((authenticated || messagesAvailable) && onMessagesPressed != null)
             IconButton(
               tooltip: '消息',
               onPressed: onMessagesPressed,
-              icon: const Icon(Icons.forum_outlined),
+              icon: Badge(
+                isLabelVisible: messagesUnread,
+                child: const Icon(Icons.forum_outlined),
+              ),
             ),
           if (authenticated && onProfilePressed != null)
             IconButton(

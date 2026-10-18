@@ -35,6 +35,8 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/feat/report-moderation` | 已有帖子举报、网页审核、必要申诉与最小系统通知阶段1限定范围通过，见PR #18；评论接入留第二阶段，未合并。 | [任务详情](docs/branches/feat-report-moderation.md) |
+
 | `codex/feat/comments-replies` | 独立评论核心与契约已实现；SQL、页面与通知接线待完成。 | [任务边界](docs/branches/feat-comments-replies.md) |
 | `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
 

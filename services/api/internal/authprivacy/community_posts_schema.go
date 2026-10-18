@@ -18,6 +18,22 @@ func (c *Community) CheckPostSchema(ctx context.Context) error {
 	return checkPostSchema(ctx, c.pool)
 }
 
+// CheckModerationLifecycleSchema validates the cleanup hooks that migration
+// 0015 attaches to existing account/content lifecycles. It is independent of
+// whether posts or moderation HTTP features are configured. Pre-0015 databases
+// have no moderation dependency; the formal runtime must also hold the minimum
+// invoker cleanup privileges before it accepts any traffic.
+func CheckModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool) error {
+	if pool == nil {
+		return errPostSchema
+	}
+	var runtime bool
+	if err := pool.QueryRow(ctx, `SELECT current_user='hnuhole_c_runtime'`).Scan(&runtime); err != nil {
+		return errPostSchema
+	}
+	return checkModerationLifecycleSchema(ctx, pool, runtime)
+}
+
 func checkPostSchema(ctx context.Context, pool *pgxpool.Pool) error {
 	tables := []string{"schema_meta", "protocol_keys", "account_publication_control", "publication_stop_events", "identity_public_labels", "posts", "post_identity_bindings", "publication_tasks", "publication_attempts", "attempt_contents", "command_receipts", "payload_cleanup"}
 	columns := map[string][]string{
@@ -83,6 +99,9 @@ WHERE n.nspname='c_posts' AND c.relname IN ('publication_ordinal_seq','acceptanc
 	if err := pool.QueryRow(ctx, `SELECT current_user='hnuhole_c_runtime'`).Scan(&runtime); err != nil {
 		return errPostSchema
 	}
+	if err := checkModerationLifecycleSchema(ctx, pool, runtime); err != nil {
+		return err
+	}
 	if !runtime {
 		return nil
 	}
@@ -112,6 +131,15 @@ WHERE n.nspname='c_posts' AND c.relname IN ('publication_ordinal_seq','acceptanc
 		"command_receipts":            {"owner_account_id", "outcome", "task_id", "post_id", "attempt_version", "task_state", "error_code"},
 		"payload_cleanup":             {"state"},
 	}
+	// Full moderation is a separate opt-in grant, but its hide column must not
+	// make the post startup whitelist reject a correctly configured deployment.
+	var moderationColumn bool
+	if err := pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM pg_attribute WHERE attrelid='c_posts.posts'::regclass AND attname='moderation_hidden' AND NOT attisdropped AND has_column_privilege(current_user,attrelid,attname,'UPDATE'))`).Scan(&moderationColumn); err != nil {
+		return errPostSchema
+	}
+	if moderationColumn {
+		writable["posts"] = append(writable["posts"], "moderation_hidden")
+	}
 	for table, names := range writable {
 		if err := pool.QueryRow(ctx, `SELECT NOT EXISTS(SELECT 1 FROM unnest($2::text[]) AS required(name)
 WHERE NOT has_column_privilege(current_user,'c_posts.'||$1,required.name,'UPDATE'))
@@ -133,6 +161,48 @@ AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['schema_meta','protocol_keys','identit
 AND has_sequence_privilege(current_user,'c_posts.publication_ordinal_seq','USAGE')
 AND has_sequence_privilege(current_user,'c_posts.acceptance_ordinal_seq','USAGE')
 AND has_function_privilege(current_user,'c_posts.allocate_identity_label(uuid)','EXECUTE')`, tables).Scan(&valid); err != nil || !valid {
+		return errPostSchema
+	}
+	return nil
+}
+
+// 0014 installations have no moderation dependency. Once 0015 attaches invoker
+// cleanup hooks, the old lifecycle must be checked before the final Gate can
+// advance, independently of whether moderation endpoints are enabled.
+func checkModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool, runtime bool) error {
+	var present, valid bool
+	if err := pool.QueryRow(ctx, `SELECT to_regnamespace('c_moderation') IS NOT NULL`).Scan(&present); err != nil {
+		return errPostSchema
+	}
+	if !present {
+		return nil
+	}
+	for _, hook := range []struct{ table, trigger, function string }{
+		{"c_posts.posts", "moderation_post_deleted", "deleted_post"},
+		{"c_auth.accounts", "moderation_account_closed", "closed_account"},
+	} {
+		if err := pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM pg_trigger t JOIN pg_proc p ON p.oid=t.tgfoid JOIN pg_namespace n ON n.oid=p.pronamespace WHERE t.tgrelid=to_regclass($1) AND t.tgname=$2 AND t.tgenabled='O' AND NOT t.tgisinternal AND n.nspname='c_moderation' AND p.proname=$3)`, hook.table, hook.trigger, hook.function).Scan(&valid); err != nil || !valid {
+			return errPostSchema
+		}
+	}
+	for _, table := range []string{"cases", "reports", "notifications", "access_sessions", "roles"} {
+		if err := pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='c_moderation' AND c.relname=$1 AND c.relkind='r' AND c.relpersistence='p')`, table).Scan(&valid); err != nil || !valid {
+			return errPostSchema
+		}
+	}
+	if !runtime {
+		return nil
+	}
+	if err := pool.QueryRow(ctx, `SELECT has_schema_privilege(current_user,'c_moderation','USAGE')
+ AND has_table_privilege(current_user,'c_moderation.cases','SELECT')
+ AND has_table_privilege(current_user,'c_moderation.reports','SELECT')
+ AND has_table_privilege(current_user,'c_moderation.notifications','SELECT')
+ AND has_table_privilege(current_user,'c_moderation.notifications','INSERT')
+ AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['notifications','access_sessions','roles']) AS t(name) WHERE NOT has_table_privilege(current_user,'c_moderation.'||t.name,'DELETE'))
+ AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['access_sessions','roles']) AS t(name) WHERE NOT has_column_privilege(current_user,'c_moderation.'||t.name,'account_id','SELECT'))
+ AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['state','outcome','explanation','version']) AS c(name) WHERE NOT has_column_privilege(current_user,'c_moderation.cases',c.name,'UPDATE'))
+ AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['reporter_account_id','identity_id']) AS c(name) WHERE NOT has_column_privilege(current_user,'c_moderation.reports',c.name,'UPDATE'))
+ AND has_column_privilege(current_user,'public.community_identities','moderation_rename_required','UPDATE')`).Scan(&valid); err != nil || !valid {
 		return errPostSchema
 	}
 	return nil
