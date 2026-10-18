@@ -7,6 +7,7 @@ import 'package:flutter/semantics.dart';
 
 import '../channels/channel.dart';
 import '../identity/identity_api.dart';
+import '../reports/report_screens.dart';
 import '../storage/post_store.dart';
 import 'post_controller.dart';
 import 'post_models.dart';
@@ -2095,11 +2096,41 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         appBar: AppBar(
           title: Text(widget.channelName ?? '帖子'),
           actions: [
-            if (_authority.current && _canDelete && !_deleted)
-              IconButton(
-                tooltip: '删除帖子',
-                onPressed: _deleting ? null : _delete,
+            if (_authority.current &&
+                !_deleted &&
+                (_canDelete || GovernanceScope.maybeOf(context) != null))
+              PopupMenuButton<String>(
+                tooltip: '帖子操作',
+                enabled: !_deleting,
                 icon: const Icon(Icons.more_horiz),
+                itemBuilder: (context) => [
+                  if (_post != null &&
+                      GovernanceScope.maybeOf(context)?.available == true)
+                    const PopupMenuItem(value: 'report', child: Text('举报帖子')),
+                  if (_canDelete)
+                    const PopupMenuItem(value: 'delete', child: Text('删除帖子')),
+                ],
+                onSelected: (action) {
+                  if (action == 'delete') {
+                    unawaited(_delete());
+                    return;
+                  }
+                  final governance = GovernanceScope.maybeOf(context);
+                  if (governance == null ||
+                      _post == null ||
+                      !_authority.current) {
+                    return;
+                  }
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ReportScreen(
+                        controller: governance,
+                        postId: widget.postId,
+                        title: _post!.title,
+                      ),
+                    ),
+                  );
+                },
               ),
           ],
         ),

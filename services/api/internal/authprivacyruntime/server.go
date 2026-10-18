@@ -69,6 +69,15 @@ func CheckDatabase(ctx context.Context, pool *pgxpool.Pool, service authprivacyh
 		if err = pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM unnest(ARRAY['community_identities','identity_account_state','identity_change_receipts']) AS t(name) WHERE NOT has_table_privilege(current_user,format('public.%I',t.name),'SELECT') OR NOT has_table_privilege(current_user,format('public.%I',t.name),'INSERT') OR (t.name<>'identity_change_receipts' AND NOT has_table_privilege(current_user,format('public.%I',t.name),'UPDATE')))`).Scan(&insufficient); err != nil || insufficient {
 			return errors.New("identity management DML privileges absent")
 		}
+		// 0015 cleanup hooks remain active on account closure even when Posts
+		// is nil and Moderation is false. Validate them on the common C path,
+		// before any optional HTTP feature or worker can start.
+		if err = authprivacy.CheckModerationLifecycleSchema(ctx, pool); err != nil {
+			return errors.New("moderation lifecycle schema or privileges absent")
+		}
+		if err = authprivacy.CheckModerationLegacyRestrictionSchema(ctx, pool); err != nil {
+			return errors.New("moderation legacy restriction schema or privileges absent")
+		}
 	}
 	var recoveryMember bool
 	if err = pool.QueryRow(ctx, `SELECT pg_has_role(current_user,$1::text,'MEMBER')`, "hnuhole_"+party+"_recovery").Scan(&recoveryMember); err != nil || recoveryMember {
@@ -290,6 +299,12 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 				return err
 			}
 		}
+		if c.Moderation {
+			community, err = community.WithModeration(ctx)
+			if err != nil {
+				return err
+			}
+		}
 		if c.WebAuthn != nil {
 			community, err = community.WithWebAuthn(*c.WebAuthn)
 			if err != nil {
@@ -304,7 +319,13 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 		if err != nil {
 			return err
 		}
-		endpoints, err = authprivacyhttp.NewCommunityEndpoints(authprivacyhttp.CommunityOptions{Backend: community, Passwords: passwords, InternalPeer: identity, AllowedOrigins: c.AllowedOrigins, Limits: limits})
+		origins := c.AllowedOrigins
+		adminDirectory := ""
+		if c.AdminDirectory != "" {
+			adminDirectory = c.Path(c.AdminDirectory)
+			origins = append(append([]string{}, origins...), c.PublicOrigin)
+		}
+		endpoints, err = authprivacyhttp.NewCommunityEndpoints(authprivacyhttp.CommunityOptions{Backend: community, Passwords: passwords, InternalPeer: identity, AllowedOrigins: origins, Limits: limits, AdminDirectory: adminDirectory})
 		if err != nil {
 			return err
 		}

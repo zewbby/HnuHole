@@ -1,8 +1,12 @@
 # 设计进度与剩余工作
 
+> **2026-10-18 预发布主线同步：**核对PR #18已实际合入main `1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1`，正式迁移新增0015。下方schema14及PR #18合并前状态保留原版本；本任务正重跑受影响检查并据新环境准备手机包，不沿用旧结果作为新版本PASS。未连接手机。
+
 > **2026-10-18 手机测试包准备：**按本session授权先准备vivo S18 / OriginOS 5目标的独立签名pinned-CA debug包；无设备窗口，不运行ADB。代码接线与实际包准备证据分开记录，手机/原生插件/业务链路仍NOT_RUN，见[发布记录](../release/android-prerelease.md)。
 
 > **2026-10-18 Android候选与隔离预发布：**任务见[PR #16](https://github.com/zewbby/HnuHole/pull/16)及[分支详情](../branches/ci-android-prerelease.md)。已同步PR #13/main986477b；本地0d10719的11项实际迁移/权限/HTTPS文字图片/双新实例恢复/应用回滚/重部署/停机和独立CLI调用PASS，独立CI后台和测试签名release候选6b2927c PASS，APK/证书摘要已归档；安装和APK实际服务链路NOT_RUN。独立审查REVIEW_PASS_SCOPED。未合并、未发布；手机NOT_RUN，跨设备Passkey/iOS延期，P03/P05生产结论不升级。复现及脱敏回执见[发布记录](../release/android-prerelease.md)。
+
+> **2026-10-18 举报／审核阶段1：PHASE1_SCOPED_PASS。**产品候选 `aab9a647d9c8310e344bbc767abb5cbdc1045f73` 基于最新已核对 main `986477b`，已提交、推送至[PR #18](https://github.com/zewbby/HnuHole/pull/18)，独立 agent 安全复核无阻断。已有帖子举报→真实网页审核→最小系统通知／必要申诉链通过实际 Dart→C HTTPS→PostgreSQL→浏览器验证。最终聚焦47项零FAIL/SKIP；完整继承回归321项PASS、两个既有独立Flutter入口明确SKIP、不计通过。Flutter439／analyze0／bundle、9份OpenAPI、Node12、Go host／build／vet及产品候选4工作流7任务全部通过。632个产品／测试／配置输入指纹、失败历史及交付head回执方法见[验收报告](report-moderation-validation-report.md)和[机器记录](report-moderation-verification.json)。0015不依赖评论表，评论举报／真实失败provider阶段2仍NOT_INTEGRATED；完整互动、私信及推送未实现。未合并、未部署、未发布，B08／B11保持PARTIAL，手机／iOS／跨设备Passkey及生产未验边界不扩大。 见[任务详情](../branches/feat-report-moderation.md)、[通知契约](report-notification-contract.md)与[模块交接](module-acceptance-handoff.md)；下方旧记录保留各自日期与范围。
 
 > **2026-10-18 已确认合并 main：**[PR #13](https://github.com/zewbby/HnuHole/pull/13) 按维护者本次指令普通 Squash Merge，合并提交 `359c180a53a674e308e1496bed31da33b9ab8524`。远端main已核对；完整文件树与已测 `06a7ada` 一致，宿主/真实SQL/构建及三项产品CI通过证据继续适用。旧分支/历史协作policy失败与无独立成员批准如实保留，未改保护规则、使用绕过选项或强推。跨设备Passkey NI-X02继续延期；旧设备结果仅限原APK，新整合候选原生设备仍NOT_RUN，iOS/生产/完整App未验。见[合并回执](community-pr13-main-merge-20261018.json)。下方待合并/draft等条目保留为合并前快照。
 

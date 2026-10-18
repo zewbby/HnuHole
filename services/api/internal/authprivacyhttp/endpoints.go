@@ -81,18 +81,20 @@ type ChannelBackend interface {
 }
 
 type CommunityOptions struct {
-	Posts          PostBackend
-	Channels       ChannelBackend
-	Identities     IdentityBackend
-	Backend        CommunityBackend
-	Sessions       SessionBackend
-	Recovery       RecoveryBackend
-	Closures       ClosureBackend
-	Credentials    authprivacy.CredentialBackend
-	Passwords      PasswordPreparer
-	InternalPeer   PeerIdentity
-	AllowedOrigins []string
-	Limits         NetworkLimits
+	AdminDirectory   string
+	ModerationAccess ModerationAccessBackend
+	Posts            PostBackend
+	Channels         ChannelBackend
+	Identities       IdentityBackend
+	Backend          CommunityBackend
+	Sessions         SessionBackend
+	Recovery         RecoveryBackend
+	Closures         ClosureBackend
+	Credentials      authprivacy.CredentialBackend
+	Passwords        PasswordPreparer
+	InternalPeer     PeerIdentity
+	AllowedOrigins   []string
+	Limits           NetworkLimits
 }
 
 type errorBody struct {
@@ -148,6 +150,9 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if options.Sessions == nil {
 		options.Sessions, _ = options.Backend.(SessionBackend)
 	}
+	if options.ModerationAccess == nil {
+		options.ModerationAccess, _ = options.Backend.(ModerationAccessBackend)
+	}
 	if options.Recovery == nil {
 		options.Recovery, _ = options.Backend.(RecoveryBackend)
 	}
@@ -159,6 +164,27 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
+			if isAdminPath(r.URL.Path) {
+				serveModerationUI(w, r, options.AdminDirectory)
+				return
+			}
+			if r.URL.Path == "/api/v1/moderation-access/sessions" || r.URL.Path == "/api/v1/moderation-access/session-revocations" {
+				if enabled, ok := options.Backend.(interface{ ModerationEnabled() bool }); ok && !enabled.ModerationEnabled() {
+					b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+					return
+				}
+				b.communityModerationAccessPublic(w, r, options.ModerationAccess, options.Passwords)
+				return
+			}
+			if isModerationPath(r.URL.Path) {
+				if enabled, ok := options.Backend.(interface{ ModerationEnabled() bool }); ok && !enabled.ModerationEnabled() {
+					b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+					return
+				}
+				backend, _ := options.Backend.(ModerationBackend)
+				b.communityModeration(w, r, backend)
+				return
+			}
 			if isPostPath(r.URL.Path) {
 				b.communityPostsPublic(w, r, options.Posts)
 				return
@@ -255,7 +281,7 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				w.Header().Set("Vary", "Origin")
 			}
 		}
-		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !allowsPostListQuery(r))) {
+		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsModerationQuery(r)))) {
 			b.bad(w, errMalformed)
 			return
 		}
@@ -303,6 +329,13 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 }
 
 func publicMethodAllowed(service Service, path, method string) bool {
+	if service == CommunityService && isAdminPath(path) {
+		return method == "GET"
+	}
+	if service == CommunityService && isModerationPath(path) {
+		route, e := parseModerationRoute(path)
+		return e == nil && strings.Contains(", "+route.method+",", ", "+method+",")
+	}
 	if service == CommunityService && isPostImagePath(path) {
 		route, e := parseImageRoute(path)
 		return e == nil && route.method == method
@@ -337,6 +370,7 @@ func publicMethod(service Service, path string) string {
 	} else {
 		switch path {
 		case "/api/v1/auth/registration-intents", "/api/v1/auth/registrations",
+			"/api/v1/moderation-access/sessions", "/api/v1/moderation-access/session-revocations",
 			"/api/v1/auth/sessions", "/api/v1/auth/session-renewals",
 			"/api/v1/auth/session-revocations", "/api/v1/auth/recovery-code-reset-intents",
 			"/api/v1/auth/password-resets", "/api/v1/account-closures",

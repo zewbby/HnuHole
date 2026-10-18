@@ -1,5 +1,27 @@
 # Hnuhole C/V 开发服务
 
+本分支新增的举报／审核／通知运行说明见下节；下文其余认证历史报告仍保持各自原版本的证明范围。
+
+## 帖子举报、审核和最小系统通知
+
+`codex/feat/report-moderation` 阶段1提供已有帖子举报、原提交核对、同事实合案、审核、处罚、必要申诉与 App 内通知。评论举报和真实评论失败 provider 等 `comments-replies` 合入后接入；不依赖评论表。本地真实 HTTPS／SQL／Dart／网页链路与权限证据见[阶段1报告](../../docs/design/report-moderation-validation-report.md)。
+
+已有 C/V 开发环境继续使用原认证和 Gate 初始化／恢复流程。在 **C owner 连接**上按实际 main 的顺序执行迁移；本分支基于0014新增0015，不能跨号或覆盖已合入迁移。迁移后执行 `infra/postgres/grant-community.sql`，图片功能启用时执行 `grant-post-images.sql`，启用审核再执行 `grant-moderation.sql`。0015 的删除／注销清理钩子在关闭审核时仍必需，故必须重跑新版 `grant-community.sql`；启动会核查缺失权限。Down 明确拒绝，采用冻结和前向修复。
+
+在已有 C 配置加入 `"moderation": true`，并保持已验证的 `posts` 配置。若提供网页，再设置 `"adminDirectory": "/absolute/path/to/repo/apps/admin"`；该值也可相对配置文件目录，最终解析为绝对路径。启动后同源 HTTPS `/admin` 只提供四个静态文件。管理端无需构建，不另设登录服务。补充图片需要已有 `postImages` 的固定 Python／验证器路径及 SHA256；未启用图片时纯文字举报仍可用，补图失败关闭，不信任 MIME 声明。
+
+首次管理员由受控 owner 对已经注册的专用账号执行一次，六位平台号保留前导零：
+
+```sh
+psql -X -v ON_ERROR_STOP=1 -v platform_number=001527 "$C_MIGRATION_DSN" -f ../../infra/postgres/bootstrap-moderation-admin.sql
+```
+
+脚本只允许表 owner、ACTIVE 账号且系统尚无管理员；创建角色并留审计，不产生初始密码。后续使用网页按六位编号分配审核员或管理员，禁止移除最后管理员。管理员注销前应先移交权限；若已无管理员，由 owner 按同一脚本恢复并留审计，运行服务无此引导权限。管理登录沿用现有单设备规则，建议使用专用合成账号演练。页面不会展示邮箱、内部映射、其他面具或举报人身份。
+
+移动端使用原 C HTTPS origin，从帖子菜单举报、从系统消息查看进度及结果；处罚归账号，举报可绑定原身份。普通会话因封禁失效时，可在本人处理通知入口独立复验现有用户名密码，得到24小时、不可访问社区或管理接口的 `MODERATION_SELF` 能力。该能力不接替普通登录、不取消注销，不改变现有 Passkey 或 iOS 边界。
+
+Linux／WSL 使用本任务专属缓存、日志及私有数据库 socket，执行 `authlab/run-moderation-isolated.sh`。它拒绝 root 和外部 DSN，结束即清理所建库。设置 `PGPORT` 为本任务端口；`POST_MEDIA_PYTHON`／`POST_MEDIA_FIXTURES` 使用已准备的固定验证器；`MODERATION_GOOSE` 指向 Goose v3.22.1；在 `apps/mobile` 目录先执行 `flutter pub get --enforce-lockfile`，再用 `dart compile exe integration/governance_live_probe.dart -o <本任务绝对路径>` 生成探针，并设置 `MODERATION_PROBE` 为该可执行文件绝对路径。再设置 `MODERATION_NODE`、`MODERATION_PLAYWRIGHT_MODULE`、`MODERATION_BROWSER_OUTPUT`（可选 `MODERATION_BROWSER`）即可同时执行真实网页审核。未提供探针只会明确 SKIP 该项，不能记录为整链 PASS。完整继承 SQL 回归可显式设 `MODERATION_TEST_PATTERN=.` 和 `GOFLAGS=-timeout=25m`，避免 Go 默认十分钟在慢主机提前中断；所有夹具仅使用合成账号。
+
 本轮设备／凭据／原生Passkey接入见[实施报告](../../docs/design/auth-privacy-device-credentials-passkey-validation-report.md)。C可选 `webAuthn:{rpId,origins,androidOrigins}` 固定策略；省略／null保持Passkey禁用，CORS不选择RP或Android签名白名单。`authdev init` 可显式传 `-webauthn-rp-id`、`-webauthn-https-origins`、`-webauthn-android-origins`，不生成虚构部署值。平台关联步骤见[原生包](../../packages/auth_passkey/README.md)，loopback TLS材料不代证手机关联／信任。
 
 `GET /api/v1/auth/credential-change-result` 使用当前Bearer、原 `Credential-Change-ID`／`Idempotency-Key` 核对轮换、绑定、移除，三态均200。缺记录不推断失败，已知意图的不可逆终止和所有成功结论均经最终Gate；过期结果410。返回权威 `Session-Expires-At`，不重放新码或证明，结构复用既有迁移。本轮SQL／HTTP／origin／配置测试缺Go未执行。
