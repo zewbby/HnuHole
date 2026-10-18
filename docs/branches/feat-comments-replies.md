@@ -1,5 +1,7 @@
 # 评论与回复：开发任务范围
 
+> 2026-10-18本轮更新：核心分支已正常整合实际main `1b78f42`（真实治理0015），head `767b0a3`；后端文字链路独立送审[PR #19](https://github.com/zewbby/HnuHole/pull/19)，见[增量任务](feat-comments-backend-text.md)及[报告](../design/comments-backend-text-report-20261018.md)。0016与真实SQL/HTTP限定范围PASS属于后端增量，完整B07/通知仍未通过；本轮不继续客户端。下方首阶段范围与旧依赖状态为历史快照。
+
 创建／接手：2026-10-18，Asia/Shanghai。状态：CORE_HOST_PASS_INTEGRATION_PENDING，独立核心宿主验证通过；完整 B07 尚未完成。
 仓库 zewbby/HnuHole；分支 `codex/feat/comments-replies`；独立目录 `E:/HnuHole-comments-replies-20261018/repo`。
 创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。接手时工作区干净，仓库／分支／远端均已核对；正常合并实时 main `986477b`，整合提交 `79213db`，保留 PR #13 已合入的图片、认证和无障碍成果。原“尚未执行”仅属于范围准备时点。

@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-18 评论文字后端增量：BACKEND_TEXT_SCOPED_PASS。**[Draft PR #19](https://github.com/zewbby/HnuHole/pull/19) 堆叠于核心 #17；已正常整合 main `1b78f42` 的真实治理0015，正式评论0016及空库/升级/Down拒绝、真实PG/受限角色/TLS HTTP/重试放弃/封口/生命周期针对性检查通过。被测后端 `07911ab`，完整B07仍BLOCKED、通知provider未接入；本轮不推进客户端/图片/原生日志/设备。见[报告](comments-backend-text-report-20261018.md)、[机器记录](comments-backend-text-verification-20261018.json)与[后端任务](../branches/feat-comments-backend-text.md)。独立成员审查与最终head CI待PR核对，未合并/未发布；下方“0015尚未合入”等为原日期历史快照。
+
 > **2026-10-18 举报／审核阶段1：PHASE1_SCOPED_PASS。**产品候选 `aab9a647d9c8310e344bbc767abb5cbdc1045f73` 基于最新已核对 main `986477b`，已提交、推送至[PR #18](https://github.com/zewbby/HnuHole/pull/18)，独立 agent 安全复核无阻断。已有帖子举报→真实网页审核→最小系统通知／必要申诉链通过实际 Dart→C HTTPS→PostgreSQL→浏览器验证。最终聚焦47项零FAIL/SKIP；完整继承回归321项PASS、两个既有独立Flutter入口明确SKIP、不计通过。Flutter439／analyze0／bundle、9份OpenAPI、Node12、Go host／build／vet及产品候选4工作流7任务全部通过。632个产品／测试／配置输入指纹、失败历史及交付head回执方法见[验收报告](report-moderation-validation-report.md)和[机器记录](report-moderation-verification.json)。0015不依赖评论表，评论举报／真实失败provider阶段2仍NOT_INTEGRATED；完整互动、私信及推送未实现。未合并、未部署、未发布，B08／B11保持PARTIAL，手机／iOS／跨设备Passkey及生产未验边界不扩大。 见[任务详情](../branches/feat-report-moderation.md)、[通知契约](report-notification-contract.md)与[模块交接](module-acceptance-handoff.md)；下方旧记录保留各自日期与范围。
 
 > **2026-10-18 通知依赖核对增量：**已读取治理已提交契约 `60e5df4`，评论原身份／任务／状态／动作与 `IDENTITY`、`LOCAL_TASK`、`COMMENT_FAILURE/taskId` 路由映射已记录在[评论接线契约](comments-replies-contract.md)。完整事件包装／时间／已读／去重、未受理失败入口及实际 provider 尚未实现；0015 未合入，B07 和 COMMENT-FAIL-ENTRY-01 继续未通过。未合入整条治理分支。

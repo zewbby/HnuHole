@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-18 评论文字后端增量：BACKEND_TEXT_SCOPED_PASS。**[Draft PR #19](https://github.com/zewbby/HnuHole/pull/19) 堆叠于核心 #17；已正常整合 main `1b78f42` 的真实治理0015，正式评论0016及空库/升级/Down拒绝、真实PG/受限角色/TLS HTTP/重试放弃/封口/生命周期针对性检查通过。被测后端 `07911ab`，完整B07仍BLOCKED、通知provider未接入；本轮不推进客户端/图片/原生日志/设备。见[报告](comments-backend-text-report-20261018.md)、[机器记录](comments-backend-text-verification-20261018.json)与[后端任务](../branches/feat-comments-backend-text.md)。独立成员审查与最终head CI待PR核对，未合并/未发布；下方“0015尚未合入”等为原日期历史快照。
+
 ## B11／B08：举报、审核与最小系统通知阶段1（2026-10-18）
 
 任务为 `codex/feat/report-moderation`，[PR #18](https://github.com/zewbby/HnuHole/pull/18)，见[任务详情](../branches/feat-report-moderation.md)与[阶段契约](report-notification-contract.md)。

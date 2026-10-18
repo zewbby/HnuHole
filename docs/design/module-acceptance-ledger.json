@@ -16349,17 +16349,18 @@
     {
       "id": "B07",
       "name": "评论与回复",
-      "implementationState": "PARTIAL_INDEPENDENT_CORE_ONLY",
-      "acceptanceState": "CORE_HOST_SCOPED_PASS_SQL_HTTP_UI_NATIVE_JOURNAL_NOT_IMPLEMENTED_NOTIFICATIONS_NOT_CONNECTED",
+      "implementationState": "PARTIAL_BACKEND_TEXT_AND_INDEPENDENT_CORE",
+      "acceptanceState": "BACKEND_TEXT_REAL_SQL_HTTPS_SCOPED_PASS_FULL_CLIENT_IMAGES_NATIVE_JOURNAL_NOT_IMPLEMENTED_NOTIFICATIONS_NOT_CONNECTED",
       "currentResult": "BLOCKED",
       "verificationEntries": [
         "B07-CORE-01",
         "B07-CLIENT-01",
         "B07-CODEC-01",
-        "B07-CONTRACT-01"
+        "B07-CONTRACT-01",
+        "B07-BACKEND-TEXT-01"
       ],
-      "note": "2026-10-18 PR17 draft分支独立Go/Dart核心、精确codec与设计契约已实现并宿主验证；没有评论SQL/HTTP/worker/真实加密journal/页面/媒体接线/系统通知，不能将B07或COMMENT-FAIL-ENTRY-01计PASS；未合并或发布。",
-      "nextAcceptance": "治理0015实际进入main后正常整合并核迁移编号，开发0016/最小授权/最终C事务/持久回执/HTTP/生命周期；再接原生journal、评论页面和单图、统一失败通知，最后固定APK与统一设备窗口。无评论真实SQL或原生重开通过事实。",
+      "note": "2026-10-18 核心PR17继承；后端文字增量PR19在main 1b78f42真实0015之上实现0016/最小授权/持久命令与seal/任务/worker/实际TLS HTTP，针对性SQL与迁移链PASS。完整客户端、图片、原生journal、通知接线未完成；不能把B07或COMMENT-FAIL-ENTRY-01计PASS。未合并、未发布。",
+      "nextAcceptance": "先审查/合入核心PR17和后端文字PR19并核对base；下一轮建议文字客户端及原生任务journal接线，再按授权推进点赞/定位/本人删除、单图、统一失败通知，最后固定APK与设备窗口。本轮不自动执行。",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -16379,7 +16380,11 @@
         "services/api/internal/comments",
         "apps/mobile/lib/src/comments",
         "packages/openapi/comment-api.yaml",
-        "packages/comment-protocol-vectors/v1.json"
+        "packages/comment-protocol-vectors/v1.json",
+        "services/api/internal/authprivacy/community_comments.go",
+        "services/api/internal/authprivacyhttp/comments_endpoints.go",
+        "services/api/migrations/0016_comments.sql",
+        "packages/openapi/comment-text-component.yaml"
       ],
       "commentsCore20261018": {
         "result": "PASS_INDEPENDENT_CORE_ONLY",
@@ -16399,6 +16404,42 @@
         "notificationContractCommit": "60e5df46545180c1c7017b6aee3b417af471ccbe",
         "notificationContractReadAndMapped": true,
         "notificationProviderImplemented": false
+      },
+      "commentsBackendText20261018": {
+        "result": "BACKEND_TEXT_SCOPED_PASS",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
+        "testedBackendCommit": "07911ab13fa034e186a9de79864004a4bbd3d3e4",
+        "integratedMain": "1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1",
+        "migration": {
+          "result": "PASS",
+          "goose": "v3.22.1",
+          "upstream": "0015_reports_moderation.sql",
+          "comments": "0016_comments.sql",
+          "emptyInstall": "0001..0016",
+          "upgrade": "0014 -> real 0015 -> 0016",
+          "appliedVersions": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "down": "REJECTED_AND_LEDGER_REMAINS_16"
+        },
+        "report": "docs/design/comments-backend-text-report-20261018.md",
+        "evidence": "docs/design/comments-backend-text-verification-20261018.json"
       }
     },
     {
@@ -39703,5 +39744,19 @@
       "X07"
     ],
     "historicalBaselineFieldsPreserved": true
+  },
+  "commentsBackendTextWorkItem20261018": {
+    "branch": "codex/feat/comments-backend-text",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
+    "result": "BACKEND_TEXT_SCOPED_PASS",
+    "testedBackendCommit": "07911ab13fa034e186a9de79864004a4bbd3d3e4",
+    "integratedMain": "1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1",
+    "report": "docs/design/comments-backend-text-report-20261018.md",
+    "evidence": "docs/design/comments-backend-text-verification-20261018.json",
+    "currentFullModuleResult": "BLOCKED",
+    "notificationIntegration": "NOT_RUN_NOT_CONNECTED",
+    "independentMemberReview": "PENDING",
+    "merged": false,
+    "published": false
   }
 }
