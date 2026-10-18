@@ -203,7 +203,7 @@ class Lab:
             raise RuntimeError('PRERELEASE_IMAGE_PYTHON must point to an independent Pillow environment')
         versions = {}
         for name, command in [('go', ['go', 'version']), ('goose', ['goose', '-version']),
-                              ('postgres', ['postgres', '--version']), ('mailpit', ['mailpit', '--version']),
+                              ('postgres', ['postgres', '--version']), ('mailpit', ['mailpit', 'version']),
                               ('pillow', [python, '-c', 'import PIL; print(PIL.__version__)'])]:
             versions[name] = subprocess.check_output(command, env=self.env, stderr=subprocess.STDOUT, text=True).strip()
         if 'v3.22.1' not in versions['goose'] or not versions['pillow'].endswith('12.3.0') or ' 16.' not in versions['postgres']:
