@@ -1,0 +1,1823 @@
+openapi: 3.0.3
+info:
+  title: HnuHole moderation and appeal API
+  version: 0.1.0
+  description: REVIEWER handles reports, content takedown, profile reset and bounded mute. ADMIN additionally bans/unbans
+    and manages roles. Management DTOs expose platform numbers, authorized public snapshots and submitted materials;
+    never email, qualification slots, internal account mappings, reporter identities or other masks. HTTPS only.
+    No redirects, user-supplied URLs, or extra request fields. Every successful business response is committed inside
+    the existing final C Safety Gate transaction. Only implemented post targets are described; comment, chat, push
+    and full interaction inbox APIs are absent.
+servers:
+- url: /
+paths:
+  /api/v1/moderation-access/sessions:
+    post:
+      operationId: createModerationAccessSession
+      summary: Authenticate for own handling notices and appeals
+      description: Uses the existing username/password verifier with dummy work for unknown users. Allows ACTIVE
+        accounts including banned accounts; PENDING_CLOSE/CLOSED are refused. Never cancels closure, advances ordinary
+        session generation, replaces the mobile session, or enables community/management APIs. A repeated successful
+        restricted login replaces only the previous restricted capability. No Idempotency-Key or Authorization header
+        is accepted.
+      security: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 8192
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModerationAccessInput'
+      responses:
+        '201':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModerationAccessSession'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation-access/session-revocations:
+    post:
+      operationId: revokeModerationAccessSession
+      summary: Revoke this restricted capability
+      description: 'Empty body and no query parameters; Authorization: Bearer uses the restricted token. An ordinary
+        bearer does not become a logout capability here. Does not revoke or renew a normal session.'
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/sanctions/{sanctionId}:
+    parameters:
+    - name: sanctionId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: getOwnSanction
+      summary: Read own punishment and appeal availability
+      description: Ordinary or MODERATION_SELF session. Only this account's sanction is visible. Expiry removes
+        only the corresponding restriction; appeal review continues. Read access does not disclose reporter information.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanction'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/sanctions/{sanctionId}/appeals/{requestId}:
+    parameters:
+    - name: sanctionId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    - name: requestId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    put:
+      operationId: submitAppeal
+      summary: Start a new appeal attempt for own sanction
+      description: Original request UUID binds complete material, excluding optional retryToken. Same-key same-material
+        replay returns the original appeal. Initial requests can omit retryToken only before a reconciliation fence
+        exists. A missing-result GET seals all old attempts and only its latest retryToken permits retry; otherwise
+        409 REPORT_ATTEMPT_SEALED. At most one PENDING appeal per sanction, at most three distinct attempts across
+        all identities. A new attempt after closure requires new material. Merely opening this endpoint's UI does
+        not consume an attempt. Expired sanctions remain appealable; a revoked sanction cannot receive a new attempt.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitialAppealMaterial'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appeal'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/sanctions/{sanctionId}/appeal-requests/{requestId}:
+    parameters:
+    - name: sanctionId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    - name: requestId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: getAppealSubmissionResult
+      summary: Reconcile the original appeal submission
+      description: Use the original parent and requestId after unknown result. Missing originals atomically return
+        NOT_SUBMITTED with a newly rotated retryToken and seal every older attempt. Retry the same parent/request/material
+        with the latest token; repeated missing GET rotates it again.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppealResult'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/appeals/{appealId}:
+    parameters:
+    - name: appealId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: getOwnAppeal
+      summary: Read own appeal and retained material
+      description: Ordinary or MODERATION_SELF session. No original reviewer platform number or reporter identity
+        is returned to this self-service route.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appeal'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/appeals/{appealId}/materials/{requestId}:
+    parameters:
+    - name: appealId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    - name: requestId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    put:
+      operationId: appendAppealMaterial
+      summary: Append an independent batch to a pending appeal
+      description: Only PENDING appeals accept new batches. Each batch has its own original request UUID; replay
+        preserves earlier batches. Missing-result reconciliation rotates retryToken and seals older attempts; only
+        the latest token permits retry after that fence. Optional retryToken never changes the material fingerprint.
+        Append does not consume any of the three appeal attempts. No confirmed limit on append count is introduced.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppendedAppealMaterial'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appeal'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/appeals/{appealId}/material-requests/{requestId}:
+    parameters:
+    - name: appealId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    - name: requestId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: getAppealAppendResult
+      summary: Reconcile an original appeal append
+      description: Returns SUBMITTED with the current appeal or NOT_SUBMITTED plus a freshly rotated retryToken
+        for this account/appeal/request. Missing-result reconciliation seals every previous attempt. Preserve the
+        original batch key/material and attach only the latest token when retrying.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppealResult'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/me:
+    get:
+      operationId: getModerationIdentity
+      summary: Read own effective management role
+      description: Ordinary session with REVIEWER or ADMIN role required. MODERATION_SELF is never accepted.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModerationIdentity'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/cases:
+    get:
+      operationId: listModerationCases
+      summary: List report cases
+      description: Ordinary authorized management role. Descending creation time and case UUID. Pass nextBefore
+        unchanged; this is a server-owned cursor. Lists omit evidence and reporter identity.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: before
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 1
+        description: Opaque server nextBefore continuation; pass unchanged. Current encoding is RFC3339Nano time,
+          literal |, and canonical case UUID; URL-encode it.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 50
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CasePage'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/cases/{caseId}:
+    parameters:
+    - name: caseId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: getModerationCase
+      summary: Read authorized case evidence
+      description: Public snapshot plus submitted supplementary materials only; no reporter identifiers, email,
+        internal account IDs or other identity list.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Case'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/cases/{caseId}/claim:
+    parameters:
+    - name: caseId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    post:
+      operationId: claimModerationCase
+      summary: Mark a case processing
+      description: Atomically checks expectedVersion and current content lifecycle. Original commandId is idempotent;
+        retry with unchanged fields. Author deletion closes unfinished cases and prevents later punitive processing.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClaimCommand'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Case'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/cases/{caseId}/decision:
+    parameters:
+    - name: caseId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    post:
+      operationId: decideModerationCase
+      summary: Finish a case with an authorized action
+      description: Reviewer may dismiss, take down, reset profile or impose bounded mute. Only ADMIN may ban. The
+        result, restriction/session revocation, publication stop, notification and operation audit commit together.
+        Separate punishments overlap to their latest applicable end; they do not add durations.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseDecisionCommand'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Case'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/appeals:
+    get:
+      operationId: listModerationAppeals
+      summary: List the latest appeals for review
+      description: Returns at most the newest 100 appeals, descending by creation time and UUID. This route currently
+        provides no pagination, filter or extra query parameter.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAppealList'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/appeals/{appealId}:
+    parameters:
+    - name: appealId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: getModerationAppeal
+      summary: Read an authorized appeal
+      description: Management role required. Includes target and original actor platform numbers and the submitted
+        appeal materials.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAppeal'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/appeals/{appealId}/decision:
+    parameters:
+    - name: appealId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    post:
+      operationId: decideModerationAppeal
+      summary: Accept or reject an appeal with explanation
+      description: The original punisher cannot decide this appeal. BAN appeals require another ADMIN; other actions
+        require another authorized reviewer. Without another reviewer the appeal stays pending, retains material
+        and consumes no extra attempt. Acceptance revokes only its sanction, recalculates remaining effective restrictions
+        and restores only eligible content never author-deleted or still hidden for another reason.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppealDecisionCommand'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAppeal'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/sanctions/{sanctionId}/revoke:
+    parameters:
+    - name: sanctionId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    post:
+      operationId: revokeModerationSanction
+      summary: Revoke one sanction with an audit reason
+      description: Requires another authorized operator; BAN reversal requires ADMIN. Other active sanctions and
+        historical restriction facts continue to apply. Reversal never revives a revoked ordinary session or an
+        author-deleted post.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevokeCommand'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanction'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/accounts:
+    get:
+      operationId: searchModerationAccount
+      summary: Find an account by exact platform number
+      description: Exact number lookup only; returns zero or one result with permitted state, registration timestamp
+        if known and recorded sanctions. No email search, internal-account lookup or identity enumeration.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: number
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/PlatformNumber'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountSearch'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/audit:
+    get:
+      operationId: listCaseModerationAudit
+      summary: Read operation audit for one case
+      description: Case-scoped append-only operation facts in insertion order. Platform numbers only; no reporter
+        account or email metadata.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: caseId
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditList'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/moderation/roles/{platformNumber}:
+    parameters:
+    - name: platformNumber
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/PlatformNumber'
+    put:
+      operationId: setModerationRole
+      summary: Grant, change or revoke a management role
+      description: ADMIN only. Original commandId binds target, role and reason. Role changes are serialized with
+        management authorization; NONE removes the role. The last ADMIN cannot be demoted through this operation.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleCommand'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResult'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical-unpadded-base64url-32-bytes
+      description: An ordinary C session for community and management operations. Explicit self-service operations
+        also accept the isolated MODERATION_SELF bearer.
+  headers:
+    RequestId:
+      required: true
+      description: Server-generated request identifier; error body requestId equals this value.
+      schema:
+        type: string
+        minLength: 22
+        maxLength: 22
+    NoStore:
+      required: true
+      schema:
+        type: string
+        enum:
+        - no-store
+    SessionExpiresAt:
+      required: true
+      description: Committed deadline of the bearer used for this request. Ordinary sessions follow existing renewal
+        rules. MODERATION_SELF has a fixed 24-hour deadline and is never renewed.
+      schema:
+        type: string
+        format: date-time
+    ServerTime:
+      required: true
+      description: Final C Gate trusted decision time.
+      schema:
+        type: string
+        format: date-time
+    RetryAfter:
+      required: true
+      description: Retry delay in seconds; does not establish a previous mutation outcome.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 300
+  responses:
+    Error400:
+      description: Malformed input, invalid original image, noncanonical identifier, unknown or duplicate JSON fields,
+        unexpected/duplicate query values, or invalid cursor.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error401:
+      description: Invalid, expired, replaced, revoked or wrong-scope bearer; no ordinary session is restored by
+        a restricted token.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error403:
+      description: The authenticated account or role cannot perform this operation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error404:
+      description: The authorized resource is unavailable in this account/identity scope.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error405:
+      description: Unsupported HTTP method. Allow identifies permitted methods.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error409:
+      description: Original request key conflicts with its material, concurrent state/version changed, appeal pending/closed/limited,
+        or operation is no longer allowed.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error415:
+      description: Only application/json with optional UTF-8 charset is accepted.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error429:
+      description: Bounded network/password-worker budget exceeded; retry using the original mutation key where
+        applicable.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error503:
+      description: C Gate frozen/unavailable, storage unavailable, or required subsystem unavailable. No mutation
+        success is implied.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+  schemas:
+    UUID:
+      type: string
+      format: uuid
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      not:
+        enum:
+        - 00000000-0000-0000-0000-000000000000
+      description: Canonical lowercase, nonzero UUID. Resource identifiers never authorize access.
+    DateTime:
+      type: string
+      format: date-time
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      - requestId
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: false
+              required:
+              - retryAfterSeconds
+              properties:
+                retryAfterSeconds:
+                  type: integer
+                  minimum: 1
+                  maximum: 300
+        requestId:
+          type: string
+          minLength: 22
+          maxLength: 22
+    Image:
+      type: object
+      additionalProperties: false
+      required:
+      - mime
+      - base64
+      properties:
+        mime:
+          type: string
+          enum:
+          - image/png
+          - image/jpeg
+          - image/gif
+          - image/webp
+        base64:
+          type: string
+          maxLength: 2796204
+          minLength: 4
+          format: byte
+          description: Canonical padded standard Base64 of validated original image bytes. Decoded bytes must be
+            1..2097152; original MIME must match inspection.
+          x-max-decoded-bytes: 2097152
+    Material:
+      type: object
+      additionalProperties: false
+      required:
+      - description
+      - images
+      - createdAt
+      properties:
+        description:
+          type: string
+          maxLength: 500
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          maxItems: 6
+          x-max-total-decoded-bytes: 8388608
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+      description: One independently retained submission. Initial appeal accepts at most six images; each append
+        at most three. At most 8388608 decoded image bytes per submission.
+    Sanction:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - caseId
+      - action
+      - reason
+      - startsAt
+      - endsAt
+      - revokedAt
+      - postId
+      - appealCount
+      - activeAppealId
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        caseId:
+          $ref: '#/components/schemas/UUID'
+        action:
+          type: string
+          enum:
+          - TAKEDOWN
+          - MUTE
+          - BAN
+          - RESET_NICKNAME
+          - RESET_AVATAR
+        reason:
+          type: string
+          maxLength: 500
+        startsAt:
+          $ref: '#/components/schemas/DateTime'
+        endsAt:
+          type: string
+          format: date-time
+          nullable: true
+        revokedAt:
+          type: string
+          format: date-time
+          nullable: true
+        postId:
+          $ref: '#/components/schemas/UUID'
+        appealCount:
+          type: integer
+          minimum: 0
+          maximum: 3
+        activeAppealId:
+          type: string
+          format: uuid
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          not:
+            enum:
+            - 00000000-0000-0000-0000-000000000000
+          description: Canonical lowercase, nonzero UUID. Resource identifiers never authorize access.
+          nullable: true
+    Appeal:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - sanctionId
+      - caseId
+      - state
+      - ordinal
+      - version
+      - reason
+      - action
+      - materials
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        sanctionId:
+          $ref: '#/components/schemas/UUID'
+        caseId:
+          $ref: '#/components/schemas/UUID'
+        state:
+          type: string
+          enum:
+          - PENDING
+          - ACCEPTED
+          - REJECTED
+        ordinal:
+          type: integer
+          minimum: 1
+          maximum: 3
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+        reason:
+          type: string
+          maxLength: 500
+        action:
+          type: string
+          enum:
+          - TAKEDOWN
+          - MUTE
+          - BAN
+          - RESET_NICKNAME
+          - RESET_AVATAR
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Material'
+    Opaque32:
+      type: string
+      minLength: 43
+      maxLength: 43
+      pattern: ^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$
+    PlatformNumber:
+      type: string
+      pattern: ^[0-9]{6}$
+      minLength: 6
+      maxLength: 6
+      description: Six-digit platform number; preserve leading zeros. Not a login identifier.
+    ModerationAccessInput:
+      type: object
+      additionalProperties: false
+      required:
+      - username
+      - password
+      properties:
+        username:
+          type: string
+          maxLength: 24
+          minLength: 6
+          pattern: ^[a-z][a-z0-9_]{5,23}$
+        password:
+          type: string
+          maxLength: 512
+          minLength: 1
+          description: Same existing private credential verification and bounded worker as ordinary login; at most
+            2048 UTF-8 bytes.
+    ModerationAccessSession:
+      type: object
+      additionalProperties: false
+      required:
+      - sessionToken
+      - moderationSubject
+      - expiresAt
+      - scope
+      properties:
+        sessionToken:
+          $ref: '#/components/schemas/Opaque32'
+        moderationSubject:
+          $ref: '#/components/schemas/Opaque32'
+        expiresAt:
+          $ref: '#/components/schemas/DateTime'
+        scope:
+          type: string
+          enum:
+          - MODERATION_SELF
+      description: 'Independent 24-hour fixed-expiry self-service capability. moderationSubject is a keyed opaque
+        local-material owner: stable for the same account incarnation and changes if a closed username is registered
+        again. It is not accountId, a platform number or an authorization token. Store token separately from ordinary
+        sessions.'
+    InitialAppealMaterial:
+      type: object
+      additionalProperties: false
+      required:
+      - description
+      - images
+      properties:
+        description:
+          type: string
+          maxLength: 500
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          maxItems: 6
+          x-max-total-decoded-bytes: 8388608
+        retryToken:
+          $ref: '#/components/schemas/UUID'
+      description: Nonblank explanation or at least one image required. Maximum six images, 2 MiB each, 8 MiB decoded
+        total, 12 MiB JSON. createdAt is server-assigned and forbidden in this request.
+    AppendedAppealMaterial:
+      type: object
+      additionalProperties: false
+      required:
+      - description
+      - images
+      properties:
+        description:
+          type: string
+          maxLength: 500
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          maxItems: 3
+          x-max-total-decoded-bytes: 8388608
+        retryToken:
+          $ref: '#/components/schemas/UUID'
+      description: 'One independent append: nonblank explanation or at least one image; at most three images and
+        8 MiB decoded total. Does not consume a new appeal attempt.'
+    AppealResult:
+      oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+        - state
+        - retryToken
+        properties:
+          state:
+            type: string
+            enum:
+            - NOT_SUBMITTED
+          retryToken:
+            $ref: '#/components/schemas/UUID'
+      - type: object
+        additionalProperties: false
+        required:
+        - state
+        - appeal
+        properties:
+          state:
+            type: string
+            enum:
+            - SUBMITTED
+          appeal:
+            $ref: '#/components/schemas/Appeal'
+    EvidenceImage:
+      type: object
+      additionalProperties: false
+      required:
+      - mime
+      - base64
+      properties:
+        mime:
+          type: string
+          enum:
+          - image/png
+          - image/jpeg
+          - image/gif
+          - image/webp
+        base64:
+          type: string
+          maxLength: 13981016
+          minLength: 4
+          format: byte
+          description: Public post snapshot image under the existing post-image limit of 10485760 original bytes;
+            not a supplemental 2 MiB image.
+    Evidence:
+      type: object
+      additionalProperties: false
+      required:
+      - title
+      - body
+      - images
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceImage'
+          maxItems: 9
+      description: Immutable snapshot of publicly visible post content accepted with the report. Public post images
+        retain their post-image limits, independently from supplementary report-image limits.
+    Case:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - number
+      - postId
+      - reason
+      - state
+      - version
+      - createdAt
+      - platformNumber
+      - outcome
+      - explanation
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        number:
+          type: string
+          pattern: ^[0-9]+$
+        postId:
+          $ref: '#/components/schemas/UUID'
+        reason:
+          type: string
+          enum:
+          - ADVERTISING
+          - HARASSMENT
+          - PRIVACY
+          - FRAUD
+          - ILLEGAL
+          - OTHER
+        state:
+          type: string
+          enum:
+          - PENDING
+          - PROCESSING
+          - ENDED
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+        platformNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+        outcome:
+          type: string
+          enum:
+          - ''
+          - UPHELD
+          - DISMISSED
+          - TARGET_DELETED
+        explanation:
+          type: string
+        evidence:
+          $ref: '#/components/schemas/Evidence'
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/Material'
+        sanctions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sanction'
+      description: Lists omit detailed evidence/reports/sanctions. Detail returns the accepted public snapshot and
+        supplementary material without reporter account or identity fields.
+    CasePage:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextBefore
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Case'
+          maxItems: 50
+        nextBefore:
+          type: string
+          nullable: true
+    AdminAppeal:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - sanctionId
+      - caseId
+      - state
+      - ordinal
+      - version
+      - reason
+      - action
+      - materials
+      - platformNumber
+      - originalActorNumber
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        sanctionId:
+          $ref: '#/components/schemas/UUID'
+        caseId:
+          $ref: '#/components/schemas/UUID'
+        state:
+          type: string
+          enum:
+          - PENDING
+          - ACCEPTED
+          - REJECTED
+        ordinal:
+          type: integer
+          minimum: 1
+          maximum: 3
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+        reason:
+          type: string
+          maxLength: 500
+        action:
+          type: string
+          enum:
+          - TAKEDOWN
+          - MUTE
+          - BAN
+          - RESET_NICKNAME
+          - RESET_AVATAR
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Material'
+        platformNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+        originalActorNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+    AdminAppealList:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminAppeal'
+          maxItems: 100
+    ModerationIdentity:
+      type: object
+      additionalProperties: false
+      required:
+      - role
+      - platformNumber
+      properties:
+        role:
+          type: string
+          enum:
+          - REVIEWER
+          - ADMIN
+        platformNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+    ModerationAccount:
+      type: object
+      additionalProperties: false
+      required:
+      - platformNumber
+      - createdAt
+      - state
+      - violationCount
+      - sanctions
+      properties:
+        platformNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+        state:
+          type: string
+          enum:
+          - ACTIVE
+          - PENDING_CLOSE
+          - CLOSED
+        violationCount:
+          type: integer
+          minimum: 0
+        sanctions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sanction'
+      description: Historical registrations before this migration have createdAt=null. Received reports do not count
+        as violations; revocation corrects the corresponding count.
+    AccountSearch:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModerationAccount'
+          maxItems: 1
+    AuditEntry:
+      type: object
+      additionalProperties: false
+      required:
+      - actorNumber
+      - targetNumber
+      - action
+      - reason
+      - createdAt
+      - caseId
+      properties:
+        actorNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+        targetNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+        action:
+          type: string
+        reason:
+          type: string
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+        caseId:
+          $ref: '#/components/schemas/UUID'
+    AuditList:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditEntry'
+    ClaimCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - commandId
+      - expectedVersion
+      properties:
+        commandId:
+          $ref: '#/components/schemas/UUID'
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+    CaseDecisionCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - commandId
+      - expectedVersion
+      - action
+      - days
+      - reason
+      properties:
+        commandId:
+          $ref: '#/components/schemas/UUID'
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+        action:
+          type: string
+          enum:
+          - DISMISS
+          - TAKEDOWN
+          - MUTE
+          - BAN
+          - RESET_NICKNAME
+          - RESET_AVATAR
+        days:
+          type: integer
+          enum:
+          - 0
+          - 1
+          - 3
+          - 7
+          - 30
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 1
+          pattern: \S
+      description: Reason must contain non-whitespace text. MUTE accepts 1/3/7/30 days; BAN accepts 1/3/7/30 or
+        0 for permanent and requires ADMIN. Other actions require days=0. Final version/state fencing prevents concurrent
+        duplicate processing or punishment.
+    AppealDecisionCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - commandId
+      - expectedVersion
+      - accept
+      - reason
+      properties:
+        commandId:
+          $ref: '#/components/schemas/UUID'
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+        accept:
+          type: boolean
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 1
+          pattern: \S
+    RevokeCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - commandId
+      - reason
+      properties:
+        commandId:
+          $ref: '#/components/schemas/UUID'
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 1
+          pattern: \S
+    RoleCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - commandId
+      - reason
+      - role
+      properties:
+        commandId:
+          $ref: '#/components/schemas/UUID'
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 1
+          pattern: \S
+        role:
+          type: string
+          enum:
+          - NONE
+          - REVIEWER
+          - ADMIN
+    RoleResult:
+      type: object
+      additionalProperties: false
+      required:
+      - platformNumber
+      - role
+      properties:
+        platformNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+        role:
+          type: string
+          enum:
+          - NONE
+          - REVIEWER
+          - ADMIN
