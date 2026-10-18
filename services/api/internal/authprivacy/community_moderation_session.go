@@ -18,7 +18,14 @@ const moderationAccessLifetime = 24 * time.Hour
 type ModerationAccessRequest struct{ Username, Password string }
 type ModerationAccessResult struct {
 	SessionToken [32]byte
+	Subject      [32]byte
 	ExpiresAt    time.Time
+}
+
+// The opaque local subject binds pending self-service material to this account
+// incarnation. It is neither an account identifier nor an authorization token.
+func (c *Community) moderationLocalSubject(account uuid.UUID) [32]byte {
+	return requestMAC(c.requestKey, []byte("HNUHOLE/MODERATION-LOCAL-SUBJECT/V1"), account[:])
 }
 
 // CreateModerationAccessSession proves the existing private credential. It
@@ -80,6 +87,7 @@ func (c *Community) CreateModerationAccessSession(ctx context.Context, request M
 		return ModerationAccessResult{}, err
 	}
 	result.SessionToken = token
+	result.Subject = c.moderationLocalSubject(proof.account)
 	return result, nil
 }
 

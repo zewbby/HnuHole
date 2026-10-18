@@ -6,13 +6,14 @@ import (
 	"time"
 
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol"
 )
 
 type httpTestModerationAccess struct{ calls int }
 
 func (s *httpTestModerationAccess) CreateModerationAccessSession(context.Context, authprivacy.ModerationAccessRequest, authprivacy.PasswordVerifier) (authprivacy.ModerationAccessResult, error) {
 	s.calls++
-	return authprivacy.ModerationAccessResult{SessionToken: [32]byte{9}, ExpiresAt: time.Now().UTC().Add(time.Hour)}, nil
+	return authprivacy.ModerationAccessResult{SessionToken: [32]byte{9}, Subject: [32]byte{10}, ExpiresAt: time.Now().UTC().Add(time.Hour)}, nil
 }
 func (s *httpTestModerationAccess) RevokeModerationAccessSession(context.Context, [32]byte) error {
 	s.calls++
@@ -43,7 +44,8 @@ func TestModerationAccessHTTPBoundary(t *testing.T) {
 		t.Fatal("invalid requests reached restricted login")
 	}
 	response, body, _ := doHTTPTest(t, client, "POST", path, `{"username":"test_user","password":"a"}`, map[string][]string{"Content-Type": {"application/json"}})
-	if response.StatusCode != 201 || body["scope"] != "MODERATION_SELF" || body["accountId"] != nil || response.Header.Get("Session-Expires-At") == "" {
+	wantSubject := [32]byte{10}
+	if response.StatusCode != 201 || len(body) != 4 || body["scope"] != "MODERATION_SELF" || body["moderationSubject"] != protocol.EncodeCanonicalBase64url(wantSubject[:]) || body["accountId"] != nil || response.Header.Get("Session-Expires-At") == "" {
 		t.Fatalf("restricted login contract leaked account or lacked scope: %d %+v", response.StatusCode, body)
 	}
 	response, _, _ = doHTTPTest(t, client, "POST", server.URL+"/api/v1/moderation-access/session-revocations", "", map[string][]string{"Authorization": {"Bearer " + httpTestEncoding(32, 9)}})

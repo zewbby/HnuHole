@@ -65,10 +65,10 @@ func (b *boundary) communityModerationAccessPublic(w http.ResponseWriter, r *htt
 		b.sessionFailure(w, err)
 		return
 	}
-	if created.SessionToken == ([32]byte{}) || created.ExpiresAt.IsZero() {
+	if created.SessionToken == ([32]byte{}) || created.Subject == ([32]byte{}) || created.ExpiresAt.IsZero() {
 		b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)
 		return
 	}
 	w.Header().Set("Session-Expires-At", utc(created.ExpiresAt))
-	writeJSON(w, http.StatusCreated, map[string]string{"sessionToken": protocol.EncodeCanonicalBase64url(created.SessionToken[:]), "expiresAt": utc(created.ExpiresAt), "scope": "MODERATION_SELF"})
+	writeJSON(w, http.StatusCreated, map[string]string{"sessionToken": protocol.EncodeCanonicalBase64url(created.SessionToken[:]), "moderationSubject": protocol.EncodeCanonicalBase64url(created.Subject[:]), "expiresAt": utc(created.ExpiresAt), "scope": "MODERATION_SELF"})
 }

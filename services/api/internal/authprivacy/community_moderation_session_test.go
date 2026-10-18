@@ -2,6 +2,7 @@ package authprivacy
 
 import (
 	"context"
+	"crypto/ed25519"
 	"crypto/sha256"
 	"errors"
 	"testing"
@@ -33,6 +34,9 @@ func TestModerationAccessBannedAccountScopePostgres(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if limited.Subject == ([32]byte{}) || limited.Subject != l.c.moderationLocalSubject(initial.AccountID) {
+		t.Fatal("restricted login omitted the account-bound local subject")
+	}
 	view, err := moderationAccessRead(ctx, l.c, limited.SessionToken, true)
 	if err != nil || view.Value != initial.AccountID || !view.ExpiresAt.Equal(limited.ExpiresAt) {
 		t.Fatalf("self-service unavailable: %+v %v", view, err)
@@ -57,6 +61,9 @@ func TestModerationAccessBannedAccountScopePostgres(t *testing.T) {
 	replaced, err := l.c.CreateModerationAccessSession(ctx, ModerationAccessRequest{"moderation_scope_user", labLoginPassword}, passwords)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if replaced.Subject != limited.Subject {
+		t.Fatal("same account's local subject changed on reauthentication")
 	}
 	if _, err = moderationAccessRead(ctx, l.c, limited.SessionToken, true); !errors.Is(err, ErrSessionInvalid) {
 		t.Fatalf("replaced restricted token survived: %v", err)
@@ -116,6 +123,44 @@ func TestModerationAccessDoesNotCancelClosurePostgres(t *testing.T) {
 	}
 	if n := count(t, l.cp, `SELECT count(*) FROM c_auth.accounts WHERE account_id=$1 AND state='PENDING_CLOSE'`, initial.AccountID); n != 1 {
 		t.Fatal("restricted login changed closure state")
+	}
+}
+
+func TestModerationLocalSubjectDoesNotFollowReusedUsernamePostgres(t *testing.T) {
+	control := newGateControl(t)
+	l := control.lab
+	ctx := context.Background()
+	initial := sessionTestAccount(t, l, "moderation_reused_user")
+	passwords := sessionTestPasswordWorker(t, 1)
+	request := ModerationAccessRequest{"moderation_reused_user", labLoginPassword}
+	before, err := l.c.CreateModerationAccessSession(ctx, request, passwords)
+	if err != nil {
+		t.Fatal(err)
+	}
+	closure, _ := closureTestRequest(t, initial.SessionToken)
+	accepted, err := l.c.RequestAccountClosure(ctx, closure, passwords)
+	if err != nil {
+		t.Fatal(err)
+	}
+	advanceClosureClock(t, control, accepted.DueAt)
+	if n, e := l.c.FinalizeDueClosures(ctx, 10); e != nil || n != 1 {
+		t.Fatalf("close original account: %d %v", n, e)
+	}
+	ticket, private := l.ticket(t)
+	ticket.Window = uint32(control.clock.now().Unix() / 1800)
+	message := ticket.MessageBytes()
+	copy(ticket.Signature[:], ed25519.Sign(l.vPrivate, message[:]))
+	_, signup := l.intent(t, ticket, private, request.Username)
+	recreated, err := l.c.CommitSignup(ctx, signup)
+	if err != nil {
+		t.Fatal(err)
+	}
+	after, err := l.c.CreateModerationAccessSession(ctx, request, passwords)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if recreated.AccountID == initial.AccountID || before.Subject == after.Subject || after.Subject == ([32]byte{}) {
+		t.Fatal("reused username inherited the closed account's local pending-material subject")
 	}
 }
 
