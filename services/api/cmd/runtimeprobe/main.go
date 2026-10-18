@@ -37,17 +37,18 @@ type probe struct {
 	httpsRequests int
 }
 type state struct {
-	Email                       string            `json:"email,omitempty"`
-	Username                    string            `json:"username"`
-	Password                    string            `json:"password"`
-	Token                       string            `json:"token"`
-	ExpiresAt                   time.Time         `json:"expiresAt"`
-	IdentityID                  string            `json:"identityId,omitempty"`
-	IdentityReceiptKey          string            `json:"identityReceiptKey,omitempty"`
-	VerifierConfirmationBody    map[string]string `json:"verifierConfirmationBody,omitempty"`
-	VerifierConfirmationHeaders map[string]string `json:"verifierConfirmationHeaders,omitempty"`
-	Posts                       *postProbeState   `json:"posts,omitempty"`
-	Images                      *imageProbeState  `json:"images,omitempty"`
+	Email                       string                `json:"email,omitempty"`
+	Username                    string                `json:"username"`
+	Password                    string                `json:"password"`
+	Token                       string                `json:"token"`
+	ExpiresAt                   time.Time             `json:"expiresAt"`
+	IdentityID                  string                `json:"identityId,omitempty"`
+	IdentityReceiptKey          string                `json:"identityReceiptKey,omitempty"`
+	VerifierConfirmationBody    map[string]string     `json:"verifierConfirmationBody,omitempty"`
+	VerifierConfirmationHeaders map[string]string     `json:"verifierConfirmationHeaders,omitempty"`
+	Posts                       *postProbeState       `json:"posts,omitempty"`
+	Images                      *imageProbeState      `json:"images,omitempty"`
+	Moderation                  *moderationProbeState `json:"moderation,omitempty"`
 }
 
 func main() {
@@ -287,6 +288,13 @@ func (p *probe) run(ctx context.Context, phase string) error {
 		return p.save(s)
 	case "images-restart":
 		return p.imageSnapshot(ctx, s)
+	case "moderation":
+		if err = p.moderationFacts(ctx, &s); err != nil {
+			return err
+		}
+		return p.save(s)
+	case "moderation-restart":
+		return p.moderationSnapshot(ctx, s)
 	case "verifier-stage":
 		if err = p.verifierStage(ctx, &s); err != nil {
 			return err
@@ -329,7 +337,10 @@ func (p *probe) run(ctx context.Context, phase string) error {
 		if err = p.postGateRead(ctx, s, 503); err != nil {
 			return err
 		}
-		return p.imageGateRead(ctx, s, 503)
+		if err = p.imageGateRead(ctx, s, 503); err != nil {
+			return err
+		}
+		return p.moderationGateRead(ctx, s, 503)
 	case "recovered":
 		if _, err = p.directory(ctx, s.Token, 401); err != nil {
 			return err
@@ -341,6 +352,9 @@ func (p *probe) run(ctx context.Context, phase string) error {
 			return err
 		}
 		if err = p.imageGateRead(ctx, s, 401); err != nil {
+			return err
+		}
+		if err = p.moderationGateRead(ctx, s, 401); err != nil {
 			return err
 		}
 		s, err = p.login(ctx, s)
@@ -357,6 +371,11 @@ func (p *probe) run(ctx context.Context, phase string) error {
 		}
 		if s.Images != nil {
 			if err = p.imageSnapshot(ctx, s); err != nil {
+				return err
+			}
+		}
+		if s.Moderation != nil {
+			if err = p.moderationSnapshot(ctx, s); err != nil {
 				return err
 			}
 		}

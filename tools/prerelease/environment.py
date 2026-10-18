@@ -287,6 +287,11 @@ class Lab:
     def grants(self, party, target=None):
         names = ['grant-community.sql', 'grant-post-images.sql', 'grant-moderation.sql'] if party == 'c' else ['grant-verifier.sql']
         for name in names:
+            if name == 'grant-moderation.sql':
+                # --no-privileges restore omits migration ACLs, including its
+                # PUBLIC function EXECUTE revocation. Re-establish the same
+                # deny baseline before applying the canonical opt-in grants.
+                self.sql(party, (self.source / 'infra/prerelease/reset-moderation-grants.sql').read_text(), target=target, role='migrator')
             self.sql(party, (self.source / 'infra/postgres' / name).read_text(), target=target, role='migrator')
 
     def operator(self, command, party):
@@ -380,8 +385,11 @@ class Lab:
             sequence_selector = "WHERE n.nspname NOT LIKE 'pg_%' AND c.relkind='S'"
             if audit.count(table_selector) != 1 or audit.count(sequence_selector) != 1:
                 raise RuntimeError('upstream privacy audit selectors changed; review explicit moderation matrix')
-            audit = audit.replace(table_selector, table_selector + " AND n.nspname<>'c_moderation'")
-            audit = audit.replace(sequence_selector, sequence_selector + " AND n.nspname<>'c_moderation'")
+            if party == 'c':
+                audit = audit.replace(table_selector, table_selector + " AND n.nspname<>'c_moderation'")
+                audit = audit.replace(sequence_selector, sequence_selector + " AND n.nspname<>'c_moderation'")
+            elif self.sql(party, "SELECT to_regnamespace('c_moderation') IS NOT NULL") != 'f':
+                raise RuntimeError('moderation schema must not exist in V')
             self.sql(party, audit)
             if party == 'c':
                 self.sql(party, (self.source / 'infra/prerelease/moderation-role-audit.sql').read_text())
@@ -484,6 +492,8 @@ class Lab:
             self.probe('posts')
             self.probe('images')
             passed('actual-https-registration-login-catalog-text-image-and-denials')
+            self.probe('moderation')
+            passed('existing-main-report-and-read-notification-facts-created-over-https')
             # Explicit freeze before stopping writers avoids inventing a clean
             # gate after an interrupted anchor/SQL authorization commit.
             for party in 'cv':
@@ -522,6 +532,7 @@ class Lab:
             self.health()
             self.probe('recovered')
             self.probe('images-restart')
+            self.probe('moderation-restart')
             passed('restore-old-session-rejected-fresh-login-reads-original-text-and-image')
             # Failed deployment uses actual candidate startup with a wrong
             # validator fingerprint; it must fail before accepting traffic.
@@ -537,11 +548,13 @@ class Lab:
             self.start(prefix='rollback-')
             self.health()
             self.probe('images-restart')
+            self.probe('moderation-restart')
             passed('previous-main-binaries-run-on-current-restored-schema')
             self.quiesce()
             self.start()
             self.health()
             self.probe('images-restart')
+            self.probe('moderation-restart')
             passed('candidate-redeploy-after-application-rollback')
             evidence['binarySha256'] = {p.name: sha(p) for p in (self.root / 'bin').iterdir()}
             evidence['result'] = 'PASS'
