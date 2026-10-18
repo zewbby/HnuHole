@@ -2,7 +2,7 @@
 """Owned Linux prerelease C/V lab. No external DSN, downloads or down migrations.
 
 All mutable state belongs to --root, which must be new for init. PostgreSQL uses
-four separate clusters (source C/V and restored C/V), private sockets and SCRAM.
+five separate clusters (source C/V, restored C/V, schema13 upgrade C), private sockets and SCRAM.
 Only evidence.json is suitable for publication; all other state is private.
 """
 import argparse

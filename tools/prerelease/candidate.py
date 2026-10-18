@@ -99,6 +99,16 @@ def main():
         cert = run([keytool, '-exportcert', '-keystore', env['HNUHOLE_TEST_KEYSTORE'],
                     '-storepass:env', 'HNUHOLE_TEST_STORE_PASSWORD', '-alias', 'prerelease-test'], app, env, binary=True)
         digest = hashlib.sha256(cert).hexdigest()
+        # Flutter #169336: --no-pub alone retains dev plugin registration.
+        # Generate RELEASE tooling through the supported config-only command,
+        # then require the already-enforced locks and source to remain exact.
+        run([flutter, 'build', 'apk', '--release', '--config-only', '--target', 'lib/main.dart',
+             '--target-platform', 'android-arm64', '--build-name', version,
+             '--build-number', str(a.build_number)], app, env, visible=True)
+        clean()
+        require(all(sha(source / name) == value for name, value in locks.items()), 'config-only changed a lockfile')
+        registrant = app / 'android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java'
+        require(registrant.is_file() and 'dev.flutter.plugins.integration_test' not in registrant.read_text(), 'release tooling retained a dev-only integration plugin')
         run([flutter, 'build', 'apk', '--release', '--no-pub', '--target', 'lib/main.dart',
              '--target-platform', 'android-arm64', '--build-name', version,
              '--build-number', str(a.build_number)], app, env, visible=True)
