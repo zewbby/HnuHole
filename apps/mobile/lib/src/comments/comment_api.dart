@@ -1,6 +1,8 @@
 import 'comment_models.dart';
 
 /// The host supplies current authenticated transport; tokens never enter models.
+/// Each instance is bound to one fixed C environment. Its CommentJournal must
+/// use that same environment; changing environments requires a new controller.
 abstract interface class CommentApi {
   /// The adapter must resolve the command receipt and read the current task.
   /// A historical ACCEPTED receipt by itself is never a task snapshot.
@@ -39,6 +41,8 @@ class CommentIdentityDeleted implements Exception {
 /// A host implementation must durably and atomically save the intent plus any
 /// referenced original image bytes before put completes. This is a task journal,
 /// not a comment draft list. Entries and blobs must be isolated by account.
+/// Each instance is also bound to one fixed C environment, matching CommentApi.
+/// Account IDs alone must never share journal entries across C environments.
 abstract interface class CommentJournal {
   Future<List<CommentJournalEntry>> read(String accountId);
   Future<void> put(String accountId, CommentJournalEntry entry);

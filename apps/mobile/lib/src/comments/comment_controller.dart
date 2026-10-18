@@ -6,6 +6,7 @@ import 'comment_models.dart';
 
 /// Independent task core. The application supplies a durable account-scoped
 /// journal, authenticated API and the unified notification rendering adapter.
+/// Both dependencies must be bound to the same fixed C environment per instance.
 class CommentController extends ChangeNotifier {
   CommentController({required this.api, required this.journal});
   final CommentApi api;
@@ -470,6 +471,17 @@ class CommentController extends ChangeNotifier {
       await _unknown(account, epoch, entry);
       return;
     }
+    if (rejectedMutation &&
+        task.attemptVersion > expected &&
+        (task.state == CommentTaskState.accepted ||
+            task.state == CommentTaskState.failed)) {
+      // This API returns task metadata, not the newer attempt's owner payload.
+      // Do not attach this rejected command's local text/image to that version.
+      // A future adapter must fetch actual owner material and align its version
+      // with the durable journal before this newer attempt may become editable.
+      await _unknown(account, epoch, entry);
+      return;
+    }
     if ((!rejectedMutation && task.attemptVersion != expected) ||
         intent.operation == CommentOperation.abandon &&
             !rejectedMutation &&
@@ -498,6 +510,8 @@ class CommentController extends ChangeNotifier {
     }
     if (task.state == CommentTaskState.published ||
         task.state == CommentTaskState.abandoned) {
+      // A higher terminal version needs no retry material. Its verified binding
+      // is enough to clear private buffers and report the authoritative outcome.
       await _remove(account, entry.localId);
       if (!_current(account, epoch)) return;
       _entries.remove(entry.localId);

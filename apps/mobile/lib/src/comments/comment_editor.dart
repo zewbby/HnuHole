@@ -56,8 +56,8 @@ class CommentEditor {
     required Future<bool> Function(CommentTarget next) confirm,
   }) async {
     if (_left || target.postId != next.postId) return false;
-    if (target.sameAs(next)) return true;
     final version = ++_targetVersion;
+    if (target.sameAs(next)) return true;
     if (hasInput && !await confirm(next)) return false;
     if (_left || version != _targetVersion) return false;
     _target = next;

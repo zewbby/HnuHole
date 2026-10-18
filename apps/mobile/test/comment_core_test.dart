@@ -182,6 +182,39 @@ void main() {
       },
     );
 
+    test('reselecting the current target invalidates an older pending switch confirmation', () async {
+      final original = CommentTarget(
+        postId: _post,
+        rootCommentId: _id(5),
+        commentId: _id(6),
+      );
+      final next = CommentTarget(
+        postId: _post,
+        rootCommentId: _id(5),
+        commentId: _id(8),
+      );
+      final editor = CommentEditor(original)
+        ..body = '仍回复原对象'
+        ..setImage(_image());
+      final approval = Completer<bool>();
+      final switching = editor.switchTarget(
+        next,
+        confirm: (_) => approval.future,
+      );
+      expect(
+        await editor.switchTarget(
+          original,
+          confirm: (_) async => throw StateError('Must not ask'),
+        ),
+        isTrue,
+      );
+      approval.complete(true);
+      expect(await switching, isFalse);
+      expect(editor.target, same(original));
+      expect(editor.body, '仍回复原对象');
+      expect(editor.image, isNotNull);
+    });
+
     test('cross-post transfer is rejected without asking', () async {
       final editor = CommentEditor(CommentTarget(postId: _post))..body = '文字';
       expect(
@@ -506,6 +539,98 @@ void main() {
         expect(api.taskQueries, 1);
       },
     );
+
+    test('rejected mutation cannot label local content as a higher FAILED attempt whose material is unavailable', () async {
+      api.onExecute = (intent) async =>
+          _snapshot(intent, state: CommentTaskState.failed);
+      await submit();
+      final original = api.sent.single;
+      api.onExecute = (_) async =>
+          throw CommentCommandRejected('TASK_VERSION_CONFLICT');
+      // The current server attempt contains other text/image bytes. The metadata
+      // API cannot return those owner materials, so the local edit cannot be
+      // presented or resent as if it belonged to that newer attempt.
+      api.onQueryTask = (_, _) async =>
+          _snapshot(original, state: CommentTaskState.failed, version: 2);
+      await controller.retry(
+        localId: _task,
+        commandId: _retryCommand,
+        content: CommentContent(body: '未受理的本地编辑', image: _image()),
+      );
+      expect(
+        controller.entries.single.transport,
+        CommentTransportState.unknown,
+      );
+      expect(controller.entries.single.task!.attemptVersion, 1);
+      expect(controller.entries.single.content!.body, '未受理的本地编辑');
+      expect(controller.failures, isEmpty);
+      expect(controller.resolvedTasks, isEmpty);
+      await expectLater(
+        controller.retry(
+          localId: _task,
+          commandId: _abandonCommand,
+          content: _content(),
+        ),
+        throwsStateError,
+      );
+      await controller.reconcile(_task);
+      expect(
+        controller.entries.single.transport,
+        CommentTransportState.unknown,
+      );
+      expect((await journal.read(_account)).single.task!.attemptVersion, 1);
+      expect(api.sent, hasLength(2));
+    });
+
+    test('rejected mutation keeps a higher ACCEPTED attempt unknown without adopting local retry material', () async {
+      api.onExecute = (intent) async =>
+          _snapshot(intent, state: CommentTaskState.failed);
+      await submit();
+      final original = api.sent.single;
+      api.onExecute = (_) async =>
+          throw CommentCommandRejected('TASK_VERSION_CONFLICT');
+      api.onQueryTask = (_, _) async => _snapshot(original, version: 2);
+      await controller.abandon(localId: _task, commandId: _abandonCommand);
+      expect(
+        controller.entries.single.transport,
+        CommentTransportState.unknown,
+      );
+      expect(controller.entries.single.task!.attemptVersion, 1);
+      expect(controller.failures, isEmpty);
+      await expectLater(
+        controller.abandon(localId: _task, commandId: _retryCommand),
+        throwsStateError,
+      );
+    });
+
+    for (final terminal in [
+      CommentTaskState.published,
+      CommentTaskState.abandoned,
+    ]) {
+      test(
+        'rejected mutation may resolve higher $terminal metadata and clear private buffers',
+        () async {
+          api.onExecute = (intent) async =>
+              _snapshot(intent, state: CommentTaskState.failed);
+          await submit();
+          final original = api.sent.single;
+          api.onExecute = (_) async =>
+              throw CommentCommandRejected('TASK_VERSION_CONFLICT');
+          api.onQueryTask = (_, _) async =>
+              _snapshot(original, state: terminal, version: 2);
+          await controller.retry(
+            localId: _task,
+            commandId: _retryCommand,
+            content: CommentContent(body: '未受理的本地编辑', image: _image()),
+          );
+          expect(controller.entries, isEmpty);
+          expect(controller.failures, isEmpty);
+          expect(controller.resolvedTasks.single.state, terminal);
+          expect(controller.resolvedTasks.single.attemptVersion, 2);
+          expect(await journal.read(_account), isEmpty);
+        },
+      );
+    }
 
     test('a contradictory PUBLISHED read cannot rewrite a failed attempt at the same version', () async {
       api.onExecute = (intent) async =>
