@@ -120,4 +120,6 @@ jobs:
       - name: Signing builder boundary regression
         run: python -B -m unittest discover -s tools/tests -p test_android_b3_b4_signature_contrast.py -v
       - name: Guarded validation tooling regression
-        run: python -B -m unittest discover -s tools/tests -v
+        run: |
+          python -m pip install -r packages/openapi/requirements-check.txt
+          python -B -m unittest discover -s tools/tests -v

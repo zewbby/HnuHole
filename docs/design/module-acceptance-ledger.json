@@ -5,7 +5,7 @@
   "branch": "codex/post-image-integration",
   "baselineHeadCommit": "075b567ee6093319a0dcb48ab40919aada5cb8f2",
   "workingTreeContainsUncommittedImplementation": false,
-  "workflow": "PR13_MAIN_INTEGRATION_IN_PROGRESS_PASSKEY_DUAL_DEFERRED",
+  "workflow": "PR13_MAIN_CONFLICTS_RESOLVED_HOST_SQL_BUILD_PASS_DEVICE_HISTORY_SCOPED_PASSKEY_DUAL_DEFERRED",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
   "baselineEvidence": "services/api/authlab/platform-acceptance-verification.json",
@@ -5702,6 +5702,31 @@
         "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
         "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
         "fullModuleAcceptanceGranted": false
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -9016,6 +9041,31 @@
         "evidence": "docs/design/community-android-oem-transfer-20261018.json",
         "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
         "scope": "Application category only; existing-installed target, one HnuHole Stage4 100 MB. Application-data and other data categories excluded."
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -10654,6 +10704,31 @@
         "evidence": "docs/design/community-android-oem-transfer-20261018.json",
         "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
         "scope": "Application category only; existing-installed target, one HnuHole Stage4 100 MB. Application-data and other data categories excluded."
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -11360,6 +11435,31 @@
         "targetCredentialFeature": false,
         "targetCredentialServicePresent": false,
         "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json"
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -13568,6 +13668,31 @@
         "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
         "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -14456,6 +14581,31 @@
         "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
         "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -15260,6 +15410,31 @@
         "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
         "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
         "fullModuleAcceptanceGranted": false
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -16068,6 +16243,31 @@
         "evidence": "docs/design/auth-privacy-b5-main-integration-verification.json",
         "nativeDeviceAcceptance": "NOT_RUN",
         "productionApproved": false
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -17086,6 +17286,31 @@
         "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
         "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
         "fullModuleAcceptanceGranted": false
+      },
+      "currentPr13MainRegression": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+        "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+        "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+        "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+        "sourceFileCount": 595,
+        "counts": {
+          "mobile": 395,
+          "imageViewer": 112,
+          "authPasskeyHost": 9,
+          "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+          "imageSqlPassEventsIncludingSubtests": 251,
+          "imageSqlSkipEvents": 0
+        },
+        "candidateNativeDeviceAcceptance": "NOT_RUN",
+        "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+        "completeAppAccepted": false,
+        "mergedToMain": false,
+        "deployed": false,
+        "report": "docs/design/community-pr13-main-integration-20261018.md",
+        "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+        "githubChecks": "PENDING_PUSH"
       }
     },
     {
@@ -25297,7 +25522,7 @@
       "productionApproved": false
     }
   },
-  "workingTreeUncommitted": true,
+  "workingTreeUncommitted": false,
   "latestValidationEvidence": "docs/design/community-auth-integration-20261013.json",
   "cleanupEvidence": {
     "evidence": "docs/design/community-auth-integration-delivery-20261013.json",
@@ -25710,7 +25935,7 @@
     "documentationReceiptCommitReference": "Documentation-only commit containing this record; final HEAD in external final-delivery.json",
     "evidence": "docs/design/community-auth-integration-delivery-20261013.json"
   },
-  "workingTreeStatusNote": "Independent PR13 main integration in progress; historical runtime/device evidence retained only for original inputs.",
+  "workingTreeStatusNote": "Normal PR13 main integration merge containing this record; exact delivered HEAD and remote equality verified externally. No other branch push or production action.",
   "currentAC04": {
     "recordedOn": "2026-10-05",
     "implementationState": "TEST_SCENARIOS_IMPLEMENTED",
@@ -37829,6 +38054,31 @@
       "productCodeChanged": false,
       "passkeyDualDeferred": true,
       "oemTransferNotRun": true
+    },
+    "currentMainIntegration": {
+      "recordedOn": "2026-10-18",
+      "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+      "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+      "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+      "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+      "sourceFileCount": 595,
+      "counts": {
+        "mobile": 395,
+        "imageViewer": 112,
+        "authPasskeyHost": 9,
+        "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+        "imageSqlPassEventsIncludingSubtests": 251,
+        "imageSqlSkipEvents": 0
+      },
+      "candidateNativeDeviceAcceptance": "NOT_RUN",
+      "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+      "completeAppAccepted": false,
+      "mergedToMain": false,
+      "deployed": false,
+      "report": "docs/design/community-pr13-main-integration-20261018.md",
+      "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+      "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+      "githubChecks": "PENDING_PUSH"
     }
   },
   "currentCommunityAndroidStage1Preparation": {
@@ -38887,14 +39137,28 @@
     "nextAcceptance": "NI-X02 only remains in original four-stage Android plan; compatible second physical Android/provider required. iOS and production separate."
   },
   "currentPr13MainIntegration": {
-    "result": "IN_PROGRESS_REGRESSION_NOT_RUN",
-    "communityHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
-    "mainHEAD": "65a8dbf0e17a07edd42503620365e18241c92a76",
-    "historicalEvidenceOnly": "Prior single/dual Android results apply to their original APKs. New combined native-device acceptance NOT_RUN; cross-device Passkey remains deferred.",
-    "preservedMainB5AndImageEvidence": true,
-    "historicalLedgers": [
-      "2abda5935e2e5618ca90bb7e60314d7c6572fe85:docs/design/module-acceptance-ledger.json",
-      "65a8dbf0e17a07edd42503620365e18241c92a76:docs/design/module-acceptance-ledger.json"
-    ]
+    "recordedOn": "2026-10-18",
+    "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+    "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+    "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+    "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+    "sourceFileCount": 595,
+    "counts": {
+      "mobile": 395,
+      "imageViewer": 112,
+      "authPasskeyHost": 9,
+      "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+      "imageSqlPassEventsIncludingSubtests": 251,
+      "imageSqlSkipEvents": 0
+    },
+    "candidateNativeDeviceAcceptance": "NOT_RUN",
+    "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+    "completeAppAccepted": false,
+    "mergedToMain": false,
+    "deployed": false,
+    "report": "docs/design/community-pr13-main-integration-20261018.md",
+    "evidence": "docs/design/community-pr13-main-integration-20261018.json",
+    "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
+    "githubChecks": "PENDING_PUSH"
   }
 }

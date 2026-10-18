@@ -1,5 +1,7 @@
 # 文字社区与认证 Android 统一验收任务单
 
+> **2026-10-18 PR #13 主线冲突整合：宿主/真实SQL/构建范围PASS。**社区 `2abda59` 正常整合main `8fa9cbc`，保留图片/B5闭号擦除与社区无障碍修复。76冲突收口；全mobile395/分析0、R05/F4、server/权限/runtime/vet、图片SQL和组件、Android构建均有本轮证据。原生插件/SQL/锁与main一致；未操作手机，旧设备证据仍限原APK，NI-X02跨设备Passkey继续延期。旧分支名/79条继承提交与main新协作policy不兼容，未改policy或强推，PR保持draft待审查。见[整合报告](community-pr13-main-integration-20261018.md)/[机器记录](community-pr13-main-integration-20261018.json)。以下记录按原时点与范围保留。
+
 > **2026-10-18 OEM 双实体实测收口：NI-X01 限定路径 PASS。**官方搬家 vivo→真我，只传唯一 HnuHole Stage4/100 MB/成功1项失败0项；源已登录、目标访客对照后，目标重开仍访客，源登录及 Stage4Local 保持，两侧 no_backup 文件哈希与服务端会话/计数不变。仅选应用、未选应用数据，不外推到强制私有数据导入或所有OEM。7项本轮限定检查PASS，源码/其他分支未改；自有连接已收尾，设置未改，最后有效会话在vivo。恢复码双实体8项历史限定PASS保留；Android原四任务仅NI-X02跨设备Passkey仍按用户要求延期，iOS/生产仍独立。见[OEM报告](community-android-oem-transfer-20261018.md)/[机器记录](community-android-oem-transfer-20261018.json)。以下旧日期/同日较早状态按当时范围保留。
 
 > **2026-10-18 恢复码双实体范围完成：8项限定PASS。**vivo→真我实际恢复码重设/隐藏后完整确认/无自动登录、旧密码与旧码401、同一活跃旧会话撤销、双向单移动会话接替、两机原生重开及源草稿标记隔离均有本轮UI/HTTPS/SQL证据。真我仅恢复当前用户的原签名隔离包；有效会话最后留在真我。产品代码/依赖/协议/其他分支未改，主机旧记录不计本轮；只更新脱敏交接。Passkey NI-X02按用户要求单独延期，真我当前ROM缺凭据feature/service且官方OTA无新版；NI-X01 OEM仍NOT_RUN，直接安装不代证搬家，iOS/生产仍独立。见[本轮报告](community-android-recovery-code-dual-device-20261018.md)/[机器记录](community-android-recovery-code-dual-device-20261018.json)。旧日期记录按原范围保留。
