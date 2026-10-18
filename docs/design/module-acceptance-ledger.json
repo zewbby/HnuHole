@@ -1,11 +1,11 @@
 {
   "schemaVersion": "hnuhole-module-acceptance-ledger/v1",
-  "recordedOn": "2026-10-16",
+  "recordedOn": "2026-10-18",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/community-flutter-pages",
   "baselineHeadCommit": "7452dadefb52e7b695cdd1079d21083fcb6cae02",
   "workingTreeContainsUncommittedImplementation": false,
-  "workflow": "COMMUNITY_TASK1_TASK2_TASK3_SCOPED_PASS_TASK4_NOT_RUN",
+  "workflow": "COMMUNITY_TASK1_TASK2_TASK3_SCOPED_PASS_RECOVERY_CODE_DUAL_PASS_OEM_NIX01_SCOPED_PASS_PASSKEY_DUAL_DEFERRED",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
   "baselineEvidence": "services/api/authlab/platform-acceptance-verification.json",
@@ -4563,6 +4563,13 @@
           "deviceSourceFingerprint": "ec7aab83fa4024a578529c3e924c81d614237ee547bd08d0e8f940e8bad7ed73",
           "nextAcceptance": "Keep normal/A session and current owned services/data; stage2-4 and platform/production acceptance remain independent, default stage2 key guard unchanged."
         }
+      },
+      "communityRecoveryCodeDualDevice": {
+        "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+        "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+        "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+        "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "fullModuleAcceptanceGranted": false
       }
     },
     {
@@ -5500,7 +5507,14 @@
         "definitive wrong-cert/package provider evidence",
         "deliberate cancellation",
         "active rather than already-replaced old session revocation"
-      ]
+      ],
+      "communityRecoveryCodeDualDevice": {
+        "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+        "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+        "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+        "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "fullModuleAcceptanceGranted": false
+      }
     },
     {
       "id": "A08",
@@ -6960,7 +6974,14 @@
         "definitive wrong-cert/package provider evidence",
         "deliberate cancellation",
         "active rather than already-replaced old session revocation"
-      ]
+      ],
+      "communityRecoveryCodeDualDevice": {
+        "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+        "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+        "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+        "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "fullModuleAcceptanceGranted": false
+      }
     },
     {
       "id": "A10",
@@ -8670,7 +8691,22 @@
         "definitive wrong-cert/package provider evidence",
         "deliberate cancellation",
         "active rather than already-replaced old session revocation"
-      ]
+      ],
+      "communityRecoveryCodeDualDevice": {
+        "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+        "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+        "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+        "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "fullModuleAcceptanceGranted": false
+      },
+      "communityOemDualDevice": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_NI_X01_OBSERVED_OEM_APP_TRANSFER_SCOPE",
+        "report": "docs/design/community-android-oem-transfer-20261018.md",
+        "evidence": "docs/design/community-android-oem-transfer-20261018.json",
+        "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "scope": "Application category only; existing-installed target, one HnuHole Stage4 100 MB. Application-data and other data categories excluded."
+      }
     },
     {
       "id": "A13",
@@ -10217,7 +10253,22 @@
         "definitive wrong-cert/package provider evidence",
         "deliberate cancellation",
         "active rather than already-replaced old session revocation"
-      ]
+      ],
+      "communityRecoveryCodeDualDevice": {
+        "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+        "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+        "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+        "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "fullModuleAcceptanceGranted": false
+      },
+      "communityOemDualDevice": {
+        "recordedOn": "2026-10-18",
+        "result": "PASS_NI_X01_OBSERVED_OEM_APP_TRANSFER_SCOPE",
+        "report": "docs/design/community-android-oem-transfer-20261018.md",
+        "evidence": "docs/design/community-android-oem-transfer-20261018.json",
+        "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "scope": "Application category only; existing-installed target, one HnuHole Stage4 100 MB. Application-data and other data categories excluded."
+      }
     },
     {
       "id": "N02",
@@ -10863,7 +10914,14 @@
         "definitive wrong-cert/package provider evidence",
         "deliberate cancellation",
         "active rather than already-replaced old session revocation"
-      ]
+      ],
+      "communityDualPasskeyDeferral": {
+        "result": "BLOCKED",
+        "userDeferred": true,
+        "targetCredentialFeature": false,
+        "targetCredentialServicePresent": false,
+        "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json"
+      }
     },
     {
       "id": "B01",
@@ -14523,6 +14581,13 @@
         "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
         "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
+      },
+      "communityRecoveryCodeDualDevice": {
+        "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+        "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+        "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+        "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "fullModuleAcceptanceGranted": false
       }
     },
     {
@@ -16045,6 +16110,13 @@
         "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
         "fullModulePassed": false,
         "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
+      },
+      "communityRecoveryCodeDualDevice": {
+        "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+        "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+        "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+        "testedHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+        "fullModuleAcceptanceGranted": false
       }
     },
     {
@@ -23337,7 +23409,7 @@
     "documentationReceiptCommitReference": "Documentation-only commit containing this record; final HEAD in external final-delivery.json",
     "evidence": "docs/design/community-auth-integration-delivery-20261013.json"
   },
-  "workingTreeStatusNote": "Integrated source28cee465 and saved community7452dade normally pushed; source tree clean at merge delivery,443 final inputs match. Only documentation receipt updates follow; no new product edits or device execution.",
+  "workingTreeStatusNote": "Documentation-only acceptance delivery: recovery-code dual-device and observed OEM NI-X01 results saved in the commit containing this record. Runtime code and other branches unchanged; NI-X02 cross-device Passkey deferred. Exact delivery commit and remote equality are verified after push.",
   "currentAC04": {
     "recordedOn": "2026-10-05",
     "implementationState": "TEST_SCENARIOS_IMPLEMENTED",
@@ -34556,7 +34628,7 @@
     "functionalAcceptancePromoted": false,
     "bookkeepingOnly": true
   },
-  "updatedOn": "2026-10-15",
+  "updatedOn": "2026-10-18",
   "currentB6": {
     "recordedOn": "2026-10-13",
     "currentResult": "PASS",
@@ -35143,12 +35215,12 @@
     }
   },
   "currentCommunityAndroidUnifiedAcceptance": {
-    "recordedOn": "2026-10-16",
+    "recordedOn": "2026-10-18",
     "plan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
     "planningBaselineHEAD": "1a0051297a4f8a046ca41191f1c47ab5d7b5b166",
     "productSourceCommit": "9dda242b21694af1c4c33f11784958851c805fc4",
     "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
-    "result": "PARTIAL_TASK1_TASK2_TASK3_SCOPED_PASS_TASK4_NOT_RUN",
+    "result": "PARTIAL_RECOVERY_CODE_AND_OEM_SCOPED_PASS_PASSKEY_DUAL_DEFERRED",
     "scope": "Single Android community/native/Passkey first, then two physical Android NI-X01 and NI-X02",
     "phases": [
       {
@@ -35251,7 +35323,7 @@
         "id": "CA-T04",
         "order": 4,
         "name": "Two physical Android OEM transfer and Passkey recovery",
-        "result": "NOT_RUN",
+        "result": "PARTIAL_NIX01_SCOPED_PASS_RECOVERY_CODE_PASS_NIX02_DEFERRED",
         "checkIds": [
           "NI-X01",
           "NI-X02"
@@ -35262,7 +35334,36 @@
           "A07",
           "N03"
         ],
-        "blocker": "SECOND_PHYSICAL_ANDROID_AVAILABILITY_AND_TWO_DEVICE_WINDOW_UNCONFIRMED"
+        "blocker": "NI-X02_USER_DEFERRED_TARGET_ROM_CREDENTIAL_CAPABILITY_ABSENT",
+        "recoveryCodeSupplement": {
+          "recordedOn": "2026-10-18",
+          "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+          "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+          "finalHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+          "currentScopePassCount": 8,
+          "fullOriginalFourStageAcceptancePassed": false,
+          "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+          "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+          "productCodeChanged": false,
+          "passkeyDualDeferred": true,
+          "oemTransferNotRun": true
+        },
+        "originalCheckResults": {
+          "NI-X01": "PASS_OBSERVED_OEM_APP_TRANSFER_SCOPE",
+          "NI-X02": "BLOCKED_USER_DEFERRED"
+        },
+        "oemTransfer": {
+          "result": "PASS_NI_X01_OBSERVED_OEM_APP_TRANSFER_SCOPE",
+          "report": "docs/design/community-android-oem-transfer-20261018.md",
+          "evidence": "docs/design/community-android-oem-transfer-20261018.json",
+          "limitations": [
+            "Does not prove unsupported/forced private application-data import, a wiped/new target, arbitrary OEM or Android versions. OEM warns lower target OS does not support some data.",
+            "Stage4Local marker retention observed; full draft content was not re-compared character by character.",
+            "NI-X02 Passkey cross-device recovery remains BLOCKED_USER_DEFERRED; no new Passkey attempt. iOS/production excluded.",
+            "Host/mobile suites not rerun in this documentation-only window; old host counts are historical, not current execution."
+          ],
+          "finalHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13"
+        }
       }
     ],
     "deviceOperationAuthorizedByThisPlanningRequest": false,
@@ -35414,6 +35515,19 @@
       "sevenHostStages": "PASS",
       "fullModuleOrAppPassed": false,
       "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
+    },
+    "currentRecoveryCodeSupplement": {
+      "recordedOn": "2026-10-18",
+      "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+      "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+      "finalHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+      "currentScopePassCount": 8,
+      "fullOriginalFourStageAcceptancePassed": false,
+      "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+      "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+      "productCodeChanged": false,
+      "passkeyDualDeferred": true,
+      "oemTransferNotRun": true
     }
   },
   "currentCommunityAndroidStage1Preparation": {
@@ -35693,5 +35807,310 @@
       "fullModuleOrAppPassed": false,
       "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
     }
-  ]
+  ],
+  "preRecoveryCodeUnifiedAcceptance20261018": {
+    "recordedOn": "2026-10-16",
+    "plan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+    "planningBaselineHEAD": "1a0051297a4f8a046ca41191f1c47ab5d7b5b166",
+    "productSourceCommit": "9dda242b21694af1c4c33f11784958851c805fc4",
+    "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+    "result": "PARTIAL_TASK1_TASK2_TASK3_SCOPED_PASS_TASK4_NOT_RUN",
+    "scope": "Single Android community/native/Passkey first, then two physical Android NI-X01 and NI-X02",
+    "phases": [
+      {
+        "id": "CA-T01",
+        "order": 1,
+        "name": "Single Android community flows",
+        "result": "PASS_TASK1_SCOPED",
+        "checkIds": [
+          "CA-A01",
+          "CA-A02",
+          "CA-A03",
+          "CA-A04",
+          "CA-A05",
+          "CA-A06",
+          "CA-A07",
+          "CA-A10"
+        ],
+        "moduleIds": [
+          "A06",
+          "A08",
+          "A12",
+          "B02",
+          "B03",
+          "B05",
+          "B06",
+          "B10"
+        ],
+        "blocker": null,
+        "preparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_TASK1_COMPLETED",
+        "preparationReport": "docs/design/community-android-stage1-preparation-20261015.md",
+        "preparationEvidence": "docs/design/community-android-stage1-preparation-20261015.json",
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceEvidence": "docs/design/community-android-device-validation-20261015.json",
+        "manualIme": "USER_CONFIRMED"
+      },
+      {
+        "id": "CA-T02",
+        "order": 2,
+        "name": "Native storage and lifecycle",
+        "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+        "checkIds": [
+          "CA-A08",
+          "CA-A09",
+          "CA-A11",
+          "CA-A12"
+        ],
+        "moduleIds": [
+          "N01",
+          "A12",
+          "A08"
+        ],
+        "blocker": null,
+        "preparationResult": "PASS_PREPARATION_AND_APPROVED_DEVICE_SCOPE",
+        "preparationReport": "docs/design/community-android-stage2-preparation-20261015.md",
+        "preparationEvidence": "docs/design/community-android-stage2-preparation-20261015.json",
+        "publishedPreparationSourceCommit": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+        "historicalPreparationResult": "PASS_NON_PHONE_PREPARATION_DEVICE_NOT_RUN",
+        "currentDeviceEvidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+        "manualReopenAndReboot": "USER_CONFIRMED",
+        "talkbackSupplement": {
+          "recordedOn": "2026-10-15",
+          "result": "PASS_TALKBACK_NETWORK_RETRY_SCOPED",
+          "report": "docs/design/community-android-talkback-network-retry-20261015.md",
+          "evidence": "docs/design/community-android-talkback-network-retry-20261015.json",
+          "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+          "previousScopedEvidence": "docs/design/community-android-talkback-validation-20261015.json",
+          "ordinaryNetworkErrorAnnouncementAndReload": "USER_CONFIRMED_PASS",
+          "fullModulePassed": false,
+          "nextAcceptance": "task3 own RP/system Passkey; task4 dual physical Android; iOS/production and unvisited flows independent"
+        }
+      },
+      {
+        "id": "CA-T03",
+        "order": 3,
+        "name": "System Passkey and single-device regression closure",
+        "result": "PASS_TASK3_APPROVED_SINGLE_ANDROID_SCOPE",
+        "checkIds": [
+          "CA-A13"
+        ],
+        "moduleIds": [
+          "N03",
+          "A07",
+          "A09"
+        ],
+        "blocker": null,
+        "preparationResult": "PASS_INDEPENDENT_HOST_PREPARATION_CONFIG_AND_DEVICE_BLOCKED",
+        "preparationReport": "docs/design/community-android-stage3-preparation-20261015.md",
+        "preparationEvidence": "docs/design/community-android-stage3-preparation-20261015.json",
+        "rpPlanSelectedByUser": true,
+        "securityConfigurationApplied": true,
+        "publishedPreparationSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
+        "currentDeviceEvidence": "docs/design/community-android-stage3-closure-20261016.json",
+        "currentReport": "docs/design/community-android-stage3-closure-20261016.md",
+        "devicePositiveResult": "PASS_PRIOR_UNCHANGED_PRODUCT",
+        "currentDeviceWindowEnded": true,
+        "currentClosureEvidence": "docs/design/community-android-stage3-closure-20261016.json",
+        "singleAndroidScopePassed": true
+      },
+      {
+        "id": "CA-T04",
+        "order": 4,
+        "name": "Two physical Android OEM transfer and Passkey recovery",
+        "result": "NOT_RUN",
+        "checkIds": [
+          "NI-X01",
+          "NI-X02"
+        ],
+        "moduleIds": [
+          "N01",
+          "A12",
+          "A07",
+          "N03"
+        ],
+        "blocker": "SECOND_PHYSICAL_ANDROID_AVAILABILITY_AND_TWO_DEVICE_WINDOW_UNCONFIRMED"
+      }
+    ],
+    "deviceOperationAuthorizedByThisPlanningRequest": false,
+    "newDynamicTestsExecuted": true,
+    "historicalHostAndBuildEvidence": "docs/design/community-auth-integration-20261013.json",
+    "priorHostEvidenceScopeChanged": false,
+    "fullModuleAcceptancePassed": false,
+    "iOSAndProductionIncluded": false,
+    "historicalProductSourceCommit": "28cee4656edd710d60676a81794c20cd49f45351",
+    "sourceFingerprint": "713098a87c032c404ac182d6091e3d73a916aa880770de77c3700c9e6dc483ae",
+    "stage2SourceFingerprint": "47731f0befe0c1b567a62a8f626e30adca29965eec59321f52824bb16c0f0b63",
+    "currentDeviceAttempt": {
+      "recordedOn": "2026-10-15",
+      "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+      "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+      "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+      "checkIds": [
+        "CA-A08",
+        "CA-A09",
+        "CA-A11",
+        "CA-A12"
+      ],
+      "nativePassed": 35,
+      "authProcessPairsPassed": 3,
+      "wholePhoneRebootWitnessed": true,
+      "manualReopenAndReboot": "USER_CONFIRMED",
+      "fullModuleOrAppPassed": false,
+      "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+      "sourceControllerHashes": {
+        "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+        "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+        "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+        "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+      },
+      "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
+    },
+    "stage3ScopedSourceFingerprint": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9",
+    "currentStage2DeviceAttempt": {
+      "recordedOn": "2026-10-15",
+      "result": "PASS_TASK2_APPROVED_SINGLE_ANDROID_SCOPE",
+      "report": "docs/design/community-android-stage2-device-validation-20261015.md",
+      "evidence": "docs/design/community-android-stage2-device-validation-20261015.json",
+      "checkIds": [
+        "CA-A08",
+        "CA-A09",
+        "CA-A11",
+        "CA-A12"
+      ],
+      "nativePassed": 35,
+      "authProcessPairsPassed": 3,
+      "wholePhoneRebootWitnessed": true,
+      "manualReopenAndReboot": "USER_CONFIRMED",
+      "fullModuleOrAppPassed": false,
+      "testedStartHEAD": "7e185b129eef0269cb66f53e97b5efceed21bada",
+      "sourceControllerHashes": {
+        "tools/community-android-stage1/phone.py": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+        "tools/community-android-stage2/phone.py": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+        "tools/tests/test_community_android_stage2_phone.py": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+        "tools/community-android-stage2/README.md": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+      },
+      "nextAcceptance": "Task3 own RP configuration and system Passkey; task4 dual physical Android; iOS/production separate"
+    },
+    "priorTask1DeviceAttempt": {
+      "recordedOn": "2026-10-15",
+      "result": "PASS_TASK1_SCOPED_DEVICE_AND_USER_CONFIRMED_IME",
+      "report": "docs/design/community-android-device-validation-20261015.md",
+      "evidence": "docs/design/community-android-device-validation-20261015.json",
+      "automaticCheckIds": [
+        "CA-A01",
+        "CA-A02",
+        "CA-A04",
+        "CA-A03",
+        "CA-A05",
+        "CA-A06",
+        "CA-A07",
+        "CA-A10"
+      ],
+      "automatic": "PASS",
+      "manualIme": "USER_CONFIRMED",
+      "aggregateTask1": "PASS",
+      "fullModulePassed": false,
+      "deviceSourceFingerprint": "ec7aab83fa4024a578529c3e924c81d614237ee547bd08d0e8f940e8bad7ed73",
+      "nextAcceptance": "Keep normal/A session and current owned services/data; stage2-4 and platform/production acceptance remain independent, default stage2 key guard unchanged."
+    },
+    "currentStage3DeviceAttempt": {
+      "recordedOn": "2026-10-16",
+      "result": "PASS_TASK3_APPROVED_SINGLE_ANDROID_SCOPE",
+      "report": "docs/design/community-android-stage3-closure-20261016.md",
+      "evidence": "docs/design/community-android-stage3-closure-20261016.json",
+      "startHEAD": "4fc0ce873a576f7d83f3bd6dfb0db49ec5dcd939",
+      "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+      "compiledPhoneProductCommit": "9dda242b21694af1c4c33f11784958851c805fc4",
+      "finalTrackedRuntimeAndTestFingerprint": "060a9051966677d58f56ec87b41a7b85dbe3281e097bfca0f830f1b3461efede",
+      "finalTrackedRuntimeAndTestSourceCount": 511,
+      "actualGoogleProviderWrongSignatureAndPackageRejection": "PASS_CURRENT_26_39_33_NO_NETWORK_ERROR",
+      "directStrictHTTPSWindowsAndLinux": "PASS_TRUTHFUL_TOOL_IDENTIFIER_TLS_AND_CONTENT_CHECKS_UNCHANGED",
+      "deliberateSystemCancellation": "PASS_USER_CONFIRMED_NO_C_SUBMIT",
+      "activeSessionRevokedByReset": "PASS_REAL_HTTPS_AND_POSTGRES_SAME_TOKEN_BEFORE_AFTER",
+      "activeSessionProofScope": "Real C/SQL, Passkey test uses synthetic authenticator; not a new device reset claim",
+      "sevenFinalHostStages": "PASS",
+      "mobilePassed": 334,
+      "pythonWindowsPassed": 159,
+      "pythonWindowsPosixSkipped": 3,
+      "pythonLinuxPassed": 162,
+      "exactVivoProviderSettingsRestored": true,
+      "deviceWindowEnded": true,
+      "fullModuleOrAppPassed": false,
+      "nextAcceptance": "Task4 NI-X01/NI-X02 needs second physical Android and new two-device window; iOS/production remain separate. Preserve old OEM timeout/provider scope and unknown material; do not reopen new phone work without authorization."
+    },
+    "stage3ProductSourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+    "currentStage3Closure": {
+      "recordedOn": "2026-10-16",
+      "result": "PASS_TASK3_APPROVED_SINGLE_ANDROID_SCOPE",
+      "report": "docs/design/community-android-stage3-closure-20261016.md",
+      "evidence": "docs/design/community-android-stage3-closure-20261016.json",
+      "startHEAD": "4fc0ce873a576f7d83f3bd6dfb0db49ec5dcd939",
+      "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+      "compiledPhoneProductCommit": "9dda242b21694af1c4c33f11784958851c805fc4",
+      "finalTrackedRuntimeAndTestFingerprint": "060a9051966677d58f56ec87b41a7b85dbe3281e097bfca0f830f1b3461efede",
+      "finalTrackedRuntimeAndTestSourceCount": 511,
+      "actualGoogleProviderWrongSignatureAndPackageRejection": "PASS_CURRENT_26_39_33_NO_NETWORK_ERROR",
+      "directStrictHTTPSWindowsAndLinux": "PASS_TRUTHFUL_TOOL_IDENTIFIER_TLS_AND_CONTENT_CHECKS_UNCHANGED",
+      "deliberateSystemCancellation": "PASS_USER_CONFIRMED_NO_C_SUBMIT",
+      "activeSessionRevokedByReset": "PASS_REAL_HTTPS_AND_POSTGRES_SAME_TOKEN_BEFORE_AFTER",
+      "activeSessionProofScope": "Real C/SQL, Passkey test uses synthetic authenticator; not a new device reset claim",
+      "sevenFinalHostStages": "PASS",
+      "mobilePassed": 334,
+      "pythonWindowsPassed": 159,
+      "pythonWindowsPosixSkipped": 3,
+      "pythonLinuxPassed": 162,
+      "exactVivoProviderSettingsRestored": true,
+      "deviceWindowEnded": true,
+      "fullModuleOrAppPassed": false,
+      "nextAcceptance": "Task4 NI-X01/NI-X02 needs second physical Android and new two-device window; iOS/production remain separate. Preserve old OEM timeout/provider scope and unknown material; do not reopen new phone work without authorization."
+    },
+    "priorStage3DeviceAttempt": {
+      "recordedOn": "2026-10-15",
+      "result": "PARTIAL_SYSTEM_PASSKEY_POSITIVE_PASS_NEGATIVE_AND_PUBLIC_FETCH_BLOCKED",
+      "report": "docs/design/community-android-stage3-device-validation-20261015.md",
+      "evidence": "docs/design/community-android-stage3-device-validation-20261015.json",
+      "testedStartHEAD": "9dda242b21694af1c4c33f11784958851c805fc4",
+      "sourceFingerprint": "5bc83b4d98a46a7db8ea0139fb76073bbc87e17efaa59aac0c324c8f5e677631",
+      "devicePositiveCreateAndDiscoverableRecovery": "PASS",
+      "bindingResponseLossAndOriginalAnchorAcrossProcess": "PASS",
+      "badSignatureProviderRejection": "BLOCKED_NATIVE_TIMEOUT",
+      "unassociatedProviderRejection": "BLOCKED_NATIVE_CANCELLED",
+      "strictPublicHTTPS": "FAIL_HTTP403_CLOUDFLARE1010",
+      "googleAdditionalPositiveBothRelationsLinked": true,
+      "sevenHostStages": "PASS",
+      "fullModuleOrAppPassed": false,
+      "nextAcceptance": "New confirmed phone window and bounded current-provider diagnostic evidence for definitive bad-signature/package rejection; investigate strict public HTTPS403 without weakening checks/security; separate intentional cancel and active old-session device proof. Task4/iOS/production remain independent."
+    }
+  },
+  "currentCommunityRecoveryCodeDualDevice": {
+    "recordedOn": "2026-10-18",
+    "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+    "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+    "finalHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+    "currentScopePassCount": 8,
+    "fullOriginalFourStageAcceptancePassed": false,
+    "report": "docs/design/community-android-recovery-code-dual-device-20261018.md",
+    "evidence": "docs/design/community-android-recovery-code-dual-device-20261018.json",
+    "productCodeChanged": false,
+    "passkeyDualDeferred": true,
+    "oemTransferNotRun": true
+  },
+  "currentCommunityOemDualDevice": {
+    "recordedOn": "2026-10-18",
+    "result": "PASS_NI_X01_OBSERVED_OEM_APP_TRANSFER_SCOPE",
+    "checkId": "NI-X01",
+    "moduleIds": [
+      "N01",
+      "A12"
+    ],
+    "report": "docs/design/community-android-oem-transfer-20261018.md",
+    "evidence": "docs/design/community-android-oem-transfer-20261018.json",
+    "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+    "finalHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+    "scope": "Application category only; existing-installed target, one HnuHole Stage4 100 MB. Application-data and other data categories excluded.",
+    "currentScopePassCount": 7,
+    "productCodeChanged": false,
+    "fullFourStageAcceptancePassed": false,
+    "nextAcceptance": "NI-X02 only remains in original four-stage Android plan; compatible second physical Android/provider required. iOS and production separate."
+  }
 }

@@ -1,5 +1,9 @@
 # 文字社区与认证 Android 统一验收任务单
 
+> **2026-10-18 OEM 双实体实测收口：NI-X01 限定路径 PASS。**官方搬家 vivo→真我，只传唯一 HnuHole Stage4/100 MB/成功1项失败0项；源已登录、目标访客对照后，目标重开仍访客，源登录及 Stage4Local 保持，两侧 no_backup 文件哈希与服务端会话/计数不变。仅选应用、未选应用数据，不外推到强制私有数据导入或所有OEM。7项本轮限定检查PASS，源码/其他分支未改；自有连接已收尾，设置未改，最后有效会话在vivo。恢复码双实体8项历史限定PASS保留；Android原四任务仅NI-X02跨设备Passkey仍按用户要求延期，iOS/生产仍独立。见[OEM报告](community-android-oem-transfer-20261018.md)/[机器记录](community-android-oem-transfer-20261018.json)。以下旧日期/同日较早状态按当时范围保留。
+
+> **2026-10-18 恢复码双实体范围完成：8项限定PASS。**vivo→真我实际恢复码重设/隐藏后完整确认/无自动登录、旧密码与旧码401、同一活跃旧会话撤销、双向单移动会话接替、两机原生重开及源草稿标记隔离均有本轮UI/HTTPS/SQL证据。真我仅恢复当前用户的原签名隔离包；有效会话最后留在真我。产品代码/依赖/协议/其他分支未改，主机旧记录不计本轮；只更新脱敏交接。Passkey NI-X02按用户要求单独延期，真我当前ROM缺凭据feature/service且官方OTA无新版；NI-X01 OEM仍NOT_RUN，直接安装不代证搬家，iOS/生产仍独立。见[本轮报告](community-android-recovery-code-dual-device-20261018.md)/[机器记录](community-android-recovery-code-dual-device-20261018.json)。旧日期记录按原范围保留。
+
 > **2026-10-16 第三项三处缺口已收口：PASS_APPROVED_SINGLE_ANDROID_SCOPE。**坏签名与未关联包均拿到当前Google26.39.33的明确50152/终态错误/匹配校验栈且无网络错误，未拿泛化取消代证；真实工具标识后Windows/Linux严格直接HTTPS及精确原文件PASS，无网站安全降级；用户主动关闭的native取消及无C提交PASS；同一活跃旧token在真实重设提交前有效、提交后被拒绝，HTTPS与Passkey服务端SQL均补证。最终七阶段全PASS、mobile334/分析0，Windows159＋3POSIX SKIP／Linux162。见[补验报告](community-android-stage3-closure-20261016.md)/[机器记录](community-android-stage3-closure-20261016.json)。手机约18分钟后结束，vivo设置逐字恢复，正常App及三包摘要不变，无安装/卸载/清数据；不再调用ADB。任务1/2/3限定PASS、第四项双实体及iOS/生产未验，完整模块/App不升级PASS；昨天PARTIAL及失败证据保留原范围。
 
 > **2026-10-15 第三项实测：PARTIAL。**独立RP获准发布；真实vivo系统Passkey创建、可发现恢复、绑定丢响应后跨进程原键核对、新凭据完整确认/无自动登录及重开恢复PASS。最终七阶段全部PASS（mobile334/分析0、R05、F4八项、server、受限权限、实际runtime25断言、vet），被测产品9dda242、205输入指纹5bc83b4d…677631；没有改产品/SQL/锁。Google两项正向关联现均linked=true，但严格默认HTTPS仍403/1010；坏签名超时、未关联包取消均无明确关联拒绝，第一次恢复超时保留。因此CA-A13和第三项不记整体PASS。见[实测报告](community-android-stage3-device-validation-20261015.md)/[机器记录](community-android-stage3-device-validation-20261015.json)/[已应用公开关联](community-android-stage3-applied-20261015/proposal.json)。手机窗口已结束，三个新包与未决材料保留，无后续ADB；任务1/2限定通过保留，任务4双实体、iOS、生产及完整App仍待验。下方旧日期准备/未授权/NOT_RUN记录均为原版本历史。
@@ -34,7 +38,7 @@
 | 已验证运行输入 | 443项，SHA256 599757bf3bb84043d5903e8dad375b0650b469dc5088fcc82a16f1b45e1173c7 |
 | 主机及构建 | 20261013七stage、mobile320及Android构建PASS；属于对应固定输入的证据 |
 | 单机设备 | CA-A01–07/A10自动PASS＋人工IME USER_CONFIRMED；CA-A08/09/11/12及TalkBack限定PASS；CA-A13限定PASS，详见20261016补验记录；不代证双实体/iOS/生产 |
-| 双设备 | NI-X01／NI-X02尚未执行；第二实体Android与两机窗口未确认 |
+| 双设备 | 2026-10-18恢复码8项限定PASS；NI-X01实际OEM路径限定PASS；NI-X02跨设备Passkey延期 |
 
 已有[联合报告](community-auth-integration-report-20261013.md)、[机器记录](community-auth-integration-20261013.json)、[交付与清理回执](community-auth-integration-delivery-20261013.json)保留原日期与范围。本任务单追加双设备工作，不将旧认证22 PASS／0 FAIL／2 BLOCKED或社区主机结果改写成新设备通过。
 
@@ -53,7 +57,7 @@
 | 1 | 单台Android文字社区全流程 | CA-A01–A07、A10；A06/A08/A12/B02/B03/B05/B06/B10 | PASS：本轮八自动点＋USER_CONFIRMED IME |
 | 2 | 原生存储与生命周期 | CA-A08/A09/A11/A12；N01/A12/A08 | PASS：35原生项＋3中断对＋实际重开/重启与用户确认 |
 | 3 | 系统Passkey与单机回归收口 | CA-A13；N03/A07/A09，并复核前三阶段受影响检查 | PASS：单Android批准范围；正向/核对原证据＋20261016明确拒绝/HTTPS/主动取消/活跃会话补验 |
-| 4 | 双实体Android迁移与恢复验证 | NI-X01／NI-X02；N01/A12/A07/N03 | NOT_RUN：第二设备及两机窗口未确认 |
+| 4 | 双实体Android迁移与恢复验证 | NI-X01／NI-X02；N01/A12/A07/N03 | PARTIAL：NI-X01限定OEM路径PASS；恢复码双实体PASS；NI-X02 Passkey延期 |
 
 ### 任务1：单台Android文字社区全流程
 
