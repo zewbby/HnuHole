@@ -25,7 +25,7 @@ type CommentBackend interface {
 type commentRoute struct{ id, post, kind, methods string }
 
 func isCommentPath(path string) bool {
-	return path == "/api/v1/comment-commands" || strings.HasPrefix(path, "/api/v1/comment-commands/") || path == "/api/v1/me/comment-tasks" || strings.HasPrefix(path, "/api/v1/me/comment-tasks/") || strings.HasPrefix(path, "/api/v1/posts/") && (strings.HasSuffix(path, "/comments") || strings.HasSuffix(path,"/replies"))
+	return path == "/api/v1/comment-commands" || strings.HasPrefix(path, "/api/v1/comment-commands/") || path == "/api/v1/me/comment-tasks" || strings.HasPrefix(path, "/api/v1/me/comment-tasks/") || strings.HasPrefix(path, "/api/v1/posts/") && (strings.HasSuffix(path, "/comments") || strings.HasSuffix(path, "/replies"))
 }
 func parseCommentRoute(path string) (commentRoute, error) {
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
@@ -45,10 +45,12 @@ func parseCommentRoute(path string) (commentRoute, error) {
 	case len(parts) == 3 && parts[0] == "posts" && parts[2] == "comments":
 		r.id = parts[1]
 		r.kind = "main"
-	case len(parts) == 5 && parts[0] == "posts" && parts[2] == "comments" && parts[4]=="replies":
+	case len(parts) == 5 && parts[0] == "posts" && parts[2] == "comments" && parts[4] == "replies":
 		r.id = parts[3]
-		r.post=parts[1]
-		if _,e:=posts.ParseResourceID(r.post);e!=nil{return r,e}
+		r.post = parts[1]
+		if _, e := posts.ParseResourceID(r.post); e != nil {
+			return r, e
+		}
 		r.kind = "replies"
 	default:
 		return r, errMalformed
@@ -116,7 +118,7 @@ func (b *boundary) communityCommentsPublic(w http.ResponseWriter, r *http.Reques
 		case "task":
 			response, e = backend.GetOwnCommentTask(r.Context(), bearer, route.id)
 		default:
-			q := authprivacy.CommentQuery{ID: route.id,PostID:route.post, Replies: route.kind == "replies", Limit: 50}
+			q := authprivacy.CommentQuery{ID: route.id, PostID: route.post, Replies: route.kind == "replies", Limit: 50}
 			var values url.Values
 			values, e = url.ParseQuery(r.URL.RawQuery)
 			if e == nil {
@@ -235,11 +237,17 @@ func commentIntent(r *http.Request) (comments.Intent, error) {
 			if e != nil {
 				return in, e
 			}
+			if _, e = posts.ParseResourceID(in.RootCommentID); e != nil {
+				return in, errMalformed
+			}
 		}
 		if object["targetCommentId"] != nil {
 			in.TargetCommentID, e = stringField(object, "targetCommentId")
 			if e != nil {
 				return in, e
+			}
+			if _, e = posts.ParseResourceID(in.TargetCommentID); e != nil {
+				return in, errMalformed
 			}
 		}
 	case comments.Retry, comments.Abandon:

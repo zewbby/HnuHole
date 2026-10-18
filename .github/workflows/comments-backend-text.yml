@@ -3,6 +3,12 @@ on:
   pull_request:
     paths:
       - 'services/api/comment-schema/**'
+      - 'services/api/migrations/0016_comments.sql'
+      - 'infra/postgres/grant-comments.sql'
+      - 'infra/postgres/grant-community.sql'
+      - 'services/api/authlab/privacy-role-audit.sql'
+      - 'packages/openapi/comment-text-component.yaml'
+      - 'tools/check-comment-text-contract.py'
       - 'services/api/internal/comments/persistence*'
       - 'services/api/internal/authprivacy/community_comments*'
       - 'services/api/internal/authprivacy/community.go'
@@ -33,6 +39,8 @@ jobs:
           cache-dependency-path: services/api/go.sum
       - name: Install private PostgreSQL lab tools
         run: sudo apt-get update && sudo apt-get install -y postgresql-16
+      - name: Install pinned migration tool
+        run: go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -47,7 +55,7 @@ jobs:
           go build -mod=readonly ./cmd/authdev
           go vet -mod=readonly ./internal/comments ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime
       - name: Real SQL, restricted role, final Gate and TLS HTTP component
-        # Not the ordered Goose chain: governance 0015 remains a merge dependency.
+        # Includes real empty installation and 0014 -> actual main 0015 -> 0016.
         env:
           PGPORT: '55463'
         run: |

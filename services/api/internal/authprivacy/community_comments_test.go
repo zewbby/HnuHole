@@ -17,12 +17,7 @@ import (
 func commentTextLab(t *testing.T) *lab {
 	t.Helper()
 	l := newPostLab(t)
-	mustExec(t, l.cp, `DROP SCHEMA IF EXISTS c_comments CASCADE`)
-	source, e := os.ReadFile("../../comment-schema/text-v1.sql")
-	if e != nil {
-		t.Fatal(e)
-	}
-	mustExec(t, l.cp, string(source))
+	var e error
 	cfg := CommentConfig{}
 	cfg.KeyKey, _ = random32()
 	cfg.FingerprintKey, _ = random32()
@@ -277,7 +272,7 @@ func TestCommentTextRuntimeAndSQLGuardsPostgres(t *testing.T) {
 	id := identityChange(t, l.c, owner.SessionToken, "CREATE", uuid.Nil, "运行身份").IdentityID
 	post := commentTextPost(t, l, owner.SessionToken, id)
 	mustExec(t, l.cp, `CREATE TABLE IF NOT EXISTS public.goose_db_version(version_id bigint,is_applied boolean)`)
-	for _, path := range []string{"../../../../infra/postgres/grant-community.sql", "../../comment-schema/runtime-grants.sql"} {
+	for _, path := range []string{"../../../../infra/postgres/grant-community.sql", "../../../../infra/postgres/grant-comments.sql"} {
 		sql, e := os.ReadFile(path)
 		if e != nil {
 			t.Fatal(e)
@@ -331,11 +326,86 @@ func TestCommentTextRuntimeAndSQLGuardsPostgres(t *testing.T) {
 	// Identity lifecycle still works with restricted invoker triggers, hides owner
 	// recovery and preserves already published public content with a safe author.
 	identityChange(t, l.c, owner.SessionToken, "CREATE", uuid.Nil, "保留身份")
+	pending := in
+	pending.TaskID = uuid.NewString()
+	commentTextSend(t, l, owner.SessionToken, postTestKey(t), pending)
 	identityChange(t, l.c, owner.SessionToken, "DELETE", id, "")
 	_, e = l.c.GetOwnCommentTask(ctx, owner.SessionToken, in.TaskID)
 	postTestError(t, e, "TASK_NOT_FOUND", 404)
+	if count(t, l.cp, `SELECT count(*) FROM c_comments.attempts WHERE task_id=$1 AND state='FAILED' AND failure_code='IDENTITY_INACTIVE' AND body IS NULL`, pending.TaskID) != 1 {
+		t.Fatal("deleted identity retained live recovery")
+	}
 	page, e := l.c.ReadComments(ctx, owner.SessionToken, CommentQuery{ID: post})
 	if e != nil || page.Value.(TextCommentPage).Comments[0].Author.State != "IDENTITY_DELETED" {
 		t.Fatal(e)
+	}
+}
+
+func TestCommentTextUnavailablePostPostgres(t *testing.T) {
+	l := commentTextLab(t)
+	ctx := context.Background()
+	owner := sessionTestAccount(t, l, "ct_hidden")
+	id := identityChange(t, l.c, owner.SessionToken, "CREATE", uuid.Nil, "原身份").IdentityID
+	post := commentTextPost(t, l, owner.SessionToken, id)
+	in := comments.Intent{Operation: comments.Create, TaskID: uuid.NewString(), PostID: post, IdentityID: id.String(), Body: "下架前已受理"}
+	commentTextSend(t, l, owner.SessionToken, postTestKey(t), in)
+	mustExec(t, l.cp, `UPDATE c_posts.posts SET moderation_hidden=true WHERE post_id=$1`, post)
+	commentTextPublish(t, l)
+	task := commentTextOwn(t, l, owner.SessionToken, in.TaskID)
+	if task.State != comments.Failed || *task.FailureCode != "POST_UNAVAILABLE" {
+		t.Fatal(task)
+	}
+	_, e := l.c.ReadComments(ctx, owner.SessionToken, CommentQuery{ID: post})
+	postTestError(t, e, "POST_NOT_FOUND", 404)
+	retry := comments.Intent{Operation: comments.Retry, TaskID: in.TaskID, ExpectedAttemptVersion: 1, Body: "不能自动改目标"}
+	if r := commentTextSend(t, l, owner.SessionToken, postTestKey(t), retry); r.ErrorCode != "TASK_NOT_FAILED" {
+		t.Fatal(r)
+	}
+	in.TaskID = uuid.NewString()
+	if r := commentTextSend(t, l, owner.SessionToken, postTestKey(t), in); r.ErrorCode != "TARGET_UNAVAILABLE" {
+		t.Fatal(r)
+	}
+}
+
+func TestCommentTextClosureCleanupWithFeatureDisabledPostgres(t *testing.T) {
+	control := newGateControl(t)
+	l := control.lab
+	ctx := context.Background()
+	postConfig := enablePostLab(t, l)
+	cfg := CommentConfig{}
+	cfg.KeyKey, _ = random32()
+	cfg.FingerprintKey, _ = random32()
+	var e error
+	l.c, e = l.c.WithComments(ctx, cfg)
+	if e != nil {
+		t.Fatal(e)
+	}
+	owner := sessionTestAccount(t, l, "ct_close")
+	id := identityChange(t, l.c, owner.SessionToken, "CREATE", uuid.Nil, "关闭账号").IdentityID
+	post := commentTextPost(t, l, owner.SessionToken, id)
+	in := comments.Intent{Operation: comments.Create, TaskID: uuid.NewString(), PostID: post, IdentityID: id.String(), Body: "待处理文字"}
+	commentTextSend(t, l, owner.SessionToken, postTestKey(t), in)
+	runtime := moderationLifecycleRuntime(t, l)
+	clone := *l.c
+	clone.pool = runtime
+	clone.comments = nil
+	off, e := clone.WithPosts(ctx, postConfig)
+	if e != nil {
+		t.Fatal(e)
+	}
+	request, _ := closureTestRequest(t, owner.SessionToken)
+	accepted, e := off.RequestAccountClosure(ctx, request, sessionTestPasswordWorker(t, 1))
+	if e != nil {
+		t.Fatal(e)
+	}
+	if count(t, l.cp, `SELECT count(*) FROM c_comments.attempts WHERE task_id=$1 AND state='FAILED' AND failure_code='PUBLISHING_STOPPED'`, in.TaskID) != 1 {
+		t.Fatal("closure request did not stop pending comment")
+	}
+	advanceClosureClock(t, control, accepted.DueAt)
+	if n, e := off.FinalizeDueClosures(ctx, 10); e != nil || n != 1 {
+		t.Fatal("restricted legacy close failed", e)
+	}
+	if count(t, l.cp, `SELECT count(*) FROM c_comments.tasks t JOIN c_comments.attempts a USING(task_id) WHERE t.owner_account_id=$1 AND (t.owner_visible OR a.body IS NOT NULL)`, owner.AccountID) != 0 {
+		t.Fatal("closed account retained private comment material")
 	}
 }

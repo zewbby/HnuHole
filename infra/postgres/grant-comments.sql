@@ -1,5 +1,5 @@
--- Explicit C runtime grants for the pending text component, after the existing
--- auth/privacy bootstrap. No recovery/business/V role receives comment data.
+-- Run after real Goose 0016 and grant-community.sql. No recovery/business/V
+-- role receives comment data, and no runtime role receives DDL or permanent deletion.
 GRANT USAGE ON SCHEMA c_comments TO hnuhole_c_runtime;
 GRANT SELECT,INSERT ON c_comments.protocol_keys,c_comments.tasks,c_comments.attempts,c_comments.receipts,c_comments.snapshots TO hnuhole_c_runtime;
 GRANT UPDATE(owner_visible,abandoned_at) ON c_comments.tasks TO hnuhole_c_runtime;

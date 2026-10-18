@@ -364,7 +364,7 @@ func (c *Community) applyCommentIntent(ctx context.Context, tx pgx.Tx, a uuid.UU
 // publication without taking another author's account lock.
 func checkCommentContext(ctx context.Context, tx pgx.Tx, account uuid.UUID, b comments.Binding) error {
 	var visibility string
-	e := tx.QueryRow(ctx, `SELECT visibility FROM c_posts.posts WHERE post_id=$1 FOR UPDATE`, b.PostID).Scan(&visibility)
+	e := tx.QueryRow(ctx, `SELECT CASE WHEN moderation_hidden THEN 'HIDDEN' ELSE visibility END FROM c_posts.posts WHERE post_id=$1 FOR UPDATE`, b.PostID).Scan(&visibility)
 	if errors.Is(e, pgx.ErrNoRows) || e == nil && visibility != "PUBLISHED" {
 		return postError("POST_UNAVAILABLE", 409)
 	}

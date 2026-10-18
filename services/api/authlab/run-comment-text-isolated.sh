@@ -11,9 +11,10 @@ esac
 [ "${#comment_text_pg_port}" -le 5 ] && [ "$comment_text_pg_port" -ge 1024 ] && [ "$comment_text_pg_port" -le 65535 ] || {
     echo "Invalid comment text PGPORT" >&2; exit 2;
 }
-for comment_text_tool in go initdb pg_ctl psql; do
+for comment_text_tool in go goose initdb pg_ctl psql; do
     command -v "$comment_text_tool" >/dev/null 2>&1 || { echo "Missing tool: $comment_text_tool" >&2; exit 1; }
 done
+goose -version 2>&1 | python3 -c 'import sys; assert "v3.22.1" in sys.stdin.read(), "Goose v3.22.1 required"'
 comment_text_dir=$(mktemp -d "${TMPDIR:-/tmp}/hnuhole-comment-text.XXXXXX")
 case "$comment_text_dir" in *[!A-Za-z0-9_./-]*) echo 'Unsupported temporary path' >&2; exit 1 ;; esac
 comment_text_socket=$(mktemp -d /tmp/hnuhole-comment-text-socket.XXXXXX)
@@ -37,8 +38,12 @@ CREATE ROLE hnuhole_c_recovery NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
 CREATE ROLE hnuhole_business NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
 CREATE DATABASE hnuhole_c OWNER hnuhole_c;
 CREATE DATABASE hnuhole_v OWNER hnuhole_v;
+CREATE DATABASE hnuhole_comments_upgrade OWNER hnuhole_c;
+CREATE DATABASE hnuhole_comments_fresh OWNER hnuhole_c;
 REVOKE CONNECT ON DATABASE hnuhole_c FROM PUBLIC;
 REVOKE CONNECT ON DATABASE hnuhole_v FROM PUBLIC;
+REVOKE CONNECT ON DATABASE hnuhole_comments_upgrade,hnuhole_comments_fresh FROM PUBLIC;
+GRANT CONNECT ON DATABASE hnuhole_comments_upgrade,hnuhole_comments_fresh TO hnuhole_c;
 GRANT CONNECT ON DATABASE hnuhole_c TO hnuhole_c,hnuhole_c_runtime;
 GRANT CONNECT ON DATABASE hnuhole_v TO hnuhole_v;
 SQL
@@ -48,6 +53,10 @@ AUTHLAB_V_DSN="postgresql://hnuhole_v@/hnuhole_v?host=$comment_text_socket&appli
 AUTHLAB_POSTS_RUNTIME_DSN="postgresql://hnuhole_c_runtime@/hnuhole_c?host=$comment_text_socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 AUTHLAB_ALLOW_SCHEMA_RESET=1
 export AUTHLAB_RUNTIME_TAG AUTHLAB_C_DSN AUTHLAB_V_DSN AUTHLAB_POSTS_RUNTIME_DSN AUTHLAB_ALLOW_SCHEMA_RESET
+COMMENT_TEXT_GOOSE=$(command -v goose)
+COMMENT_TEXT_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_comments_upgrade?host=$comment_text_socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+COMMENT_TEXT_FRESH_DSN="postgresql://hnuhole_c@/hnuhole_comments_fresh?host=$comment_text_socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+export COMMENT_TEXT_GOOSE COMMENT_TEXT_UPGRADE_DSN COMMENT_TEXT_FRESH_DSN
 comment_text_script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$comment_text_script_dir/.."
-go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp -run '^TestCommentText' -v
+go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp -run '^(TestCommentText|TestPostSchemaFixedOwnershipAndTerminalStatePostgres$|TestPostSchemaModerationCleanupPrivilegesWithoutFeaturePostgres$|TestPostSchemaModerationAccountClosureWithoutFeaturePostgres$)' -v

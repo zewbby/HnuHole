@@ -95,7 +95,7 @@ type CommunityOptions struct {
 	InternalPeer     PeerIdentity
 	AllowedOrigins   []string
 	Limits           NetworkLimits
-	Comments CommentBackend
+	Comments         CommentBackend
 }
 
 type errorBody struct {
@@ -145,7 +145,9 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if options.Posts == nil {
 		options.Posts, _ = options.Backend.(PostBackend)
 	}
-	if options.Comments == nil { options.Comments, _ = options.Backend.(CommentBackend) }
+	if options.Comments == nil {
+		options.Comments, _ = options.Backend.(CommentBackend)
+	}
 	if options.Identities == nil {
 		options.Identities, _ = options.Backend.(IdentityBackend)
 	}
@@ -166,7 +168,10 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
-			if isCommentPath(r.URL.Path) { b.communityCommentsPublic(w,r,options.Comments); return }
+			if isCommentPath(r.URL.Path) {
+				b.communityCommentsPublic(w, r, options.Comments)
+				return
+			}
 			if isAdminPath(r.URL.Path) {
 				serveModerationUI(w, r, options.AdminDirectory)
 				return
@@ -284,8 +289,7 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				w.Header().Set("Vary", "Origin")
 			}
 		}
-		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || (!allowsPostListQuery(r) && !allowsCommentListQuery(r)))) {
-		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsModerationQuery(r)))) {
+		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsCommentListQuery(r) || allowsModerationQuery(r)))) {
 			b.bad(w, errMalformed)
 			return
 		}
@@ -333,7 +337,10 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 }
 
 func publicMethodAllowed(service Service, path, method string) bool {
-	if service == CommunityService && isCommentPath(path) { route,e:=parseCommentRoute(path);return e==nil && strings.Contains(", "+route.methods+", ",", "+method+", ") }
+	if service == CommunityService && isCommentPath(path) {
+		route, e := parseCommentRoute(path)
+		return e == nil && strings.Contains(", "+route.methods+", ", ", "+method+", ")
+	}
 	if service == CommunityService && isAdminPath(path) {
 		return method == "GET"
 	}

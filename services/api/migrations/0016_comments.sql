@@ -1,6 +1,6 @@
--- Pending ordered migration body. Component lab ONLY until governance 0015 is
--- merged and the real main migration chain can assign/validate the next number.
--- This file does NOT advance goose_db_version and must not be used as a deploy shortcut.
+-- +goose Up
+-- +goose StatementBegin
+-- Follows real main 0015_reports_moderation.sql; C-only text comments.
 CREATE SCHEMA c_comments;
 REVOKE ALL ON SCHEMA c_comments FROM PUBLIC;
 
@@ -63,11 +63,12 @@ CREATE TABLE c_comments.receipts (
     committed_at timestamptz NOT NULL,
     FOREIGN KEY(owner_account_id,task_id) REFERENCES c_comments.tasks(owner_account_id,task_id),
     FOREIGN KEY(task_id,version) REFERENCES c_comments.attempts(task_id,version),
-    CHECK((outcome IN ('ACCEPTED','APPLIED') AND task_id IS NOT NULL AND version>0 AND error_code IS NULL)
+    CHECK((outcome IN ('ACCEPTED','APPLIED') AND task_id IS NOT NULL AND version IS NOT NULL AND version>0 AND error_code IS NULL)
        OR (outcome IN ('REJECTED','NOT_ACCEPTED') AND task_id IS NULL AND version IS NULL AND error_code IS NOT NULL)),
     CHECK(outcome<>'ACCEPTED' OR operation IN ('CREATE','RETRY')),
     CHECK(outcome<>'APPLIED' OR operation='ABANDON'),
     CHECK(outcome<>'NOT_ACCEPTED' OR error_code='SEALED')
+    ,CHECK(outcome<>'REJECTED' OR error_code IN ('INVALID_CONTENT','IDENTITY_UNAVAILABLE','TARGET_UNAVAILABLE','PERMISSION_DENIED','STALE_ATTEMPT','TASK_NOT_FAILED'))
 );
 CREATE INDEX comment_receipt_budget ON c_comments.receipts(owner_account_id,committed_at);
 CREATE TABLE c_comments.snapshots (
@@ -79,6 +80,30 @@ CREATE TABLE c_comments.snapshots (
  expires_at timestamptz NOT NULL
 );
 CREATE INDEX comment_snapshot_expiry ON c_comments.snapshots(expires_at);
+
+-- A participant binding cannot be created just by opening/selecting identity.
+-- The binding and first accepted task/receipt must commit atomically.
+CREATE FUNCTION c_comments.check_acceptance() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+ IF TG_TABLE_SCHEMA='c_posts' THEN
+  IF NOT EXISTS(SELECT 1 FROM c_posts.posts WHERE post_id=NEW.post_id AND owner_account_id=NEW.account_id)
+   AND NOT EXISTS(SELECT 1 FROM c_comments.tasks t JOIN c_comments.attempts a USING(task_id)
+    JOIN c_comments.receipts r ON r.task_id=t.task_id AND r.version=a.version
+    WHERE t.owner_account_id=NEW.account_id AND t.post_id=NEW.post_id AND t.identity_id=NEW.identity_id
+      AND a.version=1 AND a.accepted_at=NEW.bound_at AND r.operation='CREATE' AND r.outcome='ACCEPTED') THEN
+   RAISE EXCEPTION 'participant binding requires an accepted comment' USING ERRCODE='23514'; END IF;
+ ELSE
+  IF NOT EXISTS(SELECT 1 FROM c_comments.attempts a JOIN c_comments.receipts r USING(task_id)
+    WHERE a.task_id=NEW.task_id AND a.version=1 AND r.version=1 AND r.owner_account_id=NEW.owner_account_id
+      AND r.operation='CREATE' AND r.outcome='ACCEPTED') THEN
+   RAISE EXCEPTION 'comment task requires first attempt and receipt' USING ERRCODE='23514'; END IF;
+ END IF;
+ RETURN NULL;
+END $$;
+CREATE CONSTRAINT TRIGGER comment_binding_acceptance AFTER INSERT ON c_posts.post_identity_bindings
+ DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION c_comments.check_acceptance();
+CREATE CONSTRAINT TRIGGER comment_task_acceptance AFTER INSERT ON c_comments.tasks
+ DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION c_comments.check_acceptance();
 
 CREATE TRIGGER comment_keys_immutable BEFORE UPDATE OR DELETE ON c_comments.protocol_keys
  FOR EACH ROW EXECUTE FUNCTION c_posts.guard_immutable();
@@ -123,7 +148,7 @@ BEGIN
   SELECT stop_generation INTO STRICT generation FROM c_posts.account_publication_control WHERE account_id=t.owner_account_id;
   IF NEW.accepted_stop_generation<>generation OR NOT EXISTS(SELECT 1 FROM c_auth.accounts WHERE account_id=t.owner_account_id AND state='ACTIVE')
    OR NOT EXISTS(SELECT 1 FROM public.community_identities WHERE identity_id=t.identity_id AND deleted_at IS NULL)
-   OR NOT EXISTS(SELECT 1 FROM c_posts.posts WHERE post_id=t.post_id AND visibility='PUBLISHED') THEN
+   OR NOT EXISTS(SELECT 1 FROM c_posts.posts WHERE post_id=t.post_id AND visibility='PUBLISHED' AND NOT moderation_hidden) THEN
    RAISE EXCEPTION 'publication unavailable' USING ERRCODE='23514'; END IF;
   IF t.root_comment_id IS NOT NULL THEN
    SELECT * INTO p FROM c_comments.tasks WHERE comment_id=t.root_comment_id;
@@ -167,3 +192,9 @@ END $$;
 CREATE TRIGGER comment_identity_hook AFTER UPDATE ON public.community_identities FOR EACH ROW EXECUTE FUNCTION c_comments.identity_hook();
 REVOKE ALL ON ALL TABLES IN SCHEMA c_comments FROM PUBLIC;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA c_comments FROM PUBLIC;
+
+-- +goose StatementEnd
+-- +goose Down
+-- +goose StatementBegin
+DO $$ BEGIN RAISE EXCEPTION 'comment receipts and identity bindings cannot be rolled back; use a forward repair'; END $$;
+-- +goose StatementEnd

@@ -79,6 +79,16 @@ DO $$ BEGIN
  END IF;
 END $$;
 
+-- 0016 lifecycle hooks run even with the comment HTTP feature disabled.
+DO $$ BEGIN
+ IF to_regnamespace('c_comments') IS NOT NULL THEN
+  GRANT USAGE ON SCHEMA c_comments TO hnuhole_c_runtime;
+  GRANT SELECT ON c_comments.tasks,c_comments.attempts TO hnuhole_c_runtime;
+  GRANT UPDATE(owner_visible) ON c_comments.tasks TO hnuhole_c_runtime;
+  GRANT UPDATE(state,terminal_at,failure_code,body) ON c_comments.attempts TO hnuhole_c_runtime;
+ END IF;
+END $$;
+
 -- 0015 lifecycle hooks execute on old post/closure paths even when moderation
 -- HTTP features are disabled. Grant only their cleanup operations here.
 DO $$ BEGIN

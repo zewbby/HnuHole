@@ -12,7 +12,7 @@ info:
     scoped snapshots exclude later insertions. Default replies show five; expanded=true continues after those five.
     Cursors require the same account and scope. Bodies are byte/grapheme validated by existing core and never trimmed.
     No request/body/secret logging.
-x-contract-status: IMPLEMENTED_TEXT_COMPONENT_ORDERED_MIGRATION_BLOCKED
+x-contract-status: IMPLEMENTED_BACKEND_TEXT
 x-source-design: comment-api.yaml
 servers:
 - url: /

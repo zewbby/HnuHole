@@ -4,13 +4,11 @@ import (
 	"context"
 	"encoding/hex"
 	"encoding/json"
-	"os"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/comments"
 )
@@ -18,27 +16,6 @@ import (
 func TestCommentTextHTTPSPostgres(t *testing.T) {
 	ctx := context.Background()
 	s := e2eNewServices(t, func(c *authprivacy.Community) *authprivacy.Community {
-		// This pool is the same disposable, marker-checked database already checked
-		// by e2ePool. This is component SQL, not a missing Goose migration bypass.
-		cfg, e := pgxpool.ParseConfig(os.Getenv("AUTHLAB_C_DSN"))
-		if e != nil || cfg.ConnConfig.RuntimeParams["application_name"] != os.Getenv("AUTHLAB_RUNTIME_TAG") {
-			t.Fatal("missing lab marker")
-		}
-		pool, e := pgxpool.NewWithConfig(ctx, cfg)
-		if e != nil {
-			t.Fatal(e)
-		}
-		defer pool.Close()
-		source, e := os.ReadFile("../../comment-schema/text-v1.sql")
-		if e != nil {
-			t.Fatal(e)
-		}
-		if _, e = pool.Exec(ctx, `DROP SCHEMA IF EXISTS c_comments CASCADE`); e != nil {
-			t.Fatal(e)
-		}
-		if _, e = pool.Exec(ctx, string(source)); e != nil {
-			t.Fatal(e)
-		}
 		result, e := c.WithComments(ctx, authprivacy.CommentConfig{KeyKey: e2eKey(t), FingerprintKey: e2eKey(t)})
 		if e != nil {
 			t.Fatal(e)

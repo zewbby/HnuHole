@@ -36,13 +36,13 @@ def main():
     assert importlib.metadata.version("openapi-spec-validator") == "0.9.0"
     design = yaml.safe_load((DIRECTORY / "comment-api.yaml").read_text(encoding="utf-8"))
     spec = yaml.safe_load((DIRECTORY / "comment-text-component.yaml").read_text(encoding="utf-8"))
-    assert spec["x-contract-status"] == "IMPLEMENTED_TEXT_COMPONENT_ORDERED_MIGRATION_BLOCKED"
+    assert spec["x-contract-status"] == "IMPLEMENTED_BACKEND_TEXT"
     assert len(spec["paths"]) == 5
     assert set(spec["components"]["schemas"]) == {"CreateCommentCommand", "RetryCommentCommand", "CommentTaskCommand", "Seal"}
     for name in ("CreateCommentCommand", "RetryCommentCommand"):
         assert spec["components"]["schemas"][name]["allOf"][1]["properties"]["image"]["enum"] == [None]
     validate_spec(expand(spec, spec, design))
-    print("comment text supplement: OpenAPI passed; text-only runtime scope, ordered migration BLOCKED")
+    print("comment text supplement: OpenAPI passed; backend text scope; full comment client/notifications excluded")
 
 
 if __name__ == "__main__":

@@ -15,8 +15,8 @@ import (
 
 type CommentQuery struct {
 	ID, PostID, Cursor string
-	Replies, Expanded bool
-	Limit             int
+	Replies, Expanded  bool
+	Limit              int
 }
 type CommentAuthor struct {
 	Ref      string `json:"ref"`
@@ -93,10 +93,12 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 			if e != nil {
 				return nil, e
 			}
-			if q.PostID!="" && q.PostID!=postID{return nil,postError("COMMENT_NOT_FOUND",404)}
+			if q.PostID != "" && q.PostID != postID {
+				return nil, postError("COMMENT_NOT_FOUND", 404)
+			}
 		}
 		var visible bool
-		if e := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_posts.posts WHERE post_id=$1 AND visibility='PUBLISHED')`, postID).Scan(&visible); e != nil {
+		if e := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_posts.posts WHERE post_id=$1 AND visibility='PUBLISHED' AND NOT moderation_hidden)`, postID).Scan(&visible); e != nil {
 			return nil, e
 		}
 		if !visible {
@@ -245,7 +247,7 @@ func readCommentAuthor(ctx context.Context, tx pgx.Tx, identity string) (Comment
 func readTextComment(ctx context.Context, tx pgx.Tx, id string) (TextComment, error) {
 	var r TextComment
 	var identity string
-	e := tx.QueryRow(ctx, `SELECT t.comment_id::text,t.post_id::text,t.root_comment_id::text,t.target_comment_id::text,x.body,x.terminal_at,t.identity_id::text,(t.identity_id=p.identity_id),CASE WHEN t.root_comment_id IS NULL THEN (SELECT count(*) FROM c_comments.tasks z JOIN c_comments.attempts a ON a.task_id=z.task_id AND a.state='PUBLISHED' WHERE z.root_comment_id=t.comment_id) ELSE 0 END FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' JOIN c_posts.posts pp ON pp.post_id=t.post_id AND pp.visibility='PUBLISHED' JOIN c_posts.publication_tasks p ON p.post_id=t.post_id WHERE t.comment_id=$1`, id).Scan(&r.ID, &r.PostID, &r.RootCommentID, &r.TargetCommentID, &r.Body, &r.PublishedAt, &identity, &r.IsPostAuthor, &r.ReplyCount)
+	e := tx.QueryRow(ctx, `SELECT t.comment_id::text,t.post_id::text,t.root_comment_id::text,t.target_comment_id::text,x.body,x.terminal_at,t.identity_id::text,(t.identity_id=p.identity_id),CASE WHEN t.root_comment_id IS NULL THEN (SELECT count(*) FROM c_comments.tasks z JOIN c_comments.attempts a ON a.task_id=z.task_id AND a.state='PUBLISHED' WHERE z.root_comment_id=t.comment_id) ELSE 0 END FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' JOIN c_posts.posts pp ON pp.post_id=t.post_id AND pp.visibility='PUBLISHED' AND NOT pp.moderation_hidden JOIN c_posts.publication_tasks p ON p.post_id=t.post_id WHERE t.comment_id=$1`, id).Scan(&r.ID, &r.PostID, &r.RootCommentID, &r.TargetCommentID, &r.Body, &r.PublishedAt, &identity, &r.IsPostAuthor, &r.ReplyCount)
 	if e != nil {
 		return r, e
 	}

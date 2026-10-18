@@ -22,6 +22,9 @@ func TestCommentTextNullableBoundary(t *testing.T) {
 			t.Fatal("ambiguous comment input accepted")
 		}
 	}
+	if parse(strings.Replace(body, `"rootCommentId":null`, `"rootCommentId":""`, 1)) == nil {
+		t.Fatal("empty string is not a nullable UUID")
+	}
 	// The authentication parser keeps its original no-null rule.
 	if _, e := parseObject(strings.NewReader(`{"password":null}`), 1024); e == nil {
 		t.Fatal("auth null policy changed")
