@@ -21,6 +21,7 @@ const raster = { mime: 'image/png', base64: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQ
 let role = 'REVIEWER', state = 'PENDING', version = 1, appealState = 'PENDING', revoked = false;
 const commands = [], errors = [], requests = [];
 const record = () => ({ id: caseId, number: 'R202610180001', postId: '40000000-0000-4000-8000-000000000001', platformNumber: '000125', reason: 'HARASSMENT', state, version, createdAt: stamp, outcome: state === 'ENDED' ? 'MUTE' : null, explanation: '已核查证据。', evidence: { title: '校园讨论中的违规内容', body: hostile, images: [raster] }, reports: [{ reason: 'HARASSMENT', description: '说明仅用于核查本案。', images: [], createdAt: stamp }], sanctions: [] });
+const profiles = new Map([2, 3].map(n => { const id = `10000000-0000-4000-8000-00000000000${n}`; return [id, { ...record(), id, number: `R20261018000${n}`, state: 'PENDING', version: 1 }]; }));
 const appeal = () => ({ id: appealId, caseId, sanctionId, state: appealState, ordinal: 1, version: 1, reason: appealState === 'ACCEPTED' ? '核查新材料后撤销对应处罚。' : '', platformNumber: '000125', action: 'MUTE', originalActorNumber: '000999', createdAt: stamp, materials: [{ description: '请结合原帖重新核查。', createdAt: stamp, images: [] }] });
 const sanctions = () => [{ id: sanctionId, action: 'MUTE', reason: '已确认违规。', actorNumber: '000999', startsAt: stamp, endsAt: '2026-10-21T04:30:00Z', revokedAt: revoked ? stamp : null }];
 let server, browser;
@@ -39,14 +40,19 @@ try {
       if (url.pathname === '/api/v1/auth/sessions') { role = payload.username === 'admin_test' ? 'ADMIN' : 'REVIEWER'; state = 'PENDING'; version = 1; respond({ sessionToken: token, accountId: 'PRIVATE-ACCOUNT-MAPPING', expiresAt: '2030-01-01T00:00:00Z' }, 201); return; }
       if (url.pathname === '/api/v1/auth/session-revocations') { respond(null, 204); return; }
       if (url.pathname === '/api/v1/moderation/me') { respond({ role, platformNumber: '000123', email: 'PRIVATE-EMAIL', otherIdentities: ['PRIVATE-OTHER-MASK'] }); return; }
-      if (url.pathname === '/api/v1/moderation/cases') { respond({ items: [record()] }); return; }
+      if (url.pathname === '/api/v1/moderation/cases') { respond(url.searchParams.has('before') ? { items: [...profiles.values()] } : { items: [record()], nextBefore: `${stamp}|${caseId}` }); return; }
       if (url.pathname === `/api/v1/moderation/cases/${caseId}`) { respond(record()); return; }
+      if (profiles.has(url.pathname.split('/').at(-1))) { respond(profiles.get(url.pathname.split('/').at(-1))); return; }
+      if (url.pathname.endsWith('/decision') && profiles.has(url.pathname.split('/').at(-2))) { const profile = profiles.get(url.pathname.split('/').at(-2)); profile.state = 'ENDED'; profile.version++; profile.outcome = 'UPHELD'; profile.explanation = payload.reason; commands.push(payload); respond(profile); return; }
       if (url.pathname.endsWith('/claim')) { state = 'PROCESSING'; version++; commands.push(payload); respond(record()); return; }
       if (url.pathname.endsWith(`/cases/${caseId}/decision`)) { state = 'ENDED'; version++; commands.push(payload); respond(record()); return; }
-      if (url.pathname === '/api/v1/moderation/appeals') { if (url.search) { respond({}, 400); return; } respond({ items: [appeal()] }); return; }
+      if (url.pathname === '/api/v1/moderation/appeals') { if (url.searchParams.get('limit') !== '50') { respond({}, 400); return; } respond(url.searchParams.has('before') ? { items: [{ ...appeal(), id: '20000000-0000-4000-8000-000000000002', ordinal: 2 }] } : { items: [appeal()], nextBefore: `${stamp}|${appealId}` }); return; }
       if (url.pathname === `/api/v1/moderation/appeals/${appealId}`) { respond(appeal()); return; }
       if (url.pathname.endsWith(`/appeals/${appealId}/decision`)) { appealState = payload.accept ? 'ACCEPTED' : 'REJECTED'; commands.push(payload); respond(appeal()); return; }
-      if (url.pathname === '/api/v1/moderation/accounts') { respond({ items: [{ platformNumber: '000125', state: 'ACTIVE', createdAt: stamp, violationCount: 1, sanctions: sanctions() }] }); return; }
+      if (url.pathname === '/api/v1/moderation/accounts') {
+        const account = { platformNumber: '000125', state: 'ACTIVE', createdAt: stamp, violationCount: revoked ? 0 : 1, sanctions: sanctions() };
+        respond(url.searchParams.has('number') ? { items: [account] } : url.searchParams.has('before') ? { items: [{ ...account, platformNumber: '000127', sanctions: [] }] } : { items: [account, { ...account, platformNumber: '000126', sanctions: [] }], nextBefore: '000126' }); return;
+      }
       if (url.pathname.endsWith('/revoke')) { revoked = true; commands.push(payload); respond(sanctions()[0]); return; }
       if (url.pathname === '/api/v1/moderation/audit') { respond({ items: [{ actorNumber: '000999', targetNumber: '000125', action: 'MUTE', reason: '已核查材料。', createdAt: stamp, caseId }] }); return; }
       if (url.pathname.startsWith('/api/v1/moderation/roles/')) { commands.push(payload); respond({ platformNumber: url.pathname.split('/').at(-1), role: payload.role }); return; }
@@ -74,9 +80,16 @@ try {
   await page.getByText(/考虑现有处罚/).waitFor(); await page.getByLabel('处理原因', { exact: true }).fill('根据本案证据作出三天禁言。');
   await page.screenshot({ path: join(root, 'reviewer-case.png'), fullPage: true });
   await page.getByRole('button', { name: '确认处理', exact: true }).click(); await page.getByText('案件已处理。', { exact: true }).waitFor();
-  await page.getByRole('button', { name: '申诉复核', exact: true }).click(); await page.getByRole('button', { name: /申诉 1\/3/ }).click();
+  await page.getByRole('button', { name: '加载更早记录', exact: true }).click();
+  for (const [number, action] of [['R202610180002', 'RESET_NICKNAME'], ['R202610180003', 'RESET_AVATAR']]) {
+    await page.getByRole('button', { name: new RegExp(`工单 ${number}`) }).click(); await page.getByLabel('处理措施', { exact: true }).selectOption(action);
+    assert.equal(await page.getByLabel('本次期限', { exact: true }).isVisible(), false);
+    await page.getByLabel('处理原因', { exact: true }).fill('仅重置本案身份的违规资料。'); await page.getByRole('button', { name: '确认处理', exact: true }).click(); await page.getByText('案件已处理。', { exact: true }).waitFor();
+  }
+  await page.getByRole('button', { name: '申诉复核', exact: true }).click(); await page.getByRole('button', { name: '加载更早记录', exact: true }).click(); await page.getByRole('button', { name: /申诉 2\/3/ }).waitFor(); await page.screenshot({ path: join(root, 'appeals-queue.png'), fullPage: true }); await page.getByRole('button', { name: /申诉 1\/3/ }).click();
   await page.getByLabel('复核结果', { exact: true }).selectOption('true'); await page.getByLabel('复核理由', { exact: true }).fill('核查新材料后撤销对应处罚。'); await page.getByRole('button', { name: '确认复核结果', exact: true }).click(); await page.getByText('复核结果已保存。', { exact: true }).waitFor();
-  await page.getByRole('button', { name: '账号与处罚', exact: true }).click(); await page.getByLabel('六位平台编号', { exact: true }).fill('000125'); await page.getByRole('button', { name: '查找账号', exact: true }).click();
+  await page.getByRole('button', { name: '账号与处罚', exact: true }).click(); await page.getByRole('heading', { name: '账号 000125', exact: true }).waitFor(); await page.getByRole('button', { name: '加载更多账号', exact: true }).click(); await page.getByRole('heading', { name: '账号 000127', exact: true }).waitFor(); await page.screenshot({ path: join(root, 'accounts-list.png'), fullPage: true });
+  await page.getByLabel('六位平台编号', { exact: true }).fill('000125'); await page.getByRole('button', { name: '查找账号', exact: true }).click(); await page.getByRole('button', { name: '查看处罚', exact: true }).click();
   await page.getByLabel('撤销原因', { exact: true }).fill('独立核查后撤销。'); await page.getByRole('button', { name: '撤销此项处罚', exact: true }).click(); await page.getByText('已撤销此项处罚，其他有效处罚继续执行。', { exact: true }).waitFor();
   await page.getByRole('button', { name: '退出', exact: true }).click(); await page.getByRole('heading', { name: '进入审核工作台' }).waitFor();
   await page.getByLabel('用户名', { exact: true }).fill('admin_test'); await page.getByLabel('密码', { exact: true }).fill('synthetic fixture password'); await page.getByRole('button', { name: '登录', exact: true }).click();
@@ -87,9 +100,12 @@ try {
   await page.setViewportSize({ width: 390, height: 844 }); await page.screenshot({ path: join(root, 'admin-narrow.png'), fullPage: true });
   assert.equal(await page.locator('html').evaluate(node => node.scrollWidth <= window.innerWidth), true);
   assert.equal(commands.some(c => c.action === 'MUTE' && c.days === 3), true); assert.equal(commands.some(c => c.accept === true), true); assert.equal(commands.some(c => c.role === 'REVIEWER'), true);
+  assert.equal(commands.some(c => c.action === 'RESET_NICKNAME' && c.days === 0), true); assert.equal(commands.some(c => c.action === 'RESET_AVATAR' && c.days === 0), true);
+  assert.equal(requests.some(url => url.includes('/moderation/appeals?') && new URL(url).searchParams.get('before') === `${stamp}|${appealId}`), true);
+  assert.equal(requests.some(url => url.includes('/moderation/accounts?') && new URL(url).searchParams.get('before') === '000126'), true);
   assert.equal(commands.every(c => typeof c.commandId === 'string'), true); assert.equal(requests.every(url => url.startsWith(origin)), true); assert.deepEqual(errors, []);
   await page.getByRole('button', { name: '退出', exact: true }).click();
-  console.log(JSON.stringify({ result: 'PASS_SYNTHETIC_HTTPS_UI', commands: commands.length, noExternalRequests: true, pageErrors: errors.length, screenshots: ['reviewer-case.png', 'admin-case.png', 'admin-narrow.png'] }));
+  console.log(JSON.stringify({ result: 'PASS_SYNTHETIC_HTTPS_UI', commands: commands.length, noExternalRequests: true, pageErrors: errors.length, screenshots: ['reviewer-case.png', 'appeals-queue.png', 'accounts-list.png', 'admin-case.png', 'admin-narrow.png'] }));
 } finally {
   await browser?.close(); await new Promise(resolveClose => server ? server.close(resolveClose) : resolveClose());
   const checked = resolve(temporary); if (!checked.startsWith(root + '\\') && !checked.startsWith(root + '/')) throw new Error('Temporary TLS cleanup escaped the test root.');

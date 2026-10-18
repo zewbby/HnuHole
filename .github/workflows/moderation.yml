@@ -1,0 +1,65 @@
+name: Report moderation
+
+on:
+  pull_request:
+    paths:
+      - 'apps/admin/**'
+      - 'services/api/**'
+      - 'infra/postgres/**'
+      - 'packages/openapi/**'
+      - '.github/workflows/moderation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: moderation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  admin:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Admin contract, privacy and retry tests
+        run: |
+          node --check apps/admin/app.mjs
+          node --test apps/admin/test/*.test.mjs
+
+  moderation-postgres:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - name: Private PostgreSQL and media validator dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 python3-venv
+          echo '/usr/lib/postgresql/16/bin' >> "$GITHUB_PATH"
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/moderation-python"
+          "$RUNNER_TEMP/moderation-python/bin/python" -m pip install -r services/api/media/requirements.txt
+          chmod -R go-w services/api/media
+          "$RUNNER_TEMP/moderation-python/bin/python" -I -B services/api/media/validate_image.py --probe
+          "$RUNNER_TEMP/moderation-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/moderation-fixtures"
+      - name: Isolated SQL, permissions and real HTTPS moderation regression
+        working-directory: services/api
+        env:
+          PGPORT: '55435'
+          MODERATION_TEST_PATTERN: '^(TestModeration|TestRealHTTPSModeration)'
+        run: |
+          export POST_MEDIA_PYTHON="$RUNNER_TEMP/moderation-python/bin/python"
+          export POST_MEDIA_FIXTURES="$RUNNER_TEMP/moderation-fixtures"
+          sh authlab/run-moderation-isolated.sh

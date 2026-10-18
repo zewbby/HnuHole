@@ -123,8 +123,11 @@ function renderQueue(parent, kind) {
       const record = await client.request(`/api/v1/moderation/${kind}/${requireUUID(item.id)}`);
       if (current !== viewVersion || version !== requestVersion) return;
       for (const row of list.querySelectorAll('button[data-record]')) {
-        if (row.dataset.record === selected) row.querySelector('.status')?.replaceWith(status(record.state));
+        if (row.dataset.record !== selected) continue;
+        if (kind === 'appeals' && record.state !== 'PENDING') { row.remove(); items = items.filter(value => value.id !== record.id); }
+        else row.querySelector('.status')?.replaceWith(status(record.state));
       }
+      if (kind === 'appeals' && !items.length && !nextBefore) list.replaceChildren(el('p', '暂无待复核申诉。', 'empty'));
       if (kind === 'cases') renderCase(detail, record, () => choose(item), current); else renderAppeal(detail, record, () => choose(item), current);
     } catch (error) { if (current === viewVersion && version === requestVersion) { detail.replaceChildren(el('p', '材料未加载，不能提交处理。', 'empty')); showError(error); } }
   }
@@ -133,7 +136,7 @@ function renderQueue(parent, kind) {
     if (!append) { list.replaceChildren(el('p', '正在加载…', 'busy')); items = []; nextBefore = null; }
     try {
       const query = new URLSearchParams({ limit: '50' }); if (append && nextBefore) query.set('before', nextBefore);
-      const data = await client.request(`/api/v1/moderation/${kind}${kind === 'cases' ? `?${query}` : ''}`);
+      const data = await client.request(`/api/v1/moderation/${kind}?${query}`);
       if (current !== viewVersion) return;
       items.push(...(Array.isArray(data.items) ? data.items : [])); nextBefore = data.nextBefore ?? null;
       list.replaceChildren();
@@ -172,7 +175,7 @@ function renderCase(parent, record, reload, current) {
     }, 'primary'));
     else controls.append(el('p', '核查材料后选择处理措施，并说明依据。', 'muted'));
     const form = el('form', null, 'inline-form');
-    const action = select([['DISMISS', '未发现违规，结束案件'], ['TAKEDOWN', '下架本案帖子'], ['MUTE', '下架并限时禁言'], ...(me.role === 'ADMIN' ? [['BAN', '下架并封禁账号']] : [])]);
+    const action = select([['DISMISS', '未发现违规，结束案件'], ['TAKEDOWN', '下架本案帖子'], ['RESET_NICKNAME', '重置本案身份的违规昵称'], ['RESET_AVATAR', '重置本案身份的违规头像'], ['MUTE', '下架并限时禁言'], ...(me.role === 'ADMIN' ? [['BAN', '下架并封禁账号']] : [])]);
     const days = select([['1', '1 天'], ['3', '3 天'], ['7', '7 天'], ['30', '30 天']]); days.value = '3';
     const period = field('本次期限', days); const why = reasonInput();
     const estimate = el('p', null, 'helper'); const effect = el('p', null, 'warning');
@@ -183,8 +186,9 @@ function renderCase(parent, record, reload, current) {
       const timed = ['MUTE', 'BAN'].includes(action.value); period.hidden = !timed;
       if (action.value === 'BAN' && ![...days.options].some(o => o.value === '0')) { const forever = el('option', '永久'); forever.value = '0'; days.append(forever); }
       if (action.value !== 'BAN') { if (days.value === '0') days.value = '3'; [...days.options].find(o => o.value === '0')?.remove(); }
-      effect.hidden = !timed;
-      effect.textContent = action.value === 'BAN' ? '封禁后保留处罚通知与申诉入口，其余社区功能暂停；本案帖子同时下架。' : '禁言对账号全部身份生效，暂停发帖、评论、编辑、私信和点赞；本案帖子同时下架。';
+      const profile = ['RESET_NICKNAME', 'RESET_AVATAR'].includes(action.value);
+      effect.hidden = !timed && !profile;
+      effect.textContent = profile ? '只重置本案身份的对应违规资料并通知本人，不删除身份、不变更内容归属。本人可立即修正为合规资料。' : action.value === 'BAN' ? '封禁后保留处罚通知与申诉入口，其余社区功能暂停；本案帖子同时下架。' : '禁言对账号全部身份生效，暂停发帖、评论、编辑、私信和点赞；本案帖子同时下架。';
       estimate.hidden = !timed;
       const result = recoveryEstimate(sanctions, action.value, Number(days.value));
       estimate.textContent = estimateReady ? `考虑现有处罚：社区访问预计恢复 ${result.community}；发言权限预计恢复 ${result.speaking}。以服务端实际提交时刻为准，各项处罚独立计时。` : '正在核对现有处罚，核对完成前不能提交账号处罚。';
@@ -241,26 +245,45 @@ function renderAppeal(parent, appeal, reload, current) {
   }));
 }
 function renderAccounts(parent) {
-  const current = viewVersion; const search = el('form', null, 'search'); const number = input(); number.inputMode = 'numeric'; number.pattern = '[0-9]{6}'; number.maxLength = 6; number.required = true;
-  const submit = el('button', '查找账号', 'primary'); submit.type = 'submit'; add(search, field('六位平台编号', number), submit); const results = el('div'); add(parent, search, results);
-  async function loadAccounts() {
-    const data = await client.request(`/api/v1/moderation/accounts?number=${encodeURIComponent(number.value)}`); if (current !== viewVersion) return;
-    results.replaceChildren(); if (!data.items?.length) results.append(el('p', '未找到可访问的账号。', 'empty'));
-    for (const account of data.items ?? []) {
-      const box = add(el('article', null, 'account'), el('h2', `账号 ${platformNumber(account.platformNumber)}`), add(el('div', null, 'summary'), el('span', `状态：${label(account.state)}`), el('span', `已确认违规：${Number.isInteger(account.violationCount) ? account.violationCount : '—'}`), el('span', `注册：${dateText(account.createdAt)}`)));
-      box.append(el('h3', '处罚记录', 'section'));
-      for (const sanction of account.sanctions ?? []) {
-        const row = add(el('section', null, 'sanction'), el('strong', label(sanction.action)), el('p', sanction.reason ?? ''), el('p', `${dateText(sanction.startsAt)} 至 ${sanction.endsAt ? dateText(sanction.endsAt) : '永久'}${sanction.revokedAt ? ` · 已撤销 ${dateText(sanction.revokedAt)}` : ''}`, 'meta'));
-        if (canRevoke(me, sanction)) {
-          const form = el('form', null, 'inline-form'); const why = reasonInput(); const revoke = el('button', '撤销此项处罚', 'danger'); revoke.type = 'submit'; add(form, field('撤销原因', why), revoke);
-          watchForm(form, async () => { if (!why.value.trim()) throw new Error('请填写撤销原因。'); await client.command(`/api/v1/moderation/sanctions/${requireUUID(sanction.id)}/revoke`, { reason: why.value.trim() }); if (current === viewVersion) { await loadAccounts(); announce('已撤销此项处罚，其他有效处罚继续执行。'); } }); row.append(form);
-        } else if (!sanction.revokedAt && me.platformNumber === sanction.actorNumber) row.append(el('p', '此项由你作出，撤销须由另一名有相应权限的人员处理。', 'helper'));
-        box.append(row);
+  const current = viewVersion; const search = el('form', null, 'search'); const number = input(); number.inputMode = 'numeric'; number.pattern = '[0-9]{6}'; number.maxLength = 6;
+  const submit = el('button', '查找账号', 'primary'); submit.type = 'submit';
+  const all = button('全部账号', () => { number.value = ''; void loadAccounts(false).catch(showError); });
+  add(search, field('六位平台编号', number, '留空查看账号列表。'), submit, all); const results = el('div'); add(parent, search, results);
+  let items = [], nextBefore = null, activeNumber = '', requestVersion = 0;
+  async function loadAccounts(append = false) {
+    const version = ++requestVersion;
+    if (!append) { activeNumber = number.value; items = []; nextBefore = null; results.replaceChildren(el('p', '正在加载账号…', 'busy')); }
+    const query = new URLSearchParams({ limit: '50' }); if (activeNumber) query.set('number', activeNumber); if (append && nextBefore) query.set('before', nextBefore);
+    const data = await client.request(`/api/v1/moderation/accounts?${query}`); if (current !== viewVersion || version !== requestVersion) return;
+    items.push(...(Array.isArray(data.items) ? data.items : [])); nextBefore = data.nextBefore ?? null; results.replaceChildren();
+    if (!items.length) results.append(el('p', activeNumber ? '未找到可访问的账号。' : '暂无可展示的账号。', 'empty'));
+    for (const account of items) {
+      const summary = el('div', null, 'summary');
+      function updateSummary() { summary.replaceChildren(el('span', `状态：${label(account.state)}`), el('span', `已确认违规：${Number.isInteger(account.violationCount) ? account.violationCount : '—'}`), el('span', `注册：${dateText(account.createdAt)}`)); }
+      updateSummary(); const detail = el('div'); const box = add(el('article', null, 'account'), el('h2', `账号 ${platformNumber(account.platformNumber)}`), summary, button('查看处罚', () => { void loadDetail().catch(showError); }), detail);
+      let detailVersion = 0;
+      async function loadDetail() {
+        const selectedVersion = ++detailVersion; detail.replaceChildren(el('p', '正在加载处罚记录…', 'busy'));
+        const data = await client.request(`/api/v1/moderation/accounts?number=${encodeURIComponent(account.platformNumber)}`);
+        if (current !== viewVersion || !box.isConnected || selectedVersion !== detailVersion) return;
+        const full = data.items?.find(item => item.platformNumber === account.platformNumber); if (!full) { detail.replaceChildren(el('p', '记录当前不可访问，请刷新账号列表。', 'empty')); return; }
+        Object.assign(account, full); updateSummary(); detail.replaceChildren(el('h3', '处罚记录', 'section'));
+        for (const sanction of full.sanctions ?? []) {
+          const row = add(el('section', null, 'sanction'), el('strong', label(sanction.action)), el('p', sanction.reason ?? ''), el('p', `${dateText(sanction.startsAt)} 至 ${sanction.endsAt ? dateText(sanction.endsAt) : '永久'}${sanction.revokedAt ? ` · 已撤销 ${dateText(sanction.revokedAt)}` : ''}`, 'meta'));
+          if (canRevoke(me, sanction)) {
+            const form = el('form', null, 'inline-form'); const why = reasonInput(); const revoke = el('button', '撤销此项处罚', 'danger'); revoke.type = 'submit'; add(form, field('撤销原因', why), revoke);
+            watchForm(form, async () => { if (!why.value.trim()) throw new Error('请填写撤销原因。'); await client.command(`/api/v1/moderation/sanctions/${requireUUID(sanction.id)}/revoke`, { reason: why.value.trim() }); if (current === viewVersion) { await loadDetail(); announce('已撤销此项处罚，其他有效处罚继续执行。'); } }); row.append(form);
+          } else if (!sanction.revokedAt && me.platformNumber === sanction.actorNumber) row.append(el('p', '此项由你作出，撤销须由另一名有相应权限的人员处理。', 'helper'));
+          detail.append(row);
+        }
+        if (!full.sanctions?.length) detail.append(el('p', '暂无处罚记录。', 'muted'));
       }
-      if (!account.sanctions?.length) box.append(el('p', '暂无处罚记录。', 'muted')); results.append(box);
+      results.append(box);
     }
+    if (nextBefore) results.append(button('加载更多账号', () => { void loadAccounts(true).catch(showError); }, 'pager'));
   }
-  watchForm(search, loadAccounts);
+  watchForm(search, () => loadAccounts(false));
+  void loadAccounts(false).catch(error => { if (current === viewVersion) { results.replaceChildren(button('加载失败，点击重试', () => { void loadAccounts(false).catch(showError); }, 'pager')); showError(error); } });
 }
 function renderRoles(parent) {
   if (me.role !== 'ADMIN') { parent.append(el('p', '仅管理员可管理权限。', 'empty')); return; }

@@ -399,6 +399,10 @@ textarea[readonly] {
   margin:0;
   flex:1
 }
+.search>button {
+  align-self:flex-start;
+  margin-top:1.8rem;
+}
 .account {
   border:1px solid var(--line);
   background:var(--paper);
@@ -491,6 +495,10 @@ textarea[readonly] {
   .search {
     align-items:stretch;
     flex-direction:column
+  }
+  .search>button {
+    margin-top:0;
+    align-self:stretch;
   }
 }
 @media(prefers-reduced-motion:reduce) {
