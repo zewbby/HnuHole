@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "514a944560988e3d8d599e6f9fe9d5d99fe07f88",
+  "comparedMain": "65a8dbf0e17a07edd42503620365e18241c92a76",
+  "normalization": "none; exact Git blob bytes",
+  "files": [
+    {
+      "path": "GLOSSARY.md",
+      "archivePath": "original/GLOSSARY.md",
+      "bytes": 2562,
+      "sha256": "9256f1131985c4ee1d6ecda946a3a5a9b68e9dce96a06ffb61f65f2dc3d73f3b",
+      "gitBlob": "f5b1885fa9062d538f4a77ea3ebf1d27f86ee931"
+    },
+    {
+      "path": "docs/adr/0006-text-post-command-publication-boundary.md",
+      "archivePath": "original/docs/adr/0006-text-post-command-publication-boundary.md",
+      "bytes": 2588,
+      "sha256": "d9a7518ad7d4fd7d2dbe20898ac27f44cab9ebe31af34f76f8531d42b216616e",
+      "gitBlob": "3f359cbf225035d1c4112866bd817ed0c4daa967"
+    },
+    {
+      "path": "docs/design/community-text-posting-api.md",
+      "archivePath": "original/docs/design/community-text-posting-api.md",
+      "bytes": 11300,
+      "sha256": "74192b5900bc1211c1e5864f65963214d4e7947b90219dc38482293032f3c3ed",
+      "gitBlob": "b6d9c85c4e6956757ef948f1674d23e5b829e275"
+    },
+    {
+      "path": "docs/design/community-text-posting-backend-design.md",
+      "archivePath": "original/docs/design/community-text-posting-backend-design.md",
+      "bytes": 26167,
+      "sha256": "4a8786f1ddf7d64e9a17d90c5cc46361f1921532517005691ca37fb70c5056f8",
+      "gitBlob": "36f41150967b51acf494016ae98142d9a8f36ccc"
+    },
+    {
+      "path": "docs/design/community-text-posting-plan.md",
+      "archivePath": "original/docs/design/community-text-posting-plan.md",
+      "bytes": 19684,
+      "sha256": "b84df5c8c5981d7f0b52af388dfe1c107ed0ec15716651373b985c16f5ed326d",
+      "gitBlob": "7f15e917b13e149596c4c130dfff360846084919"
+    },
+    {
+      "path": "docs/design/community-text-posting-t1-report.md",
+      "archivePath": "original/docs/design/community-text-posting-t1-report.md",
+      "bytes": 8489,
+      "sha256": "a9eb31a58c09b637b9f139717b807400bf07d805113660cdf75acc1e3bc71c7a",
+      "gitBlob": "673442cd3e810a4030a4f50884c4c4d95cf6be3a"
+    },
+    {
+      "path": "docs/design/community-text-posting-t1-verification.json",
+      "archivePath": "original/docs/design/community-text-posting-t1-verification.json",
+      "bytes": 7101,
+      "sha256": "43eed08fff2bac78d6cf886bcd1a88d907cc2b964ba44ad0a32165a22fc00689",
+      "gitBlob": "6581ddc7b6d6bc699fa090a3718e809f6eef4300"
+    },
+    {
+      "path": "docs/design/community-text-posting-t2-report.md",
+      "archivePath": "original/docs/design/community-text-posting-t2-report.md",
+      "bytes": 11444,
+      "sha256": "1f56f2efb83c0301f8724182e0efcbbb5f2ac77c8c09038df2bc845246fd3ba8",
+      "gitBlob": "87848c63cff71806e35a531aed1217d070ad36d9"
+    },
+    {
+      "path": "docs/design/community-text-posting-t2-verification.json",
+      "archivePath": "original/docs/design/community-text-posting-t2-verification.json",
+      "bytes": 36038,
+      "sha256": "c6a4e69568b18d0f414097b951c5910c138cf0dd98e1803785d93c875994b9a0",
+      "gitBlob": "1f7e7e5596ae966fc39f7dd74a558f3051705e74"
+    },
+    {
+      "path": "docs/design/community-text-posting-t3-report.md",
+      "archivePath": "original/docs/design/community-text-posting-t3-report.md",
+      "bytes": 18590,
+      "sha256": "4672298b106d91ae4b327de53a2c33e9d85acc147c18c27c389f73c7528ce8c2",
+      "gitBlob": "bc62de9145e1a2898d66621ae3f9e21e2a212b89"
+    },
+    {
+      "path": "docs/design/community-text-posting-t3-test-summary.json",
+      "archivePath": "original/docs/design/community-text-posting-t3-test-summary.json",
+      "bytes": 820,
+      "sha256": "15f3c61e4a2f95ad440d5a4f9fa71fecb097ed82dd469d6c3c56d391c8f8881d",
+      "gitBlob": "5e96f58d01294dbe697120e72feb9560b754007b"
+    },
+    {
+      "path": "docs/design/community-text-posting-t3-verification.json",
+      "archivePath": "original/docs/design/community-text-posting-t3-verification.json",
+      "bytes": 19589,
+      "sha256": "58339b1ca630b5561c97d566d98efa4fce095297a5307668a510ef65ae41973a",
+      "gitBlob": "9266ff14ed527d79d38902f9209a7b9d2732d6c1"
+    },
+    {
+      "path": "docs/design/evidence/community-text-posting-t3/channel-list.png",
+      "archivePath": "original/docs/design/evidence/community-text-posting-t3/channel-list.png",
+      "bytes": 116364,
+      "sha256": "84d762698a52444130e64d66d9d86f402aba9a58e70dcb5aa5673340c6abbaf4",
+      "gitBlob": "9100bec4825ecb8d80999c0eb06d464748c36734"
+    },
+    {
+      "path": "docs/design/evidence/community-text-posting-t3/personal-posts.png",
+      "archivePath": "original/docs/design/evidence/community-text-posting-t3/personal-posts.png",
+      "bytes": 62520,
+      "sha256": "a19df014e99fb7ac621efc40ce75bf62f45564296cc709641bca8cf1d4ee0b45",
+      "gitBlob": "cc6438344c6056834f78f086f96ca9b95d009359"
+    },
+    {
+      "path": "docs/design/evidence/community-text-posting-t3/text-editor.png",
+      "archivePath": "original/docs/design/evidence/community-text-posting-t3/text-editor.png",
+      "bytes": 77755,
+      "sha256": "ea0f7c6c7b06a8ad75e86724b57fb73df6a4a8be62d280749dce864d7b9697bc",
+      "gitBlob": "569baf95e6f1936bf6c7f1c3d6620de0ade99a75"
+    },
+    {
+      "path": "services/api/authlab/community-text-post-http-verification.json",
+      "archivePath": "original/services/api/authlab/community-text-post-http-verification.json",
+      "bytes": 14434,
+      "sha256": "e24f507f2e8a875071cb2d7a2886756479bf7b71959d829759a42c5955516c8a",
+      "gitBlob": "aaf80b0a209e2bd91a68bfb5c7da53141330bafb"
+    },
+    {
+      "path": "services/api/authlab/community-text-post-schema-verification.json",
+      "archivePath": "original/services/api/authlab/community-text-post-schema-verification.json",
+      "bytes": 3819,
+      "sha256": "cc18fe0dab12eb07978161b30a6de3b7a52f558a78265446ab25dd56abd679f0",
+      "gitBlob": "bfde97445e0fe3848fdd41cd0d556a9958cefd3a"
+    },
+    {
+      "path": "services/api/authlab/community-text-posting-t2-runtime-verification.json",
+      "archivePath": "original/services/api/authlab/community-text-posting-t2-runtime-verification.json",
+      "bytes": 7033,
+      "sha256": "52bd57749ff9384f420652c331eab56cc787845e2fe9df7a62a1bb5b2cbfa6df",
+      "gitBlob": "5b7a452169ec6324342f0c92966b3ea8a1b8ce64"
+    },
+    {
+      "path": "tools/check-community-text-contract.py",
+      "archivePath": "original/tools/check-community-text-contract.py",
+      "bytes": 8118,
+      "sha256": "c26ca7ed6a6b1807d3a4b8339a0df5022782671f139e103102e85650aae3f3e3",
+      "gitBlob": "53ba15480c833256c9709c7e14cea8a2372153ce"
+    }
+  ]
+}
