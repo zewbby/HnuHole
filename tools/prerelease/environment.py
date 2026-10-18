@@ -7,6 +7,7 @@ Only evidence.json is suitable for publication; all other state is private.
 """
 import argparse
 import contextlib
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
@@ -63,9 +64,14 @@ class Lab:
         write(self.root / 'state.private.json', self.state)
 
     def run(self, args, name, *, env=None, input=None, cwd=None, check=True, timeout=180):
+        started = datetime.now(timezone.utc).isoformat()
         with (self.root / (name + '.private.log')).open('ab') as log:
             result = subprocess.run(list(map(str, args)), cwd=cwd or self.api, env=env or self.env,
                                     input=input, stdout=log, stderr=subprocess.STDOUT, timeout=timeout)
+        if self.state is not None:
+            self.state.setdefault('commands', []).append(dict(name=name, exitCode=result.returncode, startedAtUtc=started,
+                                                             endedAtUtc=datetime.now(timezone.utc).isoformat()))
+            self.save()
         if check and result.returncode:
             raise RuntimeError(name + ' failed (see private log)')
         return result.returncode
@@ -175,10 +181,11 @@ class Lab:
         with archive.open('wb') as stream:
             subprocess.run(['git', '-C', self.source, 'archive', rollback_ref], stdout=stream, check=True)
         with tarfile.open(archive) as tar:
-            for member in tar.getmembers():
+            members = [m for m in tar.getmembers() if m.name.startswith('services/api/')]
+            for member in members:
                 if member.issym() or member.islnk() or not (self.root / 'rollback-source' / member.name).resolve().is_relative_to(self.root / 'rollback-source'):
                     raise RuntimeError('unsafe source archive')
-            tar.extractall(self.root / 'rollback-source')
+            tar.extractall(self.root / 'rollback-source', members=members)
         archive.unlink()
         self.build(self.root / 'rollback-source', 'rollback-')
         args = [self.root / 'bin/authdev', 'init', '-dir', self.root / 'material']
@@ -194,6 +201,16 @@ class Lab:
         python = os.environ.get('PRERELEASE_IMAGE_PYTHON')
         if not python or not Path(python).is_file():
             raise RuntimeError('PRERELEASE_IMAGE_PYTHON must point to an independent Pillow environment')
+        versions = {}
+        for name, command in [('go', ['go', 'version']), ('goose', ['goose', '-version']),
+                              ('postgres', ['postgres', '--version']), ('mailpit', ['mailpit', '--version']),
+                              ('pillow', [python, '-c', 'import PIL; print(PIL.__version__)'])]:
+            versions[name] = subprocess.check_output(command, env=self.env, stderr=subprocess.STDOUT, text=True).strip()
+        if 'v3.22.1' not in versions['goose'] or not versions['pillow'].endswith('12.3.0') or ' 16.' not in versions['postgres']:
+            raise RuntimeError('requires Goose3.22.1, PG16 and Pillow12.3.0')
+        self.state['toolVersions'] = versions
+        self.state['migrationSha256'] = {str(path.relative_to(self.api)): sha(path) for directory in ('migrations', 'verifier-migrations') for path in (self.api / directory).glob('*.sql')}
+        self.save()
         validator = self.root / 'validate_image.py'
         shutil.copyfile(self.api / 'media/validate_image.py', validator)
         validator.chmod(0o600)
@@ -368,7 +385,8 @@ class Lab:
     def rehearse(self):
         evidence = dict(sourceSha=self.state['sourceSha'], rollbackSha=self.state['rollbackSha'],
                         scope='same-machine isolated development; not independent production operations',
-                        result='FAIL', checks=[], oldSnapshot=self.state['oldSnapshot'], device='NOT_RUN', ios='DEFERRED', crossDevicePasskey='DEFERRED')
+                        result='FAIL', checks=[], oldSnapshot=self.state['oldSnapshot'], toolVersions=self.state['toolVersions'],
+                        migrationSha256=self.state['migrationSha256'], device='NOT_RUN', ios='DEFERRED', crossDevicePasskey='DEFERRED')
         def passed(name):
             evidence['checks'].append(name)
             write(self.root / 'evidence.json', evidence)
@@ -448,6 +466,9 @@ class Lab:
             evidence['result'] = 'PASS'
         finally:
             self.stop()
+            evidence['cleanup'] = 'PASS: owned processes and all five PostgreSQL instances stopped; private material retained'
+            evidence['commands'] = self.state['commands']
+            evidence['privateLogSha256'] = {p.name: sha(p) for p in self.root.glob('*.private.log')}
             write(self.root / 'evidence.json', evidence)
 
 
@@ -472,8 +493,12 @@ def main():
     elif lab.state is None:
         p.error('initialize a new owned root first')
     elif a.command == 'recover':
+        lab.halt(['watch-c', 'watch-v'])
         for party in 'cv':
             lab.operator('recover', party)
+            lab.spawn('watch-' + party, [lab.root / 'bin/authdev', 'watch', '-operator', lab.root / 'material/operator' / ('operator.json' if party == 'c' else 'v-operator.json')])
+    elif a.command == 'start':
+        lab.start(watches=False)
     else:
         getattr(lab, a.command)()
 
