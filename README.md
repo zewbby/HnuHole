@@ -35,7 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `codex/ci/android-prerelease` | Android候选构建与隔离预发布演练；尚未实现。 | [任务边界](docs/branches/ci-android-prerelease.md) |
+| `codex/ci/android-prerelease` | Android测试签名候选与隔离预发布工具已实现，实际构建/恢复/回滚验收进行中；未发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
 | `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
 
 ### 已合并或退役的历史工作

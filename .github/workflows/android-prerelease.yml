@@ -1,0 +1,167 @@
+name: Android prerelease
+
+on:
+  pull_request:
+    paths:
+      - 'tools/prerelease/**'
+      - 'infra/prerelease/**'
+      - 'services/api/**'
+      - 'apps/mobile/**'
+      - 'packages/auth_vault/**'
+      - 'packages/auth_passkey/**'
+      - 'packages/image_viewer/**'
+      - '.github/workflows/android-prerelease.yml'
+  push:
+    branches: [codex/ci/android-prerelease]
+    paths:
+      - 'tools/prerelease/**'
+      - 'infra/prerelease/**'
+      - 'services/api/**'
+      - 'apps/mobile/**'
+      - 'packages/auth_vault/**'
+      - 'packages/auth_passkey/**'
+      - 'packages/image_viewer/**'
+      - '.github/workflows/android-prerelease.yml'
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Full 40-character commit SHA containing the prerelease signing hook
+        required: true
+      build_number:
+        description: Positive Android versionCode
+        default: '2026101801'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-prerelease-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  SOURCE_SHA: ${{ inputs.source_sha || github.event.pull_request.head.sha || github.sha }}
+  WORKFLOW_SHA: ${{ github.workflow_sha }}
+
+jobs:
+  candidate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PUB_CACHE: ${{ runner.temp }}/prerelease-pub
+      GRADLE_USER_HOME: ${{ runner.temp }}/prerelease-gradle
+      BUILD_NUMBER: ${{ inputs.build_number || '2026101801' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          persist-credentials: false
+      - name: Require exact commit
+        run: |
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: false
+      - name: Independent Android packages and locked dependencies
+        run: |
+          mkdir -p "$RUNNER_TEMP/prerelease-android"
+          cp -a "$ANDROID_HOME/cmdline-tools" "$RUNNER_TEMP/prerelease-android/"
+          export ANDROID_HOME="$RUNNER_TEMP/prerelease-android"
+          export ANDROID_SDK_ROOT="$ANDROID_HOME"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" --licenses > /dev/null || test "${PIPESTATUS[1]}" = 0
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" 'platforms;android-36' 'build-tools;36.0.0' 'ndk;28.2.13676358' 'platform-tools'
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
+          cd apps/mobile
+          flutter pub get --enforce-lockfile
+      - name: Build and verify actual candidate
+        run: |
+          python tools/prerelease/candidate.py --source "$GITHUB_WORKSPACE" --source-sha "$SOURCE_SHA" --workflow-sha "$WORKFLOW_SHA" --out "$RUNNER_TEMP/android-candidate" --build-number "$BUILD_NUMBER"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-candidate-${{ env.SOURCE_SHA }}
+          path: ${{ runner.temp }}/android-candidate/
+          if-no-files-found: error
+          retention-days: 30
+
+  rehearsal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GOCACHE: ${{ runner.temp }}/prerelease-go-build
+      GOMODCACHE: ${{ runner.temp }}/prerelease-go-mod
+      GOPATH: ${{ runner.temp }}/prerelease-go
+      PRERELEASE_IMAGE_PYTHON: ${{ runner.temp }}/prerelease-python/bin/python
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache: false
+      - name: Owned lab prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 python3-venv
+          echo '/usr/lib/postgresql/16/bin' >> "$GITHUB_PATH"
+          echo "$GOPATH/bin" >> "$GITHUB_PATH"
+          go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.22.1
+          mkdir -p "$RUNNER_TEMP/prerelease-mailpit"
+          cd "$RUNNER_TEMP/prerelease-mailpit"
+          curl --fail --location --retry 3 --output mailpit.tar.gz https://github.com/axllent/mailpit/releases/download/v1.21.8/mailpit-linux-amd64.tar.gz
+          echo '0a75353c9e784d41189be7148d8b0e021f68e1bd7f29b521131b7cf50b396d97  mailpit.tar.gz' | sha256sum --check --strict
+          tar -xzf mailpit.tar.gz mailpit
+          echo "$RUNNER_TEMP/prerelease-mailpit" >> "$GITHUB_PATH"
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/prerelease-python"
+          "$PRERELEASE_IMAGE_PYTHON" -m pip install --only-binary=:all: -r "$GITHUB_WORKSPACE/services/api/media/requirements.txt"
+      - name: Tool regression and existing Go checks
+        run: |
+          test -z "$(gofmt -l services/api/cmd/runtimeprobe)"
+          python -m unittest discover -s tools/prerelease/tests -v
+          cd services/api
+          go test -mod=readonly ./...
+          go build -mod=readonly ./...
+          go vet -mod=readonly ./...
+          go mod download
+      - name: Actual migration, restricted-role and image SQL regressions
+        working-directory: services/api
+        env:
+          POST_MEDIA_PYTHON: ${{ env.PRERELEASE_IMAGE_PYTHON }}
+          POST_MEDIA_FIXTURES: ${{ runner.temp }}/prerelease-image-fixtures
+          PGPORT: '55434'
+        run: |
+          "$POST_MEDIA_PYTHON" media/test_validator.py --fixtures "$POST_MEDIA_FIXTURES"
+          sh authlab/run-post-schema-isolated.sh
+          sh authlab/run-post-images-isolated.sh
+      - name: Actual new-instance restore and application rollback
+        run: |
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          BASELINE=$(git rev-parse origin/main)
+          export GOTOOLCHAIN=local GOPROXY=off
+          python tools/prerelease/environment.py --root "$RUNNER_TEMP/hnuhole-prerelease" init --rollback-sha "$BASELINE"
+          python tools/prerelease/environment.py --root "$RUNNER_TEMP/hnuhole-prerelease" rehearse
+      - name: Stop only this lab
+        if: always()
+        run: |
+          if test -f "$RUNNER_TEMP/hnuhole-prerelease/state.private.json"; then
+            python tools/prerelease/environment.py --root "$RUNNER_TEMP/hnuhole-prerelease" stop
+          fi
+      - name: Publish sanitized evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prerelease-rehearsal-${{ env.SOURCE_SHA }}
+          path: ${{ runner.temp }}/hnuhole-prerelease/evidence.json
+          if-no-files-found: warn
+          retention-days: 30

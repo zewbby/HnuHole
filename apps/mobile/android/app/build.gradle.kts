@@ -29,9 +29,25 @@ android {
         versionName = flutter.versionName
     }
 
+    // Opt-in CI test identity. Production signing is configured separately.
+    val testSigningNames = listOf("HNUHOLE_TEST_KEYSTORE", "HNUHOLE_TEST_KEY_ALIAS", "HNUHOLE_TEST_STORE_PASSWORD", "HNUHOLE_TEST_KEY_PASSWORD")
+    val testSigningValues = testSigningNames.map { System.getenv(it) }
+    require(testSigningValues.all { it == null } || testSigningValues.all { !it.isNullOrBlank() }) {
+        "All four prerelease test signing inputs are required"
+    }
+    val testSigning = if (testSigningValues.all { it != null }) {
+        signingConfigs.create("prereleaseTest") {
+            storeFile = file(testSigningValues[0]!!)
+            keyAlias = testSigningValues[1]
+            storePassword = testSigningValues[2]
+            keyPassword = testSigningValues[3]
+        }
+    } else null
+
     buildTypes {
         release {
             // Configure an explicit release signing identity before distribution.
+            if (testSigning != null) signingConfig = testSigning
         }
     }
 }

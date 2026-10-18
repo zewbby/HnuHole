@@ -1,8 +1,13 @@
 # Android候选版本交付与隔离预发布：开发任务范围
 
-创建：2026-10-18，Asia/Shanghai。状态：SCOPED_NOT_IMPLEMENTED，仅完成分支与边界准备。
+创建：2026-10-18，Asia/Shanghai。状态：IMPLEMENTED_TESTING，正在执行实际构建和隔离演练，尚未验收或发布。
 仓库 zewbby/HnuHole；分支 `codex/ci/android-prerelease`；独立目录 `E:/HnuHole-android-prerelease-20261018/repo`。
 创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。本任务不是正式上线或生产安全批准。
+
+2026-10-18 已核对独立目录、干净分支和 origin，复用原分支。PR #13 已实际合入
+`359c180`，同步 main `986477b`，没有使用其他session的SDK、数据库或手机。
+当前新增独立候选workflow、测试签名接线、私有C/V初始化/健康/启停及新实例恢复和应用回滚入口；
+实际结果在[发布运行手册](../release/android-prerelease.md)记录，脚本存在不等于演练通过。
 
 ## 目标与本次包含
 
