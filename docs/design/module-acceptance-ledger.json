@@ -16395,7 +16395,10 @@
         "realSQL": "NOT_RUN_NOT_IMPLEMENTED",
         "nativeJournal": "NOT_RUN_NOT_IMPLEMENTED",
         "commentAPK": "NOT_BUILT",
-        "deviceUsed": false
+        "deviceUsed": false,
+        "notificationContractCommit": "60e5df46545180c1c7017b6aee3b417af471ccbe",
+        "notificationContractReadAndMapped": true,
+        "notificationProviderImplemented": false
       }
     },
     {

@@ -322,10 +322,13 @@
   ],
   "dependencies": {
     "governanceBranch": "codex/feat/report-moderation",
-    "lastObservedCommit": "5292d2d",
+    "lastObservedCommit": "60e5df46545180c1c7017b6aee3b417af471ccbe",
     "governanceMigration": "0015 provisional, absent from integrated main",
     "commentsMigration": "0016 provisional; not added or executed",
-    "notificationProjection": "NOT_CONNECTED"
+    "notificationProjection": "NOT_CONNECTED",
+    "notificationContract": "https://github.com/zewbby/HnuHole/blob/60e5df46545180c1c7017b6aee3b417af471ccbe/docs/design/report-notification-contract.md",
+    "notificationContractReadAndMapped": true,
+    "notificationProviderImplemented": false
   },
   "review": {
     "mode": "independent peer agent cross-review plus root integration review",

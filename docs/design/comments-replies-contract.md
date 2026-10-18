@@ -74,7 +74,20 @@ image 先放 uint8 presence（0 或 1）。有图时放 `media UUID16 || text(sh
 
 阅读/标已读不解决任务，失败项删除表示放弃任务，不是删公开评论。重试进行中不得再提供并发重试/放弃。任务最终成功或放弃后幂等移除通知；失败状态/动作由任务实时权限判定，通知不能自行推导成功或复活任务。
 
-任务2拥有消息系统通知列表/详情/已读/路由；本任务不新增第二套通知中心。当前远端 `codex/feat/report-moderation` 只见范围提交 `5292d2d`，没有可消费实现；适配契约待与其已提交接口核对。`COMMENT-FAIL-ENTRY-01` 与完整 B07 均保持未验。
+任务2拥有消息系统通知列表/详情/已读/路由；本任务不新增第二套通知中心。最终远端核对发现任务2已提交[通知契约 60e5df4](https://github.com/zewbby/HnuHole/blob/60e5df46545180c1c7017b6aee3b417af471ccbe/docs/design/report-notification-contract.md)，已完整读取并对齐下列映射；尚无已合入的 0015 或真实通知 provider 接线。没有合并整条治理分支或复制其未提交代码。
+
+| 本任务的私有事实 | 对接任务2的通知包装 |
+| --- | --- |
+| `ownerIdentityId` | `identityId`，固定 `scope=IDENTITY`；不能混入账号级或其他身份列表 |
+| `taskId` | `route={name:COMMENT_FAILURE,resourceId:taskId}`，白名单资源路由，不传任意 URL |
+| 本机 journal 的明确失败投影 | `source=LOCAL_TASK`；这是通知来源，不是伪造服务端是否受理的证据 |
+| 权威 FAILED、原目标与动作权限 | 详情与 RETRY/ABANDON 调用评论任务 provider，通知不复制正文或发送状态机 |
+| PUBLISHED／ABANDONED／已删除原身份 | 按实际结果撤去本人失败入口；未知仅保留核对元数据，不投递失败 |
+| 阅读／标已读 | 不修改任务、不放弃内容；由实际 provider／通知持久适配记录单条 read |
+
+当前投影尚不包含完整通知包装的 `id/eventId/kind/state/title/body/createdAt/readAt/route`，不冒充完整 provider。接线时按 `(taskId,attemptVersion)` 识别失败事件并建立稳定事件／接收记录映射，精确 ID 格式和 LOCAL_TASK/SERVER 同一事件去重须与任务2实际实现核对；不能每次列表重新生成 ID 或时间。`body` 只放通知摘要，原评论文字和图片仍从评论拥有者详情取，不存第二份。失败时间和本机单条 read 需持久适配，不借标已读清任务；通知 `kind/state` 的精确枚举仍待任务2实际规范固定，不能直接把全部任务状态作为通知状态。
+
+当前核心 `failures` 只投递权威 FAILED；CREATE 的 `REJECTED/NOT_ACCEPTED` 没有服务端任务，继续使用本地已提交意图及同帖显式恢复流程，不伪造 FAILED 来补通知入口。后续本机未受理失败详情路由需以真实 provider 接线单独覆盖。治理证据的 2 MiB／每批 8 MiB 预算不覆盖评论单图既有 10 MiB。上述包装／已读／路由及实际顶部失败入口均为未实现项，`COMMENT-FAIL-ENTRY-01` 与完整 B07 继续未验。
 
 ## 迁移和验证门槛
 

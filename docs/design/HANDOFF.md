@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-18 通知依赖核对增量：**已读取治理已提交契约 `60e5df4`，评论原身份／任务／状态／动作与 `IDENTITY`、`LOCAL_TASK`、`COMMENT_FAILURE/taskId` 路由映射已记录在[评论接线契约](comments-replies-contract.md)。完整事件包装／时间／已读／去重、未受理失败入口及实际 provider 尚未实现；0015 未合入，B07 和 COMMENT-FAIL-ENTRY-01 继续未通过。未合入整条治理分支。
+
 > **2026-10-18 评论与回复首阶段：独立核心宿主范围 PASS，完整 B07 未完成。**[Draft PR #17](https://github.com/zewbby/HnuHole/pull/17)，分支 `codex/feat/comments-replies`，被测实现 `cd45a89`；已正常整合 main `986477b`（含 PR #13），保留图片、认证和无障碍成果。Go 不可变任务／固定身份目标／排序、Dart 临时输入／未知与权威未受理／恢复接口、专属 codec 的12黄金向量及严格契约已实现；Flutter445／分析0／bundle、Go评论50含子项／91%覆盖／全服务宿主build+vet、7份OpenAPI与Python207（3平台跳过）通过。尚无评论 SQL/HTTP/worker/真实加密journal/页面/单图上传读取/通知接线，未生成评论功能APK、未操作手机；内存适配器不代证重开持久化。治理0015尚未进main，评论暂定0016，不造前置或跳号；`COMMENT-FAIL-ENTRY-01`为NOT_RUN_NOT_CONNECTED，B07保持BLOCKED。见[阶段报告](comments-core-report-20261018.md)、[机器证据](comments-core-verification-20261018.json)、[接线契约](comments-replies-contract.md)及[任务边界](../branches/feat-comments-replies.md)。未合并／未发布；NI-X02与iOS继续延期。下方历史快照保留原范围。
 
 > **2026-10-18 已确认合并 main：**[PR #13](https://github.com/zewbby/HnuHole/pull/13) 按维护者本次指令普通 Squash Merge，合并提交 `359c180a53a674e308e1496bed31da33b9ab8524`。远端main已核对；完整文件树与已测 `06a7ada` 一致，宿主/真实SQL/构建及三项产品CI通过证据继续适用。旧分支/历史协作policy失败与无独立成员批准如实保留，未改保护规则、使用绕过选项或强推。跨设备Passkey NI-X02继续延期；旧设备结果仅限原APK，新整合候选原生设备仍NOT_RUN，iOS/生产/完整App未验。见[合并回执](community-pr13-main-merge-20261018.json)。下方待合并/draft等条目保留为合并前快照。
