@@ -1,0 +1,43 @@
+name: Community text contract
+
+on:
+  pull_request:
+    paths:
+      - 'packages/openapi/**'
+      - 'packages/post-protocol-vectors/**'
+      - 'tools/check-community-text-contract.py'
+      - 'tools/tests/test_community_text_contract.py'
+      - 'docs/archive/community-text-posting-20261008/**'
+      - '.github/workflows/community-text-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'packages/openapi/**'
+      - 'packages/post-protocol-vectors/**'
+      - 'tools/check-community-text-contract.py'
+      - 'tools/tests/test_community_text_contract.py'
+      - 'docs/archive/community-text-posting-20261008/**'
+      - '.github/workflows/community-text-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned specification validators
+        run: python -m pip install -r packages/openapi/requirements-check.txt
+      - name: Validate all OpenAPI documents
+        run: python packages/openapi/check-specs.py
+      - name: Check text and media contract compatibility
+        run: python tools/check-community-text-contract.py
+      - name: Negative contract regressions and archive integrity
+        run: python -m unittest discover -s tools/tests -p test_community_text_contract.py -v
