@@ -48,14 +48,16 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
-      PUB_CACHE: ${{ runner.temp }}/prerelease-pub
-      GRADLE_USER_HOME: ${{ runner.temp }}/prerelease-gradle
       BUILD_NUMBER: ${{ inputs.build_number || '2026101801' }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.SOURCE_SHA }}
           persist-credentials: false
+      - name: Allocate this candidate's caches
+        run: |
+          echo "PUB_CACHE=$RUNNER_TEMP/prerelease-pub" >> "$GITHUB_ENV"
+          echo "GRADLE_USER_HOME=$RUNNER_TEMP/prerelease-gradle" >> "$GITHUB_ENV"
       - name: Require exact commit
         run: |
           [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
@@ -94,17 +96,19 @@ jobs:
   rehearsal:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    env:
-      GOCACHE: ${{ runner.temp }}/prerelease-go-build
-      GOMODCACHE: ${{ runner.temp }}/prerelease-go-mod
-      GOPATH: ${{ runner.temp }}/prerelease-go
-      PRERELEASE_IMAGE_PYTHON: ${{ runner.temp }}/prerelease-python/bin/python
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.SOURCE_SHA }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Allocate this rehearsal's caches
+        run: |
+          mkdir -p "$RUNNER_TEMP/prerelease-go-build" "$RUNNER_TEMP/prerelease-go-mod" "$RUNNER_TEMP/prerelease-go"
+          echo "GOCACHE=$RUNNER_TEMP/prerelease-go-build" >> "$GITHUB_ENV"
+          echo "GOMODCACHE=$RUNNER_TEMP/prerelease-go-mod" >> "$GITHUB_ENV"
+          echo "GOPATH=$RUNNER_TEMP/prerelease-go" >> "$GITHUB_ENV"
+          echo "PRERELEASE_IMAGE_PYTHON=$RUNNER_TEMP/prerelease-python/bin/python" >> "$GITHUB_ENV"
       - uses: actions/setup-go@v5
         with:
           go-version: '1.22.2'
