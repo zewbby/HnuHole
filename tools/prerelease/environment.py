@@ -381,15 +381,32 @@ class Lab:
         return {key: hashlib.sha256(value.encode()).hexdigest() for key, value in result.items()}
 
     def stop(self):
+        failures = []
         if any(party in self.state['processes'] for party in 'cv'):
-            self.quiesce()
-        self.halt()
+            try:
+                self.quiesce()
+            except Exception as error:
+                failures.append(str(error))
+        for name in list(self.state['processes']):
+            try:
+                self.halt([name])
+            except Exception as error:
+                failures.append(str(error))
         for target, parties in self.state['pgPorts'].items():
             for party in parties:
                 data = self.root / (target + '-' + party) / 'data'
                 if data.exists():
-                    if self.run(['pg_ctl', '-D', data, 'status'], 'pg-stop-status', check=False) == 0:
-                        self.run(['pg_ctl', '-D', data, '-m', 'fast', '-w', 'stop'], 'pg-stop-' + target + party)
+                    try:
+                        status = self.run(['pg_ctl', '-D', data, 'status'], 'pg-stop-status', check=False)
+                        if status == 0:
+                            self.run(['pg_ctl', '-D', data, '-m', 'fast', '-w', 'stop'], 'pg-stop-' + target + party)
+                            status = self.run(['pg_ctl', '-D', data, 'status'], 'pg-stopped-status', check=False)
+                        if status != 3:
+                            raise RuntimeError('could not prove owned PostgreSQL stopped')
+                    except Exception as error:
+                        failures.append(str(error))
+        if failures:
+            raise RuntimeError('owned cleanup failed: ' + '; '.join(failures))
 
     def quiesce(self):
         # Stop between Gate commits, as in the existing actual-runtime runner.
@@ -410,9 +427,17 @@ class Lab:
         finally:
             for lock in locks:
                 if lock.poll() is None:
-                    lock.stdin.write('ROLLBACK;\n\\q\n')
-                    lock.stdin.flush()
-                    lock.communicate(timeout=10)
+                    try:
+                        lock.stdin.write('ROLLBACK;\n\\q\n')
+                        lock.stdin.flush()
+                        lock.communicate(timeout=10)
+                    except (OSError, subprocess.TimeoutExpired):
+                        lock.terminate()
+                        try:
+                            lock.wait(timeout=5)
+                        except subprocess.TimeoutExpired:
+                            lock.kill()
+                            lock.wait(timeout=5)
 
     def rehearse(self):
         evidence = dict(sourceSha=self.state['sourceSha'], rollbackSha=self.state['rollbackSha'],
@@ -497,11 +522,19 @@ class Lab:
             evidence['binarySha256'] = {p.name: sha(p) for p in (self.root / 'bin').iterdir()}
             evidence['result'] = 'PASS'
         finally:
-            self.stop()
-            evidence['cleanup'] = 'PASS: owned processes and all five PostgreSQL instances stopped; private material retained'
+            cleanup_error = None
+            try:
+                self.stop()
+                evidence['cleanup'] = 'PASS: owned processes and all five PostgreSQL instances stopped; private material retained'
+            except Exception as error:
+                cleanup_error = error
+                evidence['result'] = 'FAIL'
+                evidence['cleanup'] = 'FAIL: could not prove every owned process stopped'
             evidence['commands'] = self.state['commands']
             evidence['privateLogSha256'] = {p.name: sha(p) for p in self.root.glob('*.private.log')}
             write(self.root / 'evidence.json', evidence)
+            if cleanup_error:
+                raise cleanup_error
 
 
 def main():

@@ -4,6 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 import urllib.parse
+from unittest.mock import Mock
 
 spec = importlib.util.spec_from_file_location('environment', Path(__file__).parents[1] / 'environment.py')
 environment = importlib.util.module_from_spec(spec)
@@ -11,6 +12,18 @@ spec.loader.exec_module(environment)
 
 
 class IsolatedEnvironmentTest(unittest.TestCase):
+    def test_cleanup_does_not_treat_pg_status_error_as_stopped(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'new-root'
+            lab = environment.Lab(root, Path('/source'))
+            lab.state = dict(processes={}, pgPorts={'source': {'c': 15432, 'v': 15433}})
+            for party in 'cv':
+                (root / ('source-' + party) / 'data').mkdir(parents=True)
+            lab.run = Mock(return_value=4)
+            with self.assertRaisesRegex(RuntimeError, 'could not prove owned PostgreSQL stopped'):
+                lab.stop()
+            self.assertEqual(lab.run.call_count, 2)
+
     def test_migrator_dsn_works_with_libpq_percent_decoding(self):
         lab = environment.Lab(Path(tempfile.gettempdir()) / 'nonexistent-prerelease-unit-root', Path('/source'))
         lab.state = dict(target='source', tag='hnuhole_runtime_unit', pgPorts={'source': {'c': 15432}})
