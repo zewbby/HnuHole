@@ -78,3 +78,17 @@ DO $$ BEGIN
    ON c_posts.images TO hnuhole_c_runtime;
  END IF;
 END $$;
+
+-- 0015 lifecycle hooks execute on old post/closure paths even when moderation
+-- HTTP features are disabled. Grant only their cleanup operations here.
+DO $$ BEGIN
+ IF to_regnamespace('c_moderation') IS NOT NULL THEN
+  GRANT USAGE ON SCHEMA c_moderation TO hnuhole_c_runtime;
+  GRANT SELECT ON c_moderation.cases,c_moderation.reports,c_moderation.notifications TO hnuhole_c_runtime;
+  GRANT UPDATE(state,outcome,explanation,version) ON c_moderation.cases TO hnuhole_c_runtime;
+  GRANT UPDATE(reporter_account_id,identity_id) ON c_moderation.reports TO hnuhole_c_runtime;
+  GRANT INSERT,DELETE ON c_moderation.notifications TO hnuhole_c_runtime;
+  GRANT SELECT(account_id),DELETE ON c_moderation.access_sessions,c_moderation.roles TO hnuhole_c_runtime;
+  GRANT UPDATE(moderation_rename_required) ON public.community_identities TO hnuhole_c_runtime;
+ END IF;
+END $$;
