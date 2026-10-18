@@ -120,7 +120,7 @@ def main():
                         fileName=target.name, lockfileSha256=locks, toolchain=tools,
                         serviceConfiguration='unconfigured: compiled .invalid defaults; no development CA or RP override',
                         deviceValidation='NOT_RUN', serviceSmoke='NOT_RUN', productionRelease=False,
-                        androidBuildTools='36.0.0', ndk='28.2.13676358',
+                        androidBuildTools='36.0.0', ndk='28.2.13676358', cmake='3.22.1',
                         gradleWrapperSha256=sha(app / 'android/gradle/wrapper/gradle-wrapper.properties'))
     require(not Path(private).exists(), 'test signing material not removed')
     (out / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
