@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - 'apps/admin/**'
+      - 'apps/mobile/**'
+      - 'packages/auth_vault/**'
+      - 'packages/auth_passkey/**'
+      - 'packages/image_viewer/**'
       - 'services/api/**'
       - 'infra/postgres/**'
       - 'packages/openapi/**'
@@ -35,25 +39,57 @@ jobs:
 
   moderation-postgres:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Private moderation tool and cache directories
+        run: |
+          mkdir -p "$RUNNER_TEMP/moderation-bin" "$RUNNER_TEMP/moderation-go-cache" "$RUNNER_TEMP/moderation-go-mod-cache" "$RUNNER_TEMP/moderation-pub-cache"
+          printf '%s\n' \
+            "GOBIN=$RUNNER_TEMP/moderation-bin" \
+            "GOCACHE=$RUNNER_TEMP/moderation-go-cache" \
+            "GOMODCACHE=$RUNNER_TEMP/moderation-go-mod-cache" \
+            "PUB_CACHE=$RUNNER_TEMP/moderation-pub-cache" >> "$GITHUB_ENV"
       - uses: actions/setup-go@v5
         with:
           go-version: '1.22.2'
-          cache-dependency-path: services/api/go.sum
+          cache: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: false
       - name: Private PostgreSQL and media validator dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-16 python3-venv
+          sudo apt-get install -y postgresql-16 python3-venv libsqlite3-dev openssl
           echo '/usr/lib/postgresql/16/bin' >> "$GITHUB_PATH"
           /usr/bin/python3 -m venv "$RUNNER_TEMP/moderation-python"
-          "$RUNNER_TEMP/moderation-python/bin/python" -m pip install -r services/api/media/requirements.txt
+          "$RUNNER_TEMP/moderation-python/bin/python" -m pip install --no-cache-dir -r services/api/media/requirements.txt -r packages/openapi/requirements-check.txt
           chmod -R go-w services/api/media
           "$RUNNER_TEMP/moderation-python/bin/python" -I -B services/api/media/validate_image.py --probe
           "$RUNNER_TEMP/moderation-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/moderation-fixtures"
+      - name: Validate every pinned OpenAPI contract
+        run: '"$RUNNER_TEMP/moderation-python/bin/python" packages/openapi/check-specs.py'
+      - name: Install the pinned Goose migration runner
+        working-directory: services/api
+        run: |
+          go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
+          test -x "$GOBIN/goose"
+          "$GOBIN/goose" -version
+      - name: Locked mobile dependencies and native Linux governance probe
+        working-directory: apps/mobile
+        run: |
+          flutter pub get --enforce-lockfile
+          dart compile exe integration/governance_live_probe.dart -o "$RUNNER_TEMP/moderation-bin/governance-live-probe"
+          test -x "$RUNNER_TEMP/moderation-bin/governance-live-probe"
+      - name: Verify lockfiles were preserved
+        run: git diff --exit-code -- '**/pubspec.lock' services/api/go.mod services/api/go.sum
       - name: Isolated SQL, permissions and real HTTPS moderation regression
         working-directory: services/api
         env:
@@ -62,4 +98,10 @@ jobs:
         run: |
           export POST_MEDIA_PYTHON="$RUNNER_TEMP/moderation-python/bin/python"
           export POST_MEDIA_FIXTURES="$RUNNER_TEMP/moderation-fixtures"
+          export MODERATION_PROBE="$RUNNER_TEMP/moderation-bin/governance-live-probe"
+          export MODERATION_GOOSE="$GOBIN/goose"
+          export MODERATION_NODE="$(command -v node)"
+          test -x "$MODERATION_PROBE"
+          test -x "$MODERATION_GOOSE"
+          test -x "$MODERATION_NODE"
           sh authlab/run-moderation-isolated.sh

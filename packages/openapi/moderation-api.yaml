@@ -252,8 +252,8 @@ paths:
     get:
       operationId: getOwnAppeal
       summary: Read own appeal and retained material
-      description: Ordinary or MODERATION_SELF session. No original reviewer platform number or reporter identity
-        is returned to this self-service route.
+      description: Ordinary or MODERATION_SELF session. Returns at most the first appeal batch and optional nextMaterialsCursor.
+        No original reviewer platform number, reporter identity or internal account mapping is returned.
       security:
       - bearerAuth: []
       responses:
@@ -286,6 +286,62 @@ paths:
           $ref: '#/components/responses/Error429'
         '503':
           $ref: '#/components/responses/Error503'
+  /api/v1/appeals/{appealId}/materials:
+    parameters:
+    - name: appealId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: listOwnAppealMaterials
+      summary: Read the next retained appeal batch
+      description: Ordinary or MODERATION_SELF session, restricted to this account's own appeal. Appeal batches
+        omit reason, platform numbers and reporter identifiers. At most one batch per page, ascending creation time
+        then submission UUID. Omit cursor for the first batch, then pass nextCursor unchanged and URL-encoded. Only
+        one nonempty cursor query parameter is accepted; duplicate/unknown query fields and request bodies are rejected.
+        No limit query is supported.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaterialPage'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 1
+        description: Opaque server nextCursor or parent nextReportsCursor/nextMaterialsCursor; pass unchanged. Current
+          encoding is RFC3339Nano time, literal |, canonical report/request UUID.
   /api/v1/appeals/{appealId}/materials/{requestId}:
     parameters:
     - name: appealId
@@ -494,8 +550,9 @@ paths:
     get:
       operationId: getModerationCase
       summary: Read authorized case evidence
-      description: Public snapshot plus submitted supplementary materials only; no reporter identifiers, email,
-        internal account IDs or other identity list.
+      description: Public snapshot plus at most the first retained report batch and optional nextReportsCursor.
+        Each report batch keeps its original reason. No reporter identifiers, email, internal account IDs or other
+        identity list.
       security:
       - bearerAuth: []
       responses:
@@ -528,6 +585,62 @@ paths:
           $ref: '#/components/responses/Error429'
         '503':
           $ref: '#/components/responses/Error503'
+  /api/v1/moderation/cases/{caseId}/reports:
+    parameters:
+    - name: caseId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: listModerationReportMaterials
+      summary: Read the next retained report batch
+      description: Ordinary REVIEWER or ADMIN session required; MODERATION_SELF is refused. Report batches retain
+        their individual reason without reporter identifiers. At most one batch per page, ascending creation time
+        then submission UUID. Omit cursor for the first batch, then pass nextCursor unchanged and URL-encoded. Only
+        one nonempty cursor query parameter is accepted; duplicate/unknown query fields and request bodies are rejected.
+        No limit query is supported.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportMaterialPage'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 1
+        description: Opaque server nextCursor or parent nextReportsCursor/nextMaterialsCursor; pass unchanged. Current
+          encoding is RFC3339Nano time, literal |, canonical report/request UUID.
   /api/v1/moderation/cases/{caseId}/claim:
     parameters:
     - name: caseId
@@ -699,8 +812,8 @@ paths:
     get:
       operationId: getModerationAppeal
       summary: Read an authorized appeal
-      description: Management role required. Includes target and original actor platform numbers and the submitted
-        appeal materials.
+      description: Ordinary REVIEWER or ADMIN management session required; MODERATION_SELF is refused. Includes
+        target and original actor platform numbers, at most the first appeal batch, and optional nextMaterialsCursor.
       security:
       - bearerAuth: []
       responses:
@@ -733,6 +846,62 @@ paths:
           $ref: '#/components/responses/Error429'
         '503':
           $ref: '#/components/responses/Error503'
+  /api/v1/moderation/appeals/{appealId}/materials:
+    parameters:
+    - name: appealId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: listModerationAppealMaterials
+      summary: Read the next retained appeal batch
+      description: Ordinary REVIEWER or ADMIN session required; MODERATION_SELF is refused. Appeal batches omit
+        reason, platform numbers and reporter identifiers. At most one batch per page, ascending creation time then
+        submission UUID. Omit cursor for the first batch, then pass nextCursor unchanged and URL-encoded. Only one
+        nonempty cursor query parameter is accepted; duplicate/unknown query fields and request bodies are rejected.
+        No limit query is supported.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaterialPage'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 1
+        description: Opaque server nextCursor or parent nextReportsCursor/nextMaterialsCursor; pass unchanged. Current
+          encoding is RFC3339Nano time, literal |, canonical report/request UUID.
   /api/v1/moderation/appeals/{appealId}/decision:
     parameters:
     - name: appealId
@@ -1231,8 +1400,9 @@ components:
           x-max-total-decoded-bytes: 8388608
         createdAt:
           $ref: '#/components/schemas/DateTime'
-      description: One independently retained submission. Initial appeal accepts at most six images; each append
-        at most three. At most 8388608 decoded image bytes per submission.
+      description: One retained appeal submission with server-assigned createdAt. Appeal batches never contain reason,
+        request/retry tokens, reporter identity or internal account mappings. Initial appeal accepts at most six
+        images; each append at most three; 8388608 decoded bytes per submission.
     Sanction:
       type: object
       additionalProperties: false
@@ -1337,8 +1507,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Material'
-      description: Self-service appeal DTO always includes caseId, version and action, as well as retained material.
-        It never includes platformNumber or originalActorNumber; those appear only in management DTOs.
+          maxItems: 1
+        nextMaterialsCursor:
+          type: string
+          minLength: 1
+          readOnly: true
+          description: Opaque server continuation. Pass unchanged and URL-encoded. Current encoding is RFC3339Nano
+            time, literal |, and a canonical submission UUID; ordering is ascending creation time then UUID. Omitted
+            when there is no next batch.
+      description: Self-service appeal always includes caseId, version and action and at most the first material
+        batch. nextMaterialsCursor, when present, continues GET /api/v1/appeals/{appealId}/materials. No platformNumber
+        or originalActorNumber, reporter identity or internal account mappings are returned.
     Opaque32:
       type: string
       minLength: 43
@@ -1410,7 +1589,8 @@ components:
         retryToken:
           $ref: '#/components/schemas/UUID'
       description: Nonblank explanation or at least one image required. Maximum six images, 2 MiB each, 8 MiB decoded
-        total, 12 MiB JSON. createdAt is server-assigned and forbidden in this request.
+        total, 12 MiB JSON. createdAt is server-assigned and forbidden in this request. reason is a report-only
+        output field and is forbidden in appeal writes.
     AppendedAppealMaterial:
       type: object
       additionalProperties: false
@@ -1430,7 +1610,8 @@ components:
         retryToken:
           $ref: '#/components/schemas/UUID'
       description: 'One independent append: nonblank explanation or at least one image; at most three images and
-        8 MiB decoded total. Does not consume a new appeal attempt.'
+        8 MiB decoded total. Does not consume a new appeal attempt. reason is a report-only output field and is
+        forbidden in appeal writes.'
     AppealResult:
       oneOf:
       - type: object
@@ -1556,13 +1737,22 @@ components:
         reports:
           type: array
           items:
-            $ref: '#/components/schemas/Material'
+            $ref: '#/components/schemas/ReportMaterial'
+          maxItems: 1
         sanctions:
           type: array
           items:
             $ref: '#/components/schemas/Sanction'
+        nextReportsCursor:
+          type: string
+          minLength: 1
+          readOnly: true
+          description: Opaque server continuation. Pass unchanged and URL-encoded. Current encoding is RFC3339Nano
+            time, literal |, and a canonical submission UUID; ordering is ascending creation time then UUID. Omitted
+            when there is no next batch.
       description: Lists omit detailed evidence/reports/sanctions. Detail returns the accepted public snapshot and
-        supplementary material without reporter account or identity fields.
+        at most the first report batch; nextReportsCursor, when present, continues GET /api/v1/moderation/cases/{caseId}/reports.
+        No reporter account/identity, email, internal account mappings or other masks are exposed.
     CasePage:
       type: object
       additionalProperties: false
@@ -1629,10 +1819,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Material'
+          maxItems: 1
         platformNumber:
           $ref: '#/components/schemas/PlatformNumber'
         originalActorNumber:
           $ref: '#/components/schemas/PlatformNumber'
+        nextMaterialsCursor:
+          type: string
+          minLength: 1
+          readOnly: true
+          description: Opaque server continuation. Pass unchanged and URL-encoded. Current encoding is RFC3339Nano
+            time, literal |, and a canonical submission UUID; ordering is ascending creation time then UUID. Omitted
+            when there is no next batch.
+      description: Management detail adds target and original actor platform numbers. Includes at most the first
+        appeal batch; nextMaterialsCursor continues GET /api/v1/moderation/appeals/{appealId}/materials. No reporter
+        identity, email, internal account mappings or other masks are exposed.
     AdminAppealList:
       type: object
       additionalProperties: false
@@ -1932,3 +2133,74 @@ components:
       description: Pending management list entry. Metadata includes caseId, version, action and the two permitted
         platform numbers. materials is always an empty array; open the authorized detail route to load all submitted
         material.
+    ReportMaterial:
+      type: object
+      additionalProperties: false
+      required:
+      - reason
+      - description
+      - images
+      - createdAt
+      properties:
+        reason:
+          type: string
+          enum:
+          - ADVERTISING
+          - HARASSMENT
+          - PRIVACY
+          - FRAUD
+          - ILLEGAL
+          - OTHER
+          readOnly: true
+        description:
+          type: string
+          maxLength: 200
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          maxItems: 6
+          x-max-total-decoded-bytes: 8388608
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+      description: One retained report submission. reason is the original category chosen by this reporter, even
+        when reports of the same post snapshot with different reasons share one case. Read only; reporter account/identity,
+        internal mappings, request/retry tokens and other masks are absent.
+    MaterialPage:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextCursor
+      properties:
+        items:
+          type: array
+          maxItems: 1
+          items:
+            $ref: '#/components/schemas/Material'
+        nextCursor:
+          type: string
+          nullable: true
+          description: Null at end. Otherwise pass this opaque ascending time|UUID continuation unchanged in cursor,
+            URL-encoded.
+      description: At most one independently retained material batch per page. End-of-list is an empty items array
+        and null nextCursor. No limit parameter is accepted.
+    ReportMaterialPage:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextCursor
+      properties:
+        items:
+          type: array
+          maxItems: 1
+          items:
+            $ref: '#/components/schemas/ReportMaterial'
+        nextCursor:
+          type: string
+          nullable: true
+          description: Null at end. Otherwise pass this opaque ascending time|UUID continuation unchanged in cursor,
+            URL-encoded.
+      description: At most one independently retained material batch per page. End-of-list is an empty items array
+        and null nextCursor. No limit parameter is accepted.
