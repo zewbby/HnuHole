@@ -1,0 +1,6 @@
+{
+  "name": "hnuhole-moderation-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test test/*.test.mjs", "test:browser": "node test/browser-smoke.mjs" }
+}

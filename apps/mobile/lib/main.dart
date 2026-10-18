@@ -82,6 +82,34 @@ void main() {
     ),
   );
   final postMedia = PostMediaRepository(posts);
+  final governanceApi = HttpGovernanceApi(
+    baseUri: communityBaseUri,
+    client: createAppHttpClient(
+      community: communityBaseUri,
+      verifier: verifierBaseUri,
+    ),
+  );
+  final moderationAccess = ModerationAccess(
+    api: governanceApi,
+    vault: FlutterAuthVault(
+      namespace: 'hnuhole.moderation-access.v1.$storageNamespace',
+    ),
+  );
+  final governance = GovernanceController(
+    api: governanceApi,
+    sessions: sessions,
+    authStore: store,
+    identitiesApi: api,
+    restrictedAccess: moderationAccess,
+    pendingStore: GovernancePendingStore(
+      GovernanceMaterialVault(
+        openStore: () => PostStore.openNative(
+          environment: '$storageScope|governance-material-v1',
+          accountId: 'governance-pending-owners',
+        ),
+      ),
+    ),
+  );
   final passkey = NativePasskeyClient();
   final management = SecurityManagementController(
     api: api,
@@ -103,7 +131,10 @@ void main() {
     passkey: passkey,
     sessionAuthorityVersion: () => sessions.authorityVersion,
     sessionAuthority: sessions,
-    onAccountClosed: posts.purgeClosedAccount,
+    onAccountClosed: (accountId) async {
+      await posts.purgeClosedAccount(accountId);
+      await governance.purgeClosedAccount(accountId);
+    },
   );
 
   runApp(
@@ -120,6 +151,8 @@ void main() {
       postApi: postApi,
       postMedia: postMedia,
       loadPostImages: postMedia.load,
+      governance: governance,
+      governanceApi: governanceApi,
     ),
   );
 }
@@ -142,6 +175,8 @@ class HnuholeApp extends StatefulWidget {
     required this.postApi,
     this.loadPostImages,
     this.postMedia,
+    this.governance,
+    this.governanceApi,
   });
 
   final ChannelDirectoryController directory;
@@ -156,6 +191,8 @@ class HnuholeApp extends StatefulWidget {
   final HttpPostApi postApi;
   final PostImagesLoader? loadPostImages;
   final PostMediaRepository? postMedia;
+  final GovernanceController? governance;
+  final HttpGovernanceApi? governanceApi;
 
   @override
   State<HnuholeApp> createState() => _HnuholeAppState();
@@ -172,6 +209,57 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   bool _identityRouteOpen = false;
   bool _personalRouteOpen = false;
   String? _channelRouteId;
+  bool _messagesRouteOpen = false;
+
+  Future<void> _openMessages() async {
+    final navigator = _navigatorKey.currentState,
+        governance = widget.governance;
+    if (navigator == null || governance == null || _messagesRouteOpen) return;
+    _messagesRouteOpen = true;
+    try {
+      if (!governance.available) {
+        final access = governance.restrictedAccess;
+        if (access == null) {
+          _openAuth();
+          return;
+        }
+        final result = await navigator.push<bool>(
+          MaterialPageRoute(
+            builder: (_) => ModerationAccessScreen(access: access),
+          ),
+        );
+        if (result != true || !mounted || !governance.available) return;
+      }
+      final owner = governance.accountId,
+          authority = governance.authorityVersion;
+      await navigator.push(
+        MaterialPageRoute<void>(
+          builder: (_) => SystemNotificationsScreen(
+            controller: governance,
+            onOpenPost: (postId) async {
+              if (!widget.posts.available ||
+                  governance.accountId != owner ||
+                  governance.authorityVersion != authority) {
+                return;
+              }
+              await navigator.push(
+                MaterialPageRoute<void>(
+                  builder: (_) => PostDetailScreen(
+                    controller: widget.posts,
+                    postId: postId,
+                    loadImages: widget.loadPostImages,
+                    onAuthenticationRequired: _openAuth,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } finally {
+      _messagesRouteOpen = false;
+    }
+  }
 
   @override
   void initState() {
@@ -387,6 +475,9 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     widget.identities.dispose();
     widget.flows.dispose();
     widget.postMedia?.dispose();
+    widget.governance?.dispose();
+    widget.governance?.restrictedAccess?.dispose();
+    widget.governanceApi?.close();
     widget.posts.dispose();
     widget.postApi.close();
     widget.sessions.dispose();
@@ -411,7 +502,14 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
           // is a user gesture, never a background timer or a build side effect.
           scheduleMicrotask(widget.sessions.onActivity);
         },
-        child: CommunitySpokenLocale(child: child ?? const SizedBox.shrink()),
+        child: CommunitySpokenLocale(
+          child: widget.governance == null
+              ? child ?? const SizedBox.shrink()
+              : GovernanceScope(
+                  controller: widget.governance!,
+                  child: child ?? const SizedBox.shrink(),
+                ),
+        ),
       ),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF76AFC8)),
@@ -424,12 +522,21 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         ),
         useMaterial3: true,
       ),
-      home: EntryScreen(
-        directory: widget.directory,
-        treeSession: _treeSession,
-        onLoginRequested: _openAuth,
-        onProfilePressed: _openPersonal,
-        onChannelSelected: _openChannel,
+      home: AnimatedBuilder(
+        animation: Listenable.merge([
+          widget.sessions,
+          if (widget.governance != null) widget.governance!,
+        ]),
+        builder: (context, _) => EntryScreen(
+          directory: widget.directory,
+          treeSession: _treeSession,
+          onLoginRequested: _openAuth,
+          onProfilePressed: _openPersonal,
+          onChannelSelected: _openChannel,
+          onMessagesPressed: widget.governance == null ? null : _openMessages,
+          messagesAvailable: widget.governance != null,
+          messagesUnread: widget.governance?.hasUnread == true,
+        ),
       ),
     );
   }

@@ -265,7 +265,7 @@ func (c *Community) ReadPostImages(ctx context.Context, bearer [32]byte, post, c
 		// Serialize the resource visibility check with deletion. No author
 		// account lock is acquired after the caller's account lock.
 		var published string
-		if e := tx.QueryRow(ctx, `SELECT visibility FROM c_posts.posts WHERE post_id=$1 AND visibility='PUBLISHED' FOR SHARE`, post).Scan(&published); errors.Is(e, pgx.ErrNoRows) {
+		if e := tx.QueryRow(ctx, `SELECT visibility FROM c_posts.posts p WHERE post_id=$1 AND visibility='PUBLISHED' AND NOT COALESCE((to_jsonb(p)->>'moderation_hidden')::boolean,false) FOR SHARE`, post).Scan(&published); errors.Is(e, pgx.ErrNoRows) {
 			return nil, postError("MEDIA_NOT_FOUND", 404)
 		} else if e != nil {
 			return nil, e

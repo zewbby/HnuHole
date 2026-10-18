@@ -597,72 +597,18 @@ func (c *Community) ApplyAccountBan(ctx context.Context, account uuid.UUID, expe
 		return ErrAuthorizationUnavailable
 	}
 	defer c.gate.Abort(ctx, tx)
-	var state string
-	var generation, closureGeneration int64
-	err = tx.QueryRow(ctx, `SELECT state,session_generation,closure_generation FROM c_auth.accounts WHERE account_id=$1 FOR UPDATE`, account).
-		Scan(&state, &generation, &closureGeneration)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return ErrAccountUnavailable
-	}
+	locked, err := c.lockModerationRestrictionTx(ctx, tx, account, "BAN")
 	if err != nil {
-		return ErrAuthorizationUnavailable
-	}
-	if _, err = lockRestriction(ctx, tx, account); err != nil {
-		return ErrAuthorizationUnavailable
-	}
-	var version int64
-	if err = tx.QueryRow(ctx, `SELECT version FROM c_auth.account_restrictions WHERE account_id=$1`, account).Scan(&version); err != nil {
-		return ErrAuthorizationUnavailable
-	}
-	p, err := lockPendingClosure(ctx, tx, account)
-	if err != nil {
-		return ErrAuthorizationUnavailable
-	}
-	rows, err := tx.Query(ctx, `SELECT token_digest FROM c_auth.sessions WHERE account_id=$1 ORDER BY token_digest FOR UPDATE`, account)
-	if err != nil {
-		return ErrAuthorizationUnavailable
-	}
-	for rows.Next() {
-	}
-	err = rows.Err()
-	rows.Close()
-	if err != nil {
-		return ErrAuthorizationUnavailable
+		return err
 	}
 	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
-		if state == "CLOSED" {
+		if locked.state == "CLOSED" {
 			return ErrAccountUnavailable
 		}
-		if version != expectedVersion {
+		if locked.version != expectedVersion {
 			return ErrRestrictionStateChanged
 		}
-		if version == math.MaxInt64 || generation == math.MaxInt64 {
-			return ErrAuthorizationUnavailable
-		}
-		if endsAt != nil && !endsAt.After(final.TrustedAt) {
-			return ErrIntentInvalid
-		}
-		if state == "PENDING_CLOSE" && (!p.found || p.generation != closureGeneration) {
-			return ErrAccountUnavailable
-		}
-		if e := c.stopPostPublication(ctx, tx, account, "BAN", final.TrustedAt); e != nil {
-			return e
-		}
-		if _, e := tx.Exec(ctx, `UPDATE c_auth.account_restrictions SET ban_state='BANNED',ban_ends_at=$2,version=version+1
-			WHERE account_id=$1`, account, endsAt); e != nil {
-			return e
-		}
-		if _, e := tx.Exec(ctx, `UPDATE c_auth.sessions SET revoked_at=$2,revocation_reason='BAN'
-			WHERE account_id=$1 AND revoked_at IS NULL`, account, final.TrustedAt); e != nil {
-			return e
-		}
-		if _, e := tx.Exec(ctx, `UPDATE c_auth.accounts SET session_generation=session_generation+1 WHERE account_id=$1`, account); e != nil {
-			return e
-		}
-		if state == "PENDING_CLOSE" && final.TrustedAt.Before(p.dueAt) {
-			return cancelPendingClosure(ctx, tx, account, p, final.TrustedAt)
-		}
-		return nil
+		return c.applyLegacyModerationRestrictionTx(ctx, tx, locked, "BAN", endsAt, final.TrustedAt)
 	})
 	return err
 }

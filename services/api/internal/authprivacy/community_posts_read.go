@@ -37,11 +37,12 @@ func readOwnPostTask(ctx context.Context, tx pgx.Tx, account uuid.UUID, id strin
 	var postVisibility string
 	var cleanup bool
 	var imageCount int
+	var hidden bool
 	err := tx.QueryRow(ctx, `SELECT t.task_id,t.post_id,t.channel_id,t.identity_id,t.latest_attempt_version,a.state,a.accepted_at,a.terminal_at,a.failure_code,t.owner_visible,i.deleted_at,x.erased_at,x.title,x.body,p.visibility,
- EXISTS(SELECT 1 FROM c_posts.payload_cleanup q WHERE q.task_id=a.task_id AND q.version=a.version),COALESCE((to_jsonb(x)->>'image_count')::int,0)
+ EXISTS(SELECT 1 FROM c_posts.payload_cleanup q WHERE q.task_id=a.task_id AND q.version=a.version),COALESCE((to_jsonb(x)->>'image_count')::int,0),COALESCE((to_jsonb(p)->>'moderation_hidden')::boolean,false)
  FROM c_posts.publication_tasks t JOIN c_posts.publication_attempts a ON a.task_id=t.task_id AND a.version=t.latest_attempt_version
  JOIN public.community_identities i ON i.identity_id=t.identity_id JOIN c_posts.attempt_contents x ON x.task_id=a.task_id AND x.version=a.version JOIN c_posts.posts p ON p.post_id=t.post_id
- WHERE t.task_id=$1 AND t.owner_account_id=$2`, id, account).Scan(&r.Task.TaskID, &r.Task.PostID, &r.Task.ChannelID, &r.Task.IdentityID, &r.Task.AttemptVersion, &state, &r.Task.AcceptedAt, &r.Task.TerminalAt, &r.Task.FailureCode, &ownerVisible, &deleted, &erased, &title, &body, &postVisibility, &cleanup, &imageCount)
+ WHERE t.task_id=$1 AND t.owner_account_id=$2`, id, account).Scan(&r.Task.TaskID, &r.Task.PostID, &r.Task.ChannelID, &r.Task.IdentityID, &r.Task.AttemptVersion, &state, &r.Task.AcceptedAt, &r.Task.TerminalAt, &r.Task.FailureCode, &ownerVisible, &deleted, &erased, &title, &body, &postVisibility, &cleanup, &imageCount, &hidden)
 	if err != nil {
 		return r, err
 	}
@@ -53,7 +54,7 @@ func readOwnPostTask(ctx context.Context, tx pgx.Tx, account uuid.UUID, id strin
 		r.Task.TerminalAt = &utc
 	}
 	r.Task.Visible = ownerVisible && deleted == nil && (r.Task.State == posts.Accepted || r.Task.State == posts.Failed)
-	r.Task.ContentAvailable = ownerVisible && deleted == nil && erased == nil && !cleanup && title != nil && body != nil && r.Task.State != posts.Cancelled && postVisibility != "DELETED"
+	r.Task.ContentAvailable = !hidden && ownerVisible && deleted == nil && erased == nil && !cleanup && title != nil && body != nil && r.Task.State != posts.Cancelled && postVisibility != "DELETED"
 	if r.Task.ContentAvailable {
 		r.Content = &posts.OwnTaskContent{Title: *title, Body: *body, ImageCount: imageCount}
 	}
@@ -174,7 +175,7 @@ func readPublicPost(ctx context.Context, tx pgx.Tx, id string) (posts.PublicPost
 	err := tx.QueryRow(ctx, `SELECT p.post_id,p.channel_id,x.title,x.body,p.published_at,p.publication_ordinal,a.state,i.deleted_at,i.nickname,i.avatar,l.short_code,COALESCE((to_jsonb(x)->>'image_count')::int,0)
  FROM c_posts.posts p JOIN c_posts.publication_tasks t ON t.post_id=p.post_id JOIN c_posts.attempt_contents x ON x.task_id=t.task_id AND x.version=p.published_attempt_version
  JOIN public.community_identities i ON i.identity_id=t.identity_id JOIN c_auth.accounts a ON a.account_id=p.owner_account_id JOIN c_posts.identity_public_labels l ON l.identity_id=i.identity_id
- WHERE p.post_id=$1 AND p.visibility='PUBLISHED' AND x.erased_at IS NULL`, id).Scan(&r.PostID, &r.ChannelID, &r.Title, &r.Body, &r.PublishedAt, &ordinal, &accountState, &deleted, &nickname, &avatar, &short, &r.ImageCount)
+ WHERE p.post_id=$1 AND p.visibility='PUBLISHED' AND NOT COALESCE((to_jsonb(p)->>'moderation_hidden')::boolean,false) AND x.erased_at IS NULL`, id).Scan(&r.PostID, &r.ChannelID, &r.Title, &r.Body, &r.PublishedAt, &ordinal, &accountState, &deleted, &nickname, &avatar, &short, &r.ImageCount)
 	if err != nil {
 		return r, 0, err
 	}
@@ -246,7 +247,7 @@ func (c *Community) listPublicPosts(ctx context.Context, tx pgx.Tx, account uuid
 		owner = account
 	}
 	rows, err := tx.Query(ctx, `SELECT p.post_id FROM c_posts.posts p JOIN c_posts.publication_tasks t ON t.post_id=p.post_id JOIN public.community_identities i ON i.identity_id=t.identity_id
- WHERE p.visibility='PUBLISHED' AND p.publication_ordinal<=$1 AND ($2::uuid IS NULL OR p.channel_id=$2) AND ($3::uuid IS NULL OR (p.owner_account_id=$3 AND i.deleted_at IS NULL))
+ WHERE p.visibility='PUBLISHED' AND NOT COALESCE((to_jsonb(p)->>'moderation_hidden')::boolean,false) AND p.publication_ordinal<=$1 AND ($2::uuid IS NULL OR p.channel_id=$2) AND ($3::uuid IS NULL OR (p.owner_account_id=$3 AND i.deleted_at IS NULL))
  AND ($4::timestamptz IS NULL OR (p.published_at,p.publication_ordinal)<($4,$5::bigint)) ORDER BY p.published_at DESC,p.publication_ordinal DESC LIMIT $6`, position.Ceiling, channel, owner, lastAt, lastOrdinal, query.Limit+1)
 	if err != nil {
 		return nil, err

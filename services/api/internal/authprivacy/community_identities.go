@@ -13,32 +13,32 @@ import (
 )
 
 type OwnIdentity struct {
-	ID uuid.UUID
-	Nickname, Avatar string
-	IsOriginal bool
-	CreatedAt time.Time
+	ID                uuid.UUID
+	Nickname, Avatar  string
+	IsOriginal        bool
+	CreatedAt         time.Time
 	RenameAvailableAt *time.Time
 }
 
 type IdentityDirectory struct {
-	Identities []OwnIdentity
-	CreatedCount int64
-	NextCreateAt *time.Time
+	Identities            []OwnIdentity
+	CreatedCount          int64
+	NextCreateAt          *time.Time
 	ServerTime, ExpiresAt time.Time
 }
 
 type IdentityChangeRequest struct {
-	Bearer [32]byte
-	ChangeID [16]byte
-	Operation string
+	Bearer     [32]byte
+	ChangeID   [16]byte
+	Operation  string
 	IdentityID uuid.UUID
-	Nickname string
+	Nickname   string
 }
 
 type IdentityChangeResult struct {
 	State, Operation, ErrorCode string
-	IdentityID uuid.UUID
-	ExpiresAt time.Time
+	IdentityID                  uuid.UUID
+	ExpiresAt                   time.Time
 }
 
 // The callback has persisted a terminal business rejection. Commit its receipt
@@ -124,7 +124,7 @@ func readIdentityCreationState(ctx context.Context, tx pgx.Tx, account uuid.UUID
 
 func readOwnIdentities(ctx context.Context, tx pgx.Tx, account uuid.UUID) ([]OwnIdentity, error) {
 	items := make([]OwnIdentity, 0, 3)
-	rows, err := tx.Query(ctx, `SELECT identity_id,nickname,avatar,is_original,created_at,last_renamed_at FROM public.community_identities WHERE account_id=$1 AND deleted_at IS NULL ORDER BY created_at,identity_id LIMIT 4`, account)
+	rows, err := tx.Query(ctx, `SELECT identity_id,nickname,avatar,is_original,created_at,CASE WHEN COALESCE((to_jsonb(community_identities)->>'moderation_rename_required')::boolean,false) THEN NULL ELSE last_renamed_at END FROM public.community_identities WHERE account_id=$1 AND deleted_at IS NULL ORDER BY created_at,identity_id LIMIT 4`, account)
 	if err != nil {
 		return nil, ErrAuthorizationUnavailable
 	}
@@ -347,7 +347,15 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 				if target.RenameAvailableAt != nil && final.TrustedAt.Before(*target.RenameAvailableAt) {
 					return reject("IDENTITY_RENAME_COOLDOWN")
 				}
-				if _, e = tx.Exec(ctx, `UPDATE public.community_identities SET nickname=$3,last_renamed_at=$4 WHERE account_id=$1 AND identity_id=$2 AND deleted_at IS NULL`, account, target.ID, name, final.TrustedAt); e != nil {
+				var hasModerationFlag bool
+				if e = tx.QueryRow(ctx, `SELECT to_jsonb(i) ? 'moderation_rename_required' FROM public.community_identities i WHERE account_id=$1 AND identity_id=$2 AND deleted_at IS NULL`, account, target.ID).Scan(&hasModerationFlag); e != nil {
+					return ErrAuthorizationUnavailable
+				}
+				renameSQL := `UPDATE public.community_identities SET nickname=$3,last_renamed_at=$4 WHERE account_id=$1 AND identity_id=$2 AND deleted_at IS NULL`
+				if hasModerationFlag {
+					renameSQL = `UPDATE public.community_identities SET nickname=$3,last_renamed_at=$4,moderation_rename_required=false WHERE account_id=$1 AND identity_id=$2 AND deleted_at IS NULL`
+				}
+				if _, e = tx.Exec(ctx, renameSQL, account, target.ID, name, final.TrustedAt); e != nil {
 					return ErrAuthorizationUnavailable
 				}
 			}

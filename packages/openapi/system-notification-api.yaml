@@ -1,0 +1,490 @@
+openapi: 3.0.3
+info:
+  title: HnuHole minimal system notification API
+  version: 0.1.0
+  description: A single descending timeline combines current-identity records with account records. The list is
+    read-only. The server never accepts client-written notifications. COMMENT_FAILURE/LOCAL_TASK is an unintegrated
+    client provider contract, not a server endpoint or server event kind. HTTPS only. No redirects, user-supplied
+    URLs, or extra request fields. Every successful business response is committed inside the existing final C Safety
+    Gate transaction. Only implemented post targets are described; comment, chat, push and full interaction inbox
+    APIs are absent.
+servers:
+- url: /
+paths:
+  /api/v1/system-notifications:
+    get:
+      operationId: listSystemNotifications
+      summary: List account and selected-identity notifications
+      description: Opening a list never marks any record read. Ordered by createdAt descending and UUID descending;
+        cursor includes both for equal-time records. Ordinary sessions and MODERATION_SELF are accepted; restricted
+        tokens receive only own account SANCTION/APPEAL_RESULT records.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: identityId
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/UUID'
+        description: Select one existing identity owned by this account. Omit to read account records only. Detail/read
+          requires the record identity to equal this selection; account records remain visible. Restricted access
+          rejects identityId and exposes only ACCOUNT SANCTION/APPEAL_RESULT.
+      - name: before
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 1
+        description: Opaque continuation returned by nextBefore. Current encoding is RFC3339Nano timestamp, a literal
+          |, and canonical notification UUID. URL-encode it; clients must not manufacture or reinterpret it.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 50
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPage'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/system-notifications/{notificationId}:
+    parameters:
+    - name: notificationId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: getSystemNotification
+      summary: Read one authorized notification
+      description: Read-only detail. A record belonging to another account, another selected identity, deleted identity,
+        or disallowed restricted scope returns 404. Does not set readAt.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: identityId
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/UUID'
+        description: Select one existing identity owned by this account. Omit to read account records only. Detail/read
+          requires the record identity to equal this selection; account records remain visible. Restricted access
+          rejects identityId and exposes only ACCOUNT SANCTION/APPEAL_RESULT.
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /api/v1/system-notifications/{notificationId}/read:
+    parameters:
+    - name: notificationId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    post:
+      operationId: markSystemNotificationRead
+      summary: Mark only this notification read
+      description: Explicit per-record idempotent read. First readAt is retained on replay; it does not mark other
+        records or remove an entry. Same account and identity checks as detail.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: identityId
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/UUID'
+        description: Select one existing identity owned by this account. Omit to read account records only. Detail/read
+          requires the record identity to equal this selection; account records remain visible. Restricted access
+          rejects identityId and exposes only ACCOUNT SANCTION/APPEAL_RESULT.
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties: {}
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical-unpadded-base64url-32-bytes
+      description: An ordinary C session for community and management operations. Explicit self-service operations
+        also accept the isolated MODERATION_SELF bearer.
+  headers:
+    RequestId:
+      required: true
+      description: Server-generated request identifier; error body requestId equals this value.
+      schema:
+        type: string
+        minLength: 22
+        maxLength: 22
+    NoStore:
+      required: true
+      schema:
+        type: string
+        enum:
+        - no-store
+    SessionExpiresAt:
+      required: true
+      description: Committed deadline of the bearer used for this request. Ordinary sessions follow existing renewal
+        rules. MODERATION_SELF has a fixed 24-hour deadline and is never renewed.
+      schema:
+        type: string
+        format: date-time
+    ServerTime:
+      required: true
+      description: Final C Gate trusted decision time.
+      schema:
+        type: string
+        format: date-time
+    RetryAfter:
+      required: true
+      description: Retry delay in seconds; does not establish a previous mutation outcome.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 300
+  responses:
+    Error400:
+      description: Malformed input, invalid original image, noncanonical identifier, unknown or duplicate JSON fields,
+        unexpected/duplicate query values, or invalid cursor.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error401:
+      description: Invalid, expired, replaced, revoked or wrong-scope bearer; no ordinary session is restored by
+        a restricted token.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error403:
+      description: The authenticated account or role cannot perform this operation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error404:
+      description: The authorized resource is unavailable in this account/identity scope.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error405:
+      description: Unsupported HTTP method. Allow identifies permitted methods.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error409:
+      description: Original request key conflicts with its material, concurrent state/version changed, appeal pending/closed/limited,
+        or operation is no longer allowed.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error415:
+      description: Only application/json with optional UTF-8 charset is accepted.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error429:
+      description: Bounded network/password-worker budget exceeded; retry using the original mutation key where
+        applicable.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error503:
+      description: C Gate frozen/unavailable, storage unavailable, or required subsystem unavailable. No mutation
+        success is implied.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+  schemas:
+    UUID:
+      type: string
+      format: uuid
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      not:
+        enum:
+        - 00000000-0000-0000-0000-000000000000
+      description: Canonical lowercase, nonzero UUID. Resource identifiers never authorize access.
+    DateTime:
+      type: string
+      format: date-time
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      - requestId
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: false
+              required:
+              - retryAfterSeconds
+              properties:
+                retryAfterSeconds:
+                  type: integer
+                  minimum: 1
+                  maximum: 300
+        requestId:
+          type: string
+          minLength: 22
+          maxLength: 22
+    NotificationRoute:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - resourceId
+      properties:
+        name:
+          type: string
+          enum:
+          - REPORT
+          - SANCTION
+          - APPEAL
+        resourceId:
+          $ref: '#/components/schemas/UUID'
+      description: Allowlisted resource route only. REPORT uses the original report requestId; SANCTION/ APPEAL
+        use their own IDs. Every destination separately rechecks ownership.
+    Notification:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - eventId
+      - source
+      - scope
+      - kind
+      - state
+      - title
+      - body
+      - createdAt
+      - readAt
+      - route
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        eventId:
+          type: string
+          minLength: 1
+        source:
+          type: string
+          enum:
+          - SERVER
+        scope:
+          type: string
+          enum:
+          - ACCOUNT
+          - IDENTITY
+        identityId:
+          $ref: '#/components/schemas/UUID'
+        kind:
+          type: string
+          enum:
+          - REPORT_PROGRESS
+          - REPORT_RESULT
+          - SANCTION
+          - APPEAL_RESULT
+        state:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+        readAt:
+          type: string
+          format: date-time
+          nullable: true
+        route:
+          $ref: '#/components/schemas/NotificationRoute'
+      description: IDENTITY records include identityId; ACCOUNT records omit it. Event identifiers deduplicate delivery
+        per receiving account. Reading never resolves a future comment-failure task.
+      oneOf:
+      - properties:
+          scope:
+            type: string
+            enum:
+            - ACCOUNT
+        not:
+          required:
+          - identityId
+      - properties:
+          scope:
+            type: string
+            enum:
+            - IDENTITY
+        required:
+        - identityId
+    NotificationPage:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextBefore
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+          maxItems: 50
+        nextBefore:
+          type: string
+          nullable: true
+      description: nextBefore is null at end. Keep the opaque cursor and pass it unchanged while retaining the same
+        account and selected identity.

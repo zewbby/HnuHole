@@ -77,6 +77,8 @@ type Config struct {
 	Gate                    *GateConfig  `json:"gate,omitempty"`
 	Posts                   *PostsConfig `json:"posts,omitempty"`
 	Comments                *CommentsConfig `json:"comments,omitempty"`
+	Moderation              bool         `json:"moderation,omitempty"`
+	AdminDirectory          string       `json:"adminDirectory,omitempty"`
 
 	PostImages *PostImagesConfig `json:"postImages,omitempty"`
 	// Exactly four public Gate purpose keys from the other party, in evidence,
@@ -146,6 +148,12 @@ func (c Config) Path(path string) string {
 }
 
 func (c Config) Validate(service authprivacyhttp.Service) error {
+	if c.Moderation && (service != authprivacyhttp.CommunityService || c.Posts == nil) {
+		return errors.New("moderation requires C posts")
+	}
+	if c.AdminDirectory != "" && (!c.Moderation || !filepath.IsAbs(c.Path(c.AdminDirectory))) {
+		return errors.New("admin directory requires explicit C moderation")
+	}
 	if c.PostImages != nil {
 		if service != authprivacyhttp.CommunityService || c.Posts == nil || c.PostImages.PythonFile == "" || c.PostImages.ValidatorFile == "" || len(c.PostImages.ValidatorSHA256) != 64 {
 			return errors.New("postImages requires explicit C posts and pinned validator paths")
