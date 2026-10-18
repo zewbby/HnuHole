@@ -25,6 +25,9 @@ CREATE TABLE c_moderation.roles(account_id uuid PRIMARY KEY REFERENCES c_auth.ac
 CREATE TABLE c_moderation.access_sessions(token_digest bytea PRIMARY KEY CHECK(octet_length(token_digest)=32),account_id uuid NOT NULL REFERENCES c_auth.accounts,credential_version bigint NOT NULL,session_generation bigint NOT NULL,authorization_generation bigint NOT NULL,expires_at timestamptz NOT NULL,revoked_at timestamptz);
 CREATE UNIQUE INDEX moderation_one_access ON c_moderation.access_sessions(account_id) WHERE revoked_at IS NULL;
 ALTER TABLE c_posts.posts ADD COLUMN moderation_hidden boolean NOT NULL DEFAULT false;
+ALTER TABLE public.community_identities ADD COLUMN moderation_rename_required boolean NOT NULL DEFAULT false;
+CREATE TABLE c_moderation.legacy_restrictions AS SELECT account_id,ban_state,ban_ends_at,mute_state,mute_ends_at FROM c_auth.account_restrictions;
+ALTER TABLE c_moderation.legacy_restrictions ADD PRIMARY KEY(account_id);
 CREATE TABLE c_moderation.cases(
  case_id uuid PRIMARY KEY, number bigint GENERATED ALWAYS AS IDENTITY UNIQUE,
  post_id uuid NOT NULL REFERENCES c_posts.posts, target_account_id uuid NOT NULL REFERENCES c_auth.accounts, target_identity_id uuid NOT NULL REFERENCES public.community_identities,

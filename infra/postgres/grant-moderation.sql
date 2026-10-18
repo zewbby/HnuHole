@@ -12,3 +12,4 @@ GRANT DELETE ON c_moderation.notifications,c_moderation.access_sessions,c_modera
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA c_moderation TO hnuhole_c_runtime;
 GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA c_moderation TO hnuhole_c_runtime;
 GRANT UPDATE(moderation_hidden) ON c_posts.posts TO hnuhole_c_runtime;
+GRANT UPDATE(moderation_rename_required) ON public.community_identities TO hnuhole_c_runtime;
