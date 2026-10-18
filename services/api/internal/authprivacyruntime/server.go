@@ -75,6 +75,9 @@ func CheckDatabase(ctx context.Context, pool *pgxpool.Pool, service authprivacyh
 		if err = authprivacy.CheckModerationLifecycleSchema(ctx, pool); err != nil {
 			return errors.New("moderation lifecycle schema or privileges absent")
 		}
+		if err = authprivacy.CheckModerationLegacyRestrictionSchema(ctx, pool); err != nil {
+			return errors.New("moderation legacy restriction schema or privileges absent")
+		}
 	}
 	var recoveryMember bool
 	if err = pool.QueryRow(ctx, `SELECT pg_has_role(current_user,$1::text,'MEMBER')`, "hnuhole_"+party+"_recovery").Scan(&recoveryMember); err != nil || recoveryMember {

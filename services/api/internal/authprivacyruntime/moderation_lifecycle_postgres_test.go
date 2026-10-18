@@ -114,6 +114,18 @@ func TestModerationLifecycleCommonCStartupWithoutFeaturesPostgres(t *testing.T) 
 			}
 		})
 	}
+	for _, access := range []struct{ name, revoke, grant string }{
+		{"legacy write", `REVOKE UPDATE(mute_state) ON c_moderation.legacy_restrictions FROM hnuhole_c_runtime`, `GRANT UPDATE(mute_state) ON c_moderation.legacy_restrictions TO hnuhole_c_runtime`},
+		{"legacy aggregate", `REVOKE SELECT(action) ON c_moderation.sanctions FROM hnuhole_c_runtime`, `GRANT SELECT(action) ON c_moderation.sanctions TO hnuhole_c_runtime`},
+	} {
+		t.Run(access.name, func(t *testing.T) {
+			exec(t, access.revoke)
+			defer exec(t, access.grant)
+			if err := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); err == nil || err.Error() != "moderation legacy restriction schema or privileges absent" {
+				t.Fatal("common C startup accepted missing legacy grant", err)
+			}
+		})
+	}
 	for _, hook := range []struct{ table, name, restore string }{
 		{"c_auth.accounts", "moderation_account_closed", `CREATE TRIGGER moderation_account_closed AFTER UPDATE OF state ON c_auth.accounts FOR EACH ROW EXECUTE FUNCTION c_moderation.closed_account()`},
 		{"c_posts.posts", "moderation_post_deleted", `CREATE TRIGGER moderation_post_deleted AFTER UPDATE OF visibility ON c_posts.posts FOR EACH ROW EXECUTE FUNCTION c_moderation.deleted_post()`},
