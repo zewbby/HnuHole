@@ -178,9 +178,19 @@ func (c *Community) withModerationSessionPrepared(ctx context.Context, bearer [3
 		}
 		return nil
 	}
-	// A snapshot failure must never be repaired by a later final timestamp:
-	// prepare contains mandatory role/resource authorization and locking.
-	if err = validate(d); err != nil {
+	// Another request may renew this session between Snapshot and our account
+	// lock. Preliminary checks validate its authority, without treating that
+	// normal queue wait as clock rollback. The original lastActivity remains in
+	// s and is checked strictly against final trusted time before any action.
+	// Mandatory role/resource preparation must never be skipped.
+	if restricted {
+		err = validate(d)
+	} else {
+		preliminary := s
+		preliminary.lastActivity = time.Time{}
+		err = preliminary.validate(a, d)
+	}
+	if err != nil {
 		return result, err
 	}
 	if prepare != nil {

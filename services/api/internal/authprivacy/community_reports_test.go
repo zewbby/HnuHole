@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/moderation"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
@@ -150,7 +151,7 @@ func TestModerationStaleSessionCannotSkipManagementAuthorizationPostgres(t *test
 			return e
 		},
 	}
-	for i, operation := range operations {
+	for _, operation := range operations {
 		barrier := &identitySnapshotBarrier{AuthorizationGate: l.gate, captured: make(chan struct{}), release: make(chan struct{})}
 		c := *l.c
 		c.gate = barrier
@@ -160,12 +161,40 @@ func TestModerationStaleSessionCannotSkipManagementAuthorizationPostgres(t *test
 		hash := sha256.Sum256(actor.SessionToken[:])
 		mustExec(t, l.cp, `UPDATE c_auth.sessions SET last_activity_at=clock_timestamp() WHERE token_digest=$1`, hash[:])
 		close(barrier.release)
-		if e := <-done; !errors.Is(e, ErrAuthorizationUnavailable) {
-			t.Fatalf("operation %d bypassed failed snapshot: %v", i, e)
-		}
+		postTestError(t, <-done, "MODERATION_FORBIDDEN", 403)
 	}
 	if count(t, l.cp, `SELECT count(*) FROM c_moderation.roles WHERE account_id=$1`, actor.AccountID) != 0 {
 		t.Fatal("ordinary account elevated itself")
+	}
+}
+
+func TestModerationConcurrentSessionRenewalAndFinalClockPostgres(t *testing.T) {
+	l := moderationLab(t)
+	ctx := context.Background()
+	actor := moderationActor(t, l, "mod_concurrent_reader", "REVIEWER")
+	barrier := &identitySnapshotBarrier{AuthorizationGate: l.gate, captured: make(chan struct{}), release: make(chan struct{})}
+	c := *l.c
+	c.gate = barrier
+	done := make(chan error, 1)
+	go func() { _, e := c.ReadModeration(ctx, actor.SessionToken, "me", "", "", "", 50); done <- e }()
+	<-barrier.captured
+	hash := sha256.Sum256(actor.SessionToken[:])
+	mustExec(t, l.cp, `UPDATE c_auth.sessions SET last_activity_at=clock_timestamp() WHERE token_digest=$1`, hash[:])
+	close(barrier.release)
+	if e := <-done; e != nil {
+		t.Fatal("normal concurrent renewal became clock rollback", e)
+	}
+	// A real future last_activity cannot authorize an action. Preparation is
+	// mandatory, but it cannot substitute for the final trusted clock check.
+	mustExec(t, l.cp, `UPDATE c_auth.sessions SET last_activity_at=clock_timestamp()+interval '1 hour' WHERE token_digest=$1`, hash[:])
+	prepared, acted := false, false
+	_, e := l.c.withModerationAccountsSession(ctx, actor.SessionToken, uuid.Nil, func(tx pgx.Tx, account uuid.UUID) error {
+		prepared = true
+		_, e := moderationRole(ctx, tx, account)
+		return e
+	}, func(pgx.Tx, uuid.UUID, AuthorizationDecision) (any, error) { acted = true; return nil, nil })
+	if !errors.Is(e, ErrAuthorizationUnavailable) || !prepared || acted {
+		t.Fatal("final clock or mandatory preparation bypassed", e, prepared, acted)
 	}
 }
 
