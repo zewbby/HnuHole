@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> **2026-10-18 Android候选与隔离预发布：**[PR #16](https://github.com/zewbby/HnuHole/pull/16) 已实现独立候选CI、测试签名接线、配置/启停/健康和真实恢复/回滚路径，尚未合并或发布。本地0d10719的11项实际演练、60份表/sequence恢复摘要、独立CLI生命周期和Linux6项工具回归PASS；独立CI后台dee7fdc也PASS，Android APK核验仍在运行。见[任务详情](../branches/ci-android-prerelease.md)、[发布记录与复现入口](../release/android-prerelease.md)。同机开发证明不代证P03生产独立运营；本候选手机NOT_RUN、跨设备Passkey/iOS延期，不复用历史手机或旧签名。
+> **2026-10-18 Android候选与隔离预发布：**[PR #16](https://github.com/zewbby/HnuHole/pull/16) 已实现独立候选CI、测试签名接线、配置/启停/健康和真实恢复/回滚路径，尚未合并或发布。本地0d10719的11项实际演练、60份表/sequence恢复摘要、独立CLI生命周期和Linux6项工具回归PASS；独立CI后台和测试签名release候选6b2927c实际PASS，APK/证书摘要已归档；安装和APK实际服务链路NOT_RUN。见[任务详情](../branches/ci-android-prerelease.md)、[发布记录与复现入口](../release/android-prerelease.md)。同机开发证明不代证P03生产独立运营；本候选手机NOT_RUN、跨设备Passkey/iOS延期，不复用历史手机或旧签名。
 
 > **2026-10-18 已确认合并 main：**[PR #13](https://github.com/zewbby/HnuHole/pull/13) 按维护者本次指令普通 Squash Merge，合并提交 `359c180a53a674e308e1496bed31da33b9ab8524`。远端main已核对；完整文件树与已测 `06a7ada` 一致，宿主/真实SQL/构建及三项产品CI通过证据继续适用。旧分支/历史协作policy失败与无独立成员批准如实保留，未改保护规则、使用绕过选项或强推。跨设备Passkey NI-X02继续延期；旧设备结果仅限原APK，新整合候选原生设备仍NOT_RUN，iOS/生产/完整App未验。见[合并回执](community-pr13-main-merge-20261018.json)。下方待合并/draft等条目保留为合并前快照。
 

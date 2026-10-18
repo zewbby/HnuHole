@@ -1,6 +1,6 @@
 # 分模块验收与测试交接
 
-> **2026-10-18 P03/P05开发交付补充：**[PR #16](https://github.com/zewbby/HnuHole/pull/16) 新增Android候选CI和隔离预发布；本地0d10719完整11项实际演练/60份表与sequence恢复摘要、独立CLI启停和Linux6项工具回归PASS，独立CI后台dee7fdc PASS，Android构建待最终核验。见[发布记录/命令/机器回执](../release/android-prerelease.md)。这只补同机开发恢复/应用切换证据，不将P03生产灾备或P05完整发布标PASS；正式签名、固定生产端点、手机/iOS及生产主体独立仍未验。所有历史设备证据保留原SHA与范围。
+> **2026-10-18 P03/P05开发交付补充：**[PR #16](https://github.com/zewbby/HnuHole/pull/16) 新增Android候选CI和隔离预发布；本地0d10719完整11项实际演练/60份表与sequence恢复摘要、独立CLI启停和Linux6项工具回归PASS，独立CI后台和测试签名release候选6b2927c PASS，APK/证书摘要已归档；安装和APK实际服务链路NOT_RUN。见[发布记录/命令/机器回执](../release/android-prerelease.md)。这只补同机开发恢复/应用切换证据，不将P03生产灾备或P05完整发布标PASS；正式签名、固定生产端点、手机/iOS及生产主体独立仍未验。所有历史设备证据保留原SHA与范围。
 
 > **2026-10-18 已确认合并 main：**[PR #13](https://github.com/zewbby/HnuHole/pull/13) 按维护者本次指令普通 Squash Merge，合并提交 `359c180a53a674e308e1496bed31da33b9ab8524`。远端main已核对；完整文件树与已测 `06a7ada` 一致，宿主/真实SQL/构建及三项产品CI通过证据继续适用。旧分支/历史协作policy失败与无独立成员批准如实保留，未改保护规则、使用绕过选项或强推。跨设备Passkey NI-X02继续延期；旧设备结果仅限原APK，新整合候选原生设备仍NOT_RUN，iOS/生产/完整App未验。见[合并回执](community-pr13-main-merge-20261018.json)。下方待合并/draft等条目保留为合并前快照。
 
