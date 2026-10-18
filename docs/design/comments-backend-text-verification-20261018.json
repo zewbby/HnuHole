@@ -34,12 +34,13 @@
       15,
       16
     ],
-    "down": "REJECTED_AND_LEDGER_REMAINS_16"
+    "down": "REJECTED_AND_LEDGER_REMAINS_16",
+    "upstreamPinnedRegression": "TestModerationGooseUpgradeAndDownRefusalPostgres explicitly up-to15: PASS"
   },
   "targetedRealSQLAndHTTPS": {
     "result": "PASS",
     "command": "bash services/api/authlab/run-comment-text-isolated.sh",
-    "topLevelChecks": 12,
+    "topLevelChecks": 13,
     "nestedGooseChecks": 2,
     "failureCount": 0,
     "skipCount": 0,
@@ -56,6 +57,7 @@
       "TestPostSchemaModerationCleanupPrivilegesWithoutFeaturePostgres",
       "TestPostSchemaModerationAccountClosureWithoutFeaturePostgres",
       "TestPostSchemaFixedOwnershipAndTerminalStatePostgres",
+      "TestModerationGooseUpgradeAndDownRefusalPostgres",
       "TestCommentTextNullableBoundary",
       "TestCommentTextHTTPSPostgres"
     ],
@@ -64,7 +66,7 @@
     "transport": "real TLS server/client and private PG Unix socket; no production DSN",
     "restrictedRole": "hnuhole_c_runtime",
     "localLog": "E:/HnuHole-comments-replies-20261018/runtime/backend-text-sql-http-final.log",
-    "logSha256": "62933cede5c24f71439fbdc3e182430155f6d479afc3bf3c9ad01dafe85bbbe7"
+    "logSha256": "e8942512627af9072732766fd5763f44351e1b9e738bf26a3720c164e28fb78b"
   },
   "host": {
     "result": "PASS",
@@ -88,7 +90,7 @@
     "inheritsOriginalDTOAndRejectionVocabulary": true
   },
   "backendSourceFingerprint": {
-    "sha256": "e373430bfca9f1d122f2cf4385688bdda17a797a88a5dc7805ad42b09b83e8ae",
+    "sha256": "d7ea7789862e052c5e7685e1997041e41a70f8703dcd8aaabb7c272df545e8bf",
     "serialization": "sorted path + U+0000 + git blob object SHA-1 + LF; Go/SQL/runner/workflow/checker plus Go module locks only; documentation and descriptive OpenAPI metadata excluded",
     "inputs": [
       {
@@ -109,7 +111,7 @@
       },
       {
         "path": "services/api/authlab/run-comment-text-isolated.sh",
-        "gitBlob": "e433179f12d398b6270aecc00420cf664280fdab"
+        "gitBlob": "186860871d21f794bc23ae8f9a0a4732b6deb65b"
       },
       {
         "path": "services/api/go.mod",
@@ -150,6 +152,10 @@
       {
         "path": "services/api/internal/authprivacy/community_posts_schema.go",
         "gitBlob": "ced6d010f2a737e1cc742f0eef3bc521847b600e"
+      },
+      {
+        "path": "services/api/internal/authprivacy/moderation_upgrade_test.go",
+        "gitBlob": "948cc983ee067f0bc1326b8a4ffb3ca6512f3f76"
       },
       {
         "path": "services/api/internal/authprivacy/postgres_test.go",
@@ -240,5 +246,12 @@
       "targetedLocalRetest": "PASS",
       "finalRemoteCheck": "see final PR head checks"
     }
-  ]
+  ],
+  "validationFixtureRevision": "Executed working tree identified by the committed blob fingerprint; backend implementation remains 07911ab",
+  "ciProductHeadEvidence": {
+    "head": "d833291b66fbc9b39e6ad819b10ddf3d8058e5f6",
+    "textComponent": "PASS",
+    "inheritedImageSQL": "PASS",
+    "scope": "Backend product unchanged; final fixture/doc commit gets its own Checks"
+  }
 }

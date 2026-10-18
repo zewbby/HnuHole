@@ -56,7 +56,9 @@ func TestModerationGooseUpgradeAndDownRefusalPostgres(t *testing.T) {
 	if _, e = pool.Exec(ctx, `INSERT INTO c_auth.accounts(account_id,platform_number,username,password_hash,password_salt,password_params_version) VALUES('a811e9fa-7663-4182-88c4-465512194416','001527','upgrade_fixture',decode(repeat('11',32),'hex'),decode(repeat('22',16),'hex'),1)`); e != nil {
 		t.Fatal(e)
 	}
-	if e = run("up"); e != nil {
+	// This regression pins the governance-only boundary. Later business
+	// migrations have their own full-chain checks and must not change this test.
+	if e = run("up-to", "15"); e != nil {
 		t.Fatal("formal 14 to 15 upgrade failed")
 	}
 	var version int

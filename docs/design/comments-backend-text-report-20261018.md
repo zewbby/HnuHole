@@ -37,7 +37,7 @@ Go/Dart原核心及黄金向量继承，不重写也不重跑其完整宿主验�
 
 环境为本任务私有 WSL Linux 文件、PG16 Unix socket端口55463、Go1.22.2、Goose3.22.1；工具/缓存/日志位于本任务runtime目录。没有连接未知/生产库、修改其他session或使用手机。实验PG和TLS服务退出已清理，日志只保留测试名/结果；合成密码、令牌、正文或查询参数不进入证据。
 
-1. `bash services/api/authlab/run-comment-text-isolated.sh`：**PASS**。12个顶层检查加Goose2个子项，零FAIL/SKIP；其中真实数据库检查含空库0001–0016、0014→真实0015→0016、版本0–16连续且Down失败后仍16；并发8次原键只一尝试、冲突和越权、固定身份、明确多层目标、冻结分页/范围隔离、UNKNOWN与seal、失败/原身份重试/放弃擦除、冻结Gate、审核下架、删身份、关闭功能后的受限闭号清理。真实TLS HTTP覆盖文字/回复/任务/原回执/重试/放弃/封口/严格边界。另仅重开3个受影响的旧绑定/治理清理检查。
+1. `bash services/api/authlab/run-comment-text-isolated.sh`：**PASS**。13个顶层检查加Goose2个子项，零FAIL/SKIP；其中真实数据库检查含空库0001–0016、0014→真实0015→0016、版本0–16连续且Down失败后仍16；并发8次原键只一尝试、冲突和越权、固定身份、明确多层目标、冻结分页/范围隔离、UNKNOWN与seal、失败/原身份重试/放弃擦除、冻结Gate、审核下架、删身份、关闭功能后的受限闭号清理。真实TLS HTTP覆盖文字/回复/任务/原回执/重试/放弃/封口/严格边界。另仅重开4个受影响的旧绑定/治理清理/0015升级检查。
 2. `go test -race -mod=readonly ./internal/comments ./internal/authprivacyhttp ./internal/authprivacyruntime -run '^(TestCommentTextPersistenceCheckpoint|TestCommentTextExplicitRuntimeConfiguration|TestCommentTextNullableBoundary|TestStrictJSONRejectsAmbiguousInputs|TestStrictObjectFieldsAndTypes|TestModerationAccessHTTPBoundary)$' -count=1 -v`：**PASS**。6个顶层检查，旧认证解析仍拒绝null；没有运行Dart/Flutter全量测试。
 3. `go build -mod=readonly ./cmd/authdev`（产物写本任务runtime）及受影响4个Go包的 `go vet -mod=readonly`：**PASS**。
 4. 固定Python3.12/PyYAML6.0.1/openapi-spec-validator0.9.0运行 `tools/check-comment-text-contract.py`：**PASS**，只校验文字子集及其原契约引用。
@@ -46,7 +46,9 @@ Go/Dart原核心及黄金向量继承，不重写也不重跑其完整宿主验�
 
 ## 失败历史与修复
 
-首个产品head `718d5f4` 的新增文字CI通过，但继承的图片SQL CI在 `TestPostImagesRestrictedRuntimePostgres` 失败：绑定延迟约束在原帖作者分支的同一SQL内仍检查了评论回执表权限。`07911ab` 改为PL/pgSQL提前返回，保留原发帖最小授权，未扩大回执读取。新增“评论接口关闭时受限角色实际发帖”回归并重跑本轮真实SQL/Goose/TLS HTTP，全部通过；最终远端图片检查以PR head结果为准。此失败没有被计入PASS或隐藏。收尾日期为2026-10-19，工作项和报告文件保留20261018编号。
+首个产品head `718d5f4` 的新增文字CI通过，但继承的图片SQL CI在 `TestPostImagesRestrictedRuntimePostgres` 失败：绑定延迟约束在原帖作者分支的同一SQL内仍检查了评论回执表权限。`07911ab` 改为PL/pgSQL提前返回，保留原发帖最小授权，未扩大回执读取。新增“评论接口关闭时受限角色实际发帖”回归并重跑本轮真实SQL/Goose/TLS HTTP，全部通过；产品相同的 `d833291` 远端文字CI及继承图片SQL检查已通过，修复得到确认；最终交付head检查另在PR核对。此失败没有被计入PASS或隐藏。收尾日期为2026-10-19，工作项和报告文件保留20261018编号。
+
+0016加入后，原治理专用升级夹具仍须证明0014→0015及0015 Down拒绝，因此将其不限定版本的 `up` 固定为 `up-to 15`，没有改变治理迁移/运行代码或降低断言。该旧夹具和本轮0001–0016完整链各自使用独立私有数据库，本地真实Goose检查均PASS。最终31项后端源码/测试/SQL/runner/CI输入由机器记录中的blob指纹固定；产品Go/SQL实现仍为07911ab。
 
 ## 未完成与审查安排
 
