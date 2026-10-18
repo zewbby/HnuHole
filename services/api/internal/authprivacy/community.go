@@ -31,6 +31,7 @@ type Community struct {
 	webauthnConfig WebAuthnConfig
 	posts          *postServices
 	postImages     *postImageServices
+	comments       *commentServices
 }
 
 func NewCommunity(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte, gate AuthorizationGate) (*Community, error) {

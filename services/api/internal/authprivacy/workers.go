@@ -65,6 +65,7 @@ func NewCommunityWorker(c *Community,config WorkerConfig,sign Signer,receive Rec
  tasks:=[]durableTask{
   {"closures",countTask(c.FinalizeDueClosures)},
   {"posts",countTask(c.PublishAcceptedPosts)},
+  {"comments",countTask(c.PublishAcceptedComments)},
   {"post_payload_cleanup",countTask(c.CleanupPostPayloads)},
   {"receipts",func(ctx context.Context,limit int)(int,error) {
    jobs,err:=c.ClaimReceiptJobs(ctx,limit,config.ReceiptLease)

@@ -280,6 +280,11 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 				return err
 			}
 		}
+		if c.Comments != nil {
+			commandKey,e:=c.Key32(c.Comments.CommandKeyFile);if e!=nil{return e}
+			fingerprintKey,e:=c.Key32(c.Comments.FingerprintKeyFile);if e!=nil{return e}
+			community,err=community.WithComments(ctx,authprivacy.CommentConfig{KeyKey:commandKey,FingerprintKey:fingerprintKey});if err!=nil{return err}
+		}
 		if c.PostImages != nil {
 			v, e := postmedia.NewProcessValidator(c.Path(c.PostImages.PythonFile), c.Path(c.PostImages.ValidatorFile), c.PostImages.ValidatorSHA256)
 			if e != nil {
