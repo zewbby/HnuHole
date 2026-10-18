@@ -1,6 +1,6 @@
 # Android候选版本交付与隔离预发布：开发任务范围
 
-创建：2026-10-18，Asia/Shanghai。状态：IMPLEMENTED_TESTING，正在执行实际构建和隔离演练，尚未验收或发布。
+创建：2026-10-18，Asia/Shanghai。状态：NON_PHONE_PASS_DEVICE_NOT_RUN，尚未合并或发布。
 仓库 zewbby/HnuHole；分支 `codex/ci/android-prerelease`；独立目录 `E:/HnuHole-android-prerelease-20261018/repo`。
 创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。本任务不是正式上线或生产安全批准。
 
@@ -8,6 +8,15 @@
 `359c180`，同步 main `986477b`，没有使用其他session的SDK、数据库或手机。
 当前新增独立候选workflow、测试签名接线、私有C/V初始化/健康/启停及新实例恢复和应用回滚入口；
 实际结果在[发布运行手册](../release/android-prerelease.md)记录，脚本存在不等于演练通过。
+
+交付PR：[PR #16](https://github.com/zewbby/HnuHole/pull/16)，保持draft，合并未授权、未执行。
+本地0d10719完整11项演练/60份表与sequence摘要、四次独立CLI启停、Linux6项工具回归实际PASS；
+独立CI后台和Android候选6b2927c实际PASS，已下载APK核对摘要和大小；版本0.1.0+2026101801、
+包名org.hnuhole.hnuhole_mobile、签名和APK摘要见[制品manifest](../release/android-candidate-20261018.json)。
+首个完整成功运行[39115461923](https://github.com/zewbby/HnuHole/actions/runs/39115461923)；
+最终head以PR最新checks/制品manifest为准，证据提交后的检查继续核对。
+独立agent审查通过，不冒充GitHub成员批准。当前手机NOT_RUN、跨设备Passkey和iOS延期。
+P03/P05仅新增开发范围证明，生产主体独立/真实云/正式签名/正式发布未验。
 
 ## 目标与本次包含
 

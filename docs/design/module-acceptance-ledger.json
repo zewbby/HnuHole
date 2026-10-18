@@ -17591,6 +17591,14 @@
     },
     {
       "id": "P03",
+      "androidPrereleaseDevelopmentEvidence": {
+        "task": "https://github.com/zewbby/HnuHole/pull/16",
+        "sourceSha": "0d107191556b650fb0e8363e46dc6fc2f510baf0",
+        "result": "PASS_SAME_MACHINE_ISOLATED_DEVELOPMENT_ONLY",
+        "checks": "Actual C/V backup to two new instances, sixty table/sequence fingerprints, permission matrix, old-token denial, fresh-login original text/image reads, application rollback/redeploy, five-instance shutdown",
+        "evidence": "docs/release/android-prerelease-local-20261018.json",
+        "productionAcceptance": "NOT_RUN; original module currentResult is not upgraded"
+      },
       "name": "真实灾备、备份与留存",
       "implementationState": "EXTERNAL_OR_FUTURE",
       "acceptanceState": "PENDING_OPERATIONAL_EVIDENCE",
@@ -17621,6 +17629,16 @@
     },
     {
       "id": "P05",
+      "androidPrereleaseDevelopmentEvidence": {
+        "task": "https://github.com/zewbby/HnuHole/pull/16",
+        "result": "PASS_SCOPED_ANDROID_BUILD_AND_BACKEND_REHEARSAL",
+        "candidateSourceSha": "6b2927c3c19ebcea2bbbfbc556f5dfdf26ecca2e",
+        "candidateEvidence": "docs/release/android-candidate-20261018.json",
+        "report": "docs/release/android-prerelease.md",
+        "deviceAcceptance": "NOT_RUN",
+        "iosAndCrossDevicePasskey": "DEFERRED",
+        "productionAcceptance": "NOT_RUN; test signing and .invalid defaults do not prove production release"
+      },
       "name": "CI、完整发布与外部服务集成",
       "implementationState": "PARTIAL",
       "acceptanceState": "NOT_READY_IMPLEMENTATION",

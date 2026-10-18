@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-18",
+  "timeZone": "Asia/Shanghai",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/16",
+  "reviewResult": "REVIEW_PASS_SCOPED",
+  "reviewedRuntimeHead": "0d107191556b650fb0e8363e46dc6fc2f510baf0",
+  "reviewedCandidateHead": "6b2927c3c19ebcea2bbbfbc556f5dfdf26ecca2e",
+  "independentReviewers": [
+    {
+      "agent": "/root/deployment_audit",
+      "scope": "Isolated C/V lifecycle, original role matrix with explicit image opt-in, actual upload/read probe, snapshot/restore, application rollback, cleanup failure handling",
+      "result": "No remaining blocking findings after fixes"
+    },
+    {
+      "agent": "/root/candidate_audit",
+      "scope": "Exact-source Android candidate, explicit test signing, APK metadata/signature checks, workflow inputs and independent SDK setup",
+      "result": "No blocker after explicit API35/CMake3.22.1 setup and supported release config-only generation; verified against official Flutter3.47.5 source and issue169336"
+    }
+  ],
+  "evidenceReview": {
+    "agent": "/root/evidence_review",
+    "result": "No blocking evidence contradictions; independently verified previous CI backend success and honest Android/device/production scope",
+    "clarification": "Data fingerprints cover table rows and sequences; schema is checked by formal migrations, startup and role audit, not a DDL hash"
+  },
+  "fixedFindings": [
+    "Use actual workflow SHA rather than PR synthetic source attribution",
+    "libpq URI options require percent20 rather than plus for spaces",
+    "Preserve the full original role/table/sequence matrix with exact image INSERT and ten-column UPDATE opt-in",
+    "Reuse existing strict literal-loopback runtimeprobe marker checks",
+    "Actual schema13 snapshot loaded into a fifth owned cluster before forward migration",
+    "Graceful Gate quiescence before binary replacement",
+    "Require PostgreSQL status3 after stop, continue owned cleanup on failures and retain FAIL receipt",
+    "Terminate and reap only self-created psql lock processes on timeout"
+  ],
+  "githubMemberApproval": "NOT_PROVIDED: independent agent review does not impersonate a separate GitHub member",
+  "finalHeadChecks": "Required on the final PR head; see live PR checks and exact artifact manifests"
+}

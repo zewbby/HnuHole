@@ -122,8 +122,10 @@ def main():
         out.mkdir()
         target = out / ('hnuhole-' + a.source_sha[:12] + '-arm64-test.apk')
         shutil.copyfile(apk, target)
+        require(sha(target) == sha(apk), 'artifact copy changed verified APK bytes')
         manifest = dict(schemaVersion=1, result='PASS', createdAtUtc=datetime.now(timezone.utc).isoformat(),
                         sourceSha=a.source_sha, workflowSha=a.workflow_sha, sourceTree=git(source, 'rev-parse', 'HEAD^{tree}'),
+                        workflowRunUrl=(os.environ.get('GITHUB_SERVER_URL', 'https://github.com') + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID']) if os.environ.get('GITHUB_RUN_ID') else None,
                         buildMode='release', entrypoint='lib/main.dart', **packaged,
                         signingPurpose='ephemeral-isolated-test-only', signingCertificateSha256=digest,
                         samePackageUpgradeAcrossRuns=False, apkSha256=sha(target), apkBytes=target.stat().st_size,
