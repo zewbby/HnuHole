@@ -20,7 +20,7 @@ psql -X -v ON_ERROR_STOP=1 -v platform_number=001527 "$C_MIGRATION_DSN" -f ../..
 
 移动端使用原 C HTTPS origin，从帖子菜单举报、从系统消息查看进度及结果；处罚归账号，举报可绑定原身份。普通会话因封禁失效时，可在本人处理通知入口独立复验现有用户名密码，得到24小时、不可访问社区或管理接口的 `MODERATION_SELF` 能力。该能力不接替普通登录、不取消注销，不改变现有 Passkey 或 iOS 边界。
 
-Linux／WSL 使用本任务专属缓存、日志及私有数据库 socket，执行 `authlab/run-moderation-isolated.sh`。它拒绝 root 和外部 DSN，结束即清理所建库。设置 `PGPORT` 为本任务端口；`POST_MEDIA_PYTHON`／`POST_MEDIA_FIXTURES` 使用已准备的固定验证器；`MODERATION_GOOSE` 指向 Goose v3.22.1；用 `dart compile exe apps/mobile/integration/governance_live_probe.dart` 生成探针后设置 `MODERATION_PROBE`。再设置 `MODERATION_NODE`、`MODERATION_PLAYWRIGHT_MODULE`、`MODERATION_BROWSER_OUTPUT`（可选 `MODERATION_BROWSER`）即可同时执行真实网页审核。未提供探针只会明确 SKIP 该项，不能记录为整链 PASS。完整继承 SQL 回归可显式设 `MODERATION_TEST_PATTERN=.`；所有夹具仅使用合成账号。
+Linux／WSL 使用本任务专属缓存、日志及私有数据库 socket，执行 `authlab/run-moderation-isolated.sh`。它拒绝 root 和外部 DSN，结束即清理所建库。设置 `PGPORT` 为本任务端口；`POST_MEDIA_PYTHON`／`POST_MEDIA_FIXTURES` 使用已准备的固定验证器；`MODERATION_GOOSE` 指向 Goose v3.22.1；用 `dart compile exe apps/mobile/integration/governance_live_probe.dart` 生成探针后设置 `MODERATION_PROBE`。再设置 `MODERATION_NODE`、`MODERATION_PLAYWRIGHT_MODULE`、`MODERATION_BROWSER_OUTPUT`（可选 `MODERATION_BROWSER`）即可同时执行真实网页审核。未提供探针只会明确 SKIP 该项，不能记录为整链 PASS。完整继承 SQL 回归可显式设 `MODERATION_TEST_PATTERN=.` 和 `GOFLAGS=-timeout=25m`，避免 Go 默认十分钟在慢主机提前中断；所有夹具仅使用合成账号。
 
 本轮设备／凭据／原生Passkey接入见[实施报告](../../docs/design/auth-privacy-device-credentials-passkey-validation-report.md)。C可选 `webAuthn:{rpId,origins,androidOrigins}` 固定策略；省略／null保持Passkey禁用，CORS不选择RP或Android签名白名单。`authdev init` 可显式传 `-webauthn-rp-id`、`-webauthn-https-origins`、`-webauthn-android-origins`，不生成虚构部署值。平台关联步骤见[原生包](../../packages/auth_passkey/README.md)，loopback TLS材料不代证手机关联／信任。
 

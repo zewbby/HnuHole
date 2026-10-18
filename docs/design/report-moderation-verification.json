@@ -5,24 +5,335 @@
   "repository": "zewbby/HnuHole",
   "branch": "codex/feat/report-moderation",
   "baseMain": "986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb",
-  "coreProductCommit": "6e0b406",
-  "phase1": "IMPLEMENTED_FINAL_VALIDATION_IN_PROGRESS",
+  "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/18",
+  "phase1": "PASS_POST_REPORT_MODERATION_MINIMAL_NOTIFICATIONS_HOST_SQL_HTTPS_SCOPE",
   "phase2Comments": "NOT_INTEGRATED",
   "mainMerged": false,
+  "deployed": false,
   "published": false,
   "fullModulePass": false,
-  "checks": {
-    "moderationSQLRace": {"result": "PASS", "log": "sql-6.log"},
-    "realDartGoSQLBrowser": {"result": "PASS", "log": "sql-live-7.log", "phases": ["report", "browser", "appeal", "result", "limited"]},
-    "goHostTestBuildVet": {"result": "PASS", "log": "go-host-1.log"},
-    "flutterAnalyze": {"result": "PASS", "issues": 0},
-    "flutterHostTests": {"result": "PASS", "count": 439},
-    "flutterDebugBundle": {"result": "PASS"},
-    "openapi": {"result": "PASS", "specs": 9},
-    "fullInheritedSQLRace": {"result": "IN_PROGRESS", "log": "sql-all-1.log"},
-    "finalHeadCI": {"result": "NOT_RUN"}
+  "productInputs": {
+    "kind": "sha256-of-sorted-git-blob-manifest",
+    "commit": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+    "files": 632,
+    "sha256": "93116225c497d2c2b3be3388ccf327a817207d318314fce228db3972aab32646",
+    "prefixes": [
+      "apps/admin/",
+      "apps/mobile/",
+      "services/api/",
+      "infra/postgres/",
+      "packages/openapi/",
+      "packages/auth_vault/",
+      "packages/auth_passkey/",
+      "packages/image_viewer/",
+      ".github/workflows/"
+    ],
+    "excludes": [
+      "*.md"
+    ],
+    "serialization": "UTF-8 of concatenated records sorted by path: path + U+0000 + Git blob object SHA-1 + LF; includes trailing LF"
   },
-  "independentAgentReview": {"result": "IN_PROGRESS", "githubMemberApproval": false},
-  "notRun": ["current-candidate native/phone acceptance", "cross-device Passkey NI-X02 user-deferred", "iOS user-deferred", "production acceptance", "comments reports/failure provider phase2"],
-  "isolation": {"syntheticAccountsOnly": true, "privateSocketDatabases": true, "otherSessionWrites": false, "systemTrustChanged": false}
+  "deliveryHeadReceipt": {
+    "location": "pullRequest",
+    "method": "Recheck current PR head/base, remote main, unchanged 632-blob manifest and all exact-head workflows after this documentation-only commit; record delivery SHA and CI in the PR body.",
+    "doesNotClaimSelfReferentialCommitSHA": true
+  },
+  "environment": {
+    "go": "1.22.2",
+    "postgres": "16",
+    "goose": "3.22.1",
+    "flutter": "3.47.5",
+    "playwright": "1.62.1",
+    "localBrowser": "Microsoft Edge",
+    "ciBrowser": "Chromium",
+    "privateSocketOnly": true,
+    "systemTrustChanged": false
+  },
+  "logRoot": {
+    "linux": "/home/hnuhole/report-moderation-root-20261018",
+    "windows": "E:/HnuHole-report-moderation-20261018/runtime"
+  },
+  "checks": {
+    "moderationPrivacyPostSchemaSQLRace": {
+      "result": "PASS",
+      "log": "sql-release.log",
+      "sha256": "cf1a1891185e209012cfb44007f08627d3ec56dafdbf25d5ed390d9072b566e0",
+      "topLevelPass": 47,
+      "topLevelSkip": [],
+      "topLevelFail": [],
+      "packages": [
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy\t60.684s",
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp\t13.103s",
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyruntime\t1.813s"
+      ],
+      "livePhases": [
+        [
+          "report",
+          "PASS report"
+        ],
+        [
+          "browser",
+          "PASS_REAL_C_HTTPS_UI"
+        ],
+        [
+          "appeal",
+          "PASS appeal"
+        ],
+        [
+          "result",
+          "PASS result"
+        ],
+        [
+          "limited",
+          "PASS limited"
+        ]
+      ]
+    },
+    "fullInheritedSQLRace": {
+      "result": "PASS_WITH_EXPLICIT_SKIPS",
+      "log": "sql-all-release.log",
+      "sha256": "2e21614f30de9d0b3a89f339197475a0b3528627ca40c63d609887fb7a3a9640",
+      "topLevelPass": 321,
+      "topLevelSkip": [
+        "TestF4MainAppHTTPSPostgres",
+        "TestMobileClientHTTPSPostgres"
+      ],
+      "topLevelFail": [],
+      "packages": [
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy\t359.288s",
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp\t38.387s",
+        "ok  \tgithub.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyruntime\t1.563s"
+      ],
+      "livePhases": [
+        [
+          "report",
+          "PASS report"
+        ],
+        [
+          "browser",
+          "PASS_REAL_C_HTTPS_UI"
+        ],
+        [
+          "appeal",
+          "PASS appeal"
+        ],
+        [
+          "result",
+          "PASS result"
+        ],
+        [
+          "limited",
+          "PASS limited"
+        ]
+      ]
+    },
+    "explicitSkipReason": "Two separate pre-existing Flutter F4/mobile integration runner executables were not configured. They are not counted as passed. The dedicated governance Dart executable and actual Go /admin browser chain ran and passed in both final local runs and CI.",
+    "realDartGoSQLBrowser": {
+      "result": "PASS",
+      "logs": [
+        "sql-release.log",
+        "sql-all-release.log"
+      ],
+      "phases": [
+        "report",
+        "browser",
+        "appeal",
+        "result",
+        "limited"
+      ],
+      "probeSHA256": "56d6970f6628a501c3ede53cd6a737754bde7fe0a604ff64c3f6596d53c695db",
+      "screenshot": "runtime/admin-ui/sql-all-release/live-moderation-ended.png",
+      "noMockAPI": true
+    },
+    "goHostTestBuildVet": {
+      "result": "PASS",
+      "job": 117654442720
+    },
+    "flutter": {
+      "result": "PASS",
+      "analysisIssues": 0,
+      "hostTests": 439,
+      "debugBundle": "PASS",
+      "lockfilesPreserved": true,
+      "job": 117654442846,
+      "localLog": "runtime/client/accepted-mobile.log",
+      "doesNotProveNativeDevice": true
+    },
+    "openapi": {
+      "result": "PASS",
+      "specs": 9,
+      "run": 39120324419
+    },
+    "adminNode": {
+      "result": "PASS",
+      "tests": 12,
+      "job": 117654442506
+    },
+    "productCandidateCI": {
+      "result": "PASS",
+      "commit": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+      "workflows": 4,
+      "jobs": 7,
+      "runs": [
+        {
+          "name": "Collaboration",
+          "run": 39120324374,
+          "jobs": [
+            {
+              "name": "policy",
+              "id": 117654442496,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324374/job/117654442496"
+            }
+          ],
+          "result": "PASS",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324374"
+        },
+        {
+          "name": "Community text contract",
+          "run": 39120324419,
+          "jobs": [
+            {
+              "name": "contract",
+              "id": 117654442333,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324419/job/117654442333"
+            }
+          ],
+          "result": "PASS",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324419"
+        },
+        {
+          "name": "Post images",
+          "run": 39120324499,
+          "jobs": [
+            {
+              "name": "go-host",
+              "id": 117654442720,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324499/job/117654442720"
+            },
+            {
+              "name": "flutter",
+              "id": 117654442846,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324499/job/117654442846"
+            },
+            {
+              "name": "go-postgres",
+              "id": 117654442849,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324499/job/117654442849"
+            }
+          ],
+          "result": "PASS",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324499"
+        },
+        {
+          "name": "Report moderation",
+          "run": 39120324402,
+          "jobs": [
+            {
+              "name": "admin",
+              "id": 117654442506,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324402/job/117654442506"
+            },
+            {
+              "name": "moderation-postgres",
+              "id": 117654442323,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324402/job/117654442323"
+            }
+          ],
+          "result": "PASS",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324402"
+        }
+      ]
+    }
+  },
+  "commands": {
+    "sqlScope": "PGPORT=56445 GOFLAGS=-timeout=25m MODERATION_TEST_PATTERN='^(TestModeration|TestRealHTTPSModeration|TestPrivacy|TestPostSchema)' sh authlab/run-moderation-isolated.sh",
+    "sqlAll": "PGPORT=56446 GOFLAGS=-timeout=25m MODERATION_TEST_PATTERN=. sh authlab/run-moderation-isolated.sh",
+    "sqlWorkingDirectory": "archived productCandidate/services/api",
+    "prerequisites": "Owned Go/Python caches, media fixtures, Goose, compiled governance probe, Node/Playwright/browser; see services/api/README.md and apps/admin/README.md",
+    "goHost": "go test -mod=readonly ./... && go build -mod=readonly ./... && go vet -mod=readonly ./...",
+    "flutter": "flutter pub get --enforce-lockfile; flutter analyze --no-pub; flutter test --no-pub test; flutter build bundle --debug --no-pub"
+  },
+  "regressions": {
+    "authorization": [
+      "TestModerationStaleSessionCannotSkipManagementAuthorizationPostgres",
+      "TestModerationConcurrentSessionRenewalAndFinalClockPostgres"
+    ],
+    "reportReplayPrivacy": [
+      "TestModerationReportsOriginalResultAndPrivacyPostgres",
+      "TestModerationMergedReportMaterialRetainsEachReasonPostgres"
+    ],
+    "concurrencyIdentityRead": [
+      "TestModerationConcurrentDecisionAndIdentityReadPostgres"
+    ],
+    "appealReversal": [
+      "TestModerationAppealIndependentReversalAndAuthorDeletionPostgres",
+      "TestModerationAppealRoundsAndAdvanceReversalPostgres",
+      "TestModerationMuteOverlapAndRestrictedNoticesPostgres"
+    ],
+    "legacyAndLifecycle": [
+      "TestModerationLegacyRestrictionInteroperabilityPostgres",
+      "TestModerationLegacyRestrictionMinimalPrivilegesPostgres",
+      "TestModerationLegacyRestrictionBefore0015Postgres",
+      "TestModerationLifecycleCommonCStartupWithoutFeaturesPostgres",
+      "TestModerationLifecycleClosureWithoutPostsOrModerationPostgres"
+    ],
+    "goose": [
+      "TestModerationGooseUpgradeAndDownRefusalPostgres"
+    ]
+  },
+  "independentAgentReview": {
+    "result": "PASS_NO_BLOCKING_FINDINGS",
+    "authorizationFinalReadOnlyCommit": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+    "githubMemberApproval": false,
+    "scope": "Cross-review by client/admin/auth agents; final preliminary-copy authorization change independently read-only reviewed, with actual SQL and browser regressions recorded separately."
+  },
+  "failureHistory": [
+    {
+      "log": "sql-all-1.log",
+      "result": "FAIL_FIXTURE",
+      "fix": "a23cddc",
+      "reason": "Owned lab reset left goose_db_version in privacy inventory and omitted PostgreSQL log export; final full run supersedes."
+    },
+    {
+      "log": "sql-all-final.log",
+      "result": "FAIL_SMOKE_OLD_FORM",
+      "fix": "e1a45635252a92b9e4c45b66a7c8ef09320fef38",
+      "reason": "Browser waited on an announcement before authoritative case reload; smoke now waits for PROCESSING."
+    },
+    {
+      "log": "sql-verified.log",
+      "result": "TIMEOUT_AND_CONCURRENT_SESSION_FAILURE",
+      "fix": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+      "reason": "Go default ten-minute timeout plus genuine stale-snapshot 503 under parallel session renewal. Final strict validation is preserved; prepare cannot be skipped. Original partial run is not PASS.",
+      "remaining121Completion": {
+        "result": "PASS",
+        "log": "sql-remaining.log"
+      },
+      "supersededBy": "sql-all-release.log"
+    }
+  ],
+  "notRunOrNotImplemented": [
+    "comment reports and real comment-failure provider phase2",
+    "full direct messaging/chat-evidence reports/interaction inbox/system push",
+    "current-candidate native/phone acceptance",
+    "cross-device Passkey NI-X02 user-deferred",
+    "iOS user-deferred",
+    "production acceptance, independent human security review and evidence retention/cleanup policy"
+  ],
+  "isolation": {
+    "syntheticAccountsOnly": true,
+    "privateSocketDatabases": true,
+    "otherSessionWrites": false,
+    "systemTrustChanged": false,
+    "runnerOwnDatabaseAndProcessesRemovedOnExit": true,
+    "privateProbeFixturesRemovedOnExit": true
+  }
 }

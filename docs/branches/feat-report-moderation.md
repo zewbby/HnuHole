@@ -1,9 +1,16 @@
 # 举报、审核与最小系统通知：开发任务范围
 
-创建／更新：2026-10-18，Asia/Shanghai。状态：PHASE1_IMPLEMENTATION_AND_VALIDATION_IN_PROGRESS。
+创建／更新：2026-10-18，Asia/Shanghai。状态：PHASE1_SCOPED_PASS。
 仓库 zewbby/HnuHole；分支 `codex/feat/report-moderation`；独立目录 `E:/HnuHole-report-moderation-20261018/repo`。
 创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`；共享接线前已正常整合实际 main
-`986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb`（包含 PR #13 及其合并记录）。当前后端仍有未提交集成改动，最终候选及证据尚未固定；未合并、未发布，不宣告 B11／B08 完整通过。
+`986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb`（包含 PR #13 及其合并记录）。产品候选
+`aab9a647d9c8310e344bbc767abb5cbdc1045f73` 已提交、推送并通过 agent 安全复核，无阻断发现；产品源码无未提交改动。
+[PR #18](https://github.com/zewbby/HnuHole/pull/18) 阶段1限定范围通过，交付文档head回执见PR，未合并、未部署、未发布，B11／B08 仍为 PARTIAL。
+
+最终候选 Flutter439／analyze0／bundle、9份OpenAPI、Node12、Go host／build／vet和4工作流7任务全部通过。
+真实SQL聚焦47项零FAIL/SKIP；完整继承回归321项PASS、两个既有独立Flutter入口SKIP，不计通过。
+真实 Dart→C HTTPS→PostgreSQL→浏览器完成举报、审核、通知与申诉，最终输入指纹、历史失败和未验边界见
+[验收报告](../design/report-moderation-validation-report.md)及[机器记录](../design/report-moderation-verification.json)。
 
 ## 目标与本次包含
 
@@ -68,15 +75,14 @@ HTTP处理器使用相应独立文件。移动端放 `apps/mobile/lib/src/report
 [举报 API](../../packages/openapi/report-api.yaml)、[审核 API](../../packages/openapi/moderation-api.yaml)及[通知 API](../../packages/openapi/system-notification-api.yaml)。
 
 - 移动端已有帖子举报入口、六类原因、说明与补图、原请求结果核对及待核对材料保存；系统通知已有账号／身份隔离、列表、详情、单条已读和资源路由。受限账号通过本人处理通知入口查看处罚和申诉，不建立可访问社区的替代会话。
-- C 侧已有举报／案件／快照、命令回执、操作审计及必要共享接线的工作区实现。相同 `postId + snapshotDigest` 的举报跨原因合案，每份举报保留自己的类别，只形成一次认定和处罚。作者删除终结未完成案件；已有处罚独立保留，误判撤销不能恢复作者已删除内容。
+- C 侧已提交举报／案件／快照、命令回执、操作审计及必要共享接线。相同 `postId + snapshotDigest` 的举报跨原因合案，每份举报保留自己的类别，只形成一次认定和处罚。作者删除终结未完成案件；已有处罚独立保留，误判撤销不能恢复作者已删除内容。
 - 电脑同源 HTTPS `/admin` 已有真实用户名密码登录、案件处理、审核员／管理员权限、资料重置、独立申诉复核、六位编号账号列表／查询、处罚撤销与操作记录。只下发允许字段，不提供邮箱、资格或内部映射、其他面具与举报人身份；Bearer 仅在内存。
 - 每项处罚独立计时并按最大有效截止汇总；撤销只影响对应处罚。每项处罚最多三轮申诉、同时一轮待复核，原处理人回避；到期不取消申诉。首次及追加各自保留材料，案件举报和申诉材料只自动读首份／首批，后续按升序游标逐批追加，明确提示未加载材料。
-- `0015`、最小数据库权限、启动边界校验和 SQL／HTTPS 回归入口已在集成工作区，最终执行结果仍由固定候选的报告补齐。网页 Node／合成 HTTPS 检查的原快照结果只证明工作台范围，不能代证真实 C／SQL、最终共享授权或整模块验收。
+- `0015`、最小数据库权限、通用 C 启动生命周期检查、旧／新处罚独立账目兼容及 SQL／HTTPS 回归入口均已提交。网页 Node／合成 HTTPS 检查只证明相应范围，真实 C／SQL 与最终 head 的结果另由固定候选报告记录，不代证完整模块验收。
 
-当前验证状态为 IN_PROGRESS。主任务继续执行 `services/api/authlab/run-moderation-isolated.sh`（从 `services/api` 运行）、
-真实 Dart→C HTTPS→SQL 与实际 Go `/admin` 浏览器链、受影响 Flutter／Go 构建分析及契约校验；越权、并发、原结果、跨原因合案、权限隐私、生命周期和申诉恢复须在最终 head 重核。
-独立审查已发现并推动修复管理授权初验及逐份举报原因遗漏，静态复核与真实 SQL 回归的证据分别记录，不把修复代码等同于测试通过。
-[模块交接](../design/module-acceptance-handoff.md)和[机器台账](../design/module-acceptance-ledger.json)保留 B08／B11 的部分实现、待验证状态；最终 SHA、命令结果与脱敏证据由主任务补入。
+当前阶段1限定范围通过。最终产品候选已完成真实SQL／Dart HTTPS／实际Go网页及CI回归；交付文档提交另核对产品输入指纹和head检查。
+管理授权初验、逐份举报原因、旧配置生命周期检查、旧处罚兼容及正常并发续期503均已修复并复验，独立agent复核无阻断；不冒充GitHub成员批准。
+[模块交接](../design/module-acceptance-handoff.md)与[机器台账](../design/module-acceptance-ledger.json)仅记录本阶段范围，B08／B11保持PARTIAL。
 
 ### 阶段2依赖与未完成范围
 

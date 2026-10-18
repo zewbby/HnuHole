@@ -2,20 +2,23 @@
 
 ## B11／B08：举报、审核与最小系统通知阶段1（2026-10-18）
 
-任务为 `codex/feat/report-moderation`，见[任务详情](../branches/feat-report-moderation.md)与[阶段契约](report-notification-contract.md)。
-正常整合实际 main `986477b` 后，当前集成工作区已有帖子举报、电脑网页审核、必要申诉和最小系统通知；后端仍有未提交改动，验证为 IN_PROGRESS，最终候选和脱敏证据由主任务补齐。B11／B08均为 PARTIAL，不将实现、旧快照宿主结果或本文档核对记为完整验收 PASS。
+任务为 `codex/feat/report-moderation`，[PR #18](https://github.com/zewbby/HnuHole/pull/18)，见[任务详情](../branches/feat-report-moderation.md)与[阶段契约](report-notification-contract.md)。
+基于实际 main `986477b` 的产品候选 `aab9a647d9c8310e344bbc767abb5cbdc1045f73` 已提交、推送，无未提交产品源码，agent 安全复核无阻断；状态为 PHASE1_SCOPED_PASS。
+帖子举报、电脑网页审核、必要申诉和最小系统通知已交付候选，最终真实SQL／HTTPS／浏览器链及产品候选CI已通过，最终命令、输入和结果由[验收报告](report-moderation-validation-report.md)及[机器记录](report-moderation-verification.json)固定。B11／B08均保持PARTIAL，不将实现或局部结果记为完整验收PASS。
+
+已记录宿主范围为 Flutter439项／analyze0／bundle、9份OpenAPI、Node12项及Go host／build／vet全部PASS。最终aab候选4工作流／7任务通过，聚焦47项零FAIL/SKIP、完整继承321项PASS和两个既有独立Flutter入口SKIP；交付文档head另核对相同产品输入及CI。
 
 | 范围 | 当前实现与必须复核的场景 | 源码／测试入口与当前验证状态 |
 | --- | --- | --- |
-| 原举报与合案 | 6类、200字／6图；未知先查原键，同键材料冲突；相同 post＋snapshot 跨原因归并，各份原因保留；重复提交／多审核员不重复处罚 | `authprivacy/community_reports.go`、`community_reports_test.go`、`authprivacyhttp/moderation_postgres_test.go`；真实 SQL 最终候选回归 IN_PROGRESS |
-| 管理与隐私 | 同源 HTTPS `/admin`，真实既有登录；审核员／管理员、原处理人回避、版本竞争、最后管理员保护、只允许六位编号最小 DTO；无邮箱／内部映射／其他面具／举报人 | [工作台](../../apps/admin/README.md)、`authprivacy/community_moderation*.go`；`node --test apps/admin/test/*.test.mjs`、独立合成 HTTPS 脚本和 `live-api-smoke.mjs`；最终集成 head 尚待执行／记录 |
-| 处罚与生命周期 | 下架／资料重置／独立禁言与封禁；有效限制取最大截止；作者删除终结未完成案件，既有处罚保留；撤销只解除对应处罚，误判恢复不复活作者删除或其他有效下架 | `community_moderation_restrictions.go`、`community_posts_lifecycle.go`、`community_reports_test.go`；权限／冻结／并发／恢复真实 SQL 回归 IN_PROGRESS |
-| 申诉与材料 | 每项处罚三轮、同时一轮待复核；首次500字／6图，追加每次500字／3图且不加次数；到期继续复核；详情首份／首批，后续一组一页升序追加并保留旧组，明确未加载状态 | `community_moderation_appeals.go`、`community_moderation_materials.go`；[审核契约](../../packages/openapi/moderation-api.yaml)、[移动测试](../../apps/mobile/test/governance_test.dart)；最终 SQL／客户端回归 IN_PROGRESS |
-| 通知与受限入口 | 账号通知与当前身份单一时间流；列表不标已读、详情单条已读；路由复核本人归属；受限访问仅本人处罚／申诉，不恢复社区会话；待核对材料按账号隔离 | [移动实现](../../apps/mobile/lib/src/system_notifications/governance_controller.dart)、[HTTP测试](../../apps/mobile/test/governance_http_test.dart)、[本地材料测试](../../apps/mobile/test/governance_material_store_test.dart)；真实 Dart→C HTTPS→SQL 及实际 Go 页浏览器链 IN_PROGRESS |
-| 迁移与发布边界 | main `986477b` 迁移至0014，0015不依赖评论表；最小权限与启动 schema 核验，不覆盖既有迁移；迁移升级与拒绝静默回滚需真实库验证 | `0015_reports_moderation.sql`、`grant-moderation.sql`、`moderation_upgrade_test.go`；从 `services/api` 运行 `sh authlab/run-moderation-isolated.sh`，pattern `^(TestModeration\|TestRealHTTPSModeration)`；本轮最终结果待补 |
+| 原举报与合案 | 6类、200字／6图；未知先查原键，同键材料冲突；相同 post＋snapshot 跨原因归并，各份原因保留；重复提交／多审核员不重复处罚 | `authprivacy/community_reports.go`、`community_reports_test.go`、`authprivacyhttp/moderation_postgres_test.go`；最终真实SQL回归PASS |
+| 管理与隐私 | 同源 HTTPS `/admin`，真实既有登录；审核员／管理员、原处理人回避、版本竞争、最后管理员保护、只允许六位编号最小 DTO；无邮箱／内部映射／其他面具／举报人 | [工作台](../../apps/admin/README.md)、`authprivacy/community_moderation*.go`；Node12项PASS，agent安全复核aab无阻断；`live-api-smoke.mjs`实际Go网页链PASS |
+| 处罚与生命周期 | 下架／资料重置／独立禁言与封禁；有效限制取最大截止；作者删除终结未完成案件，既有处罚保留；撤销只解除对应处罚，误判恢复不复活作者删除或其他有效下架 | `community_moderation_restrictions.go`、`community_posts_lifecycle.go`、`community_reports_test.go`；权限／冻结／并发／恢复真实 SQL 回归 PASS_SCOPED |
+| 申诉与材料 | 每项处罚三轮、同时一轮待复核；首次500字／6图，追加每次500字／3图且不加次数；到期继续复核；详情首份／首批，后续一组一页升序追加并保留旧组，明确未加载状态 | `community_moderation_appeals.go`、`community_moderation_materials.go`；[审核契约](../../packages/openapi/moderation-api.yaml)、[移动测试](../../apps/mobile/test/governance_test.dart)；最终SQL／客户端回归PASS |
+| 通知与受限入口 | 账号通知与当前身份单一时间流；列表不标已读、详情单条已读；路由复核本人归属；受限访问仅本人处罚／申诉，不恢复社区会话；待核对材料按账号隔离 | [移动实现](../../apps/mobile/lib/src/system_notifications/governance_controller.dart)、[HTTP测试](../../apps/mobile/test/governance_http_test.dart)、[本地材料测试](../../apps/mobile/test/governance_material_store_test.dart)；真实Dart→C HTTPS→SQL及实际Go网页浏览器链PASS |
+| 迁移与发布边界 | main `986477b` 迁移至0014，0015不依赖评论表；最小权限与通用C启动生命周期核验、旧／新处罚独立账目；不覆盖既有迁移，迁移升级与拒绝静默回滚需真实库验证 | `0015_reports_moderation.sql`、`grant-moderation.sql`、`moderation_upgrade_test.go`；从 `services/api` 运行 `sh authlab/run-moderation-isolated.sh`；最终真实SQL／race PASS，精确计数与SKIP范围见固定报告 |
 
-独立审查已推动修复快照初验失败时管理授权漏检与合案后逐份类别遗漏，补丁静态复核及真实 SQL 负向结果须分别保留；无 DSN 的测试 SKIP 不代证 SQL PASS。
-最终回归还须记录 Go test/build/vet、受影响 Flutter analyze/test/build、全部正式 OpenAPI 校验及 CI/head 检查，精确到被测 SHA／源码集合。
+管理授权初验、逐份举报类别、旧配置生命周期启动检查和旧处罚兼容问题均已修复；aab的agent安全复核无阻断，不冒充GitHub独立成员批准。宿主检查与最终真实SQL／CI证据分开记录；无DSN的SKIP不代证SQL PASS。
+上述报告已固定最终SQL／Dart HTTPS／实际Go网页与产品CI结果；交付文档head回执在PR核对产品指纹、实时main及CI。阶段1限定范围PASS，后续按评论合入依赖接阶段2。
 本轮重新打开 A01／A03／A06／A08／A10／A12、B02／B05／B06及跨模块生命周期／账号隔离回归，不覆盖其既往证据。
 
 阶段2待评论任务合入后接评论举报和真实 `CommentFailureProvider`：评论核心、图片、失败保存／重试／放弃归评论任务，通知层只投影明确失败，不处理未知结果或复制发送状态机。

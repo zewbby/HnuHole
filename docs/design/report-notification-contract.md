@@ -1,6 +1,9 @@
 # B11 / B08 分阶段接口契约
 
-2026-10-18；分支 `codex/feat/report-moderation`。契约已提交供并行对接，阶段1实现正在集成验证；本页不表示最终候选或完整模块已验收。
+2026-10-18；分支 `codex/feat/report-moderation`。[PR #18](https://github.com/zewbby/HnuHole/pull/18) 的阶段1产品候选
+`aab9a647d9c8310e344bbc767abb5cbdc1045f73` 已提交、推送，agent 安全复核无阻断，状态 PHASE1_SCOPED_PASS。
+基于 main `986477b`，当前无未提交产品源码；宿主、真实 SQL／HTTPS／浏览器链和产品候选CI均通过，交付head回执见PR。
+最终证据由[验收报告](report-moderation-validation-report.md)及[机器记录](report-moderation-verification.json)固定；未合并、未部署、未发布，B08／B11仍为 PARTIAL，评论举报及真实失败 provider 等未实现范围不据此关闭。
 
 阶段一独立 PR 交付帖子举报、审核、申诉和 App 内通知。评论发布/图片/失败任务仍由
 `codex/feat/comments-replies` 拥有；阶段一不依赖评论表。评论合入 main 后另作类型适配与集成回归。

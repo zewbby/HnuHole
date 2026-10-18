@@ -16373,9 +16373,19 @@
         "recordedOn": "2026-10-18",
         "branch": "codex/feat/report-moderation",
         "taskReference": "docs/branches/feat-report-moderation.md",
-        "phase1ValidationState": "IN_PROGRESS",
+        "phase1ValidationState": "PASS_HOST_SQL_HTTPS_SCOPE",
         "fullModuleAcceptancePassed": false,
-        "rootLedgerEntry": "currentReportModeration"
+        "rootLedgerEntry": "currentReportModeration",
+        "status": "PHASE1_SCOPED_PASS",
+        "phase1ImplementationState": "DELIVERED",
+        "phase2State": "NOT_INTEGRATED",
+        "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/18",
+        "report": "docs/design/report-moderation-validation-report.md",
+        "verification": "docs/design/report-moderation-verification.json",
+        "mainMerged": false,
+        "deployed": false,
+        "published": false
       }
     },
     {
@@ -17489,9 +17499,19 @@
         "recordedOn": "2026-10-18",
         "branch": "codex/feat/report-moderation",
         "taskReference": "docs/branches/feat-report-moderation.md",
-        "phase1ValidationState": "IN_PROGRESS",
+        "phase1ValidationState": "PASS_HOST_SQL_HTTPS_SCOPE",
         "fullModuleAcceptancePassed": false,
-        "rootLedgerEntry": "currentReportModeration"
+        "rootLedgerEntry": "currentReportModeration",
+        "status": "PHASE1_SCOPED_PASS",
+        "phase1ImplementationState": "DELIVERED",
+        "phase2State": "NOT_INTEGRATED",
+        "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/18",
+        "report": "docs/design/report-moderation-validation-report.md",
+        "verification": "docs/design/report-moderation-verification.json",
+        "mainMerged": false,
+        "deployed": false,
+        "published": false
       }
     },
     {
@@ -18913,13 +18933,21 @@
     "recordedOn": "2026-10-18",
     "branch": "codex/feat/report-moderation",
     "taskReference": "docs/branches/feat-report-moderation.md",
-    "result": "IN_PROGRESS",
+    "result": "PHASE1_SCOPED_PASS",
     "phase1Scope": "existing posts, desktop moderation, appeals and minimal notifications",
-    "phase2State": "NOT_INTEGRATED_WAITING_FOR_COMMENTS_MAIN_DELIVERY",
+    "phase2State": "NOT_INTEGRATED",
     "mainMerged": false,
     "deployed": false,
     "completeModuleAcceptance": false,
-    "ledgerEntry": "currentReportModeration"
+    "ledgerEntry": "currentReportModeration",
+    "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/18",
+    "sourceCommitted": true,
+    "sourcePushed": true,
+    "workingTreeContainsUncommittedImplementation": false,
+    "published": false,
+    "report": "docs/design/report-moderation-validation-report.md",
+    "verification": "docs/design/report-moderation-verification.json"
   },
   "featureHistory": [
     {
@@ -26772,9 +26800,14 @@
       "B05",
       "B06"
     ],
-    "scope": "Phase 1 existing-post reporting/moderation/minimal-notification integration; final evidence pending",
+    "scope": "Phase 1 existing-post reporting, moderation and minimal notifications validated on fixed product inputs. Comment reports and real failure provider remain NOT_INTEGRATED; full modules remain partial.",
     "fullModuleAcceptancePassed": false,
-    "newDeviceTestsExecuted": false
+    "newDeviceTestsExecuted": false,
+    "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+    "validationState": "PASS_HOST_SQL_HTTPS_SCOPE",
+    "phase2State": "NOT_INTEGRATED",
+    "report": "docs/design/report-moderation-validation-report.md",
+    "verification": "docs/design/report-moderation-verification.json"
   },
   "currentCommunityFlutterF2": {
     "recordedOn": "2026-10-09",
@@ -39306,10 +39339,10 @@
     "taskReference": "docs/branches/feat-report-moderation.md",
     "contract": "docs/design/report-notification-contract.md",
     "baselineMainCommit": "986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb",
-    "phase1ImplementationState": "INTEGRATED_WORKING_TREE_IN_PROGRESS",
-    "phase1ValidationState": "IN_PROGRESS",
-    "fixedCandidate": "NOT_FIXED_FINAL_HEAD_PENDING",
-    "workingTreeContainsUncommittedImplementation": true,
+    "phase1ImplementationState": "DELIVERED",
+    "phase1ValidationState": "PASS_HOST_SQL_HTTPS_SCOPE",
+    "fixedCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+    "workingTreeContainsUncommittedImplementation": false,
     "mainMerged": false,
     "deployed": false,
     "published": false,
@@ -39343,10 +39376,12 @@
       "baseHasContinuousMigrationsThrough": 14,
       "dependsOnCommentTables": false,
       "commentsTentativeNumber": 16,
-      "finalMainNumberingRecheckRequired": true,
-      "overwritesMergedMigrations": false
+      "finalMainNumberingRecheckRequired": false,
+      "overwritesMergedMigrations": false,
+      "lastCheckedMain": "986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb",
+      "commentsMustRecheckMainAtOwnDelivery": true
     },
-    "phase2State": "NOT_INTEGRATED_WAITING_FOR_COMMENTS_MAIN_DELIVERY",
+    "phase2State": "NOT_INTEGRATED",
     "phase2OwnerBoundary": "comments-replies owns publishing/images/failure tasks; this task adapts comment reports and the real failure provider after comments merge",
     "phase2ContractAvailable": true,
     "actualCommentFailureProviderInstalled": false,
@@ -39370,27 +39405,42 @@
         "entry": "services/api/authlab/run-moderation-isolated.sh",
         "workingDirectory": "services/api",
         "pattern": "^(TestModeration|TestRealHTTPSModeration)",
-        "state": "IN_PROGRESS_FINAL_EVIDENCE_PENDING",
-        "scope": "real isolated PostgreSQL, migration/privilege/lifecycle/concurrency/privacy and HTTPS; absent DSN skips are not PASS"
+        "state": "PASS_SCOPED",
+        "scope": "real isolated PostgreSQL, migration/privilege/lifecycle/concurrency/privacy and HTTPS; absent DSN skips are not PASS",
+        "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+        "report": "docs/design/report-moderation-validation-report.md",
+        "verification": "docs/design/report-moderation-verification.json"
       },
       {
         "entry": "services/api/internal/authprivacyhttp/moderation_live_postgres_test.go",
-        "state": "IN_PROGRESS_FINAL_EVIDENCE_PENDING",
-        "scope": "real Dart to Go C HTTPS to SQL plus actual Go /admin browser; owned synthetic accounts only"
+        "state": "PASS_SCOPED",
+        "scope": "real Dart to Go C HTTPS to SQL plus actual Go /admin browser; owned synthetic accounts only",
+        "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+        "report": "docs/design/report-moderation-validation-report.md",
+        "verification": "docs/design/report-moderation-verification.json"
       },
       {
         "entry": "apps/admin/test/live-api-smoke.mjs",
-        "state": "IN_PROGRESS_REAL_GO_EXECUTION_PENDING",
-        "scope": "loopback HTTPS login, claim, MUTE 3 days, ENDED/audit and screenshot; no mock or exported bearer"
+        "state": "PASS_SCOPED",
+        "scope": "loopback HTTPS login, claim, MUTE 3 days, ENDED/audit and screenshot; no mock or exported bearer",
+        "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+        "report": "docs/design/report-moderation-validation-report.md",
+        "verification": "docs/design/report-moderation-verification.json"
       },
       {
         "entry": "apps/mobile/test/governance_test.dart; governance_http_test.dart; governance_material_store_test.dart; governance_live_probe_test.dart",
-        "state": "IN_PROGRESS_FINAL_EVIDENCE_PENDING",
-        "scope": "client ownership, pending originals, notice/material paging and live transport; not native/device proof"
+        "state": "PASS_SCOPED",
+        "scope": "client ownership, pending originals, notice/material paging and live transport; not native/device proof",
+        "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+        "report": "docs/design/report-moderation-validation-report.md",
+        "verification": "docs/design/report-moderation-verification.json"
       },
       {
         "entry": "Go build/test/vet; Flutter analyze/test/build; packages/openapi/check-specs.py; final head CI",
-        "state": "IN_PROGRESS_FINAL_EVIDENCE_PENDING"
+        "state": "PASS_SCOPED",
+        "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+        "report": "docs/design/report-moderation-validation-report.md",
+        "verification": "docs/design/report-moderation-verification.json"
       }
     ],
     "priorAdminOnlyChecks": {
@@ -39406,9 +39456,13 @@
       "doesNotProveFinalIntegratedCandidateOrRealSQL": true
     },
     "independentReview": {
-      "snapshotAuthorizationPreparation": "STATIC_FIX_REVIEWED_DYNAMIC_REGRESSION_PENDING",
-      "perReportReasonRetention": "STATIC_FIX_REVIEWED_DYNAMIC_REGRESSION_PENDING",
-      "agentReviewIsGitHubMemberApproval": false
+      "snapshotAuthorizationPreparation": "FIXED_STATIC_REVIEW_CONFIRMED",
+      "perReportReasonRetention": "FIXED_STATIC_REVIEW_CONFIRMED",
+      "commonLifecycleAndLegacyRestrictions": "FIXED_STATIC_REVIEW_CONFIRMED",
+      "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+      "candidateResult": "PASS_NO_BLOCKING_AGENT_FINDINGS",
+      "agentReviewIsGitHubMemberApproval": false,
+      "dynamicEvidenceRecordedSeparately": true
     },
     "deferredOrNotRun": [
       "cross-device Passkey NI-X02 user-deferred",
@@ -39416,6 +39470,157 @@
       "current candidate native/device acceptance not executed in this task",
       "production independent operational/security and evidence-retention acceptance"
     ],
-    "nextAcceptance": "Root records exact final SHA/source inputs, actual commands and safe evidence after fixing/retesting findings, then independent final review and head checks. B08/B11 remain partial, without full PASS."
+    "nextAcceptance": "Deliver PR18 with exact-head CI receipt; merge/deploy only with session authorization. After comments merge main, implement comment reports and the real failure provider in phase 2. B08/B11 remain PARTIAL.",
+    "status": "PHASE1_SCOPED_PASS",
+    "productCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+    "sourceCommitted": true,
+    "sourcePushed": true,
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/18",
+    "report": "docs/design/report-moderation-validation-report.md",
+    "verification": "docs/design/report-moderation-verification.json",
+    "hostChecks": {
+      "flutter": {
+        "result": "PASS",
+        "tests": 439,
+        "analysisIssues": 0,
+        "bundle": "PASS"
+      },
+      "openapi": {
+        "result": "PASS",
+        "documents": 9
+      },
+      "node": {
+        "result": "PASS",
+        "tests": 12
+      },
+      "go": {
+        "host": "PASS",
+        "build": "PASS",
+        "vet": "PASS"
+      },
+      "doesNotProveNativeDeviceOrProduction": true
+    },
+    "ci": {
+      "previousCandidate": "e1a45635252a92b9e4c45b66a7c8ef09320fef38",
+      "previousResult": "PASS",
+      "previousWorkflows": 4,
+      "previousJobs": 7,
+      "currentCandidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+      "currentResult": "PASS",
+      "previousPassDoesNotProveCurrentHead": true,
+      "currentWorkflows": 4,
+      "currentJobs": 7,
+      "runs": [
+        {
+          "name": "Collaboration",
+          "run": 39120324374,
+          "jobs": [
+            {
+              "name": "policy",
+              "id": 117654442496,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324374/job/117654442496"
+            }
+          ],
+          "result": "PASS",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324374"
+        },
+        {
+          "name": "Community text contract",
+          "run": 39120324419,
+          "jobs": [
+            {
+              "name": "contract",
+              "id": 117654442333,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324419/job/117654442333"
+            }
+          ],
+          "result": "PASS",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324419"
+        },
+        {
+          "name": "Post images",
+          "run": 39120324499,
+          "jobs": [
+            {
+              "name": "go-host",
+              "id": 117654442720,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324499/job/117654442720"
+            },
+            {
+              "name": "flutter",
+              "id": 117654442846,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324499/job/117654442846"
+            },
+            {
+              "name": "go-postgres",
+              "id": 117654442849,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324499/job/117654442849"
+            }
+          ],
+          "result": "PASS",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324499"
+        },
+        {
+          "name": "Report moderation",
+          "run": 39120324402,
+          "jobs": [
+            {
+              "name": "admin",
+              "id": 117654442506,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324402/job/117654442506"
+            },
+            {
+              "name": "moderation-postgres",
+              "id": 117654442323,
+              "result": "PASS",
+              "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324402/job/117654442323"
+            }
+          ],
+          "result": "PASS",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/39120324402"
+        }
+      ]
+    },
+    "latestSQL": {
+      "candidate": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+      "result": "PASS_SCOPED_WITH_EXPLICIT_UNRELATED_SKIPS",
+      "scope": "real isolated SQL/races plus actual Dart to C HTTPS to PostgreSQL to Edge moderation and notification/appeal chain",
+      "report": "docs/design/report-moderation-validation-report.md",
+      "verification": "docs/design/report-moderation-verification.json",
+      "finalResultMustBeFixedByRoot": false,
+      "scopePass": 47,
+      "fullPass": 321,
+      "explicitSkips": [
+        "TestF4MainAppHTTPSPostgres",
+        "TestMobileClientHTTPSPostgres"
+      ]
+    },
+    "productInputs": {
+      "kind": "sha256-of-sorted-git-blob-manifest",
+      "commit": "aab9a647d9c8310e344bbc767abb5cbdc1045f73",
+      "files": 632,
+      "sha256": "93116225c497d2c2b3be3388ccf327a817207d318314fce228db3972aab32646",
+      "prefixes": [
+        "apps/admin/",
+        "apps/mobile/",
+        "services/api/",
+        "infra/postgres/",
+        "packages/openapi/",
+        "packages/auth_vault/",
+        "packages/auth_passkey/",
+        "packages/image_viewer/",
+        ".github/workflows/"
+      ],
+      "excludes": [
+        "*.md"
+      ],
+      "serialization": "UTF-8 of concatenated records sorted by path: path + U+0000 + Git blob object SHA-1 + LF; includes trailing LF"
+    }
   }
 }
