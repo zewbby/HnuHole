@@ -1,0 +1,2205 @@
+openapi: 3.0.3
+info:
+  title: HnuHole comments and replies design contract
+  version: 0.1.0-design
+  description: Design core only. No SQL persistence, live HTTP route, protected media endpoint, Flutter page integration
+    or notification connection is supplied by this document. All planned operations require current C Bearer session
+    and final C Gate/account/session generation/deadline/permissions/resource checks. Reject extra fields/query/header
+    ambiguity, duplicate JSON keys, invalid UTF-8 and noncanonical IDs. No body/secret logging; no-store responses.
+    Unknown transport results never prove nonacceptance. Digest framing remains pending; this contract is not a
+    deployed byte protocol. Public/owner wire DTOs are planned explicit adapters; existing Go structs are not claimed
+    to implement these JSON shapes.
+servers:
+- url: /
+  description: Planned current C HTTPS origin; never V or arbitrary returned origins.
+x-contract-status: design-core-only-no-http-or-sql-implementation
+x-notification-integration: NOT_CONNECTED
+x-media-endpoints: NOT_IMPLEMENTED_COMMENT_OWNED_SINGLE_IMAGE_REQUIRED
+x-design-document: ../../docs/design/comments-replies-contract.md
+security:
+- bearerAuth: []
+paths:
+  /api/v1/comment-commands/{commandId}:
+    parameters:
+    - $ref: '#/components/parameters/CommandId'
+    put:
+      operationId: executeOwnCommentTaskCommand
+      summary: Planned executeOwnCommentTaskCommand
+      description: CREATE/RETRY acceptance is an immutable receipt, not publication. Every new intent has a fresh
+        key. Same key+exact intent replays; different operation/resource/content conflicts. Retrying and abandoning
+        require current FAILED and matching version. Server validates original identity/target in final C transaction.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskCommandReceipt'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '413':
+          $ref: '#/components/responses/Error'
+        '415':
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        x-max-bytes: 262144
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentTaskCommand'
+    get:
+      operationId: getOwnCommentCommandResult
+      summary: Planned getOwnCommentCommandResult
+      description: Query the original account-scoped key only; UNKNOWN_NOT_OBSERVED remains unknown and permits
+        no new send or abandonment. Accepted receipt requires a separate latest task read. No body or extra query
+        parameters. Authoritative REJECTED/NOT_ACCEPTED are distinct from UNKNOWN and contain no taskId. CREATE
+        rejection remains a local submitted intent, never a service FAILED task. RETRY/ABANDON rejection requires
+        latest original owner task reconciliation before allowing actions.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentCommandResult'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/v1/comment-commands/{commandId}/seal:
+    parameters:
+    - $ref: '#/components/parameters/CommandId'
+    post:
+      operationId: sealUnknownCommentCommand
+      summary: Planned sealUnknownCommentCommand
+      description: Future serialized seal using original operation/digest/key; digest byte framing is pending. Shares
+        final account/key lock with delayed originals. Lost response must reconcile same key.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservedCommandResult'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '413':
+          $ref: '#/components/responses/Error'
+        '415':
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SealCommentCommand'
+  /api/v1/me/comment-tasks/{taskId}:
+    parameters:
+    - $ref: '#/components/parameters/TaskId'
+    get:
+      operationId: getOwnCommentTask
+      summary: Planned getOwnCommentTask
+      description: Private original-account task only. No cross-account results; latest authoritative task state
+        and permissions, fixed owner identity/post/root/target. Deleted identities cannot recover cleared failure
+        materials.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnCommentTask'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/v1/me/comment-tasks/{taskId}/failure-projection:
+    parameters:
+    - $ref: '#/components/parameters/TaskId'
+    get:
+      operationId: getOwnCommentFailureProjection
+      summary: Planned getOwnCommentFailureProjection
+      description: Design-only adapter NOT_CONNECTED to unified notifications. It is not a second notification inbox.
+        Only FAILED creates failure entry; reading it does not solve it.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentFailureProjection'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/v1/posts/{postId}/comments:
+    parameters:
+    - $ref: '#/components/parameters/PostId'
+    get:
+      operationId: listPostComments
+      summary: Planned listPostComments
+      description: Authorized public content; first request establishes frozen account/post snapshot. Opaque cursor
+        continues it. Re-enter/collapse-reopen creates new snapshot; no live insert/reorder.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentPage'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+  /api/v1/posts/{postId}/comments/{rootCommentId}/replies:
+    parameters:
+    - $ref: '#/components/parameters/PostId'
+    - $ref: '#/components/parameters/RootCommentId'
+    get:
+      operationId: listCommentReplies
+      summary: Planned listCommentReplies
+      description: Same reading snapshot. Top five plus explicitly expanded chronological remainder, default pages
+        of 50. Target/floor visibility checked in final C transaction.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReplyPage'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+      parameters:
+      - $ref: '#/components/parameters/Snapshot'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Expanded'
+  /api/v1/posts/{postId}/comments/{commentId}/location:
+    parameters:
+    - $ref: '#/components/parameters/PostId'
+    - $ref: '#/components/parameters/CommentId'
+    get:
+      operationId: locateComment
+      summary: Planned locateComment
+      description: Resolve exact comment ID, including folded replies. Deleted/inaccessible target returns 404 COMMENT_NOT_FOUND
+        without original text; never opens a private contact.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentLocation'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+      parameters:
+      - $ref: '#/components/parameters/Snapshot'
+  /api/v1/comments/{commentId}/delete-commands/{commandId}:
+    parameters:
+    - $ref: '#/components/parameters/CommentId'
+    - $ref: '#/components/parameters/CommandId'
+    put:
+      operationId: deleteOwnComment
+      summary: Planned deleteOwnComment
+      description: Owner-only final C transaction; root deletes floor, reply only itself. Muted owner may delete.
+        Reconcile same original command after unknown response; DELETE never changes post binding.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCommandReceipt'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '413':
+          $ref: '#/components/responses/Error'
+        '415':
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteCommentCommand'
+  /api/v1/comments/{commentId}/like-commands/{commandId}:
+    parameters:
+    - $ref: '#/components/parameters/CommentId'
+    - $ref: '#/components/parameters/CommandId'
+    put:
+      operationId: setCommentLike
+      summary: Planned setCommentLike
+      description: Idempotent desired account-level state; no speaking identity selection/binding. No public liker
+        list. Optimistic UI rolls back only definite failure; unknown reconciles original key. Does not reorder
+        current read snapshot.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Planned response; no route is implemented in this stage.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LikeCommandReceipt'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '413':
+          $ref: '#/components/responses/Error'
+        '415':
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetCommentLikeCommand'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Existing opaque C session; never a public or image upload capability.
+  parameters:
+    CommandId:
+      name: commandId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/CommandID'
+    PostId:
+      name: postId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    CommentId:
+      name: commentId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    RootCommentId:
+      name: rootCommentId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/OpaqueCursor'
+    Snapshot:
+      name: snapshotId
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/OpaqueCursor'
+    Expanded:
+      name: expanded
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+      description: Only explicit true opts into hidden replies. Ordinary scrolling must not set this automatically.
+  responses:
+    Error:
+      description: Rejected request or unavailable service. No inference of nonacceptance; reconcile original key.
+      headers:
+        X-Request-ID:
+          required: true
+          schema:
+            type: string
+        Cache-Control:
+          required: true
+          schema:
+            type: string
+            enum:
+            - no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommentError'
+  schemas:
+    UUID:
+      type: string
+      format: uuid
+      pattern: ^(?!00000000-0000-0000-0000-000000000000$)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      description: Canonical lowercase, nonzero UUID; compare raw UUID bytes for stable ordering.
+    CommandID:
+      type: string
+      minLength: 22
+      maxLength: 22
+      pattern: ^[A-Za-z0-9_-]{21}[AQgw]$
+      description: Fresh 16 random bytes encoded as canonical unpadded base64url. The last character enforces zero
+        pad bits.
+    OpaqueCursor:
+      type: string
+      minLength: 22
+      maxLength: 2048
+      pattern: ^[A-Za-z0-9_-]+$
+      description: Integrity-protected opaque token bound to authenticated account, post, root, snapshot and position.
+        No caller-supplied offset.
+    Digest:
+      type: string
+      minLength: 64
+      maxLength: 64
+      pattern: ^[0-9a-f]{64}$
+      description: Planned purpose-separated SHA-256 digest. Canonical framing and golden vectors are NOT_DEFINED
+        in this stage; never use the post command digest domain.
+      x-digest-definition: NOT_DEFINED_DESIGN_CORE_ONLY
+    ImageSelection:
+      type: object
+      additionalProperties: false
+      required:
+      - mediaId
+      - sha256
+      - byteLength
+      - mimeType
+      - width
+      - height
+      properties:
+        mediaId:
+          $ref: '#/components/schemas/UUID'
+        sha256:
+          $ref: '#/components/schemas/Sha256'
+        byteLength:
+          type: integer
+          minimum: 1
+          maximum: 10485760
+        mimeType:
+          type: string
+          enum:
+          - image/jpeg
+          - image/png
+          - image/gif
+          - image/webp
+        width:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        height:
+          type: integer
+          minimum: 1
+          maximum: 16384
+      description: Exactly one original-format selection. Metadata validation is not decoding, uploading or permission
+        to publish; future runtime must reuse postmedia format/pixel/animation limits and comment-owned task/version/media
+        grants.
+    CommentContent:
+      type: object
+      additionalProperties: false
+      required:
+      - body
+      - image
+      properties:
+        body:
+          type: string
+          description: 'Provisional technical budget inherited from posts: at most 3000 grapheme clusters and 65536
+            UTF-8 bytes. These are distinct checks; JSON maxLength/code-point count is not a grapheme limit, and
+            this is not a new confirmed product limit.'
+          x-max-graphemes: 3000
+          x-max-utf8-bytes: 65536
+        image:
+          oneOf:
+          - &id001
+            $ref: '#/components/schemas/ImageSelection'
+          - type: object
+            nullable: true
+            enum:
+            - null
+      anyOf:
+      - properties:
+          body:
+            type: string
+            pattern: \S
+      - properties:
+          image:
+            $ref: '#/components/schemas/ImageSelection'
+    CreateCommentCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      - taskId
+      - identityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - body
+      - image
+      properties:
+        operation:
+          type: string
+          enum:
+          - CREATE
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        identityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        body:
+          type: string
+          description: 'Provisional technical budget inherited from posts: at most 3000 grapheme clusters and 65536
+            UTF-8 bytes. These are distinct checks; JSON maxLength/code-point count is not a grapheme limit, and
+            this is not a new confirmed product limit.'
+          x-max-graphemes: 3000
+          x-max-utf8-bytes: 65536
+        image:
+          oneOf:
+          - *id001
+          - type: object
+            nullable: true
+            enum:
+            - null
+      anyOf:
+      - properties:
+          body:
+            type: string
+            pattern: \S
+      - properties:
+          image:
+            $ref: '#/components/schemas/ImageSelection'
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+      description: Client taskId and exact target are journaled before sending. Main comment has both root/target
+        null; a reply has both UUIDs. Final C transaction validates target belongs to post/root and atomically writes
+        task, receipt and unique account/post identity binding. A rejected request creates no binding.
+    RetryCommentCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      - taskId
+      - expectedAttemptVersion
+      - body
+      - image
+      properties:
+        operation:
+          type: string
+          enum:
+          - RETRY
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        expectedAttemptVersion:
+          type: integer
+          minimum: 1
+        body:
+          type: string
+          description: 'Provisional technical budget inherited from posts: at most 3000 grapheme clusters and 65536
+            UTF-8 bytes. These are distinct checks; JSON maxLength/code-point count is not a grapheme limit, and
+            this is not a new confirmed product limit.'
+          x-max-graphemes: 3000
+          x-max-utf8-bytes: 65536
+        image:
+          oneOf:
+          - *id001
+          - type: object
+            nullable: true
+            enum:
+            - null
+      anyOf:
+      - properties:
+          body:
+            type: string
+            pattern: \S
+      - properties:
+          image:
+            $ref: '#/components/schemas/ImageSelection'
+      description: Only current FAILED with matching attempt version. Changes content only; original post, speaking
+        identity, root and target are server facts and cannot be supplied or changed. New accepted attempt increments
+        version. Deleted target blocks retry; abandon and an explicit new temporary operation are separate actions.
+    AbandonCommentCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      - taskId
+      - expectedAttemptVersion
+      properties:
+        operation:
+          type: string
+          enum:
+          - ABANDON
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        expectedAttemptVersion:
+          type: integer
+          minimum: 1
+      description: Only current FAILED with matching version. Same version becomes ABANDONED; erase owner-visible
+        retained materials and resolve failure notification. Does not delete a published comment and has no restore
+        action.
+    CommentTaskCommand:
+      oneOf:
+      - $ref: '#/components/schemas/CreateCommentCommand'
+      - $ref: '#/components/schemas/RetryCommentCommand'
+      - $ref: '#/components/schemas/AbandonCommentCommand'
+      discriminator:
+        propertyName: operation
+        mapping:
+          CREATE: '#/components/schemas/CreateCommentCommand'
+          RETRY: '#/components/schemas/RetryCommentCommand'
+          ABANDON: '#/components/schemas/AbandonCommentCommand'
+    DeleteCommentCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      properties:
+        operation:
+          type: string
+          enum:
+          - DELETE
+      description: Own content only, including when muted. Root deletion removes its entire floor; reply deletion
+        removes only itself. No confirmation for root deletion. Preserve other replies and their target relationship;
+        atomically update live counts and revoke deleted media.
+    SetCommentLikeCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      - liked
+      properties:
+        operation:
+          type: string
+          enum:
+          - SET_LIKE
+        liked:
+          type: boolean
+      description: Set a desired account-level state, never toggle. One like per account/content, including own
+        content. No identity selector; liking does not create a post speaking binding. Same key replays the original
+        receipt, not a new toggle.
+    SealCommentCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      - requestDigest
+      properties:
+        operation:
+          type: string
+          enum:
+          - CREATE
+          - RETRY
+          - ABANDON
+          - DELETE
+          - SET_LIKE
+        requestDigest:
+          $ref: '#/components/schemas/Digest'
+      description: Use the original command key, operation and persisted digest. Final account/key lock serializes
+        seal with delayed originals; absent intent records permanent NOT_ACCEPTED. Existing matching receipt is
+        returned unchanged. No fresh command key. Lost seal response stays unknown until reconciled; digest framing
+        is not implemented in this stage.
+    AcceptedTaskReceipt:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - taskId
+      - attemptVersion
+      properties:
+        state:
+          type: string
+          enum:
+          - ACCEPTED
+        operation:
+          type: string
+          enum:
+          - CREATE
+          - RETRY
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        attemptVersion:
+          type: integer
+          minimum: 1
+      description: Original immutable acceptance receipt; not the latest task state. Read taskId to learn whether
+        it later published or failed.
+    AppliedTaskReceipt:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - taskId
+      - attemptVersion
+      properties:
+        state:
+          type: string
+          enum:
+          - APPLIED
+        operation:
+          type: string
+          enum:
+          - ABANDON
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        attemptVersion:
+          type: integer
+          minimum: 1
+      description: Original abandonment result; version is unchanged. Re-read the original task for current authoritative
+        state.
+    DeleteAppliedReceipt:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - commentId
+      - deletedCount
+      properties:
+        state:
+          type: string
+          enum:
+          - APPLIED
+        operation:
+          type: string
+          enum:
+          - DELETE
+        commentId:
+          $ref: '#/components/schemas/UUID'
+        deletedCount:
+          type: integer
+          minimum: 1
+    LikeAppliedReceipt:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - commentId
+      - liked
+      - likeCount
+      properties:
+        state:
+          type: string
+          enum:
+          - APPLIED
+        operation:
+          type: string
+          enum:
+          - SET_LIKE
+        commentId:
+          $ref: '#/components/schemas/UUID'
+        liked:
+          type: boolean
+        likeCount:
+          type: integer
+          minimum: 0
+    NotAcceptedReceipt:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - errorCode
+      properties:
+        state:
+          type: string
+          enum:
+          - NOT_ACCEPTED
+        operation:
+          type: string
+          enum:
+          - CREATE
+          - RETRY
+          - ABANDON
+          - DELETE
+          - SET_LIKE
+        errorCode:
+          type: string
+          enum:
+          - SEALED
+      description: Authoritatively observed permanent NOT_ACCEPTED seal of this key/operation only; no task is fabricated.
+        CREATE can be explicitly restored to current same-post temporary input only after successful journal removal;
+        RETRY/ABANDON must reconcile the latest owner task before further actions. Timeout, empty lookup or HTTP
+        error cannot produce this state.
+    UnknownCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      properties:
+        state:
+          type: string
+          enum:
+          - UNKNOWN_NOT_OBSERVED
+      description: No observed durable receipt. The original can still be delayed/in flight; forbids new task, altered
+        intent, retry or abandon until reconciled or serialized seal.
+    ObservedCommandResult:
+      oneOf:
+      - $ref: '#/components/schemas/AcceptedTaskReceipt'
+      - $ref: '#/components/schemas/AppliedTaskReceipt'
+      - $ref: '#/components/schemas/DeleteAppliedReceipt'
+      - $ref: '#/components/schemas/LikeAppliedReceipt'
+      - $ref: '#/components/schemas/RejectedReceipt'
+      - $ref: '#/components/schemas/NotAcceptedReceipt'
+    CommentCommandResult:
+      oneOf:
+      - $ref: '#/components/schemas/AcceptedTaskReceipt'
+      - $ref: '#/components/schemas/AppliedTaskReceipt'
+      - $ref: '#/components/schemas/DeleteAppliedReceipt'
+      - $ref: '#/components/schemas/LikeAppliedReceipt'
+      - $ref: '#/components/schemas/RejectedReceipt'
+      - $ref: '#/components/schemas/NotAcceptedReceipt'
+      - $ref: '#/components/schemas/UnknownCommand'
+    AcceptedOwnTask:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - ownerIdentityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - attemptVersion
+      - state
+      - failureCode
+      - materialsAvailable
+      - content
+      - allowedActions
+      - publishedCommentId
+      properties:
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        ownerIdentityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - &id002
+            $ref: '#/components/schemas/UUID'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - &id003
+            $ref: '#/components/schemas/UUID'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        attemptVersion:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - ACCEPTED
+        failureCode:
+          type: string
+          nullable: true
+          enum:
+          - null
+        materialsAvailable:
+          type: boolean
+          enum:
+          - true
+        content:
+          $ref: '#/components/schemas/CommentContent'
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - RETRY
+            - ABANDON
+          enum:
+          - []
+          uniqueItems: true
+        publishedCommentId:
+          type: string
+          nullable: true
+          enum:
+          - null
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+      description: Private owner-only task. FAILED permissions are re-evaluated by the server; absent RETRY means
+        target/identity/permission blocks it. UNKNOWN and SENDING are never service task states. Deleted identity
+        removes owner-visible failures after real-result reconciliation.
+    FailedOwnTask:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - ownerIdentityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - attemptVersion
+      - state
+      - failureCode
+      - materialsAvailable
+      - content
+      - allowedActions
+      - publishedCommentId
+      properties:
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        ownerIdentityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - *id002
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - *id003
+          - type: string
+            nullable: true
+            enum:
+            - null
+        attemptVersion:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - FAILED
+        failureCode:
+          type: string
+          minLength: 1
+          maxLength: 64
+        materialsAvailable:
+          type: boolean
+          enum:
+          - true
+        content:
+          $ref: '#/components/schemas/CommentContent'
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - RETRY
+            - ABANDON
+          enum:
+          - - RETRY
+            - ABANDON
+          - - ABANDON
+          uniqueItems: true
+        publishedCommentId:
+          type: string
+          nullable: true
+          enum:
+          - null
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+      description: Private owner-only task. FAILED permissions are re-evaluated by the server; absent RETRY means
+        target/identity/permission blocks it. UNKNOWN and SENDING are never service task states. Deleted identity
+        removes owner-visible failures after real-result reconciliation.
+    PublishedOwnTask:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - ownerIdentityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - attemptVersion
+      - state
+      - failureCode
+      - materialsAvailable
+      - content
+      - allowedActions
+      - publishedCommentId
+      properties:
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        ownerIdentityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - *id002
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - *id003
+          - type: string
+            nullable: true
+            enum:
+            - null
+        attemptVersion:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - PUBLISHED
+        failureCode:
+          type: string
+          nullable: true
+          enum:
+          - null
+        materialsAvailable:
+          type: boolean
+          enum:
+          - false
+        content:
+          type: object
+          nullable: true
+          enum:
+          - null
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - RETRY
+            - ABANDON
+          enum:
+          - []
+          uniqueItems: true
+        publishedCommentId:
+          $ref: '#/components/schemas/UUID'
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+      description: Private owner-only task. FAILED permissions are re-evaluated by the server; absent RETRY means
+        target/identity/permission blocks it. UNKNOWN and SENDING are never service task states. Deleted identity
+        removes owner-visible failures after real-result reconciliation.
+    AbandonedOwnTask:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - ownerIdentityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - attemptVersion
+      - state
+      - failureCode
+      - materialsAvailable
+      - content
+      - allowedActions
+      - publishedCommentId
+      properties:
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        ownerIdentityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - *id002
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - *id003
+          - type: string
+            nullable: true
+            enum:
+            - null
+        attemptVersion:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - ABANDONED
+        failureCode:
+          type: string
+          nullable: true
+          enum:
+          - null
+        materialsAvailable:
+          type: boolean
+          enum:
+          - false
+        content:
+          type: object
+          nullable: true
+          enum:
+          - null
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - RETRY
+            - ABANDON
+          enum:
+          - []
+          uniqueItems: true
+        publishedCommentId:
+          type: string
+          nullable: true
+          enum:
+          - null
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+      description: Private owner-only task. FAILED permissions are re-evaluated by the server; absent RETRY means
+        target/identity/permission blocks it. UNKNOWN and SENDING are never service task states. Deleted identity
+        removes owner-visible failures after real-result reconciliation.
+    OwnCommentTask:
+      oneOf:
+      - $ref: '#/components/schemas/AcceptedOwnTask'
+      - $ref: '#/components/schemas/FailedOwnTask'
+      - $ref: '#/components/schemas/PublishedOwnTask'
+      - $ref: '#/components/schemas/AbandonedOwnTask'
+    PendingFailureProjection:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - ownerIdentityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - attemptVersion
+      - state
+      - failureCode
+      - materialsAvailable
+      - allowedActions
+      - entryAction
+      - connection
+      properties:
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        ownerIdentityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - *id002
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - *id003
+          - type: string
+            nullable: true
+            enum:
+            - null
+        attemptVersion:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - ACCEPTED
+        failureCode:
+          type: string
+          nullable: true
+          enum:
+          - null
+        materialsAvailable:
+          type: boolean
+          enum:
+          - true
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - RETRY
+            - ABANDON
+          enum:
+          - []
+          uniqueItems: true
+        entryAction:
+          type: string
+          enum:
+          - HIDE_PENDING
+        connection:
+          type: string
+          enum:
+          - NOT_CONNECTED
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+    FailedFailureProjection:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - ownerIdentityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - attemptVersion
+      - state
+      - failureCode
+      - materialsAvailable
+      - allowedActions
+      - entryAction
+      - connection
+      properties:
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        ownerIdentityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - *id002
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - *id003
+          - type: string
+            nullable: true
+            enum:
+            - null
+        attemptVersion:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - FAILED
+        failureCode:
+          type: string
+          minLength: 1
+          maxLength: 64
+        materialsAvailable:
+          type: boolean
+          enum:
+          - true
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - RETRY
+            - ABANDON
+          enum:
+          - - RETRY
+            - ABANDON
+          - - ABANDON
+          uniqueItems: true
+        entryAction:
+          type: string
+          enum:
+          - RETAIN_FAILURE
+        connection:
+          type: string
+          enum:
+          - NOT_CONNECTED
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+    PublishedFailureProjection:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - ownerIdentityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - attemptVersion
+      - state
+      - failureCode
+      - materialsAvailable
+      - allowedActions
+      - entryAction
+      - connection
+      properties:
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        ownerIdentityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - *id002
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - *id003
+          - type: string
+            nullable: true
+            enum:
+            - null
+        attemptVersion:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - PUBLISHED
+        failureCode:
+          type: string
+          nullable: true
+          enum:
+          - null
+        materialsAvailable:
+          type: boolean
+          enum:
+          - false
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - RETRY
+            - ABANDON
+          enum:
+          - []
+          uniqueItems: true
+        entryAction:
+          type: string
+          enum:
+          - REMOVE
+        connection:
+          type: string
+          enum:
+          - NOT_CONNECTED
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+    AbandonedFailureProjection:
+      type: object
+      additionalProperties: false
+      required:
+      - taskId
+      - ownerIdentityId
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - attemptVersion
+      - state
+      - failureCode
+      - materialsAvailable
+      - allowedActions
+      - entryAction
+      - connection
+      properties:
+        taskId:
+          $ref: '#/components/schemas/UUID'
+        ownerIdentityId:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - *id002
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - *id003
+          - type: string
+            nullable: true
+            enum:
+            - null
+        attemptVersion:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - ABANDONED
+        failureCode:
+          type: string
+          nullable: true
+          enum:
+          - null
+        materialsAvailable:
+          type: boolean
+          enum:
+          - false
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - RETRY
+            - ABANDON
+          enum:
+          - []
+          uniqueItems: true
+        entryAction:
+          type: string
+          enum:
+          - REMOVE
+        connection:
+          type: string
+          enum:
+          - NOT_CONNECTED
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+    CommentFailureProjection:
+      oneOf:
+      - $ref: '#/components/schemas/PendingFailureProjection'
+      - $ref: '#/components/schemas/FailedFailureProjection'
+      - $ref: '#/components/schemas/PublishedFailureProjection'
+      - $ref: '#/components/schemas/AbandonedFailureProjection'
+      description: Private planned adapter owned by comment tasks, NOT_CONNECTED to moderation notifications. Filter
+        by original ownerIdentityId. Fetch retained content only from owner task endpoint. Read/unread does not
+        resolve a failure; publish/abandon removes it, and deleted identity clears owner entry. Never expose through
+        public content.
+    PublicAuthor:
+      type: object
+      additionalProperties: false
+      required:
+      - ref
+      - nickname
+      - avatar
+      - state
+      properties:
+        ref:
+          type: string
+          minLength: 1
+          maxLength: 128
+        nickname:
+          type: string
+          minLength: 1
+          maxLength: 80
+        avatar:
+          type: string
+          minLength: 1
+          maxLength: 128
+        state:
+          type: string
+          enum:
+          - ACTIVE
+          - IDENTITY_DELETED
+          - ACCOUNT_CLOSED
+      description: Opaque public identity display reference for this author only; inactive identities use separate
+        stable placeholders. No internal identity/account selectors, private username or related masks.
+    ReplyRelation:
+      type: object
+      additionalProperties: false
+      required:
+      - commentId
+      - author
+      properties:
+        commentId:
+          $ref: '#/components/schemas/UUID'
+        author:
+          $ref: '#/components/schemas/PublicAuthor'
+      description: Preserved relation after target deletion; no quote/original body/deleted placeholder. A click
+        resolves actual commentId and may return COMMENT_NOT_FOUND.
+    PublishedCommentImage:
+      type: object
+      additionalProperties: false
+      required:
+      - mediaId
+      - contentVersionId
+      - pixelWidth
+      - pixelHeight
+      - mimeType
+      - saveAllowed
+      properties:
+        mediaId:
+          $ref: '#/components/schemas/UUID'
+        contentVersionId:
+          $ref: '#/components/schemas/UUID'
+        pixelWidth:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        pixelHeight:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        mimeType:
+          type: string
+          enum:
+          - image/jpeg
+          - image/png
+          - image/gif
+          - image/webp
+        saveAllowed:
+          type: boolean
+      description: Metadata only, no public URL/path/token/bytes. Future protected comment-owned reads require current
+        C session/final Gate and terminating lease <=60s/session deadline; revoke on deletion/account/permission
+        changes. One image only, original format, no cross-comment gallery.
+    PublicComment:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - postId
+      - rootCommentId
+      - targetCommentId
+      - body
+      - image
+      - author
+      - replyTo
+      - isPostAuthor
+      - publishedAt
+      - likeCount
+      - likedByMe
+      - replyCount
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        postId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        targetCommentId:
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        body:
+          type: string
+          description: 'Provisional technical budget inherited from posts: at most 3000 grapheme clusters and 65536
+            UTF-8 bytes. These are distinct checks; JSON maxLength/code-point count is not a grapheme limit, and
+            this is not a new confirmed product limit.'
+          x-max-graphemes: 3000
+          x-max-utf8-bytes: 65536
+        image:
+          oneOf:
+          - $ref: '#/components/schemas/PublishedCommentImage'
+          - type: object
+            nullable: true
+            enum:
+            - null
+        author:
+          $ref: '#/components/schemas/PublicAuthor'
+        replyTo:
+          oneOf:
+          - $ref: '#/components/schemas/ReplyRelation'
+          - type: object
+            nullable: true
+            enum:
+            - null
+        isPostAuthor:
+          type: boolean
+        publishedAt:
+          type: string
+          format: date-time
+        likeCount:
+          type: integer
+          minimum: 0
+        likedByMe:
+          type: boolean
+        replyCount:
+          type: integer
+          minimum: 0
+          description: Live replies in this floor for a main comment; zero for a nested reply. Preserved replies
+            still count after their target reply is deleted.
+      oneOf:
+      - properties:
+          rootCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          targetCommentId:
+            type: string
+            nullable: true
+            enum:
+            - null
+          replyTo:
+            type: object
+            nullable: true
+            enum:
+            - null
+      - properties:
+          rootCommentId:
+            $ref: '#/components/schemas/UUID'
+          targetCommentId:
+            $ref: '#/components/schemas/UUID'
+          replyTo:
+            $ref: '#/components/schemas/ReplyRelation'
+          replyCount:
+            type: integer
+            minimum: 0
+            maximum: 0
+      description: Authorized public content only. isPostAuthor compares actual public author identity with post
+        author, never nickname/account equality. Body initially four lines in UI with independent expand; all nested
+        replies indent only one level.
+      anyOf:
+      - properties:
+          body:
+            type: string
+            pattern: \S
+      - properties:
+          image:
+            $ref: '#/components/schemas/PublishedCommentImage'
+    CommentPage:
+      type: object
+      additionalProperties: false
+      required:
+      - snapshotId
+      - comments
+      - nextCursor
+      - totalCount
+      properties:
+        snapshotId:
+          $ref: '#/components/schemas/OpaqueCursor'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicComment'
+          maxItems: 50
+        nextCursor:
+          oneOf:
+          - $ref: '#/components/schemas/OpaqueCursor'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        totalCount:
+          type: integer
+          minimum: 0
+          description: Current live main comments plus all live nested replies, not this page size. Root deletion
+            subtracts its entire floor; deleting a reply subtracts only that reply.
+      description: 'Frozen read order: top ten likes descending, publishedAt ascending, raw UUID ascending; remaining
+        comments time/UUID ascending excluding top ten. Like counts may change without reordering; others new content
+        waits for re-entry or collapse/reopen.'
+      x-order-contract:
+        topCount: 10
+        topOrder:
+        - likeCount:desc
+        - publishedAt:asc
+        - id:uuid-bytes-asc
+        remainderOrder:
+        - publishedAt:asc
+        - id:uuid-bytes-asc
+        liveReorder: false
+    ReplyPage:
+      type: object
+      additionalProperties: false
+      required:
+      - snapshotId
+      - rootCommentId
+      - comments
+      - nextCursor
+      - remainingCount
+      properties:
+        snapshotId:
+          $ref: '#/components/schemas/OpaqueCursor'
+        rootCommentId:
+          $ref: '#/components/schemas/UUID'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicComment'
+          maxItems: 50
+        nextCursor:
+          oneOf:
+          - $ref: '#/components/schemas/OpaqueCursor'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        remainingCount:
+          type: integer
+          minimum: 0
+      description: Default top five only. Explicit expanded=true loads remaining replies in chronological pages
+        of 50; no scroll-triggered expansion and no duplicates of top five. Collapse restores five without reranking.
+      x-order-contract:
+        topCount: 5
+        topOrder:
+        - likeCount:desc
+        - publishedAt:asc
+        - id:uuid-bytes-asc
+        remainderOrder:
+        - publishedAt:asc
+        - id:uuid-bytes-asc
+        liveReorder: false
+        manualExpansion: true
+    CommentLocation:
+      type: object
+      additionalProperties: false
+      required:
+      - snapshotId
+      - commentId
+      - rootCommentId
+      - cursor
+      properties:
+        snapshotId:
+          $ref: '#/components/schemas/OpaqueCursor'
+        commentId:
+          $ref: '#/components/schemas/UUID'
+        rootCommentId:
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            nullable: true
+            enum:
+            - null
+        cursor:
+          oneOf:
+          - $ref: '#/components/schemas/OpaqueCursor'
+          - type: string
+            nullable: true
+            enum:
+            - null
+      description: Exact content location in snapshot; expand floor and highlight without moving upper post. No
+        original text. Missing/deleted/inaccessible target uniformly COMMENT_NOT_FOUND; repeatable nonblocking short
+        UI hint.
+    CommentError:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+              enum:
+              - INVALID_REQUEST
+              - UNAUTHORIZED
+              - FORBIDDEN
+              - COMMAND_CONFLICT
+              - COMMENT_NOT_FOUND
+              - TASK_NOT_FOUND
+              - STALE_ATTEMPT
+              - TASK_NOT_FAILED
+              - INVALID_CONTENT
+              - IDENTITY_UNAVAILABLE
+              - TARGET_UNAVAILABLE
+              - RATE_LIMITED
+              - SERVICE_UNAVAILABLE
+            message:
+              type: string
+              maxLength: 200
+      description: Bounded public error, no account links, bodies, tokens, raw command keys or database errors.
+        HTTP errors do not establish whether a command was accepted.
+    Sha256:
+      type: string
+      minLength: 64
+      maxLength: 64
+      pattern: ^[0-9a-f]{64}$
+      description: SHA-256 of the exact original image bytes; existing postmedia selection semantics. This is distinct
+        from the pending comment command framing.
+    RejectedReceipt:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - operation
+      - errorCode
+      properties:
+        state:
+          type: string
+          enum:
+          - REJECTED
+        operation:
+          type: string
+          enum:
+          - CREATE
+          - RETRY
+          - ABANDON
+          - DELETE
+          - SET_LIKE
+        errorCode:
+          type: string
+          enum:
+          - INVALID_CONTENT
+          - IDENTITY_UNAVAILABLE
+          - TARGET_UNAVAILABLE
+          - PERMISSION_DENIED
+          - STALE_ATTEMPT
+          - TASK_NOT_FAILED
+      description: Authoritatively observed durable rejection of the original account-scoped key; no accepted task
+        is fabricated. For CREATE there is no task/binding. Restore preserved content only by explicit user action
+        into the current same-post temporary editor after journal removal succeeds. For rejected RETRY/ABANDON,
+        read the latest owner task snapshot before offering another action; stale local FAILED cannot unlock anything.
+    TaskCommandReceipt:
+      oneOf:
+      - $ref: '#/components/schemas/AcceptedTaskReceipt'
+      - $ref: '#/components/schemas/AppliedTaskReceipt'
+      - $ref: '#/components/schemas/RejectedReceipt'
+      - $ref: '#/components/schemas/NotAcceptedReceipt'
+    DeleteCommandReceipt:
+      oneOf:
+      - $ref: '#/components/schemas/DeleteAppliedReceipt'
+      - $ref: '#/components/schemas/RejectedReceipt'
+      - $ref: '#/components/schemas/NotAcceptedReceipt'
+    LikeCommandReceipt:
+      oneOf:
+      - $ref: '#/components/schemas/LikeAppliedReceipt'
+      - $ref: '#/components/schemas/RejectedReceipt'
+      - $ref: '#/components/schemas/NotAcceptedReceipt'
