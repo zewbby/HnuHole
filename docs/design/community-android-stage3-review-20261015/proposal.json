@@ -1,0 +1,54 @@
+{
+  "owner": "HNUHOLE_COMMUNITY_ANDROID_STAGE3_V1",
+  "status": "DRAFT_REQUIRES_DOMAIN_AND_SECURITY_CONFIGURATION_APPROVAL",
+  "rpId": "hnuhole-community-passkey.pages.dev",
+  "domainCandidateOnly": true,
+  "domainAvailabilityChecked": false,
+  "domainControlVerified": false,
+  "publicAssociationPublished": false,
+  "securityConfigurationApplied": false,
+  "deviceWindowGranted": false,
+  "androidPackage": "org.hnuhole.hnuhole_mobile.communityf5.passkey",
+  "certificateSha256": "3309ce001a5dfd93148c14e35159147a6711e4b61d881b7a223b3e8429665e34",
+  "httpsOrigin": "https://hnuhole-community-passkey.pages.dev",
+  "androidOrigin": "android:apk-key-hash:MwnOABpd_ZMUjBTjUVkUemcR5LYdiBt6Ijs-hClmXjQ",
+  "exactApprovedAssociationEntries": 1,
+  "excludedNegativeControls": [
+    {
+      "package": "org.hnuhole.hnuhole_mobile.communityf5.passkey",
+      "certificateSha256": "08cddd6d4eff8b50315ecd1a4496d847a3d86048c6da5d08019b11aaa412e849",
+      "expectedAssociation": false
+    },
+    {
+      "package": "org.hnuhole.hnuhole_mobile.communityf5.passkey.unassociated",
+      "certificateSha256": "3309ce001a5dfd93148c14e35159147a6711e4b61d881b7a223b3e8429665e34",
+      "expectedAssociation": false
+    }
+  ],
+  "sourceCommit": "e0c128033682923d519ea99546d72503b085a99e",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "deviceReadyApks": false,
+  "baselineApksNeedRebuildWithApprovedRPAndOwnTLSLab": true,
+  "files": {
+    "candidate-debug/dart-defines.fragment.json": "e70db1437fe3cb1a023643307bb8ae6db0bb3915168a85f0c7bfe71782a66f8e",
+    "candidate-debug/manifest-snippet.xml": "f1bbf59ae3ec988a68e2c8aa5c9469dd769a7fb8746cbd32e2f70ca51e27f8d1",
+    "candidate-debug/passkey_associations.xml": "414861483b110fc3eb411889046f3227c3899518749f441d07181d3516f90bfe",
+    "review-only.patch": "8dc4f031fee5d5e3e1f252deb3144dd214827c092dd9e9c3562aa7c3115863c3",
+    "runtime/authdev-init-extra-argv.json": "c83f2c71b36af6ccd1395992753a3d65286a71cc6b556fbd455fa496048602a2",
+    "runtime/web-authn.config.fragment.json": "b1eaff99722baaa7ec3809d766a14fc7f9f0f0cda26e547dd5e0854e3a655dad",
+    "site/.well-known/assetlinks.json": "2023cbbfee1e05382e49b8027c7801b14d5e469d9f93e6ed0865ab2f95b1bb9e"
+  },
+  "confirmationNeeded": [
+    "independent domain availability and ownership/hosting account",
+    "one exact package/signing digest association and both DAL relations",
+    "new disposable task3 C policy and candidate debug XML/Dart RP setting",
+    "separate public deployment approval, device window and creation of synthetic system Passkeys"
+  ],
+  "unchanged": [
+    "task1/task2 packages, materials and databases",
+    "authentication-session domain and associations",
+    "production configuration/signing/deployment",
+    "C/V protocol, UV/resident/ES256 policy, final Gate",
+    "dependency locks"
+  ]
+}

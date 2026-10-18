@@ -1,0 +1,161 @@
+{
+  "recordedOn": "2026-10-18",
+  "timeZone": "Asia/Shanghai",
+  "result": "PASS_NI_X01_OBSERVED_OEM_APP_TRANSFER_SCOPE",
+  "checkId": "NI-X01",
+  "moduleIds": [
+    "N01",
+    "A12"
+  ],
+  "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+  "finalHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+  "branch": "codex/community-flutter-pages",
+  "productCodeChanged": false,
+  "committedOrPushedThisWindow": false,
+  "apkSha256": "6cce56a7879bd76b2db9c1ed1b63c6326b1abb029a6f6f853d9c7a250470229c",
+  "certificateSha256": "3309ce001a5dfd93148c14e35159147a6711e4b61d881b7a223b3e8429665e34",
+  "package": "org.hnuhole.hnuhole_mobile.communityf5.passkey.control",
+  "source": {
+    "model": "vivo S18 / V2323A",
+    "android": "15",
+    "sdk": 35,
+    "oemVersion": "14.7.34_third"
+  },
+  "target": {
+    "model": "realme GT Master Explorer / RMX3366",
+    "android": "14",
+    "sdk": 34,
+    "oemVersion": "16.10.1"
+  },
+  "mechanism": "Installed official com.coloros.backuprestore; OEM pairing QR explicitly allowed; no Google/Passkey QR.",
+  "transferScope": "Application category only; existing-installed target, one HnuHole Stage4 100 MB. Application-data and other data categories excluded.",
+  "limitations": [
+    "Does not prove unsupported/forced private application-data import, a wiped/new target, arbitrary OEM or Android versions. OEM warns lower target OS does not support some data.",
+    "Stage4Local marker retention observed; full draft content was not re-compared character by character.",
+    "NI-X02 Passkey cross-device recovery remains BLOCKED_USER_DEFERRED; no new Passkey attempt. iOS/production excluded.",
+    "Host/mobile suites not rerun in this documentation-only window; old host counts are historical, not current execution."
+  ],
+  "checks": [
+    {
+      "id": "OEM-01",
+      "result": "PASS",
+      "scope": "Actual official vivo to realme transfer, exact single HnuHole Stage4, 100 MB, one success and zero failures, 11:57:19–11:57:25 local."
+    },
+    {
+      "id": "OEM-02",
+      "result": "PASS",
+      "scope": "Before supplemental transfer source session generation 13 authenticated with local draft; target guest witnessed after prior session replaced."
+    },
+    {
+      "id": "OEM-03",
+      "result": "PASS",
+      "scope": "Target actual task App force-stopped/reopened to guest login/register, no source login or draft marker imported."
+    },
+    {
+      "id": "OEM-04",
+      "result": "PASS",
+      "scope": "Source actual task App force-stopped/reopened; My and Stage4Local retained."
+    },
+    {
+      "id": "OEM-05",
+      "result": "PASS",
+      "scope": "Before App reopen, both devices retain all three original no_backup file hashes; auth ciphertext and DB hashes differ between devices. No key/file bytes exported."
+    },
+    {
+      "id": "OEM-06",
+      "result": "PASS",
+      "scope": "Final read-only SQL equals pre-transfer account/session/counter snapshot: credentialVersion 6, resetGeneration 2, passkeys 0, sole valid source session generation 13; no new target session."
+    },
+    {
+      "id": "OEM-07",
+      "result": "PASS",
+      "scope": "Exact APK retained, provider/autofill unchanged, final App processes nativeBegun 0; only this window reverse mappings and exact owned ADB process stopped."
+    }
+  ],
+  "currentScopePassCount": 7,
+  "fullFourStageAcceptancePassed": false,
+  "firstTransfer": "Existing target own-session variant succeeded 11:47:24–11:47:30; source session then already replaced, so not used alone to grant NI-X01. Supplemental live-source/guest-target case supplies that missing precondition.",
+  "finalDeviceState": {
+    "sourceAuthenticatedGeneration": 13,
+    "sourceDraftMarkerRetained": true,
+    "targetGuest": true,
+    "settingsUnchanged": true,
+    "ownAdbClosed": true,
+    "backendAndMaterialRetained": true
+  },
+  "externalEvidence": [
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\first-transfer-summary.json",
+      "sha256": "46cd0d860c482586c11723e3206e961417afca2a6c1478feb3afeb065917f056"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\source-second-selection-user-ready.json",
+      "sha256": "77c46990b073f97abab99e23ebf22de8df32202a12af4eb831d349ae3e04573c"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\source-second-exact-selected-row.json",
+      "sha256": "6883fd978f02034576fddcee7eb43a5c130b6ccc305cbd23b256947c639a7181"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\source-second-category-proof.json",
+      "sha256": "a1706766ad650b4ecad6e4891475274cc369ddbfbc77a91cb795c38b5a03702e"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\target-second-official-receipt-summary.json",
+      "sha256": "511a132994875d481876adc8232d01266987a91e34b495c42734e7234353766e"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\target-second-successful-app-list.json",
+      "sha256": "8845d44a6a0aa35783190469e98d672f46c2cca4c63752baf76d1b8a8fa3806d"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\target-post-second-transfer-guest.app.json",
+      "sha256": "6decc982f5a4b2682be78c9b7448b0d1996c079c7835356d91e76767b269172f"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\source-post-second-transfer-draft.app.json",
+      "sha256": "8c5357bd7a53585e36e28eb1314812b2f1f90b0bfac7742f17b135b8d80aa007"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\final-phone-checks.json",
+      "sha256": "8ad208b65b91e5406127ba7b2cf60a158f07a0a3e76d43f40e789aa61a2f2155"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018\\closed.json",
+      "sha256": "44f87b7fcc868e2d75fe104e412eecb9badcaacb05d2e48189da18a86c21b359"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-before-live-source-second-transfer-20261018.sql.json",
+      "sha256": "2d36286f4f5bd64822b2c2ad25506aafb328a9ebfe02b0960448dd04fc876f82"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-final-after-reopen-20261018.sql.json",
+      "sha256": "c03e6993869e9d039751ca8199938c3976be4cc7965feba243803d9c349a669a"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-before-second-source-20261018.native-files.json",
+      "sha256": "6a6203ed26fa607c949e9e00cad60d6e11ff9f55e4012b9dcd9d61b180d65819"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-before-second-target-20261018.native-files.json",
+      "sha256": "1786b44ba25b74c9c2ff23a70173b64538a3c156884221a68b26b792de054042"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-after-second-source-20261018.native-files.json",
+      "sha256": "fb1ba5e5f45f40ffd86fc6fd4f266d351aa4dc1e9edc78b46b785fb10199463f"
+    },
+    {
+      "path": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-after-second-target-20261018.native-files.json",
+      "sha256": "9d9652cdddd2c135c36001da393958bcf0d56216d7f0f5565554db120789726f"
+    }
+  ],
+  "actualCommands": [
+    "E:/acanda/python.exe -B -X utf8 <OEMROOT>/window.py inspect <source|target> <unique-label>",
+    "E:/acanda/python.exe -B -X utf8 <OEMROOT>/window.py native-files <source|target> <unique-label>",
+    "E:/acanda/python.exe -B -X utf8 <OEMROOT>/app.py <source|target> reopen <unique-label>",
+    "E:/acanda/python.exe -B -X utf8 <OEMROOT>/window.py app-inspect <source|target> <unique-label>",
+    "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- python3 -B /mnt/e/HnuHole-community-f4-20261012/stage4-execution-20261016/owned-sql.py oem-final-after-reopen-20261018",
+    "E:/acanda/python.exe -B -X utf8 <OEMROOT>/finish.py"
+  ],
+  "OEMROOT": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\oem-execution-20261018"
+}

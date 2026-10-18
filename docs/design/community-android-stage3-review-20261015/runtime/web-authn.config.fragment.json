@@ -1,0 +1,11 @@
+{
+  "webAuthn": {
+    "rpId": "hnuhole-community-passkey.pages.dev",
+    "origins": [
+      "https://hnuhole-community-passkey.pages.dev"
+    ],
+    "androidOrigins": [
+      "android:apk-key-hash:MwnOABpd_ZMUjBTjUVkUemcR5LYdiBt6Ijs-hClmXjQ"
+    ]
+  }
+}

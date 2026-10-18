@@ -18,6 +18,27 @@ imports.loader.exec_module(public_import)
 
 
 class StoragePhoneGuardTests(unittest.TestCase):
+    def test_existing_identity_opt_in_verifies_before_manifest(self):
+        args = types.SimpleNamespace(confirmed_window=True, allow_isolated_install=True,
+                                     auth_session_released=True, allow_owned_adb_key=True,
+                                     allow_owned_force_stop=True, allow_existing_host_usb_identity=True)
+        with patch.object(phone.transport.sys, 'platform', 'win32'), patch.object(phone.transport, 'verify_existing_host_usb_identity', side_effect=ValueError('metadata rejected')) as verify, patch.object(phone, 'load_manifest') as manifest, patch.object(phone.subprocess, 'run') as command:
+            with self.assertRaisesRegex(ValueError, 'metadata rejected'):
+                phone.run_phone(args)
+            verify.assert_called_once_with()
+            manifest.assert_not_called()
+            command.assert_not_called()
+
+    def test_existing_identity_opt_in_does_not_skip_other_consents(self):
+        args = types.SimpleNamespace(confirmed_window=False, allow_isolated_install=True,
+                                     auth_session_released=True, allow_owned_adb_key=True,
+                                     allow_owned_force_stop=True, allow_existing_host_usb_identity=True)
+        with patch.object(phone.transport, 'require_adb_key_isolation') as identity, patch.object(phone.subprocess, 'run') as command:
+            with self.assertRaises(ValueError):
+                phone.run_phone(args)
+            identity.assert_not_called()
+            command.assert_not_called()
+
     def test_windows_all_consents_and_all_phases_block_before_manifest_or_side_effects(self):
         for phase in ['suites', *phone.ORDER]:
             args = types.SimpleNamespace(confirmed_window=True, allow_isolated_install=True, auth_session_released=True, allow_owned_adb_key=True, allow_owned_force_stop=True, confirmed_manual_reboot=True, phase=phase, device='synthetic-device', manifest='not-accessed')

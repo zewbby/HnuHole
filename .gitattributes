@@ -6,6 +6,10 @@
 *.yml text eol=lf
 # Protocol fixture hashes are byte-exact on every development platform.
 packages/auth-protocol-vectors/v1.json text eol=lf
+# Keep this public DAL and executed source archive byte-exact on Windows.
+docs/design/community-android-stage3-applied-20261015/site/.well-known/assetlinks.json text eol=lf
+tools/community-android-stage3/execution-20261015/* text eol=lf
+
 packages/post-protocol-vectors/media-v1.json text eol=lf
 # Preserve portable project skill scripts and vendored text on Windows.
 .agents/skills/** text eol=lf

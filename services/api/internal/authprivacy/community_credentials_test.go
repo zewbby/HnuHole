@@ -349,6 +349,9 @@ func TestPasskeyEnrollmentRemovalAndResetLifecyclePostgres(t *testing.T) {
 		count(t, l.cp, `SELECT count(*) FROM c_auth.sessions WHERE account_id=$1 AND revoked_at IS NULL`, initial.AccountID) != 0 {
 		t.Fatal("Passkey reset left old Passkeys or ordinary sessions authorized")
 	}
+	if _, err = l.c.GetCurrentSession(ctx, initial.SessionToken); !errors.Is(err, ErrSessionInvalid) {
+		t.Fatalf("the session verified live immediately before Passkey reset remained authorized: %v", err)
+	}
 	if _, err = l.c.CreateRecoveryCodeResetIntent(ctx, oldCode); !errors.Is(err, ErrRecoveryProofInvalid) {
 		t.Fatalf("Passkey reset retained old code: %v", err)
 	}

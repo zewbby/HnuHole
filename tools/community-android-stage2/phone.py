@@ -132,7 +132,8 @@ def owned_server(witness, previous, adb):
 
 def run_phone(args):
     consent(args)  # Before filesystem reads, socket binding, or any ADB call.
-    transport.require_adb_key_isolation()
+    allow_host_identity = getattr(args, 'allow_existing_host_usb_identity', False)
+    transport.require_adb_key_isolation(allow_host_identity)
     if args.phase not in ['suites', *ORDER] or not re.fullmatch(r'[A-Za-z0-9._:-]{1,128}', args.device or ''):
         raise ValueError('explicit phase and device required')
     root, manifest = load_manifest(args.manifest)
@@ -154,7 +155,8 @@ def run_phone(args):
         before = current
         done = subprocess.run([manifest['adb'], '-P', str(port), '-s', args.device, *map(str, parts)],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=240,
-                              env=transport.adb_environment(root))
+                              env=transport.adb_environment(root, allow_host_identity))
+        transport.preserve_install_failure(root, parts, done.returncode, done.stdout)
         if tuple(parts[:3]) == ('shell', 'am', 'instrument'):
             if len(done.stdout) + len(done.stderr) > 262144:
                 raise ValueError('native output bound exceeded; result unknown')
@@ -174,8 +176,10 @@ def run_phone(args):
         return done.stdout.decode(errors='replace').strip()
     state['deviceIdHash'] = device_hash
     state['runId'] = manifest['runId']
+    state['existingUsbIdentityConfirmed'] = allow_host_identity
+    state['ownedUsbDebugKeyConfirmed'] = not allow_host_identity
     state_path.write_text(json.dumps(state, indent=2) + '\n')
-    print('Authorize this task USB debugging key on the confirmed phone if prompted.', flush=True)
+    print('Keep the confirmed phone unlocked; approve installation prompts for the three isolated task-2 packages.', flush=True)
     end = time.monotonic() + 90
     while adb('get-state', optional=True) != 'device':
         if time.monotonic() > end:
@@ -287,10 +291,10 @@ if __name__ == '__main__':
     parser.add_argument('--manifest')
     parser.add_argument('--device')
     parser.add_argument('--phase', choices=['suites', *ORDER])
-    for flag in ['confirmed-window', 'allow-isolated-install', 'auth-session-released', 'allow-owned-adb-key', 'allow-owned-force-stop', 'confirmed-manual-reboot', 'plan-only']:
+    for flag in ['confirmed-window', 'allow-isolated-install', 'auth-session-released', 'allow-owned-adb-key', 'allow-owned-force-stop', 'allow-existing-host-usb-identity', 'confirmed-manual-reboot', 'plan-only']:
         parser.add_argument('--' + flag, action='store_true')
     args = parser.parse_args()
     if args.plan_only:
-        print('Plan only (no manifest/ADB access): Windows device execution is BLOCKED_KEY_ISOLATION until verified independent-profile or dedicated-key-directory ADB isolation; consent flags cannot bypass this guard. Then recheck hashes/ready/empty lab and USB release -> 7+16+12 native tests + 3 auth process pairs -> write -> read -> separately approved manual reboot/read -> purge -> closed/new-process. Only task-2 packages.')
+        print('Plan only (no manifest/ADB access): Windows defaults to BLOCKED_KEY_ISOLATION. Explicit user-approved --allow-existing-host-usb-identity uses the stage1 OS-profile metadata verification; no key is read, copied or changed. All window/install/release/force-stop consents remain required. Recheck hashes and USB release -> 7+16+12 native tests + 3 auth process pairs -> write -> read -> separately approved manual reboot/read -> purge -> closed/new-process. Only task-2 packages.')
     else:
         run_phone(args)
