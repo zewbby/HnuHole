@@ -53,6 +53,9 @@ Map<String, dynamic> _noticeJson({
 Map<String, dynamic> _appealJson({String id = _appeal}) => {
   'id': id,
   'sanctionId': _sanction,
+  'caseId': _case,
+  'version': 1,
+  'action': 'MUTE',
   'state': 'PENDING',
   'ordinal': 1,
   'reason': '',

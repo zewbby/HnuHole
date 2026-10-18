@@ -686,16 +686,25 @@ class GovernanceController extends ChangeNotifier {
       }
       if (r['activeAppealId'] != null) PostJson.id(r, 'activeAppealId');
     } else {
-      final r = PostJson.record(raw, {
-        'id',
-        'sanctionId',
-        'state',
-        'ordinal',
-        'reason',
-        'materials',
-      });
+      final r = PostJson.record(
+        raw,
+        {'id', 'sanctionId', 'state', 'ordinal', 'reason', 'materials'},
+        optional: {'caseId', 'version', 'action'},
+      );
       PostJson.id(r, 'id');
       PostJson.id(r, 'sanctionId');
+      if (r['caseId'] != null) PostJson.id(r, 'caseId');
+      if (r['version'] != null) PostJson.integer(r, 'version', 1, 2147483647);
+      if (r['action'] != null &&
+          !{
+            'TAKEDOWN',
+            'MUTE',
+            'BAN',
+            'RESET_NICKNAME',
+            'RESET_AVATAR',
+          }.contains(r['action'])) {
+        throw const FormatException('Invalid appeal action');
+      }
       if (!{'PENDING', 'ACCEPTED', 'REJECTED'}.contains(r['state']) ||
           r['ordinal'] is! int ||
           (r['ordinal'] as int) < 1 ||

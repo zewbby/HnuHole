@@ -135,7 +135,7 @@ class SystemNotice {
       kind: PostJson.text(m, 'kind', maxLength: 64),
       state: PostJson.text(m, 'state', maxLength: 64),
       title: PostJson.text(m, 'title', maxLength: 512),
-      body: PostJson.text(m, 'body', maxLength: 2048),
+      body: PostJson.text(m, 'body', maxLength: 2048, allowEmpty: true),
       createdAt: PostJson.date(m, 'createdAt'),
       readAt: m['readAt'] == null ? null : PostJson.date(m, 'readAt'),
       route: NotificationRoute.parse(m['route']),
