@@ -219,6 +219,31 @@ class Lab:
         c['postImages'] = dict(pythonFile=python, validatorFile=str(validator), validatorSHA256=sha(validator))
         write(cpath, c)
         self.audit()
+        self.sql('c', 'GRANT UPDATE(digest) ON c_posts.images TO hnuhole_c_runtime')
+        try:
+            try:
+                self.audit()
+            except RuntimeError:
+                log = (self.root / 'sql-error.private.log').read_text()
+                if 'operational role acquired noncontract table privilege' not in log:
+                    raise
+            else:
+                raise RuntimeError('image audit accepted extra immutable-column UPDATE')
+        finally:
+            self.sql('c', 'REVOKE UPDATE(digest) ON c_posts.images FROM hnuhole_c_runtime')
+        self.audit()
+        self.sql('c', 'REVOKE INSERT ON c_posts.images FROM hnuhole_c_runtime')
+        try:
+            code = self.run([self.root / 'bin/candidate-community', '-config', cpath], 'missing-image-insert', check=False, timeout=25)
+            if code == 0 or 'stage=runtime reason=failed' not in (self.root / 'missing-image-insert.private.log').read_text():
+                raise RuntimeError('missing image upload permission was not rejected at runtime startup')
+        finally:
+            self.grants('c')
+        self.audit()
+        self.state['initChecks'] = ['fresh-formal-migrations-and-schema13-snapshot-upgrade',
+                                    'restricted-role-matrix-rejects-immutable-image-column-update',
+                                    'actual-startup-rejects-missing-image-insert-permission']
+        self.save()
 
     def migrate(self, party):
         directory = self.api / ('migrations' if party == 'c' else 'verifier-migrations')
@@ -348,9 +373,16 @@ class Lab:
                 if not re.fullmatch('[a-z_]+[.][a-z_]+', table):
                     raise RuntimeError('unexpected table identifier')
                 result[party + ':' + table] = self.sql(party, "SELECT COALESCE(json_agg(x ORDER BY x::text),'[]') FROM (SELECT row_to_json(t) x FROM " + table + ' t) q')
+            sequences = self.sql(party, "SELECT schemaname||'.'||sequencename FROM pg_sequences WHERE schemaname IN ('public','c_auth','c_posts','v_auth') ORDER BY 1").splitlines()
+            for sequence in sequences:
+                if not re.fullmatch('[a-z_]+[.][a-z_]+', sequence):
+                    raise RuntimeError('unexpected sequence identifier')
+                result[party + ':' + sequence] = self.sql(party, 'SELECT last_value,is_called FROM ' + sequence)
         return {key: hashlib.sha256(value.encode()).hexdigest() for key, value in result.items()}
 
     def stop(self):
+        if any(party in self.state['processes'] for party in 'cv'):
+            self.quiesce()
         self.halt()
         for target, parties in self.state['pgPorts'].items():
             for party in parties:
@@ -385,7 +417,7 @@ class Lab:
     def rehearse(self):
         evidence = dict(sourceSha=self.state['sourceSha'], rollbackSha=self.state['rollbackSha'],
                         scope='same-machine isolated development; not independent production operations',
-                        result='FAIL', checks=[], oldSnapshot=self.state['oldSnapshot'], toolVersions=self.state['toolVersions'],
+                        result='FAIL', checks=list(self.state['initChecks']), oldSnapshot=self.state['oldSnapshot'], toolVersions=self.state['toolVersions'],
                         migrationSha256=self.state['migrationSha256'], device='NOT_RUN', ios='DEFERRED', crossDevicePasskey='DEFERRED')
         def passed(name):
             evidence['checks'].append(name)
@@ -450,7 +482,7 @@ class Lab:
             bad['postImages']['validatorSHA256'] = '0' * 64
             write(self.root / 'material/c-failed.json', bad)
             code = self.run([self.root / 'bin/candidate-community', '-config', self.root / 'material/c-failed.json'], 'failed-deployment', check=False, timeout=25)
-            if code == 0:
+            if code == 0 or 'stage=runtime reason=failed' not in (self.root / 'failed-deployment.private.log').read_text():
                 raise RuntimeError('invalid candidate deployment unexpectedly accepted')
             passed('failed-candidate-startup-rejected')
             self.start(prefix='rollback-')
