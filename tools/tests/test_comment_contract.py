@@ -145,13 +145,13 @@ class CommentContractTests(unittest.TestCase):
         for operation in ("RETRY", "ABANDON"):
             for field, value in (("identityId", IDENTITY), ("ownerIdentityId", IDENTITY),
                                  ("postId", POST), ("rootCommentId", ROOT),
-                                 ("targetCommentId", TARGET), ("expectedAttemptVersion", 0)):
+                                 ("targetCommentId", TARGET), ("expectedAttemptVersion", 0), ("expectedAttemptVersion", 2147483648)):
                 with self.subTest(operation=operation, field=field):
                     self.assert_payload_rejected("CommentTaskCommand", action(operation, **{field: value}))
 
     def test_command_keys_and_ids_are_canonical(self):
-        contract.validate_payload(self.spec, "CommandID", "A" * 22)
-        for value in ("A" * 21, "A" * 23, "A" * 21 + "B", "A" * 21 + "=", "A" * 21 + "+"):
+        contract.validate_payload(self.spec, "CommandID", "AQEBAQEBAQEBAQEBAQEBAQ")
+        for value in ("A" * 22, "A" * 21, "A" * 23, "A" * 21 + "B", "A" * 21 + "=", "A" * 21 + "+"):
             with self.subTest(key_length=len(value), ending=value[-1]):
                 self.assert_payload_rejected("CommandID", value)
         for value in ("00000000-0000-0000-0000-000000000000", TASK.upper().replace("1", "A", 1),
@@ -254,6 +254,7 @@ class CommentContractTests(unittest.TestCase):
             lambda spec: spec["components"]["schemas"]["ReplyPage"]["x-order-contract"].update({"topCount": 3}),
             lambda spec: spec["components"]["schemas"]["CommentPage"]["x-order-contract"].update({"liveReorder": True}),
             lambda spec: spec["components"]["schemas"]["Digest"].update({"x-digest-definition": "IMPLEMENTED"}),
+            lambda spec: spec["components"]["schemas"]["Digest"].update({"x-command-domain": "HNUHOLE/POST-COMMAND/V1"}),
             lambda spec: spec["paths"]["/api/v1/comment-commands/{commandId}"]["get"].update({"security": []}),
             lambda spec: spec["paths"].update({"/api/v1/comments/images": {}}),
         ]

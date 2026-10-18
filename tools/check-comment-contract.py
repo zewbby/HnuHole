@@ -226,8 +226,9 @@ def check_contract(spec):
                 "rank/time/UUID order changed")
     require(schemas["ReplyPage"]["x-order-contract"]["manualExpansion"] is True,
             "hidden replies require manual expansion")
-    require(schemas["Digest"].get("x-digest-definition") == "NOT_DEFINED_DESIGN_CORE_ONLY",
-            "digest framing must not be represented as implemented")
+    require(schemas["Digest"].get("x-digest-definition") == "CORE_CODEC_V1_NO_HTTP_LEDGER"
+            and schemas["Digest"].get("x-command-domain") == "HNUHOLE/COMMENT-COMMAND/V1",
+            "independent comment codec must remain separate from the HTTP/SQL ledger")
     expected_paths = {
         "/api/v1/comment-commands/{commandId}": {"put", "get"},
         "/api/v1/comment-commands/{commandId}/seal": {"post"},

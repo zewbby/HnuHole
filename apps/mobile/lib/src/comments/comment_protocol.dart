@@ -57,9 +57,13 @@ class CommentProtocol {
       _frame(4, [_id(commentId)]);
 
   static Uint8List setLike({required String commentId, required bool liked}) =>
-      _frame(5, [_id(commentId), [liked ? 1 : 0]]);
+      _frame(5, [
+        _id(commentId),
+        [liked ? 1 : 0],
+      ]);
 
-  static String digest(List<int> frame) => hashes.sha256.convert(frame).toString();
+  static String digest(List<int> frame) =>
+      hashes.sha256.convert(frame).toString();
 
   static Uint8List _frame(int operation, List<List<int>> fields) {
     final bytes = BytesBuilder(copy: false)
@@ -83,10 +87,10 @@ class CommentProtocol {
     ]);
   }
 
-  static Uint8List _version(int value) => (ByteData(8)
-        ..setUint64(0, PostProtocol.version(value), Endian.big))
-      .buffer
-      .asUint8List();
+  static Uint8List _version(int value) =>
+      (ByteData(8)..setUint64(0, PostProtocol.version(value), Endian.big))
+          .buffer
+          .asUint8List();
 
   static List<int> _text(String value) {
     PostContentRules.scalarText(value);
@@ -95,9 +99,9 @@ class CommentProtocol {
       throw const FormatException('Comment framing text too large');
     }
     return [
-      ...(ByteData(4)..setUint32(0, bytes.length, Endian.big))
-          .buffer
-          .asUint8List(),
+      ...(ByteData(
+        4,
+      )..setUint32(0, bytes.length, Endian.big)).buffer.asUint8List(),
       ...bytes,
     ];
   }

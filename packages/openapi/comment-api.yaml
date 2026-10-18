@@ -6,8 +6,8 @@ info:
     or notification connection is supplied by this document. All planned operations require current C Bearer session
     and final C Gate/account/session generation/deadline/permissions/resource checks. Reject extra fields/query/header
     ambiguity, duplicate JSON keys, invalid UTF-8 and noncanonical IDs. No body/secret logging; no-store responses.
-    Unknown transport results never prove nonacceptance. Digest framing remains pending; this contract is not a
-    deployed byte protocol. Public/owner wire DTOs are planned explicit adapters; existing Go structs are not claimed
+    Unknown transport results never prove nonacceptance. Independent Go/Dart byte codecs and golden vectors
+    define command framing; HTTP adapters, SQL ledger and seal execution are not implemented. Public/owner wire DTOs are planned explicit adapters; existing Go structs are not claimed
     to implement these JSON shapes.
 servers:
 - url: /
@@ -131,7 +131,7 @@ paths:
     post:
       operationId: sealUnknownCommentCommand
       summary: Planned sealUnknownCommentCommand
-      description: Future serialized seal using original operation/digest/key; digest byte framing is pending. Shares
+      description: Future serialized seal using original operation/digest/key; byte framing is defined by the independent codec. Shares
         final account/key lock with delayed originals. Lost response must reconcile same key.
       security:
       - bearerAuth: []
@@ -633,9 +633,9 @@ components:
       type: string
       minLength: 22
       maxLength: 22
-      pattern: ^[A-Za-z0-9_-]{21}[AQgw]$
+      pattern: ^(?!A{22}$)[A-Za-z0-9_-]{21}[AQgw]$
       description: Fresh 16 random bytes encoded as canonical unpadded base64url. The last character enforces zero
-        pad bits.
+        pad bits. All-zero command keys are rejected.
     OpaqueCursor:
       type: string
       minLength: 22
@@ -648,9 +648,10 @@ components:
       minLength: 64
       maxLength: 64
       pattern: ^[0-9a-f]{64}$
-      description: Planned purpose-separated SHA-256 digest. Canonical framing and golden vectors are NOT_DEFINED
-        in this stage; never use the post command digest domain.
-      x-digest-definition: NOT_DEFINED_DESIGN_CORE_ONLY
+      description: SHA-256 of the exact independent COMMENT-COMMAND/V1 frame. See the design document and shared
+        comment-protocol-vectors/v1.json; this codec does not implement the HTTP/SQL command ledger.
+      x-digest-definition: CORE_CODEC_V1_NO_HTTP_LEDGER
+      x-command-domain: HNUHOLE/COMMENT-COMMAND/V1
     ImageSelection:
       type: object
       additionalProperties: false
@@ -816,6 +817,7 @@ components:
         expectedAttemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         body:
           type: string
           description: 'Provisional technical budget inherited from posts: at most 3000 grapheme clusters and 65536
@@ -858,6 +860,7 @@ components:
         expectedAttemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
       description: Only current FAILED with matching version. Same version becomes ABANDONED; erase owner-visible
         retained materials and resolve failure notification. Does not delete a published comment and has no restore
         action.
@@ -920,8 +923,8 @@ components:
           $ref: '#/components/schemas/Digest'
       description: Use the original command key, operation and persisted digest. Final account/key lock serializes
         seal with delayed originals; absent intent records permanent NOT_ACCEPTED. Existing matching receipt is
-        returned unchanged. No fresh command key. Lost seal response stays unknown until reconciled; digest framing
-        is not implemented in this stage.
+        returned unchanged. No fresh command key. Lost seal response stays unknown until reconciled; seal execution
+        and its durable SQL lock are not implemented in this stage.
     AcceptedTaskReceipt:
       type: object
       additionalProperties: false
@@ -945,6 +948,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
       description: Original immutable acceptance receipt; not the latest task state. Read taskId to learn whether
         it later published or failed.
     AppliedTaskReceipt:
@@ -969,6 +973,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
       description: Original abandonment result; version is unchanged. Re-read the original task for current authoritative
         state.
     DeleteAppliedReceipt:
@@ -1117,6 +1122,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         state:
           type: string
           enum:
@@ -1207,6 +1213,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         state:
           type: string
           enum:
@@ -1298,6 +1305,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         state:
           type: string
           enum:
@@ -1388,6 +1396,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         state:
           type: string
           enum:
@@ -1487,6 +1496,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         state:
           type: string
           enum:
@@ -1575,6 +1585,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         state:
           type: string
           enum:
@@ -1664,6 +1675,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         state:
           type: string
           enum:
@@ -1752,6 +1764,7 @@ components:
         attemptVersion:
           type: integer
           minimum: 1
+          maximum: 2147483647
         state:
           type: string
           enum:
@@ -2153,7 +2166,7 @@ components:
       maxLength: 64
       pattern: ^[0-9a-f]{64}$
       description: SHA-256 of the exact original image bytes; existing postmedia selection semantics. This is distinct
-        from the pending comment command framing.
+        from the COMMENT-COMMAND/V1 command frame digest.
     RejectedReceipt:
       type: object
       additionalProperties: false
