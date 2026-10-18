@@ -1,0 +1,21 @@
+{
+  "recordedUTC": "2026-10-15T03:00:24.554032+00:00",
+  "rpCandidate": "hnuhole-community-passkey.pages.dev",
+  "userSelectedPlan": true,
+  "selectionAuthorizesRegistrationDeploymentOrSecurityConfig": false,
+  "domainControlVerified": false,
+  "projectNameAvailabilityProved": false,
+  "registrationPerformed": false,
+  "deploymentPerformed": false,
+  "configurationApplied": false,
+  "networkReadOnly": true,
+  "dns": {
+    "result": "RESOLVES",
+    "addressCount": 1
+  },
+  "https": {
+    "result": "NOT_REACHABLE_OR_DIRECT_TLS_DOCUMENT_UNAVAILABLE",
+    "responseStored": false
+  },
+  "conclusion": "Read-only public lookup cannot prove project-name availability or user account/domain control. Need explicit hosting account/control verification before registration/deployment/security config."
+}

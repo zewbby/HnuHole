@@ -1,0 +1,622 @@
+{
+  "schemaVersion": "hnuhole-community-recovery-code-dual-device/v1",
+  "recordedOn": "2026-10-18",
+  "timeZone": "Asia/Shanghai",
+  "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+  "startHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+  "finalHEAD": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "branch": "codex/community-flutter-pages",
+  "productCodeAndDependenciesChanged": false,
+  "otherBranchesTouched": false,
+  "apk": {
+    "sourceCommit": "dd5745a10bb0c732b5cf8b5ffc25a471e26f1b13",
+    "runtimeProductCodeUnchanged": true,
+    "applicationId": "org.hnuhole.hnuhole_mobile.communityf5.passkey.control",
+    "displayLabel": "HnuHole Stage4",
+    "certificateSha256": "3309ce001a5dfd93148c14e35159147a6711e4b61d881b7a223b3e8429665e34",
+    "apkSha256": "6cce56a7879bd76b2db9c1ed1b63c6326b1abb029a6f6f853d9c7a250470229c",
+    "apkSize": 84668635
+  },
+  "devices": [
+    {
+      "role": "source",
+      "model": "V2323A",
+      "deviceIdHash": "557ef20f4d13aaf0605d2de7ec7fe8a6a44cf36e2520607fe2009b134cd774e8"
+    },
+    {
+      "role": "target",
+      "model": "RMX3366",
+      "deviceIdHash": "24c50a70d86dc676b2b2474adbafb50bed7a1f4e0a7da0477e766fa014b75d37"
+    }
+  ],
+  "currentScopeChecks": [
+    {
+      "id": "RC-X01",
+      "result": "PASS",
+      "scope": "Restore the user-deleted realme user-0 task App from exact existing signed package; guest, no automatic authority",
+      "receipt": "target-reinstall.json"
+    },
+    {
+      "id": "RC-X02",
+      "result": "PASS",
+      "scope": "Source active session and source-only native draft witnessed before target recovery",
+      "receipt": "source-draft-before-reset.ui.json"
+    },
+    {
+      "id": "RC-X03",
+      "result": "PASS",
+      "scope": "Actual second Android recovers the expected synthetic account using only the existing recovery code; no username/password hint",
+      "receipt": "code-reset-begin.submitted.json"
+    },
+    {
+      "id": "RC-X04",
+      "result": "PASS",
+      "scope": "New code hidden and fully retyped before actual reset commit; no automatic login; old active source session and old C Passkeys revoked",
+      "receipt": "code-reset-confirmed.json"
+    },
+    {
+      "id": "RC-X05",
+      "result": "PASS",
+      "scope": "Actual HTTPS C rejects both old password and old recovery code with 401; no successful host login or extra SQL side effects",
+      "receipt": "old-credential-negatives.json"
+    },
+    {
+      "id": "RC-X06",
+      "result": "PASS",
+      "scope": "Explicit new-password login succeeds on realme and vivo; no Google or Bitwarden authentication needed",
+      "receipt": "target-new-password-login-01.submitted.json"
+    },
+    {
+      "id": "RC-X07",
+      "result": "PASS",
+      "scope": "Both physical Apps restore native sessions across force-stop/reopen; source draft marker retained and absent on target",
+      "receipt": "source-draft-and-session-after-reopen.ui.json"
+    },
+    {
+      "id": "RC-X08",
+      "result": "PASS",
+      "scope": "Two-way single-mobile-session replacement enforced by actual App protected reads and exact SQL session witnesses; target active at finish",
+      "receipt": "source-final-session-replaced-by-target.ui.json"
+    }
+  ],
+  "currentScopePassCount": 8,
+  "executionRoot": "E:\\HnuHole-community-f4-20261012\\stage4-execution-20261016\\recovery-code-execution-20261018",
+  "sql": {
+    "before": {
+      "recordedUTC": "2026-10-18T03:31:01.815371+00:00",
+      "project": "hnuhole-community-s3-e974f2621f",
+      "account": {
+        "credentialVersion": 5,
+        "resetGeneration": 1,
+        "passkeys": 2,
+        "unrevokedSessions": 1,
+        "resetIntentsConsumed": 1
+      },
+      "sessions": [
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 7,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "6395ad4620f927a37dc77e90c4e59d9a29fa66a61e63da585147284f73af4dfc"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 2,
+          "reason": "LOGOUT",
+          "sessionWitnessSha256": "9b8e2a3495f33a16a07673aafa9b091c006bd4b15fc8a69d8c6f5e0f9b8cfca8"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 5,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "b70391246919b25b3651638a1bfdf9a6815b761f8345013d9ad03920f387ecd0"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 1,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "53d7d8a7c36e00bb34b5c15cf74cd0ab78c009a4f372acf213e0b413cde38474"
+        },
+        {
+          "unrevoked": true,
+          "unexpired": true,
+          "generation": 8,
+          "reason": null,
+          "sessionWitnessSha256": "ad7f810257ab3585188f0c5438dfe37b8efc5c2adea582c953ebadd49f5e0e34"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 6,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "480dc534ee261f7353de1b74b4f402adb10d7038557625a90f01bf9ea0649ee6"
+        }
+      ],
+      "passkeys": [
+        {
+          "counter": 0,
+          "eligible": true,
+          "backed": true,
+          "credentialIdSha256": "0e53978f9786f2b8f77f2c64a8c0b00b202e732c4f026007cb37bbb893a719c1"
+        },
+        {
+          "counter": 0,
+          "eligible": true,
+          "backed": true,
+          "credentialIdSha256": "c31789e4fcaac1653d96c0280d3b229a4dcd99b5a3c3b6c28332920889de02fd"
+        }
+      ],
+      "totalCounts": {
+        "accounts": 2,
+        "passkeys": 2,
+        "challenges": 16,
+        "credentialChanges": 9,
+        "posts": 0
+      },
+      "readOnlySql": true,
+      "accountIdentifiersOrTokensOrProofsExported": false
+    },
+    "intentBeforeCommit": {
+      "recordedUTC": "2026-10-18T03:32:48.207641+00:00",
+      "project": "hnuhole-community-s3-e974f2621f",
+      "account": {
+        "credentialVersion": 5,
+        "resetGeneration": 2,
+        "passkeys": 2,
+        "unrevokedSessions": 1,
+        "resetIntentsConsumed": 1
+      },
+      "sessions": [
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 7,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "6395ad4620f927a37dc77e90c4e59d9a29fa66a61e63da585147284f73af4dfc"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 2,
+          "reason": "LOGOUT",
+          "sessionWitnessSha256": "9b8e2a3495f33a16a07673aafa9b091c006bd4b15fc8a69d8c6f5e0f9b8cfca8"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 5,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "b70391246919b25b3651638a1bfdf9a6815b761f8345013d9ad03920f387ecd0"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 1,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "53d7d8a7c36e00bb34b5c15cf74cd0ab78c009a4f372acf213e0b413cde38474"
+        },
+        {
+          "unrevoked": true,
+          "unexpired": true,
+          "generation": 8,
+          "reason": null,
+          "sessionWitnessSha256": "ad7f810257ab3585188f0c5438dfe37b8efc5c2adea582c953ebadd49f5e0e34"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 6,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "480dc534ee261f7353de1b74b4f402adb10d7038557625a90f01bf9ea0649ee6"
+        }
+      ],
+      "passkeys": [
+        {
+          "counter": 0,
+          "eligible": true,
+          "backed": true,
+          "credentialIdSha256": "0e53978f9786f2b8f77f2c64a8c0b00b202e732c4f026007cb37bbb893a719c1"
+        },
+        {
+          "counter": 0,
+          "eligible": true,
+          "backed": true,
+          "credentialIdSha256": "c31789e4fcaac1653d96c0280d3b229a4dcd99b5a3c3b6c28332920889de02fd"
+        }
+      ],
+      "totalCounts": {
+        "accounts": 2,
+        "passkeys": 2,
+        "challenges": 16,
+        "credentialChanges": 9,
+        "posts": 0
+      },
+      "readOnlySql": true,
+      "accountIdentifiersOrTokensOrProofsExported": false
+    },
+    "afterCommit": {
+      "recordedUTC": "2026-10-18T03:34:01.362922+00:00",
+      "project": "hnuhole-community-s3-e974f2621f",
+      "account": {
+        "credentialVersion": 6,
+        "resetGeneration": 2,
+        "passkeys": 0,
+        "unrevokedSessions": 0,
+        "resetIntentsConsumed": 2
+      },
+      "sessions": [
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 7,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "6395ad4620f927a37dc77e90c4e59d9a29fa66a61e63da585147284f73af4dfc"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 2,
+          "reason": "LOGOUT",
+          "sessionWitnessSha256": "9b8e2a3495f33a16a07673aafa9b091c006bd4b15fc8a69d8c6f5e0f9b8cfca8"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 5,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "b70391246919b25b3651638a1bfdf9a6815b761f8345013d9ad03920f387ecd0"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 1,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "53d7d8a7c36e00bb34b5c15cf74cd0ab78c009a4f372acf213e0b413cde38474"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 8,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "ad7f810257ab3585188f0c5438dfe37b8efc5c2adea582c953ebadd49f5e0e34"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 6,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "480dc534ee261f7353de1b74b4f402adb10d7038557625a90f01bf9ea0649ee6"
+        }
+      ],
+      "passkeys": [],
+      "totalCounts": {
+        "accounts": 2,
+        "passkeys": 0,
+        "challenges": 16,
+        "credentialChanges": 9,
+        "posts": 0
+      },
+      "readOnlySql": true,
+      "accountIdentifiersOrTokensOrProofsExported": false
+    },
+    "targetExplicitLoginAndReopen": {
+      "recordedUTC": "2026-10-18T03:36:31.069145+00:00",
+      "project": "hnuhole-community-s3-e974f2621f",
+      "account": {
+        "credentialVersion": 6,
+        "resetGeneration": 2,
+        "passkeys": 0,
+        "unrevokedSessions": 1,
+        "resetIntentsConsumed": 2
+      },
+      "sessions": [
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 7,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "6395ad4620f927a37dc77e90c4e59d9a29fa66a61e63da585147284f73af4dfc"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 2,
+          "reason": "LOGOUT",
+          "sessionWitnessSha256": "9b8e2a3495f33a16a07673aafa9b091c006bd4b15fc8a69d8c6f5e0f9b8cfca8"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 5,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "b70391246919b25b3651638a1bfdf9a6815b761f8345013d9ad03920f387ecd0"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 1,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "53d7d8a7c36e00bb34b5c15cf74cd0ab78c009a4f372acf213e0b413cde38474"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 8,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "ad7f810257ab3585188f0c5438dfe37b8efc5c2adea582c953ebadd49f5e0e34"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 6,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "480dc534ee261f7353de1b74b4f402adb10d7038557625a90f01bf9ea0649ee6"
+        },
+        {
+          "unrevoked": true,
+          "unexpired": true,
+          "generation": 10,
+          "reason": null,
+          "sessionWitnessSha256": "80c02e758dd7d851c78c14baa96db91e0ee298103f9cb783b465193d9860b64f"
+        }
+      ],
+      "passkeys": [],
+      "totalCounts": {
+        "accounts": 2,
+        "passkeys": 0,
+        "challenges": 16,
+        "credentialChanges": 9,
+        "posts": 0
+      },
+      "readOnlySql": true,
+      "accountIdentifiersOrTokensOrProofsExported": false
+    },
+    "sourceReplacesTarget": {
+      "recordedUTC": "2026-10-18T03:37:34.602071+00:00",
+      "project": "hnuhole-community-s3-e974f2621f",
+      "account": {
+        "credentialVersion": 6,
+        "resetGeneration": 2,
+        "passkeys": 0,
+        "unrevokedSessions": 1,
+        "resetIntentsConsumed": 2
+      },
+      "sessions": [
+        {
+          "unrevoked": true,
+          "unexpired": true,
+          "generation": 11,
+          "reason": null,
+          "sessionWitnessSha256": "a79dcf6fcc1da827def8c6e5228609e7529f5a6a6700917450a28e1989f27726"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 7,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "6395ad4620f927a37dc77e90c4e59d9a29fa66a61e63da585147284f73af4dfc"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 2,
+          "reason": "LOGOUT",
+          "sessionWitnessSha256": "9b8e2a3495f33a16a07673aafa9b091c006bd4b15fc8a69d8c6f5e0f9b8cfca8"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 5,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "b70391246919b25b3651638a1bfdf9a6815b761f8345013d9ad03920f387ecd0"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 1,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "53d7d8a7c36e00bb34b5c15cf74cd0ab78c009a4f372acf213e0b413cde38474"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 8,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "ad7f810257ab3585188f0c5438dfe37b8efc5c2adea582c953ebadd49f5e0e34"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 6,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "480dc534ee261f7353de1b74b4f402adb10d7038557625a90f01bf9ea0649ee6"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 10,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "80c02e758dd7d851c78c14baa96db91e0ee298103f9cb783b465193d9860b64f"
+        }
+      ],
+      "passkeys": [],
+      "totalCounts": {
+        "accounts": 2,
+        "passkeys": 0,
+        "challenges": 16,
+        "credentialChanges": 9,
+        "posts": 0
+      },
+      "readOnlySql": true,
+      "accountIdentifiersOrTokensOrProofsExported": false
+    },
+    "finalTargetReplacesSource": {
+      "recordedUTC": "2026-10-18T03:39:44.731722+00:00",
+      "project": "hnuhole-community-s3-e974f2621f",
+      "account": {
+        "credentialVersion": 6,
+        "resetGeneration": 2,
+        "passkeys": 0,
+        "unrevokedSessions": 1,
+        "resetIntentsConsumed": 2
+      },
+      "sessions": [
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 7,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "6395ad4620f927a37dc77e90c4e59d9a29fa66a61e63da585147284f73af4dfc"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 2,
+          "reason": "LOGOUT",
+          "sessionWitnessSha256": "9b8e2a3495f33a16a07673aafa9b091c006bd4b15fc8a69d8c6f5e0f9b8cfca8"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 5,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "b70391246919b25b3651638a1bfdf9a6815b761f8345013d9ad03920f387ecd0"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 11,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "a79dcf6fcc1da827def8c6e5228609e7529f5a6a6700917450a28e1989f27726"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 1,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "53d7d8a7c36e00bb34b5c15cf74cd0ab78c009a4f372acf213e0b413cde38474"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 8,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "ad7f810257ab3585188f0c5438dfe37b8efc5c2adea582c953ebadd49f5e0e34"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 6,
+          "reason": "RECOVERY",
+          "sessionWitnessSha256": "480dc534ee261f7353de1b74b4f402adb10d7038557625a90f01bf9ea0649ee6"
+        },
+        {
+          "unrevoked": true,
+          "unexpired": true,
+          "generation": 12,
+          "reason": null,
+          "sessionWitnessSha256": "3ce8608837f04c57b269ba03690659370f22fe6fe2d37d6d92c61a361d910717"
+        },
+        {
+          "unrevoked": false,
+          "unexpired": true,
+          "generation": 10,
+          "reason": "REPLACED",
+          "sessionWitnessSha256": "80c02e758dd7d851c78c14baa96db91e0ee298103f9cb783b465193d9860b64f"
+        }
+      ],
+      "passkeys": [],
+      "totalCounts": {
+        "accounts": 2,
+        "passkeys": 0,
+        "challenges": 16,
+        "credentialChanges": 9,
+        "posts": 0
+      },
+      "readOnlySql": true,
+      "accountIdentifiersOrTokensOrProofsExported": false
+    }
+  },
+  "oldCredentialHttpsNegatives": {
+    "result": "PASS_OLD_PASSWORD_AND_RECOVERY_CODE_REJECTED",
+    "oldPassword": {
+      "status": 401,
+      "publicErrorCode": null
+    },
+    "oldRecoveryCode": {
+      "status": 401,
+      "publicErrorCode": null
+    },
+    "beforeAndAfterSqlCountsEqual": true,
+    "noSuccessfulHostLogin": true,
+    "recordedUTC": "2026-10-18T03:35:09.610698+00:00"
+  },
+  "phoneClosure": {
+    "recordedUTC": "2026-10-18T03:40:33.558297+00:00",
+    "result": "PASS_APPROVED_RECOVERY_CODE_TWO_DEVICE_SCOPE",
+    "onlyExactOwnedAdbStopped": true,
+    "settingsUnchanged": true,
+    "finalActiveMobileDevice": "target",
+    "sourceSessionReplacedAsExpected": true,
+    "privateFixtureAndPreviouslyOwnedBackendRetained": true,
+    "futureDeviceAccessNeedsOwnReverseSetup": true,
+    "qrOrPasskeyRequestsThisWindow": 0,
+    "productCodeOrOtherBranchChanges": 0
+  },
+  "remaining": {
+    "NI-X02": {
+      "result": "BLOCKED",
+      "scope": "Actual two-physical-Android Passkey recovery",
+      "userDeferred": true,
+      "targetCredentialFeature": false,
+      "targetCredentialServicePresent": false
+    },
+    "NI-X01": {
+      "result": "NOT_RUN",
+      "scope": "Actual OEM data transfer",
+      "reason": "Prior transfer did not run; direct user-0 reinstall is not an OEM transfer; no further migration requested"
+    },
+    "iOS": "NOT_RUN",
+    "production": "NOT_RUN"
+  },
+  "hostRegression": {
+    "rerunThisRecoveryCodeWindow": false,
+    "reason": "No runtime/SQL/protocol/manifest/lock change; this window is device acceptance using the exact existing APK. Historical seven-stage host334 evidence remains its original 2026-10-16 scope, not new passes."
+  },
+  "driverIncidents": [
+    {
+      "incident": "UIAutomator concurrent read collision stopped first target new-password driver before submission",
+      "resolution": "Full original username and masked password length reverified; one original submission; no credential retyping or request replay",
+      "receipt": "target-new-password-login-01.input-resume.json"
+    },
+    {
+      "incident": "Package path CRLF regex rejected metadata before installation",
+      "resolution": "Read-only parser corrected before any install; restored existing exact global code only for user0"
+    }
+  ],
+  "commands": [
+    "python -B -X utf8 window.py start",
+    "python -B -X utf8 window.py target-package-readonly",
+    "python -B -X utf8 window.py install-target",
+    "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- python3 -B owned-backend-readonly.py",
+    "python -B -X utf8 window.py begin-code-reset target",
+    "python -B -X utf8 window.py complete-code-reset target",
+    "wsl.exe -d HnuHole-Ubuntu-24.04 -u hnuhole -- python3 -B check-old-credentials.py",
+    "python -B -X utf8 window.py new-password-login <source|target> <unique-case>",
+    "python -B -X utf8 window.py finish-login-input target target-new-password-login-01",
+    "python -B -X utf8 window.py reopen <source|target> <unique-case>",
+    "python -B -X utf8 window.py finish-phone"
+  ],
+  "commandSafety": "Historical once-only submissions, not a blind rerun recipe. Resolve pending state and use the latest private fixture/new journals for another test.",
+  "latestPrivateFixture": "/home/hnuhole/community-android-stage3-execution-20261015/lab/fixture/recovery-code-two-phone-20261018.private.json",
+  "oldFixtureMustNotBeUsedAsCurrentCredentials": true,
+  "credentialsOrProofsInRecord": false,
+  "fullOriginalFourStageAcceptancePassed": false,
+  "releaseOrDeploymentPerformed": false,
+  "commitOrPushPerformed": false
+}

@@ -40,5 +40,32 @@ class ProviderEvidenceTest(unittest.TestCase):
         self.assertTrue(self.check(raw,native,server_followup=True)['correctRpFollowupSucceeded'])
         with self.assertRaises(ValueError):self.check(raw.replace(m.SUCCESS_END,m.ERROR_END),native,server_followup=True)
 
+    def current_log(self):
+        return self.log().replace('curh:', 'cvtf:').replace('curi.g(public:10)',
+            'cvtg.g(:com.google.android.gms@263933035@26.39.33 (260400-build):10)').replace(
+            'aolv.a(public:25)', 'cvte.a(:com.google.android.gms@263933035@26.39.33 (260400-build):11)')
+
+    def test_current_installed_build_requires_explicit_matching_profile(self):
+        raw=self.current_log()
+        with self.assertRaises(ValueError):self.check(raw)
+        with self.assertRaises(ValueError):self.check(raw,installed_provider_version='unreviewed')
+        result=self.check(raw,installed_provider_version='26.39.33')
+        self.assertEqual(result['installedProviderVersion'],'26.39.33')
+        self.assertFalse(result['sdkCancellationUsedAsDiagnosis'])
+
+    def test_current_build_still_rejects_network_failure_and_wrong_stack_version(self):
+        for raw in [self.current_log()+'\n'+self.row('net::ERR_NETWORK_CHANGED'),
+                    self.current_log().replace('@26.39.33 ', '@26.40.00 '),
+                    self.current_log().replace('at cvte.a(', 'at unrelated.a(')]:
+            with self.assertRaises(ValueError):self.check(raw,installed_provider_version='26.39.33')
+
+    def test_current_oem_cancel_is_never_the_provider_diagnosis(self):
+        native={'pid':8896,'nativeBegun':1,'nativeErrored':1,'nativeCreateCancelled':1}
+        self.assertEqual(self.check(self.current_log(),native,
+            installed_provider_version='26.39.33')['rejectionCode'],50152)
+        with self.assertRaises(ValueError):self.check(self.current_log().replace(
+            'cvtf: [50152] RP ID cannot be validated.','generic cancellation'),native,
+            installed_provider_version='26.39.33')
+
 
 if __name__=='__main__':unittest.main()

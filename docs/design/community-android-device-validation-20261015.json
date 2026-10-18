@@ -1,0 +1,209 @@
+{
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "result": "PASS_TASK1_SCOPED_DEVICE_AND_USER_CONFIRMED_IME",
+  "fullAppOrModulePassed": false,
+  "branch": "codex/community-flutter-pages",
+  "taskStartHEAD": "7ded6bda975684a7a6c07869d9ac02130fb7223b",
+  "previousGuardCommit": "e0c128033682923d519ea99546d72503b085a99e",
+  "preservedParallelBase": "8981f6a4f90805d5cdb7a385e73799cd6db3cbc2",
+  "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "models": {
+    "failureLocalization": "gpt-6-astra",
+    "allRepairsVerificationAndDeviceOperations": "gpt-6.1-sol high"
+  },
+  "explicitUserExceptions": {
+    "existingHostUsbIdentity": true,
+    "stopOnlyKnownOldServer59948": true,
+    "normalAndAcceptanceSameSignedIsolatedPackage": true,
+    "noGlobalSecurityConfigurationChange": true
+  },
+  "deviceFacts": {
+    "manufacturer": "vivo",
+    "hardwareModel": "V2323A",
+    "androidRelease": "15",
+    "androidSDK": "35",
+    "defaultInputMethodId": "com.vivo.ai.ime.nex/com.vivo.ai.ime.main.IMEService",
+    "readOnly": true,
+    "settingsModified": false,
+    "manualImeResult": "PENDING_USER_FACTS"
+  },
+  "automaticDeviceResult": {
+    "automaticDeviceChecks": "PASS",
+    "data": {
+      "scope": "ACTUAL_ANDROID_DEVICE_RUN",
+      "checkpoints": {
+        "CA-A01": true,
+        "CA-A02": true,
+        "CA-A04": true,
+        "CA-A03": true,
+        "CA-A05": true,
+        "CA-A06": true,
+        "CA-A07": true,
+        "CA-A10": true
+      },
+      "counters": {
+        "creates": 2,
+        "retries": 1,
+        "deletes": 1,
+        "commandQueries": 14,
+        "droppedQueries": 4,
+        "droppedReplies": 3,
+        "uniqueCreates": 2,
+        "uniqueRetries": 1,
+        "uniqueDeletes": 1,
+        "rawTokensOrProofsStored": false
+      },
+      "sql": {
+        "accounts": 2,
+        "closed": 1,
+        "pendingClose": 0,
+        "posts": 2,
+        "published": 0,
+        "deleted": 1,
+        "attempts": 3,
+        "failed": 2,
+        "bindings": 2,
+        "closedPayloadsRemaining": 0,
+        "closedPrivateReceiptsRemaining": 0,
+        "closedCredentialsRemaining": 0
+      },
+      "manualChineseImeVerified": false,
+      "phoneUsed": true,
+      "actualMainCalled": true,
+      "hostVaultSubstitutes": false
+    },
+    "task1Result": "PARTIAL_MANUAL_IME_NOT_RUN",
+    "rawFailureDetailsRetained": false,
+    "runId": "community-stage1-814bddbac8",
+    "apkSha256": "406317fb35fa215d3c1182b0b6f348df13796647aae0763e427d46d2cbaa339c",
+    "sourceFingerprint": "a745c8d6f97c5d32d027b5da469fa9a5a64628eede0b69ef892cb56f949663df",
+    "physicalDevice": true,
+    "controlledInstallAttempt": 2
+  },
+  "manualIme": {
+    "recordedUTC": "2026-10-15T03:28:21.179042+00:00",
+    "result": "USER_CONFIRMED",
+    "exactUserResponse": "一切正确",
+    "confirmationBasis": "Parent asked explicit manual IME checklist; user collectively confirmed it. No automated typing or per-item quotation claimed.",
+    "checklist": [
+      "Normal isolated App, channel -> add -> write post",
+      "Title 输入法验证; personally type 中文输入测试 then newline 第二行🙂",
+      "Chinese/newline/emoji intact",
+      "Keyboard does not obscure key controls",
+      "Return to save draft then reopen through 我的 and verify same content",
+      "Report any abnormality"
+    ],
+    "inputMethodComponentMeasuredReadOnly": "com.vivo.ai.ime.nex/com.vivo.ai.ime.main.IMEService",
+    "inputMethodFriendlyName": "NOT_SEPARATELY_PROVIDED",
+    "phoneUsedByUser": true,
+    "automatedTypingUsedForManualEvidence": false,
+    "normalAccountASessionAndDataRetained": true,
+    "deviceWindowKeptOpenForHostClosure": true
+  },
+  "aggregateTask1Result": "PASS",
+  "automaticHistoricalResultNotOverwritten": true,
+  "nativeClosedEvidence": {
+    "sameScopePathCapturedBeforeClosure": true,
+    "markerExactlyOneByte1": true,
+    "sqliteJournalWalShmAndAuthAuthBakAuthNewAbsent": true,
+    "reopenRejected": true,
+    "ordinaryIoAloneCannotProveClosed": true,
+    "hostStillRequiresPostStorageClosed": true
+  },
+  "hostChecks": {
+    "mobileFinal": {
+      "pass": 327,
+      "fail": 0,
+      "skip": 0
+    },
+    "priorWrapperRun": {
+      "pass": 262,
+      "failure": 29,
+      "error": 36,
+      "reason": "task sqlite LD_LIBRARY_PATH omitted; fixed only owned shell environment and retained original logs"
+    },
+    "nativeClosedHelperTests": 5,
+    "analyzeIssues": 0,
+    "windowsPinnedHostSelection": {
+      "run": 147,
+      "pass": 144,
+      "posixSkip": 3
+    },
+    "linuxSamePinnedHostSelection": {
+      "pass": 147
+    },
+    "phoneFocused": 31,
+    "parallelStage3TestsIncluded": false,
+    "goSqlSevenStagesRerun": false,
+    "priorUnchangedProductEvidence": "docs/design/community-android-stage1-preparation-20261015.json"
+  },
+  "source": {
+    "apkBuildSnapshotFingerprint": "a745c8d6f97c5d32d027b5da469fa9a5a64628eede0b69ef892cb56f949663df",
+    "final452InputFingerprint": "ec7aab83fa4024a578529c3e924c81d614237ee547bd08d0e8f940e8bad7ed73",
+    "apkCompiledInputsUnchangedAfterBuild": true,
+    "onlyChangedPostBuildInput": [
+      "tools/community-android-stage1/phone.py",
+      "tools/tests/test_community_android_stage1_phone.py"
+    ],
+    "newDeviceRunId": "community-stage1-814bddbac8",
+    "apkHashes": {
+      "acceptance": "406317fb35fa215d3c1182b0b6f348df13796647aae0763e427d46d2cbaa339c",
+      "normal": "75c789bf20b713c09c1b0392cbe2e10f65497c4f13286ab334f87de6ee29d5a1"
+    },
+    "sameSigningCertificateVerified": true,
+    "newCommunityAndVerifierOrigins": true,
+    "oldFailedScopeDataPreserved": true
+  },
+  "historicalFailuresPreserved": [
+    {
+      "phase": "dedicated key isolation/transport",
+      "evidence": "docs/design/community-android-device-blocked-20261015.json"
+    },
+    {
+      "phase": "existing USB identity but transport absent",
+      "external": "device-validation-20261015-resume-01"
+    },
+    {
+      "phase": "getIsolate metadata 172543 bytes exceeded 128KiB",
+      "fix": "getIsolate only 1MiB; driver128KiB/handshake16KiB unchanged",
+      "external": "device-validation-20261015-resume-02"
+    },
+    {
+      "phase": "native closed scope contract",
+      "fix": "test harness now independently proves closed files plus opaque refusal; plugin/product unchanged",
+      "external": "device-validation-20261015-resume-02"
+    },
+    {
+      "phase": "fresh-run install attempt1",
+      "reason": "INSTALL_FAILED_ABORTED: User rejected permissions; update did not apply; not attributed to deliberate user rejection",
+      "fix": "explicit unlocked/user-watching confirmation, one recorded attempt2; same latch/fresh fixture preserved"
+    },
+    {
+      "phase": "full mobile host wrapper",
+      "reason": "missing owned SQLite loader path; original 65 failures retained",
+      "fix": "owned process LD_LIBRARY_PATH prefix, one full327 rerun PASS"
+    }
+  ],
+  "remaining": {
+    "CA-A08": "NOT_RUN",
+    "CA-A09": "NOT_RUN",
+    "CA-A11": "NOT_RUN",
+    "CA-A12": "NOT_RUN",
+    "CA-A13": "NOT_RUN",
+    "stage2": "NOT_RUN; default key isolation guard remains; exception wired only in stage1",
+    "stage3": "NOT_RUN_DEVICE; parallel preparation preserved",
+    "stage4": "NOT_RUN",
+    "iOS": "NOT_RUN",
+    "production": "NOT_RUN"
+  },
+  "resources": {
+    "currentServerReverseNormalAppAndFixtureRetainedForContinuation": true,
+    "oldFailedFixtureAndDataRetainedForAudit": true,
+    "sdkCachesAndOtherStageResourcesPreserved": true,
+    "cleanupPerformed": false
+  },
+  "externalEvidenceRoot": "E:/HnuHole-community-f4-20261012/device-validation-20261015-rerun-01",
+  "finalCommitAndRemoteReceipt": "external git-delivery.json after normal push"
+}

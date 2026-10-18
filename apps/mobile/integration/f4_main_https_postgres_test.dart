@@ -271,7 +271,7 @@ void main() {
         final channel = directory.channels.firstWhere((e) => e.code == 'vent');
         state['channelId'] = channel.id;
         if (phase == 'write') {
-          await tap(find.byTooltip('My content'));
+          await tap(find.byTooltip('我的'));
           await wait(
             () => find.byType(PersonalPostsScreen).evaluate().isNotEmpty,
             'root profile route',
@@ -532,7 +532,7 @@ void main() {
             () => find.byType(ChannelTree).evaluate().isNotEmpty,
             'B returns to root',
           );
-          await tap(find.byTooltip('My content'));
+          await tap(find.byTooltip('我的'));
           await wait(
             () => find.byTooltip('设置').evaluate().isNotEmpty,
             'B My route',
