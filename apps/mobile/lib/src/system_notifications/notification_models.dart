@@ -147,6 +147,12 @@ class SystemNotice {
 /// explicitly local; merely rendering or reading it never resolves its task.
 abstract interface class CommentFailureProvider {
   List<LocalCommentFailure> entries(String accountId, String identityId);
+  Future<LocalCommentFailure?> read(
+    String accountId,
+    String identityId,
+    String taskId,
+  );
+  Future<void> markRead(String accountId, String identityId, String taskId);
   Future<void> retry(String accountId, String identityId, String taskId);
   Future<void> discard(String accountId, String identityId, String taskId);
 }
@@ -161,7 +167,7 @@ class LocalCommentFailure {
   });
   final String taskId, identityId, content, targetLabel;
   final DateTime createdAt;
-  String get source => 'LOCAL_COMMENT_TASK';
+  String get source => 'LOCAL_TASK';
 }
 
 /// One bounded evidence batch per response. Cursors are opaque and are never

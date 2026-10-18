@@ -20,6 +20,9 @@ func CheckModerationLegacyRestrictionSchema(ctx context.Context, pool *pgxpool.P
 	if err := pool.QueryRow(ctx, `SELECT to_regclass('c_moderation.legacy_restrictions') IS NOT NULL AND to_regclass('c_moderation.sanctions') IS NOT NULL`).Scan(&ok); err != nil || !ok {
 		return ErrAuthorizationUnavailable
 	}
+	if err := pool.QueryRow(ctx, `SELECT count(*)=5 FROM pg_attribute WHERE attrelid='c_moderation.legacy_restrictions'::regclass AND attnum>0 AND NOT attisdropped AND attname=ANY(ARRAY['account_id','ban_state','ban_ends_at','mute_state','mute_ends_at'])`).Scan(&ok); err != nil || !ok {
+		return ErrAuthorizationUnavailable
+	}
 	if !runtime {
 		return nil
 	}

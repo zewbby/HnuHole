@@ -141,6 +141,10 @@ func TestModerationLifecycleCommonCStartupWithoutFeaturesPostgres(t *testing.T) 
 	if err := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); err != nil {
 		t.Fatal("restored lifecycle permissions/hooks rejected", err)
 	}
+	exec(t, `ALTER TABLE c_moderation.legacy_restrictions DROP COLUMN ban_ends_at`)
+	if err := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); err == nil || err.Error() != "moderation legacy restriction schema or privileges absent" {
+		t.Fatal("common C startup accepted missing legacy column", err)
+	}
 	// Model the formal 0014 shape, without requiring absent moderation objects.
 	exec(t, `DROP SCHEMA c_moderation CASCADE;
 ALTER TABLE c_posts.posts DROP COLUMN moderation_hidden;
