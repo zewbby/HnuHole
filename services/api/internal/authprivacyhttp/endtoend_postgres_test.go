@@ -148,10 +148,13 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 		t.Fatal(err)
 	}
 	if schema == "c_auth" {
+		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_moderation CASCADE`); err != nil {
+			t.Fatal(err)
+		}
 		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_posts CASCADE`); err != nil {
 			t.Fatal(err)
 		}
-		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.identity_account_state, public.community_identities, public.sessions, public.channels CASCADE`); err != nil {
+		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.identity_account_state, public.community_identities, public.sessions, public.channels, public.goose_db_version CASCADE`); err != nil {
 			t.Fatal(err)
 		}
 		if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_community_identity(),public.guard_identity_receipt(),public.check_identity_account_shape() CASCADE`); err != nil {
@@ -302,7 +305,7 @@ type e2eServices struct {
 	recoverV         func() error
 }
 
-func e2eNewServices(t *testing.T, configure ...func(*authprivacy.Community)*authprivacy.Community) *e2eServices {
+func e2eNewServices(t *testing.T, configure ...func(*authprivacy.Community) *authprivacy.Community) *e2eServices {
 	t.Helper()
 	s := &e2eServices{cp: e2ePool(t, "c"), vp: e2ePool(t, "v")}
 	var trusted []protocol.TrustedKey
@@ -350,8 +353,10 @@ func e2eNewServices(t *testing.T, configure ...func(*authprivacy.Community)*auth
 	if err != nil {
 		t.Fatal(err)
 	}
-	s.c, err = s.c.WithPosts(context.Background(), authprivacy.PostConfig{Environment:"lab",KeyKey:e2eKey(t),FingerprintKey:e2eKey(t),CursorKey:e2eKey(t)})
-	if err != nil { t.Fatal(err) }
+	s.c, err = s.c.WithPosts(context.Background(), authprivacy.PostConfig{Environment: "lab", KeyKey: e2eKey(t), FingerprintKey: e2eKey(t), CursorKey: e2eKey(t)})
+	if err != nil {
+		t.Fatal(err)
+	}
 	vGatePoolConfig := s.vp.Config()
 	vGatePoolConfig.MaxConns = 4
 	vGatePool, err := pgxpool.NewWithConfig(context.Background(), vGatePoolConfig)
@@ -375,7 +380,9 @@ func e2eNewServices(t *testing.T, configure ...func(*authprivacy.Community)*auth
 		return NetworkLimits{Key: e2eKey(t), MutationCapacity: 10000, QueryCapacity: 10000, Window: time.Minute, MaxEntries: 1024}
 	}
 	cPeer := PeerIdentity{Environment: "lab", Service: VerifierService, Roots: pki.roots}
-	for _,setup:=range configure { s.c=setup(s.c) }
+	for _, setup := range configure {
+		s.c = setup(s.c)
+	}
 	cEndpoints, err := NewCommunityEndpoints(CommunityOptions{Backend: s.c, Passwords: passwords, InternalPeer: cPeer, AllowedOrigins: []string{"https://app.invalid"}, Limits: limits()})
 	if err != nil {
 		t.Fatal(err)

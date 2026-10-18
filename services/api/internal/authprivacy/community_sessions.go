@@ -96,6 +96,46 @@ func sessionReplay(ctx context.Context, q interface {
 	return true, ErrSessionCreatedReplay
 }
 
+type usernamePasswordProof struct {
+	account         uuid.UUID
+	hash, salt      []byte
+	params, version int64
+}
+
+// Both login scopes use the same verifier, including bounded dummy-password
+// work for unknown usernames. Scope-specific authorization follows SQL locks.
+func (c *Community) proveUsernamePassword(ctx context.Context, username, password string, verifier PasswordVerifier) (usernamePasswordProof, error) {
+	var proof usernamePasswordProof
+	var account uuid.UUID
+	var hash, salt []byte
+	var version, params int64
+	err := c.pool.QueryRow(ctx, `SELECT account_id,password_hash,password_salt,password_params_version,
+		credential_version FROM c_auth.accounts WHERE username=$1`, username).
+		Scan(&account, &hash, &salt, &params, &version)
+	material := dummyPasswordMaterial
+	found := err == nil
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return proof, ErrAuthorizationUnavailable
+	}
+	if found {
+		if len(hash) != 32 || len(salt) != 16 || params != 1 || version < 1 {
+			return proof, ErrAuthorizationUnavailable
+		}
+		copy(material.Hash[:], hash)
+		copy(material.Salt[:], salt)
+		material.ParametersVersion = params
+	}
+	valid, err := verifier.VerifyPassword(ctx, password, material)
+	if err != nil {
+		return proof, err
+	}
+	if !found || !valid {
+		return proof, ErrAuthenticationFailed
+	}
+
+	return usernamePasswordProof{account: account, hash: hash, salt: salt, params: params, version: version}, nil
+}
+
 // CreateSession verifies a password outside SQL locks, then rechecks the exact
 // verifier and credential version under the account lock. Its final Gate
 // callback atomically replaces the one mobile session and persists a result
@@ -118,32 +158,11 @@ func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequ
 		return zero, e
 	}
 
-	var account uuid.UUID
-	var hash, salt []byte
-	var version, params int64
-	err = c.pool.QueryRow(ctx, `SELECT account_id,password_hash,password_salt,password_params_version,
-		credential_version FROM c_auth.accounts WHERE username=$1`, request.Username).
-		Scan(&account, &hash, &salt, &params, &version)
-	material := dummyPasswordMaterial
-	found := err == nil
-	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-		return zero, ErrAuthorizationUnavailable
-	}
-	if found {
-		if len(hash) != 32 || len(salt) != 16 || params != 1 || version < 1 {
-			return zero, ErrAuthorizationUnavailable
-		}
-		copy(material.Hash[:], hash)
-		copy(material.Salt[:], salt)
-		material.ParametersVersion = params
-	}
-	valid, err := verifier.VerifyPassword(ctx, request.Password, material)
+	proof, err := c.proveUsernamePassword(ctx, request.Username, request.Password, verifier)
 	if err != nil {
 		return zero, err
 	}
-	if !found || !valid {
-		return zero, ErrAuthenticationFailed
-	}
+	account, hash, salt, params, version := proof.account, proof.hash, proof.salt, proof.params, proof.version
 
 	tx, err := begin(ctx, c.pool)
 	if err != nil {

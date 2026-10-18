@@ -785,7 +785,9 @@ void main() {
     await tester.pumpWidget(_app(detailSource(c)));
     await tester.tap(find.text('来源列表'));
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('删除帖子'));
+    await tester.tap(find.byTooltip('帖子操作'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('删除帖子'));
     await tester.pumpAndSettle();
     expect(c.deletions, 0);
     expect(find.text('确认删除这篇帖子？'), findsOneWidget);
@@ -813,7 +815,9 @@ void main() {
     await tester.pumpWidget(_app(detailSource(c)));
     await tester.tap(find.text('来源列表'));
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('删除帖子'));
+    await tester.tap(find.byTooltip('帖子操作'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('删除帖子'));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('scoped-confirm-action')));
     await tester.pumpAndSettle();
@@ -845,7 +849,9 @@ void main() {
       _app(PostDetailScreen(controller: c, postId: _postId)),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('删除帖子'));
+    await tester.tap(find.byTooltip('帖子操作'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('删除帖子'));
     await tester.pumpAndSettle();
     c.loseAuthority();
     await tester.pump();
@@ -1574,7 +1580,9 @@ void main() {
         'post-delete-confirm',
         PostDetailScreen(controller: c, postId: _postId, channelName: '搭子'),
         prepare: () async {
-          await tester.tap(find.byTooltip('删除帖子'));
+          await tester.tap(find.byTooltip('帖子操作'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('删除帖子'));
           await tester.pump(const Duration(milliseconds: 300));
         },
       );

@@ -1,0 +1,440 @@
+openapi: 3.0.3
+info:
+  title: HnuHole post report API
+  version: 0.1.0
+  description: Reports preserve the accepted public-content snapshot and authorized supplementary material. A successful
+    submission is not a finding of violation. Ordinary sessions only; muted accounts may report, banned or restricted-access
+    bearers may not. HTTPS only. No redirects, user-supplied URLs, or extra request fields. Every successful business
+    response is committed inside the existing final C Safety Gate transaction. Only implemented post targets are
+    described; comment, chat, push and full interaction inbox APIs are absent.
+servers:
+- url: /
+paths:
+  /api/v1/reports/{requestId}:
+    parameters:
+    - name: requestId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+    get:
+      operationId: getPostReportResult
+      summary: Reconcile the original report request
+      description: Returns only the current account's accepted report. On a missing original, this same-account
+        final transaction rotates retryToken, returns NOT_SUBMITTED with that token and seals every earlier attempt.
+        Each subsequent missing-result GET rotates again. Retry only the original requestId and material with the
+        latest token; timeout or leaving the page does not cancel an accepted report.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResult'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+    put:
+      operationId: submitPostReport
+      summary: Submit or replay a post report
+      description: Generate requestId once before submission. The same account/key and complete intent replay the
+        original result; retryToken is excluded from that intent fingerprint. Changed material with the same key
+        returns 409 REQUEST_CONFLICT. Initial submission may omit retryToken only when no reconciliation fence exists;
+        after a missing-result GET only its latest retryToken may submit, while earlier/absent tokens return 409
+        REPORT_ATTEMPT_SEALED. Same post and complete public snapshot merge into one case regardless of reporter
+        reason, without duplicate penalties; each report retains its reporter-selected reason. Published, visible
+        posts only. Author deletion ends unfinished cases as TARGET_DELETED; completed findings remain.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        x-max-request-bytes: 12582912
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportInput'
+      responses:
+        '200':
+          description: Committed response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResult'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '405':
+          $ref: '#/components/responses/Error405'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical-unpadded-base64url-32-bytes
+      description: An ordinary C session for community and management operations. Explicit self-service operations
+        also accept the isolated MODERATION_SELF bearer.
+  headers:
+    RequestId:
+      required: true
+      description: Server-generated request identifier; error body requestId equals this value.
+      schema:
+        type: string
+        minLength: 22
+        maxLength: 22
+    NoStore:
+      required: true
+      schema:
+        type: string
+        enum:
+        - no-store
+    SessionExpiresAt:
+      required: true
+      description: Committed deadline of the bearer used for this request. Ordinary sessions follow existing renewal
+        rules. MODERATION_SELF has a fixed 24-hour deadline and is never renewed.
+      schema:
+        type: string
+        format: date-time
+    ServerTime:
+      required: true
+      description: Final C Gate trusted decision time.
+      schema:
+        type: string
+        format: date-time
+    RetryAfter:
+      required: true
+      description: Retry delay in seconds; does not establish a previous mutation outcome.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 300
+  responses:
+    Error400:
+      description: Malformed input, invalid original image, noncanonical identifier, unknown or duplicate JSON fields,
+        unexpected/duplicate query values, or invalid cursor.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error401:
+      description: Invalid, expired, replaced, revoked or wrong-scope bearer; no ordinary session is restored by
+        a restricted token.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error403:
+      description: The authenticated account or role cannot perform this operation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error404:
+      description: The authorized resource is unavailable in this account/identity scope.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error405:
+      description: Unsupported HTTP method. Allow identifies permitted methods.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error409:
+      description: Original request key conflicts with its material, concurrent state/version changed, appeal pending/closed/limited,
+        or operation is no longer allowed.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error415:
+      description: Only application/json with optional UTF-8 charset is accepted.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error429:
+      description: Bounded network/password-worker budget exceeded; retry using the original mutation key where
+        applicable.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Error503:
+      description: C Gate frozen/unavailable, storage unavailable, or required subsystem unavailable. No mutation
+        success is implied.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestId'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+  schemas:
+    UUID:
+      type: string
+      format: uuid
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      not:
+        enum:
+        - 00000000-0000-0000-0000-000000000000
+      description: Canonical lowercase, nonzero UUID. Resource identifiers never authorize access.
+    DateTime:
+      type: string
+      format: date-time
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      - requestId
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: false
+              required:
+              - retryAfterSeconds
+              properties:
+                retryAfterSeconds:
+                  type: integer
+                  minimum: 1
+                  maximum: 300
+        requestId:
+          type: string
+          minLength: 22
+          maxLength: 22
+    Image:
+      type: object
+      additionalProperties: false
+      required:
+      - mime
+      - base64
+      properties:
+        mime:
+          type: string
+          enum:
+          - image/png
+          - image/jpeg
+          - image/gif
+          - image/webp
+        base64:
+          type: string
+          maxLength: 2796204
+          minLength: 4
+          format: byte
+          description: Canonical padded standard Base64 of validated original image bytes. Decoded bytes must be
+            1..2097152; original MIME must match inspection.
+          x-max-decoded-bytes: 2097152
+    ReportInput:
+      type: object
+      additionalProperties: false
+      required:
+      - postId
+      - reason
+      - description
+      - images
+      properties:
+        postId:
+          $ref: '#/components/schemas/UUID'
+        identityId:
+          type: string
+          format: uuid
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          not:
+            enum:
+            - 00000000-0000-0000-0000-000000000000
+          description: Canonical lowercase, nonzero UUID. Resource identifiers never authorize access.
+          nullable: true
+        retryToken:
+          $ref: '#/components/schemas/UUID'
+        reason:
+          type: string
+          enum:
+          - ADVERTISING
+          - HARASSMENT
+          - PRIVACY
+          - FRAUD
+          - ILLEGAL
+          - OTHER
+        description:
+          type: string
+          maxLength: 200
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          maxItems: 6
+          x-max-total-decoded-bytes: 8388608
+      description: Optional identityId must be an existing identity of this account. Omit/null for an account-scoped
+        report. Explanation may be empty; images may be empty. Six images maximum, 2 MiB each and 8 MiB decoded
+        total. JSON body maximum 12 MiB.
+    Report:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - caseId
+      - state
+      - postId
+      - reason
+      - description
+      - createdAt
+      - outcome
+      - explanation
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        caseId:
+          $ref: '#/components/schemas/UUID'
+        state:
+          type: string
+          enum:
+          - PENDING
+          - PROCESSING
+          - ENDED
+        postId:
+          $ref: '#/components/schemas/UUID'
+        reason:
+          type: string
+          enum:
+          - ADVERTISING
+          - HARASSMENT
+          - PRIVACY
+          - FRAUD
+          - ILLEGAL
+          - OTHER
+        description:
+          type: string
+          maxLength: 200
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+        outcome:
+          type: string
+          enum:
+          - ''
+          - UPHELD
+          - DISMISSED
+          - TARGET_DELETED
+        explanation:
+          type: string
+    ReportResult:
+      oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+        - state
+        - retryToken
+        properties:
+          state:
+            type: string
+            enum:
+            - NOT_SUBMITTED
+          retryToken:
+            $ref: '#/components/schemas/UUID'
+      - type: object
+        additionalProperties: false
+        required:
+        - state
+        - report
+        properties:
+          state:
+            type: string
+            enum:
+            - SUBMITTED
+          report:
+            $ref: '#/components/schemas/Report'
