@@ -1,11 +1,13 @@
 # Android候选版本交付与隔离预发布：开发任务范围
 
-创建：2026-10-18，Asia/Shanghai。状态：NON_PHONE_PASS_DEVICE_NOT_RUN，尚未合并或发布。
+创建：2026-10-18，Asia/Shanghai。状态：DEVICE_PACKAGE_PREPARED_DEVICE_NOT_RUN，尚未合并或发布。
+更新：2026-10-19。设备包8691eb4实际构建验签PASS；后端14f5096独立13项/75摘要及Windows严格HTTPS预检PASS；8691八项CI全绿，文档交付后的最终head另按PR核对。
 仓库 zewbby/HnuHole；分支 `codex/ci/android-prerelease`；独立目录 `E:/HnuHole-android-prerelease-20261018/repo`。
 创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。本任务不是正式上线或生产安全批准。
 
 2026-10-18 已核对独立目录、干净分支和 origin，复用原分支。PR #13 已实际合入
 `359c180`，同步 main `986477b`，没有使用其他session的SDK、数据库或手机。
+当前已同步PR #18/main1b78f42；14f5096本地schema15完整13项/75摘要/五实例停机PASS，设备包准备PASS，受影响CI另按最终head核对。
 当前新增独立候选workflow、测试签名接线、私有C/V初始化/健康/启停及新实例恢复和应用回滚入口；
 实际结果在[发布运行手册](../release/android-prerelease.md)记录，脚本存在不等于演练通过。
 
@@ -15,9 +17,9 @@
 包名org.hnuhole.hnuhole_mobile、签名和APK摘要见[制品manifest](../release/android-candidate-20261018.json)。
 首个完整成功运行[39115461923](https://github.com/zewbby/HnuHole/actions/runs/39115461923)；
 最终head以PR最新checks/制品manifest为准，证据提交后的检查继续核对。
-独立agent审查通过，不冒充GitHub成员批准。当前手机NOT_RUN、跨设备Passkey和iOS延期。
-用户指定vivo S18 / OriginOS 5，本次没有设备窗口；按授权先准备本任务独立SDK/签名和pinned-CA debug测试包，
-不运行ADB或操作手机。安装前须核对现有同包归属，避免覆盖。实际构建证据另行记录，不替代设备验收。
+[本轮独立agent审查](../release/android-prerelease-review-20261019.json)通过，不冒充GitHub成员批准。当前手机NOT_RUN、跨设备Passkey和iOS延期。
+用户指定vivo S18 / OriginOS 5，本次没有设备窗口；本任务独立SDK/签名和pinned-CA debug测试包已实际构建验签，
+不运行ADB或操作手机。安装前须核对现有同包归属，避免覆盖。实际构建证据见发布记录，不替代设备验收。
 P03/P05仅新增开发范围证明，生产主体独立/真实云/正式签名/正式发布未验。
 
 ## 目标与本次包含
@@ -42,7 +44,8 @@ P03/P05仅新增开发范围证明，生产主体独立/真实云/正式签名/�
 ## 与任务1／2及PR #13的关系
 
 可立即基于当前main准备CI和隔离环境。PR #13整合后正常同步main并重跑受影响检查，不能使用它的未提交目录或借用专用SDK／数据库。
-任务2通知／治理基础暂定0015，任务1评论暂定0016，最终编号随实际main核对；本任务只读取实际已合并迁移并验证部署，不预建虚假的评论／治理表。
+初始规划中，任务2通知／治理基础暂定0015，任务1评论暂定0016，最终编号随实际main核对；本任务只读取实际已合并迁移并验证部署，不预建虚假的评论／治理表。
+后续PR #18已实际合入main1b78f42，本任务已同步正式0015；评论0016仍未合入该轮main。
 任务2管理网页可在接口稳定后作为可选构建／部署消费者；其业务、权限和页面仍由任务2负责。
 共享工作流只做必要接入，优先新建独立workflow，保持原CI原样有效。
 
@@ -50,7 +53,7 @@ P03/P05仅新增开发范围证明，生产主体独立/真实云/正式签名/�
 
 主要修改 `.github/workflows/android-prerelease.yml`、必要独立预发布workflow、`tools/prerelease/`、
 `infra/prerelease/`和`docs/release/`及对应测试。本页是任务状态入口。
-确需Android构建或环境配置接线时先说明差异，限制到本任务所需，不改包的认证身份／RP／备份排除／会话语义。
+确需Android构建或环境配置接线时先说明差异，限制到本任务所需，不改applicationId／RP配置／备份排除／会话语义；测试签名与正式Android签名身份不同。
 日志、工具、构建缓存、数据库和制品放本任务根下runtime/，不进入Git，不清理别人资源。
 
 ## 明确排除

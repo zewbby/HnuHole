@@ -17646,6 +17646,19 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "androidPrereleaseSchema15DevelopmentEvidence": {
+        "recordedOn": "2026-10-19",
+        "result": "PASS_SCOPED_NON_DEVICE",
+        "backendSourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b",
+        "candidateSourceSha": "8691eb49d3863b911e04c4678512c1eb8d54aaca",
+        "report": "docs/release/android-prerelease.md",
+        "backend": "docs/release/android-prerelease-schema15-local-20261018.json",
+        "candidate": "docs/release/android-device-candidate-20261019.json",
+        "checks": 13,
+        "restoredFingerprints": 75,
+        "production": "NOT_RUN",
+        "device": "NOT_RUN"
       }
     },
     {
@@ -17686,6 +17699,19 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "androidPrereleaseSchema15DevelopmentEvidence": {
+        "recordedOn": "2026-10-19",
+        "result": "PASS_SCOPED_NON_DEVICE",
+        "backendSourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b",
+        "candidateSourceSha": "8691eb49d3863b911e04c4678512c1eb8d54aaca",
+        "report": "docs/release/android-prerelease.md",
+        "backend": "docs/release/android-prerelease-schema15-local-20261018.json",
+        "candidate": "docs/release/android-device-candidate-20261019.json",
+        "checks": 13,
+        "restoredFingerprints": 75,
+        "production": "NOT_RUN",
+        "device": "NOT_RUN"
       }
     },
     {
@@ -37273,7 +37299,7 @@
     "functionalAcceptancePromoted": false,
     "bookkeepingOnly": true
   },
-  "updatedOn": "2026-10-18",
+  "updatedOn": "2026-10-19",
   "currentB6": {
     "recordedOn": "2026-10-13",
     "currentResult": "PASS",

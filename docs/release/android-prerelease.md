@@ -4,7 +4,7 @@
 GitHub Actions的Android制品和后台演练证据分开保存，手机验收NOT_RUN。
 
 后续核对main已到`1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1`（PR #18），正式迁移为C0015/V0004。
-本任务已同步，正在新root重跑迁移/权限/恢复/回滚并准备手机包；下方schema14记录保留原SHA。
+本任务已同步；14f5096的新root已实际通过13项检查、75份恢复摘要和五实例停机，专属手机包也已构建验签。下方schema14记录保留原SHA。
 环境启用实际合入的`moderation=true`及`grant-moderation.sql`，没有创建管理员或部署管理网页，
 不新增治理业务。新增精确治理表/列/sequence/function权限矩阵和不可变证据列的实际越权负审计，
 备份摘要覆盖全部非系统schema；治理业务端到端范围另按既有CI/实际测试记录，不由文字图片smoke代替。
@@ -65,10 +65,10 @@ python tools/prerelease/environment.py --root /absolute/new-lab stop
 schema13快照仅合成目录/迁移历史，不含真实用户历史数据。真实云、正式签名、生产主体独立、
 外部独立备份运营与正式发布不属于已获批准的本地演练。媒体仍沿用现有SQL存储。
 
-## 2026-10-18实际发布记录（候选交付，未正式发布）
+## 2026-10-18首轮schema14发布记录（历史候选，未正式发布）
 
 任务为 [PR #16](https://github.com/zewbby/HnuHole/pull/16)，创建基线8fa9cbc；已同步实际合入的
-PR #13/main 986477b。当前正式迁移C0014/V0004；0015/0016没有进入本轮源码，不预建占位表。
+PR #13/main 986477b。该轮正式迁移C0014/V0004；0015/0016未进入该轮源码，不预建占位表。
 
 | 检查 | 被测版本与实际结果 | 证据 |
 | --- | --- | --- |
@@ -98,7 +98,7 @@ APK22531056字节，SHA256 `f7a723c304c6a832e025eb2290263fa774a36dc0a8477a1f73f3
 错误validator摘要候选实际启动失败，旧main 986477b的C/V二进制在当前恢复库通过健康/原图读取，
 随后重新切回候选并通过健康/读取。只切换应用二进制，不执行down迁移。
 
-当前与回滚版本的业务源码及迁移相同；这证明本轮二进制切换/故障拒绝和schema14兼容，
+该历史轮次的候选与回滚版本业务源码及迁移相同；这证明本轮二进制切换/故障拒绝和schema14兼容，
 不证明未来0015/0016或未知历史数据库兼容。完整业务/动画多图/跨账号访问、原生Picker/Gal/vault/物理设备、
 固定生产端点/正式签名/安装升级及生产灾备仍未验。APK当前默认.invalid不连接本地服务，后台smoke不冒充APK链路通过。
 
@@ -111,13 +111,13 @@ dee7fdc后台PASS但Android缺CMake3.22.1失败；4c9477a的release dev插件注
 ## 下一设备窗口方案
 
 用户指定设备为vivo S18 / OriginOS 5，当前不能配合验证，已授权先准备测试包；
-实际Android版本/API/ABI、安装和APK服务链路仍NOT_RUN。先保留本轮非手机证据并离线构建专属debug/pinned-CA候选：
+实际Android版本/API/ABI、安装和APK服务链路仍NOT_RUN。已保留本轮非手机证据并构建专属debug/pinned-CA候选：
 仅loopback HTTPS、专属测试签名、明确的USB服务/key和单机端口映射；不装系统CA、不开放数据库/内部mTLS。
 安装前核对目标包现状，避免覆盖其他任务App或数据。验证安装启动、合成注册/登录、文字/图片最小链路和重开，
 逐项保存当前APK/源码/证书摘要；结束后只撤本任务映射并停止本任务服务。跨设备Passkey和iOS继续延期。
 此方案尚未执行手机操作，等待本session设备窗口；手机专属工具只下载到本任务独立目录，不借用其他session工具。
 
-### 离线准备手机测试包
+### 不连接手机准备测试包
 
 `device_candidate.py`只构建/验签，不运行ADB、服务或设备探测。与release候选分开归档，
 仍使用真实`lib/main.dart`、原applicationId和认证逻辑；`HNUHOLE_PRERELEASE_DEVICE=1`显式选择测试label和签名，
@@ -129,7 +129,7 @@ dee7fdc后台PASS但Android缺CMake3.22.1失败；4c9477a的release dev插件注
 先在同一独立环境执行`flutter pub get --enforce-lockfile`。配置文件只接受以下三个公开字段：
 
 ```json
-{"communityOrigin":"https://127.0.0.1:49291","verifierOrigin":"https://127.0.0.1:59947","caPem":"-----BEGIN CERTIFICATE-----\n本任务公有CA的PEM内容\n-----END CERTIFICATE-----\n"}
+{"communityOrigin":"https://127.0.0.1:52045","verifierOrigin":"https://127.0.0.1:37073","caPem":"-----BEGIN CERTIFICATE-----\n本任务公有CA的PEM内容\n-----END CERTIFICATE-----\n"}
 ```
 
 ```sh
@@ -143,9 +143,52 @@ python tools/prerelease/device_candidate.py --source /owned/clean-source --sourc
 最终元数据核对debug模式、原包名/版本/minSdk、备份排除、测试label、禁明文和诊断/DAL声明缺席。
 安装前检查手机现有同包签名和归属；冲突时暂停，不卸载、清数据或强制覆盖。
 
-保留lab-07为恢复后的非空数据库，`target=restore`；不要重跑`init`或包含初始化的`run-local.sh`。
-C/V固定端口49291/59947，公有CA PEM SHA256为`1be676311b5b88adac3ea10bc9987498231086a7c8f390b82eb9a7af5a43bef0`。
-现有C/V叶证书到2026-10-25 17:18:53（上海）到期，CA到11-17；窗口前重新检查实际证书有效期。
+当前lab-09为恢复后的非空数据库，`target=restore`；不要重跑`init`或包含初始化的`run-local.sh`。
+C/V固定端口52045/37073，公有CA PEM SHA256为`da2215084e59bc56c6aeca048eefd2c6f8b1de2505ae46f5e8edcfa932c7a3ac`。
+现有C/V叶证书到2026-10-25 23:38:00（上海）到期，CA到11-17；窗口前重新检查实际证书有效期。
 叶证书到期必须使用本任务CA续签并验证，不得跳过证书校验；CA更换则重建并重新核包摘要。
 当前进程已停止。窗口内先start/recover/health并严格核验Windows到WSL HTTPS，再建立本任务两条USB映射。
 不映射数据库、邮件或内部mTLS；设备端口冲突同样阻断，结束只撤本任务映射并停本任务进程。
+
+## 0015同步后的实际结果与2026-10-19设备包（未执行手机）
+
+后端演练源码`14f5096bb65aa53743939031000d6df32e42ad4b`；设备包源码`8691eb49d3863b911e04c4678512c1eb8d54aaca`，仅追加debug准备复用已锁依赖的flag。
+已同步PR #18/main1b78f42；正式迁移C0015/V0004，0016尚未进入该轮main。
+新环境`/home/hnuhole/android-prerelease-20261018-runtime/lab-09`完整13项PASS、75份表/sequence摘要一致，
+覆盖合成PENDING举报、原图片证据、通知及已读状态的真实HTTPS写入→备份→新实例恢复，
+恢复后旧token拒绝、fresh login、已有main1b78f42二进制回滚和候选重部署读取均PASS，五个PG及其他进程已停。
+见[本地回执](android-prerelease-schema15-local-20261018.json)。非空处罚/申诉/管理员角色/治理audit恢复仍NOT_RUN，
+实际GoSQL和既有Dart/browser CI结果分别记录，不外推成手机或完整治理验收。环境回滚不执行down；
+既有SQL回归只在自己的升级fixture核验0015 Down明确拒绝。
+
+手机包`0.1.0+2026101802`、debug、Flutter目标`android-arm64`（含JNI附带的其他ABI库）、原包名`org.hnuhole.hnuhole_mobile`、测试label`HnuHole Prerelease Test`；
+实际main.dart构建、测试签名验签、最终Manifest及源码/锁文件不变检查PASS，结果`PASS_NON_DEVICE_PREPARATION`。
+C/V固定`https://127.0.0.1:52045`/`https://127.0.0.1:37073`，仅App内CA，无RP override、无系统CA。
+APK SHA256 `d80c47283e22007dfbc5cebf6ccb96f82b70b917b9a1efe1a85af0cd971cd18a`，98479040字节；
+测试证书SHA256 `09309fe3ac7e4f817e81cdadd406ccae28ca465ab591701d233ea1527660397c`。
+完整公开元数据见[手机包manifest](android-device-candidate-20261019.json)；本地APK/manifest/SHA256SUMS保存在
+`E:/HnuHole-android-prerelease-20261018/runtime/device-candidate-8691eb4/`，私有签名不进入Git。
+该原始manifest中的`authenticationIdentityChanged=false`仅表示applicationId及RP配置未改；
+测试签名证书与正式签名身份不同，不能据此声称Android凭据来源或Passkey身份等同。原始manifest及其摘要保留不改写。
+
+用户目前不能测，目标仅由用户报告为vivo S18 / OriginOS 5；实际Android API/ABI、安装、重开、原生存储、Picker/Gal、
+APK→服务文字图片与Passkey全部NOT_RUN。未运行ADB、未连接手机。仍需先核同包归属；冲突暂停，不覆盖其他任务数据。
+
+新失败历史：lab-08恢复时精确审计发现`--no-privileges`丢失PUBLIC函数EXECUTE撤销，未放宽审计；
+现由本任务恢复流程显式重建deny ACL后应用主线canonical grants，lab-09重跑通过。
+本地回归初次缺图片fixture、随后提前设置Goose触发无DSN保护，均保留FAIL日志，纠正入口环境和顺序后重跑。
+
+[宿主/真实SQL回归](android-prerelease-schema15-regression-20261018.json)及[Windows到WSL严格HTTPS与独立启停](android-prerelease-schema15-host-preflight-20261018.json)已通过；本地Dart/browser专用入口明确SKIP，既有治理CI单独核对，不计入本地通过项。
+WSL官方Gradle下载超时后，从同一官方URL经Windows新下载并核对wrapper固定SHA256，放入本任务缓存。
+后续Maven下载临时使用本任务loopback CONNECT转发至Windows网络，TLS仍端到端验证；构建后关闭转发，不修改系统代理/证书或原依赖仓库。
+
+8691eb4的8个产品/协作检查全部SUCCESS，含既有治理Dart/browser专用CI；见[按源码保存的检查回执](android-prerelease-checks-8691eb4.json)。
+该轮[CI运行39143627400](https://github.com/zewbby/HnuHole/actions/runs/39143627400)实际后台演练同样13项/75摘要PASS，
+见[CI演练回执](android-prerelease-schema15-ci-8691eb4.json)。下载的release APK、manifest及SHA256SUMS已重新核验，
+APK22924620字节，SHA256 `005f22bfc9cbce39b48d1a3bd32a0088bf4e8bcd4d525b02be69e4e0c3163618`；
+完整来源/临时证书见[CI候选manifest](android-candidate-schema15-ci-8691eb4.json)，该release仍使用.invalid默认服务。
+它与上方已配置CA/端点的手机debug包是不同制品，不混用摘要或安装说明。
+
+[独立审查](android-prerelease-review-20261019.json)分别只读核对后端实物证据、APK及文档限定，无剩余阻断；
+agent审查不等于GitHub成员批准。文档交付提交后的最终head仍须在[PR #16](https://github.com/zewbby/HnuHole/pull/16)核对全部检查，
+上述8691结果只属于其精确源码。PR保留draft，未合并、未正式发布。

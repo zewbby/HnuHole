@@ -1,6 +1,8 @@
 # 设计进度与剩余工作
 
-> **2026-10-18 预发布主线同步：**核对PR #18已实际合入main `1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1`，正式迁移新增0015。下方schema14及PR #18合并前状态保留原版本；本任务正重跑受影响检查并据新环境准备手机包，不沿用旧结果作为新版本PASS。未连接手机。
+> **2026-10-19 手机包已准备：**8691eb4独立SDK/签名/pinned-CA debug包构建验签PASS，绑定14f5096的lab-09（schema15）C52045/V37073；用户当前不能测。没有ADB/手机操作，安装和原生/业务链路保持NOT_RUN。准确APK/证书摘要及CA到期见[发布记录](../release/android-prerelease.md)。
+
+> **2026-10-18 预发布主线同步：**核对PR #18已实际合入main `1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1`，正式迁移新增0015。下方schema14及PR #18合并前状态保留原版本；本任务14f5096的schema15新环境已通过13项/75摘要/五实例停机，手机包构建验签PASS；受影响CI仍按最终head核对，不沿用旧结果作为新版本PASS。未连接手机。
 
 > **2026-10-18 手机测试包准备：**按本session授权先准备vivo S18 / OriginOS 5目标的独立签名pinned-CA debug包；无设备窗口，不运行ADB。代码接线与实际包准备证据分开记录，手机/原生插件/业务链路仍NOT_RUN，见[发布记录](../release/android-prerelease.md)。
 
