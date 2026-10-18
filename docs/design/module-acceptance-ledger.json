@@ -17644,7 +17644,7 @@
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "无GitHub Actions工作流；正式签名/端点/供应商实际集成未配置或未验",
+      "note": "已有协作/Go/Flutter/SQL/契约CI；PR16测试签名候选与隔离演练为开发范围通过、尚未合并；正式签名/端点/供应商实际集成仍未配置或未验",
       "nextAcceptance": "按最终报告取得真实运营／发布／灾备或人类独立评审证据；本地开发测试和AI核对不能代证生产。",
       "currentAC06Handoff": {
         "result": "PASS",

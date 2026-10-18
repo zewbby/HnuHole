@@ -36,7 +36,7 @@ python tools/prerelease/environment.py --root /absolute/new-lab rehearse
 `init`从正式迁移初始化C/V，另外将schema13实际备份装入新C实例再前向升级；
 不添加业务迁移、占位表或运行down。源库、升级库、恢复库均归该root，PG只监听loopback及私有socket。
 `rehearse`运行真实HTTPS合成注册/登录/目录/文字/图片上传和原字节读取，
-冻结拒绝、停写备份、两个新实例恢复、schema与数据摘要/权限复核、旧token拒绝与重新登录，
+冻结拒绝、停写备份、两个新实例恢复、全表/sequence数据摘要及schema/权限检查、旧token拒绝与重新登录，
 再运行实际失败部署、旧main二进制回滚和候选重部署。只保留开发同机证明范围。
 
 手动启停可复用同一root：
