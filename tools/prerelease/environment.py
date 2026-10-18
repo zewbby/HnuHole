@@ -331,9 +331,9 @@ class Lab:
             audit = audit.replace("SET authlab.party TO :'party';", "SET authlab.party TO '" + party + "';")
             old_insert = "'attempt_contents','command_receipts','payload_cleanup'))"
             old_columns = "a.attname NOT IN ('payload','erased_at','grant_digest','grant_expires_at')"
-            if audit.count(old_insert) != 1 or audit.count(old_columns) != 1:
+            if audit.count(old_insert) != 2 or audit.count(old_columns) != 1:
                 raise RuntimeError('upstream privacy audit changed; review image opt-in explicitly')
-            audit = audit.replace(old_insert, "'attempt_contents','command_receipts','payload_cleanup','images'))")
+            audit = audit.replace(old_insert, "'attempt_contents','command_receipts','payload_cleanup','images'))", 1)
             audit = audit.replace(old_columns, "a.attname NOT IN ('payload','erased_at','grant_digest','grant_expires_at','verified_at','display_width','display_height','frames','cycle_duration_ms','max_frame_duration_ms')")
             self.sql(party, audit)
             result = self.sql(party, (self.source / 'infra/prerelease/role-audit.sql').read_text().replace('@PARTY@', party))
