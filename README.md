@@ -35,7 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `codex/community-flutter-pages` | PR #13 整合社区无障碍与主线图片/认证，待合并；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
+| `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
 
 ### 已合并或退役的历史工作
 
@@ -52,8 +52,8 @@
 
 按合并时间倒序保留最近 5 条，每条一句话说明。
 
+- 2026-10-18 · [#13](https://github.com/zewbby/HnuHole/pull/13)：合入社区无障碍与主线图片/认证整合成果，跨设备 Passkey 保留待验。
+- 2026-10-18 · [#14](https://github.com/zewbby/HnuHole/pull/14)：归档文字帖原始证据并退役历史分支。
 - 2026-10-17 · [#12](https://github.com/zewbby/HnuHole/pull/12)：退役工程基线分支并保留完整历史归档。
 - 2026-10-17 · [#11](https://github.com/zewbby/HnuHole/pull/11)：将已合并或退役工作移入历史入口，更新现存分支索引。
 - 2026-10-17 · [#10](https://github.com/zewbby/HnuHole/pull/10)：补记 B5 验收增量进入主线的合并事实、验收边界与交接更新。
-- 2026-10-17 · [#9](https://github.com/zewbby/HnuHole/pull/9)：接入 B5 验收增量并修复闭号状态及图片生命周期擦除权限。
-- 2026-10-16 · [#6](https://github.com/zewbby/HnuHole/pull/6)：记录图片分支退役和实际资源清理结果。

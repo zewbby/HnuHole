@@ -1,5 +1,7 @@
 # PR #13 与最新 main 整合回归
 
+> **2026-10-18 已确认合并 main：**[PR #13](https://github.com/zewbby/HnuHole/pull/13) 按维护者本次指令普通 Squash Merge，合并提交 `359c180a53a674e308e1496bed31da33b9ab8524`。远端main已核对；完整文件树与已测 `06a7ada` 一致，宿主/真实SQL/构建及三项产品CI通过证据继续适用。旧分支/历史协作policy失败与无独立成员批准如实保留，未改保护规则、使用绕过选项或强推。跨设备Passkey NI-X02继续延期；旧设备结果仅限原APK，新整合候选原生设备仍NOT_RUN，iOS/生产/完整App未验。见[合并回执](community-pr13-main-merge-20261018.json)。下方待合并/draft等条目保留为合并前快照。
+
 2026-10-18，分支 `codex/community-flutter-pages`，PR [#13](https://github.com/zewbby/HnuHole/pull/13)。社区起点 `2abda5935e2e5618ca90bb7e60314d7c6572fe85`，主线固定 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。先整合main `65a8dbf`（提交 `8a72f75`），再补入其后只含文档/契约工具的main增量 `8fa9cbc`。在 `E:/HnuHole-pr13-main-20261018/repo` 独立 clone 正常合并；保留两个真实父提交，不改写历史、不强推、不向 main 推送。
 
 ## 冲突与保留能力

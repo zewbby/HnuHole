@@ -5,7 +5,7 @@
   "branch": "codex/post-image-integration",
   "baselineHeadCommit": "075b567ee6093319a0dcb48ab40919aada5cb8f2",
   "workingTreeContainsUncommittedImplementation": false,
-  "workflow": "PR13_MAIN_CONFLICTS_RESOLVED_HOST_SQL_BUILD_PASS_DEVICE_HISTORY_SCOPED_PASSKEY_DUAL_DEFERRED",
+  "workflow": "PR13_MERGED_MAIN_HOST_SQL_BUILD_PASS_DEVICE_HISTORY_SCOPED_PASSKEY_DUAL_DEFERRED",
   "handoffDocument": "docs/design/module-acceptance-handoff.md",
   "agentInstructions": "AGENTS.md",
   "baselineEvidence": "services/api/authlab/platform-acceptance-verification.json",
@@ -5721,12 +5721,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -9060,12 +9068,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -10723,12 +10739,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -11454,12 +11478,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -13687,12 +13719,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -14600,12 +14640,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -15429,12 +15477,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -16262,12 +16318,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -17305,12 +17369,20 @@
         "candidateNativeDeviceAcceptance": "NOT_RUN",
         "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
         "completeAppAccepted": false,
-        "mergedToMain": false,
+        "mergedToMain": true,
         "deployed": false,
         "report": "docs/design/community-pr13-main-integration-20261018.md",
         "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-        "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-        "githubChecks": "PENDING_PUSH"
+        "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+        "githubChecks": {
+          "flutter": "PASS",
+          "go-host": "PASS",
+          "go-postgres": "PASS",
+          "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+        },
+        "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+        "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+        "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
       }
     },
     {
@@ -38073,12 +38145,20 @@
       "candidateNativeDeviceAcceptance": "NOT_RUN",
       "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
       "completeAppAccepted": false,
-      "mergedToMain": false,
+      "mergedToMain": true,
       "deployed": false,
       "report": "docs/design/community-pr13-main-integration-20261018.md",
       "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-      "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-      "githubChecks": "PENDING_PUSH"
+      "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+      "githubChecks": {
+        "flutter": "PASS",
+        "go-host": "PASS",
+        "go-postgres": "PASS",
+        "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+      },
+      "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+      "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+      "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
     }
   },
   "currentCommunityAndroidStage1Preparation": {
@@ -39154,11 +39234,20 @@
     "candidateNativeDeviceAcceptance": "NOT_RUN",
     "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
     "completeAppAccepted": false,
-    "mergedToMain": false,
+    "mergedToMain": true,
     "deployed": false,
     "report": "docs/design/community-pr13-main-integration-20261018.md",
     "evidence": "docs/design/community-pr13-main-integration-20261018.json",
-    "collaborationPolicy": "BLOCKED_LEGACY_HEAD_AND_HISTORY",
-    "githubChecks": "PENDING_PUSH"
-  }
+    "collaborationPolicy": "FAIL_LEGACY_BRANCH_HISTORY_MAINTAINER_DIRECTED_ORDINARY_MERGE",
+    "githubChecks": {
+      "flutter": "PASS",
+      "go-host": "PASS",
+      "go-postgres": "PASS",
+      "policy": "FAIL_LEGACY_BRANCH_HISTORY"
+    },
+    "mergeCommit": "359c180a53a674e308e1496bed31da33b9ab8524",
+    "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
+    "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
+  },
+  "currentPr13MergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
 }
