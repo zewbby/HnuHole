@@ -16358,16 +16358,24 @@
     {
       "id": "B08",
       "name": "消息中心、互动与系统通知",
-      "implementationState": "NOT_STARTED",
-      "acceptanceState": "NOT_READY_IMPLEMENTATION",
+      "implementationState": "PARTIAL",
+      "acceptanceState": "PENDING_CURRENT_REVISION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计/图稿，消息入口未接线",
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "note": "本分支最小系统通知阶段1正在集成验证；账号／身份隔离、单条已读与路由已有工作区实现。完整互动收件箱／私信／推送未实现，真实评论失败provider待阶段2。",
+      "nextAcceptance": "阶段1固定候选后记录真实SQL／HTTPS／浏览器与客户端结果及独立最终审查；阶段2待评论合入再接举报和失败任务。保留隐私、越权、并发与生命周期回归，不以代码或旧快照关闭整模块。",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "currentReportModeration": {
+        "recordedOn": "2026-10-18",
+        "branch": "codex/feat/report-moderation",
+        "taskReference": "docs/branches/feat-report-moderation.md",
+        "phase1ValidationState": "IN_PROGRESS",
+        "fullModuleAcceptancePassed": false,
+        "rootLedgerEntry": "currentReportModeration"
       }
     },
     {
@@ -17388,12 +17396,12 @@
     {
       "id": "B11",
       "name": "作者编辑删除、举报、审核与申诉",
-      "implementationState": "NOT_STARTED",
-      "acceptanceState": "NOT_READY_IMPLEMENTATION",
+      "implementationState": "PARTIAL",
+      "acceptanceState": "PENDING_CURRENT_REVISION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "C restrictions仅认证限制基础，不等于完整治理",
-      "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
+      "note": "已有帖子的举报、跨原因同快照合案、网页双角色审核、独立处罚审计及必要申诉正在集成验证；评论举报待阶段2，完整治理不计通过。",
+      "nextAcceptance": "阶段1固定候选后记录真实SQL／HTTPS／浏览器与客户端结果及独立最终审查；阶段2待评论合入再接举报和失败任务。保留隐私、越权、并发与生命周期回归，不以代码或旧快照关闭整模块。",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -17476,7 +17484,15 @@
         "completeModuleAcceptance": false,
         "doesNotCompleteWholeModule": true
       },
-      "nextPostMediaAndroidAcceptance": "PMA01–14，等待其他会话释放；先离线SHA/期限预检，再probe与真实主App原生链路；不复用宿主/旧组件证据冒称当前设备通过。"
+      "nextPostMediaAndroidAcceptance": "PMA01–14，等待其他会话释放；先离线SHA/期限预检，再probe与真实主App原生链路；不复用宿主/旧组件证据冒称当前设备通过。",
+      "currentReportModeration": {
+        "recordedOn": "2026-10-18",
+        "branch": "codex/feat/report-moderation",
+        "taskReference": "docs/branches/feat-report-moderation.md",
+        "phase1ValidationState": "IN_PROGRESS",
+        "fullModuleAcceptancePassed": false,
+        "rootLedgerEntry": "currentReportModeration"
+      }
     },
     {
       "id": "B12",
@@ -18894,29 +18910,16 @@
   ],
   "inventoryScope": "2026-10-15 post-image real-process host chain and Android build PASS, 19 checkpoints and full 375 mobile tests; native business device, iOS and production remain separate. Historical snapshots preserve previous source scopes.",
   "currentFeature": {
-    "recordedOn": "2026-10-15",
-    "branch": "codex/post-image-integration",
-    "sourceCommit": "2eeb19ce87542aed9e0c57874e8d6b3478df946d",
-    "result": "PASS_NON_DEVICE_PREPARATION",
-    "deviceResult": "NOT_RUN_OTHER_SESSION_OCCUPIES_PHONE",
-    "report": "docs/design/post-image-android-preparation-report.md",
-    "evidence": "docs/design/post-image-android-preparation-verification.json",
-    "runbook": "tools/post-media-android/README.md",
-    "analysisIssues": 0,
-    "flutterFixtureTests": 10,
-    "pythonGuardTests": 15,
-    "hostBuildDeviceGuards": 4,
-    "nativeDebugApks": 2,
-    "nativeReleaseBuild": "NOT_RUN_THIS_PHASE",
-    "nativeProbeExecution": "NOT_RUN",
-    "phoneOrAdbUsed": false,
+    "recordedOn": "2026-10-18",
+    "branch": "codex/feat/report-moderation",
+    "taskReference": "docs/branches/feat-report-moderation.md",
+    "result": "IN_PROGRESS",
+    "phase1Scope": "existing posts, desktop moderation, appeals and minimal notifications",
+    "phase2State": "NOT_INTEGRATED_WAITING_FOR_COMMENTS_MAIN_DELIVERY",
     "mainMerged": false,
     "deployed": false,
     "completeModuleAcceptance": false,
-    "plan": "tools/post-media-android/README.md",
-    "deviceWindow": "DEFERRED_USER_OTHER_SESSION_OCCUPIES_PHONE",
-    "executedChecksAreFullModuleAcceptance": false,
-    "nextStep": "Run the offline ready check, then use the released phone window once; PMA01–14 remain NOT_RUN. No ADB/device actions before release."
+    "ledgerEntry": "currentReportModeration"
   },
   "featureHistory": [
     {
@@ -26755,28 +26758,21 @@
   },
   "latestBackendValidationEvidence": "docs/design/community-flutter-f4-validation-20261012.json",
   "currentInventoryScope": {
-    "taskPlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+    "taskPlan": "docs/branches/feat-report-moderation.md",
     "affectedModules": [
-      "A00",
+      "B08",
+      "B11",
       "A01",
-      "A02",
       "A03",
-      "A04",
-      "A05",
       "A06",
-      "A07",
       "A08",
-      "A09",
+      "A10",
       "A12",
-      "N01",
-      "N03",
       "B02",
-      "B03",
       "B05",
-      "B06",
-      "B10"
+      "B06"
     ],
-    "scope": "Single Android community/native/Passkey first, then two physical Android NI-X01 and NI-X02",
+    "scope": "Phase 1 existing-post reporting/moderation/minimal-notification integration; final evidence pending",
     "fullModuleAcceptancePassed": false,
     "newDeviceTestsExecuted": false
   },
@@ -39249,5 +39245,177 @@
     "testedPullRequestHEAD": "06a7ada859a52b3407a49e044debbe86d70567ca",
     "mergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
   },
-  "currentPr13MergeReceipt": "docs/design/community-pr13-main-merge-20261018.json"
+  "currentPr13MergeReceipt": "docs/design/community-pr13-main-merge-20261018.json",
+  "reportModerationPredecessorSnapshot20261018": {
+    "currentFeature": {
+      "recordedOn": "2026-10-15",
+      "branch": "codex/post-image-integration",
+      "sourceCommit": "2eeb19ce87542aed9e0c57874e8d6b3478df946d",
+      "result": "PASS_NON_DEVICE_PREPARATION",
+      "deviceResult": "NOT_RUN_OTHER_SESSION_OCCUPIES_PHONE",
+      "report": "docs/design/post-image-android-preparation-report.md",
+      "evidence": "docs/design/post-image-android-preparation-verification.json",
+      "runbook": "tools/post-media-android/README.md",
+      "analysisIssues": 0,
+      "flutterFixtureTests": 10,
+      "pythonGuardTests": 15,
+      "hostBuildDeviceGuards": 4,
+      "nativeDebugApks": 2,
+      "nativeReleaseBuild": "NOT_RUN_THIS_PHASE",
+      "nativeProbeExecution": "NOT_RUN",
+      "phoneOrAdbUsed": false,
+      "mainMerged": false,
+      "deployed": false,
+      "completeModuleAcceptance": false,
+      "plan": "tools/post-media-android/README.md",
+      "deviceWindow": "DEFERRED_USER_OTHER_SESSION_OCCUPIES_PHONE",
+      "executedChecksAreFullModuleAcceptance": false,
+      "nextStep": "Run the offline ready check, then use the released phone window once; PMA01–14 remain NOT_RUN. No ADB/device actions before release."
+    },
+    "currentInventoryScope": {
+      "taskPlan": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "affectedModules": [
+        "A00",
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A12",
+        "N01",
+        "N03",
+        "B02",
+        "B03",
+        "B05",
+        "B06",
+        "B10"
+      ],
+      "scope": "Single Android community/native/Passkey first, then two physical Android NI-X01 and NI-X02",
+      "fullModuleAcceptancePassed": false,
+      "newDeviceTestsExecuted": false
+    },
+    "interpretation": "Preserved previous task inventory; not a report/moderation result"
+  },
+  "currentReportModeration": {
+    "recordedOn": "2026-10-18",
+    "branch": "codex/feat/report-moderation",
+    "taskReference": "docs/branches/feat-report-moderation.md",
+    "contract": "docs/design/report-notification-contract.md",
+    "baselineMainCommit": "986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb",
+    "phase1ImplementationState": "INTEGRATED_WORKING_TREE_IN_PROGRESS",
+    "phase1ValidationState": "IN_PROGRESS",
+    "fixedCandidate": "NOT_FIXED_FINAL_HEAD_PENDING",
+    "workingTreeContainsUncommittedImplementation": true,
+    "mainMerged": false,
+    "deployed": false,
+    "published": false,
+    "fullModuleAcceptancePassed": false,
+    "affectedModules": [
+      "B08",
+      "B11"
+    ],
+    "reopenedRegressionModules": [
+      "A01",
+      "A03",
+      "A06",
+      "A08",
+      "A10",
+      "A12",
+      "B02",
+      "B05",
+      "B06"
+    ],
+    "phase1Scope": [
+      "existing-post reports and original-request reconciliation",
+      "same post and snapshot merged across reasons; each report retains its reason",
+      "same-origin desktop reviewer/admin UI and privacy-safe DTOs",
+      "independent sanctions, audit and conditional reversal",
+      "three appeal rounds per sanction with only one pending; independently paged batches",
+      "account/identity-scoped minimal system notifications, detail-only read and owned routes",
+      "restricted self-service notices/appeals without a replacement community session"
+    ],
+    "migration": {
+      "file": "services/api/migrations/0015_reports_moderation.sql",
+      "baseHasContinuousMigrationsThrough": 14,
+      "dependsOnCommentTables": false,
+      "commentsTentativeNumber": 16,
+      "finalMainNumberingRecheckRequired": true,
+      "overwritesMergedMigrations": false
+    },
+    "phase2State": "NOT_INTEGRATED_WAITING_FOR_COMMENTS_MAIN_DELIVERY",
+    "phase2OwnerBoundary": "comments-replies owns publishing/images/failure tasks; this task adapts comment reports and the real failure provider after comments merge",
+    "phase2ContractAvailable": true,
+    "actualCommentFailureProviderInstalled": false,
+    "excluded": [
+      "full direct messaging and chat-evidence reports",
+      "full interaction inbox",
+      "system push"
+    ],
+    "sourceEntries": [
+      "services/api/internal/authprivacy/community_reports.go",
+      "services/api/internal/authprivacy/community_moderation.go",
+      "services/api/internal/authprivacy/community_moderation_appeals.go",
+      "services/api/internal/authprivacy/community_moderation_materials.go",
+      "services/api/internal/authprivacyhttp/moderation_endpoints.go",
+      "apps/admin/app.mjs",
+      "apps/mobile/lib/src/reports/report_screens.dart",
+      "apps/mobile/lib/src/system_notifications/governance_controller.dart"
+    ],
+    "validationEntries": [
+      {
+        "entry": "services/api/authlab/run-moderation-isolated.sh",
+        "workingDirectory": "services/api",
+        "pattern": "^(TestModeration|TestRealHTTPSModeration)",
+        "state": "IN_PROGRESS_FINAL_EVIDENCE_PENDING",
+        "scope": "real isolated PostgreSQL, migration/privilege/lifecycle/concurrency/privacy and HTTPS; absent DSN skips are not PASS"
+      },
+      {
+        "entry": "services/api/internal/authprivacyhttp/moderation_live_postgres_test.go",
+        "state": "IN_PROGRESS_FINAL_EVIDENCE_PENDING",
+        "scope": "real Dart to Go C HTTPS to SQL plus actual Go /admin browser; owned synthetic accounts only"
+      },
+      {
+        "entry": "apps/admin/test/live-api-smoke.mjs",
+        "state": "IN_PROGRESS_REAL_GO_EXECUTION_PENDING",
+        "scope": "loopback HTTPS login, claim, MUTE 3 days, ENDED/audit and screenshot; no mock or exported bearer"
+      },
+      {
+        "entry": "apps/mobile/test/governance_test.dart; governance_http_test.dart; governance_material_store_test.dart; governance_live_probe_test.dart",
+        "state": "IN_PROGRESS_FINAL_EVIDENCE_PENDING",
+        "scope": "client ownership, pending originals, notice/material paging and live transport; not native/device proof"
+      },
+      {
+        "entry": "Go build/test/vet; Flutter analyze/test/build; packages/openapi/check-specs.py; final head CI",
+        "state": "IN_PROGRESS_FINAL_EVIDENCE_PENDING"
+      }
+    ],
+    "priorAdminOnlyChecks": {
+      "nodeTests": {
+        "result": "PASS",
+        "count": 12,
+        "sourceCommit": "13584dd586b4b74de3a857df3654b9354a88fe4d"
+      },
+      "syntheticHTTPSBrowser": {
+        "result": "PASS",
+        "sourceCommit": "85a456610e406e5b1a65c5eb879065f42c5d93ad"
+      },
+      "doesNotProveFinalIntegratedCandidateOrRealSQL": true
+    },
+    "independentReview": {
+      "snapshotAuthorizationPreparation": "STATIC_FIX_REVIEWED_DYNAMIC_REGRESSION_PENDING",
+      "perReportReasonRetention": "STATIC_FIX_REVIEWED_DYNAMIC_REGRESSION_PENDING",
+      "agentReviewIsGitHubMemberApproval": false
+    },
+    "deferredOrNotRun": [
+      "cross-device Passkey NI-X02 user-deferred",
+      "iOS deferred",
+      "current candidate native/device acceptance not executed in this task",
+      "production independent operational/security and evidence-retention acceptance"
+    ],
+    "nextAcceptance": "Root records exact final SHA/source inputs, actual commands and safe evidence after fixing/retesting findings, then independent final review and head checks. B08/B11 remain partial, without full PASS."
+  }
 }

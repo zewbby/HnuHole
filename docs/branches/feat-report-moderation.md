@@ -1,8 +1,9 @@
 # 举报、审核与最小系统通知：开发任务范围
 
-创建：2026-10-18，Asia/Shanghai。状态：SCOPED_NOT_IMPLEMENTED，仅完成分支与边界准备。
+创建／更新：2026-10-18，Asia/Shanghai。状态：PHASE1_IMPLEMENTATION_AND_VALIDATION_IN_PROGRESS。
 仓库 zewbby/HnuHole；分支 `codex/feat/report-moderation`；独立目录 `E:/HnuHole-report-moderation-20261018/repo`。
-创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`，未执行新产品测试，未宣告治理或生产通过。
+创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`；共享接线前已正常整合实际 main
+`986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb`（包含 PR #13 及其合并记录）。当前后端仍有未提交集成改动，最终候选及证据尚未固定；未合并、未发布，不宣告 B11／B08 完整通过。
 
 ## 目标与本次包含
 
@@ -37,8 +38,9 @@
 优先新增 `services/api/internal/moderation/`，以及 authprivacy 下独立 reports/moderation/system_notifications 文件；
 HTTP处理器使用相应独立文件。移动端放 `apps/mobile/lib/src/reports/`、`system_notifications/`，管理端放 `apps/admin/`。
 新契约使用 `packages/openapi/report-api.yaml`、`moderation-api.yaml`、`system-notification-api.yaml`。
-本任务暂定 `0015_reports_moderation.sql` 和 `infra/postgres/grant-moderation.sql`；任务1暂定0016，任务3不改业务迁移。
-0015须可应用于尚无评论表的main；评论目标后续经有类型适配器检查，保持资源归属和生命周期完整性。
+本任务基础迁移为 `0015_reports_moderation.sql`，权限脚本为 `infra/postgres/grant-moderation.sql`。
+已核对 main `986477b` 的正式迁移连续至0014；0015只使用既有账号、身份和帖子表，不依赖评论表，不覆盖已合入迁移。
+任务1仍暂定0016，最终以各自送审时实时 main 核对；评论目标后续经有类型适配器检查，保持资源归属和生命周期完整性。
 若确需新增评论专用DDL，等任务1的0016实际合入后按实时编号增加后继迁移，不预占或覆盖其他任务文件。
 开工与送审时核对编号占用；不允许缺失／乱序迁移，不改已合入迁移来掩盖冲突。
 共享路由／权限／账号生命周期只做必要接线，先核对归属，保持C/V分离和现有Gate规则。
@@ -59,6 +61,31 @@ HTTP处理器使用相应独立文件。移动端放 `apps/mobile/lib/src/report
 非手机工作先完成；手机需统一窗口，真实凭据或系统安全设置按当前用户授权处理，不反复确认已授权动作。
 
 ## 完成标准与交付
+
+### 阶段1当前实现与验证边界
+
+本阶段是通知基础与已有帖子的独立交付，接口见[分阶段契约](../design/report-notification-contract.md)、
+[举报 API](../../packages/openapi/report-api.yaml)、[审核 API](../../packages/openapi/moderation-api.yaml)及[通知 API](../../packages/openapi/system-notification-api.yaml)。
+
+- 移动端已有帖子举报入口、六类原因、说明与补图、原请求结果核对及待核对材料保存；系统通知已有账号／身份隔离、列表、详情、单条已读和资源路由。受限账号通过本人处理通知入口查看处罚和申诉，不建立可访问社区的替代会话。
+- C 侧已有举报／案件／快照、命令回执、操作审计及必要共享接线的工作区实现。相同 `postId + snapshotDigest` 的举报跨原因合案，每份举报保留自己的类别，只形成一次认定和处罚。作者删除终结未完成案件；已有处罚独立保留，误判撤销不能恢复作者已删除内容。
+- 电脑同源 HTTPS `/admin` 已有真实用户名密码登录、案件处理、审核员／管理员权限、资料重置、独立申诉复核、六位编号账号列表／查询、处罚撤销与操作记录。只下发允许字段，不提供邮箱、资格或内部映射、其他面具与举报人身份；Bearer 仅在内存。
+- 每项处罚独立计时并按最大有效截止汇总；撤销只影响对应处罚。每项处罚最多三轮申诉、同时一轮待复核，原处理人回避；到期不取消申诉。首次及追加各自保留材料，案件举报和申诉材料只自动读首份／首批，后续按升序游标逐批追加，明确提示未加载材料。
+- `0015`、最小数据库权限、启动边界校验和 SQL／HTTPS 回归入口已在集成工作区，最终执行结果仍由固定候选的报告补齐。网页 Node／合成 HTTPS 检查的原快照结果只证明工作台范围，不能代证真实 C／SQL、最终共享授权或整模块验收。
+
+当前验证状态为 IN_PROGRESS。主任务继续执行 `services/api/authlab/run-moderation-isolated.sh`（从 `services/api` 运行）、
+真实 Dart→C HTTPS→SQL 与实际 Go `/admin` 浏览器链、受影响 Flutter／Go 构建分析及契约校验；越权、并发、原结果、跨原因合案、权限隐私、生命周期和申诉恢复须在最终 head 重核。
+独立审查已发现并推动修复管理授权初验及逐份举报原因遗漏，静态复核与真实 SQL 回归的证据分别记录，不把修复代码等同于测试通过。
+[模块交接](../design/module-acceptance-handoff.md)和[机器台账](../design/module-acceptance-ledger.json)保留 B08／B11 的部分实现、待验证状态；最终 SHA、命令结果与脱敏证据由主任务补入。
+
+### 阶段2依赖与未完成范围
+
+评论发布／图片／原任务失败重试仍归 `codex/feat/comments-replies`。阶段1合入 main 后，评论任务从 main 对接稳定通知契约；
+待评论自身合入，再由本任务接评论举报及实际失败 provider，并做跨模块集成回归。本阶段只有 provider 接口与白名单路由，不伪造评论失败任务或服务端已受理事实。
+完整私信、聊天证据举报、完整互动收件箱和系统推送继续排除；B08／B11 的其他未实现业务不标为“只差测试”。
+跨设备 Passkey NI-X02、iOS、当前候选原生设备及生产独立证据仍分别延期／未验，本阶段不操作手机或改变现有安全边界。
+
+### 最终交付门槛
 
 帖子举报能进入网页处理并回到本人通知；角色越权被拒绝，并发处理不重复处罚，举报人与其他匿名身份不泄露。
 处罚后的内容和会话权限即时按既定规则生效，必要申诉处理可追溯。评论目标与失败通知真实接线后再计相应子项完成。
