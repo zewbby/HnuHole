@@ -35,6 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/feat/report-moderation` | 举报审核、必要申诉及最小系统通知；尚未实现。 | [任务边界](docs/branches/feat-report-moderation.md) |
 | `codex/community-flutter-pages` | 实现社区页面并推进社区与认证的 Android 验收。 | [详情](docs/branches/community-flutter-pages.md) |
 
 ### 已合并或退役的历史工作
