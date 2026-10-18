@@ -38,6 +38,7 @@ class IsolatedEnvironmentTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'shared'
             root.mkdir(mode=0o755)
+            root.chmod(0o755)  # Fixture must stay shared even under an owned 077 umask.
             with self.assertRaises(RuntimeError):
                 environment.Lab(root, Path('/source'))
             root.chmod(0o700)
