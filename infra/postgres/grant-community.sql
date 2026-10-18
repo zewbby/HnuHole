@@ -89,6 +89,12 @@ DO $$ BEGIN
   GRANT UPDATE(reporter_account_id,identity_id) ON c_moderation.reports TO hnuhole_c_runtime;
   GRANT INSERT,DELETE ON c_moderation.notifications TO hnuhole_c_runtime;
   GRANT SELECT(account_id),DELETE ON c_moderation.access_sessions,c_moderation.roles TO hnuhole_c_runtime;
+  -- Old trusted ban/mute commands keep a separate baseline when 0015 exists.
+  GRANT SELECT ON c_moderation.legacy_restrictions TO hnuhole_c_runtime;
+  GRANT SELECT(account_id,action,revoked_at,ends_at) ON c_moderation.sanctions TO hnuhole_c_runtime;
+  GRANT INSERT(account_id,ban_state,ban_ends_at,mute_state,mute_ends_at),
+   UPDATE(ban_state,ban_ends_at,mute_state,mute_ends_at)
+   ON c_moderation.legacy_restrictions TO hnuhole_c_runtime;
   GRANT UPDATE(moderation_rename_required) ON public.community_identities TO hnuhole_c_runtime;
  END IF;
 END $$;

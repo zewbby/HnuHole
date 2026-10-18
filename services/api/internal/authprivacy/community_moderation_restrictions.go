@@ -20,6 +20,34 @@ type moderationRestrictionState struct {
 	closure                                pendingClosure
 }
 
+// Legacy trusted commands replace only their independent baseline. New case
+// decisions and reversals call applyModerationRestrictionTx directly, so their
+// aggregate projection can never become an unrevocable legacy punishment.
+func (c *Community) applyLegacyModerationRestrictionTx(ctx context.Context, tx pgx.Tx, s moderationRestrictionState, action string, endsAt *time.Time, at time.Time) error {
+	if action != "BAN" && action != "MUTE" || endsAt != nil && !endsAt.After(at) {
+		return ErrIntentInvalid
+	}
+	var installed bool
+	if err := tx.QueryRow(ctx, `SELECT to_regnamespace('c_moderation') IS NOT NULL`).Scan(&installed); err != nil {
+		return ErrAuthorizationUnavailable
+	}
+	if installed {
+		query := `INSERT INTO c_moderation.legacy_restrictions(account_id,ban_state,ban_ends_at,mute_state,mute_ends_at) VALUES($1,'NONE',NULL,'MUTED',$2) ON CONFLICT(account_id) DO UPDATE SET mute_state=EXCLUDED.mute_state,mute_ends_at=EXCLUDED.mute_ends_at`
+		if action == "BAN" {
+			query = `INSERT INTO c_moderation.legacy_restrictions(account_id,ban_state,ban_ends_at,mute_state,mute_ends_at) VALUES($1,'BANNED',$2,'NONE',NULL) ON CONFLICT(account_id) DO UPDATE SET ban_state=EXCLUDED.ban_state,ban_ends_at=EXCLUDED.ban_ends_at`
+		}
+		if _, err := tx.Exec(ctx, query, s.account, endsAt); err != nil {
+			return err
+		}
+		var err error
+		endsAt, err = effectiveModerationEnd(ctx, tx, s.account, action, at)
+		if err != nil {
+			return err
+		}
+	}
+	return c.applyModerationRestrictionTx(ctx, tx, s, action, endsAt, at)
+}
+
 func (c *Community) lockModerationRestrictionTx(ctx context.Context, tx pgx.Tx, account uuid.UUID, action string) (moderationRestrictionState, error) {
 	s := moderationRestrictionState{account: account}
 	if account == uuid.Nil || (action != "BAN" && action != "MUTE" && action != "UNBAN" && action != "UNMUTE") {

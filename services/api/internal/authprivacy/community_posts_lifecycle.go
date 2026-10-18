@@ -109,7 +109,7 @@ func (c *Community) ApplyAccountMute(ctx context.Context, account uuid.UUID, exp
 		if locked.version != expectedVersion {
 			return ErrRestrictionStateChanged
 		}
-		return c.applyModerationRestrictionTx(ctx, tx, locked, "MUTE", endsAt, final.TrustedAt)
+		return c.applyLegacyModerationRestrictionTx(ctx, tx, locked, "MUTE", endsAt, final.TrustedAt)
 	})
 	return err
 }

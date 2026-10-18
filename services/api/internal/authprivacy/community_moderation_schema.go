@@ -35,7 +35,7 @@ func (c *Community) WithModeration(ctx context.Context) (*Community, error) {
 			insert[t] = true
 		}
 		deletable := map[string]bool{"roles": true, "access_sessions": true, "notifications": true}
-		writable := map[string][]string{"roles": {"role"}, "access_sessions": {"revoked_at"}, "cases": {"state", "version", "outcome", "explanation", "decided_by"}, "reports": {"reporter_account_id", "identity_id"}, "sanctions": {"revoked_at"}, "appeals": {"state", "version", "reason"}, "notifications": {"read_at"}, "request_fences": {"retry_token"}}
+		writable := map[string][]string{"roles": {"role"}, "access_sessions": {"revoked_at"}, "cases": {"state", "version", "outcome", "explanation", "decided_by"}, "reports": {"reporter_account_id", "identity_id"}, "sanctions": {"revoked_at"}, "appeals": {"state", "version", "reason"}, "notifications": {"read_at"}, "request_fences": {"retry_token"}, "legacy_restrictions": {"ban_state", "ban_ends_at", "mute_state", "mute_ends_at"}}
 		for _, t := range tables {
 			if e := c.pool.QueryRow(ctx, `SELECT has_table_privilege(current_user,$1,'SELECT') AND has_table_privilege(current_user,$1,'INSERT')=$2 AND has_table_privilege(current_user,$1,'DELETE')=$3 AND NOT has_table_privilege(current_user,$1,'TRUNCATE')`, "c_moderation."+t, insert[t], deletable[t]).Scan(&ok); e != nil || !ok {
 				return nil, ErrAuthorizationUnavailable
@@ -65,6 +65,9 @@ func (c *Community) WithModeration(ctx context.Context) (*Community, error) {
 		if e := c.pool.QueryRow(ctx, `SELECT NOT has_schema_privilege(current_user,'c_moderation','CREATE')`).Scan(&ok); e != nil || !ok {
 			return nil, ErrAuthorizationUnavailable
 		}
+	}
+	if err := CheckModerationLegacyRestrictionSchema(ctx, c.pool); err != nil {
+		return nil, err
 	}
 	clone := *c
 	clone.moderationEnabled = true

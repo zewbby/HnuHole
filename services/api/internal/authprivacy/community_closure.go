@@ -608,7 +608,7 @@ func (c *Community) ApplyAccountBan(ctx context.Context, account uuid.UUID, expe
 		if locked.version != expectedVersion {
 			return ErrRestrictionStateChanged
 		}
-		return c.applyModerationRestrictionTx(ctx, tx, locked, "BAN", endsAt, final.TrustedAt)
+		return c.applyLegacyModerationRestrictionTx(ctx, tx, locked, "BAN", endsAt, final.TrustedAt)
 	})
 	return err
 }
