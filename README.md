@@ -35,6 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/ci/android-prerelease` | Android候选构建与隔离预发布演练；尚未实现。 | [任务边界](docs/branches/ci-android-prerelease.md) |
 | `codex/community-flutter-pages` | 实现社区页面并推进社区与认证的 Android 验收。 | [详情](docs/branches/community-flutter-pages.md) |
 
 ### 已合并或退役的历史工作
