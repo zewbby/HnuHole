@@ -4,23 +4,9 @@
 CREATE SCHEMA c_moderation;
 CREATE TABLE c_moderation.schema_meta(singleton_id smallint PRIMARY KEY CHECK(singleton_id=1), version int NOT NULL CHECK(version=1));
 INSERT INTO c_moderation.schema_meta VALUES(1,1);
-CREATE TABLE c_moderation.platform_numbers(account_id uuid PRIMARY KEY REFERENCES c_auth.accounts, number text COLLATE "C" UNIQUE NOT NULL CHECK(number ~ '^[0-9]{6}$'));
-CREATE FUNCTION c_moderation.allocate_number() RETURNS trigger LANGUAGE plpgsql AS $$
-DECLARE candidate text;
-BEGIN
- IF (SELECT count(*) FROM c_moderation.platform_numbers)>=1000000 THEN RAISE EXCEPTION 'platform number capacity exhausted'; END IF;
- LOOP
-  candidate:=lpad(((('x'||substr(replace(gen_random_uuid()::text,'-',''),1,8))::bit(32)::bigint)%1000000)::text,6,'0');
-  BEGIN INSERT INTO c_moderation.platform_numbers VALUES(NEW.account_id,candidate); EXIT;
-  EXCEPTION WHEN unique_violation THEN NULL; END;
- END LOOP;
- RETURN NEW;
-END $$;
-CREATE TRIGGER moderation_number AFTER INSERT ON c_auth.accounts FOR EACH ROW EXECUTE FUNCTION c_moderation.allocate_number();
-DO $$ DECLARE a record; candidate text; BEGIN FOR a IN SELECT account_id FROM c_auth.accounts ORDER BY created_at,account_id LOOP
- LOOP candidate:=lpad(((('x'||substr(replace(gen_random_uuid()::text,'-',''),1,8))::bit(32)::bigint)%1000000)::text,6,'0');
- BEGIN INSERT INTO c_moderation.platform_numbers VALUES(a.account_id,candidate); EXIT; EXCEPTION WHEN unique_violation THEN NULL; END; END LOOP;
-END LOOP; END $$;
+-- Reuse the existing private six-digit number; no second mapping.
+CREATE VIEW c_moderation.platform_numbers WITH (security_invoker=true) AS SELECT account_id,platform_number AS number FROM c_auth.accounts;
+ALTER TABLE c_auth.accounts ADD COLUMN registered_at timestamptz;
 CREATE TABLE c_moderation.roles(account_id uuid PRIMARY KEY REFERENCES c_auth.accounts, role text NOT NULL CHECK(role IN('REVIEWER','ADMIN')));
 CREATE TABLE c_moderation.access_sessions(token_digest bytea PRIMARY KEY CHECK(octet_length(token_digest)=32),account_id uuid NOT NULL REFERENCES c_auth.accounts,credential_version bigint NOT NULL,session_generation bigint NOT NULL,authorization_generation bigint NOT NULL,expires_at timestamptz NOT NULL,revoked_at timestamptz);
 CREATE UNIQUE INDEX moderation_one_access ON c_moderation.access_sessions(account_id) WHERE revoked_at IS NULL;
