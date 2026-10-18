@@ -638,9 +638,10 @@ paths:
   /api/v1/moderation/appeals:
     get:
       operationId: listModerationAppeals
-      summary: List the latest appeals for review
-      description: Returns at most the newest 100 appeals, descending by creation time and UUID. This route currently
-        provides no pagination, filter or extra query parameter.
+      summary: List pending appeals for review
+      description: Returns only PENDING appeals, descending by creation time and appeal UUID, with limit and opaque
+        compound before pagination. List entries contain metadata and materials=[]; detail retains all actual submitted
+        materials. Requires an ordinary management session.
       security:
       - bearerAuth: []
       responses:
@@ -671,6 +672,23 @@ paths:
           $ref: '#/components/responses/Error429'
         '503':
           $ref: '#/components/responses/Error503'
+      parameters:
+      - name: before
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 1
+        description: 'Opaque nextBefore continuation: current encoding is RFC3339Nano time, a literal |, and canonical
+          appeal UUID. URL-encode and pass it unchanged.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 50
   /api/v1/moderation/appeals/{appealId}:
     parameters:
     - name: appealId
@@ -827,17 +845,35 @@ paths:
   /api/v1/moderation/accounts:
     get:
       operationId: searchModerationAccount
-      summary: Find an account by exact platform number
-      description: Exact number lookup only; returns zero or one result with permitted state, registration timestamp
-        if known and recorded sanctions. No email search, internal-account lookup or identity enumeration.
+      summary: List accounts or search one exact platform number
+      description: Without number, returns the initial directory with permitted account metadata in ascending six-digit
+        platform-number order and sanctions=[]. Optional number searches exactly that platform number and includes
+        recorded sanctions. Optional before continues strictly after a six-digit platform number; preserve leading
+        zeros. Never supports email, internal-account-ID or other-mask lookup.
       security:
       - bearerAuth: []
       parameters:
       - name: number
         in: query
-        required: true
+        required: false
         schema:
           $ref: '#/components/schemas/PlatformNumber'
+        description: Optional exact platform number. Omit to list the initial account directory.
+      - name: before
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/PlatformNumber'
+        description: Ascending continuation returned by nextBefore; despite its name, selects platform numbers strictly
+          greater than this six-digit value.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 50
       responses:
         '200':
           description: Committed response.
@@ -1301,6 +1337,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Material'
+      description: Self-service appeal DTO always includes caseId, version and action, as well as retained material.
+        It never includes platformNumber or originalActorNumber; those appear only in management DTOs.
     Opaque32:
       type: string
       minLength: 43
@@ -1600,12 +1638,18 @@ components:
       additionalProperties: false
       required:
       - items
+      - nextBefore
       properties:
         items:
           type: array
+          maxItems: 50
           items:
-            $ref: '#/components/schemas/AdminAppeal'
-          maxItems: 100
+            $ref: '#/components/schemas/PendingAdminAppeal'
+        nextBefore:
+          type: string
+          nullable: true
+      description: Only PENDING appeals, newest first by creation time then appeal UUID. nextBefore is null at end;
+        otherwise pass the opaque time|UUID cursor unchanged.
     ModerationIdentity:
       type: object
       additionalProperties: false
@@ -1649,19 +1693,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sanction'
-      description: Historical registrations before this migration have createdAt=null. Received reports do not count
-        as violations; revocation corrects the corresponding count.
+      description: Only permitted platform metadata. Legacy registrations have createdAt=null when no historical
+        registration timestamp exists. New registrations since migration 0015 use the database transaction timestamp.
+        Initial directory items have sanctions=[]; an exact number search includes that account's recorded sanctions.
+        Received reports do not count as violations; revocation corrects its corresponding count.
     AccountSearch:
       type: object
       additionalProperties: false
       required:
       - items
+      - nextBefore
       properties:
         items:
           type: array
+          maxItems: 50
           items:
             $ref: '#/components/schemas/ModerationAccount'
-          maxItems: 1
+        nextBefore:
+          type: string
+          nullable: true
+          pattern: ^[0-9]{6}$
+      description: Without number this is the initial account directory, ordered by six-digit platform number ascending.
+        With number it is an exact-match search returning zero or one item. nextBefore is null at end; otherwise
+        it is the final returned platform number and excludes that number from the next page.
     AuditEntry:
       type: object
       additionalProperties: false
@@ -1821,3 +1875,60 @@ components:
           - NONE
           - REVIEWER
           - ADMIN
+    PendingAdminAppeal:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - sanctionId
+      - caseId
+      - state
+      - ordinal
+      - version
+      - reason
+      - action
+      - materials
+      - platformNumber
+      - originalActorNumber
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        sanctionId:
+          $ref: '#/components/schemas/UUID'
+        caseId:
+          $ref: '#/components/schemas/UUID'
+        state:
+          type: string
+          enum:
+          - PENDING
+        ordinal:
+          type: integer
+          minimum: 1
+          maximum: 3
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+        reason:
+          type: string
+          maxLength: 500
+        action:
+          type: string
+          enum:
+          - TAKEDOWN
+          - MUTE
+          - BAN
+          - RESET_NICKNAME
+          - RESET_AVATAR
+        materials:
+          type: array
+          maxItems: 0
+          items:
+            $ref: '#/components/schemas/Material'
+        platformNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+        originalActorNumber:
+          $ref: '#/components/schemas/PlatformNumber'
+      description: Pending management list entry. Metadata includes caseId, version, action and the two permitted
+        platform numbers. materials is always an empty array; open the authorized detail route to load all submitted
+        material.
