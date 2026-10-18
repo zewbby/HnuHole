@@ -137,7 +137,10 @@ def main():
         define_sha = sha(defines_file)
         build_args = ['--target', 'lib/main.dart', '--target-platform', 'android-arm64', '--build-name', version,
                       '--build-number', str(a.build_number), '--dart-define-from-file', defines_file]
-        run([flutter, 'build', 'apk', '--debug', '--config-only', *build_args], app, env, visible=True)
+        # The required enforce-lockfile pub get has already prepared DEBUG
+        # tooling. Unlike release #169336, debug keeps dev plugins; config-only
+        # must not repeat online resolution on every local rebuild.
+        run([flutter, 'build', 'apk', '--debug', '--config-only', '--no-pub', *build_args], app, env, visible=True)
         clean()
         require(all(sha(source / name) == value for name, value in locks.items()), 'config-only changed a lockfile')
         run([flutter, 'build', 'apk', '--debug', '--no-pub', *build_args], app, env, visible=True)
