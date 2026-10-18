@@ -1,0 +1,8 @@
+--- a/apps/mobile/android/app/src/debug/res/values/passkey_associations.xml
++++ b/apps/mobile/android/app/src/debug/res/values/passkey_associations.xml
+@@ -1,4 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <resources>
+-    <string name="asset_statements" translatable="false">[{\"include\":\"https://zewbby.github.io/.well-known/assetlinks.json\"}]</string>
++  <string name="asset_statements" translatable="false">[{\"include\":\"https://hnuhole-community-passkey.pages.dev/.well-known/assetlinks.json\"}]</string>
+ </resources>

@@ -1,0 +1,8 @@
+[
+  "-webauthn-rp-id",
+  "hnuhole-community-passkey.pages.dev",
+  "-webauthn-https-origins",
+  "https://hnuhole-community-passkey.pages.dev",
+  "-webauthn-android-origins",
+  "android:apk-key-hash:MwnOABpd_ZMUjBTjUVkUemcR5LYdiBt6Ijs-hClmXjQ"
+]

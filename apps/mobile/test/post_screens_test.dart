@@ -389,6 +389,85 @@ void main() {
     c.dispose();
   });
 
+  testWidgets('空内容下一步向读屏通知必填错误且不发布', (tester) async {
+    final handle = tester.ensureSemantics();
+    final c = _WidgetPosts(), e = editor();
+    try {
+      await tester.pumpWidget(_app(composer(c, e)));
+      await tester.tap(find.text('下一步'));
+      await tester.pumpAndSettle();
+      final error = find.text('请填写标题，并提供正文或图片；标题最多15字，正文最多3000字。');
+      expect(error, findsOneWidget);
+      expect(
+        tester
+            .getSemantics(error)
+            .getSemanticsData()
+            .flagsCollection
+            .isLiveRegion,
+        isTrue,
+      );
+      expect(find.byKey(const ValueKey('post-title-input')), findsOneWidget);
+      expect(find.byKey(const ValueKey('post-body-input')), findsOneWidget);
+      expect(c.publications, 0);
+      await tester.enterText(
+        find.byKey(const ValueKey('post-title-input')),
+        '标题',
+      );
+      await tester.pump();
+      expect(error, findsNothing);
+      expect(c.publications, 0);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      c.dispose();
+      handle.dispose();
+    }
+  });
+
+  testWidgets('身份面板向读屏暴露当前选中项，关闭不改变身份或发布', (tester) async {
+    final handle = tester.ensureSemantics();
+    final c = _WidgetPosts()
+      ..identities = [
+        ManagedIdentity(
+          id: _postId,
+          nickname: '已选身份',
+          avatar: 'default-v1',
+          isOriginal: true,
+          createdAt: _time,
+        ),
+      ];
+    final e = editor()
+      ..title = '标题'
+      ..body = '正文';
+    try {
+      await tester.pumpWidget(_app(composer(c, e)));
+      await tester.tap(find.text('下一步'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('已选身份'));
+      await tester.pumpAndSettle();
+      final choice = find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.byType(ListTile),
+      );
+      expect(choice, findsOneWidget);
+      expect(
+        tester
+            .getSemantics(choice)
+            .getSemanticsData()
+            .flagsCollection
+            .isSelected,
+        ui.Tristate.isTrue,
+      );
+      await tester.tap(find.byTooltip('关闭身份选择'));
+      await tester.pumpAndSettle();
+      expect(e.identityId, _postId);
+      expect(c.publications, 0);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      c.dispose();
+      handle.dispose();
+    }
+  });
+
   testWidgets('零身份进入设置后返回原确认且不自动发布', (tester) async {
     final c = _WidgetPosts(),
         e = editor()
@@ -539,6 +618,54 @@ void main() {
     expect(find.text('请重新核对登录状态'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     c.dispose();
+  });
+
+  testWidgets('列表读取失败向读屏通知错误并保留重新加载操作', (tester) async {
+    final handle = tester.ensureSemantics();
+    final c = _WidgetPosts();
+    try {
+      await tester.pumpWidget(
+        _app(
+          ChannelPostsScreen(
+            controller: c,
+            channel: _channel,
+            onManageIdentities: () async {},
+            onAuthenticationRequired: () {},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      c.failure = '普通网络读取失败';
+      c.notifyListeners();
+      await tester.pump();
+      expect(
+        tester
+            .getSemantics(find.text('暂时无法加载帖子'))
+            .getSemanticsData()
+            .flagsCollection
+            .isLiveRegion,
+        isTrue,
+      );
+      final retry = tester.getSemantics(find.text('重新加载'));
+      expect(
+        retry.getSemanticsData().hasAction(ui.SemanticsAction.tap),
+        isTrue,
+      );
+      final previous = c.reads;
+      tester.binding.renderViews.single.owner!.semanticsOwner!.performAction(
+        retry.id,
+        ui.SemanticsAction.tap,
+      );
+      await tester.pump();
+      expect(c.reads, previous + 1);
+      expect(c.accountId, _accountId);
+      expect(c.available, isTrue);
+      expect(c.publications, 0);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      c.dispose();
+      handle.dispose();
+    }
   });
 
   testWidgets('空列表与首次失败提供不同状态和真实重试', (tester) async {

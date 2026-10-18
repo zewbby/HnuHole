@@ -290,13 +290,34 @@ void main() {
       await sessions.login(username, password);
       expect(sessions.isAuthenticated, isTrue);
 
+      final activeBeforeResetToken = store.current!.session!.token;
+      expect(
+        (await api.currentSession(activeBeforeResetToken)).accountId,
+        store.current!.session!.accountId,
+      );
       await flows.beginCodeReset(currentRecoveryCode);
       expect(flows.status, AuthFlowStatus.resetCodeShown);
       final newCode = flows.recoveryCode!;
       flows.hideRecoveryCode();
+      // A recovery intent must not revoke this still-live session. The commit,
+      // rather than a prior takeover/logout, must cause its later rejection.
+      expect(
+        (await api.currentSession(activeBeforeResetToken)).accountId,
+        store.current!.session!.accountId,
+      );
       await fixture('drop-next', {'path': '/api/v1/auth/password-resets'});
       await flows.commitReset(resetPassword, newCode);
       expect(flows.status, AuthFlowStatus.resetUnknown);
+      await expectLater(
+        api.currentSession(activeBeforeResetToken),
+        throwsA(
+          isA<AuthFailure>().having(
+            (e) => e.unauthorized,
+            'active pre-reset session revoked by real C commit',
+            true,
+          ),
+        ),
+      );
       final resetKey = store.current!.pendingReset!['key'];
       await restartClient();
       expect(sessions.isAuthenticated, isFalse);

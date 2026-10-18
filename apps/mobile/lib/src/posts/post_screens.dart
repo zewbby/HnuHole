@@ -266,6 +266,7 @@ class _ChannelPostsScreenState extends State<ChannelPostsScreen> {
     if (c.feedItems.isEmpty && c.feedError != null) {
       return _PageState(
         title: '暂时无法加载帖子',
+        announceTitle: true,
         message: '请稍后重试',
         action: '重新加载',
         onAction: () => c.loadFeed(widget.channel.id),
@@ -828,12 +829,15 @@ class _PostComposerScreenState extends State<PostComposerScreen> {
                               if (_validation != null)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 12),
-                                  child: Text(
-                                    _validation!,
-                                    style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .error,
+                                  child: Semantics(
+                                    liveRegion: true,
+                                    child: Text(
+                                      _validation!,
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .error,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -988,6 +992,8 @@ class _PostConfirmScreenState extends State<_PostConfirmScreen> {
                           const SizedBox(height: 12),
                           for (final identity in _identities)
                             ListTile(
+                              selected: widget.editor.identityId == identity.id,
+                              selectedColor: PostTheme.ink,
                               leading: const _IdentityAvatar(),
                               title: Text(identity.nickname),
                               trailing: widget.editor.identityId == identity.id
@@ -2288,11 +2294,13 @@ class _IdentityAvatar extends StatelessWidget {
 class _PageState extends StatelessWidget {
   const _PageState({
     required this.title,
+    this.announceTitle = false,
     this.message,
     this.action,
     this.onAction,
   });
   final String title;
+  final bool announceTitle;
   final String? message, action;
   final VoidCallback? onAction;
   @override
@@ -2302,10 +2310,13 @@ class _PageState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+          Semantics(
+            liveRegion: announceTitle,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            ),
           ),
           if (message != null) ...[
             const SizedBox(height: 12),

@@ -1,0 +1,37 @@
+{
+  "status": "APPLIED_EXPLICIT_USER_AUTHORIZATION_TEST_ONLY",
+  "rpId": "hnuhole-community-passkey.pages.dev",
+  "httpsOrigin": "https://hnuhole-community-passkey.pages.dev",
+  "certificateSha256": "3309ce001a5dfd93148c14e35159147a6711e4b61d881b7a223b3e8429665e34",
+  "approvedPackages": [
+    "org.hnuhole.hnuhole_mobile.communityf5.passkey",
+    "org.hnuhole.hnuhole_mobile.communityf5.passkey.control"
+  ],
+  "exactApprovedAssociationEntries": 2,
+  "files": {
+    "site/.well-known/assetlinks.json": "886f286883a7889c11acbcb3ec5a353aaee34e5287fd018b8ee70dc5692dc17b"
+  },
+  "domainControlVerifiedBy": "user signed-in Cloudflare account created independent Pages project and two visibly successful deployments; public content exact-match verified",
+  "initialDeployment": {
+    "id": "33244fe9-480d-48cd-90c0-afb70bdf701d",
+    "assetSha256": "2023cbbfee1e05382e49b8027c7801b14d5e469d9f93e6ed0865ab2f95b1bb9e",
+    "approvedPackageCount": 1
+  },
+  "currentDeployment": {
+    "id": "f791f91a-4cc7-4bc0-8816-28fd32e84c33",
+    "assetSha256": "886f286883a7889c11acbcb3ec5a353aaee34e5287fd018b8ee70dc5692dc17b",
+    "approvedPackageCount": 2
+  },
+  "additionalPackageAuthorization": "user explicitly allowed new DAL entry and independent control APK installation after review; preserve unresolved bad-signature package",
+  "excludedPackages": [
+    "org.hnuhole.hnuhole_mobile.communityf5.passkey.unassociated"
+  ],
+  "excludedCertificates": [
+    "08cddd6d4eff8b50315ecd1a4496d847a3d86048c6da5d08019b11aaa412e849"
+  ],
+  "backendAndroidOrigin": "android:apk-key-hash:MwnOABpd_ZMUjBTjUVkUemcR5LYdiBt6Ijs-hClmXjQ",
+  "backendRpOrOriginsChangedForAdditionalPackage": false,
+  "productionOrAuthenticationSessionDomainModified": false,
+  "credentialsOrPrivateSigningKeysIncluded": false,
+  "baselineCommit": "9dda242b21694af1c4c33f11784958851c805fc4"
+}
