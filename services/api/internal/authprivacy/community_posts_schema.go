@@ -18,6 +18,22 @@ func (c *Community) CheckPostSchema(ctx context.Context) error {
 	return checkPostSchema(ctx, c.pool)
 }
 
+// CheckModerationLifecycleSchema validates the cleanup hooks that migration
+// 0015 attaches to existing account/content lifecycles. It is independent of
+// whether posts or moderation HTTP features are configured. Pre-0015 databases
+// have no moderation dependency; the formal runtime must also hold the minimum
+// invoker cleanup privileges before it accepts any traffic.
+func CheckModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool) error {
+	if pool == nil {
+		return errPostSchema
+	}
+	var runtime bool
+	if err := pool.QueryRow(ctx, `SELECT current_user='hnuhole_c_runtime'`).Scan(&runtime); err != nil {
+		return errPostSchema
+	}
+	return checkModerationLifecycleSchema(ctx, pool, runtime)
+}
+
 func checkPostSchema(ctx context.Context, pool *pgxpool.Pool) error {
 	tables := []string{"schema_meta", "protocol_keys", "account_publication_control", "publication_stop_events", "identity_public_labels", "posts", "post_identity_bindings", "publication_tasks", "publication_attempts", "attempt_contents", "command_receipts", "payload_cleanup"}
 	columns := map[string][]string{
