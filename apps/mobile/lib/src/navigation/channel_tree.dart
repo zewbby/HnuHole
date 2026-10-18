@@ -182,6 +182,13 @@ class _ChannelTreeState extends State<ChannelTree> {
   }
 
   Widget _buildNode(BuildContext context, Channel channel, Offset center) {
+    void selectChannel() {
+      setState(() {
+        _selectedCode = channel.code;
+      });
+      widget.onChannelSelected(channel);
+    }
+
     final selected = _selectedCode == channel.code;
     final colorScheme = Theme.of(context).colorScheme;
     final accent = channel.initiallyVisible
@@ -195,14 +202,11 @@ class _ChannelTreeState extends State<ChannelTree> {
       child: Semantics(
         button: true,
         label: channel.displayName,
+        excludeSemantics: true,
+        onTap: selectChannel,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () {
-            setState(() {
-              _selectedCode = channel.code;
-            });
-            widget.onChannelSelected(channel);
-          },
+          onTap: selectChannel,
           child: AnimatedScale(
             scale: selected ? 1.16 : 1,
             duration: const Duration(milliseconds: 180),

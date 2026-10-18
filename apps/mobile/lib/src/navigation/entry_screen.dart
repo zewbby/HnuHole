@@ -144,13 +144,13 @@ class _EntryHeader extends StatelessWidget {
           ),
           if (authenticated && onMessagesPressed != null)
             IconButton(
-              tooltip: 'Messages',
+              tooltip: '消息',
               onPressed: onMessagesPressed,
               icon: const Icon(Icons.forum_outlined),
             ),
           if (authenticated && onProfilePressed != null)
             IconButton(
-              tooltip: 'My content',
+              tooltip: '我的',
               onPressed: onProfilePressed,
               icon: const Icon(Icons.person_outline),
             ),

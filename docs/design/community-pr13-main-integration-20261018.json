@@ -1,0 +1,4415 @@
+{
+  "schemaVersion": "hnuhole-pr13-main-integration/v1",
+  "recordedOn": "2026-10-18",
+  "branch": "codex/community-flutter-pages",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/13",
+  "communityStartHEAD": "2abda5935e2e5618ca90bb7e60314d7c6572fe85",
+  "integratedMainHEAD": "8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903",
+  "firstIntegratedMainHEAD": "65a8dbf0e17a07edd42503620365e18241c92a76",
+  "firstIntegrationCommit": "8a72f75046d8d3d6f5227c97e9ed23e1f4570116",
+  "mergeMethod": "Normal merge with both committed parents; no rebase, reset, force-push, branch overwrite or main push.",
+  "result": "PASS_COMBINED_SOURCE_HOST_SQL_BUILD_SCOPE",
+  "publication": "Commit containing this evidence is the integration merge; exact final head is in PR and external delivery.json.",
+  "sourceFingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+  "sourceFileCount": 595,
+  "sourceFiles": [
+    {
+      "path": "apps/mobile/README.md",
+      "sha256NormalizedText": "b4ca1601c2f26b6b4a4c58a448ad11d438a9de20138fc7a5ed6df2d18833cc06",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/analysis_options.yaml",
+      "sha256NormalizedText": "8fd2d64e9b2cdd11cc2dbb9a78cb2e4c177cf14575b744c0132c1b0fc0129842",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/.gitignore",
+      "sha256NormalizedText": "b027c9de1011765c015e5819bf857c0d75bfcd0886fb01721c091159012e50f1",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/build.gradle.kts",
+      "sha256NormalizedText": "33330ebc866bcecb41466c857b48dcd0928b27aeb4810b2974c365c684a8e30a",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/AndroidManifest.xml",
+      "sha256NormalizedText": "f7c485f2ce1470fe985c7e2212533520500e229509bad987d162cf6cd479e580",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticActivity.java",
+      "sha256NormalizedText": "87c19fa137043a2290cc5b6306b0d7271f9babfb8ee8891d28497e2792771c33",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/java/org/hnuhole/hnuhole_mobile/GoogleFidoDiagnosticPolicy.java",
+      "sha256NormalizedText": "7e727f29ee389c5c383882a1e06b882b9d5d84841e13f69747d387599b942605",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/res/values/passkey_associations.xml",
+      "sha256NormalizedText": "31032703453b7defbdec56e19bad8331be06bbab645e185e60f22083bd2679fd",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/AndroidManifest.xml",
+      "sha256NormalizedText": "bbf5ef5c546167d911a1da3799f506bbd0b5140d4c30123d3982c8011c6ea756",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt",
+      "sha256NormalizedText": "c22ef1ab372277123863c82a6fb91a2fff2fb71e153006e005b210d989ff66db",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable-v21/launch_background.xml",
+      "sha256NormalizedText": "7ca6d5cec2169c5a98661a119db23a6f3399c8fef2256ff04f3a642831282478",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable/launch_background.xml",
+      "sha256NormalizedText": "94433756fe10005ddd6fc55cc5c0b1e9f3c10b66a08ceac795ece6713d34e28a",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "sha256NormalizedText": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "sha256NormalizedText": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "sha256NormalizedText": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "sha256NormalizedText": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "sha256NormalizedText": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values-night/styles.xml",
+      "sha256NormalizedText": "8c5bad5152f217e837519f9c15211d19f39bd45f5f67faf6dd81cb4b299e518f",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values/styles.xml",
+      "sha256NormalizedText": "937d7c82f539c72eb94fd3a3773f29b3d3fef1997213c92cb632298cedf4bda9",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/xml/auth_data_extraction_rules.xml",
+      "sha256NormalizedText": "1ebb983c78f21bda053fe8342dea1bfd2b5f99a47fc7ab26a226455b8ebb3c50",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/app/src/profile/AndroidManifest.xml",
+      "sha256NormalizedText": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/build.gradle.kts",
+      "sha256NormalizedText": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/gradle.properties",
+      "sha256NormalizedText": "c48145a733bf98220d895f8a9d5859645dd46e64d2fc5b06ca66d9bb28bbc61b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256NormalizedText": "5485634483d93f576f699b1a4e127130e28dfe24f24a34ae405db67312594f32",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/prebuilt-debug.init.gradle",
+      "sha256NormalizedText": "b45f1cb6db4cf28212507ebfd96a588a63837e65277d19933e2a336b58ca5bbd",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/android/settings.gradle.kts",
+      "sha256NormalizedText": "016759283e88ade6eba92910583feeef88b962839b957aa414296afd2952d122",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration/auth_public_https_postgres_test.dart",
+      "sha256NormalizedText": "d465e39c6c6935782b938eb8e539e6eadac55619581b0b56852c179b1dc2f208",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/integration/community_stage1_host_test.dart",
+      "sha256NormalizedText": "5edd1eed4f9bfef22ff7087f83600d12208ba126242e80ca293ac3cc56f949e8",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration/community_stage1_scenario.dart",
+      "sha256NormalizedText": "b12c0720b96df7118d01f939a7b72fc8062b82acc966229b8d51aceca831f88b",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/integration/f4_main_https_postgres_test.dart",
+      "sha256NormalizedText": "033bfe7d870814f273c8e6a3dede5ec15915652eb9b02f74862cc84e8ee91e6f",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/integration/identity_https_scenarios.dart",
+      "sha256NormalizedText": "84af996cb24ab47a3e707a6008c802abc8473987f99d9ec0a39c20dd3cee5f79",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration/native_closed_scope_evidence.dart",
+      "sha256NormalizedText": "60b2497c6d42660f8ecb63d83e871368a609dc5ecf87df1d33d81a29a987a702",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/integration/post_media_android_preflight_test.dart",
+      "sha256NormalizedText": "51f4c9a71521bbd806ff5c2ef110aa60e53d08c80004c9095f50eb0b76fe535c",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration/post_media_joint_test.dart",
+      "sha256NormalizedText": "b837bfca44a1ab24c090eae3f0ebaa9d4c10c08429a84b333039e95b41d57f79",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration/verifier_gate_https_scenarios.dart",
+      "sha256NormalizedText": "3e379467c99a0f07b5162c7d52d108b45e714bde229b05b49155a62fa3a14e4b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_b1_b2_device_test.dart",
+      "sha256NormalizedText": "8b39a9dd14c0f02ce77d0b7b4d9fb268e1551ee01167c4c5bb9181e9ae43ae1e",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_b3_b4_device_test.dart",
+      "sha256NormalizedText": "8bc1d19f77ddca760db72506c62d7a6d167015fe2eb2638d629fc20dbc31fe6c",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_b5_bitwarden_test.dart",
+      "sha256NormalizedText": "a2857874212e0868bc22bfc349814d8820855ea0e790b16fd0ea0cda794b7721",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+      "sha256NormalizedText": "603796e530a1ad0ff32b2bed129a706d0b3fccbb6ebbd9d7eb5dd3a617a3de86",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+      "sha256NormalizedText": "603796e530a1ad0ff32b2bed129a706d0b3fccbb6ebbd9d7eb5dd3a617a3de86",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_batch_device_test.dart",
+      "sha256NormalizedText": "cfd2c3ceba19a75095835bd8318f42337d8312abc26e881f945540b467a53121",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_boundary_device_test.dart",
+      "sha256NormalizedText": "ef4104527fbf1eeb55ff64b3064cdb41bf032ddde581ea3767d3a44fe1a55939",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_closure_device_test.dart",
+      "sha256NormalizedText": "6762fa96ff266640585fe57bde9afaced5a17dab62030eb55bd574e7b230d39c",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_ime_device_test.dart",
+      "sha256NormalizedText": "f3b1f5d9727a7e59e4d32c32e44bb940f937cd94f7c49d4a60d8571bb6e2854f",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_lifecycle_device_test.dart",
+      "sha256NormalizedText": "c254b87bb3a9e55844eb65a77a69f8765735c319eac0d00315b7a886d94d8819",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_matrix_device_test.dart",
+      "sha256NormalizedText": "8d23c10b0031c4c1411c167109875f28728dfb0a9fc27a29324a25b721b5e0e0",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_otp_continuation_device_test.dart",
+      "sha256NormalizedText": "a1489ee577d56b3cb64ba632b878af24a023fbee2561ecd67f252eb2f49d4831",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_release_boundary.dart",
+      "sha256NormalizedText": "2f3c1ac751c5c1fbb5159b4fc5da37501862eb7011421e3caac38d5bec34ee63",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_storage_device_test.dart",
+      "sha256NormalizedText": "4eebfb603984f7835806483aaca3e57db09f0291b3abe4f3a863c316459d6235",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_android_talkback_device_test.dart",
+      "sha256NormalizedText": "cb7a2e52a1bb7dc829b91d654468b7143a51b7c261be445083a97ba58517efb1",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_fault_device_test.dart",
+      "sha256NormalizedText": "73b0b1f3def83490d86aebb5e5f26a5b9127f38661b1c9a2bfa15fef8ed278b8",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_live_device_test.dart",
+      "sha256NormalizedText": "b434c6ef7f507a942ce0d2e5bdf49e67a470464617bc1be415f8f954b55872d1",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/auth_security_device_test.dart",
+      "sha256NormalizedText": "b4231f1ca698da9402f00eab6b4272f77c37350567a78229a479a8f36c0b9805",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/b5_candidate_root.dart",
+      "sha256NormalizedText": "2bb08a575f6d993807beb8db9ca0544604482f115f9fa33d91bc7194f34d2868",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/community_android_stage1_test.dart",
+      "sha256NormalizedText": "29ad8d545b3f378a03a64dc9d28dd34e541c3cd70f0b35a91661c83c3871f088",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/community_android_storage_test.dart",
+      "sha256NormalizedText": "61c583e7ac703fd347ccedbc27d3d0408b92bd207f4ec2a7ad324f4c68605048",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/identity_device_scenarios.dart",
+      "sha256NormalizedText": "8c519703e6f6b22ebbcf8e0dee5ed339bd4b8872b6609d2eca80e0d75d2b3c9d",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/integration_test/owned_auth_device_helpers.dart",
+      "sha256NormalizedText": "9076d4ed4e24e442f1a12303540375ca753ba9420e7b919a3f6f5ebd947457ea",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/ios/.gitignore",
+      "sha256NormalizedText": "37380775aeb2499662b7aca80f4ac4c95ae827c3ba2bfa179aa3e9af4812c623",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Flutter/AppFrameworkInfo.plist",
+      "sha256NormalizedText": "da12038f9b2688a8a26160fea2609fa8fcb11421448c109f09c0f573efe7698d",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Flutter/Debug.xcconfig",
+      "sha256NormalizedText": "a82d7765b37116ee4821d2cd1d65942febf8032353757ffb0826eabde785b4a6",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Flutter/Release.xcconfig",
+      "sha256NormalizedText": "a82d7765b37116ee4821d2cd1d65942febf8032353757ffb0826eabde785b4a6",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/project.pbxproj",
+      "sha256NormalizedText": "339d8b84e926acf1cae5b3665634d668d951b884c0539dd05e4ea146f86516de",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "sha256NormalizedText": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256NormalizedText": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256NormalizedText": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+      "sha256NormalizedText": "9fbce429f56243561dd437a527136c9f9ed77165e3b271b923faf236cfcd0484",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcworkspace/contents.xcworkspacedata",
+      "sha256NormalizedText": "46c3c9702ff7c5584e11c954d943cfb6e07fb26e3fbd072ddbc0f388aa352de1",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256NormalizedText": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256NormalizedText": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/AppDelegate.swift",
+      "sha256NormalizedText": "451c6d9ba0a2b3ff43092ea349c60fa79a91f1158b915eb29dbdd357cb95d7b8",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "sha256NormalizedText": "3b1e214f466ffedff74baa5598ad5c4421130eea6bc8d57b8fe23435e8280ae4",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "sha256NormalizedText": "7770183009e914112de7d8ef1d235a6a30c5834424858e0d2f8253f6b8d31926",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "sha256NormalizedText": "cab10a0d391ec5bc09ef50ce49e8ad401cee7ef03707ec0923a222c5c2b3d212",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "sha256NormalizedText": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "sha256NormalizedText": "c6e6d3b215ae744a9c391f4c4d44157eff5e739d6ad6c39f9bfa5df66dddd267",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "sha256NormalizedText": "5dee24dc104ac76dc162e42ae0beb163d426bf365562ee28ba7b3ad368559a60",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "sha256NormalizedText": "a9b21eb6f4271385655a8771f76e29eef8c1107d7879cbcfc567e6619d1f716a",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "sha256NormalizedText": "e677d701ffe4af7bc2935098d6b3984cc9ab7ace573e6900955a5535b12410cf",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "sha256NormalizedText": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "sha256NormalizedText": "7c61c42fc7b657d9cf314d32a4ec458f0647c3aaf360be1b9377857266ec2499",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "sha256NormalizedText": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "sha256NormalizedText": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "sha256NormalizedText": "4209a49e44a92ec40a327d3455eb1b1c153ee83d75de1c2be0a12ab18b2ff9de",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "sha256NormalizedText": "836c918cb613249eba0483a6b02fa3df3c1c0a89a315ee4d3b88509b83c7ab73",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "sha256NormalizedText": "41c7d42f6e61f8fe7f30b1ffa2256aecbc9682be06d18c4a3062043e1a2e547c",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "sha256NormalizedText": "5d7e5bdf01b93802bc973345b3a78c038907147625035952a08a115a563b7f81",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "sha256NormalizedText": "ccc7950fd5f5b82067c85f667940a9d59189151460761ece8098ca78daa19469",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "sha256NormalizedText": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "sha256NormalizedText": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "sha256NormalizedText": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+      "sha256NormalizedText": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "sha256NormalizedText": "857e61203b3deafb05766d8fcda898b86a7cb6f3d5e385ecc9926c4d698215e9",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Base.lproj/Main.storyboard",
+      "sha256NormalizedText": "fd367b6c43006d61b730f674970dd48b9f662c8f2264e52ffc1558102a2c9f2d",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Info.plist",
+      "sha256NormalizedText": "45910a437ec6b89ac0096835ca9183ea39daf832250eb23371d304a1c06340ad",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Runner-Bridging-Header.h",
+      "sha256NormalizedText": "1a8d11d01d1cc92c650c9c9ed35299240052d4683a15a719a2315ef44185e074",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/Runner/SceneDelegate.swift",
+      "sha256NormalizedText": "add68b905971dedfcc0d0b5b7118030de5925ba8c081ad9815463699e3a444ad",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/ios/RunnerTests/RunnerTests.swift",
+      "sha256NormalizedText": "cd497780668b55ef1ba3ec614edaa4a85c1f00d0502df7098e16960c08fb6230",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/hnuhole_mobile.dart",
+      "sha256NormalizedText": "87493f6bab1a09623a9d9c385dd2e9d1e6e295806c04a2d2939c8dffc1890b9e",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/main.dart",
+      "sha256NormalizedText": "928466b88d5e376ceddddf9fa6e015aad7d44a94e7d653825a449a773b496626",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_api.dart",
+      "sha256NormalizedText": "7b0efde4afdd2af2720ad2dbad8b1ab96ddd417947f1ec817244f74952826ece",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_crypto.dart",
+      "sha256NormalizedText": "11883f2e1cd067554f8d31f2fa15e92ff93a412388d670c2b04ac93bed1c07bf",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_flows.dart",
+      "sha256NormalizedText": "7625325a32beb517460ffa3dc9f40f1f5cb9fc4b79a00518a28b592d2b0d0a62",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_models.dart",
+      "sha256NormalizedText": "84b7f45dd9700bc0b72ece164dcf959e6d36bbb7c4cfed680bdd93f135f72387",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_screen.dart",
+      "sha256NormalizedText": "34681c4134dc9746992108953fd391a0a30419efd8f50fe7192b88e32fd98ac6",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_session_controller.dart",
+      "sha256NormalizedText": "04476dfedbc6e9893e19bd0c3188b14863e8524273474ec3b2b7f0e54a322b11",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_state_codec.dart",
+      "sha256NormalizedText": "7adcac9ec5cf49a7097f19e0420d034edb026b358b7af39de874df4895dca0ba",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_store.dart",
+      "sha256NormalizedText": "c024d5a587393aacf60dbf4c6da54beabb5dc77ac5efcee5ae955994133f9700",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/credential_management_api.dart",
+      "sha256NormalizedText": "b8fda81bcda45b9789a2a4c15a65d46a432a82d2deac43323228b2871e36003b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/http_auth_api.dart",
+      "sha256NormalizedText": "e3a5a65bd47eeb856c846965e7e2a4122188aab5eadfff7fe7d0e0d234c81b73",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/security_management_controller.dart",
+      "sha256NormalizedText": "6d5c6f305785dbba3015fbccdae1c933b3dcb8821040f770d6d0f79717b9967f",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/security_management_screen.dart",
+      "sha256NormalizedText": "1b9de3fba07b55ed477cc7a46fc6b60a32eb2fcfe9c4a46b74b53644f5aaf53b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/channel.dart",
+      "sha256NormalizedText": "0f3388192e5ccea98e1c442bfa7dbe234546c96b6851dc5b213bc2434309effb",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/channel_repository.dart",
+      "sha256NormalizedText": "197d20a241b9499f543634583f04dc5461e4ac6c29705e2329dab173b64a07ab",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/channels/http_channel_repository.dart",
+      "sha256NormalizedText": "8acebf38e27752ac7b5a7f5e0c13d961bdb1de2d710a52d707ba5ba754fc73a5",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/config/mobile_environment.dart",
+      "sha256NormalizedText": "b72271611a72966cbecaf7056311b3ef286d0b34474044d3809b76bfb56b6ef2",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/development/app_transport.dart",
+      "sha256NormalizedText": "d2b891b3db409b59604fa8ab1463c831ac892ea2e454043ae55eb924b36a3be6",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_api.dart",
+      "sha256NormalizedText": "f99fe4086da0e42e3b229741c6d553d9fe7bae17a9778d5c4ea6f5fbd71838c3",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_management_controller.dart",
+      "sha256NormalizedText": "b6150323b0127eef08999b6e1ecad3b34ca751b6b1c63ffece5311671dd5bab6",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_management_screen.dart",
+      "sha256NormalizedText": "389abcaf03878873a978a95e8fa043418ac0f916312bfacc6e45c29378346800",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_name_formatter.dart",
+      "sha256NormalizedText": "6c4a805bed154d25d1cfe25e80ae70c40fba66434553ab4cb7908279fa18f427",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/identity_name_ranges.dart",
+      "sha256NormalizedText": "fda2068b6dbe1782483d5a43a36b1d380f973603f9f6ab704b29cd02ad537793",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/identity/settings_screen.dart",
+      "sha256NormalizedText": "16dfe62fc4b0e02ac37de7fb6c89c9f3371e33d7d40a50363d44410f71397185",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_directory_controller.dart",
+      "sha256NormalizedText": "26d48f58234c7c5513f3d7fca178ca701d55112c562e5876a26a85c2f59594f6",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_tree.dart",
+      "sha256NormalizedText": "3905e0c5603842a28c1f6724532a9bf6f779e197b0b0606444aad2093f8a745c",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/community_material_labels.dart",
+      "sha256NormalizedText": "405452ff8128fd991d0b136ea2ffbd1e8bbaa1826efb353d662faa28cf8ae912",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/entry_screen.dart",
+      "sha256NormalizedText": "446b83fa3dcc9286458fd594c18e8ac32cd3184bdb93fa773c200464918600a5",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/http_post_api.dart",
+      "sha256NormalizedText": "d2251e0a38c191c45e63ed9436128c4edc409bd9fedc67f99efdd10fb5184144",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_api.dart",
+      "sha256NormalizedText": "18258abde12c3de567102c435d05a10891b85cd7d1678624ec0791e9887bfcdc",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_composer_media.dart",
+      "sha256NormalizedText": "aedcdcd31c0ef79ff0d7e8b9eb62c93d293d1a4c704e64c9ba5e81e1d148bda7",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_composer_photos.dart",
+      "sha256NormalizedText": "cf63efa5d48a18382f56d48b0d861b511cae5b8f2b35396d764509e46dce1406",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_controller.dart",
+      "sha256NormalizedText": "97baa6d6b14ab3a663b2c6175e4fe701d6fed7b2992611e6e44e5fb802327746",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_images.dart",
+      "sha256NormalizedText": "0c269f10282cec93a1b5dc17069e58dc5c3671079f2997f8823fc58b322e7ea0",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_media_api.dart",
+      "sha256NormalizedText": "106769454e6fcc0c2d4ca65f460a6f6c8b31092c9b60faad10955c2c52ddbf23",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_media_repository.dart",
+      "sha256NormalizedText": "c52dde069b4659babdce739e4a266f7ec956a476a69b120bb529c833b639fea2",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_models.dart",
+      "sha256NormalizedText": "58f142735b76d3a4832497bb66ba21d33fea67d856ee1c49c0e5bd9e3cd56959",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_photo_picker.dart",
+      "sha256NormalizedText": "9ce28dfe79dbbd20a24f078e7bfd7420bdb458d5c5d02bddd1f108a71cccc62d",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_protocol.dart",
+      "sha256NormalizedText": "2c38f950938dda74719bf5312e532cf05257551d874e53208996dd84e4a77358",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_screens.dart",
+      "sha256NormalizedText": "b311577ed330ffb80a32ba48a4ef337f512e21e2c90897651ee41fa5fae5982c",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_theme.dart",
+      "sha256NormalizedText": "9ea346bceb94c20652ec4350ca6f25c9f75e3398c1cc1a92bd5c6962cfb4ad11",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_upload_api.dart",
+      "sha256NormalizedText": "87eec2c69d6c99444c40cf2327ea2d57d046ae13a17ef91fd898b3762bcd5aaf",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_upload_http.dart",
+      "sha256NormalizedText": "6969685c312174894cd9b3e985b27215d4107da84e90a99d630bdc116bf4e10c",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_upload_models.dart",
+      "sha256NormalizedText": "1a42d957498bfe855039d82df72296b98d749d7df95430d57fcd7d47ace91880",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/storage/post_media_store.dart",
+      "sha256NormalizedText": "1ab558a7169d043a38efe4b2f39ded321cf9378506d2167c61193952f033266a",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/lib/src/storage/post_store.dart",
+      "sha256NormalizedText": "9a4e928fbba963d5dfc09c800128cd216ae82893fffcc422898d4a43017f33ea",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "sha256NormalizedText": "e88241d8383f83f7d5ba9fcdcc65caef7542bb1d583db648bbb321a1c0b3129b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/pubspec.yaml",
+      "sha256NormalizedText": "558245ea01729cce45da575807c116564e9ae818efe0a235ca45923267380e24",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/auth_api_test.dart",
+      "sha256NormalizedText": "2f85e45b725a72b73a3b464a52d3c475eac3f158805cd4ce5d1bc081d45eb83f",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/auth_crypto_test.dart",
+      "sha256NormalizedText": "74593016d9eacae1a601e2948159a576aa53c16b1a3df47353760cfbdb806c1d",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/auth_flows_test.dart",
+      "sha256NormalizedText": "c37e84e2d6143f7369f048a103c8b45e7daa572afdc10bbbc0ffeaa80a09d01c",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/auth_screen_test.dart",
+      "sha256NormalizedText": "6ccdc77cf34a8d3424bed9fbd36f2a701617edb112264d39351fbd52752aa7ef",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/auth_session_controller_test.dart",
+      "sha256NormalizedText": "569c0411fb46a070405f4b0adb69ff870425a12db50583464fce3cccc680288b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/auth_vault_test.dart",
+      "sha256NormalizedText": "bfa51bae2da56ba7e17e3163562987a4e899a95b55fa9dc600a9d0c1e29dcb63",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/b5_candidate_root_test.dart",
+      "sha256NormalizedText": "daa22888172c9c2c63ccff353468adee5a4918679a42d428486ea8cddda43344",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/development/app_transport_test.dart",
+      "sha256NormalizedText": "353ac7398c8af7de678501d4f0f255f35166a45216783948d0b7f7e3416c11f2",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/fixtures/oriented-jpeg.b64",
+      "sha256NormalizedText": "9ab8385500f8d9017e0e80afb3d6ea1256b51b677a7f6cf2c25096c1f49e9756",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/fixtures/post-media-v1.json",
+      "sha256NormalizedText": "1d5199dd8c5d3abc97f0dd2be262238a5b8b5b17884b01fa005b0afe325b9b0a",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/identity_management_controller_test.dart",
+      "sha256NormalizedText": "ad5f9be4e957a21478b599eff2f3b98d7849768e5c6c59cd831cc5385d7e795b",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/identity_management_screen_test.dart",
+      "sha256NormalizedText": "f806fcefaafad6615fe852b36f149775f20d2ec997a21f9e08b89349c799a985",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/identity_name_formatter_test.dart",
+      "sha256NormalizedText": "39f61b74ff35f77ab227db795a80fcceef114f837bb383d82734886706734781",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/identity_test_support.dart",
+      "sha256NormalizedText": "535a1588cbbdb82e024aafb702027ec07234be8d06998bf18cab1a12b2bd09f1",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/loopback_tls_fixture.dart",
+      "sha256NormalizedText": "75476cf578ac9ef1cc9691d8f03a61f332b7861571146d9e1ee1b283141e2159",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/mobile_environment_test.dart",
+      "sha256NormalizedText": "a1fec6852c291a55aff2a552b709e6102878828ea80282c73c417bc8b13e2379",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/native_closed_scope_evidence_test.dart",
+      "sha256NormalizedText": "8e761f6f233ff57f199ba2c4b74278b01903bd43601456271dc00e89ef35077d",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/test/passkey_recovery_flow_test.dart",
+      "sha256NormalizedText": "82d04a1e39c50f1e584ec0c9654e21bf60a4f3b8916dfa07a0ea74bd017c621a",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_api_test.dart",
+      "sha256NormalizedText": "1332ea75756ec5d4daa79597057791633b62db2e80af716346f0725c88a26851",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_closure_cleanup_test.dart",
+      "sha256NormalizedText": "06da2ed2343778b0de44d35020fe0e0a62de04d65b855e5946e76765b2623f30",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_composer_media_test.dart",
+      "sha256NormalizedText": "b1b1051af4016a3516bf8f9b2eb61007f690fb6e26bfe3fe29c3a2789fba1b4e",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_composer_photos_test.dart",
+      "sha256NormalizedText": "b57aacfa82359958d3cb636d53adeea7ce1ad5f385600115a5e925124887caed",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_controller_test.dart",
+      "sha256NormalizedText": "7181c5f5df026cefe54d70d7629d4e370f3cc86971b1f59878210e32c01b4a64",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_images_test.dart",
+      "sha256NormalizedText": "0b190beb2a7203ba72ab8bf2cb6d96a6b1849b3112162fcfd87b063b958920cb",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_media_repository_test.dart",
+      "sha256NormalizedText": "e4bdf58f42b66c385ae2ef07534f69914766d2768b6534e32bb28a28a54bb6ac",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_media_test_support.dart",
+      "sha256NormalizedText": "216a1143ab87af87b5cd2a24dce2380d29d1d955ddd8fd9a34f9bb926c072cff",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_models_test.dart",
+      "sha256NormalizedText": "b16536795ffc2b51b9b5b54df39107f633b71519cf3e5aabf8e5ee92afa576ea",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_photo_picker_test.dart",
+      "sha256NormalizedText": "56683548af49e043b4b058ce22cfb49f6f9bfd0e67c94c6e6b661d230ff96781",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_protocol_test.dart",
+      "sha256NormalizedText": "e181905a5a322ccfb2593ed8fea09ab51c52df2400cabeb549ce6ab98bb703d8",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_screens_test.dart",
+      "sha256NormalizedText": "d88b1985885be3d10d830fed832a670ef0e88700a2ee7cc9990d0783876c18e0",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/test/post_storage_test.dart",
+      "sha256NormalizedText": "c0a7589fa51d9d3e617f244a82a8b6e0ccf545807f25a6bb82bf317642e83e23",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/post_upload_support.dart",
+      "sha256NormalizedText": "2f4e96700a4937a516f5c14158f9335bb7d30aa421266e0234f417a27c3520df",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/security_management_controller_test.dart",
+      "sha256NormalizedText": "7accbc4e1bf50583b4dc62a17357ca0d6f29e8fb92a5df710552c6986dae8ea1",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/security_management_screen_test.dart",
+      "sha256NormalizedText": "4b037261d5c25e10822fbb15b62d1c36d24ef4a9e381f98773de1fca41fb9ec1",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test/talkback_semantics_test.dart",
+      "sha256NormalizedText": "57b5756f69f5b2b2e288de529abac62a063304ac6deaf2f1838ccc101505b201",
+      "differsFromMain": true
+    },
+    {
+      "path": "apps/mobile/test_driver/auth_live_device_driver.dart",
+      "sha256NormalizedText": "a4cdb7f8eefcf8e84f7308b5b38af68ec133ef929df168d47282e4085f46bcb7",
+      "differsFromMain": false
+    },
+    {
+      "path": "apps/mobile/test_driver/auth_security_test.dart",
+      "sha256NormalizedText": "a4cdb7f8eefcf8e84f7308b5b38af68ec133ef929df168d47282e4085f46bcb7",
+      "differsFromMain": false
+    },
+    {
+      "path": "infra/postgres/grant-community.sql",
+      "sha256NormalizedText": "694d8e30a7b8806cd27256ce97885aa52152c46f9eb633ac90fe3682710b0175",
+      "differsFromMain": false
+    },
+    {
+      "path": "infra/postgres/grant-post-images.sql",
+      "sha256NormalizedText": "1880c582d89ac4cc7ae04f2cfa77e046bb3a4b3034e6acddd649e979ea86207d",
+      "differsFromMain": false
+    },
+    {
+      "path": "infra/postgres/grant-verifier.sql",
+      "sha256NormalizedText": "ef7552db2f46355ea7d5f67b3f8c802c4c9540e07d82094965c0d78873a8693e",
+      "differsFromMain": false
+    },
+    {
+      "path": "infra/postgres/init-auth.sh",
+      "sha256NormalizedText": "92c6d4f60007a1b1a400a1046d7165090038e46310ed6bcd75c10420652a0212",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth-protocol-vectors/retirement-ack-static-verification.json",
+      "sha256NormalizedText": "39462a3b873700330c742a702522661badb913a8f8d2cb6349a57fe32d24c8e8",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth-protocol-vectors/static-verification-report.json",
+      "sha256NormalizedText": "ad6ff0cf687fabf44d82f6489790b20362286585d10cb8a92a93cb123ee1f02d",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth-protocol-vectors/v1.json",
+      "sha256NormalizedText": "da913014063f3972dbc15a6c79a87757e7f113ff9cd5911bbb4b42918e5262b1",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/.gitignore",
+      "sha256NormalizedText": "afdc8d6ac5b51de601a9b3616486218761b956696228b066cd8556d37941b675",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/README.md",
+      "sha256NormalizedText": "b92ec31fb7f9cd822ee549a76331ecd02c43591b627f2a747df26232b4323300",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/android/build.gradle.kts",
+      "sha256NormalizedText": "8d1ad5b31d6165951a304d7b3802e112157e18a2cab4de2988719c9faba149d5",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/android/src/androidTest/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrorsTest.kt",
+      "sha256NormalizedText": "6518c26b024fe04dd06c02cadeaec8ffe33da457ef46cc6161e32f9f91633200",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/android/src/androidTest/kotlin/org/hnuhole/authpasskey/PasskeyCodecTest.kt",
+      "sha256NormalizedText": "6303a010b71a9e38ba60e5db316cec9b694eb3f1c1d3a7db4d639794cccedaba",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/AndroidManifest.xml",
+      "sha256NormalizedText": "343d5be1ac17cdd45d1a2f2ddc616c509290e655869125a9422a96d88aa66066",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/AuthPasskeyPlugin.kt",
+      "sha256NormalizedText": "4b8bfc676582f2fa250ef0b67ccb79ac98ac62c10873de140c30c8c561125419",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyAcceptanceErrors.kt",
+      "sha256NormalizedText": "6c918e07f575e62f7939c314ca60dee6663c3e761105b126ae3a080b7e2a2d93",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PasskeyCodec.kt",
+      "sha256NormalizedText": "c44fdd68077f40483ff95e4a14a00da82f812c56d79ca3e875bb0e583acc6b13",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/android/src/main/kotlin/org/hnuhole/authpasskey/PendingOperation.kt",
+      "sha256NormalizedText": "3c22c870f3d9a7a311ca27500d89ca938f1b1e690257d2485ef1997336cfa473",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey.podspec",
+      "sha256NormalizedText": "d2808ce9262337c2b3296d8c043468390e69e9ffda7b7ac47a187cc05cfd7aad",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Package.swift",
+      "sha256NormalizedText": "c547124ce16c31ef6fe4d08d7e819157a0b896e8689d813555443d906c832be9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Sources/hnuhole_auth_passkey/AuthPasskeyPlugin.swift",
+      "sha256NormalizedText": "58b82fc373100d06a4e26289fbfef90447de9bcc862734e0f0b065a16ad1b7f9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Sources/hnuhole_auth_passkey/PasskeyCodec.swift",
+      "sha256NormalizedText": "2b82618e327451759dc8386f8695af55adf625e8341a924346383407149498ff",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Sources/hnuhole_auth_passkey/PendingOperation.swift",
+      "sha256NormalizedText": "94d39ca461b8f5a011c5ca7e16a4b15ee251e3bf60b150655aba02c9cbc3ea16",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/ios/hnuhole_auth_passkey/Tests/HnuholePasskeyCodecTests/PasskeyCodecTests.swift",
+      "sha256NormalizedText": "0ae376faebe78c08d14330505fd7c3fa5e5ebcdf3ea64c1032567f759c05ccff",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/lib/hnuhole_auth_passkey.dart",
+      "sha256NormalizedText": "02c9a0539f06306afc175a8b7fd2c3396fcc5e42a25b60cc9aae310c884f5d27",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/pubspec.yaml",
+      "sha256NormalizedText": "f7acd31d14996ad1bb059e95bbc1453e4c7d3ba6d9894c19d70d1cfbb679d27c",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/test/native/PasskeyCodecTest.swift",
+      "sha256NormalizedText": "4d411eeeef2a13bb65432e86d5d5b1a326b72a42cfac5f94b3553ecad1fc1736",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/test/native/run-codec.sh",
+      "sha256NormalizedText": "a0d2fe1f98acf30cf2fa959e7596c03843e205cec11da25ac4b1a9a41cd94800",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_passkey/test/native_passkey_client_test.dart",
+      "sha256NormalizedText": "9e937227637b9c5a5477e75277b5c2697a76e4d2dac7766200b5c52808eb134b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/.gitignore",
+      "sha256NormalizedText": "acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/README.md",
+      "sha256NormalizedText": "9813b40e35bbcd74b593e18936ad9986ae1fd7673f402116e1e834fb4e916ce4",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/android/build.gradle.kts",
+      "sha256NormalizedText": "7af413a655190a27df0a2960ec78e3947b505d782ce9dd781532e5c70eed4707",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidAuthVaultTest.kt",
+      "sha256NormalizedText": "16bed2bb8b1c29ab4d0ba8dd69ddddaf9ecf529e07276bd639c7dec08993e794",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AndroidBusinessStorageTest.kt",
+      "sha256NormalizedText": "e02fe88e0b3e6a752fdebb95459eda0240168aeb2d7eea7569d9250775ee7f44",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/android/src/androidTest/kotlin/org/hnuhole/authvault/AuthVaultProcessRestartTest.kt",
+      "sha256NormalizedText": "6bcb394e6b637e7dff754db1600cbdee70452186fdbcc782c0e3c1adcf144dc9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/AndroidManifest.xml",
+      "sha256NormalizedText": "343d5be1ac17cdd45d1a2f2ddc616c509290e655869125a9422a96d88aa66066",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidAuthVault.kt",
+      "sha256NormalizedText": "de874ca6a81c7a905ccd7e30774fe6cb8d6925b0ac386e403ac276b086b678cc",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AndroidBusinessStorage.kt",
+      "sha256NormalizedText": "c68f30897e124e6cd86d69ba0040d96642ef1cbfae9b6ed07b929dcb43aafb3c",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/android/src/main/kotlin/org/hnuhole/authvault/AuthVaultPlugin.kt",
+      "sha256NormalizedText": "d900b2cab0873d85aeab2f95668f70b18667710977d483febed63f27d8560145",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/ios/Classes/AuthInstallationMarker.swift",
+      "sha256NormalizedText": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/ios/Classes/AuthVaultPlugin.swift",
+      "sha256NormalizedText": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault.podspec",
+      "sha256NormalizedText": "e90758dd3f121d91031ce7c5da1eb816fe7ef9a0ec97a0f531bddc119296f5e2",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Package.swift",
+      "sha256NormalizedText": "dce4b0812fc26456154459943096932b3b7a3a0e14a6ee31d42dd604ee524b3e",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthInstallationMarker.swift",
+      "sha256NormalizedText": "db58627647628c2d9653c2551fc08cfa6eb35858eb5cc43ba0f403477134f19a",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/ios/hnuhole_auth_vault/Sources/hnuhole_auth_vault/AuthVaultPlugin.swift",
+      "sha256NormalizedText": "b977c8a771ee7e465b13432e4552b9b0e67ed4d9be795af0df380c778c840fde",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/lib/hnuhole_auth_vault.dart",
+      "sha256NormalizedText": "51e27211543fbdc0684fabea16adebfdf8d68e579ca5c366a489524a598fe9a2",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/pubspec.lock",
+      "sha256NormalizedText": "89b30ee926d11a020e0e3db68bd55708dcece478ce71ad72f394a6125827e8d5",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/pubspec.yaml",
+      "sha256NormalizedText": "d3aa5fa5ff50c1004a8edcd2c2729e2c65a4f11dd4026aa9aca78591bc55d908",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/test/native/installation_marker_test.swift",
+      "sha256NormalizedText": "399bb2b7c75780222b1992abe30c2ee81b32b02b9f4ddd804b80078a790cd969",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/auth_vault/test/native/run-installation-marker.sh",
+      "sha256NormalizedText": "668585b3b3195cc8520781742d6282192a1fd0fa26b8f61b7a3fd2e465db12a7",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/README.md",
+      "sha256NormalizedText": "49b61da2c2ba62fb9773c0e60fdc9cda2ea3cb28b3ee77e997185ca1c1848c1a",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/analysis_options.yaml",
+      "sha256NormalizedText": "88a05fea8acb9db6d976dc273cd08a80275f43044479b561a7c1374c653d96a4",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/.gitignore",
+      "sha256NormalizedText": "441eaa1de5b3db9fae056e7503567e9f8dd94173e1389c60f76956abf729015a",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/.metadata",
+      "sha256NormalizedText": "f0f31c5e788ddf35c5468481a572e01780a4cf5b23a55d8be9a503510888ad04",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/README.md",
+      "sha256NormalizedText": "179184f4e63504f811ae4fac83d3c54194b20dc310bf610e092be71d0f7b6823",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/analysis_options.yaml",
+      "sha256NormalizedText": "92808b5cfd2ab6193a124faa355f0050d4e7c2fbe09c474a4f88f9f02e021711",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/.gitignore",
+      "sha256NormalizedText": "b027c9de1011765c015e5819bf857c0d75bfcd0886fb01721c091159012e50f1",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/build.gradle.kts",
+      "sha256NormalizedText": "679ad23045383a34b0d3c587d6840c01b8c3c1e2957e4aba8d9627802aae5d4b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/debug/AndroidManifest.xml",
+      "sha256NormalizedText": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/AndroidManifest.xml",
+      "sha256NormalizedText": "c9cd3c61e8e8141cb1995b85c7c72e4e629335df2070e0966b9b050d3a39ad5e",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/kotlin/org/hnuhole/image_viewer_component/MainActivity.kt",
+      "sha256NormalizedText": "c03dbde7093c2c7bc5d983cdb3a35b944ff7bbcae2f6d345ca999af84e85ed4a",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/drawable-v21/launch_background.xml",
+      "sha256NormalizedText": "7ca6d5cec2169c5a98661a119db23a6f3399c8fef2256ff04f3a642831282478",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/drawable/launch_background.xml",
+      "sha256NormalizedText": "94433756fe10005ddd6fc55cc5c0b1e9f3c10b66a08ceac795ece6713d34e28a",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "sha256NormalizedText": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "sha256NormalizedText": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "sha256NormalizedText": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "sha256NormalizedText": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "sha256NormalizedText": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/values-night/styles.xml",
+      "sha256NormalizedText": "8c5bad5152f217e837519f9c15211d19f39bd45f5f67faf6dd81cb4b299e518f",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/main/res/values/styles.xml",
+      "sha256NormalizedText": "937d7c82f539c72eb94fd3a3773f29b3d3fef1997213c92cb632298cedf4bda9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/nativecheckDebug/AndroidManifest.xml",
+      "sha256NormalizedText": "8c45b13960cb7a1e8517134e464dea9f37d7edc696c44579989b3cfaf2782dc9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/nativecheckDebug/kotlin/org/hnuhole/image_viewer_component/NativeWebpReplayProbe.kt",
+      "sha256NormalizedText": "57d62f551406cb83a7d730e4c4a8903959e2e569a746adc3872884d95eed3fb6",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/app/src/profile/AndroidManifest.xml",
+      "sha256NormalizedText": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/build.gradle.kts",
+      "sha256NormalizedText": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/gradle.properties",
+      "sha256NormalizedText": "0f82b18017fba6bb5ce3aa4b2d1a00c9382fc8aae7b1d9326e44b18abd66d80b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256NormalizedText": "0a4c04897a122384a6e637589493cda7b82afb7071bcaecccbd830d64fb395c6",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/android/settings.gradle.kts",
+      "sha256NormalizedText": "016759283e88ade6eba92910583feeef88b962839b957aa414296afd2952d122",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_acceptance_manifest.json",
+      "sha256NormalizedText": "7ef877f99e525de71f63d207a1f8b232d30ad75927e1e188ad3a8a46e0d521f9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_animation_limit.webp",
+      "sha256NormalizedText": "91b1d800df78176d87a5956b6c3ebe15e39eb2b7e773b709ca3d47bc492d3977",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_animation_work_over.webp",
+      "sha256NormalizedText": "11c70778093bb63484da4c1a28e1162e355dbc8d0e6161dcca24daa0b5110b74",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_dimension_over.png",
+      "sha256NormalizedText": "1258299857c6e46012404ce2b8e8e81c9045dc035f8548eba8eb5b3c0a0f7865",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_duration_over.webp",
+      "sha256NormalizedText": "2f0e4be04fa7687bdef98a3e5dc652e0a24183817dcb92d15579d128b088f26e",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_exif_1.jpg",
+      "sha256NormalizedText": "f4ab4302ffa13229a023af5df27663e4df4e4f361c8036fc3c5de7b25477f8f6",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_exif_2.jpg",
+      "sha256NormalizedText": "b312746c9ab1d9cea5cde4b7fe36e0120c50ff9df3fa28930b5fbddf3fe90c83",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_exif_3.jpg",
+      "sha256NormalizedText": "0eaf27dd42023b8cd9643ab7cf531934b10840e46531999fc58280cb5fb9f3f5",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_exif_4.jpg",
+      "sha256NormalizedText": "3e13dd5683311ed86f866a77592afcf3f70855dbab46efdcccea289ee5be1b96",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_exif_5.jpg",
+      "sha256NormalizedText": "9b89dbecd521fccce1736f77e33e3df085c5ece564b200a2267751c3790d8e66",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_exif_6.jpg",
+      "sha256NormalizedText": "18af2dccae2d484217db08413e6ab31900b9ce6ee0e3da6968164c5bdc0982bb",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_exif_7.jpg",
+      "sha256NormalizedText": "3d5ede368d5d702d79a7086b8a443f7a72eb972a23ad59335aa25b566fec0c30",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_exif_8.jpg",
+      "sha256NormalizedText": "972458e92cea1891af0e5e8e1f52ffcdfd32ad5bc1fc18e51e835993ece0d633",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_frames_limit.webp",
+      "sha256NormalizedText": "276521c817df77258ad8128f29a9b4bd507c9301812725a155c1c1f0183244ed",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_frames_over.webp",
+      "sha256NormalizedText": "842e03836ff9ded7f1126f663e5522b8370b9145dbeb94d48a9498ee3ee11be0",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_gif_slow.gif",
+      "sha256NormalizedText": "96478521e9f3ccc23be7b3a90bcf0f788e8b86b394d391bfcdf30c991a734357",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_long_limit.png",
+      "sha256NormalizedText": "ef2de681f26e2fcce69fb679296fa3dc775d74abe101bacc128b7f4df0bcd6b9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_pixels_over.png",
+      "sha256NormalizedText": "f805cae3b162c0f298c33d843983de9c8d4b800c4d7d3fa1a2f7ebc5e5e18b28",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_small.png",
+      "sha256NormalizedText": "3860a1ad1bc01dc58955f25b598ce665cc94e60c5fb8a6029d38ce85ef3babcf",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_static_limit.png",
+      "sha256NormalizedText": "3686d478923be44179df4979e9503d8ec45278096d2e21325eef89faed4b9add",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_transparent.png",
+      "sha256NormalizedText": "db4c1b7f3f34c1b58ff2d92ed5feb9f7cdc3c4594709a5c58c17b8c0f72c709e",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/android_wide.png",
+      "sha256NormalizedText": "c1a6dbea922a044a65cde57cd5c4ac13204dc800e6903c74a0820247f72ebb07",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation.gif",
+      "sha256NormalizedText": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation.webp",
+      "sha256NormalizedText": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_benchmark.webp",
+      "sha256NormalizedText": "0145845e1b4aff94e1f73841f03b6ea6d5ef0aeeb16bdd3831724d563e42fb46",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary.webp",
+      "sha256NormalizedText": "259c7f65840e440861329dbd35723c04a446ecabbfb21f2283bf5f56d97806f5",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary_infinite.webp",
+      "sha256NormalizedText": "3897796f787092b33333358d146482a4f67759bd97075be6669f305e88d696ed",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_binary_once.webp",
+      "sha256NormalizedText": "39f08e88ed651f7321a8de9e80e99bd605b4d8eb88b1194e8f7c9fec8bd39fad",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_infinite.gif",
+      "sha256NormalizedText": "9f0ab897a6b22f6a6a19310462aaf78a776ab8fc05d2cc805889d3e0871df9ed",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_infinite.webp",
+      "sha256NormalizedText": "e8d714336d16477d76cf01515d61a8e9916babd87ee093434bbd1638ead40e76",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_once.webp",
+      "sha256NormalizedText": "d73a18998b3325cae6a2c6c9f3ec2b82ac7e78a8e19899d2202c3ace287859be",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_over_limit.webp",
+      "sha256NormalizedText": "45e67e717cb796bb87deb43430da1f1d3c4c051c01e9c7525b75f7beb84786b1",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_repeat_once.gif",
+      "sha256NormalizedText": "43a730212cf2cdd0ff3f8e32f5e00ed0032b0e1fa68ed3d594cde76e43f645c8",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_replay_slow.webp",
+      "sha256NormalizedText": "f881330695568fd135112d6ce63c547f7fe0773d9c7e18f4b28294fd6ad99be6",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/animation_timing.webp",
+      "sha256NormalizedText": "32a65f932e0330630c78e0e86f0483c17381fc922df3dc99ac18392e3747305b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/long.png",
+      "sha256NormalizedText": "69269d9cd174e1be00a84efecc1b9a01b9150ba4dae8b41816359ae13749575b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/manifest.json",
+      "sha256NormalizedText": "1c1fd61662ce704e304706fc12d5c7ed1515758e68a44dcfe82326e24f6188d0",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/ordinary.png",
+      "sha256NormalizedText": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/replay_identity_fast.webp",
+      "sha256NormalizedText": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/assets/fixtures/replay_identity_slow.webp",
+      "sha256NormalizedText": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/integration_test/image_viewer_component_device_test.dart",
+      "sha256NormalizedText": "823c1dcfa8d39eb3230c77b3a65097733780174b356a52398835bc742f277ac5",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/integration_test/image_viewer_device_test.dart",
+      "sha256NormalizedText": "7f7914add9e31e05e11e597bdad49de2067772fc85f72c717e50496a26693944",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/.gitignore",
+      "sha256NormalizedText": "37380775aeb2499662b7aca80f4ac4c95ae827c3ba2bfa179aa3e9af4812c623",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/AppFrameworkInfo.plist",
+      "sha256NormalizedText": "da12038f9b2688a8a26160fea2609fa8fcb11421448c109f09c0f573efe7698d",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/Debug.xcconfig",
+      "sha256NormalizedText": "a82d7765b37116ee4821d2cd1d65942febf8032353757ffb0826eabde785b4a6",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Flutter/Release.xcconfig",
+      "sha256NormalizedText": "a82d7765b37116ee4821d2cd1d65942febf8032353757ffb0826eabde785b4a6",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.pbxproj",
+      "sha256NormalizedText": "6e8b92d9388dca319dda0391476bd0f7f8d10ef873942a406d0025debf304439",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "sha256NormalizedText": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256NormalizedText": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256NormalizedText": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+      "sha256NormalizedText": "9fbce429f56243561dd437a527136c9f9ed77165e3b271b923faf236cfcd0484",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/contents.xcworkspacedata",
+      "sha256NormalizedText": "46c3c9702ff7c5584e11c954d943cfb6e07fb26e3fbd072ddbc0f388aa352de1",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "sha256NormalizedText": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "sha256NormalizedText": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/AppDelegate.swift",
+      "sha256NormalizedText": "451c6d9ba0a2b3ff43092ea349c60fa79a91f1158b915eb29dbdd357cb95d7b8",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "sha256NormalizedText": "3b1e214f466ffedff74baa5598ad5c4421130eea6bc8d57b8fe23435e8280ae4",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "sha256NormalizedText": "7770183009e914112de7d8ef1d235a6a30c5834424858e0d2f8253f6b8d31926",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "sha256NormalizedText": "cab10a0d391ec5bc09ef50ce49e8ad401cee7ef03707ec0923a222c5c2b3d212",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "sha256NormalizedText": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "sha256NormalizedText": "c6e6d3b215ae744a9c391f4c4d44157eff5e739d6ad6c39f9bfa5df66dddd267",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "sha256NormalizedText": "5dee24dc104ac76dc162e42ae0beb163d426bf365562ee28ba7b3ad368559a60",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "sha256NormalizedText": "a9b21eb6f4271385655a8771f76e29eef8c1107d7879cbcfc567e6619d1f716a",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "sha256NormalizedText": "e677d701ffe4af7bc2935098d6b3984cc9ab7ace573e6900955a5535b12410cf",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "sha256NormalizedText": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "sha256NormalizedText": "7c61c42fc7b657d9cf314d32a4ec458f0647c3aaf360be1b9377857266ec2499",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "sha256NormalizedText": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "sha256NormalizedText": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "sha256NormalizedText": "4209a49e44a92ec40a327d3455eb1b1c153ee83d75de1c2be0a12ab18b2ff9de",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "sha256NormalizedText": "836c918cb613249eba0483a6b02fa3df3c1c0a89a315ee4d3b88509b83c7ab73",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "sha256NormalizedText": "41c7d42f6e61f8fe7f30b1ffa2256aecbc9682be06d18c4a3062043e1a2e547c",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "sha256NormalizedText": "5d7e5bdf01b93802bc973345b3a78c038907147625035952a08a115a563b7f81",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "sha256NormalizedText": "ccc7950fd5f5b82067c85f667940a9d59189151460761ece8098ca78daa19469",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "sha256NormalizedText": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "sha256NormalizedText": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "sha256NormalizedText": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+      "sha256NormalizedText": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "sha256NormalizedText": "857e61203b3deafb05766d8fcda898b86a7cb6f3d5e385ecc9926c4d698215e9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Base.lproj/Main.storyboard",
+      "sha256NormalizedText": "fd367b6c43006d61b730f674970dd48b9f662c8f2264e52ffc1558102a2c9f2d",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Info.plist",
+      "sha256NormalizedText": "2ca77af743f99bc3a2322c634b3563c8fc43d2cbe28f38b2ea7512be77aebfd8",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/Runner-Bridging-Header.h",
+      "sha256NormalizedText": "1a8d11d01d1cc92c650c9c9ed35299240052d4683a15a719a2315ef44185e074",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/Runner/SceneDelegate.swift",
+      "sha256NormalizedText": "add68b905971dedfcc0d0b5b7118030de5925ba8c081ad9815463699e3a444ad",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/ios/RunnerTests/RunnerTests.swift",
+      "sha256NormalizedText": "5e8f4908dacea6f29b2a790e4d38bf5fded69096063f9a27a2f21584d62b30c0",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/lib/component_example.dart",
+      "sha256NormalizedText": "eac3a58b81baa762950121a7e84b8ef2404326bee2fdc0ebae69e9fb17896dc1",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/lib/main.dart",
+      "sha256NormalizedText": "810726cfab25c70fed54d1d93e0194da878a7e662ce702ea651db0695c79cc25",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.lock",
+      "sha256NormalizedText": "e591e134e35a7f1ff7669dbe84aaf10599a95236ef7ffd3a6bb895b2524f4f73",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.yaml",
+      "sha256NormalizedText": "bf18e0ca41d0a0bfa16044103deeb6315f5d6e9c676ba14f52f163de11762993",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/example/test/component_example_test.dart",
+      "sha256NormalizedText": "c19fa1e729e6dbc8c94aface15668317e3eeb0e271b214cc2f13153b8c5c227c",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/lib/image_viewer.dart",
+      "sha256NormalizedText": "8c2307ccc9f7e9f39c0a5b287c63edd30e57fba8f0891d8044b1311d23464d1d",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/lib/src/m1_save_probe.dart",
+      "sha256NormalizedText": "c3a9723eb1e3c4f0bc0b986be5837f00bd81a78ddb56068d479848a347fb3ea2",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/lib/src/m1_viewer_probe.dart",
+      "sha256NormalizedText": "2d671fb435fc7c953541e542e3d4bc4cae4624a75c199cfb1d60696a2d5fc0cd",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer.dart",
+      "sha256NormalizedText": "a95ab6f4b1d820bea502edcc77293b315eb5a0ba373a70ca0f492431eb4dc71f",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_controller.dart",
+      "sha256NormalizedText": "916fa33d0a8ed26422a847a6ca8b0d060e2c1cc3671994262605e4737787ddfd",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_resources.dart",
+      "sha256NormalizedText": "35d523389b17bc6aedd167db9839f2810b8d293d8373c02ab5f337450030522c",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_save.dart",
+      "sha256NormalizedText": "749f4a05fd5a4f0f193ca17d34340775aed0d6b2b7e27da11bdd38c2315dd346",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/lib/src/viewer_surface.dart",
+      "sha256NormalizedText": "d59763ea9365c116495358c78363bcd08d0c6d1a965a2ed5368bd94f4b20ff6f",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/pubspec.lock",
+      "sha256NormalizedText": "496cd5164c655b95874d5c2dec3faedcb85b0f379e5f3cda9e1489fb548b4594",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/pubspec.yaml",
+      "sha256NormalizedText": "a13b4d5cea14c77d690aec45f3ebf3afa833cf4bb6e97f53dc421cfaed2ebedf",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/test/m1_animation_codec_test.dart",
+      "sha256NormalizedText": "4b51717cdf7bf83079bceb7d08599b6afad7237e11512063484c10f39be2b6c2",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/test/m1_gesture_lifecycle_test.dart",
+      "sha256NormalizedText": "d5dbdc39c448bbe8d2f5b2d73d40454b8c095c85d2ba22b8578e5f4ef0b08096",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/test/m1_save_probe_test.dart",
+      "sha256NormalizedText": "6018056f17b57d3251bf1e0b603e08edb736183b67967cad3dc8f96440521292",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/test/viewer_contract_test.dart",
+      "sha256NormalizedText": "b155c95a9dba56bddd3495425e56ce92f99f497d3f03cdb7a89dffac918c8f22",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/test/viewer_resources_test.dart",
+      "sha256NormalizedText": "4faba3182cba443679660e08a2068dd26b4cefa8b13a8db22f3715a079a7e305",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/test/viewer_save_test.dart",
+      "sha256NormalizedText": "f38d1923490bd4f60aea169bc0c0cc41cbd0b58811234137394345e732634ff8",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/tool/collect_test_results.py",
+      "sha256NormalizedText": "2d4f353e9a8e73989478ec266075be6537b3418b43e992640ca1a0faf8b331d7",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/tool/create_android_acceptance_fixtures.py",
+      "sha256NormalizedText": "656e01a08a0f269def87376018ecea4d7b8c01951eb86c9f6acd75b60aba66a8",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/tool/create_fixtures.py",
+      "sha256NormalizedText": "3486ff79f11a907465fc741dc990cd61aa3ed2948a669a96fdfaaf0b728dee92",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/tool/create_replay_control.py",
+      "sha256NormalizedText": "0ca630a7e2c4a2d47ca0df396c4d488bde3eb9c7ae687006eb04ac8a8fd338db",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/tool/create_replay_identity_controls.py",
+      "sha256NormalizedText": "4bbff966752aaafb434b9d6a9c3b161602623bd1eb03944fef028395c974c5a5",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/tool/m1_animation_codec.dart",
+      "sha256NormalizedText": "cf42eb9b416ec94c3a64973a4d72ad59cd4c7686e6688ac113c1b34437289659",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/image_viewer/tool/measure_conversion.dart",
+      "sha256NormalizedText": "75a1039cddefa6ec1f2fb2c23faf371ade1857936381af758f9f04ea2a1a0b22",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/README.md",
+      "sha256NormalizedText": "c911ce4d73af6db6d7adfbbe7af4ddb5e3a2acbb156a83e73477d91c8d94c4dd",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/channel-api.yaml",
+      "sha256NormalizedText": "a6931f7513b44b81108aef7c5df967c6924ff59e16863415556f7a0925f60a02",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/check-specs.py",
+      "sha256NormalizedText": "72bb7b37b65305ebcd9d73a2e5899c31850fd576084b185774f5909a89a9f2ba",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/community-auth-api.yaml",
+      "sha256NormalizedText": "86dbac36cd6bc1a15602f0937da6eb92d3d681355fd4ad5f4aa7e3c7e426b1d6",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/generate-channel.sh",
+      "sha256NormalizedText": "5b64ed4407687b1d7b05b8b42d8943a2d28f287e5627553b169d55ee3e975f52",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/identity-api.yaml",
+      "sha256NormalizedText": "398f50e2c7d5e6b2b5166780c50a0e6d199f5fa358d3b4629a42218c8bd252b3",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/post-api.yaml",
+      "sha256NormalizedText": "128d7ad59beb65ea03c723b1746c05ecc0c0c0106e51b4f63dc0f7e9af2aff76",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/post-image-api.yaml",
+      "sha256NormalizedText": "5101c2925c00137ef331fdde6e35bf4d533de588ffe9faefad9d9fa946376de7",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/requirements-check.txt",
+      "sha256NormalizedText": "2dcf2f923a4fe9dd75f511b67b8d0edf3a43c25f14ba652358e1f9ef8e4e6651",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/openapi/verifier-auth-api.yaml",
+      "sha256NormalizedText": "14260a035658c9a789d93a6b0a3257917664d59304fb8265b9c23a855a3dad6c",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/post-protocol-vectors/GraphemeBreakTest-16.0.0.txt",
+      "sha256NormalizedText": "ee2b9354d270ac061b29f09662cafea06341d77e704b8cc6bd72aaeeda363cb5",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/post-protocol-vectors/README.md",
+      "sha256NormalizedText": "0f01b7f05d4ab0fb603e9bfd1e2276cb0dbae444eb8ef83e7768fae3c3b85de9",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/post-protocol-vectors/media-v1.json",
+      "sha256NormalizedText": "1d5199dd8c5d3abc97f0dd2be262238a5b8b5b17884b01fa005b0afe325b9b0a",
+      "differsFromMain": false
+    },
+    {
+      "path": "packages/post-protocol-vectors/post-command-v1.json",
+      "sha256NormalizedText": "928160e58630a2b4540df0dd054aae4a33698607b59a44cce630e2392b42f787",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/README.md",
+      "sha256NormalizedText": "e375902d6c78547699f8ef655404f300e3ee328c3135d1ef9cc63154bcce8b59",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/README.md",
+      "sha256NormalizedText": "c7d26bd83c60eca086bbdd00e620dc37d7a6eedc2c0a7808985421220ccf60bc",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-batch-20261010-verification.json",
+      "sha256NormalizedText": "9ce364b3068719444f2e9a0a6555d2c629ca163c14c45154986ddfc11f24d68a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-fresh-20261012-verification.json",
+      "sha256NormalizedText": "f7a5df56db7ef3a5f46ab54caa913c5dc3d4c248e718d0f2570ab12f725980fa",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-google-provider-verification.json",
+      "sha256NormalizedText": "2e6f02c9c3b1194edd4e2f2b0598310bb264b0296069eb35529524af08b39859",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-native-negatives-20261013-verification.json",
+      "sha256NormalizedText": "49a3fc9c5a09f8e0b74cee8e67f4c802d4c0e788f36187d47c6db5f56cd6b0e8",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-v14-batch-verification.json",
+      "sha256NormalizedText": "f975c66160019cf06c3defdb5026927a79409cd2bc4c58cd84f165241fb55b7f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-v15-preparation-verification.json",
+      "sha256NormalizedText": "8e5fabd990023408669e07ae44ec50df275bf53415daa4bb8600bfca0173ec0c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-v16-batch-verification.json",
+      "sha256NormalizedText": "3c0d4d73b88f866b92946a106e18a41f9eef7b93323e492f5ed02b72bdee0661",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-v16-preparation-verification.json",
+      "sha256NormalizedText": "f396a659c8ac1e0d2b368ca46d4f387a834dc95edf204a10572ae800981caf7d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b3b4-v17-preparation-verification.json",
+      "sha256NormalizedText": "66a8190d4c52aeb011e4916d233646346cda0f2154bc2f1d45d2b99ceaf7b73e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b5-20261016-verification.json",
+      "sha256NormalizedText": "95fe0deee8dad7b3b48ecdc0f4321d0ff4ee9e6ed028c521cf6b6515082296c0",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b5-bitwarden-20261016-verification.json",
+      "sha256NormalizedText": "f8defc0ed23ccb47a8b3743eba1cd3072e9ed37b51f52b29d2d5ec02f3fa1636",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-b5-sync-20261016-verification.json",
+      "sha256NormalizedText": "96714e6af3d4fef481ccd3fbf9e86a6ed55be508000117f7cb518d299bb8bdc3",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-fault-verification.json",
+      "sha256NormalizedText": "a63f26b8e85950ec3eae162def6d49e61793d25504224e9ceb7cd42e236999d8",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-live-verification.json",
+      "sha256NormalizedText": "78bdfb82fdc21cfaf45ac02ee49eaba325315470e088a2d6db07ba6fa6d0d9e8",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-matrix-verification.json",
+      "sha256NormalizedText": "4ca190f5bd5d39a57a2a8ff8b349321675083a69cb7be738d3578f37e8f00e90",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-passkey-domain-verification.json",
+      "sha256NormalizedText": "22dab9c71dd60b8928c65b369c3689c9531df8ab8bd1f71a6180f8fbb3f1eb2c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/android-passkey-selector-diagnosis-verification.json",
+      "sha256NormalizedText": "8f6e761bc337c6be49c48faadbc37ee2da631e26e2b0577085439b47ea2b5dbf",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/auth-machine-cache-archive-verification.json",
+      "sha256NormalizedText": "e40bfbd4f99076d4edcbe2940100594d7aaf1c3fa172f9f726274454ba1f79ab",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/auth-privacy-machine-transfer-verification.json",
+      "sha256NormalizedText": "d317920f475ac95e5cad7b198e2dc50f6cd73b7a7d1853e2234fa16059b1e26d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/authorization-safety-gate-verification.json",
+      "sha256NormalizedText": "d46a2c615f8e75c274eccfa1113ea5111778a34b8fb38fa95f22e6f3768272c5",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/b6-single-android-20261013-verification.json",
+      "sha256NormalizedText": "c198186f3c9924bbc467869ce8b8454d3c8fc7c42c8a31961598a09efa7711ee",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/device-credentials-passkey-verification.json",
+      "sha256NormalizedText": "a16cb694fb3553c87ad112907342d42b61e2a548d329623b6f8bd92fa9e94b2f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/eligibility-http-verification.json",
+      "sha256NormalizedText": "e51b9b8c289c0855c72703f7599369b9ff2d6cb97f1f9051d1e85a274016ddd3",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/final-handoff-verification.json",
+      "sha256NormalizedText": "6491536afbbcacb94e271688739b386238c8a5515e79aab4863840b2e455ad34",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/identity-account-closure-verification.json",
+      "sha256NormalizedText": "e39d54739e23216c19c27b118bbe56da948239dd9114b5980d1e2388431532ff",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/identity-management-verification.json",
+      "sha256NormalizedText": "eca25cb757b1c6f3f8a500c38dae60f85848ccd0e63dc94be9bc90a391f25328",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/identity-runtime-test-verification.json",
+      "sha256NormalizedText": "a28e1ebd3e80106a2e0913621d0ecaf563882bb84772570029cb46eb4adb9a3e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/migrations/community/README.md",
+      "sha256NormalizedText": "cb36334fcc800c1356329d01fdf7e4119e9a658ed48cf1483867cbd098d370c5",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/migrations/verifier/README.md",
+      "sha256NormalizedText": "05e3eb9e47611e60690e40db254af113d6a89321ece790946da6bf112c2cd899",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/mobile-auth-verification.json",
+      "sha256NormalizedText": "b7cba8ff629a224dc6eeb23f8141090f57f61a2d76a2063ecd9ae06644ea050a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/mobile-native-integration-verification.json",
+      "sha256NormalizedText": "c406c5e157d7b1956336e9031c645d3ea40e823610611203fc5115285e98c659",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/platform-acceptance-verification.json",
+      "sha256NormalizedText": "9354c1ceaa4ce626d4f254f80fc35b3fb992cbd104db12ea5ec845958b811415",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/post-media-control/main.go",
+      "sha256NormalizedText": "2a3adadb246a2034976f1b2e9f7a6cb8b905411c4838d3864ddb16eace844b29",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/privacy-boundary-verification.json",
+      "sha256NormalizedText": "05153e248f3deae0cc5375c2db71926361218a76ca6d1a334644c7a884ad771e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/privacy-diagnostics-canary.py",
+      "sha256NormalizedText": "be3dceb351f4b202ad6b1a75f918a75f1e14a56d956cc0cc486205691fc904d0",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/privacy-regression-verification.json",
+      "sha256NormalizedText": "ca96b310bd8957b7340aed57cf0a559fb189838e22dbd86c3a279373d5f132fd",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/privacy-role-audit.sql",
+      "sha256NormalizedText": "c98344c6f27e620f539d5fa73e10f3a8410c6db0cd90a7687bed20c882a9a95d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/recovery-closure-verification.json",
+      "sha256NormalizedText": "bc4ab891ad0f1ff6b4a76c379b5845fe0b0b1b9671455e3969a8deed28b261fc",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/recovery-credentials-verification.json",
+      "sha256NormalizedText": "ad9f3c7fed5765490babc510268c2f08256a5dd1b60530ea793ff3d6e06e5b47",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/run-isolated.sh",
+      "sha256NormalizedText": "e26e81329fb43e9bffc9c05e42174b22315b3c964eae154794f1068cfca243f8",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/run-mobile-isolated.sh",
+      "sha256NormalizedText": "6dc1be3965d4ec8630e6cb9b3ad72ca814bba506ca7c889f307ff6560f95d687",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/run-post-images-isolated.sh",
+      "sha256NormalizedText": "cce281a8507e22eb78e24b207e025d24db52a0444d1df23d05597b364a26515f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/run-post-schema-isolated.sh",
+      "sha256NormalizedText": "8c39e494da7025d9e497293b6994fcaab3f2b4d1fed1f79ab6796418cae8249b",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/run-runtime-isolated.sh",
+      "sha256NormalizedText": "9763767850339ae38e1a122eb14b704148fd060e18470b76d180f0ad2160046d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/runtime-business-integration-verification.json",
+      "sha256NormalizedText": "9632b37db60c400525c4aae06627ea37abf6427f537994abc1a92d94e1017a1a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/session-lifecycle-verification.json",
+      "sha256NormalizedText": "7f34d81f01f297a1ad0af46aaabe8859b758255e7b42b120171f22990fbc8e90",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/verification.json",
+      "sha256NormalizedText": "8a8bf7a232dc9fba5b28da3b0482bc511a6a2901c55091eb3cf707a976bb5282",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/authlab/verifier-safety-gate-verification.json",
+      "sha256NormalizedText": "3d37c544fa8c93c3b94f8b9cecf194824964226d2af70935ad3a2782c1c8573f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/api/main.go",
+      "sha256NormalizedText": "488b5398f8ff2d78e7c1b78c31e23b79326fb63d724d020561a5c52ff06c2a93",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/authdev/main.go",
+      "sha256NormalizedText": "083df3b07f8d4c6b5457d8f21340fcc2ddafeb176425d26f1a2602e748fdd725",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/authdev/main_test.go",
+      "sha256NormalizedText": "d8c42d9d8b7f8b393db23fc60d24629eab6e5682f3dd2ad5e38d7c128abae21f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/identities.go",
+      "sha256NormalizedText": "13541e04f49d5a3e589748d644abdcab00faded09f6c01168e23defcb77a8ff9",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/identity_closure.go",
+      "sha256NormalizedText": "00f4ae15b16d833f5412d2734b865b9b907603f5854405d77703179d59233076",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/main.go",
+      "sha256NormalizedText": "f5fa7132258bc7b1f594e4780eb458deda4bd1547e37074f42ce91b7c253958c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/posts.go",
+      "sha256NormalizedText": "c9ffbea6e8c4333319cc802c7201807d858d3a13799080b3e367feef44f00f06",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/runtimeprobe/verifier_gate.go",
+      "sha256NormalizedText": "cd3de8842a576427b3f2b32ef9d181848f83c6ea3ef7bcadb80e6f703cf35ad4",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/cmd/verifier/main.go",
+      "sha256NormalizedText": "2c2e502366b6eb0797d44137184cbaa9f98657cf21e3589bd88fd5a4317654a3",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/community.config.example.json",
+      "sha256NormalizedText": "1b07f82f3c0712526afcb6c1aebc80d7b8e17a9c61281e49cc91789d8425933a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/go.mod",
+      "sha256NormalizedText": "228555413dbb87a647fabd317189f4d6f5722a2d52a8865e191b093afa44b2d0",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/go.sum",
+      "sha256NormalizedText": "72f63e347d14c2f82805462d632aedaf5232cbf4d091fa9e8529443cf5c8cc34",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/auth/postgres.go",
+      "sha256NormalizedText": "40cb4c626577ec88d869b84660405b9f4afa694d8b0012a5cc8dcf5a35484bf7",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_evidence.go",
+      "sha256NormalizedText": "6cdb21169a3d1eb4c83c7c89e1a136a9ef14c8bd0525b6c28d2dfaa68dd6ecdc",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_gate.go",
+      "sha256NormalizedText": "fe169653b70f76b0c092e7378f6e1e665daf620fa3522b5161bd0ee128b1f7d1",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/authorization_gate_test.go",
+      "sha256NormalizedText": "88487faaf4a3a071e69327974110e03245c2cba5e32926a04f963ee5784b972d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/common.go",
+      "sha256NormalizedText": "47272c335e64ee59012d948625fac16af36bbe4795a37ea7228aef7268f8f83f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community.go",
+      "sha256NormalizedText": "1336137fc35b6227a4cc5b189ecfd96259582d26662f868467ef284480ce5abd",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_authorized.go",
+      "sha256NormalizedText": "06f2631a058aff961770093294adcbbf9fa7f79daccb7c05b435fa68a3e010f3",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_authorized_test.go",
+      "sha256NormalizedText": "fce9e54bf03b090e2bdeb0e2ee6193b308bcf751b47dfe26a18c483626a0a31d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_closure.go",
+      "sha256NormalizedText": "1b43cc9b096fb3084ad0b5b320d2a01b4e9e8c8f1e999e075d2ff40003f3a799",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_closure_test.go",
+      "sha256NormalizedText": "e0ccbd7da39f02f0e41f26913d29aafc538e231a1e73536ed72d30fff824f49e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credential_cleanup.go",
+      "sha256NormalizedText": "06040b7dde029e458f4c97a5d12409f4c34c1b6d24f7d7f1b6dfb6ea4c3ac860",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credential_result.go",
+      "sha256NormalizedText": "416a2735f8fabfe6df4fa53a8dbf9e2ccd126774422a6cc1258380795e84bed3",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credential_result_test.go",
+      "sha256NormalizedText": "9954207658cfd9f75ab085719a2b591f8275f1e381e99a74568efb77af9b9e7a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credentials.go",
+      "sha256NormalizedText": "a5d89292a8f359400676bee7c404178a2c8be71951a769f74e2ac1fbfaf9017e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credentials_test.go",
+      "sha256NormalizedText": "2d7f3c4d7099a08b3470d44f65bcdc29133c91c82f20ec58eb88d52b73ed3667",
+      "differsFromMain": true
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_identities.go",
+      "sha256NormalizedText": "0ee67c7158250418d9ef5163b83a33769c8947a5f5da3169f4d163438134f48b",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_identities_test.go",
+      "sha256NormalizedText": "087a78e96a009694f79ba444a8846e76c095c90b6c58bcb1967d4249fda394df",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_identity_closure_test.go",
+      "sha256NormalizedText": "5ea05ccdcb3b68517117102e9797d12faeb602182abb5fdd3dbe3188f5e4c31c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_identity_projection.go",
+      "sha256NormalizedText": "e4b8fc160393f18794b5bb56633f960a2175e8400ec080026e3c31c49003767a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_passkey_recovery.go",
+      "sha256NormalizedText": "616fc12e5708a971ff50e36a72d0d1ff64f7b86b8f407b30bceb159cc82a02a5",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_passkeys.go",
+      "sha256NormalizedText": "cf911bb9827a5a7920daf46c0c5d413422f1ceb389a8b96cce8b1a062d10b697",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_post_image_terminal_test.go",
+      "sha256NormalizedText": "c4be09b571531d31a38b357a50ce02f8af7c4ae8a90bfd78aac6469f6e8906ff",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_post_images.go",
+      "sha256NormalizedText": "c988ddd0dbb422c52dc008e2b711e33de4ac5770498117a9eaa6a1dbea0d7a45",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_post_images_test.go",
+      "sha256NormalizedText": "d2e3d9bd5e0a20a6905f73f0475461d7f977d956e796841850584148cd7a7882",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts.go",
+      "sha256NormalizedText": "cf53f3652b4598f07c7069fb43793dd0fa53617becdddd6fb8a78034ac537834",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_lifecycle.go",
+      "sha256NormalizedText": "6d93bda666c9e5f28f16c762b93e47b681c7fc7072b2254721812a4ce9e74e18",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_read.go",
+      "sha256NormalizedText": "579696d587118cd58e3d11a6de5010d19502d09120834e8290957a55528866c6",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_schema.go",
+      "sha256NormalizedText": "88bcc72ac524cc30db9952af102770fa9627cf31c154c53b1ac75f1953c9b9cf",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_schema_test.go",
+      "sha256NormalizedText": "86b3e87ef537150f70097ddba8a331d81ad92dd56170ce9c0f187758790073b7",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_test.go",
+      "sha256NormalizedText": "6329d6553d9f98be7dea981f9da3396d00b2160e297322659b0a98d0d9c0a904",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_recovery.go",
+      "sha256NormalizedText": "abdfaf73a9074ce60f438d67b9db1cf6f8d0cf0749cf492e27b12a8a2cc8d53f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_recovery_test.go",
+      "sha256NormalizedText": "c405f73c8f822099dc1ff580afaa67a87ba849789752b7be10f196dc5919ebe3",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_sessions.go",
+      "sha256NormalizedText": "79b2afe3f62545444e40b4d41bb5d8fc055cc85f7df84c4c73a36b7f408c0fb8",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_sessions_test.go",
+      "sha256NormalizedText": "71ac15abb08c504e8ba5dce41fe2a3208c0a5de0255d4b8949187ef185d898f4",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/credential_types.go",
+      "sha256NormalizedText": "764d3dcab4ce0c854f9db16ae18f0604527c87190b0b32b3d05b9f45088e7a1a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_confirmation.go",
+      "sha256NormalizedText": "cab61e07d088b47d51eea099a66c0ab5a42b57981b5c66055761b3f30066388c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_confirmation_test.go",
+      "sha256NormalizedText": "8c298bb9ca854ef67f7c761d2ebbc5f772f536a06bd479aa1841b6a6adad3996",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_mail_worker_test.go",
+      "sha256NormalizedText": "c9ce4e54bc801e14a6c77647f5b826ba3ce320322463fd735f386aa6a3cd9469",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_otp.go",
+      "sha256NormalizedText": "064b0883a3180b62180b6f109592506406f0747217cd735fd28cfc87782bf5f4",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_otp_test.go",
+      "sha256NormalizedText": "ea37c59775db4fafa46efa2575a36524f2f3cb7529c308e759f39b02ffa1ff7d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/eligibility_types.go",
+      "sha256NormalizedText": "acec7f9cb07c119b7f15c5c13cbc2de574fe1bb2890646b456915eede659e17f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/identity_closure_migration_test.go",
+      "sha256NormalizedText": "0fefc2f4c9fe9e6d7caaede614f0b04001143fbbd2eba8b93e7e9513973402b9",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/identity_rules.go",
+      "sha256NormalizedText": "4c2c1278822cccf7036e737fecc441b49fd9e1cbd51ee618a6bccd37c44e3439",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/identity_rules_test.go",
+      "sha256NormalizedText": "77f0680381fd79897da316189496a44f3d3e868603fc7590ee0d36997ab37aaf",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/mail.go",
+      "sha256NormalizedText": "3a001f7fcc8b6d8401feb0291c1e4b19a3bc2c0004c38c304f585e238be035e6",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/mail_test.go",
+      "sha256NormalizedText": "6d2c3db202d0604ffe4e1bb1f6b521228be2d54ca0b503ed9ab06150381a8301",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox.go",
+      "sha256NormalizedText": "d19e8ca2a6699a9a6ec5549be927474f332113d819b728b6dc50d9dffc0b88af",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox_authorization_test.go",
+      "sha256NormalizedText": "20cf84a5fc30c5d25dce96baccac9b718476c42d021a4650c2870a715946b629",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/outbox_workers_test.go",
+      "sha256NormalizedText": "0820b55bcfcebd8e5f8afbf668de372129e56bec863b70b08c6206614ee10c9f",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/passkey_verification.go",
+      "sha256NormalizedText": "cbc3036fc9ef23dcab4a9635d7da91488ac8efa606be496314795a7cc7650861",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/passkey_verification_test.go",
+      "sha256NormalizedText": "1e392be2e8aa019f3aee320cf43bcc2fbe4a8cba94f7bc2870f1ed7947e9a5f2",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/password.go",
+      "sha256NormalizedText": "9d817d8f8a18e4ac911dbb350e59fcab71b6c4bd10d0f10a7f92f6822555535e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/password_test.go",
+      "sha256NormalizedText": "99bec8834a9a123e3d290e6293fbb22cfed30b80dc260260f3c884e4dec01bd5",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/postgres_test.go",
+      "sha256NormalizedText": "f6b571aaffe4f0f2e79c352013c068e94c062d28b3bb465b9f5492e8530b9cc8",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/privacy_boundary_postgres_test.go",
+      "sha256NormalizedText": "a2fa626a1a48b937354f8bf2277d2c71a7ccda6806af513e9630e8c9a88ce791",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol.go",
+      "sha256NormalizedText": "0793427b595f3972719c2ce9366f3177e74ef821eefbdd4a78dc69ea08c9a021",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/protocol/protocol_test.go",
+      "sha256NormalizedText": "eb2c1fa28a321562a4ba29e79f7dff1525b5a8e0e989c0fab1d7c98e671b0763",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/retirement_authorization_test.go",
+      "sha256NormalizedText": "1eea54e3291bf5ddfc7664420b71bcf24af00627724d64af42c973e75f4e77d9",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/retirement_http.go",
+      "sha256NormalizedText": "5f72e9023c44abe0cf2e227dcf3bd15679305a2dcea1505f748e59e060c74398",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/verifier.go",
+      "sha256NormalizedText": "44be3c0c946e4a26d222322567ad9a697565a6961f587cc882f9f5e1bed8026a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/verifier_gate_business_test.go",
+      "sha256NormalizedText": "91b79c7bf180ccab597e9ca1079b68f819911c3af5776a016e12068b7b84e59c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/verifier_gate_test.go",
+      "sha256NormalizedText": "badc951f5cc27592ea009d00a5e4a0fcc8ed1f067349b25758fff38fa8814013",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/workers.go",
+      "sha256NormalizedText": "fac2b15263dbf3ba3e635aeeae7c025032935ed3f58006da0bca0bc702e46209",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacy/workers_test.go",
+      "sha256NormalizedText": "72a5eda3261f63c4367b3cab8275e7ad426cc386b10db39a31495515d7bf7438",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/channel_endpoints.go",
+      "sha256NormalizedText": "2b11bd81fbb659302608d4701a12ad31bf84f29221ce21781035ef1453430836",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/channel_endpoints_test.go",
+      "sha256NormalizedText": "88ab141145600f7cd7977792eda6b805d8fc3c93094256a537d24cf83dfe384c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/credential_endpoints.go",
+      "sha256NormalizedText": "f3724306c80d0dc1600e7a3e5821251befd313ed7cdf8668dd7c21dda4dbfa47",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/credential_endpoints_test.go",
+      "sha256NormalizedText": "d1bdcbb1807f1212dcd0936c46b44885f24f73740eb8631594bbc9ddc373e5f9",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/credential_endtoend_postgres_test.go",
+      "sha256NormalizedText": "cc62273647dafbca381691117f7e4caa0d1ec4c2c0885f8eb9464b01f7accd91",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "sha256NormalizedText": "59160cbe1dab411d11c25a10c8ea54a27309171f9479445b93e1cb2986ddfd88",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints_test.go",
+      "sha256NormalizedText": "831f615fd4d5f9422dea4cb70853982432b5e0d99656f804328288a8a94c8168",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+      "sha256NormalizedText": "fd83894079e3e9076eb79e0263ee0ce47461d2fc36b75a6916038aa844a56753",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/f4_main_mobile_postgres_test.go",
+      "sha256NormalizedText": "a5f016483d483922cad1310c39b204e0a951d734c3f888d6898344c1774577da",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/identity_endpoints.go",
+      "sha256NormalizedText": "c96a49d1c700cda55a91d61827a3369ea55b54a2ce77cb8d4fc2e37b8764cc1d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/identity_endpoints_test.go",
+      "sha256NormalizedText": "9e84431478b63f82fa028ca0a96749813ea2a113085a6ae74fac73d537b0fa7e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go",
+      "sha256NormalizedText": "94bce40edbca8a14464d35a86e7a9c0e80c20735b4320d41b11a16529ad294fb",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/limits.go",
+      "sha256NormalizedText": "2b136295f2709df194bb285357823f1651d6838c4e6d99e0880d5e58ba51559e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go",
+      "sha256NormalizedText": "ce5bc58799430eb6b8477b6e76742b0a793d7ec8d42f6852506d7c653c488b4a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go",
+      "sha256NormalizedText": "5f4bdfa8750181d26f64f263cae0537bb0dcd4dcbecb42bf06a68f5c41583e2b",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/peer.go",
+      "sha256NormalizedText": "d416fd6f1fdc0d021e757306e9b9918dc91398d0b28a4e7115014751f39e33f3",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/peer_test.go",
+      "sha256NormalizedText": "a00f474a07906d16f65c69927b06c16ba8037d519db8e68e71f8f2483fcdbacf",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/post_images_endpoints.go",
+      "sha256NormalizedText": "1f0ebe00a311ea9c74e41ef8a832931b7c5b727c79e368aeda0f2766a5956e97",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/post_images_endpoints_test.go",
+      "sha256NormalizedText": "bc3a02f4c0eccc1e5d3537a6eed49d24888bf14c658f6750841a5ce1ae7b7965",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/post_images_postgres_test.go",
+      "sha256NormalizedText": "dfa4b8368974a38bde867cc2c6199d5ff4800d15d398eab2dba4527c7a8a0bb5",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/posts_endpoints.go",
+      "sha256NormalizedText": "70812e00a37bac21b511c0b908834c3c3036816fbac11b4fcff52c43b360f0cd",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+      "sha256NormalizedText": "9e602b31baede16c9a9891e93d5616ae77256eac1f373f69183a80fb2824e210",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/posts_postgres_test.go",
+      "sha256NormalizedText": "57a691d558b2c626f39d5f460c1aafc4f911f3fb43af050ffc141f8c9b89c632",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/privacy_boundary_test.go",
+      "sha256NormalizedText": "d2fa80d0ee401a0dbf27e78b1afa2bcdba8bfeb395bec6cc0014f59542c82423",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/recovery_closure_endpoints.go",
+      "sha256NormalizedText": "a6a30af25921e1155625ea17048f43f1178cdf0fcf90c934ab49efff62301ddf",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/recovery_closure_endpoints_test.go",
+      "sha256NormalizedText": "1ee0300a62df1aa041c880c93f5b59e5950a927f9cae51265186e045f408770b",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/session_endpoints.go",
+      "sha256NormalizedText": "026d254dbc47be0caada6b0c7617b697240a8e558d861418cce4e3b0aeef67e2",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/session_endpoints_test.go",
+      "sha256NormalizedText": "d4fc6e7a7198043cabb53483eaaef8229e29c6b7483e4f80ac6bd383ed0e0a34",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/strict.go",
+      "sha256NormalizedText": "296658f575bc2c50b638483e1bfafe9e3fbb6cbb00fa326841868943db559832",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/strict_test.go",
+      "sha256NormalizedText": "4acf13871b2d3be5654bc1a1d5576abbd79740c2901f2e00ecec1c90f75a5aab",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/tls.go",
+      "sha256NormalizedText": "16e4d99ba30b50e6cba71eb1c9dcc385ae0440edceac53e42d90353d34b95022",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/tls_test.go",
+      "sha256NormalizedText": "336b99fa5c58efa8fb432609ed766d2d4590b1b69b54caab2cde456355656222",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/config.go",
+      "sha256NormalizedText": "af8086a8ab1d9b512b1164e2da40bb4ca5ffd7e051665158f5c8be48b4833146",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/database_diagnostics.go",
+      "sha256NormalizedText": "427fbfedb46e72b343c5b773108cf2bc0c91775a2bce05875a02014612febad9",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/database_diagnostics_test.go",
+      "sha256NormalizedText": "e738d8df24b5d05a418f261adbc0aef0a3e2cef0c85bb46a8cc5342c13723a27",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/diagnostics.go",
+      "sha256NormalizedText": "ed35c61b16cd307510ede20b7b799e6ccac60d54679f5f57dd6a0cbfeb7a241c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/diagnostics_test.go",
+      "sha256NormalizedText": "b5d7b2f65f8ebb77f85cecd3078a7bc0f7243384f990afa14eda75df5afd0e32",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/post_images_config_test.go",
+      "sha256NormalizedText": "47d69e6dbcb615808a51e32f16ce3f8642d8397c068754e3cbb8112389b26312",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/posts_config_test.go",
+      "sha256NormalizedText": "69e48733ee72d262f676acaa4e43c1834afbb47e52cc05e425aea43c04aba0c3",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/server.go",
+      "sha256NormalizedText": "33e647659a08d6327d8b09c41d27072b2d35fd25112f562f881919a8b5983d8c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/webauthn_config_test.go",
+      "sha256NormalizedText": "2e52b965f628f3324197c14f6b7c4dba559bf1cb245cc96798b612564d6bad34",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/channels/catalog.go",
+      "sha256NormalizedText": "e6e7d77eceb95618f114f3363fec39bc5bb737b57f2e2f60eecb267e0de6cfc5",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/channels/model.go",
+      "sha256NormalizedText": "be97830c533480ca63ed00f3fc5bd197cde9637f8ca7e728270a50efcb887225",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/channels/postgres.go",
+      "sha256NormalizedText": "c0e7bf55902f87a20eca33b180108924fbb420024c288b2e89d770cd7d9c327e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/channels/queries.sql",
+      "sha256NormalizedText": "b29f945d1a58d49e950cf7aaaa3c4867ce7350f0c98d34502152ecaf11bd2a2b",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/channels/service.go",
+      "sha256NormalizedText": "2c0a444fa7594201b77049da55691f17cf7a7472e748b803f9c57db81f88b487",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/httpapi/router.go",
+      "sha256NormalizedText": "445b563df96f63c9269c36533064408a33809b665f9e6e065dfb4b2d98447c4b",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/postmedia/model.go",
+      "sha256NormalizedText": "7bc7985fce4820049e74da656d1b61b515235e5ae736bd74f538a49d10957275",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/postmedia/model_test.go",
+      "sha256NormalizedText": "feaee83b95299d8367a1473b632fd83fc892f108b91dbf3c5f37a82c7458691c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/postmedia/validator.go",
+      "sha256NormalizedText": "4e65d2b83c02deb8c5907311431fe329e9a5da3dc8fd9fe1729ed4313d58f1eb",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/content.go",
+      "sha256NormalizedText": "c872b9a73cefbc0d90c30ee7fff960de80c9fb8010b9a8c10649a583767d0ece",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/content_test.go",
+      "sha256NormalizedText": "e9038547a798024a862a899c3deea08f3e1b9810a576486d224763aa5a267378",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/cursor.go",
+      "sha256NormalizedText": "b5572233a452785625693644338d5eaf8ecaa4fe764af28cdeaa057fc90898c6",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/cursor_test.go",
+      "sha256NormalizedText": "24b92f454d6fc6270a227a1aa111e952b252ce31335f4e4027b9a8dd7a9fe70c",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/media_protocol_test.go",
+      "sha256NormalizedText": "efa8393c5c1117e2121b4d99c419fcbb172653c03b51b78c56605158b59fb5f8",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/model.go",
+      "sha256NormalizedText": "fc924b4e4ac61ec9dc03ffe16df80794e6b880ed3d569af68a444e56e671d616",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/model_test.go",
+      "sha256NormalizedText": "a90b515cdc4a9800c562970c9d9991eaf22c84a0ceb9367f856e84e60b68b2e9",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/protocol.go",
+      "sha256NormalizedText": "739b44d449fd4bad43b9c6ce3eb5e2d820087e4139938c77cdd4d57970414dfa",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/protocol_test.go",
+      "sha256NormalizedText": "390062fade0e0419e97e859175bdc45dd9caf45e74863da1b7e2fe70cd00260d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/testdata/GraphemeBreakTest-16.0.0.txt",
+      "sha256NormalizedText": "ee2b9354d270ac061b29f09662cafea06341d77e704b8cc6bd72aaeeda363cb5",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/testdata/LICENSE-UNICODE.txt",
+      "sha256NormalizedText": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/internal/posts/unicode16.go",
+      "sha256NormalizedText": "0ca2f4007e03fd362948a920624af2beeed53357cca3150c7467a6ff58c42522",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/media/requirements.txt",
+      "sha256NormalizedText": "41b54a6fb2918667ca47a61d73b522629d84490f3d78f0f20b21135faba10d35",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/media/test_validator.py",
+      "sha256NormalizedText": "f6f7d58fa6443b7150ada3815dbd13e0c25a1be87b26549342a39142fc87bed0",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/media/validate_image.py",
+      "sha256NormalizedText": "ed06a45d3196a6f7d2a5b057d900c09836cd8d52c5e6c1038a2c3afc0eb7c7e4",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0001_sessions.sql",
+      "sha256NormalizedText": "8b011adf71047a1de622a6f9809c4a78eaf305304e5ee536fa2b5a67092dc720",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0002_channels.sql",
+      "sha256NormalizedText": "4b7d6429acb31be315f1546710c8136e0bee48bf2cd1021a385c5710f9b54504",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0003_authprivacy.sql",
+      "sha256NormalizedText": "51ba4d7835a1fbb33a264c7693a365a6cc1997f77f0825bc68f8dc2e28184278",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0004_authorization_gate.sql",
+      "sha256NormalizedText": "b2c7737c6ef24658bba39aa65e003158ee26d4669d098ba79b8f9562b8ed0101",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0005_session_lifecycle.sql",
+      "sha256NormalizedText": "4dd140ba2724b4bcdd432fe365f086fdd10b25ae65110445d98892a44e4ceb6e",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0006_recovery_reset.sql",
+      "sha256NormalizedText": "4bb9e591c9a0c1774e39de4932e79ef608cfdb7d11674d3bd8fff59db075b730",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0007_account_closure.sql",
+      "sha256NormalizedText": "9fa39a97a027cc32a51fc7955f6ee04332f4803560267e33e6314b9ad2e39094",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0008_recovery_credentials.sql",
+      "sha256NormalizedText": "c5ff5114fa790a86606cc66fd363e69a292bb2f17a8b611f60fddbced8d31fd0",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0009_receipt_worker_claim.sql",
+      "sha256NormalizedText": "2386fe4362eab48c423baf4862d6f621677c665131893e50a70351125fc1bcd7",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0010_legacy_fence.sql",
+      "sha256NormalizedText": "e2e377cda6fea2543e25b8acac010fd9d41d8254ca2142f9aa18984cdf99ad33",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0011_identity_management.sql",
+      "sha256NormalizedText": "eb49fc3b43ff47febfa1682021d48b2b64a5e09e1de65d97b73ef1c90bc0889b",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0012_identity_account_closure.sql",
+      "sha256NormalizedText": "4cf0979531530f053cb365fa01eaddfb1c925b1c03c1e019382751d2a0d78f0d",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0013_community_text_posts.sql",
+      "sha256NormalizedText": "35274cba859c0d51fc7805e341ea3880d12ee7f67eedad96f9841c915f1344fe",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/migrations/0014_post_images.sql",
+      "sha256NormalizedText": "16b35e586ede3c32d0933590d5466e5f70465493ab8c104e94e4754ac2df6528",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/sqlc.yaml",
+      "sha256NormalizedText": "b7bd3aa2d96f7367216102f4615380c1960ec70b923c32b4b914b0fb29b0c85a",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/verifier-migrations/0001_authprivacy.sql",
+      "sha256NormalizedText": "102d6a2f9faafbdf992bad8e5122323b46bba80d6ed8419d48cc8466cef41fa0",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/verifier-migrations/0002_otp.sql",
+      "sha256NormalizedText": "204a03451012ba39b08a36c6b39a4a8ef37dede968b7399df9425a1b469ab152",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/verifier-migrations/0003_confirmation.sql",
+      "sha256NormalizedText": "40e0413282ea541d7195d7c443738631a5627f49bdd0f5c421ff19bf8f870a46",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/verifier-migrations/0004_authorization_gate.sql",
+      "sha256NormalizedText": "72fff9927f88d5546a8571b53f94b353f5e22e64fdc74c2fe352b013ed78f132",
+      "differsFromMain": false
+    },
+    {
+      "path": "services/api/verifier.config.example.json",
+      "sha256NormalizedText": "67804537897501d592ad52b2b37aff9ae30c4615b5392a499a93cd1649d83de3",
+      "differsFromMain": false
+    }
+  ],
+  "originalConflictFileCount": 76,
+  "conflictResolutions": [
+    {
+      "path": ".agents/skills/impeccable/reference/extract.md",
+      "committedInputSha256": {
+        "ours": "31b90048c0b540daec46762a10c2b6b6434737a89af005054d8b848d829d003b",
+        "theirs": "3fbdbed81a26435d6eb346b47725b42383077f90d0f43f2f8cacc5b4ee5e9e7e",
+        "alignment": "31b90048c0b540daec46762a10c2b6b6434737a89af005054d8b848d829d003b"
+      },
+      "resolvedNormalizedSha256": "3fbdbed81a26435d6eb346b47725b42383077f90d0f43f2f8cacc5b4ee5e9e7e",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": ".agents/skills/impeccable/reference/harden.md",
+      "committedInputSha256": {
+        "ours": "16ba7fca1973c5faf53dd2ca523559129c0fe9e5f8d50b645f527afa78186cd2",
+        "theirs": "79345611ca02788b55be59e0673749a21e6c768b7c7972e1421d6f02266bdd38",
+        "alignment": "16ba7fca1973c5faf53dd2ca523559129c0fe9e5f8d50b645f527afa78186cd2"
+      },
+      "resolvedNormalizedSha256": "79345611ca02788b55be59e0673749a21e6c768b7c7972e1421d6f02266bdd38",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": ".agents/skills/impeccable/reference/optimize.md",
+      "committedInputSha256": {
+        "ours": "f672ef8251a3ed4051a053d30819664951b17540b2899acd27d20e500c234abc",
+        "theirs": "b8e7c2b66e9f748912f672a82c6f0a6bd8057f5ce1a0f2c6452808c1421f0131",
+        "alignment": "f672ef8251a3ed4051a053d30819664951b17540b2899acd27d20e500c234abc"
+      },
+      "resolvedNormalizedSha256": "b8e7c2b66e9f748912f672a82c6f0a6bd8057f5ce1a0f2c6452808c1421f0131",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "committedInputSha256": {
+        "ours": "e7d1c94c4b2eada17c5551157668362659ccf9626d34dbd58e68142410f90103",
+        "theirs": "8a38d68b1499ab539c6bf336f859922896a51e98f19d6c125e982574c4767188",
+        "alignment": "e7d1c94c4b2eada17c5551157668362659ccf9626d34dbd58e68142410f90103"
+      },
+      "resolvedNormalizedSha256": "8a38d68b1499ab539c6bf336f859922896a51e98f19d6c125e982574c4767188",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": ".gitattributes",
+      "committedInputSha256": {
+        "ours": "e780859ab61aa6a48ada7a6905db9304b77882fa7124e87bab2364a42ff796e5",
+        "theirs": "68d9f1bc50904e9c46b397f0b135268414bcb5b5d6169af2e81225a12188d417",
+        "alignment": "641c858e753302a33fc4f337c74ed7508a521fce67ac426441a0d3e2d2d22b5c"
+      },
+      "resolvedNormalizedSha256": "1f795588b6811349ae156380e50ce0a3a9798f3eec1a2ef3ef5f4a94c5801b27",
+      "contentAlignmentMerged": false
+    },
+    {
+      "path": "AGENTS.md",
+      "committedInputSha256": {
+        "ours": "f933fd8deb162a2b0562eafd61db00eceef590e78cf274d3bd46679a1c12cbcd",
+        "theirs": "3ba855cc3352a8863862d63e9493183e74c2aa5482d147a3d616fb2ac05dd0bb",
+        "alignment": "f933fd8deb162a2b0562eafd61db00eceef590e78cf274d3bd46679a1c12cbcd"
+      },
+      "resolvedNormalizedSha256": "3ba855cc3352a8863862d63e9493183e74c2aa5482d147a3d616fb2ac05dd0bb",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "README.md",
+      "committedInputSha256": {
+        "ours": "42e67efe2b40f17ee421a986485e195b4d46ec5d6c4ecade6b5728912f5f4d31",
+        "theirs": "f8f6f388cc50e7f46d8986a3e89c7271ddf97f1e32193fdb3db84b53f80bd351",
+        "alignment": "42e67efe2b40f17ee421a986485e195b4d46ec5d6c4ecade6b5728912f5f4d31"
+      },
+      "resolvedNormalizedSha256": "cbb6d722a1d7903f62b97d5814cbb626c50e72ccc9d0cae498367054bb76d56b",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/README.md",
+      "committedInputSha256": {
+        "ours": "bf292efe0abc763d3660d7e11cd3a392903c598acf9da291c181f4c918fd42a7",
+        "theirs": "b4ca1601c2f26b6b4a4c58a448ad11d438a9de20138fc7a5ed6df2d18833cc06",
+        "alignment": "bf292efe0abc763d3660d7e11cd3a392903c598acf9da291c181f4c918fd42a7"
+      },
+      "resolvedNormalizedSha256": "b4ca1601c2f26b6b4a4c58a448ad11d438a9de20138fc7a5ed6df2d18833cc06",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/android/app/build.gradle.kts",
+      "committedInputSha256": {
+        "ours": "fb0a0dd4dd07042f6e8e169b4c68a25e685f2393a78010d28670a5753bda805c",
+        "theirs": "33330ebc866bcecb41466c857b48dcd0928b27aeb4810b2974c365c684a8e30a",
+        "alignment": "fb0a0dd4dd07042f6e8e169b4c68a25e685f2393a78010d28670a5753bda805c"
+      },
+      "resolvedNormalizedSha256": "33330ebc866bcecb41466c857b48dcd0928b27aeb4810b2974c365c684a8e30a",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/integration/auth_public_https_postgres_test.dart",
+      "committedInputSha256": {
+        "ours": "d465e39c6c6935782b938eb8e539e6eadac55619581b0b56852c179b1dc2f208",
+        "theirs": "b3e773f71bc8673fe9733c13d86af19424914e428aaeeddde41342cf60e979d4",
+        "alignment": "b3e773f71bc8673fe9733c13d86af19424914e428aaeeddde41342cf60e979d4"
+      },
+      "resolvedNormalizedSha256": "d465e39c6c6935782b938eb8e539e6eadac55619581b0b56852c179b1dc2f208",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/integration/community_stage1_scenario.dart",
+      "committedInputSha256": {
+        "ours": "5c410bb1cce724d320ae7738c38cdc5d9f637b771881eb15ee50271b0a64cf82",
+        "theirs": "a4bf716de13e916109f7110fa788a71499b8c1c3fbdb502e3b30b4a51ea98de5",
+        "alignment": "2c2099c219aa871e74eba3ea606da24fa59bbae690400a291b6ebb295c4c2060"
+      },
+      "resolvedNormalizedSha256": "b12c0720b96df7118d01f939a7b72fc8062b82acc966229b8d51aceca831f88b",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/integration/f4_main_https_postgres_test.dart",
+      "committedInputSha256": {
+        "ours": "033bfe7d870814f273c8e6a3dede5ec15915652eb9b02f74862cc84e8ee91e6f",
+        "theirs": "a85191b854456f5f2ef646c4f13470325d29333c01743de6762760c85ed36731",
+        "alignment": "a85191b854456f5f2ef646c4f13470325d29333c01743de6762760c85ed36731"
+      },
+      "resolvedNormalizedSha256": "033bfe7d870814f273c8e6a3dede5ec15915652eb9b02f74862cc84e8ee91e6f",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/integration_test/owned_auth_device_helpers.dart",
+      "committedInputSha256": {
+        "ours": "9076d4ed4e24e442f1a12303540375ca753ba9420e7b919a3f6f5ebd947457ea",
+        "theirs": "aeeb7cfc14cdfec586eaec96259410a14cc11b6a836e508f6fa8d90c09965fe5",
+        "alignment": "aeeb7cfc14cdfec586eaec96259410a14cc11b6a836e508f6fa8d90c09965fe5"
+      },
+      "resolvedNormalizedSha256": "9076d4ed4e24e442f1a12303540375ca753ba9420e7b919a3f6f5ebd947457ea",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/ios/Runner/Info.plist",
+      "committedInputSha256": {
+        "ours": "f2e4a941c27d885b3c860720717e10895e3eadaa4c8d29aa3346ed4e7554dda7",
+        "theirs": "45910a437ec6b89ac0096835ca9183ea39daf832250eb23371d304a1c06340ad",
+        "alignment": "f2e4a941c27d885b3c860720717e10895e3eadaa4c8d29aa3346ed4e7554dda7"
+      },
+      "resolvedNormalizedSha256": "45910a437ec6b89ac0096835ca9183ea39daf832250eb23371d304a1c06340ad",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/hnuhole_mobile.dart",
+      "committedInputSha256": {
+        "ours": "659bda1262a11e3b72bae75f9cf74da097958f6f4504e2d6c50547f00ae3067f",
+        "theirs": "87493f6bab1a09623a9d9c385dd2e9d1e6e295806c04a2d2939c8dffc1890b9e",
+        "alignment": "659bda1262a11e3b72bae75f9cf74da097958f6f4504e2d6c50547f00ae3067f"
+      },
+      "resolvedNormalizedSha256": "87493f6bab1a09623a9d9c385dd2e9d1e6e295806c04a2d2939c8dffc1890b9e",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/main.dart",
+      "committedInputSha256": {
+        "ours": "a2d488a7fa26c9dca1cb811a289e507ab8948a0c6b1721834a58414869ff85f0",
+        "theirs": "6d0e0fc028a9dd37576e9dfc43ae67d931442811a5ada37573f1f55b339fc006",
+        "alignment": "a16c8ffc7394b897fde45523d7b2c2d5368b126c42c75577a9a0d74dcaaa8c6e"
+      },
+      "resolvedNormalizedSha256": "928466b88d5e376ceddddf9fa6e015aad7d44a94e7d653825a449a773b496626",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/auth/auth_flows.dart",
+      "committedInputSha256": {
+        "ours": "eee9d96fc00404e20e662a5d116a0991803db17891aaa05140316802e35a017c",
+        "theirs": "7625325a32beb517460ffa3dc9f40f1f5cb9fc4b79a00518a28b592d2b0d0a62",
+        "alignment": "eee9d96fc00404e20e662a5d116a0991803db17891aaa05140316802e35a017c"
+      },
+      "resolvedNormalizedSha256": "7625325a32beb517460ffa3dc9f40f1f5cb9fc4b79a00518a28b592d2b0d0a62",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/channel_tree.dart",
+      "committedInputSha256": {
+        "ours": "3905e0c5603842a28c1f6724532a9bf6f779e197b0b0606444aad2093f8a745c",
+        "theirs": "af839060c766a31507bd44a006090b95efb64211acf3a20862e29234aa78fe94",
+        "alignment": "af839060c766a31507bd44a006090b95efb64211acf3a20862e29234aa78fe94"
+      },
+      "resolvedNormalizedSha256": "3905e0c5603842a28c1f6724532a9bf6f779e197b0b0606444aad2093f8a745c",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/navigation/entry_screen.dart",
+      "committedInputSha256": {
+        "ours": "446b83fa3dcc9286458fd594c18e8ac32cd3184bdb93fa773c200464918600a5",
+        "theirs": "d3b5d99c9a450f35ec400edbec1c8884e2a23db9833d4974915a02ba62fd652a",
+        "alignment": "d3b5d99c9a450f35ec400edbec1c8884e2a23db9833d4974915a02ba62fd652a"
+      },
+      "resolvedNormalizedSha256": "446b83fa3dcc9286458fd594c18e8ac32cd3184bdb93fa773c200464918600a5",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/http_post_api.dart",
+      "committedInputSha256": {
+        "ours": "be3ba00c3c83378c73bacd2bc2d178b7ac1a56f240a6a69fbd2d47eeefbec5ef",
+        "theirs": "d2251e0a38c191c45e63ed9436128c4edc409bd9fedc67f99efdd10fb5184144",
+        "alignment": "be3ba00c3c83378c73bacd2bc2d178b7ac1a56f240a6a69fbd2d47eeefbec5ef"
+      },
+      "resolvedNormalizedSha256": "d2251e0a38c191c45e63ed9436128c4edc409bd9fedc67f99efdd10fb5184144",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_controller.dart",
+      "committedInputSha256": {
+        "ours": "49a72e8f65c87a6fb3e175433a4c8810200bb4149c9b2335003f488204e96724",
+        "theirs": "97baa6d6b14ab3a663b2c6175e4fe701d6fed7b2992611e6e44e5fb802327746",
+        "alignment": "49a72e8f65c87a6fb3e175433a4c8810200bb4149c9b2335003f488204e96724"
+      },
+      "resolvedNormalizedSha256": "97baa6d6b14ab3a663b2c6175e4fe701d6fed7b2992611e6e44e5fb802327746",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_models.dart",
+      "committedInputSha256": {
+        "ours": "c4133991ca2c61c097aef19235b5e65fb8b4733336ed9a7d15145ddc8ae47704",
+        "theirs": "58f142735b76d3a4832497bb66ba21d33fea67d856ee1c49c0e5bd9e3cd56959",
+        "alignment": "c4133991ca2c61c097aef19235b5e65fb8b4733336ed9a7d15145ddc8ae47704"
+      },
+      "resolvedNormalizedSha256": "58f142735b76d3a4832497bb66ba21d33fea67d856ee1c49c0e5bd9e3cd56959",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_protocol.dart",
+      "committedInputSha256": {
+        "ours": "afab051109ed6715d179285c5a14d68cea3977ddb19b5556f4b3c0355cac871b",
+        "theirs": "2c38f950938dda74719bf5312e532cf05257551d874e53208996dd84e4a77358",
+        "alignment": "afab051109ed6715d179285c5a14d68cea3977ddb19b5556f4b3c0355cac871b"
+      },
+      "resolvedNormalizedSha256": "2c38f950938dda74719bf5312e532cf05257551d874e53208996dd84e4a77358",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/posts/post_screens.dart",
+      "committedInputSha256": {
+        "ours": "896d5c23a21bbefbaec2ac1634ec83f329d8ca88aecd747a1771d120f9de7393",
+        "theirs": "2dc303ddd95f0225ff70788cf327e5dc0642a92361c9614646ff51ad4e838553",
+        "alignment": "e496b2cd737507d34e2a873fe96b213cc98eacca9dafd9b751c694a6abe70188"
+      },
+      "resolvedNormalizedSha256": "b311577ed330ffb80a32ba48a4ef337f512e21e2c90897651ee41fa5fae5982c",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/lib/src/storage/post_store.dart",
+      "committedInputSha256": {
+        "ours": "738cf69eba57a628d29270be79720dad8cbf60ce2b25963ed2c7c7c92e87545b",
+        "theirs": "9a4e928fbba963d5dfc09c800128cd216ae82893fffcc422898d4a43017f33ea",
+        "alignment": "738cf69eba57a628d29270be79720dad8cbf60ce2b25963ed2c7c7c92e87545b"
+      },
+      "resolvedNormalizedSha256": "9a4e928fbba963d5dfc09c800128cd216ae82893fffcc422898d4a43017f33ea",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/pubspec.lock",
+      "committedInputSha256": {
+        "ours": "9609e0f46a13ab53d6dedfb9665b0b7ac7523d20474b42abb77380dbdb4c9261",
+        "theirs": "e88241d8383f83f7d5ba9fcdcc65caef7542bb1d583db648bbb321a1c0b3129b",
+        "alignment": "9609e0f46a13ab53d6dedfb9665b0b7ac7523d20474b42abb77380dbdb4c9261"
+      },
+      "resolvedNormalizedSha256": "e88241d8383f83f7d5ba9fcdcc65caef7542bb1d583db648bbb321a1c0b3129b",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/pubspec.yaml",
+      "committedInputSha256": {
+        "ours": "562be19adfb9dea9057655b753ae354e10df452eb469b842f9c553fea759718f",
+        "theirs": "558245ea01729cce45da575807c116564e9ae818efe0a235ca45923267380e24",
+        "alignment": "562be19adfb9dea9057655b753ae354e10df452eb469b842f9c553fea759718f"
+      },
+      "resolvedNormalizedSha256": "558245ea01729cce45da575807c116564e9ae818efe0a235ca45923267380e24",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/test/auth_api_test.dart",
+      "committedInputSha256": {
+        "ours": "9110873194e5e32b6880c66e98bec31a7d775e5528ff4fbeafe134d7e2c0190f",
+        "theirs": "2f85e45b725a72b73a3b464a52d3c475eac3f158805cd4ce5d1bc081d45eb83f",
+        "alignment": "9110873194e5e32b6880c66e98bec31a7d775e5528ff4fbeafe134d7e2c0190f"
+      },
+      "resolvedNormalizedSha256": "2f85e45b725a72b73a3b464a52d3c475eac3f158805cd4ce5d1bc081d45eb83f",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/test/post_api_test.dart",
+      "committedInputSha256": {
+        "ours": "f4c52c4e5396a0fe273a7a873439b38bd461c21fefa7312166c0a67e4ea6f8d1",
+        "theirs": "1332ea75756ec5d4daa79597057791633b62db2e80af716346f0725c88a26851",
+        "alignment": "f4c52c4e5396a0fe273a7a873439b38bd461c21fefa7312166c0a67e4ea6f8d1"
+      },
+      "resolvedNormalizedSha256": "1332ea75756ec5d4daa79597057791633b62db2e80af716346f0725c88a26851",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/test/post_closure_cleanup_test.dart",
+      "committedInputSha256": {
+        "ours": "a03e4824307bf3d4127451f3b2d8fbda4c3ac5964f3bdf9123b65728abef7011",
+        "theirs": "06da2ed2343778b0de44d35020fe0e0a62de04d65b855e5946e76765b2623f30",
+        "alignment": "a03e4824307bf3d4127451f3b2d8fbda4c3ac5964f3bdf9123b65728abef7011"
+      },
+      "resolvedNormalizedSha256": "06da2ed2343778b0de44d35020fe0e0a62de04d65b855e5946e76765b2623f30",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/test/post_controller_test.dart",
+      "committedInputSha256": {
+        "ours": "d306b0522ea24b1c479675596342a1faf91cf2554da8a687aa4b1d7bf79d2d4f",
+        "theirs": "7181c5f5df026cefe54d70d7629d4e370f3cc86971b1f59878210e32c01b4a64",
+        "alignment": "d306b0522ea24b1c479675596342a1faf91cf2554da8a687aa4b1d7bf79d2d4f"
+      },
+      "resolvedNormalizedSha256": "7181c5f5df026cefe54d70d7629d4e370f3cc86971b1f59878210e32c01b4a64",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/test/post_models_test.dart",
+      "committedInputSha256": {
+        "ours": "03d9a4e69a422f61554415bb46309b0551fb84c1c948c344872071bbd3fc358f",
+        "theirs": "b16536795ffc2b51b9b5b54df39107f633b71519cf3e5aabf8e5ee92afa576ea",
+        "alignment": "03d9a4e69a422f61554415bb46309b0551fb84c1c948c344872071bbd3fc358f"
+      },
+      "resolvedNormalizedSha256": "b16536795ffc2b51b9b5b54df39107f633b71519cf3e5aabf8e5ee92afa576ea",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/test/post_protocol_test.dart",
+      "committedInputSha256": {
+        "ours": "fb7d0966d159a539c94e1642a51a15a0536f47294e5a21df5640fe18e51158e0",
+        "theirs": "e181905a5a322ccfb2593ed8fea09ab51c52df2400cabeb549ce6ab98bb703d8",
+        "alignment": "fb7d0966d159a539c94e1642a51a15a0536f47294e5a21df5640fe18e51158e0"
+      },
+      "resolvedNormalizedSha256": "e181905a5a322ccfb2593ed8fea09ab51c52df2400cabeb549ce6ab98bb703d8",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "apps/mobile/test/post_screens_test.dart",
+      "committedInputSha256": {
+        "ours": "4f784d26768e393087b89f3b4593c72b7a4beef76d589e1fbb2fa0c070483526",
+        "theirs": "d82dbfb1b509aa6a195fa1a142f18edbdb68c42d7ca10815688287e86d74c988",
+        "alignment": "7151aa20a0c6f875c5dc1eb1eb077a0314d9934ee4b4614a249af37701caa469"
+      },
+      "resolvedNormalizedSha256": "d88b1985885be3d10d830fed832a670ef0e88700a2ee7cc9990d0783876c18e0",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "docs/design/HANDOFF.md",
+      "committedInputSha256": {
+        "ours": "f55866656545c3a7cff5980f9fddf4a3f88b7a39fc5ce2d0fd20d4c998dd3ee5",
+        "theirs": "aff5d0f994d5c8045f6eb7a2ecfac8f04c771f75a218e51df7fd411e3bb45443",
+        "alignment": "6bfc2b83359a86006e84bf5d7fc85aeaaa93b12cee83ec77352729b0e8b46028"
+      },
+      "resolvedNormalizedSha256": "f92276235e44b0f2444980e9377a5d567d8ff40238a79664e25fdf4534528478",
+      "contentAlignmentMerged": false
+    },
+    {
+      "path": "docs/design/README.md",
+      "committedInputSha256": {
+        "ours": "5acbc28c7042346f334b90bb1ea8c25bf0b744343065c1e6c44e8df8e57fe84d",
+        "theirs": "9c716fd7b974c4eb35790ea566f03a499dfab4723b649f5ab68ec9aaf5f0308f",
+        "alignment": "5acbc28c7042346f334b90bb1ea8c25bf0b744343065c1e6c44e8df8e57fe84d"
+      },
+      "resolvedNormalizedSha256": "9c716fd7b974c4eb35790ea566f03a499dfab4723b649f5ab68ec9aaf5f0308f",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "docs/design/auth-authorization-safety-gate.md",
+      "committedInputSha256": {
+        "ours": "bf4f2cb0f5caaa16b06c26e3fd9b033d0143c0cd208c4d91bca9a17327c6c94e",
+        "theirs": "4f838060ca9a046b130d7dd1c1b813b5bb53d560cefa8c7abe2823d1b4a6485e",
+        "alignment": "bf4f2cb0f5caaa16b06c26e3fd9b033d0143c0cd208c4d91bca9a17327c6c94e"
+      },
+      "resolvedNormalizedSha256": "4f838060ca9a046b130d7dd1c1b813b5bb53d560cefa8c7abe2823d1b4a6485e",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "docs/design/auth-privacy-machine-handoff.md",
+      "committedInputSha256": {
+        "ours": "6fcbe29d3d0d8dc06bbb24014d1f29b582ee495606ab6a7a573149de1330ff6e",
+        "theirs": "a687ee80c8966d5e951f2b6d9707d1e9320688621a3659dd9ccd06a8be33938f",
+        "alignment": "6fcbe29d3d0d8dc06bbb24014d1f29b582ee495606ab6a7a573149de1330ff6e"
+      },
+      "resolvedNormalizedSha256": "a687ee80c8966d5e951f2b6d9707d1e9320688621a3659dd9ccd06a8be33938f",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "docs/design/auth-privacy-non-ios-closure-plan.md",
+      "committedInputSha256": {
+        "ours": "c586a15be4d00fb85aa921f28841efb5e7d9bf9820891cccd8caf1db4410a024",
+        "theirs": "210d32ff24e57d05cc2b0984dfd30d3c600a0ce1c3a059f156214e7555dfddb6",
+        "alignment": "c586a15be4d00fb85aa921f28841efb5e7d9bf9820891cccd8caf1db4410a024"
+      },
+      "resolvedNormalizedSha256": "210d32ff24e57d05cc2b0984dfd30d3c600a0ce1c3a059f156214e7555dfddb6",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "docs/design/auth-privacy-platform-acceptance-plan.md",
+      "committedInputSha256": {
+        "ours": "79443c9f345d419651ccb488a6506665aeaed310d82a359d490b5657df0ecf3e",
+        "theirs": "23185d4d11e2616781db0aae6a5fb5671a559208472f11e91cf5024f91040768",
+        "alignment": "79443c9f345d419651ccb488a6506665aeaed310d82a359d490b5657df0ecf3e"
+      },
+      "resolvedNormalizedSha256": "23185d4d11e2616781db0aae6a5fb5671a559208472f11e91cf5024f91040768",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "docs/design/community-android-unified-acceptance-plan-20261014.md",
+      "committedInputSha256": {
+        "ours": "0d67e5df0ae3d9487e7cb5690c1bcf7d5b366420e9ee725a1d67f923b6a0dd09",
+        "theirs": "cb16276c0c1bbbb351c65805dcbea8b7ca5ce39d7d4cd5b7499211fa5b01d2ae",
+        "alignment": "e8881d884eb946956b233de6ce47f3fed83da703537214088ffedfd800342128"
+      },
+      "resolvedNormalizedSha256": "0d67e5df0ae3d9487e7cb5690c1bcf7d5b366420e9ee725a1d67f923b6a0dd09",
+      "contentAlignmentMerged": false
+    },
+    {
+      "path": "docs/design/community-flutter-f4-machine-handoff.md",
+      "committedInputSha256": {
+        "ours": "a0f051d9df22742d027e192569016d1bc7a836daccec63f31e73bc38fba3cfcb",
+        "theirs": "466c626396647f741935bacaa41b940ff2d781a3f49d68c762e2c41cbd8f676c",
+        "alignment": "b67f4c3b092521c14fe2589ff475c27b4f6c3a80be7de18a27059cc82e2ff36e"
+      },
+      "resolvedNormalizedSha256": "a0f051d9df22742d027e192569016d1bc7a836daccec63f31e73bc38fba3cfcb",
+      "contentAlignmentMerged": false
+    },
+    {
+      "path": "docs/design/community-single-android-acceptance-20261013.md",
+      "committedInputSha256": {
+        "ours": "1e313f533ad079820da0ad4b964520eaf0a3a908ee7e5b1b2d9ad4144fe93a5c",
+        "theirs": "09465154c5467e70abaccbc9484d6fc96bef79d138b495585d81bc882f5032d6",
+        "alignment": "8b4194656233274a99fdda7ba20f19e59368276bf67a0ac667b8c744e78c01e0"
+      },
+      "resolvedNormalizedSha256": "1e313f533ad079820da0ad4b964520eaf0a3a908ee7e5b1b2d9ad4144fe93a5c",
+      "contentAlignmentMerged": false
+    },
+    {
+      "path": "docs/design/module-acceptance-handoff.md",
+      "committedInputSha256": {
+        "ours": "334b93a4115cbe0b85b5b62877dffb83849329a90bcf3fca4deb300f05160e88",
+        "theirs": "e0befe7a61e3518488a2de685331ef8ea8af3a586a29d7465103c56d2f6fc845",
+        "alignment": "8dd619d3604ac65bb4fa481468372e3d2e40ee1bea289c5d3e2c7d6276e7e86f"
+      },
+      "resolvedNormalizedSha256": "b82423bddbc417f5bd0ccfe635f334d516016c646a81e130c4148108d5276626",
+      "contentAlignmentMerged": false
+    },
+    {
+      "path": "docs/design/module-acceptance-ledger.json",
+      "committedInputSha256": {
+        "ours": "569710ee274cb03d79b340147973925bf98618f1f805aa8b2fe69845d71e4cfe",
+        "theirs": "1ed934ed3f56b36c7abb430b3b9f6f9290a7d49523f7fddc819a1b10b2762642",
+        "alignment": "42eeba5a7c09a4465a4d04f9aa0de7d75223e2cc4ab265772d234ac2422671e0"
+      },
+      "resolvedNormalizedSha256": "549d32fe9ae053158257aa7ef901ccd41490c07a1ac3392cd6206a5270afcc65",
+      "contentAlignmentMerged": false
+    },
+    {
+      "path": "docs/design/progress.md",
+      "committedInputSha256": {
+        "ours": "2e691f92fa6dff9f3f52d945120d3d234fd831142cb0abaa041b60ebe6d3c59a",
+        "theirs": "b6b318d3e5840340052ef1e85bcc2b38b58708e94bbf0dc33be1dfe11e4654b1",
+        "alignment": "986272a504fa2c57e41c01d89226b312c0782477c2e87196c6f7d2171cc43612"
+      },
+      "resolvedNormalizedSha256": "aee8eafcea79d8221ca959fc8b4712e5587ec934a3d7002b46ba751230622a36",
+      "contentAlignmentMerged": false
+    },
+    {
+      "path": "docs/discussions/2026-09-29-grilling-round39.md",
+      "committedInputSha256": {
+        "ours": "4e6c6903e10bc4d5ec85dff6cfa1d029e42269598efb1030dca803dd35172b37",
+        "theirs": "c21565a99cbc6acf3766df04740321779080518520dd6c8abedbd32db079ebb9",
+        "alignment": "4e6c6903e10bc4d5ec85dff6cfa1d029e42269598efb1030dca803dd35172b37"
+      },
+      "resolvedNormalizedSha256": "c21565a99cbc6acf3766df04740321779080518520dd6c8abedbd32db079ebb9",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "docs/engineering/git-github-guide.md",
+      "committedInputSha256": {
+        "ours": "685789a216079b993f04e8264edd4496d0f077618e694f04d8a2dff92d0e90ed",
+        "theirs": "9264ecc3b4c1df8a7f356a541e6b90b297c9a055d7de25f7106df14ead9a3b5b",
+        "alignment": "685789a216079b993f04e8264edd4496d0f077618e694f04d8a2dff92d0e90ed"
+      },
+      "resolvedNormalizedSha256": "9264ecc3b4c1df8a7f356a541e6b90b297c9a055d7de25f7106df14ead9a3b5b",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "infra/postgres/grant-community.sql",
+      "committedInputSha256": {
+        "ours": "43348ded5c1227f367b1968d3087989fb2763b94e587ab36f486423193f28c10",
+        "theirs": "694d8e30a7b8806cd27256ce97885aa52152c46f9eb633ac90fe3682710b0175",
+        "alignment": "43348ded5c1227f367b1968d3087989fb2763b94e587ab36f486423193f28c10"
+      },
+      "resolvedNormalizedSha256": "694d8e30a7b8806cd27256ce97885aa52152c46f9eb633ac90fe3682710b0175",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "packages/openapi/post-api.yaml",
+      "committedInputSha256": {
+        "ours": "4270a18b4bdb0fa094f18d12b22fa199abab5fd35a6728e24f8509734f586b09",
+        "theirs": "128d7ad59beb65ea03c723b1746c05ecc0c0c0106e51b4f63dc0f7e9af2aff76",
+        "alignment": "4270a18b4bdb0fa094f18d12b22fa199abab5fd35a6728e24f8509734f586b09"
+      },
+      "resolvedNormalizedSha256": "128d7ad59beb65ea03c723b1746c05ecc0c0c0106e51b4f63dc0f7e9af2aff76",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/authlab/privacy-role-audit.sql",
+      "committedInputSha256": {
+        "ours": "e99a0c49dcb85ec9a8a27cfd292f786eeb4d8fef64a12f0d3091368029c32da8",
+        "theirs": "c98344c6f27e620f539d5fa73e10f3a8410c6db0cd90a7687bed20c882a9a95d",
+        "alignment": "e99a0c49dcb85ec9a8a27cfd292f786eeb4d8fef64a12f0d3091368029c32da8"
+      },
+      "resolvedNormalizedSha256": "c98344c6f27e620f539d5fa73e10f3a8410c6db0cd90a7687bed20c882a9a95d",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/authlab/run-runtime-isolated.sh",
+      "committedInputSha256": {
+        "ours": "af0e013175178c6ff1015dd17f873851f46c950990086f8569520a6516c60c64",
+        "theirs": "9763767850339ae38e1a122eb14b704148fd060e18470b76d180f0ad2160046d",
+        "alignment": "af0e013175178c6ff1015dd17f873851f46c950990086f8569520a6516c60c64"
+      },
+      "resolvedNormalizedSha256": "9763767850339ae38e1a122eb14b704148fd060e18470b76d180f0ad2160046d",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacy/community.go",
+      "committedInputSha256": {
+        "ours": "9c0168e38e2c747a4a4f698c9af4a1c129bd1f0498fda770eaa0f3be866045a7",
+        "theirs": "1336137fc35b6227a4cc5b189ecfd96259582d26662f868467ef284480ce5abd",
+        "alignment": "9c0168e38e2c747a4a4f698c9af4a1c129bd1f0498fda770eaa0f3be866045a7"
+      },
+      "resolvedNormalizedSha256": "1336137fc35b6227a4cc5b189ecfd96259582d26662f868467ef284480ce5abd",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_credentials_test.go",
+      "committedInputSha256": {
+        "ours": "2d7f3c4d7099a08b3470d44f65bcdc29133c91c82f20ec58eb88d52b73ed3667",
+        "theirs": "e4fda722bcb71f7f0e08e0d2345db62d6a05ce0ba43297f8ad86dd4243468607",
+        "alignment": "e4fda722bcb71f7f0e08e0d2345db62d6a05ce0ba43297f8ad86dd4243468607"
+      },
+      "resolvedNormalizedSha256": "2d7f3c4d7099a08b3470d44f65bcdc29133c91c82f20ec58eb88d52b73ed3667",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts.go",
+      "committedInputSha256": {
+        "ours": "78f2f1798cfcc441c30ed473d338e9d0e8ae8a15ce2a8734609b87f67e20e26b",
+        "theirs": "cf53f3652b4598f07c7069fb43793dd0fa53617becdddd6fb8a78034ac537834",
+        "alignment": "78f2f1798cfcc441c30ed473d338e9d0e8ae8a15ce2a8734609b87f67e20e26b"
+      },
+      "resolvedNormalizedSha256": "cf53f3652b4598f07c7069fb43793dd0fa53617becdddd6fb8a78034ac537834",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_lifecycle.go",
+      "committedInputSha256": {
+        "ours": "bf458764debf40c5b788f18e6736ba1e09bd6685a5ae2c32a861a9cd8a8dcd24",
+        "theirs": "6d93bda666c9e5f28f16c762b93e47b681c7fc7072b2254721812a4ce9e74e18",
+        "alignment": "bf458764debf40c5b788f18e6736ba1e09bd6685a5ae2c32a861a9cd8a8dcd24"
+      },
+      "resolvedNormalizedSha256": "6d93bda666c9e5f28f16c762b93e47b681c7fc7072b2254721812a4ce9e74e18",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_read.go",
+      "committedInputSha256": {
+        "ours": "eaf95bb2d6721e51b4163eb027179926002b6f4460817aa54d47315d5a6e6086",
+        "theirs": "579696d587118cd58e3d11a6de5010d19502d09120834e8290957a55528866c6",
+        "alignment": "eaf95bb2d6721e51b4163eb027179926002b6f4460817aa54d47315d5a6e6086"
+      },
+      "resolvedNormalizedSha256": "579696d587118cd58e3d11a6de5010d19502d09120834e8290957a55528866c6",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_schema.go",
+      "committedInputSha256": {
+        "ours": "f8f3ad9fbb18c4737d776b213fceca1f92767e0fea0058dd018c090acbf2d5d6",
+        "theirs": "88bcc72ac524cc30db9952af102770fa9627cf31c154c53b1ac75f1953c9b9cf",
+        "alignment": "f8f3ad9fbb18c4737d776b213fceca1f92767e0fea0058dd018c090acbf2d5d6"
+      },
+      "resolvedNormalizedSha256": "88bcc72ac524cc30db9952af102770fa9627cf31c154c53b1ac75f1953c9b9cf",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_posts_schema_test.go",
+      "committedInputSha256": {
+        "ours": "6cef4d414fd06747e5acb1e06f2c8062300996c40321650e5de29311a1d17100",
+        "theirs": "86b3e87ef537150f70097ddba8a331d81ad92dd56170ce9c0f187758790073b7",
+        "alignment": "6cef4d414fd06747e5acb1e06f2c8062300996c40321650e5de29311a1d17100"
+      },
+      "resolvedNormalizedSha256": "86b3e87ef537150f70097ddba8a331d81ad92dd56170ce9c0f187758790073b7",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "committedInputSha256": {
+        "ours": "fffd269f0875652a4af345e587b50a1bd39159d3d5a789893c348d94dcd0422d",
+        "theirs": "59160cbe1dab411d11c25a10c8ea54a27309171f9479445b93e1cb2986ddfd88",
+        "alignment": "fffd269f0875652a4af345e587b50a1bd39159d3d5a789893c348d94dcd0422d"
+      },
+      "resolvedNormalizedSha256": "59160cbe1dab411d11c25a10c8ea54a27309171f9479445b93e1cb2986ddfd88",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+      "committedInputSha256": {
+        "ours": "6b6ff6db3c298b7ed2d5cb6ae8012d456aa9831fde40f4e8f9ff383782208536",
+        "theirs": "fd83894079e3e9076eb79e0263ee0ce47461d2fc36b75a6916038aa844a56753",
+        "alignment": "6b6ff6db3c298b7ed2d5cb6ae8012d456aa9831fde40f4e8f9ff383782208536"
+      },
+      "resolvedNormalizedSha256": "fd83894079e3e9076eb79e0263ee0ce47461d2fc36b75a6916038aa844a56753",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/posts_endpoints.go",
+      "committedInputSha256": {
+        "ours": "9530ebe14b11a3812399e17f3b271750ebbf96ec4b0759f2e97b7f5a7adfd9a0",
+        "theirs": "70812e00a37bac21b511c0b908834c3c3036816fbac11b4fcff52c43b360f0cd",
+        "alignment": "9530ebe14b11a3812399e17f3b271750ebbf96ec4b0759f2e97b7f5a7adfd9a0"
+      },
+      "resolvedNormalizedSha256": "70812e00a37bac21b511c0b908834c3c3036816fbac11b4fcff52c43b360f0cd",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/config.go",
+      "committedInputSha256": {
+        "ours": "b28c69bc7849bb648d8be5eaed827cf0fc8c5d22e88d74712840956cd4b0bf85",
+        "theirs": "af8086a8ab1d9b512b1164e2da40bb4ca5ffd7e051665158f5c8be48b4833146",
+        "alignment": "b28c69bc7849bb648d8be5eaed827cf0fc8c5d22e88d74712840956cd4b0bf85"
+      },
+      "resolvedNormalizedSha256": "af8086a8ab1d9b512b1164e2da40bb4ca5ffd7e051665158f5c8be48b4833146",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/server.go",
+      "committedInputSha256": {
+        "ours": "2a27b939816950148cd8462efc813eb26e8ac64f17dddc89b57f9f1f8ff98cab",
+        "theirs": "33e647659a08d6327d8b09c41d27072b2d35fd25112f562f881919a8b5983d8c",
+        "alignment": "2a27b939816950148cd8462efc813eb26e8ac64f17dddc89b57f9f1f8ff98cab"
+      },
+      "resolvedNormalizedSha256": "33e647659a08d6327d8b09c41d27072b2d35fd25112f562f881919a8b5983d8c",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/posts/content.go",
+      "committedInputSha256": {
+        "ours": "d71f4fc9866b07da8988ac87cc0a5c099492b0aef39e7989fe7c0119b4637f9a",
+        "theirs": "c872b9a73cefbc0d90c30ee7fff960de80c9fb8010b9a8c10649a583767d0ece",
+        "alignment": "d71f4fc9866b07da8988ac87cc0a5c099492b0aef39e7989fe7c0119b4637f9a"
+      },
+      "resolvedNormalizedSha256": "c872b9a73cefbc0d90c30ee7fff960de80c9fb8010b9a8c10649a583767d0ece",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/posts/model.go",
+      "committedInputSha256": {
+        "ours": "27778d75a4a2eb81f1c901ba1153f4aab4e9e60cea477d76f430a43f72c8786d",
+        "theirs": "fc924b4e4ac61ec9dc03ffe16df80794e6b880ed3d569af68a444e56e671d616",
+        "alignment": "27778d75a4a2eb81f1c901ba1153f4aab4e9e60cea477d76f430a43f72c8786d"
+      },
+      "resolvedNormalizedSha256": "fc924b4e4ac61ec9dc03ffe16df80794e6b880ed3d569af68a444e56e671d616",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "services/api/internal/posts/protocol.go",
+      "committedInputSha256": {
+        "ours": "fc649c4282fc521858671eead359875b3f22b402143c46535f36a8c7db3fc384",
+        "theirs": "739b44d449fd4bad43b9c6ce3eb5e2d820087e4139938c77cdd4d57970414dfa",
+        "alignment": "fc649c4282fc521858671eead359875b3f22b402143c46535f36a8c7db3fc384"
+      },
+      "resolvedNormalizedSha256": "739b44d449fd4bad43b9c6ce3eb5e2d820087e4139938c77cdd4d57970414dfa",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/community-android-stage1/README.md",
+      "committedInputSha256": {
+        "ours": "4fff26a423bfbfcf6709dfc096718bb9685a1b101d275df6f4107556bcef18df",
+        "theirs": "8e578da0422576ebe0cb01c773214b81608f7d655f55a5a16f1a98dbf066f690",
+        "alignment": "4fff26a423bfbfcf6709dfc096718bb9685a1b101d275df6f4107556bcef18df"
+      },
+      "resolvedNormalizedSha256": "4fff26a423bfbfcf6709dfc096718bb9685a1b101d275df6f4107556bcef18df",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/community-android-stage1/phone.py",
+      "committedInputSha256": {
+        "ours": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+        "theirs": "7c796035a55a4c20143dcb775a8e5963fed9fbd36d35f2f8f97e804c4d3ecccf",
+        "alignment": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e"
+      },
+      "resolvedNormalizedSha256": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/community-android-stage2/README.md",
+      "committedInputSha256": {
+        "ours": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6",
+        "theirs": "916453b248be09022068d0e6d7f4a0f0d0599e74265e35e18348e85aebb0bee6",
+        "alignment": "916453b248be09022068d0e6d7f4a0f0d0599e74265e35e18348e85aebb0bee6"
+      },
+      "resolvedNormalizedSha256": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/community-android-stage2/phone.py",
+      "committedInputSha256": {
+        "ours": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+        "theirs": "f5f7479329f9129728a608ce0bbc7785cafa0fa004f1fa25242318330a31df70",
+        "alignment": "f5f7479329f9129728a608ce0bbc7785cafa0fa004f1fa25242318330a31df70"
+      },
+      "resolvedNormalizedSha256": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/tests/test_android_b3_b4_provider_rejection.py",
+      "committedInputSha256": {
+        "ours": "dca284b2373e131dbf5bead8a4afcda65b8eaa658d93187e98aee4c216d277a5",
+        "theirs": "c124a7fa3f5bf79d655d6654df40f7705e0f910959d90a1f69cbaaecd563b065",
+        "alignment": "c124a7fa3f5bf79d655d6654df40f7705e0f910959d90a1f69cbaaecd563b065"
+      },
+      "resolvedNormalizedSha256": "dca284b2373e131dbf5bead8a4afcda65b8eaa658d93187e98aee4c216d277a5",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/tests/test_android_b3_b4_signature_contrast.py",
+      "committedInputSha256": {
+        "ours": "ac29c437231d45ab7beebfb96e4ff2aeb3d3617c657b1d29bcc599ee2972b117",
+        "theirs": "4458a6f0fea9b4bc7dbcdd9b8eb839b92dcfeb6451c76e0cd45234a1931e713a",
+        "alignment": "ac29c437231d45ab7beebfb96e4ff2aeb3d3617c657b1d29bcc599ee2972b117"
+      },
+      "resolvedNormalizedSha256": "4458a6f0fea9b4bc7dbcdd9b8eb839b92dcfeb6451c76e0cd45234a1931e713a",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/tests/test_community_android_stage1_phone.py",
+      "committedInputSha256": {
+        "ours": "a7481973770093fbddd036384adc6f0fc1e69928e8fc83cd25e37d2ea661a638",
+        "theirs": "92a6fdfca76a1e889a601f963bde9bf0845ddc43d899291d9750b4d57e181a84",
+        "alignment": "a7481973770093fbddd036384adc6f0fc1e69928e8fc83cd25e37d2ea661a638"
+      },
+      "resolvedNormalizedSha256": "a7481973770093fbddd036384adc6f0fc1e69928e8fc83cd25e37d2ea661a638",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/tests/test_community_android_stage2_phone.py",
+      "committedInputSha256": {
+        "ours": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+        "theirs": "0ddeb7f7ceebf6459efb5816aa285d11af089083ee5cf1c94564ab25dd630f0e",
+        "alignment": "0ddeb7f7ceebf6459efb5816aa285d11af089083ee5cf1c94564ab25dd630f0e"
+      },
+      "resolvedNormalizedSha256": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119",
+      "contentAlignmentMerged": true
+    },
+    {
+      "path": "tools/verify-android-b3-b4-provider-rejection.py",
+      "committedInputSha256": {
+        "ours": "dafa197d721befabb12e3e5cf4a597c26eb1b2f48670609ba30b20567c5869e2",
+        "theirs": "d461366a330c61b750abd6666eb51b7f95d74b83b4689e0931624326ea383c3b",
+        "alignment": "d461366a330c61b750abd6666eb51b7f95d74b83b4689e0931624326ea383c3b"
+      },
+      "resolvedNormalizedSha256": "dafa197d721befabb12e3e5cf4a597c26eb1b2f48670609ba30b20567c5869e2",
+      "contentAlignmentMerged": true
+    }
+  ],
+  "contentAlignmentReference": "7e185b1 only for per-file content merge across squashed history; actual Git merge parents remain exact BASE and MAIN.",
+  "preservedMainFeatures": [
+    "Post image selection/upload/viewer and encrypted durable originals",
+    "Image schema/permissions and terminal erasure triggers",
+    "B5 durable closure terminal visibility and epoch/closureId fencing",
+    "Current native plugins, manifest, minSdk, iOS photo usage and dependency locks"
+  ],
+  "preservedCommunityFeatures": [
+    "Chinese TalkBack navigation and numeric subtree locale",
+    "Single semantic action per channel",
+    "Selected identity semantics and validation/feed error live regions",
+    "Current recovery-code/OEM evidence and explicit Passkey dual-device deferral",
+    "Bounded consent-gated USB transport and previous-candidate upgrade evidence"
+  ],
+  "newOrAdaptedIntegration": [
+    "F4 isolated runner now copies image_viewer path dependency",
+    "Empty-composer semantic regression expects existing image-capable validation rule",
+    "Full mobile and guarded tooling suites included in existing product CI"
+  ],
+  "counts": {
+    "mobile": 395,
+    "imageViewer": 112,
+    "authPasskeyHost": 9,
+    "authVaultHost": "NOT_RUN_NATIVE_ONLY_PACKAGE",
+    "imageSqlPassEventsIncludingSubtests": 251,
+    "imageSqlSkipEvents": 0
+  },
+  "pythonToolTests": 191,
+  "commands": [
+    {
+      "label": "checks-01",
+      "startUTC": "2026-10-18T04:10:04Z",
+      "endUTC": "2026-10-18T04:10:53Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth-regression-01",
+      "startUTC": "2026-10-18T04:11:34Z",
+      "endUTC": "2026-10-18T04:13:02Z",
+      "exitCode": 0
+    },
+    {
+      "label": "integration-01",
+      "startUTC": "2026-10-18T04:13:21Z",
+      "endUTC": "2026-10-18T04:13:59Z",
+      "exitCode": 0
+    },
+    {
+      "label": "server-01",
+      "startUTC": "2026-10-18T04:13:59Z",
+      "endUTC": "2026-10-18T04:29:38Z",
+      "exitCode": 0
+    },
+    {
+      "label": "posts-privileges-01",
+      "startUTC": "2026-10-18T04:29:38Z",
+      "endUTC": "2026-10-18T04:29:41Z",
+      "exitCode": 1
+    },
+    {
+      "label": "posts-privileges-02",
+      "startUTC": "2026-10-18T04:31:01Z",
+      "endUTC": "2026-10-18T04:31:52Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth-runtime-01",
+      "startUTC": "2026-10-18T04:31:52Z",
+      "endUTC": "2026-10-18T04:33:21Z",
+      "exitCode": 0
+    },
+    {
+      "label": "vet-01",
+      "startUTC": "2026-10-18T04:33:21Z",
+      "endUTC": "2026-10-18T04:33:23Z",
+      "exitCode": 0
+    },
+    {
+      "label": "image-validator",
+      "startUTC": "2026-10-18T04:33:23Z",
+      "endUTC": "2026-10-18T04:33:23Z",
+      "exitCode": 0
+    },
+    {
+      "label": "image-sql",
+      "startUTC": "2026-10-18T04:33:23Z",
+      "endUTC": "2026-10-18T04:37:32Z",
+      "exitCode": 0
+    },
+    {
+      "label": "image-package-deps",
+      "startUTC": "2026-10-18T04:37:32Z",
+      "endUTC": "2026-10-18T04:37:32Z",
+      "exitCode": 0
+    },
+    {
+      "label": "image-package-analyze",
+      "startUTC": "2026-10-18T04:37:32Z",
+      "endUTC": "2026-10-18T04:37:39Z",
+      "exitCode": 0
+    },
+    {
+      "label": "image-package-tests",
+      "startUTC": "2026-10-18T04:37:39Z",
+      "endUTC": "2026-10-18T04:37:57Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_passkey-deps",
+      "startUTC": "2026-10-18T04:37:57Z",
+      "endUTC": "2026-10-18T04:37:57Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_passkey-analyze",
+      "startUTC": "2026-10-18T04:37:57Z",
+      "endUTC": "2026-10-18T04:38:01Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_passkey-tests",
+      "startUTC": "2026-10-18T04:38:01Z",
+      "endUTC": "2026-10-18T04:38:07Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_vault-deps",
+      "startUTC": "2026-10-18T04:38:07Z",
+      "endUTC": "2026-10-18T04:38:07Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_vault-analyze",
+      "startUTC": "2026-10-18T04:38:07Z",
+      "endUTC": "2026-10-18T04:38:08Z",
+      "exitCode": 0
+    },
+    {
+      "label": "android-debug",
+      "startUTC": "2026-10-18T04:38:08Z",
+      "endUTC": "2026-10-18T04:39:09Z",
+      "exitCode": 0
+    },
+    {
+      "label": "android-release",
+      "startUTC": "2026-10-18T04:39:09Z",
+      "endUTC": "2026-10-18T04:40:06Z",
+      "exitCode": 0
+    },
+    {
+      "label": "go-build",
+      "startUTC": "2026-10-18T04:40:06Z",
+      "endUTC": "2026-10-18T04:40:07Z",
+      "exitCode": 0
+    },
+    {
+      "label": "image-package-deps",
+      "startUTC": "2026-10-18T04:40:46Z",
+      "endUTC": "2026-10-18T04:40:46Z",
+      "exitCode": 0
+    },
+    {
+      "label": "image-package-analyze",
+      "startUTC": "2026-10-18T04:40:46Z",
+      "endUTC": "2026-10-18T04:40:49Z",
+      "exitCode": 0
+    },
+    {
+      "label": "image-package-tests",
+      "startUTC": "2026-10-18T04:40:49Z",
+      "endUTC": "2026-10-18T04:41:01Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_passkey-deps",
+      "startUTC": "2026-10-18T04:41:01Z",
+      "endUTC": "2026-10-18T04:41:01Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_passkey-analyze",
+      "startUTC": "2026-10-18T04:41:01Z",
+      "endUTC": "2026-10-18T04:41:05Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_passkey-tests",
+      "startUTC": "2026-10-18T04:41:05Z",
+      "endUTC": "2026-10-18T04:41:07Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_vault-deps",
+      "startUTC": "2026-10-18T04:41:07Z",
+      "endUTC": "2026-10-18T04:41:07Z",
+      "exitCode": 0
+    },
+    {
+      "label": "auth_vault-analyze",
+      "startUTC": "2026-10-18T04:41:07Z",
+      "endUTC": "2026-10-18T04:41:07Z",
+      "exitCode": 0
+    },
+    {
+      "label": "android-debug",
+      "startUTC": "2026-10-18T04:41:07Z",
+      "endUTC": "2026-10-18T04:41:13Z",
+      "exitCode": 0
+    },
+    {
+      "label": "android-release",
+      "startUTC": "2026-10-18T04:41:13Z",
+      "endUTC": "2026-10-18T04:45:46Z",
+      "exitCode": 0
+    },
+    {
+      "label": "go-build",
+      "startUTC": "2026-10-18T04:45:46Z",
+      "endUTC": "2026-10-18T04:45:47Z",
+      "exitCode": 0
+    }
+  ],
+  "logs": [
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\android-debug.log",
+      "sha256": "bfcc3641e6d4eabc9a83bfb4d865a592d8c90d22b5e5bd09cfa894e122b89efc",
+      "bytes": 127
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\android-release.log",
+      "sha256": "a28c8bfb461c9844bc71d478d10ca95ad775723d23ae91bc5dfe0b89fe0a463d",
+      "bytes": 744
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth-regression-01.console.log",
+      "sha256": "8545427d86e2faf8de3f8d83ccc05637fd66efd5e3f95aa5bc680cdb3069e75c",
+      "bytes": 631
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth-regression-01.log",
+      "sha256": "8545427d86e2faf8de3f8d83ccc05637fd66efd5e3f95aa5bc680cdb3069e75c",
+      "bytes": 631
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth-runtime-01.console.log",
+      "sha256": "22c66c4e90f1a3f6dae7464ba05075dc86d1b1f9e2bfcb25fbd90bf068f8dc13",
+      "bytes": 1948
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth-runtime-01.log",
+      "sha256": "4a6a795199257295c45d11bc4c356d3d98e9614007cb591f302c578f00ee4f8a",
+      "bytes": 10210
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth_passkey-analyze.log",
+      "sha256": "0c2df5d62ca6ae3f7506e01ac9f33962a5ad4a2ad7f0ab8c1819646392adcd27",
+      "bytes": 96
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth_passkey-deps.log",
+      "sha256": "d4cb7a3c68b4133b4f6e58c67ff5bfd13725d8021e930388cdc98da8a575919d",
+      "bytes": 68
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth_passkey-tests.log",
+      "sha256": "9e203e3dab8a7c6c6d6fb43957da88c3c47f179b9f165a8797385a043930809c",
+      "bytes": 4827
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth_vault-analyze.log",
+      "sha256": "fc6c4885dd6efb3bfea3a6dd4c577facdffcb2940a04b3b20b4442cd265b60be",
+      "bytes": 96
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\auth_vault-deps.log",
+      "sha256": "d4cb7a3c68b4133b4f6e58c67ff5bfd13725d8021e930388cdc98da8a575919d",
+      "bytes": 68
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\checks-01.analyze.log",
+      "sha256": "faf280da0dfdad684d6ace74e4dc9313076fa7e112210ed7764754ba41ecb940",
+      "bytes": 199
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\checks-01.console.log",
+      "sha256": "fe774fe9cde4fdeed2caa5c6b35dd9a9835fe36ea9f48aafa83c63554c04e816",
+      "bytes": 228
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\checks-01.mobile-tests.jsonl",
+      "sha256": "bc612439d068ef3bdbdc5b295d05c97c3bdb4a83002463ee2819dae3871f2aa2",
+      "bytes": 228255
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\commands.tsv",
+      "sha256": "160161825daee062d390e660d26cfa51491a95c48bfdbe2fb242a6d3f2738a3c",
+      "bytes": 1937
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\go-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\image-package-analyze.log",
+      "sha256": "b59fd1f77c0211c53b02cb77159ac6860f870fd815264660c084e5dff1baa935",
+      "bytes": 96
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\image-package-deps.log",
+      "sha256": "3444a0cc7aa926618ecc3bac9119dce95f21f2ef066cb27e8db466006e631de3",
+      "bytes": 319
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\image-package-tests.log",
+      "sha256": "ab4a8cfa3b84899240e2b00900220ea4e237d099db6dd9c1bff941cd1319915a",
+      "bytes": 60707
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\image-sql.log",
+      "sha256": "6e377b02166d7898a1fa972bede4b01478a810f10f0b803e93a1d154abbb89f6",
+      "bytes": 276602
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\image-validator.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\integration-01.console.log",
+      "sha256": "92650e951a4063ce20a9d579f9e209fe9e45b4ff17dced9221a7db4189d2cd42",
+      "bytes": 429
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\integration-01.log",
+      "sha256": "f92f42276a68b66b0d61bf7ac9730bacd071bf226dc3fcf35964fec00ada9615",
+      "bytes": 1253
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\openapi-02.log",
+      "sha256": "cb3ec346396c7ba7c5ffaec5b9ff1aecea5567a543fcdcfa509c0f1c10ab0859",
+      "bytes": 266
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\openapi.log",
+      "sha256": "6b22a6111c03cdd3a1ee0d7dff54b77db2cca7857267b6fa09bd3d80acde641b",
+      "bytes": 1252
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\android-debug.log",
+      "sha256": "e9af0dae5a0f6e1133a75a6679ed52ea86d6c57167075f57241717a60853c9d1",
+      "bytes": 442
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\android-release.log",
+      "sha256": "91ef7493d0fdea76d3918b78aa74da0a535f5fda2bc3cf68eef7279b7183dedc",
+      "bytes": 1020
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\auth_passkey-analyze.log",
+      "sha256": "840db07135162dc2a74490f00e1c40df0d2ce4170f5dd667a5403bf2364b13b2",
+      "bytes": 96
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\auth_passkey-deps.log",
+      "sha256": "341549be4532b64cc1f3e47b0913cb77a01e4d341911ade2382be4e4431d4721",
+      "bytes": 627
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\auth_passkey-tests.log",
+      "sha256": "8441a0bdb05e7866783f9f4d80c29434b4a6b5ece625dd69ef0c01875a23a374",
+      "bytes": 4827
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\auth_vault-analyze.log",
+      "sha256": "0694fcf1f1b2e29165be1c4c826d5b03d482ab19c0b794579ac82f044e4e6cde",
+      "bytes": 96
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\auth_vault-deps.log",
+      "sha256": "d4cb7a3c68b4133b4f6e58c67ff5bfd13725d8021e930388cdc98da8a575919d",
+      "bytes": 68
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\go-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\image-package-analyze.log",
+      "sha256": "aa743971ed312e65bac7b669c1ce4deebe515215b7970b96aef457300fcf4e7c",
+      "bytes": 96
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\image-package-deps.log",
+      "sha256": "3444a0cc7aa926618ecc3bac9119dce95f21f2ef066cb27e8db466006e631de3",
+      "bytes": 319
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\package-build-first\\image-package-tests.log",
+      "sha256": "38210bbad4fc0eacdf8ff946f43b3b4581712e50a9145d47ed54c44d4e890ad6",
+      "bytes": 60785
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\posts-privileges-01.console.log",
+      "sha256": "68163daf2e45c333e2188acee2a6e317ff4af1121a228b1eeb9fbb67c3988a50",
+      "bytes": 55
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\posts-privileges-01.log",
+      "sha256": "68163daf2e45c333e2188acee2a6e317ff4af1121a228b1eeb9fbb67c3988a50",
+      "bytes": 55
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\posts-privileges-02.console.log",
+      "sha256": "e3fc01ed0c7d3fd62fb296ad2cc273dc4d272c173c440e397234ad6b5fc81883",
+      "bytes": 1117
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\posts-privileges-02.log",
+      "sha256": "a701853aa20f3b5a97619e9469f8ccfedd9b55d08a12010b0a453eb670f66a76",
+      "bytes": 1904
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\python-tests-01.log",
+      "sha256": "bef8cc829106c5eb1562e3106e584427d96a0ef19268a17d99c34b0c2bb62f36",
+      "bytes": 40789
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\python-tests-02.log",
+      "sha256": "a3fa1b79f0fa6025ddc301933c7529f215f5f47273dff640eec7c451b2392674",
+      "bytes": 33452
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\python-tests-03.log",
+      "sha256": "3772eca7a5f085c0cab302dec149407cc6e555123a0c5bf080c6e3af835c27d5",
+      "bytes": 35011
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\python-tests-final.log",
+      "sha256": "43a021798136dd46cadb08dcdd4d87c85ce2cbd5c92b6112264f1a83499a225b",
+      "bytes": 35011
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\runner-isolation.log",
+      "sha256": "87fca84a94aca8d96fbdb9d8ad5645eb54f448047e56883a1787488ee469c5f2",
+      "bytes": 1078
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\server-01.console.log",
+      "sha256": "e010ea928da02ba3d3f1e08f817aa25aa6bff564248dbcd67c64a9d064f607a9",
+      "bytes": 1282
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\server-01.log",
+      "sha256": "e010ea928da02ba3d3f1e08f817aa25aa6bff564248dbcd67c64a9d064f607a9",
+      "bytes": 1282
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\spec-tools-setup.log",
+      "sha256": "f252d677010607fa1777e2078f74caab1765448f5514db9fa4ededd354dce998",
+      "bytes": 9076
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\text-contract.log",
+      "sha256": "3923460b238cc1173a428291c2665a7d1c83394f297761dbbf12af3d4c1674b0",
+      "bytes": 206
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\vet-01.console.log",
+      "sha256": "0b9abbff3b3a168120635e3ec2a7648dee9fc0403e01b1f52db9d43c976781e6",
+      "bytes": 23
+    },
+    {
+      "path": "E:\\HnuHole-pr13-main-20261018\\logs\\vet-01.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "latestMainContractSupplement": {
+    "result": "PASS",
+    "staticOnly": true,
+    "protectedOperations": 14,
+    "textVectors": 9,
+    "mediaVectors": 2,
+    "openApiDocuments": 6,
+    "commands": [
+      "python3 -B -m unittest discover -s tools/tests -v",
+      "python3 -B tools/check-community-text-contract.py",
+      "<owned-spec-python>/bin/python -B packages/openapi/check-specs.py"
+    ],
+    "tools": "Only pinned PyYAML6.0.1/openapi-spec-validator0.9.0 in a new task-owned venv; no product dependency upgrade."
+  },
+  "isolation": {
+    "windowsTaskRoot": "E:\\HnuHole-pr13-main-20261018",
+    "linuxTaskRoot": "/home/hnuhole/hnuhole-community-flutter-f4-p13",
+    "sdkRoot": "/home/hnuhole/community-pr13-main-20261018-tools",
+    "privateSocketPgPort": 55718,
+    "newDisposableDatabasesOnly": true,
+    "sharedSdkWrites": false,
+    "globalConfigChanges": false,
+    "adbOrPhoneOperations": false,
+    "dependenciesUpgraded": false
+  },
+  "failuresAndRepairs": [
+    "First Python run: stage2/new parameter versus stage1/old transport API caused 8 errors. Restored committed community transport plus guard tests; 182 final tests pass.",
+    "posts-privileges-01 failed before SQL startup: the original owned directory produced a 109-character Unix socket path, rejected by AF_UNIX. Moved only the inactive owned task root to a shorter canonical path and reran posts-privileges-02; no SQL/configuration/check relaxation.",
+    "Copied old task SDK had a known zero-byte clang before any build attempt. Preserved that owned copy and copied already installed complete B5 SDK into a separate owned path; no installation/shared write.",
+    "First package/build child commands all exited0, but changing the task wrapper while Bash read it caused a footer parse error. First logs retained; stable wrapper rerun completed separately; no product edit."
+  ],
+  "collaborationPolicyPreflight": {
+    "existingPrHeadBranch": "codex/community-flutter-pages",
+    "branchNamingErrors": [
+      "Use a task branch: [codex/]<type>/<lowercase-hyphenated-slug>."
+    ],
+    "inheritedNonConventionalCommitCount": 79,
+    "historyRewritten": false,
+    "collaborationPolicyModified": false,
+    "resolution": "Preserve user-authorized current PR branch and history; no bypass. Report CI blocker separately from product regression."
+  },
+  "candidateNativeDeviceAcceptance": "NOT_RUN",
+  "priorDeviceEvidenceAppliesOnlyToOriginalApk": true,
+  "crossDevicePasskey": "BLOCKED_USER_DEFERRED",
+  "iOSAndProduction": "OUT_OF_SCOPE_NOT_PASSED",
+  "completeAppAccepted": false,
+  "mergedToMain": false,
+  "deployed": false,
+  "finalSourceVerification": {
+    "trackedInputCount": 595,
+    "directContractFiles": 10,
+    "runtimeMirrorFiles": 585,
+    "fingerprint": "65070a6f14d23b236ef13df7b3e5f10f6fd0386b5d9f56295e53d9b261a4e8ac",
+    "mismatches": [],
+    "productCodeChangedAfterTests": false,
+    "buildArtifacts": [
+      {
+        "mode": "debug",
+        "path": "/home/hnuhole/hnuhole-community-flutter-f4-p13/source/apps/mobile/build/app/outputs/flutter-apk/app-debug.apk",
+        "sha256": "6369a4353bd0f86723fb57f33e2d30f65a7c5093c73d1d0a6f3bcc59188d6b92",
+        "bytes": 98374332,
+        "installed": false,
+        "productionReleased": false
+      },
+      {
+        "mode": "release",
+        "path": "/home/hnuhole/hnuhole-community-flutter-f4-p13/source/apps/mobile/build/app/outputs/flutter-apk/app-release.apk",
+        "sha256": "76cbf56b62911bd7480d257485704e7d697ad1cc5ad85d04ab9a5caaab115931",
+        "bytes": 22522856,
+        "installed": false,
+        "productionReleased": false
+      }
+    ]
+  },
+  "allSuccessfulChecksCoverFinalRuntimeInputs": true,
+  "changedValidationToolHashes": [
+    {
+      "path": ".github/workflows/post-images.yml",
+      "sha256NormalizedText": "1f478c93052d77b585b33657651847f42c37654ccc75d5e2fa81cf358daa0ecb"
+    },
+    {
+      "path": "tools/community-android-stage1/README.md",
+      "sha256NormalizedText": "4fff26a423bfbfcf6709dfc096718bb9685a1b101d275df6f4107556bcef18df"
+    },
+    {
+      "path": "tools/community-android-stage1/phone.py",
+      "sha256NormalizedText": "39ac96c31afde8f0133da56903e13df633baf30b243384b92d5845f13396315e"
+    },
+    {
+      "path": "tools/community-android-stage2/README.md",
+      "sha256NormalizedText": "a9a3a8f55ac13b980e530854f42a4f00eec3b9d0a2069e808adad84943be75f6"
+    },
+    {
+      "path": "tools/community-android-stage2/phone.py",
+      "sha256NormalizedText": "0e79f4d09d8277f0c1e4ae1c5fba09518ac15514b9604c942e91bc3099a3c128"
+    },
+    {
+      "path": "tools/community-android-stage3/README.md",
+      "sha256NormalizedText": "ddfd6718664e148737a98fcb1c46918697473eb180f48a370fd272d61dbc840a"
+    },
+    {
+      "path": "tools/community-android-stage3/build-baseline.sh",
+      "sha256NormalizedText": "4f985c18bd21c432a8457678c771c2259bf24f0d4904f8eb03f6e287ce69bb29"
+    },
+    {
+      "path": "tools/community-android-stage3/check-association.py",
+      "sha256NormalizedText": "fa2daa20c1d068685643a580252b4768719602ef02dcfa2982cecc6fcf4982c2"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/README.md",
+      "sha256NormalizedText": "87493c335e19b1ccf336d4da4b037a3ef635567a850d8b38bf908f4f41390b25"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/create-fixtures.sh",
+      "sha256NormalizedText": "ed63ac85b96d1ea6e8a3965a249cead64e5064315e2eb79b00a3dcacd3dc7e39"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/final-owned-sql.py",
+      "sha256NormalizedText": "f0fbe4146fe2f677a61b0d5be2c6de12ec83dd3003731196e6bd3c8e784bd159"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/lab.py",
+      "sha256NormalizedText": "053efe0195740b07462d1b31ffaf0d10f4ba83a99eb80128b9a9a819aebd3491"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/observe-lab.py",
+      "sha256NormalizedText": "9617cbed1e97dcc61d59a3a4358ab90d2632ba735b19732679b7e7c4f13106ce"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/owned_stage3_fixture_test.dart",
+      "sha256NormalizedText": "2e6931630a28394cbd55dad19bb70c7845b5571a2e904f173563d87fa9d5fca2"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/owned_stage3_post_reset_test.dart",
+      "sha256NormalizedText": "fb6314421c18bb7c0c9ac574b6756d98366fbd5fc0f71216a915d29afd052dd0"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/run-final-host.sh",
+      "sha256NormalizedText": "60278147754c6df9a54b85be0315dff8d145a5f0b41625af39cb4330400bf370"
+    },
+    {
+      "path": "tools/community-android-stage3/execution-20261015/run-post-reset-host.sh",
+      "sha256NormalizedText": "d96e3835cb611739abf635d484bfab1d43bce0c8987ec99c400e53e36b557e36"
+    },
+    {
+      "path": "tools/community-android-stage3/proposal.py",
+      "sha256NormalizedText": "062830c6aee7ec181276f5b650a32bef3244f9e2e4793ada46cad398d25aaf6d"
+    },
+    {
+      "path": "tools/community-android-stage3/verify-baseline.py",
+      "sha256NormalizedText": "e711809eda0e1ca349b7744c3f6e3ecd0917b05882d28a1e0ddd154448d5617d"
+    },
+    {
+      "path": "tools/run-community-flutter-f4-linux.sh",
+      "sha256NormalizedText": "d3bf770b58293ae3b454a10574658c07a1a6e071de1ae5ff64df2a5cf993939a"
+    },
+    {
+      "path": "tools/tests/test-community-f4-runner-isolation.sh",
+      "sha256NormalizedText": "f00cc7cdffeaffbd599c715bc21fa6b5cccd81ccf1b269958d126a24ef305835"
+    },
+    {
+      "path": "tools/tests/test_android_b3_b4_provider_rejection.py",
+      "sha256NormalizedText": "dca284b2373e131dbf5bead8a4afcda65b8eaa658d93187e98aee4c216d277a5"
+    },
+    {
+      "path": "tools/tests/test_community_android_stage1_phone.py",
+      "sha256NormalizedText": "a7481973770093fbddd036384adc6f0fc1e69928e8fc83cd25e37d2ea661a638"
+    },
+    {
+      "path": "tools/tests/test_community_android_stage2_phone.py",
+      "sha256NormalizedText": "50443d51e6d147b3c991454a29c93e25c4682c96d2688591c0713c7cf0acf119"
+    },
+    {
+      "path": "tools/tests/test_community_android_stage3.py",
+      "sha256NormalizedText": "5e9f8945f93481b35454f5c7fe5cb59cfdae7897a49346dfe46ca23c992e3cf6"
+    },
+    {
+      "path": "tools/verify-android-b3-b4-provider-rejection.py",
+      "sha256NormalizedText": "dafa197d721befabb12e3e5cf4a597c26eb1b2f48670609ba30b20567c5869e2"
+    }
+  ]
+}

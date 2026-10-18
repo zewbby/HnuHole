@@ -145,7 +145,7 @@ Future<String> registerOwned(
 /// A signed-out personal action still opens the authentication page directly.
 Future<void> openOwnedManagement(WidgetTester tester) async {
   if (find.byType(SettingsScreen).evaluate().isNotEmpty) return;
-  await tapOwned(tester, find.byTooltip('My content'));
+  await tapOwned(tester, find.byTooltip('我的'));
   if (find.byType(AuthScreen).evaluate().isNotEmpty ||
       find.byType(SettingsScreen).evaluate().isNotEmpty) {
     return;

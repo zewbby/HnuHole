@@ -1,6 +1,8 @@
 # 第一项：单机文字社区验收工具
 
-> 当前设备入口 **BLOCKED_KEY_ISOLATION**：本机Windows ADB的默认key目录由OS profile API定位；HOME/USERPROFILE/ANDROID_USER_HOME/ANDROID_SDK_HOME与独立server端口均未证明key隔离，ADB_VENDOR_KEYS仅追加。两个runner在读取manifest、写状态、绑定socket和任何ADB调用前阻断，即使全部授权flag为true也不通过；`--plan-only`仍可用。先证明真正独立profile或经验证支持专用key目录的ADB，再由原服务归属方安全释放目标USB并重验摘要/ready/空库。新OS账户、安全配置或共享ADB/key例外须明确变更授权，不自行创建。见[本轮报告](../../docs/design/community-android-device-blocked-20261015.md)。下方执行步骤仅在该阻塞安全解除且授权有效后使用。
+> 本轮任务1八自动点与人工IME已完成，见[实测报告](../../docs/design/community-android-device-validation-20261015.md)。Windows默认仍BLOCKED_KEY_ISOLATION；只有用户明确批准后才传`--allow-existing-host-usb-identity`，仅metadata核既有真实OS profile/key/pub，缺失/重解析点即停，不新建或读取key。其他四授权仍须具备。已安装旧候选的更新另需明确指定`--previous-owned-manifest`及其`--previous-owned-manifest-sha256`、`--previous-owned-proof-sha256`；仅原owner/latch/同device/已有结果/旧APK与相同已验证签名来源链通过可接受。未知包仍拒绝。失败install仅将bounded stdout记到Git外私有文件。原失败latch不删，任何恢复均核原结果、明确记录phase，不能重新跑未知业务。
+
+> 原默认隔离路径阻断（历史，当前显式USB身份例外见上方）：本机Windows ADB的默认key目录由OS profile API定位；HOME/USERPROFILE/ANDROID_USER_HOME/ANDROID_SDK_HOME与独立server端口均未证明key隔离，ADB_VENDOR_KEYS仅追加。两个runner在读取manifest、写状态、绑定socket和任何ADB调用前阻断，即使全部授权flag为true也不通过；`--plan-only`仍可用。先证明真正独立profile或经验证支持专用key目录的ADB，再由原服务归属方安全释放目标USB并重验摘要/ready/空库。新OS账户、安全配置或共享ADB/key例外须明确变更授权，不自行创建。见[本轮报告](../../docs/design/community-android-device-blocked-20261015.md)。下方执行步骤仅在该阻塞安全解除且授权有效后使用。
 
 本目录准备实际生产main、真实C/V与正式SQL、原生端口的第一项设备流程。准备阶段不调用手机或ADB。现有主机脚本用替代vault排练相同流程，不能计为设备PASS。
 

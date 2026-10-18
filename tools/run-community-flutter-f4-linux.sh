@@ -52,7 +52,7 @@ export LD_LIBRARY_PATH=$TASK_ROOT/sqlite${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export CI=true FLUTTER_SUPPRESS_ANALYTICS=true
 ln -sfn "$SQLITE_LIBRARY" "$TASK_ROOT/sqlite/libsqlite3.so"
 prepare() {
- for directory in apps/mobile packages/auth_vault packages/auth_passkey packages/auth-protocol-vectors packages/post-protocol-vectors services/api infra/postgres; do
+ for directory in apps/mobile packages/auth_vault packages/auth_passkey packages/image_viewer packages/auth-protocol-vectors packages/post-protocol-vectors services/api infra/postgres; do
   mkdir -p "$TASK_ROOT/source/$directory"
   rsync -a --exclude=.dart_tool --exclude=build --exclude=.gradle --exclude=local.properties --exclude=.cxx --exclude=__pycache__ "$SOURCE/$directory/" "$TASK_ROOT/source/$directory/"
  done

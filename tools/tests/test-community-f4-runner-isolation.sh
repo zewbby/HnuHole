@@ -19,7 +19,7 @@ cleanup() {
 trap cleanup EXIT
 mkdir -p "$fixture/repo/tools" "$fixture/sdk/flutter/bin/cache" "$fixture/tools"
 cp "$runner" "$fixture/repo/tools/runner.sh"
-for directory in apps/mobile packages/auth_vault packages/auth_passkey packages/auth-protocol-vectors packages/post-protocol-vectors services/api infra/postgres; do
+for directory in apps/mobile packages/auth_vault packages/auth_passkey packages/image_viewer packages/auth-protocol-vectors packages/post-protocol-vectors services/api infra/postgres; do
  mkdir -p "$fixture/repo/$directory"
 done
 mkdir -p "$fixture/repo/services/api/authlab"

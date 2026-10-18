@@ -1,0 +1,654 @@
+{
+  "recordedOn": "2026-10-15",
+  "recordedUTC": "2026-10-15T03:09:02.444859+00:00",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/community-flutter-pages",
+  "origin": "https://github.com/zewbby/HnuHole.git",
+  "taskStartHEAD": "0c8e2470d6281785ba9e6ff647cfc2aa7fc19cc4",
+  "fixedReviewedSnapshot": "e0c128033682923d519ea99546d72503b085a99e",
+  "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+  "fixedAuthenticationCommit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+  "result": "PASS_INDEPENDENT_HOST_PREPARATION_CONFIG_AND_DEVICE_BLOCKED",
+  "executedWithUncommittedTask3Tools": true,
+  "sourceFingerprint": {
+    "fileCount": 457,
+    "sha256": "e185849eaac2d37d5b2988f21b54a2edb3d9f3326ecd71e2d5487f74f02c6ca9"
+  },
+  "fingerprintRecord": "docs/design/community-android-stage3-source-fingerprint-20261015.json",
+  "sourceScope": "452 unchanged product/build/runtime inputs plus 5 new task3 tools/tests. Four parallel phone runner/test inputs separately pinned; no live uncommitted USB changes read/copied/tested.",
+  "separatelyTestedPhoneGuardSnapshot": {
+    "commit": "e0c128033682923d519ea99546d72503b085a99e",
+    "files": [
+      {
+        "path": "tools/community-android-stage1/phone.py",
+        "sha256": "7c796035a55a4c20143dcb775a8e5963fed9fbd36d35f2f8f97e804c4d3ecccf"
+      },
+      {
+        "path": "tools/community-android-stage2/phone.py",
+        "sha256": "f5f7479329f9129728a608ce0bbc7785cafa0fa004f1fa25242318330a31df70"
+      },
+      {
+        "path": "tools/tests/test_community_android_stage1_phone.py",
+        "sha256": "92a6fdfca76a1e889a601f963bde9bf0845ddc43d899291d9750b4d57e181a84"
+      },
+      {
+        "path": "tools/tests/test_community_android_stage2_phone.py",
+        "sha256": "0ddeb7f7ceebf6459efb5816aa285d11af089083ee5cf1c94564ab25dd630f0e"
+      }
+    ]
+  },
+  "parallelUncommittedUsbCodeCopiedOrTested": false,
+  "productProtocolNativeManifestSQLGrantsLocksChanged": false,
+  "stages": [
+    {
+      "stage": "checks",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "bash tools/run-community-flutter-f4-linux.sh checks",
+      "startedUTC": "2026-10-15T02:45:09Z",
+      "endedUTC": "2026-10-15T02:45:34Z",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\regression\\checks.console.log",
+      "coversFinalProductInputs": true,
+      "androidDeviceEvidence": false
+    },
+    {
+      "stage": "auth-regression",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "bash tools/run-community-flutter-f4-linux.sh auth-regression",
+      "startedUTC": "2026-10-15T02:45:34Z",
+      "endedUTC": "2026-10-15T02:46:08Z",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\regression\\auth-regression.console.log",
+      "coversFinalProductInputs": true,
+      "androidDeviceEvidence": false
+    },
+    {
+      "stage": "integration",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "bash tools/run-community-flutter-f4-linux.sh integration",
+      "startedUTC": "2026-10-15T02:46:08Z",
+      "endedUTC": "2026-10-15T02:46:42Z",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\regression\\integration.console.log",
+      "coversFinalProductInputs": true,
+      "androidDeviceEvidence": false
+    },
+    {
+      "stage": "server",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "bash tools/run-community-flutter-f4-linux.sh server",
+      "startedUTC": "2026-10-15T02:46:42Z",
+      "endedUTC": "2026-10-15T03:02:57Z",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\regression\\server.console.log",
+      "coversFinalProductInputs": true,
+      "androidDeviceEvidence": false
+    },
+    {
+      "stage": "posts-privileges",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "bash tools/run-community-flutter-f4-linux.sh posts-privileges",
+      "startedUTC": "2026-10-15T03:02:57Z",
+      "endedUTC": "2026-10-15T03:03:51Z",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\regression\\posts-privileges.console.log",
+      "coversFinalProductInputs": true,
+      "androidDeviceEvidence": false
+    },
+    {
+      "stage": "auth-runtime",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "bash tools/run-community-flutter-f4-linux.sh auth-runtime",
+      "startedUTC": "2026-10-15T03:03:51Z",
+      "endedUTC": "2026-10-15T03:05:03Z",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\regression\\auth-runtime.console.log",
+      "coversFinalProductInputs": true,
+      "androidDeviceEvidence": false
+    },
+    {
+      "stage": "vet",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "bash tools/run-community-flutter-f4-linux.sh vet",
+      "startedUTC": "2026-10-15T03:05:03Z",
+      "endedUTC": "2026-10-15T03:05:05Z",
+      "consoleLog": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\regression\\vet.console.log",
+      "coversFinalProductInputs": true,
+      "androidDeviceEvidence": false
+    }
+  ],
+  "mobile": {
+    "passed": 322,
+    "failed": 0,
+    "skipped": 0,
+    "log": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\regression\\mobile-tests.jsonl"
+  },
+  "f4HostCheckpoints": 8,
+  "postPrivilegeTopLevelTests": 9,
+  "postLifecycleSubtests": 4,
+  "actualRuntimeAssertions": 25,
+  "actualRuntimeSummary": {
+    "privacyRoleMatrix": "passed",
+    "privacyUnsafeDatabaseDiagnosticsRejected": "passed",
+    "privacyRealProcessAndPostgresLogs": "passed",
+    "actualCmdLifecycle": "passed",
+    "formalMigrationAndRoles": "passed",
+    "upgradeChannelsPreserved": "passed",
+    "identityUpgrade10To11": "passed",
+    "identityClosureUpgrade11To12": "passed",
+    "identityLegacyClosedProfileRepair": "passed",
+    "identityClosureTriggerBoundary": "passed",
+    "identityMissingSchemaAndDml": "passed",
+    "identityCrudReceiptsAndRestart": "passed",
+    "identityClosureAndSameEmailNewAccount": "passed",
+    "inactiveProjectionPureContract": "passed",
+    "textUpgrade12To13": "passed",
+    "textMissingSchemaAndRequiredDml": "passed",
+    "textExcessPrivilegeAndReusedKeyRejected": "passed",
+    "textActualHttpsWorkerSqlAndRestart": "passed",
+    "textUnknownSealAndDurableContentRejection": "passed",
+    "textClosureProjectionAndNewAccountIsolation": "passed",
+    "verifierGateUpgrade3To4": "passed",
+    "verifierGateFreezeRestartAndRecovery": "passed",
+    "verifierOldSnapshotBlocked": "passed",
+    "verifierOldGenerationOtpBlocked": "passed",
+    "verifierIndependentEvidenceExpiry": "passed",
+    "cleanup": "this invocation project and private directory only"
+  },
+  "passkeyDart": {
+    "passed": 9,
+    "scope": "Method-channel/ownership/error policy via locked mobile graph; platform substituted",
+    "log": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\wsl\\passkey-dart-tests.jsonl"
+  },
+  "jvmPolicy": {
+    "passed": 24,
+    "androidApiInvoked": false,
+    "log": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\wsl\\jvm-policy.log"
+  },
+  "hostTools": {
+    "baseSnapshot": "e0c128033682923d519ea99546d72503b085a99e",
+    "snapshotPlusOnlyNewTask3Files": true,
+    "linux": {
+      "passed": 148,
+      "failed": 0,
+      "skipped": 0,
+      "log": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\linux-host-tests.log"
+    },
+    "windows": {
+      "passed": 145,
+      "failed": 0,
+      "skipped": 3,
+      "skipReason": "POSIX owner/permissions/symlink checks, passed on Linux",
+      "log": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015\\logs\\windows-host-tests.log"
+    },
+    "newStage3GuardTestsPerPlatform": 9
+  },
+  "baselineArtifacts": {
+    "owner": "HNUHOLE_COMMUNITY_ANDROID_STAGE3_V1",
+    "sourceCommit": "e0c128033682923d519ea99546d72503b085a99e",
+    "productSourceCommit": "b5accf36b90e27829b6d039cd58a5b9c189a3da8",
+    "result": "PASS_UNCONFIGURED_BUILD_AND_SIGNATURE_CONTRAST_ONLY",
+    "apks": {
+      "control": {
+        "applicationId": "org.hnuhole.hnuhole_mobile.communityf5.passkey",
+        "certificateSha256": "3309ce001a5dfd93148c14e35159147a6711e4b61d881b7a223b3e8429665e34",
+        "sha256": "a4da439f30eb915b5cbdc3b6a6b9d4ecdd53c7d40c3c22f23af742d502d4bd7c",
+        "sizeBytes": 84667139,
+        "signatureVerified": true,
+        "deviceReady": false
+      },
+      "unassociated": {
+        "applicationId": "org.hnuhole.hnuhole_mobile.communityf5.passkey.unassociated",
+        "certificateSha256": "3309ce001a5dfd93148c14e35159147a6711e4b61d881b7a223b3e8429665e34",
+        "sha256": "2b86d9a603a454d7fae8d83b050aac7691d7b23e96ead203dfe5198b5b9dc45e",
+        "sizeBytes": 84667155,
+        "signatureVerified": true,
+        "deviceReady": false
+      },
+      "badSignature": {
+        "applicationId": "org.hnuhole.hnuhole_mobile.communityf5.passkey",
+        "certificateSha256": "08cddd6d4eff8b50315ecd1a4496d847a3d86048c6da5d08019b11aaa412e849",
+        "sha256": "49dd0328a6539c62fea1f9e58d3ac2f16ab0e5e2dd34890a9774c14a6c2003ee",
+        "sizeBytes": 84718986,
+        "signatureVerified": true,
+        "deviceReady": false
+      }
+    },
+    "badSignaturePayloadEqualsControl": true,
+    "comparedNonSignatureEntries": 560,
+    "task1And2InputsUnchanged": 452,
+    "parallelGuardCommit": "e0c128033682923d519ea99546d72503b085a99e",
+    "parallelGuardFilesChangedSinceTask2": [
+      "tools/community-android-stage1/phone.py",
+      "tools/community-android-stage2/phone.py",
+      "tools/tests/test_community_android_stage1_phone.py",
+      "tools/tests/test_community_android_stage2_phone.py"
+    ],
+    "mirrorInputsCompared": 199,
+    "phoneGuardInputsReadFromCommittedSnapshotOnly": true,
+    "mirrorOverlay": "applicationId only; no RP, trust or association config applied",
+    "associationApplied": false,
+    "inheritsHistoricalDebugResourceOnly": true,
+    "newTask3DebugSigningCertificate": true,
+    "needsApprovedRPAndOwnFreshLabRebuild": true,
+    "systemPasskeyPositiveResult": "NOT_RUN",
+    "deviceUsed": false,
+    "adbInvoked": false,
+    "globalConfigurationChanged": false,
+    "sharedSdkInvoked": false
+  },
+  "rpProposal": {
+    "selectedByUser": true,
+    "selectedPlanDoesNotAuthorizeRegistrationDeploymentOrSecurityConfig": true,
+    "rpCandidate": "hnuhole-community-passkey.pages.dev",
+    "package": "org.hnuhole.hnuhole_mobile.communityf5.passkey",
+    "certificateSha256": "3309ce001a5dfd93148c14e35159147a6711e4b61d881b7a223b3e8429665e34",
+    "domainControlVerified": false,
+    "domainReadOnlyVerification": {
+      "recordedUTC": "2026-10-15T03:00:24.554032+00:00",
+      "rpCandidate": "hnuhole-community-passkey.pages.dev",
+      "userSelectedPlan": true,
+      "selectionAuthorizesRegistrationDeploymentOrSecurityConfig": false,
+      "domainControlVerified": false,
+      "projectNameAvailabilityProved": false,
+      "registrationPerformed": false,
+      "deploymentPerformed": false,
+      "configurationApplied": false,
+      "networkReadOnly": true,
+      "dns": {
+        "result": "RESOLVES",
+        "addressCount": 1
+      },
+      "https": {
+        "result": "NOT_REACHABLE_OR_DIRECT_TLS_DOCUMENT_UNAVAILABLE",
+        "responseStored": false
+      },
+      "conclusion": "Read-only public lookup cannot prove project-name availability or user account/domain control. Need explicit hosting account/control verification before registration/deployment/security config."
+    },
+    "registrationOrDeploymentPerformed": false,
+    "securityConfigurationApplied": false,
+    "reviewBundle": "docs/design/community-android-stage3-review-20261015",
+    "proposal": "docs/design/community-android-stage3-rp-proposal-20261015.md",
+    "baselineApksReadyForPositiveCeremony": false
+  },
+  "isolation": {
+    "windowsRoot": "E:\\HnuHole-community-f4-20261012\\stage3-preparation-20261015",
+    "linuxRoot": "/home/hnuhole/community-android-stage3-20261015",
+    "owner": "HNUHOLE_COMMUNITY_ANDROID_STAGE3_V1",
+    "exclusiveCommunityTools": "/home/hnuhole/community-android-stage1-20261014-tools",
+    "sharedSdkInvoked": false,
+    "communityCachesReusedSequentially": true,
+    "independentTask3HomeSigningSourceTempLogs": true,
+    "f4PrivatePGPort": 55446,
+    "onlyFreshDisposableRegressionDatabases": true,
+    "task1ExistingLabUsedByTask3": false,
+    "authenticationEnvironmentUsed": false,
+    "globalConfigModified": false,
+    "toolchainInstalled": false,
+    "largeCachesRestoredOnC": false,
+    "adbInvoked": false,
+    "deviceUsed": false,
+    "realPlatformCredentialsCreated": false,
+    "initialCapacityBytes": {
+      "C": 19078238208,
+      "E": 154125262848
+    },
+    "latestCapacityBytes": {
+      "C": 19041873920,
+      "E": 150285578240
+    }
+  },
+  "previousArtifactPreservation": {
+    "immutablePreviousArtifactsUnchanged": {
+      "stage1-preparation-20261014": {
+        "acceptance.apk": true,
+        "artifact-proof.json": true,
+        "dev-ca.pem": true,
+        "manifest.json": true,
+        "normal.apk": true,
+        "standard-unsigned-release.apk": true
+      },
+      "stage2-preparation-20261015": {
+        "artifact-proof.json": true,
+        "manifest.json": true,
+        "passkey.apk": true,
+        "storage.apk": true,
+        "vault.apk": true
+      }
+    },
+    "stage3AdbInvoked": false,
+    "stage3DeviceUsed": false,
+    "parallelPhoneOperationalStateNotClaimedUnchanged": true,
+    "stage1DatabasesNotAccessedByStage3": true
+  },
+  "resolvedPreparationFailures": [
+    {
+      "id": "library-missing-lock",
+      "initialBuildWrapperExit": 1,
+      "cause": "Library has no separately committed lock; --enforce-lockfile correctly refused",
+      "resolution": "Run 9 library tests through existing locked mobile package graph without resolving/upgrading dependencies",
+      "finalFocusedProbesExit": 0
+    },
+    {
+      "id": "archive-line-endings",
+      "initialWindowsHostErrors": 5,
+      "cause": "Windows git archive autocrlf changed frozen byte-exact fixture in exported copy",
+      "resolution": "Export exact committed LF blobs with command-level settings; original locks/constants untouched; final 148-test suite passes with platform skips"
+    },
+    {
+      "id": "drvfs-public-output-chmod",
+      "cause": "POSIX chmod unsupported for WSL user on Windows output",
+      "resolution": "Public bundle no longer claims ACL isolation via mode bits; create new final review directory",
+      "partialOutputDeletion": "AUTOMATIC_APPROVAL_REJECTED_BLOCKED_BY_POLICY",
+      "partialOutputRetained": true,
+      "finalOutputComplete": true
+    }
+  ],
+  "blockers": [
+    {
+      "id": "RP_DOMAIN_CONTROL_AND_SECURITY_CONFIG_APPROVAL",
+      "result": "BLOCKED",
+      "unblock": "Identify/verify user-controlled hosting account/project availability and explicitly authorize independent test-site publication plus new disposable C/debug config. Then provision fresh task3 lab, rebuild and verify final candidate; current APKs are unconfigured review controls."
+    },
+    {
+      "id": "USB_FIXED_HANDOFF_AND_DEVICE_WINDOW",
+      "result": "BLOCKED",
+      "unblock": "Use explicitly committed verified USB identity solution from phone task, then newly confirm task3 physical-device window/auth release/package-data scope. No live uncommitted USB code adopted."
+    },
+    {
+      "id": "CA-A13_AND_SINGLE_DEVICE_CLOSURE",
+      "result": "NOT_RUN",
+      "unblock": "Real provider creation/discoverable recovery/UV/cancel/rejection/natural expiry/lost-response original-anchor recovery and task1/2 actual phone flows"
+    }
+  ],
+  "notPassed": [
+    "full task3 configuration/environment readiness",
+    "system Passkey ceremony",
+    "CA-A01-CA-A13 device acceptance",
+    "NI-X01/NI-X02 two physical Android",
+    "iOS",
+    "production",
+    "full module/App acceptance"
+  ],
+  "retainedResources": "User requested preparation ready for later; only task3 owned materials retained, no cleanup of previous stages or unknown resources",
+  "releasePublished": false,
+  "productionDeployed": false,
+  "logArtifacts": [
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/baseline-build.console.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/baseline-build.ended",
+      "bytes": 21,
+      "sha256": "5d321f38ce049c62b5a3e003892c0e27a10bdfe8411a0f23b9b09f1fb1075078"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/baseline-build.exit",
+      "bytes": 1,
+      "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/baseline-build.started",
+      "bytes": 21,
+      "sha256": "c2eab37aaeb01947dcb58e24f30735aacc3345c57e3a6397bedc4f620e7650aa"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/focused-probes.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/linux-host-tests.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/linux-host-tests.log",
+      "bytes": 28153,
+      "sha256": "c22a3b624bfbb48de5dbc2745c36d6f10528aaede3442b0e35429960ebd8663b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/analyze.log",
+      "bytes": 199,
+      "sha256": "451e0d3bfbc05cf63af51e6374475c1e5ce0bc0cabf323e6c05b5e57773f3cd9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-regression.console.log",
+      "bytes": 629,
+      "sha256": "7d00323d3b33b6eada9e923ecd40345b18972cd82823d234b3cdf1bac96ae6e2"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-regression.ended",
+      "bytes": 21,
+      "sha256": "f078c28e1fb28a9bd77ae09f522ef9b2ce732391c68cdf5025e62eff7e547b8b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-regression.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-regression.log",
+      "bytes": 629,
+      "sha256": "7d00323d3b33b6eada9e923ecd40345b18972cd82823d234b3cdf1bac96ae6e2"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-regression.started",
+      "bytes": 21,
+      "sha256": "b43b89cd656a99e82b664553ff91db31a6d9c70f66ec1373afdf42a9a429f01b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-runtime.console.log",
+      "bytes": 1901,
+      "sha256": "7485f96a401dd47a462914e03fc3701fac4dfd7be7673e2a14782e39873b3b7d"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-runtime.ended",
+      "bytes": 21,
+      "sha256": "8c424bd32de3211cbcd10e691f43edd5e86d826fca18149a4e802d52226fb9d0"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-runtime.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-runtime.log",
+      "bytes": 9061,
+      "sha256": "1835ecc93560d09174db75ded9aef9ca5278a07c5d15345efb3b6f8adf3ad8de"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/auth-runtime.started",
+      "bytes": 21,
+      "sha256": "7a7ad73c124f760587a0ec150c039fb30a5ad50412957fd99843cd62ba0d4ae9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/checks.console.log",
+      "bytes": 228,
+      "sha256": "580258586e8c720a02193029018e37046d9dcfebe489eeeceb284c54ec8d85e8"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/checks.ended",
+      "bytes": 21,
+      "sha256": "b43b89cd656a99e82b664553ff91db31a6d9c70f66ec1373afdf42a9a429f01b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/checks.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/checks.started",
+      "bytes": 21,
+      "sha256": "77049e7eae287920c109a24862ae907cd6a58d3b8a637204fbfe8d348d9f266b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/integration.console.log",
+      "bytes": 429,
+      "sha256": "e64538efd47b0ad284d25cdb38e41e458f8ec9a7b1c3ae86153de4bf19034686"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/integration.ended",
+      "bytes": 21,
+      "sha256": "407c1a6d925a887515df495aa9ae7197a1eaa956fd8c0f17234171d40f42bd79"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/integration.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/integration.log",
+      "bytes": 1249,
+      "sha256": "4a65b7b19baad6796c785a5759e9b4841154bab600fa8e77f9f0ca4fd9bf6f6a"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/integration.started",
+      "bytes": 21,
+      "sha256": "f078c28e1fb28a9bd77ae09f522ef9b2ce732391c68cdf5025e62eff7e547b8b"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/mobile-tests.jsonl",
+      "bytes": 183019,
+      "sha256": "7738ef99bc6f0ef2fd85faeaa47bbd0c79e6fdcdd6cf3807a6a05a2b20983420"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/posts-privileges.console.log",
+      "bytes": 1117,
+      "sha256": "55aaa0312453917cacda0a3c1d78c64f0c9a7731fe07399915c1ed34b1dcc0c5"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/posts-privileges.ended",
+      "bytes": 21,
+      "sha256": "7a7ad73c124f760587a0ec150c039fb30a5ad50412957fd99843cd62ba0d4ae9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/posts-privileges.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/posts-privileges.log",
+      "bytes": 1904,
+      "sha256": "c5847f590846bc324f41ee90c4e7bb4132636aff27ad5130a759cf5c11780258"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/posts-privileges.started",
+      "bytes": 21,
+      "sha256": "00f171d348feffb0410a00ed43cf6433622c56b2204d6f2d60a8e6b524976e3f"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/server.console.log",
+      "bytes": 1091,
+      "sha256": "0c0b355e52a19b91180f0195c01ecd9e0c0a21854e56c4752ed3dd6ab26f2723"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/server.ended",
+      "bytes": 21,
+      "sha256": "00f171d348feffb0410a00ed43cf6433622c56b2204d6f2d60a8e6b524976e3f"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/server.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/server.log",
+      "bytes": 1091,
+      "sha256": "0c0b355e52a19b91180f0195c01ecd9e0c0a21854e56c4752ed3dd6ab26f2723"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/server.started",
+      "bytes": 21,
+      "sha256": "407c1a6d925a887515df495aa9ae7197a1eaa956fd8c0f17234171d40f42bd79"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/vet.console.log",
+      "bytes": 23,
+      "sha256": "0b9abbff3b3a168120635e3ec2a7648dee9fc0403e01b1f52db9d43c976781e6"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/vet.ended",
+      "bytes": 21,
+      "sha256": "4ff2a4c1f32afa13b7b94c8cca7172bb27160f06a7d5772ad99cbc9f822aefa9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/vet.exit",
+      "bytes": 1,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/vet.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/regression/vet.started",
+      "bytes": 21,
+      "sha256": "8c424bd32de3211cbcd10e691f43edd5e86d826fca18149a4e802d52226fb9d0"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/windows-host-tests-before-exact-export.log",
+      "bytes": 23787,
+      "sha256": "59312685e38493bf5c7d6bc7ce3452d830a05aad5cabdd04675238152c15d35d"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/windows-host-tests.exit",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/windows-host-tests.log",
+      "bytes": 19440,
+      "sha256": "39305bc8b18ef213548189e11b05631199af572cba073ede4425f3099d02170e"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/wsl/analyze.log",
+      "bytes": 96,
+      "sha256": "d1d0ca8d03f54571df213fe9bd6570384a9de53fb684a469fa4a8358dc19292d"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/wsl/control-build.log",
+      "bytes": 536,
+      "sha256": "5e69bbb6d40cff071990e0b850cd61a7a10ec524401c4ae17655545015b696c9"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/wsl/jvm-policy.log",
+      "bytes": 155,
+      "sha256": "4f7c6a1e92918a1445781e0e481833eb0e83227d597baf4180773829353fb027"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/wsl/passkey-dart-tests.jsonl",
+      "bytes": 4839,
+      "sha256": "3360df28bffab1bd1d242dda2666b636d77ee175a1b8f507a4478632c88a2bbe"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/wsl/passkey-pub.log",
+      "bytes": 183,
+      "sha256": "f2765415a638ec254925b7a681486dedacd2dedadc324564798c2b9feaa7f752"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/wsl/pub.log",
+      "bytes": 68,
+      "sha256": "d4cb7a3c68b4133b4f6e58c67ff5bfd13725d8021e930388cdc98da8a575919d"
+    },
+    {
+      "path": "E:/HnuHole-community-f4-20261012/stage3-preparation-20261015/logs/wsl/unassociated-build.log",
+      "bytes": 536,
+      "sha256": "8e0de685a6d9ba449d355dffeae2049eb9502bf57ec2e9b7df5385fd85b30353"
+    }
+  ],
+  "publishedSourceCommit": "71b26a86f14fbbe58008bc300e1de89d94e07d54",
+  "sourceCommitRemoteVerified": true,
+  "deliveryReceipt": "docs/design/community-android-stage3-delivery-20261015.json",
+  "parallelWorktreeChangesPreservedAndExcluded": [
+    "apps/mobile/integration/community_stage1_scenario.dart",
+    "apps/mobile/integration/native_closed_scope_evidence.dart",
+    "apps/mobile/test/native_closed_scope_evidence_test.dart",
+    "tools/community-android-stage1/phone.py",
+    "tools/tests/test_community_android_stage1_phone.py"
+  ]
+}
