@@ -519,7 +519,8 @@ func TestModerationRuntimePrivilegesAndAuditPostgres(t *testing.T) {
 	defer pool.Close()
 	clone := *l.c
 	clone.pool = pool
-	if _, e = clone.WithModeration(ctx); e != nil {
+	runtimeCommunity, e := clone.WithModeration(ctx)
+	if e != nil {
 		t.Fatal("restricted runtime did not enable", e)
 	}
 	for _, sql := range []string{`DELETE FROM c_moderation.audit`, `UPDATE c_moderation.audit SET reason='changed'`, `SELECT * FROM v_auth.slots`} {
@@ -534,6 +535,24 @@ func TestModerationRuntimePrivilegesAndAuditPostgres(t *testing.T) {
 	}
 	_, e = l.c.ExecuteModeration(ctx, actor.SessionToken, "role", number, moderation.Decision{CommandID: uuid.NewString(), Role: "NONE", Reason: "最后管理员"})
 	postTestError(t, e, "LAST_ADMIN", 409)
+	f := moderationPost(t, l, "mod_priv_post_owner")
+	reporter := moderationActor(t, l, "mod_priv_reporter", "")
+	other := moderationActor(t, l, "mod_priv_other_admin", "ADMIN")
+	// Business DML must actually run through the restricted runtime connection;
+	// owner fixture creation alone is not evidence that the grant is sufficient.
+	l.c = runtimeCommunity
+	_, report := moderationReport(t, l, reporter, nil, f.post, "PRIVACY")
+	s := moderationDecision(t, l, actor, report.CaseID, "MUTE", 3).Sanctions[0]
+	v, e := l.c.SubmitAppeal(ctx, f.bearer, s.ID, uuid.NewString(), moderation.Material{Description: "受限数据库角色申诉", Images: []moderation.Image{}}, false)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, e = l.c.ExecuteModeration(ctx, other.SessionToken, "appeal-decision", v.Value.(moderation.Appeal).ID, moderation.Decision{CommandID: uuid.NewString(), ExpectedVersion: 1, Accept: true, Reason: "受限数据库角色复核"}); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = l.c.ReadSystemNotifications(ctx, f.bearer, "", "", "", 50, false); e != nil {
+		t.Fatal(e)
+	}
 }
 
 // Seed historical independently established facts only to exercise conservative reversal.

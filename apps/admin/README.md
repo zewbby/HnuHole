@@ -57,8 +57,10 @@ JSON 仅含 `username`、`password`、随机 16 字节 base64url `installationId
 
 真实 C／SQL 浏览器入口：`node apps/admin/test/live-api-smoke.mjs fixture.json output.json`。
 同样使用 `PLAYWRIGHT_MODULE`、可选 `ADMIN_UI_BROWSER`；调用者先准备专用真实 Go C HTTPS 服务、4 个合成账号与待处理案件。
-fixture 只存在本任务运行目录，字段为 `url`、`reviewerUsername`、`reviewerPassword`、`caseId`、`outputDirectory`。
+fixture 只存在本任务运行目录，字段为 `url`、`reviewerUsername`、`reviewerPassword`、`caseId`、`outputDirectory`；可用 `playwrightModule`／`browserExecutable` 提供调用者独立工具路径，环境变量优先。
 脚本只接受 loopback HTTPS，直接从 Go `/admin` 加载页面，不创建替身服务；登录后领取／禁言三天，检查真实处理响应 `ENDED` 与可见审计，截图后退出。
 输出 JSON 只有检查结果、固定失败阶段和截图位置，不导出 Bearer、密码、邮箱或响应材料；stdout 只输出安全的 PASS／FAIL 阶段。
 使用 Windows Node 时，fixture／output 参数与截图目录须为 Windows 可访问的路径；从 WSL 调用前用 `wslpath -w` 转换本任务路径。
 该脚本本身不是通过证明，须随固定候选、真实服务与独立一次性数据库执行后记录结果；fixture 文件不得提交。
+
+本分支已通过上述真实 Go C／SQL／Dart／Edge 链路，实际配置、首位管理员引导和最终证据见 [API 运行说明](../../services/api/README.md)与[阶段1报告](../../docs/design/report-moderation-validation-report.md)。不扩大到真机或生产验收。

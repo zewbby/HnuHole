@@ -50,8 +50,10 @@ AUTHLAB_V_DSN="postgresql://hnuhole_v@/hnuhole_v?host=$post_schema_dir/socket&ap
 AUTHLAB_POSTS_RUNTIME_DSN="postgresql://hnuhole_c_runtime@/hnuhole_c?host=$post_schema_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 AUTHLAB_ALLOW_SCHEMA_RESET=1
 export AUTHLAB_RUNTIME_TAG AUTHLAB_C_DSN AUTHLAB_V_DSN AUTHLAB_POSTS_RUNTIME_DSN AUTHLAB_ALLOW_SCHEMA_RESET
+AUTHLAB_POSTGRES_LOG="$post_schema_dir/postgres.log"
+export AUTHLAB_POSTGRES_LOG
 MODERATION_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_moderation_upgrade?host=$post_schema_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 export MODERATION_UPGRADE_DSN
 post_schema_script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$post_schema_script_dir/.."
-go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp -run "${MODERATION_TEST_PATTERN:-^(TestModeration|TestRealHTTPSModeration)}" -v
+go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime -run "${MODERATION_TEST_PATTERN:-^(TestModeration|TestRealHTTPSModeration)}" -v

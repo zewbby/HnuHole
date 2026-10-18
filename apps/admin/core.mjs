@@ -3,6 +3,7 @@ export const LABELS = Object.freeze({
   REVIEWER: '审核员', ADMIN: '管理员', NONE: '无管理权限', DISMISS: '未发现违规',
   TAKEDOWN: '内容下架', MUTE: '账号禁言', BAN: '账号封禁', ACTIVE: '正常', CLOSED: '已注销',
   UPHELD: '举报成立', DISMISSED: '未发现违规', TARGET_DELETED: '内容已删除，本次举报已结束', RESET_NICKNAME: '重置违规昵称', RESET_AVATAR: '重置违规头像',
+  CLAIM: '开始审核', REVERSED: '原处理已撤销', REVOKE: '撤销处罚', 'APPEAL-DECISION': '申诉复核', ROLE: '变更管理权限',
   ADVERTISING: '广告引流', HARASSMENT: '辱骂骚扰', PRIVACY: '泄露隐私', FRAUD: '诈骗', ILLEGAL: '色情或违法内容', OTHER: '其他',
 });
 export const label = value => LABELS[value] ?? String(value ?? '—');

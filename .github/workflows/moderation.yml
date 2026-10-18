@@ -51,7 +51,8 @@ jobs:
             "GOBIN=$RUNNER_TEMP/moderation-bin" \
             "GOCACHE=$RUNNER_TEMP/moderation-go-cache" \
             "GOMODCACHE=$RUNNER_TEMP/moderation-go-mod-cache" \
-            "PUB_CACHE=$RUNNER_TEMP/moderation-pub-cache" >> "$GITHUB_ENV"
+            "PUB_CACHE=$RUNNER_TEMP/moderation-pub-cache" \
+            "PLAYWRIGHT_BROWSERS_PATH=$RUNNER_TEMP/moderation-browsers" >> "$GITHUB_ENV"
       - uses: actions/setup-go@v5
         with:
           go-version: '1.22.2'
@@ -90,6 +91,10 @@ jobs:
           test -x "$RUNNER_TEMP/moderation-bin/governance-live-probe"
       - name: Verify lockfiles were preserved
         run: git diff --exit-code -- '**/pubspec.lock' services/api/go.mod services/api/go.sum
+      - name: Private browser for the real C HTTPS workbench
+        run: |
+          npm install --prefix "$RUNNER_TEMP/moderation-browser-tools" --cache "$RUNNER_TEMP/moderation-npm-cache" --no-audit --no-fund playwright@1.62.1
+          node "$RUNNER_TEMP/moderation-browser-tools/node_modules/playwright/cli.js" install --with-deps chromium
       - name: Isolated SQL, permissions and real HTTPS moderation regression
         working-directory: services/api
         env:
@@ -101,6 +106,8 @@ jobs:
           export MODERATION_PROBE="$RUNNER_TEMP/moderation-bin/governance-live-probe"
           export MODERATION_GOOSE="$GOBIN/goose"
           export MODERATION_NODE="$(command -v node)"
+          export MODERATION_PLAYWRIGHT_MODULE="$RUNNER_TEMP/moderation-browser-tools/node_modules/playwright"
+          export MODERATION_BROWSER_OUTPUT="$RUNNER_TEMP/moderation-browser-evidence"
           test -x "$MODERATION_PROBE"
           test -x "$MODERATION_GOOSE"
           test -x "$MODERATION_NODE"

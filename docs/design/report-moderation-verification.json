@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "hnuhole-report-moderation-verification/v1",
+  "recordedOn": "2026-10-18",
+  "timeZone": "Asia/Shanghai",
+  "repository": "zewbby/HnuHole",
+  "branch": "codex/feat/report-moderation",
+  "baseMain": "986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb",
+  "coreProductCommit": "6e0b406",
+  "phase1": "IMPLEMENTED_FINAL_VALIDATION_IN_PROGRESS",
+  "phase2Comments": "NOT_INTEGRATED",
+  "mainMerged": false,
+  "published": false,
+  "fullModulePass": false,
+  "checks": {
+    "moderationSQLRace": {"result": "PASS", "log": "sql-6.log"},
+    "realDartGoSQLBrowser": {"result": "PASS", "log": "sql-live-7.log", "phases": ["report", "browser", "appeal", "result", "limited"]},
+    "goHostTestBuildVet": {"result": "PASS", "log": "go-host-1.log"},
+    "flutterAnalyze": {"result": "PASS", "issues": 0},
+    "flutterHostTests": {"result": "PASS", "count": 439},
+    "flutterDebugBundle": {"result": "PASS"},
+    "openapi": {"result": "PASS", "specs": 9},
+    "fullInheritedSQLRace": {"result": "IN_PROGRESS", "log": "sql-all-1.log"},
+    "finalHeadCI": {"result": "NOT_RUN"}
+  },
+  "independentAgentReview": {"result": "IN_PROGRESS", "githubMemberApproval": false},
+  "notRun": ["current-candidate native/phone acceptance", "cross-device Passkey NI-X02 user-deferred", "iOS user-deferred", "production acceptance", "comments reports/failure provider phase2"],
+  "isolation": {"syntheticAccountsOnly": true, "privateSocketDatabases": true, "otherSessionWrites": false, "systemTrustChanged": false}
+}

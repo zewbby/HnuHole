@@ -96,7 +96,7 @@ func newLab(t *testing.T) *lab {
 			if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_posts CASCADE`); err != nil {
 				t.Fatal(err)
 			}
-			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.community_identities, public.identity_account_state, public.sessions, public.channels CASCADE`); err != nil {
+			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.community_identities, public.identity_account_state, public.sessions, public.channels, public.goose_db_version CASCADE`); err != nil {
 				t.Fatal(err)
 			}
 			if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(), public.guard_community_identity(), public.guard_identity_receipt(), public.check_identity_account_shape() CASCADE`); err != nil {
