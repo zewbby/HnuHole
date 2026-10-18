@@ -81,18 +81,19 @@ type ChannelBackend interface {
 }
 
 type CommunityOptions struct {
-	Posts          PostBackend
-	Channels       ChannelBackend
-	Identities     IdentityBackend
-	Backend        CommunityBackend
-	Sessions       SessionBackend
-	Recovery       RecoveryBackend
-	Closures       ClosureBackend
-	Credentials    authprivacy.CredentialBackend
-	Passwords      PasswordPreparer
-	InternalPeer   PeerIdentity
-	AllowedOrigins []string
-	Limits         NetworkLimits
+	ModerationAccess ModerationAccessBackend
+	Posts            PostBackend
+	Channels         ChannelBackend
+	Identities       IdentityBackend
+	Backend          CommunityBackend
+	Sessions         SessionBackend
+	Recovery         RecoveryBackend
+	Closures         ClosureBackend
+	Credentials      authprivacy.CredentialBackend
+	Passwords        PasswordPreparer
+	InternalPeer     PeerIdentity
+	AllowedOrigins   []string
+	Limits           NetworkLimits
 }
 
 type errorBody struct {
@@ -148,6 +149,9 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if options.Sessions == nil {
 		options.Sessions, _ = options.Backend.(SessionBackend)
 	}
+	if options.ModerationAccess == nil {
+		options.ModerationAccess, _ = options.Backend.(ModerationAccessBackend)
+	}
 	if options.Recovery == nil {
 		options.Recovery, _ = options.Backend.(RecoveryBackend)
 	}
@@ -159,6 +163,10 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path == "/api/v1/moderation-access/sessions" || r.URL.Path == "/api/v1/moderation-access/session-revocations" {
+				b.communityModerationAccessPublic(w, r, options.ModerationAccess, options.Passwords)
+				return
+			}
 			if isPostPath(r.URL.Path) {
 				b.communityPostsPublic(w, r, options.Posts)
 				return
@@ -337,6 +345,7 @@ func publicMethod(service Service, path string) string {
 	} else {
 		switch path {
 		case "/api/v1/auth/registration-intents", "/api/v1/auth/registrations",
+			"/api/v1/moderation-access/sessions", "/api/v1/moderation-access/session-revocations",
 			"/api/v1/auth/sessions", "/api/v1/auth/session-renewals",
 			"/api/v1/auth/session-revocations", "/api/v1/auth/recovery-code-reset-intents",
 			"/api/v1/auth/password-resets", "/api/v1/account-closures",

@@ -98,37 +98,18 @@ func (c *Community) ApplyAccountMute(ctx context.Context, account uuid.UUID, exp
 		return ErrAuthorizationUnavailable
 	}
 	defer c.gate.Abort(ctx, tx)
-	var state string
-	if err = tx.QueryRow(ctx, `SELECT state FROM c_auth.accounts WHERE account_id=$1 FOR UPDATE`, account).Scan(&state); errors.Is(err, pgx.ErrNoRows) {
-		return ErrAccountUnavailable
-	} else if err != nil {
-		return ErrAuthorizationUnavailable
-	}
-	if _, err = lockRestriction(ctx, tx, account); err != nil {
-		return ErrAuthorizationUnavailable
-	}
-	var version int64
-	if err = tx.QueryRow(ctx, `SELECT version FROM c_auth.account_restrictions WHERE account_id=$1`, account).Scan(&version); err != nil {
-		return ErrAuthorizationUnavailable
+	locked, err := c.lockModerationRestrictionTx(ctx, tx, account, "MUTE")
+	if err != nil {
+		return err
 	}
 	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
-		if state == "CLOSED" {
+		if locked.state == "CLOSED" {
 			return ErrAccountUnavailable
 		}
-		if version != expectedVersion {
+		if locked.version != expectedVersion {
 			return ErrRestrictionStateChanged
 		}
-		if version == math.MaxInt64 {
-			return ErrAuthorizationUnavailable
-		}
-		if endsAt != nil && !endsAt.After(final.TrustedAt) {
-			return ErrIntentInvalid
-		}
-		if err := c.stopPostPublication(ctx, tx, account, "MUTE", final.TrustedAt); err != nil {
-			return err
-		}
-		_, err := tx.Exec(ctx, `UPDATE c_auth.account_restrictions SET mute_state='MUTED',mute_ends_at=$2,version=version+1 WHERE account_id=$1`, account, endsAt)
-		return err
+		return c.applyModerationRestrictionTx(ctx, tx, locked, "MUTE", endsAt, final.TrustedAt)
 	})
 	return err
 }
