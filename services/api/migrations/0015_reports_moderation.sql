@@ -7,6 +7,7 @@ INSERT INTO c_moderation.schema_meta VALUES(1,1);
 -- Reuse the existing private six-digit number; no second mapping.
 CREATE VIEW c_moderation.platform_numbers WITH (security_invoker=true) AS SELECT account_id,platform_number AS number FROM c_auth.accounts;
 ALTER TABLE c_auth.accounts ADD COLUMN registered_at timestamptz;
+ALTER TABLE c_auth.accounts ALTER COLUMN registered_at SET DEFAULT CURRENT_TIMESTAMP;
 CREATE TABLE c_moderation.roles(account_id uuid PRIMARY KEY REFERENCES c_auth.accounts, role text NOT NULL CHECK(role IN('REVIEWER','ADMIN')));
 CREATE TABLE c_moderation.access_sessions(token_digest bytea PRIMARY KEY CHECK(octet_length(token_digest)=32),account_id uuid NOT NULL REFERENCES c_auth.accounts,credential_version bigint NOT NULL,session_generation bigint NOT NULL,authorization_generation bigint NOT NULL,expires_at timestamptz NOT NULL,revoked_at timestamptz);
 CREATE UNIQUE INDEX moderation_one_access ON c_moderation.access_sessions(account_id) WHERE revoked_at IS NULL;
@@ -16,15 +17,17 @@ CREATE TABLE c_moderation.legacy_restrictions AS SELECT account_id,ban_state,ban
 ALTER TABLE c_moderation.legacy_restrictions ADD PRIMARY KEY(account_id);
 CREATE TABLE c_moderation.cases(
  case_id uuid PRIMARY KEY, number bigint GENERATED ALWAYS AS IDENTITY UNIQUE,
- post_id uuid NOT NULL REFERENCES c_posts.posts, target_account_id uuid NOT NULL REFERENCES c_auth.accounts, target_identity_id uuid NOT NULL REFERENCES public.community_identities,
+ -- Account/identity references here are checked under final Gate, without a
+ -- cross-account FK KEY SHARE after Gate (closure holds these rows before Gate).
+ post_id uuid NOT NULL REFERENCES c_posts.posts, target_account_id uuid NOT NULL, target_identity_id uuid NOT NULL,
  reason text NOT NULL CHECK(reason IN('ADVERTISING','HARASSMENT','PRIVACY','FRAUD','ILLEGAL','OTHER')), snapshot_digest text NOT NULL,
  evidence jsonb NOT NULL, state text NOT NULL DEFAULT 'PENDING' CHECK(state IN('PENDING','PROCESSING','ENDED')),
  version bigint NOT NULL DEFAULT 1 CHECK(version>0), created_at timestamptz NOT NULL,
- outcome text NOT NULL DEFAULT '', explanation text NOT NULL DEFAULT '', decided_by uuid REFERENCES c_auth.accounts,
- UNIQUE(post_id,reason,snapshot_digest));
+ outcome text NOT NULL DEFAULT '', explanation text NOT NULL DEFAULT '', decided_by uuid,
+ UNIQUE(post_id,snapshot_digest));
 CREATE TABLE c_moderation.reports(
  report_id uuid PRIMARY KEY, request_id uuid NOT NULL, reporter_account_id uuid REFERENCES c_auth.accounts, identity_id uuid REFERENCES public.community_identities,
- case_id uuid NOT NULL REFERENCES c_moderation.cases, fingerprint text NOT NULL, description text NOT NULL, images jsonb NOT NULL,
+ case_id uuid NOT NULL REFERENCES c_moderation.cases, reason text NOT NULL CHECK(reason IN('ADVERTISING','HARASSMENT','PRIVACY','FRAUD','ILLEGAL','OTHER')), fingerprint text NOT NULL, description text NOT NULL, images jsonb NOT NULL,
  created_at timestamptz NOT NULL, UNIQUE(reporter_account_id,request_id));
 CREATE TABLE c_moderation.sanctions(
  sanction_id uuid PRIMARY KEY, case_id uuid NOT NULL UNIQUE REFERENCES c_moderation.cases, account_id uuid NOT NULL REFERENCES c_auth.accounts,
@@ -39,12 +42,15 @@ CREATE TABLE c_moderation.appeals(
 CREATE UNIQUE INDEX moderation_pending_appeal ON c_moderation.appeals(sanction_id) WHERE state='PENDING';
 CREATE TABLE c_moderation.appeal_materials(appeal_id uuid NOT NULL REFERENCES c_moderation.appeals, request_id uuid NOT NULL, fingerprint text NOT NULL, description text NOT NULL, images jsonb NOT NULL, created_at timestamptz NOT NULL,PRIMARY KEY(appeal_id,request_id));
 CREATE TABLE c_moderation.notifications(
- notification_id uuid PRIMARY KEY, event_id text NOT NULL, account_id uuid NOT NULL REFERENCES c_auth.accounts, identity_id uuid REFERENCES public.community_identities,
+ notification_id uuid PRIMARY KEY, event_id text NOT NULL, account_id uuid NOT NULL, identity_id uuid,
  kind text NOT NULL CHECK(kind IN('REPORT_PROGRESS','REPORT_RESULT','SANCTION','APPEAL_RESULT')), state text NOT NULL,title text NOT NULL,body text NOT NULL,
  route_name text NOT NULL CHECK(route_name IN('REPORT','SANCTION','APPEAL')), resource_id uuid NOT NULL,created_at timestamptz NOT NULL,read_at timestamptz,
  UNIQUE(account_id,event_id));
 CREATE INDEX moderation_notification_feed ON c_moderation.notifications(account_id,created_at DESC,notification_id DESC);
 CREATE TABLE c_moderation.commands(actor_id uuid NOT NULL REFERENCES c_auth.accounts,command_id uuid NOT NULL,fingerprint text NOT NULL,result jsonb NOT NULL,PRIMARY KEY(actor_id,command_id));
+-- A result lookup without a committed receipt seals every earlier attempt.
+-- The next explicit retry keeps the task ID and presents the latest retry token.
+CREATE TABLE c_moderation.request_fences(account_id uuid NOT NULL REFERENCES c_auth.accounts,kind text NOT NULL CHECK(kind IN('REPORT','APPEAL','MATERIAL')),parent_id uuid NOT NULL,request_id uuid NOT NULL,retry_token uuid NOT NULL,PRIMARY KEY(account_id,kind,parent_id,request_id));
 CREATE TABLE c_moderation.audit(audit_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,actor_number text NOT NULL,target_number text NOT NULL,case_id uuid REFERENCES c_moderation.cases,action text NOT NULL,reason text NOT NULL,created_at timestamptz NOT NULL);
 CREATE FUNCTION c_moderation.immutable_audit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'moderation audit is append only' USING ERRCODE='23514'; END $$;
 CREATE TRIGGER moderation_audit_immutable BEFORE UPDATE OR DELETE ON c_moderation.audit FOR EACH ROW EXECUTE FUNCTION c_moderation.immutable_audit();
@@ -73,3 +79,6 @@ REVOKE EXECUTE ON ALL FUNCTIONS IN SCHEMA c_moderation FROM PUBLIC;
 -- +goose StatementEnd
 -- +goose Down
 -- irreversible: evidence, case decisions and audit must not be silently discarded.
+-- +goose StatementBegin
+DO $$ BEGIN RAISE EXCEPTION 'moderation facts cannot be rolled back; use an explicit forward repair'; END $$;
+-- +goose StatementEnd

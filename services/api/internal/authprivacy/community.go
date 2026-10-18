@@ -21,16 +21,17 @@ import (
 )
 
 type Community struct {
-	pool           *pgxpool.Pool
-	verifier       *protocol.Verifier
-	gate           AuthorizationGate
-	signingEpoch   uint32
-	requestKey     [32]byte
-	receiptSigner  Signer
-	webauthn       *WebAuthnValidator
-	webauthnConfig WebAuthnConfig
-	posts          *postServices
-	postImages     *postImageServices
+	pool              *pgxpool.Pool
+	verifier          *protocol.Verifier
+	gate              AuthorizationGate
+	signingEpoch      uint32
+	requestKey        [32]byte
+	receiptSigner     Signer
+	webauthn          *WebAuthnValidator
+	webauthnConfig    WebAuthnConfig
+	posts             *postServices
+	postImages        *postImageServices
+	moderationEnabled bool
 }
 
 func NewCommunity(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte, gate AuthorizationGate) (*Community, error) {

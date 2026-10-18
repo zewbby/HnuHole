@@ -290,6 +290,12 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 				return err
 			}
 		}
+		if c.Moderation {
+			community, err = community.WithModeration(ctx)
+			if err != nil {
+				return err
+			}
+		}
 		if c.WebAuthn != nil {
 			community, err = community.WithWebAuthn(*c.WebAuthn)
 			if err != nil {
@@ -304,7 +310,13 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 		if err != nil {
 			return err
 		}
-		endpoints, err = authprivacyhttp.NewCommunityEndpoints(authprivacyhttp.CommunityOptions{Backend: community, Passwords: passwords, InternalPeer: identity, AllowedOrigins: c.AllowedOrigins, Limits: limits})
+		origins := c.AllowedOrigins
+		adminDirectory := ""
+		if c.AdminDirectory != "" {
+			adminDirectory = c.Path(c.AdminDirectory)
+			origins = append(append([]string{}, origins...), c.PublicOrigin)
+		}
+		endpoints, err = authprivacyhttp.NewCommunityEndpoints(authprivacyhttp.CommunityOptions{Backend: community, Passwords: passwords, InternalPeer: identity, AllowedOrigins: origins, Limits: limits, AdminDirectory: adminDirectory})
 		if err != nil {
 			return err
 		}

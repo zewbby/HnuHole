@@ -10,9 +10,11 @@ let browser, stage = 'FIXTURE_VALIDATION', outputPath;
 const checks = { loopbackHTTPS: false, login: false, caseSelected: false, claimed: false, muteThreeDays: false, ended: false, auditVisible: false, noExternalRequests: false, noPageErrors: false, logout: false };
 const result = { schemaVersion: 1, status: 'FAIL', passed: false, checks, artifacts: {} };
 try {
-  if (process.argv.length !== 4 || !process.env.PLAYWRIGHT_MODULE) throw new Error('configuration required');
+  if (process.argv.length !== 4) throw new Error('configuration required');
   outputPath = resolve(process.argv[3]);
   const fixture = JSON.parse(await readFile(resolve(process.argv[2]), 'utf8'));
+  const playwrightModule = process.env.PLAYWRIGHT_MODULE || fixture.playwrightModule;
+  if (!playwrightModule) throw new Error('configuration required');
   const target = new URL(fixture.url);
   assert.equal(target.protocol, 'https:');
   assert.ok(['127.0.0.1', 'localhost', '[::1]'].includes(target.hostname));
@@ -24,9 +26,9 @@ try {
   checks.loopbackHTTPS = true;
   const directory = resolve(fixture.outputDirectory); await mkdir(directory, { recursive: true });
   const screenshot = join(directory, 'live-moderation-ended.png');
-  const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE);
+  const { chromium } = createRequire(import.meta.url)(playwrightModule);
   stage = 'BROWSER_START';
-  browser = await chromium.launch({ executablePath: process.env.ADMIN_UI_BROWSER || undefined, headless: true });
+  browser = await chromium.launch({ executablePath: process.env.ADMIN_UI_BROWSER || fixture.browserExecutable || undefined, headless: true });
   // This exception belongs only to the caller's synthetic self-signed loopback
   // context. It never changes the OS trust store or the app's HTTPS guard.
   const context = await browser.newContext({ ignoreHTTPSErrors: true, viewport: { width: 1440, height: 1080 } });

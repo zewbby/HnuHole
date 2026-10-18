@@ -14,3 +14,4 @@ GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA c_moderation TO hnuhole_c_runtime;
 GRANT UPDATE(moderation_hidden) ON c_posts.posts TO hnuhole_c_runtime;
 GRANT UPDATE(moderation_rename_required) ON public.community_identities TO hnuhole_c_runtime;
 GRANT INSERT(registered_at) ON c_auth.accounts TO hnuhole_c_runtime;
+GRANT INSERT,UPDATE(retry_token) ON c_moderation.request_fences TO hnuhole_c_runtime;

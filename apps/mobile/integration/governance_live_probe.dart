@@ -582,6 +582,12 @@ Future<void> main(List<String> args) async {
             ? 'http_rejected'
             : error.runtimeType.toString(),
         if (error is GovernanceFailure) 'httpStatus': error.status,
+        if (error is FormatException && const {
+          'Invalid notice scope', 'Invalid post object fields',
+          'Invalid post string', 'Invalid post resource ID',
+          'Invalid UTC post time', 'Invalid post calendar time',
+          'Unknown notification route',
+        }.contains(error.message)) 'formatReason': error.message,
       }),
       flush: true,
     );

@@ -81,6 +81,7 @@ type ChannelBackend interface {
 }
 
 type CommunityOptions struct {
+	AdminDirectory   string
 	ModerationAccess ModerationAccessBackend
 	Posts            PostBackend
 	Channels         ChannelBackend
@@ -163,8 +164,25 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
+			if isAdminPath(r.URL.Path) {
+				serveModerationUI(w, r, options.AdminDirectory)
+				return
+			}
 			if r.URL.Path == "/api/v1/moderation-access/sessions" || r.URL.Path == "/api/v1/moderation-access/session-revocations" {
+				if enabled, ok := options.Backend.(interface{ ModerationEnabled() bool }); ok && !enabled.ModerationEnabled() {
+					b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+					return
+				}
 				b.communityModerationAccessPublic(w, r, options.ModerationAccess, options.Passwords)
+				return
+			}
+			if isModerationPath(r.URL.Path) {
+				if enabled, ok := options.Backend.(interface{ ModerationEnabled() bool }); ok && !enabled.ModerationEnabled() {
+					b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+					return
+				}
+				backend, _ := options.Backend.(ModerationBackend)
+				b.communityModeration(w, r, backend)
 				return
 			}
 			if isPostPath(r.URL.Path) {
@@ -263,7 +281,7 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				w.Header().Set("Vary", "Origin")
 			}
 		}
-		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !allowsPostListQuery(r))) {
+		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsModerationQuery(r)))) {
 			b.bad(w, errMalformed)
 			return
 		}
@@ -311,6 +329,13 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 }
 
 func publicMethodAllowed(service Service, path, method string) bool {
+	if service == CommunityService && isAdminPath(path) {
+		return method == "GET"
+	}
+	if service == CommunityService && isModerationPath(path) {
+		route, e := parseModerationRoute(path)
+		return e == nil && strings.Contains(", "+route.method+",", ", "+method+",")
+	}
 	if service == CommunityService && isPostImagePath(path) {
 		route, e := parseImageRoute(path)
 		return e == nil && route.method == method

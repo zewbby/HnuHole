@@ -178,7 +178,12 @@ func (c *Community) withModerationSessionPrepared(ctx context.Context, bearer [3
 		}
 		return nil
 	}
-	if validate(d) == nil && prepare != nil {
+	// A snapshot failure must never be repaired by a later final timestamp:
+	// prepare contains mandatory role/resource authorization and locking.
+	if err = validate(d); err != nil {
+		return result, err
+	}
+	if prepare != nil {
 		if err = prepare(tx, account); err != nil {
 			return result, err
 		}
@@ -206,6 +211,7 @@ func (c *Community) withModerationSessionPrepared(ctx context.Context, bearer [3
 	if err != nil {
 		return PostResponse{}, err
 	}
+	result.ExpiresAt = result.ExpiresAt.UTC()
 	return result, nil
 }
 
