@@ -54,3 +54,11 @@ JSON 仅含 `username`、`password`、随机 16 字节 base64url `installationId
 不修改系统证书或产品 HTTPS 检查；测试结束关闭浏览器与服务并清理本次 TLS 材料。截图写入指定运行目录，不提交到源码。
 夹具操作覆盖审核员禁言、两类资料重置、案件／申诉追加分页、举报／申诉材料逐批加载与失败重试／迟到页围栏、初始账号列表／搜索／分页、申诉复核、处罚撤销、管理员永久封禁选项与权限管理、材料 XSS、图片预览、390px 窄窗及零第三方请求。
 测试替身不代证真实 HTTPS／SQL／角色权限、通知投递或物理设备验收；这些结果随本任务整链回归另记。
+
+真实 C／SQL 浏览器入口：`node apps/admin/test/live-api-smoke.mjs fixture.json output.json`。
+同样使用 `PLAYWRIGHT_MODULE`、可选 `ADMIN_UI_BROWSER`；调用者先准备专用真实 Go C HTTPS 服务、4 个合成账号与待处理案件。
+fixture 只存在本任务运行目录，字段为 `url`、`reviewerUsername`、`reviewerPassword`、`caseId`、`outputDirectory`。
+脚本只接受 loopback HTTPS，直接从 Go `/admin` 加载页面，不创建替身服务；登录后领取／禁言三天，检查真实处理响应 `ENDED` 与可见审计，截图后退出。
+输出 JSON 只有检查结果、固定失败阶段和截图位置，不导出 Bearer、密码、邮箱或响应材料；stdout 只输出安全的 PASS／FAIL 阶段。
+使用 Windows Node 时，fixture／output 参数与截图目录须为 Windows 可访问的路径；从 WSL 调用前用 `wslpath -w` 转换本任务路径。
+该脚本本身不是通过证明，须随固定候选、真实服务与独立一次性数据库执行后记录结果；fixture 文件不得提交。
