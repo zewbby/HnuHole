@@ -19,10 +19,12 @@ const stamp = '2026-10-18T04:30:00Z';
 const hostile = '<img src=x onerror="window.evidenceExecuted=true">';
 const raster = { mime: 'image/png', base64: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a5mQAAAAASUVORK5CYII=' };
 let role = 'REVIEWER', state = 'PENDING', version = 1, appealState = 'PENDING', revoked = false;
+let reportPageFailures = 1, releaseLateReport, markLateReportStarted;
+const lateReportStarted = new Promise(resolveStarted => { markLateReportStarted = resolveStarted; });
 const commands = [], errors = [], requests = [];
-const record = () => ({ id: caseId, number: 'R202610180001', postId: '40000000-0000-4000-8000-000000000001', platformNumber: '000125', reason: 'HARASSMENT', state, version, createdAt: stamp, outcome: state === 'ENDED' ? 'MUTE' : null, explanation: '已核查证据。', evidence: { title: '校园讨论中的违规内容', body: hostile, images: [raster] }, reports: [{ reason: 'HARASSMENT', description: '说明仅用于核查本案。', images: [], createdAt: stamp }], sanctions: [] });
-const profiles = new Map([2, 3].map(n => { const id = `10000000-0000-4000-8000-00000000000${n}`; return [id, { ...record(), id, number: `R20261018000${n}`, state: 'PENDING', version: 1 }]; }));
-const appeal = () => ({ id: appealId, caseId, sanctionId, state: appealState, ordinal: 1, version: 1, reason: appealState === 'ACCEPTED' ? '核查新材料后撤销对应处罚。' : '', platformNumber: '000125', action: 'MUTE', originalActorNumber: '000999', createdAt: stamp, materials: [{ description: '请结合原帖重新核查。', createdAt: stamp, images: [] }] });
+const record = () => ({ id: caseId, number: 'R202610180001', postId: '40000000-0000-4000-8000-000000000001', platformNumber: '000125', reason: 'HARASSMENT', state, version, createdAt: stamp, outcome: state === 'ENDED' ? 'MUTE' : null, explanation: '已核查证据。', evidence: { title: '校园讨论中的违规内容', body: hostile, images: [raster] }, reports: [{ reason: 'HARASSMENT', description: '说明仅用于核查本案。', images: [], createdAt: stamp }], nextReportsCursor: 'opaque-report+2|a', sanctions: [] });
+const profiles = new Map([2, 3].map(n => { const id = `10000000-0000-4000-8000-00000000000${n}`; return [id, { ...record(), id, number: `R20261018000${n}`, state: 'PENDING', version: 1, nextReportsCursor: n === 2 ? 'late-report' : null }]; }));
+const appeal = () => ({ id: appealId, caseId, sanctionId, state: appealState, ordinal: 1, version: 1, reason: appealState === 'ACCEPTED' ? '核查新材料后撤销对应处罚。' : '', platformNumber: '000125', action: 'MUTE', originalActorNumber: '000999', createdAt: stamp, materials: [{ description: '请结合原帖重新核查。', createdAt: stamp, images: [] }], nextMaterialsCursor: 'appeal-material+2' });
 const sanctions = () => [{ id: sanctionId, action: 'MUTE', reason: '已确认违规。', actorNumber: '000999', startsAt: stamp, endsAt: '2026-10-21T04:30:00Z', revokedAt: revoked ? stamp : null }];
 let server, browser;
 try {
@@ -42,12 +44,22 @@ try {
       if (url.pathname === '/api/v1/moderation/me') { respond({ role, platformNumber: '000123', email: 'PRIVATE-EMAIL', otherIdentities: ['PRIVATE-OTHER-MASK'] }); return; }
       if (url.pathname === '/api/v1/moderation/cases') { respond(url.searchParams.has('before') ? { items: [...profiles.values()] } : { items: [record()], nextBefore: `${stamp}|${caseId}` }); return; }
       if (url.pathname === `/api/v1/moderation/cases/${caseId}`) { respond(record()); return; }
+      if (url.pathname === `/api/v1/moderation/cases/${caseId}/reports`) {
+        if (reportPageFailures-- > 0) { respond({}, 503); return; }
+        const second = url.searchParams.get('cursor') === 'opaque-report+2|a';
+        respond({ items: [{ reason: 'OTHER', description: second ? '第二份举报材料（保留顺序）。' : '第三份举报材料（最后一批）。', images: [], createdAt: stamp }], nextCursor: second ? 'opaque-report-3' : null }); return;
+      }
+      if (url.pathname === '/api/v1/moderation/cases/10000000-0000-4000-8000-000000000002/reports') {
+        markLateReportStarted(); await new Promise(resolveReply => { releaseLateReport = resolveReply; });
+        respond({ items: [{ description: '迟到材料不应串入另一案件。', images: [], createdAt: stamp }], nextCursor: null }); return;
+      }
       if (profiles.has(url.pathname.split('/').at(-1))) { respond(profiles.get(url.pathname.split('/').at(-1))); return; }
       if (url.pathname.endsWith('/decision') && profiles.has(url.pathname.split('/').at(-2))) { const profile = profiles.get(url.pathname.split('/').at(-2)); profile.state = 'ENDED'; profile.version++; profile.outcome = 'UPHELD'; profile.explanation = payload.reason; commands.push(payload); respond(profile); return; }
       if (url.pathname.endsWith('/claim')) { state = 'PROCESSING'; version++; commands.push(payload); respond(record()); return; }
       if (url.pathname.endsWith(`/cases/${caseId}/decision`)) { state = 'ENDED'; version++; commands.push(payload); respond(record()); return; }
       if (url.pathname === '/api/v1/moderation/appeals') { if (url.searchParams.get('limit') !== '50') { respond({}, 400); return; } respond(url.searchParams.has('before') ? { items: [{ ...appeal(), id: '20000000-0000-4000-8000-000000000002', ordinal: 2 }] } : { items: [appeal()], nextBefore: `${stamp}|${appealId}` }); return; }
       if (url.pathname === `/api/v1/moderation/appeals/${appealId}`) { respond(appeal()); return; }
+      if (url.pathname === `/api/v1/moderation/appeals/${appealId}/materials`) { respond({ items: [{ description: '追加的第二批申诉材料。', images: [], createdAt: stamp }], nextCursor: null }); return; }
       if (url.pathname.endsWith(`/appeals/${appealId}/decision`)) { appealState = payload.accept ? 'ACCEPTED' : 'REJECTED'; commands.push(payload); respond(appeal()); return; }
       if (url.pathname === '/api/v1/moderation/accounts') {
         const account = { platformNumber: '000125', state: 'ACTIVE', createdAt: stamp, violationCount: revoked ? 0 : 1, sanctions: sanctions() };
@@ -75,18 +87,32 @@ try {
   assert.equal(await page.getByLabel('处理措施', { exact: true }).locator('option[value="BAN"]').count(), 0);
   assert.doesNotMatch(await page.locator('body').innerText(), /PRIVATE-EMAIL|PRIVATE-ACCOUNT-MAPPING|PRIVATE-OTHER-MASK/);
   await page.getByRole('button', { name: '查看内容证据 1原图', exact: true }).click(); await page.getByRole('button', { name: '关闭图片', exact: true }).click();
+  await page.getByText(/还有后续材料，当前内容尚不完整/).waitFor();
+  await page.getByRole('button', { name: '加载后续材料', exact: true }).click(); await page.getByText(/服务暂不可用/).waitFor();
+  assert.equal(await page.getByText('说明仅用于核查本案。', { exact: true }).count(), 1); assert.equal(await page.getByText('第二份举报材料（保留顺序）。', { exact: true }).count(), 0);
+  await page.getByRole('button', { name: '加载后续材料', exact: true }).click(); await page.getByText('第二份举报材料（保留顺序）。', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '加载后续材料', exact: true }).click(); await page.getByText('第三份举报材料（最后一批）。', { exact: true }).waitFor();
+  assert.equal(await page.getByRole('button', { name: '加载后续材料', exact: true }).count(), 0);
+  const materialText = await page.locator('.detail').innerText(); assert.ok(materialText.indexOf('说明仅用于核查本案。') < materialText.indexOf('第二份举报材料')); assert.ok(materialText.indexOf('第二份举报材料') < materialText.indexOf('第三份举报材料'));
   await page.getByRole('button', { name: '开始处理', exact: true }).click(); await page.getByText('已进入处理状态。', { exact: true }).waitFor();
   await page.getByLabel('处理措施', { exact: true }).selectOption('MUTE');
   await page.getByText(/考虑现有处罚/).waitFor(); await page.getByLabel('处理原因', { exact: true }).fill('根据本案证据作出三天禁言。');
   await page.screenshot({ path: join(root, 'reviewer-case.png'), fullPage: true });
   await page.getByRole('button', { name: '确认处理', exact: true }).click(); await page.getByText('案件已处理。', { exact: true }).waitFor();
   await page.getByRole('button', { name: '加载更早记录', exact: true }).click();
+  await page.getByRole('button', { name: /工单 R202610180002/ }).click(); await page.getByRole('button', { name: '加载后续材料', exact: true }).click(); await lateReportStarted;
+  await page.getByRole('button', { name: /工单 R202610180003/ }).click(); await page.getByRole('heading', { name: '工单 R202610180003', exact: true }).waitFor();
+  const lateResponse = page.waitForResponse(response => response.url().endsWith('/reports?cursor=late-report')); releaseLateReport(); await (await lateResponse).finished();
+  await page.evaluate(() => new Promise(resolveFrame => requestAnimationFrame(() => requestAnimationFrame(resolveFrame))));
+  assert.equal(await page.getByText('迟到材料不应串入另一案件。', { exact: true }).count(), 0);
   for (const [number, action] of [['R202610180002', 'RESET_NICKNAME'], ['R202610180003', 'RESET_AVATAR']]) {
     await page.getByRole('button', { name: new RegExp(`工单 ${number}`) }).click(); await page.getByLabel('处理措施', { exact: true }).selectOption(action);
     assert.equal(await page.getByLabel('本次期限', { exact: true }).isVisible(), false);
     await page.getByLabel('处理原因', { exact: true }).fill('仅重置本案身份的违规资料。'); await page.getByRole('button', { name: '确认处理', exact: true }).click(); await page.getByText('案件已处理。', { exact: true }).waitFor();
   }
   await page.getByRole('button', { name: '申诉复核', exact: true }).click(); await page.getByRole('button', { name: '加载更早记录', exact: true }).click(); await page.getByRole('button', { name: /申诉 2\/3/ }).waitFor(); await page.screenshot({ path: join(root, 'appeals-queue.png'), fullPage: true }); await page.getByRole('button', { name: /申诉 1\/3/ }).click();
+  await page.getByText(/还有后续材料，当前内容尚不完整/).waitFor(); await page.getByRole('button', { name: '加载后续材料', exact: true }).click(); await page.getByText('追加的第二批申诉材料。', { exact: true }).waitFor();
+  assert.equal(await page.getByText('请结合原帖重新核查。', { exact: true }).count(), 1);
   await page.getByLabel('复核结果', { exact: true }).selectOption('true'); await page.getByLabel('复核理由', { exact: true }).fill('核查新材料后撤销对应处罚。'); await page.getByRole('button', { name: '确认复核结果', exact: true }).click(); await page.getByText('复核结果已保存。', { exact: true }).waitFor();
   await page.getByRole('button', { name: '账号与处罚', exact: true }).click(); await page.getByRole('heading', { name: '账号 000125', exact: true }).waitFor(); await page.getByRole('button', { name: '加载更多账号', exact: true }).click(); await page.getByRole('heading', { name: '账号 000127', exact: true }).waitFor(); await page.screenshot({ path: join(root, 'accounts-list.png'), fullPage: true });
   await page.getByLabel('六位平台编号', { exact: true }).fill('000125'); await page.getByRole('button', { name: '查找账号', exact: true }).click(); await page.getByRole('button', { name: '查看处罚', exact: true }).click();
@@ -103,6 +129,8 @@ try {
   assert.equal(commands.some(c => c.action === 'RESET_NICKNAME' && c.days === 0), true); assert.equal(commands.some(c => c.action === 'RESET_AVATAR' && c.days === 0), true);
   assert.equal(requests.some(url => url.includes('/moderation/appeals?') && new URL(url).searchParams.get('before') === `${stamp}|${appealId}`), true);
   assert.equal(requests.some(url => url.includes('/moderation/accounts?') && new URL(url).searchParams.get('before') === '000126'), true);
+  assert.equal(requests.filter(url => url.includes(`/cases/${caseId}/reports?`) && new URL(url).searchParams.get('cursor') === 'opaque-report+2|a').length, 2);
+  assert.equal(requests.some(url => url.includes(`/appeals/${appealId}/materials?`) && new URL(url).searchParams.get('cursor') === 'appeal-material+2'), true);
   assert.equal(commands.every(c => typeof c.commandId === 'string'), true); assert.equal(requests.every(url => url.startsWith(origin)), true); assert.deepEqual(errors, []);
   await page.getByRole('button', { name: '退出', exact: true }).click();
   console.log(JSON.stringify({ result: 'PASS_SYNTHETIC_HTTPS_UI', commands: commands.length, noExternalRequests: true, pageErrors: errors.length, screenshots: ['reviewer-case.png', 'appeals-queue.png', 'accounts-list.png', 'admin-case.png', 'admin-narrow.png'] }));

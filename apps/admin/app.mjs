@@ -50,6 +50,31 @@ function materialImages(parent, images, prefix) {
     }, 'image-button'); preview.setAttribute('aria-label', `查看${prefix} ${index + 1}原图`); preview.append(image); group.append(preview);
   }); parent.append(group);
 }
+function materialFeed(parent, { initial, nextCursor, path, noun, renderMaterial, isCurrent }) {
+  const feed = el('div'); const groups = el('div'); const progress = el('p', null, 'helper'); progress.setAttribute('aria-live', 'polite');
+  let cursor = nextCursor ?? null, count = 0, busy = false, requestVersion = 0;
+  const more = button('加载后续材料', async () => {
+    if (busy || !cursor || !isCurrent()) return;
+    busy = true; const version = ++requestVersion; const requestedCursor = cursor; update();
+    try {
+      const query = new URLSearchParams({ cursor: requestedCursor });
+      const data = await client.request(`${path}?${query}`);
+      if (!isCurrent() || !feed.isConnected || version !== requestVersion) return;
+      if (!Array.isArray(data.items) || data.items.length > 1 || data.nextCursor != null && typeof data.nextCursor !== 'string' || data.nextCursor === requestedCursor) throw new Error('材料分页未正确返回，请保留已加载材料并重新核对。');
+      for (const material of data.items) { groups.append(renderMaterial(material)); count++; }
+      cursor = data.nextCursor ?? null;
+    } catch (error) { if (isCurrent() && feed.isConnected && version === requestVersion) showError(error); }
+    finally { busy = false; if (isCurrent() && feed.isConnected && version === requestVersion) update(); }
+  });
+  function update() {
+    more.hidden = !cursor; more.disabled = busy;
+    progress.className = cursor ? 'warning' : 'helper';
+    progress.textContent = busy ? `正在加载后续${noun}，已显示的材料仍保留。` : cursor ? `已显示 ${count} 份${noun}。还有后续材料，当前内容尚不完整。` : count ? `已显示 ${count} 份${noun}。` : `暂无${noun}。`;
+    feed.setAttribute('aria-busy', String(busy));
+  }
+  for (const material of Array.isArray(initial) ? initial : []) { groups.append(renderMaterial(material)); count++; }
+  add(feed, groups, progress, more); parent.append(feed); update();
+}
 function applyBusy(form, busy) {
   form.setAttribute('aria-busy', String(busy));
   for (const node of form.querySelectorAll('button, input, select, textarea')) node.disabled = busy;
@@ -76,6 +101,7 @@ async function retryLogout() {
   catch (error) { showError(error); }
 }
 function renderLogin() {
+  for (const dialog of document.querySelectorAll('dialog.image-dialog')) { dialog.close(); dialog.remove(); }
   sessionBox.replaceChildren();
   const box = el('section', null, 'login');
   add(box, el('h1', '进入审核工作台'), el('p', '使用已获授权的社区管理账号登录。', 'muted'));
@@ -128,7 +154,8 @@ function renderQueue(parent, kind) {
         else row.querySelector('.status')?.replaceWith(status(record.state));
       }
       if (kind === 'appeals' && !items.length && !nextBefore) list.replaceChildren(el('p', '暂无待复核申诉。', 'empty'));
-      if (kind === 'cases') renderCase(detail, record, () => choose(item), current); else renderAppeal(detail, record, () => choose(item), current);
+      const isCurrent = () => current === viewVersion && version === requestVersion;
+      if (kind === 'cases') renderCase(detail, record, () => choose(item), current, isCurrent); else renderAppeal(detail, record, () => choose(item), current, isCurrent);
     } catch (error) { if (current === viewVersion && version === requestVersion) { detail.replaceChildren(el('p', '材料未加载，不能提交处理。', 'empty')); showError(error); } }
   }
   async function load(append) {
@@ -151,7 +178,7 @@ function renderQueue(parent, kind) {
   }
   void load(false);
 }
-function renderCase(parent, record, reload, current) {
+function renderCase(parent, record, reload, current, isCurrent = () => current === viewVersion && parent.isConnected) {
   parent.replaceChildren();
   const header = add(el('div', null, 'heading'), add(el('div'), el('h2', `工单 ${record.number ?? '待核对'}`), el('p', `目标账号 ${platformNumber(record.platformNumber)} · ${dateText(record.createdAt)}`, 'meta')), status(record.state));
   parent.append(header);
@@ -159,19 +186,18 @@ function renderCase(parent, record, reload, current) {
   const snapshot = add(el('div', null, 'evidence'), el('h3', record.evidence?.title ?? '帖子'), el('p', record.evidence?.body ?? '暂无可展示的文字材料。', 'body'));
   materialImages(snapshot, record.evidence?.images, '内容证据'); evidence.append(snapshot); parent.append(evidence);
   const reports = section('举报材料');
-  for (const report of record.reports ?? []) {
+  materialFeed(reports, { initial: record.reports, nextCursor: record.nextReportsCursor, path: `/api/v1/moderation/cases/${requireUUID(record.id)}/reports`, noun: '举报材料', isCurrent, renderMaterial: report => {
     const group = add(el('div', null, 'report'), el('h3', label(report.reason ?? record.reason)), el('p', report.description || '未补充说明。'), el('p', dateText(report.createdAt), 'meta'));
-    materialImages(group, report.images, '举报补充图片'); reports.append(group);
-  }
-  if (!record.reports?.length) reports.append(el('p', '暂无补充材料。', 'muted'));
+    materialImages(group, report.images, '举报补充图片'); return group;
+  } });
   parent.append(reports);
   if (record.state === 'ENDED') {
     parent.append(add(el('div', null, 'result'), el('h3', label(record.outcome ?? '已结束')), el('p', record.explanation ?? '请查看操作记录。')));
   } else {
     const controls = section('处理案件');
     if (record.state === 'PENDING') controls.append(button('开始处理', async () => {
-      try { await client.command(`/api/v1/moderation/cases/${requireUUID(record.id)}/claim`, { expectedVersion: record.version }); if (current === viewVersion) { announce('已进入处理状态。'); await reload(); } }
-      catch (error) { if (current === viewVersion) showError(error); }
+      try { await client.command(`/api/v1/moderation/cases/${requireUUID(record.id)}/claim`, { expectedVersion: record.version }); if (isCurrent()) { announce('已进入处理状态。'); await reload(); } }
+      catch (error) { if (isCurrent()) showError(error); }
     }, 'primary'));
     else controls.append(el('p', '核查材料后选择处理措施，并说明依据。', 'muted'));
     const form = el('form', null, 'inline-form');
@@ -200,7 +226,7 @@ function renderCase(parent, record, reload, current) {
       if (['MUTE', 'BAN'].includes(action.value) && !estimateReady) throw new Error('请先核对现有处罚。');
       if (!why.value.trim()) { why.focus(); throw new Error('请填写处理原因。'); }
       await client.command(`/api/v1/moderation/cases/${requireUUID(record.id)}/decision`, { expectedVersion: record.version, action: action.value, days: ['MUTE', 'BAN'].includes(action.value) ? Number(days.value) : 0, reason: why.value.trim() });
-      if (current === viewVersion) { announce('案件已处理。'); await reload(); }
+      if (isCurrent()) { announce('案件已处理。'); await reload(); }
     }); controls.append(form); parent.append(controls); update();
     void client.request(`/api/v1/moderation/accounts?number=${encodeURIComponent(record.platformNumber ?? '')}`).then(data => {
       if (current !== viewVersion || !parent.contains(form)) return;
@@ -220,13 +246,12 @@ async function loadAudit(parent, caseId, current) {
     if (!data.items?.length) parent.append(el('p', '暂无操作记录。', 'muted'));
   } catch { if (current === viewVersion && parent.isConnected) parent.append(el('p', '操作记录暂未加载，可重新选择本案重试。', 'muted')); }
 }
-function renderAppeal(parent, appeal, reload, current) {
+function renderAppeal(parent, appeal, reload, current, isCurrent = () => current === viewVersion && parent.isConnected) {
   parent.replaceChildren(add(el('div', null, 'heading'), add(el('div'), el('h2', `申诉 ${appeal.ordinal ?? 1}/3`), el('p', `目标账号 ${platformNumber(appeal.platformNumber)} · ${label(appeal.action)}`, 'meta')), status(appeal.state)));
   const materials = section('本次申诉材料');
-  for (const material of appeal.materials ?? []) {
-    const group = add(el('div', null, 'report'), el('p', material.description ?? material.text ?? material.body ?? '未补充文字。'), el('p', dateText(material.createdAt), 'meta')); materialImages(group, material.images, '申诉图片'); materials.append(group);
-  }
-  if (!appeal.materials?.length) materials.append(el('p', '暂无可展示材料。', 'muted'));
+  materialFeed(materials, { initial: appeal.materials, nextCursor: appeal.nextMaterialsCursor, path: `/api/v1/moderation/appeals/${requireUUID(appeal.id)}/materials`, noun: '申诉材料', isCurrent, renderMaterial: material => {
+    const group = add(el('div', null, 'report'), el('p', material.description ?? material.text ?? material.body ?? '未补充文字。'), el('p', dateText(material.createdAt), 'meta')); materialImages(group, material.images, '申诉图片'); return group;
+  } });
   parent.append(materials);
   if (appeal.reason || appeal.explanation) parent.append(add(el('div', null, 'result'), el('p', appeal.reason || appeal.explanation)));
   if (canReviewAppeal(me, appeal)) {
@@ -236,12 +261,12 @@ function renderAppeal(parent, appeal, reload, current) {
     watchForm(form, async () => {
       if (!why.value.trim()) throw new Error('请填写复核理由。');
       await client.command(`/api/v1/moderation/appeals/${requireUUID(appeal.id)}/decision`, { expectedVersion: appeal.version, accept: decision.value === 'true', reason: why.value.trim() });
-      if (current === viewVersion) { announce('复核结果已保存。'); await reload(); }
+      if (isCurrent()) { announce('复核结果已保存。'); await reload(); }
     }); add(controls, form); parent.append(controls);
   } else if (!['ACCEPTED', 'REJECTED', 'ENDED'].includes(appeal.state)) parent.append(el('p', me.platformNumber === appeal.originalActorNumber ? '你是原处理人，本次申诉须由另一名有相应权限的人员复核。' : '当前角色无权复核本项处罚。申诉继续保留待复核。', 'warning'));
   if (appeal.caseId) parent.append(button('查看原案件与证据', async () => {
-    try { const record = await client.request(`/api/v1/moderation/cases/${requireUUID(appeal.caseId)}`); if (current === viewVersion) { renderCase(parent, record, async () => {}, current); parent.prepend(button('返回申诉', reload)); } }
-    catch (error) { if (current === viewVersion) showError(error); }
+    try { const record = await client.request(`/api/v1/moderation/cases/${requireUUID(appeal.caseId)}`); if (isCurrent()) { renderCase(parent, record, async () => {}, current, isCurrent); parent.prepend(button('返回申诉', reload)); } }
+    catch (error) { if (isCurrent()) showError(error); }
   }));
 }
 function renderAccounts(parent) {
