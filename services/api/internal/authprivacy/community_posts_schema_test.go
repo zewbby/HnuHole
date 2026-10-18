@@ -275,6 +275,16 @@ func TestPostSchemaRestrictedRuntimePrivilegesPostgres(t *testing.T) {
 		t.Fatalf("overbroad immutable-input UPDATE was accepted at startup: %v", err)
 	}
 	mustExec(t, l.cp, `REVOKE UPDATE(accepted_stop_generation) ON c_posts.publication_attempts FROM hnuhole_c_runtime`)
+	for _, column := range []string{"payload", "erased_at", "grant_digest", "grant_expires_at"} {
+		mustExec(t, l.cp, `REVOKE UPDATE(`+column+`) ON c_posts.images FROM hnuhole_c_runtime`)
+		if err = checkPostSchema(context.Background(), runtime); !errors.Is(err, errPostSchema) {
+			t.Fatalf("missing image lifecycle erasure column %s accepted: %v", column, err)
+		}
+		mustExec(t, l.cp, `GRANT UPDATE(`+column+`) ON c_posts.images TO hnuhole_c_runtime`)
+		if err = checkPostSchema(context.Background(), runtime); err != nil {
+			t.Fatalf("restored image erasure column %s rejected: %v", column, err)
+		}
+	}
 	for _, privilege := range []struct {
 		revoke, grant string
 	}{
@@ -295,7 +305,7 @@ func TestPostSchemaRestrictedRuntimePrivilegesPostgres(t *testing.T) {
 func TestPostSchemaPartyInventoryAndPrivateColumnsPostgres(t *testing.T) {
 	l := newLab(t)
 	ctx := context.Background()
-	expected := []string{"account_publication_control", "attempt_contents", "command_receipts", "identity_public_labels", "payload_cleanup", "post_identity_bindings", "posts", "protocol_keys", "publication_attempts", "publication_stop_events", "publication_tasks", "schema_meta"}
+	expected := []string{"account_publication_control", "attempt_contents", "command_receipts", "identity_public_labels", "images", "payload_cleanup", "post_identity_bindings", "posts", "protocol_keys", "publication_attempts", "publication_stop_events", "publication_tasks", "schema_meta"}
 	rows, err := l.cp.Query(ctx, `SELECT c.relname,c.relkind::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='c_posts' AND c.relkind IN ('r','p','v','m','f') ORDER BY c.relname`)
 	if err != nil {
 		t.Fatal(err)

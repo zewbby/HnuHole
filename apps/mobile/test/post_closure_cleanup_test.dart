@@ -29,6 +29,7 @@ class _Vault implements AuthVault {
 class _ClosureApi implements AuthApi {
   final requests = <Map<String, String>>[];
   final queries = <Map<String, String>>[];
+  Completer<ClosureStatus>? statusGate;
   AuthFailure? requestFailure;
   ClosureStatus result = ClosureStatus(
     state: ClosureState.pending,
@@ -60,6 +61,7 @@ class _ClosureApi implements AuthApi {
     required String statusSecret,
   }) async {
     queries.add({'closureId': closureId, 'statusSecret': statusSecret});
+    if (statusGate != null) return statusGate!.future;
     return result;
   }
 
@@ -262,8 +264,13 @@ void main() {
       state: ClosureState.closedReleasePending,
     );
     final first = h.makeFlows();
+    await first.restorePending();
+    expect(first.status, AuthFlowStatus.closurePending);
     await first.reconcileClosure();
     expect(first.errorMessage, isNotNull);
+    expect(first.status, AuthFlowStatus.closureClosedReleasePending);
+    expect(first.closureStatus!.state, ClosureState.closedReleasePending);
+    expect(first.closureStatus!.dueAt, isNull);
     expect(
       (await h.store.read()).pendingClosure!['state'],
       'CLOSED_RELEASE_PENDING',
@@ -281,6 +288,107 @@ void main() {
       'CLOSED_RELEASE_PENDING',
     );
     restarted.dispose();
+  });
+
+  test('RELEASED清理失败仍展示已关闭释放，重试清理保留后来账号', () async {
+    final h = _Harness();
+    await h.seed('PENDING');
+    await h.login(_laterAccount);
+    final flows = h.makeFlows();
+    await flows.restorePending();
+    h.failCleanup = true;
+    h.api.result = ClosureStatus(
+      state: ClosureState.released,
+      releaseReceipt: _bytes(120, 4),
+    );
+    await flows.reconcileClosure();
+    expect(flows.status, AuthFlowStatus.closureReleased);
+    expect(flows.closureStatus!.state, ClosureState.released);
+    expect(flows.closureStatus!.releaseReceipt, _bytes(120, 4));
+    expect(flows.errorMessage, isNotNull);
+    expect((await h.store.read()).pendingClosure!['state'], 'RELEASED');
+    expect(h.cleaned, [_originalAccount]);
+    h.failCleanup = false;
+    await flows.reconcileClosure();
+    expect(flows.status, AuthFlowStatus.closureReleased);
+    expect(flows.errorMessage, isNull);
+    expect(h.cleaned, [_originalAccount, _originalAccount]);
+    expect((await h.store.read()).session!.accountId, _laterAccount);
+    flows.dispose();
+  });
+
+  test('关闭状态持久写失败不提前展示关闭或清理业务', () async {
+    final h = _Harness();
+    await h.seed('PENDING');
+    final flows = h.makeFlows();
+    await flows.restorePending();
+    h.api.result = const ClosureStatus(
+      state: ClosureState.closedReleasePending,
+    );
+    h.vault.failWrite = true;
+    await flows.reconcileClosure();
+    expect(flows.status, AuthFlowStatus.closurePending);
+    expect(flows.closureStatus!.state, ClosureState.pending);
+    expect(flows.errorMessage, isNotNull);
+    expect(h.cleaned, isEmpty);
+    h.vault.failWrite = false;
+    expect((await h.store.read()).pendingClosure!['state'], 'PENDING');
+    flows.dispose();
+  });
+
+  test('迟到闭号核对不覆盖等待期间换入的另一申请或展示其旧结果', () async {
+    final h = _Harness();
+    await h.seed('PENDING');
+    final flows = h.makeFlows();
+    await flows.restorePending();
+    h.api.statusGate = Completer<ClosureStatus>();
+    final reconcile = flows.reconcileClosure();
+    for (var i = 0; i < 50 && h.api.queries.isEmpty; i++) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    expect(h.api.queries, hasLength(1));
+    final replacement = {
+      ..._pending('PENDING', owner: _laterAccount),
+      'closureId': _bytes(32, 17),
+    };
+    await h.store.update(
+      (state) => state.copyWith(pendingClosure: replacement),
+    );
+    h.api.statusGate!.complete(
+      const ClosureStatus(state: ClosureState.closedReleasePending),
+    );
+    await reconcile;
+    expect((await h.store.read()).pendingClosure!['closureId'], _bytes(32, 17));
+    expect(flows.status, AuthFlowStatus.closurePending);
+    expect(flows.closureStatus!.state, ClosureState.pending);
+    expect(h.cleaned, isEmpty);
+    flows.dispose();
+  });
+
+  test('清理期间销毁流程不让迟到完成再次更新页面', () async {
+    final h = _Harness();
+    await h.seed('PENDING');
+    final flows = h.makeFlows();
+    await flows.restorePending();
+    h.api.result = const ClosureStatus(
+      state: ClosureState.closedReleasePending,
+    );
+    h.cleanupGate = Completer<void>();
+    final reconcile = flows.reconcileClosure();
+    for (var i = 0; i < 50 && h.cleaned.isEmpty; i++) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    expect(h.cleaned, [_originalAccount]);
+    expect(flows.status, AuthFlowStatus.closureClosedReleasePending);
+    final recordedStatus = flows.closureStatus;
+    flows.dispose();
+    h.cleanupGate!.complete();
+    await reconcile;
+    expect(flows.closureStatus, same(recordedStatus));
+    expect(
+      (await h.store.read()).pendingClosure!['state'],
+      'CLOSED_RELEASE_PENDING',
+    );
   });
 
   test('forget清理故障不得删除RELEASED标识，重试成功才去标识', () async {

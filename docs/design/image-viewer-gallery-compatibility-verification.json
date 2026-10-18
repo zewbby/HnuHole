@@ -1,0 +1,515 @@
+{
+  "schemaVersion": "hnuhole-image-viewer-gallery-compatibility/v1",
+  "recordedOn": "2026-10-14",
+  "timezone": "Asia/Shanghai",
+  "moduleId": "IV01",
+  "branch": "codex/image-viewer-component",
+  "origin": "https://github.com/zewbby/HnuHole.git",
+  "workingDirectory": "E:\\Hnuhole-image-viewer-component-20261012\\repo",
+  "initialSha": "cdc31289d573a1dfaaa48384773595622cc37e36",
+  "executionHead": "cdc31289d573a1dfaaa48384773595622cc37e36",
+  "finalCommitIdentity": "Owning Git commit; full local/remote HEAD and clean status in external compatibility-publication-receipt.json",
+  "publicationReceipt": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\compatibility-publication-receipt.json",
+  "publicApiInputLifecycleCoreExampleDependenciesLocksChanged": false,
+  "testedPackageDigestSha256": "080aa3dcb7c7b96cde5dce05b82aac0b2000fe2b646681128d8000196ffeffa7",
+  "sourceManifestReference": "docs/design/image-viewer-gallery-identity-verification.json#testedPackageManifest",
+  "manifestFilesRehashedThisPhase": 112,
+  "locks": [
+    {
+      "path": "packages/image_viewer/pubspec.lock",
+      "sha256": "00ac99d693f003b46111d24e18a233741aedfd3501569130d57d731ca192fb81"
+    },
+    {
+      "path": "packages/image_viewer/example/pubspec.lock",
+      "sha256": "9a7de0b094b07456d44016212168f2f5890e5a74d0bf4f708d77db6c51c95a24"
+    }
+  ],
+  "physicalDevice": {
+    "model": "vivo S18",
+    "product": "V2323A",
+    "android": "15",
+    "api": 35,
+    "abi": "arm64-v8a",
+    "serialPublished": false
+  },
+  "installedHnuVersions": {
+    "nativecheck": 20263017,
+    "component": 20263014,
+    "newHnuBuildOrInstallThisPhase": false
+  },
+  "nativecheckApk": {
+    "versionName": "0.0.0-webp-identity20261014-nativecheck",
+    "versionCode": 20263017,
+    "bytes": 82195691,
+    "sha256": "adbe747b11c3b0d9e0e6c9dd9ebfd1f282451ad3a0f368d9bfcfa5b6cbdab49a"
+  },
+  "userDecision": "按照推荐的，必须要能通过: keep originals and test a compatible Gallery; no conversion route selected",
+  "deviceAuthorization": "现在空闲，可以复试; community has priority",
+  "selectedCompatibleGalleryResult": "PASS",
+  "selectedResultScope": "Fossify 1.14.0/29, this vivo S18/API35, exact synthetic original files and per-case limits below",
+  "vendorGallery": {
+    "package": "com.vivo.gallery",
+    "versionName": "9.4.6.13",
+    "versionCode": 9040613,
+    "apkSha256": "b7ad604eee8f883b8ce0290bd23a5277cbac19ecfed36a9837e88d33aa87aced",
+    "apkBytes": 181733744,
+    "directFiniteStartup": "FAIL",
+    "frameTimingAndFiniteStop": "FAIL",
+    "reproducedWithoutRecording": true,
+    "operatorDirectReply": "一直是红色FRAME 1",
+    "operatorInternalReturnReply": "很快闪动且不停",
+    "postPlaybackIntegrity": "PASS",
+    "integrityLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\slow-after-gallery-playback.json",
+    "staticCause": {
+      "dex": "classes.dex",
+      "class": "com.android.gallery3d.app.s0$d0",
+      "method": "run()V",
+      "codeOffset": "0x40f82c",
+      "getFrameCallOffset": "0x40f92c",
+      "getFrameDelayReturnDiscarded": true,
+      "constantDelayOffset": "0x40fa1a",
+      "constantSchedulingDelayMs": 100,
+      "handlerScheduleOffset": "0x40fa20",
+      "finiteLoopCountHandledInRunner": false,
+      "advancesModuloFrameCount": true,
+      "startPath": "com.android.gallery3d.app.s0.j2",
+      "methodDisassemblySha256": "aa1f7382fbc6abdfa7af5274492c743799a12bb0c45e990d712c9d729a675f3e",
+      "privateEvidence": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\artifacts\\animation-disassembly\\classes.dex-com.android.gallery3d.app.s0$d0.txt",
+      "vendorCodePublishedOrModified": false
+    },
+    "inferenceBoundary": "Concrete installed-code scheduling/loop defect matches observed rapid unbounded playback; no runtime hook/call trace. Exact first-open static startup trigger remains unresolved.",
+    "scopedRuntimeTagLogLines": 0,
+    "vendorPackagePatchedOrUpdated": false
+  },
+  "compatibleGallery": {
+    "package": "org.fossify.gallery",
+    "versionName": "1.14.0",
+    "versionCode": 29,
+    "minSdk": 26,
+    "targetSdk": 36,
+    "officialRelease": "https://github.com/FossifyOrg/Gallery/releases/tag/1.14.0",
+    "officialAsset": "https://github.com/FossifyOrg/Gallery/releases/download/1.14.0/gallery-29-foss-release.apk",
+    "bytes": 38538363,
+    "sha256": "cfa321d7467b116741689f8f118b46011c882a4c2359b9320111f87c998af373",
+    "officialAssetDigestMatched": true,
+    "v2SignatureResult": "PASS",
+    "signerSha256": "affdb124d3f4720c2f98dbca9eacba0514fba4306e20a2786c861c3c0d6ff292",
+    "internetPermissionDeclared": false,
+    "alreadyInstalledBeforeThisTask": false,
+    "installedDuringThisPhase": true,
+    "installedUser": 0,
+    "addedAsComponentDependency": false,
+    "componentMinSdkChanged": false,
+    "madeDefaultGallery": false,
+    "installLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-install.log"
+  },
+  "replayCases": [
+    {
+      "id": "slow",
+      "fixture": "replay_identity_slow.webp",
+      "galleryPackage": "org.fossify.gallery",
+      "galleryVersion": "1.14.0/29",
+      "result": "PASS",
+      "scope": "Automatic startup, marked RGB frames, approximately 2-second intervals, two rounds and final blue stop; operator plus continuous recording",
+      "limitations": "Recording starts 554ms after open; first visible red interval is partial. First observation missed animation after permission UI and is INCONCLUSIVE.",
+      "originalFile": {
+        "mediaId": "1000043705",
+        "uri": "content://media/external/images/media/1000043705",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "mimeType": "image/webp",
+        "bytes": 10352,
+        "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+        "byteIdentical": true
+      },
+      "postPlaybackIntegrityResult": "PASS",
+      "postPlaybackIntegrityLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-slow-after-playback.json",
+      "recording": {
+        "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-slow-retry-20261014-125932.mp4",
+        "sha256": "b8d97665190f42a5ee5452fe983c161b0eeef39144e0f54b953f579ec8d37272",
+        "bytes": 26308,
+        "remoteRemoved": true
+      },
+      "reviewLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-slow-realtime-review.json",
+      "reviewSha256": "44eb74849904c1cf28f2d53a417a75988438089d997d445ac85c0dc8f9eedda5",
+      "actualDecodedDurationSeconds": 19.1131,
+      "sourceOfFrames": "Physical Android screenrecord; offline continuous software video decode; actual mediaTime",
+      "phoneInputAfterOpen": false,
+      "frameChanges": [
+        {
+          "mediaTime": 0.208856,
+          "color": "red"
+        },
+        {
+          "mediaTime": 1.830444,
+          "color": "green"
+        },
+        {
+          "mediaTime": 3.821622,
+          "color": "blue"
+        },
+        {
+          "mediaTime": 5.8161,
+          "color": "red"
+        },
+        {
+          "mediaTime": 7.833822,
+          "color": "green"
+        },
+        {
+          "mediaTime": 9.863233,
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "id": "shortFinite",
+      "fixture": "animation.webp",
+      "galleryPackage": "org.fossify.gallery",
+      "galleryVersion": "1.14.0/29",
+      "result": "PASS",
+      "scope": "Automatic animation and finite blue stop; stable target contains two RGB groups",
+      "limitations": "Activity transition contains earlier colors; not a precise total-start/restart count during entry.",
+      "originalFile": {
+        "mediaId": "1000043700",
+        "uri": "content://media/external/images/media/1000043700",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "mimeType": "image/webp",
+        "bytes": 290,
+        "sha256": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139",
+        "byteIdentical": true
+      },
+      "postPlaybackIntegrityResult": "PASS",
+      "postPlaybackIntegrityLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-short-after-playback.json",
+      "recording": {
+        "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-short-finite-20261014-130222.mp4",
+        "sha256": "b923f20c846ba3a6428efe0bf2751e8e1272b7d5b38637bd52b7effd42291a23",
+        "bytes": 334788,
+        "remoteRemoved": true
+      },
+      "reviewLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-short-finite-video-review.json",
+      "reviewSha256": "ae6fe84fdd57a8f3ba6e75742a1dd236163c98e9b138302fd600645661e6f1b6",
+      "actualDecodedDurationSeconds": 17.211111,
+      "sourceOfFrames": "Physical Android screenrecord; offline continuous software video decode; actual mediaTime",
+      "phoneInputAfterOpen": false,
+      "frameChanges": [
+        {
+          "mediaTime": 0,
+          "color": "blue"
+        },
+        {
+          "mediaTime": 0.251933,
+          "color": "other"
+        },
+        {
+          "mediaTime": 0.334967,
+          "color": "blue"
+        },
+        {
+          "mediaTime": 0.672811,
+          "color": "red"
+        },
+        {
+          "mediaTime": 0.688811,
+          "color": "green"
+        },
+        {
+          "mediaTime": 0.782756,
+          "color": "other"
+        },
+        {
+          "mediaTime": 0.821533,
+          "color": "red"
+        },
+        {
+          "mediaTime": 0.903689,
+          "color": "green"
+        },
+        {
+          "mediaTime": 1.032933,
+          "color": "blue"
+        },
+        {
+          "mediaTime": 1.215756,
+          "color": "red"
+        },
+        {
+          "mediaTime": 1.298578,
+          "color": "green"
+        },
+        {
+          "mediaTime": 1.436956,
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "id": "gif",
+      "fixture": "animation.gif",
+      "galleryPackage": "org.fossify.gallery",
+      "galleryVersion": "1.14.0/29",
+      "result": "PASS",
+      "scope": "Automatic color changes and finite blue stop",
+      "limitations": "First red frame obscured by entry transition; exact complete three-play GIF repeat-count acceptance NOT_RUN.",
+      "originalFile": {
+        "mediaId": "1000043699",
+        "uri": "content://media/external/images/media/1000043699",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "mimeType": "image/gif",
+        "bytes": 934,
+        "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+        "byteIdentical": true
+      },
+      "postPlaybackIntegrityResult": "PASS",
+      "postPlaybackIntegrityLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-gif-after-playback.json",
+      "recording": {
+        "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-gif-20261014-130257.mp4",
+        "sha256": "bba10d551b572479c7616067bd148b8afd3366719341cdf7cf62d84b0da83ded",
+        "bytes": 338212,
+        "remoteRemoved": true
+      },
+      "reviewLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-gif-video-review.json",
+      "reviewSha256": "f1ceb67618bb8fe04d7262f73af8cb5b207f5dc58e588c28844490c243207e19",
+      "actualDecodedDurationSeconds": 9.190911,
+      "sourceOfFrames": "Physical Android screenrecord; offline continuous software video decode; actual mediaTime",
+      "phoneInputAfterOpen": false,
+      "frameChanges": [
+        {
+          "mediaTime": 0.069178,
+          "color": "blue"
+        },
+        {
+          "mediaTime": 0.247022,
+          "color": "other"
+        },
+        {
+          "mediaTime": 0.329422,
+          "color": "blue"
+        },
+        {
+          "mediaTime": 0.612356,
+          "color": "green"
+        },
+        {
+          "mediaTime": 0.729811,
+          "color": "other"
+        },
+        {
+          "mediaTime": 0.8461,
+          "color": "green"
+        },
+        {
+          "mediaTime": 0.960756,
+          "color": "blue"
+        },
+        {
+          "mediaTime": 1.165044,
+          "color": "red"
+        },
+        {
+          "mediaTime": 1.247367,
+          "color": "green"
+        },
+        {
+          "mediaTime": 1.365422,
+          "color": "blue"
+        },
+        {
+          "mediaTime": 1.583789,
+          "color": "red"
+        },
+        {
+          "mediaTime": 1.651211,
+          "color": "green"
+        },
+        {
+          "mediaTime": 1.782511,
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "id": "infinite",
+      "fixture": "animation_infinite.webp",
+      "galleryPackage": "org.fossify.gallery",
+      "galleryVersion": "1.14.0/29",
+      "result": "PASS",
+      "scope": "Continuous automatic RGB changes within observed stable target interval 0.838344 to 11.896044 seconds",
+      "limitations": "Bounded recording only, not an unlimited-duration, resource-budget or strict timing test.",
+      "originalFile": {
+        "mediaId": "1000043704",
+        "uri": "content://media/external/images/media/1000043704",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "mimeType": "image/webp",
+        "bytes": 290,
+        "sha256": "e8d714336d16477d76cf01515d61a8e9916babd87ee093434bbd1638ead40e76",
+        "byteIdentical": true
+      },
+      "postPlaybackIntegrityResult": "PASS",
+      "postPlaybackIntegrityLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-infinite-after-playback.json",
+      "recording": {
+        "file": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-infinite-20261014-130405.mp4",
+        "sha256": "4d832f828841140d09aae1e2dc244851fc1880712b8cd4850360d325eae08473",
+        "bytes": 398373,
+        "remoteRemoved": true
+      },
+      "reviewLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\fossify-infinite-video-review.json",
+      "reviewSha256": "5c61dbe143a07742d1e6a13c67ae1c3ef1e3914a8ae223cdbcccde7683bf90b9",
+      "actualDecodedDurationSeconds": 12.026311,
+      "sourceOfFrames": "Physical Android screenrecord; offline continuous software video decode; actual mediaTime",
+      "phoneInputAfterOpen": false,
+      "frameChanges": {
+        "totalTransitionsIncludingEntry": 92,
+        "firstStableRed": 0.838344,
+        "lastObservedBlue": 11.896044,
+        "completeSequenceInPrivateReviewLog": true
+      }
+    }
+  ],
+  "operatorSlowConfirmation": {
+    "questionScope": "Automatic RGB playback, about two seconds per color, repeat twice, then stop blue",
+    "answer": "OK ，没问题",
+    "firstMissedObservationResult": "INCONCLUSIVE"
+  },
+  "slowCompleteIntervalsSeconds": [
+    1.991178,
+    1.994478,
+    2.017722,
+    2.029411
+  ],
+  "currentPhaseApkInspectionChecks": [
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\android-sdk\\build-tools\\36.0.0\\apksigner.bat",
+        "verify",
+        "--verbose",
+        "--print-certs",
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\artifacts\\gallery-29-foss-release.apk"
+      ],
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\gallery-fossify-signature.log"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\android-sdk\\build-tools\\36.0.0\\aapt.exe",
+        "dump",
+        "badging",
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\artifacts\\gallery-29-foss-release.apk"
+      ],
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\gallery-fossify-badging.log"
+    },
+    {
+      "command": [
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools\\android-sdk\\build-tools\\36.0.0\\aapt.exe",
+        "dump",
+        "permissions",
+        "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\artifacts\\gallery-29-foss-release.apk"
+      ],
+      "exitCode": 0,
+      "log": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs\\gallery-fossify-permissions.log"
+    }
+  ],
+  "currentPhaseFlutterAnalyzeTestBundleAndroidBuild": {
+    "result": "NOT_RUN",
+    "reason": "No package, example, dependency or lock changes; previous full manifest rehashed. This phase changes documentation only."
+  },
+  "priorImplementationChecks": {
+    "evidence": "docs/design/image-viewer-gallery-identity-verification.json",
+    "owningCommit": "cdc31289d573a1dfaaa48384773595622cc37e36",
+    "packageTests": 90,
+    "exampleTests": 5,
+    "analyzeBundleBothAndroidBuildsAndSignatures": "PASS",
+    "rerunThisPhase": false
+  },
+  "nativeSaveProductDefaultEnabled": false,
+  "automaticGifConversion": false,
+  "silentQualityReduction": false,
+  "decoderForkOrProductionBridgeImplemented": false,
+  "mainAppIntegrated": false,
+  "authEnvironmentChanged": false,
+  "permissionsAndSettings": {
+    "endedAt": "2026-10-14T13:10:23.5214670+08:00",
+    "package": "org.fossify.gallery",
+    "versionName": "1.14.0",
+    "versionCode": 29,
+    "installedForUser": 0,
+    "newInstallationRetained": true,
+    "permissionsRevoked": [
+      {
+        "permission": "android.permission.READ_MEDIA_IMAGES",
+        "exitCode": 0
+      },
+      {
+        "permission": "android.permission.READ_MEDIA_VIDEO",
+        "exitCode": 0
+      },
+      {
+        "permission": "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+        "exitCode": 0
+      }
+    ],
+    "permissionVerification": [
+      "android.permission.READ_MEDIA_IMAGES: granted=false, flags=[ USER_SET|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]",
+      "android.permission.READ_MEDIA_VIDEO: granted=false, flags=[ USER_SET|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]",
+      "android.permission.READ_MEDIA_VISUAL_USER_SELECTED: granted=false, flags=[ USER_SET|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]"
+    ],
+    "systemSettingsReadOnly": {
+      "font_scale": "1.0",
+      "accelerometer_rotation": "1",
+      "show_touches": "0",
+      "pointer_location": "0",
+      "accessibility_enabled": "0",
+      "enabled_accessibility_services": ""
+    },
+    "systemSettingsChangedThisPhase": false,
+    "defaultGalleryChanged": false,
+    "userInitiallyGrantedFullMediaAccess": true,
+    "assistantOpenedOnlyKnownSyntheticItems": true
+  },
+  "permissionVerificationParserCorrection": "Initial verifier selected a trailing repeated User 0 heading; corrected first complete package User 0 block. Revocations had succeeded, all three false verified.",
+  "deviceEnd": {
+    "endedAt": "2026-10-14T13:10:23.6671962+08:00",
+    "ownServerPid": 20148,
+    "ownServerPort": 5038,
+    "ownServerStopped": true,
+    "sharedServerStartedRestartedOrStopped": false,
+    "keyRemoval": [
+      {
+        "kind": "private",
+        "removed": true
+      },
+      {
+        "kind": "public",
+        "removed": true
+      }
+    ],
+    "deviceOperationsEnded": true,
+    "rawRecordingPolicy": "Private local evidence only; never publish gallery neighbor thumbnails",
+    "priorPublicKeyCleanupCorrection": "Historical correction completed during webp-retry-20261014; no old key deletion repeated in this phase",
+    "toolAndApkRetention": "Existing isolated E toolchain and task APKs retained outside Git for remaining controlled platform reproduction; no auth/shared resources cleaned"
+  },
+  "cleanup": {
+    "diagnosticBinaryCleanupLog": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014\\logs\\diagnostic-binary-cleanup.json",
+    "exactFilesRemoved": 12,
+    "bytesRemoved": 289384563,
+    "allAbsentVerified": true,
+    "recursiveDelete": false,
+    "historicalBlockedProfileCacheDeletionRetried": false,
+    "existingIsolatedToolsAndHnuApksRetainedOutsideGit": true
+  },
+  "rawScreenshotsVideosAndDisassemblyPublished": false,
+  "assistantReadPersonalMediaOriginals": false,
+  "unresolved": {
+    "vivoGallery9040613": "FAIL",
+    "exactVivoFirstOpenStaticCodeTrigger": "NOT_PROVEN",
+    "completeAndroidMatrix": "NOT_RUN",
+    "api24to28PermissionDenial": "NOT_RUN",
+    "ios": "NOT_RUN",
+    "MIV13": "NOT_DEVELOPED_NOT_FIXED",
+    "MIV14": "NOT_DEVELOPED_NOT_INTEGRATED"
+  },
+  "formalAndroidComplete": false,
+  "formalDualPlatformComplete": false,
+  "M3Complete": false,
+  "M4Complete": false
+}

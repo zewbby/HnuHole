@@ -18,6 +18,7 @@ import (
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
 )
 
 // CheckDatabase rejects a wrong database, missing formal schema, privileged
@@ -275,6 +276,16 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 				return e
 			}
 			community, err = community.WithPosts(ctx, authprivacy.PostConfig{Environment: c.PublicOrigin, KeyKey: commandKey, FingerprintKey: fingerprintKey, CursorKey: cursorKey})
+			if err != nil {
+				return err
+			}
+		}
+		if c.PostImages != nil {
+			v, e := postmedia.NewProcessValidator(c.Path(c.PostImages.PythonFile), c.Path(c.PostImages.ValidatorFile), c.PostImages.ValidatorSHA256)
+			if e != nil {
+				return e
+			}
+			community, err = community.WithPostImages(ctx, v)
 			if err != nil {
 				return err
 			}

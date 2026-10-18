@@ -1,0 +1,1615 @@
+{
+  "schemaVersion": "hnuhole-post-image-media-evidence/v1",
+  "recordedOn": "2026-10-15",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/post-image-media",
+  "startingCommit": "e0c128033682923d519ea99546d72503b085a99e",
+  "frontendReadOnlyCommit": "a696742f943c1cfe6a5005024dccaf40be752d8f",
+  "viewerComponentCommit": "bd7458ad94b7f9aea377ef060acf1316a6cfc6de",
+  "scopedResult": "PASS",
+  "fullAppResult": "NOT_RUN",
+  "productionResult": "NOT_RUN",
+  "sourceFingerprint": {
+    "canonicalLF_SHA256": "0d75d18f4c64432aed5f676118f0e8d2f843cd048c3c99ed6954df7eac4de00c",
+    "fileCount": 183,
+    "linuxMirrorMatched": true,
+    "files": {
+      "infra/postgres/grant-community.sql": "f82526fda88d5bf01ce5a1d86a58f6141728fc12b6085ceb19ea2e39502bf648",
+      "infra/postgres/grant-post-images.sql": "1880c582d89ac4cc7ae04f2cfa77e046bb3a4b3034e6acddd649e979ea86207d",
+      "infra/postgres/grant-verifier.sql": "ef7552db2f46355ea7d5f67b3f8c802c4c9540e07d82094965c0d78873a8693e",
+      "infra/postgres/init-auth.sh": "92c6d4f60007a1b1a400a1046d7165090038e46310ed6bcd75c10420652a0212",
+      "packages/openapi/channel-api.yaml": "a6931f7513b44b81108aef7c5df967c6924ff59e16863415556f7a0925f60a02",
+      "packages/openapi/check-specs.py": "72bb7b37b65305ebcd9d73a2e5899c31850fd576084b185774f5909a89a9f2ba",
+      "packages/openapi/community-auth-api.yaml": "86dbac36cd6bc1a15602f0937da6eb92d3d681355fd4ad5f4aa7e3c7e426b1d6",
+      "packages/openapi/generate-channel.sh": "5b64ed4407687b1d7b05b8b42d8943a2d28f287e5627553b169d55ee3e975f52",
+      "packages/openapi/identity-api.yaml": "398f50e2c7d5e6b2b5166780c50a0e6d199f5fa358d3b4629a42218c8bd252b3",
+      "packages/openapi/post-api.yaml": "128d7ad59beb65ea03c723b1746c05ecc0c0c0106e51b4f63dc0f7e9af2aff76",
+      "packages/openapi/post-image-api.yaml": "5101c2925c00137ef331fdde6e35bf4d533de588ffe9faefad9d9fa946376de7",
+      "packages/openapi/requirements-check.txt": "2dcf2f923a4fe9dd75f511b67b8d0edf3a43c25f14ba652358e1f9ef8e4e6651",
+      "packages/openapi/verifier-auth-api.yaml": "14260a035658c9a789d93a6b0a3257917664d59304fb8265b9c23a855a3dad6c",
+      "packages/post-protocol-vectors/GraphemeBreakTest-16.0.0.txt": "ee2b9354d270ac061b29f09662cafea06341d77e704b8cc6bd72aaeeda363cb5",
+      "packages/post-protocol-vectors/media-v1.json": "1d5199dd8c5d3abc97f0dd2be262238a5b8b5b17884b01fa005b0afe325b9b0a",
+      "packages/post-protocol-vectors/post-command-v1.json": "928160e58630a2b4540df0dd054aae4a33698607b59a44cce630e2392b42f787",
+      "services/api/authlab/privacy-diagnostics-canary.py": "be3dceb351f4b202ad6b1a75f918a75f1e14a56d956cc0cc486205691fc904d0",
+      "services/api/authlab/privacy-role-audit.sql": "e99a0c49dcb85ec9a8a27cfd292f786eeb4d8fef64a12f0d3091368029c32da8",
+      "services/api/authlab/run-isolated.sh": "e26e81329fb43e9bffc9c05e42174b22315b3c964eae154794f1068cfca243f8",
+      "services/api/authlab/run-mobile-isolated.sh": "6dc1be3965d4ec8630e6cb9b3ad72ca814bba506ca7c889f307ff6560f95d687",
+      "services/api/authlab/run-post-images-isolated.sh": "cce281a8507e22eb78e24b207e025d24db52a0444d1df23d05597b364a26515f",
+      "services/api/authlab/run-post-schema-isolated.sh": "8c39e494da7025d9e497293b6994fcaab3f2b4d1fed1f79ab6796418cae8249b",
+      "services/api/authlab/run-runtime-isolated.sh": "af0e013175178c6ff1015dd17f873851f46c950990086f8569520a6516c60c64",
+      "services/api/cmd/api/main.go": "488b5398f8ff2d78e7c1b78c31e23b79326fb63d724d020561a5c52ff06c2a93",
+      "services/api/cmd/authdev/main.go": "083df3b07f8d4c6b5457d8f21340fcc2ddafeb176425d26f1a2602e748fdd725",
+      "services/api/cmd/authdev/main_test.go": "d8c42d9d8b7f8b393db23fc60d24629eab6e5682f3dd2ad5e38d7c128abae21f",
+      "services/api/cmd/runtimeprobe/identities.go": "13541e04f49d5a3e589748d644abdcab00faded09f6c01168e23defcb77a8ff9",
+      "services/api/cmd/runtimeprobe/identity_closure.go": "00f4ae15b16d833f5412d2734b865b9b907603f5854405d77703179d59233076",
+      "services/api/cmd/runtimeprobe/main.go": "f5fa7132258bc7b1f594e4780eb458deda4bd1547e37074f42ce91b7c253958c",
+      "services/api/cmd/runtimeprobe/posts.go": "c9ffbea6e8c4333319cc802c7201807d858d3a13799080b3e367feef44f00f06",
+      "services/api/cmd/runtimeprobe/verifier_gate.go": "cd3de8842a576427b3f2b32ef9d181848f83c6ea3ef7bcadb80e6f703cf35ad4",
+      "services/api/cmd/verifier/main.go": "2c2e502366b6eb0797d44137184cbaa9f98657cf21e3589bd88fd5a4317654a3",
+      "services/api/community.config.example.json": "1b07f82f3c0712526afcb6c1aebc80d7b8e17a9c61281e49cc91789d8425933a",
+      "services/api/go.mod": "228555413dbb87a647fabd317189f4d6f5722a2d52a8865e191b093afa44b2d0",
+      "services/api/go.sum": "72f63e347d14c2f82805462d632aedaf5232cbf4d091fa9e8529443cf5c8cc34",
+      "services/api/internal/auth/postgres.go": "40cb4c626577ec88d869b84660405b9f4afa694d8b0012a5cc8dcf5a35484bf7",
+      "services/api/internal/authprivacy/authorization_evidence.go": "6cdb21169a3d1eb4c83c7c89e1a136a9ef14c8bd0525b6c28d2dfaa68dd6ecdc",
+      "services/api/internal/authprivacy/authorization_gate.go": "fe169653b70f76b0c092e7378f6e1e665daf620fa3522b5161bd0ee128b1f7d1",
+      "services/api/internal/authprivacy/authorization_gate_test.go": "88487faaf4a3a071e69327974110e03245c2cba5e32926a04f963ee5784b972d",
+      "services/api/internal/authprivacy/common.go": "47272c335e64ee59012d948625fac16af36bbe4795a37ea7228aef7268f8f83f",
+      "services/api/internal/authprivacy/community.go": "1336137fc35b6227a4cc5b189ecfd96259582d26662f868467ef284480ce5abd",
+      "services/api/internal/authprivacy/community_authorized.go": "06f2631a058aff961770093294adcbbf9fa7f79daccb7c05b435fa68a3e010f3",
+      "services/api/internal/authprivacy/community_authorized_test.go": "fce9e54bf03b090e2bdeb0e2ee6193b308bcf751b47dfe26a18c483626a0a31d",
+      "services/api/internal/authprivacy/community_closure.go": "1b43cc9b096fb3084ad0b5b320d2a01b4e9e8c8f1e999e075d2ff40003f3a799",
+      "services/api/internal/authprivacy/community_closure_test.go": "e0ccbd7da39f02f0e41f26913d29aafc538e231a1e73536ed72d30fff824f49e",
+      "services/api/internal/authprivacy/community_credential_cleanup.go": "06040b7dde029e458f4c97a5d12409f4c34c1b6d24f7d7f1b6dfb6ea4c3ac860",
+      "services/api/internal/authprivacy/community_credential_result.go": "416a2735f8fabfe6df4fa53a8dbf9e2ccd126774422a6cc1258380795e84bed3",
+      "services/api/internal/authprivacy/community_credential_result_test.go": "9954207658cfd9f75ab085719a2b591f8275f1e381e99a74568efb77af9b9e7a",
+      "services/api/internal/authprivacy/community_credentials.go": "a5d89292a8f359400676bee7c404178a2c8be71951a769f74e2ac1fbfaf9017e",
+      "services/api/internal/authprivacy/community_credentials_test.go": "e4fda722bcb71f7f0e08e0d2345db62d6a05ce0ba43297f8ad86dd4243468607",
+      "services/api/internal/authprivacy/community_identities.go": "0ee67c7158250418d9ef5163b83a33769c8947a5f5da3169f4d163438134f48b",
+      "services/api/internal/authprivacy/community_identities_test.go": "087a78e96a009694f79ba444a8846e76c095c90b6c58bcb1967d4249fda394df",
+      "services/api/internal/authprivacy/community_identity_closure_test.go": "5ea05ccdcb3b68517117102e9797d12faeb602182abb5fdd3dbe3188f5e4c31c",
+      "services/api/internal/authprivacy/community_identity_projection.go": "e4b8fc160393f18794b5bb56633f960a2175e8400ec080026e3c31c49003767a",
+      "services/api/internal/authprivacy/community_passkey_recovery.go": "616fc12e5708a971ff50e36a72d0d1ff64f7b86b8f407b30bceb159cc82a02a5",
+      "services/api/internal/authprivacy/community_passkeys.go": "cf911bb9827a5a7920daf46c0c5d413422f1ceb389a8b96cce8b1a062d10b697",
+      "services/api/internal/authprivacy/community_post_images.go": "c988ddd0dbb422c52dc008e2b711e33de4ac5770498117a9eaa6a1dbea0d7a45",
+      "services/api/internal/authprivacy/community_post_images_test.go": "d2e3d9bd5e0a20a6905f73f0475461d7f977d956e796841850584148cd7a7882",
+      "services/api/internal/authprivacy/community_posts.go": "cf53f3652b4598f07c7069fb43793dd0fa53617becdddd6fb8a78034ac537834",
+      "services/api/internal/authprivacy/community_posts_lifecycle.go": "6d93bda666c9e5f28f16c762b93e47b681c7fc7072b2254721812a4ce9e74e18",
+      "services/api/internal/authprivacy/community_posts_read.go": "579696d587118cd58e3d11a6de5010d19502d09120834e8290957a55528866c6",
+      "services/api/internal/authprivacy/community_posts_schema.go": "f8f3ad9fbb18c4737d776b213fceca1f92767e0fea0058dd018c090acbf2d5d6",
+      "services/api/internal/authprivacy/community_posts_schema_test.go": "80dc6c4c841681dfd6bf9a4aa2bf1d8c0e4eae0f10a9c2f18a8ec2282ca5ae62",
+      "services/api/internal/authprivacy/community_posts_test.go": "6329d6553d9f98be7dea981f9da3396d00b2160e297322659b0a98d0d9c0a904",
+      "services/api/internal/authprivacy/community_recovery.go": "abdfaf73a9074ce60f438d67b9db1cf6f8d0cf0749cf492e27b12a8a2cc8d53f",
+      "services/api/internal/authprivacy/community_recovery_test.go": "c405f73c8f822099dc1ff580afaa67a87ba849789752b7be10f196dc5919ebe3",
+      "services/api/internal/authprivacy/community_sessions.go": "79b2afe3f62545444e40b4d41bb5d8fc055cc85f7df84c4c73a36b7f408c0fb8",
+      "services/api/internal/authprivacy/community_sessions_test.go": "71ac15abb08c504e8ba5dce41fe2a3208c0a5de0255d4b8949187ef185d898f4",
+      "services/api/internal/authprivacy/credential_types.go": "764d3dcab4ce0c854f9db16ae18f0604527c87190b0b32b3d05b9f45088e7a1a",
+      "services/api/internal/authprivacy/eligibility_confirmation.go": "cab61e07d088b47d51eea099a66c0ab5a42b57981b5c66055761b3f30066388c",
+      "services/api/internal/authprivacy/eligibility_confirmation_test.go": "8c298bb9ca854ef67f7c761d2ebbc5f772f536a06bd479aa1841b6a6adad3996",
+      "services/api/internal/authprivacy/eligibility_mail_worker_test.go": "c9ce4e54bc801e14a6c77647f5b826ba3ce320322463fd735f386aa6a3cd9469",
+      "services/api/internal/authprivacy/eligibility_otp.go": "064b0883a3180b62180b6f109592506406f0747217cd735fd28cfc87782bf5f4",
+      "services/api/internal/authprivacy/eligibility_otp_test.go": "ea37c59775db4fafa46efa2575a36524f2f3cb7529c308e759f39b02ffa1ff7d",
+      "services/api/internal/authprivacy/eligibility_types.go": "acec7f9cb07c119b7f15c5c13cbc2de574fe1bb2890646b456915eede659e17f",
+      "services/api/internal/authprivacy/identity_closure_migration_test.go": "0fefc2f4c9fe9e6d7caaede614f0b04001143fbbd2eba8b93e7e9513973402b9",
+      "services/api/internal/authprivacy/identity_rules.go": "4c2c1278822cccf7036e737fecc441b49fd9e1cbd51ee618a6bccd37c44e3439",
+      "services/api/internal/authprivacy/identity_rules_test.go": "77f0680381fd79897da316189496a44f3d3e868603fc7590ee0d36997ab37aaf",
+      "services/api/internal/authprivacy/mail.go": "3a001f7fcc8b6d8401feb0291c1e4b19a3bc2c0004c38c304f585e238be035e6",
+      "services/api/internal/authprivacy/mail_test.go": "6d2c3db202d0604ffe4e1bb1f6b521228be2d54ca0b503ed9ab06150381a8301",
+      "services/api/internal/authprivacy/outbox.go": "d19e8ca2a6699a9a6ec5549be927474f332113d819b728b6dc50d9dffc0b88af",
+      "services/api/internal/authprivacy/outbox_authorization_test.go": "20cf84a5fc30c5d25dce96baccac9b718476c42d021a4650c2870a715946b629",
+      "services/api/internal/authprivacy/outbox_workers_test.go": "0820b55bcfcebd8e5f8afbf668de372129e56bec863b70b08c6206614ee10c9f",
+      "services/api/internal/authprivacy/passkey_verification.go": "cbc3036fc9ef23dcab4a9635d7da91488ac8efa606be496314795a7cc7650861",
+      "services/api/internal/authprivacy/passkey_verification_test.go": "1e392be2e8aa019f3aee320cf43bcc2fbe4a8cba94f7bc2870f1ed7947e9a5f2",
+      "services/api/internal/authprivacy/password.go": "9d817d8f8a18e4ac911dbb350e59fcab71b6c4bd10d0f10a7f92f6822555535e",
+      "services/api/internal/authprivacy/password_test.go": "99bec8834a9a123e3d290e6293fbb22cfed30b80dc260260f3c884e4dec01bd5",
+      "services/api/internal/authprivacy/postgres_test.go": "f6b571aaffe4f0f2e79c352013c068e94c062d28b3bb465b9f5492e8530b9cc8",
+      "services/api/internal/authprivacy/privacy_boundary_postgres_test.go": "a2fa626a1a48b937354f8bf2277d2c71a7ccda6806af513e9630e8c9a88ce791",
+      "services/api/internal/authprivacy/protocol/protocol.go": "0793427b595f3972719c2ce9366f3177e74ef821eefbdd4a78dc69ea08c9a021",
+      "services/api/internal/authprivacy/protocol/protocol_test.go": "eb2c1fa28a321562a4ba29e79f7dff1525b5a8e0e989c0fab1d7c98e671b0763",
+      "services/api/internal/authprivacy/retirement_authorization_test.go": "1eea54e3291bf5ddfc7664420b71bcf24af00627724d64af42c973e75f4e77d9",
+      "services/api/internal/authprivacy/retirement_http.go": "5f72e9023c44abe0cf2e227dcf3bd15679305a2dcea1505f748e59e060c74398",
+      "services/api/internal/authprivacy/verifier.go": "44be3c0c946e4a26d222322567ad9a697565a6961f587cc882f9f5e1bed8026a",
+      "services/api/internal/authprivacy/verifier_gate_business_test.go": "91b79c7bf180ccab597e9ca1079b68f819911c3af5776a016e12068b7b84e59c",
+      "services/api/internal/authprivacy/verifier_gate_test.go": "badc951f5cc27592ea009d00a5e4a0fcc8ed1f067349b25758fff38fa8814013",
+      "services/api/internal/authprivacy/workers.go": "fac2b15263dbf3ba3e635aeeae7c025032935ed3f58006da0bca0bc702e46209",
+      "services/api/internal/authprivacy/workers_test.go": "72a5eda3261f63c4367b3cab8275e7ad426cc386b10db39a31495515d7bf7438",
+      "services/api/internal/authprivacyhttp/channel_endpoints.go": "2b11bd81fbb659302608d4701a12ad31bf84f29221ce21781035ef1453430836",
+      "services/api/internal/authprivacyhttp/channel_endpoints_test.go": "88ab141145600f7cd7977792eda6b805d8fc3c93094256a537d24cf83dfe384c",
+      "services/api/internal/authprivacyhttp/credential_endpoints.go": "f3724306c80d0dc1600e7a3e5821251befd313ed7cdf8668dd7c21dda4dbfa47",
+      "services/api/internal/authprivacyhttp/credential_endpoints_test.go": "d1bdcbb1807f1212dcd0936c46b44885f24f73740eb8631594bbc9ddc373e5f9",
+      "services/api/internal/authprivacyhttp/credential_endtoend_postgres_test.go": "cc62273647dafbca381691117f7e4caa0d1ec4c2c0885f8eb9464b01f7accd91",
+      "services/api/internal/authprivacyhttp/endpoints.go": "59160cbe1dab411d11c25a10c8ea54a27309171f9479445b93e1cb2986ddfd88",
+      "services/api/internal/authprivacyhttp/endpoints_test.go": "831f615fd4d5f9422dea4cb70853982432b5e0d99656f804328288a8a94c8168",
+      "services/api/internal/authprivacyhttp/endtoend_postgres_test.go": "fd83894079e3e9076eb79e0263ee0ce47461d2fc36b75a6916038aa844a56753",
+      "services/api/internal/authprivacyhttp/f4_main_mobile_postgres_test.go": "a5f016483d483922cad1310c39b204e0a951d734c3f888d6898344c1774577da",
+      "services/api/internal/authprivacyhttp/identity_endpoints.go": "c96a49d1c700cda55a91d61827a3369ea55b54a2ce77cb8d4fc2e37b8764cc1d",
+      "services/api/internal/authprivacyhttp/identity_endpoints_test.go": "9e84431478b63f82fa028ca0a96749813ea2a113085a6ae74fac73d537b0fa7e",
+      "services/api/internal/authprivacyhttp/identity_privacy_postgres_test.go": "94bce40edbca8a14464d35a86e7a9c0e80c20735b4320d41b11a16529ad294fb",
+      "services/api/internal/authprivacyhttp/limits.go": "2b136295f2709df194bb285357823f1651d6838c4e6d99e0880d5e58ba51559e",
+      "services/api/internal/authprivacyhttp/mobile_client_postgres_test.go": "ce5bc58799430eb6b8477b6e76742b0a793d7ec8d42f6852506d7c653c488b4a",
+      "services/api/internal/authprivacyhttp/mobile_closure_postgres_test.go": "5f4bdfa8750181d26f64f263cae0537bb0dcd4dcbecb42bf06a68f5c41583e2b",
+      "services/api/internal/authprivacyhttp/peer.go": "d416fd6f1fdc0d021e757306e9b9918dc91398d0b28a4e7115014751f39e33f3",
+      "services/api/internal/authprivacyhttp/peer_test.go": "a00f474a07906d16f65c69927b06c16ba8037d519db8e68e71f8f2483fcdbacf",
+      "services/api/internal/authprivacyhttp/post_images_endpoints.go": "1f0ebe00a311ea9c74e41ef8a832931b7c5b727c79e368aeda0f2766a5956e97",
+      "services/api/internal/authprivacyhttp/post_images_endpoints_test.go": "bc3a02f4c0eccc1e5d3537a6eed49d24888bf14c658f6750841a5ce1ae7b7965",
+      "services/api/internal/authprivacyhttp/post_images_postgres_test.go": "dfa4b8368974a38bde867cc2c6199d5ff4800d15d398eab2dba4527c7a8a0bb5",
+      "services/api/internal/authprivacyhttp/posts_endpoints.go": "70812e00a37bac21b511c0b908834c3c3036816fbac11b4fcff52c43b360f0cd",
+      "services/api/internal/authprivacyhttp/posts_endpoints_test.go": "9e602b31baede16c9a9891e93d5616ae77256eac1f373f69183a80fb2824e210",
+      "services/api/internal/authprivacyhttp/posts_postgres_test.go": "57a691d558b2c626f39d5f460c1aafc4f911f3fb43af050ffc141f8c9b89c632",
+      "services/api/internal/authprivacyhttp/privacy_boundary_test.go": "d2fa80d0ee401a0dbf27e78b1afa2bcdba8bfeb395bec6cc0014f59542c82423",
+      "services/api/internal/authprivacyhttp/recovery_closure_endpoints.go": "a6a30af25921e1155625ea17048f43f1178cdf0fcf90c934ab49efff62301ddf",
+      "services/api/internal/authprivacyhttp/recovery_closure_endpoints_test.go": "1ee0300a62df1aa041c880c93f5b59e5950a927f9cae51265186e045f408770b",
+      "services/api/internal/authprivacyhttp/session_endpoints.go": "026d254dbc47be0caada6b0c7617b697240a8e558d861418cce4e3b0aeef67e2",
+      "services/api/internal/authprivacyhttp/session_endpoints_test.go": "d4fc6e7a7198043cabb53483eaaef8229e29c6b7483e4f80ac6bd383ed0e0a34",
+      "services/api/internal/authprivacyhttp/strict.go": "296658f575bc2c50b638483e1bfafe9e3fbb6cbb00fa326841868943db559832",
+      "services/api/internal/authprivacyhttp/strict_test.go": "4acf13871b2d3be5654bc1a1d5576abbd79740c2901f2e00ecec1c90f75a5aab",
+      "services/api/internal/authprivacyhttp/tls.go": "16e4d99ba30b50e6cba71eb1c9dcc385ae0440edceac53e42d90353d34b95022",
+      "services/api/internal/authprivacyhttp/tls_test.go": "336b99fa5c58efa8fb432609ed766d2d4590b1b69b54caab2cde456355656222",
+      "services/api/internal/authprivacyruntime/config.go": "af8086a8ab1d9b512b1164e2da40bb4ca5ffd7e051665158f5c8be48b4833146",
+      "services/api/internal/authprivacyruntime/database_diagnostics.go": "427fbfedb46e72b343c5b773108cf2bc0c91775a2bce05875a02014612febad9",
+      "services/api/internal/authprivacyruntime/database_diagnostics_test.go": "e738d8df24b5d05a418f261adbc0aef0a3e2cef0c85bb46a8cc5342c13723a27",
+      "services/api/internal/authprivacyruntime/diagnostics.go": "ed35c61b16cd307510ede20b7b799e6ccac60d54679f5f57dd6a0cbfeb7a241c",
+      "services/api/internal/authprivacyruntime/diagnostics_test.go": "b5d7b2f65f8ebb77f85cecd3078a7bc0f7243384f990afa14eda75df5afd0e32",
+      "services/api/internal/authprivacyruntime/post_images_config_test.go": "47d69e6dbcb615808a51e32f16ce3f8642d8397c068754e3cbb8112389b26312",
+      "services/api/internal/authprivacyruntime/posts_config_test.go": "69e48733ee72d262f676acaa4e43c1834afbb47e52cc05e425aea43c04aba0c3",
+      "services/api/internal/authprivacyruntime/server.go": "33e647659a08d6327d8b09c41d27072b2d35fd25112f562f881919a8b5983d8c",
+      "services/api/internal/authprivacyruntime/webauthn_config_test.go": "2e52b965f628f3324197c14f6b7c4dba559bf1cb245cc96798b612564d6bad34",
+      "services/api/internal/channels/catalog.go": "e6e7d77eceb95618f114f3363fec39bc5bb737b57f2e2f60eecb267e0de6cfc5",
+      "services/api/internal/channels/model.go": "be97830c533480ca63ed00f3fc5bd197cde9637f8ca7e728270a50efcb887225",
+      "services/api/internal/channels/postgres.go": "c0e7bf55902f87a20eca33b180108924fbb420024c288b2e89d770cd7d9c327e",
+      "services/api/internal/channels/queries.sql": "b29f945d1a58d49e950cf7aaaa3c4867ce7350f0c98d34502152ecaf11bd2a2b",
+      "services/api/internal/channels/service.go": "2c0a444fa7594201b77049da55691f17cf7a7472e748b803f9c57db81f88b487",
+      "services/api/internal/httpapi/router.go": "445b563df96f63c9269c36533064408a33809b665f9e6e065dfb4b2d98447c4b",
+      "services/api/internal/postmedia/model.go": "7bc7985fce4820049e74da656d1b61b515235e5ae736bd74f538a49d10957275",
+      "services/api/internal/postmedia/model_test.go": "feaee83b95299d8367a1473b632fd83fc892f108b91dbf3c5f37a82c7458691c",
+      "services/api/internal/postmedia/validator.go": "4e65d2b83c02deb8c5907311431fe329e9a5da3dc8fd9fe1729ed4313d58f1eb",
+      "services/api/internal/posts/content.go": "c872b9a73cefbc0d90c30ee7fff960de80c9fb8010b9a8c10649a583767d0ece",
+      "services/api/internal/posts/content_test.go": "e9038547a798024a862a899c3deea08f3e1b9810a576486d224763aa5a267378",
+      "services/api/internal/posts/cursor.go": "b5572233a452785625693644338d5eaf8ecaa4fe764af28cdeaa057fc90898c6",
+      "services/api/internal/posts/cursor_test.go": "24b92f454d6fc6270a227a1aa111e952b252ce31335f4e4027b9a8dd7a9fe70c",
+      "services/api/internal/posts/media_protocol_test.go": "efa8393c5c1117e2121b4d99c419fcbb172653c03b51b78c56605158b59fb5f8",
+      "services/api/internal/posts/model.go": "fc924b4e4ac61ec9dc03ffe16df80794e6b880ed3d569af68a444e56e671d616",
+      "services/api/internal/posts/model_test.go": "a90b515cdc4a9800c562970c9d9991eaf22c84a0ceb9367f856e84e60b68b2e9",
+      "services/api/internal/posts/protocol.go": "739b44d449fd4bad43b9c6ce3eb5e2d820087e4139938c77cdd4d57970414dfa",
+      "services/api/internal/posts/protocol_test.go": "390062fade0e0419e97e859175bdc45dd9caf45e74863da1b7e2fe70cd00260d",
+      "services/api/internal/posts/testdata/GraphemeBreakTest-16.0.0.txt": "ee2b9354d270ac061b29f09662cafea06341d77e704b8cc6bd72aaeeda363cb5",
+      "services/api/internal/posts/testdata/LICENSE-UNICODE.txt": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+      "services/api/internal/posts/unicode16.go": "0ca2f4007e03fd362948a920624af2beeed53357cca3150c7467a6ff58c42522",
+      "services/api/media/requirements.txt": "41b54a6fb2918667ca47a61d73b522629d84490f3d78f0f20b21135faba10d35",
+      "services/api/media/test_validator.py": "f6f7d58fa6443b7150ada3815dbd13e0c25a1be87b26549342a39142fc87bed0",
+      "services/api/media/validate_image.py": "ed06a45d3196a6f7d2a5b057d900c09836cd8d52c5e6c1038a2c3afc0eb7c7e4",
+      "services/api/migrations/0001_sessions.sql": "8b011adf71047a1de622a6f9809c4a78eaf305304e5ee536fa2b5a67092dc720",
+      "services/api/migrations/0002_channels.sql": "4b7d6429acb31be315f1546710c8136e0bee48bf2cd1021a385c5710f9b54504",
+      "services/api/migrations/0003_authprivacy.sql": "51ba4d7835a1fbb33a264c7693a365a6cc1997f77f0825bc68f8dc2e28184278",
+      "services/api/migrations/0004_authorization_gate.sql": "b2c7737c6ef24658bba39aa65e003158ee26d4669d098ba79b8f9562b8ed0101",
+      "services/api/migrations/0005_session_lifecycle.sql": "4dd140ba2724b4bcdd432fe365f086fdd10b25ae65110445d98892a44e4ceb6e",
+      "services/api/migrations/0006_recovery_reset.sql": "4bb9e591c9a0c1774e39de4932e79ef608cfdb7d11674d3bd8fff59db075b730",
+      "services/api/migrations/0007_account_closure.sql": "9fa39a97a027cc32a51fc7955f6ee04332f4803560267e33e6314b9ad2e39094",
+      "services/api/migrations/0008_recovery_credentials.sql": "c5ff5114fa790a86606cc66fd363e69a292bb2f17a8b611f60fddbced8d31fd0",
+      "services/api/migrations/0009_receipt_worker_claim.sql": "2386fe4362eab48c423baf4862d6f621677c665131893e50a70351125fc1bcd7",
+      "services/api/migrations/0010_legacy_fence.sql": "e2e377cda6fea2543e25b8acac010fd9d41d8254ca2142f9aa18984cdf99ad33",
+      "services/api/migrations/0011_identity_management.sql": "eb49fc3b43ff47febfa1682021d48b2b64a5e09e1de65d97b73ef1c90bc0889b",
+      "services/api/migrations/0012_identity_account_closure.sql": "4cf0979531530f053cb365fa01eaddfb1c925b1c03c1e019382751d2a0d78f0d",
+      "services/api/migrations/0013_community_text_posts.sql": "35274cba859c0d51fc7805e341ea3880d12ee7f67eedad96f9841c915f1344fe",
+      "services/api/migrations/0014_post_images.sql": "16b35e586ede3c32d0933590d5466e5f70465493ab8c104e94e4754ac2df6528",
+      "services/api/sqlc.yaml": "b7bd3aa2d96f7367216102f4615380c1960ec70b923c32b4b914b0fb29b0c85a",
+      "services/api/verifier-migrations/0001_authprivacy.sql": "102d6a2f9faafbdf992bad8e5122323b46bba80d6ed8419d48cc8466cef41fa0",
+      "services/api/verifier-migrations/0002_otp.sql": "204a03451012ba39b08a36c6b39a4a8ef37dede968b7399df9425a1b469ab152",
+      "services/api/verifier-migrations/0003_confirmation.sql": "40e0413282ea541d7195d7c443738631a5627f49bdd0f5c421ff19bf8f870a46",
+      "services/api/verifier-migrations/0004_authorization_gate.sql": "72fff9927f88d5546a8571b53f94b353f5e22e64fdc74c2fe352b013ed78f132",
+      "services/api/verifier.config.example.json": "67804537897501d592ad52b2b37aff9ae30c4615b5392a499a93cd1649d83de3"
+    }
+  },
+  "testCounts": {
+    "distinctTopLevelGoTests": 72,
+    "distinctGoTestsIncludingSubtests": 244,
+    "goResults": {
+      "PASS": 244
+    },
+    "pythonTests": 4,
+    "openapiDocuments": 6
+  },
+  "runs": {
+    "verified.jsonl": {
+      "sha256": "86b33ad6b09ff198af45c1843e4d7a38203cc7a975e24e6582fcf66d5c100d7c",
+      "packages": {
+        "posts": {
+          "result": "PASS",
+          "seconds": 1.033,
+          "topLevelTests": 12
+        },
+        "postmedia": {
+          "result": "PASS",
+          "seconds": 1.533,
+          "topLevelTests": 2
+        },
+        "authprivacyruntime": {
+          "result": "PASS",
+          "seconds": 1.017,
+          "topLevelTests": 8
+        },
+        "authprivacy": {
+          "result": "PASS",
+          "seconds": 213.147,
+          "topLevelTests": 33
+        },
+        "authprivacyhttp": {
+          "result": "PASS",
+          "seconds": 27.828,
+          "topLevelTests": 17
+        }
+      },
+      "tests": {
+        "postmedia/TestManifestBoundsAndIdentity": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats/png": {
+          "result": "PASS",
+          "seconds": 0.12
+        },
+        "posts/TestUnicode16OfficialGraphemeConformance": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestContentLimitsAndOriginalText": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestUnicode16FrozenInvisibleProperties": {
+          "result": "PASS",
+          "seconds": 0.01
+        },
+        "posts/TestScopedCursorEncryption/channel": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestScopedCursorEncryption/own": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestScopedCursorEncryption/task": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestScopedCursorEncryption": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestMediaIntentBindsFullManifestAndPreservesTextDomain": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestMediaProtocolIndependentGoldenVectors": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestPublicAndOwnDTOKeepSeparate": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestCommandResultsHaveOperationSpecificFields": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-composed": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-decomposed": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-lf": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-crlf": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-emoji": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/retry": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/cancel": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/hide_task": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/delete-post": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/combined-accent": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/emoji-zwj": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/emoji-modifier": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/two-flags": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/crlf": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/spaces-punctuation-lf": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/hangul": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestStrictResourceAndCommandKeys": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestCommandDomainsAndExactText": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestRandomIdentityShortCodes": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats/jpeg": {
+          "result": "PASS",
+          "seconds": 0.11
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats/gif": {
+          "result": "PASS",
+          "seconds": 0.1
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats/webp": {
+          "result": "PASS",
+          "seconds": 0.14
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats": {
+          "result": "PASS",
+          "seconds": 0.52
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_statement": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_error_verbosity": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_min_duration_sample": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_min_duration_statement": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_transaction_sample_rate": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_duration": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_min_messages": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_min_error_statement": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_parameter_max_length": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_parameter_max_length_on_error": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestProcessDiagnosticsExcludeUntrustedErrors": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestHTTPPanicDiagnosticExcludesRequestAndPanicMaterial": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestPostImagesRequiresExplicitCommunityConfiguration": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostsRequiresExplicitCompleteCommunityPolicy/command": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostsRequiresExplicitCompleteCommunityPolicy/fingerprint": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostsRequiresExplicitCompleteCommunityPolicy/cursor": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostsRequiresExplicitCompleteCommunityPolicy": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose/request": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose/network": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose/command": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose/fingerprint": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimeRejectsUnknownPostPolicyFieldBeforeMaterialLoading": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimeWebAuthnPolicyIsExplicitAndIndependent": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacy/TestPostImagesPartialUploadsPublicationAndErasePostgres": {
+          "result": "PASS",
+          "seconds": 7.97
+        },
+        "authprivacy/TestPostImagesImmutableManifestAndSQLBoundaryPostgres": {
+          "result": "PASS",
+          "seconds": 3.57
+        },
+        "authprivacy/TestPostImagesUploadCapabilitySessionReplacementAndFreezePostgres": {
+          "result": "PASS",
+          "seconds": 4.51
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/cancel": {
+          "result": "PASS",
+          "seconds": 3.34
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/mute": {
+          "result": "PASS",
+          "seconds": 3.47
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/expiry": {
+          "result": "PASS",
+          "seconds": 3.28
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/identity": {
+          "result": "PASS",
+          "seconds": 3.42
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres": {
+          "result": "PASS",
+          "seconds": 13.52
+        },
+        "authprivacy/TestPostImagesRestrictedRuntimePostgres": {
+          "result": "PASS",
+          "seconds": 3.55
+        },
+        "authprivacy/TestPostImagesMetadataMismatchDoesNotBlockTextPostgres": {
+          "result": "PASS",
+          "seconds": 3.12
+        },
+        "authprivacy/TestPostImagesFinalTransactionRacesPostgres": {
+          "result": "PASS",
+          "seconds": 3.49
+        },
+        "authprivacy/TestPostSchemaPermanentFactsAndTextGuardsPostgres": {
+          "result": "PASS",
+          "seconds": 3.14
+        },
+        "authprivacy/TestPostSchemaFixedOwnershipAndTerminalStatePostgres": {
+          "result": "PASS",
+          "seconds": 3.59
+        },
+        "authprivacy/TestPostSchemaLegacyBackfillAndStableLabelsPostgres": {
+          "result": "PASS",
+          "seconds": 3.89
+        },
+        "authprivacy/TestPostSchemaStartupRejectsMissingHookPostgres": {
+          "result": "PASS",
+          "seconds": 2.86
+        },
+        "authprivacy/TestPostSchemaLifecycleHookBlocksOldWriterPostgres/REQUEST_CLOSURE": {
+          "result": "PASS",
+          "seconds": 4.31
+        },
+        "authprivacy/TestPostSchemaLifecycleHookBlocksOldWriterPostgres/MUTE": {
+          "result": "PASS",
+          "seconds": 5.36
+        },
+        "authprivacy/TestPostSchemaLifecycleHookBlocksOldWriterPostgres/BAN": {
+          "result": "PASS",
+          "seconds": 3.95
+        },
+        "authprivacy/TestPostSchemaLifecycleHookBlocksOldWriterPostgres/ACCOUNT_CLOSED": {
+          "result": "PASS",
+          "seconds": 4.8
+        },
+        "authprivacy/TestPostSchemaLifecycleHookBlocksOldWriterPostgres": {
+          "result": "PASS",
+          "seconds": 18.42
+        },
+        "authprivacy/TestPostSchemaRestrictedRuntimePrivilegesPostgres": {
+          "result": "PASS",
+          "seconds": 4.64
+        },
+        "authprivacy/TestPostSchemaPartyInventoryAndPrivateColumnsPostgres": {
+          "result": "PASS",
+          "seconds": 3.73
+        },
+        "authprivacy/TestPostSchemaProtocolKeyBindingImmutablePostgres": {
+          "result": "PASS",
+          "seconds": 2.44
+        },
+        "authprivacy/TestPostSchemaIdentityDeletionRequiresPrivateTaskHookPostgres": {
+          "result": "PASS",
+          "seconds": 3.23
+        },
+        "authprivacy/TestPostAtomicAcceptanceOriginalReceiptAndWorkerPostgres": {
+          "result": "PASS",
+          "seconds": 3.9
+        },
+        "authprivacy/TestPostUnknownSealAndDelayedCommandPostgres": {
+          "result": "PASS",
+          "seconds": 3.37
+        },
+        "authprivacy/TestPostConcurrentReplayAndSealPostgres": {
+          "result": "PASS",
+          "seconds": 5.85
+        },
+        "authprivacy/TestPostRejectedFactOwnershipAndSessionReplacementPostgres": {
+          "result": "PASS",
+          "seconds": 4.57
+        },
+        "authprivacy/TestPostCancelPublicationRaceAndCleanupPostgres": {
+          "result": "PASS",
+          "seconds": 12.91
+        },
+        "authprivacy/TestPostMuteExpiryAndExplicitRetryPostgres": {
+          "result": "PASS",
+          "seconds": 2.97
+        },
+        "authprivacy/TestPostClosureCancellationNeverRevivesAttemptPostgres": {
+          "result": "PASS",
+          "seconds": 3.42
+        },
+        "authprivacy/TestPostIdentityDeleteProjectionOwnershipAndHiddenTaskPostgres": {
+          "result": "PASS",
+          "seconds": 4.54
+        },
+        "authprivacy/TestPostFormalClosureIndependentCodesAndExpiredFactsPostgres": {
+          "result": "PASS",
+          "seconds": 3.93
+        },
+        "authprivacy/TestPostFormalClosureErasesUnpublishedPayloadsAndPreservesOtherAccountPostgres": {
+          "result": "PASS",
+          "seconds": 4.84
+        },
+        "authprivacy/TestPostCeilingPaginationAndCursorIsolationPostgres": {
+          "result": "PASS",
+          "seconds": 5.92
+        },
+        "authprivacy/TestPostGateFreezeAndStaleSessionFinalAuthorizationPostgres": {
+          "result": "PASS",
+          "seconds": 4.28
+        },
+        "authprivacy/TestPostBanExpiryAndHideNeverRestoreTaskPostgres": {
+          "result": "PASS",
+          "seconds": 4.35
+        },
+        "authprivacy/TestPostTaskCursorRetryCeilingPostgres": {
+          "result": "PASS",
+          "seconds": 5.81
+        },
+        "authprivacy/TestPostProtocolKeysCannotLoseHistoricalDomainPostgres/command": {
+          "result": "PASS",
+          "seconds": 6.25
+        },
+        "authprivacy/TestPostProtocolKeysCannotLoseHistoricalDomainPostgres/fingerprint": {
+          "result": "PASS",
+          "seconds": 3.49
+        },
+        "authprivacy/TestPostProtocolKeysCannotLoseHistoricalDomainPostgres/missing": {
+          "result": "PASS",
+          "seconds": 3.49
+        },
+        "authprivacy/TestPostProtocolKeysCannotLoseHistoricalDomainPostgres": {
+          "result": "PASS",
+          "seconds": 13.22
+        },
+        "authprivacy/TestPostBudgetAndLiveTaskLimitPostgres": {
+          "result": "PASS",
+          "seconds": 31.91
+        },
+        "authprivacy/TestPostgresIsolatedSlice/signup_commit_atomic_and_replay_has_no_secrets": {
+          "result": "PASS",
+          "seconds": 0.42
+        },
+        "authprivacy/TestPostgresIsolatedSlice/username_conflict_consumes_proof_without_slot": {
+          "result": "PASS",
+          "seconds": 0.71
+        },
+        "authprivacy/TestPostgresIsolatedSlice/expired_result_anchor_rejects_late_post": {
+          "result": "PASS",
+          "seconds": 0.59
+        },
+        "authprivacy/TestPostgresIsolatedSlice/register_and_retire_compete_for_one_terminal": {
+          "result": "PASS",
+          "seconds": 1.48
+        },
+        "authprivacy/TestPostgresIsolatedSlice/unique_index_wait_rechecks_deadline_after_provisional_writes": {
+          "result": "PASS",
+          "seconds": 0.56
+        },
+        "authprivacy/TestPostgresIsolatedSlice/same_request_concurrent_replay_never_duplicates_session": {
+          "result": "PASS",
+          "seconds": 0.45
+        },
+        "authprivacy/TestPostgresIsolatedSlice/lock_wait_rechecks_intent_expiry_with_database_time": {
+          "result": "PASS",
+          "seconds": 0.44
+        },
+        "authprivacy/TestPostgresIsolatedSlice/receipt_ack_loss_retry_and_new_slot_preservation": {
+          "result": "PASS",
+          "seconds": 2.02
+        },
+        "authprivacy/TestPostgresIsolatedSlice/same_email_quota_serializes_exact_bytes": {
+          "result": "PASS",
+          "seconds": 0.24
+        },
+        "authprivacy/TestPostgresIsolatedSlice/unknown_and_unsigned_receipts_cannot_release": {
+          "result": "PASS",
+          "seconds": 0.06
+        },
+        "authprivacy/TestPostgresIsolatedSlice/database_columns_do_not_join_email_or_store_plaintext_secrets": {
+          "result": "PASS",
+          "seconds": 0.01
+        },
+        "authprivacy/TestPostgresIsolatedSlice": {
+          "result": "PASS",
+          "seconds": 10.65
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/no_auth": {
+          "result": "PASS",
+          "seconds": 0.01
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/upload_token_cannot_read": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/read_body": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/query_token": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/wrong_verb": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/bad_content_id": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/range_forbidden": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/validator_input_encoding": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/wrong_scheme_upload": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/svg_denied": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/mime_params_denied": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies/grant_body_denied": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostImageHTTPStrictPathsCredentialsAndBodies": {
+          "result": "PASS",
+          "seconds": 0.02
+        },
+        "authprivacyhttp/TestPostImageHTTPManifestStrictnessAndResponseIsolation": {
+          "result": "PASS",
+          "seconds": 0.01
+        },
+        "authprivacyhttp/TestRealHTTPSPostImagesUploadReadRevocationPostgres": {
+          "result": "PASS",
+          "seconds": 8.35
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/create": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/reconcile": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/seal": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/composer": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/tasks": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/task": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/cancel": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/retry": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/hide": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/channel": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/detail": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/own": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/capabilities": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations/delete": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPAllFourteenOperations": {
+          "result": "PASS",
+          "seconds": 0.02
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/duplicate": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/escaped-duplicate": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/unknown": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/wrong-case": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/null": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/unpaired-surrogate": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/invalid-utf8": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/noncanonical-id": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/zero-id": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/trailing-object": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/array": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend/oversize": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPRejectsMalformedCreateBeforeBackend": {
+          "result": "PASS",
+          "seconds": 0.02
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/seal-cap": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/cancel-cap": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/hide-cap": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/version-zero": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/version-overflow": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/version-float": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/version-string": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/retry-rebind": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/hide-extra": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/seal-op": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/seal-digest": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed/delete-body": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMaintenanceBodiesAreSmallAndClosed": {
+          "result": "PASS",
+          "seconds": 0.02
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit=0": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit=51": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit=01": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit=%2B1": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit=1&limit=2": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?cursor=AQ&cursor=Ag": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?ownerId=private": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit=": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit=1&": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?limit=%zz": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?cursor=AQ==": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?cursor=AB": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded/?cursor=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPListQueriesAreCanonicalAndBounded": {
+          "result": "PASS",
+          "seconds": 0.03
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/duplicate-auth": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/wrong-auth": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/no-auth": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/extra-key": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/duplicate-type": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/encoded": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/foreign-proof": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/get-body": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/wrong-method": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/trailing-slash": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/encoded-path": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity/noncanonical-key": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPHeadersAndMethodsRejectAmbiguity": {
+          "result": "PASS",
+          "seconds": 0.02
+        },
+        "authprivacyhttp/TestPostHTTPRejectedMutationAndQueryAreDifferentFacts": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/SESSION_INVALID/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/session_replaced/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/AUTHENTICATION_FAILED/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/AUTHENTICATION_FAILED/#01": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/AUTHORIZATION_UNAVAILABLE/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/CURSOR_INVALID/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/RATE_LIMITED/300": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/RATE_LIMITED/1": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/COMMAND_CONFLICT/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/COMMAND_SEALED/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/RESULT_EXPIRED/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/TASK_NOT_FOUND/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/SERVICE_UNAVAILABLE/": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/SERVICE_UNAVAILABLE/#01": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies/SERVICE_UNAVAILABLE/#02": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPBackendErrorsHaveFixedPublicBodies": {
+          "result": "PASS",
+          "seconds": 0.02
+        },
+        "authprivacyhttp/TestPostHTTPNeverSerializesArbitraryBackendRows": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/create-version": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/operation": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/seal-unknown": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/seal-wrong-operation": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/cancel-version": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/delete-target": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/private-sort": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/terminal-before-acceptance": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/hidden-content": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/invalid-author": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/non-utc": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/nil-items": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/exceeds-limit": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/capabilities-edit": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/typed-nil": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced/wrong-type": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPResponseInvariantsAreEnforced": {
+          "result": "PASS",
+          "seconds": 0.03
+        },
+        "authprivacyhttp/TestPostHTTPPublishedTaskCanReconcilePublicContent": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPMissingChannelReadAndCreateHaveDistinctStatuses": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestPostHTTPNetworkOverloadAndCORS": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyhttp/TestRealHTTPSPostAcceptancePublicationReadAndDeletePostgres": {
+          "result": "PASS",
+          "seconds": 9.61
+        },
+        "authprivacyhttp/TestRealHTTPSPostStopsRetryHideCancelAndSealPostgres": {
+          "result": "PASS",
+          "seconds": 8.64
+        }
+      }
+    },
+    "lifecycle.jsonl": {
+      "sha256": "b094f8b4f6d1cc403043fe324816af949146c1e491529d62beb25ebf6b3cb258",
+      "packages": {
+        "posts": {
+          "result": "PASS",
+          "seconds": 1.029,
+          "topLevelTests": 12
+        },
+        "authprivacyruntime": {
+          "result": "PASS",
+          "seconds": 1.031,
+          "topLevelTests": 8
+        },
+        "postmedia": {
+          "result": "PASS",
+          "seconds": 1.487,
+          "topLevelTests": 2
+        },
+        "authprivacy": {
+          "result": "PASS",
+          "seconds": 26.112,
+          "topLevelTests": 1
+        },
+        "authprivacyhttp": {
+          "result": "PASS",
+          "seconds": 1.011,
+          "topLevelTests": 0,
+          "scope": "compiled/no tests selected in this supplemental run"
+        }
+      },
+      "tests": {
+        "postmedia/TestManifestBoundsAndIdentity": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestUnicode16OfficialGraphemeConformance": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestContentLimitsAndOriginalText": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestUnicode16FrozenInvisibleProperties": {
+          "result": "PASS",
+          "seconds": 0.01
+        },
+        "posts/TestScopedCursorEncryption/channel": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestScopedCursorEncryption/own": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestScopedCursorEncryption/task": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestScopedCursorEncryption": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestMediaIntentBindsFullManifestAndPreservesTextDomain": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestMediaProtocolIndependentGoldenVectors": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestPublicAndOwnDTOKeepSeparate": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestCommandResultsHaveOperationSpecificFields": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-composed": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-decomposed": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-lf": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-crlf": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/create-emoji": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/retry": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/cancel": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/hide_task": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/delete-post": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/combined-accent": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/emoji-zwj": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/emoji-modifier": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/two-flags": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/crlf": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/spaces-punctuation-lf": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors/hangul": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestSharedProtocolVectors": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestStrictResourceAndCommandKeys": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestCommandDomainsAndExactText": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "posts/TestRandomIdentityShortCodes": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats/png": {
+          "result": "PASS",
+          "seconds": 0.1
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_min_messages": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_parameter_max_length_on_error": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_min_duration_statement": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_min_duration_sample": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_transaction_sample_rate": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_duration": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_statement": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_error_verbosity": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_parameter_max_length": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings/log_min_error_statement": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestDatabaseDiagnosticsRejectMissingAndUnsafeSettings": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestProcessDiagnosticsExcludeUntrustedErrors": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestHTTPPanicDiagnosticExcludesRequestAndPanicMaterial": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestPostImagesRequiresExplicitCommunityConfiguration": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostsRequiresExplicitCompleteCommunityPolicy/command": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostsRequiresExplicitCompleteCommunityPolicy/fingerprint": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostsRequiresExplicitCompleteCommunityPolicy/cursor": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostsRequiresExplicitCompleteCommunityPolicy": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose/request": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose/network": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose/command": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose/fingerprint": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimePostKeysCannotReuseAuthenticationOrOtherPostPurpose": {
+          "result": "PASS",
+          "seconds": 0.01
+        },
+        "authprivacyruntime/TestRuntimeRejectsUnknownPostPolicyFieldBeforeMaterialLoading": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "authprivacyruntime/TestRuntimeWebAuthnPolicyIsExplicitAndIndependent": {
+          "result": "PASS",
+          "seconds": 0
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats/jpeg": {
+          "result": "PASS",
+          "seconds": 0.1
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats/gif": {
+          "result": "PASS",
+          "seconds": 0.1
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats/webp": {
+          "result": "PASS",
+          "seconds": 0.13
+        },
+        "postmedia/TestRealProcessValidatorOriginalFormats": {
+          "result": "PASS",
+          "seconds": 0.48
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/cancel": {
+          "result": "PASS",
+          "seconds": 5.14
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/mute": {
+          "result": "PASS",
+          "seconds": 4.85
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/expiry": {
+          "result": "PASS",
+          "seconds": 3.92
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/identity": {
+          "result": "PASS",
+          "seconds": 3.38
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/ban": {
+          "result": "PASS",
+          "seconds": 3.82
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres/closure": {
+          "result": "PASS",
+          "seconds": 3.96
+        },
+        "authprivacy/TestPostImagesCancelMuteAndExpiredGrantPostgres": {
+          "result": "PASS",
+          "seconds": 25.08
+        }
+      }
+    }
+  },
+  "additionalChecks": {
+    "goVetAll": "PASS",
+    "goCompileAllPackagesOnly": "PASS",
+    "pythonSyntheticValidation": "PASS",
+    "sixOpenAPIContracts": "PASS"
+  },
+  "evidenceBoundaries": {
+    "realHTTP": "Fresh loopback TLS HTTP servers execute actual C handlers, synthetic account flows and real PostgreSQL byte storage; not actual cmd/deployment/mobile.",
+    "realSQL": "Fresh private-socket cluster/empty C and V databases; raw Up migration SQL including 0014, actual image constraints/hash/erasure and restricted C runtime DML. Not formal Goose upgrade evidence.",
+    "realFilesystem": "Task-owned synthetic fixtures, real Python child and FileAuthorizationEvidenceProvider/FileAuthorizationAnchorStore. Image payloads are SQL bytea, not fake filesystem storage.",
+    "hostSubstitutes": "PostImageHTTP strictness tests use a host backend substitute only. OTP/mail/time authorities use fresh test material. No production safety/operating assertion.",
+    "android": "NOT_RUN; API29+ design only; no SDK/Flutter/bin-cache, ADB or phone use.",
+    "ios": "NOT_RUN; independent acceptance required.",
+    "frontend": "No app/UI modification or merge; PostImages mapping and imageCount/empty-body/new-digest deltas handed off at fixed SHA."
+  },
+  "isolation": {
+    "checkout": "E:/Hnuhole-post-image-media-20261015/repo",
+    "linuxOwnedRoot": "/home/hnuhole/post-image-media-20261015",
+    "sdkInvoked": false,
+    "adbInvoked": false,
+    "deviceUsed": false,
+    "sharedServicesModified": false,
+    "sharedDatabasesUsed": false,
+    "sharedCachesOrSecretsUsed": false,
+    "parallelWorkspacesWritten": false
+  },
+  "historicalFailures": [
+    {
+      "run": "initial focused run",
+      "tests": [
+        "identity delete fixture",
+        "party relation inventory"
+      ],
+      "cause": "Last-identity deletion is forbidden and the old inventory omitted the new images table; fixture/inventory corrected and retested. Initial compilation also corrected an int/int64 local mismatch.",
+      "currentResult": "RESOLVED"
+    }
+  ],
+  "notRun": [
+    "formal Goose old-database upgrade",
+    "actual C cmd image-validator assembly",
+    "Flutter host uploader/durable image drafts/viewer wiring",
+    "Android device/gallery/animation",
+    "iOS device/gallery/animation",
+    "production storage/quotas/load/backup deletion/independent security"
+  ],
+  "report": "docs/design/post-image-media-contract.md",
+  "cleanup": {
+    "status": "PASS",
+    "root": "/home/hnuhole/post-image-media-20261015",
+    "removed": [
+      "go-mod",
+      "pip-cache",
+      "python",
+      "fixtures",
+      "tmp",
+      "compile.log",
+      "compile-final.log",
+      "unit.log",
+      "vet-final.log",
+      "vet.log",
+      "openapi.log",
+      "python-test.log",
+      "openapi-install.log",
+      "verified.jsonl",
+      "focused.jsonl",
+      "lifecycle.jsonl",
+      "final.jsonl"
+    ],
+    "alreadyAbsent": [
+      "go-cache"
+    ],
+    "retained": [
+      "repo (source mirror)",
+      "authoritative E:/Hnuhole-post-image-media-20261015/repo"
+    ],
+    "activeOwnedProcesses": 0
+  },
+  "environment": {
+    "go": "go1.22.2 linux/amd64",
+    "postgresql": "16.15 Ubuntu",
+    "python": "3.12.3",
+    "pillow": "12.3.0",
+    "libwebp": "1.6.0",
+    "gocacheAndModules": "task-owned Linux path only",
+    "automaticToolchainDownload": false
+  },
+  "runRevisionNotes": {
+    "verified.jsonl": "All final product source; includes seven media SQL top-level tests and HTTP/contract/runtime regression. The lifecycle test subsequently gained ban/closure, nonempty partial-byte erasure and 24h retry cases.",
+    "lifecycle.jsonl": "Final expanded lifecycle test and all pure protocol/validator/runtime tests rerun; no product source changed since verified.jsonl. Final all-package compile/vet and OpenAPI validation follow this run."
+  },
+  "implementationCommit": "efccade441bfc5d453751a3fac74211b090e8129",
+  "implementationCommitRemoteVerified": true,
+  "indexedSourceMatchedTestedFingerprint": true
+}

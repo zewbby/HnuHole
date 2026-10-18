@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'loopback_tls_fixture.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/src/auth/auth_crypto.dart';
 import 'package:hnuhole_mobile/src/auth/auth_models.dart';
@@ -112,6 +114,14 @@ Matcher _failure(AuthFailureKind kind, {int? status, String? code}) =>
         .having((e) => e.code, 'code', code);
 
 void main() {
+  late LoopbackTlsFixture tls;
+  setUpAll(() async {
+    tls = await LoopbackTlsFixture.create();
+    _certificate = tls.certificate;
+    _privateKey = tls.privateKey;
+  });
+  tearDownAll(() => tls.dispose());
+
   late _Endpoint community;
   late _Endpoint verifier;
   late HttpAuthApi api;
@@ -1632,52 +1642,5 @@ void main() {
 }
 
 // Public, synthetic loopback-only test credentials. Never deployment material.
-const _certificate = '''-----BEGIN CERTIFICATE-----
-MIIDGjCCAgKgAwIBAgIUeainJsU//PbE0FJ/JhfwvJw81PwwDQYJKoZIhvcNAQEL
-BQAwFDESMBAGA1UEAwwJMTI3LjAuMC4xMB4XDTI2MDkzMDEzNTMyMVoXDTM2MDky
-NzEzNTMyMVowFDESMBAGA1UEAwwJMTI3LjAuMC4xMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAwnKcMVYoOlJPk3cP0T9epaBny4sjJWRZYGDXEMU2dMNP
-gQvQprguHdpKXWbYCkESP7vIGl6dQ6Mg3+7a23VHwUmOHxtyfQ5da4btwCaNEdD4
-HMAwmceqNP/5uRUsVqV2ophXPRSqPueQ/n8thHJoJjaaG5FuWXmyYtXMotpB1NGc
-FKaRMYciz+5kPyxWwOdlgqcVGU5CQmUrr+1PmbGjQuyFwlqPdil93177FjgqG8CO
-vmpshHVRwLtMBmu0a3GmryZVz5yWwkhhrw0/+Qo1P0AHh0lQ5xA2EsFM7bqzR9qn
-67OPR3LS/lhLaZ755bkh1GG1qfAJ8ZmVH5EOjHP9PwIDAQABo2QwYjAdBgNVHQ4E
-FgQUl06WpXjlpqVFYxuCGCiiwfNdw3owHwYDVR0jBBgwFoAUl06WpXjlpqVFYxuC
-GCiiwfNdw3owDwYDVR0TAQH/BAUwAwEB/zAPBgNVHREECDAGhwR/AAABMA0GCSqG
-SIb3DQEBCwUAA4IBAQCGKenINT9a7mNzSu2hWkIWGI/7MS4ZghtSKZuAI1iAbMyg
-UyTL2BcmqDHzWsRUv8RVH5dLTOrsz7br4V1N2z2cAcjtgS97CvjaqH4RyBe4PYe9
-+XynhGBktryTNV/4imJg0dHSjKbj9phuqsdXaFqHWf03zhtnCj+LmBzys/QRGHNn
-8jA2traXXVVhkYR1rlOX8Asd4FtbgpqV2BtUBUGiRoDQNz06/tt8y94Ji5nSH14L
-a5FNGUlV6d5LG7fErLvV2YUqK4/hm1CCReTKsaoZUf7u0A7pBcETJCNM9eHlQCqC
-X4Q8nT4lS+LPikYXrjZVoohYlBc0+LIkQTjhWd4L
------END CERTIFICATE-----
-''';
-const _privateKey = '''-----BEGIN PRIVATE KEY-----
-MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDCcpwxVig6Uk+T
-dw/RP16loGfLiyMlZFlgYNcQxTZ0w0+BC9CmuC4d2kpdZtgKQRI/u8gaXp1DoyDf
-7trbdUfBSY4fG3J9Dl1rhu3AJo0R0PgcwDCZx6o0//m5FSxWpXaimFc9FKo+55D+
-fy2EcmgmNpobkW5ZebJi1cyi2kHU0ZwUppExhyLP7mQ/LFbA52WCpxUZTkJCZSuv
-7U+ZsaNC7IXCWo92KX3fXvsWOCobwI6+amyEdVHAu0wGa7RrcaavJlXPnJbCSGGv
-DT/5CjU/QAeHSVDnEDYSwUzturNH2qfrs49HctL+WEtpnvnluSHUYbWp8AnxmZUf
-kQ6Mc/0/AgMBAAECggEACBm4/6X3zdr8YHrqS5MY2n+HM24opash8HQeux647D5V
-6cNYCuOYKdUCzUdQIrhsdGYNqdBdO6JOtH8bDcXVNAX51LpSl63pUf+jmFV2AdMA
-MxQFy+VxTGOJjLgg47v66D6+cgrFWN+FJWtsHJ0DhIWe/+nPSUAnoIE8CC2Qs1C0
-vbnUuhazEX+tnxuOTOqCe5tT+3J9YB57eicJNC0ffpnWx2W63pRGPVxxYzq/BPKN
-+1ezfl+FdRnaAF3SAGnGTP/nd61J8qUCccEjTzqGSuuUUonw671wJNQRSRG+LVHN
-h/KL8saVqquRc4FrGCFhHhfIeaT2tSIlDcsaNzM7mQKBgQDmFLsYWX64/7AQ4xzG
-5jgTMsVu/C7Qw640Rm9FVCCKSycXZM2hAAuhajoF2upiyCWJgXejGYKMs4gehr+l
-KOVfeZWSy9vE3bzjYe0o7ncDN6cbB8L2dsaqye/XTpsaUmRMo2e7k0NsU9xDkuz8
-vMQR5PcbNtjcURBdkjVTV1QclQKBgQDYWkGxv6a2kgtJcMQ19qBM4aYqLRgD004U
-g4eqJESYuMkSNXIqFhsCR4wuLahe6zCte5OJLlr1rTEpWkHmlMOlS+ZrjS5HsBif
-JDntCYpVIahVv7E8e243rSpgYU9p8E6dIStzMDmi5WdfOL/PXpWkNcTdkJEihB63
-/6nIAZ+pgwKBgFfvpHJyAhUC5HAP3XfHlbcAuKTqjZoMsBAau3xr4uP4RUCTrmPS
-eJ+A0hxaxypqBK7BZNBZd6P/Gg9QwP6G2uPavGgWsjBT71WYn+P9AE+ifaO/G6zH
-SLcN5zULPgyZYOxJp+PxLNvCUXUiOqF+JBISyL8F/2x1LyQUNX1c6zDhAoGBAJkh
-ePIIRkVepSJ78ESJpPgFloivlhnPC6q1VeZ0+SBnWdnLflyPfNpmLa/ZnRxhtvhz
-SP+Fkdfll7A/M/myPa/XQuXI7YLL/wFUsLM3V3Pd+LmIjjfS3TYHGMFS3tSKw/mv
-KoPDFGhZmorpLcnmll+9tvNjiXY2sU9mY5MuowVlAoGBAOF15/Gtdf/wwl4YNJJY
-0+1x/xg+b3fm+gvi7un0AUcw1DRc9KyrOWQ4N9emzuiNWfWIFSB9L8hmpcWqxP1d
-uy9I9Uv/X6qVEJQGS2Pi3LgxZMVj/vyxQd6AGn4IXspDoCMQhBTFuxH+3txbJnc7
-DCfSU0aufQ19SXd2zMP8ywH0
------END PRIVATE KEY-----
-''';
+late String _certificate;
+late String _privateKey;

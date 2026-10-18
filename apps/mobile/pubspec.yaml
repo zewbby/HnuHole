@@ -16,10 +16,13 @@ dependencies:
   cryptography: 2.7.0
   drift: 2.35.2
   sqlite3: 3.7.0
+  image_picker: 1.2.4
   hnuhole_auth_vault:
     path: ../../packages/auth_vault
   hnuhole_auth_passkey:
     path: ../../packages/auth_passkey
+  hnuhole_image_viewer:
+    path: ../../packages/image_viewer
 
 dev_dependencies:
   flutter_test:

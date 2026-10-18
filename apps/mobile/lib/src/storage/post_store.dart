@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart' as hashes;
 import 'package:cryptography/cryptography.dart';
@@ -9,6 +10,8 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:hnuhole_auth_vault/hnuhole_auth_vault.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
+
+part 'post_media_store.dart';
 
 const _postSchemaV1 = <String, String>{
   'post_meta': 'CREATE TABLE post_meta(scope TEXT PRIMARY KEY NOT NULL,payload BLOB NOT NULL)',
@@ -140,6 +143,7 @@ class PostStore {
   final _cipher = AesGcm.with256bits();
   Future<void> _tail = Future.value();
   bool _closed = false;
+  Future<void>? _closing;
 
   static String scopeFor(String environment, String accountId) {
     if (environment.isEmpty || accountId.isEmpty) {
@@ -369,7 +373,7 @@ class PostStore {
     await _checkActive();
     final rows = await _db
         .customSelect(
-          'SELECT id,revision,state,payload FROM post_entries ORDER BY id',
+          "SELECT id,revision,state,payload FROM post_entries WHERE state NOT IN ('mediaChunk','mediaRoot') ORDER BY id",
         )
         .get();
     return Future.wait(rows.map(_decodeRow));
@@ -477,6 +481,7 @@ class PostStore {
         variables: [Variable<String>(id), Variable<int>(expectedRevision)],
       );
       if (count != 1) throw const PostStorageConflict();
+      await _collectMedia(this);
     });
   });
 
@@ -541,6 +546,7 @@ class PostStore {
       final next = _next(old, 'submitted', data, [...old.intents, intent]);
       await _insertIntentIndex(id, intent);
       await _update(next, expectedRevision);
+      if (old.data.containsKey('images')) await _collectMedia(this);
       return next;
     });
   });
@@ -603,7 +609,8 @@ class PostStore {
     await _db.customStatement('VACUUM');
   });
 
-  Future<void> close() async {
+  Future<void> close() => _closing ??= _close();
+  Future<void> _close() async {
     await _tail;
     if (!_closed) {
       _closed = true;
@@ -623,6 +630,7 @@ class PostStore {
       final next = transform(old);
       if (newIntent != null) await _insertIntentIndex(id, newIntent);
       await _update(next, expectedRevision);
+      if (old.data.containsKey('images')) await _collectMedia(this);
       return next;
     });
   });
@@ -741,7 +749,8 @@ class PostStore {
         )
         .toList();
     if (intents.map((i) => i.commandId).toSet().length != intents.length ||
-        (state == 'draft') != intents.isEmpty) {
+        {'draft', 'mediaChunk', 'mediaRoot'}.contains(state) !=
+            intents.isEmpty) {
       throw const PostStorageFailure();
     }
     return StoredPostEntry(
@@ -816,6 +825,7 @@ class PostStore {
   }
 
   Future<T> _run<T>(Future<T> Function() action) async {
+    if (_closing != null) throw const PostStorageFailure();
     final previous = _tail;
     final done = Completer<void>();
     _tail = done.future;
@@ -918,7 +928,14 @@ Map<String, dynamic> _withoutContent(Map<String, dynamic> value) {
     if (input is Map) {
       return <String, dynamic>{
         for (final entry in input.entries)
-          if (!{'title', 'body', 'content'}.contains(entry.key))
+          if (!{
+            'title',
+            'body',
+            'content',
+            'images',
+            'mediaUploads',
+            'pickerPending',
+          }.contains(entry.key))
             entry.key as String: compact(entry.value),
       };
     }

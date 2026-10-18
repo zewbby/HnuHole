@@ -302,7 +302,7 @@ type e2eServices struct {
 	recoverV         func() error
 }
 
-func e2eNewServices(t *testing.T) *e2eServices {
+func e2eNewServices(t *testing.T, configure ...func(*authprivacy.Community)*authprivacy.Community) *e2eServices {
 	t.Helper()
 	s := &e2eServices{cp: e2ePool(t, "c"), vp: e2ePool(t, "v")}
 	var trusted []protocol.TrustedKey
@@ -375,6 +375,7 @@ func e2eNewServices(t *testing.T) *e2eServices {
 		return NetworkLimits{Key: e2eKey(t), MutationCapacity: 10000, QueryCapacity: 10000, Window: time.Minute, MaxEntries: 1024}
 	}
 	cPeer := PeerIdentity{Environment: "lab", Service: VerifierService, Roots: pki.roots}
+	for _,setup:=range configure { s.c=setup(s.c) }
 	cEndpoints, err := NewCommunityEndpoints(CommunityOptions{Backend: s.c, Passwords: passwords, InternalPeer: cPeer, AllowedOrigins: []string{"https://app.invalid"}, Limits: limits()})
 	if err != nil {
 		t.Fatal(err)

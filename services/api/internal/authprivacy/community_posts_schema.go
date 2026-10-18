@@ -86,6 +86,15 @@ WHERE n.nspname='c_posts' AND c.relname IN ('publication_ordinal_seq','acceptanc
 	if !runtime {
 		return nil
 	}
+	// Migration 0014 attaches invoker image checks/erasure to text lifecycle
+	// writes too. Missing cleanup privileges must fail before an authorized
+	// transaction advances its anchor and then fails inside the SQL trigger.
+	if err := pool.QueryRow(ctx, `SELECT to_regclass('c_posts.images') IS NULL OR
+	(has_table_privilege(current_user,to_regclass('c_posts.images'),'SELECT')
+	 AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['payload','erased_at','grant_digest','grant_expires_at']) AS c(name)
+	 WHERE NOT has_column_privilege(current_user,to_regclass('c_posts.images'),c.name,'UPDATE')))`).Scan(&valid); err != nil || !valid {
+		return errPostSchema
+	}
 	for _, table := range tables {
 		if table == "schema_meta" {
 			continue

@@ -1,0 +1,153 @@
+// Test-only entry; generated originals are synthetic, never account material.
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:crypto/crypto.dart' as hashes;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hnuhole_auth_vault/hnuhole_auth_vault.dart';
+import 'package:hnuhole_mobile/hnuhole_mobile.dart';
+
+const _fixtureJson = r'''@@OWNED_FIXTURES@@''';
+const _driver = MethodChannel('hnuhole/owned_device_driver');
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var phase = 'unknown';
+  final checks = <String, bool>{};
+  try {
+    if (!Platform.isAndroid) throw StateError('Android-only probe');
+    phase = (await _driver.invokeMethod<String>('phase')) ?? 'unknown';
+    if (!{'media-write', 'media-read', 'media-purge'}.contains(phase)) {
+      throw StateError('Explicit probe phase required');
+    }
+    final fixture = jsonDecode(_fixtureJson) as Map<String, dynamic>;
+    final originals = (fixture['files'] as List).cast<Map<String, dynamic>>();
+    final environment = 'hnuhole.post-media-native-probe/${fixture['runId']}';
+    const account = 'e0000000-0000-4000-8000-000000000001';
+    const otherAccount = 'e0000000-0000-4000-8000-000000000002';
+    const draft = 'e0000000-0000-4000-8000-000000000003';
+    final scope = PostStore.scopeFor(environment, account);
+    final path = await DurableBusinessVault(scope).databasePath();
+    final witness = File('${File(path).parent.parent.path}/post-media-probe-result.json');
+    Map<String, dynamic>? previous;
+    if (await witness.exists()) previous = jsonDecode(await witness.readAsString()) as Map<String, dynamic>;
+    var writePid = pid;
+    if (phase != 'media-write') {
+      if (previous == null || previous['result'] != 'PASS' || previous['runId'] != fixture['runId'] ||
+          !{'media-write', 'media-read'}.contains(previous['phase']) || previous['writePid'] == pid) {
+        throw StateError('Original successful write in another process required');
+      }
+      if (phase == 'media-purge' && previous['phase'] != 'media-read') throw StateError('Successful read required before purge');
+      writePid = previous['writePid'] as int;
+    } else if (previous != null) {
+      throw StateError('Existing probe witness; inspect original run before replay');
+    }
+    if (!path.contains('/no_backup/')) throw StateError('Native no-backup location required');
+    if (phase == 'media-purge') {
+      await PostStore.purgeNativeClosedAccount(environment: environment, accountId: account);
+      await PostStore.purgeNativeClosedAccount(environment: environment, accountId: otherAccount);
+      checks['databaseRemoved'] = !await File(path).exists();
+      try {
+        await DurableBusinessVault(scope).read();
+        throw StateError('Closed native vault admitted access');
+      } on PlatformException catch (error) {
+        if (error.code != 'BUSINESS_STORAGE_UNAVAILABLE') rethrow;
+        checks['closedNativeVaultAccessRejected'] = true;
+      }
+      try {
+        final unexpected = await PostStore.openNative(environment: environment, accountId: account);
+        await unexpected.close();
+        throw StateError('Closed namespace reopened');
+      } on PostStorageFailure {
+        checks['closedNamespaceRejected'] = true;
+      }
+    } else {
+      final store = await PostStore.openNative(environment: environment, accountId: account);
+      try {
+        if (phase == 'media-write') {
+          if (await store.get(draft) != null) throw StateError('Existing probe draft; resume read instead of replaying write');
+          final data = <String, Uint8List>{};
+          final images = <Map<String, dynamic>>[];
+          for (var i = 0; i < originals.length; i++) {
+            final item = originals[i];
+            final id = 'd0000000-0000-4000-8000-${(i+1).toString().padLeft(12, '0')}';
+            final bytes = base64Decode(item['base64'] as String);
+            if (bytes.length != item['byteLength'] || hashes.sha256.convert(bytes).toString() != item['sha256']) {
+              throw StateError('Original fixture changed');
+            }
+            data[id] = bytes;
+            images.add({'blobId': id, 'selection': {'byteLength': bytes.length, 'sha256': item['sha256']}});
+          }
+          await store.saveMediaDraft(draft, null, {'images': images, 'probe': 'synthetic-originals'}, data);
+          checks['nineOriginalsDurable'] = images.length == 9;
+          checks['multiChunkOriginal'] = data.values.any((value) => value.length > 256*1024);
+        } else {
+          final restored = await store.get(draft);
+          if (restored == null || (restored.data['images'] as List).length != 9) throw StateError('Probe draft not restored');
+          for (var i = 0; i < originals.length; i++) {
+            final item = originals[i];
+            final id = 'd0000000-0000-4000-8000-${(i+1).toString().padLeft(12, '0')}';
+            final data = await store.readMedia(id, item['byteLength'] as int, item['sha256'] as String);
+            if (hashes.sha256.convert(data).toString() != item['sha256']) throw StateError('Native original integrity');
+          }
+          checks['nineOriginalsRecoveredInNewProcess'] = true;
+          final first = originals.first;
+          try {
+            await store.readMedia('d0000000-0000-4000-8000-000000000001', first['byteLength'] as int, '0'*64);
+            throw StateError('Wrong original digest admitted');
+          } on PostStorageFailure {
+            checks['wrongDigestRejected'] = true;
+          }
+          final other = await PostStore.openNative(environment: environment, accountId: otherAccount);
+          try {
+            try {
+              await other.readMedia('d0000000-0000-4000-8000-000000000001', first['byteLength'] as int, first['sha256'] as String);
+              throw StateError('Other account read original');
+            } on PostStorageFailure {
+              checks['otherAccountRejected'] = true;
+            }
+          } finally {
+            await other.close();
+          }
+        }
+      } finally {
+        await store.close();
+      }
+      final needle = base64Decode(originals.first['base64'] as String);
+      var inspected = 0;
+      for (final suffix in ['', '-wal', '-shm', '-journal']) {
+        final file = File('$path$suffix');
+        if (!await file.exists()) continue;
+        final raw = await file.readAsBytes();
+        if (_contains(raw, needle.sublist(0, 64))) throw StateError('Plain original header in native database');
+        inspected++;
+      }
+      checks['noOriginalHeaderInDatabaseOrSidecars'] = inspected > 0;
+      checks['nativeNoBackupDirectory'] = true;
+    }
+    if (checks.isEmpty || checks.values.any((value) => !value)) throw StateError('Incomplete probe');
+    final report = {'result': 'PASS', 'phase': phase, 'checks': checks, 'pid': pid, 'writePid': writePid,
+      'runId': fixture['runId'], 'device': true,
+      'nativePostStore': true, 'nativeKeystore': true, 'pickerOrGalleryProved': false};
+    // The witness contains counts/booleans only; the main business account and
+    // its auth vault are never read by this separate probe package.
+    await witness.writeAsString(jsonEncode(report), flush: true);
+    await _driver.invokeMethod<void>('stage', '$phase-pass');
+    runApp(MaterialApp(home: Scaffold(body: SafeArea(child: Text('$phase PASS\n${checks.keys.join('\n')}')))));
+  } catch (_) {
+    if (phase != 'unknown') await _driver.invokeMethod<void>('stage', '$phase-fail');
+    runApp(MaterialApp(home: Scaffold(body: SafeArea(child: Text('$phase FAIL — inspect owned probe, no automatic replay')))));
+  }
+}
+
+bool _contains(List<int> source, List<int> needle) {
+  for (var i = 0; i <= source.length-needle.length; i++) {
+    var same = true;
+    for (var j = 0; j < needle.length; j++) {
+      if (source[i+j] != needle[j]) { same = false; break; }
+    }
+    if (same) return true;
+  }
+  return false;
+}

@@ -10,6 +10,45 @@ const _id = '11111111-1111-4111-8111-111111111111';
 const _other = '22222222-2222-4222-8222-222222222222';
 
 void main() {
+  test('media framing matches the two backend fixed-byte golden vectors without changing text-only frames', () {
+    final suite = jsonDecode(
+      File('test/fixtures/post-media-v1.json').readAsStringSync(),
+    ) as Map;
+    for (final vector in suite['vectors'] as List) {
+      final input = vector['intent'] as Map;
+      final text = input['operation'] == 'CREATE'
+          ? PostProtocol.create(
+              channelId: input['channelId'],
+              identityId: input['identityId'],
+              title: input['title'],
+              body: input['body'],
+            )
+          : PostProtocol.retry(
+              taskId: input['taskId'],
+              expectedAttemptVersion: input['expectedAttemptVersion'],
+              title: input['title'],
+              body: input['body'],
+            );
+      final images = [
+        for (final image in input['images'] as List)
+          Map<String, dynamic>.from(image),
+      ];
+      final frame = PostProtocol.withImages(text, images);
+      expect(base64Encode(frame), vector['frameBase64']);
+      expect(PostProtocol.digest(frame), vector['requestDigest']);
+      expect(PostProtocol.withImages(text, []), text);
+      if (images.length > 1) {
+        expect(
+          PostProtocol.digest(
+            PostProtocol.withImages(text, images.reversed.toList()),
+          ),
+          isNot(vector['requestDigest']),
+        );
+      }
+    }
+    PostContentRules.validate('纯图标题', '', imageCount: 1);
+    expect(() => PostContentRules.validate('只有标题', ''), throwsFormatException);
+  });
   test('Dart validates all shared nine digest and seven Unicode16 vectors', () {
     final suite = jsonDecode(
       File('../../packages/post-protocol-vectors/post-command-v1.json')

@@ -29,11 +29,21 @@ func CountGraphemes(text string) (int, error) {
 }
 
 func ValidateContent(title, body string) error {
+	return ValidateContentWithImages(title, body, 0)
+}
+
+func ValidateContentWithImages(title, body string, imageCount int) error {
+	if imageCount < 0 || imageCount > 9 {
+		return ErrContentInvalid
+	}
 	if len(title) > MaxTitleBytes || len(body) > MaxBodyBytes {
 		return ErrPayloadTooLarge
 	}
 	if err := validateField(title, MaxTitleClusters); err != nil {
 		return err
+	}
+	if body == "" && imageCount > 0 {
+		return nil
 	}
 	return validateField(body, MaxBodyClusters)
 }

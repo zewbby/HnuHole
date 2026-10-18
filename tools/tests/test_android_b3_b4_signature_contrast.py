@@ -138,8 +138,10 @@ class PreparedPubRouteTests(unittest.TestCase):
         self.mirror = self.linux / 'repo'
         # The frozen authentication-only builder admits its reviewed lock,
         # not whichever dependency graph the integrating product now has.
+        # Normalize checkout line endings only for this text fixture; the
+        # builder still requires the exact reviewed LF bytes.
         self.original = (Path(__file__).parent / 'fixtures' /
-                         'auth-canonical-pubspec-d859cb05.lock').read_bytes()
+                         'auth-canonical-pubspec-d859cb05.lock').read_text(encoding='utf-8').encode('utf-8')
         self.routed = builder.pub_lock_route_bytes(self.original)
         for directory in (self.mirror, self.canonical):
             path = directory / builder.LOCK_NAME
@@ -164,6 +166,12 @@ class PreparedPubRouteTests(unittest.TestCase):
         # A changed version/checksum fails even when the approved URL count stays.
         with self.assertRaises(RuntimeError):
             builder.pub_lock_route_bytes(self.original + b'changed dependency bytes')
+
+    def test_builder_still_rejects_unreviewed_crlf_lock_bytes(self):
+        crlf = self.original.replace(b'\n', b'\r\n')
+        self.assertNotEqual(fresh.digest(crlf), builder.LOCK_ROUTE_SOURCE_SHA256)
+        with self.assertRaises(RuntimeError):
+            builder.pub_lock_route_bytes(crlf)
 
     def test_explicit_route_records_identical_receipts_and_preserves_original_admission(self):
         before = self.manifest.read_bytes()

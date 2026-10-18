@@ -12,6 +12,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/google/uuid"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
 )
 
 func ParseResourceID(value string) (uuid.UUID, error) {
@@ -65,6 +66,7 @@ type Intent struct {
 	ExpectedAttemptVersion int32
 	Title                  string
 	Body                   string
+	Images                 []postmedia.Selection
 }
 
 // FrameIntent 按协议字段编码，不对 JSON 字节或正规化文本计算摘要。
@@ -115,6 +117,23 @@ func FrameIntent(intent Intent) ([]byte, error) {
 	}
 	if !valid {
 		return nil, ErrInvalidIntent
+	}
+	// Preserve every existing text command digest. Media commands have a new
+	// domain and frame the entire ordered immutable manifest, with no JSON hash.
+	if len(intent.Images) > 0 {
+		if (intent.Operation != Create && intent.Operation != Retry) || postmedia.ValidateManifest(intent.Images) != nil {
+			return nil, ErrInvalidIntent
+		}
+		frame = append([]byte("HNUHOLE/POST-MEDIA-COMMAND/V1\x00"), frame...)
+		frame = append(frame, byte(len(intent.Images)))
+		for _, s := range intent.Images {
+			if !addID(s.MediaID) || !addText(s.SHA256) || !addText(s.MIME) {
+				return nil, ErrInvalidIntent
+			}
+			frame = binary.BigEndian.AppendUint32(frame, uint32(s.ByteLength))
+			frame = binary.BigEndian.AppendUint32(frame, uint32(s.Width))
+			frame = binary.BigEndian.AppendUint32(frame, uint32(s.Height))
+		}
 	}
 	return frame, nil
 }

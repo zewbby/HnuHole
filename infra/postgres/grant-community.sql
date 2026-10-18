@@ -67,3 +67,14 @@ GRANT UPDATE(owner_account_id,outcome,task_id,post_id,attempt_version,task_state
 GRANT UPDATE(state) ON c_posts.payload_cleanup TO hnuhole_c_runtime;
 GRANT USAGE ON SEQUENCE c_posts.publication_ordinal_seq,c_posts.acceptance_ordinal_seq TO hnuhole_c_runtime;
 GRANT EXECUTE ON FUNCTION c_posts.allocate_identity_label(uuid) TO hnuhole_c_runtime;
+
+-- 0014's image triggers also protect text-only writes. Lifecycle cleanup
+-- must erase existing bytes/grants even when the image HTTP API is disabled.
+-- Upload insertion and verification columns remain a separate opt-in grant.
+DO $$ BEGIN
+ IF to_regclass('c_posts.images') IS NOT NULL THEN
+  GRANT SELECT ON c_posts.images TO hnuhole_c_runtime;
+  GRANT UPDATE(payload,erased_at,grant_digest,grant_expires_at)
+   ON c_posts.images TO hnuhole_c_runtime;
+ END IF;
+END $$;

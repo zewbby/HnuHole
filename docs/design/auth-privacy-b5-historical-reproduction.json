@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 1,
+  "scope": "FIXED_HISTORICAL_EVIDENCE_REPRODUCTION_ONLY",
+  "executedAtUtc": "2026-10-16T08:34:19.375714+00:00",
+  "status": "PASS_WITH_EXPLICIT_EXPECTED_GIT_BYTES_SYNC_FAILURE",
+  "historicalCommits": {
+    "b5": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+    "b6AndProductBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46"
+  },
+  "python": {
+    "version": "3.9.13 (main, Aug 25 2022, 23:51:50) [MSC v.1916 64 bit (AMD64)]",
+    "optimizationLevel": 0,
+    "PYTHONOPTIMIZE": null,
+    "assertionsEnabled": true,
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "commandNotation": "python refers to the actual interpreter reported by sys.executable; local absolute environment path omitted"
+  },
+  "materialization": {
+    "method": "git ls-tree -r -z COMMIT + git cat-file --batch; each tracked blob written byte-for-byte",
+    "usedGitArchive": false,
+    "blanketNewlineNormalization": false,
+    "binaryBytesPreserved": true,
+    "checkerAndEvidenceBytesModified": false,
+    "localCloneConfig": {
+      "core.autocrlf": false,
+      "core.eol": "lf",
+      "core.symlinks": false
+    },
+    "safeDirectory": "Command-scoped to each dedicated historical clone; no global Git configuration changes",
+    "trackedFiles": {
+      "b5": 595,
+      "b6": 583
+    }
+  },
+  "priorManifestFailure": {
+    "log": "historical-b5-sync.log (preserved prior local log)",
+    "checker": "tools/check-android-b5-sync-evidence.py",
+    "line": 40,
+    "assertion": "assert hashlib.sha256(data).hexdigest() == item['sha256'], item['path']",
+    "path": "apps/mobile/android/app/src/main/AndroidManifest.xml",
+    "note": "Prior log preserved. Current initial hashes cannot establish bytes that existed before this run.",
+    "observedAtResume": {
+      "path": "apps/mobile/android/app/src/main/AndroidManifest.xml",
+      "gitMode": "100644",
+      "gitBlobOid": "8f0b2dc76d033262de36ea3d4ad5324f651c0e2f",
+      "gitBlobBytes": 2416,
+      "gitBlobSha256": "bbf5ef5c546167d911a1da3799f506bbd0b5140d4c30123d3982c8011c6ea756",
+      "workingRawBytes": 2465,
+      "workingRawSha256": "8fe7595f86b2250cc3daf1e6391bcd7743893db846a7a43b419f95089be10d42",
+      "workingLfSha256": "bbf5ef5c546167d911a1da3799f506bbd0b5140d4c30123d3982c8011c6ea756",
+      "gitBlobLfSha256": "bbf5ef5c546167d911a1da3799f506bbd0b5140d4c30123d3982c8011c6ea756",
+      "rawEqualsGitBlob": false,
+      "workingIsSymlink": false
+    }
+  },
+  "gitBlobSyncFailure": {
+    "exitCode": 1,
+    "checker": "tools/check-android-b5-sync-evidence.py",
+    "line": 71,
+    "assertion": "assert record['build']['fixtureSha256'] in [sha256(normalized fixture), sha256(raw fixture)]",
+    "fixturePath": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+    "recordBuildFixtureSha256": "a4f4e74c887c46dd06e9ae20e04dcfc80368f9482bd6b0b56ef4f347d893feb2",
+    "actualRawAndLfSha256": "c18a6fbe3f0eaec878802abc71c488c4abc6e13a694b7b4a7377eeafd95c0c9c",
+    "log": "artifacts/historical-validation/b5-sync-git-blob.log"
+  },
+  "mixedHistoricalCheckout": {
+    "path": "apps/mobile/integration_test/auth_android_b5_sync_test.dart",
+    "lfTerminators": 383,
+    "gitBlobAndLfSha256": "c18a6fbe3f0eaec878802abc71c488c4abc6e13a694b7b4a7377eeafd95c0c9c",
+    "crlfSha256": "a4f4e74c887c46dd06e9ae20e04dcfc80368f9482bd6b0b56ef4f347d893feb2",
+    "change": "Only this fixture receives LF-to-CRLF checkout line endings in the fixed historical validation copy."
+  },
+  "originalDeviceFixture": {
+    "path": "apps/mobile/integration_test/auth_android_b5_device_test.dart",
+    "gitRawSha256": "08e0e9f1f95fdda9208e0a36ab19b011b5f3bf3ceb9859c880431f85aebddc46",
+    "finalWorkingRawSha256": "08e0e9f1f95fdda9208e0a36ab19b011b5f3bf3ceb9859c880431f85aebddc46",
+    "sourceBuildFixtureSha256": "08e0e9f1f95fdda9208e0a36ab19b011b5f3bf3ceb9859c880431f85aebddc46"
+  },
+  "b5ProductInputProof": {
+    "count": 162,
+    "archiveMatchesGitBlob": 162,
+    "archiveMatchesFinalWorkingRaw": 162,
+    "initialRawMismatches": 157,
+    "manifest": "artifacts/historical-validation/b5-162-input-byte-proof.json"
+  },
+  "b6WindowsSymlinkStubs": [
+    {
+      "path": "packages/auth_vault/ios/Classes/AuthInstallationMarker.swift",
+      "gitMode": "120000",
+      "gitBlobOid": "16df6d2747cf6034bf35b88682d8c20135d6af57",
+      "gitBlobBytes": 77,
+      "gitBlobSha256": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881",
+      "workingRawBytes": 77,
+      "workingRawSha256": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881",
+      "workingLfSha256": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881",
+      "gitBlobLfSha256": "4728fe35c6d26ef63c6f7ca0cde11b468b1db7f4d91adb1b4fa546927fb70881",
+      "rawEqualsGitBlob": true,
+      "workingIsSymlink": false
+    },
+    {
+      "path": "packages/auth_vault/ios/Classes/AuthVaultPlugin.swift",
+      "gitMode": "120000",
+      "gitBlobOid": "418d1d35150f7cc3db0f4bf8ed4b72c9ff8926e6",
+      "gitBlobBytes": 70,
+      "gitBlobSha256": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe",
+      "workingRawBytes": 70,
+      "workingRawSha256": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe",
+      "workingLfSha256": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe",
+      "gitBlobLfSha256": "89d602130b8634b50e2561b4e2db5e85d959b39a0d278010837fb4aa382d6fbe",
+      "rawEqualsGitBlob": true,
+      "workingIsSymlink": false
+    }
+  ],
+  "b6SymlinkScope": "Mode 120000 Git blobs are regular 77/70-byte path placeholders on Windows; not dereferenced Swift files. No iOS execution or acceptance claimed.",
+  "versionSpecificHandoffDifferences": [
+    {
+      "path": "docs/design/HANDOFF.md",
+      "b6GitBlobSha256": "cc1b782ec5cffa1eb89b4db0d9579dea6ec602650642d4a7512171b5c298a182",
+      "b5GitBlobSha256": "44a1fe4858eb6e6f033a3b5376cd5a63cde4a39a0b90ca27ae588ad3e72aaf2c",
+      "b6ArchivedRawSha256": "cc1b782ec5cffa1eb89b4db0d9579dea6ec602650642d4a7512171b5c298a182",
+      "b6ArchivedLfSha256": "cc1b782ec5cffa1eb89b4db0d9579dea6ec602650642d4a7512171b5c298a182"
+    },
+    {
+      "path": "docs/design/progress.md",
+      "b6GitBlobSha256": "9fbc17d0d00fd278b5f81b4f0c421ef23889d4a3b1e8cd5426e46cacf05414c4",
+      "b5GitBlobSha256": "aa1a93e35f3802fbae185ce65596291938146d0ed253daa5d5b2cd19f369e97f",
+      "b6ArchivedRawSha256": "9fbc17d0d00fd278b5f81b4f0c421ef23889d4a3b1e8cd5426e46cacf05414c4",
+      "b6ArchivedLfSha256": "9fbc17d0d00fd278b5f81b4f0c421ef23889d4a3b1e8cd5426e46cacf05414c4"
+    },
+    {
+      "path": "docs/design/module-acceptance-handoff.md",
+      "b6GitBlobSha256": "495a7a5a15ae0d9f1ec2d3079cbca83ce94fad1b99368dcfe2f23a8de9d94e97",
+      "b5GitBlobSha256": "920d19b05cb36cacc6ab0a92c13e94c233fa1174bf7d4373df32c98bbd19d9fc",
+      "b6ArchivedRawSha256": "495a7a5a15ae0d9f1ec2d3079cbca83ce94fad1b99368dcfe2f23a8de9d94e97",
+      "b6ArchivedLfSha256": "495a7a5a15ae0d9f1ec2d3079cbca83ce94fad1b99368dcfe2f23a8de9d94e97"
+    },
+    {
+      "path": "docs/design/auth-privacy-machine-handoff.md",
+      "b6GitBlobSha256": "6fcbe29d3d0d8dc06bbb24014d1f29b582ee495606ab6a7a573149de1330ff6e",
+      "b5GitBlobSha256": "5a57b392e02862d407e62cf7f4885736b58fb9626622070d8c3c245b51e32769",
+      "b6ArchivedRawSha256": "6fcbe29d3d0d8dc06bbb24014d1f29b582ee495606ab6a7a573149de1330ff6e",
+      "b6ArchivedLfSha256": "6fcbe29d3d0d8dc06bbb24014d1f29b582ee495606ab6a7a573149de1330ff6e"
+    },
+    {
+      "path": "docs/design/auth-privacy-non-ios-closure-plan.md",
+      "b6GitBlobSha256": "c586a15be4d00fb85aa921f28841efb5e7d9bf9820891cccd8caf1db4410a024",
+      "b5GitBlobSha256": "8c0daf4e525477d33b88a044653afacb9c69f3553485e06b7ea707eb328e308c",
+      "b6ArchivedRawSha256": "c586a15be4d00fb85aa921f28841efb5e7d9bf9820891cccd8caf1db4410a024",
+      "b6ArchivedLfSha256": "c586a15be4d00fb85aa921f28841efb5e7d9bf9820891cccd8caf1db4410a024"
+    }
+  ],
+  "historicalResultsRetained": {
+    "originalB5": {
+      "PASS": 23,
+      "FAIL": 1,
+      "BLOCKED": 0,
+      "NOT_RUN": 0
+    },
+    "syncB5": {
+      "PASS": 24,
+      "FAIL": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0
+    },
+    "b6": {
+      "PASS": 22,
+      "FAIL": 0,
+      "BLOCKED": 2,
+      "NOT_RUN": 0
+    },
+    "productBaseline": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+    "historicalOnly": true,
+    "candidateAcceptanceClaimed": false,
+    "bitwarden": "BLOCKED"
+  },
+  "indexRefreshHistory": {
+    "observation": "After exact raw-byte restoration Git status still listed 387 stat-only M entries, while git diff and per-file blob comparisons showed no content difference except the explicitly recorded sync fixture line endings.",
+    "attempts": [
+      {
+        "command": "git update-index --refresh",
+        "exitCode": 1,
+        "result": "status remained",
+        "log": "artifacts/historical-validation/b5-index-refresh.log"
+      },
+      {
+        "command": "git read-tree --reset HEAD",
+        "exitCode": 0,
+        "result": "status remained; cached diff empty; no -u/worktree modification",
+        "log": "artifacts/historical-validation/b5-index-rebuild.log"
+      },
+      {
+        "command": "git add --renormalize -- .",
+        "exitCode": 0,
+        "result": "index refreshed; status empty; cached diff empty",
+        "log": "artifacts/historical-validation/b5-index-renormalize.log"
+      }
+    ],
+    "workingBytesChangedByIndexRefresh": false,
+    "noNewCommit": true,
+    "note": "Earlier status logs remain preserved and were not empty; final status logs are the clean ones. The initial inference about sandbox permissions was not established."
+  },
+  "commands": [
+    {
+      "label": "b5-original-git-blob",
+      "cwd": "HnuHole-b5-historical",
+      "args": [
+        "python",
+        "tools/check-android-b5-evidence.py"
+      ],
+      "exitCode": 0,
+      "log": "b5-original-git-blob.log",
+      "logSha256": "8f109f5e8a0ee38ccfdbfa248013c8a8b7229cf90106267ec9520a9292e27948"
+    },
+    {
+      "label": "b5-sync-git-blob",
+      "cwd": "HnuHole-b5-historical",
+      "args": [
+        "python",
+        "tools/check-android-b5-sync-evidence.py"
+      ],
+      "exitCode": 1,
+      "log": "b5-sync-git-blob.log",
+      "logSha256": "89c4e39e633975278021cfe23576ae3e7131f2f72e52f8e03b0d205b7cf0145b"
+    },
+    {
+      "label": "b5-original-mixed-checkout",
+      "cwd": "HnuHole-b5-historical",
+      "args": [
+        "python",
+        "tools/check-android-b5-evidence.py"
+      ],
+      "exitCode": 0,
+      "log": "b5-original-mixed-checkout.log",
+      "logSha256": "8f109f5e8a0ee38ccfdbfa248013c8a8b7229cf90106267ec9520a9292e27948"
+    },
+    {
+      "label": "b5-sync-mixed-checkout",
+      "cwd": "HnuHole-b5-historical",
+      "args": [
+        "python",
+        "tools/check-android-b5-sync-evidence.py"
+      ],
+      "exitCode": 0,
+      "log": "b5-sync-mixed-checkout.log",
+      "logSha256": "22f92d5d9299eb87c50e3be3933109d6c469f56a96a782d66e92c62a90ab5335"
+    },
+    {
+      "label": "b6-full-fixed-snapshot",
+      "cwd": "HnuHole-b6-historical",
+      "args": [
+        "python",
+        "tools/check-non-ios-closure.py"
+      ],
+      "exitCode": 0,
+      "log": "b6-full-fixed-snapshot.log",
+      "logSha256": "8e8b600ba8f2953e257569712fbb861b1f6555cc821039640fb16fdb076f9502"
+    },
+    {
+      "label": "b5-original-final-clean",
+      "cwd": "HnuHole-b5-historical",
+      "args": [
+        "python",
+        "tools/check-android-b5-evidence.py"
+      ],
+      "exitCode": 0,
+      "log": "b5-original-final-clean.log",
+      "logSha256": "8f109f5e8a0ee38ccfdbfa248013c8a8b7229cf90106267ec9520a9292e27948"
+    },
+    {
+      "label": "b5-sync-final-clean",
+      "cwd": "HnuHole-b5-historical",
+      "args": [
+        "python",
+        "tools/check-android-b5-sync-evidence.py"
+      ],
+      "exitCode": 0,
+      "log": "b5-sync-final-clean.log",
+      "logSha256": "22f92d5d9299eb87c50e3be3933109d6c469f56a96a782d66e92c62a90ab5335"
+    },
+    {
+      "label": "b6-full-final-clean",
+      "cwd": "HnuHole-b6-historical",
+      "args": [
+        "python",
+        "tools/check-non-ios-closure.py"
+      ],
+      "exitCode": 0,
+      "log": "b6-full-final-clean.log",
+      "logSha256": "8e8b600ba8f2953e257569712fbb861b1f6555cc821039640fb16fdb076f9502"
+    }
+  ],
+  "finalCleanliness": [
+    {
+      "repository": "HnuHole-b5-historical",
+      "statusExitCode": 0,
+      "statusIncludingUntrackedAndIgnored": "",
+      "runtimeRoots": [
+        "apps/mobile/lib",
+        "apps/mobile/android/app/src/main",
+        "packages/auth_passkey/lib",
+        "packages/auth_passkey/android/src/main",
+        "packages/auth_vault/lib",
+        "packages/auth_vault/android/src/main",
+        "services/api/internal",
+        "services/api/cmd",
+        "services/api/migrations"
+      ],
+      "runtimeFileCount": 162,
+      "untrackedRuntimeFiles": [],
+      "log": "HnuHole-b5-historical-final-status-including-ignored.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "command": "git status --porcelain=v1 --untracked-files=all --ignored"
+    },
+    {
+      "repository": "HnuHole-b6-historical",
+      "statusExitCode": 0,
+      "statusIncludingUntrackedAndIgnored": "",
+      "runtimeRoots": [
+        "apps/mobile/lib",
+        "apps/mobile/android/app/src/main",
+        "packages/auth_passkey/lib",
+        "packages/auth_passkey/android/src/main",
+        "packages/auth_vault/lib",
+        "packages/auth_vault/android/src/main",
+        "services/api/internal",
+        "services/api/cmd",
+        "services/api/migrations"
+      ],
+      "runtimeFileCount": 162,
+      "untrackedRuntimeFiles": [],
+      "log": "HnuHole-b6-historical-final-status-including-ignored.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "command": "git status --porcelain=v1 --untracked-files=all --ignored"
+    }
+  ],
+  "boundSourceFiles": [
+    {
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "path": "tools/check-android-b5-evidence.py",
+      "sha256": "e2b756156a8fc3ecae99ee45df0454ce9e4ab12729243a5e68cbbdf8922997f7",
+      "bytes": 4546,
+      "exactGitBlob": true
+    },
+    {
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "path": "tools/check-android-b5-sync-evidence.py",
+      "sha256": "cbed68cc05cc3960caca78690441982a581e91109f7f043f4cf3dfffd91aa06c",
+      "bytes": 6084,
+      "exactGitBlob": true
+    },
+    {
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "path": "tools/check-non-ios-closure.py",
+      "sha256": "c1373dedef0be67c3a52eae8c066f0281be631e2cabab2a704a68f97bfee762a",
+      "bytes": 14067,
+      "exactGitBlob": true
+    },
+    {
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "path": "services/api/authlab/android-b5-20261016-verification.json",
+      "sha256": "95fe0deee8dad7b3b48ecdc0f4321d0ff4ee9e6ed028c521cf6b6515082296c0",
+      "bytes": 28465,
+      "exactGitBlob": true
+    },
+    {
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "path": "services/api/authlab/android-b5-sync-20261016-verification.json",
+      "sha256": "96714e6af3d4fef481ccd3fbf9e86a6ed55be508000117f7cb518d299bb8bdc3",
+      "bytes": 60624,
+      "exactGitBlob": true
+    },
+    {
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "path": "services/api/authlab/android-b5-bitwarden-20261016-verification.json",
+      "sha256": "f8defc0ed23ccb47a8b3743eba1cd3072e9ed37b51f52b29d2d5ec02f3fa1636",
+      "bytes": 2928,
+      "exactGitBlob": true
+    },
+    {
+      "commit": "ea5cc52840f009b02106f928c444e423c6e61b3e",
+      "path": "services/api/authlab/b6-single-android-20261013-verification.json",
+      "sha256": "c198186f3c9924bbc467869ce8b8454d3c8fc7c42c8a31961598a09efa7711ee",
+      "bytes": 191629,
+      "exactGitBlob": true
+    },
+    {
+      "commit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+      "path": "tools/check-non-ios-closure.py",
+      "sha256": "c1373dedef0be67c3a52eae8c066f0281be631e2cabab2a704a68f97bfee762a",
+      "bytes": 14067,
+      "exactGitBlob": true
+    },
+    {
+      "commit": "d859cb05c772cdf8d8b75e439a2bfedf0414dd46",
+      "path": "services/api/authlab/b6-single-android-20261013-verification.json",
+      "sha256": "c198186f3c9924bbc467869ce8b8454d3c8fc7c42c8a31961598a09efa7711ee",
+      "bytes": 191629,
+      "exactGitBlob": true
+    }
+  ],
+  "supportingArtifacts": [
+    {
+      "path": "historical-validation/b5-initial-bytes.json",
+      "sha256": "1f96118584a56739cac85e0945f11320cd4b5203fd8d96ad562db808dfe8820f",
+      "bytes": 390017,
+      "availability": "Local review artifacts retained alongside this portable summary; not a claim that this file is tracked in the candidate"
+    },
+    {
+      "path": "historical-validation/b5-git-blob-bytes.json",
+      "sha256": "bafb95b28744f3691a96ff9f8336ad11661c6bd6eacc1d134b18ae1c2c3171d1",
+      "bytes": 389624,
+      "availability": "Local review artifacts retained alongside this portable summary; not a claim that this file is tracked in the candidate"
+    },
+    {
+      "path": "historical-validation/b5-mixed-checkout-bytes.json",
+      "sha256": "367fc63098b2b9d41e0752ed4f8fca0697d52cabeb8738e111a2cf6b99262335",
+      "bytes": 389625,
+      "availability": "Local review artifacts retained alongside this portable summary; not a claim that this file is tracked in the candidate"
+    },
+    {
+      "path": "historical-validation/b6-initial-bytes.json",
+      "sha256": "ed78e8017e5b207824fc0bf3414849104d804b0a24bba34787d30251e1247983",
+      "bytes": 381763,
+      "availability": "Local review artifacts retained alongside this portable summary; not a claim that this file is tracked in the candidate"
+    },
+    {
+      "path": "historical-validation/b6-git-blob-bytes.json",
+      "sha256": "ed78e8017e5b207824fc0bf3414849104d804b0a24bba34787d30251e1247983",
+      "bytes": 381763,
+      "availability": "Local review artifacts retained alongside this portable summary; not a claim that this file is tracked in the candidate"
+    },
+    {
+      "path": "historical-validation/b5-162-input-byte-proof.json",
+      "sha256": "c0a317deb470e65dfc45b57ed535550a79bd2ac25ef680f2f537e7cf1266e35a",
+      "bytes": 113117,
+      "availability": "Local review artifacts retained alongside this portable summary; not a claim that this file is tracked in the candidate"
+    },
+    {
+      "path": "historical-validation/REPORT.md",
+      "sha256": "3593f8c649cea95107c22a6de3270918376f11a579714c9d447c77e128c272f6",
+      "bytes": 7244,
+      "availability": "Local review artifacts retained alongside this portable summary; not a claim that this file is tracked in the candidate"
+    },
+    {
+      "path": "historical-validation/historical-validation.json",
+      "sha256": "54867df5b810d029631bf98be6b0104f128ffb75db04c90d3a6b17fd63f8e39a",
+      "bytes": 297938,
+      "availability": "Retained local historical review evidence"
+    },
+    {
+      "path": "historical-b5-sync.log",
+      "sha256": "2e173997f99e7c28777f5ec24f63d29c7c080fe2e5787702170b1bafbe75ad28",
+      "bytes": 453,
+      "availability": "Retained local historical review evidence"
+    }
+  ],
+  "boundaries": {
+    "historicalBookkeepingRechecked": true,
+    "currentCandidateAcceptance": "NOT_ESTABLISHED_BY_THIS_REPORT",
+    "currentCandidateApkTested": false,
+    "newDeviceCeremonyExecuted": false,
+    "nativeInstrumentationExecuted": false,
+    "productionApproved": false,
+    "iosAcceptancePassed": false,
+    "futureBusinessAcceptancePassed": false,
+    "fullAnonymityClosurePassed": false,
+    "historicalB5Original23Pass1FailPreserved": true,
+    "historicalBitwardenBlockedPreserved": true,
+    "historicalB6_22Pass2BlockedPreserved": true,
+    "historicalSyncAttemptsAndCumulative24PassPreserved": true,
+    "candidateFilesChangedByHistoricalTask": false,
+    "committed": false,
+    "pushed": false,
+    "remoteWritten": false,
+    "phoneAccessed": false,
+    "personalOrProductionDataAccessed": false
+  },
+  "initialCheckoutDifferences": {
+    "b5RawDifferentTrackedFiles": 388,
+    "b5RawDifferentProductInputs": 157,
+    "allTrackedPathsAndRawLfBlobHashes": "historical-validation/b5-initial-bytes.json",
+    "afterGitBlobMaterializationDifferentTrackedFiles": 0,
+    "afterExplicitMixedFixtureDifferentTrackedFiles": 1,
+    "soleFinalRawDifferencePath": "apps/mobile/integration_test/auth_android_b5_sync_test.dart"
+  }
+}

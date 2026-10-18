@@ -1,0 +1,32 @@
+name: Collaboration
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: collaboration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Regression tests for policy and hooks
+        run: python -m unittest discover -s tools/tests -p test_collaboration.py -v
+      - name: Check PR or merged commits
+        # Read untrusted PR fields as JSON data, never interpolate them into shell code.
+        run: python tools/check-collaboration.py --github-event "$GITHUB_EVENT_PATH"

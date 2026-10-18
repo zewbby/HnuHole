@@ -14,6 +14,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/posts"
 )
 
@@ -134,6 +135,11 @@ func allowsPostListQuery(r *http.Request) bool {
 }
 
 func (b *boundary) communityPostsPublic(w http.ResponseWriter, r *http.Request, backend PostBackend) {
+	if isPostImagePath(r.URL.Path) {
+		images, _ := backend.(PostImageBackend)
+		b.communityPostImages(w, r, images)
+		return
+	}
 	route, err := parsePostRoute(r.URL.Path)
 	if err != nil || r.URL.RawPath != "" {
 		b.postBad(w, errMalformed)
@@ -314,7 +320,7 @@ func validPostCursor(cursor string) bool {
 func postIntent(r *http.Request, route postRoute) (posts.Intent, error) {
 	intent := posts.Intent{Operation: route.operation}
 	if route.command {
-		object, err := readRequestObject(r, posts.MaxRequestBytes, []string{"channelId", "identityId", "title", "body"}, nil)
+		object, err := readRequestObject(r, posts.MaxRequestBytes, []string{"channelId", "identityId", "title", "body"}, []string{"images"})
 		if err != nil {
 			return intent, err
 		}
@@ -326,6 +332,10 @@ func postIntent(r *http.Request, route postRoute) (posts.Intent, error) {
 		intent.Body, e4 = stringField(object, "body")
 		if e1 != nil || e2 != nil || e3 != nil || e4 != nil {
 			return intent, errMalformed
+		}
+		intent.Images, err = parsePostImages(object)
+		if err != nil {
+			return intent, err
 		}
 	} else if route.operation == posts.DeletePost {
 		if noBodyOrQuery(r) != nil {
@@ -341,7 +351,11 @@ func postIntent(r *http.Request, route postRoute) (posts.Intent, error) {
 		if route.operation == posts.Retry {
 			limit = posts.MaxRequestBytes
 		}
-		object, err := readRequestObject(r, limit, required, nil)
+		var optional []string
+		if route.operation == posts.Retry {
+			optional = []string{"images"}
+		}
+		object, err := readRequestObject(r, limit, required, optional)
 		if err != nil {
 			return intent, err
 		}
@@ -358,12 +372,52 @@ func postIntent(r *http.Request, route postRoute) (posts.Intent, error) {
 			if e1 != nil || e2 != nil {
 				return intent, errMalformed
 			}
+			intent.Images, err = parsePostImages(object)
+			if err != nil {
+				return intent, err
+			}
 		}
 	}
 	if _, err := posts.FrameIntent(intent); err != nil {
 		return intent, errMalformed
 	}
 	return intent, nil
+}
+
+func parsePostImages(object map[string]any) ([]postmedia.Selection, error) {
+	value, exists := object["images"]
+	if !exists {
+		return nil, nil
+	}
+	array, ok := value.([]any)
+	if !ok || len(array) > 9 {
+		return nil, errMalformed
+	}
+	items := make([]postmedia.Selection, len(array))
+	for i, v := range array {
+		o, ok := v.(map[string]any)
+		if !ok || fields(o, []string{"mediaId", "sha256", "byteLength", "mimeType", "width", "height"}, nil) != nil {
+			return nil, errMalformed
+		}
+		var e1, e2, e3, e4, e5, e6 error
+		var size, w, h int
+		items[i].MediaID, e1 = stringField(o, "mediaId")
+		items[i].SHA256, e2 = stringField(o, "sha256")
+		items[i].MIME, e3 = stringField(o, "mimeType")
+		size, e4 = integerField(o, "byteLength", 1, postmedia.MaxBytes)
+		w, e5 = integerField(o, "width", 1, postmedia.MaxDimension)
+		h, e6 = integerField(o, "height", 1, postmedia.MaxDimension)
+		if e1 != nil || e2 != nil || e3 != nil || e4 != nil || e5 != nil || e6 != nil {
+			return nil, errMalformed
+		}
+		items[i].ByteLength = int(size)
+		items[i].Width = int(w)
+		items[i].Height = int(h)
+	}
+	if postmedia.ValidateManifest(items) != nil {
+		return nil, errMalformed
+	}
+	return items, nil
 }
 
 func (b *boundary) postBad(w http.ResponseWriter, err error) {
@@ -593,7 +647,7 @@ func strictPostValue(value any, route postRoute) (any, error) {
 		if p, yes := value.(*posts.PublicPostResponse); yes && p != nil {
 			result, ok = *p, true
 		}
-		if !ok || result.Post.PostID != route.id || !validPublicPostCard(posts.PublicPostCard{PostID: result.Post.PostID, ChannelID: result.Post.ChannelID, Title: result.Post.Title, Author: result.Post.Author, PublishedAt: result.Post.PublishedAt}) || posts.ValidateContent(result.Post.Title, result.Post.Body) != nil {
+		if !ok || result.Post.PostID != route.id || !validPublicPostCard(posts.PublicPostCard{PostID: result.Post.PostID, ChannelID: result.Post.ChannelID, Title: result.Post.Title, Author: result.Post.Author, PublishedAt: result.Post.PublishedAt}) || posts.ValidateContentWithImages(result.Post.Title, result.Post.Body, result.Post.ImageCount) != nil {
 			return nil, errMalformed
 		}
 		return result, nil
@@ -652,7 +706,7 @@ func validOwnPostTask(detail posts.OwnTaskDetail) bool {
 	if !postValidID(task.TaskID) || !postValidID(task.PostID) || !postValidID(task.ChannelID) || !postValidID(task.IdentityID) || task.AttemptVersion < 1 || !validPostTime(task.AcceptedAt) || !task.ServerSortAt.Equal(task.AcceptedAt) || !validPostTime(task.ServerSortAt) || task.ContentAvailable != (detail.Content != nil) {
 		return false
 	}
-	if detail.Content != nil && posts.ValidateContent(detail.Content.Title, detail.Content.Body) != nil {
+	if detail.Content != nil && posts.ValidateContentWithImages(detail.Content.Title, detail.Content.Body, detail.Content.ImageCount) != nil {
 		return false
 	}
 	// 已公开任务可核对其公开文字，但不能重建 pending/failed 卡片或维护权限。

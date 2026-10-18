@@ -110,25 +110,32 @@ class PostDetail extends PostCard {
     required super.author,
     required super.publishedAt,
     required this.body,
+    this.imageCount = 0,
   });
   final String body;
+  final int imageCount;
   static PostDetail fromJson(Object? raw) {
-    final m = PostJson.record(raw, {
-      'postId',
-      'channelId',
-      'title',
-      'body',
-      'author',
-      'publishedAt',
-    });
+    final m = PostJson.record(
+      raw,
+      {'postId', 'channelId', 'title', 'body', 'author', 'publishedAt'},
+      optional: {'imageCount'},
+    );
     final title = PostJson.text(m, 'title', maxLength: 4096);
-    final body = PostJson.text(m, 'body', maxLength: 65536);
-    PostContentRules.validate(title, body);
+    final imageCount = PostJson.imageCount(m);
+    final body = PostJson.text(
+      m,
+      'body',
+      maxLength: 65536,
+      allowEmpty: imageCount > 0,
+    );
+    PostContentRules.validateTitle(title);
+    if (body.isNotEmpty || imageCount == 0) PostContentRules.validateBody(body);
     return PostDetail(
       postId: PostJson.id(m, 'postId'),
       channelId: PostJson.id(m, 'channelId'),
       title: title,
       body: body,
+      imageCount: imageCount,
       author: PostAuthor.fromJson(m['author']),
       publishedAt: PostJson.date(m, 'publishedAt'),
     );
@@ -151,14 +158,26 @@ class OwnPostCard {
 }
 
 class PostContent {
-  const PostContent({required this.title, required this.body});
+  const PostContent({
+    required this.title,
+    required this.body,
+    this.imageCount = 0,
+  });
   final String title, body;
+  final int imageCount;
   static PostContent fromJson(Object? raw) {
-    final m = PostJson.record(raw, {'title', 'body'});
+    final m = PostJson.record(raw, {'title', 'body'}, optional: {'imageCount'});
+    final imageCount = PostJson.imageCount(m);
     final title = PostJson.text(m, 'title', maxLength: 4096);
-    final body = PostJson.text(m, 'body', maxLength: 65536);
-    PostContentRules.validate(title, body);
-    return PostContent(title: title, body: body);
+    final body = PostJson.text(
+      m,
+      'body',
+      maxLength: 65536,
+      allowEmpty: imageCount > 0,
+    );
+    PostContentRules.validateTitle(title);
+    if (body.isNotEmpty || imageCount == 0) PostContentRules.validateBody(body);
+    return PostContent(title: title, body: body, imageCount: imageCount);
   }
 }
 
@@ -486,9 +505,12 @@ class PostJson {
     Map<String, Object?> m,
     String key, {
     int maxLength = 1024,
+    bool allowEmpty = false,
   }) {
     final value = m[key];
-    if (value is! String || value.isEmpty || value.length > maxLength) {
+    if (value is! String ||
+        !allowEmpty && value.isEmpty ||
+        value.length > maxLength) {
       throw const FormatException('Invalid post string');
     }
     PostContentRules.scalarText(value);
@@ -497,6 +519,8 @@ class PostJson {
 
   static String id(Map<String, Object?> m, String key) =>
       PostProtocol.resourceId(text(m, key));
+  static int imageCount(Map<String, Object?> m) =>
+      m.containsKey('imageCount') ? integer(m, 'imageCount', 1, 9) : 0;
   static bool boolean(Map<String, Object?> m, String key) {
     if (m[key] is! bool) throw const FormatException('Invalid post boolean');
     return m[key] as bool;

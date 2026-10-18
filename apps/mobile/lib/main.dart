@@ -59,7 +59,7 @@ void main() {
     store: store,
     directory: directory,
   );
-  final postApi = HttpPostApi(
+  final postApi = HttpPostUploadApi(
     communityBaseUri: communityBaseUri,
     client: createAppHttpClient(
       community: communityBaseUri,
@@ -68,6 +68,9 @@ void main() {
   );
   final posts = PostController(
     api: postApi,
+    mediaApi: postApi,
+    uploadApi: postApi,
+    photoPicker: NativePostPhotoPicker(),
     sessions: sessions,
     authStore: store,
     identities: api,
@@ -78,6 +81,7 @@ void main() {
       accountId: accountId,
     ),
   );
+  final postMedia = PostMediaRepository(posts);
   final passkey = NativePasskeyClient();
   final management = SecurityManagementController(
     api: api,
@@ -114,6 +118,8 @@ void main() {
       store: store,
       posts: posts,
       postApi: postApi,
+      postMedia: postMedia,
+      loadPostImages: postMedia.load,
     ),
   );
 }
@@ -134,6 +140,8 @@ class HnuholeApp extends StatefulWidget {
     required this.store,
     required this.posts,
     required this.postApi,
+    this.loadPostImages,
+    this.postMedia,
   });
 
   final ChannelDirectoryController directory;
@@ -146,6 +154,8 @@ class HnuholeApp extends StatefulWidget {
   final AuthStore store;
   final PostController posts;
   final HttpPostApi postApi;
+  final PostImagesLoader? loadPostImages;
+  final PostMediaRepository? postMedia;
 
   @override
   State<HnuholeApp> createState() => _HnuholeAppState();
@@ -313,6 +323,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
           MaterialPageRoute<void>(
             builder: (_) => PersonalPostsScreen(
               controller: widget.posts,
+              loadImages: widget.loadPostImages,
               channelNames: {
                 for (final channel in widget.directory.channels)
                   channel.id: channel.displayName,
@@ -354,6 +365,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
       settings: RouteSettings(name: 'channel:${channel.id}'),
       builder: (_) => ChannelPostsScreen(
         controller: widget.posts,
+        loadImages: widget.loadPostImages,
         channel: channel,
         onManageIdentities: _openIdentity,
         onAuthenticationRequired: _openAuth,
@@ -374,6 +386,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     widget.management.dispose();
     widget.identities.dispose();
     widget.flows.dispose();
+    widget.postMedia?.dispose();
     widget.posts.dispose();
     widget.postApi.close();
     widget.sessions.dispose();

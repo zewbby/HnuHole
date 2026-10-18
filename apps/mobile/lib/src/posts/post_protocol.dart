@@ -91,6 +91,68 @@ class PostProtocol {
   static String digest(List<int> frame) =>
       hashes.sha256.convert(frame).toString();
 
+  /// media-v1 wraps the unchanged text frame. No images retains legacy bytes.
+  static Uint8List withImages(
+    Uint8List textFrame,
+    List<Map<String, dynamic>> images,
+  ) {
+    if (images.isEmpty) return textFrame;
+    if (images.length > 9) throw const FormatException('Too many images');
+    final ids = <String>{};
+    final fields = <List<int>>[];
+    for (final image in images) {
+      if (image.keys.toSet().difference({
+            'mediaId',
+            'sha256',
+            'mimeType',
+            'byteLength',
+            'width',
+            'height',
+          }).isNotEmpty ||
+          image.length != 6) {
+        throw const FormatException('Invalid image fields');
+      }
+      final id = resourceId(image['mediaId'] as String);
+      if (!ids.add(id)) throw const FormatException('Repeated media');
+      final digest = digestValue(image['sha256'] as String),
+          mime = image['mimeType'] as String;
+      final bytes = image['byteLength'] as int,
+          width = image['width'] as int,
+          height = image['height'] as int;
+      if (!{
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+          }.contains(mime) ||
+          bytes < 1 ||
+          bytes > 10 * 1024 * 1024 ||
+          width < 1 ||
+          height < 1 ||
+          width > 16384 ||
+          height > 16384 ||
+          width * height > 12 * 1024 * 1024) {
+        throw const FormatException('Invalid image budget');
+      }
+      fields.add([
+        ..._id(id),
+        ..._text(digest),
+        ..._text(mime),
+        for (final value in [bytes, width, height])
+          ...(ByteData(
+            4,
+          )..setUint32(0, value, Endian.big)).buffer.asUint8List(),
+      ]);
+    }
+    return Uint8List.fromList([
+      ...ascii.encode('HNUHOLE/POST-MEDIA-COMMAND/V1'),
+      0,
+      ...textFrame,
+      images.length,
+      for (final field in fields) ...field,
+    ]);
+  }
+
   static Uint8List _frame(int operation, List<List<int>> fields) =>
       Uint8List.fromList([
         ...ascii.encode('HNUHOLE/POST-COMMAND/V1'),
@@ -135,9 +197,12 @@ class PostContentRules {
     return value.characters.length;
   }
 
-  static void validate(String title, String body) {
+  static void validate(String title, String body, {int imageCount = 0}) {
+    if (imageCount < 0 || imageCount > 9) {
+      throw const FormatException('Invalid image count');
+    }
     validateTitle(title);
-    validateBody(body);
+    if (body.isNotEmpty || imageCount == 0) validateBody(body);
   }
 
   static void validateTitle(String value) =>

@@ -1,12 +1,30 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'loopback_tls_fixture.dart';
+
+import 'dart:typed_data';
+
+import 'package:crypto/crypto.dart' as hashes;
+
+import 'package:flutter/painting.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/src/auth/auth_crypto.dart';
 import 'package:hnuhole_mobile/src/posts/http_post_api.dart';
 import 'package:hnuhole_mobile/src/posts/post_api.dart';
 import 'package:hnuhole_mobile/src/posts/post_models.dart';
+import 'package:hnuhole_mobile/src/posts/post_media_api.dart';
+import 'package:hnuhole_mobile/src/posts/post_controller.dart';
+import 'package:hnuhole_mobile/src/posts/post_media_repository.dart';
+import 'package:hnuhole_mobile/src/posts/post_upload_models.dart';
+import 'package:hnuhole_mobile/src/storage/post_store.dart';
+
+import 'identity_test_support.dart';
+
 import 'package:hnuhole_mobile/src/posts/post_protocol.dart';
+
+import 'post_media_test_support.dart';
 
 const _id = '11111111-1111-4111-8111-111111111111';
 const _other = '22222222-2222-4222-8222-222222222222';
@@ -17,8 +35,9 @@ final _key = AuthCrypto.encode(List.filled(16, 8));
 final _requestId = AuthCrypto.encode(List.filled(16, 10));
 
 class _Captured {
-  _Captured(this.method, this.uri, this.headers, this.body);
+  _Captured(this.method, this.uri, this.headers, this.body, this.bytes);
   final String method, body;
+  final List<int> bytes;
   final Uri uri;
   final Map<String, List<String>> headers;
 }
@@ -42,9 +61,14 @@ class _Endpoint {
         request.headers.forEach(
           (key, values) => headers[key] = List.from(values),
         );
-        final body = await utf8.decoder.bind(request).join();
+        final raw = await request.fold<BytesBuilder>(
+          BytesBuilder(copy: false),
+          (b, chunk) => b..add(chunk),
+        );
+        final bytes = raw.takeBytes();
+        final body = utf8.decode(bytes, allowMalformed: true);
         endpoint.requests.add(
-          _Captured(request.method, request.uri, headers, body),
+          _Captured(request.method, request.uri, headers, body, bytes),
         );
         request.response.headers.contentType = ContentType.json;
         request.response.headers.set('Cache-Control', 'no-store');
@@ -142,8 +166,416 @@ Matcher _failure(PostFailureKind kind, {int? status, String? code}) =>
         .having((e) => e.code, 'code', code);
 
 void main() {
+  late LoopbackTlsFixture tls;
+  setUpAll(() async {
+    tls = await LoopbackTlsFixture.create();
+    _certificate = tls.certificate;
+    _privateKey = tls.privateKey;
+  });
+  tearDownAll(() => tls.dispose());
+
+  TestWidgetsFlutterBinding.ensureInitialized();
+  // This isolate intentionally contacts only its own loopback TLS fixture.
+  // Undo the test binding's blanket HTTP substitute, never production TLS rules.
+  HttpOverrides.global = null;
   late _Endpoint endpoint;
   late HttpPostApi api;
+  test('media CREATE and RETRY preserve manifest and bind the existing intent routes', () async {
+    final uploader = HttpPostUploadApi(
+      communityBaseUri: endpoint.uri,
+      client: endpoint.client(),
+    );
+    addTearDown(uploader.close);
+    final selection = PostImageSelection.fromJson({
+      'mediaId': _other,
+      'sha256': 'a' * 64,
+      'byteLength': 42,
+      'mimeType': 'image/gif',
+      'width': 1,
+      'height': 1,
+    });
+    endpoint.respond = (r) => _json(
+      r,
+      202,
+      r.uri.path.endsWith('/retry')
+          ? {..._accepted('RETRY', 2), 'taskId': _id}
+          : _accepted(),
+    );
+    await uploader.createWithImages(
+      sessionToken: _token,
+      commandId: _key,
+      channelId: _id,
+      identityId: _other,
+      title: '纯图帖子',
+      body: '',
+      images: [selection],
+    );
+    expect(jsonDecode(endpoint.requests.last.body), {
+      'channelId': _id,
+      'identityId': _other,
+      'title': '纯图帖子',
+      'body': '',
+      'images': [selection.toJson()],
+    });
+    await uploader.retryWithImages(
+      sessionToken: _token,
+      commandId: _key,
+      taskId: _id,
+      expectedAttemptVersion: 1,
+      title: '重试',
+      body: '',
+      images: [selection],
+    );
+    expect(endpoint.requests.last.uri.path, '/api/v1/me/post-tasks/$_id/retry');
+    expect(endpoint.requests.last.headers['idempotency-key'], [_key]);
+  });
+
+  test(
+    'per-item status/grant and raw PUT isolate Upload capability from Bearer',
+    () async {
+      final uploader = HttpPostUploadApi(
+        communityBaseUri: endpoint.uri,
+        client: endpoint.client(),
+      );
+      addTearDown(uploader.close);
+      final bytes = Uint8List.fromList([137, 80, 78, 71, 13, 10, 26, 10]);
+      final image = PostImageSelection.fromJson({
+        'mediaId': _other,
+        'sha256': hashes.sha256.convert(bytes).toString(),
+        'byteLength': bytes.length,
+        'mimeType': 'image/png',
+        'width': 1,
+        'height': 1,
+      });
+      final uploadToken = AuthCrypto.encode(List.filled(32, 31));
+      endpoint.respond = (r) async {
+        if (r.method == 'PUT') {
+          r.response.statusCode = 204;
+          r.response.headers.set('Server-Time', _time);
+          r.response.headers.set('X-Content-Type-Options', 'nosniff');
+          await r.response.close();
+          return;
+        }
+        await _json(
+          r,
+          200,
+          r.method == 'GET'
+              ? {
+                  'taskId': _id,
+                  'postId': _id,
+                  'attemptVersion': 1,
+                  'items': [
+                    {...image.toJson(), 'position': 0, 'uploaded': false},
+                  ],
+                }
+              : {
+                  'taskId': _id,
+                  'mediaId': _other,
+                  'attemptVersion': 1,
+                  'uploadToken': uploadToken,
+                  'expiresAt': '2026-10-08T00:10:00Z',
+                },
+        );
+      };
+      expect(
+        (await uploader.uploads(
+          sessionToken: _token,
+          taskId: _id,
+          version: 1,
+        )).value.uploaded,
+        [false],
+      );
+      final grant = await uploader.uploadGrant(
+        sessionToken: _token,
+        taskId: _id,
+        version: 1,
+        mediaId: _other,
+      );
+      expect(grant.value.toString(), isNot(contains(uploadToken)));
+      expect(endpoint.requests.last.headers['idempotency-key'], isNull);
+      expect(endpoint.requests.last.body, isEmpty);
+      await uploader.putOriginal(
+        uploadToken: grant.value.uploadToken,
+        taskId: _id,
+        version: 1,
+        image: image,
+        bytes: bytes,
+      );
+      expect(endpoint.requests.last.bytes, bytes);
+      expect(endpoint.requests.last.headers['authorization'], [
+        'Upload $uploadToken',
+      ]);
+      expect(endpoint.requests.last.headers['content-type'], ['image/png']);
+      expect(endpoint.requests.last.headers['idempotency-key'], isNull);
+      final count = endpoint.requests.length;
+      await expectLater(
+        uploader.putOriginal(
+          uploadToken: uploadToken,
+          taskId: _id,
+          version: 1,
+          image: image,
+          bytes: Uint8List.fromList(List.filled(bytes.length, 0)),
+        ),
+        throwsA(isA<PostFailure>()),
+      );
+      expect(endpoint.requests.length, count);
+      for (final code in ['MEDIA_INVALID', 'MEDIA_VALIDATOR_UNAVAILABLE']) {
+        endpoint.respond = (r) => _json(
+          r,
+          code == 'MEDIA_INVALID' ? 422 : 503,
+          _error(code),
+          success: false,
+        );
+        await expectLater(
+          uploader.putOriginal(
+            uploadToken: uploadToken,
+            taskId: _id,
+            version: 1,
+            image: image,
+            bytes: bytes,
+          ),
+          throwsA(isA<PostFailure>().having((e) => e.code, 'code', code)),
+        );
+      }
+    },
+  );
+  test('real host TLS adapter composes detail, renewable authority and original image group', () async {
+    final auth = await IdentityTestFixture.create();
+    final posts = PostController(
+      api: api,
+      mediaApi: api,
+      sessions: auth.sessions,
+      authStore: auth.store,
+      identities: auth.api,
+      pollInterval: Duration.zero,
+      openStore: (_) async => throw const PostStorageFailure(),
+    );
+    final media = PostMediaRepository(posts);
+    try {
+      final bytes = await File(
+        '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
+      ).readAsBytes();
+      endpoint.respond = (request) async {
+        if (request.uri.path == '/api/v1/posts/$_id') {
+          return _json(request, 200, {
+            'post': {..._card(), 'body': '', 'imageCount': 1},
+          });
+        }
+        if (request.uri.path == '/api/v1/posts/$_id/images') {
+          return _json(
+            request,
+            200,
+            mediaManifest(bytes: bytes.length, width: 640, height: 480),
+          );
+        }
+        final h = request.response.headers;
+        h.set('Content-Type', 'image/png');
+        h.set('Content-Disposition', 'attachment');
+        h.set('X-Content-Type-Options', 'nosniff');
+        h.set('Server-Time', _time);
+        h.set('Session-Expires-At', _expiry);
+        request.response.add(bytes);
+        await request.response.close();
+      };
+      expect((await posts.loadDetail(_id))!.imageCount, 1);
+      final group = await media.load(_id);
+      final source = await group.images.single.item.loadSource();
+      expect((source.provider as MemoryImage).bytes, bytes);
+      expect(source.pixelSize, const Size(640, 480));
+      expect(await group.images.single.loadThumbnail!(), same(source.provider));
+      await group.images.single.item.resolveOriginal!();
+      expect(endpoint.requests.length, 4);
+      expect(
+        endpoint.requests.every(
+          (r) =>
+              r.headers['authorization']!.single == 'Bearer $identityTestToken',
+        ),
+        isTrue,
+      );
+      group.onRelease!();
+      await expectLater(
+        group.images.single.item.loadSource(),
+        throwsA(isA<PostFailure>()),
+      );
+    } finally {
+      media.dispose();
+      posts.dispose();
+      auth.dispose();
+    }
+  });
+  test('protected media manifest and bytes use fixed C route and no credential provider', () async {
+    endpoint.respond = (request) => _json(request, 200, mediaManifest());
+    final group = (await api.imageManifest(
+      sessionToken: _token,
+      postId: _id,
+    )).value;
+    expect(group.images.single.contentVersionId, startsWith('44444444'));
+    final bytes = [137, 80, 78, 71, 13, 10, 26, 10];
+    endpoint.respond = (request) async {
+      request.response.headers.set('Content-Type', 'image/png');
+      request.response.headers.set('Content-Disposition', 'attachment');
+      request.response.headers.set('X-Content-Type-Options', 'nosniff');
+      request.response.headers.set('Session-Expires-At', _expiry);
+      request.response.headers.set('Server-Time', _time);
+      request.response.add(bytes);
+      await request.response.close();
+    };
+    final result = await api.imageBytes(
+      sessionToken: _token,
+      postId: _id,
+      image: group.images.single,
+    );
+    expect(result.value, bytes);
+    expect(endpoint.requests.last.uri.path, group.images.single.path);
+    expect(endpoint.requests.last.body, isEmpty);
+    expect(endpoint.requests.last.headers['authorization'], ['Bearer $_token']);
+    await expectLater(
+      api.imageBytes(
+        sessionToken: _token,
+        postId: _other,
+        image: group.images.single,
+      ),
+      throwsA(isA<PostFailure>()),
+    );
+    expect(endpoint.requests.length, 2);
+  });
+
+  test('media manifest rejects wrong ownership, URL tricks, duplicates, budgets and lease extension', () async {
+    final invalid = <Map<String, Object?>>[];
+    invalid.add({...mediaManifest(), 'postId': _other});
+    invalid.add({...mediaManifest(), 'accountId': _id});
+    invalid.add(mediaManifest(count: 10));
+    invalid.add(mediaManifest(lifetime: const Duration(seconds: 61)));
+    invalid.add(mediaManifest(lifetime: Duration.zero));
+    for (final path in [
+      'https://evil.invalid/a',
+      '//evil.invalid/a',
+      '/api/v1/posts/$_other/images/a/original',
+      '/api/v1/posts/$_id/../x',
+      '/api/v1/posts/$_id/images/a/original?token=x',
+    ]) {
+      final m = mediaManifest();
+      ((m['images'] as List).first['original'] as Map)['path'] = path;
+      invalid.add(m);
+    }
+    for (final field in ['mediaId', 'contentVersionId', 'position']) {
+      final m = mediaManifest(count: 2);
+      final items = m['images'] as List;
+      items[1][field] = items[0][field];
+      invalid.add(m);
+    }
+    for (final change in [
+      {'pixelWidth': 1},
+      {'frames': 121},
+      {'animated': true},
+      {'width': 16384, 'height': 16384},
+      {
+        'width': 1024,
+        'height': 1024,
+        'pixelWidth': 1024,
+        'pixelHeight': 1024,
+        'frames': 120,
+        'animated': true,
+      },
+    ]) {
+      final m = mediaManifest();
+      ((m['images'] as List).first as Map).addAll(change);
+      invalid.add(m);
+    }
+    for (final m in invalid) {
+      endpoint.respond = (request) => _json(request, 200, m);
+      await expectLater(
+        api.imageManifest(sessionToken: _token, postId: _id),
+        throwsA(isA<PostFailure>()),
+      );
+    }
+  });
+
+  test(
+    'media errors retain fixed classification and redirects are not followed',
+    () async {
+      final image = PostMediaManifest.fromJson(
+        mediaManifest(),
+        _id,
+      ).images.single;
+      endpoint.respond = (request) =>
+          _json(request, 404, _error('MEDIA_NOT_FOUND'), success: false);
+      await expectLater(
+        api.imageBytes(sessionToken: _token, postId: _id, image: image),
+        throwsA(
+          _failure(
+            PostFailureKind.rejected,
+            status: 404,
+            code: 'MEDIA_NOT_FOUND',
+          ),
+        ),
+      );
+      endpoint.respond = (request) async {
+        request.response.statusCode = 302;
+        request.response.headers.set(
+          'location',
+          '${endpoint.uri}/must-not-fetch',
+        );
+        await request.response.close();
+      };
+      await expectLater(
+        api.imageBytes(sessionToken: _token, postId: _id, image: image),
+        throwsA(isA<PostFailure>()),
+      );
+      expect(endpoint.requests.length, 2);
+    },
+  );
+
+  test(
+    'image bytes reject wrong MIME, length, cache, cookies and download policy',
+    () async {
+      final image = PostMediaManifest.fromJson(
+        mediaManifest(),
+        _id,
+      ).images.single;
+      for (final kind in [
+        'mime',
+        'short',
+        'long',
+        'cache',
+        'cookie',
+        'disposition',
+        'sniff',
+      ]) {
+        endpoint.respond = (request) async {
+          final h = request.response.headers;
+          h.set('Content-Type', kind == 'mime' ? 'image/gif' : 'image/png');
+          h.set(
+            'Content-Disposition',
+            kind == 'disposition' ? 'inline' : 'attachment',
+          );
+          h.set(
+            'X-Content-Type-Options',
+            kind == 'sniff' ? 'sniff' : 'nosniff',
+          );
+          h.set('Session-Expires-At', _expiry);
+          h.set('Server-Time', _time);
+          if (kind == 'cache') h.set('Cache-Control', 'public');
+          if (kind == 'cookie') h.add('Set-Cookie', 'test=synthetic');
+          request.response.add(
+            List.filled(
+              kind == 'short'
+                  ? 7
+                  : kind == 'long'
+                  ? 9
+                  : 8,
+              1,
+            ),
+          );
+          await request.response.close();
+        };
+        await expectLater(
+          api.imageBytes(sessionToken: _token, postId: _id, image: image),
+          throwsA(isA<PostFailure>()),
+        );
+      }
+    },
+  );
   setUp(() async {
     endpoint = await _Endpoint.start();
     api = HttpPostApi(
@@ -712,52 +1144,5 @@ void main() {
 }
 
 // 合成的公开 loopback TLS 测试材料；不作为设备、真实 C 服务或生产证据。
-const _certificate = '''-----BEGIN CERTIFICATE-----
-MIIDGjCCAgKgAwIBAgIUeainJsU//PbE0FJ/JhfwvJw81PwwDQYJKoZIhvcNAQEL
-BQAwFDESMBAGA1UEAwwJMTI3LjAuMC4xMB4XDTI2MDkzMDEzNTMyMVoXDTM2MDky
-NzEzNTMyMVowFDESMBAGA1UEAwwJMTI3LjAuMC4xMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAwnKcMVYoOlJPk3cP0T9epaBny4sjJWRZYGDXEMU2dMNP
-gQvQprguHdpKXWbYCkESP7vIGl6dQ6Mg3+7a23VHwUmOHxtyfQ5da4btwCaNEdD4
-HMAwmceqNP/5uRUsVqV2ophXPRSqPueQ/n8thHJoJjaaG5FuWXmyYtXMotpB1NGc
-FKaRMYciz+5kPyxWwOdlgqcVGU5CQmUrr+1PmbGjQuyFwlqPdil93177FjgqG8CO
-vmpshHVRwLtMBmu0a3GmryZVz5yWwkhhrw0/+Qo1P0AHh0lQ5xA2EsFM7bqzR9qn
-67OPR3LS/lhLaZ755bkh1GG1qfAJ8ZmVH5EOjHP9PwIDAQABo2QwYjAdBgNVHQ4E
-FgQUl06WpXjlpqVFYxuCGCiiwfNdw3owHwYDVR0jBBgwFoAUl06WpXjlpqVFYxuC
-GCiiwfNdw3owDwYDVR0TAQH/BAUwAwEB/zAPBgNVHREECDAGhwR/AAABMA0GCSqG
-SIb3DQEBCwUAA4IBAQCGKenINT9a7mNzSu2hWkIWGI/7MS4ZghtSKZuAI1iAbMyg
-UyTL2BcmqDHzWsRUv8RVH5dLTOrsz7br4V1N2z2cAcjtgS97CvjaqH4RyBe4PYe9
-+XynhGBktryTNV/4imJg0dHSjKbj9phuqsdXaFqHWf03zhtnCj+LmBzys/QRGHNn
-8jA2traXXVVhkYR1rlOX8Asd4FtbgpqV2BtUBUGiRoDQNz06/tt8y94Ji5nSH14L
-a5FNGUlV6d5LG7fErLvV2YUqK4/hm1CCReTKsaoZUf7u0A7pBcETJCNM9eHlQCqC
-X4Q8nT4lS+LPikYXrjZVoohYlBc0+LIkQTjhWd4L
------END CERTIFICATE-----
-''';
-const _privateKey = '''-----BEGIN PRIVATE KEY-----
-MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDCcpwxVig6Uk+T
-dw/RP16loGfLiyMlZFlgYNcQxTZ0w0+BC9CmuC4d2kpdZtgKQRI/u8gaXp1DoyDf
-7trbdUfBSY4fG3J9Dl1rhu3AJo0R0PgcwDCZx6o0//m5FSxWpXaimFc9FKo+55D+
-fy2EcmgmNpobkW5ZebJi1cyi2kHU0ZwUppExhyLP7mQ/LFbA52WCpxUZTkJCZSuv
-7U+ZsaNC7IXCWo92KX3fXvsWOCobwI6+amyEdVHAu0wGa7RrcaavJlXPnJbCSGGv
-DT/5CjU/QAeHSVDnEDYSwUzturNH2qfrs49HctL+WEtpnvnluSHUYbWp8AnxmZUf
-kQ6Mc/0/AgMBAAECggEACBm4/6X3zdr8YHrqS5MY2n+HM24opash8HQeux647D5V
-6cNYCuOYKdUCzUdQIrhsdGYNqdBdO6JOtH8bDcXVNAX51LpSl63pUf+jmFV2AdMA
-MxQFy+VxTGOJjLgg47v66D6+cgrFWN+FJWtsHJ0DhIWe/+nPSUAnoIE8CC2Qs1C0
-vbnUuhazEX+tnxuOTOqCe5tT+3J9YB57eicJNC0ffpnWx2W63pRGPVxxYzq/BPKN
-+1ezfl+FdRnaAF3SAGnGTP/nd61J8qUCccEjTzqGSuuUUonw671wJNQRSRG+LVHN
-h/KL8saVqquRc4FrGCFhHhfIeaT2tSIlDcsaNzM7mQKBgQDmFLsYWX64/7AQ4xzG
-5jgTMsVu/C7Qw640Rm9FVCCKSycXZM2hAAuhajoF2upiyCWJgXejGYKMs4gehr+l
-KOVfeZWSy9vE3bzjYe0o7ncDN6cbB8L2dsaqye/XTpsaUmRMo2e7k0NsU9xDkuz8
-vMQR5PcbNtjcURBdkjVTV1QclQKBgQDYWkGxv6a2kgtJcMQ19qBM4aYqLRgD004U
-g4eqJESYuMkSNXIqFhsCR4wuLahe6zCte5OJLlr1rTEpWkHmlMOlS+ZrjS5HsBif
-JDntCYpVIahVv7E8e243rSpgYU9p8E6dIStzMDmi5WdfOL/PXpWkNcTdkJEihB63
-/6nIAZ+pgwKBgFfvpHJyAhUC5HAP3XfHlbcAuKTqjZoMsBAau3xr4uP4RUCTrmPS
-eJ+A0hxaxypqBK7BZNBZd6P/Gg9QwP6G2uPavGgWsjBT71WYn+P9AE+ifaO/G6zH
-SLcN5zULPgyZYOxJp+PxLNvCUXUiOqF+JBISyL8F/2x1LyQUNX1c6zDhAoGBAJkh
-ePIIRkVepSJ78ESJpPgFloivlhnPC6q1VeZ0+SBnWdnLflyPfNpmLa/ZnRxhtvhz
-SP+Fkdfll7A/M/myPa/XQuXI7YLL/wFUsLM3V3Pd+LmIjjfS3TYHGMFS3tSKw/mv
-KoPDFGhZmorpLcnmll+9tvNjiXY2sU9mY5MuowVlAoGBAOF15/Gtdf/wwl4YNJJY
-0+1x/xg+b3fm+gvi7un0AUcw1DRc9KyrOWQ4N9emzuiNWfWIFSB9L8hmpcWqxP1d
-uy9I9Uv/X6qVEJQGS2Pi3LgxZMVj/vyxQd6AGn4IXspDoCMQhBTFuxH+3txbJnc7
-DCfSU0aufQ19SXd2zMP8ywH0
------END PRIVATE KEY-----
-''';
+late String _certificate;
+late String _privateKey;

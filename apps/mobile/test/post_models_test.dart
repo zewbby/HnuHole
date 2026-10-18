@@ -34,6 +34,57 @@ Map<String, Object?> _task() => {
 
 void main() {
   test(
+    'image detail and task content allow empty body only with a positive count',
+    () {
+      expect(
+        PostDetail.fromJson({..._card(), 'body': '', 'imageCount': 9})
+            .imageCount,
+        9,
+      );
+      expect(
+        PostContent.fromJson({'title': '图片', 'body': '', 'imageCount': 1}).body,
+        '',
+      );
+      expect(
+        () => PostDetail.fromJson({..._card(), 'body': ''}),
+        throwsFormatException,
+      );
+      for (final invalid in [0, 10, -1, 1.0, '1', null]) {
+        expect(
+          () => PostDetail.fromJson({
+            ..._card(),
+            'body': '',
+            'imageCount': invalid,
+          }),
+          throwsFormatException,
+        );
+        expect(
+          () => PostContent.fromJson({
+            'title': '图',
+            'body': '',
+            'imageCount': invalid,
+          }),
+          throwsFormatException,
+        );
+      }
+      expect(
+        () =>
+            PostContent.fromJson({'title': '图', 'body': '  ', 'imageCount': 1}),
+        throwsFormatException,
+      );
+      expect(
+        () => PostContent.fromJson({
+          'title': '图',
+          'body': '\u0000',
+          'imageCount': 1,
+        }),
+        throwsFormatException,
+      );
+      // Read DTO support must not relax the old text-only command validation/digest.
+      expect(() => PostContentRules.validate('图', ''), throwsFormatException);
+    },
+  );
+  test(
     'public card never accepts body previews or private owner/identity fields',
     () {
       expect(PostCard.fromJson(_card()).title, '原文');

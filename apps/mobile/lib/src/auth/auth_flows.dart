@@ -966,12 +966,8 @@ class AuthFlows extends ChangeNotifier {
     await _recordClosure(
       id,
       ClosureStatus(state: ClosureState.pending, dueAt: result.dueAt),
+      epoch,
     );
-    _closureStatus = ClosureStatus(
-      state: ClosureState.pending,
-      dueAt: result.dueAt,
-    );
-    _status = AuthFlowStatus.closurePending;
   });
 
   /// Retry must use exactly the original capability and ID. A 401 is followed
@@ -1005,9 +1001,7 @@ class AuthFlows extends ChangeNotifier {
       state: ClosureState.pending,
       dueAt: accepted.dueAt,
     );
-    await _recordClosure(id, status);
-    _closureStatus = status;
-    _status = AuthFlowStatus.closurePending;
+    await _recordClosure(id, status, epoch);
   });
 
   Future<void> reconcileClosure() => _run((epoch) async {
@@ -1025,9 +1019,7 @@ class AuthFlows extends ChangeNotifier {
     if (!_current(epoch)) {
       return;
     }
-    await _recordClosure(id, result);
-    _closureStatus = result;
-    _status = _closureFlowStatus(result.state);
+    await _recordClosure(id, result, epoch);
   });
 
   Future<void> forgetClosureStatus() => _run((epoch) async {
@@ -1184,7 +1176,7 @@ class AuthFlows extends ChangeNotifier {
     });
   }
 
-  Future<void> _recordClosure(String id, ClosureStatus status) async {
+  Future<void> _recordClosure(String id, ClosureStatus status, int epoch) async {
     await _store.update((latest) {
       final pending = latest.pendingClosure;
       if (pending?['closureId'] != id) {
@@ -1234,7 +1226,11 @@ class AuthFlows extends ChangeNotifier {
       return latest.copyWith(pendingClosure: next);
     });
     final recorded = _store.current?.pendingClosure;
-    if (recorded?['closureId'] == id) await _cleanClosedBusinessData(recorded!);
+    if (recorded?['closureId'] != id) return;
+    // Local cleanup can fail after C's terminal status was durably recorded.
+    // Keep that authority visible, without publishing a stale flow's result.
+    if (_current(epoch)) _restoreClosure(recorded!);
+    await _cleanClosedBusinessData(recorded!);
   }
 
   Future<void> _cleanClosedBusinessData(Map<String, dynamic> closure) async {

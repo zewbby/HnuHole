@@ -1,0 +1,483 @@
+{
+  "scope": "WINDOWS_FLUTTER_TESTER_NOT_ANDROID_OR_IOS",
+  "result": "PASS",
+  "cases": [
+    {
+      "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation_binary.webp",
+      "result": "PASS"
+    },
+    {
+      "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation_binary_infinite.webp",
+      "result": "PASS"
+    },
+    {
+      "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation_binary_once.webp",
+      "result": "PASS"
+    },
+    {
+      "name": "blind encodeGif changes finite WebP loop meaning",
+      "result": "PASS"
+    },
+    {
+      "name": "non-10ms frame timing keeps full-cycle drift within 5ms",
+      "result": "PASS"
+    },
+    {
+      "name": "conversion exposes semi-transparency loss rather than asserting equivalence",
+      "result": "PASS"
+    },
+    {
+      "name": "invalid and above-budget conversion fails before full decoding",
+      "result": "PASS"
+    },
+    {
+      "name": "safe compatibility path preserves binary alpha and rejects semi-alpha",
+      "result": "PASS"
+    },
+    {
+      "name": "long image fits viewport width and starts at top",
+      "result": "PASS"
+    },
+    {
+      "name": "reading back to top in the same gesture never slides or closes",
+      "result": "PASS"
+    },
+    {
+      "name": "short downward pull cancels and a new pull can close",
+      "result": "PASS"
+    },
+    {
+      "name": "one-frame pointer burst still requires a new gesture at the top",
+      "result": "PASS"
+    },
+    {
+      "name": "horizontal gesture switches only inside the supplied group",
+      "result": "PASS"
+    },
+    {
+      "name": "two-pointer zoom and zoomed drag cannot dismiss or switch",
+      "result": "PASS"
+    },
+    {
+      "name": "adding a second pointer while pulling revokes close eligibility",
+      "result": "PASS"
+    },
+    {
+      "name": "animation_infinite.gif stops stream listening off page, background, and close",
+      "result": "PASS"
+    },
+    {
+      "name": "animation_infinite.webp stops stream listening off page, background, and close",
+      "result": "PASS"
+    },
+    {
+      "name": "ordinary image is contained and centered, and can dismiss",
+      "result": "PASS"
+    },
+    {
+      "name": "long image can page forward and back at its width-fit baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "double tap zooms and returns to the per-image baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "pointer cancellation above close threshold cancels instead of dismissing",
+      "result": "PASS"
+    },
+    {
+      "name": "access revocation disposes animation and closes pending gestures",
+      "result": "PASS"
+    },
+    {
+      "name": "vertical reading cannot change into paging before all pointers lift",
+      "result": "PASS"
+    },
+    {
+      "name": "repeated open and close releases each animated stream",
+      "result": "PASS"
+    },
+    {
+      "name": "no source, permission or write calls when saving is forbidden",
+      "result": "PASS"
+    },
+    {
+      "name": "original animation bytes and extension reach gal, then owned temporary is cleaned",
+      "result": "PASS"
+    },
+    {
+      "name": "permission denial performs no write",
+      "result": "PASS"
+    },
+    {
+      "name": "duplicate click while platform write is pending produces one write",
+      "result": "PASS"
+    },
+    {
+      "name": "invalidation during permission request stops before writing",
+      "result": "PASS"
+    },
+    {
+      "name": "invalidation after commit cannot claim to cancel the system write",
+      "result": "PASS"
+    },
+    {
+      "name": "format failure cleans owned files and maps gal error",
+      "result": "PASS"
+    },
+    {
+      "name": "platform ACCESS_DENIED is reported without retry and owned files are cleaned",
+      "result": "PASS"
+    },
+    {
+      "name": "platform NOT_ENOUGH_SPACE is reported without retry and owned files are cleaned",
+      "result": "PASS"
+    },
+    {
+      "name": "platform NOT_SUPPORTED_FORMAT is reported without retry and owned files are cleaned",
+      "result": "PASS"
+    },
+    {
+      "name": "platform UNEXPECTED is reported without retry and owned files are cleaned",
+      "result": "PASS"
+    },
+    {
+      "name": "missing plugin is reported and never silently retried",
+      "result": "PASS"
+    }
+  ],
+  "errors": [],
+  "failureDetails": [],
+  "history": [
+    {
+      "scope": "WINDOWS_FLUTTER_TESTER_NOT_ANDROID_OR_IOS",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "long image fits viewport width and starts at top",
+          "result": "PASS"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "WINDOWS_FLUTTER_TESTER_NOT_ANDROID_OR_IOS",
+      "result": "FAIL",
+      "cases": [
+        {
+          "name": "horizontal gesture switches only inside the supplied group",
+          "result": "FAIL"
+        }
+      ],
+      "errors": [
+        {
+          "testId": 4,
+          "message": "Test failed. See exception logs above.\nThe test description was: horizontal gesture switches only inside the supplied group"
+        }
+      ]
+    },
+    {
+      "scope": "WINDOWS_FLUTTER_TESTER_NOT_ANDROID_OR_IOS",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation.webp",
+          "result": "PASS"
+        },
+        {
+          "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation_infinite.webp",
+          "result": "PASS"
+        },
+        {
+          "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation_once.webp",
+          "result": "PASS"
+        },
+        {
+          "name": "blind encodeGif changes finite WebP loop meaning",
+          "result": "PASS"
+        },
+        {
+          "name": "non-10ms frame timing keeps full-cycle drift within 5ms",
+          "result": "PASS"
+        },
+        {
+          "name": "conversion exposes semi-transparency loss rather than asserting equivalence",
+          "result": "PASS"
+        },
+        {
+          "name": "invalid and above-budget conversion fails before full decoding",
+          "result": "PASS"
+        },
+        {
+          "name": "long image fits viewport width and starts at top",
+          "result": "PASS"
+        },
+        {
+          "name": "reading back to top in the same gesture never slides or closes",
+          "result": "PASS"
+        },
+        {
+          "name": "short downward pull cancels and a new pull can close",
+          "result": "PASS"
+        },
+        {
+          "name": "one-frame pointer burst still requires a new gesture at the top",
+          "result": "PASS"
+        },
+        {
+          "name": "horizontal gesture switches only inside the supplied group",
+          "result": "PASS"
+        },
+        {
+          "name": "two-pointer zoom and zoomed drag cannot dismiss or switch",
+          "result": "PASS"
+        },
+        {
+          "name": "adding a second pointer while pulling revokes close eligibility",
+          "result": "PASS"
+        },
+        {
+          "name": "animation_infinite.gif stops stream listening off page, background, and close",
+          "result": "PASS"
+        },
+        {
+          "name": "animation_infinite.webp stops stream listening off page, background, and close",
+          "result": "PASS"
+        },
+        {
+          "name": "ordinary image is contained and centered, and can dismiss",
+          "result": "PASS"
+        },
+        {
+          "name": "long image can page forward and back at its width-fit baseline",
+          "result": "PASS"
+        },
+        {
+          "name": "double tap zooms and returns to the per-image baseline",
+          "result": "PASS"
+        },
+        {
+          "name": "pointer cancellation above close threshold cancels instead of dismissing",
+          "result": "PASS"
+        },
+        {
+          "name": "access revocation disposes animation and closes pending gestures",
+          "result": "PASS"
+        },
+        {
+          "name": "no source, permission or write calls when saving is forbidden",
+          "result": "PASS"
+        },
+        {
+          "name": "original animation bytes and extension reach gal, then owned temporary is cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "permission denial performs no write",
+          "result": "PASS"
+        },
+        {
+          "name": "duplicate click while platform write is pending produces one write",
+          "result": "PASS"
+        },
+        {
+          "name": "invalidation during permission request stops before writing",
+          "result": "PASS"
+        },
+        {
+          "name": "invalidation after commit cannot claim to cancel the system write",
+          "result": "PASS"
+        },
+        {
+          "name": "format failure cleans owned files and maps gal error",
+          "result": "PASS"
+        },
+        {
+          "name": "platform ACCESS_DENIED is reported without retry and owned files are cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "platform NOT_ENOUGH_SPACE is reported without retry and owned files are cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "platform NOT_SUPPORTED_FORMAT is reported without retry and owned files are cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "platform UNEXPECTED is reported without retry and owned files are cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "missing plugin is reported and never silently retried",
+          "result": "PASS"
+        }
+      ],
+      "errors": [],
+      "failureDetails": []
+    },
+    {
+      "scope": "WINDOWS_FLUTTER_TESTER_NOT_ANDROID_OR_IOS",
+      "result": "FAIL",
+      "cases": [
+        {
+          "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation_binary.webp",
+          "result": "PASS"
+        },
+        {
+          "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation_binary_infinite.webp",
+          "result": "PASS"
+        },
+        {
+          "name": "compatibility GIF preserves frame count and Flutter loop meaning: animation_binary_once.webp",
+          "result": "PASS"
+        },
+        {
+          "name": "blind encodeGif changes finite WebP loop meaning",
+          "result": "PASS"
+        },
+        {
+          "name": "non-10ms frame timing keeps full-cycle drift within 5ms",
+          "result": "PASS"
+        },
+        {
+          "name": "conversion exposes semi-transparency loss rather than asserting equivalence",
+          "result": "PASS"
+        },
+        {
+          "name": "invalid and above-budget conversion fails before full decoding",
+          "result": "PASS"
+        },
+        {
+          "name": "safe compatibility path preserves binary alpha and rejects semi-alpha",
+          "result": "PASS"
+        },
+        {
+          "name": "long image fits viewport width and starts at top",
+          "result": "PASS"
+        },
+        {
+          "name": "reading back to top in the same gesture never slides or closes",
+          "result": "PASS"
+        },
+        {
+          "name": "short downward pull cancels and a new pull can close",
+          "result": "PASS"
+        },
+        {
+          "name": "one-frame pointer burst still requires a new gesture at the top",
+          "result": "PASS"
+        },
+        {
+          "name": "horizontal gesture switches only inside the supplied group",
+          "result": "PASS"
+        },
+        {
+          "name": "two-pointer zoom and zoomed drag cannot dismiss or switch",
+          "result": "PASS"
+        },
+        {
+          "name": "adding a second pointer while pulling revokes close eligibility",
+          "result": "PASS"
+        },
+        {
+          "name": "animation_infinite.gif stops stream listening off page, background, and close",
+          "result": "PASS"
+        },
+        {
+          "name": "animation_infinite.webp stops stream listening off page, background, and close",
+          "result": "PASS"
+        },
+        {
+          "name": "ordinary image is contained and centered, and can dismiss",
+          "result": "PASS"
+        },
+        {
+          "name": "long image can page forward and back at its width-fit baseline",
+          "result": "PASS"
+        },
+        {
+          "name": "double tap zooms and returns to the per-image baseline",
+          "result": "PASS"
+        },
+        {
+          "name": "pointer cancellation above close threshold cancels instead of dismissing",
+          "result": "PASS"
+        },
+        {
+          "name": "access revocation disposes animation and closes pending gestures",
+          "result": "PASS"
+        },
+        {
+          "name": "vertical reading cannot change into paging before all pointers lift",
+          "result": "PASS"
+        },
+        {
+          "name": "repeated open and close releases each animated stream",
+          "result": "FAIL"
+        },
+        {
+          "name": "no source, permission or write calls when saving is forbidden",
+          "result": "PASS"
+        },
+        {
+          "name": "original animation bytes and extension reach gal, then owned temporary is cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "permission denial performs no write",
+          "result": "PASS"
+        },
+        {
+          "name": "duplicate click while platform write is pending produces one write",
+          "result": "PASS"
+        },
+        {
+          "name": "invalidation during permission request stops before writing",
+          "result": "PASS"
+        },
+        {
+          "name": "invalidation after commit cannot claim to cancel the system write",
+          "result": "PASS"
+        },
+        {
+          "name": "format failure cleans owned files and maps gal error",
+          "result": "PASS"
+        },
+        {
+          "name": "platform ACCESS_DENIED is reported without retry and owned files are cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "platform NOT_ENOUGH_SPACE is reported without retry and owned files are cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "platform NOT_SUPPORTED_FORMAT is reported without retry and owned files are cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "platform UNEXPECTED is reported without retry and owned files are cleaned",
+          "result": "PASS"
+        },
+        {
+          "name": "missing plugin is reported and never silently retried",
+          "result": "PASS"
+        }
+      ],
+      "errors": [
+        {
+          "testId": 31,
+          "message": "Test failed. See exception logs above.\nThe test description was: repeated open and close releases each animated stream"
+        }
+      ],
+      "failureDetails": [
+        {
+          "testId": 31,
+          "message": "══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════\nThe following TestFailure was thrown running a test:\nExpected: false\n  Actual: <true>\n\nWhen the exception was thrown, this was the stack:\n#4      main.<anonymous closure> (file:///C:/Users/Administrator/.codex/worktrees/image-viewer-component/HnuHole/packages/image_viewer/test/m1_gesture_lifecycle_test.dart:382:7)\n<asynchronous suspension>\n#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)\n<asynchronous suspension>\n#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)\n<asynchronous suspension>\n<asynchronous suspension>\n(elided one frame from package:stack_trace)\n\nThis was caught by the test expectation on the following line:\n  file:///C:/Users/Administrator/.codex/worktrees/image-viewer-component/HnuHole/packages/image_viewer/test/m1_gesture_lifecycle_test.dart line 382\nThe test description was:\n  repeated open and close releases each animated stream\n════════════════════════════════════════════════════════════════════════════════════════════════════"
+        }
+      ]
+    }
+  ]
+}

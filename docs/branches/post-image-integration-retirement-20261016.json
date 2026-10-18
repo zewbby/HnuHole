@@ -1,0 +1,1003 @@
+{
+  "schemaVersion": "hnuhole-branch-retirement/v1",
+  "recordedOn": "2026-10-16",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/post-image-integration",
+  "finalBranchHead": "f4a556d40de22b659cc0d78f301c93939e5f54a6",
+  "contentVerifiedAgainstMain": "b933c8a18a9160ece26fd17b53058bb7e73731ad",
+  "localBranchDeleted": true,
+  "remoteBranchDeleted": true,
+  "worktreeHadUncommittedChanges": false,
+  "productMergedPr": "https://github.com/zewbby/HnuHole/pull/2",
+  "handoffRecordsPreserved": true,
+  "sourceRepositoriesPreserved": true,
+  "computerCleanup": {
+    "result": "PARTIAL",
+    "removedTargetCount": 82,
+    "logicalBytesRemoved": 24185739817,
+    "targets": [
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\logs",
+        "bytesBefore": 1071081,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\logs",
+        "bytesBefore": 4062595,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\temp",
+        "bytesBefore": 0,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\private",
+        "bytesBefore": 7516066,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\profile",
+        "bytesBefore": 27138870,
+        "verifiedUnlinkOnlyEntries": [
+          "E:\\Hnuhole-post-media-android-20261015\\profile\\AppData\\Local\\Dart\\perf\\23832",
+          "E:\\Hnuhole-post-media-android-20261015\\profile\\AppData\\Local\\Dart\\perf\\6412",
+          "E:\\Hnuhole-post-media-android-20261015\\profile\\AppData\\Local\\Dart\\perf\\83116",
+          "E:\\Hnuhole-post-media-android-20261015\\profile\\AppData\\Local\\Dart\\perf\\85644"
+        ],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\logs",
+        "bytesBefore": 1103752,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\fixtures",
+        "bytesBefore": 1013141,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\artifacts",
+        "bytesBefore": 296944148,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\pub-cache",
+        "bytesBefore": 390287103,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\no-devices",
+        "bytesBefore": 0,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\gradle-cache",
+        "bytesBefore": 3361062066,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-android-20261015\\source-tools",
+        "bytesBefore": 22776,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\build",
+        "bytesBefore": 1247199275,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\logs",
+        "bytesBefore": 114774815,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\temp",
+        "bytesBefore": 233432,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\.dart_tool",
+        "bytesBefore": 264246496,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\tools",
+        "bytesBefore": 6504111199,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\logs",
+        "bytesBefore": 11901498,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\temp",
+        "bytesBefore": 439096210,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile",
+        "bytesBefore": 45495230,
+        "verifiedUnlinkOnlyEntries": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\14096",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\18580",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\19540",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\20972",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\2592",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\31748",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\36248",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\37648",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\41664",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\43468",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\44696",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\46356",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\48876",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\49676",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\51300",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\54468",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\54776",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\55372",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\57524",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\60344",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\61128",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\61388",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\6588",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\68032",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\70664",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\72152",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\7460",
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\profile\\AppData\\Local\\Dart\\perf\\8208"
+        ],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile",
+        "bytesBefore": 80195029,
+        "verifiedUnlinkOnlyEntries": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\43176",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\71120",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\72936",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\75416",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\75972",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\76860",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\78232",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\80276",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\84700",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\86136",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\87084",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\90628",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\91996",
+          "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\profile\\AppData\\Local\\Dart\\perf\\92612"
+        ],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\artifacts",
+        "bytesBefore": 328680988,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\downloads",
+        "bytesBefore": 496118488,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\pub-cache",
+        "bytesBefore": 168124179,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\sdk-stage",
+        "bytesBefore": 141938368,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\android\\.gradle",
+        "bytesBefore": 4064451,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\pub-cache",
+        "bytesBefore": 393107050,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gradle-cache",
+        "bytesBefore": 3396484946,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\build",
+        "bytesBefore": 58116129,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\ios\\Flutter\\ephemeral",
+        "bytesBefore": 2566,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\video-review-cache",
+        "bytesBefore": 856600,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\android\\local.properties",
+        "bytesBefore": 135,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\video-review-profile",
+        "bytesBefore": 9704281,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\.dart_tool",
+        "bytesBefore": 11453927,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\adb-one-device-profile",
+        "bytesBefore": 79012,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\build",
+        "bytesBefore": 1050612045,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example\\build",
+        "bytesBefore": 2796940151,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\.flutter-plugins-dependencies",
+        "bytesBefore": 7626,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-retry-20261014\\logs",
+        "bytesBefore": 59507080,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-retry-20261014\\temp",
+        "bytesBefore": 123,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\ios\\Flutter\\Generated.xcconfig",
+        "bytesBefore": 698,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\gallery-rootcause-20261014",
+        "bytesBefore": 11436362,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-retry-20261014\\profile",
+        "bytesBefore": 1048576,
+        "verifiedUnlinkOnlyEntries": [
+          "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-retry-20261014\\profile\\AppData\\Local\\Microsoft\\Windows\\INetCache\\Content.IE5"
+        ],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline\\apps\\mobile\\build",
+        "bytesBefore": 57110913,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\.dart_tool",
+        "bytesBefore": 200733867,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example\\.dart_tool",
+        "bytesBefore": 1039943322,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-retry-20261014\\artifacts",
+        "bytesBefore": 246529543,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-complete-20261014\\logs",
+        "bytesBefore": 11605391,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-complete-20261014\\temp",
+        "bytesBefore": 0,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\logs",
+        "bytesBefore": 124542687,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\temp",
+        "bytesBefore": 369,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline\\apps\\mobile\\.dart_tool",
+        "bytesBefore": 14575562,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-complete-20261014\\profile",
+        "bytesBefore": 0,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\profile",
+        "bytesBefore": 1048576,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\android\\.gradle",
+        "bytesBefore": 3644782,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example\\android\\.gradle",
+        "bytesBefore": 9487864,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-save-default-20261015\\logs",
+        "bytesBefore": 3931070,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-save-default-20261015\\temp",
+        "bytesBefore": 0,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-complete-20261014\\artifacts",
+        "bytesBefore": 368011856,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\artifacts",
+        "bytesBefore": 164391114,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-post-media-joint-20261015\\repo\\apps\\mobile\\ios\\Flutter\\flutter_export_environment.sh",
+        "bytesBefore": 737,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-save-default-20261015\\profile",
+        "bytesBefore": 0,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-retry-20261014\\video-review-cache",
+        "bytesBefore": 856600,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\android-save-default-20261015\\artifacts",
+        "bytesBefore": 203550081,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\ios\\Flutter\\ephemeral",
+        "bytesBefore": 2635,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example\\ios\\Flutter\\ephemeral",
+        "bytesBefore": 2635,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-retry-20261014\\video-review-profile",
+        "bytesBefore": 9831299,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-retry-20261014\\adb-one-device-profile",
+        "bytesBefore": 78968,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\android\\local.properties",
+        "bytesBefore": 179,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example\\android\\local.properties",
+        "bytesBefore": 281,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline\\apps\\mobile\\ios\\Flutter\\ephemeral",
+        "bytesBefore": 2643,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline\\apps\\mobile\\android\\local.properties",
+        "bytesBefore": 179,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\.flutter-plugins-dependencies",
+        "bytesBefore": 8357,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example\\.flutter-plugins-dependencies",
+        "bytesBefore": 4301,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\android-20261013\\webp-entry-retry-20261014\\adb-one-device-profile",
+        "bytesBefore": 78984,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\ios\\Flutter\\Generated.xcconfig",
+        "bytesBefore": 767,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example\\ios\\Flutter\\Generated.xcconfig",
+        "bytesBefore": 767,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline\\apps\\mobile\\.flutter-plugins-dependencies",
+        "bytesBefore": 1724,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline\\apps\\mobile\\ios\\Flutter\\Generated.xcconfig",
+        "bytesBefore": 775,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\repo\\apps\\mobile\\ios\\Flutter\\flutter_export_environment.sh",
+        "bytesBefore": 806,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\repo\\packages\\image_viewer\\example\\ios\\Flutter\\flutter_export_environment.sh",
+        "bytesBefore": 806,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      },
+      {
+        "path": "E:\\Hnuhole-image-viewer-component-20261012\\business-20261015\\baseline\\apps\\mobile\\ios\\Flutter\\flutter_export_environment.sh",
+        "bytesBefore": 814,
+        "verifiedUnlinkOnlyEntries": [],
+        "result": "REMOVED"
+      }
+    ],
+    "remainingToolkit": {
+      "path": "E:/Hnuhole-post-media-android-20261015",
+      "result": "BLOCKED",
+      "reason": "exec_command rejected before execution: blocked by policy",
+      "deletionExecuted": false,
+      "remaining": "Dedicated tools SDK/JDK/Flutter copies and small root manifests; freshly created retirement-private ADB cleanup key/profile is ACL-restricted but its deletion was also rejected. Earlier test private/profile/cache/APK/fixtures/logs were removed."
+    },
+    "remainingIgnoredGeneratedFiles": {
+      "result": "BLOCKED",
+      "reason": "Separate guarded removal was also rejected before execution: blocked by policy",
+      "description": "Ignored GeneratedPluginRegistrant Java/Objective-C files remain in owned source checkouts; tracked source files unchanged"
+    },
+    "automaticRejections": "Final toolkit deletion, separate ignored-generated-file deletion, and the newly created private cleanup-key-profile deletion were each rejected before execution with only blocked by policy. No alternate deletion mechanism was used after these rejections."
+  },
+  "phoneCleanup": {
+    "recordedOn": "2026-10-16",
+    "deviceModel": "V2323A",
+    "deviceIdSha256": "557ef20f4d13aaf0605d2de7ec7fe8a6a44cf36e2520607fe2009b134cd774e8",
+    "serverScope": "own fresh one-device server on 5038",
+    "sharedServerStartedOrRestarted": false,
+    "sharedKeysUsed": false,
+    "result": "PASS_EXACT_TASK_PHONE_CLEANUP",
+    "media": [
+      {
+        "id": "1000043825",
+        "path": "/storage/emulated/0/Pictures/original (4).png",
+        "owner": "org.hnuhole.image_viewer_component",
+        "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+        "result": "DELETED_ROW_AND_FILE_VERIFIED"
+      },
+      {
+        "id": "1000043826",
+        "path": "/storage/emulated/0/Pictures/original (7).webp",
+        "owner": "org.hnuhole.image_viewer_component",
+        "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043827",
+        "path": "/storage/emulated/0/Pictures/original (8).webp",
+        "owner": "org.hnuhole.image_viewer_component",
+        "sha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043828",
+        "path": "/storage/emulated/0/Pictures/original (5).png",
+        "owner": "org.hnuhole.image_viewer_component",
+        "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043697",
+        "path": "/storage/emulated/0/Pictures/original.png",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043698",
+        "path": "/storage/emulated/0/Pictures/original (1).png",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043699",
+        "path": "/storage/emulated/0/Pictures/original.gif",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043700",
+        "path": "/storage/emulated/0/Pictures/original.webp",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "8b8b45e3f971e60b42ff0d45cc01aada69ff7856744500dfb655930595bfa139",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043701",
+        "path": "/storage/emulated/0/Pictures/original (1).gif",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043702",
+        "path": "/storage/emulated/0/Pictures/original (2).gif",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043703",
+        "path": "/storage/emulated/0/Pictures/original (1).webp",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "f881330695568fd135112d6ce63c547f7fe0773d9c7e18f4b28294fd6ad99be6",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043704",
+        "path": "/storage/emulated/0/Pictures/original (2).webp",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "e8d714336d16477d76cf01515d61a8e9916babd87ee093434bbd1638ead40e76",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043705",
+        "path": "/storage/emulated/0/Pictures/original (3).webp",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043706",
+        "path": "/storage/emulated/0/Pictures/original (4).webp",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043817",
+        "path": "/storage/emulated/0/Pictures/original (2).png",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "6cc1d099a6d3ab59f6abbfcda73a023212e605623a768fe177d11f630cf2d964",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043818",
+        "path": "/storage/emulated/0/Pictures/original (3).gif",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043819",
+        "path": "/storage/emulated/0/Pictures/original (4).gif",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "1343ba962a5e4754481cbd1227922a09445ad59819da0e17cadbec810392369c",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043820",
+        "path": "/storage/emulated/0/Pictures/original.jpg",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "f4ab4302ffa13229a023af5df27663e4df4e4f361c8036fc3c5de7b25477f8f6",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043821",
+        "path": "/storage/emulated/0/Pictures/original (3).png",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "db4c1b7f3f34c1b58ff2d92ed5feb9f7cdc3c4594709a5c58c17b8c0f72c709e",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043822",
+        "path": "/storage/emulated/0/Pictures/original (5).gif",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "96478521e9f3ccc23be7b3a90bcf0f788e8b86b394d391bfcdf30c991a734357",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043823",
+        "path": "/storage/emulated/0/Pictures/original (5).webp",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "6da384a6f2a36b4ac27c29b6094e810796eb12e10aa68b236ff39d489c961e75",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043824",
+        "path": "/storage/emulated/0/Pictures/original (6).webp",
+        "owner": "org.hnuhole.image_viewer_component.nativecheck",
+        "sha256": "deb0286b961dfed5b0011dfdac6fd31a870dda78eeec84c71666a9bcc71ed988",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043858",
+        "path": "/storage/emulated/0/Pictures/original (6).png",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043859",
+        "path": "/storage/emulated/0/Pictures/original (7).png",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043860",
+        "path": "/storage/emulated/0/Pictures/original (8).png",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043861",
+        "path": "/storage/emulated/0/Pictures/original (6).gif",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043862",
+        "path": "/storage/emulated/0/Pictures/original (9).webp",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043863",
+        "path": "/storage/emulated/0/Pictures/original (10).webp",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043864",
+        "path": "/storage/emulated/0/Pictures/original (1).jpg",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043865",
+        "path": "/storage/emulated/0/Pictures/original (2).jpg",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043866",
+        "path": "/storage/emulated/0/Pictures/original (9).png",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      },
+      {
+        "id": "1000043867",
+        "path": "/storage/emulated/0/Pictures/original (10).png",
+        "owner": "org.hnuhole.post_media_android",
+        "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+        "result": "DELETED_ROW_AND_FILE",
+        "providerExitCode": 0,
+        "providerMessage": ""
+      }
+    ],
+    "fixtures": [
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/01-ordinary.png",
+        "sha256": "fbcd431a37f780f8aab9fa863c3511e24dbf9f2b63c747a37917d174c60cea62",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      },
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/02-photo.jpg",
+        "sha256": "b5b1fd12c606c3b8c395ad42d63b9bd1867cda64871ef47e740ed29a2e512ed7",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      },
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/03-exif6.jpg",
+        "sha256": "b9de587cab1ecf02be41b0f43b06bb8b6d527dea2516f95502a92892a2af46cb",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      },
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/04-long.png",
+        "sha256": "ec573cd6b20e8bbb3580c4d574289e4937b90817d0bb7b52e99581e49c4af81c",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      },
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/05-loop.gif",
+        "sha256": "3d3ce981ef04ff70e8d7f4990945d940b2d2d674c99345a67d12eeeac4d3a062",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      },
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/06-finite.webp",
+        "sha256": "33dfdaad7986f1af80309123675ad5fc9cf93f24010974a0e9bc5b0bc408cdc4",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      },
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/07-loop.webp",
+        "sha256": "292891663dcd813436531c26a32c2cca8461d3a16c0e2a54d69a85a595e2c9f4",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      },
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/08-landscape.png",
+        "sha256": "0186314bb1718d11b22ba874854b29c762f6df42355a7209792608db2b2ab884",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      },
+      {
+        "path": "/storage/emulated/0/Pictures/HnuHoleMediaAcceptance20261015/09-square.png",
+        "sha256": "f1ba0e8351f4d631f09f60999de4f974dcc0221216c48f4bb1a8db066e8f4465",
+        "result": "DELETED_RECORDED_FIXTURE",
+        "providerExitCode": 0
+      }
+    ],
+    "packages": [
+      {
+        "package": "org.hnuhole.image_viewer_component",
+        "installedApkSha256": "0ebf674bedbb6fc1caa954df149ba2ca593ed97c67e5ffb7935ed0401bf4b544",
+        "result": "UNINSTALLED_USER0_APP_DATA_AND_CACHE",
+        "uninstallExitCode": 0,
+        "uninstallMessage": "Success"
+      },
+      {
+        "package": "org.hnuhole.image_viewer_component.nativecheck",
+        "installedApkSha256": "5f7766b5f2661cf2ea429cb74ba8596965439c6523055d7f9e0759f61ab2e827",
+        "result": "UNINSTALLED_USER0_APP_DATA_AND_CACHE",
+        "uninstallExitCode": 0,
+        "uninstallMessage": "Success"
+      },
+      {
+        "package": "org.hnuhole.post_media_android",
+        "installedApkSha256": "451f87f0a19ed920795c9bf7fdd2d89c1adb1fefba62f32d3d2db6c9b5bd257c",
+        "result": "UNINSTALLED_USER0_APP_DATA_AND_CACHE",
+        "uninstallExitCode": 0,
+        "uninstallMessage": "Success"
+      },
+      {
+        "package": "org.hnuhole.post_media_android.probe",
+        "installedApkSha256": "af27b986b3be2ca9f74d688daa5b7ffc1cfcfeaccb98e4711fee013aa037b193",
+        "result": "UNINSTALLED_USER0_APP_DATA_AND_CACHE",
+        "uninstallExitCode": 0,
+        "uninstallMessage": "Success"
+      },
+      {
+        "package": "org.fossify.gallery",
+        "installedApkSha256": "cfa321d7467b116741689f8f118b46011c882a4c2359b9320111f87c998af373",
+        "result": "UNINSTALLED_USER0_APP_DATA_AND_CACHE",
+        "uninstallExitCode": 0,
+        "uninstallMessage": "Success"
+      }
+    ],
+    "fixtureDirectoryRemovedIfEmpty": true,
+    "personalMediaOrOtherPackagesTouched": false,
+    "settingsChanged": false,
+    "adbServerStopped": true,
+    "finalRecheck": {
+      "fivePackagesAbsentUser0": true,
+      "fourTaskOwnersHaveNoRemainingImages": true,
+      "fixtureDirectoryAbsent": true,
+      "additionalTaskPrefixedTemporaryFiles": 0,
+      "personalMediaOrOtherAppsExaminedOrDeleted": false,
+      "sharedSystemGalleryCachePurged": false
+    },
+    "userConfirmedConnectedForCleanup": true,
+    "ownSingleDeviceServerStarted": true,
+    "temporaryAdbKeyProfileRemoval": {
+      "result": "BLOCKED",
+      "path": "E:/Hnuhole-post-media-android-20261015/retirement-private",
+      "reason": "Native guarded deletion of this newly created cleanup key profile was rejected before execution: blocked by policy",
+      "privateAcl": "Inheritance disabled; current user, SYSTEM and Administrators only",
+      "daemonStopped": true,
+      "sharedDebugKeysUsed": false,
+      "globalUsbAuthorizationsOrOtherSettingsReset": false
+    }
+  },
+  "preservedSharedResources": [
+    "E:/Hnuhole-image-viewer-m1-20261010/pub-cache is referenced by authentication environment",
+    "E:/Hnuhole-env and existing/shared SDKs",
+    "E:/Hnuhole-post-image-media-20261015 is the other backend session directory"
+  ],
+  "otherSessionsStoppedOrModified": false,
+  "remainingProductWork": "iOS original picker implementation and native/device acceptance on a new branch from latest main",
+  "releasePublished": false,
+  "deployed": false,
+  "retirementResult": "BRANCH_RETIRED_PHONE_CLEANED_COMPUTER_PARTIAL_AUTOMATIC_APPROVAL_BLOCKED",
+  "mainSyncedDuringRetirement": "c5988ebeb9697b690bf705eaf1d583db815b5751",
+  "concurrentWorkPreserved": "PR #5 backend-branch retirement and README history entry retained unchanged",
+  "retirementRecordPr": "https://github.com/zewbby/HnuHole/pull/6"
+}

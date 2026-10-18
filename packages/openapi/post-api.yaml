@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Hnuhole text posting API
+  title: Hnuhole posting API (optional protected images)
   version: 0.1.0
   description: T2 C server implements these operations; mobile integration and production acceptance remain separate. Every access
     requires a current C Bearer and a final C Safety Gate transaction. Account identity comes from that
@@ -600,10 +600,49 @@ components:
       x-max-grapheme-clusters: 15
       x-max-utf8-bytes: 4096
       x-unicode-version: 16.0.0
+    PostImageSelection:
+      type: object
+      additionalProperties: false
+      required:
+      - mediaId
+      - sha256
+      - byteLength
+      - mimeType
+      - width
+      - height
+      properties:
+        mediaId:
+          type: string
+          format: uuid
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+        sha256:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+        byteLength:
+          type: integer
+          minimum: 1
+          maximum: 10485760
+        mimeType:
+          type: string
+          enum:
+          - image/jpeg
+          - image/png
+          - image/gif
+          - image/webp
+        width:
+          type: integer
+          minimum: 1
+          maximum: 16384
+        height:
+          type: integer
+          minimum: 1
+          maximum: 16384
+      description: Immutable ordered selection; canonical nonzero UUID, maximum 12582912
+        pixels. All declared values are verified against full bytes.
     Body:
       type: string
-      minLength: 1
-      description: Original Unicode scalar text counted as Unicode 16.0 extended grapheme clusters. Spaces,
+      minLength: 0
+      description: Empty only with at least one image (or positive response imageCount). Otherwise original Unicode scalar text counted as Unicode 16.0 extended grapheme clusters. Spaces,
         punctuation, TAB/CR/LF count; CRLF is one cluster. No trim, NFC or nickname character ban. At
         least one scalar outside White_Space and Default_Ignorable is required. Invalid UTF-8/surrogates/NUL
         and C0/C1 except TAB/CR/LF are rejected. Runtime grapheme and byte validation required; JSON Schema
@@ -628,6 +667,11 @@ components:
           $ref: '#/components/schemas/Title'
         body:
           $ref: '#/components/schemas/Body'
+        images:
+          type: array
+          maxItems: 9
+          items:
+            $ref: '#/components/schemas/PostImageSelection'
     RetryInput:
       type: object
       additionalProperties: false
@@ -642,6 +686,11 @@ components:
           $ref: '#/components/schemas/Title'
         body:
           $ref: '#/components/schemas/Body'
+        images:
+          type: array
+          maxItems: 9
+          items:
+            $ref: '#/components/schemas/PostImageSelection'
     AttemptVersionInput:
       type: object
       additionalProperties: false
@@ -938,6 +987,11 @@ components:
           $ref: '#/components/schemas/Title'
         body:
           $ref: '#/components/schemas/Body'
+        imageCount:
+          type: integer
+          minimum: 1
+          maximum: 9
+          description: Omitted for zero images; positive count permits an empty body.
     OwnTaskDetail:
       type: object
       additionalProperties: false
@@ -959,6 +1013,10 @@ components:
               $ref: '#/components/schemas/Title'
             body:
               $ref: '#/components/schemas/Body'
+            imageCount:
+              type: integer
+              minimum: 1
+              maximum: 9
           description: Latest immutable attempt text only when available/authorized; null when hidden/purged/cancelled.
             Never another attempt or ordinary draft.
     OwnTaskList:
@@ -1068,6 +1126,11 @@ components:
           $ref: '#/components/schemas/PublicAuthor'
         publishedAt:
           $ref: '#/components/schemas/UTCDateTime'
+        imageCount:
+          type: integer
+          minimum: 1
+          maximum: 9
+          description: Omitted for zero images; positive count permits an empty body.
     PublicPostResponse:
       type: object
       additionalProperties: false

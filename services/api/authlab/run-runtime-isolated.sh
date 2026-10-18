@@ -180,6 +180,56 @@ if "$runtime_dir/community" -config "$runtime_material/c-reused-post-key.json" >
 for runtime_privacy_party in c v; do
  if [ "$runtime_privacy_party" = c ]; then runtime_privacy_service=community-postgres; runtime_privacy_binary=community; else runtime_privacy_service=verifier-postgres; runtime_privacy_binary=verifier; fi
  docker compose -p "$runtime_project" -f "$runtime_compose" exec -T "$runtime_privacy_service" psql -X -v ON_ERROR_STOP=1 -v party="$runtime_privacy_party" -U "hnuhole_${runtime_privacy_party}_admin" -d "hnuhole_$runtime_privacy_party" < "$runtime_api_dir/authlab/privacy-role-audit.sql" >/dev/null
+ # Text-only C needs image reads and lifecycle erasure after migration 0014,
+ # but no upload insertion/verification or recovery/business access.
+ # Inject only into THIS disposable cluster and restore each negative before
+ # asserting the positive baseline again. An unrelated audit error is not PASS.
+ if [ "$runtime_privacy_party" = c ]; then
+  for runtime_image_negative in insert update column-update delete truncate references trigger recovery-select business-select unlisted-select; do
+   case "$runtime_image_negative" in
+    insert|update|delete|truncate|references|trigger)
+     runtime_image_grant="GRANT $runtime_image_negative ON c_posts.images TO hnuhole_c_runtime"
+     runtime_image_revoke="REVOKE $runtime_image_negative ON c_posts.images FROM hnuhole_c_runtime" ;;
+    column-update)
+     runtime_image_grant='GRANT UPDATE(verified_at) ON c_posts.images TO hnuhole_c_runtime'
+     runtime_image_revoke='REVOKE UPDATE(verified_at) ON c_posts.images FROM hnuhole_c_runtime' ;;
+    recovery-select)
+     runtime_image_grant='GRANT SELECT ON c_posts.images TO hnuhole_c_recovery'
+     runtime_image_revoke='REVOKE SELECT ON c_posts.images FROM hnuhole_c_recovery' ;;
+    business-select)
+     runtime_image_grant='GRANT SELECT ON c_posts.images TO hnuhole_business'
+     runtime_image_revoke='REVOKE SELECT ON c_posts.images FROM hnuhole_business' ;;
+    unlisted-select)
+     runtime_image_grant='CREATE TABLE c_posts.privacy_audit_unlisted_images(id integer); GRANT SELECT ON c_posts.privacy_audit_unlisted_images TO hnuhole_c_runtime'
+     runtime_image_revoke='DROP TABLE c_posts.privacy_audit_unlisted_images' ;;
+   esac
+   docker compose -p "$runtime_project" -f "$runtime_compose" exec -T community-postgres psql -X -v ON_ERROR_STOP=1 -U hnuhole_c_admin -d hnuhole_c -c "$runtime_image_grant" >/dev/null
+   if docker compose -p "$runtime_project" -f "$runtime_compose" exec -T community-postgres psql -X -v ON_ERROR_STOP=1 -v party=c -U hnuhole_c_admin -d hnuhole_c < "$runtime_api_dir/authlab/privacy-role-audit.sql" >"$runtime_dir/privacy-image-$runtime_image_negative-negative.log" 2>&1; then
+    echo "Image lifecycle privilege audit accepted $runtime_image_negative" >&2; exit 1
+   fi
+   python3 - "$runtime_dir/privacy-image-$runtime_image_negative-negative.log" <<'IMAGE_AUDIT'
+import pathlib,sys
+assert 'operational role acquired noncontract table privilege' in pathlib.Path(sys.argv[1]).read_text(), 'image privilege negative failed outside its intended audit boundary'
+IMAGE_AUDIT
+   docker compose -p "$runtime_project" -f "$runtime_compose" exec -T community-postgres psql -X -v ON_ERROR_STOP=1 -U hnuhole_c_admin -d hnuhole_c -c "$runtime_image_revoke" >/dev/null
+   PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_repo_dir/infra/postgres/grant-community.sql" >/dev/null
+   docker compose -p "$runtime_project" -f "$runtime_compose" exec -T community-postgres psql -X -v ON_ERROR_STOP=1 -v party=c -U hnuhole_c_admin -d hnuhole_c < "$runtime_api_dir/authlab/privacy-role-audit.sql" >/dev/null
+   printf 'Image lifecycle privilege audit rejected %s; baseline restored\n' "$runtime_image_negative"
+  done
+  for runtime_image_column in payload erased_at grant_digest grant_expires_at; do
+   PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c "REVOKE UPDATE($runtime_image_column) ON c_posts.images FROM hnuhole_c_runtime" >/dev/null
+   if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/image-erasure-$runtime_image_column-negative.log" 2>&1; then
+    echo "Missing image erasure column accepted at startup: $runtime_image_column" >&2; exit 1
+   fi
+   python3 - "$runtime_dir/image-erasure-$runtime_image_column-negative.log" <<'IMAGE_STARTUP'
+import pathlib,sys
+log=pathlib.Path(sys.argv[1]).read_text()
+assert 'authentication process failure' in log and 'stage=runtime' in log and 'reason=failed' in log, 'missing erasure privilege did not reach the expected runtime startup rejection'
+IMAGE_STARTUP
+   PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -c "GRANT UPDATE($runtime_image_column) ON c_posts.images TO hnuhole_c_runtime" >/dev/null
+   printf 'Image erasure startup rejected missing %s; baseline restored\n' "$runtime_image_column"
+  done
+ fi
  # A role override changes the effective pool settings despite the fixed
  # server command line. Ordinary API startup must reject it, not repair it.
  docker compose -p "$runtime_project" -f "$runtime_compose" exec -T "$runtime_privacy_service" psql -X -v ON_ERROR_STOP=1 -U "hnuhole_${runtime_privacy_party}_admin" -d "hnuhole_$runtime_privacy_party" -c "ALTER ROLE hnuhole_${runtime_privacy_party}_runtime SET log_duration=on" >/dev/null
@@ -519,4 +569,4 @@ runtime_stop
 docker compose -p "$runtime_project" -f "$runtime_compose" logs --no-color community-postgres >"$runtime_dir/privacy-pg-c.log"
 docker compose -p "$runtime_project" -f "$runtime_compose" logs --no-color verifier-postgres >"$runtime_dir/privacy-pg-v.log"
 python3 "$runtime_api_dir/authlab/privacy-diagnostics-canary.py" verify "$runtime_dir"
-printf '%s\n' '{"privacyRoleMatrix":"passed","privacyUnsafeDatabaseDiagnosticsRejected":"passed","privacyRealProcessAndPostgresLogs":"passed","actualCmdLifecycle":"passed","formalMigrationAndRoles":"passed","upgradeChannelsPreserved":"passed","identityUpgrade10To11":"passed","identityClosureUpgrade11To12":"passed","identityLegacyClosedProfileRepair":"passed","identityClosureTriggerBoundary":"passed","identityMissingSchemaAndDml":"passed","identityCrudReceiptsAndRestart":"passed","identityClosureAndSameEmailNewAccount":"passed","inactiveProjectionPureContract":"passed","textUpgrade12To13":"passed","textMissingSchemaAndRequiredDml":"passed","textExcessPrivilegeAndReusedKeyRejected":"passed","textActualHttpsWorkerSqlAndRestart":"passed","textUnknownSealAndDurableContentRejection":"passed","textClosureProjectionAndNewAccountIsolation":"passed","verifierGateUpgrade3To4":"passed","verifierGateFreezeRestartAndRecovery":"passed","verifierOldSnapshotBlocked":"passed","verifierOldGenerationOtpBlocked":"passed","verifierIndependentEvidenceExpiry":"passed","cleanup":"this invocation project and private directory only"}'
+printf '%s\n' '{"privacyRoleMatrix":"passed","privacyImageLifecycleColumnBoundary":"passed","privacyUnsafeDatabaseDiagnosticsRejected":"passed","privacyRealProcessAndPostgresLogs":"passed","actualCmdLifecycle":"passed","formalMigrationAndRoles":"passed","upgradeChannelsPreserved":"passed","identityUpgrade10To11":"passed","identityClosureUpgrade11To12":"passed","identityLegacyClosedProfileRepair":"passed","identityClosureTriggerBoundary":"passed","identityMissingSchemaAndDml":"passed","identityCrudReceiptsAndRestart":"passed","identityClosureAndSameEmailNewAccount":"passed","inactiveProjectionPureContract":"passed","textUpgrade12To13":"passed","textMissingSchemaAndRequiredDml":"passed","textExcessPrivilegeAndReusedKeyRejected":"passed","textActualHttpsWorkerSqlAndRestart":"passed","textUnknownSealAndDurableContentRejection":"passed","textClosureProjectionAndNewAccountIsolation":"passed","verifierGateUpgrade3To4":"passed","verifierGateFreezeRestartAndRecovery":"passed","verifierOldSnapshotBlocked":"passed","verifierOldGenerationOtpBlocked":"passed","verifierIndependentEvidenceExpiry":"passed","cleanup":"this invocation project and private directory only"}'

@@ -1,0 +1,455 @@
+{
+  "scope": "LOCKED_PUBLISHED_SOURCE_REVIEW_NOT_NATIVE_LINKING",
+  "packages": [
+    {
+      "package": "extended_image-10.1.0",
+      "publishedSource": "https://pub.dev/packages/extended_image/versions/10.1.0",
+      "pubspecSha256": "790728b3abc0fca7d39afa58ae60e4c22f482c1e14962d76565a316e25b1d7bf",
+      "licenseSha256": "b6c05126910f5644f7d94b9420c8820735ce0a5d55ca2e40351fad82aa6965d0",
+      "license": "MIT",
+      "environment": "sdk: ^3.7.0\n  flutter: \">=3.29.0\""
+    },
+    {
+      "package": "extended_image_library-5.0.1",
+      "publishedSource": "https://pub.dev/packages/extended_image_library/versions/5.0.1",
+      "pubspecSha256": "394debe0039d4b9880694c3fab9d5816f5e9fe1754b60e8253a5c689c0ea0537",
+      "licenseSha256": "737180ae4cd54af134a795471efa36157f59f59440a78b18d4b9f4a4fb2f9136",
+      "license": "MIT",
+      "environment": "sdk: ^3.7.0\n  flutter: \">=3.29.0\""
+    },
+    {
+      "package": "gal-2.3.3",
+      "publishedSource": "https://pub.dev/packages/gal/versions/2.3.3",
+      "pubspecSha256": "ee995ba8fcc8df5464e12f503172b08c1d19c3140ea9b5349ef5feb051433a50",
+      "licenseSha256": "4a963156383f276c9214aed3beee1a57e12947c63b58dae134fdae6abd01b3da",
+      "license": "BSD-3-Clause",
+      "environment": "sdk: '>=3.0.0 <4.0.0'\n  flutter: '>=3.7.0'"
+    },
+    {
+      "package": "image-4.10.1",
+      "publishedSource": "https://pub.dev/packages/image/versions/4.10.1",
+      "pubspecSha256": "b22710f05f64a9b158b3e0da3b39cef951aa3dc539b90c06125b8a6a19798cf7",
+      "licenseSha256": "f3c17da84e0780e1c334325c73098257c32221d62498ed55ef3c1361904925aa",
+      "license": "MIT",
+      "environment": "sdk: ^3.0.0"
+    },
+    {
+      "package": "path_provider-2.1.5",
+      "publishedSource": "https://pub.dev/packages/path_provider/versions/2.1.5",
+      "pubspecSha256": "7547f633e9a9f91577667b21d525aada918f21b93e88f2d75b5bb64c84796aea",
+      "licenseSha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+      "license": "BSD-3-Clause",
+      "environment": "sdk: ^3.4.0\n  flutter: \">=3.22.0\""
+    },
+    {
+      "package": "path_provider_android-2.3.1",
+      "publishedSource": "https://pub.dev/packages/path_provider_android/versions/2.3.1",
+      "pubspecSha256": "b80824aedcb8e0ea192403de0dc01c501b22dc2f627588dffb78093f5064dc89",
+      "licenseSha256": "420f7739f169097f0aad1242045169cd643c8f1d94e62866fad265ae4c369b7d",
+      "license": "BSD-3-Clause",
+      "environment": "sdk: ^3.9.0\n  flutter: \">=3.35.0\""
+    },
+    {
+      "package": "path_provider_foundation-2.6.0",
+      "publishedSource": "https://pub.dev/packages/path_provider_foundation/versions/2.6.0",
+      "pubspecSha256": "2453954d9201ce4a90a5d26705c4b089c3997a9b943e1c7dc7a95893c262c75d",
+      "licenseSha256": "420f7739f169097f0aad1242045169cd643c8f1d94e62866fad265ae4c369b7d",
+      "license": "BSD-3-Clause",
+      "environment": "sdk: ^3.10.3\n  flutter: \">=3.38.4\""
+    }
+  ],
+  "resolvedPackages": [
+    {
+      "name": "hnuhole_image_viewer",
+      "version": "0.0.0",
+      "kind": "root",
+      "source": "root"
+    },
+    {
+      "name": "flutter_lints",
+      "version": "4.0.0",
+      "kind": "dev",
+      "source": "hosted"
+    },
+    {
+      "name": "lints",
+      "version": "4.0.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "crypto",
+      "version": "3.0.6",
+      "kind": "dev",
+      "source": "hosted"
+    },
+    {
+      "name": "typed_data",
+      "version": "1.4.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "collection",
+      "version": "1.19.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "path_provider_platform_interface",
+      "version": "2.1.3",
+      "kind": "dev",
+      "source": "hosted"
+    },
+    {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "meta",
+      "version": "1.19.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "platform",
+      "version": "3.2.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "flutter",
+      "version": "0.0.0",
+      "kind": "direct",
+      "source": "sdk"
+    },
+    {
+      "name": "sky_engine",
+      "version": "0.0.0",
+      "kind": "transitive",
+      "source": "sdk"
+    },
+    {
+      "name": "vector_math",
+      "version": "2.4.3",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "material_color_utilities",
+      "version": "0.13.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "characters",
+      "version": "1.4.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "image",
+      "version": "4.10.1",
+      "kind": "dev",
+      "source": "hosted"
+    },
+    {
+      "name": "archive",
+      "version": "4.3.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "posix",
+      "version": "6.5.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "path",
+      "version": "1.9.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "ffi",
+      "version": "2.2.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "flutter_test",
+      "version": "0.0.0",
+      "kind": "dev",
+      "source": "sdk"
+    },
+    {
+      "name": "stream_channel",
+      "version": "2.1.4",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "async",
+      "version": "2.13.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "leak_tracker_flutter_testing",
+      "version": "3.0.10",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "matcher",
+      "version": "0.12.20",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "test_api",
+      "version": "0.7.12",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "term_glyph",
+      "version": "1.2.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "string_scanner",
+      "version": "1.4.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "source_span",
+      "version": "1.10.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "stack_trace",
+      "version": "1.12.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "boolean_selector",
+      "version": "2.1.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "leak_tracker_testing",
+      "version": "3.0.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "leak_tracker",
+      "version": "11.0.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "vm_service",
+      "version": "15.3.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "clock",
+      "version": "1.1.3",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "fake_async",
+      "version": "1.3.3",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "path_provider",
+      "version": "2.1.5",
+      "kind": "direct",
+      "source": "hosted"
+    },
+    {
+      "name": "path_provider_windows",
+      "version": "2.3.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "path_provider_linux",
+      "version": "2.2.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "xdg_directories",
+      "version": "1.1.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "path_provider_foundation",
+      "version": "2.6.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "objective_c",
+      "version": "9.6.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "pub_semver",
+      "version": "2.2.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "logging",
+      "version": "1.3.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "hooks",
+      "version": "2.2.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "yaml",
+      "version": "3.1.4",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "record_use",
+      "version": "1.1.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "code_assets",
+      "version": "2.1.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "path_provider_android",
+      "version": "2.3.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "jni_flutter",
+      "version": "1.0.4+1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "jni",
+      "version": "1.1.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "package_config",
+      "version": "3.0.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "jni_util",
+      "version": "1.0.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "args",
+      "version": "2.7.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "gal",
+      "version": "2.3.3",
+      "kind": "direct",
+      "source": "hosted"
+    },
+    {
+      "name": "extended_image",
+      "version": "10.1.0",
+      "kind": "direct",
+      "source": "hosted"
+    },
+    {
+      "name": "extended_image_library",
+      "version": "5.0.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "web",
+      "version": "1.1.1",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "js",
+      "version": "0.7.2",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "http_client_helper",
+      "version": "3.0.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "http",
+      "version": "1.6.0",
+      "kind": "transitive",
+      "source": "hosted"
+    },
+    {
+      "name": "http_parser",
+      "version": "4.1.2",
+      "kind": "transitive",
+      "source": "hosted"
+    }
+  ],
+  "selectedNativeSourceFingerprints": {
+    "galAndroid": {
+      "packageRelativePath": "gal-2.3.3/android/src/main/java/studio/midoridesign/gal/GalPlugin.java",
+      "sha256": "b8f6eaae91686479741e20a1000c8861a05e086629041e96b198d13a0e0e4695"
+    },
+    "galDarwin": {
+      "packageRelativePath": "gal-2.3.3/darwin/gal/Sources/gal/GalPlugin.swift",
+      "sha256": "8d7c93a95421d7462f2774b6793e83bd7480259d8010eaae8d8d4877e2f748da"
+    },
+    "galDart": {
+      "packageRelativePath": "gal-2.3.3/lib/src/gal.dart",
+      "sha256": "cd7bfa583af600487b82c4826fce08eecf30f7b0d0591b1539ad9e6e94604f34"
+    }
+  },
+  "nativeSourceReview": {
+    "galAndroidMinSdk": 19,
+    "galIOSDeploymentTarget": "11.0",
+    "formatPlaybackVerified": false,
+    "darwinFileImportForceUnwrap": "REVIEWED_POTENTIAL_RISK_NOT_DEVICE_REPRODUCED"
+  }
+}

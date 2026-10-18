@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
+
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
 )
 
 var (
@@ -31,16 +33,18 @@ func (o Operation) Valid() bool {
 }
 
 type CreatePostInput struct {
-	ChannelID  string `json:"channelId"`
-	IdentityID string `json:"identityId"`
-	Title      string `json:"title"`
-	Body       string `json:"body"`
+	ChannelID  string                `json:"channelId"`
+	IdentityID string                `json:"identityId"`
+	Title      string                `json:"title"`
+	Body       string                `json:"body"`
+	Images     []postmedia.Selection `json:"images,omitempty"`
 }
 
 type RetryInput struct {
-	ExpectedAttemptVersion int32  `json:"expectedAttemptVersion"`
-	Title                  string `json:"title"`
-	Body                   string `json:"body"`
+	ExpectedAttemptVersion int32                 `json:"expectedAttemptVersion"`
+	Title                  string                `json:"title"`
+	Body                   string                `json:"body"`
+	Images                 []postmedia.Selection `json:"images,omitempty"`
 }
 
 type AttemptVersionInput struct {
@@ -148,8 +152,9 @@ type OwnTaskSummary struct {
 }
 
 type OwnTaskContent struct {
-	Title string `json:"title"`
-	Body  string `json:"body"`
+	Title      string `json:"title"`
+	Body       string `json:"body"`
+	ImageCount int    `json:"imageCount,omitempty"`
 }
 
 type OwnTaskDetail struct {
@@ -208,6 +213,7 @@ type PublicPost struct {
 	ChannelID   string       `json:"channelId"`
 	Title       string       `json:"title"`
 	Body        string       `json:"body"`
+	ImageCount  int          `json:"imageCount,omitempty"`
 	Author      PublicAuthor `json:"author"`
 	PublishedAt time.Time    `json:"publishedAt"`
 }

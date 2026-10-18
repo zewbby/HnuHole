@@ -1,13 +1,23 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 
 import '../channels/channel.dart';
 import '../identity/identity_api.dart';
+import '../storage/post_store.dart';
 import 'post_controller.dart';
 import 'post_models.dart';
+import 'post_images.dart';
 import 'post_protocol.dart';
 import 'post_theme.dart';
+import 'post_upload_models.dart';
+
+import 'package:hnuhole_image_viewer/image_viewer.dart';
+
+part 'post_composer_photos.dart';
 
 class ChannelPostsScreen extends StatefulWidget {
   const ChannelPostsScreen({
@@ -17,12 +27,14 @@ class ChannelPostsScreen extends StatefulWidget {
     required this.onManageIdentities,
     required this.onAuthenticationRequired,
     this.onOpenPersonal,
+    this.loadImages,
   });
   final PostController controller;
   final Channel channel;
   final Future<void> Function() onManageIdentities;
   final VoidCallback onAuthenticationRequired;
   final VoidCallback? onOpenPersonal;
+  final PostImagesLoader? loadImages;
   @override
   State<ChannelPostsScreen> createState() => _ChannelPostsScreenState();
 }
@@ -280,6 +292,7 @@ class _ChannelPostsScreenState extends State<ChannelPostsScreen> {
                     MaterialPageRoute<void>(
                       builder: (_) => PostDetailScreen(
                         controller: c,
+                        loadImages: widget.loadImages,
                         postId: post.postId,
                         channelName: widget.channel.name,
                         onAuthenticationRequired:
@@ -426,6 +439,7 @@ class _PostComposerScreenState extends State<PostComposerScreen> {
       _body.removeListener(_edit);
       _title.clear();
       _body.clear();
+      widget.controller.clearEditorMedia(widget.editor);
     }
     if (mounted) setState(() {});
   }
@@ -434,11 +448,28 @@ class _PostComposerScreenState extends State<PostComposerScreen> {
       _title.value.composing.isValid && !_title.value.composing.isCollapsed ||
       _body.value.composing.isValid && !_body.value.composing.isCollapsed;
   Future<void> _next() async {
-    if (!_current || _leaving || _composing || _retryPreparing) return;
+    if (!_current ||
+        _leaving ||
+        _composing ||
+        _retryPreparing ||
+        widget.editor.mediaBusy) {
+      return;
+    }
     try {
-      PostContentRules.validate(_title.text, _body.text);
+      PostContentRules.validate(
+        _title.text,
+        _body.text,
+        imageCount: widget.editor.images.length,
+      );
+      if (widget.editor.images.any((image) => !image.ready)) {
+        throw const FormatException('Unreadable image');
+      }
     } on FormatException {
-      setState(() => _validation = '请填写标题和正文，标题最多15字，正文最多3000字。');
+      setState(
+        () => _validation = widget.editor.images.any((image) => !image.ready)
+            ? '请重新选择或移除无法读取的图片。'
+            : '请填写标题，并提供正文或图片；标题最多15字，正文最多3000字。',
+      );
       return;
     }
     FocusScope.of(context).unfocus();
@@ -473,7 +504,7 @@ class _PostComposerScreenState extends State<PostComposerScreen> {
   }
 
   Future<void> _leave() async {
-    if (_leaving) return;
+    if (_leaving || widget.editor.mediaBusy) return;
     if (!_current) {
       setState(() => _allowPop = true);
       Navigator.of(context).pop();
@@ -623,7 +654,11 @@ class _PostComposerScreenState extends State<PostComposerScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 12),
                   child: FilledButton(
-                    onPressed: _current && !_leaving && !_composing
+                    onPressed:
+                        _current &&
+                            !_leaving &&
+                            !_composing &&
+                            !widget.editor.mediaBusy
                         ? _next
                         : null,
                     child: const Text('下一步'),
@@ -734,6 +769,11 @@ class _PostComposerScreenState extends State<PostComposerScreen> {
                                         : PostTheme.muted,
                                   ),
                                 ),
+                              _ComposerPhotos(
+                                controller: widget.controller,
+                                editor: widget.editor,
+                                onChanged: _edit,
+                              ),
                               if (widget.editor.isRetry) ...[
                                 const Divider(),
                                 const SizedBox(height: 20),
@@ -1153,6 +1193,7 @@ class PersonalPostsScreen extends StatefulWidget {
     this.onOpenSettings,
     this.onPublishedToChannel,
     this.onChooseChannel,
+    this.loadImages,
   });
   final PostController controller;
   final Map<String, String> channelNames;
@@ -1161,6 +1202,7 @@ class PersonalPostsScreen extends StatefulWidget {
   final VoidCallback? onOpenSettings;
   final ValueChanged<String>? onPublishedToChannel;
   final VoidCallback? onChooseChannel;
+  final PostImagesLoader? loadImages;
   @override
   State<PersonalPostsScreen> createState() => _PersonalPostsScreenState();
 }
@@ -1194,6 +1236,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
         MaterialPageRoute<void>(
           builder: (_) => PostDetailScreen(
             controller: widget.controller,
+            loadImages: widget.loadImages,
             postId: item.post!.postId,
             channelName: widget.channelNames[item.post!.channelId],
             onAuthenticationRequired: widget.onAuthenticationRequired,
@@ -1901,6 +1944,14 @@ class _PostTaskScreenState extends State<_PostTaskScreen> {
                                     widget.controller.cancelTask(task!.taskId),
                           child: const Text('取消本次发布'),
                         ),
+                      if (!resultUnknown &&
+                          item.local?.data['images'] is List &&
+                          (item.local!.data['images'] as List).isNotEmpty &&
+                          item.state == 'ACCEPTED')
+                        _PostImageUploadStatus(
+                          controller: widget.controller,
+                          item: item,
+                        ),
                       if (!resultUnknown && task?.canRetry == true)
                         OutlinedButton(
                           onPressed: widget.controller.busy
@@ -1935,11 +1986,13 @@ class PostDetailScreen extends StatefulWidget {
     required this.controller,
     required this.postId,
     this.channelName,
+    this.loadImages,
     this.onAuthenticationRequired,
   });
   final PostController controller;
   final String postId;
   final String? channelName;
+  final PostImagesLoader? loadImages;
   final VoidCallback? onAuthenticationRequired;
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -1980,8 +2033,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_authority.current) return;
       final route = ModalRoute.of(context);
-      if (route?.isCurrent == true && Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
+      if (route?.isActive == true) {
+        final navigator = Navigator.of(context);
+        if (route!.isCurrent && navigator.canPop()) {
+          navigator.pop();
+        } else if (!route.isCurrent) {
+          // A viewer may cover this detail. Remove this exact deleted route;
+          // its child lease closes independently without popping another page.
+          navigator.removeRoute(route);
+        }
       }
     });
   }
@@ -2111,6 +2171,17 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 post.body,
                 style: const TextStyle(fontSize: 17, height: 1.8),
               ),
+              if (widget.loadImages case final loader? when post.imageCount > 0)
+                PostImagesSection(
+                  postId: post.postId,
+                  expectedCount: post.imageCount,
+                  loadImages: loader,
+                  authority: widget.controller,
+                  isCurrent: () =>
+                      _authority.current &&
+                      !_deleted &&
+                      !widget.controller.isPostDeleted(widget.postId),
+                ),
               if (widget.controller.errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 24),

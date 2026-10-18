@@ -141,7 +141,13 @@ func (c *Community) PublishAcceptedPosts(ctx context.Context, limit int) (int64,
 	if limit < 1 || limit > 100 {
 		return 0, ErrIntentInvalid
 	}
-	rows, err := c.pool.Query(ctx, `SELECT t.task_id,t.owner_account_id FROM c_posts.publication_tasks t JOIN c_posts.publication_attempts a ON a.task_id=t.task_id AND a.version=t.latest_attempt_version WHERE a.state='ACCEPTED' ORDER BY a.accepted_at,t.task_id LIMIT $1`, limit)
+	query := `SELECT t.task_id,t.owner_account_id FROM c_posts.publication_tasks t JOIN c_posts.publication_attempts a ON a.task_id=t.task_id AND a.version=t.latest_attempt_version WHERE a.state='ACCEPTED' ORDER BY a.accepted_at,t.task_id LIMIT $1`
+	if c.PostImagesEnabled() {
+		// An incomplete old upload must not block unrelated ready/text posts.
+		// This is only a scheduling hint, never the final publication check.
+		query = `SELECT t.task_id,t.owner_account_id FROM c_posts.publication_tasks t JOIN c_posts.publication_attempts a ON a.task_id=t.task_id AND a.version=t.latest_attempt_version WHERE a.state='ACCEPTED' ORDER BY (NOT EXISTS(SELECT 1 FROM c_posts.images m WHERE m.task_id=t.task_id AND m.version=a.version AND m.payload IS NULL)) DESC,a.accepted_at,t.task_id LIMIT $1`
+	}
+	rows, err := c.pool.Query(ctx, query, limit)
 	if err != nil {
 		return 0, ErrAuthorizationUnavailable
 	}
@@ -227,6 +233,13 @@ func (c *Community) publishPostCandidate(ctx context.Context, account, task uuid
 			}
 			_, e = tx.Exec(ctx, `UPDATE c_posts.publication_attempts SET state='FAILED',terminal_at=$3,failure_code=$4 WHERE task_id=$1 AND version=$2`, task, version, final.TrustedAt, code)
 			return e
+		}
+		ready, e := c.postImagesReady(ctx, tx, task, version, final.TrustedAt)
+		if e != nil {
+			return e
+		}
+		if !ready {
+			return nil
 		}
 		var ordinal int64
 		if e = tx.QueryRow(ctx, `SELECT nextval('c_posts.publication_ordinal_seq')`).Scan(&ordinal); e != nil {

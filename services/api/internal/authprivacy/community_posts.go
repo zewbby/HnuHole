@@ -341,6 +341,9 @@ func (c *Community) SealPostCommand(ctx context.Context, bearer [32]byte, comman
 	})
 }
 func (c *Community) ExecutePostCommand(ctx context.Context, bearer [32]byte, command string, intent posts.Intent) (PostResponse, error) {
+	if len(intent.Images) > 0 && !c.PostImagesEnabled() {
+		return PostResponse{}, ErrAuthorizationUnavailable
+	}
 	if _, err := posts.ParseCommandKey(command); err != nil {
 		return PostResponse{}, err
 	}
@@ -389,7 +392,7 @@ func (c *Community) ExecutePostCommand(ctx context.Context, bearer [32]byte, com
 			if mutedAt(mute, final.TrustedAt) {
 				return reject("POSTING_RESTRICTED")
 			}
-			if posts.ValidateContent(intent.Title, intent.Body) != nil {
+			if posts.ValidateContentWithImages(intent.Title, intent.Body, len(intent.Images)) != nil {
 				return reject("POST_CONTENT_INVALID")
 			}
 			var active bool
@@ -428,6 +431,9 @@ func (c *Community) ExecutePostCommand(ctx context.Context, bearer [32]byte, com
 			if e = writePostAttempt(ctx, tx, taskID.String(), 1, generation, intent, digest, final.TrustedAt); e != nil {
 				return nil, e
 			}
+			if e = writePostImages(ctx, tx, taskID.String(), 1, intent.Images); e != nil {
+				return nil, e
+			}
 			r = posts.CommandResult{State: "ACCEPTED", Operation: posts.Create, TaskID: taskID.String(), PostID: postID.String(), AttemptVersion: 1, TaskState: posts.Accepted}
 		case posts.Retry, posts.Cancel, posts.HideTask:
 			task, e := readOwnPostTask(ctx, tx, account, intent.TaskID, final.TrustedAt, mute)
@@ -448,7 +454,7 @@ func (c *Community) ExecutePostCommand(ctx context.Context, bearer [32]byte, com
 				if !task.Task.CanRetry || task.Task.AttemptVersion == math.MaxInt32 {
 					return reject("TASK_NOT_RETRYABLE")
 				}
-				if posts.ValidateContent(intent.Title, intent.Body) != nil {
+				if posts.ValidateContentWithImages(intent.Title, intent.Body, len(intent.Images)) != nil {
 					return reject("POST_CONTENT_INVALID")
 				}
 				version := task.Task.AttemptVersion + 1
@@ -456,6 +462,9 @@ func (c *Community) ExecutePostCommand(ctx context.Context, bearer [32]byte, com
 					return nil, e
 				}
 				if e = writePostAttempt(ctx, tx, intent.TaskID, version, generation, intent, digest, final.TrustedAt); e != nil {
+					return nil, e
+				}
+				if e = writePostImages(ctx, tx, intent.TaskID, version, intent.Images); e != nil {
 					return nil, e
 				}
 				if e = enqueuePostErase(ctx, tx, intent.TaskID, task.Task.AttemptVersion, "RETRIED", final.TrustedAt); e != nil {
@@ -514,6 +523,10 @@ func (c *Community) ExecutePostCommand(ctx context.Context, bearer [32]byte, com
 }
 func writePostAttempt(ctx context.Context, tx pgx.Tx, task string, version int32, generation int64, intent posts.Intent, digest [32]byte, at time.Time) error {
 	if _, err := tx.Exec(ctx, `INSERT INTO c_posts.publication_attempts(task_id,version,accepted_stop_generation,state,accepted_at,acceptance_ordinal) VALUES($1,$2,$3,'ACCEPTED',$4,nextval('c_posts.acceptance_ordinal_seq'))`, task, version, generation, at); err != nil {
+		return err
+	}
+	if len(intent.Images) > 0 {
+		_, err := tx.Exec(ctx, `INSERT INTO c_posts.attempt_contents(task_id,version,title,body,request_digest,image_count) VALUES($1,$2,$3,$4,$5,$6)`, task, version, intent.Title, intent.Body, digest[:], len(intent.Images))
 		return err
 	}
 	_, err := tx.Exec(ctx, `INSERT INTO c_posts.attempt_contents(task_id,version,title,body,request_digest) VALUES($1,$2,$3,$4,$5)`, task, version, intent.Title, intent.Body, digest[:])

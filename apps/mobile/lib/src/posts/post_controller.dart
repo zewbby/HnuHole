@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
@@ -10,7 +11,14 @@ import '../identity/identity_api.dart';
 import '../storage/post_store.dart';
 import 'post_api.dart';
 import 'post_models.dart';
+import 'post_media_api.dart';
+
 import 'post_protocol.dart';
+import 'post_upload_api.dart';
+import 'post_upload_models.dart';
+import 'post_photo_picker.dart';
+
+part 'post_composer_media.dart';
 
 typedef PostStoreFactory = Future<PostStore> Function(String accountId);
 
@@ -42,7 +50,8 @@ class PostDraftEditor {
     this.attemptVersion,
     this.bufferId,
     this.bufferRevision = 0,
-  });
+    List<DraftPostImage>? images,
+  }) : images = images ?? [];
   final String id, channelId, accountId;
   final int authorityVersion;
   final bool isRetry;
@@ -55,6 +64,10 @@ class PostDraftEditor {
   int revision;
   bool persisted, saved = false, saving = false, submitted = false;
   String? error;
+  final List<DraftPostImage> images;
+  final _originals = <String, Uint8List>{};
+  bool mediaBusy = false, mediaTouched = false, pickerPending = false;
+  String? mediaError;
 }
 
 class PersonalPostItem {
@@ -115,6 +128,9 @@ class PostController extends ChangeNotifier {
     this._purgeStore,
     String Function()? newId,
     Duration pollInterval = const Duration(seconds: 5),
+    this._mediaApi,
+    this._uploadApi,
+    this._photoPicker,
   }) : _clock = clock ?? DateTime.now,
        _newId = newId ?? (() => AuthCrypto.randomEncoded(16)) {
     _sessions.addListener(_authorityChanged);
@@ -131,6 +147,12 @@ class PostController extends ChangeNotifier {
   }
 
   final PostApi _api;
+  final PostMediaApi? _mediaApi;
+  final PostUploadApi? _uploadApi;
+  final PostPhotoPicker? _photoPicker;
+  bool _lostSelectionChecked = false;
+  final _uploadingImages = <String>{};
+  final _imageProgress = <String, PostImageUploadProgress>{};
   final AuthSessionController _sessions;
   final AuthStore _authStore;
   final IdentityApi _identities;
@@ -161,6 +183,7 @@ class PostController extends ChangeNotifier {
   int _publicationSequence = 0;
   PostPublicationNotice? _latestPublicationNotice;
   String? currentChannelId, feedCursor, feedError, personalError, errorMessage;
+  String? _errorCommandId;
   bool feedLoading = false, personalLoading = false;
   List<PostCard> feedItems = [];
   List<PersonalPostItem> personalItems = [];
@@ -209,11 +232,13 @@ class PostController extends ChangeNotifier {
     _remoteTasks.clear();
     _deletedPostIds.clear();
     _latestPublicationNotice = null;
+    _imageProgress.clear();
     personalItems = [];
     personalIdentity = null;
     feedItems = [];
     currentChannelId = feedCursor = feedError = personalError = errorMessage =
         null;
+    _errorCommandId = null;
     _ownCursor = _taskCursor = null;
     feedLoading = personalLoading = false;
     _publishing.clear();
@@ -238,7 +263,9 @@ class PostController extends ChangeNotifier {
       _store = store;
       final entries = await store.list();
       if (epoch != _epoch) return;
-      _local = entries;
+      final recovered = await _restorePickerCheckpoint(store, entries, epoch);
+      if (_disposed || epoch != _epoch || account != _accountId) return;
+      _local = recovered;
       _rememberDeletedPosts(entries);
       _mergePersonal();
       _notify();
@@ -303,11 +330,16 @@ class PostController extends ChangeNotifier {
     return response.value;
   }
 
-  void _failure(Object error, [_PostAuthority? authority]) {
+  void _failure(
+    Object error, [
+    _PostAuthority? authority,
+    String? commandId,
+  ]) {
     if (error is _StalePostAuthority ||
         authority != null && !_current(authority)) {
       return;
     }
+    _errorCommandId = commandId;
     if (error is AuthFailure) {
       if (authority != null && error.unauthorized) {
         _sessions.sessionUnauthorized(authority.token, error.code);
@@ -339,6 +371,12 @@ class PostController extends ChangeNotifier {
       errorMessage = '暂时无法完成操作，请重试。';
     }
     _notify();
+  }
+
+  void _clearCommandError(String commandId) {
+    if (_errorCommandId != commandId) return;
+    _errorCommandId = null;
+    errorMessage = null;
   }
 
   Future<void> loadFeed(String channelId, {bool more = false}) async {
@@ -407,6 +445,51 @@ class PostController extends ChangeNotifier {
       return null;
     }
   }
+
+  /// Uses the same authority capture and durable renewal as text reads.
+  /// Only the host HTTP adapter sees a session token.
+  Future<PostResponse<T>> _readMedia<T>(
+    String postId,
+    Future<PostResponse<T>> Function(PostMediaApi api, String token) read,
+  ) async {
+    final a = await _authority();
+    try {
+      PostProtocol.resourceId(postId);
+      if (_deletedPostIds.contains(postId) || _mediaApi == null) {
+        throw const PostFailure(kind: PostFailureKind.rejected);
+      }
+      final response = await read(_mediaApi, a.token);
+      await _accept(a, response);
+      if (!_current(a) || _deletedPostIds.contains(postId)) {
+        throw _StalePostAuthority();
+      }
+      return response;
+    } catch (error) {
+      if (error is PostFailure &&
+          (error.kind == PostFailureKind.unauthorized ||
+              error.kind == PostFailureKind.unavailable)) {
+        _failure(error, a);
+      }
+      // No raw transport/storage exceptions escape into an image resolver.
+      if (error is PostFailure) rethrow;
+      throw const PostFailure(kind: PostFailureKind.invalidResponse);
+    }
+  }
+
+  Future<PostResponse<PostMediaManifest>> loadImageManifest(String postId) =>
+      _readMedia(
+        postId,
+        (api, token) => api.imageManifest(sessionToken: token, postId: postId),
+      );
+
+  Future<PostResponse<Uint8List>> loadImageBytes(
+    String postId,
+    PostMediaImage image,
+  ) => _readMedia(
+    postId,
+    (api, token) =>
+        api.imageBytes(sessionToken: token, postId: postId, image: image),
+  );
 
   /// 身份管理返回时刷新已显示的公共投影，保留当前列表顺序与分页游标。
   Future<void> refreshKnownPosts() async {
@@ -660,16 +743,21 @@ class PostController extends ChangeNotifier {
         return null;
       }
       return PostDraftEditor(
-        id: entry.id,
-        channelId: entry.data['channelId'] as String,
-        accountId: a.accountId,
-        authorityVersion: a.epoch,
-        identityId: entry.data['identityId'] as String?,
-        title: entry.data['title'] as String,
-        body: entry.data['body'] as String,
-        revision: entry.revision,
-        persisted: true,
-      )..saved = true;
+          id: entry.id,
+          channelId: entry.data['channelId'] as String,
+          accountId: a.accountId,
+          authorityVersion: a.epoch,
+          identityId: entry.data['identityId'] as String?,
+          title: entry.data['title'] as String,
+          body: entry.data['body'] as String,
+          revision: entry.revision,
+          persisted: true,
+          images: DraftPostImage.list(entry.data['images']),
+        )
+        ..saved = true
+        ..mediaError = entry.data['pickerInterrupted'] == true
+            ? '上次选图被中断，请重新选择；已保存的图片仍保留。'
+            : null;
     } catch (error) {
       _failure(error, a);
       return null;
@@ -684,6 +772,9 @@ class PostController extends ChangeNotifier {
     'editedAt': _clock().toUtc().toIso8601String(),
     if (e.taskId != null) 'taskId': e.taskId,
     if (e.attemptVersion != null) 'attemptVersion': e.attemptVersion,
+    if (e.images.isNotEmpty || e.mediaTouched)
+      'images': [for (final image in e.images) image.toJson()],
+    if (e.pickerPending) 'pickerPending': true,
   };
 
   Future<bool> saveDraft(PostDraftEditor e) {
@@ -709,14 +800,24 @@ class PostController extends ChangeNotifier {
       // 空白新稿不落盘，也不能覆盖其他草稿。
       if (!e.persisted &&
           !PostContentRules.hasMeaningfulText(e.title) &&
-          !PostContentRules.hasMeaningfulText(e.body)) {
+          !PostContentRules.hasMeaningfulText(e.body) &&
+          e.images.isEmpty &&
+          !e.pickerPending) {
         e.saved = true;
         return true;
       }
       if (e.isRetry) data['isRetryBuffer'] = true;
       final id = e.bufferId ?? e.id;
       final revision = e.isRetry ? e.bufferRevision : e.revision;
-      final entry = e.persisted
+      final originals = Map<String, Uint8List>.of(e._originals);
+      final entry = e.images.isNotEmpty || e.mediaTouched || e.pickerPending
+          ? await a.store!.saveMediaDraft(
+              id,
+              e.persisted ? revision : null,
+              data,
+              originals,
+            )
+          : e.persisted
           ? await a.store!.saveDraft(id, revision, data)
           : await a.store!.createDraft(id, data);
       if (!_current(a) || !editorCurrent(e)) return false;
@@ -726,10 +827,17 @@ class PostController extends ChangeNotifier {
         e.revision = entry.revision;
       }
       e.persisted = true;
+      for (final key in originals.keys) {
+        if (identical(e._originals[key], originals[key])) {
+          e._originals.remove(key);
+        }
+      }
       e.saved =
           e.title == data['title'] &&
           e.body == data['body'] &&
-          e.identityId == data['identityId'];
+          e.identityId == data['identityId'] &&
+          jsonEncode(e.images.map((e) => e.toJson()).toList()) ==
+              jsonEncode(data['images'] ?? []);
       await _refreshLocal(a);
       return true;
     } catch (error) {
@@ -819,7 +927,15 @@ class PostController extends ChangeNotifier {
     }
     _PostAuthority? a;
     try {
-      PostContentRules.validate(e.title, e.body);
+      PostContentRules.validate(e.title, e.body, imageCount: e.images.length);
+      if (e.mediaBusy || e.images.any((image) => !image.ready)) {
+        e.error = '请移除或重新选择无法读取的图片。';
+        return false;
+      }
+      if (e.images.isNotEmpty && _uploadApi == null) {
+        e.error = '当前图片发布不可用，请稍后重试。';
+        return false;
+      }
       if (e.identityId == null) {
         e.error = '请先选择有效身份。';
         return false;
@@ -860,21 +976,28 @@ class PostController extends ChangeNotifier {
               'title': e.title,
               'body': e.body,
             };
+      final selections = [
+        for (final image in e.images) image.selection!.toJson(),
+      ];
+      if (selections.isNotEmpty) payload['images'] = selections;
       final operation = e.isRetry ? PostOperation.retry : PostOperation.create;
       final digest = PostProtocol.digest(
-        e.isRetry
-            ? PostProtocol.retry(
-                taskId: e.taskId!,
-                expectedAttemptVersion: e.attemptVersion!,
-                title: e.title,
-                body: e.body,
-              )
-            : PostProtocol.create(
-                channelId: e.channelId,
-                identityId: e.identityId!,
-                title: e.title,
-                body: e.body,
-              ),
+        PostProtocol.withImages(
+          e.isRetry
+              ? PostProtocol.retry(
+                  taskId: e.taskId!,
+                  expectedAttemptVersion: e.attemptVersion!,
+                  title: e.title,
+                  body: e.body,
+                )
+              : PostProtocol.create(
+                  channelId: e.channelId,
+                  identityId: e.identityId!,
+                  title: e.title,
+                  body: e.body,
+                ),
+          selections,
+        ),
       );
       final intent = StoredPostIntent(
         commandId: _newId(),
@@ -886,11 +1009,14 @@ class PostController extends ChangeNotifier {
         if (retryOriginal != null) ...retryOriginal.data,
         ..._editorData(e),
         'commandState': 'UNKNOWN',
-      };
+      }..remove('mediaUploadPaused');
       final entry = e.isRetry
           ? await a.store!.appendIntent(e.id, e.revision, intent, data)
           : await a.store!.submitDraft(e.id, e.revision, intent, data);
       if (!_current(a) || !editorCurrent(e)) return false;
+      // A newly durable attempt must not inherit the previous upload's pause.
+      // Old in-flight work still checks its original command/attempt fence.
+      _imageProgress.remove(e.id);
       e.revision = entry.revision;
       e.submitted = true;
       e.saved = true;
@@ -982,6 +1108,16 @@ class PostController extends ChangeNotifier {
     try {
       final p = intent.payload;
       final response = switch (intent.operation) {
+        'CREATE' when p['images'] is List && (p['images'] as List).isNotEmpty =>
+          await _uploadApi!.createWithImages(
+            sessionToken: a.token,
+            commandId: intent.commandId,
+            channelId: p['channelId'] as String,
+            identityId: p['identityId'] as String,
+            title: p['title'] as String,
+            body: p['body'] as String,
+            images: PostImageSelection.list(p['images']),
+          ),
         'CREATE' => await _api.create(
           sessionToken: a.token,
           commandId: intent.commandId,
@@ -990,6 +1126,16 @@ class PostController extends ChangeNotifier {
           title: p['title'] as String,
           body: p['body'] as String,
         ),
+        'RETRY' when p['images'] is List && (p['images'] as List).isNotEmpty =>
+          await _uploadApi!.retryWithImages(
+            sessionToken: a.token,
+            commandId: intent.commandId,
+            taskId: p['taskId'] as String,
+            expectedAttemptVersion: p['expectedAttemptVersion'] as int,
+            title: p['title'] as String,
+            body: p['body'] as String,
+            images: PostImageSelection.list(p['images']),
+          ),
         'RETRY' => await _api.retry(
           sessionToken: a.token,
           commandId: intent.commandId,
@@ -1020,7 +1166,7 @@ class PostController extends ChangeNotifier {
       await _applyResult(a, entry.id, intent, await _accept(a, response));
     } catch (error) {
       // mutation 的409也先核对原回执；超时、503或写盘失败都不能变成新草稿。
-      _failure(error, a);
+      _failure(error, a, intent.commandId);
       if (_current(a)) unawaited(reconcile(entry.id));
     } finally {
       _sending.remove(intent.commandId);
@@ -1043,6 +1189,7 @@ class PostController extends ChangeNotifier {
 
   Future<void> _reconcile(String id) async {
     _PostAuthority? a;
+    String? commandId;
     try {
       a = await _authority(storage: true);
       final entry = await a.store!.get(id);
@@ -1061,6 +1208,7 @@ class PostController extends ChangeNotifier {
         return;
       }
       final intent = entry.intents.last;
+      commandId = intent.commandId;
       if (intent.operation == 'TASK_ANCHOR') {
         await _applyTask(
           a,
@@ -1084,7 +1232,7 @@ class PostController extends ChangeNotifier {
       );
       await _applyResult(a, id, intent, result);
     } catch (error) {
-      _failure(error, a);
+      _failure(error, a, commandId);
     }
   }
 
@@ -1206,6 +1354,9 @@ class PostController extends ChangeNotifier {
     }
     if (!_current(a)) return;
     // 同一命令的并发核对可遇CAS竞争；下次核对读取最新revision即可，不重发。
+    if (observedTask?.state == PostTaskState.cancelled) {
+      await _preserveCancelledImages(a, entry);
+    }
     if ({
       'PUBLISHED',
       'CANCELLED',
@@ -1219,6 +1370,10 @@ class PostController extends ChangeNotifier {
     }
     if (!_current(a)) return;
     if (observedTask != null) _remoteTasks[observedTask.taskId] = observedTask;
+    if (result.state != PostCommandState.unknownNotObserved &&
+        result.state != PostCommandState.resultExpired) {
+      _clearCommandError(intent.commandId);
+    }
     await _refreshLocal(a);
     if (!_current(a)) return;
     if (result.state == PostCommandState.accepted &&
@@ -1228,6 +1383,11 @@ class PostController extends ChangeNotifier {
     }
     if (!_current(a)) return;
     final currentTask = taskId == null ? null : _remoteTasks[taskId];
+    if (state == 'ACCEPTED' &&
+        data['images'] is List &&
+        (data['images'] as List).isNotEmpty) {
+      unawaited(resumeImageUpload(id, automatic: true));
+    }
     if (currentTask != null) await _dropRetryBuffers(a, currentTask);
     if (!_current(a)) return;
     if (state == 'DELETED') {
@@ -1259,6 +1419,9 @@ class PostController extends ChangeNotifier {
         : task.state == PostTaskState.published
         ? 'PUBLISHED'
         : 'HIDDEN';
+    if (task.state == PostTaskState.cancelled) {
+      await _preserveCancelledImages(a, entry);
+    }
     if (!task.contentAvailable && state == 'FAILED') {
       await a.store!.compactTerminal(
         entry.id,
@@ -1273,6 +1436,12 @@ class PostController extends ChangeNotifier {
     }
     if (!_current(a)) return;
     _remoteTasks[task.taskId] = task;
+    _clearCommandError(entry.intents.last.commandId);
+    if (state == 'ACCEPTED' &&
+        data['images'] is List &&
+        (data['images'] as List).isNotEmpty) {
+      unawaited(resumeImageUpload(entry.id, automatic: true));
+    }
     await _refreshLocal(a);
     if (!_current(a)) return;
     if (entry.state == 'ACCEPTED' &&
@@ -1450,6 +1619,14 @@ class PostController extends ChangeNotifier {
       );
       if (!_current(a)) return null;
       final bufferId = buffer?.id ?? _newId();
+      final images = DraftPostImage.list(
+        buffer?.data['images'] ?? entry.data['images'],
+      );
+      if (buffer == null && images.isEmpty && task.content!.imageCount > 0) {
+        errorMessage = '此设备没有原草稿图片，请回原设备处理，原任务仍保留。';
+        _notify();
+        return null;
+      }
       return PostDraftEditor(
         id: entry.id,
         channelId: task.channelId,
@@ -1465,6 +1642,7 @@ class PostController extends ChangeNotifier {
         attemptVersion: task.attemptVersion,
         bufferId: bufferId,
         bufferRevision: buffer?.revision ?? 0,
+        images: images,
       )..saved = buffer != null;
     } catch (error) {
       _failure(error, a);
@@ -1524,7 +1702,7 @@ class PostController extends ChangeNotifier {
         await _api.task(sessionToken: a.token, taskId: taskId),
       );
       if (hide ? !task.canHide : !task.canCancel) return;
-      final entry = await _entryForTask(a, task);
+      var entry = await _entryForTask(a, task);
       if (!_current(a)) return;
       if (_unresolved(entry)) {
         await reconcile(entry.id);
@@ -1549,12 +1727,33 @@ class PostController extends ChangeNotifier {
           'expectedAttemptVersion': task.attemptVersion,
         },
       );
-      final next = await a.store!.appendIntent(
-        entry.id,
-        entry.revision,
-        intent,
-        Map<String, dynamic>.from(entry.data)..['commandState'] = 'UNKNOWN',
-      );
+      StoredPostEntry? next;
+      for (var attempt = 0; attempt < 3; attempt++) {
+        try {
+          next = await a.store!.appendIntent(
+            entry.id,
+            entry.revision,
+            intent,
+            Map<String, dynamic>.from(entry.data)..['commandState'] = 'UNKNOWN',
+          );
+          break;
+        } on PostStorageConflict {
+          // Upload progress may update this same accepted row. Retry only the
+          // unsent local CAS; never append over a newer command or attempt.
+          final latest = await a.store!.get(entry.id);
+          if (!_current(a)) return;
+          if (latest == null ||
+              _unresolved(latest) ||
+              latest.state != entry.state ||
+              latest.data['attemptVersion'] != task.attemptVersion ||
+              latest.intents.last.commandId != entry.intents.last.commandId) {
+            await reconcile(entry.id);
+            return;
+          }
+          entry = latest;
+        }
+      }
+      if (next == null) throw const PostStorageConflict();
       if (!_current(a)) return;
       await _refreshLocal(a);
       await _send(a, next);
@@ -1646,6 +1845,8 @@ class PostController extends ChangeNotifier {
         ..title = entry.data['title'] as String? ?? ''
         ..body = entry.data['body'] as String? ?? ''
         ..identityId = entry.data['identityId'] as String?;
+      editor.images.addAll(DraftPostImage.list(entry.data['images']));
+      editor.mediaTouched = editor.images.isNotEmpty;
       if (!await saveDraft(editor)) return null;
       if (!_current(a)) return null;
       await a.store!.compactTerminal(

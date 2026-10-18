@@ -303,6 +303,10 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 }
 
 func publicMethodAllowed(service Service, path, method string) bool {
+	if service == CommunityService && isPostImagePath(path) {
+		route, e := parseImageRoute(path)
+		return e == nil && route.method == method
+	}
 	if service == CommunityService && isPostPath(path) {
 		route, err := parsePostRoute(path)
 		return err == nil && route.allows(method)

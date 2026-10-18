@@ -1,14 +1,8 @@
 # 海南大学树洞
 
-面向海南大学校内人员的封闭树洞社区，首版通道为吐槽、避雷、安利、互助、搭子、科技、情感，围绕“想说就说”设计。
+面向海南大学校内人员的封闭树洞社区，用于吐槽、互助、找搭子、发表想法和分享生活。致力于打造一款匿名程度尽可能高的匿名论坛，保护在校师生的个人信息。
 
 当前已从产品设计阶段进入工程方案阶段，首版面向 iOS 与 Android。工程基线已确定为 Flutter/Dart 移动端、Go 服务端和模块化单体后端；仓库采用 monorepo，Go HTTP、PostgreSQL、REST/OpenAPI、服务端会话、移动端本地存储、CI/测试与部署基线已记录，具体云厂商、推送供应商和发布流程仍在后续决策中。
-
-## 当前开发切片
-
-任务 1 正在实现登录后的通道目录与二维入口树。未登录只显示无节点树外壳；登录后通过 `GET /api/v1/channels` 加载七个通道，初始关注五个，另外两个通过拖动探索。服务端代码位于 `services/api`，OpenAPI 源文件位于 `packages/openapi/channel-api.yaml`，本地 PostgreSQL/Mailpit 配置位于 `infra`。
-
-当前机器未安装 Go/Flutter SDK，且 Docker 引擎未启动；本轮代码尚未运行测试。换到具备 SDK 的环境后，先执行 API 依赖整理、迁移、格式化和测试，再运行 Flutter 分析与客户端测试。
 
 ## 新会话接续
 
@@ -35,3 +29,31 @@
 - [历史讨论目录](docs/discussions/README.md)
 
 按用户要求优先交付 PNG，设计图的确认范围在各模块内说明。
+
+## 分支一览
+
+| 分支 | 一句话说明 | 进度详情 |
+| --- | --- | --- |
+| `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/community-text-posting` | 实现文字帖后端、接口及早期客户端闭环。 | [详情](docs/branches/community-text-posting.md) |
+| `codex/community-flutter-pages` | 实现社区页面并推进社区与认证的 Android 验收。 | [详情](docs/branches/community-flutter-pages.md) |
+
+### 已合并或退役的历史工作
+
+以下分支已合并、关闭或被后续实现取代；历史详情与 PR 记录保留，后续开发以 `main` 为基线：
+
+- 工程基线：[工程决策与早期骨架](docs/branches/engineering-baseline.md)，原分支按用户要求退役，完整历史保留于归档标签。
+- 认证与 B5：[认证交接](docs/branches/auth-privacy-handoff.md)、[B5 主线接入](docs/branches/fix-b5-main-integration.md)、[B5 合并记录](docs/branches/docs-b5-integration-merge-record.md)；认证导入 PR [#8](https://github.com/zewbby/HnuHole/pull/8) 已由 [#9](https://github.com/zewbby/HnuHole/pull/9) 取代。
+- 帖子图片：[图片 Android 交付](docs/branches/feat-post-image-android.md)、[图片业务合并记录](docs/branches/docs-post-image-merge-record.md)、[图片后端](docs/branches/post-image-media.md)、[图片集成](docs/branches/post-image-integration.md)。
+- 图片查看器：[组件](docs/branches/image-viewer-component.md)、[业务接入](docs/branches/image-viewer-business-integration.md)。
+- 协作与索引：[协作规范](docs/branches/chore-collaboration-rules.md)、[README 分支索引](docs/branches/docs-readme-branch-index.md)。
+
+## 最近变动
+
+按合并时间倒序保留最近 5 条，每条一句话说明。
+
+- 2026-10-17 · [#11](https://github.com/zewbby/HnuHole/pull/11)：将已合并或退役工作移入历史入口，更新现存分支索引。
+- 2026-10-17 · [#10](https://github.com/zewbby/HnuHole/pull/10)：补记 B5 验收增量进入主线的合并事实、验收边界与交接更新。
+- 2026-10-17 · [#9](https://github.com/zewbby/HnuHole/pull/9)：接入 B5 验收增量并修复闭号状态及图片生命周期擦除权限。
+- 2026-10-16 · [#6](https://github.com/zewbby/HnuHole/pull/6)：记录图片分支退役和实际资源清理结果。
+- 2026-10-16 · [#5](https://github.com/zewbby/HnuHole/pull/5)：退役帖子图片后端分支，保留历史交接入口。

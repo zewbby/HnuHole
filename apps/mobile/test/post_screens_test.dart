@@ -10,6 +10,8 @@ import 'package:hnuhole_mobile/src/channels/channel.dart';
 import 'package:hnuhole_mobile/src/identity/identity_api.dart';
 import 'package:hnuhole_mobile/src/posts/post_controller.dart';
 import 'package:hnuhole_mobile/src/posts/post_models.dart';
+import 'package:hnuhole_mobile/src/posts/post_images.dart';
+import 'package:hnuhole_image_viewer/image_viewer.dart';
 import 'package:hnuhole_mobile/src/posts/post_screens.dart';
 import 'package:hnuhole_mobile/src/storage/post_store.dart';
 
@@ -178,6 +180,117 @@ Widget _app(Widget child, {double scale = 1, String? fontFamily}) =>
     );
 
 void main() {
+  for (final fromPersonal in [false, true]) {
+    testWidgets(
+      'existing ${fromPersonal ? "personal" : "channel"} detail passes images and removes deleted covered route',
+      (tester) async {
+        final bytes = await tester.runAsync(
+          () => File(
+            '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
+          ).readAsBytes(),
+        );
+        final provider = MemoryImage(bytes!);
+        final access = ValueNotifier(true);
+        final c = _WidgetPosts()
+          ..detail = PostDetail(
+            postId: _postId,
+            channelId: _channelId,
+            title: '带图详情',
+            imageCount: 1,
+            body: List.filled(30, '原页面的阅读内容。').join('\n'),
+            author: _active,
+            publishedAt: _time,
+          );
+        c.cards = [c.detail!];
+        c.personal = [
+          PersonalPostItem(
+            id: _postId,
+            title: '带图详情',
+            sortAt: _time,
+            post: c.detail,
+          ),
+        ];
+        final requested = <String>[];
+        Future<PostImages> load(String postId) async {
+          requested.add(postId);
+          return PostImages(
+            postId: postId,
+            accessGranted: access,
+            images: [
+              PostImage(
+                thumbnail: provider,
+                item: ViewerItem.provider(
+                  id: 'post-image-v1',
+                  provider: provider,
+                  pixelSize: const Size(640, 480),
+                  saveAllowed: false,
+                ),
+              ),
+            ],
+          );
+        }
+
+        await tester.pumpWidget(
+          _app(
+            fromPersonal
+                ? PersonalPostsScreen(
+                    controller: c,
+                    channelNames: const {_channelId: '搭子'},
+                    onManageIdentities: () async {},
+                    onAuthenticationRequired: () {},
+                    loadImages: load,
+                  )
+                : ChannelPostsScreen(
+                    controller: c,
+                    channel: _channel,
+                    onManageIdentities: () async {},
+                    onAuthenticationRequired: () {},
+                    loadImages: load,
+                  ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('带图详情'));
+        await tester.pumpAndSettle();
+        expect(requested, [_postId]);
+        final tile = find.byKey(
+          const ValueKey(('post-image', 'post-image-v1')),
+        );
+        await tester.ensureVisible(tile);
+        await tester.pumpAndSettle();
+        final scroll = tester.state<ScrollableState>(
+          find.ancestor(of: tile, matching: find.byType(Scrollable)).last,
+        );
+        final offset = scroll.position.pixels;
+        await tester.tap(tile);
+        await tester.pumpAndSettle();
+        expect(find.byType(HnuImageViewer), findsOneWidget);
+        await tester.tap(find.byKey(const ValueKey('viewer-close')));
+        await tester.pumpAndSettle();
+        expect(scroll.position.pixels, offset);
+        await tester.tap(tile);
+        await tester.pumpAndSettle();
+        c.tombstoned = true;
+        c.notifyListeners();
+        for (var i = 0; i < 8; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        expect(find.byType(HnuImageViewer, skipOffstage: false), findsNothing);
+        expect(
+          find.byType(PostDetailScreen, skipOffstage: false),
+          findsNothing,
+        );
+        expect(
+          find.byType(fromPersonal ? PersonalPostsScreen : ChannelPostsScreen),
+          findsOneWidget,
+        );
+        await tester.pumpWidget(const SizedBox());
+        access.dispose();
+        c.dispose();
+      },
+    );
+  }
+
   PostDraftEditor editor() => PostDraftEditor(
     id: 'draft-widget-1',
     channelId: _channelId,
@@ -283,7 +396,7 @@ void main() {
       await tester.pumpWidget(_app(composer(c, e)));
       await tester.tap(find.text('下一步'));
       await tester.pumpAndSettle();
-      final error = find.text('请填写标题和正文，标题最多15字，正文最多3000字。');
+      final error = find.text('请填写标题，并提供正文或图片；标题最多15字，正文最多3000字。');
       expect(error, findsOneWidget);
       expect(
         tester
@@ -1400,6 +1513,7 @@ void main() {
         postId: _postId,
         channelId: _channelId,
         title: '周末一起去图书馆',
+        imageCount: 2,
         body: '周六下午想去图书馆坐一会儿，看看书，也把拖了很久的作业写完。\n\n不用一直聊天，各做各的就好。累了可以一起出去走走。',
         author: _active,
         publishedAt: _time,
@@ -1409,6 +1523,53 @@ void main() {
         'post-detail',
         PostDetailScreen(controller: c, postId: _postId, channelName: '搭子'),
       );
+      final imageBytes = await tester.runAsync(
+        () async => [
+          await File(
+            '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
+          ).readAsBytes(),
+          await File(
+            '../../packages/image_viewer/example/assets/fixtures/long.png',
+          ).readAsBytes(),
+        ],
+      );
+      final mediaAccess = ValueNotifier(true);
+      await capture(
+        'post-detail-images',
+        PostDetailScreen(
+          controller: c,
+          postId: _postId,
+          channelName: '搭子',
+          loadImages: (postId) async => PostImages(
+            postId: postId,
+            accessGranted: mediaAccess,
+            images: [
+              for (var i = 0; i < 2; i++)
+                PostImage(
+                  thumbnail: MemoryImage(imageBytes![i]),
+                  item: ViewerItem.provider(
+                    id: 'render-media-$i',
+                    provider: MemoryImage(imageBytes[i]),
+                    pixelSize: i == 0
+                        ? const Size(640, 480)
+                        : const Size(480, 2400),
+                    saveAllowed: false,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        prepare: () async {
+          for (var i = 0; i < 12; i++) {
+            await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 5)),
+            );
+            await tester.pump(const Duration(milliseconds: 40));
+          }
+        },
+      );
+      await tester.pumpWidget(const SizedBox());
+      mediaAccess.dispose();
       await capture(
         'post-delete-confirm',
         PostDetailScreen(controller: c, postId: _postId, channelName: '搭子'),

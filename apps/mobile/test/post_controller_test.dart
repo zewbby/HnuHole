@@ -493,6 +493,7 @@ class _Fixture {
 
   Future<void> restart({Duration poll = Duration.zero}) async {
     controller.dispose();
+    await Future.wait(opening.values.toList());
     for (final store in stores) {
       await store.close();
     }
@@ -512,6 +513,9 @@ class _Fixture {
 
   Future<void> close() async {
     controller.dispose();
+    // A switched account may still be opening its real background connection.
+    // Wait for the owned factory before enumerating connections or deleting it.
+    await Future.wait(opening.values.toList());
     for (final store in stores) {
       await store.close();
     }
@@ -629,6 +633,63 @@ void main() {
     expect(api.queries.every((query) => query['commandId'] == key), isTrue);
     expect((await _entry(f, editor.id)).intents.single.commandId, key);
     expect(await f.controller.restoreDraft(editor.id), isNull);
+  });
+
+  test('confirmed original command clears its stale transport banner without restart or another CREATE', () async {
+    final api = _Api()
+      ..createLost = true
+      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+    f = await _Fixture.create(api: api);
+    final editor = f.editor();
+    expect(await f.controller.publish(editor), isTrue);
+    await _until(() => api.queries.isNotEmpty && !f.controller.busy);
+    expect(f.controller.errorMessage, isNotNull);
+    api.queryFailure = null;
+    await f.controller.reconcile(editor.id);
+    expect((await _entry(f, editor.id)).state, 'ACCEPTED');
+    expect(f.controller.errorMessage, isNull);
+    expect(api.creates, hasLength(1));
+  });
+
+  test('a still unknown original result retains its transport banner', () async {
+    final api = _Api()
+      ..createLost = true
+      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+    f = await _Fixture.create(api: api);
+    final editor = f.editor();
+    expect(await f.controller.publish(editor), isTrue);
+    await _until(() => api.queries.isNotEmpty && !f.controller.busy);
+    final message = f.controller.errorMessage;
+    expect(message, isNotNull);
+    api.queryFailure = null;
+    api.receipts.clear();
+    await f.controller.reconcile(editor.id);
+    expect((await _entry(f, editor.id)).state, 'UNKNOWN');
+    expect(f.controller.errorMessage, message);
+  });
+
+  test('confirming an original command does not clear a later feed failure', () async {
+    final api = _Api()
+      ..createLost = true
+      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+    f = await _Fixture.create(api: api);
+    final editor = f.editor();
+    expect(await f.controller.publish(editor), isTrue);
+    await _until(() => api.queries.isNotEmpty && !f.controller.busy);
+    api.feedWait = Completer<PostResponse<PostsPage<PostCard>>>();
+    final feed = f.controller.loadFeed(_channel);
+    await Future<void>.delayed(Duration.zero);
+    api.feedWait!.completeError(
+      const PostFailure(kind: PostFailureKind.transport),
+    );
+    await feed;
+    final message = f.controller.errorMessage;
+    expect(message, isNotNull);
+    expect(f.controller.feedError, isNotNull);
+    api.queryFailure = null;
+    await f.controller.reconcile(editor.id);
+    expect((await _entry(f, editor.id)).state, 'ACCEPTED');
+    expect(f.controller.errorMessage, message);
   });
 
   test('CREATE 409 checks the original command before accepting its existing task and never submits a second key', () async {

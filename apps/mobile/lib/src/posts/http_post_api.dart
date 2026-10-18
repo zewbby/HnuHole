@@ -1,14 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import '../auth/auth_crypto.dart';
 import 'post_api.dart';
 import 'post_models.dart';
+import 'post_media_api.dart';
 import 'post_protocol.dart';
+import 'post_upload_api.dart';
+import 'post_upload_models.dart';
+
+import 'package:crypto/crypto.dart' as hashes;
+
+part 'post_upload_http.dart';
 
 /// 仅访问构造时固定的 C HTTPS origin，不跟随重定向或自动重送命令。
-class HttpPostApi implements PostApi {
+class HttpPostApi implements PostApi, PostMediaApi {
   HttpPostApi({
     required this.communityBaseUri,
     HttpClient? client,
@@ -31,6 +39,44 @@ class HttpPostApi implements PostApi {
   final Duration timeout;
   final HttpClient _client;
   void close() => _client.close(force: true);
+
+  @override
+  Future<PostResponse<PostMediaManifest>> imageManifest({
+    required String sessionToken,
+    required String postId,
+  }) => _input(() async {
+    PostProtocol.resourceId(postId);
+    final response = await _send(
+      sessionToken,
+      'GET',
+      '/api/v1/posts/$postId/images',
+      decode: (raw) => PostMediaManifest.fromJson(raw, postId),
+    );
+    final until = response.value.accessValidUntil;
+    if (!until.isAfter(response.serverTime) ||
+        until.isAfter(response.serverTime.add(const Duration(seconds: 60))) ||
+        until.isAfter(response.sessionExpiresAt)) {
+      throw const PostFailure(kind: PostFailureKind.invalidResponse);
+    }
+    return response;
+  });
+
+  @override
+  Future<PostResponse<Uint8List>> imageBytes({
+    required String sessionToken,
+    required String postId,
+    required PostMediaImage image,
+  }) => _input(() {
+    image.validatePost(postId);
+    return _send(
+      sessionToken,
+      'GET',
+      image.path,
+      binaryImage: image,
+      maxResponseBytes: image.byteLength,
+      decode: (raw) => raw as Uint8List,
+    );
+  });
 
   @override
   Future<PostResponse<PostCommandResult>> create({
@@ -368,9 +414,7 @@ class HttpPostApi implements PostApi {
     return {'limit': '$limit', if (cursor != null) 'cursor': cursor};
   }
 
-  Future<PostResponse<T>> _input<T>(
-    Future<PostResponse<T>> Function() call,
-  ) async {
+  Future<T> _input<T>(Future<T> Function() call) async {
     try {
       return await call();
     } on FormatException {
@@ -392,6 +436,7 @@ class HttpPostApi implements PostApi {
     int expected = 200,
     int maxRequestBytes = 1024,
     int maxResponseBytes = 32768,
+    PostMediaImage? binaryImage,
   }) async {
     AuthCrypto.decode(token, bytes: 32);
     final bytes = body == null ? null : utf8.encode(jsonEncode(body));
@@ -433,15 +478,16 @@ class HttpPostApi implements PostApi {
         }
         final response = await request.close();
         status = response.statusCode;
-        if (response.contentLength > maxResponseBytes) {
+        final limit = status == expected ? maxResponseBytes : 32768;
+        if (response.contentLength > limit) {
           throw const FormatException('Oversized post response');
         }
-        final data = <int>[];
+        final data = BytesBuilder(copy: false);
         await for (final chunk in response) {
-          if (data.length + chunk.length > maxResponseBytes) {
+          if (data.length + chunk.length > limit) {
             throw const FormatException('Oversized post response');
           }
-          data.addAll(chunk);
+          data.add(chunk);
         }
         final h = response.headers;
         final requestId = _single(h, 'x-request-id');
@@ -453,13 +499,26 @@ class HttpPostApi implements PostApi {
         final type = ContentType.parse(
           _single(h, HttpHeaders.contentTypeHeader),
         );
-        if (type.mimeType != 'application/json' ||
-            type.charset != null && type.charset!.toLowerCase() != 'utf-8') {
-          throw const FormatException('Invalid post response type');
+        final responseBytes = data.takeBytes();
+        final Object? payload;
+        if (status == expected && binaryImage != null) {
+          if (type.mimeType != binaryImage.mimeType ||
+              type.parameters.isNotEmpty ||
+              responseBytes.length != binaryImage.byteLength ||
+              _single(h, 'x-content-type-options') != 'nosniff' ||
+              _single(h, 'content-disposition') != 'attachment') {
+            throw const FormatException('Invalid protected image bytes');
+          }
+          payload = responseBytes;
+        } else {
+          if (type.mimeType != 'application/json' ||
+              type.charset != null && type.charset!.toLowerCase() != 'utf-8') {
+            throw const FormatException('Invalid post response type');
+          }
+          payload = _PostStrictJson(
+            utf8.decode(responseBytes, allowMalformed: false),
+          ).decode();
         }
-        final payload = _PostStrictJson(
-          utf8.decode(data, allowMalformed: false),
-        ).decode();
         if (status != expected) throw _failure(status!, payload, h, requestId);
         final serverTime = PostJson.utc(_single(h, 'server-time'));
         final sessionExpiry = PostJson.utc(_single(h, 'session-expires-at'));
@@ -531,18 +590,30 @@ class HttpPostApi implements PostApi {
         'AUTHORIZATION_UNAVAILABLE',
         'POSTING_RESTRICTED',
         'ACCOUNT_CLOSING',
+        'MEDIA_UPLOAD_DENIED',
       },
-      404 => {'TASK_NOT_FOUND', 'POST_NOT_FOUND', 'POST_CHANNEL_UNAVAILABLE'},
+      404 => {
+        'TASK_NOT_FOUND',
+        'POST_NOT_FOUND',
+        'POST_CHANNEL_UNAVAILABLE',
+        'MEDIA_NOT_FOUND',
+      },
       409 => {
         'COMMAND_CONFLICT',
         'COMMAND_SEALED',
         'RESULT_EXPIRED',
         ...PostJson.businessRejections,
+        'MEDIA_UPLOAD_CLOSED',
       },
       413 => {'PAYLOAD_TOO_LARGE'},
       415 => {'UNSUPPORTED_MEDIA_TYPE'},
       429 => {'RATE_LIMITED'},
-      503 => {'SERVICE_UNAVAILABLE', 'AUTHORIZATION_UNAVAILABLE'},
+      422 => {'MEDIA_INVALID'},
+      503 => {
+        'SERVICE_UNAVAILABLE',
+        'AUTHORIZATION_UNAVAILABLE',
+        'MEDIA_VALIDATOR_UNAVAILABLE',
+      },
       _ => const <String>{},
     };
     if (!allowed.contains(code)) {

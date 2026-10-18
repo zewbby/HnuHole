@@ -16,7 +16,37 @@
 
 > **2026-10-15 当前任务1实测完成：八自动点PASS＋人工IME USER_CONFIRMED。**真实vivo S18/Android15，中文/换行/emoji与草稿重开由用户对明确清单综合答“一切正确”；原自动PARTIAL记录未改，汇总另存。最终mobile327、分析0，Python Windows144＋3 POSIX SKIP／Linux147；历史失败及修复全过程保留。见[实测报告](community-android-device-validation-20261015.md)与[机器记录](community-android-device-validation-20261015.json)。normal/A会话、当前server/reverse/fixture与专用材料保留。任务2–4、iOS和生产仍独立未验；并行stage3准备保留原范围。
 
-> **2026-10-15 CA-T03独立主机准备：**N03/A07/A09新增精确关联方案/审阅文件与9项工具守卫，3个未配置基线/签名对照通过；七阶段/mobile322、Passkey Dart9、JVM24、Linux148／Windows145＋3POSIX SKIP通过。见[报告](community-android-stage3-preparation-20261015.md)、[记录](community-android-stage3-preparation-20261015.json)、[方案](community-android-stage3-rp-proposal-20261015.md)。本轮457输入覆盖未变产品及新工具，手机守卫4项只测e0c1280固定快照，不纳入/覆盖并行未提交工作。域名方案已选，控制权/配置/部署仍待授权，独立环境及最终APK待重建；CA-A13实际系统创建/恢复/拒绝/到期/原键核对均NOT_RUN，任务1/2设备和模块/完整App未通过，不以构建或host证据升级。
+> **2026-10-17 B5 主线增量已合并：**[PR #9](https://github.com/zewbby/HnuHole/pull/9) 已通过 Squash Merge 进入 main，合并提交 `eff7461`。闭号状态与图片擦除修复、B5 材料和夹具适配已交付；受影响宿主测试、真实 SQL/C/V、Android 构建、独立审查及最终 head GitHub 检查通过。见[整合报告](auth-privacy-b5-main-integration-report.md)、[机器记录](auth-privacy-b5-main-integration-verification.json)和[分支记录](../branches/fix-b5-main-integration.md)。历史24/24仅证明原认证版本；当前 APK 原生设备验收仍 NOT_RUN，iOS、完整产品及生产批准不在本轮范围。未部署或发布。
+
+> **历史认证证据独立保留：**B5 来源为 `ea5cc52840f009b02106f928c444e423c6e61b3e`，产品基线仍是 `d859cb05c772cdf8d8b75e439a2bfedf0414dd46`。历史 B6 为 **22 PASS／0 FAIL／2 BLOCKED**；B5 双实体首轮为 **23 PASS／1 FAIL**（NI-X02），随后 Bitwarden 原生路线仍 **BLOCKED**；B5-sync 后续为 **24／24 PASS**。原四次 hybrid 失败、同步成功后夹具失败、用户报告未出现选择／验证页的第六次失败及后续重试均保留在原[首轮报告](auth-privacy-b5-validation-report.md)、[同步报告](auth-privacy-b5-sync-validation-report.md)和三份机器证据中。历史 `nonIOSDevelopmentAcceptancePassed=true` 仅属于原 B5-sync 输入及设备链，不是本候选通过；iOS、生产及未来业务边界不扩张。
+
+> **候选证据规则：**两个 B5 checker 仍在固定 `ea5cc528` 历史副本验证，完整 B6 checker 在固定 `d859cb05` 副本验证；不改历史摘要或降低门槛。候选须记录全部历史 runtime 输入的差异及集合以外新增 runtime 文件，另记三份 B5 夹具由 `_HnuholeApp` 适配 `HnuholeApp` 后的摘要及运行时根组件发现回归。旧 APK／旧夹具结果不代证新候选；当前原生设备回归为 **NOT_RUN**，Dart mock、分析和构建不能替代原生存储与设备验收。
+
+本轮重新打开 A07／A12／N01／N03 及受账号生命周期影响的 A08／B02／B05／B06／B10 回归：恢复与错误处理、注销／封禁／删身份后停止发布、切账号、仅清 originalAccountId、认证与业务 namespace／alias 隔离。主线模块结论保留；B5 历史字段放入机器台账 historicalAuthB5Integration，候选验证独立放入 candidateIntegration，均不提升整个模块验收状态。
+
+> **2026-10-16 已合并 main：**PM01/IV01 帖子图片任务经 [PR #2](https://github.com/zewbby/HnuHole/pull/2) 合并，主线提交 `4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398`，送审提交 `2f46700`，来源 `codex/post-image-integration`（f30e8ae）。本任务的独立组件、帖子选图上传、真实前后端联调和 S18 Android 约定范围已交付；本任务功能范围剩余 iOS（原始选图未实现、入口关闭，macOS/Xcode/iPhone 原生与设备验收待完成）。GitHub Flutter 分析0/组件112项/受影响mobile130项/bundle、Go test/build/vet、协作检查均实际PASS；仅宿主CI，不扩充原SQL/手机证据范围。独立agent复审无阻断，不伪造GitHub成员批准。未发布或部署，详情见[合并回执](post-image-main-delivery-20261016.json)。下方旧日期记录保留原时点状态。
+
+## PM01 / IV01 / B05 / B06 / B10：本轮主App Android约定范围
+
+2026-10-15，`codex/post-image-integration`，起点c1b26ea，修复实现fd2e4c04f48b29ddda0142660188988c4a655f5f。单台vivo S18/Android15/API35，独立真实主App包20263115→20263116及probe20263115；用户已释放窗口并实际完成中文输入、Picker和长图手势。原图存储、九图公开/补传、失败同任务RETRY、读取/原格式保存/真实Gallery回放、删除/退出/切账号与迟到隔离的本轮结果见[报告](post-image-android-device-report.md)及[机器记录](post-image-android-device-verification.json)。当前为PASS_SCOPED_ANDROID_BUSINESS_DEVICE，PMA01–14逐项有范围；不更新整模块为全通过。
+
+实际修复：PostController的旧错误提示绑定command，权威核对并持久保存后清除；仍未知及后来其他操作错误保留。新增3项回归，最后修改后相关3文件69项、分析0、bundle、Debug原生构建/验签和修复包上机复验PASS，准备守卫15项PASS。旧完整mobile375/后端244等保留原SHA和宿主范围，本轮未重复计数。认证插件/Go/SQL/锁/图片引擎未修改，X05仅当前帖子图片链路，不升级认证和其他社区模块证据。
+
+手机窗口已结束；字体/方向/无障碍恢复，自己的测试包与C/V/watch/PG停止，仅撤销自建映射。Linux专用库/私钥已删除；Windows清理两次被自动审批拒绝（blocked by policy），SDK/cache、APK及受限目录中的合成秘密仍保留并登记，未冒称清理完成。手机测试包/合成图按SOP保留；没有删除手机媒体或操作其他会话。
+
+待开发/未验：iOS原始资源选图库仍未实现，需macOS/Xcode/iOS实机后补；最大九图资源、生产SQL存储配额/WAL/备份、正式库存升级和部署仍独立；评论/私信图片消费者未开发。原生写入已派发后的关闭、临时文件故意消失，以及旧组件TalkBack/大字沿用未改组件旧范围，不写成本轮主App重测；本轮没有重验vivo9.4.6.13已知播放器缺陷。下一任务不能复用已结束手机窗口、已清理Linux库或旧空库恢复命令。
+
+
+> **2026-10-15 主App帖子图片真机验收的非手机准备已完成：**实现 `2eeb19ce87542aed9e0c57874e8d6b3478df946d`，本任务独立kit `E:/Hnuhole-post-media-android-20261015`。新主App/probe两个API29+包构建与验签、分析0、原图宿主10项、离线守卫15项/设备命令守卫4项、专用真实C/V/Goose/受限空PG重启及Windows HTTPS均PASS；自己的后端已停。没有调用ADB或操作手机，PMA01–14全部NOT_RUN，等待另一会话释放；旧组件TalkBack不重测。按用户要求暂留独立APK/签名/空库/工具供直接配合，过期先核就绪清单。见[准备报告](post-image-android-preparation-report.md)、[机器记录](post-image-android-preparation-verification.json)、[集中SOP](../../tools/post-media-android/README.md)。下方旧结果保留原源码和范围。
+
+> **2026-10-15 帖子图片真实前后端联调完成：**联合分支 `codex/post-image-integration`，源码 `31e82df6ad0f8345471705cf78e6e0f463beecfb`（前端075b567＋后端d893378）。真实C/V进程、Goose/受限PG、Flutter生产页面/API/原图草稿/补传/读取/保存resolver，19检查点全部PASS；修复旧上传暂停状态污染新RETRY。当前分析0、完整宿主375（零排除）、后端SQL/race244、Python4/OpenAPI6、编译/vet、Windows bundle与Android原生构建/验签PASS。没有手机或其他会话服务操作；原生业务真机、iOS原始选图、总预算/生产与评论私信另列。见[联合报告](post-image-joint-report.md)和[机器记录](post-image-joint-verification.json)。下方各分支旧记录保留原版本与范围。
+
+> **2026-10-15 帖子选图上传前端已补齐：**实现 `5cd5fdb8f3766bb5ae5840fa7546eda6739fd98c`，最多9图/排序/移除、加密原图草稿、媒体摘要、逐项补传和重启核对已接现有写帖页。最终分析0、完整mobile374项（零排除，含修复后的控制器43项）、bundle及Android API29+原生构建/验签PASS。后端仍固定d893378独立分支，真实C/V/SQL联调和业务手机未验；本轮未操作手机/服务。iOS选图库会重编码原图，原格式选图尚未实现、入口保持关闭，不能只写待验；评论私信/总资源预算另列。见[本轮报告](post-image-composer-report.md)和[机器记录](post-image-composer-verification.json)。下方旧结果保留原版本，不代证当前。
+
+> **2026-10-15 真实帖子图片读取已接线：**前端固定源码 `b5ab3969870daa43b9d40919311d68f1d4cdca61` 对接后端 `d893378a8224b9c7a3b9d2bc9681a6ea508d5587` 契约；main/通道/我的→详情已装配受保护读取、最长60秒租约、逐个内存缓存释放与原格式保存resolver。分析0、聚焦76项、其余315项及bundle PASS；完整Windows控制器文件43项保留已复现SQLite清理故障，未计PASS。两个源分支未合并/部署，本轮没有手机或服务操作；完整C进程/SQL联调、业务原生构建/真机未验，上传UI/原图草稿/补传恢复与评论私信未开发，iOS独立。见[读取接线报告](image-viewer-post-media-read-report.md)和[机器记录](image-viewer-post-media-read-verification.json)。下方旧钩子/组件记录按原版本与范围保留。
+
+> **2026-10-15 图片前端接入阶段1：**独立 `codex/image-viewer-business-integration`，从已提交社区e0c1280接入原图片包bd7458a；现有通道/我的→帖子详情已接图片loader钩子、等尺寸预览和独立查看路由，撤销/删除/迟到与返回位置有宿主证据。生产尚无真实图片接口，评论/私信未开发，MIV14仅部分实现。新会话负责帖子图片业务，不编辑社区验收目录/服务/手机；见[阶段1报告](image-viewer-business-stage1-report.md)、[机器记录](image-viewer-business-stage1-verification.json)和[新会话prompt](image-viewer-media-next-session.md)。分析、聚焦34项、其余290项回归、bundle通过；完整Windows回归的SQLite清理errno32已在未改动基线复现，未冒称全套通过。下方历史各按原版本与范围理解。
+> **2026-10-15 帖子图片后端独立交付：**分支 `codex/post-image-media`，从已提交社区 `e0c128033682923d519ea99546d72503b085a99e` 在独立 clone 实现真实 SQL 原字节存储、最多九张不可变清单、单项短期补传能力、完整验证后原子公开、受保护清单/原图读取与撤销/清理。Go 72个顶层／含子项244 PASS、Python合成图4 PASS、OpenAPI6份、全包编译/vet PASS；宿主替身与真实TLS/SQL/文件系统范围分列，不代表实际cmd/Goose升级/Flutter/设备/iOS/生产通过。只读参考前端 `a696742f943c1cfe6a5005024dccaf40be752d8f`，未修改或合并其工作区；接线前须处理 imageCount/空正文、新媒体摘要、60秒终止租约。PM01/B05/B06仍为后端已实现／宿主与平台待实现或验收，评论/私信只登记未来契约。见[契约与方案](post-image-media-contract.md)、[脱敏证据](post-image-media-verification-20261015.json)；源码固定提交 efccade441bfc5d453751a3fac74211b090e8129 已正常推送并核对远端；见[交付回执](post-image-media-delivery-20261015.json)，不部署、不发布。下方社区与认证证据保留原版本与范围。
 
 > **2026-10-15 手机窗口当前阻断：BLOCKED_KEY_ISOLATION。**用户已确认 vivo S18、30–45分钟窗口、认证会话释放、隔离包和专用USB key；原stage1实际等待90秒后exit1，未发现目标设备，未安装/启动App、注册或业务写入。Windows环境变量不能证明专用key隔离，已给stage1/2添加不可凭授权flag绕过的前置守卫；CA-A01–13全部NOT_RUN，stage2也阻断。Windows136 PASS＋3 POSIX SKIP、Linux139 PASS仅为host；自有60761 server已按exe/start/port核实后停止，既存5037未动；用户已结束本轮窗口，后续须重新确认。见[本轮报告](community-android-device-blocked-20261015.md)与[脱敏记录](community-android-device-blocked-20261015.json)。历史准备/指纹/APK证据保留原范围；先证明真正独立profile或验证专用key目录的ADB，再由原服务归属方安全释放USB并重验摘要/ready/空库。新增OS账户/安全配置或共享key例外须用户明确变更授权。
 
@@ -697,3 +727,18 @@ A01/A02/A13/B02和X01/X02/X03/X04/X05/X08需要执行对应当前回归；身份
 R01完整Go／一次性SQL／race、R02 vet、R03实际非owner C/V／C12V4迁移升级／冻结恢复／旧快照／身份关闭与同邮箱注册、Linux Flutter analyze及179项测试、R05真实Dart＋HTTPS handler＋SQL均PASS。R05新增V冻结请求／确认／结果拒绝与旧代OTP失效、身份缓冲／取消不变、正式擦除和永久回执保持、重复终结、旧Bearer拒绝及新账号原键NOT_FOUND。R03普通重启在持有两侧一次性Gate行锁、当前授权完成后停机；任意授权中断仍可能安全冻结，需要显式恢复。
 
 影响P01、A00/A01/A02/A03/A04/A05/A06/A08/A09/A10/A11/A12/A13、B01/B02；X02及X06/X07仅当前基础边界。R01主动SKIP opt-in移动测试，R05另跑取得证据。R00契约／生成未跑（输入未变）；R07/R09/R10原生、系统Passkey、物理设备与B02矩阵未跑，iOS／平台关联仍缺配置设备；入口沿用本文件runner表。B05–B11消费者未实现，生产P02–P06仍缺外部事实与独立审计。下一验收为AC05；B02仍BLOCKED。
+
+
+## PM01 帖子图片服务端（2026-10-15）
+
+| 项目 | 当前证据与边界 |
+| --- | --- |
+| 实现 | `services/api/internal/postmedia/`、`authprivacy/community_post_images.go`、`authprivacyhttp/post_images_endpoints.go`、迁移0014及精确grants；协议见 `packages/openapi/post-image-api.yaml` 和媒体黄金向量 |
+| 真实SQL/字节 | 九图7+2补传、完整清单/散列/尺寸、GIF/WebP原字节、私有受限runtime、取消/禁言/封禁/注销/身份删除/截止清理、原身份重试、竞争围栏；实际文件Gate与限资源Python验证器 |
+| HTTP | `post_images_postgres_test.go` 实际loopback TLS+SQL；`post_images_endpoints_test.go` 为严格路由/闭合DTO宿主替身，单独计证 |
+| 已执行 | Go72顶层/含子项244全部PASS，Python4、OpenAPI6、全包编译与vet PASS；源指纹/逐用例/重复计数合并见脱敏证据 |
+| NOT_RUN | 实际cmd媒体装配、正式Goose旧库前向升级、Flutter上传/持久图片草稿/loader接线、Android API29+设备/原格式相册、iOS、容量/备份擦除/生产安全 |
+| 跨模块 | A01/A03/A06/A08/A10/A13、B02/B05/B06/B11与X05；新迁移/授权的scoped回归不升级整模块历史PASS |
+| 后续 | 前端按固定双方SHA先解决DTO/摘要/失效差异；独立环境显式配置validator、迁移与grants，再集成验证。评论B07、私信B09未实现，不借用帖子端点 |
+
+复验入口 `services/api/authlab/run-post-images-isolated.sh`，环境与命令见[媒体契约](post-image-media-contract.md)。本轮没有调用Flutter/SDK/ADB/手机，也没有重复TalkBack验收；iOS继续单列NOT_RUN。

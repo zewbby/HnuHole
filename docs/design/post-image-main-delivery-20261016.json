@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "hnuhole-post-image-main-delivery/v1",
+  "recordedOn": "2026-10-16",
+  "timeZone": "Asia/Shanghai",
+  "task": "PM01/IV01: standalone image viewer, post original media frontend/backend integration and scoped Android S18 acceptance",
+  "status": "MERGED_MAIN_ANDROID_SCOPE_DELIVERED_IOS_PENDING",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/2",
+  "mergeCommit": "4fc19baf8655da4b012a0a6dd2c8c9a7b2bab398",
+  "reviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+  "sourceBranch": "codex/post-image-integration",
+  "sourceSavedCommit": "f30e8ae",
+  "deliveryBranch": "codex/feat/post-image-android",
+  "mergedTreeMatchesReviewedAndSourceTrees": true,
+  "originalSharedBranchHistoryPreserved": true,
+  "forcePushUsed": false,
+  "directMainPushUsed": false,
+  "ci": {
+    "productRun": "https://github.com/zewbby/HnuHole/actions/runs/38830165500",
+    "policyRun": "https://github.com/zewbby/HnuHole/actions/runs/38830165415",
+    "flutter": {
+      "result": "PASS",
+      "sdk": "3.47.5",
+      "imageViewerAnalyzeIssues": 0,
+      "imageViewerHostTests": 112,
+      "mobileAnalyzeIssues": 0,
+      "mobileAffectedHostTests": 130,
+      "bundle": "PASS",
+      "lockfilesPreserved": true
+    },
+    "goHost": {
+      "result": "PASS",
+      "commands": [
+        "go test -mod=readonly ./...",
+        "go build -mod=readonly ./...",
+        "go vet -mod=readonly ./..."
+      ],
+      "scope": "Host only; DSN-dependent suites do not imply real SQL acceptance"
+    },
+    "policy": {
+      "result": "PASS",
+      "focusedTests": 19
+    },
+    "resolvedFailure": {
+      "run": "https://github.com/zewbby/HnuHole/actions/runs/38829943733",
+      "result": "FAIL_RESOLVED",
+      "cause": "Image package lockfile hosted source pub.flutter-io.cn differed from CI default pub.dev, triggering re-resolution under --enforce-lockfile",
+      "fix": "Match PUB_HOSTED_URL only for image package dependency step; lockfiles and dependency versions unchanged"
+    }
+  },
+  "review": {
+    "independentAgent": "merge_review",
+    "result": "NO_BLOCKING_FINDINGS",
+    "finalReviewedHead": "2f46700d29b833774f6192da671aed4e92de6f6a",
+    "githubMemberApproval": false,
+    "arrangement": "Single repository owner account; independent agent review is evidence, not a second GitHub member. Maintainer explicitly authorized merge after checks in this task."
+  },
+  "nativeEvidence": {
+    "sourceCommit": "fd2e4c04f48b29ddda0142660188988c4a655f5f",
+    "deliveryCommit": "1c8ad33b13cbac829670a9bb327dc8a06bc2064a",
+    "androidVersionCode": 20263116,
+    "device": "vivo S18 Android15 API35",
+    "report": "docs/design/post-image-android-device-report.md",
+    "evidence": "docs/design/post-image-android-device-verification.json",
+    "repeatedDuringMerge": false,
+    "scope": "Existing Android evidence remains tied to its tested revision; merge changes tests/docs/CI, not product runtime"
+  },
+  "jointEvidence": "docs/design/post-image-joint-verification.json",
+  "remainingInThisTask": {
+    "iOS": "Original asset picker unimplemented and entry disabled; requires macOS/Xcode/iPhone implementation, native builds, storage/permissions, gallery playback and interaction acceptance"
+  },
+  "separateProjectWork": [
+    "Maximum nine-image resource budget",
+    "Production storage/quota/backup/upgrade and deployment",
+    "Comment and messaging image consumers"
+  ],
+  "releasePublished": false,
+  "deployed": false,
+  "phoneUsedDuringMerge": false,
+  "cleanup": "Linux private lab removed; Windows dedicated materials remain after prior automatic approval rejections; restricted ACL and prior report retained. No cleanup retried during merge."
+}

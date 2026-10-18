@@ -40,6 +40,14 @@ type PostsConfig struct {
 	CursorKeyFile      string `json:"cursorKeyFile"`
 }
 
+// PostImages enables private PostgreSQL storage, not a public file server.
+// Python must be a dedicated, dependency-pinned Linux validator environment.
+type PostImagesConfig struct {
+	PythonFile      string `json:"pythonFile"`
+	ValidatorFile   string `json:"validatorFile"`
+	ValidatorSHA256 string `json:"validatorSHA256"`
+}
+
 type Config struct {
 	Environment             string       `json:"environment"`
 	DatabaseURL             string       `json:"databaseUrl"`
@@ -63,6 +71,8 @@ type Config struct {
 	PasswordBlocklistFile   string       `json:"passwordBlocklistFile,omitempty"`
 	Gate                    *GateConfig  `json:"gate,omitempty"`
 	Posts                   *PostsConfig `json:"posts,omitempty"`
+
+	PostImages *PostImagesConfig `json:"postImages,omitempty"`
 	// Exactly four public Gate purpose keys from the other party, in evidence,
 	// recovery, break-glass, anchor order. No counterpart private material.
 	PeerGatePublicKeyFiles  []string                    `json:"peerGatePublicKeyFiles"`
@@ -130,6 +140,11 @@ func (c Config) Path(path string) string {
 }
 
 func (c Config) Validate(service authprivacyhttp.Service) error {
+	if c.PostImages != nil {
+		if service != authprivacyhttp.CommunityService || c.Posts == nil || c.PostImages.PythonFile == "" || c.PostImages.ValidatorFile == "" || len(c.PostImages.ValidatorSHA256) != 64 {
+			return errors.New("postImages requires explicit C posts and pinned validator paths")
+		}
+	}
 	if c.Environment != "dev" || (service != authprivacyhttp.CommunityService && service != authprivacyhttp.VerifierService) {
 		return errors.New("only explicitly dev C/V configuration is supported")
 	}

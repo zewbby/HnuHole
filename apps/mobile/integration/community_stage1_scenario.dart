@@ -6,10 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/main.dart' as app;
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
-import 'package:hnuhole_auth_vault/hnuhole_auth_vault.dart';
 
 import '../integration_test/owned_auth_device_helpers.dart';
-import 'native_closed_scope_evidence.dart';
 
 class _FileVault implements AuthVault {
   _FileVault(this.file);
@@ -662,13 +660,6 @@ Future<Map<String, Object>> runCommunityStage1(
     await logout();
     await login(userB);
     checks['CA-A07'] = true;
-    // Capture the same native scope's path while it is still open. The plugin
-    // intentionally hides CLOSED behind its generic storage refusal later.
-    final closedBPath = native
-        ? await DurableBusinessVault(
-            PostStore.scopeFor(environment.storageScope, accountB),
-          ).databasePath()
-        : null;
     await requestClosure();
     await control('advance-closure');
     await wait(() => !root.flows.busy, 'pending closure available');
@@ -691,21 +682,16 @@ Future<Map<String, Object>> runCommunityStage1(
       isTrue,
     );
     var tombstone = false;
-    if (native) {
-      tombstone = await nativeClosedScopeRejectsReopen(closedBPath!, () async {
-        final store = await PostStore.openNative(
-          environment: environment.storageScope,
-          accountId: accountB,
-        );
-        await store.close();
-      });
-    } else {
-      try {
-        final store = await openHost(accountB);
-        await store.close();
-      } on PostStorageClosed {
-        tombstone = true;
-      }
+    try {
+      final store = native
+          ? await PostStore.openNative(
+              environment: environment.storageScope,
+              accountId: accountB,
+            )
+          : await openHost(accountB);
+      await store.close();
+    } on PostStorageClosed {
+      tombstone = true;
     }
     expect(
       tombstone,

@@ -1,0 +1,38 @@
+{
+  "result": "BLOCKED",
+  "reason": "Automatic approval review rejected PowerShell Remove-Item commands: blocked by policy. No deletion executed.",
+  "bytesRetained": 253787594,
+  "targets": [
+    {
+      "bytes": 51192164,
+      "path": "D:\\zewbbyTest\\Hnuhole-image-viewer-m1-20261010",
+      "result": "BLOCKED",
+      "deleted": false
+    },
+    {
+      "bytes": 56348857,
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\image-viewer-component\\HnuHole\\packages\\image_viewer\\build",
+      "result": "BLOCKED",
+      "deleted": false
+    },
+    {
+      "bytes": 11448911,
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\image-viewer-component\\HnuHole\\packages\\image_viewer\\.dart_tool",
+      "result": "BLOCKED",
+      "deleted": false
+    },
+    {
+      "bytes": 68276187,
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\image-viewer-component\\HnuHole\\packages\\image_viewer\\example\\build",
+      "result": "BLOCKED",
+      "deleted": false
+    },
+    {
+      "bytes": 66521475,
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\image-viewer-component\\HnuHole\\packages\\image_viewer\\example\\.dart_tool",
+      "result": "BLOCKED",
+      "deleted": false
+    }
+  ],
+  "preserved": "Existing SDKs, other task caches, AVDs, source, fixtures and lock files."
+}
