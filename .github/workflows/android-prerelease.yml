@@ -11,17 +11,6 @@ on:
       - 'packages/auth_passkey/**'
       - 'packages/image_viewer/**'
       - '.github/workflows/android-prerelease.yml'
-  push:
-    branches: [codex/ci/android-prerelease]
-    paths:
-      - 'tools/prerelease/**'
-      - 'infra/prerelease/**'
-      - 'services/api/**'
-      - 'apps/mobile/**'
-      - 'packages/auth_vault/**'
-      - 'packages/auth_passkey/**'
-      - 'packages/image_viewer/**'
-      - '.github/workflows/android-prerelease.yml'
   workflow_dispatch:
     inputs:
       source_sha:

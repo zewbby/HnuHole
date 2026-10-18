@@ -83,7 +83,7 @@ class Lab:
                       sslmode='disable', application_name=self.state['tag'])
         if role == 'migrator':
             params['options'] = '-c role=hnuhole_' + party + '_owner'
-        return 'postgres://hnuhole_' + party + '_' + role + '@/hnuhole_' + party + '?' + urllib.parse.urlencode(params)
+        return 'postgres://hnuhole_' + party + '_' + role + '@/hnuhole_' + party + '?' + urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
 
     def password_env(self, party, role):
         name = 'db-' + party + '-' + role + '.password'
