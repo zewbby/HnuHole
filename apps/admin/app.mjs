@@ -133,7 +133,7 @@ function renderQueue(parent, kind) {
     if (!append) { list.replaceChildren(el('p', '正在加载…', 'busy')); items = []; nextBefore = null; }
     try {
       const query = new URLSearchParams({ limit: '50' }); if (append && nextBefore) query.set('before', nextBefore);
-      const data = await client.request(`/api/v1/moderation/${kind}?${query}`);
+      const data = await client.request(`/api/v1/moderation/${kind}${kind === 'cases' ? `?${query}` : ''}`);
       if (current !== viewVersion) return;
       items.push(...(Array.isArray(data.items) ? data.items : [])); nextBefore = data.nextBefore ?? null;
       list.replaceChildren();
@@ -157,7 +157,7 @@ function renderCase(parent, record, reload, current) {
   materialImages(snapshot, record.evidence?.images, '内容证据'); evidence.append(snapshot); parent.append(evidence);
   const reports = section('举报材料');
   for (const report of record.reports ?? []) {
-    const group = add(el('div', null, 'report'), el('h3', label(report.reason)), el('p', report.description || '未补充说明。'), el('p', dateText(report.createdAt), 'meta'));
+    const group = add(el('div', null, 'report'), el('h3', label(report.reason ?? record.reason)), el('p', report.description || '未补充说明。'), el('p', dateText(report.createdAt), 'meta'));
     materialImages(group, report.images, '举报补充图片'); reports.append(group);
   }
   if (!record.reports?.length) reports.append(el('p', '暂无补充材料。', 'muted'));
@@ -224,7 +224,7 @@ function renderAppeal(parent, appeal, reload, current) {
   }
   if (!appeal.materials?.length) materials.append(el('p', '暂无可展示材料。', 'muted'));
   parent.append(materials);
-  if (appeal.explanation) parent.append(add(el('div', null, 'result'), el('p', appeal.explanation)));
+  if (appeal.reason || appeal.explanation) parent.append(add(el('div', null, 'result'), el('p', appeal.reason || appeal.explanation)));
   if (canReviewAppeal(me, appeal)) {
     const controls = section('独立复核'); const form = el('form', null, 'inline-form'); const decision = select([['false', '维持本次处罚'], ['true', '申诉通过，撤销对应处罚']]); const why = reasonInput();
     const submit = el('button', '确认复核结果', 'primary'); submit.type = 'submit';

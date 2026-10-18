@@ -2,6 +2,7 @@ export const LABELS = Object.freeze({
   PENDING: '待处理', PROCESSING: '处理中', ENDED: '已结束', ACCEPTED: '申诉通过', REJECTED: '申诉未通过',
   REVIEWER: '审核员', ADMIN: '管理员', NONE: '无管理权限', DISMISS: '未发现违规',
   TAKEDOWN: '内容下架', MUTE: '账号禁言', BAN: '账号封禁', ACTIVE: '正常', CLOSED: '已注销',
+  UPHELD: '举报成立', DISMISSED: '未发现违规', TARGET_DELETED: '内容已删除，本次举报已结束', RESET_NICKNAME: '重置违规昵称', RESET_AVATAR: '重置违规头像',
   ADVERTISING: '广告引流', HARASSMENT: '辱骂骚扰', PRIVACY: '泄露隐私', FRAUD: '诈骗', ILLEGAL: '色情或违法内容', OTHER: '其他',
 });
 export const label = value => LABELS[value] ?? String(value ?? '—');

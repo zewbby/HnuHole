@@ -21,7 +21,7 @@ const raster = { mime: 'image/png', base64: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQ
 let role = 'REVIEWER', state = 'PENDING', version = 1, appealState = 'PENDING', revoked = false;
 const commands = [], errors = [], requests = [];
 const record = () => ({ id: caseId, number: 'R202610180001', postId: '40000000-0000-4000-8000-000000000001', platformNumber: '000125', reason: 'HARASSMENT', state, version, createdAt: stamp, outcome: state === 'ENDED' ? 'MUTE' : null, explanation: '已核查证据。', evidence: { title: '校园讨论中的违规内容', body: hostile, images: [raster] }, reports: [{ reason: 'HARASSMENT', description: '说明仅用于核查本案。', images: [], createdAt: stamp }], sanctions: [] });
-const appeal = () => ({ id: appealId, caseId, sanctionId, state: appealState, ordinal: 1, version: 1, platformNumber: '000125', action: 'MUTE', originalActorNumber: '000999', createdAt: stamp, materials: [{ description: '请结合原帖重新核查。', createdAt: stamp, images: [] }] });
+const appeal = () => ({ id: appealId, caseId, sanctionId, state: appealState, ordinal: 1, version: 1, reason: appealState === 'ACCEPTED' ? '核查新材料后撤销对应处罚。' : '', platformNumber: '000125', action: 'MUTE', originalActorNumber: '000999', createdAt: stamp, materials: [{ description: '请结合原帖重新核查。', createdAt: stamp, images: [] }] });
 const sanctions = () => [{ id: sanctionId, action: 'MUTE', reason: '已确认违规。', actorNumber: '000999', startsAt: stamp, endsAt: '2026-10-21T04:30:00Z', revokedAt: revoked ? stamp : null }];
 let server, browser;
 try {
@@ -43,7 +43,7 @@ try {
       if (url.pathname === `/api/v1/moderation/cases/${caseId}`) { respond(record()); return; }
       if (url.pathname.endsWith('/claim')) { state = 'PROCESSING'; version++; commands.push(payload); respond(record()); return; }
       if (url.pathname.endsWith(`/cases/${caseId}/decision`)) { state = 'ENDED'; version++; commands.push(payload); respond(record()); return; }
-      if (url.pathname === '/api/v1/moderation/appeals') { respond({ items: [appeal()] }); return; }
+      if (url.pathname === '/api/v1/moderation/appeals') { if (url.search) { respond({}, 400); return; } respond({ items: [appeal()] }); return; }
       if (url.pathname === `/api/v1/moderation/appeals/${appealId}`) { respond(appeal()); return; }
       if (url.pathname.endsWith(`/appeals/${appealId}/decision`)) { appealState = payload.accept ? 'ACCEPTED' : 'REJECTED'; commands.push(payload); respond(appeal()); return; }
       if (url.pathname === '/api/v1/moderation/accounts') { respond({ items: [{ platformNumber: '000125', state: 'ACTIVE', createdAt: stamp, violationCount: 1, sanctions: sanctions() }] }); return; }
