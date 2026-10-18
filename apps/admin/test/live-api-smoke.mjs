@@ -55,7 +55,14 @@ try {
   await selected.click(); await page.getByRole('heading', { name: '举报时的内容', exact: true }).waitFor(); checks.caseSelected = true;
   stage = 'CASE_CLAIM';
   const claim = page.getByRole('button', { name: '开始处理', exact: true });
-  if (await claim.count()) { await claim.click(); await page.getByText('已进入处理状态。', { exact: true }).waitFor(); checks.claimed = true; }
+  if (await claim.count()) {
+    await claim.click();
+    await page.getByText('已进入处理状态。', { exact: true }).waitFor();
+    // The announcement precedes the awaited detail reload. Wait for the new
+    // authoritative form before selecting controls in it.
+    await page.locator('.detail .heading .status').filter({ hasText: '处理中' }).waitFor();
+    checks.claimed = true;
+  }
   stage = 'MUTE_DECISION';
   await page.getByLabel('处理措施', { exact: true }).selectOption('MUTE');
   await page.getByLabel('本次期限', { exact: true }).selectOption('3');
