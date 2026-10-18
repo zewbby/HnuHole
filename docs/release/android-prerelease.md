@@ -104,8 +104,42 @@ dee7fdc后台PASS但Android缺CMake3.22.1失败；4c9477a的release dev插件注
 
 ## 下一设备窗口方案
 
-先保留本轮非手机证据。获得一台明确归属设备的窗口后，再为本任务生成专属debug/pinned-CA候选：
+用户指定设备为vivo S18 / OriginOS 5，当前不能配合验证，已授权先准备测试包；
+实际Android版本/API/ABI、安装和APK服务链路仍NOT_RUN。先保留本轮非手机证据并离线构建专属debug/pinned-CA候选：
 仅loopback HTTPS、专属测试签名、明确的USB服务/key和单机端口映射；不装系统CA、不开放数据库/内部mTLS。
 安装前核对目标包现状，避免覆盖其他任务App或数据。验证安装启动、合成注册/登录、文字/图片最小链路和重开，
 逐项保存当前APK/源码/证书摘要；结束后只撤本任务映射并停止本任务服务。跨设备Passkey和iOS继续延期。
-此方案尚未执行手机操作，用户未提供本session设备窗口；缺SDK的手机专属候选不借用其他session工具。
+此方案尚未执行手机操作，等待本session设备窗口；手机专属工具只下载到本任务独立目录，不借用其他session工具。
+
+### 离线准备手机测试包
+
+`device_candidate.py`只构建/验签，不运行ADB、服务或设备探测。与release候选分开归档，
+仍使用真实`lib/main.dart`、原applicationId和认证逻辑；`HNUHOLE_PRERELEASE_DEVICE=1`显式选择测试label和签名，
+替换debug Manifest以去掉历史GoogleFido诊断Activity及DAL元数据声明。旧诊断类/资源可能仍被打包，
+不宣称已移除其全部代码。不开启RP override，不装系统CA，不放宽TLS或Gate。
+
+所有HOME/Flutter/JDK/Android SDK/Pub/Gradle缓存必须落在指定的私有`--tool-root`；
+版本沿用Flutter3.47.5、JDK17、Android35/36、build-tools36.0.0、NDK28.2.13676358、CMake3.22.1。
+先在同一独立环境执行`flutter pub get --enforce-lockfile`。配置文件只接受以下三个公开字段：
+
+```json
+{"communityOrigin":"https://127.0.0.1:49291","verifierOrigin":"https://127.0.0.1:59947","caPem":"-----BEGIN CERTIFICATE-----\n本任务公有CA的PEM内容\n-----END CERTIFICATE-----\n"}
+```
+
+```sh
+python tools/prerelease/device_candidate.py --source /owned/clean-source --source-sha FULL_SHA \
+  --config /owned/device-public-config.json --tool-root /owned/private-tool-root \
+  --signing-dir /owned/private-signing --out /owned/new-device-artifact --build-number 2026101802
+```
+
+工具拒绝HTTP、非loopback、相同C/V origin、额外配置字段和私钥PEM；签名目录带归属marker，
+私钥和密码保留在私有目录供本session后续构建，输出目录只有APK/manifest/SHA256SUMS。
+最终元数据核对debug模式、原包名/版本/minSdk、备份排除、测试label、禁明文和诊断/DAL声明缺席。
+安装前检查手机现有同包签名和归属；冲突时暂停，不卸载、清数据或强制覆盖。
+
+保留lab-07为恢复后的非空数据库，`target=restore`；不要重跑`init`或包含初始化的`run-local.sh`。
+C/V固定端口49291/59947，公有CA PEM SHA256为`1be676311b5b88adac3ea10bc9987498231086a7c8f390b82eb9a7af5a43bef0`。
+现有C/V叶证书到2026-10-25 17:18:53（上海）到期，CA到11-17；窗口前重新检查实际证书有效期。
+叶证书到期必须使用本任务CA续签并验证，不得跳过证书校验；CA更换则重建并重新核包摘要。
+当前进程已停止。窗口内先start/recover/health并严格核验Windows到WSL HTTPS，再建立本任务两条USB映射。
+不映射数据库、邮件或内部mTLS；设备端口冲突同样阻断，结束只撤本任务映射并停本任务进程。

@@ -16,6 +16,8 @@
 首个完整成功运行[39115461923](https://github.com/zewbby/HnuHole/actions/runs/39115461923)；
 最终head以PR最新checks/制品manifest为准，证据提交后的检查继续核对。
 独立agent审查通过，不冒充GitHub成员批准。当前手机NOT_RUN、跨设备Passkey和iOS延期。
+用户指定vivo S18 / OriginOS 5，本次没有设备窗口；按授权先准备本任务独立SDK/签名和pinned-CA debug测试包，
+不运行ADB或操作手机。安装前须核对现有同包归属，避免覆盖。实际构建证据另行记录，不替代设备验收。
 P03/P05仅新增开发范围证明，生产主体独立/真实云/正式签名/正式发布未验。
 
 ## 目标与本次包含

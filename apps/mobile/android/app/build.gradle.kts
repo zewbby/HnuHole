@@ -44,7 +44,24 @@ android {
         }
     } else null
 
+    // Explicit device preparation only: same authentication identity, owned key,
+    // and no historical debug Passkey diagnostic/DAL manifest declarations.
+    val deviceProfileValue = System.getenv("HNUHOLE_PRERELEASE_DEVICE")
+    require(deviceProfileValue == null || deviceProfileValue == "1") {
+        "HNUHOLE_PRERELEASE_DEVICE must be unset or 1"
+    }
+    val deviceProfile = deviceProfileValue == "1"
+    require(!deviceProfile || testSigning != null) {
+        "The prerelease device profile requires an explicit test signing identity"
+    }
+    if (deviceProfile) {
+        sourceSets.getByName("debug").manifest.srcFile("src/prereleaseDevice/AndroidManifest.xml")
+    }
+
     buildTypes {
+        debug {
+            if (deviceProfile) signingConfig = testSigning
+        }
         release {
             // Configure an explicit release signing identity before distribution.
             if (testSigning != null) signingConfig = testSigning

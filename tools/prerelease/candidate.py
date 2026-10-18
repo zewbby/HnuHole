@@ -37,21 +37,25 @@ def git(source, *args):
     return run(['git', *args], source).strip()
 
 
-def verify_manifest(xml, version, number):
+def verify_manifest(xml, version, number, *, debug=False):
     root = ET.fromstring(xml)
     app, sdk = root.find('application'), root.find('uses-sdk')
     require(root.get('package') == PACKAGE, 'unexpected packaged ID')
     require(root.get(NS + 'versionName') == version and root.get(NS + 'versionCode') == str(number), 'packaged version mismatch')
     require(app is not None and sdk is not None, 'APK application or SDK declaration missing')
-    for name in ('debuggable', 'testOnly', 'allowBackup'):
+    require(app.get(NS + 'debuggable', 'false') in (('true', '1') if debug else ('false', '0')), 'unexpected debug mode')
+    for name in ('testOnly', 'allowBackup'):
         require(app.get(NS + name, 'false') in ('false', '0'), 'unsafe release manifest: ' + name)
     require(app.get(NS + 'allowBackup') in ('false', '0'), 'backup exclusion missing')
     require(sdk.get(NS + 'minSdkVersion') == '29', 'minSdk changed')
     for node in app.iter():
         name = node.get(NS + 'name', '')
         require('GoogleFidoDiagnosticActivity' not in name and name != 'asset_statements', 'debug diagnostic/DAL in release')
+    if debug:
+        require(app.get(NS + 'label') == 'HnuHole Prerelease Test', 'device test label missing')
+        require(app.get(NS + 'usesCleartextTraffic') in ('false', '0'), 'device cleartext exclusion missing')
     return dict(applicationId=PACKAGE, versionName=version, versionCode=number,
-                minSdk=29, targetSdk=int(sdk.get(NS + 'targetSdkVersion')), debuggable=False, allowBackup=False)
+                minSdk=29, targetSdk=int(sdk.get(NS + 'targetSdkVersion')), debuggable=debug, allowBackup=False)
 
 
 def main():

@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-18 手机测试包准备：**按本session授权先准备vivo S18 / OriginOS 5目标的独立签名pinned-CA debug包；无设备窗口，不运行ADB。代码接线与实际包准备证据分开记录，手机/原生插件/业务链路仍NOT_RUN，见[发布记录](../release/android-prerelease.md)。
+
 > **2026-10-18 Android候选与隔离预发布：**任务见[PR #16](https://github.com/zewbby/HnuHole/pull/16)及[分支详情](../branches/ci-android-prerelease.md)。已同步PR #13/main986477b；本地0d10719的11项实际迁移/权限/HTTPS文字图片/双新实例恢复/应用回滚/重部署/停机和独立CLI调用PASS，独立CI后台和测试签名release候选6b2927c PASS，APK/证书摘要已归档；安装和APK实际服务链路NOT_RUN。独立审查REVIEW_PASS_SCOPED。未合并、未发布；手机NOT_RUN，跨设备Passkey/iOS延期，P03/P05生产结论不升级。复现及脱敏回执见[发布记录](../release/android-prerelease.md)。
 
 > **2026-10-18 已确认合并 main：**[PR #13](https://github.com/zewbby/HnuHole/pull/13) 按维护者本次指令普通 Squash Merge，合并提交 `359c180a53a674e308e1496bed31da33b9ab8524`。远端main已核对；完整文件树与已测 `06a7ada` 一致，宿主/真实SQL/构建及三项产品CI通过证据继续适用。旧分支/历史协作policy失败与无独立成员批准如实保留，未改保护规则、使用绕过选项或强推。跨设备Passkey NI-X02继续延期；旧设备结果仅限原APK，新整合候选原生设备仍NOT_RUN，iOS/生产/完整App未验。见[合并回执](community-pr13-main-merge-20261018.json)。下方待合并/draft等条目保留为合并前快照。
