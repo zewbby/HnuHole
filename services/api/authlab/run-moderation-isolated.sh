@@ -37,12 +37,15 @@ CREATE ROLE hnuhole_business NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
 CREATE DATABASE hnuhole_c OWNER hnuhole_c;
 CREATE DATABASE hnuhole_v OWNER hnuhole_v;
 CREATE DATABASE hnuhole_moderation_upgrade OWNER hnuhole_c;
+CREATE DATABASE hnuhole_comment_report_upgrade OWNER hnuhole_c;
 REVOKE CONNECT ON DATABASE hnuhole_c FROM PUBLIC;
 REVOKE CONNECT ON DATABASE hnuhole_v FROM PUBLIC;
 REVOKE CONNECT ON DATABASE hnuhole_moderation_upgrade FROM PUBLIC;
+REVOKE CONNECT ON DATABASE hnuhole_comment_report_upgrade FROM PUBLIC;
 GRANT CONNECT ON DATABASE hnuhole_c TO hnuhole_c,hnuhole_c_runtime;
 GRANT CONNECT ON DATABASE hnuhole_v TO hnuhole_v;
 GRANT CONNECT ON DATABASE hnuhole_moderation_upgrade TO hnuhole_c;
+GRANT CONNECT ON DATABASE hnuhole_comment_report_upgrade TO hnuhole_c;
 SQL
 AUTHLAB_RUNTIME_TAG="hnuhole_authlab_post_schema_$(date -u +%Y%m%d%H%M%S)"
 AUTHLAB_C_DSN="postgresql://hnuhole_c@/hnuhole_c?host=$post_schema_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
@@ -54,6 +57,8 @@ AUTHLAB_POSTGRES_LOG="$post_schema_dir/postgres.log"
 export AUTHLAB_POSTGRES_LOG
 MODERATION_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_moderation_upgrade?host=$post_schema_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 export MODERATION_UPGRADE_DSN
+COMMENT_REPORT_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_comment_report_upgrade?host=$post_schema_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+export COMMENT_REPORT_UPGRADE_DSN
 post_schema_script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$post_schema_script_dir/.."
-go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime -run "${MODERATION_TEST_PATTERN:-^(TestModeration|TestRealHTTPSModeration)}" -v
+go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime -run "${MODERATION_TEST_PATTERN:-^(TestModeration|TestRealHTTPSModeration|TestCommentReport|TestRealHTTPSCommentReport)}" -v

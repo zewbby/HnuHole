@@ -10,6 +10,9 @@ func (c *Community) WithModeration(ctx context.Context) (*Community, error) {
 	if !c.PostsEnabled() {
 		return nil, ErrAuthorizationUnavailable
 	}
+	if e := checkCommentModerationSchema(ctx, c.pool, true); e != nil {
+		return nil, e
+	}
 	var ok bool
 	tables := []string{"schema_meta", "platform_numbers", "roles", "access_sessions", "legacy_restrictions", "cases", "reports", "sanctions", "appeals", "appeal_materials", "notifications", "commands", "request_fences", "audit"}
 	for _, t := range tables {

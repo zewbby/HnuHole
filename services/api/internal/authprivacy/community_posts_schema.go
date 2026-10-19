@@ -35,7 +35,9 @@ func CheckModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool) err
 }
 
 func checkPostSchema(ctx context.Context, pool *pgxpool.Pool) error {
-	if e:=checkCommentLifecycleSchema(ctx,pool);e!=nil{return errPostSchema}
+	if e := checkCommentLifecycleSchema(ctx, pool); e != nil {
+		return errPostSchema
+	}
 	tables := []string{"schema_meta", "protocol_keys", "account_publication_control", "publication_stop_events", "identity_public_labels", "posts", "post_identity_bindings", "publication_tasks", "publication_attempts", "attempt_contents", "command_receipts", "payload_cleanup"}
 	columns := map[string][]string{
 		"schema_meta":                 {"singleton_id", "version", "hooks_version"},
@@ -171,6 +173,9 @@ AND has_function_privilege(current_user,'c_posts.allocate_identity_label(uuid)',
 // cleanup hooks, the old lifecycle must be checked before the final Gate can
 // advance, independently of whether moderation endpoints are enabled.
 func checkModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool, runtime bool) error {
+	if e := checkCommentModerationSchema(ctx, pool, false); e != nil {
+		return e
+	}
 	var present, valid bool
 	if err := pool.QueryRow(ctx, `SELECT to_regnamespace('c_moderation') IS NOT NULL`).Scan(&present); err != nil {
 		return errPostSchema

@@ -18,9 +18,11 @@ class SystemNotificationsScreen extends StatefulWidget {
     super.key,
     required this.controller,
     this.onOpenPost,
+    this.onOpenComment,
   });
   final GovernanceController controller;
   final Future<void> Function(String)? onOpenPost;
+  final Future<void> Function(String postId, String commentId)? onOpenComment;
   @override
   State<SystemNotificationsScreen> createState() =>
       _SystemNotificationsScreenState();
@@ -111,6 +113,7 @@ class _SystemNotificationsScreenState extends State<SystemNotificationsScreen> {
                               noticeId: notice.id,
                               targetIdentityId: notice.identityId,
                               onOpenPost: widget.onOpenPost,
+                              onOpenComment: widget.onOpenComment,
                             ),
                           ),
                         );
@@ -176,11 +179,13 @@ class SystemNoticeDetailScreen extends StatefulWidget {
     required this.noticeId,
     this.targetIdentityId,
     this.onOpenPost,
+    this.onOpenComment,
   });
   final GovernanceController controller;
   final String noticeId;
   final String? targetIdentityId;
   final Future<void> Function(String)? onOpenPost;
+  final Future<void> Function(String postId, String commentId)? onOpenComment;
   @override
   State<SystemNoticeDetailScreen> createState() =>
       _SystemNoticeDetailScreenState();
@@ -260,6 +265,7 @@ class _SystemNoticeDetailScreenState extends State<SystemNoticeDetailScreen> {
                         route: n.route,
                         resource: r,
                         onOpenPost: widget.onOpenPost,
+                        onOpenComment: widget.onOpenComment,
                         onRefresh: _load,
                       ),
                   ] else
@@ -283,12 +289,14 @@ class GovernanceResourceView extends StatelessWidget {
     required this.resource,
     required this.onRefresh,
     this.onOpenPost,
+    this.onOpenComment,
   });
   final GovernanceController controller;
   final NotificationRoute route;
   final Map<String, dynamic> resource;
   final Future<void> Function() onRefresh;
   final Future<void> Function(String)? onOpenPost;
+  final Future<void> Function(String postId, String commentId)? onOpenComment;
   Widget _line(String label, Object? value) => value == null || value == ''
       ? const SizedBox.shrink()
       : Padding(
@@ -358,7 +366,15 @@ class GovernanceResourceView extends StatelessWidget {
             _ => null,
           }),
           _line('简短说明', r['explanation']),
-          if (r['postId'] is String && onOpenPost != null)
+          if (r['commentId'] is String && onOpenComment != null)
+            TextButton(
+              onPressed: () => onOpenComment!(
+                PostProtocol.resourceId(r['postId'] as String),
+                PostProtocol.resourceId(r['commentId'] as String),
+              ),
+              child: const Text('查看来源评论'),
+            )
+          else if (r['postId'] is String && onOpenPost != null)
             TextButton(
               onPressed: () =>
                   onOpenPost!(PostProtocol.resourceId(r['postId'] as String)),
@@ -412,6 +428,7 @@ class GovernanceResourceView extends StatelessWidget {
                         route: NotificationRoute('APPEAL', active),
                         resource: appeal,
                         onOpenPost: onOpenPost,
+                        onOpenComment: onOpenComment,
                       ),
                     ),
                   );
@@ -626,11 +643,13 @@ class _ResourceScreen extends StatelessWidget {
     required this.route,
     required this.resource,
     this.onOpenPost,
+    this.onOpenComment,
   });
   final GovernanceController controller;
   final NotificationRoute route;
   final Map<String, dynamic> resource;
   final Future<void> Function(String)? onOpenPost;
+  final Future<void> Function(String postId, String commentId)? onOpenComment;
   @override
   Widget build(BuildContext context) {
     final epoch = controller.authorityVersion;
@@ -647,6 +666,7 @@ class _ResourceScreen extends StatelessWidget {
                   route: route,
                   resource: resource,
                   onOpenPost: onOpenPost,
+                  onOpenComment: onOpenComment,
                   onRefresh: () async {
                     if (context.mounted) Navigator.pop(context);
                   },

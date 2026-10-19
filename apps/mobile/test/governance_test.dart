@@ -138,6 +138,51 @@ class _Fixture {
 }
 
 void _paginationTests() {
+  testWidgets(
+    'comment report notification routes to its exact comment and marks only the opened notice',
+    (tester) async {
+      final f = await _Fixture.create();
+      addTearDown(f.dispose);
+      final report = _report(_post);
+      (report['report'] as Map)['commentId'] = _appeal;
+      f.api.respond = (call) async {
+        if (call.path == '/api/v1/system-notifications') {
+          return {
+            'items': [_noticeJson()],
+            'nextBefore': null,
+          };
+        }
+        if (call.path.startsWith('/api/v1/system-notifications/')) {
+          return _noticeJson(
+            readAt: call.method == 'POST' ? '2026-10-19T00:00:00Z' : null,
+          );
+        }
+        return report;
+      };
+      final opened = <String>[];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SystemNotificationsScreen(
+            controller: f.controller,
+            onOpenComment: (post, comment) async {
+              opened.addAll([post, comment]);
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('已收到你的举报'));
+      await tester.pumpAndSettle();
+      expect(find.text('查看来源帖子'), findsNothing);
+      await tester.tap(find.text('查看来源评论'));
+      await tester.pumpAndSettle();
+      expect(opened, [_post, _appeal]);
+      expect(
+        f.api.calls.where((c) => c.method == 'POST').single.path,
+        '/api/v1/system-notifications/$_notice/read',
+      );
+    },
+  );
   test(
     'appeal material page keeps opaque cursor and rejects repeated cursor',
     () async {
@@ -317,8 +362,9 @@ void main() {
       final f = await _Fixture.create();
       addTearDown(f.dispose);
       f.api.respond = (call) async {
-        if (call.method == 'PUT')
+        if (call.method == 'PUT') {
           throw const GovernanceFailure(null, 'TIMEOUT', uncertain: true);
+        }
         final result = _report(call.path.split('/').last);
         (result['report'] as Map)['commentId'] = _appeal;
         return result;

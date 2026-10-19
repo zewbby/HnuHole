@@ -199,6 +199,7 @@ class _Probe {
     _check(
       report['id'] == id &&
           report['postId'] == post &&
+          report['commentId'] == fixture['commentId'] &&
           report['reason'] == 'OTHER' &&
           report['description'] == '合成举报联调材料',
       'report_receipt_mismatch',
@@ -257,6 +258,8 @@ class _Probe {
     final retry = _uuid(original['retryToken']);
     final body = <String, dynamic>{
       'postId': post,
+      if (fixture['commentId'] != null)
+        'commentId': _uuid(fixture['commentId']),
       'identityId': identity,
       'reason': 'OTHER',
       'description': '合成举报联调材料',
@@ -313,6 +316,7 @@ class _Probe {
     _check(
       current['id'] == sanction &&
           current['postId'] == post &&
+          current['commentId'] == fixture['commentId'] &&
           current['appealCount'] == 0,
       'sanction_dto_mismatch',
     );
@@ -582,12 +586,17 @@ Future<void> main(List<String> args) async {
             ? 'http_rejected'
             : error.runtimeType.toString(),
         if (error is GovernanceFailure) 'httpStatus': error.status,
-        if (error is FormatException && const {
-          'Invalid notice scope', 'Invalid post object fields',
-          'Invalid post string', 'Invalid post resource ID',
-          'Invalid UTC post time', 'Invalid post calendar time',
-          'Unknown notification route',
-        }.contains(error.message)) 'formatReason': error.message,
+        if (error is FormatException &&
+            const {
+              'Invalid notice scope',
+              'Invalid post object fields',
+              'Invalid post string',
+              'Invalid post resource ID',
+              'Invalid UTC post time',
+              'Invalid post calendar time',
+              'Unknown notification route',
+            }.contains(error.message))
+          'formatReason': error.message,
       }),
       flush: true,
     );

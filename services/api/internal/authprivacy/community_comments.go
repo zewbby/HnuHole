@@ -403,7 +403,7 @@ func checkCommentContext(ctx context.Context, tx pgx.Tx, account uuid.UUID, b co
 	}
 	if b.RootCommentID != "" {
 		var valid bool
-		e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_comments.tasks r JOIN c_comments.attempts ra ON ra.task_id=r.task_id AND ra.state='PUBLISHED' JOIN c_comments.tasks t ON t.comment_id=$3 JOIN c_comments.attempts ta ON ta.task_id=t.task_id AND ta.state='PUBLISHED' WHERE r.comment_id=$2 AND r.post_id=$1 AND r.root_comment_id IS NULL AND t.post_id=r.post_id AND COALESCE(t.root_comment_id,t.comment_id)=r.comment_id AND r.deleted_at IS NULL AND t.deleted_at IS NULL)`, b.PostID, b.RootCommentID, b.TargetCommentID).Scan(&valid)
+		e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_comments.tasks r JOIN c_comments.attempts ra ON ra.task_id=r.task_id AND ra.state='PUBLISHED' JOIN c_comments.tasks t ON t.comment_id=$3 JOIN c_comments.attempts ta ON ta.task_id=t.task_id AND ta.state='PUBLISHED' WHERE r.comment_id=$2 AND r.post_id=$1 AND r.root_comment_id IS NULL AND t.post_id=r.post_id AND COALESCE(t.root_comment_id,t.comment_id)=r.comment_id AND r.deleted_at IS NULL AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(r)->>'moderation_hidden')::boolean,false) AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false))`, b.PostID, b.RootCommentID, b.TargetCommentID).Scan(&valid)
 		if e != nil {
 			return e
 		}

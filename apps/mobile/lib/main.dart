@@ -322,6 +322,25 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         MaterialPageRoute<void>(
           builder: (_) => SystemNotificationsScreen(
             controller: governance,
+            onOpenComment: (postId, commentId) async {
+              if (!widget.posts.available ||
+                  governance.restricted ||
+                  governance.accountId != owner ||
+                  governance.authorityVersion != authority) {
+                return;
+              }
+              await navigator.push(
+                MaterialPageRoute<void>(
+                  builder: (_) => PostDetailScreen(
+                    controller: widget.posts,
+                    postId: postId,
+                    initialCommentId: commentId,
+                    loadImages: widget.loadPostImages,
+                    onAuthenticationRequired: _openAuth,
+                  ),
+                ),
+              );
+            },
             onOpenPost: (postId) async {
               if (!widget.posts.available ||
                   governance.accountId != owner ||

@@ -64,7 +64,7 @@ func (c *Community) CheckCommentSchema(ctx context.Context) error {
 	if !runtime {
 		return nil
 	}
-	for table, columns := range map[string][]string{"tasks": {"owner_visible", "abandoned_at", "deleted_at"}, "attempts": {"state", "terminal_at", "failure_code", "body"}, "snapshots": {}, "images": {"payload", "metadata", "erased_at"}, "likes": {}} {
+	for table, columns := range map[string][]string{"tasks": {"owner_visible", "abandoned_at", "deleted_at", "moderation_hidden"}, "attempts": {"state", "terminal_at", "failure_code", "body"}, "snapshots": {}, "images": {"payload", "metadata", "erased_at"}, "likes": {}} {
 		if e := c.pool.QueryRow(ctx, `SELECT NOT EXISTS(SELECT 1 FROM pg_attribute WHERE attrelid=to_regclass('c_comments.'||$1) AND attnum>0 AND NOT attisdropped AND NOT(attname=ANY($2::text[])) AND has_column_privilege(current_user,attrelid,attname,'UPDATE'))`, table, columns).Scan(&ok); e != nil || !ok {
 			return errCommentSchema
 		}
