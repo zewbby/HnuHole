@@ -66,3 +66,5 @@ python -O -m unittest discover -s tools/android_integration/tests -v
 应用候选可撤回安装；旧0018前后端不满足新权限契约，实测拒绝启动，不能对新治理库盲目回滚。保持当前固定后端或由所属模块向前修复；数据库不执行Down。原预发布的旧版本应用回滚证据保留原版本范围。
 
 授权/Gate所属模块后续分析一次 `INDEPENDENT_ANCHOR_FROZEN`：固定源码、三个关联ID及恢复后的read_at见设备回执；原始Gate日志/锚点/操作记录在私有归档。网页回执与冻结相距约57ms，只有时间相关，原因未确定。本任务仅以既有签名恢复，没有修改业务。iOS、跨设备Passkey、多机型、生产发布和持续可用证明继续不在范围。
+
+收尾事实见[清理回执](android-integration-cleanup-20261019.json)：Linux专属目录及全部大型SDK/cache已移除，运行材料保留在私有归档；Windows专属ADB SDK删除被自动审批拒绝，目录停用保留，不能宣称已删除。临时登录说明仍位于私有手机证据目录，不能并入普通候选分发。无需为本轮收尾重新启动环境或手机。

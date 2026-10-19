@@ -40001,10 +40001,15 @@
     "restore": "docs/release/android-integration-restore-20261019.json",
     "device": "docs/release/android-integration-device-20261019.json",
     "report": "docs/release/android-integration-candidate-20261019.md",
-    "merge": "PENDING_PR_CHECKS",
+    "merge": "MERGED",
     "productionAcceptance": "NOT_RUN; full module result not promoted",
     "phoneWindow": "CLOSED; no further ADB authorized",
     "gateIncident": "INDEPENDENT_ANCHOR_FROZEN; cause undetermined; formal existing C-only recovery then App fresh login and final notice readAt; auth/Gate owner follow-up",
-    "pullRequest": "https://github.com/zewbby/HnuHole/pull/23"
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/23",
+    "mainMerged": true,
+    "mergeSha": "b6cc077894bab684783f84488880f655c5065e78",
+    "mergeReceipt": "docs/release/android-integration-main-merge-20261019.json",
+    "cleanup": "docs/release/android-integration-cleanup-20261019.json",
+    "remaining": "Windows owned ADB SDK directory delete blocked by automatic approval; all services stopped; no further acceptance work"
   }
 }

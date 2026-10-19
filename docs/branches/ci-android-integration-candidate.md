@@ -1,6 +1,6 @@
 # Android 集成候选
 
-2026-10-19，Asia/Shanghai。状态：固定候选及必要新增限定验收完成；待本任务 PR 审查/检查后合并，未部署或正式发布。
+2026-10-19，Asia/Shanghai。状态：固定候选与必要新增限定验收已交付，PR #23 已 Squash 合入 main；未部署或正式发布。临时服务均关闭，Windows专属ADB SDK目录删除被自动审批拦截，停用保留。
 
 唯一交付为固定源码、配置、后端、迁移和签名的可用 Android 集成候选，包含现有图文、完整评论和评论举报审核/通知/申诉。交付 [PR #23](https://github.com/zewbby/HnuHole/pull/23)，分支 `codex/ci/android-integration-candidate`，独立工作目录 `E:/HnuHole-android-integration-20261019/repo`。
 
@@ -31,4 +31,6 @@ APK `4df3f7c85f6bb312fde1034d577c093136b6f0c989daeea70a65f32aa624ac0f`，版本 
 
 完整摘要、工具版本、命令、incident、未验范围及归档入口见[发布记录](../release/android-integration-candidate-20261019.md)与[复现说明](../release/android-integration-reproduction-20261019.md)。构建 manifest 是构建时快照（device NOT_RUN），设备实际结果另见[设备回执](../release/android-integration-device-20261019.json)，不能改写历史。
 
-独立[审查回执](../release/android-integration-review-20261019.json)及[保留/停止回执](../release/android-integration-retention-20261019.json)已归档；最终 CI/合并与缓存删除按实际完成后更新。
+独立[审查回执](../release/android-integration-review-20261019.json)及[保留/停止回执](../release/android-integration-retention-20261019.json)已归档；最终head两项CI通过并合入 `b6cc077894bab684783f84488880f655c5065e78`，合并树与已测交付head一致。
+
+实际[合并回执](../release/android-integration-main-merge-20261019.json)与[清理回执](../release/android-integration-cleanup-20261019.json)已补齐；候选、备份/私有测试签名、源码bundle、设备证据和复现材料保留。Linux独立SDK/cache/runtime已删除；Windows SDK删除两次均被自动审批以“blocked by policy”拒绝，未换用其他删除手段。该残留停用目录不作为清理通过，后续由用户手动处理或另行解决审批限制。本任务不重启环境/手机、不继续追main。
