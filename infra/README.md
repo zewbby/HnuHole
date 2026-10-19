@@ -1,5 +1,11 @@
 # C/V 同机开发基础设施
 
+2026-10-18独立预发布工具位于 `infra/prerelease/` 和 `tools/prerelease/`，交付于
+[PR #16](https://github.com/zewbby/HnuHole/pull/16)（尚未合并/发布）。
+其独立PG进程环境的正式迁移、权限拒绝、双新实例恢复及应用回滚已有实际开发证据，
+见[运行手册与回执](../docs/release/android-prerelease.md)。这些结果不代验下述Compose入口，
+也不证明生产主体独立；本任务未启动Docker或操作其他session资源。
+
 Compose提供分离的PG16 C／V服务与Mailpit，只绑定literal loopback。C为 `127.0.0.1:55432/hnuhole_c`，V为 `127.0.0.1:55433/hnuhole_v`；SMTP1025／Mailpit UI8025。固定images `postgres:16.6-alpine`、`axllent/mailpit:v1.21.8`。PG16／Go1.22尚无本轮实测；本机Go、PG、Docker已清理，不能把配置静态检查报告为实际启动成功。
 
 从 `services/api` 按 [API README](../services/api/README.md) 初始化新私有material目录，生成独立runtime／migration／恢复密码与开发PKI。`infra/.env.example`只有占位符；Compose要求显式提供各方独立密码，不含演示token／万能码。按README把私有password files加载进环境后启动：

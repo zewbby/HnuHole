@@ -1,0 +1,667 @@
+{
+  "sourceSha": "0d107191556b650fb0e8363e46dc6fc2f510baf0",
+  "rollbackSha": "986477b4cbdaeb3fef7749961f6ee9b60d5d1ffb",
+  "scope": "same-machine isolated development; not independent production operations",
+  "result": "PASS",
+  "checks": [
+    "fresh-formal-migrations-and-schema13-snapshot-upgrade",
+    "restricted-role-matrix-rejects-immutable-image-column-update",
+    "actual-startup-rejects-missing-image-insert-permission",
+    "new-instance-startup-remains-frozen",
+    "actual-https-registration-login-catalog-text-image-and-denials",
+    "gate-closed-denies-protected-reads",
+    "backup-restored-to-two-new-instances-data-and-permissions-match",
+    "restore-old-session-rejected-fresh-login-reads-original-text-and-image",
+    "failed-candidate-startup-rejected",
+    "previous-main-binaries-run-on-current-restored-schema",
+    "candidate-redeploy-after-application-rollback"
+  ],
+  "oldSnapshot": {
+    "version": 13,
+    "sha256": "17f64ec9f2158252130b06b87deb81c4c6b971ab0ac66b27f01e64ed8dd61aca",
+    "catalogRowsPreserved": 7,
+    "scope": "synthetic schema13 snapshot; catalog/goose data, no historical user data"
+  },
+  "toolVersions": {
+    "go": "go version go1.22.2 linux/amd64",
+    "goose": "goose version: v3.22.1",
+    "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+    "mailpit": "mailpit v1.21.8 compiled with go1.23.4 on linux/amd64\n\nUpdate available: v1.31.6\nRun `mailpit version -u` to update (requires read/write access to install directory).",
+    "pillow": "12.3.0"
+  },
+  "migrationSha256": {
+    "migrations/0014_post_images.sql": "16b35e586ede3c32d0933590d5466e5f70465493ab8c104e94e4754ac2df6528",
+    "migrations/0012_identity_account_closure.sql": "4cf0979531530f053cb365fa01eaddfb1c925b1c03c1e019382751d2a0d78f0d",
+    "migrations/0007_account_closure.sql": "9fa39a97a027cc32a51fc7955f6ee04332f4803560267e33e6314b9ad2e39094",
+    "migrations/0006_recovery_reset.sql": "4bb9e591c9a0c1774e39de4932e79ef608cfdb7d11674d3bd8fff59db075b730",
+    "migrations/0010_legacy_fence.sql": "e2e377cda6fea2543e25b8acac010fd9d41d8254ca2142f9aa18984cdf99ad33",
+    "migrations/0008_recovery_credentials.sql": "c5ff5114fa790a86606cc66fd363e69a292bb2f17a8b611f60fddbced8d31fd0",
+    "migrations/0005_session_lifecycle.sql": "4dd140ba2724b4bcdd432fe365f086fdd10b25ae65110445d98892a44e4ceb6e",
+    "migrations/0009_receipt_worker_claim.sql": "2386fe4362eab48c423baf4862d6f621677c665131893e50a70351125fc1bcd7",
+    "migrations/0013_community_text_posts.sql": "35274cba859c0d51fc7805e341ea3880d12ee7f67eedad96f9841c915f1344fe",
+    "migrations/0001_sessions.sql": "8b011adf71047a1de622a6f9809c4a78eaf305304e5ee536fa2b5a67092dc720",
+    "migrations/0004_authorization_gate.sql": "b2c7737c6ef24658bba39aa65e003158ee26d4669d098ba79b8f9562b8ed0101",
+    "migrations/0003_authprivacy.sql": "51ba4d7835a1fbb33a264c7693a365a6cc1997f77f0825bc68f8dc2e28184278",
+    "migrations/0011_identity_management.sql": "eb49fc3b43ff47febfa1682021d48b2b64a5e09e1de65d97b73ef1c90bc0889b",
+    "migrations/0002_channels.sql": "4b7d6429acb31be315f1546710c8136e0bee48bf2cd1021a385c5710f9b54504",
+    "verifier-migrations/0002_otp.sql": "204a03451012ba39b08a36c6b39a4a8ef37dede968b7399df9425a1b469ab152",
+    "verifier-migrations/0003_confirmation.sql": "40e0413282ea541d7195d7c443738631a5627f49bdd0f5c421ff19bf8f870a46",
+    "verifier-migrations/0001_authprivacy.sql": "102d6a2f9faafbdf992bad8e5122323b46bba80d6ed8419d48cc8466cef41fa0",
+    "verifier-migrations/0004_authorization_gate.sql": "72fff9927f88d5546a8571b53f94b353f5e22e64fdc74c2fe352b013ed78f132"
+  },
+  "device": "NOT_RUN",
+  "ios": "DEFERRED",
+  "crossDevicePasskey": "DEFERRED",
+  "backupSha256": {
+    "c": "cae09e2568228527e7c3338d983d4de9fc25cfc6a05a8b73e3ce84102393146a",
+    "v": "c20d2d6676ec3ac6801c6d2078927a6f7c03f6b7ca5f11e6ed2bbb4f3c97913d"
+  },
+  "restoredFingerprints": {
+    "c:c_auth.account_restrictions": "2176584154b9eb677ba516b42b8ae20c4d1f16d311010fe776570035fa9ff552",
+    "c:c_auth.accounts": "dab4139d72a4f97d4e91be29be1e40ddb7e950c0a53ff77be7ae5c2459a34630",
+    "c:c_auth.auth_challenges": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "c:c_auth.authorization_gate": "46f108c68ff3dbabf20912da54db47a54baa9959ff841a60786ec522fdf13faa",
+    "c:c_auth.authorization_gate_audit": "e7d7e78a3292390299f2a1f78438d94364ec6a829353ed0f09fee39f372761d2",
+    "c:c_auth.closure_requests": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "c:c_auth.credential_change_intents": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "c:c_auth.passkeys": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "c:c_auth.receipt_outbox": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "c:c_auth.recent_device_replacement": "10dfc2e25c9325e3f664d8e069a0b0449514d0a9dc01e9abab05118c41db5650",
+    "c:c_auth.recovery_codes": "805fee5c538b3aa4708ce304fcaea3388b52fc2b77489e338092b08517086224",
+    "c:c_auth.request_results": "cb14462e9a8cf3e8fc558e0dafc8f7f8a7fcbaa8e3bc6d8919a8793735eeffa6",
+    "c:c_auth.reset_intents": "5b00764c562f6a65fc3d0ecdf24620895ec7063349d9d6d531eb7d85c7fc039b",
+    "c:c_auth.security_events": "bcefde34228b8669df83f6a75250e991015a7a76f55af797b257f6a079b5e73b",
+    "c:c_auth.sessions": "e966caa761de6a6f7be31903b16abbd3d5229cf94c15e61f064a3fb77b141e1a",
+    "c:c_auth.signup_intents": "5bf9e1eedeff7be8514756f625b68a8e6a06d77cf965afa90f4a7a1892f40147",
+    "c:c_auth.slot_ledger": "eb1324a1ab239469e959e67ffb6ef7e69e0cb0a001dee336f2aa3634bba1c943",
+    "c:c_posts.account_publication_control": "e7780548b1353508da48ce5cd50cc5b7aeca397fd56434d18a6d179b538783a7",
+    "c:c_posts.attempt_contents": "7b57f85c918b78748df1945a839a834e603c4301cd494870b651228359decbdd",
+    "c:c_posts.command_receipts": "b5fef6aa353f1c3e78731acf230ac853ccf6d0b875b24a6327c8dea509c3e1d0",
+    "c:c_posts.identity_public_labels": "9f2b2d86b1e361266fa21d8c23c24294178331a5d67009f9184f02f299fa3c39",
+    "c:c_posts.images": "66c9c99a5e613d283d7e96c2db27d873747f7e6cc7313bbc419cdf848f3b3c44",
+    "c:c_posts.payload_cleanup": "829edf9b0a4bb1ba764338b34d9805b706c54cdf547101b0f16fbab842f0da03",
+    "c:c_posts.post_identity_bindings": "b60322c81ed13ae9ba8102dc6949e311e62f6f19b90895e1be5853af529b3286",
+    "c:c_posts.posts": "636c98c270b19eb46bedfae332e11db78553af78d73314fd61ba468c6c7895f6",
+    "c:c_posts.protocol_keys": "b0c80b33c6603c11ed74d5dd016a7b21424129689cb0808041a8520abe9906fe",
+    "c:c_posts.publication_attempts": "67bfcb8e3e62f8ac3c3cabbe38c82c364bf5c308f876800b103278927cc92fb5",
+    "c:c_posts.publication_stop_events": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "c:c_posts.publication_tasks": "1fa017f3c92a0de249e02ad0ecaf20c2f92a4456a708aa63030169a577e6f79b",
+    "c:c_posts.schema_meta": "a5286e29576a2e39ac7520cab9b3c1f2ffa6e33be114a7da4ed3e5916c7565c3",
+    "c:public.channels": "467e90ec3eba57a73d2e48dfb002d985d2c40e90109e35623ad6902ad8596c88",
+    "c:public.community_identities": "10254bce5ae4a9ed842705be84368b0fce21d58406782fc54da0d64e910ee9a7",
+    "c:public.goose_db_version": "bd0b3c1e949b5d6d103e03b0c84556db8ed01bc123473c27b6cab9d4af44bd7a",
+    "c:public.identity_account_state": "815829f895c0a6773e21fadb0b3b494eb6bfb9d69515cbea5088e79d37c606bb",
+    "c:public.identity_change_receipts": "0a64e2f17143466f83692fc3a3397a2a9ce9f24341b6f62ccadfa4bd1f499f36",
+    "c:public.sessions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "c:c_auth.authorization_gate_audit_event_id_seq": "3fdecf8d57a6ec098be4b94939de73991fc4b4e19647d4da33da1d70ee1416bb",
+    "c:c_posts.acceptance_ordinal_seq": "187a6f8ae4730c004f4a67da17c6dcdc2b5c0a44fe57d995f2fe3335bb5746e4",
+    "c:c_posts.publication_ordinal_seq": "187a6f8ae4730c004f4a67da17c6dcdc2b5c0a44fe57d995f2fe3335bb5746e4",
+    "c:public.goose_db_version_id_seq": "1bed49d92463cb43fad950064afdbe9265b76ab5e6e6a115eb237d7141338ce8",
+    "v:public.goose_db_version": "0531096bbe5df16eba1abfe687f23f11054e54c7ac15a6151a849711d4651ede",
+    "v:v_auth.authorization_gate": "3f215acab956e48b60baf3fd75a31725380a05d1a8cc3596aaa918d0078927e0",
+    "v:v_auth.authorization_gate_audit": "0421ba4f9a22590c0ca82601be095bbbf2d330d5e10b8d70e812f2c9b757b03a",
+    "v:v_auth.confirmation_rejections": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "v:v_auth.confirmation_sign_jobs": "236bbee87da02634bdb0127d98d56e80cacec8566472a712dafc625307c6fdb3",
+    "v:v_auth.device_email_limits": "4f544fc125c66b5941b3f1badcaed773ae9a34b521a857bb68d29fc398c15319",
+    "v:v_auth.email_quota": "4036203dd6a087ffcb758ebc442b77729bb333faaab29af00c1856b9afff2af4",
+    "v:v_auth.mail_outbox": "9683f40634457724545b394c70262acf8b7a2f4f66a77ead718cbeb5a0872031",
+    "v:v_auth.otp_budget_events": "006d5a868555c8a3e482ee2a903a8f57d508cfc773c284c5909332b32fa61ad6",
+    "v:v_auth.otp_code_versions": "a9483ae9fab95355174940241537024f4128585010c5ad131c73c8553ff48225",
+    "v:v_auth.otp_confirmations": "b5b4fdd685ab8c76b6b6e7d73bec176ccb3e9aed2d823a1088b199092dac2fd0",
+    "v:v_auth.otp_email_state": "e2f66d08cebd29054cf2b89e8a4a1c7707fc09280cd2d536a5b5df9e626ce006",
+    "v:v_auth.otp_flows": "c6f9128c69df4ffab2407eba990e29c7920d542b6ebdd6af570d434d3c0e9875",
+    "v:v_auth.processed_receipts": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "v:v_auth.request_results": "4e7d44448091d034558cef79dba82391ec7e1a2aabf211b92845e5463af37e22",
+    "v:v_auth.retire_pending": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "v:v_auth.used_slots": "e03088f00fcaa7b6bd9a0d2aa3f62549078e9d60d0eaba4e5d045f96c46139fe",
+    "v:public.goose_db_version_id_seq": "dd9d8bb0e97a22b6995c079a86d5cd02371b822197d38d83c35afee0e6c84802",
+    "v:v_auth.authorization_gate_audit_event_id_seq": "3fdecf8d57a6ec098be4b94939de73991fc4b4e19647d4da33da1d70ee1416bb",
+    "v:v_auth.otp_budget_events_event_id_seq": "3fdecf8d57a6ec098be4b94939de73991fc4b4e19647d4da33da1d70ee1416bb"
+  },
+  "binarySha256": {
+    "candidate-verifier": "f19baa4804de42a059d1447d9d215e3bd21806c4c653ed37afcbe2308b749113",
+    "rollback-verifier": "0d5a64a88e065f37b771da2f4393e3cc629352378a45ee2537520600436f880c",
+    "runtimeprobe": "5e4fd5e4ace764204bf71f95f25cea5c2c9ad59f00f7484705f9da6c2cf04e5b",
+    "candidate-community": "9c9c6fb5a5d1213a3956a01c8b5fd512975dacd19ee9bc68109fad82d638ed5d",
+    "authdev": "6bc95c5ea5fa0ab57e652255ece18f83329249d9cf260ff585799053c9366151",
+    "rollback-community": "b7581101026307998b482527acf461fc22af06241236a27a8ce00a0f2bdfa1c9"
+  },
+  "cleanup": "PASS: owned processes and all five PostgreSQL instances stopped; private material retained",
+  "commands": [
+    {
+      "name": "build-candidate-community",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:43.424680+00:00",
+      "endedAtUtc": "2026-10-18T09:18:44.659655+00:00"
+    },
+    {
+      "name": "build-candidate-verifier",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:44.660433+00:00",
+      "endedAtUtc": "2026-10-18T09:18:45.478675+00:00"
+    },
+    {
+      "name": "build-authdev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:45.479277+00:00",
+      "endedAtUtc": "2026-10-18T09:18:46.604051+00:00"
+    },
+    {
+      "name": "build-runtimeprobe",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:46.604995+00:00",
+      "endedAtUtc": "2026-10-18T09:18:48.714417+00:00"
+    },
+    {
+      "name": "build-rollback-community",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:49.867722+00:00",
+      "endedAtUtc": "2026-10-18T09:18:52.290584+00:00"
+    },
+    {
+      "name": "build-rollback-verifier",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:52.291078+00:00",
+      "endedAtUtc": "2026-10-18T09:18:53.158018+00:00"
+    },
+    {
+      "name": "authdev-init",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:53.159184+00:00",
+      "endedAtUtc": "2026-10-18T09:18:53.175480+00:00"
+    },
+    {
+      "name": "initdb-sourcec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:53.176431+00:00",
+      "endedAtUtc": "2026-10-18T09:18:54.796037+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:18:54.796532+00:00",
+      "endedAtUtc": "2026-10-18T09:18:54.798062+00:00"
+    },
+    {
+      "name": "pg-start-sourcec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:54.798337+00:00",
+      "endedAtUtc": "2026-10-18T09:18:54.912762+00:00"
+    },
+    {
+      "name": "roles-sourcec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:54.913855+00:00",
+      "endedAtUtc": "2026-10-18T09:18:55.028886+00:00"
+    },
+    {
+      "name": "upgrade-c-to13",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:55.038936+00:00",
+      "endedAtUtc": "2026-10-18T09:18:55.604574+00:00"
+    },
+    {
+      "name": "schema13-snapshot",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:55.611689+00:00",
+      "endedAtUtc": "2026-10-18T09:18:55.726080+00:00"
+    },
+    {
+      "name": "initdb-upgradec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:55.726650+00:00",
+      "endedAtUtc": "2026-10-18T09:18:56.994434+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:18:56.994901+00:00",
+      "endedAtUtc": "2026-10-18T09:18:56.996581+00:00"
+    },
+    {
+      "name": "pg-start-upgradec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:56.996905+00:00",
+      "endedAtUtc": "2026-10-18T09:18:57.111223+00:00"
+    },
+    {
+      "name": "roles-upgradec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:57.111607+00:00",
+      "endedAtUtc": "2026-10-18T09:18:57.225912+00:00"
+    },
+    {
+      "name": "schema13-load-new-cluster",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:57.234957+00:00",
+      "endedAtUtc": "2026-10-18T09:18:58.201366+00:00"
+    },
+    {
+      "name": "schema13-snapshot-upgrade",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:58.201927+00:00",
+      "endedAtUtc": "2026-10-18T09:18:58.234185+00:00"
+    },
+    {
+      "name": "goose-c",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:58.422571+00:00",
+      "endedAtUtc": "2026-10-18T09:18:58.486950+00:00"
+    },
+    {
+      "name": "goose-c",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:58.487482+00:00",
+      "endedAtUtc": "2026-10-18T09:18:58.503402+00:00"
+    },
+    {
+      "name": "initdb-sourcev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:58.640472+00:00",
+      "endedAtUtc": "2026-10-18T09:18:59.958187+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:18:59.958897+00:00",
+      "endedAtUtc": "2026-10-18T09:18:59.960660+00:00"
+    },
+    {
+      "name": "pg-start-sourcev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:18:59.961361+00:00",
+      "endedAtUtc": "2026-10-18T09:19:00.075992+00:00"
+    },
+    {
+      "name": "roles-sourcev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:00.076802+00:00",
+      "endedAtUtc": "2026-10-18T09:19:00.191542+00:00"
+    },
+    {
+      "name": "goose-v",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:00.203992+00:00",
+      "endedAtUtc": "2026-10-18T09:19:00.468990+00:00"
+    },
+    {
+      "name": "goose-v",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:00.469592+00:00",
+      "endedAtUtc": "2026-10-18T09:19:00.485667+00:00"
+    },
+    {
+      "name": "missing-image-insert",
+      "exitCode": 1,
+      "startedAtUtc": "2026-10-18T09:19:01.191243+00:00",
+      "endedAtUtc": "2026-10-18T09:19:01.305608+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:01.558634+00:00",
+      "endedAtUtc": "2026-10-18T09:19:01.560720+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:01.561205+00:00",
+      "endedAtUtc": "2026-10-18T09:19:01.562828+00:00"
+    },
+    {
+      "name": "recover-c",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:01.833539+00:00",
+      "endedAtUtc": "2026-10-18T09:19:01.897932+00:00"
+    },
+    {
+      "name": "recover-v",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:01.898713+00:00",
+      "endedAtUtc": "2026-10-18T09:19:01.963306+00:00"
+    },
+    {
+      "name": "probe-lifecycle",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:01.988353+00:00",
+      "endedAtUtc": "2026-10-18T09:19:03.104798+00:00"
+    },
+    {
+      "name": "probe-identities",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:03.105361+00:00",
+      "endedAtUtc": "2026-10-18T09:19:03.420180+00:00"
+    },
+    {
+      "name": "probe-posts",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:03.420774+00:00",
+      "endedAtUtc": "2026-10-18T09:19:08.295999+00:00"
+    },
+    {
+      "name": "probe-images",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:08.296507+00:00",
+      "endedAtUtc": "2026-10-18T09:19:10.719981+00:00"
+    },
+    {
+      "name": "freeze-c",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:10.720717+00:00",
+      "endedAtUtc": "2026-10-18T09:19:10.752767+00:00"
+    },
+    {
+      "name": "freeze-v",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:10.753137+00:00",
+      "endedAtUtc": "2026-10-18T09:19:10.785073+00:00"
+    },
+    {
+      "name": "probe-frozen",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:10.793409+00:00",
+      "endedAtUtc": "2026-10-18T09:19:10.809215+00:00"
+    },
+    {
+      "name": "backup-c",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:11.409627+00:00",
+      "endedAtUtc": "2026-10-18T09:19:11.523863+00:00"
+    },
+    {
+      "name": "initdb-restorec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:11.525338+00:00",
+      "endedAtUtc": "2026-10-18T09:19:12.491411+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:19:12.491956+00:00",
+      "endedAtUtc": "2026-10-18T09:19:12.493480+00:00"
+    },
+    {
+      "name": "pg-start-restorec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:12.493823+00:00",
+      "endedAtUtc": "2026-10-18T09:19:12.607843+00:00"
+    },
+    {
+      "name": "roles-restorec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:12.608433+00:00",
+      "endedAtUtc": "2026-10-18T09:19:12.672428+00:00"
+    },
+    {
+      "name": "restore-c",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:12.680685+00:00",
+      "endedAtUtc": "2026-10-18T09:19:13.446734+00:00"
+    },
+    {
+      "name": "backup-v",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:13.447306+00:00",
+      "endedAtUtc": "2026-10-18T09:19:13.561497+00:00"
+    },
+    {
+      "name": "initdb-restorev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:13.562302+00:00",
+      "endedAtUtc": "2026-10-18T09:19:14.678946+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:19:14.679601+00:00",
+      "endedAtUtc": "2026-10-18T09:19:14.681168+00:00"
+    },
+    {
+      "name": "pg-start-restorev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:14.681514+00:00",
+      "endedAtUtc": "2026-10-18T09:19:14.795812+00:00"
+    },
+    {
+      "name": "roles-restorev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:14.796324+00:00",
+      "endedAtUtc": "2026-10-18T09:19:14.860434+00:00"
+    },
+    {
+      "name": "restore-v",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:14.871388+00:00",
+      "endedAtUtc": "2026-10-18T09:19:15.186060+00:00"
+    },
+    {
+      "name": "recover-c",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:15.757753+00:00",
+      "endedAtUtc": "2026-10-18T09:19:15.789633+00:00"
+    },
+    {
+      "name": "recover-v",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:15.790089+00:00",
+      "endedAtUtc": "2026-10-18T09:19:15.821891+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:15.822274+00:00",
+      "endedAtUtc": "2026-10-18T09:19:15.823721+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:15.824128+00:00",
+      "endedAtUtc": "2026-10-18T09:19:15.825536+00:00"
+    },
+    {
+      "name": "probe-recovered",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:16.100615+00:00",
+      "endedAtUtc": "2026-10-18T09:19:16.465147+00:00"
+    },
+    {
+      "name": "probe-images-restart",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:16.465841+00:00",
+      "endedAtUtc": "2026-10-18T09:19:16.529943+00:00"
+    },
+    {
+      "name": "failed-deployment",
+      "exitCode": 1,
+      "startedAtUtc": "2026-10-18T09:19:16.962078+00:00",
+      "endedAtUtc": "2026-10-18T09:19:17.026125+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:17.026952+00:00",
+      "endedAtUtc": "2026-10-18T09:19:17.028602+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:17.029010+00:00",
+      "endedAtUtc": "2026-10-18T09:19:17.030489+00:00"
+    },
+    {
+      "name": "probe-images-restart",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:17.306031+00:00",
+      "endedAtUtc": "2026-10-18T09:19:17.369934+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:17.797595+00:00",
+      "endedAtUtc": "2026-10-18T09:19:17.799195+00:00"
+    },
+    {
+      "name": "pg-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:17.799626+00:00",
+      "endedAtUtc": "2026-10-18T09:19:17.801081+00:00"
+    },
+    {
+      "name": "probe-images-restart",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:18.073006+00:00",
+      "endedAtUtc": "2026-10-18T09:19:18.137016+00:00"
+    },
+    {
+      "name": "pg-stop-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:19.054727+00:00",
+      "endedAtUtc": "2026-10-18T09:19:19.056295+00:00"
+    },
+    {
+      "name": "pg-stop-sourcec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:19.056759+00:00",
+      "endedAtUtc": "2026-10-18T09:19:19.571924+00:00"
+    },
+    {
+      "name": "pg-stopped-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:19:19.572608+00:00",
+      "endedAtUtc": "2026-10-18T09:19:19.574202+00:00"
+    },
+    {
+      "name": "pg-stop-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:19.574772+00:00",
+      "endedAtUtc": "2026-10-18T09:19:19.576301+00:00"
+    },
+    {
+      "name": "pg-stop-sourcev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:19.576679+00:00",
+      "endedAtUtc": "2026-10-18T09:19:19.891221+00:00"
+    },
+    {
+      "name": "pg-stopped-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:19:19.891627+00:00",
+      "endedAtUtc": "2026-10-18T09:19:19.893198+00:00"
+    },
+    {
+      "name": "pg-stop-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:19.893690+00:00",
+      "endedAtUtc": "2026-10-18T09:19:19.895188+00:00"
+    },
+    {
+      "name": "pg-stop-restorec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:19.895651+00:00",
+      "endedAtUtc": "2026-10-18T09:19:20.310476+00:00"
+    },
+    {
+      "name": "pg-stopped-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:19:20.310944+00:00",
+      "endedAtUtc": "2026-10-18T09:19:20.312531+00:00"
+    },
+    {
+      "name": "pg-stop-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:20.313079+00:00",
+      "endedAtUtc": "2026-10-18T09:19:20.314558+00:00"
+    },
+    {
+      "name": "pg-stop-restorev",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:20.315011+00:00",
+      "endedAtUtc": "2026-10-18T09:19:20.629741+00:00"
+    },
+    {
+      "name": "pg-stopped-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:19:20.630386+00:00",
+      "endedAtUtc": "2026-10-18T09:19:20.632011+00:00"
+    },
+    {
+      "name": "pg-stop-status",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:20.632504+00:00",
+      "endedAtUtc": "2026-10-18T09:19:20.634037+00:00"
+    },
+    {
+      "name": "pg-stop-upgradec",
+      "exitCode": 0,
+      "startedAtUtc": "2026-10-18T09:19:20.634643+00:00",
+      "endedAtUtc": "2026-10-18T09:19:21.049628+00:00"
+    },
+    {
+      "name": "pg-stopped-status",
+      "exitCode": 3,
+      "startedAtUtc": "2026-10-18T09:19:21.050131+00:00",
+      "endedAtUtc": "2026-10-18T09:19:21.051656+00:00"
+    }
+  ],
+  "privateLogSha256": {
+    "probe-images-restart.private.log": "376d2091c92fb651e3c8288c8755950575f4aadb56c73cb73a460a342ee14e0f",
+    "schema13-snapshot-upgrade.private.log": "358828b84c08064e77f1b1060927df5425a6ccf173c847cdc26972a1b13aaa54",
+    "backup-c.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "schema13-snapshot.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "watch-v.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "roles-restorec.private.log": "22e512619e4361197268a101a46fce041ed8c34a03dcc3195937d340a3fcafbf",
+    "goose-v.private.log": "1cba7c9cd9e961990da218a54d868f7d4865eb3c157b6ad71c3bb85bb542bda2",
+    "pg-stop-sourcec.private.log": "ca19178a35ab4153b75b494963b66ce8243e1b94c173107c87b44d09db23652d",
+    "freeze-v.private.log": "29724fed8d078e805cea76aa9dee847aa9e3cfb4b89723ca43f4d7fe7cde4329",
+    "initdb-restorev.private.log": "e97af1c75484093a29ac8c75fdd0dd9a10421fc09bd2a17454714291e44cb0f9",
+    "probe-images.private.log": "b9d0085c8e8386519b767895431d335cec27c496e537a4d2d52e30577597c2c0",
+    "pg-stop-status.private.log": "0f277e7ce86a568c5791ecbc6edc16143719d71b8c355c67d08ffd4adff0ff0f",
+    "goose-c.private.log": "e573bfc77c126c7ebca3abafd4929c311b6395643a8df5e3426385e552b9089e",
+    "pg-start-upgradec.private.log": "66afd0411ccc09366e99fdd99b85f21899c8d2d064f5835126859618802153ad",
+    "mailpit.private.log": "c121a0a2fd0325414956d01045abc985d5877b200771d5ad96baef199c892955",
+    "roles-sourcec.private.log": "22e512619e4361197268a101a46fce041ed8c34a03dcc3195937d340a3fcafbf",
+    "initdb-sourcec.private.log": "119cc3904fb320ca9b3e88afcc8ff8b0252710bf6bf31a8e9520f510c57cf25c",
+    "c.private.log": "97de37dd5bef33a83bfff351d147e32d0bec207c339d0398cb627ac831168fb0",
+    "initdb-restorec.private.log": "61a126d120ceef46dd7ba058e152164d7160a443d9c37fe9fee24fef570a3e4b",
+    "pg-stop-restorec.private.log": "ca19178a35ab4153b75b494963b66ce8243e1b94c173107c87b44d09db23652d",
+    "pg-start-sourcev.private.log": "66afd0411ccc09366e99fdd99b85f21899c8d2d064f5835126859618802153ad",
+    "initdb-upgradec.private.log": "a87756254d78b7eef87b96c763cd4fba6dd5dceb13f1696825cbcbe23f2c4b1b",
+    "build-candidate-verifier.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "freeze-c.private.log": "29724fed8d078e805cea76aa9dee847aa9e3cfb4b89723ca43f4d7fe7cde4329",
+    "probe-lifecycle.private.log": "13f8e1252827f53db427686299d6fcc721acf434535d68e086b6c4f524668e70",
+    "pg-start-restorev.private.log": "66afd0411ccc09366e99fdd99b85f21899c8d2d064f5835126859618802153ad",
+    "backup-v.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sql-error.private.log": "3f908fe6ba63ffa4527db116e5a1a338a1da9727fb0fa506a644325ff915e5bc",
+    "pg-status.private.log": "ca57878bfb662f35f2c0c887b12e3da834b3a01e59c4017bac89adc9744c1c82",
+    "recover-v.private.log": "111e867cf41e800be54ccab377b9e9b7d29c92a761b8ed57f64aff9f9f775da2",
+    "probe-frozen.private.log": "78ab7d4d4602d131e1c754486fb3747e5a5079876f61f007480c18d34913d85c",
+    "build-runtimeprobe.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "probe-posts.private.log": "0b1fb962ceb14670c33f6de818af33108cdcf2fdb50d186e8d3c27f697c9301a",
+    "authdev-init.private.log": "3ba120f6d326590032828af0d578d3c4edb0d0401fd731127127cfe47359fed6",
+    "roles-restorev.private.log": "0da79ab99fee78f6603a857961b5cf1400a307b8d6b259a7928fde88f60ff438",
+    "restore-v.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pg-stop-sourcev.private.log": "ca19178a35ab4153b75b494963b66ce8243e1b94c173107c87b44d09db23652d",
+    "roles-sourcev.private.log": "0da79ab99fee78f6603a857961b5cf1400a307b8d6b259a7928fde88f60ff438",
+    "failed-deployment.private.log": "b78cf7cd246cfba5926dd5359248b71ed4d761b1b0a28b42bf197e13f86bb01b",
+    "recover-c.private.log": "111e867cf41e800be54ccab377b9e9b7d29c92a761b8ed57f64aff9f9f775da2",
+    "build-candidate-community.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build-authdev.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pg-start-restorec.private.log": "66afd0411ccc09366e99fdd99b85f21899c8d2d064f5835126859618802153ad",
+    "roles-upgradec.private.log": "22e512619e4361197268a101a46fce041ed8c34a03dcc3195937d340a3fcafbf",
+    "build-rollback-community.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upgrade-c-to13.private.log": "4cd952264ed27c5426639e8fdfb21d033994653b77c9598a8d7d5581e9084a3b",
+    "pg-stop-restorev.private.log": "ca19178a35ab4153b75b494963b66ce8243e1b94c173107c87b44d09db23652d",
+    "build-rollback-verifier.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pg-stop-upgradec.private.log": "ca19178a35ab4153b75b494963b66ce8243e1b94c173107c87b44d09db23652d",
+    "probe-recovered.private.log": "4a18da1a826267cb2ca59d859ca61edf5d753b9cf40075760bcd28438cec9b4c",
+    "pg-stopped-status.private.log": "d7eb816297dc3ed3fd2bb3a0ad6c1ebe8283d14f61ddb623698919f8aa9154aa",
+    "schema13-load-new-cluster.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "initdb-sourcev.private.log": "45a2b78ae3b0d38a070310d1b22867739717d6ec56f702dedc771909ddc5ec42",
+    "probe-identities.private.log": "e2c2f538bcc0f1a69558b4cfe495d66de944dddbe156ed301869ae00cf64a181",
+    "missing-image-insert.private.log": "72e0e37074c94bb68e9312c47fe53e966aa803a0eceef5308ffd4d0dcde0ed5e",
+    "watch-c.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "v.private.log": "dcfc1d677c998c39c1d398027939aafb435e1c5e5c872bfa77cf008814edb585",
+    "restore-c.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pg-start-sourcec.private.log": "66afd0411ccc09366e99fdd99b85f21899c8d2d064f5835126859618802153ad"
+  }
+}

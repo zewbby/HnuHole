@@ -1,0 +1,26 @@
+{
+  "sourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b",
+  "result": "PASS_SCOPED_HOST_AND_REAL_SQL",
+  "combinedCommandExitCode": 0,
+  "commands": [
+    "media/test_validator.py --fixtures <owned>",
+    "go test -mod=readonly ./...",
+    "go build -mod=readonly ./...",
+    "go vet -mod=readonly ./...",
+    "sh authlab/run-post-schema-isolated.sh",
+    "sh authlab/run-post-images-isolated.sh",
+    "sh authlab/run-moderation-isolated.sh"
+  ],
+  "parsedImageSqlEvents": {
+    "pass": 263
+  },
+  "explicitLocalSkips": [
+    "TestRealHTTPSModerationDartAndBrowserChainPostgres"
+  ],
+  "skipScope": "Dart/browser independent entries require their own probe and browser; final GitHub moderation workflow covers them separately",
+  "toolTestsLinux": "8 PASS",
+  "toolTestsWindows": "7 PASS / 1 POSIX SKIP",
+  "privateLogSha256": "ad06a483f43c3cd536636383d2e7afe8b67f3a530a529a68d0c145fb0141c45b",
+  "physicalDevice": "NOT_RUN",
+  "production": "NOT_RUN"
+}

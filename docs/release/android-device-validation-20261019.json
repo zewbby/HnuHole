@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "result": "PASS_SCOPED_SINGLE_ANDROID_MINIMUM_CHAIN",
+  "recordedAtUtc": "2026-10-19T01:46:34.606623+00:00",
+  "windowDate": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "phoneOperationsEndedAtUtc": "2026-10-19T01:44:58.101233+00:00",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/16",
+  "sourceSha": "8691eb49d3863b911e04c4678512c1eb8d54aaca",
+  "backendSourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b",
+  "mainBaseline": "1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1",
+  "device": {
+    "userReportedName": "vivo S18",
+    "observedModel": "V2323A",
+    "manufacturer": "vivo",
+    "android": "15",
+    "api": 35,
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "armeabi"
+    ],
+    "userReportedSkin": "OriginOS 5",
+    "observedVivoOsProperty": "15.0"
+  },
+  "candidate": {
+    "applicationId": "org.hnuhole.hnuhole_mobile",
+    "versionName": "0.1.0",
+    "versionCode": 2026101802,
+    "buildMode": "debug",
+    "flutterTarget": "android-arm64; includes additional JNI ABIs",
+    "apkSha256": "d80c47283e22007dfbc5cebf6ccb96f82b70b917b9a1efe1a85af0cd971cd18a",
+    "apkBytes": 98479040,
+    "signingCertificateSha256": "09309fe3ac7e4f817e81cdadd406ccae28ca465ab591701d233ea1527660397c",
+    "installedApkBytesMatched": true,
+    "preparationManifest": "docs/release/android-device-candidate-20261019.json"
+  },
+  "installation": {
+    "mode": "fresh install after explicit user-authorized original-package app and local-data removal",
+    "previousCertificateSha256": "fd26b276cb170bf084a932d3b3919bd3aa44874395809968bdd74ddab87389dc",
+    "unknownSignerOverwritten": false,
+    "samePackageUpgrade": "NOT_RUN",
+    "testPackageRetained": true
+  },
+  "checks": [
+    {
+      "id": "ADP01",
+      "result": "PASS",
+      "scope": "Observed device API/ABI, candidate digest, authorized clean installation and actual cold launch"
+    },
+    {
+      "id": "ADP02",
+      "result": "PASS",
+      "scope": "Real normal UI V OTP request/confirmation via isolated Mailpit, C registration and full recovery-code confirmation; no host-created account or universal OTP"
+    },
+    {
+      "id": "ADP03",
+      "result": "PASS",
+      "scope": "Authenticated channel UI read on fixed C/V HTTPS and app-only development CA"
+    },
+    {
+      "id": "ADP04",
+      "result": "PASS",
+      "scope": "User manually entered Chinese identity 预发布验收 with real IME; UI and SQL identity count1"
+    },
+    {
+      "id": "ADP05",
+      "result": "PASS",
+      "scope": "Normal UI text publish, worker publication, refreshed list/detail exact synthetic marker; SQL published count1"
+    },
+    {
+      "id": "ADP06",
+      "result": "PASS",
+      "scope": "User selected only owned synthetic PNG through system Photo Picker; normal UI upload/publication, thumbnail/detail and SQL verified original payload digest"
+    },
+    {
+      "id": "ADP07",
+      "result": "PASS",
+      "scope": "Normal image viewer render and Gal save; package-attributed MediaStore file original SHA256 equals selected PNG; no system Gallery browsing UI claim"
+    },
+    {
+      "id": "ADP08",
+      "result": "PASS",
+      "scope": "Force-stop/reopen in distinct native processes, session retained without another login; list and original text/image facts retained"
+    },
+    {
+      "id": "ADP09",
+      "result": "PASS_AFTER_INPUT_CORRECTION",
+      "scope": "Normal UI logout with SQL active-session count0, corrected full original password login with count1; no credential reset or database writes by diagnostic"
+    },
+    {
+      "id": "ADP10",
+      "result": "PASS",
+      "scope": "After password login re-entered channel from home, both posts read and image viewer rendered; invalidated old personal route remains closed"
+    },
+    {
+      "id": "ADP11",
+      "result": "PASS",
+      "scope": "Only owned temporary media/UI dump and C/V reverse mappings removed, own ADB server stopped, five PG status3 and backend process records empty"
+    }
+  ],
+  "databaseFacts": {
+    "ownedAccountCount": 1,
+    "activeAccountCount": 1,
+    "ownedSessionCount": 1,
+    "ownedPublishedPosts": 2,
+    "ownedImages": 1,
+    "ownedIdentityCount": 1,
+    "ownedCredentialVersion": 1,
+    "textMarkerPublishedCount": 1,
+    "imageMarkerPublishedCount": 1,
+    "ownedVerifiedOriginalImageCount": 1,
+    "originalImageSha256": "994bd517ee5da474608ad4aa8d5d50fd6a68a69e1ad6e11f80a5b2d049e62e27",
+    "atUtc": "2026-10-19T01:42:34.421466+00:00",
+    "sourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b"
+  },
+  "originalImage": {
+    "sha256": "994bd517ee5da474608ad4aa8d5d50fd6a68a69e1ad6e11f80a5b2d049e62e27",
+    "bytes": 5049,
+    "width": 512,
+    "height": 384,
+    "selectedPhoneFileMatches": true,
+    "sqlPayloadMatches": true,
+    "galMediaStoreFileMatches": true
+  },
+  "sessionProof": {
+    "distinctNativeProcesses": true,
+    "activeSessionsAfterReopen": 1,
+    "activeSessionsAfterLogout": 0,
+    "activeSessionsAfterCorrectPasswordLogin": 1,
+    "credentialVersion": 1
+  },
+  "failedHistory": [
+    {
+      "result": "FAIL_OBSERVED_LOGIN",
+      "detail": "User reported incorrect account/password; actual field held38 masked characters instead of intended40. Read-only Argon2id comparison confirmed original40-character fixture matches stored account hash. Explicitly re-focused empty password field, waited for IME, verified40 characters, scrolled form and used normal login button successfully. No claimed exact cause of lost input, no reset or server bypass."
+    },
+    {
+      "result": "RUNNER_RECOVERED",
+      "detail": "Secure keyboard/autofill obscured UI; Bitwarden locked-vault prompt dismissed without unlocking or reading vault. Selector failures retained privately. No keyboard/autofill/security setting changed."
+    },
+    {
+      "result": "RUNNER_RECOVERED",
+      "detail": "Missing-package pm path status1 after authorized uninstall, initial unsupported explicit-host ADB listener, content-delete row-count wording and blank reverse-list line checks corrected against observed state; no repeated uninstall/delete of unknown resources."
+    }
+  ],
+  "navigationObservation": "After logout/login, the already-open personal route retained an invalidated authority and showed AccessClosed. Returning home and entering channel created a fresh route and read both posts/image successfully. Product route/authority code unchanged; automatic old-route resumption is not claimed.",
+  "transport": {
+    "communityOrigin": "https://127.0.0.1:52045",
+    "verifierOrigin": "https://127.0.0.1:37073",
+    "developmentCaPemSha256": "da2215084e59bc56c6aeca048eefd2c6f8b1de2505ae46f5e8edcfa932c7a3ac",
+    "appOnlyCa": true,
+    "normalChainAndHostnameValidation": true,
+    "systemCaInstalled": false,
+    "gateBypass": false,
+    "phoneNegativeCertificateTest": "NOT_RUN",
+    "phoneGateFreezeTest": "NOT_RUN"
+  },
+  "usb": {
+    "ownedFreshOfficialPlatformTools": {
+      "url": "https://dl.google.com/android/repository/platform-tools_r37.0.1-win.zip",
+      "officialSha1": "e03e78b1d80b396f1c3358e31251cb31740e1110",
+      "sha256": "45f4d63113e895ebde0c90f194099a4676b6ac653bd28d54314a9e022bbc1a99",
+      "size": 8044989
+    },
+    "dedicatedPort": 5049,
+    "existingWindowsOsProfileUsbIdentity": true,
+    "operatorCopiedReadOrHashedKeyBytes": false,
+    "osProfileKeyMetadataUnchanged": true,
+    "actualDedicatedServerExecutableAndPidVerifiedBeforeStop": true,
+    "shared5037Used": false
+  },
+  "cleanup": {
+    "startAtUtc": "2026-10-19T01:43:07.739072+00:00",
+    "result": "PASS_PHONE_CLEANUP",
+    "removedReverse": [
+      52045,
+      37073
+    ],
+    "temporaryFiles": [
+      "owned gallery export removed after owner/path/digest check; absence verified",
+      "owned pushed fixture directory and UI dump absent"
+    ],
+    "originalAppRemovedOnlyAfterExplicitUserAuthorization": true,
+    "testPackageRetained": true,
+    "runnerFailuresRecovered": [
+      "content delete output row-count wording mismatch; actual row/file absence verified without replay",
+      "reverse-list empty trailing line differed; normalized nonempty mapping lines unchanged",
+      "initial foreground explicit-host listener unsupported; dedicated-port client started own executable; actual listening PID/path verified before shutdown"
+    ],
+    "unrelatedReverseMappingsUnchanged": true,
+    "osProfileUsbKeyMetadataUnchanged": true,
+    "ownedAdbServerStopped": true,
+    "endAtUtc": "2026-10-19T01:44:58.101233+00:00",
+    "systemSettingsModified": false,
+    "personalPhotoFilesRead": false
+  },
+  "backendCleanup": {
+    "result": "PASS_BACKEND_STOPPED",
+    "fivePostgresStatuses": {
+      "source-c": 3,
+      "source-v": 3,
+      "restore-c": 3,
+      "restore-v": 3,
+      "upgrade-c": 3
+    },
+    "ownedProcessRecordsEmpty": true,
+    "communityAndVerifierStopped": true
+  },
+  "notRun": [
+    "same-package upgrade",
+    "full native vault/Keystore security proof",
+    "OEM transfer or OS restart",
+    "system Gallery browsing UI",
+    "multi-image/animation/large-image matrix on this APK",
+    "TalkBack full suite on this APK",
+    "phone negative TLS/certificate and Gate-freeze cases",
+    "physical device deployment rollback",
+    "current APK Passkey ceremonies",
+    "nonempty moderation sanctions/appeals/admin/audit restore",
+    "production independent operations/cloud/formal signing/release"
+  ],
+  "crossDevicePasskey": "DEFERRED",
+  "ios": "DEFERRED",
+  "merged": false,
+  "productionRelease": false,
+  "rawEvidencePolicy": "Synthetic credentials, OTP, recovery code, serial, APK, screenshots, UI dumps and logs remain private outside Git; only scoped counts/hashes and observations published",
+  "rawEvidenceSha256": {
+    "13-identity-created.xml": "3ee6c7249c23de8f60abd54c35a45fc7bf773f5f6998de9e63adb02d7caf51ea",
+    "16-text-list.xml": "f0829d7f9be574c7fb33a34c6b72331fef118e51fd0e61c37f03c8bb2cdab058",
+    "17-text-detail.xml": "334273f92d7ff776f5b5682f299756b71205bfa2ee326163824c03d7fff9448a",
+    "19-photo-selected.xml": "ef567dd1070b44520bc447274af15359b6a8d9353455a71c46dc845cc51b4b25",
+    "22-image-detail.xml": "0ffa71ce32f2247a406429781640f5888a8d3473b4ad25f465c40b78f10b1399",
+    "24-gallery-save.xml": "4f39b32205e5cf8800a5db8f4fed07769ec904fecbcd7e5f5bf838421df05d03",
+    "26-reopened-list.xml": "8df0911d817f52746c1c5f9e649edbfc5d9f273eedb78473d73919c602cd56ae",
+    "38-login-rejected.xml": "d68405b3b13a9db08c95d83f465b4b77deae58a0cd4a80f0914e36906df19b9b",
+    "43-password-complete.xml": "877a5a0571c57a51eb77ff3af832e7122ec12101f7368c6cd24bcf74743e23b4",
+    "44-login-button-visible.xml": "52cb8393049029caf32e8b33b748aaa978600e568b74a1599d3d952f16be064f",
+    "48-list-after-login.xml": "a7c56c9889241597e9732b22354d7929d39cc3bcc54682864e929392a7604cfd",
+    "49-image-after-login.xml": "dc8ee44f1c9d970af9bf357004c548bb2ec19cafc9f74568090deae8a8ae6608",
+    "49-image-after-login.png": "71227816f1463d7c1ec5b49dedcd0821f32c8295795e5c7e1a0e13ced5b4c720",
+    "sql-final.json": "2bedd29a2f08d8c9a13274d48c9696d4e923a3e302b201661cd578077be2b201",
+    "cleanup.json": "0fae55373470572bbac954943c0c3ab108d75c48babaac7402493949710a8466",
+    "backend-cleanup.json": "e8ea600e8a910101e9749612a606e71777ef8c3d6c0be40fd03a5c50bbff8f86",
+    "commands.private.jsonl": "0ebe51a23093d5b017370fc5edf46c80ae46939d5db88a948dd39cdadf479662"
+  },
+  "independentEvidenceReview": {
+    "agent": "/root/evidence_review",
+    "result": "REVIEW_PASS_SCOPED_NO_BLOCKER",
+    "date": "2026-10-19",
+    "scope": "Read-only public SQL counts, cleanup/backend cleanup/tool/fixture JSON and document/link/source-boundary consistency; did not read credentials/raw UI/screenshots/logs or reperform device gestures",
+    "githubMemberApproval": "NOT_PROVIDED"
+  }
+}
