@@ -3233,6 +3233,12 @@
         "mainMerged": false,
         "deployed": false,
         "doesNotCompleteWholeModule": true
+      },
+      "gateCancellationFix20261019": {
+        "task": "docs/branches/fix-gate-cancellation-freeze.md",
+        "evidence": "docs/design/gate-cancellation-verification-20261019.json",
+        "result": "PASS_SCOPED_LOCAL_SQL_RACE; final-head CI/merge pending",
+        "fullModulePromoted": false
       }
     },
     {
@@ -17807,6 +17813,12 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "gateCancellationFix20261019": {
+        "task": "docs/branches/fix-gate-cancellation-freeze.md",
+        "evidence": "docs/design/gate-cancellation-verification-20261019.json",
+        "result": "PASS_SCOPED_LOCAL_SQL_RACE; final-head CI/merge pending",
+        "fullModulePromoted": false
       }
     },
     {
@@ -40011,5 +40023,22 @@
     "mergeReceipt": "docs/release/android-integration-main-merge-20261019.json",
     "cleanup": "docs/release/android-integration-cleanup-20261019.json",
     "remaining": "Windows owned ADB SDK directory delete blocked by automatic approval; all services stopped; no further acceptance work"
+  },
+  "currentGateCancellationFix20261019": {
+    "recordedOn": "2026-10-19",
+    "branch": "codex/fix/gate-cancellation-freeze",
+    "result": "PASS_SCOPED_LOCAL_SQL_RACE; final-head CI/merge pending",
+    "task": "docs/branches/fix-gate-cancellation-freeze.md",
+    "evidence": "docs/design/gate-cancellation-verification-20261019.json",
+    "modules": [
+      "A03",
+      "P01"
+    ],
+    "affectedCallers": "Existing auth, sessions, credentials, directory, workers, posts/comments/moderation host SQL regressions; conditional SKIP remains SKIP",
+    "originalSingleEventAttribution": "UNDETERMINED_NO_REQUEST_TRACE",
+    "oldCandidateRebuilt": false,
+    "oldEnvironmentRestarted": false,
+    "phoneValidation": "NOT_RUN; outside this server fix",
+    "productionAcceptance": "NOT_RUN; full module result not promoted"
   }
 }

@@ -50,18 +50,22 @@ pg_ctl -D "$AUTHLAB_RUN_DIR/data" -l "$AUTHLAB_RUN_DIR/postgres.log" -w start \
 psql -X -v ON_ERROR_STOP=1 -h "$AUTHLAB_RUN_DIR/socket" -U authlab_admin -d postgres >/dev/null <<'SQL'
 CREATE ROLE hnuhole_c LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
 CREATE ROLE hnuhole_v LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
+CREATE ROLE hnuhole_c_runtime LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
+CREATE ROLE hnuhole_c_recovery NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
+CREATE ROLE hnuhole_business NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
 CREATE DATABASE hnuhole_c OWNER hnuhole_c;
 CREATE DATABASE hnuhole_v OWNER hnuhole_v;
 REVOKE CONNECT ON DATABASE hnuhole_c FROM PUBLIC;
 REVOKE CONNECT ON DATABASE hnuhole_v FROM PUBLIC;
-GRANT CONNECT ON DATABASE hnuhole_c TO hnuhole_c;
+GRANT CONNECT ON DATABASE hnuhole_c TO hnuhole_c,hnuhole_c_runtime;
 GRANT CONNECT ON DATABASE hnuhole_v TO hnuhole_v;
 SQL
 
 AUTHLAB_RUNTIME_TAG="hnuhole_authlab_$(date -u +%Y%m%d%H%M%S)"
 AUTHLAB_C_DSN="postgresql://hnuhole_c@/hnuhole_c?host=$AUTHLAB_RUN_DIR/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 AUTHLAB_V_DSN="postgresql://hnuhole_v@/hnuhole_v?host=$AUTHLAB_RUN_DIR/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
-export AUTHLAB_C_DSN AUTHLAB_V_DSN AUTHLAB_RUNTIME_TAG
+AUTHLAB_POSTS_RUNTIME_DSN="postgresql://hnuhole_c_runtime@/hnuhole_c?host=$AUTHLAB_RUN_DIR/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+export AUTHLAB_C_DSN AUTHLAB_V_DSN AUTHLAB_POSTS_RUNTIME_DSN AUTHLAB_RUNTIME_TAG
 AUTHLAB_POSTGRES_LOG="$AUTHLAB_RUN_DIR/postgres.log"
 export AUTHLAB_POSTGRES_LOG
 export AUTHLAB_ALLOW_SCHEMA_RESET=1
