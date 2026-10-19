@@ -8,9 +8,9 @@
   "integratedMain": "7b2dd1634c3ffb3835543a8a49c9d22cdbcc2f52",
   "testedProductInputs": {
     "kind": "sha256-of-sorted-git-blob-manifest",
-    "commit": "ec6672f35d4124e495299d133eeca15178c19d3b",
-    "files": 695,
-    "sha256": "21b07188755d22ad9bc091230903dd3739aa3ddae3716654c483f4aaf76b5c56",
+    "commit": "21b1704deb93c2c24d7557530a3b39093f32fa40",
+    "files": 699,
+    "sha256": "bdda093c4c40ff60e8ff4d4820f2f7b5d0cdec2c5f5ebeb89c34638b853654a6",
     "prefixes": [
       "apps/admin/",
       "apps/mobile/",
@@ -20,7 +20,8 @@
       "packages/auth_vault/",
       "packages/auth_passkey/",
       "packages/image_viewer/",
-      ".github/workflows/"
+      ".github/workflows/",
+      "infra/prerelease/"
     ],
     "excludes": [
       "*.md"
@@ -118,6 +119,12 @@
       ],
       "race": true,
       "scope": "restore pre-moderation fixtures by removing new flag only after proving half-0018 remains rejected; no production checker/grant/code change"
+    },
+    "deploymentPrivilegeAudit": {
+      "result": "PASS_SCOPED",
+      "test": "TestCommentReportRuntimeSchemaAndLeastPrivilegePostgres",
+      "race": true,
+      "scope": "real c_moderation audit accepts the two explicit new triggers, refuses UPDATE(comment_id); runtime comment schema refuses UPDATE(root_comment_id); full shared audit and restore remain final CI responsibility"
     }
   },
   "migration": {
@@ -193,6 +200,35 @@
       ],
       "cause": "two pre-moderation fixture builders dropped c_moderation but retained 0018 tasks.moderation_hidden; startup correctly rejected partial migration",
       "businessChain": "same attempt real Linux Dart/HTTPS/web comment report+appeal passed; not represented as workflow success"
+    },
+    {
+      "head": "b318e6d61602f5a015939cef3af6c73b30c16ba0",
+      "result": "FAIL_EXISTING_PRIVILEGE_AUDIT_NOT_EXTENDED",
+      "job": 117883709795,
+      "cause": "pre-release audit did not yet list 0018 task flag and two trigger functions; no runtime privilege expansion beyond already-reviewed grant",
+      "otherChecks": "Report moderation incl new real HTTPS/UI chain, Comments backend text and Post images succeeded on this head; not a whole-CI success"
     }
-  ]
+  ],
+  "fixtureTestedProductInputs": {
+    "kind": "sha256-of-sorted-git-blob-manifest",
+    "commit": "ec6672f35d4124e495299d133eeca15178c19d3b",
+    "files": 695,
+    "sha256": "21b07188755d22ad9bc091230903dd3739aa3ddae3716654c483f4aaf76b5c56",
+    "prefixes": [
+      "apps/admin/",
+      "apps/mobile/",
+      "services/api/",
+      "infra/postgres/",
+      "packages/openapi/",
+      "packages/auth_vault/",
+      "packages/auth_passkey/",
+      "packages/image_viewer/",
+      ".github/workflows/"
+    ],
+    "excludes": [
+      "*.md"
+    ],
+    "serialization": "UTF-8 sorted path + U+0000 + Git blob SHA-1 + LF"
+  },
+  "privilegeAuditFixCommit": "21b1704deb93c2c24d7557530a3b39093f32fa40"
 }

@@ -25,6 +25,8 @@
 
 CI 首次还发现两处历史“治理前结构”夹具只删除治理 schema、留下0018列，触发正确的半迁移拒绝。提交 `ec6672f35d4124e495299d133eeca15178c19d3b` 只修夹具：先断言残留0018必须拒绝，再删测试列并验证旧结构兼容。两项受影响真实PG/race用例（含通用启动8个子项）定向PASS，独立增量复核无阻断；产品checker、授权、迁移及业务代码未变。原CI失败回执保留在机器记录，最终CI由PR实时head核对。
 
+随后隔离恢复CI的审计清单仍沿旧矩阵，未列出0018的 `moderation_hidden` 与两个触发器。提交 `21b1704deb93c2c24d7557530a3b39093f32fa40` 仅补这1列/2函数的显式白名单，实际运行权限不变；真实SQL审计及case目标/root绑定不可变负向检查已定向PASS。对应失败记录保留，完整恢复CI仍按最终head核验；本轮没有部署/发布。指纹范围新增 `infra/prerelease/`，覆盖本次审计输入。
+
 ## 沿用与边界
 
 沿用 [PR #18](https://github.com/zewbby/HnuHole/pull/18) 的[帖子治理证据](report-moderation-verification.json)和 [PR #19](https://github.com/zewbby/HnuHole/pull/19) 的[真实评论/失败通知证据](comments-connected-verification-20261019.json)。本轮未重做认证、处罚政策、原生 journal 或失败 provider。仅因新下架边界影响待发布回复，定向验已受理原任务变为 `COMMENT_TARGET_DELETED`、已有 SERVER 通知、禁止原目标重试与放弃后移除。
