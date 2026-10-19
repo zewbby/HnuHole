@@ -1,7 +1,9 @@
-# 文字评论与回复后端增量
+# 评论业务接通（含原文字后端增量）
 
-> 2026-10-19 用户已明确将本轮扩大为完整评论业务接通，继续沿用 #19，不另建重复功能分支。当前包含0017、真实单图/点赞/定位/删除/通知、Flutter页面与独立原生加密任务日志；真机窗口正在验证。最新结果以[全链路报告](../design/comments-connected-report-20261019.md)为准。下方“本轮不做客户端”“下一轮建议”等只属于2026-10-18后端文字交付快照，不再限制当前任务。
+> **2026-10-19 当前交付：完整评论业务已接通，Android限定验收PASS。** 最新main `41ed0c5`，依赖 #17 head `be48a1d` → #19；0016/0017、页面、原生journal、单图、点赞删除及真实失败通知已完成。产品候选 `e1466c7`，158项Flutter及真实库/TLS/Dart、同APK三阶段设备通过，独立审查发现已修复复核。详见[报告](../design/comments-connected-report-20261019.md)、[证据](../design/comments-connected-verification-20261019.json)、[审查](../design/comments-connected-review-20261019.json)。最终head以PR实时回执为准，未合并、未发布，合并另议；下方文字/核心阶段边界均为历史快照。
 
+
+## 2026-10-18 文字阶段历史快照
 
 - 更新时间：2026-10-19。
 - 分支：`codex/feat/comments-backend-text`；[Draft PR #19](https://github.com/zewbby/HnuHole/pull/19)，base 为[核心 PR #17](https://github.com/zewbby/HnuHole/pull/17)。本轮 diff 没有 Dart、Flutter 页面或原生代码。

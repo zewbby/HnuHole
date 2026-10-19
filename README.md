@@ -39,7 +39,7 @@
 
 | `codex/feat/report-moderation` | PR #18 已合入main：帖子举报、网页审核和最小系统通知阶段1；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |
 | `codex/feat/comments-replies` | 评论核心 PR #17 为业务接通 PR #19 的前置，按顺序交付。 | [任务边界](docs/branches/feat-comments-replies.md) |
-| `codex/feat/comments-backend-text` | PR #19 接通评论页面、原生任务恢复、单图、点赞删除与真实通知，候选待最终审查。 | [详情](docs/branches/feat-comments-backend-text.md) |
+| `codex/feat/comments-backend-text` | PR #19 评论业务已接通并通过真实后端与Android限定验收，待合并。 | [详情](docs/branches/feat-comments-backend-text.md) |
 | `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
 
 ### 已合并或退役的历史工作

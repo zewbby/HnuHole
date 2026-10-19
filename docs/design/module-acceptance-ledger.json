@@ -16349,18 +16349,20 @@
     {
       "id": "B07",
       "name": "评论与回复",
-      "implementationState": "CONNECTED_BUSINESS_CANDIDATE",
-      "acceptanceState": "REAL_SQL_TLS_DART_BUILD_PASS_DEVICE_FINALIZATION_IN_PROGRESS",
+      "implementationState": "CONNECTED_ANDROID_BUSINESS_COMPLETE",
+      "acceptanceState": "CONNECTED_ANDROID_SCOPED_PASS",
       "currentResult": "PARTIAL",
       "verificationEntries": [
         "B07-CORE-01",
         "B07-CLIENT-01",
         "B07-CODEC-01",
         "B07-CONTRACT-01",
-        "B07-BACKEND-TEXT-01"
+        "B07-BACKEND-TEXT-01",
+        "B07-CONNECTED-01",
+        "COMMENT-FAIL-ENTRY-01"
       ],
-      "note": "2026-10-19 #19在#17核心之上继续实现页面、原生加密已提交任务日志、单图、点赞/删除/定位、真实系统通知数据源；0017接续0016，真实SQL/TLS/Dart及构建已有通过，最终独占设备与head检查仍在执行。旧证据不覆盖当前版本；未合并、未发布。",
-      "nextAcceptance": "完成独占Android两进程恢复/图库/通知动作，固定最终源码和APK、受影响回归及head CI，完成独立审查；依授权按#17→#19处理合并，不推进iOS/跨设备Passkey。",
+      "note": "2026-10-19 #19完整评论业务接通：真实PG/TLS/Dart、原生已提交journal、页面/单图/点赞/删除/具体定位、真实失败通知与恢复通过本轮Android限定验收；最终产品e1466c7。PARTIAL保留全平台/生产/新增实体TalkBack及多机型矩阵缺口，不再表示客户端或通知未实现；未合并、未发布。",
+      "nextAcceptance": "按实际PR最终head检查送审；用户合并另议，获授权后按#17→#19正常合并。iOS/跨设备Passkey继续延期，生产与新增实体无障碍/多机型矩阵另按授权安排。",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -16373,9 +16375,9 @@
         "report": "docs/design/post-image-media-contract.md"
       },
       "taskPlan": "docs/branches/feat-comments-replies.md",
-      "report": "docs/design/comments-core-report-20261018.md",
-      "evidence": "docs/design/comments-core-verification-20261018.json",
-      "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+      "report": "docs/design/comments-connected-report-20261019.md",
+      "evidence": "docs/design/comments-connected-verification-20261019.json",
+      "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
       "sourcePaths": [
         "services/api/internal/comments",
         "apps/mobile/lib/src/comments",
@@ -16384,7 +16386,10 @@
         "services/api/internal/authprivacy/community_comments.go",
         "services/api/internal/authprivacyhttp/comments_endpoints.go",
         "services/api/migrations/0016_comments.sql",
-        "packages/openapi/comment-text-component.yaml"
+        "packages/openapi/comment-text-component.yaml",
+        "services/api/migrations/0017_comment_business.sql",
+        "packages/openapi/comment-business-component.yaml",
+        "apps/mobile/integration_test/comment_business_device_test.dart"
       ],
       "commentsCore20261018": {
         "result": "PASS_INDEPENDENT_CORE_ONLY",
@@ -16442,12 +16447,23 @@
         "evidence": "docs/design/comments-backend-text-verification-20261018.json"
       },
       "commentsConnected20261019": {
-        "state": "IN_PROGRESS",
+        "state": "CONNECTED_ANDROID_SCOPED_PASS",
+        "testedImplementationCommit": "e1466c770b7618e9421d4ea1be6121c183ee26b4",
+        "integratedMain": "41ed0c50f04ea2264aa2da5998723b234d440120",
+        "coreDependencyHead": "be48a1d022183bde3aa01673b9e96fb5d6518f12",
         "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
         "migrationChain": "0001..0017",
         "report": "docs/design/comments-connected-report-20261019.md",
-        "deviceWindowAuthorized": true,
-        "published": false
+        "evidence": "docs/design/comments-connected-verification-20261019.json",
+        "review": "docs/design/comments-connected-review-20261019.json",
+        "notificationProviderImplemented": true,
+        "nativeJournalActualDevicePassed": true,
+        "flutterPassed": 158,
+        "deviceSameApkThreePhasesPassed": true,
+        "sourceFingerprint": "9252c2ad51a9233904a8ddfb65efc259fc5146c3725d979c6bfecdbcfed59685",
+        "merged": false,
+        "published": false,
+        "mergeAuthorization": "Merge reserved for separate discussion by user."
       }
     },
     {
@@ -39838,11 +39854,22 @@
     "published": false
   },
   "commentsConnectedWorkItem20261019": {
-    "state": "IN_PROGRESS",
+    "state": "CONNECTED_ANDROID_SCOPED_PASS",
+    "testedImplementationCommit": "e1466c770b7618e9421d4ea1be6121c183ee26b4",
+    "integratedMain": "41ed0c50f04ea2264aa2da5998723b234d440120",
+    "coreDependencyHead": "be48a1d022183bde3aa01673b9e96fb5d6518f12",
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
     "migrationChain": "0001..0017",
     "report": "docs/design/comments-connected-report-20261019.md",
-    "deviceWindowAuthorized": true,
-    "published": false
+    "evidence": "docs/design/comments-connected-verification-20261019.json",
+    "review": "docs/design/comments-connected-review-20261019.json",
+    "notificationProviderImplemented": true,
+    "nativeJournalActualDevicePassed": true,
+    "flutterPassed": 158,
+    "deviceSameApkThreePhasesPassed": true,
+    "sourceFingerprint": "9252c2ad51a9233904a8ddfb65efc259fc5146c3725d979c6bfecdbcfed59685",
+    "merged": false,
+    "published": false,
+    "mergeAuthorization": "Merge reserved for separate discussion by user."
   }
 }
