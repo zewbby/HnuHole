@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-19 FEED-BACKEND-01：BACKEND_SCOPED_PASS。**独立 `codex/feat/feed-backend` 从远端main `fc2348f` 开始，仅实现 HEAT-07、跨通道时间游标、账号通道屏蔽及分页前过滤，迁移0019；原鉴权与旧接口不变。Go全量宿主/build/vet、真实PG16/race/TLS 29顶层／61含子项、11份OpenAPI及旧契约通过。PR／最终head CI／独立review状态见[任务](../branches/feat-feed-backend.md)，[证据](feed-backend-verification-20261019.json)保留初次失败及修复。未合并／部署；下一步前端依[契约](feed-backend-contract.md)单独接线，完整模块／设备／生产结果不提升。
+
 > **2026-10-19 Gate取消误冻结修复已合入main：**[PR #25](https://github.com/zewbby/HnuHole/pull/25)，`54a6768`。发布前取消不误冻结；发布后以独立限时SQL context收尾，真实故障仍fail closed。真实C/V SQL/TLS复现及修复回归、独立审查和固定head八项适用CI通过；两项Android旧流程明确SKIP。新建测试工具/库已清理，旧APK和恢复归档摘要不变；未部署、未发布、未重验手机，原单次触发因无请求trace仍未确定。见[任务](../branches/fix-gate-cancellation-freeze.md)、[合并回执](gate-cancellation-main-merge-20261019.json)与[清理记录](gate-cancellation-cleanup-20261019.json)。
 
 > **2026-10-19 Gate取消误冻结修复（本分支，尚未合并）：**真实 C/V PostgreSQL 和可信 TLS 断连已复现旧代码故障；发布前取消拒绝且不改检查点，发布后以独立限时 context 完成SQL收尾，真实故障仍冻结。限定本地SQL/race/build/vet及独立只读审查完成，最终head CI/合并待核对。历史单次事件缺请求trace，具体归因仍未确定；不重建Android/不恢复旧环境/不连接手机，旧候选和证据保留。见[任务](../branches/fix-gate-cancellation-freeze.md)与[机器记录](gate-cancellation-verification-20261019.json)。

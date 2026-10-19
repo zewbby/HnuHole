@@ -1,0 +1,215 @@
+{
+  "schemaVersion": "hnuhole-feed-backend-verification/v1",
+  "task": "FEED-BACKEND-01",
+  "recordedOn": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/feat/feed-backend",
+  "baseMain": "fc2348ff791fab7da17ef866e8c6f506f9bf7075",
+  "implementation": "COMPLETE_ON_BRANCH",
+  "result": "BACKEND_SCOPED_PASS",
+  "testedVersion": "Base main plus the exact input hashes below, tested as a pre-commit working tree in an isolated Linux copy.",
+  "modules": [
+    "B03",
+    "B04",
+    "B12"
+  ],
+  "regressionModules": [
+    "A03",
+    "P01"
+  ],
+  "environment": {
+    "system": "WSL2 Ubuntu 24.04, Linux filesystem, non-root hnuhole",
+    "go": "go1.22.2 linux/amd64",
+    "postgres": "16.15",
+    "goose": "v3.22.1",
+    "sql": "New task-owned private Unix socket cluster, fresh C/V databases and two separate fresh/upgrade databases; all synthetic; no external DSN"
+  },
+  "checks": [
+    {
+      "result": "PASS",
+      "command": "go test -mod=readonly ./...",
+      "scope": "Full Go host suite. Tests requiring absent isolated DSNs/probes retain explicit SKIP; host checks alone do not prove SQL/device acceptance."
+    },
+    {
+      "result": "PASS",
+      "command": "go build -mod=readonly ./...",
+      "scope": "All service packages"
+    },
+    {
+      "result": "PASS",
+      "command": "go vet -mod=readonly ./...",
+      "scope": "All service packages"
+    },
+    {
+      "result": "PASS",
+      "command": "FEED_GOOSE=/mnt/e/Hnuhole-env/linux/bin/goose sh authlab/run-feed-isolated.sh",
+      "topLevelPassed": 29,
+      "passedIncludingSubtests": 61,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Actual PostgreSQL, -race, restricted role, migration and real HTTPS boundary; inherited image/device suites are outside this selected pattern."
+    },
+    {
+      "result": "PASS",
+      "command": "python -X utf8 packages/openapi/check-specs.py",
+      "documents": 11,
+      "scope": "Pinned complete OpenAPI validation, not YAML-only"
+    },
+    {
+      "result": "PASS",
+      "command": "python -X utf8 tools/check-community-text-contract.py",
+      "scope": "14 legacy protected operations, closed public DTOs and existing protocol vectors unchanged"
+    }
+  ],
+  "scenarios": [
+    "HEAT-07: no list/detail-GET increments, explicit body-open registration, author account exclusion across identities, same account/day uniqueness with 10 concurrent retries, independent account count",
+    "Final Gate trusted Asia/Shanghai midnight boundary and pruning of prior-day keys",
+    "No visitor/account/identity fields in new public projections; existing exact-key legacy HTTP DTOs still pass",
+    "Cross-channel and selected-channel filtering before LIMIT/lookahead; hidden/deleted exclusion; all-seven blocked empty page; reset",
+    "Same-time unique order, first-page publication ceiling, no duplicate/omitted eligible rows; new publication excluded from continuation",
+    "Encrypted cursor bindings for account/scope/channel/limit/preference revision; same-set retry preserves cursor; preference change invalidates it",
+    "Database persistence through a reopened business pool/service instance and account preference isolation",
+    "Real restricted runtime mutation/read and original account closure cleanup; cumulative total retained after closing reader",
+    "Replaced session cannot commit preferences; frozen Gate refuses new routes; missing cleanup privileges/hooks or partially missing 0019 rejects common C startup",
+    "Goose 0001..0019 empty install and 0018..0019 upgrade with preserved published content, tasks and channel snapshot; no fabricated historical counts; Down rejected without ledger change"
+  ],
+  "retainedAttempts": [
+    {
+      "result": "FAIL",
+      "scope": "Initial host exact DTO assertion expected a new viewCount on legacy DTOs.",
+      "resolution": "Preserved legacy DTOs unchanged and introduced a separate FeedPost. Final host/legacy real HTTPS tests pass."
+    },
+    {
+      "result": "FAIL",
+      "scope": "First new HTTP fixture used empty bounded network budgets; old SQL inventory omitted three new private tables.",
+      "resolution": "Used the existing httpTestLimits helper and updated the explicit private relation inventory. Final suites pass."
+    },
+    {
+      "result": "FAIL",
+      "scope": "Full host command accidentally exported FEED_GOOSE without the owned migration DSNs.",
+      "resolution": "Limited FEED_GOOSE to the isolated SQL invocation; the guarded migration test correctly refused the unconfigured host invocation. Corrected full host and owned migration runs pass."
+    }
+  ],
+  "artifacts": {
+    "localLogs": "/home/hnuhole/feed-backend-20261019/{go-host-final.log,sql-final.log}",
+    "logsCommitted": false,
+    "temporaryDatabases": "Stopped and removed by runner trap on exit",
+    "sourceInputs": [
+      {
+        "path": ".github/workflows/feed-backend.yml",
+        "sha256": "4fdec2ae154b528d3bdb35e3cb33a1d2b3b3f31312c617f726516303cd00507a"
+      },
+      {
+        "path": "infra/postgres/grant-community.sql",
+        "sha256": "a9dfb1e1f37781e0441cbcac2370d1094963600f068871f7ff7dba4ae9361ddf"
+      },
+      {
+        "path": "packages/openapi/feed-api.yaml",
+        "sha256": "bd460abc85c1643f2da4980eee7936a6d1e3cf7dd929f84d4ddb39369a7bd19d"
+      },
+      {
+        "path": "services/api/authlab/privacy-role-audit.sql",
+        "sha256": "3293fa739ef5cd1160fdeb75bebe114f21f4d2dcd879c2d8b153f85993a5a283"
+      },
+      {
+        "path": "services/api/authlab/run-feed-isolated.sh",
+        "sha256": "f9b27029520301ad3fcdc31ef9f8f69ced0249af77903fbc89af4ed2eac98e4c"
+      },
+      {
+        "path": "services/api/go.mod",
+        "sha256": "228555413dbb87a647fabd317189f4d6f5722a2d52a8865e191b093afa44b2d0"
+      },
+      {
+        "path": "services/api/go.sum",
+        "sha256": "72f63e347d14c2f82805462d632aedaf5232cbf4d091fa9e8529443cf5c8cc34"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comment_reports_test.go",
+        "sha256": "5f3644aa45474df55c4bf80c32769e2765a35c1f944e42ea6560e81f7049edb2"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_feed_migration_test.go",
+        "sha256": "b85865896b307469809287a6ada317ae070be0399aa1c10aae9692385f4d8046"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_feed_schema.go",
+        "sha256": "9b78760a633e498bbf53da899ab8824cc1682307e88422906ecbb25bd21b351f"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_feed_test.go",
+        "sha256": "bd857fe53816d58d5fe885e6bb142e5459ec4e921a5f3e3b6bdc857f29a097ea"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_feed.go",
+        "sha256": "7e6afc80051c20af6e3728a12de1071ca30d225eb43dac37c12d32c2eea91e14"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts_read.go",
+        "sha256": "a374cfbf594b4f0b6fef57a15a2adf0d601885fb00102c18e80dedcfc988f72a"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts_schema_test.go",
+        "sha256": "828ad7eb042db4a8d65d76b3e2735cb7da3f9418def57ec01586b02abc348387"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts_schema.go",
+        "sha256": "f65647f9b75aa8dd1c68bad990f37d24a965d7d8d7a3d0884b9eaded900428fa"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/feed_endpoints_test.go",
+        "sha256": "7d7daff4caa4bc5ac2e3063293b4c6ff86eec1fb04b119b59bf3833433a44ece"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/feed_postgres_test.go",
+        "sha256": "89cef518352b3ff312b0a6a88879898796fa6c34b193b6c93dd59468d296c81a"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/posts_endpoints_test.go",
+        "sha256": "dd1c04afb5a0e0450e082ad7519c8f6a1ec2a0db11bcf9124a7584187f30c8b8"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/posts_endpoints.go",
+        "sha256": "4d6ef843e13f7f06b3b22522f5e37abf16b8be96425cbe3d627904f4a261edb5"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/feed_postgres_test.go",
+        "sha256": "f0316b5398da106c039605ce6319d6220078ddb7d179a80fab92f188df36bfcb"
+      },
+      {
+        "path": "services/api/internal/posts/cursor_test.go",
+        "sha256": "fd22ad534000d0496dabfc4118132d51376ce194b35249197832b66ab00dea7f"
+      },
+      {
+        "path": "services/api/internal/posts/cursor.go",
+        "sha256": "3d4d3f9e62d860dd0b0104731e2336a7232be5d5a45c7e5e78f182dd5bf1e1b3"
+      },
+      {
+        "path": "services/api/internal/posts/model_test.go",
+        "sha256": "bfadae3e2df542d0561ec28afe65b5bfc2e033291b727765cfc3e9ae533f698e"
+      },
+      {
+        "path": "services/api/internal/posts/model.go",
+        "sha256": "6f19640709fc8c8cc25a9a03fdc3372ebd4255d7677cb82c494c94a06675239e"
+      },
+      {
+        "path": "services/api/migrations/0019_feed_backend.sql",
+        "sha256": "52a78fc998efd1faad5091ebee2d81b7fbabc6e74d9d85ebfb87e34a23bf15a2"
+      }
+    ]
+  },
+  "frontendContract": "docs/design/feed-backend-contract.md",
+  "openapi": "packages/openapi/feed-api.yaml",
+  "ci": {
+    "workflow": ".github/workflows/feed-backend.yml",
+    "result": "PENDING_PR_FINAL_HEAD"
+  },
+  "independentReview": "PENDING; no delegated agent or GitHub member approval claimed",
+  "notRun": [
+    "Formal frontend wiring",
+    "Android/iOS device acceptance",
+    "Production acceptance and deployment"
+  ],
+  "mainMerged": false,
+  "deployed": false,
+  "published": false
+}

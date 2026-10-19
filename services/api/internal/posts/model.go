@@ -218,6 +218,25 @@ type PublicPost struct {
 	PublishedAt time.Time    `json:"publishedAt"`
 }
 
+type PostView struct {
+	PostID    string `json:"postId"`
+	ViewCount int64  `json:"viewCount"`
+}
+
+type FeedPreferences struct {
+	BlockedChannelIDs []string `json:"blockedChannelIds"`
+}
+
+type FeedPost struct {
+	PublicPost
+	ViewCount int64 `json:"viewCount"`
+}
+
+type CrossChannelFeedPage struct {
+	Items      []FeedPost `json:"items"`
+	NextCursor *string    `json:"nextCursor"`
+}
+
 type PublicPostResponse struct {
 	Post PublicPost `json:"post"`
 }

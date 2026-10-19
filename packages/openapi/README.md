@@ -2,6 +2,7 @@
 
 | 契约 | 范围与状态 |
 | --- | --- |
+| [feed-api.yaml](feed-api.yaml) | FEED-BACKEND-01 分支新增跨通道时间列表、账号屏蔽与 HEAT-07 浏览登记；旧 post-api 响应不变，前端接线见[说明](../../docs/design/feed-backend-contract.md) |
 | [channel-api.yaml](channel-api.yaml) | 当前通道目录切片的接口唯一来源；服务端和客户端据此实现目录 |
 | [identity-api.yaml](identity-api.yaml) | B02本人身份列表／创建／改名／删除与账号归属幂等结果核对；业务联动随对应模块实现 |
 | [verifier-auth-api.yaml](verifier-auth-api.yaml) | 独立验证方 V，6 个操作：OTP申请／确认、原结果核对、内部正式释放与退役收据持久确认；实施前评审稿 |

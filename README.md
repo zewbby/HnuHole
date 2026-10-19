@@ -35,6 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/feat/feed-backend` | 新版列表后端：真实浏览与每日去重、跨通道时间游标、账号通道屏蔽；本分支送审，未合并／部署。 | [任务详情](docs/branches/feat-feed-backend.md) |
 | `codex/fix/gate-cancellation-freeze` | PR #25已合入main，修复C/V Gate取消误冻结，真实SQL/TLS回归与证据已交付；未部署。 | [任务详情](docs/branches/fix-gate-cancellation-freeze.md) |
 | `codex/ci/android-integration-candidate` | PR #23已合入main，交付固定Android集成候选及新增恢复/真机治理连接限定证据；未正式发布。 | [任务详情](docs/branches/ci-android-integration-candidate.md) |
 | `codex/ci/android-prerelease` | PR #16已合入main，交付测试签名候选、同机恢复/回滚与vivo S18最小文字图片限定实测；未正式发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |

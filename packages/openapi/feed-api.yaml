@@ -1,0 +1,298 @@
+openapi: 3.0.3
+info:
+  title: HnuHole chronological feed and account preferences
+  version: 0.1.0
+  description: >-
+    FEED-BACKEND-01, HEAT-07. Uses the existing independent C HTTPS origin,
+    current Bearer and final Safety Gate transaction. No account or identity
+    selectors are accepted. Existing post-api.yaml responses remain unchanged.
+    Unknown fields, duplicate keys/headers/query parameters, invalid UTF-8,
+    noncanonical UUIDs and unrelated Idempotency-Key headers are rejected.
+    All responses have no-store and an independent X-Request-ID. Only committed
+    success carries Session-Expires-At and Server-Time. No visitor list exists.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+x-design-document: ../../docs/design/feed-backend-contract.md
+paths:
+  /api/v1/feed:
+    get:
+      operationId: getChronologicalFeed
+      summary: List published posts across channels, after account blocking
+      description: >-
+        Sort by publishedAt DESC and private unique publication ordinal DESC.
+        The first page fixes a publication ceiling; later publications cannot
+        enter that traversal. Visibility and account blocking are applied before
+        LIMIT, including the extra lookahead row. Optional channelId selects one
+        channel and still respects blocking; an entirely blocked scope returns
+        items=[] and nextCursor=null. No recommendation or heat score is used.
+        The opaque encrypted cursor binds account, endpoint scope, channel,
+        limit and preference revision, expires after 30 minutes, and is never
+        an access capability. A changed preference, expired or mismatched
+        cursor returns 400 CURSOR_INVALID; refresh without the old cursor.
+        Reading/exposing the feed never increments views.
+      parameters:
+        - name: channelId
+          in: query
+          schema:
+            $ref: '#/components/schemas/ResourceID'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            $ref: '#/components/schemas/Cursor'
+      responses:
+        '200':
+          description: Committed feed, including the real cumulative view total
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/RequestID' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+            Session-Expires-At: { $ref: '#/components/headers/SessionExpiresAt' }
+            Server-Time: { $ref: '#/components/headers/ServerTime' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FeedPage' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/me/feed-preferences:
+    get:
+      operationId: getOwnFeedPreferences
+      summary: Read the current account's blocked channels
+      description: >-
+        Default is an empty array. Shared by all identities and devices of the
+        account, private to that account. No query/body or idempotency key.
+        Preferences affect only the new feed, not the directory, legacy channel
+        list, detail, own posts, search, notifications or messages.
+      responses:
+        '200': { $ref: '#/components/responses/Preferences' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Error' }
+    put:
+      operationId: replaceOwnFeedPreferences
+      summary: Atomically replace the complete blocked channel set
+      description: >-
+        Requires a complete unique array of catalog UUIDs; [] resets it.
+        The server canonicalizes order. Exact same-set retries do not invalidate
+        cursors. Concurrent changes serialize per account; last committed set
+        wins. Lost responses may be reconciled with GET or the same PUT.
+        No Idempotency-Key. An unknown catalog UUID returns 404
+        POST_CHANNEL_UNAVAILABLE. No caller-provided account/identity.
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FeedPreferences' }
+      responses:
+        '200': { $ref: '#/components/responses/Preferences' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '413': { $ref: '#/components/responses/Error' }
+        '415': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/posts/{postId}/views:
+    parameters:
+      - name: postId
+        in: path
+        required: true
+        schema: { $ref: '#/components/schemas/ResourceID' }
+    post:
+      operationId: recordOpenedPostView
+      summary: Register an actual opened post body and return its total
+      description: >-
+        Send only after opening the real body, never for list impressions,
+        prefetches or image downloads. No body, query or Idempotency-Key.
+        Uses final Gate trusted time and the Asia/Shanghai natural day
+        (00:00, UTC+08:00); no client time. An account contributes at most once
+        per post/day, regardless of identity, session, retry or concurrency.
+        The author account never contributes, including other identities.
+        Registration and aggregate update commit in the same transaction.
+        Returns only postId and cumulative viewCount, never whether this
+        account visited, a visitor list or identity associations. Unpublished,
+        deleted, hidden or inaccessible posts return 404 POST_NOT_FOUND and do
+        not count. Existing GET detail and channel endpoints do not count.
+        Historical posts start at zero; historical views are not inferred.
+      responses:
+        '200':
+          description: Committed cumulative total (including a no-op replay or author open)
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/RequestID' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+            Session-Expires-At: { $ref: '#/components/headers/SessionExpiresAt' }
+            Server-Time: { $ref: '#/components/headers/ServerTime' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PostView' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Error' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical-unpadded-base64url-32-bytes
+  headers:
+    RequestID:
+      required: true
+      schema: { type: string, minLength: 22, maxLength: 22 }
+    NoStore:
+      required: true
+      schema: { type: string, enum: [no-store] }
+    SessionExpiresAt:
+      required: true
+      schema: { $ref: '#/components/schemas/UTCDateTime' }
+    ServerTime:
+      required: true
+      schema: { $ref: '#/components/schemas/UTCDateTime' }
+    RetryAfter:
+      required: true
+      schema: { type: integer, minimum: 1, maximum: 300 }
+  schemas:
+    ResourceID:
+      type: string
+      format: uuid
+      pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+      description: Canonical nonzero UUID; possession does not authorize access.
+    UTCDateTime:
+      type: string
+      format: date-time
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$'
+    Cursor:
+      type: string
+      minLength: 1
+      maxLength: 1024
+      pattern: '^[A-Za-z0-9_-]+$'
+    ViewCount:
+      type: integer
+      format: int64
+      minimum: 0
+      description: Cumulative account-per-post-per-Shanghai-day opens, excluding the author.
+    PublicAuthor:
+      oneOf:
+        - type: object
+          additionalProperties: false
+          required: [state, nickname, avatar]
+          properties:
+            state: { type: string, enum: [ACTIVE] }
+            nickname: { type: string, minLength: 1, maxLength: 512 }
+            avatar: { type: string, enum: [default-v1] }
+        - type: object
+          additionalProperties: false
+          required: [state, shortCode, avatar]
+          properties:
+            state: { type: string, enum: [DELETED, ACCOUNT_CLOSED] }
+            shortCode: { type: string, pattern: '^[A-Z2-7]{12}$' }
+            avatar: { type: string, enum: [inactive-v1] }
+    FeedPost:
+      type: object
+      additionalProperties: false
+      required: [postId, channelId, title, body, author, publishedAt, viewCount]
+      properties:
+        postId: { $ref: '#/components/schemas/ResourceID' }
+        channelId: { $ref: '#/components/schemas/ResourceID' }
+        title: { type: string, minLength: 1, x-max-grapheme-clusters: 15 }
+        body: { type: string, x-max-grapheme-clusters: 3000 }
+        author: { $ref: '#/components/schemas/PublicAuthor' }
+        publishedAt: { $ref: '#/components/schemas/UTCDateTime' }
+        viewCount: { $ref: '#/components/schemas/ViewCount' }
+        imageCount:
+          type: integer
+          minimum: 1
+          maximum: 9
+          description: Omitted for zero images. Use existing protected image APIs for manifests and bytes.
+    FeedPage:
+      type: object
+      additionalProperties: false
+      required: [items, nextCursor]
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items: { $ref: '#/components/schemas/FeedPost' }
+        nextCursor:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 1024
+          pattern: '^[A-Za-z0-9_-]+$'
+    FeedPreferences:
+      type: object
+      additionalProperties: false
+      required: [blockedChannelIds]
+      properties:
+        blockedChannelIds:
+          type: array
+          maxItems: 7
+          uniqueItems: true
+          items: { $ref: '#/components/schemas/ResourceID' }
+    PostView:
+      type: object
+      additionalProperties: false
+      required: [postId, viewCount]
+      properties:
+        postId: { $ref: '#/components/schemas/ResourceID' }
+        viewCount: { $ref: '#/components/schemas/ViewCount' }
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required: [error, requestId]
+      properties:
+        requestId: { type: string, minLength: 22, maxLength: 22 }
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum: [MALFORMED_REQUEST, AUTHENTICATION_FAILED, SESSION_INVALID, session_replaced, AUTHORIZATION_UNAVAILABLE, SERVICE_UNAVAILABLE, RATE_LIMITED, PAYLOAD_TOO_LARGE, UNSUPPORTED_MEDIA_TYPE, CURSOR_INVALID, POST_CHANNEL_UNAVAILABLE, POST_NOT_FOUND]
+            message: { type: string, minLength: 1, maxLength: 256 }
+  responses:
+    Preferences:
+      description: Committed current account preference, canonical channel order
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/RequestID' }
+        Cache-Control: { $ref: '#/components/headers/NoStore' }
+        Session-Expires-At: { $ref: '#/components/headers/SessionExpiresAt' }
+        Server-Time: { $ref: '#/components/headers/ServerTime' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/FeedPreferences' }
+    Error:
+      description: Safe error; never includes session authority or private visitor/identity data
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/RequestID' }
+        Cache-Control: { $ref: '#/components/headers/NoStore' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorBody' }
+    RateLimited:
+      description: Network budget exceeded
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/RequestID' }
+        Cache-Control: { $ref: '#/components/headers/NoStore' }
+        Retry-After: { $ref: '#/components/headers/RetryAfter' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorBody' }

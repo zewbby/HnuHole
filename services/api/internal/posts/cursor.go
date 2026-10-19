@@ -15,19 +15,21 @@ const (
 	CursorChannel = "channel"
 	CursorOwn     = "own"
 	CursorTask    = "task"
+	CursorFeed    = "feed"
 	CursorTTL     = 30 * time.Minute
 )
 
 type CursorPosition struct {
-	Scope       string    `json:"scope"`
-	AccountID   string    `json:"accountId"`
-	ChannelID   string    `json:"channelId"`
-	Ceiling     int64     `json:"ceiling"`
-	LastAt      time.Time `json:"lastAt"`
-	LastOrdinal int64     `json:"lastOrdinal"`
-	LastID      string    `json:"lastId"`
-	Limit       int       `json:"limit"`
-	ExpiresAt   time.Time `json:"expiresAt"`
+	Scope          string    `json:"scope"`
+	AccountID      string    `json:"accountId"`
+	ChannelID      string    `json:"channelId"`
+	Ceiling        int64     `json:"ceiling"`
+	LastAt         time.Time `json:"lastAt"`
+	LastOrdinal    int64     `json:"lastOrdinal"`
+	LastID         string    `json:"lastId"`
+	Limit          int       `json:"limit"`
+	ExpiresAt      time.Time `json:"expiresAt"`
+	FilterRevision int64     `json:"filterRevision,omitempty"`
 }
 
 type CursorCodec struct {
@@ -77,7 +79,7 @@ func (c *CursorCodec) Encode(position CursorPosition) (string, error) {
 	return token, nil
 }
 
-// Decode 的 expected 只使用账号、scope、channel、limit，其他字段不参与绑定。
+// Decode binds account, scope, channel, limit and feed preference revision.
 // 可信截止时间必须取最终授权事务的 TrustedAt；cursor 本身不授访问权。
 func (c *CursorCodec) Decode(token string, expected CursorPosition, trustedAt time.Time) (CursorPosition, error) {
 	if len(token) < 1 || len(token) > 1024 || trustedAt.IsZero() {
@@ -93,7 +95,7 @@ func (c *CursorCodec) Decode(token string, expected CursorPosition, trustedAt ti
 		return CursorPosition{}, ErrCursorInvalid
 	}
 	var position CursorPosition
-	if json.Unmarshal(plaintext, &position) != nil || !validPosition(position) || position.Scope != expected.Scope || position.AccountID != expected.AccountID || position.ChannelID != expected.ChannelID || position.Limit != expected.Limit || !trustedAt.Before(position.ExpiresAt) || position.ExpiresAt.After(trustedAt.Add(CursorTTL)) {
+	if json.Unmarshal(plaintext, &position) != nil || !validPosition(position) || position.Scope != expected.Scope || position.AccountID != expected.AccountID || position.ChannelID != expected.ChannelID || position.Limit != expected.Limit || position.FilterRevision != expected.FilterRevision || !trustedAt.Before(position.ExpiresAt) || position.ExpiresAt.After(trustedAt.Add(CursorTTL)) {
 		return CursorPosition{}, ErrCursorInvalid
 	}
 	return position, nil
@@ -104,6 +106,8 @@ func validPosition(position CursorPosition) bool {
 		return false
 	}
 	switch position.Scope {
+	case CursorFeed:
+		return (position.ChannelID == "" || validID(position.ChannelID)) && position.FilterRevision >= 0 && position.LastOrdinal > 0 && position.LastOrdinal <= position.Ceiling && position.LastID == ""
 	case CursorChannel:
 		return validID(position.ChannelID) && position.LastOrdinal > 0 && position.LastOrdinal <= position.Ceiling && position.LastID == ""
 	case CursorOwn:
