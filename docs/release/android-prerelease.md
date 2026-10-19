@@ -1,6 +1,12 @@
 # Android候选与隔离预发布
 
-2026-10-19：本地隔离演练、独立CI后台演练、测试签名候选构建，以及vivo S18最小文字/单PNG手机链路均有实际限定证据；未合并、未正式发布。结果必须对应精确源码SHA。
+## 主线合并交付（2026-10-19）
+
+PR [#16](https://github.com/zewbby/HnuHole/pull/16) 已转正式送审并普通Squash合并为 `32cb87b73e2feb518e1c5ec75ea11bb4d3414df1`，与最终head `a6f8f60` 完整文件树一致。合并前八项最新检查全SUCCESS，实际CI release APK及恢复回执已下载核验；源码、版本、包名、签名证书与制品摘要见[合并回执](android-prerelease-main-merge-20261019.json)。独立agent审查无阻断；没有GitHub成员批准，不伪造批准或绕过规则。
+
+CI release默认.invalid，手机验收仍只属于8691/d80c debug包；两者不混用摘要或设备结论。保留Flutter首轮超时及重跑记录，不把树一致写成合并SHA重新构建。应用回滚只换二进制，数据库兼容单独核对，不执行down。手机窗口已结束，自有连接和服务已收回；后续不要自动重启设备窗口。未验范围、跨设备Passkey/iOS延期和生产NOT_RUN继续有效。下方待合并/draft及准备期NOT_RUN为原时点快照，由本节更新合并状态。
+
+2026-10-19：本地隔离演练、独立CI后台演练、测试签名候选构建，以及vivo S18最小文字/单PNG手机链路均有实际限定证据；PR #16已合并main，未正式发布。结果必须对应精确源码SHA。
 设备实测详见[手机报告](android-device-validation-20261019.md)及[机器记录](android-device-validation-20261019.json)；CI release、手机debug包和后台演练分开归档。下方历史NOT_RUN保留其原时点。
 
 后续核对main已到`1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1`（PR #18），正式迁移为C0015/V0004。

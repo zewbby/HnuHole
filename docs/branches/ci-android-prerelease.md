@@ -1,7 +1,7 @@
 # Android候选版本交付与隔离预发布：开发任务范围
 
-创建：2026-10-18，Asia/Shanghai。状态：PASS_SCOPED_SINGLE_ANDROID_MINIMUM_CHAIN，尚未合并或发布。
-更新：2026-10-19。设备包8691eb4的vivo S18最小文字/图片链路11项限定实测通过，窗口已结束；后端14f5096的13项/75摘要和c42dfb2八项CI通过。新证据提交后的最终head另按PR核对。
+创建：2026-10-18，Asia/Shanghai。状态：MERGED_SCOPED_ANDROID_NOT_RELEASED，已合并main，未正式发布。
+更新：2026-10-19。PR #16已转正式送审并普通Squash合并为 `32cb87b73e2feb518e1c5ec75ea11bb4d3414df1`（上海时间10:13:17）；与最终head `a6f8f60efe52cd7661cba7b95d7740b7e6cb1d25` 文件树完全一致。最终head八项最新CI全SUCCESS，真实候选制品已下载验签；手机8691eb4的11项限定实测、后端14f5096的13项/75摘要保持原版本范围。独立agent审查无阻断，无GitHub成员批准。详见[合并回执](../release/android-prerelease-main-merge-20261019.json)。
 仓库 zewbby/HnuHole；分支 `codex/ci/android-prerelease`；独立目录 `E:/HnuHole-android-prerelease-20261018/repo`。
 创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。本任务不是正式上线或生产安全批准。
 
@@ -11,7 +11,7 @@
 当前新增独立候选workflow、测试签名接线、私有C/V初始化/健康/启停及新实例恢复和应用回滚入口；
 实际结果在[发布运行手册](../release/android-prerelease.md)记录，脚本存在不等于演练通过。
 
-交付PR：[PR #16](https://github.com/zewbby/HnuHole/pull/16)，保持draft，合并未授权、未执行。
+交付PR：[PR #16](https://github.com/zewbby/HnuHole/pull/16)，本session用户已明确授权送审和合并，现已合并main；未正式发布。后续补记合并事实的文档PR不重跑整套设备验收，也不改变历史证据。下列早期演练保留原版本和时点。
 本地0d10719完整11项演练/60份表与sequence摘要、四次独立CLI启停、Linux6项工具回归实际PASS；
 独立CI后台和Android候选6b2927c实际PASS，已下载APK核对摘要和大小；版本0.1.0+2026101801、
 包名org.hnuhole.hnuhole_mobile、签名和APK摘要见[制品manifest](../release/android-candidate-20261018.json)。
