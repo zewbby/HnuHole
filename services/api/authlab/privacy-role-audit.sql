@@ -78,6 +78,15 @@ BEGIN
               'attempt_contents','command_receipts','payload_cleanup'))
               OR (privilege='UPDATE' AND relation.relname IN ('account_publication_control','posts','publication_tasks',
               'publication_attempts','attempt_contents','command_receipts','payload_cleanup'));
+            allowed := allowed OR (relation.relname IN ('post_view_totals','post_daily_views','feed_preferences') AND privilege IN ('SELECT','INSERT'))
+              OR (relation.relname IN ('post_daily_views','feed_preferences') AND privilege='DELETE');
+            IF relation.relname IN ('post_view_totals','feed_preferences') AND privilege='UPDATE' THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid
+                  AND a.attnum>0 AND NOT a.attisdropped
+                  AND NOT (a.attname=ANY(CASE relation.relname WHEN 'post_view_totals' THEN ARRAY['view_count'] ELSE ARRAY['blocked_channel_ids','revision'] END))
+                  AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
             IF relation.relname='images' AND privilege='UPDATE' THEN
               allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
                 AND NOT EXISTS(SELECT 1 FROM pg_attribute a

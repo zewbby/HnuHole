@@ -17,6 +17,9 @@ const (
 	PostTaskList        PostReadKind = "tasks"
 	PostTaskDetail      PostReadKind = "task"
 	PostChannelFeed     PostReadKind = "channel"
+	PostFeed            PostReadKind = "feed"
+	PostViewRecord      PostReadKind = "view"
+	PostFeedPreferences PostReadKind = "feedPreferences"
 	PostDetail          PostReadKind = "post"
 	PostOwnList         PostReadKind = "own"
 	PostCapabilities    PostReadKind = "capabilities"
@@ -66,11 +69,17 @@ func readOwnPostTask(ctx context.Context, tx pgx.Tx, account uuid.UUID, id strin
 
 func (c *Community) ReadPosts(ctx context.Context, bearer [32]byte, query PostQuery) (PostResponse, error) {
 	switch query.Kind {
-	case PostTaskDetail, PostChannelFeed, PostDetail, PostCapabilities:
+	case PostTaskDetail, PostChannelFeed, PostDetail, PostCapabilities, PostViewRecord:
 		if _, err := posts.ParseResourceID(query.ID); err != nil {
 			return PostResponse{}, err
 		}
-	case PostComposerContext, PostTaskList, PostOwnList:
+	case PostFeed:
+		if query.ID != "" {
+			if _, err := posts.ParseResourceID(query.ID); err != nil {
+				return PostResponse{}, err
+			}
+		}
+	case PostComposerContext, PostTaskList, PostOwnList, PostFeedPreferences:
 		if query.ID != "" {
 			return PostResponse{}, posts.ErrInvalidID
 		}
@@ -85,6 +94,11 @@ func (c *Community) ReadPosts(ctx context.Context, bearer [32]byte, query PostQu
 	}
 	return c.withPostSession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, final AuthorizationDecision, mute restriction) (any, error) {
 		switch query.Kind {
+		case PostFeedPreferences:
+			preferences, _, err := readFeedPreferences(ctx, tx, account)
+			return preferences, err
+		case PostViewRecord:
+			return recordPostView(ctx, tx, account, query.ID, final.TrustedAt)
 		case PostComposerContext:
 			return readPostComposerContext(ctx, tx, account)
 		case PostTaskDetail:
@@ -117,7 +131,7 @@ func (c *Community) ReadPosts(ctx context.Context, bearer [32]byte, query PostQu
 				return nil, postError("POST_NOT_FOUND", 404)
 			}
 			return posts.PublicPostResponse{Post: r}, err
-		case PostChannelFeed, PostOwnList:
+		case PostChannelFeed, PostOwnList, PostFeed:
 			return c.listPublicPosts(ctx, tx, account, query, final.TrustedAt)
 		}
 		return nil, posts.ErrInvalidIntent
@@ -210,6 +224,14 @@ func (c *Community) postCursor(ctx context.Context, tx pgx.Tx, account uuid.UUID
 		sequence = "acceptance_ordinal"
 	}
 	p := posts.CursorPosition{Scope: scope, AccountID: account.String(), ChannelID: channel, Limit: query.Limit, ExpiresAt: at.Add(30 * time.Minute)}
+	if query.Kind == PostFeed {
+		p.Scope = posts.CursorFeed
+		_, revision, err := readFeedPreferences(ctx, tx, account)
+		if err != nil {
+			return p, err
+		}
+		p.FilterRevision = revision
+	}
 	if query.Cursor != "" {
 		return c.posts.cursors.Decode(query.Cursor, p, at)
 	}
@@ -221,7 +243,7 @@ func (c *Community) postCursor(ctx context.Context, tx pgx.Tx, account uuid.UUID
 	return p, err
 }
 func (c *Community) listPublicPosts(ctx context.Context, tx pgx.Tx, account uuid.UUID, query PostQuery, at time.Time) (any, error) {
-	if query.Kind == PostChannelFeed {
+	if query.Kind == PostChannelFeed || query.Kind == PostFeed && query.ID != "" {
 		var exists bool
 		if err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM public.channels WHERE id=$1)`, query.ID).Scan(&exists); err != nil {
 			return nil, err
@@ -241,14 +263,23 @@ func (c *Community) listPublicPosts(ctx context.Context, tx pgx.Tx, account uuid
 		lastOrdinal = position.LastOrdinal
 	}
 	var channel, owner any
-	if query.Kind == PostChannelFeed {
+	if query.Kind == PostChannelFeed || query.Kind == PostFeed && query.ID != "" {
 		channel = query.ID
-	} else {
+	} else if query.Kind == PostOwnList {
 		owner = account
 	}
+	blocked := []string{}
+	if query.Kind == PostFeed {
+		preferences, _, e := readFeedPreferences(ctx, tx, account)
+		if e != nil {
+			return nil, e
+		}
+		blocked = preferences.BlockedChannelIDs
+	}
 	rows, err := tx.Query(ctx, `SELECT p.post_id FROM c_posts.posts p JOIN c_posts.publication_tasks t ON t.post_id=p.post_id JOIN public.community_identities i ON i.identity_id=t.identity_id
- WHERE p.visibility='PUBLISHED' AND NOT COALESCE((to_jsonb(p)->>'moderation_hidden')::boolean,false) AND p.publication_ordinal<=$1 AND ($2::uuid IS NULL OR p.channel_id=$2) AND ($3::uuid IS NULL OR (p.owner_account_id=$3 AND i.deleted_at IS NULL))
- AND ($4::timestamptz IS NULL OR (p.published_at,p.publication_ordinal)<($4,$5::bigint)) ORDER BY p.published_at DESC,p.publication_ordinal DESC LIMIT $6`, position.Ceiling, channel, owner, lastAt, lastOrdinal, query.Limit+1)
+ WHERE p.visibility='PUBLISHED' AND NOT p.moderation_hidden AND p.publication_ordinal<=$1 AND ($2::uuid IS NULL OR p.channel_id=$2) AND ($3::uuid IS NULL OR (p.owner_account_id=$3 AND i.deleted_at IS NULL))
+ AND NOT (p.channel_id=ANY($7::uuid[]))
+ AND ($4::timestamptz IS NULL OR (p.published_at,p.publication_ordinal)<($4,$5::bigint)) ORDER BY p.published_at DESC,p.publication_ordinal DESC LIMIT $6`, position.Ceiling, channel, owner, lastAt, lastOrdinal, query.Limit+1, blocked)
 	if err != nil {
 		return nil, err
 	}
@@ -268,6 +299,7 @@ func (c *Community) listPublicPosts(ctx context.Context, tx pgx.Tx, account uuid
 		return nil, err
 	}
 	page := posts.FeedPage{Items: make([]posts.PublicPostCard, 0, query.Limit)}
+	feed := posts.CrossChannelFeedPage{Items: make([]posts.FeedPost, 0, query.Limit)}
 	own := posts.OwnPostPage{Items: make([]posts.OwnPostCard, 0, query.Limit)}
 	more := len(ids) > query.Limit
 	if more {
@@ -279,6 +311,13 @@ func (c *Community) listPublicPosts(ctx context.Context, tx pgx.Tx, account uuid
 			return nil, e
 		}
 		card := postCard(item)
+		if query.Kind == PostFeed {
+			views, e := readPostViewCount(ctx, tx, id)
+			if e != nil {
+				return nil, e
+			}
+			feed.Items = append(feed.Items, posts.FeedPost{PublicPost: item, ViewCount: views})
+		}
 		page.Items = append(page.Items, card)
 		own.Items = append(own.Items, posts.OwnPostCard{Post: card, ServerSortAt: item.PublishedAt})
 		position.LastAt = item.PublishedAt
@@ -290,10 +329,14 @@ func (c *Community) listPublicPosts(ctx context.Context, tx pgx.Tx, account uuid
 			return nil, e
 		}
 		page.NextCursor = &cursor
+		feed.NextCursor = &cursor
 		own.NextCursor = &cursor
 	}
 	if query.Kind == PostOwnList {
 		return own, nil
+	}
+	if query.Kind == PostFeed {
+		return feed, nil
 	}
 	return page, nil
 }

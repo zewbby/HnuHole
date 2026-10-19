@@ -472,7 +472,7 @@ func TestCommentReportGooseUpgradePostgres(t *testing.T) {
 		t.Fatal("main schema install", e)
 	}
 	mustExec(t, pool, `INSERT INTO c_auth.accounts(account_id,platform_number,username,password_hash,password_salt,password_params_version) VALUES('d2c920f5-5563-452d-901c-be133844b0fa','001829','comment_report_upgrade',decode(repeat('11',32),'hex'),decode(repeat('22',16),'hex'),1)`)
-	if e = run("up"); e != nil {
+	if e = run("up-to", "18"); e != nil {
 		t.Fatal("0018 upgrade", e)
 	}
 	if count(t, pool, `SELECT count(*) FROM public.goose_db_version WHERE is_applied`) != 19 || count(t, pool, `SELECT count(*) FROM c_auth.accounts WHERE username='comment_report_upgrade'`) != 1 {

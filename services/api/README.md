@@ -1,5 +1,7 @@
 # Hnuhole C/V 开发服务
 
+> 2026-10-19 `codex/feat/feed-backend` 分支增量（未合并／未部署）：新增0019，提供 `/api/v1/feed`、账号通道屏蔽和 HEAT-07 浏览登记；旧帖子响应字段保持兼容。迁移、最小授权和前端接入见[接线契约](../../docs/design/feed-backend-contract.md)。
+
 > 分支增量 #19：文字评论/回复真实后端、0016与最小授权已实现，使用方式见[数据库/运行说明](comment-schema/README.md)，[限定验证报告](../../docs/design/comments-backend-text-report-20261018.md)。依赖核心 #17；未合并/未发布，图片、客户端、原生日志和系统通知provider未接入。
 
 本分支新增的举报／审核／通知运行说明见下节；下文其余认证历史报告仍保持各自原版本的证明范围。

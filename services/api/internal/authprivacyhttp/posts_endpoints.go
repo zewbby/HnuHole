@@ -26,6 +26,10 @@ type PostBackend interface {
 	ReadPosts(context.Context, [32]byte, authprivacy.PostQuery) (authprivacy.PostResponse, error)
 }
 
+type FeedPreferenceBackend interface {
+	ReplaceFeedPreferences(context.Context, [32]byte, posts.FeedPreferences) (authprivacy.PostResponse, error)
+}
+
 type postRoute struct {
 	kind      authprivacy.PostReadKind
 	id        string
@@ -47,7 +51,7 @@ func (route postRoute) allows(method string) bool {
 }
 
 func isPostPath(path string) bool {
-	for _, prefix := range []string{"/api/v1/post-commands", "/api/v1/me/post-tasks", "/api/v1/me/posts", "/api/v1/me/post-composer-context", "/api/v1/posts"} {
+	for _, prefix := range []string{"/api/v1/post-commands", "/api/v1/me/post-tasks", "/api/v1/me/posts", "/api/v1/me/post-composer-context", "/api/v1/posts", "/api/v1/feed", "/api/v1/me/feed-preferences"} {
 		if path == prefix || strings.HasPrefix(path, prefix+"/") {
 			return true
 		}
@@ -60,6 +64,9 @@ func parsePostRoute(path string) (postRoute, error) {
 		return postRoute{}, errMalformed
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
+	if len(parts) == 1 && parts[0] == "feed" {
+		return postRoute{kind: authprivacy.PostFeed, methods: "GET"}, nil
+	}
 	if len(parts) == 2 && parts[0] == "post-commands" {
 		if _, err := posts.ParseCommandKey(parts[1]); err != nil {
 			return postRoute{}, errMalformed
@@ -74,6 +81,8 @@ func parsePostRoute(path string) (postRoute, error) {
 	}
 	if len(parts) == 2 && parts[0] == "me" {
 		switch parts[1] {
+		case "feed-preferences":
+			return postRoute{kind: authprivacy.PostFeedPreferences, methods: "GET, PUT"}, nil
 		case "post-composer-context":
 			return postRoute{kind: authprivacy.PostComposerContext, methods: "GET"}, nil
 		case "post-tasks":
@@ -116,6 +125,12 @@ func parsePostRoute(path string) (postRoute, error) {
 		}
 		return postRoute{kind: authprivacy.PostDetail, id: parts[1], methods: "GET"}, nil
 	}
+	if len(parts) == 3 && parts[0] == "posts" && parts[2] == "views" {
+		if _, err := posts.ParseResourceID(parts[1]); err != nil {
+			return postRoute{}, errMalformed
+		}
+		return postRoute{kind: authprivacy.PostViewRecord, id: parts[1], methods: "POST"}, nil
+	}
 	if len(parts) == 3 && parts[0] == "posts" && parts[2] == "delete" {
 		if _, err := posts.ParseResourceID(parts[1]); err != nil {
 			return postRoute{}, errMalformed
@@ -126,7 +141,7 @@ func parsePostRoute(path string) (postRoute, error) {
 }
 
 func postListKind(kind authprivacy.PostReadKind) bool {
-	return kind == authprivacy.PostTaskList || kind == authprivacy.PostChannelFeed || kind == authprivacy.PostOwnList
+	return kind == authprivacy.PostTaskList || kind == authprivacy.PostChannelFeed || kind == authprivacy.PostOwnList || kind == authprivacy.PostFeed
 }
 
 func allowsPostListQuery(r *http.Request) bool {
@@ -172,7 +187,7 @@ func (b *boundary) communityPostsPublic(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 	command := ""
-	if route.command || route.seal || r.Method == http.MethodGet {
+	if route.command || route.seal || r.Method == http.MethodGet || route.kind == authprivacy.PostViewRecord || route.kind == authprivacy.PostFeedPreferences {
 		if hasHeader(r.Header, "Idempotency-Key") {
 			b.postBad(w, errMalformed)
 			return
@@ -199,12 +214,47 @@ func (b *boundary) communityPostsPublic(w http.ResponseWriter, r *http.Request, 
 			return
 		}
 		route.limit = query.Limit
+		if route.kind == authprivacy.PostFeed {
+			route.id = query.ID
+		}
 		var response authprivacy.PostResponse
 		if route.command {
 			response, err = backend.GetPostCommand(r.Context(), bearer, route.id)
 		} else {
 			response, err = backend.ReadPosts(r.Context(), bearer, query)
 		}
+		if err != nil {
+			b.postFailure(w, err)
+			return
+		}
+		b.writePostResponse(w, response, route, false)
+		return
+	}
+	if route.kind == authprivacy.PostViewRecord {
+		if noBodyOrQuery(r) != nil {
+			b.postBad(w, errMalformed)
+			return
+		}
+		response, err := backend.ReadPosts(r.Context(), bearer, authprivacy.PostQuery{Kind: route.kind, ID: route.id})
+		if err != nil {
+			b.postFailure(w, err)
+			return
+		}
+		b.writePostResponse(w, response, route, false)
+		return
+	}
+	if route.kind == authprivacy.PostFeedPreferences {
+		input, err := feedPreferencesInput(r)
+		if err != nil {
+			b.postBad(w, err)
+			return
+		}
+		preferences, ok := backend.(FeedPreferenceBackend)
+		if !ok {
+			b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+			return
+		}
+		response, err := preferences.ReplaceFeedPreferences(r.Context(), bearer, input)
 		if err != nil {
 			b.postFailure(w, err)
 			return
@@ -291,6 +341,11 @@ func postReadQuery(r *http.Request, route postRoute) (authprivacy.PostQuery, err
 			return query, errMalformed
 		}
 		switch name {
+		case "channelId":
+			if route.kind != authprivacy.PostFeed || !postValidID(items[0]) {
+				return query, errMalformed
+			}
+			query.ID = items[0]
 		case "limit":
 			limit, err := strconv.Atoi(items[0])
 			if err != nil || limit < 1 || limit > 50 || strconv.Itoa(limit) != items[0] {
@@ -315,6 +370,44 @@ func validPostCursor(cursor string) bool {
 	}
 	decoded, err := base64.RawURLEncoding.Strict().DecodeString(cursor)
 	return err == nil && len(decoded) > 0 && base64.RawURLEncoding.EncodeToString(decoded) == cursor
+}
+
+func feedPreferencesInput(r *http.Request) (posts.FeedPreferences, error) {
+	var input posts.FeedPreferences
+	object, err := readRequestObject(r, 1024, []string{"blockedChannelIds"}, nil)
+	if err != nil {
+		return input, err
+	}
+	values, ok := object["blockedChannelIds"].([]any)
+	if !ok {
+		return input, errMalformed
+	}
+	input.BlockedChannelIDs = make([]string, 0, len(values))
+	for _, value := range values {
+		id, ok := value.(string)
+		if !ok {
+			return input, errMalformed
+		}
+		input.BlockedChannelIDs = append(input.BlockedChannelIDs, id)
+	}
+	if !validFeedPreferences(input) {
+		return input, errMalformed
+	}
+	return input, nil
+}
+
+func validFeedPreferences(input posts.FeedPreferences) bool {
+	if input.BlockedChannelIDs == nil || len(input.BlockedChannelIDs) > 7 {
+		return false
+	}
+	seen := make(map[string]bool)
+	for _, id := range input.BlockedChannelIDs {
+		if !postValidID(id) || seen[id] {
+			return false
+		}
+		seen[id] = true
+	}
+	return true
 }
 
 func postIntent(r *http.Request, route postRoute) (posts.Intent, error) {
@@ -584,6 +677,18 @@ func strictPostValue(value any, route postRoute) (any, error) {
 		return result, nil
 	}
 	switch route.kind {
+	case authprivacy.PostViewRecord:
+		result, ok := value.(posts.PostView)
+		if !ok || result.PostID != route.id || !postValidID(result.PostID) || result.ViewCount < 0 {
+			return nil, errMalformed
+		}
+		return result, nil
+	case authprivacy.PostFeedPreferences:
+		result, ok := value.(posts.FeedPreferences)
+		if !ok || !validFeedPreferences(result) {
+			return nil, errMalformed
+		}
+		return result, nil
 	case authprivacy.PostComposerContext:
 		result, ok := value.(posts.ComposerContext)
 		if p, yes := value.(*posts.ComposerContext); yes && p != nil {
@@ -624,6 +729,17 @@ func strictPostValue(value any, route postRoute) (any, error) {
 		}
 		for _, task := range result.Items {
 			if !validOwnPostTask(task) || !task.Task.Visible || (task.Task.State != posts.Accepted && task.Task.State != posts.Failed) {
+				return nil, errMalformed
+			}
+		}
+		return result, nil
+	case authprivacy.PostFeed:
+		result, ok := value.(posts.CrossChannelFeedPage)
+		if !ok || result.Items == nil || !validPostPageSize(len(result.Items), route.limit) || !validNullablePostCursor(result.NextCursor) {
+			return nil, errMalformed
+		}
+		for _, post := range result.Items {
+			if route.id != "" && post.ChannelID != route.id || post.ViewCount < 0 || !validPublicPostCard(posts.PublicPostCard{PostID: post.PostID, ChannelID: post.ChannelID, Title: post.Title, Author: post.Author, PublishedAt: post.PublishedAt}) || posts.ValidateContentWithImages(post.Title, post.Body, post.ImageCount) != nil {
 				return nil, errMalformed
 			}
 		}

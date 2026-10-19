@@ -42,6 +42,7 @@ func TestPublicAndOwnDTOKeepSeparate(t *testing.T) {
 	assertJSONKeys(t, card, "postId", "channelId", "title", "author", "publishedAt")
 	post := PublicPost{PostID: testID, ChannelID: otherID, Title: "标题", Body: "正文", Author: author, PublishedAt: time.Now().UTC()}
 	assertJSONKeys(t, post, "postId", "channelId", "title", "body", "author", "publishedAt")
+	assertJSONKeys(t, FeedPost{PublicPost: post}, "postId", "channelId", "title", "body", "author", "publishedAt", "viewCount")
 }
 
 func TestCommandResultsHaveOperationSpecificFields(t *testing.T) {

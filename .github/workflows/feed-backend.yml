@@ -1,0 +1,53 @@
+name: Feed backend
+on:
+  pull_request:
+    paths:
+      - 'services/api/**'
+      - 'infra/postgres/**'
+      - 'packages/openapi/**'
+      - '.github/workflows/feed-backend.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: feed-backend-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  feed-postgres:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - name: Install PostgreSQL and pinned migration runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16
+          go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Full OpenAPI validation and legacy contract compatibility
+        run: |
+          python -m pip install -r packages/openapi/requirements-check.txt
+          python packages/openapi/check-specs.py
+          python tools/check-community-text-contract.py
+      - name: Host tests, formatting, build and vet
+        working-directory: services/api
+        run: |
+          test -z "$(gofmt -l internal/posts internal/authprivacy/community_feed*.go internal/authprivacy/community_posts_read.go internal/authprivacyhttp/feed*.go)"
+          go test -mod=readonly ./...
+          go build -mod=readonly ./...
+          go vet -mod=readonly ./...
+      - name: Real SQL, migration upgrade, least privilege and TLS HTTP regression
+        env:
+          PGPORT: '55439'
+        run: |
+          export PATH="$(pg_config --bindir):$PATH"
+          export FEED_GOOSE="$(go env GOPATH)/bin/goose"
+          sh services/api/authlab/run-feed-isolated.sh

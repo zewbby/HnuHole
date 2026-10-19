@@ -95,6 +95,13 @@ func (f *postHTTPBackend) ReadPosts(_ context.Context, bearer [32]byte, query au
 	f.method, f.bearer, f.query = "read", bearer, query
 	var value any
 	switch query.Kind {
+	case authprivacy.PostFeed:
+		card := postHTTPCard()
+		value = posts.CrossChannelFeedPage{Items: []posts.FeedPost{{PublicPost: posts.PublicPost{PostID: card.PostID, ChannelID: card.ChannelID, Title: card.Title, Body: "body", Author: card.Author, PublishedAt: card.PublishedAt}, ViewCount: 12}}}
+	case authprivacy.PostViewRecord:
+		value = posts.PostView{PostID: query.ID, ViewCount: 12}
+	case authprivacy.PostFeedPreferences:
+		value = posts.FeedPreferences{BlockedChannelIDs: []string{}}
 	case authprivacy.PostComposerContext:
 		id := postHTTPIdentity
 		value = posts.ComposerContext{SelectionState: "DEFAULT_AVAILABLE", DefaultIdentityID: &id}
@@ -113,6 +120,13 @@ func (f *postHTTPBackend) ReadPosts(_ context.Context, bearer [32]byte, query au
 		value = posts.OwnPostCapabilities{PostID: query.ID, CanDelete: true}
 	}
 	return f.response(value)
+}
+
+func (f *postHTTPBackend) ReplaceFeedPreferences(_ context.Context, bearer [32]byte, input posts.FeedPreferences) (authprivacy.PostResponse, error) {
+	f.calls++
+	f.bearer = bearer
+	f.method = "preferences"
+	return f.response(input)
 }
 
 func newPostHTTP(t *testing.T, limits NetworkLimits) (*postHTTPBackend, http.Handler) {
