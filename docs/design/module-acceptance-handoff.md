@@ -1,6 +1,8 @@
 # 分模块验收与测试交接
 
-> **2026-10-19 手机包已准备：**8691eb4独立SDK/签名/pinned-CA debug包构建验签PASS，绑定14f5096的lab-09（schema15）C52045/V37073；用户当前不能测。没有ADB/手机操作，安装和原生/业务链路保持NOT_RUN。准确APK/证书摘要及CA到期见[发布记录](../release/android-prerelease.md)。
+> **2026-10-19 手机实测完成：**8691eb4测试包在vivo S18 / Android15 API35通过本轮11项限定检查：正常UI合成注册/恢复码确认、中文身份输入、文字及单PNG发布/读回、大图/Gal原字节保存、跨进程会话保留、退出后密码重登。输入截短导致的一次错误登录及旧个人路由失效观察如实保留；未改认证/业务代码。用户明确授权后才移除旧签名同包及本机数据。自有临时媒体、两条reverse、ADB5049及后端均已收回，窗口已结束，不再ADB。详见[手机报告](../release/android-device-validation-20261019.md)及[机器记录](../release/android-device-validation-20261019.json)。不升级完整原生安全/Passkey/多图/TalkBack/生产结论，iOS及跨设备Passkey继续延期；PR #16仍未合并/发布。
+
+> **2026-10-19 较早准备快照（下列NOT_RUN属于实测前）：**8691eb4独立SDK/签名/pinned-CA debug包构建验签PASS，绑定14f5096的lab-09（schema15）C52045/V37073；用户当前不能测。没有ADB/手机操作，安装和原生/业务链路保持NOT_RUN。准确APK/证书摘要及CA到期见[发布记录](../release/android-prerelease.md)。
 
 > **2026-10-18 预发布主线同步：**核对PR #18已实际合入main `1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1`，正式迁移新增0015。下方schema14及PR #18合并前状态保留原版本；本任务14f5096的schema15新环境已通过13项/75摘要/五实例停机，手机包构建验签PASS；受影响CI仍按最终head核对，不沿用旧结果作为新版本PASS。未连接手机。
 

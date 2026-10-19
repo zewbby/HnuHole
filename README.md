@@ -35,7 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `codex/ci/android-prerelease` | 测试签名候选与同机恢复/回滚实测通过，vivo S18专属测试包已准备；手机待验，未合并/发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
+| `codex/ci/android-prerelease` | 测试签名候选、同机恢复/回滚及vivo S18最小文字图片链路实测通过；未合并/发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
 
 | `codex/feat/report-moderation` | PR #18 已合入main：帖子举报、网页审核和最小系统通知阶段1；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |
 | `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |

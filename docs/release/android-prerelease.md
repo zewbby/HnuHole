@@ -1,7 +1,7 @@
 # Android候选与隔离预发布
 
-2026-10-18：本地隔离演练、独立CI后台演练、测试签名Android候选实际构建/验签/摘要核对通过；未合并、未正式发布。结果必须对应精确源码SHA；
-GitHub Actions的Android制品和后台演练证据分开保存，手机验收NOT_RUN。
+2026-10-19：本地隔离演练、独立CI后台演练、测试签名候选构建，以及vivo S18最小文字/单PNG手机链路均有实际限定证据；未合并、未正式发布。结果必须对应精确源码SHA。
+设备实测详见[手机报告](android-device-validation-20261019.md)及[机器记录](android-device-validation-20261019.json)；CI release、手机debug包和后台演练分开归档。下方历史NOT_RUN保留其原时点。
 
 后续核对main已到`1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1`（PR #18），正式迁移为C0015/V0004。
 本任务已同步；14f5096的新root已实际通过13项检查、75份恢复摘要和五实例停机，专属手机包也已构建验签。下方schema14记录保留原SHA。
@@ -61,7 +61,7 @@ python tools/prerelease/environment.py --root /absolute/new-lab stop
 
 ## 未验范围
 
-手机安装/原生存储/Picker/Gal/物理UX和本候选Passkey均NOT_RUN；跨设备Passkey和iOS延期。
+本轮仅指定debug包的安装/注册登录/中文输入/文字与单PNG/Picker/Gal原字节/进程重开通过；完整原生存储安全、物理UX全套、多图动画、同包升级、系统重启/OEM及本候选Passkey仍NOT_RUN；跨设备Passkey和iOS延期。
 schema13快照仅合成目录/迁移历史，不含真实用户历史数据。真实云、正式签名、生产主体独立、
 外部独立备份运营与正式发布不属于已获批准的本地演练。媒体仍沿用现有SQL存储。
 
@@ -108,7 +108,7 @@ dee7fdc后台PASS但Android缺CMake3.22.1失败；4c9477a的release dev插件注
 保留先行enforce-lockfile和配置前后锁/源码一致性校验，不手改生成代码。均修复后重跑，失败不计PASS。
 本地早期源码提取、libpq、Mailpit版本参数和审计匹配守卫失败保留在同任务私有目录，后续精确SHA回执取代其验收结论。
 
-## 下一设备窗口方案
+## 2026-10-19设备窗口执行前方案（历史准备快照）
 
 用户指定设备为vivo S18 / OriginOS 5，当前不能配合验证，已授权先准备测试包；
 实际Android版本/API/ABI、安装和APK服务链路仍NOT_RUN。已保留本轮非手机证据并构建专属debug/pinned-CA候选：
@@ -150,7 +150,7 @@ C/V固定端口52045/37073，公有CA PEM SHA256为`da2215084e59bc56c6aeca048eef
 当前进程已停止。窗口内先start/recover/health并严格核验Windows到WSL HTTPS，再建立本任务两条USB映射。
 不映射数据库、邮件或内部mTLS；设备端口冲突同样阻断，结束只撤本任务映射并停本任务进程。
 
-## 0015同步后的实际结果与2026-10-19设备包（未执行手机）
+## 0015同步后的实际结果与2026-10-19设备包（下列手机NOT_RUN为准备时状态）
 
 后端演练源码`14f5096bb65aa53743939031000d6df32e42ad4b`；设备包源码`8691eb49d3863b911e04c4678512c1eb8d54aaca`，仅追加debug准备复用已锁依赖的flag。
 已同步PR #18/main1b78f42；正式迁移C0015/V0004，0016尚未进入该轮main。
@@ -192,3 +192,24 @@ APK22924620字节，SHA256 `005f22bfc9cbce39b48d1a3bd32a0088bf4e8bcd4d525b02be69
 [独立审查](android-prerelease-review-20261019.json)分别只读核对后端实物证据、APK及文档限定，无剩余阻断；
 agent审查不等于GitHub成员批准。文档交付提交后的最终head仍须在[PR #16](https://github.com/zewbby/HnuHole/pull/16)核对全部检查，
 上述8691结果只属于其精确源码。PR保留draft，未合并、未正式发布。
+
+
+## 2026-10-19实际手机验收补充
+
+用户开放vivo S18窗口，实际V2323A/Android15/API35、ARM64；使用既存8691eb4 debug包和14f5096 lab-09，
+main仍为1b78f42/C0015/V0004。11项限定设备检查通过，详见[报告](android-device-validation-20261019.md)。
+两个合成帖子、1张PNG、1身份/1活跃会话真实入库；PNG选图→SQL payload→Gal MediaStore原字节SHA256均为
+`994bd517ee5da474608ad4aa8d5d50fd6a68a69e1ad6e11f80a5b2d049e62e27`，5049字节。
+实际新进程重开保留登录，退出SQL会话0、重登后1；凭据版本保持1，没有重设密码或诊断写库。
+
+自动输入曾截短40位密码为38位，用户看到“账号密码不正确”；保留FAIL，重新聚焦核对完整40位后通过正常UI重登。
+没有以离线密码比较代证手机登录。旧“我的”路由在退出/重登后仍保守失效；返回首页重新进入通道后两个帖子和大图可读，
+不声称旧路由自动恢复或全App无缺陷。手机端负TLS/Gate冻结、完整原生安全、多图/TalkBack全套仍未验。
+
+原包名已有旧测试签名；用户明确授权卸载旧App及本机数据后才做全新安装，因此不证明同包升级。
+Windows工具新下载在本任务目录，专用ADB5049仅使用既有OS profile USB身份，metadata不变；操作者未复制/读取/哈希key，
+没有新建OS账号或改全局调试设置。只映射C52045/V37073，无PG/邮件/内部mTLS映射。
+
+窗口已结束；本任务临时媒体/UI文件、两条reverse和专用ADB已收回，五个PG均status3、C/V及watch/mailpit等自有进程已停。
+保留测试App及私有工具/库/签名，不能因保留安装而声称后台持续在线。后续新窗口先核归属、端点和证书，不自动沿用授权卸载其他包。
+原准备manifest及CI release的NOT_RUN不改写；本轮手机结果仅属于8691/d80c包，证据提交后的最终head CI另在PR核对。

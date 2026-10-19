@@ -1,7 +1,7 @@
 # Android候选版本交付与隔离预发布：开发任务范围
 
-创建：2026-10-18，Asia/Shanghai。状态：DEVICE_PACKAGE_PREPARED_DEVICE_NOT_RUN，尚未合并或发布。
-更新：2026-10-19。设备包8691eb4实际构建验签PASS；后端14f5096独立13项/75摘要及Windows严格HTTPS预检PASS；8691八项CI全绿，文档交付后的最终head另按PR核对。
+创建：2026-10-18，Asia/Shanghai。状态：PASS_SCOPED_SINGLE_ANDROID_MINIMUM_CHAIN，尚未合并或发布。
+更新：2026-10-19。设备包8691eb4的vivo S18最小文字/图片链路11项限定实测通过，窗口已结束；后端14f5096的13项/75摘要和c42dfb2八项CI通过。新证据提交后的最终head另按PR核对。
 仓库 zewbby/HnuHole；分支 `codex/ci/android-prerelease`；独立目录 `E:/HnuHole-android-prerelease-20261018/repo`。
 创建基线 `8fa9cbc8bc69e490ddfcf4d0fce4e289e32e7903`。本任务不是正式上线或生产安全批准。
 
@@ -17,9 +17,10 @@
 包名org.hnuhole.hnuhole_mobile、签名和APK摘要见[制品manifest](../release/android-candidate-20261018.json)。
 首个完整成功运行[39115461923](https://github.com/zewbby/HnuHole/actions/runs/39115461923)；
 最终head以PR最新checks/制品manifest为准，证据提交后的检查继续核对。
-[本轮独立agent审查](../release/android-prerelease-review-20261019.json)通过，不冒充GitHub成员批准。当前手机NOT_RUN、跨设备Passkey和iOS延期。
-用户指定vivo S18 / OriginOS 5，本次没有设备窗口；本任务独立SDK/签名和pinned-CA debug测试包已实际构建验签，
-不运行ADB或操作手机。安装前须核对现有同包归属，避免覆盖。实际构建证据见发布记录，不替代设备验收。
+[本轮独立agent审查](../release/android-prerelease-review-20261019.json)通过，不冒充GitHub成员批准。本轮手机最小链路PASS_SCOPED、跨设备Passkey和iOS延期。
+用户开放本session的vivo S18窗口后，实际核对Android15/API35并完成测试。旧签名同包冲突时先暂停，用户明确授权卸载旧App及本机数据后才安装；没有换签名覆盖。
+本任务新下载的Windows SDK/专用ADB5049使用既有OS profile USB身份，操作者未读取/复制/哈希key，metadata不变；不声称生成了隔离Windows USB key。
+手机11项限定结果、输入失败历史、旧路由保守失效及收尾见[手机报告](../release/android-device-validation-20261019.md)。所有临时映射/媒体及自有服务已收回，保留测试App，后续不得自动重启设备窗口。
 P03/P05仅新增开发范围证明，生产主体独立/真实云/正式签名/正式发布未验。
 
 ## 目标与本次包含

@@ -17658,7 +17658,11 @@
         "checks": 13,
         "restoredFingerprints": 75,
         "production": "NOT_RUN",
-        "device": "NOT_RUN"
+        "device": "PASS_SCOPED_SINGLE_ANDROID_MINIMUM_CHAIN",
+        "deviceEvidence": "docs/release/android-device-validation-20261019.json",
+        "deviceReport": "docs/release/android-device-validation-20261019.md",
+        "deviceChecks": 11,
+        "deviceScope": "Single vivo S18/API35 debug8691; text/one PNG/session reopen/login only; no production or full module promotion"
       }
     },
     {
@@ -17711,7 +17715,11 @@
         "checks": 13,
         "restoredFingerprints": 75,
         "production": "NOT_RUN",
-        "device": "NOT_RUN"
+        "device": "PASS_SCOPED_SINGLE_ANDROID_MINIMUM_CHAIN",
+        "deviceEvidence": "docs/release/android-device-validation-20261019.json",
+        "deviceReport": "docs/release/android-device-validation-20261019.md",
+        "deviceChecks": 11,
+        "deviceScope": "Single vivo S18/API35 debug8691; text/one PNG/session reopen/login only; no production or full module promotion"
       }
     },
     {
