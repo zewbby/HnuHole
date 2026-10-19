@@ -16361,8 +16361,8 @@
         "B07-CONNECTED-01",
         "COMMENT-FAIL-ENTRY-01"
       ],
-      "note": "2026-10-19 #19完整评论业务接通：真实PG/TLS/Dart、原生已提交journal、页面/单图/点赞/删除/具体定位、真实失败通知与恢复通过本轮Android限定验收；最终产品e1466c7。PARTIAL保留全平台/生产/新增实体TalkBack及多机型矩阵缺口，不再表示客户端或通知未实现；未合并、未发布。",
-      "nextAcceptance": "按实际PR最终head检查送审；用户合并另议，获授权后按#17→#19正常合并。iOS/跨设备Passkey继续延期，生产与新增实体无障碍/多机型矩阵另按授权安排。",
+      "note": "2026-10-19 #19完整评论业务接通：真实PG/TLS/Dart、原生已提交journal、页面/单图/点赞/删除/具体定位、真实失败通知与恢复通过本轮Android限定验收；最终产品e1466c7。PARTIAL保留全平台/生产/新增实体TalkBack及多机型矩阵缺口，不再表示客户端或通知未实现；已按#17→#19合入main，评论开发结束；未发布。",
+      "nextAcceptance": "评论开发任务已结束；合并事实见docs/design/comments-main-merge-20261019.json。iOS/跨设备Passkey继续延期，生产与新增评论实体无障碍/多机型矩阵另按授权安排，不自动开展。",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -16461,9 +16461,13 @@
         "flutterPassed": 158,
         "deviceSameApkThreePhasesPassed": true,
         "sourceFingerprint": "9252c2ad51a9233904a8ddfb65efc259fc5146c3725d979c6bfecdbcfed59685",
-        "merged": false,
+        "merged": true,
         "published": false,
-        "mergeAuthorization": "Merge reserved for separate discussion by user."
+        "mergeAuthorization": "User explicitly authorized merge delivery and end of comments development in this session.",
+        "taskState": "CLOSED_DEVELOPMENT_DELIVERED",
+        "mergeSha": "2da7cdf9d4311e8017108e56656c74d379d4a01b",
+        "coreMergeSha": "3e0cc02b7708abc4ab172bee549db5ec57f2f6f5",
+        "mergeReceipt": "docs/design/comments-main-merge-20261019.json"
       }
     },
     {
@@ -39837,7 +39841,9 @@
       "X06",
       "X07"
     ],
-    "historicalBaselineFieldsPreserved": true
+    "historicalBaselineFieldsPreserved": true,
+    "historicalPhaseSnapshot": true,
+    "currentDelivery": "docs/design/comments-main-merge-20261019.json"
   },
   "commentsBackendTextWorkItem20261018": {
     "branch": "codex/feat/comments-backend-text",
@@ -39851,7 +39857,9 @@
     "notificationIntegration": "NOT_RUN_NOT_CONNECTED",
     "independentMemberReview": "PENDING",
     "merged": false,
-    "published": false
+    "published": false,
+    "historicalPhaseSnapshot": true,
+    "currentDelivery": "docs/design/comments-main-merge-20261019.json"
   },
   "commentsConnectedWorkItem20261019": {
     "state": "CONNECTED_ANDROID_SCOPED_PASS",
@@ -39868,8 +39876,12 @@
     "flutterPassed": 158,
     "deviceSameApkThreePhasesPassed": true,
     "sourceFingerprint": "9252c2ad51a9233904a8ddfb65efc259fc5146c3725d979c6bfecdbcfed59685",
-    "merged": false,
+    "merged": true,
     "published": false,
-    "mergeAuthorization": "Merge reserved for separate discussion by user."
+    "mergeAuthorization": "User explicitly authorized merge delivery and end of comments development in this session.",
+    "taskState": "CLOSED_DEVELOPMENT_DELIVERED",
+    "mergeSha": "2da7cdf9d4311e8017108e56656c74d379d4a01b",
+    "coreMergeSha": "3e0cc02b7708abc4ab172bee549db5ec57f2f6f5",
+    "mergeReceipt": "docs/design/comments-main-merge-20261019.json"
   }
 }

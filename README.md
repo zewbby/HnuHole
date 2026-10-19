@@ -38,14 +38,13 @@
 | `codex/ci/android-prerelease` | PR #16已合入main，交付测试签名候选、同机恢复/回滚与vivo S18最小文字图片限定实测；未正式发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
 
 | `codex/feat/report-moderation` | PR #18 已合入main：帖子举报、网页审核和最小系统通知阶段1；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |
-| `codex/feat/comments-replies` | 评论核心 PR #17 为业务接通 PR #19 的前置，按顺序交付。 | [任务边界](docs/branches/feat-comments-replies.md) |
-| `codex/feat/comments-backend-text` | PR #19 评论业务已接通并通过真实后端与Android限定验收，待合并。 | [详情](docs/branches/feat-comments-backend-text.md) |
 | `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
 
 ### 已合并或退役的历史工作
 
 以下分支已合并、关闭或被后续实现取代；历史详情与 PR 记录保留，后续开发以 `main` 为基线：
 
+- 评论与回复：[#17 核心](https://github.com/zewbby/HnuHole/pull/17)与[#19 完整业务接通](https://github.com/zewbby/HnuHole/pull/19)已合入main，评论开发结束；[任务详情](docs/branches/feat-comments-backend-text.md)及[合并收尾](docs/branches/docs-comments-merge-delivery.md)保留Android限定验收及延期边界。
 - 文字帖：[早期实现与退役交接](docs/branches/community-text-posting.md)；维护资料已整理，T1–T3 原始证据与完整提交历史分别归档。
 - 工程基线：[工程决策与早期骨架](docs/branches/engineering-baseline.md)，原分支按用户要求退役，完整历史保留于归档标签。
 - 认证与 B5：[认证交接](docs/branches/auth-privacy-handoff.md)、[B5 主线接入](docs/branches/fix-b5-main-integration.md)、[B5 合并记录](docs/branches/docs-b5-integration-merge-record.md)；认证导入 PR [#8](https://github.com/zewbby/HnuHole/pull/8) 已由 [#9](https://github.com/zewbby/HnuHole/pull/9) 取代。
@@ -55,8 +54,8 @@
 
 ## 最近变动
 
+- 2026-10-19 · [#19](https://github.com/zewbby/HnuHole/pull/19)：合入评论回复页面、原生恢复、单图、点赞删除与真实失败通知数据源，Android限定验收通过。
+- 2026-10-19 · [#17](https://github.com/zewbby/HnuHole/pull/17)：合入评论领域、客户端任务核心及幂等与未知核对契约。
+- 2026-10-19 · [#20](https://github.com/zewbby/HnuHole/pull/20)：补记Android候选PR #16的实际合并事实与限定验收边界。
 - 2026-10-19 · [#16](https://github.com/zewbby/HnuHole/pull/16)：合入Android测试签名候选、隔离预发布与恢复/回滚路径，并归档vivo S18最小文字图片限定验收。
 - 2026-10-18 · [#18](https://github.com/zewbby/HnuHole/pull/18)：合入帖子举报审核与最小系统通知阶段1，评论接入保留第二阶段。
-- 2026-10-18 · [#15](https://github.com/zewbby/HnuHole/pull/15)：补记社区PR #13的合并事实和宿主、SQL、设备验收边界。
-- 2026-10-18 · [#13](https://github.com/zewbby/HnuHole/pull/13)：合入社区无障碍与主线图片/认证整合成果，跨设备 Passkey 保留待验。
-- 2026-10-18 · [#14](https://github.com/zewbby/HnuHole/pull/14)：归档文字帖原始证据并退役历史分支。

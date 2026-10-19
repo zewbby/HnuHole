@@ -1,6 +1,6 @@
 # 评论业务接通（含原文字后端增量）
 
-> **2026-10-19 当前交付：完整评论业务已接通，Android限定验收PASS。** 最新main `41ed0c5`，依赖 #17 head `be48a1d` → #19；0016/0017、页面、原生journal、单图、点赞删除及真实失败通知已完成。产品候选 `e1466c7`，158项Flutter及真实库/TLS/Dart、同APK三阶段设备通过，独立审查发现已修复复核。详见[报告](../design/comments-connected-report-20261019.md)、[证据](../design/comments-connected-verification-20261019.json)、[审查](../design/comments-connected-review-20261019.json)。最终head以PR实时回执为准，未合并、未发布，合并另议；下方文字/核心阶段边界均为历史快照。
+> **2026-10-19 评论开发已合并交付并结束。** 用户明确授权“完成合并交付，结束评论开发”；[核心 #17](https://github.com/zewbby/HnuHole/pull/17)（`3e0cc02`）→[业务接通 #19](https://github.com/zewbby/HnuHole/pull/19)（`2da7cdf`）已依次 Squash 合入 main。#19 普通整合 #17 实际 main 后，完整文件树与已实测 `d1b83c5` 一致；送合 head `ad0a9c0` 的全部适用 CI 通过，57项产品输入指纹保持一致。详见[合并回执](../design/comments-main-merge-20261019.json)、[接通报告](../design/comments-connected-report-20261019.md)及[独立审查](../design/comments-connected-review-20261019.json)。页面、原生已提交任务持久化、单图、点赞、删除、失败恢复和真实失败通知数据源均已进入主线，迁移链为0001..0017。Android限定验收结论保持；B07全平台/生产仍为PARTIAL，iOS、跨设备Passkey及新增评论实体TalkBack/多机型矩阵留后续独立授权，未发布。当前评论开发任务关闭，下方各阶段记录保留原版本历史。
 
 
 ## 2026-10-18 文字阶段历史快照
