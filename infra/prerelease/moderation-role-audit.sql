@@ -1,4 +1,4 @@
--- Exact deployed main 0015 + grant-moderation.sql contract, private C only.
+-- Exact 0015/0018 + grant-moderation.sql contract, private C only.
 -- This replaces only c_moderation's table/sequence part of the legacy audit.
 DO $audit$
 DECLARE
@@ -57,7 +57,7 @@ BEGIN
    END LOOP;
   END LOOP;
   FOR f IN SELECT p.oid,p.proname FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='c_moderation' LOOP
-   allowed := r='hnuhole_c_runtime' AND f.proname IN ('immutable_audit','deleted_post','closed_account');
+   allowed := r='hnuhole_c_runtime' AND f.proname IN ('immutable_audit','deleted_post','closed_account','deleted_comment','comment_publication_guard');
    IF has_function_privilege(r,f.oid,'EXECUTE')<>allowed THEN RAISE EXCEPTION 'moderation function privilege mismatch'; END IF;
   END LOOP;
  END LOOP;

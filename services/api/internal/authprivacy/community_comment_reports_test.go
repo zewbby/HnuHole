@@ -415,6 +415,23 @@ func TestCommentReportRuntimeSchemaAndLeastPrivilegePostgres(t *testing.T) {
 	}
 	_, r := commentReportSubmit(t, l, reporter, p.post.String(), root, nil)
 	moderationDecision(t, l, reviewer, r.CaseID, "TAKEDOWN", 0)
+	// The deployment audit must recognize the two explicit 0018 trigger
+	// functions while still refusing immutable case evidence/target writes.
+	audit, e := os.ReadFile("../../../../infra/prerelease/moderation-role-audit.sql")
+	if e != nil {
+		t.Fatal(e)
+	}
+	mustExec(t, l.cp, string(audit))
+	mustExec(t, l.cp, `GRANT UPDATE(comment_id) ON c_moderation.cases TO hnuhole_c_runtime`)
+	if _, e = l.cp.Exec(ctx, string(audit)); e == nil {
+		t.Fatal("deployment audit accepted mutable case target")
+	}
+	mustExec(t, l.cp, `REVOKE UPDATE(comment_id) ON c_moderation.cases FROM hnuhole_c_runtime`)
+	mustExec(t, l.cp, `GRANT UPDATE(root_comment_id) ON c_comments.tasks TO hnuhole_c_runtime`)
+	if e = l.c.CheckCommentSchema(ctx); e == nil {
+		t.Fatal("immutable reply binding acquired UPDATE")
+	}
+	mustExec(t, l.cp, `REVOKE UPDATE(root_comment_id) ON c_comments.tasks FROM hnuhole_c_runtime`)
 	if _, e = l.c.ReadOneComment(ctx, reporter.SessionToken, p.post.String(), root); e == nil {
 		t.Fatal("runtime public filter bypass")
 	}
