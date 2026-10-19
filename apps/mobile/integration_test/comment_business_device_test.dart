@@ -29,7 +29,12 @@ void main() {
       const driver = MethodChannel('hnuhole/owned_device_driver');
       final phase = await driver.invokeMethod<String>('phase');
       expect(
-        {'comment-write', 'comment-read', 'comment-picker'}.contains(phase),
+        {
+          'comment-write',
+          'comment-read',
+          'comment-view',
+          'comment-picker',
+        }.contains(phase),
         isTrue,
       );
       final device = await driver.invokeMapMethod<String, dynamic>(
@@ -119,7 +124,7 @@ void main() {
           condition(),
           isTrue,
           reason:
-              '$label; mediaSections=${find.byType(PostImagesSection).evaluate().length}; imageLabels=${find.byType(Text).evaluate().map((e) => (e.widget as Text).data ?? '').where((t) => t.contains("图片")).join("|")}',
+              '$label; mediaSections=${find.byType(PostImagesSection).evaluate().length}; commentMediaSections=${find.descendant(of: find.byType(CommentImageView), matching: find.byType(PostImagesSection)).evaluate().length}; imageRect=${find.byType(CommentImageView).evaluate().isEmpty ? null : tester.getRect(find.byType(CommentImageView))}; imageLabels=${find.byType(Text).evaluate().map((e) => (e.widget as Text).data ?? '').where((t) => t.contains("图片")).join("|")}',
         );
       }
 
@@ -225,19 +230,29 @@ void main() {
           expect((await journal.read(account)).length, 1);
           flags['temporaryInputNotJournaled'] = true;
         } else {
-          final loaded = (await journal.read(account)).single;
-          expect(loaded.intent.taskId, task);
-          expect(loaded.content!.body, '原生重开原文\r\ne\u0301');
-          flags['nativeJournalReopened'] = true;
+          if (phase != 'comment-view') {
+            final loaded = (await journal.read(account)).single;
+            expect(loaded.intent.taskId, task);
+            expect(loaded.content!.body, '原生重开原文\r\ne\u0301');
+            flags['nativeJournalReopened'] = true;
+          }
           await control('/resume');
           await runtime.reconcile();
           await wait(
-            () => runtime.core.resolvedTasks.any((t) => t.taskId == task),
+            () =>
+                phase == 'comment-view' ||
+                runtime.core.resolvedTasks.any((t) => t.taskId == task),
             'original task published after reopen',
           );
-          final published = runtime.core.resolvedTasks.singleWhere(
-            (t) => t.taskId == task,
-          );
+          final published = phase == 'comment-view'
+              ? (await runtime.api.queryTask(
+                  taskId: task,
+                  binding: CommentBinding(
+                    postId: post,
+                    identityId: f['identityId'] as String,
+                  ),
+                ))!
+              : runtime.core.resolvedTasks.singleWhere((t) => t.taskId == task);
           final cid = published.commentId!;
           expect(await journal.read(account), isEmpty);
           flags['publishedOriginalRemovedFromJournal'] = true;
@@ -281,7 +296,7 @@ void main() {
             alignment: .5,
           );
           final thumbnail = find.byKey(
-            ValueKey(('post-image', (row['image'] as Map)['contentVersionId'])),
+            ValueKey(('post-image', (row['image'] as Map)['contentVersionId'] as String)),
           );
           await wait(
             () => thumbnail.evaluate().isNotEmpty,
