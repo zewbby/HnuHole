@@ -24,6 +24,10 @@ var (
 // parseObject bounds allocation before parsing and deliberately does not use
 // encoding/json's case-insensitive struct-field matching or last-key-wins rule.
 func parseObject(reader io.Reader, limit int64) (map[string]any, error) {
+	return parseObjectPolicy(reader, limit, false)
+}
+
+func parseObjectPolicy(reader io.Reader, limit int64, allowNull bool) (map[string]any, error) {
 	if reader == nil {
 		return nil, errMalformed
 	}
@@ -39,7 +43,7 @@ func parseObject(reader io.Reader, limit int64) (map[string]any, error) {
 	}
 	d := json.NewDecoder(bytes.NewReader(data))
 	d.UseNumber()
-	value, err := readValue(d, 0)
+	value, err := readValuePolicy(d, 0, allowNull)
 	if err != nil {
 		return nil, errMalformed
 	}
@@ -54,11 +58,15 @@ func parseObject(reader io.Reader, limit int64) (map[string]any, error) {
 }
 
 func readValue(d *json.Decoder, depth int) (any, error) {
+	return readValuePolicy(d, depth, false)
+}
+
+func readValuePolicy(d *json.Decoder, depth int, allowNull bool) (any, error) {
 	if depth > 8 {
 		return nil, errMalformed
 	}
 	token, err := d.Token()
-	if err != nil || token == nil {
+	if err != nil || token == nil && !allowNull {
 		return nil, errMalformed
 	}
 	if delim, ok := token.(json.Delim); ok {
@@ -74,7 +82,7 @@ func readValue(d *json.Decoder, depth int) (any, error) {
 				if _, exists := object[key]; exists {
 					return nil, errMalformed
 				}
-				value, e := readValue(d, depth+1)
+				value, e := readValuePolicy(d, depth+1, allowNull)
 				if e != nil {
 					return nil, e
 				}
@@ -88,7 +96,7 @@ func readValue(d *json.Decoder, depth int) (any, error) {
 		case '[':
 			var array []any
 			for d.More() {
-				value, e := readValue(d, depth+1)
+				value, e := readValuePolicy(d, depth+1, allowNull)
 				if e != nil {
 					return nil, e
 				}
@@ -237,6 +245,10 @@ func capability(header http.Header, scheme string) ([32]byte, error) {
 }
 
 func readRequestObject(r *http.Request, limit int64, required, optional []string) (map[string]any, error) {
+	return readRequestObjectPolicy(r, limit, required, optional, false)
+}
+
+func readRequestObjectPolicy(r *http.Request, limit int64, required, optional []string, allowNull bool) (map[string]any, error) {
 	if r.URL.RawQuery != "" || r.URL.ForceQuery || r.Header.Get("Content-Encoding") != "" {
 		return nil, errMalformed
 	}
@@ -256,7 +268,7 @@ func readRequestObject(r *http.Request, limit int64, required, optional []string
 			return nil, errMediaType
 		}
 	}
-	object, err := parseObject(r.Body, limit)
+	object, err := parseObjectPolicy(r.Body, limit, allowNull)
 	if err != nil {
 		return nil, err
 	}

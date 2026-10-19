@@ -40,6 +40,11 @@ type PostsConfig struct {
 	CursorKeyFile      string `json:"cursorKeyFile"`
 }
 
+type CommentsConfig struct {
+	CommandKeyFile     string `json:"commandKeyFile"`
+	FingerprintKeyFile string `json:"fingerprintKeyFile"`
+}
+
 // PostImages enables private PostgreSQL storage, not a public file server.
 // Python must be a dedicated, dependency-pinned Linux validator environment.
 type PostImagesConfig struct {
@@ -49,30 +54,31 @@ type PostImagesConfig struct {
 }
 
 type Config struct {
-	Environment             string       `json:"environment"`
-	DatabaseURL             string       `json:"databaseUrl"`
-	DatabasePasswordFile    string       `json:"databasePasswordFile"`
-	PublicListen            string       `json:"publicListen"`
-	InternalListen          string       `json:"internalListen"`
-	PublicOrigin            string       `json:"publicOrigin"`
-	PeerOrigin              string       `json:"peerOrigin"`
-	AllowedOrigins          []string     `json:"allowedOrigins"`
-	AllowDevelopmentNetwork bool         `json:"allowDevelopmentNetwork"`
-	CAFile                  string       `json:"caFile"`
-	PublicCertificateFile   string       `json:"publicCertificateFile"`
-	PublicKeyFile           string       `json:"publicKeyFile"`
-	InternalCertificateFile string       `json:"internalCertificateFile"`
-	InternalKeyFile         string       `json:"internalKeyFile"`
-	NetworkKeyFile          string       `json:"networkKeyFile"`
-	SigningKeyFile          string       `json:"signingKeyFile"`
-	TrustedCommunityKeyFile string       `json:"trustedCommunityKeyFile"`
-	TrustedVerifierKeyFile  string       `json:"trustedVerifierKeyFile"`
-	RequestKeyFile          string       `json:"requestKeyFile,omitempty"`
-	PasswordBlocklistFile   string       `json:"passwordBlocklistFile,omitempty"`
-	Gate                    *GateConfig  `json:"gate,omitempty"`
-	Posts                   *PostsConfig `json:"posts,omitempty"`
-	Moderation              bool         `json:"moderation,omitempty"`
-	AdminDirectory          string       `json:"adminDirectory,omitempty"`
+	Environment             string          `json:"environment"`
+	DatabaseURL             string          `json:"databaseUrl"`
+	DatabasePasswordFile    string          `json:"databasePasswordFile"`
+	PublicListen            string          `json:"publicListen"`
+	InternalListen          string          `json:"internalListen"`
+	PublicOrigin            string          `json:"publicOrigin"`
+	PeerOrigin              string          `json:"peerOrigin"`
+	AllowedOrigins          []string        `json:"allowedOrigins"`
+	AllowDevelopmentNetwork bool            `json:"allowDevelopmentNetwork"`
+	CAFile                  string          `json:"caFile"`
+	PublicCertificateFile   string          `json:"publicCertificateFile"`
+	PublicKeyFile           string          `json:"publicKeyFile"`
+	InternalCertificateFile string          `json:"internalCertificateFile"`
+	InternalKeyFile         string          `json:"internalKeyFile"`
+	NetworkKeyFile          string          `json:"networkKeyFile"`
+	SigningKeyFile          string          `json:"signingKeyFile"`
+	TrustedCommunityKeyFile string          `json:"trustedCommunityKeyFile"`
+	TrustedVerifierKeyFile  string          `json:"trustedVerifierKeyFile"`
+	RequestKeyFile          string          `json:"requestKeyFile,omitempty"`
+	PasswordBlocklistFile   string          `json:"passwordBlocklistFile,omitempty"`
+	Gate                    *GateConfig     `json:"gate,omitempty"`
+	Posts                   *PostsConfig    `json:"posts,omitempty"`
+	Comments                *CommentsConfig `json:"comments,omitempty"`
+	Moderation              bool            `json:"moderation,omitempty"`
+	AdminDirectory          string          `json:"adminDirectory,omitempty"`
 
 	PostImages *PostImagesConfig `json:"postImages,omitempty"`
 	// Exactly four public Gate purpose keys from the other party, in evidence,
@@ -163,6 +169,11 @@ func (c Config) Validate(service authprivacyhttp.Service) error {
 	if err != nil {
 		return err
 	}
+	commentPaths, err := c.commentKeyFiles(service)
+	if err != nil {
+		return err
+	}
+	postPaths = append(postPaths, commentPaths...)
 	if c.PublicListen == c.InternalListen {
 		return errors.New("public and internal listeners must be separate")
 	}
@@ -357,6 +368,16 @@ func (c Config) postKeyFiles(service authprivacyhttp.Service) ([]string, error) 
 		}
 	}
 	return paths, nil
+}
+
+func (c Config) commentKeyFiles(service authprivacyhttp.Service) ([]string, error) {
+	if c.Comments == nil {
+		return nil, nil
+	}
+	if service != authprivacyhttp.CommunityService || c.Posts == nil || c.Comments.CommandKeyFile == "" || c.Comments.FingerprintKeyFile == "" {
+		return nil, errors.New("comment text requires explicit C posts and two independent purpose keys")
+	}
+	return []string{c.Comments.CommandKeyFile, c.Comments.FingerprintKeyFile}, nil
 }
 
 // 所有私有用途密钥用同一集合查重，帖子密钥不得复用认证或签名材料。

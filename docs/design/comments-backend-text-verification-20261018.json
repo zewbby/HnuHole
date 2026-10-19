@@ -1,0 +1,257 @@
+{
+  "recordedOn": "2026-10-18",
+  "result": "BACKEND_TEXT_SCOPED_PASS",
+  "fullB07Result": "BLOCKED",
+  "branch": "codex/feat/comments-backend-text",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
+  "basePullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+  "baseCommit": "767b0a38db0f382c9defe2c6011907a963069f52",
+  "integratedMain": "1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1",
+  "testedBackendCommit": "07911ab13fa034e186a9de79864004a4bbd3d3e4",
+  "migration": {
+    "result": "PASS",
+    "goose": "v3.22.1",
+    "upstream": "0015_reports_moderation.sql",
+    "comments": "0016_comments.sql",
+    "emptyInstall": "0001..0016",
+    "upgrade": "0014 -> real 0015 -> 0016",
+    "appliedVersions": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "down": "REJECTED_AND_LEDGER_REMAINS_16",
+    "upstreamPinnedRegression": "TestModerationGooseUpgradeAndDownRefusalPostgres explicitly up-to15: PASS"
+  },
+  "targetedRealSQLAndHTTPS": {
+    "result": "PASS",
+    "command": "bash services/api/authlab/run-comment-text-isolated.sh",
+    "topLevelChecks": 13,
+    "nestedGooseChecks": 2,
+    "failureCount": 0,
+    "skipCount": 0,
+    "passed": [
+      "TestCommentTextGooseMigrationChainPostgres",
+      "TestCommentTextGooseMigrationChainPostgres/upgrade",
+      "TestCommentTextGooseMigrationChainPostgres/fresh",
+      "TestCommentTextTransactionsPostgres",
+      "TestCommentTextFailureRetryAbandonPostgres",
+      "TestCommentTextFrozenGatePostgres",
+      "TestCommentTextRuntimeAndSQLGuardsPostgres",
+      "TestCommentTextUnavailablePostPostgres",
+      "TestCommentTextClosureCleanupWithFeatureDisabledPostgres",
+      "TestPostSchemaModerationCleanupPrivilegesWithoutFeaturePostgres",
+      "TestPostSchemaModerationAccountClosureWithoutFeaturePostgres",
+      "TestPostSchemaFixedOwnershipAndTerminalStatePostgres",
+      "TestModerationGooseUpgradeAndDownRefusalPostgres",
+      "TestCommentTextNullableBoundary",
+      "TestCommentTextHTTPSPostgres"
+    ],
+    "postgres": "16",
+    "go": "1.22.2",
+    "transport": "real TLS server/client and private PG Unix socket; no production DSN",
+    "restrictedRole": "hnuhole_c_runtime",
+    "localLog": "E:/HnuHole-comments-replies-20261018/runtime/backend-text-sql-http-final.log",
+    "logSha256": "e8942512627af9072732766fd5763f44351e1b9e738bf26a3720c164e28fb78b"
+  },
+  "host": {
+    "result": "PASS",
+    "topLevelChecks": 6,
+    "scope": "new persistence/config/nullable parsing + affected strict auth parser and moderation-access boundary",
+    "build": "go build -mod=readonly ./cmd/authdev",
+    "vetPackages": [
+      "internal/comments",
+      "internal/authprivacy",
+      "internal/authprivacyhttp",
+      "internal/authprivacyruntime"
+    ],
+    "executedAtCommit": "718d5f4b9ed213fbf0636b52c732fbe724877152",
+    "reuseAtCommit": "07911ab13fa034e186a9de79864004a4bbd3d3e4",
+    "reason": "fix changes SQL and its regression only; product Go implementation identical"
+  },
+  "contract": {
+    "result": "PASS",
+    "spec": "packages/openapi/comment-text-component.yaml",
+    "command": "python tools/check-comment-text-contract.py",
+    "inheritsOriginalDTOAndRejectionVocabulary": true
+  },
+  "backendSourceFingerprint": {
+    "sha256": "d7ea7789862e052c5e7685e1997041e41a70f8703dcd8aaabb7c272df545e8bf",
+    "serialization": "sorted path + U+0000 + git blob object SHA-1 + LF; Go/SQL/runner/workflow/checker plus Go module locks only; documentation and descriptive OpenAPI metadata excluded",
+    "inputs": [
+      {
+        "path": ".github/workflows/comments-backend-text.yml",
+        "gitBlob": "078c8b7024647a915861b8e3cbbbd0fbab60b013"
+      },
+      {
+        "path": "infra/postgres/grant-comments.sql",
+        "gitBlob": "f78a63bae8e3673c303b5c2052c457a6494fa44c"
+      },
+      {
+        "path": "infra/postgres/grant-community.sql",
+        "gitBlob": "3edd373285fa29ff0a518f0138dc48b60cdb81af"
+      },
+      {
+        "path": "services/api/authlab/privacy-role-audit.sql",
+        "gitBlob": "6437c8b01ba7785873eaa49f5f5eef61ba476692"
+      },
+      {
+        "path": "services/api/authlab/run-comment-text-isolated.sh",
+        "gitBlob": "186860871d21f794bc23ae8f9a0a4732b6deb65b"
+      },
+      {
+        "path": "services/api/go.mod",
+        "gitBlob": "ed1999f9827c4b28179863c1da3a8653c12f8e59"
+      },
+      {
+        "path": "services/api/go.sum",
+        "gitBlob": "75d12ffc588902e84a39c4b0b6d4d214be480e7d"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community.go",
+        "gitBlob": "6a040edd3b978a90dc0cfbe302d95e6379c76dee"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments.go",
+        "gitBlob": "729a814ac7fbec9fb3222d48a9f1dd0d5ea49a0c"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_migration_test.go",
+        "gitBlob": "47c92d688291e428ddbc08522e997095d7d47995"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_read.go",
+        "gitBlob": "5e8941bf13a4acd4819700dc85f2ad058ebbd869"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_schema.go",
+        "gitBlob": "01d48f19910fcdda713d721f3c2abed07776e51e"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_test.go",
+        "gitBlob": "69fcececbf802ae8e0b45327d3b99709fafa4480"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_worker.go",
+        "gitBlob": "dbe3b30ec36209e47485ac182c0574d535b41a72"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts_schema.go",
+        "gitBlob": "ced6d010f2a737e1cc742f0eef3bc521847b600e"
+      },
+      {
+        "path": "services/api/internal/authprivacy/moderation_upgrade_test.go",
+        "gitBlob": "948cc983ee067f0bc1326b8a4ffb3ca6512f3f76"
+      },
+      {
+        "path": "services/api/internal/authprivacy/postgres_test.go",
+        "gitBlob": "7b6de22f4f1bafecce54f8dac4a7f60f6d37c429"
+      },
+      {
+        "path": "services/api/internal/authprivacy/workers.go",
+        "gitBlob": "340fa53f23bc4edf34059d05f430996eccad405e"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/comments_endpoints.go",
+        "gitBlob": "cfaad94eee3a0bb2772c4fd4af1032b4aee63f1a"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/comments_endpoints_test.go",
+        "gitBlob": "4b9bba702b9848d5d746f19ca955f5015881b4ef"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/comments_postgres_test.go",
+        "gitBlob": "c22d089bec104af9fc6630ef78fa58435aaf2094"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/endpoints.go",
+        "gitBlob": "9badc91df8eb60ba427a11396d0458c7dc3524a2"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/endtoend_postgres_test.go",
+        "gitBlob": "433bccfb029eed1f50cb9e5b50f2f9d53ca72649"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/strict.go",
+        "gitBlob": "40d3ca337438bb0ab28bd6e9c17a422ca00ab86d"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/comments_config_test.go",
+        "gitBlob": "51465024dc624108d453f3a242a021934ceda9b1"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/config.go",
+        "gitBlob": "9ecb0301c1a7bb5d620fd2c4530faf984e994a99"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/server.go",
+        "gitBlob": "505c3123f147b88dedb4b637656f9156deb316ae"
+      },
+      {
+        "path": "services/api/internal/comments/persistence.go",
+        "gitBlob": "5a562a4f8adbbfa47cbf03033d089209a585782d"
+      },
+      {
+        "path": "services/api/internal/comments/persistence_test.go",
+        "gitBlob": "4a511054a07eb96d79e137b6d344f160d878ef3f"
+      },
+      {
+        "path": "services/api/migrations/0016_comments.sql",
+        "gitBlob": "3300c1e34e7105f881a4d42aa014c54245ef680a"
+      },
+      {
+        "path": "tools/check-comment-text-contract.py",
+        "gitBlob": "973a9fac3d2b57166d5ec622edd12d80411ab957"
+      }
+    ]
+  },
+  "scopeExclusions": [
+    "Flutter pages/app routes",
+    "native task journal/process restart",
+    "images",
+    "likes/delete/locate HTTP",
+    "notification provider/report moderation adaptation",
+    "devices/Passkey/iOS",
+    "deployment/production"
+  ],
+  "notificationIntegration": "NOT_RUN_NOT_CONNECTED",
+  "independentMemberReview": "PENDING",
+  "merged": false,
+  "published": false,
+  "finalHeadCheck": "PR metadata records final pushed head and CI; documentation-only follow-up preserves backend source fingerprint",
+  "report": "docs/design/comments-backend-text-report-20261018.md",
+  "verifiedOn": "2026-10-19",
+  "failureHistory": [
+    {
+      "head": "718d5f4b9ed213fbf0636b52c732fbe724877152",
+      "result": "FAIL_INHERITED_IMAGE_SQL_CI",
+      "check": "TestPostImagesRestrictedRuntimePostgres",
+      "job": "https://github.com/zewbby/HnuHole/actions/runs/39142674151/job/117720120115",
+      "cause": "SQL permission checks before boolean short-circuit required comment receipt SELECT on legacy post acceptance",
+      "fixCommit": "07911ab13fa034e186a9de79864004a4bbd3d3e4",
+      "targetedLocalRetest": "PASS",
+      "finalRemoteCheck": "see final PR head checks"
+    }
+  ],
+  "validationFixtureRevision": "Executed working tree identified by the committed blob fingerprint; backend implementation remains 07911ab",
+  "ciProductHeadEvidence": {
+    "head": "d833291b66fbc9b39e6ad819b10ddf3d8058e5f6",
+    "textComponent": "PASS",
+    "inheritedImageSQL": "PASS",
+    "scope": "Backend product unchanged; final fixture/doc commit gets its own Checks"
+  }
+}

@@ -1,3 +1,6 @@
+import '../comments/comment_runtime.dart';
+import '../comments/comment_failure_view.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -88,6 +91,11 @@ class _SystemNotificationsScreenState extends State<SystemNotificationsScreen> {
                   ),
                   const SizedBox(height: 24),
                   if (c.pending != null) PendingGovernancePanel(controller: c),
+                  if (CommentScope.maybeOf(context) case final comments?)
+                    CommentPendingView(
+                      runtime: comments,
+                      identityId: c.selectedIdentityId,
+                    ),
                   if (c.loading && c.items.isEmpty)
                     const Center(child: CircularProgressIndicator()),
                   if (!c.loading && c.items.isEmpty)
@@ -239,7 +247,13 @@ class _SystemNoticeDetailScreenState extends State<SystemNoticeDetailScreen> {
                     Text(n.body),
                     const SizedBox(height: 24),
                     if (n.route.name == 'COMMENT_FAILURE')
-                      const Text('评论失败任务接口已预留，当前版本尚未接入评论发布任务。'),
+                      if (CommentScope.maybeOf(context) case final comments?)
+                        CommentFailureView(
+                          runtime: comments,
+                          taskId: n.route.resourceId,
+                          identityId: n.identityId,
+                          onResolved: () => unawaited(c.loadNotifications()),
+                        ),
                     if (_resource case final r?)
                       GovernanceResourceView(
                         controller: c,

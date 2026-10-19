@@ -27,6 +27,9 @@ func imageValidator(t *testing.T) *postmedia.ProcessValidator {
 		t.Skip("dedicated real validator not configured")
 	}
 	script, e := filepath.Abs("../../media/validate_image.py")
+	if configured := os.Getenv("POST_MEDIA_VALIDATOR"); configured != "" {
+		script = configured
+	}
 	if e != nil {
 		t.Fatal(e)
 	}

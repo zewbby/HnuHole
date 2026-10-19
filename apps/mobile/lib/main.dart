@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
+import 'src/comments/comment_runtime.dart';
+import 'src/comments/comment_http.dart';
+import 'src/comments/comment_journal.dart';
 import 'src/development/app_transport.dart';
 import 'src/navigation/community_material_labels.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   final communityBaseUri = Uri.parse(
     const String.fromEnvironment(
       'AUTH_COMMUNITY_BASE_URL',
@@ -122,6 +126,41 @@ void main() {
     store: store,
     sessions: sessions,
   );
+  final comments = CommentRuntime(
+    http: CommentHttp(
+      communityBaseUri,
+      client: createAppHttpClient(
+        community: communityBaseUri,
+        verifier: verifierBaseUri,
+      ),
+    ),
+    sessions: sessions,
+    authStore: store,
+    identities: api,
+    identityManagement: identities,
+    journal: NativeCommentJournal(
+      (account) => PostStore.openNative(
+        environment: '$storageScope|comments-v1',
+        accountId: account,
+      ),
+      purgeStore: (account) => PostStore.purgeNativeClosedAccount(
+        environment: '$storageScope|comments-v1',
+        accountId: account,
+      ),
+    ),
+  );
+  comments.openRetarget = (context, input, bytes) =>
+      Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          builder: (_) => PostDetailScreen(
+            controller: posts,
+            postId: input.binding.postId,
+            loadImages: postMedia.load,
+            initialCommentInput: input,
+            initialCommentOriginal: bytes,
+          ),
+        ),
+      );
   final flows = AuthFlows(
     api: api,
     store: store,
@@ -133,6 +172,7 @@ void main() {
     sessionAuthority: sessions,
     onAccountClosed: (accountId) async {
       await posts.purgeClosedAccount(accountId);
+      await comments.purgeClosedAccount(accountId);
       await governance.purgeClosedAccount(accountId);
     },
   );
@@ -151,6 +191,7 @@ void main() {
       postApi: postApi,
       postMedia: postMedia,
       loadPostImages: postMedia.load,
+      comments: comments,
       governance: governance,
       governanceApi: governanceApi,
     ),
@@ -177,6 +218,7 @@ class HnuholeApp extends StatefulWidget {
     this.postMedia,
     this.governance,
     this.governanceApi,
+    this.comments,
   });
 
   final ChannelDirectoryController directory;
@@ -192,6 +234,7 @@ class HnuholeApp extends StatefulWidget {
   final PostImagesLoader? loadPostImages;
   final PostMediaRepository? postMedia;
   final GovernanceController? governance;
+  final CommentRuntime? comments;
   final HttpGovernanceApi? governanceApi;
 
   @override
@@ -210,6 +253,49 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   bool _personalRouteOpen = false;
   String? _channelRouteId;
   bool _messagesRouteOpen = false;
+
+  final _notifiedFailures = <String>{};
+  void _commentChanged() {
+    final comments = widget.comments;
+    if (comments == null || !comments.available) return;
+    for (final failure in comments.core.failures) {
+      if (!_notifiedFailures.add(
+        '${comments.accountId}:${failure.taskId}:${failure.task.attemptVersion}',
+      )) {
+        continue;
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !comments.available) return;
+        _scaffoldMessengerKey.currentState?.showMaterialBanner(
+          MaterialBanner(
+            content: const Text('评论发送失败，原内容已保留。'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _scaffoldMessengerKey.currentState
+                      ?.hideCurrentMaterialBanner();
+                  unawaited(() async {
+                    final g = widget.governance;
+                    if (g != null) {
+                      await g.loadIdentities();
+                      await g.selectIdentity(failure.ownerIdentityId);
+                    }
+                    await _openMessages();
+                  }());
+                },
+                child: const Text('进入系统通知'),
+              ),
+              TextButton(
+                onPressed: () => _scaffoldMessengerKey.currentState
+                    ?.hideCurrentMaterialBanner(),
+                child: const Text('稍后'),
+              ),
+            ],
+          ),
+        );
+      });
+    }
+  }
 
   Future<void> _openMessages() async {
     final navigator = _navigatorKey.currentState,
@@ -265,6 +351,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    widget.comments?.addListener(_commentChanged);
     _startAuthentication();
   }
 
@@ -471,6 +558,8 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.comments?.removeListener(_commentChanged);
+    widget.comments?.dispose();
     widget.management.dispose();
     widget.identities.dispose();
     widget.flows.dispose();
@@ -495,20 +584,23 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
       localizationsDelegates: const [CommunityMaterialLabels.delegate],
       scaffoldMessengerKey: _scaffoldMessengerKey,
       navigatorKey: _navigatorKey,
-      builder: (context, child) => Listener(
-        behavior: HitTestBehavior.translucent,
-        onPointerUp: (_) {
-          // Let the requested action (including logout) start first. Activity
-          // is a user gesture, never a background timer or a build side effect.
-          scheduleMicrotask(widget.sessions.onActivity);
-        },
-        child: CommunitySpokenLocale(
-          child: widget.governance == null
-              ? child ?? const SizedBox.shrink()
-              : GovernanceScope(
-                  controller: widget.governance!,
-                  child: child ?? const SizedBox.shrink(),
-                ),
+      builder: (context, child) => CommentScopeHost(
+        runtime: widget.comments,
+        child: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerUp: (_) {
+            // Let the requested action (including logout) start first. Activity
+            // is a user gesture, never a background timer or a build side effect.
+            scheduleMicrotask(widget.sessions.onActivity);
+          },
+          child: CommunitySpokenLocale(
+            child: widget.governance == null
+                ? child ?? const SizedBox.shrink()
+                : GovernanceScope(
+                    controller: widget.governance!,
+                    child: child ?? const SizedBox.shrink(),
+                  ),
+          ),
         ),
       ),
       theme: ThemeData(
@@ -540,4 +632,13 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
       ),
     );
   }
+}
+
+class CommentScopeHost extends StatelessWidget {
+  const CommentScopeHost({super.key, this.runtime, required this.child});
+  final CommentRuntime? runtime;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) =>
+      runtime == null ? child : CommentScope(runtime: runtime!, child: child);
 }

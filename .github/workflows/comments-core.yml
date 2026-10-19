@@ -9,6 +9,7 @@ on:
       - 'packages/openapi/**'
       - 'packages/comment-protocol-vectors/**'
       - 'tools/check-comment-contract.py'
+      - 'tools/check-comment-business-contract.py'
       - 'tools/tests/test_comment_contract.py'
       - '.github/workflows/comments-core.yml'
   workflow_dispatch:
@@ -43,7 +44,7 @@ jobs:
           go vet -mod=readonly ./...
   client:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: apps/mobile
@@ -61,11 +62,19 @@ jobs:
           PUB_HOSTED_URL: https://pub.dev
         run: flutter pub get --enforce-lockfile
       - name: Analyze mobile and exercise comment core
-        # The tests use explicit adapters, not a connected notification centre
-        # or production encrypted journal. Native/device checks remain separate.
+        # SQLite exercises the production encrypted journal; widget adapters are
+        # explicit fixtures. Hardware vault and device checks remain separate.
         run: |
           flutter analyze --no-pub
-          flutter test --no-pub test/comment_core_test.dart test/comment_protocol_test.dart
+          flutter test --no-pub test/comment_core_test.dart test/comment_protocol_test.dart test/comment_journal_test.dart test/comment_views_test.dart test/comment_http_test.dart
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build Android comments integration
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'cmake;3.22.1'
+          flutter build apk --debug --no-pub
       - name: Preserve dependency locks
         run: git diff --exit-code -- pubspec.lock
   contract:
@@ -84,4 +93,5 @@ jobs:
         run: |
           python packages/openapi/check-specs.py
           python tools/check-comment-contract.py
+          python tools/check-comment-business-contract.py
           python -m unittest discover -s tools/tests -p test_comment_contract.py -v

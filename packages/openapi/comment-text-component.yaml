@@ -1,0 +1,250 @@
+openapi: 3.0.3
+info:
+  title: HnuHole live backend text comment subset
+  version: 0.1.0-text
+  description: Implemented only on codex/feat/comments-backend-text, stacked on PR17. PostgreSQL migration 0016
+    follows actual main governance 0015, with real TLS HTTP. This supplements the original design snapshot, without
+    claiming the rest of comment-api.yaml is live. CREATE/RETRY require image:null; all other unknown/null fields,
+    duplicate JSON keys, invalid Unicode and ambiguous headers are rejected. Reuse original codec and rejection
+    vocabulary. Receipt reads never substitute for current task reads. Existing authenticated C session and final
+    Gate protect every route. No images, likes, deletion, locate, notification or native journal integration. Public
+    likeCount=0 and likedByMe=false until likes are implemented. Order uses existing core; five-minute account/post/root
+    scoped snapshots exclude later insertions. Default replies show five; expanded=true continues after those five.
+    Cursors require the same account and scope. Bodies are byte/grapheme validated by existing core and never trimmed.
+    No request/body/secret logging.
+x-contract-status: IMPLEMENTED_BACKEND_TEXT
+x-source-design: comment-api.yaml
+servers:
+- url: /
+  description: Explicit current C HTTPS origin
+security:
+- bearerAuth: []
+paths:
+  /api/v1/comment-commands/{commandId}:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/CommandId
+    get:
+      operationId: getOwnTextCommentCommandResult
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session. A business REJECTED is
+            durable and has no task.
+          headers: &id001
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/CommentCommandResult
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+    put:
+      operationId: executeOwnTextCommentTaskCommand
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session. A business REJECTED is
+            durable and has no task.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/TaskCommandReceipt
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+        '202':
+          description: Original immutable CREATE/RETRY acceptance, including exact replays; publication is asynchronous.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/AcceptedTaskReceipt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentTaskCommand'
+  /api/v1/comment-commands/{commandId}/seal:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/CommandId
+    post:
+      operationId: sealUnknownTextCommentCommand
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session. A business REJECTED is
+            durable and has no task.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/ObservedCommandResult
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Seal'
+  /api/v1/me/comment-tasks/{taskId}:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/TaskId
+    get:
+      operationId: getOwnTextCommentTask
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session. A business REJECTED is
+            durable and has no task.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/OwnCommentTask
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+  /api/v1/posts/{postId}/comments:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/PostId
+    get:
+      operationId: listTextComments
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session. A business REJECTED is
+            durable and has no task.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/CommentPage
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 50
+      - name: cursor
+        in: query
+        schema:
+          type: string
+  /api/v1/posts/{postId}/comments/{rootCommentId}/replies:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/PostId
+    - $ref: comment-api.yaml#/components/parameters/RootCommentId
+    get:
+      operationId: listTextCommentReplies
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session. A business REJECTED is
+            durable and has no task.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/ReplyPage
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 50
+      - name: cursor
+        in: query
+        schema:
+          type: string
+      - name: expanded
+        in: query
+        schema:
+          type: boolean
+          default: false
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    CreateCommentCommand:
+      allOf:
+      - $ref: comment-api.yaml#/components/schemas/CreateCommentCommand
+      - type: object
+        properties:
+          image:
+            type: object
+            nullable: true
+            enum:
+            - null
+    RetryCommentCommand:
+      allOf:
+      - $ref: comment-api.yaml#/components/schemas/RetryCommentCommand
+      - type: object
+        properties:
+          image:
+            type: object
+            nullable: true
+            enum:
+            - null
+    CommentTaskCommand:
+      oneOf:
+      - $ref: '#/components/schemas/CreateCommentCommand'
+      - $ref: '#/components/schemas/RetryCommentCommand'
+      - $ref: comment-api.yaml#/components/schemas/AbandonCommentCommand
+    Seal:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      - requestDigest
+      properties:
+        operation:
+          type: string
+          enum:
+          - CREATE
+          - RETRY
+          - ABANDON
+        requestDigest:
+          $ref: comment-api.yaml#/components/schemas/Digest

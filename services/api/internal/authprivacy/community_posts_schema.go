@@ -35,6 +35,7 @@ func CheckModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool) err
 }
 
 func checkPostSchema(ctx context.Context, pool *pgxpool.Pool) error {
+	if e:=checkCommentLifecycleSchema(ctx,pool);e!=nil{return errPostSchema}
 	tables := []string{"schema_meta", "protocol_keys", "account_publication_control", "publication_stop_events", "identity_public_labels", "posts", "post_identity_bindings", "publication_tasks", "publication_attempts", "attempt_contents", "command_receipts", "payload_cleanup"}
 	columns := map[string][]string{
 		"schema_meta":                 {"singleton_id", "version", "hooks_version"},
