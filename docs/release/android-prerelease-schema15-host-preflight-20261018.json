@@ -1,0 +1,39 @@
+{
+  "sourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b",
+  "result": "PASS_NON_DEVICE_HOST_TLS_PREFLIGHT",
+  "startAtUtc": "2026-10-18T15:56:27.974996+00:00",
+  "commands": [
+    {
+      "command": "start",
+      "exitCode": 0
+    },
+    {
+      "command": "recover",
+      "exitCode": 0
+    },
+    {
+      "command": "health",
+      "exitCode": 0
+    },
+    {
+      "command": "stop",
+      "exitCode": 0
+    }
+  ],
+  "windowsHttps": [
+    {
+      "url": "https://127.0.0.1:52045/health/ready",
+      "status": 200,
+      "chainAndHostnameVerified": true
+    },
+    {
+      "url": "https://127.0.0.1:37073/health/ready",
+      "status": 200,
+      "chainAndHostnameVerified": true
+    }
+  ],
+  "adbInvoked": false,
+  "device": "NOT_RUN",
+  "caPemSha256": "da2215084e59bc56c6aeca048eefd2c6f8b1de2505ae46f5e8edcfa932c7a3ac",
+  "endAtUtc": "2026-10-18T15:56:31.160756+00:00"
+}
