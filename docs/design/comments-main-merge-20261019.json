@@ -1,0 +1,224 @@
+{
+  "schemaVersion": "hnuhole-comments-main-merge/v1",
+  "recordedOn": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "taskState": "CLOSED_DEVELOPMENT_DELIVERED",
+  "authorization": "User explicitly instructed: 完成合并交付，结束评论开发",
+  "core": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
+    "merged": true,
+    "mergeMethod": "squash",
+    "headSha": "be48a1d022183bde3aa01673b9e96fb5d6518f12",
+    "mergeSha": "3e0cc02b7708abc4ab172bee549db5ec57f2f6f5",
+    "mergedAt": "2026-10-19T03:27:04Z"
+  },
+  "business": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
+    "merged": true,
+    "mergeMethod": "squash",
+    "headSha": "ad0a9c006957b4f38cbbf78e0f3ce845807d684a",
+    "mergeSha": "2da7cdf9d4311e8017108e56656c74d379d4a01b",
+    "mergedAt": "2026-10-19T03:35:06Z",
+    "baseAtMerge": "3e0cc02b7708abc4ab172bee549db5ec57f2f6f5"
+  },
+  "baselineSync": {
+    "method": "Normal merge of actual main after #17 squash, then retarget #19 to main",
+    "commit": "ad0a9c006957b4f38cbbf78e0f3ce845807d684a",
+    "squashOverlapConflicts": "Reviewed explicit five-file conflicts; #17 main tree exactly equals be48a1d. Retained tested #19 changes.",
+    "forcePush": false,
+    "unfinishedOtherBranchMerged": false
+  },
+  "treeVerification": {
+    "result": "PASS",
+    "coreMainEqualsCoreTestedHead": true,
+    "businessMainEqualsMergeHead": true,
+    "businessMergeHeadEqualsTestedDeliveryHead": "d1b83c571dd8c0a10426a4fd85cb5eda9f6b45e0",
+    "businessTree": "89f3fec763187df6b98c7e6e8527750d63959886",
+    "inputCount": 57,
+    "sourceFingerprint": "9252c2ad51a9233904a8ddfb65efc259fc5146c3725d979c6bfecdbcfed59685",
+    "commands": [
+      "git diff --exit-code be48a1d 3e0cc02",
+      "git diff --exit-code d1b83c5 ad0a9c0",
+      "git diff --exit-code ad0a9c0 2da7cdf",
+      "SHA256 each of 57 Git blob bytes against comments-connected-verification-20261019.json"
+    ]
+  },
+  "ci": {
+    "headSha": "ad0a9c006957b4f38cbbf78e0f3ce845807d684a",
+    "result": "PASS",
+    "latestWorkflows": [
+      {
+        "id": 39194797855,
+        "name": "Collaboration",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194797855"
+      },
+      {
+        "id": 39194782205,
+        "name": "Comments backend text",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782205"
+      },
+      {
+        "id": 39194782317,
+        "name": "Post images",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782317"
+      },
+      {
+        "id": 39194782223,
+        "name": "Community text contract",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782223"
+      },
+      {
+        "id": 39194782321,
+        "name": "Report moderation",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782321"
+      },
+      {
+        "id": 39194782376,
+        "name": "Android prerelease",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782376"
+      },
+      {
+        "id": 39194782358,
+        "name": "Comments core",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782358"
+      }
+    ],
+    "effectiveChecks": [
+      {
+        "name": "policy",
+        "id": 117875139102,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194797855/job/117875139102"
+      },
+      {
+        "name": "rehearsal",
+        "id": 117875071442,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782376/job/117875071442"
+      },
+      {
+        "name": "client",
+        "id": 117875071426,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782358/job/117875071426"
+      },
+      {
+        "name": "domain",
+        "id": 117875071372,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782358/job/117875071372"
+      },
+      {
+        "name": "go-host",
+        "id": 117875071365,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782317/job/117875071365"
+      },
+      {
+        "name": "flutter",
+        "id": 117875071313,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782317/job/117875071313"
+      },
+      {
+        "name": "candidate",
+        "id": 117875071256,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782376/job/117875071256"
+      },
+      {
+        "name": "moderation-postgres",
+        "id": 117875071214,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782321/job/117875071214"
+      },
+      {
+        "name": "contract",
+        "id": 117875071190,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782358/job/117875071190"
+      },
+      {
+        "name": "go-postgres",
+        "id": 117875071065,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782317/job/117875071065"
+      },
+      {
+        "name": "admin",
+        "id": 117875071013,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782321/job/117875071013"
+      },
+      {
+        "name": "text-component",
+        "id": 117875070575,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782205/job/117875070575"
+      },
+      {
+        "name": "contract",
+        "id": 117875070349,
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39194782223/job/117875070349"
+      }
+    ],
+    "supersededCancelledCheckIds": [
+      117875070567
+    ],
+    "note": "Metadata edits cancelled predecessor Collaboration run; latest run39194797855 passed. Historical cancellations are not counted as passing jobs."
+  },
+  "verification": {
+    "result": "CONNECTED_ANDROID_SCOPED_PASS",
+    "report": "docs/design/comments-connected-report-20261019.md",
+    "evidence": "docs/design/comments-connected-verification-20261019.json",
+    "testedImplementationCommit": "e1466c770b7618e9421d4ea1be6121c183ee26b4",
+    "migrationChain": "0001..0017",
+    "governanceMigration": "0015_reports_moderation.sql",
+    "commentsMigrations": [
+      "0016_comments.sql",
+      "0017_comment_business.sql"
+    ],
+    "newHardwareRunThisMergeTurn": false,
+    "reason": "Full source tree is identical to tested delivery; no product changes"
+  },
+  "review": {
+    "result": "REVIEW_PASS_SCOPED",
+    "record": "docs/design/comments-connected-review-20261019.json",
+    "independentAgents": [
+      "comments_backend_review",
+      "comments_client_review"
+    ],
+    "githubMemberApproval": false,
+    "branchProtectionBypassed": false
+  },
+  "delivery": {
+    "scope": "Complete comments business wiring: real PG/TLS HTTP, pages, native submitted-task journal, one image, likes/order/location, own deletion, unknown/retry/abandon/reopen and actual COMMENT_FAILURE notification data source.",
+    "module": "B07",
+    "moduleResult": "PARTIAL",
+    "published": false,
+    "releaseAuthorized": false,
+    "deferred": [
+      "iOS",
+      "cross-device Passkey",
+      "new comments entity physical TalkBack and multi-OEM matrix",
+      "production certification"
+    ],
+    "furtherDevelopment": "No automatic continuation. Separate user authorization required for later work."
+  },
+  "historyPreservation": {
+    "bundleLocalPath": "E:/HnuHole-comments-replies-20261018/runtime/artifacts/comments-development-history-20261019.bundle",
+    "bundleSha256": "5e97898f2803dc395da03446d3bd3a0c686a34ca341c8d310a5c80c29cd24ba0",
+    "completeHistoryVerified": true,
+    "branches": 5,
+    "standardApkRetainedOutsideGit": true,
+    "temporaryWorktrees": "To be retired only after closure docs PR is confirmed merged; preserve recoverable refs and keep primary repository."
+  }
+}
