@@ -10,6 +10,8 @@
 
 [PR #16](https://github.com/zewbby/HnuHole/pull/16) 已合入测试签名Android候选、隔离预发布配置与生命周期、正式迁移/精确权限核验、实际备份到双新实例恢复和应用回滚路径，并归档vivo S18最小文字/单PNG限定实测。合并提交 `32cb87b73e2feb518e1c5ec75ea11bb4d3414df1` 与已测最终head `a6f8f60` 完整文件树一致，八项最新检查全SUCCESS；见[合并回执](../release/android-prerelease-main-merge-20261019.json)。实现、验收和正式发布分别记录。
 
+[PR #17](https://github.com/zewbby/HnuHole/pull/17)（`3e0cc02`）与[PR #19](https://github.com/zewbby/HnuHole/pull/19)（`2da7cdf`）已依次合入评论核心及完整业务接通：评论/具体回复、固定身份、点赞排序与定位、本人删除、单图、原生任务恢复及真实失败通知。正式迁移链0001..0017，Android限定验收与独立审查通过；评论开发任务关闭，未发布。合并文件树与已实测候选一致，详见[合并回执](../design/comments-main-merge-20261019.json)与[任务详情](feat-comments-backend-text.md)。
+
 ## 剩余事项
 
 跨设备Passkey NI-X02按用户要求延期。8691/d80c手机debug包的11项限定结果不代证其他APK或完整原生安全；CI release默认.invalid，与手机包分开归档。iOS、正式签名、真实云、独立生产运营与完整App验收仍未完成，未正式发布；其余未验范围见[手机报告](../release/android-device-validation-20261019.md)。手机窗口已结束，不再ADB；后续开发从最新main新开需求分支。
