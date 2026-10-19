@@ -16529,7 +16529,8 @@
           19
         ],
         "remainingInThisTask": [],
-        "moduleResultUnchanged": "PARTIAL"
+        "moduleResultUnchanged": "PARTIAL",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/22"
       }
     },
     {
@@ -17684,7 +17685,8 @@
           19
         ],
         "remainingInThisTask": [],
-        "moduleResultUnchanged": "PARTIAL"
+        "moduleResultUnchanged": "PARTIAL",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/22"
       }
     },
     {
@@ -39950,6 +39952,7 @@
       19
     ],
     "remainingInThisTask": [],
-    "moduleResultUnchanged": "PARTIAL"
+    "moduleResultUnchanged": "PARTIAL",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/22"
   }
 }

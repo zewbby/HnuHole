@@ -137,7 +137,7 @@
     }
   ],
   "delivery": {
-    "pullRequest": "PENDING_CREATION",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/22",
     "mergeStatus": "see task PR live merged state; merge only after final checks",
     "published": false,
     "contract": "docs/design/report-notification-contract.md",
