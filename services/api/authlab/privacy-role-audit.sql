@@ -86,6 +86,17 @@ BEGIN
                     AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
             END IF;
           END IF;
+          IF party='c' AND relation.nspname='c_comments' THEN
+            allowed := (privilege IN ('SELECT','INSERT') AND relation.relname IN ('protocol_keys','tasks','attempts','receipts','snapshots','images','likes'))
+              OR (privilege='DELETE' AND relation.relname IN ('snapshots','likes'));
+            IF privilege='UPDATE' AND relation.relname IN ('tasks','attempts','images') THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid
+                  AND a.attnum>0 AND NOT a.attisdropped
+                  AND NOT (a.attname=ANY(CASE relation.relname WHEN 'tasks' THEN ARRAY['owner_visible','abandoned_at','deleted_at'] WHEN 'images' THEN ARRAY['payload','metadata','erased_at'] ELSE ARRAY['state','terminal_at','failure_code','body'] END))
+                  AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
+          END IF;
         END IF;
         IF granted AND NOT allowed THEN RAISE EXCEPTION 'operational role acquired noncontract table privilege'; END IF;
       END LOOP;

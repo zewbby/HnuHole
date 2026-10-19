@@ -148,6 +148,7 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 		t.Fatal(err)
 	}
 	if schema == "c_auth" {
+		if _,err=tx.Exec(context.Background(),`DROP SCHEMA IF EXISTS c_comments CASCADE`);err!=nil{t.Fatal(err)}
 		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_moderation CASCADE`); err != nil {
 			t.Fatal(err)
 		}

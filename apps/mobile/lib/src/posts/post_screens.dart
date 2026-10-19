@@ -1,3 +1,7 @@
+import '../comments/comment_runtime.dart';
+import '../comments/comment_views.dart';
+import '../comments/comment_models.dart';
+
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -1349,6 +1353,32 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
         appBar: AppBar(
           title: const Text('我的'),
           actions: [
+            if (CommentScope.maybeOf(context) case final comments?)
+              IconButton(
+                tooltip: '我发出的评论',
+                icon: const Icon(Icons.forum_outlined),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => CommentHistoryScreen(
+                      runtime: comments,
+                      onOpen: (row) => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => PostDetailScreen(
+                            controller: widget.controller,
+                            postId: row.post,
+                            initialCommentId: row.id,
+                            loadImages: widget.loadImages,
+                            onAuthenticationRequired:
+                                widget.onAuthenticationRequired,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (widget.onOpenSettings != null)
               IconButton(
                 tooltip: '设置',
@@ -1987,12 +2017,18 @@ class PostDetailScreen extends StatefulWidget {
     required this.controller,
     required this.postId,
     this.channelName,
+    this.initialCommentId,
+    this.initialCommentInput,
+    this.initialCommentOriginal,
     this.loadImages,
     this.onAuthenticationRequired,
   });
   final PostController controller;
   final String postId;
   final String? channelName;
+  final String? initialCommentId;
+  final CommentRejectedInput? initialCommentInput;
+  final Uint8List? initialCommentOriginal;
   final PostImagesLoader? loadImages;
   final VoidCallback? onAuthenticationRequired;
   @override
@@ -2147,7 +2183,20 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 action: '重新核对',
                 onAction: _load,
               )
-            : _detail(context, _post!),
+            : CommentScope.maybeOf(context) == null
+            ? _detail(context, _post!)
+            : CommentPostPane(
+                key: ValueKey(
+                  'comments:${widget.postId}:${_authority.version}',
+                ),
+                runtime: CommentScope.maybeOf(context)!,
+                postId: widget.postId,
+                postBody: _post!.body,
+                initialCommentId: widget.initialCommentId,
+                initialInput: widget.initialCommentInput,
+                initialOriginal: widget.initialCommentOriginal,
+                body: _detail(context, _post!),
+              ),
       ),
     ),
   );

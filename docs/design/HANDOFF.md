@@ -1,5 +1,9 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-19 评论业务接通完成，Android限定验收PASS。** #19继承#17，已正常整合实际main `41ed0c5`；0015→0016→0017真实迁移、15项实际库链路加1项单位边界、158项Flutter、标准APK、原生两进程恢复/原图/查看器/通知重试/双账号点赞/整楼删除/系统单图选择均通过。独立后端与客户端agent审查发现已修复并复核。见[完整报告](comments-connected-report-20261019.md)、[机器证据](comments-connected-verification-20261019.json)及[审查](comments-connected-review-20261019.json)。最终head检查以PR实时回执为准；#17→#19待合并，用户明确合并另议，未发布。B07全平台/生产矩阵不记无条件PASS，iOS/跨设备Passkey继续延期。
+
+
+> **2026-10-18 评论文字后端增量：BACKEND_TEXT_SCOPED_PASS。**[Draft PR #19](https://github.com/zewbby/HnuHole/pull/19) 堆叠于核心 #17；已正常整合 main `1b78f42` 的真实治理0015，正式评论0016及空库/升级/Down拒绝、真实PG/受限角色/TLS HTTP/重试放弃/封口/生命周期针对性检查通过。被测后端 `07911ab`，完整B07仍BLOCKED、通知provider未接入；本轮不推进客户端/图片/原生日志/设备。见[报告](comments-backend-text-report-20261018.md)、[机器记录](comments-backend-text-verification-20261018.json)与[后端任务](../branches/feat-comments-backend-text.md)。独立成员审查与最终head CI待PR核对，未合并/未发布；下方“0015尚未合入”等为原日期历史快照。
 > **2026-10-19 已确认合并 main：**[PR #16](https://github.com/zewbby/HnuHole/pull/16) 经本session用户明确授权转正式送审并普通 Squash Merge，提交 `32cb87b73e2feb518e1c5ec75ea11bb4d3414df1`（上海时间10:13:17）。文件树与已测最终head `a6f8f60` 完全一致，八项最新检查全SUCCESS；独立agent审查无阻断，无GitHub成员批准，不伪造批准或绕过规则。候选构建、同机隔离恢复/回滚与vivo S18最小文字/单PNG限定证据已进入主线；未正式发布，P03/P05完整生产结论不升级。手机窗口已结束，不再ADB；跨设备Passkey、iOS及报告列出的未验范围继续保留。见[合并回执](../release/android-prerelease-main-merge-20261019.json)及[任务详情](../branches/ci-android-prerelease.md)。以下待合并/draft/NOT_RUN条目保留为各自版本和时点的历史快照。
 
 > **2026-10-19 手机实测完成：**8691eb4测试包在vivo S18 / Android15 API35通过本轮11项限定检查：正常UI合成注册/恢复码确认、中文身份输入、文字及单PNG发布/读回、大图/Gal原字节保存、跨进程会话保留、退出后密码重登。输入截短导致的一次错误登录及旧个人路由失效观察如实保留；未改认证/业务代码。用户明确授权后才移除旧签名同包及本机数据。自有临时媒体、两条reverse、ADB5049及后端均已收回，窗口已结束，不再ADB。详见[手机报告](../release/android-device-validation-20261019.md)及[机器记录](../release/android-device-validation-20261019.json)。不升级完整原生安全/Passkey/多图/TalkBack/生产结论，iOS及跨设备Passkey继续延期；PR #16仍未合并/发布。

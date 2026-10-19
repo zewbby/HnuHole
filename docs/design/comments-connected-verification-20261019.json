@@ -1,0 +1,228 @@
+{
+  "schemaVersion": "hnuhole-comments-connected-verification/v1",
+  "recordedOn": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "result": "CONNECTED_ANDROID_SCOPED_PASS",
+  "scope": "Complete comments business wiring and scoped Android acceptance; not production or deferred platform certification.",
+  "testedImplementationCommit": "e1466c770b7618e9421d4ea1be6121c183ee26b4",
+  "productCodeCommit": "8f8a536716ced3cc6c4a5f636713c3ec0fec7c34",
+  "integratedMain": "41ed0c50f04ea2264aa2da5998723b234d440120",
+  "coreDependencyHead": "be48a1d022183bde3aa01673b9e96fb5d6518f12",
+  "pullRequests": {
+    "core": "https://github.com/zewbby/HnuHole/pull/17",
+    "business": "https://github.com/zewbby/HnuHole/pull/19",
+    "order": [
+      17,
+      19
+    ]
+  },
+  "migration": {
+    "result": "PASS",
+    "postgres": "16",
+    "goose": "v3.22.1",
+    "chain": "0001..0017",
+    "upgrade": "0014 -> actual main0015 -> 0016 -> 0017",
+    "down": "REJECTED; ledger remains17",
+    "governance": "0015_reports_moderation.sql",
+    "comments": "0016_comments.sql",
+    "business": "0017_comment_business.sql"
+  },
+  "checks": {
+    "isolatedPostgresRunner": {
+      "result": "PASS",
+      "passed": 16,
+      "realDatabaseTests": 15,
+      "nullableBoundaryUnitTests": 1,
+      "skipped": 1,
+      "skipReason": "Opt-in hardware fixture runs separately with actual device phases below",
+      "command": "POST_MEDIA_PYTHON=<owned trusted python> POST_MEDIA_VALIDATOR=<owned immutable helper> POST_MEDIA_FIXTURES=<synthetic fixtures> COMMENT_LIVE_PROBE=<compiled production Dart probe> bash services/api/authlab/run-comment-text-isolated.sh",
+      "commandIsTemplate": true
+    },
+    "go": {
+      "result": "PASS",
+      "commands": [
+        "go build -mod=readonly ./...",
+        "go vet -mod=readonly ./internal/comments ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime",
+        "go test -race -mod=readonly -count=1 ./internal/comments ./internal/authprivacyhttp ./internal/authprivacyruntime -run '^(TestCommentText|TestCommentBusiness|TestStrictJSON|TestStrictObject)'"
+      ],
+      "noDsnRunIsNotSqlEvidence": true
+    },
+    "flutter": {
+      "result": "PASS",
+      "analyzeIssues": 0,
+      "passed": 158,
+      "commentTests": 65,
+      "affectedSharedTests": 93,
+      "command": "flutter test --no-pub test/comment_core_test.dart test/comment_protocol_test.dart test/comment_journal_test.dart test/comment_views_test.dart test/comment_http_test.dart test/post_screens_test.dart test/post_photo_picker_test.dart test/post_images_test.dart test/post_closure_cleanup_test.dart test/governance_test.dart test/governance_material_store_test.dart test/b5_candidate_root_test.dart test/talkback_semantics_test.dart"
+    },
+    "contracts": {
+      "result": "PASS",
+      "fullApiSpecifications": 10,
+      "implementedSupplements": 2,
+      "negativeContractTests": 16,
+      "commands": [
+        "python packages/openapi/check-specs.py",
+        "python tools/check-comment-contract.py",
+        "python tools/check-comment-text-contract.py",
+        "python tools/check-comment-business-contract.py",
+        "python -m unittest discover -s tools/tests -p test_comment_contract.py -v"
+      ]
+    },
+    "standardAndroidBuild": {
+      "result": "PASS",
+      "target": "lib/main.dart",
+      "applicationId": "org.hnuhole.hnuhole_mobile",
+      "sha256": "4a0ca6a05dab67b355cdd61eafb76235288af40865f4ae84935a51ed09a3d630",
+      "artifactLocalPath": "E:/HnuHole-comments-replies-20261018/runtime/artifacts/hnuhole-comments-e1466c7-debug.apk",
+      "command": "flutter build apk --debug --no-pub --target lib/main.dart",
+      "installed": false
+    }
+  },
+  "device": {
+    "result": "PASS",
+    "model": "vivo V2323A",
+    "android": "15/API35",
+    "windowExplicitlyAuthorized": true,
+    "applicationId": "org.hnuhole.hnuhole_mobile.commentsvalidation",
+    "target": "integration_test/comment_business_device_test.dart",
+    "apkSha256": "46d138a40374f2a508677181cdca3b9fc0a6fc9bd9d2b8984f1dd9dda7c3aa11",
+    "privateSyntheticTlsFixtureOutsideRepository": true,
+    "phases": [
+      {
+        "status": "PASS",
+        "phase": "comment-write",
+        "pid": 27594,
+        "flags": {
+          "originalCommittedBeforeUnknown": true,
+          "unknownNotRetried": true,
+          "temporaryInputNotJournaled": true
+        }
+      },
+      {
+        "status": "PASS",
+        "phase": "comment-read",
+        "pid": 29141,
+        "flags": {
+          "nativeJournalReopened": true,
+          "publishedOriginalRemovedFromJournal": true,
+          "exactOriginalAfterProcessDeath": true,
+          "protectedSingleImageViewerOpenedAndClosed": true,
+          "realIdentityFailureNotification": true,
+          "retryClearedRealNotification": true,
+          "realAccountLike": true,
+          "accountIsolation": true,
+          "ownerDeletedWholeFloor": true
+        }
+      },
+      {
+        "status": "PASS",
+        "phase": "comment-picker",
+        "pid": 30380,
+        "originalFormatAndHash": true
+      }
+    ],
+    "actualProcessDeathAndNewPid": true,
+    "originalAppDataModified": false,
+    "validationAppAndSyntheticPhotoRemoved": true,
+    "ownedFixtureStopped": true,
+    "ownedAdbMappingsRemoved": true
+  },
+  "source": {
+    "scheme": "SHA256 of canonical JSON mapping path to SHA256 of Git blob bytes; CRLF working-tree conversion excluded",
+    "inputCount": 57,
+    "fingerprint": "9252c2ad51a9233904a8ddfb65efc259fc5146c3725d979c6bfecdbcfed59685",
+    "inputs": {
+      ".github/workflows/comments-backend-text.yml": "9219cdfbf711d1576dd9b65e77f135b3e0362f23fba6fc7950a5ccf9273bf607",
+      ".github/workflows/comments-core.yml": "e6e65b41b9ea59fbba711fcd69222e48dc7325d605a9c46a17f5498902f942db",
+      "apps/mobile/android/app/build.gradle.kts": "faf92ef59d8a943aa5eb709cad477ac34062ed31eb68c8915f54528561b04b17",
+      "apps/mobile/integration/comment_live_probe.dart": "563d36b0c5b622f0138d6f74ad6004d550d9d772c83dd49c173af7dac9267030",
+      "apps/mobile/integration_test/comment_business_device_test.dart": "afdb03c08ed2a43f4859dcba59a3cb9feec1f050c8f7ac17e3863d3f97f1eef7",
+      "apps/mobile/lib/main.dart": "df03849af618a7ef20acc8ee489aedbc8e71644512e27ef41701729198a201c0",
+      "apps/mobile/lib/src/comments/comment_controller.dart": "556d9e55302f7278008ce4611124ab3ae5dfcb758eae12be6f1e3e82b6e6f815",
+      "apps/mobile/lib/src/comments/comment_failure_view.dart": "e473dec6d9fb8f808504cff8c90fc0419ab332a5cd7be1fb7e916a68dbb0ad79",
+      "apps/mobile/lib/src/comments/comment_http.dart": "371095aa9ed86305bcbce3820fb4b85f4bc6d7b54e38715daf6d68b4bd4eda2c",
+      "apps/mobile/lib/src/comments/comment_journal.dart": "6847a375f81969b8c6c2cbadefea1fb9fa4b311eb4fa0157adb1bc4b775dc3b2",
+      "apps/mobile/lib/src/comments/comment_runtime.dart": "47db9c320a2b1965d33338f862979c8d8a54fb8e67d46fa6e69eb560927a2537",
+      "apps/mobile/lib/src/comments/comment_views.dart": "60c055fe49f4c3ad05e5ebdb379a0b2ce936b29e1708706ec1004c3fa11dd29d",
+      "apps/mobile/lib/src/posts/post_photo_picker.dart": "c7ccd974121c179b0ee28cfbbc3e28b6a3db69389c74f0426be9dfdabf2078a2",
+      "apps/mobile/lib/src/posts/post_screens.dart": "4e5e8b4df120754a3fcacc9f350894f58066555ae7e00055b292e9632133d520",
+      "apps/mobile/lib/src/system_notifications/notification_screens.dart": "e14025aa9fb37cff83b1320b4d4882c8bff931d0216ea6498b5c8b030d32c9bb",
+      "apps/mobile/test/comment_http_test.dart": "f53d9fdfcca82109c01db39db5921b9ca206b09c8844971563e5ba26dc7ebd41",
+      "apps/mobile/test/comment_journal_test.dart": "b5cd63ff35cad6819e94250a31a3902854cf836fc752b964778b0eaf95663a3e",
+      "apps/mobile/test/comment_views_test.dart": "92a19030f99df8baa8654656933d64196a96e615add66be74109def4c61d847a",
+      "infra/postgres/grant-comments.sql": "5140a4b18fdb0b642d0a3417f6db5e33901e8948aeaac13c1d3f222ca91194d6",
+      "infra/postgres/grant-community.sql": "e6a77bda975173012c5ec14b7d074f114e884c4eb92ea6db9c00c35198226991",
+      "packages/openapi/comment-business-component.yaml": "6a1279d2899cb5ad907bad5305e6290733a3863b244173d66b6440aa5c2284c2",
+      "packages/openapi/comment-text-component.yaml": "b54be139ac0393b765f5432931654b125a71e170026f9bef04a39fd5519aad00",
+      "services/api/authlab/privacy-role-audit.sql": "0bf5b2e4390961bd889528754f081d7746c2627c89b70be92d75f3beb76afabb",
+      "services/api/authlab/run-comment-text-isolated.sh": "dffe38f4d28b83a3837526afdf8d5d1446d6401b8186cd65be3118728a2aaad3",
+      "services/api/internal/authprivacy/community.go": "9638983a3bd615b83dc9605bbbe847d547ca9353ccb1bff31bf20cdc923b57c9",
+      "services/api/internal/authprivacy/community_comments.go": "c4b9a75fb00b4b6aa12ee7ea9f1784e7662f0cf332b1421e004662734024056e",
+      "services/api/internal/authprivacy/community_comments_business.go": "5016a28e0d1ce9163160189e84171e0b737a3f0fdeaf74405c698e00c3166ec5",
+      "services/api/internal/authprivacy/community_comments_business_test.go": "4de019cd15391c72cf0db8f033e571a00514a6f92b08f23d16009211498f56c3",
+      "services/api/internal/authprivacy/community_comments_migration_test.go": "5f8216db3cd17cacf14d19af21be46ac9ff8a2042b86d235f0d431192c6b80dd",
+      "services/api/internal/authprivacy/community_comments_read.go": "3465f3510a35b197df6e94056d08abab9dcf52cbb955d6c3f97eed7e96c7ef9e",
+      "services/api/internal/authprivacy/community_comments_schema.go": "60bb3049d46754adea3ee5b9a6633ffd5c7035befcc46e1024d24e23f557db44",
+      "services/api/internal/authprivacy/community_comments_test.go": "a88d03df79f3bf439dc9f8f58fdaa1d0cc0f0ad39ab10ee89b806ebff26c462f",
+      "services/api/internal/authprivacy/community_comments_worker.go": "afa00d4a5bdc6df8832a3ee1bb2ccc514a3aa4badeeeb516e0394d1f50606aab",
+      "services/api/internal/authprivacy/community_post_images_test.go": "907a4e2032d52d32c138dd541981430fc17fbda083e87179cace1085a9175b19",
+      "services/api/internal/authprivacy/community_posts_schema.go": "7c1e78633035d1371c31ca34dbe907c202b7260b92f143dff6633128baea70a7",
+      "services/api/internal/authprivacy/moderation_upgrade_test.go": "74340cc20cede7c780f2ec3088f49f013091f5920020606a80594819a1eb0d54",
+      "services/api/internal/authprivacy/postgres_test.go": "1db6da95f9ee2458309a34c81b35d479b8145a2a8ad04cb516409044686b86d4",
+      "services/api/internal/authprivacy/workers.go": "016c0dc18b6cf07e3e49f84392419aba497565feaa4ca072724ed84fea3b94ec",
+      "services/api/internal/authprivacyhttp/comments_business_postgres_test.go": "279b9dfa5f34092f7e95610b76d7bebfd69069933268189847d8ee490c0f9a9f",
+      "services/api/internal/authprivacyhttp/comments_device_postgres_test.go": "23d17399ae35b4847e23c066f008ccf922e94be5622b40f45a8d2c4a9ffbd78a",
+      "services/api/internal/authprivacyhttp/comments_endpoints.go": "d30f1b673e9e15d12ab6bdd5ae307dc3e4994882d3e6f1d17fd89c696f571d4b",
+      "services/api/internal/authprivacyhttp/comments_endpoints_test.go": "1b07297f0744750fc0718c86cb29212fbd7e2764428fbab208638aa704774e23",
+      "services/api/internal/authprivacyhttp/comments_live_postgres_test.go": "0731da77fa7d30910177464df55b71c06a3aa72d745b10680e2a87ec17dd6144",
+      "services/api/internal/authprivacyhttp/comments_postgres_test.go": "b01146af625f3ecacae6f0f157fd98668b616f494ab361ff12626cdd7a627b3d",
+      "services/api/internal/authprivacyhttp/endpoints.go": "2166f85b0d0650d372f6450d654722ab9462019c06154a8d8e227cee33599c16",
+      "services/api/internal/authprivacyhttp/endtoend_postgres_test.go": "afa482db26d56b493d88c0694560867fe80e51887628f3a32de1baaad26f668b",
+      "services/api/internal/authprivacyhttp/strict.go": "80e6e0b0ffc19048456e44048a1ec0cbc228ee6f79851ed33c9106908ae4a2ca",
+      "services/api/internal/authprivacyruntime/comments_config_test.go": "082200e50ddb6d1d0db1f4d10547d9d32a65d5b1dada9ce7bc6705e7da7c59b2",
+      "services/api/internal/authprivacyruntime/config.go": "bbf3f7fbb7bf8e2b20aecd47e60b0b6ac3cb6c9be13aec3ca31bc882e68132a5",
+      "services/api/internal/authprivacyruntime/moderation_lifecycle_postgres_test.go": "1e91ba930d6c5e200babce89dea57c369d52ab2bfb157d83bccf6d93480406f2",
+      "services/api/internal/authprivacyruntime/server.go": "e967e5c27da6edc4344db122ac64400f31bc7b2bf6745b7c070dd796724777aa",
+      "services/api/internal/comments/persistence.go": "3c939b310f37cc8d0d6e3e251da8b841762f8173232bf8e5637aa0692e855f4b",
+      "services/api/internal/comments/persistence_test.go": "5e7f31bd961e4b5123bda29225a4dbc144b16b960d3be13c20c04eca415b9042",
+      "services/api/migrations/0016_comments.sql": "650224c4c9191375f6c497cde1de7bfa6f715525f3838ef6e1c5ca2241812578",
+      "services/api/migrations/0017_comment_business.sql": "973685c25ff4a8899ff754df8eb1398a23ee3f79714b1d1a5eacc3a32a326b85",
+      "tools/check-comment-business-contract.py": "bf6597e5335fefaa33e722dd3ecaeee2cbfa1fa1cffbdeac8424fa37228de8ef",
+      "tools/check-comment-text-contract.py": "386bebd74b827d639d950cef71d1b51a763ca332fbc81eb1a5497dfa05b2b9af"
+    }
+  },
+  "logDigestsOutsideRepository": {
+    "comment-review-sql.log": "823ae2fd88682ae3c28f08eb6092827d808c381eff9539035ee9d24dcbbf0b50",
+    "comment-shared-final158.log": "f8154a66235673d811d3eac71aab4ac74dc6da9ce0ef6814837c2ccaa5e867af",
+    "comment-go-reviewed-final.log": "d50fdc6e63027a380bb1d978b20c3ff21fe6c723e555040413901f2d301e786a",
+    "comment-python-reviewed-final.log": "a1105a64662c4c7c0a2fc7925bb0b09d7a8f30b0e48557af02a8b25c6b3c09f4",
+    "comment-device-acceptance-server.log": "5fc880f0bc73f3052eed7b204faa96fe0d9e267f3a8155f0e6796615da124245",
+    "comment-final-standard-build.log": "0b2803f040b9fd51e6ea7e5c638987b34771809a51558fde9863dbf0b81c293c"
+  },
+  "review": {
+    "result": "REVIEW_PASS_SCOPED",
+    "record": "docs/design/comments-connected-review-20261019.json",
+    "githubMemberApproval": false
+  },
+  "ci": {
+    "finalHeadResultLocation": "Current PR19 body and GitHub head checks; evidence/documentation commits must preserve this product-input fingerprint.",
+    "coreHeadChecked": "be48a1d022183bde3aa01673b9e96fb5d6518f12",
+    "coreChecksPassed": 13
+  },
+  "merged": false,
+  "published": false,
+  "mergeAuthorization": "User explicitly reserved merge for separate discussion.",
+  "notRun": [
+    "iOS",
+    "Cross-device Passkey",
+    "Physical TalkBack audit of newly added comments",
+    "Full production and multi-device/multi-OEM certification"
+  ],
+  "failureHistory": [
+    "Old governance fixture retained c_comments; fixed in9c6a532.",
+    "Canonical command-key underscore path rejected; fixed and exercised through TLS/device.",
+    "Independent backend/client findings fixed in fed5b69 and follow-up8f8a536.",
+    "CI840c5ad client sdkmanager PATH and schema17 lifecycle audit mismatch corrected.",
+    "Native viewer test used a dynamic-typed ValueKey; corrected exact String tuple key in e1466c7. Earlier failed attempts are not counted as device PASS."
+  ]
+}

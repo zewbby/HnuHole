@@ -26,6 +26,15 @@ class NativePostPhotoPicker implements PostPhotoPicker {
     // GIF timing/loop changes). Keep that platform gated instead of silently
     // violating the original-format contract. No native fork is introduced.
     if (!Platform.isAndroid) throw const PostPhotoSelectionUnavailable();
+    if (limit == 1) {
+      final file = await _picker.pickImage(
+        source: ImageSource.gallery,
+        requestFullMetadata: false,
+      );
+      return file == null
+          ? []
+          : [PostPickedFile(length: file.length, openRead: file.openRead)];
+    }
     return [
       for (final file in await _picker.pickMultiImage(
         limit: limit,

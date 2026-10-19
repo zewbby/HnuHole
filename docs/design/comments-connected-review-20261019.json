@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "hnuhole-comments-connected-review/v1",
+  "date": "2026-10-19",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
+  "reviewedCandidate": "840c5adf66d4c8cae75d4fbeb5a040dc6a441c19",
+  "fixCommit": "fed5b69f48676d425d7ab9233fe899af0100f7e3",
+  "authorization": "User explicitly authorized independent agents; merge to be discussed separately.",
+  "backend": {
+    "reviewer": "comments_backend_review",
+    "result": "REVIEW_PASS_SCOPED",
+    "fixedFindings": [
+      "Decoder was called before authenticated ownership/manifest preflight",
+      "Cursor offset lacked integrity protection"
+    ],
+    "followup": [
+      "Private-role audit explicitly allows only declared 0017 table/column privileges; no schema skipped"
+    ],
+    "checks": "Read-only source and regression-test review; real execution recorded separately"
+  },
+  "client": {
+    "reviewer": "comments_client_review",
+    "result": "REVIEW_PASS_SCOPED",
+    "fixedFindings": [
+      "Native closed-account cleanup depended on decryptable DB",
+      "Offscreen concrete comment location and paging",
+      "Journal-first background send without waiting for network",
+      "Body tap reply and direct owner deletion",
+      "Authoritative denial cached-content removal",
+      "Original-identity notification filtering",
+      "First-read error and unrequested ranking refresh",
+      "Viewport media activation and bounded thumbnail decoding",
+      "Publication during pending page read"
+    ],
+    "checks": "Read-only source/diff and added test review; device and CI recorded separately",
+    "followup": "Viewport mounting/bounded decode, pending-read location and async media-revocation follow-ups re-reviewed without new blockers."
+  },
+  "githubMemberApproval": false,
+  "selfApprovalSubmitted": false,
+  "merged": false,
+  "published": false,
+  "limitations": [
+    "Agent review is independent review evidence, not a GitHub member approval.",
+    "iOS and cross-device Passkey remain deferred."
+  ],
+  "followupCommits": [
+    "8f8a536716ced3cc6c4a5f636713c3ec0fec7c34",
+    "e1466c770b7618e9421d4ea1be6121c183ee26b4"
+  ]
+}

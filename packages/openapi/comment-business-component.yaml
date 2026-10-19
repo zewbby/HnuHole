@@ -1,0 +1,714 @@
+openapi: 3.0.3
+info:
+  title: HnuHole connected comment business
+  version: 0.2.0
+  description: Implemented on PR19 above PR17 and real main governance0015. Migration0016
+    tasks plus0017 media/likes/deletion/real notification events. This live supplement
+    retains the frozen command frame and public DTOs; the design snapshot and text-only
+    historical supplement remain unchanged. Every route uses current C session and
+    final Gate. No long-lived unsubmitted drafts. Hardware/device evidence is recorded
+    separately.
+x-contract-status: IMPLEMENTED_COMMENT_BUSINESS_DEVICE_ACCEPTANCE_SEPARATE
+x-source-design: comment-api.yaml
+servers:
+- url: /
+  description: Explicit current C HTTPS origin
+security:
+- bearerAuth: []
+paths:
+  /api/v1/comment-commands/{commandId}:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/CommandId
+    get:
+      operationId: getOwnTextCommentCommandResult
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session.
+            A business REJECTED is durable and has no task.
+          headers: &id001
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/CommentCommandResult
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+    put:
+      operationId: executeConnectedCommentTask
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session.
+            A business REJECTED is durable and has no task.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/TaskCommandReceipt
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+        '202':
+          description: Original immutable CREATE/RETRY acceptance, including exact
+            replays; publication is asynchronous.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/AcceptedTaskReceipt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentTaskCommand'
+  /api/v1/comment-commands/{commandId}/seal:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/CommandId
+    post:
+      operationId: sealConnectedCommentCommand
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session.
+            A business REJECTED is durable and has no task.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/ObservedCommandResult
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Seal'
+  /api/v1/me/comment-tasks/{taskId}:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/TaskId
+    get:
+      operationId: getOwnTextCommentTask
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session.
+            A business REJECTED is durable and has no task.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/OwnCommentTask
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+  /api/v1/posts/{postId}/comments:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/PostId
+    get:
+      operationId: listTextComments
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session.
+            A business REJECTED is durable and has no task.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/CommentPage
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 50
+      - name: cursor
+        in: query
+        schema:
+          type: string
+  /api/v1/posts/{postId}/comments/{rootCommentId}/replies:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/PostId
+    - $ref: comment-api.yaml#/components/parameters/RootCommentId
+    get:
+      operationId: listTextCommentReplies
+      responses:
+        '200':
+          description: Authoritative result; no-store, final C Gate and current session.
+            A business REJECTED is durable and has no task.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/ReplyPage
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 50
+      - name: cursor
+        in: query
+        schema:
+          type: string
+      - name: expanded
+        in: query
+        schema:
+          type: boolean
+          default: false
+  /api/v1/posts/{postId}/comments/{commentId}/location:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/PostId
+    - $ref: comment-api.yaml#/components/parameters/CommentId
+    get:
+      operationId: locateComment
+      summary: Connected locateComment
+      description: Resolve exact comment ID, including folded replies. Deleted/inaccessible
+        target returns 404 COMMENT_NOT_FOUND without original text; never opens a
+        private contact.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Final C transaction; current authorized result.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/CommentLocation
+        '400':
+          $ref: comment-api.yaml#/components/responses/Error
+        '401':
+          $ref: comment-api.yaml#/components/responses/Error
+        '403':
+          $ref: comment-api.yaml#/components/responses/Error
+        '409':
+          $ref: comment-api.yaml#/components/responses/Error
+        '429':
+          $ref: comment-api.yaml#/components/responses/Error
+        '503':
+          $ref: comment-api.yaml#/components/responses/Error
+        '404':
+          $ref: comment-api.yaml#/components/responses/Error
+  /api/v1/comments/{commentId}/delete-commands/{commandId}:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/CommentId
+    - $ref: comment-api.yaml#/components/parameters/CommandId
+    put:
+      operationId: deleteOwnComment
+      summary: Connected deleteOwnComment
+      description: Owner-only final C transaction; root deletes floor, reply only
+        itself. Muted owner may delete. Reconcile same original command after unknown
+        response; DELETE never changes post binding.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Final C transaction; current authorized result.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/DeleteCommandReceipt
+        '400':
+          $ref: comment-api.yaml#/components/responses/Error
+        '401':
+          $ref: comment-api.yaml#/components/responses/Error
+        '403':
+          $ref: comment-api.yaml#/components/responses/Error
+        '409':
+          $ref: comment-api.yaml#/components/responses/Error
+        '429':
+          $ref: comment-api.yaml#/components/responses/Error
+        '503':
+          $ref: comment-api.yaml#/components/responses/Error
+        '404':
+          $ref: comment-api.yaml#/components/responses/Error
+        '413':
+          $ref: comment-api.yaml#/components/responses/Error
+        '415':
+          $ref: comment-api.yaml#/components/responses/Error
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties: {}
+  /api/v1/comments/{commentId}/like-commands/{commandId}:
+    parameters:
+    - $ref: comment-api.yaml#/components/parameters/CommentId
+    - $ref: comment-api.yaml#/components/parameters/CommandId
+    put:
+      operationId: setCommentLike
+      summary: Connected setCommentLike
+      description: Idempotent desired account-level state; no speaking identity selection/binding.
+        No public liker list. Optimistic UI rolls back only definite failure; unknown
+        reconciles original key. Does not reorder current read snapshot.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Final C transaction; current authorized result.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/LikeCommandReceipt
+        '400':
+          $ref: comment-api.yaml#/components/responses/Error
+        '401':
+          $ref: comment-api.yaml#/components/responses/Error
+        '403':
+          $ref: comment-api.yaml#/components/responses/Error
+        '409':
+          $ref: comment-api.yaml#/components/responses/Error
+        '429':
+          $ref: comment-api.yaml#/components/responses/Error
+        '503':
+          $ref: comment-api.yaml#/components/responses/Error
+        '404':
+          $ref: comment-api.yaml#/components/responses/Error
+        '413':
+          $ref: comment-api.yaml#/components/responses/Error
+        '415':
+          $ref: comment-api.yaml#/components/responses/Error
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - liked
+              properties:
+                liked:
+                  type: boolean
+  /api/v1/posts/{postId}/comment-context:
+    parameters:
+    - name: postId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: getPrivateCommentContext
+      responses:
+        '200':
+          description: Current authorized no-store response.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - boundIdentityId
+                - ownCommentIds
+                - totalCount
+                properties:
+                  boundIdentityId:
+                    type: string
+                    format: uuid
+                    nullable: true
+                  ownCommentIds:
+                    type: array
+                    items:
+                      $ref: comment-api.yaml#/components/schemas/UUID
+                  totalCount:
+                    type: integer
+                    minimum: 0
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+  /api/v1/posts/{postId}/comments/{commentId}:
+    parameters:
+    - name: postId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: commentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: getOneVisibleComment
+      responses:
+        '200':
+          description: Current authorized no-store response.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: comment-api.yaml#/components/schemas/PublicComment
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+  /api/v1/me/comments:
+    get:
+      operationId: listOwnPublishedComments
+      responses:
+        '200':
+          description: Current authorized no-store response.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - items
+                - nextCursor
+                properties:
+                  items:
+                    type: array
+                    maxItems: 20
+                    items:
+                      $ref: comment-api.yaml#/components/schemas/PublicComment
+                  nextCursor:
+                    type: string
+                    format: uuid
+                    nullable: true
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+      parameters:
+      - name: identityId
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cursor
+        in: query
+        schema:
+          type: string
+          format: uuid
+  /api/v1/me/comment-tasks/{taskId}/attempts/{version}/image:
+    parameters:
+    - name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: version
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    put:
+      operationId: putOriginalForAcceptedComment
+      responses:
+        '200':
+          description: Current authorized no-store response.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - uploaded
+                properties:
+                  uploaded:
+                    type: boolean
+                    enum:
+                    - true
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema:
+              type: string
+              format: binary
+          image/png:
+            schema:
+              type: string
+              format: binary
+          image/gif:
+            schema:
+              type: string
+              format: binary
+          image/webp:
+            schema:
+              type: string
+              format: binary
+  /api/v1/posts/{postId}/comments/{commentId}/images/{contentVersionId}/original:
+    parameters:
+    - name: postId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: commentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: contentVersionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: readProtectedCommentOriginal
+      responses:
+        '200':
+          description: Current authorized no-store response.
+          headers:
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Access-Valid-Until:
+              required: true
+              schema:
+                type: string
+                format: date-time
+              description: Terminating lease <=60 seconds and current session deadline;
+                no disk cache.
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/gif:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: comment-api.yaml#/components/responses/Error
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    CreateCommentCommand:
+      $ref: comment-api.yaml#/components/schemas/CreateCommentCommand
+    RetryCommentCommand:
+      $ref: comment-api.yaml#/components/schemas/RetryCommentCommand
+    CommentTaskCommand:
+      $ref: comment-api.yaml#/components/schemas/CommentTaskCommand
+    Seal:
+      type: object
+      additionalProperties: false
+      required:
+      - operation
+      - requestDigest
+      properties:
+        operation:
+          type: string
+          enum:
+          - CREATE
+          - RETRY
+          - ABANDON
+          - DELETE
+          - SET_LIKE
+        requestDigest:
+          $ref: comment-api.yaml#/components/schemas/Digest

@@ -111,6 +111,7 @@ class CommentController extends ChangeNotifier {
     required String commandId,
     required CommentBinding binding,
     required CommentContent content,
+    VoidCallback? onJournaled,
   }) async {
     final account = _accountId;
     if (account == null || _disposed || !_ready) {
@@ -146,7 +147,7 @@ class CommentController extends ChangeNotifier {
       intent: intent,
       transport: CommentTransportState.sending,
     );
-    await _execute(entry, account, _epoch);
+    await _execute(entry, account, _epoch, onJournaled: onJournaled);
   }
 
   Future<void> retry({
@@ -226,6 +227,45 @@ class CommentController extends ChangeNotifier {
     return entry;
   }
 
+  /// Explicit recovery from a freshly authenticated owner task (for example on
+  /// a second installation). This journals the new user action before sending;
+  /// it does not invent a CREATE receipt or replay a missing original command.
+  Future<void> recoverFailed({
+    required CommentTask task,
+    required String commandId,
+    CommentContent? content,
+    required bool abandon,
+  }) async {
+    if (!_ready ||
+        _accountId == null ||
+        task.state != CommentTaskState.failed ||
+        (abandon ? !task.canAbandon : !task.canRetry) ||
+        _usedCommands.contains(commandId) ||
+        _entries.containsKey(task.taskId) ||
+        _retiredIdentities.contains(task.binding.identityId)) {
+      throw StateError('Task cannot be recovered');
+    }
+    final intent = CommentIntent(
+      commandId: commandId,
+      taskId: task.taskId,
+      operation: abandon ? CommentOperation.abandon : CommentOperation.retry,
+      binding: task.binding,
+      expectedAttemptVersion: task.attemptVersion,
+      content: abandon ? null : content,
+    );
+    await _execute(
+      CommentJournalEntry(
+        localId: task.taskId,
+        intent: intent,
+        transport: CommentTransportState.sending,
+        task: task,
+        retainedContent: content,
+      ),
+      _accountId!,
+      _epoch,
+    );
+  }
+
   /// The host may install the returned value only into this currently open
   /// post's temporary editor, checking its route generation after the await.
   /// No network send or target change happens here.
@@ -274,8 +314,9 @@ class CommentController extends ChangeNotifier {
   Future<void> _execute(
     CommentJournalEntry entry,
     String account,
-    int epoch,
-  ) async {
+    int epoch, {
+    VoidCallback? onJournaled,
+  }) async {
     final key = '$account:$epoch:${entry.localId}';
     if (!_busy.add(key)) {
       throw StateError('A task operation is already running');
@@ -298,6 +339,7 @@ class CommentController extends ChangeNotifier {
       _knownTasks.add(entry.localId);
       _usedCommands.addAll(entry.usedCommandIds);
       _changed();
+      onJournaled?.call();
       try {
         final task = await api.execute(entry.intent);
         if (!_current(account, epoch)) return;
