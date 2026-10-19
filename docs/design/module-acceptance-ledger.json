@@ -16507,6 +16507,29 @@
         "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
         "report": "docs/design/comments-core-report-20261018.md",
         "scope": "仅独立评论核心及设计联动；实际身份/详情/系统通知/治理消费者尚未接入，不升级本模块验收。共享边界变化时重新打开适用回归。"
+      },
+      "currentCommentReportModeration": {
+        "rootLedgerEntry": "currentCommentReportModeration",
+        "recordedOn": "2026-10-19",
+        "branch": "codex/feat/comment-report-moderation",
+        "taskReference": "docs/branches/feat-comment-report-moderation.md",
+        "implementation": "COMPLETE_ON_BRANCH",
+        "acceptance": "COMMENT_REPORT_CLOSED_LOOP_SCOPED_PASS",
+        "merge": "task PR authoritative live state",
+        "published": false,
+        "productCommit": "dd436d66185d1ce0ac871c3d55bc10511364843a",
+        "integratedMain": "7b2dd1634c3ffb3835543a8a49c9d22cdbcc2f52",
+        "report": "docs/design/comment-report-validation-20261019.md",
+        "verification": "docs/design/comment-report-verification-20261019.json",
+        "contract": "docs/design/report-notification-contract.md",
+        "newMigration": "0018_comment_reports.sql",
+        "scope": "real root/reply text/single image report, web moderation, notification, independent appeal and affected lifecycle",
+        "inherited": [
+          18,
+          19
+        ],
+        "remainingInThisTask": [],
+        "moduleResultUnchanged": "PARTIAL"
       }
     },
     {
@@ -17639,6 +17662,29 @@
         "pullRequest": "https://github.com/zewbby/HnuHole/pull/17",
         "report": "docs/design/comments-core-report-20261018.md",
         "scope": "仅独立评论核心及设计联动；实际身份/详情/系统通知/治理消费者尚未接入，不升级本模块验收。共享边界变化时重新打开适用回归。"
+      },
+      "currentCommentReportModeration": {
+        "rootLedgerEntry": "currentCommentReportModeration",
+        "recordedOn": "2026-10-19",
+        "branch": "codex/feat/comment-report-moderation",
+        "taskReference": "docs/branches/feat-comment-report-moderation.md",
+        "implementation": "COMPLETE_ON_BRANCH",
+        "acceptance": "COMMENT_REPORT_CLOSED_LOOP_SCOPED_PASS",
+        "merge": "task PR authoritative live state",
+        "published": false,
+        "productCommit": "dd436d66185d1ce0ac871c3d55bc10511364843a",
+        "integratedMain": "7b2dd1634c3ffb3835543a8a49c9d22cdbcc2f52",
+        "report": "docs/design/comment-report-validation-20261019.md",
+        "verification": "docs/design/comment-report-verification-20261019.json",
+        "contract": "docs/design/report-notification-contract.md",
+        "newMigration": "0018_comment_reports.sql",
+        "scope": "real root/reply text/single image report, web moderation, notification, independent appeal and affected lifecycle",
+        "inherited": [
+          18,
+          19
+        ],
+        "remainingInThisTask": [],
+        "moduleResultUnchanged": "PARTIAL"
       }
     },
     {
@@ -39883,5 +39929,27 @@
     "mergeSha": "2da7cdf9d4311e8017108e56656c74d379d4a01b",
     "coreMergeSha": "3e0cc02b7708abc4ab172bee549db5ec57f2f6f5",
     "mergeReceipt": "docs/design/comments-main-merge-20261019.json"
+  },
+  "currentCommentReportModeration": {
+    "recordedOn": "2026-10-19",
+    "branch": "codex/feat/comment-report-moderation",
+    "taskReference": "docs/branches/feat-comment-report-moderation.md",
+    "implementation": "COMPLETE_ON_BRANCH",
+    "acceptance": "COMMENT_REPORT_CLOSED_LOOP_SCOPED_PASS",
+    "merge": "task PR authoritative live state",
+    "published": false,
+    "productCommit": "dd436d66185d1ce0ac871c3d55bc10511364843a",
+    "integratedMain": "7b2dd1634c3ffb3835543a8a49c9d22cdbcc2f52",
+    "report": "docs/design/comment-report-validation-20261019.md",
+    "verification": "docs/design/comment-report-verification-20261019.json",
+    "contract": "docs/design/report-notification-contract.md",
+    "newMigration": "0018_comment_reports.sql",
+    "scope": "real root/reply text/single image report, web moderation, notification, independent appeal and affected lifecycle",
+    "inherited": [
+      18,
+      19
+    ],
+    "remainingInThisTask": [],
+    "moduleResultUnchanged": "PARTIAL"
   }
 }

@@ -4,11 +4,16 @@
 
 本分支新增的举报／审核／通知运行说明见下节；下文其余认证历史报告仍保持各自原版本的证明范围。
 
+2026-10-19 当前接续：完整评论 #19 已合入 main；上方“文字后端／provider未接入”为原版本快照。
+评论举报新增0018，真实失败通知、原任务重试／放弃／移除直接复用0017，见[评论举报任务](../../docs/branches/feat-comment-report-moderation.md)与[新增限定报告](../../docs/design/comment-report-validation-20261019.md)。
+
 ## 帖子举报、审核和最小系统通知
 
-`codex/feat/report-moderation` 阶段1提供已有帖子举报、原提交核对、同事实合案、审核、处罚、必要申诉与 App 内通知。评论举报和真实评论失败 provider 等 `comments-replies` 合入后接入；不依赖评论表。本地真实 HTTPS／SQL／Dart／网页链路与权限证据见[阶段1报告](../../docs/design/report-moderation-validation-report.md)。
+`codex/feat/report-moderation` 阶段1提供帖子举报、原提交核对、同事实合案、审核、处罚、必要申诉与 App 内通知，0015不依赖评论表。当前评论举报任务在其上支持真实主评论／回复（文字及单图），原请求增加可选 `commentId`；帖子旧请求继续兼容。阶段1证据沿用[原报告](../../docs/design/report-moderation-validation-report.md)，新增评论链见上方报告。
 
 已有 C/V 开发环境继续使用原认证和 Gate 初始化／恢复流程。在 **C owner 连接**上按实际 main 的顺序执行迁移；本分支基于0014新增0015，不能跨号或覆盖已合入迁移。迁移后执行 `infra/postgres/grant-community.sql`，图片功能启用时执行 `grant-post-images.sql`，启用审核再执行 `grant-moderation.sql`。0015 的删除／注销清理钩子在关闭审核时仍必需，故必须重跑新版 `grant-community.sql`；启动会核查缺失权限。Down 明确拒绝，采用冻结和前向修复。
+
+0018必须在实际0016／0017之后执行；保留已有评论及回执，仅增加案件 `comment_id`、评论 `moderation_hidden` 与生命周期触发器。重新执行新版 `grant-community.sql`、启用评论时的 `grant-comments.sql`、图片 `grant-post-images.sql` 及治理 `grant-moderation.sql`；新增处置授权仅为评论下架标记列 UPDATE。通用 C 启动即核验新钩子，启用治理再核验处置写权限；缺失时拒绝启动。评论配置继续沿[原运行说明](comment-schema/README.md)，不更换评论密钥／journal 或初始化第二个任务系统。
 
 在已有 C 配置加入 `"moderation": true`，并保持已验证的 `posts` 配置。若提供网页，再设置 `"adminDirectory": "/absolute/path/to/repo/apps/admin"`；该值也可相对配置文件目录，最终解析为绝对路径。启动后同源 HTTPS `/admin` 只提供四个静态文件。管理端无需构建，不另设登录服务。补充图片需要已有 `postImages` 的固定 Python／验证器路径及 SHA256；未启用图片时纯文字举报仍可用，补图失败关闭，不信任 MIME 声明。
 

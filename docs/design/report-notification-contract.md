@@ -1,12 +1,8 @@
-# B11 / B08 分阶段接口契约
+# B11 / B08 举报、审核与最小系统通知契约
 
-2026-10-18；分支 `codex/feat/report-moderation`。[PR #18](https://github.com/zewbby/HnuHole/pull/18) 的阶段1产品候选
-`aab9a647d9c8310e344bbc767abb5cbdc1045f73` 已提交、推送，agent 安全复核无阻断，状态 PHASE1_SCOPED_PASS。
-基于 main `986477b`，当前无未提交产品源码；宿主、真实 SQL／HTTPS／浏览器链和产品候选CI均通过，交付head回执见PR。
-最终证据由[验收报告](report-moderation-validation-report.md)及[机器记录](report-moderation-verification.json)固定；未合并、未部署、未发布，B08／B11仍为 PARTIAL，评论举报及真实失败 provider 等未实现范围不据此关闭。
-
-阶段一独立 PR 交付帖子举报、审核、申诉和 App 内通知。评论发布/图片/失败任务仍由
-`codex/feat/comments-replies` 拥有；阶段一不依赖评论表。评论合入 main 后另作类型适配与集成回归。
+2026-10-19。帖子治理基础 [PR #18](https://github.com/zewbby/HnuHole/pull/18) 和真实评论 [PR #19](https://github.com/zewbby/HnuHole/pull/19) 已合入 main；阶段1的[报告](report-moderation-validation-report.md)与[机器证据](report-moderation-verification.json)保留原版本范围。
+当前 `codex/feat/comment-report-moderation` 在实际完整评论主线接通评论举报闭环，验证与合并状态见[任务详情](../branches/feat-comment-report-moderation.md)、[新增报告](comment-report-validation-20261019.md)。未部署／发布，完整 B08／B11 仍为 PARTIAL。
+评论发布、图片、失败任务及原任务重试／放弃仍由评论模块拥有；当前直接复用 #19 成果，不开发第二份 provider 或发送状态机。
 
 ## 通知事件与任务
 
@@ -24,15 +20,23 @@
 评论 provider 最小职责：列出本账号本身份明确失败任务；按稳定任务标识读取详情、重试、放弃、标已读；
 成功/放弃/原身份删除时撤去入口。通知层不存第二份发送正文、不重新绑定身份、不自行裁决未知。
 评论目标适配须在同一最终 Gate 事务检查其类型、归属、帖子及评论生命周期，不能只凭资源 ID 存在放行。
-当前已有 `CommentFailureProvider` 类型与 `COMMENT_FAILURE` 路由保留，尚未装配真实评论 provider；
-阶段1服务端通知只创建举报进度／结果、处罚和申诉结果，不写入占位评论通知。
+真实服务端失败已由 #19 的 `0017_comment_business.sql` 在权威 FAILED 事务写入统一通知：
+`source=SERVER`、`scope=IDENTITY`、`identityId=ownerIdentityId`、`kind=COMMENT_FAILURE`、
+`eventId=comment-failure:{taskId}`、`route={name:COMMENT_FAILURE,resourceId:taskId}`。
+任务重试进入 ACCEPTED、成功／放弃／原身份删除时沿已有触发器移除失效入口；后续失败产生当前权威入口，读取通知不能解锁任务。
+App 详情复用 `CommentFailureView` 和 `CommentRuntime`，由评论拥有者接口读取原 `taskId`、版本、正文、图片及允许动作；
+重试／放弃只调用评论核心，保留原身份／目标并核对原命令，通知模块不发 CREATE、不改投、不清 journal、不推断 UNKNOWN 为失败。
+已有 `CommentFailureProvider`／`LOCAL_TASK` 类型仅是扩展边界，不能把它当成还需另造真实服务端任务的缺项。
 
 ## 公开接口
 
-- `PUT /api/v1/reports/{requestId}`：`postId, identityId?, reason, description, images, retryToken?`。
+- `PUT /api/v1/reports/{requestId}`：`postId, commentId?, identityId?, reason, description, images, retryToken?`。
   原随机 UUID 绑定完整意图；同键同材料幂等，不同材料 409。`GET` 同路径核对，
   返回 `{state: SUBMITTED, report}` 或 `{state: NOT_SUBMITTED, retryToken}`；未知先核对，不能新键重发。
   `NOT_SUBMITTED` 在权威事务封住此前迟到尝试；显式重试保留原 requestId、材料及最新 retryToken，旧令牌不能重新受理。
+  省略 `commentId` 为原帖子举报；传入时必须是该 `postId` 下真实已发布主评论或回复，不能用 taskId 代替。
+  `identityId` 是举报者本人选用的通知身份，独立于评论作者身份；不得接收客户端声称的作者账号／身份。
+  本人举报回执、案件与本人处罚摘要增加可选 `commentId`，旧帖子省略，不改变其原意图指纹。
 - `GET /api/v1/system-notifications?identityId=&before=&limit=`：`{items,nextBefore}`。
   `GET /{id}` 读单条，`POST /{id}/read` 标单条已读；都需本人权限。
 - `GET /api/v1/sanctions/{id}` 返回本人处罚摘要、起止/撤销时间、申诉次数及活动申诉 ID。
@@ -70,6 +74,9 @@
 图片只接受验证通过的 PNG/JPEG/GIF/WebP 原字节，单图2MiB、每批8MiB；JSON请求最多12MiB。
 本次以相同 `postId + snapshotDigest` 归并同事实，不按原因拆案；每份举报保留自己的类别，
 不因多人／多原因／多人同时处理重复计违规或加罚，快照不因后续编辑替换。
+评论摘要在同一命名空间加入 `COMMENT + commentId`，同文不同对象不会合案；评论文字及单图原字节从最终授权事务读取，父帖归属与公开状态一并核验。
+下架回复只影响自己，下架主评论阻断整楼；处置取评论实际作者，父帖仍独立。作者删除、父帖删除及其他有效下架原因不能被申诉撤销覆盖。
+举报通知仍以原 `requestId` 路由核对本人举报，再以权威回执 `postId/commentId` 调用现有评论定位；不在通知上复制内容或携带任意 URL。
 无身份的浏览账号可举报，通知用账号范围，不为举报创建发言身份。
 复用既有私有六位平台号，随机无重复、保留前导零、容量100万；不新增第二份账号映射，不将其作为公开身份或登录凭据。
 审核员可下架、重置本案身份违规资料及禁言1／3／7／30天；封禁1／3／7／30天或永久、解除封禁及角色管理仅管理员，角色变更不能撤掉最后管理员。
@@ -81,7 +88,7 @@
 
 ## 阶段状态
 
-契约可供评论任务先行对接；评论举报、真实评论失败 provider、完整互动收件箱、私信证据及系统推送未集成。
-基础迁移0015基于实际 main `986477b`（既有迁移连续至0014），只引用已存在的账号、身份和帖子表。
-评论暂定0016；阶段2所需新迁移在评论合入后按实时 main 递增，不覆盖已合入文件、不乱序执行。
-当前实现／验证状态见[任务详情](../branches/feat-report-moderation.md)与[模块交接](module-acceptance-handoff.md)；最终 SHA、真实 SQL／HTTPS／浏览器和平台结果须由对应执行证据补齐，B08／B11不计完整 PASS。
+基础迁移0015保持只依赖原账号、身份和帖子表；真实评论0016／0017已经合入。
+本任务新增0018，在实际评论表上增加案件目标及下架投影、删除终结和发布保护；前向升级，不覆盖既有迁移，不允许跳号，Down拒绝。
+评论举报已完成本任务范围接通，真实失败通知直接沿用 #19；完整互动收件箱、私信证据及系统推送仍不在范围。
+当前实现／验证及最终合并状态见[本任务详情](../branches/feat-comment-report-moderation.md)、[新增证据](comment-report-verification-20261019.json)与[模块交接](module-acceptance-handoff.md)，B08／B11不计全平台／生产完整 PASS。
