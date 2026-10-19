@@ -1474,5 +1474,12 @@
     "fault injection covers actual SQL UPDATE failure, not all possible COMMIT/disk fault modes",
     "no phone/Android rebuild/old environment restart/production acceptance/deployment/release"
   ],
-  "reproduction": "Use Authorization Gate workflow or a dedicated Go1.22.2/PostgreSQL16 private Linux fixture: cd services/api; go build -mod=readonly ./...; sh authlab/run-isolated.sh. Optional media/Goose/Dart/browser fixtures are explicitly conditional; required C/V Gate tests run on real SQL."
+  "reproduction": "Use Authorization Gate workflow or a dedicated Go1.22.2/PostgreSQL16 private Linux fixture: cd services/api; go build -mod=readonly ./...; sh authlab/run-isolated.sh. Optional media/Goose/Dart/browser fixtures are explicitly conditional; required C/V Gate tests run on real SQL.",
+  "ciFailureHistory": {
+    "head": "d5ae07ec1c3c19eb90ed079ab9c4218462c538dc",
+    "job": "https://github.com/zewbby/HnuHole/actions/runs/39210700683/job/117923193315",
+    "result": "FAIL; new formatting command included an unchanged legacy authorization_gate_test.go with pre-existing formatting drift; product SQL step had not run",
+    "resolution": "Format-check only the two changed Gate Go files; no security/test assertion removed and no legacy file reformatted",
+    "privateLogSha256": "c8e3c19031694d987c1a502a96665f3a8e7a1ee910bf3ed1002b388c963dee88"
+  }
 }

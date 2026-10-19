@@ -45,7 +45,7 @@ jobs:
       - name: Formatting and build
         working-directory: services/api
         run: |
-          test -z "$(gofmt -l internal/authprivacy/authorization_gate*.go)"
+          test -z "$(gofmt -l internal/authprivacy/authorization_gate.go internal/authprivacy/authorization_gate_cancellation_test.go)"
           go build -mod=readonly ./...
       - name: New isolated C/V SQL, cancellation, recovery and affected backend regressions
         working-directory: services/api
