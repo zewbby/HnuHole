@@ -4,6 +4,8 @@
   "recordedOn": "2026-10-19",
   "timeZone": "Asia/Shanghai",
   "branch": "codex/feat/feed-backend",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/27",
+  "implementationCommit": "965db4729e06c93b8e27dbee14fdd4faf3072649",
   "baseMain": "fc2348ff791fab7da17ef866e8c6f506f9bf7075",
   "implementation": "COMPLETE_ON_BRANCH",
   "result": "BACKEND_SCOPED_PASS",
@@ -201,7 +203,7 @@
   "openapi": "packages/openapi/feed-api.yaml",
   "ci": {
     "workflow": ".github/workflows/feed-backend.yml",
-    "result": "PENDING_PR_FINAL_HEAD"
+    "result": "LIVE_PR_CHECKS_AUTHORITATIVE_FOR_DELIVERY_HEAD"
   },
   "independentReview": "PENDING; no delegated agent or GitHub member approval claimed",
   "notRun": [
