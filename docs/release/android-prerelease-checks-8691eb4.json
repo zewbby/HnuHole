@@ -1,0 +1,70 @@
+{
+  "recordedAtUtc": "2026-10-18T16:22:51.642730+00:00",
+  "sourceSha": "8691eb49d3863b911e04c4678512c1eb8d54aaca",
+  "result": "PASS_SOURCE_SCOPED",
+  "checks": [
+    {
+      "name": "policy",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39144005652/job/117724027135",
+      "completedAt": "2026-10-18T16:13:29Z"
+    },
+    {
+      "name": "go-postgres",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39143627434/job/117722905593",
+      "completedAt": "2026-10-18T16:10:52Z"
+    },
+    {
+      "name": "flutter",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39143627434/job/117722905534",
+      "completedAt": "2026-10-18T16:10:29Z"
+    },
+    {
+      "name": "moderation-postgres",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39143627428/job/117722905508",
+      "completedAt": "2026-10-18T16:12:34Z"
+    },
+    {
+      "name": "admin",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39143627428/job/117722905411",
+      "completedAt": "2026-10-18T16:08:21Z"
+    },
+    {
+      "name": "rehearsal",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39143627400/job/117722905341",
+      "completedAt": "2026-10-18T16:11:40Z"
+    },
+    {
+      "name": "go-host",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39143627434/job/117722905319",
+      "completedAt": "2026-10-18T16:08:37Z"
+    },
+    {
+      "name": "policy",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39143627352/job/117722905229",
+      "completedAt": "2026-10-18T16:08:23Z"
+    },
+    {
+      "name": "candidate",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39143627400/job/117722905075",
+      "completedAt": "2026-10-18T16:14:35Z"
+    }
+  ],
+  "runUrl": "https://github.com/zewbby/HnuHole/actions/runs/39143627400",
+  "candidateArtifactId": 12142850782,
+  "rehearsalArtifactId": 12142458584,
+  "downloadedCandidateSha256Verified": true,
+  "rehearsalChecks": 13,
+  "restoredFingerprints": 75,
+  "scope": "Exact source only; document delivery commits require their own final-head live checks",
+  "device": "NOT_RUN",
+  "production": "NOT_RUN"
+}

@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/16",
+  "reviewResult": "REVIEW_PASS_SCOPED",
+  "backendSourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b",
+  "candidateSourceSha": "8691eb49d3863b911e04c4678512c1eb8d54aaca",
+  "mainBaseline": "1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1",
+  "independentReviewers": [
+    {
+      "agent": "/root/deployment_audit",
+      "result": "PASS",
+      "scope": "Read-only actual lab09 migration and exact ACL audit, immutable moderation evidence denial, 13 checks, 75 restore fingerprints, original image/report/read notification facts, backup/binary/migration/log digests, five PostgreSQL post-stop status3; same machine only"
+    },
+    {
+      "agent": "/root/candidate_audit",
+      "result": "PASS_NON_DEVICE_PREPARATION",
+      "scope": "Read-only independent apksigner verification, final manifest, Windows/Linux APK and manifest SHA256SUMS, source tree/locks, debug kernel origins and public CA; no ADB or private signing material read"
+    },
+    {
+      "agent": "/root/evidence_review",
+      "result": "PASS_SCOPED",
+      "scope": "Read-only final source/result boundaries, current versus historical evidence, local link checks, README merge history, safe retained-root continuation; no blocker after ABI and signing identity clarifications"
+    }
+  ],
+  "findingsAddressed": [
+    "Restore no-privileges loses PUBLIC function EXECUTE denial: reset owned deny ACL, apply canonical main grants, retain exact permission matrix; lab08 FAIL then lab09 PASS",
+    "Flutter android-arm64 target includes JNI libraries for other ABIs; scope states the Flutter runtime target rather than pure single ABI",
+    "Original device manifest authenticationIdentityChanged=false means applicationId/RP configuration unchanged only; test signing certificate is distinct and Passkey equivalence is not asserted; original receipt bytes retained",
+    "Device and source boundaries retained: local backend14f, candidate8691, CI8691; physical-device results NOT_RUN",
+    "Acceptance ledger updatedOn advanced to 2026-10-19; historical baselines remain unchanged"
+  ],
+  "githubMemberApproval": "NOT_PROVIDED: independent agent review is not a separate GitHub member approval",
+  "finalHeadChecks": "Check live final PR head after delivery commit; source-scoped CI receipts do not replace it",
+  "physicalDevice": "NOT_RUN",
+  "crossDevicePasskey": "DEFERRED",
+  "ios": "DEFERRED",
+  "production": "NOT_RUN"
+}

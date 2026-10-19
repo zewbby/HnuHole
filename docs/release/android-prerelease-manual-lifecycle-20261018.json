@@ -1,0 +1,26 @@
+{
+  "sourceSha": "0d107191556b650fb0e8363e46dc6fc2f510baf0",
+  "steps": [
+    {
+      "command": "start",
+      "exitCode": 0,
+      "atUtc": "2026-10-18T09:21:17.988969+00:00"
+    },
+    {
+      "command": "recover",
+      "exitCode": 0,
+      "atUtc": "2026-10-18T09:21:18.178423+00:00"
+    },
+    {
+      "command": "health",
+      "exitCode": 0,
+      "atUtc": "2026-10-18T09:21:18.260443+00:00"
+    },
+    {
+      "command": "stop",
+      "exitCode": 0,
+      "atUtc": "2026-10-18T09:21:19.408894+00:00"
+    }
+  ],
+  "result": "PASS"
+}

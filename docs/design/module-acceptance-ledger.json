@@ -17734,6 +17734,14 @@
     },
     {
       "id": "P03",
+      "androidPrereleaseDevelopmentEvidence": {
+        "task": "https://github.com/zewbby/HnuHole/pull/16",
+        "sourceSha": "0d107191556b650fb0e8363e46dc6fc2f510baf0",
+        "result": "PASS_SAME_MACHINE_ISOLATED_DEVELOPMENT_ONLY",
+        "checks": "Actual C/V backup to two new instances, sixty table/sequence fingerprints, permission matrix, old-token denial, fresh-login original text/image reads, application rollback/redeploy, five-instance shutdown",
+        "evidence": "docs/release/android-prerelease-local-20261018.json",
+        "productionAcceptance": "NOT_RUN; original module currentResult is not upgraded"
+      },
       "name": "真实灾备、备份与留存",
       "implementationState": "EXTERNAL_OR_FUTURE",
       "acceptanceState": "PENDING_OPERATIONAL_EVIDENCE",
@@ -17745,6 +17753,32 @@
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "androidPrereleaseSchema15DevelopmentEvidence": {
+        "recordedOn": "2026-10-19",
+        "result": "PASS_SCOPED_NON_DEVICE",
+        "backendSourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b",
+        "candidateSourceSha": "8691eb49d3863b911e04c4678512c1eb8d54aaca",
+        "report": "docs/release/android-prerelease.md",
+        "backend": "docs/release/android-prerelease-schema15-local-20261018.json",
+        "candidate": "docs/release/android-device-candidate-20261019.json",
+        "checks": 13,
+        "restoredFingerprints": 75,
+        "production": "NOT_RUN",
+        "device": "PASS_SCOPED_SINGLE_ANDROID_MINIMUM_CHAIN",
+        "deviceEvidence": "docs/release/android-device-validation-20261019.json",
+        "deviceReport": "docs/release/android-device-validation-20261019.md",
+        "deviceChecks": 11,
+        "deviceScope": "Single vivo S18/API35 debug8691; text/one PNG/session reopen/login only; no production or full module promotion"
+      },
+      "androidPrereleaseMainMerge": {
+        "pr": 16,
+        "mergedToMain": true,
+        "mergeSha": "32cb87b73e2feb518e1c5ec75ea11bb4d3414df1",
+        "sourceHead": "a6f8f60efe52cd7661cba7b95d7740b7e6cb1d25",
+        "treeEqual": true,
+        "evidence": "docs/release/android-prerelease-main-merge-20261019.json",
+        "productionAcceptance": "NOT_RUN; original module currentResult unchanged"
       }
     },
     {
@@ -17764,17 +17798,53 @@
     },
     {
       "id": "P05",
+      "androidPrereleaseDevelopmentEvidence": {
+        "task": "https://github.com/zewbby/HnuHole/pull/16",
+        "result": "PASS_SCOPED_ANDROID_BUILD_AND_BACKEND_REHEARSAL",
+        "candidateSourceSha": "6b2927c3c19ebcea2bbbfbc556f5dfdf26ecca2e",
+        "candidateEvidence": "docs/release/android-candidate-20261018.json",
+        "report": "docs/release/android-prerelease.md",
+        "deviceAcceptance": "NOT_RUN",
+        "iosAndCrossDevicePasskey": "DEFERRED",
+        "productionAcceptance": "NOT_RUN; test signing and .invalid defaults do not prove production release"
+      },
       "name": "CI、完整发布与外部服务集成",
       "implementationState": "PARTIAL",
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "无GitHub Actions工作流；正式签名/端点/供应商实际集成未配置或未验",
+      "note": "已有协作/Go/Flutter/SQL/契约CI；PR16测试签名候选与隔离演练为开发范围通过、已合并main；手机限定验收见8691专属记录；正式签名/端点/供应商实际集成仍未配置或未验",
       "nextAcceptance": "按最终报告取得真实运营／发布／灾备或人类独立评审证据；本地开发测试和AI核对不能代证生产。",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
         "scope": "Source/status/proof mapping only; does not change functional module result"
+      },
+      "androidPrereleaseSchema15DevelopmentEvidence": {
+        "recordedOn": "2026-10-19",
+        "result": "PASS_SCOPED_NON_DEVICE",
+        "backendSourceSha": "14f5096bb65aa53743939031000d6df32e42ad4b",
+        "candidateSourceSha": "8691eb49d3863b911e04c4678512c1eb8d54aaca",
+        "report": "docs/release/android-prerelease.md",
+        "backend": "docs/release/android-prerelease-schema15-local-20261018.json",
+        "candidate": "docs/release/android-device-candidate-20261019.json",
+        "checks": 13,
+        "restoredFingerprints": 75,
+        "production": "NOT_RUN",
+        "device": "PASS_SCOPED_SINGLE_ANDROID_MINIMUM_CHAIN",
+        "deviceEvidence": "docs/release/android-device-validation-20261019.json",
+        "deviceReport": "docs/release/android-device-validation-20261019.md",
+        "deviceChecks": 11,
+        "deviceScope": "Single vivo S18/API35 debug8691; text/one PNG/session reopen/login only; no production or full module promotion"
+      },
+      "androidPrereleaseMainMerge": {
+        "pr": 16,
+        "mergedToMain": true,
+        "mergeSha": "32cb87b73e2feb518e1c5ec75ea11bb4d3414df1",
+        "sourceHead": "a6f8f60efe52cd7661cba7b95d7740b7e6cb1d25",
+        "treeEqual": true,
+        "evidence": "docs/release/android-prerelease-main-merge-20261019.json",
+        "productionAcceptance": "NOT_RUN; original module currentResult unchanged"
       }
     },
     {
@@ -37362,7 +37432,7 @@
     "functionalAcceptancePromoted": false,
     "bookkeepingOnly": true
   },
-  "updatedOn": "2026-10-18",
+  "updatedOn": "2026-10-19",
   "currentB6": {
     "recordedOn": "2026-10-13",
     "currentResult": "PASS",

@@ -29,6 +29,35 @@ android {
         versionName = flutter.versionName
     }
 
+    // Opt-in CI test identity. Production signing is configured separately.
+    val testSigningNames = listOf("HNUHOLE_TEST_KEYSTORE", "HNUHOLE_TEST_KEY_ALIAS", "HNUHOLE_TEST_STORE_PASSWORD", "HNUHOLE_TEST_KEY_PASSWORD")
+    val testSigningValues = testSigningNames.map { System.getenv(it) }
+    require(testSigningValues.all { it == null } || testSigningValues.all { !it.isNullOrBlank() }) {
+        "All four prerelease test signing inputs are required"
+    }
+    val testSigning = if (testSigningValues.all { it != null }) {
+        signingConfigs.create("prereleaseTest") {
+            storeFile = file(testSigningValues[0]!!)
+            keyAlias = testSigningValues[1]
+            storePassword = testSigningValues[2]
+            keyPassword = testSigningValues[3]
+        }
+    } else null
+
+    // Explicit device preparation only: same authentication identity, owned key,
+    // and no historical debug Passkey diagnostic/DAL manifest declarations.
+    val deviceProfileValue = System.getenv("HNUHOLE_PRERELEASE_DEVICE")
+    require(deviceProfileValue == null || deviceProfileValue == "1") {
+        "HNUHOLE_PRERELEASE_DEVICE must be unset or 1"
+    }
+    val deviceProfile = deviceProfileValue == "1"
+    require(!deviceProfile || testSigning != null) {
+        "The prerelease device profile requires an explicit test signing identity"
+    }
+    if (deviceProfile) {
+        sourceSets.getByName("debug").manifest.srcFile("src/prereleaseDevice/AndroidManifest.xml")
+    }
+
     buildTypes {
         debug {
             // Explicit owned acceptance install; ordinary debug/release IDs stay
@@ -36,9 +65,11 @@ android {
             if (providers.gradleProperty("hnuholeCommentsValidation").orNull == "true") {
                 applicationIdSuffix = ".commentsvalidation"
             }
+            if (deviceProfile) signingConfig = testSigning
         }
         release {
             // Configure an explicit release signing identity before distribution.
+            if (testSigning != null) signingConfig = testSigning
         }
     }
 }

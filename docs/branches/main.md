@@ -2,20 +2,22 @@
 
 汇集已经合并的项目实现与文档。
 
-核对日期：2026-10-18。
+核对日期：2026-10-19。
 
 ## 进度
 
-主线已包含协作规范、帖子图片前后端、Android S18 原约定范围、PR #9 的 B5 材料与闭号/图片擦除修复、PR #14 的文字帖证据归档，以及 PR #13 的社区中文无障碍和图片/认证联合回归成果。产品实现、验收和发布分别记录。
+主线包含协作规范、帖子图片前后端、Android S18原约定范围、PR #9的B5材料与闭号/图片擦除修复、PR #14的文字帖证据归档、PR #13的社区中文无障碍和图片/认证联合回归，以及PR #18的帖子举报审核与最小系统通知阶段1。
+
+[PR #16](https://github.com/zewbby/HnuHole/pull/16) 已合入测试签名Android候选、隔离预发布配置与生命周期、正式迁移/精确权限核验、实际备份到双新实例恢复和应用回滚路径，并归档vivo S18最小文字/单PNG限定实测。合并提交 `32cb87b73e2feb518e1c5ec75ea11bb4d3414df1` 与已测最终head `a6f8f60` 完整文件树一致，八项最新检查全SUCCESS；见[合并回执](../release/android-prerelease-main-merge-20261019.json)。实现、验收和正式发布分别记录。
 
 ## 剩余事项
 
-跨设备 Passkey NI-X02 按用户要求延期；PR #13 的新整合候选未重新执行原生设备验收，历史设备结果保留原固定 APK 范围。iOS、生产及完整 App 验收仍待完成；后续开发从最新 main 新开需求分支。
-
-核对合并提交：[`359c180`](https://github.com/zewbby/HnuHole/commit/359c180a53a674e308e1496bed31da33b9ab8524)。未发布或部署。
+跨设备Passkey NI-X02按用户要求延期。8691/d80c手机debug包的11项限定结果不代证其他APK或完整原生安全；CI release默认.invalid，与手机包分开归档。iOS、正式签名、真实云、独立生产运营与完整App验收仍未完成，未正式发布；其余未验范围见[手机报告](../release/android-device-validation-20261019.md)。手机窗口已结束，不再ADB；后续开发从最新main新开需求分支。
 
 ## 详细记录
 
 - [主线进度](../design/progress.md)
-- [社区 PR #13 交付与验证范围](community-flutter-pages.md)
-- [B5 主线增量交付与验证范围](fix-b5-main-integration.md)
+- [Android候选与隔离预发布交付](ci-android-prerelease.md)
+- [举报审核阶段1](feat-report-moderation.md)
+- [社区PR #13交付与验证范围](community-flutter-pages.md)
+- [B5主线增量交付与验证范围](fix-b5-main-integration.md)

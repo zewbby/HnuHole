@@ -35,9 +35,11 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `codex/feat/report-moderation` | 已有帖子举报、网页审核、必要申诉与最小系统通知阶段1限定范围通过，PR #18已合入main；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |
+| `codex/ci/android-prerelease` | PR #16已合入main，交付测试签名候选、同机恢复/回滚与vivo S18最小文字图片限定实测；未正式发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
+
+| `codex/feat/report-moderation` | PR #18 已合入main：帖子举报、网页审核和最小系统通知阶段1；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |
 | `codex/feat/comments-replies` | 评论核心 PR #17 为业务接通 PR #19 的前置，按顺序交付。 | [任务边界](docs/branches/feat-comments-replies.md) |
-| `codex/feat/comments-backend-text` | PR #19 继续接通评论页面、原生任务恢复、单图、点赞删除与真实通知，当前候选待最终验收及审查。 | [详情](docs/branches/feat-comments-backend-text.md) |
+| `codex/feat/comments-backend-text` | PR #19 接通评论页面、原生任务恢复、单图、点赞删除与真实通知，候选待最终审查。 | [详情](docs/branches/feat-comments-backend-text.md) |
 | `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
 
 ### 已合并或退役的历史工作
@@ -53,11 +55,8 @@
 
 ## 最近变动
 
-按合并时间倒序保留最近 5 条，每条一句话说明。
-
-- 2026-10-18 · [#18](https://github.com/zewbby/HnuHole/pull/18)：合入帖子举报审核与最小系统通知基础，评论适配留后续。
-
+- 2026-10-19 · [#16](https://github.com/zewbby/HnuHole/pull/16)：合入Android测试签名候选、隔离预发布与恢复/回滚路径，并归档vivo S18最小文字图片限定验收。
+- 2026-10-18 · [#18](https://github.com/zewbby/HnuHole/pull/18)：合入帖子举报审核与最小系统通知阶段1，评论接入保留第二阶段。
+- 2026-10-18 · [#15](https://github.com/zewbby/HnuHole/pull/15)：补记社区PR #13的合并事实和宿主、SQL、设备验收边界。
 - 2026-10-18 · [#13](https://github.com/zewbby/HnuHole/pull/13)：合入社区无障碍与主线图片/认证整合成果，跨设备 Passkey 保留待验。
 - 2026-10-18 · [#14](https://github.com/zewbby/HnuHole/pull/14)：归档文字帖原始证据并退役历史分支。
-- 2026-10-17 · [#12](https://github.com/zewbby/HnuHole/pull/12)：退役工程基线分支并保留完整历史归档。
-- 2026-10-17 · [#11](https://github.com/zewbby/HnuHole/pull/11)：将已合并或退役工作移入历史入口，更新现存分支索引。
