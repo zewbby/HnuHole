@@ -2,7 +2,7 @@
 
 2026-10-19，Asia/Shanghai。状态：固定候选及必要新增限定验收完成；待本任务 PR 审查/检查后合并，未部署或正式发布。
 
-唯一交付为固定源码、配置、后端、迁移和签名的可用 Android 集成候选，包含现有图文、完整评论和评论举报审核/通知/申诉。分支 `codex/ci/android-integration-candidate`，独立工作目录 `E:/HnuHole-android-integration-20261019/repo`。
+唯一交付为固定源码、配置、后端、迁移和签名的可用 Android 集成候选，包含现有图文、完整评论和评论举报审核/通知/申诉。交付 [PR #23](https://github.com/zewbby/HnuHole/pull/23)，分支 `codex/ci/android-integration-candidate`，独立工作目录 `E:/HnuHole-android-integration-20261019/repo`。
 
 依赖已实际合入：完整评论 [#19](https://github.com/zewbby/HnuHole/pull/19)、评论举报 [#22](https://github.com/zewbby/HnuHole/pull/22)。产品基线固定为 `1a810944787eacb66e2115e1ce77de08190c366a`，正式 C 迁移0001..0018 / V0001..0004；停止追新 main。
 
@@ -30,3 +30,5 @@ APK `4df3f7c85f6bb312fde1034d577c093136b6f0c989daeea70a65f32aa624ac0f`，版本 
 新增恢复实测包含62份 C 表/sequence摘要及规范权限匹配；0018前后端实测拒绝新授权契约，不能安全回滚该旧 binary，不执行 Down。普通与 `-O` 下8项工具边界检查均通过；独立只读审查已闭环三项交付工具问题，无剩余 P1/P2，agent 审查不冒充 GitHub 成员批准。
 
 完整摘要、工具版本、命令、incident、未验范围及归档入口见[发布记录](../release/android-integration-candidate-20261019.md)与[复现说明](../release/android-integration-reproduction-20261019.md)。构建 manifest 是构建时快照（device NOT_RUN），设备实际结果另见[设备回执](../release/android-integration-device-20261019.json)，不能改写历史。
+
+独立[审查回执](../release/android-integration-review-20261019.json)及[保留/停止回执](../release/android-integration-retention-20261019.json)已归档；最终 CI/合并与缓存删除按实际完成后更新。

@@ -40004,6 +40004,7 @@
     "merge": "PENDING_PR_CHECKS",
     "productionAcceptance": "NOT_RUN; full module result not promoted",
     "phoneWindow": "CLOSED; no further ADB authorized",
-    "gateIncident": "INDEPENDENT_ANCHOR_FROZEN; cause undetermined; formal existing C-only recovery then App fresh login and final notice readAt; auth/Gate owner follow-up"
+    "gateIncident": "INDEPENDENT_ANCHOR_FROZEN; cause undetermined; formal existing C-only recovery then App fresh login and final notice readAt; auth/Gate owner follow-up",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/23"
   }
 }

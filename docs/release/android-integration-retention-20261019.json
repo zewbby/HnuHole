@@ -1,0 +1,27 @@
+{
+  "atUtc": "2026-10-19T05:33:55.596651+00:00",
+  "archive": "integration-private-runtime.tar.gz",
+  "sha256": "ae975e0516c8953ce7ae672b21152eb0ca2810cd1d17e0fb20a6165dc6399bb9",
+  "bytes": 203837790,
+  "verifiedFileCount": 6605,
+  "verifiedMembers": 6997,
+  "result": "PASS_STOPPED_PRIVATE_RUNTIME_ARCHIVED_AND_ALL_FILE_BYTES_VERIFIED",
+  "serviceProcesses": {},
+  "postgresClustersStopped": [
+    "source-c",
+    "source-v",
+    "restore-c"
+  ],
+  "containsPrivateTestKeysAndSyntheticCredentials": true,
+  "ordinaryCandidateContainsCredentials": false,
+  "excluded": [
+    "SDK/Gradle/Flutter/Go caches",
+    "unrelated inherited host environment",
+    "source checkout; use fixed integration-source.bundle"
+  ],
+  "restorationScope": "same-machine owned development runtime only; not production independent operations",
+  "sourceBundleSha256": "f49cc8c0fed62a53686b87a1fff9454d7d23a38f9669f09593d72959a34812be",
+  "buildResourcesStopped": "PASS_OWNED_BUILD_PROCESSES_STOPPED",
+  "phoneWindowClosed": "CLOSED",
+  "largeCacheDeletion": "PENDING_AFTER_MERGE; stopped and preserved already"
+}
