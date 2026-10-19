@@ -73,7 +73,7 @@ jobs:
           java-version: '17'
       - name: Build Android comments integration
         run: |
-          sdkmanager 'platforms;android-35' 'cmake;3.22.1'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'cmake;3.22.1'
           flutter build apk --debug --no-pub
       - name: Preserve dependency locks
         run: git diff --exit-code -- pubspec.lock

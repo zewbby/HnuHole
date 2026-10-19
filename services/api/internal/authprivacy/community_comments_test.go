@@ -2,6 +2,7 @@ package authprivacy
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"os"
 	"sync"
@@ -181,6 +182,10 @@ func TestCommentTextTransactionsPostgres(t *testing.T) {
 	if snapshot.NextCursor == nil {
 		t.Fatal("missing next cursor")
 	}
+	forged, _ := base64.RawURLEncoding.DecodeString(*snapshot.NextCursor)
+	forged[19] ^= 1
+	_, e = l.c.ReadComments(ctx, reader.SessionToken, CommentQuery{ID: post, Cursor: base64.RawURLEncoding.EncodeToString(forged)})
+	postTestError(t, e, "CURSOR_INVALID", 400)
 	extra.TaskID = uuid.NewString()
 	commentTextSend(t, l, reader.SessionToken, postTestKey(t), extra)
 	commentTextPublish(t, l)

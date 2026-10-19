@@ -92,7 +92,10 @@ class _SystemNotificationsScreenState extends State<SystemNotificationsScreen> {
                   const SizedBox(height: 24),
                   if (c.pending != null) PendingGovernancePanel(controller: c),
                   if (CommentScope.maybeOf(context) case final comments?)
-                    CommentPendingView(runtime: comments),
+                    CommentPendingView(
+                      runtime: comments,
+                      identityId: c.selectedIdentityId,
+                    ),
                   if (c.loading && c.items.isEmpty)
                     const Center(child: CircularProgressIndicator()),
                   if (!c.loading && c.items.isEmpty)

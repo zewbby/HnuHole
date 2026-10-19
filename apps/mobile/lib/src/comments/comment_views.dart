@@ -10,6 +10,7 @@ import '../posts/post_images.dart';
 import '../posts/post_models.dart';
 import '../posts/post_photo_picker.dart';
 import 'comment_editor.dart';
+import 'comment_http.dart';
 import 'comment_models.dart';
 import 'comment_runtime.dart';
 
@@ -208,7 +209,9 @@ class _CommentPostPaneState extends State<CommentPostPane> {
   String? cursor, highlight, error;
   int total = 0;
   bool open = false, loading = false;
+  Completer<void>? _reading;
   double bodyFraction = 2 / 3;
+  Timer? _highlightTimer;
   Set<String> own = {};
   bool get current => mounted && widget.runtime.current(epoch);
   @override
@@ -243,6 +246,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
   @override
   void dispose() {
     widget.runtime.removeListener(_changed);
+    _highlightTimer?.cancel();
     originals.clear();
     editor.leave();
     super.dispose();
@@ -294,7 +298,16 @@ class _CommentPostPaneState extends State<CommentPostPane> {
   }
 
   Future<void> _load({bool more = false}) async {
-    if (!current || loading) return;
+    if (!current) return;
+    final pending = _reading;
+    if (pending != null) {
+      await pending.future;
+      if (more && current && cursor != null) await _load(more: true);
+      return;
+    }
+    if (more && cursor == null) return;
+    final reading = Completer<void>();
+    _reading = reading;
     setState(() => loading = true);
     try {
       final p = await widget.runtime.request(
@@ -322,10 +335,25 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         if (!current) return;
         if (!replies.containsKey(row.id)) await _replies(row.id);
       }
-    } catch (_) {
-      if (current) setState(() => error = '评论暂时无法读取，请重新核对。');
+    } catch (e) {
+      if (current) {
+        setState(() {
+          if (e is CommentHttpFailure && {403, 404}.contains(e.status)) {
+            rows.clear();
+            replies.clear();
+            replyCursors.clear();
+            expanded.clear();
+            cursor = null;
+            own.clear();
+            total = 0;
+          }
+          error = '评论暂时无法读取，请重新核对。';
+        });
+      }
     } finally {
       if (current) setState(() => loading = false);
+      _reading = null;
+      reading.complete();
     }
   }
 
@@ -350,7 +378,16 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         }
         replyCursors[root] = p['nextCursor'] as String?;
       });
-    } catch (_) {
+    } catch (e) {
+      if (current && e is CommentHttpFailure && {403, 404}.contains(e.status)) {
+        setState(() {
+          rows.removeWhere((r) => r.id == root);
+          replies.remove(root);
+          replyCursors.remove(root);
+          expanded.remove(root);
+          own.remove(root);
+        });
+      }
       _hint('回复暂时无法读取，请重试。');
     }
   }
@@ -358,7 +395,10 @@ class _CommentPostPaneState extends State<CommentPostPane> {
   Future<void> _locate(String id) async {
     if (!current) return;
     try {
-      await widget.runtime.request(
+      final reading = _reading;
+      if (reading != null) await reading.future;
+      if (!current) return;
+      final location = await widget.runtime.request(
         'GET',
         '/api/v1/posts/${widget.postId}/comments/$id/location',
       );
@@ -368,7 +408,29 @@ class _CommentPostPaneState extends State<CommentPostPane> {
       );
       final target = CommentRow(raw);
       final floor = target.root ?? id;
+      final laterReading = _reading;
+      if (laterReading != null) await laterReading.future;
       if (!current) return;
+      // A fresh deep link starts at the server's authenticated containing page.
+      // An existing reader keeps its captured membership/order and follows only
+      // that snapshot's cursors before merging this owner's new publication.
+      if (rows.isEmpty && cursor == null && location['cursor'] != null) {
+        final page = await widget.runtime.request(
+          'GET',
+          '/api/v1/posts/${widget.postId}/comments',
+          query: {'cursor': location['cursor'] as String},
+        );
+        if (!current) return;
+        rows.addAll((page['comments'] as List).map(CommentRow.new));
+        cursor = page['nextCursor'] as String?;
+        total = page['totalCount'] as int;
+      }
+      while (!rows.any((r) => r.id == floor) && cursor != null) {
+        final previous = cursor;
+        await _load(more: true);
+        if (!current) return;
+        if (cursor == previous) throw StateError('Captured page unavailable');
+      }
       if (!rows.any((r) => r.id == floor)) {
         final root = target.root == null
             ? target
@@ -379,26 +441,29 @@ class _CommentPostPaneState extends State<CommentPostPane> {
                 ),
               );
         if (!current) return;
-        rows.add(root);
+        if (!own.contains(root.id) && widget.initialCommentId != id) {
+          throw StateError('Outside captured snapshot');
+        }
+        rows.insert(_insertAt(rows, root, 10), root);
       }
       if (target.root != null) {
         expanded.add(floor);
         if (!replies.containsKey(floor)) await _replies(floor);
         if (!current) return;
         final list = replies.putIfAbsent(floor, () => []);
-        if (!list.any((r) => r.id == id)) {
-          var at = list.length;
-          // Preserve the captured first five and every survivor's position.
-          for (var i = 5; i < list.length; i++) {
-            final a = DateTime.parse(target.data['publishedAt'] as String),
-                b = DateTime.parse(list[i].data['publishedAt'] as String);
-            if (a.isBefore(b) ||
-                a == b && target.id.compareTo(list[i].id) < 0) {
-              at = i;
-              break;
-            }
+        while (!list.any((r) => r.id == id) && replyCursors[floor] != null) {
+          final previous = replyCursors[floor];
+          await _replies(floor, more: true);
+          if (!current) return;
+          if (replyCursors[floor] == previous) {
+            throw StateError('Captured replies unavailable');
           }
-          list.insert(at, target);
+        }
+        if (!list.any((r) => r.id == id)) {
+          if (!own.contains(id) && widget.initialCommentId != id) {
+            throw StateError('Outside captured replies');
+          }
+          list.insert(_insertAt(list, target, 5), target);
         }
       }
       if (!current) return;
@@ -416,12 +481,35 @@ class _CommentPostPaneState extends State<CommentPostPane> {
           );
         }
       });
-      Future.delayed(const Duration(seconds: 2), () {
+      _highlightTimer?.cancel();
+      _highlightTimer = Timer(const Duration(seconds: 2), () {
         if (current && highlight == id) setState(() => highlight = null);
       });
-    } catch (_) {
-      _hint('这条评论已不存在或暂时无法读取。');
+    } catch (e) {
+      if (current && e is CommentHttpFailure && {403, 404}.contains(e.status)) {
+        setState(() {
+          rows.removeWhere((r) => r.id == id);
+          replies.remove(id);
+          for (final list in replies.values) {
+            list.removeWhere((r) => r.id == id);
+          }
+        });
+        _hint('评论已经删除');
+      } else {
+        _hint('暂时无法定位，请重试。');
+      }
     }
+  }
+
+  int _insertAt(List<CommentRow> list, CommentRow target, int top) {
+    final a = DateTime.parse(target.data['publishedAt'] as String);
+    for (var i = top; i < list.length; i++) {
+      final b = DateTime.parse(list[i].data['publishedAt'] as String);
+      if (a.isBefore(b) || a == b && target.id.compareTo(list[i].id) < 0) {
+        return i;
+      }
+    }
+    return list.length;
   }
 
   Future<void> _compose([CommentRow? row]) async {
@@ -531,25 +619,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
   }
 
   Future<void> _mutate(CommentRow row, {bool delete = false}) async {
-    if (delete) {
-      final yes = await showDialog<bool>(
-        context: context,
-        builder: (c) => AlertDialog(
-          title: Text(row.root == null ? '删除这条主评论及整楼回复？' : '删除这条回复？'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(c, false),
-              child: const Text('取消'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(c, true),
-              child: const Text('删除'),
-            ),
-          ],
-        ),
-      );
-      if (yes != true || !current) return;
-    }
+    if (!current) return;
     final pending = widget.runtime.mutations.values.any(
       (m) => m['comment'] == row.id,
     );
@@ -596,16 +666,28 @@ class _CommentPostPaneState extends State<CommentPostPane> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${r.nickname}${r.data['isPostAuthor'] == true ? ' · 楼主' : ''}',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+        Row(
+          children: [
+            const CircleAvatar(
+              radius: 14,
+              child: Icon(Icons.person_outline, size: 18),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '${r.nickname}${r.data['isPostAuthor'] == true ? ' · 楼主' : ''}',
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
         ),
         if (r.data['replyTo'] case final Map relation)
           TextButton(
             onPressed: () => _locate(relation['commentId'] as String),
             child: Text('回复 ${(relation['author'] as Map)['nickname']}'),
           ),
-        if (r.body.isNotEmpty) CommentBody(text: r.body),
+        if (r.body.isNotEmpty)
+          CommentBody(text: r.body, onReply: () => _compose(r)),
         if (r.data['image'] != null)
           Align(
             alignment: Alignment.centerLeft,
@@ -698,69 +780,68 @@ class _CommentPostPaneState extends State<CommentPostPane> {
             flex: ((1 - bodyFraction) * 1000).round(),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Expanded(child: Text('评论 $total')),
-                    IconButton(
-                      tooltip: '刷新评论排序',
-                      onPressed: loading ? null : () => _load(),
-                      icon: const Icon(Icons.refresh),
-                    ),
-                  ],
-                ),
+                Row(children: [Expanded(child: Text('评论 $total'))]),
                 Expanded(
-                  child: ListView(
+                  // Eager layout of the loaded page makes concrete targets
+                  // addressable even outside the viewport; network pagination
+                  // still bounds the initial content and keeps its snapshot.
+                  child: SingleChildScrollView(
                     key: PageStorageKey('comment-list:${widget.postId}:$epoch'),
                     padding: const EdgeInsets.only(bottom: 24),
-                    children: [
-                      if (loading) const LinearProgressIndicator(),
-                      if (error != null)
-                        TextButton(
-                          onPressed: () => _load(),
-                          child: Text(error!),
-                        ),
-                      for (final r in rows) ...[
-                        _row(r),
-                        for (final reply
-                            in (replies[r.id] ?? <CommentRow>[]).take(
-                              expanded.contains(r.id) ? 10000 : 5,
-                            ))
-                          _row(reply, reply: true),
-                        if (r.replyCount > 5)
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (loading) const LinearProgressIndicator(),
+                        if (error != null)
                           TextButton(
-                            onPressed: () async {
-                              if (expanded.remove(r.id)) {
-                                setState(() {});
-                              } else {
-                                setState(() => expanded.add(r.id));
-                                if (replyCursors[r.id] != null) {
-                                  await _replies(r.id, more: true);
+                            onPressed: () => _load(),
+                            child: Text(error!),
+                          ),
+                        for (final r in rows) ...[
+                          _row(r),
+                          for (final reply
+                              in (replies[r.id] ?? <CommentRow>[]).take(
+                                expanded.contains(r.id) ? 10000 : 5,
+                              ))
+                            _row(reply, reply: true),
+                          if (r.replyCount > 5)
+                            TextButton(
+                              onPressed: () async {
+                                if (expanded.remove(r.id)) {
+                                  setState(() {});
+                                } else {
+                                  setState(() => expanded.add(r.id));
+                                  if (replyCursors[r.id] != null) {
+                                    await _replies(r.id, more: true);
+                                  }
                                 }
-                              }
-                            },
-                            child: Text(
-                              expanded.contains(r.id) ? '收起回复' : '展开剩余回复',
+                              },
+                              child: Text(
+                                expanded.contains(r.id)
+                                    ? '收起回复'
+                                    : '展开其余 ${r.replyCount - 5} 条回复',
+                              ),
                             ),
+                          if (expanded.contains(r.id) &&
+                              replyCursors[r.id] != null)
+                            TextButton(
+                              onPressed: () => _replies(r.id, more: true),
+                              child: const Text('更多回复'),
+                            ),
+                          const Divider(),
+                        ],
+                        if (rows.isEmpty && !loading && error == null)
+                          const Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Text('暂无评论'),
                           ),
-                        if (expanded.contains(r.id) &&
-                            replyCursors[r.id] != null)
+                        if (cursor != null)
                           TextButton(
-                            onPressed: () => _replies(r.id, more: true),
-                            child: const Text('更多回复'),
+                            onPressed: () => _load(more: true),
+                            child: const Text('更多评论'),
                           ),
-                        const Divider(),
                       ],
-                      if (rows.isEmpty && !loading)
-                        const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Text('还没有评论'),
-                        ),
-                      if (cursor != null)
-                        TextButton(
-                          onPressed: () => _load(more: true),
-                          child: const Text('更多评论'),
-                        ),
-                    ],
+                    ),
                   ),
                 ),
               ],
@@ -882,11 +963,14 @@ class _CommentComposerState extends State<CommentComposer> {
           targetCommentId: t.commentId,
         ),
         content: content,
+        onJournaled: () {
+          if (!current) return;
+          FocusManager.instance.primaryFocus?.unfocus();
+          widget.originals.clear();
+          widget.onSubmitted();
+          Navigator.pop(context);
+        },
       );
-      if (!mounted || !current) return;
-      widget.originals.clear();
-      widget.onSubmitted();
-      Navigator.pop(context);
     } catch (_) {
       if (current) setState(() => error = '尚未发送，请检查内容或恢复任务存储后重试。');
     } finally {
@@ -957,6 +1041,18 @@ class _CommentComposerState extends State<CommentComposer> {
                   Semantics(liveRegion: true, child: Text(error!)),
                 if (widget.editor.image != null)
                   ListTile(
+                    leading: picked == null
+                        ? null
+                        : SizedBox(
+                            width: 64,
+                            height: 64,
+                            child: Image.memory(
+                              picked!,
+                              fit: BoxFit.contain,
+                              cacheWidth: 128,
+                              cacheHeight: 128,
+                            ),
+                          ),
                     title: const Text('已选择 1 张原图'),
                     trailing: IconButton(
                       tooltip: '移除图片',
@@ -1039,7 +1135,7 @@ class _CommentImageViewState extends State<CommentImageView> {
     final row = widget.row;
     final m = row.data['image'] as Map;
     final access = ValueNotifier(true);
-    final providers = <MemoryImage>[];
+    final providers = <ImageProvider>[];
     Timer? timer;
     final clock = Stopwatch()..start();
     bool current() =>
@@ -1082,9 +1178,19 @@ class _CommentImageViewState extends State<CommentImageView> {
       }
     }
 
-    Future<MemoryImage> provider() async {
+    Future<ImageProvider> provider({bool thumbnail = false}) async {
       final p = MemoryImage(await bytes());
       providers.add(p);
+      if (thumbnail) {
+        final resized = ResizeImage(
+          p,
+          width: 320,
+          height: 320,
+          policy: ResizeImagePolicy.fit,
+        );
+        providers.add(resized);
+        return resized;
+      }
       return p;
     }
 
@@ -1095,7 +1201,7 @@ class _CommentImageViewState extends State<CommentImageView> {
       onRelease: revoke,
       images: [
         PostImage.deferred(
-          loadThumbnail: provider,
+          loadThumbnail: () => provider(thumbnail: true),
           item: ViewerItem(
             id: m['contentVersionId'] as String,
             semanticLabel: '评论图片',
@@ -1121,21 +1227,85 @@ class _CommentImageViewState extends State<CommentImageView> {
   }
 
   @override
-  Widget build(BuildContext context) => PostImagesSection(
-    postId: widget.row.id,
-    expectedCount: 1,
-    loadImages: _load,
-    authority: widget.runtime,
-    isCurrent: () =>
-        widget.runtime.available &&
-        !widget.runtime.deleted.contains(widget.row.id) &&
-        !widget.runtime.deleted.contains(widget.row.root),
+  Widget build(BuildContext context) => CommentViewportMedia(
+    builder: (_) => PostImagesSection(
+      postId: widget.row.id,
+      expectedCount: 1,
+      loadImages: _load,
+      authority: widget.runtime,
+      isCurrent: () =>
+          widget.runtime.available &&
+          !widget.runtime.deleted.contains(widget.row.id) &&
+          !widget.runtime.deleted.contains(widget.row.root),
+    ),
+  );
+}
+
+/// Offscreen loaded rows keep their layout for exact positioning, but never
+/// mount media or hold decoded originals. The visible thumbnail has a bounded
+/// decode size; full-size bytes remain behind the existing authorized viewer.
+class CommentViewportMedia extends StatefulWidget {
+  const CommentViewportMedia({super.key, required this.builder});
+  final WidgetBuilder builder;
+  @override
+  State<CommentViewportMedia> createState() => _CommentViewportMediaState();
+}
+
+class _CommentViewportMediaState extends State<CommentViewportMedia> {
+  ScrollableState? _scrollable;
+  bool _visible = false, _scheduled = false;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final next = Scrollable.maybeOf(context);
+    if (next != _scrollable) {
+      _scrollable?.position.removeListener(_schedule);
+      _scrollable = next;
+      next?.position.addListener(_schedule);
+    }
+    _schedule();
+  }
+
+  void _schedule() {
+    if (_scheduled || !mounted) return;
+    _scheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scheduled = false;
+      if (!mounted) return;
+      final box = context.findRenderObject();
+      final viewport = _scrollable?.context.findRenderObject();
+      if (box is! RenderBox || !box.hasSize) return;
+      final rect = box.localToGlobal(Offset.zero) & box.size;
+      var visible = rect.overlaps(Offset.zero & MediaQuery.sizeOf(context));
+      if (viewport is RenderBox && viewport.hasSize) {
+        visible =
+            visible &&
+            rect.overlaps(viewport.localToGlobal(Offset.zero) & viewport.size);
+      }
+      if (_visible != visible) setState(() => _visible = visible);
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollable?.position.removeListener(_schedule);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 160,
+    height: 160,
+    child: _visible
+        ? widget.builder(context)
+        : const Center(child: Icon(Icons.image_outlined)),
   );
 }
 
 class CommentBody extends StatefulWidget {
-  const CommentBody({super.key, required this.text});
+  const CommentBody({super.key, required this.text, this.onReply});
   final String text;
+  final VoidCallback? onReply;
   @override
   State<CommentBody> createState() => _CommentBodyState();
 }
@@ -1159,7 +1329,11 @@ class _CommentBodyState extends State<CommentBody> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SelectableText(widget.text, maxLines: expanded ? null : 4),
+          SelectableText(
+            widget.text,
+            maxLines: expanded ? null : 4,
+            onTap: widget.onReply,
+          ),
           if (overflow)
             TextButton(
               onPressed: () => setState(() => expanded = !expanded),

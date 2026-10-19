@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:hnuhole_image_viewer/image_viewer.dart';
 import 'package:hnuhole_auth_vault/hnuhole_auth_vault.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/comments/comment_runtime.dart';
 import 'package:hnuhole_mobile/src/comments/comment_http.dart';
 import 'package:hnuhole_mobile/src/comments/comment_journal.dart';
 import 'package:hnuhole_mobile/src/comments/comment_models.dart';
+import 'package:hnuhole_mobile/src/comments/comment_views.dart';
 import 'package:hnuhole_mobile/src/development/app_transport.dart';
 
 void main() {
@@ -265,6 +267,32 @@ void main() {
             () => find.text('原生重开原文\r\ne\u0301').evaluate().isNotEmpty,
             'published comment in actual page',
           );
+          await tester.ensureVisible(find.byType(CommentImageView));
+          final thumbnail = find.byKey(
+            ValueKey(('post-image', (row['image'] as Map)['contentVersionId'])),
+          );
+          await wait(
+            () => thumbnail.evaluate().isNotEmpty,
+            'visible protected single-image thumbnail',
+          );
+          await tester.tap(thumbnail);
+          await wait(
+            () => find.byType(HnuImageViewer).evaluate().isNotEmpty,
+            'comment image viewer',
+          );
+          await wait(
+            () =>
+                tester
+                    .widget<HnuImageViewer>(find.byType(HnuImageViewer))
+                    .controller
+                    .snapshot
+                    .status ==
+                ViewerLoadStatus.ready,
+            'full original viewer decode',
+          );
+          await tester.tap(find.byKey(const ValueKey('viewer-close')));
+          await tester.pumpAndSettle();
+          flags['protectedSingleImageViewerOpenedAndClosed'] = true;
           await control('/pause');
           final failedId = commentUUID();
           await runtime.core.submit(

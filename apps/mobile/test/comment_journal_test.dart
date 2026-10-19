@@ -26,6 +26,27 @@ void main() {
   const blob = '33333333-3333-4333-8333-333333333333';
   const identity = '44444444-4444-4444-8444-444444444444';
   const post = '55555555-5555-4555-8555-555555555555';
+  test('closed native scope cleanup does not depend on decrypting a lost-key store', () async {
+    var opened = 0;
+    final purged = <String>[];
+    final journal = NativeCommentJournal(
+      (_) async {
+        opened++;
+        throw const PostStorageLostKey();
+      },
+      purgeStore: (a) async {
+        purged.add(a);
+      },
+    );
+    await expectLater(
+      journal.store(account),
+      throwsA(isA<PostStorageLostKey>()),
+    );
+    await journal.purgeClosedAccount(account);
+    expect(opened, 1);
+    expect(purged, [account]);
+    await journal.close();
+  });
   test('submitted original, immutable binding and unknown command survive encrypted SQLite reopen', () async {
     final dir = await Directory.systemTemp.createTemp(
       'hnuhole-comment-journal-',

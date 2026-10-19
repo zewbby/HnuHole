@@ -2,6 +2,8 @@ package authprivacy
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
@@ -53,21 +55,24 @@ type TextCommentPage struct {
 	RemainingCount *int          `json:"remainingCount,omitempty"`
 }
 
-func commentCursor(id uuid.UUID, offset int) string {
+func (c *Community) commentCursor(id uuid.UUID, offset int) string {
 	b := make([]byte, 20)
 	copy(b, id[:])
 	binary.BigEndian.PutUint32(b[16:], uint32(offset))
-	return base64.RawURLEncoding.EncodeToString(b)
+	digest := sha256.Sum256(append([]byte("HNUHOLE/COMMENT-CURSOR/V1\x00"), b...))
+	tag := c.comments.codec.IntentFingerprint(digest)
+	return base64.RawURLEncoding.EncodeToString(append(b, tag[:]...))
 }
-func parseCommentCursor(s string) (uuid.UUID, int, error) {
+func (c *Community) parseCommentCursor(s string) (uuid.UUID, int, error) {
 	b, e := base64.RawURLEncoding.Strict().DecodeString(s)
-	if e != nil || len(b) != 20 || base64.RawURLEncoding.EncodeToString(b) != s {
+	if e != nil || len(b) != 52 || base64.RawURLEncoding.EncodeToString(b) != s {
 		return uuid.Nil, 0, postError("CURSOR_INVALID", 400)
 	}
 	var id uuid.UUID
 	copy(id[:], b[:16])
-	offset := binary.BigEndian.Uint32(b[16:])
-	if id == uuid.Nil || offset > 10000 {
+	offset := binary.BigEndian.Uint32(b[16:20])
+	expected, _ := base64.RawURLEncoding.DecodeString(c.commentCursor(id, int(offset)))
+	if id == uuid.Nil || offset > 10000 || !hmac.Equal(b[20:], expected[20:]) {
 		return uuid.Nil, 0, postError("CURSOR_INVALID", 400)
 	}
 	return id, int(offset), nil
@@ -110,7 +115,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 		offset := 0
 		if q.Cursor != "" {
 			var e error
-			snapshotID, offset, e = parseCommentCursor(q.Cursor)
+			snapshotID, offset, e = c.parseCommentCursor(q.Cursor)
 			if e != nil {
 				return nil, e
 			}
@@ -201,7 +206,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 			r.Comments = append(r.Comments, item)
 		}
 		if end < len(ids) {
-			cursor := commentCursor(snapshotID, end)
+			cursor := c.commentCursor(snapshotID, end)
 			r.NextCursor = &cursor
 		}
 		if q.Replies {
@@ -344,7 +349,7 @@ func (c *Community) LocateComment(ctx context.Context, b [32]byte, post, id stri
 		}
 		for i, item := range ids {
 			if item.String() == floor {
-				cursor := commentCursor(sid, i/50*50)
+				cursor := c.commentCursor(sid, i/50*50)
 				return CommentLocation{snapshot, id, row.RootCommentID, &cursor}, nil
 			}
 		}

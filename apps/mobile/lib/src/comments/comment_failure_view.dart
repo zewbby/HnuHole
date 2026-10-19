@@ -338,8 +338,13 @@ class _CommentFailureViewState extends State<CommentFailureView> {
 /// Unknown submitted operations live in the unified notifications page. They
 /// are labelled as unknown and never offered failure retry/abandon actions.
 class CommentPendingView extends StatelessWidget {
-  const CommentPendingView({super.key, required this.runtime});
+  const CommentPendingView({
+    super.key,
+    required this.runtime,
+    required this.identityId,
+  });
   final CommentRuntime runtime;
+  final String? identityId;
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: runtime,
@@ -348,9 +353,10 @@ class CommentPendingView extends StatelessWidget {
         if (runtime.error != null) Text(runtime.error!),
         for (final e in runtime.core.entries.where(
           (e) =>
-              e.transport != CommentTransportState.settled ||
-              e.task?.state == CommentTaskState.accepted ||
-              e.rejectionCode != null,
+              e.intent.binding.identityId == identityId &&
+              (e.transport != CommentTransportState.settled ||
+                  e.task?.state == CommentTaskState.accepted ||
+                  e.rejectionCode != null),
         ))
           ListTile(
             title: Text(e.rejectionCode != null ? '评论未受理' : '评论结果待核对'),
@@ -368,7 +374,10 @@ class CommentPendingView extends StatelessWidget {
               child: const Text('核对并停止迟到发送'),
             ),
           ),
-        for (final e in runtime.mutations.entries)
+        // Account-scoped mutation recovery is shown only in the account tab.
+        for (final e in runtime.mutations.entries.where(
+          (_) => identityId == null,
+        ))
           ListTile(
             title: Text(
               e.value['operation'] == 'DELETE' ? '删除结果待核对' : '点赞结果待核对',

@@ -2,6 +2,8 @@ package authprivacy
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
@@ -199,6 +201,30 @@ func (c *Community) ReadOwnComments(ctx context.Context, b [32]byte, identity, c
 func (c *Community) UploadCommentImage(ctx context.Context, b [32]byte, task string, version int32, data []byte, mime string) (PostResponse, error) {
 	if !c.PostImagesEnabled() || version < 1 || len(data) < 1 || len(data) > postmedia.MaxBytes {
 		return PostResponse{}, postmedia.ErrInvalid
+	}
+	// Reject unauthenticated/foreign/stale or manifest-mismatched traffic before
+	// occupying the shared bounded decoder. Final authorization is repeated below.
+	_, e := c.withCommentSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, d AuthorizationDecision, m restriction) (any, error) {
+		t, e := loadCommentTask(ctx, tx, a, task)
+		if e != nil {
+			return nil, e
+		}
+		v := t.View()
+		if v.State != comments.Accepted || v.AttemptVersion != version || v.Content == nil || v.Content.Image == nil || mutedAt(m, d.TrustedAt) {
+			return nil, postError("MEDIA_UPLOAD_CLOSED", 409)
+		}
+		s := v.Content.Image
+		hash := sha256.Sum256(data)
+		if s.ByteLength != len(data) || s.MIME != mime || s.SHA256 != hex.EncodeToString(hash[:]) {
+			return nil, postmedia.ErrInvalid
+		}
+		if e = checkCommentContext(ctx, tx, a, v.Binding); e != nil {
+			return nil, e
+		}
+		return CommentMediaAck{true}, nil
+	})
+	if e != nil {
+		return PostResponse{}, e
 	}
 	metadata, e := c.postImages.validator.Inspect(ctx, data)
 	if e != nil {

@@ -143,6 +143,10 @@ void main() {
         environment: '$storageScope|comments-v1',
         accountId: account,
       ),
+      purgeStore: (account) => PostStore.purgeNativeClosedAccount(
+        environment: '$storageScope|comments-v1',
+        accountId: account,
+      ),
     ),
   );
   comments.openRetarget = (context, input, bytes) =>

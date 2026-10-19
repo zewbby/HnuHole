@@ -5,14 +5,27 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/comments"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
 	"os"
 	"testing"
 	"time"
 )
 
+type commentCountingInspector struct {
+	postmedia.Validator
+	calls int
+}
+
+func (v *commentCountingInspector) Inspect(ctx context.Context, data []byte) (postmedia.Metadata, error) {
+	v.calls++
+	return v.Validator.Inspect(ctx, data)
+}
+
 func TestCommentBusinessMediaDeleteLikesNoticesPostgres(t *testing.T) {
 	l := commentTextLab(t)
 	enableImageLab(t, l)
+	inspector := &commentCountingInspector{Validator: l.c.postImages.validator}
+	l.c.postImages.validator = inspector
 	ctx := context.Background()
 	owner := sessionTestAccount(t, l, "cb_owner")
 	other := sessionTestAccount(t, l, "cb_other")
@@ -47,6 +60,17 @@ func TestCommentBusinessMediaDeleteLikesNoticesPostgres(t *testing.T) {
 	}
 	if _, e = l.c.UploadCommentImage(ctx, other.SessionToken, in.TaskID, 1, data, selection.MIME); e == nil {
 		t.Fatal("foreign upload")
+	}
+	if _, e = l.c.UploadCommentImage(ctx, [32]byte{1}, in.TaskID, 1, data, selection.MIME); e == nil {
+		t.Fatal("invalid session upload")
+	}
+	wrong := append([]byte(nil), data...)
+	wrong[0] ^= 1
+	if _, e = l.c.UploadCommentImage(ctx, owner.SessionToken, in.TaskID, 1, wrong, selection.MIME); e == nil {
+		t.Fatal("wrong manifest upload")
+	}
+	if inspector.calls != 0 {
+		t.Fatal("unauthorized or mismatched image reached decoder")
 	}
 	if _, e = l.c.UploadCommentImage(ctx, owner.SessionToken, in.TaskID, 1, data, selection.MIME); e != nil {
 		t.Fatal(e)

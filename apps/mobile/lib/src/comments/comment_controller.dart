@@ -111,6 +111,7 @@ class CommentController extends ChangeNotifier {
     required String commandId,
     required CommentBinding binding,
     required CommentContent content,
+    VoidCallback? onJournaled,
   }) async {
     final account = _accountId;
     if (account == null || _disposed || !_ready) {
@@ -146,7 +147,7 @@ class CommentController extends ChangeNotifier {
       intent: intent,
       transport: CommentTransportState.sending,
     );
-    await _execute(entry, account, _epoch);
+    await _execute(entry, account, _epoch, onJournaled: onJournaled);
   }
 
   Future<void> retry({
@@ -313,8 +314,9 @@ class CommentController extends ChangeNotifier {
   Future<void> _execute(
     CommentJournalEntry entry,
     String account,
-    int epoch,
-  ) async {
+    int epoch, {
+    VoidCallback? onJournaled,
+  }) async {
     final key = '$account:$epoch:${entry.localId}';
     if (!_busy.add(key)) {
       throw StateError('A task operation is already running');
@@ -337,6 +339,7 @@ class CommentController extends ChangeNotifier {
       _knownTasks.add(entry.localId);
       _usedCommands.addAll(entry.usedCommandIds);
       _changed();
+      onJournaled?.call();
       try {
         final task = await api.execute(entry.intent);
         if (!_current(account, epoch)) return;

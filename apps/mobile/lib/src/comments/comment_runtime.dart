@@ -403,8 +403,7 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> purgeClosedAccount(String account) async {
     _closed.add(account);
     _changed();
-    final db = await journal.store(account);
-    await db.purgeClosedAccount();
+    await journal.purgeClosedAccount(account);
   }
 
   @override

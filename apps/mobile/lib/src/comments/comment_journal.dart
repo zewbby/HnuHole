@@ -8,8 +8,9 @@ import 'comment_models.dart';
 /// A distinct native encrypted namespace. Only submitted tasks and immutable
 /// mutation commands enter this store; temporary editors never call it.
 class NativeCommentJournal implements CommentJournal {
-  NativeCommentJournal(this.openStore);
+  NativeCommentJournal(this.openStore, {this.purgeStore});
   final Future<PostStore> Function(String account) openStore;
+  final Future<void> Function(String account)? purgeStore;
   final _stores = <String, Future<PostStore>>{};
   final staged = <String, Uint8List>{};
   Future<PostStore> store(String account) =>
@@ -45,6 +46,23 @@ class NativeCommentJournal implements CommentJournal {
         image.selection.byteLength,
         image.selection.sha256,
       );
+  Future<void> purgeClosedAccount(String account) async {
+    if (purgeStore == null) {
+      await (await store(account)).purgeClosedAccount();
+      return;
+    }
+    final opening = _stores.remove(account);
+    if (opening != null) {
+      try {
+        await (await opening).close();
+      } catch (_) {
+        // Native closed-scope cleanup must also work without a readable key/DB.
+      }
+    }
+    staged.clear();
+    await purgeStore!(account);
+  }
+
   @override
   Future<void> remove(String accountId, String localId) async {
     final db = await store(accountId);

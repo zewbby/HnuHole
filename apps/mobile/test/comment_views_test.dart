@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/src/comments/comment_api.dart';
+import 'package:hnuhole_mobile/src/comments/comment_failure_view.dart';
+import 'package:hnuhole_mobile/src/comments/comment_http.dart';
 import 'package:hnuhole_mobile/src/comments/comment_controller.dart';
 import 'package:hnuhole_mobile/src/comments/comment_journal.dart';
 import 'package:hnuhole_mobile/src/comments/comment_models.dart';
@@ -39,15 +43,21 @@ class _MemoryJournal extends NativeCommentJournal {
 
 class _Api implements CommentApi {
   CommentIntent? sent;
+  Completer<CommentTask>? pending;
+  String? publishedId;
   @override
   Future<CommentTask> execute(CommentIntent i) async {
     sent = i;
+    if (pending != null) return pending!.future;
     return CommentTask(
       taskId: i.taskId,
       binding: i.binding,
       attemptVersion: 1,
-      state: CommentTaskState.accepted,
-      contentAvailable: true,
+      state: publishedId == null
+          ? CommentTaskState.accepted
+          : CommentTaskState.published,
+      commentId: publishedId,
+      contentAvailable: publishedId == null,
       canRetry: false,
       canAbandon: false,
     );
@@ -102,6 +112,7 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
   _Runtime(this.journal) {
     transportFake = _Api();
     core = CommentController(api: transportFake, journal: journal);
+    core.addListener(notifyListeners);
   }
   @override
   final NativeCommentJournal journal;
@@ -122,10 +133,26 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
   final mutations = <String, Map<String, dynamic>>{};
   @override
   String? error;
+  final ownIds = <String>[];
+  String? removed;
+  Object? loadFailure;
+  Object? replyFailure;
+  bool moreReplies = false;
+  Completer<void>? pageGate;
+  List<Map<String, dynamic>> rootRows = [row(root, '甲的主评论')];
+  @override
+  Future<void> mutate(String id, {bool? liked}) async {
+    if (liked == null) {
+      removed = id;
+      deleted.add(id);
+      notifyListeners();
+    }
+  }
+
   @override
   Future<Map<String, dynamic>> contextFor(String _) async => {
     'boundIdentityId': identity,
-    'ownCommentIds': <String>[],
+    'ownCommentIds': ownIds,
     'totalCount': 2,
   };
   @override
@@ -151,25 +178,353 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
     Map<String, String>? query,
     dynamic bytes,
     String? mime,
-  }) async => path.endsWith('/replies')
-      ? {
-          'snapshotId': 'snapshot',
-          'rootCommentId': root,
-          'comments': [row(reply, '乙回复甲的具体内容', floor: root, target: root)],
-          'nextCursor': null,
-          'remainingCount': 0,
-        }
-      : {
-          'snapshotId': 'snapshot',
-          'comments': [row(root, '甲的主评论')],
-          'nextCursor': null,
-          'totalCount': 2,
-        };
+  }) async {
+    if (path.endsWith('/comments') && pageGate != null) await pageGate!.future;
+    if (loadFailure != null) throw loadFailure!;
+    if (path.endsWith('/replies') && replyFailure != null) throw replyFailure!;
+    if (path.endsWith('/location')) return {'cursor': 'location'};
+    final single = rootRows
+        .where((r) => path.endsWith('/${r['id']}'))
+        .firstOrNull;
+    if (single != null) return single;
+    return path.endsWith('/replies')
+        ? {
+            'snapshotId': 'snapshot',
+            'rootCommentId': root,
+            'comments': [row(reply, '乙回复甲的具体内容', floor: root, target: root)],
+            'nextCursor': moreReplies ? 'reply-cursor' : null,
+            'remainingCount': moreReplies ? 5 : 0,
+          }
+        : {
+            'snapshotId': 'snapshot',
+            'comments': rootRows,
+            'nextCursor': null,
+            'totalCount': rootRows.length,
+          };
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {
+  testWidgets(
+    'known deleted floor is removed when loading its remaining replies fails',
+    (tester) async {
+      final journal = _MemoryJournal();
+      final r = _Runtime(journal)..moreReplies = true;
+      r.rootRows.single['replyCount'] = 6;
+      await r.core.activate(account);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '原帖正文',
+              body: const Text('原帖正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('评论 2'));
+      await tester.pumpAndSettle();
+      r.replyFailure = const CommentHttpFailure(404, 'COMMENT_NOT_FOUND');
+      await tester.drag(
+        find.byType(SingleChildScrollView).last,
+        const Offset(0, -500),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('展开其余 1 条回复'));
+      await tester.pumpAndSettle();
+      expect(find.text('甲的主评论'), findsNothing);
+      expect(find.text('乙回复甲的具体内容'), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+      r.core.dispose();
+      r.dispose();
+      await journal.close();
+    },
+  );
+  testWidgets(
+    'publication during a pending page waits and still locates the owner content',
+    (tester) async {
+      final journal = _MemoryJournal();
+      final r = _Runtime(journal);
+      r.rootRows = [
+        for (var i = 1; i <= 60; i++)
+          row(
+            '${i.toRadixString(16).padLeft(8, '0')}-8888-4888-8888-888888888888',
+            '等待期间评论$i',
+          ),
+      ];
+      for (final value in r.rootRows) {
+        value['replyCount'] = 0;
+      }
+      final target = r.rootRows.last['id'] as String;
+      r.ownIds.add(target);
+      r.transportFake.publishedId = target;
+      r.pageGate = Completer<void>();
+      await r.core.activate(account);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '原帖正文',
+              body: const Text('原帖正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('评论 2'));
+      await tester.pump();
+      await r.core.submit(
+        taskId: root,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '成功定位'),
+      );
+      r.pageGate!.complete();
+      await tester.pumpAndSettle();
+      final position = tester.getCenter(find.text('等待期间评论60'));
+      expect(position.dy, greaterThan(0));
+      expect(position.dy, lessThan(600));
+      await tester.pumpWidget(const SizedBox());
+      r.core.dispose();
+      r.dispose();
+      await journal.close();
+    },
+  );
+  testWidgets(
+    'offscreen media stays unmounted while concrete row layout remains positionable',
+    (tester) async {
+      final scroll = ScrollController();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              controller: scroll,
+              child: Column(
+                children: [
+                  for (var i = 0; i < 70; i++)
+                    CommentViewportMedia(builder: (_) => Text('media-$i')),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('media-0'), findsOneWidget);
+      expect(find.text('media-69'), findsNothing);
+      expect(find.textContaining('media-'), findsNWidgets(4));
+      scroll.jumpTo(scroll.position.maxScrollExtent);
+      await tester.pumpAndSettle();
+      expect(find.text('media-0'), findsNothing);
+      expect(find.text('media-69'), findsOneWidget);
+      expect(
+        find.textContaining('media-').evaluate().length,
+        lessThanOrEqualTo(4),
+      );
+      await tester.pumpWidget(const SizedBox());
+      scroll.dispose();
+    },
+  );
+  testWidgets(
+    'body reply closes after durable submission while transport is still pending',
+    (tester) async {
+      final journal = _MemoryJournal();
+      final r = _Runtime(journal);
+      r.transportFake.pending = Completer<CommentTask>();
+      await r.core.activate(account);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '原帖正文',
+              body: const Text('原帖正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('评论 2'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('甲的主评论'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), '已提交后台发送');
+      await tester.tap(find.text('发布'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TextField), findsNothing);
+      expect((await journal.read(account)).single.content!.body, '已提交后台发送');
+      final sent = r.transportFake.sent!;
+      expect(sent.binding.targetCommentId, root);
+      r.transportFake.pending!.complete(
+        CommentTask(
+          taskId: sent.taskId,
+          binding: sent.binding,
+          attemptVersion: 1,
+          state: CommentTaskState.accepted,
+          contentAvailable: true,
+          canRetry: false,
+          canAbandon: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(const SizedBox());
+      r.core.dispose();
+      r.dispose();
+      await journal.close();
+    },
+  );
+  testWidgets(
+    'local unknown task appears only under its original identity notifications',
+    (tester) async {
+      final journal = _MemoryJournal();
+      final r = _Runtime(journal);
+      await r.core.activate(account);
+      await r.core.submit(
+        taskId: root,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '原面具私有内容'),
+      );
+      for (final selected in [null, reply, identity]) {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: CommentPendingView(runtime: r, identityId: selected),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.text('原面具私有内容'),
+          selected == identity ? findsOneWidget : findsNothing,
+        );
+      }
+      await tester.pumpWidget(const SizedBox());
+      r.core.dispose();
+      r.dispose();
+      await journal.close();
+    },
+  );
+  testWidgets(
+    'authoritative read denial removes cached comments and first failure has no empty state',
+    (tester) async {
+      final journal = _MemoryJournal();
+      final r = _Runtime(journal);
+      await r.core.activate(account);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '原帖正文',
+              body: const Text('原帖正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('评论 2'));
+      await tester.pumpAndSettle();
+      expect(find.text('甲的主评论'), findsOneWidget);
+      await tester.tap(find.text('收起评论'));
+      await tester.pumpAndSettle();
+      r.loadFailure = const CommentHttpFailure(404, 'POST_NOT_FOUND');
+      await tester.tap(find.text('评论 1'));
+      await tester.pumpAndSettle();
+      expect(find.text('甲的主评论'), findsNothing);
+      expect(find.text('暂无评论'), findsNothing);
+      expect(find.text('评论暂时无法读取，请重新核对。'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      r.core.dispose();
+      r.dispose();
+      await journal.close();
+    },
+  );
+  testWidgets(
+    'deep location scrolls to a comment initially outside the viewport',
+    (tester) async {
+      final journal = _MemoryJournal();
+      final r = _Runtime(journal);
+      r.rootRows = [
+        for (var i = 1; i <= 70; i++)
+          row(
+            '${i.toRadixString(16).padLeft(8, '0')}-7777-4777-8777-777777777777',
+            '屏外评论$i',
+          ),
+      ];
+      for (final value in r.rootRows) {
+        value['replyCount'] = 0;
+      }
+      await r.core.activate(account);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '原帖正文',
+              body: const Text('原帖正文'),
+              initialCommentId: r.rootRows.last['id'] as String,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final position = tester.getCenter(find.text('屏外评论70'));
+      expect(position.dy, greaterThan(0));
+      expect(position.dy, lessThan(600));
+      await tester.pumpWidget(const SizedBox());
+      r.core.dispose();
+      r.dispose();
+      await journal.close();
+    },
+  );
+  testWidgets('owner delete acts directly without an extra confirmation', (
+    tester,
+  ) async {
+    final journal = _MemoryJournal();
+    final r = _Runtime(journal)..ownIds.add(root);
+    await r.core.activate(account);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CommentPostPane(
+            runtime: r,
+            postId: post,
+            postBody: '原帖正文',
+            body: const Text('原帖正文'),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('评论 2'));
+    await tester.pumpAndSettle();
+    await tester.drag(
+      find.byType(SingleChildScrollView).last,
+      const Offset(0, -120),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('删除'));
+    await tester.pumpAndSettle();
+    expect(r.removed, root);
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.text('甲的主评论'), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    r.core.dispose();
+    r.dispose();
+    await journal.close();
+  });
   testWidgets(
     'retargeted failed content stays temporary until explicit target confirmation and publish',
     (tester) async {
@@ -239,7 +594,10 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('评论 2'));
       await tester.pumpAndSettle();
-      await tester.drag(find.byType(ListView).last, const Offset(0, -400));
+      await tester.drag(
+        find.byType(SingleChildScrollView).last,
+        const Offset(0, -400),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('回复').last);
       await tester.pumpAndSettle();
