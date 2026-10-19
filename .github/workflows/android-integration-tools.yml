@@ -1,0 +1,28 @@
+name: Android integration delivery tools
+
+on:
+  pull_request:
+    paths:
+      - 'tools/android_integration/**'
+      - '.github/workflows/android-integration-tools.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  integration-boundaries:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Target and redirect boundaries
+        run: |
+          python -m unittest discover -s tools/android_integration/tests -v
+          python -O -m unittest discover -s tools/android_integration/tests -v
+      - name: Compile delivery commands
+        run: python -m py_compile tools/android_integration/*.py

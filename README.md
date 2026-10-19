@@ -35,6 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/ci/android-integration-candidate` | 固定评论与举报均已合入的main，交付普通Android集成候选及新增恢复/真机治理连接限定证据，合并状态见任务PR。 | [任务详情](docs/branches/ci-android-integration-candidate.md) |
 | `codex/ci/android-prerelease` | PR #16已合入main，交付测试签名候选、同机恢复/回滚与vivo S18最小文字图片限定实测；未正式发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
 
 | `codex/feat/comment-report-moderation` | 真实主评论/单图回复举报、网页处置、系统通知和申诉已接通，合并状态见任务PR。 | [任务详情](docs/branches/feat-comment-report-moderation.md) |
@@ -55,8 +56,8 @@
 
 ## 最近变动
 
+- 2026-10-19 · [#22](https://github.com/zewbby/HnuHole/pull/22)：接通真实评论/回复举报、网页处置、系统通知和独立申诉复核。
 - 2026-10-19 · [#21](https://github.com/zewbby/HnuHole/pull/21)：记录评论核心及业务成果已合入main并关闭评论开发任务。
 - 2026-10-19 · [#19](https://github.com/zewbby/HnuHole/pull/19)：合入评论回复页面、原生恢复、单图、点赞删除与真实失败通知数据源，Android限定验收通过。
 - 2026-10-19 · [#17](https://github.com/zewbby/HnuHole/pull/17)：合入评论领域、客户端任务核心及幂等与未知核对契约。
 - 2026-10-19 · [#20](https://github.com/zewbby/HnuHole/pull/20)：补记Android候选PR #16的实际合并事实与限定验收边界。
-- 2026-10-19 · [#16](https://github.com/zewbby/HnuHole/pull/16)：合入Android测试签名候选、隔离预发布与恢复/回滚路径，并归档vivo S18最小文字图片限定验收。

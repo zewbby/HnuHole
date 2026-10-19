@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "atUtc": "2026-10-19T05:28:26.819401+00:00",
+  "result": "PASS_SCOPED_DEVICE_GOVERNANCE_AFTER_FORMAL_GATE_RECOVERY",
+  "productSourceSha": "1a810944787eacb66e2115e1ce77de08190c366a",
+  "apkSha256": "4df3f7c85f6bb312fde1034d577c093136b6f0c989daeea70a65f32aa624ac0f",
+  "device": {
+    "model": "vivo S18 / V2323A",
+    "android": "15",
+    "api": 35,
+    "abi": "arm64-v8a",
+    "userReportedOs": "OriginOS 5"
+  },
+  "checks": [
+    {
+      "name": "fixed-ordinary-APK-install-real-login",
+      "result": "PASS"
+    },
+    {
+      "name": "exact-reply-App-report",
+      "result": "PASS"
+    },
+    {
+      "name": "strict-TLS-web-claim-MUTE3",
+      "result": "PASS"
+    },
+    {
+      "name": "reporter-App-three-stage-notices",
+      "result": "PASS"
+    },
+    {
+      "name": "author-App-sanction-detail-appeal-submit",
+      "result": "PASS"
+    },
+    {
+      "name": "independent-web-appeal-accepted",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh-App-login-accepted-appeal-detail",
+      "result": "PASS"
+    },
+    {
+      "name": "single-notice-readAt-real-runtime-SQL",
+      "result": "PASS"
+    },
+    {
+      "name": "final-C-V-strict-TLS-ready",
+      "result": "PASS"
+    }
+  ],
+  "caseId": "912b464a-5016-49fd-8e0f-c01fe904adfc",
+  "commentId": "590ce447-2c6a-401d-9baf-5991a6fec116",
+  "appealId": "52517493-591b-47eb-b19f-e4dbacbefd00",
+  "serverFacts": {
+    "appealState": "ACCEPTED",
+    "sanctionRevoked": true,
+    "readNoticeId": "3bc6221b-8827-4245-9402-3b220e25b6ae",
+    "readAt": "2026-10-19T13:27:31.917305+08:00",
+    "targetCommentId": "590ce447-2c6a-401d-9baf-5991a6fec116"
+  },
+  "finalHealth": {
+    "c": 200,
+    "v": 200
+  },
+  "screenshotSha256": {
+    "01-device-comment.png": "1f5eb6942c9cf9b4d5d493e38870f9445eea60b4553531d1188446caf259fb93",
+    "02-report-ready.png": "81446ab0b7707c9481f5be986f7fa8c241d03fa0eba71076dcd5f7a7188bbc96",
+    "03-reporter-result.png": "6b7d5c50ed0959cc8483718e63838a118640cbf171abaa24d3f1d97f01f43255",
+    "04-author-notice.png": "6462427b0ca4159864543853d3957d5e80aece030c8d334406b38c621f23ac2c",
+    "05-sanction-detail.png": "666ca2aceb1bdfe98bfee2541997fecb0c25dbef8c90ee3400c81cc3262a18f8",
+    "06-appeal-ready.png": "326b585cf0f68adeca68431f2f3afd26c6c1a25a0c2bceb5c3ac54de11586ac2",
+    "07-appeal-submitted.png": "f2737d1b158c7c482eaa09ade938e5ceb89633de4fcd817d53abab7d5b7cbbef",
+    "08-final-notices.png": "35de56befab9bc1a3ef4cdf800cf506e9fdbb5ab298a2fc21d9617d57a196343",
+    "09-appeal-accepted-detail.png": "735037f39e11311fe64150b19144606bd72df833e8b2c48372bd75b4f21d09ab"
+  },
+  "browserIgnoreHTTPSErrors": false,
+  "gateIncident": {
+    "atUtc": "2026-10-19T05:23:06.353676+00:00",
+    "before": "FROZEN|INDEPENDENT_ANCHOR_FROZEN|2026-10-19 13:20:38.693729+08",
+    "after": "OPEN|3",
+    "result": "RECOVERED_WITH_EXISTING_SIGNED_OPERATOR",
+    "cause": "INDEPENDENT_ANCHOR_FROZEN; origin not yet determined",
+    "scope": "owned C only; V unchanged; no DB data reset or ACL changes"
+  },
+  "failuresRetained": [
+    "UI helper initially read outcome=MUTE; actual contract UPHELD with sanction.action=MUTE; no repeated disposition",
+    "Automatic credential input was unreliable with system secure keyboard/Bitwarden; failed login retained, successful final ordinary login entered manually",
+    "C independent anchor freeze after web acceptance; cause undetermined, formally recovered only C, old session rejected then fresh login"
+  ],
+  "notRun": [
+    "full registration/image/comment recovery rerun intentionally inherited",
+    "new governance image attachment/picker",
+    "new governance TalkBack/multiple devices",
+    "iOS/cross-device Passkey/production/independent operations"
+  ],
+  "productionRelease": false
+}
