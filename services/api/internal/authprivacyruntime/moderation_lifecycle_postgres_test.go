@@ -146,7 +146,12 @@ func TestModerationLifecycleCommonCStartupWithoutFeaturesPostgres(t *testing.T) 
 		t.Fatal("common C startup accepted missing legacy column", err)
 	}
 	// Model the formal 0014 shape, without requiring absent moderation objects.
-	exec(t, `DROP SCHEMA c_moderation CASCADE;
+	// First prove that a partial 0018 removal still fails common C startup.
+	exec(t, `DROP SCHEMA c_moderation CASCADE`)
+	if err := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); err == nil {
+		t.Fatal("common C startup accepted partially removed 0018")
+	}
+	exec(t, `ALTER TABLE c_comments.tasks DROP COLUMN moderation_hidden;
 ALTER TABLE c_posts.posts DROP COLUMN moderation_hidden;
 ALTER TABLE public.community_identities DROP COLUMN moderation_rename_required;
 UPDATE public.goose_db_version SET version_id=14`)
