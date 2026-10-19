@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-19 Gate取消误冻结修复已合入main：**[PR #25](https://github.com/zewbby/HnuHole/pull/25)，`54a6768`。发布前取消不误冻结；发布后以独立限时SQL context收尾，真实故障仍fail closed。真实C/V SQL/TLS复现及修复回归、独立审查和固定head八项适用CI通过；两项Android旧流程明确SKIP。新建测试工具/库已清理，旧APK和恢复归档摘要不变；未部署、未发布、未重验手机，原单次触发因无请求trace仍未确定。见[任务](../branches/fix-gate-cancellation-freeze.md)、[合并回执](gate-cancellation-main-merge-20261019.json)与[清理记录](gate-cancellation-cleanup-20261019.json)。
+
 > **2026-10-19 Gate取消误冻结修复（本分支，尚未合并）：**真实 C/V PostgreSQL 和可信 TLS 断连已复现旧代码故障；发布前取消拒绝且不改检查点，发布后以独立限时 context 完成SQL收尾，真实故障仍冻结。限定本地SQL/race/build/vet及独立只读审查完成，最终head CI/合并待核对。历史单次事件缺请求trace，具体归因仍未确定；不重建Android/不恢复旧环境/不连接手机，旧候选和证据保留。见[任务](../branches/fix-gate-cancellation-freeze.md)与[机器记录](gate-cancellation-verification-20261019.json)。
 
 > **2026-10-19 Android 集成候选已合入 main：[PR #23](https://github.com/zewbby/HnuHole/pull/23)，`b6cc077`，最终head两项CI通过、独立审查无阻断、合并树一致。**产品固定 `1a810944`，普通 APK、新增 C18 恢复及 vivo S18 真实举报→网页处置→App 通知/申诉→独立复核→App 结果/已读限定通过；Gate根因未知事件及正式恢复事实保留，不宣称持续可用或生产。候选/私有恢复材料/证据已留存，手机窗口和服务/3个数据库/构建进程已关闭，Linux SDK/缓存已删除；Windows专属ADB SDK目录删除被自动审批拦截，停用但保留，见[清理回执](../release/android-integration-cleanup-20261019.json)。不再验收/追新main；未部署或正式发布。见[任务](../branches/ci-android-integration-candidate.md)、[合并回执](../release/android-integration-main-merge-20261019.json)及[复现说明](../release/android-integration-reproduction-20261019.md)。

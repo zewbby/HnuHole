@@ -1,0 +1,114 @@
+{
+  "atUtc": "2026-10-19T06:44:57.444116+00:00",
+  "pr": 25,
+  "url": "https://github.com/zewbby/HnuHole/pull/25",
+  "head": "b0946e53a1b218b899506ffcaf707f273da6f42a",
+  "baseBeforeMerge": "65b28cafebbfe259e661553919611f287486d661",
+  "merged": true,
+  "mergeSha": "54a6768fe607c37930959fab23c4876bb4ab531d",
+  "method": "squash",
+  "checks": [
+    {
+      "name": "moderation-postgres",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 117924311078,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027896/job/117924311078"
+    },
+    {
+      "name": "admin",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 117924310862,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027896/job/117924310862"
+    },
+    {
+      "name": "rehearsal",
+      "status": "completed",
+      "conclusion": "skipped",
+      "id": 117924265418,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027947/job/117924265418"
+    },
+    {
+      "name": "candidate",
+      "status": "completed",
+      "conclusion": "skipped",
+      "id": 117924265049,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027947/job/117924265049"
+    },
+    {
+      "name": "go-postgres",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 117924211580,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027889/job/117924211580"
+    },
+    {
+      "name": "flutter",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 117924211031,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027889/job/117924211031"
+    },
+    {
+      "name": "gate-postgres",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 117924210956,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027890/job/117924210956"
+    },
+    {
+      "name": "scope",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 117924210729,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027947/job/117924210729"
+    },
+    {
+      "name": "go-host",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 117924210621,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027889/job/117924210621"
+    },
+    {
+      "name": "policy",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 117924209904,
+      "detailsUrl": "https://github.com/zewbby/HnuHole/actions/runs/39211027859/job/117924209904"
+    }
+  ],
+  "independentAgentReview": true,
+  "memberApprovals": [],
+  "normalMergeNoBypass": true,
+  "productionRelease": false,
+  "treeMatchesReviewedHead": true,
+  "tree": "e68a09e9ab17c9fd16b9c6eea66c03e02a7b0d2d",
+  "ciLogReceipt": [
+    {
+      "name": "final-gate-ci.private.log",
+      "bytes": 26502,
+      "sha256": "4325fdc00531b1f00f469a18268870064d8d0018d5cc11b59f27e5e824b47b43",
+      "passLines": 0,
+      "skipLines": 0,
+      "scope": "raw CI log line counts; not unique tests or phone acceptance"
+    },
+    {
+      "name": "final-moderation-ci.private.log",
+      "bytes": 92714,
+      "sha256": "f83afe18dd7a2a55b8c3f5549dbb4aa65983fb03fecb237f3820b95f3fb4ee26",
+      "passLines": 54,
+      "skipLines": 0,
+      "scope": "raw CI log line counts; not unique tests or phone acceptance"
+    },
+    {
+      "name": "final-post-images-ci.private.log",
+      "bytes": 406543,
+      "sha256": "423279844552d58964cdae0f713a4f1be8732119670ed8575e89deb75767af26",
+      "passLines": 280,
+      "skipLines": 0,
+      "scope": "raw CI log line counts; not unique tests or phone acceptance"
+    }
+  ]
+}

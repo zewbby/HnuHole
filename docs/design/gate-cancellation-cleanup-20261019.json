@@ -1,0 +1,31 @@
+{
+  "atUtc": "2026-10-19T06:45:57.571651+00:00",
+  "owner": "HNUHOLE_GATE_FREEZE_FIX_20261019",
+  "postgresStopped": true,
+  "linuxRoot": "/home/hnuhole/gate-freeze-fix-20261019",
+  "linuxRootAbsent": true,
+  "archive": "/mnt/e/HnuHole-gate-freeze-fix-20261019/runtime/gate-fix-private-evidence.tar.gz",
+  "archiveSha256": "d563580487dbf69e35e7cc961c0db54bfc1a7ed3acb5acf21310166851fe49c7",
+  "archiveBytes": 103330,
+  "archiveMembers": 15,
+  "allMembersReadbackVerified": true,
+  "oldArtifacts": [
+    {
+      "path": "E:\\HnuHole-android-integration-20261019\\runtime\\candidate\\hnuhole-1a810944787e-arm64-device-test.apk",
+      "bytes": 98625420,
+      "sha256": "4df3f7c85f6bb312fde1034d577c093136b6f0c989daeea70a65f32aa624ac0f",
+      "result": "UNCHANGED"
+    },
+    {
+      "path": "E:\\HnuHole-android-integration-20261019\\runtime\\integration-private-runtime.tar.gz",
+      "bytes": 203837790,
+      "sha256": "ae975e0516c8953ce7ae672b21152eb0ca2810cd1d17e0fb20a6165dc6399bb9",
+      "result": "UNCHANGED"
+    }
+  ],
+  "androidSdkCreated": false,
+  "phoneOperated": false,
+  "oldEnvironmentRestored": false,
+  "cleanupFailureHistory": "Initial deletion stopped on read-only Go module cache directory; made only verified owner directories within this new root writable, then removed successfully",
+  "ownedReadOnlyDirectoriesAdjusted": 270
+}
