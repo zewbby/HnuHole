@@ -1,6 +1,6 @@
 # 评论举报审核闭环限定验收（2026-10-19）
 
-`codex/feat/comment-report-moderation` 的本任务范围为 **COMMENT_REPORT_CLOSED_LOOP_SCOPED_PASS**。产品提交 `dd436d66185d1ce0ac871c3d55bc10511364843a`，正常整合 main `7b2dd1634c3ffb3835543a8a49c9d22cdbcc2f52` 后产品输入未变；完整指纹、逐项结果和未执行项见[机器记录](comment-report-verification-20261019.json)。合并状态与最终提交以[任务详情](../branches/feat-comment-report-moderation.md)指向的 PR 实时回执为准，未发布。
+`codex/feat/comment-report-moderation` 的本任务范围为 **COMMENT_REPORT_CLOSED_LOOP_SCOPED_PASS**。产品提交 `dd436d66185d1ce0ac871c3d55bc10511364843a`，测试夹具修复 `ec6672f35d4124e495299d133eeca15178c19d3b`；正常整合 main `7b2dd1634c3ffb3835543a8a49c9d22cdbcc2f52` 后产品输入未变；完整指纹、逐项结果和未执行项见[机器记录](comment-report-verification-20261019.json)。合并状态与最终提交以[任务详情](../branches/feat-comment-report-moderation.md)指向的 PR 实时回执为准，未发布。
 
 ## 实际交付
 
@@ -22,6 +22,8 @@
 | 独立审查 | `auth_integration` 只读独立复核产品 `dd436d6` / 整合 `e84807c`，无阻断／无未关闭finding；agent审查不冒充GitHub成员批准 |
 
 一次性库入口：在 `services/api` 执行 `MODERATION_TEST_PATTERN='^(TestCommentReport|TestRealHTTPSCommentReport)' sh authlab/run-moderation-isolated.sh`，配置自有 PGPORT、Goose、媒体验证器和 Dart/browser probe。Go测试名及环境要求在源码中固定。该 runner 拒绝外部 DSN／root，使用专属角色、私有 socket／一次性库，结束清理库、进程及密钥。实际本地分轮只执行新增项，首轮两项测试断言使用了不同于既有协议的错误码及一个旧列名，修正断言后仅补验失败项；非产品缺陷，不隐藏失败历史。
+
+CI 首次还发现两处历史“治理前结构”夹具只删除治理 schema、留下0018列，触发正确的半迁移拒绝。提交 `ec6672f35d4124e495299d133eeca15178c19d3b` 只修夹具：先断言残留0018必须拒绝，再删测试列并验证旧结构兼容。两项受影响真实PG/race用例（含通用启动8个子项）定向PASS，独立增量复核无阻断；产品checker、授权、迁移及业务代码未变。原CI失败回执保留在机器记录，最终CI由PR实时head核对。
 
 ## 沿用与边界
 

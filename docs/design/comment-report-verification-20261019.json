@@ -8,9 +8,9 @@
   "integratedMain": "7b2dd1634c3ffb3835543a8a49c9d22cdbcc2f52",
   "testedProductInputs": {
     "kind": "sha256-of-sorted-git-blob-manifest",
-    "commit": "e84807c284d094a1da881f237e4b489caa3d85ad",
+    "commit": "ec6672f35d4124e495299d133eeca15178c19d3b",
     "files": 695,
-    "sha256": "e4441f93887bb120aa6c059f4699775e8ba264f6e9e9620f5f43f6fb0a5fd7d0",
+    "sha256": "21b07188755d22ad9bc091230903dd3739aa3ddae3716654c483f4aaf76b5c56",
     "prefixes": [
       "apps/admin/",
       "apps/mobile/",
@@ -107,7 +107,18 @@
       "tests": 12,
       "syntax": "PASS"
     },
-    "collaboration": "PASS_POLICY_ONLY"
+    "collaboration": "PASS_POLICY_ONLY",
+    "affectedLegacyFixtures": {
+      "result": "PASS",
+      "cases": 2,
+      "runtimeSubcases": 8,
+      "tests": [
+        "TestPostSchemaPreModerationNeedsNoCleanupGrantPostgres",
+        "TestModerationLifecycleCommonCStartupWithoutFeaturesPostgres"
+      ],
+      "race": true,
+      "scope": "restore pre-moderation fixtures by removing new flag only after proving half-0018 remains rejected; no production checker/grant/code change"
+    }
   },
   "migration": {
     "path": "services/api/migrations/0018_comment_reports.sql",
@@ -124,7 +135,13 @@
     "reviewedProduct": "dd436d66185d1ce0ac871c3d55bc10511364843a",
     "reviewedHead": "e84807c284d094a1da881f237e4b489caa3d85ad",
     "openFindings": 0,
-    "scope": "final Gate/locks, least privileges, lifecycle, privacy, SQL/HTTP/App tests and existing evidence reuse"
+    "scope": "final Gate/locks, least privileges, lifecycle, privacy, SQL/HTTP/App tests and existing evidence reuse",
+    "fixtureFix": {
+      "result": "PASS",
+      "commit": "ec6672f35d4124e495299d133eeca15178c19d3b",
+      "scope": "both legacy fixture changes only; fail-closed assertions retained",
+      "openFindings": 0
+    }
   },
   "notRun": [
     {
@@ -142,5 +159,40 @@
     "published": false,
     "contract": "docs/design/report-notification-contract.md",
     "task": "docs/branches/feat-comment-report-moderation.md"
-  }
+  },
+  "initialTestedProductInputs": {
+    "kind": "sha256-of-sorted-git-blob-manifest",
+    "commit": "e84807c284d094a1da881f237e4b489caa3d85ad",
+    "files": 695,
+    "sha256": "e4441f93887bb120aa6c059f4699775e8ba264f6e9e9620f5f43f6fb0a5fd7d0",
+    "prefixes": [
+      "apps/admin/",
+      "apps/mobile/",
+      "services/api/",
+      "infra/postgres/",
+      "packages/openapi/",
+      "packages/auth_vault/",
+      "packages/auth_passkey/",
+      "packages/image_viewer/",
+      ".github/workflows/"
+    ],
+    "excludes": [
+      "*.md"
+    ],
+    "serialization": "UTF-8 sorted path + U+0000 + Git blob SHA-1 + LF"
+  },
+  "fixtureFixCommit": "ec6672f35d4124e495299d133eeca15178c19d3b",
+  "ciAttemptHistory": [
+    {
+      "head": "1c2fd5d21997889caea6acf0d53d28d5434b0913",
+      "result": "FAIL_HISTORICAL_FIXTURE_SHAPE",
+      "affectedJobs": [
+        117882026501,
+        117882049868,
+        117882005137
+      ],
+      "cause": "two pre-moderation fixture builders dropped c_moderation but retained 0018 tasks.moderation_hidden; startup correctly rejected partial migration",
+      "businessChain": "same attempt real Linux Dart/HTTPS/web comment report+appeal passed; not represented as workflow success"
+    }
+  ]
 }
