@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-19 Gate取消误冻结修复（本分支，尚未合并）：**真实 C/V PostgreSQL 和可信 TLS 断连已复现旧代码故障；发布前取消拒绝且不改检查点，发布后以独立限时 context 完成SQL收尾，真实故障仍冻结。限定本地SQL/race/build/vet及独立只读审查完成，最终head CI/合并待核对。历史单次事件缺请求trace，具体归因仍未确定；不重建Android/不恢复旧环境/不连接手机，旧候选和证据保留。见[任务](../branches/fix-gate-cancellation-freeze.md)与[机器记录](gate-cancellation-verification-20261019.json)。
+
 > **2026-10-19 Android 集成候选已合入 main：[PR #23](https://github.com/zewbby/HnuHole/pull/23)，`b6cc077`，最终head两项CI通过、独立审查无阻断、合并树一致。**产品固定 `1a810944`，普通 APK、新增 C18 恢复及 vivo S18 真实举报→网页处置→App 通知/申诉→独立复核→App 结果/已读限定通过；Gate根因未知事件及正式恢复事实保留，不宣称持续可用或生产。候选/私有恢复材料/证据已留存，手机窗口和服务/3个数据库/构建进程已关闭，Linux SDK/缓存已删除；Windows专属ADB SDK目录删除被自动审批拦截，停用但保留，见[清理回执](../release/android-integration-cleanup-20261019.json)。不再验收/追新main；未部署或正式发布。见[任务](../branches/ci-android-integration-candidate.md)、[合并回执](../release/android-integration-main-merge-20261019.json)及[复现说明](../release/android-integration-reproduction-20261019.md)。
 
 > **2026-10-19 评论举报闭环交付候选：COMMENT_REPORT_CLOSED_LOOP_SCOPED_PASS。** 基于已合入完整评论 #19 的 main，新增0018，将真实主评论/单图回复举报、网页处置、本人通知、原申诉及独立复核一次接通。6项新SQL/race、1项实际Dart HTTPS/网页闭环、45项受影响Flutter/analyze0/bundle、Go build/vet、10份API与Node12通过，独立只读审查无阻断。见[任务/合并状态](../branches/feat-comment-report-moderation.md)、[报告](comment-report-validation-20261019.md)、[机器证据](comment-report-verification-20261019.json)和[契约](report-notification-contract.md)。#18与#19有效证据沿用；失败任务/重试/放弃/移除直接复用#19，仅补验新下架影响。本范围合并后结束，无评论业务待接项；未发布/部署，不扩展手机/iOS/Passkey/完整消息中心或生产结论，B08/B11整体PARTIAL。以下旧“第二阶段待评论接入”等保留原版本历史。

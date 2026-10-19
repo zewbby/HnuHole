@@ -176,10 +176,27 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 	}
 	var decision AuthorizationDecision
 	var reason string
+	var finish context.Context
+	var finishCancel context.CancelFunc
+	defer func() {
+		if finishCancel != nil {
+			finishCancel()
+		}
+	}()
 	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		var e AuthorizationEvidence
 		var offline bool
 		decision, e, offline, reason = g.inspect(ctx, row, *a, exists)
+		// A cancelled caller is not evidence of a failed authority source.
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		// Publishing the independent checkpoint starts a bounded finalization.
+		// Caller cancellation must not strand it ahead of an otherwise healthy SQL row.
+		finish, finishCancel = context.WithTimeout(context.WithoutCancel(ctx), 10*time.Second)
 		if reason != "" {
 			if exists && !a.Frozen {
 				a.Frozen = true
@@ -199,30 +216,30 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 			reason = "ANCHOR_WRITE_FAILURE"
 			return err
 		}
-		_, err := tx.Exec(ctx, `UPDATE `+g.schema+`.authorization_gate SET trusted_high_watermark=$1,
+		_, err := tx.Exec(finish, `UPDATE `+g.schema+`.authorization_gate SET trusted_high_watermark=$1,
 			evidence_version=$2,evidence_issued_at=$3,evidence_valid_until=$4
 			WHERE singleton_id=1`, decision.TrustedAt, int64(e.Version), e.IssuedAt, e.ValidUntil)
 		return err
 	})
 	if err != nil {
-		_ = tx.Rollback(ctx)
 		fallback, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
+		_ = tx.Rollback(fallback)
 		_ = g.persistExternalFreeze(fallback)
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
 	if reason != "" {
 		if row.state == "OPEN" {
-			if err = g.freezeGateRow(ctx, tx, row, reason, g.clock().UTC()); err != nil {
+			if err = g.freezeGateRow(finish, tx, row, reason, g.clock().UTC()); err != nil {
 				return AuthorizationDecision{}, ErrAuthorizationUnavailable
 			}
 		}
-		if err = tx.Commit(ctx); err != nil {
+		if err = tx.Commit(finish); err != nil {
 			return AuthorizationDecision{}, ErrAuthorizationUnavailable
 		}
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
-	if err = tx.Commit(ctx); err != nil {
+	if err = tx.Commit(finish); err != nil {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
 	return decision, nil
@@ -254,7 +271,13 @@ func (g *PostgresAuthorizationGate) RecheckForCommit(ctx context.Context, tx pgx
 	var decision AuthorizationDecision
 	var reason string
 	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		decision, _, _, reason = g.inspect(ctx, row, *a, exists)
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		if reason != "" && exists && !a.Frozen {
 			a.Frozen = true
 			return g.anchor.writeLocked(*a)
@@ -269,8 +292,9 @@ func (g *PostgresAuthorizationGate) RecheckForCommit(ctx context.Context, tx pgx
 
 // CommitAuthorized is the final authority point. Validation and any final
 // timestamp writes run after locking the gate, then the independent checkpoint
-// is durably advanced before the SQL commit. If SQL fails, the next request
-// detects the ahead checkpoint and requires explicit recovery.
+// is durably advanced before the SQL commit. Once publication starts, a bounded
+// context completes it independently of caller cancellation. If SQL fails, the
+// next request detects the ahead checkpoint and requires explicit recovery.
 func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx.Tx, expected uint64, validate ...func(AuthorizationDecision) error) (AuthorizationDecision, error) {
 	row, err := g.readGateRow(ctx, tx)
 	if err != nil || expected == 0 || row.generation < 0 || uint64(row.generation) != expected {
@@ -278,10 +302,23 @@ func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx
 	}
 	var decision AuthorizationDecision
 	var reason string
+	var finish context.Context
+	var finishCancel context.CancelFunc
+	defer func() {
+		if finishCancel != nil {
+			finishCancel()
+		}
+	}()
 	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		var e AuthorizationEvidence
 		var offline bool
 		decision, e, offline, reason = g.inspect(ctx, row, *a, exists)
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		if reason != "" {
 			if exists && !a.Frozen {
 				a.Frozen = true
@@ -297,6 +334,10 @@ func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx
 				return err
 			}
 		}
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		finish, finishCancel = context.WithTimeout(context.WithoutCancel(ctx), 10*time.Second)
 		updated := *a
 		updated.Highwater = decision.TrustedAt
 		updated.Version = e.Version
@@ -307,7 +348,7 @@ func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx
 			reason = "ANCHOR_WRITE_FAILURE"
 			return err
 		}
-		_, err := tx.Exec(ctx, `UPDATE `+g.schema+`.authorization_gate SET trusted_high_watermark=$1,
+		_, err := tx.Exec(finish, `UPDATE `+g.schema+`.authorization_gate SET trusted_high_watermark=$1,
 			evidence_version=$2,evidence_issued_at=$3,evidence_valid_until=$4 WHERE singleton_id=1`,
 			decision.TrustedAt, int64(e.Version), e.IssuedAt, e.ValidUntil)
 		return err
@@ -318,7 +359,7 @@ func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx
 	if reason != "" {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
-	if err = tx.Commit(ctx); err != nil {
+	if err = tx.Commit(finish); err != nil {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
 	return decision, nil

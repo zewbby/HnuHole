@@ -33,7 +33,33 @@ env:
   WORKFLOW_SHA: ${{ github.workflow_sha }}
 
 jobs:
+  scope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      gate_only: ${{ steps.scope.outputs.gate_only }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # Older PR heads may not yet contain the selector; retain both jobs.
+          if test "$EVENT_NAME" = pull_request && test -f tools/ci/gate_scope.py; then
+            python3 tools/ci/gate_scope.py "$BASE_SHA" "$SOURCE_SHA" >> "$GITHUB_OUTPUT"
+          else
+            echo 'gate_only=false' >> "$GITHUB_OUTPUT"
+          fi
+
   candidate:
+    needs: scope
+    # Gate-only backend fixes have their own real PostgreSQL/race CI.
+    if: needs.scope.outputs.gate_only != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
@@ -83,6 +109,8 @@ jobs:
           retention-days: 30
 
   rehearsal:
+    needs: scope
+    if: needs.scope.outputs.gate_only != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
