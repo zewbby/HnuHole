@@ -115,7 +115,12 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
           await Future<void>.delayed(const Duration(milliseconds: 100));
         }
-        expect(condition(), isTrue, reason: label);
+        expect(
+          condition(),
+          isTrue,
+          reason:
+              '$label; mediaSections=${find.byType(PostImagesSection).evaluate().length}; imageLabels=${find.byType(Text).evaluate().map((e) => (e.widget as Text).data ?? '').where((t) => t.contains("图片")).join("|")}',
+        );
       }
 
       await wait(() => runtime.core.ready, 'native journal ready');
@@ -267,7 +272,14 @@ void main() {
             () => find.text('原生重开原文\r\ne\u0301').evaluate().isNotEmpty,
             'published comment in actual page',
           );
-          await tester.ensureVisible(find.byType(CommentImageView));
+          // Let the just-published comment's own location finish before moving
+          // to its image; both operations intentionally use the comment scroll.
+          await tester.pump(const Duration(milliseconds: 600));
+          await Future<void>.delayed(const Duration(milliseconds: 300));
+          await Scrollable.ensureVisible(
+            tester.element(find.byType(CommentImageView)),
+            alignment: .5,
+          );
           final thumbnail = find.byKey(
             ValueKey(('post-image', (row['image'] as Map)['contentVersionId'])),
           );

@@ -1158,6 +1158,9 @@ class _CommentImageViewState extends State<CommentImageView> {
       if (!current()) revoke();
     };
     Future<Uint8List> bytes() async {
+      // Deferred thumbnail loaders may start during layout; normalize even a
+      // local session failure to async before notifying the owning media group.
+      await Future<void>.value();
       if (!current() || !access.value) throw StateError('Image access ended');
       try {
         final token = r.authStore.current!.session!.token;

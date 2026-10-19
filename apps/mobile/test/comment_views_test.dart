@@ -11,6 +11,7 @@ import 'package:hnuhole_mobile/src/comments/comment_models.dart';
 import 'package:hnuhole_mobile/src/comments/comment_runtime.dart';
 import 'package:hnuhole_mobile/src/comments/comment_views.dart';
 import 'package:hnuhole_mobile/src/identity/identity_api.dart';
+import 'package:hnuhole_mobile/src/posts/post_images.dart';
 
 const post = '11111111-1111-4111-8111-111111111111',
     identity = '22222222-2222-4222-8222-222222222222',
@@ -208,6 +209,42 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
 }
 
 void main() {
+  testWidgets(
+    'a comment media section activates after scrolling its image into the split viewport',
+    (tester) async {
+      final journal = _MemoryJournal();
+      final r = _Runtime(journal);
+      r.rootRows.single['image'] = {
+        'contentVersionId': reply,
+        'mimeType': 'image/gif',
+        'pixelWidth': 5,
+        'pixelHeight': 5,
+      };
+      await r.core.activate(account);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '原帖正文',
+              body: const Text('原帖正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('评论 2'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byType(CommentImageView));
+      await tester.pumpAndSettle();
+      expect(find.byType(PostImagesSection), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      r.core.dispose();
+      r.dispose();
+      await journal.close();
+    },
+  );
   testWidgets(
     'known deleted floor is removed when loading its remaining replies fails',
     (tester) async {
