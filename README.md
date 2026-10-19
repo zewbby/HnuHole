@@ -53,8 +53,6 @@
 
 ## 最近变动
 
-按合并时间倒序保留最近 5 条，每条一句话说明。
-
 - 2026-10-19 · [#16](https://github.com/zewbby/HnuHole/pull/16)：合入Android测试签名候选、隔离预发布与恢复/回滚路径，并归档vivo S18最小文字图片限定验收。
 - 2026-10-18 · [#18](https://github.com/zewbby/HnuHole/pull/18)：合入帖子举报审核与最小系统通知阶段1，评论接入保留第二阶段。
 - 2026-10-18 · [#15](https://github.com/zewbby/HnuHole/pull/15)：补记社区PR #13的合并事实和宿主、SQL、设备验收边界。
