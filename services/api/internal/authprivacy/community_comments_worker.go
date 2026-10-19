@@ -3,6 +3,7 @@ package authprivacy
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/comments"
@@ -17,7 +18,7 @@ func (c *Community) PublishAcceptedComments(ctx context.Context, limit int) (int
 	if limit < 1 || limit > 100 {
 		return 0, ErrIntentInvalid
 	}
-	rows, e := c.pool.Query(ctx, `SELECT t.task_id,t.owner_account_id FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE x.state='ACCEPTED' ORDER BY x.accepted_at,t.task_id LIMIT $1`, limit)
+	rows, e := c.pool.Query(ctx, `SELECT t.task_id,t.owner_account_id FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE x.state='ACCEPTED' ORDER BY (x.image IS NULL OR EXISTS(SELECT 1 FROM c_comments.images m WHERE m.task_id=x.task_id AND m.version=x.version AND m.payload IS NOT NULL) OR x.accepted_at<=clock_timestamp()-interval '15 minutes') DESC,x.accepted_at,t.task_id LIMIT $1`, limit)
 	if e != nil {
 		return 0, ErrAuthorizationUnavailable
 	}
@@ -110,6 +111,18 @@ func (c *Community) publishComment(ctx context.Context, account, task uuid.UUID)
 		}
 		if acceptedGeneration != currentGeneration {
 			failure = comments.FailurePublishingStopped
+		}
+		if failure == "" && v.Content != nil && v.Content.Image != nil {
+			var ready bool
+			if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_comments.images WHERE task_id=$1 AND version=$2 AND payload IS NOT NULL AND erased_at IS NULL)`, v.TaskID, v.AttemptVersion).Scan(&ready); e != nil {
+				return e
+			}
+			if !ready {
+				if final.TrustedAt.Before(v.AcceptedAt.Add(15 * time.Minute)) {
+					return nil
+				}
+				failure = comments.FailurePublication
+			}
 		}
 		if failure == "" {
 			t, e = t.Publish(v.AttemptVersion, final.TrustedAt)

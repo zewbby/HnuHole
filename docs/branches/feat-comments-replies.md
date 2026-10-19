@@ -1,5 +1,8 @@
 # 评论与回复：开发任务范围
 
+> 2026-10-19 当前继续完整评论接通，#17提供既有核心，#19承接真实业务/客户端/原生日志/单图/点赞/删除/通知。治理0015已在main，评论0016后新增0017，旧停止边界已由用户明确扩大。见[当前报告](../design/comments-connected-report-20261019.md)；完整验收结论等待最终设备、head CI及审查固定。
+
+
 > 2026-10-18本轮更新：核心分支已正常整合实际main `1b78f42`（真实治理0015），head `767b0a3`；后端文字链路独立送审[PR #19](https://github.com/zewbby/HnuHole/pull/19)，见[增量任务](feat-comments-backend-text.md)及[报告](../design/comments-backend-text-report-20261018.md)。0016与真实SQL/HTTP限定范围PASS属于后端增量，完整B07/通知仍未通过；本轮不继续客户端。下方首阶段范围与旧依赖状态为历史快照。
 
 创建／接手：2026-10-18，Asia/Shanghai。状态：CORE_HOST_PASS_INTEGRATION_PENDING，独立核心宿主验证通过；完整 B07 尚未完成。

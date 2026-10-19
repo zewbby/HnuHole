@@ -1,5 +1,8 @@
 # 文字评论与回复后端增量
 
+> 2026-10-19 用户已明确将本轮扩大为完整评论业务接通，继续沿用 #19，不另建重复功能分支。当前包含0017、真实单图/点赞/定位/删除/通知、Flutter页面与独立原生加密任务日志；真机窗口正在验证。最新结果以[全链路报告](../design/comments-connected-report-20261019.md)为准。下方“本轮不做客户端”“下一轮建议”等只属于2026-10-18后端文字交付快照，不再限制当前任务。
+
+
 - 更新时间：2026-10-19。
 - 分支：`codex/feat/comments-backend-text`；[Draft PR #19](https://github.com/zewbby/HnuHole/pull/19)，base 为[核心 PR #17](https://github.com/zewbby/HnuHole/pull/17)。本轮 diff 没有 Dart、Flutter 页面或原生代码。
 - 已正常整合 main `1b78f42`（治理 PR #18），通过 #17 基线 `767b0a3` 继承；后端被测实现 `07911ab`。原核心任务范围见[评论与回复](feat-comments-replies.md)。

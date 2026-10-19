@@ -108,3 +108,11 @@ DO $$ BEGIN
   GRANT UPDATE(moderation_rename_required) ON public.community_identities TO hnuhole_c_runtime;
  END IF;
 END $$;
+
+-- Comment lifecycle cleanup remains active when comment HTTP is disabled.
+DO $$ BEGIN
+ IF to_regclass('c_comments.images') IS NOT NULL THEN
+  GRANT SELECT ON c_comments.images TO hnuhole_c_runtime;
+  GRANT UPDATE(payload,metadata,erased_at) ON c_comments.images TO hnuhole_c_runtime;
+ END IF;
+END $$;

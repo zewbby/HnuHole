@@ -59,14 +59,14 @@ func TestCommentTextGooseMigrationChainPostgres(t *testing.T) {
 					t.Fatal("real governance 0015 upgrade failed")
 				}
 				if e = run("up"); e != nil {
-					t.Fatal("0015 to 0016 upgrade failed")
+					t.Fatal("0015 to 0017 upgrade failed")
 				}
 				var preserved bool
 				if e = pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_moderation.platform_numbers WHERE number='001527')`).Scan(&preserved); e != nil || !preserved {
 					t.Fatal("upgrade lost historical account")
 				}
 			} else if e = run("up"); e != nil {
-				t.Fatal("empty database 0001..0016 installation failed")
+				t.Fatal("empty database 0001..0017 installation failed")
 			}
 			var versions []int64
 			rows, e := pool.Query(ctx, `SELECT version_id FROM public.goose_db_version WHERE is_applied ORDER BY version_id`)
@@ -81,7 +81,7 @@ func TestCommentTextGooseMigrationChainPostgres(t *testing.T) {
 				versions = append(versions, v)
 			}
 			rows.Close()
-			if len(versions) != 17 {
+			if len(versions) != 18 {
 				t.Fatal("missing/extra migration ledger entry")
 			}
 			for i, v := range versions {
@@ -97,7 +97,7 @@ func TestCommentTextGooseMigrationChainPostgres(t *testing.T) {
 				t.Fatal("permanent comment facts silently rolled back")
 			}
 			var current int
-			if e = pool.QueryRow(ctx, `SELECT max(version_id) FROM public.goose_db_version WHERE is_applied`).Scan(&current); e != nil || current != 16 {
+			if e = pool.QueryRow(ctx, `SELECT max(version_id) FROM public.goose_db_version WHERE is_applied`).Scan(&current); e != nil || current != 17 {
 				t.Fatal("failed Down changed ledger")
 			}
 		})

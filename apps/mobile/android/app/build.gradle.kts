@@ -30,6 +30,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Explicit owned acceptance install; ordinary debug/release IDs stay
+            // unchanged and existing user data is never reused by this fixture.
+            if (providers.gradleProperty("hnuholeCommentsValidation").orNull == "true") {
+                applicationIdSuffix = ".commentsvalidation"
+            }
+        }
         release {
             // Configure an explicit release signing identity before distribution.
         }

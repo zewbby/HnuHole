@@ -36,8 +36,8 @@
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `codex/feat/report-moderation` | 已有帖子举报、网页审核、必要申诉与最小系统通知阶段1限定范围通过，PR #18已合入main；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |
-| `codex/feat/comments-replies` | 已交付评论核心，PR #17；真实后端增量另见 #19，客户端与通知待接线。 | [任务边界](docs/branches/feat-comments-replies.md) |
-| `codex/feat/comments-backend-text` | 文字评论/回复真实后端与0016针对性验证通过，PR #19待审查，完整评论功能未完成。 | [详情](docs/branches/feat-comments-backend-text.md) |
+| `codex/feat/comments-replies` | 评论核心 PR #17 为业务接通 PR #19 的前置，按顺序交付。 | [任务边界](docs/branches/feat-comments-replies.md) |
+| `codex/feat/comments-backend-text` | PR #19 继续接通评论页面、原生任务恢复、单图、点赞删除与真实通知，当前候选待最终验收及审查。 | [详情](docs/branches/feat-comments-backend-text.md) |
 | `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
 
 ### 已合并或退役的历史工作

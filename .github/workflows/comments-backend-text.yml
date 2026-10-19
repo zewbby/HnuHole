@@ -4,11 +4,16 @@ on:
     paths:
       - 'services/api/comment-schema/**'
       - 'services/api/migrations/0016_comments.sql'
+      - 'services/api/migrations/0017_comment_business.sql'
+      - 'apps/mobile/lib/src/comments/**'
+      - 'apps/mobile/integration/comment_live_probe.dart'
+      - 'packages/openapi/comment-business-component.yaml'
       - 'infra/postgres/grant-comments.sql'
       - 'infra/postgres/grant-community.sql'
       - 'services/api/authlab/privacy-role-audit.sql'
       - 'packages/openapi/comment-text-component.yaml'
       - 'tools/check-comment-text-contract.py'
+      - 'tools/check-comment-business-contract.py'
       - 'services/api/internal/comments/persistence*'
       - 'services/api/internal/authprivacy/community_comments*'
       - 'services/api/internal/authprivacy/community.go'
@@ -28,7 +33,7 @@ concurrency:
 jobs:
   text-component:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,16 +53,36 @@ jobs:
         run: |
           python -m pip install -r packages/openapi/requirements-check.txt
           python tools/check-comment-text-contract.py
+          python tools/check-comment-business-contract.py
       - name: New persistence and affected strict parser/config checks
         working-directory: services/api
         run: |
-          go test -mod=readonly -race ./internal/comments ./internal/authprivacyhttp ./internal/authprivacyruntime -run '^(TestCommentText|TestStrictJSON|TestStrictObject)'
+          go test -mod=readonly -race ./internal/comments ./internal/authprivacyhttp ./internal/authprivacyruntime -run '^(TestCommentText|TestCommentBusiness|TestStrictJSON|TestStrictObject)'
           go build -mod=readonly ./cmd/authdev
           go vet -mod=readonly ./internal/comments ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      - name: Build production Dart transport probe
+        working-directory: apps/mobile
+        run: |
+          flutter pub get --enforce-lockfile
+          dart compile exe integration/comment_live_probe.dart -o "$RUNNER_TEMP/comment-live-probe"
+      - name: Install bounded image inspector and synthetic originals
+        run: |
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/comment-image-python"
+          "$RUNNER_TEMP/comment-image-python/bin/python" -m pip install -r services/api/media/requirements.txt
+          chmod -R go-w services/api/media
+          "$RUNNER_TEMP/comment-image-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/comment-image-fixtures"
       - name: Real SQL, restricted role, final Gate and TLS HTTP component
-        # Includes real empty installation and 0014 -> actual main 0015 -> 0016.
+        # Includes real empty installation and 0014 -> actual main 0015 -> 0016 -> 0017.
         env:
           PGPORT: '55463'
         run: |
           export PATH="$(pg_config --bindir):$PATH"
+          export POST_MEDIA_PYTHON="$RUNNER_TEMP/comment-image-python/bin/python"
+          export POST_MEDIA_FIXTURES="$RUNNER_TEMP/comment-image-fixtures"
+          export COMMENT_LIVE_PROBE="$RUNNER_TEMP/comment-live-probe"
           bash services/api/authlab/run-comment-text-isolated.sh

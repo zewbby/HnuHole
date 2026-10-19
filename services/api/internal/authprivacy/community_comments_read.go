@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/binary"
+	"encoding/json"
 	"errors"
 	"time"
 
@@ -86,7 +87,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 		var root any
 		if q.Replies {
 			root = q.ID
-			e := tx.QueryRow(ctx, `SELECT t.post_id::text FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.comment_id=$1 AND t.root_comment_id IS NULL AND x.state='PUBLISHED'`, q.ID).Scan(&postID)
+			e := tx.QueryRow(ctx, `SELECT t.post_id::text FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.comment_id=$1 AND t.root_comment_id IS NULL AND t.deleted_at IS NULL AND x.state='PUBLISHED'`, q.ID).Scan(&postID)
 			if errors.Is(e, pgx.ErrNoRows) {
 				return nil, postError("COMMENT_NOT_FOUND", 404)
 			}
@@ -124,14 +125,14 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 				return nil, postError("CURSOR_INVALID", 400)
 			}
 		} else {
-			rows, e := tx.Query(ctx, `SELECT t.comment_id::text,x.terminal_at FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND t.root_comment_id IS NOT DISTINCT FROM $2::uuid AND x.state='PUBLISHED' LIMIT 10001`, postID, root)
+			rows, e := tx.Query(ctx, `SELECT t.comment_id::text,x.terminal_at,(SELECT count(*) FROM c_comments.likes l WHERE l.comment_id=t.comment_id) FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND t.root_comment_id IS NOT DISTINCT FROM $2::uuid AND x.state='PUBLISHED' AND t.deleted_at IS NULL LIMIT 10001`, postID, root)
 			if e != nil {
 				return nil, e
 			}
 			order := []comments.OrderItem{}
 			for rows.Next() {
 				var i comments.OrderItem
-				if e = rows.Scan(&i.CommentID, &i.PublishedAt); e != nil {
+				if e = rows.Scan(&i.CommentID, &i.PublishedAt, &i.LikeCount); e != nil {
 					break
 				}
 				order = append(order, i)
@@ -190,7 +191,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 		end := min(offset+limit, len(ids))
 		r := TextCommentPage{SnapshotID: base64.RawURLEncoding.EncodeToString(snapshotID[:]), Comments: []TextComment{}}
 		for _, id := range ids[offset:end] {
-			item, e := readTextComment(ctx, tx, id.String())
+			item, e := readTextComment(ctx, tx, id.String(), account)
 			if errors.Is(e, pgx.ErrNoRows) {
 				continue
 			}
@@ -209,7 +210,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 			r.RootCommentID = &q.ID
 		} else {
 			var count int
-			if e := tx.QueryRow(ctx, `SELECT count(*) FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND x.state='PUBLISHED'`, postID).Scan(&count); e != nil {
+			if e := tx.QueryRow(ctx, `SELECT count(*) FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND t.deleted_at IS NULL AND x.state='PUBLISHED'`, postID).Scan(&count); e != nil {
 				return nil, e
 			}
 			r.TotalCount = &count
@@ -244,11 +245,34 @@ func readCommentAuthor(ctx context.Context, tx pgx.Tx, identity string) (Comment
 	}
 	return r, nil
 }
-func readTextComment(ctx context.Context, tx pgx.Tx, id string) (TextComment, error) {
+func readTextComment(ctx context.Context, tx pgx.Tx, id string, account uuid.UUID) (TextComment, error) {
 	var r TextComment
 	var identity string
-	e := tx.QueryRow(ctx, `SELECT t.comment_id::text,t.post_id::text,t.root_comment_id::text,t.target_comment_id::text,x.body,x.terminal_at,t.identity_id::text,(t.identity_id=p.identity_id),CASE WHEN t.root_comment_id IS NULL THEN (SELECT count(*) FROM c_comments.tasks z JOIN c_comments.attempts a ON a.task_id=z.task_id AND a.state='PUBLISHED' WHERE z.root_comment_id=t.comment_id) ELSE 0 END FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' JOIN c_posts.posts pp ON pp.post_id=t.post_id AND pp.visibility='PUBLISHED' AND NOT pp.moderation_hidden JOIN c_posts.publication_tasks p ON p.post_id=t.post_id WHERE t.comment_id=$1`, id).Scan(&r.ID, &r.PostID, &r.RootCommentID, &r.TargetCommentID, &r.Body, &r.PublishedAt, &identity, &r.IsPostAuthor, &r.ReplyCount)
+	e := tx.QueryRow(ctx, `SELECT t.comment_id::text,t.post_id::text,t.root_comment_id::text,t.target_comment_id::text,x.body,x.terminal_at,t.identity_id::text,(t.identity_id=p.identity_id),CASE WHEN t.root_comment_id IS NULL THEN (SELECT count(*) FROM c_comments.tasks z JOIN c_comments.attempts a ON a.task_id=z.task_id AND a.state='PUBLISHED' WHERE z.root_comment_id=t.comment_id AND z.deleted_at IS NULL) ELSE 0 END FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' JOIN c_posts.posts pp ON pp.post_id=t.post_id AND pp.visibility='PUBLISHED' AND NOT pp.moderation_hidden JOIN c_posts.publication_tasks p ON p.post_id=t.post_id WHERE t.comment_id=$1 AND t.deleted_at IS NULL`, id).Scan(&r.ID, &r.PostID, &r.RootCommentID, &r.TargetCommentID, &r.Body, &r.PublishedAt, &identity, &r.IsPostAuthor, &r.ReplyCount)
 	if e != nil {
+		return r, e
+	}
+	if e = tx.QueryRow(ctx, `SELECT count(*),EXISTS(SELECT 1 FROM c_comments.likes WHERE comment_id=$1 AND account_id=$2) FROM c_comments.likes WHERE comment_id=$1`, id, account).Scan(&r.LikeCount, &r.LikedByMe); e != nil {
+		return r, e
+	}
+	var raw []byte
+	var content string
+	e = tx.QueryRow(ctx, `SELECT metadata,content_version_id::text FROM c_comments.images m JOIN c_comments.tasks t USING(task_id) JOIN c_comments.attempts x ON x.task_id=m.task_id AND x.version=m.version AND x.state='PUBLISHED' WHERE t.comment_id=$1 AND m.payload IS NOT NULL AND m.erased_at IS NULL`, id).Scan(&raw, &content)
+	if e == nil {
+		var meta struct {
+			Width  int    `json:"displayWidth"`
+			Height int    `json:"displayHeight"`
+			MIME   string `json:"mimeType"`
+		}
+		if json.Unmarshal(raw, &meta) != nil {
+			return r, ErrAuthorizationUnavailable
+		}
+		var media string
+		if e = tx.QueryRow(ctx, `SELECT x.image->>'mediaId' FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' WHERE t.comment_id=$1`, id).Scan(&media); e != nil {
+			return r, e
+		}
+		r.Image = PublishedCommentImage{media, content, meta.Width, meta.Height, meta.MIME, true}
+	} else if !errors.Is(e, pgx.ErrNoRows) {
 		return r, e
 	}
 	r.PublishedAt = r.PublishedAt.UTC()
@@ -268,4 +292,62 @@ func readTextComment(ctx context.Context, tx pgx.Tx, id string) (TextComment, er
 		r.ReplyTo = &CommentRelation{CommentID: *r.TargetCommentID, Author: author}
 	}
 	return r, nil
+}
+
+type PublishedCommentImage struct {
+	MediaID          string `json:"mediaId"`
+	ContentVersionID string `json:"contentVersionId"`
+	PixelWidth       int    `json:"pixelWidth"`
+	PixelHeight      int    `json:"pixelHeight"`
+	MIME             string `json:"mimeType"`
+	SaveAllowed      bool   `json:"saveAllowed"`
+}
+
+// Location uses a normal main-comment reading snapshot. The cursor opens its
+// containing floor; the client can expand that floor to the exact reply ID.
+type CommentLocation struct {
+	SnapshotID    string  `json:"snapshotId"`
+	CommentID     string  `json:"commentId"`
+	RootCommentID *string `json:"rootCommentId"`
+	Cursor        *string `json:"cursor"`
+}
+
+func (c *Community) LocateComment(ctx context.Context, b [32]byte, post, id string) (PostResponse, error) {
+	page, e := c.ReadComments(ctx, b, CommentQuery{ID: post, Limit: 50})
+	if e != nil {
+		return page, e
+	}
+	snapshot := page.Value.(TextCommentPage).SnapshotID
+	return c.withCommentSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
+		row, e := readTextComment(ctx, tx, id, a)
+		if errors.Is(e, pgx.ErrNoRows) || e == nil && row.PostID != post {
+			return nil, postError("COMMENT_NOT_FOUND", 404)
+		}
+		if e != nil {
+			return nil, e
+		}
+		raw, e := base64.RawURLEncoding.DecodeString(snapshot)
+		if e != nil {
+			return nil, e
+		}
+		sid, e := uuid.FromBytes(raw)
+		if e != nil {
+			return nil, e
+		}
+		var ids []uuid.UUID
+		if e = tx.QueryRow(ctx, `SELECT comment_ids FROM c_comments.snapshots WHERE snapshot_id=$1 AND owner_account_id=$2`, sid, a).Scan(&ids); e != nil {
+			return nil, e
+		}
+		floor := id
+		if row.RootCommentID != nil {
+			floor = *row.RootCommentID
+		}
+		for i, item := range ids {
+			if item.String() == floor {
+				cursor := commentCursor(sid, i/50*50)
+				return CommentLocation{snapshot, id, row.RootCommentID, &cursor}, nil
+			}
+		}
+		return nil, postError("COMMENT_NOT_FOUND", 404)
+	})
 }

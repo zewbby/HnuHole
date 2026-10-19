@@ -3,12 +3,14 @@ package authprivacy
 import (
 	"context"
 	"crypto/hmac"
+	"encoding/json"
 	"errors"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/comments"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/posts"
 )
 
@@ -24,6 +26,10 @@ type CommentReceipt struct {
 	TaskID         string             `json:"taskId,omitempty"`
 	AttemptVersion int32              `json:"attemptVersion,omitempty"`
 	ErrorCode      string             `json:"errorCode,omitempty"`
+	CommentID      string             `json:"commentId,omitempty"`
+	DeletedCount   *int64             `json:"deletedCount,omitempty"`
+	Liked          *bool              `json:"liked,omitempty"`
+	LikeCount      *int64             `json:"likeCount,omitempty"`
 }
 type OwnCommentTask struct {
 	TaskID             string             `json:"taskId"`
@@ -125,9 +131,9 @@ func (c *Community) withCommentSession(ctx context.Context, bearer [32]byte, act
 func readCommentReceipt(ctx context.Context, tx pgx.Tx, key [32]byte) (CommentReceipt, []byte, bool, error) {
 	var r CommentReceipt
 	var f []byte
-	var task, code *string
+	var task, code, comment *string
 	var version *int32
-	e := tx.QueryRow(ctx, `SELECT outcome,operation,task_id::text,version,error_code,intent_fingerprint FROM c_comments.receipts WHERE key_digest=$1`, key[:]).Scan(&r.State, &r.Operation, &task, &version, &code, &f)
+	e := tx.QueryRow(ctx, `SELECT outcome,operation,task_id::text,version,error_code,intent_fingerprint,comment_id::text,deleted_count,liked,like_count FROM c_comments.receipts WHERE key_digest=$1`, key[:]).Scan(&r.State, &r.Operation, &task, &version, &code, &f, &comment, &r.DeletedCount, &r.Liked, &r.LikeCount)
 	if errors.Is(e, pgx.ErrNoRows) {
 		return r, nil, false, nil
 	}
@@ -143,6 +149,9 @@ func readCommentReceipt(ctx context.Context, tx pgx.Tx, key [32]byte) (CommentRe
 	if code != nil {
 		r.ErrorCode = *code
 	}
+	if comment != nil {
+		r.CommentID = *comment
+	}
 	return r, f, true, nil
 }
 func writeCommentReceipt(ctx context.Context, tx pgx.Tx, account uuid.UUID, key, fp [32]byte, r CommentReceipt, at time.Time) error {
@@ -150,7 +159,7 @@ func writeCommentReceipt(ctx context.Context, tx pgx.Tx, account uuid.UUID, key,
 	if r.AttemptVersion > 0 {
 		version = r.AttemptVersion
 	}
-	_, e := tx.Exec(ctx, `INSERT INTO c_comments.receipts(key_digest,owner_account_id,intent_fingerprint,operation,outcome,task_id,version,error_code,committed_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`, key[:], account, fp[:], r.Operation, r.State, nullablePostID(r.TaskID), version, nullablePostID(r.ErrorCode), at)
+	_, e := tx.Exec(ctx, `INSERT INTO c_comments.receipts(key_digest,owner_account_id,intent_fingerprint,operation,outcome,task_id,version,error_code,committed_at,comment_id,deleted_count,liked,like_count) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`, key[:], account, fp[:], r.Operation, r.State, nullablePostID(r.TaskID), version, nullablePostID(r.ErrorCode), at, nullablePostID(r.CommentID), r.DeletedCount, r.Liked, r.LikeCount)
 	return e
 }
 func (c *Community) GetCommentCommand(ctx context.Context, b [32]byte, key string) (PostResponse, error) {
@@ -191,7 +200,7 @@ func (c *Community) SealCommentCommand(ctx context.Context, b [32]byte, key stri
 	})
 }
 func textCommentOperation(op comments.Operation) bool {
-	return op == comments.Create || op == comments.Retry || op == comments.Abandon
+	return op.Valid()
 }
 func commentBudget(ctx context.Context, tx pgx.Tx, a uuid.UUID, at time.Time) error {
 	var n int
@@ -204,7 +213,7 @@ func commentBudget(ctx context.Context, tx pgx.Tx, a uuid.UUID, at time.Time) er
 	return nil
 }
 func (c *Community) ExecuteCommentCommand(ctx context.Context, b [32]byte, key string, in comments.Intent) (PostResponse, error) {
-	if _, e := comments.ParseCommandKey(key); e != nil || !textCommentOperation(in.Operation) || in.Image != nil {
+	if _, e := comments.ParseCommandKey(key); e != nil || !textCommentOperation(in.Operation) {
 		return PostResponse{}, comments.ErrInvalid
 	}
 	digest, e := comments.RequestDigest(in)
@@ -266,10 +275,16 @@ func commentRejectionCode(code string) string {
 	}
 }
 func (c *Community) applyCommentIntent(ctx context.Context, tx pgx.Tx, a uuid.UUID, in comments.Intent, at time.Time, muted bool) (CommentReceipt, error) {
+	if in.Operation == comments.DeleteComment || in.Operation == comments.SetLike {
+		return c.applyCommentMutation(ctx, tx, a, in, at)
+	}
 	reject := func(code string) (CommentReceipt, error) { return CommentReceipt{}, postError(code, 409) }
 	var model comments.Task
 	var e error
-	content := comments.Content{Body: in.Body}
+	content := comments.Content{Body: in.Body, Image: in.Image}
+	if in.Image != nil && !c.PostImagesEnabled() {
+		return reject("COMMENT_CONTENT_INVALID")
+	}
 	if in.Operation != comments.Abandon && content.Validate() != nil {
 		return reject("COMMENT_CONTENT_INVALID")
 	}
@@ -356,7 +371,15 @@ func (c *Community) applyCommentIntent(ctx context.Context, tx pgx.Tx, a uuid.UU
 			return CommentReceipt{}, e
 		}
 	}
-	_, e = tx.Exec(ctx, `INSERT INTO c_comments.attempts(task_id,version,state,accepted_at,accepted_stop_generation,body) SELECT $1,$2,'ACCEPTED',$3,stop_generation,$4 FROM c_posts.account_publication_control WHERE account_id=$5`, v.TaskID, v.AttemptVersion, at, in.Body, a)
+	var image any
+	if in.Image != nil {
+		data, _ := json.Marshal(in.Image)
+		image = data
+	}
+	_, e = tx.Exec(ctx, `INSERT INTO c_comments.attempts(task_id,version,state,accepted_at,accepted_stop_generation,body,image) SELECT $1,$2,'ACCEPTED',$3,stop_generation,$4,$6 FROM c_posts.account_publication_control WHERE account_id=$5`, v.TaskID, v.AttemptVersion, at, in.Body, a, image)
+	if e == nil && in.Image != nil {
+		_, e = tx.Exec(ctx, `INSERT INTO c_comments.images(task_id,version,content_version_id) VALUES($1,$2,$3)`, v.TaskID, v.AttemptVersion, uuid.New())
+	}
 	return CommentReceipt{State: "ACCEPTED", Operation: in.Operation, TaskID: v.TaskID, AttemptVersion: v.AttemptVersion}, e
 }
 
@@ -380,7 +403,7 @@ func checkCommentContext(ctx context.Context, tx pgx.Tx, account uuid.UUID, b co
 	}
 	if b.RootCommentID != "" {
 		var valid bool
-		e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_comments.tasks r JOIN c_comments.attempts ra ON ra.task_id=r.task_id AND ra.state='PUBLISHED' JOIN c_comments.tasks t ON t.comment_id=$3 JOIN c_comments.attempts ta ON ta.task_id=t.task_id AND ta.state='PUBLISHED' WHERE r.comment_id=$2 AND r.post_id=$1 AND r.root_comment_id IS NULL AND t.post_id=r.post_id AND COALESCE(t.root_comment_id,t.comment_id)=r.comment_id)`, b.PostID, b.RootCommentID, b.TargetCommentID).Scan(&valid)
+		e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_comments.tasks r JOIN c_comments.attempts ra ON ra.task_id=r.task_id AND ra.state='PUBLISHED' JOIN c_comments.tasks t ON t.comment_id=$3 JOIN c_comments.attempts ta ON ta.task_id=t.task_id AND ta.state='PUBLISHED' WHERE r.comment_id=$2 AND r.post_id=$1 AND r.root_comment_id IS NULL AND t.post_id=r.post_id AND COALESCE(t.root_comment_id,t.comment_id)=r.comment_id AND r.deleted_at IS NULL AND t.deleted_at IS NULL)`, b.PostID, b.RootCommentID, b.TargetCommentID).Scan(&valid)
 		if e != nil {
 			return e
 		}
@@ -396,9 +419,10 @@ func loadCommentTask(ctx context.Context, tx pgx.Tx, account uuid.UUID, id strin
 	var terminal, abandoned, deleted *time.Time
 	var failure *string
 	var accountState string
-	e := tx.QueryRow(ctx, `SELECT t.task_id::text,t.comment_id::text,t.post_id::text,t.identity_id::text,t.root_comment_id::text,t.target_comment_id::text,t.owner_visible,t.abandoned_at,i.deleted_at,ac.state,x.version,x.state,x.accepted_at,x.terminal_at,x.failure_code,x.body
+	var image []byte
+	e := tx.QueryRow(ctx, `SELECT t.task_id::text,t.comment_id::text,t.post_id::text,t.identity_id::text,t.root_comment_id::text,t.target_comment_id::text,t.owner_visible,t.abandoned_at,i.deleted_at,ac.state,x.version,x.state,x.accepted_at,x.terminal_at,x.failure_code,x.body,x.image
  FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.version=(SELECT max(version) FROM c_comments.attempts WHERE task_id=t.task_id)
- JOIN public.community_identities i ON i.identity_id=t.identity_id JOIN c_auth.accounts ac ON ac.account_id=t.owner_account_id WHERE t.task_id=$1 AND t.owner_account_id=$2`, id, account).Scan(&r.TaskID, &r.CommentID, &r.Binding.PostID, &r.Binding.IdentityID, &root, &target, &r.OwnerVisible, &abandoned, &deleted, &accountState, &r.Version, &r.State, &r.AcceptedAt, &terminal, &failure, &body)
+ JOIN public.community_identities i ON i.identity_id=t.identity_id JOIN c_auth.accounts ac ON ac.account_id=t.owner_account_id WHERE t.task_id=$1 AND t.owner_account_id=$2`, id, account).Scan(&r.TaskID, &r.CommentID, &r.Binding.PostID, &r.Binding.IdentityID, &root, &target, &r.OwnerVisible, &abandoned, &deleted, &accountState, &r.Version, &r.State, &r.AcceptedAt, &terminal, &failure, &body, &image)
 	if errors.Is(e, pgx.ErrNoRows) {
 		return comments.Task{}, postError("TASK_NOT_FOUND", 404)
 	}
@@ -419,6 +443,13 @@ func loadCommentTask(ctx context.Context, tx pgx.Tx, account uuid.UUID, id strin
 	}
 	if body != nil {
 		r.Content = &comments.Content{Body: *body}
+		if len(image) > 0 {
+			var selection postmedia.Selection
+			if json.Unmarshal(image, &selection) != nil {
+				return comments.Task{}, ErrAuthorizationUnavailable
+			}
+			r.Content.Image = &selection
+		}
 	}
 	r.IdentityActive = deleted == nil && accountState != "CLOSED"
 	if abandoned != nil {

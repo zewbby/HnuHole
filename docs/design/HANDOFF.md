@@ -1,5 +1,8 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-19 评论全链路接通中（取代上一轮文字阶段停止边界）。**用户已明确扩大到页面、原生任务日志、单图、点赞、定位、本人删除、失败恢复与真实通知数据源；当前在原 #19 分支继承 #17，main 仍核对为 `1b78f42`，不合入其他未完成分支。0017 接续0016；SQL/TLS/Dart端到端和标准 Android 构建已有通过证据，真机独占窗口正在执行，最终 head/CI/独立审查尚待固定。旧报告保留各自范围，不再作为当前“未实现客户端”结论。见[全链路报告](comments-connected-report-20261019.md)。未合并、未发布；完整B07暂不记PASS。
+
+
 > **2026-10-18 评论文字后端增量：BACKEND_TEXT_SCOPED_PASS。**[Draft PR #19](https://github.com/zewbby/HnuHole/pull/19) 堆叠于核心 #17；已正常整合 main `1b78f42` 的真实治理0015，正式评论0016及空库/升级/Down拒绝、真实PG/受限角色/TLS HTTP/重试放弃/封口/生命周期针对性检查通过。被测后端 `07911ab`，完整B07仍BLOCKED、通知provider未接入；本轮不推进客户端/图片/原生日志/设备。见[报告](comments-backend-text-report-20261018.md)、[机器记录](comments-backend-text-verification-20261018.json)与[后端任务](../branches/feat-comments-backend-text.md)。独立成员审查与最终head CI待PR核对，未合并/未发布；下方“0015尚未合入”等为原日期历史快照。
 
 > **2026-10-18 举报／审核阶段1：PHASE1_SCOPED_PASS。**产品候选 `aab9a647d9c8310e344bbc767abb5cbdc1045f73` 基于最新已核对 main `986477b`，已提交、推送至[PR #18](https://github.com/zewbby/HnuHole/pull/18)，独立 agent 安全复核无阻断。已有帖子举报→真实网页审核→最小系统通知／必要申诉链通过实际 Dart→C HTTPS→PostgreSQL→浏览器验证。最终聚焦47项零FAIL/SKIP；完整继承回归321项PASS、两个既有独立Flutter入口明确SKIP、不计通过。Flutter439／analyze0／bundle、9份OpenAPI、Node12、Go host／build／vet及产品候选4工作流7任务全部通过。632个产品／测试／配置输入指纹、失败历史及交付head回执方法见[验收报告](report-moderation-validation-report.md)和[机器记录](report-moderation-verification.json)。0015不依赖评论表，评论举报／真实失败provider阶段2仍NOT_INTEGRATED；完整互动、私信及推送未实现。未合并、未部署、未发布，B08／B11保持PARTIAL，手机／iOS／跨设备Passkey及生产未验边界不扩大。 见[任务详情](../branches/feat-report-moderation.md)、[通知契约](report-notification-contract.md)与[模块交接](module-acceptance-handoff.md)；下方旧记录保留各自日期与范围。

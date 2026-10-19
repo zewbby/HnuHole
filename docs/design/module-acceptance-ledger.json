@@ -16349,9 +16349,9 @@
     {
       "id": "B07",
       "name": "评论与回复",
-      "implementationState": "PARTIAL_BACKEND_TEXT_AND_INDEPENDENT_CORE",
-      "acceptanceState": "BACKEND_TEXT_REAL_SQL_HTTPS_SCOPED_PASS_FULL_CLIENT_IMAGES_NATIVE_JOURNAL_NOT_IMPLEMENTED_NOTIFICATIONS_NOT_CONNECTED",
-      "currentResult": "BLOCKED",
+      "implementationState": "CONNECTED_BUSINESS_CANDIDATE",
+      "acceptanceState": "REAL_SQL_TLS_DART_BUILD_PASS_DEVICE_FINALIZATION_IN_PROGRESS",
+      "currentResult": "PARTIAL",
       "verificationEntries": [
         "B07-CORE-01",
         "B07-CLIENT-01",
@@ -16359,8 +16359,8 @@
         "B07-CONTRACT-01",
         "B07-BACKEND-TEXT-01"
       ],
-      "note": "2026-10-18 核心PR17继承；后端文字增量PR19在main 1b78f42真实0015之上实现0016/最小授权/持久命令与seal/任务/worker/实际TLS HTTP，针对性SQL与迁移链PASS。完整客户端、图片、原生journal、通知接线未完成；不能把B07或COMMENT-FAIL-ENTRY-01计PASS。未合并、未发布。",
-      "nextAcceptance": "先审查/合入核心PR17和后端文字PR19并核对base；下一轮建议文字客户端及原生任务journal接线，再按授权推进点赞/定位/本人删除、单图、统一失败通知，最后固定APK与设备窗口。本轮不自动执行。",
+      "note": "2026-10-19 #19在#17核心之上继续实现页面、原生加密已提交任务日志、单图、点赞/删除/定位、真实系统通知数据源；0017接续0016，真实SQL/TLS/Dart及构建已有通过，最终独占设备与head检查仍在执行。旧证据不覆盖当前版本；未合并、未发布。",
+      "nextAcceptance": "完成独占Android两进程恢复/图库/通知动作，固定最终源码和APK、受影响回归及head CI，完成独立审查；依授权按#17→#19处理合并，不推进iOS/跨设备Passkey。",
       "currentAC06Handoff": {
         "result": "PASS",
         "evidence": "services/api/authlab/final-handoff-verification.json",
@@ -16440,6 +16440,14 @@
         },
         "report": "docs/design/comments-backend-text-report-20261018.md",
         "evidence": "docs/design/comments-backend-text-verification-20261018.json"
+      },
+      "commentsConnected20261019": {
+        "state": "IN_PROGRESS",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
+        "migrationChain": "0001..0017",
+        "report": "docs/design/comments-connected-report-20261019.md",
+        "deviceWindowAuthorized": true,
+        "published": false
       }
     },
     {
@@ -39757,6 +39765,14 @@
     "notificationIntegration": "NOT_RUN_NOT_CONNECTED",
     "independentMemberReview": "PENDING",
     "merged": false,
+    "published": false
+  },
+  "commentsConnectedWorkItem20261019": {
+    "state": "IN_PROGRESS",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/19",
+    "migrationChain": "0001..0017",
+    "report": "docs/design/comments-connected-report-20261019.md",
+    "deviceWindowAuthorized": true,
     "published": false
   }
 }

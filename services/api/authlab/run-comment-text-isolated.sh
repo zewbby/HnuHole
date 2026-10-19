@@ -65,4 +65,4 @@ MODERATION_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_moderation_upgrade?host=
 export MODERATION_GOOSE MODERATION_UPGRADE_DSN
 comment_text_script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$comment_text_script_dir/.."
-go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp -run '^(TestCommentText|TestModerationGooseUpgradeAndDownRefusalPostgres$|TestPostSchemaFixedOwnershipAndTerminalStatePostgres$|TestPostSchemaModerationCleanupPrivilegesWithoutFeaturePostgres$|TestPostSchemaModerationAccountClosureWithoutFeaturePostgres$)' -v
+go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp -run "${COMMENT_TEST_PATTERN:-^(TestCommentText|TestCommentBusiness|TestModerationGooseUpgradeAndDownRefusalPostgres$|TestPostSchemaFixedOwnershipAndTerminalStatePostgres$|TestPostSchemaModerationCleanupPrivilegesWithoutFeaturePostgres$|TestPostSchemaModerationAccountClosureWithoutFeaturePostgres$)}" -v
