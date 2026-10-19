@@ -245,7 +245,7 @@ func decodeModerationObject(o map[string]any, v any) error {
 			return errMalformed
 		}
 		switch k {
-		case "postId", "reason", "description", "commandId", "action", "role":
+		case "postId", "commentId", "reason", "description", "commandId", "action", "role":
 			if _, ok := value.(string); !ok {
 				return errMalformed
 			}
@@ -389,7 +389,7 @@ func (b *boundary) communityModeration(w http.ResponseWriter, r *http.Request, b
 	} else {
 		switch route.kind {
 		case "report":
-			o, err := moderationObject(r, []string{"postId", "reason", "description", "images"}, []string{"identityId", "retryToken"})
+			o, err := moderationObject(r, []string{"postId", "reason", "description", "images"}, []string{"identityId", "retryToken", "commentId"})
 			var input moderation.ReportInput
 			if err == nil {
 				err = decodeModerationObject(o, &input)

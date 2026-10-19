@@ -331,6 +331,9 @@ components:
       properties:
         postId:
           $ref: '#/components/schemas/UUID'
+        commentId:
+          $ref: '#/components/schemas/UUID'
+          description: Optional concrete comment or reply within postId; omitted for a post target.
         identityId:
           type: string
           format: uuid
@@ -389,6 +392,9 @@ components:
           - ENDED
         postId:
           $ref: '#/components/schemas/UUID'
+        commentId:
+          $ref: '#/components/schemas/UUID'
+          description: Optional concrete comment or reply within postId; omitted for a post target.
         reason:
           type: string
           enum:

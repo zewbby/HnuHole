@@ -26,11 +26,11 @@ func moderationNumber(ctx context.Context, tx pgx.Tx, account uuid.UUID) (string
 	return number, e
 }
 
-const caseFields = `c.case_id,c.number::text,c.post_id,c.reason,c.state,c.version,c.created_at,n.number,c.outcome,c.explanation`
+const caseFields = `c.case_id,c.number::text,c.post_id,c.reason,c.state,c.version,c.created_at,n.number,c.outcome,c.explanation,to_jsonb(c)->>'comment_id'`
 
 func scanCase(row pgx.Row) (moderation.Case, error) {
 	var c moderation.Case
-	e := row.Scan(&c.ID, &c.Number, &c.PostID, &c.Reason, &c.State, &c.Version, &c.CreatedAt, &c.PlatformNumber, &c.Outcome, &c.Explanation)
+	e := row.Scan(&c.ID, &c.Number, &c.PostID, &c.Reason, &c.State, &c.Version, &c.CreatedAt, &c.PlatformNumber, &c.Outcome, &c.Explanation, &c.CommentID)
 	c.CreatedAt = c.CreatedAt.UTC()
 	return c, e
 }
@@ -87,7 +87,7 @@ func readCase(ctx context.Context, tx pgx.Tx, id string, detail bool) (moderatio
 }
 func readSanction(ctx context.Context, tx pgx.Tx, id string, account uuid.UUID) (moderation.Sanction, error) {
 	var s moderation.Sanction
-	e := tx.QueryRow(ctx, `SELECT s.sanction_id,s.case_id,s.action,s.reason,s.starts_at,s.ends_at,s.revoked_at,c.post_id,(SELECT count(*) FROM c_moderation.appeals a WHERE a.sanction_id=s.sanction_id),(SELECT a.appeal_id FROM c_moderation.appeals a WHERE a.sanction_id=s.sanction_id AND a.state='PENDING') FROM c_moderation.sanctions s JOIN c_moderation.cases c USING(case_id) WHERE s.sanction_id=$1 AND ($2::uuid IS NULL OR s.account_id=$2)`, id, nullableUUID(account)).Scan(&s.ID, &s.CaseID, &s.Action, &s.Reason, &s.StartsAt, &s.EndsAt, &s.RevokedAt, &s.PostID, &s.AppealCount, &s.ActiveAppealID)
+	e := tx.QueryRow(ctx, `SELECT s.sanction_id,s.case_id,s.action,s.reason,s.starts_at,s.ends_at,s.revoked_at,c.post_id,(SELECT count(*) FROM c_moderation.appeals a WHERE a.sanction_id=s.sanction_id),(SELECT a.appeal_id FROM c_moderation.appeals a WHERE a.sanction_id=s.sanction_id AND a.state='PENDING'),to_jsonb(c)->>'comment_id' FROM c_moderation.sanctions s JOIN c_moderation.cases c USING(case_id) WHERE s.sanction_id=$1 AND ($2::uuid IS NULL OR s.account_id=$2)`, id, nullableUUID(account)).Scan(&s.ID, &s.CaseID, &s.Action, &s.Reason, &s.StartsAt, &s.EndsAt, &s.RevokedAt, &s.PostID, &s.AppealCount, &s.ActiveAppealID, &s.CommentID)
 	s.StartsAt = s.StartsAt.UTC()
 	s.EndsAt = moderationTimeUTC(s.EndsAt)
 	s.RevokedAt = moderationTimeUTC(s.RevokedAt)
@@ -438,9 +438,10 @@ func (c *Community) ExecuteModeration(ctx context.Context, bearer [32]byte, oper
 			result = map[string]any{"platformNumber": n, "role": d.Role}
 		case "claim", "decision":
 			var state, post string
+			var comment *string
 			var version int64
 			var actual uuid.UUID
-			e = tx.QueryRow(ctx, `SELECT state,version,post_id,target_account_id FROM c_moderation.cases WHERE case_id=$1 FOR UPDATE`, id).Scan(&state, &version, &post, &actual)
+			e = tx.QueryRow(ctx, `SELECT state,version,post_id,target_account_id,to_jsonb(c)->>'comment_id' FROM c_moderation.cases c WHERE case_id=$1 FOR UPDATE`, id).Scan(&state, &version, &post, &actual, &comment)
 			if e != nil {
 				return nil, e
 			}
@@ -453,6 +454,16 @@ func (c *Community) ExecuteModeration(ctx context.Context, bearer [32]byte, oper
 			}
 			if visibility != "PUBLISHED" {
 				return nil, postError("CASE_ALREADY_HANDLED", 409)
+			}
+			if comment != nil {
+				var deleted *time.Time
+				e = tx.QueryRow(ctx, `SELECT t.deleted_at FROM c_comments.tasks t JOIN c_comments.attempts a USING(task_id) WHERE t.comment_id=$1 AND t.post_id=$2 AND a.state='PUBLISHED' FOR UPDATE OF t`, *comment, post).Scan(&deleted)
+				if errors.Is(e, pgx.ErrNoRows) || e == nil && deleted != nil {
+					return nil, postError("CASE_ALREADY_HANDLED", 409)
+				}
+				if e != nil {
+					return nil, e
+				}
 			}
 			if operation == "claim" {
 				_, e = tx.Exec(ctx, `UPDATE c_moderation.cases SET state='PROCESSING',version=version+1 WHERE case_id=$1`, id)
@@ -482,7 +493,7 @@ func (c *Community) ExecuteModeration(ctx context.Context, bearer [32]byte, oper
 					}
 					switch d.Action {
 					case "TAKEDOWN", "MUTE", "BAN":
-						if _, e = tx.Exec(ctx, `UPDATE c_posts.posts SET moderation_hidden=true WHERE post_id=$1 AND visibility='PUBLISHED'`, post); e != nil {
+						if e = hideModerationTarget(ctx, tx, post, comment); e != nil {
 							return nil, e
 						}
 						if d.Action != "TAKEDOWN" {
@@ -597,7 +608,7 @@ func (c *Community) revokeModerationSanction(ctx context.Context, tx pgx.Tx, act
 		}
 	}
 	// A deleted post remains terminal. Every other active takedown reason is checked.
-	_, e = tx.Exec(ctx, `UPDATE c_posts.posts p SET moderation_hidden=false WHERE p.post_id=(SELECT post_id FROM c_moderation.cases WHERE case_id=$1) AND p.visibility='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM c_moderation.sanctions s JOIN c_moderation.cases c USING(case_id) WHERE c.post_id=p.post_id AND s.revoked_at IS NULL AND s.action IN('TAKEDOWN','MUTE','BAN'))`, caseID)
+	e = restoreModerationTarget(ctx, tx, caseID)
 	if e != nil {
 		return e
 	}

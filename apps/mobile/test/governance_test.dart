@@ -282,6 +282,64 @@ void _paginationTests() {
 void main() {
   _paginationTests();
   test(
+    'comment report original result cannot resolve a different target',
+    () async {
+      final f = await _Fixture.create();
+      addTearDown(f.dispose);
+      f.api.respond = (call) async => _report(call.path.split('/').last);
+      expect(
+        await f.controller.submitReport(
+          postId: _post,
+          commentId: _appeal,
+          identityId: identityTestId,
+          reason: 'OTHER',
+          description: '',
+          images: [],
+        ),
+        isFalse,
+      );
+      expect(f.controller.pending, isNotNull);
+      expect(f.api.calls.first.body!['commentId'], _appeal);
+      final original = f.api.calls.first.path;
+      f.api.respond = (call) async {
+        final result = _report(call.path.split('/').last);
+        (result['report'] as Map)['commentId'] = _appeal;
+        return result;
+      };
+      expect(await f.controller.reconcilePending(), isTrue);
+      expect(f.api.calls.last.path, original);
+      expect(f.controller.pending, isNull);
+    },
+  );
+  test(
+    'comment report lost response reconciles the same comment and original key',
+    () async {
+      final f = await _Fixture.create();
+      addTearDown(f.dispose);
+      f.api.respond = (call) async {
+        if (call.method == 'PUT')
+          throw const GovernanceFailure(null, 'TIMEOUT', uncertain: true);
+        final result = _report(call.path.split('/').last);
+        (result['report'] as Map)['commentId'] = _appeal;
+        return result;
+      };
+      expect(
+        await f.controller.submitReport(
+          postId: _post,
+          commentId: _appeal,
+          identityId: identityTestId,
+          reason: 'OTHER',
+          description: '',
+          images: [],
+        ),
+        isTrue,
+      );
+      expect(f.api.calls.map((c) => c.method), ['PUT', 'GET']);
+      expect(f.api.calls.map((c) => c.path).toSet().length, 1);
+      expect(f.controller.pending, isNull);
+    },
+  );
+  test(
     'report intent is durable before request and successful receipt clears it',
     () async {
       final f = await _Fixture.create();

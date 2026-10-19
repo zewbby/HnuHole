@@ -1445,6 +1445,9 @@ components:
           nullable: true
         postId:
           $ref: '#/components/schemas/UUID'
+        commentId:
+          $ref: '#/components/schemas/UUID'
+          description: Optional concrete comment or reply within postId; omitted for a post target.
         appealCount:
           type: integer
           minimum: 0
@@ -1700,6 +1703,9 @@ components:
           pattern: ^[0-9]+$
         postId:
           $ref: '#/components/schemas/UUID'
+        commentId:
+          $ref: '#/components/schemas/UUID'
+          description: Optional concrete comment or reply within postId; omitted for a post target.
         reason:
           type: string
           enum:
