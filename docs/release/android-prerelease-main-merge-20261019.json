@@ -1,0 +1,142 @@
+{
+  "pr": 16,
+  "url": "https://github.com/zewbby/HnuHole/pull/16",
+  "merged": true,
+  "merged_at": "2026-10-19T02:13:17Z",
+  "merge_method": "squash",
+  "source_head": "a6f8f60efe52cd7661cba7b95d7740b7e6cb1d25",
+  "merge_sha": "32cb87b73e2feb518e1c5ec75ea11bb4d3414df1",
+  "parent": [
+    "1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1"
+  ],
+  "tree": "f47478de8ddeae3d6994fdd8907977bedc9b8fb2",
+  "source_tree": "f47478de8ddeae3d6994fdd8907977bedc9b8fb2",
+  "tree_equal": true,
+  "head_checks": [
+    {
+      "name": "policy",
+      "id": 117857128783,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39188901649/job/117857128783"
+    },
+    {
+      "name": "go-postgres",
+      "id": 117854995364,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39187209500/job/117854995364"
+    },
+    {
+      "name": "go-host",
+      "id": 117854994949,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39187209500/job/117854994949"
+    },
+    {
+      "name": "flutter",
+      "id": 117854993923,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39187209500/job/117854993923"
+    },
+    {
+      "name": "candidate",
+      "id": 117852038715,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39187209479/job/117852038715"
+    },
+    {
+      "name": "moderation-postgres",
+      "id": 117852038711,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39187209452/job/117852038711"
+    },
+    {
+      "name": "rehearsal",
+      "id": 117852038553,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39187209479/job/117852038553"
+    },
+    {
+      "name": "admin",
+      "id": 117852038473,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39187209452/job/117852038473"
+    }
+  ],
+  "github_member_reviews": [],
+  "review_threads": [],
+  "production_release": false,
+  "schemaVersion": "hnuhole-android-prerelease-merge/v1",
+  "recordedOn": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "userAuthorization": "本session明确要求将PR #16转为正式送审并按仓库规范完成合并交付。",
+  "status": "MERGED_SCOPED_ANDROID_NOT_RELEASED",
+  "independentReview": {
+    "agents": [
+      "evidence_review",
+      "candidate_audit",
+      "deployment_audit"
+    ],
+    "finalHeadReviewer": "evidence_review",
+    "result": "PASS_SCOPED_NO_BLOCKING_FINDINGS",
+    "scope": "Independent artifact/deployment/source-evidence review; final head docs/cleanup/scope review; no replay of user gestures or reading raw UI/credentials.",
+    "historicalRecord": "docs/release/android-prerelease-review-20261019.json",
+    "githubMemberApproval": false
+  },
+  "remoteRulesAtMerge": {
+    "branchProtection": "404 Branch not protected",
+    "activeBranchRules": [],
+    "bypassUsed": false,
+    "rulesChanged": false
+  },
+  "ciReleaseCandidate": {
+    "sourceSha": "a6f8f60efe52cd7661cba7b95d7740b7e6cb1d25",
+    "run": "https://github.com/zewbby/HnuHole/actions/runs/39187209479",
+    "candidateArtifactId": 12158518170,
+    "rehearsalArtifactId": 12158856754,
+    "version": "0.1.0+2026101801",
+    "applicationId": "org.hnuhole.hnuhole_mobile",
+    "apkBytes": 22924620,
+    "apkSha256": "d9595275cf3917d4a773d108887dff588ca0c88c9788cbc8f8924a1975991a27",
+    "certificateSha256": "f8d30fdac018fc8ae3f0a08b5d7b024be647c10d05d08a15703ca7249d53ccea",
+    "verification": "Actual download, source/tree/size/SHA256SUMS and SDK signature verification; rehearsal 13 checks/75 fingerprints/five PostgreSQL stopped.",
+    "deviceAcceptance": "NOT_RUN for this release artifact; .invalid endpoints, temporary test certificate, no app CA."
+  },
+  "deviceEvidence": "docs/release/android-device-validation-20261019.json",
+  "deviceScope": "8691eb4/d80c debug APK only; 11 scoped vivo S18/API35 checks passed; phone window closed and owned resources stopped.",
+  "backendEvidence": "docs/release/android-prerelease-schema15-local-20261018.json",
+  "failureHistory": [
+    "Flutter first attempt job117852038598: 438 PASS/1 FAIL partial-upload manual-retry fixture timeout. Same-head original assertions rerun success; CI timeout root cause unknown.",
+    "Clean local product source focused test three runs and full file fourteen checks passed after task-only libsqlite3.so path repair; initial missing-library failure retained.",
+    "Superseded/cancelled policy runs are retained, not counted as PASS.",
+    "Device first password entry truncated to 38/40 and failed; complete normal UI retry passed without password/database changes. Old personal route remains AccessClosed after re-login; fresh route reads passed."
+  ],
+  "notRunOrDeferred": [
+    "cross-device Passkey",
+    "iOS",
+    "same-package signed upgrade",
+    "full native vault/Keystore proof",
+    "OS reboot/OEM matrix",
+    "system gallery browsing UI",
+    "multi-image/animation/large-image matrix",
+    "full current-package TalkBack",
+    "phone negative TLS/Gate freeze",
+    "physical-device deployment rollback",
+    "nonempty sanctions/appeals/admin/audit restore",
+    "real cloud/independent production operations",
+    "formal signing/release"
+  ],
+  "evidencePolicy": "Historical manifests and original test SHA/results remain unchanged. Tree equality transfers source scope, not a rebuild or a production release claim.",
+  "mainPushPolicy": {
+    "result": "success",
+    "url": "https://github.com/zewbby/HnuHole/actions/runs/39188939556/job/117857240034",
+    "scope": "Collaboration policy only; product checks belong to exact source_head."
+  }
+}
