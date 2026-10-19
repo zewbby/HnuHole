@@ -3237,8 +3237,10 @@
       "gateCancellationFix20261019": {
         "task": "docs/branches/fix-gate-cancellation-freeze.md",
         "evidence": "docs/design/gate-cancellation-verification-20261019.json",
-        "result": "PASS_SCOPED_LOCAL_SQL_RACE; final-head CI/merge pending",
-        "fullModulePromoted": false
+        "result": "PASS_SCOPED_SQL_RACE_FINAL_HEAD_CI_MERGED",
+        "fullModulePromoted": false,
+        "mainMerged": true,
+        "mergeReceipt": "docs/design/gate-cancellation-main-merge-20261019.json"
       }
     },
     {
@@ -17817,8 +17819,10 @@
       "gateCancellationFix20261019": {
         "task": "docs/branches/fix-gate-cancellation-freeze.md",
         "evidence": "docs/design/gate-cancellation-verification-20261019.json",
-        "result": "PASS_SCOPED_LOCAL_SQL_RACE; final-head CI/merge pending",
-        "fullModulePromoted": false
+        "result": "PASS_SCOPED_SQL_RACE_FINAL_HEAD_CI_MERGED",
+        "fullModulePromoted": false,
+        "mainMerged": true,
+        "mergeReceipt": "docs/design/gate-cancellation-main-merge-20261019.json"
       }
     },
     {
@@ -40022,12 +40026,13 @@
     "mergeSha": "b6cc077894bab684783f84488880f655c5065e78",
     "mergeReceipt": "docs/release/android-integration-main-merge-20261019.json",
     "cleanup": "docs/release/android-integration-cleanup-20261019.json",
-    "remaining": "Windows owned ADB SDK directory delete blocked by automatic approval; all services stopped; no further acceptance work"
+    "remaining": "Windows owned ADB SDK directory delete blocked by automatic approval; all services stopped; no further acceptance work",
+    "gateIncidentFollowup": "docs/branches/fix-gate-cancellation-freeze.md; reproduced cancellation defect fixed/merged, original single request attribution still undetermined"
   },
   "currentGateCancellationFix20261019": {
     "recordedOn": "2026-10-19",
     "branch": "codex/fix/gate-cancellation-freeze",
-    "result": "PASS_SCOPED_LOCAL_SQL_RACE; final-head CI/merge pending",
+    "result": "PASS_SCOPED_SQL_RACE_FINAL_HEAD_CI_MERGED",
     "task": "docs/branches/fix-gate-cancellation-freeze.md",
     "evidence": "docs/design/gate-cancellation-verification-20261019.json",
     "modules": [
@@ -40039,6 +40044,13 @@
     "oldCandidateRebuilt": false,
     "oldEnvironmentRestarted": false,
     "phoneValidation": "NOT_RUN; outside this server fix",
-    "productionAcceptance": "NOT_RUN; full module result not promoted"
+    "productionAcceptance": "NOT_RUN; full module result not promoted",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/25",
+    "mainMerged": true,
+    "mergeSha": "54a6768fe607c37930959fab23c4876bb4ab531d",
+    "testedHead": "b0946e53a1b218b899506ffcaf707f273da6f42a",
+    "mergeReceipt": "docs/design/gate-cancellation-main-merge-20261019.json",
+    "cleanup": "docs/design/gate-cancellation-cleanup-20261019.json",
+    "taskState": "CLOSED; no further old environment/device acceptance"
   }
 }

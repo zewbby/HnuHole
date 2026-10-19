@@ -12,6 +12,8 @@
 
 [PR #17](https://github.com/zewbby/HnuHole/pull/17)（`3e0cc02`）与[PR #19](https://github.com/zewbby/HnuHole/pull/19)（`2da7cdf`）已依次合入评论核心及完整业务接通：评论/具体回复、固定身份、点赞排序与定位、本人删除、单图、原生任务恢复及真实失败通知。正式迁移链0001..0017，Android限定验收与独立审查通过；评论开发任务关闭，未发布。合并文件树与已实测候选一致，详见[合并回执](../design/comments-main-merge-20261019.json)与[任务详情](feat-comments-backend-text.md)。
 
+[PR #25](https://github.com/zewbby/HnuHole/pull/25) 已修复C/V Gate请求取消误冻结，合并提交 `54a6768fe607c37930959fab23c4876bb4ab531d`；真实SQL/TLS定向回归、受影响宿主CI与独立审查通过，真实故障仍保持冻结。仅交付服务端修复，新建测试资源已收尾；原Android候选及验收材料保持原SHA，未恢复旧环境、未部署或发布。见[任务](fix-gate-cancellation-freeze.md)。
+
 ## 剩余事项
 
 跨设备Passkey NI-X02按用户要求延期。8691/d80c手机debug包的11项限定结果不代证其他APK或完整原生安全；CI release默认.invalid，与手机包分开归档。iOS、正式签名、真实云、独立生产运营与完整App验收仍未完成，未正式发布；其余未验范围见[手机报告](../release/android-device-validation-20261019.md)。手机窗口已结束，不再ADB；后续开发从最新main新开需求分支。

@@ -1,6 +1,6 @@
 # Gate 取消请求导致冻结的修复
 
-2026-10-19，状态：本分支修复及限定本地验证完成；PR、最终 head CI 与合并待核对。
+2026-10-19，状态：已通过[PR #25](https://github.com/zewbby/HnuHole/pull/25)正常 Squash 合入 main `54a6768fe607c37930959fab23c4876bb4ab531d`，未部署或发布。
 
 用户针对 Android 集成候选期间的 `INDEPENDENT_ANCHOR_FROZEN` 事件明确要求“解决”。本次分支 `codex/fix/gate-cancellation-freeze`，基线为实际 main `65b28cafebbfe259e661553919611f287486d661`。原 APK、验收证据和私有恢复归档继续保留；不恢复旧实例、不准备 Android SDK、不重建候选、不连接手机或重复旧验收。
 
@@ -41,3 +41,9 @@ sh authlab/run-isolated.sh
 共享授权影响重新打开 A03/P01 及调用方宿主回归，按上述实际版本与范围关闭；不提升完整模块/生产结论。原固定 Android APK 及旧证据保留原 SHA，不能说旧后端/旧归档已包含本修复。没有部署或正式发布，没有新手机验收。真实磁盘/COMMIT故障全集、独立生产运营与原事件请求级归因仍不在此限定证明内。
 
 交付前同步[HANDOFF](../design/HANDOFF.md)、[progress](../design/progress.md)、[模块交接](../design/module-acceptance-handoff.md)、[模块台账](../design/module-acceptance-ledger.json)与README。合并事实以后续PR/API回执为准，不为记录自身递归创建文档PR；本任务新工具/测试库收尾及保留路径写入本地最终回执。
+
+## 已确认合并与收尾
+
+固定送合 head `b0946e53a1b218b899506ffcaf707f273da6f42a`：8项适用检查全部 SUCCESS；candidate/rehearsal 由成功的范围检查明确 SKIP，不记作候选重建/旧演练通过。Gate真实PostgreSQL/race/build/vet、治理、受影响图片/Go/Flutter检查及协作均实际通过。独立agent对固定head及CI增量审查无阻断，无GitHub成员批准，按仓库现有规则普通合并、未绕过限制。合并树与已检head一致，见[合并回执](../design/gate-cancellation-main-merge-20261019.json)。
+
+本任务新建的PostgreSQL已停止，独立Go工具/缓存/源码副本及测试库已清理；原始测试事件、失败历史、历史只读摘录及每成员摘要读回验证的私有证据归档保留。原APK与旧私有恢复归档重新核对摘要保持一致，见[清理/保留回执](../design/gate-cancellation-cleanup-20261019.json)。Windows交付目录保留源码bundle、证据和运行说明；本需求结束，不追新main，不重启旧环境或重复验收。

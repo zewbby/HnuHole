@@ -9,7 +9,7 @@
     "services/api/internal/authprivacy/authorization_gate_cancellation_test.go": "9a400ad6911444c8ba29f448b89abe0a81cf11fc46eccbe42856b851d3d89a22",
     "services/api/authlab/run-isolated.sh": "114f26d51af2d1da43acf2e216c3bfcd036cec544f172cef2661f6f98aa3437c"
   },
-  "result": "PASS_SCOPED_LOCAL_SQL_RACE; PR/final-head CI pending",
+  "result": "PASS_SCOPED_SQL_RACE_FINAL_HEAD_CI_MERGED",
   "historicalIncident": {
     "source": "docs/release/android-integration-device-20261019.json",
     "freeze": "INDEPENDENT_ANCHOR_FROZEN",
@@ -1481,5 +1481,23 @@
     "result": "FAIL; new formatting command included an unchanged legacy authorization_gate_test.go with pre-existing formatting drift; product SQL step had not run",
     "resolution": "Format-check only the two changed Gate Go files; no security/test assertion removed and no legacy file reformatted",
     "privateLogSha256": "c8e3c19031694d987c1a502a96665f3a8e7a1ee910bf3ed1002b388c963dee88"
+  },
+  "delivery": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/25",
+    "testedHead": "b0946e53a1b218b899506ffcaf707f273da6f42a",
+    "mainMerge": "54a6768fe607c37930959fab23c4876bb4ab531d",
+    "receipt": "docs/design/gate-cancellation-main-merge-20261019.json",
+    "independentAgentFinalReview": "PASS; b0946e5 delta contains only CI format scope/evidence, no product/test code change",
+    "memberApprovalClaimed": false,
+    "oldCandidateOrEnvironmentUpdated": false
+  },
+  "repositorySourceSha256": {
+    "commit": "b0946e53a1b218b899506ffcaf707f273da6f42a",
+    "bytes": "Git blob bytes; sourceSha256 above retains actual host test-input bytes including line endings",
+    "files": {
+      "services/api/internal/authprivacy/authorization_gate.go": "160ec6857caff0d2da51335ab2909147a77dbc335a1f46cfac2be9e075bab2c2",
+      "services/api/internal/authprivacy/authorization_gate_cancellation_test.go": "9a400ad6911444c8ba29f448b89abe0a81cf11fc46eccbe42856b851d3d89a22",
+      "services/api/authlab/run-isolated.sh": "114f26d51af2d1da43acf2e216c3bfcd036cec544f172cef2661f6f98aa3437c"
+    }
   }
 }
