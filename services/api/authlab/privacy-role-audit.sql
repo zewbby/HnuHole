@@ -93,7 +93,7 @@ BEGIN
               allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
                 AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid
                   AND a.attnum>0 AND NOT a.attisdropped
-                  AND NOT (a.attname=ANY(CASE relation.relname WHEN 'tasks' THEN ARRAY['owner_visible','abandoned_at','deleted_at'] WHEN 'images' THEN ARRAY['payload','metadata','erased_at'] ELSE ARRAY['state','terminal_at','failure_code','body'] END))
+                  AND NOT (a.attname=ANY(CASE relation.relname WHEN 'tasks' THEN ARRAY['owner_visible','abandoned_at','deleted_at','moderation_hidden'] WHEN 'images' THEN ARRAY['payload','metadata','erased_at'] ELSE ARRAY['state','terminal_at','failure_code','body'] END))
                   AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
             END IF;
           END IF;

@@ -18,3 +18,9 @@ GRANT UPDATE(moderation_hidden) ON c_posts.posts TO hnuhole_c_runtime;
 GRANT UPDATE(moderation_rename_required) ON public.community_identities TO hnuhole_c_runtime;
 GRANT INSERT(registered_at) ON c_auth.accounts TO hnuhole_c_runtime;
 GRANT INSERT,UPDATE(retry_token) ON c_moderation.request_fences TO hnuhole_c_runtime;
+-- 0018 adds only this mutable projection; comment ownership/receipts stay fixed.
+DO $$ BEGIN
+ IF EXISTS(SELECT 1 FROM pg_attribute WHERE attrelid=to_regclass('c_comments.tasks') AND attname='moderation_hidden' AND NOT attisdropped) THEN
+  GRANT UPDATE(moderation_hidden) ON c_comments.tasks TO hnuhole_c_runtime;
+ END IF;
+END $$;

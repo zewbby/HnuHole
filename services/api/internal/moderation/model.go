@@ -33,6 +33,7 @@ type Material struct {
 type ReportInput struct {
 	RetryToken  string  `json:"retryToken,omitempty"`
 	PostID      string  `json:"postId"`
+	CommentID   *string `json:"commentId,omitempty"`
 	IdentityID  *string `json:"identityId"`
 	Reason      string  `json:"reason"`
 	Description string  `json:"description"`
@@ -90,7 +91,7 @@ func Images(items []Image, max int) ([][]byte, error) {
 	return out, nil
 }
 func (r ReportInput) Validate() error {
-	if !ValidID(r.PostID) || r.IdentityID != nil && !ValidID(*r.IdentityID) || !ValidReason(r.Reason) || !Text(r.Description, 200) {
+	if !ValidID(r.PostID) || r.CommentID != nil && !ValidID(*r.CommentID) || r.IdentityID != nil && !ValidID(*r.IdentityID) || !ValidReason(r.Reason) || !Text(r.Description, 200) {
 		return ErrInvalid
 	}
 	_, e := Images(r.Images, 6)
@@ -128,6 +129,7 @@ func Fingerprint(v any) string {
 }
 
 type Report struct {
+	CommentID   *string   `json:"commentId,omitempty"`
 	ID          string    `json:"id"`
 	CaseID      string    `json:"caseId"`
 	State       string    `json:"state"`
@@ -171,6 +173,7 @@ type Evidence struct {
 	Images []Image `json:"images"`
 }
 type Case struct {
+	CommentID         *string    `json:"commentId,omitempty"`
 	NextReportsCursor *string    `json:"nextReportsCursor,omitempty"`
 	ID                string     `json:"id"`
 	Number            string     `json:"number"`
@@ -187,6 +190,7 @@ type Case struct {
 	Sanctions         []Sanction `json:"sanctions,omitempty"`
 }
 type Sanction struct {
+	CommentID      *string    `json:"commentId,omitempty"`
 	ID             string     `json:"id"`
 	CaseID         string     `json:"caseId"`
 	Action         string     `json:"action"`

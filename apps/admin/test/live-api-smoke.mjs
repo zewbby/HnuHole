@@ -52,7 +52,13 @@ try {
     const response = page.waitForResponse(value => new URL(value.url()).pathname === '/api/v1/moderation/cases');
     await older.click(); await (await response).finished();
   }
-  await selected.click(); await page.getByRole('heading', { name: '举报时的内容', exact: true }).waitFor(); checks.caseSelected = true;
+  await selected.click(); await page.getByRole('heading', { name: fixture.commentId ? '举报时的评论／回复' : '举报时的内容', exact: true }).waitFor(); checks.caseSelected = true;
+  if (fixture.commentId) {
+    assert.ok(validUUID(fixture.commentId));
+    await page.locator('.evidence').getByText('真实单图回复举报', { exact: true }).waitFor();
+    await page.locator('.evidence img').first().waitFor();
+    checks.commentEvidence = true;
+  }
   stage = 'CASE_CLAIM';
   const claim = page.getByRole('button', { name: '开始处理', exact: true });
   if (await claim.count()) {

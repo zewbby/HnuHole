@@ -26,9 +26,11 @@ class ReportScreen extends StatefulWidget {
     required this.controller,
     required this.postId,
     required this.title,
+    this.commentId,
   });
   final GovernanceController controller;
   final String postId, title;
+  final String? commentId;
   @override
   State<ReportScreen> createState() => _ReportScreenState();
 }
@@ -107,6 +109,7 @@ class _ReportScreenState extends State<ReportScreen> {
         ),
         onSubmit: (text, images) => c.submitReport(
           postId: widget.postId,
+          commentId: widget.commentId,
           identityId: _identity,
           reason: _reason!,
           description: text,

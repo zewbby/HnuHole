@@ -10,8 +10,9 @@ import 'package:hnuhole_mobile/src/comments/comment_journal.dart';
 import 'package:hnuhole_mobile/src/comments/comment_models.dart';
 import 'package:hnuhole_mobile/src/comments/comment_runtime.dart';
 import 'package:hnuhole_mobile/src/comments/comment_views.dart';
-import 'package:hnuhole_mobile/src/identity/identity_api.dart';
-import 'package:hnuhole_mobile/src/posts/post_images.dart';
+import 'package:hnuhole_mobile/hnuhole_mobile.dart';
+
+import 'identity_test_support.dart';
 
 const post = '11111111-1111-4111-8111-111111111111',
     identity = '22222222-2222-4222-8222-222222222222',
@@ -209,6 +210,60 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
 }
 
 void main() {
+  testWidgets(
+    'real root and reply rows open report forms for their concrete comment',
+    (tester) async {
+      final auth = await IdentityTestFixture.create();
+      final governance = GovernanceController(
+        api: _ReportApi(),
+        sessions: auth.sessions,
+        authStore: auth.store,
+        identitiesApi: auth.api,
+        pendingStore: GovernancePendingStore(IdentityTestVault()),
+      );
+      addTearDown(() {
+        governance.dispose();
+        auth.dispose();
+      });
+      final runtime = _Runtime(_MemoryJournal());
+      await runtime.core.activate(account);
+      addTearDown(runtime.core.dispose);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: GovernanceScope(
+            controller: governance,
+            child: Scaffold(
+              body: CommentPostPane(
+                runtime: runtime,
+                postId: post,
+                postBody: '原帖',
+                body: const Text('原帖'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('评论 2'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('举报').first);
+      await tester.tap(find.text('举报').first);
+      await tester.pumpAndSettle();
+      var screen = tester.widget<ReportScreen>(find.byType(ReportScreen));
+      expect(screen.postId, post);
+      expect(screen.commentId, root);
+      expect(find.text('举报主评论'), findsOneWidget);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('举报').last);
+      await tester.tap(find.text('举报').last);
+      await tester.pumpAndSettle();
+      screen = tester.widget<ReportScreen>(find.byType(ReportScreen));
+      expect(screen.postId, post);
+      expect(screen.commentId, reply);
+      expect(find.text('举报回复'), findsOneWidget);
+    },
+  );
   testWidgets(
     'a comment media section activates after scrolling its image into the split viewport',
     (tester) async {
@@ -658,4 +713,18 @@ void main() {
       await journal.close();
     },
   );
+}
+
+class _ReportApi implements GovernanceApi {
+  @override
+  Future<GovernanceResponse> request(
+    String token,
+    String method,
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String>? query,
+  }) async => GovernanceResponse({
+    'items': <Object>[],
+    'nextBefore': null,
+  }, identityTestRenewed);
 }

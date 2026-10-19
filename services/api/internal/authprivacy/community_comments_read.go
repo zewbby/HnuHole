@@ -92,7 +92,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 		var root any
 		if q.Replies {
 			root = q.ID
-			e := tx.QueryRow(ctx, `SELECT t.post_id::text FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.comment_id=$1 AND t.root_comment_id IS NULL AND t.deleted_at IS NULL AND x.state='PUBLISHED'`, q.ID).Scan(&postID)
+			e := tx.QueryRow(ctx, `SELECT t.post_id::text FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.comment_id=$1 AND t.root_comment_id IS NULL AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false) AND NOT EXISTS(SELECT 1 FROM c_comments.tasks root_row WHERE root_row.comment_id=t.root_comment_id AND (root_row.deleted_at IS NOT NULL OR COALESCE((to_jsonb(root_row)->>'moderation_hidden')::boolean,false))) AND x.state='PUBLISHED'`, q.ID).Scan(&postID)
 			if errors.Is(e, pgx.ErrNoRows) {
 				return nil, postError("COMMENT_NOT_FOUND", 404)
 			}
@@ -130,7 +130,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 				return nil, postError("CURSOR_INVALID", 400)
 			}
 		} else {
-			rows, e := tx.Query(ctx, `SELECT t.comment_id::text,x.terminal_at,(SELECT count(*) FROM c_comments.likes l WHERE l.comment_id=t.comment_id) FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND t.root_comment_id IS NOT DISTINCT FROM $2::uuid AND x.state='PUBLISHED' AND t.deleted_at IS NULL LIMIT 10001`, postID, root)
+			rows, e := tx.Query(ctx, `SELECT t.comment_id::text,x.terminal_at,(SELECT count(*) FROM c_comments.likes l WHERE l.comment_id=t.comment_id) FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND t.root_comment_id IS NOT DISTINCT FROM $2::uuid AND x.state='PUBLISHED' AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false) AND NOT EXISTS(SELECT 1 FROM c_comments.tasks root_row WHERE root_row.comment_id=t.root_comment_id AND (root_row.deleted_at IS NOT NULL OR COALESCE((to_jsonb(root_row)->>'moderation_hidden')::boolean,false))) LIMIT 10001`, postID, root)
 			if e != nil {
 				return nil, e
 			}
@@ -215,7 +215,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 			r.RootCommentID = &q.ID
 		} else {
 			var count int
-			if e := tx.QueryRow(ctx, `SELECT count(*) FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND t.deleted_at IS NULL AND x.state='PUBLISHED'`, postID).Scan(&count); e != nil {
+			if e := tx.QueryRow(ctx, `SELECT count(*) FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false) AND NOT EXISTS(SELECT 1 FROM c_comments.tasks root_row WHERE root_row.comment_id=t.root_comment_id AND (root_row.deleted_at IS NOT NULL OR COALESCE((to_jsonb(root_row)->>'moderation_hidden')::boolean,false))) AND x.state='PUBLISHED'`, postID).Scan(&count); e != nil {
 				return nil, e
 			}
 			r.TotalCount = &count
@@ -253,7 +253,7 @@ func readCommentAuthor(ctx context.Context, tx pgx.Tx, identity string) (Comment
 func readTextComment(ctx context.Context, tx pgx.Tx, id string, account uuid.UUID) (TextComment, error) {
 	var r TextComment
 	var identity string
-	e := tx.QueryRow(ctx, `SELECT t.comment_id::text,t.post_id::text,t.root_comment_id::text,t.target_comment_id::text,x.body,x.terminal_at,t.identity_id::text,(t.identity_id=p.identity_id),CASE WHEN t.root_comment_id IS NULL THEN (SELECT count(*) FROM c_comments.tasks z JOIN c_comments.attempts a ON a.task_id=z.task_id AND a.state='PUBLISHED' WHERE z.root_comment_id=t.comment_id AND z.deleted_at IS NULL) ELSE 0 END FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' JOIN c_posts.posts pp ON pp.post_id=t.post_id AND pp.visibility='PUBLISHED' AND NOT pp.moderation_hidden JOIN c_posts.publication_tasks p ON p.post_id=t.post_id WHERE t.comment_id=$1 AND t.deleted_at IS NULL`, id).Scan(&r.ID, &r.PostID, &r.RootCommentID, &r.TargetCommentID, &r.Body, &r.PublishedAt, &identity, &r.IsPostAuthor, &r.ReplyCount)
+	e := tx.QueryRow(ctx, `SELECT t.comment_id::text,t.post_id::text,t.root_comment_id::text,t.target_comment_id::text,x.body,x.terminal_at,t.identity_id::text,(t.identity_id=p.identity_id),CASE WHEN t.root_comment_id IS NULL THEN (SELECT count(*) FROM c_comments.tasks z JOIN c_comments.attempts a ON a.task_id=z.task_id AND a.state='PUBLISHED' WHERE z.root_comment_id=t.comment_id AND z.deleted_at IS NULL AND NOT COALESCE((to_jsonb(z)->>'moderation_hidden')::boolean,false)) ELSE 0 END FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' JOIN c_posts.posts pp ON pp.post_id=t.post_id AND pp.visibility='PUBLISHED' AND NOT pp.moderation_hidden JOIN c_posts.publication_tasks p ON p.post_id=t.post_id WHERE t.comment_id=$1 AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false) AND NOT EXISTS(SELECT 1 FROM c_comments.tasks root_row WHERE root_row.comment_id=t.root_comment_id AND (root_row.deleted_at IS NOT NULL OR COALESCE((to_jsonb(root_row)->>'moderation_hidden')::boolean,false)))`, id).Scan(&r.ID, &r.PostID, &r.RootCommentID, &r.TargetCommentID, &r.Body, &r.PublishedAt, &identity, &r.IsPostAuthor, &r.ReplyCount)
 	if e != nil {
 		return r, e
 	}

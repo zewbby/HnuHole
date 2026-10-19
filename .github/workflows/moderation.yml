@@ -99,7 +99,7 @@ jobs:
         working-directory: services/api
         env:
           PGPORT: '55435'
-          MODERATION_TEST_PATTERN: '^(TestModeration|TestRealHTTPSModeration)'
+          MODERATION_TEST_PATTERN: '^(TestModeration|TestRealHTTPSModeration|TestCommentReport|TestRealHTTPSCommentReport)'
         run: |
           export POST_MEDIA_PYTHON="$RUNNER_TEMP/moderation-python/bin/python"
           export POST_MEDIA_FIXTURES="$RUNNER_TEMP/moderation-fixtures"

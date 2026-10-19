@@ -1,0 +1,234 @@
+{
+  "schemaVersion": "hnuhole-comment-report-verification/v1",
+  "recordedOn": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "result": "COMMENT_REPORT_CLOSED_LOOP_SCOPED_PASS",
+  "branch": "codex/feat/comment-report-moderation",
+  "productCommit": "dd436d66185d1ce0ac871c3d55bc10511364843a",
+  "integratedMain": "7b2dd1634c3ffb3835543a8a49c9d22cdbcc2f52",
+  "testedProductInputs": {
+    "kind": "sha256-of-sorted-git-blob-manifest",
+    "commit": "21b1704deb93c2c24d7557530a3b39093f32fa40",
+    "files": 699,
+    "sha256": "bdda093c4c40ff60e8ff4d4820f2f7b5d0cdec2c5f5ebeb89c34638b853654a6",
+    "prefixes": [
+      "apps/admin/",
+      "apps/mobile/",
+      "services/api/",
+      "infra/postgres/",
+      "packages/openapi/",
+      "packages/auth_vault/",
+      "packages/auth_passkey/",
+      "packages/image_viewer/",
+      ".github/workflows/",
+      "infra/prerelease/"
+    ],
+    "excludes": [
+      "*.md"
+    ],
+    "serialization": "UTF-8 sorted path + U+0000 + Git blob SHA-1 + LF"
+  },
+  "inheritedEvidence": [
+    {
+      "pr": 18,
+      "merge": "1b78f422dccff1f5598e3a52a9dc2ae7a928e4d1",
+      "verification": "docs/design/report-moderation-verification.json",
+      "scope": "post governance, authentication/final Gate, sanctions, moderation privacy and notifications"
+    },
+    {
+      "pr": 19,
+      "merge": "2da7cdf9d4311e8017108e56656c74d379d4a01b",
+      "verification": "docs/design/comments-connected-verification-20261019.json",
+      "scope": "real comments, single images, native journal and original failure/retry/abandon/removal pipeline"
+    }
+  ],
+  "checks": {
+    "isolatedPostgres": {
+      "result": "PASS",
+      "go": "1.22",
+      "postgres": "16",
+      "race": true,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "tests": [
+        "TestCommentReportTargetPrivacyReceiptsAndConcurrentDecisionPostgres",
+        "TestCommentReportOldCursorAndIndependentRestorationPostgres",
+        "TestCommentReportSingleImageAppealVisibilityAndDeletionPostgres",
+        "TestCommentReportRootFailureProviderAndParentLifecyclePostgres",
+        "TestCommentReportRuntimeSchemaAndLeastPrivilegePostgres",
+        "TestCommentReportGooseUpgradePostgres"
+      ],
+      "execution": "Only new tests; failed test assertions corrected to existing CASE_ALREADY_HANDLED/REVIEWER_RECUSED and sanctions.account_id; reran those tests only. No production fix required by these assertion errors."
+    },
+    "realHTTPSDartBrowser": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "test": "TestRealHTTPSCommentReportDartAndBrowserChainPostgres",
+      "phases": [
+        "real reply single-image upload/publication",
+        "Dart report/original request fence and receipt",
+        "actual Go HTTPS admin Edge claim/evidence image/MUTE3/audit",
+        "Dart reporter result + owner sanction notice/detail/read",
+        "owner original appeal request and independent administrator acceptance",
+        "Dart appeal result notice/read",
+        "parent/root preserved; reply image404 then200 after appeal"
+      ],
+      "browser": "headless Microsoft Edge / Playwright1.62.1",
+      "screenshotSHA256": "bec4f75c9e44dca3d6cbe6a6d3eb7ef90b46ed598a2c6665da662619f031ec8b",
+      "tls": "Dart verifies private P-256 CA; only browser synthetic loopback context ignores its self-signed certificate; no OS/product trust changes"
+    },
+    "flutter": {
+      "result": "PASS",
+      "version": "3.47.5",
+      "tests": [
+        "test/governance_test.dart",
+        "test/comment_views_test.dart"
+      ],
+      "pass": 45,
+      "fail": 0,
+      "analyzeIssues": 0,
+      "bundle": "PASS",
+      "scope": "two new actual row/report + notification routing widget cases, exact original comment receipt tests and affected regression files"
+    },
+    "goBuild": "PASS",
+    "goVet": "PASS",
+    "goReportModelUnit": {
+      "result": "PASS",
+      "pass": 1
+    },
+    "openAPI": {
+      "result": "PASS",
+      "contracts": 10
+    },
+    "admin": {
+      "result": "PASS",
+      "tests": 12,
+      "syntax": "PASS"
+    },
+    "collaboration": "PASS_POLICY_ONLY",
+    "affectedLegacyFixtures": {
+      "result": "PASS",
+      "cases": 2,
+      "runtimeSubcases": 8,
+      "tests": [
+        "TestPostSchemaPreModerationNeedsNoCleanupGrantPostgres",
+        "TestModerationLifecycleCommonCStartupWithoutFeaturesPostgres"
+      ],
+      "race": true,
+      "scope": "restore pre-moderation fixtures by removing new flag only after proving half-0018 remains rejected; no production checker/grant/code change"
+    },
+    "deploymentPrivilegeAudit": {
+      "result": "PASS_SCOPED",
+      "test": "TestCommentReportRuntimeSchemaAndLeastPrivilegePostgres",
+      "race": true,
+      "scope": "real c_moderation audit accepts the two explicit new triggers, refuses UPDATE(comment_id); runtime comment schema refuses UPDATE(root_comment_id); full shared audit and restore remain final CI responsibility"
+    }
+  },
+  "migration": {
+    "path": "services/api/migrations/0018_comment_reports.sql",
+    "upgrade": "0001..0017 -> 0018 via pinned Goose v3.22.1",
+    "fresh": "all new SQL fixtures install actual 0001..0018 Up files",
+    "existingFacts": "preserved prior account and contiguous 19 ledger rows including version0",
+    "down": "REJECTED; ledger remains18",
+    "grants": "infra/postgres/grant-moderation.sql (only moderation_hidden UPDATE added); reapply common/comments/media grants as enabled",
+    "commonStartup": "new trigger/column checks apply even if feature endpoints are disabled"
+  },
+  "independentReview": {
+    "result": "PASS",
+    "reviewer": "auth_integration (independent read-only agent; not a GitHub member approval)",
+    "reviewedProduct": "dd436d66185d1ce0ac871c3d55bc10511364843a",
+    "reviewedHead": "e84807c284d094a1da881f237e4b489caa3d85ad",
+    "openFindings": 0,
+    "scope": "final Gate/locks, least privileges, lifecycle, privacy, SQL/HTTP/App tests and existing evidence reuse",
+    "fixtureFix": {
+      "result": "PASS",
+      "commit": "ec6672f35d4124e495299d133eeca15178c19d3b",
+      "scope": "both legacy fixture changes only; fail-closed assertions retained",
+      "openFindings": 0
+    }
+  },
+  "notRun": [
+    {
+      "scope": "whole historical post governance/comments failure test matrices",
+      "reason": "valid inherited evidence; unchanged mechanisms not re-proven"
+    },
+    {
+      "scope": "new phone/iOS/Passkey/production/deployment",
+      "reason": "Dart-only UI entry/routing verified by widgets, bundle and real HTTPS/web chain; no native/security-storage change requiring new device acceptance; out of authorized business scope"
+    }
+  ],
+  "delivery": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/22",
+    "mergeStatus": "see task PR live merged state; merge only after final checks",
+    "published": false,
+    "contract": "docs/design/report-notification-contract.md",
+    "task": "docs/branches/feat-comment-report-moderation.md"
+  },
+  "initialTestedProductInputs": {
+    "kind": "sha256-of-sorted-git-blob-manifest",
+    "commit": "e84807c284d094a1da881f237e4b489caa3d85ad",
+    "files": 695,
+    "sha256": "e4441f93887bb120aa6c059f4699775e8ba264f6e9e9620f5f43f6fb0a5fd7d0",
+    "prefixes": [
+      "apps/admin/",
+      "apps/mobile/",
+      "services/api/",
+      "infra/postgres/",
+      "packages/openapi/",
+      "packages/auth_vault/",
+      "packages/auth_passkey/",
+      "packages/image_viewer/",
+      ".github/workflows/"
+    ],
+    "excludes": [
+      "*.md"
+    ],
+    "serialization": "UTF-8 sorted path + U+0000 + Git blob SHA-1 + LF"
+  },
+  "fixtureFixCommit": "ec6672f35d4124e495299d133eeca15178c19d3b",
+  "ciAttemptHistory": [
+    {
+      "head": "1c2fd5d21997889caea6acf0d53d28d5434b0913",
+      "result": "FAIL_HISTORICAL_FIXTURE_SHAPE",
+      "affectedJobs": [
+        117882026501,
+        117882049868,
+        117882005137
+      ],
+      "cause": "two pre-moderation fixture builders dropped c_moderation but retained 0018 tasks.moderation_hidden; startup correctly rejected partial migration",
+      "businessChain": "same attempt real Linux Dart/HTTPS/web comment report+appeal passed; not represented as workflow success"
+    },
+    {
+      "head": "b318e6d61602f5a015939cef3af6c73b30c16ba0",
+      "result": "FAIL_EXISTING_PRIVILEGE_AUDIT_NOT_EXTENDED",
+      "job": 117883709795,
+      "cause": "pre-release audit did not yet list 0018 task flag and two trigger functions; no runtime privilege expansion beyond already-reviewed grant",
+      "otherChecks": "Report moderation incl new real HTTPS/UI chain, Comments backend text and Post images succeeded on this head; not a whole-CI success"
+    }
+  ],
+  "fixtureTestedProductInputs": {
+    "kind": "sha256-of-sorted-git-blob-manifest",
+    "commit": "ec6672f35d4124e495299d133eeca15178c19d3b",
+    "files": 695,
+    "sha256": "21b07188755d22ad9bc091230903dd3739aa3ddae3716654c483f4aaf76b5c56",
+    "prefixes": [
+      "apps/admin/",
+      "apps/mobile/",
+      "services/api/",
+      "infra/postgres/",
+      "packages/openapi/",
+      "packages/auth_vault/",
+      "packages/auth_passkey/",
+      "packages/image_viewer/",
+      ".github/workflows/"
+    ],
+    "excludes": [
+      "*.md"
+    ],
+    "serialization": "UTF-8 sorted path + U+0000 + Git blob SHA-1 + LF"
+  },
+  "privilegeAuditFixCommit": "21b1704deb93c2c24d7557530a3b39093f32fa40"
+}

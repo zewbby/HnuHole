@@ -182,7 +182,7 @@ function renderCase(parent, record, reload, current, isCurrent = () => current =
   parent.replaceChildren();
   const header = add(el('div', null, 'heading'), add(el('div'), el('h2', `工单 ${record.number ?? '待核对'}`), el('p', `目标账号 ${platformNumber(record.platformNumber)} · ${dateText(record.createdAt)}`, 'meta')), status(record.state));
   parent.append(header);
-  const evidence = section('举报时的内容');
+  const evidence = section(record.commentId ? '举报时的评论／回复' : '举报时的内容');
   const snapshot = add(el('div', null, 'evidence'), el('h3', record.evidence?.title ?? '帖子'), el('p', record.evidence?.body ?? '暂无可展示的文字材料。', 'body'));
   materialImages(snapshot, record.evidence?.images, '内容证据'); evidence.append(snapshot); parent.append(evidence);
   const reports = section('举报材料');

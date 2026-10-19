@@ -441,6 +441,7 @@ class GovernanceController extends ChangeNotifier {
 
   Future<bool> submitReport({
     required String postId,
+    String? commentId,
     required String? identityId,
     required String reason,
     required String description,
@@ -452,10 +453,12 @@ class GovernanceController extends ChangeNotifier {
       throw const FormatException('Invalid reason');
     }
     PostProtocol.resourceId(postId);
+    if (commentId != null) PostProtocol.resourceId(commentId);
     if (identityId != null) PostProtocol.resourceId(identityId);
     final id = governanceId();
     return _submit(id, 'REPORT', '/api/v1/reports/$id', '/api/v1/reports/$id', {
       'postId': postId,
+      if (commentId != null) 'commentId': commentId,
       'identityId': identityId,
       'reason': reason,
       'description': description,
@@ -614,6 +617,7 @@ class GovernanceController extends ChangeNotifier {
       if (report == null ||
           report['id'] != p['id'] ||
           report['postId'] != original['postId'] ||
+          report['commentId'] != original['commentId'] ||
           report['reason'] != original['reason'] ||
           report['description'] != original['description']) {
         throw const FormatException('Mismatched report receipt');
@@ -652,11 +656,12 @@ class GovernanceController extends ChangeNotifier {
     final r = PostJson.record(
       wrapper['report'],
       {'id', 'caseId', 'state', 'postId', 'reason', 'description', 'createdAt'},
-      optional: {'outcome', 'explanation'},
+      optional: {'outcome', 'explanation', 'commentId'},
     );
     for (final key in ['id', 'caseId', 'postId']) {
       PostJson.id(r, key);
     }
+    if (r['commentId'] != null) PostJson.id(r, 'commentId');
     if (!{'PENDING', 'PROCESSING', 'ENDED'}.contains(r['state']) ||
         !reportReasons.containsKey(r['reason'])) {
       throw const FormatException('Invalid report');
@@ -696,11 +701,12 @@ class GovernanceController extends ChangeNotifier {
           'postId',
           'appealCount',
         },
-        optional: {'endsAt', 'revokedAt', 'activeAppealId'},
+        optional: {'endsAt', 'revokedAt', 'activeAppealId', 'commentId'},
       );
       for (final key in ['id', 'caseId', 'postId']) {
         PostJson.id(r, key);
       }
+      if (r['commentId'] != null) PostJson.id(r, 'commentId');
       PostJson.text(r, 'reason', maxLength: 2048);
       PostJson.date(r, 'startsAt');
       if (r['appealCount'] is! int ||

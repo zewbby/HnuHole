@@ -40,7 +40,7 @@ func notification(ctx context.Context, tx pgx.Tx, account uuid.UUID, identity *s
 func readReport(ctx context.Context, tx pgx.Tx, account uuid.UUID, request string) (moderation.ReportResult, error) {
 	out := moderation.ReportResult{State: "NOT_SUBMITTED"}
 	var r moderation.Report
-	e := tx.QueryRow(ctx, `SELECT r.request_id,c.case_id,c.state,c.post_id,r.reason,r.description,r.created_at,c.outcome,c.explanation FROM c_moderation.reports r JOIN c_moderation.cases c USING(case_id) WHERE r.reporter_account_id=$1 AND r.request_id=$2`, account, request).Scan(&r.ID, &r.CaseID, &r.State, &r.PostID, &r.Reason, &r.Description, &r.CreatedAt, &r.Outcome, &r.Explanation)
+	e := tx.QueryRow(ctx, `SELECT r.request_id,c.case_id,c.state,c.post_id,r.reason,r.description,r.created_at,c.outcome,c.explanation,to_jsonb(c)->>'comment_id' FROM c_moderation.reports r JOIN c_moderation.cases c USING(case_id) WHERE r.reporter_account_id=$1 AND r.request_id=$2`, account, request).Scan(&r.ID, &r.CaseID, &r.State, &r.PostID, &r.Reason, &r.Description, &r.CreatedAt, &r.Outcome, &r.Explanation, &r.CommentID)
 	r.CreatedAt = r.CreatedAt.UTC()
 	if errors.Is(e, pgx.ErrNoRows) {
 		return out, nil
@@ -103,41 +103,48 @@ func (c *Community) SubmitReport(ctx context.Context, bearer [32]byte, request s
 		var task string
 		var version int
 		var expectedImages int
-		e = tx.QueryRow(ctx, `SELECT p.owner_account_id,t.identity_id,x.title,x.body,t.task_id,p.published_attempt_version,COALESCE((to_jsonb(x)->>'image_count')::int,0) FROM c_posts.posts p JOIN c_posts.publication_tasks t USING(post_id) JOIN c_posts.attempt_contents x ON x.task_id=t.task_id AND x.version=p.published_attempt_version WHERE p.post_id=$1 AND p.visibility='PUBLISHED' AND NOT p.moderation_hidden FOR SHARE OF p`, input.PostID).Scan(&target, &identity, &evidence.Title, &evidence.Body, &task, &version, &expectedImages)
-		if errors.Is(e, pgx.ErrNoRows) {
-			return nil, postError("POST_NOT_FOUND", 404)
-		}
-		if e != nil {
-			return nil, e
-		}
-		evidence.Images = []moderation.Image{}
-		var mediaSchema bool
-		if e = tx.QueryRow(ctx, `SELECT to_regclass('c_posts.images') IS NOT NULL`).Scan(&mediaSchema); e != nil {
-			return nil, e
-		}
-		if mediaSchema {
-			rows, e := tx.Query(ctx, `SELECT mime_type,payload FROM c_posts.images WHERE task_id=$1 AND version=$2 AND verified_at IS NOT NULL AND erased_at IS NULL ORDER BY position`, task, version)
+		if input.CommentID != nil {
+			target, identity, evidence, e = commentReportEvidence(ctx, tx, input.PostID, *input.CommentID)
 			if e != nil {
 				return nil, e
 			}
-			for rows.Next() {
-				var mime string
-				var b []byte
-				if e = rows.Scan(&mime, &b); e != nil {
-					break
+		} else {
+			e = tx.QueryRow(ctx, `SELECT p.owner_account_id,t.identity_id,x.title,x.body,t.task_id,p.published_attempt_version,COALESCE((to_jsonb(x)->>'image_count')::int,0) FROM c_posts.posts p JOIN c_posts.publication_tasks t USING(post_id) JOIN c_posts.attempt_contents x ON x.task_id=t.task_id AND x.version=p.published_attempt_version WHERE p.post_id=$1 AND p.visibility='PUBLISHED' AND NOT p.moderation_hidden FOR SHARE OF p`, input.PostID).Scan(&target, &identity, &evidence.Title, &evidence.Body, &task, &version, &expectedImages)
+			if errors.Is(e, pgx.ErrNoRows) {
+				return nil, postError("POST_NOT_FOUND", 404)
+			}
+			if e != nil {
+				return nil, e
+			}
+			evidence.Images = []moderation.Image{}
+			var mediaSchema bool
+			if e = tx.QueryRow(ctx, `SELECT to_regclass('c_posts.images') IS NOT NULL`).Scan(&mediaSchema); e != nil {
+				return nil, e
+			}
+			if mediaSchema {
+				rows, e := tx.Query(ctx, `SELECT mime_type,payload FROM c_posts.images WHERE task_id=$1 AND version=$2 AND verified_at IS NOT NULL AND erased_at IS NULL ORDER BY position`, task, version)
+				if e != nil {
+					return nil, e
 				}
-				evidence.Images = append(evidence.Images, moderation.Image{MIME: mime, Base64: base64.StdEncoding.EncodeToString(b)})
+				for rows.Next() {
+					var mime string
+					var b []byte
+					if e = rows.Scan(&mime, &b); e != nil {
+						break
+					}
+					evidence.Images = append(evidence.Images, moderation.Image{MIME: mime, Base64: base64.StdEncoding.EncodeToString(b)})
+				}
+				if e == nil {
+					e = rows.Err()
+				}
+				rows.Close()
+				if e != nil {
+					return nil, e
+				}
 			}
-			if e == nil {
-				e = rows.Err()
+			if len(evidence.Images) != expectedImages {
+				return nil, ErrAuthorizationUnavailable
 			}
-			rows.Close()
-			if e != nil {
-				return nil, e
-			}
-		}
-		if len(evidence.Images) != expectedImages {
-			return nil, ErrAuthorizationUnavailable
 		}
 		payload, e := json.Marshal(evidence)
 		if e != nil {
@@ -145,7 +152,13 @@ func (c *Community) SubmitReport(ctx context.Context, bearer [32]byte, request s
 		}
 		caseID := uuid.New()
 		snapshot := moderation.Fingerprint(evidence)
-		e = tx.QueryRow(ctx, `INSERT INTO c_moderation.cases(case_id,post_id,target_account_id,target_identity_id,reason,snapshot_digest,evidence,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(post_id,snapshot_digest) DO UPDATE SET version=c_moderation.cases.version RETURNING case_id`, caseID, input.PostID, target, identity, input.Reason, snapshot, payload, final.TrustedAt).Scan(&caseID)
+		if input.CommentID != nil {
+			// Separate resource facts even when two comments contain identical bytes.
+			snapshot = moderation.Fingerprint([]any{"COMMENT", *input.CommentID, evidence})
+			e = tx.QueryRow(ctx, `INSERT INTO c_moderation.cases(case_id,post_id,comment_id,target_account_id,target_identity_id,reason,snapshot_digest,evidence,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT(post_id,snapshot_digest) DO UPDATE SET version=c_moderation.cases.version RETURNING case_id`, caseID, input.PostID, *input.CommentID, target, identity, input.Reason, snapshot, payload, final.TrustedAt).Scan(&caseID)
+		} else {
+			e = tx.QueryRow(ctx, `INSERT INTO c_moderation.cases(case_id,post_id,target_account_id,target_identity_id,reason,snapshot_digest,evidence,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(post_id,snapshot_digest) DO UPDATE SET version=c_moderation.cases.version RETURNING case_id`, caseID, input.PostID, target, identity, input.Reason, snapshot, payload, final.TrustedAt).Scan(&caseID)
+		}
 		if e != nil {
 			return nil, e
 		}

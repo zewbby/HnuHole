@@ -58,14 +58,14 @@ func TestCommentTextGooseMigrationChainPostgres(t *testing.T) {
 				if e = run("up-to", "15"); e != nil {
 					t.Fatal("real governance 0015 upgrade failed")
 				}
-				if e = run("up"); e != nil {
+				if e = run("up-to", "17"); e != nil {
 					t.Fatal("0015 to 0017 upgrade failed")
 				}
 				var preserved bool
 				if e = pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_moderation.platform_numbers WHERE number='001527')`).Scan(&preserved); e != nil || !preserved {
 					t.Fatal("upgrade lost historical account")
 				}
-			} else if e = run("up"); e != nil {
+			} else if e = run("up-to", "17"); e != nil {
 				t.Fatal("empty database 0001..0017 installation failed")
 			}
 			var versions []int64

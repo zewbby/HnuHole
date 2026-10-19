@@ -135,9 +135,14 @@ func TestPostSchemaModerationAccountClosureWithoutFeaturePostgres(t *testing.T) 
 
 func TestPostSchemaPreModerationNeedsNoCleanupGrantPostgres(t *testing.T) {
 	l := newLab(t)
-	// Remove only this fixture's 0015 additions, modeling an upgraded 0014
-	// installation. Old schema checks and grants must not name absent tables.
+	// Remove this fixture's moderation additions, including the optional 0018
+	// comment projection. A half-removed 0018 must still fail startup; this case
+	// models the pre-moderation installation, not a broken forward migration.
 	mustExec(t, l.cp, `DROP SCHEMA c_moderation CASCADE`)
+	if err := CheckModerationLifecycleSchema(context.Background(), l.cp); err == nil {
+		t.Fatal("partially removed 0018 passed startup")
+	}
+	mustExec(t, l.cp, `ALTER TABLE c_comments.tasks DROP COLUMN moderation_hidden`)
 	mustExec(t, l.cp, `ALTER TABLE c_posts.posts DROP COLUMN moderation_hidden`)
 	mustExec(t, l.cp, `ALTER TABLE public.community_identities DROP COLUMN moderation_rename_required`)
 	runtime := moderationLifecycleRuntime(t, l)

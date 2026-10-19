@@ -9,6 +9,7 @@ import '../identity/identity_management_screen.dart';
 import '../posts/post_images.dart';
 import '../posts/post_models.dart';
 import '../posts/post_photo_picker.dart';
+import '../reports/report_screens.dart';
 import 'comment_editor.dart';
 import 'comment_http.dart';
 import 'comment_models.dart';
@@ -705,6 +706,22 @@ class _CommentPostPaneState extends State<CommentPostPane> {
               label: Text('${r.likes}'),
             ),
             TextButton(onPressed: () => _compose(r), child: const Text('回复')),
+            if (GovernanceScope.maybeOf(context) case final governance?)
+              TextButton(
+                onPressed: current && governance.available
+                    ? () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => ReportScreen(
+                            controller: governance,
+                            postId: r.post,
+                            commentId: r.id,
+                            title: r.root == null ? '举报主评论' : '举报回复',
+                          ),
+                        ),
+                      )
+                    : null,
+                child: const Text('举报'),
+              ),
             if (own.contains(r.id))
               TextButton(
                 onPressed: () => _mutate(r, delete: true),
