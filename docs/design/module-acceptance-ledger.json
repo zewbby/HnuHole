@@ -40116,6 +40116,7 @@
     "branch": "codex/feat/feed-ui",
     "baseline": "f1752e10867efb894e1b7bb3bd9a208c14fa74a0",
     "state": "SCOPED_HOST_SQL_RENDER_ANDROID_BUILD_PASS",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/28",
     "evidence": "docs/design/feed-ui-verification-20261019.json",
     "report": "docs/branches/feat-feed-ui.md",
     "modules": [

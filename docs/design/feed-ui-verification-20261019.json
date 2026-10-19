@@ -149,8 +149,10 @@
   ],
   "ci": {
     "workflow": ".github/workflows/feed-ui.yml",
-    "result": "PENDING_PR",
-    "otherProductCI": "Existing post-images mobile whole suite and Android candidate workflows continue to apply."
+    "result": "PENDING_AT_PR_CREATION",
+    "otherProductCI": "Existing post-images mobile whole suite and Android candidate workflows continue to apply.",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/28",
+    "note": "Final head checks recorded on the PR; documentation follow-up preserves the product input digest."
   },
   "review": {
     "agentSelfReview": "Implemented/tested and manually inspected own diff; not independent approval.",
@@ -212,5 +214,7 @@
     "sha256": "c9a9d568452a20cf27d703cb21ef9529dd67bda6be048c4d4b884acb3ac3a2b8",
     "publisherMetadataSHA1Verified": true,
     "scope": "One necessary build component; no full SDK/toolchain restoration."
-  }
+  },
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/28",
+  "testedImplementationCommit": "9d7f3b7dcb64e6ddf667ecacbe26cc4560765e1c"
 }

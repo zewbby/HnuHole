@@ -4,7 +4,7 @@
 - 分支：`codex/feat/feed-ui`，独立 worktree `E:/Hnuhole-env/source/HnuHole-feed-ui`。
 - 基线：已确认 [后端 PR #27](https://github.com/zewbby/HnuHole/pull/27) 于 2026-10-19 16:35:57 合入，最新远端 main `f1752e10867efb894e1b7bb3bd9a208c14fa74a0`。不依赖未合并分支。
 - 目标：保留 Flutter、认证、发帖、评论与受保护图片链路，接入已确认的推荐／通道／屏蔽／浏览量设计，并实现比例单图与横向多图；不做私信。
-- 状态：本地限定验证 PASS，PR 待创建；未合并、未部署。最终验证与源码指纹见[机器记录](../design/feed-ui-verification-20261019.json)。
+- 状态：本地限定验证 PASS，已提交 [PR #28](https://github.com/zewbby/HnuHole/pull/28)；未合并、未部署。最终验证与源码指纹见[机器记录](../design/feed-ui-verification-20261019.json)。
 
 ## 实现与使用
 
@@ -31,3 +31,5 @@
 宿主渲染／合成资源不代表实体 Android 触控、TalkBack、多机型性能或 iOS 验收。未操作手机、未连接生产、未部署、未更改迁移与服务端生产逻辑。B03/B04/B06/B12仅增加本范围证据，不升级完整模块结果。独立同事／GitHub 成员审查仍需维护者安排，未伪造批准；最终 CI 随 PR 核对。
 
 最终 APK 为 `apps/mobile/build/app/outputs/apk/debug/app-debug.apk`，SHA-256 `6366ed1efd269fa34baa263db6f546e3b6a5b7031f429872dbad60516e4aee21`；早期 `flutter-apk/app-debug.apk` 不作为最终交付证据。未安装或发布。
+
+实现提交：`9d7f3b7dcb64e6ddf667ecacbe26cc4560765e1c`。本次送审后的文档补记不改变产品源码指纹；远端最终head CI见PR checks，独立成员review待完成。
