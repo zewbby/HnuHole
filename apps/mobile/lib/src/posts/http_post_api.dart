@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import '../auth/auth_crypto.dart';
 import 'post_api.dart';
+import 'feed_api.dart';
 import 'post_models.dart';
 import 'post_media_api.dart';
 import 'post_protocol.dart';
@@ -14,9 +15,10 @@ import 'post_upload_models.dart';
 import 'package:crypto/crypto.dart' as hashes;
 
 part 'post_upload_http.dart';
+part 'feed_http.dart';
 
 /// 仅访问构造时固定的 C HTTPS origin，不跟随重定向或自动重送命令。
-class HttpPostApi implements PostApi, PostMediaApi {
+class HttpPostApi implements PostApi, PostMediaApi, FeedApi {
   HttpPostApi({
     required this.communityBaseUri,
     HttpClient? client,
@@ -39,6 +41,63 @@ class HttpPostApi implements PostApi, PostMediaApi {
   final Duration timeout;
   final HttpClient _client;
   void close() => _client.close(force: true);
+
+  @override
+  Future<PostResponse<PostsPage<FeedPost>>> timeline({
+    required String sessionToken,
+    String? channelId,
+    String? cursor,
+    int limit = 20,
+  }) => _timeline(
+    sessionToken: sessionToken,
+    channelId: channelId,
+    cursor: cursor,
+    limit: limit,
+  );
+  @override
+  Future<PostResponse<FeedPreferences>> feedPreferences({
+    required String sessionToken,
+  }) => _input(
+    () => _send(
+      sessionToken,
+      'GET',
+      '/api/v1/me/feed-preferences',
+      decode: FeedPreferences.fromJson,
+    ),
+  );
+  @override
+  Future<PostResponse<FeedPreferences>> saveFeedPreferences({
+    required String sessionToken,
+    required Set<String> blockedChannelIds,
+  }) => _input(() {
+    final ids = FeedPreferences(blockedChannelIds).blockedChannelIds.toList()
+      ..sort();
+    return _send(
+      sessionToken,
+      'PUT',
+      '/api/v1/me/feed-preferences',
+      body: {'blockedChannelIds': ids},
+      decode: FeedPreferences.fromJson,
+    );
+  });
+  @override
+  Future<PostResponse<PostViews>> registerPostView({
+    required String sessionToken,
+    required String postId,
+  }) => _input(
+    () => _send(
+      sessionToken,
+      'POST',
+      '/api/v1/posts/${PostProtocol.resourceId(postId)}/views',
+      decode: (raw) {
+        final result = PostViews.fromJson(raw);
+        if (result.postId != postId) {
+          throw const FormatException('Mismatched view');
+        }
+        return result;
+      },
+    ),
+  );
 
   @override
   Future<PostResponse<PostMediaManifest>> imageManifest({

@@ -2037,6 +2037,32 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   late final _PostAuthority _authority;
+  final _bodyKey = GlobalKey();
+  bool _viewRecorded = false, _viewScheduled = false;
+  void _scheduleView() {
+    if (_viewRecorded || _viewScheduled || !widget.controller.supportsFeed) {
+      return;
+    }
+    _viewScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _viewScheduled = false;
+      if (!mounted ||
+          !_authority.current ||
+          _post == null ||
+          _deleted ||
+          ModalRoute.of(context)?.isCurrent != true) {
+        return;
+      }
+      final render = _bodyKey.currentContext?.findRenderObject();
+      if (render is! RenderBox || !render.attached || !render.hasSize) return;
+      final rect = render.localToGlobal(Offset.zero) & render.size;
+      final viewport = Offset.zero & MediaQuery.sizeOf(context);
+      if (!rect.overlaps(viewport)) return;
+      _viewRecorded = true;
+      unawaited(widget.controller.registerVisiblePost(widget.postId));
+    });
+  }
+
   PostDetail? _post;
   bool _loading = true, _canDelete = false, _deleting = false, _deleted = false;
   bool _returnScheduled = false;
@@ -2200,79 +2226,93 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       ),
     ),
   );
-  Widget _detail(BuildContext context, PostDetail post) => SafeArea(
-    top: false,
-    child: SingleChildScrollView(
-      key: PageStorageKey(
-        'detail:${_authority.account}:${_authority.version}:${widget.postId}',
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 28, 20, 40),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final author = _AuthorWidget(author: post.author);
-                  final title = Text(
-                    post.title,
+  Widget _detail(BuildContext context, PostDetail post) {
+    _scheduleView();
+    return NotificationListener<ScrollNotification>(
+      onNotification: (_) {
+        _scheduleView();
+        return false;
+      },
+      child: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          key: PageStorageKey(
+            'detail:${_authority.account}:${_authority.version}:${widget.postId}',
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 28, 20, 40),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final author = _AuthorWidget(author: post.author);
+                      final title = Text(
+                        post.title,
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                          height: 1.45,
+                        ),
+                      );
+                      if (constraints.maxWidth < 340 ||
+                          MediaQuery.textScalerOf(context).scale(16) > 22) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [title, const SizedBox(height: 12), author],
+                        );
+                      }
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: title),
+                          const SizedBox(width: 16),
+                          Flexible(child: author),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    _postDate(post.publishedAt),
                     style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      height: 1.45,
+                      fontSize: 14,
+                      color: PostTheme.muted,
                     ),
-                  );
-                  if (constraints.maxWidth < 340 ||
-                      MediaQuery.textScalerOf(context).scale(16) > 22) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [title, const SizedBox(height: 12), author],
-                    );
-                  }
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: title),
-                      const SizedBox(width: 16),
-                      Flexible(child: author),
-                    ],
-                  );
-                },
+                  ),
+                  const SizedBox(height: 32),
+                  SelectableText(
+                    key: _bodyKey,
+                    post.body,
+                    style: const TextStyle(fontSize: 17, height: 1.8),
+                  ),
+                  if (widget.loadImages case final loader?
+                      when post.imageCount > 0)
+                    PostImagesSection(
+                      postId: post.postId,
+                      expectedCount: post.imageCount,
+                      loadImages: loader,
+                      authority: widget.controller,
+                      isCurrent: () =>
+                          _authority.current &&
+                          !_deleted &&
+                          !widget.controller.isPostDeleted(widget.postId),
+                    ),
+                  if (widget.controller.errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: Text(widget.controller.errorMessage!),
+                    ),
+                ],
               ),
-              const SizedBox(height: 14),
-              Text(
-                _postDate(post.publishedAt),
-                style: const TextStyle(fontSize: 14, color: PostTheme.muted),
-              ),
-              const SizedBox(height: 32),
-              SelectableText(
-                post.body,
-                style: const TextStyle(fontSize: 17, height: 1.8),
-              ),
-              if (widget.loadImages case final loader? when post.imageCount > 0)
-                PostImagesSection(
-                  postId: post.postId,
-                  expectedCount: post.imageCount,
-                  loadImages: loader,
-                  authority: widget.controller,
-                  isCurrent: () =>
-                      _authority.current &&
-                      !_deleted &&
-                      !widget.controller.isPostDeleted(widget.postId),
-                ),
-              if (widget.controller.errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 24),
-                  child: Text(widget.controller.errorMessage!),
-                ),
-            ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _PostCardWidget extends StatelessWidget {

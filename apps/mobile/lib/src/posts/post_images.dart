@@ -7,15 +7,20 @@ import 'package:hnuhole_image_viewer/image_viewer.dart';
 /// The host authorizes both providers and the complete original resolver.
 /// A thumbnail is only a preview; [item] must load the full viewing resource.
 class PostImage {
-  const PostImage({required ImageProvider this.thumbnail, required this.item})
-    : loadThumbnail = null;
+  const PostImage({
+    required ImageProvider this.thumbnail,
+    required this.item,
+    this.pixelSize,
+  }) : loadThumbnail = null;
   const PostImage.deferred({
     required Future<ImageProvider> Function() this.loadThumbnail,
     required this.item,
+    this.pixelSize,
   }) : thumbnail = null;
   final ImageProvider? thumbnail;
   final Future<ImageProvider> Function()? loadThumbnail;
   final ViewerItem item;
+  final Size? pixelSize;
 }
 
 /// One immutable, ordered post image group, owned by the calling media layer.
@@ -56,6 +61,7 @@ class PostImagesSection extends StatefulWidget {
     required this.authority,
     required this.isCurrent,
     this.expectedCount,
+    this.feedPreview = false,
     super.key,
   });
   final String postId;
@@ -63,6 +69,7 @@ class PostImagesSection extends StatefulWidget {
   final Listenable authority;
   final bool Function() isCurrent;
   final int? expectedCount;
+  final bool feedPreview;
   @override
   State<PostImagesSection> createState() => _PostImagesSectionState();
 }
@@ -243,6 +250,7 @@ class _PostImagesSectionState extends State<PostImagesSection> {
         ),
       );
     }
+    if (widget.feedPreview) return _feedMedia(context, group);
     return Padding(
       padding: const EdgeInsets.only(top: 24),
       child: GridView.builder(
@@ -278,10 +286,85 @@ class _PostImagesSectionState extends State<PostImagesSection> {
       ),
     );
   }
+
+  Widget _feedMedia(BuildContext context, PostImages group) => LayoutBuilder(
+    builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      double ratio(PostImage image) {
+        final size = image.pixelSize;
+        return size == null ? 1 : size.width / size.height;
+      }
+
+      Widget card(int index, double w, double h) => SizedBox(
+        width: w,
+        height: h,
+        child: Semantics(
+          button: true,
+          label: '查看第${index + 1}张图片，共${group.images.length}张',
+          child: Material(
+            clipBehavior: Clip.antiAlias,
+            borderRadius: BorderRadius.circular(14),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: InkWell(
+              key: ValueKey(('feed-image', group.images[index].item.id)),
+              onTap: () => _open(index),
+              child: _PostThumbnail(
+                key: ValueKey(group.images[index]),
+                image: group.images[index],
+                fit: group.images.length == 1 ? BoxFit.cover : BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      );
+      if (group.images.length == 1) {
+        final r = ratio(group.images.first);
+        final previewRatio = r.clamp(.75, 2.0);
+        return Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              card(0, width, width / previewRatio),
+              if (r != previewRatio)
+                const Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child: Text('点击查看完整图片', style: TextStyle(fontSize: 12)),
+                ),
+            ],
+          ),
+        );
+      }
+      final height = (width * .8).clamp(160.0, 260.0);
+      return Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: SizedBox(
+          height: height,
+          child: ListView.separated(
+            key: ValueKey('feed-media:${widget.postId}'),
+            scrollDirection: Axis.horizontal,
+            primary: false,
+            itemCount: group.images.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 5),
+            itemBuilder: (_, i) => card(
+              i,
+              (height * ratio(group.images[i])).clamp(width * .45, width * .78),
+              height,
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }
 
 class _PostThumbnail extends StatefulWidget {
-  const _PostThumbnail({required this.image, super.key});
+  const _PostThumbnail({
+    required this.image,
+    this.fit = BoxFit.cover,
+    super.key,
+  });
+  final BoxFit fit;
   final PostImage image;
   @override
   State<_PostThumbnail> createState() => _PostThumbnailState();
@@ -292,7 +375,7 @@ class _PostThumbnailState extends State<_PostThumbnail> {
       ?.call();
   Widget _image(ImageProvider provider) => Image(
     image: provider,
-    fit: BoxFit.cover,
+    fit: widget.fit,
     frameBuilder: (_, child, frame, sync) => sync || frame != null
         ? child
         : const Center(child: Icon(Icons.image_outlined)),

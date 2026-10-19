@@ -1,0 +1,216 @@
+{
+  "schemaVersion": "hnuhole-feed-ui-verification/v1",
+  "task": "FEED-UI-01",
+  "recordedOn": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "branch": "codex/feat/feed-ui",
+  "baseline": "f1752e10867efb894e1b7bb3bd9a208c14fa74a0",
+  "backendPrerequisite": {
+    "pr": "https://github.com/zewbby/HnuHole/pull/27",
+    "merged": true,
+    "mergedAt": "2026-10-19T16:35:57+08:00"
+  },
+  "status": "SCOPED_HOST_SQL_RENDER_ANDROID_BUILD_PASS",
+  "merged": false,
+  "deployed": false,
+  "referenceInputs": {
+    "docs/design/ui-reviews/x-feed-recommend-controls.md": "82a6f31458a2ce48ae212ff8801a384b47bdc0411625a83ffb0688cb23fbfc3e",
+    "docs/design/mobile-ui-system/x-media-analysis.md": "db7cf3fa32d93477825c84bdea60a59a79a6f740c532bfedf6dbab94f7cc6803"
+  },
+  "runtimeAndTestInputs": {
+    ".github/workflows/feed-ui.yml": "ce4290e89d4b9a44ec06079176f01108af6ffc5b48d526262a7551fa638a1bda",
+    "apps/mobile/integration/feed_live_probe.dart": "28b4ecd5c1e529bd2d1d7e0b8c7f1254be716181d4df32a4f783926600372ab6",
+    "apps/mobile/lib/main.dart": "9a60d8f6a7b2ef45b48a35ae59dee75b570d3dff8c8f967eb35039b744857c92",
+    "apps/mobile/lib/src/design_system/telegram_theme.dart": "5635ccb294558e7f5bb560ce990d6099c08806d810bdf9469712b8c4db1c72f3",
+    "apps/mobile/lib/src/posts/feed_api.dart": "e630dafb9f00d1a29ad31c9f313ea1f66fbf27b8e0b0d1300caa15b86bb0c61d",
+    "apps/mobile/lib/src/posts/feed_controller.dart": "e58ab9503b286e3b6d3375e9b72a1d3c144b8f59c87124b670dfe59c1d3ffac1",
+    "apps/mobile/lib/src/posts/feed_http.dart": "9bb0d72c34515ec7993cbd6c5fcd7b1d9bb87db9a4b523531583761e35ba00f5",
+    "apps/mobile/lib/src/posts/feed_screen.dart": "ef0c6c68f5ce217dfb049f1b865eeaa6d100d4060d7a930c54f09630bd86d419",
+    "apps/mobile/lib/src/posts/http_post_api.dart": "4d2fef40c37bd9da1064a903fae8b4e4e197ff4a8ddaeeb4cfca546e8cf7b7cb",
+    "apps/mobile/lib/src/posts/post_controller.dart": "f4d65e1e50b80b613a94ebe34f92e790b0aadf94118f56d8e17390638a499930",
+    "apps/mobile/lib/src/posts/post_images.dart": "0b5c1b2c643fd0eb75177fe3b21649e3c49149801197b1579a626875dfb043d5",
+    "apps/mobile/lib/src/posts/post_media_repository.dart": "2b8b608cfc8cecb98d5fa0ea90b3fd0a57f76f949978738cfa837446e67c06a0",
+    "apps/mobile/lib/src/posts/post_screens.dart": "f14dd30cf1363e36407349e457b5e9bc58097080e8214bdffda2521975a65c14",
+    "apps/mobile/lib/src/posts/x_feed.dart": "853db55899a35f59ff26e36508c3bf449ef1afd3e1da7be951a4f04d746bfe8a",
+    "apps/mobile/lib/src/posts/x_feed_controls.dart": "22851726303a1a443006a920ea96a570e3c0b0192850aeabac255c5b219124a6",
+    "apps/mobile/test/feed_media_test.dart": "30003743fc94fc1be574075cbee3f4b721f6751dcc5543ca87b5904b66026776",
+    "apps/mobile/test/feed_ui_test.dart": "83e7fef95aa60cc81db04b55740dc51b867b42ea042e0263c03958e4ee3f795b",
+    "apps/mobile/test/post_api_test.dart": "0b4a20bcb7f8b495af65f2c8a53a7dc053014f0fd627d00237f68c7e068bfea2",
+    "apps/mobile/test/post_screens_test.dart": "23681409136e9c7e8881fa4b491e1c08e46cd3bd50ef2cc53f4085908c18276f",
+    "services/api/internal/authprivacyhttp/feed_live_postgres_test.go": "f95e4904c44dee6a9e342cba78c1ce8d7b5d4ecb435b3c30c6be1ec366664854"
+  },
+  "inputDigest": "6624fe31aef0e6296740cc95ad3a993aeb44dd0c3849c5c79fde061bd9d9c2bd",
+  "digestNormalization": "UTF-8 files with CRLF normalized to LF; sorted relative paths and sha256 separated by TAB/LF",
+  "checks": [
+    {
+      "id": "FEEDUI-H01",
+      "command": "PUB_HOSTED_URL=https://pub.dev flutter pub get --enforce-lockfile --offline",
+      "result": "PASS",
+      "scope": "Existing pinned cache; no lockfile changes. Initial mirror-host mismatch failed and was corrected by matching the lock host."
+    },
+    {
+      "id": "FEEDUI-H02",
+      "command": "flutter analyze --no-pub",
+      "result": "PASS",
+      "log": "apps/mobile/build-feed-analyze-final.log",
+      "findings": 0
+    },
+    {
+      "id": "FEEDUI-H03",
+      "command": "flutter test --no-pub test --reporter expanded",
+      "result": "PASS",
+      "passed": 530,
+      "failed": 0,
+      "log": "apps/mobile/build-feed-all-tests-final-pass.log",
+      "scope": "All mobile host tests: 18 new UI/media cases plus 4 new HTTP cases; not native device proof."
+    },
+    {
+      "id": "FEEDUI-H04",
+      "command": "flutter build bundle --debug --no-pub",
+      "result": "PASS",
+      "artifact": "apps/mobile/build/flutter_assets/kernel_blob.bin"
+    },
+    {
+      "id": "FEEDUI-H05",
+      "command": "flutter build apk --debug --no-pub",
+      "result": "PASS",
+      "log": "apps/mobile/build-feed-android.log",
+      "scope": "Initial earlier-source APK; superseded by final H06 with regenerated locked dependencies and explicit native-plugin checks. Do not use this early artifact as final delivery proof.",
+      "superseded": true
+    },
+    {
+      "id": "FEEDUI-H06",
+      "command": "gradlew.bat --console=plain --init-script ../build/feed-repositories.init.gradle -Ptarget-platform=android-arm,android-arm64,android-x64 -Ptarget=lib/main.dart -Pbase-application-name=android.app.Application -Pdart-obfuscation=false -Ptrack-widget-creation=true -Ptree-shake-icons=false assembleDebug",
+      "result": "PASS",
+      "log": "apps/mobile/build-feed-android-complete.log",
+      "scope": "Final main.dart Android debug, ARM32/ARM64/x86_64, all locked native plugins. Local ignored configuration selects HTTPS mirrors, preserves Flutter engine repository and versions, reuses an existing installed API35 platform, and locates checksum-verified official CMake3.22.1 in this task build directory.",
+      "tasks": 301
+    },
+    {
+      "id": "FEEDUI-R01",
+      "command": "flutter test --no-pub test/feed_media_test.dart --plain-name 'render production feed' --reporter expanded",
+      "result": "PASS",
+      "viewport": "402x806; PNG 804x1612",
+      "fontScope": "Roboto static 400/500/700 + Android36 Noto SC variable, loaded under the actual Noto Sans CJK SC family; MaterialIcons. Host Flutter renderer, not a phone.",
+      "visualReview": "Six PNGs inspected: readable controls/reset, all seven channels, real-state presentation, different single heights, next-card hint and dark contrast. FAB overlap follows approved reference; bottom padding permits scrolling actions clear.",
+      "initialCorrections": [
+        "200% toolbar moved filter off-screen; now wraps.",
+        "Reset label initially blue on blue; now uses onAccent.",
+        "Host CJK fallback alias left a missing glyph; render font registered under the actual requested family.",
+        "Unknown preference state initially retained a non-null Switch callback; now disabled until reconciliation."
+      ],
+      "assets": {
+        "blocked.png": "9733025ec25823e360f93448de4bb4fcf3f6a6b9d4ca7481ab256bb4098d8f46",
+        "carousel.png": "908adddf60335f73a0913f5d1f2bfcf82d63881030a5b30dee6081e6fbae400a",
+        "channels.png": "19d6fe8479b8b2e8676b576bd57a0e26308888ff6c4e70384e1cf5c7b4c49e06",
+        "feed-dark.png": "20511048c209dc13b21c32c12b545e281e3ddc957207ccf93334cde54adfc002",
+        "feed-light.png": "bdb8e85ed2a622221da8c92c6b1c7ec8c38e4c3c95fffa5a90d9a3b8d9c092e8",
+        "portrait.png": "86d608b3a3e3dbf99394180fd9fd38352025f6e3ebb4d326b7cc9a9a27d4f432"
+      }
+    },
+    {
+      "id": "FEEDUI-S01",
+      "command": "FEED_GOOSE=<existing goose3.22.1> FEED_DART_PROBE=<compiled probe> PGPORT=55441 sh authlab/run-feed-isolated.sh",
+      "result": "PASS",
+      "scope": "Real isolated PG16.15, race, C HTTPS and compiled shipped Dart adapter; default existing feed/schema/lifecycle regressions plus new probe.",
+      "log": "/home/hnuhole/feed-ui-20261019/sql.log"
+    },
+    {
+      "id": "FEEDUI-S02",
+      "command": "FEED_TEST_PATTERN=^TestRealHTTPSFeedDartPostgres$ FEED_GOOSE=<goose3.22.1> FEED_DART_PROBE=<compiled probe> PGPORT=55441 sh authlab/run-feed-isolated.sh",
+      "result": "PASS",
+      "scope": "Final probe fixture covers three published posts across two real directory channels, cursor pages, original detail DTO, read-only exposure, author exclusion, view dedup, persisted account blocking/reset and revision invalidation.",
+      "log": "/home/hnuhole/feed-ui-20261019/sql-final-probe.log"
+    },
+    {
+      "id": "FEEDUI-S03",
+      "command": "go test -mod=readonly ./... && go build -mod=readonly ./... && go vet -mod=readonly ./...",
+      "result": "PASS",
+      "scope": "Go1.22.2 Linux filesystem host; no-DSN host tests do not replace S01/S02."
+    },
+    {
+      "id": "FEEDUI-C01",
+      "command": "python -X utf8 packages/openapi/check-specs.py",
+      "result": "PASS",
+      "specCount": 11
+    },
+    {
+      "id": "FEEDUI-C02",
+      "command": "python tools/check-community-text-contract.py",
+      "result": "PASS",
+      "operations": 14
+    },
+    {
+      "id": "FEEDUI-C03",
+      "command": "python -m unittest discover -s tools/tests -p test_collaboration.py -v",
+      "result": "PASS",
+      "passed": 19
+    }
+  ],
+  "ci": {
+    "workflow": ".github/workflows/feed-ui.yml",
+    "result": "PENDING_PR",
+    "otherProductCI": "Existing post-images mobile whole suite and Android candidate workflows continue to apply."
+  },
+  "review": {
+    "agentSelfReview": "Implemented/tested and manually inspected own diff; not independent approval.",
+    "independentGitHubMemberApproval": "PENDING"
+  },
+  "notRun": [
+    "Physical Android touch/TalkBack/multi-device performance matrix",
+    "iOS/macOS build/device",
+    "Production migration/deploy"
+  ],
+  "preserved": [
+    "Authentication, session metadata persistence and C Gate",
+    "Original composer, accepted tasks and protected upload",
+    "Original detail/comment/governance routes",
+    "Protected manifest/bytes and viewer leases"
+  ],
+  "excluded": [
+    "Direct messages",
+    "Recommendation ranking algorithm",
+    "Post like/bookmark mutations and unavailable counters",
+    "Production or device operations"
+  ],
+  "failureHistory": [
+    "Initial pub mirror differs from pub.dev lock; resolved with exact locked host offline.",
+    "Initial new widget tests used real-zone fixture creation and timed out; fixtures now created in test zone.",
+    "Existing widget PostController mock gained supportsFeed=false to preserve explicit behavior.",
+    "Initial render restored painting debug globals too late; finally now restores before framework verification.",
+    "Initial root SQL invocation rejected; actual successful SQL uses task user hnuhole and owned isolated database.",
+    "Final regenerated native graph first required uncached Kotlin2.3.20; default Maven endpoint timed out. Task-local mirror ordering resolved exact versions.",
+    "API35 was absent in Windows SDK; copied the existing installed API35 component from the prior tool cache, without removing SDKs.",
+    "CMake3.22.1 was absent; downloaded its 16MB official Windows SDK component and verified the publisher metadata checksum.",
+    "An initial mirror helper dropped the Flutter engine repository; corrected the ignored helper to preserve all repositories and narrow engine content.",
+    "Final APK passed after these local environment corrections; no native production source, dependency version or tracked Android configuration changed."
+  ],
+  "scope": "Implementation, merge, host/SQL/build acceptance and publication are separate; B03/B04/B06/B12 overall results unchanged. Final snapshots use synthetic media/data in the production Flutter screen; real network proof is separately bound to actual C HTTPS and PostgreSQL.",
+  "androidArtifact": {
+    "path": "apps/mobile/build/app/outputs/apk/debug/app-debug.apk",
+    "byteLength": 205981795,
+    "sha256": "6366ed1efd269fa34baa263db6f546e3b6a5b7031f429872dbad60516e4aee21",
+    "abis": [
+      "armeabi-v7a",
+      "arm64-v8a",
+      "x86_64"
+    ],
+    "dexContains": [
+      "AuthVaultPlugin",
+      "AuthPasskeyPlugin",
+      "ImagePickerPlugin",
+      "GalPlugin",
+      "JniFlutterPlugin"
+    ],
+    "deviceInstalled": false,
+    "note": "The earlier flutter-apk/app-debug.apk is an earlier source artifact; use this final Gradle output."
+  },
+  "cmakeComponent": {
+    "url": "https://dl.google.com/android/repository/cmake-3.22.1-windows.zip",
+    "version": "3.22.1",
+    "byteLength": 16116742,
+    "sha256": "c9a9d568452a20cf27d703cb21ef9529dd67bda6be048c4d4b884acb3ac3a2b8",
+    "publisherMetadataSHA1Verified": true,
+    "scope": "One necessary build component; no full SDK/toolchain restoration."
+  }
+}

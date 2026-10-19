@@ -1,5 +1,7 @@
 # FEED-BACKEND-01 新版帖子列表后端
 
+> **合并事实补记（2026-10-19）：**已核对 PR #27 的 merged=true，上海时间16:35:57以 Squash 合入 main `f1752e10867efb894e1b7bb3bd9a208c14fa74a0`。下方未合并为原送审快照；本次前端从该最新主线独立接续，后端未部署。
+
 - 更新：2026-10-19。
 - 分支：`codex/feat/feed-backend`，独立 worktree；基线为最新远端 main `fc2348f`。
 - 状态：`BACKEND_SCOPED_PASS`，实现与本地验证完成，已提交 [PR #27](https://github.com/zewbby/HnuHole/pull/27)；未合并、未部署。

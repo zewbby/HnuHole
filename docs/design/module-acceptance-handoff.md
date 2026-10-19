@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-19 FEED-UI-01：**已确认后端 [#27](https://github.com/zewbby/HnuHole/pull/27) 合入 `f1752e1`，独立 `codex/feat/feed-ui` 基于新 main 接推荐／通道／账号屏蔽／真实浏览及自适应单图／横向多图。保留原认证、发帖、评论和图片链路，无私信。本地分析、530项Flutter宿主回归、真实HTTPS/SQL、6张实图与全插件Android构建限定PASS，未合并／部署；[任务](../branches/feat-feed-ui.md)、[验证](feed-ui-verification-20261019.json)和渲染沿各自范围交接，完整 B03/B04/B06/B12、设备及生产结论不升级。
+
 > **2026-10-19 FEED-BACKEND-01 复核：**B03/B04/B12及A03/P01受影响边界重新验证。修复三表主键未被启动校验、每日冲突未指定键造成的故障状态重复计数；新增失败回滚、跨账号并发、翻页内容失效、偏好改回原值等回归。修复版33顶层／70含子项真实SQL/race/TLS、Go宿主/build/vet、11份API与旧契约PASS，记录在[本轮证据](feed-backend-review-20261019.json)。此为同一代理技术复核，不代独立成员批准；设备／前端／生产与完整模块边界不扩张，未合并／部署。
 
 > **2026-10-19 FEED-BACKEND-01 后端限定 PASS：**B03新时间列表、B04账号通道屏蔽、B12 HEAT-07浏览计数已在 `codex/feat/feed-backend` 实现；共享存储／授权影响的 A03/P01 与旧帖子生命周期已复验。真实SQL/race/TLS 29顶层／61含子项零跳过，Go全量宿主/build/vet、11份API与旧DTO契约通过；版本、源码／测试路径、实际命令与初次失败见[机器记录](feed-backend-verification-20261019.json)，运行／前端接续见[接线契约](feed-backend-contract.md)。未合并、设备／正式前端／生产 NOT_RUN，各完整模块保持原未完成边界；PR与独立review见[任务](../branches/feat-feed-backend.md)。

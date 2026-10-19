@@ -183,6 +183,7 @@ class _MediaLease {
 
   PostImage image(PostMediaImage item, int index, int count) =>
       PostImage.deferred(
+        pixelSize: Size(item.pixelWidth.toDouble(), item.pixelHeight.toDouble()),
         loadThumbnail: () => provider(item),
         item: ViewerItem(
           id: item.contentVersionId,

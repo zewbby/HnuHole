@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-19 FEED-UI-01：**已确认后端 [#27](https://github.com/zewbby/HnuHole/pull/27) 合入 `f1752e1`，独立 `codex/feat/feed-ui` 基于新 main 接推荐／通道／账号屏蔽／真实浏览及自适应单图／横向多图。保留原认证、发帖、评论和图片链路，无私信。本地分析、530项Flutter宿主回归、真实HTTPS/SQL、6张实图与全插件Android构建限定PASS，未合并／部署；[任务](../branches/feat-feed-ui.md)、[验证](feed-ui-verification-20261019.json)和渲染沿各自范围交接，完整 B03/B04/B06/B12、设备及生产结论不升级。
+
 > **2026-10-19 PR #27 复核增量：**同一代理复核接口、迁移、计数、屏蔽与分页，真实复现并修复“去重主键丢失仍放行并重复计数”的P2；新增精确主键启动校验及显式冲突目标，不改0019 SQL与公开契约。修复版 Go宿主/build/vet、11份API、真实SQL/race/TLS 33顶层／70含子项零跳过通过；旧29／61属于原版。见[复核记录](feed-backend-review-20261019.json)与[任务](../branches/feat-feed-backend.md)，修复版最终head CI以PR为准，不冒充独立成员批准；按用户指令不合并、不部署。
 
 > **2026-10-19 FEED-BACKEND-01 本分支交付：**基于最新 main `fc2348f` 的独立 `codex/feat/feed-backend`，新增0019、HEAT-07真实浏览／账号上海自然日去重、跨通道时间稳定游标及账号通道屏蔽（分页前过滤）。旧鉴权、匿名 DTO 与旧接口兼容；Go全量宿主/build/vet、真实SQL/race/TLS 29顶层／61含子项及11份API通过。仅后端分支范围，PR／CI见[任务](../branches/feat-feed-backend.md)与[记录](feed-backend-verification-20261019.json)，未合并／部署。下一前端按[接线顺序](feed-backend-contract.md#前端接入)使用新 `/feed`、账号偏好及正文显示后的 `/views`；不搬入旧UI整包，不扩展其他业务，设备／生产未验。

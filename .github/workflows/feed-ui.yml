@@ -1,0 +1,71 @@
+name: Feed UI
+
+on:
+  pull_request:
+    paths:
+      - 'apps/mobile/**'
+      - 'packages/auth_vault/**'
+      - 'packages/auth_passkey/**'
+      - 'packages/image_viewer/**'
+      - 'services/api/**'
+      - 'infra/postgres/**'
+      - '.github/workflows/feed-ui.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: feed-ui-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter-and-real-feed:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - name: Host dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-dev openssl postgresql-16
+          echo '/usr/lib/postgresql/16/bin' >> "$GITHUB_PATH"
+          go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
+      - name: Locked Flutter dependencies
+        working-directory: apps/mobile
+        run: flutter pub get --enforce-lockfile
+      - name: Analysis, feed regressions and production bundle
+        working-directory: apps/mobile
+        run: |
+          flutter analyze --no-pub
+          flutter test --no-pub test/feed_ui_test.dart test/feed_media_test.dart test/post_api_test.dart test/post_screens_test.dart test/post_images_test.dart test/post_media_repository_test.dart
+          flutter build bundle --debug --no-pub
+          dart compile exe integration/feed_live_probe.dart -o build/feed-live-probe
+      - name: Shipped Dart transport to real C HTTPS and isolated PostgreSQL
+        working-directory: services/api
+        env:
+          PGPORT: '55441'
+        run: |
+          export FEED_GOOSE="$(go env GOPATH)/bin/goose"
+          export FEED_DART_PROBE="$GITHUB_WORKSPACE/apps/mobile/build/feed-live-probe"
+          export FEED_TEST_PATTERN='^(TestFeed|TestRealHTTPSFeed)'
+          sh authlab/run-feed-isolated.sh
+      - name: Preserve dependency locks
+        run: git diff --exit-code -- '**/pubspec.lock'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: feed-ui-host-renders
+          path: apps/mobile/build/feed-ui-render/*.png
+          if-no-files-found: ignore

@@ -35,7 +35,8 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `codex/feat/feed-backend` | 新版列表后端：真实浏览与每日去重、跨通道时间游标、账号通道屏蔽；本分支送审，未合并／部署。 | [任务详情](docs/branches/feat-feed-backend.md) |
+| `codex/feat/feed-ui` | 新版 Flutter 列表接真实推荐／通道／屏蔽／浏览量及比例单图／横向多图；本分支送审，未合并／部署。 | [任务详情](docs/branches/feat-feed-ui.md) |
+| `codex/feat/feed-backend` | PR #27已合入main：真实浏览、跨通道时间游标和账号屏蔽后端；未部署。 | [任务详情](docs/branches/feat-feed-backend.md) |
 | `codex/fix/gate-cancellation-freeze` | PR #25已合入main，修复C/V Gate取消误冻结，真实SQL/TLS回归与证据已交付；未部署。 | [任务详情](docs/branches/fix-gate-cancellation-freeze.md) |
 | `codex/ci/android-integration-candidate` | PR #23已合入main，交付固定Android集成候选及新增恢复/真机治理连接限定证据；未正式发布。 | [任务详情](docs/branches/ci-android-integration-candidate.md) |
 | `codex/ci/android-prerelease` | PR #16已合入main，交付测试签名候选、同机恢复/回滚与vivo S18最小文字图片限定实测；未正式发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
@@ -58,8 +59,8 @@
 
 ## 最近变动
 
+- 2026-10-19 · [#27](https://github.com/zewbby/HnuHole/pull/27)：接入真实浏览去重、跨通道时间列表与账号屏蔽后端。
 - 2026-10-19 · [#25](https://github.com/zewbby/HnuHole/pull/25)：修复C/V Gate取消误冻结，交付真实SQL/TLS回归与专用CI，保留真实故障冻结。
 - 2026-10-19 · [#24](https://github.com/zewbby/HnuHole/pull/24)：补记集成候选合并与资源收尾，保留固定制品、证据和复现材料。
 - 2026-10-19 · [#23](https://github.com/zewbby/HnuHole/pull/23)：交付固定Android集成候选、必要新增恢复与vivo S18举报/审核/通知/申诉限定证据。
 - 2026-10-19 · [#22](https://github.com/zewbby/HnuHole/pull/22)：接通真实评论/回复举报、网页处置、系统通知和独立申诉复核。
-- 2026-10-19 · [#21](https://github.com/zewbby/HnuHole/pull/21)：记录评论核心及业务成果已合入main并关闭评论开发任务。
