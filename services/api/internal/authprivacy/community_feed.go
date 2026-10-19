@@ -38,7 +38,7 @@ func recordPostView(ctx context.Context, tx pgx.Tx, account uuid.UUID, id string
 	if _, err = tx.Exec(ctx, `DELETE FROM c_posts.post_daily_views WHERE account_id=$1 AND view_day<$2::date`, account, day); err != nil {
 		return result, err
 	}
-	inserted, err := tx.Exec(ctx, `INSERT INTO c_posts.post_daily_views(account_id,post_id,view_day) VALUES($1,$2,$3::date) ON CONFLICT DO NOTHING`, account, id, day)
+	inserted, err := tx.Exec(ctx, `INSERT INTO c_posts.post_daily_views(account_id,post_id,view_day) VALUES($1,$2,$3::date) ON CONFLICT(account_id,post_id,view_day) DO NOTHING`, account, id, day)
 	if err != nil || inserted.RowsAffected() == 0 {
 		return result, err
 	}

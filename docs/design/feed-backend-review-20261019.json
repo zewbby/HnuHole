@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "hnuhole-feed-backend-review/v1",
+  "task": "FEED-BACKEND-01",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/27",
+  "recordedOn": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
+  "reviewedHead": "eec8f4e844f02976d3fac941f16754ea25de1bea",
+  "branch": "codex/feat/feed-backend",
+  "result": "FIXED_SCOPED_LOCAL_PASS",
+  "findings": [
+    {
+      "id": "FEED-REVIEW-01",
+      "priority": "P2",
+      "status": "FIXED",
+      "title": "Missing dedup key was accepted and allowed repeated view registration",
+      "trigger": "A partial restore or schema change removes post_daily_views' primary key while retaining its table, columns and lifecycle trigger.",
+      "before": "CheckPostSchema and common C startup accepted the invalid schema. Untargeted ON CONFLICT DO NOTHING still inserted another daily row, and the repeated account/day registration committed.",
+      "fix": "Validate the exact non-deferrable primary keys on all three feed tables at startup. Explicitly target (account_id,post_id,view_day) in registration so constraint loss after startup fails closed and rolls back.",
+      "source": [
+        "services/api/internal/authprivacy/community_feed_schema.go",
+        "services/api/internal/authprivacy/community_feed.go"
+      ],
+      "tests": [
+        "TestFeedSchemaRequiresUniqueKeysPostgres",
+        "TestFeedViewDedupKeyLossFailsClosedPostgres"
+      ],
+      "initialReproduction": "FAIL on original eec8f4e implementation; all three missing keys were accepted and a repeated view committed without the daily key.",
+      "reproductionLog": "/home/hnuhole/feed-backend-review-20261019/key-repro.log"
+    }
+  ],
+  "reviewCoverage": {
+    "api": "Strict request/response allowlists, current Bearer/final Gate, safe headers/errors and legacy DTO compatibility reviewed; real HTTPS and parser regressions passed.",
+    "migration": "0019 SQL remains unchanged. Fresh 0001..0019 and populated 0018 upgrade, existing post/content/task/channel preservation, Down refusal, restricted role and closure hooks rerun.",
+    "views": "Shanghai midnight, author-account exclusion, retry dedup, two concurrent accounts/12 requests, non-author reads not counting, aggregate failure rollback and post-checkpoint Gate boundaries covered.",
+    "blocking": "Catalog-only complete account set, canonical same-set retries, selected channel/all-blocked/reset and filtering before SQL LIMIT reviewed.",
+    "pagination": "Stable same-time order, initial publication ceiling, scope/account/channel/limit/expiry binding; deletes/hides between pages refill the page, removal of final unread row terminates; preference A-to-B-to-A cannot revive an old cursor."
+  },
+  "localChecks": [
+    {
+      "command": "go test -mod=readonly ./...",
+      "result": "PASS",
+      "scope": "All Go host packages; absent-DSN suites retain their declared SKIP and are not SQL acceptance."
+    },
+    {
+      "command": "go build -mod=readonly ./...",
+      "result": "PASS"
+    },
+    {
+      "command": "go vet -mod=readonly ./...",
+      "result": "PASS"
+    },
+    {
+      "command": "FEED_GOOSE=/mnt/e/Hnuhole-env/linux/bin/goose PGPORT=55440 sh authlab/run-feed-isolated.sh",
+      "result": "PASS",
+      "topLevelPassed": 33,
+      "passedIncludingSubtests": 70,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python -X utf8 packages/openapi/check-specs.py",
+      "result": "PASS",
+      "documents": 11
+    },
+    {
+      "command": "python -X utf8 tools/check-community-text-contract.py",
+      "result": "PASS",
+      "protectedOperations": 14
+    }
+  ],
+  "environment": "Existing Go1.22.2, PostgreSQL16.15, Goose3.22.1; new task-owned private socket cluster in WSL Linux filesystem, non-root; synthetic accounts only; runner stopped/removed its databases.",
+  "testedInputs": {
+    "base": "eec8f4e844f02976d3fac941f16754ea25de1bea",
+    "description": "Corrected working tree delta; documentation does not alter these runtime/test inputs.",
+    "changedFiles": [
+      {
+        "path": "services/api/internal/authprivacy/community_feed.go",
+        "sha256": "4fd2864d6426981da15a76053fd8f61428a1bf0fc1b5458bcfa69a28da9db1b6"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_feed_schema.go",
+        "sha256": "0cba62fca11ec09e8bfd2cb80d822687e41c4534c6a83b7c84b57c4ad1484b09"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_feed_review_test.go",
+        "sha256": "01c874ae61dd87dffbfa8820dd30cc7a901f0d6f6218394234d987144c65929b"
+      }
+    ]
+  },
+  "logs": {
+    "committed": false,
+    "directory": "/home/hnuhole/feed-backend-review-20261019",
+    "finalSql": "review-sql.log",
+    "host": "host.log"
+  },
+  "ci": "PR #27 live checks for the corrected delivery head are authoritative; previous eec8f4e checks do not certify the fix.",
+  "mergeAssessment": "No remaining technical blocker found after the fix and local regression; confirm corrected-head CI and required independent review before merging.",
+  "reviewIndependence": "Same-assistant technical review of its prior implementation; not an independent colleague or GitHub member approval.",
+  "boundaries": {
+    "publicApiChanged": false,
+    "migrationSqlChanged": false,
+    "authenticationOrAnonymityChanged": false,
+    "formalFrontend": "NOT_RUN",
+    "devices": "NOT_RUN",
+    "production": "NOT_RUN",
+    "merged": false,
+    "autoMergeEnabled": false,
+    "deployed": false
+  }
+}

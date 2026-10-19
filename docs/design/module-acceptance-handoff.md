@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-19 FEED-BACKEND-01 复核：**B03/B04/B12及A03/P01受影响边界重新验证。修复三表主键未被启动校验、每日冲突未指定键造成的故障状态重复计数；新增失败回滚、跨账号并发、翻页内容失效、偏好改回原值等回归。修复版33顶层／70含子项真实SQL/race/TLS、Go宿主/build/vet、11份API与旧契约PASS，记录在[本轮证据](feed-backend-review-20261019.json)。此为同一代理技术复核，不代独立成员批准；设备／前端／生产与完整模块边界不扩张，未合并／部署。
+
 > **2026-10-19 FEED-BACKEND-01 后端限定 PASS：**B03新时间列表、B04账号通道屏蔽、B12 HEAT-07浏览计数已在 `codex/feat/feed-backend` 实现；共享存储／授权影响的 A03/P01 与旧帖子生命周期已复验。真实SQL/race/TLS 29顶层／61含子项零跳过，Go全量宿主/build/vet、11份API与旧DTO契约通过；版本、源码／测试路径、实际命令与初次失败见[机器记录](feed-backend-verification-20261019.json)，运行／前端接续见[接线契约](feed-backend-contract.md)。未合并、设备／正式前端／生产 NOT_RUN，各完整模块保持原未完成边界；PR与独立review见[任务](../branches/feat-feed-backend.md)。
 
 > **2026-10-19 Gate取消误冻结修复已合入main：**[PR #25](https://github.com/zewbby/HnuHole/pull/25)，`54a6768`。发布前取消不误冻结；发布后以独立限时SQL context收尾，真实故障仍fail closed。真实C/V SQL/TLS复现及修复回归、独立审查和固定head八项适用CI通过；两项Android旧流程明确SKIP。新建测试工具/库已清理，旧APK和恢复归档摘要不变；未部署、未发布、未重验手机，原单次触发因无请求trace仍未确定。见[任务](../branches/fix-gate-cancellation-freeze.md)、[合并回执](gate-cancellation-main-merge-20261019.json)与[清理记录](gate-cancellation-cleanup-20261019.json)。

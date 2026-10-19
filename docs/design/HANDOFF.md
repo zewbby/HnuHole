@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-19 PR #27 复核增量：**同一代理复核接口、迁移、计数、屏蔽与分页，真实复现并修复“去重主键丢失仍放行并重复计数”的P2；新增精确主键启动校验及显式冲突目标，不改0019 SQL与公开契约。修复版 Go宿主/build/vet、11份API、真实SQL/race/TLS 33顶层／70含子项零跳过通过；旧29／61属于原版。见[复核记录](feed-backend-review-20261019.json)与[任务](../branches/feat-feed-backend.md)，修复版最终head CI以PR为准，不冒充独立成员批准；按用户指令不合并、不部署。
+
 > **2026-10-19 FEED-BACKEND-01 本分支交付：**基于最新 main `fc2348f` 的独立 `codex/feat/feed-backend`，新增0019、HEAT-07真实浏览／账号上海自然日去重、跨通道时间稳定游标及账号通道屏蔽（分页前过滤）。旧鉴权、匿名 DTO 与旧接口兼容；Go全量宿主/build/vet、真实SQL/race/TLS 29顶层／61含子项及11份API通过。仅后端分支范围，PR／CI见[任务](../branches/feat-feed-backend.md)与[记录](feed-backend-verification-20261019.json)，未合并／部署。下一前端按[接线顺序](feed-backend-contract.md#前端接入)使用新 `/feed`、账号偏好及正文显示后的 `/views`；不搬入旧UI整包，不扩展其他业务，设备／生产未验。
 
 > **2026-10-19 Gate取消误冻结修复已合入main：**[PR #25](https://github.com/zewbby/HnuHole/pull/25)，`54a6768`。发布前取消不误冻结；发布后以独立限时SQL context收尾，真实故障仍fail closed。真实C/V SQL/TLS复现及修复回归、独立审查和固定head八项适用CI通过；两项Android旧流程明确SKIP。新建测试工具/库已清理，旧APK和恢复归档摘要不变；未部署、未发布、未重验手机，原单次触发因无请求trace仍未确定。见[任务](../branches/fix-gate-cancellation-freeze.md)、[合并回执](gate-cancellation-main-merge-20261019.json)与[清理记录](gate-cancellation-cleanup-20261019.json)。

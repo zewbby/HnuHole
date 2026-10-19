@@ -36,6 +36,18 @@ func checkFeedSchema(ctx context.Context, pool *pgxpool.Pool, required bool) err
  AND NOT EXISTS(SELECT 1 FROM unnest($2::text[]) AS c(name) WHERE NOT EXISTS(SELECT 1 FROM pg_attribute WHERE attrelid=to_regclass('c_posts.'||$1) AND attname=c.name AND attnum>0 AND NOT attisdropped))`, table, names).Scan(&valid); err != nil || !valid {
 			return errPostSchema
 		}
+		key := names[:1]
+		if table == "post_daily_views" {
+			key = names
+		}
+		// These exact immediate keys are required by all three UPSERTs. A
+		// partial restore must fail before serving, rather than lose dedup.
+		if err := pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM pg_constraint k
+ WHERE k.conrelid=to_regclass('c_posts.'||$1) AND k.contype='p' AND k.convalidated AND NOT k.condeferrable
+ AND k.conkey=ARRAY(SELECT a.attnum FROM unnest($2::text[]) WITH ORDINALITY AS required(name,position)
+ JOIN pg_attribute a ON a.attrelid=k.conrelid AND a.attname=required.name AND NOT a.attisdropped ORDER BY required.position))`, table, key).Scan(&valid); err != nil || !valid {
+			return errPostSchema
+		}
 	}
 	if err := pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM pg_trigger t JOIN pg_proc p ON p.oid=t.tgfoid WHERE t.tgrelid='c_auth.accounts'::regclass AND t.tgname='feed_account_closed' AND t.tgenabled='O' AND NOT t.tgisinternal AND p.oid='c_posts.clear_closed_account_feed()'::regprocedure AND NOT p.prosecdef),current_user='hnuhole_c_runtime'`).Scan(&valid, &runtime); err != nil || !valid {
 		return errPostSchema
