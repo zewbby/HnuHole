@@ -1,0 +1,30 @@
+{
+  "atUtc": "2026-10-19T05:42:22.712059+00:00",
+  "pr": 23,
+  "url": "https://github.com/zewbby/HnuHole/pull/23",
+  "merged": true,
+  "mergeSha": "b6cc077894bab684783f84488880f655c5065e78",
+  "head": "6baa40fd18c2ba7c4bc8eba7b358fe79326c04b8",
+  "baseBeforeMerge": "1a810944787eacb66e2115e1ce77de08190c366a",
+  "method": "squash",
+  "checks": [
+    {
+      "name": "policy",
+      "conclusion": "success",
+      "id": 117908487269
+    },
+    {
+      "name": "integration-boundaries",
+      "conclusion": "success",
+      "id": 117908158377
+    }
+  ],
+  "memberApprovals": [],
+  "independentAgentReview": true,
+  "normalMergeNoBypass": true,
+  "productionRelease": false,
+  "mergedAt": "2026-10-19T05:42:22Z",
+  "mergeTree": "174e510ff41e20f4af6a75444eed4d34f8b8c850",
+  "headTree": "174e510ff41e20f4af6a75444eed4d34f8b8c850",
+  "treeEqual": true
+}

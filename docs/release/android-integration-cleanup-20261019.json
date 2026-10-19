@@ -1,0 +1,43 @@
+{
+  "result": "SCOPED_RESOURCES_CLOSED_LINUX_REMOVED_WINDOWS_SDK_DELETE_BLOCKED",
+  "linux": {
+    "atUtc": "2026-10-19T05:44:16.190292+00:00",
+    "result": "PASS_OWNED_LINUX_RUNTIME_REMOVED_AFTER_VERIFIED_RETENTION",
+    "removedRoot": "/home/hnuhole/android-integration-20261019-runtime",
+    "privateArchiveSha256": "ae975e0516c8953ce7ae672b21152eb0ca2810cd1d17e0fb20a6165dc6399bb9",
+    "candidateSha256": "4df3f7c85f6bb312fde1034d577c093136b6f0c989daeea70a65f32aa624ac0f",
+    "sourceSha": "1a810944787eacb66e2115e1ce77de08190c366a",
+    "ownedPostgresStopped": 3,
+    "activeOwnedProcesses": 0,
+    "otherSessionResourcesTouched": false,
+    "readOnlyOwnedCacheDirectoriesMadeWritable": 1200,
+    "cleanupHarnessHistory": [
+      "WSL git bundle check first used Windows worktree cwd; corrected to owned Linux source cwd before any removal",
+      "Initial removal stopped at read-only owned Go module cache; only owned remaining directories made writable before narrow continuation"
+    ],
+    "retained": [
+      "ordinary candidate",
+      "private backend/signing/evidence archive",
+      "product/delivery source bundles",
+      "pinned installer archives",
+      "phone evidence and closed-window receipt",
+      "execution/reproduction scripts"
+    ]
+  },
+  "windows": {
+    "result": "BLOCKED_AUTOMATIC_APPROVAL_REJECTED_DIRECTORY_DELETE",
+    "retainedSdk": "E:\\HnuHole-android-integration-20261019\\runtime\\phone-window-20261019\\sdk",
+    "bytes": 17529398,
+    "adbServerStopped": true,
+    "ownedPort5159Listening": false,
+    "automaticApprovalReason": "blocked by policy; no further reason returned",
+    "attempts": 2,
+    "saferAttempt": "independent read-only owner/path/closure/installer-hash verification followed by literal-path native PowerShell deletion also rejected",
+    "privateLoginNote": "retained in private phone evidence directory; excluded from ordinary candidate and Git",
+    "otherSessionResourcesTouched": false
+  },
+  "phoneWindow": "CLOSED; no more ADB",
+  "servicesAndThreeDatabases": "STOPPED",
+  "privateRetention": "VERIFIED_6605_FILES",
+  "otherSessionResourcesTouched": false
+}

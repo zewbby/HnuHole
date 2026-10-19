@@ -23,5 +23,6 @@
   "sourceBundleSha256": "f49cc8c0fed62a53686b87a1fff9454d7d23a38f9669f09593d72959a34812be",
   "buildResourcesStopped": "PASS_OWNED_BUILD_PROCESSES_STOPPED",
   "phoneWindowClosed": "CLOSED",
-  "largeCacheDeletion": "PENDING_AFTER_MERGE; stopped and preserved already"
+  "largeCacheDeletion": "SCOPED_RESOURCES_CLOSED_LINUX_REMOVED_WINDOWS_SDK_DELETE_BLOCKED",
+  "cleanupEvidence": "docs/release/android-integration-cleanup-20261019.json"
 }

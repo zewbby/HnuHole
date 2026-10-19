@@ -1,6 +1,6 @@
 # Android 集成候选（2026-10-19）
 
-状态：固定 APK、必要新增恢复和限定设备治理连接完成；待本任务 PR 审查/检查后合并，未部署或正式发布。中途 Gate incident 已正式恢复，根因待所属模块分析；不宣称持续可用。
+状态：固定 APK、必要新增恢复和限定设备治理连接已随 [PR #23](https://github.com/zewbby/HnuHole/pull/23) 合入 main（`b6cc077`）；未部署或正式发布。中途 Gate incident 已正式恢复，根因待所属模块分析；不宣称持续可用。
 
 产品源码固定 `1a810944787eacb66e2115e1ce77de08190c366a`，包含完整评论 [#19](https://github.com/zewbby/HnuHole/pull/19) 与评论举报 [#22](https://github.com/zewbby/HnuHole/pull/22)。不继续追新 main。交付工具和文档的提交与产品源码分别记录，不能把文档提交当作重新构建或设备已测版本。
 
@@ -60,8 +60,10 @@
 
 未重验完整注册、图片发布、评论恢复；沿用有效原证据。新增治理补图/系统选图、实体 TalkBack、多机型矩阵、iOS、跨设备 Passkey、云端及生产/独立运营均 NOT_RUN。未弱化 TLS、Gate 或权限检查。
 
-普通与 `-O` 下各8项交付边界测试通过；当前受限 seed helper 编译成功但未重复播种；Go1.22.2、Goose3.22.1、PostgreSQL16.15、Python3.12.3/Pillow12.3.0、Flutter3.47.5、Java17.0.20.1、build-tools36、NDK28.2.13676358/CMake3.22.1已固定。独立只读复审无剩余 P1/P2，agent 审查不冒充 GitHub 成员批准。CI/合并事实由本任务 PR 和最终合并回执补充。
+普通与 `-O` 下各8项交付边界测试通过；当前受限 seed helper 编译成功但未重复播种；Go1.22.2、Goose3.22.1、PostgreSQL16.15、Python3.12.3/Pillow12.3.0、Flutter3.47.5、Java17.0.20.1、build-tools36、NDK28.2.13676358/CMake3.22.1已固定。独立只读复审无剩余 P1/P2，agent 审查不冒充 GitHub 成员批准。最终head `6baa40fd18c2ba7c4bc8eba7b358fe79326c04b8` 的 policy 与 integration-boundaries 两项最新检查均SUCCESS；普通 Squash 合并树与该head一致，见[实际合并回执](android-integration-main-merge-20261019.json)。无GitHub成员批准，按用户授权及独立agent审查正常合并，无旁路。
 
 候选、私有运行材料、安装/运行/恢复入口及清理回执见[复现说明](android-integration-reproduction-20261019.md)。后端私有凭据仅存专用本地材料；不进普通交付包或仓库。
 
 任务与接续：[任务详情](../branches/ci-android-integration-candidate.md)、[HANDOFF](../design/HANDOFF.md)、[进度](../design/progress.md)。
+
+服务/数据库/构建进程均已停，私有归档6605文件读回验摘要通过，Linux运行环境与SDK/cache已删除。Windows专属ADB SDK目录删除被自动审批拦截，固定字面路径的更安全尝试也仅返回“blocked by policy”；该目录已停用但未删除，不计清理PASS。详见[实际清理回执](android-integration-cleanup-20261019.json)。此补记只反映交付和收尾事实，不重新构建或重验产品。
