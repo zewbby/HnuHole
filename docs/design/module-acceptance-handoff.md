@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-20 FEED-STAGING-01／#30合并及0021部署：限定PASS。**[#30](https://github.com/zewbby/HnuHole/pull/30)经独立同事审查无阻断、最终aab1061适用检查全通过，按用户授权合并为c923fa5（树一致）。共享C51245/V49747现为该主线C0021/V0004；先停写备份、新库完整恢复87项一致，再迁移并保留85项业务摘要，规范权限／签名恢复及8组HTTPS/SQL、前端7组生产Dart客户端严格TLS通过。独立CAS仍aab1061，不改标设备版本；共享及CAS各自隔离故障入口自有账号7项真实C/SQL、工具10项TLS/范围测试及各5种网格图片通过，设备结论由Android维护。见[部署恢复方案](../release/feed-staging-20261020.md)、[脱敏证据](../release/feed-staging-verification-20261020.json)及[故障控制](../release/feed-isolated-faults-20261020.md)。旧0020／未合并叙述为历史快照；worker失败重试及release/profile真实设备性能尚未验，完整模块／生产不升级，未部署正式环境。
+
 > **2026-10-20 FEED-STAGING-01：P03/P05本机隔离部署限定PASS。**归档6605文件校验、C18/V4备份到新实例82项摘要、升级0020旧80项事实保存和精确授权通过；B03/B04/B06/B07/B12共7组实际HTTPS/SQL与生产Dart客户端4项基线检查通过。另隔离的未合并aab1061/0021通过Dart条件写5项，不冒充共享部署。源码、命令、备份及正式恢复限制见[记录](../release/feed-staging-verification-20261020.json)与[方案](../release/feed-staging-20261020.md)；设备证据由验收chat维护，完整模块／生产结论不升级。
 
 > **2026-10-20 FEED-INTERACTION-ORDER-01：B03／B06 条件写限定PASS。**重开A03/A08/B07/B10及C/V隔离回归，新增0021写围栏、正式注销清理和精确权限；真实SQL/race/TLS56顶层／115含子项零失败零跳过，11份API和Go全包/build/vet通过。[证据](feed-interaction-order-verification-20261020.json)记录命令与产品输入；前端条件写／设备另验，未合并／部署，共享仍0020，完整模块结论不升级。

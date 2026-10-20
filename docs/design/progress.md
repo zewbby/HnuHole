@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-20 FEED-STAGING-01／#30合并及0021部署：限定PASS。**[#30](https://github.com/zewbby/HnuHole/pull/30)经独立同事审查无阻断、最终aab1061适用检查全通过，按用户授权合并为c923fa5（树一致）。共享C51245/V49747现为该主线C0021/V0004；先停写备份、新库完整恢复87项一致，再迁移并保留85项业务摘要，规范权限／签名恢复及8组HTTPS/SQL、前端7组生产Dart客户端严格TLS通过。独立CAS仍aab1061，不改标设备版本；共享及CAS各自隔离故障入口自有账号7项真实C/SQL、工具10项TLS/范围测试及各5种网格图片通过，设备结论由Android维护。见[部署恢复方案](../release/feed-staging-20261020.md)、[脱敏证据](../release/feed-staging-verification-20261020.json)及[故障控制](../release/feed-isolated-faults-20261020.md)。旧0020／未合并叙述为历史快照；worker失败重试及release/profile真实设备性能尚未验，完整模块／生产不升级，未部署正式环境。
+
 > **2026-10-20 FEED-STAGING-01：隔离部署和联调限定PASS。**共享444d258／C0020/V0004已部署，备份恢复82项摘要、原80项事实保存、最小权限和7组实际HTTPS/SQL通过；42帖及独立A/B账号交给前端/Android。迟到赞藏缺陷交独立PR30，未合并，临时候选不覆盖共享；[任务](../branches/chore-feed-staging.md)／[发布与恢复方案](../release/feed-staging-20261020.md)。正式部署未授权，完整模块结论不升级。
 
 > **2026-10-20 FEED-INTERACTION-ORDER-01：后端限定PASS。**独立 `codex/fix/feed-interaction-order` 修复赞藏未知结果后迟到覆盖后续意图，新增0021持久条件写版本，保持DTO和无条件旧接口兼容。56顶层／115含子项SQL/race/TLS、Go全包/build/vet及11份API通过；[任务](../branches/fix-feed-interaction-order.md)／[证据](feed-interaction-order-verification-20261020.json)。未合并／部署，最终head CI和独立审查待PR；共享444d258／0020不变，正式环境未触碰。

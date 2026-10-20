@@ -40176,13 +40176,13 @@
     "sqlPassedIncludingSubtests": 115,
     "sqlFailed": 0,
     "sqlSkipped": 0,
-    "sharedEnvironmentUpdated": false,
-    "mainMerged": false,
+    "sharedEnvironmentUpdated": true,
+    "mainMerged": true,
     "productionDeployed": false,
     "fullModuleResultsPromoted": false,
     "independentMemberApproval": false
   },
-  "currentFeedStaging20261020": {
+  "previousFeedStagingMain20Snapshot20261020": {
     "task": "FEED-STAGING-01",
     "branch": "codex/chore/feed-staging",
     "result": "ISOLATED_SHARED_MAIN0020_READY_SCOPED_PASS",
@@ -40205,6 +40205,38 @@
     "actualHTTPSGroupsPassed": 7,
     "consumerDartBaseline": "PASS_4_CHECKS",
     "consumerDartCAS": "PASS_5_CHECKS_ON_ISOLATED_UNMERGED_AAB1061",
+    "taskDocument": "docs/branches/chore-feed-staging.md",
+    "evidence": "docs/release/feed-staging-verification-20261020.json",
+    "releaseRecoveryPlan": "docs/release/feed-staging-20261020.md",
+    "formalDeployment": false,
+    "fullModuleResultChanged": false,
+    "productionTouched": false
+  },
+  "currentFeedStaging20261020": {
+    "task": "FEED-STAGING-01",
+    "branch": "codex/chore/feed-staging",
+    "result": "ISOLATED_SHARED_MAIN0021_READY_SCOPED_PASS",
+    "sourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "schema": {
+      "c": 21,
+      "v": 4
+    },
+    "modules": [
+      "P03",
+      "P05",
+      "B03",
+      "B04",
+      "B06",
+      "B07",
+      "B12"
+    ],
+    "restoredFingerprintEntries": 87,
+    "preservedBusinessFingerprintEntries": 85,
+    "actualHTTPSGroupsPassed": 8,
+    "consumerDartMain21": "PASS_7_STRICT_HTTPS_CHECKS",
+    "isolatedFaultSelftest": "PASS_7_REAL_PRODUCT_HTTPS_SQL_CHECKS",
+    "isolatedFaultToolTests": 10,
+    "workerFailureDevice": "NOT_RUN",
     "taskDocument": "docs/branches/chore-feed-staging.md",
     "evidence": "docs/release/feed-staging-verification-20261020.json",
     "releaseRecoveryPlan": "docs/release/feed-staging-20261020.md",
