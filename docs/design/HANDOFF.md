@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> FEED-INTERACTIONS-UI-01：2026-10-20 从 main 444d258 建独立 feat/feed-interactions-ui；列表/详情互动接线进行中，analyze0、544项Flutter宿主回归PASS。未知PUT迟到写等待独立CAS修复，真实联调/Android候选/设备/PR仍在推进；不提升完整模块或发布结论。见 [任务](../branches/feat-feed-interactions-ui.md)。
+> FEED-INTERACTIONS-UI-01：2026-10-20，独立 feat/feed-interactions-ui／[Draft PR #31](https://github.com/zewbby/HnuHole/pull/31)，真实赞/藏/评论数与列表详情共享状态已接通；分析0、565宿主、HTTPS/SQL、7张渲染、同签APK限定PASS。360dp缺陷已由Android会话复验修复；2003忙态穿透/失权媒体跳位已修并升Max复核，2004独立0021候选两缺陷已真机复验PASS；FA15设备强丢响应BLOCKED。依赖后端#30尚未合并，main整合/最终CI待完成，2004评论0→2→0及7项只读SQL对照PASS，Android独立报告按各版本范围记录；不合并或发布，不升级完整模块。见[任务](../branches/feat-feed-interactions-ui.md)／[机器记录](feed-interactions-ui-verification-20261020.json)。
 
 > **2026-10-20 FEED-INTERACTIONS-01 本分支后端限定PASS：**基于已合入 #27／#28 的 main `f3454d1`，用户指定独立 `feat/feed-interactions`；新增0020、账号级幂等赞／藏及批量／单帖摘要，评论数共用既有统计，不改严格FeedPost／旧接口。真实SQL/race/TLS 50顶层／108含子项零失败零跳过、Go全包／11份API通过。前端按[接线契约](feed-backend-contract.md#点赞收藏与评论数接线)独立接入，见[任务](../branches/feat-feed-interactions.md)与[机器记录](feed-interactions-verification-20261020.json)。尚未合并，最终head CI／合并回执以PR为准；不冒充独立成员批准，不扩展收藏列表／通知／热度／私信，未部署或设备／生产验收。下方 #27／#28“未合并”为原送审快照，已由本次核对更新。
 

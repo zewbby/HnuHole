@@ -40152,5 +40152,33 @@
     "independentMemberApproval": false,
     "mainMerged": false,
     "deployed": false
+  },
+  "currentFeedInteractionsUi20261020": {
+    "task": "FEED-INTERACTIONS-UI-01",
+    "recordedOn": "2026-10-20",
+    "branch": "feat/feed-interactions-ui",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/31",
+    "dependency": "https://github.com/zewbby/HnuHole/pull/30",
+    "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
+    "candidateSource": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
+    "result": "HOST_565_HTTPS_SQL_RENDER_BUILD_DEVICE_SCOPED_PASS_FA15_BLOCKED",
+    "modules": [
+      "B03",
+      "B06"
+    ],
+    "affectedRegressionModules": [
+      "A03",
+      "B04",
+      "B07",
+      "B12"
+    ],
+    "evidence": "docs/design/feed-interactions-ui-verification-20261020.json",
+    "report": "docs/branches/feat-feed-interactions-ui.md",
+    "physicalAndroid": "2002 layout and original chains scoped PASS by device owner;2003 busy-tap and media-expiry bugs fixed;2004 FA-D02/FA-O02 and comments0→2→0 plus seven read-only SQL checks scoped PASS;FA15 BLOCKED without controlled response loss",
+    "mainMerged": false,
+    "sharedEnvironmentUpdatedByThisTask": false,
+    "deviceOperatedByThisTask": false,
+    "published": false,
+    "fullModuleResultsPromoted": false
   }
 }

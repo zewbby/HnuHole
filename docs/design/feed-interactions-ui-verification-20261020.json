@@ -1,0 +1,370 @@
+{
+  "schemaVersion": "hnuhole-feed-interactions-ui-verification/v1",
+  "task": "FEED-INTERACTIONS-UI-01",
+  "recordedOn": "2026-10-20",
+  "timeZone": "Asia/Shanghai",
+  "branch": "feat/feed-interactions-ui",
+  "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
+  "candidateSource": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/31",
+  "dependency": "https://github.com/zewbby/HnuHole/pull/30",
+  "status": "HOST_HTTPS_SQL_RENDER_BUILD_DEVICE_SCOPED_PASS_FA15_BLOCKED_DEPENDENCY_UNMERGED",
+  "merged": false,
+  "deployedByThisTask": false,
+  "runtimeAndTestInputs": {
+    ".github/workflows/feed-ui.yml": "0814358c5f039294cfaf76156f02e0e98f5c4bf1b01f09535d69a7655501c2c4",
+    "apps/mobile/android/app/build.gradle.kts": "faf92ef59d8a943aa5eb709cad477ac34062ed31eb68c8915f54528561b04b17",
+    "apps/mobile/integration/feed_live_probe.dart": "373087dbad78343ef4da8707426a555a28b86df261e23da617e6c4d78bf887b1",
+    "apps/mobile/integration/feed_staging_probe.dart": "b943bfdcd7f0f5d38a2afb2a6e40c511b76a49cc4811d26519f5bd583863bdd4",
+    "apps/mobile/lib/main.dart": "9a60d8f6a7b2ef45b48a35ae59dee75b570d3dff8c8f967eb35039b744857c92",
+    "apps/mobile/lib/src/comments/comment_views.dart": "9e9a0416d2032e41c0f20e5914e1a9467b5a8a37d75bd4c7f67066027dc180f2",
+    "apps/mobile/lib/src/design_system/telegram_theme.dart": "5635ccb294558e7f5bb560ce990d6099c08806d810bdf9469712b8c4db1c72f3",
+    "apps/mobile/lib/src/posts/feed_controller.dart": "d3b19b7a182b3a867701c627f6bff677f0569a9bd3c4b11b37b66cd9d2dc62b3",
+    "apps/mobile/lib/src/posts/feed_screen.dart": "1beb0dd9c33275e6f0aed2dc4da7018e4cbb5d501377d46ff48894c26e3af391",
+    "apps/mobile/lib/src/posts/http_post_api.dart": "e7d7c7c8e69a720bc050695f08e63b4ea9fe6de93e4ac9d3bbbe8977c0d3eb36",
+    "apps/mobile/lib/src/posts/post_api.dart": "bd5a6cd258134030c90110d728ea71657d2470ee9f0ff527dbe5da0b3d9b98be",
+    "apps/mobile/lib/src/posts/post_controller.dart": "8d99cb78c6216e8c48d7ae7637c3f84229dd126d9ae250f7a8a4b466a745ed4b",
+    "apps/mobile/lib/src/posts/post_images.dart": "5f57ea411bde2cfaa101ce398873d0fccc12171dab2136e4c730eb2701ed05db",
+    "apps/mobile/lib/src/posts/post_interactions_api.dart": "f1c4d56b6c78eb27e4edb294cba0c0ac1db71a2da3970a57abb4040ee428cf01",
+    "apps/mobile/lib/src/posts/post_interactions_controller.dart": "aba72a3dc780816d2f48c211c3786c11479e18c7da3d7c1ffb4dd0b6e294d942",
+    "apps/mobile/lib/src/posts/post_interactions_http.dart": "6e31beb67fd552a12b0bc31eb331b0dea450aa2d00b9f08f479211dfce541cca",
+    "apps/mobile/lib/src/posts/post_screens.dart": "2559e3952b99bb799fc08b23305e32fe7132b17483cffed40bc8a4c43e8f1d3e",
+    "apps/mobile/lib/src/posts/x_feed.dart": "4ac44dd2288e7068707d95ce7cf11fb6760498acf114030a5a0f04932e447e4f",
+    "apps/mobile/pubspec.lock": "e88241d8383f83f7d5ba9fcdcc65caef7542bb1d583db648bbb321a1c0b3129b",
+    "apps/mobile/pubspec.yaml": "558245ea01729cce45da575807c116564e9ae818efe0a235ca45923267380e24",
+    "apps/mobile/test/feed_interactions_test.dart": "6d5830c6813a1c55ddbef65aa78ad613a1ea2b35c0e79e55f6119ab53f4aa436",
+    "apps/mobile/test/feed_media_test.dart": "77505cb2ec6d7cc314d646a00f314fa979c524499dbe7bf9b3cf14fee99fcb67",
+    "apps/mobile/test/post_api_test.dart": "2a47ff04375d23b96de4e6f28d76c5f4e57d3b169f7060d10e9e735b28c0a2d6",
+    "apps/mobile/test/post_screens_test.dart": "a0d44e77b599469272be9f4b879bd6e031fbe0298344a46804b6349396bc70dc"
+  },
+  "inputDigest": "90c7ddf2c47c0fa331b96b76bad156f9da34732805ce3e43d3d98fd702a4e986",
+  "normalization": "UTF8 CRLF normalized to LF; sorted path TAB digest LF; baseline binds unchanged files",
+  "checks": [
+    {
+      "id": "FIUI-H01",
+      "command": "flutter analyze --no-pub",
+      "result": "PASS",
+      "issues": 0,
+      "log": "apps/mobile/build-interactions-2004-analyze.log",
+      "source": "f8133cf819e655a98d5d53d234a26e4a705c2d10"
+    },
+    {
+      "id": "FIUI-H02",
+      "command": "flutter test --no-pub test --reporter expanded",
+      "result": "PASS",
+      "passed": 565,
+      "failed": 0,
+      "newStateAndRenderTests": 26,
+      "newHttpTests": 4,
+      "log": "apps/mobile/build-interactions-2004-all.log",
+      "newMediaTests": 5,
+      "source": "f8133cf819e655a98d5d53d234a26e4a705c2d10"
+    },
+    {
+      "id": "FIUI-H03",
+      "command": "flutter build bundle --debug --no-pub",
+      "result": "PASS",
+      "artifact": "apps/mobile/build/flutter_assets/kernel_blob.bin",
+      "log": "apps/mobile/build-interactions-2004-bundle.log",
+      "source": "f8133cf819e655a98d5d53d234a26e4a705c2d10"
+    },
+    {
+      "id": "FIUI-R01",
+      "command": "flutter test --no-pub test/feed_interactions_test.dart --plain-name 'render production interaction states' --reporter expanded",
+      "result": "PASS",
+      "count": 7,
+      "viewports": [
+        "402x806",
+        "360x800"
+      ],
+      "pixelRatio": 2,
+      "textScale": [
+        1,
+        2
+      ],
+      "fonts": "Roboto400/500/700 + Android36 Noto Sans CJK SC + MaterialIcons",
+      "fontScope": "Existing local reference fonts, host Flutter renderer, synthetic content",
+      "visualReview": "All seven images reviewed; confirmed single row at360dp, selected flags, distinct unknown retry, original detail and 200% wrapping",
+      "log": "apps/mobile/build-interactions-2004-render.log",
+      "source": "f8133cf819e655a98d5d53d234a26e4a705c2d10"
+    },
+    {
+      "id": "FIUI-S01",
+      "command": "dart run integration/feed_staging_probe.dart <private-front-accounts> <shared-public-defines> build/feed-staging-baseline-result.json baseline",
+      "result": {
+        "status": "PASS",
+        "mode": "baseline",
+        "backendSource": "444d25862a83d3a8d40168ef660e50da0712b71e",
+        "schema": {
+          "c": 20,
+          "v": 4
+        },
+        "checks": [
+          "two_synthetic_accounts",
+          "real_feed_pagination",
+          "batch_comment_context_agreement",
+          "protected_single_and_carousel_bytes"
+        ],
+        "cas": "NOT_RUN"
+      },
+      "frontendProbeSource": "5b5cad592e03f674e04eb5da88a9fa756c1b36f2",
+      "candidateScope": "Probe and HTTP/controller transport unchanged at f8133cf; later runtime changes are action/media gesture and placeholder layout only. Actual staging probes not rerun for this layout-only fix."
+    },
+    {
+      "id": "FIUI-S02",
+      "command": "dart run integration/feed_staging_probe.dart <private-author-reporter> <cas-public-defines> build/feed-staging-cas-result.json cas",
+      "result": {
+        "status": "PASS",
+        "mode": "cas",
+        "backendSource": "aab1061e4403c0ec87749f9986ec71feecb49ba8",
+        "schema": {
+          "c": 21,
+          "v": 4
+        },
+        "checks": [
+          "two_synthetic_accounts",
+          "real_feed_pagination",
+          "batch_comment_context_agreement",
+          "protected_single_and_carousel_bytes",
+          "conditional_write_and_account_flags",
+          "restore_then_reject_late_condition"
+        ],
+        "cas": "PASS",
+        "media": "PASS"
+      },
+      "frontendProbeSource": "5b5cad592e03f674e04eb5da88a9fa756c1b36f2",
+      "candidateScope": "Probe and HTTP/controller transport unchanged at f8133cf; later runtime changes are action/media gesture and placeholder layout only. Actual staging probes not rerun for this layout-only fix."
+    },
+    {
+      "id": "FIUI-S03",
+      "command": "FEED_DART_PROBE=<compiled Linux shipped Dart probe> FEED_TEST_PATTERN=^TestRealHTTPSFeedDartPostgres$ PGPORT=55443 <owned isolated runner>",
+      "result": "PASS",
+      "executedBy": "新版列表测试环境与后端联调",
+      "backendSource": "aab1061e4403c0ec87749f9986ec71feecb49ba8",
+      "seconds": 10.02,
+      "failed": 0,
+      "skipped": 0,
+      "log": "E:/HnuHole-feed-staging-20261020/runtime/frontend-linux-probe.log",
+      "logSha256": "81d87eeb06ca455d0453748c0b87bd1d6da90904b912f0525ac9506b83d08166",
+      "scope": "Actual C HTTPS and disposable PostgreSQL; nonmatching package output not counted",
+      "frontendProbeSource": "5b5cad592e03f674e04eb5da88a9fa756c1b36f2",
+      "candidateScope": "Probe and HTTP/controller transport unchanged at f8133cf; later runtime changes are action/media gesture and placeholder layout only. Actual staging probes not rerun for this layout-only fix."
+    },
+    {
+      "id": "FIUI-A01",
+      "command": "apps/mobile/build/build-feed-candidate.ps1 -BuildNumber 2026102004 -DefineFile <cas-public/app-defines.json>",
+      "result": "PASS",
+      "tasks": 301,
+      "recipe": "Local ignored Gradle helper with explicit original test signing environment, loopback public CA defines, locked full native plugin graph, existing HTTPS repository mirrors and installed SDK/CMake",
+      "log": "apps/mobile/build-interactions-android-2004.log",
+      "source": "f8133cf819e655a98d5d53d234a26e4a705c2d10"
+    },
+    {
+      "id": "FIUI-A02",
+      "command": "apksigner verify --print-certs <2004.apk>; aapt dump badging <2004.apk>; inspect packaged kernel",
+      "result": "PASS",
+      "compiledKernelSha256": "1426f5c0e6b3968cc32f5a9668d7a1effe799bae08e24717978fc8ade93f50b2",
+      "compiledDefinesVerified": [
+        "If-Interaction-Version",
+        "https://127.0.0.1:50649",
+        "https://127.0.0.1:41979"
+      ],
+      "abis": "arm64 Flutter engine; inherited native plugins also contain small armeabi-v7a/x86_64 libraries",
+      "source": "f8133cf819e655a98d5d53d234a26e4a705c2d10"
+    }
+  ],
+  "renders": {
+    "android-2004-media-expired.png": "d3f459ac5e6da816965d3e4adc034fe11299476ead7c655c7320e335208b6659",
+    "android-2004-plain-rapid-both.png": "0d4a3248f6413d80417763b53c0c6ece6d9aec838bce2ef596d4b01970decf4c",
+    "android-2004-rapid-both.png": "0f1ec54c2190cfa4865bdd5d87e632c369690fb658b4bcc18eac5ab3381c7dd9",
+    "android-360dp-fixed.png": "e2e0f5894b759871259e1892d238d18dffb52f2571d634ca670dab84ec8f1112",
+    "interactions-360dp.png": "c61b7bb0dccb2927961aa435621449707b239221e1072fc87d4582587ae03b34",
+    "interactions-dark.png": "1bc98a9661db466f33b5e13c92c06d57422d3b89b9da45317b6f18b07133e58b",
+    "interactions-detail.png": "61d02b69815927e67639aff95ac87967c5bc023aa957333893d4aaa8578a343c",
+    "interactions-large-text.png": "6d29ac8fbf1b0f31303839e45c395f8df062c7adfaa7920dc01c700bb9e3dd7e",
+    "interactions-light.png": "1e15b93745cfe124f883b348ba647ad387a2b34e26976623e3327a0611f5b88e",
+    "interactions-retry.png": "0007ecf11f0c471ca28e7cac62cb93153939f9bb677542ec77d8a046dffc000a",
+    "interactions-selected.png": "b6d346f40319f5bc15e814fa81738751bcb46b82069a0372c2cb478992eb473a"
+  },
+  "artifacts": [
+    {
+      "buildNumber": 2026102001,
+      "source": "abd9f35c1856942c33f831e69c07cb856b612390",
+      "environment": "shared0020",
+      "scope": "HISTORICAL_SUPERSEDED_FA-D01",
+      "path": "E:\\Hnuhole-env\\source\\HnuHole-feed-interactions-ui\\apps\\mobile\\build\\feed-candidates\\feed-ui-abd9f35-2026102001.apk",
+      "bytes": 98791596,
+      "sha256": "2c80ed9d6da047a3ff1afc781838389adf160aa6b645c740bb705ef247a505fb",
+      "package": "org.hnuhole.hnuhole_mobile",
+      "mode": "debug/main.dart/arm64/min29/target36",
+      "signingCertificateSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "runtimeDirty": false
+    },
+    {
+      "buildNumber": 2026102002,
+      "source": "c3cc3bb69376add4e35af628dcf9dc524eef1b5f",
+      "environment": "shared0020",
+      "scope": "DEVICE_LAYOUT_ORIGINAL_CHAINS_SCOPED_PASS_CAS_NOT_RUN",
+      "path": "E:\\Hnuhole-env\\source\\HnuHole-feed-interactions-ui\\apps\\mobile\\build\\feed-candidates\\feed-ui-c3cc3bb-2026102002.apk",
+      "bytes": 98791780,
+      "sha256": "56dca4a763c5fca8f1b8ee15b26316d1b56418e3fec8b7e1a6a2497332bb9884",
+      "package": "org.hnuhole.hnuhole_mobile",
+      "mode": "debug/main.dart/arm64/min29/target36",
+      "signingCertificateSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "runtimeDirty": false
+    },
+    {
+      "buildNumber": 2026102003,
+      "source": "5b5cad592e03f674e04eb5da88a9fa756c1b36f2",
+      "environment": "independent_unmerged0021",
+      "scope": "HISTORICAL_SUPERSEDED_FA-D02_FA-O02",
+      "path": "E:\\Hnuhole-env\\source\\HnuHole-feed-interactions-ui\\apps\\mobile\\build\\feed-candidates\\feed-ui-cas-2026102003.apk",
+      "bytes": 98798732,
+      "sha256": "8b1736e6cb875586ccffc67b94b15532b8cd5776e81e8972e2f42bb3a49b3416",
+      "package": "org.hnuhole.hnuhole_mobile",
+      "mode": "debug/main.dart/arm64/min29/target36",
+      "signingCertificateSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "runtimeDirty": false
+    },
+    {
+      "buildNumber": 2026102004,
+      "source": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
+      "environment": "independent_unmerged0021",
+      "scope": "DEVICE_SCOPED_RETEST_AND_COMMENTS_PASS_FA15_BLOCKED",
+      "path": "E:/Hnuhole-env/source/HnuHole-feed-interactions-ui/apps/mobile/build/feed-candidates/feed-ui-cas-2026102004.apk",
+      "bytes": 119545527,
+      "sha256": "d661bc58414a2789a0c383dc854366b135f7b5a65b50f0bdd89853ecf76be55b",
+      "package": "org.hnuhole.hnuhole_mobile",
+      "mode": "debug/main.dart/arm64/min29/target36",
+      "signingCertificateSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "runtimeDirty": false,
+      "packagingStructure": {
+        "zipEntries": 570,
+        "referencedCompressedBytes": 98655963,
+        "centralDirectoryOffset": 119490246,
+        "signingBlockSize": 4088,
+        "note": "Larger than2003 due to unreferenced ZIP space before central directory; verified sign and exact delivered bytes, not a larger native library set"
+      }
+    }
+  ],
+  "review": {
+    "reviewer": "Independent read-only Max subagent explicitly requested for concurrency faults",
+    "executedTestsByReviewer": false,
+    "finalBlockingFindings": 0,
+    "fixed": [
+      "Unknown PUT unlocked using bool instead of persistent fence",
+      "Same-token activity renewal cleared pending locks",
+      "Pending mutations swallowed comment refresh",
+      "Read retry resent an old failed mutation",
+      "Old account page callbacks could operate the current account",
+      "Preflight failure invalidated a pending count refresh",
+      "Busy or disabled action taps fell through to parent post navigation",
+      "Media lease expiry collapsed card geometry",
+      "Lease changes during a pointer gesture passed taps to the parent post",
+      "Narrow large-text media status overflowed and hid retry"
+    ],
+    "independentGitHubMemberApproval": false
+  },
+  "device": {
+    "operator": "新版列表 Android 验收与交付; this frontend task never operated the device",
+    "state": "SCOPED_ACCEPTANCE_PASS_2004_FA15_BLOCKED",
+    "FA-D01": {
+      "initial": "FAIL 2001/abd9f35 at360dp/font_scale1.0: wrapped action row",
+      "fix": "c3cc3bb: width threshold308→260 plus normal/large text geometry regression",
+      "retest": "PASS 2002 on vivo S18 Android15 by device owner",
+      "evidence": "docs/design/feed-interactions-ui/assets/android-360dp-fixed.png"
+    },
+    "2002ScopeReported": [
+      "Text post published/read back; own view excluded",
+      "Native PhotoPicker3 PNG/upload/read back",
+      "Second of3 viewer and saved original-byte SHA equality",
+      "Main comment+reply count2→4; root deletion4→2"
+    ],
+    "fullModuleResultsPromoted": false,
+    "FA-D02": {
+      "initial": "FAIL 2003: busy like button let the parent post receive rapid taps",
+      "fix": "f8133cf819e655a98d5d53d234a26e4a705c2d10: stable no-op gesture layer and three action gesture regressions",
+      "retest": "PASS 2004 on vivo S18 Android15: imaged42 and plain36 each10 like+10 favorite taps at0.35–0.6s; stayed in feed, settled, disabled share did not navigate. Busy taps ignored, not all40 submitted.",
+      "evidence": [
+        "docs/design/feed-interactions-ui/assets/android-2004-rapid-both.png",
+        "docs/design/feed-interactions-ui/assets/android-2004-plain-rapid-both.png"
+      ]
+    },
+    "FA-O02": {
+      "initial": "FAIL 2003: expired media replaced tile with shorter column; controls moved",
+      "fix": "f8133cf819e655a98d5d53d234a26e4a705c2d10: metadata-only geometry, protected image subtree removed, stable gesture layer, bounded scrollable local status",
+      "retest": "PASS 2004: natural expiry83.84s, ImageView=0, card geometry and like bounds[400,1533][584,1677] stable; failed reload with C mapping disconnected and restored successful reload kept sameY",
+      "evidence": "docs/design/feed-interactions-ui/assets/android-2004-media-expired.png"
+    },
+    "2003ScopeReported": [
+      "A to B UI login and new B identity; SQL verified separate preferences and flags",
+      "43 feed items including 42 fixtures paginated20/20/3; no visible duplicate or crash observed in28 screens",
+      "Offline original comment task preserved text and explicit seal returned NOT_ACCEPTED; not evidence of accepted-response-loss retry"
+    ],
+    "FA15": {
+      "result": "BLOCKED",
+      "reason": "No controllable device request-accepted/response-lost injection entry; ordinary offline results do not substitute",
+      "separateEvidence": "Controller interleaving regressions, real CAS conditional requests, backend SQL/TLS/race checks retain their own scope"
+    },
+    "installation2004": "Same-sign upgrade installed; device-pulled APK SHA matched delivered bytes; B session retained",
+    "publicScreenshotReview": "Device owner confirmed three2004 synthetic-content screenshots public; frontend visually inspected copied PNGs. Ordinary status-bar icons/time remain.",
+    "2004CommentsScopeReported": {
+      "result": "PASS",
+      "source": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
+      "flow": "Original UI root+reply: detail0→1→2, return to feed2; comment like0→1→0; delete own root: detail0 and feed0",
+      "sqlReceipt": "cas-device-comments-readonly-2004.json; environment owner performed seven read-only checks PASS, each marker uniquely published/accepted, deleted=true/bodyPresent=true, visible0 and own comment liked=false/count0",
+      "scope": "Visible deletion, not physical erasure; production/main not covered"
+    },
+    "independentReport": "E:/Hnuhole-env/source/HnuHole-feed-android-acceptance/docs/design/feed-android-acceptance-20261020.md",
+    "independentMachineRecord": "E:/Hnuhole-env/source/HnuHole-feed-android-acceptance/docs/design/feed-android-acceptance-20261020.json"
+  },
+  "ci": {
+    "head": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
+    "state": "SIX_WORKFLOWS_PASS_FEED_UI_REAL_PROBE_FAIL_DEPENDENCY_UNMERGED",
+    "previousHead": "5b5cad592e03f674e04eb5da88a9fa756c1b36f2",
+    "previousRuns": "Six workflows PASS; Feed UI host step PASS and real conditional_like probe FAIL (PostFailure); job118437037626/run39364176199 logs read",
+    "dependencyBlock": "Main0020 lacks version headers. Requires backend#30 authorized merge and actual main integration rerun. Candidate Linux probe PASS does not turn main CI green.",
+    "workflow": ".github/workflows/feed-ui.yml",
+    "currentRun": 39366060156,
+    "currentJob": 118443062283,
+    "currentHostStep": "PASS: analysis, feed regressions, production bundle, both pure Dart probes compiled",
+    "currentRealStep": "FAIL: conditional_like PostFailure against current main0020; decoded log inspected",
+    "passedWorkflowRuns": {
+      "Collaboration": 39366306986,
+      "Post images": 39366060138,
+      "Report moderation": 39366060286,
+      "Comments backend text": 39366060143,
+      "Comments core": 39366060166,
+      "Android prerelease": 39366060153
+    }
+  },
+  "failureHistory": [
+    "Initial nullable Dart request body failed compilation; corrected and reran",
+    "Existing widget mock needed supportsInteractions=false; fixed without bypassing production behavior",
+    "First host font load scheduled async IO outside runAsync and hung; terminated only this render and corrected IO scope",
+    "Initial private staging probe used16-byte auth key; client rejected before network; corrected to protocol32-byte key, both real probes passed",
+    "First attempted local build preceded wrapper generation; generated ignored wrapper using existing SDK, then full native build passed",
+    "Local Gradle property did not override versionCode; amended ignored local.properties recipe and verified actual2002/2003 badging; mismatched intermediate artifact never delivered",
+    "FA-D01 device three-row layout fixed and actually retested; old2001 evidence retained",
+    "FA-D02 device busy-tap navigation and FA-O02 expiry layout change reproduced on2003; fixed with Max review and regressions on2004",
+    "Media test initially expected zero width under a fixed-width parent; corrected to height0. New gesture test initially targeted section whitespace instead of the image; corrected to actual tile center and both transitions PASS"
+  ],
+  "notRun": [
+    "Final merged-main integration while backend#30 awaits merge authorization",
+    "Full physical Android matrix/TalkBack/iOS/production",
+    "FA15 physical Android strong response-loss interleaving: BLOCKED without controlled fault injection"
+  ],
+  "excluded": [
+    "Direct messaging",
+    "Production release",
+    "Shared environment updates by this task",
+    "Device operations by this task"
+  ],
+  "publicBuildInputs": {
+    "E:/HnuHole-feed-staging-20261020/runtime/cas-public/app-defines.json": "1a40c03655f8d1b8104e4b2022f6ba4db6cbe00f2aff233d0e7be6755f42542c",
+    "E:/HnuHole-feed-staging-20261020/runtime/cas-public/dev-ca.pem": "072f9cc70894d5dbb401f71a3bd5466db3f848898cced29ff2c88dac387295d0",
+    "apps/mobile/build/build-feed-candidate.ps1": "d407fff677c3b5cc40c8ff23fc1b3a2883a68a08748e57d34d20fb3aae66e3c0",
+    "apps/mobile/build/feed-repositories.init.gradle": "80a19f8a5cfdea0d7cb2966ac504dfa62c52d78faf0515a97ea3e67f8c19bd48"
+  },
+  "laterChangesScope": "Only delivery documents remain dirty when building2004; production and test source bound to f8133cf"
+}
