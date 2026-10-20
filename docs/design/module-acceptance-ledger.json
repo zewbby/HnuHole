@@ -16509,7 +16509,8 @@
         "result": "PASS_SCOPED_WITH_RETAINED_GATE_INCIDENT",
         "report": "docs/release/android-integration-candidate-20261019.md",
         "fullModuleResultUnchanged": true
-      }
+      },
+      "feedWorkerRetrySupplement20261020": "docs/design/comment-failure-reconcile-verification-20261020.json"
     },
     {
       "id": "B08",
@@ -40344,5 +40345,17 @@
     "deviceOperatedByFrontend": false,
     "sharedEnvironmentUpdatedByFrontend": false,
     "finalGate": "exact final PR HEAD CI + independent review + targeted no blockers, then authorized merge/main2010 and final device smoke; actual receipts in delivery package"
+  },
+  "currentFeedPerfWorkerSupport20261020": {
+    "task": "FEED-PERF-WORKER-SUPPORT-01",
+    "defect": "FA-D08",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/36",
+    "sourceCommit": "57dfe5f888986c41c54e073f5e66ba80b4e26371",
+    "evidence": "docs/design/comment-failure-reconcile-verification-20261020.json",
+    "branchRecord": "docs/branches/fix-comment-failure-reconcile.md",
+    "result": "ORIGINAL_TASK_RECOVERY_SCOPED_PASS_FINAL_HEAD_CI_AT_PR",
+    "performance": "BLOCKED_TRUSTED_HTTPS_NOT_READY",
+    "merged": false,
+    "formalRelease": false
   }
 }

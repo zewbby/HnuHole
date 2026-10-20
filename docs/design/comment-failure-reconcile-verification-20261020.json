@@ -1,0 +1,256 @@
+{
+  "task": "FEED-PERF-WORKER-SUPPORT-01",
+  "defect": "FA-D08",
+  "updatedAtUtc": "2026-10-20T14:47:44.426490+00:00",
+  "branch": "codex/fix/comment-failure-reconcile",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/36",
+  "baseMain": "30401b8034b9ffdb2df07debf4b174adb04a138c",
+  "sourceCommit": "57dfe5f888986c41c54e073f5e66ba80b4e26371",
+  "sourceTree": "c10e346409864c9ac1139bd6669d89bfce4bf640",
+  "status": "ORIGINAL_FAILED_TASK_RECOVERY_SCOPED_PASS_FINAL_HEAD_CI_AT_PR",
+  "merged": false,
+  "formalRelease": false,
+  "modules": [
+    "B07"
+  ],
+  "relatedAuthorityRegression": [
+    "A03",
+    "B10"
+  ],
+  "rootCause": "Failure page read the remote FAILED task but left the existing journal ACCEPTED after 40 automatic polls; retry requires core-confirmed settled FAILED.",
+  "implementation": [
+    "Reconcile the original command before owner task display and check the account window afterward",
+    "Require matching taskId, attemptVersion, binding and settled FAILED for existing local entry actions",
+    "Keep unknown RETRY/ABANDON and busy reconciliation uneditable",
+    "Fence retained-image read and post-action reload against old-account action/callback",
+    "Preserve edited body, retained image and fresh owner recovery without local entry"
+  ],
+  "candidate": {
+    "task": "FEED-PERF-WORKER-SUPPORT-01",
+    "defect": "FA-D08",
+    "recordedAtUtc": "2026-10-20T14:36:45.291256+00:00",
+    "sourceCommit": "57dfe5f888986c41c54e073f5e66ba80b4e26371",
+    "sourceTree": "c10e346409864c9ac1139bd6669d89bfce4bf640",
+    "baseMain": "30401b8034b9ffdb2df07debf4b174adb04a138c",
+    "branch": "codex/fix/comment-failure-reconcile",
+    "workingTreeClean": true,
+    "apk": "E:\\Hnuhole-env\\source\\HnuHole-comment-failure-reconcile\\apps\\mobile\\build\\comment-failure-candidates\\comment-failure-reconcile-57dfe5f-2026102011.apk",
+    "bytes": 98806364,
+    "sha256": "9815825f29fd57895f9d00ef7acfa6996dfd9cd09fc3c147ddcaf7527cfbf0f0",
+    "versionCode": 2026102011,
+    "buildMode": "debug",
+    "entrypoint": "lib/main.dart",
+    "package": "org.hnuhole.hnuhole_mobile",
+    "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+    "signatureVerification": "PASS",
+    "kernelSha256": "ed38ef8251458f721df0e07f538fc1b6dc4ead7dac96a8fa94d39ba1b039609d",
+    "flutterEngineLibraries": [
+      "lib/arm64-v8a/libflutter.so"
+    ],
+    "runtimeDiffFrom2010": [
+      "apps/mobile/lib/src/comments/comment_failure_view.dart"
+    ],
+    "publicDefinesSha256": "f7d52b05297121684c89e643480ce4a5f2e0ab1b4fed165b4d6a2f1f431c7862",
+    "publicCaSha256": "57487d56e2d50327bfbf2ca9bb0db4952a050efef6c4fb85ac9990ffbf9cbda4",
+    "communityOrigin": "https://127.0.0.1:51245",
+    "verifierOrigin": "https://127.0.0.1:49747",
+    "backend": "shared c923fa5a / C0021 / V0004 / original direct C51245 V49747",
+    "installRestartBoundary": "Device retry proves retained-task recovery; deterministic host budget-exhaustion regression proves stale-core fix.",
+    "formalRelease": false,
+    "merged": false
+  },
+  "localValidation": {
+    "flutterAnalyzeIssues": 0,
+    "affectedTestsPassed": 76,
+    "newFailurePageCases": 10,
+    "fullAppRepeatedLocally": false,
+    "androidBuildTasks": 301,
+    "androidBuildSeconds": 53,
+    "commands": [
+      "flutter analyze --no-pub",
+      "flutter test --no-pub test/comment_failure_view_test.dart test/comment_core_test.dart test/comment_journal_test.dart test/comment_http_test.dart test/comment_runtime_test.dart test/comment_views_test.dart --reporter expanded",
+      "build/build-feed-candidate.ps1 -BuildNumber 2026102011"
+    ],
+    "history": "Initial new-fixture failures and analyzer unnecessary import preserved in delivery logs; final affected suite and analysis passed. Old 25/615 and baseline red-green were not repeated.",
+    "scope": "Production session/runtime/core/page with HTTP and storage adapters; comment_journal_test separately exercises encrypted SQLite. Native device evidence is independent."
+  },
+  "independentReview": {
+    "reviewer": "/root/interaction_race_max",
+    "result": "NO_REMAINING_STATIC_BLOCKERS",
+    "githubCommentReviewId": 5586680776,
+    "githubMemberApproval": false,
+    "testsRunByReviewer": false
+  },
+  "device": {
+    "summary": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\d08-2011-device-retest-summary.json",
+    "sha256": "86fe897487c5d6a294fa72b87635442c5cdb1172b4a74f4a4f731164022240cd",
+    "result": "PASS_ORIGINAL_FAILED_TASK_RECOVERY",
+    "device": "realme RMX3366 / Android14 API34",
+    "versionCode": 2026102011,
+    "installBoundary": "Same-signature upgrade restarts the app. Device proof covers the original retained task/body/image/identity and single retry; deterministic host budget-exhaustion case proves the same-process stale-core fix. No second failure task or repeated 15-minute wait."
+  },
+  "worker": {
+    "backend": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "schema": {
+      "C": 21,
+      "V": 4
+    },
+    "fixtureSource": "14ee26c7381aad31b30472d786d2d81a54ed4400",
+    "fixturePullRequest": "https://github.com/zewbby/HnuHole/pull/35",
+    "fixtureProductMergedOrDeployed": false,
+    "taskId": "7202fe80-9809-483a-9720-d700ce49153e",
+    "commentId": "519c59ca-fa59-45cd-94fd-3de137b5236c",
+    "failedAfterSeconds": 902.335425,
+    "version1": "FAILED/PUBLICATION_FAILED",
+    "version2": "PUBLISHED",
+    "version2PublishSeconds": 0.616413,
+    "acceptedCreateCount": 1,
+    "acceptedRetryCount": 1,
+    "publishedComments": 1,
+    "imageBytes": 1840,
+    "imageSha256": "1fe401f1342a36ea348b936e4a5551533ed4aad59226d5459b065d0ff8d6eb71",
+    "bodyAndFullImageManifestUnchanged": true,
+    "noSqlStateOrClockMutation": true,
+    "fixtureStoppedAndDirectOriginsRestored": true
+  },
+  "reuse": {
+    "runtimeDiffFrom2010": [
+      "apps/mobile/lib/src/comments/comment_failure_view.dart"
+    ],
+    "unchanged": [
+      "backend/API/migrations/grants",
+      "authentication and posting implementation",
+      "media/permissions/dependencies/Android configuration",
+      "test signer/public defines/development CA/origins"
+    ],
+    "historicalResults": "Old FA15/drop/late-write/account-switch/media/25/615 results retain their original versions and scopes; they do not substitute changed failure-page regressions. No duplicate SQL/fault/whole-device matrix."
+  },
+  "performance": {
+    "result": "BLOCKED",
+    "deviceMeasurements": "NOT_RUN",
+    "profileApk": "NOT_BUILT",
+    "releaseApk": "NOT_BUILT",
+    "reason": "No reachable pair of independently trusted HTTPS origins; QuickTunnel had no registered edge connection, external TLS timed out. Do not bake allocated but unreachable URLs.",
+    "guard": "Standard trust roots, TLS/hostname verification, Gate and debug-only development CA/RP guards unchanged.",
+    "preparation": "Profile/release signing preflight passed with the existing test certificate; ignored local build/record helpers and profile engine are ready. Flutter.Frame profile Extension events can separate UI/raster timings; release/system SurfaceView data is not a substitute.",
+    "budget": "Android predefined per-device collection thresholds remain a plan, not a project SLA or measured PASS. No debug performance claim.",
+    "versionPlanning": "Unbuilt profile2011/release2012 reservations superseded; 2011 is this debug fix candidate. Assign actual later mode versions only after trusted origins are ready."
+  },
+  "ci": {
+    "stateAtDocumentCheckpoint": "FINAL_HEAD_REQUIRED",
+    "sourceCi": "Comments core includes the new fixture; configured applicable product workflows must pass on final PR head. Final exact-head diagnostics and closure are linked from PR and delivery package; no success inferred from old source.",
+    "reviewBoundary": "Independent agent review is not GitHub member approval; no new merge authorization."
+  },
+  "evidence": {
+    "d08-2011-device-retest-summary.json": {
+      "path": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\d08-2011-device-retest-summary.json",
+      "sha256": "86fe897487c5d6a294fa72b87635442c5cdb1172b4a74f4a4f731164022240cd"
+    },
+    "FA-D08-2010-failure-public.json": {
+      "path": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\FA-D08-2010-failure-public.json",
+      "sha256": "3d1b1d82c1fd45aa29ab31eecff86cd37cf1c6cf21a933ddea81ef84492932bd"
+    },
+    "two-supplement-device-cleanup-public.json": {
+      "path": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\two-supplement-device-cleanup-public.json",
+      "sha256": "36724bfee25bcada2160a3a14a24c4bf441295371156184c900ff340f03f234a"
+    },
+    "verify-d08-2011-public.json": {
+      "path": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\verify-d08-2011-public.json",
+      "sha256": "0bd7dc945bda0dd7d5861c36eb3034eeaed8fe57fac04e80180db5d6de43112e"
+    },
+    "install-d08-2011-public.json": {
+      "path": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\install-d08-2011-public.json",
+      "sha256": "4a28e2b2a7088bfdea7c287f7060fe77219917f8826220a8d81db4ab698577d0"
+    },
+    "d08-2011-original-task-retry-public.json": {
+      "path": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\d08-2011-original-task-retry-public.json",
+      "sha256": "5fe58ab6330b478ef0bc59617081c50f89f3fe8334e5b3fd2ae2835231008b27"
+    },
+    "d08-2011-related-views-public.json": {
+      "path": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\d08-2011-related-views-public.json",
+      "sha256": "5f5f782aef21f77a4b9427a7d6c0a65626fe5aa72cb41af1e731ce857779140f"
+    },
+    "worker-C-restored-public.json": {
+      "path": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\worker-C-restored-public.json",
+      "sha256": "286f99f39797a13d5e42c04f1bfe447df73192ac4dab19b27e40303fef0fa23e"
+    },
+    "worker-failed-sql.json": {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\supplement-perf-worker\\worker-failed-sql.json",
+      "sha256": "d610c850e716201d95f9711c2b1146cb810d6c0bd36d7b29447e6c175119e7e6"
+    },
+    "worker-original-retry-blocked-sql.json": {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\supplement-perf-worker\\worker-original-retry-blocked-sql.json",
+      "sha256": "fbc945955a03a7b8e74afd6c5cafca1d2e38d773fe43ee482f7434c4ad953c8c"
+    },
+    "worker-published-sql.json": {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\supplement-perf-worker\\worker-published-sql.json",
+      "sha256": "2f56e28755d172ce5b8d996060a7d3a04294fab7223d297a3a89704455b69ea3"
+    },
+    "d08-57dfe5f-backend-applicability.json": {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\supplement-perf-worker\\d08-57dfe5f-backend-applicability.json",
+      "sha256": "70e462115bc70fe4e9162f04bdb42577cd1a621457f67fe2bf4ca560a1f4782e"
+    },
+    "trusted-https-attempt1-blocked.json": {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\supplement-perf-worker\\trusted-https-attempt1-blocked.json",
+      "sha256": "0aea8dc288197fdc88130c5349644f9603739cfd1ef81bd84c1fe581c12c0911"
+    },
+    "supplement-recovery-protocol.json": {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\supplement-perf-worker\\supplement-recovery-protocol.json",
+      "sha256": "bb03f0cadb28a4130e73b7888012d24f02cdba27dd804ad0d76f2a534f079f0f"
+    },
+    "2011-source-review-local-verification.json": {
+      "path": "E:\\Hnuhole-env\\source\\HnuHole-comment-failure-reconcile\\apps\\mobile\\build\\comment-failure-candidates\\2011-source-review-local-verification.json",
+      "sha256": "8b35e2d8509e013fa1a665d74f627f366d689bde496050b2a51d78094927a669"
+    },
+    "2011-compiled-defines-verification.json": {
+      "path": "E:\\Hnuhole-env\\source\\HnuHole-comment-failure-reconcile\\apps\\mobile\\build\\comment-failure-candidates\\2011-compiled-defines-verification.json",
+      "sha256": "f3bf3237d43bb5136f6217daa3e8d3529284eecbd718326750edd2493a4022ee"
+    },
+    "performance-signing-preflight.json": {
+      "path": "E:\\Hnuhole-env\\source\\HnuHole-feed-performance-support\\apps\\mobile\\build\\performance-signing-preflight.json",
+      "sha256": "7ba58a0a7f43adbf101e42cadd320ebe728a26700114404bf279567a52599466"
+    }
+  },
+  "renders": [
+    {
+      "path": "docs/design/feed-worker-retry/assets/d08-2011-retained-before-retry.png",
+      "sha256": "d5c0d774bd3999ef6df3f7b0a1fe360eb34630adf27bb150bb5ac5d48d89c12b",
+      "original": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\d08-2011-retained-before-retry.png",
+      "ownerVisualApproval": true,
+      "frontendVisualReview": true
+    },
+    {
+      "path": "docs/design/feed-worker-retry/assets/d08-2011-after-original-retry.png",
+      "sha256": "594fde20f7ccbc589382875c82d7e118e4ef007d25f983927d276be53a35406d",
+      "original": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\d08-2011-after-original-retry.png",
+      "ownerVisualApproval": true,
+      "frontendVisualReview": true
+    },
+    {
+      "path": "docs/design/feed-worker-retry/assets/d08-2011-list-after-published.png",
+      "sha256": "b4b3420d89f3d96411357a63be42ae98b5e2afc3ff507b8f76d624e58953d156",
+      "original": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\d08-2011-list-after-published.png",
+      "ownerVisualApproval": true,
+      "frontendVisualReview": true
+    },
+    {
+      "path": "docs/design/feed-worker-retry/assets/d08-2011-detail-comment-after-published.png",
+      "sha256": "54a166c1823b310437530ea4b9239ae9bd38ebf676f26d4505511eb07c25cc7b",
+      "original": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\d08-2011-detail-comment-after-published.png",
+      "ownerVisualApproval": true,
+      "frontendVisualReview": true
+    },
+    {
+      "path": "docs/design/feed-worker-retry/assets/d08-2010-original-retry-blocked.png",
+      "sha256": "12dd1f3449c318e49b201584501a29e782945762376011bfef8f12dbc03afb18",
+      "original": "E:\\HnuHole-feed-android-acceptance-20261020\\runtime\\supplement-perf-worker\\worker-after-original-retry.png",
+      "ownerVisualApproval": true,
+      "frontendVisualReview": true
+    }
+  ],
+  "remaining": [
+    "Final PR head applicable CI and delivery receipt",
+    "Reachable trusted HTTPS pair, then genuine profile/release performance under Android owner",
+    "Explicit new merge authorization; no formal release"
+  ]
+}
