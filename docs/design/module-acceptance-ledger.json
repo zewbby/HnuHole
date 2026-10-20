@@ -14681,7 +14681,8 @@
         "evidence": "docs/design/feed-ui-verification-20261019.json",
         "device": "NOT_RUN",
         "fullModuleResultUnchanged": true
-      }
+      },
+      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json"
     },
     {
       "id": "B04",
@@ -16379,7 +16380,8 @@
         "evidence": "docs/design/feed-ui-verification-20261019.json",
         "device": "NOT_RUN",
         "fullModuleResultUnchanged": true
-      }
+      },
+      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json"
     },
     {
       "id": "B07",
@@ -16510,7 +16512,8 @@
         "report": "docs/release/android-integration-candidate-20261019.md",
         "fullModuleResultUnchanged": true
       },
-      "feedWorkerRetrySupplement20261020": "docs/design/comment-failure-reconcile-verification-20261020.json"
+      "feedWorkerRetrySupplement20261020": "docs/design/comment-failure-reconcile-verification-20261020.json",
+      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json"
     },
     {
       "id": "B08",
@@ -40354,8 +40357,13 @@
     "evidence": "docs/design/comment-failure-reconcile-verification-20261020.json",
     "branchRecord": "docs/branches/fix-comment-failure-reconcile.md",
     "result": "ORIGINAL_TASK_RECOVERY_SCOPED_PASS_FINAL_HEAD_CI_AT_PR",
-    "performance": "BLOCKED_TRUSTED_HTTPS_NOT_READY",
+    "performance": "PASS_SCOPED_SINGLE_DEVICE_PROFILE_BUDGET",
     "merged": false,
-    "formalRelease": false
+    "formalRelease": false,
+    "performanceEvidence": "docs/design/feed-profile-performance-verification-20261020.json",
+    "performanceReport": "docs/design/feed-profile-performance-report-20261020.md",
+    "performanceTestedCommit": "31bc061918cdb9d9583e1df9d9a473590b45615c",
+    "performanceCandidateSha256": "72a3f2511e3603f0a1e2f263e68c7e7bebdb464bbfe5370a42cd17b76deb28b0",
+    "priorPerformanceCheckpoint": "BLOCKED_TRUSTED_HTTPS_NOT_READY; original snapshot retained in branch history and previous commit"
   }
 }

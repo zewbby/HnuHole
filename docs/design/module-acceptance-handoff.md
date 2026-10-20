@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-20 23:40 FEED-PERF-WORKER-SUPPORT-01 性能补验更新：**可信 HTTPS ready 后，`31bc061` 同签 profile2012 在 realme RMX3366／Android14 实测四场景9,383帧、另翻页628帧，预设单设备预算PASS；10次／30秒内存增量79KiB、末尾原图可见。无效／中断／跨lease样本保留，只补受影响项；Max未确认新增产品缺陷，源码与110项运行输入未变。见[性能报告](feed-profile-performance-report-20261020.md)／[机器记录](feed-profile-performance-verification-20261020.json)。本次文档最终HEAD CI以PR／回执为准；[PR36](https://github.com/zewbby/HnuHole/pull/36)仍Draft未合并，无新合并授权、未正式发布。下面可信HTTPS未ready等为原时点历史。
+
 > **2026-10-20 FEED-PERF-WORKER-SUPPORT-01／FA-D08：**真实 worker 原期限后 FAILED 复现2010原重试阻断；独立 `codex/fix/comment-failure-reconcile`／[Draft #36](https://github.com/zewbby/HnuHole/pull/36) 源码 `57dfe5f` 核对原命令并保留未知命令／账号围栏。分析0、评论影响76项、同签debug2011原生构建、Max独立审查及同一原任务v1失败→v2唯一图文发表限定PASS；安装重启不代证同进程stale，宿主预算耗尽用例另证。最终head CI以PR和交付回执为准，未合并／发布。可信HTTPS未ready，profile/release未构建、真实性能BLOCKED；旧证据按输入及原版本复用。见[任务](../branches/fix-comment-failure-reconcile.md)及[机器记录](comment-failure-reconcile-verification-20261020.json)，下方为各自历史快照。
 
 > **2026-10-20 FEED-READ-ERROR-SCOPE-01／FA-D07：**#31 已合入 main `a1cb812`，最终 main2008 后发现列表重载成功仍残留详情错误。独立 `codex/fix/feed-read-errors`／源码 `8f8ec66` 仅隔离 timeline/preferences 三处局部错误，保留 typed401/503、账号围栏与真实命令错误归属；25专项／615全量／analyze0／bundle／原生301tasks通过，复用未重复。2009 Android D07及直接影响范围定点：列表断网原重载及偏好保存/读回双 transport 失败后原重新核对均恢复，同详情及返回重开无旧全局提示，恢复后同列表普通点赞0→1→取消0正常；无新增阻断，非全矩阵。Max独立静态无阻断，环境六项证据适用性通过；旧设备／SQL证据保留原版本。最终精确PR CI及合并／main2010同签制品／设备冒烟由PR和交付回执确认，未提前宣告合并或正式发布；新阻断继续修复。见[任务](../branches/fix-feed-read-errors.md)及[机器记录](feed-read-errors-verification-20261020.json)，下方均为各自版本历史快照。

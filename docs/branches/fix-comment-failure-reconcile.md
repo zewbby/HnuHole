@@ -20,7 +20,11 @@
 
 旧 FA15／迟到写／账号切换／图片／认证等证据只按未变输入及原范围复用，不替代这次失败页影响回归。最终文档提交若仅文档／原 PNG 变化，复用此源码、候选及设备证据，核对 diff 后不再换包或重测相同场景。最终 CI 和交付包的精确提交／摘要在 PR 回执确认。
 
-## 性能补验仍阻塞
+## 性能补验更新：单设备 profile 限定通过
+
+可信 HTTPS 已恢复，实际 profile2012 在 `31bc061` 构建并完成 Android 真机采样。四场景 9,383 帧及翻页补充 628 帧达到预设预算，10 次查看器开关／30 秒静置增量 79 KiB；无效窗口与旧失败保留。完整口径、候选 SHA、模式与 PNG 指纹更正见[性能报告](../design/feed-profile-performance-report-20261020.md)及[机器记录](../design/feed-profile-performance-verification-20261020.json)。本次仅文档，没有新运行改动，不重跑已适用的产品／设备检查。PR36 仍 Draft，未获新合并授权。
+
+### 以下为 22:47 的阻塞历史，已由上述实测更新
 
 可信公网 C/V HTTPS 入口尚不可达；免费隧道分配了 URL，但没有注册 edge，外部 TLS 超时，不能烘焙这些 URL。profile／release APK **未构建**，真机性能 **NOT_RUN／BLOCKED**。标准 TLS、原 Gate 和开发 CA／RP debug guard 未降低，也没有用 debug 或 SurfaceView 帧数据冒充 Flutter UI／raster。
 

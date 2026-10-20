@@ -35,7 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `codex/fix/comment-failure-reconcile` | 修复原失败评论重试的本地状态同步，PR #36及同任务2011定点见详情；未合并／发布。 | [任务详情](docs/branches/fix-comment-failure-reconcile.md) |
+| `codex/fix/comment-failure-reconcile` | 修复原失败评论重试同步并完成同任务2011／profile2012限定补验，PR #36见详情；未合并／发布。 | [任务详情](docs/branches/fix-comment-failure-reconcile.md) |
 | `codex/fix/feed-read-errors` | PR #34已合入main，隔离列表与偏好局部错误并完成D07定点；未正式发布。 | [任务详情](docs/branches/fix-feed-read-errors.md) |
 | `feat/feed-interactions-ui` | PR #31已合入main，接通真实互动与评论数、修复竞态恢复；D07已由#34修复，后续补验见独立任务；未正式发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
 | `codex/chore/feed-staging` | PR #32已合入main，交付隔离故障入口与0021部署恢复记录；未正式发布。 | [任务详情](docs/branches/chore-feed-staging.md) |
