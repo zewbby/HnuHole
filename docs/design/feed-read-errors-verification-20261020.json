@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "hnuhole-feed-read-error-scope/v1",
+  "task": "FEED-READ-ERROR-SCOPE-01",
+  "defect": "FA-D07",
+  "recordedOn": "2026-10-20",
+  "branch": "codex/fix/feed-read-errors",
+  "sourceCommit": "8f8ec66c6b185fdbb15fb528b164820b70fa7ec1",
+  "baseMain": "a1cb812a84ef7650b9156a6b510997df508b6c70",
+  "status": "HOST_AND_TARGETED_ANDROID_SCOPED_PASS_FINAL_PR_CI_PENDING",
+  "baselinePullRequest": {
+    "url": "https://github.com/zewbby/HnuHole/pull/31",
+    "merged": true,
+    "mergeSha": "a1cb812a84ef7650b9156a6b510997df508b6c70",
+    "mergedAtUtc": "2026-10-20T07:09:01Z"
+  },
+  "problem": "Timeline/preferences transport errors wrote the command-global banner and erased its command owner; successful feed retry only cleared local errors, leaving a banner in detail/reopened detail.",
+  "change": "Only typed Post/Auth unauthorized/unavailable propagate to the original authority handler in three feed catch sites. Existing epoch/request/current guards remain. Success does not clear global errors.",
+  "runtimeFilesChanged": [
+    "apps/mobile/lib/src/posts/feed_controller.dart"
+  ],
+  "tests": "apps/mobile/test/feed_read_error_scope_test.dart",
+  "automatedChecks": {
+    "source": "8f8ec66c6b185fdbb15fb528b164820b70fa7ec1",
+    "results": {
+      "targeted": 25,
+      "full": 615,
+      "analysisIssues": 0,
+      "bundle": "PASS",
+      "nativeTasks": 301,
+      "baseline": "17_PASS_8_FAIL_SAME_25_TESTS_ORIGINAL_MAIN_RUNTIME"
+    },
+    "logs": {
+      "targeted": {
+        "log": "apps\\mobile\\build-read-errors-green.log",
+        "sha256": "2db0c2dc388f94b985193daf649d6c059d30ab0f7d576803cfeea087a9afd207",
+        "bytes": 2239
+      },
+      "full": {
+        "log": "apps\\mobile\\build-read-errors-all.log",
+        "sha256": "6abeac58e7556872edd7a04fe281ef70471baebbf97166532ccfca8759c3b98c",
+        "bytes": 123529
+      },
+      "analyze": {
+        "log": "apps\\mobile\\build-read-errors-analyze.log",
+        "sha256": "d51e8801c5c67cf5105aa2883b750bdb1a0ccaffa8637305288ef3734bd920fc",
+        "bytes": 202
+      },
+      "bundle": {
+        "log": "apps\\mobile\\build-read-errors-bundle.log",
+        "sha256": "dd720f25a90c4aaf7e6d9b099c37177b4437f61470e934b3e001f53324c2c819",
+        "bytes": 104
+      },
+      "baseline": {
+        "log": "apps\\mobile\\build-read-errors-final-baseline-red.log",
+        "sha256": "86d9ba09c510e6fe33b784df3d1a81417f641dc94c98d0b64ca8637606e3bfee",
+        "bytes": 10398
+      },
+      "native": {
+        "log": "apps\\mobile\\build-read-errors-android-2009-r2.log",
+        "sha256": "0ca828371d1b727b701624fe8af4a1e541b2ce4f903488073cec742e75521bfd",
+        "bytes": 27211
+      }
+    },
+    "notRerunAfterScopeClarification": true
+  },
+  "testLimits": "Production Controller and original widgets/retry/navigation; HTTP, account PostStore and secure-vault substitutes. Not native SQLite, real TLS or device proof.",
+  "review": {
+    "reviewer": "independent interaction_race_max agent",
+    "result": "NO_BLOCKERS",
+    "scope": "static production diff, 25 tests and Feed UI CI wiring",
+    "testsRunByReviewer": false,
+    "githubMemberApproval": false
+  },
+  "candidate": {
+    "task": "FEED-READ-ERROR-SCOPE-01",
+    "recordedAtUtc": "2026-10-20T08:12:37.330460+00:00",
+    "sourceCommit": "8f8ec66c6b185fdbb15fb528b164820b70fa7ec1",
+    "sourceTree": "daf579ad063c193efecd85415403ab884d11f6f3",
+    "workingTreeClean": true,
+    "baselinePullRequest": "https://github.com/zewbby/HnuHole/pull/31",
+    "versionCode": 2026102009,
+    "buildMode": "debug",
+    "entrypoint": "lib/main.dart",
+    "package": "org.hnuhole.hnuhole_mobile",
+    "apk": "E:\\Hnuhole-env\\source\\HnuHole-feed-read-errors\\apps\\mobile\\build\\feed-candidates\\feed-ui-d07-8f8ec66-2026102009.apk",
+    "bytes": 98804432,
+    "sha256": "3329947f0bc3c7f3c33954ed031a3f17477bc507c1e64a1b85989dab20861936",
+    "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+    "signatureVerification": "PASS",
+    "kernelSha256": "c476b92a6fe494b8ca4ea798ac9d5f733a98891a41dcd8c420146ca13fc83f85",
+    "flutterEngineLibraries": [
+      "lib/arm64-v8a/libflutter.so"
+    ],
+    "publicDefinesSha256": "f7d52b05297121684c89e643480ce4a5f2e0ab1b4fed165b4d6a2f1f431c7862",
+    "publicCaSha256": "57487d56e2d50327bfbf2ca9bb0db4952a050efef6c4fb85ac9990ffbf9cbda4",
+    "backend": "shared c923fa5a / C0021 / V0004 / C51245 / V49747",
+    "formalRelease": false,
+    "deviceAcceptance": "PENDING_ANDROID_OWNER_D07_TARGETED",
+    "releaseProfilePerformance": "NOT_RUN_PRIVATE_CA_ONLY_DEBUG_GUARD_PRESERVED"
+  },
+  "androidTargeted": {
+    "receipt": "E:/HnuHole-feed-android-acceptance-20261020/runtime/candidate2009-d07-targeted-summary.json",
+    "sha256": "745651d4a21f5d2eb3814f1dfcccbe7df40df8beae06936e24492e275ed32d5e",
+    "result": "PASS_D07_TARGETED_AND_DIRECT_REGRESSION_NOT_FULL_MATRIX",
+    "summary": "列表断网原重载及偏好保存/读回双 transport 失败后原重新核对均恢复，同详情及返回重开无旧全局提示，恢复后同列表普通点赞0→1→取消0正常；无新增阻断，非全矩阵",
+    "driverCorrection": "首次按假设重试标签定位在触控前断言失败；观察真实重新核对设置标签后仅续接，未重放故障或PUT，不算产品FAIL",
+    "approvedRenders": [
+      {
+        "source": "E:/HnuHole-feed-android-acceptance-20261020/runtime/candidate2009-d07-timeline-detail.png",
+        "repositoryPath": "docs/design/feed-interactions-ui/assets/android-2009-d07-timeline-detail.png",
+        "sha256": "8f7a73495b5ecace62080a1c511bc1fef29b75eba10fdfaf43e69218b2df00dd"
+      },
+      {
+        "source": "E:/HnuHole-feed-android-acceptance-20261020/runtime/candidate2009-d07-preferences-detail.png",
+        "repositoryPath": "docs/design/feed-interactions-ui/assets/android-2009-d07-preferences-detail.png",
+        "sha256": "f799ae790fa968fa9e26c0f8943a0d625446fd02527af3862a25c3f0a0f3b964"
+      }
+    ]
+  },
+  "impactMapping": {
+    "B03_B04": "2009 timeline original offline/reload/detail/reopen and preference-save transport recovery independently rechecked; see Android receipt.",
+    "A03": "Typed Post/Auth401/503 at read/write/recheck, old-account late transport/401/503, metadata persistence fail-closed covered in the existing 25 host tests. Auth policy is unchanged.",
+    "B06_B07": "25 host tests preserve a real CREATE reconciliation error and command ownership across failed/successful feed reads until its own REJECTED result; no global reset on success.",
+    "unchangedRuntime": "2008 to 2009 runtimeInputs differ only at feed_controller.dart. CAS, API/transport, routes/layout, comments, publishing, media, dependencies, Android config, signing, public defines and CA unchanged.",
+    "priorDeviceFacts": "2008 response loss, late old conditional writes, retry/cancel, account switch, comments and publications retain original source/version and exact receipt limits; 2007 media/earlier auth facts are not relabelled 2009.",
+    "backend": "Owner independently checked six applicability assertions; backend c923fa5a/C21/V4 and fault proxy938f7e72 are unchanged. No repeated SQL regression or deployment."
+  },
+  "externalReceipts": [
+    {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\d07-8f8ec66c-backend-evidence-applicability.json",
+      "sha256": "c1de4cf01dbb8b3a8fc49e5c8592217b78cf9083e34e62c66bf83f84baedfa6b"
+    },
+    {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\device-final2008-backend-evidence.json",
+      "sha256": "0221a1c420670030b69d2842b57523a4e56d9d6fe7d58882268d65485777b034"
+    },
+    {
+      "path": "E:\\HnuHole-feed-staging-20261020\\runtime\\device-images-shared2008-publications.json",
+      "sha256": "eac0f729bb23f9d87ae9d3c3995e7ce2aecfe6f879a86742f7d3e566b1874ae0"
+    }
+  ],
+  "mergeAndDeliveryGate": "Final exact PR HEAD applicable CI and independent review must pass, with targeted Android no blockers; then user-authorized Ready/merge and final-main same-sign2010 build plus install/start/feed/detail smoke. Final PR/source/check IDs and artifact hashes live in PR and immutable delivery receipts, avoiding another tracked documentation round.",
+  "notRun": [
+    "natural same-token device renewal without a production forcing UI",
+    "failed worker retry",
+    "iOS and cross-device Passkey",
+    "release/profile private-CA performance and production/security acceptance"
+  ],
+  "productionReleased": false,
+  "deviceOperatedByFrontend": false,
+  "sharedEnvironmentUpdatedByFrontend": false,
+  "fullModuleResultsPromoted": false
+}

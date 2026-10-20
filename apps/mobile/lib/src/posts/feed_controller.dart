@@ -2,6 +2,21 @@ part of 'post_controller.dart';
 
 extension FeedController on PostController {
   FeedApi get _feedApi => _api as FeedApi;
+
+  void _propagateFeedAuthorityFailure(Object error, _PostAuthority? authority) {
+    // Timeline/preferences already own their retry messages. A transient feed
+    // failure must not replace another command's error or its clearing owner.
+    if (error is PostFailure &&
+            {
+              PostFailureKind.unauthorized,
+              PostFailureKind.unavailable,
+            }.contains(error.kind) ||
+        error is AuthFailure &&
+            (error.unauthorized || error.kind == AuthFailureKind.unavailable)) {
+      _failure(error, authority);
+    }
+  }
+
   List<FeedPost> get timelineItems => List.unmodifiable(
     _timeline.where((p) => !_deletedPostIds.contains(p.postId)),
   );
@@ -106,7 +121,7 @@ extension FeedController on PostController {
       }
     } catch (error) {
       if (epoch != _epoch || request != _timelineRequest) return;
-      _failure(error, a);
+      _propagateFeedAuthorityFailure(error, a);
       if (a != null && _current(a)) {
         if (error is PostFailure && error.code == 'CURSOR_INVALID') {
           // Never append another scope to the current page or treat this as EOF.
@@ -161,7 +176,7 @@ extension FeedController on PostController {
       _preferencesReady = true;
     } catch (error) {
       if (!_current(a)) return;
-      _failure(error, a);
+      _propagateFeedAuthorityFailure(error, a);
       _preferencesReady = false;
       if (!_current(a)) return;
       // Even a timeout may have committed. Read before accepting another toggle.
@@ -176,7 +191,7 @@ extension FeedController on PostController {
             ? null
             : '屏蔽设置未保存，已恢复服务器设置。';
       } catch (readError) {
-        _failure(readError, a);
+        _propagateFeedAuthorityFailure(readError, a);
         if (_current(a)) preferencesError = '暂时无法核对屏蔽设置，请重试。';
       }
     } finally {
