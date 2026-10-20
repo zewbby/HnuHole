@@ -106,7 +106,7 @@
     "files": [
       {
         "path": ".github/workflows/feed-backend.yml",
-        "sha256": "67399beddb51c9cfa754914d757f4b1076de5564a92b1eadf8ab6ffa722e6636"
+        "sha256": "d5e553b7947d0040b238cf4b54edd98475b6413d48c79ef6714755aba419d7b1"
       },
       {
         "path": "infra/postgres/grant-community.sql",
@@ -199,6 +199,13 @@
     ]
   },
   "ci": "Final delivery-head PR checks authoritative; feed-backend runs the expanded SQL/HTTPS suite with media prerequisites. Feed UI separately supplies the compiled Dart probe; it is not silently counted as backend SQL acceptance.",
+  "ciEnvironmentRepair": {
+    "failedHead": "d77ee098fb766ac7142a3e821c4fd8e8d27d815e",
+    "failedRun": "https://github.com/zewbby/HnuHole/actions/runs/39358780089",
+    "reason": "The setup-python toolcache interpreter could not run the validator in its intentionally minimal child environment. Both media regressions failed availability while non-media business checks passed.",
+    "fix": "Reuse post-images CI's system-interpreter private venv and non-writable helper policy, and probe with env -i before SQL. No validator safety bypass, product or test-code change.",
+    "localMinimalEnvironmentProbe": "PASS; the existing system-based trusted venv matches the established CI strategy. Complete local 50/108 SQL result remains scoped to unchanged product/test inputs; repaired final-head CI must pass independently."
+  },
   "review": "Same-assistant technical review, not an independent colleague or GitHub member approval. User explicitly authorizes PR and merge; do not invent approval.",
   "frontendContract": "docs/design/feed-backend-contract.md#点赞收藏与评论数接线",
   "boundaries": {

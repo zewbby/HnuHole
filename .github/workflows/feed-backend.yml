@@ -27,16 +27,21 @@ jobs:
       - name: Install PostgreSQL and pinned migration runner
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-16
+          sudo apt-get install -y postgresql-16 python3-venv
           go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Private image validator prerequisites
+        run: |
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/feed-image-python"
+          "$RUNNER_TEMP/feed-image-python/bin/python" -m pip install -r services/api/media/requirements.txt
+          chmod -R go-w services/api/media
+          env -i PATH=/usr/bin:/bin LANG=C.UTF-8 "$RUNNER_TEMP/feed-image-python/bin/python" -I -B services/api/media/validate_image.py --probe
+          "$RUNNER_TEMP/feed-image-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/feed-media-fixtures"
       - name: Full OpenAPI validation and legacy contract compatibility
         run: |
           python -m pip install -r packages/openapi/requirements-check.txt
-          python -m pip install -r services/api/media/requirements.txt
-          python services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/feed-media-fixtures"
           python packages/openapi/check-specs.py
           python tools/check-community-text-contract.py
       - name: Host tests, formatting, build and vet
@@ -52,6 +57,6 @@ jobs:
         run: |
           export PATH="$(pg_config --bindir):$PATH"
           export FEED_GOOSE="$(go env GOPATH)/bin/goose"
-          export POST_MEDIA_PYTHON="$(command -v python)"
+          export POST_MEDIA_PYTHON="$RUNNER_TEMP/feed-image-python/bin/python"
           export POST_MEDIA_FIXTURES="$RUNNER_TEMP/feed-media-fixtures"
           sh services/api/authlab/run-feed-isolated.sh
