@@ -40348,8 +40348,13 @@
   "currentFeedSupplementSupport20261020": {
     "task": "FEED-SUPPLEMENT-SUPPORT-01",
     "branch": "codex/test/feed-supplement-support",
-    "modules": ["B03", "B04", "B07", "B12"],
-    "result": "TOOLS_REVIEW_CI22_PASS_REAL_WORKER_FAILURE_AND_CANDIDATE2011_SAME_TASK_RECOVERY_SCOPED_PASS_HTTPS_BLOCKED",
+    "modules": [
+      "B03",
+      "B04",
+      "B07",
+      "B12"
+    ],
+    "result": "TOOLS_CI22_AND_ORIGINAL_COMMENT_RECOVERY_SCOPED_PASS_NETWORK3_TRUSTED_HTTPS_PROFILE2012_SINGLE_DEVICE_BUDGET_PASS",
     "toolTestsPassed": 10,
     "unchangedToolTestsReused": 12,
     "actualCICombinedTestsPassed": 22,
@@ -40359,6 +40364,9 @@
     "evidence": "docs/design/feed-supplement-support-verification-20261020.json",
     "scope": "Only trusted HTTPS for profile/release performance and original FA20 comment worker failure/retry; no duplicate valid regression",
     "fullModuleResultsPromoted": false,
-    "productionTouched": false
+    "productionTouched": false,
+    "performance": "profile2012/source31bc061/APK72a3f251: RMX3366 actual60Hz,4x3x20s frame budgets PASS, separate628page frames,10loops+30s returned PSS+79KiB PASS; excluded samples retained; not production SLA",
+    "retention": "network3 same process URLs and original C/V/PG/data/33923 retained; worker53381 stopped; own VM/gesture/XML cleaned, disconnected old vivo cleanup pending",
+    "mergeState": "PR35 and PR36 Draft/unmerged; no new merge authorization; repaired final main candidate pending"
   }
 }

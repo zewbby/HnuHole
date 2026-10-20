@@ -29,11 +29,11 @@
     "failed": 0,
     "skipped": 0
   },
-  "finalHeadCI": "Exact final delivery head checks must be read from PR35/PR36 and frozen runtime CI receipts; prior14ee26c and f409399 successes do not substitute final head",
-  "publicTrustedHTTPS": "BLOCKED_EDGE_TCP7844_TLS_EOF_TIMEOUT_NO_VERIFIED_PUBLIC_ORIGIN; unusable processes stopped",
-  "quicScope": "Two Quick API timeouts before transport; not an actual QUIC/UDP test",
+  "finalHeadCI": "PR36 source31bc061 frozen independent7workflows/14jobs SUCCESS; PR35 final documentation head requires exact live checks plus external frozen final-delivery receipt, not old025a36d",
+  "publicTrustedHTTPS": "PASS_NETWORK3_STANDARD_SYSTEM_CHAIN_HOSTNAME_HEALTH_AND_ORIGINAL_SOURCE_CA_BOTH_CV; active temporary origins",
+  "quicScope": "Attempt1 Quick API timeout before QUIC; attempt2 actual QUIC edge timeout with host TUN still up; attempt3 native real DNS after human TUN off, actual HTTP2 registered and TCP/QUIC precheck pass",
   "deviceWorkerRetry": "SCOPED_PASS_REAL_NATURAL_FAILURE_AND_CANDIDATE2011_SAME_RETAINED_TASK_RECOVERY; original2010 FA-D08 FAIL preserved",
-  "performanceDevice": "BLOCKED_NO_USABLE_TRUSTED_CV_ORIGINS; no profile/release performance claim",
+  "performanceDevice": "PASS_SCOPED_SINGLE_DEVICE_PROFILE_BUDGET; actual profile2012, RMX3366/60Hz, predeclared frame and returned-PSS budgets only",
   "worker": {
     "deviceVersionCode": 2026102010,
     "deviceApkSha256": "762bfd669dc3e6d27bd9788944c35cc2f50ccb07d4b062e7401fbfb87efb9968",
@@ -129,7 +129,23 @@
     "pr35-f409399-head-ci.json": "eb28028a3adac50b8e44e86350e6191c368d71541ef3cb49c0b6b347e9106782",
     "d08-57dfe5f-backend-applicability.json": "70e462115bc70fe4e9162f04bdb42577cd1a621457f67fe2bf4ca560a1f4782e",
     "worker-published-sql.json": "2f56e28755d172ce5b8d996060a7d3a04294fab7223d297a3a89704455b69ea3",
-    "android-d08-2011-device-retest.snapshot-86fe897487c5.json": "86fe897487c5d6a294fa72b87635442c5cdb1172b4a74f4a4f731164022240cd"
+    "android-d08-2011-device-retest.snapshot-86fe897487c5.json": "86fe897487c5d6a294fa72b87635442c5cdb1172b4a74f4a4f731164022240cd",
+    "pr35-025a36d-final-head-ci.json": "3f10ffe480058592297a49859e97285be5638f4ffb79696a90a924e564ede2a9",
+    "pr36-31bc061-final-ci-independent.json": "fa113e042447903b9e6a0cb5d5f13704ef7f5e6e4f664ba8df2961472224796c",
+    "trusted-https-attempt2-blocked-cleanup.json": "ecf09f27b461efe1c355f20638bfaa02c59571403f57a93c598711cca90825ab",
+    "trusted-network3-ready.json": "9d6df2a5caa98d66e21a97a40895f375dd75d5f9416f636ca6eeae53990331c6",
+    "trusted-network3-public-defines.json": "0338aa3b82563df0e3d73b40364e8f95aebd345b01113a41d0828f94fef753e2",
+    "trusted-network3-c-public-chain.pem": "0adf2847f014a45f824237b98c723cd75849bf11be4ddd240716fe7c9717e36a",
+    "trusted-network3-v-public-chain.pem": "0adf2847f014a45f824237b98c723cd75849bf11be4ddd240716fe7c9717e36a",
+    "trusted-network3-auth-boundary.json": "0008ff37e816afbdc1788dd04955f3a934d60e52b67bd2d99c45d646d2d813c4",
+    "trusted-network3-active-deployment-recovery.json": "2c5d5168031a0977fe640cd586a718a7315426237d78c38b3ccd34649eb5f267",
+    "profile2012-metadata.snapshot.json": "db1adf0929ccc3549029b1b5a18a5fad57953c0c68662fb27dd4e0bd35f2fb61",
+    "profile2012-mode-check-checkpoint.json": "a4c5475f77ccb8f9f618965f400b7636d355c88950d912a6ea4599096bcb35de",
+    "profile2012-mode-config.snapshot-a9e82c62.json": "a9e82c621f54415d3804d4087ccbb5c88fea3382880275b9ec0ad8ae9b9b65de",
+    "profile2012-runtime-raw-correction.snapshot-86ba7f58.json": "86ba7f58a910663cee6c21553a4b72a6c9f6d8281b7ca19ec52d7c8c876c4917",
+    "media-lease60-relative-path-confirmation.json": "68880140467e88b3edf2759e1a3552da4d531980cfb6f7a031d5e413da987b2d",
+    "media-window2319-2321-existing-log-scan.json": "c6a041c50e66f72f5f85afe146e521614a52703cfdc346149d4d2779297c961b",
+    "trusted-network3-final-retention.json": "915b6b8a563cff43704d887aa836a62d6739096ff8bd3384d5e5178f6942e524"
   },
   "androidFailureEvidence": {
     "path": "E:/HnuHole-feed-android-acceptance-20261020/runtime/supplement-perf-worker/FA-D08-2010-failure-public.json",
@@ -142,5 +158,139 @@
   "trustedClockChanged": false,
   "productionTouched": false,
   "mergeAuthorized": false,
-  "fullModuleConclusionsPromoted": false
+  "fullModuleConclusionsPromoted": false,
+  "trustedHTTPSHistory": [
+    {
+      "attempt": 1,
+      "result": "BLOCKED synthetic edge DNS/TCP TLS EOF; QUIC did not reach transport"
+    },
+    {
+      "attempt": 2,
+      "result": "BLOCKED TCP EOF and actual QUIC timeout; host TUN route still up after network switch"
+    },
+    {
+      "attempt": 3,
+      "result": "PASS_ENTRY_READY after human disabled desktop TUN; two independently trusted HTTPS origins; no product/Gate/CA weakening"
+    }
+  ],
+  "trustedHTTPSCurrent": {
+    "readyAtUtc": "2026-10-20T15:03:01.419982+00:00",
+    "origins": {
+      "c": "https://reproduce-homes-xml-tiny.trycloudflare.com",
+      "v": "https://analysis-slots-generous-cheaper.trycloudflare.com"
+    },
+    "upstreamPorts": {
+      "c": 51245,
+      "v": 49747
+    },
+    "publicCertificateIssuer": "Google Trust Services WE1",
+    "publicSAN": "*.trycloudflare.com",
+    "publicTLS": "TLS1.3",
+    "publicTrustAndHostnameAndChainVerified": true,
+    "sourceCAAndHostnameVerified": true,
+    "externalAndSourceHealthBoth200": true,
+    "sourceHealthPayloadsEqual": true,
+    "publicDefinesKeys": [
+      "AUTH_COMMUNITY_BASE_URL",
+      "AUTH_VERIFIER_BASE_URL"
+    ],
+    "publicDefinesSha256": "0338aa3b82563df0e3d73b40364e8f95aebd345b01113a41d0828f94fef753e2",
+    "devCAAndRPDefinesOmitted": true,
+    "normalAuthenticationBoundary": "Unauthenticated feed GET401 AUTHENTICATION_FAILED; canonical requestId",
+    "noTLSVerify": false,
+    "globalDNSOrProductConfigChanged": false,
+    "processesRemainRunningForAcceptance": true,
+    "retainedAfterAcceptance": true
+  },
+  "profile2012": {
+    "source": "31bc061918cdb9d9583e1df9d9a473590b45615c",
+    "versionCode": 2026102012,
+    "mode": "profile/main.dart/same test signing/default system roots/AOT",
+    "apkSha256": "72a3f2511e3603f0a1e2f263e68c7e7bebdb464bbfe5370a42cd17b76deb28b0",
+    "apkBytes": 42045645,
+    "androidInstalledPulledAPKHashMatchesReported": true,
+    "normalAppBLoginOverPublicOriginSucceededReported": true,
+    "stockProfileEqualsMerged": true,
+    "agpStrippedEqualsAPK": true,
+    "debugKernelAbsent": true,
+    "profileVmServiceSnapshotPresent": true,
+    "oldDevelopmentCALiteralAbsentFromAOT": true,
+    "actualRuntimeImageHashes": "110 raw-byte manifest in supplemental correction; old metadata normalized5launcher PNGs preserved with correction",
+    "performance": "PASS_SCOPED_SINGLE_DEVICE_PROFILE_BUDGET",
+    "networkOverheadSeparateFromFrameStages": true,
+    "mediaLease": "Original<=60sec lease unchanged; reauthorize through normal UI before20sec image windows; expired placeholders excluded from image performance",
+    "productCodeChangedForThisProfileBuild": false,
+    "deviceFinalEvidenceRoot": "E:/HnuHole-feed-staging-20261020/runtime/supplement-perf-worker/profile2012-final-device-evidence",
+    "deviceFinalSummarySha256": "afa174d5fdd2b1176f70b86969cd9056171dd4f06a9330f90899221877a5c942",
+    "effectiveFrameCounts": [
+      3121,
+      3024,
+      2198,
+      1040
+    ],
+    "pageSupplementFramesNotMergedIntoThreeWindows": 628,
+    "memory": {
+      "source": "memory2-10loops-public.json",
+      "warmBaselinePssKiB": 230196,
+      "last3ReturnedMedianPssKiB": 230275,
+      "deltaKiB": 79,
+      "budgetKiB": 46039.200000000004,
+      "warmImagesFinalVisible": true,
+      "result": "PASS_DECLARED_RETURNED_PSS_BUDGET"
+    },
+    "scopeLimits": [
+      "Actual protected network-backed fixtures with loading/reloads, not pure GPU-only",
+      "Single device current settings/60Hz and20s windows, not production SLA or all-content stress",
+      "Quick tunnels private staging; network latency separately, no media HTTP200 inference from icon",
+      "Main304 retainsD08; PR36 not merged, no final main rebuild for repair yet",
+      "Profile test-signed APK, no release2013 build or formal release"
+    ],
+    "stability": "Same current PID11691, observed gestures responded and currentPID log fatal/ANR0; not device-wide tombstone guarantee",
+    "thermal": "Overall thermal status0; USB100percent; OEM soc mStatus6 sentinel retained, not every sensor no-throttling proof",
+    "deviceCleanup": "Owned VM forward/gesture JAR/UI XML removed; app/B/data/original C/V mappings retained; disconnected old vivo cleanup still pending",
+    "excludedSamples": "Expired-media S1, unintended-detail S1, SystemUI-interrupted S2, expired S4 probe and first memory sample preserved/excluded; only affected windows replaced",
+    "frozenEvidenceSha256": {
+      "memory2-10loops-public.json": "3254a6e0d4d39fdfb0ebfcb3c449a76fb88a53ab012a83f3ceaecc01a5c5a21b",
+      "memory2-loop-vm-metrics-public.json": "f88dafd5b3046f924f4559027f14ef66abb3ea7d4bbba4b6a69005f312c6510e",
+      "performance-cleanup-public.json": "a4200e63df2b4a2f10186cf936b10609b204f6881efeeb1a4842033af8028eaf",
+      "performance-final-summary-public.json": "afa174d5fdd2b1176f70b86969cd9056171dd4f06a9330f90899221877a5c942",
+      "plan-fixed-before-measurement.json": "c075cb6824ae59fd718a80cdb18b1154632fa44cdcfe444d3ffff4a8f5d674f0",
+      "profile-stability-public.json": "f546ebb55fb444ba025250521836051a182211b8833251e00c6c6d1c7fe77490",
+      "profile-startup-environment-public.json": "ee683d5f342f03c5ee2a24e9f42c097b1183fcb2bbd2fc086a1c3a0dd2ccbcfd",
+      "profile2012-independent-artifact-public.json": "3c496e02bcaaee23b31ddf53f2218bcdad97355e14e32f557adadbb3d465f513",
+      "profile2012-install-public.json": "1d731168a050827e17697f210d76e658aa4bd6ebc77ab676a99922e1a9fc5508",
+      "S1-final-frame-summary.json": "7bbb1f7347d47bad46cce6f89a9435c225b27452e9968e1d41e7ed3ee36852f2",
+      "S1-replacement-window1-actions-public.json": "38a718da7db9fded49c0ec3a2f276138dc76c38af156aa1bd5dfe58df20cb1dc",
+      "S1-replacement-window1-metrics-public.json": "3811d8fc9b2c719bb77f2dd2669a6dc2dac90e185d9fba4ec9e8038b7e9eef53",
+      "S1-valid-window2-actions-public.json": "25afa946d9cd07824813e82e9139696fc7e094cf0086dbdb23a68009e0c53fc8",
+      "S1-valid-window2-metrics-public.json": "5a6681b114b8d4ca7baaa5fbddf0e9e39e552ad93016efb33daf9db2ef59476d",
+      "S1-valid-window3-actions-public.json": "f47885284062005c01244a27a44ad707dec513c86aa55b8d996b92c3d771530f",
+      "S1-valid-window3-metrics-public.json": "9b6b5a09f2454519eaa8d51969dcad6fe04103befcdf7e7abf1063c489c7ea00",
+      "S2-profile-frame-summary.json": "5b4da00e0d865c82b31ab189aa2f6b4594e5267997ca50c158fa0b1dc9263c0c",
+      "S2-replacement-window3-actions-public.json": "560f84c63a3453791084d0d9d534ef139880887309d25dd09cd8d422c0793226",
+      "S2-replacement-window3-metrics-public.json": "a39017cea1d41111d822ad76e74131e50a4015339a88ac570f9957946ad7a1c9",
+      "S2-valid-window1-actions-public.json": "79bccc5900cf62086c8d9245c85806eb610c6288abfe91cc77adb050b3fb6728",
+      "S2-valid-window1-metrics-public.json": "3093ff3154a7e34111b2610e54156d12a6cc4b62e3178067398222753b1eef8e",
+      "S2-valid-window2-actions-public.json": "a050fb9e437cfddb7c0d0dbbc6e6e71e6704529caf18bb0dc4016b8e01a3eba7",
+      "S2-valid-window2-metrics-public.json": "bb50e910238548a8cbd137911d99838f363f4e24cabb5fe33dbb442cb0eaa837",
+      "S3-profile-frame-summary.json": "589280de638312650a489a14156157a84bd70107669d6aee90f8edede5a581c8",
+      "S3-valid-window1-actions-public.json": "acf8e7472f253627e14dedf2a651d862a67521709973fe382a221380cc1e9121",
+      "S3-valid-window1-metrics-public.json": "2662d843dbb833ae3b4ebac5a795f85f2ab0d80a66d5ab05788ce126be7c5e7a",
+      "S3-valid-window2-actions-public.json": "c976b4c98251015c4731c6bfa33f6f350bad20b27d8476393a0e39e37df8385f",
+      "S3-valid-window2-metrics-public.json": "95402fcaff26aa56fa6d4943cd33ce0001455744c233bb892c156c90bb334afb",
+      "S3-valid-window3-actions-public.json": "c74be2d4e7130fdb65745a2fac9aae883c411a901a7def6d7c5d3d11e0c2b9c8",
+      "S3-valid-window3-metrics-public.json": "fdb8e36c833af8bda1a31379b1cfefba1b14f09b3ddb5e6f80dea69d6778946c",
+      "S4-page-confirm-public.json": "d7afdf6e7671aab11afdf7bc559195bae3185391ad4c0f86f7bb143aee9443d4",
+      "S4-page-confirm20s-metrics-public.json": "eea5e2961181f81f5793bcc059626f7e20b04eb3267abed901aa298fa69d9059",
+      "S4-profile-frame-summary.json": "8859a4e1b6fda6669a32011fa1c6aa64215a730abd1fa444fe7dca7a01ffbc2d",
+      "S4-valid-window1-actions-public.json": "b1f0e11d35dee4be73c21e30980a1bdbd3588cdaba678c0d4fc9fef69f79ff0c",
+      "S4-valid-window1-metrics-public.json": "10ca1b5faac4a487e41afdbf4f44b38974817362718c8197466789623ae9791c",
+      "S4-valid-window2-actions-public.json": "21484f0d968c727a442893f876f93f3ca17acee4ed07d0294343faabaad63985",
+      "S4-valid-window2-metrics-public.json": "61817134fae4d879e50697c1193b0110a668da8ef9e8a6f1ea523464fe24f96c",
+      "S4-valid-window3-actions-public.json": "a75e8f6c2f10760b5bf5d93d4e8480f3cf7929e8daa9c93793edfffe0138c1a4",
+      "S4-valid-window3-metrics-public.json": "5de082b4415f7e25c828be89eee4f61f93a79027b821eca98782808264392383",
+      "sample-validity-public.json": "9dd61e76bf2e637f066782c9ef374f87a20ecab573ce65cd9917dde114338ae6"
+    }
+  },
+  "mediaSamplingLogBoundary": "At23:19-23:21 C recorded1552 bounded-worker lines, no per-request image path/status; tunnel info ERR0 does not prove individual HTTP success; no logging/TLS/Gate/TTL/config change"
 }

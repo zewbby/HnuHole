@@ -3,7 +3,8 @@
 FEED-SUPPLEMENT-SUPPORT-01，仅2026-10-20本轮合成隔离环境。任务及状态见
 [分支记录](../branches/test-feed-supplement-support.md)。产品和现有恢复方案不变；正式
 环境没有访问、部署或恢复授权。下述协议与实际结果分别记录；一次真实worker失败
-及2011候选同一原任务恢复限定PASS，旧2010 FA-D08失败保留，真实性能BLOCKED。
+及2011候选同一原任务恢复限定PASS，旧2010 FA-D08失败保留；可信入口已打通，
+profile2012已完成单机预设帧/内存预算限定PASS，非生产SLA。
 
 ## 可信入口
 
@@ -15,11 +16,30 @@ debug-only guard；只提供独立 AUTH_COMMUNITY_BASE_URL/AUTH_VERIFIER_BASE_UR
 已确认的C/V公共端口，不转发PG、内部mTLS或管理控制端口。隧道网络开销单独记录，
 不能把帧耗时与网络响应时间混称生产性能。
 
-当前尝试为BLOCKED：Quick API申请URL成功，但TCP7844 edge TLS EOF/超时，
+首轮尝试为BLOCKED：Quick API申请URL成功，但TCP7844 edge TLS EOF/超时，
 外侧TLS不可达；官方DoH真IP和宿主既有proxy CONNECT亦未恢复。QUIC两次在API
 阶段超时，未检验实际QUIC传输。原C/V严格TLS健康200，未放宽noTLSVerify或修改
-全局DNS/产品配置，未交付不可用defines。失败自有隧道已精确停止；集中等待可用
+全局DNS/产品配置，未交付不可用defines。失败自有隧道已精确停止；当时等待可用
 网络，保留官方程序供之后重试。不能据此声称可信证书链或profile性能已验。
+
+后续第二轮换网后仍有电脑TUN路由，TCP失败、QUIC已实际到edge但超时；失败自有
+进程精确收回。第三轮人类关闭电脑TUN、虚拟网卡及default route消失后，原生DNS
+恢复真实地址，双隧道实际注册。外侧标准系统根证书及OpenSSL chain/hostname、
+TLS1.3均通过（Google Trust Services WE1/SAN *.trycloudflare.com），外侧和内侧原
+CA/hostname严格health各200且响应一致。未登录feed仍401 AUTHENTICATION_FAILED；
+原测试Gate、内部mTLS、数据库、材料及旧33923不改。
+
+公开defines只含C/V两个独立临时HTTPS origin；前端profile2012只用这两键，省略
+开发CA/RP，保留debug-only guard。实际source31bc061/同签AOT/profile engine链及
+安装回读SHA、正常公网B登录已记录；未改变产品代码。5个PNG的旧manifest使用
+归一化摘要问题以单独raw-byte110项补正保留，原APK和metadata不覆盖。设备真实
+性能须按既定判据与样本汇总报告；不能用debug/入口健康/构建或目视流畅代替。
+
+原媒体lease最多60秒并受会话到期收紧；原始媒体路径相对C origin，无旧localhost
+authority。每20秒图文窗口前通过原UI刷新授权、确认实图可见；过期占位窗口保留并
+排除，不改TTL/Gate/缓存授权。临时隧道进程与URL在采样期间保持不重启。恢复时
+只按UID/startTicks/cmdline停止自有隧道，保留原C/V/PG与全部业务数据；停止后该
+测试包origins失效，需要新测试defines，不能回灌旧数据库。正式方案仍沿用文末链接。
 
 ## 一组评论夹具
 
@@ -82,3 +102,46 @@ C/V原入口严格TLS各200，原33923不动。保留原失败历史及随后同
 [机器记录](../design/feed-supplement-support-verification-20261020.json)。本轮没有
 数据库迁移/权限/材料/Gate变更，不执行数据库恢复；已有正式发布与恢复方案仍为
 [原方案](feed-staging-20261020.md)，历史备份不包含之后的设备数据，不盲目回灌。
+
+## 最终限定结果与保留状态
+
+Android冻结 summary `afa174d5fdd2b1176f70b86969cd9056171dd4f06a9330f90899221877a5c942`，
+环境逐项校验39份原引用并另冻结清理回执，位置为 runtime/supplement-perf-worker/
+profile2012-final-device-evidence/；机器记录保留全部40项实际SHA。profile2012源码
+31bc061、APK72a3f251、后端c923fa5/C21V4均未改变。
+
+| 场景 | 三个有效20秒窗帧数 | build p95/p99 ms | raster p95/p99 ms |
+| --- | ---: | ---: | ---: |
+| S1 列表滚动 | 3121 | 1.872 / 3.001 | 4.245 / 5.025 |
+| S2 图文列表/详情返回 | 3024 | 1.475 / 1.883 | 3.967 / 4.707 |
+| S3 三图横滑 | 2198 | 2.637 / 3.166 | 4.140 / 4.760 |
+| S4 查看器缩放/拖动/返回 | 1040 | 1.547 / 1.908 | 3.179 / 3.714 |
+
+实际vsync60.000004Hz，预算16.6666656ms；build/raster独立判断，不能相加。
+各场景两阶段超预算率0%，p95<=1预算/p99<=2预算且最慢阶段<250ms，符合测前
+计划c075cb68的限定判据。S4原三窗的翻页缺口另用20秒628帧及2/3、3/3实际页码/
+绿棕实图确认，不混入原1040帧；该补窗build p95/p99为5.067/8.875ms，raster
+3.791/4.356ms。过期S1、误入详情S1、SystemUI中断S2、过期S4探针和第一内存
+样本保留排除，只补受影响项。原保护媒体的加载/离屏重取属于实际网络场景，未
+把占位图当HTTP200、未放宽原60秒lease，也不声称纯GPU或所有内容压力测试。
+
+有效memory2同暖图10次开关+同列表静置30秒，PSS暖基线230196KiB、末三次中位
+230275KiB，增量79KiB，小于原max(30MiB,20%)预算46039.2KiB；末尾实图仍可用，
+未强制GC。Dart/Java/native/PSS记录分列；符合本样本预算不等于证明任意长期无泄漏。
+当前PID11691从profile启动不变，当前PID log fatal/ANR0，动作可响应；该观察不等于
+整机tombstone保证。总体thermal status0、USB100%，OEM soc mStatus6原值保留，
+不声称每个传感器均无节流。最终只记单台RMX3366 Android14/当前60Hz设置的限定PASS。
+
+设备自有VM forward53492/gesture JAR/UI XML已清理；profile2012/B和数据、原C/V
+reverse保留。断连旧vivo的历史工具/设置清理仍待，未冒充完成。环境最终保留回执
+`trusted-network3-final-retention.json` SHA915b6b8a563cff43704d887aa836a62d6739096ff8bd3384d5e5178f6942e524，
+只核UID/startTicks/完整cmdline和本地侦听：network3同进程、51245/49747/33923仍在，
+53381未侦听；没有新增API/SQL请求、迁移、权限、数据恢复或服务更新。继续保持
+原双URL供用户测试，进程停止/换网会影响可用性；恢复按此前精确身份收回自有隧道，
+重启后新URL须重建测试defines，绝不回灌旧库或弱化TLS/Gate。
+
+PR36的31bc061七类workflow/14job SUCCESS已独立冻结；PR35本次事实文档仅要求
+最终精确HEAD适用CI及独立同事复核，不重复设备/数据库场景。README既有分支入口
+仍准确，本次只是该工作项结果，毋须重复修改。#35/#36均仍Draft未合并，无新合并
+授权；main304仍含D08，尚无修复后最终main包，因此不是正式可发布结论。正式
+发布/恢复仍沿用[原方案](feed-staging-20261020.md)，正式部署等待授权。
