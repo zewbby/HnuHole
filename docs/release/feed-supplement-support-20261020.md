@@ -2,7 +2,8 @@
 
 FEED-SUPPLEMENT-SUPPORT-01，仅2026-10-20本轮合成隔离环境。任务及状态见
 [分支记录](../branches/test-feed-supplement-support.md)。产品和现有恢复方案不变；正式
-环境没有访问、部署或恢复授权。当前工具尚未武装，不能将下述协议当实际设备PASS。
+环境没有访问、部署或恢复授权。下述协议与实际结果分别记录；当前已完成一次真实
+worker失败，但2010原重试暴露FA-D08，闭环未PASS。
 
 ## 可信入口
 
@@ -13,6 +14,12 @@ debug-only guard；只提供独立 AUTH_COMMUNITY_BASE_URL/AUTH_VERIFIER_BASE_UR
 不得使用 noTLSVerify 或全局信任修改。C/V内部通信、配置和Gate不变；只转发至本轮
 已确认的C/V公共端口，不转发PG、内部mTLS或管理控制端口。隧道网络开销单独记录，
 不能把帧耗时与网络响应时间混称生产性能。
+
+当前尝试为BLOCKED：Quick API申请URL成功，但TCP7844 edge TLS EOF/超时，
+外侧TLS不可达；官方DoH真IP和宿主既有proxy CONNECT亦未恢复。QUIC两次在API
+阶段超时，未检验实际QUIC传输。原C/V严格TLS健康200，未放宽noTLSVerify或修改
+全局DNS/产品配置，未交付不可用defines。失败自有隧道已精确停止；集中等待可用
+网络，保留官方程序供之后重试。不能据此声称可信证书链或profile性能已验。
 
 ## 一组评论夹具
 
@@ -46,3 +53,22 @@ postId/bodyMarker/imageSha256；不接收任意URL/SQL/任务状态或第三方�
 armed10分钟未命中自动失效，绑定后20分钟停止阻断；boot改变失效。终止异常时先由
 Android恢复直连，环境才停代理。真实失败未发生或已过期即如实记录NOT_RUN/未命中，
 不能改判据造失败。
+
+## 实际执行与恢复
+
+工具14ee26c已独立review无阻断，两项适用CI成功且实跑22项。已仅在隔离环境以
+该未合并候选开53381，真实C仍c923fa5/C0021、V0004。2026-10-20正常2010/B一次
+CREATE后，task7202fe80-9809-483a-9720-d700ce49153e在22:24:44.447348+08由原
+worker自然写FAILED/PUBLICATION_FAILED，距受理902.335425秒。精确规则release
+后原失败页一次重试提示“请核对任务结果后再操作。”；只读SQL仍FAILEDv1、CREATE1、
+RETRY0、公开评论0，登记FA-D08交前端独立修复，不能冒充完整闭环通过。
+
+Android已恢复手机C51245直连并保留原数据；环境验证自有进程身份后只停53381，
+C/V原入口严格TLS各200，原33923不动。保留原FAILED任务/身份/图片journal，修复后
+在同一任务上继续正常RETRY2，不新建任务、不重复15分钟夹具。实际回执与哈希见
+机器记录。覆盖安装必然重启，设备只能证明该原任务正常恢复，不能单独证明同进程
+40次轮询耗尽的stale已修；根因修复另由确定性宿主回归证明。旧2010失败与修复后
+结果分开记录，保留各自被测版本。全部证据见
+[机器记录](../design/feed-supplement-support-verification-20261020.json)。本轮没有
+数据库迁移/权限/材料/Gate变更，不执行数据库恢复；已有正式发布与恢复方案仍为
+[原方案](feed-staging-20261020.md)，历史备份不包含之后的设备数据，不盲目回灌。

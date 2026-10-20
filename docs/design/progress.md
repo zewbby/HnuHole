@@ -1,6 +1,6 @@
 # 设计进度与剩余工作
 
-> **2026-10-20 FEED-SUPPLEMENT-SUPPORT-01：**仅性能可信HTTPS和原FA20评论worker失败重试补验支持；新版10项工具边界/TLS通过、原12项未变复用，独立审查/CI和设备尚待，不升级模块。共享后端c923/C21V4及原938代理保持，正式环境未触碰；见[任务](../branches/test-feed-supplement-support.md)／[机器记录](feed-supplement-support-verification-20261020.json)。
+> **2026-10-20 FEED-SUPPLEMENT-SUPPORT-01／FA-D08：**工具14ee26c独立review/适用两CI成功22项；一次原FA20评论真实worker902.335425秒后FAILED通过，2010原重试按钮FA-D08实际FAIL，SQL仍v1/CREATE1/RETRY0/公开0，前端独立修复，同任务原图journal保留。手机C直连已恢复、仅53381已停、原C/V严格TLS各200。Cloudflare Quick URL申请成功但edge连接/外侧TLS失败，QUIC未到传输，性能BLOCKED，集中待可用网络；不升级完整模块。共享c923/C21V4及938代理不变，#35 Draft未合并、无新增合并授权、正式环境未触碰；见[任务](../branches/test-feed-supplement-support.md)／[机器记录](feed-supplement-support-verification-20261020.json)。
 
 > **2026-10-20 FEED-READ-ERROR-SCOPE-01／FA-D07：**#31 已合入 main `a1cb812`，最终 main2008 后发现列表重载成功仍残留详情错误。独立 `codex/fix/feed-read-errors`／源码 `8f8ec66` 仅隔离 timeline/preferences 三处局部错误，保留 typed401/503、账号围栏与真实命令错误归属；25专项／615全量／analyze0／bundle／原生301tasks通过，复用未重复。2009 Android D07及直接影响范围定点：列表断网原重载及偏好保存/读回双 transport 失败后原重新核对均恢复，同详情及返回重开无旧全局提示，恢复后同列表普通点赞0→1→取消0正常；无新增阻断，非全矩阵。Max独立静态无阻断，环境六项证据适用性通过；旧设备／SQL证据保留原版本。最终精确PR CI及合并／main2010同签制品／设备冒烟由PR和交付回执确认，未提前宣告合并或正式发布；新阻断继续修复。见[任务](../branches/fix-feed-read-errors.md)及[机器记录](feed-read-errors-verification-20261020.json)，下方均为各自版本历史快照。
 
