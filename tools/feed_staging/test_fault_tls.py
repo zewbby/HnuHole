@@ -15,7 +15,9 @@ from test_fault_proxy import proxy
 
 class Upstream(http.server.BaseHTTPRequestHandler):
     def log_message(self,*args):pass
-    def do_GET(self):self.reply(200,{'ok':True})
+    def do_GET(self):
+        self.server.reads+=1
+        self.reply(200,{'ok':True})
     def do_PUT(self):
         json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         self.server.conditions=self.headers.get_all('If-Interaction-Version',[])
@@ -30,7 +32,7 @@ class TLSIngressTests(unittest.TestCase):
         cls.tmp=tempfile.TemporaryDirectory();cls.root=Path(cls.tmp.name)
         cls.cert=cls.root/'cert.pem';cls.key=cls.root/'key.pem'
         subprocess.run(['openssl','req','-x509','-newkey','rsa:2048','-nodes','-days','1','-subj','/CN=loopback-test','-addext','subjectAltName=IP:127.0.0.1','-keyout',cls.key,'-out',cls.cert],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-        cls.up=http.server.ThreadingHTTPServer(('127.0.0.1',0),Upstream);cls.up.writes=0
+        cls.up=http.server.ThreadingHTTPServer(('127.0.0.1',0),Upstream);cls.up.writes=0;cls.up.reads=0
         tls=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);tls.load_cert_chain(cls.cert,cls.key);cls.up.socket=tls.wrap_socket(cls.up.socket,server_side=True)
         cls.upthread=threading.Thread(target=cls.up.serve_forever,daemon=True);cls.upthread.start()
         with socket.socket() as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
@@ -40,11 +42,12 @@ class TLSIngressTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.ingress.stop_event.set();cls.ingress.shutdown();cls.ingress.server_close();cls.up.shutdown();cls.up.server_close();cls.tmp.cleanup()
-    def call(self,method='GET',body=None,authorization=None,timeout=2):
+    def call(self,method='GET',body=None,authorization=None,timeout=2,with_headers=False):
         c=http.client.HTTPSConnection('127.0.0.1',self.ingress.server_port,context=self.trust,timeout=timeout)
         try:
             c.request(method,'/api/v1/posts/11111111-1111-4111-8111-111111111111/like' if method=='PUT' else '/api/v1/feed',body=body,headers={'Authorization':authorization or self.token,'Content-Type':'application/json'})
-            r=c.getresponse();raw=r.read();return r.status,json.loads(raw)
+            r=c.getresponse();raw=r.read()
+            return (r.status,json.loads(raw),dict(r.headers)) if with_headers else (r.status,json.loads(raw))
         finally:c.close()
     def arm(self,mode,method='PUT',hold=.05):
         j=self.ingress.journal
@@ -72,8 +75,19 @@ class TLSIngressTests(unittest.TestCase):
         t.join(2);self.assertEqual(result[0][0],200);self.assertEqual(self.up.writes,before+1)
     def test_injected_failure_does_not_reach_upstream(self):
         for status in (401,503):
-            self.arm('inject_'+str(status),method='GET');before=self.up.writes
-            code,body=self.call();self.assertEqual(code,status);self.assertIn('error',body);self.assertEqual(self.up.writes,before)
+            self.arm('inject_'+str(status),method='GET');before=(self.up.writes,self.up.reads)
+            code,body,headers=self.call(with_headers=True);self.assertEqual(code,status)
+            self.assertEqual(set(body),{'error','requestId'})
+            self.assertEqual(set(body['error']),{'code','message'})
+            self.assertEqual(body['requestId'],headers['X-Request-ID'])
+            self.assertRegex(body['requestId'],r'^[A-Za-z0-9_-]{22}$')
+            raw=base64.urlsafe_b64decode(body['requestId']+'==');self.assertEqual(len(raw),16)
+            self.assertEqual(base64.urlsafe_b64encode(raw).decode().rstrip('='),body['requestId'])
+            self.assertEqual(body['error']['code'],'SESSION_INVALID' if status==401 else 'AUTHORIZATION_UNAVAILABLE')
+            self.assertLessEqual(len(body['error']['message']),256)
+            self.assertNotIn('Server-Time',headers);self.assertNotIn('Session-Expires-At',headers)
+            self.assertEqual(headers['Cache-Control'],'no-store')
+            self.assertEqual((self.up.writes,self.up.reads),before)
             self.assertEqual(self.ingress.journal.read()['state'],'injected_not_upstream')
     def test_duplicate_condition_headers_preserved(self):
         with self.ingress.journal.locked():self.ingress.journal.write({})
