@@ -681,7 +681,7 @@
     "media": "PASS"
   },
   "isolatedFaultIngress": {
-    "toolTests": "PASS_10_UNITTEST_AND_REAL_LOOPBACK_TLS",
+    "toolTests": "PASS_12_UNITTEST_AND_REAL_LOOPBACK_TLS",
     "realProductSelftest": {
       "result": "PASS_DEDICATED_SYNTHETIC_REAL_C_HTTPS_SQL",
       "sourceSha": "aab1061e4403c0ec87749f9986ec71feecb49ba8",
@@ -1177,6 +1177,7 @@
     "toolSha256": {
       "tools\\feed_staging\\fault_control.py": "15b90f805c88671849aed43145856f24e948c9dff128bb2e27f9525dae2ed739",
       "tools\\feed_staging\\fault_proxy.py": "a585deb2c13b414f1ca2e39073707fad57f9d7b5edf6acbe6949409182fe69c4",
+      "tools\\feed_staging\\test_fault_control.py": "935d46377b8a4aed227c4cede034f7f442221cb9b0af5c72f5098b7c85b03a43",
       "tools\\feed_staging\\test_fault_proxy.py": "72e6cae87ae3e83f261eb3041e5b60d7783004d5059f46630d35a51b1fb17466",
       "tools\\feed_staging\\test_fault_tls.py": "ff9af4283b1c8a864230a2ca6266b264f05c36d5e5edd2fc0027760140020230"
     },
@@ -1553,7 +1554,8 @@
       "productBinaryChanged": false,
       "atUtc": "2026-10-20T04:59:40.598377+00:00",
       "productionTouched": false
-    }
+    },
+    "controlRegression": "Private status redacts digest/marker; exact-id release/abort, active-rule exclusion and private rule-file mode tested"
   },
   "candidateGridFixtures": {
     "result": "PASS_FIVE_NORMAL_API_GRID_SINGLE_IMAGES",

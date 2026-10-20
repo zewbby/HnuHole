@@ -40235,7 +40235,7 @@
     "actualHTTPSGroupsPassed": 8,
     "consumerDartMain21": "PASS_7_STRICT_HTTPS_CHECKS",
     "isolatedFaultSelftest": "PASS_7_REAL_PRODUCT_HTTPS_SQL_CHECKS",
-    "isolatedFaultToolTests": 10,
+    "isolatedFaultToolTests": 12,
     "workerFailureDevice": "NOT_RUN",
     "taskDocument": "docs/branches/chore-feed-staging.md",
     "evidence": "docs/release/feed-staging-verification-20261020.json",
