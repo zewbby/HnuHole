@@ -35,13 +35,14 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `codex/fix/feed-interaction-order` | 以持久条件写版本阻止赞藏未知请求迟到覆盖，独立PR送审；未合并／部署。 | [任务详情](docs/branches/fix-feed-interaction-order.md) |
+| `codex/fix/feed-interaction-order` | PR #30已合入main，以持久条件写版本阻止赞藏条件请求迟到覆盖；已部署隔离测试环境。 | [任务详情](docs/branches/fix-feed-interaction-order.md) |
 | `feat/feed-interactions` | PR #29补齐帖子账号级点赞／收藏与复用评论数的批量摘要后端，本分支送审；未部署。 | [任务详情](docs/branches/feat-feed-interactions.md) |
 | `codex/feat/feed-ui` | PR #28已合入main：新版列表接推荐／通道／屏蔽／浏览与自适应图片；未部署。 | [任务详情](docs/branches/feat-feed-ui.md) |
 | `codex/feat/feed-backend` | PR #27已合入main：真实浏览、跨通道时间游标和账号屏蔽后端；未部署。 | [任务详情](docs/branches/feat-feed-backend.md) |
 | `codex/fix/gate-cancellation-freeze` | PR #25已合入main，修复C/V Gate取消误冻结，真实SQL/TLS回归与证据已交付；未部署。 | [任务详情](docs/branches/fix-gate-cancellation-freeze.md) |
 | `codex/ci/android-integration-candidate` | PR #23已合入main，交付固定Android集成候选及新增恢复/真机治理连接限定证据；未正式发布。 | [任务详情](docs/branches/ci-android-integration-candidate.md) |
 | `codex/ci/android-prerelease` | PR #16已合入main，交付测试签名候选、同机恢复/回滚与vivo S18最小文字图片限定实测；未正式发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
+| `codex/chore/feed-staging` | 维护新版列表共享隔离后端、备份迁移与联调记录，提供正式发布及恢复方案；未正式部署。 | [任务详情](docs/branches/chore-feed-staging.md) |
 
 | `codex/feat/comment-report-moderation` | 真实主评论/单图回复举报、网页处置、系统通知和申诉已接通，合并状态见任务PR。 | [任务详情](docs/branches/feat-comment-report-moderation.md) |
 | `codex/feat/report-moderation` | PR #18 已合入main：帖子举报、网页审核和最小系统通知阶段1；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |
@@ -61,8 +62,8 @@
 
 ## 最近变动
 
+- 2026-10-20 · [#30](https://github.com/zewbby/HnuHole/pull/30)：新增持久条件写版本，拒绝迟到赞藏请求并兼容旧客户端。
+- 2026-10-20 · [#29](https://github.com/zewbby/HnuHole/pull/29)：补齐账号点赞、收藏与评论统计接口。
 - 2026-10-20 · [#28](https://github.com/zewbby/HnuHole/pull/28)：新版帖子列表接通真实通道、账号屏蔽、浏览及自适应图片。
 - 2026-10-19 · [#27](https://github.com/zewbby/HnuHole/pull/27)：接入真实浏览去重、跨通道时间列表与账号屏蔽后端。
-- 2026-10-19 · [#25](https://github.com/zewbby/HnuHole/pull/25)：修复C/V Gate取消误冻结，交付真实SQL/TLS回归与专用CI，保留真实故障冻结。
-- 2026-10-19 · [#24](https://github.com/zewbby/HnuHole/pull/24)：补记集成候选合并与资源收尾，保留固定制品、证据和复现材料。
-- 2026-10-19 · [#23](https://github.com/zewbby/HnuHole/pull/23)：交付固定Android集成候选、必要新增恢复与vivo S18举报/审核/通知/申诉限定证据。
+- 2026-10-19 · [#25](https://github.com/zewbby/HnuHole/pull/25)：修复C/V Gate取消误冻结，保留真实故障冻结。
