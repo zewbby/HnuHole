@@ -40,3 +40,7 @@
 两环境各以正常API、上传grant/bytes、原worker发表5种有网格/中心/边界的单图：640×360、360×640、640×640、4096×128、256×4096；严格protected manifest与原bytes逐字节一致，SHA/帖子ID在 `cas-grid-fixtures.json`／`shared-grid-fixtures.json` 本机及脱敏汇总中。夹具不代证手机正常发帖、精确4x或所有设备比例通过。
 
 当前只有private CA隔离入口；debug功能验收可使用原pinned CA。release/profile真实设备链路及性能缺公信CA隔离入口，保持NOT_RUN；不降低正式guard或申请公网资源来绕过。正式环境未部署。
+
+## GET注入严格契约增量
+
+#32旧注入缺body.requestId，生产Dart会按401/503进入格式错误回退；原宿主状态码自测不能代证规范错误解析。独立 `codex/fix/feed-fault-error-contract` 补同一canonical requestId用于正文和header、无续期/不去上游的TLS断言，旧实现实际FAIL后修复12项PASS；本段为分支范围，未合并/部署前设备GET注入保持NOT_RUN。真实上游200/202 drop及旧请求412不受影响。见[任务及验证](../branches/fix-feed-fault-error-contract.md)。

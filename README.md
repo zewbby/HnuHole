@@ -35,6 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/fix/feed-fault-error-contract` | 补齐隔离GET错误注入的严格关联ID契约与TLS回归，未合并／部署。 | [任务详情](docs/branches/fix-feed-fault-error-contract.md) |
 | `codex/fix/feed-interaction-order` | PR #30已合入main，以持久条件写版本阻止赞藏条件请求迟到覆盖；已部署隔离测试环境。 | [任务详情](docs/branches/fix-feed-interaction-order.md) |
 | `feat/feed-interactions` | PR #29补齐帖子账号级点赞／收藏与复用评论数的批量摘要后端，本分支送审；未部署。 | [任务详情](docs/branches/feat-feed-interactions.md) |
 | `codex/feat/feed-ui` | PR #28已合入main：新版列表接推荐／通道／屏蔽／浏览与自适应图片；未部署。 | [任务详情](docs/branches/feat-feed-ui.md) |
@@ -62,8 +63,8 @@
 
 ## 最近变动
 
+- 2026-10-20 · [#32](https://github.com/zewbby/HnuHole/pull/32)：交付0021隔离部署恢复记录及单次可控故障入口。
 - 2026-10-20 · [#30](https://github.com/zewbby/HnuHole/pull/30)：新增持久条件写版本，拒绝迟到赞藏请求并兼容旧客户端。
 - 2026-10-20 · [#29](https://github.com/zewbby/HnuHole/pull/29)：补齐账号点赞、收藏与评论统计接口。
 - 2026-10-20 · [#28](https://github.com/zewbby/HnuHole/pull/28)：新版帖子列表接通真实通道、账号屏蔽、浏览及自适应图片。
 - 2026-10-19 · [#27](https://github.com/zewbby/HnuHole/pull/27)：接入真实浏览去重、跨通道时间列表与账号屏蔽后端。
-- 2026-10-19 · [#25](https://github.com/zewbby/HnuHole/pull/25)：修复C/V Gate取消误冻结，保留真实故障冻结。
