@@ -303,6 +303,9 @@ func TestFeedRuntimePrivilegesClosureAndStartupPostgres(t *testing.T) {
 	if count(t, l.cp, `SELECT count(*) FROM c_posts.post_likes WHERE account_id=$1`, reader.AccountID) != 0 || count(t, l.cp, `SELECT count(*) FROM c_posts.post_favorites WHERE account_id=$1`, reader.AccountID) != 0 {
 		t.Fatal("closure retained private interactions")
 	}
+	if count(t, l.cp, `SELECT count(*) FROM c_posts.post_interaction_versions WHERE account_id=$1`, reader.AccountID) != 0 {
+		t.Fatal("closure retained private write fence")
+	}
 	remaining := interactionTestRead(t, l, owner.SessionToken, p.PostID)[0]
 	if remaining.LikeCount != 1 || remaining.FavoriteCount != 1 || !remaining.LikedByMe || !remaining.FavoritedByMe {
 		t.Fatal("closure touched another account", remaining)

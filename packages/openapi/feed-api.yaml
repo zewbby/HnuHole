@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: HnuHole chronological feed and account preferences
-  version: 0.2.0
+  version: 0.3.0
   description: >-
     FEED-BACKEND-01, HEAT-07. Uses the existing independent C HTTPS origin,
     current Bearer and final Safety Gate transaction. No account or identity
@@ -73,6 +73,8 @@ paths:
       - { $ref: '#/components/parameters/PostID' }
     put:
       operationId: setPostLike
+      parameters:
+        - { $ref: '#/components/parameters/InteractionVersion' }
       summary: Set the current account's like, never toggle it
       description: >-
         Account-level and shared across identities, sessions and devices.
@@ -82,6 +84,12 @@ paths:
         rejects non-ACTIVE accounts, including PENDING_CLOSE, with 401. Muting
         publication does not prohibit likes.
         Returns the committed current summary, not a cached command receipt.
+        New clients must send If-Interaction-Version from the single-post GET.
+        Every successful PUT rotates the private account/post write version,
+        even a same-value or legacy unconditional PUT. A stale condition returns
+        412 INTERACTION_VERSION_CONFLICT without mutation or session renewal.
+        This version is not an HTTP representation ETag. Unconditional legacy
+        writes retain commit-order semantics and cannot resolve delayed intents.
       requestBody:
         required: true
         x-max-bytes: 1024
@@ -99,6 +107,7 @@ paths:
         '401': { $ref: '#/components/responses/Error' }
         '403': { $ref: '#/components/responses/Error' }
         '404': { $ref: '#/components/responses/Error' }
+        '412': { $ref: '#/components/responses/Error' }
         '413': { $ref: '#/components/responses/Error' }
         '415': { $ref: '#/components/responses/Error' }
         '429': { $ref: '#/components/responses/RateLimited' }
@@ -108,6 +117,8 @@ paths:
       - { $ref: '#/components/parameters/PostID' }
     put:
       operationId: setPostFavorite
+      parameters:
+        - { $ref: '#/components/parameters/InteractionVersion' }
       summary: Set the current account's private favorite
       description: >-
         Same account isolation, visibility and idempotent set semantics as likes.
@@ -115,6 +126,7 @@ paths:
         Repeating true preserves the original trusted saved time. Removing and
         later re-adding creates a new saved time. Account closure clears both
         private interaction facts; deleting a speaking identity does not.
+        Uses the same optional If-Interaction-Version write fence as likes.
       requestBody:
         required: true
         x-max-bytes: 1024
@@ -132,6 +144,7 @@ paths:
         '401': { $ref: '#/components/responses/Error' }
         '403': { $ref: '#/components/responses/Error' }
         '404': { $ref: '#/components/responses/Error' }
+        '412': { $ref: '#/components/responses/Error' }
         '413': { $ref: '#/components/responses/Error' }
         '415': { $ref: '#/components/responses/Error' }
         '429': { $ref: '#/components/responses/RateLimited' }
@@ -268,6 +281,19 @@ paths:
         '503': { $ref: '#/components/responses/Error' }
 components:
   parameters:
+    InteractionVersion:
+      name: If-Interaction-Version
+      in: header
+      required: false
+      description: >-
+        Exactly one opaque quoted 64-lowercase-hex version from this account and
+        post. No wildcard, weak tag, list, or duplicate header. Unknown transport
+        results must retain this same condition until a changed version or 412
+        proves it can never commit. Counts changing in other accounts do not
+        alter this write fence. Like and favorite share one version and queue.
+      schema:
+        type: string
+        pattern: '^"[0-9a-f]{64}"$'
     PostID:
       name: postId
       in: path
@@ -279,6 +305,12 @@ components:
       scheme: bearer
       bearerFormat: canonical-unpadded-base64url-32-bytes
   headers:
+    InteractionVersion:
+      required: true
+      description: Opaque account/post write fence, not an HTTP ETag or a count cache validator.
+      schema:
+        type: string
+        pattern: '^"[0-9a-f]{64}"$'
     RequestID:
       required: true
       schema: { type: string, minLength: 22, maxLength: 22 }
@@ -420,12 +452,13 @@ components:
           properties:
             code:
               type: string
-              enum: [MALFORMED_REQUEST, AUTHENTICATION_FAILED, SESSION_INVALID, session_replaced, AUTHORIZATION_UNAVAILABLE, SERVICE_UNAVAILABLE, RATE_LIMITED, PAYLOAD_TOO_LARGE, UNSUPPORTED_MEDIA_TYPE, CURSOR_INVALID, POST_CHANNEL_UNAVAILABLE, POST_NOT_FOUND]
+              enum: [MALFORMED_REQUEST, AUTHENTICATION_FAILED, SESSION_INVALID, session_replaced, AUTHORIZATION_UNAVAILABLE, SERVICE_UNAVAILABLE, RATE_LIMITED, PAYLOAD_TOO_LARGE, UNSUPPORTED_MEDIA_TYPE, CURSOR_INVALID, POST_CHANNEL_UNAVAILABLE, POST_NOT_FOUND, INTERACTION_VERSION_CONFLICT]
             message: { type: string, minLength: 1, maxLength: 256 }
   responses:
     Interactions:
       description: Committed aggregate counts and own account flags
       headers:
+        Interaction-Version: { $ref: '#/components/headers/InteractionVersion' }
         X-Request-ID: { $ref: '#/components/headers/RequestID' }
         Cache-Control: { $ref: '#/components/headers/NoStore' }
         Session-Expires-At: { $ref: '#/components/headers/SessionExpiresAt' }

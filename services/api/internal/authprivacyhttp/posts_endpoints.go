@@ -595,6 +595,8 @@ func (b *boundary) postFailure(w http.ResponseWriter, err error) {
 				status = 503
 			case "POSTING_RESTRICTED":
 				status = 409
+			case "INTERACTION_VERSION_CONFLICT":
+				status = 412
 			}
 		}
 		if status != 0 && failure.Status == status {
@@ -660,6 +662,13 @@ func (b *boundary) writePostResponse(w http.ResponseWriter, response authprivacy
 	if err != nil {
 		b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
 		return
+	}
+	if response.InteractionVersion != "" && route.kind != authprivacy.PostInteractionBatch {
+		if !posts.ValidInteractionVersion(response.InteractionVersion) || !isPostInteractionKind(route.kind) {
+			b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+			return
+		}
+		w.Header().Set("Interaction-Version", response.InteractionVersion)
 	}
 	w.Header().Set("Session-Expires-At", utc(response.ExpiresAt))
 	w.Header().Set("Server-Time", utc(response.ServerTime))

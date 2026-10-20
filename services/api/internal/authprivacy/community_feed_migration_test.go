@@ -16,7 +16,7 @@ func TestFeedGooseFreshAndUpgradePostgres(t *testing.T) {
 	if tool == "" {
 		t.Skip("owned Goose fixture absent")
 	}
-	for _, mode := range []string{"fresh", "upgrade", "interactions"} {
+	for _, mode := range []string{"fresh", "upgrade", "interactions", "versions"} {
 		t.Run(mode, func(t *testing.T) {
 			ctx := context.Background()
 			dsn := os.Getenv("FEED_" + strings.ToUpper(mode) + "_DSN")
@@ -47,6 +47,9 @@ func TestFeedGooseFreshAndUpgradePostgres(t *testing.T) {
 				if mode == "interactions" {
 					base = "19"
 				}
+				if mode == "versions" {
+					base = "20"
+				}
 				if e = run("up-to", base); e != nil {
 					t.Fatal("main schema install", e)
 				}
@@ -62,10 +65,13 @@ func TestFeedGooseFreshAndUpgradePostgres(t *testing.T) {
  UPDATE c_posts.publication_attempts SET state='PUBLISHED',terminal_at='2026-10-19T00:00:00Z' WHERE task_id='33333333-3333-4333-8333-333333333333';
  UPDATE c_posts.posts SET visibility='PUBLISHED',published_attempt_version=1,published_at='2026-10-19T00:00:00Z',publication_ordinal=nextval('c_posts.publication_ordinal_seq') WHERE post_id='22222222-2222-4222-8222-222222222222';
  COMMIT;`)
-				if mode == "interactions" {
+				if mode == "interactions" || mode == "versions" {
 					mustExec(t, pool, `INSERT INTO c_posts.post_view_totals VALUES('22222222-2222-4222-8222-222222222222',7);
  INSERT INTO c_posts.post_daily_views VALUES('d2c920f5-5563-452d-901c-be133844b0fa','22222222-2222-4222-8222-222222222222','2026-10-19');
  INSERT INTO c_posts.feed_preferences VALUES('d2c920f5-5563-452d-901c-be133844b0fa','{}',3)`)
+				}
+				if mode == "versions" {
+					mustExec(t, pool, `INSERT INTO c_posts.post_likes VALUES('d2c920f5-5563-452d-901c-be133844b0fa','22222222-2222-4222-8222-222222222222'); INSERT INTO c_posts.post_favorites VALUES('d2c920f5-5563-452d-901c-be133844b0fa','22222222-2222-4222-8222-222222222222','2026-10-20T00:00:00Z')`)
 				}
 				if e = pool.QueryRow(ctx, preserved).Scan(&before); e != nil {
 					t.Fatal(e)
@@ -74,7 +80,7 @@ func TestFeedGooseFreshAndUpgradePostgres(t *testing.T) {
 			if e = run("up"); e != nil {
 				t.Fatal("latest migration failed", e)
 			}
-			if count(t, pool, `SELECT count(*) FROM public.goose_db_version WHERE is_applied`) != 21 {
+			if count(t, pool, `SELECT count(*) FROM public.goose_db_version WHERE is_applied`) != 22 {
 				t.Fatal("incomplete migration chain")
 			}
 			if e = checkFeedSchema(ctx, pool, true); e != nil {
@@ -94,17 +100,24 @@ func TestFeedGooseFreshAndUpgradePostgres(t *testing.T) {
 				if mode == "upgrade" && count(t, pool, `SELECT count(*) FROM c_posts.post_view_totals`) != 0 {
 					t.Fatal("historical views fabricated")
 				}
-				if mode == "interactions" && (count(t, pool, `SELECT view_count FROM c_posts.post_view_totals`) != 7 || count(t, pool, `SELECT count(*) FROM c_posts.post_daily_views`) != 1 || count(t, pool, `SELECT revision FROM c_posts.feed_preferences`) != 3) {
+				if (mode == "interactions" || mode == "versions") && (count(t, pool, `SELECT view_count FROM c_posts.post_view_totals`) != 7 || count(t, pool, `SELECT count(*) FROM c_posts.post_daily_views`) != 1 || count(t, pool, `SELECT revision FROM c_posts.feed_preferences`) != 3) {
 					t.Fatal("0020 changed feed facts")
 				}
 			}
-			if count(t, pool, `SELECT count(*) FROM c_posts.post_likes`) != 0 || count(t, pool, `SELECT count(*) FROM c_posts.post_favorites`) != 0 {
+			wantFacts := 0
+			if mode == "versions" {
+				wantFacts = 1
+			}
+			if count(t, pool, `SELECT count(*) FROM c_posts.post_likes`) != wantFacts || count(t, pool, `SELECT count(*) FROM c_posts.post_favorites`) != wantFacts {
 				t.Fatal("fabricated historical interactions")
+			}
+			if count(t, pool, `SELECT count(*) FROM c_posts.post_interaction_versions`) != 0 {
+				t.Fatal("fabricated historical write versions")
 			}
 			if e = run("down"); e == nil {
 				t.Fatal("cumulative facts rolled back")
 			}
-			if count(t, pool, `SELECT max(version_id) FROM public.goose_db_version WHERE is_applied`) != 20 {
+			if count(t, pool, `SELECT max(version_id) FROM public.goose_db_version WHERE is_applied`) != 21 {
 				t.Fatal("failed Down changed ledger")
 			}
 		})

@@ -1,5 +1,20 @@
 package posts
 
+import "encoding/hex"
+
+func ValidInteractionVersion(tag string) bool {
+	if len(tag) != 66 || tag[0] != '"' || tag[65] != '"' {
+		return false
+	}
+	for _, c := range tag[1:65] {
+		if !(c >= '0' && c <= '9' || c >= 'a' && c <= 'f') {
+			return false
+		}
+	}
+	_, err := hex.DecodeString(tag[1:65])
+	return err == nil
+}
+
 type InteractionKind string
 
 const (

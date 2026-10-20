@@ -176,7 +176,7 @@ func TestFeedInteractionsVisibilityRollbackAndSchemaPostgres(t *testing.T) {
 	if _, err := l.c.ReadPostInteractions(ctx, owner.SessionToken, []string{post}); err == nil {
 		t.Fatal("deleted post summary leaked")
 	}
-	for _, table := range []string{"post_likes", "post_favorites"} {
+	for _, table := range []string{"post_likes", "post_favorites", "post_interaction_versions"} {
 		mustExec(t, l.cp, `ALTER TABLE c_posts.`+table+` DROP CONSTRAINT `+table+`_pkey`)
 		if l.c.CheckPostSchema(ctx) == nil || CheckModerationLifecycleSchema(ctx, l.cp) == nil {
 			t.Fatal("missing interaction key accepted")
