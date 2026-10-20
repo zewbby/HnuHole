@@ -1,0 +1,33 @@
+{
+  "task": "FEED-SUPPLEMENT-SUPPORT-01",
+  "date": "2026-10-20",
+  "timezone": "Asia/Shanghai",
+  "baselineMain": "30401b8034b9ffdb2df07debf4b174adb04a138c",
+  "branch": "codex/test/feed-supplement-support",
+  "actualBackendSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+  "schema": {
+    "c": 21,
+    "v": 4
+  },
+  "existingProxySha": "938f7e72be829ef3b36ce724ba1d414870783828",
+  "localToolTests": {
+    "currentFocusedPassed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "unchangedOriginalTestsReused": 12,
+    "previousCombinedRunPassed": 20,
+    "finalCIDiscoveryExpected": 22,
+    "scope": "private scope, real loopback TLS forwarding and bounded upload suppression; not product SQL/worker/device"
+  },
+  "independentReview": "INITIAL_PEER_NO_SECURITY_BLOCKERS_INCREMENTAL_AUDIT_FIX_REVIEW_PENDING",
+  "finalHeadCI": "PENDING",
+  "publicTrustedHTTPS": "PREPARING_USER_AUTHORIZED_TEMPORARY_TUNNELS",
+  "deviceWorkerRetry": "NOT_RUN_WAIT_REVIEW_CI_AND_GROUP_WINDOW",
+  "performanceDevice": "NOT_RUN_WAIT_TRUSTED_HTTPS_AND_TRACED_PROFILE_BUILD",
+  "productSourceChanged": false,
+  "databaseMutationByTool": false,
+  "trustedClockChanged": false,
+  "productionTouched": false,
+  "mergeAuthorized": false,
+  "fullModuleConclusionsPromoted": false
+}
