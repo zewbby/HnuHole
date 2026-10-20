@@ -41,6 +41,8 @@ FA-D02为2003忙态按钮失去tap recognizer，外层卡片收下连点误进�
 
 2004另用原UI完成主评+回复：详情0→1→2，回列表2；主评赞0→1→0；删除自己的主评后详情/列表均0。环境负责人对同一操作做7项只读SQL核对PASS：各marker唯一发布/受理、deleted=true/bodyPresent=true、可见0及本人评论赞false/0；仅可见删除，不称物理擦除。独立Android报告位于 `E:/Hnuhole-env/source/HnuHole-feed-android-acceptance/docs/design/feed-android-acceptance-20261020.md` 与同名JSON，保留其版本和验收边界。
 
+验收侧最终24项用例按实际被测版本累计13 PASS／9 NOT_RUN／2 BLOCKED；不是2004单版本24项全通过。FA15缺设备可控丢响应入口，FA24等待前后端合入后的最终main重建。独立报告及JSON摘要已核对，未提升完整模块结论。
+
 FA15设备强制“请求已受理、响应丢失”暂缺可控故障入口，明确BLOCKED；普通断网、宿主交错、真实CAS及后端SQL证据分别保留，不互相代证。
 
 ## 审查及剩余

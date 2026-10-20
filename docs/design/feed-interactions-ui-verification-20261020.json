@@ -316,7 +316,21 @@
       "scope": "Visible deletion, not physical erasure; production/main not covered"
     },
     "independentReport": "E:/Hnuhole-env/source/HnuHole-feed-android-acceptance/docs/design/feed-android-acceptance-20261020.md",
-    "independentMachineRecord": "E:/Hnuhole-env/source/HnuHole-feed-android-acceptance/docs/design/feed-android-acceptance-20261020.json"
+    "independentMachineRecord": "E:/Hnuhole-env/source/HnuHole-feed-android-acceptance/docs/design/feed-android-acceptance-20261020.json",
+    "independentFinalSummary": {
+      "total": 24,
+      "PASS": 13,
+      "NOT_RUN": 9,
+      "BLOCKED": 2,
+      "scope": "Cumulative across actual tested versions, not24 tests passed on2004",
+      "blockedCases": {
+        "FA15": "No controlled device response-loss entry",
+        "FA24": "Final main build unavailable while frontend and backendPR30 remain unmerged"
+      },
+      "reportSha256": "c62cda3b667d66a81ce8e04f6f610d7942ba36799515f641f002633a6ce99e6e",
+      "machineRecordSha256": "8f8c03ffa40293a784bc21324f494eb4a171b1d9053d1066f89e65ca5c601994",
+      "fullModuleResultsPromoted": false
+    }
   },
   "ci": {
     "head": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
