@@ -1,7 +1,7 @@
 # FEED-INTERACTIONS-01
 
 - 2026-10-20，分支 `feat/feed-interactions`，基于最新远端 main `f3454d1` 的独立 worktree，用户指定分支名。
-- 状态：SCOPED_LOCAL_PASS，PR 尚未创建；实现、验证、送审和合并已获授权，最终head CI完成前不合并，未部署。
+- 状态：SCOPED_LOCAL_PASS，已提交[PR #29](https://github.com/zewbby/HnuHole/pull/29)；实现提交 `97e7c8b7ed4fa6e5a6d35d201c0366707932c3bd`，后续交接引用提交不改变被测产品输入。合并已获授权，最终head CI完成前不合并，未部署。
 - 范围：新版列表的帖子点赞、收藏、评论数接口；复用现有评论统计，不改评论业务或既有 feed DTO，不扩展收藏列表、消息通知或热度算法。
 - 规则：按登录账号保存点赞／收藏，无身份选择或发言绑定；允许自赞；公开聚合数量，仅向本人返回本账号状态，无参与者或身份关联 API。
 - 完成标准：幂等设置与批量查询、匿名及账号隔离、0020空库／升级及最小权限／关闭清理、真实 SQL/race/TLS、Go和完整OpenAPI、前端接线与模块交接、最终head CI后PR合并。独立成员批准状态如实记录，不伪造批准。

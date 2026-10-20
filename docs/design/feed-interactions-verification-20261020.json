@@ -5,7 +5,8 @@
   "timeZone": "Asia/Shanghai",
   "branch": "feat/feed-interactions",
   "baseMain": "f3454d11ff054976054e402b7d71c4f45e0f5b06",
-  "pullRequest": null,
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/29",
+  "implementationCommit": "97e7c8b7ed4fa6e5a6d35d201c0366707932c3bd",
   "result": "SCOPED_LOCAL_PASS",
   "implementation": {
     "migration": "0020_post_interactions.sql",
