@@ -2,7 +2,7 @@
 
 工作项 FEED-SUPPLEMENT-SUPPORT-01；2026-10-20，Asia/Shanghai。独立分支
 `codex/test/feed-supplement-support`，基线 main `30401b8034b9ffdb2df07debf4b174adb04a138c`。
-状态 TOOLS_REVIEW_CI_PASS_WORKER_FAILED_RETRY_FA_D08_BLOCKED；[Draft PR #35](https://github.com/zewbby/HnuHole/pull/35) 未合并、未正式部署。
+状态 WORKER_FAILURE_AND_CANDIDATE2011_RECOVERY_SCOPED_PASS_HTTPS_BLOCKED；[Draft PR #35](https://github.com/zewbby/HnuHole/pull/35) 未合并、未正式部署。
 
 只补 profile/release 真机性能所需的标准可信 HTTPS，以及原 FA20 评论的真实
 worker 失败→正常用户重试→成功。共享后端仍为 c923fa5／C0021/V0004，原隔离代理
@@ -43,9 +43,15 @@ task `7202fe80-9809-483a-9720-d700ce49153e`／comment
 902.335425秒写 FAILED/PUBLICATION_FAILED（22:24:44.447348+08），原图未上传，
 失败时正常清理。没有改SQL、时钟或Gate。只读SQL确认CREATE1/task1/公开评论0。
 环境精确release后，2010原失败页直接点击重试一次，实际出现“请核对任务结果后再
-操作。”；SQL仍只有v1 FAILED、RETRY0，登记FA-D08，不能记重试成功。前端在最新
-main独立 `codex/fix/comment-failure-reconcile` 修复；保留原B/同机journal/原图/任务，
-旧2010失败前未用重启/重新核对绕过；待同签候选后复验同一任务，不新建CREATE。
+操作。”；SQL仍只有v1 FAILED、RETRY0，登记FA-D08，不能把旧2010记重试成功。
+前端基于最新main独立 `codex/fix/comment-failure-reconcile`／[PR #36](https://github.com/zewbby/HnuHole/pull/36)
+修复源 `57dfe5f`，76影响回归／分析0／301原生构建任务通过，独立Max无阻断。
+原CA/origins/同签debug2011保数据升级后，原B无需重登；同一原FAILED任务正常UI
+只点一次RETRY，v2在22:40:28.743782+08正常PUBLISHED（受理后0.616413秒）。
+只读SQL确认CREATE1/RETRY1/task1/唯一公开评论1，v1失败历史保留；完整image
+manifest含mediaId、原文/身份/对象均未变，原PNG1840bytes／SHA一致。Android
+实际关联读列表1/详情1/唯一正文+蓝色原图并目视四张PNG通过，未新建CREATE或再
+造失败。旧2010失败及countsAfterOriginalRetry=RETRY0冻结，修复后计数另记postFix。
 
 修复候选覆盖安装必然重启App，旧core状态可能因此自愈。该设备复验只能证明同一
 原FAILED任务/原图/身份的expected1→version2正常恢复，不能声称重新复现并消除
@@ -54,7 +60,9 @@ main独立 `codex/fix/comment-failure-reconcile` 修复；保留原B/同机journ
 
 Android已恢复C51245直连，环境核uid/startTicks/cmdline后仅停自有53381，原C/V
 严格TLS健康200，原33923不动。原任务和全部证据保留，无须再开夹具或重复15分钟。
-当前重试闭环和真实性能均未完成；不升级完整模块或生产结论。
+原任务恢复限定通过，真实性能仍BLOCKED；不升级完整模块或生产结论。工具14ee26c
+及事实提交f409399的适用CI均成功22项；本次最终文档HEAD和PR36的最终适用CI
+须以对应PR实时checks与独立冻结回执为准，不用旧HEAD冒充通过。无新增合并授权。
 
 操作及证明范围见[补验协议](../release/feed-supplement-support-20261020.md)，记录见
 [机器状态](../design/feed-supplement-support-verification-20261020.json)。完成两项支持后
