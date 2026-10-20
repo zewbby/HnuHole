@@ -63,6 +63,7 @@ class HttpPostApi
       'POST',
       '/api/v1/feed/interactions',
       body: {'postIds': postIds},
+      maxRequestBytes: 4096,
       decode: (raw) {
         final m = PostJson.record(raw, {'items'});
         final items = m['items'];

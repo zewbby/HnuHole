@@ -112,6 +112,27 @@ Future<void> main(List<String> args) async {
       require(context['totalCount'] == summary.commentCount, step);
     }
     checks.add(step);
+    step = 'large_interaction_batch';
+    final widePage = (await posts.timeline(
+      sessionToken: tokens[0],
+      limit: 50,
+    )).value;
+    final wideIds = widePage.items.map((post) => post.postId).toList();
+    require(wideIds.length >= 26, step);
+    final wideBatch = (await posts.interactions(
+      sessionToken: tokens[0],
+      postIds: wideIds,
+    )).value;
+    require(
+      jsonEncode({'postIds': wideIds}).length > 1024 &&
+          wideBatch.length == wideIds.length &&
+          List.generate(
+            wideIds.length,
+            (i) => i,
+          ).every((i) => wideBatch[i].postId == wideIds[i]),
+      step,
+    );
+    checks.add(step);
     step = 'protected_single_and_carousel_bytes';
     final mediaPosts = first.items
         .where((p) => p.imageCount > 0)

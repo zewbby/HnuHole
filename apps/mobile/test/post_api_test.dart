@@ -191,6 +191,29 @@ void main() {
     'favoritedByMe': false,
   };
   final version = '"${List.filled(64, 'a').join()}"';
+  List<String> interactionIds(int count) => [
+    for (var i = 1; i <= count; i++)
+      '10000000-0000-4000-8000-${i.toRadixString(16).padLeft(12, '0')}',
+  ];
+  for (final count in [26, 50]) {
+    test('interaction batch accepts $count unique IDs over real TLS', () async {
+      final ids = interactionIds(count);
+      endpoint.respond = (r) => _json(r, 200, {
+        'items': [for (final id in ids) interaction(id: id)],
+      });
+      final response = await api.interactions(
+        sessionToken: _token,
+        postIds: ids,
+      );
+      expect(response.value.map((item) => item.postId).toList(), ids);
+      expect(endpoint.requests, hasLength(1));
+      final request = endpoint.requests.single;
+      expect(request.method, 'POST');
+      expect(request.uri.path, '/api/v1/feed/interactions');
+      expect(request.bytes.length, inInclusiveRange(1025, 4096));
+      expect(jsonDecode(request.body), {'postIds': ids});
+    });
+  }
   test('interaction batch and conditional writes use exact private routes and headers', () async {
     endpoint.respond = (r) {
       r.response.headers.set('Interaction-Version', version);
@@ -259,7 +282,7 @@ void main() {
     for (final ids in <List<String>>[
       [],
       [_id, _id],
-      List.filled(51, _id),
+      interactionIds(51),
     ]) {
       await expectLater(
         api.interactions(sessionToken: _token, postIds: ids),

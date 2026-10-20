@@ -1,5 +1,7 @@
 # FEED-INTERACTIONS-UI-01
 
+> 续办（2026-10-20）：用户已授权在后端#30真实合入、最新main整合、更新后的共享测试环境联调、Android补验无阻断及最终head适用CI全通过后，将#31转Ready并合并；随后从最终main重建同签候选，不正式发布。前端不操作设备或更新环境。等待期间独立复核发现合法26–50项batch被默认1024字节上限拦截，已复现并修为本接口4096字节，补26/50项真实TLS与51唯一ID发送前拒绝回归；历史交付证据按原版本保留，最终收口材料另补。
+
 - 更新：2026-10-20（Asia/Shanghai）。用户指定分支 `feat/feed-interactions-ui`，独立 worktree `E:/Hnuhole-env/source/HnuHole-feed-interactions-ui`；基线最新远端 main `444d25862a83d3a8d40168ef660e50da0712b71e`，旧工作区保留。
 - [Draft PR #31](https://github.com/zewbby/HnuHole/pull/31)，候选源码 `f8133cf819e655a98d5d53d234a26e4a705c2d10`。实现/宿主/真实接口/构建限定通过，2004两缺陷真机复验PASS，2004评论/SQL对照已收口并交接独立报告；未合并或发布。
 - 依赖独立后端 [#30](https://github.com/zewbby/HnuHole/pull/30) 的条件版本契约与0021；本PR不夹带后端提交。依赖获授权合入后须重新整合main/核对CI。0020不支持条件写，客户端不会回退到无条件写。
