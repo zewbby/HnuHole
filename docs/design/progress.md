@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-19 FEED-UI-01：**已确认后端 [#27](https://github.com/zewbby/HnuHole/pull/27) 合入 `f1752e1`，独立 `codex/feat/feed-ui` 基于新 main 接推荐／通道／账号屏蔽／真实浏览及自适应单图／横向多图。保留原认证、发帖、评论和图片链路，无私信。本地分析、530项Flutter宿主回归、真实HTTPS/SQL、6张实图与全插件Android构建限定PASS，未合并／部署；[任务](../branches/feat-feed-ui.md)、[验证](feed-ui-verification-20261019.json)和渲染沿各自范围交接，完整 B03/B04/B06/B12、设备及生产结论不升级。
+
 > **2026-10-19 FEED-BACKEND-01 复核修复：**PR #27 基于 `eec8f4e` 的结构故障测试确认去重主键丢失会被旧代码静默放行；已补精确主键检查和指定冲突键。新本地33顶层／70含子项SQL/race/TLS及全Go/11份API/旧契约通过；原测试证据保留，不代证修复版。完整审查范围与故障复现见[记录](feed-backend-review-20261019.json)，最终head CI／独立review见[任务](../branches/feat-feed-backend.md)；不合并或部署。
 
 > **2026-10-19 FEED-BACKEND-01：BACKEND_SCOPED_PASS。**独立 `codex/feat/feed-backend` 从远端main `fc2348f` 开始，仅实现 HEAT-07、跨通道时间游标、账号通道屏蔽及分页前过滤，迁移0019；原鉴权与旧接口不变。Go全量宿主/build/vet、真实PG16/race/TLS 29顶层／61含子项、11份OpenAPI及旧契约通过。PR／最终head CI／独立review状态见[任务](../branches/feat-feed-backend.md)，[证据](feed-backend-verification-20261019.json)保留初次失败及修复。未合并／部署；下一步前端依[契约](feed-backend-contract.md)单独接线，完整模块／设备／生产结果不提升。

@@ -10,6 +10,7 @@ import '../auth/auth_store.dart';
 import '../identity/identity_api.dart';
 import '../storage/post_store.dart';
 import 'post_api.dart';
+import 'feed_api.dart';
 import 'post_models.dart';
 import 'post_media_api.dart';
 
@@ -19,6 +20,7 @@ import 'post_upload_models.dart';
 import 'post_photo_picker.dart';
 
 part 'post_composer_media.dart';
+part 'feed_controller.dart';
 
 typedef PostStoreFactory = Future<PostStore> Function(String accountId);
 
@@ -146,6 +148,14 @@ class PostController extends ChangeNotifier {
     }
   }
 
+  List<FeedPost> _timeline = [];
+  Set<String> _blockedChannels = {};
+  final _postViews = <String, int>{};
+  bool _preferencesReady = false;
+  int _timelineRequest = 0;
+  String? timelineChannelId, timelineCursor, timelineError, preferencesError;
+  bool timelineLoading = false, preferencesSaving = false;
+  Future<void> _preferenceWrites = Future.value();
   final PostApi _api;
   final PostMediaApi? _mediaApi;
   final PostUploadApi? _uploadApi;
@@ -189,6 +199,8 @@ class PostController extends ChangeNotifier {
   List<PersonalPostItem> personalItems = [];
   ManagedIdentity? personalIdentity;
 
+  bool get supportsFeed => _api is FeedApi;
+  bool get feedPreferencesReady => _preferencesReady;
   String? get accountId => _accountId;
   int get authorityVersion => _epoch;
   PostPublicationNotice? get latestPublicationNotice =>
@@ -221,6 +233,7 @@ class PostController extends ChangeNotifier {
     _token = token;
     _accountId = account;
     final epoch = ++_epoch;
+    _clearTimeline();
     final old = _store;
     _store = null;
     if (old != null) {

@@ -34,6 +34,8 @@ const _active = PostAuthor(
 
 /// 本替身只验证 widget 与导航/权限遮蔽，不能证明 HTTP 或持久存储。
 class _WidgetPosts extends ChangeNotifier implements PostController {
+  @override
+  bool get supportsFeed => false;
   bool access = true, loading = false;
   int version = 1;
   String? failure, channel;

@@ -1,5 +1,7 @@
 # 新版帖子列表后端接线
 
+> **2026-10-19 合并事实：**PR #27 已以 `f1752e1` 合入 main；下文“本分支／未合并”为原后端交接快照。FEED-UI-01 从该最新主线单独完成接线，见[前端任务](../branches/feat-feed-ui.md)。未部署。
+
 工作项 `FEED-BACKEND-01`，分支 `codex/feat/feed-backend`，基线 main `fc2348f`。本页描述本分支新增能力，未合并、未部署。精确 JSON、错误与 header 以 [feed-api.yaml](../../packages/openapi/feed-api.yaml) 为准；实际验证见[分支交接](../branches/feat-feed-backend.md)。
 
 ## 接口

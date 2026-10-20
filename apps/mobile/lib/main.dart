@@ -10,6 +10,7 @@ import 'src/comments/comment_http.dart';
 import 'src/comments/comment_journal.dart';
 import 'src/development/app_transport.dart';
 import 'src/navigation/community_material_labels.dart';
+import 'src/posts/feed_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -537,12 +538,13 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
                     .firstOrNull;
                 if (channel == null) return;
                 if (_channelRouteId == channelId) {
+                  unawaited(widget.posts.loadTimeline(channelId: channelId));
                   navigator.popUntil(
                     (route) => route.settings.name == 'channel:$channelId',
                   );
                 } else {
                   navigator.popUntil((route) => route.isFirst);
-                  _openChannel(channel);
+                  _openChannel(channel, initialChannelId: channelId);
                 }
               },
             ),
@@ -551,24 +553,26 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         .whenComplete(() => _personalRouteOpen = false);
   }
 
-  void _openChannel(Channel channel) {
+  void _openChannel(Channel channel, {String? initialChannelId}) {
     final navigator = _navigatorKey.currentState;
     if (navigator == null || !widget.sessions.isAuthenticated) return;
     _channelRouteId = channel.id;
     final route = MaterialPageRoute<void>(
       settings: RouteSettings(name: 'channel:${channel.id}'),
-      builder: (_) => ChannelPostsScreen(
+      builder: (_) => FeedScreen(
         controller: widget.posts,
         loadImages: widget.loadPostImages,
-        channel: channel,
+        composeChannel: channel,
+        initialChannelId: initialChannelId,
+        channels: widget.directory.channels,
+        onOpenMessages: _openMessages,
         onManageIdentities: _openIdentity,
         onAuthenticationRequired: _openAuth,
         onOpenPersonal: _openPersonal,
       ),
     );
     navigator.push(route).whenComplete(() {
-      if (_channelRouteId == channel.id &&
-          widget.posts.currentChannelId == channel.id) {
+      if (_channelRouteId == channel.id) {
         _channelRouteId = null;
       }
     });
@@ -600,6 +604,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hnuhole',
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: const [CommunityMaterialLabels.delegate],
       scaffoldMessengerKey: _scaffoldMessengerKey,
       navigatorKey: _navigatorKey,

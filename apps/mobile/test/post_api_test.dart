@@ -26,6 +26,8 @@ import 'package:hnuhole_mobile/src/posts/post_protocol.dart';
 
 import 'post_media_test_support.dart';
 
+import 'package:hnuhole_mobile/src/posts/feed_api.dart';
+
 const _id = '11111111-1111-4111-8111-111111111111';
 const _other = '22222222-2222-4222-8222-222222222222';
 const _time = '2026-10-08T00:00:00Z';
@@ -180,6 +182,123 @@ void main() {
   HttpOverrides.global = null;
   late _Endpoint endpoint;
   late HttpPostApi api;
+  test(
+    'feed uses new routes, opaque cursor and strict public projection',
+    () async {
+      endpoint.respond = (r) => _json(r, 200, {
+        'items': [
+          {..._card(), 'body': '真实正文', 'viewCount': 1234, 'imageCount': 2},
+        ],
+        'nextCursor': 'opaque_cursor',
+      });
+      final page = await api.timeline(sessionToken: _token, limit: 7);
+      expect(page.value.items.single.body, '真实正文');
+      expect(page.value.items.single.viewCount, 1234);
+      expect(endpoint.requests.last.uri.path, '/api/v1/feed');
+      expect(endpoint.requests.last.uri.queryParameters, {'limit': '7'});
+      await api.timeline(
+        sessionToken: _token,
+        channelId: _id,
+        cursor: page.value.nextCursor,
+        limit: 7,
+      );
+      expect(endpoint.requests.last.uri.queryParameters, {
+        'limit': '7',
+        'channelId': _id,
+        'cursor': 'opaque_cursor',
+      });
+      expect(endpoint.requests.last.headers['authorization'], [
+        'Bearer $_token',
+      ]);
+      endpoint.respond = (r) => _json(r, 200, {
+        'items': [
+          {..._card(), 'body': '', 'imageCount': 1, 'viewCount': 0},
+        ],
+        'nextCursor': null,
+      });
+      expect(
+        (await api.timeline(sessionToken: _token)).value.items.single.body,
+        '',
+      );
+      endpoint.respond = (r) => _json(r, 200, {
+        'items': [
+          {..._card(), 'body': '正文', 'viewCount': 1, 'accountId': _id},
+        ],
+        'nextCursor': null,
+      });
+      await expectLater(
+        api.timeline(sessionToken: _token),
+        throwsA(isA<PostFailure>()),
+      );
+    },
+  );
+  test('preferences replace complete UUID set and views POST has no body or command key', () async {
+    endpoint.respond = (r) => _json(r, 200, {
+      'blockedChannelIds': [_id],
+    });
+    expect(
+      (await api.feedPreferences(sessionToken: _token)).value.blockedChannelIds,
+      {_id},
+    );
+    await api.saveFeedPreferences(
+      sessionToken: _token,
+      blockedChannelIds: {_id},
+    );
+    expect(endpoint.requests.last.method, 'PUT');
+    expect(jsonDecode(endpoint.requests.last.body), {
+      'blockedChannelIds': [_id],
+    });
+    endpoint.respond = (r) => _json(r, 200, {'blockedChannelIds': []});
+    await api.saveFeedPreferences(sessionToken: _token, blockedChannelIds: {});
+    expect(jsonDecode(endpoint.requests.last.body), {'blockedChannelIds': []});
+    endpoint.respond = (r) => _json(r, 200, {'postId': _id, 'viewCount': 19});
+    expect(
+      (await api.registerPostView(
+        sessionToken: _token,
+        postId: _id,
+      )).value.viewCount,
+      19,
+    );
+    final request = endpoint.requests.last;
+    expect(request.method, 'POST');
+    expect(request.uri.path, '/api/v1/posts/$_id/views');
+    expect(request.uri.hasQuery, false);
+    expect(request.body, '');
+    expect(request.headers['idempotency-key'], isNull);
+    endpoint.respond = (r) =>
+        _json(r, 200, {'postId': _other, 'viewCount': 19});
+    await expectLater(
+      api.registerPostView(sessionToken: _token, postId: _id),
+      throwsA(isA<PostFailure>()),
+    );
+  });
+  test('feed preserves CURSOR_INVALID, 401 and 503 classifications', () async {
+    for (final entry in [
+      (400, 'CURSOR_INVALID', PostFailureKind.rejected),
+      (401, 'session_replaced', PostFailureKind.unauthorized),
+      (503, 'SERVICE_UNAVAILABLE', PostFailureKind.unavailable),
+    ]) {
+      endpoint.respond = (r) =>
+          _json(r, entry.$1, _error(entry.$2), success: false);
+      await expectLater(
+        api.timeline(sessionToken: _token),
+        throwsA(_failure(entry.$3, status: entry.$1, code: entry.$2)),
+      );
+    }
+  });
+  test('feed DTO rejects negative totals and duplicate preferences', () {
+    expect(
+      () => FeedPost.fromJson({..._card(), 'body': '正文', 'viewCount': -1}),
+      throwsFormatException,
+    );
+    expect(
+      () => FeedPreferences.fromJson({
+        'blockedChannelIds': [_id, _id],
+      }),
+      throwsFormatException,
+    );
+  });
+
   test('media CREATE and RETRY preserve manifest and bind the existing intent routes', () async {
     final uploader = HttpPostUploadApi(
       communityBaseUri: endpoint.uri,
