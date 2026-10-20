@@ -39,6 +39,8 @@ type postRoute struct {
 	methods   string
 	limit     int
 	version   int32
+	ids       []string
+	enabled   *bool
 }
 
 func (route postRoute) allows(method string) bool {
@@ -64,6 +66,9 @@ func parsePostRoute(path string) (postRoute, error) {
 		return postRoute{}, errMalformed
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
+	if len(parts) == 2 && parts[0] == "feed" && parts[1] == "interactions" {
+		return postRoute{kind: authprivacy.PostInteractionBatch, methods: "POST"}, nil
+	}
 	if len(parts) == 1 && parts[0] == "feed" {
 		return postRoute{kind: authprivacy.PostFeed, methods: "GET"}, nil
 	}
@@ -124,6 +129,18 @@ func parsePostRoute(path string) (postRoute, error) {
 			return postRoute{}, errMalformed
 		}
 		return postRoute{kind: authprivacy.PostDetail, id: parts[1], methods: "GET"}, nil
+	}
+	if len(parts) == 3 && parts[0] == "posts" && (parts[2] == "interactions" || parts[2] == "like" || parts[2] == "favorite") {
+		if _, err := posts.ParseResourceID(parts[1]); err != nil {
+			return postRoute{}, errMalformed
+		}
+		kind, method := authprivacy.PostInteractions, "GET"
+		if parts[2] == "like" {
+			kind, method = authprivacy.PostLikeSet, "PUT"
+		} else if parts[2] == "favorite" {
+			kind, method = authprivacy.PostFavoriteSet, "PUT"
+		}
+		return postRoute{kind: kind, id: parts[1], methods: method}, nil
 	}
 	if len(parts) == 3 && parts[0] == "posts" && parts[2] == "views" {
 		if _, err := posts.ParseResourceID(parts[1]); err != nil {
@@ -187,7 +204,7 @@ func (b *boundary) communityPostsPublic(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 	command := ""
-	if route.command || route.seal || r.Method == http.MethodGet || route.kind == authprivacy.PostViewRecord || route.kind == authprivacy.PostFeedPreferences {
+	if route.command || route.seal || r.Method == http.MethodGet || route.kind == authprivacy.PostViewRecord || route.kind == authprivacy.PostFeedPreferences || isPostInteractionKind(route.kind) {
 		if hasHeader(r.Header, "Idempotency-Key") {
 			b.postBad(w, errMalformed)
 			return
@@ -205,6 +222,10 @@ func (b *boundary) communityPostsPublic(w http.ResponseWriter, r *http.Request, 
 	}
 	if backend == nil {
 		b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+		return
+	}
+	if isPostInteractionKind(route.kind) {
+		b.communityPostInteractions(w, r, backend, bearer, route)
 		return
 	}
 	if r.Method == http.MethodGet {
@@ -677,6 +698,8 @@ func strictPostValue(value any, route postRoute) (any, error) {
 		return result, nil
 	}
 	switch route.kind {
+	case authprivacy.PostInteractions, authprivacy.PostLikeSet, authprivacy.PostFavoriteSet, authprivacy.PostInteractionBatch:
+		return strictPostInteractions(value, route)
 	case authprivacy.PostViewRecord:
 		result, ok := value.(posts.PostView)
 		if !ok || result.PostID != route.id || !postValidID(result.PostID) || result.ViewCount < 0 {

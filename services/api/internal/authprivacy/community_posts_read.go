@@ -13,16 +13,20 @@ import (
 type PostReadKind string
 
 const (
-	PostComposerContext PostReadKind = "composer"
-	PostTaskList        PostReadKind = "tasks"
-	PostTaskDetail      PostReadKind = "task"
-	PostChannelFeed     PostReadKind = "channel"
-	PostFeed            PostReadKind = "feed"
-	PostViewRecord      PostReadKind = "view"
-	PostFeedPreferences PostReadKind = "feedPreferences"
-	PostDetail          PostReadKind = "post"
-	PostOwnList         PostReadKind = "own"
-	PostCapabilities    PostReadKind = "capabilities"
+	PostComposerContext  PostReadKind = "composer"
+	PostTaskList         PostReadKind = "tasks"
+	PostTaskDetail       PostReadKind = "task"
+	PostChannelFeed      PostReadKind = "channel"
+	PostFeed             PostReadKind = "feed"
+	PostViewRecord       PostReadKind = "view"
+	PostFeedPreferences  PostReadKind = "feedPreferences"
+	PostInteractions     PostReadKind = "interactions"
+	PostInteractionBatch PostReadKind = "interactionBatch"
+	PostLikeSet          PostReadKind = "likeSet"
+	PostFavoriteSet      PostReadKind = "favoriteSet"
+	PostDetail           PostReadKind = "post"
+	PostOwnList          PostReadKind = "own"
+	PostCapabilities     PostReadKind = "capabilities"
 )
 
 type PostQuery struct {

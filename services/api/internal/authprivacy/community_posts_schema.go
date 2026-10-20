@@ -30,6 +30,9 @@ func CheckModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool) err
 	if err := checkFeedSchema(ctx, pool, false); err != nil {
 		return err
 	}
+	if err := checkPostInteractionSchema(ctx, pool, false); err != nil {
+		return err
+	}
 	var runtime bool
 	if err := pool.QueryRow(ctx, `SELECT current_user='hnuhole_c_runtime'`).Scan(&runtime); err != nil {
 		return errPostSchema
@@ -38,6 +41,9 @@ func CheckModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool) err
 }
 
 func checkPostSchema(ctx context.Context, pool *pgxpool.Pool) error {
+	if err := checkPostInteractionSchema(ctx, pool, true); err != nil {
+		return err
+	}
 	if err := checkFeedSchema(ctx, pool, true); err != nil {
 		return err
 	}

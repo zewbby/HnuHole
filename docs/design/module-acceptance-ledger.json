@@ -40082,9 +40082,10 @@
     "localSQLSkipped": 0,
     "finalHeadCI": "PR #27 live checks authoritative",
     "independentReview": "PENDING",
-    "formalFrontendAndDevices": "NOT_RUN; next separate task",
+    "formalFrontendAndDevices": "Original backend scope NOT_RUN; later UI #28 evidence tracked separately",
     "fullModuleResultsPromoted": false,
-    "mainMerged": false,
+    "mainMerged": true,
+    "mergeSha": "f1752e10867efb894e1b7bb3bd9a208c14fa74a0",
     "deployed": false
   },
   "currentGateCancellationFix20261019": {
@@ -40125,8 +40126,31 @@
       "B06",
       "B12"
     ],
-    "merged": false,
+    "merged": true,
+    "mergeSha": "f3454d11ff054976054e402b7d71c4f45e0f5b06",
     "deployed": false,
     "overallModuleResultChanged": false
+  },
+  "currentFeedInteractions20261020": {
+    "task": "FEED-INTERACTIONS-01",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/29",
+    "branch": "feat/feed-interactions",
+    "baseMain": "f3454d11ff054976054e402b7d71c4f45e0f5b06",
+    "result": "SCOPED_LOCAL_PASS",
+    "taskDocument": "docs/branches/feat-feed-interactions.md",
+    "evidence": "docs/design/feed-interactions-verification-20261020.json",
+    "frontendContract": "docs/design/feed-backend-contract.md#点赞收藏与评论数接线",
+    "modules": ["B03", "B06"],
+    "reopenedRegressions": ["A03", "A08", "B07", "B10", "C/V isolation and existing views"],
+    "migration": "0020_post_interactions.sql",
+    "sqlTopLevelPassed": 50,
+    "sqlPassedIncludingSubtests": 108,
+    "sqlFailed": 0,
+    "sqlSkipped": 0,
+    "frontendDevicesProduction": "NOT_RUN; backend and wiring document only",
+    "fullModuleResultsPromoted": false,
+    "independentMemberApproval": false,
+    "mainMerged": false,
+    "deployed": false
   }
 }

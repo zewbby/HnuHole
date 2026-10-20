@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "hnuhole-feed-interactions-verification/v1",
+  "task": "FEED-INTERACTIONS-01",
+  "recordedOn": "2026-10-20",
+  "timeZone": "Asia/Shanghai",
+  "branch": "feat/feed-interactions",
+  "baseMain": "f3454d11ff054976054e402b7d71c4f45e0f5b06",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/29",
+  "implementationCommit": "97e7c8b7ed4fa6e5a6d35d201c0366707932c3bd",
+  "result": "SCOPED_LOCAL_PASS",
+  "implementation": {
+    "migration": "0020_post_interactions.sql",
+    "endpoints": [
+      "POST /api/v1/feed/interactions",
+      "GET /api/v1/posts/{postId}/interactions",
+      "PUT /api/v1/posts/{postId}/like",
+      "PUT /api/v1/posts/{postId}/favorite"
+    ],
+    "existingFeedAndLegacyDTOsChanged": false,
+    "comments": "One shared readVisibleCommentCounts query is used by feed summaries, existing comment context and main comment page totals. No secondary counter or cache.",
+    "privacy": "Account-private facts and own booleans, aggregate counts only. No identity selection, speaking binding, voter/favorite lists, account/identity IDs or author privileges. Self contributions are displayed, not a heat score.",
+    "authentication": "Unchanged withPostSession/final C Gate, including immediate session invalidation for PENDING_CLOSE; no read-only exception.",
+    "closure": "Original final closure deletes private likes/favorites under runtime grants; other account facts and cumulative views remain."
+  },
+  "checks": [
+    {
+      "command": "go test -mod=readonly ./...",
+      "result": "PASS",
+      "scope": "All Go host packages; absent-DSN skips are not SQL evidence."
+    },
+    {
+      "command": "go build -mod=readonly ./...",
+      "result": "PASS"
+    },
+    {
+      "command": "go vet -mod=readonly ./...",
+      "result": "PASS"
+    },
+    {
+      "command": "POST_MEDIA_PYTHON=<existing trusted Python> POST_MEDIA_FIXTURES=<task synthetic fixtures> FEED_GOOSE=<Goose3.22.1> PGPORT=55441 sh authlab/run-feed-isolated.sh",
+      "result": "PASS",
+      "topLevelPassed": 50,
+      "passedIncludingSubtests": 108,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python -X utf8 packages/openapi/check-specs.py",
+      "result": "PASS",
+      "completeDocuments": 11
+    },
+    {
+      "command": "python -X utf8 tools/check-community-text-contract.py",
+      "result": "PASS",
+      "protectedOperations": 14
+    },
+    {
+      "command": "python -X utf8 -m unittest discover -s tools/tests -p test_collaboration.py -v",
+      "result": "PASS",
+      "tests": 19
+    },
+    {
+      "command": "python services/api/media/test_validator.py",
+      "result": "PASS",
+      "tests": 4
+    },
+    {
+      "command": "gofmt and git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "coverage": [
+    "Account-level idempotent like/favorite, self-like, two-account 12 concurrent requests, no identity prerequisite/binding, identity deletion preserves flags; unlike/unfavorite and saved-time preservation.",
+    "Input/response strict DTO allowlists, booleans, duplicate keys, UUIDs, 1..50 bounds, no account/identity selectors, no unrelated idempotency header, real HTTPS and no success authority on failure.",
+    "Shared published root/reply count agrees with existing context and comment page; pending, deleted, hidden and hidden roots' floors excluded. Existing text, single-image, comment like/delete/notification/TLS regressions rerun.",
+    "Unpublished/hidden/deleted posts unavailable, no partial batch, reads/interactions do not count views, original feed filter/order/cursor and exact DTO regression retained.",
+    "Final Gate freeze, session replacement before final authorization, fault-induced rollback, formal runtime closure cleanup and retention of another account; feature-disabled common C key/hook/grant checks.",
+    "Fresh 0001..0020, populated 0018 and 0019 upgrade, old post/content/task/channel and view/preference facts preserved, no fabricated interactions, refused Down leaves version20.",
+    "Pre-0020 auth-only common C compatibility, version20 with erased tables rejected, disabled/wrong-event closure trigger and excess/missing runtime privileges rejected."
+  ],
+  "environment": {
+    "runtime": "Existing Go1.22.2, PostgreSQL16.15, Goose3.22.1, Pillow12.3.0; WSL Linux filesystem, non-root, task-owned private socket cluster and 5 disposable synthetic databases.",
+    "source": "/home/hnuhole/feed-interactions-20261020/source",
+    "validator": "Existing /home/hnuhole/report-moderation-root-20261018/python/bin/python, task copy validate_image.py permission600, synthetic fixtures generated under task directory.",
+    "productionDatabasesUsed": false,
+    "cleanup": "Runner stops and removes only its own socket cluster and temporary databases; logs/source/fixtures retained."
+  },
+  "priorRuns": {
+    "logs": [
+      "sql.log",
+      "sql-fixed.log",
+      "sql-final.log",
+      "sql-delivery.log",
+      "sql-complete.log"
+    ],
+    "description": "Initial test fixtures attempted last-identity deletion, used an overlong username and omitted new table inventory; corrected. A pending-close test incorrectly expected access; corrected to existing SESSION_INVALID without auth changes. Initial optional image skips and a writable copied helper rejection were resolved by trusted Linux copy permissions and synthetic media fixtures; final sql-verified.log is authoritative."
+  },
+  "logs": {
+    "directory": "/home/hnuhole/feed-interactions-20261020",
+    "authoritative": "sql-verified.log",
+    "committed": false
+  },
+  "testedInputs": {
+    "base": "f3454d11ff054976054e402b7d71c4f45e0f5b06",
+    "description": "Changed product, migration, grant, contract, runner, CI and test inputs. Subsequent PR-reference documentation commits do not change runtime inputs.",
+    "files": [
+      {
+        "path": ".github/workflows/feed-backend.yml",
+        "sha256": "d5e553b7947d0040b238cf4b54edd98475b6413d48c79ef6714755aba419d7b1"
+      },
+      {
+        "path": "infra/postgres/grant-community.sql",
+        "sha256": "f51a0c0f14bf320c7e15efd25f5efc548d679f85130837a3a92c36c18ae10aab"
+      },
+      {
+        "path": "packages/openapi/feed-api.yaml",
+        "sha256": "e75fd7abba542874f29b45cdd3c242195809da76ace393bcf165bea2125aed4f"
+      },
+      {
+        "path": "services/api/authlab/privacy-role-audit.sql",
+        "sha256": "375a06139dbb67951c33cf5050ad6afcdea9ec37e2b6a93e89907d24b37d51ad"
+      },
+      {
+        "path": "services/api/authlab/run-feed-isolated.sh",
+        "sha256": "97f062bd32187a2e0a8e85ab194348f3a84f91df502f7eb446f45042614a4e94"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_business.go",
+        "sha256": "211e193bc049c99780a778b69221831138264e28515393ad7c2672bd828dfee5"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_read.go",
+        "sha256": "8f38ca1d6769106b11c520c3639ccd397b417a01d57a752e7ae0ca53772923cf"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_feed_migration_test.go",
+        "sha256": "fb523a0fca7925d4821e9b460ef1450e45a677425d67b27f13807d54a5082755"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_feed_test.go",
+        "sha256": "12a4b783388b64303fd87ed97ac8e8cd39a6468fa95ff2d0418d2bb0073513e3"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_post_interactions_schema.go",
+        "sha256": "8917b6505ccd1243a67635b50c7cbd9afb301d062b04b90c5fd2de2f3b2b0683"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_post_interactions_test.go",
+        "sha256": "f775d1de013c6e9c9ca760f239bb5465b986ee4a3a1cc61d9e3c71eddf16e5d2"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_post_interactions.go",
+        "sha256": "3d9e9bc29a332b005aba2310f70c697da757de7cc1626b503872b030f8655740"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts_read.go",
+        "sha256": "d10ceaada969dd675a3bb1c86da3f2aa5fb841aaaf021c75d7afc358a88d0297"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts_schema_test.go",
+        "sha256": "792ee9d7010e26db46cb6b51ce0c7a5c5c7ba40e72a90e7c98551ac769d42698"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts_schema.go",
+        "sha256": "98c5627f76ea3d46990092addd7f027bc3a9af5b861042b92f0d344bd027133c"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/post_interactions_endpoints_test.go",
+        "sha256": "7c82711ac8fcf52cc3b2ee888a87a3449e7dbf3db9268e46f3f216e3b25c44e3"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/post_interactions_endpoints.go",
+        "sha256": "402494f16ac97877e1a087a253e5cca0e4bdb533f019ca8dfb40b40e1561d0e5"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/post_interactions_postgres_test.go",
+        "sha256": "064fb691a05da608b40e4be71e5389e119feba894b795ef045da3ea0198c8b0d"
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/posts_endpoints.go",
+        "sha256": "c7130b3fdd9dd2934c21999aa07d95dacedad48d121134dc21740c7f2180e56d"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/feed_postgres_test.go",
+        "sha256": "adc66fc7a0bd14cfdecc9f9dd0abdc0b76c731b135d801ec168ef76f1a4cd63f"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/post_interactions_postgres_test.go",
+        "sha256": "dcbde170c23b00a626ba27882077083fe826eba942d6ab4cabd9f20b206341ba"
+      },
+      {
+        "path": "services/api/internal/posts/interactions.go",
+        "sha256": "f49abb25d659b5232085b5d19d2e7e3897bf59b289f40c732a78d31e0c711429"
+      },
+      {
+        "path": "services/api/migrations/0020_post_interactions.sql",
+        "sha256": "466305396c5ddc25828f273c2a221fb1fc4f8dccc894c2d092cc07ccbd85072d"
+      }
+    ]
+  },
+  "ci": "Final delivery-head PR checks authoritative; feed-backend runs the expanded SQL/HTTPS suite with media prerequisites. Feed UI separately supplies the compiled Dart probe; it is not silently counted as backend SQL acceptance.",
+  "ciEnvironmentRepair": {
+    "failedHead": "d77ee098fb766ac7142a3e821c4fd8e8d27d815e",
+    "failedRun": "https://github.com/zewbby/HnuHole/actions/runs/39358780089",
+    "reason": "The setup-python toolcache interpreter could not run the validator in its intentionally minimal child environment. Both media regressions failed availability while non-media business checks passed.",
+    "fix": "Reuse post-images CI's system-interpreter private venv and non-writable helper policy, and probe with env -i before SQL. No validator safety bypass, product or test-code change.",
+    "localMinimalEnvironmentProbe": "PASS; the existing system-based trusted venv matches the established CI strategy. Complete local 50/108 SQL result remains scoped to unchanged product/test inputs; repaired final-head CI must pass independently."
+  },
+  "review": "Same-assistant technical review, not an independent colleague or GitHub member approval. User explicitly authorizes PR and merge; do not invent approval.",
+  "frontendContract": "docs/design/feed-backend-contract.md#点赞收藏与评论数接线",
+  "boundaries": {
+    "formalFrontendInteractions": "NOT_RUN; documentation only, no Flutter changes",
+    "devices": "NOT_RUN",
+    "production": "NOT_RUN",
+    "fullModuleResultsPromoted": false,
+    "merged": false,
+    "deployed": false
+  }
+}

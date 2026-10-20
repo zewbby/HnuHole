@@ -2,7 +2,7 @@
 
 汇集已经合并的项目实现与文档。
 
-核对日期：2026-10-19。
+核对日期：2026-10-20。
 
 ## 进度
 
@@ -15,6 +15,8 @@
 [PR #25](https://github.com/zewbby/HnuHole/pull/25) 已修复C/V Gate请求取消误冻结，合并提交 `54a6768fe607c37930959fab23c4876bb4ab531d`；真实SQL/TLS定向回归、受影响宿主CI与独立审查通过，真实故障仍保持冻结。仅交付服务端修复，新建测试资源已收尾；原Android候选及验收材料保持原SHA，未恢复旧环境、未部署或发布。见[任务](fix-gate-cancellation-freeze.md)。
 
 ## 剩余事项
+
+[PR #27](https://github.com/zewbby/HnuHole/pull/27) 的真实浏览去重／时间游标／账号屏蔽后端（`f1752e1`），以及[PR #28](https://github.com/zewbby/HnuHole/pull/28) 的新版列表与自适应图片接线（`f3454d1`）已合入main；原完整模块、设备和生产边界不提升，未部署。后续帖子互动接口见[独立任务](feat-feed-interactions.md)，不提前计作主线能力。
 
 跨设备Passkey NI-X02按用户要求延期。8691/d80c手机debug包的11项限定结果不代证其他APK或完整原生安全；CI release默认.invalid，与手机包分开归档。iOS、正式签名、真实云、独立生产运营与完整App验收仍未完成，未正式发布；其余未验范围见[手机报告](../release/android-device-validation-20261019.md)。手机窗口已结束，不再ADB；后续开发从最新main新开需求分支。
 

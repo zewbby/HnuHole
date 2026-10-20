@@ -99,9 +99,11 @@ func (c *Community) ReadCommentContext(ctx context.Context, b [32]byte, post str
 			return nil, postError("POST_NOT_FOUND", 404)
 		}
 		r := CommentContext{OwnCommentIDs: []string{}}
-		if e := tx.QueryRow(ctx, `SELECT count(*) FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' WHERE t.post_id=$1 AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false) AND NOT EXISTS(SELECT 1 FROM c_comments.tasks root_row WHERE root_row.comment_id=t.root_comment_id AND (root_row.deleted_at IS NOT NULL OR COALESCE((to_jsonb(root_row)->>'moderation_hidden')::boolean,false)))`, post).Scan(&r.TotalCount); e != nil {
-			return nil, e
+		counts, err := readVisibleCommentCounts(ctx, tx, []string{post})
+		if err != nil {
+			return nil, err
 		}
+		r.TotalCount = counts[post]
 		e := tx.QueryRow(ctx, `SELECT identity_id::text FROM c_posts.post_identity_bindings WHERE account_id=$1 AND post_id=$2`, a, post).Scan(&r.BoundIdentityID)
 		if e != nil && !errors.Is(e, pgx.ErrNoRows) {
 			return nil, e
