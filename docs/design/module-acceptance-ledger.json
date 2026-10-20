@@ -40153,6 +40153,97 @@
     "mainMerged": false,
     "deployed": false
   },
+  "currentFeedInteractionOrder20261020": {
+    "task": "FEED-INTERACTION-ORDER-01",
+    "branch": "codex/fix/feed-interaction-order",
+    "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
+    "result": "SCOPED_LOCAL_SQL_TLS_RACE_PASS",
+    "taskDocument": "docs/branches/fix-feed-interaction-order.md",
+    "evidence": "docs/design/feed-interaction-order-verification-20261020.json",
+    "modules": [
+      "B03",
+      "B06"
+    ],
+    "reopenedRegressions": [
+      "A03",
+      "A08",
+      "B07",
+      "B10",
+      "C/V isolation"
+    ],
+    "migration": "0021_post_interaction_versions.sql",
+    "sqlTopLevelPassed": 56,
+    "sqlPassedIncludingSubtests": 115,
+    "sqlFailed": 0,
+    "sqlSkipped": 0,
+    "sharedEnvironmentUpdated": true,
+    "mainMerged": true,
+    "productionDeployed": false,
+    "fullModuleResultsPromoted": false,
+    "independentMemberApproval": false
+  },
+  "previousFeedStagingMain20Snapshot20261020": {
+    "task": "FEED-STAGING-01",
+    "branch": "codex/chore/feed-staging",
+    "result": "ISOLATED_SHARED_MAIN0020_READY_SCOPED_PASS",
+    "sourceSha": "444d25862a83d3a8d40168ef660e50da0712b71e",
+    "schema": {
+      "c": 20,
+      "v": 4
+    },
+    "modules": [
+      "P03",
+      "P05",
+      "B03",
+      "B04",
+      "B06",
+      "B07",
+      "B12"
+    ],
+    "restoredFingerprintEntries": 82,
+    "preservedMigrationFactEntries": 80,
+    "actualHTTPSGroupsPassed": 7,
+    "consumerDartBaseline": "PASS_4_CHECKS",
+    "consumerDartCAS": "PASS_5_CHECKS_ON_ISOLATED_UNMERGED_AAB1061",
+    "taskDocument": "docs/branches/chore-feed-staging.md",
+    "evidence": "docs/release/feed-staging-verification-20261020.json",
+    "releaseRecoveryPlan": "docs/release/feed-staging-20261020.md",
+    "formalDeployment": false,
+    "fullModuleResultChanged": false,
+    "productionTouched": false
+  },
+  "currentFeedStaging20261020": {
+    "task": "FEED-STAGING-01",
+    "branch": "codex/chore/feed-staging",
+    "result": "ISOLATED_SHARED_MAIN0021_READY_SCOPED_PASS",
+    "sourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "schema": {
+      "c": 21,
+      "v": 4
+    },
+    "modules": [
+      "P03",
+      "P05",
+      "B03",
+      "B04",
+      "B06",
+      "B07",
+      "B12"
+    ],
+    "restoredFingerprintEntries": 87,
+    "preservedBusinessFingerprintEntries": 85,
+    "actualHTTPSGroupsPassed": 8,
+    "consumerDartMain21": "PASS_7_STRICT_HTTPS_CHECKS",
+    "isolatedFaultSelftest": "PASS_7_REAL_PRODUCT_HTTPS_SQL_CHECKS",
+    "isolatedFaultToolTests": 12,
+    "workerFailureDevice": "NOT_RUN",
+    "taskDocument": "docs/branches/chore-feed-staging.md",
+    "evidence": "docs/release/feed-staging-verification-20261020.json",
+    "releaseRecoveryPlan": "docs/release/feed-staging-20261020.md",
+    "formalDeployment": false,
+    "fullModuleResultChanged": false,
+    "productionTouched": false
+  },
   "currentFeedInteractionsUi20261020": {
     "task": "FEED-INTERACTIONS-UI-01",
     "recordedOn": "2026-10-20",
@@ -40162,7 +40253,10 @@
     "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
     "candidateSource": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
     "result": "HOST_565_HTTPS_SQL_RENDER_BUILD_DEVICE_SCOPED_PASS_FA15_BLOCKED",
-    "modules": ["B03", "B06"],
+    "modules": [
+      "B03",
+      "B06"
+    ],
     "affectedRegressionModules": [
       "A03",
       "B04",
@@ -40177,32 +40271,6 @@
     "deviceOperatedByThisTask": false,
     "published": false,
     "fullModuleResultsPromoted": false
-  },
-  "currentFeedInteractionOrder20261020": {
-    "task": "FEED-INTERACTION-ORDER-01",
-    "branch": "codex/fix/feed-interaction-order",
-    "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
-    "result": "SCOPED_LOCAL_SQL_TLS_RACE_PASS",
-    "taskDocument": "docs/branches/fix-feed-interaction-order.md",
-    "evidence": "docs/design/feed-interaction-order-verification-20261020.json",
-    "modules": ["B03", "B06"],
-    "reopenedRegressions": [
-      "A03",
-      "A08",
-      "B07",
-      "B10",
-      "C/V isolation"
-    ],
-    "migration": "0021_post_interaction_versions.sql",
-    "sqlTopLevelPassed": 56,
-    "sqlPassedIncludingSubtests": 115,
-    "sqlFailed": 0,
-    "sqlSkipped": 0,
-    "sharedEnvironmentUpdated": false,
-    "mainMerged": false,
-    "productionDeployed": false,
-    "fullModuleResultsPromoted": false,
-    "independentMemberApproval": false
   },
   "currentFeedInteractionsUiFinalization20261020": {
     "task": "FEED-INTERACTIONS-UI-01",
