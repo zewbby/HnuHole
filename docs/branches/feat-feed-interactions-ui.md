@@ -1,10 +1,16 @@
 # FEED-INTERACTIONS-UI-01
 
-## 当前收口增量（2026-10-20）
+## 最终送检快照（2026-10-20）
 
-FEED-INTERACTIONS-UI-01 收口增量（2026-10-20）：已整合main938f7e7（#30/#32/#33），共享产品c923fa5a/C0021/V0004，真实Dart7PASS。修复source de98ae2七类CI全SUCCESS、独立Max无阻断；同签debug2006已独立核验升级，D04双向旧My即时切账号及B原My真实科技发帖/唯一执行SQL10项PASS；D05原Feed503无凭据核对恢复PASS，401及最终设备结论仍待。旧A收藏在B登录后68.224秒手动释放，C真实401、SQL11项隔离PASS，旧连接已关不冒充App迟到回调。另发现P3 FAB仍读旧通道名，现修提示并实际语义/导航回归，原运行1FAIL→修后1PASS，App590PASS/分析0、Max无阻断；待新2007增量包。2005两FAIL保留原范围，2006结果不转算2007。用户授权门槛满足后Ready/merge#31，再从最终main递增构建同签候选；尚未合并或正式发布，前端不操作设备/更新环境。详见[本轮证据](../design/feed-interactions-ui-finalization-20261020.json)，下方为各版本历史快照。
+FEED-INTERACTIONS-UI-01 最终送检（2026-10-20）：已核#30合入并整合最新main938f7e7（含#32/#33）；共享产品c923fa5a/C0021/V0004，严格Dart联调7PASS。修复源531e92d：App590PASS/分析0、未变Viewer116既有PASS、独立Max无阻断，七类CI已通过该运行源。2006独立复验D04/D05旧My/Feed恢复、双向账号与原B发帖PASS；2007单独修复FA-D06动态FAB语义，相关My/原A发帖/正常评论/503原token恢复无新增阻断，矩阵仅4PASS/19NOT_RUN/FA24待最终main，不拼接旧版。最终证据提交仍须核精确HEAD全部适用CI，再按已有授权Ready/merge#31；随后从最终main重建同签debug2008+并交Android独立验收。当前未合并、未正式发布，前端不操作设备或更新共享环境。自然同token设备续期、worker失败重试、release/profile真实性能等未验范围保留。见[本轮证据](../design/feed-interactions-ui-finalization-20261020.json)，下方为各自版本历史快照。
 
-[2006旧My恢复实际图](../design/feed-interactions-ui/assets/android-2006-old-my-A-to-B-after-login.png)／[2006原Feed503恢复实际图](../design/feed-interactions-ui/assets/android-2006-B503-original-feed-recovered.png)。
+同签候选2026102007：源码`531e92d9d59ae37199b18a67fae33338d9a5c4e1`，98,793,288字节，APK SHA256 `339ca5a67f3caca29a6ef8bde77e350e6d8ed13b56701d73733f5a721a225b33`。原测试cert SHA256 `adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea`，main.dart/debug，原共享C51245/V49747/CA；实际升级/pull摘要一致。此包不是最终main包。
+
+2007详情实采评论0→1→2→0，列表仅实采2和最终0；主评论赞0→1→0。首轮删除驱动未执行和MISMATCH保留，r2实际删除后11项SQL全PASS，不以SQL反推未采的列表1；逻辑删除正文仍存。动态通道真实发帖10项SQL、503原会话恢复11项SQL均独立PASS。503是规范隔离注入，不称真实Gate冻结；本包未做401，不跨用2006。
+
+[2007原Feed核对后实际渲染](../design/feed-interactions-ui/assets/android-2007-feed-after-original-recheck.png)／[2006旧My恢复图](../design/feed-interactions-ui/assets/android-2006-old-my-A-to-B-after-login.png)／[2006原Feed恢复图](../design/feed-interactions-ui/assets/android-2006-B503-original-feed-recovered.png)。安全合成原图由Android批准，前端逐张目视。
+
+最终材料仅改文档及安全实际渲染，运行源码最后改于531e92d；最终精确HEAD CI、Ready/合并事实和最终main候选以PR检查、合并回执及后续Android FA24交接为准。尚未正式发布。
 
 ## 2006构建前与2005证据快照
 

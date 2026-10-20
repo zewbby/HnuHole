@@ -40294,19 +40294,19 @@
   "currentFeedInteractionsUiFinalization20261020": {
     "task": "FEED-INTERACTIONS-UI-01",
     "evidence": "docs/design/feed-interactions-ui-finalization-20261020.json",
-    "candidateSource": "de98ae2b5212faece784498017c1133f9765425b",
+    "candidateSource": "531e92d9d59ae37199b18a67fae33338d9a5c4e1",
     "backendMergedMain": "c923fa5a14919034272abd406cfaf9392bc094d8",
     "host": "590 app PASS/analyze0; unchanged viewer116 prior PASS",
     "sharedProbe": "7 PASS, batch50/1963 bytes, B flags unchanged, single+carousel, old condition412",
     "android2005": "SCOPED_FA15_COMMENTS_PASS_D04_D05_P2_FAIL",
-    "finalMainCandidate": "NOT_RUN_WAIT_AUTHORIZED_MERGE",
+    "finalMainCandidate": "NOT_RUN_WAIT_MERGE_THEN_BUILD2008_PLUS",
     "merged": false,
     "formallyReleased": false,
     "scope": "B03/B06 interactions; affected B04/B07/B12/A03 regression only; historical module conclusions unchanged",
-    "candidate2006": "INSTALLED_D04_PASS_D05_503_PASS_401_PENDING_P3_SEMANTICS_FAIL",
-    "deviceBlockers": [
-      "FA-D05 full2006 recheck pending;401 path still under device test"
-    ],
-    "candidate2007": "NOT_BUILT_WAIT_COMMIT"
+    "candidate2006": "D04_D05_FIXED_SCOPED_PASS_P3_FAIL_HISTORICAL",
+    "deviceBlockers": [],
+    "candidate2007": "RELATED_DELTA_NO_NEW_BLOCKERS_4PASS_19NOT_RUN_FA24_WAIT_MAIN",
+    "finalDeliveryHeadCI": "PENDING_EXACT_FINAL_DOCUMENTATION_HEAD",
+    "reviewedRuntimeCommit": "531e92d9d59ae37199b18a67fae33338d9a5c4e1"
   }
 }
