@@ -4,7 +4,7 @@
   "recordedOn": "2026-10-20",
   "branch": "feat/feed-interactions-ui",
   "pullRequest": "https://github.com/zewbby/HnuHole/pull/31",
-  "status": "SHARED_MAIN21_PASS_ANDROID2005_AND_FINAL_HEAD_CI_PENDING",
+  "status": "D04_D05_HOST_FIXED_ANDROID2006_AND_FINAL_CI_PENDING",
   "merged": false,
   "formallyReleased": false,
   "deviceOperatedByFrontend": false,
@@ -120,10 +120,11 @@
   "independentReview": {
     "reviewer": "interaction_race_max",
     "modelEffort": "Max per user escalation",
-    "scope": "Static review through ca38c70",
+    "scope": "Static implementation review through ca38c70; probe/docs reviewed as 2e78ff4; latest-main merge reviewed as66ecc67; no new blocking findings",
     "blockingFindings": 0,
     "testsExecutedByReviewer": false,
-    "githubMemberApproval": false
+    "githubMemberApproval": false,
+    "githubCommentReview": "https://github.com/zewbby/HnuHole/pull/31#pullrequestreview-5580961407"
   },
   "android2005": {
     "status": "PENDING",
@@ -136,11 +137,24 @@
       "account switch",
       "affected original paths"
     ],
-    "historical2004CASResultsDoNotProve2005": true
+    "historical2004CASResultsDoNotProve2005": true,
+    "FA15": "PASS independent Android same-version shared: like/favorite accepted200 drop20s, original-condition retry and cancellation then oldPUT412; UI/detail/feed/SQL0/0 unchanged; hold release78.63s and46.86s, both before120s abort",
+    "FA_D03_light": "PASS scoped readable index; dark/multi-image full FA07 pending",
+    "commentAcceptedDrop": "PASS actual202/drop35.90s/original command recovery single comment; root+reply count2 then root delete0 in feed/detail and seven SQL checks"
   },
   "ci": {
-    "head": "ca38c70b21ee97bcf761be689a09b43b0e213ad0",
-    "status": "IN_PROGRESS_RECHECK_FINAL_HEAD"
+    "head": "c90b51022a0ac02c155ea3e19b0f6992ef2af709",
+    "status": "ALL_7_SUCCESS_SNAPSHOT_RECHECK_FINAL_DELIVERY_HEAD",
+    "workflowRuns": {
+      "Collaboration": 39374806949,
+      "Feed UI": 39374806893,
+      "Post images": 39374806932,
+      "Comments backend text": 39374806940,
+      "Comments core": 39374806987,
+      "Report moderation": 39374806904,
+      "Android prerelease": 39374806900
+    },
+    "scope": "Pre-repair c90 snapshot only; all applicable CI must run on repaired final delivery HEAD"
   },
   "finalMainCandidate": {
     "status": "NOT_RUN_WAIT_AUTHORIZED_MERGE"
@@ -153,6 +167,10 @@
     {
       "scope": "iOS, complete accessibility/security/storage/production modules",
       "reason": "Outside this frontend interaction acceptance scope"
+    },
+    {
+      "scope": "REG-RENEW-DEVICE same-token onActivity renewal",
+      "reason": "Production UI no force-renew; fresh30day sessions exceed7day scheduling threshold, normal protected activity renews; no existing short-TTL fixture. No phone/trusted clock or sharedSQL modification. Five production-controller/runtime/pane/composer automated regressions PASS with HTTP/storage substitutes; device normal draft regression recorded separately"
     }
   ],
   "runtimeAndTestInputs": {
@@ -308,5 +326,291 @@
     "packages/image_viewer/test/viewer_resources_test.dart": "4faba3182cba443679660e08a2068dd26b4cefa8b13a8db22f3715a079a7e305",
     "packages/image_viewer/test/viewer_save_test.dart": "f38d1923490bd4f60aea169bc0c0cc41cbd0b58811234137394345e732634ff8"
   },
-  "normalization": "SHA256 of UTF8 file bytes with CRLF normalized to LF; no build outputs, credentials or logs committed"
+  "normalization": "SHA256 of UTF8 file bytes with CRLF normalized to LF; no build outputs, credentials or logs committed",
+  "integratedLatestMain": "938f7e72be829ef3b36ce724ba1d414870783828",
+  "latestMainIntegrationCommit": "c90b51022a0ac02c155ea3e19b0f6992ef2af709",
+  "publicRendering2005": {
+    "path": "docs/design/feed-interactions-ui/assets/android-2005-viewer-contrast.png",
+    "sha256": "1557dd504364cad644568a494823f116597627b25c27964208498bba0aec3a23",
+    "scope": "Actual vivo S18 screenshot on2005, light outer theme, own black viewer with readable index; synthetic content cleared for public use by Android owner; frontend visually checked"
+  },
+  "faultReceipts": {
+    "like-drop": {
+      "sourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+      "schema": {
+        "c": 21,
+        "v": 4
+      },
+      "ruleId": "06bb53ab1caf4705a28c0579b4a58d0b",
+      "receiptSha256": "84a4a53bec1194b8693a4db1cc2ee399d10a91215b3c6d836155236526b726c3",
+      "upstream": [
+        {
+          "event": "upstream_response_received",
+          "atUtc": "2026-10-20T05:06:39.460065+00:00",
+          "upstreamStatus": 200,
+          "upstreamRequestId": "86qoy36O4dHKX59ZwnbGCw"
+        },
+        {
+          "event": "response_dropped_after_upstream",
+          "atUtc": "2026-10-20T05:06:59.496649+00:00",
+          "upstreamStatus": 200
+        }
+      ],
+      "sqlState": {
+        "postId": "e16013b1-30f6-430b-84f1-1855d912ccd1",
+        "likedByMe": true,
+        "favoritedByMe": false,
+        "likeCount": 1,
+        "favoriteCount": 0,
+        "versionSha256": "da1a038d8c9f5e54de3cb71a16ccc3bac917ae021df7862b792c507f7f72cef4",
+        "unrevokedSessions": 1
+      },
+      "deviceScope": "Android2005 independent report; host receipt alone does not prove UI"
+    },
+    "favorite-drop": {
+      "sourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+      "schema": {
+        "c": 21,
+        "v": 4
+      },
+      "ruleId": "2eded000ae584bd29efcb8f36502e772",
+      "receiptSha256": "6bce23623f050caf6ad753838a5a65654017e2ed1391b2cc4486e1ed49549691",
+      "upstream": [
+        {
+          "event": "upstream_response_received",
+          "atUtc": "2026-10-20T05:08:58.100264+00:00",
+          "upstreamStatus": 200,
+          "upstreamRequestId": "atGnWUrtC-0BMXPT4PYexg"
+        },
+        {
+          "event": "response_dropped_after_upstream",
+          "atUtc": "2026-10-20T05:09:18.147251+00:00",
+          "upstreamStatus": 200
+        }
+      ],
+      "sqlState": {
+        "postId": "e16013b1-30f6-430b-84f1-1855d912ccd1",
+        "likedByMe": true,
+        "favoritedByMe": true,
+        "likeCount": 1,
+        "favoriteCount": 1,
+        "versionSha256": "842bb5a0b271f07a830f3f50a228f5f674e60b2aba4700386d6c91c40893e055",
+        "unrevokedSessions": 1
+      },
+      "deviceScope": "Android2005 independent report; host receipt alone does not prove UI"
+    },
+    "like-late": {
+      "sourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+      "schema": {
+        "c": 21,
+        "v": 4
+      },
+      "ruleId": "6309ae3875d54ecfabcbc0a886cc6dae",
+      "receiptSha256": "39021557c6bae727ea944d0d71b8aff1e664c7558e9f363d396bcec0c3901788",
+      "upstream": [
+        {
+          "event": "upstream_response_received",
+          "atUtc": "2026-10-20T05:12:52.723025+00:00",
+          "upstreamStatus": 412,
+          "upstreamRequestId": "_6a5XXTQg5mATDf3i7_6OQ"
+        }
+      ],
+      "sqlState": {
+        "postId": "e16013b1-30f6-430b-84f1-1855d912ccd1",
+        "likedByMe": false,
+        "favoritedByMe": false,
+        "likeCount": 0,
+        "favoriteCount": 0,
+        "versionSha256": "2b0d0284788787b52ad47bf2fdb94399ac8ed16a6ae19538207ff95e799d1a82",
+        "unrevokedSessions": 1
+      },
+      "deviceScope": "Android2005 independent report; host receipt alone does not prove UI"
+    },
+    "favorite-late": {
+      "sourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+      "schema": {
+        "c": 21,
+        "v": 4
+      },
+      "ruleId": "1792f8987f434f5884fba30f34205fd6",
+      "receiptSha256": "887cc0c8c847eeffbc3b0e703a6c635e447c7d16f081e9d5e87360a798b4db37",
+      "upstream": [
+        {
+          "event": "upstream_response_received",
+          "atUtc": "2026-10-20T05:16:20.868772+00:00",
+          "upstreamStatus": 412,
+          "upstreamRequestId": "f06fW72XM_ov2oZuJJcnuw"
+        }
+      ],
+      "sqlState": {
+        "postId": "e16013b1-30f6-430b-84f1-1855d912ccd1",
+        "likedByMe": false,
+        "favoritedByMe": false,
+        "likeCount": 0,
+        "favoriteCount": 0,
+        "versionSha256": "a877a55808d81c6ccd959bb18c9cf0a3299ead560993cbb56298be988552cc2c",
+        "unrevokedSessions": 1
+      },
+      "deviceScope": "Android2005 independent report; host receipt alone does not prove UI"
+    },
+    "comment-accepted-drop": {
+      "sourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+      "schema": {
+        "c": 21,
+        "v": 4
+      },
+      "ruleId": "4a80cabfb56d4b0dbe62151c5f3daa3c",
+      "receiptSha256": "21843573c90b2cb941440fe0887919b56c91d6020e73c2c1cc710c71736e751f",
+      "upstream": [
+        {
+          "event": "upstream_response_received",
+          "atUtc": "2026-10-20T05:20:42.024297+00:00",
+          "upstreamStatus": 202,
+          "upstreamRequestId": "1rxbegUjqG50v99_WZvFvw"
+        },
+        {
+          "event": "response_dropped_after_upstream",
+          "atUtc": "2026-10-20T05:21:17.926923+00:00",
+          "upstreamStatus": 202
+        }
+      ],
+      "commentTasks": [
+        {
+          "taskId": "19e780ce-aa08-45ff-b1e0-cc0ebb8c5c12",
+          "commentId": "f3d3c906-5465-4595-bfc9-1c391db0b564",
+          "postId": "e16013b1-30f6-430b-84f1-1855d912ccd1",
+          "identityId": "ef9bdf38-a306-4e7f-98e3-9ce2c8acbd70",
+          "ownerIsExpected": true,
+          "rootCommentId": null,
+          "targetCommentId": null,
+          "deleted": false,
+          "publishedAttemptCount": 1,
+          "totalAttemptCount": 1,
+          "createAcceptedReceiptCount": 1,
+          "bodySha256": "a4bc78497647ef96edc9be374c5f6736b96e33e77cb3e8ea5dc3194c2255aaab"
+        }
+      ],
+      "scope": "Real202 accepted, response drop35.90s, original-command recovery; not workerFAILED retry"
+    }
+  },
+  "environmentOwnerHandoff": {
+    "backendSource": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "faultToolSource": "938f7e72be829ef3b36ce724ba1d414870783828",
+    "faultProxySourceSha256": "0305a957b07e37ff9e0453d7e957df8d5f5c0afe2b24e62bd4fc440521968911",
+    "scope": "Owner-only isolated proxy restart after comment window; C/V/watch process identities and binaries unchanged; no frontend environment operation",
+    "toolChecks": "12 PASS; dedicated fault accounts shared and CAS7 real HTTPS/SQL each; strict401/503 body+header ID and no renewal headers PASS",
+    "deviceInjectedErrors": "PENDING_ANDROID_OWNER"
+  },
+  "commentSql2005": {
+    "sourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "schema": {
+      "c": 21,
+      "v": 4
+    },
+    "result": "PASS_READ_ONLY_SQL_SCOPED",
+    "checks": {
+      "twoMarkerRows": true,
+      "ownershipAndIdentity": true,
+      "parentChildRelationship": true,
+      "bothDeleted": true,
+      "onePublishedCommentAndReceiptEach": true,
+      "visibleCountZero": true,
+      "rootLikeFalseZero": true
+    },
+    "receiptSha256": "ba653daa5199e733a7979aae8985e0a49adc395572947a5fb6dede68af099625",
+    "scope": "Read-only evidence; soft deletion leaves body stored; Android UI root+reply feed/detail0-to2-to0 independently reported"
+  },
+  "currentDeviceBlockers": [
+    "FA-D04 old My window remains access-closed after B login",
+    "FA-D05 old Feed window remains access-closed after503 recheck /401 login"
+  ],
+  "routeRecovery": {
+    "baseline": "c90b51022a0ac02c155ea3e19b0f6992ef2af709",
+    "affectedCandidate": 2026102005,
+    "deviceResult": "FAIL_TWO_P2",
+    "cause": "Personal/Feed State captured old authority; successful replacement or recheck left old routes closed. Store policy itself preserved503 token and cleared401 token correctly.",
+    "change": "Root filtered account+epoch notifier plus directory updates keys fresh Personal/Feed State; old states/callbacks remain fenced; publication callback captures new window; same-channel route reuse requires original window, active exact route, identity-safe completion cleanup.",
+    "initialRead": "Feed initial read scheduled after synchronous Navigator build; starting flag hides any previous timeline until read; prevents hidden sibling listener setState during build.",
+    "authPolicy": "No authentication/controller/storage/backend change; label login or recheck session;503 recovers original token without credentials,401 requires normal new login.",
+    "tests": "Production HnuholeApp/AuthScreen/AuthSessionController/PostController/Personal/Feed; HTTP, secure storage and post storage substitutes; publication callback test proves navigation only, not real publishing.",
+    "baselineCheck": "9FAIL on actual c90 runtime files, restored repaired runtime byte-for-byte afterwards; log apps/mobile/build-fa-d04-d05-baseline-red.log",
+    "repairedCheck": "9PASS log apps/mobile/build-fa-d04-d05-green.log",
+    "covered": [
+      "normal UI logout stays on login form then B login pops once",
+      "My from root and existing Feed rebuilds for B",
+      "old A publication callback cannot navigate B",
+      "B publication callback avoids old A channel route; same-window channel reuse remains",
+      "metadata same token preserves State; explicit same-account new login replaces it",
+      "late A personal200/401/503 cannot change B UI/token/expiry",
+      "delayed B directory refreshes props without new State",
+      "503 rechecks original token with0 password logins;401 clears then password-login new token"
+    ],
+    "review": "PASS independent Max static full implementation diff; reviewer did not execute tests or operate device/environment; not GitHub member approval",
+    "deviceRetest": "PENDING_NEW2006",
+    "oldMyScreenshot": {
+      "path": "docs/design/feed-interactions-ui/assets/android-2005-old-my-window.png",
+      "sha256": "af049f414106892f8be362092bf79f001a2aa5dafcbddaf6ebadab2450acafa4",
+      "scope": "Original2005 FAIL, Android cleared synthetic screenshot for public use, frontend visually checked"
+    },
+    "driverCorrection": "Initial AB and401 auth route pop before login was caused by old input driver sending Back after a stale IME assumption; not product auto-auth. Android corrected its initial no-input inference. D04/D05 independent reproductions unchanged."
+  },
+  "routeRecoveryRuntimeInputs": {
+    "apps/mobile/lib/main.dart": "316726c98b3cd462e530a949a803e73f5e96705168ce0f0dc3df1b121c2ba6d2",
+    "apps/mobile/lib/src/posts/feed_screen.dart": "9b55b8ce94437ebe0ac081508fd3a59f3425d231919ec5be426aee3744302307",
+    "apps/mobile/test/personal_route_account_test.dart": "0b7f5d2011c0bc1cbdbcaadf4157b845eef26fc4c3274bfa970d0831629432f0",
+    ".github/workflows/feed-ui.yml": "b1417f07250d9407a6fa46cf311e0825fbdedfabf0cce1b52766df85da0d678e"
+  },
+  "routeRecoveryHostChecks": [
+    {
+      "command": "flutter analyze --no-pub",
+      "status": "PASS",
+      "issues": 0,
+      "log": "apps/mobile/build-fa-d04-d05-analyze.log"
+    },
+    {
+      "command": "flutter test --no-pub",
+      "status": "PASS",
+      "passed": 589,
+      "log": "apps/mobile/build-fa-d04-d05-all.log"
+    },
+    {
+      "command": "flutter build bundle --debug --no-pub",
+      "status": "PASS",
+      "log": "apps/mobile/build-fa-d04-d05-bundle.log"
+    }
+  ],
+  "candidate2006": {
+    "status": "NOT_BUILT_WAIT_REVIEW",
+    "versionCode": 2026102006,
+    "mode": "debug",
+    "entrypoint": "lib/main.dart",
+    "sameSignatureAs2005": true,
+    "environment": "original shared C51245 V49747 and CA; product c923fa5a C21V4"
+  },
+  "sharedProbeAfterRouteRepair": {
+    "status": "PASS",
+    "mode": "cas",
+    "backendSource": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "schema": {
+      "c": 21,
+      "v": 4
+    },
+    "batchSize": 50,
+    "batchRequestBytes": 1963,
+    "mediaCounts": [
+      1,
+      3
+    ],
+    "checks": [
+      "two_synthetic_accounts",
+      "real_feed_pagination",
+      "batch_comment_context_agreement",
+      "large_interaction_batch",
+      "protected_single_and_carousel_bytes",
+      "conditional_write_and_account_flags",
+      "restore_then_reject_late_condition"
+    ],
+    "cas": "PASS",
+    "media": "PASS"
+  }
 }

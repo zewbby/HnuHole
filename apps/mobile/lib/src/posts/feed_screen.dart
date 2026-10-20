@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../channels/channel.dart';
 import '../design_system/telegram_theme.dart';
+import 'feed_api.dart';
 import 'post_controller.dart';
 import 'post_images.dart';
 import 'post_screens.dart';
@@ -40,6 +41,7 @@ class _FeedScreenState extends State<FeedScreen> {
   late final int _epoch;
   int _publication = 0;
   bool _published = false;
+  bool _starting = true;
   Timer? _notice;
   final _scroll = ScrollController();
   PostController get c => widget.controller;
@@ -62,7 +64,13 @@ class _FeedScreenState extends State<FeedScreen> {
     _epoch = c.authorityVersion;
     _publication = c.latestPublicationNotice?.sequence ?? 0;
     c.addListener(_changed);
-    unawaited(c.loadTimeline(channelId: widget.initialChannelId));
+    // Starting a new route must not synchronously notify still-mounted sibling
+    // routes during Navigator's build. Hide any prior timeline until this read.
+    scheduleMicrotask(() {
+      if (!current) return;
+      setState(() => _starting = false);
+      unawaited(c.loadTimeline(channelId: widget.initialChannelId));
+    });
   }
 
   void _changed() {
@@ -188,12 +196,12 @@ class _FeedScreenState extends State<FeedScreen> {
             body: Center(
               child: TextButton(
                 onPressed: widget.onAuthenticationRequired,
-                child: const Text('请重新登录'),
+                child: const Text('登录或核对会话'),
               ),
             ),
           );
         }
-        final posts = c.timelineItems;
+        final posts = _starting ? const <FeedPost>[] : c.timelineItems;
         return HhXPostFeed(
           channelTitle: widget.composeChannel.name,
           feedTitle:
@@ -236,9 +244,9 @@ class _FeedScreenState extends State<FeedScreen> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.only(bottom: 96),
                   children: [
-                    if (c.timelineLoading || c.preferencesSaving)
+                    if (_starting || c.timelineLoading || c.preferencesSaving)
                       const LinearProgressIndicator(),
-                    if (c.timelineError != null)
+                    if (!_starting && c.timelineError != null)
                       Padding(
                         padding: const EdgeInsets.all(24),
                         child: Column(
@@ -253,7 +261,8 @@ class _FeedScreenState extends State<FeedScreen> {
                           ],
                         ),
                       ),
-                    if (!c.timelineLoading &&
+                    if (!_starting &&
+                        !c.timelineLoading &&
                         !c.preferencesSaving &&
                         c.timelineError == null &&
                         posts.isEmpty)

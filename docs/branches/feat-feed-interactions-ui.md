@@ -2,6 +2,10 @@
 
 ## 当前收口（2026-10-20）
 
+最新增量：2005实测发现FA-D04（B已登录但旧My仍捕获A窗口）和FA-D05（503原令牌核对/401重登成功后旧Feed仍失效），两项P2尚待新包复验。根路由现按账号/epoch重建My与Feed，保留旧页面/编辑器/异步回调围栏；目录另行更新props，同通道回用须匹配窗口及存活路由实例。新增真实生产root/AuthScreen/Session/PostController回归9项，原c90运行文件9FAIL、修后9PASS，App全量589PASS/分析0。准备新同签debug2006，最终main再递增；2005失败不改成PASS。[旧My实际失败图](../design/feed-interactions-ui/assets/android-2005-old-my-window.png)。完整范围及输入摘要见本轮机器记录的routeRecovery；原首次账号页退回经driver日志核实为过时IME判断发Back，非产品认证自动成功，独立D04/D05复现不变。
+
+已整合工具[#32](https://github.com/zewbby/HnuHole/pull/32)/[#33](https://github.com/zewbby/HnuHole/pull/33)后的最新main `938f7e7`。2005已有真实FA15、评论202丢响应恢复/回复删除、旧通道及时返回、B个人旗标与SQL限定证据；本轮修复提交及新设备/最终CI仍待，不以前版CI/宿主结果代证修复真机。
+
 后端 [#30](https://github.com/zewbby/HnuHole/pull/30) 已合入 `c923fa5a`，本分支通过 `c1b92f0` 整合；真实条件写探针原先依赖 main0020 的失败条件已消除。`ca38c70` 的 Feed UI CI 已通过真实 C HTTPS／一次性 PostgreSQL 步骤，最终提交仍须重核全部适用 CI。
 
 本轮修复 26–50 项摘要被 1024 字节默认上限拦截、FA-D03 查看器前景对比度、有效同账号续期丢评论页面/草稿、已释放媒体租约迟到拒绝误伤新租约。宿主分析0、App580及Viewer116项PASS；查看器主题、评论续期与旧租约分别保留失败复现及回归。Max独立静态复核至`ca38c70`未发现阻断，未替代 GitHub 成员批准。
@@ -11,6 +15,8 @@
 同签 debug／`main.dart` 候选2026102005已交Android：源码`ca38c70b21ee97bcf761be689a09b43b0e213ad0`，APK SHA256 `c0e7569ea53457a369ae2dd3e06ad9c0078e67cf156462ca49c7d9d1f3191431`，98,791,052字节。当前2005矩阵及响应丢失/迟到写/重试/切账号补验待收口；不使用2004的CAS结果代证2005。隔离入口只有私有CA，release/profile真实链路和性能明确NOT_RUN，保持debug-only CA guard，不正式发布。最终main候选须等合并后重建，不能用2005代替。
 
 当前详情、命令、输入摘要与待办见[本轮机器记录](../design/feed-interactions-ui-finalization-20261020.json)。用户已授权在相关验收无阻断、独立审查完成及最终head适用CI全通过后将[#31](https://github.com/zewbby/HnuHole/pull/31)转Ready并合并；目前保持draft。
+
+Android 2005 的 FA15 已独立 PASS：赞/藏各真实200提交后hold20秒丢响应，原UI核对与详情/列表/只读SQL一致；各旧PUT在入口扣住，15秒超时后保持未知并锁住两动作，原UI显式重试复用条件成功，取消后再释放旧PUT得到真实412，最终0/0且写版本不变。点赞78.63秒、收藏46.86秒释放，均早于120秒入口终止上限，不是abort代证。其余2005补验仍待收口。FA-D03浅色实际页码已确认可读，[2005查看器实际渲染](../design/feed-interactions-ui/assets/android-2005-viewer-contrast.png)由Android确认可公开合成内容，前端再目视核对，不代证深色/多图全项。
 
 ## 原送审及2001–2004历史快照
 
