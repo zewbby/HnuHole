@@ -43,7 +43,7 @@ class _FeedScreenState extends State<FeedScreen> {
   Timer? _notice;
   final _scroll = ScrollController();
   PostController get c => widget.controller;
-  bool get current => c.available && c.authorityVersion == _epoch;
+  bool get current => mounted && c.available && c.authorityVersion == _epoch;
   List<FeedChannelView> get channels => [
     for (final channel in widget.channels)
       FeedChannelView(channel.id, channel.name, switch (channel.code) {
@@ -331,6 +331,7 @@ class _FeedScreenState extends State<FeedScreen> {
                         onMenu: () =>
                             _open(context, post.postId, post.channelId),
                         onAction: (action) {
+                          if (!current) return;
                           switch (action) {
                             case FeedAction.comment:
                               _open(context, post.postId, post.channelId);
@@ -354,24 +355,41 @@ class _FeedScreenState extends State<FeedScreen> {
                         },
                         onMedia: (_) {},
                       ),
-                      if (c.interaction(post.postId).error case final error?)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 64, right: 16),
-                          child: Row(
-                            children: [
-                              Expanded(child: Text(error)),
-                              TextButton(
-                                key: ValueKey(
-                                  'interaction-retry:${post.postId}',
+                      for (final notice in [
+                        (c.interaction(post.postId).writeError, true),
+                        (c.interaction(post.postId).readError, false),
+                      ])
+                        if (notice.$1 case final error?)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 64, right: 16),
+                            child: Row(
+                              children: [
+                                Expanded(child: Text(error)),
+                                TextButton(
+                                  key: ValueKey(
+                                    'interaction-${notice.$2 ? '' : 'read-'}retry:${post.postId}',
+                                  ),
+                                  onPressed: c.interaction(post.postId).sending
+                                      ? null
+                                      : () {
+                                          if (!current) return;
+                                          if (notice.$2) {
+                                            unawaited(
+                                              c.retryInteraction(post.postId),
+                                            );
+                                          } else {
+                                            unawaited(
+                                              c.loadInteractions([
+                                                post.postId,
+                                              ], single: true),
+                                            );
+                                          }
+                                        },
+                                  child: Text(notice.$2 ? '重试' : '重新读取'),
                                 ),
-                                onPressed: c.interaction(post.postId).sending
-                                    ? null
-                                    : () => c.retryInteraction(post.postId),
-                                child: const Text('重试'),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
                       const Divider(height: 1, thickness: .5),
                     ],
                     if (c.timelineCursor != null && !c.timelineLoading)

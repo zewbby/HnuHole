@@ -60,10 +60,12 @@ abstract interface class PostInteractionsApi {
     required String sessionToken,
     required String postId,
     required bool liked,
+    required String version,
   });
   Future<PostResponse<PostInteractions>> setPostFavorite({
     required String sessionToken,
     required String postId,
     required bool favorited,
+    required String version,
   });
 }

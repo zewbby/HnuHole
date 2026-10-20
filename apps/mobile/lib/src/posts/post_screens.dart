@@ -2342,10 +2342,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               TextButton.icon(
                 key: ValueKey('detail-like:${widget.postId}'),
                 onPressed: state.canChange
-                    ? () => c.changeInteraction(
-                        widget.postId,
-                        PostInteractionAction.like,
-                      )
+                    ? () {
+                        if (!mounted || !_authority.current) return;
+                        unawaited(
+                          c.changeInteraction(
+                            widget.postId,
+                            PostInteractionAction.like,
+                          ),
+                        );
+                      }
                     : null,
                 icon: Icon(
                   state.liked ? Icons.favorite : Icons.favorite_border,
@@ -2357,10 +2362,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               TextButton.icon(
                 key: ValueKey('detail-favorite:${widget.postId}'),
                 onPressed: state.canChange
-                    ? () => c.changeInteraction(
-                        widget.postId,
-                        PostInteractionAction.favorite,
-                      )
+                    ? () {
+                        if (!mounted || !_authority.current) return;
+                        unawaited(
+                          c.changeInteraction(
+                            widget.postId,
+                            PostInteractionAction.favorite,
+                          ),
+                        );
+                      }
                     : null,
                 icon: Icon(
                   state.favorited ? Icons.bookmark : Icons.bookmark_border,
@@ -2378,19 +2388,34 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ),
             ],
           ),
-          if (state.error case final error?)
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(error),
-                TextButton(
-                  onPressed: state.sending
-                      ? null
-                      : () => c.retryInteraction(widget.postId),
-                  child: const Text('重试'),
-                ),
-              ],
-            ),
+          for (final notice in [
+            (state.writeError, true),
+            (state.readError, false),
+          ])
+            if (notice.$1 case final error?)
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(error),
+                  TextButton(
+                    onPressed: state.sending
+                        ? null
+                        : () {
+                            if (!mounted || !_authority.current) return;
+                            if (notice.$2) {
+                              unawaited(c.retryInteraction(widget.postId));
+                            } else {
+                              unawaited(
+                                c.loadInteractions([
+                                  widget.postId,
+                                ], single: true),
+                              );
+                            }
+                          },
+                    child: Text(notice.$2 ? '重试' : '重新读取'),
+                  ),
+                ],
+              ),
         ],
       ),
     );

@@ -8,7 +8,11 @@ class PostInteractionState {
   bool loading = false, sending = false, refreshPending = false;
   PostInteractionAction? pendingAction;
   bool? desired;
-  String? error;
+  String? readError, writeError, expectedVersion;
+  String? get error => writeError ?? readError;
+  bool uncertain = false;
+  PostInteractionAction? retryAction;
+  bool? retryDesired;
   int revision = 0;
   bool get unresolved => pendingAction != null;
   bool get canChange => value != null && !unresolved;
@@ -34,6 +38,7 @@ extension PostInteractionsController on PostController {
 
   void _invalidateInteractionReads() {
     for (final entry in _interactions.values) {
+      entry.refreshPending = entry.refreshPending || entry.loading;
       entry.revision++;
       entry.loading = false;
     }
@@ -53,7 +58,7 @@ extension PostInteractionsController on PostController {
       }
       tickets[id] = ++entry.revision;
       entry.loading = true;
-      entry.error = null;
+      entry.readError = null;
     }
     if (tickets.isEmpty) return true;
     _notify();
@@ -87,7 +92,8 @@ extension PostInteractionsController on PostController {
             !entry.unresolved &&
             !_deletedPostIds.contains(value.postId)) {
           entry.value = value;
-          entry.error = null;
+          entry.refreshPending = false;
+          entry.readError = null;
         }
       }
     } catch (error) {
@@ -103,7 +109,7 @@ extension PostInteractionsController on PostController {
       for (final id in tickets.keys) {
         final entry = interaction(id);
         if (entry.revision == tickets[id] && !entry.unresolved) {
-          entry.error = '互动数据暂时无法读取，请重试。';
+          entry.readError = '互动数据暂时无法读取，请重试。';
         }
       }
       return !(error is PostFailure && error.code == 'POST_NOT_FOUND');
@@ -128,14 +134,31 @@ extension PostInteractionsController on PostController {
     }
     final entry = interaction(id);
     if (!entry.canChange) return;
+    _beginInteraction(
+      entry,
+      action,
+      action == PostInteractionAction.like
+          ? !entry.value!.likedByMe
+          : !entry.value!.favoritedByMe,
+    );
+    await _writeInteraction(id, entry, _epoch);
+  }
+
+  void _beginInteraction(
+    PostInteractionState entry,
+    PostInteractionAction action,
+    bool desired,
+  ) {
+    // Lock before any authority/preflight await, including the other operation.
+    entry.refreshPending = entry.refreshPending || entry.loading;
     entry.pendingAction = action;
-    entry.desired = action == PostInteractionAction.like
-        ? !entry.value!.likedByMe
-        : !entry.value!.favoritedByMe;
-    // Synchronous lock, before authority/storage awaits: rapid taps cannot queue toggles.
+    entry.desired = desired;
+    entry.expectedVersion = null;
+    entry.uncertain = false;
+    entry.retryAction = null;
+    entry.retryDesired = null;
     entry.revision++;
     entry.loading = false;
-    await _writeInteraction(id, entry, _epoch);
   }
 
   Future<void> retryInteraction(String id) async {
@@ -144,13 +167,50 @@ extension PostInteractionsController on PostController {
     }
     final entry = interaction(id);
     if (entry.sending) return;
+    if (!entry.unresolved && entry.retryAction != null) {
+      _beginInteraction(entry, entry.retryAction!, entry.retryDesired!);
+    }
     if (entry.unresolved) {
-      // Reassert exactly the same desired value. An older timed-out PUT can
-      // still commit after a GET, so a mismatching GET never unlocks reversal.
+      // An uncertain attempt always reuses the original CAS condition.
       await _writeInteraction(id, entry, _epoch);
     } else {
       await loadInteractions([id], single: true);
     }
+  }
+
+  void _finishInteraction(PostInteractionState entry, PostInteractions actual) {
+    final matched = entry.pendingAction == PostInteractionAction.like
+        ? actual.likedByMe == entry.desired
+        : actual.favoritedByMe == entry.desired;
+    entry.value = actual;
+    entry.retryAction = matched ? null : entry.pendingAction;
+    entry.retryDesired = matched ? null : entry.desired;
+    entry.writeError = matched ? null : '操作未成功，已同步当前状态，请重试。';
+    entry.pendingAction = null;
+    entry.desired = null;
+    entry.expectedVersion = null;
+    entry.uncertain = false;
+  }
+
+  Future<void> _reconcileInteraction(
+    _PostAuthority a,
+    String id,
+    PostInteractionState entry,
+  ) async {
+    final response = await _interactionsApi.postInteractions(
+      sessionToken: a.token,
+      postId: id,
+    );
+    final actual = await _accept(a, response);
+    final version = response.interactionVersion;
+    if (version == null) {
+      throw const PostFailure(kind: PostFailureKind.invalidResponse);
+    }
+    if (_deletedPostIds.contains(id)) return;
+    entry.value = actual;
+    // Only a rotated persistent write fence proves ALL attempts using our old
+    // condition can no longer apply, even if the process lost their responses.
+    if (version != entry.expectedVersion) _finishInteraction(entry, actual);
   }
 
   Future<void> _writeInteraction(
@@ -160,28 +220,47 @@ extension PostInteractionsController on PostController {
   ) async {
     if (entry.sending || epoch != _epoch) return;
     entry.sending = true;
-    entry.error = null;
+    entry.writeError = null;
     _notify();
     _PostAuthority? a;
+    var attempted = false;
+    final alreadyUncertain = entry.uncertain;
     try {
       a = await _authority();
       if (epoch != _epoch) return;
+      if (entry.expectedVersion == null) {
+        final response = await _interactionsApi.postInteractions(
+          sessionToken: a.token,
+          postId: id,
+        );
+        final actual = await _accept(a, response);
+        if (response.interactionVersion == null) {
+          throw const PostFailure(kind: PostFailureKind.invalidResponse);
+        }
+        entry.value = actual;
+        entry.expectedVersion = response.interactionVersion;
+      }
+      attempted = true;
       final response = entry.pendingAction == PostInteractionAction.like
           ? await _interactionsApi.setPostLike(
               sessionToken: a.token,
               postId: id,
               liked: entry.desired!,
+              version: entry.expectedVersion!,
             )
           : await _interactionsApi.setPostFavorite(
               sessionToken: a.token,
               postId: id,
               favorited: entry.desired!,
+              version: entry.expectedVersion!,
             );
       final value = await _accept(a, response);
       if (_deletedPostIds.contains(id)) return;
-      entry.value = value;
-      entry.pendingAction = null;
-      entry.desired = null;
+      if (response.interactionVersion == null ||
+          response.interactionVersion == entry.expectedVersion) {
+        throw const PostFailure(kind: PostFailureKind.invalidResponse);
+      }
+      _finishInteraction(entry, value);
     } catch (error) {
       if (epoch != _epoch) return;
       if (error is PostFailure &&
@@ -192,30 +271,26 @@ extension PostInteractionsController on PostController {
         _failure(error, a);
       }
       if (epoch != _epoch || a == null || !_current(a)) return;
-      if (error is PostFailure && error.kind == PostFailureKind.rejected) {
-        // A definite server rejection did not apply this PUT.
+      final conflict =
+          error is PostFailure && error.code == 'INTERACTION_VERSION_CONFLICT';
+      if (!attempted ||
+          !alreadyUncertain &&
+              error is PostFailure &&
+              error.kind == PostFailureKind.rejected &&
+              !conflict) {
+        // No PUT started, or this first PUT was explicitly rejected. A later
+        // rejection must never discard an earlier transport-unknown attempt.
+        entry.retryAction = entry.pendingAction;
+        entry.retryDesired = entry.desired;
         entry.pendingAction = null;
         entry.desired = null;
-        entry.error = '操作未成功，已恢复原状态，请重试。';
+        entry.expectedVersion = null;
+        entry.writeError = '操作未成功，已恢复原状态，请重试。';
       } else {
-        entry.error = '结果尚未确认，请重试核对。';
+        entry.uncertain = true;
+        entry.writeError = '结果尚未确认，请重试核对。';
         try {
-          final actual = await _accept(
-            a,
-            await _interactionsApi.postInteractions(
-              sessionToken: a.token,
-              postId: id,
-            ),
-          );
-          final matches = entry.pendingAction == PostInteractionAction.like
-              ? actual.likedByMe == entry.desired
-              : actual.favoritedByMe == entry.desired;
-          if (matches && !_deletedPostIds.contains(id)) {
-            entry.value = actual;
-            entry.pendingAction = null;
-            entry.desired = null;
-            entry.error = null;
-          }
+          await _reconcileInteraction(a, id, entry);
         } catch (readError) {
           if (readError is PostFailure &&
               {

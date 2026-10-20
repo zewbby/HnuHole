@@ -182,6 +182,145 @@ void main() {
   HttpOverrides.global = null;
   late _Endpoint endpoint;
   late HttpPostApi api;
+  Map<String, Object> interaction({String id = _id, bool liked = true}) => {
+    'postId': id,
+    'likeCount': 12,
+    'favoriteCount': 3,
+    'commentCount': 8,
+    'likedByMe': liked,
+    'favoritedByMe': false,
+  };
+  final version = '"${List.filled(64, 'a').join()}"';
+  test('interaction batch and conditional writes use exact private routes and headers', () async {
+    endpoint.respond = (r) {
+      r.response.headers.set('Interaction-Version', version);
+      return _json(
+        r,
+        200,
+        r.uri.path == '/api/v1/feed/interactions'
+            ? {
+                'items': [interaction()],
+              }
+            : interaction(),
+      );
+    };
+    final batch = await api.interactions(sessionToken: _token, postIds: [_id]);
+    expect(batch.value.single.commentCount, 8);
+    expect(endpoint.requests.last.method, 'POST');
+    expect(jsonDecode(endpoint.requests.last.body), {
+      'postIds': [_id],
+    });
+    expect(endpoint.requests.last.headers['idempotency-key'], isNull);
+    final read = await api.postInteractions(sessionToken: _token, postId: _id);
+    expect(read.interactionVersion, version);
+    await api.setPostLike(
+      sessionToken: _token,
+      postId: _id,
+      liked: true,
+      version: version,
+    );
+    final sent = endpoint.requests.last;
+    expect(sent.method, 'PUT');
+    expect(sent.uri.path, '/api/v1/posts/$_id/like');
+    expect(sent.uri.hasQuery, false);
+    expect(sent.headers['if-interaction-version'], [version]);
+    expect(jsonDecode(sent.body), {'liked': true});
+    await api.setPostFavorite(
+      sessionToken: _token,
+      postId: _id,
+      favorited: false,
+      version: version,
+    );
+    expect(endpoint.requests.last.uri.path, '/api/v1/posts/$_id/favorite');
+    expect(jsonDecode(endpoint.requests.last.body), {'favorited': false});
+  });
+  test('interaction transport rejects malformed, missing and ambiguous write fence', () async {
+    for (final tag in <String?>[null, 'weak', 'W/$version', '"AA"']) {
+      endpoint.respond = (r) {
+        if (tag != null) r.response.headers.set('Interaction-Version', tag);
+        return _json(r, 200, interaction());
+      };
+      await expectLater(
+        api.postInteractions(sessionToken: _token, postId: _id),
+        throwsA(_failure(PostFailureKind.invalidResponse, status: 200)),
+      );
+    }
+    endpoint.respond = (r) {
+      r.response.headers.add('Interaction-Version', version);
+      r.response.headers.add('Interaction-Version', version);
+      return _json(r, 200, interaction());
+    };
+    await expectLater(
+      api.postInteractions(sessionToken: _token, postId: _id),
+      throwsA(_failure(PostFailureKind.invalidResponse, status: 200)),
+    );
+  });
+  test('interaction protocol rejects invalid batches before sending and mismatched responses', () async {
+    for (final ids in <List<String>>[
+      [],
+      [_id, _id],
+      List.filled(51, _id),
+    ]) {
+      await expectLater(
+        api.interactions(sessionToken: _token, postIds: ids),
+        throwsA(
+          _failure(PostFailureKind.rejected, code: 'CLIENT_INPUT_INVALID'),
+        ),
+      );
+    }
+    await expectLater(
+      api.setPostLike(
+        sessionToken: _token,
+        postId: _id,
+        liked: true,
+        version: '*',
+      ),
+      throwsA(_failure(PostFailureKind.rejected, code: 'CLIENT_INPUT_INVALID')),
+    );
+    expect(endpoint.requests, isEmpty);
+    endpoint.respond = (r) => _json(r, 200, {
+      'items': [interaction(id: _other)],
+    });
+    await expectLater(
+      api.interactions(sessionToken: _token, postIds: [_id]),
+      throwsA(_failure(PostFailureKind.invalidResponse, status: 200)),
+    );
+    endpoint.respond = (r) {
+      r.response.headers.set('Interaction-Version', version);
+      return _json(r, 200, interaction(liked: false));
+    };
+    await expectLater(
+      api.setPostLike(
+        sessionToken: _token,
+        postId: _id,
+        liked: true,
+        version: version,
+      ),
+      throwsA(_failure(PostFailureKind.invalidResponse, status: 200)),
+    );
+  });
+  test(
+    'interaction version conflict is an explicit rejection without renewal',
+    () async {
+      endpoint.respond = (r) =>
+          _json(r, 412, _error('INTERACTION_VERSION_CONFLICT'), success: false);
+      await expectLater(
+        api.setPostLike(
+          sessionToken: _token,
+          postId: _id,
+          liked: true,
+          version: version,
+        ),
+        throwsA(
+          _failure(
+            PostFailureKind.rejected,
+            status: 412,
+            code: 'INTERACTION_VERSION_CONFLICT',
+          ),
+        ),
+      );
+    },
+  );
   test(
     'feed uses new routes, opaque cursor and strict public projection',
     () async {

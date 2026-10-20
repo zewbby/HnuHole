@@ -6,14 +6,21 @@ extension _PostInteractionsHttp on HttpPostApi {
     String id, {
     String? action,
     bool? desired,
-  }) => _input(
-    () => _send(
+    String? version,
+  }) => _input(() {
+    if (action != null &&
+        (version == null || !_validInteractionVersion(version))) {
+      throw const FormatException('Interaction write requires a version');
+    }
+    return _send(
       token,
       action == null ? 'GET' : 'PUT',
       '/api/v1/posts/${PostProtocol.resourceId(id)}/${action ?? 'interactions'}',
       body: action == null
           ? null
           : {action == 'like' ? 'liked' : 'favorited': desired!},
+      headers: {if (version != null) 'If-Interaction-Version': version},
+      readInteractionVersion: true,
       decode: (raw) {
         final value = PostInteractions.fromJson(raw);
         if (value.postId != id ||
@@ -23,6 +30,9 @@ extension _PostInteractionsHttp on HttpPostApi {
         }
         return value;
       },
-    ),
-  );
+    );
+  });
 }
+
+bool _validInteractionVersion(String version) =>
+    RegExp(r'^"[0-9a-f]{64}"$').hasMatch(version);

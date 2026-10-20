@@ -89,18 +89,26 @@ class HttpPostApi
     required String sessionToken,
     required String postId,
     required bool liked,
-  }) =>
-      _interactionRequest(sessionToken, postId, action: 'like', desired: liked);
+    required String version,
+  }) => _interactionRequest(
+    sessionToken,
+    postId,
+    action: 'like',
+    desired: liked,
+    version: version,
+  );
   @override
   Future<PostResponse<PostInteractions>> setPostFavorite({
     required String sessionToken,
     required String postId,
     required bool favorited,
+    required String version,
   }) => _interactionRequest(
     sessionToken,
     postId,
     action: 'favorite',
     desired: favorited,
+    version: version,
   );
 
   @override
@@ -557,6 +565,7 @@ class HttpPostApi
     int maxRequestBytes = 1024,
     int maxResponseBytes = 32768,
     PostMediaImage? binaryImage,
+    bool readInteractionVersion = false,
   }) async {
     AuthCrypto.decode(token, bytes: 32);
     final bytes = body == null ? null : utf8.encode(jsonEncode(body));
@@ -645,12 +654,20 @@ class HttpPostApi
         if (!sessionExpiry.isAfter(serverTime)) {
           throw const FormatException('Invalid post session deadline');
         }
+        final interactionVersion = readInteractionVersion
+            ? _single(h, 'interaction-version')
+            : null;
+        if (interactionVersion != null &&
+            !_validInteractionVersion(interactionVersion)) {
+          throw const FormatException('Invalid interaction version');
+        }
         return PostResponse<T>(
           value: decode(payload),
           serverTime: serverTime,
           sessionExpiresAt: sessionExpiry,
           requestId: requestId,
           statusCode: status!,
+          interactionVersion: interactionVersion,
         );
       })().timeout(timeout);
     } on PostFailure {
@@ -726,6 +743,7 @@ class HttpPostApi
         'MEDIA_UPLOAD_CLOSED',
       },
       413 => {'PAYLOAD_TOO_LARGE'},
+      412 => {'INTERACTION_VERSION_CONFLICT'},
       415 => {'UNSUPPORTED_MEDIA_TYPE'},
       429 => {'RATE_LIMITED'},
       422 => {'MEDIA_INVALID'},

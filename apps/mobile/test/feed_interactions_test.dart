@@ -30,6 +30,21 @@ class InteractionTestApi extends feed.FeedTestApi
   PostInteractions actual = summary();
   final changes = <String>[];
   int reads = 0;
+  int generation = 0;
+  String get version => '"${generation.toRadixString(16).padLeft(64, '0')}"';
+  final conditions = <String>[];
+  Completer<void>? beforeCas;
+  PostResponse<PostInteractions> versionReply(
+    PostInteractions value, [
+    String? tag,
+  ]) => PostResponse(
+    value: value,
+    serverTime: feed.at,
+    sessionExpiresAt: identityTestRenewed,
+    requestId: AuthCrypto.encode(List.filled(16, 9)),
+    statusCode: 200,
+    interactionVersion: tag ?? version,
+  );
   PostFailure? failure;
   bool mutationCommitLost = false,
       summaryReadFails = false,
@@ -66,24 +81,43 @@ class InteractionTestApi extends feed.FeedTestApi
     if (summaryReadFails) {
       throw const PostFailure(kind: PostFailureKind.transport);
     }
-    return readWait?.future ?? feed.reply(actual);
+    final tag = version;
+    return readWait == null
+        ? versionReply(actual)
+        : versionReply((await readWait!.future).value, tag);
   }
 
   Future<PostResponse<PostInteractions>> write(
     String token,
     bool desired,
     bool like,
+    String expected,
   ) async {
     changes.add('${like ? 'like' : 'favorite'}:$desired:$token');
-    if (mutationWait != null) return mutationWait!.future;
+    conditions.add(expected);
+    final gate = beforeCas;
+    if (gate != null) await gate.future;
+    if (expected != version) {
+      throw const PostFailure(
+        kind: PostFailureKind.rejected,
+        statusCode: 412,
+        code: 'INTERACTION_VERSION_CONFLICT',
+      );
+    }
+    if (mutationWait != null) {
+      final result = await mutationWait!.future;
+      generation++;
+      return versionReply(result.value);
+    }
     if (failure == null || mutationCommitLost) {
       actual = summary(
         liked: like ? desired : actual.likedByMe,
         favorite: like ? actual.favoritedByMe : desired,
       );
+      generation++;
     }
     if (failure case final error?) throw error;
-    return feed.reply(actual);
+    return versionReply(actual);
   }
 
   @override
@@ -91,13 +125,15 @@ class InteractionTestApi extends feed.FeedTestApi
     required String sessionToken,
     required String postId,
     required bool liked,
-  }) => write(sessionToken, liked, true);
+    required String version,
+  }) => write(sessionToken, liked, true, version);
   @override
   Future<PostResponse<PostInteractions>> setPostFavorite({
     required String sessionToken,
     required String postId,
     required bool favorited,
-  }) => write(sessionToken, favorited, false);
+    required String version,
+  }) => write(sessionToken, favorited, false, version);
 }
 
 Future<feed.FeedFixture> fixture() async =>
@@ -151,6 +187,184 @@ Future<IdentityTestFixture> renewingAuth() async {
 }
 
 void main() {
+  test(
+    'restart before old CAS resumes cannot resurrect a cancelled like',
+    () async {
+      final auth = await IdentityTestFixture.create();
+      addTearDown(auth.dispose);
+      final server = InteractionTestApi();
+      final first = feed.FeedTestController(auth, server);
+      await first.loadTimeline();
+      final gate = Completer<void>();
+      server.beforeCas = gate;
+      final delayed = first.changeInteraction(
+        feed.postId,
+        PostInteractionAction.like,
+      );
+      await Future<void>.delayed(Duration.zero);
+      expect(server.changes.length, 1);
+      first.dispose();
+      server.beforeCas = null;
+      final reopened = feed.FeedTestController(auth, server);
+      addTearDown(reopened.dispose);
+      await reopened.loadTimeline();
+      await reopened.changeInteraction(feed.postId, PostInteractionAction.like);
+      await reopened.changeInteraction(feed.postId, PostInteractionAction.like);
+      expect(server.actual.likedByMe, false);
+      gate.complete();
+      await delayed;
+      expect(server.actual.likedByMe, false);
+      expect(reopened.interaction(feed.postId).value!.likedByMe, false);
+      expect(auth.sessions.isAuthenticated, true);
+    },
+  );
+  testWidgets(
+    'dirty read preserves failed write; read retry never resends failed mutation',
+    (tester) async {
+      final f = await fixture();
+      addTearDown(f.dispose);
+      await tester.pumpWidget(feed.screen(f));
+      await tester.pumpAndSettle();
+      api(f).failure = const PostFailure(
+        kind: PostFailureKind.rejected,
+        statusCode: 429,
+      );
+      await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
+      await tester.pumpAndSettle();
+      final failed = state(f).writeError;
+      await f.controller.loadInteractions([feed.postId], single: true);
+      expect(state(f).writeError, failed);
+      api(f).summaryReadFails = true;
+      await f.controller.loadInteractions([feed.postId], single: true);
+      await tester.pumpAndSettle();
+      expect(state(f).readError, isNotNull);
+      final before = api(f).changes.length;
+      api(f).summaryReadFails = false;
+      await tester.tap(
+        find.byKey(const ValueKey('interaction-read-retry:${feed.postId}')),
+      );
+      await tester.pumpAndSettle();
+      expect(api(f).changes.length, before);
+      expect(state(f).writeError, failed);
+      expect(state(f).readError, isNull);
+    },
+  );
+  test('dirty refresh after conflicting CAS keeps explicit write failure and retry intent', () async {
+    final f = await fixture();
+    addTearDown(f.dispose);
+    await f.controller.loadTimeline();
+    api(f).failure = const PostFailure(
+      kind: PostFailureKind.transport,
+      code: 'TIMEOUT',
+    );
+    await f.controller.changeInteraction(
+      feed.postId,
+      PostInteractionAction.like,
+    );
+    await f.controller.loadInteractions([feed.postId], single: true);
+    api(f).generation++;
+    await f.controller.retryInteraction(feed.postId);
+    expect(state(f).unresolved, false);
+    expect(state(f).value!.likedByMe, false);
+    expect(state(f).writeError, isNotNull);
+    expect(state(f).retryAction, PostInteractionAction.like);
+  });
+  test('same boolean without rotated fence stays locked, including later explicit rejection', () async {
+    final f = await fixture();
+    addTearDown(f.dispose);
+    await f.controller.loadTimeline();
+    api(f).failure = const PostFailure(
+      kind: PostFailureKind.transport,
+      code: 'TIMEOUT',
+    );
+    await f.controller.changeInteraction(
+      feed.postId,
+      PostInteractionAction.like,
+    );
+    api(f).actual = summary(liked: true);
+    await f.controller.retryInteraction(feed.postId);
+    expect(state(f).unresolved, true);
+    api(f).failure = const PostFailure(
+      kind: PostFailureKind.rejected,
+      statusCode: 429,
+    );
+    await f.controller.retryInteraction(feed.postId);
+    expect(state(f).unresolved, true);
+    expect(api(f).conditions.toSet().length, 1);
+  });
+  test('rotated fence resolves conflict; explicit retry gets new condition and seals late old write', () async {
+    final f = await fixture();
+    addTearDown(f.dispose);
+    await f.controller.loadTimeline();
+    api(f).failure = const PostFailure(
+      kind: PostFailureKind.transport,
+      code: 'TIMEOUT',
+    );
+    await f.controller.changeInteraction(
+      feed.postId,
+      PostInteractionAction.like,
+    );
+    final original = api(f).conditions.single;
+    api(f).generation++;
+    api(f).failure = null;
+    await f.controller.retryInteraction(feed.postId);
+    expect(state(f).unresolved, false);
+    expect(state(f).liked, false);
+    expect(state(f).error, isNotNull);
+    await f.controller.retryInteraction(feed.postId);
+    expect(state(f).liked, true);
+    await f.controller.changeInteraction(
+      feed.postId,
+      PostInteractionAction.like,
+    );
+    expect(state(f).liked, false);
+    await expectLater(
+      api(f).setPostLike(
+        sessionToken: identityTestToken,
+        postId: feed.postId,
+        liked: true,
+        version: original,
+      ),
+      throwsA(isA<PostFailure>().having((e) => e.statusCode, 'status', 412)),
+    );
+    expect(api(f).actual.likedByMe, false);
+  });
+  testWidgets(
+    '360dp normal text keeps all interactions on one row; large text wraps',
+    (tester) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final f = await fixture();
+      addTearDown(f.dispose);
+      await tester.pumpWidget(feed.screen(f));
+      await tester.pumpAndSettle();
+      final tops = [
+        for (final key in ['comment', 'like', 'bookmark', 'share'])
+          tester.getTopLeft(find.byKey(ValueKey('$key:${feed.postId}'))).dy,
+      ];
+      expect(tops.toSet().length, 1);
+      final viewTop = tester
+          .getTopLeft(find.byKey(const ValueKey('views:${feed.postId}')))
+          .dy;
+      expect(viewTop, tops.first);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(feed.screen(f, scale: 2));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .getTopLeft(find.byKey(const ValueKey('bookmark:${feed.postId}')))
+            .dy,
+        greaterThan(
+          tester
+              .getTopLeft(find.byKey(const ValueKey('like:${feed.postId}')))
+              .dy,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
   test(
     'same-token activity renewal preserves pending write and authority window',
     () async {
@@ -481,15 +695,17 @@ void main() {
       'Noto Sans CJK SC': ['HNUHOLE_UI_RENDER_FONT'],
       'MaterialIcons': ['HNUHOLE_UI_RENDER_ICON_FONT'],
     }.entries) {
-      final loader = FontLoader(entry.key);
-      var hasFont = false;
-      for (final variable in entry.value) {
-        if (Platform.environment[variable] case final path?) {
-          loader.addFont(File(path).readAsBytes().then(ByteData.sublistView));
-          hasFont = true;
+      await tester.runAsync(() async {
+        final loader = FontLoader(entry.key);
+        var hasFont = false;
+        for (final variable in entry.value) {
+          if (Platform.environment[variable] case final path?) {
+            loader.addFont(File(path).readAsBytes().then(ByteData.sublistView));
+            hasFont = true;
+          }
         }
-      }
-      if (hasFont) await tester.runAsync(loader.load);
+        if (hasFont) await loader.load();
+      });
     }
     final out = Directory(
       Platform.environment['HNUHOLE_INTERACTIONS_RENDER_DIR'] ??
@@ -519,6 +735,7 @@ void main() {
     );
     await tester.pumpWidget(mount(Brightness.light));
     await tester.pumpAndSettle();
+    f.controller.errorMessage = null;
     await capture('interactions-light');
     await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
     await tester.pumpAndSettle();

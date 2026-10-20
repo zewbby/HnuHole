@@ -573,7 +573,7 @@ class HhXPostItem extends StatelessWidget {
                             final wideText =
                                 MediaQuery.textScalerOf(context).scale(12) >
                                     16 ||
-                                constraints.maxWidth < 308;
+                                constraints.maxWidth < 260;
                             final actions = [
                               _action(
                                 context,
