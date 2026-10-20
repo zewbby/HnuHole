@@ -66,7 +66,8 @@ RETRY0、公开评论0，登记FA-D08交前端独立修复，不能冒充完整�
 随后前端PR36修复源57dfe5f通过76影响回归／分析0／301原生任务及独立Max审查。
 原CA/origins/同签debug2011保数据覆盖安装后，Android用原B/同一原任务/原图和
 身份正常点一次RETRY。v1失败历史保留，v2于22:40:28.743782+08 PUBLISHED；
-真实持久回执CREATE ACCEPTED1／RETRY ACCEPTED2（22:40:28.127369+08），
+真实持久回执CREATE ACCEPTED×1（attemptVersion1）／RETRY ACCEPTED×1（attemptVersion2），
+RETRY committed_at为22:40:28.127369+08，
 task1/公开评论1/原完整图文manifest及SHA一致。原HTTP响应未抓包，不编造requestId；
 回执以只读SQL为准。Android关联读列表1/详情1/唯一图文并目视四张PNG，限定通过。
 旧2010 FAIL与修复后结果分别冻结；最终精确PR HEAD CI另查live checks和冻结回执，
