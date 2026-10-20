@@ -253,6 +253,10 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   bool _identityRouteOpen = false;
   bool _personalRouteOpen = false;
   String? _channelRouteId;
+  Route<void>? _channelRoute;
+  (String?, int)? _channelRouteWindow;
+  final _postWindow = ValueNotifier<(String?, int)>((null, -1));
+  late final Listenable _postRouteChanges;
   bool _messagesRouteOpen = false;
 
   final _notifiedFailures = <String>{};
@@ -372,7 +376,16 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     widget.comments?.addListener(_commentChanged);
+    _postRouteChanges = Listenable.merge([_postWindow, widget.directory]);
+    widget.posts.addListener(_postWindowChanged);
+    _postWindowChanged();
     _startAuthentication();
+  }
+
+  void _postWindowChanged() {
+    // Data/loading notifications can arrive while a different route builds.
+    // Only a changed authority window invalidates the route's local state.
+    _postWindow.value = (widget.posts.accountId, widget.posts.authorityVersion);
   }
 
   @override
@@ -511,41 +524,55 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
       return;
     }
     _personalRouteOpen = true;
-    final account = widget.posts.accountId;
-    final authority = widget.posts.authorityVersion;
     navigator
         .push(
           MaterialPageRoute<void>(
-            builder: (_) => PersonalPostsScreen(
-              controller: widget.posts,
-              loadImages: widget.loadPostImages,
-              channelNames: {
-                for (final channel in widget.directory.channels)
-                  channel.id: channel.displayName,
-              },
-              onManageIdentities: _openIdentity,
-              onAuthenticationRequired: _openAuth,
-              onOpenSettings: _openSettings,
-              onChooseChannel: () =>
-                  navigator.popUntil((route) => route.isFirst),
-              onPublishedToChannel: (channelId) {
-                if (widget.posts.accountId != account ||
-                    widget.posts.authorityVersion != authority) {
-                  return;
-                }
-                final channel = widget.directory.channels
-                    .where((item) => item.id == channelId)
-                    .firstOrNull;
-                if (channel == null) return;
-                if (_channelRouteId == channelId) {
-                  unawaited(widget.posts.loadTimeline(channelId: channelId));
-                  navigator.popUntil(
-                    (route) => route.settings.name == 'channel:$channelId',
-                  );
-                } else {
-                  navigator.popUntil((route) => route.isFirst);
-                  _openChannel(channel, initialChannelId: channelId);
-                }
+            builder: (_) => AnimatedBuilder(
+              animation: _postRouteChanges,
+              builder: (context, _) {
+                final window = _postWindow.value;
+                final account = window.$1;
+                final authority = window.$2;
+                // Recreate only this account hub. Old editors/details retain
+                // their original fences and old callbacks keep their window.
+                return PersonalPostsScreen(
+                  key: ValueKey((account, authority)),
+                  controller: widget.posts,
+                  loadImages: widget.loadPostImages,
+                  channelNames: {
+                    for (final channel in widget.directory.channels)
+                      channel.id: channel.displayName,
+                  },
+                  onManageIdentities: _openIdentity,
+                  onAuthenticationRequired: _openAuth,
+                  onOpenSettings: _openSettings,
+                  onChooseChannel: () =>
+                      navigator.popUntil((route) => route.isFirst),
+                  onPublishedToChannel: (channelId) {
+                    if (!widget.posts.available ||
+                        widget.posts.accountId != account ||
+                        widget.posts.authorityVersion != authority) {
+                      return;
+                    }
+                    final channel = widget.directory.channels
+                        .where((item) => item.id == channelId)
+                        .firstOrNull;
+                    if (channel == null) return;
+                    final existing = _channelRoute;
+                    if (_channelRouteId == channelId &&
+                        _channelRouteWindow == (account, authority) &&
+                        existing != null &&
+                        existing.isActive) {
+                      unawaited(
+                        widget.posts.loadTimeline(channelId: channelId),
+                      );
+                      navigator.popUntil((route) => identical(route, existing));
+                    } else {
+                      navigator.popUntil((route) => route.isFirst);
+                      _openChannel(channel, initialChannelId: channelId);
+                    }
+                  },
+                );
               },
             ),
           ),
@@ -559,21 +586,32 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     _channelRouteId = channel.id;
     final route = MaterialPageRoute<void>(
       settings: RouteSettings(name: 'channel:${channel.id}'),
-      builder: (_) => FeedScreen(
-        controller: widget.posts,
-        loadImages: widget.loadPostImages,
-        composeChannel: channel,
-        initialChannelId: initialChannelId,
-        channels: widget.directory.channels,
-        onOpenMessages: _openMessages,
-        onManageIdentities: _openIdentity,
-        onAuthenticationRequired: _openAuth,
-        onOpenPersonal: _openPersonal,
+      builder: (_) => AnimatedBuilder(
+        animation: _postRouteChanges,
+        builder: (context, _) => FeedScreen(
+          key: ValueKey(_postWindow.value),
+          controller: widget.posts,
+          loadImages: widget.loadPostImages,
+          composeChannel: channel,
+          initialChannelId: initialChannelId,
+          channels: widget.directory.channels,
+          onOpenMessages: _openMessages,
+          onManageIdentities: _openIdentity,
+          onAuthenticationRequired: _openAuth,
+          onOpenPersonal: _openPersonal,
+        ),
       ),
     );
+    _channelRoute = route;
+    _channelRouteWindow = (
+      widget.posts.accountId,
+      widget.posts.authorityVersion,
+    );
     navigator.push(route).whenComplete(() {
-      if (_channelRouteId == channel.id) {
+      if (identical(_channelRoute, route)) {
         _channelRouteId = null;
+        _channelRoute = null;
+        _channelRouteWindow = null;
       }
     });
   }
@@ -583,6 +621,8 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     widget.comments?.removeListener(_commentChanged);
     widget.comments?.dispose();
+    widget.posts.removeListener(_postWindowChanged);
+    _postWindow.dispose();
     widget.management.dispose();
     widget.identities.dispose();
     widget.flows.dispose();

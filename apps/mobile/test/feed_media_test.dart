@@ -102,6 +102,237 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'FA-O02 expired single and carousel keep geometry without protected images',
+    (tester) async {
+      for (final sizes in [
+        [const Size(1600, 900)],
+        [const Size(900, 1200)],
+        [const Size(100, 3000)],
+        [const Size(900, 1200), const Size(1600, 900), const Size(900, 900)],
+      ]) {
+        final authority = ValueNotifier(true), access = ValueNotifier(true);
+        await tester.pumpWidget(
+          section(
+            authority,
+            group([
+              for (var i = 0; i < sizes.length; i++)
+                media('image-$i', sizes[i]),
+            ], access),
+          ),
+        );
+        await frames(tester);
+        final before = tester.getSize(find.byType(PostImagesSection));
+        access.value = false;
+        await tester.pumpAndSettle();
+        expect(tester.getSize(find.byType(PostImagesSection)), before);
+        expect(find.byType(Image, skipOffstage: false), findsNothing);
+        expect(find.byType(RawImage, skipOffstage: false), findsNothing);
+        expect(find.text('图片已不可访问'), findsWidgets);
+        await tester.pumpWidget(const SizedBox());
+        authority.dispose();
+        access.dispose();
+      }
+    },
+  );
+  testWidgets(
+    'FA-O02 reload pending and failure retain known geometry and late bytes stay hidden',
+    (tester) async {
+      final authority = ValueNotifier(true),
+          oldAccess = ValueNotifier(true),
+          newAccess = ValueNotifier(true);
+      final pendingBytes = Completer<ImageProvider>();
+      final oldGroup = group([
+        media('old', const Size(1600, 900), pending: pendingBytes.future),
+      ], oldAccess);
+      final freshGroup = group([
+        media('fresh', const Size(1600, 900)),
+      ], newAccess);
+      var calls = 0;
+      final reload = Completer<PostImages>();
+      Future<PostImages> loader(String _) async {
+        calls++;
+        if (calls == 1) return oldGroup;
+        if (calls == 2) return reload.future;
+        return freshGroup;
+      }
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 317,
+              child: PostImagesSection(
+                postId: fixture.postId,
+                expectedCount: 1,
+                feedPreview: true,
+                loadImages: loader,
+                authority: authority,
+                isCurrent: () => authority.value,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final before = tester.getSize(find.byType(PostImagesSection));
+      oldAccess.value = false;
+      await tester.pumpAndSettle();
+      pendingBytes.complete(image);
+      await tester.pumpAndSettle();
+      expect(find.byType(Image), findsNothing);
+      await tester.tap(find.text('重新读取图片'));
+      await tester.pump();
+      expect(tester.getSize(find.byType(PostImagesSection)), before);
+      expect(find.byType(Image), findsNothing);
+      reload.completeError(StateError('synthetic unavailable'));
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byType(PostImagesSection)), before);
+      expect(find.byType(Image), findsNothing);
+      await tester.tap(find.text('重新加载图片'));
+      await frames(tester);
+      expect(tester.getSize(find.byType(PostImagesSection)), before);
+      expect(find.byType(Image), findsOneWidget);
+      expect(calls, 3);
+      authority.value = false;
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byType(PostImagesSection)).height, 0);
+      expect(find.byType(Image), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+      authority.dispose();
+      oldAccess.dispose();
+      newAccess.dispose();
+    },
+  );
+  for (final expiresDuringGesture in [true, false]) {
+    testWidgets(
+      'FA-O02 lease changes during pointer gesture never open parent or viewer ($expiresDuringGesture)',
+      (tester) async {
+        final authority = ValueNotifier(true),
+            oldAccess = ValueNotifier(true),
+            freshAccess = ValueNotifier(true);
+        final oldGroup = group([
+          media('old', const Size(1600, 900)),
+        ], oldAccess);
+        final freshGroup = group([
+          media('fresh', const Size(1600, 900)),
+        ], freshAccess);
+        final reload = Completer<PostImages>();
+        var calls = 0, parentTaps = 0;
+        Future<PostImages> loader(String _) async =>
+            ++calls == 1 ? oldGroup : reload.future;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: InkWell(
+                onTap: () => parentTaps++,
+                child: SizedBox(
+                  width: 317,
+                  child: PostImagesSection(
+                    postId: fixture.postId,
+                    expectedCount: 1,
+                    feedPreview: true,
+                    loadImages: loader,
+                    authority: authority,
+                    isCurrent: () => authority.value,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await frames(tester);
+        final position = tester.getCenter(
+          find.byKey(const ValueKey(('feed-image', 'old'))),
+        );
+        if (!expiresDuringGesture) {
+          oldAccess.value = false;
+          await tester.pump();
+          await tester.tap(find.text('重新读取图片'));
+          await tester.pump();
+        }
+        final gesture = await tester.startGesture(position);
+        await tester.pump();
+        if (expiresDuringGesture) {
+          oldAccess.value = false;
+          await tester.pump();
+          expect(find.byType(Image, skipOffstage: false), findsNothing);
+        } else {
+          reload.complete(freshGroup);
+          await frames(tester);
+        }
+        await gesture.up();
+        await tester.pumpAndSettle();
+        expect(parentTaps, 0);
+        expect(find.byType(HnuImageViewer), findsNothing);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        authority.dispose();
+        oldAccess.dispose();
+        freshAccess.dispose();
+      },
+    );
+  }
+  testWidgets(
+    'FA-O02 narrow large-text status scrolls to retry without overflow',
+    (tester) async {
+      for (final scale in [2.0, 3.0]) {
+        final authority = ValueNotifier(true), access = ValueNotifier(true);
+        final value = group([media('wide', const Size(1600, 800))], access);
+        final pending = Completer<PostImages>();
+        var calls = 0;
+        Future<PostImages> loader(String _) async =>
+            ++calls == 1 ? value : pending.future;
+        await tester.pumpWidget(
+          MaterialApp(
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.linear(scale)),
+              child: child!,
+            ),
+            home: Scaffold(
+              body: Align(
+                alignment: Alignment.topLeft,
+                child: SizedBox(
+                  width: 180,
+                  child: PostImagesSection(
+                    postId: fixture.postId,
+                    expectedCount: 1,
+                    feedPreview: true,
+                    loadImages: loader,
+                    authority: authority,
+                    isCurrent: () => authority.value,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await frames(tester);
+        final before = tester.getSize(find.byType(PostImagesSection));
+        access.value = false;
+        await tester.pumpAndSettle();
+        expect(tester.getSize(find.byType(PostImagesSection)), before);
+        expect(tester.takeException(), isNull);
+        await tester.ensureVisible(find.text('重新读取图片'));
+        await tester.tap(find.text('重新读取图片'));
+        await tester.pump();
+        expect(calls, 2);
+        expect(tester.getSize(find.byType(PostImagesSection)), before);
+        expect(tester.takeException(), isNull);
+        pending.completeError(StateError('synthetic unavailable'));
+        await tester.pumpAndSettle();
+        expect(tester.getSize(find.byType(PostImagesSection)), before);
+        expect(tester.takeException(), isNull);
+        await tester.ensureVisible(find.text('重新加载图片'));
+        expect(find.text('重新加载图片').hitTestable(), findsOneWidget);
+        expect(find.byType(Image, skipOffstage: false), findsNothing);
+        await tester.pumpWidget(const SizedBox());
+        authority.dispose();
+        access.dispose();
+      }
+    },
+  );
   testWidgets('metadata fixes geometry while image bytes load or fail', (
     tester,
   ) async {

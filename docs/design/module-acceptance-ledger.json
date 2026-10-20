@@ -40262,5 +40262,51 @@
     "fullModuleResultsPromoted": false,
     "productionTouched": false,
     "evidence": "docs/branches/fix-feed-fault-error-contract.md"
+  },
+  "currentFeedInteractionsUi20261020": {
+    "task": "FEED-INTERACTIONS-UI-01",
+    "recordedOn": "2026-10-20",
+    "branch": "feat/feed-interactions-ui",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/31",
+    "dependency": "https://github.com/zewbby/HnuHole/pull/30",
+    "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
+    "candidateSource": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
+    "result": "HOST_565_HTTPS_SQL_RENDER_BUILD_DEVICE_SCOPED_PASS_FA15_BLOCKED",
+    "modules": [
+      "B03",
+      "B06"
+    ],
+    "affectedRegressionModules": [
+      "A03",
+      "B04",
+      "B07",
+      "B12"
+    ],
+    "evidence": "docs/design/feed-interactions-ui-verification-20261020.json",
+    "report": "docs/branches/feat-feed-interactions-ui.md",
+    "physicalAndroid": "2002 layout and original chains scoped PASS by device owner;2003 busy-tap and media-expiry bugs fixed;2004 FA-D02/FA-O02 and comments0→2→0 plus seven read-only SQL checks scoped PASS;FA15 BLOCKED without controlled response loss",
+    "mainMerged": false,
+    "sharedEnvironmentUpdatedByThisTask": false,
+    "deviceOperatedByThisTask": false,
+    "published": false,
+    "fullModuleResultsPromoted": false
+  },
+  "currentFeedInteractionsUiFinalization20261020": {
+    "task": "FEED-INTERACTIONS-UI-01",
+    "evidence": "docs/design/feed-interactions-ui-finalization-20261020.json",
+    "candidateSource": "531e92d9d59ae37199b18a67fae33338d9a5c4e1",
+    "backendMergedMain": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "host": "590 app PASS/analyze0; unchanged viewer116 prior PASS",
+    "sharedProbe": "7 PASS, batch50/1963 bytes, B flags unchanged, single+carousel, old condition412",
+    "android2005": "SCOPED_FA15_COMMENTS_PASS_D04_D05_P2_FAIL",
+    "finalMainCandidate": "NOT_RUN_WAIT_MERGE_THEN_BUILD2008_PLUS",
+    "merged": false,
+    "formallyReleased": false,
+    "scope": "B03/B06 interactions; affected B04/B07/B12/A03 regression only; historical module conclusions unchanged",
+    "candidate2006": "D04_D05_FIXED_SCOPED_PASS_P3_FAIL_HISTORICAL",
+    "deviceBlockers": [],
+    "candidate2007": "RELATED_DELTA_NO_NEW_BLOCKERS_4PASS_19NOT_RUN_FA24_WAIT_MAIN",
+    "finalDeliveryHeadCI": "PENDING_EXACT_FINAL_DOCUMENTATION_HEAD",
+    "reviewedRuntimeCommit": "531e92d9d59ae37199b18a67fae33338d9a5c4e1"
   }
 }

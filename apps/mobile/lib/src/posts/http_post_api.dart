@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import '../auth/auth_crypto.dart';
 import 'post_api.dart';
 import 'feed_api.dart';
+import 'post_interactions_api.dart';
 import 'post_models.dart';
 import 'post_media_api.dart';
 import 'post_protocol.dart';
@@ -16,9 +17,11 @@ import 'package:crypto/crypto.dart' as hashes;
 
 part 'post_upload_http.dart';
 part 'feed_http.dart';
+part 'post_interactions_http.dart';
 
 /// 仅访问构造时固定的 C HTTPS origin，不跟随重定向或自动重送命令。
-class HttpPostApi implements PostApi, PostMediaApi, FeedApi {
+class HttpPostApi
+    implements PostApi, PostMediaApi, FeedApi, PostInteractionsApi {
   HttpPostApi({
     required this.communityBaseUri,
     HttpClient? client,
@@ -41,6 +44,73 @@ class HttpPostApi implements PostApi, PostMediaApi, FeedApi {
   final Duration timeout;
   final HttpClient _client;
   void close() => _client.close(force: true);
+
+  @override
+  Future<PostResponse<List<PostInteractions>>> interactions({
+    required String sessionToken,
+    required List<String> postIds,
+  }) => _input(() {
+    if (postIds.isEmpty ||
+        postIds.length > 50 ||
+        postIds.toSet().length != postIds.length) {
+      throw const FormatException('Invalid interaction batch');
+    }
+    for (final id in postIds) {
+      PostProtocol.resourceId(id);
+    }
+    return _send(
+      sessionToken,
+      'POST',
+      '/api/v1/feed/interactions',
+      body: {'postIds': postIds},
+      maxRequestBytes: 4096,
+      decode: (raw) {
+        final m = PostJson.record(raw, {'items'});
+        final items = m['items'];
+        if (items is! List || items.length != postIds.length) {
+          throw const FormatException('Invalid interaction batch');
+        }
+        final values = items.map(PostInteractions.fromJson).toList();
+        for (var i = 0; i < values.length; i++) {
+          if (values[i].postId != postIds[i]) {
+            throw const FormatException('Mismatched interaction batch');
+          }
+        }
+        return values;
+      },
+    );
+  });
+  @override
+  Future<PostResponse<PostInteractions>> postInteractions({
+    required String sessionToken,
+    required String postId,
+  }) => _interactionRequest(sessionToken, postId);
+  @override
+  Future<PostResponse<PostInteractions>> setPostLike({
+    required String sessionToken,
+    required String postId,
+    required bool liked,
+    required String version,
+  }) => _interactionRequest(
+    sessionToken,
+    postId,
+    action: 'like',
+    desired: liked,
+    version: version,
+  );
+  @override
+  Future<PostResponse<PostInteractions>> setPostFavorite({
+    required String sessionToken,
+    required String postId,
+    required bool favorited,
+    required String version,
+  }) => _interactionRequest(
+    sessionToken,
+    postId,
+    action: 'favorite',
+    desired: favorited,
+    version: version,
+  );
 
   @override
   Future<PostResponse<PostsPage<FeedPost>>> timeline({
@@ -496,6 +566,7 @@ class HttpPostApi implements PostApi, PostMediaApi, FeedApi {
     int maxRequestBytes = 1024,
     int maxResponseBytes = 32768,
     PostMediaImage? binaryImage,
+    bool readInteractionVersion = false,
   }) async {
     AuthCrypto.decode(token, bytes: 32);
     final bytes = body == null ? null : utf8.encode(jsonEncode(body));
@@ -584,12 +655,20 @@ class HttpPostApi implements PostApi, PostMediaApi, FeedApi {
         if (!sessionExpiry.isAfter(serverTime)) {
           throw const FormatException('Invalid post session deadline');
         }
+        final interactionVersion = readInteractionVersion
+            ? _single(h, 'interaction-version')
+            : null;
+        if (interactionVersion != null &&
+            !_validInteractionVersion(interactionVersion)) {
+          throw const FormatException('Invalid interaction version');
+        }
         return PostResponse<T>(
           value: decode(payload),
           serverTime: serverTime,
           sessionExpiresAt: sessionExpiry,
           requestId: requestId,
           statusCode: status!,
+          interactionVersion: interactionVersion,
         );
       })().timeout(timeout);
     } on PostFailure {
@@ -665,6 +744,7 @@ class HttpPostApi implements PostApi, PostMediaApi, FeedApi {
         'MEDIA_UPLOAD_CLOSED',
       },
       413 => {'PAYLOAD_TOO_LARGE'},
+      412 => {'INTERACTION_VERSION_CONFLICT'},
       415 => {'UNSUPPORTED_MEDIA_TYPE'},
       429 => {'RATE_LIMITED'},
       422 => {'MEDIA_INVALID'},

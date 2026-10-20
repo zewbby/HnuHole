@@ -31,6 +31,7 @@ class FeedPostView {
     this.availableActions = const {FeedAction.comment},
     this.comments,
     this.likes,
+    this.favorites,
     this.views,
     this.channelCode = 'buddy',
     this.liked = false,
@@ -42,7 +43,7 @@ class FeedPostView {
   final String id, authorId, authorName, elapsed, title;
   final String body;
   final Set<FeedAction> availableActions;
-  final int? comments, likes;
+  final int? comments, likes, favorites;
   final int? views;
   final String channelCode;
   final bool liked, bookmarked, isOwnAuthor;
@@ -60,6 +61,7 @@ class FeedPostView {
         availableActions: availableActions,
         comments: comments,
         likes: likes ?? this.likes,
+        favorites: favorites,
         views: views,
         channelCode: channelCode,
         liked: liked ?? this.liked,
@@ -96,6 +98,7 @@ class HhXPostFeed extends StatelessWidget {
     this.avatarBuilder,
     this.accountAvatar,
     this.feedTitle,
+    this.composeTooltip,
     this.blockedCount = 0,
     required this.onPost,
     required this.onAuthor,
@@ -115,6 +118,7 @@ class HhXPostFeed extends StatelessWidget {
   final FeedAvatarBuilder? avatarBuilder;
   final Widget? accountAvatar;
   final String? feedTitle;
+  final String? composeTooltip;
   final int blockedCount;
   final ValueChanged<FeedPostView> onPost, onMenu;
   final ValueChanged<String> onAuthor;
@@ -344,7 +348,7 @@ class HhXPostFeed extends StatelessWidget {
         height: 64,
         child: FloatingActionButton(
           key: const ValueKey('feed-compose'),
-          tooltip: '发布到$channelTitle',
+          tooltip: composeTooltip ?? '发布到$channelTitle',
           onPressed: onCompose,
           elevation: 2,
           backgroundColor: p.action,
@@ -571,7 +575,7 @@ class HhXPostItem extends StatelessWidget {
                             final wideText =
                                 MediaQuery.textScalerOf(context).scale(12) >
                                     16 ||
-                                constraints.maxWidth < 308;
+                                constraints.maxWidth < 260;
                             final actions = [
                               _action(
                                 context,
@@ -593,7 +597,7 @@ class HhXPostItem extends StatelessWidget {
                                 context,
                                 FeedAction.bookmark,
                                 null,
-                                post.bookmarked ? '取消收藏' : '收藏',
+                                '${post.bookmarked ? '取消收藏' : '收藏'}${post.favorites == null ? '' : '，收藏数${post.favorites}'}',
                                 post.bookmarked,
                               ),
                               _action(
@@ -726,40 +730,50 @@ class HhXPostItem extends StatelessWidget {
       onTap: enabled ? () => onAction(action) : null,
       child: Tooltip(
         message: label,
-        child: TextButton(
-          key: ValueKey('${action.name}:${post.id}'),
-          onPressed: enabled ? () => onAction(action) : null,
-          style: TextButton.styleFrom(
-            minimumSize: const Size(48, 48),
-            padding: EdgeInsets.zero,
-            alignment: count == null ? Alignment.center : Alignment.centerLeft,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+        // Keep this recognizer even while enabled. If the button becomes busy
+        // between pointer-down and pointer-up, its parent still absorbs the
+        // gesture instead of letting the whole post's InkWell open the detail.
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          excludeFromSemantics: true,
+          onTap: () {},
+          child: TextButton(
+            key: ValueKey('${action.name}:${post.id}'),
+            onPressed: enabled ? () => onAction(action) : null,
+            style: TextButton.styleFrom(
+              minimumSize: const Size(48, 48),
+              padding: EdgeInsets.zero,
+              alignment: count == null
+                  ? Alignment.center
+                  : Alignment.centerLeft,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
-          ),
-          child: Flex(
-            direction: stacked ? Axis.vertical : Axis.horizontal,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (busy)
-                SizedBox(
-                  width: 19,
-                  height: 19,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1.5,
-                    color: color,
+            child: Flex(
+              direction: stacked ? Axis.vertical : Axis.horizontal,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (busy)
+                  SizedBox(
+                    width: 19,
+                    height: 19,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                      color: color,
+                    ),
+                  )
+                else
+                  CustomPaint(
+                    size: const Size(20, 20),
+                    painter: _FeedActionGlyph(action, color, selected),
                   ),
-                )
-              else
-                CustomPaint(
-                  size: const Size(20, 20),
-                  painter: _FeedActionGlyph(action, color, selected),
-                ),
-              if (count != null) ...[
-                SizedBox(width: stacked ? 0 : 5, height: stacked ? 4 : 0),
-                Text(count, style: _text(context, 14, color: color)),
+                if (count != null) ...[
+                  SizedBox(width: stacked ? 0 : 5, height: stacked ? 4 : 0),
+                  Text(count, style: _text(context, 14, color: color)),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

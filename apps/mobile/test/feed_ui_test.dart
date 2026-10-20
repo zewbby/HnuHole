@@ -219,6 +219,57 @@ Widget screen(
 );
 
 void main() {
+  testWidgets(
+    'compose semantics follow selected channel and recommended picker',
+    (tester) async {
+      final f = await FeedFixture.create();
+      addTearDown(f.dispose);
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(screen(f));
+        await tester.pumpAndSettle();
+        expect(find.byTooltip('选择通道写帖子'), findsOneWidget);
+        expect(
+          tester
+              .getSemantics(find.byKey(const ValueKey('feed-compose')))
+              .getSemanticsData()
+              .tooltip,
+          '选择通道写帖子',
+        );
+        await tester.tap(find.byKey(const ValueKey('feed-channel-picker')));
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.byKey(ValueKey('choose-channel:${channels.last.id}')),
+          100,
+          scrollable: find.descendant(
+            of: find.byKey(const ValueKey('channel-options')),
+            matching: find.byType(Scrollable),
+          ),
+        );
+        await tester.tap(
+          find.byKey(ValueKey('choose-channel:${channels.last.id}')),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byTooltip('发布到科技'), findsOneWidget);
+        expect(
+          tester
+              .getSemantics(find.byKey(const ValueKey('feed-compose')))
+              .getSemanticsData()
+              .tooltip,
+          '发布到科技',
+        );
+        expect(find.byTooltip('发布到吐槽'), findsNothing);
+        await tester.tap(find.byKey(const ValueKey('feed-compose')));
+        await tester.pumpAndSettle();
+        expect(find.text('写帖子'), findsOneWidget);
+        expect(find.text('科技'), findsWidgets);
+        expect(tester.takeException(), isNull);
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
+
   test(
     'preferences precede feed, renewal persists, list does not count views',
     () async {

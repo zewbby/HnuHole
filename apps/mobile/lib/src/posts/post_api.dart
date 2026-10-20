@@ -32,11 +32,13 @@ class PostResponse<T> {
     required this.sessionExpiresAt,
     required this.requestId,
     required this.statusCode,
+    this.interactionVersion,
   });
   final T value;
   final DateTime serverTime, sessionExpiresAt;
   final String requestId;
   final int statusCode;
+  final String? interactionVersion;
 }
 
 abstract interface class PostApi {

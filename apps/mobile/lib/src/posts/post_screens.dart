@@ -2119,6 +2119,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       _loading = false;
     });
     if (post != null) {
+      unawaited(
+        widget.controller.loadInteractions([widget.postId], single: true),
+      );
       final canDelete = await widget.controller.canDelete(widget.postId);
       if (mounted && _authority.current) setState(() => _canDelete = canDelete);
     }
@@ -2222,6 +2225,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 initialInput: widget.initialCommentInput,
                 initialOriginal: widget.initialCommentOriginal,
                 body: _detail(context, _post!),
+                onCountChanged: () {
+                  if (_authority.current) {
+                    unawaited(
+                      widget.controller.loadInteractions([
+                        widget.postId,
+                      ], single: true),
+                    );
+                  }
+                },
               ),
       ),
     ),
@@ -2305,11 +2317,106 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       padding: const EdgeInsets.only(top: 24),
                       child: Text(widget.controller.errorMessage!),
                     ),
+                  if (widget.controller.supportsInteractions) _interactionBar(),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _interactionBar() {
+    final c = widget.controller;
+    final state = c.interaction(widget.postId);
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 12,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              TextButton.icon(
+                key: ValueKey('detail-like:${widget.postId}'),
+                onPressed: state.canChange
+                    ? () {
+                        if (!mounted || !_authority.current) return;
+                        unawaited(
+                          c.changeInteraction(
+                            widget.postId,
+                            PostInteractionAction.like,
+                          ),
+                        );
+                      }
+                    : null,
+                icon: Icon(
+                  state.liked ? Icons.favorite : Icons.favorite_border,
+                ),
+                label: Text(
+                  '${state.liked ? '取消点赞' : '点赞'} ${state.likes ?? '—'}',
+                ),
+              ),
+              TextButton.icon(
+                key: ValueKey('detail-favorite:${widget.postId}'),
+                onPressed: state.canChange
+                    ? () {
+                        if (!mounted || !_authority.current) return;
+                        unawaited(
+                          c.changeInteraction(
+                            widget.postId,
+                            PostInteractionAction.favorite,
+                          ),
+                        );
+                      }
+                    : null,
+                icon: Icon(
+                  state.favorited ? Icons.bookmark : Icons.bookmark_border,
+                ),
+                label: Text(
+                  '${state.favorited ? '取消收藏' : '收藏'} ${state.value?.favoriteCount ?? '—'}',
+                ),
+              ),
+              Text('评论 ${state.value?.commentCount ?? '—'}'),
+              if (state.sending || state.loading)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+            ],
+          ),
+          for (final notice in [
+            (state.writeError, true),
+            (state.readError, false),
+          ])
+            if (notice.$1 case final error?)
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(error),
+                  TextButton(
+                    onPressed: state.sending
+                        ? null
+                        : () {
+                            if (!mounted || !_authority.current) return;
+                            if (notice.$2) {
+                              unawaited(c.retryInteraction(widget.postId));
+                            } else {
+                              unawaited(
+                                c.loadInteractions([
+                                  widget.postId,
+                                ], single: true),
+                              );
+                            }
+                          },
+                    child: Text(notice.$2 ? '重试' : '重新读取'),
+                  ),
+                ],
+              ),
+        ],
       ),
     );
   }

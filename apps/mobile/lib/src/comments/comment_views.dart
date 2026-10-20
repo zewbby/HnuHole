@@ -184,6 +184,7 @@ class CommentPostPane extends StatefulWidget {
     this.initialCommentId,
     this.initialInput,
     this.initialOriginal,
+    this.onCountChanged,
   });
   final CommentRuntime runtime;
   final String postId, postBody;
@@ -191,6 +192,7 @@ class CommentPostPane extends StatefulWidget {
   final String? initialCommentId;
   final CommentRejectedInput? initialInput;
   final Uint8List? initialOriginal;
+  final VoidCallback? onCountChanged;
   @override
   State<CommentPostPane> createState() => _CommentPostPaneState();
 }
@@ -207,6 +209,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
   final originals = <String, Uint8List>{};
   final keys = <String, GlobalKey>{};
   final completed = <String>{};
+  final _seenDeleted = <String>{};
   String? cursor, highlight, error;
   int total = 0;
   bool open = false, loading = false;
@@ -255,6 +258,9 @@ class _CommentPostPaneState extends State<CommentPostPane> {
 
   void _changed() {
     if (!mounted) return;
+    if (current && widget.runtime.deleted.any(_seenDeleted.add)) {
+      widget.onCountChanged?.call();
+    }
     if (!current) {
       editor.leave();
       rows.clear();
@@ -271,6 +277,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         if (t.state == CommentTaskState.published &&
             t.binding.postId == widget.postId &&
             completed.add(t.taskId)) {
+          widget.onCountChanged?.call();
           open = true;
           own.add(t.commentId!);
           unawaited(_locate(t.commentId!));
@@ -294,6 +301,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
           own = (c['ownCommentIds'] as List).cast<String>().toSet();
           total = c['totalCount'] as int;
         });
+        widget.onCountChanged?.call();
       }
     } catch (_) {}
   }

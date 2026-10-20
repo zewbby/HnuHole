@@ -147,10 +147,13 @@ class _MediaLease {
       check();
       return response;
     } on PostFailure catch (error) {
-      if ({401, 403, 404, 503}.contains(error.statusCode) ||
-          error.kind == PostFailureKind.unauthorized ||
-          error.kind == PostFailureKind.unavailable) {
-        // A denied byte request invalidates every open lease for this post.
+      if (current &&
+          ({401, 403, 404, 503}.contains(error.statusCode) ||
+              error.kind == PostFailureKind.unauthorized ||
+              error.kind == PostFailureKind.unavailable)) {
+        // Only this still-current lease may propagate a post denial. An old
+        // account/released lease cannot revoke a newer group's authorization.
+        // Current-token 401/503 still close access in PostController first.
         for (final lease
             in owner._leases.where((l) => l.postId == postId).toList()) {
           lease.revoke();
@@ -183,7 +186,10 @@ class _MediaLease {
 
   PostImage image(PostMediaImage item, int index, int count) =>
       PostImage.deferred(
-        pixelSize: Size(item.pixelWidth.toDouble(), item.pixelHeight.toDouble()),
+        pixelSize: Size(
+          item.pixelWidth.toDouble(),
+          item.pixelHeight.toDouble(),
+        ),
         loadThumbnail: () => provider(item),
         item: ViewerItem(
           id: item.contentVersionId,

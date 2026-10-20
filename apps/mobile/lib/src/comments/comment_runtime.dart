@@ -109,11 +109,19 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
             sessions.isCurrentToken(s.token)
         ? s.token
         : null;
-    if (_token == token && _version == sessions.authorityVersion) return;
+    final account = token == null ? null : s!.accountId;
+    if (_token == token &&
+        _account == account &&
+        (token != null || _version == sessions.authorityVersion)) {
+      // A valid same-account renewal only changes expiry metadata. Preserve
+      // open panes, temporary input and requests in this authority window.
+      _version = sessions.authorityVersion;
+      return;
+    }
     _automaticPolls = 0;
     _version = sessions.authorityVersion;
     _token = token;
-    _account = token == null ? null : s!.accountId;
+    _account = account;
     _epoch++;
     _seenCommands.clear();
     mutations.clear();

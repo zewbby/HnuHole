@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../channels/channel.dart';
 import '../design_system/telegram_theme.dart';
+import 'feed_api.dart';
 import 'post_controller.dart';
 import 'post_images.dart';
 import 'post_screens.dart';
@@ -40,10 +41,11 @@ class _FeedScreenState extends State<FeedScreen> {
   late final int _epoch;
   int _publication = 0;
   bool _published = false;
+  bool _starting = true;
   Timer? _notice;
   final _scroll = ScrollController();
   PostController get c => widget.controller;
-  bool get current => c.available && c.authorityVersion == _epoch;
+  bool get current => mounted && c.available && c.authorityVersion == _epoch;
   List<FeedChannelView> get channels => [
     for (final channel in widget.channels)
       FeedChannelView(channel.id, channel.name, switch (channel.code) {
@@ -62,7 +64,13 @@ class _FeedScreenState extends State<FeedScreen> {
     _epoch = c.authorityVersion;
     _publication = c.latestPublicationNotice?.sequence ?? 0;
     c.addListener(_changed);
-    unawaited(c.loadTimeline(channelId: widget.initialChannelId));
+    // Starting a new route must not synchronously notify still-mounted sibling
+    // routes during Navigator's build. Hide any prior timeline until this read.
+    scheduleMicrotask(() {
+      if (!current) return;
+      setState(() => _starting = false);
+      unawaited(c.loadTimeline(channelId: widget.initialChannelId));
+    });
   }
 
   void _changed() {
@@ -188,20 +196,21 @@ class _FeedScreenState extends State<FeedScreen> {
             body: Center(
               child: TextButton(
                 onPressed: widget.onAuthenticationRequired,
-                child: const Text('请重新登录'),
+                child: const Text('登录或核对会话'),
               ),
             ),
           );
         }
-        final posts = c.timelineItems;
+        final posts = _starting ? const <FeedPost>[] : c.timelineItems;
+        final selectedChannel = widget.channels
+            .where((channel) => channel.id == c.timelineChannelId)
+            .firstOrNull;
         return HhXPostFeed(
           channelTitle: widget.composeChannel.name,
-          feedTitle:
-              widget.channels
-                  .where((p) => p.id == c.timelineChannelId)
-                  .firstOrNull
-                  ?.name ??
-              '推荐',
+          feedTitle: selectedChannel?.name ?? '推荐',
+          composeTooltip: selectedChannel == null
+              ? '选择通道写帖子'
+              : '发布到${selectedChannel.name}',
           blockedCount: c.blockedChannelIds.length,
           posts: const [],
           mediaBuilder: (_, _) => const SizedBox.shrink(),
@@ -236,9 +245,9 @@ class _FeedScreenState extends State<FeedScreen> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.only(bottom: 96),
                   children: [
-                    if (c.timelineLoading || c.preferencesSaving)
+                    if (_starting || c.timelineLoading || c.preferencesSaving)
                       const LinearProgressIndicator(),
-                    if (c.timelineError != null)
+                    if (!_starting && c.timelineError != null)
                       Padding(
                         padding: const EdgeInsets.all(24),
                         child: Column(
@@ -253,7 +262,8 @@ class _FeedScreenState extends State<FeedScreen> {
                           ],
                         ),
                       ),
-                    if (!c.timelineLoading &&
+                    if (!_starting &&
+                        !c.timelineLoading &&
                         !c.preferencesSaving &&
                         c.timelineError == null &&
                         posts.isEmpty)
@@ -285,6 +295,31 @@ class _FeedScreenState extends State<FeedScreen> {
                           title: post.title,
                           body: post.body,
                           views: c.postViewCount(post.postId),
+                          comments: c
+                              .interaction(post.postId)
+                              .value
+                              ?.commentCount,
+                          likes: c.interaction(post.postId).likes,
+                          favorites: c
+                              .interaction(post.postId)
+                              .value
+                              ?.favoriteCount,
+                          liked: c.interaction(post.postId).liked,
+                          bookmarked: c.interaction(post.postId).favorited,
+                          availableActions: {
+                            FeedAction.comment,
+                            if (c.interaction(post.postId).canChange) ...{
+                              FeedAction.like,
+                              FeedAction.bookmark,
+                            },
+                          },
+                          busyActions: {
+                            if (c.interaction(post.postId).sending)
+                              c.interaction(post.postId).pendingAction ==
+                                      PostInteractionAction.like
+                                  ? FeedAction.like
+                                  : FeedAction.bookmark,
+                          },
                         ),
                         mediaBuilder: (_, _) => const SizedBox.shrink(),
                         mediaSection:
@@ -305,10 +340,66 @@ class _FeedScreenState extends State<FeedScreen> {
                         onAuthor: () {},
                         onMenu: () =>
                             _open(context, post.postId, post.channelId),
-                        onAction: (_) =>
-                            _open(context, post.postId, post.channelId),
+                        onAction: (action) {
+                          if (!current) return;
+                          switch (action) {
+                            case FeedAction.comment:
+                              _open(context, post.postId, post.channelId);
+                            case FeedAction.like:
+                              unawaited(
+                                c.changeInteraction(
+                                  post.postId,
+                                  PostInteractionAction.like,
+                                ),
+                              );
+                            case FeedAction.bookmark:
+                              unawaited(
+                                c.changeInteraction(
+                                  post.postId,
+                                  PostInteractionAction.favorite,
+                                ),
+                              );
+                            case FeedAction.share:
+                              break;
+                          }
+                        },
                         onMedia: (_) {},
                       ),
+                      for (final notice in [
+                        (c.interaction(post.postId).writeError, true),
+                        (c.interaction(post.postId).readError, false),
+                      ])
+                        if (notice.$1 case final error?)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 64, right: 16),
+                            child: Row(
+                              children: [
+                                Expanded(child: Text(error)),
+                                TextButton(
+                                  key: ValueKey(
+                                    'interaction-${notice.$2 ? '' : 'read-'}retry:${post.postId}',
+                                  ),
+                                  onPressed: c.interaction(post.postId).sending
+                                      ? null
+                                      : () {
+                                          if (!current) return;
+                                          if (notice.$2) {
+                                            unawaited(
+                                              c.retryInteraction(post.postId),
+                                            );
+                                          } else {
+                                            unawaited(
+                                              c.loadInteractions([
+                                                post.postId,
+                                              ], single: true),
+                                            );
+                                          }
+                                        },
+                                  child: Text(notice.$2 ? '重试' : '重新读取'),
+                                ),
+                              ],
+                            ),
+                          ),
                       const Divider(height: 1, thickness: .5),
                     ],
                     if (c.timelineCursor != null && !c.timelineLoading)

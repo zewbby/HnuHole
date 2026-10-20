@@ -11,6 +11,7 @@ import '../identity/identity_api.dart';
 import '../storage/post_store.dart';
 import 'post_api.dart';
 import 'feed_api.dart';
+import 'post_interactions_api.dart';
 import 'post_models.dart';
 import 'post_media_api.dart';
 
@@ -21,6 +22,7 @@ import 'post_photo_picker.dart';
 
 part 'post_composer_media.dart';
 part 'feed_controller.dart';
+part 'post_interactions_controller.dart';
 
 typedef PostStoreFactory = Future<PostStore> Function(String accountId);
 
@@ -149,6 +151,7 @@ class PostController extends ChangeNotifier {
   }
 
   List<FeedPost> _timeline = [];
+  final _interactions = <String, PostInteractionState>{};
   Set<String> _blockedChannels = {};
   final _postViews = <String, int>{};
   bool _preferencesReady = false;
@@ -200,6 +203,7 @@ class PostController extends ChangeNotifier {
   ManagedIdentity? personalIdentity;
 
   bool get supportsFeed => _api is FeedApi;
+  bool get supportsInteractions => _api is PostInteractionsApi;
   bool get feedPreferencesReady => _preferencesReady;
   String? get accountId => _accountId;
   int get authorityVersion => _epoch;
@@ -226,7 +230,9 @@ class PostController extends ChangeNotifier {
     final account = permitted ? record.accountId : null;
     if (token == _token &&
         account == _accountId &&
-        _sessionVersion == _sessions.authorityVersion) {
+        (permitted || _sessionVersion == _sessions.authorityVersion)) {
+      // Same-token activity renewal is metadata, not a new account window.
+      _sessionVersion = _sessions.authorityVersion;
       return;
     }
     _sessionVersion = _sessions.authorityVersion;
@@ -343,11 +349,7 @@ class PostController extends ChangeNotifier {
     return response.value;
   }
 
-  void _failure(
-    Object error, [
-    _PostAuthority? authority,
-    String? commandId,
-  ]) {
+  void _failure(Object error, [_PostAuthority? authority, String? commandId]) {
     if (error is _StalePostAuthority ||
         authority != null && !_current(authority)) {
       return;

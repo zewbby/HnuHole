@@ -68,6 +68,43 @@ void main() {
     semanticLabel: '合成测试图片$id',
   );
 
+  for (final parentBrightness in Brightness.values) {
+    for (final background in [Colors.black, Colors.white]) {
+      testWidgets(
+        'FA-D03 index contrasts with viewer background under $parentBrightness/$background',
+        (tester) async {
+          final controller = ViewerController(
+            items: [item('a'), item('b'), item('c')],
+            initialIndex: 1,
+          );
+          await tester.pumpWidget(
+            MaterialApp(
+              theme: ThemeData(brightness: parentBrightness),
+              home: Scaffold(
+                body: HnuImageViewer(
+                  controller: controller,
+                  enableAndroidSaving: false,
+                  backgroundColor: background,
+                ),
+              ),
+            ),
+          );
+          final foreground = DefaultTextStyle.of(
+            tester.element(find.text('2 / 3')),
+          ).style.color!;
+          final a = Color.alphaBlend(foreground, background).computeLuminance();
+          final b = background.computeLuminance();
+          final contrast = a > b
+              ? (a + .05) / (b + .05)
+              : (b + .05) / (a + .05);
+          expect(contrast, greaterThanOrEqualTo(4.5));
+          await tester.pumpWidget(const SizedBox());
+          controller.dispose();
+        },
+      );
+    }
+  }
+
   Future<void> frames(WidgetTester tester, [int count = 12]) async {
     for (var i = 0; i < count; i++) {
       await tester.pump(const Duration(milliseconds: 40));

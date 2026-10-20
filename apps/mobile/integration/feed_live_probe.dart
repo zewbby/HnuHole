@@ -153,6 +153,92 @@ Future<void> main(List<String> args) async {
       (await api.timeline(sessionToken: reader)).value.items.length == 3,
       step,
     );
+    step = 'interactions_batch';
+    final summaries = (await api.interactions(
+      sessionToken: reader,
+      postIds: [postId],
+    )).value;
+    check(
+      summaries.single.likeCount == 0 &&
+          summaries.single.commentCount == 0 &&
+          !summaries.single.likedByMe &&
+          !summaries.single.favoritedByMe,
+      step,
+    );
+    step = 'conditional_like';
+    final original = await api.postInteractions(
+      sessionToken: reader,
+      postId: postId,
+    );
+    final liked = await api.setPostLike(
+      sessionToken: reader,
+      postId: postId,
+      liked: true,
+      version: original.interactionVersion!,
+    );
+    check(
+      liked.value.likedByMe &&
+          liked.value.likeCount == 1 &&
+          liked.interactionVersion != original.interactionVersion,
+      step,
+    );
+    step = 'conditional_favorite';
+    final saved = await api.setPostFavorite(
+      sessionToken: reader,
+      postId: postId,
+      favorited: true,
+      version: liked.interactionVersion!,
+    );
+    check(
+      saved.value.favoritedByMe &&
+          saved.value.favoriteCount == 1 &&
+          saved.value.likedByMe,
+      step,
+    );
+    step = 'account_private_flags';
+    final own = (await api.postInteractions(
+      sessionToken: owner,
+      postId: postId,
+    )).value;
+    check(
+      own.likeCount == 1 &&
+          own.favoriteCount == 1 &&
+          !own.likedByMe &&
+          !own.favoritedByMe,
+      step,
+    );
+    step = 'reverse_then_late_like';
+    final reversed = await api.setPostLike(
+      sessionToken: reader,
+      postId: postId,
+      liked: false,
+      version: saved.interactionVersion!,
+    );
+    check(!reversed.value.likedByMe && reversed.value.likeCount == 0, step);
+    try {
+      await api.setPostLike(
+        sessionToken: reader,
+        postId: postId,
+        liked: true,
+        version: original.interactionVersion!,
+      );
+      throw StateError('late_like_applied');
+    } on PostFailure catch (error) {
+      check(
+        error.statusCode == 412 && error.code == 'INTERACTION_VERSION_CONFLICT',
+        step,
+      );
+    }
+    final finalSummary = (await api.postInteractions(
+      sessionToken: reader,
+      postId: postId,
+    )).value;
+    check(
+      !finalSummary.likedByMe &&
+          finalSummary.favoritedByMe &&
+          finalSummary.likeCount == 0,
+      step,
+    );
     await output.writeAsString(
       jsonEncode({
         'status': 'PASS',
@@ -169,6 +255,11 @@ Future<void> main(List<String> args) async {
           'blocked_channel_selectable',
           'cursor_invalidated',
           'reset',
+          'interactions_batch',
+          'conditional_like',
+          'conditional_favorite',
+          'account_private_flags',
+          'reverse_then_late_like',
         ],
       }),
     );

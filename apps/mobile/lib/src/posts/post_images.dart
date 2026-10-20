@@ -79,6 +79,7 @@ class _PostImagesSectionState extends State<PostImagesSection> {
   ViewerController? _viewer;
   int _revision = 0;
   bool _loading = true, _failed = false, _revoked = false;
+  List<Size?>? _feedSizes;
 
   @override
   void initState() {
@@ -91,6 +92,7 @@ class _PostImagesSectionState extends State<PostImagesSection> {
 
   void _authorityChanged() {
     if (!_current) {
+      _feedSizes = null;
       _revision++;
       _viewer?.invalidateAccess();
       _detachGroup();
@@ -133,6 +135,7 @@ class _PostImagesSectionState extends State<PostImagesSection> {
       }
       _detachGroup();
       _group = group;
+      _feedSizes = [for (final image in group.images) image.pixelSize];
       _revoked = !group.accessGranted.value;
       group.accessGranted.addListener(_groupChanged);
     } catch (_) {
@@ -145,6 +148,11 @@ class _PostImagesSectionState extends State<PostImagesSection> {
   @override
   void didUpdateWidget(PostImagesSection oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.postId != widget.postId ||
+        oldWidget.expectedCount != widget.expectedCount ||
+        oldWidget.authority != widget.authority) {
+      _feedSizes = null;
+    }
     if (oldWidget.postId != widget.postId ||
         oldWidget.expectedCount != widget.expectedCount ||
         oldWidget.loadImages != widget.loadImages ||
@@ -219,6 +227,15 @@ class _PostImagesSectionState extends State<PostImagesSection> {
   Widget build(BuildContext context) {
     if (!_current) return const SizedBox.shrink();
     if (_loading) {
+      if (widget.feedPreview && _feedSizes?.isNotEmpty == true) {
+        return _feedMedia(
+          context,
+          _group,
+          placeholder: const Center(
+            child: CircularProgressIndicator(semanticsLabel: '正在读取图片'),
+          ),
+        );
+      }
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 16),
         child: Center(
@@ -227,6 +244,13 @@ class _PostImagesSectionState extends State<PostImagesSection> {
       );
     }
     if (_failed) {
+      if (widget.feedPreview && _feedSizes?.isNotEmpty == true) {
+        return _feedMedia(
+          context,
+          _group,
+          placeholder: _feedStatus('图片暂时无法读取', '重新加载图片'),
+        );
+      }
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
@@ -240,6 +264,13 @@ class _PostImagesSectionState extends State<PostImagesSection> {
     final group = _group;
     if (group == null || group.images.isEmpty) return const SizedBox.shrink();
     if (_revoked || !group.accessGranted.value) {
+      if (widget.feedPreview) {
+        return _feedMedia(
+          context,
+          group,
+          placeholder: _feedStatus('图片已不可访问', '重新读取图片'),
+        );
+      }
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
@@ -287,11 +318,29 @@ class _PostImagesSectionState extends State<PostImagesSection> {
     );
   }
 
-  Widget _feedMedia(BuildContext context, PostImages group) => LayoutBuilder(
+  Widget _feedStatus(String status, String retry) => Center(
+    child: SingleChildScrollView(
+      primary: false,
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(status),
+          TextButton(onPressed: _load, child: Text(retry)),
+        ],
+      ),
+    ),
+  );
+
+  Widget _feedMedia(
+    BuildContext context,
+    PostImages? group, {
+    Widget? placeholder,
+  }) => LayoutBuilder(
     builder: (context, constraints) {
       final width = constraints.maxWidth;
-      double ratio(PostImage image) {
-        final size = image.pixelSize;
+      final sizes = _feedSizes!;
+      double ratio(Size? size) {
         return size == null ? 1 : size.width / size.height;
       }
 
@@ -299,26 +348,37 @@ class _PostImagesSectionState extends State<PostImagesSection> {
         width: w,
         height: h,
         child: Semantics(
-          button: true,
-          label: '查看第${index + 1}张图片，共${group.images.length}张',
+          button: placeholder == null,
+          label: placeholder == null
+              ? '查看第${index + 1}张图片，共${sizes.length}张'
+              : null,
           child: Material(
             clipBehavior: Clip.antiAlias,
             borderRadius: BorderRadius.circular(14),
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            child: InkWell(
-              key: ValueKey(('feed-image', group.images[index].item.id)),
-              onTap: () => _open(index),
-              child: _PostThumbnail(
-                key: ValueKey(group.images[index]),
-                image: group.images[index],
-                fit: group.images.length == 1 ? BoxFit.cover : BoxFit.contain,
-              ),
+            // Participate from pointer-down even if the lease or reload state
+            // changes before pointer-up. The outer post must never inherit it.
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              excludeFromSemantics: true,
+              onTap: () {},
+              child:
+                  placeholder ??
+                  InkWell(
+                    key: ValueKey(('feed-image', group!.images[index].item.id)),
+                    onTap: () => _open(index),
+                    child: _PostThumbnail(
+                      key: ValueKey(group.images[index]),
+                      image: group.images[index],
+                      fit: sizes.length == 1 ? BoxFit.cover : BoxFit.contain,
+                    ),
+                  ),
             ),
           ),
         ),
       );
-      if (group.images.length == 1) {
-        final r = ratio(group.images.first);
+      if (sizes.length == 1) {
+        final r = ratio(sizes.first);
         final previewRatio = r.clamp(.75, 2.0);
         return Padding(
           padding: const EdgeInsets.only(top: 8),
@@ -344,11 +404,11 @@ class _PostImagesSectionState extends State<PostImagesSection> {
             key: ValueKey('feed-media:${widget.postId}'),
             scrollDirection: Axis.horizontal,
             primary: false,
-            itemCount: group.images.length,
+            itemCount: sizes.length,
             separatorBuilder: (_, _) => const SizedBox(width: 5),
             itemBuilder: (_, i) => card(
               i,
-              (height * ratio(group.images[i])).clamp(width * .45, width * .78),
+              (height * ratio(sizes[i])).clamp(width * .45, width * .78),
               height,
             ),
           ),

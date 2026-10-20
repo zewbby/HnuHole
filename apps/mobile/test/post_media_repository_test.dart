@@ -271,6 +271,51 @@ void main() {
   );
 
   for (final status in [401, 403, 404, 503]) {
+    for (final changedAccount in [true, false]) {
+      test(
+        'late media denial $status after ${changedAccount ? 'account change' : 'release'} cannot cross its lease',
+        () async {
+          final old = await repository.load(mediaPostId);
+          final delayed = Completer<PostResponse<Uint8List>>();
+          api.bytesWait = delayed;
+          final oldRead = expectLater(
+            old.images.single.item.loadSource(),
+            throwsA(isA<PostFailure>()),
+          );
+          await Future<void>.delayed(Duration.zero);
+          expect(api.byteReads, 1);
+          api.bytesWait = null;
+          if (changedAccount) {
+            auth.sessionApi.account = '00000000-0000-0000-0000-000000000002';
+            await auth.sessions.login('synthetic-b', 'synthetic-password');
+          } else {
+            old.onRelease!();
+          }
+          final fresh = await repository.load(mediaPostId);
+          expect(fresh.accessGranted.value, isTrue);
+          delayed.completeError(
+            PostFailure(
+              statusCode: status,
+              kind: status == 401
+                  ? PostFailureKind.unauthorized
+                  : status == 503
+                  ? PostFailureKind.unavailable
+                  : PostFailureKind.rejected,
+            ),
+          );
+          await oldRead;
+          final stillAuthorized =
+              changedAccount || !{401, 503}.contains(status);
+          expect(old.accessGranted.value, isFalse);
+          expect(posts.available, stillAuthorized);
+          expect(fresh.accessGranted.value, stillAuthorized);
+          if (stillAuthorized) {
+            await fresh.images.single.item.loadSource();
+            expect(fresh.accessGranted.value, isTrue);
+          }
+        },
+      );
+    }
     test(
       'protected byte denial $status revokes all groups for that post',
       () async {
