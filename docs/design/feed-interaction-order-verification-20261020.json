@@ -1,0 +1,70 @@
+{
+  "task": "FEED-INTERACTION-ORDER-01",
+  "atUtc": "2026-10-20T03:16:40.993215+00:00",
+  "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
+  "branch": "codex/fix/feed-interaction-order",
+  "result": "PASS_SCOPED_LOCAL_SQL_TLS_RACE",
+  "productInputs": {
+    "services/api/internal/authprivacy/community_post_interaction_order_test.go": "2b0f0706b48c0005ad63d83637ad66d5e16d6dce294ee913675177b37bdd164f",
+    "services/api/internal/authprivacyhttp/post_interaction_order_postgres_test.go": "55da05ace3dbaddaadc23b9053e91ca695d905f69ebfff1fe71a33216c6ac457",
+    "services/api/migrations/0021_post_interaction_versions.sql": "bca482a75d28086f54f167605b077c5866c4912ce84bb44e7d69a3b3849635d8",
+    "infra/postgres/grant-community.sql": "808950a4a840ba90faa3d9d70d64cb6b3fd90af341dd9114e0af5316c047faa7",
+    "packages/openapi/feed-api.yaml": "374c96ddbc69566d7619f2199266d3493f3584a111a78bc424b7edc70fb4d542",
+    "services/api/authlab/privacy-role-audit.sql": "d3e834a90864c682d096c57d213ca33ff126b7e6cd3960d0391233796eaa3948",
+    "services/api/authlab/run-feed-isolated.sh": "ed9c61fde7ed292cf418f95b971881aeb5c7da6ce391676b358f80f659b63aef",
+    "services/api/internal/authprivacy/community_feed_migration_test.go": "73713c258a3fea76d9b4be58bb793e3ef56b77a87e61d2fc84878235a9982f06",
+    "services/api/internal/authprivacy/community_feed_test.go": "33722a6224619954abf18982a43d5b360717b86a26190f6e0a6cb83cc94d7607",
+    "services/api/internal/authprivacy/community_post_interactions.go": "9c46005d326286d38ecf829281949824c45f0e13505eb098fd9e470061c4b3e8",
+    "services/api/internal/authprivacy/community_post_interactions_schema.go": "eef4badfc35813947db29b8949432b41146a119d8605bf9951b4a5684a3218da",
+    "services/api/internal/authprivacy/community_post_interactions_test.go": "37eb416f9a7dc7e6148e938f2caa86f4ed67938d5fff777b656444b2d030184f",
+    "services/api/internal/authprivacy/community_posts.go": "2aa5ad215c9302a8a26aa976cd825198c8a49c3661ceec30c6bda482a5c91246",
+    "services/api/internal/authprivacy/community_posts_schema_test.go": "2109537e63ba7af9a3256798f07f26d424fb731cdd5182d765f6d74f9af40669",
+    "services/api/internal/authprivacyhttp/endpoints.go": "5ca9ca290e23b3a4234121f13cb77cfde9139a3b47f7890dce7b921f45b4caaa",
+    "services/api/internal/authprivacyhttp/post_interactions_endpoints.go": "366da4c0a7859f816e489986ee4744801881b2cf778837634f0ee25cea6c961b",
+    "services/api/internal/authprivacyhttp/post_interactions_endpoints_test.go": "69e01f2c0bfef38d9e3ff87af8fa644f9c68b2914f0e243d30ac854535df2420",
+    "services/api/internal/authprivacyhttp/posts_endpoints.go": "f66b9842741c199d98a025648c179cd35e15b5b81819f149e8731a57a3ec4db2",
+    "services/api/internal/authprivacyruntime/post_interactions_postgres_test.go": "8863f23edf0c596a09dd105f21f126fd314c25fee144c3a519fac6df7cc156ba",
+    "services/api/internal/posts/interactions.go": "c2608a987711dbd645011aedf3500fcbea4d58ee85bd8001b021ede3f7e41aeb"
+  },
+  "sqlTopLevelPassed": 56,
+  "sqlPassedIncludingSubtests": 115,
+  "sqlFailed": 0,
+  "sqlSkipped": 0,
+  "sqlLogSha256": "581cbd5e2d64fdf2e74ee9d77c72aa04408142867a06327d23f9a106a3c63eab",
+  "commands": [
+    "go test -mod=readonly ./...",
+    "go build -mod=readonly ./...",
+    "go vet -mod=readonly ./...",
+    "FEED_GOOSE=<owned-goose3.22.1> PGPORT=55442 POST_MEDIA_PYTHON=<owned-Pillow> POST_MEDIA_FIXTURES=<owned-fixtures> sh services/api/authlab/run-feed-isolated.sh",
+    "<isolated pinned Python> packages/openapi/check-specs.py",
+    "python tools/check-community-text-contract.py"
+  ],
+  "coverage": [
+    "real delayed legacy request reproduction",
+    "same timing conditional request rejected412 after opposite write",
+    "other account aggregate ABA does not change private fence",
+    "cross-account/post binding",
+    "eight concurrent same-version writes exactly one success",
+    "fact/fence transaction rollback",
+    "same-value and legacy write rotation",
+    "fresh C0001..0021 and nonempty0018/0019/0020 upgrade; Down refusal",
+    "minimal runtime permissions, missing key, common startup ledger and closure cleanup",
+    "strict HTTP header parsing, CORS and actual TLS DTO/authority"
+  ],
+  "history": [
+    "Windows default Python OpenAPI check refused nonpinned PyYAML; repeated with independent pinned venv PASS",
+    "Initial Linux test driver attempted Windows Git worktree metadata; refused before tests; explicit Windows file manifest then Linux source clone used",
+    "First SQL run PASS; final run adds HTTP/CORS/TLS,0020 upgrade, permissions and closure assertions, kept separate log segment"
+  ],
+  "independentReview": "PENDING; author technical review is not member approval",
+  "sharedEnvironment": {
+    "sourceSha": "444d25862a83d3a8d40168ef660e50da0712b71e",
+    "cSchema": 20,
+    "vSchema": 4,
+    "updatedWithFix": false
+  },
+  "productionTouched": false,
+  "merged": false,
+  "deployed": false,
+  "remoteCI": "PENDING_PR"
+}

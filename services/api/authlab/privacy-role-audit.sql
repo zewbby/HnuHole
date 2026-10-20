@@ -80,7 +80,11 @@ BEGIN
               'publication_attempts','attempt_contents','command_receipts','payload_cleanup'));
             allowed := allowed OR (relation.relname IN ('post_view_totals','post_daily_views','feed_preferences') AND privilege IN ('SELECT','INSERT'))
               OR (relation.relname IN ('post_daily_views','feed_preferences') AND privilege='DELETE')
-              OR (relation.relname IN ('post_likes','post_favorites') AND privilege IN ('SELECT','INSERT','DELETE'));
+              OR (relation.relname IN ('post_likes','post_favorites','post_interaction_versions') AND privilege IN ('SELECT','INSERT','DELETE'));
+            IF relation.relname='post_interaction_versions' AND privilege='UPDATE' THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid AND a.attnum>0 AND NOT a.attisdropped AND a.attname<>'version' AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
             IF relation.relname IN ('post_view_totals','feed_preferences') AND privilege='UPDATE' THEN
               allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
                 AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid
