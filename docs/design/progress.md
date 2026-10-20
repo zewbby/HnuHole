@@ -1,6 +1,10 @@
 # 设计进度与剩余工作
 
+> FEED-INTERACTIONS-UI-01 续办（2026-10-20）：已核实后端[#30](https://github.com/zewbby/HnuHole/pull/30)合入main `c923fa5a`；本分支已整合。已修大批量摘要上限、FA-D03查看器对比度、普通续期评论窗及旧媒体租约迟到拒绝，分析0／移动端580项／查看器116项PASS，独立Max静态复核无阻断。共享升级由环境负责人执行，设备由Android会话操作；待更新环境真实联调、响应丢失/迟到写/重试/切账号补验及最终head适用CI全通过后，按本次用户授权转Ready并合并#31，再从最终main重建同签release候选；不正式发布。下方未合并/565/2004等为原送审和交付快照，不提升完整模块结论。
+
 > FEED-INTERACTIONS-UI-01：2026-10-20，独立 feat/feed-interactions-ui／[Draft PR #31](https://github.com/zewbby/HnuHole/pull/31)，真实赞/藏/评论数与列表详情共享状态已接通；分析0、565宿主、HTTPS/SQL、7张渲染、同签APK限定PASS。360dp缺陷已由Android会话复验修复；2003忙态穿透/失权媒体跳位已修并升Max复核，2004独立0021候选两缺陷已真机复验PASS；FA15设备强丢响应BLOCKED。依赖后端#30尚未合并，main整合/最终CI待完成，2004评论0→2→0及7项只读SQL对照PASS，Android独立报告按各版本范围记录；不合并或发布，不升级完整模块。见[任务](../branches/feat-feed-interactions-ui.md)／[机器记录](feed-interactions-ui-verification-20261020.json)。
+
+> **2026-10-20 FEED-INTERACTION-ORDER-01：后端限定PASS。**独立 `codex/fix/feed-interaction-order` 修复赞藏未知结果后迟到覆盖后续意图，新增0021持久条件写版本，保持DTO和无条件旧接口兼容。56顶层／115含子项SQL/race/TLS、Go全包/build/vet及11份API通过；[任务](../branches/fix-feed-interaction-order.md)／[证据](feed-interaction-order-verification-20261020.json)。未合并／部署，最终head CI和独立审查待PR；共享444d258／0020不变，正式环境未触碰。
 
 > **2026-10-20 FEED-INTERACTIONS-01：SCOPED_LOCAL_PASS。**`feat/feed-interactions` 基于最新 main `f3454d1`，赞／藏幂等设置及复用评论数的批量／单帖摘要实现完成；Go全包／11份API／真实SQL-race-TLS 50顶层108含子项零失败零跳过。最终head CI后按授权送PR并合并，当前未合并／部署；[任务](../branches/feat-feed-interactions.md)、[证据](feed-interactions-verification-20261020.json)与[前端接线](feed-backend-contract.md#点赞收藏与评论数接线)保留正式前端／设备／生产未验边界，不提升完整模块。
 

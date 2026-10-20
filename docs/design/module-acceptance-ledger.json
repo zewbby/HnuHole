@@ -40180,5 +40180,34 @@
     "deviceOperatedByThisTask": false,
     "published": false,
     "fullModuleResultsPromoted": false
+  },
+  "currentFeedInteractionOrder20261020": {
+    "task": "FEED-INTERACTION-ORDER-01",
+    "branch": "codex/fix/feed-interaction-order",
+    "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
+    "result": "SCOPED_LOCAL_SQL_TLS_RACE_PASS",
+    "taskDocument": "docs/branches/fix-feed-interaction-order.md",
+    "evidence": "docs/design/feed-interaction-order-verification-20261020.json",
+    "modules": [
+      "B03",
+      "B06"
+    ],
+    "reopenedRegressions": [
+      "A03",
+      "A08",
+      "B07",
+      "B10",
+      "C/V isolation"
+    ],
+    "migration": "0021_post_interaction_versions.sql",
+    "sqlTopLevelPassed": 56,
+    "sqlPassedIncludingSubtests": 115,
+    "sqlFailed": 0,
+    "sqlSkipped": 0,
+    "sharedEnvironmentUpdated": false,
+    "mainMerged": false,
+    "productionDeployed": false,
+    "fullModuleResultsPromoted": false,
+    "independentMemberApproval": false
   }
 }

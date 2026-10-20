@@ -35,8 +35,9 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `feat/feed-interactions-ui` | PR #31接通真实互动与评论数，候选验收中；依赖#30，未合并/发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
+| `feat/feed-interactions-ui` | PR #31接通真实互动与评论数，补验与主线整合中；#30已合入，本PR未合并/发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
 | `feat/feed-interactions` | PR #29已合入main，补齐帖子账号级赞／藏与复用评论数的批量摘要后端；未正式发布。 | [任务详情](docs/branches/feat-feed-interactions.md) |
+| `codex/fix/feed-interaction-order` | 以持久条件写版本阻止赞藏未知请求迟到覆盖，PR #30已合入main；共享升级另行验收，未正式发布。 | [任务详情](docs/branches/fix-feed-interaction-order.md) |
 | `codex/feat/feed-ui` | PR #28已合入main：新版列表接推荐／通道／屏蔽／浏览与自适应图片；未部署。 | [任务详情](docs/branches/feat-feed-ui.md) |
 | `codex/feat/feed-backend` | PR #27已合入main：真实浏览、跨通道时间游标和账号屏蔽后端；未部署。 | [任务详情](docs/branches/feat-feed-backend.md) |
 | `codex/fix/gate-cancellation-freeze` | PR #25已合入main，修复C/V Gate取消误冻结，真实SQL/TLS回归与证据已交付；未部署。 | [任务详情](docs/branches/fix-gate-cancellation-freeze.md) |
@@ -61,8 +62,8 @@
 
 ## 最近变动
 
+- 2026-10-20 · [#30](https://github.com/zewbby/HnuHole/pull/30)：以持久条件写版本阻止赞藏未知请求迟到覆盖。
 - 2026-10-20 · [#29](https://github.com/zewbby/HnuHole/pull/29)：补齐帖子账号级点赞、收藏与真实评论数摘要后端。
 - 2026-10-20 · [#28](https://github.com/zewbby/HnuHole/pull/28)：新版帖子列表接通真实通道、账号屏蔽、浏览及自适应图片。
 - 2026-10-19 · [#27](https://github.com/zewbby/HnuHole/pull/27)：接入真实浏览去重、跨通道时间列表与账号屏蔽后端。
 - 2026-10-19 · [#25](https://github.com/zewbby/HnuHole/pull/25)：修复C/V Gate取消误冻结，交付真实SQL/TLS回归与专用CI，保留真实故障冻结。
-- 2026-10-19 · [#24](https://github.com/zewbby/HnuHole/pull/24)：补记集成候选合并与资源收尾，保留固定制品、证据和复现材料。

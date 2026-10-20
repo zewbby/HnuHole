@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -19,6 +20,61 @@ func (f *postHTTPBackend) ReadPostInteractions(_ context.Context, bearer [32]byt
 		page.Items = append(page.Items, posts.PostInteractions{PostID: id})
 	}
 	return f.response(page)
+}
+
+func (f *postHTTPBackend) SetPostInteractionConditional(ctx context.Context, bearer [32]byte, id string, kind posts.InteractionKind, enabled bool, expected string) (authprivacy.PostResponse, error) {
+	f.command = expected
+	r, e := f.SetPostInteraction(ctx, bearer, id, kind, enabled)
+	r.InteractionVersion = `"` + strings.Repeat("b", 64) + `"`
+	return r, e
+}
+
+func TestFeedInteractionConditionalHTTPHeaders(t *testing.T) {
+	backend, handler := newPostHTTP(t, httpTestLimits())
+	path := "/api/v1/posts/" + postHTTPPost + "/like"
+	tag := `"` + strings.Repeat("a", 64) + `"`
+	for _, values := range [][]string{{""}, {"*"}, {"W/" + tag}, {tag + ", " + tag}, {tag, tag}, {`"` + strings.Repeat("A", 64) + `"`}} {
+		headers := postHTTPHeaders(false)
+		headers["If-Interaction-Version"] = values
+		before := backend.calls
+		w := postHTTPRequest(handler, "PUT", path, `{"liked":true}`, headers)
+		if w.Code != 400 || backend.calls != before {
+			t.Fatal("invalid conditional header accepted", values, w.Code)
+		}
+	}
+	headers := postHTTPHeaders(false)
+	headers.Set("If-Interaction-Version", tag)
+	w := postHTTPRequest(handler, "PUT", path, `{"liked":true}`, headers)
+	if w.Code != 200 || backend.command != tag || !posts.ValidInteractionVersion(w.Header().Get("Interaction-Version")) || w.Header().Get("ETag") != "" {
+		t.Fatal("conditional response envelope", w.Code)
+	}
+	backend.err = &authprivacy.PostError{Code: "INTERACTION_VERSION_CONFLICT", Status: 412}
+	w = postHTTPRequest(handler, "PUT", path, `{"liked":true}`, headers)
+	if w.Code != 412 || w.Header().Get("Interaction-Version") != "" || w.Header().Get("Session-Expires-At") != "" {
+		t.Fatal("conflict altered authority", w.Code)
+	}
+	backend.err = nil
+	for _, path := range []string{"/api/v1/posts/" + postHTTPPost + "/interactions", "/api/v1/feed/interactions"} {
+		method, body := "GET", ""
+		if path == "/api/v1/feed/interactions" {
+			method = "POST"
+			body = `{"postIds":["` + postHTTPPost + `"]}`
+		}
+		if postHTTPRequest(handler, method, path, body, headers).Code != 400 {
+			t.Fatal("write condition accepted on read")
+		}
+	}
+	cors := http.Header{"Origin": {"https://client.example"}, "Access-Control-Request-Method": {"PUT"}, "Access-Control-Request-Headers": {"content-type,authorization,if-interaction-version"}}
+	if postHTTPRequest(handler, "OPTIONS", path, "", cors).Code != 204 {
+		t.Fatal("conditional preflight blocked")
+	}
+	if postHTTPRequest(handler, "OPTIONS", "/api/v1/post-commands/"+httpTestEncoding(16, 8), "", cors).Code != 400 {
+		t.Fatal("conditional header allowed outside interaction PUT")
+	}
+	headers.Set("Origin", "https://client.example")
+	if !strings.Contains(postHTTPRequest(handler, "PUT", path, `{"liked":true}`, headers).Header().Get("Access-Control-Expose-Headers"), "Interaction-Version") {
+		t.Fatal("write version hidden from browser")
+	}
 }
 func (f *postHTTPBackend) SetPostInteraction(_ context.Context, bearer [32]byte, id string, kind posts.InteractionKind, enabled bool) (authprivacy.PostResponse, error) {
 	f.calls++

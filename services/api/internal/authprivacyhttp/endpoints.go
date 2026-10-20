@@ -286,6 +286,9 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				}
 				w.Header().Set("Access-Control-Allow-Origin", origin)
 				w.Header().Set("Access-Control-Expose-Headers", "Session-Expires-At, Server-Time, X-Request-ID, Retry-After")
+				if route, e := parsePostRoute(r.URL.Path); b.service == CommunityService && e == nil && isPostInteractionKind(route.kind) && route.kind != authprivacy.PostInteractionBatch {
+					w.Header().Set("Access-Control-Expose-Headers", "Session-Expires-At, Server-Time, X-Request-ID, Retry-After, Interaction-Version")
+				}
 				w.Header().Set("Vary", "Origin")
 			}
 		}
@@ -320,6 +323,9 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 		allowed["authorization"] = true
 	} else {
 		allowed["authorization"] = true
+		if route, e := parsePostRoute(r.URL.Path); e == nil && method == http.MethodPut && (route.kind == authprivacy.PostLikeSet || route.kind == authprivacy.PostFavoriteSet) {
+			allowed["if-interaction-version"] = true
+		}
 		allowed["reset-intent-id"] = true
 		if isPasskeyRemovalPath(r.URL.Path) || r.URL.Path == "/api/v1/auth/credential-change-result" {
 			allowed["credential-change-id"] = true
