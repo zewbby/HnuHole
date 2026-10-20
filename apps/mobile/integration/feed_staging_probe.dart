@@ -134,16 +134,14 @@ Future<void> main(List<String> args) async {
     );
     checks.add(step);
     step = 'protected_single_and_carousel_bytes';
-    final mediaPosts = first.items
-        .where((p) => p.imageCount > 0)
-        .take(2)
-        .toList();
-    require(
-      mediaPosts.length == 2 &&
-          mediaPosts.any((post) => post.imageCount == 1) &&
-          mediaPosts.any((post) => post.imageCount > 1),
-      step,
-    );
+    final single = widePage.items
+        .where((post) => post.imageCount == 1)
+        .firstOrNull;
+    final carousel = widePage.items
+        .where((post) => post.imageCount > 1)
+        .firstOrNull;
+    require(single != null && carousel != null, step);
+    final mediaPosts = [single!, carousel!];
     for (final post in mediaPosts) {
       final manifest = (await posts.imageManifest(
         sessionToken: tokens[0],
@@ -236,6 +234,11 @@ Future<void> main(List<String> args) async {
         'mode': args[3],
         'backendSource': manifest['sourceSha'],
         'schema': manifest['schema'],
+        'batchSize': wideIds.length,
+        'batchRequestBytes': utf8
+            .encode(jsonEncode({'postIds': wideIds}))
+            .length,
+        'mediaCounts': mediaPosts.map((post) => post.imageCount).toList(),
         'checks': checks,
         'cas': args[3] == 'cas' ? 'PASS' : 'NOT_RUN',
         'media': mediaPosts.isEmpty ? 'NOT_RUN' : 'PASS',
