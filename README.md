@@ -41,6 +41,7 @@
 | `codex/fix/gate-cancellation-freeze` | PR #25已合入main，修复C/V Gate取消误冻结，真实SQL/TLS回归与证据已交付；未部署。 | [任务详情](docs/branches/fix-gate-cancellation-freeze.md) |
 | `codex/ci/android-integration-candidate` | PR #23已合入main，交付固定Android集成候选及新增恢复/真机治理连接限定证据；未正式发布。 | [任务详情](docs/branches/ci-android-integration-candidate.md) |
 | `codex/ci/android-prerelease` | PR #16已合入main，交付测试签名候选、同机恢复/回滚与vivo S18最小文字图片限定实测；未正式发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
+| `codex/chore/feed-staging` | 维护新版列表共享隔离后端、备份迁移与联调记录，提供正式发布及恢复方案；未正式部署。 | [任务详情](docs/branches/chore-feed-staging.md) |
 
 | `codex/feat/comment-report-moderation` | 真实主评论/单图回复举报、网页处置、系统通知和申诉已接通，合并状态见任务PR。 | [任务详情](docs/branches/feat-comment-report-moderation.md) |
 | `codex/feat/report-moderation` | PR #18 已合入main：帖子举报、网页审核和最小系统通知阶段1；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |

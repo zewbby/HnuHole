@@ -1,0 +1,361 @@
+{
+  "task": "FEED-STAGING-01",
+  "recordedAtUtc": "2026-10-20T03:20:09.543032+00:00",
+  "result": "SHARED_MAIN0020_READY_SCOPED_PASS_CAS_FIX_PR30_PENDING",
+  "backendSha": "444d25862a83d3a8d40168ef660e50da0712b71e",
+  "schema": {
+    "c": 20,
+    "v": 4
+  },
+  "productionTouched": false,
+  "formalDeploymentAuthorized": false,
+  "sharedEnvironmentOwner": "01a15739-644a-7003-b6f3-1dd8bd81eb09",
+  "consumers": [
+    "新版列表前端互动接线",
+    "新版列表 Android 验收与交付"
+  ],
+  "records": {
+    "isolation-preflight.json": {
+      "atUtc": "2026-10-20T02:55:49.811568+00:00",
+      "result": "PASS_ARCHIVE_INTEGRITY_OWNERSHIP_PORTS",
+      "archiveSha256": "ae975e0516c8953ce7ae672b21152eb0ca2810cd1d17e0fb20a6165dc6399bb9",
+      "verifiedFiles": 6605,
+      "root": "/home/hnuhole/android-integration-20261019-runtime",
+      "oldSourceSha": "1a810944787eacb66e2115e1ce77de08190c366a",
+      "newSourceSha": "444d25862a83d3a8d40168ef660e50da0712b71e",
+      "target": "restore",
+      "publicPorts": {
+        "c": 51245,
+        "v": 49747
+      },
+      "pgPorts": {
+        "source": {
+          "c": 46355,
+          "v": 42753
+        },
+        "restore": {
+          "c": 44641
+        }
+      },
+      "servicesStarted": false,
+      "productionTouched": false,
+      "preparationHistory": [
+        "bundle remote ref has no local main; first clone refused before any service or DB start; continued with explicit fetch into empty source"
+      ]
+    },
+    "backup-restore-preupgrade.json": {
+      "result": "PASS_FULL_CV_DATA_SEQUENCE_RESTORE",
+      "sourceSha": "1a810944787eacb66e2115e1ce77de08190c366a",
+      "schema": {
+        "c": 18,
+        "v": 4
+      },
+      "syntheticAccounts": 4,
+      "fingerprints": {
+        "c:c_auth.account_restrictions": "8d9ab6b62a9fa662d273d7e391db821881ec65aef0a5c8dfc8c0de52e8b65749",
+        "c:c_auth.accounts": "b4efecebb6465e15526998aa290c8c152e74376b5f7e03fe81c1560ac93ea769",
+        "c:c_auth.auth_challenges": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.authorization_gate": "0415a17a7aa741a62f56b253ddf24e96d0d1140bd4ec98ae5e3f15a6c2ab9788",
+        "c:c_auth.authorization_gate_audit": "873f03e4a50dbb4e66877282e2a1a61600ce028cd6fd302de1c5fd63c1bbcf05",
+        "c:c_auth.closure_requests": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.credential_change_intents": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.passkeys": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.receipt_outbox": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.recent_device_replacement": "179f11fb39b8da64b79dd0f67e96bd27e52bfe392814251abe2b8ac270bfc6d4",
+        "c:c_auth.recovery_codes": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.request_results": "1c6fdac639938e9e9de67ac6f0da8f45ac56540211d9afdf5d71f4a71b1da070",
+        "c:c_auth.reset_intents": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.security_events": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.sessions": "766d919d5f14bd136d7a58a901f9896f72afbd229b88d7c92bb0a5ca7f025a8b",
+        "c:c_auth.signup_intents": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.slot_ledger": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_comments.attempts": "cc3c5f4134c6b539d0b00c5ca421d6307783bff2b72228044eeab46d8296c373",
+        "c:c_comments.images": "377e43ceb9d08d8f3629b77665233c2117a6f4342d7c108dfcec7d20f5c4504a",
+        "c:c_comments.likes": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_comments.protocol_keys": "5bbe1f178674d8d91950fa22f068a59f21bc101908d3b51c4360a073591e5d7f",
+        "c:c_comments.receipts": "d005d81291820babba2e723c6b8624215ce2974d4107eb3e7d901b3fc23f3037",
+        "c:c_comments.snapshots": "3f62ccf763501b9bb63500aae169853631a0584156eee8d1bf4ac6cb75474e0a",
+        "c:c_comments.tasks": "8f62761337e59e1389d9e64922396eb76aa863453a1e2e984279a9ccc2d30965",
+        "c:c_moderation.access_sessions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_moderation.appeal_materials": "d5a7ccd0361e149b7d20c04715627d12102d62988d564889945c80233528db39",
+        "c:c_moderation.appeals": "bd4c0aa87fb8e9a6fb9959eb757133ec82cd08c1ffa1229a907e5052700655e9",
+        "c:c_moderation.audit": "7b27c1c28f7bc7fc03b6090186e073c31650ace9fac8f33394f4872e3fff5d84",
+        "c:c_moderation.cases": "34865bc69f1180f7f782daeeffff303fb2bd1ab7007e57394d9e378e8d5d79be",
+        "c:c_moderation.commands": "0400c98e63eb878b1d6b632a3a0f5ac3524c576f25ea3c85d12751fc5f5e9a61",
+        "c:c_moderation.legacy_restrictions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_moderation.notifications": "d4bb1e0f59c931a2a702ac5642982d8b0f9caad0e50d225c8b51d7fc0e380ced",
+        "c:c_moderation.reports": "22a4cab2efd09a7355df6aea9a2de1da4edaeb4c7584ea9c1972b3ef2df77f6b",
+        "c:c_moderation.request_fences": "d3279cb1ab082baaf13e1b26d2c90924889f7c049ae539401bdde2778e1f694c",
+        "c:c_moderation.roles": "74a5c2b908e9bc0ec5b481fcdfd063934a994dff36ad9be5e29c25d71cfa14b6",
+        "c:c_moderation.sanctions": "a6b48abd930e7a3e9de9696fbaf335c2cfd8eb9547a90585d8b97c578809ab56",
+        "c:c_moderation.schema_meta": "b7b8acd17f8c663e63441ac29056762909fdad893b1664829a3de6456bef7086",
+        "c:c_posts.account_publication_control": "f0b271274e6f48f4d061e4ec7e876037ca823ff249bc57682559f628a4423f82",
+        "c:c_posts.attempt_contents": "814ed7eaee8f4f3b4db864330dccd9a94ded7589bbe473fe84bd5a21c0ea418b",
+        "c:c_posts.command_receipts": "167ce89547754a70dc7fc2f39496842c3e5ac60627ffbd30d62a7eb3e6f3d61f",
+        "c:c_posts.identity_public_labels": "5d21f43763a48b519f547eeb5b983d3990729af337222317882a6856442d46aa",
+        "c:c_posts.images": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_posts.payload_cleanup": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_posts.post_identity_bindings": "6f4c86333cb93305bb6912c2106f3f338a2db0250afd171c18ad70a44489764f",
+        "c:c_posts.posts": "72b206cfe165ad1600c2e5df667c01f2a00dca27390c3b1120d929a02916e9a2",
+        "c:c_posts.protocol_keys": "c3022be1be5270bd1187b83e44d67ebd3bf969009311cb3d3c6b9912517d9ef3",
+        "c:c_posts.publication_attempts": "d2f4430732e9c74abb99fcf07706d2e8267a795cb77524ddf3f365a0cdffe57d",
+        "c:c_posts.publication_stop_events": "f01914f16883a49e2920b82b270c8ec6b74d3c80d407ffdd86368fb7f9e368ce",
+        "c:c_posts.publication_tasks": "fc02cc21e7a8185ad16f4e572dd65ff70b0d64a1801950c09462a9856fcd9d89",
+        "c:c_posts.schema_meta": "a5286e29576a2e39ac7520cab9b3c1f2ffa6e33be114a7da4ed3e5916c7565c3",
+        "c:public.channels": "91e50aaccc2a05d2d4273cc82fd58f25147a684bc55d533f2db56d049f191a90",
+        "c:public.community_identities": "6503f4765fd190e9006c02514fab22511b6e63453a18685d4dc8689c52a3aaae",
+        "c:public.goose_db_version": "d614d76ec411b5f0c9a8c5cda515868e7fccdb4e14566ebb5efc365427d3e6ac",
+        "c:public.identity_account_state": "ab797f4ecaf96174ce6678d4c0e1e52505d4a5674eb638c0bf7957fcce9209df",
+        "c:public.identity_change_receipts": "51b0c8238d4ccdfd727539e2114f850409bd2a5558daf94979a32c792b472de2",
+        "c:public.sessions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "c:c_auth.authorization_gate_audit_event_id_seq": "dd9d8bb0e97a22b6995c079a86d5cd02371b822197d38d83c35afee0e6c84802",
+        "c:c_moderation.audit_audit_id_seq": "7350d449bf6ef4d7bf68d3d9649c616689ddd7a11d3c75721bf9694fb674d329",
+        "c:c_moderation.cases_number_seq": "3fdecf8d57a6ec098be4b94939de73991fc4b4e19647d4da33da1d70ee1416bb",
+        "c:c_posts.acceptance_ordinal_seq": "b6694e02a301f9fab02af58d1f756688a2a5fba7acfd593d9b8a1b6fd47c2897",
+        "c:c_posts.publication_ordinal_seq": "b6694e02a301f9fab02af58d1f756688a2a5fba7acfd593d9b8a1b6fd47c2897",
+        "c:public.goose_db_version_id_seq": "b7d7fba031d6fd3a4547c8a7d4bc6f13dfcd29a51dd660031adb97ccc9e2a5c4",
+        "v:public.goose_db_version": "e930f2c499106c036ccee355bc00f1689a930113c9a6b9178d37d79efed633cc",
+        "v:v_auth.authorization_gate": "db5fef8cb8fd195fc41a5eeb8556badc3abf381ca928fa345f2a93a0e1ab319b",
+        "v:v_auth.authorization_gate_audit": "c2c49b3bb4dc047ceaf430412e84d108a1c547ed45fcbc5316d4670d7f57091b",
+        "v:v_auth.confirmation_rejections": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.confirmation_sign_jobs": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.device_email_limits": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.email_quota": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.mail_outbox": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.otp_budget_events": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.otp_code_versions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.otp_confirmations": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.otp_email_state": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.otp_flows": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.processed_receipts": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.request_results": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.retire_pending": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:v_auth.used_slots": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "v:public.goose_db_version_id_seq": "dd9d8bb0e97a22b6995c079a86d5cd02371b822197d38d83c35afee0e6c84802",
+        "v:v_auth.authorization_gate_audit_event_id_seq": "b6694e02a301f9fab02af58d1f756688a2a5fba7acfd593d9b8a1b6fd47c2897",
+        "v:v_auth.otp_budget_events_event_id_seq": "d8f8250c71ee319854388678110601c9c3d5b3ea39e653024317ed082c3182e8"
+      },
+      "matchedEntries": 82,
+      "backups": {
+        "c": {
+          "file": "/home/hnuhole/android-integration-20261019-runtime/lab/backup/feed-preupgrade-c18.dump",
+          "sha256": "ffca91c53de927fb75a846f6473d232d9528670e127cb9effdb589e9b780bea9",
+          "bytes": 277158
+        },
+        "v": {
+          "file": "/home/hnuhole/android-integration-20261019-runtime/lab/backup/feed-preupgrade-v18.dump",
+          "sha256": "b565737162a25dff61f9bc90e1b0ed496eeefb8ca946c1f82bb2a292f3219407",
+          "bytes": 71725
+        },
+        "privateMaterial": {
+          "file": "/home/hnuhole/android-integration-20261019-runtime/lab/backup/feed-preupgrade-material.tar.gz",
+          "sha256": "b7237d880245f304b56f5756039d21035fad9e7401602bbc5d2834227763c1a7",
+          "bytes": 39465328
+        }
+      },
+      "proofClustersStopped": true,
+      "downMigrationRun": false,
+      "atUtc": "2026-10-20T02:57:10.856236+00:00",
+      "productionTouched": false
+    },
+    "deployment.json": {
+      "result": "PASS_DEPLOYED_HTTPS_READY",
+      "deployment": {
+        "id": "feed-staging-20261020",
+        "sourceSha": "444d25862a83d3a8d40168ef660e50da0712b71e",
+        "previousSourceSha": "1a810944787eacb66e2115e1ce77de08190c366a",
+        "schema": {
+          "c": 20,
+          "v": 4
+        },
+        "operator": "01a15739-644a-7003-b6f3-1dd8bd81eb09"
+      },
+      "preservedExistingEntries": 80,
+      "migrationSha256": {
+        "migrations/0020_post_interactions.sql": "466305396c5ddc25828f273c2a221fb1fc4f8dccc894c2d092cc07ccbd85072d",
+        "migrations/0014_post_images.sql": "16b35e586ede3c32d0933590d5466e5f70465493ab8c104e94e4754ac2df6528",
+        "migrations/0019_feed_backend.sql": "52a78fc998efd1faad5091ebee2d81b7fbabc6e74d9d85ebfb87e34a23bf15a2",
+        "migrations/0012_identity_account_closure.sql": "4cf0979531530f053cb365fa01eaddfb1c925b1c03c1e019382751d2a0d78f0d",
+        "migrations/0007_account_closure.sql": "9fa39a97a027cc32a51fc7955f6ee04332f4803560267e33e6314b9ad2e39094",
+        "migrations/0016_comments.sql": "650224c4c9191375f6c497cde1de7bfa6f715525f3838ef6e1c5ca2241812578",
+        "migrations/0017_comment_business.sql": "973685c25ff4a8899ff754df8eb1398a23ee3f79714b1d1a5eacc3a32a326b85",
+        "migrations/0006_recovery_reset.sql": "4bb9e591c9a0c1774e39de4932e79ef608cfdb7d11674d3bd8fff59db075b730",
+        "migrations/0010_legacy_fence.sql": "e2e377cda6fea2543e25b8acac010fd9d41d8254ca2142f9aa18984cdf99ad33",
+        "migrations/0008_recovery_credentials.sql": "c5ff5114fa790a86606cc66fd363e69a292bb2f17a8b611f60fddbced8d31fd0",
+        "migrations/0005_session_lifecycle.sql": "4dd140ba2724b4bcdd432fe365f086fdd10b25ae65110445d98892a44e4ceb6e",
+        "migrations/0009_receipt_worker_claim.sql": "2386fe4362eab48c423baf4862d6f621677c665131893e50a70351125fc1bcd7",
+        "migrations/0013_community_text_posts.sql": "35274cba859c0d51fc7805e341ea3880d12ee7f67eedad96f9841c915f1344fe",
+        "migrations/0001_sessions.sql": "8b011adf71047a1de622a6f9809c4a78eaf305304e5ee536fa2b5a67092dc720",
+        "migrations/0015_reports_moderation.sql": "2fecb76fca3216182635fc5c60cbef9bfbc5e0a8d4acc8a09b8840821e9d76f0",
+        "migrations/0004_authorization_gate.sql": "b2c7737c6ef24658bba39aa65e003158ee26d4669d098ba79b8f9562b8ed0101",
+        "migrations/0003_authprivacy.sql": "51ba4d7835a1fbb33a264c7693a365a6cc1997f77f0825bc68f8dc2e28184278",
+        "migrations/0018_comment_reports.sql": "19939f252f29a0df3e1c183289ee6cffcfbd9a3b3eea679439d9655acd08d528",
+        "migrations/0011_identity_management.sql": "eb49fc3b43ff47febfa1682021d48b2b64a5e09e1de65d97b73ef1c90bc0889b",
+        "migrations/0002_channels.sql": "4b7d6429acb31be315f1546710c8136e0bee48bf2cd1021a385c5710f9b54504",
+        "verifier-migrations/0002_otp.sql": "204a03451012ba39b08a36c6b39a4a8ef37dede968b7399df9425a1b469ab152",
+        "verifier-migrations/0003_confirmation.sql": "40e0413282ea541d7195d7c443738631a5627f49bdd0f5c421ff19bf8f870a46",
+        "verifier-migrations/0001_authprivacy.sql": "102d6a2f9faafbdf992bad8e5122323b46bba80d6ed8419d48cc8466cef41fa0",
+        "verifier-migrations/0004_authorization_gate.sql": "72fff9927f88d5546a8571b53f94b353f5e22e64fdc74c2fe352b013ed78f132"
+      },
+      "binarySha256": {
+        "candidate-community": "de0e02bcd1ec5f600c78978f12f9fa852a8a83d2b966d8fa51f15dd347ed2dab",
+        "candidate-verifier": "5e2ccf132ab0cfcf6bbe6e866aa399f418ac371763c322807b6036c2d0ca802e",
+        "authdev": "0e87f7f9fdeb2b5dc27a293811f22d489f74e930e9241a549ed7c7752b8de3ca"
+      },
+      "publicOrigins": {
+        "c": "https://127.0.0.1:51245",
+        "v": "https://127.0.0.1:49747"
+      },
+      "canonicalGrants": [
+        "grant-community.sql",
+        "grant-post-images.sql",
+        "grant-comments.sql",
+        "grant-moderation.sql",
+        "grant-verifier.sql"
+      ],
+      "roleAudit": "PASS",
+      "signedRecovery": "C and V explicit recover; new generations, normal login required",
+      "downMigrationRun": false,
+      "atUtc": "2026-10-20T02:58:01.133793+00:00",
+      "productionTouched": false
+    },
+    "fixtures.json": {
+      "result": "PASS_42_POSTS_7_CHANNELS_SINGLE_AND_MULTI_IMAGE",
+      "postCount": 42,
+      "channelCount": 7,
+      "imagePostIds": [
+        "15ced836-c9d2-4224-bd76-ac64965e7ecc",
+        "2fc577f1-11a1-4412-b7b5-0db0b5955477"
+      ],
+      "syntheticAccountCount": 4,
+      "credentialPaths": {
+        "front": "/home/hnuhole/android-integration-20261019-runtime/lab/front-accounts.private.json",
+        "device": "/home/hnuhole/android-integration-20261019-runtime/lab/device-accounts.private.json"
+      },
+      "caSha256": "57487d56e2d50327bfbf2ca9bb0db4952a050efef6c4fb85ac9990ffbf9cbda4",
+      "appDefines": "/mnt/e/HnuHole-feed-staging-20261020/runtime/public/app-defines.json",
+      "fixtureHarnessHistory": [
+        "upload returned correct204; initial harness expected200, resumed original accepted task without reposting"
+      ],
+      "atUtc": "2026-10-20T03:01:36.486752+00:00",
+      "productionTouched": false
+    },
+    "smoke-0020.json": {
+      "result": "PASS_SCOPED_REAL_HTTPS_SQL",
+      "sourceSha": "444d25862a83d3a8d40168ef660e50da0712b71e",
+      "schema": {
+        "c": 20,
+        "v": 4
+      },
+      "checks": [
+        "cross-channel-stable-pagination-no-duplicates",
+        "real-view-daily-concurrent-dedup-and-account-separation",
+        "post-author-excluded-from-view-facts",
+        "block-before-pagination-account-isolation-and-old-cursor-rejection",
+        "like-favorite-idempotent-set-unset-and-private-flags",
+        "published-root-and-reply-shared-single-and-batch-comment-count",
+        "protected-single-and-three-image-manifest-and-original-bytes"
+      ],
+      "paginatedPosts": 43,
+      "commentFixturePostId": "2fc577f1-11a1-4412-b7b5-0db0b5955477",
+      "commentIds": [
+        "86835e07-421f-43c7-8a3b-fb80f62aed19",
+        "f5228f96-cf38-4383-856c-0344b5e8568d"
+      ],
+      "commentCount": 2,
+      "device": "NOT_RUN_BY_ENVIRONMENT_OWNER",
+      "knownIssue": "Delayed legacy PUT can overwrite a later opposite intent; independent CAS fix in progress",
+      "atUtc": "2026-10-20T03:06:43.501845+00:00",
+      "productionTouched": false
+    }
+  },
+  "knownIssue": {
+    "task": "FEED-INTERACTION-ORDER-01",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/30",
+    "candidateSha": "aab1061e4403c0ec87749f9986ec71feecb49ba8",
+    "merged": false,
+    "sharedEnvironmentUpdated": false
+  },
+  "boundaries": [
+    "Same-machine isolated synthetic development proof only",
+    "No production, independent operators, RTO/RPO or cross-host recovery proof",
+    "Original APK/device evidence keeps original source scope",
+    "Credentials and keys stay in private local paths; not included here"
+  ],
+  "isolatedUnmergedCandidate": {
+    "result": "PASS_ISOLATED_UNMERGED_CANDIDATE_READY",
+    "sourceSha": "aab1061e4403c0ec87749f9986ec71feecb49ba8",
+    "schema": {
+      "c": 21,
+      "v": 4
+    },
+    "publicOrigins": {
+      "AUTH_COMMUNITY_BASE_URL": "https://127.0.0.1:50649",
+      "AUTH_VERIFIER_BASE_URL": "https://127.0.0.1:41979"
+    },
+    "pgPorts": {
+      "source": {
+        "c": 36627,
+        "v": 37819
+      },
+      "restore": {
+        "c": 52639
+      }
+    },
+    "publicConfiguration": "/mnt/e/HnuHole-feed-staging-20261020/runtime/cas-public",
+    "privateAccountPath": "/home/hnuhole/android-integration-20261019-runtime/cas-lab/cas-accounts.private.json",
+    "postId": "3da182af-6c12-4082-bdd9-0a5e9986d931",
+    "sharedEnvironmentUnchanged": true,
+    "merged": false,
+    "history": [
+      "init caller used systemPython withoutPillow; resumed persisted accepted task using ownedPillow interpreter, no reseed"
+    ],
+    "atUtc": "2026-10-20T03:20:53.827861+00:00",
+    "productionTouched": false
+  },
+  "consumerDartHttpEvidence": {
+    "baseline": {
+      "status": "PASS",
+      "mode": "baseline",
+      "backendSource": "444d25862a83d3a8d40168ef660e50da0712b71e",
+      "schema": {
+        "c": 20,
+        "v": 4
+      },
+      "checks": [
+        "two_synthetic_accounts",
+        "real_feed_pagination",
+        "batch_comment_context_agreement",
+        "protected_single_and_carousel_bytes"
+      ],
+      "cas": "NOT_RUN"
+    },
+    "cas": {
+      "status": "PASS",
+      "mode": "cas",
+      "backendSource": "aab1061e4403c0ec87749f9986ec71feecb49ba8",
+      "schema": {
+        "c": 21,
+        "v": 4
+      },
+      "checks": [
+        "two_synthetic_accounts",
+        "real_feed_pagination",
+        "batch_comment_context_agreement",
+        "conditional_write_and_account_flags",
+        "restore_then_reject_late_condition"
+      ],
+      "cas": "PASS",
+      "media": "NOT_RUN"
+    }
+  },
+  "candidateFixtures": {
+    "count": 42,
+    "channels": 7,
+    "sourceSha": "aab1061e4403c0ec87749f9986ec71feecb49ba8",
+    "imagePostIds": [
+      "b84fcd0c-66f7-47ea-ba27-777f0b6a8719",
+      "1447e156-0af3-4229-96b3-e12591e8d30b"
+    ]
+  }
+}

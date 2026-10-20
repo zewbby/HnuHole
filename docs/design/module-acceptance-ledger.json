@@ -40152,5 +40152,35 @@
     "independentMemberApproval": false,
     "mainMerged": false,
     "deployed": false
+  },
+  "currentFeedStaging20261020": {
+    "task": "FEED-STAGING-01",
+    "branch": "codex/chore/feed-staging",
+    "result": "ISOLATED_SHARED_MAIN0020_READY_SCOPED_PASS",
+    "sourceSha": "444d25862a83d3a8d40168ef660e50da0712b71e",
+    "schema": {
+      "c": 20,
+      "v": 4
+    },
+    "modules": [
+      "P03",
+      "P05",
+      "B03",
+      "B04",
+      "B06",
+      "B07",
+      "B12"
+    ],
+    "restoredFingerprintEntries": 82,
+    "preservedMigrationFactEntries": 80,
+    "actualHTTPSGroupsPassed": 7,
+    "consumerDartBaseline": "PASS_4_CHECKS",
+    "consumerDartCAS": "PASS_5_CHECKS_ON_ISOLATED_UNMERGED_AAB1061",
+    "taskDocument": "docs/branches/chore-feed-staging.md",
+    "evidence": "docs/release/feed-staging-verification-20261020.json",
+    "releaseRecoveryPlan": "docs/release/feed-staging-20261020.md",
+    "formalDeployment": false,
+    "fullModuleResultChanged": false,
+    "productionTouched": false
   }
 }
