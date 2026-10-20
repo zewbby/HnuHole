@@ -728,40 +728,50 @@ class HhXPostItem extends StatelessWidget {
       onTap: enabled ? () => onAction(action) : null,
       child: Tooltip(
         message: label,
-        child: TextButton(
-          key: ValueKey('${action.name}:${post.id}'),
-          onPressed: enabled ? () => onAction(action) : null,
-          style: TextButton.styleFrom(
-            minimumSize: const Size(48, 48),
-            padding: EdgeInsets.zero,
-            alignment: count == null ? Alignment.center : Alignment.centerLeft,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+        // Keep this recognizer even while enabled. If the button becomes busy
+        // between pointer-down and pointer-up, its parent still absorbs the
+        // gesture instead of letting the whole post's InkWell open the detail.
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          excludeFromSemantics: true,
+          onTap: () {},
+          child: TextButton(
+            key: ValueKey('${action.name}:${post.id}'),
+            onPressed: enabled ? () => onAction(action) : null,
+            style: TextButton.styleFrom(
+              minimumSize: const Size(48, 48),
+              padding: EdgeInsets.zero,
+              alignment: count == null
+                  ? Alignment.center
+                  : Alignment.centerLeft,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
-          ),
-          child: Flex(
-            direction: stacked ? Axis.vertical : Axis.horizontal,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (busy)
-                SizedBox(
-                  width: 19,
-                  height: 19,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1.5,
-                    color: color,
+            child: Flex(
+              direction: stacked ? Axis.vertical : Axis.horizontal,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (busy)
+                  SizedBox(
+                    width: 19,
+                    height: 19,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                      color: color,
+                    ),
+                  )
+                else
+                  CustomPaint(
+                    size: const Size(20, 20),
+                    painter: _FeedActionGlyph(action, color, selected),
                   ),
-                )
-              else
-                CustomPaint(
-                  size: const Size(20, 20),
-                  painter: _FeedActionGlyph(action, color, selected),
-                ),
-              if (count != null) ...[
-                SizedBox(width: stacked ? 0 : 5, height: stacked ? 4 : 0),
-                Text(count, style: _text(context, 14, color: color)),
+                if (count != null) ...[
+                  SizedBox(width: stacked ? 0 : 5, height: stacked ? 4 : 0),
+                  Text(count, style: _text(context, 14, color: color)),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

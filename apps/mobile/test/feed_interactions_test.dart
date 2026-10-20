@@ -193,6 +193,88 @@ Future<IdentityTestFixture> renewingAuth() async {
 }
 
 void main() {
+  for (final enabledAtDown in [true, false]) {
+    testWidgets(
+      'FA-D02 action changes enabled state during pointer gesture ($enabledAtDown)',
+      (tester) async {
+        final f = await fixture();
+        addTearDown(f.dispose);
+        await tester.pumpWidget(feed.screen(f));
+        await tester.pumpAndSettle();
+        final wait = Completer<PostResponse<PostInteractions>>();
+        api(f).mutationWait = wait;
+        Future<void>? write;
+        if (!enabledAtDown) {
+          write = f.controller.changeInteraction(
+            feed.postId,
+            PostInteractionAction.like,
+          );
+          await tester.pump();
+        }
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.byKey(const ValueKey('like:${feed.postId}'))),
+        );
+        await tester.pump();
+        if (enabledAtDown) {
+          write = f.controller.changeInteraction(
+            feed.postId,
+            PostInteractionAction.like,
+          );
+          await tester.pump();
+        } else {
+          wait.complete(feed.reply(summary(liked: true)));
+          await write;
+          await tester.pump();
+        }
+        await gesture.up();
+        await tester.pump();
+        expect(find.byType(PostDetailScreen), findsNothing);
+        expect(api(f).changes.length, 1);
+        if (enabledAtDown) {
+          wait.complete(feed.reply(summary(liked: true)));
+          await write;
+        }
+        await tester.pumpAndSettle();
+        expect(find.byType(PostDetailScreen), findsNothing);
+        expect(api(f).changes.length, 1);
+      },
+    );
+  }
+  testWidgets(
+    'FA-D02 busy and disabled action taps never fall through to post navigation',
+    (tester) async {
+      final f = await fixture();
+      addTearDown(f.dispose);
+      await tester.pumpWidget(feed.screen(f));
+      await tester.pumpAndSettle();
+      final wait = Completer<PostResponse<PostInteractions>>();
+      api(f).mutationWait = wait;
+      await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
+      await tester.pump();
+      expect(
+        tester
+            .widget<TextButton>(
+              find.byKey(const ValueKey('like:${feed.postId}')),
+            )
+            .onPressed,
+        isNull,
+      );
+      for (var i = 0; i < 10; i++) {
+        await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(find.byType(PostDetailScreen), findsNothing);
+      }
+      await tester.tap(find.byKey(const ValueKey('bookmark:${feed.postId}')));
+      await tester.tap(find.byKey(const ValueKey('share:${feed.postId}')));
+      await tester.pump();
+      expect(find.byType(PostDetailScreen), findsNothing);
+      expect(api(f).changes.length, 1);
+      wait.complete(feed.reply(summary(liked: true)));
+      await tester.pumpAndSettle();
+      expect(find.byType(PostDetailScreen), findsNothing);
+      expect(state(f).value!.likedByMe, true);
+    },
+  );
   testWidgets(
     'old account feed action and both retry callbacks cannot issue B requests',
     (tester) async {
@@ -807,92 +889,102 @@ void main() {
     },
   );
   testWidgets('render production interaction states', (tester) async {
-    tester.view.physicalSize = const Size(402, 806);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    for (final entry in {
-      'Roboto': [
-        'HNUHOLE_UI_RENDER_LATIN_FONT',
-        'HNUHOLE_UI_RENDER_LATIN_MEDIUM_FONT',
-        'HNUHOLE_UI_RENDER_LATIN_BOLD_FONT',
-      ],
-      'Noto Sans CJK SC': ['HNUHOLE_UI_RENDER_FONT'],
-      'MaterialIcons': ['HNUHOLE_UI_RENDER_ICON_FONT'],
-    }.entries) {
-      await tester.runAsync(() async {
-        final loader = FontLoader(entry.key);
-        var hasFont = false;
-        for (final variable in entry.value) {
-          if (Platform.environment[variable] case final path?) {
-            loader.addFont(File(path).readAsBytes().then(ByteData.sublistView));
-            hasFont = true;
+    final previousShadows = debugDisableShadows;
+    debugDisableShadows = false;
+    try {
+      tester.view.physicalSize = const Size(402, 806);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      for (final entry in {
+        'Roboto': [
+          'HNUHOLE_UI_RENDER_LATIN_FONT',
+          'HNUHOLE_UI_RENDER_LATIN_MEDIUM_FONT',
+          'HNUHOLE_UI_RENDER_LATIN_BOLD_FONT',
+        ],
+        'Noto Sans CJK SC': ['HNUHOLE_UI_RENDER_FONT'],
+        'MaterialIcons': ['HNUHOLE_UI_RENDER_ICON_FONT'],
+      }.entries) {
+        await tester.runAsync(() async {
+          final loader = FontLoader(entry.key);
+          var hasFont = false;
+          for (final variable in entry.value) {
+            if (Platform.environment[variable] case final path?) {
+              loader.addFont(
+                File(path).readAsBytes().then(ByteData.sublistView),
+              );
+              hasFont = true;
+            }
           }
-        }
-        if (hasFont) await loader.load();
-      });
-    }
-    final out = Directory(
-      Platform.environment['HNUHOLE_INTERACTIONS_RENDER_DIR'] ??
-          'build/feed-interactions-render',
-    );
-    await tester.runAsync(() => out.create(recursive: true));
-    final f = await fixture();
-    addTearDown(f.dispose);
-    final boundary = GlobalKey();
-    Future<void> capture(String name) async {
-      await tester.pump(const Duration(milliseconds: 180));
-      final render =
-          boundary.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-      await tester.runAsync(() async {
-        final bitmap = await render.toImage(pixelRatio: 2);
-        final bytes = await bitmap.toByteData(format: ui.ImageByteFormat.png);
-        await File('${out.path}/$name.png')
-            .writeAsBytes(bytes!.buffer.asUint8List());
-        bitmap.dispose();
-      });
-      expect(tester.takeException(), isNull);
-    }
+          if (hasFont) await loader.load();
+        });
+      }
+      final out = Directory(
+        Platform.environment['HNUHOLE_INTERACTIONS_RENDER_DIR'] ??
+            'build/feed-interactions-render',
+      );
+      await tester.runAsync(() => out.create(recursive: true));
+      final f = await fixture();
+      addTearDown(f.dispose);
+      final boundary = GlobalKey();
+      Future<void> capture(String name) async {
+        await tester.pump(const Duration(milliseconds: 180));
+        final render =
+            boundary.currentContext!.findRenderObject()!
+                as RenderRepaintBoundary;
+        await tester.runAsync(() async {
+          final bitmap = await render.toImage(pixelRatio: 2);
+          final bytes = await bitmap.toByteData(format: ui.ImageByteFormat.png);
+          await File('${out.path}/$name.png')
+              .writeAsBytes(bytes!.buffer.asUint8List());
+          bitmap.dispose();
+        });
+        expect(tester.takeException(), isNull);
+      }
 
-    Widget mount(Brightness brightness, {double scale = 1}) => RepaintBoundary(
-      key: boundary,
-      child: feed.screen(f, brightness: brightness, scale: scale),
-    );
-    await tester.pumpWidget(mount(Brightness.light));
-    await tester.pumpAndSettle();
-    f.controller.errorMessage = null;
-    await capture('interactions-light');
-    await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('bookmark:${feed.postId}')));
-    await tester.pumpAndSettle();
-    await capture('interactions-selected');
-    api(f).failure = const PostFailure(
-      kind: PostFailureKind.transport,
-      code: 'TIMEOUT',
-    );
-    await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
-    await tester.pumpAndSettle();
-    await capture('interactions-retry');
-    api(f).failure = null;
-    await tester.tap(
-      find.byKey(const ValueKey('interaction-retry:${feed.postId}')),
-    );
-    await tester.pumpAndSettle();
-    await tester.pumpWidget(mount(Brightness.dark));
-    await tester.pumpAndSettle();
-    await capture('interactions-dark');
-    await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
-    await tester.pumpAndSettle();
-    await capture('interactions-detail');
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-    await tester.pumpWidget(mount(Brightness.light, scale: 2));
-    await tester.pumpAndSettle();
-    await capture('interactions-large-text');
-    tester.view.physicalSize = const Size(360, 800);
-    await tester.pumpWidget(mount(Brightness.light));
-    await tester.pumpAndSettle();
-    await capture('interactions-360dp');
+      Widget mount(Brightness brightness, {double scale = 1}) =>
+          RepaintBoundary(
+            key: boundary,
+            child: feed.screen(f, brightness: brightness, scale: scale),
+          );
+      await tester.pumpWidget(mount(Brightness.light));
+      await tester.pumpAndSettle();
+      f.controller.errorMessage = null;
+      await capture('interactions-light');
+      await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('bookmark:${feed.postId}')));
+      await tester.pumpAndSettle();
+      await capture('interactions-selected');
+      api(f).failure = const PostFailure(
+        kind: PostFailureKind.transport,
+        code: 'TIMEOUT',
+      );
+      await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
+      await tester.pumpAndSettle();
+      await capture('interactions-retry');
+      api(f).failure = null;
+      await tester.tap(
+        find.byKey(const ValueKey('interaction-retry:${feed.postId}')),
+      );
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(mount(Brightness.dark));
+      await tester.pumpAndSettle();
+      await capture('interactions-dark');
+      await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
+      await tester.pumpAndSettle();
+      await capture('interactions-detail');
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(mount(Brightness.light, scale: 2));
+      await tester.pumpAndSettle();
+      await capture('interactions-large-text');
+      tester.view.physicalSize = const Size(360, 800);
+      await tester.pumpWidget(mount(Brightness.light));
+      await tester.pumpAndSettle();
+      await capture('interactions-360dp');
+    } finally {
+      debugDisableShadows = previousShadows;
+    }
   });
 }
