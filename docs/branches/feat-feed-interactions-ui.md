@@ -1,5 +1,9 @@
 # FEED-INTERACTIONS-UI-01
 
+## 实际合并及后续修复（2026-10-20）
+
+[#31](https://github.com/zewbby/HnuHole/pull/31) 已于 07:09:01 UTC squash 合入 `a1cb812a84ef7650b9156a6b510997df508b6c70`，树与最终 PR head `28991759b503d619b352be378137e43a770ea7df` 一致，七类最终 CI 及 Ready 协作检查成功。最终 main 同签 2008 的 APK SHA256 为 `b2f49dacd7f158db467bb6658efbac357129626f08a035a23a1a968b81ed901d`。2008 赞藏、丢响应／迟到条件写、原重试、账号隔离、评论与图片发布的实际限定证据保留；其后发现 FA-D07 通用提示残留，修复与 2009 定点见[独立后续任务](fix-feed-read-errors.md)。未正式发布，下方为送审时历史快照。
+
 ## 最终送检快照（2026-10-20）
 
 FEED-INTERACTIONS-UI-01 最终送检（2026-10-20）：已核#30合入并整合最新main938f7e7（含#32/#33）；共享产品c923fa5a/C0021/V0004，严格Dart联调7PASS。修复源531e92d：App590PASS/分析0、未变Viewer116既有PASS、独立Max无阻断，七类CI已通过该运行源。2006独立复验D04/D05旧My/Feed恢复、双向账号与原B发帖PASS；2007单独修复FA-D06动态FAB语义，相关My/原A发帖/正常评论/503原token恢复无新增阻断，矩阵仅4PASS/19NOT_RUN/FA24待最终main，不拼接旧版。最终证据提交仍须核精确HEAD全部适用CI，再按已有授权Ready/merge#31；随后从最终main重建同签debug2008+并交Android独立验收。当前未合并、未正式发布，前端不操作设备或更新共享环境。自然同token设备续期、worker失败重试、release/profile真实性能等未验范围保留。见[本轮证据](../design/feed-interactions-ui-finalization-20261020.json)，下方为各自版本历史快照。

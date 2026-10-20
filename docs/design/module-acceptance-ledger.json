@@ -40285,11 +40285,14 @@
     "evidence": "docs/design/feed-interactions-ui-verification-20261020.json",
     "report": "docs/branches/feat-feed-interactions-ui.md",
     "physicalAndroid": "2002 layout and original chains scoped PASS by device owner;2003 busy-tap and media-expiry bugs fixed;2004 FA-D02/FA-O02 and comments0→2→0 plus seven read-only SQL checks scoped PASS;FA15 BLOCKED without controlled response loss",
-    "mainMerged": false,
+    "mainMerged": true,
     "sharedEnvironmentUpdatedByThisTask": false,
     "deviceOperatedByThisTask": false,
     "published": false,
-    "fullModuleResultsPromoted": false
+    "fullModuleResultsPromoted": false,
+    "mergeSha": "a1cb812a84ef7650b9156a6b510997df508b6c70",
+    "historicalEvidenceScopePreserved": true,
+    "latestTask": "FEED-READ-ERROR-SCOPE-01"
   },
   "currentFeedInteractionsUiFinalization20261020": {
     "task": "FEED-INTERACTIONS-UI-01",
@@ -40299,14 +40302,47 @@
     "host": "590 app PASS/analyze0; unchanged viewer116 prior PASS",
     "sharedProbe": "7 PASS, batch50/1963 bytes, B flags unchanged, single+carousel, old condition412",
     "android2005": "SCOPED_FA15_COMMENTS_PASS_D04_D05_P2_FAIL",
-    "finalMainCandidate": "NOT_RUN_WAIT_MERGE_THEN_BUILD2008_PLUS",
-    "merged": false,
+    "finalMainCandidate": "MAIN_2008_BUILT_INSTALLED_SCOPED_FACTS_D07_FOUND",
+    "merged": true,
     "formallyReleased": false,
     "scope": "B03/B06 interactions; affected B04/B07/B12/A03 regression only; historical module conclusions unchanged",
     "candidate2006": "D04_D05_FIXED_SCOPED_PASS_P3_FAIL_HISTORICAL",
-    "deviceBlockers": [],
+    "deviceBlockers": [
+      "2008 FA-D07; repaired 2009 targeted result in currentFeedReadErrorScope20261020"
+    ],
     "candidate2007": "RELATED_DELTA_NO_NEW_BLOCKERS_4PASS_19NOT_RUN_FA24_WAIT_MAIN",
-    "finalDeliveryHeadCI": "PENDING_EXACT_FINAL_DOCUMENTATION_HEAD",
-    "reviewedRuntimeCommit": "531e92d9d59ae37199b18a67fae33338d9a5c4e1"
+    "finalDeliveryHeadCI": "PASS_EXACT_28991759_SEVEN_WORKFLOWS_AND_READY_COLLABORATION",
+    "reviewedRuntimeCommit": "531e92d9d59ae37199b18a67fae33338d9a5c4e1",
+    "mergeSha": "a1cb812a84ef7650b9156a6b510997df508b6c70",
+    "repairEvidence": "docs/design/feed-read-errors-verification-20261020.json"
+  },
+  "currentFeedReadErrorScope20261020": {
+    "task": "FEED-READ-ERROR-SCOPE-01",
+    "defect": "FA-D07",
+    "branch": "codex/fix/feed-read-errors",
+    "candidateSource": "8f8ec66c6b185fdbb15fb528b164820b70fa7ec1",
+    "candidateVersion": 2026102009,
+    "modules": [
+      "B03",
+      "B04"
+    ],
+    "affectedRegressionModules": [
+      "A03",
+      "B06",
+      "B07"
+    ],
+    "result": "HOST_AND_TARGETED_ANDROID_SCOPED_PASS_FINAL_PR_CI_PENDING",
+    "targetedHostPassed": 25,
+    "fullAppPassed": 615,
+    "analysisIssues": 0,
+    "physicalAndroid": "列表断网原重载及偏好保存/读回双 transport 失败后原重新核对均恢复，同详情及返回重开无旧全局提示，恢复后同列表普通点赞0→1→取消0正常；无新增阻断，非全矩阵",
+    "evidence": "docs/design/feed-read-errors-verification-20261020.json",
+    "report": "docs/branches/fix-feed-read-errors.md",
+    "merged": false,
+    "formalRelease": false,
+    "fullModuleResultsPromoted": false,
+    "deviceOperatedByFrontend": false,
+    "sharedEnvironmentUpdatedByFrontend": false,
+    "finalGate": "exact final PR HEAD CI + independent review + targeted no blockers, then authorized merge/main2010 and final device smoke; actual receipts in delivery package"
   }
 }
