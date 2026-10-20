@@ -138,7 +138,12 @@ Future<void> main(List<String> args) async {
         .where((p) => p.imageCount > 0)
         .take(2)
         .toList();
-    require(args[3] == 'cas' || mediaPosts.length == 2, step);
+    require(
+      mediaPosts.length == 2 &&
+          mediaPosts.any((post) => post.imageCount == 1) &&
+          mediaPosts.any((post) => post.imageCount > 1),
+      step,
+    );
     for (final post in mediaPosts) {
       final manifest = (await posts.imageManifest(
         sessionToken: tokens[0],
