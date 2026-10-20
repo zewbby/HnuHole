@@ -36,10 +36,11 @@ CREATE DATABASE hnuhole_c OWNER hnuhole_c;
 CREATE DATABASE hnuhole_v OWNER hnuhole_v;
 CREATE DATABASE hnuhole_feed_fresh OWNER hnuhole_c;
 CREATE DATABASE hnuhole_feed_upgrade OWNER hnuhole_c;
-REVOKE CONNECT ON DATABASE hnuhole_c,hnuhole_v,hnuhole_feed_fresh,hnuhole_feed_upgrade FROM PUBLIC;
+CREATE DATABASE hnuhole_feed_interactions OWNER hnuhole_c;
+REVOKE CONNECT ON DATABASE hnuhole_c,hnuhole_v,hnuhole_feed_fresh,hnuhole_feed_upgrade,hnuhole_feed_interactions FROM PUBLIC;
 GRANT CONNECT ON DATABASE hnuhole_c TO hnuhole_c,hnuhole_c_runtime;
 GRANT CONNECT ON DATABASE hnuhole_v TO hnuhole_v;
-GRANT CONNECT ON DATABASE hnuhole_feed_fresh,hnuhole_feed_upgrade TO hnuhole_c;
+GRANT CONNECT ON DATABASE hnuhole_feed_fresh,hnuhole_feed_upgrade,hnuhole_feed_interactions TO hnuhole_c;
 SQL
 export PGPORT="$feed_port"
 AUTHLAB_RUNTIME_TAG="hnuhole_authlab_feed_$(date -u +%Y%m%d%H%M%S)"
@@ -48,9 +49,10 @@ AUTHLAB_V_DSN="postgresql://hnuhole_v@/hnuhole_v?host=$feed_dir/socket&applicati
 AUTHLAB_POSTS_RUNTIME_DSN="postgresql://hnuhole_c_runtime@/hnuhole_c?host=$feed_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 FEED_FRESH_DSN="postgresql://hnuhole_c@/hnuhole_feed_fresh?host=$feed_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 FEED_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_feed_upgrade?host=$feed_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+FEED_INTERACTIONS_DSN="postgresql://hnuhole_c@/hnuhole_feed_interactions?host=$feed_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 AUTHLAB_ALLOW_SCHEMA_RESET=1
-export AUTHLAB_RUNTIME_TAG AUTHLAB_C_DSN AUTHLAB_V_DSN AUTHLAB_POSTS_RUNTIME_DSN AUTHLAB_ALLOW_SCHEMA_RESET FEED_FRESH_DSN FEED_UPGRADE_DSN
+export AUTHLAB_RUNTIME_TAG AUTHLAB_C_DSN AUTHLAB_V_DSN AUTHLAB_POSTS_RUNTIME_DSN AUTHLAB_ALLOW_SCHEMA_RESET FEED_FRESH_DSN FEED_UPGRADE_DSN FEED_INTERACTIONS_DSN
 feed_script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$feed_script_dir/.."
 go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime \
-    -run "${FEED_TEST_PATTERN:-^(TestFeed|TestRealHTTPSFeed|TestPostSchema|TestPostAtomic|TestPostCeiling|TestPostGate|TestPostFormalClosure|TestRealHTTPSPost(Acceptance|Stops)|TestModerationLifecycleCommonCStartup)}" -v
+    -run "${FEED_TEST_PATTERN:-^(TestFeed|TestRealHTTPSFeed(Views|Interactions)|TestPostSchema|TestPostAtomic|TestPostCeiling|TestPostGate|TestPostFormalClosure|TestRealHTTPSPost(Acceptance|Stops)|TestModerationLifecycleCommonCStartup|TestCommentText(Transactions|FailureRetryAbandon|FrozenGate|RuntimeAndSQLGuards|UnavailablePost|ClosureCleanupWithFeatureDisabled|HTTPS|NullableBoundary)|TestCommentBusiness(MediaDeleteLikesNotices|HTTPS))}" -v

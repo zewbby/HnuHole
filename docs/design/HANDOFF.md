@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-20 FEED-INTERACTIONS-01 本分支后端限定PASS：**基于已合入 #27／#28 的 main `f3454d1`，用户指定独立 `feat/feed-interactions`；新增0020、账号级幂等赞／藏及批量／单帖摘要，评论数共用既有统计，不改严格FeedPost／旧接口。真实SQL/race/TLS 50顶层／108含子项零失败零跳过、Go全包／11份API通过。前端按[接线契约](feed-backend-contract.md#点赞收藏与评论数接线)独立接入，见[任务](../branches/feat-feed-interactions.md)与[机器记录](feed-interactions-verification-20261020.json)。尚未合并，最终head CI／合并回执以PR为准；不冒充独立成员批准，不扩展收藏列表／通知／热度／私信，未部署或设备／生产验收。下方 #27／#28“未合并”为原送审快照，已由本次核对更新。
+
 > **2026-10-19 FEED-UI-01：**已确认后端 [#27](https://github.com/zewbby/HnuHole/pull/27) 合入 `f1752e1`，独立 `codex/feat/feed-ui` 基于新 main 接推荐／通道／账号屏蔽／真实浏览及自适应单图／横向多图。保留原认证、发帖、评论和图片链路，无私信。本地分析、530项Flutter宿主回归、真实HTTPS/SQL、6张实图与全插件Android构建限定PASS，未合并／部署；[任务](../branches/feat-feed-ui.md)、[验证](feed-ui-verification-20261019.json)和渲染沿各自范围交接，完整 B03/B04/B06/B12、设备及生产结论不升级。
 
 > **2026-10-19 PR #27 复核增量：**同一代理复核接口、迁移、计数、屏蔽与分页，真实复现并修复“去重主键丢失仍放行并重复计数”的P2；新增精确主键启动校验及显式冲突目标，不改0019 SQL与公开契约。修复版 Go宿主/build/vet、11份API、真实SQL/race/TLS 33顶层／70含子项零跳过通过；旧29／61属于原版。见[复核记录](feed-backend-review-20261019.json)与[任务](../branches/feat-feed-backend.md)，修复版最终head CI以PR为准，不冒充独立成员批准；按用户指令不合并、不部署。

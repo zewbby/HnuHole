@@ -55,6 +55,29 @@ type TextCommentPage struct {
 	RemainingCount *int          `json:"remainingCount,omitempty"`
 }
 
+// One visibility rule for comment context, comment pages and feed summaries.
+// Includes published replies, excludes hidden/deleted roots and their floors.
+func readVisibleCommentCounts(ctx context.Context, tx pgx.Tx, ids []string) (map[string]int, error) {
+	counts := make(map[string]int, len(ids))
+	rows, err := tx.Query(ctx, `SELECT t.post_id,count(*) FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED'
+ WHERE t.post_id=ANY($1::uuid[]) AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false)
+ AND NOT EXISTS(SELECT 1 FROM c_comments.tasks root_row WHERE root_row.comment_id=t.root_comment_id AND (root_row.deleted_at IS NOT NULL OR COALESCE((to_jsonb(root_row)->>'moderation_hidden')::boolean,false)))
+ GROUP BY t.post_id`, ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var id string
+		var n int
+		if err := rows.Scan(&id, &n); err != nil {
+			return nil, err
+		}
+		counts[id] = n
+	}
+	return counts, rows.Err()
+}
+
 func (c *Community) commentCursor(id uuid.UUID, offset int) string {
 	b := make([]byte, 20)
 	copy(b, id[:])
@@ -214,10 +237,11 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 			r.RemainingCount = &remaining
 			r.RootCommentID = &q.ID
 		} else {
-			var count int
-			if e := tx.QueryRow(ctx, `SELECT count(*) FROM c_comments.tasks t JOIN c_comments.attempts x USING(task_id) WHERE t.post_id=$1 AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false) AND NOT EXISTS(SELECT 1 FROM c_comments.tasks root_row WHERE root_row.comment_id=t.root_comment_id AND (root_row.deleted_at IS NOT NULL OR COALESCE((to_jsonb(root_row)->>'moderation_hidden')::boolean,false))) AND x.state='PUBLISHED'`, postID).Scan(&count); e != nil {
+			counts, e := readVisibleCommentCounts(ctx, tx, []string{postID})
+			if e != nil {
 				return nil, e
 			}
+			count := counts[postID]
 			r.TotalCount = &count
 		}
 		return r, nil

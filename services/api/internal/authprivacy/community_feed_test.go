@@ -257,6 +257,10 @@ func TestFeedRuntimePrivilegesClosureAndStartupPostgres(t *testing.T) {
 		t.Fatal(e)
 	}
 	postTestRead(t, l, reader.SessionToken, PostQuery{Kind: PostFeed})
+	interactionTestSet(t, l, reader.SessionToken, p.PostID, posts.PostLike, true)
+	interactionTestSet(t, l, reader.SessionToken, p.PostID, posts.PostFavorite, true)
+	interactionTestSet(t, l, owner.SessionToken, p.PostID, posts.PostLike, true)
+	interactionTestSet(t, l, owner.SessionToken, p.PostID, posts.PostFavorite, true)
 	for _, sql := range []string{`REVOKE DELETE ON c_posts.feed_preferences FROM hnuhole_c_runtime`, `ALTER TABLE c_auth.accounts DISABLE TRIGGER feed_account_closed`} {
 		tx, err := l.cp.Begin(ctx)
 		if err != nil {
@@ -279,6 +283,13 @@ func TestFeedRuntimePrivilegesClosureAndStartupPostgres(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	_, err = l.c.SetPostInteraction(ctx, reader.SessionToken, p.PostID, posts.PostLike, false)
+	if !errors.Is(err, ErrSessionInvalid) {
+		t.Fatal("pending closure session retained write access", err)
+	}
+	if _, err = l.c.ReadPostInteractions(ctx, reader.SessionToken, []string{p.PostID}); !errors.Is(err, ErrSessionInvalid) {
+		t.Fatal("pending closure session retained read access", err)
+	}
 	advanceClosureClock(t, control, closure.DueAt)
 	if n, e := l.c.FinalizeDueClosures(ctx, 10); e != nil || n != 1 {
 		t.Fatal("original closure path failed", n, e)
@@ -288,6 +299,13 @@ func TestFeedRuntimePrivilegesClosureAndStartupPostgres(t *testing.T) {
 	}
 	if count(t, l.cp, `SELECT view_count FROM c_posts.post_view_totals WHERE post_id=$1`, p.PostID) != 1 {
 		t.Fatal("closure changed cumulative total")
+	}
+	if count(t, l.cp, `SELECT count(*) FROM c_posts.post_likes WHERE account_id=$1`, reader.AccountID) != 0 || count(t, l.cp, `SELECT count(*) FROM c_posts.post_favorites WHERE account_id=$1`, reader.AccountID) != 0 {
+		t.Fatal("closure retained private interactions")
+	}
+	remaining := interactionTestRead(t, l, owner.SessionToken, p.PostID)[0]
+	if remaining.LikeCount != 1 || remaining.FavoriteCount != 1 || !remaining.LikedByMe || !remaining.FavoritedByMe {
+		t.Fatal("closure touched another account", remaining)
 	}
 }
 

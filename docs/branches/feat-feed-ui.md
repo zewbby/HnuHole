@@ -1,5 +1,7 @@
 # FEED-UI-01 新版帖子列表接线
 
+> 2026-10-20 主线核对：PR #28 已Squash合入 `f3454d11ff054976054e402b7d71c4f45e0f5b06`（上海09:58:19），未部署。下方未合并属于原送审快照；点赞／收藏及计数后端由后续[FEED-INTERACTIONS-01](feat-feed-interactions.md)补齐，正式前端接线不包含在该后端任务中。
+
 - 更新：2026-10-19（Asia/Shanghai）。
 - 分支：`codex/feat/feed-ui`，独立 worktree `E:/Hnuhole-env/source/HnuHole-feed-ui`。
 - 基线：已确认 [后端 PR #27](https://github.com/zewbby/HnuHole/pull/27) 于 2026-10-19 16:35:57 合入，最新远端 main `f1752e10867efb894e1b7bb3bd9a208c14fa74a0`。不依赖未合并分支。

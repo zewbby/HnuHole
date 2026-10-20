@@ -68,6 +68,13 @@ GRANT UPDATE(state) ON c_posts.payload_cleanup TO hnuhole_c_runtime;
 GRANT USAGE ON SEQUENCE c_posts.publication_ordinal_seq,c_posts.acceptance_ordinal_seq TO hnuhole_c_runtime;
 GRANT EXECUTE ON FUNCTION c_posts.allocate_identity_label(uuid) TO hnuhole_c_runtime;
 
+-- 0020: account-private interactions, including closure with HTTP disabled.
+DO $$ BEGIN
+ IF to_regclass('c_posts.post_likes') IS NOT NULL THEN
+  GRANT SELECT,INSERT,DELETE ON c_posts.post_likes,c_posts.post_favorites TO hnuhole_c_runtime;
+ END IF;
+END $$;
+
 -- 0019: closure cleanup also runs when post HTTP endpoints are disabled.
 DO $$ BEGIN
  IF to_regclass('c_posts.feed_preferences') IS NOT NULL THEN

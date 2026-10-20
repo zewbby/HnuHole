@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: HnuHole chronological feed and account preferences
-  version: 0.1.0
+  version: 0.2.0
   description: >-
     FEED-BACKEND-01, HEAT-07. Uses the existing independent C HTTPS origin,
     current Bearer and final Safety Gate transaction. No account or identity
@@ -16,6 +16,126 @@ security:
   - bearerAuth: []
 x-design-document: ../../docs/design/feed-backend-contract.md
 paths:
+  /api/v1/feed/interactions:
+    post:
+      operationId: readFeedInteractionSummaries
+      summary: Read current counts and own account state for up to 50 posts
+      description: >-
+        Read-only batch in request order. No query or Idempotency-Key. Every ID
+        must be unique and currently public; one inaccessible ID rejects the
+        entire request with 404 POST_NOT_FOUND, without returning partial data.
+        Does not count views, alter feed ordering, or bind a speaking identity.
+        The existing strict FeedPost DTO is unchanged; join summaries by postId.
+        Blocking still applies to /feed, not to these detail-equivalent reads.
+      requestBody:
+        required: true
+        x-max-bytes: 4096
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [postIds]
+              properties:
+                postIds:
+                  type: array
+                  minItems: 1
+                  maxItems: 50
+                  uniqueItems: true
+                  items: { $ref: '#/components/schemas/ResourceID' }
+      responses:
+        '200': { $ref: '#/components/responses/InteractionBatch' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '413': { $ref: '#/components/responses/Error' }
+        '415': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/posts/{postId}/interactions:
+    parameters:
+      - { $ref: '#/components/parameters/PostID' }
+    get:
+      operationId: readPostInteractions
+      summary: Read current counts and own account state
+      description: No body, query or Idempotency-Key. Same visibility and privacy as the batch read.
+      responses:
+        '200': { $ref: '#/components/responses/Interactions' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/posts/{postId}/like:
+    parameters:
+      - { $ref: '#/components/parameters/PostID' }
+    put:
+      operationId: setPostLike
+      summary: Set the current account's like, never toggle it
+      description: >-
+        Account-level and shared across identities, sessions and devices.
+        Self-likes are allowed and included in the displayed count. No identity
+        selector or speaking binding. Retries of the same desired state are
+        idempotent. No query or Idempotency-Key. Existing session validation
+        rejects non-ACTIVE accounts, including PENDING_CLOSE, with 401. Muting
+        publication does not prohibit likes.
+        Returns the committed current summary, not a cached command receipt.
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [liked]
+              properties:
+                liked: { type: boolean }
+      responses:
+        '200': { $ref: '#/components/responses/Interactions' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '413': { $ref: '#/components/responses/Error' }
+        '415': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/posts/{postId}/favorite:
+    parameters:
+      - { $ref: '#/components/parameters/PostID' }
+    put:
+      operationId: setPostFavorite
+      summary: Set the current account's private favorite
+      description: >-
+        Same account isolation, visibility and idempotent set semantics as likes.
+        Only aggregate counts are shared. No favorites or contributor list API.
+        Repeating true preserves the original trusted saved time. Removing and
+        later re-adding creates a new saved time. Account closure clears both
+        private interaction facts; deleting a speaking identity does not.
+      requestBody:
+        required: true
+        x-max-bytes: 1024
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [favorited]
+              properties:
+                favorited: { type: boolean }
+      responses:
+        '200': { $ref: '#/components/responses/Interactions' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '413': { $ref: '#/components/responses/Error' }
+        '415': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Error' }
   /api/v1/feed:
     get:
       operationId: getChronologicalFeed
@@ -147,6 +267,12 @@ paths:
         '429': { $ref: '#/components/responses/RateLimited' }
         '503': { $ref: '#/components/responses/Error' }
 components:
+  parameters:
+    PostID:
+      name: postId
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/ResourceID' }
   securitySchemes:
     bearerAuth:
       type: http
@@ -169,6 +295,34 @@ components:
       required: true
       schema: { type: integer, minimum: 1, maximum: 300 }
   schemas:
+    PostInteractions:
+      type: object
+      additionalProperties: false
+      required: [postId, likeCount, favoriteCount, commentCount, likedByMe, favoritedByMe]
+      description: >-
+        Counts are current nonnegative aggregates, not unique discussion users.
+        commentCount reuses the comment context/page rule: published visible
+        roots and replies, excluding deleted/hidden items and hidden/deleted
+        roots' replies. Pending/failed comments do not count. The two ByMe flags
+        are private to the authenticated account. No account/identity IDs, voter
+        lists, owner capabilities or visitor data are returned. Not a heat score.
+      properties:
+        postId: { $ref: '#/components/schemas/ResourceID' }
+        likeCount: { type: integer, format: int64, minimum: 0 }
+        favoriteCount: { type: integer, format: int64, minimum: 0 }
+        commentCount: { type: integer, minimum: 0 }
+        likedByMe: { type: boolean }
+        favoritedByMe: { type: boolean }
+    PostInteractionBatch:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items: { $ref: '#/components/schemas/PostInteractions' }
     ResourceID:
       type: string
       format: uuid
@@ -269,6 +423,26 @@ components:
               enum: [MALFORMED_REQUEST, AUTHENTICATION_FAILED, SESSION_INVALID, session_replaced, AUTHORIZATION_UNAVAILABLE, SERVICE_UNAVAILABLE, RATE_LIMITED, PAYLOAD_TOO_LARGE, UNSUPPORTED_MEDIA_TYPE, CURSOR_INVALID, POST_CHANNEL_UNAVAILABLE, POST_NOT_FOUND]
             message: { type: string, minLength: 1, maxLength: 256 }
   responses:
+    Interactions:
+      description: Committed aggregate counts and own account flags
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/RequestID' }
+        Cache-Control: { $ref: '#/components/headers/NoStore' }
+        Session-Expires-At: { $ref: '#/components/headers/SessionExpiresAt' }
+        Server-Time: { $ref: '#/components/headers/ServerTime' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/PostInteractions' }
+    InteractionBatch:
+      description: Committed summaries in request order, no partial results
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/RequestID' }
+        Cache-Control: { $ref: '#/components/headers/NoStore' }
+        Session-Expires-At: { $ref: '#/components/headers/SessionExpiresAt' }
+        Server-Time: { $ref: '#/components/headers/ServerTime' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/PostInteractionBatch' }
     Preferences:
       description: Committed current account preference, canonical channel order
       headers:
