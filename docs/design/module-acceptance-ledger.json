@@ -40162,10 +40162,7 @@
     "baseMain": "444d25862a83d3a8d40168ef660e50da0712b71e",
     "candidateSource": "f8133cf819e655a98d5d53d234a26e4a705c2d10",
     "result": "HOST_565_HTTPS_SQL_RENDER_BUILD_DEVICE_SCOPED_PASS_FA15_BLOCKED",
-    "modules": [
-      "B03",
-      "B06"
-    ],
+    "modules": ["B03", "B06"],
     "affectedRegressionModules": [
       "A03",
       "B04",
@@ -40188,10 +40185,7 @@
     "result": "SCOPED_LOCAL_SQL_TLS_RACE_PASS",
     "taskDocument": "docs/branches/fix-feed-interaction-order.md",
     "evidence": "docs/design/feed-interaction-order-verification-20261020.json",
-    "modules": [
-      "B03",
-      "B06"
-    ],
+    "modules": ["B03", "B06"],
     "reopenedRegressions": [
       "A03",
       "A08",
@@ -40209,5 +40203,18 @@
     "productionDeployed": false,
     "fullModuleResultsPromoted": false,
     "independentMemberApproval": false
+  },
+  "currentFeedInteractionsUiFinalization20261020": {
+    "task": "FEED-INTERACTIONS-UI-01",
+    "evidence": "docs/design/feed-interactions-ui-finalization-20261020.json",
+    "candidateSource": "ca38c70b21ee97bcf761be689a09b43b0e213ad0",
+    "backendMergedMain": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "host": "580 app / 116 viewer PASS; analyze 0",
+    "sharedProbe": "7 PASS, batch50/1963 bytes, B flags unchanged, single+carousel, old condition412",
+    "android2005": "PENDING",
+    "finalMainCandidate": "NOT_RUN_WAIT_AUTHORIZED_MERGE",
+    "merged": false,
+    "formallyReleased": false,
+    "scope": "B03/B06 interactions; affected B04/B07/B12/A03 regression only; historical module conclusions unchanged"
   }
 }

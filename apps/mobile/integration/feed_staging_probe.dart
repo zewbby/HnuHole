@@ -165,6 +165,10 @@ Future<void> main(List<String> args) async {
         sessionToken: tokens[0],
         postId: id,
       );
+      final foreignBefore = (await posts.postInteractions(
+        sessionToken: tokens[1],
+        postId: id,
+      )).value;
       final liked = await posts.setPostLike(
         sessionToken: tokens[0],
         postId: id,
@@ -184,6 +188,8 @@ Future<void> main(List<String> args) async {
       require(
         saved.value.likeCount == foreign.likeCount &&
             saved.value.favoriteCount == foreign.favoriteCount &&
+            foreign.likedByMe == foreignBefore.likedByMe &&
+            foreign.favoritedByMe == foreignBefore.favoritedByMe &&
             saved.value.likedByMe != original.value.likedByMe &&
             saved.value.favoritedByMe != original.value.favoritedByMe,
         step,

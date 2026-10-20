@@ -1,5 +1,21 @@
 # FEED-INTERACTIONS-UI-01
 
+## 当前收口（2026-10-20）
+
+后端 [#30](https://github.com/zewbby/HnuHole/pull/30) 已合入 `c923fa5a`，本分支通过 `c1b92f0` 整合；真实条件写探针原先依赖 main0020 的失败条件已消除。`ca38c70` 的 Feed UI CI 已通过真实 C HTTPS／一次性 PostgreSQL 步骤，最终提交仍须重核全部适用 CI。
+
+本轮修复 26–50 项摘要被 1024 字节默认上限拦截、FA-D03 查看器前景对比度、有效同账号续期丢评论页面/草稿、已释放媒体租约迟到拒绝误伤新租约。宿主分析0、App580及Viewer116项PASS；查看器主题、评论续期与旧租约分别保留失败复现及回归。Max独立静态复核至`ca38c70`未发现阻断，未替代 GitHub 成员批准。
+
+更新后的共享 main `c923fa5a`／C0021／V0004，生产 Dart 探针7项PASS：50项摘要1963字节、单图及三图保护字节、条件赞藏、B账号旗标写前/后不变、恢复原状态及旧条件412。环境由负责人升级，前端不操作环境或设备；历史独立CAS及2004证据保留原范围。
+
+同签 debug／`main.dart` 候选2026102005已交Android：源码`ca38c70b21ee97bcf761be689a09b43b0e213ad0`，APK SHA256 `c0e7569ea53457a369ae2dd3e06ad9c0078e67cf156462ca49c7d9d1f3191431`，98,791,052字节。当前2005矩阵及响应丢失/迟到写/重试/切账号补验待收口；不使用2004的CAS结果代证2005。隔离入口只有私有CA，release/profile真实链路和性能明确NOT_RUN，保持debug-only CA guard，不正式发布。最终main候选须等合并后重建，不能用2005代替。
+
+当前详情、命令、输入摘要与待办见[本轮机器记录](../design/feed-interactions-ui-finalization-20261020.json)。用户已授权在相关验收无阻断、独立审查完成及最终head适用CI全通过后将[#31](https://github.com/zewbby/HnuHole/pull/31)转Ready并合并；目前保持draft。
+
+## 原送审及2001–2004历史快照
+
+以下内容保留原版本、环境和时点；其中未合并、565项、FA15缺入口等不覆盖上方当前状态。
+
 > 续办（2026-10-20）：用户已授权在后端#30真实合入、最新main整合、更新后的共享测试环境联调、Android补验无阻断及最终head适用CI全通过后，将#31转Ready并合并；随后从最终main重建同签候选，不正式发布。前端不操作设备或更新环境。等待期间独立复核发现合法26–50项batch被默认1024字节上限拦截，已复现并修为本接口4096字节，补26/50项真实TLS与51唯一ID发送前拒绝回归；历史交付证据按原版本保留，最终收口材料另补。
 
 - 更新：2026-10-20（Asia/Shanghai）。用户指定分支 `feat/feed-interactions-ui`，独立 worktree `E:/Hnuhole-env/source/HnuHole-feed-interactions-ui`；基线最新远端 main `444d25862a83d3a8d40168ef660e50da0712b71e`，旧工作区保留。

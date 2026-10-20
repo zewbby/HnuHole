@@ -1,6 +1,6 @@
 # 分模块验收与测试交接
 
-> FEED-INTERACTIONS-UI-01 续办（2026-10-20）：已核实后端[#30](https://github.com/zewbby/HnuHole/pull/30)合入main `c923fa5a`；本分支已整合。已修大批量摘要上限、FA-D03查看器对比度、普通续期评论窗及旧媒体租约迟到拒绝，分析0／移动端580项／查看器116项PASS，独立Max静态复核无阻断。共享升级由环境负责人执行，设备由Android会话操作；待更新环境真实联调、响应丢失/迟到写/重试/切账号补验及最终head适用CI全通过后，按本次用户授权转Ready并合并#31，再从最终main重建同签release候选；不正式发布。下方未合并/565/2004等为原送审和交付快照，不提升完整模块结论。
+> FEED-INTERACTIONS-UI-01 续办（2026-10-20）：已核实后端[#30](https://github.com/zewbby/HnuHole/pull/30)合入main `c923fa5a`；本分支已整合。大批量摘要上限、FA-D03查看器对比度、普通续期评论窗及旧媒体租约迟到拒绝已修，分析0／移动端580项／查看器116项PASS，独立Max静态复核无阻断。更新后的共享C0021/V0004真实联调7项PASS（50项摘要1963字节、单图/三图、条件赞藏、B账号旗标不变、旧条件412）；2005同签debug已交Android独立补验。待设备响应丢失/迟到写/重试/切账号无阻断及最终head适用CI全通过后，按用户授权转Ready并合并#31，再从最终main重建同签debug候选。无公信CA入口，release/profile真实链路及性能NOT_RUN，保留正式安全guard；不正式发布，前端不操作设备或更新环境。见[本轮收口证据](feed-interactions-ui-finalization-20261020.json)。下方未合并/565/2004为原版本快照。
 
 > FEED-INTERACTIONS-UI-01：2026-10-20，独立 feat/feed-interactions-ui／[Draft PR #31](https://github.com/zewbby/HnuHole/pull/31)，真实赞/藏/评论数与列表详情共享状态已接通；分析0、565宿主、HTTPS/SQL、7张渲染、同签APK限定PASS。360dp缺陷已由Android会话复验修复；2003忙态穿透/失权媒体跳位已修并升Max复核，2004独立0021候选两缺陷已真机复验PASS；FA15设备强丢响应BLOCKED。依赖后端#30尚未合并，main整合/最终CI待完成，2004评论0→2→0及7项只读SQL对照PASS，Android独立报告按各版本范围记录；不合并或发布，不升级完整模块。见[任务](../branches/feat-feed-interactions-ui.md)／[机器记录](feed-interactions-ui-verification-20261020.json)。
 
