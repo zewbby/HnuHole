@@ -13,6 +13,10 @@ type PostInteractionBackend interface {
 	SetPostInteraction(context.Context, [32]byte, string, posts.InteractionKind, bool) (authprivacy.PostResponse, error)
 }
 
+type ConditionalPostInteractionBackend interface {
+	SetPostInteractionConditional(context.Context, [32]byte, string, posts.InteractionKind, bool, string) (authprivacy.PostResponse, error)
+}
+
 func isPostInteractionKind(kind authprivacy.PostReadKind) bool {
 	return kind == authprivacy.PostInteractions || kind == authprivacy.PostInteractionBatch || kind == authprivacy.PostLikeSet || kind == authprivacy.PostFavoriteSet
 }
@@ -20,7 +24,23 @@ func isPostInteractionKind(kind authprivacy.PostReadKind) bool {
 func (b *boundary) communityPostInteractions(w http.ResponseWriter, r *http.Request, backend PostBackend, bearer [32]byte, route postRoute) {
 	var ids []string
 	var enabled bool
+	var expected string
 	var err error
+	if hasHeader(r.Header, "If-Match") {
+		b.postBad(w, errMalformed)
+		return
+	}
+	if hasHeader(r.Header, "If-Interaction-Version") {
+		if route.kind != authprivacy.PostLikeSet && route.kind != authprivacy.PostFavoriteSet {
+			b.postBad(w, errMalformed)
+			return
+		}
+		expected, err = singleHeader(r.Header, "If-Interaction-Version")
+		if err != nil || !posts.ValidInteractionVersion(expected) {
+			b.postBad(w, errMalformed)
+			return
+		}
+	}
 	switch route.kind {
 	case authprivacy.PostInteractions:
 		err = noBodyOrQuery(r)
@@ -88,7 +108,20 @@ func (b *boundary) communityPostInteractions(w http.ResponseWriter, r *http.Requ
 		if route.kind == authprivacy.PostFavoriteSet {
 			kind = posts.PostFavorite
 		}
-		response, err = interactions.SetPostInteraction(r.Context(), bearer, route.id, kind, enabled)
+		if expected != "" {
+			conditional, ok := backend.(ConditionalPostInteractionBackend)
+			if !ok {
+				b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+				return
+			}
+			response, err = conditional.SetPostInteractionConditional(r.Context(), bearer, route.id, kind, enabled, expected)
+			if err == nil && !posts.ValidInteractionVersion(response.InteractionVersion) {
+				b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+				return
+			}
+		} else {
+			response, err = interactions.SetPostInteraction(r.Context(), bearer, route.id, kind, enabled)
+		}
 	}
 	if err != nil {
 		b.postFailure(w, err)

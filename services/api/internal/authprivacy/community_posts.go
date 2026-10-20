@@ -26,6 +26,7 @@ type postServices struct {
 type PostResponse struct {
 	Value                 any
 	ExpiresAt, ServerTime time.Time
+	InteractionVersion    string
 }
 type PostError struct {
 	Code               string

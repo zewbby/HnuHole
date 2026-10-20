@@ -2,6 +2,10 @@ package authprivacy
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,9 +17,33 @@ func (c *Community) ReadPostInteractions(ctx context.Context, bearer [32]byte, i
 	if err := posts.ValidateInteractionIDs(ids); err != nil {
 		return PostResponse{}, err
 	}
-	return c.withPostSession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
-		return readPostInteractions(ctx, tx, account, ids)
+	var tag string
+	r, err := c.withPostSession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
+		page, err := readPostInteractions(ctx, tx, account, ids)
+		if err == nil && len(ids) == 1 {
+			tag, err = c.postInteractionVersion(ctx, tx, account, page.Items[0])
+		}
+		return page, err
 	})
+	r.InteractionVersion = tag
+	return r, err
+}
+
+// Opaque write fence binds only the account, post and persistent random version.
+// Aggregate counts can change independently; they must never revive an old fence.
+func (c *Community) postInteractionVersion(ctx context.Context, tx pgx.Tx, account uuid.UUID, item posts.PostInteractions) (string, error) {
+	var version string
+	err := tx.QueryRow(ctx, `SELECT version::text FROM c_posts.post_interaction_versions WHERE account_id=$1 AND post_id=$2`, account, item.PostID).Scan(&version)
+	if err != nil && err != pgx.ErrNoRows {
+		return "", err
+	}
+	encoded, err := json.Marshal([]any{"HNUHOLE/POST-INTERACTION-VERSION/V1", account.String(), item.PostID, version})
+	if err != nil {
+		return "", err
+	}
+	mac := hmac.New(sha256.New, c.requestKey[:])
+	_, _ = mac.Write(encoded)
+	return `"` + hex.EncodeToString(mac.Sum(nil)) + `"`, nil
 }
 
 func readPostInteractions(ctx context.Context, tx pgx.Tx, account uuid.UUID, ids []string) (posts.PostInteractionPage, error) {
@@ -65,10 +93,20 @@ func readPostInteractions(ctx context.Context, tx pgx.Tx, account uuid.UUID, ids
 // Set operations are idempotent, not toggles. Account lock precedes post lock,
 // matching publication/deletion; no speaking identity is selected or bound.
 func (c *Community) SetPostInteraction(ctx context.Context, bearer [32]byte, id string, kind posts.InteractionKind, enabled bool) (PostResponse, error) {
+	return c.SetPostInteractionConditional(ctx, bearer, id, kind, enabled, "")
+}
+
+// expected is either empty (legacy commit-order behavior) or one opaque write version.
+// Every successful write rotates the fence, including same-value legacy writes.
+func (c *Community) SetPostInteractionConditional(ctx context.Context, bearer [32]byte, id string, kind posts.InteractionKind, enabled bool, expected string) (PostResponse, error) {
 	if _, err := posts.ParseResourceID(id); err != nil || kind != posts.PostLike && kind != posts.PostFavorite {
 		return PostResponse{}, posts.ErrInvalidIntent
 	}
-	return c.withPostSession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, final AuthorizationDecision, _ restriction) (any, error) {
+	if expected != "" && !posts.ValidInteractionVersion(expected) {
+		return PostResponse{}, posts.ErrInvalidIntent
+	}
+	var tag string
+	r, err := c.withPostSession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, final AuthorizationDecision, _ restriction) (any, error) {
 		var visible bool
 		if err := tx.QueryRow(ctx, `SELECT visibility='PUBLISHED' AND NOT moderation_hidden FROM c_posts.posts WHERE post_id=$1 FOR UPDATE`, id).Scan(&visible); err != nil || !visible {
 			if err != nil && err != pgx.ErrNoRows {
@@ -77,18 +115,39 @@ func (c *Community) SetPostInteraction(ctx context.Context, bearer [32]byte, id 
 			return nil, postError("POST_NOT_FOUND", 404)
 		}
 		// Also require the same content availability as public post reads.
-		if _, err := readPostInteractions(ctx, tx, account, []string{id}); err != nil {
+		page, err := readPostInteractions(ctx, tx, account, []string{id})
+		if err != nil {
 			return nil, err
+		}
+		current, err := c.postInteractionVersion(ctx, tx, account, page.Items[0])
+		if err != nil {
+			return nil, err
+		}
+		if expected != "" && !hmac.Equal([]byte(expected), []byte(current)) {
+			return nil, postError("INTERACTION_VERSION_CONFLICT", 412)
 		}
 		if err := writePostInteraction(ctx, tx, account, id, kind, enabled, final.TrustedAt); err != nil {
 			return nil, err
 		}
-		page, err := readPostInteractions(ctx, tx, account, []string{id})
+		version, err := uuid.NewRandom()
+		if err != nil {
+			return nil, err
+		}
+		if _, err = tx.Exec(ctx, `INSERT INTO c_posts.post_interaction_versions(account_id,post_id,version) VALUES($1,$2,$3) ON CONFLICT(account_id,post_id) DO UPDATE SET version=excluded.version`, account, id, version); err != nil {
+			return nil, err
+		}
+		page, err = readPostInteractions(ctx, tx, account, []string{id})
+		if err != nil {
+			return nil, err
+		}
+		tag, err = c.postInteractionVersion(ctx, tx, account, page.Items[0])
 		if err != nil {
 			return nil, err
 		}
 		return page.Items[0], nil
 	})
+	r.InteractionVersion = tag
+	return r, err
 }
 
 func writePostInteraction(ctx context.Context, tx pgx.Tx, account uuid.UUID, id string, kind posts.InteractionKind, enabled bool, at time.Time) error {
