@@ -38,6 +38,7 @@
 | `feat/feed-interactions-ui` | PR #31接通真实互动与评论数，补验与主线整合中；#30已合入，本PR未合并/发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
 | `codex/chore/feed-staging` | PR #32已合入main，交付隔离故障入口与0021部署恢复记录；未正式发布。 | [任务详情](docs/branches/chore-feed-staging.md) |
 | `feat/feed-interactions` | PR #29已合入main，补齐帖子账号级赞／藏与复用评论数的批量摘要后端；未正式发布。 | [任务详情](docs/branches/feat-feed-interactions.md) |
+| `codex/fix/feed-fault-error-contract` | PR #33已合入main，补齐隔离GET错误注入的严格关联ID契约与TLS回归；非正式发布。 | [任务详情](docs/branches/fix-feed-fault-error-contract.md) |
 | `codex/fix/feed-interaction-order` | PR #30已合入main，以持久条件写版本阻止赞藏条件请求迟到覆盖；已部署隔离测试环境。 | [任务详情](docs/branches/fix-feed-interaction-order.md) |
 | `codex/feat/feed-ui` | PR #28已合入main：新版列表接推荐／通道／屏蔽／浏览与自适应图片；未部署。 | [任务详情](docs/branches/feat-feed-ui.md) |
 | `codex/feat/feed-backend` | PR #27已合入main：真实浏览、跨通道时间游标和账号屏蔽后端；未部署。 | [任务详情](docs/branches/feat-feed-backend.md) |
@@ -64,8 +65,8 @@
 
 ## 最近变动
 
+- 2026-10-20 · [#33](https://github.com/zewbby/HnuHole/pull/33)：修正隔离GET错误注入的正文及响应头关联ID。
 - 2026-10-20 · [#32](https://github.com/zewbby/HnuHole/pull/32)：补齐隔离故障测试入口及0021部署恢复证据。
 - 2026-10-20 · [#30](https://github.com/zewbby/HnuHole/pull/30)：以持久条件写版本阻止赞藏未知请求迟到覆盖。
 - 2026-10-20 · [#29](https://github.com/zewbby/HnuHole/pull/29)：补齐帖子账号级点赞、收藏与真实评论数摘要后端。
 - 2026-10-20 · [#28](https://github.com/zewbby/HnuHole/pull/28)：新版帖子列表接通真实通道、账号屏蔽、浏览及自适应图片。
-- 2026-10-19 · [#27](https://github.com/zewbby/HnuHole/pull/27)：接入真实浏览去重、跨通道时间列表与账号屏蔽后端。

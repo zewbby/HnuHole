@@ -196,8 +196,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     if not j.wait(rule,self.server.stop_event):j.update(rule,'aborted_before_upstream');self.close_only();return
                 if rule['mode'].startswith('inject_'):
                     status=int(rule['mode'][-3:]);code='SESSION_INVALID' if status==401 else 'AUTHORIZATION_UNAVAILABLE'
-                    raw=json.dumps({'error':{'code':code,'message':'Isolated test ingress response'}}).encode()
-                    self.send_response(status);self.send_header('Content-Type','application/json');self.send_header('Cache-Control','no-store');self.send_header('X-Request-ID',base64.urlsafe_b64encode(os.urandom(16)).decode().rstrip('='));self.send_header('Content-Length',str(len(raw)));self.send_header('Connection','close');self.end_headers();self.wfile.write(raw);self.close_connection=True;j.update(rule,'injected_not_upstream',status=status);return
+                    request_id=base64.urlsafe_b64encode(os.urandom(16)).decode().rstrip('=')
+                    raw=json.dumps({'error':{'code':code,'message':'Isolated test ingress response'},'requestId':request_id}).encode()
+                    self.send_response(status);self.send_header('Content-Type','application/json');self.send_header('Cache-Control','no-store');self.send_header('X-Request-ID',request_id);self.send_header('Content-Length',str(len(raw)));self.send_header('Connection','close');self.end_headers();self.wfile.write(raw);self.close_connection=True;j.update(rule,'injected_not_upstream',status=status,syntheticRequestId=request_id);return
             connection=http.client.HTTPSConnection('127.0.0.1',self.server.config['upstreamPort'],context=self.server.upstream_context,timeout=45)
             try:
                 if rule:j.event('forwarded_upstream',rule)
