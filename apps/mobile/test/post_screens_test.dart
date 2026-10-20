@@ -36,6 +36,8 @@ const _active = PostAuthor(
 class _WidgetPosts extends ChangeNotifier implements PostController {
   @override
   bool get supportsFeed => false;
+  @override
+  bool get supportsInteractions => false;
   bool access = true, loading = false;
   int version = 1;
   String? failure, channel;

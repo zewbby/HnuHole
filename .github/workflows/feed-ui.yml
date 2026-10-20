@@ -49,7 +49,7 @@ jobs:
         working-directory: apps/mobile
         run: |
           flutter analyze --no-pub
-          flutter test --no-pub test/feed_ui_test.dart test/feed_media_test.dart test/post_api_test.dart test/post_screens_test.dart test/post_images_test.dart test/post_media_repository_test.dart
+          flutter test --no-pub test/feed_interactions_test.dart test/feed_ui_test.dart test/feed_media_test.dart test/post_api_test.dart test/post_screens_test.dart test/post_images_test.dart test/post_media_repository_test.dart test/comment_views_test.dart
           flutter build bundle --debug --no-pub
           dart compile exe integration/feed_live_probe.dart -o build/feed-live-probe
       - name: Shipped Dart transport to real C HTTPS and isolated PostgreSQL

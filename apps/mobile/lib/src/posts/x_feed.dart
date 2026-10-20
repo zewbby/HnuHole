@@ -31,6 +31,7 @@ class FeedPostView {
     this.availableActions = const {FeedAction.comment},
     this.comments,
     this.likes,
+    this.favorites,
     this.views,
     this.channelCode = 'buddy',
     this.liked = false,
@@ -42,7 +43,7 @@ class FeedPostView {
   final String id, authorId, authorName, elapsed, title;
   final String body;
   final Set<FeedAction> availableActions;
-  final int? comments, likes;
+  final int? comments, likes, favorites;
   final int? views;
   final String channelCode;
   final bool liked, bookmarked, isOwnAuthor;
@@ -60,6 +61,7 @@ class FeedPostView {
         availableActions: availableActions,
         comments: comments,
         likes: likes ?? this.likes,
+        favorites: favorites,
         views: views,
         channelCode: channelCode,
         liked: liked ?? this.liked,
@@ -593,7 +595,7 @@ class HhXPostItem extends StatelessWidget {
                                 context,
                                 FeedAction.bookmark,
                                 null,
-                                post.bookmarked ? '取消收藏' : '收藏',
+                                '${post.bookmarked ? '取消收藏' : '收藏'}${post.favorites == null ? '' : '，收藏数${post.favorites}'}',
                                 post.bookmarked,
                               ),
                               _action(

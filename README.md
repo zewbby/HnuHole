@@ -35,6 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `feat/feed-interactions-ui` | 新版列表真实赞/藏/评论数前端接线与候选验收进行中，等待迟到写围栏；未合并/发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
 | `feat/feed-interactions` | PR #29补齐帖子账号级点赞／收藏与复用评论数的批量摘要后端，本分支送审；未部署。 | [任务详情](docs/branches/feat-feed-interactions.md) |
 | `codex/feat/feed-ui` | PR #28已合入main：新版列表接推荐／通道／屏蔽／浏览与自适应图片；未部署。 | [任务详情](docs/branches/feat-feed-ui.md) |
 | `codex/feat/feed-backend` | PR #27已合入main：真实浏览、跨通道时间游标和账号屏蔽后端；未部署。 | [任务详情](docs/branches/feat-feed-backend.md) |

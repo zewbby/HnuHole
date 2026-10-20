@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import '../auth/auth_crypto.dart';
 import 'post_api.dart';
 import 'feed_api.dart';
+import 'post_interactions_api.dart';
 import 'post_models.dart';
 import 'post_media_api.dart';
 import 'post_protocol.dart';
@@ -16,9 +17,11 @@ import 'package:crypto/crypto.dart' as hashes;
 
 part 'post_upload_http.dart';
 part 'feed_http.dart';
+part 'post_interactions_http.dart';
 
 /// 仅访问构造时固定的 C HTTPS origin，不跟随重定向或自动重送命令。
-class HttpPostApi implements PostApi, PostMediaApi, FeedApi {
+class HttpPostApi
+    implements PostApi, PostMediaApi, FeedApi, PostInteractionsApi {
   HttpPostApi({
     required this.communityBaseUri,
     HttpClient? client,
@@ -41,6 +44,64 @@ class HttpPostApi implements PostApi, PostMediaApi, FeedApi {
   final Duration timeout;
   final HttpClient _client;
   void close() => _client.close(force: true);
+
+  @override
+  Future<PostResponse<List<PostInteractions>>> interactions({
+    required String sessionToken,
+    required List<String> postIds,
+  }) => _input(() {
+    if (postIds.isEmpty ||
+        postIds.length > 50 ||
+        postIds.toSet().length != postIds.length) {
+      throw const FormatException('Invalid interaction batch');
+    }
+    for (final id in postIds) {
+      PostProtocol.resourceId(id);
+    }
+    return _send(
+      sessionToken,
+      'POST',
+      '/api/v1/feed/interactions',
+      body: {'postIds': postIds},
+      decode: (raw) {
+        final m = PostJson.record(raw, {'items'});
+        final items = m['items'];
+        if (items is! List || items.length != postIds.length) {
+          throw const FormatException('Invalid interaction batch');
+        }
+        final values = items.map(PostInteractions.fromJson).toList();
+        for (var i = 0; i < values.length; i++) {
+          if (values[i].postId != postIds[i]) {
+            throw const FormatException('Mismatched interaction batch');
+          }
+        }
+        return values;
+      },
+    );
+  });
+  @override
+  Future<PostResponse<PostInteractions>> postInteractions({
+    required String sessionToken,
+    required String postId,
+  }) => _interactionRequest(sessionToken, postId);
+  @override
+  Future<PostResponse<PostInteractions>> setPostLike({
+    required String sessionToken,
+    required String postId,
+    required bool liked,
+  }) =>
+      _interactionRequest(sessionToken, postId, action: 'like', desired: liked);
+  @override
+  Future<PostResponse<PostInteractions>> setPostFavorite({
+    required String sessionToken,
+    required String postId,
+    required bool favorited,
+  }) => _interactionRequest(
+    sessionToken,
+    postId,
+    action: 'favorite',
+    desired: favorited,
+  );
 
   @override
   Future<PostResponse<PostsPage<FeedPost>>> timeline({

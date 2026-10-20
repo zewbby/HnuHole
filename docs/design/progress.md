@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> FEED-INTERACTIONS-UI-01：2026-10-20 从 main 444d258 建独立 feat/feed-interactions-ui；列表/详情互动接线进行中，analyze0、544项Flutter宿主回归PASS。未知PUT迟到写等待独立CAS修复，真实联调/Android候选/设备/PR仍在推进；不提升完整模块或发布结论。见 [任务](../branches/feat-feed-interactions-ui.md)。
+
 > **2026-10-20 FEED-INTERACTIONS-01：SCOPED_LOCAL_PASS。**`feat/feed-interactions` 基于最新 main `f3454d1`，赞／藏幂等设置及复用评论数的批量／单帖摘要实现完成；Go全包／11份API／真实SQL-race-TLS 50顶层108含子项零失败零跳过。最终head CI后按授权送PR并合并，当前未合并／部署；[任务](../branches/feat-feed-interactions.md)、[证据](feed-interactions-verification-20261020.json)与[前端接线](feed-backend-contract.md#点赞收藏与评论数接线)保留正式前端／设备／生产未验边界，不提升完整模块。
 
 > **2026-10-19 FEED-UI-01：**已确认后端 [#27](https://github.com/zewbby/HnuHole/pull/27) 合入 `f1752e1`，独立 `codex/feat/feed-ui` 基于新 main 接推荐／通道／账号屏蔽／真实浏览及自适应单图／横向多图。保留原认证、发帖、评论和图片链路，无私信。本地分析、530项Flutter宿主回归、真实HTTPS/SQL、6张实图与全插件Android构建限定PASS，未合并／部署；[任务](../branches/feat-feed-ui.md)、[验证](feed-ui-verification-20261019.json)和渲染沿各自范围交接，完整 B03/B04/B06/B12、设备及生产结论不升级。

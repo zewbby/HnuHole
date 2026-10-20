@@ -9,6 +9,7 @@ extension FeedController on PostController {
   int? postViewCount(String id) => _postViews[id];
 
   void _clearTimeline() {
+    _interactions.clear();
     ++_timelineRequest;
     _timeline = [];
     _blockedChannels = {};
@@ -21,7 +22,11 @@ extension FeedController on PostController {
     _preferenceWrites = Future.value();
   }
 
-  Future<void> loadTimeline({String? channelId, bool more = false}) async {
+  Future<void> loadTimeline({
+    String? channelId,
+    bool more = false,
+    bool recoverMissingInteractions = true,
+  }) async {
     if (!supportsFeed || !available || preferencesSaving) return;
     if (more &&
         (timelineLoading ||
@@ -33,6 +38,7 @@ extension FeedController on PostController {
     final epoch = _epoch;
     final cursor = more ? timelineCursor : null;
     if (!more) {
+      _invalidateInteractionReads();
       timelineChannelId = channelId;
       timelineCursor = null;
       _timeline = [];
@@ -85,6 +91,19 @@ extension FeedController on PostController {
         _postViews[post.postId] = post.viewCount > old ? post.viewCount : old;
       }
       timelineCursor = page.nextCursor;
+      _notify();
+      final found = await loadInteractions(
+        page.items.map((p) => p.postId).toList(),
+      );
+      if (!found &&
+          recoverMissingInteractions &&
+          _current(a) &&
+          request == _timelineRequest) {
+        await loadTimeline(
+          channelId: channelId,
+          recoverMissingInteractions: false,
+        );
+      }
     } catch (error) {
       if (epoch != _epoch || request != _timelineRequest) return;
       _failure(error, a);

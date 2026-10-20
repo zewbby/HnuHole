@@ -285,6 +285,31 @@ class _FeedScreenState extends State<FeedScreen> {
                           title: post.title,
                           body: post.body,
                           views: c.postViewCount(post.postId),
+                          comments: c
+                              .interaction(post.postId)
+                              .value
+                              ?.commentCount,
+                          likes: c.interaction(post.postId).likes,
+                          favorites: c
+                              .interaction(post.postId)
+                              .value
+                              ?.favoriteCount,
+                          liked: c.interaction(post.postId).liked,
+                          bookmarked: c.interaction(post.postId).favorited,
+                          availableActions: {
+                            FeedAction.comment,
+                            if (c.interaction(post.postId).canChange) ...{
+                              FeedAction.like,
+                              FeedAction.bookmark,
+                            },
+                          },
+                          busyActions: {
+                            if (c.interaction(post.postId).sending)
+                              c.interaction(post.postId).pendingAction ==
+                                      PostInteractionAction.like
+                                  ? FeedAction.like
+                                  : FeedAction.bookmark,
+                          },
                         ),
                         mediaBuilder: (_, _) => const SizedBox.shrink(),
                         mediaSection:
@@ -305,10 +330,48 @@ class _FeedScreenState extends State<FeedScreen> {
                         onAuthor: () {},
                         onMenu: () =>
                             _open(context, post.postId, post.channelId),
-                        onAction: (_) =>
-                            _open(context, post.postId, post.channelId),
+                        onAction: (action) {
+                          switch (action) {
+                            case FeedAction.comment:
+                              _open(context, post.postId, post.channelId);
+                            case FeedAction.like:
+                              unawaited(
+                                c.changeInteraction(
+                                  post.postId,
+                                  PostInteractionAction.like,
+                                ),
+                              );
+                            case FeedAction.bookmark:
+                              unawaited(
+                                c.changeInteraction(
+                                  post.postId,
+                                  PostInteractionAction.favorite,
+                                ),
+                              );
+                            case FeedAction.share:
+                              break;
+                          }
+                        },
                         onMedia: (_) {},
                       ),
+                      if (c.interaction(post.postId).error case final error?)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 64, right: 16),
+                          child: Row(
+                            children: [
+                              Expanded(child: Text(error)),
+                              TextButton(
+                                key: ValueKey(
+                                  'interaction-retry:${post.postId}',
+                                ),
+                                onPressed: c.interaction(post.postId).sending
+                                    ? null
+                                    : () => c.retryInteraction(post.postId),
+                                child: const Text('重试'),
+                              ),
+                            ],
+                          ),
+                        ),
                       const Divider(height: 1, thickness: .5),
                     ],
                     if (c.timelineCursor != null && !c.timelineLoading)
