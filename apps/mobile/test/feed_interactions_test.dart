@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/posts/post_interactions_api.dart';
+import 'package:hnuhole_mobile/src/posts/x_feed.dart';
 
 import 'feed_ui_test.dart' as feed;
 import 'identity_test_support.dart';
@@ -51,6 +52,7 @@ class InteractionTestApi extends feed.FeedTestApi
       missingBatch = false;
   Completer<PostResponse<List<PostInteractions>>>? batchWait;
   Completer<PostResponse<PostInteractions>>? mutationWait, readWait;
+  bool failNextRead = false;
   @override
   Future<PostResponse<List<PostInteractions>>> interactions({
     required String sessionToken,
@@ -78,6 +80,10 @@ class InteractionTestApi extends feed.FeedTestApi
     required String postId,
   }) async {
     reads++;
+    if (failNextRead) {
+      failNextRead = false;
+      throw const PostFailure(kind: PostFailureKind.transport);
+    }
     if (summaryReadFails) {
       throw const PostFailure(kind: PostFailureKind.transport);
     }
@@ -187,6 +193,125 @@ Future<IdentityTestFixture> renewingAuth() async {
 }
 
 void main() {
+  testWidgets(
+    'old account feed action and both retry callbacks cannot issue B requests',
+    (tester) async {
+      final f = await fixture();
+      addTearDown(f.dispose);
+      await tester.pumpWidget(feed.screen(f));
+      await tester.pumpAndSettle();
+      final oldAction = tester
+          .widget<HhXPostItem>(find.byType(HhXPostItem))
+          .onAction;
+      api(f).failure = const PostFailure(
+        kind: PostFailureKind.rejected,
+        statusCode: 429,
+      );
+      oldAction(FeedAction.like);
+      await tester.pumpAndSettle();
+      api(f).summaryReadFails = true;
+      await f.controller.loadInteractions([feed.postId], single: true);
+      await tester.pumpAndSettle();
+      final oldWriteRetry = tester
+          .widget<TextButton>(
+            find.byKey(const ValueKey('interaction-retry:${feed.postId}')),
+          )
+          .onPressed!;
+      final oldReadRetry = tester
+          .widget<TextButton>(
+            find.byKey(const ValueKey('interaction-read-retry:${feed.postId}')),
+          )
+          .onPressed!;
+      f.auth.sessionApi.account = feed.otherChannelId;
+      await f.auth.sessions.acceptSession(
+        AuthSession(
+          accountId: feed.otherChannelId,
+          sessionToken: identityTestOtherToken,
+          expiresAt: identityTestExpiry,
+        ),
+      );
+      api(f).summaryReadFails = false;
+      api(f).failure = null;
+      await f.controller.loadTimeline();
+      final reads = api(f).reads, writes = api(f).changes.length;
+      oldAction(FeedAction.like);
+      oldAction(FeedAction.bookmark);
+      oldWriteRetry();
+      oldReadRetry();
+      await tester.pumpAndSettle();
+      expect(api(f).reads, reads);
+      expect(api(f).changes.length, writes);
+      expect(state(f).liked, false);
+      expect(state(f).favorited, false);
+    },
+  );
+  testWidgets('old account detail callbacks cannot issue B requests', (
+    tester,
+  ) async {
+    final f = await fixture();
+    addTearDown(f.dispose);
+    await tester.pumpWidget(feed.screen(f));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
+    await tester.pumpAndSettle();
+    final oldLike = tester
+        .widget<TextButton>(
+          find.byKey(const ValueKey('detail-like:${feed.postId}')),
+        )
+        .onPressed!;
+    final oldFavorite = tester
+        .widget<TextButton>(
+          find.byKey(const ValueKey('detail-favorite:${feed.postId}')),
+        )
+        .onPressed!;
+    api(f).failure = const PostFailure(
+      kind: PostFailureKind.rejected,
+      statusCode: 429,
+    );
+    oldLike();
+    await tester.pumpAndSettle();
+    final oldRetry = tester
+        .widget<TextButton>(find.widgetWithText(TextButton, '重试'))
+        .onPressed!;
+    f.auth.sessionApi.account = feed.otherChannelId;
+    await f.auth.sessions.acceptSession(
+      AuthSession(
+        accountId: feed.otherChannelId,
+        sessionToken: identityTestOtherToken,
+        expiresAt: identityTestExpiry,
+      ),
+    );
+    api(f).failure = null;
+    await f.controller.loadTimeline();
+    final reads = api(f).reads, writes = api(f).changes.length;
+    oldLike();
+    oldFavorite();
+    oldRetry();
+    await tester.pumpAndSettle();
+    expect(api(f).reads, reads);
+    expect(api(f).changes.length, writes);
+  });
+  test('preflight failure replays invalidated comment read instead of swallowing refresh', () async {
+    final f = await fixture();
+    addTearDown(f.dispose);
+    await f.controller.loadTimeline();
+    final delayed = Completer<PostResponse<List<PostInteractions>>>();
+    api(f).batchWait = delayed;
+    final read = f.controller.loadInteractions([feed.postId]);
+    await Future<void>.delayed(Duration.zero);
+    api(f).actual = summary(comments: 9);
+    api(f).failNextRead = true;
+    await f.controller.changeInteraction(
+      feed.postId,
+      PostInteractionAction.like,
+    );
+    delayed.complete(feed.reply([summary(comments: 9)]));
+    await read;
+    expect(api(f).changes, isEmpty);
+    expect(state(f).value!.commentCount, 9);
+    expect(state(f).writeError, isNotNull);
+    expect(state(f).readError, isNull);
+  });
   test(
     'restart before old CAS resumes cannot resurrect a cancelled like',
     () async {
@@ -765,5 +890,9 @@ void main() {
     await tester.pumpWidget(mount(Brightness.light, scale: 2));
     await tester.pumpAndSettle();
     await capture('interactions-large-text');
+    tester.view.physicalSize = const Size(360, 800);
+    await tester.pumpWidget(mount(Brightness.light));
+    await tester.pumpAndSettle();
+    await capture('interactions-360dp');
   });
 }
