@@ -4,14 +4,14 @@
   "recordedOn": "2026-10-20",
   "branch": "feat/feed-interactions-ui",
   "pullRequest": "https://github.com/zewbby/HnuHole/pull/31",
-  "status": "D04_D05_HOST_FIXED_ANDROID2006_AND_FINAL_CI_PENDING",
+  "status": "P3_HOST_FIXED_ANDROID2006_D05_AND_NEW2007_PENDING",
   "merged": false,
   "formallyReleased": false,
   "deviceOperatedByFrontend": false,
   "sharedEnvironmentUpdatedByFrontend": false,
   "backendMergedMain": "c923fa5a14919034272abd406cfaf9392bc094d8",
   "integratedAt": "c1b92f0d1d8d8efcaede4276e36f76c01e0cf982",
-  "candidateSource": "ca38c70b21ee97bcf761be689a09b43b0e213ad0",
+  "candidateSource": "de98ae2b5212faece784498017c1133f9765425b",
   "historicalEvidence": "docs/design/feed-interactions-ui-verification-20261020.json",
   "repairs": [
     {
@@ -115,19 +115,19 @@
     "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
     "kernelSha256": "236b911af8897cfb7af59408b7574510c14f409a1c3422d268ec1d053e752905",
     "backend": "c923fa5a / C0021 / V0004 / shared C51245 V49747 original CA",
-    "status": "BUILD_SIGNATURE_HASH_PASS_DEVICE_ACCEPTANCE_PENDING"
+    "status": "HISTORICAL_SCOPED_PASS_WITH_D04_D05_FAIL"
   },
   "independentReview": {
     "reviewer": "interaction_race_max",
     "modelEffort": "Max per user escalation",
-    "scope": "Static implementation review through ca38c70; probe/docs reviewed as 2e78ff4; latest-main merge reviewed as66ecc67; no new blocking findings",
+    "scope": "Independent Max full runtime/tests static review through de98ae2; no blocking findings; reviewer did not execute tests or operate device/environment",
     "blockingFindings": 0,
     "testsExecutedByReviewer": false,
     "githubMemberApproval": false,
-    "githubCommentReview": "https://github.com/zewbby/HnuHole/pull/31#pullrequestreview-5580961407"
+    "githubCommentReview": "https://github.com/zewbby/HnuHole/pull/31#pullrequestreview-5581356933"
   },
   "android2005": {
-    "status": "PENDING",
+    "status": "SCOPED_PASS_WITH_D04_D05_FAIL",
     "owner": "新版列表 Android 验收与交付",
     "required": [
       "FA-D03 contrast",
@@ -143,18 +143,19 @@
     "commentAcceptedDrop": "PASS actual202/drop35.90s/original command recovery single comment; root+reply count2 then root delete0 in feed/detail and seven SQL checks"
   },
   "ci": {
-    "head": "c90b51022a0ac02c155ea3e19b0f6992ef2af709",
+    "head": "de98ae2b5212faece784498017c1133f9765425b",
     "status": "ALL_7_SUCCESS_SNAPSHOT_RECHECK_FINAL_DELIVERY_HEAD",
     "workflowRuns": {
-      "Collaboration": 39374806949,
-      "Feed UI": 39374806893,
-      "Post images": 39374806932,
-      "Comments backend text": 39374806940,
-      "Comments core": 39374806987,
-      "Report moderation": 39374806904,
-      "Android prerelease": 39374806900
+      "Collaboration": 39378915143,
+      "Feed UI": 39378678751,
+      "Post images": 39378678791,
+      "Comments backend text": 39378678755,
+      "Comments core": 39378678717,
+      "Report moderation": 39378678675,
+      "Android prerelease": 39378678648
     },
-    "scope": "Pre-repair c90 snapshot only; all applicable CI must run on repaired final delivery HEAD"
+    "realFeedStep": "PASS shipped Dart transport to real C HTTPS and isolated PostgreSQL; job118482496831 step8",
+    "scope": "Repaired de98ae2 source all7 SUCCESS; final documentation delivery commit must separately satisfy all applicable CI before Ready/merge"
   },
   "finalMainCandidate": {
     "status": "NOT_RUN_WAIT_AUTHORIZED_MERGE"
@@ -521,8 +522,7 @@
     "scope": "Read-only evidence; soft deletion leaves body stored; Android UI root+reply feed/detail0-to2-to0 independently reported"
   },
   "currentDeviceBlockers": [
-    "FA-D04 old My window remains access-closed after B login",
-    "FA-D05 old Feed window remains access-closed after503 recheck /401 login"
+    "FA-D05 full2006 recheck pending;401 path still under device test"
   ],
   "routeRecovery": {
     "baseline": "c90b51022a0ac02c155ea3e19b0f6992ef2af709",
@@ -546,7 +546,7 @@
       "503 rechecks original token with0 password logins;401 clears then password-login new token"
     ],
     "review": "PASS independent Max static full implementation diff; reviewer did not execute tests or operate device/environment; not GitHub member approval",
-    "deviceRetest": "PENDING_NEW2006",
+    "deviceRetest": "2006 D04 two-way old My and real B publication PASS; D05 503 original Feed recovery PASS,401 and final conclusion pending",
     "oldMyScreenshot": {
       "path": "docs/design/feed-interactions-ui/assets/android-2005-old-my-window.png",
       "sha256": "af049f414106892f8be362092bf79f001a2aa5dafcbddaf6ebadab2450acafa4",
@@ -580,12 +580,22 @@
     }
   ],
   "candidate2006": {
-    "status": "NOT_BUILT_WAIT_REVIEW",
+    "status": "BUILD_SIGNATURE_HASH_PASS_ANDROID_INSTALLED_RETEST_IN_PROGRESS",
     "versionCode": 2026102006,
     "mode": "debug",
     "entrypoint": "lib/main.dart",
     "sameSignatureAs2005": true,
-    "environment": "original shared C51245 V49747 and CA; product c923fa5a C21V4"
+    "environment": "original shared C51245 V49747 and CA; product c923fa5a C21V4",
+    "source": "de98ae2b5212faece784498017c1133f9765425b",
+    "sourceTree": "c4c4ded1a20418b29ec70824e39fec3b8c1eca51",
+    "path": "apps/mobile/build/feed-candidates/feed-ui-route-de98ae2-2026102006.apk",
+    "bytes": 98793000,
+    "sha256": "05ecaa699c0c3e5ebf411cbf2f0a6c1ebe883548b29615ce31b10d277b44ddc8",
+    "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+    "kernelSha256": "aa6256813ae93f7d7d18c98aef3d0f9b1d91eda40c52039760b97bd99d1f82aa",
+    "notFinalMainCandidate": true,
+    "publicDefinesSha256": "f7d52b05297121684c89e643480ce4a5f2e0ab1b4fed165b4d6a2f1f431c7862",
+    "publicCaSha256": "57487d56e2d50327bfbf2ca9bb0db4952a050efef6c4fb85ac9990ffbf9cbda4"
   },
   "sharedProbeAfterRouteRepair": {
     "status": "PASS",
@@ -612,5 +622,74 @@
     ],
     "cas": "PASS",
     "media": "PASS"
+  },
+  "historicalHostChecksScope": "hostChecks and runtimeAndTestInputs preserve pre-route-repair ca38 snapshot; current app routeRecoveryHostChecks and routeRecoveryRuntimeInputs are de98ae2; viewer source unchanged",
+  "android2006": {
+    "status": "RETEST_IN_PROGRESS",
+    "source": "de98ae2b5212faece784498017c1133f9765425b",
+    "versionCode": 2026102006,
+    "independentlyVerifiedInstalledAndPulledHash": true,
+    "owner": "新版列表 Android 验收与交付",
+    "oldMySwitch": "PASS B-to-A and A-to-B original My immediately shows current identity/posts; normal B My navigation published one real technology post, feed/detail ownership agrees",
+    "lateOldAccountRequest": {
+      "status": "PASS_REAL_C_REJECTION_AND_SQL_ACCOUNT_ISOLATION_ONLY",
+      "ruleId": "9bdadffb1cba48cc917ca4e2d465036a",
+      "operatorReleaseAfterHitSeconds": 68.224,
+      "releaseAtUtc": "2026-10-20T06:20:02.041584Z",
+      "upstreamAtUtc": "2026-10-20T06:20:02.099624Z",
+      "upstreamStatus": 401,
+      "sqlChecksPassed": 11,
+      "appCallbackDeliveryClaimed": false,
+      "scope": "A gen6 logout and normal UI B gen8 login before manual release; A favorite/version and B false/false/version unchanged, A blocked technology and B empty unchanged. Old socket transport closed after15s; no claim401 delivered to Dart callback.",
+      "receipt": "device-account-shared2006-ab-old-request-after-release.json",
+      "receiptSha256": "348fdc5ba31f94a385f79be5b59f563162e428e2728a2d99c84fd3a606c2ac26"
+    },
+    "originalFeed503": "PASS normal UI original-token recheck without credentials/root, returns usable original Feed; rebuilt header recommended; same-session SQL receipt pending",
+    "myPublication": {
+      "status": "PASS_DEVICE_AND_10_READ_ONLY_SQL_CHECKS",
+      "receipt": "device-post-shared2006-my-route-publication.json",
+      "receiptSha256": "9c6f1e53352156b087e600e19a9ce1390e554d3f6c42b0d5be2752e2c4c03c7e",
+      "scope": "Normal UI B My to technology publication; unique PUBLISHED post/version1/attempt1/CREATE ACCEPTED receipt1. Over15char title rejected locally before network, not product failure."
+    },
+    "publicRenders": [
+      {
+        "path": "docs/design/feed-interactions-ui/assets/android-2006-old-my-A-to-B-after-login.png",
+        "sha256": "513508df57d4d9b8ecd6504b658c4f4c1a6a63e72a99af4eeee8856e41ea5738",
+        "scope": "Actual2006 scoped repair render; Android cleared synthetic content for public use; frontend visually inspected"
+      },
+      {
+        "path": "docs/design/feed-interactions-ui/assets/android-2006-B503-original-feed-recovered.png",
+        "sha256": "9783eabb5c91a53f06284c8871bdf578e23ed1b1abfd3c7e5efb8b5b6e43f665",
+        "scope": "Actual2006 scoped repair render; Android cleared synthetic content for public use; frontend visually inspected"
+      }
+    ]
+  },
+  "composeSemanticsRepair": {
+    "affectedCandidate": 2026102006,
+    "severity": "P3",
+    "problem": "After switching vent to technology, FAB still announces vent; actual composer and write target already correct",
+    "change": "Production Feed passes current channel tooltip, or choose channel for recommended feed; optional presentation prop preserves existing callers",
+    "host": "Actual de98 runtime1FAIL; restored repaired bytes; targeted1PASS, app590PASS/analyze0",
+    "logs": [
+      "apps/mobile/build-fa-p3-compose-baseline-red.log",
+      "apps/mobile/build-fa-p3-compose-green.log",
+      "apps/mobile/build-fa-p3-compose-all.log",
+      "apps/mobile/build-fa-p3-compose-analyze.log"
+    ],
+    "scope": "Actual Flutter semantics tooltip, header picker selects technology and FAB opens technology editor; no direct recommended FAB click or real publication in this host test",
+    "review": "Independent Max static no blockers; reviewer did not run tests or operate environment/device",
+    "deviceRetest": "PENDING_NEW2007",
+    "runtimeAndTestInputs": {
+      "apps/mobile/lib/src/posts/feed_screen.dart": "b661e2bf5e7a16a5b615857ad897c43289040f56cb747f4d872ff17ac08a41a5",
+      "apps/mobile/lib/src/posts/x_feed.dart": "dac9cb745b8be5158798d41a53c11b5ba2b0450c72592dd38eb7a010078a7bfa",
+      "apps/mobile/test/feed_ui_test.dart": "e1a802c118215d73670634feb0c1a2c13dc76691b92d37606de8abbc7297dacd"
+    }
+  },
+  "candidate2007": {
+    "status": "NOT_BUILT_WAIT_COMMIT",
+    "versionCode": 2026102007,
+    "mode": "debug",
+    "sameSignatureAs2006": true,
+    "notFinalMainCandidate": true
   }
 }

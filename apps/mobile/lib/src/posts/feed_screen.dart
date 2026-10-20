@@ -202,14 +202,15 @@ class _FeedScreenState extends State<FeedScreen> {
           );
         }
         final posts = _starting ? const <FeedPost>[] : c.timelineItems;
+        final selectedChannel = widget.channels
+            .where((channel) => channel.id == c.timelineChannelId)
+            .firstOrNull;
         return HhXPostFeed(
           channelTitle: widget.composeChannel.name,
-          feedTitle:
-              widget.channels
-                  .where((p) => p.id == c.timelineChannelId)
-                  .firstOrNull
-                  ?.name ??
-              '推荐',
+          feedTitle: selectedChannel?.name ?? '推荐',
+          composeTooltip: selectedChannel == null
+              ? '选择通道写帖子'
+              : '发布到${selectedChannel.name}',
           blockedCount: c.blockedChannelIds.length,
           posts: const [],
           mediaBuilder: (_, _) => const SizedBox.shrink(),

@@ -1,6 +1,12 @@
 # FEED-INTERACTIONS-UI-01
 
-## 当前收口（2026-10-20）
+## 当前收口增量（2026-10-20）
+
+FEED-INTERACTIONS-UI-01 收口增量（2026-10-20）：已整合main938f7e7（#30/#32/#33），共享产品c923fa5a/C0021/V0004，真实Dart7PASS。修复source de98ae2七类CI全SUCCESS、独立Max无阻断；同签debug2006已独立核验升级，D04双向旧My即时切账号及B原My真实科技发帖/唯一执行SQL10项PASS；D05原Feed503无凭据核对恢复PASS，401及最终设备结论仍待。旧A收藏在B登录后68.224秒手动释放，C真实401、SQL11项隔离PASS，旧连接已关不冒充App迟到回调。另发现P3 FAB仍读旧通道名，现修提示并实际语义/导航回归，原运行1FAIL→修后1PASS，App590PASS/分析0、Max无阻断；待新2007增量包。2005两FAIL保留原范围，2006结果不转算2007。用户授权门槛满足后Ready/merge#31，再从最终main递增构建同签候选；尚未合并或正式发布，前端不操作设备/更新环境。详见[本轮证据](../design/feed-interactions-ui-finalization-20261020.json)，下方为各版本历史快照。
+
+[2006旧My恢复实际图](../design/feed-interactions-ui/assets/android-2006-old-my-A-to-B-after-login.png)／[2006原Feed503恢复实际图](../design/feed-interactions-ui/assets/android-2006-B503-original-feed-recovered.png)。
+
+## 2006构建前与2005证据快照
 
 最新增量：2005实测发现FA-D04（B已登录但旧My仍捕获A窗口）和FA-D05（503原令牌核对/401重登成功后旧Feed仍失效），两项P2尚待新包复验。根路由现按账号/epoch重建My与Feed，保留旧页面/编辑器/异步回调围栏；目录另行更新props，同通道回用须匹配窗口及存活路由实例。新增真实生产root/AuthScreen/Session/PostController回归9项，原c90运行文件9FAIL、修后9PASS，App全量589PASS/分析0。准备新同签debug2006，最终main再递增；2005失败不改成PASS。[旧My实际失败图](../design/feed-interactions-ui/assets/android-2005-old-my-window.png)。完整范围及输入摘要见本轮机器记录的routeRecovery；原首次账号页退回经driver日志核实为过时IME判断发Back，非产品认证自动成功，独立D04/D05复现不变。
 

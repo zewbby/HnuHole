@@ -98,6 +98,7 @@ class HhXPostFeed extends StatelessWidget {
     this.avatarBuilder,
     this.accountAvatar,
     this.feedTitle,
+    this.composeTooltip,
     this.blockedCount = 0,
     required this.onPost,
     required this.onAuthor,
@@ -117,6 +118,7 @@ class HhXPostFeed extends StatelessWidget {
   final FeedAvatarBuilder? avatarBuilder;
   final Widget? accountAvatar;
   final String? feedTitle;
+  final String? composeTooltip;
   final int blockedCount;
   final ValueChanged<FeedPostView> onPost, onMenu;
   final ValueChanged<String> onAuthor;
@@ -346,7 +348,7 @@ class HhXPostFeed extends StatelessWidget {
         height: 64,
         child: FloatingActionButton(
           key: const ValueKey('feed-compose'),
-          tooltip: '发布到$channelTitle',
+          tooltip: composeTooltip ?? '发布到$channelTitle',
           onPressed: onCompose,
           elevation: 2,
           backgroundColor: p.action,

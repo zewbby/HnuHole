@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> FEED-INTERACTIONS-UI-01 续办（2026-10-20）：后端#30及隔离工具#32/#33已合入，前端整合最新main `938f7e7`。共享产品仍`c923fa5a`／C0021／V0004，严格Dart联调7PASS（50项1963字节、单图/三图、B旗标不变、旧412）。2005真机FA15赞藏丢响应/旧请求412、评论202恢复与0→2→0已限定PASS；新发现FA-D04旧My与FA-D05核对后旧Feed窗口失效，两项P2仍待新包复验。已按账号/epoch重建根路由且保留旧回调围栏，生产root自动回归原实现9FAIL→修复9PASS，App589PASS/分析0；Viewer116为未变包既有结果。准备同签debug2006，待相关设备无阻断、独立review及最终head CI全通过再按用户授权Ready/merge#31，并从最终main重建更高版本。自然同token续期设备、release/profile真实性能等未验范围独立保留；不操作设备/更新环境/正式发布。见[本轮证据](feed-interactions-ui-finalization-20261020.json)，下方为各自版本快照。
+> FEED-INTERACTIONS-UI-01 收口增量（2026-10-20）：已整合main938f7e7（#30/#32/#33），共享产品c923fa5a/C0021/V0004，真实Dart7PASS。修复source de98ae2七类CI全SUCCESS、独立Max无阻断；同签debug2006已独立核验升级，D04双向旧My即时切账号及B原My真实科技发帖/唯一执行SQL10项PASS；D05原Feed503无凭据核对恢复PASS，401及最终设备结论仍待。旧A收藏在B登录后68.224秒手动释放，C真实401、SQL11项隔离PASS，旧连接已关不冒充App迟到回调。另发现P3 FAB仍读旧通道名，现修提示并实际语义/导航回归，原运行1FAIL→修后1PASS，App590PASS/分析0、Max无阻断；待新2007增量包。2005两FAIL保留原范围，2006结果不转算2007。用户授权门槛满足后Ready/merge#31，再从最终main递增构建同签候选；尚未合并或正式发布，前端不操作设备/更新环境。详见[本轮证据](feed-interactions-ui-finalization-20261020.json)，下方为各版本历史快照。
 
 > FEED-INTERACTIONS-UI-01：2026-10-20，独立 feat/feed-interactions-ui／[Draft PR #31](https://github.com/zewbby/HnuHole/pull/31)，真实赞/藏/评论数与列表详情共享状态已接通；分析0、565宿主、HTTPS/SQL、7张渲染、同签APK限定PASS。360dp缺陷已由Android会话复验修复；2003忙态穿透/失权媒体跳位已修并升Max复核，2004独立0021候选两缺陷已真机复验PASS；FA15设备强丢响应BLOCKED。依赖后端#30尚未合并，main整合/最终CI待完成，2004评论0→2→0及7项只读SQL对照PASS，Android独立报告按各版本范围记录；不合并或发布，不升级完整模块。见[任务](../branches/feat-feed-interactions-ui.md)／[机器记录](feed-interactions-ui-verification-20261020.json)。
 
