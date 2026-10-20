@@ -253,10 +253,16 @@ class _HnuImageViewerState extends State<HnuImageViewer>
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) c.close(ViewerCloseReason.systemBack);
       },
-      child: Material(
-        color: widget.backgroundColor,
-        child: Theme(
-          data: ThemeData.dark(),
+      child: Theme(
+        data: ThemeData(
+          brightness: ThemeData.estimateBrightnessForColor(
+            widget.backgroundColor,
+          ),
+        ),
+        // Material supplies DefaultTextStyle, so it must be below the viewer's
+        // own theme rather than inheriting the page's foreground on a black UI.
+        child: Material(
+          color: widget.backgroundColor,
           child: SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) => Column(
