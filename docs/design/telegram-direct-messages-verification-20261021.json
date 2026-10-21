@@ -92,9 +92,8 @@
       "note": "Actual root two-round switching, original notices endpoint only, no mark-read or DM requests, home/channel state retained; preview native does not verify production authenticated navigation"
     },
     "remoteCI": {
-      "result": "IN_PROGRESS",
-      "checkedHead": "cd1fce865cbf1df023027ea54db213bbdea96aa7",
-      "note": "PR triggered nine jobs; subsequent documentation-only head must also pass before merge. Final live status is authoritative at PR."
+      "result": "FIX_PUSH_PENDING",
+      "note": "SDK setup fix changes only workflow; tested Flutter runtime remains cd1fce8. See PR live checks for final head."
     },
     "independentReview": "NOT_RUN",
     "ios": "NOT_RUN",
@@ -236,6 +235,13 @@
       "stage": "navigation regression",
       "result": "FAIL",
       "reason": "Legacy personal-page test located 首页 by visible text; shared icon-only nav provides tooltip. Corrected finder and reran full 702 plus focused36 PASS."
+    },
+    {
+      "stage": "GitHub Android toolchain setup",
+      "result": "FAIL",
+      "head": "8f8c6cd61fbde8e116299ce776974f5e4a99aa2e",
+      "job": "https://github.com/zewbby/HnuHole/actions/runs/39625860882/job/119311109867",
+      "reason": "setup-android v3 default packages includes removed tools package; explicitly request platform-tools and keep exact SDK/NDK packages in following step. Runtime source unchanged."
     }
   ],
   "handoff": "docs/design/telegram-direct-messages.md",
