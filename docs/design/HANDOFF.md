@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-22 AUTH-EMAIL-LOGIN-01／[PR #45](https://github.com/zewbby/HnuHole/pull/45) 已合入main `6bb59fa`：**真实QQ校邮注册与已有账号验证码登录接通，vivo原账号／唯一会话／冷启动恢复限定PASS；最终head全部9类远端workflow成功，独立agent审查无阻断（非GitHub成员批准）。677项Flutter、分析0，正式SQL／HTTPS／恢复回滚通过；同签主体2143已生成，与合并main应用运行输入相同，USB断开待覆盖安装。开发包仍需电脑／WSL／USB在线，未正式发布。详见[交付记录](../branches/feat-email-auth-flow.md)。下方未合并／邮箱待接入均为旧时点记录。
+
 > **2026-10-21 AUTH-EMAIL-LOGIN-01（未合并，本机开发C/V已加载）：**真实校邮注册由用户完成，vivo已有账号邮箱OTP登录、原账号/唯一会话/冷启动恢复通过；新增用途隔离、227字节限时绑定证明、原操作待办及V迁移5/6，密码10位起支持英文标点且不接受空格。独立复核已修3项，完整验收/未验项见[分支交接](../branches/feat-email-auth-flow.md)，未正式发布。
 
 > **2026-10-21 AUTH-SMTP-01（未合并／本机开发V已加载）：**分支新增 QQ 465 TLS 与私有授权码配置向导，本地 Python／Go／SMTP race／build／vet PASS；本机开发V已备份切换QQ，TLS认证与就绪PASS，一次真实OTP接口202／SMTP持久SENT；校园实际收件用户确认PASS，验证码确认 NOT_RUN，既有账号邮箱登录 API 待实现。见[任务与验收记录](../branches/feat-smtp-real-delivery.md)。

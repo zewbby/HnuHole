@@ -4,7 +4,7 @@
 
 ## 状态与范围
 
-实现完成，独立同事审查三项已修并复核；尚未合并，已加载本机WSL开发服务并在vivo限定验收，未正式发布。当前需求与协议见[需求报告](../design/email-login-requirements-20261021.md)。旧独立需求报告工作区不改动。
+实现完成，独立同事审查三项已修并复核；PR #45已合入main `6bb59fa`，已加载本机WSL开发服务并在vivo限定验收；2143同签主体包待USB重连覆盖安装，未正式发布。当前需求与协议见[需求报告](../design/email-login-requirements-20261021.md)。旧独立需求报告工作区不改动。
 
 范围：A02运行配置/SMTP、A03/A06会话授权、A12/B01客户端认证入口；注册的用户名密码/恢复码由用户本人完成。新增V登录专用取码/确认、227字节环境和原操作绑定签名、C既有账号登录；用途隔离、幂等/过期、单会话/Gate/封禁注销复用、原生待办恢复、最小过期墓碑；密码10–128可见ASCII且旧凭据仍可验证；按用户删除冗余说明与统一“发送验证码”。
 
@@ -27,8 +27,18 @@ WSL升级前做V私有pg_dump、配置备份；仅前向迁移、替换C/V二进
 
 未验：iOS、正式部署、独立第三方安全/运营证据、所有设备矩阵和完整双机接替；未升级A02/A03/A06/A12整模块结论。真实校园邮箱人工收件确认仅沿用本轮用户确认，不将出站观察误写为再次人工确认。
 
-证据：[机器摘要](../design/validation/email-auth-20261021/verification.json)；交接 [HANDOFF](../design/HANDOFF.md)、[progress](../design/progress.md)、[模块表](../design/module-acceptance-handoff.md)、[台账](../design/module-acceptance-ledger.json)。下一步：最终检查/提交PR与CI；合并后同签主体APK交付。
+证据：[机器摘要](../design/validation/email-auth-20261021/verification.json)；交接 [HANDOFF](../design/HANDOFF.md)、[progress](../design/progress.md)、[模块表](../design/module-acceptance-handoff.md)、[台账](../design/module-acceptance-ledger.json)。下一步：vivo USB重连后保留数据覆盖安装2143，并做限定启动冒烟；完整双机/iOS/生产仍独立待验。
 
 ## 2026-10-22 远端回归补齐
 
 PR [#45](https://github.com/zewbby/HnuHole/pull/45) 的 e979f4f 远端 SQL/HTTPS 回归揭示共享注册 fixture 仍使用含空格的旧模拟密码，触发新建密码策略失败；已将注册、登录、恢复与审核探针的对应模拟输入同步为可见 ASCII 连字符形式，不改运行代码或既有密码验证兼容。原失败保留，修订后的最终远端检查待通过后再合并。677 项 Flutter 与同签 2026102143 APK 的运行输入未变化；vivo USB 当前断开，最终覆盖安装待连接。
+
+## 已合并与交付回执（2026-10-22）
+
+PR #45 已 Squash 合入 main `6bb59faaca2075d8ec1f05da284de7f10678b976`；最终审核 head `bd5943122958a056edd463f9223ec6e86a558f41` 全部9类适用workflow成功，PR元数据更新另触发的协作检查也成功。独立agent定点审查无阻断，不冒充GitHub成员批准。合并文件树与审核head完全一致。
+
+本机补跑真实隔离PostgreSQL／HTTPS注册、恢复凭据及独立Gate 5项PASS。feed完整runner首次补跑仅两项图片校验因Windows挂载脚本777权限失败，其余PASS；脚本复制到Linux本任务私有600路径后只补跑受影响CommentBusiness SQL／HTTPS，PASS，Dart／设备专用入口未配置而SKIP；远端已配置的完整对应链路PASS。原失败保留，无权限策略放宽。
+
+主体同签APK2143已生成，SHA256 `d0f56def5bdb5dbaf788ddbc4bf5376cf028c04ba97c2b2e7ad28ccee59d7c37`，源75427b0；与合并main的App／原生运行输入比较相同，非声称在合并SHA重编。2142等价应用代码已在vivo限定实测，2143因USB断开待保数据覆盖安装。QQ直连V和原C已加载，出站临时取码观察器已关闭。电脑／WSL／USB依赖及未正式发布边界仍有效。
+
+本次文档补充使用 `docs/email-auth-delivery`，不递归登记自身PR。
