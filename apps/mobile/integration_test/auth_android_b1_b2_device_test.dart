@@ -920,7 +920,7 @@ Future<void> _talkback(
       seconds: 180,
     );
     final code = controller.recoveryCode!;
-    await tester.ensureVisible(find.text('我已保存，隐藏原码并确认'));
+    await tester.ensureVisible(find.textContaining('我已保存，'));
     await tester.pump(const Duration(milliseconds: 200));
     await publicStage('ni-talkback-hide', ['hide']);
     await publicWait(

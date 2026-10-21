@@ -99,6 +99,10 @@ class AuthFlows extends ChangeNotifier {
   String? get username => _username;
   String? get resetUsername => _username;
   DateTime? get otpWaitUntil => _otpWaitUntil;
+
+  /// Exact address of the existing OTP operation, including after restoration.
+  String? get registrationEmail =>
+      _map(_store.current?.registration?['request'])?['email'] as String?;
   ClosureStatus? get closureStatus => _closureStatus;
   bool get canRestartOtpVerification {
     final state = _store.current;
@@ -1176,7 +1180,11 @@ class AuthFlows extends ChangeNotifier {
     });
   }
 
-  Future<void> _recordClosure(String id, ClosureStatus status, int epoch) async {
+  Future<void> _recordClosure(
+    String id,
+    ClosureStatus status,
+    int epoch,
+  ) async {
     await _store.update((latest) {
       final pending = latest.pendingClosure;
       if (pending?['closureId'] != id) {

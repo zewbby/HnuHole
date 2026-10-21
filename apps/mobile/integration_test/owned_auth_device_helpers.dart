@@ -57,7 +57,7 @@ Future<String> registerOwned(
   ) {
     final flows = tester.widget<AuthScreen>(find.byType(AuthScreen)).flows;
     if (flows.status == AuthFlowStatus.otpConfirmationPending) {
-      await tapOwned(tester, find.text('核对校邮确认结果'));
+      await tapOwned(tester, find.byTooltip('核对校邮确认结果'));
       await waitOwned(
         tester,
         () => !flows.busy,
@@ -88,7 +88,9 @@ Future<String> registerOwned(
     await inputOwned(tester, 'registration-otp', otp);
     await tapOwned(
       tester,
-      find.text(originalConfirmation ? '使用原验证码继续确认' : '确认验证码'),
+      (originalConfirmation
+          ? find.text('使用原验证码继续确认')
+          : find.byTooltip('确认验证码')),
     );
     await waitOwned(
       tester,
@@ -101,7 +103,7 @@ Future<String> registerOwned(
   }
   await inputOwned(tester, 'registration-username', username);
   await inputOwned(tester, 'registration-password', password);
-  await tapOwned(tester, find.text('生成并保存恢复码'));
+  await tapOwned(tester, find.byTooltip('生成并保存恢复码'));
   await waitOwned(
     tester,
     () => find
@@ -112,12 +114,14 @@ Future<String> registerOwned(
   );
   final recovery = tester
       .widget<Text>(find.byKey(const ValueKey('displayed-recovery-code')))
-      .data!;
+      .data!
+      .replaceAll('\n', '');
   await onRecoveryPrepared?.call(recovery);
-  await tapOwned(tester, find.text('我已保存，隐藏原码并确认'));
+  await tapOwned(tester, find.textContaining('我已保存，'));
   await inputOwned(tester, 'recovery-confirmation', recovery);
   final auth = tester.widget<AuthScreen>(find.byType(AuthScreen));
   await tapOwned(tester, find.text('确认恢复码并创建账号'));
+  await tapOwned(tester, find.byKey(const ValueKey('registration-finish')));
   try {
     await waitOwned(
       tester,

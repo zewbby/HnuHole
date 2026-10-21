@@ -1,0 +1,73 @@
+{
+  "task": "AUTH-REGISTER-IMPLEMENT-03",
+  "date": "2026-10-21",
+  "branch": "feat/registration-wizard-ui",
+  "base": "a746fa86b17689308f36ef66addab624a5b32656",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/42",
+  "design": "docs/design/auth-flow-final/registration-v3/verification.json",
+  "checks": [
+    {
+      "command": "flutter analyze --no-pub",
+      "result": "PASS",
+      "issues": 0
+    },
+    {
+      "command": "flutter test --no-pub --concurrency=2 --reporter expanded",
+      "result": "PASS",
+      "passed": 668
+    },
+    {
+      "command": "flutter test --no-pub --dart-define=AUTH_UI_QA_FONT=<system-Chinese> --dart-define=AUTH_UI_QA_MONO_FONT=<Consolas> --dart-define=AUTH_UI_QA_ICON_FONT=<MaterialIcons> --dart-define=AUTH_UI_QA_SERIF_FONT=<Georgia> --dart-define=AUTH_UI_QA_DIR=build/registration-ui-render test/auth_screen_test.dart",
+      "result": "PASS",
+      "passed": 20
+    },
+    {
+      "command": "flutter build apk --debug --no-pub --target-platform android-arm64 -P kotlin.incremental=false -P kotlin.compiler.execution.strategy=in-process --build-number 2026102131 --build-name 0.1.0-registration --dart-define=<inherited-public-C-and-V>",
+      "result": "PASS",
+      "scope": "premerge compile check, not final main delivery; no physical device claim"
+    }
+  ],
+  "coverage": [
+    "10px progress and 3 stages",
+    "existing strict campus suffix and OTP continuation",
+    "known OTP request cooldown permits correcting address; changed address cannot confirm old request",
+    "once-only recovery code and explicit full-code clipboard copy",
+    "clipboard failure feedback; no automatic clipboard writes; secrets not stored by UI",
+    "confirmation required before commit; page stays for optional passkey after session accept",
+    "passkey action routes to existing password-required native management; no fake completion",
+    "finish arrow calls existing authenticated destination",
+    "375px light / 320px dark at 1.6 text scale, scrollable content; copy touch size >=48",
+    "existing recovery, closure, authorization, community/navigation tests"
+  ],
+  "review": {
+    "result": "NO_BLOCKING_FINDINGS_AFTER_FIXES",
+    "kind": "independent agent, not GitHub member approval",
+    "fixed": [
+      "known OTP email correction",
+      "legacy real-integration selectors and full displayed-code normalization",
+      "wait for actual button body enabled before finish in device helpers"
+    ],
+    "independentTests": "NOT_RUN; reviewer used code inspection"
+  },
+  "scope": "UI and existing registration flows only; no new backend or email login",
+  "notRun": [
+    "physical device and actual email",
+    "native Passkey ceremony",
+    "iOS",
+    "production deployment"
+  ],
+  "sourceSha256": {
+    "apps/mobile/lib/src/auth/auth_screen.dart": "fd747f337b9d175f1fd8b868977f52d961e72f9a2844684a885f76a9bf542b11",
+    "apps/mobile/lib/src/auth/auth_flows.dart": "eeaca139a75a73dcc1856131421ee5a26d5db72baa553ff9fea66512f8ad022e",
+    "apps/mobile/lib/src/auth/auth_presentation.dart": "f4c192d6722fef4e8ab94f616819ccc5663d647b0d5a0dff2cc22b21d13d1d3c"
+  },
+  "screenshots": {
+    "registration-account-320.png": "acce608d39051a16705ce134f2019302d1bd274039aed7d619a641e726992d31",
+    "registration-account-375.png": "a1c897fb44fec09f7f7e3b036c0ec6642a630500ebf49324905a50a038d197bd",
+    "registration-complete-320.png": "18751e066be3fb7172f4b3471122ed4ec9021eddb719bdba795c4df6cbb4f6b6",
+    "registration-complete-375.png": "57e5539c93444d34382b729f41d844403f446240cb514b9490111950f39ab26c",
+    "registration-email.png": "3884fef05f79d350af9868323bf0e00af9841e49e627bf15adfd2e7d74db84ae",
+    "registration-recovery-320.png": "54fb1c6aae48dd120825c13985bcc1b900bc1d849a2f1b2cde0753723d2c92f4",
+    "registration-recovery-375.png": "1ba07c0f68817c747f00f07693458b5ca548796d00ab9c56e4a955e9ef597ed1"
+  }
+}

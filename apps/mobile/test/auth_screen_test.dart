@@ -44,6 +44,7 @@ class _Channels implements ChannelRepository {
 class _Api implements AuthApi {
   int logins = 0;
   int otpRequests = 0;
+  int otpRetrySeconds = 60;
   int registrations = 0;
   int resets = 0;
   int revocations = 0;
@@ -95,7 +96,7 @@ class _Api implements AuthApi {
     submittedEmail = email;
     return OtpRequestAccepted(
       flowId: AuthCrypto.randomEncoded(32),
-      retryAfterSeconds: 60,
+      retryAfterSeconds: otpRetrySeconds,
     );
   }
 
@@ -195,6 +196,8 @@ class _Harness {
     bool dark = false,
     AuthPresentationController? presentation,
     Widget? home,
+    VoidCallback? onAuthenticated,
+    VoidCallback? onManageSecurity,
   }) async {
     const qaFont = String.fromEnvironment('AUTH_UI_QA_FONT');
     if (qaFont.isNotEmpty) {
@@ -209,6 +212,7 @@ class _Harness {
             const String.fromEnvironment('AUTH_UI_QA_ICON_FONT'),
           ),
           ('serif', const String.fromEnvironment('AUTH_UI_QA_SERIF_FONT')),
+          ('monospace', const String.fromEnvironment('AUTH_UI_QA_MONO_FONT')),
         ]) {
           if (filename.isEmpty) continue;
           final font = await File(filename).readAsBytes();
@@ -243,7 +247,14 @@ class _Harness {
                     child: child!,
                   ),
           ),
-          home: home ?? AuthScreen(sessions: sessions, flows: flows),
+          home:
+              home ??
+              AuthScreen(
+                sessions: sessions,
+                flows: flows,
+                onAuthenticated: onAuthenticated,
+                onManageSecurity: onManageSecurity,
+              ),
         ),
       ),
     );
@@ -276,7 +287,11 @@ Future<void> _snapshot(WidgetTester tester, String name) async {
 }
 
 Future<void> _tap(WidgetTester tester, String text) async {
-  final finder = text == '登录并进入'
+  final finder = text == '返回登录'
+      ? find.byTooltip('返回登录')
+      : text == '生成并保存恢复码' || text == '确认验证码'
+      ? find.byKey(const ValueKey('registration-next'))
+      : text == '登录并进入'
       ? find.byKey(const ValueKey('login-submit'))
       : find.text(text);
   await tester.ensureVisible(finder);
@@ -307,6 +322,271 @@ Future<void> _seedEligibility(_Harness h) async {
 }
 
 void main() {
+  testWidgets(
+    'known OTP cooldown permits correcting email and confirming only its current request',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 812);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final h = _Harness();
+      h.api.otpRetrySeconds = 0;
+      await h.mount(tester);
+      await _tap(tester, '创建账号');
+      await _snapshot(tester, 'registration-email');
+      await tester.enterText(
+        find.byKey(const ValueKey('registration-email')),
+        'mistyped',
+      );
+      await _tap(tester, '获取验证码');
+      expect(h.flows.status, AuthFlowStatus.otpRequested);
+      await tester.enterText(
+        find.byKey(const ValueKey('registration-email')),
+        'corrected',
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const ValueKey('registration-next')),
+            )
+            .onPressed,
+        isNull,
+      );
+      await _tap(tester, '获取验证码');
+      expect(h.api.otpRequests, 2);
+      expect(h.api.submittedEmail, 'corrected@hainanu.edu.cn');
+      expect(
+        tester
+            .widget<TextFormField>(
+              find.byKey(const ValueKey('registration-email')),
+            )
+            .controller!
+            .text,
+        'corrected',
+      );
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const ValueKey('registration-next')),
+            )
+            .onPressed,
+        isNotNull,
+      );
+      await _tap(tester, '返回登录');
+      await _tap(tester, '创建账号');
+      expect(
+        tester
+            .widget<TextFormField>(
+              find.byKey(const ValueKey('registration-email')),
+            )
+            .controller!
+            .text,
+        'corrected',
+      );
+      await h.finish(tester);
+    },
+  );
+
+  for (final (width, dark, scale) in [
+    (375.0, false, 1.0),
+    (320.0, true, 1.6),
+  ]) {
+    testWidgets(
+      'registration security, copy and explicit finish at $width / $scale',
+      (tester) async {
+        tester.view.physicalSize = Size(width, 812);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        final h = _Harness();
+        await _seedEligibility(h);
+        var completed = 0, securityOpened = 0;
+        final copies = <String>[];
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          (call) async {
+            if (call.method == 'Clipboard.setData') {
+              copies.add((call.arguments as Map)['text'] as String);
+            }
+            return null;
+          },
+        );
+        addTearDown(
+          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            SystemChannels.platform,
+            null,
+          ),
+        );
+        await h.mount(
+          tester,
+          dark: dark,
+          scale: scale,
+          onAuthenticated: () => completed++,
+          onManageSecurity: () => securityOpened++,
+        );
+        await _tap(tester, '创建账号');
+        expect(
+          tester
+              .widget<LinearProgressIndicator>(
+                find.byType(LinearProgressIndicator),
+              )
+              .minHeight,
+          10,
+        );
+        expect(
+          tester
+              .widget<LinearProgressIndicator>(
+                find.byType(LinearProgressIndicator),
+              )
+              .value,
+          closeTo(2 / 3, .001),
+        );
+        await tester.enterText(
+          find.byKey(const ValueKey('registration-username')),
+          'campus_echo',
+        );
+        await tester.enterText(
+          find.byKey(const ValueKey('registration-password')),
+          'an independent password',
+        );
+        tester.testTextInput.hide();
+        await _snapshot(tester, 'registration-account-${width.toInt()}');
+        await _tap(tester, '生成并保存恢复码');
+        expect(tester.takeException(), isNull);
+        expect(copies, isEmpty);
+        expect(
+          tester
+              .widget<LinearProgressIndicator>(
+                find.byType(LinearProgressIndicator),
+              )
+              .value,
+          1,
+        );
+        expect(
+          tester
+              .widget<TextButton>(
+                find.byKey(const ValueKey('registration-passkey')),
+              )
+              .onPressed,
+          isNull,
+        );
+        final box = tester.getRect(
+          find
+              .ancestor(
+                of: find.byKey(const ValueKey('displayed-recovery-code')),
+                matching: find.byType(Stack),
+              )
+              .first,
+        );
+        final copy = find.byKey(
+          const ValueKey('copy-registration-recovery-code'),
+        );
+        expect(box.contains(tester.getCenter(copy)), isTrue);
+        expect(tester.getSize(copy).width, greaterThanOrEqualTo(48));
+        await _snapshot(tester, 'registration-recovery-${width.toInt()}');
+        await tester.ensureVisible(copy);
+        await tester.tap(copy);
+        await tester.pumpAndSettle();
+        expect(copies, [_savedCode]);
+        expect(find.textContaining('恢复码已复制'), findsOneWidget);
+        expect(h.vault.value, isNot(contains(_savedCode)));
+        await _tap(tester, '我已保存，继续确认');
+        expect(
+          find.byKey(const ValueKey('displayed-recovery-code')),
+          findsNothing,
+        );
+        expect(
+          find.byKey(const ValueKey('copy-registration-recovery-code')),
+          findsNothing,
+        );
+        expect(h.flows.recoveryCode, isNull);
+        await _tap(tester, '确认恢复码并创建账号');
+        expect(h.api.registrations, 0);
+        await tester.enterText(
+          find.byKey(const ValueKey('recovery-confirmation')),
+          _savedCode,
+        );
+        await _tap(tester, '确认恢复码并创建账号');
+        expect(h.sessions.isAuthenticated, isTrue);
+        expect(
+          completed,
+          0,
+          reason: 'Registration keeps the optional security stage open.',
+        );
+        expect(find.text('暂不设置'), findsNothing);
+        expect(find.text('恢复码已保存并确认'), findsOneWidget);
+        expect(h.vault.value, isNot(contains(_savedCode)));
+        final setup = find.byKey(const ValueKey('registration-passkey'));
+        await tester.ensureVisible(setup);
+        await tester.tap(setup);
+        await tester.pumpAndSettle();
+        expect(securityOpened, 1);
+        expect(completed, 0);
+        await _snapshot(tester, 'registration-complete-${width.toInt()}');
+        final finish = find.byKey(const ValueKey('registration-finish'));
+        await tester.ensureVisible(finish);
+        await tester.tap(finish);
+        await tester.pumpAndSettle();
+        expect(completed, 1);
+        expect(tester.takeException(), isNull);
+        await h.finish(tester);
+      },
+    );
+  }
+
+  testWidgets(
+    'copy failure gives feedback and returning to account hides the code',
+    (tester) async {
+      final h = _Harness();
+      await _seedEligibility(h);
+      await h.mount(tester);
+      await _tap(tester, '创建账号');
+      await tester.enterText(
+        find.byKey(const ValueKey('registration-username')),
+        'campus_echo',
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('registration-password')),
+        'an independent password',
+      );
+      await _tap(tester, '生成并保存恢复码');
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            throw PlatformException(code: 'copy-denied');
+          }
+          return null;
+        },
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+      await tester.tap(
+        find.byKey(const ValueKey('copy-registration-recovery-code')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('复制未成功'), findsOneWidget);
+      await tester.tap(find.byTooltip('返回登录'));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('registration-username')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('displayed-recovery-code')),
+        findsNothing,
+      );
+      expect(h.flows.recoveryCode, isNull);
+      expect(h.api.registrations, 0);
+      await h.finish(tester);
+    },
+  );
+
   testWidgets(
     'login method swaps in place and pending email cannot invoke C or V',
     (tester) async {
@@ -496,9 +776,9 @@ void main() {
     expect(find.text('Welcome back'), findsOneWidget);
     expect(find.text('Username'), findsOneWidget);
     await _tap(tester, 'Create an account');
-    expect(find.text('Verify campus email'), findsOneWidget);
+    expect(find.text('Your campus email'), findsOneWidget);
     expect(find.text('Get code'), findsOneWidget);
-    expect(find.text('Back to sign in'), findsOneWidget);
+    expect(find.byTooltip('Back to sign in'), findsOneWidget);
     await h.finish(tester);
     presentation.dispose();
   });
@@ -642,10 +922,16 @@ void main() {
         'an independent password',
       );
       await _tap(tester, '生成并保存恢复码');
-      expect(find.text(_savedCode), findsOneWidget);
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('displayed-recovery-code')))
+            .data!
+            .replaceAll('\n', ''),
+        _savedCode,
+      );
       expect(find.byKey(const ValueKey('recovery-confirmation')), findsNothing);
       expect(h.vault.value, isNot(contains(_savedCode)));
-      await _tap(tester, '我已保存，隐藏原码并确认');
+      await _tap(tester, '我已保存，继续确认');
       expect(find.text(_savedCode), findsNothing);
       expect(h.flows.recoveryCode, isNull);
       await tester.enterText(

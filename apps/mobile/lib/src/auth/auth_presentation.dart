@@ -360,6 +360,12 @@ class AuthWelcomeScreen extends StatelessWidget {
 }
 
 const authEnglish = <String, String>{
+  '你的校园邮箱': 'Your campus email',
+  '设置你的账号': 'Set up your account',
+  '保护你的账号': 'Protect your account',
+  '我已保存，继续确认': 'Saved; continue to confirmation',
+  '完成注册': 'Finish registration',
+
   '正在核对账号状态': 'Checking account status',
   '新密码': 'New password',
   '设置新密码并激活新恢复码': 'Set new password and activate recovery code',

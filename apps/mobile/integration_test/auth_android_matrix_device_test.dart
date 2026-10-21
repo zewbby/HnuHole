@@ -197,7 +197,7 @@ void main() {
                 find.byKey(const ValueKey('rotation-displayed-code')),
               )
               .data!;
-          await _tap(tester, find.text('我已保存，隐藏原码并确认'));
+          await _tap(tester, find.textContaining('我已保存，'));
           expect(
             find.byKey(const ValueKey('rotation-displayed-code')),
             findsNothing,
@@ -247,10 +247,11 @@ void main() {
               .widget<Text>(
                 find.byKey(const ValueKey('displayed-recovery-code')),
               )
-              .data!;
+              .data!
+              .replaceAll('\n', '');
           final nextPassword =
               'Matrix-${AuthCrypto.domainDigest('DEVICE-RESET-PASSWORD', utf8.encode('$runId-$phase'))}#8';
-          await _tap(tester, find.text('我已保存，隐藏原码并确认'));
+          await _tap(tester, find.textContaining('我已保存，'));
           await _input(tester, 'reset-new-password', nextPassword);
           await _input(tester, 'recovery-confirmation', code);
           await _tap(tester, find.text('设置新密码并激活新恢复码'));
