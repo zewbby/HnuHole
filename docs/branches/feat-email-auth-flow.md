@@ -28,3 +28,7 @@ WSL升级前做V私有pg_dump、配置备份；仅前向迁移、替换C/V二进
 未验：iOS、正式部署、独立第三方安全/运营证据、所有设备矩阵和完整双机接替；未升级A02/A03/A06/A12整模块结论。真实校园邮箱人工收件确认仅沿用本轮用户确认，不将出站观察误写为再次人工确认。
 
 证据：[机器摘要](../design/validation/email-auth-20261021/verification.json)；交接 [HANDOFF](../design/HANDOFF.md)、[progress](../design/progress.md)、[模块表](../design/module-acceptance-handoff.md)、[台账](../design/module-acceptance-ledger.json)。下一步：最终检查/提交PR与CI；合并后同签主体APK交付。
+
+## 2026-10-22 远端回归补齐
+
+PR [#45](https://github.com/zewbby/HnuHole/pull/45) 的 e979f4f 远端 SQL/HTTPS 回归揭示共享注册 fixture 仍使用含空格的旧模拟密码，触发新建密码策略失败；已将注册、登录、恢复与审核探针的对应模拟输入同步为可见 ASCII 连字符形式，不改运行代码或既有密码验证兼容。原失败保留，修订后的最终远端检查待通过后再合并。677 项 Flutter 与同签 2026102143 APK 的运行输入未变化；vivo USB 当前断开，最终覆盖安装待连接。

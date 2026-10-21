@@ -18,7 +18,7 @@ func e2ePrivacySignup(t *testing.T, s *e2eServices, name string) (token, account
 	ticketText := confirmed["registrationTicket"].(string)
 	installation := e2eInstallation(t)
 	intent := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/registration-intents", map[string]string{
-		"registrationTicket": ticketText, "username": name, "password": "separate community privacy audit password", "installationId": protocol.EncodeCanonicalBase64url(installation[:]),
+		"registrationTicket": ticketText, "username": name, "password": "separate-community-privacy-audit-password", "installationId": protocol.EncodeCanonicalBase64url(installation[:]),
 	}, nil, http.StatusCreated)
 	ticket, err := protocol.ParseRegistrationTicket(ticketText)
 	if err != nil {

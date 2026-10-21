@@ -137,7 +137,7 @@ func TestRealHTTPSCommentReportDartAndBrowserChainPostgres(t *testing.T) {
 	imagePath := "/api/v1/posts/" + post + "/comments/" + comment + "/images/" + row["image"].(map[string]any)["contentVersionId"].(string) + "/original"
 	certificates := s.cPublic.TLS.Certificates[0].Certificate
 	rootPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certificates[len(certificates)-1]})
-	fixture := map[string]any{"url": s.cPublic.URL, "certificatePem": string(rootPEM), "ownerToken": owner, "reporterToken": reporter, "reporterIdentityId": reportIdentity, "postId": post, "commentId": comment, "ownerUsername": "mod_live_owner", "ownerPassword": "separate community privacy audit password"}
+	fixture := map[string]any{"url": s.cPublic.URL, "certificatePem": string(rootPEM), "ownerToken": owner, "reporterToken": reporter, "reporterIdentityId": reportIdentity, "postId": post, "commentId": comment, "ownerUsername": "mod_live_owner", "ownerPassword": "separate-community-privacy-audit-password"}
 	report := runLiveGovernanceProbe(t, probe, fixture, "report")
 	caseID := report["caseId"].(string)
 	if node := os.Getenv("MODERATION_NODE"); node != "" {
@@ -155,7 +155,7 @@ func TestRealHTTPSCommentReportDartAndBrowserChainPostgres(t *testing.T) {
 			t.Fatal(e)
 		}
 		s.cPublic.Config.Handler = endpoints.Public
-		browserFixture := map[string]any{"url": s.cPublic.URL, "reviewerUsername": "mod_live_reviewer", "reviewerPassword": "separate community privacy audit password", "caseId": caseID, "commentId": comment, "playwrightModule": os.Getenv("MODERATION_PLAYWRIGHT_MODULE"), "browserExecutable": os.Getenv("MODERATION_BROWSER"), "outputDirectory": os.Getenv("MODERATION_BROWSER_OUTPUT")}
+		browserFixture := map[string]any{"url": s.cPublic.URL, "reviewerUsername": "mod_live_reviewer", "reviewerPassword": "separate-community-privacy-audit-password", "caseId": caseID, "commentId": comment, "playwrightModule": os.Getenv("MODERATION_PLAYWRIGHT_MODULE"), "browserExecutable": os.Getenv("MODERATION_BROWSER"), "outputDirectory": os.Getenv("MODERATION_BROWSER_OUTPUT")}
 		script := filepath.Join(sourceRoot, "apps", "admin", "test", "live-api-smoke.mjs")
 		runLiveGovernanceProbe(t, node, browserFixture, "browser", liveProbePath(t, node, script))
 	} else {
