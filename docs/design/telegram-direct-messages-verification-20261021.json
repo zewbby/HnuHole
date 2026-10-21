@@ -4,24 +4,33 @@
   "timeZone": "Asia/Shanghai",
   "branch": "feat/telegram-direct-messages",
   "baseline": "76af92b25eeba8bd5e93339be737314b3c35ea0b",
-  "scope": "Flutter presentation and isolated development preview only; production DM not integrated",
+  "scope": "Flutter messaging presentation, shared production root navigation, honest unavailable production DM destination and isolated preview UI/IME; no production DM backend",
   "productSourceInputs": {
     "apps/mobile/android/app/build.gradle.kts": "c06e9aff4a2a99d3a7fc1c842cac7208ffec5ee9bc5f4a9e8fecf767f2922ab8",
+    "apps/mobile/lib/main.dart": "05c8bdec28bd183ac369e8722bbb9fa12dbdee99778f828d8a462c1d28aeffc8",
     "apps/mobile/lib/src/messaging/direct_message_bubble.dart": "c8f7e51cc58370a3603f34778da8aef18791f92de927114f1d4384f08fa9baf5",
     "apps/mobile/lib/src/messaging/direct_message_chrome.dart": "4077defd70a7ac179b86ef9dd8a8489d78d8542594625c3f84bd84698a6b5be3",
-    "apps/mobile/lib/src/messaging/direct_message_composer.dart": "03552f6e5e2dfd8763b109862a2aa638f81ed281078016fafd396146a40d6380",
-    "apps/mobile/lib/src/messaging/direct_message_inbox.dart": "ca40604699f104a04e1715b3851bb0bea8dbf13cfc42c89f1899b272291a1590",
+    "apps/mobile/lib/src/messaging/direct_message_composer.dart": "05c1a9aa9db843a19b66acd3525160f4d82fa91922866d0891c8df906df2b252",
+    "apps/mobile/lib/src/messaging/direct_message_inbox.dart": "b778857f875c40bf2ea1c2b2b7c2659bcbbdbefa82cf9e8ebf758f1742f81e88",
     "apps/mobile/lib/src/messaging/direct_message_models.dart": "d38059b33a0d01e1323ed21b7ae8c789770990f8663e6418bb8b7c1991736d57",
-    "apps/mobile/lib/src/messaging/direct_message_screen.dart": "f7f9a4c7326dc09b9fc24497ba01bcd50094853ecb61cff772e24024d65d468d",
+    "apps/mobile/lib/src/messaging/direct_message_screen.dart": "1529e9087bf6b20f7c280a37c9571369d0f934424ca3cd3d3c71e32bd8c95cf8",
     "apps/mobile/lib/src/messaging/direct_message_timeline.dart": "0a4f329d5f54daf895aeeb298158baf6ba6aafd7c3bed50c232f8bdb4d4ddac9",
-    "apps/mobile/tool/direct_message_gallery.dart": "fa9faa4ec20dbdeceeccdacd8fe8ac3a429e6d7ad57e713c3d57c03507e4faaf",
-    "apps/mobile/tool/direct_message_preview.dart": "01ee0dc5640ce46b6d89ab7117da770f27b80ffa26e090f6c6a899bfe852a4eb",
-    "apps/mobile/tool/src/dm_preview_fixtures.dart": "fa8a507a72d044acf8acb1020e6b216c2ecf872fb15e4da1d29a9772f273a89e"
+    "apps/mobile/lib/src/messaging/direct_messages_unavailable.dart": "1f029d2c10e1751d93c2689b46823bea5cb7b7d4f34bd401da01e5b7eda3caef",
+    "apps/mobile/lib/src/navigation/app_navigation.dart": "fed7498aa0a169e6c47b9b2ee9f0b796ef757fa4edbf0a62fdb0e77c311fc5f8",
+    "apps/mobile/lib/src/posts/feed_screen.dart": "9353cd779edf07b1787d1718f8d4e2d87a9496f30482ffc324592019ec6c9573",
+    "apps/mobile/lib/src/posts/post_screens.dart": "29dde36cd4bd384185eb3d2eda7c2c376653a4fe96ec5e492ec0ca6a01ca76a4",
+    "apps/mobile/lib/src/posts/x_feed.dart": "918c6ae1ad082a9403424340cb252e6872e39971572ece71707646e624c82c24",
+    "apps/mobile/lib/src/system_notifications/notification_screens.dart": "97ca866f5e16a8770624f89eda5ff46396fdea0004b82cfbad0d12167f5221d6",
+    "apps/mobile/tool/direct_message_gallery.dart": "286b3cde723fe05dfaf59d837490d5c7226610455d7859b0e4f1cffa4338e869",
+    "apps/mobile/tool/direct_message_preview.dart": "009434f3350ecca712e0c1fe6e69980071e0cf3da87cc7d64653c2bbcf731206",
+    "apps/mobile/tool/src/dm_preview_fixtures.dart": "3388720b01b22441e57aabc9a2fd7ef5358190e79faf53c5ab8c355694b42c69"
   },
   "finalFocusedTestInputs": {
+    "apps/mobile/test/app_navigation_test.dart": "83aa7c2108d6ed65c969e92e9b9dce632fa5eeda1fd68a1ffd0ad5ddf729553d",
     "apps/mobile/test/direct_message_navigation_test.dart": "ea0b13e255d0edcb7f660787b6070cb229b8a82beb2d826f44eb8ee22619205e",
-    "apps/mobile/test/direct_message_preview_test.dart": "7e8ef7087a8ed6440975c4f7c19ee3f8a48601071cb1756844f46c332366cc35",
-    "apps/mobile/test/direct_message_screen_test.dart": "48149f09f7b96bb9f2680e88a3dd0a5e9f1cf8b1a4ef84fa330c10c6be49f32c"
+    "apps/mobile/test/direct_message_preview_test.dart": "806cfe99bacc95a03c8aebc4878a350b32c7a0a6614107b85db130f8fd4a74fc",
+    "apps/mobile/test/direct_message_screen_test.dart": "1e8eb35b05208e2bd381a761c0e00a2652e852a9c9bbfc1e6a998fa135bf6c2d",
+    "apps/mobile/test/login_home_navigation_test.dart": "54dbf9223463c6969f1c8b1615fe7ebd1a3115d56ca1dcc74ca9ec842d491b38"
   },
   "checks": {
     "analyze": {
@@ -31,35 +40,56 @@
     },
     "fullFlutter": {
       "result": "PASS",
-      "passed": 700,
-      "command": "flutter test --no-pub test --concurrency=2 --reporter expanded",
-      "note": "After this run only the optional render test debug-shadow cleanup changed; product inputs unchanged and final focused render tests rerun."
+      "passed": 702,
+      "command": "flutter test --no-pub test --concurrency=2 --reporter expanded"
     },
     "finalFocusedWithRenders": {
       "result": "PASS",
-      "passed": 34,
-      "command": "flutter test --no-pub test/direct_message_screen_test.dart test/direct_message_navigation_test.dart test/direct_message_preview_test.dart --reporter expanded",
+      "passed": 36,
+      "command": "flutter test --no-pub test/direct_message_screen_test.dart test/direct_message_navigation_test.dart test/direct_message_preview_test.dart test/app_navigation_test.dart --reporter expanded",
       "renderEnvironment": "HNUHOLE_DM_RENDER_DIR set; actual bundled fonts loaded"
     },
-    "productionBundle": {
+    "productionAndroidBuild": {
       "result": "PASS",
-      "command": "flutter build bundle --debug --no-pub",
-      "scope": "unchanged production main entry; does not integrate messaging"
+      "versionCode": 2026102155,
+      "command": "flutter build apk --debug --no-pub --build-name=0.1.0-dm-nav --build-number=2026102155",
+      "scope": "actual main with independent notification and unavailable DM roots; not installed over daily app"
     },
     "isolatedAndroidBuild": {
       "result": "PASS",
-      "command": "HNUHOLE_DM_PREVIEW=1 flutter build apk --debug --no-pub -t tool/direct_message_preview.dart --build-name=0.1.0-dm-preview --build-number=2026102153"
+      "command": "HNUHOLE_DM_PREVIEW=1 flutter build apk --debug --no-pub -t tool/direct_message_preview.dart --build-name=0.1.0-dm-preview --build-number=2026102156"
     },
     "androidDevice": {
-      "result": "BLOCKED",
+      "result": "PASS",
+      "scope": "Isolated preview UI/IME only, no actual DM network/storage acceptance",
       "model": "realme RMX3366",
       "android": "14",
       "screen": "1080x2400",
-      "reason": "Physical device remained Dozing/locked; isolated 2152 install returned -99 and package was not installed. Await human unlock and system installation confirmation. 2153 candidate has not been installed.",
-      "physicalIme": "NOT_RUN",
-      "uiAcceptance": "NOT_RUN",
+      "installedVersionCode": 2026102156,
+      "dailyAppVersionCodeUnchanged": 2026102142,
+      "uiAcceptance": "PASS",
+      "physicalIme": "PASS",
       "backendMessaging": "NOT_IMPLEMENTED",
-      "requestedUserAction": "Unlock connected phone and keep screen on, accept preview install prompt if shown."
+      "checks": [
+        "Four fixed root icons, outline unselected and blue fill selected, light/dark palettes",
+        "Native multiline IME avoidance and send target above keyboard (2156)",
+        "Chinese pinyin composing, committed 你好, menu with IME, back preserves draft, send remains unknown (2153 same chat sources)",
+        "Failed cancel preserves red state; confirm retries one original message and remains unknown (2156)",
+        "Load 20 older in-memory history items and return to newest original item 35 (2156)",
+        "First-contact sending identity selection does not automatically send (2156)"
+      ],
+      "notMeasured": [
+        "pixel-precise native scroll anchors",
+        "TalkBack",
+        "frame-time performance"
+      ],
+      "deviceLease": "released; stopped only preview package",
+      "logcat": "NOT_RUN: preview PID was absent when queried; no crash-free log claim"
+    },
+    "productionRootNavigation": {
+      "result": "PASS_HOST",
+      "test": "apps/mobile/test/app_navigation_test.dart",
+      "note": "Actual root two-round switching, original notices endpoint only, no mark-read or DM requests, home/channel state retained; preview native does not verify production authenticated navigation"
     },
     "remoteCI": "NOT_RUN",
     "independentReview": "NOT_RUN",
@@ -67,14 +97,42 @@
     "performanceBudget": "NOT_RUN"
   },
   "apk": {
-    "pathOutsideGit": "E:\\Hnuhole-env\\deliveries\\HnuHole-dm-preview-2026102153.apk",
+    "pathOutsideGit": "E:\\Hnuhole-env\\deliveries\\HnuHole-dm-preview-2026102156.apk",
     "applicationId": "org.hnuhole.hnuhole_mobile.dmpreview",
-    "versionCode": 2026102153,
-    "sha256": "7fc4af5134ed799d028eb5fa00a91762b905dca272459aaa73f71863fa0f1bb4",
-    "bytes": 184466067,
+    "versionCode": 2026102156,
+    "sha256": "04d81b9b652d890fc3fd3c8756e9ae034ac6f09a12a6888f6db7ec0e5ca906b9",
+    "bytes": 184470895,
     "signing": "ordinary development debug; not production signed"
   },
   "renders": {
+    "docs/design/telegram-direct-messages/assets/android-history-2156.png": {
+      "sha256": "c922bc10f0d1effeade757784253b4abafd26e5aab16c5369d251245323c8c68",
+      "kind": "Android physical device screenshot, isolated fixture preview"
+    },
+    "docs/design/telegram-direct-messages/assets/android-inbox-2156.png": {
+      "sha256": "ee5445734a362ce6972b387c4a8947deed1405bdc29b80ea7fc3b25d5a433f65",
+      "kind": "Android physical device screenshot, isolated fixture preview"
+    },
+    "docs/design/telegram-direct-messages/assets/android-inbox-dark-2156.png": {
+      "sha256": "58b314241e08d5d5ee13c2f15638d41f3ac9042df14f0184fe1689f8036d9bdd",
+      "kind": "Android physical device screenshot, isolated fixture preview"
+    },
+    "docs/design/telegram-direct-messages/assets/android-keyboard-2156.png": {
+      "sha256": "f228e422681c29997596f5b69d9df86776ce0f9107ba4dc5e6383d6a50f31a28",
+      "kind": "Android physical device screenshot, isolated fixture preview"
+    },
+    "docs/design/telegram-direct-messages/assets/android-menu-ime-2153.png": {
+      "sha256": "97e9f33c62b0a16f362f8103b9ea43454d37c6e00afd90da7c89d4b323f8dcf1",
+      "kind": "Android physical device screenshot, isolated fixture preview"
+    },
+    "docs/design/telegram-direct-messages/assets/android-notifications-2156.png": {
+      "sha256": "74fecdd30113de82b0c2377e99fdb4e276edf3873186c152837f7578941b3fab",
+      "kind": "Android physical device screenshot, isolated fixture preview"
+    },
+    "docs/design/telegram-direct-messages/assets/android-retry-2156.png": {
+      "sha256": "6616f88dddbdfcafbd75b8ae1799d7c69978ca454724280a82132e21ef4d9b9f",
+      "kind": "Android physical device screenshot, isolated fixture preview"
+    },
     "docs/design/telegram-direct-messages/assets/telegram-dm-dark-v2.png": {
       "sha256": "35f74031e51b69236ab0a89e84dd4d08d04eb8e619f00da5ad7440c12c3331ba",
       "kind": "Flutter host render, not Android screenshot"
@@ -92,7 +150,7 @@
       "kind": "Flutter host render, not Android screenshot"
     },
     "docs/design/telegram-direct-messages/assets/telegram-inbox-light.png": {
-      "sha256": "124329015bb0fb6fed70e3febd1f41b164275957aa99a7a7663523656569c424",
+      "sha256": "6922296386406768f2182d8d8c4e80538656caba944ba6e98249e4b5c19ab96f",
       "kind": "Flutter host render, not Android screenshot"
     }
   },
@@ -120,6 +178,26 @@
     "render-shadow-failure.txt": {
       "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\render-shadow-failure.txt",
       "sha256": "58fb8d6e2c15cf8fc038f0a154378ee9ff433c15c04b2775bf80c2c232a7727d"
+    },
+    "nav-analyze.txt": {
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\nav-analyze.txt",
+      "sha256": "2528ac89cf718f2140de87f5bf295dcf3f23c9c9928c5ff55b2c4945aede6ad6"
+    },
+    "nav-all-tests.txt": {
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\nav-all-tests.txt",
+      "sha256": "5202cb0fd058f8dfdcbd754caa046f2c270d644596c542f73a6623c4afc5afc1"
+    },
+    "nav-renders.txt": {
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\nav-renders.txt",
+      "sha256": "58a0df147e45bed48909b3f809a7b0ce36f6b68203d8bed295bc0d7409e749a0"
+    },
+    "nav-production-build.txt": {
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\nav-production-build.txt",
+      "sha256": "385f86f07e76771618479cc7ec809cfed0ce3ebe5b6e25e9e42fe872557a76a3"
+    },
+    "nav-preview-build.txt": {
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\nav-preview-build.txt",
+      "sha256": "0ad60000adf9ae10e6d989ec897bd1ee993ec88872b91cb4b32c14a094ab001e"
     }
   },
   "priorFailures": [
@@ -143,10 +221,121 @@
       "stage": "optional render test",
       "result": "FAIL",
       "reason": "Painting debug variable restored only in teardown after framework invariant check; fixed with try/finally before return and final 34 PASS."
+    },
+    {
+      "stage": "locked device install",
+      "result": "BLOCKED",
+      "versionCode": 2026102152,
+      "reason": "Returned -99 while device locked/Dozing. Following user retry, 2153 installed after system prompt, final navigation preview upgraded to 2156."
+    },
+    {
+      "stage": "navigation regression",
+      "result": "FAIL",
+      "reason": "Legacy personal-page test located 首页 by visible text; shared icon-only nav provides tooltip. Corrected finder and reran full 702 plus focused36 PASS."
     }
   ],
   "handoff": "docs/design/telegram-direct-messages.md",
   "pullRequest": null,
   "mainMerged": false,
-  "published": false
+  "published": false,
+  "previousQualification": {
+    "checks": {
+      "analyze": {
+        "result": "PASS",
+        "issues": 0,
+        "command": "flutter analyze --no-pub"
+      },
+      "fullFlutter": {
+        "result": "PASS",
+        "passed": 700,
+        "command": "flutter test --no-pub test --concurrency=2 --reporter expanded",
+        "note": "After this run only the optional render test debug-shadow cleanup changed; product inputs unchanged and final focused render tests rerun."
+      },
+      "finalFocusedWithRenders": {
+        "result": "PASS",
+        "passed": 34,
+        "command": "flutter test --no-pub test/direct_message_screen_test.dart test/direct_message_navigation_test.dart test/direct_message_preview_test.dart --reporter expanded",
+        "renderEnvironment": "HNUHOLE_DM_RENDER_DIR set; actual bundled fonts loaded"
+      },
+      "productionBundle": {
+        "result": "PASS",
+        "command": "flutter build bundle --debug --no-pub",
+        "scope": "unchanged production main entry; does not integrate messaging"
+      },
+      "isolatedAndroidBuild": {
+        "result": "PASS",
+        "command": "HNUHOLE_DM_PREVIEW=1 flutter build apk --debug --no-pub -t tool/direct_message_preview.dart --build-name=0.1.0-dm-preview --build-number=2026102153"
+      },
+      "androidDevice": {
+        "result": "BLOCKED",
+        "model": "realme RMX3366",
+        "android": "14",
+        "screen": "1080x2400",
+        "reason": "Physical device remained Dozing/locked; isolated 2152 install returned -99 and package was not installed. Await human unlock and system installation confirmation. 2153 candidate has not been installed.",
+        "physicalIme": "NOT_RUN",
+        "uiAcceptance": "NOT_RUN",
+        "backendMessaging": "NOT_IMPLEMENTED",
+        "requestedUserAction": "Unlock connected phone and keep screen on, accept preview install prompt if shown."
+      },
+      "remoteCI": "NOT_RUN",
+      "independentReview": "NOT_RUN",
+      "ios": "NOT_RUN",
+      "performanceBudget": "NOT_RUN"
+    },
+    "apk": {
+      "pathOutsideGit": "E:\\Hnuhole-env\\deliveries\\HnuHole-dm-preview-2026102153.apk",
+      "applicationId": "org.hnuhole.hnuhole_mobile.dmpreview",
+      "versionCode": 2026102153,
+      "sha256": "7fc4af5134ed799d028eb5fa00a91762b905dca272459aaa73f71863fa0f1bb4",
+      "bytes": 184466067,
+      "signing": "ordinary development debug; not production signed"
+    },
+    "productSourceInputs": {
+      "apps/mobile/android/app/build.gradle.kts": "c06e9aff4a2a99d3a7fc1c842cac7208ffec5ee9bc5f4a9e8fecf767f2922ab8",
+      "apps/mobile/lib/src/messaging/direct_message_bubble.dart": "c8f7e51cc58370a3603f34778da8aef18791f92de927114f1d4384f08fa9baf5",
+      "apps/mobile/lib/src/messaging/direct_message_chrome.dart": "4077defd70a7ac179b86ef9dd8a8489d78d8542594625c3f84bd84698a6b5be3",
+      "apps/mobile/lib/src/messaging/direct_message_composer.dart": "03552f6e5e2dfd8763b109862a2aa638f81ed281078016fafd396146a40d6380",
+      "apps/mobile/lib/src/messaging/direct_message_inbox.dart": "ca40604699f104a04e1715b3851bb0bea8dbf13cfc42c89f1899b272291a1590",
+      "apps/mobile/lib/src/messaging/direct_message_models.dart": "d38059b33a0d01e1323ed21b7ae8c789770990f8663e6418bb8b7c1991736d57",
+      "apps/mobile/lib/src/messaging/direct_message_screen.dart": "f7f9a4c7326dc09b9fc24497ba01bcd50094853ecb61cff772e24024d65d468d",
+      "apps/mobile/lib/src/messaging/direct_message_timeline.dart": "0a4f329d5f54daf895aeeb298158baf6ba6aafd7c3bed50c232f8bdb4d4ddac9",
+      "apps/mobile/tool/direct_message_gallery.dart": "fa9faa4ec20dbdeceeccdacd8fe8ac3a429e6d7ad57e713c3d57c03507e4faaf",
+      "apps/mobile/tool/direct_message_preview.dart": "01ee0dc5640ce46b6d89ab7117da770f27b80ffa26e090f6c6a899bfe852a4eb",
+      "apps/mobile/tool/src/dm_preview_fixtures.dart": "fa8a507a72d044acf8acb1020e6b216c2ecf872fb15e4da1d29a9772f273a89e"
+    },
+    "finalFocusedTestInputs": {
+      "apps/mobile/test/direct_message_navigation_test.dart": "ea0b13e255d0edcb7f660787b6070cb229b8a82beb2d826f44eb8ee22619205e",
+      "apps/mobile/test/direct_message_preview_test.dart": "7e8ef7087a8ed6440975c4f7c19ee3f8a48601071cb1756844f46c332366cc35",
+      "apps/mobile/test/direct_message_screen_test.dart": "48149f09f7b96bb9f2680e88a3dd0a5e9f1cf8b1a4ef84fa330c10c6be49f32c"
+    },
+    "note": "Historical pre-navigation stage; lock-screen blocker subsequently resolved."
+  },
+  "updatedAtUtc": "2026-10-21T15:23:02Z",
+  "hashNormalization": "Source inputs use UTF-8 bytes with CRLF normalized to LF; binary APK/screenshots/logs use raw bytes.",
+  "nativeLocalEvidence": {
+    "device\\history-older.xml": {
+      "sha256": "cd6135df78b2b3a9288f0b47c654944890aedcf87ae919a7757e35d0fe024fc5",
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\device\\history-older.xml"
+    },
+    "device\\history-return.xml": {
+      "sha256": "47263c826a4b4e5948a6dc5ffeafd9dd0dea5881e3bf4d42d313dfac14000106",
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\device\\history-return.xml"
+    },
+    "device\\identity-confirmed.xml": {
+      "sha256": "e553734575f1be480d748b6556a13c365d489b3ee61ee4c2f2c256b80c521439",
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\device\\identity-confirmed.xml"
+    },
+    "device\\multiline.xml": {
+      "sha256": "9f708d53d41deab0a098a22c713b7b9b1b689d76ae803a49a95ff861c6a9dd60",
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\device\\multiline.xml"
+    },
+    "device\\retry-cancel-2156.xml": {
+      "sha256": "4abd228a051f32a13b3b34b4d356d965fa352ff801a6aaca268f93cb9aed2aab",
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\device\\retry-cancel-2156.xml"
+    },
+    "device\\retry-confirmed-2156.xml": {
+      "sha256": "27b5713170b27c19443b5833793e184c02584ce1b0792f380da28a0c7e199c03",
+      "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\device\\retry-confirmed-2156.xml"
+    }
+  }
 }

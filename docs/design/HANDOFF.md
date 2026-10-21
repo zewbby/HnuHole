@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> **2026-10-21 DM-TELEGRAM-01：**`feat/telegram-direct-messages` 按用户指定不含 codex 前缀，基于 main `76af92b` 改造列表/聊天展示层。完整700/最终聚焦34含宿主渲染 PASS、分析0、生产bundle及独立APK2026102153构建PASS。真我锁屏，2152安装-99且未装、2153未装，真机UI/IME BLOCKED；用户解锁后先重新核对设备占用，再安装最终候选补验，验收后才推送/创建PR，当前无PR。主线私信后端/持久队列/本地聊天仓库仍未实现，不将内存预览接正式消息入口。见[任务](../branches/feat-telegram-direct-messages.md)、[报告](telegram-direct-messages.md)和[机器记录](telegram-direct-messages-verification-20261021.json)。
+> **2026-10-21 DM-TELEGRAM-01：**`feat/telegram-direct-messages` 基于 main `76af92b`，已完成 Telegram 私信展示组件及首页/消息/私信/我的四入口；消息铃铛与私信单气泡采用未选中线框、选中蓝色实心，沿用固定底栏。完整702/聚焦含渲染36 PASS、分析0、生产APK2155/隔离预览2156构建PASS；真我 RMX3366 Android14 实际 UI/IME 范围 PASS，早期锁屏安装阻塞已解除且保留历史失败。正式私信仅显示暂未开放，内存预览独立，真实私信API/持久队列/本地聊天仓库仍未实现，不升级B08/B09整模块验收。Draft PR待提交，独立review/远端CI待完成，未合并/发布。见[任务](../branches/feat-telegram-direct-messages.md)、[报告](telegram-direct-messages.md)和[机器记录](telegram-direct-messages-verification-20261021.json)。
 
 > **2026-10-21 PR37 主题整合补验：**综合2139切换主题红屏，真实根回归在原代码FAIL；e82844d保留base主题样式修复，同例1 PASS／全量664 PASS／分析0／源提交15远端检查成功，独立审查绑定e82844d无阻断。旧663与2126专项不代证新修复；综合真我主题与登录复测由总整合会话维护，最终设备结果及后继head CI须在PR37合并前核对，实际状态以PR回执为准。见[本轮记录](telegram-android-appearance.md)与机器证据themeIntegrationFix。下方a23/663“最终”等为被此覆盖的历史阶段，生产未发布。
 

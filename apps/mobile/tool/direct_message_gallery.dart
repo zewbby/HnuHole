@@ -4,6 +4,7 @@ import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_inbox.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_models.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_screen.dart';
+import 'package:hnuhole_mobile/src/navigation/app_navigation.dart';
 
 import 'src/dm_preview_fixtures.dart';
 
@@ -21,6 +22,7 @@ class DmPreviewApp extends StatefulWidget {
 
 class _DmPreviewAppState extends State<DmPreviewApp> {
   bool dark = false;
+  AppDestination destination = AppDestination.directMessages;
   DmIdentity identity = dmPreviewIdentities.first;
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -58,132 +60,103 @@ class _DmPreviewAppState extends State<DmPreviewApp> {
       ],
     ),
     home: Builder(
-      builder: (context) => HhDmInboxScreen(
-        scopeKey: 'preview/${identity.id}',
-        identity: identity,
-        identities: [
-          for (final i in dmPreviewIdentities)
-            DmInboxIdentity(i, unread: i.id == identity.id ? 0 : 2),
-        ],
-        onIdentitySelected: (value) => setState(() => identity = value),
-        entries: [
-          for (final (index, scene) in [
-            'normal',
-            'first-contact',
-            'failed',
-            'unknown',
-            'waiting',
-            'history',
-            'identity-lost',
-            'save-failed',
-          ].indexed)
-            DmInboxEntry(
-              id: scene,
-              selfIdentityId: identity.id,
-              recipient: DmIdentity(
-                id: 'preview-$scene',
-                name: [
-                  '海边的树',
-                  '科科',
-                  '图书馆同学',
-                  '晚潮',
-                  '风里的信',
-                  '云朵收集者',
-                  '旧相识',
-                  '山海',
-                ][index],
-              ),
-              preview: [
-                '[图片] 从这边走，树荫多一点。',
-                '还没有消息',
-                '发送失败，点击进入确认重试',
-                '消息结果待核对',
-                '等待对方回复',
-                '向上查看本地历史样例',
-                '对方身份已失效',
-                '部分记录未保存',
-              ][index],
-              time: index == 0 ? '21:56' : '昨天',
-              unread: index == 0 ? 3 : 0,
-              pinned: index == 0,
-              outgoingState: scene == 'failed'
-                  ? DmSendState.failed
-                  : scene == 'unknown'
-                  ? DmSendState.unknown
-                  : null,
-            ),
-        ],
-        onOpen: (target) => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => _ConversationDemo(scene: target.conversationId),
-          ),
-        ),
-        navigation: Material(
-          color: HhTelegramPalette.of(context).surface,
-          borderRadius: BorderRadius.circular(32),
-          elevation: 1,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () => showAboutDialog(
-                      context: context,
-                      applicationName: 'HnuHole 私信预览',
-                      children: [
-                        const Text('本包仅用于界面与键盘验收。消息、未读及历史均为内存样例，不代表真实收发。'),
-                      ],
-                    ),
-                    child: const Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Icon(Icons.home_outlined), Text('首页')],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: HhTelegramPalette.of(context).selection,
-                      borderRadius: BorderRadius.circular(28),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 6),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.chat_bubble_outline),
-                          Text(
-                            '消息',
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: TextButton(
-                    onPressed: () => setState(() => dark = !dark),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          dark
-                              ? Icons.light_mode_outlined
-                              : Icons.dark_mode_outlined,
-                        ),
-                        const Text('外观'),
-                      ],
-                    ),
-                  ),
-                ),
+      builder: (context) => destination != AppDestination.directMessages
+          ? _otherDestination(context)
+          : HhDmInboxScreen(
+              scopeKey: 'preview/${identity.id}',
+              identity: identity,
+              identities: [
+                for (final i in dmPreviewIdentities)
+                  DmInboxIdentity(i, unread: i.id == identity.id ? 0 : 2),
               ],
+              onIdentitySelected: (value) => setState(() => identity = value),
+              entries: [
+                for (final (index, scene) in [
+                  'normal',
+                  'first-contact',
+                  'failed',
+                  'unknown',
+                  'waiting',
+                  'history',
+                  'identity-lost',
+                  'save-failed',
+                ].indexed)
+                  DmInboxEntry(
+                    id: scene,
+                    selfIdentityId: identity.id,
+                    recipient: DmIdentity(
+                      id: 'preview-$scene',
+                      name: [
+                        '海边的树',
+                        '科科',
+                        '图书馆同学',
+                        '晚潮',
+                        '风里的信',
+                        '云朵收集者',
+                        '旧相识',
+                        '山海',
+                      ][index],
+                    ),
+                    preview: [
+                      '[图片] 从这边走，树荫多一点。',
+                      '还没有消息',
+                      '发送失败，点击进入确认重试',
+                      '消息结果待核对',
+                      '等待对方回复',
+                      '向上查看本地历史样例',
+                      '对方身份已失效',
+                      '部分记录未保存',
+                    ][index],
+                    time: index == 0 ? '21:56' : '昨天',
+                    unread: index == 0 ? 3 : 0,
+                    pinned: index == 0,
+                    outgoingState: scene == 'failed'
+                        ? DmSendState.failed
+                        : scene == 'unknown'
+                        ? DmSendState.unknown
+                        : null,
+                  ),
+              ],
+              onOpen: (target) => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) =>
+                      _ConversationDemo(scene: target.conversationId),
+                ),
+              ),
+              navigation: _navigation(),
             ),
+    ),
+  );
+
+  Widget _navigation() => HhAppNavigation(
+    selected: destination,
+    onSelected: (value) => setState(() => destination = value),
+  );
+
+  Widget _otherDestination(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: Text(switch (destination) {
+        AppDestination.home => '首页',
+        AppDestination.messages => '消息',
+        AppDestination.personal => '我的',
+        AppDestination.directMessages => '私信',
+      }),
+      actions: [
+        IconButton(
+          tooltip: '切换预览外观',
+          onPressed: () => setState(() => dark = !dark),
+          icon: Icon(
+            dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
           ),
         ),
+      ],
+    ),
+    body: Center(
+      child: Text(
+        destination == AppDestination.messages ? '预览未连接通知服务' : '请在日常 App 查看此页面',
       ),
     ),
+    bottomNavigationBar: _navigation(),
   );
 }
 

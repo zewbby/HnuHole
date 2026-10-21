@@ -16668,7 +16668,7 @@
       },
       "telegramDirectMessagePresentation20261021": {
         "rootLedgerEntry": "currentDirectMessagePresentation",
-        "scope": "独立展示组件与宿主回归；真实私信/本地持久化仍未实现，真机待解锁，完整模块结论不升级。"
+        "scope": "展示组件、独立导航与宿主回归/隔离预览真机UI/IME通过；真实私信/本地持久化仍未实现，完整模块结论不升级。"
       }
     },
     {
@@ -16693,7 +16693,7 @@
       },
       "telegramDirectMessagePresentation20261021": {
         "rootLedgerEntry": "currentDirectMessagePresentation",
-        "scope": "独立展示组件与宿主回归；真实私信/本地持久化仍未实现，真机待解锁，完整模块结论不升级。"
+        "scope": "展示组件、独立导航与宿主回归/隔离预览真机UI/IME通过；真实私信/本地持久化仍未实现，完整模块结论不升级。"
       }
     },
     {
@@ -40561,16 +40561,20 @@
     "task": "DM-TELEGRAM-01",
     "branch": "feat/telegram-direct-messages",
     "recordedOn": "2026-10-21",
-    "implementation": "PRESENTATION_ONLY",
+    "implementation": "PRESENTATION_AND_INDEPENDENT_ROOT_NAVIGATION",
     "fullModuleAcceptancePassed": false,
-    "flutterFull": 700,
-    "finalFocusedWithRenders": 34,
-    "native": "BLOCKED_LOCKED_DEVICE",
+    "flutterFull": 702,
+    "finalFocusedWithRenders": 36,
+    "native": "PASS_SCOPED_PREVIEW_UI_IME",
     "business": "NOT_IMPLEMENTED",
     "report": "docs/design/telegram-direct-messages.md",
     "verification": "docs/design/telegram-direct-messages-verification-20261021.json",
     "pullRequest": null,
     "mainMerged": false,
-    "published": false
+    "published": false,
+    "productionRoot": "PASS_HOST_NAVIGATION_WITH_UNAVAILABLE_DM",
+    "previewVersionCode": 2026102156,
+    "remoteCI": "NOT_RUN",
+    "independentReview": "NOT_RUN"
   }
 }

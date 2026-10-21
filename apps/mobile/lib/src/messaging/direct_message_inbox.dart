@@ -289,6 +289,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
     ];
     return Scaffold(
       backgroundColor: p.background,
+      bottomNavigationBar: widget.navigation,
       body: SafeArea(
         child: Column(
           children: [
@@ -298,7 +299,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      '消息',
+                      '私信',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
@@ -504,11 +505,6 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                 ],
               ),
             ),
-            if (widget.navigation != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 4, 18, 12),
-                child: widget.navigation!,
-              ),
           ],
         ),
       ),

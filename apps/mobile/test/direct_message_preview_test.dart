@@ -8,7 +8,41 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../tool/direct_message_gallery.dart';
 
+import 'package:hnuhole_mobile/src/navigation/app_navigation.dart';
+
 void main() {
+  testWidgets(
+    'four fixed destinations distinguish notifications and private messages',
+    (tester) async {
+      await tester.pumpWidget(const DmPreviewApp());
+      final inbox = find.byKey(const ValueKey('conversation:normal'));
+      expect(inbox, findsOneWidget);
+      expect(find.byTooltip('首页'), findsOneWidget);
+      expect(find.byTooltip('消息'), findsOneWidget);
+      expect(find.byTooltip('私信'), findsOneWidget);
+      expect(find.byTooltip('我的'), findsOneWidget);
+      expect(
+        tester.widget<HhAppNavigation>(find.byType(HhAppNavigation)).selected,
+        AppDestination.directMessages,
+      );
+      await tester.tap(find.byTooltip('消息'));
+      await tester.pumpAndSettle();
+      expect(find.text('预览未连接通知服务'), findsOneWidget);
+      expect(inbox, findsNothing);
+      expect(
+        tester.widget<HhAppNavigation>(find.byType(HhAppNavigation)).selected,
+        AppDestination.messages,
+      );
+      await tester.tap(find.byTooltip('私信'));
+      await tester.pumpAndSettle();
+      expect(inbox, findsOneWidget);
+      expect(
+        tester.widget<HhAppNavigation>(find.byType(HhAppNavigation)).selected,
+        AppDestination.directMessages,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'development gallery is labelled and opens the actual chat component',
     (tester) async {

@@ -10,6 +10,8 @@ import 'src/comments/comment_http.dart';
 import 'src/comments/comment_journal.dart';
 import 'src/development/app_transport.dart';
 import 'src/navigation/community_material_labels.dart';
+import 'src/navigation/app_navigation.dart';
+import 'src/messaging/direct_messages_unavailable.dart';
 import 'src/design_system/telegram_theme.dart';
 
 void main() {
@@ -260,6 +262,47 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   final _homeChannels = <String, String?>{};
   late final Listenable _postRouteChanges;
   bool _messagesRouteOpen = false;
+  bool _directMessagesRouteOpen = false;
+
+  Widget _primaryNavigation(AppDestination selected) => HhAppNavigation(
+    selected: selected,
+    onSelected: (destination) {
+      final navigator = _navigatorKey.currentState;
+      if (navigator == null || !mounted) return;
+      navigator.popUntil((route) => route.isFirst);
+      switch (destination) {
+        case AppDestination.home:
+          break;
+        case AppDestination.messages:
+          unawaited(_openMessages());
+        case AppDestination.directMessages:
+          unawaited(_openDirectMessages());
+        case AppDestination.personal:
+          _openPersonal();
+      }
+    },
+  );
+
+  Future<void> _openDirectMessages() async {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || _directMessagesRouteOpen) return;
+    if (!widget.sessions.isAuthenticated) {
+      _openAuth();
+      return;
+    }
+    _directMessagesRouteOpen = true;
+    try {
+      await navigator.push(
+        MaterialPageRoute<void>(
+          builder: (_) => DirectMessagesUnavailableScreen(
+            navigation: _primaryNavigation(AppDestination.directMessages),
+          ),
+        ),
+      );
+    } finally {
+      _directMessagesRouteOpen = false;
+    }
+  }
 
   final _notifiedFailures = <String>{};
   void _commentChanged() {
@@ -329,6 +372,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         MaterialPageRoute<void>(
           builder: (_) => SystemNotificationsScreen(
             controller: governance,
+            navigation: _primaryNavigation(AppDestination.messages),
             onOpenComment: (postId, commentId) async {
               if (!widget.posts.available ||
                   governance.restricted ||
@@ -545,6 +589,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
                 // Recreate only this account hub. Old editors/details retain
                 // their original fences and old callbacks keep their window.
                 return PersonalPostsScreen(
+                  navigation: _primaryNavigation(AppDestination.personal),
                   key: ValueKey((account, authority)),
                   controller: widget.posts,
                   loadImages: widget.loadPostImages,
@@ -663,6 +708,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
                     ? null
                     : _openMessages,
                 onOpenPersonal: _openPersonal,
+                onOpenDirectMessages: _openDirectMessages,
                 onManageIdentities: _openIdentity,
                 onAuthenticationRequired: _openAuth,
               );
