@@ -1,5 +1,7 @@
 # 账号与访问
 
+> 2026-10-21 用户更新：新增／重设密码为10–128位可见ASCII字符（英文字母、数字及英文标点），禁止空格与其他Unicode字符；保留弱密码及用户名相关检查。旧密码仍按原哈希配置验证，避免锁号。已有账号允许校园邮箱验证码独立登录；敏感凭据管理仍按现有复验规则。实现与实测见AUTH-EMAIL-LOGIN-01，分支未合并。
+
 2026-10-21 视觉增量：[登录注册流程 UI 定稿](../auth-flow-final/README.md)为欢迎、登录、注册和恢复的统一界面基准，最终采用同页原位置切换两种登录输入框。新增邮箱验证码登录入口是设计需求，尚未接入主线协议；下述校邮准入、用户名密码登录及 C/V 隐私边界不因设计归档自动改写，接入差异见定稿“规格与接入边界”。
 
 更新：2026-09-29。隔离实现状态见[校邮与 HTTP 验证报告](../auth-privacy-eligibility-http-validation-report.md)；产品规则保持下述协议。当前认证主方案及威胁边界见[认证与隐私架构决策](../auth-privacy-architecture-decision.md)，注册、退役和释放的固定协议见[协议 v1](../auth-privacy-registration-protocol.md)。本页维护产品规则；[独立恢复策略](../auth-privacy-recovery-decision.md)与[逻辑数据／API 契约](../auth-privacy-data-api-contract.md)已成稿。[V OpenAPI](../../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../../packages/openapi/community-auth-api.yaml)及[数据库迁移设计](../auth-privacy-database-migration-design.md)已成稿；实验 SQL／校邮确认／开户和 HTTP 适配已有隔离实现；生产迁移、移动端适配、独立主体运营及安全评审仍未完成。

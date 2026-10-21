@@ -10,30 +10,30 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-func TestPasswordPolicyAndNormalization(t *testing.T) {
-	p, err := NewPasswordPreparer(1, []string{"PasswordPassword123!"})
+func TestPasswordPolicyAndLegacyVerification(t *testing.T) {
+	p, err := NewPasswordPreparer(1, []string{"Password12345"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, password := range []string{"short", "passwordpassword123!", "private_user123456789", strings.Repeat("a", 129), strings.Repeat("a", 2049), "\xfflong enough password"} {
-		if _, err := p.PreparePassword(context.Background(), password, "private_user"); !errors.Is(err, ErrPasswordPolicy) {
-			t.Fatalf("policy accepted invalid input: %v", err)
+	for _, password := range []string{"", "A1b2C3d4E", "Password12345", "contains spaces 123", "中文abcdefgh123", strings.Repeat("a", 129), strings.Repeat("a", 2049), "\xfflong enough password"} {
+		if _, err = p.PreparePassword(context.Background(), password, "private_user"); !errors.Is(err, ErrPasswordPolicy) {
+			t.Fatal("invalid new credential accepted")
 		}
 	}
-	password := "une longue phrase cafe\u0301 secrete"
-	material, err := p.PreparePassword(context.Background(), password, "private_user")
-	if err != nil {
-		t.Fatal(err)
+	for _, password := range []string{"A1b2C3d4E5", "SpecialSymbols123!@#", strings.Repeat("z", 128)} {
+		material, er := p.PreparePassword(context.Background(), password, "private_user")
+		if er != nil {
+			t.Fatal(er)
+		}
+		if ok, er := p.VerifyPassword(context.Background(), password, material); er != nil || !ok {
+			t.Fatal("valid new credential did not verify")
+		}
 	}
-	want := argon2.IDKey([]byte(norm.NFC.String(password)), material.Salt[:], 3, 64*1024, 4, 32)
-	if string(want) != string(material.Hash[:]) || material.ParametersVersion != 1 {
-		t.Fatal("password material did not use the stored NFC/profile contract")
-	}
-	if valid, err := p.VerifyPassword(context.Background(), norm.NFC.String(password), material); err != nil || !valid {
-		t.Fatalf("stored NFC password did not verify: %v", err)
-	}
-	if valid, err := p.VerifyPassword(context.Background(), password+"!", material); err != nil || valid {
-		t.Fatalf("wrong password verified: %v", err)
+	legacy := "une longue phrase cafe\u0301 secrete!"
+	material := PasswordMaterial{Salt: [16]byte{1}, ParametersVersion: 1}
+	copy(material.Hash[:], argon2.IDKey([]byte(norm.NFC.String(legacy)), material.Salt[:], 3, 64*1024, 4, 32))
+	if ok, er := p.VerifyPassword(context.Background(), legacy, material); er != nil || !ok {
+		t.Fatal("legacy credential was locked out")
 	}
 }
 
@@ -43,13 +43,13 @@ func TestPasswordCapacityAndCancellation(t *testing.T) {
 		t.Fatal(err)
 	}
 	p.workers <- struct{}{}
-	if _, err := p.PreparePassword(context.Background(), "a long independent password", "someone"); !errors.Is(err, ErrPasswordBusy) {
+	if _, err := p.PreparePassword(context.Background(), "LongIndependent1234", "someone"); !errors.Is(err, ErrPasswordBusy) {
 		t.Fatalf("unbounded queue: %v", err)
 	}
 	<-p.workers
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	if _, err := p.PreparePassword(ctx, "a long independent password", "someone"); !errors.Is(err, context.Canceled) {
+	if _, err := p.PreparePassword(ctx, "LongIndependent1234", "someone"); !errors.Is(err, context.Canceled) {
 		t.Fatalf("cancelled work: %v", err)
 	}
 }

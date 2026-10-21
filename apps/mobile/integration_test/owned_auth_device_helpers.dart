@@ -82,7 +82,7 @@ Future<String> registerOwned(
     String? previousMessage;
     if (!originalConfirmation && flows.status != AuthFlowStatus.otpRequested) {
       previousMessage = await smtpFingerprint(mail);
-      await tapOwned(tester, find.text('获取验证码'));
+      await tapOwned(tester, find.text('发送验证码'));
     }
     final otp = await smtpOtp(mail, email, excludingMessage: previousMessage);
     await inputOwned(tester, 'registration-otp', otp);

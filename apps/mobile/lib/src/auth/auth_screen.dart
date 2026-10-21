@@ -63,10 +63,22 @@ class _AuthScreenState extends State<AuthScreen> {
   void initState() {
     super.initState();
     _authenticated = widget.sessions.status == AuthStatus.authenticated;
+    if (widget.flows.emailLogin != null) {
+      _emailLogin = true;
+      final saved = widget.flows.emailLogin!['email'] as String;
+      _loginEmail.text = saved.substring(
+        0,
+        saved.length - '@hainanu.edu.cn'.length,
+      );
+    }
     widget.sessions.addListener(_changed);
     widget.flows.addListener(_changed);
     _countdown = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted && widget.flows.otpWaitUntil != null) setState(() {});
+      if (mounted &&
+          (widget.flows.otpWaitUntil != null ||
+              widget.flows.emailLoginWaitUntil != null)) {
+        setState(() {});
+      }
     });
   }
 
@@ -170,7 +182,11 @@ class _AuthScreenState extends State<AuthScreen> {
     _presentationContext = context;
     final sessionStatus = widget.sessions.status;
     final flowStatus = widget.flows.status;
-    final error = widget.flows.errorMessage ?? widget.sessions.errorMessage;
+    final flowError = widget.flows.errorMessage;
+    // A previous session's failure is unrelated to this signed-out registration.
+    final error = _mode == _AuthMode.register
+        ? (flowError == '结果未知，请保留原请求并核对。' ? null : flowError)
+        : flowError ?? widget.sessions.errorMessage;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 64,
@@ -378,6 +394,13 @@ class _AuthScreenState extends State<AuthScreen> {
     ];
   }
 
+  int get _emailWaitSeconds =>
+      widget.flows.emailLoginWaitUntil
+          ?.difference(DateTime.now())
+          .inSeconds
+          .clamp(0, 3600) ??
+      0;
+
   List<Widget> _login() {
     final normal =
         !_explicitClosureLogin &&
@@ -394,7 +417,12 @@ class _AuthScreenState extends State<AuthScreen> {
           _loginEmail,
           key: 'email-login-address',
           email: true,
-          pending: true,
+          pending: !widget.flows.supportsEmailLogin,
+          locked:
+              widget.flows.emailLogin != null &&
+              (widget.flows.emailLogin!['sendState'] == 'UNKNOWN' ||
+                  widget.flows.emailLogin!['confirmKey'] != null ||
+                  _emailWaitSeconds > 0),
           placeholder: '输入邮箱',
         ),
         _field(
@@ -402,29 +430,38 @@ class _AuthScreenState extends State<AuthScreen> {
           _loginOtp,
           key: 'email-login-code',
           otp: true,
-          pending: true,
+          pending: !widget.flows.supportsEmailLogin,
           placeholder: '输入验证码',
-          suffix: Tooltip(
-            message: _text('邮箱登录待接入'),
-            child: SizedBox(
-              width: 108,
-              child: TextButton(
-                key: const ValueKey('email-login-request'),
-                onPressed: null,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(_text('获取验证码'), style: const TextStyle(fontSize: 13)),
-                    Text(
-                      _text('待接入', 'Coming soon'),
-                      style: const TextStyle(fontSize: 10),
+          suffix: SizedBox(
+            width: 126,
+            child: TextButton(
+              key: const ValueKey('email-login-request'),
+              onPressed:
+                  !widget.flows.supportsEmailLogin ||
+                      _busy ||
+                      _emailWaitSeconds > 0 ||
+                      widget.flows.emailLogin?['confirmKey'] != null
+                  ? null
+                  : () => _submit(
+                      () => widget.flows.requestEmailLogin(
+                        _campusEmail(_loginEmail.text),
+                      ),
                     ),
-                  ],
-                ),
+              child: Text(
+                widget.flows.supportsEmailLogin
+                    ? _text(
+                        _emailWaitSeconds > 0
+                            ? '$_emailWaitSeconds 秒后可重新获取'
+                            : '发送验证码',
+                      )
+                    : _text('待接入', 'Coming soon'),
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 13),
               ),
             ),
           ),
         ),
+        if (widget.flows.emailUnregistered) const _Notice('该邮箱尚未注册，请创建账号。'),
       ] else ...[
         _field(
           '用户名',
@@ -455,10 +492,24 @@ class _AuthScreenState extends State<AuthScreen> {
                         _loginOtp.clear();
                         _visiblePasswords.clear();
                         _emailLogin = !_emailLogin;
+                        if (_emailLogin && widget.flows.emailLogin != null) {
+                          final saved =
+                              widget.flows.emailLogin!['email'] as String;
+                          _loginEmail.text = saved.substring(
+                            0,
+                            saved.length - '@hainanu.edu.cn'.length,
+                          );
+                        }
                       }),
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 child: Text(
-                  _text(email ? '切换用户名登录' : '切换邮箱登录（待接入）'),
+                  _text(
+                    email
+                        ? '切换用户名登录'
+                        : widget.flows.supportsEmailLogin
+                        ? '切换邮箱登录'
+                        : '切换邮箱登录（待接入）',
+                  ),
                   style: const TextStyle(fontSize: 13),
                 ),
               ),
@@ -475,11 +526,25 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Align(
           alignment: Alignment.centerRight,
           child: Tooltip(
-            message: _text(email ? '邮箱登录待接入' : '登录并进入'),
+            message: _text(
+              email && !widget.flows.supportsEmailLogin ? '邮箱登录待接入' : '登录并进入',
+            ),
             child: FilledButton(
               key: const ValueKey('login-submit'),
-              onPressed: _busy || email
+              onPressed:
+                  _busy ||
+                      (email &&
+                          (!widget.flows.supportsEmailLogin ||
+                              widget.flows.emailLogin?['flowId'] == null ||
+                              widget.flows.emailUnregistered))
                   ? null
+                  : email
+                  ? () async {
+                      _validateOtp = true;
+                      await _submit(
+                        () => widget.flows.completeEmailLogin(_loginOtp.text),
+                      );
+                    }
                   : () => _submit(
                       () =>
                           widget.sessions.login(_username.text, _password.text),
@@ -524,7 +589,12 @@ class _AuthScreenState extends State<AuthScreen> {
                     TextButton(
                       onPressed: _busy
                           ? null
-                          : () => _selectMode(_AuthMode.register),
+                          : () async {
+                              if (widget.flows.emailUnregistered) {
+                                await widget.flows.clearEmailLogin();
+                              }
+                              if (mounted) _selectMode(_AuthMode.register);
+                            },
                       child: Text(
                         _text('创建账号'),
                         style: const TextStyle(fontSize: 14),
@@ -674,13 +744,13 @@ class _AuthScreenState extends State<AuthScreen> {
     final requestLabel = unknown
         ? seconds > 20
               ? '${seconds - 20} 秒后可核对申请'
-              : '核对验证码申请'
+              : '发送验证码'
         : seconds > 0
         ? '$seconds 秒后可重新获取'
-        : '获取验证码';
+        : '发送验证码';
     Future<void> request() async {
       if (unknown) {
-        await widget.flows.reconcileOtpRequest();
+        await widget.flows.requestOtp(widget.flows.registrationEmail!);
         return;
       }
       _validateOtp = false;
@@ -699,19 +769,6 @@ class _AuthScreenState extends State<AuthScreen> {
             confirming ||
             unknown ||
             (flow == AuthFlowStatus.otpRequested && seconds > 0),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(bottom: 24),
-        child: Text(
-          _text(
-            '只需填写邮箱前缀，后缀已自动补全',
-            'Enter the prefix; the campus domain is filled in.',
-          ),
-          style: TextStyle(
-            fontSize: 13,
-            color: _theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
       ),
       _field(
         '验证码',
@@ -754,11 +811,6 @@ class _AuthScreenState extends State<AuthScreen> {
         }),
       if (widget.flows.canRestartOtpVerification)
         _secondary('结束过期操作，重新收码', widget.flows.abandonExpiredOtpOperation),
-      if (unknown || confirming)
-        const Padding(
-          padding: EdgeInsets.only(top: 16),
-          child: _Notice('如果可以发送，验证码将到达邮箱。投递结果未知时先核对原申请。'),
-        ),
     ];
   }
 
@@ -1340,7 +1392,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   )
                 : null),
         helperText: newPassword
-            ? _text('至少 15 个字符，支持空格和粘贴；不要使用校邮密码。')
+            ? _text('至少 10 位，支持字母、数字和英文标点')
             : newUsername
             ? _text('6–24 个小写字母、数字或下划线，以字母开头。')
             : null,
@@ -1363,8 +1415,8 @@ class _AuthScreenState extends State<AuthScreen> {
             !RegExp(r'^[a-z][a-z0-9_]{5,23}$').hasMatch(input.toLowerCase())) {
           return _text('用户名须为 6–24 个字母、数字或下划线，以字母开头');
         }
-        if (newPassword && input.runes.length < 15) {
-          return _text('新密码至少需要 15 个字符');
+        if (newPassword && !RegExp(r'^[!-~]{10,128}$').hasMatch(input)) {
+          return _text('密码需为 10–128 位字母、数字或英文标点，不能有空格');
         }
         if (otp && !RegExp(r'^\d{6}$').hasMatch(input)) {
           return _text('请输入六位最新验证码');

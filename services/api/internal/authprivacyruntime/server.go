@@ -26,7 +26,7 @@ import (
 func CheckDatabase(ctx context.Context, pool *pgxpool.Pool, service authprivacyhttp.Service) error {
 	party, schema, version := "c", "c_auth", int64(12)
 	if service == authprivacyhttp.VerifierService {
-		party, schema, version = "v", "v_auth", 4
+		party, schema, version = "v", "v_auth", 6
 	}
 	var db, user string
 	var privileged, ownerMember, ddl, legacy bool
@@ -43,7 +43,7 @@ func CheckDatabase(ctx context.Context, pool *pgxpool.Pool, service authprivacyh
 	var schemaOK bool
 	query := `SELECT to_regclass('c_auth.accounts') IS NOT NULL AND to_regclass('c_auth.authorization_gate') IS NOT NULL AND to_regclass('public.channels') IS NOT NULL AND EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='c_auth' AND table_name='receipt_outbox' AND column_name='claim_generation')`
 	if party == "v" {
-		query = `SELECT to_regclass('v_auth.otp_confirmations') IS NOT NULL AND to_regclass('v_auth.mail_outbox') IS NOT NULL AND to_regclass('v_auth.used_slots') IS NOT NULL AND to_regclass('v_auth.authorization_gate') IS NOT NULL AND to_regclass('v_auth.authorization_gate_audit') IS NOT NULL AND EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='v_auth' AND table_name='mail_outbox' AND column_name='authorization_generation')`
+		query = `SELECT to_regclass('v_auth.email_login_confirmations') IS NOT NULL AND EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='v_auth' AND table_name='otp_flows' AND column_name='purpose') AND to_regclass('v_auth.otp_confirmations') IS NOT NULL AND to_regclass('v_auth.mail_outbox') IS NOT NULL AND to_regclass('v_auth.used_slots') IS NOT NULL AND to_regclass('v_auth.authorization_gate') IS NOT NULL AND to_regclass('v_auth.authorization_gate_audit') IS NOT NULL AND EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='v_auth' AND table_name='mail_outbox' AND column_name='authorization_generation')`
 	}
 	if err = pool.QueryRow(ctx, query).Scan(&schemaOK); err != nil || !schemaOK {
 		return errors.New("required formal auth schema absent")
@@ -56,7 +56,7 @@ func CheckDatabase(ctx context.Context, pool *pgxpool.Pool, service authprivacyh
 	var insufficient bool
 	required := []string{"accounts", "sessions", "receipt_outbox", "request_results"}
 	if party == "v" {
-		required = []string{"otp_flows", "otp_confirmations", "mail_outbox", "request_results"}
+		required = []string{"email_login_confirmations", "otp_flows", "otp_confirmations", "mail_outbox", "request_results"}
 	}
 	if err = pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM unnest($2::text[]) AS required_table(table_name) WHERE NOT has_table_privilege(current_user,format('%I.%I',$1::text,required_table.table_name),'SELECT') OR NOT has_table_privilege(current_user,format('%I.%I',$1::text,required_table.table_name),'INSERT') OR NOT has_table_privilege(current_user,format('%I.%I',$1::text,required_table.table_name),'UPDATE'))`, schema, required).Scan(&insufficient); err != nil || insufficient {
 		return errors.New("runtime required auth DML privileges absent")
@@ -144,6 +144,7 @@ func trust(c Config) (*protocol.Verifier, error) {
 	copy(verifier[:], vp)
 	return protocol.NewVerifier(c.Environment, []protocol.TrustedKey{
 		{Environment: c.Environment, Purpose: protocol.PurposeRegister, Epoch: 1, PublicKey: verifier},
+		{Environment: c.Environment, Purpose: protocol.PurposeEmailLogin, Epoch: 1, PublicKey: verifier},
 		{Environment: c.Environment, Purpose: protocol.PurposeRetireAuth, Epoch: 1, PublicKey: verifier},
 		{Environment: c.Environment, Purpose: protocol.PurposeRetired, Epoch: 1, PublicKey: community},
 		{Environment: c.Environment, Purpose: protocol.PurposeReleased, Epoch: 1, PublicKey: community},
@@ -372,7 +373,7 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 		if err != nil {
 			return err
 		}
-		smtp, err := authprivacy.NewSMTPProvider(authprivacy.SMTPConfig{Address: c.SMTPAddress, From: c.SMTPFrom, Timeout: time.Duration(c.WorkerTimeoutSeconds) * time.Second, AllowInsecureLoopback: true})
+		smtp, err := c.smtpProvider(time.Duration(c.WorkerTimeoutSeconds) * time.Second)
 		if err != nil {
 			return err
 		}

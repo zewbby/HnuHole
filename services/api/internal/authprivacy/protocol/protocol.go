@@ -475,7 +475,7 @@ func (v *Verifier) lookup(purpose Purpose, epoch uint32) (PublicKey, error) {
 }
 
 func validPurpose(purpose Purpose) bool {
-	return purpose == PurposeRegister || purpose == PurposeRetireAuth || purpose == PurposeRetired || purpose == PurposeReleased
+	return purpose == PurposeEmailLogin || purpose == PurposeRegister || purpose == PurposeRetireAuth || purpose == PurposeRetired || purpose == PurposeReleased
 }
 
 func scope(purpose Purpose) []byte {
@@ -492,3 +492,6 @@ func receiptLengths(purpose Purpose) (int, int, error) {
 		return 0, 0, ErrPurpose
 	}
 }
+
+// Environment is the immutable trust scope used to bind cross-party proofs.
+func (v *Verifier) Environment() string { return v.environment }

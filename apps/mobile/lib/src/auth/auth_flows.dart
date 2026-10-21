@@ -100,6 +100,227 @@ class AuthFlows extends ChangeNotifier {
   String? get resetUsername => _username;
   DateTime? get otpWaitUntil => _otpWaitUntil;
 
+  bool get supportsEmailLogin => _api is EmailLoginApi;
+  Map<String, dynamic>? get emailLogin => _store.current?.emailLogin;
+  DateTime? get emailLoginWaitUntil => emailLogin == null
+      ? null
+      : DateTime.parse(emailLogin!['waitUntil'] as String);
+  bool get emailUnregistered => emailLogin?['unregistered'] == true;
+  Future<void> clearEmailLogin() => _run((epoch) async {
+    final m = (_store.current ?? await _store.read()).emailLogin;
+    if (m?['proof'] != null) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'PENDING_CHECK_REQUIRED',
+      );
+    }
+    await _store.update((s) => s.copyWith(clearEmailLogin: true));
+  });
+  Future<void> requestEmailLogin(String email) => _run((epoch) async {
+    if (_api is! EmailLoginApi) {
+      throw const AuthFailure(kind: AuthFailureKind.unavailable);
+    }
+    if (!RegExp(r'^[^\s@]+@hainanu\.edu\.cn$').hasMatch(email)) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'EMAIL_INVALID',
+      );
+    }
+    var state = await _store.read();
+    _requireNoOtherPending(state);
+    var m = state.emailLogin;
+    if (m?['proof'] != null || m?['confirmKey'] != null) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'PENDING_CHECK_REQUIRED',
+      );
+    }
+    if (m != null &&
+        m['sendState'] == 'ACCEPTED' &&
+        _clock().isBefore(DateTime.parse(m['waitUntil'] as String))) {
+      throw const AuthFailure(kind: AuthFailureKind.rejected, code: 'OTP_WAIT');
+    }
+    if (m != null && m['sendState'] == 'UNKNOWN' && m['email'] != email) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'PENDING_CHECK_REQUIRED',
+      );
+    }
+    if (m == null || m['sendState'] == 'ACCEPTED') {
+      m = {
+        'email': email,
+        'sendKey': AuthCrypto.randomEncoded(32),
+        'cKey': AuthCrypto.randomEncoded(32),
+        'sendState': 'UNKNOWN',
+        'waitUntil': _clock()
+            .toUtc()
+            .add(const Duration(seconds: 60))
+            .toIso8601String(),
+      };
+      state = await _store.update(
+        (s) => s.copyWith(
+          emailLogin: m,
+          cInstallationId: s.cInstallationId ?? AuthCrypto.randomEncoded(16),
+          vInstallationId: s.vInstallationId ?? AuthCrypto.randomEncoded(16),
+        ),
+      );
+    }
+    final original = m;
+    final result = await (_api as EmailLoginApi).requestEmailLoginOtp(
+      email: email,
+      installationId: state.vInstallationId!,
+      idempotencyKey: original['sendKey'] as String,
+    );
+    if (!_current(epoch)) return;
+    await _store.update(
+      (s) => s.emailLogin?['sendKey'] == original['sendKey']
+          ? s.copyWith(
+              emailLogin: {
+                ...original,
+                'flowId': result.flowId,
+                'sendState': 'ACCEPTED',
+                'waitUntil': _clock()
+                    .toUtc()
+                    .add(Duration(seconds: result.retryAfterSeconds))
+                    .toIso8601String(),
+              },
+            )
+          : s,
+    );
+  });
+  Future<void> completeEmailLogin(String otp) => _run((epoch) async {
+    if (_api is! EmailLoginApi) {
+      throw const AuthFailure(kind: AuthFailureKind.unavailable);
+    }
+    final authority = _sessionAuthorityVersion();
+    var state = await _store.read();
+    _requireNoOtherPending(state);
+    var m = state.emailLogin;
+    if (m == null || m['flowId'] == null) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'OTP_FLOW_INVALID',
+      );
+    }
+    if (m['proof'] == null) {
+      if (m['confirmKey'] == null) {
+        if (!RegExp(r'^\d{6}$').hasMatch(otp)) {
+          throw const AuthFailure(
+            kind: AuthFailureKind.rejected,
+            code: 'OTP_INVALID',
+          );
+        }
+        m = {...m, 'confirmKey': AuthCrypto.randomEncoded(32), 'otp': otp};
+        state = await _store.update((s) => s.copyWith(emailLogin: m));
+      }
+      final binding = AuthCrypto.encode(
+        hashes.sha256.convert([
+          ...utf8.encode('HNUHOLE/EMAIL-LOGIN-BINDING/V1\x00'),
+          ...AuthCrypto.decode(state.cInstallationId!, bytes: 16),
+          ...AuthCrypto.decode(m['cKey'] as String, bytes: 32),
+        ]).bytes,
+      );
+      String? proof;
+      try {
+        proof = await (_api as EmailLoginApi).confirmEmailLoginOtp(
+          flowId: m['flowId'] as String,
+          otp: m['otp'] as String,
+          binding: binding,
+          installationId: state.vInstallationId!,
+          idempotencyKey: m['confirmKey'] as String,
+        );
+      } on AuthFailure catch (e) {
+        if (e.code == 'OTP_EXPIRED' ||
+            e.code == 'OTP_REPLACED' ||
+            e.code == 'OTP_FLOW_INVALID' ||
+            e.resultsExpired) {
+          await _store.update((s) => s.copyWith(clearEmailLogin: true));
+        } else if (!e.uncertain) {
+          await _store.update(
+            (s) => s.copyWith(
+              emailLogin: {...m!}
+                ..remove('confirmKey')
+                ..remove('otp'),
+            ),
+          );
+        }
+        rethrow;
+      }
+      if (!_current(epoch)) return;
+      if (proof == null) {
+        await _store.update(
+          (s) => s.copyWith(
+            emailLogin: {...m!, 'unregistered': true}
+              ..remove('otp')
+              ..remove('confirmKey'),
+          ),
+        );
+        return;
+      }
+      m = {...m, 'proof': proof};
+      state = await _store.update((s) => s.copyWith(emailLogin: m));
+    }
+    if (!_current(epoch) || authority != _sessionAuthorityVersion()) {
+      return;
+    }
+    AuthSession session;
+    try {
+      session = await (_api as EmailLoginApi).createEmailSession(
+        proof: m['proof'] as String,
+        installationId: state.cInstallationId!,
+        idempotencyKey: m['cKey'] as String,
+      );
+    } on AuthFailure catch (e) {
+      if (e.code == 'EMAIL_UNREGISTERED') {
+        await _store.update(
+          (s) => s.copyWith(
+            emailLogin: {...m!, 'unregistered': true}
+              ..remove('otp')
+              ..remove('proof')
+              ..remove('confirmKey'),
+          ),
+        );
+        return;
+      }
+      if (e.code == 'SESSION_CREATED_RETRY_LOGIN' ||
+          e.code == 'EMAIL_PROOF_INVALID') {
+        await _store.update((s) => s.copyWith(clearEmailLogin: true));
+      }
+      rethrow;
+    }
+    if (!_current(epoch) || authority != _sessionAuthorityVersion()) {
+      final hash = AuthCrypto.encode(
+        hashes.sha256
+            .convert(AuthCrypto.decode(session.sessionToken, bytes: 32))
+            .bytes,
+      );
+      final secret = AuthCrypto.revocationSecret(session.sessionToken);
+      await _store.update(
+        (s) => s.copyWith(
+          logouts: [
+            ...s.logouts.where((task) => task.tokenDigest != hash),
+            LogoutTask(tokenDigest: hash, revocationSecret: secret),
+          ],
+        ),
+      );
+      try {
+        await _api.revokeSession(secret);
+        await _store.update(
+          (s) => s.copyWith(
+            logouts: s.logouts
+                .where((task) => task.tokenDigest != hash)
+                .toList(),
+          ),
+        );
+      } on AuthFailure {
+        /* The durable revocation is retried by session startup. */
+      }
+      return;
+    }
+    await _acceptRegistrationSession(session);
+    await _store.update((s) => s.copyWith(clearEmailLogin: true));
+  });
+
   /// Exact address of the existing OTP operation, including after restoration.
   String? get registrationEmail =>
       _map(_store.current?.registration?['request'])?['email'] as String?;
@@ -1290,6 +1511,12 @@ class AuthFlows extends ChangeNotifier {
           ? '核对记录已过保留期，无法据此确认是否提交。请主动选择后续操作。'
           : failure.uncertain
           ? '结果未知，请保留原请求并核对。'
+          : failure.code == 'SESSION_CREATED_RETRY_LOGIN'
+          ? '上次登录已建立会话，请重新发送验证码登录。'
+          : failure.code == 'EMAIL_PROOF_INVALID'
+          ? '验证已过期，请重新发送验证码。'
+          : failure.code == 'OTP_INVALID'
+          ? '验证码不正确，请重新输入。'
           : failure.code == 'HIDE_CODE_FIRST'
           ? '先隐藏原恢复码，再完整重输确认。'
           : failure.code == 'PENDING_CHECK_REQUIRED'

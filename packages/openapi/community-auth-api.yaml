@@ -2,8 +2,8 @@ openapi: 3.0.3
 info:
   title: Hnuhole Community Authentication API
   version: 1.0.0-draft
-  description: 社区认证方C的生产契约评审稿（2026-09-28），未实现、未经过独立安全审计或上线批准。日常认证为私有用户名+密码；学校邮箱、OTP、V
-    flowId/安装ID/幂等键不允许进入任何C请求。V签名资格只给新账号准入，邮箱/资格/释放收据不能找回旧号。本文件与verifier-auth-api.yaml使用不同受信主机、独立权限/密钥/库/日志/编号。所有JSON对象拒绝额外字段、重复键、null替代必填项、非法UTF-8/错误类型和超大体；本版不支持无文档字段或未知版本，所有base64url严格解码、查长度并规范重编码。所有成功/错误/204响应Cache-Control:no-store、C自生成X-Request-ID；不使用认证cookie，CORS只允许固定受信客户端origin，不记录Authorization或秘密请求体。认证类型严格互斥且仅在其专属路径有效，拒绝重复Authorization头、混用方案、query凭据或未声明body。403/401/429不公开账号存在性/邮箱/槽位/其他面具，用户名占用只在有效注册PoP后受限公开。全部截止在权威库最终取得锁后用clock_timestamp()取实际UTC裁决并连续转换，不用事务开始时间。从旧备份恢复/时钟回退/钥撤销状态不明须冻结全部认证与受保护读写，外部可信证据重建后撤旧会话。所有有副作用幂等操作同键同负载原子认领，HMAC绑定值用数据库外独立密钥；并发在途键409
+  description: 社区认证方C的生产契约评审稿（2026-09-28），未实现、未经过独立安全审计或上线批准。日常认证支持用户名密码及独立校邮验证码登录证明；学校邮箱原文、OTP、V
+    flowId/安装ID/幂等键不允许进入任何C请求。REGISTER签名资格只给新账号准入；新增EMAIL-LOGIN/V1证明可进入已有账号，不授予密码重设或凭据管理权限。本文件与verifier-auth-api.yaml使用不同受信主机、独立权限/密钥/库/日志/编号。所有JSON对象拒绝额外字段、重复键、null替代必填项、非法UTF-8/错误类型和超大体；本版不支持无文档字段或未知版本，所有base64url严格解码、查长度并规范重编码。所有成功/错误/204响应Cache-Control:no-store、C自生成X-Request-ID；不使用认证cookie，CORS只允许固定受信客户端origin，不记录Authorization或秘密请求体。认证类型严格互斥且仅在其专属路径有效，拒绝重复Authorization头、混用方案、query凭据或未声明body。403/401/429不公开账号存在性/邮箱/槽位/其他面具，用户名占用只在有效注册PoP后受限公开。全部截止在权威库最终取得锁后用clock_timestamp()取实际UTC裁决并连续转换，不用事务开始时间。从旧备份恢复/时钟回退/钥撤销状态不明须冻结全部认证与受保护读写，外部可信证据重建后撤旧会话。所有有副作用幂等操作同键同负载原子认领，HMAC绑定值用数据库外独立密钥；并发在途键409
     OPERATION_PENDING并有界重试，终态保留超过声明的重试窗口。已提交注册/登录只给无秘密错误，重设/凭据管理可无秘密204；令牌及恢复原码绝不重发。request_results首次受理即以(operation,key_digest)建立唯一锚点，key_digest=SHA-256(ASCII("HNUHOLE/C-REQUEST-TOMBSTONE/V1")||0x00||原32字节幂等键)。完整结果到期后原行同事务原位变EXPIRED，清空除operation/key_digest/EXPIRED之外所有字段，永久保留该无身份唯一锚点，不删除后重插。本方key_digest另设唯一约束，拒同原键跨操作复用；EXPIRED只核对规范原键摘要，不再核对已清理的设备/意图绑定，不作原提交结论。closure申请首次提交同事务建立CLOSURE锚点，closureId用独立域HNUHOLE/C-CLOSURE-TOMBSTONE/V1；状态记录有界清理后仅留此锚点。EXPIRED锚点无原ID、时间、账号、slot、安装ID、请求HMAC或原提交结论；迟到原POST仅410
     RESULT_EXPIRED，绝不能当新请求重执行或重建七天申请。同键首次认领、完成与清理按operation/key_digest串行，取得键锁后复核live/EXPIRED；在途未有持久终态不能按TTL清理。
     所有Ed25519验签遵循注册协议第2.1节项目配置：bootstrap和V/C公钥A、签名R均须32字节规范曲线编码、非单位元且[L]P=I；S为32字节小端且0≤S<L。只用Pure Ed25519验原始固定正文，不能仅凭裸Verify成功接受弱点。PoP仅传64字节签名，153字节正文由保存的意图重建；固定向量和库差异见docs/design/auth-privacy-protocol-vectors.md。
@@ -996,6 +996,60 @@ paths:
       x-allowed-peer: eligibility-verifier
       x-public-exposure: false
       x-retry-semantics: slot-and-purpose-idempotent-postcommit-signing
+  /api/v1/auth/email-sessions:
+    post:
+      operationId: createEmailLoginSession
+      summary: 用已验证校园邮箱登录已有账号
+      description: 只接受EMAIL-LOGIN/V1限时签名证明；不接收邮箱、OTP、V安装ID或V幂等键。验证受信用途/环境/签名/当前槽位及SHA-256(HNUHOLE/EMAIL-LOGIN-BINDING/V1\0
+        || C安装16字节 || 原登录键32字节)。最终账号事务沿用单移动会话、凭据版本、封禁、注销撤销与C Gate检查。证明不能用于注册、重设密码或管理凭据。无有效账号422 EMAIL_UNREGISTERED，引导用户主动走独立注册，不自动建号。原键重复提交只返回SESSION_CREATED_RETRY_LOGIN且不重复建会话、不重发令牌；客户端须主动重新收码登录。过期/错绑定422
+        EMAIL_PROOF_INVALID。
+      tags:
+      - Session
+      security: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        x-max-bytes: 8192
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailSessionCreate'
+      responses:
+        '201':
+          description: 新会话已提交，旧移动会话立即失效。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/RequestId'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionCreated'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '410':
+          $ref: '#/components/responses/Gone'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      x-retry-semantics: same-key-no-token-replay-new-key-explicit-login
 components:
   securitySchemes:
     bearerAuth:
@@ -1085,6 +1139,26 @@ components:
       schema:
         "$ref": "#/components/schemas/DateTime"
   schemas:
+    EmailLoginProof:
+      type: string
+      minLength: 303
+      maxLength: 303
+      pattern: ^[A-Za-z0-9_-]{302}[AEIMQUYcgkosw048]$
+      description: 227字节固定EMAIL-LOGIN/V1签名证明，含环境、槽位、C原操作绑定、随机nonce和UTC截止；不含邮箱或OTP。
+    EmailSessionCreate:
+      type: object
+      additionalProperties: false
+      required:
+      - proof
+      - installationId
+      properties:
+        proof:
+          $ref: '#/components/schemas/EmailLoginProof'
+        installationId:
+          type: string
+          minLength: 22
+          maxLength: 22
+          pattern: ^[A-Za-z0-9_-]{21}[AQgw]$
     Base64url16:
       type: string
       minLength: 22
@@ -1120,7 +1194,7 @@ components:
       minLength: 1
       maxLength: 512
       format: password
-      description: 不进入日志。服务端统一NFC；最多2048个UTF-8输入字节、512个输入码点。创建/重设时规范化后为15–128个Unicode码点，并查弱/泄漏/用户名相关密码阻止名单；验证已有密码不得截断或改变既有规范化规则，短密码仅得统一认证失败。
+      description: 不进入日志。服务端统一NFC；最多2048个UTF-8输入字节、512个输入码点。创建/重设时为10–128位可见ASCII（英文字母、数字及英文标点，无空格），并查弱/泄漏/用户名相关密码阻止名单；验证已有密码不得截断或改变既有规范化规则，短密码仅得统一认证失败。
     RecoveryCodeInput:
       type: string
       minLength: 26
