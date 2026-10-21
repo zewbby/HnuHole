@@ -1,5 +1,7 @@
 # 账号与访问
 
+2026-10-21 视觉增量：[登录注册流程 UI 定稿](../auth-flow-final/README.md)为欢迎、登录、注册和恢复的统一界面基准，最终采用同页原位置切换两种登录输入框。新增邮箱验证码登录入口是设计需求，尚未接入主线协议；下述校邮准入、用户名密码登录及 C/V 隐私边界不因设计归档自动改写，接入差异见定稿“规格与接入边界”。
+
 更新：2026-09-29。隔离实现状态见[校邮与 HTTP 验证报告](../auth-privacy-eligibility-http-validation-report.md)；产品规则保持下述协议。当前认证主方案及威胁边界见[认证与隐私架构决策](../auth-privacy-architecture-decision.md)，注册、退役和释放的固定协议见[协议 v1](../auth-privacy-registration-protocol.md)。本页维护产品规则；[独立恢复策略](../auth-privacy-recovery-decision.md)与[逻辑数据／API 契约](../auth-privacy-data-api-contract.md)已成稿。[V OpenAPI](../../../packages/openapi/verifier-auth-api.yaml)、[C OpenAPI](../../../packages/openapi/community-auth-api.yaml)及[数据库迁移设计](../auth-privacy-database-migration-design.md)已成稿；实验 SQL／校邮确认／开户和 HTTP 适配已有隔离实现；生产迁移、移动端适配、独立主体运营及安全评审仍未完成。
 
 **当前覆盖规则：**每次注册必须完成严格的 hainanu.edu.cn 校邮验证码验证；客户端新生一次性公钥并由其导出资格槽位，C 还须验证对真实 C 挑战的持钥证明。用户创建只用于登录的用户名和独立密码；日常、换机及缓冲期主动登录使用用户名和密码，不再联系校邮验证方。用户名、密码及恢复材料不交给验证方，邮箱不进入社区库或管理端。一个精确邮箱地址同时最多一个有效账号的配额依赖 V 按协议执行；别名／大小写规则意味着不能据此承诺一个实际收件箱或自然人只有一个账号。正式注销后社区关闭旧号并释放邮箱配额，再次注册重新收码并创建新号，保留七天、禁言、封禁及旧内容占位规则。密码只能用事先设立的独立恢复凭据重设，校邮验证码不能单独重设旧号。V 持邮箱→槽位，C 受限认证库持槽位→账号；串通或共同泄漏时可连接映射。

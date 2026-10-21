@@ -5,6 +5,8 @@
 
 > **2026-10-21 UI-ANDROID-APPEARANCE-01（本工作区，未合并）：**用户授权统一现有前端 Telegram Android 字体配色、列表快捷评论和点赞／取消即时反馈，并构建安装后提交 PR／合并。新增独立分支，不覆盖旧稿；共享主题、真实打包字体、原评论持久任务及 CAS 串行意图已接入，637项宿主回归通过，新公网 C/V 入口已恢复并通过 TLS／健康检查；最终包已构建，ADB 尚未恢复，设备与最终CI状态以[本轮记录](telegram-android-appearance.md)为准，不升级旧模块整体结论。
 
+> **2026-10-21 AUTH-UI-FINAL-01：DESIGN_APPROVED。**用户确认当前登录注册交互稿定稿并授权推送 GitHub。独立 `docs/auth-flow-final` 从最新 main `ddf506a` 归档[统一规范、交互稿与截图](auth-flow-final/README.md)，冻结同页原位置“用户名／密码 ↔ 邮箱／验证码”与第二框右侧获取验证码，删除额外标题／说明。注册恢复沿用统一视觉与现有协议；邮箱登录契约、Flutter 接入及正式 Logo 待后续实现。纯设计交付不提升功能台账，未合并／发布；[交付与验证](../branches/docs-auth-flow-final.md)。
+
 > **2026-10-21 PR36 主线整合与交付授权：**用户已明确授权最新main整合、必要CI／审查无阻断后转Ready并合并#36，再从合并后main构建同签日常测试APK。#35已由负责人合入`3611925c67137cfe43dedfdd6876a6c652f84231`（09:39+08），本分支已整合；110项客户端raw运行输入与所测`31bc061`逐项相同，冲突仅合并两侧文档事实，不变更产品运行源。原76项、worker原任务恢复及profile2012真实性能按原范围复用，最终整合head必要CI另核。日常debug包使用经环境负责人本轮确认可用的C/V入口及原测试证书，实际origin／trust差异随包回执；原profile2012独立保留；Android仅启动／列表／详情／评论入口一次必要冒烟，差异才补回归，不重复worker或性能。环境保留版本c923/C21V4，但本轮只读检查原C/V及双隧道均未在线；入口恢复由环境负责人按权限处理，旧公网URL不得沿用昨晚在线结论，前端不部署或操作设备。合并及日常包实际SHA／设备结果以PR和最终交付回执为准，未正式发布。下面“未获新授权／#35未合并”等均为原版本历史。
 
 > **2026-10-20 23:40 FEED-PERF-WORKER-SUPPORT-01 性能补验更新：**可信 HTTPS ready 后，`31bc061` 同签 profile2012 在 realme RMX3366／Android14 实测四场景9,383帧、另翻页628帧，预设单设备预算PASS；10次／30秒内存增量79KiB、末尾原图可见。无效／中断／跨lease样本保留，只补受影响项；Max未确认新增产品缺陷，源码与110项运行输入未变。见[性能报告](feed-profile-performance-report-20261020.md)／[机器记录](feed-profile-performance-verification-20261020.json)。本次文档最终HEAD CI以PR／回执为准；[PR36](https://github.com/zewbby/HnuHole/pull/36)仍Draft未合并，无新合并授权、未正式发布。下面可信HTTPS未ready等为原时点历史。
