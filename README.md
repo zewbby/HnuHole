@@ -37,7 +37,8 @@
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `feat/login-home-recommended` | 登录直达首页，启动默认推荐、返回保留所选通道；2122测试包与单机指定验收通过，交付及合并状态见 [PR #40](https://github.com/zewbby/HnuHole/pull/40)。 | [任务详情](docs/branches/feat-login-home-recommended.md) |
-| `feat/auth-entry-flow` | 将登录注册定稿接入真实 App，邮箱登录明确待接入；分支交付检查中，未正式发布。 | [任务详情](docs/branches/feat-auth-entry-flow.md) |
+| `docs/auth-entry-delivery` | 同步 PR #39 的合并事实与主线交付回执；仅文档，不改产品代码。 | [任务详情](docs/branches/docs-auth-entry-delivery.md) |
+| `feat/auth-entry-flow` | 将登录注册定稿接入真实 App，邮箱登录明确待接入；PR #39已合入main，原生主体包交付，未正式发布。 | [任务详情](docs/branches/feat-auth-entry-flow.md) |
 | `docs/auth-flow-final` | 归档用户确认的登录注册流程 UI 定稿与原位切换交互稿；PR #38已合入main，App 接入见 feat/auth-entry-flow。 | [任务详情](docs/branches/docs-auth-flow-final.md) |
 | `codex/fix/comment-failure-reconcile` | 修复原失败评论重试同步并完成2011／profile2012限定补验；PR #36按授权整合送合，主线日常包见详情，未发布。 | [任务详情](docs/branches/fix-comment-failure-reconcile.md) |
 | `codex/test/feed-supplement-support` | PR #35已合入main，交付可信HTTPS与原评论worker失败重试隔离补验支持；未正式发布。 | [任务详情](docs/branches/test-feed-supplement-support.md) |
@@ -72,8 +73,8 @@
 
 ## 最近变动
 
-- [PR #35](https://github.com/zewbby/HnuHole/pull/35)：支持原评论worker失败重试隔离补验并封存可信入口与单机性能证据。
-- 2026-10-20 · [#34](https://github.com/zewbby/HnuHole/pull/34)：隔离列表与偏好局部错误，修复恢复后详情残留提示。
-- 2026-10-20 · [#31](https://github.com/zewbby/HnuHole/pull/31)：接通列表详情真实互动与评论数，并修复账号及未知结果恢复。
-- 2026-10-20 · [#33](https://github.com/zewbby/HnuHole/pull/33)：修正隔离GET错误注入的正文及响应头关联ID。
-- 2026-10-20 · [#32](https://github.com/zewbby/HnuHole/pull/32)：补齐隔离故障测试入口及0021部署恢复证据。
+- [PR #39](https://github.com/zewbby/HnuHole/pull/39)：接入登录注册定稿、欢迎页、外观语言与原位切换，邮箱登录待接入。
+- [PR #38](https://github.com/zewbby/HnuHole/pull/38)：归档用户确认的登录注册交互定稿。
+- [PR #36](https://github.com/zewbby/HnuHole/pull/36)：核对原失败评论任务后恢复重试。
+- [PR #35](https://github.com/zewbby/HnuHole/pull/35)：支持原评论worker失败重试隔离补验。
+- [PR #34](https://github.com/zewbby/HnuHole/pull/34)：隔离列表与偏好局部错误，修复恢复后详情残留提示。

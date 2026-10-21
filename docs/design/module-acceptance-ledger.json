@@ -10,7 +10,11 @@
       "B03"
     ],
     "scope": "auth presentation and signed-out welcome; email login disabled/pending per user; existing auth protocols unchanged",
-    "implementation": "BRANCH_IMPLEMENTED_NOT_MERGED",
+    "implementation": "MERGED_MAIN_SCOPED_UI_HOST_AND_NATIVE_BUILD_PASS",
+    "mergeCommit": "c23620feb5ac7fc651f7005673ee7a7030756755",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/39",
+    "finalHostTests": "633 PASS",
+    "finalCi": "ALL_FIVE_WORKFLOWS_SUCCESS",
     "evidence": "docs/design/validation/auth-entry-ui-20261021/verification.json",
     "device": "NOT_RUN",
     "production": "NOT_RELEASED",
