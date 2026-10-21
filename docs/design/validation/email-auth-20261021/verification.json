@@ -2,8 +2,8 @@
   "task": "AUTH-EMAIL-LOGIN-01",
   "branch": "feat/email-auth-flow",
   "base": "76af92b",
-  "status": "IMPLEMENTED_UNMERGED",
-  "date": "2026-10-21",
+  "status": "MERGED_MAIN_NOT_FORMAL_RELEASE",
+  "date": "2026-10-22",
   "checks": {
     "goHost": "PASS",
     "goBuild": "PASS",
@@ -16,7 +16,31 @@
     "flutterAnalysis": 0,
     "openApiSpecs": 11,
     "flutterFinalFull": 677,
-    "flutterFinalAnalysis": 0
+    "flutterFinalAnalysis": 0,
+    "remoteWorkflowNamesAllSuccess": [
+      "Collaboration",
+      "Community text contract",
+      "Feed backend",
+      "Comments backend text",
+      "Post images",
+      "Feed UI",
+      "Report moderation",
+      "Comments core",
+      "Android prerelease"
+    ],
+    "additionalLocalHTTPSPostgres": "5 PASS",
+    "additionalFeedRunner": "FIRST_FAIL_WINDOWS_VALIDATOR_PERMISSIONS_ONLY; AFFECTED_SQL_HTTPS_RERUN_WITH_LINUX_PRIVATE_SCRIPT_PASS; DEVICE_DART_PROBE_SKIPPED_LOCAL_REMOTE_FULL_PASS",
+    "remoteRunIds": [
+      39631275353,
+      39631275279,
+      39631275285,
+      39631275376,
+      39631275276,
+      39631275331,
+      39631275522,
+      39631275445,
+      39631275287
+    ]
   },
   "device": {
     "model": "vivo V2323A",
@@ -66,5 +90,16 @@
     "temporaryOtpObserver": "CLOSED",
     "devGateMaintenance": "UPDATED_AUTHDEV_SIGNED_RECOVERY_AND_WATCH",
     "cAndVReady": true
+  },
+  "mergeCommit": "6bb59faaca2075d8ec1f05da284de7f10678b976",
+  "reviewedHead": "bd5943122958a056edd463f9223ec6e86a558f41",
+  "pullRequest": 45,
+  "delivery": {
+    "versionCode": 2026102143,
+    "sha256": "d0f56def5bdb5dbaf788ddbc4bf5376cf028c04ba97c2b2e7ad28ccee59d7c37",
+    "runtimeInputsEqualMergedMain": true,
+    "installed": "PENDING_USB_RECONNECT",
+    "alreadyTestedEquivalentAppVersion": 2026102142,
+    "standalonePublicUse": false
   }
 }
