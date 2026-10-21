@@ -1,0 +1,53 @@
+{
+  "task": "AUTH-UI-IMPLEMENT-01",
+  "pullRequest": 39,
+  "merged": true,
+  "mergeCommit": "c23620feb5ac7fc651f7005673ee7a7030756755",
+  "testedHead": "781339376c0db98a24fb8da721213e7983e59eee",
+  "mergeTreeEqualsTestedHead": true,
+  "verifiedBy": "git diff --quiet <testedHead> <mergeCommit> exit 0",
+  "workflowRuns": [
+    {
+      "name": "Collaboration",
+      "id": 39551401543,
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39551401543"
+    },
+    {
+      "name": "Post images",
+      "id": 39551401682,
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39551401682"
+    },
+    {
+      "name": "Feed UI",
+      "id": 39551401584,
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39551401584"
+    },
+    {
+      "name": "Report moderation",
+      "id": 39551401523,
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39551401523"
+    },
+    {
+      "name": "Android prerelease",
+      "id": 39551401817,
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39551401817"
+    }
+  ],
+  "finalLocalChecks": {
+    "analyze": "PASS no issues",
+    "host": "633 PASS",
+    "fontVisual": "16 PASS",
+    "nativeDebugCandidate": "PASS after final source update; main delivery rebuilt separately"
+  },
+  "independentReviewCommit": "2477cade698a2e1c207e1eb63286597c998b41b6",
+  "review": "NO_BLOCKING_FINDINGS; independent read-only agent, not GitHub member approval",
+  "emailLogin": "PENDING_DISABLED per user",
+  "device": "NOT_RUN",
+  "liveEmail": "NOT_RUN",
+  "productionRelease": false
+}
