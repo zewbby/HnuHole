@@ -523,7 +523,7 @@ paths:
       summary: 验证登录专用验证码并取得限时签名证明
       description: 只接受LOGIN用途flow，与REGISTER验证码和注册资格隔离。绑定本V安装与确认原键；正确OTP只消费一次，重试返回同一签名证明。binding是C安装ID和C登录原键的独立域SHA-256承诺，原始C安装ID/键不发送给V。校邮无当前资格时UNREGISTERED；当前槽位没有有效C账号时由C另行返回EMAIL_UNREGISTERED，不自动注册。证明有效120秒，C仍须最终检查账号/封禁/注销/Gate。过期记录仅保留不可重开的最小墓碑并清空流程/设备/绑定/请求HMAC/证明。
       security: []
-      x-max-request-body-bytes: 4096
+      x-max-request-body-bytes: 2048
       parameters:
       - $ref: '#/components/parameters/VInstallationId'
       - $ref: '#/components/parameters/IdempotencyKey'

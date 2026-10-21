@@ -1010,7 +1010,7 @@ paths:
       - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
-        x-max-bytes: 8192
+        x-max-bytes: 2048
         content:
           application/json:
             schema:
@@ -1984,6 +1984,8 @@ components:
               enum:
               - MALFORMED_REQUEST
               - AUTHENTICATION_FAILED
+              - EMAIL_UNREGISTERED
+              - EMAIL_PROOF_INVALID
               - SESSION_INVALID
               - session_replaced
               - ACCOUNT_UNAVAILABLE
