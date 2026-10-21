@@ -35,6 +35,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `codex/test/feed-supplement-support` | 准备可信HTTPS与原FA20评论worker失败重试的隔离补验支持；设备/CI结果见详情，未正式发布。 | [任务详情](docs/branches/test-feed-supplement-support.md) |
 | `codex/fix/feed-read-errors` | 隔离列表与偏好局部错误，D07 定点及送审门槛见详情；未正式发布。 | [任务详情](docs/branches/fix-feed-read-errors.md) |
 | `feat/feed-interactions-ui` | PR #31已合入main，接通真实互动与评论数、修复竞态恢复；后续D07独立修复中，未正式发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
 | `codex/chore/feed-staging` | PR #32已合入main，交付隔离故障入口与0021部署恢复记录；未正式发布。 | [任务详情](docs/branches/chore-feed-staging.md) |
