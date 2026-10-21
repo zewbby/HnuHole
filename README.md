@@ -34,7 +34,7 @@
 
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
-| `codex/feat/telegram-android-appearance` | 统一安卓字体配色、列表直接评论及点赞／取消即时反馈；验证中，未合并。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
+| `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；[PR #37](https://github.com/zewbby/HnuHole/pull/37) 验证中。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `codex/fix/comment-failure-reconcile` | 修复原失败评论重试同步并完成2011／profile2012限定补验；PR #36按授权整合送合，主线日常包见详情，未发布。 | [任务详情](docs/branches/fix-comment-failure-reconcile.md) |
 | `codex/test/feed-supplement-support` | PR #35已合入main，交付可信HTTPS与原评论worker失败重试隔离补验支持；未正式发布。 | [任务详情](docs/branches/test-feed-supplement-support.md) |

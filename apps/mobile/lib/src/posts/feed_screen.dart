@@ -172,6 +172,11 @@ class _FeedScreenState extends State<FeedScreen> {
           originals: originals,
           contextText: post.body,
           quickReplyTo: post.author.nickname,
+          onOpenRejected: () {
+            if (!current) return;
+            Navigator.of(context).pop();
+            _open(context, post.postId, post.channelId);
+          },
           onSubmitted: () {
             if (!current) return;
             _replyEditors.remove(post.postId);

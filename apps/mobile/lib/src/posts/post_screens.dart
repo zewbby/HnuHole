@@ -1,3 +1,5 @@
+import '../design_system/detail_components.dart';
+import 'x_feed.dart';
 import '../comments/comment_runtime.dart';
 import '../comments/comment_views.dart';
 import '../comments/comment_models.dart';
@@ -2159,45 +2161,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     child: Builder(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          title: Text(widget.channelName ?? '帖子'),
-          actions: [
-            if (_authority.current &&
-                !_deleted &&
-                (_canDelete || GovernanceScope.maybeOf(context) != null))
-              PopupMenuButton<String>(
-                tooltip: '帖子操作',
-                enabled: !_deleting,
-                icon: const Icon(Icons.more_horiz),
-                itemBuilder: (context) => [
-                  if (_post != null &&
-                      GovernanceScope.maybeOf(context)?.available == true)
-                    const PopupMenuItem(value: 'report', child: Text('举报帖子')),
-                  if (_canDelete)
-                    const PopupMenuItem(value: 'delete', child: Text('删除帖子')),
-                ],
-                onSelected: (action) {
-                  if (action == 'delete') {
-                    unawaited(_delete());
-                    return;
-                  }
-                  final governance = GovernanceScope.maybeOf(context);
-                  if (governance == null ||
-                      _post == null ||
-                      !_authority.current) {
-                    return;
-                  }
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => ReportScreen(
-                        controller: governance,
-                        postId: widget.postId,
-                        title: _post!.title,
-                      ),
-                    ),
-                  );
-                },
-              ),
-          ],
+          centerTitle: false,
+          title: Text(
+            '帖子',
+            style: detailType(context, 20, weight: FontWeight.w500),
+          ),
+          leading: BackButton(onPressed: () => Navigator.maybePop(context)),
         ),
         body: !_authority.current
             ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
@@ -2224,7 +2193,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 initialCommentId: widget.initialCommentId,
                 initialInput: widget.initialCommentInput,
                 initialOriginal: widget.initialCommentOriginal,
-                body: _detail(context, _post!),
+                continuous: true,
+                onBodyScroll: _scheduleView,
+                body: _detail(context, _post!, embedded: true),
                 onCountChanged: () {
                   if (_authority.current) {
                     unawaited(
@@ -2238,194 +2209,254 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       ),
     ),
   );
-  Widget _detail(BuildContext context, PostDetail post) {
+  Widget _postMenu() =>
+      !_authority.current ||
+          _deleted ||
+          !(_canDelete || GovernanceScope.maybeOf(context) != null)
+      ? const SizedBox(width: 48)
+      : PopupMenuButton<String>(
+          tooltip: '帖子操作',
+          enabled: !_deleting,
+          icon: const DetailChromeIcon(
+            DetailChrome.more,
+            color: detailIconInk,
+            size: 22,
+          ),
+          itemBuilder: (context) => [
+            if (_post != null &&
+                GovernanceScope.maybeOf(context)?.available == true)
+              const PopupMenuItem(value: 'report', child: Text('举报帖子')),
+            if (_canDelete)
+              const PopupMenuItem(value: 'delete', child: Text('删除帖子')),
+          ],
+          onSelected: (action) {
+            if (action == 'delete') {
+              unawaited(_delete());
+              return;
+            }
+            final governance = GovernanceScope.maybeOf(context);
+            if (governance == null || _post == null || !_authority.current) {
+              return;
+            }
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => ReportScreen(
+                  controller: governance,
+                  postId: widget.postId,
+                  title: _post!.title,
+                ),
+              ),
+            );
+          },
+        );
+
+  Widget _detail(
+    BuildContext context,
+    PostDetail post, {
+    bool embedded = false,
+  }) {
     _scheduleView();
+    final content = Padding(
+      padding: const EdgeInsets.fromLTRB(8, 17, 8, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              DetailAvatar(name: post.author.displayName),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: post.author.inactiveMessage == null
+                          ? null
+                          : () {
+                              if (!_authority.current) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(post.author.inactiveMessage!),
+                                ),
+                              );
+                            },
+                      child: Text(
+                        post.author.displayName,
+                        style: detailType(context, 17, weight: FontWeight.w500),
+                      ),
+                    ),
+                    if (widget.channelName != null) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        widget.channelName!,
+                        style: detailType(context, 14, color: PostTheme.muted),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              _postMenu(),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            post.title,
+            style: detailType(context, 18, weight: FontWeight.w500),
+          ),
+          const SizedBox(height: 9),
+          SelectableText(
+            key: _bodyKey,
+            post.body,
+            style: detailType(context, 16, height: 1.5),
+          ),
+          if (widget.loadImages case final loader? when post.imageCount > 0)
+            PostImagesSection(
+              postId: post.postId,
+              expectedCount: post.imageCount,
+              loadImages: loader,
+              authority: widget.controller,
+              isCurrent: () =>
+                  _authority.current &&
+                  !_deleted &&
+                  !widget.controller.isPostDeleted(widget.postId),
+            ),
+          Padding(
+            padding: const EdgeInsets.only(top: 18, bottom: 6),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${_postDate(post.publishedAt)} · ',
+                    style: detailType(context, 13.5, color: PostTheme.muted),
+                  ),
+                  TextSpan(
+                    text:
+                        '${(widget.controller.supportsFeed ? widget.controller.postViewCount(widget.postId) : null) ?? '—'}',
+                    style: detailType(context, 13.5, weight: FontWeight.w500),
+                  ),
+                  TextSpan(
+                    text: ' 次浏览',
+                    style: detailType(context, 13.5, color: PostTheme.muted),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (widget.controller.errorMessage != null)
+            Text(widget.controller.errorMessage!),
+          if (widget.controller.supportsInteractions) _interactionBar(),
+        ],
+      ),
+    );
+    if (embedded) return content;
     return NotificationListener<ScrollNotification>(
       onNotification: (_) {
         _scheduleView();
         return false;
       },
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          key: PageStorageKey(
-            'detail:${_authority.account}:${_authority.version}:${widget.postId}',
-          ),
-          padding: const EdgeInsets.fromLTRB(20, 28, 20, 40),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final author = _AuthorWidget(author: post.author);
-                      final title = Text(
-                        post.title,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                          height: 1.45,
-                        ),
-                      );
-                      if (constraints.maxWidth < 340 ||
-                          MediaQuery.textScalerOf(context).scale(16) > 22) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [title, const SizedBox(height: 12), author],
-                        );
-                      }
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: title),
-                          const SizedBox(width: 16),
-                          Flexible(child: author),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    _postDate(post.publishedAt),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: PostTheme.muted,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  SelectableText(
-                    key: _bodyKey,
-                    post.body,
-                    style: const TextStyle(fontSize: 17, height: 1.8),
-                  ),
-                  if (widget.loadImages case final loader?
-                      when post.imageCount > 0)
-                    PostImagesSection(
-                      postId: post.postId,
-                      expectedCount: post.imageCount,
-                      loadImages: loader,
-                      authority: widget.controller,
-                      isCurrent: () =>
-                          _authority.current &&
-                          !_deleted &&
-                          !widget.controller.isPostDeleted(widget.postId),
-                    ),
-                  if (widget.controller.errorMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 24),
-                      child: Text(widget.controller.errorMessage!),
-                    ),
-                  if (widget.controller.supportsInteractions) _interactionBar(),
-                ],
-              ),
-            ),
-          ),
+      child: SingleChildScrollView(
+        key: PageStorageKey(
+          'detail:${_authority.account}:${_authority.version}:${widget.postId}',
         ),
+        child: content,
       ),
     );
+  }
+
+  void _changeInteraction(PostInteractionAction action) {
+    if (!mounted || !_authority.current) return;
+    unawaited(widget.controller.changeInteraction(widget.postId, action));
   }
 
   Widget _interactionBar() {
     final c = widget.controller;
     final state = c.interaction(widget.postId);
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            spacing: 12,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              TextButton.icon(
-                key: ValueKey('detail-like:${widget.postId}'),
-                style: TextButton.styleFrom(
-                  foregroundColor: state.liked
-                      ? PostTheme.destructive
-                      : PostTheme.muted,
-                  disabledForegroundColor: state.liked
-                      ? PostTheme.destructive
-                      : PostTheme.muted,
-                ),
-                onPressed: state.canChange
-                    ? () {
-                        if (!mounted || !_authority.current) return;
-                        unawaited(
-                          c.changeInteraction(
-                            widget.postId,
-                            PostInteractionAction.like,
-                          ),
-                        );
-                      }
-                    : null,
-                icon: Icon(
-                  state.liked ? Icons.favorite : Icons.favorite_border,
-                ),
-                label: Text(
-                  '${state.liked ? '取消点赞' : '点赞'} ${state.likes ?? '—'}',
+    final favorites = state.value == null
+        ? null
+        : state.value!.favoriteCount +
+              (state.favorited != state.value!.favoritedByMe
+                  ? (state.favorited ? 1 : -1)
+                  : 0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final actions = [
+              Builder(
+                builder: (context) => DetailAction(
+                  action: FeedAction.comment,
+                  label: '评论',
+                  count: '${state.value?.commentCount ?? '—'}',
+                  onPressed: CommentScope.maybeOf(context) == null
+                      ? null
+                      : () => CommentPostPane.composeFrom(context),
                 ),
               ),
-              TextButton.icon(
-                key: ValueKey('detail-favorite:${widget.postId}'),
+              DetailAction(
+                buttonKey: ValueKey('detail-like:${widget.postId}'),
+                action: FeedAction.like,
+                label: state.liked ? '取消点赞' : '点赞',
+                selected: state.liked,
+                count: '${state.likes ?? '—'}',
                 onPressed: state.canChange
-                    ? () {
-                        if (!mounted || !_authority.current) return;
-                        unawaited(
-                          c.changeInteraction(
-                            widget.postId,
-                            PostInteractionAction.favorite,
-                          ),
-                        );
-                      }
+                    ? () => _changeInteraction(PostInteractionAction.like)
                     : null,
-                icon: Icon(
-                  state.favorited ? Icons.bookmark : Icons.bookmark_border,
-                ),
-                label: Text(
-                  '${state.favorited ? '取消收藏' : '收藏'} ${state.value?.favoriteCount ?? '—'}',
-                ),
               ),
-              Text('评论 ${state.value?.commentCount ?? '—'}'),
-              if (state.loading && state.value == null)
-                const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-            ],
-          ),
-          for (final notice in [
-            (state.writeError, true),
-            (state.readError, false),
-          ])
-            if (notice.$1 case final error?)
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
+              DetailAction(
+                buttonKey: ValueKey('detail-favorite:${widget.postId}'),
+                action: FeedAction.bookmark,
+                label: state.favorited ? '取消收藏' : '收藏',
+                selected: state.favorited,
+                count: '${favorites ?? '—'}',
+                onPressed: state.canChange
+                    ? () => _changeInteraction(PostInteractionAction.favorite)
+                    : null,
+              ),
+              const DetailAction(action: FeedAction.share, label: '分享（暂未开放）'),
+            ];
+            if (MediaQuery.textScalerOf(context).scale(14) > 21 ||
+                constraints.maxWidth < 300) {
+              return Wrap(
                 children: [
-                  Text(error),
-                  TextButton(
-                    onPressed: state.sending
-                        ? null
-                        : () {
-                            if (!mounted || !_authority.current) return;
-                            if (notice.$2) {
-                              unawaited(c.retryInteraction(widget.postId));
-                            } else {
-                              unawaited(
-                                c.loadInteractions([
-                                  widget.postId,
-                                ], single: true),
-                              );
-                            }
-                          },
-                    child: Text(notice.$2 ? '重试' : '重新读取'),
-                  ),
+                  for (final action in actions)
+                    SizedBox(width: constraints.maxWidth / 2, child: action),
                 ],
-              ),
-        ],
-      ),
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: actions,
+            );
+          },
+        ),
+        for (final notice in [
+          (state.writeError, true),
+          (state.readError, false),
+        ])
+          if (notice.$1 case final error?)
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(error),
+                TextButton(
+                  onPressed: state.sending
+                      ? null
+                      : () {
+                          if (!mounted || !_authority.current) return;
+                          if (notice.$2) {
+                            unawaited(c.retryInteraction(widget.postId));
+                          } else {
+                            unawaited(
+                              c.loadInteractions([widget.postId], single: true),
+                            );
+                          }
+                        },
+                  child: Text(notice.$2 ? '重试' : '重新读取'),
+                ),
+              ],
+            ),
+      ],
     );
   }
 }

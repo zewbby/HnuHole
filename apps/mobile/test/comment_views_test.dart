@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnuhole_mobile/src/design_system/detail_components.dart';
+import 'package:hnuhole_mobile/src/posts/x_feed.dart';
 import 'package:hnuhole_mobile/src/comments/comment_api.dart';
 import 'package:hnuhole_mobile/src/comments/comment_failure_view.dart';
 import 'package:hnuhole_mobile/src/comments/comment_http.dart';
@@ -59,10 +61,12 @@ class _Api implements CommentApi {
   Completer<CommentTask>? pending;
   String? publishedId;
   VoidCallback? onExecute;
+  Object? executeFailure;
   @override
   Future<CommentTask> execute(CommentIntent i) async {
     sent = i;
     onExecute?.call();
+    if (executeFailure case final failure?) throw failure;
     if (pending != null) return pending!.future;
     return CommentTask(
       taskId: i.taskId,
@@ -781,6 +785,7 @@ void quickReplyTests() {
                   originals: originals,
                   contextText: '原帖',
                   quickReplyTo: '松间',
+                  onOpenRejected: () {},
                   onSubmitted: editor.leave,
                 ),
               ),
@@ -792,6 +797,180 @@ void quickReplyTests() {
     await tester.tap(find.text('打开回复'));
     await tester.pumpAndSettle();
   }
+
+  Future<CommentIntent> reject(
+    _Runtime r, {
+    String? target,
+    Object? failure,
+  }) async {
+    r.transportFake.executeFailure =
+        failure ?? CommentCommandRejected('IDENTITY_UNAVAILABLE');
+    await r.core.submit(
+      taskId: commentUUID(),
+      commandId: commentKey(),
+      binding: CommentBinding(
+        postId: post,
+        identityId: identity,
+        rootCommentId: target == null ? null : root,
+        targetCommentId: target,
+      ),
+      content: CommentContent(body: '原评论完整内容'),
+    );
+    return r.transportFake.sent!;
+  }
+
+  testWidgets(
+    'authoritative quick rejection restores input and explicitly resends with fresh keys',
+    (tester) async {
+      final r = await runtime(tester);
+      final old = await reject(r);
+      expect(r.core.entries.single.rejectionCode, 'IDENTITY_UNAVAILABLE');
+      await launch(tester, r, CommentEditor(CommentTarget(postId: post)));
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('reply-send')))
+            .onPressed,
+        isNull,
+      );
+      await tester.tap(find.text('恢复未发送内容'));
+      await tester.pumpAndSettle();
+      expect(find.text('原评论完整内容'), findsOneWidget);
+      expect(r.core.entries, isEmpty);
+      expect(r.transportFake.sent, same(old));
+      r.transportFake.executeFailure = null;
+      await tester.tap(find.byKey(const ValueKey('reply-send')));
+      await tester.pumpAndSettle();
+      final sent = r.transportFake.sent!;
+      expect(sent.taskId, isNot(old.taskId));
+      expect(sent.commandId, isNot(old.commandId));
+      expect(sent.binding.targetCommentId, isNull);
+      expect(sent.content!.body, '原评论完整内容');
+      expect(find.byType(QuickReplyDialog), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'rejected nested target is retained for original detail recovery',
+    (tester) async {
+      final r = await runtime(tester);
+      final old = await reject(r, target: reply);
+      await launch(tester, r, CommentEditor(CommentTarget(postId: post)));
+      expect(find.text('前往原帖恢复'), findsOneWidget);
+      expect(find.text('恢复未发送内容'), findsNothing);
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('reply-send')))
+            .onPressed,
+        isNull,
+      );
+      expect(r.core.entries.single.intent.binding.sameAs(old.binding), true);
+      expect(r.core.entries.single.content!.body, '原评论完整内容');
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'retirement during recovery confirmation closes child and preserves journal',
+    (tester) async {
+      final r = await runtime(tester);
+      await reject(r);
+      final editor = CommentEditor(CommentTarget(postId: post))
+        ..body = '当前未发草稿';
+      await launch(tester, r, editor);
+      await tester.tap(find.text('恢复未发送内容'));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('恢复之前的评论？'), findsOneWidget);
+      r.retire();
+      await tester.pumpAndSettle();
+      expect(find.byType(QuickReplyDialog), findsNothing);
+      expect(find.text('恢复之前的评论？'), findsNothing);
+      expect(editor.hasInput, false);
+      expect(
+        (r.journal as _MemoryJournal).values.values.single.content!.body,
+        '原评论完整内容',
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets('transport unknown is never offered as rejected input recovery', (
+    tester,
+  ) async {
+    final r = await runtime(tester);
+    await reject(r, failure: StateError('Synthetic lost response'));
+    expect(r.core.entries.single.transport, CommentTransportState.unknown);
+    await launch(tester, r, CommentEditor(CommentTarget(postId: post)));
+    expect(find.text('恢复未发送内容'), findsNothing);
+    expect(find.text('前往原帖恢复'), findsNothing);
+    expect(r.core.entries.single.content!.body, '原评论完整内容');
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('detail action semantics include count without visual labels', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: DetailAction(
+            action: FeedAction.like,
+            label: '取消点赞',
+            count: '12',
+            selected: true,
+            onPressed: () {},
+          ),
+        ),
+      ),
+    );
+    expect(find.bySemanticsLabel('取消点赞，12'), findsOneWidget);
+    expect(find.text('取消点赞'), findsNothing);
+    expect(find.text('12'), findsOneWidget);
+    semantics.dispose();
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets(
+    'continuous comments load immediately and reply entry stays fixed while scrolling',
+    (tester) async {
+      final r = await runtime(tester);
+      var bodyScrolls = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: HhTelegramTheme.create(Brightness.light),
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '原帖',
+              continuous: true,
+              onBodyScroll: () => bodyScrolls++,
+              body: const SizedBox(height: 700, child: Text('原帖正文')),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('发布你的回复'), findsOneWidget);
+      expect(find.text('收起评论'), findsNothing);
+      expect(find.text('甲的主评论'), findsOneWidget);
+      final entryY = tester.getTopLeft(find.text('发布你的回复')).dy;
+      await tester.drag(
+        find.byType(SingleChildScrollView).first,
+        const Offset(0, -600),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(find.text('发布你的回复')).dy, entryY);
+      expect(bodyScrolls, greaterThan(0));
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CommentComposer), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
   testWidgets(
     'feed comment opens direct composer without detail or view registration; cancel retains draft',

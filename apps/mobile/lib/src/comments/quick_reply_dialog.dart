@@ -14,12 +14,14 @@ class QuickReplyDialog extends StatelessWidget {
     this.error,
     this.identityCaption,
     this.onRetry,
+    this.retryLabel = '重试',
   });
   final String targetName;
   final TextEditingController controller;
   final VoidCallback? onReply, onClose, onRetry;
   final bool busy;
   final String? error, identityCaption;
+  final String retryLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +114,7 @@ class QuickReplyDialog extends StatelessWidget {
                   if (onRetry != null)
                     TextButton(
                       onPressed: busy ? null : onRetry,
-                      child: const Text('重试'),
+                      child: Text(retryLabel),
                     ),
                 ],
                 const SizedBox(height: 8),
