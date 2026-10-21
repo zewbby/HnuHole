@@ -1865,6 +1865,7 @@ class _CommentBodyState extends State<CommentBody> {
         children: [
           SelectableText(
             widget.text,
+            minLines: 1,
             maxLines: expanded ? null : 4,
             onTap: widget.onReply,
           ),

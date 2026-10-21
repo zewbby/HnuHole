@@ -623,10 +623,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('评论 2'));
     await tester.pumpAndSettle();
-    await tester.drag(
-      find.byType(SingleChildScrollView).last,
-      const Offset(0, -120),
-    );
+    await tester.ensureVisible(find.text('删除'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('删除'));
     await tester.pumpAndSettle();
@@ -905,6 +902,41 @@ void quickReplyTests() {
     expect(find.text('恢复未发送内容'), findsNothing);
     expect(find.text('前往原帖恢复'), findsNothing);
     expect(r.core.entries.single.content!.body, '原评论完整内容');
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('real continuous detail registers a visible body once', (tester) async {
+    final f = await interactions.fixture();
+    addTearDown(f.dispose);
+    final r = await runtime(tester);
+    await tester.pumpWidget(CommentScope(runtime: r, child: feed.screen(f)));
+    await tester.pumpAndSettle();
+    expect(f.api.calls.where((c) => c.startsWith('view:')), isEmpty);
+    await tester.tap(find.text(feed.post().title).first);
+    await tester.pumpAndSettle();
+    expect(find.byType(PostDetailScreen), findsOneWidget);
+    expect(f.api.calls.where((c) => c == 'view:${feed.postId}'), hasLength(1));
+    await tester.drag(find.byType(SingleChildScrollView).first, const Offset(0, -300));
+    await tester.pumpAndSettle();
+    expect(f.api.calls.where((c) => c == 'view:${feed.postId}'), hasLength(1));
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('short comment uses its natural one-line height', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 300,
+            child: DefaultTextStyle(
+              style: TextStyle(fontSize: 16, height: 1.45),
+              child: CommentBody(text: '短评论'),
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(tester.getSize(find.byType(SelectableText)).height, lessThan(30));
     await tester.pumpWidget(const SizedBox());
   });
 
