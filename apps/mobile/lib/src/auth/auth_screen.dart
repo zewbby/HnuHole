@@ -675,7 +675,7 @@ class _AuthScreenState extends State<AuthScreen> {
         context: context,
         builder: (context) => AlertDialog(
           title: const _AuthText('申请七天后注销'),
-          content: const Text(
+          content: const _AuthText(
             '预计完成时间由服务端受理时确定。期间登录会撤销申请；尚未公开的发送任务将取消，公开内容仍保留。',
           ),
           actions: [

@@ -36,12 +36,12 @@
     "recovery and closure semantics",
     "375px large text 1.6 scrolling",
     "keyboard and native field controls",
-    "actual descendant theme contrast >=4.5"
+    "actual descendant primary/onPrimary, primary/surface, surface/onSurface and recovery container text contrast >=4.5"
   ],
   "screenshots": [
     {
       "path": "auth-email-pending-dark-final-375px.png",
-      "sha256": "478d41e8264bee7f0412bc7fc8c4b0e81205da52d5fdd5fb598c7d61098c166f"
+      "sha256": "b5f59dc9406fdc0f854ea77eb51f3c7be6d99183d4e2be215869b7a8bebd8274"
     },
     {
       "path": "auth-email-pending-final-375px.png",
@@ -53,7 +53,7 @@
     },
     {
       "path": "auth-recovery-code-dark-375px.png",
-      "sha256": "1c8f312433b0e396d48b093622242e5b884eb0e4b75b9ad3f5dc113299593562"
+      "sha256": "25fab818695487525fcd0991a1242d7d7a8a5ff8ec724e3056fb0b8d62224ed4"
     },
     {
       "path": "auth-registration-375px-160pct.png",
@@ -64,7 +64,7 @@
       "sha256": "9c2890c641df0ddc4f2f66966ad11ebef78579b216a7375a55234e4c62daa69e"
     }
   ],
-  "review": "Independent read-only agent review; findings corrected (translation/fallback context/actual-theme contrast). Final head review tracked in PR. Not a GitHub member approval.",
+  "review": "Independent read-only agent review; final findings corrected: dialog translated and dark primary/surface contrast checked along with button foreground. Final head review tracked in PR; not a GitHub member approval.",
   "limitations": {
     "emailLogin": "PENDING_DISABLED_NO_BACKEND_CHANGE",
     "device": "NOT_RUN",

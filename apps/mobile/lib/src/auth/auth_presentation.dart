@@ -115,8 +115,8 @@ ThemeData authPresentationTheme(ThemeData base) {
   final foreground = dark ? const Color(0xFFF2F4F7) : const Color(0xFF24272B);
   final background = dark ? const Color(0xFF14171B) : Colors.white;
   final colors = base.colorScheme.copyWith(
-    primary: const Color(0xFF0076A3),
-    onPrimary: Colors.white,
+    primary: dark ? authBrandColor : const Color(0xFF0076A3),
+    onPrimary: dark ? background : Colors.white,
     surface: background,
     onSurface: foreground,
     outline: dark ? const Color(0xFF434B56) : const Color(0xFFD9DDE2),

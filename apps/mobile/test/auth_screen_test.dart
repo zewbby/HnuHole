@@ -857,6 +857,7 @@ void main() {
 
     for (final pair in [
       (colors.primary, colors.onPrimary),
+      (colors.primary, colors.surface),
       (colors.surface, colors.onSurface),
       (colors.secondaryContainer, colors.onSecondaryContainer),
     ]) {
