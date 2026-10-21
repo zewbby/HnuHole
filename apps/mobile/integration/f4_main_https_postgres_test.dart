@@ -271,7 +271,7 @@ void main() {
         final channel = directory.channels.firstWhere((e) => e.code == 'vent');
         state['channelId'] = channel.id;
         if (phase == 'write') {
-          await tap(find.byTooltip('我的'));
+          await tap(find.byTooltip('我的').first);
           await wait(
             () => find.byType(PersonalPostsScreen).evaluate().isNotEmpty,
             'root profile route',
@@ -294,7 +294,7 @@ void main() {
           await back();
           await tap(find.text('首页'));
           await wait(
-            () => find.byType(ChannelTree).evaluate().isNotEmpty,
+            () => find.byType(FeedScreen).evaluate().isNotEmpty,
             'My home returns root',
           );
           checks['F4-H02'] = true;
@@ -463,7 +463,7 @@ void main() {
           debugPrint('F4-H05 PASS');
           await tap(find.text('首页'));
           await wait(
-            () => find.byType(ChannelTree).evaluate().isNotEmpty,
+            () => find.byType(FeedScreen).evaluate().isNotEmpty,
             'main home restored',
           );
           await tap(find.text(channel.displayName));
@@ -529,10 +529,10 @@ void main() {
           expect(await posts.saveDraft(closedDraft), isTrue);
           await back();
           await wait(
-            () => find.byType(ChannelTree).evaluate().isNotEmpty,
+            () => find.byType(FeedScreen).evaluate().isNotEmpty,
             'B returns to root',
           );
-          await tap(find.byTooltip('我的'));
+          await tap(find.byTooltip('我的').first);
           await wait(
             () => find.byTooltip('设置').evaluate().isNotEmpty,
             'B My route',

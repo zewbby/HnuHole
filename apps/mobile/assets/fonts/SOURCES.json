@@ -1,0 +1,37 @@
+{
+  "LICENSE-Roboto.txt": {
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "source": "https://raw.githubusercontent.com/googlefonts/roboto-2/main/LICENSE"
+  },
+  "NOTICE-Roboto.txt": {
+    "bytes": 194,
+    "sha256": "5c23be225cc13ea7aa498bed232a0110bcd756568304d94534c7eead8e681b03",
+    "source": "Existing Flutter DevTools Roboto 2.137 assets; embedded Apache-2.0 notice"
+  },
+  "NotoSansSC-Variable.ttf": {
+    "bytes": 17772300,
+    "sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf"
+  },
+  "OFL-NotoSansSC.txt": {
+    "bytes": 4388,
+    "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/OFL.txt"
+  },
+  "Roboto-Bold.ttf": {
+    "bytes": 170760,
+    "sha256": "7d0b991ee3e0be7af01ad7ea8cd2beea6c00a25e679a0226b6737f079aafff86",
+    "source": "Existing Flutter DevTools Roboto 2.137 assets; embedded Apache-2.0 notice"
+  },
+  "Roboto-Medium.ttf": {
+    "bytes": 172064,
+    "sha256": "f205cc511821ea56078a105557fcea6253129404d411c997e1866fbd006abb68",
+    "source": "Existing Flutter DevTools Roboto 2.137 assets; embedded Apache-2.0 notice"
+  },
+  "Roboto-Regular.ttf": {
+    "bytes": 171676,
+    "sha256": "79e851404657dac2106b3d22ad256d47824a9a5765458edb72c9102a45816d95",
+    "source": "Existing Flutter DevTools Roboto 2.137 assets; embedded Apache-2.0 notice"
+  }
+}

@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
 
+import '../design_system/detail_components.dart';
+import '../posts/x_feed.dart';
 import '../identity/identity_api.dart';
 import '../identity/identity_management_screen.dart';
 import '../posts/post_images.dart';
@@ -14,6 +16,7 @@ import 'comment_editor.dart';
 import 'comment_http.dart';
 import 'comment_models.dart';
 import 'comment_runtime.dart';
+import 'quick_reply_dialog.dart';
 
 class CommentRow {
   CommentRow(Object? raw)
@@ -185,6 +188,8 @@ class CommentPostPane extends StatefulWidget {
     this.initialInput,
     this.initialOriginal,
     this.onCountChanged,
+    this.continuous = false,
+    this.onBodyScroll,
   });
   final CommentRuntime runtime;
   final String postId, postBody;
@@ -193,6 +198,14 @@ class CommentPostPane extends StatefulWidget {
   final CommentRejectedInput? initialInput;
   final Uint8List? initialOriginal;
   final VoidCallback? onCountChanged;
+  final bool continuous;
+  final VoidCallback? onBodyScroll;
+
+  static void composeFrom(BuildContext context) {
+    final state = context.findAncestorStateOfType<_CommentPostPaneState>();
+    if (state != null) unawaited(state._compose());
+  }
+
   @override
   State<CommentPostPane> createState() => _CommentPostPaneState();
 }
@@ -237,6 +250,10 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         editor.setImage(image);
         originals[image.blobId] = widget.initialOriginal!;
       }
+      open = true;
+      unawaited(_load());
+    }
+    if (widget.continuous && !open) {
       open = true;
       unawaited(_load());
     }
@@ -666,83 +683,373 @@ class _CommentPostPaneState extends State<CommentPostPane> {
     }
   }
 
-  Widget _row(CommentRow r, {bool reply = false}) => Container(
+  Widget _row(CommentRow r, {bool reply = false}) => widget.continuous
+      ? _timelineRow(r)
+      : Container(
+          key: keys.putIfAbsent(r.id, GlobalKey.new),
+          color: highlight == r.id
+              ? Theme.of(context).colorScheme.secondaryContainer
+              : null,
+          padding: EdgeInsets.fromLTRB(reply ? 24 : 12, 8, 8, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 14,
+                    child: Icon(Icons.person_outline, size: 18),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '${r.nickname}${r.data['isPostAuthor'] == true ? ' · 楼主' : ''}',
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+              if (r.data['replyTo'] case final Map relation)
+                TextButton(
+                  onPressed: () => _locate(relation['commentId'] as String),
+                  child: Text('回复 ${(relation['author'] as Map)['nickname']}'),
+                ),
+              if (r.body.isNotEmpty)
+                CommentBody(text: r.body, onReply: () => _compose(r)),
+              if (r.data['image'] != null)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: SizedBox(
+                    width: 160,
+                    child: CommentImageView(runtime: widget.runtime, row: r),
+                  ),
+                ),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  TextButton.icon(
+                    onPressed: () => _mutate(r),
+                    icon: Icon(
+                      r.liked ? Icons.favorite : Icons.favorite_border,
+                    ),
+                    label: Text('${r.likes}'),
+                  ),
+                  TextButton(
+                    onPressed: () => _compose(r),
+                    child: const Text('回复'),
+                  ),
+                  if (GovernanceScope.maybeOf(context) case final governance?)
+                    TextButton(
+                      onPressed: current && governance.available
+                          ? () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => ReportScreen(
+                                  controller: governance,
+                                  postId: r.post,
+                                  commentId: r.id,
+                                  title: r.root == null ? '举报主评论' : '举报回复',
+                                ),
+                              ),
+                            )
+                          : null,
+                      child: const Text('举报'),
+                    ),
+                  if (own.contains(r.id))
+                    TextButton(
+                      onPressed: () => _mutate(r, delete: true),
+                      child: const Text('删除'),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+  Widget _timelineRow(CommentRow r) => Container(
     key: keys.putIfAbsent(r.id, GlobalKey.new),
     color: highlight == r.id
         ? Theme.of(context).colorScheme.secondaryContainer
         : null,
-    padding: EdgeInsets.fromLTRB(reply ? 24 : 12, 8, 8, 8),
-    child: Column(
+    padding: const EdgeInsets.fromLTRB(8, 14, 8, 8),
+    child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            const CircleAvatar(
-              radius: 14,
-              child: Icon(Icons.person_outline, size: 18),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                '${r.nickname}${r.data['isPostAuthor'] == true ? ' · 楼主' : ''}',
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-          ],
-        ),
-        if (r.data['replyTo'] case final Map relation)
-          TextButton(
-            onPressed: () => _locate(relation['commentId'] as String),
-            child: Text('回复 ${(relation['author'] as Map)['nickname']}'),
-          ),
-        if (r.body.isNotEmpty)
-          CommentBody(text: r.body, onReply: () => _compose(r)),
-        if (r.data['image'] != null)
-          Align(
-            alignment: Alignment.centerLeft,
-            child: SizedBox(
-              width: 160,
-              child: CommentImageView(runtime: widget.runtime, row: r),
-            ),
-          ),
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            TextButton.icon(
-              onPressed: () => _mutate(r),
-              icon: Icon(r.liked ? Icons.favorite : Icons.favorite_border),
-              label: Text('${r.likes}'),
-            ),
-            TextButton(onPressed: () => _compose(r), child: const Text('回复')),
-            if (GovernanceScope.maybeOf(context) case final governance?)
-              TextButton(
-                onPressed: current && governance.available
-                    ? () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => ReportScreen(
-                            controller: governance,
-                            postId: r.post,
-                            commentId: r.id,
-                            title: r.root == null ? '举报主评论' : '举报回复',
+        DetailAvatar(name: r.nickname),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: r.nickname,
+                            style: detailType(
+                              context,
+                              16,
+                              weight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                      )
-                    : null,
-                child: const Text('举报'),
+                          if (r.data['isPostAuthor'] == true)
+                            TextSpan(
+                              text: '  楼主',
+                              style: detailType(
+                                context,
+                                11.5,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          TextSpan(
+                            text: ' · ${_commentTime(r)}',
+                            style: detailType(
+                              context,
+                              12.5,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuButton<String>(
+                    tooltip: '评论操作',
+                    icon: DetailChromeIcon(
+                      DetailChrome.more,
+                      color: Theme.of(context).hintColor,
+                      size: 18,
+                    ),
+                    itemBuilder: (_) => [
+                      const PopupMenuItem(value: 'reply', child: Text('回复')),
+                      if (GovernanceScope.maybeOf(context)?.available == true)
+                        const PopupMenuItem(value: 'report', child: Text('举报')),
+                      if (own.contains(r.id))
+                        const PopupMenuItem(value: 'delete', child: Text('删除')),
+                    ],
+                    onSelected: (value) {
+                      if (!current) return;
+                      if (value == 'reply') unawaited(_compose(r));
+                      if (value == 'delete') {
+                        unawaited(_mutate(r, delete: true));
+                      }
+                      if (value == 'report') {
+                        final governance = GovernanceScope.maybeOf(context);
+                        if (governance?.available != true) return;
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => ReportScreen(
+                              controller: governance!,
+                              postId: r.post,
+                              commentId: r.id,
+                              title: r.root == null ? '举报主评论' : '举报回复',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
-            if (own.contains(r.id))
-              TextButton(
-                onPressed: () => _mutate(r, delete: true),
-                child: const Text('删除'),
+              if (r.data['replyTo'] case final Map relation)
+                TextButton(
+                  onPressed: () => _locate(relation['commentId'] as String),
+                  child: Text('回复 ${(relation['author'] as Map)['nickname']}'),
+                ),
+              if (r.body.isNotEmpty)
+                DefaultTextStyle(
+                  style: detailType(context, 16),
+                  child: CommentBody(text: r.body, onReply: () => _compose(r)),
+                ),
+              if (r.data['image'] != null)
+                SizedBox(
+                  width: 160,
+                  child: CommentImageView(runtime: widget.runtime, row: r),
+                ),
+              Row(
+                children: [
+                  DetailAction(
+                    action: FeedAction.comment,
+                    label: '回复${r.nickname}',
+                    size: 18,
+                    count: r.replyCount > 0 ? '${r.replyCount}' : null,
+                    onPressed: () => _compose(r),
+                  ),
+                  const SizedBox(width: 36),
+                  DetailAction(
+                    action: FeedAction.like,
+                    label: r.liked ? '取消点赞' : '点赞',
+                    size: 18,
+                    selected: r.liked,
+                    count: '${r.likes}',
+                    onPressed: () => _mutate(r),
+                  ),
+                ],
               ),
-          ],
+            ],
+          ),
         ),
       ],
     ),
   );
+
+  String _commentTime(CommentRow row) {
+    final date = DateTime.tryParse(row.data['publishedAt'] as String? ?? '')
+        ?.toLocal();
+    return date == null ? '' : '${date.month}月${date.day}日';
+  }
+
+  Widget _continuous() => Column(
+    children: [
+      Expanded(
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (_) {
+            widget.onBodyScroll?.call();
+            return false;
+          },
+          child: SingleChildScrollView(
+            key: PageStorageKey('comment-list:${widget.postId}:$epoch'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                widget.body,
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 16, 12, 3),
+                  child: Text(
+                    '评论',
+                    style: detailType(context, 17, weight: FontWeight.w500),
+                  ),
+                ),
+                if (loading) const LinearProgressIndicator(),
+                if (error != null)
+                  TextButton(onPressed: () => _load(), child: Text(error!)),
+                for (final r in rows) ...[
+                  Stack(
+                    children: [
+                      if ((replies[r.id] ?? []).isNotEmpty)
+                        const Positioned(
+                          left: 31.5,
+                          top: 53,
+                          bottom: 65,
+                          child: ColoredBox(
+                            color: Color(0xFFDADFE1),
+                            child: SizedBox(width: 1),
+                          ),
+                        ),
+                      Column(
+                        children: [
+                          _row(r),
+                          for (final reply
+                              in (replies[r.id] ?? <CommentRow>[]).take(
+                                expanded.contains(r.id) ? 10000 : 5,
+                              ))
+                            _row(reply, reply: true),
+                        ],
+                      ),
+                    ],
+                  ),
+                  if (r.replyCount > 5)
+                    TextButton(
+                      onPressed: () async {
+                        if (expanded.remove(r.id)) {
+                          setState(() {});
+                        } else {
+                          setState(() => expanded.add(r.id));
+                          if (replyCursors[r.id] != null) {
+                            await _replies(r.id, more: true);
+                          }
+                        }
+                      },
+                      child: Text(
+                        expanded.contains(r.id)
+                            ? '收起回复'
+                            : '展开其余 ${r.replyCount - 5} 条回复',
+                      ),
+                    ),
+                  if (expanded.contains(r.id) && replyCursors[r.id] != null)
+                    TextButton(
+                      onPressed: () => _replies(r.id, more: true),
+                      child: const Text('更多回复'),
+                    ),
+                  const Divider(height: 1),
+                ],
+                if (rows.isEmpty && !loading && error == null)
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text('暂无评论'),
+                  ),
+                if (cursor != null)
+                  TextButton(
+                    onPressed: () => _load(more: true),
+                    child: const Text('更多评论'),
+                  ),
+                const SizedBox(height: 24),
+              ],
+            ),
+          ),
+        ),
+      ),
+      SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          child: Semantics(
+            label: editor.hasInput ? '继续输入' : '写评论',
+            button: true,
+            child: Material(
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(29),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(29),
+                onTap: () => _compose(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 9,
+                  ),
+                  child: Row(
+                    children: [
+                      const DetailAvatar(name: '海', radius: 18),
+                      const SizedBox(width: 11),
+                      Expanded(
+                        child: Text(
+                          editor.hasInput ? '继续输入' : '发布你的回复',
+                          style: detailType(
+                            context,
+                            16,
+                            color: Theme.of(context).hintColor,
+                          ),
+                        ),
+                      ),
+                      DetailChromeIcon(
+                        DetailChrome.image,
+                        color: Theme.of(context).hintColor,
+                        size: 26,
+                      ),
+                      const SizedBox(width: 17),
+                      DetailChromeIcon(
+                        DetailChrome.expand,
+                        color: Theme.of(context).hintColor,
+                        size: 23,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     if (!current) return const Center(child: Text('会话已变化，请重新进入帖子。'));
+    if (widget.continuous) return _continuous();
     return Column(
       children: [
         Expanded(
@@ -886,11 +1193,17 @@ class CommentComposer extends StatefulWidget {
     required this.onSubmitted,
     required this.originals,
     this.replyContext,
+    this.quickReplyTo,
+    this.onOpenRejected,
   });
   final CommentRuntime runtime;
   final CommentEditor editor;
   final Map<String, Uint8List> originals;
   final CommentRow? replyContext;
+
+  /// List entry only; the existing full-screen detail composer is unchanged.
+  final String? quickReplyTo;
+  final VoidCallback? onOpenRejected;
   final String contextText;
   final VoidCallback onSubmitted;
   @override
@@ -903,6 +1216,8 @@ class _CommentComposerState extends State<CommentComposer> {
   String? identity, error;
   List<ManagedIdentity> identities = [];
   bool bound = false, busy = false;
+  bool identitiesReady = false, identityConfirmed = false;
+  Route<dynamic>? _childRoute;
   Uint8List? picked;
   @override
   void initState() {
@@ -915,6 +1230,18 @@ class _CommentComposerState extends State<CommentComposer> {
   bool get current =>
       mounted && widget.runtime.current(epoch) && widget.editor.active;
   void _changed() {
+    if (mounted &&
+        !widget.runtime.current(epoch) &&
+        widget.quickReplyTo != null) {
+      widget.editor.leave();
+      text.clear();
+      final route = ModalRoute.of(context);
+      final picker = _childRoute;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (picker?.isActive == true) picker!.navigator?.removeRoute(picker);
+        if (route?.isActive == true) route!.navigator?.removeRoute(route);
+      });
+    }
     if (mounted) setState(() {});
   }
 
@@ -924,6 +1251,9 @@ class _CommentComposerState extends State<CommentComposer> {
           d = await widget.runtime.directory();
       if (!current) return;
       setState(() {
+        identitiesReady = true;
+        identityConfirmed = false;
+        error = null;
         identities = d.identities;
         identity = c['boundIdentityId'] as String?;
         bound = identity != null;
@@ -935,6 +1265,7 @@ class _CommentComposerState extends State<CommentComposer> {
         }
         if (bound && !identities.any((i) => i.id == identity)) {
           identity = null;
+          error = '帖内身份已不可用，无法继续回复。';
         }
       });
     } catch (_) {
@@ -1003,6 +1334,138 @@ class _CommentComposerState extends State<CommentComposer> {
     }
   }
 
+  Future<void> _quickSend() async {
+    if (!current || busy || !identitiesReady || !widget.runtime.core.ready) {
+      return;
+    }
+    if (_quickRejected != null) return;
+    if (!bound && !identityConfirmed) {
+      final navigator = Navigator.of(context);
+      final route = DialogRoute<String>(
+        context: context,
+        builder: (pickerContext) => AlertDialog(
+          title: const Text('选择发言身份'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final item in identities)
+                    ListTile(
+                      title: Text(item.nickname),
+                      onTap: () => Navigator.pop(pickerContext, item.id),
+                    ),
+                  if (identities.isEmpty) const Text('请先在身份设置中创建发言身份。'),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(pickerContext),
+              child: const Text('取消'),
+            ),
+            if (identities.isEmpty)
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(pickerContext);
+                  await Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => IdentityManagementScreen(
+                        controller: widget.runtime.identityManagement,
+                        sessions: widget.runtime.sessions,
+                      ),
+                    ),
+                  );
+                  if (current) await _identities();
+                },
+                child: const Text('身份设置'),
+              ),
+          ],
+        ),
+      );
+      _childRoute = route;
+      final selected = await navigator.push(route);
+      _childRoute = null;
+      if (!current ||
+          selected == null ||
+          !identities.any((item) => item.id == selected)) {
+        return;
+      }
+      setState(() {
+        identity = selected;
+        identityConfirmed = true;
+      });
+      // Choosing an identity does not itself publish a comment.
+      return;
+    }
+    await _send();
+  }
+
+  CommentJournalEntry? get _quickRejected => widget.runtime.core.entries
+      .where(
+        (entry) =>
+            entry.intent.operation == CommentOperation.create &&
+            entry.rejectionCode != null &&
+            entry.intent.binding.postId == widget.editor.target.postId,
+      )
+      .firstOrNull;
+
+  bool get _canRestoreQuick {
+    final entry = _quickRejected;
+    return entry != null &&
+        entry.transport == CommentTransportState.settled &&
+        !entry.identityDeleted &&
+        entry.intent.binding.targetCommentId == null &&
+        entry.content != null &&
+        entry.content!.image == null;
+  }
+
+  Future<void> _restoreQuickReply() async {
+    if (!current || busy || !_canRestoreQuick) return;
+    final entry = _quickRejected!;
+    setState(() => busy = true);
+    try {
+      if (text.text.isNotEmpty && text.text != entry.content!.body) {
+        final route = DialogRoute<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('恢复之前的评论？'),
+            content: const Text('恢复原内容会替换当前输入。之前的评论尚未被服务器接收。'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('保留当前输入'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('恢复原内容'),
+              ),
+            ],
+          ),
+        );
+        _childRoute = route;
+        final replace = await Navigator.of(context).push(route);
+        _childRoute = null;
+        if (!current || replace != true) return;
+      }
+      final recovered = await widget.runtime.core.releaseRejected(
+        localId: entry.localId,
+        activePostId: widget.editor.target.postId,
+      );
+      if (!current || recovered == null) return;
+      text.text = recovered.content.body;
+      widget.editor.body = recovered.content.body;
+      await _identities();
+      // Recovery edits input only. A new explicit Reply action is required.
+    } catch (_) {
+      if (current) setState(() => error = '暂时无法恢复，原内容仍已保留，请重试。');
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
   @override
   void dispose() {
     if (widget.editor.active) widget.editor.body = text.text;
@@ -1012,137 +1475,180 @@ class _CommentComposerState extends State<CommentComposer> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('评论与回复'),
-      actions: [
-        TextButton(
-          onPressed:
-              current && !busy && identity != null && widget.runtime.core.ready
-              ? _send
-              : null,
-          child: const Text('发布'),
-        ),
-      ],
-    ),
-    body: !current
-        ? const Center(child: Text('会话已变化，请返回帖子。'))
-        : SafeArea(
-            child: Column(
-              children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.sizeOf(context).height * .25,
-                  ),
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(widget.contextText),
-                        if (widget.replyContext case final row?
-                            when row.data['image'] != null)
-                          CommentImageView(runtime: widget.runtime, row: row),
-                      ],
-                    ),
-                  ),
-                ),
-                const Divider(),
-                Expanded(
-                  child: TextField(
-                    controller: text,
-                    onChanged: (v) => widget.editor.body = v,
-                    expands: true,
-                    minLines: null,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      hintText: '写下评论，最多 3000 字',
-                      contentPadding: EdgeInsets.all(16),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                if (error != null)
-                  Semantics(liveRegion: true, child: Text(error!)),
-                if (widget.editor.image != null)
-                  ListTile(
-                    leading: picked == null
-                        ? null
-                        : SizedBox(
-                            width: 64,
-                            height: 64,
-                            child: Image.memory(
-                              picked!,
-                              fit: BoxFit.contain,
-                              cacheWidth: 128,
-                              cacheHeight: 128,
-                            ),
+  Widget build(BuildContext context) => widget.quickReplyTo != null
+      ? PopScope(
+          canPop: !busy,
+          child: QuickReplyDialog(
+            targetName: current ? widget.quickReplyTo! : '',
+            controller: text,
+            busy: busy,
+            onReply:
+                current &&
+                    identitiesReady &&
+                    widget.runtime.core.ready &&
+                    _quickRejected == null &&
+                    (!bound || identity != null)
+                ? _quickSend
+                : null,
+            onClose: busy ? null : () => Navigator.pop(context),
+            error: _quickRejected == null
+                ? error
+                : error ??
+                      (_canRestoreQuick
+                          ? '这条帖子有一条未被接收的评论，原内容已保留，请先恢复。'
+                          : '这条帖子有一条未被接收的回复，请前往原帖打开回复输入框，恢复原对象和内容。'),
+            onRetry: _quickRejected == null
+                ? (error == null ? null : _identities)
+                : (_canRestoreQuick
+                      ? _restoreQuickReply
+                      : widget.onOpenRejected),
+            retryLabel: _quickRejected == null
+                ? '重试'
+                : (_canRestoreQuick ? '恢复未发送内容' : '前往原帖恢复'),
+            identityCaption: !bound && identityConfirmed
+                ? '以 ${identities.where((i) => i.id == identity).firstOrNull?.nickname ?? '所选身份'} 回复'
+                : null,
+          ),
+        )
+      : Scaffold(
+          appBar: AppBar(
+            title: const Text('评论与回复'),
+            actions: [
+              TextButton(
+                onPressed:
+                    current &&
+                        !busy &&
+                        identity != null &&
+                        widget.runtime.core.ready
+                    ? _send
+                    : null,
+                child: const Text('发布'),
+              ),
+            ],
+          ),
+          body: !current
+              ? const Center(child: Text('会话已变化，请返回帖子。'))
+              : SafeArea(
+                  child: Column(
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.sizeOf(context).height * .25,
+                        ),
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(widget.contextText),
+                              if (widget.replyContext case final row?
+                                  when row.data['image'] != null)
+                                CommentImageView(
+                                  runtime: widget.runtime,
+                                  row: row,
+                                ),
+                            ],
                           ),
-                    title: const Text('已选择 1 张原图'),
-                    trailing: IconButton(
-                      tooltip: '移除图片',
-                      onPressed: busy
-                          ? null
-                          : () => setState(() {
-                              if (widget.editor.image != null) {
-                                widget.originals.remove(
-                                  widget.editor.image!.blobId,
-                                );
-                              }
-                              picked = null;
-                              widget.editor.setImage(null);
-                            }),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ),
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    IconButton(
-                      tooltip: '选择一张图片',
-                      onPressed: busy ? null : _pick,
-                      icon: const Icon(Icons.image_outlined),
-                    ),
-                    DropdownButton<String>(
-                      hint: const Text('选择身份'),
-                      value: identities.any((i) => i.id == identity)
-                          ? identity
-                          : null,
-                      items: [
-                        for (final i in identities)
-                          DropdownMenuItem(
-                            value: i.id,
-                            child: Text(i.nickname),
+                        ),
+                      ),
+                      const Divider(),
+                      Expanded(
+                        child: TextField(
+                          controller: text,
+                          onChanged: (v) => widget.editor.body = v,
+                          expands: true,
+                          minLines: null,
+                          maxLines: null,
+                          decoration: const InputDecoration(
+                            hintText: '写下评论，最多 3000 字',
+                            contentPadding: EdgeInsets.all(16),
+                            border: InputBorder.none,
                           ),
-                      ],
-                      onChanged: bound || busy
-                          ? null
-                          : (id) => setState(() => identity = id),
-                    ),
-                    TextButton(
-                      onPressed: busy
-                          ? null
-                          : () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute<void>(
-                                  builder: (_) => IdentityManagementScreen(
-                                    controller:
-                                        widget.runtime.identityManagement,
-                                    sessions: widget.runtime.sessions,
+                        ),
+                      ),
+                      if (error != null)
+                        Semantics(liveRegion: true, child: Text(error!)),
+                      if (widget.editor.image != null)
+                        ListTile(
+                          leading: picked == null
+                              ? null
+                              : SizedBox(
+                                  width: 64,
+                                  height: 64,
+                                  child: Image.memory(
+                                    picked!,
+                                    fit: BoxFit.contain,
+                                    cacheWidth: 128,
+                                    cacheHeight: 128,
                                   ),
                                 ),
-                              );
-                              if (current) await _identities();
-                            },
-                      child: Text(bound ? '帖内身份已固定' : '身份设置'),
-                    ),
-                  ],
+                          title: const Text('已选择 1 张原图'),
+                          trailing: IconButton(
+                            tooltip: '移除图片',
+                            onPressed: busy
+                                ? null
+                                : () => setState(() {
+                                    if (widget.editor.image != null) {
+                                      widget.originals.remove(
+                                        widget.editor.image!.blobId,
+                                      );
+                                    }
+                                    picked = null;
+                                    widget.editor.setImage(null);
+                                  }),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          IconButton(
+                            tooltip: '选择一张图片',
+                            onPressed: busy ? null : _pick,
+                            icon: const Icon(Icons.image_outlined),
+                          ),
+                          DropdownButton<String>(
+                            hint: const Text('选择身份'),
+                            value: identities.any((i) => i.id == identity)
+                                ? identity
+                                : null,
+                            items: [
+                              for (final i in identities)
+                                DropdownMenuItem(
+                                  value: i.id,
+                                  child: Text(i.nickname),
+                                ),
+                            ],
+                            onChanged: bound || busy
+                                ? null
+                                : (id) => setState(() => identity = id),
+                          ),
+                          TextButton(
+                            onPressed: busy
+                                ? null
+                                : () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute<void>(
+                                        builder: (_) =>
+                                            IdentityManagementScreen(
+                                              controller: widget
+                                                  .runtime
+                                                  .identityManagement,
+                                              sessions: widget.runtime.sessions,
+                                            ),
+                                      ),
+                                    );
+                                    if (current) await _identities();
+                                  },
+                            child: Text(bound ? '帖内身份已固定' : '身份设置'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
-  );
+        );
 }
 
 class CommentImageView extends StatefulWidget {
@@ -1359,6 +1865,7 @@ class _CommentBodyState extends State<CommentBody> {
         children: [
           SelectableText(
             widget.text,
+            minLines: 1,
             maxLines: expanded ? null : 4,
             onTap: widget.onReply,
           ),

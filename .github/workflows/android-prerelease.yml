@@ -69,6 +69,7 @@ jobs:
         with:
           ref: ${{ env.SOURCE_SHA }}
           persist-credentials: false
+          lfs: true
       - name: Allocate this candidate's caches
         run: |
           echo "PUB_CACHE=$RUNNER_TEMP/prerelease-pub" >> "$GITHUB_ENV"

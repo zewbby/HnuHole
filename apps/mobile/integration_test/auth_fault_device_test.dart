@@ -138,7 +138,7 @@ void main() {
           await _tap(tester, find.text('确认恢复码并创建账号'));
           await _wait(
             tester,
-            () => find.byType(ChannelTree).evaluate().isNotEmpty,
+            () => find.byType(FeedScreen).evaluate().isNotEmpty,
             'actual registration and directory',
           );
           await openOwnedManagement(tester);
@@ -261,7 +261,7 @@ void main() {
             await _wait(
               tester,
               () =>
-                  find.byType(ChannelTree).evaluate().isNotEmpty &&
+                  find.byType(FeedScreen).evaluate().isNotEmpty &&
                   find.text('开始使用').evaluate().isEmpty,
               'explicit new-generation login',
             );
@@ -314,7 +314,7 @@ void main() {
             await _wait(
               tester,
               () =>
-                  find.byType(ChannelTree).evaluate().isNotEmpty &&
+                  find.byType(FeedScreen).evaluate().isNotEmpty &&
                   find.text('开始使用').evaluate().isEmpty,
               'explicit login after offline logout drain',
             );
@@ -352,7 +352,7 @@ void main() {
             await _wait(
               tester,
               () =>
-                  find.byType(ChannelTree).evaluate().isNotEmpty &&
+                  find.byType(FeedScreen).evaluate().isNotEmpty &&
                   find.text('开始使用').evaluate().isEmpty,
               'actual App session restored',
             );

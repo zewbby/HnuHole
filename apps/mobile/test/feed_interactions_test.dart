@@ -222,6 +222,8 @@ void main() {
           );
           await tester.pump();
         } else {
+          api(f).actual = summary(liked: true);
+          api(f).mutationWait = null;
           wait.complete(feed.reply(summary(liked: true)));
           await write;
           await tester.pump();
@@ -229,19 +231,22 @@ void main() {
         await gesture.up();
         await tester.pump();
         expect(find.byType(PostDetailScreen), findsNothing);
-        expect(api(f).changes.length, 1);
+        expect(api(f).changes.length, enabledAtDown ? 1 : 2);
         if (enabledAtDown) {
+          api(f).actual = summary(liked: true);
+          api(f).mutationWait = null;
           wait.complete(feed.reply(summary(liked: true)));
           await write;
         }
         await tester.pumpAndSettle();
         expect(find.byType(PostDetailScreen), findsNothing);
-        expect(api(f).changes.length, 1);
+        expect(api(f).changes.length, 2);
+        expect(state(f).liked, false);
       },
     );
   }
   testWidgets(
-    'FA-D02 busy and disabled action taps never fall through to post navigation',
+    'pending actions stay responsive and disabled share never opens the post',
     (tester) async {
       final f = await fixture();
       addTearDown(f.dispose);
@@ -257,7 +262,7 @@ void main() {
               find.byKey(const ValueKey('like:${feed.postId}')),
             )
             .onPressed,
-        isNull,
+        isNotNull,
       );
       for (var i = 0; i < 10; i++) {
         await tester.tap(find.byKey(const ValueKey('like:${feed.postId}')));
@@ -269,10 +274,20 @@ void main() {
       await tester.pump();
       expect(find.byType(PostDetailScreen), findsNothing);
       expect(api(f).changes.length, 1);
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('like:${feed.postId}')),
+          matching: find.byType(CircularProgressIndicator),
+        ),
+        findsNothing,
+      );
+      api(f).actual = summary(liked: true);
+      api(f).mutationWait = null;
       wait.complete(feed.reply(summary(liked: true)));
       await tester.pumpAndSettle();
       expect(find.byType(PostDetailScreen), findsNothing);
       expect(state(f).value!.likedByMe, true);
+      expect(state(f).value!.favoritedByMe, true);
     },
   );
   testWidgets(
@@ -334,7 +349,7 @@ void main() {
     addTearDown(f.dispose);
     await tester.pumpWidget(feed.screen(f));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
+    await tester.tap(find.text(feed.post().title).first);
     await tester.pumpAndSettle();
     final oldLike = tester
         .widget<TextButton>(
@@ -637,7 +652,7 @@ void main() {
       expect(f.api.calls.where((c) => c.startsWith('view:')), isEmpty);
     },
   );
-  test('rapid taps lock synchronously across both operations; response replaces count', () async {
+  test('rapid taps coalesce synchronously across both operations; response replaces count', () async {
     final f = await fixture();
     addTearDown(f.dispose);
     await f.controller.loadTimeline();
@@ -665,6 +680,89 @@ void main() {
     expect(state(f).likes, 13);
     expect(state(f).canChange, true);
   });
+  testWidgets(
+    'like and unlike update on next frame with serial final-intent writes and no spinner',
+    (tester) async {
+      final f = await fixture();
+      addTearDown(f.dispose);
+      await tester.pumpWidget(feed.screen(f));
+      await tester.pumpAndSettle();
+      final wait = Completer<PostResponse<PostInteractions>>();
+      api(f).mutationWait = wait;
+      final button = find.byKey(const ValueKey('like:${feed.postId}'));
+      await tester.tap(button);
+      await tester.pump();
+      var item = tester.widget<HhXPostItem>(find.byType(HhXPostItem));
+      expect(item.post.liked, true);
+      expect(item.post.likes, 13);
+      expect(
+        find.descendant(
+          of: button,
+          matching: find.byType(CircularProgressIndicator),
+        ),
+        findsNothing,
+      );
+      await tester.tap(button);
+      await tester.pump();
+      item = tester.widget<HhXPostItem>(find.byType(HhXPostItem));
+      expect(item.post.liked, false);
+      expect(item.post.likes, 12);
+      expect(api(f).changes.length, 1);
+      expect(find.byType(PostDetailScreen), findsNothing);
+      api(f).actual = summary(liked: true);
+      api(f).mutationWait = null;
+      wait.complete(feed.reply(summary(liked: true)));
+      await tester.pumpAndSettle();
+      expect(
+        api(f).changes.map((s) => s.split(':').take(2).join(':')).toList(),
+        ['like:true', 'like:false'],
+      );
+      expect(state(f).liked, false);
+      expect(state(f).likes, 12);
+      expect(api(f).conditions[0], isNot(api(f).conditions[1]));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  test(
+    'queued unlike waits for unknown original CAS and retains its final intent',
+    () async {
+      final f = await fixture();
+      addTearDown(f.dispose);
+      await f.controller.loadTimeline();
+      final gate = Completer<void>();
+      api(f).beforeCas = gate;
+      api(f).failure = const PostFailure(kind: PostFailureKind.transport);
+      final first = f.controller.changeInteraction(
+        feed.postId,
+        PostInteractionAction.like,
+      );
+      await Future<void>.delayed(Duration.zero);
+      await f.controller.changeInteraction(
+        feed.postId,
+        PostInteractionAction.like,
+      );
+      expect(state(f).liked, false);
+      gate.complete();
+      await first;
+      expect(state(f).uncertain, true);
+      expect(state(f).canChange, false);
+      expect(api(f).changes.length, 1);
+      api(f).beforeCas = null;
+      api(f).failure = null;
+      await f.controller.retryInteraction(feed.postId);
+      expect(api(f).conditions[0], api(f).conditions[1]);
+      expect(api(f).conditions[2], isNot(api(f).conditions[1]));
+      expect(
+        api(f).changes.map((s) => s.split(':').take(2).join(':')).toList(),
+        ['like:true', 'like:true', 'like:false'],
+      );
+      expect(state(f).liked, false);
+      expect(api(f).actual.likedByMe, false);
+      expect(state(f).writeError, isNull);
+    },
+  );
+
   test('older batch cannot overwrite successful mutation', () async {
     final f = await fixture();
     addTearDown(f.dispose);
@@ -864,7 +962,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(PostDetailScreen), findsNothing);
       expect(state(f).value!.likedByMe, true);
-      await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
+      await tester.tap(find.text(feed.post().title).first);
       await tester.pumpAndSettle();
       expect(find.byType(PostDetailScreen), findsOneWidget);
       await tester.scrollUntilVisible(
@@ -902,7 +1000,7 @@ void main() {
           'HNUHOLE_UI_RENDER_LATIN_MEDIUM_FONT',
           'HNUHOLE_UI_RENDER_LATIN_BOLD_FONT',
         ],
-        'Noto Sans CJK SC': ['HNUHOLE_UI_RENDER_FONT'],
+        'HhNotoSansSC': ['HNUHOLE_UI_RENDER_FONT'],
         'MaterialIcons': ['HNUHOLE_UI_RENDER_ICON_FONT'],
       }.entries) {
         await tester.runAsync(() async {
@@ -971,7 +1069,7 @@ void main() {
       await tester.pumpWidget(mount(Brightness.dark));
       await tester.pumpAndSettle();
       await capture('interactions-dark');
-      await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
+      await tester.tap(find.text(feed.post().title).first);
       await tester.pumpAndSettle();
       await capture('interactions-detail');
       await tester.pageBack();

@@ -126,7 +126,7 @@ void main() {
           if (phase == 'closure-profile-request') {
             await _wait(
               tester,
-              () => find.byType(ChannelTree).evaluate().isNotEmpty,
+              () => find.byType(FeedScreen).evaluate().isNotEmpty,
               'restored fresh account',
             );
             await _identity(tester);
@@ -321,7 +321,7 @@ void main() {
           );
           await _wait(
             tester,
-            () => find.byType(ChannelTree).evaluate().isNotEmpty,
+            () => find.byType(FeedScreen).evaluate().isNotEmpty,
             'new session restart',
           );
           final directory = await api.identities(original.session!.token);
@@ -509,7 +509,7 @@ Future<String> _register(
   await _wait(
     tester,
     () =>
-        find.byType(ChannelTree).evaluate().isNotEmpty &&
+        find.byType(FeedScreen).evaluate().isNotEmpty &&
         find.byType(AuthScreen).evaluate().isEmpty,
     'actual fresh account',
   );

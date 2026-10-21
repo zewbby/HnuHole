@@ -186,10 +186,11 @@ class _AuthPresentationHostState extends State<AuthPresentationHost> {
         final themed =
             base.brightness == (dark ? Brightness.dark : Brightness.light)
             ? base
-            : ThemeData(
+            // The host can update before the root theme animation finishes.
+            // Keep component text styles and font fallback consistent while
+            // changing brightness; a bare ThemeData breaks TextStyle.lerp.
+            : base.copyWith(
                 brightness: dark ? Brightness.dark : Brightness.light,
-                useMaterial3: true,
-                fontFamily: base.textTheme.bodyMedium?.fontFamily,
               );
         return AuthPresentationScope(
           controller: controller,

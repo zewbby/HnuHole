@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnuhole_mobile/src/design_system/detail_components.dart';
+import 'package:hnuhole_mobile/src/posts/x_feed.dart';
 import 'package:hnuhole_mobile/src/comments/comment_api.dart';
 import 'package:hnuhole_mobile/src/comments/comment_failure_view.dart';
 import 'package:hnuhole_mobile/src/comments/comment_http.dart';
@@ -13,6 +16,12 @@ import 'package:hnuhole_mobile/src/comments/comment_views.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 
 import 'identity_test_support.dart';
+import 'feed_ui_test.dart' as feed;
+import 'feed_interactions_test.dart' as interactions;
+
+import 'package:hnuhole_mobile/src/comments/comment_editor.dart';
+import 'package:hnuhole_mobile/src/comments/quick_reply_dialog.dart';
+import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 
 const post = '11111111-1111-4111-8111-111111111111',
     identity = '22222222-2222-4222-8222-222222222222',
@@ -24,11 +33,15 @@ class _MemoryJournal extends NativeCommentJournal {
   _MemoryJournal()
     : super((_) => throw StateError('Widget fixture has no native store'));
   final values = <String, CommentJournalEntry>{};
+  final writes = <CommentJournalEntry>[];
+  bool failWrite = false;
   @override
   Future<List<CommentJournalEntry>> read(String account) async =>
       values.values.toList();
   @override
   Future<void> put(String account, CommentJournalEntry e) async {
+    if (failWrite) throw StateError('Synthetic journal failure');
+    writes.add(e);
     values[e.localId] = e;
   }
 
@@ -47,9 +60,13 @@ class _Api implements CommentApi {
   CommentIntent? sent;
   Completer<CommentTask>? pending;
   String? publishedId;
+  VoidCallback? onExecute;
+  Object? executeFailure;
   @override
   Future<CommentTask> execute(CommentIntent i) async {
     sent = i;
+    onExecute?.call();
+    if (executeFailure case final failure?) throw failure;
     if (pending != null) return pending!.future;
     return CommentTask(
       taskId: i.taskId,
@@ -136,6 +153,8 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
   @override
   String? error;
   final ownIds = <String>[];
+  bool bound = true;
+  bool hideIdentity = false;
   String? removed;
   Object? loadFailure;
   Object? replyFailure;
@@ -153,20 +172,21 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
 
   @override
   Future<Map<String, dynamic>> contextFor(String _) async => {
-    'boundIdentityId': identity,
+    'boundIdentityId': bound ? identity : null,
     'ownCommentIds': ownIds,
     'totalCount': 2,
   };
   @override
   Future<IdentityDirectory> directory() async => IdentityDirectory(
     identities: [
-      ManagedIdentity(
-        id: identity,
-        nickname: '固定身份',
-        avatar: 'default-v1',
-        isOriginal: false,
-        createdAt: DateTime.utc(2026),
-      ),
+      if (!hideIdentity)
+        ManagedIdentity(
+          id: identity,
+          nickname: '固定身份',
+          avatar: 'default-v1',
+          isOriginal: false,
+          createdAt: DateTime.utc(2026),
+        ),
     ],
     createdCount: 1,
     serverTime: DateTime.utc(2026),
@@ -210,6 +230,7 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
 }
 
 void main() {
+  quickReplyTests();
   testWidgets(
     'real root and reply rows open report forms for their concrete comment',
     (tester) async {
@@ -602,10 +623,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('评论 2'));
     await tester.pumpAndSettle();
-    await tester.drag(
-      find.byType(SingleChildScrollView).last,
-      const Offset(0, -120),
-    );
+    await tester.ensureVisible(find.text('删除'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('删除'));
     await tester.pumpAndSettle();
@@ -711,6 +729,487 @@ void main() {
       r.core.dispose();
       r.dispose();
       await journal.close();
+    },
+  );
+}
+
+class _RetiringRuntime extends _Runtime {
+  _RetiringRuntime(super.journal);
+  bool active = true;
+  @override
+  bool get available => active;
+  @override
+  bool current(int e) => active && e == 0;
+  void retire() {
+    active = false;
+    notifyListeners();
+  }
+}
+
+void quickReplyTests() {
+  Future<_RetiringRuntime> runtime(
+    WidgetTester tester, {
+    bool bound = true,
+  }) async {
+    final r = _RetiringRuntime(_MemoryJournal())..bound = bound;
+    await r.core.activate(account);
+    addTearDown(() {
+      r.core.dispose();
+      r.dispose();
+    });
+    return r;
+  }
+
+  Future<void> launch(
+    WidgetTester tester,
+    _Runtime r,
+    CommentEditor editor,
+  ) async {
+    final originals = <String, Uint8List>{};
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: HhTelegramTheme.create(Brightness.light),
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              child: const Text('打开回复'),
+              onPressed: () => showDialog<void>(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => CommentComposer(
+                  runtime: r,
+                  editor: editor,
+                  originals: originals,
+                  contextText: '原帖',
+                  quickReplyTo: '松间',
+                  onOpenRejected: () {},
+                  onSubmitted: editor.leave,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('打开回复'));
+    await tester.pumpAndSettle();
+  }
+
+  Future<CommentIntent> reject(
+    _Runtime r, {
+    String? target,
+    Object? failure,
+  }) async {
+    r.transportFake.executeFailure =
+        failure ?? CommentCommandRejected('IDENTITY_UNAVAILABLE');
+    await r.core.submit(
+      taskId: commentUUID(),
+      commandId: commentKey(),
+      binding: CommentBinding(
+        postId: post,
+        identityId: identity,
+        rootCommentId: target == null ? null : root,
+        targetCommentId: target,
+      ),
+      content: CommentContent(body: '原评论完整内容'),
+    );
+    return r.transportFake.sent!;
+  }
+
+  testWidgets(
+    'authoritative quick rejection restores input and explicitly resends with fresh keys',
+    (tester) async {
+      final r = await runtime(tester);
+      final old = await reject(r);
+      expect(r.core.entries.single.rejectionCode, 'IDENTITY_UNAVAILABLE');
+      await launch(tester, r, CommentEditor(CommentTarget(postId: post)));
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('reply-send')))
+            .onPressed,
+        isNull,
+      );
+      await tester.tap(find.text('恢复未发送内容'));
+      await tester.pumpAndSettle();
+      expect(find.text('原评论完整内容'), findsOneWidget);
+      expect(r.core.entries, isEmpty);
+      expect(r.transportFake.sent, same(old));
+      r.transportFake.executeFailure = null;
+      await tester.tap(find.byKey(const ValueKey('reply-send')));
+      await tester.pumpAndSettle();
+      final sent = r.transportFake.sent!;
+      expect(sent.taskId, isNot(old.taskId));
+      expect(sent.commandId, isNot(old.commandId));
+      expect(sent.binding.targetCommentId, isNull);
+      expect(sent.content!.body, '原评论完整内容');
+      expect(find.byType(QuickReplyDialog), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'rejected nested target is retained for original detail recovery',
+    (tester) async {
+      final r = await runtime(tester);
+      final old = await reject(r, target: reply);
+      await launch(tester, r, CommentEditor(CommentTarget(postId: post)));
+      expect(find.text('前往原帖恢复'), findsOneWidget);
+      expect(find.text('恢复未发送内容'), findsNothing);
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('reply-send')))
+            .onPressed,
+        isNull,
+      );
+      expect(r.core.entries.single.intent.binding.sameAs(old.binding), true);
+      expect(r.core.entries.single.content!.body, '原评论完整内容');
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'retirement during recovery confirmation closes child and preserves journal',
+    (tester) async {
+      final r = await runtime(tester);
+      await reject(r);
+      final editor = CommentEditor(CommentTarget(postId: post))
+        ..body = '当前未发草稿';
+      await launch(tester, r, editor);
+      await tester.tap(find.text('恢复未发送内容'));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('恢复之前的评论？'), findsOneWidget);
+      r.retire();
+      await tester.pumpAndSettle();
+      expect(find.byType(QuickReplyDialog), findsNothing);
+      expect(find.text('恢复之前的评论？'), findsNothing);
+      expect(editor.hasInput, false);
+      expect(
+        (r.journal as _MemoryJournal).values.values.single.content!.body,
+        '原评论完整内容',
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets('transport unknown is never offered as rejected input recovery', (
+    tester,
+  ) async {
+    final r = await runtime(tester);
+    await reject(r, failure: StateError('Synthetic lost response'));
+    expect(r.core.entries.single.transport, CommentTransportState.unknown);
+    await launch(tester, r, CommentEditor(CommentTarget(postId: post)));
+    expect(find.text('恢复未发送内容'), findsNothing);
+    expect(find.text('前往原帖恢复'), findsNothing);
+    expect(r.core.entries.single.content!.body, '原评论完整内容');
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('real continuous detail registers a visible body once', (tester) async {
+    final f = await interactions.fixture();
+    addTearDown(f.dispose);
+    final r = await runtime(tester);
+    await tester.pumpWidget(CommentScope(runtime: r, child: feed.screen(f)));
+    await tester.pumpAndSettle();
+    expect(f.api.calls.where((c) => c.startsWith('view:')), isEmpty);
+    await tester.tap(find.text(feed.post().title).first);
+    await tester.pumpAndSettle();
+    expect(find.byType(PostDetailScreen), findsOneWidget);
+    expect(f.api.calls.where((c) => c == 'view:${feed.postId}'), hasLength(1));
+    await tester.drag(find.byType(SingleChildScrollView).first, const Offset(0, -300));
+    await tester.pumpAndSettle();
+    expect(f.api.calls.where((c) => c == 'view:${feed.postId}'), hasLength(1));
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('short comment uses its natural one-line height', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 300,
+            child: DefaultTextStyle(
+              style: TextStyle(fontSize: 16, height: 1.45),
+              child: CommentBody(text: '短评论'),
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(tester.getSize(find.byType(SelectableText)).height, lessThan(30));
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('detail action semantics include count without visual labels', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: DetailAction(
+            action: FeedAction.like,
+            label: '取消点赞',
+            count: '12',
+            selected: true,
+            onPressed: () {},
+          ),
+        ),
+      ),
+    );
+    expect(find.bySemanticsLabel('取消点赞，12'), findsOneWidget);
+    expect(find.text('取消点赞'), findsNothing);
+    expect(find.text('12'), findsOneWidget);
+    semantics.dispose();
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets(
+    'continuous comments load immediately and reply entry stays fixed while scrolling',
+    (tester) async {
+      final r = await runtime(tester);
+      var bodyScrolls = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: HhTelegramTheme.create(Brightness.light),
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '原帖',
+              continuous: true,
+              onBodyScroll: () => bodyScrolls++,
+              body: const SizedBox(height: 700, child: Text('原帖正文')),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('发布你的回复'), findsOneWidget);
+      expect(find.text('收起评论'), findsNothing);
+      expect(find.text('甲的主评论'), findsOneWidget);
+      final entryY = tester.getTopLeft(find.text('发布你的回复')).dy;
+      await tester.drag(
+        find.byType(SingleChildScrollView).first,
+        const Offset(0, -600),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(find.text('发布你的回复')).dy, entryY);
+      expect(bodyScrolls, greaterThan(0));
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CommentComposer), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'feed comment opens direct composer without detail or view registration; cancel retains draft',
+    (tester) async {
+      final f = await interactions.fixture();
+      addTearDown(f.dispose);
+      final r = await runtime(tester);
+      await tester.pumpWidget(CommentScope(runtime: r, child: feed.screen(f)));
+      await tester.pumpAndSettle();
+      final before = List<String>.of(f.api.calls);
+      await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
+      await tester.pumpAndSettle();
+      expect(find.byType(QuickReplyDialog), findsOneWidget);
+      expect(find.byType(PostDetailScreen), findsNothing);
+      expect(
+        tester
+            .widget<QuickReplyDialog>(find.byType(QuickReplyDialog))
+            .targetName,
+        feed.author.nickname,
+      );
+      expect(f.api.calls, before);
+      await tester.enterText(
+        find.byKey(const ValueKey('reply-input')),
+        '列表中的未发送文字',
+      );
+      await tester.pump();
+      await tester.tap(find.byTooltip('收起回复'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
+      await tester.pumpAndSettle();
+      expect(find.text('列表中的未发送文字'), findsOneWidget);
+      expect(r.transportFake.sent, isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'quick reply journals exact root target, returns to feed and refreshes published count',
+    (tester) async {
+      final f = await interactions.fixture();
+      addTearDown(f.dispose);
+      final r = await runtime(tester);
+      r.transportFake.publishedId = root;
+      r.transportFake.onExecute = () =>
+          interactions.api(f).actual = interactions.summary(comments: 9);
+      await tester.pumpWidget(CommentScope(runtime: r, child: feed.screen(f)));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('comment:${feed.postId}')));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('reply-input')),
+        '直接从列表真实提交',
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('reply-send')));
+      await tester.pumpAndSettle();
+      expect(find.byType(QuickReplyDialog), findsNothing);
+      final sent = r.transportFake.sent!;
+      expect(sent.binding.postId, feed.postId);
+      expect(sent.binding.identityId, identity);
+      expect(sent.binding.rootCommentId, isNull);
+      expect(sent.binding.targetCommentId, isNull);
+      expect(
+        (r.journal as _MemoryJournal).writes.first.content!.body,
+        '直接从列表真实提交',
+      );
+      expect((await r.journal.read(account)), isEmpty);
+      expect(f.controller.interaction(feed.postId).value!.commentCount, 9);
+      expect(find.byType(PostDetailScreen), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'first quick reply selects identity without publishing on selection',
+    (tester) async {
+      final r = await runtime(tester, bound: false);
+      final editor = CommentEditor(CommentTarget(postId: post));
+      await launch(tester, r, editor);
+      await tester.enterText(
+        find.byKey(const ValueKey('reply-input')),
+        '选择身份后再明确回复',
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('reply-send')));
+      await tester.pumpAndSettle();
+      expect(find.text('选择发言身份'), findsOneWidget);
+      await tester.tap(find.text('固定身份'));
+      await tester.pumpAndSettle();
+      expect(r.transportFake.sent, isNull);
+      expect(find.text('以 固定身份 回复'), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('reply-send')));
+      await tester.pumpAndSettle();
+      expect(r.transportFake.sent!.binding.identityId, identity);
+      expect(find.byType(QuickReplyDialog), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'missing bound identity is explained and cannot silently switch identity or send',
+    (tester) async {
+      final r = await runtime(tester);
+      r.hideIdentity = true;
+      final editor = CommentEditor(CommentTarget(postId: post));
+      await launch(tester, r, editor);
+      await tester.enterText(
+        find.byKey(const ValueKey('reply-input')),
+        '绑定身份已被删除',
+      );
+      await tester.pump();
+      expect(find.text('帖内身份已不可用，无法继续回复。'), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('reply-send')))
+            .onPressed,
+        isNull,
+      );
+      expect(r.transportFake.sent, isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'account retirement closes both quick reply and identity picker and clears input',
+    (tester) async {
+      final r = await runtime(tester, bound: false);
+      final editor = CommentEditor(CommentTarget(postId: post));
+      await launch(tester, r, editor);
+      await tester.enterText(
+        find.byKey(const ValueKey('reply-input')),
+        '旧账号私有输入',
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('reply-send')));
+      await tester.pumpAndSettle();
+      r.retire();
+      await tester.pumpAndSettle();
+      expect(find.byType(QuickReplyDialog), findsNothing);
+      expect(find.text('选择发言身份'), findsNothing);
+      expect(editor.hasInput, false);
+      expect(r.transportFake.sent, isNull);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'journal failure retains quick reply and cannot issue a network command',
+    (tester) async {
+      final r = await runtime(tester);
+      (r.journal as _MemoryJournal).failWrite = true;
+      final editor = CommentEditor(CommentTarget(postId: post));
+      await launch(tester, r, editor);
+      await tester.enterText(
+        find.byKey(const ValueKey('reply-input')),
+        '存储失败仍保留',
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('reply-send')));
+      await tester.pumpAndSettle();
+      expect(find.text('存储失败仍保留'), findsOneWidget);
+      expect(find.textContaining('尚未发送'), findsOneWidget);
+      expect(r.transportFake.sent, isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'quick reply fits small screen with keyboard and 200 percent text',
+    (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 260);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewInsets);
+      final controller = TextEditingController(text: '大字与键盘下仍能回复');
+      var pressed = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: HhTelegramTheme.create(Brightness.light),
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(2)),
+            child: child!,
+          ),
+          home: Scaffold(
+            body: QuickReplyDialog(
+              targetName: '很长的中文发帖人名字',
+              controller: controller,
+              onReply: () => pressed = true,
+              onClose: () {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const ValueKey('reply-send')));
+      await tester.tap(
+        find.byKey(const ValueKey('reply-send')),
+        warnIfMissed: true,
+      );
+      expect(pressed, true);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      controller.dispose();
     },
   );
 }

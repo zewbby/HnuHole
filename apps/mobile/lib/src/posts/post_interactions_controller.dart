@@ -8,6 +8,7 @@ class PostInteractionState {
   bool loading = false, sending = false, refreshPending = false;
   PostInteractionAction? pendingAction;
   bool? desired;
+  bool? queuedLike, queuedFavorite;
   String? readError, writeError, expectedVersion;
   String? get error => writeError ?? readError;
   bool uncertain = false;
@@ -15,20 +16,20 @@ class PostInteractionState {
   bool? retryDesired;
   int revision = 0;
   bool get unresolved => pendingAction != null;
-  bool get canChange => value != null && !unresolved;
-  bool get liked => pendingAction == PostInteractionAction.like
-      ? desired!
-      : value?.likedByMe ?? false;
-  bool get favorited => pendingAction == PostInteractionAction.favorite
-      ? desired!
-      : value?.favoritedByMe ?? false;
+  bool get canChange => value != null && (!unresolved || sending && !uncertain);
+  bool get liked =>
+      queuedLike ??
+      (pendingAction == PostInteractionAction.like
+          ? desired!
+          : value?.likedByMe ?? false);
+  bool get favorited =>
+      queuedFavorite ??
+      (pendingAction == PostInteractionAction.favorite
+          ? desired!
+          : value?.favoritedByMe ?? false);
   int? get likes => value == null
       ? null
-      : value!.likeCount +
-            (pendingAction == PostInteractionAction.like &&
-                    desired != value!.likedByMe
-                ? (desired! ? 1 : -1)
-                : 0);
+      : value!.likeCount + (liked != value!.likedByMe ? (liked ? 1 : -1) : 0);
 }
 
 extension PostInteractionsController on PostController {
@@ -134,6 +135,15 @@ extension PostInteractionsController on PostController {
     }
     final entry = interaction(id);
     if (!entry.canChange) return;
+    if (entry.unresolved) {
+      if (action == PostInteractionAction.like) {
+        entry.queuedLike = !entry.liked;
+      } else {
+        entry.queuedFavorite = !entry.favorited;
+      }
+      _notify();
+      return;
+    }
     _beginInteraction(
       entry,
       action,
@@ -281,7 +291,11 @@ extension PostInteractionsController on PostController {
         // No PUT started, or this first PUT was explicitly rejected. A later
         // rejection must never discard an earlier transport-unknown attempt.
         entry.retryAction = entry.pendingAction;
-        entry.retryDesired = entry.desired;
+        entry.retryDesired = entry.pendingAction == PostInteractionAction.like
+            ? entry.queuedLike ?? entry.desired
+            : entry.queuedFavorite ?? entry.desired;
+        entry.queuedLike = null;
+        entry.queuedFavorite = null;
         entry.pendingAction = null;
         entry.desired = null;
         entry.expectedVersion = null;
@@ -306,7 +320,30 @@ extension PostInteractionsController on PostController {
         entry.sending = false;
         entry.revision++;
         _notify();
-        if (entry.refreshPending &&
+        // One CAS write at a time per post; collapse rapid taps to the latest
+        // explicit state, and never drain while an earlier outcome is unknown.
+        if (!entry.unresolved && available && !_deletedPostIds.contains(id)) {
+          for (final action in PostInteractionAction.values) {
+            final desired = action == PostInteractionAction.like
+                ? entry.queuedLike
+                : entry.queuedFavorite;
+            if (action == PostInteractionAction.like) {
+              entry.queuedLike = null;
+            } else {
+              entry.queuedFavorite = null;
+            }
+            if (desired == null) continue;
+            final actual = action == PostInteractionAction.like
+                ? entry.value!.likedByMe
+                : entry.value!.favoritedByMe;
+            if (desired == actual) continue;
+            _beginInteraction(entry, action, desired);
+            await _writeInteraction(id, entry, epoch);
+            break;
+          }
+        }
+        if (epoch == _epoch &&
+            entry.refreshPending &&
             !entry.unresolved &&
             !_deletedPostIds.contains(id)) {
           entry.refreshPending = false;
