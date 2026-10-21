@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/posts/feed_api.dart';
-import 'package:hnuhole_mobile/src/posts/feed_screen.dart';
 
 import 'feed_interactions_test.dart' as interactions;
 import 'feed_ui_test.dart' as feed;

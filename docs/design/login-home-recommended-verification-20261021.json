@@ -1,0 +1,355 @@
+{
+  "task": "LOGIN-HOME-01",
+  "recordedOn": "2026-10-21",
+  "timeZone": "Asia/Shanghai",
+  "branch": "feat/login-home-recommended",
+  "baselineHeadCommit": "ddf506a5dfd9874c0bf060a8ab40b3efa3728d31",
+  "workingTreeUncommitted": true,
+  "scope": "New app run starts recommended; subsequent navigation and same-account re-login preserve selected channel within the run. Node-selection page removed.",
+  "modules": [
+    "A12",
+    "B03",
+    "B10"
+  ],
+  "implementationResult": "PASS",
+  "hostNavigationResult": "PASS",
+  "tests": [
+    {
+      "name": "analyze",
+      "command": "flutter analyze --no-pub",
+      "result": "PASS",
+      "issues": 0
+    },
+    {
+      "name": "targeted",
+      "command": "flutter test --no-pub test/login_home_navigation_test.dart test/personal_route_account_test.dart test/talkback_semantics_test.dart --reporter expanded",
+      "result": "PASS",
+      "count": 23
+    },
+    {
+      "name": "fullMobile",
+      "command": "flutter test --no-pub --reporter expanded",
+      "result": "PASS",
+      "count": 635
+    },
+    {
+      "name": "androidApk",
+      "command": "gradlew.bat --offline --no-daemon --max-workers=2 -I <task>/test-identity.init.gradle -Pkotlin.incremental=false -Ptarget-platform=android-arm64 -Ptarget=lib/main.dart -Pdart-defines=<public defines> -Pdart-obfuscation=false -Ptrack-widget-creation=true -Ptree-shake-icons=false :app:assembleDebug",
+      "result": "PASS",
+      "versionCode": 2026102122,
+      "taskCount": 212
+    },
+    {
+      "name": "realDevice",
+      "result": "PASS",
+      "model": "vivo V2323A",
+      "androidVersion": "15",
+      "checks": {
+        "final-2122-vent-before-navigation": "PASS",
+        "final-2122-detail-back-keeps-vent": "PASS",
+        "final-2122-personal-home-keeps-vent": "PASS",
+        "final-2122-home-button-keeps-vent": "PASS",
+        "final-2122-messages-back-keeps-vent": "PASS",
+        "sameRunPasswordLoginRetainsVent": "PASS",
+        "rootBackDoesNotExposeSelectionRoute": "PASS",
+        "coldRestartDefaultsRecommended": "PASS",
+        "recommendedDefaultSelectionFlag": "PASS",
+        "originalAppInstallMetadataUnchanged": "PASS"
+      }
+    },
+    {
+      "name": "remoteCI",
+      "result": "IN_PROGRESS",
+      "reason": "PR #40 opened; evaluate final exact head checks before merge."
+    }
+  ],
+  "cases": [
+    "First/new app run starts recommended",
+    "Same-account channel remembered only in memory within the run",
+    "Different account does not inherit another account channel",
+    "Detail Back preserves vent",
+    "Personal Home preserves vent",
+    "Home icon preserves vent without data reload",
+    "System-message Back preserves vent",
+    "Real password re-login preserves vent in the same run",
+    "Root Back leaves app instead of revealing a node page",
+    "Force-stop/relaunch defaults to recommendation",
+    "Recommendation native chooser selected flag is true",
+    "Original App installation metadata unchanged"
+  ],
+  "limitations": [
+    "Single vivo Android 15 and configured private-CA isolated C/V services only; no production or iOS acceptance.",
+    "Historical device/F4 fixtures are statically adapted, not re-executed as full historical matrices.",
+    "Debug test APK uses its own package and requires the documented USB/host loopback routes.",
+    "Submission/merge state is tracked by PR #40; no production release."
+  ],
+  "sourceAndTestSha256": {
+    "apps/mobile/integration/community_stage1_scenario.dart": "a92eaeaa0becae8ea250921c4a5c4b18a543a60bc7f00076385107c1d2c35bcf",
+    "apps/mobile/integration/f4_main_https_postgres_test.dart": "224a5992ffb1d23984e036d55fc8f032275718c1055de715bffcb40d8777b8ab",
+    "apps/mobile/integration_test/auth_android_b1_b2_device_test.dart": "18f8a93d83ff51550498737e6c6d48581163eea70b670598fee14b376ca432eb",
+    "apps/mobile/integration_test/auth_android_batch_device_test.dart": "359714ea67645f9d53eff64c42899556615a2958345faf8266287e8cc4c4eaaf",
+    "apps/mobile/integration_test/auth_android_boundary_device_test.dart": "672052fc262f889e200c29c4675af8c56fa40457c75034604c658d9bf0e6c2d0",
+    "apps/mobile/integration_test/auth_android_closure_device_test.dart": "9ddaa9a924aa37f2119b0ebcf310cbd226e0c760e634b0c048e900d2162afda7",
+    "apps/mobile/integration_test/auth_android_ime_device_test.dart": "3635b318d59dd2cda8939a3614498dcee56b9f5a0800442f319c47c2e02bc673",
+    "apps/mobile/integration_test/auth_android_matrix_device_test.dart": "02f9e7a3783a196d2d967c889e3799c9744e1043216d177ad32d357845824996",
+    "apps/mobile/integration_test/auth_android_storage_device_test.dart": "36ee32e498de729d2041b95b324b933dc1ac9d75783d1349aeaa53b24afbf8d9",
+    "apps/mobile/integration_test/auth_android_talkback_device_test.dart": "374b9a13a5fe75d491da9447cee70379eb989113eea033849dc1746b0e83f241",
+    "apps/mobile/integration_test/auth_fault_device_test.dart": "6bcf73bf5297c3cfb1bd7bbc5d248f09b2d0b34855dfa92b3f60085dced3a357",
+    "apps/mobile/integration_test/auth_live_device_test.dart": "252bc2cda28ec108630fe0b839fd2b21447a92539c0e0483f135cf6e0b3ce6fc",
+    "apps/mobile/integration_test/owned_auth_device_helpers.dart": "1fd66bfc9c91f861ecbd383f1cb75ce6615f9f4c77ddfb93292dee775dbb9a9a",
+    "apps/mobile/lib/hnuhole_mobile.dart": "4cc3e06060c46784691dfbf87777bba379ac9bf540fbb78c744debb072e24b0e",
+    "apps/mobile/lib/main.dart": "ed50f0e33d219f16a48ec9106281ec912c9f843a9d8a1b6c8c4fe9f77c0b28af",
+    "apps/mobile/lib/src/navigation/channel_directory_controller.dart": "050be12278b380932b94ce6073c7e86387ea8a7bf3c7458b6dde1bbe47e6e647",
+    "apps/mobile/lib/src/navigation/channel_tree.dart": "DELETED",
+    "apps/mobile/lib/src/navigation/entry_screen.dart": "0bec5d360bf7b473d2bdc2ca5ba4e3e1d3d22a8dee97c9a9720b3fe946c553a8",
+    "apps/mobile/lib/src/posts/feed_screen.dart": "c3be6849671e316b4387d332b4d67a8843be342e35d1882f1ab4345921087bf7",
+    "apps/mobile/test/feed_read_error_scope_test.dart": "7d095d1d3b92f791b40eacfabb3799f016ccc64feeb0c5a084f267b49ac483af",
+    "apps/mobile/test/feed_ui_test.dart": "6ac6c74cb31e7ae3d482a5b80ab90ea4186a51c4e831b57a82b33e7ef4b18f21",
+    "apps/mobile/test/login_home_navigation_test.dart": "49c8cb47b885d2912f56e24314da87d8d0ffd011e129786b910fc70419d6f67b",
+    "apps/mobile/test/login_home_test_support.dart": "d83ed94cd06cae75510d5ce872160f6502c9176663bfc51af7075950c11de340",
+    "apps/mobile/test/personal_route_account_test.dart": "d8f5bf4421563b3dde08a8596a5e3a921fef9d27dd73f2a3fe3410b6fc596df5",
+    "apps/mobile/test/talkback_semantics_test.dart": "d792ac68b0c7833605e8f431b6904ffc36ce10eaf0ec3208375427ab6df82798"
+  },
+  "report": "docs/branches/feat-login-home-recommended.md",
+  "history": [
+    {
+      "stage": "Initial implementation before user clarified channel preservation; original results retained",
+      "scope": "Login and restored-session navigation to recommended root feed; ChannelTree removed.",
+      "tests": [
+        {
+          "name": "lockedDependencies",
+          "command": "PUB_HOSTED_URL=https://pub.dev flutter pub get --enforce-lockfile --offline",
+          "result": "PASS",
+          "lockfilesChanged": false
+        },
+        {
+          "name": "analyze",
+          "command": "flutter analyze --no-pub",
+          "result": "PASS",
+          "issues": 0
+        },
+        {
+          "name": "targeted",
+          "command": "flutter test --no-pub test/login_home_navigation_test.dart test/personal_route_account_test.dart test/talkback_semantics_test.dart --reporter expanded",
+          "result": "PASS",
+          "count": 20
+        },
+        {
+          "name": "fullMobile",
+          "command": "flutter test --no-pub --reporter expanded",
+          "result": "PASS",
+          "count": 632
+        },
+        {
+          "name": "bundle",
+          "command": "flutter build bundle --debug --no-pub",
+          "result": "PASS"
+        },
+        {
+          "name": "androidApk",
+          "command": "flutter build apk --debug --no-pub --target-platform android-arm64",
+          "result": "BLOCKED",
+          "reason": "Windows Android SDK lacks CMake 3.22.1; jni configureCMakeDebug failed. image_picker_android Kotlin incremental caches also failed to close."
+        },
+        {
+          "name": "realDeviceLogin",
+          "result": "NOT_RUN",
+          "reason": "No device install or shared service operation in this task."
+        },
+        {
+          "name": "remoteCI",
+          "result": "NOT_RUN",
+          "reason": "Local working tree; not committed or pushed. Existing feed-ui CI now includes the new regression tests."
+        },
+        {
+          "name": "workingTreePolicy",
+          "command": "tools/check-collaboration.py check_branch/check_path/check_blob/check_whitespace against all local changes",
+          "result": "PASS"
+        }
+      ],
+      "cases": [
+        "Password login reaches recommended root without channel selection",
+        "Restored session reaches recommended root",
+        "Same-account login resets previous channel",
+        "Cross-account login resets previous channel",
+        "Home navigation returns to recommended without popping root",
+        "Same-token deadline renewal preserves reading state",
+        "Post-load transport error retains recommended and retries",
+        "Complete directory gates home before and after account change",
+        "Late A account success/401/503 cannot affect B account",
+        "Old publication callback cannot navigate new account window",
+        "Chinese login and personal controls remain actionable"
+      ],
+      "limitations": [
+        "HTTP and secure storage are host substitutes. No new real-service or native storage assertion.",
+        "Historical device/F4 predicates migrated to FeedScreen; full historical cross-service scenarios not executed.",
+        "Android native build and device acceptance remain pending.",
+        "No commit, push, merge or release performed."
+      ],
+      "sourceAndTestSha256": {
+        "apps/mobile/integration/community_stage1_scenario.dart": "a92eaeaa0becae8ea250921c4a5c4b18a543a60bc7f00076385107c1d2c35bcf",
+        "apps/mobile/integration/f4_main_https_postgres_test.dart": "224a5992ffb1d23984e036d55fc8f032275718c1055de715bffcb40d8777b8ab",
+        "apps/mobile/integration_test/auth_android_b1_b2_device_test.dart": "18f8a93d83ff51550498737e6c6d48581163eea70b670598fee14b376ca432eb",
+        "apps/mobile/integration_test/auth_android_batch_device_test.dart": "359714ea67645f9d53eff64c42899556615a2958345faf8266287e8cc4c4eaaf",
+        "apps/mobile/integration_test/auth_android_boundary_device_test.dart": "672052fc262f889e200c29c4675af8c56fa40457c75034604c658d9bf0e6c2d0",
+        "apps/mobile/integration_test/auth_android_closure_device_test.dart": "9ddaa9a924aa37f2119b0ebcf310cbd226e0c760e634b0c048e900d2162afda7",
+        "apps/mobile/integration_test/auth_android_ime_device_test.dart": "3635b318d59dd2cda8939a3614498dcee56b9f5a0800442f319c47c2e02bc673",
+        "apps/mobile/integration_test/auth_android_matrix_device_test.dart": "02f9e7a3783a196d2d967c889e3799c9744e1043216d177ad32d357845824996",
+        "apps/mobile/integration_test/auth_android_storage_device_test.dart": "36ee32e498de729d2041b95b324b933dc1ac9d75783d1349aeaa53b24afbf8d9",
+        "apps/mobile/integration_test/auth_android_talkback_device_test.dart": "374b9a13a5fe75d491da9447cee70379eb989113eea033849dc1746b0e83f241",
+        "apps/mobile/integration_test/auth_fault_device_test.dart": "6bcf73bf5297c3cfb1bd7bbc5d248f09b2d0b34855dfa92b3f60085dced3a357",
+        "apps/mobile/integration_test/auth_live_device_test.dart": "252bc2cda28ec108630fe0b839fd2b21447a92539c0e0483f135cf6e0b3ce6fc",
+        "apps/mobile/integration_test/owned_auth_device_helpers.dart": "1fd66bfc9c91f861ecbd383f1cb75ce6615f9f4c77ddfb93292dee775dbb9a9a",
+        "apps/mobile/lib/hnuhole_mobile.dart": "4cc3e06060c46784691dfbf87777bba379ac9bf540fbb78c744debb072e24b0e",
+        "apps/mobile/lib/main.dart": "df3d9dd6a6710e6cbece79a23461072c3f9178826508e3bd71bbf5bd7ffd40ff",
+        "apps/mobile/lib/src/navigation/channel_directory_controller.dart": "050be12278b380932b94ce6073c7e86387ea8a7bf3c7458b6dde1bbe47e6e647",
+        "apps/mobile/lib/src/navigation/channel_tree.dart": "DELETED",
+        "apps/mobile/lib/src/navigation/entry_screen.dart": "0bec5d360bf7b473d2bdc2ca5ba4e3e1d3d22a8dee97c9a9720b3fe946c553a8",
+        "apps/mobile/lib/src/posts/feed_screen.dart": "d6a02cb7cf71dfdce09a31de9a56ec54d4dd914323535f883e15cee1d59871fa",
+        "apps/mobile/test/feed_read_error_scope_test.dart": "7d095d1d3b92f791b40eacfabb3799f016ccc64feeb0c5a084f267b49ac483af",
+        "apps/mobile/test/feed_ui_test.dart": "6ac6c74cb31e7ae3d482a5b80ab90ea4186a51c4e831b57a82b33e7ef4b18f21",
+        "apps/mobile/test/login_home_navigation_test.dart": "04c93045917a8aedabcfc271704231ce08832ef659350cfcbbc041ad3e2f333d",
+        "apps/mobile/test/login_home_test_support.dart": "2562b53e4bf4a82eed5ff9c042db5632b46eabbb6f0279f9f795fb136030da6a",
+        "apps/mobile/test/personal_route_account_test.dart": "d8f5bf4421563b3dde08a8596a5e3a921fef9d27dd73f2a3fe3410b6fc596df5",
+        "apps/mobile/test/talkback_semantics_test.dart": "d792ac68b0c7833605e8f431b6904ffc36ce10eaf0ec3208375427ab6df82798"
+      }
+    }
+  ],
+  "userClarification": "每次启动默认推荐，启动后保留所选通道；不跨彻底重启持久化。",
+  "buildResolution": {
+    "cmake": "Installed only Android SDK CMake 3.22.1; executable verified",
+    "kotlin": "One-build -Pkotlin.incremental=false avoids E: pub-cache versus C: workspace incremental-cache roots; no shared Gradle property changed",
+    "testIdentityOverride": "Only package suffix, label, version and debug manifest are build overrides; main.dart and shipped auth/controllers remain production source",
+    "initialFailedBuildsRetained": true
+  },
+  "apk": {
+    "versionCode": 2026102122,
+    "applicationId": "org.hnuhole.hnuhole_mobile.loginhome",
+    "entrypoint": "lib/main.dart",
+    "buildMode": "debug",
+    "apkSha256": "af71445abb10a8e8aa38bd25682be87e6392802f1b9fc316f295e043e71a8cf5",
+    "apkBytes": 98781028,
+    "baselineHeadCommit": "ddf506a5dfd9874c0bf060a8ab40b3efa3728d31",
+    "workingTreeUncommitted": true,
+    "compileConfigurationKeys": [
+      "AUTH_COMMUNITY_BASE_URL",
+      "AUTH_VERIFIER_BASE_URL",
+      "AUTH_DEV_CA_BASE64"
+    ],
+    "credentialsEmbedded": false,
+    "trust": "debug app-only CA with chain and hostname validation",
+    "cmake": "3.22.1",
+    "kotlinIncremental": false,
+    "builder": "Windows Gradle 9.3.1; existing Flutter 3.47.5/Android SDK",
+    "nativeBuild": "PASS",
+    "taskCount": 212,
+    "productionRelease": false,
+    "tests": {
+      "targeted": 23,
+      "mobileFull": 635,
+      "analyzeIssues": 0
+    },
+    "device": {
+      "manufacturer": "vivo",
+      "model": "V2323A",
+      "androidVersion": "15",
+      "serialSha256": "557ef20f4d13aaf0605d2de7ec7fe8a6a44cf36e2520607fe2009b134cd774e8",
+      "result": "PASS",
+      "checks": {
+        "final-2122-vent-before-navigation": "PASS",
+        "final-2122-detail-back-keeps-vent": "PASS",
+        "final-2122-personal-home-keeps-vent": "PASS",
+        "final-2122-home-button-keeps-vent": "PASS",
+        "final-2122-messages-back-keeps-vent": "PASS",
+        "sameRunPasswordLoginRetainsVent": "PASS",
+        "rootBackDoesNotExposeSelectionRoute": "PASS",
+        "coldRestartDefaultsRecommended": "PASS",
+        "recommendedDefaultSelectionFlag": "PASS",
+        "originalAppInstallMetadataUnchanged": "PASS"
+      }
+    },
+    "signingCertificateSha256": "1538fb309499d651d7d12d7711a646c4a80fde4b1397857a9e39ce672b3dc9ae",
+    "isolation": {
+      "existingApplicationUntouched": true,
+      "syntheticAccountRole": "reporter",
+      "credentialsEmbedded": false,
+      "systemSecuritySettingsChanged": false,
+      "caInstalledOnDevice": false,
+      "newDatabaseCreated": false,
+      "sharedServicesReconfigured": false
+    },
+    "loopbackRoutes": {
+      "phoneC": 55145,
+      "hostC": 51245,
+      "phoneV": 54947,
+      "hostVTaskRelay": 54948,
+      "upstreamV": 49747
+    },
+    "backendSourceSha": "c923fa5a14919034272abd406cfaf9392bc094d8",
+    "configuration": "Each new app run starts recommended; per-account channel choice kept only in memory within the run."
+  },
+  "localDelivery": {
+    "apk": "E:\\Hnuhole-env\\login-home-20261021\\hnuhole-login-home-2026102122.apk",
+    "instructions": "E:\\Hnuhole-env\\login-home-20261021\\INSTALL.md",
+    "manifest": "E:\\Hnuhole-env\\login-home-20261021\\apk-manifest-2122.json"
+  },
+  "deviceArtifacts": {
+    "final-2122-ready.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-ready.png",
+      "sha256": "59c9cf0dea0a272099d2e3b9ff4fb3e8eb77773b8ffc5daf8c678fb4bffc92c8"
+    },
+    "final-2122-channel-picker.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-channel-picker.png",
+      "sha256": "7135be17ceda11f78ce62516747ed751af1f430d088bda7a8af2577c0eb24a40"
+    },
+    "final-2122-detail-back-keeps-vent.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-detail-back-keeps-vent.png",
+      "sha256": "0950848f0366aeb2bcd28aa9dae2a0a15597fed78f7a9ab9105fcff8a269a17d"
+    },
+    "final-2122-personal-home-keeps-vent.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-personal-home-keeps-vent.png",
+      "sha256": "3fc2689014902e67ee6b98d1a387c95e08a2a6b898ddbf03dced015a500d1c5e"
+    },
+    "final-2122-home-button-keeps-vent.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-home-button-keeps-vent.png",
+      "sha256": "be693337ae93380bcf0c37d706d95b2d68ac1b5b28096155495836970cab6adb"
+    },
+    "final-2122-messages-back-keeps-vent.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-messages-back-keeps-vent.png",
+      "sha256": "3fc2689014902e67ee6b98d1a387c95e08a2a6b898ddbf03dced015a500d1c5e"
+    },
+    "final-2122-password-login.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-password-login.png",
+      "sha256": "2a54bb538c55b593db81e2164b4ad0901c3bbe0d8392f9575be07d04f7100a26"
+    },
+    "final-2122-cold-restart.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-cold-restart.png",
+      "sha256": "bdbf584bcacbb3dea0a5b8f5d0008de8145b60d2c3237b6e3b2d0b39be60a48b"
+    },
+    "final-2122-default-selected.png": {
+      "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-default-selected.png",
+      "sha256": "705a9dc550c62ac0e6aaa3738d741df800836bfdb2781a4e381b57bdb9a69b17"
+    }
+  },
+  "submission": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/40",
+    "sourceCommit": "250af2a",
+    "integratedHead": "c1b7ebfd08b8f20235fb5ed83b28ed1171c56bf7",
+    "integratedMain": "874bc0b394073a6901bd7d856cf5f1c857692120",
+    "userAuthorizedCommitPushMerge": true,
+    "mergeStatus": "See authoritative PR #40 state; this is pre-merge submission evidence.",
+    "release": false
+  },
+  "independentReview": {
+    "reviewer": "/root/independent_review",
+    "kind": "independent_agent_static_review",
+    "result": "NO_BLOCKERS",
+    "reviewedSourceCommit": "250af2a",
+    "reviewedIntegratedHead": "c1b7ebfd08b8f20235fb5ed83b28ed1171c56bf7",
+    "runtimeInputsMatchDeviceCandidate": true,
+    "githubMemberApproval": false,
+    "note": "One nonblocking wording clarification applied to navigation spec; runtime code and tests unchanged."
+  },
+  "currentIntegrationEvidence": "docs/design/login-home-main-integration-20261021.json",
+  "sourceFingerprintScope": "Original 2122 candidate before upstream PR39; current integrated source fingerprints and tests are in currentIntegrationEvidence."
+}

@@ -241,7 +241,7 @@ void main() {
         } else {
           await _wait(
             tester,
-            () => find.byType(ChannelTree).evaluate().isNotEmpty,
+            () => find.byType(FeedScreen).evaluate().isNotEmpty,
             'authoritative App startup',
           );
           if (phase == 'batch-phone-draft') {
@@ -778,7 +778,7 @@ Future<void> _login(
     tester,
     () =>
         find.byType(AuthScreen).evaluate().isEmpty &&
-        find.byType(ChannelTree).evaluate().isNotEmpty,
+        find.byType(FeedScreen).evaluate().isNotEmpty,
     'explicit product login',
   );
 }
@@ -880,7 +880,7 @@ Future<String> _register(
     tester,
     () =>
         find.byType(AuthScreen).evaluate().isEmpty &&
-        find.byType(ChannelTree).evaluate().isNotEmpty,
+        find.byType(FeedScreen).evaluate().isNotEmpty,
     'actual C registration',
   );
   return code;

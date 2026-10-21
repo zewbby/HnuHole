@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-21 LOGIN-HOME-01／A12、B03、B10：限定 PASS。**最终每次启动默认推荐，运行期间返回保留当前通道；节点选择页删除。23专项／635全量／分析0及2122原生APK通过；vivo V2323A Android15真实密码登录、吐槽详情/个人/消息/首页往返、同次重新登录保留与冷启动推荐实际PASS。独立包未覆盖原App，未改C/V或数据库；不替代完整模块/iOS/生产验收。实际命令、制品摘要与截图索引见[任务](../branches/feat-login-home-recommended.md)／[机器记录](login-home-recommended-verification-20261021.json)。
+
 > **2026-10-21 PR36 主线整合与交付授权：**用户已明确授权最新main整合、必要CI／审查无阻断后转Ready并合并#36，再从合并后main构建同签日常测试APK。#35已由负责人合入`3611925c67137cfe43dedfdd6876a6c652f84231`（09:39+08），本分支已整合；110项客户端raw运行输入与所测`31bc061`逐项相同，冲突仅合并两侧文档事实，不变更产品运行源。原76项、worker原任务恢复及profile2012真实性能按原范围复用，最终整合head必要CI另核。日常debug包使用经环境负责人本轮确认可用的C/V入口及原测试证书，实际origin／trust差异随包回执；原profile2012独立保留；Android仅启动／列表／详情／评论入口一次必要冒烟，差异才补回归，不重复worker或性能。环境保留版本c923/C21V4，但本轮只读检查原C/V及双隧道均未在线；入口恢复由环境负责人按权限处理，旧公网URL不得沿用昨晚在线结论，前端不部署或操作设备。合并及日常包实际SHA／设备结果以PR和最终交付回执为准，未正式发布。下面“未获新授权／#35未合并”等均为原版本历史。
 
 > **2026-10-20 23:40 FEED-PERF-WORKER-SUPPORT-01 性能补验更新：**可信 HTTPS ready 后，`31bc061` 同签 profile2012 在 realme RMX3366／Android14 实测四场景9,383帧、另翻页628帧，预设单设备预算PASS；10次／30秒内存增量79KiB、末尾原图可见。无效／中断／跨lease样本保留，只补受影响项；Max未确认新增产品缺陷，源码与110项运行输入未变。见[性能报告](feed-profile-performance-report-20261020.md)／[机器记录](feed-profile-performance-verification-20261020.json)。本次文档最终HEAD CI以PR／回执为准；[PR36](https://github.com/zewbby/HnuHole/pull/36)仍Draft未合并，无新合并授权、未正式发布。下面可信HTTPS未ready等为原时点历史。

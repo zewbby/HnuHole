@@ -143,7 +143,7 @@ void main() {
               await _wait(
                 tester,
                 () =>
-                    find.byType(ChannelTree).evaluate().isNotEmpty &&
+                    find.byType(FeedScreen).evaluate().isNotEmpty &&
                     find.text('开始使用').evaluate().isEmpty,
                 'authority restored',
               );

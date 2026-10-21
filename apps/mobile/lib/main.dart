@@ -10,7 +10,6 @@ import 'src/comments/comment_http.dart';
 import 'src/comments/comment_journal.dart';
 import 'src/development/app_transport.dart';
 import 'src/navigation/community_material_labels.dart';
-import 'src/posts/feed_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -246,7 +245,6 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   final _authPresentation = AuthPresentationController(
     preferences: FlutterAuthVault(namespace: 'hnuhole.presentation.v1'),
   );
-  final ChannelTreeSession _treeSession = ChannelTreeSession();
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   final _navigatorKey = GlobalKey<NavigatorState>();
@@ -255,10 +253,9 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   bool _settingsRouteOpen = false;
   bool _identityRouteOpen = false;
   bool _personalRouteOpen = false;
-  String? _channelRouteId;
-  Route<void>? _channelRoute;
-  (String?, int)? _channelRouteWindow;
   final _postWindow = ValueNotifier<(String?, int)>((null, -1));
+  // Navigation preference is local to this app run and to its owning account.
+  final _homeChannels = <String, String?>{};
   late final Listenable _postRouteChanges;
   bool _messagesRouteOpen = false;
 
@@ -387,6 +384,11 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   }
 
   void _postWindowChanged() {
+    final posts = widget.posts;
+    final account = posts.accountId;
+    if (posts.available && account != null && posts.timelineLoading) {
+      _homeChannels[account] = posts.timelineChannelId;
+    }
     // Data/loading notifications can arrive while a different route builds.
     // Only a changed authority window invalidates the route's local state.
     _postWindow.value = (widget.posts.accountId, widget.posts.authorityVersion);
@@ -425,7 +427,8 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             builder: (context) => AuthScreen(
               sessions: widget.sessions,
               flows: widget.flows,
-              onAuthenticated: () => Navigator.of(context).pop(),
+              onAuthenticated: () =>
+                  Navigator.of(context).popUntil((route) => route.isFirst),
               onManageSecurity: _openSecurity,
             ),
           ),
@@ -562,19 +565,8 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
                         .where((item) => item.id == channelId)
                         .firstOrNull;
                     if (channel == null) return;
-                    final existing = _channelRoute;
-                    if (_channelRouteId == channelId &&
-                        _channelRouteWindow == (account, authority) &&
-                        existing != null &&
-                        existing.isActive) {
-                      unawaited(
-                        widget.posts.loadTimeline(channelId: channelId),
-                      );
-                      navigator.popUntil((route) => identical(route, existing));
-                    } else {
-                      navigator.popUntil((route) => route.isFirst);
-                      _openChannel(channel, initialChannelId: channelId);
-                    }
+                    unawaited(widget.posts.loadTimeline(channelId: channelId));
+                    navigator.popUntil((route) => route.isFirst);
                   },
                 );
               },
@@ -582,42 +574,6 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
           ),
         )
         .whenComplete(() => _personalRouteOpen = false);
-  }
-
-  void _openChannel(Channel channel, {String? initialChannelId}) {
-    final navigator = _navigatorKey.currentState;
-    if (navigator == null || !widget.sessions.isAuthenticated) return;
-    _channelRouteId = channel.id;
-    final route = MaterialPageRoute<void>(
-      settings: RouteSettings(name: 'channel:${channel.id}'),
-      builder: (_) => AnimatedBuilder(
-        animation: _postRouteChanges,
-        builder: (context, _) => FeedScreen(
-          key: ValueKey(_postWindow.value),
-          controller: widget.posts,
-          loadImages: widget.loadPostImages,
-          composeChannel: channel,
-          initialChannelId: initialChannelId,
-          channels: widget.directory.channels,
-          onOpenMessages: _openMessages,
-          onManageIdentities: _openIdentity,
-          onAuthenticationRequired: _openAuth,
-          onOpenPersonal: _openPersonal,
-        ),
-      ),
-    );
-    _channelRoute = route;
-    _channelRouteWindow = (
-      widget.posts.accountId,
-      widget.posts.authorityVersion,
-    );
-    navigator.push(route).whenComplete(() {
-      if (identical(_channelRoute, route)) {
-        _channelRouteId = null;
-        _channelRoute = null;
-        _channelRouteWindow = null;
-      }
-    });
   }
 
   @override
@@ -692,18 +648,39 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         home: AnimatedBuilder(
           animation: Listenable.merge([
             widget.sessions,
+            _postRouteChanges,
             if (widget.governance != null) widget.governance!,
           ]),
-          builder: (context, _) => EntryScreen(
-            directory: widget.directory,
-            treeSession: _treeSession,
-            onLoginRequested: _openAuth,
-            onProfilePressed: _openPersonal,
-            onChannelSelected: _openChannel,
-            onMessagesPressed: widget.governance == null ? null : _openMessages,
-            messagesAvailable: widget.governance != null,
-            messagesUnread: widget.governance?.hasUnread == true,
-          ),
+          builder: (context, _) {
+            if (widget.sessions.isAuthenticated &&
+                widget.posts.available &&
+                widget.directory.status == ChannelDirectoryStatus.ready) {
+              return FeedScreen(
+                // New authorization owns fresh protected data. Its channel
+                // preference survives within this app run for the same account.
+                key: ValueKey(_postWindow.value),
+                controller: widget.posts,
+                channels: widget.directory.channels,
+                composeChannel: widget.directory.channels.first,
+                initialChannelId: _homeChannels[widget.posts.accountId],
+                loadImages: widget.loadPostImages,
+                onOpenMessages: widget.governance == null
+                    ? null
+                    : _openMessages,
+                onOpenPersonal: _openPersonal,
+                onManageIdentities: _openIdentity,
+                onAuthenticationRequired: _openAuth,
+              );
+            }
+            return EntryScreen(
+              directory: widget.directory,
+              onLoginRequested: _openAuth,
+              onMessagesPressed: widget.governance == null
+                  ? null
+                  : _openMessages,
+              messagesUnread: widget.governance?.hasUnread == true,
+            );
+          },
         ),
       ),
     );

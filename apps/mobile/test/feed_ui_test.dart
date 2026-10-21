@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/posts/feed_api.dart';
-import 'package:hnuhole_mobile/src/posts/feed_screen.dart';
 import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 
 import 'identity_test_support.dart';
