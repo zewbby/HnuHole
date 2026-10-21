@@ -183,7 +183,7 @@ void main() {
         } else if (phase == 'takeover-source') {
           await _wait(
             tester,
-            () => find.byType(ChannelTree).evaluate().isNotEmpty,
+            () => find.byType(FeedScreen).evaluate().isNotEmpty,
             'source App restored',
           );
           flags['sourceAuthoritativeSessionAndIdentitiesCaptured'] = true;

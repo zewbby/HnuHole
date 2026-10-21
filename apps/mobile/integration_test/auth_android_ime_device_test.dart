@@ -115,7 +115,7 @@ void main() {
         await tester.pump();
         await _wait(
           tester,
-          () => find.byType(ChannelTree).evaluate().isNotEmpty,
+          () => find.byType(FeedScreen).evaluate().isNotEmpty,
           'authoritative App',
         );
         await openOwnedManagement(tester);

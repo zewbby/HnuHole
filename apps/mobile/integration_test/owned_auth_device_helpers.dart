@@ -123,19 +123,18 @@ Future<String> registerOwned(
       tester,
       () =>
           auth.sessions.isAuthenticated &&
-          find.byType(ChannelTree, skipOffstage: false).evaluate().isNotEmpty &&
+          find.byType(FeedScreen).evaluate().isNotEmpty &&
           find.byType(AuthScreen).evaluate().isEmpty,
       'actual fresh account',
     );
     evidence?['actualFreshRegistrationAuthenticatedAndAuthRouteClosed'] = true;
   } catch (_) {
-    // Public enums/counts only. An authenticated return may leave Settings above
-    // ChannelTree; that underlying route is intentionally offstage.
+    // Public enums/counts only. A successful login returns to visible home.
     throw StateError(
       'Owned fresh registration: session=${auth.sessions.status.name}, '
       'flow=${auth.flows.status.name}, busy=${auth.flows.busy}, '
       'authRoutes=${find.byType(AuthScreen).evaluate().length}, '
-      'visibleTrees=${find.byType(ChannelTree).evaluate().length}',
+      'visibleFeeds=${find.byType(FeedScreen).evaluate().length}',
     );
   }
   return recovery;
@@ -145,7 +144,7 @@ Future<String> registerOwned(
 /// A signed-out personal action still opens the authentication page directly.
 Future<void> openOwnedManagement(WidgetTester tester) async {
   if (find.byType(SettingsScreen).evaluate().isNotEmpty) return;
-  await tapOwned(tester, find.byTooltip('我的'));
+  await tapOwned(tester, find.byTooltip('我的').first);
   if (find.byType(AuthScreen).evaluate().isNotEmpty ||
       find.byType(SettingsScreen).evaluate().isNotEmpty) {
     return;

@@ -7,7 +7,7 @@ enum ChannelDirectoryStatus { signedOut, loading, ready, failure }
 
 /// Coordinates authentication state and an all-or-nothing directory load.
 ///
-/// A failed or incomplete response never reaches the tree. This is important
+/// A failed or incomplete response never reaches the feed. This is important
 /// for the entry contract: the UI must not present a partial or stale set of
 /// channels as if it were current business data.
 class ChannelDirectoryController extends ChangeNotifier {
@@ -63,7 +63,7 @@ class ChannelDirectoryController extends ChangeNotifier {
   }
 
   /// Hide protected data while authority is unavailable, without turning a
-  /// temporary failure into logout or resetting the caller's tree position.
+  /// temporary failure into logout or deleting the caller's local state.
   void suspend() {
     _sessionToken = null;
     _requestVersion++;

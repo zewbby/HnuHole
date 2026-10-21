@@ -185,7 +185,7 @@ void main() {
         }
         await wait(
           () =>
-              find.byType(ChannelTree).evaluate().isNotEmpty &&
+              find.byType(FeedScreen).evaluate().isNotEmpty &&
               find.byType(AuthScreen).evaluate().isEmpty,
           'authoritative App',
         );

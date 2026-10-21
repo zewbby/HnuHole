@@ -112,7 +112,7 @@ void main() {
         await _wait(
           tester,
           () =>
-              find.byType(ChannelTree).evaluate().isNotEmpty &&
+              find.byType(FeedScreen).evaluate().isNotEmpty &&
               find.text('登录或注册').evaluate().isEmpty,
           'actual session restored',
         );
