@@ -24,6 +24,8 @@ type SMTPConfig struct {
 	Password   string
 	TLSConfig  *tls.Config
 	Timeout    time.Duration
+	// ImplicitTLS negotiates TLS before the SMTP greeting (port 465).
+	ImplicitTLS bool
 	// Only a literal loopback address can opt out of STARTTLS, for local tests.
 	AllowInsecureLoopback bool
 }
@@ -41,6 +43,12 @@ func NewSMTPProvider(config SMTPConfig) (*SMTPProvider, error) {
 	from, err := mail.ParseAddress(config.From)
 	if err != nil || from.Name != "" || from.Address != config.From || strings.IndexAny(config.From, "\r\n") >= 0 {
 		return nil, errors.New("invalid SMTP sender")
+	}
+	if (config.Username == "") != (config.Password == "") || strings.ContainsAny(config.Username, "\r\n\x00") || strings.ContainsAny(config.Password, "\r\n\x00") {
+		return nil, errors.New("invalid SMTP authentication configuration")
+	}
+	if config.ImplicitTLS && config.AllowInsecureLoopback {
+		return nil, errors.New("SMTP TLS and insecure loopback are mutually exclusive")
 	}
 	if config.AllowInsecureLoopback {
 		ip := net.ParseIP(host)
@@ -94,32 +102,33 @@ func (p *SMTPProvider) SendOTP(ctx context.Context, operation [32]byte, email, c
 	if err = conn.SetDeadline(deadline); err != nil {
 		return MailNotSent, errors.New("SMTP deadline unavailable")
 	}
-	stop := context.AfterFunc(ctx, func() { _ = conn.Close() })
+	socket := conn // Keep cancellation bound to the original socket, without racing TLS wrapping.
+	stop := context.AfterFunc(ctx, func() { _ = socket.Close() })
 	defer stop()
+	if p.config.ImplicitTLS {
+		encrypted := tls.Client(conn, p.connectionTLSConfig())
+		if err = encrypted.HandshakeContext(ctx); err != nil {
+			return MailNotSent, errors.New("SMTP TLS unavailable")
+		}
+		conn = encrypted
+	}
 	client, err := smtp.NewClient(conn, p.host)
 	if err != nil {
 		return MailNotSent, errors.New("SMTP greeting unavailable")
 	}
 	defer client.Close()
-	if !p.config.AllowInsecureLoopback {
+	if !p.config.AllowInsecureLoopback && !p.config.ImplicitTLS {
 		if ok, _ := client.Extension("STARTTLS"); !ok {
 			return MailNotSent, errors.New("SMTP requires STARTTLS")
 		}
-		tlsConfig := &tls.Config{ServerName: p.config.ServerName, MinVersion: tls.VersionTLS12}
-		if p.config.TLSConfig != nil {
-			tlsConfig = p.config.TLSConfig.Clone()
-			tlsConfig.ServerName = p.config.ServerName
-			if tlsConfig.MinVersion < tls.VersionTLS12 {
-				tlsConfig.MinVersion = tls.VersionTLS12
-			}
-		}
+		tlsConfig := p.connectionTLSConfig()
 		if err = client.StartTLS(tlsConfig); err != nil {
 			return MailNotSent, errors.New("SMTP TLS unavailable")
 		}
-		if p.config.Username != "" || p.config.Password != "" {
-			if err = client.Auth(smtp.PlainAuth("", p.config.Username, p.config.Password, p.host)); err != nil {
-				return MailNotSent, errors.New("SMTP authentication unavailable")
-			}
+	}
+	if !p.config.AllowInsecureLoopback && p.config.Username != "" {
+		if err = client.Auth(smtp.PlainAuth("", p.config.Username, p.config.Password, p.host)); err != nil {
+			return MailNotSent, errors.New("SMTP authentication unavailable")
 		}
 	}
 	if err = client.Mail(p.config.From); err != nil {
@@ -151,4 +160,16 @@ func (p *SMTPProvider) SendOTP(ctx context.Context, operation [32]byte, email, c
 	}
 	_ = client.Quit() // final DATA success already established acceptance.
 	return MailSent, nil
+}
+
+func (p *SMTPProvider) connectionTLSConfig() *tls.Config {
+	config := &tls.Config{MinVersion: tls.VersionTLS12}
+	if p.config.TLSConfig != nil {
+		config = p.config.TLSConfig.Clone()
+	}
+	config.ServerName = p.config.ServerName
+	if config.MinVersion < tls.VersionTLS12 {
+		config.MinVersion = tls.VersionTLS12
+	}
+	return config
 }

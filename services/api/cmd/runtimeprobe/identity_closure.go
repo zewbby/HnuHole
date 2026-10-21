@@ -213,7 +213,7 @@ func (p *probe) identityClosureReturn(ctx context.Context, pool *pgxpool.Pool, b
 	}
 	sum := sha256.Sum256([]byte(key))
 	username := fmt.Sprintf("returned_%x", sum[:6])
-	password := "new account independent runtime password 2026!"
+	password := "NewAccountIndependent2026!"
 	intent, _, err := p.request(ctx, "POST", p.c, "/api/v1/auth/registration-intents", map[string]string{"registrationTicket": ticketText, "username": username, "password": password, "installationId": cInstall}, nil, 201)
 	if err != nil {
 		return err

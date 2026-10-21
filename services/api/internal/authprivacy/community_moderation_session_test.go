@@ -237,7 +237,7 @@ func TestModerationAccessPasswordProofCannotCrossCredentialChangePostgres(t *tes
 		answer <- err
 	}()
 	<-paused.ready
-	material, err := passwords.PreparePassword(ctx, "changed independent moderation credential", "moderation_proof_user")
+	material, err := passwords.PreparePassword(ctx, "ChangedIndependentCredential987", "moderation_proof_user")
 	if err != nil {
 		t.Fatal(err)
 	}

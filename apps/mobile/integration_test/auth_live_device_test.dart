@@ -99,7 +99,7 @@ void main() {
           final email =
               'device-${DateTime.now().microsecondsSinceEpoch}@hainanu.edu.cn';
           await _input(tester, 'registration-email', email);
-          await _tap(tester, find.text('获取验证码'));
+          await _tap(tester, find.text('发送验证码'));
           final otp = await _smtpOtp(mail, email);
           await _wait(
             tester,

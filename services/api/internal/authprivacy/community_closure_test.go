@@ -197,7 +197,7 @@ func TestClosureFreezeAndRecoveryFencePostgres(t *testing.T) {
 					t.Fatal(err)
 				}
 			} else {
-				newMaterial, err := passwords.PreparePassword(ctx, "a newly replaced independent credential phrase", "closure_proof_user")
+				newMaterial, err := passwords.PreparePassword(ctx, "NewIndependentCredential987", "closure_proof_user")
 				if err != nil {
 					t.Fatal(err)
 				}

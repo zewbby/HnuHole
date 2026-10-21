@@ -18,7 +18,8 @@ var (
 	ErrPasswordBusy   = errors.New("password worker capacity reached")
 )
 
-// PasswordPreparer implements the frozen version-1 profile. The caller loads a
+// PasswordPreparer keeps version-1 Argon2id hashes; new credentials use the
+// current printable ASCII policy. Existing credentials remain verifiable. The caller loads a
 // reviewed local common/breached-password list; it never sends passwords to an
 // online checking service. Production list coverage and capacity still need
 // operational calibration. The lab intentionally has no implicit empty list.
@@ -53,7 +54,7 @@ func (p *PasswordPreparer) PreparePassword(ctx context.Context, password, userna
 	}
 	canonical := norm.NFC.String(password)
 	count := utf8.RuneCountInString(canonical)
-	if count < 15 || count > 128 {
+	if count < 10 || count > 128 || strings.IndexFunc(canonical, func(r rune) bool { return r < '!' || r > '~' }) >= 0 {
 		return material, ErrPasswordPolicy
 	}
 	lower := strings.ToLower(canonical)

@@ -1,0 +1,70 @@
+{
+  "task": "AUTH-EMAIL-LOGIN-01",
+  "branch": "feat/email-auth-flow",
+  "base": "76af92b",
+  "status": "IMPLEMENTED_UNMERGED",
+  "date": "2026-10-21",
+  "checks": {
+    "goHost": "PASS",
+    "goBuild": "PASS",
+    "goVet": "PASS",
+    "isolatedSQLRace": "PASS",
+    "smtpPythonTests": 4,
+    "smtpTLSRace": "PASS",
+    "flutterBaselineFull": 668,
+    "flutterEmailAndHttpScoped": 49,
+    "flutterAnalysis": 0,
+    "openApiSpecs": 11,
+    "flutterFinalFull": 677,
+    "flutterFinalAnalysis": 0
+  },
+  "device": {
+    "model": "vivo V2323A",
+    "android": 15,
+    "serial": "10CEAG17RY003M7",
+    "package": "org.hnuhole.hnuhole_mobile",
+    "versionCode": 2026102142,
+    "registration": "REAL_OTP_STEP_OBSERVED_USER_COMPLETED_ACCOUNT_AND_RECOVERY",
+    "emailLogin": "PASS_REAL_QQ_ACCEPTANCE_TO_SAME_ACCOUNT_HOME",
+    "coldStartNativeRestore": "PASS",
+    "wrongCodeFeedback": "OBSERVED_PASS",
+    "activeSessions": 1,
+    "repeatLogin": "HOME_OBSERVED_BEFORE_SCRIPT_PLANNED_CORRECT_CODE_REENTRY_NO_FULL_SCRIPT_ACTION_CLAIM",
+    "otpSource": "TASK_ONLY_OUTBOUND_RELAY_AFTER_QQ_ACCEPTANCE_MEMORY_ONLY_MODE600_UNIX_SOCKET",
+    "mailboxReceipt": "USER_CONFIRMED_EARLIER_REAL_DELIVERY_NO_SECOND_MANUAL_INBOX_CLAIM"
+  },
+  "review": {
+    "kind": "INDEPENDENT_AGENT_NOT_GITHUB_MEMBER_APPROVAL",
+    "firstFindings": [
+      "PROOF_LENGTH_227_VS_225",
+      "DURABLE_LATE_SESSION_REVOCATION",
+      "V_CONFIRMATION_RETENTION"
+    ],
+    "fixedAndRechecked": true
+  },
+  "notRun": [
+    "iOS",
+    "production",
+    "external_independent_security_audit",
+    "full_two_physical_device_takeover_matrix"
+  ],
+  "historicalModuleVerdictsUnchanged": true,
+  "sourceSha256": {
+    "apps/mobile/lib/src/auth/auth_flows.dart": "d605ec29f0a243591457d6f5536a40d0c82dcb41f1beb9e45f5dfe06f078cac7",
+    "apps/mobile/lib/src/auth/auth_screen.dart": "578769e2d78e3539d145f774f9be4c5b24d2631c3e3ef14a8420aac260c13ad6",
+    "apps/mobile/lib/src/auth/auth_store.dart": "099ac5d800301ebf5565288d858b1eb92aef844d38fde6b66afc588d1c643ab2",
+    "apps/mobile/lib/src/auth/http_auth_api.dart": "f967ec86d936a96cdc93185b12cc43a7ab84ce46f9af931e32effaefdf6ded95",
+    "services/api/internal/authprivacy/eligibility_email_login.go": "7b9f8d09725e2b36f11eeb09a0b8e61838f361e14d0d5ec37471160b2558bd9b",
+    "services/api/internal/authprivacy/community_email_login.go": "abd2ad747a93d231cdc3177c2ac96962be6e02f14169a6d1bdb5838492285f9d",
+    "services/api/internal/authprivacy/password.go": "77a2d2d19324f8328e35bc93ea90df14a5964cba20abaf4c47acb0832f98ef46"
+  },
+  "runtime": {
+    "vMigration": 6,
+    "privateBackups": "TAKEN_BEFORE_FORWARD_MIGRATIONS",
+    "sharedDatabaseReset": false,
+    "smtpDirect": "QQ_TLS_RESTORED",
+    "temporaryOtpObserver": "CLOSED",
+    "devGateMaintenance": "UPDATED_AUTHDEV_SIGNED_RECOVERY_AND_WATCH",
+    "cAndVReady": true
+  }
+}

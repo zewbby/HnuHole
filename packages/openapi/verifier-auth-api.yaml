@@ -3,8 +3,8 @@ info:
   title: Hnuhole Verifier Authentication API
   version: 0.1.0-review
   description: |
-    独立校园邮箱验证方 V 的实施前评审契约。仅用于校园资格注册与配额释放，
-    不是社区方 C 的登录、找回或账号查询接口，也不是独立安全审计或上线批准。
+    独立校园邮箱验证方 V 的实施前评审契约。用于校园资格注册、配额释放及独立用途的邮箱登录验证，
+    不是社区会话创建或凭据找回接口，也不是独立安全审计或上线批准。
     与 community-auth-api.yaml 的主机、签名钥、权限、数据库、安装 ID、请求 ID、
     幂等键、日志和备份独立。V 收完整精确邮箱；C 只收到固定二进制签名资格。
 
@@ -473,6 +473,111 @@ paths:
           $ref: '#/components/responses/RateLimited'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/email-login/otp-requests:
+    post:
+      operationId: requestEmailLoginOtp
+      tags:
+      - Eligibility
+      summary: 申请已有账号登录专用校园邮箱验证码
+      description: 仅登录用途。沿用精确校邮、持久幂等发信、60秒冷却和跨用途共享风控预算；不占用或释放资格，不透露是否注册。同键重POST只推进原申请，不重复投递。结果未知时保留原键。
+      security: []
+      x-max-request-body-bytes: 1024
+      parameters:
+      - $ref: '#/components/parameters/VInstallationId'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpRequest'
+      responses:
+        '202':
+          description: 原发送请求已持久受理；不证明到达收件箱，空闲和占用地址同形。
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpRequestAccepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '410':
+          $ref: '#/components/responses/ResultExpired'
+        '422':
+          $ref: '#/components/responses/EmailInvalid'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/email-login/otp-confirmations:
+    post:
+      operationId: confirmEmailLoginOtp
+      tags:
+      - Eligibility
+      summary: 验证登录专用验证码并取得限时签名证明
+      description: 只接受LOGIN用途flow，与REGISTER验证码和注册资格隔离。绑定本V安装与确认原键；正确OTP只消费一次，重试返回同一签名证明。binding是C安装ID和C登录原键的独立域SHA-256承诺，原始C安装ID/键不发送给V。校邮无当前资格时UNREGISTERED；当前槽位没有有效C账号时由C另行返回EMAIL_UNREGISTERED，不自动注册。证明有效120秒，C仍须最终检查账号/封禁/注销/Gate。过期记录仅保留不可重开的最小墓碑并清空流程/设备/绑定/请求HMAC/证明。
+      security: []
+      x-max-request-body-bytes: 2048
+      parameters:
+      - $ref: '#/components/parameters/VInstallationId'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailLoginConfirmation'
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/ConfirmationConflict'
+        '410':
+          $ref: '#/components/responses/ResultExpired'
+        '422':
+          $ref: '#/components/responses/ConfirmationInvalid'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '200':
+          description: 邮箱验证通过，返回证明或未注册分流；不建立C会话
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Request-ID:
+              $ref: '#/components/headers/VRequestId'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties: false
+                  required:
+                  - state
+                  - proof
+                  properties:
+                    state:
+                      type: string
+                      enum:
+                      - PROOF_AVAILABLE
+                    proof:
+                      $ref: '#/components/schemas/EmailLoginProof'
+                - type: object
+                  additionalProperties: false
+                  required:
+                  - state
+                  properties:
+                    state:
+                      type: string
+                      enum:
+                      - UNREGISTERED
 components:
   securitySchemes:
     otpRequestResultAuth:
@@ -529,6 +634,29 @@ components:
         type: string
         pattern: '^[1-9][0-9]{0,5}$'
   schemas:
+    EmailLoginProof:
+      type: string
+      minLength: 303
+      maxLength: 303
+      pattern: ^[A-Za-z0-9_-]{302}[AEIMQUYcgkosw048]$
+      description: 227字节固定EMAIL-LOGIN/V1签名证明，含环境、槽位、C原操作绑定、随机nonce和UTC截止；不含邮箱或OTP。
+    EmailLoginConfirmation:
+      type: object
+      additionalProperties: false
+      required:
+      - flowId
+      - otp
+      - binding
+      properties:
+        flowId:
+          $ref: '#/components/schemas/Random32'
+        otp:
+          type: string
+          pattern: ^[0-9]{6}$
+          minLength: 6
+          maxLength: 6
+        binding:
+          $ref: '#/components/schemas/Random32'
     Random16:
       type: string
       minLength: 22

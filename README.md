@@ -37,6 +37,7 @@
 | --- | --- | --- |
 | `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `feat/email-auth-flow` | 接通真实校邮注册发信与已有账号验证码登录，vivo限定验收通过；本机开发服务已加载，尚未合并。 | [详情](docs/branches/feat-email-auth-flow.md) |
 | `docs/registration-delivery` | 同步三步注册PR #42的实际合并与验收回执，仅文档。 | [详情](docs/branches/docs-registration-delivery.md) |
 | `feat/registration-wizard-ui` | 三步注册接入现有校邮开户流程，恢复码框内复制与可选Passkey；已合入main，验收范围见 [PR #42](https://github.com/zewbby/HnuHole/pull/42)。 | [详情](docs/branches/feat-registration-wizard-ui.md) |
 | `feat/login-home-recommended` | 登录直达首页，启动默认推荐、返回保留所选通道；2122测试包与单机指定验收通过，交付及合并状态见 [PR #40](https://github.com/zewbby/HnuHole/pull/40)。 | [任务详情](docs/branches/feat-login-home-recommended.md) |

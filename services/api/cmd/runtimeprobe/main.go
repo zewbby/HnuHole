@@ -393,7 +393,7 @@ func (p *probe) lifecycle(ctx context.Context) (state, error) {
 	// Username stays within the server's private username grammar.
 	sum := sha256.Sum256([]byte(suffix))
 	s.Username = fmt.Sprintf("probe_%x", sum[:6])
-	s.Password = "isolated runtime independent long password 2026!"
+	s.Password = "IsolatedRuntimeIndependent2026!"
 	email := fmt.Sprintf("runtime-%x@hainanu.edu.cn", sum[:8])
 	s.Email = email
 	installation, err := randomCapability(16)
@@ -531,7 +531,7 @@ func (p *probe) lifecycle(ctx context.Context) (state, error) {
 	if err != nil {
 		return s, err
 	}
-	s.Password = "isolated runtime changed independent password 2026!"
+	s.Password = "IsolatedRuntimeChanged2026!"
 	if _, _, err = p.request(ctx, "POST", p.c, "/api/v1/auth/password-resets", map[string]string{"resetIntentId": resetID, "newPassword": s.Password, "newRecoveryCodeConfirmation": newCode}, map[string]string{"Idempotency-Key": resetKey}, 204); err != nil {
 		return s, err
 	}
