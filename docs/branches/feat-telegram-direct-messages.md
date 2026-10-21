@@ -4,7 +4,7 @@
 
 分支 `feat/telegram-direct-messages` 从本轮 fetch 后的 `origin/main` 建立，基线 `76af92b25eeba8bd5e93339be737314b3c35ea0b`。用户最新要求分支不含 codex 字样，优先于仓库默认前缀。独立工作区位于 E 盘；C 盘创建因空间不足失败，Git 已回滚工作区注册，没有清理其他任务资源。
 
-当前已完成列表/聊天展示层与四入口导航，准备提交 Draft PR；未合并/发布。真实私信 API 与本地业务持久化仍缺失。以下“现状/规则/接口缺口”为实施前分析快照。
+当前已完成列表/聊天展示层与四入口导航，已提交 [Draft PR #44](https://github.com/zewbby/HnuHole/pull/44)；未合并/发布。真实私信 API 与本地业务持久化仍缺失。以下“现状/规则/接口缺口”为实施前分析快照。
 
 > **同日交付进度：**按用户最新要求，四入口为首页、消息（铃铛）、私信（单气泡）、我的，沿用发帖页固定底栏，未选中线框/选中蓝色实心。消息保持现有系统通知；正式私信入口仅显示暂未开放，聊天夹具继续独立预览。最终完整 Flutter **702 PASS**、聚焦含渲染 **36 PASS**、分析 0、生产 APK 2155/独立预览 APK 2156 构建 PASS。真我 RMX3366/Android14 已安装 2156 并完成约定 UI/IME 验收，早期锁屏阻塞已解除，原失败保留。后端联调未实现，独立 review 与远端 CI 待完成，保持 Draft。见[实施记录](../design/telegram-direct-messages.md)及[机器记录](../design/telegram-direct-messages-verification-20261021.json)。
 

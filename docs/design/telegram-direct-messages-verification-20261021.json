@@ -91,7 +91,11 @@
       "test": "apps/mobile/test/app_navigation_test.dart",
       "note": "Actual root two-round switching, original notices endpoint only, no mark-read or DM requests, home/channel state retained; preview native does not verify production authenticated navigation"
     },
-    "remoteCI": "NOT_RUN",
+    "remoteCI": {
+      "result": "IN_PROGRESS",
+      "checkedHead": "cd1fce865cbf1df023027ea54db213bbdea96aa7",
+      "note": "PR triggered nine jobs; subsequent documentation-only head must also pass before merge. Final live status is authoritative at PR."
+    },
     "independentReview": "NOT_RUN",
     "ios": "NOT_RUN",
     "performanceBudget": "NOT_RUN"
@@ -235,7 +239,7 @@
     }
   ],
   "handoff": "docs/design/telegram-direct-messages.md",
-  "pullRequest": null,
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/44",
   "mainMerged": false,
   "published": false,
   "previousQualification": {
@@ -337,5 +341,6 @@
       "sha256": "27b5713170b27c19443b5833793e184c02584ce1b0792f380da28a0c7e199c03",
       "pathOutsideGit": "E:\\Hnuhole-env\\tmp-dm\\device\\retry-confirmed-2156.xml"
     }
-  }
+  },
+  "testedProductCommit": "cd1fce865cbf1df023027ea54db213bbdea96aa7"
 }

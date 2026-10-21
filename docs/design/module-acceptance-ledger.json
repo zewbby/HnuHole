@@ -40569,12 +40569,13 @@
     "business": "NOT_IMPLEMENTED",
     "report": "docs/design/telegram-direct-messages.md",
     "verification": "docs/design/telegram-direct-messages-verification-20261021.json",
-    "pullRequest": null,
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/44",
     "mainMerged": false,
     "published": false,
     "productionRoot": "PASS_HOST_NAVIGATION_WITH_UNAVAILABLE_DM",
     "previewVersionCode": 2026102156,
-    "remoteCI": "NOT_RUN",
-    "independentReview": "NOT_RUN"
+    "remoteCI": "IN_PROGRESS_SEE_PR_LIVE_STATUS",
+    "independentReview": "NOT_RUN",
+    "testedProductCommit": "cd1fce865cbf1df023027ea54db213bbdea96aa7"
   }
 }
