@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> **2026-10-21 LOGIN-HOME-01（未提交／未合并）：**`feat/login-home-recommended` 最终按用户澄清：新启动默认推荐，运行期间保留各账号所选通道，详情／我的／消息返回及首页按钮不重置；删除节点页。23 专项／635 全量／分析0、2122 原生 APK 与 vivo Android15 指定场景 PASS；真实密码登录、吐槽往返、冷重启推荐及根返回均实测。CMake已定点补齐，Kotlin跨盘缓存仅本次构建禁用；独立包已安装，原包未覆盖。见[任务](../branches/feat-login-home-recommended.md)／[机器记录](login-home-recommended-verification-20261021.json)。共享服务不改配置；本地 USB 路由和 V 字节中继保留供试用，不提升完整模块或生产结论。
+> **2026-10-21 LOGIN-HOME-01／[PR #40](https://github.com/zewbby/HnuHole/pull/40)：**`feat/login-home-recommended` 最终按用户澄清：新启动默认推荐，运行期间保留各账号所选通道，详情／我的／消息返回及首页按钮不重置；删除节点页。23 专项／635 全量／分析0、2122 原生 APK 与 vivo Android15 指定场景 PASS；真实密码登录、吐槽往返、冷重启推荐及根返回均实测。CMake已定点补齐，Kotlin跨盘缓存仅本次构建禁用；独立包已安装，原包未覆盖。见[任务](../branches/feat-login-home-recommended.md)／[机器记录](login-home-recommended-verification-20261021.json)。共享服务不改配置；本地 USB 路由和 V 字节中继保留供试用，不提升完整模块或生产结论。
 
 > **2026-10-21 AUTH-UI-FINAL-01 设计定稿：**用户已确认并授权推送[登录注册流程 UI 定稿](auth-flow-final/README.md)。独立 `docs/auth-flow-final` 只交付设计资产与说明，不夹带其他在研代码；最终方式为同一页仅原位替换两个输入框，不使用独立邮箱页。邮箱验证码登录尚未接入现有认证契约，h Logo 仍占位；后续按定稿另行实现。设计确认、App 实现、验收、合并与发布分列，当前未合并／发布；见[交付记录](../branches/docs-auth-flow-final.md)。
 

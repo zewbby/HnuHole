@@ -3,7 +3,8 @@
 - 更新：2026-10-21，Asia/Shanghai。
 - 分支：`feat/login-home-recommended`；基线 `ddf506a5dfd9874c0bf060a8ab40b3efa3728d31` 加本地未提交差异。
 - 状态：实现、宿主回归、Android 测试 APK 和单台 vivo 真机指定场景 PASS；用户已授权提交、推送、PR 及通过规范检查后合并，当前进入交付流程，未正式发布。
-- 送检：整合最新主线文档后复核源码一致性，独立审查和远端 CI／合并回执随 PR 更新。
+- PR：[ #40 ](https://github.com/zewbby/HnuHole/pull/40)，用户已授权检查通过后 Squash Merge。合并状态、时间和最终 SHA 以该 PR 回执为准；本页保留送检事实，不将旧 APK 标为新构建。
+- 送检：源码提交 `250af2a`，整合主线文档 `c1b7ebf`／主线 `874bc0b`，运行源码与 2122 被测输入一致。独立 agent `/root/independent_review` 已完成静态审查，无阻断；这不是 GitHub 成员批准。最终远端 head CI 由 PR 回执确认。
 - 当前结果与旧阶段区分：[机器记录](../design/login-home-recommended-verification-20261021.json) 的 history 保留原 20／632 项和 Android 构建受阻状态；以下为澄清后最终版本。
 
 ## 用户最终确认的行为
@@ -24,7 +25,7 @@
 | 跳转／账号／无障碍 | `flutter test --no-pub test/login_home_navigation_test.dart test/personal_route_account_test.dart test/talkback_semantics_test.dart --reporter expanded`：PASS，23 项 |
 | 移动端全量 | `flutter test --no-pub --reporter expanded`：PASS，635 项 |
 | Android 原生 | 下述本地覆盖参数的 `:app:assembleDebug`：PASS，212 tasks，最终 42 秒 |
-| 远端 CI | NOT_RUN；既有 `.github/workflows/feed-ui.yml` 已纳入新增专项，尚未提交／推送 |
+| 远端 CI | 送检中；既有 `.github/workflows/feed-ui.yml` 已纳入新增专项，最终结果见 PR #40 |
 
 测试从 `apps/mobile/test/login_home_navigation_test.dart` 进入。旧认证／设备夹具将已删除的树类型落点更新为 FeedScreen，历史 F4／全矩阵未在本轮复跑，不据此提升完整模块状态。
 
@@ -71,3 +72,7 @@ vivo V2323A／Android 15，独立测试包已安装。通过真实页面使用�
 本测试包使用 App 内开发 CA，证书链与主机名校验开启，手机系统未安装 CA。需本机隔离服务及 USB 在线：phone55145→host51245；phone54947→本任务 localhost54948 透明中继→WSL V49747。当前保留映射和本任务中继以支持用户继续试用，说明见本地 `INSTALL.md`；共享服务未改配置。仅操作测试包，未卸载／清除原 App 数据。
 
 模块沿用 A12、B03、B10，仅登记本次导航限定 PASS。iOS、生产、其他机型与完整历史模块矩阵不在本轮范围；未发布。
+
+## 审查与主线同步
+
+2026-10-21，独立审查覆盖 `ddf506a..250af2a` 与 `c1b7ebf` 整合后的运行输入，核对导航、按账号内存选择、授权代次/旧回调、CI、635项日志、分析0和2122制品摘要，未发现阻断。文档中“默认推荐”已明确仅指本次运行首次进入；最终提交只补交付文档，产品与测试输入不变。合并前检查所有适用远端 CI，使用预期 head SHA 的 Squash Merge；合并后核对远端 main 包含 PR 结果。未正式发布。

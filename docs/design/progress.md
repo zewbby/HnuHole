@@ -1,6 +1,6 @@
 # 设计进度与剩余工作
 
-> **2026-10-21 LOGIN-HOME-01：本地实现与指定单机验收 PASS。**最终规则为每次启动默认推荐，启动后保留通道；删除节点页。`feat/login-home-recommended`／ddf506a+未提交差异，23 专项／635 全量／分析0／2122 原生构建及 vivo Android15 真实登录、吐槽往返、同次登录保留、冷启动推荐 PASS。独立测试包已安装，原包未覆盖；未推送／合并／发布，远端CI未运行。[任务](../branches/feat-login-home-recommended.md)。
+> **2026-10-21 LOGIN-HOME-01：本地实现与指定单机验收 PASS。**最终规则为每次启动默认推荐，启动后保留通道；删除节点页。`feat/login-home-recommended`／250af2a／c1b7ebf，运行输入不变，23 专项／635 全量／分析0／2122 原生构建及 vivo Android15 真实登录、吐槽往返、同次登录保留、冷启动推荐 PASS。独立测试包已安装，原包未覆盖；已提交推送至 [PR #40](https://github.com/zewbby/HnuHole/pull/40)，独立 agent 审查无阻断；远端CI及合并状态见该PR，未发布。[任务](../branches/feat-login-home-recommended.md)。
 
 > **2026-10-21 AUTH-UI-FINAL-01：DESIGN_APPROVED。**用户确认当前登录注册交互稿定稿并授权推送 GitHub。独立 `docs/auth-flow-final` 从最新 main `ddf506a` 归档[统一规范、交互稿与截图](auth-flow-final/README.md)，冻结同页原位置“用户名／密码 ↔ 邮箱／验证码”与第二框右侧获取验证码，删除额外标题／说明。注册恢复沿用统一视觉与现有协议；邮箱登录契约、Flutter 接入及正式 Logo 待后续实现。纯设计交付不提升功能台账，未合并／发布；[交付与验证](../branches/docs-auth-flow-final.md)。
 

@@ -59,8 +59,8 @@
     },
     {
       "name": "remoteCI",
-      "result": "NOT_RUN",
-      "reason": "Local uncommitted candidate; no push or PR authorized."
+      "result": "IN_PROGRESS",
+      "reason": "PR #40 opened; evaluate final exact head checks before merge."
     }
   ],
   "cases": [
@@ -81,7 +81,7 @@
     "Single vivo Android 15 and configured private-CA isolated C/V services only; no production or iOS acceptance.",
     "Historical device/F4 fixtures are statically adapted, not re-executed as full historical matrices.",
     "Debug test APK uses its own package and requires the documented USB/host loopback routes.",
-    "No commit, push, merge or production release."
+    "Submission/merge state is tracked by PR #40; no production release."
   ],
   "sourceAndTestSha256": {
     "apps/mobile/integration/community_stage1_scenario.dart": "a92eaeaa0becae8ea250921c4a5c4b18a543a60bc7f00076385107c1d2c35bcf",
@@ -330,5 +330,24 @@
       "path": "E:\\Hnuhole-env\\login-home-20261021\\final-2122-default-selected.png",
       "sha256": "705a9dc550c62ac0e6aaa3738d741df800836bfdb2781a4e381b57bdb9a69b17"
     }
+  },
+  "submission": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/40",
+    "sourceCommit": "250af2a",
+    "integratedHead": "c1b7ebfd08b8f20235fb5ed83b28ed1171c56bf7",
+    "integratedMain": "874bc0b394073a6901bd7d856cf5f1c857692120",
+    "userAuthorizedCommitPushMerge": true,
+    "mergeStatus": "See authoritative PR #40 state; this is pre-merge submission evidence.",
+    "release": false
+  },
+  "independentReview": {
+    "reviewer": "/root/independent_review",
+    "kind": "independent_agent_static_review",
+    "result": "NO_BLOCKERS",
+    "reviewedSourceCommit": "250af2a",
+    "reviewedIntegratedHead": "c1b7ebfd08b8f20235fb5ed83b28ed1171c56bf7",
+    "runtimeInputsMatchDeviceCandidate": true,
+    "githubMemberApproval": false,
+    "note": "One nonblocking wording clarification applied to navigation spec; runtime code and tests unchanged."
   }
 }
