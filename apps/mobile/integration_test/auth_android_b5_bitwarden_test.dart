@@ -90,14 +90,14 @@ void main() {
 
     Future<void> authRoute() async {
       if (find.byType(AuthScreen).evaluate().isEmpty) {
-        await tapOwned(tester, find.text('登录或注册'));
+        await tapOwned(tester, find.text('开始使用'));
       }
     }
 
     Future<void> login(String password) async {
       await inputOwned(tester, 'login-username', _username);
       await inputOwned(tester, 'login-password', password);
-      await tapOwned(tester, find.text('登录并进入'));
+      await tapOwned(tester, find.byKey(const ValueKey('login-submit')));
       await waitOwned(
         tester,
         () =>
@@ -268,7 +268,7 @@ void main() {
             expect(getAttempts, 0);
             account = Map<String, dynamic>.from(command['account'] as Map);
             expect(account['username'], _username);
-            await tapOwned(tester, find.text('恢复账号'));
+            await tapOwned(tester, find.text('找回账号'));
             getAttempts++;
             await report('GET_NATIVE_PENDING');
             await tapOwned(tester, find.text('使用 Passkey 恢复'));

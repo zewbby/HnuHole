@@ -1,4 +1,21 @@
 {
+  "authEntryUi20261021": {
+    "task": "AUTH-UI-IMPLEMENT-01",
+    "branch": "feat/auth-entry-flow",
+    "base": "874bc0b394073a6901bd7d856cf5f1c857692120",
+    "modules": [
+      "A06",
+      "A12",
+      "B01",
+      "B03"
+    ],
+    "scope": "auth presentation and signed-out welcome; email login disabled/pending per user; existing auth protocols unchanged",
+    "implementation": "BRANCH_IMPLEMENTED_NOT_MERGED",
+    "evidence": "docs/design/validation/auth-entry-ui-20261021/verification.json",
+    "device": "NOT_RUN",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true
+  },
   "schemaVersion": "hnuhole-module-acceptance-ledger/v1",
   "recordedOn": "2026-10-18",
   "timeZone": "Asia/Shanghai",

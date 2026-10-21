@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../auth/auth_presentation.dart';
 import '../channels/channel.dart';
 import 'channel_directory_controller.dart';
 import 'channel_tree.dart';
@@ -71,6 +72,10 @@ class _EntryScreenState extends State<EntryScreen> {
   Widget build(BuildContext context) {
     final state = widget.directory.status;
     final showTree = state == ChannelDirectoryStatus.ready;
+
+    if (state == ChannelDirectoryStatus.signedOut) {
+      return AuthWelcomeScreen(onStarted: widget.onLoginRequested);
+    }
 
     return Scaffold(
       body: SafeArea(

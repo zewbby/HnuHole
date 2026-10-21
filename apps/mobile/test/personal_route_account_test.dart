@@ -183,7 +183,7 @@ class _Fixture {
       find.byType(TextFormField).at(1),
       'valid-password-123',
     );
-    await tester.tap(find.widgetWithText(FilledButton, '登录并进入'));
+    await tester.tap(find.byKey(const ValueKey('login-submit')));
     await tester.pumpAndSettle();
     expect(sessions.isAuthenticated, isTrue);
     expect(store.current!.session!.accountId, account);
@@ -385,7 +385,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(f.sessions.isAuthenticated, isFalse);
       expect(f.store.current!.session?.token, status == 503 ? oldToken : null);
-        await tester.tap(find.textContaining(RegExp(r'^(请重新登录|登录或核对会话)$')));
+      await tester.tap(find.textContaining(RegExp(r'^(请重新登录|登录或核对会话)$')));
       await tester.pumpAndSettle();
       if (status == 503) {
         await tester.tap(find.text('重新核对会话'));
@@ -395,7 +395,7 @@ void main() {
           find.byType(TextFormField).at(1),
           'valid-password-123',
         );
-        await tester.tap(find.widgetWithText(FilledButton, '登录并进入'));
+        await tester.tap(find.byKey(const ValueKey('login-submit')));
       }
       await tester.pumpAndSettle();
       expect(f.sessions.isAuthenticated, isTrue);
@@ -406,7 +406,7 @@ void main() {
       );
       expect(find.byType(AuthScreen), findsNothing);
       expect(find.text('登录或核对会话'), findsNothing);
-        expect(find.text('请重新登录'), findsNothing);
+      expect(find.text('请重新登录'), findsNothing);
       expect(find.text('今天的校园'), findsOneWidget);
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();

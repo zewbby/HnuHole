@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'auth_flows.dart';
+import 'auth_presentation.dart';
 import 'auth_session_controller.dart';
 
 enum _AuthMode { login, register, recover }
@@ -38,6 +40,12 @@ class _AuthScreenState extends State<AuthScreen> {
   final _confirmation = TextEditingController();
   final _newPassword = TextEditingController();
   final _closurePassword = TextEditingController();
+  final _loginEmail = TextEditingController();
+  final _loginOtp = TextEditingController();
+  final _visiblePasswords = <String>{};
+  bool _emailLogin = false;
+  double _minimumBodyHeight = 0;
+  BuildContext? _presentationContext;
   _AuthMode _mode = _AuthMode.login;
   Timer? _countdown;
   bool _authenticated = false;
@@ -76,6 +84,8 @@ class _AuthScreenState extends State<AuthScreen> {
       _confirmation,
       _newPassword,
       _closurePassword,
+      _loginEmail,
+      _loginOtp,
     ]) {
       controller.dispose();
     }
@@ -86,6 +96,9 @@ class _AuthScreenState extends State<AuthScreen> {
     if (!mounted) return;
     final authenticated = widget.sessions.status == AuthStatus.authenticated;
     if (authenticated && !_authenticated) {
+      _visiblePasswords.clear();
+      _loginEmail.clear();
+      _loginOtp.clear();
       _password.clear();
       _newPassword.clear();
       _recoveryCode.clear();
@@ -108,6 +121,10 @@ class _AuthScreenState extends State<AuthScreen> {
     _recoveryCode.clear();
     _confirmation.clear();
     _closurePassword.clear();
+    _loginEmail.clear();
+    _loginOtp.clear();
+    _emailLogin = false;
+    _visiblePasswords.clear();
     _validateOtp = false;
     setState(() => _mode = mode);
     widget.flows.restorePending();
@@ -120,47 +137,88 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      AuthPresentationHost(child: Builder(builder: _buildPage));
+
+  String _text(String value, [String? english]) => AuthPresentationScope.text(
+    _presentationContext ?? context,
+    value,
+    english,
+  );
+
+  ThemeData get _theme => Theme.of(_presentationContext ?? context);
+
+  Widget _buildPage(BuildContext context) {
+    _presentationContext = context;
     final sessionStatus = widget.sessions.status;
     final flowStatus = widget.flows.status;
     final error = widget.flows.errorMessage ?? widget.sessions.errorMessage;
-    final content = _content(sessionStatus, flowStatus);
     return Scaffold(
-      appBar: AppBar(title: const Text('账号与安全')),
+      appBar: AppBar(
+        toolbarHeight: 64,
+        title: sessionStatus == AuthStatus.authenticated
+            ? Text(_text('账号与安全'))
+            : null,
+        leading: IconButton(
+          tooltip: _text('返回登录'),
+          onPressed: _busy
+              ? null
+              : () {
+                  if (_mode != _AuthMode.login) {
+                    _selectMode(_AuthMode.login);
+                  } else {
+                    Navigator.of(context).maybePop();
+                  }
+                },
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
+        actions: const [AuthThemeButton(), SizedBox(width: 12)],
+      ),
       body: SafeArea(
         top: false,
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 520),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (_busy) ...[
-                      Semantics(
-                        label: '正在核对账号状态',
-                        child: const LinearProgressIndicator(),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                    if (error != null) ...[
-                      _Notice(error, error: true),
-                      const SizedBox(height: 16),
-                    ],
-                    if (widget.sessions.hasPendingLogout) ...[
-                      const _Notice('本机已退出，服务端撤销仍待完成。联网后会继续定向撤销旧会话，不恢复旧登录。'),
-                      const SizedBox(height: 16),
-                    ],
-                    ...content,
-                  ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            _minimumBodyHeight = (constraints.maxHeight - 48).clamp(
+              0,
+              double.infinity,
+            );
+            final content = _content(sessionStatus, flowStatus);
+            return Align(
+              alignment: Alignment.topCenter,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 520),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (_busy) ...[
+                          Semantics(
+                            label: _text('正在核对账号状态'),
+                            child: const LinearProgressIndicator(),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                        if (error != null) ...[
+                          _Notice(error, error: true),
+                          const SizedBox(height: 16),
+                        ],
+                        if (widget.sessions.hasPendingLogout) ...[
+                          const _Notice(
+                            '本机已退出，服务端撤销仍待完成。联网后会继续定向撤销旧会话，不恢复旧登录。',
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                        ...content,
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -273,57 +331,176 @@ class _AuthScreenState extends State<AuthScreen> {
       ];
     }
     return [
-      Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          _modeButton('登录', _AuthMode.login),
-          _modeButton('新注册', _AuthMode.register),
-          _modeButton('恢复账号', _AuthMode.recover),
-        ],
-      ),
-      const SizedBox(height: 24),
       ...switch (_mode) {
         _AuthMode.login => _login(),
         _AuthMode.register => _registration(flow),
         _AuthMode.recover => _recovery(),
       },
+      if (_mode != _AuthMode.login)
+        _secondary('返回登录', () async => _selectMode(_AuthMode.login)),
     ];
   }
 
-  Widget _modeButton(String label, _AuthMode mode) => Semantics(
-    selected: _mode == mode,
-    child: OutlinedButton(
-      onPressed: _busy ? null : () => _selectMode(mode),
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size(72, 48),
-        backgroundColor: _mode == mode
-            ? Theme.of(context).colorScheme.secondaryContainer
-            : null,
-        foregroundColor: _mode == mode
-            ? Theme.of(context).colorScheme.onSecondaryContainer
-            : null,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontWeight: _mode == mode ? FontWeight.w700 : FontWeight.w400,
+  List<Widget> _login() {
+    final normal =
+        !_explicitClosureLogin &&
+        !_explicitResetLogin &&
+        !_explicitRegistrationLogin;
+    final email = normal && _emailLogin;
+    final controls = <Widget>[
+      const SizedBox(height: 56),
+      const _Title('欢迎回来', ''),
+      if (_explicitClosureLogin) const _Notice('注销缓冲期内主动登录将撤销注销申请。'),
+      if (email) ...[
+        _field(
+          '邮箱',
+          _loginEmail,
+          key: 'email-login-address',
+          email: true,
+          pending: true,
+          placeholder: '输入邮箱',
+        ),
+        _field(
+          '验证码',
+          _loginOtp,
+          key: 'email-login-code',
+          otp: true,
+          pending: true,
+          placeholder: '输入验证码',
+          suffix: Tooltip(
+            message: _text('邮箱登录待接入'),
+            child: SizedBox(
+              width: 108,
+              child: TextButton(
+                key: const ValueKey('email-login-request'),
+                onPressed: null,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(_text('获取验证码'), style: const TextStyle(fontSize: 13)),
+                    Text(
+                      _text('待接入', 'Coming soon'),
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ] else ...[
+        _field(
+          '用户名',
+          _username,
+          key: 'login-username',
+          username: true,
+          placeholder: '输入用户名',
+        ),
+        _field(
+          '密码',
+          _password,
+          key: 'login-password',
+          password: true,
+          placeholder: '输入密码',
+        ),
+      ],
+      if (normal)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: TextButton(
+                key: const ValueKey('login-method-toggle'),
+                onPressed: _busy
+                    ? null
+                    : () => setState(() {
+                        _password.clear();
+                        _loginOtp.clear();
+                        _visiblePasswords.clear();
+                        _emailLogin = !_emailLogin;
+                      }),
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                child: Text(
+                  _text(email ? '切换用户名登录' : '切换邮箱登录（待接入）'),
+                  style: const TextStyle(fontSize: 13),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: _busy ? null : () => _selectMode(_AuthMode.recover),
+              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+              child: Text(_text('找回账号'), style: const TextStyle(fontSize: 13)),
+            ),
+          ],
+        ),
+      Padding(
+        padding: const EdgeInsets.only(top: 24),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Tooltip(
+            message: _text(email ? '邮箱登录待接入' : '登录并进入'),
+            child: FilledButton(
+              key: const ValueKey('login-submit'),
+              onPressed: _busy || email
+                  ? null
+                  : () => _submit(
+                      () =>
+                          widget.sessions.login(_username.text, _password.text),
+                    ),
+              style: FilledButton.styleFrom(
+                fixedSize: const Size(64, 64),
+                padding: EdgeInsets.zero,
+                shape: const CircleBorder(),
+              ),
+              child: const Icon(Icons.arrow_forward_rounded, size: 32),
+            ),
+          ),
         ),
       ),
-    ),
-  );
-
-  List<Widget> _login() => [
-    const _Title('登录树洞', '使用私有用户名与密码。登录成功会接替其他移动设备；注销缓冲期内登录会撤销注销申请。'),
-    _field('私有用户名', _username, key: 'login-username', username: true),
-    _field('密码', _password, key: 'login-password', password: true),
-    _button(
-      '登录并进入',
-      () =>
-          _submit(() => widget.sessions.login(_username.text, _password.text)),
-    ),
-  ];
+    ];
+    return [
+      ConstrainedBox(
+        constraints: BoxConstraints(minHeight: normal ? _minimumBodyHeight : 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: controls,
+            ),
+            if (normal)
+              Padding(
+                padding: const EdgeInsets.only(top: 24),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      _text('第一次来？'),
+                      style: TextStyle(
+                        color: _theme.colorScheme.onSurfaceVariant,
+                        fontSize: 14,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: _busy
+                          ? null
+                          : () => _selectMode(_AuthMode.register),
+                      child: Text(
+                        _text('创建账号'),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    ];
+  }
 
   List<Widget> _registration(AuthFlowStatus flow) {
     if (flow == AuthFlowStatus.eligibilityReady) {
@@ -363,7 +540,7 @@ class _AuthScreenState extends State<AuthScreen> {
       const _Title('校邮注册', '校园邮箱只用于新注册，不能登录或找回旧账号。邮箱只交给独立校邮验证方。'),
       _field('校园邮箱', _email, key: 'registration-email', email: true),
       _field('最新验证码', _otp, key: 'registration-otp', otp: true),
-      const Text('请使用最新验证码。', style: TextStyle(fontSize: 14)),
+      const _AuthText('请使用最新验证码。', style: TextStyle(fontSize: 14)),
       const SizedBox(height: 8),
       if (flow == AuthFlowStatus.otpRequestUnknown)
         _button(
@@ -377,7 +554,9 @@ class _AuthScreenState extends State<AuthScreen> {
               ? null
               : () {
                   _validateOtp = false;
-                  return _submit(() => widget.flows.requestOtp(_email.text));
+                  return _submit(
+                    () => widget.flows.requestOtp(_campusEmail(_email.text)),
+                  );
                 },
         ),
       if (flow == AuthFlowStatus.otpRequested)
@@ -410,7 +589,7 @@ class _AuthScreenState extends State<AuthScreen> {
       _secondary('使用 Passkey 恢复', widget.flows.beginPasskeyReset),
     const _Notice('Passkey 只用于找回旧号。验证后仍需设置新密码、保存并完整确认新恢复码，不会自动登录。'),
     const SizedBox(height: 16),
-    const Text('密码、恢复码和全部备用 Passkey 都丢失后，旧号无法找回。不会按邮箱人工重置。'),
+    const _AuthText('密码、恢复码和全部备用 Passkey 都丢失后，旧号无法找回。不会按邮箱人工重置。'),
   ];
 
   List<Widget> _showRecoveryCode({required bool isReset}) => [
@@ -419,11 +598,11 @@ class _AuthScreenState extends State<AuthScreen> {
       '只在这次画面展示。请写下或存入你选择的安全管理器，下一页隐藏原码后需要完整重输。',
     ),
     if (isReset && widget.flows.resetUsername != null)
-      Text('私有用户名：${widget.flows.resetUsername}'),
+      _AuthText('私有用户名：${widget.flows.resetUsername}'),
     const SizedBox(height: 16),
     DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        color: _theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
@@ -431,8 +610,7 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Text(
           widget.flows.recoveryCode ?? '',
           key: const ValueKey('displayed-recovery-code'),
-          style: Theme.of(context).textTheme.titleLarge
-              ?.copyWith(letterSpacing: 1.5),
+          style: _theme.textTheme.titleLarge?.copyWith(letterSpacing: 1.5),
           textAlign: TextAlign.center,
         ),
       ),
@@ -442,7 +620,7 @@ class _AuthScreenState extends State<AuthScreen> {
     if (!isReset)
       const Padding(
         padding: EdgeInsets.only(top: 16),
-        child: Text('密码、恢复码和所有备用 Passkey 均丢失时，旧号不能找回；再次收校邮验证码也不会释放旧号配额。'),
+        child: _AuthText('密码、恢复码和所有备用 Passkey 均丢失时，旧号不能找回；再次收校邮验证码也不会释放旧号配额。'),
       ),
     _button('我已保存，隐藏原码并确认', () async {
       _recoveryCode.clear();
@@ -478,7 +656,7 @@ class _AuthScreenState extends State<AuthScreen> {
     if (widget.sessions.username != null)
       Padding(
         padding: const EdgeInsets.only(bottom: 16),
-        child: Text('私有用户名：${widget.sessions.username}'),
+        child: _AuthText('私有用户名：${widget.sessions.username}'),
       ),
     if (widget.flows.closureStatus != null) ...[
       _secondary('核对上次注销申请', widget.flows.reconcileClosure),
@@ -497,18 +675,18 @@ class _AuthScreenState extends State<AuthScreen> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('申请七天后注销'),
-          content: const Text(
+          title: const _AuthText('申请七天后注销'),
+          content: const _AuthText(
             '预计完成时间由服务端受理时确定。期间登录会撤销申请；尚未公开的发送任务将取消，公开内容仍保留。',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
+              child: const _AuthText('取消'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('申请注销'),
+              child: const _AuthText('申请注销'),
             ),
           ],
         ),
@@ -550,7 +728,7 @@ class _AuthScreenState extends State<AuthScreen> {
     final dueAt = widget.flows.closureStatus?.dueAt;
     return [
       _Title(title, message),
-      if (dueAt != null) Text('预计完成时间：${_deadline(dueAt)}'),
+      if (dueAt != null) _AuthText('预计完成时间：${_deadline(dueAt)}'),
       _button('核对注销状态', widget.flows.reconcileClosure),
       if (status == AuthFlowStatus.closureUnknown) ...[
         const SizedBox(height: 16),
@@ -613,13 +791,17 @@ class _AuthScreenState extends State<AuthScreen> {
     bool newPassword = false,
     bool email = false,
     bool otp = false,
+    bool pending = false,
+    String? placeholder,
+    Widget? suffix,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
     child: TextFormField(
       key: ValueKey(key),
       controller: controller,
-      enabled: !_busy,
-      obscureText: password,
+      inputFormatters: email ? [_CampusEmailPrefixFormatter()] : null,
+      enabled: !_busy && !pending,
+      obscureText: password && !_visiblePasswords.contains(key),
       autocorrect: false,
       enableSuggestions: !password && !otp,
       enableIMEPersonalizedLearning:
@@ -640,12 +822,36 @@ class _AuthScreenState extends State<AuthScreen> {
           ? [AutofillHints.oneTimeCode]
           : null,
       decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
+        labelText: _text(label),
+        hintText: placeholder == null ? null : _text(placeholder),
+        suffixText: email ? '@hainanu.edu.cn' : null,
+        suffixStyle: const TextStyle(fontSize: 13),
+        suffixIcon:
+            suffix ??
+            (password
+                ? IconButton(
+                    tooltip: _text(
+                      _visiblePasswords.contains(key) ? '隐藏密码' : '显示密码',
+                    ),
+                    onPressed: _busy
+                        ? null
+                        : () => setState(() {
+                            if (!_visiblePasswords.add(key)) {
+                              _visiblePasswords.remove(key);
+                            }
+                          }),
+                    icon: Icon(
+                      _visiblePasswords.contains(key)
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: 20,
+                    ),
+                  )
+                : null),
         helperText: newPassword
-            ? '至少 15 个字符，支持空格和粘贴；不要使用校邮密码。'
+            ? _text('至少 15 个字符，支持空格和粘贴；不要使用校邮密码。')
             : newUsername
-            ? '6–24 个小写字母、数字或下划线，以字母开头。'
+            ? _text('6–24 个小写字母、数字或下划线，以字母开头。')
             : null,
         helperMaxLines: 3,
         errorMaxLines: 3,
@@ -653,20 +859,25 @@ class _AuthScreenState extends State<AuthScreen> {
       validator: (value) {
         final input = value ?? '';
         if (otp && !_validateOtp) return null;
-        if (input.isEmpty) return '请输入$label';
+        if (input.isEmpty) return '${_text('请输入', 'Enter ')}${_text(label)}';
         if (email &&
             (RegExp(r'\s').hasMatch(input) ||
                 input.startsWith('@') ||
-                !input.endsWith('@hainanu.edu.cn') ||
-                input.indexOf('@') != input.lastIndexOf('@'))) {
-          return '请输入精确的 @hainanu.edu.cn 校园邮箱，不能有空格';
+                !_campusEmail(input).endsWith('@hainanu.edu.cn') ||
+                _campusEmail(input).indexOf('@') !=
+                    _campusEmail(input).lastIndexOf('@'))) {
+          return _text('请输入精确的 @hainanu.edu.cn 校园邮箱，不能有空格');
         }
         if (newUsername &&
             !RegExp(r'^[a-z][a-z0-9_]{5,23}$').hasMatch(input.toLowerCase())) {
-          return '用户名须为 6–24 个字母、数字或下划线，以字母开头';
+          return _text('用户名须为 6–24 个字母、数字或下划线，以字母开头');
         }
-        if (newPassword && input.runes.length < 15) return '新密码至少需要 15 个字符';
-        if (otp && !RegExp(r'^\d{6}$').hasMatch(input)) return '请输入六位最新验证码';
+        if (newPassword && input.runes.length < 15) {
+          return _text('新密码至少需要 15 个字符');
+        }
+        if (otp && !RegExp(r'^\d{6}$').hasMatch(input)) {
+          return _text('请输入六位最新验证码');
+        }
         return null;
       },
     ),
@@ -677,18 +888,54 @@ class _AuthScreenState extends State<AuthScreen> {
     child: FilledButton(
       onPressed: _busy || action == null ? null : action,
       style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
-      child: Text(label, textAlign: TextAlign.center),
+      child: Text(_text(label), textAlign: TextAlign.center),
     ),
   );
 
   Widget _secondary(String label, Future<void> Function() action) => Padding(
     padding: const EdgeInsets.only(top: 12),
-    child: OutlinedButton(
+    child: TextButton(
       onPressed: _busy ? null : action,
-      style: OutlinedButton.styleFrom(minimumSize: const Size(0, 48)),
-      child: Text(label, textAlign: TextAlign.center),
+      style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
+      child: Text(_text(label), textAlign: TextAlign.center),
     ),
   );
+
+  String _campusEmail(String value) =>
+      value.contains('@') ? value : '$value@hainanu.edu.cn';
+}
+
+/// Only a valid, exact campus suffix is split from a pasted address. Invalid
+/// domains, whitespace and case are preserved for the existing validator.
+class _CampusEmailPrefixFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    const suffix = '@hainanu.edu.cn';
+    final text = newValue.text;
+    if (!text.endsWith(suffix) ||
+        text.indexOf('@') != text.lastIndexOf('@') ||
+        RegExp(r'\s').hasMatch(text)) {
+      return newValue;
+    }
+    final prefix = text.substring(0, text.length - suffix.length);
+    return TextEditingValue(
+      text: prefix,
+      selection: TextSelection.collapsed(offset: prefix.length),
+    );
+  }
+}
+
+class _AuthText extends StatelessWidget {
+  const _AuthText(this.value, {this.style});
+  final String value;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) =>
+      Text(AuthPresentationScope.text(context, value), style: style);
 }
 
 class _Title extends StatelessWidget {
@@ -700,11 +947,22 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: 24),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(title, style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 12),
-        Text(description, style: Theme.of(context).textTheme.bodyLarge),
+        Text(
+          AuthPresentationScope.text(context, title),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headlineSmall
+              ?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        if (description.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text(
+            AuthPresentationScope.text(context, description),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
       ],
     ),
   );
@@ -728,7 +986,7 @@ class _Notice extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Text(
-            message,
+            AuthPresentationScope.text(context, message),
             style: TextStyle(
               color: error
                   ? colors.onErrorContainer
