@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-21 DM-TELEGRAM-01：**独立 `feat/telegram-direct-messages` 基于 main `76af92b`，按用户五张 Telegram 图改造列表/聊天展示组件，复用主线主题与字体；四态/身份隔离、本地历史分页端口和键盘处理已实现。700 全量/34 最终聚焦含渲染 PASS、分析 0、bundle/独立 APK 2026102153 构建 PASS。手机锁屏，2152 安装 -99、2153 未装，Android UI/IME BLOCKED，待用户解锁；按要求验收后才推送/创建 PR，当前无 PR、未合并/发布。真实私信 API/持久任务/本地聊天仓库仍未实现，不升级 B09 业务验收。见[任务](../branches/feat-telegram-direct-messages.md)、[报告](telegram-direct-messages.md)及[机器记录](telegram-direct-messages-verification-20261021.json)。
+
 > **2026-10-21 PR37 主题整合补验：**综合2139切换主题红屏，真实根回归在原代码FAIL；e82844d保留base主题样式修复，同例1 PASS／全量664 PASS／分析0／源提交15远端检查成功，独立审查绑定e82844d无阻断。旧663与2126专项不代证新修复；综合真我主题与登录复测由总整合会话维护，最终设备结果及后继head CI须在PR37合并前核对，实际状态以PR回执为准。见[本轮记录](telegram-android-appearance.md)与机器证据themeIntegrationFix。下方a23/663“最终”等为被此覆盖的历史阶段，生产未发布。
 
 

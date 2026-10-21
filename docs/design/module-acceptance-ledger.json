@@ -16665,16 +16665,20 @@
         "result": "PASS_SCOPED_WITH_RETAINED_GATE_INCIDENT",
         "report": "docs/release/android-integration-candidate-20261019.md",
         "fullModuleResultUnchanged": true
+      },
+      "telegramDirectMessagePresentation20261021": {
+        "rootLedgerEntry": "currentDirectMessagePresentation",
+        "scope": "独立展示组件与宿主回归；真实私信/本地持久化仍未实现，真机待解锁，完整模块结论不升级。"
       }
     },
     {
       "id": "B09",
       "name": "私信与会话",
-      "implementationState": "NOT_STARTED",
+      "implementationState": "PARTIAL",
       "acceptanceState": "NOT_READY_IMPLEMENTATION",
       "currentResult": "NOT_RUN",
       "verificationEntries": [],
-      "note": "仅设计规则，无聊天/本地业务存储/投递实现",
+      "note": "独立分支新增Flutter私信展示组件；生产聊天/本地业务存储/投递仍未实现，未合并。",
       "nextAcceptance": "业务片暂停；先按后续明确任务补齐尚未实现／部分实现的消费者，再验授权、隐私与X06/X07，不能只靠补测试结案。",
       "currentAC06Handoff": {
         "result": "PASS",
@@ -16686,6 +16690,10 @@
         "implementation": "NOT_IMPLEMENTED",
         "contractOnly": true,
         "report": "docs/design/post-image-media-contract.md"
+      },
+      "telegramDirectMessagePresentation20261021": {
+        "rootLedgerEntry": "currentDirectMessagePresentation",
+        "scope": "独立展示组件与宿主回归；真实私信/本地持久化仍未实现，真机待解锁，完整模块结论不升级。"
       }
     },
     {
@@ -40548,5 +40556,21 @@
     "testedHead": "e1d2b0ad14021c8680ea72cc8df1f30bed89ae10",
     "finalCi": "ALL_FIVE_WORKFLOWS_SUCCESS",
     "mergeEvidence": "docs/design/validation/registration-wizard-20261021/main-merge.json"
+  },
+  "currentDirectMessagePresentation": {
+    "task": "DM-TELEGRAM-01",
+    "branch": "feat/telegram-direct-messages",
+    "recordedOn": "2026-10-21",
+    "implementation": "PRESENTATION_ONLY",
+    "fullModuleAcceptancePassed": false,
+    "flutterFull": 700,
+    "finalFocusedWithRenders": 34,
+    "native": "BLOCKED_LOCKED_DEVICE",
+    "business": "NOT_IMPLEMENTED",
+    "report": "docs/design/telegram-direct-messages.md",
+    "verification": "docs/design/telegram-direct-messages-verification-20261021.json",
+    "pullRequest": null,
+    "mainMerged": false,
+    "published": false
   }
 }

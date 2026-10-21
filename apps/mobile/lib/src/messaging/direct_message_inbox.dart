@@ -1,0 +1,549 @@
+import 'package:flutter/material.dart';
+
+import '../design_system/telegram_theme.dart';
+import 'direct_message_composer.dart';
+import 'direct_message_models.dart';
+
+@immutable
+class DmInboxEntry {
+  const DmInboxEntry({
+    required this.id,
+    required this.selfIdentityId,
+    required this.recipient,
+    required this.preview,
+    required this.time,
+    this.unread = 0,
+    this.privateNote,
+    this.sourceTitle = '',
+    this.localSearchText = '',
+    this.pinned = false,
+    this.hidden = false,
+    this.outgoingState,
+  });
+  final String id, selfIdentityId, preview, time, sourceTitle, localSearchText;
+  final DmIdentity recipient;
+  final String? privateNote;
+  final int unread;
+  final bool pinned, hidden;
+  final DmSendState? outgoingState;
+}
+
+@immutable
+class DmInboxIdentity {
+  const DmInboxIdentity(this.identity, {this.unread = 0});
+  final DmIdentity identity;
+  final int unread;
+}
+
+@immutable
+class DmInboxTarget {
+  const DmInboxTarget({
+    required this.scopeKey,
+    required this.identityId,
+    required this.conversationId,
+  });
+  final String scopeKey, identityId, conversationId;
+}
+
+/// Read-only projection. Opening a row emits its exact target; this widget never
+/// clears unread, reveals hidden conversations or changes delivery state.
+class HhDmInboxScreen extends StatefulWidget {
+  const HhDmInboxScreen({
+    super.key,
+    required this.scopeKey,
+    required this.identity,
+    required this.identities,
+    required this.entries,
+    required this.onOpen,
+    required this.onIdentitySelected,
+    this.loading = false,
+    this.error,
+    this.onRetry,
+    this.onSystemNotifications,
+    this.systemUnread = 0,
+    this.navigation,
+  });
+
+  /// Must include account/session generation AND the selected inbox identity.
+  final String scopeKey;
+  final DmIdentity identity;
+  final List<DmInboxIdentity> identities;
+
+  /// Canonical order is supplied by the owner, including the pinned partition.
+  final List<DmInboxEntry> entries;
+  final ValueChanged<DmInboxTarget> onOpen;
+  final ValueChanged<DmIdentity> onIdentitySelected;
+  final bool loading;
+  final String? error;
+  final VoidCallback? onRetry, onSystemNotifications;
+  final int systemUnread;
+  final Widget? navigation;
+
+  @override
+  State<HhDmInboxScreen> createState() => _HhDmInboxScreenState();
+}
+
+class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
+  final _search = TextEditingController();
+  final _scroll = ScrollController();
+  final _offsets = <String, double>{};
+  late List<String> _order;
+  bool _pending = false;
+  int _epoch = 0;
+
+  List<DmInboxEntry> get _owned => widget.entries
+      .where((e) => e.selfIdentityId == widget.identity.id)
+      .toList();
+  @override
+  void initState() {
+    super.initState();
+    _order = _owned.map((e) => e.id).toList();
+  }
+
+  @override
+  void dispose() {
+    _search.dispose();
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant HhDmInboxScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.scopeKey != widget.scopeKey ||
+        oldWidget.identity.id != widget.identity.id) {
+      _epoch++;
+      _offsets[oldWidget.scopeKey] = _scroll.hasClients ? _scroll.offset : 0;
+      _search.clear();
+      FocusScope.of(context).unfocus();
+      _pending = false;
+      _order = _owned.map((e) => e.id).toList();
+      final epoch = _epoch;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && epoch == _epoch && _scroll.hasClients) {
+          _scroll.jumpTo(
+            (_offsets[widget.scopeKey] ?? 0).clamp(
+              0,
+              _scroll.position.maxScrollExtent,
+            ),
+          );
+        }
+      });
+    } else {
+      final next = _owned.map((e) => e.id).toList();
+      if (_scroll.hasClients && _scroll.offset > 40 && _search.text.isEmpty) {
+        final previous = {
+          for (final entry in oldWidget.entries) entry.id: entry,
+        };
+        final newContent = _owned.any((entry) {
+          final old = previous[entry.id];
+          return old == null ||
+              entry.time != old.time ||
+              entry.preview != old.preview ||
+              entry.unread > old.unread;
+        });
+        _pending = _pending || newContent || next.join('|') != _order.join('|');
+      } else {
+        _order = next;
+      }
+    }
+  }
+
+  Future<void> _selectIdentity() async {
+    final epoch = _epoch;
+    final chosen = await showModalBottomSheet<DmIdentity>(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (context) => SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(12),
+                child: Text(
+                  '切换收件身份',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+              ),
+              for (final item in widget.identities)
+                ListTile(
+                  key: ValueKey('inbox-identity:${item.identity.id}'),
+                  leading: Badge(
+                    isLabelVisible: item.unread > 0,
+                    child: HhDmAvatar(identity: item.identity),
+                  ),
+                  title: Text(item.identity.name),
+                  selected: item.identity.id == widget.identity.id,
+                  trailing: item.identity.id == widget.identity.id
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () => Navigator.pop(context, item.identity),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (mounted &&
+        epoch == _epoch &&
+        chosen != null &&
+        widget.identities.any((i) => i.identity.id == chosen.id)) {
+      widget.onIdentitySelected(chosen);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = HhTelegramPalette.of(context);
+    final query = _search.text.trim().toLowerCase();
+    final byId = {for (final entry in _owned) entry.id: entry};
+    final entries = query.isEmpty
+        ? [
+            for (final id in _order)
+              if (byId[id] case final entry? when !entry.hidden) entry,
+          ]
+        : _owned
+              .where(
+                (e) =>
+                    '${e.recipient.name}\n${e.privateNote ?? ''}\n${e.sourceTitle}\n${e.localSearchText}'
+                        .toLowerCase()
+                        .contains(query),
+              )
+              .toList();
+    final headers = <Widget>[
+      Material(
+        color: p.surface,
+        borderRadius: BorderRadius.circular(24),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: [
+            ListTile(
+              leading: HhDmAvatar(identity: widget.identity, size: 34),
+              title: Text(
+                widget.identity.name,
+                style: const TextStyle(fontSize: 16),
+              ),
+              subtitle: const Text('当前收件身份', style: TextStyle(fontSize: 12)),
+              trailing: const Icon(Icons.expand_more),
+              onTap: _selectIdentity,
+            ),
+            if (widget.onSystemNotifications != null)
+              ListTile(
+                leading: Icon(Icons.notifications_none, color: p.accent),
+                title: const Text('系统通知', style: TextStyle(fontSize: 16)),
+                trailing: _Unread(count: widget.systemUnread),
+                onTap: widget.onSystemNotifications,
+              ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 16),
+      Material(
+        color: p.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+              child: Text(
+                query.isEmpty ? '最近聊天' : '搜索结果',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: p.accent,
+                ),
+              ),
+            ),
+            if (widget.loading) const LinearProgressIndicator(minHeight: 2),
+            if (widget.error != null)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Text(widget.error!, style: TextStyle(color: p.error)),
+                    if (widget.onRetry != null)
+                      TextButton(
+                        onPressed: widget.onRetry,
+                        child: const Text('重新加载'),
+                      ),
+                  ],
+                ),
+              ),
+            if (entries.isEmpty && !widget.loading && widget.error == null)
+              Padding(
+                padding: const EdgeInsets.all(28),
+                child: Text(
+                  query.isEmpty ? '还没有会话' : '没有找到相关会话',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: p.secondary),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ];
+    return Scaffold(
+      backgroundColor: p.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16, 16, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '消息',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: p.ink,
+                      ),
+                    ),
+                  ),
+                  Badge(
+                    isLabelVisible: widget.identities.any(
+                      (i) =>
+                          i.identity.id != widget.identity.id && i.unread > 0,
+                    ),
+                    child: IconButton(
+                      key: const ValueKey('dm-inbox-identity'),
+                      tooltip: '切换收件身份',
+                      onPressed: _selectIdentity,
+                      icon: Icon(Icons.switch_account_outlined, color: p.ink),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: TextField(
+                key: const ValueKey('dm-search'),
+                controller: _search,
+                onChanged: (_) => setState(() {}),
+                style: TextStyle(fontSize: 16, color: p.ink),
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: p.surface,
+                  hintText: '搜索当前身份的会话',
+                  prefixIcon: const Icon(Icons.search, size: 24),
+                  suffixIcon: query.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: '清除搜索',
+                          onPressed: () => setState(() => _search.clear()),
+                          icon: const Icon(Icons.close, size: 20),
+                        ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 14,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: p.accent),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Stack(
+                children: [
+                  ListView.builder(
+                    controller: _scroll,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
+                    itemCount: entries.length + 4,
+                    itemBuilder: (context, index) {
+                      if (index < 3) return headers[index];
+                      if (index == entries.length + 3) {
+                        return Material(
+                          color: p.surface,
+                          borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(24),
+                          ),
+                          child: const SizedBox(height: 8),
+                        );
+                      }
+                      final entry = entries[index - 3];
+                      return Material(
+                        color: p.surface,
+                        child: InkWell(
+                          key: ValueKey('conversation:${entry.id}'),
+                          onTap: () => widget.onOpen(
+                            DmInboxTarget(
+                              scopeKey: widget.scopeKey,
+                              identityId: widget.identity.id,
+                              conversationId: entry.id,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                HhDmAvatar(identity: entry.recipient, size: 50),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        entry.privateNote ??
+                                            entry.recipient.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w500,
+                                          color: p.ink,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 3),
+                                      Row(
+                                        children: [
+                                          if (entry.outgoingState != null &&
+                                              entry.outgoingState !=
+                                                  DmSendState.sent) ...[
+                                            Icon(
+                                              entry.outgoingState ==
+                                                      DmSendState.failed
+                                                  ? Icons.error_outline
+                                                  : Icons.schedule,
+                                              size: 15,
+                                              color:
+                                                  entry.outgoingState ==
+                                                      DmSendState.failed
+                                                  ? p.error
+                                                  : p.secondary,
+                                            ),
+                                            const SizedBox(width: 4),
+                                          ],
+                                          Expanded(
+                                            child: Text(
+                                              entry.preview,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: p.secondary,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      entry.time,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: entry.unread > 0
+                                            ? p.accent
+                                            : p.secondary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    if (entry.unread > 0)
+                                      _Unread(count: entry.unread)
+                                    else if (entry.pinned)
+                                      Icon(
+                                        Icons.push_pin,
+                                        size: 16,
+                                        color: p.secondary,
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  if (_pending)
+                    Positioned(
+                      top: 4,
+                      left: 48,
+                      right: 48,
+                      child: FilledButton.icon(
+                        key: const ValueKey('dm-inbox-new'),
+                        onPressed: () {
+                          setState(() {
+                            _pending = false;
+                            _order = _owned.map((e) => e.id).toList();
+                          });
+                          _scroll.jumpTo(0);
+                        },
+                        icon: const Icon(Icons.arrow_upward, size: 18),
+                        label: const Text('有新消息'),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (widget.navigation != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 4, 18, 12),
+                child: widget.navigation!,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Unread extends StatelessWidget {
+  const _Unread({required this.count});
+  final int count;
+  @override
+  Widget build(BuildContext context) {
+    final p = HhTelegramPalette.of(context);
+    if (count <= 0) return const SizedBox.shrink();
+    return Semantics(
+      label: '$count条未读',
+      child: ExcludeSemantics(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: p.action,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            child: Text(
+              count > 99 ? '99+' : '$count',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -35,6 +35,7 @@
 
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
+| `feat/telegram-direct-messages` | 按用户 Telegram 截图改造私信列表与聊天展示组件，独立预览验收；未接私信业务、未合并。 | [任务详情](docs/branches/feat-telegram-direct-messages.md) |
 | `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `docs/registration-delivery` | 同步三步注册PR #42的实际合并与验收回执，仅文档。 | [详情](docs/branches/docs-registration-delivery.md) |

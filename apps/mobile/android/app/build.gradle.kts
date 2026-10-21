@@ -60,6 +60,10 @@ android {
 
     buildTypes {
         debug {
+            // Isolated, memory-only DM preview. Never replaces the daily app.
+            if (System.getenv("HNUHOLE_DM_PREVIEW") == "1") {
+                applicationIdSuffix = ".dmpreview"
+            }
             // Explicit owned acceptance install; ordinary debug/release IDs stay
             // unchanged and existing user data is never reused by this fixture.
             if (providers.gradleProperty("hnuholeCommentsValidation").orNull == "true") {

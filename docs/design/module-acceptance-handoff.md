@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-21 DM-TELEGRAM-01：**仅 `feat/telegram-direct-messages` 分支的 B08/B09 展示层：按五张用户 Telegram 图改造，700 全量/34 最终聚焦含宿主渲染、分析0、生产bundle与独立APK2026102153构建 PASS。真我 RMX3366/Android14 锁屏，2152 安装 -99且未装，2153 未安装，Android UI/IME BLOCKED；用户解锁后重新核对设备占用并续验。按用户要求，真机验收后才推送/创建 PR，当前无 PR、未合并/发布。私信收发、未读同步、本地持久化与 ACK 仍缺业务实现，不升级整模块验收。来源、命令、实际输入与遗留见[报告](telegram-direct-messages.md)和[机器记录](telegram-direct-messages-verification-20261021.json)。以下历史结论保留原版本范围。
+
 > **2026-10-21 PR37 主题整合补验：**综合2139切换主题红屏，真实根回归在原代码FAIL；e82844d保留base主题样式修复，同例1 PASS／全量664 PASS／分析0／源提交15远端检查成功，独立审查绑定e82844d无阻断。旧663与2126专项不代证新修复；综合真我主题与登录复测由总整合会话维护，最终设备结果及后继head CI须在PR37合并前核对，实际状态以PR回执为准。见[本轮记录](telegram-android-appearance.md)与机器证据themeIntegrationFix。下方a23/663“最终”等为被此覆盖的历史阶段，生产未发布。
 
 
