@@ -60,6 +60,12 @@ android {
 
     buildTypes {
         debug {
+            // P1 uses its own durable fixture data, separate from the UI preview.
+            val dmText = System.getenv("HNUHOLE_DM_TEXT") == "1"
+            require(!dmText || System.getenv("HNUHOLE_DM_PREVIEW") != "1") {
+                "Choose either DM text integration or the UI preview"
+            }
+            if (dmText) applicationIdSuffix = ".dmtext"
             // Isolated, memory-only DM preview. Never replaces the daily app.
             if (System.getenv("HNUHOLE_DM_PREVIEW") == "1") {
                 applicationIdSuffix = ".dmpreview"

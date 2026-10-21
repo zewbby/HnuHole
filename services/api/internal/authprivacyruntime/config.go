@@ -77,6 +77,7 @@ type Config struct {
 	Gate                    *GateConfig     `json:"gate,omitempty"`
 	Posts                   *PostsConfig    `json:"posts,omitempty"`
 	Comments                *CommentsConfig `json:"comments,omitempty"`
+	DirectMessages          bool            `json:"directMessages,omitempty"`
 	Moderation              bool            `json:"moderation,omitempty"`
 	AdminDirectory          string          `json:"adminDirectory,omitempty"`
 

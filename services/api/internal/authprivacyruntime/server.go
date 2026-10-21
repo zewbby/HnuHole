@@ -303,6 +303,15 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 				return err
 			}
 		}
+		if c.DirectMessages {
+			if !c.AllowDevelopmentNetwork {
+				return errors.New("DM P1 requires isolated development network")
+			}
+			community, err = community.WithDirectMessages(ctx)
+			if err != nil {
+				return err
+			}
+		}
 		if c.PostImages != nil {
 			v, e := postmedia.NewProcessValidator(c.Path(c.PostImages.PythonFile), c.Path(c.PostImages.ValidatorFile), c.PostImages.ValidatorSHA256)
 			if e != nil {

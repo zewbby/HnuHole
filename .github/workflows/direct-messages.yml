@@ -1,10 +1,16 @@
-name: Direct message presentation
+name: Direct message text and presentation
 
 on:
   pull_request:
     paths:
       - 'apps/mobile/**'
       - 'packages/**'
+      - 'services/api/internal/authprivacy/**'
+      - 'services/api/internal/authprivacyhttp/**'
+      - 'services/api/internal/authprivacyruntime/**'
+      - 'services/api/migrations/**'
+      - 'infra/postgres/**'
+      - 'tools/check-direct-message-contract.py'
       - '.github/workflows/direct-messages.yml'
   workflow_dispatch:
 
@@ -16,6 +22,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  reliable-text-sql:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install -r packages/openapi/requirements-check.txt
+          python tools/check-direct-message-contract.py
+          sudo apt-get update && sudo apt-get install -y postgresql-16
+          go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
+      - name: New DM transactions and affected comment binding
+        env:
+          PGPORT: '55468'
+          COMMENT_TEST_PATTERN: '^(TestDMFirst|TestDMGoose|TestDMReliable|TestCommentTextTransactionsPostgres$)'
+        run: |
+          export PATH="$(pg_config --bindir):$PATH"
+          bash services/api/authlab/run-comment-text-isolated.sh
+      - name: Build and vet changed service packages
+        working-directory: services/api
+        run: |
+          go build -mod=readonly ./cmd/authdev
+          go vet -mod=readonly ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime
   flutter-and-android:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -46,16 +83,16 @@ jobs:
         working-directory: apps/mobile
         run: |
           flutter analyze --no-pub
-          flutter test --no-pub test/direct_message_screen_test.dart test/direct_message_navigation_test.dart test/direct_message_preview_test.dart test/app_navigation_test.dart test/login_home_navigation_test.dart test/personal_route_account_test.dart
+          flutter test --no-pub test/dm_reliability_test.dart test/dm_route_test.dart test/dm_visible_read_test.dart test/direct_message_screen_test.dart test/direct_message_navigation_test.dart test/direct_message_preview_test.dart test/app_navigation_test.dart test/login_home_navigation_test.dart test/personal_route_account_test.dart test/comment_views_test.dart test/feed_ui_test.dart
           flutter build bundle --debug --no-pub
-      - name: Build isolated Android preview
+      - name: Build isolated Android text integration
         working-directory: apps/mobile
         env:
-          HNUHOLE_DM_PREVIEW: '1'
+          HNUHOLE_DM_TEXT: '1'
         run: |
-          flutter build apk --debug --no-pub -t tool/direct_message_preview.dart
+          flutter build apk --debug --no-pub --dart-define=DM_TEXT_INTEGRATION=true
           for tool in "$ANDROID_HOME"/build-tools/*/aapt; do aapt="$tool"; done
           metadata=$("$aapt" dump badging build/app/outputs/flutter-apk/app-debug.apk | sed -n '1p')
-          [[ "$metadata" == *"name='org.hnuhole.hnuhole_mobile.dmpreview'"* ]]
+          [[ "$metadata" == *"name='org.hnuhole.hnuhole_mobile.dmtext'"* ]]
       - name: Preserve locks
         run: git diff --exit-code -- '**/pubspec.lock'

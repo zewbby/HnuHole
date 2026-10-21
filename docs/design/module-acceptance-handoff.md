@@ -1,5 +1,8 @@
 # 分模块验收与测试交接
 
+> **2026-10-22 DM-P1-TEXT：**`feat/direct-message-text-reliability`依赖#44，可靠文字API/持久队列/ACK与阅读分离/基础未读草稿及窗口围栏已在隔离开发装配实现；新增13及真实Dart HTTPS联调1、入口影响42及本轮早期复用41项宿主检查PASS，SQL/race/HTTPS与新建/升级迁移PASS，分析0、独立`.dmtext`2202构建PASS。安全锁屏导致原生文字链路BLOCKED；旧`.dmpreview`被Flutter降级安装回退卸载，原制品恢复同样受阻，须先恢复。fixture/安装等待已停、lease已释放。生产默认关闭，PR待设备补验，未合并/发布；不提升B08/B09完整结论。见[任务](../branches/feat-direct-message-text-reliability.md)与[机器记录](direct-message-text-verification-20261022.json)。
+
+
 > **2026-10-21 DM-TELEGRAM-01：**`feat/telegram-direct-messages` 基于 main `76af92b`，已完成 Telegram 私信展示组件及首页/消息/私信/我的四入口；消息铃铛与私信单气泡采用未选中线框、选中蓝色实心，沿用固定底栏。完整702/聚焦含渲染36 PASS、分析0、生产APK2155/隔离预览2156构建PASS；真我 RMX3366 Android14 实际 UI/IME 范围 PASS，早期锁屏安装阻塞已解除且保留历史失败。正式私信仅显示暂未开放，内存预览独立，真实私信API/持久队列/本地聊天仓库仍未实现，不升级B08/B09整模块验收。[Draft PR #44](https://github.com/zewbby/HnuHole/pull/44)已提交，独立review/远端CI待完成，未合并/发布。见[任务](../branches/feat-telegram-direct-messages.md)、[报告](telegram-direct-messages.md)和[机器记录](telegram-direct-messages-verification-20261021.json)。
 
 > **2026-10-21 PR37 主题整合补验：**综合2139切换主题红屏，真实根回归在原代码FAIL；e82844d保留base主题样式修复，同例1 PASS／全量664 PASS／分析0／源提交15远端检查成功，独立审查绑定e82844d无阻断。旧663与2126专项不代证新修复；综合真我主题与登录复测由总整合会话维护，最终设备结果及后继head CI须在PR37合并前核对，实际状态以PR回执为准。见[本轮记录](telegram-android-appearance.md)与机器证据themeIntegrationFix。下方a23/663“最终”等为被此覆盖的历史阶段，生产未发布。

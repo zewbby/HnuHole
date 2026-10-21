@@ -1,4 +1,18 @@
 {
+  "dmTextP120261022": {
+    "task": "DM-P1-TEXT",
+    "branch": "feat/direct-message-text-reliability",
+    "modules": [
+      "B08",
+      "B09"
+    ],
+    "implementation": "LOCAL_SCOPED_PASS_DEVICE_BLOCKED",
+    "evidence": "docs/design/direct-message-text-verification-20261022.json",
+    "device": "BLOCKED_SECURE_KEYGUARD",
+    "historicalModuleVerdictsUnchanged": true,
+    "merged": false,
+    "released": false
+  },
   "authEntryUi20261021": {
     "task": "AUTH-UI-IMPLEMENT-01",
     "branch": "feat/auth-entry-flow",
