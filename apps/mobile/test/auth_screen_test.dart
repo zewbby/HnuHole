@@ -382,6 +382,13 @@ void main() {
       await _snapshot(tester, 'auth-email-pending-final-375px');
       await tester.tap(find.byKey(const ValueKey('auth-theme-toggle')));
       await tester.pumpAndSettle();
+      final footer = find.text('第一次来？');
+      final footerTheme = Theme.of(tester.element(footer));
+      expect(footerTheme.brightness, Brightness.dark);
+      expect(
+        tester.widget<Text>(footer).style!.color,
+        footerTheme.colorScheme.onSurfaceVariant,
+      );
       await _snapshot(tester, 'auth-email-pending-dark-final-375px');
       await tester.tap(find.byKey(const ValueKey('login-method-toggle')));
       await tester.pumpAndSettle();

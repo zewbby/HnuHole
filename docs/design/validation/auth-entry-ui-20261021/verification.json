@@ -36,12 +36,13 @@
     "recovery and closure semantics",
     "375px large text 1.6 scrolling",
     "keyboard and native field controls",
-    "actual descendant primary/onPrimary, primary/surface, surface/onSurface and recovery container text contrast >=4.5"
+    "actual descendant primary/onPrimary, primary/surface, surface/onSurface and recovery container text contrast >=4.5",
+    "isolated auth fallback theme footer and recovery code inherit the inner presentation theme"
   ],
   "screenshots": [
     {
       "path": "auth-email-pending-dark-final-375px.png",
-      "sha256": "b5f59dc9406fdc0f854ea77eb51f3c7be6d99183d4e2be215869b7a8bebd8274"
+      "sha256": "fcc63d13aee6f1351de5f5876fd82e51ef75ae2873186ed5c6eb27edf0b76be1"
     },
     {
       "path": "auth-email-pending-final-375px.png",
@@ -53,7 +54,7 @@
     },
     {
       "path": "auth-recovery-code-dark-375px.png",
-      "sha256": "25fab818695487525fcd0991a1242d7d7a8a5ff8ec724e3056fb0b8d62224ed4"
+      "sha256": "e6e43d15983dd164387e53a56d9f84f416c5d605cd9987ab5d4079c8bcd4901d"
     },
     {
       "path": "auth-registration-375px-160pct.png",

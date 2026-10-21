@@ -146,6 +146,8 @@ class _AuthScreenState extends State<AuthScreen> {
     english,
   );
 
+  ThemeData get _theme => Theme.of(_presentationContext ?? context);
+
   Widget _buildPage(BuildContext context) {
     _presentationContext = context;
     final sessionStatus = widget.sessions.status;
@@ -478,7 +480,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     Text(
                       _text('第一次来？'),
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: _theme.colorScheme.onSurfaceVariant,
                         fontSize: 14,
                       ),
                     ),
@@ -600,7 +602,7 @@ class _AuthScreenState extends State<AuthScreen> {
     const SizedBox(height: 16),
     DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        color: _theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
@@ -608,8 +610,7 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Text(
           widget.flows.recoveryCode ?? '',
           key: const ValueKey('displayed-recovery-code'),
-          style: Theme.of(context).textTheme.titleLarge
-              ?.copyWith(letterSpacing: 1.5),
+          style: _theme.textTheme.titleLarge?.copyWith(letterSpacing: 1.5),
           textAlign: TextAlign.center,
         ),
       ),
