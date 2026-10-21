@@ -1,5 +1,11 @@
 # 原失败评论任务重试同步修复
 
+## 2026-10-21 收尾授权与最新主线整合
+
+用户已明确授权本PR整合最新main、必要CI和审查无阻断后Ready／合并，再从合并后的main构建同签日常debug测试包，交Android仅做启动／列表／详情／评论入口必要冒烟。#35已合入`3611925c67137cfe43dedfdd6876a6c652f84231`，本次合并保留双方文档、工具和证据；客户端110项raw运行输入仍与已验`31bc061`相同，不新增产品修复或重跑worker／性能。最终head CI与独立整合审查按实际回执核实，不沿用旧head冒充新提交通过。
+
+日常包拟`2026102113`、沿profile2012两个可信origin／默认系统根、不含开发CA／RP、原测试证书；debug与profile的模式／engine／kernel差异明确记录，profile2012单独保留。原2010已知失败包待新main日常包验证后由交付说明标为被替代。合并事实、精确源码／APK SHA和必要冒烟结果见PR及最终交付回执；不直接写main、不正式发布。以下未合并／无授权均为原时点历史。
+
 工作项 `FEED-PERF-WORKER-SUPPORT-01`／`FA-D08`，分支 `codex/fix/comment-failure-reconcile`，[Draft PR #36](https://github.com/zewbby/HnuHole/pull/36)。从最新 main `30401b8` 独立建立，源码 `57dfe5f888986c41c54e073f5e66ba80b4e26371`；旧工作区、2010 包和失败历史保留。未合并、未正式发布，新 PR 没有合并授权。
 
 真实 worker 在原 15 分钟期限后失败，失败页显示新的 FAILED，但前台 40 次自动轮询早已耗尽，本地 journal 仍为 ACCEPTED。2010 真机没有重启／resume／Pending 核对，直接点击原重试立即报“请核对任务结果后再操作”；SQL 确认 CREATE 1、RETRY 0。失败任务正文、原图和身份均保留。
