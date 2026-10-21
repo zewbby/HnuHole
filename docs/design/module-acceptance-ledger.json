@@ -14735,7 +14735,17 @@
         "device": "NOT_RUN",
         "fullModuleResultUnchanged": true
       },
-      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json"
+      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json",
+      "telegramAndroidAppearance20261021": {
+        "task": "UI-ANDROID-APPEARANCE-01",
+        "status": "IMPLEMENTED_VALIDATED_PR37",
+        "branch": "codex/feat/telegram-android-appearance",
+        "scope": "Shared fonts/colors, direct root-comment dialog, optimistic serial like/unlike; existing business boundaries retained",
+        "report": "docs/design/telegram-android-appearance.md",
+        "host": "e82844d: original theme regression FAIL then 664 full Flutter PASS/analyze0/15 source CI success; independent review no blocker",
+        "device": "2126 vivo Android15 scoped PASS: quick reply unique root publication, detail layout, like/favorite cancel and restore; final composite APK and full flow delegated to integration session",
+        "production": "NOT_RUN"
+      }
     },
     {
       "id": "B04",
@@ -14757,6 +14767,16 @@
         "evidence": "docs/design/feed-ui-verification-20261019.json",
         "device": "NOT_RUN",
         "fullModuleResultUnchanged": true
+      },
+      "telegramAndroidAppearance20261021": {
+        "task": "UI-ANDROID-APPEARANCE-01",
+        "status": "IMPLEMENTED_VALIDATED_PR37",
+        "branch": "codex/feat/telegram-android-appearance",
+        "scope": "Shared fonts/colors, direct root-comment dialog, optimistic serial like/unlike; existing business boundaries retained",
+        "report": "docs/design/telegram-android-appearance.md",
+        "host": "e82844d: original theme regression FAIL then 664 full Flutter PASS/analyze0/15 source CI success; independent review no blocker",
+        "device": "2126 vivo Android15 scoped PASS: quick reply unique root publication, detail layout, like/favorite cancel and restore; final composite APK and full flow delegated to integration session",
+        "production": "NOT_RUN"
       }
     },
     {
@@ -16434,7 +16454,17 @@
         "device": "NOT_RUN",
         "fullModuleResultUnchanged": true
       },
-      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json"
+      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json",
+      "telegramAndroidAppearance20261021": {
+        "task": "UI-ANDROID-APPEARANCE-01",
+        "status": "IMPLEMENTED_VALIDATED_PR37",
+        "branch": "codex/feat/telegram-android-appearance",
+        "scope": "Shared fonts/colors, direct root-comment dialog, optimistic serial like/unlike; existing business boundaries retained",
+        "report": "docs/design/telegram-android-appearance.md",
+        "host": "e82844d: original theme regression FAIL then 664 full Flutter PASS/analyze0/15 source CI success; independent review no blocker",
+        "device": "2126 vivo Android15 scoped PASS: quick reply unique root publication, detail layout, like/favorite cancel and restore; final composite APK and full flow delegated to integration session",
+        "production": "NOT_RUN"
+      }
     },
     {
       "id": "B07",
@@ -17835,6 +17865,16 @@
         "evidence": "docs/design/feed-ui-verification-20261019.json",
         "device": "NOT_RUN",
         "fullModuleResultUnchanged": true
+      },
+      "telegramAndroidAppearance20261021": {
+        "task": "UI-ANDROID-APPEARANCE-01",
+        "status": "IMPLEMENTED_VALIDATED_PR37",
+        "branch": "codex/feat/telegram-android-appearance",
+        "scope": "Shared fonts/colors, direct root-comment dialog, optimistic serial like/unlike; existing business boundaries retained",
+        "report": "docs/design/telegram-android-appearance.md",
+        "host": "e82844d: original theme regression FAIL then 664 full Flutter PASS/analyze0/15 source CI success; independent review no blocker",
+        "device": "2126 vivo Android15 scoped PASS: quick reply unique root publication, detail layout, like/favorite cancel and restore; final composite APK and full flow delegated to integration session",
+        "production": "NOT_RUN"
       }
     },
     {
@@ -40139,8 +40179,16 @@
     "baseMain": "fc2348ff791fab7da17ef866e8c6f506f9bf7075",
     "implementation": "COMPLETE_ON_BRANCH",
     "result": "BACKEND_SCOPED_PASS",
-    "modules": ["B03", "B04", "B12"],
-    "reopenedRegressions": ["A03", "P01", "old post lifecycle and legacy exact DTOs"],
+    "modules": [
+      "B03",
+      "B04",
+      "B12"
+    ],
+    "reopenedRegressions": [
+      "A03",
+      "P01",
+      "old post lifecycle and legacy exact DTOs"
+    ],
     "migration": "0019_feed_backend.sql",
     "taskDocument": "docs/branches/feat-feed-backend.md",
     "evidence": "docs/design/feed-backend-verification-20261019.json",
@@ -40213,8 +40261,17 @@
     "taskDocument": "docs/branches/feat-feed-interactions.md",
     "evidence": "docs/design/feed-interactions-verification-20261020.json",
     "frontendContract": "docs/design/feed-backend-contract.md#点赞收藏与评论数接线",
-    "modules": ["B03", "B06"],
-    "reopenedRegressions": ["A03", "A08", "B07", "B10", "C/V isolation and existing views"],
+    "modules": [
+      "B03",
+      "B06"
+    ],
+    "reopenedRegressions": [
+      "A03",
+      "A08",
+      "B07",
+      "B10",
+      "C/V isolation and existing views"
+    ],
     "migration": "0020_post_interactions.sql",
     "sqlTopLevelPassed": 50,
     "sqlPassedIncludingSubtests": 108,

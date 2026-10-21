@@ -147,6 +147,7 @@ class HhXPostFeed extends StatelessWidget {
                     style: _text(
                       context,
                       22,
+                      color: p.accent,
                       weight: FontWeight.w700,
                     ).copyWith(letterSpacing: -.65),
                   ),
@@ -754,20 +755,10 @@ class HhXPostItem extends StatelessWidget {
               direction: stacked ? Axis.vertical : Axis.horizontal,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (busy)
-                  SizedBox(
-                    width: 19,
-                    height: 19,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 1.5,
-                      color: color,
-                    ),
-                  )
-                else
-                  CustomPaint(
-                    size: const Size(20, 20),
-                    painter: _FeedActionGlyph(action, color, selected),
-                  ),
+                CustomPaint(
+                  size: const Size(20, 20),
+                  painter: _FeedActionGlyph(action, color, selected),
+                ),
                 if (count != null) ...[
                   SizedBox(width: stacked ? 0 : 5, height: stacked ? 4 : 0),
                   Text(count, style: _text(context, 14, color: color)),

@@ -1,5 +1,16 @@
 # 设计进度与剩余工作
 
+> **2026-10-21 PR37 主题整合补验：**综合2139切换主题红屏，真实根回归在原代码FAIL；e82844d保留base主题样式修复，同例1 PASS／全量664 PASS／分析0／源提交15远端检查成功，独立审查绑定e82844d无阻断。旧663与2126专项不代证新修复；综合真我主题与登录复测由总整合会话维护，最终设备结果及后继head CI须在PR37合并前核对，实际状态以PR回执为准。见[本轮记录](telegram-android-appearance.md)与机器证据themeIntegrationFix。下方a23/663“最终”等为被此覆盖的历史阶段，生产未发布。
+
+
+> **2026-10-21 PR37 最终主线整合：**#40已合入e3b2671，运行源a23a665整合认证／推荐首页与Telegram外观／X详情／快捷评论，663项全量PASS、分析0，独立整合审查无阻断；2126专项真机与SQL仍按原29eec1d范围保留，综合包与完整流程交总整合会话统一核对。最终后继仅补证据文档，产品/CI树等同性、精确HEAD检查及实际合并状态以[本轮机器记录](telegram-android-appearance-verification-20261021.json)和[PR37回执](https://github.com/zewbby/HnuHole/pull/37)为准；正式未发布。下方等待#40／653等均为旧时点记录。
+
+
+> **2026-10-21 PR37 详情定稿接入更新：**用户确认校准稿并授权按规范提交合并。真实详情接入X连续阅读结构、共享矢量图标及Roboto/Noto400/500；快捷评论权威拒绝恢复P2已修，新滚动浏览登记／计数读屏／身份提示复核。29eec1d全量653 PASS、分析0；2126真机快捷评论／详情／赞藏限定PASS；本会话已停止手机操作，待#40主线整合及最终CI；独立agent精确提交复核无阻断，最终冻结SHA／原生设备／CI与合并事实见[本轮记录](telegram-android-appearance.md)及[PR37](https://github.com/zewbby/HnuHole/pull/37)。下方ADB断连、637或未开始审查均为旧时点，不升级完整模块／生产结论。
+
+
+> **2026-10-21 UI-ANDROID-APPEARANCE-01（本工作区，未合并）：**用户授权统一现有前端 Telegram Android 字体配色、列表快捷评论和点赞／取消即时反馈，并构建安装后提交 PR／合并。新增独立分支，不覆盖旧稿；共享主题、真实打包字体、原评论持久任务及 CAS 串行意图已接入，637项宿主回归通过，新公网 C/V 入口已恢复并通过 TLS／健康检查；最终包已构建，ADB 尚未恢复，设备与最终CI状态以[本轮记录](telegram-android-appearance.md)为准，不升级旧模块整体结论。
+
 > **2026-10-21 LOGIN-HOME-01：本地实现与指定单机验收 PASS。**最终规则为每次启动默认推荐，启动后保留通道；删除节点页。`feat/login-home-recommended`／250af2a／c1b7ebf，运行输入不变，23 专项／635 全量／分析0／2122 原生构建及 vivo Android15 真实登录、吐槽往返、同次登录保留、冷启动推荐 PASS。独立测试包已安装，原包未覆盖；已提交推送至 [PR #40](https://github.com/zewbby/HnuHole/pull/40)，独立 agent 审查无阻断；远端CI及合并状态见该PR，未发布。[任务](../branches/feat-login-home-recommended.md)。
 
 > **2026-10-21 AUTH-UI-FINAL-01：DESIGN_APPROVED。**用户确认当前登录注册交互稿定稿并授权推送 GitHub。独立 `docs/auth-flow-final` 从最新 main `ddf506a` 归档[统一规范、交互稿与截图](auth-flow-final/README.md)，冻结同页原位置“用户名／密码 ↔ 邮箱／验证码”与第二框右侧获取验证码，删除额外标题／说明。注册恢复沿用统一视觉与现有协议；邮箱登录契约、Flutter 接入及正式 Logo 待后续实现。纯设计交付不提升功能台账，未合并／发布；[交付与验证](../branches/docs-auth-flow-final.md)。

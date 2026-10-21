@@ -33,6 +33,22 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/fonts/LICENSE-Roboto.txt
+    - assets/fonts/NOTICE-Roboto.txt
+    - assets/fonts/OFL-NotoSansSC.txt
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
+    - family: HhNotoSansSC
+      fonts:
+        - asset: assets/fonts/NotoSansSC-Variable.ttf
 
 # Linux 实盘测试使用现成系统库；Android/iOS 仍打包官方校验的 SQLite。
 hooks:

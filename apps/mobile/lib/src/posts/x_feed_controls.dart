@@ -293,7 +293,7 @@ class _BlockFilterState extends State<_BlockFilter> {
                             onChanged: (widget.saving || !widget.ready)
                                 ? null
                                 : (value) => _set(channel.code, value),
-                            activeTrackColor: p.accent,
+                            activeTrackColor: p.action,
                             activeThumbColor: Colors.white,
                             inactiveTrackColor: p.background,
                             inactiveThumbColor: p.secondary.withValues(

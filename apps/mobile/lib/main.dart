@@ -10,9 +10,11 @@ import 'src/comments/comment_http.dart';
 import 'src/comments/comment_journal.dart';
 import 'src/development/app_transport.dart';
 import 'src/navigation/community_material_labels.dart';
+import 'src/design_system/telegram_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  HhTelegramTheme.registerFontLicenses();
   final communityBaseUri = Uri.parse(
     const String.fromEnvironment(
       'AUTH_COMMUNITY_BASE_URL',
@@ -634,16 +636,9 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             ),
           ),
         ),
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF76AFC8)),
-          useMaterial3: true,
-        ),
-        darkTheme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF76AFC8),
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
+        theme: HhTelegramTheme.applyAppearance(ThemeData(useMaterial3: true)),
+        darkTheme: HhTelegramTheme.applyAppearance(
+          ThemeData(useMaterial3: true, brightness: Brightness.dark),
         ),
         home: AnimatedBuilder(
           animation: Listenable.merge([
