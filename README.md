@@ -37,7 +37,8 @@
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `feat/login-home-recommended` | 登录直达首页，启动默认推荐、返回保留所选通道；2122测试包与单机指定验收通过，交付及合并状态见 [PR #40](https://github.com/zewbby/HnuHole/pull/40)。 | [任务详情](docs/branches/feat-login-home-recommended.md) |
-| `docs/auth-flow-final` | 归档用户确认的登录注册流程 UI 定稿与原位切换交互稿；设计已确认，App 接入待实现，未合并。 | [任务详情](docs/branches/docs-auth-flow-final.md) |
+| `feat/auth-entry-flow` | 将登录注册定稿接入真实 App，邮箱登录明确待接入；分支交付检查中，未正式发布。 | [任务详情](docs/branches/feat-auth-entry-flow.md) |
+| `docs/auth-flow-final` | 归档用户确认的登录注册流程 UI 定稿与原位切换交互稿；PR #38已合入main，App 接入见 feat/auth-entry-flow。 | [任务详情](docs/branches/docs-auth-flow-final.md) |
 | `codex/fix/comment-failure-reconcile` | 修复原失败评论重试同步并完成2011／profile2012限定补验；PR #36按授权整合送合，主线日常包见详情，未发布。 | [任务详情](docs/branches/fix-comment-failure-reconcile.md) |
 | `codex/test/feed-supplement-support` | PR #35已合入main，交付可信HTTPS与原评论worker失败重试隔离补验支持；未正式发布。 | [任务详情](docs/branches/test-feed-supplement-support.md) |
 | `codex/fix/feed-read-errors` | PR #34已合入main，隔离列表与偏好局部错误并完成D07定点；未正式发布。 | [任务详情](docs/branches/fix-feed-read-errors.md) |

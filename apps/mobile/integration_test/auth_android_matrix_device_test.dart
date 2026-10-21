@@ -113,7 +113,7 @@ void main() {
           tester,
           () =>
               find.byType(FeedScreen).evaluate().isNotEmpty &&
-              find.text('登录或注册').evaluate().isEmpty,
+              find.text('开始使用').evaluate().isEmpty,
           'actual session restored',
         );
         flags['authoritativeSessionRestored'] = true;
@@ -219,7 +219,7 @@ void main() {
         } else if (phase == 'code-reset' || phase == 'passkey-recover') {
           await _account(tester);
           await _tap(tester, find.text('退出本机'));
-          await _tap(tester, find.text('恢复账号'));
+          await _tap(tester, find.text('找回账号'));
           if (phase == 'code-reset') {
             final code = fixture['recoveryCode'] as String?;
             expect(
@@ -544,7 +544,7 @@ Future<void> _login(
 ) async {
   await _input(tester, 'login-username', username);
   await _input(tester, 'login-password', password);
-  await _tap(tester, find.text('登录并进入'));
+  await _tap(tester, find.byKey(const ValueKey('login-submit')));
   await _wait(
     tester,
     () => find.byType(AuthScreen).evaluate().isEmpty,

@@ -1,0 +1,89 @@
+{
+  "task": "AUTH-UI-IMPLEMENT-01",
+  "branch": "feat/auth-entry-flow",
+  "baseCommit": "874bc0b394073a6901bd7d856cf5f1c857692120",
+  "productRevision": "implementation commit carrying this evidence; exact PR head and CI recorded in GitHub",
+  "userDecision": "Complete UI and existing flows; email login marked pending",
+  "checks": [
+    {
+      "command": "flutter analyze --no-pub",
+      "result": "PASS",
+      "details": "No issues found"
+    },
+    {
+      "command": "flutter test --no-pub --concurrency=2 --reporter expanded",
+      "result": "PASS",
+      "passed": 633
+    },
+    {
+      "command": "flutter test --no-pub --reporter expanded --dart-define=AUTH_UI_QA_FONT=<Microsoft YaHei> --dart-define=AUTH_UI_QA_ICON_FONT=<MaterialIcons> --dart-define=AUTH_UI_QA_SERIF_FONT=<Georgia> --dart-define=AUTH_UI_QA_DIR=build/auth-entry-ui-render test/auth_screen_test.dart",
+      "result": "PASS",
+      "passed": 16
+    },
+    {
+      "command": "flutter build apk --debug --no-pub --target-platform android-arm64 -P kotlin.incremental=false -P kotlin.compiler.execution.strategy=in-process --build-number 2026102129 --build-name 0.1.0-auth-entry --dart-define=AUTH_COMMUNITY_BASE_URL=<inherited-public-C> --dart-define=AUTH_VERIFIER_BASE_URL=<inherited-public-V>",
+      "result": "PASS",
+      "apkSha256": "51bc9726a2ea402a96b52278c337fbc37dd62fc92bb81b6dec2e24a50caf409a",
+      "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "kind": "premerge candidate, not final main artifact"
+    }
+  ],
+  "uiCoverage": [
+    "welcome/start/language/theme",
+    "password login",
+    "email mode fixed geometry and zero requests",
+    "strict registration campus suffix and full-address paste",
+    "recovery and closure semantics",
+    "375px large text 1.6 scrolling",
+    "keyboard and native field controls",
+    "actual descendant primary/onPrimary, primary/surface, surface/onSurface and recovery container text contrast >=4.5",
+    "isolated auth fallback theme footer and recovery code inherit the inner presentation theme"
+  ],
+  "screenshots": [
+    {
+      "path": "auth-email-pending-dark-final-375px.png",
+      "sha256": "fcc63d13aee6f1351de5f5876fd82e51ef75ae2873186ed5c6eb27edf0b76be1"
+    },
+    {
+      "path": "auth-email-pending-final-375px.png",
+      "sha256": "b9fc6764f9db093cebfc5d45d287efd1f5955402918bc72798d53a3a5381870f"
+    },
+    {
+      "path": "auth-login-final-375px.png",
+      "sha256": "a20dda0678950db8c65e512320e448df6a41a546a0e31ebf4bcee21925e5ca49"
+    },
+    {
+      "path": "auth-recovery-code-dark-375px.png",
+      "sha256": "e6e43d15983dd164387e53a56d9f84f416c5d605cd9987ab5d4079c8bcd4901d"
+    },
+    {
+      "path": "auth-registration-375px-160pct.png",
+      "sha256": "ea5e29fd5a8e28ab62fe1e5cf216cbe556be2f05f9e01f298b762009a3a27b6e"
+    },
+    {
+      "path": "auth-welcome-final-375px.png",
+      "sha256": "9c2890c641df0ddc4f2f66966ad11ebef78579b216a7375a55234e4c62daa69e"
+    }
+  ],
+  "review": "Independent read-only agent review; final findings corrected: dialog translated and dark primary/surface contrast checked along with button foreground. Final head review tracked in PR; not a GitHub member approval.",
+  "limitations": {
+    "emailLogin": "PENDING_DISABLED_NO_BACKEND_CHANGE",
+    "device": "NOT_RUN",
+    "liveEmailAndServices": "NOT_RUN; retained subject endpoints not claimed currently online",
+    "production": "NOT_RELEASED",
+    "logo": "h placeholder pending brand design"
+  },
+  "buildEnvironmentNotes": [
+    "Flutter 3.47.5 / Dart 3.13.4 / JDK17 / pinned lockfiles unchanged",
+    "Windows cross-drive Kotlin cache issue avoided by task build -P flags, no project config change",
+    "Exact sqlite3 3.7.0 official arm64 library cached only after locked SHA256 verification",
+    "One full-test attempt failed before tests with disk space; complete retry passed 633; task temporary files moved to E drive; unrelated workspaces untouched"
+  ],
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/39",
+  "independentReview": {
+    "productCommit": "2477cade698a2e1c207e1eb63286597c998b41b6",
+    "result": "NO_BLOCKING_FINDINGS",
+    "kind": "read-only agent source review; not GitHub member approval",
+    "postFixFocusedTests": "20 PASS without QA fonts, 16 PASS with real-font screenshots"
+  }
+}

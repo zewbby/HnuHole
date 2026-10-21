@@ -63,14 +63,14 @@ void main() {
     await tester.pumpWidget(await f.create(signedIn: false));
     await tester.pumpAndSettle();
     expect(find.byType(FeedScreen), findsNothing);
-    await tester.tap(find.text('登录或注册'));
+    await tester.tap(find.byKey(const ValueKey('auth-start')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextFormField).at(0), 'device_a');
     await tester.enterText(
       find.byType(TextFormField).at(1),
       'valid-password-123',
     );
-    await tester.tap(find.widgetWithText(FilledButton, '登录并进入'));
+    await tester.tap(find.byKey(const ValueKey('login-submit')));
     await tester.pumpAndSettle();
     expect(f.sessionApi.logins, 1);
     expectHome(tester, f);

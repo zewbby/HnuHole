@@ -149,7 +149,7 @@ void main() {
           await _wait(
             tester,
             () async =>
-                find.text('登录或注册').evaluate().isNotEmpty &&
+                find.text('开始使用').evaluate().isNotEmpty &&
                 (await store.read()).session == null,
             'guest after old Gate generation refusal',
           );
@@ -203,7 +203,7 @@ void main() {
           await _wait(
             tester,
             () async =>
-                find.text('登录或注册').evaluate().isNotEmpty &&
+                find.text('开始使用').evaluate().isNotEmpty &&
                 (await store.read()).session == null,
             'guest before explicit login',
           );
@@ -770,10 +770,10 @@ Future<void> _login(
   String username,
   String password,
 ) async {
-  await _tap(tester, find.text('登录或注册'));
+  await _tap(tester, find.text('开始使用'));
   await _input(tester, 'login-username', username);
   await _input(tester, 'login-password', password);
-  await _tap(tester, find.text('登录并进入'));
+  await _tap(tester, find.byKey(const ValueKey('login-submit')));
   await _wait(
     tester,
     () =>
@@ -796,7 +796,7 @@ Future<void> _logout(WidgetTester tester) async {
   await _tap(tester, find.byType(BackButton));
   await _wait(
     tester,
-    () => find.text('登录或注册').evaluate().isNotEmpty,
+    () => find.text('开始使用').evaluate().isNotEmpty,
     'product logout',
   );
 }
@@ -847,8 +847,8 @@ Future<String> _register(
   String username,
   String password,
 ) async {
-  await _tap(tester, find.text('登录或注册'));
-  await _tap(tester, find.text('新注册'));
+  await _tap(tester, find.text('开始使用'));
+  await _tap(tester, find.text('创建账号'));
   final email = 'batch-${DateTime.now().microsecondsSinceEpoch}@hainanu.edu.cn';
   await _input(tester, 'registration-email', email);
   await _tap(tester, find.text('获取验证码'));

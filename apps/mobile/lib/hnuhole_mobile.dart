@@ -6,6 +6,7 @@ export 'src/auth/auth_crypto.dart';
 export 'src/auth/auth_flows.dart';
 export 'src/auth/auth_models.dart';
 export 'src/auth/auth_screen.dart';
+export 'src/auth/auth_presentation.dart';
 export 'src/auth/auth_session_controller.dart';
 export 'src/auth/auth_store.dart';
 export 'src/auth/http_auth_api.dart';

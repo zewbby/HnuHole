@@ -92,8 +92,8 @@ void main() {
         app.main();
         await tester.pump();
         if (phase == 'closure-draft-request') {
-          await _tap(tester, find.text('登录或注册'));
-          await _tap(tester, find.text('新注册'));
+          await _tap(tester, find.text('开始使用'));
+          await _tap(tester, find.text('创建账号'));
           fixture['recovery'] = await _register(
             tester,
             fixture['email'] as String,
@@ -250,8 +250,8 @@ void main() {
               (original.registration?['request'] as Map?)?['email'],
               fixture['email'],
             );
-            await _tap(tester, find.text('登录或注册'));
-            await _tap(tester, find.text('新注册'));
+            await _tap(tester, find.text('开始使用'));
+            await _tap(tester, find.text('创建账号'));
           }
           final generation = (fixture['generation'] as int) + 1;
           fixture['recovery'] = await _register(

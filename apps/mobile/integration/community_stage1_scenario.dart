@@ -304,7 +304,7 @@ Future<Map<String, Object>> runCommunityStage1(
     if (find.text('前往登录').evaluate().isNotEmpty) await tap(find.text('前往登录'));
     await input('login-username', user);
     await input('login-password', password);
-    await tap(find.text('登录并进入'));
+    await tap(find.byKey(const ValueKey('login-submit')));
     await wait(
       () =>
           sessions.isAuthenticated ||
@@ -408,15 +408,15 @@ Future<Map<String, Object>> runCommunityStage1(
       () => sessions.status == AuthStatus.signedOut,
       'fresh isolated native/host scope',
     );
-    await tap(find.text('登录或注册'));
+    await tap(find.text('开始使用'));
     // Establish both accounts through the normal registration UI before faults.
     // Keep the cancelled closure receipt intact when later switching accounts.
-    await tap(find.text('新注册'));
+    await tap(find.text('创建账号'));
     await registerStage1('stage1b_$suffix@hainanu.edu.cn', userB);
     await wait(() => posts.available, 'pre-registered second isolated account');
     final accountB = posts.accountId!;
     await logout();
-    await tap(find.text('新注册'));
+    await tap(find.text('创建账号'));
     await registerStage1('stage1a_$suffix@hainanu.edu.cn', userA);
     await wait(
       () =>

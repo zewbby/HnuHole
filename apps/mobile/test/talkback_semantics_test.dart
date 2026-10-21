@@ -51,7 +51,7 @@ void main() {
         ),
       );
       final node = tester.getSemantics(
-        find.widgetWithText(FilledButton, '登录或注册'),
+        find.byKey(const ValueKey('auth-start')),
       );
       expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
       tester.binding.renderViews.single.owner!.semanticsOwner!.performAction(

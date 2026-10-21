@@ -83,11 +83,11 @@ void main() {
         await tester.pump();
         await _wait(
           tester,
-          () => find.text('登录或注册').evaluate().isNotEmpty,
+          () => find.text('开始使用').evaluate().isNotEmpty,
           'guest App',
         );
-        await _tap(tester, find.text('登录或注册'));
-        await _tap(tester, find.text('新注册'));
+        await _tap(tester, find.text('开始使用'));
+        await _tap(tester, find.text('创建账号'));
         final flows = tester.widget<AuthScreen>(find.byType(AuthScreen)).flows;
         if (phase == 'otp-continuation-request') {
           final email =

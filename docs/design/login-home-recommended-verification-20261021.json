@@ -349,5 +349,7 @@
     "runtimeInputsMatchDeviceCandidate": true,
     "githubMemberApproval": false,
     "note": "One nonblocking wording clarification applied to navigation spec; runtime code and tests unchanged."
-  }
+  },
+  "currentIntegrationEvidence": "docs/design/login-home-main-integration-20261021.json",
+  "sourceFingerprintScope": "Original 2122 candidate before upstream PR39; current integrated source fingerprints and tests are in currentIntegrationEvidence."
 }

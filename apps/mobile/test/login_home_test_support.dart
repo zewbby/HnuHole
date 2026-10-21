@@ -187,7 +187,7 @@ class HomeTestFixture {
       find.byType(TextFormField).at(1),
       'valid-password-123',
     );
-    await tester.tap(find.widgetWithText(FilledButton, '登录并进入'));
+    await tester.tap(find.byKey(const ValueKey('login-submit')));
     if (directoryPending) {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));

@@ -242,6 +242,9 @@ class HnuholeApp extends StatefulWidget {
 }
 
 class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
+  final _authPresentation = AuthPresentationController(
+    preferences: FlutterAuthVault(namespace: 'hnuhole.presentation.v1'),
+  );
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   final _navigatorKey = GlobalKey<NavigatorState>();
@@ -371,6 +374,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    unawaited(_authPresentation.load());
     WidgetsBinding.instance.addObserver(this);
     widget.comments?.addListener(_commentChanged);
     _postRouteChanges = Listenable.merge([_postWindow, widget.directory]);
@@ -574,6 +578,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _authPresentation.dispose();
     WidgetsBinding.instance.removeObserver(this);
     widget.comments?.removeListener(_commentChanged);
     widget.comments?.dispose();
@@ -598,74 +603,85 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hnuhole',
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [CommunityMaterialLabels.delegate],
-      scaffoldMessengerKey: _scaffoldMessengerKey,
-      navigatorKey: _navigatorKey,
-      builder: (context, child) => CommentScopeHost(
-        runtime: widget.comments,
-        child: Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerUp: (_) {
-            // Let the requested action (including logout) start first. Activity
-            // is a user gesture, never a background timer or a build side effect.
-            scheduleMicrotask(widget.sessions.onActivity);
-          },
-          child: CommunitySpokenLocale(
-            child: widget.governance == null
-                ? child ?? const SizedBox.shrink()
-                : GovernanceScope(
-                    controller: widget.governance!,
-                    child: child ?? const SizedBox.shrink(),
-                  ),
+    return AnimatedBuilder(
+      animation: _authPresentation,
+      builder: (context, _) => MaterialApp(
+        title: 'Hnuhole',
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [CommunityMaterialLabels.delegate],
+        scaffoldMessengerKey: _scaffoldMessengerKey,
+        navigatorKey: _navigatorKey,
+        themeMode: _authPresentation.themeMode,
+        builder: (context, child) => AuthPresentationScope(
+          controller: _authPresentation,
+          child: CommentScopeHost(
+            runtime: widget.comments,
+            child: Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerUp: (_) {
+                // Let the requested action (including logout) start first. Activity
+                // is a user gesture, never a background timer or a build side effect.
+                scheduleMicrotask(widget.sessions.onActivity);
+              },
+              child: CommunitySpokenLocale(
+                child: widget.governance == null
+                    ? child ?? const SizedBox.shrink()
+                    : GovernanceScope(
+                        controller: widget.governance!,
+                        child: child ?? const SizedBox.shrink(),
+                      ),
+              ),
+            ),
           ),
         ),
-      ),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF76AFC8)),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF76AFC8),
-          brightness: Brightness.dark,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF76AFC8)),
+          useMaterial3: true,
         ),
-        useMaterial3: true,
-      ),
-      home: AnimatedBuilder(
-        animation: Listenable.merge([
-          widget.sessions,
-          _postRouteChanges,
-          if (widget.governance != null) widget.governance!,
-        ]),
-        builder: (context, _) {
-          if (widget.sessions.isAuthenticated &&
-              widget.posts.available &&
-              widget.directory.status == ChannelDirectoryStatus.ready) {
-            return FeedScreen(
-              // New authorization owns fresh protected data. Its channel
-              // preference survives within this app run for the same account.
-              key: ValueKey(_postWindow.value),
-              controller: widget.posts,
-              channels: widget.directory.channels,
-              composeChannel: widget.directory.channels.first,
-              initialChannelId: _homeChannels[widget.posts.accountId],
-              loadImages: widget.loadPostImages,
-              onOpenMessages: widget.governance == null ? null : _openMessages,
-              onOpenPersonal: _openPersonal,
-              onManageIdentities: _openIdentity,
-              onAuthenticationRequired: _openAuth,
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF76AFC8),
+            brightness: Brightness.dark,
+          ),
+          useMaterial3: true,
+        ),
+        home: AnimatedBuilder(
+          animation: Listenable.merge([
+            widget.sessions,
+            _postRouteChanges,
+            if (widget.governance != null) widget.governance!,
+          ]),
+          builder: (context, _) {
+            if (widget.sessions.isAuthenticated &&
+                widget.posts.available &&
+                widget.directory.status == ChannelDirectoryStatus.ready) {
+              return FeedScreen(
+                // New authorization owns fresh protected data. Its channel
+                // preference survives within this app run for the same account.
+                key: ValueKey(_postWindow.value),
+                controller: widget.posts,
+                channels: widget.directory.channels,
+                composeChannel: widget.directory.channels.first,
+                initialChannelId: _homeChannels[widget.posts.accountId],
+                loadImages: widget.loadPostImages,
+                onOpenMessages: widget.governance == null
+                    ? null
+                    : _openMessages,
+                onOpenPersonal: _openPersonal,
+                onManageIdentities: _openIdentity,
+                onAuthenticationRequired: _openAuth,
+              );
+            }
+            return EntryScreen(
+              directory: widget.directory,
+              onLoginRequested: _openAuth,
+              onMessagesPressed: widget.governance == null
+                  ? null
+                  : _openMessages,
+              messagesUnread: widget.governance?.hasUnread == true,
             );
-          }
-          return EntryScreen(
-            directory: widget.directory,
-            onLoginRequested: _openAuth,
-            onMessagesPressed: widget.governance == null ? null : _openMessages,
-            messagesUnread: widget.governance?.hasUnread == true,
-          );
-        },
+          },
+        ),
       ),
     );
   }

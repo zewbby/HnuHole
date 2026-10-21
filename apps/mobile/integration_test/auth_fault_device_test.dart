@@ -92,11 +92,11 @@ void main() {
         if (prior == null) {
           await _wait(
             tester,
-            () => find.text('登录或注册').evaluate().isNotEmpty,
+            () => find.text('开始使用').evaluate().isNotEmpty,
             'signed-out App entry',
           );
-          await _tap(tester, find.text('登录或注册'));
-          await _tap(tester, find.text('新注册'));
+          await _tap(tester, find.text('开始使用'));
+          await _tap(tester, find.text('创建账号'));
           final email =
               'device-${DateTime.now().microsecondsSinceEpoch}@hainanu.edu.cn';
           await _input(tester, 'registration-email', email);
@@ -235,7 +235,7 @@ void main() {
             expect(initial.session != null, isTrue);
             await _wait(
               tester,
-              () => find.text('登录或注册').evaluate().isNotEmpty,
+              () => find.text('开始使用').evaluate().isNotEmpty,
               'recovery generation rejects the retained old session',
             );
             await _waitStore(
@@ -254,15 +254,15 @@ void main() {
                 ),
               ),
             );
-            await _tap(tester, find.text('登录或注册'));
+            await _tap(tester, find.text('开始使用'));
             await _input(tester, 'login-username', username);
             await _input(tester, 'login-password', password);
-            await _tap(tester, find.text('登录并进入'));
+            await _tap(tester, find.byKey(const ValueKey('login-submit')));
             await _wait(
               tester,
               () =>
                   find.byType(FeedScreen).evaluate().isNotEmpty &&
-                  find.text('登录或注册').evaluate().isEmpty,
+                  find.text('开始使用').evaluate().isEmpty,
               'explicit new-generation login',
             );
             final reauthenticated = await store.read();
@@ -307,15 +307,15 @@ void main() {
                 ),
               ),
             );
-            await _tap(tester, find.text('登录或注册'));
+            await _tap(tester, find.text('开始使用'));
             await _input(tester, 'login-username', username);
             await _input(tester, 'login-password', password);
-            await _tap(tester, find.text('登录并进入'));
+            await _tap(tester, find.byKey(const ValueKey('login-submit')));
             await _wait(
               tester,
               () =>
                   find.byType(FeedScreen).evaluate().isNotEmpty &&
-                  find.text('登录或注册').evaluate().isEmpty,
+                  find.text('开始使用').evaluate().isEmpty,
               'explicit login after offline logout drain',
             );
             await openOwnedManagement(tester);
@@ -353,7 +353,7 @@ void main() {
               tester,
               () =>
                   find.byType(FeedScreen).evaluate().isNotEmpty &&
-                  find.text('登录或注册').evaluate().isEmpty,
+                  find.text('开始使用').evaluate().isEmpty,
               'actual App session restored',
             );
             if (phase == 'unknown' || phase == 'reconcile') {

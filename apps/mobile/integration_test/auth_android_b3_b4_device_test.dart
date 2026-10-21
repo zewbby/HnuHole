@@ -129,7 +129,7 @@ void main() {
                   !sessions.isAuthenticated,
               true,
             );
-            expect(find.text('登录或注册').evaluate().isNotEmpty, true);
+            expect(find.text('开始使用').evaluate().isNotEmpty, true);
             flags['freshProductGuestWithoutAutomaticAuthentication'] = true;
           } else if (phase == 'ni-k02') {
             if (fixture.isEmpty) {
@@ -338,7 +338,7 @@ Future<void> _ensureAccount(
       true,
     );
     if (find.byType(AuthScreen).evaluate().isEmpty) {
-      await tapOwned(tester, find.text('登录或注册'));
+      await tapOwned(tester, find.text('开始使用'));
     }
     await waitOwned(
       tester,
@@ -350,7 +350,7 @@ Future<void> _ensureAccount(
             .evaluate()
             .isEmpty &&
         find.byKey(const ValueKey('registration-email')).evaluate().isEmpty) {
-      await tapOwned(tester, find.text('新注册'));
+      await tapOwned(tester, find.text('创建账号'));
     }
     flags['originalDraftRegistrationRetainedWithoutClosureResubmission'] = true;
     return;
@@ -453,14 +453,14 @@ Future<void> _ensureAccount(
     fixture['password'] =
         'Dev-${AuthCrypto.domainDigest('B3B4-PASSWORD', utf8.encode(seed))}#9';
     if (find.byType(AuthScreen).evaluate().isEmpty) {
-      await tapOwned(tester, find.text('登录或注册'));
+      await tapOwned(tester, find.text('开始使用'));
     }
     if (find
             .byKey(const ValueKey('registration-username'))
             .evaluate()
             .isEmpty &&
         find.byKey(const ValueKey('registration-email')).evaluate().isEmpty) {
-      await tapOwned(tester, find.text('新注册'));
+      await tapOwned(tester, find.text('创建账号'));
     }
     final marker = FlutterAuthVault(
       namespace: 'native.security.test.$_accountRun.b3b4',
@@ -501,10 +501,10 @@ Future<void> _ensureAccount(
       true,
       reason: 'Never discard or replay an unresolved original operation',
     );
-    await tapOwned(tester, find.text('登录或注册'));
+    await tapOwned(tester, find.text('开始使用'));
     await inputOwned(tester, 'login-username', fixture['username'] as String);
     await inputOwned(tester, 'login-password', fixture['password'] as String);
-    await tapOwned(tester, find.text('登录并进入'));
+    await tapOwned(tester, find.byKey(const ValueKey('login-submit')));
     await waitOwned(
       tester,
       () =>
@@ -524,8 +524,8 @@ Future<void> _ensureAccount(
           .toLowerCase();
   fixture['password'] =
       'Dev-${AuthCrypto.domainDigest('B3B4-PASSWORD', utf8.encode(seed))}#9';
-  await tapOwned(tester, find.text('登录或注册'));
-  await tapOwned(tester, find.text('新注册'));
+  await tapOwned(tester, find.text('开始使用'));
+  await tapOwned(tester, find.text('创建账号'));
   fixture['recovery'] = await registerOwned(
     tester,
     fixture['email'] as String,
@@ -559,14 +559,14 @@ Future<void> _loginExistingAssociationControl(
   fixture['password'] =
       'Dev-${AuthCrypto.domainDigest('B3B4-PASSWORD', utf8.encode(seed))}#9';
   if (find.byType(AuthScreen).evaluate().isEmpty) {
-    await tapOwned(tester, find.text('登录或注册'));
+    await tapOwned(tester, find.text('开始使用'));
   }
   if (find.byKey(const ValueKey('login-username')).evaluate().isEmpty) {
     await tapOwned(tester, find.text('登录'));
   }
   await inputOwned(tester, 'login-username', fixture['username'] as String);
   await inputOwned(tester, 'login-password', fixture['password'] as String);
-  await tapOwned(tester, find.text('登录并进入'));
+  await tapOwned(tester, find.byKey(const ValueKey('login-submit')));
   await waitOwned(
     tester,
     () =>
