@@ -268,7 +268,7 @@ Future<Map<String, Object>> runCommunityStage1(
 
   Future<void> home() async {
     final timer = Stopwatch()..start();
-    while (find.byType(ChannelTree).evaluate().isEmpty &&
+    while (find.byType(FeedScreen).evaluate().isEmpty &&
         timer.elapsed < const Duration(seconds: 20)) {
       // Read and tap visible navigation in one turn. Route animations may
       // temporarily expose neither control; keep pumping instead of stopping.
@@ -283,7 +283,7 @@ Future<Map<String, Object>> runCommunityStage1(
       await Future<void>.delayed(const Duration(milliseconds: 150));
     }
     await wait(
-      () => find.byType(ChannelTree).evaluate().isNotEmpty,
+      () => find.byType(FeedScreen).evaluate().isNotEmpty,
       'home navigation',
     );
   }
@@ -525,7 +525,7 @@ Future<Map<String, Object>> runCommunityStage1(
     await posts.loadPersonal();
     expect(item(pendingId).state, 'FAILED');
     await home();
-    await tap(find.byTooltip('我的'));
+    await tap(find.byTooltip('我的').first);
     await wait(
       () => find.text('单机文字验收').evaluate().isNotEmpty,
       'failed task in personal list',

@@ -2,13 +2,12 @@ import 'dart:ui' show SemanticsAction;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hnuhole_mobile/src/channels/channel.dart';
-import 'package:hnuhole_mobile/src/navigation/channel_tree.dart';
 import 'package:hnuhole_mobile/src/navigation/community_material_labels.dart';
 import 'package:hnuhole_mobile/src/navigation/entry_screen.dart';
 import 'package:hnuhole_mobile/src/navigation/channel_directory_controller.dart';
 
 import 'identity_test_support.dart';
+import 'login_home_test_support.dart';
 
 void main() {
   testWidgets('Chinese interface exposes Chinese speech locale for numerals', (
@@ -33,70 +32,53 @@ void main() {
     }
   });
 
-  testWidgets('channel has one spoken name and a working semantic tap', (
+  testWidgets('login entry exposes an actionable Chinese semantic button', (
     tester,
   ) async {
     final handle = tester.ensureSemantics();
+    final directory = ChannelDirectoryController(
+      repository: IdentityTestChannels(),
+    );
+    addTearDown(directory.dispose);
+    var opened = false;
     try {
-      const channel = Channel(
-        id: 'owned-channel',
-        code: 'vent',
-        name: '吐槽',
-        initiallyVisible: true,
-        displayOrder: 0,
-      );
-      Channel? selected;
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: ChannelTree(
-              channels: const [channel],
-              session: ChannelTreeSession(),
-              onChannelSelected: (value) => selected = value,
-            ),
+          home: EntryScreen(
+            directory: directory,
+            onLoginRequested: () => opened = true,
           ),
         ),
       );
-      final node = tester.getSemantics(find.bySemanticsLabel('吐槽'));
-      final data = node.getSemanticsData();
-      expect(data.label, '吐槽');
-      expect(data.flagsCollection.isButton, isTrue);
-      expect(data.hasAction(SemanticsAction.tap), isTrue);
+      final node = tester.getSemantics(
+        find.byKey(const ValueKey('auth-start')),
+      );
+      expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
       tester.binding.renderViews.single.owner!.semanticsOwner!.performAction(
         node.id,
         SemanticsAction.tap,
       );
       await tester.pump();
-      expect(selected, same(channel));
-      expect(find.bySemanticsLabel('吐槽\n吐槽'), findsNothing);
+      expect(opened, isTrue);
     } finally {
       handle.dispose();
     }
   });
 
-  testWidgets('profile entry is labelled in Chinese and stays actionable', (
-    tester,
-  ) async {
-    final directory = ChannelDirectoryController(
-      repository: IdentityTestChannels(),
-    );
-    addTearDown(directory.dispose);
-    await directory.authenticate(identityTestToken);
-    var opened = false;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: EntryScreen(
-          directory: directory,
-          onLoginRequested: () {},
-          onProfilePressed: () => opened = true,
-          onChannelSelected: (_) {},
-        ),
-      ),
-    );
-    expect(find.byTooltip('My content'), findsNothing);
-    await tester.tap(find.byTooltip('我的'));
-    expect(opened, isTrue);
-  });
+  testWidgets(
+    'home profile entry is labelled in Chinese and stays actionable',
+    (tester) async {
+      final fixture = HomeTestFixture();
+      await tester.pumpWidget(await fixture.create());
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('My content'), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('feed-account')));
+      await tester.pumpAndSettle();
+      expect(find.text('账号A的身份'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    },
+  );
 
   testWidgets('SDK automatic back button is Chinese and still pops the route', (
     tester,

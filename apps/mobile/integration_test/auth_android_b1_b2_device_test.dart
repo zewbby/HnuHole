@@ -192,7 +192,7 @@ void main() {
             tester,
             () =>
                 find.text('开始使用').evaluate().isNotEmpty ||
-                find.byType(ChannelTree).evaluate().isNotEmpty,
+                find.byType(FeedScreen).evaluate().isNotEmpty,
             'authoritative startup',
           );
           if (find.text('开始使用').evaluate().isNotEmpty) {
@@ -1138,7 +1138,7 @@ Future<void> _login(WidgetTester tester, String name, String password) async {
     tester,
     () =>
         find.byType(AuthScreen).evaluate().isEmpty &&
-        find.byType(ChannelTree).evaluate().isNotEmpty,
+        find.byType(FeedScreen).evaluate().isNotEmpty,
     'explicit product login',
   );
 }

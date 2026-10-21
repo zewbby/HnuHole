@@ -7,6 +7,8 @@
 
 > **2026-10-21 AUTH-UI-FINAL-01 设计定稿：**用户已确认并授权推送[登录注册流程 UI 定稿](auth-flow-final/README.md)。独立 `docs/auth-flow-final` 只交付设计资产与说明，不夹带其他在研代码；最终方式为同一页仅原位替换两个输入框，不使用独立邮箱页。邮箱验证码登录尚未接入现有认证契约，h Logo 仍占位；后续按定稿另行实现。设计确认、App 实现、验收、合并与发布分列，当前未合并／发布；见[交付记录](../branches/docs-auth-flow-final.md)。
 
+> **2026-10-21 LOGIN-HOME-01／[PR #40](https://github.com/zewbby/HnuHole/pull/40)：**`feat/login-home-recommended` 最终按用户澄清：新启动默认推荐，运行期间保留各账号所选通道，详情／我的／消息返回及首页按钮不重置；删除节点页。23 专项／635 全量／分析0、2122 原生 APK 与 vivo Android15 指定场景 PASS；真实密码登录、吐槽往返、冷重启推荐及根返回均实测。CMake已定点补齐，Kotlin跨盘缓存仅本次构建禁用；独立包已安装，原包未覆盖。见[任务](../branches/feat-login-home-recommended.md)／[机器记录](login-home-recommended-verification-20261021.json)。共享服务不改配置；本地 USB 路由和 V 字节中继保留供试用，不提升完整模块或生产结论。
+
 > **2026-10-21 AUTH-UI-FINAL-01 设计定稿：**用户已确认并授权推送[登录注册流程 UI 定稿](auth-flow-final/README.md)。独立 `docs/auth-flow-final` 只交付设计资产与说明，不夹带其他在研代码；最终方式为同一页仅原位替换两个输入框，不使用独立邮箱页。邮箱验证码登录尚未接入现有认证契约，h Logo 仍占位；后续按定稿另行实现。设计确认、App 实现、验收、合并与发布分列，设计 PR #38 已合并，App 接入见 AUTH-UI-IMPLEMENT-01，未正式发布；见[交付记录](../branches/docs-auth-flow-final.md)。
 
 > **2026-10-21 PR36 主线整合与交付授权：**用户已明确授权最新main整合、必要CI／审查无阻断后转Ready并合并#36，再从合并后main构建同签日常测试APK。#35已由负责人合入`3611925c67137cfe43dedfdd6876a6c652f84231`（09:39+08），本分支已整合；110项客户端raw运行输入与所测`31bc061`逐项相同，冲突仅合并两侧文档事实，不变更产品运行源。原76项、worker原任务恢复及profile2012真实性能按原范围复用，最终整合head必要CI另核。日常debug包使用经环境负责人本轮确认可用的C/V入口及原测试证书，实际origin／trust差异随包回执；原profile2012独立保留；Android仅启动／列表／详情／评论入口一次必要冒烟，差异才补回归，不重复worker或性能。环境保留版本c923/C21V4，但本轮只读检查原C/V及双隧道均未在线；入口恢复由环境负责人按权限处理，旧公网URL不得沿用昨晚在线结论，前端不部署或操作设备。合并及日常包实际SHA／设备结果以PR和最终交付回执为准，未正式发布。下面“未获新授权／#35未合并”等均为原版本历史。

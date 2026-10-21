@@ -318,7 +318,9 @@ class _FeedScreenState extends State<FeedScreen> {
           onDestination: (destination) {
             switch (destination) {
               case FeedDestination.home:
-                Navigator.of(context).pop();
+                // This is already the home route. Keep its channel, loaded
+                // pages and reading position when the home icon is tapped.
+                return;
               case FeedDestination.personal:
                 widget.onOpenPersonal?.call();
               case FeedDestination.messages:
