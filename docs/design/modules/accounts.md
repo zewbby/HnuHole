@@ -223,8 +223,11 @@
 
 ## 设计图与来源
 
-登录界面尚无确认的独立图稿。来源：[需求记录 AUTH-01 / ACCESS-01](../../discussions/2026-09-06-hainanu-treehole.md)。
+登录界面已确认[定稿](../auth-flow-final/README.md)，实际 App 接入由 AUTH-UI-IMPLEMENT-01 交付；邮箱登录本轮明确待接入。来源：[需求记录 AUTH-01 / ACCESS-01](../../discussions/2026-09-06-hainanu-treehole.md)。
 
 ## 匿名基础与后续接入
 
 当前 AC01／AC02／AC03 的实现和核对结果见 [隐私边界报告](../auth-privacy-boundary-validation-report.md)。后续业务必须遵守 [匿名业务接入契约](../auth-privacy-business-contract.md)，包括最终发送任务受理时的账号＋帖子绑定、按身份对隔离和各身份独立注销占位；公共内容／聊天／管理消费者尚未集成，不能由当前本人身份管理或纯投影代证。
+
+
+2026-10-21：AUTH-UI-IMPLEMENT-01 的 UI 增量见[任务单](../../branches/feat-auth-entry-flow.md)。现有校邮仅新注册的协议不变；邮箱登录按钮禁用并标注待接入。

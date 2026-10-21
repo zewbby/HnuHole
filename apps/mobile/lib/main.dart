@@ -245,6 +245,9 @@ class HnuholeApp extends StatefulWidget {
 }
 
 class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
+  final _authPresentation = AuthPresentationController(
+    preferences: FlutterAuthVault(namespace: 'hnuhole.presentation.v1'),
+  );
   final ChannelTreeSession _treeSession = ChannelTreeSession();
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -376,6 +379,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    unawaited(_authPresentation.load());
     WidgetsBinding.instance.addObserver(this);
     widget.comments?.addListener(_commentChanged);
     _postRouteChanges = Listenable.merge([_postWindow, widget.directory]);
@@ -620,6 +624,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _authPresentation.dispose();
     WidgetsBinding.instance.removeObserver(this);
     widget.comments?.removeListener(_commentChanged);
     widget.comments?.dispose();
@@ -644,49 +649,56 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hnuhole',
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [CommunityMaterialLabels.delegate],
-      scaffoldMessengerKey: _scaffoldMessengerKey,
-      navigatorKey: _navigatorKey,
-      builder: (context, child) => CommentScopeHost(
-        runtime: widget.comments,
-        child: Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerUp: (_) {
-            // Let the requested action (including logout) start first. Activity
-            // is a user gesture, never a background timer or a build side effect.
-            scheduleMicrotask(widget.sessions.onActivity);
-          },
-          child: CommunitySpokenLocale(
-            child: widget.governance == null
-                ? child ?? const SizedBox.shrink()
-                : GovernanceScope(
-                    controller: widget.governance!,
-                    child: child ?? const SizedBox.shrink(),
-                  ),
+    return AnimatedBuilder(
+      animation: _authPresentation,
+      builder: (context, _) => MaterialApp(
+        title: 'Hnuhole',
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [CommunityMaterialLabels.delegate],
+        scaffoldMessengerKey: _scaffoldMessengerKey,
+        navigatorKey: _navigatorKey,
+        themeMode: _authPresentation.themeMode,
+        builder: (context, child) => AuthPresentationScope(
+          controller: _authPresentation,
+          child: CommentScopeHost(
+            runtime: widget.comments,
+            child: Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerUp: (_) {
+                // Let the requested action (including logout) start first. Activity
+                // is a user gesture, never a background timer or a build side effect.
+                scheduleMicrotask(widget.sessions.onActivity);
+              },
+              child: CommunitySpokenLocale(
+                child: widget.governance == null
+                    ? child ?? const SizedBox.shrink()
+                    : GovernanceScope(
+                        controller: widget.governance!,
+                        child: child ?? const SizedBox.shrink(),
+                      ),
+              ),
+            ),
           ),
         ),
-      ),
-      theme: HhTelegramTheme.applyAppearance(ThemeData(useMaterial3: true)),
-      darkTheme: HhTelegramTheme.applyAppearance(
-        ThemeData(useMaterial3: true, brightness: Brightness.dark),
-      ),
-      home: AnimatedBuilder(
-        animation: Listenable.merge([
-          widget.sessions,
-          if (widget.governance != null) widget.governance!,
-        ]),
-        builder: (context, _) => EntryScreen(
-          directory: widget.directory,
-          treeSession: _treeSession,
-          onLoginRequested: _openAuth,
-          onProfilePressed: _openPersonal,
-          onChannelSelected: _openChannel,
-          onMessagesPressed: widget.governance == null ? null : _openMessages,
-          messagesAvailable: widget.governance != null,
-          messagesUnread: widget.governance?.hasUnread == true,
+        theme: HhTelegramTheme.applyAppearance(ThemeData(useMaterial3: true)),
+        darkTheme: HhTelegramTheme.applyAppearance(
+          ThemeData(useMaterial3: true, brightness: Brightness.dark),
+        ),
+        home: AnimatedBuilder(
+          animation: Listenable.merge([
+            widget.sessions,
+            if (widget.governance != null) widget.governance!,
+          ]),
+          builder: (context, _) => EntryScreen(
+            directory: widget.directory,
+            treeSession: _treeSession,
+            onLoginRequested: _openAuth,
+            onProfilePressed: _openPersonal,
+            onChannelSelected: _openChannel,
+            onMessagesPressed: widget.governance == null ? null : _openMessages,
+            messagesAvailable: widget.governance != null,
+            messagesUnread: widget.governance?.hasUnread == true,
+          ),
         ),
       ),
     );

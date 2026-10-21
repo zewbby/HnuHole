@@ -5,7 +5,7 @@
 - 分支：`docs/auth-flow-final`。
 - 基线：最新 `origin/main` 的 `ddf506a5dfd9874c0bf060a8ab40b3efa3728d31`。
 - 用户已明确确认当前交互稿定稿，并授权提交、推送 GitHub，作为整个登录注册流程的设计基准。
-- 状态：`DESIGN_APPROVED`；独立分支归档交付，尚未合并 main、未实现 App、未发布。推送／PR 入口在实际创建后补齐。
+- 状态：`DESIGN_APPROVED`；已通过 PR #38 合并 main（874bc0b）；仅设计归档，实际 App 接入见 AUTH-UI-IMPLEMENT-01，未正式发布。
 
 ## 交付
 

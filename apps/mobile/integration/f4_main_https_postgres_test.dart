@@ -238,7 +238,7 @@ void main() {
             () => sessions.status == AuthStatus.signedOut,
             'root signed out',
           );
-          await tap(find.text('登录或注册'));
+          await tap(find.text('开始使用'));
           await wait(
             () => find
                 .byKey(const ValueKey('login-username'))
@@ -254,7 +254,7 @@ void main() {
             find.byKey(const ValueKey('login-password')),
             'F4 synthetic long password 2026!',
           );
-          await tap(find.text('登录并进入'));
+          await tap(find.byKey(const ValueKey('login-submit')));
         }
         await wait(
           () =>

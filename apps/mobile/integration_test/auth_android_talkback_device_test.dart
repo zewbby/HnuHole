@@ -162,10 +162,10 @@ void main() {
         await tester.pump();
         if (phase == 'phone-talkback-prepare' && loginNeeded) {
           await wait(
-            () => find.text('登录或注册').evaluate().isNotEmpty,
+            () => find.text('开始使用').evaluate().isNotEmpty,
             'explicit login',
           );
-          await _tap(tester, find.text('登录或注册'));
+          await _tap(tester, find.text('开始使用'));
           final username =
               'dev_${AuthCrypto.domainDigest('DEVICE-USERNAME', utf8.encode(accountRunId)).substring(0, 16)}'
                   .replaceAll('-', '_')
@@ -180,7 +180,7 @@ void main() {
             find.byKey(const ValueKey('login-password')),
             password,
           );
-          await _tap(tester, find.text('登录并进入'));
+          await _tap(tester, find.byKey(const ValueKey('login-submit')));
           flags['explicitSyntheticLoginAfterGateRecovery'] = true;
         }
         await wait(

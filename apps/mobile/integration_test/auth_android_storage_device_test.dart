@@ -115,7 +115,7 @@ void main() {
           if (phase == 'storage-fresh') {
             await _wait(
               tester,
-              () => find.text('登录或注册').evaluate().isNotEmpty,
+              () => find.text('开始使用').evaluate().isNotEmpty,
               'fresh guest App',
             );
             expect((await store.read()).session, isNull);
@@ -125,13 +125,13 @@ void main() {
             if (phase == 'storage-source') {
               await _wait(
                 tester,
-                () => find.text('登录或注册').evaluate().isNotEmpty,
+                () => find.text('开始使用').evaluate().isNotEmpty,
                 'guest',
               );
-              await _tap(tester, find.text('登录或注册'));
+              await _tap(tester, find.text('开始使用'));
               await _input(tester, 'login-username', username);
               await _input(tester, 'login-password', password);
-              await _tap(tester, find.text('登录并进入'));
+              await _tap(tester, find.byKey(const ValueKey('login-submit')));
               await _wait(
                 tester,
                 () async =>
@@ -144,7 +144,7 @@ void main() {
                 tester,
                 () =>
                     find.byType(ChannelTree).evaluate().isNotEmpty &&
-                    find.text('登录或注册').evaluate().isEmpty,
+                    find.text('开始使用').evaluate().isEmpty,
                 'authority restored',
               );
             }

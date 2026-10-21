@@ -114,11 +114,11 @@ void main() {
         if (phase == 'takeover-register') {
           await _wait(
             tester,
-            () => find.text('登录或注册').evaluate().isNotEmpty,
+            () => find.text('开始使用').evaluate().isNotEmpty,
             'fresh App',
           );
-          await _tap(tester, find.text('登录或注册'));
-          await _tap(tester, find.text('新注册'));
+          await _tap(tester, find.text('开始使用'));
+          await _tap(tester, find.text('创建账号'));
           final email =
               'boundary-${DateTime.now().microsecondsSinceEpoch}@hainanu.edu.cn';
           await _input(tester, 'registration-email', email);
@@ -191,15 +191,15 @@ void main() {
           await _wait(
             tester,
             () async =>
-                find.text('登录或注册').evaluate().isNotEmpty &&
+                find.text('开始使用').evaluate().isNotEmpty &&
                 (await store.read()).session == null,
             'guest after absent or stale session',
           );
           flags['noAutomaticLoginBeforeExplicitAction'] = true;
-          await _tap(tester, find.text('登录或注册'));
+          await _tap(tester, find.text('开始使用'));
           await _input(tester, 'login-username', username);
           await _input(tester, 'login-password', password);
-          await _tap(tester, find.text('登录并进入'));
+          await _tap(tester, find.byKey(const ValueKey('login-submit')));
           await _wait(
             tester,
             () async =>
@@ -236,11 +236,11 @@ void main() {
             await _wait(
               tester,
               () async =>
-                  find.text('登录或注册').evaluate().isNotEmpty &&
+                  find.text('开始使用').evaluate().isNotEmpty &&
                   (await store.read()).session == null,
               'signed out companion',
             );
-            await _tap(tester, find.text('登录或注册'));
+            await _tap(tester, find.text('开始使用'));
           } else {
             expect(
               original.session == null && original.registration != null,
@@ -248,12 +248,12 @@ void main() {
             );
             await _wait(
               tester,
-              () => find.text('登录或注册').evaluate().isNotEmpty,
+              () => find.text('开始使用').evaluate().isNotEmpty,
               'guest registration restore',
             );
-            await _tap(tester, find.text('登录或注册'));
+            await _tap(tester, find.text('开始使用'));
           }
-          await _tap(tester, find.text('新注册'));
+          await _tap(tester, find.text('创建账号'));
           if (phase == 'v-gate-request') {
             expect(
               original.registration?['request'] == null &&

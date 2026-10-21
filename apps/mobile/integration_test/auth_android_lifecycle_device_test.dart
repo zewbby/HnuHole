@@ -103,20 +103,20 @@ void main() {
         if (phase == 'phone-prime' && loginNeeded) {
           await _wait(
             tester,
-            () => find.text('登录或注册').evaluate().isNotEmpty,
+            () => find.text('开始使用').evaluate().isNotEmpty,
             'explicit login required',
           );
-          await _tap(tester, find.text('登录或注册'));
+          await _tap(tester, find.text('开始使用'));
           await _input(tester, 'login-username', username);
           await _input(tester, 'login-password', password);
-          await _tap(tester, find.text('登录并进入'));
+          await _tap(tester, find.byKey(const ValueKey('login-submit')));
         }
         await _wait(
           tester,
           () async =>
               (await store.read()).session != null &&
               find.byType(AuthScreen).evaluate().isEmpty &&
-              find.text('登录或注册').evaluate().isEmpty,
+              find.text('开始使用').evaluate().isEmpty,
           'authoritative App',
         );
         if (phase == 'phone-lock-cycle') {
