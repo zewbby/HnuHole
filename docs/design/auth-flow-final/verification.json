@@ -1,0 +1,145 @@
+{
+  "task": "AUTH-UI-FINAL-01",
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "design_status": "DESIGN_APPROVED",
+  "base_commit": "ddf506a5dfd9874c0bf060a8ab40b3efa3728d31",
+  "scope": "Design archive and standalone preview only; no product implementation or authentication requests.",
+  "browser": "155.0.4283.62",
+  "viewports": [
+    {
+      "width": 736,
+      "height": 1000
+    },
+    {
+      "width": 320,
+      "height": 1000
+    }
+  ],
+  "source_sha256_lf": "0fe253975886803586ac0d091ab3a4c39eaeada10ce66879d3e4bee16b16ed07",
+  "preview_sha256_lf": "53fe73743987f10bd84a1c337bd7f6483940bc59bb457fdd0437905137a7bae4",
+  "checks": {
+    "approved_source_unchanged": true,
+    "welcome": true,
+    "language": true,
+    "username_to_email": true,
+    "email_labels": true,
+    "same_layout": true,
+    "same_title": true,
+    "no_extra_email_page_or_explanation": true,
+    "code_button_inside_second_field": true,
+    "arrow_without_visible_login_label": true,
+    "email_to_username": true,
+    "register_entry": true,
+    "recovery_entry": true,
+    "dark_theme": true,
+    "narrow_no_horizontal_overflow": true,
+    "code_request_is_preview": true,
+    "login_is_preview": true,
+    "no_external_requests": true,
+    "no_browser_errors": true
+  },
+  "measurements": {
+    "username": [
+      {
+        "x": 25,
+        "y": 83,
+        "width": 325,
+        "height": 150.5
+      },
+      {
+        "x": 25,
+        "y": 233.5,
+        "width": 325,
+        "height": 58
+      },
+      {
+        "x": 25,
+        "y": 315.5,
+        "width": 325,
+        "height": 58
+      },
+      {
+        "x": 286,
+        "y": 463.5,
+        "width": 64,
+        "height": 64
+      },
+      {
+        "x": 25,
+        "y": 600,
+        "width": 325,
+        "height": 88
+      }
+    ],
+    "email": [
+      {
+        "x": 25,
+        "y": 83,
+        "width": 325,
+        "height": 150.5
+      },
+      {
+        "x": 25,
+        "y": 233.5,
+        "width": 325,
+        "height": 58
+      },
+      {
+        "x": 25,
+        "y": 315.5,
+        "width": 325,
+        "height": 58
+      },
+      {
+        "x": 286,
+        "y": 463.5,
+        "width": 64,
+        "height": 64
+      },
+      {
+        "x": 25,
+        "y": 600,
+        "width": 325,
+        "height": 88
+      }
+    ],
+    "otp": {
+      "inside": true,
+      "rightGap": 1
+    },
+    "narrow": {
+      "scroll_width": 288,
+      "client_width": 288
+    }
+  },
+  "assets": {
+    "assets/email-dark.png": {
+      "sha256": "0142fd383244e987414d24d6d58bd25aad9a0b9b982eb2408b8fb7ab6e17c98d",
+      "bytes": 19676
+    },
+    "assets/email-light.png": {
+      "sha256": "898bdacdb6e23b458b69c260ec35d7729e95a3fc148c3031af07b65ae405dc5d",
+      "bytes": 19435
+    },
+    "assets/email-narrow.png": {
+      "sha256": "722f8f337fff50a51b5a5530bdbe18a027f5293d42d5cbbed6de8ed30ca0e1ab",
+      "bytes": 18401
+    },
+    "assets/username-light.png": {
+      "sha256": "10b3985fa92cfea38b865ea0986121d573b41fb670f2d968bc95904b49667b52",
+      "bytes": 17219
+    },
+    "assets/welcome-light.png": {
+      "sha256": "7f3409c443eafba65fb7238ea8f5064824da3e9898fd7de15faf6d9e17118dc1",
+      "bytes": 15624
+    }
+  },
+  "not_run": [
+    "Flutter implementation and build",
+    "real email, login, registration and recovery",
+    "C/V API and SQL",
+    "Android and iOS devices",
+    "production deployment"
+  ]
+}
