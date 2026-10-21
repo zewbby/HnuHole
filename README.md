@@ -36,6 +36,7 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `feat/registration-wizard-ui` | 三步注册设计已确认：校邮、账号设置、恢复码框内复制与可选Passkey；本地原型已保存，未接后端。 | [详情](docs/branches/feat-registration-wizard-ui.md) |
 | `docs/auth-entry-delivery` | 同步 PR #39 的合并事实与主线交付回执；仅文档，不改产品代码。 | [任务详情](docs/branches/docs-auth-entry-delivery.md) |
 | `feat/auth-entry-flow` | 将登录注册定稿接入真实 App，邮箱登录明确待接入；PR #39已合入main，原生主体包交付，未正式发布。 | [任务详情](docs/branches/feat-auth-entry-flow.md) |
 | `docs/auth-flow-final` | 归档用户确认的登录注册流程 UI 定稿与原位切换交互稿；PR #38已合入main，App 接入见 feat/auth-entry-flow。 | [任务详情](docs/branches/docs-auth-flow-final.md) |

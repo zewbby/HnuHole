@@ -1794,6 +1794,14 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;button type=&quot;button&quot; class=&quot;hh-icon cursor-interaction hh-theme&quot; aria-label=&quot;切换明暗主题&quot;&gt;&lt;i data-lucide=&quot;moon&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
       &lt;/div&gt;
 
+      &lt;div class=&quot;hh-registration-progress&quot; hidden&gt;
+        &lt;svg class=&quot;hh-progress-vector&quot; viewBox=&quot;0 0 300 10&quot; preserveAspectRatio=&quot;none&quot; role=&quot;progressbar&quot; aria-label=&quot;注册进度&quot; aria-valuemin=&quot;0&quot; aria-valuemax=&quot;3&quot; aria-valuenow=&quot;1&quot;&gt;
+          &lt;rect class=&quot;hh-progress-track&quot; width=&quot;300&quot; height=&quot;10&quot; rx=&quot;5&quot;&gt;&lt;/rect&gt;
+          &lt;rect class=&quot;hh-progress-fill&quot; width=&quot;100&quot; height=&quot;10&quot; rx=&quot;5&quot;&gt;&lt;/rect&gt;
+        &lt;/svg&gt;
+        &lt;ol class=&quot;hh-progress-labels&quot;&gt;&lt;li data-progress-step=&quot;1&quot; data-zh=&quot;邮箱验证&quot; data-en=&quot;Email&quot;&gt;邮箱验证&lt;/li&gt;&lt;li data-progress-step=&quot;2&quot; data-zh=&quot;账号设置&quot; data-en=&quot;Account&quot;&gt;账号设置&lt;/li&gt;&lt;li data-progress-step=&quot;3&quot; data-zh=&quot;账号安全&quot; data-en=&quot;Security&quot;&gt;账号安全&lt;/li&gt;&lt;/ol&gt;
+      &lt;/div&gt;
+
       &lt;section class=&quot;hh-screen hh-welcome&quot; data-screen=&quot;welcome&quot; aria-label=&quot;欢迎页&quot;&gt;
         &lt;div class=&quot;hh-brand&quot;&gt;
           &lt;div class=&quot;hh-logo&quot; role=&quot;img&quot; aria-label=&quot;临时 h 标志，正式 Logo 待设计&quot;&gt;&lt;span&gt;h&lt;/span&gt;&lt;/div&gt;
@@ -1826,13 +1834,49 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;/section&gt;
 
       &lt;section class=&quot;hh-screen hh-form-screen&quot; data-screen=&quot;register&quot; aria-label=&quot;新账号校邮验证&quot; hidden&gt;
-        &lt;div class=&quot;hh-heading&quot;&gt;&lt;h2 data-zh=&quot;验证校园邮箱&quot; data-en=&quot;Verify campus email&quot;&gt;验证校园邮箱&lt;/h2&gt;&lt;p data-zh=&quot;用校园邮箱开启你的树洞账号&quot; data-en=&quot;Start with your campus email&quot;&gt;用校园邮箱开启你的树洞账号&lt;/p&gt;&lt;/div&gt;
-        &lt;form class=&quot;hh-form&quot; data-action=&quot;register&quot;&gt;
-          &lt;div class=&quot;hh-field&quot;&gt;&lt;label for=&quot;hh-email&quot; data-zh=&quot;校园邮箱&quot; data-en=&quot;Campus email&quot;&gt;校园邮箱&lt;/label&gt;&lt;input id=&quot;hh-email&quot; type=&quot;email&quot; autocomplete=&quot;off&quot; placeholder=&quot;你的邮箱 @hainanu.edu.cn&quot; data-placeholder-zh=&quot;你的邮箱 @hainanu.edu.cn&quot; data-placeholder-en=&quot;Your email @hainanu.edu.cn&quot;&gt;&lt;/div&gt;
-          &lt;p class=&quot;hh-login-note&quot; data-zh=&quot;校园邮箱用于验证校园身份，请在下一步设置用户名和密码。&quot; data-en=&quot;Verify your campus identity, then choose a username and password.&quot;&gt;校园邮箱用于验证校园身份，请在下一步设置用户名和密码。&lt;/p&gt;
-          &lt;div class=&quot;hh-next-row&quot;&gt;&lt;button type=&quot;submit&quot; class=&quot;hh-next cursor-interaction&quot; aria-label=&quot;获取验证码&quot;&gt;&lt;i data-lucide=&quot;arrow-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+        &lt;div class=&quot;hh-heading&quot;&gt;&lt;h2 data-zh=&quot;验证校园邮箱&quot; data-en=&quot;Verify campus email&quot;&gt;验证校园邮箱&lt;/h2&gt;&lt;/div&gt;
+        &lt;form class=&quot;hh-form&quot; data-action=&quot;register-email&quot; novalidate&gt;
+          &lt;div class=&quot;hh-field hh-email-field&quot;&gt;&lt;label for=&quot;hh-register-email&quot; data-zh=&quot;邮箱&quot; data-en=&quot;Email&quot;&gt;邮箱&lt;/label&gt;&lt;input id=&quot;hh-register-email&quot; type=&quot;text&quot; inputmode=&quot;email&quot; autocomplete=&quot;off&quot; spellcheck=&quot;false&quot; placeholder=&quot;输入邮箱&quot; data-placeholder-zh=&quot;输入邮箱&quot; data-placeholder-en=&quot;Your email&quot; aria-describedby=&quot;hh-register-suffix hh-email-error&quot;&gt;&lt;span id=&quot;hh-register-suffix&quot; class=&quot;hh-email-suffix&quot;&gt;@hainanu.edu.cn&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;hh-field hh-otp-field&quot;&gt;&lt;label for=&quot;hh-register-code&quot; data-zh=&quot;验证码&quot; data-en=&quot;Verification code&quot;&gt;验证码&lt;/label&gt;&lt;input id=&quot;hh-register-code&quot; type=&quot;text&quot; inputmode=&quot;numeric&quot; maxlength=&quot;6&quot; autocomplete=&quot;off&quot; placeholder=&quot;输入验证码&quot; data-placeholder-zh=&quot;输入验证码&quot; data-placeholder-en=&quot;Email code&quot; aria-describedby=&quot;hh-email-error&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;hh-get-code hh-register-get-code cursor-interaction&quot;&gt;获取验证码&lt;/button&gt;&lt;/div&gt;
+          &lt;p class=&quot;hh-form-error&quot; id=&quot;hh-email-error&quot; role=&quot;alert&quot; hidden&gt;&lt;/p&gt;
+          &lt;div class=&quot;hh-next-row&quot;&gt;&lt;button type=&quot;submit&quot; class=&quot;hh-next cursor-interaction&quot; aria-label=&quot;验证邮箱并继续&quot;&gt;&lt;i data-lucide=&quot;arrow-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
         &lt;/form&gt;
         &lt;div class=&quot;hh-secondary-path&quot;&gt;&lt;span data-zh=&quot;已有账号？&quot; data-en=&quot;Already have an account?&quot;&gt;已有账号？&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;hh-text-action cursor-interaction&quot; data-go=&quot;login&quot; data-zh=&quot;返回登录&quot; data-en=&quot;Sign in&quot;&gt;返回登录&lt;/button&gt;&lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;hh-screen hh-form-screen&quot; data-screen=&quot;register-account&quot; aria-label=&quot;设置用户名和密码&quot; hidden&gt;
+        &lt;div class=&quot;hh-heading&quot;&gt;&lt;h2 data-zh=&quot;设置用户名和密码&quot; data-en=&quot;Set up your account&quot;&gt;设置用户名和密码&lt;/h2&gt;&lt;/div&gt;
+        &lt;form class=&quot;hh-form&quot; data-action=&quot;register-account&quot; novalidate&gt;
+          &lt;div class=&quot;hh-field&quot;&gt;&lt;label for=&quot;hh-register-user&quot; data-zh=&quot;用户名&quot; data-en=&quot;Username&quot;&gt;用户名&lt;/label&gt;&lt;input id=&quot;hh-register-user&quot; type=&quot;text&quot; autocomplete=&quot;off&quot; spellcheck=&quot;false&quot; maxlength=&quot;24&quot; placeholder=&quot;设置用户名&quot; data-placeholder-zh=&quot;设置用户名&quot; data-placeholder-en=&quot;Choose a username&quot; aria-describedby=&quot;hh-account-hint hh-account-error&quot;&gt;&lt;/div&gt;
+          &lt;div class=&quot;hh-field hh-password-field&quot;&gt;&lt;label for=&quot;hh-register-password&quot; data-zh=&quot;密码&quot; data-en=&quot;Password&quot;&gt;密码&lt;/label&gt;&lt;input id=&quot;hh-register-password&quot; type=&quot;password&quot; autocomplete=&quot;off&quot; placeholder=&quot;设置密码&quot; data-placeholder-zh=&quot;设置密码&quot; data-placeholder-en=&quot;Choose a password&quot; aria-describedby=&quot;hh-password-hint hh-account-error&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;hh-register-eye hh-icon cursor-interaction&quot; aria-label=&quot;显示密码&quot; aria-pressed=&quot;false&quot;&gt;&lt;i data-lucide=&quot;eye&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+          &lt;div class=&quot;hh-registration-hints&quot;&gt;&lt;p id=&quot;hh-account-hint&quot; data-zh=&quot;用户名仅用于登录，不作为公开昵称。&quot; data-en=&quot;Your username is private, not your public name.&quot;&gt;用户名仅用于登录，不作为公开昵称。&lt;/p&gt;&lt;p id=&quot;hh-password-hint&quot; data-zh=&quot;密码至少 15 个字符，请勿使用校邮密码。&quot; data-en=&quot;Use at least 15 characters, not your email password.&quot;&gt;密码至少 15 个字符，请勿使用校邮密码。&lt;/p&gt;&lt;/div&gt;
+          &lt;p class=&quot;hh-form-error&quot; id=&quot;hh-account-error&quot; role=&quot;alert&quot; hidden&gt;&lt;/p&gt;
+          &lt;div class=&quot;hh-next-row&quot;&gt;&lt;button type=&quot;submit&quot; class=&quot;hh-next cursor-interaction&quot; aria-label=&quot;继续设置账号安全&quot;&gt;&lt;i data-lucide=&quot;arrow-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+        &lt;/form&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;hh-screen hh-form-screen&quot; data-screen=&quot;register-security&quot; aria-label=&quot;设置账号安全&quot; hidden&gt;
+        &lt;div class=&quot;hh-heading&quot;&gt;&lt;h2 data-zh=&quot;保护你的账号&quot; data-en=&quot;Protect your account&quot;&gt;保护你的账号&lt;/h2&gt;&lt;/div&gt;
+        &lt;div class=&quot;hh-security-panel&quot; data-security-panel=&quot;show&quot;&gt;
+          &lt;div class=&quot;hh-security-heading&quot;&gt;&lt;h3 data-zh=&quot;保存恢复码&quot; data-en=&quot;Save your recovery code&quot;&gt;保存恢复码&lt;/h3&gt;&lt;span data-zh=&quot;必需&quot; data-en=&quot;Required&quot;&gt;必需&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;hh-recovery-code&quot; aria-label=&quot;恢复码设计占位，不是真实凭据&quot;&gt;&lt;code&gt;&lt;/code&gt;&lt;code&gt;&lt;/code&gt;&lt;button type=&quot;button&quot; class=&quot;hh-copy-recovery hh-icon cursor-interaction&quot; aria-label=&quot;复制恢复码&quot;&gt;&lt;i data-lucide=&quot;copy&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+          &lt;p class=&quot;hh-security-note&quot; data-zh=&quot;恢复码只展示一次。请记下或存入你信任的密码管理器。&quot; data-en=&quot;Shown once. Write it down or store it in your password manager.&quot;&gt;恢复码只展示一次。请记下或存入你信任的密码管理器。&lt;/p&gt;
+          &lt;button type=&quot;button&quot; class=&quot;hh-save-recovery hh-primary cursor-interaction&quot; data-zh=&quot;我已保存，继续确认&quot; data-en=&quot;I&#x27;ve saved it. Continue&quot;&gt;我已保存，继续确认&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;form class=&quot;hh-security-panel hh-form&quot; data-security-panel=&quot;confirm&quot; data-action=&quot;register-recovery&quot; novalidate hidden&gt;
+          &lt;div class=&quot;hh-security-heading&quot;&gt;&lt;h3 data-zh=&quot;确认恢复码&quot; data-en=&quot;Confirm your recovery code&quot;&gt;确认恢复码&lt;/h3&gt;&lt;span data-zh=&quot;必需&quot; data-en=&quot;Required&quot;&gt;必需&lt;/span&gt;&lt;/div&gt;
+          &lt;p class=&quot;hh-security-note&quot; data-zh=&quot;原码已隐藏，请完整输入刚才保存的恢复码。&quot; data-en=&quot;The code is hidden. Enter the complete code you saved.&quot;&gt;原码已隐藏，请完整输入刚才保存的恢复码。&lt;/p&gt;
+          &lt;div class=&quot;hh-field&quot;&gt;&lt;label for=&quot;hh-register-recovery&quot; data-zh=&quot;恢复码&quot; data-en=&quot;Recovery code&quot;&gt;恢复码&lt;/label&gt;&lt;input id=&quot;hh-register-recovery&quot; type=&quot;text&quot; autocomplete=&quot;off&quot; autocapitalize=&quot;characters&quot; spellcheck=&quot;false&quot; placeholder=&quot;输入完整恢复码&quot; data-placeholder-zh=&quot;输入完整恢复码&quot; data-placeholder-en=&quot;Enter the complete code&quot; aria-describedby=&quot;hh-recovery-error&quot;&gt;&lt;/div&gt;
+          &lt;p class=&quot;hh-form-error&quot; id=&quot;hh-recovery-error&quot; role=&quot;alert&quot; hidden&gt;&lt;/p&gt;
+          &lt;button type=&quot;submit&quot; class=&quot;hh-primary cursor-interaction&quot; data-zh=&quot;确认恢复码&quot; data-en=&quot;Confirm recovery code&quot;&gt;确认恢复码&lt;/button&gt;
+        &lt;/form&gt;
+        &lt;div class=&quot;hh-recovery-saved&quot; hidden&gt;&lt;i data-lucide=&quot;circle-check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;span data-zh=&quot;恢复码已保存并确认&quot; data-en=&quot;Recovery code saved and confirmed&quot;&gt;恢复码已保存并确认&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;hh-passkey-setup&quot;&gt;
+          &lt;div class=&quot;hh-passkey-symbol&quot;&gt;&lt;i data-lucide=&quot;key-round&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;div class=&quot;hh-passkey-copy&quot;&gt;&lt;div class=&quot;hh-security-heading&quot;&gt;&lt;h3 data-zh=&quot;通行密钥&quot; data-en=&quot;Passkey&quot;&gt;通行密钥&lt;/h3&gt;&lt;span data-zh=&quot;可选&quot; data-en=&quot;Optional&quot;&gt;可选&lt;/span&gt;&lt;/div&gt;&lt;p data-zh=&quot;使用指纹或面容，方便以后找回账号。&quot; data-en=&quot;Use a fingerprint or face scan to recover your account.&quot;&gt;使用指纹或面容，方便以后找回账号。&lt;/p&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;button type=&quot;button&quot; class=&quot;hh-create-passkey hh-text-action cursor-interaction&quot; disabled&gt;确认恢复码后设置&lt;/button&gt;
+        &lt;div class=&quot;hh-security-finish&quot; hidden&gt;&lt;button type=&quot;button&quot; class=&quot;hh-next hh-finish-register cursor-interaction&quot; aria-label=&quot;完成注册&quot;&gt;&lt;i data-lucide=&quot;arrow-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
       &lt;/section&gt;
 
       &lt;section class=&quot;hh-screen hh-form-screen&quot; data-screen=&quot;recover&quot; aria-label=&quot;找回账号&quot; hidden&gt;
@@ -1914,6 +1958,58 @@ html&gt;body{padding:0}&lt;/style&gt;
   #hnuhole-entry-concept .hh-bottom-space { height:36px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:10px; }
   #hnuhole-entry-concept .hh-bottom-space span { width:95px; height:4px; background:var(--hh-chrome); border-radius:4px; }
   #hnuhole-entry-concept .hh-preview-status { color:light-dark(#6f7781,#a5adb7); text-align:center; font:400 12px/1.7 system-ui,-apple-system,&quot;Microsoft YaHei&quot;,sans-serif; margin:14px 0 0; min-height:22px; }
+  #hnuhole-entry-concept .hh-phone[data-registering=&quot;true&quot;] { min-height:812px; --hh-secondary:light-dark(#656e78,#a8b1bc); --hh-link:light-dark(#0076a3,#50c4fa); }
+  #hnuhole-entry-concept .hh-registration-progress { padding:6px 24px 0; flex-shrink:0; }
+  #hnuhole-entry-concept .hh-progress-vector { display:block; width:100%; height:10px; }
+  #hnuhole-entry-concept .hh-progress-track { fill:light-dark(#d9effa,#263b48); }
+  #hnuhole-entry-concept .hh-progress-fill { fill:#0088cc; transition:width 180ms ease-out; }
+  #hnuhole-entry-concept .hh-progress-labels { display:flex; justify-content:space-between; list-style:none; margin:12px 0 0; padding:0; color:var(--hh-secondary); font-size:12px; line-height:1.5; }
+  #hnuhole-entry-concept .hh-progress-labels li::before { content:attr(data-progress-step) &#x27; &#x27;; }
+  #hnuhole-entry-concept .hh-progress-labels li[aria-current=&quot;step&quot;] { color:var(--hh-link); font-weight:650; }
+  #hnuhole-entry-concept [data-screen^=&quot;register&quot;] .hh-heading { padding-top:58px; padding-bottom:42px; }
+  #hnuhole-entry-concept [data-screen^=&quot;register&quot;] .hh-heading h2 { margin-bottom:0; }
+  #hnuhole-entry-concept [data-screen^=&quot;register&quot;] .hh-next, #hnuhole-entry-concept [data-screen^=&quot;register&quot;] .hh-primary { background:light-dark(#0088cc,#32b7f3); color:light-dark(#ffffff,#10212c); }
+  #hnuhole-entry-concept .hh-phone[data-registering=&quot;true&quot;] .hh-field input:focus-visible { outline:none; }
+  #hnuhole-entry-concept .hh-phone[data-registering=&quot;true&quot;] .hh-field:focus-within { border-color:var(--hh-link); }
+  #hnuhole-entry-concept #hh-register-password::-ms-reveal, #hnuhole-entry-concept #hh-register-password::-ms-clear { display:none; }
+  #hnuhole-entry-concept .hh-create-passkey[data-complete=&quot;true&quot;] { color:var(--hh-link); opacity:1; }
+  #hnuhole-entry-concept .hh-register-eye { position:absolute; top:5px; right:4px; color:var(--hh-secondary); }
+  #hnuhole-entry-concept .hh-registration-hints { margin-top:-9px; }
+  #hnuhole-entry-concept .hh-registration-hints p { margin:0 0 6px; color:var(--hh-secondary); font-size:12px; line-height:1.6; }
+  #hnuhole-entry-concept .hh-form-error { margin:-10px 0 0; color:light-dark(#b32424,#ffa5a5); font-size:13px; line-height:1.6; }
+  #hnuhole-entry-concept [aria-invalid=&quot;true&quot;] { outline:2px solid light-dark(#b32424,#ffa5a5); outline-offset:-2px; }
+  #hnuhole-entry-concept .hh-get-code:disabled { opacity:.7; cursor:default; }
+  #hnuhole-entry-concept [data-screen=&quot;register-security&quot;] .hh-heading { padding-top:42px; padding-bottom:34px; }
+  #hnuhole-entry-concept .hh-security-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 14px; }
+  #hnuhole-entry-concept .hh-security-heading h3 { margin:0; font-size:16px; line-height:1.5; font-weight:600; }
+  #hnuhole-entry-concept .hh-security-heading &gt; span { color:var(--hh-secondary); font-size:12px; }
+  #hnuhole-entry-concept .hh-recovery-code { display:grid; gap:8px; padding:22px 44px; position:relative; background:light-dark(#edf7fc,#20303b); border-radius:12px; text-align:center; }
+  #hnuhole-entry-concept .hh-recovery-code code { font:500 20px/1.4 ui-monospace,Consolas,monospace; letter-spacing:2px; color:var(--hh-fg); white-space:nowrap; background:transparent; padding:0; border:0; }
+  #hnuhole-entry-concept .hh-copy-recovery { position:absolute; top:4px; right:4px; color:var(--hh-link); }
+  #hnuhole-entry-concept .hh-copy-recovery svg { width:19px !important; height:19px !important; }
+  #hnuhole-entry-concept .hh-clipboard-transfer { position:fixed; left:-9999px; top:0; opacity:0; pointer-events:none; }
+  #hnuhole-entry-concept .hh-security-note { margin:14px 0 20px; color:var(--hh-secondary); font-size:13px; line-height:1.7; }
+  #hnuhole-entry-concept .hh-security-panel .hh-primary { min-height:48px; padding:12px 16px; font-size:19px; }
+  #hnuhole-entry-concept [data-security-panel=&quot;confirm&quot;] { gap:20px; }
+  #hnuhole-entry-concept [data-security-panel=&quot;confirm&quot;] .hh-security-heading { margin-bottom:0; }
+  #hnuhole-entry-concept [data-security-panel=&quot;confirm&quot;] .hh-security-note { margin:0; }
+  #hnuhole-entry-concept .hh-recovery-saved { display:flex; align-items:center; gap:10px; color:var(--hh-link); font-size:14px; padding:18px 0 26px; }
+  #hnuhole-entry-concept .hh-recovery-saved svg { width:22px; height:22px; flex-shrink:0; }
+  #hnuhole-entry-concept .hh-passkey-setup { display:flex; align-items:flex-start; gap:14px; margin-top:30px; }
+  #hnuhole-entry-concept .hh-passkey-symbol { width:44px; height:44px; display:grid; place-items:center; border-radius:50%; color:var(--hh-link); background:light-dark(#edf7fc,#20303b); flex-shrink:0; }
+  #hnuhole-entry-concept .hh-passkey-symbol svg { width:24px; height:24px; }
+  #hnuhole-entry-concept .hh-passkey-copy { flex:1; min-width:0; }
+  #hnuhole-entry-concept .hh-passkey-copy .hh-security-heading { margin-bottom:4px; }
+  #hnuhole-entry-concept .hh-passkey-copy p { margin:0; color:var(--hh-secondary); font-size:13px; line-height:1.7; }
+  #hnuhole-entry-concept .hh-create-passkey { align-self:flex-start; padding-left:58px; margin-top:4px; text-align:left; font-size:14px; }
+  #hnuhole-entry-concept .hh-create-passkey:disabled { color:var(--hh-secondary); opacity:.65; cursor:default; }
+  #hnuhole-entry-concept .hh-security-finish { display:flex; align-items:center; justify-content:flex-end; gap:22px; padding:26px 0 22px; margin-top:auto; }
+  #hnuhole-entry-concept .hh-security-finish &gt; .hh-text-action { font-size:14px; }
+  @media(max-width:380px) {
+    #hnuhole-entry-concept .hh-registration-progress { padding-left:20px; padding-right:20px; }
+    #hnuhole-entry-concept .hh-progress-labels { font-size:11px; }
+    #hnuhole-entry-concept .hh-recovery-code code { font-size:18px; letter-spacing:1px; }
+  }
   @media(max-width:380px) {
     #hnuhole-entry-concept { padding:16px 4px 10px; }
     #hnuhole-entry-concept .hh-phone { border-radius:24px; }
@@ -1924,102 +2020,184 @@ html&gt;body{padding:0}&lt;/style&gt;
   }
   @media(prefers-reduced-motion:reduce) {
     #hnuhole-entry-concept .hh-phone, #hnuhole-entry-concept .hh-field, #hnuhole-entry-concept .hh-field label { transition:none; }
+    #hnuhole-entry-concept .hh-progress-fill { transition:none; }
   }
 &lt;/style&gt;
 &lt;script&gt;
 (() =&gt; {
   const root = document.getElementById(&#x27;hnuhole-entry-concept&#x27;);
   const phone = root.querySelector(&#x27;.hh-phone&#x27;);
-  const screens = [&#x27;welcome&#x27;,&#x27;login&#x27;,&#x27;register&#x27;,&#x27;recover&#x27;];
+  const screens = [&#x27;welcome&#x27;,&#x27;login&#x27;,&#x27;register&#x27;,&#x27;register-account&#x27;,&#x27;register-security&#x27;,&#x27;recover&#x27;];
   const state = { screen:&#x27;login&#x27;, method:&#x27;username&#x27;, lang:&#x27;zh&#x27;, theme:&#x27;auto&#x27; };
-  const styleState = { accent:&#x27;#00a7e9&#x27;, logoSize:150 };
+  const registration = { sentEmail:null, sentAt:0, verified:false, phase:&#x27;show&#x27;, code:null, committed:false, passkey:false, copyState:&#x27;idle&#x27;, revision:0 };
+  const sampleCodes = [&#x27;J7KQM4V6PXH2N5DR3TWC6AZB7Q&#x27;,&#x27;M6PT2QW5G7N3VK4CXHRAZBS6DJ&#x27;];
   const copy = (zh,en) =&gt; state.lang===&#x27;zh&#x27; ? zh : en;
-  const status = root.querySelector(&#x27;.hh-preview-status&#x27;);
-  function icon(button, name) {
-    button.innerHTML = &#x27;&lt;i data-lucide=&quot;&#x27; + name + &#x27;&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&#x27;;
+  const one = selector =&gt; root.querySelector(selector);
+  const status = one(&#x27;.hh-preview-status&#x27;);
+  const reduced = () =&gt; matchMedia(&#x27;(prefers-reduced-motion:reduce)&#x27;).matches;
+  function icon(button, name) { button.innerHTML=&#x27;&lt;i data-lucide=&quot;&#x27;+name+&#x27;&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&#x27;; }
+  function registrationStep() { return state.screen===&#x27;register&#x27;?1:state.screen===&#x27;register-account&#x27;?2:state.screen===&#x27;register-security&#x27;?3:0; }
+  function previewStatus() {
+    if(state.screen===&#x27;register&#x27;) return copy(&#x27;交互预览：先获取验证码，再输入 123456。不会发送邮件。&#x27;,&#x27;Preview: request a code, then enter 123456. No email is sent.&#x27;);
+    if(state.screen===&#x27;register-account&#x27;) return copy(&#x27;交互预览：请使用示例用户名和密码，不填写真实凭据。&#x27;,&#x27;Preview: use sample credentials, not real ones.&#x27;);
+    if(state.screen===&#x27;register-security&#x27;) return registration.committed ? copy(&#x27;仅展示账号与通行密钥设置样式，未创建账号或设备凭据。&#x27;,&#x27;Account and passkey setup preview only. No account or credential is created.&#x27;) : copy(&#x27;恢复码是设计占位，仅用于演示保存与确认流程。&#x27;,&#x27;This placeholder recovery code is only for exploring the flow.&#x27;);
+    return copy(&#x27;交互示意 · Logo 为占位设计 · 未连接账号服务&#x27;,&#x27;Interaction preview · Placeholder logo · No account service connected&#x27;);
+  }
+  function updateCodeRequest() {
+    const remaining=Math.max(0,60-Math.floor((Date.now()-registration.sentAt)/1000));
+    const button=one(&#x27;.hh-register-get-code&#x27;);
+    button.disabled=registration.sentAt&gt;0 &amp;&amp; remaining&gt;0;
+    button.textContent=button.disabled ? copy(remaining+&#x27; 秒后重试&#x27;,&#x27;Retry in &#x27;+remaining+&#x27;s&#x27;) : copy(&#x27;获取验证码&#x27;,&#x27;Get code&#x27;);
   }
   function render() {
-    phone.style.colorScheme = state.theme===&#x27;auto&#x27; ? &#x27;light dark&#x27; : state.theme;
-    phone.lang = state.lang===&#x27;zh&#x27; ? &#x27;zh-CN&#x27; : &#x27;en&#x27;;
-    root.querySelectorAll(&#x27;[data-screen]&#x27;).forEach(s =&gt; { s.hidden = s.dataset.screen!==state.screen; });
-    root.querySelectorAll(&#x27;[data-method]&#x27;).forEach(group =&gt; { group.hidden=group.dataset.method!==state.method; group.querySelectorAll(&#x27;input,button&#x27;).forEach(e=&gt;{e.disabled=group.hidden;}); });
-    root.querySelectorAll(&#x27;[data-zh]&#x27;).forEach(e =&gt; {
-      const lines=e.dataset[state.lang].split(&#x27;|&#x27;);
-      e.replaceChildren();
-      lines.forEach((line,i)=&gt;{if(i)e.append(document.createElement(&#x27;br&#x27;)); e.append(document.createTextNode(line));});
+    phone.style.colorScheme=state.theme===&#x27;auto&#x27;?&#x27;light dark&#x27;:state.theme;
+    phone.lang=state.lang===&#x27;zh&#x27;?&#x27;zh-CN&#x27;:&#x27;en&#x27;;
+    const step=registrationStep();
+    phone.dataset.registering=String(step&gt;0);
+    root.querySelectorAll(&#x27;[data-screen]&#x27;).forEach(s=&gt;{s.hidden=s.dataset.screen!==state.screen;});
+    root.querySelectorAll(&#x27;[data-method]&#x27;).forEach(group=&gt;{group.hidden=group.dataset.method!==state.method;group.querySelectorAll(&#x27;input,button&#x27;).forEach(e=&gt;{e.disabled=group.hidden;});});
+    root.querySelectorAll(&#x27;[data-zh]&#x27;).forEach(e=&gt;{
+      const lines=e.dataset[state.lang].split(&#x27;|&#x27;);e.replaceChildren();
+      lines.forEach((line,i)=&gt;{if(i)e.append(document.createElement(&#x27;br&#x27;));e.append(document.createTextNode(line));});
     });
-    root.querySelectorAll(&#x27;[data-placeholder-zh]&#x27;).forEach(e =&gt; { e.placeholder=e.getAttribute(&#x27;data-placeholder-&#x27;+state.lang); });
-    root.querySelector(&#x27;.hh-language&#x27;).textContent=copy(&#x27;Continue in English&#x27;,&#x27;切换为简体中文&#x27;);
-    root.querySelector(&#x27;.hh-method-switch&#x27;).textContent=state.method===&#x27;username&#x27;?copy(&#x27;切换邮箱登录&#x27;,&#x27;Use email instead&#x27;):copy(&#x27;切换用户名登录&#x27;,&#x27;Use username instead&#x27;);
-    const back=root.querySelector(&#x27;.hh-back&#x27;);
-    back.hidden=state.screen===&#x27;welcome&#x27;;
-    back.setAttribute(&#x27;aria-label&#x27;,state.screen===&#x27;login&#x27;?copy(&#x27;返回欢迎页&#x27;,&#x27;Back to welcome&#x27;):copy(&#x27;返回登录&#x27;,&#x27;Back to sign in&#x27;));
-    const dark=state.theme===&#x27;dark&#x27;||(state.theme===&#x27;auto&#x27; &amp;&amp; matchMedia(&#x27;(prefers-color-scheme:dark)&#x27;).matches);
-    const theme=root.querySelector(&#x27;.hh-theme&#x27;);
-    theme.setAttribute(&#x27;aria-label&#x27;,dark?copy(&#x27;切换浅色主题&#x27;,&#x27;Switch to light theme&#x27;):copy(&#x27;切换深色主题&#x27;,&#x27;Switch to dark theme&#x27;));
-    theme.setAttribute(&#x27;aria-pressed&#x27;,String(dark)); icon(theme,dark?&#x27;sun&#x27;:&#x27;moon&#x27;);
-    root.querySelector(&#x27;[data-action=&quot;login&quot;] .hh-next&#x27;).setAttribute(&#x27;aria-label&#x27;,state.method===&#x27;email&#x27;?copy(&#x27;使用邮箱验证码继续&#x27;,&#x27;Continue with email code&#x27;):copy(&#x27;登录并进入&#x27;,&#x27;Sign in and continue&#x27;));
-    root.querySelector(&#x27;[data-action=&quot;register&quot;] .hh-next&#x27;).setAttribute(&#x27;aria-label&#x27;,copy(&#x27;获取验证码&#x27;,&#x27;Get verification code&#x27;));
-    root.querySelector(&#x27;[data-action=&quot;recover&quot;] .hh-next&#x27;).setAttribute(&#x27;aria-label&#x27;,copy(&#x27;验证恢复码&#x27;,&#x27;Verify recovery code&#x27;));
-    root.querySelector(&#x27;.hh-eye&#x27;).setAttribute(&#x27;aria-label&#x27;,root.querySelector(&#x27;#hh-password&#x27;).type===&#x27;password&#x27;?copy(&#x27;显示密码&#x27;,&#x27;Show password&#x27;):copy(&#x27;隐藏密码&#x27;,&#x27;Hide password&#x27;));
-    status.textContent=copy(&#x27;交互示意 · Logo 为占位设计 · 未连接账号服务&#x27;,&#x27;Interaction preview · Placeholder logo · No account service connected&#x27;);
-    if(globalThis.lucide) lucide.createIcons();
+    root.querySelectorAll(&#x27;[data-placeholder-zh]&#x27;).forEach(e=&gt;{e.placeholder=e.getAttribute(&#x27;data-placeholder-&#x27;+state.lang);});
+    one(&#x27;.hh-language&#x27;).textContent=copy(&#x27;Continue in English&#x27;,&#x27;切换为简体中文&#x27;);
+    one(&#x27;.hh-method-switch&#x27;).textContent=state.method===&#x27;username&#x27;?copy(&#x27;切换邮箱登录&#x27;,&#x27;Use email instead&#x27;):copy(&#x27;切换用户名登录&#x27;,&#x27;Use username instead&#x27;);
+    const back=one(&#x27;.hh-back&#x27;);back.hidden=state.screen===&#x27;welcome&#x27;;
+    back.setAttribute(&#x27;aria-label&#x27;,state.screen===&#x27;login&#x27;?copy(&#x27;返回欢迎页&#x27;,&#x27;Back to welcome&#x27;):(step&gt;1&amp;&amp;!registration.committed)?copy(&#x27;返回上一步&#x27;,&#x27;Back to previous step&#x27;):copy(&#x27;返回登录&#x27;,&#x27;Back to sign in&#x27;));
+    const dark=state.theme===&#x27;dark&#x27;||(state.theme===&#x27;auto&#x27;&amp;&amp;matchMedia(&#x27;(prefers-color-scheme:dark)&#x27;).matches);
+    const theme=one(&#x27;.hh-theme&#x27;);theme.setAttribute(&#x27;aria-label&#x27;,dark?copy(&#x27;切换浅色主题&#x27;,&#x27;Switch to light theme&#x27;):copy(&#x27;切换深色主题&#x27;,&#x27;Switch to dark theme&#x27;));theme.setAttribute(&#x27;aria-pressed&#x27;,String(dark));icon(theme,dark?&#x27;sun&#x27;:&#x27;moon&#x27;);
+    one(&#x27;[data-action=&quot;login&quot;] .hh-next&#x27;).setAttribute(&#x27;aria-label&#x27;,state.method===&#x27;email&#x27;?copy(&#x27;使用邮箱验证码继续&#x27;,&#x27;Continue with email code&#x27;):copy(&#x27;登录并进入&#x27;,&#x27;Sign in and continue&#x27;));
+    one(&#x27;[data-action=&quot;register-email&quot;] .hh-next&#x27;).setAttribute(&#x27;aria-label&#x27;,copy(&#x27;验证邮箱并继续&#x27;,&#x27;Verify email and continue&#x27;));
+    one(&#x27;[data-action=&quot;register-account&quot;] .hh-next&#x27;).setAttribute(&#x27;aria-label&#x27;,copy(&#x27;继续设置账号安全&#x27;,&#x27;Continue to account security&#x27;));
+    one(&#x27;.hh-finish-register&#x27;).setAttribute(&#x27;aria-label&#x27;,copy(&#x27;完成注册&#x27;,&#x27;Finish registration&#x27;));
+    one(&#x27;[data-action=&quot;recover&quot;] .hh-next&#x27;).setAttribute(&#x27;aria-label&#x27;,copy(&#x27;验证恢复码&#x27;,&#x27;Verify recovery code&#x27;));
+    for(const [buttonSelector,inputSelector] of [[&#x27;.hh-eye&#x27;,&#x27;#hh-password&#x27;],[&#x27;.hh-register-eye&#x27;,&#x27;#hh-register-password&#x27;]]) {
+      const b=one(buttonSelector), revealed=one(inputSelector).type===&#x27;text&#x27;;
+      b.setAttribute(&#x27;aria-label&#x27;,revealed?copy(&#x27;隐藏密码&#x27;,&#x27;Hide password&#x27;):copy(&#x27;显示密码&#x27;,&#x27;Show password&#x27;));b.setAttribute(&#x27;aria-pressed&#x27;,String(revealed));icon(b,revealed?&#x27;eye-off&#x27;:&#x27;eye&#x27;);
+    }
+    one(&#x27;.hh-registration-progress&#x27;).hidden=step===0;
+    const progress=one(&#x27;.hh-progress-vector&#x27;);progress.setAttribute(&#x27;aria-valuenow&#x27;,String(step));progress.setAttribute(&#x27;aria-label&#x27;,copy(&#x27;注册进度，第 &#x27;+step+&#x27; 步，共 3 步&#x27;,&#x27;Registration, step &#x27;+step+&#x27; of 3&#x27;));one(&#x27;.hh-progress-fill&#x27;).setAttribute(&#x27;width&#x27;,String(step*100));
+    root.querySelectorAll(&#x27;[data-progress-step]&#x27;).forEach(e=&gt;{if(Number(e.dataset.progressStep)===step)e.setAttribute(&#x27;aria-current&#x27;,&#x27;step&#x27;);else e.removeAttribute(&#x27;aria-current&#x27;);});
+    root.querySelectorAll(&#x27;[data-security-panel]&#x27;).forEach(e=&gt;{e.hidden=registration.committed||e.dataset.securityPanel!==registration.phase;});
+    const visibleCode=step===3&amp;&amp;registration.phase===&#x27;show&#x27;&amp;&amp;!registration.committed&amp;&amp;registration.code;
+    root.querySelectorAll(&#x27;.hh-recovery-code code&#x27;).forEach((e,i)=&gt;{e.textContent=visibleCode?registration.code.slice(i*13,(i+1)*13):&#x27;&#x27;;});
+    one(&#x27;.hh-recovery-saved&#x27;).hidden=!registration.committed;
+    const passkey=one(&#x27;.hh-create-passkey&#x27;);passkey.disabled=!registration.committed||registration.passkey;passkey.dataset.complete=String(registration.passkey);
+    passkey.textContent=registration.passkey?copy(&#x27;通行密钥已设置&#x27;,&#x27;Passkey set up&#x27;):registration.committed?copy(&#x27;设置通行密钥&#x27;,&#x27;Set up a passkey&#x27;):copy(&#x27;确认恢复码后设置&#x27;,&#x27;Confirm recovery code first&#x27;);
+    one(&#x27;.hh-security-finish&#x27;).hidden=!registration.committed;
+    const copyButton=one(&#x27;.hh-copy-recovery&#x27;);
+    copyButton.disabled=!visibleCode;
+    copyButton.setAttribute(&#x27;aria-label&#x27;,registration.copyState===&#x27;copied&#x27;?copy(&#x27;恢复码已复制&#x27;,&#x27;Recovery code copied&#x27;):copy(&#x27;复制恢复码&#x27;,&#x27;Copy recovery code&#x27;));
+    icon(copyButton,registration.copyState===&#x27;copied&#x27;?&#x27;check&#x27;:&#x27;copy&#x27;);
+    const copyNote=one(&#x27;[data-security-panel=&quot;show&quot;] .hh-security-note&#x27;);
+    copyNote.setAttribute(&#x27;role&#x27;,&#x27;status&#x27;);copyNote.setAttribute(&#x27;aria-live&#x27;,&#x27;polite&#x27;);
+    if(registration.copyState===&#x27;copied&#x27;)copyNote.textContent=copy(&#x27;恢复码已复制，请妥善保存。原码只展示一次。&#x27;,&#x27;Recovery code copied. Store it safely. It is shown only once.&#x27;);
+    if(registration.copyState===&#x27;failed&#x27;)copyNote.textContent=copy(&#x27;复制未成功，请手动记下恢复码并妥善保存。&#x27;,&#x27;Copy failed. Write down the code and keep it safe.&#x27;);
+    updateCodeRequest();status.textContent=previewStatus();
+    if(globalThis.lucide)lucide.createIcons();
   }
   function restore(saved) {
-    const ui=saved?.privateContent;
-    if(!ui || typeof ui!==&#x27;object&#x27;)return;
+    const ui=saved?.privateContent;if(!ui||typeof ui!==&#x27;object&#x27;)return;
     state.screen=screens.includes(ui.screen)?ui.screen:&#x27;login&#x27;;
-    state.method=ui.method===&#x27;email&#x27;||ui.screen===&#x27;email&#x27;?&#x27;email&#x27;:&#x27;username&#x27;;
-    state.lang=ui.lang===&#x27;en&#x27;?&#x27;en&#x27;:&#x27;zh&#x27;;
-    state.theme=[&#x27;light&#x27;,&#x27;dark&#x27;].includes(ui.theme)?ui.theme:&#x27;auto&#x27;;
+    // Secrets and verification results are deliberately not persisted.
+    if(state.screen===&#x27;register-account&#x27;&amp;&amp;!registration.verified)state.screen=&#x27;register&#x27;;
+    if(state.screen===&#x27;register-security&#x27;&amp;&amp;(!registration.verified||(!registration.code&amp;&amp;!registration.committed)))state.screen=&#x27;register&#x27;;
+    state.method=ui.method===&#x27;email&#x27;?&#x27;email&#x27;:&#x27;username&#x27;;state.lang=ui.lang===&#x27;en&#x27;?&#x27;en&#x27;:&#x27;zh&#x27;;state.theme=[&#x27;light&#x27;,&#x27;dark&#x27;].includes(ui.theme)?ui.theme:&#x27;auto&#x27;;
   }
   function save() {
-    if(window.openai?.setWidgetState) window.openai.setWidgetState({modelContent:{design:&#x27;HnuHole welcome flow&#x27;,language:state.lang,appearance:state.theme},privateContent:{...state}}).catch(()=&gt;{});
+    if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{design:&#x27;HnuHole three-step registration&#x27;,language:state.lang,appearance:state.theme,registrationStep:registrationStep()},privateContent:{...state}}).catch(()=&gt;{});
+  }
+  function clearError(form) {
+    form.querySelectorAll(&#x27;[aria-invalid]&#x27;).forEach(e=&gt;e.removeAttribute(&#x27;aria-invalid&#x27;));
+    form.querySelectorAll(&#x27;.hh-form-error&#x27;).forEach(e=&gt;{e.hidden=true;e.textContent=&#x27;&#x27;;delete e.dataset.zh;delete e.dataset.en;});
+  }
+  function fail(form,errorId,fieldId,zh,en) {
+    const error=one(errorId),field=one(fieldId);error.dataset.zh=zh;error.dataset.en=en;error.textContent=copy(zh,en);error.hidden=false;field.setAttribute(&#x27;aria-invalid&#x27;,&#x27;true&#x27;);field.focus();
+  }
+  function resetRegistration() {
+    registration.sentEmail=null;registration.sentAt=0;registration.verified=false;registration.code=null;registration.phase=&#x27;show&#x27;;registration.committed=false;registration.passkey=false;registration.copyState=&#x27;idle&#x27;;
+    root.querySelectorAll(&#x27;[data-screen^=&quot;register&quot;] input&#x27;).forEach(e=&gt;{e.value=&#x27;&#x27;;});one(&#x27;#hh-register-password&#x27;).type=&#x27;password&#x27;;root.querySelectorAll(&#x27;[data-screen^=&quot;register&quot;] form&#x27;).forEach(clearError);
   }
   function go(screen) {
     if(!screens.includes(screen))return;
     const prev=state.screen;
-    state.screen=screen;
-    const password=root.querySelector(&#x27;#hh-password&#x27;);password.value=&#x27;&#x27;;password.type=&#x27;password&#x27;;
-    const eye=root.querySelector(&#x27;.hh-eye&#x27;);eye.setAttribute(&#x27;aria-pressed&#x27;,&#x27;false&#x27;);icon(eye,&#x27;eye&#x27;);
+    if(screen===&#x27;register-account&#x27;&amp;&amp;!registration.verified)screen=&#x27;register&#x27;;
+    if(screen===&#x27;register-security&#x27;&amp;&amp;!registration.code)screen=&#x27;register-account&#x27;;
+    if(prev.startsWith(&#x27;register&#x27;)&amp;&amp;!screen.startsWith(&#x27;register&#x27;))resetRegistration();
+    if(screen===&#x27;register&#x27;&amp;&amp;!prev.startsWith(&#x27;register&#x27;))resetRegistration();
+    state.screen=screen;one(&#x27;#hh-password&#x27;).value=&#x27;&#x27;;one(&#x27;#hh-password&#x27;).type=&#x27;password&#x27;;
     render();save();
-    if(prev!==screen &amp;&amp; !matchMedia(&#x27;(prefers-reduced-motion:reduce)&#x27;).matches) {
-      root.querySelector(&#x27;[data-screen=&quot;&#x27;+screen+&#x27;&quot;]&#x27;).animate([{transform:&#x27;translateX(12px)&#x27;},{transform:&#x27;translateX(0)&#x27;}],{duration:180,easing:&#x27;ease-out&#x27;});
-    }
+    const current=one(&#x27;[data-screen=&quot;&#x27;+screen+&#x27;&quot;]&#x27;);
+    if(prev!==screen&amp;&amp;!reduced())current.animate([{transform:&#x27;translateX(12px)&#x27;},{transform:&#x27;translateX(0)&#x27;}],{duration:180,easing:&#x27;ease-out&#x27;});
+    if(prev!==screen)requestAnimationFrame(()=&gt;{const first=current.querySelector(&#x27;input:not(:disabled),button:not(:disabled)&#x27;);if(first)first.focus({preventScroll:true});});
   }
   root.querySelectorAll(&#x27;[data-go]&#x27;).forEach(button=&gt;button.addEventListener(&#x27;click&#x27;,()=&gt;go(button.dataset.go)));
-  root.querySelector(&#x27;.hh-method-switch&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{
-    root.querySelector(&#x27;#hh-password&#x27;).value=&#x27;&#x27;;root.querySelector(&#x27;#hh-password&#x27;).type=&#x27;password&#x27;;
-    root.querySelector(&#x27;#hh-email-code&#x27;).value=&#x27;&#x27;;
-    const eye=root.querySelector(&#x27;.hh-eye&#x27;);eye.setAttribute(&#x27;aria-pressed&#x27;,&#x27;false&#x27;);icon(eye,&#x27;eye&#x27;);
-    state.method=state.method===&#x27;username&#x27;?&#x27;email&#x27;:&#x27;username&#x27;;render();save();
+  one(&#x27;.hh-method-switch&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{one(&#x27;#hh-password&#x27;).value=&#x27;&#x27;;one(&#x27;#hh-password&#x27;).type=&#x27;password&#x27;;one(&#x27;#hh-email-code&#x27;).value=&#x27;&#x27;;state.method=state.method===&#x27;username&#x27;?&#x27;email&#x27;:&#x27;username&#x27;;render();save();});
+  one(&#x27;.hh-back&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{
+    if(state.screen===&#x27;register-account&#x27;){one(&#x27;#hh-register-password&#x27;).value=&#x27;&#x27;;one(&#x27;#hh-register-password&#x27;).type=&#x27;password&#x27;;go(&#x27;register&#x27;);}
+    else if(state.screen===&#x27;register-security&#x27;&amp;&amp;!registration.committed){registration.code=null;registration.phase=&#x27;show&#x27;;one(&#x27;#hh-register-recovery&#x27;).value=&#x27;&#x27;;go(&#x27;register-account&#x27;);}
+    else go(state.screen===&#x27;login&#x27;?&#x27;welcome&#x27;:&#x27;login&#x27;);
   });
-  root.querySelector(&#x27;.hh-back&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;go(state.screen===&#x27;login&#x27;?&#x27;welcome&#x27;:&#x27;login&#x27;));
-  root.querySelector(&#x27;.hh-language&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{state.lang=state.lang===&#x27;zh&#x27;?&#x27;en&#x27;:&#x27;zh&#x27;;render();save();});
-  root.querySelector(&#x27;.hh-theme&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{
-    const dark=state.theme===&#x27;dark&#x27;||(state.theme===&#x27;auto&#x27; &amp;&amp; matchMedia(&#x27;(prefers-color-scheme:dark)&#x27;).matches);
-    state.theme=dark?&#x27;light&#x27;:&#x27;dark&#x27;;render();save();
+  one(&#x27;.hh-language&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{state.lang=state.lang===&#x27;zh&#x27;?&#x27;en&#x27;:&#x27;zh&#x27;;render();save();});
+  one(&#x27;.hh-theme&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{const dark=state.theme===&#x27;dark&#x27;||(state.theme===&#x27;auto&#x27;&amp;&amp;matchMedia(&#x27;(prefers-color-scheme:dark)&#x27;).matches);state.theme=dark?&#x27;light&#x27;:&#x27;dark&#x27;;render();save();});
+  for(const [buttonSelector,inputSelector] of [[&#x27;.hh-eye&#x27;,&#x27;#hh-password&#x27;],[&#x27;.hh-register-eye&#x27;,&#x27;#hh-register-password&#x27;]])one(buttonSelector).addEventListener(&#x27;click&#x27;,()=&gt;{const input=one(inputSelector);input.type=input.type===&#x27;password&#x27;?&#x27;text&#x27;:&#x27;password&#x27;;render();});
+  function campusAddress() {
+    const input=one(&#x27;#hh-register-email&#x27;);let value=input.value;
+    if(/^[^\s@]+@hainanu\.edu\.cn$/.test(value)){input.value=value.slice(0,-15);value=input.value;}
+    return /^[^\s@]+$/.test(value)?value+&#x27;@hainanu.edu.cn&#x27;:null;
+  }
+  one(&#x27;#hh-register-email&#x27;).addEventListener(&#x27;input&#x27;,()=&gt;{registration.verified=false;});
+  one(&#x27;.hh-register-get-code&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{
+    const form=one(&#x27;[data-action=&quot;register-email&quot;]&#x27;);clearError(form);const email=campusAddress();
+    if(!email){fail(form,&#x27;#hh-email-error&#x27;,&#x27;#hh-register-email&#x27;,&#x27;请输入正确的校园邮箱前缀，不要包含空格或其他域名。&#x27;,&#x27;Enter a campus email prefix without spaces or another domain.&#x27;);return;}
+    registration.sentEmail=email;registration.sentAt=Date.now();one(&#x27;#hh-register-code&#x27;).value=&#x27;&#x27;;render();one(&#x27;#hh-register-code&#x27;).focus();
   });
-  root.querySelector(&#x27;.hh-eye&#x27;).addEventListener(&#x27;click&#x27;,e=&gt;{
-    const input=root.querySelector(&#x27;#hh-password&#x27;); const reveal=input.type===&#x27;password&#x27;;input.type=reveal?&#x27;text&#x27;:&#x27;password&#x27;;
-    const button=e.currentTarget;button.setAttribute(&#x27;aria-pressed&#x27;,String(reveal));
-    button.setAttribute(&#x27;aria-label&#x27;,reveal?copy(&#x27;隐藏密码&#x27;,&#x27;Hide password&#x27;):copy(&#x27;显示密码&#x27;,&#x27;Show password&#x27;));
-    icon(button,reveal?&#x27;eye-off&#x27;:&#x27;eye&#x27;);if(globalThis.lucide)lucide.createIcons();
+  one(&#x27;[data-action=&quot;register-email&quot;]&#x27;).addEventListener(&#x27;submit&#x27;,e=&gt;{
+    e.preventDefault();const form=e.currentTarget;clearError(form);const email=campusAddress();
+    if(!email){fail(form,&#x27;#hh-email-error&#x27;,&#x27;#hh-register-email&#x27;,&#x27;请输入正确的校园邮箱前缀。&#x27;,&#x27;Enter a valid campus email prefix.&#x27;);return;}
+    if(registration.sentEmail!==email){fail(form,&#x27;#hh-email-error&#x27;,&#x27;#hh-register-email&#x27;,&#x27;请先为这个邮箱获取验证码。&#x27;,&#x27;Request a code for this email first.&#x27;);return;}
+    if(!/^\d{6}$/.test(one(&#x27;#hh-register-code&#x27;).value)){fail(form,&#x27;#hh-email-error&#x27;,&#x27;#hh-register-code&#x27;,&#x27;请输入 6 位验证码。&#x27;,&#x27;Enter a 6-digit verification code.&#x27;);return;}
+    if(Date.now()-registration.sentAt&gt;300000){fail(form,&#x27;#hh-email-error&#x27;,&#x27;#hh-register-code&#x27;,&#x27;验证码已过期，请重新获取。&#x27;,&#x27;This code expired. Request another code.&#x27;);return;}
+    registration.verified=true;go(&#x27;register-account&#x27;);
   });
-  root.querySelectorAll(&#x27;form&#x27;).forEach(form=&gt;form.addEventListener(&#x27;submit&#x27;,e=&gt;{
-    e.preventDefault();
-    const action=form.dataset.action===&#x27;login&#x27;&amp;&amp;state.method===&#x27;email&#x27;?&#x27;email&#x27;:form.dataset.action;
-    const zh={login:&#x27;登录页面示意 · 未执行登录&#x27;,email:&#x27;邮箱登录页面示意 · 未执行登录&#x27;,register:&#x27;注册后续：验证码 → 设置用户名和密码 → 保存并确认恢复码 → 主动登录&#x27;,recover:&#x27;恢复后续：验证恢复凭据 → 设置新密码 → 保存并确认新恢复码 → 主动登录&#x27;};
-    const en={login:&#x27;Sign-in preview · No sign-in was performed&#x27;,email:&#x27;Email sign-in preview · No sign-in was performed&#x27;,register:&#x27;Next: verification code → new credentials → save and confirm recovery code → sign in&#x27;,recover:&#x27;Next: verify recovery → new password → save and confirm new recovery code → sign in&#x27;};
-    status.textContent=state.lang===&#x27;zh&#x27;?zh[action]:en[action];
-  }));
-  root.querySelector(&#x27;.hh-get-code&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{status.textContent=copy(&#x27;验证码获取交互示意 · 未发送验证码&#x27;,&#x27;Code request preview · No code was sent&#x27;);});
-  root.querySelector(&#x27;.hh-passkey&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{status.textContent=copy(&#x27;通行密钥恢复入口示意 · 未调用设备凭据&#x27;,&#x27;Passkey recovery entry preview · Device credentials were not requested&#x27;);});
-  restore(window.openai?.widgetState);
-  render();
+  one(&#x27;[data-action=&quot;register-account&quot;]&#x27;).addEventListener(&#x27;submit&#x27;,e=&gt;{
+    e.preventDefault();const form=e.currentTarget;clearError(form);if(!registration.verified){go(&#x27;register&#x27;);return;}
+    if(!/^[a-z][a-z0-9_]{5,23}$/i.test(one(&#x27;#hh-register-user&#x27;).value)){fail(form,&#x27;#hh-account-error&#x27;,&#x27;#hh-register-user&#x27;,&#x27;用户名需为 6–24 个字母、数字或下划线，以字母开头。&#x27;,&#x27;Use 6–24 letters, digits or underscores, starting with a letter.&#x27;);return;}
+    if(Array.from(one(&#x27;#hh-register-password&#x27;).value.normalize(&#x27;NFC&#x27;)).length&lt;15){fail(form,&#x27;#hh-account-error&#x27;,&#x27;#hh-register-password&#x27;,&#x27;密码至少需要 15 个字符。&#x27;,&#x27;Use a password with at least 15 characters.&#x27;);return;}
+    registration.code=sampleCodes[registration.revision++%sampleCodes.length];registration.phase=&#x27;show&#x27;;registration.committed=false;registration.passkey=false;registration.copyState=&#x27;idle&#x27;;one(&#x27;#hh-register-recovery&#x27;).value=&#x27;&#x27;;go(&#x27;register-security&#x27;);
+  });
+  one(&#x27;.hh-copy-recovery&#x27;).addEventListener(&#x27;click&#x27;,async()=&gt;{
+    const code=registration.code;
+    if(state.screen!==&#x27;register-security&#x27;||registration.phase!==&#x27;show&#x27;||registration.committed||!code)return;
+    let copied=false;
+    try { if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(code);copied=true;} } catch (_) {}
+    if(!copied){
+      const previous=document.activeElement,transfer=document.createElement(&#x27;textarea&#x27;);
+      transfer.className=&#x27;hh-clipboard-transfer&#x27;;transfer.readOnly=true;transfer.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);transfer.value=code;
+      phone.append(transfer);transfer.select();transfer.setSelectionRange(0,code.length);
+      try {copied=document.execCommand(&#x27;copy&#x27;);} catch (_) {}
+      transfer.remove();if(previous?.isConnected)previous.focus({preventScroll:true});
+    }
+    if(registration.code===code&amp;&amp;registration.phase===&#x27;show&#x27;&amp;&amp;state.screen===&#x27;register-security&#x27;){
+      registration.copyState=copied?&#x27;copied&#x27;:&#x27;failed&#x27;;render();
+    }
+  });
+  one(&#x27;.hh-save-recovery&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{registration.phase=&#x27;confirm&#x27;;render();one(&#x27;#hh-register-recovery&#x27;).focus();});
+  one(&#x27;[data-action=&quot;register-recovery&quot;]&#x27;).addEventListener(&#x27;submit&#x27;,e=&gt;{
+    e.preventDefault();const form=e.currentTarget;clearError(form);const supplied=one(&#x27;#hh-register-recovery&#x27;).value.replace(/[\s-]/g,&#x27;&#x27;).toUpperCase();
+    if(!registration.code||supplied!==registration.code){fail(form,&#x27;#hh-recovery-error&#x27;,&#x27;#hh-register-recovery&#x27;,&#x27;恢复码不一致，请完整输入你保存的恢复码。&#x27;,&#x27;The code does not match. Enter the complete code you saved.&#x27;);return;}
+    registration.committed=true;registration.code=null;one(&#x27;#hh-register-recovery&#x27;).value=&#x27;&#x27;;one(&#x27;#hh-register-password&#x27;).value=&#x27;&#x27;;one(&#x27;#hh-register-code&#x27;).value=&#x27;&#x27;;render();save();one(&#x27;.hh-create-passkey&#x27;).focus({preventScroll:true});
+  });
+  one(&#x27;.hh-create-passkey&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(!registration.committed)return;registration.passkey=true;render();status.textContent=copy(&#x27;这里只演示设置完成状态，没有调用系统或创建通行密钥。&#x27;,&#x27;This only previews the completed state. No system prompt or passkey is created.&#x27;);});
+  function finishRegistration(){go(&#x27;login&#x27;);status.textContent=copy(&#x27;三步注册演示完成。未创建账号、发送邮件或保存任何输入。&#x27;,&#x27;Three-step preview completed. No account was created, email sent, or input saved.&#x27;);}
+  one(&#x27;.hh-finish-register&#x27;).addEventListener(&#x27;click&#x27;,finishRegistration);
+  root.querySelectorAll(&#x27;[data-action=&quot;login&quot;],[data-action=&quot;recover&quot;]&#x27;).forEach(form=&gt;form.addEventListener(&#x27;submit&#x27;,e=&gt;{e.preventDefault();status.textContent=copy(&#x27;界面交互示意，未执行真实登录或账号恢复。&#x27;,&#x27;Interface preview. No real sign-in or recovery was performed.&#x27;);}));
+  one(&#x27;[data-action=&quot;login&quot;] .hh-get-code&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{status.textContent=copy(&#x27;验证码获取交互示意，未发送验证码。&#x27;,&#x27;Code request preview. No code was sent.&#x27;);});
+  one(&#x27;.hh-passkey&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{status.textContent=copy(&#x27;通行密钥恢复入口示意，未调用设备凭据。&#x27;,&#x27;Passkey recovery preview. No device credential was requested.&#x27;);});
+  restore(window.openai?.widgetState);render();
   window.addEventListener(&#x27;openai:set_globals&#x27;,e=&gt;{if(e.detail?.globals?.widgetState){restore(e.detail.globals.widgetState);render();}});
-  function applyStyle(){phone.style.setProperty(&#x27;--hh-accent&#x27;,styleState.accent);const logo=root.querySelector(&#x27;.hh-logo&#x27;);logo.style.width=logo.style.height=styleState.logoSize+&#x27;px&#x27;;}
-  if(globalThis.Tweak){const tweak=new Tweak({container:phone,onChange:applyStyle});tweak.addColorPicker(styleState,&#x27;accent&#x27;,{label:&#x27;品牌色&#x27;,reference:&#x27;--hh-accent&#x27;});tweak.addSlider(styleState,&#x27;logoSize&#x27;,{label:&#x27;Logo 大小&#x27;,min:120,max:165,step:5,unit:&#x27;px&#x27;});}
+  setInterval(()=&gt;{if(state.screen===&#x27;register&#x27;)updateCodeRequest();},1000);
 })();
 &lt;/script&gt;
 

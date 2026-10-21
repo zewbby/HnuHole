@@ -1,5 +1,7 @@
 # 登录注册流程 UI 定稿
 
+> 2026-10-21 当前注册设计：用户已确认[三步注册 v3](registration-v3/registration-three-steps.png)（“可以，就这样”）。index.html／source.html 已保存：邮箱验证→用户名密码→账号安全，恢复码框内复制、移除“暂不设置”、Passkey可选。欢迎／登录延续原确认版。仅本地设计获确认，产品、Sites、APK未更新；[核对记录](registration-v3/verification.json)与[评审](../ui-reviews/registration-wizard-v3.md)。v2及旧版Git b80452c保留。
+
 定稿日期：2026-10-21（Asia/Shanghai）。任务：`AUTH-UI-FINAL-01`。
 
 用户确认当前交互稿“定稿然后推送到 GitHub 上，作为整个登录注册流程的定稿”。本目录是后续欢迎、登录、注册和账号恢复界面的视觉与交互基准；其中用户名／邮箱登录的原位切换，以最后一次修订为准。
