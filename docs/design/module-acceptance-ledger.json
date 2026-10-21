@@ -14702,12 +14702,12 @@
       "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json",
       "telegramAndroidAppearance20261021": {
         "task": "UI-ANDROID-APPEARANCE-01",
-        "status": "IMPLEMENTED_IN_WORKTREE_NOT_MERGED",
+        "status": "IMPLEMENTED_VALIDATED_PR37_PENDING_MAIN_INTEGRATION",
         "branch": "codex/feat/telegram-android-appearance",
         "scope": "Shared fonts/colors, direct root-comment dialog, optimistic serial like/unlike; existing business boundaries retained",
         "report": "docs/design/telegram-android-appearance.md",
-        "host": "637 full Flutter tests PASS; final source fingerprints and device status in report",
-        "device": "New test APK installed; runtime font correction and network readiness still being checked",
+        "host": "29eec1d: 653 full Flutter PASS, analyze0, independent agent review no blocker",
+        "device": "2126 vivo Android15 scoped PASS: quick reply unique root publication, detail layout, like/favorite cancel and restore; final PR40 integrated APK pending",
         "production": "NOT_RUN"
       }
     },
@@ -14734,12 +14734,12 @@
       },
       "telegramAndroidAppearance20261021": {
         "task": "UI-ANDROID-APPEARANCE-01",
-        "status": "IMPLEMENTED_IN_WORKTREE_NOT_MERGED",
+        "status": "IMPLEMENTED_VALIDATED_PR37_PENDING_MAIN_INTEGRATION",
         "branch": "codex/feat/telegram-android-appearance",
         "scope": "Shared fonts/colors, direct root-comment dialog, optimistic serial like/unlike; existing business boundaries retained",
         "report": "docs/design/telegram-android-appearance.md",
-        "host": "637 full Flutter tests PASS; final source fingerprints and device status in report",
-        "device": "New test APK installed; runtime font correction and network readiness still being checked",
+        "host": "29eec1d: 653 full Flutter PASS, analyze0, independent agent review no blocker",
+        "device": "2126 vivo Android15 scoped PASS: quick reply unique root publication, detail layout, like/favorite cancel and restore; final PR40 integrated APK pending",
         "production": "NOT_RUN"
       }
     },
@@ -16421,12 +16421,12 @@
       "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json",
       "telegramAndroidAppearance20261021": {
         "task": "UI-ANDROID-APPEARANCE-01",
-        "status": "IMPLEMENTED_IN_WORKTREE_NOT_MERGED",
+        "status": "IMPLEMENTED_VALIDATED_PR37_PENDING_MAIN_INTEGRATION",
         "branch": "codex/feat/telegram-android-appearance",
         "scope": "Shared fonts/colors, direct root-comment dialog, optimistic serial like/unlike; existing business boundaries retained",
         "report": "docs/design/telegram-android-appearance.md",
-        "host": "637 full Flutter tests PASS; final source fingerprints and device status in report",
-        "device": "New test APK installed; runtime font correction and network readiness still being checked",
+        "host": "29eec1d: 653 full Flutter PASS, analyze0, independent agent review no blocker",
+        "device": "2126 vivo Android15 scoped PASS: quick reply unique root publication, detail layout, like/favorite cancel and restore; final PR40 integrated APK pending",
         "production": "NOT_RUN"
       }
     },
@@ -17816,12 +17816,12 @@
       },
       "telegramAndroidAppearance20261021": {
         "task": "UI-ANDROID-APPEARANCE-01",
-        "status": "IMPLEMENTED_IN_WORKTREE_NOT_MERGED",
+        "status": "IMPLEMENTED_VALIDATED_PR37_PENDING_MAIN_INTEGRATION",
         "branch": "codex/feat/telegram-android-appearance",
         "scope": "Shared fonts/colors, direct root-comment dialog, optimistic serial like/unlike; existing business boundaries retained",
         "report": "docs/design/telegram-android-appearance.md",
-        "host": "637 full Flutter tests PASS; final source fingerprints and device status in report",
-        "device": "New test APK installed; runtime font correction and network readiness still being checked",
+        "host": "29eec1d: 653 full Flutter PASS, analyze0, independent agent review no blocker",
+        "device": "2126 vivo Android15 scoped PASS: quick reply unique root publication, detail layout, like/favorite cancel and restore; final PR40 integrated APK pending",
         "production": "NOT_RUN"
       }
     },
