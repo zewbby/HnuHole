@@ -1,0 +1,236 @@
+<div id="hnuhole-entry-concept" class="viz-dotted-background">
+  <div class="hh-stage">
+    <article class="hh-phone" aria-label="HnuHole 欢迎与登录设计示意">
+      <div class="hh-topbar">
+        <button type="button" class="hh-icon cursor-interaction hh-back" aria-label="返回欢迎页" hidden><i data-lucide="arrow-left" aria-hidden="true"></i></button>
+        <button type="button" class="hh-icon cursor-interaction hh-theme" aria-label="切换明暗主题"><i data-lucide="moon" aria-hidden="true"></i></button>
+      </div>
+
+      <section class="hh-screen hh-welcome" data-screen="welcome" aria-label="欢迎页">
+        <div class="hh-brand">
+          <div class="hh-logo" role="img" aria-label="临时 h 标志，正式 Logo 待设计"><span>h</span></div>
+          <h1>HnuHole</h1>
+          <p class="hh-tagline" data-zh="你的校园，你的树洞。|在这里，说说心里话。" data-en="Your campus, your stories.|A space to speak your mind.">你的校园，你的树洞。<br>在这里，说说心里话。</p>
+        </div>
+        <div class="hh-welcome-actions">
+          <button type="button" class="hh-language hh-text-action cursor-interaction">Continue in English</button>
+          <button type="button" class="hh-primary cursor-interaction" data-go="login" data-zh="开始使用" data-en="Get started">开始使用</button>
+        </div>
+      </section>
+
+      <section class="hh-screen hh-form-screen" data-screen="login" aria-label="账号登录" hidden>
+        <div class="hh-heading">
+          <h2 data-zh="欢迎回来" data-en="Welcome back">欢迎回来</h2>
+        </div>
+        <form class="hh-form" data-action="login">
+          <div class="hh-login-fields" id="hh-username-fields" data-method="username">
+            <div class="hh-field"><label for="hh-user" data-zh="用户名" data-en="Username">用户名</label><input id="hh-user" name="preview-username" type="text" autocomplete="off" spellcheck="false" placeholder="输入用户名" data-placeholder-zh="输入用户名" data-placeholder-en="Your username"></div>
+            <div class="hh-field hh-password-field"><label for="hh-password" data-zh="密码" data-en="Password">密码</label><input id="hh-password" name="preview-password" type="password" autocomplete="off" placeholder="输入密码" data-placeholder-zh="输入密码" data-placeholder-en="Your password"><button type="button" class="hh-eye hh-icon cursor-interaction" aria-label="显示密码" aria-pressed="false"><i data-lucide="eye" aria-hidden="true"></i></button></div>
+          </div>
+          <div class="hh-login-fields" id="hh-email-fields" data-method="email" hidden>
+            <div class="hh-field hh-email-field"><label for="hh-email-prefix" data-zh="邮箱" data-en="Email">邮箱</label><input id="hh-email-prefix" type="text" inputmode="email" autocomplete="off" spellcheck="false" placeholder="输入邮箱" data-placeholder-zh="输入邮箱" data-placeholder-en="Your email" aria-describedby="hh-email-suffix"><span id="hh-email-suffix" class="hh-email-suffix">@hainanu.edu.cn</span></div>
+            <div class="hh-field hh-otp-field"><label for="hh-email-code" data-zh="验证码" data-en="Verification code">验证码</label><input id="hh-email-code" type="text" inputmode="numeric" autocomplete="off" placeholder="输入验证码" data-placeholder-zh="输入验证码" data-placeholder-en="Email code"><button type="button" class="hh-get-code cursor-interaction" data-zh="获取验证码" data-en="Get code">获取验证码</button></div>
+          </div>
+          <div class="hh-options-row"><button type="button" class="hh-text-action hh-method-switch cursor-interaction" aria-controls="hh-username-fields hh-email-fields">切换邮箱登录</button><button type="button" class="hh-text-action cursor-interaction" data-go="recover" data-zh="找回账号" data-en="Recover account">找回账号</button></div>
+          <div class="hh-next-row"><button type="submit" class="hh-next cursor-interaction" aria-label="登录并进入"><i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
+        </form>
+        <div class="hh-secondary-path"><span data-zh="第一次来？" data-en="New here?">第一次来？</span><button type="button" class="hh-text-action cursor-interaction" data-go="register" data-zh="创建账号" data-en="Create an account">创建账号</button></div>
+      </section>
+
+      <section class="hh-screen hh-form-screen" data-screen="register" aria-label="新账号校邮验证" hidden>
+        <div class="hh-heading"><h2 data-zh="验证校园邮箱" data-en="Verify campus email">验证校园邮箱</h2><p data-zh="用校园邮箱开启你的树洞账号" data-en="Start with your campus email">用校园邮箱开启你的树洞账号</p></div>
+        <form class="hh-form" data-action="register">
+          <div class="hh-field"><label for="hh-email" data-zh="校园邮箱" data-en="Campus email">校园邮箱</label><input id="hh-email" type="email" autocomplete="off" placeholder="你的邮箱 @hainanu.edu.cn" data-placeholder-zh="你的邮箱 @hainanu.edu.cn" data-placeholder-en="Your email @hainanu.edu.cn"></div>
+          <p class="hh-login-note" data-zh="校园邮箱用于验证校园身份，请在下一步设置用户名和密码。" data-en="Verify your campus identity, then choose a username and password.">校园邮箱用于验证校园身份，请在下一步设置用户名和密码。</p>
+          <div class="hh-next-row"><button type="submit" class="hh-next cursor-interaction" aria-label="获取验证码"><i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
+        </form>
+        <div class="hh-secondary-path"><span data-zh="已有账号？" data-en="Already have an account?">已有账号？</span><button type="button" class="hh-text-action cursor-interaction" data-go="login" data-zh="返回登录" data-en="Sign in">返回登录</button></div>
+      </section>
+
+      <section class="hh-screen hh-form-screen" data-screen="recover" aria-label="找回账号" hidden>
+        <div class="hh-heading"><h2 data-zh="找回你的账号" data-en="Recover your account">找回你的账号</h2><p data-zh="使用你保存的恢复码" data-en="Use the recovery code you saved">使用你保存的恢复码</p></div>
+        <form class="hh-form" data-action="recover">
+          <div class="hh-field"><label for="hh-recovery" data-zh="恢复码" data-en="Recovery code">恢复码</label><input id="hh-recovery" type="text" autocomplete="off" spellcheck="false" placeholder="输入恢复码" data-placeholder-zh="输入恢复码" data-placeholder-en="Your recovery code"></div>
+          <button type="button" class="hh-text-action cursor-interaction hh-passkey" data-zh="使用通行密钥恢复 ›" data-en="Recover with a passkey ›">使用通行密钥恢复 ›</button>
+          <p class="hh-login-note" data-zh="验证恢复凭据后，重设密码并保存新的恢复码。" data-en="After verification, set a new password and save a new recovery code.">验证恢复凭据后，重设密码并保存新的恢复码。</p>
+          <div class="hh-next-row"><button type="submit" class="hh-next cursor-interaction" aria-label="验证恢复码"><i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
+        </form>
+        <div class="hh-secondary-path"><button type="button" class="hh-text-action cursor-interaction" data-go="login" data-zh="返回登录" data-en="Back to sign in">返回登录</button></div>
+      </section>
+      <div class="hh-bottom-space" aria-hidden="true"><span></span></div>
+    </article>
+  </div>
+  <p class="hh-preview-status" aria-live="polite">交互示意 · Logo 为占位设计 · 未连接账号服务</p>
+</div>
+<style>
+  #hnuhole-entry-concept { padding:28px 12px 12px; background-color:transparent; }
+  #hnuhole-entry-concept .hh-stage { display:flex; justify-content:center; }
+  #hnuhole-entry-concept .hh-phone {
+    --hh-bg:light-dark(#ffffff,#14171b); --hh-fg:light-dark(#24272b,#f2f4f7); --hh-secondary:light-dark(#777e86,#a8b1bc);
+    --hh-border:light-dark(#d9dde2,#434b56); --hh-accent:#00a7e9; --hh-link:light-dark(#0084b8,#50c4fa); --hh-button-fg:#ffffff;
+    --hh-chrome:light-dark(#d8dce1,#3b434c); --hh-shadow:light-dark(#1f29371a,#00000030);
+    color-scheme:light dark; width:100%; max-width:375px; min-height:724px; display:flex; flex-direction:column; position:relative;
+    background:var(--hh-bg); color:var(--hh-fg); border:1px solid var(--hh-border); border-radius:30px;
+    box-shadow:0 9px 32px var(--hh-shadow); font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.55; box-sizing:border-box; overflow:hidden;
+    transition:background-color .26s,color .26s,border-color .26s;
+  }
+  #hnuhole-entry-concept .hh-phone *, #hnuhole-entry-concept .hh-phone *::before, #hnuhole-entry-concept .hh-phone *::after { box-sizing:border-box; }
+  #hnuhole-entry-concept .hh-phone [hidden] { display:none !important; }
+  #hnuhole-entry-concept .hh-phone button { font:inherit; -webkit-tap-highlight-color:transparent; }
+  #hnuhole-entry-concept .hh-topbar { height:82px; padding:20px 16px 10px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+  #hnuhole-entry-concept .hh-icon { padding:10px; width:44px; height:44px; border:0; background:transparent; color:var(--hh-fg); display:inline-flex; justify-content:center; align-items:center; border-radius:50%; }
+  #hnuhole-entry-concept .hh-icon svg { width:25px !important; height:25px !important; }
+  #hnuhole-entry-concept .hh-theme { color:var(--hh-accent); margin-left:auto; }
+  #hnuhole-entry-concept .hh-screen { flex:1; padding:0 24px; min-height:605px; }
+  #hnuhole-entry-concept .hh-welcome { display:flex; flex-direction:column; justify-content:space-between; }
+  #hnuhole-entry-concept .hh-brand { padding-top:58px; text-align:center; }
+  #hnuhole-entry-concept .hh-logo { width:150px; height:150px; background:var(--hh-accent); color:var(--hh-button-fg); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 25px; }
+  #hnuhole-entry-concept .hh-logo span { font:500 112px/1 Georgia,serif; letter-spacing:-6px; margin-top:-15px; margin-left:-5px; }
+  #hnuhole-entry-concept h1 { margin:0 0 10px; font-size:31px; line-height:1.25; font-weight:650; letter-spacing:-.9px; color:var(--hh-fg); }
+  #hnuhole-entry-concept .hh-tagline { margin:0; font-size:16px; line-height:1.6; color:var(--hh-fg); }
+  #hnuhole-entry-concept .hh-welcome-actions { display:grid; gap:24px; padding:30px 0 24px; }
+  #hnuhole-entry-concept .hh-primary { border:0; width:100%; border-radius:30px; padding:14px 22px; min-height:54px; background:var(--hh-accent); color:var(--hh-button-fg); font-weight:650; }
+  #hnuhole-entry-concept .hh-text-action { border:0; background:transparent; color:var(--hh-link); padding:10px 0; min-height:44px; }
+  #hnuhole-entry-concept .hh-language { font-size:17px; }
+  #hnuhole-entry-concept .hh-form-screen { display:flex; flex-direction:column; }
+  #hnuhole-entry-concept .hh-heading { text-align:center; padding:74px 0 42px; }
+  #hnuhole-entry-concept .hh-heading h2 { font-size:25px; line-height:1.3; font-weight:650; margin:0 0 12px; letter-spacing:-.3px; color:var(--hh-fg); }
+  #hnuhole-entry-concept .hh-heading p { font-size:15px; line-height:1.6; margin:0; color:var(--hh-secondary); }
+  #hnuhole-entry-concept [data-screen="login"] .hh-heading { padding-bottom:44px; }
+  #hnuhole-entry-concept [data-screen="login"] .hh-heading h2 { margin-bottom:0; }
+  #hnuhole-entry-concept .hh-form { display:flex; flex-direction:column; gap:24px; }
+  #hnuhole-entry-concept .hh-login-fields { display:flex; flex-direction:column; gap:24px; }
+  #hnuhole-entry-concept .hh-field { position:relative; border:1px solid var(--hh-border); border-radius:10px; height:58px; transition:border-color .15s; }
+  #hnuhole-entry-concept .hh-field:focus-within { border:2px solid var(--hh-accent); }
+  #hnuhole-entry-concept .hh-field label { position:absolute; top:-11px; left:12px; padding:0 5px; font-size:13px; line-height:20px; background:var(--hh-bg); color:var(--hh-secondary); transition:background-color .26s; }
+  #hnuhole-entry-concept .hh-field:focus-within label { color:var(--hh-link); }
+  #hnuhole-entry-concept .hh-field input { border:0; width:100%; height:100%; padding:11px 16px; background:transparent; border-radius:10px; color:var(--hh-fg); font:400 16px/1.5 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+  #hnuhole-entry-concept .hh-field input::placeholder { color:var(--hh-secondary); opacity:.8; }
+  #hnuhole-entry-concept .hh-password-field input { padding-right:48px; }
+  #hnuhole-entry-concept .hh-eye { position:absolute; right:4px; top:5px; color:var(--hh-secondary); }
+  #hnuhole-entry-concept .hh-eye svg { width:20px !important; height:20px !important; }
+  #hnuhole-entry-concept .hh-options-row { display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; margin-top:-18px; }
+  #hnuhole-entry-concept .hh-options-row button { font-size:14px; }
+  #hnuhole-entry-concept .hh-login-note { font-size:12px; line-height:1.7; margin:-8px 0 0; color:var(--hh-secondary); }
+  #hnuhole-entry-concept .hh-next-row { display:flex; justify-content:flex-end; padding-top:3px; }
+  #hnuhole-entry-concept [data-screen="login"] .hh-next-row { padding-top:16px; }
+  #hnuhole-entry-concept .hh-next { width:64px; height:64px; flex-shrink:0; border:0; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:var(--hh-accent); color:var(--hh-button-fg); }
+  #hnuhole-entry-concept .hh-next svg { width:32px !important; height:32px !important; stroke-width:2; }
+  #hnuhole-entry-concept .hh-email-field, #hnuhole-entry-concept .hh-otp-field { display:flex; align-items:center; }
+  #hnuhole-entry-concept .hh-email-field input, #hnuhole-entry-concept .hh-otp-field input { width:0; flex:1; min-width:0; }
+  #hnuhole-entry-concept .hh-email-suffix { color:var(--hh-secondary); font-size:14px; line-height:30px; white-space:nowrap; border-left:1px solid var(--hh-border); padding:0 12px; }
+  #hnuhole-entry-concept .hh-get-code { min-height:44px; width:112px; flex-shrink:0; border:0; border-left:1px solid var(--hh-border); padding:0 10px; background:transparent; color:var(--hh-link); font-size:14px !important; white-space:nowrap; }
+  #hnuhole-entry-concept .hh-secondary-path { display:flex; flex-wrap:wrap; gap:5px; align-items:center; justify-content:center; font-size:14px; color:var(--hh-secondary); margin:auto 0 0; padding-top:22px; padding-bottom:22px; }
+  #hnuhole-entry-concept .hh-passkey { text-align:left; margin-top:-12px; }
+  #hnuhole-entry-concept .hh-bottom-space { height:36px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:10px; }
+  #hnuhole-entry-concept .hh-bottom-space span { width:95px; height:4px; background:var(--hh-chrome); border-radius:4px; }
+  #hnuhole-entry-concept .hh-preview-status { color:light-dark(#6f7781,#a5adb7); text-align:center; font:400 12px/1.7 system-ui,-apple-system,"Microsoft YaHei",sans-serif; margin:14px 0 0; min-height:22px; }
+  @media(max-width:380px) {
+    #hnuhole-entry-concept { padding:16px 4px 10px; }
+    #hnuhole-entry-concept .hh-phone { border-radius:24px; }
+    #hnuhole-entry-concept .hh-screen { padding-left:20px; padding-right:20px; }
+    #hnuhole-entry-concept .hh-preview-status { font-size:11px; }
+    #hnuhole-entry-concept .hh-email-suffix { font-size:13px; padding:0 9px; }
+    #hnuhole-entry-concept .hh-get-code { width:102px; }
+  }
+  @media(prefers-reduced-motion:reduce) {
+    #hnuhole-entry-concept .hh-phone, #hnuhole-entry-concept .hh-field, #hnuhole-entry-concept .hh-field label { transition:none; }
+  }
+</style>
+<script>
+(() => {
+  const root = document.getElementById('hnuhole-entry-concept');
+  const phone = root.querySelector('.hh-phone');
+  const screens = ['welcome','login','register','recover'];
+  const state = { screen:'login', method:'username', lang:'zh', theme:'auto' };
+  const styleState = { accent:'#00a7e9', logoSize:150 };
+  const copy = (zh,en) => state.lang==='zh' ? zh : en;
+  const status = root.querySelector('.hh-preview-status');
+  function icon(button, name) {
+    button.innerHTML = '<i data-lucide="' + name + '" aria-hidden="true"></i>';
+  }
+  function render() {
+    phone.style.colorScheme = state.theme==='auto' ? 'light dark' : state.theme;
+    phone.lang = state.lang==='zh' ? 'zh-CN' : 'en';
+    root.querySelectorAll('[data-screen]').forEach(s => { s.hidden = s.dataset.screen!==state.screen; });
+    root.querySelectorAll('[data-method]').forEach(group => { group.hidden=group.dataset.method!==state.method; group.querySelectorAll('input,button').forEach(e=>{e.disabled=group.hidden;}); });
+    root.querySelectorAll('[data-zh]').forEach(e => {
+      const lines=e.dataset[state.lang].split('|');
+      e.replaceChildren();
+      lines.forEach((line,i)=>{if(i)e.append(document.createElement('br')); e.append(document.createTextNode(line));});
+    });
+    root.querySelectorAll('[data-placeholder-zh]').forEach(e => { e.placeholder=e.getAttribute('data-placeholder-'+state.lang); });
+    root.querySelector('.hh-language').textContent=copy('Continue in English','切换为简体中文');
+    root.querySelector('.hh-method-switch').textContent=state.method==='username'?copy('切换邮箱登录','Use email instead'):copy('切换用户名登录','Use username instead');
+    const back=root.querySelector('.hh-back');
+    back.hidden=state.screen==='welcome';
+    back.setAttribute('aria-label',state.screen==='login'?copy('返回欢迎页','Back to welcome'):copy('返回登录','Back to sign in'));
+    const dark=state.theme==='dark'||(state.theme==='auto' && matchMedia('(prefers-color-scheme:dark)').matches);
+    const theme=root.querySelector('.hh-theme');
+    theme.setAttribute('aria-label',dark?copy('切换浅色主题','Switch to light theme'):copy('切换深色主题','Switch to dark theme'));
+    theme.setAttribute('aria-pressed',String(dark)); icon(theme,dark?'sun':'moon');
+    root.querySelector('[data-action="login"] .hh-next').setAttribute('aria-label',state.method==='email'?copy('使用邮箱验证码继续','Continue with email code'):copy('登录并进入','Sign in and continue'));
+    root.querySelector('[data-action="register"] .hh-next').setAttribute('aria-label',copy('获取验证码','Get verification code'));
+    root.querySelector('[data-action="recover"] .hh-next').setAttribute('aria-label',copy('验证恢复码','Verify recovery code'));
+    root.querySelector('.hh-eye').setAttribute('aria-label',root.querySelector('#hh-password').type==='password'?copy('显示密码','Show password'):copy('隐藏密码','Hide password'));
+    status.textContent=copy('交互示意 · Logo 为占位设计 · 未连接账号服务','Interaction preview · Placeholder logo · No account service connected');
+    if(globalThis.lucide) lucide.createIcons();
+  }
+  function restore(saved) {
+    const ui=saved?.privateContent;
+    if(!ui || typeof ui!=='object')return;
+    state.screen=screens.includes(ui.screen)?ui.screen:'login';
+    state.method=ui.method==='email'||ui.screen==='email'?'email':'username';
+    state.lang=ui.lang==='en'?'en':'zh';
+    state.theme=['light','dark'].includes(ui.theme)?ui.theme:'auto';
+  }
+  function save() {
+    if(window.openai?.setWidgetState) window.openai.setWidgetState({modelContent:{design:'HnuHole welcome flow',language:state.lang,appearance:state.theme},privateContent:{...state}}).catch(()=>{});
+  }
+  function go(screen) {
+    if(!screens.includes(screen))return;
+    const prev=state.screen;
+    state.screen=screen;
+    const password=root.querySelector('#hh-password');password.value='';password.type='password';
+    const eye=root.querySelector('.hh-eye');eye.setAttribute('aria-pressed','false');icon(eye,'eye');
+    render();save();
+    if(prev!==screen && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+      root.querySelector('[data-screen="'+screen+'"]').animate([{transform:'translateX(12px)'},{transform:'translateX(0)'}],{duration:180,easing:'ease-out'});
+    }
+  }
+  root.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>go(button.dataset.go)));
+  root.querySelector('.hh-method-switch').addEventListener('click',()=>{
+    root.querySelector('#hh-password').value='';root.querySelector('#hh-password').type='password';
+    root.querySelector('#hh-email-code').value='';
+    const eye=root.querySelector('.hh-eye');eye.setAttribute('aria-pressed','false');icon(eye,'eye');
+    state.method=state.method==='username'?'email':'username';render();save();
+  });
+  root.querySelector('.hh-back').addEventListener('click',()=>go(state.screen==='login'?'welcome':'login'));
+  root.querySelector('.hh-language').addEventListener('click',()=>{state.lang=state.lang==='zh'?'en':'zh';render();save();});
+  root.querySelector('.hh-theme').addEventListener('click',()=>{
+    const dark=state.theme==='dark'||(state.theme==='auto' && matchMedia('(prefers-color-scheme:dark)').matches);
+    state.theme=dark?'light':'dark';render();save();
+  });
+  root.querySelector('.hh-eye').addEventListener('click',e=>{
+    const input=root.querySelector('#hh-password'); const reveal=input.type==='password';input.type=reveal?'text':'password';
+    const button=e.currentTarget;button.setAttribute('aria-pressed',String(reveal));
+    button.setAttribute('aria-label',reveal?copy('隐藏密码','Hide password'):copy('显示密码','Show password'));
+    icon(button,reveal?'eye-off':'eye');if(globalThis.lucide)lucide.createIcons();
+  });
+  root.querySelectorAll('form').forEach(form=>form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const action=form.dataset.action==='login'&&state.method==='email'?'email':form.dataset.action;
+    const zh={login:'登录页面示意 · 未执行登录',email:'邮箱登录页面示意 · 未执行登录',register:'注册后续：验证码 → 设置用户名和密码 → 保存并确认恢复码 → 主动登录',recover:'恢复后续：验证恢复凭据 → 设置新密码 → 保存并确认新恢复码 → 主动登录'};
+    const en={login:'Sign-in preview · No sign-in was performed',email:'Email sign-in preview · No sign-in was performed',register:'Next: verification code → new credentials → save and confirm recovery code → sign in',recover:'Next: verify recovery → new password → save and confirm new recovery code → sign in'};
+    status.textContent=state.lang==='zh'?zh[action]:en[action];
+  }));
+  root.querySelector('.hh-get-code').addEventListener('click',()=>{status.textContent=copy('验证码获取交互示意 · 未发送验证码','Code request preview · No code was sent');});
+  root.querySelector('.hh-passkey').addEventListener('click',()=>{status.textContent=copy('通行密钥恢复入口示意 · 未调用设备凭据','Passkey recovery entry preview · Device credentials were not requested');});
+  restore(window.openai?.widgetState);
+  render();
+  window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState){restore(e.detail.globals.widgetState);render();}});
+  function applyStyle(){phone.style.setProperty('--hh-accent',styleState.accent);const logo=root.querySelector('.hh-logo');logo.style.width=logo.style.height=styleState.logoSize+'px';}
+  if(globalThis.Tweak){const tweak=new Tweak({container:phone,onChange:applyStyle});tweak.addColorPicker(styleState,'accent',{label:'品牌色',reference:'--hh-accent'});tweak.addSlider(styleState,'logoSize',{label:'Logo 大小',min:120,max:165,step:5,unit:'px'});}
+})();
+</script>
