@@ -6,6 +6,9 @@
 
 PR #38 的登录注册设计定稿及 PR #39 的真实 App 接入已合入 main（`c23620f`）；欢迎、语言／明暗外观及原位登录切换已实现，邮箱登录明确待接入。五项 CI 与独立 agent 审查通过，主线同签测试 APK 交付中，未正式发布。见[任务与证据](feat-auth-entry-flow.md)。
 
+
+[PR #42](https://github.com/zewbby/HnuHole/pull/42)已合入main `09498b2`：三步注册、恢复码点击复制、完整确认和可选Passkey管理入口。最终head五项CI成功、宿主668项及分析0；同签主体APK单独交付，真实设备／邮件和生产未验，不提升历史模块结论。见[任务与合并回执](feat-registration-wizard-ui.md)。
+
 ## 进度
 
 截至 `a1cb812`，#29 真实互动摘要、#30 条件写围栏、#32 隔离联调交付、#33 隔离错误契约及[#31 列表详情互动](https://github.com/zewbby/HnuHole/pull/31)均已合入；共享实际后端仍 c923fa5a／C21／V4，不将前端 main 重标为后端二进制。main2008 有 FA-D07 残留提示，独立修复送审与定点见[后续任务](fix-feed-read-errors.md)，未正式发布。

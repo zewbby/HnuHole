@@ -40534,7 +40534,7 @@
       "A12",
       "B01"
     ],
-    "implementation": "IMPLEMENTED_HOST_CHECKED",
+    "implementation": "MERGED_MAIN_SCOPED_UI_HOST_AND_NATIVE_BUILD_PASS",
     "integrationStatusSource": "https://github.com/zewbby/HnuHole/pull/42",
     "hostTests": 668,
     "authScreenTests": 20,
@@ -40543,6 +40543,10 @@
     "evidence": "docs/design/validation/registration-wizard-20261021/verification.json",
     "device": "NOT_RUN",
     "production": "NOT_RELEASED",
-    "historicalModuleVerdictsUnchanged": true
+    "historicalModuleVerdictsUnchanged": true,
+    "mergeCommit": "09498b2bc0987a8865c768922e98607cef6fef89",
+    "testedHead": "e1d2b0ad14021c8680ea72cc8df1f30bed89ae10",
+    "finalCi": "ALL_FIVE_WORKFLOWS_SUCCESS",
+    "mergeEvidence": "docs/design/validation/registration-wizard-20261021/main-merge.json"
   }
 }

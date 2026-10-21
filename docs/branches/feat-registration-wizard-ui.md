@@ -2,7 +2,7 @@
 
 任务 AUTH-REGISTER-UI-02 / AUTH-REGISTER-IMPLEMENT-03；2026-10-21；分支 `feat/registration-wizard-ui`，按用户要求不带codex。原设计基线4d76f2c，实施前整合最新main `a746fa8`，保留#37外观和#40登录首页导航。用户已确认v3：“可以，就这样”，随后授权“开始改并且更新提交合并”。
 
-[PR #42](https://github.com/zewbby/HnuHole/pull/42)交付获确认HTML源稿、三步效果图和真实Flutter实现。代码、宿主测试与独立审查已完成；合并与远端最终head检查以PR实际状态为准，不将准备送检当作已合并或发布。
+[PR #42](https://github.com/zewbby/HnuHole/pull/42)交付获确认HTML源稿、三步效果图和真实Flutter实现。已合并main `09498b2bc0987a8865c768922e98607cef6fef89`，与检查通过的head `e1d2b0a` 完整文件树一致。五项最终CI全部SUCCESS；见[合并回执](../design/validation/registration-wizard-20261021/main-merge.json)。未正式发布。
 
 注册第一步校园邮箱＋验证码、第二行右侧取码；第二步用户名密码；第三步一次展示恢复码、框内复制、隐藏后完整确认。10px蓝色矢量进度标识三步。只有用户明确点击才复制原码；失败给出手动保存提示，不读剪贴板、不将原码或密码加入外观偏好。去掉“暂不设置”，开户后保留可选Passkey入口，通过右下角完成箭头继续既有首页导航。
 

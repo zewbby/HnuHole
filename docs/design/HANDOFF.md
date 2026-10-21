@@ -469,3 +469,5 @@ AUTH-UI-IMPLEMENT-01 合并回执：`c23620f` 与已检查 head 文件树相同�
 [PR #42](https://github.com/zewbby/HnuHole/pull/42)：已确认v3注册稿接入真实Flutter，10px蓝色进度、邮箱OTP／用户名密码／账号安全，恢复码框内明确点击复制、隐藏后完整确认，移除“暂不设置”，开户后保留可选真实Passkey管理入口和完成箭头。整合最新main a746fa8，保留首页、现有恢复／注销／原请求核对；邮箱登录仍待接入，没有后端或安全存储协议改动。
 
 分析0、全量668、真实字体20项、375浅色／320深色1.6倍字与独立只读审查无阻断；涉及A06/A12/B01的UI增量，不升级整模块历史结果。真实邮件／设备／Passkey／iOS／生产 NOT_RUN。见[任务](../branches/feat-registration-wizard-ui.md)及[证据](validation/registration-wizard-20261021/verification.json)。最终远端head与合并状态以PR为准；合并后主体APK单独记录，不把设计图或宿主替身当作真实认证验收。
+
+AUTH-REGISTER-IMPLEMENT-03 合并回执：PR #42已合入main `09498b2`，与已检查head `e1d2b0a` 完整树一致；五项CI成功，668宿主、20真实字体页面测试、分析0及独立只读审查无阻断。见[回执](validation/registration-wizard-20261021/main-merge.json)。原实现段“以PR为准”现由本条确认；主线主体包沿用原签名交付，设备／真实邮件／Passkey／生产 NOT_RUN。
