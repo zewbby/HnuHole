@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
 import '../channels/channel.dart';
 import '../design_system/telegram_theme.dart';
+import '../comments/comment_editor.dart';
+import '../comments/comment_models.dart';
+import '../comments/comment_runtime.dart';
+import '../comments/comment_views.dart';
 import 'feed_api.dart';
 import 'post_controller.dart';
 import 'post_images.dart';
@@ -44,6 +49,10 @@ class _FeedScreenState extends State<FeedScreen> {
   bool _starting = true;
   Timer? _notice;
   final _scroll = ScrollController();
+  final _replyEditors = <String, CommentEditor>{};
+  final _seenReplies = <String>{};
+  CommentRuntime? _comments;
+  bool _replyOpen = false;
   PostController get c => widget.controller;
   bool get current => mounted && c.available && c.authorityVersion == _epoch;
   List<FeedChannelView> get channels => [
@@ -75,6 +84,12 @@ class _FeedScreenState extends State<FeedScreen> {
 
   void _changed() {
     if (!mounted) return;
+    if (!current) {
+      for (final editor in _replyEditors.values) {
+        editor.leave();
+      }
+      _replyEditors.clear();
+    }
     final notice = c.latestPublicationNotice;
     if (current && notice != null && notice.sequence > _publication) {
       _publication = notice.sequence;
@@ -96,10 +111,80 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   void dispose() {
+    _comments?.removeListener(_commentsChanged);
+    for (final editor in _replyEditors.values) {
+      editor.leave();
+    }
     c.removeListener(_changed);
     _notice?.cancel();
     _scroll.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final runtime = CommentScope.maybeOf(context);
+    if (identical(runtime, _comments)) return;
+    _comments?.removeListener(_commentsChanged);
+    _comments = runtime;
+    _seenReplies.clear();
+    _seenReplies.addAll(runtime?.core.resolvedTasks.map((t) => t.taskId) ?? []);
+    runtime?.addListener(_commentsChanged);
+  }
+
+  void _commentsChanged() {
+    if (!current || _comments?.available != true) return;
+    for (final task in _comments!.core.resolvedTasks) {
+      if (task.state == CommentTaskState.published &&
+          _seenReplies.add(task.taskId)) {
+        unawaited(c.loadInteractions([task.binding.postId], single: true));
+      }
+    }
+  }
+
+  Future<void> _reply(BuildContext context, FeedPost post) async {
+    if (!current || _replyOpen || c.isPostDeleted(post.postId)) return;
+    final runtime = _comments;
+    if (runtime == null || !runtime.available) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('评论暂时不可用，请稍后重试。')));
+      return;
+    }
+    if (_replyEditors[post.postId]?.active == false) {
+      _replyEditors.remove(post.postId);
+    }
+    final editor = _replyEditors.putIfAbsent(
+      post.postId,
+      () => CommentEditor(CommentTarget(postId: post.postId)),
+    );
+    _replyOpen = true;
+    editor.expand();
+    final originals = <String, Uint8List>{};
+    try {
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: Colors.black.withValues(alpha: .30),
+        builder: (_) => CommentComposer(
+          runtime: runtime,
+          editor: editor,
+          originals: originals,
+          contextText: post.body,
+          quickReplyTo: post.author.nickname,
+          onSubmitted: () {
+            if (!current) return;
+            _replyEditors.remove(post.postId);
+            editor.leave();
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text('正在发送回复')));
+          },
+        ),
+      );
+    } finally {
+      _replyOpen = false;
+      if (editor.active) editor.collapse();
+    }
   }
 
   Future<void> _pick(BuildContext context) => showFeedChannelPicker(
@@ -314,7 +399,8 @@ class _FeedScreenState extends State<FeedScreen> {
                             },
                           },
                           busyActions: {
-                            if (c.interaction(post.postId).sending)
+                            if (c.interaction(post.postId).unresolved &&
+                                !c.interaction(post.postId).canChange)
                               c.interaction(post.postId).pendingAction ==
                                       PostInteractionAction.like
                                   ? FeedAction.like
@@ -344,7 +430,7 @@ class _FeedScreenState extends State<FeedScreen> {
                           if (!current) return;
                           switch (action) {
                             case FeedAction.comment:
-                              _open(context, post.postId, post.channelId);
+                              unawaited(_reply(context, post));
                             case FeedAction.like:
                               unawaited(
                                 c.changeInteraction(
@@ -414,14 +500,14 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
               ),
               if (_published)
-                const Positioned(
+                Positioned(
                   top: 12,
                   left: 80,
                   right: 80,
                   child: Material(
-                    color: Color(0xFF2678B6),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    child: Padding(
+                    color: HhTelegramPalette.of(context).action,
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    child: const Padding(
                       padding: EdgeInsets.all(12),
                       child: Text(
                         '发布成功！',

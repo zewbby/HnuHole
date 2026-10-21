@@ -2341,6 +2341,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             children: [
               TextButton.icon(
                 key: ValueKey('detail-like:${widget.postId}'),
+                style: TextButton.styleFrom(
+                  foregroundColor: state.liked
+                      ? PostTheme.destructive
+                      : PostTheme.muted,
+                  disabledForegroundColor: state.liked
+                      ? PostTheme.destructive
+                      : PostTheme.muted,
+                ),
                 onPressed: state.canChange
                     ? () {
                         if (!mounted || !_authority.current) return;
@@ -2380,7 +2388,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ),
               ),
               Text('评论 ${state.value?.commentCount ?? '—'}'),
-              if (state.sending || state.loading)
+              if (state.loading && state.value == null)
                 const SizedBox(
                   width: 18,
                   height: 18,
@@ -2511,7 +2519,7 @@ class _IdentityAvatar extends StatelessWidget {
   Widget build(BuildContext context) => ExcludeSemantics(
     child: CircleAvatar(
       radius: radius,
-      backgroundColor: const Color(0xFFE4EAF0),
+      backgroundColor: PostTheme.cardTint,
       foregroundColor: PostTheme.muted,
       child: Icon(Icons.person_outline_rounded, size: radius * 1.2),
     ),

@@ -34,6 +34,7 @@
 
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
+| `codex/feat/telegram-android-appearance` | 统一安卓字体配色、列表直接评论及点赞／取消即时反馈；验证中，未合并。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `codex/fix/comment-failure-reconcile` | 修复原失败评论重试同步并完成2011／profile2012限定补验；PR #36按授权整合送合，主线日常包见详情，未发布。 | [任务详情](docs/branches/fix-comment-failure-reconcile.md) |
 | `codex/test/feed-supplement-support` | PR #35已合入main，交付可信HTTPS与原评论worker失败重试隔离补验支持；未正式发布。 | [任务详情](docs/branches/test-feed-supplement-support.md) |
@@ -68,8 +69,8 @@
 
 ## 最近变动
 
+- 2026-10-21 · [#36](https://github.com/zewbby/HnuHole/pull/36)：修复失败评论原任务重试并交付最终主线日常测试包。
 - [PR #35](https://github.com/zewbby/HnuHole/pull/35)：支持原评论worker失败重试隔离补验并封存可信入口与单机性能证据。
 - 2026-10-20 · [#34](https://github.com/zewbby/HnuHole/pull/34)：隔离列表与偏好局部错误，修复恢复后详情残留提示。
 - 2026-10-20 · [#31](https://github.com/zewbby/HnuHole/pull/31)：接通列表详情真实互动与评论数，并修复账号及未知结果恢复。
 - 2026-10-20 · [#33](https://github.com/zewbby/HnuHole/pull/33)：修正隔离GET错误注入的正文及响应头关联ID。
-- 2026-10-20 · [#32](https://github.com/zewbby/HnuHole/pull/32)：补齐隔离故障测试入口及0021部署恢复证据。

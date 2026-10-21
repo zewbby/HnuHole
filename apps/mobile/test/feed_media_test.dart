@@ -411,7 +411,7 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       for (final entry in {
         'Roboto': 'HNUHOLE_UI_RENDER_LATIN_FONT',
-        'Noto Sans CJK SC': 'HNUHOLE_UI_RENDER_FONT',
+        'HhNotoSansSC': 'HNUHOLE_UI_RENDER_FONT',
         'MaterialIcons': 'HNUHOLE_UI_RENDER_ICON_FONT',
       }.entries) {
         final path = Platform.environment[entry.value];

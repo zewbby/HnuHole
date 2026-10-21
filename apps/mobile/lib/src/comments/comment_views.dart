@@ -14,6 +14,7 @@ import 'comment_editor.dart';
 import 'comment_http.dart';
 import 'comment_models.dart';
 import 'comment_runtime.dart';
+import 'quick_reply_dialog.dart';
 
 class CommentRow {
   CommentRow(Object? raw)
@@ -886,11 +887,15 @@ class CommentComposer extends StatefulWidget {
     required this.onSubmitted,
     required this.originals,
     this.replyContext,
+    this.quickReplyTo,
   });
   final CommentRuntime runtime;
   final CommentEditor editor;
   final Map<String, Uint8List> originals;
   final CommentRow? replyContext;
+
+  /// List entry only; the existing full-screen detail composer is unchanged.
+  final String? quickReplyTo;
   final String contextText;
   final VoidCallback onSubmitted;
   @override
@@ -903,6 +908,8 @@ class _CommentComposerState extends State<CommentComposer> {
   String? identity, error;
   List<ManagedIdentity> identities = [];
   bool bound = false, busy = false;
+  bool identitiesReady = false, identityConfirmed = false;
+  DialogRoute<String>? _identityRoute;
   Uint8List? picked;
   @override
   void initState() {
@@ -915,6 +922,18 @@ class _CommentComposerState extends State<CommentComposer> {
   bool get current =>
       mounted && widget.runtime.current(epoch) && widget.editor.active;
   void _changed() {
+    if (mounted &&
+        !widget.runtime.current(epoch) &&
+        widget.quickReplyTo != null) {
+      widget.editor.leave();
+      text.clear();
+      final route = ModalRoute.of(context);
+      final picker = _identityRoute;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (picker?.isActive == true) picker!.navigator?.removeRoute(picker);
+        if (route?.isActive == true) route!.navigator?.removeRoute(route);
+      });
+    }
     if (mounted) setState(() {});
   }
 
@@ -924,6 +943,9 @@ class _CommentComposerState extends State<CommentComposer> {
           d = await widget.runtime.directory();
       if (!current) return;
       setState(() {
+        identitiesReady = true;
+        identityConfirmed = false;
+        error = null;
         identities = d.identities;
         identity = c['boundIdentityId'] as String?;
         bound = identity != null;
@@ -935,6 +957,7 @@ class _CommentComposerState extends State<CommentComposer> {
         }
         if (bound && !identities.any((i) => i.id == identity)) {
           identity = null;
+          error = '帖内身份已不可用，无法继续回复。';
         }
       });
     } catch (_) {
@@ -1003,6 +1026,74 @@ class _CommentComposerState extends State<CommentComposer> {
     }
   }
 
+  Future<void> _quickSend() async {
+    if (!current || busy || !identitiesReady || !widget.runtime.core.ready) {
+      return;
+    }
+    if (!bound && !identityConfirmed) {
+      final navigator = Navigator.of(context);
+      final route = DialogRoute<String>(
+        context: context,
+        builder: (pickerContext) => AlertDialog(
+          title: const Text('选择发言身份'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final item in identities)
+                    ListTile(
+                      title: Text(item.nickname),
+                      onTap: () => Navigator.pop(pickerContext, item.id),
+                    ),
+                  if (identities.isEmpty) const Text('请先在身份设置中创建发言身份。'),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(pickerContext),
+              child: const Text('取消'),
+            ),
+            if (identities.isEmpty)
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(pickerContext);
+                  await Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => IdentityManagementScreen(
+                        controller: widget.runtime.identityManagement,
+                        sessions: widget.runtime.sessions,
+                      ),
+                    ),
+                  );
+                  if (current) await _identities();
+                },
+                child: const Text('身份设置'),
+              ),
+          ],
+        ),
+      );
+      _identityRoute = route;
+      final selected = await navigator.push(route);
+      _identityRoute = null;
+      if (!current ||
+          selected == null ||
+          !identities.any((item) => item.id == selected)) {
+        return;
+      }
+      setState(() {
+        identity = selected;
+        identityConfirmed = true;
+      });
+      // Choosing an identity does not itself publish a comment.
+      return;
+    }
+    await _send();
+  }
+
   @override
   void dispose() {
     if (widget.editor.active) widget.editor.body = text.text;
@@ -1012,137 +1103,163 @@ class _CommentComposerState extends State<CommentComposer> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('评论与回复'),
-      actions: [
-        TextButton(
-          onPressed:
-              current && !busy && identity != null && widget.runtime.core.ready
-              ? _send
-              : null,
-          child: const Text('发布'),
-        ),
-      ],
-    ),
-    body: !current
-        ? const Center(child: Text('会话已变化，请返回帖子。'))
-        : SafeArea(
-            child: Column(
-              children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.sizeOf(context).height * .25,
-                  ),
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(widget.contextText),
-                        if (widget.replyContext case final row?
-                            when row.data['image'] != null)
-                          CommentImageView(runtime: widget.runtime, row: row),
-                      ],
-                    ),
-                  ),
-                ),
-                const Divider(),
-                Expanded(
-                  child: TextField(
-                    controller: text,
-                    onChanged: (v) => widget.editor.body = v,
-                    expands: true,
-                    minLines: null,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      hintText: '写下评论，最多 3000 字',
-                      contentPadding: EdgeInsets.all(16),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                if (error != null)
-                  Semantics(liveRegion: true, child: Text(error!)),
-                if (widget.editor.image != null)
-                  ListTile(
-                    leading: picked == null
-                        ? null
-                        : SizedBox(
-                            width: 64,
-                            height: 64,
-                            child: Image.memory(
-                              picked!,
-                              fit: BoxFit.contain,
-                              cacheWidth: 128,
-                              cacheHeight: 128,
-                            ),
+  Widget build(BuildContext context) => widget.quickReplyTo != null
+      ? PopScope(
+          canPop: !busy,
+          child: QuickReplyDialog(
+            targetName: current ? widget.quickReplyTo! : '',
+            controller: text,
+            busy: busy,
+            onReply: current && identitiesReady && widget.runtime.core.ready && (!bound || identity != null)
+                ? _quickSend
+                : null,
+            onClose: busy ? null : () => Navigator.pop(context),
+            error: error,
+            onRetry: error == null ? null : _identities,
+            identityCaption: !bound && identityConfirmed
+                ? '以 ${identities.where((i) => i.id == identity).firstOrNull?.nickname ?? '所选身份'} 回复'
+                : null,
+          ),
+        )
+      : Scaffold(
+          appBar: AppBar(
+            title: const Text('评论与回复'),
+            actions: [
+              TextButton(
+                onPressed:
+                    current &&
+                        !busy &&
+                        identity != null &&
+                        widget.runtime.core.ready
+                    ? _send
+                    : null,
+                child: const Text('发布'),
+              ),
+            ],
+          ),
+          body: !current
+              ? const Center(child: Text('会话已变化，请返回帖子。'))
+              : SafeArea(
+                  child: Column(
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.sizeOf(context).height * .25,
+                        ),
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(widget.contextText),
+                              if (widget.replyContext case final row?
+                                  when row.data['image'] != null)
+                                CommentImageView(
+                                  runtime: widget.runtime,
+                                  row: row,
+                                ),
+                            ],
                           ),
-                    title: const Text('已选择 1 张原图'),
-                    trailing: IconButton(
-                      tooltip: '移除图片',
-                      onPressed: busy
-                          ? null
-                          : () => setState(() {
-                              if (widget.editor.image != null) {
-                                widget.originals.remove(
-                                  widget.editor.image!.blobId,
-                                );
-                              }
-                              picked = null;
-                              widget.editor.setImage(null);
-                            }),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ),
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    IconButton(
-                      tooltip: '选择一张图片',
-                      onPressed: busy ? null : _pick,
-                      icon: const Icon(Icons.image_outlined),
-                    ),
-                    DropdownButton<String>(
-                      hint: const Text('选择身份'),
-                      value: identities.any((i) => i.id == identity)
-                          ? identity
-                          : null,
-                      items: [
-                        for (final i in identities)
-                          DropdownMenuItem(
-                            value: i.id,
-                            child: Text(i.nickname),
+                        ),
+                      ),
+                      const Divider(),
+                      Expanded(
+                        child: TextField(
+                          controller: text,
+                          onChanged: (v) => widget.editor.body = v,
+                          expands: true,
+                          minLines: null,
+                          maxLines: null,
+                          decoration: const InputDecoration(
+                            hintText: '写下评论，最多 3000 字',
+                            contentPadding: EdgeInsets.all(16),
+                            border: InputBorder.none,
                           ),
-                      ],
-                      onChanged: bound || busy
-                          ? null
-                          : (id) => setState(() => identity = id),
-                    ),
-                    TextButton(
-                      onPressed: busy
-                          ? null
-                          : () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute<void>(
-                                  builder: (_) => IdentityManagementScreen(
-                                    controller:
-                                        widget.runtime.identityManagement,
-                                    sessions: widget.runtime.sessions,
+                        ),
+                      ),
+                      if (error != null)
+                        Semantics(liveRegion: true, child: Text(error!)),
+                      if (widget.editor.image != null)
+                        ListTile(
+                          leading: picked == null
+                              ? null
+                              : SizedBox(
+                                  width: 64,
+                                  height: 64,
+                                  child: Image.memory(
+                                    picked!,
+                                    fit: BoxFit.contain,
+                                    cacheWidth: 128,
+                                    cacheHeight: 128,
                                   ),
                                 ),
-                              );
-                              if (current) await _identities();
-                            },
-                      child: Text(bound ? '帖内身份已固定' : '身份设置'),
-                    ),
-                  ],
+                          title: const Text('已选择 1 张原图'),
+                          trailing: IconButton(
+                            tooltip: '移除图片',
+                            onPressed: busy
+                                ? null
+                                : () => setState(() {
+                                    if (widget.editor.image != null) {
+                                      widget.originals.remove(
+                                        widget.editor.image!.blobId,
+                                      );
+                                    }
+                                    picked = null;
+                                    widget.editor.setImage(null);
+                                  }),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          IconButton(
+                            tooltip: '选择一张图片',
+                            onPressed: busy ? null : _pick,
+                            icon: const Icon(Icons.image_outlined),
+                          ),
+                          DropdownButton<String>(
+                            hint: const Text('选择身份'),
+                            value: identities.any((i) => i.id == identity)
+                                ? identity
+                                : null,
+                            items: [
+                              for (final i in identities)
+                                DropdownMenuItem(
+                                  value: i.id,
+                                  child: Text(i.nickname),
+                                ),
+                            ],
+                            onChanged: bound || busy
+                                ? null
+                                : (id) => setState(() => identity = id),
+                          ),
+                          TextButton(
+                            onPressed: busy
+                                ? null
+                                : () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute<void>(
+                                        builder: (_) =>
+                                            IdentityManagementScreen(
+                                              controller: widget
+                                                  .runtime
+                                                  .identityManagement,
+                                              sessions: widget.runtime.sessions,
+                                            ),
+                                      ),
+                                    );
+                                    if (current) await _identities();
+                                  },
+                            child: Text(bound ? '帖内身份已固定' : '身份设置'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
-  );
+        );
 }
 
 class CommentImageView extends StatefulWidget {
