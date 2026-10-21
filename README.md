@@ -35,9 +35,10 @@
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `codex/test/feed-supplement-support` | 准备可信HTTPS与原FA20评论worker失败重试的隔离补验支持；设备/CI结果见详情，未正式发布。 | [任务详情](docs/branches/test-feed-supplement-support.md) |
-| `codex/fix/feed-read-errors` | 隔离列表与偏好局部错误，D07 定点及送审门槛见详情；未正式发布。 | [任务详情](docs/branches/fix-feed-read-errors.md) |
-| `feat/feed-interactions-ui` | PR #31已合入main，接通真实互动与评论数、修复竞态恢复；后续D07独立修复中，未正式发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
+| `codex/fix/comment-failure-reconcile` | 修复原失败评论重试同步并完成2011／profile2012限定补验；PR #36按授权整合送合，主线日常包见详情，未发布。 | [任务详情](docs/branches/fix-comment-failure-reconcile.md) |
+| `codex/test/feed-supplement-support` | PR #35已合入main，交付可信HTTPS与原评论worker失败重试隔离补验支持；未正式发布。 | [任务详情](docs/branches/test-feed-supplement-support.md) |
+| `codex/fix/feed-read-errors` | PR #34已合入main，隔离列表与偏好局部错误并完成D07定点；未正式发布。 | [任务详情](docs/branches/fix-feed-read-errors.md) |
+| `feat/feed-interactions-ui` | PR #31已合入main，接通真实互动与评论数、修复竞态恢复；D07已由#34修复，后续补验见独立任务；未正式发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
 | `codex/chore/feed-staging` | PR #32已合入main，交付隔离故障入口与0021部署恢复记录；未正式发布。 | [任务详情](docs/branches/chore-feed-staging.md) |
 | `feat/feed-interactions` | PR #29已合入main，补齐帖子账号级赞／藏与复用评论数的批量摘要后端；未正式发布。 | [任务详情](docs/branches/feat-feed-interactions.md) |
 | `codex/fix/feed-fault-error-contract` | PR #33已合入main，补齐隔离GET错误注入的严格关联ID契约与TLS回归；非正式发布。 | [任务详情](docs/branches/fix-feed-fault-error-contract.md) |
@@ -67,8 +68,8 @@
 
 ## 最近变动
 
+- [PR #35](https://github.com/zewbby/HnuHole/pull/35)：支持原评论worker失败重试隔离补验并封存可信入口与单机性能证据。
+- 2026-10-20 · [#34](https://github.com/zewbby/HnuHole/pull/34)：隔离列表与偏好局部错误，修复恢复后详情残留提示。
 - 2026-10-20 · [#31](https://github.com/zewbby/HnuHole/pull/31)：接通列表详情真实互动与评论数，并修复账号及未知结果恢复。
 - 2026-10-20 · [#33](https://github.com/zewbby/HnuHole/pull/33)：修正隔离GET错误注入的正文及响应头关联ID。
 - 2026-10-20 · [#32](https://github.com/zewbby/HnuHole/pull/32)：补齐隔离故障测试入口及0021部署恢复证据。
-- 2026-10-20 · [#30](https://github.com/zewbby/HnuHole/pull/30)：以持久条件写版本阻止赞藏未知请求迟到覆盖。
-- 2026-10-20 · [#29](https://github.com/zewbby/HnuHole/pull/29)：补齐帖子账号级点赞、收藏与真实评论数摘要后端。

@@ -14681,7 +14681,8 @@
         "evidence": "docs/design/feed-ui-verification-20261019.json",
         "device": "NOT_RUN",
         "fullModuleResultUnchanged": true
-      }
+      },
+      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json"
     },
     {
       "id": "B04",
@@ -16379,7 +16380,8 @@
         "evidence": "docs/design/feed-ui-verification-20261019.json",
         "device": "NOT_RUN",
         "fullModuleResultUnchanged": true
-      }
+      },
+      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json"
     },
     {
       "id": "B07",
@@ -16509,7 +16511,9 @@
         "result": "PASS_SCOPED_WITH_RETAINED_GATE_INCIDENT",
         "report": "docs/release/android-integration-candidate-20261019.md",
         "fullModuleResultUnchanged": true
-      }
+      },
+      "feedWorkerRetrySupplement20261020": "docs/design/comment-failure-reconcile-verification-20261020.json",
+      "feedProfilePerformanceSupplement20261020": "docs/design/feed-profile-performance-verification-20261020.json"
     },
     {
       "id": "B08",
@@ -40345,6 +40349,32 @@
     "sharedEnvironmentUpdatedByFrontend": false,
     "finalGate": "exact final PR HEAD CI + independent review + targeted no blockers, then authorized merge/main2010 and final device smoke; actual receipts in delivery package"
   },
+  "currentFeedPerfWorkerSupport20261020": {
+    "task": "FEED-PERF-WORKER-SUPPORT-01",
+    "defect": "FA-D08",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/36",
+    "sourceCommit": "57dfe5f888986c41c54e073f5e66ba80b4e26371",
+    "evidence": "docs/design/comment-failure-reconcile-verification-20261020.json",
+    "branchRecord": "docs/branches/fix-comment-failure-reconcile.md",
+    "result": "ORIGINAL_TASK_RECOVERY_SCOPED_PASS_FINAL_HEAD_CI_AT_PR",
+    "performance": "PASS_SCOPED_SINGLE_DEVICE_PROFILE_BUDGET",
+    "merged": false,
+    "formalRelease": false,
+    "performanceEvidence": "docs/design/feed-profile-performance-verification-20261020.json",
+    "performanceReport": "docs/design/feed-profile-performance-report-20261020.md",
+    "performanceTestedCommit": "31bc061918cdb9d9583e1df9d9a473590b45615c",
+    "performanceCandidateSha256": "72a3f2511e3603f0a1e2f263e68c7e7bebdb464bbfe5370a42cd17b76deb28b0",
+    "priorPerformanceCheckpoint": "BLOCKED_TRUSTED_HTTPS_NOT_READY; original snapshot retained in branch history and previous commit",
+    "mainIntegration20261021": {
+      "integratedMain": "3611925c67137cfe43dedfdd6876a6c652f84231",
+      "runtimeInputsEqualTo31bc061": 110,
+      "mergeAuthorized": true,
+      "finalHeadChecks": "PENDING_EXACT_INTEGRATION_HEAD",
+      "dailyCandidate": "Post-merge main debug2026102113/same test signer; current C/V/tunnels offline, wait authorized owner restoration and record actual origins/trust/SHA/Android minimal smoke at final receipt",
+      "workerAndPerformanceRepeated": false,
+      "formalRelease": false
+    }
+  },
   "currentFeedSupplementSupport20261020": {
     "task": "FEED-SUPPLEMENT-SUPPORT-01",
     "branch": "codex/test/feed-supplement-support",
@@ -40367,6 +40397,6 @@
     "productionTouched": false,
     "performance": "profile2012/source31bc061/APK72a3f251: RMX3366 actual60Hz,4x3x20s frame budgets PASS, separate628page frames,10loops+30s returned PSS+79KiB PASS; excluded samples retained; not production SLA",
     "retention": "network3 same process URLs and original C/V/PG/data/33923 retained; worker53381 stopped; own VM/gesture/XML cleaned, disconnected old vivo cleanup pending",
-    "mergeState": "PR35 and PR36 Draft/unmerged; no new merge authorization; repaired final main candidate pending"
+    "mergeState": "PR35 merged main3611925c67137cfe43dedfdd6876a6c652f84231 at2026-10-21T01:39:47Z; PR36 authorized for integration/checks/merge and daily main APK, no formal release"
   }
 }

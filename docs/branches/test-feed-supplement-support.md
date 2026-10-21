@@ -1,5 +1,7 @@
 # 列表性能与评论 worker 重试补验支持
 
+> **2026-10-21 已确认合并：**PR #35经授权Squash合入main `3611925c67137cfe43dedfdd6876a6c652f84231`（09:39+08），树与最终已审查`2eef264`相同，适用CI通过，无未解决审查线程。原共享后端／工具实例／数据与双可信URL保留，没有部署或发布；下方Draft／未合并文字保留为历史。#36本轮另获整合送合及主线日常包授权，实际结果看其PR／回执。
+
 工作项 FEED-SUPPLEMENT-SUPPORT-01；2026-10-20，Asia/Shanghai。独立分支
 `codex/test/feed-supplement-support`，基线 main `30401b8034b9ffdb2df07debf4b174adb04a138c`。
 状态 WORKER_RECOVERY_AND_PROFILE2012_SINGLE_DEVICE_SCOPED_PASS_UNMERGED；[Draft PR #35](https://github.com/zewbby/HnuHole/pull/35) 未合并、未正式部署。

@@ -34,6 +34,25 @@ class _CommentFailureViewState extends State<CommentFailureView> {
   String? error, target, identityLabel;
   final pickedBlobs = <String>{};
   bool get current => mounted && widget.runtime.current(epoch);
+
+  CommentJournalEntry? get localEntry => widget.runtime.core.entries
+      .where((e) => e.localId == widget.taskId)
+      .firstOrNull;
+
+  bool confirmedFailure(CommentTask t) {
+    final entry = localEntry;
+    // A fresh owner read also supports recovery on a second installation. An
+    // existing command must first settle through the core's original receipt;
+    // an old FAILED snapshot cannot resolve an unknown RETRY or ABANDON.
+    if (entry == null) return true;
+    final local = entry.task;
+    return entry.transport == CommentTransportState.settled &&
+        !entry.identityDeleted &&
+        local?.state == CommentTaskState.failed &&
+        local!.attemptVersion == t.attemptVersion &&
+        local.binding.sameAs(t.binding);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,11 +63,18 @@ class _CommentFailureViewState extends State<CommentFailureView> {
     if (!current) return;
     setState(() => busy = true);
     try {
+      if (localEntry != null) {
+        await widget.runtime.core.reconcile(widget.taskId);
+        if (!current) return;
+      }
       final raw = await widget.runtime.request(
         'GET',
         '/api/v1/me/comment-tasks/${widget.taskId}',
       );
       final t = HttpCommentApi.parseTask(raw);
+      if (t.taskId != widget.taskId) {
+        throw const FormatException('Wrong failure task');
+      }
       final directory = await widget.runtime.directory();
       final label =
           directory.identities
@@ -122,7 +148,7 @@ class _CommentFailureViewState extends State<CommentFailureView> {
   }
 
   Future<void> _act(bool abandon) async {
-    if (!current || busy || task == null) return;
+    if (!current || busy || task == null || !confirmedFailure(task!)) return;
     if (abandon) {
       final yes = await showDialog<bool>(
         context: context,
@@ -175,6 +201,7 @@ class _CommentFailureViewState extends State<CommentFailureView> {
       }
       if (!current) return;
       await _load();
+      if (!current) return;
       widget.onResolved?.call();
     } catch (_) {
       if (current) setState(() => error = '请核对任务结果后再操作。');
@@ -188,6 +215,7 @@ class _CommentFailureViewState extends State<CommentFailureView> {
     if (!current ||
         busy ||
         t == null ||
+        !confirmedFailure(t) ||
         !t.canAbandon ||
         widget.runtime.openRetarget == null) {
       return;
@@ -218,6 +246,7 @@ class _CommentFailureViewState extends State<CommentFailureView> {
           ? null
           : widget.runtime.journal.staged[image!.blobId] ??
                 await widget.runtime.journal.bytes(account, image!);
+      if (!current || !confirmedFailure(t)) return;
       final old = widget.runtime.core.entries
           .where((e) => e.localId == t.taskId)
           .firstOrNull;
@@ -267,6 +296,7 @@ class _CommentFailureViewState extends State<CommentFailureView> {
   Widget build(BuildContext context) {
     if (!current) return const Text('会话已变化，请返回。');
     final t = task;
+    final confirmed = t != null && confirmedFailure(t);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -281,6 +311,7 @@ class _CommentFailureViewState extends State<CommentFailureView> {
           Text(target ?? ''),
           Text('发言身份：${identityLabel ?? '原身份'}'),
           if (t.state == CommentTaskState.failed) ...[
+            if (!confirmed) const Text('任务结果待核对，请核对最新状态。'),
             TextField(
               controller: text,
               minLines: 3,
@@ -310,19 +341,23 @@ class _CommentFailureViewState extends State<CommentFailureView> {
             if (t.failureCode == 'COMMENT_TARGET_DELETED' &&
                 widget.runtime.openRetarget != null)
               TextButton(
-                onPressed: busy || missingImage ? null : _retarget,
+                onPressed: busy || missingImage || !confirmed
+                    ? null
+                    : _retarget,
                 child: const Text('保留内容，重新选择回复对象'),
               ),
             Wrap(
               children: [
                 FilledButton(
-                  onPressed: busy || missingImage || !t.canRetry
+                  onPressed: busy || missingImage || !confirmed || !t.canRetry
                       ? null
                       : () => _act(false),
                   child: const Text('按原身份和对象重试'),
                 ),
                 TextButton(
-                  onPressed: busy || !t.canAbandon ? null : () => _act(true),
+                  onPressed: busy || !confirmed || !t.canAbandon
+                      ? null
+                      : () => _act(true),
                   child: const Text('放弃任务'),
                 ),
               ],
