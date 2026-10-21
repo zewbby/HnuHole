@@ -829,3 +829,12 @@ R01完整Go／一次性SQL／race、R02 vet、R03实际非owner C/V／C12V4迁�
 | 后续 | 前端按固定双方SHA先解决DTO/摘要/失效差异；独立环境显式配置validator、迁移与grants，再集成验证。评论B07、私信B09未实现，不借用帖子端点 |
 
 复验入口 `services/api/authlab/run-post-images-isolated.sh`，环境与命令见[媒体契约](post-image-media-contract.md)。本轮没有调用Flutter/SDK/ADB/手机，也没有重复TalkBack验收；iOS继续单列NOT_RUN。
+
+
+## 2026-10-21 AUTH-UI-IMPLEMENT-01 登录注册定稿接入
+
+分支 `feat/auth-entry-flow`，基于包含设计 PR #38 的 main 874bc0b；功能 PR 检查中，尚未合并／正式发布。详见[任务单](../branches/feat-auth-entry-flow.md)与[核对记录](validation/auth-entry-ui-20261021/verification.json)。
+
+欢迎页、语言／明暗外观、用户名密码与邮箱验证码原位切换已接入真实页面；用户选择邮箱登录本轮待接入，因此邮箱输入、获取验证码和继续均禁用，绝不调用注册接口冒充登录。校邮注册保留严格域名与大小写校验，支持固定后缀／合法完整邮箱粘贴。恢复、注销、待核对操作、安全存储协议、Go／SQL均不修改。外观仅独立保存主题与语言。
+
+涉及 A06／A12／B01 的页面增量及 B03 未登录入口；不提升历史整模块或生产验收。宿主、视觉、原生构建结果以本次实际记录为准，未执行设备与真实邮件验收。

@@ -104,7 +104,7 @@ void main() {
           await _wait(
             tester,
             () =>
-                find.text('登录或注册').evaluate().isNotEmpty ||
+                find.text('开始使用').evaluate().isNotEmpty ||
                 (phase == 'ni-a02' && find.text('退出本机').evaluate().isNotEmpty),
             'guest or frozen entry',
           );
@@ -120,17 +120,17 @@ void main() {
             );
           }
           if (find.byType(AuthScreen).evaluate().isEmpty) {
-            await _tap(tester, find.text('登录或注册'));
+            await _tap(tester, find.text('开始使用'));
           }
           if (phase == 'ni-a02' && find.text('退出本机').evaluate().isNotEmpty) {
             await _tap(tester, find.text('退出本机'));
           }
           await _wait(
             tester,
-            () => find.text('恢复账号').evaluate().isNotEmpty,
+            () => find.text('找回账号').evaluate().isNotEmpty,
             'recovery mode',
           );
-          await _tap(tester, find.text('恢复账号'));
+          await _tap(tester, find.text('找回账号'));
           final flows = tester
               .widget<AuthScreen>(find.byType(AuthScreen))
               .flows;
@@ -191,11 +191,11 @@ void main() {
           await _wait(
             tester,
             () =>
-                find.text('登录或注册').evaluate().isNotEmpty ||
+                find.text('开始使用').evaluate().isNotEmpty ||
                 find.byType(ChannelTree).evaluate().isNotEmpty,
             'authoritative startup',
           );
-          if (find.text('登录或注册').evaluate().isNotEmpty) {
+          if (find.text('开始使用').evaluate().isNotEmpty) {
             await _login(tester, name, password);
             flags['explicitProductLogin'] = true;
           }
@@ -1130,10 +1130,10 @@ Future<void> _input(WidgetTester tester, String key, String value) async {
 }
 
 Future<void> _login(WidgetTester tester, String name, String password) async {
-  await _tap(tester, find.text('登录或注册'));
+  await _tap(tester, find.text('开始使用'));
   await _input(tester, 'login-username', name);
   await _input(tester, 'login-password', password);
-  await _tap(tester, find.text('登录并进入'));
+  await _tap(tester, find.byKey(const ValueKey('login-submit')));
   await _wait(
     tester,
     () =>

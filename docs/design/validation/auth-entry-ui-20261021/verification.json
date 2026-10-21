@@ -1,0 +1,81 @@
+{
+  "task": "AUTH-UI-IMPLEMENT-01",
+  "branch": "feat/auth-entry-flow",
+  "baseCommit": "874bc0b394073a6901bd7d856cf5f1c857692120",
+  "productRevision": "implementation commit carrying this evidence; exact PR head and CI recorded in GitHub",
+  "userDecision": "Complete UI and existing flows; email login marked pending",
+  "checks": [
+    {
+      "command": "flutter analyze --no-pub",
+      "result": "PASS",
+      "details": "No issues found"
+    },
+    {
+      "command": "flutter test --no-pub --concurrency=2 --reporter expanded",
+      "result": "PASS",
+      "passed": 633
+    },
+    {
+      "command": "flutter test --no-pub --reporter expanded --dart-define=AUTH_UI_QA_FONT=<Microsoft YaHei> --dart-define=AUTH_UI_QA_ICON_FONT=<MaterialIcons> --dart-define=AUTH_UI_QA_SERIF_FONT=<Georgia> --dart-define=AUTH_UI_QA_DIR=build/auth-entry-ui-render test/auth_screen_test.dart",
+      "result": "PASS",
+      "passed": 16
+    },
+    {
+      "command": "flutter build apk --debug --no-pub --target-platform android-arm64 -P kotlin.incremental=false -P kotlin.compiler.execution.strategy=in-process --build-number 2026102129 --build-name 0.1.0-auth-entry --dart-define=AUTH_COMMUNITY_BASE_URL=<inherited-public-C> --dart-define=AUTH_VERIFIER_BASE_URL=<inherited-public-V>",
+      "result": "PASS",
+      "apkSha256": "51bc9726a2ea402a96b52278c337fbc37dd62fc92bb81b6dec2e24a50caf409a",
+      "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "kind": "premerge candidate, not final main artifact"
+    }
+  ],
+  "uiCoverage": [
+    "welcome/start/language/theme",
+    "password login",
+    "email mode fixed geometry and zero requests",
+    "strict registration campus suffix and full-address paste",
+    "recovery and closure semantics",
+    "375px large text 1.6 scrolling",
+    "keyboard and native field controls",
+    "actual descendant theme contrast >=4.5"
+  ],
+  "screenshots": [
+    {
+      "path": "auth-email-pending-dark-final-375px.png",
+      "sha256": "478d41e8264bee7f0412bc7fc8c4b0e81205da52d5fdd5fb598c7d61098c166f"
+    },
+    {
+      "path": "auth-email-pending-final-375px.png",
+      "sha256": "b9fc6764f9db093cebfc5d45d287efd1f5955402918bc72798d53a3a5381870f"
+    },
+    {
+      "path": "auth-login-final-375px.png",
+      "sha256": "a20dda0678950db8c65e512320e448df6a41a546a0e31ebf4bcee21925e5ca49"
+    },
+    {
+      "path": "auth-recovery-code-dark-375px.png",
+      "sha256": "1c8f312433b0e396d48b093622242e5b884eb0e4b75b9ad3f5dc113299593562"
+    },
+    {
+      "path": "auth-registration-375px-160pct.png",
+      "sha256": "ea5e29fd5a8e28ab62fe1e5cf216cbe556be2f05f9e01f298b762009a3a27b6e"
+    },
+    {
+      "path": "auth-welcome-final-375px.png",
+      "sha256": "9c2890c641df0ddc4f2f66966ad11ebef78579b216a7375a55234e4c62daa69e"
+    }
+  ],
+  "review": "Independent read-only agent review; findings corrected (translation/fallback context/actual-theme contrast). Final head review tracked in PR. Not a GitHub member approval.",
+  "limitations": {
+    "emailLogin": "PENDING_DISABLED_NO_BACKEND_CHANGE",
+    "device": "NOT_RUN",
+    "liveEmailAndServices": "NOT_RUN; retained subject endpoints not claimed currently online",
+    "production": "NOT_RELEASED",
+    "logo": "h placeholder pending brand design"
+  },
+  "buildEnvironmentNotes": [
+    "Flutter 3.47.5 / Dart 3.13.4 / JDK17 / pinned lockfiles unchanged",
+    "Windows cross-drive Kotlin cache issue avoided by task build -P flags, no project config change",
+    "Exact sqlite3 3.7.0 official arm64 library cached only after locked SHA256 verification",
+    "One full-test attempt failed before tests with disk space; complete retry passed 633; task temporary files moved to E drive; unrelated workspaces untouched"
+  ]
+}

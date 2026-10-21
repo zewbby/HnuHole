@@ -50,6 +50,7 @@ class _Api implements AuthApi {
   ClosureState closureState = ClosureState.pending;
   bool rejectRevocation = false;
   String? submittedUsername;
+  String? submittedEmail;
   String? submittedConfirmation;
   final token = AuthCrypto.randomEncoded(32);
 
@@ -91,6 +92,7 @@ class _Api implements AuthApi {
     required String idempotencyKey,
   }) async {
     otpRequests++;
+    submittedEmail = email;
     return OtpRequestAccepted(
       flowId: AuthCrypto.randomEncoded(32),
       retryAfterSeconds: 60,
@@ -191,6 +193,8 @@ class _Harness {
     WidgetTester tester, {
     double scale = 1,
     bool dark = false,
+    AuthPresentationController? presentation,
+    Widget? home,
   }) async {
     const qaFont = String.fromEnvironment('AUTH_UI_QA_FONT');
     if (qaFont.isNotEmpty) {
@@ -199,6 +203,19 @@ class _Harness {
         await (FontLoader(
           'AuthQaChinese',
         )..addFont(Future.value(ByteData.sublistView(bytes)))).load();
+        for (final (family, filename) in [
+          (
+            'MaterialIcons',
+            const String.fromEnvironment('AUTH_UI_QA_ICON_FONT'),
+          ),
+          ('serif', const String.fromEnvironment('AUTH_UI_QA_SERIF_FONT')),
+        ]) {
+          if (filename.isEmpty) continue;
+          final font = await File(filename).readAsBytes();
+          await (FontLoader(
+            family,
+          )..addFont(Future.value(ByteData.sublistView(font)))).load();
+        }
       });
     }
     await sessions.start();
@@ -207,6 +224,7 @@ class _Harness {
       RepaintBoundary(
         key: const ValueKey('qa-auth-surface'),
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             fontFamily: qaFont.isEmpty ? null : 'AuthQaChinese',
             colorScheme: ColorScheme.fromSeed(
@@ -218,9 +236,14 @@ class _Harness {
           builder: (context, child) => MediaQuery(
             data: MediaQuery.of(context)
                 .copyWith(textScaler: TextScaler.linear(scale)),
-            child: child!,
+            child: presentation == null
+                ? child!
+                : AuthPresentationScope(
+                    controller: presentation,
+                    child: child!,
+                  ),
           ),
-          home: AuthScreen(sessions: sessions, flows: flows),
+          home: home ?? AuthScreen(sessions: sessions, flows: flows),
         ),
       ),
     );
@@ -253,7 +276,9 @@ Future<void> _snapshot(WidgetTester tester, String name) async {
 }
 
 Future<void> _tap(WidgetTester tester, String text) async {
-  final finder = find.text(text);
+  final finder = text == '登录并进入'
+      ? find.byKey(const ValueKey('login-submit'))
+      : find.text(text);
   await tester.ensureVisible(finder);
   await tester.tap(finder);
   await tester.pumpAndSettle();
@@ -283,6 +308,195 @@ Future<void> _seedEligibility(_Harness h) async {
 
 void main() {
   testWidgets(
+    'login method swaps in place and pending email cannot invoke C or V',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 812);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final h = _Harness();
+      final presentation = AuthPresentationController();
+      await h.mount(tester, presentation: presentation);
+      final beforeUser = tester.getRect(
+        find.byKey(const ValueKey('login-username')),
+      );
+      final beforePassword = tester.getRect(
+        find.byKey(const ValueKey('login-password')),
+      );
+      final beforeArrow = tester.getRect(
+        find.byKey(const ValueKey('login-submit')),
+      );
+      expect(find.text('私有用户名'), findsNothing);
+      expect(find.textContaining('使用你的私有用户名和密码'), findsNothing);
+      expect(find.text('新注册'), findsNothing);
+      await _snapshot(tester, 'auth-login-final-375px');
+      await tester.enterText(
+        find.byKey(const ValueKey('login-username')),
+        'private_name',
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('login-password')),
+        'private password here',
+      );
+      await tester.tap(find.byKey(const ValueKey('login-method-toggle')));
+      await tester.pumpAndSettle();
+      expect(find.text('欢迎回来'), findsOneWidget);
+      expect(find.text('您的校园邮箱'), findsNothing);
+      expect(
+        tester.getRect(find.byKey(const ValueKey('email-login-address'))),
+        beforeUser,
+      );
+      expect(
+        tester.getRect(find.byKey(const ValueKey('email-login-code'))),
+        beforePassword,
+      );
+      expect(
+        tester.getRect(find.byKey(const ValueKey('login-submit'))),
+        beforeArrow,
+      );
+      expect(
+        tester
+            .widget<TextFormField>(
+              find.byKey(const ValueKey('email-login-address')),
+            )
+            .enabled,
+        isFalse,
+      );
+      expect(
+        tester
+            .widget<TextButton>(
+              find.byKey(const ValueKey('email-login-request')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('login-submit')))
+            .onPressed,
+        isNull,
+      );
+      expect(find.text('待接入'), findsOneWidget);
+      expect(h.api.logins, 0);
+      expect(h.api.otpRequests, 0);
+      await _snapshot(tester, 'auth-email-pending-final-375px');
+      await tester.tap(find.byKey(const ValueKey('auth-theme-toggle')));
+      await tester.pumpAndSettle();
+      await _snapshot(tester, 'auth-email-pending-dark-final-375px');
+      await tester.tap(find.byKey(const ValueKey('login-method-toggle')));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextFormField>(find.byKey(const ValueKey('login-password')))
+            .controller!
+            .text,
+        isEmpty,
+      );
+      expect(
+        tester
+            .widget<TextField>(
+              find.descendant(
+                of: find.byKey(const ValueKey('login-password')),
+                matching: find.byType(TextField),
+              ),
+            )
+            .obscureText,
+        isTrue,
+      );
+      expect(
+        tester
+            .widget<TextFormField>(find.byKey(const ValueKey('login-username')))
+            .controller!
+            .text,
+        'private_name',
+      );
+      expect(tester.takeException(), isNull);
+      await h.finish(tester);
+      presentation.dispose();
+    },
+  );
+
+  testWidgets(
+    'campus registration accepts prefix and exact pasted suffix without rewriting another domain',
+    (tester) async {
+      final h = _Harness();
+      await h.mount(tester);
+      await _tap(tester, '创建账号');
+      await tester.enterText(
+        find.byKey(const ValueKey('registration-email')),
+        'Exact@other.example',
+      );
+      await _tap(tester, '获取验证码');
+      expect(h.api.otpRequests, 0);
+      await tester.enterText(
+        find.byKey(const ValueKey('registration-email')),
+        'Exact@hainanu.edu.cn',
+      );
+      expect(
+        tester
+            .widget<TextFormField>(
+              find.byKey(const ValueKey('registration-email')),
+            )
+            .controller!
+            .text,
+        'Exact',
+      );
+      await _tap(tester, '获取验证码');
+      expect(h.api.otpRequests, 1);
+      expect(h.api.submittedEmail, 'Exact@hainanu.edu.cn');
+      await h.finish(tester);
+    },
+  );
+
+  testWidgets('welcome switches theme and language without authenticating', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final h = _Harness();
+    final presentation = AuthPresentationController();
+    var started = false;
+    await h.mount(
+      tester,
+      presentation: presentation,
+      home: AuthWelcomeScreen(onStarted: () => started = true),
+    );
+    expect(find.text('开始使用'), findsOneWidget);
+    await _snapshot(tester, 'auth-welcome-final-375px');
+    await tester.tap(find.byKey(const ValueKey('auth-theme-toggle')));
+    await tester.pumpAndSettle();
+    expect(presentation.themeMode, ThemeMode.dark);
+    await tester.tap(find.byKey(const ValueKey('auth-language-toggle')));
+    await tester.pumpAndSettle();
+    expect(find.text('Get started'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('auth-start')));
+    expect(started, isTrue);
+    expect(h.api.logins, 0);
+    expect(h.api.otpRequests, 0);
+    expect(tester.takeException(), isNull);
+    await h.finish(tester);
+    presentation.dispose();
+  });
+
+  testWidgets('English choice applies to login and registration controls', (
+    tester,
+  ) async {
+    final h = _Harness();
+    final presentation = AuthPresentationController()..english = true;
+    await h.mount(tester, presentation: presentation);
+    expect(find.text('Welcome back'), findsOneWidget);
+    expect(find.text('Username'), findsOneWidget);
+    await _tap(tester, 'Create an account');
+    expect(find.text('Verify campus email'), findsOneWidget);
+    expect(find.text('Get code'), findsOneWidget);
+    expect(find.text('Back to sign in'), findsOneWidget);
+    await h.finish(tester);
+    presentation.dispose();
+  });
+
+  testWidgets(
     'persisted invalid OTP flow offers explicit continuation without an error or resend',
     (tester) async {
       final h = _Harness();
@@ -301,7 +515,7 @@ void main() {
         ),
       );
       await h.mount(tester);
-      await _tap(tester, '新注册');
+      await _tap(tester, '创建账号');
       expect(h.flows.error, isNull);
       expect(find.text('结束过期操作，重新收码'), findsOneWidget);
       expect(find.text('使用原验证码继续确认'), findsNothing);
@@ -391,7 +605,7 @@ void main() {
     (tester) async {
       final h = _Harness();
       await h.mount(tester);
-      await _tap(tester, '新注册');
+      await _tap(tester, '创建账号');
       expect(find.byKey(const ValueKey('registration-otp')), findsOneWidget);
       await tester.enterText(
         find.byKey(const ValueKey('registration-email')),
@@ -411,7 +625,7 @@ void main() {
       final h = _Harness();
       await _seedEligibility(h);
       await h.mount(tester);
-      await _tap(tester, '新注册');
+      await _tap(tester, '创建账号');
       await tester.enterText(
         find.byKey(const ValueKey('registration-username')),
         'new_private',
@@ -445,7 +659,7 @@ void main() {
     (tester) async {
       final h = _Harness();
       await h.mount(tester);
-      await _tap(tester, '恢复账号');
+      await _tap(tester, '找回账号');
       await tester.enterText(
         find.byKey(const ValueKey('recovery-code')),
         _savedCode,
@@ -561,7 +775,7 @@ void main() {
       expect((await h.store.read()).pendingClosure, isNull);
       expect(h.api.logins, 0);
       expect(h.sessions.isAuthenticated, isFalse);
-      expect(find.text('新注册'), findsOneWidget);
+      expect(find.text('创建账号'), findsOneWidget);
       expect(find.byKey(const ValueKey('login-username')), findsOneWidget);
       await h.finish(tester);
     },
@@ -599,7 +813,7 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       final h = _Harness();
       await h.mount(tester, scale: 1.6);
-      await _tap(tester, '新注册');
+      await _tap(tester, '创建账号');
       expect(tester.takeException(), isNull);
       await tester.ensureVisible(find.text('获取验证码'));
       expect(tester.takeException(), isNull);
@@ -622,7 +836,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     final h = _Harness();
     await h.mount(tester, dark: true);
-    await _tap(tester, '恢复账号');
+    await _tap(tester, '找回账号');
     await tester.enterText(
       find.byKey(const ValueKey('recovery-code')),
       _savedCode,
@@ -633,8 +847,9 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
-    final colors = Theme.of(tester.element(find.byType(AuthScreen)))
-        .colorScheme;
+    final colors = Theme.of(
+      tester.element(find.byKey(const ValueKey('displayed-recovery-code'))),
+    ).colorScheme;
     double contrast(Color first, Color second) {
       final a = first.computeLuminance(), b = second.computeLuminance();
       return a > b ? (a + .05) / (b + .05) : (b + .05) / (a + .05);

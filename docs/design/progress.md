@@ -421,3 +421,12 @@
 认证主链已有规则、协议、恢复、数据/API、威胁模型、OpenAPI 和评审材料，并已按用户授权进入隔离实现：槽位／开户／ACK、校邮确认、原确认续办与 HTTP／mTLS 的证据见[资格报告](auth-privacy-eligibility-http-validation-report.md)；登录、会话接替／续期／撤销及 Gate 故障验证见[会话报告](auth-privacy-session-lifecycle-validation-report.md)；恢复码重设、七天注销、截止裁决与受信封禁联动见[恢复／注销报告](auth-privacy-recovery-closure-validation-report.md)。下一切片补齐恢复码轮换与可选 Passkey 的凭据管理，再串联移动端持久待办、设备通知与生产授权。每次实现提供必要的真实事务／故障验证；生产接入仍须完整迁移、可信灾备、运营权限事实与独立安全验收。旧 [ADR 0005](../adr/0005-privacy-preserving-email-authentication.md)不再是实现规范。
 
 随后按任务 2 接入文字内容主链，再安排身份/内容/会话数据关系、可见性和账号去重等验证、联调内测与分发上线。这部分须单独估算，不把设计成熟度当成上线进度。
+
+
+## 2026-10-21 AUTH-UI-IMPLEMENT-01 登录注册定稿接入
+
+分支 `feat/auth-entry-flow`，基于包含设计 PR #38 的 main 874bc0b；功能 PR 检查中，尚未合并／正式发布。详见[任务单](../branches/feat-auth-entry-flow.md)与[核对记录](validation/auth-entry-ui-20261021/verification.json)。
+
+欢迎页、语言／明暗外观、用户名密码与邮箱验证码原位切换已接入真实页面；用户选择邮箱登录本轮待接入，因此邮箱输入、获取验证码和继续均禁用，绝不调用注册接口冒充登录。校邮注册保留严格域名与大小写校验，支持固定后缀／合法完整邮箱粘贴。恢复、注销、待核对操作、安全存储协议、Go／SQL均不修改。外观仅独立保存主题与语言。
+
+涉及 A06／A12／B01 的页面增量及 B03 未登录入口；不提升历史整模块或生产验收。宿主、视觉、原生构建结果以本次实际记录为准，未执行设备与真实邮件验收。
