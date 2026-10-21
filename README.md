@@ -37,6 +37,7 @@
 | --- | --- | --- |
 | `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `feat/registration-wizard-ui` | 三步注册接入现有校邮开户流程，恢复码框内复制与可选Passkey；实现、验收及合并状态见 [PR #42](https://github.com/zewbby/HnuHole/pull/42)。 | [详情](docs/branches/feat-registration-wizard-ui.md) |
 | `feat/login-home-recommended` | 登录直达首页，启动默认推荐、返回保留所选通道；2122测试包与单机指定验收通过，交付及合并状态见 [PR #40](https://github.com/zewbby/HnuHole/pull/40)。 | [任务详情](docs/branches/feat-login-home-recommended.md) |
 | `docs/auth-entry-delivery` | 同步 PR #39 的合并事实与主线交付回执；仅文档，不改产品代码。 | [任务详情](docs/branches/docs-auth-entry-delivery.md) |
 | `feat/auth-entry-flow` | 将登录注册定稿接入真实 App，邮箱登录明确待接入；PR #39已合入main，原生主体包交付，未正式发布。 | [任务详情](docs/branches/feat-auth-entry-flow.md) |

@@ -737,6 +737,8 @@ Future<void> _wait(
 Future<void> _tap(WidgetTester tester, Finder finder) async {
   await _wait(tester, () {
     if (finder.evaluate().length != 1) return false;
+    final target = tester.widget<Widget>(finder);
+    if (target is ButtonStyleButton) return target.onPressed != null;
     final button = find.ancestor(
       of: finder,
       matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
@@ -854,7 +856,7 @@ Future<String> _register(
   await _tap(tester, find.text('获取验证码'));
   await _wait(
     tester,
-    () => find.text('确认验证码').evaluate().isNotEmpty,
+    () => find.byTooltip('确认验证码').evaluate().isNotEmpty,
     'V request',
   );
   final mailpit = Uri.parse(
@@ -862,20 +864,21 @@ Future<String> _register(
   );
   final otp = await _smtpOtp(mailpit, email);
   await _input(tester, 'registration-otp', otp);
-  await _tap(tester, find.text('确认验证码'));
+  await _tap(tester, find.byTooltip('确认验证码'));
   await _input(tester, 'registration-username', username);
   await _input(tester, 'registration-password', password);
-  await _tap(tester, find.text('生成并保存恢复码'));
+  await _tap(tester, find.byTooltip('生成并保存恢复码'));
   final codeFinder = find.byKey(const ValueKey('displayed-recovery-code'));
   await _wait(
     tester,
     () => codeFinder.evaluate().isNotEmpty,
     'C recovery code',
   );
-  final code = tester.widget<Text>(codeFinder).data!;
-  await _tap(tester, find.text('我已保存，隐藏原码并确认'));
+  final code = tester.widget<Text>(codeFinder).data!.replaceAll('\n', '');
+  await _tap(tester, find.textContaining('我已保存，'));
   await _input(tester, 'recovery-confirmation', code);
   await _tap(tester, find.text('确认恢复码并创建账号'));
+  await _tap(tester, find.byKey(const ValueKey('registration-finish')));
   await _wait(
     tester,
     () =>

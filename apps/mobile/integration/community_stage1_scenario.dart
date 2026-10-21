@@ -352,13 +352,13 @@ Future<Map<String, Object>> runCommunityStage1(
       await tap(find.text('获取验证码'));
       final otp = await smtpOtp(mail, email, excludingMessage: previous);
       await input('registration-otp', otp);
-      await tap(find.text('确认验证码'));
+      await tap(find.byTooltip('确认验证码'));
       final timer = Stopwatch()..start();
       while (root.flows.status != AuthFlowStatus.eligibilityReady &&
           timer.elapsed < const Duration(seconds: 90)) {
         if (!root.flows.busy &&
             root.flows.status == AuthFlowStatus.otpConfirmationPending) {
-          await tap(find.text('核对校邮确认结果'));
+          await tap(find.byTooltip('核对校邮确认结果'));
         } else if (!root.flows.busy && root.flows.error != null) {
           throw StateError(
             'stage1 OTP status=${root.flows.status.name}; kind=${root.flows.error!.kind.name}; code=${root.flows.error!.code}',
@@ -376,7 +376,7 @@ Future<Map<String, Object>> runCommunityStage1(
     }
     await input('registration-username', user);
     await input('registration-password', password);
-    await tap(find.text('生成并保存恢复码'));
+    await tap(find.byTooltip('生成并保存恢复码'));
     await wait(
       () => find
           .byKey(const ValueKey('displayed-recovery-code'))
@@ -386,10 +386,12 @@ Future<Map<String, Object>> runCommunityStage1(
     );
     final recovery = tester
         .widget<Text>(find.byKey(const ValueKey('displayed-recovery-code')))
-        .data!;
-    await tap(find.text('我已保存，隐藏原码并确认'));
+        .data!
+        .replaceAll('\n', '');
+    await tap(find.textContaining('我已保存，'));
     await input('recovery-confirmation', recovery);
     await tap(find.text('确认恢复码并创建账号'));
+    await tap(find.byKey(const ValueKey('registration-finish')));
     await wait(
       () =>
           sessions.isAuthenticated &&

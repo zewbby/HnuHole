@@ -445,3 +445,14 @@
 涉及 A06／A12／B01 的页面增量及 B03 未登录入口；不提升历史整模块或生产验收。宿主、视觉、原生构建结果以本次实际记录为准，未执行设备与真实邮件验收。
 
 AUTH-UI-IMPLEMENT-01 合并回执：`c23620f` 与已检查 head 文件树相同；[五项 CI 全成功](validation/auth-entry-ui-20261021/main-merge.json)，本地最终代码 633 项宿主与分析通过。独立 agent 审查无阻断，非 GitHub 成员批准。主线 APK 同签构建交付中，实际摘要随包保存；设备／真实邮件 NOT_RUN，不提升历史完整模块或生产结论。
+
+
+2026-10-21 AUTH-REGISTER-UI-02：[三步注册 v2 效果图](auth-flow-final/registration-v2/registration-three-steps.png)与本地交互稿已准备。10px矢量蓝色进度，邮箱验证→用户名密码→恢复码及可选Passkey；候选待反馈，不改产品代码和线上环境。详见[任务](../branches/feat-registration-wizard-ui.md)。
+
+2026-10-21 AUTH-REGISTER-UI-02：用户确认[注册v3](auth-flow-final/registration-v3/registration-three-steps.png)“可以，就这样”，设计获确认。恢复码框内复制、去掉“暂不设置”；恢复码必需，Passkey可选。原型核对PASS；本地设计保存，产品／Sites／APK未更新。见[任务](../branches/feat-registration-wizard-ui.md)。
+
+## 2026-10-21 AUTH-REGISTER-IMPLEMENT-03 三步注册接入
+
+[PR #42](https://github.com/zewbby/HnuHole/pull/42)：已确认v3注册稿接入真实Flutter，10px蓝色进度、邮箱OTP／用户名密码／账号安全，恢复码框内明确点击复制、隐藏后完整确认，移除“暂不设置”，开户后保留可选真实Passkey管理入口和完成箭头。整合最新main a746fa8，保留首页、现有恢复／注销／原请求核对；邮箱登录仍待接入，没有后端或安全存储协议改动。
+
+分析0、全量668、真实字体20项、375浅色／320深色1.6倍字与独立只读审查无阻断；涉及A06/A12/B01的UI增量，不升级整模块历史结果。真实邮件／设备／Passkey／iOS／生产 NOT_RUN。见[任务](../branches/feat-registration-wizard-ui.md)及[证据](validation/registration-wizard-20261021/verification.json)。最终远端head与合并状态以PR为准；合并后主体APK单独记录，不把设计图或宿主替身当作真实认证验收。

@@ -125,7 +125,7 @@ void main() {
           await _tap(tester, find.text('获取验证码'));
           await _wait(
             tester,
-            () => find.text('确认验证码').evaluate().isNotEmpty,
+            () => find.byTooltip('确认验证码').evaluate().isNotEmpty,
             'V request',
           );
           final otp = await _smtpOtp(
@@ -133,7 +133,7 @@ void main() {
             email,
           );
           await _input(tester, 'registration-otp', otp);
-          await _tap(tester, find.text('确认验证码'));
+          await _tap(tester, find.byTooltip('确认验证码'));
           await _wait(
             tester,
             () => find
@@ -144,7 +144,7 @@ void main() {
           );
           await _input(tester, 'registration-username', username);
           await _input(tester, 'registration-password', password);
-          await _tap(tester, find.text('生成并保存恢复码'));
+          await _tap(tester, find.byTooltip('生成并保存恢复码'));
           await _wait(
             tester,
             () => find
@@ -157,10 +157,12 @@ void main() {
               .widget<Text>(
                 find.byKey(const ValueKey('displayed-recovery-code')),
               )
-              .data!;
-          await _tap(tester, find.text('我已保存，隐藏原码并确认'));
+              .data!
+              .replaceAll('\n', '');
+          await _tap(tester, find.textContaining('我已保存，'));
           await _input(tester, 'recovery-confirmation', code);
           await _tap(tester, find.text('确认恢复码并创建账号'));
+          await _tap(tester, find.byKey(const ValueKey('registration-finish')));
           await _wait(
             tester,
             () => find.byType(AuthScreen).evaluate().isEmpty,
@@ -267,7 +269,7 @@ void main() {
             await _tap(tester, find.text('获取验证码'));
             await _wait(
               tester,
-              () => find.text('确认验证码').evaluate().isNotEmpty,
+              () => find.byTooltip('确认验证码').evaluate().isNotEmpty,
               'actual V OTP request',
             );
             fixture['email'] = email;
@@ -287,7 +289,7 @@ void main() {
             await _input(tester, 'registration-otp', fixture['otp'] as String);
             if (phase == 'v-gate-frozen-confirm') {
               expect(original.registration!['confirmation'] == null, isTrue);
-              await _tap(tester, find.text('确认验证码'));
+              await _tap(tester, find.byTooltip('确认验证码'));
               await _wait(
                 tester,
                 () => !_flows(tester).busy && _flows(tester).error != null,
@@ -328,7 +330,7 @@ void main() {
                 isTrue,
               );
               flags['actualOldOtpRejectedAfterVRecovery'] = true;
-              await _tap(tester, find.text('核对校邮确认结果'));
+              await _tap(tester, find.byTooltip('核对校邮确认结果'));
               await _wait(
                 tester,
                 () async =>
@@ -391,7 +393,17 @@ Future<void> _wait(
 }
 
 Future<void> _tap(WidgetTester tester, Finder finder) async {
-  await _wait(tester, () => finder.evaluate().length == 1, 'single action');
+  await _wait(tester, () {
+    if (finder.evaluate().length != 1) return false;
+    final target = tester.widget<Widget>(finder);
+    if (target is ButtonStyleButton) return target.onPressed != null;
+    final buttons = find.ancestor(
+      of: finder,
+      matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
+    );
+    return buttons.evaluate().isEmpty ||
+        tester.widget<ButtonStyleButton>(buttons.first).onPressed != null;
+  }, 'enabled single action');
   await tester.ensureVisible(finder);
   await tester.tap(finder);
   await tester.pump(const Duration(milliseconds: 200));

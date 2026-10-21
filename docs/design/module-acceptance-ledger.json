@@ -40524,5 +40524,25 @@
     "performance": "profile2012/source31bc061/APK72a3f251: RMX3366 actual60Hz,4x3x20s frame budgets PASS, separate628page frames,10loops+30s returned PSS+79KiB PASS; excluded samples retained; not production SLA",
     "retention": "network3 same process URLs and original C/V/PG/data/33923 retained; worker53381 stopped; own VM/gesture/XML cleaned, disconnected old vivo cleanup pending",
     "mergeState": "PR35 merged main3611925c67137cfe43dedfdd6876a6c652f84231 at2026-10-21T01:39:47Z; PR36 authorized for integration/checks/merge and daily main APK, no formal release"
+  },
+  "registrationWizard20261021": {
+    "task": "AUTH-REGISTER-IMPLEMENT-03",
+    "branch": "feat/registration-wizard-ui",
+    "base": "a746fa86b17689308f36ef66addab624a5b32656",
+    "modules": [
+      "A06",
+      "A12",
+      "B01"
+    ],
+    "implementation": "IMPLEMENTED_HOST_CHECKED",
+    "integrationStatusSource": "https://github.com/zewbby/HnuHole/pull/42",
+    "hostTests": 668,
+    "authScreenTests": 20,
+    "analysisIssues": 0,
+    "scope": "3-step presentation, explicit recovery-code copy, existing registration and passkey management; email login remains pending",
+    "evidence": "docs/design/validation/registration-wizard-20261021/verification.json",
+    "device": "NOT_RUN",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true
   }
 }

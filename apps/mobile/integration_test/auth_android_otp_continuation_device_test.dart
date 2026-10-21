@@ -122,9 +122,9 @@ void main() {
           await _input(tester, 'registration-otp', fixture['otp'] as String);
           await _tap(
             tester,
-            find.text(
-              phase == 'otp-continuation-frozen' ? '确认验证码' : '使用原验证码继续确认',
-            ),
+            (phase == 'otp-continuation-frozen'
+                ? find.byTooltip('确认验证码')
+                : find.text('使用原验证码继续确认')),
           );
           await _wait(
             tester,
@@ -157,7 +157,7 @@ void main() {
             flags['actualCleanedFlowPostRejectedWithOriginalKey'] = true;
             // A missing anchor still means unknown. Querying it must not destroy
             // the explicit continuation permission from the definitive POST.
-            await _tap(tester, find.text('核对校邮确认结果'));
+            await _tap(tester, find.byTooltip('核对校邮确认结果'));
             await _wait(tester, () => !flows.busy, 'original unknown result');
             expect(
               flows.error == null &&
@@ -219,7 +219,7 @@ void main() {
             previousOtp: fixture['otp'] as String,
           );
           await _input(tester, 'registration-otp', otp);
-          await _tap(tester, find.text('确认验证码'));
+          await _tap(tester, find.byTooltip('确认验证码'));
           await _wait(
             tester,
             () =>

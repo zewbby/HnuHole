@@ -287,7 +287,8 @@ void main() {
                 .widget<Text>(
                   find.byKey(const ValueKey('displayed-recovery-code')),
                 )
-                .data!;
+                .data!
+                .replaceAll('\n', '');
             newPassword = 'B5-${AuthCrypto.randomEncoded(32)}#9';
             expect(sessions.isAuthenticated, false);
             expect(store.current!.session, null);
@@ -299,7 +300,7 @@ void main() {
             expect(state, 'RESET_INTENT_READY');
             expect(command['syntheticRecoveryAcknowledged'], true);
             expect(newRecovery != null && newPassword != null, true);
-            await tapOwned(tester, find.text('我已保存，隐藏原码并确认'));
+            await tapOwned(tester, find.textContaining('我已保存，'));
             expect(
               find
                   .byKey(const ValueKey('displayed-recovery-code'))

@@ -1,0 +1,91 @@
+{
+  "task": "AUTH-REGISTER-UI-02",
+  "date": "2026-10-21",
+  "status": "DESIGN_APPROVED",
+  "approval": "用户：可以，就这样",
+  "scope": "本地HTML注册交互稿；不代表Flutter、后端、Sites或APK已更新",
+  "changes": [
+    "恢复码框内右上角复制图标，成功变勾并反馈，失败提示手动保存",
+    "去掉暂不设置，恢复码完整确认后右下角箭头完成；Passkey可选"
+  ],
+  "verification": {
+    "clipboardIsolatedByStubs": true,
+    "results": [
+      {
+        "mode": "modern",
+        "copyResult": "copied full 26-character sample",
+        "geometry": {
+          "inside": true,
+          "overflow": false,
+          "pageOverflow": false
+        },
+        "mandatoryRecoveryConfirmation": true,
+        "finishWithoutPasskey": true,
+        "pageErrors": []
+      },
+      {
+        "mode": "fallback",
+        "copyResult": "copied full 26-character sample",
+        "geometry": {
+          "inside": true,
+          "overflow": false,
+          "pageOverflow": false
+        },
+        "mandatoryRecoveryConfirmation": true,
+        "finishWithoutPasskey": true,
+        "pageErrors": []
+      },
+      {
+        "mode": "failure",
+        "copyResult": "failure feedback",
+        "geometry": {
+          "inside": true,
+          "overflow": false,
+          "pageOverflow": false
+        },
+        "mandatoryRecoveryConfirmation": true,
+        "finishWithoutPasskey": true,
+        "pageErrors": []
+      },
+      {
+        "mode": "narrow-dark",
+        "copyResult": "copied full 26-character sample",
+        "geometry": {
+          "inside": true,
+          "overflow": false,
+          "pageOverflow": false
+        },
+        "mandatoryRecoveryConfirmation": true,
+        "finishWithoutPasskey": true,
+        "pageErrors": []
+      }
+    ]
+  },
+  "browserRender": {
+    "engine": "Edge / Playwright",
+    "pageErrors": 0,
+    "externalRequests": 0,
+    "threeStageFlow": "PASS",
+    "sourceMatchesIframe": "PASS",
+    "sandboxAndCspPreserved": "PASS"
+  },
+  "sha256": {
+    "docs/design/auth-flow-final/source.html": "a67f44296068d1b888336efcf4c347a97471bc29eb552d37fd3c29b9f2b2dcf8",
+    "docs/design/auth-flow-final/index.html": "95769188e5462c467c42b9d63d7a3a0344e9d375e75dc27a1c0fc196aaa19db6",
+    "docs/design/auth-flow-final/registration-v3/01-email.png": "953331a6426841694aa20f2db9057878d0922aa1ea9cee987d44ac949bcd92bc",
+    "docs/design/auth-flow-final/registration-v3/02-account.png": "a2c8b8a1bb7625b6e7414842dabd1819ae8f81326f56ed005199c8a2b6e082fb",
+    "docs/design/auth-flow-final/registration-v3/03-security.png": "9d93a8e6914978af354a593829d75098eb44750aafcb813e8540b8d905bbcc36",
+    "docs/design/auth-flow-final/registration-v3/04-confirm-code.png": "b483a5d2b62fa3ee8585757857b33a14c8ae9b3964dc67d49cdaff2a3fc5af18",
+    "docs/design/auth-flow-final/registration-v3/05-passkey.png": "5459ac1814edfc9b2cbec7cf78807173cc4534b85f045da3575c520707942a1a",
+    "docs/design/auth-flow-final/registration-v3/06-copied.png": "ea04075ecd6b359588c2118a8aae1db039eabb63053378f0d33d4d3818ee2cd0",
+    "docs/design/auth-flow-final/registration-v3/07-security-narrow-dark.png": "2e2b86036e23b729ab10ace5ef05060c642e249e9cb351f7b2e5731373b40088",
+    "docs/design/auth-flow-final/registration-v3/registration-three-steps.png": "77ae4d9f9d563ee7c6a7afd9d191a3df802e223e1e8c81dbfc0c5a6850292d7a"
+  },
+  "notRun": [
+    "真实邮件",
+    "系统Passkey",
+    "数据库",
+    "Flutter",
+    "设备APK"
+  ]
+}

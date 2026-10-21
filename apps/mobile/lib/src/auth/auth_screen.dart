@@ -44,6 +44,8 @@ class _AuthScreenState extends State<AuthScreen> {
   final _loginOtp = TextEditingController();
   final _visiblePasswords = <String>{};
   bool _emailLogin = false;
+  bool _registrationFinishing = false;
+  String? _copyFeedback;
   double _minimumBodyHeight = 0;
   BuildContext? _presentationContext;
   _AuthMode _mode = _AuthMode.login;
@@ -95,6 +97,17 @@ class _AuthScreenState extends State<AuthScreen> {
   void _changed() {
     if (!mounted) return;
     final authenticated = widget.sessions.status == AuthStatus.authenticated;
+    final registrationEmail = widget.flows.registrationEmail;
+    if (_mode == _AuthMode.register &&
+        registrationEmail != null &&
+        _email.text.isEmpty) {
+      _email.text = registrationEmail.endsWith('@hainanu.edu.cn')
+          ? registrationEmail.substring(
+              0,
+              registrationEmail.length - '@hainanu.edu.cn'.length,
+            )
+          : registrationEmail;
+    }
     if (authenticated && !_authenticated) {
       _visiblePasswords.clear();
       _loginEmail.clear();
@@ -105,7 +118,8 @@ class _AuthScreenState extends State<AuthScreen> {
       _confirmation.clear();
       _otp.clear();
       _email.clear();
-      if (ModalRoute.of(context)?.isCurrent ?? false) {
+      if (!_registrationFinishing &&
+          (ModalRoute.of(context)?.isCurrent ?? false)) {
         widget.onAuthenticated?.call();
       }
     }
@@ -126,6 +140,10 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailLogin = false;
     _visiblePasswords.clear();
     _validateOtp = false;
+    _email.clear();
+    _otp.clear();
+    _registrationFinishing = false;
+    _copyFeedback = null;
     setState(() => _mode = mode);
     widget.flows.restorePending();
   }
@@ -156,7 +174,8 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 64,
-        title: sessionStatus == AuthStatus.authenticated
+        title:
+            sessionStatus == AuthStatus.authenticated && !_registrationFinishing
             ? Text(_text('账号与安全'))
             : null,
         leading: IconButton(
@@ -164,7 +183,19 @@ class _AuthScreenState extends State<AuthScreen> {
           onPressed: _busy
               ? null
               : () {
-                  if (_mode != _AuthMode.login) {
+                  if (_registrationFinishing &&
+                      widget.sessions.isAuthenticated) {
+                    _finishRegistration();
+                  } else if (_mode == _AuthMode.register &&
+                      {
+                        AuthFlowStatus.registrationCodeShown,
+                        AuthFlowStatus.registrationCodeConfirmation,
+                      }.contains(widget.flows.status)) {
+                    _copyFeedback = null;
+                    _confirmation.clear();
+                    widget.flows.resetFlow();
+                    widget.flows.restorePending();
+                  } else if (_mode != _AuthMode.login) {
                     _selectMode(_AuthMode.login);
                   } else {
                     Navigator.of(context).maybePop();
@@ -194,6 +225,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        if (_mode == _AuthMode.register) ...[
+                          _registrationProgress(flowStatus),
+                          const SizedBox(height: 42),
+                        ],
                         if (_busy) ...[
                           Semantics(
                             label: _text('正在核对账号状态'),
@@ -241,7 +276,9 @@ class _AuthScreenState extends State<AuthScreen> {
         _secondary('退出本机', widget.sessions.logout),
       ];
     }
-    if (session == AuthStatus.authenticated) return _account();
+    if (session == AuthStatus.authenticated) {
+      return _registrationFinishing ? _registrationComplete() : _account();
+    }
     if (_isClosureStatus(flow) &&
         !_explicitClosureLogin &&
         !_explicitClosureRecovery) {
@@ -336,7 +373,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _AuthMode.register => _registration(flow),
         _AuthMode.recover => _recovery(),
       },
-      if (_mode != _AuthMode.login)
+      if (_mode == _AuthMode.recover)
         _secondary('返回登录', () async => _selectMode(_AuthMode.login)),
     ];
   }
@@ -502,33 +539,129 @@ class _AuthScreenState extends State<AuthScreen> {
     ];
   }
 
+  Widget _registrationProgress(AuthFlowStatus flow) {
+    final step =
+        _registrationFinishing ||
+            {
+              AuthFlowStatus.registrationCodeShown,
+              AuthFlowStatus.registrationCodeConfirmation,
+              AuthFlowStatus.registrationUnknown,
+              AuthFlowStatus.registrationComplete,
+            }.contains(flow)
+        ? 3
+        : flow == AuthFlowStatus.eligibilityReady
+        ? 2
+        : 1;
+    final labels = [
+      _text('邮箱验证', 'Email verification'),
+      _text('账号设置', 'Account setup'),
+      _text('账号安全', 'Account security'),
+    ];
+    return Column(
+      key: const ValueKey('registration-progress'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          label: _text('注册进度', 'Registration progress'),
+          value: '$step / 3',
+          child: LinearProgressIndicator(
+            value: step / 3,
+            minHeight: 10,
+            borderRadius: BorderRadius.circular(8),
+            color: const Color(0xFF0088CC),
+            backgroundColor: _theme.colorScheme.surfaceContainerHighest,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < labels.length; i++)
+              Expanded(
+                child: Text(
+                  '${i + 1} ${labels[i]}',
+                  textAlign: i == 0
+                      ? TextAlign.start
+                      : i == 2
+                      ? TextAlign.end
+                      : TextAlign.center,
+                  style: TextStyle(
+                    fontSize: MediaQuery.sizeOf(context).width <= 340 ? 11 : 12,
+                    fontWeight: step == i + 1
+                        ? FontWeight.w600
+                        : FontWeight.w400,
+                    color: step == i + 1
+                        ? _theme.colorScheme.primary
+                        : _theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _registrationNext(
+    String label,
+    Future<void> Function()? action, {
+    String key = 'registration-next',
+  }) => Padding(
+    padding: const EdgeInsets.only(top: 24),
+    child: Align(
+      alignment: Alignment.centerRight,
+      child: Tooltip(
+        message: _text(label),
+        child: FilledButton(
+          key: ValueKey(key),
+          onPressed: _busy || action == null ? null : action,
+          style: FilledButton.styleFrom(
+            backgroundColor: _theme.brightness == Brightness.dark
+                ? const Color(0xFF32B7F3)
+                : const Color(0xFF0088CC),
+            foregroundColor: _theme.brightness == Brightness.dark
+                ? const Color(0xFF10212C)
+                : Colors.white,
+            fixedSize: const Size(64, 64),
+            padding: EdgeInsets.zero,
+            shape: const CircleBorder(),
+          ),
+          child: const Icon(Icons.arrow_forward_rounded, size: 32),
+        ),
+      ),
+    ),
+  );
+
   List<Widget> _registration(AuthFlowStatus flow) {
     if (flow == AuthFlowStatus.eligibilityReady) {
       return [
-        const _Title('设置新账号', '校邮只给新账号准入。私有用户名不是公开昵称，请使用独立密码。'),
+        const _Title('设置你的账号', ''),
+        const SizedBox(height: 18),
         _field(
-          '新账号用户名',
+          '用户名',
           _username,
           key: 'registration-username',
           username: true,
           newUsername: true,
+          placeholder: '输入用户名',
         ),
         _field(
-          '新账号密码',
+          '密码',
           _password,
           key: 'registration-password',
           password: true,
           newPassword: true,
+          placeholder: '输入密码',
         ),
-        const _Notice(
-          '密码、恢复码和全部备用 Passkey 都丢失后，旧号不能找回，也不能仅凭重新收码用同一精确邮箱创建第二个账号。',
-        ),
-        _button(
+        _registrationNext(
           '生成并保存恢复码',
-          () => _submit(
-            () =>
-                widget.flows.createRegistration(_username.text, _password.text),
-          ),
+          () => _submit(() async {
+            _copyFeedback = null;
+            await widget.flows.createRegistration(
+              _username.text,
+              _password.text,
+            );
+          }),
         ),
       ];
     }
@@ -536,46 +669,389 @@ class _AuthScreenState extends State<AuthScreen> {
     final seconds = wait == null
         ? 0
         : wait.difference(DateTime.now()).inSeconds.clamp(0, 3600);
+    final unknown = flow == AuthFlowStatus.otpRequestUnknown;
+    final confirming = flow == AuthFlowStatus.otpConfirmationPending;
+    final requestLabel = unknown
+        ? seconds > 20
+              ? '${seconds - 20} 秒后可核对申请'
+              : '核对验证码申请'
+        : seconds > 0
+        ? '$seconds 秒后可重新获取'
+        : '获取验证码';
+    Future<void> request() async {
+      if (unknown) {
+        await widget.flows.reconcileOtpRequest();
+        return;
+      }
+      _validateOtp = false;
+      await _submit(() => widget.flows.requestOtp(_campusEmail(_email.text)));
+    }
+
     return [
-      const _Title('校邮注册', '校园邮箱只用于新注册，不能登录或找回旧账号。邮箱只交给独立校邮验证方。'),
-      _field('校园邮箱', _email, key: 'registration-email', email: true),
-      _field('最新验证码', _otp, key: 'registration-otp', otp: true),
-      const _AuthText('请使用最新验证码。', style: TextStyle(fontSize: 14)),
-      const SizedBox(height: 8),
-      if (flow == AuthFlowStatus.otpRequestUnknown)
-        _button(
-          seconds > 20 ? '${seconds - 20} 秒后可核对申请' : '核对验证码申请',
-          seconds > 20 ? null : widget.flows.reconcileOtpRequest,
-        )
-      else if (flow != AuthFlowStatus.otpConfirmationPending)
-        _button(
-          seconds > 0 ? '$seconds 秒后可重新获取' : '获取验证码',
-          seconds > 0
-              ? null
-              : () {
-                  _validateOtp = false;
-                  return _submit(
-                    () => widget.flows.requestOtp(_campusEmail(_email.text)),
-                  );
-                },
+      const _Title('你的校园邮箱', ''),
+      const SizedBox(height: 18),
+      _field(
+        '校园邮箱',
+        _email,
+        key: 'registration-email',
+        email: true,
+        locked:
+            confirming ||
+            unknown ||
+            (flow == AuthFlowStatus.otpRequested && seconds > 0),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(bottom: 24),
+        child: Text(
+          _text(
+            '只需填写邮箱前缀，后缀已自动补全',
+            'Enter the prefix; the campus domain is filled in.',
+          ),
+          style: TextStyle(
+            fontSize: 13,
+            color: _theme.colorScheme.onSurfaceVariant,
+          ),
         ),
-      if (flow == AuthFlowStatus.otpRequested)
-        _button('确认验证码', () {
+      ),
+      _field(
+        '验证码',
+        _otp,
+        key: 'registration-otp',
+        otp: true,
+        placeholder: '输入验证码',
+        suffix: SizedBox(
+          width: 126,
+          child: TextButton(
+            key: const ValueKey('registration-request-otp'),
+            onPressed:
+                _busy || confirming || (unknown ? seconds > 20 : seconds > 0)
+                ? null
+                : request,
+            child: Text(
+              _text(requestLabel),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13),
+            ),
+          ),
+        ),
+      ),
+      _registrationNext(
+        confirming ? '核对校邮确认结果' : '确认验证码',
+        confirming
+            ? widget.flows.reconcileOtpConfirmation
+            : flow == AuthFlowStatus.otpRequested &&
+                  _campusEmail(_email.text) == widget.flows.registrationEmail
+            ? () {
+                _validateOtp = true;
+                return _submit(() => widget.flows.confirmOtp(_otp.text));
+              }
+            : null,
+      ),
+      if (confirming && !widget.flows.canRestartOtpVerification)
+        _secondary('使用原验证码继续确认', () {
           _validateOtp = true;
           return _submit(() => widget.flows.confirmOtp(_otp.text));
         }),
-      if (flow == AuthFlowStatus.otpConfirmationPending) ...[
-        _button('核对校邮确认结果', widget.flows.reconcileOtpConfirmation),
-        if (!widget.flows.canRestartOtpVerification)
-          _secondary('使用原验证码继续确认', () {
-            _validateOtp = true;
-            return _submit(() => widget.flows.confirmOtp(_otp.text));
-          }),
-      ],
       if (widget.flows.canRestartOtpVerification)
         _secondary('结束过期操作，重新收码', widget.flows.abandonExpiredOtpOperation),
-      const _Notice('如果可以发送，验证码将到达邮箱。投递结果未知时先核对原申请。'),
+      if (unknown || confirming)
+        const Padding(
+          padding: EdgeInsets.only(top: 16),
+          child: _Notice('如果可以发送，验证码将到达邮箱。投递结果未知时先核对原申请。'),
+        ),
     ];
+  }
+
+  Widget _passkeySetup({required bool enabled}) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const SizedBox(height: 30),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: _theme.colorScheme.primaryContainer,
+            foregroundColor: _theme.colorScheme.primary,
+            child: const Icon(Icons.key_outlined),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _text('通行密钥', 'Passkey'),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      _text('可选', 'Optional'),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: _theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _text(
+                    '使用指纹或面容，方便以后找回账号。',
+                    'Use a fingerprint or face to recover your account later.',
+                  ),
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.7,
+                    color: _theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    key: const ValueKey('registration-passkey'),
+                    onPressed: enabled && !_busy
+                        ? widget.onManageSecurity
+                        : null,
+                    child: Text(
+                      _text(
+                        enabled ? '设置通行密钥' : '确认恢复码后设置',
+                        enabled
+                            ? 'Set up passkey'
+                            : 'Confirm recovery code first',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+
+  List<Widget> _registrationSecurity({bool confirm = false}) => [
+    const _Title('保护你的账号', ''),
+    const SizedBox(height: 12),
+    Row(
+      children: [
+        Expanded(
+          child: Text(
+            _text(
+              confirm ? '确认恢复码' : '保存恢复码',
+              confirm ? 'Confirm recovery code' : 'Save recovery code',
+            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+        ),
+        Text(
+          _text('必需', 'Required'),
+          style: TextStyle(
+            fontSize: 12,
+            color: _theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    ),
+    const SizedBox(height: 16),
+    if (confirm) ...[
+      Text(
+        _text(
+          '原码已隐藏，请完整输入刚才保存的恢复码。',
+          'The code is hidden. Enter the complete code you saved.',
+        ),
+        style: TextStyle(
+          fontSize: 13,
+          color: _theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
+      const SizedBox(height: 20),
+      _field('恢复码', _confirmation, key: 'recovery-confirmation'),
+      _button(
+        '确认恢复码并创建账号',
+        () => _submit(() async {
+          _registrationFinishing = true;
+          await widget.flows.commitRegistration(_confirmation.text);
+          if (mounted && !widget.sessions.isAuthenticated) {
+            setState(() => _registrationFinishing = false);
+          }
+        }),
+      ),
+    ] else ...[
+      _registrationRecoveryBox(),
+      const SizedBox(height: 14),
+      Semantics(
+        liveRegion: true,
+        child: Text(
+          _copyFeedback ??
+              _text(
+                '恢复码只展示一次。请记下或存入你信任的密码管理器。',
+                'Shown once. Write it down or store it in your password manager.',
+              ),
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.7,
+            color: _theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ),
+      _button('我已保存，继续确认', () async {
+        _copyFeedback = null;
+        _password.clear();
+        _recoveryCode.clear();
+        _confirmation.clear();
+        widget.flows.hideRecoveryCode();
+      }),
+    ],
+    _passkeySetup(enabled: false),
+  ];
+
+  Widget _registrationRecoveryBox() {
+    final code = widget.flows.recoveryCode ?? '';
+    final midpoint = (code.length / 2).ceil();
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: _theme.brightness == Brightness.dark
+            ? const Color(0xFF20303B)
+            : const Color(0xFFEDF7FC),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 22),
+            child: Center(
+              child: Semantics(
+                label: code,
+                child: ExcludeSemantics(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      '${code.substring(0, midpoint)}\n${code.substring(midpoint)}',
+                      key: const ValueKey('displayed-recovery-code'),
+                      textAlign: TextAlign.center,
+                      style: _theme.textTheme.titleLarge?.copyWith(
+                        fontFamily: 'monospace',
+                        letterSpacing: 2,
+                        height: 1.7,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: IconButton(
+              key: const ValueKey('copy-registration-recovery-code'),
+              tooltip: _text('复制恢复码', 'Copy recovery code'),
+              onPressed: _busy || code.isEmpty
+                  ? null
+                  : () async {
+                      try {
+                        await Clipboard.setData(ClipboardData(text: code));
+                        if (!mounted ||
+                            widget.flows.status !=
+                                AuthFlowStatus.registrationCodeShown ||
+                            widget.flows.recoveryCode != code) {
+                          return;
+                        }
+                        setState(
+                          () => _copyFeedback = _text(
+                            '恢复码已复制，请妥善保存。原码只展示一次。',
+                            'Recovery code copied. Store it safely. It is shown only once.',
+                          ),
+                        );
+                      } catch (_) {
+                        if (!mounted ||
+                            widget.flows.status !=
+                                AuthFlowStatus.registrationCodeShown ||
+                            widget.flows.recoveryCode != code) {
+                          return;
+                        }
+                        setState(
+                          () => _copyFeedback = _text(
+                            '复制未成功，请手动记下恢复码并妥善保存。',
+                            'Copy failed. Write down the code and keep it safe.',
+                          ),
+                        );
+                      }
+                    },
+              color: _theme.colorScheme.primary,
+              icon: Icon(
+                _copyFeedback?.startsWith(
+                          _text('恢复码已复制', 'Recovery code copied'),
+                        ) ==
+                        true
+                    ? Icons.check_rounded
+                    : Icons.copy_outlined,
+                size: 19,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _registrationComplete() => [
+    ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: (_minimumBodyHeight - 100).clamp(0, double.infinity),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const _Title('保护你的账号', ''),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    color: _theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      _text('恢复码已保存并确认', 'Recovery code saved and confirmed'),
+                      style: TextStyle(color: _theme.colorScheme.primary),
+                    ),
+                  ),
+                ],
+              ),
+              _passkeySetup(enabled: true),
+            ],
+          ),
+          _registrationNext(
+            '完成注册',
+            () async => _finishRegistration(),
+            key: 'registration-finish',
+          ),
+        ],
+      ),
+    ),
+  ];
+
+  void _finishRegistration() {
+    if (_busy || !widget.sessions.isAuthenticated) return;
+    setState(() {
+      _registrationFinishing = false;
+      _mode = _AuthMode.login;
+    });
+    widget.onAuthenticated?.call();
   }
 
   List<Widget> _recovery() => [
@@ -592,64 +1068,77 @@ class _AuthScreenState extends State<AuthScreen> {
     const _AuthText('密码、恢复码和全部备用 Passkey 都丢失后，旧号无法找回。不会按邮箱人工重置。'),
   ];
 
-  List<Widget> _showRecoveryCode({required bool isReset}) => [
-    _Title(
-      isReset ? '保存新的恢复码' : '保存你的恢复码',
-      '只在这次画面展示。请写下或存入你选择的安全管理器，下一页隐藏原码后需要完整重输。',
-    ),
-    if (isReset && widget.flows.resetUsername != null)
-      _AuthText('私有用户名：${widget.flows.resetUsername}'),
-    const SizedBox(height: 16),
-    DecoratedBox(
-      decoration: BoxDecoration(
-        color: _theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(
-          widget.flows.recoveryCode ?? '',
-          key: const ValueKey('displayed-recovery-code'),
-          style: _theme.textTheme.titleLarge?.copyWith(letterSpacing: 1.5),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    ),
-    const SizedBox(height: 16),
-    const _Notice('恢复码是单次使用的账号控制凭据，拿到的人可能重设密码。系统截图可能同步到云端；应用不会替你自动保存或复制原码。'),
-    if (!isReset)
-      const Padding(
-        padding: EdgeInsets.only(top: 16),
-        child: _AuthText('密码、恢复码和所有备用 Passkey 均丢失时，旧号不能找回；再次收校邮验证码也不会释放旧号配额。'),
-      ),
-    _button('我已保存，隐藏原码并确认', () async {
-      _recoveryCode.clear();
-      _confirmation.clear();
-      widget.flows.hideRecoveryCode();
-    }),
-  ];
+  List<Widget> _showRecoveryCode({required bool isReset}) => !isReset
+      ? _registrationSecurity()
+      : [
+          _Title(
+            isReset ? '保存新的恢复码' : '保存你的恢复码',
+            '只在这次画面展示。请写下或存入你选择的安全管理器，下一页隐藏原码后需要完整重输。',
+          ),
+          if (isReset && widget.flows.resetUsername != null)
+            _AuthText('私有用户名：${widget.flows.resetUsername}'),
+          const SizedBox(height: 16),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: _theme.colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                widget.flows.recoveryCode ?? '',
+                key: const ValueKey('displayed-recovery-code'),
+                style: _theme.textTheme.titleLarge?.copyWith(
+                  letterSpacing: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const _Notice(
+            '恢复码是单次使用的账号控制凭据，拿到的人可能重设密码。系统截图可能同步到云端；应用不会替你自动保存或复制原码。',
+          ),
+          if (!isReset)
+            const Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: _AuthText(
+                '密码、恢复码和所有备用 Passkey 均丢失时，旧号不能找回；再次收校邮验证码也不会释放旧号配额。',
+              ),
+            ),
+          _button('我已保存，隐藏原码并确认', () async {
+            _recoveryCode.clear();
+            _confirmation.clear();
+            widget.flows.hideRecoveryCode();
+          }),
+        ];
 
-  List<Widget> _confirmRecoveryCode({required bool isReset}) => [
-    const _Title('完整重输已保存的恢复码', '原码已经隐藏。服务端会核对完整确认值。'),
-    if (isReset)
-      _field(
-        '新密码',
-        _newPassword,
-        key: 'reset-new-password',
-        password: true,
-        newPassword: true,
-      ),
-    _field('恢复码确认', _confirmation, key: 'recovery-confirmation'),
-    if (isReset) const _Notice('重设将废止全部旧恢复凭据与会话，不会自动登录或撤销注销申请。'),
-    _button(
-      isReset ? '设置新密码并激活新恢复码' : '确认恢复码并创建账号',
-      () => _submit(
-        () => isReset
-            ? widget.flows.commitReset(_newPassword.text, _confirmation.text)
-            : widget.flows.commitRegistration(_confirmation.text),
-      ),
-    ),
-  ];
+  List<Widget> _confirmRecoveryCode({required bool isReset}) => !isReset
+      ? _registrationSecurity(confirm: true)
+      : [
+          const _Title('完整重输已保存的恢复码', '原码已经隐藏。服务端会核对完整确认值。'),
+          if (isReset)
+            _field(
+              '新密码',
+              _newPassword,
+              key: 'reset-new-password',
+              password: true,
+              newPassword: true,
+            ),
+          _field('恢复码确认', _confirmation, key: 'recovery-confirmation'),
+          if (isReset) const _Notice('重设将废止全部旧恢复凭据与会话，不会自动登录或撤销注销申请。'),
+          _button(
+            isReset ? '设置新密码并激活新恢复码' : '确认恢复码并创建账号',
+            () => _submit(
+              () => isReset
+                  ? widget.flows.commitReset(
+                      _newPassword.text,
+                      _confirmation.text,
+                    )
+                  : widget.flows.commitRegistration(_confirmation.text),
+            ),
+          ),
+        ];
 
   List<Widget> _account() => [
     const _Title('账号已登录', '本账号只保持一个有效移动会话。恢复码原文不能再次查看。'),
@@ -792,6 +1281,7 @@ class _AuthScreenState extends State<AuthScreen> {
     bool email = false,
     bool otp = false,
     bool pending = false,
+    bool locked = false,
     String? placeholder,
     Widget? suffix,
   }) => Padding(
@@ -799,8 +1289,9 @@ class _AuthScreenState extends State<AuthScreen> {
     child: TextFormField(
       key: ValueKey(key),
       controller: controller,
+      onChanged: email ? (_) => setState(() {}) : null,
       inputFormatters: email ? [_CampusEmailPrefixFormatter()] : null,
-      enabled: !_busy && !pending,
+      enabled: !_busy && !pending && !locked,
       obscureText: password && !_visiblePasswords.contains(key),
       autocorrect: false,
       enableSuggestions: !password && !otp,
@@ -887,7 +1378,25 @@ class _AuthScreenState extends State<AuthScreen> {
     padding: const EdgeInsets.only(top: 16),
     child: FilledButton(
       onPressed: _busy || action == null ? null : action,
-      style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(0, 48),
+        backgroundColor: _mode != _AuthMode.register
+            ? null
+            : _theme.brightness == Brightness.dark
+            ? const Color(0xFF32B7F3)
+            : const Color(0xFF0088CC),
+        foregroundColor: _mode != _AuthMode.register
+            ? null
+            : _theme.brightness == Brightness.dark
+            ? const Color(0xFF10212C)
+            : Colors.white,
+        textStyle: _mode == _AuthMode.register
+            ? _theme.textTheme.labelLarge?.copyWith(
+                fontSize: 19,
+                fontWeight: FontWeight.w700,
+              )
+            : null,
+      ),
       child: Text(_text(label), textAlign: TextAlign.center),
     ),
   );
@@ -929,13 +1438,12 @@ class _CampusEmailPrefixFormatter extends TextInputFormatter {
 }
 
 class _AuthText extends StatelessWidget {
-  const _AuthText(this.value, {this.style});
+  const _AuthText(this.value);
   final String value;
-  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) =>
-      Text(AuthPresentationScope.text(context, value), style: style);
+      Text(AuthPresentationScope.text(context, value));
 }
 
 class _Title extends StatelessWidget {

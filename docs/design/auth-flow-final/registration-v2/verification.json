@@ -1,0 +1,52 @@
+{
+  "task": "AUTH-REGISTER-UI-02",
+  "status": "CANDIDATE_AWAITING_USER_FEEDBACK",
+  "branch": "feat/registration-wizard-ui",
+  "scope": "HTML design prototype and actual rendered PNGs only; no Flutter/API/device changes",
+  "baseline": "main 4d76f2c",
+  "userRequest": [
+    "10px thick Telegram-blue vector registration progress",
+    "Step 1 campus email and OTP, Get code inside the second row",
+    "Step 2 username and password in the existing login style",
+    "Step 3 recovery code and optional passkey"
+  ],
+  "thirdStage": "recovery code show once -> hidden full confirmation -> optional passkey within stage 3; follows existing registration-before-passkey protocol",
+  "checks": {
+    "javascriptSyntax": "PASS",
+    "allThreeStepsNavigable": "PASS",
+    "fullRecoveryConfirmation": "PASS 26-character placeholder code",
+    "screenRender": "PASS 5 page states",
+    "browserErrors": [],
+    "externalRequests": [],
+    "sandboxAndCspPreserved": true,
+    "realEmail": "NOT_RUN",
+    "realPasskey": "NOT_RUN",
+    "nativeAccessibilityAndDevice": "NOT_RUN"
+  },
+  "images": [
+    {
+      "path": "01-email.png",
+      "sha256": "953331a6426841694aa20f2db9057878d0922aa1ea9cee987d44ac949bcd92bc"
+    },
+    {
+      "path": "02-account.png",
+      "sha256": "a2c8b8a1bb7625b6e7414842dabd1819ae8f81326f56ed005199c8a2b6e082fb"
+    },
+    {
+      "path": "03-security.png",
+      "sha256": "7605d24089dbf6907857844d79614501b041e38890a12180e4ca9d441c51a2fe"
+    },
+    {
+      "path": "04-confirm-code.png",
+      "sha256": "b483a5d2b62fa3ee8585757857b33a14c8ae9b3964dc67d49cdaff2a3fc5af18"
+    },
+    {
+      "path": "05-passkey.png",
+      "sha256": "cea7ff614bb293d4ab8d9595c07ce699172e79ad589a434d4521d4232c4af38a"
+    },
+    {
+      "path": "registration-three-steps.png",
+      "sha256": "a6b69ad8c21a7bd9d81fc3eb9c954f8ea69d19ae38680215c449f39505c7174c"
+    }
+  ]
+}
