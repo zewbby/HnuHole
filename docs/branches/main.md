@@ -1,5 +1,7 @@
 # main
 
+**2026-10-22 AUTH-SESSION-RESUME-01／[PR #48](https://github.com/zewbby/HnuHole/pull/48)已合入main `d450cde`：**修复开发重启误用recover而废止会话；同代次resume前置校验，冻结/独立锚不一致仍拒绝。真实隔离16项、vivo2143原会话跨后端重启/冷启、独立复核及最终七类CI通过，本机维护工具已加载，APK无需重装。未做整机长关机或生产验收；详见[任务](fix-session-restore.md)。下方未合并均为历史状态。
+
 汇集已经合并的项目实现与文档。
 
 2026-10-22：#44 Telegram私信展示/四导航及#47隔离开发环境可靠文字收发已合入main。生产默认关闭，未部署/发布；限定验收、独立agent审查和CI见[合并回执](../design/direct-message-p1-main-merge-20261022.json)。
