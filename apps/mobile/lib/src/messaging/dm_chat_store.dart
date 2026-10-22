@@ -252,6 +252,7 @@ extension DmChatStorage on DmStore {
                 draft != null &&
                 (draft['revision'] ?? 0) == row['draftRevision']) {
               await _put('draft:${r['pair']}', 'draft', r['pair'], 0, 'draft', {
+                'identityId': intent['identityId'],
                 'text': '',
                 'revision': (draft['revision'] as int? ?? 0) + 1,
               });
@@ -452,6 +453,7 @@ extension DmChatStorage on DmStore {
   ) => _run(
     () => _transaction(() async {
       final pair = await pairTag(own, peer);
+      await _requireIdentity(own);
       final id = descriptor['mediaId'] as String;
       final record = await _get('photo-draft:$pair');
       final photos = (record?['photos'] as List? ?? [])
@@ -500,7 +502,10 @@ extension DmChatStorage on DmStore {
       final photos = (row['photos'] as List)
           .where((p) => p['mediaId'] != id)
           .toList();
-      await _put(key, 'photo_draft', pair, 0, 'draft', {'photos': photos});
+      await _put(key, 'photo_draft', pair, 0, 'draft', {
+        'photos': photos,
+        'senderId': own,
+      });
       await _deletePhoto(own, id);
     }),
   );
@@ -612,6 +617,7 @@ extension DmChatStorage on DmStore {
       final textDraft = await _get('draft:$pair');
       if (textDraft?['text'] == text) {
         await _put('draft:$pair', 'draft', pair, 0, 'draft', {
+          'identityId': own,
           'text': '',
           'revision': (textDraft?['revision'] as int? ?? 0) + 1,
         });
@@ -621,6 +627,7 @@ extension DmChatStorage on DmStore {
 
   Future<void> receivePhoto(Map<String, dynamic> item, Uint8List bytes) => _run(
     () => _transaction(() async {
+      await _requireIdentity(item['identityId']);
       final descriptor = Map<String, dynamic>.from(item['media']);
       if (bytes.length != descriptor['byteLength'] ||
           hashes.sha256.convert(bytes).toString() != descriptor['sha256']) {

@@ -41,6 +41,7 @@ class DmRuntime {
   String? _token;
   int _authority = -1, _epoch = 0;
   bool _disposed = false;
+  final _closedAccounts = <String>{};
   Timer? _retry;
   void _identityChanged() {
     _authority = -1;
@@ -49,7 +50,10 @@ class DmRuntime {
 
   void _changed() {
     final record = authStore.current?.session;
-    final token = record != null && sessions.isCurrentToken(record.token)
+    final token =
+        record != null &&
+            !_closedAccounts.contains(record.accountId) &&
+            sessions.isCurrentToken(record.token)
         ? record.token
         : null;
     if (token == _token && sessions.authorityVersion == _authority) return;
@@ -85,6 +89,21 @@ class DmRuntime {
         }
       }
     }());
+  }
+
+  /// The auth flow owns the CLOSED decision; ordinary logout/replacement only
+  /// detaches and leaves encrypted local history intact.
+  Future<void> purgeClosedAccount(String accountId) async {
+    _closedAccounts.add(accountId);
+    if (authStore.current?.session?.accountId == accountId ||
+        controller.accountId == accountId) {
+      _epoch++;
+      _token = null;
+      _authority = -1;
+      _retry?.cancel();
+      identities = [];
+    }
+    await controller.purgeClosedAccount(accountId);
   }
 
   void dispose() {
