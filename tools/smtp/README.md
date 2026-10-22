@@ -19,3 +19,11 @@ QQ 设置固定为 `smtpMode=tls`、`smtpAddress=smtp.qq.com:465`，发件地址
 升级时同时升级读取同一配置的authdev证据维护工具；旧工具会拒绝新增字段并停止维护，导致Gate按设计冻结。应使用新版正常签名恢复并维护，不能绕过Gate。本机测试已完成注册收信与既有账号登录。SMTP 接受投递不等于校园收件箱收到邮件；不对未知结果自动重发。
 
 检查：`python3 -B -m unittest discover -s tools/smtp/tests -v`。Go SMTP 测试使用本地 TLS 服务和假凭据，不连接 QQ。
+
+## 普通重启与安全恢复
+
+`authdev recover` 会推进授权代次、废止既有会话，不能作为每次开电脑/WSL启动的固定步骤。普通停机后应保留原数据库、密钥和外部锚，先启动原数据库，再对 C/V 分别同步执行新版 `authdev resume -operator <原私有operator.json>`，成功后启动 `watch` 与原 API。`watch` 现在也会立即做一次 resume，不再等待首个一分钟周期。必须先完成同步检查再接 API 流量，避免过期证据先触发冻结。
+
+resume 只签发同代次的时间证据并通过真实 Gate 校验，不调用 recover；显式冻结、锚/数据库不一致或时间回退仍拒绝。失败时停止普通启动并检查原因，再由负责人明确决定安全恢复；不自动转 recover，不更新旧会话代次，不把安全失效会话复活。已被 recover 废止的会话仍须重新登录一次。
+
+`tools/prerelease/environment.py` 和 `tools/android_integration/lab.py` 的显式 `resume` 入口会先启动原数据库、校验两方，再启动 API/watch。旧的 `start` 保留新实例冻结验证语义，旧脚本中的显式 recover 不会自动变成普通重启。该路径仅适用其各自原有、已核对的开发实例/二进制，不可用历史固定候选覆盖已升级本机服务。私有配置和运行产物不进入 Git。

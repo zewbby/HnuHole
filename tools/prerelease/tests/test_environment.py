@@ -24,6 +24,19 @@ class IsolatedEnvironmentTest(unittest.TestCase):
                 lab.stop()
             self.assertEqual(lab.run.call_count, 2)
 
+    def test_resume_failure_keeps_both_api_listeners_stopped(self):
+        lab = environment.Lab(Path(tempfile.gettempdir()) / 'nonexistent-prerelease-resume-unit-root', Path('/source'))
+        lab.state = dict(target='source', processes={}, ports={'mail': 18025, 'smtp': 11025})
+        lab.pg_start = Mock()
+        lab.spawn = Mock()
+        lab.operator = Mock(side_effect=[None, RuntimeError('V checkpoint mismatch')])
+        with self.assertRaisesRegex(RuntimeError, 'V checkpoint mismatch'):
+            lab.start()
+        # Even with C healthy, neither protected API may accept traffic while
+        # V's independent resume has failed. No fallback recovery is invoked.
+        self.assertEqual([c.args for c in lab.operator.call_args_list], [('resume', 'c'), ('resume', 'v')])
+        self.assertFalse(any(c.args[0] in ('c', 'v') for c in lab.spawn.call_args_list))
+
     def test_migrator_dsn_works_with_libpq_percent_decoding(self):
         lab = environment.Lab(Path(tempfile.gettempdir()) / 'nonexistent-prerelease-unit-root', Path('/source'))
         lab.state = dict(target='source', tag='hnuhole_runtime_unit', pgPorts={'source': {'c': 15432}})

@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-22 AUTH-SESSION-RESUME-01（fix/session-restore，未合并）：**本次失效已定位为开发环境误用recover推进授权代次、主动废止旧会话；新增普通resume和watch立即续证据，安全冻结仍拒绝，不复活失效令牌。工具实现/隔离与vivo验证状态见[任务](../branches/fix-session-restore.md)，App2143运行代码未改，未正式发布。
+
 > **2026-10-22 DM-P1-TEXT已合入main：**依赖[PR #44](https://github.com/zewbby/HnuHole/pull/44)已合入`8fb28d7`，可靠文字[PR #47](https://github.com/zewbby/HnuHole/pull/47)已合入`002b789`。独立agent精确提交审查无阻断，最终适用CI成功；增量主线整合13项DM/50项登录导航、分析0、完整OpenAPI、真实SQL/race/HTTPS和Go build/vet通过。旧UI/IME及dmtext2203原生文字链路沿原证据范围复用，未重复。默认生产开关仍关闭、未部署或发布，不提升完整B08/B09结论。下方未合并/待审查等为历史记录；见[合并回执](direct-message-p1-main-merge-20261022.json)。
 
 > **2026-10-22 DM-P1-TEXT送审更新：**网络恢复后原命令推送成功，未更改Git/LFS配置。[Draft PR #47](https://github.com/zewbby/HnuHole/pull/47)已提交，base为#44外观分支；远端CI已触发，最终结果以PR Checks为准。独立审查尚未完成，未合并、未发布。运行源码仍7e137d7，新增原生文字链路PASS及既有证据继续有效，本轮未重验。下方推送阻塞为历史记录。

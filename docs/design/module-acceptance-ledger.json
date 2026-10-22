@@ -1,4 +1,23 @@
 {
+  "sessionResume20261022": {
+    "task": "AUTH-SESSION-RESUME-01",
+    "branch": "fix/session-restore",
+    "modules": [
+      "A02",
+      "A03",
+      "A06",
+      "A12"
+    ],
+    "implementation": "IMPLEMENTED_UNMERGED",
+    "rootCause": "DEVELOPMENT_RECOVER_ROTATED_GENERATION_AND_REVOKED_OLD_SESSIONS",
+    "host": "PASS",
+    "isolatedRuntime": "PASS_FORMAL_C22_V6_HTTPS_EXPIRED_EVIDENCE_AND_SAFETY_NEGATIVES",
+    "vivo": "PASS_2143_RESTART_ORIGINAL_NATIVE_SESSION",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true,
+    "remaining": "FULL_HOST_SHUTDOWN_LONG_OUTAGE_NOT_RUN",
+    "evidence": "docs/design/validation/session-resume-20261022.json"
+  },
   "dmTextP1Native20261022": {
     "task": "DM-P1-TEXT",
     "source": "7e137d7",

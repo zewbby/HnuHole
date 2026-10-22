@@ -38,6 +38,7 @@
 | `feat/direct-message-text-reliability` | 隔离环境可靠文字收发及限定Android原生验收通过；[PR #47](https://github.com/zewbby/HnuHole/pull/47)已合入main，生产默认关闭、未发布。 | [任务详情](docs/branches/feat-direct-message-text-reliability.md) |
 | `feat/telegram-direct-messages` | Telegram私信展示/四导航及UI/IME限定验收通过；[PR #44](https://github.com/zewbby/HnuHole/pull/44)已合入main，未发布。 | [任务详情](docs/branches/feat-telegram-direct-messages.md) |
 | `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
+| `fix/session-restore` | 修复普通开发重启误用安全恢复而使会话失效；实现与验证状态见详情。 | [详情](docs/branches/fix-session-restore.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `docs/email-auth-delivery` | 同步邮箱认证PR #45合并、验收与同签包交付状态，仅文档。 | [详情](docs/branches/docs-email-auth-delivery.md) |
 | `feat/email-auth-flow` | 接通真实校邮注册发信与已有账号验证码登录，vivo限定验收通过；PR #45已合入main，未正式发布。 | [详情](docs/branches/feat-email-auth-flow.md) |

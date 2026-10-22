@@ -1,0 +1,42 @@
+{
+  "task": "AUTH-SESSION-RESUME-01",
+  "date": "2026-10-22",
+  "branch": "fix/session-restore",
+  "pullRequest": 48,
+  "runtimeSource": "fbf10acbb54296be03f2f62826bc8dbaeac9a6a9",
+  "status": "IMPLEMENTED_UNMERGED",
+  "checks": {
+    "goAffectedHost": "PASS",
+    "pythonToolTests": 9,
+    "isolatedRuntime": "PASS",
+    "formalMigrations": "C22_V6",
+    "expiredEvidenceOriginalBearer": "PASS",
+    "generationAndRecoveryAuditUnchanged": "PASS",
+    "directAnchorMismatchRejected": "PASS",
+    "frozenResumeRejected": "PASS",
+    "backupRestoreRollback": "PASS",
+    "ownedFixtureCleanup": "PASS"
+  },
+  "device": {
+    "model": "vivo V2323A",
+    "android": 15,
+    "versionCode": 2026102143,
+    "ordinaryBackendRestart": "PASS",
+    "simulatedExpiredEvidenceSeconds": 2,
+    "sessionRecordsAndGateGenerationUnchanged": true,
+    "coldStartNativeRestoreAuthenticated": "PASS",
+    "welcomeOrLoginOrSessionExpiredVisible": false,
+    "recoveryInvoked": false,
+    "apkOrApiBinariesChanged": false
+  },
+  "notRun": [
+    "full_host_shutdown_long_outage",
+    "ios",
+    "production"
+  ],
+  "historicalFailures": [
+    "legacyDockerRuntimePrivilegeInventoryBeforeScenario",
+    "initialNegativePreparationBlockedByMonotonicDBTrigger"
+  ],
+  "historicalModuleVerdictsUnchanged": true
+}
