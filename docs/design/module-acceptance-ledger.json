@@ -10,10 +10,33 @@
     "evidence": "docs/design/direct-message-chat-verification-20261022.json",
     "branch": "feat/direct-message-chat-completion",
     "independentReview": "Astra High read-only fc88b9a: no remaining actionable blockers; not GitHub member approval",
-    "remoteCI": "PENDING_PR_CREATION",
+    "remoteCI": "PENDING_PR_CHECKS",
     "merged": false,
     "released": false,
-    "historicalModuleVerdictsUnchanged": true
+    "historicalModuleVerdictsUnchanged": true,
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/51"
+  },
+  "sessionResume20261022": {
+    "task": "AUTH-SESSION-RESUME-01",
+    "branch": "fix/session-restore",
+    "modules": [
+      "A02",
+      "A03",
+      "A06",
+      "A12"
+    ],
+    "implementation": "MERGED_MAIN_LOCAL_TOOL_DEPLOYED",
+    "rootCause": "DEVELOPMENT_RECOVER_ROTATED_GENERATION_AND_REVOKED_OLD_SESSIONS",
+    "host": "PASS",
+    "isolatedRuntime": "PASS_FORMAL_C22_V6_HTTPS_EXPIRED_EVIDENCE_AND_SAFETY_NEGATIVES",
+    "vivo": "PASS_2143_RESTART_ORIGINAL_NATIVE_SESSION",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true,
+    "remaining": "FULL_HOST_SHUTDOWN_LONG_OUTAGE_NOT_RUN",
+    "evidence": "docs/design/validation/session-resume-20261022.json",
+    "mergeCommit": "d450cdeb2375a0f3bcb885c45e2cc04f338c713a",
+    "reviewedHead": "6716ce85752f4e167bd2d58085c6ca5bad186b1e",
+    "remoteWorkflowClasses": 7
   },
   "dmTextP1Native20261022": {
     "task": "DM-P1-TEXT",

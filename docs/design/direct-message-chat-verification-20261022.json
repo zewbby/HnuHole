@@ -4,7 +4,7 @@
   "branch": "feat/direct-message-chat-completion",
   "baseMain": "154a76189f7fa0202963bf2deb7bf4341ba8eea8",
   "source": "889217251c54759d46f9b0f9d3613d8baacf7b30",
-  "status": "SCOPED_IMPLEMENTATION_AND_NATIVE_ACCEPTANCE_PASS_PR_PENDING",
+  "status": "SCOPED_IMPLEMENTATION_AND_NATIVE_ACCEPTANCE_PASS_PR_OPEN",
   "merged": false,
   "released": false,
   "productionDefaultEnabled": false,
@@ -210,7 +210,8 @@
     "Base64 media transport and encrypted chunks are bounded by declared 10MiB image/9-image group limits"
   ],
   "remoteCI": {
-    "result": "PENDING_PR_CREATION"
+    "result": "PENDING_FINAL_INTEGRATION_HEAD",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/51"
   },
   "regressionsReused": [
     "P1 text original device evidence",
@@ -224,5 +225,12 @@
     "dm-p2-final-build.log": "ea00ec825160b969aee9159a8942da754acf8fbd884e48fd390c7868187031f5",
     "dm-p2-native-final.log": "e64032a341194bfd866ac865fbfff0e3d2094b4dae528fde9f29b256c4c6e53b",
     "dm-p2-final-fixture.log": "be778b48dc897095df495278c9d3406030939742369289bd88e75efb0195da30"
+  },
+  "mainIntegration": {
+    "base": "e8ff4880cb9f091b816c8841e746bd664a54164f",
+    "reason": "PR base advanced; old origin/main tracking ref stale due narrow fetch refspec",
+    "conflicts": "README, HANDOFF, progress and ledger insertions combined preserving both tasks",
+    "dmProductAndTestsEquivalentTo": "889217251c54759d46f9b0f9d3613d8baacf7b30",
+    "nativeNotRepeated": true
   }
 }

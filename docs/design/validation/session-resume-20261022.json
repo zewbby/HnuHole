@@ -1,0 +1,53 @@
+{
+  "task": "AUTH-SESSION-RESUME-01",
+  "date": "2026-10-22",
+  "branch": "fix/session-restore",
+  "pullRequest": 48,
+  "runtimeSource": "fbf10acbb54296be03f2f62826bc8dbaeac9a6a9",
+  "status": "MERGED_MAIN_LOCAL_TOOL_DEPLOYED_NOT_FORMAL_RELEASE",
+  "checks": {
+    "goAffectedHost": "PASS",
+    "pythonToolTests": 9,
+    "isolatedRuntime": "PASS",
+    "formalMigrations": "C22_V6",
+    "expiredEvidenceOriginalBearer": "PASS",
+    "generationAndRecoveryAuditUnchanged": "PASS",
+    "directAnchorMismatchRejected": "PASS",
+    "frozenResumeRejected": "PASS",
+    "backupRestoreRollback": "PASS",
+    "ownedFixtureCleanup": "PASS",
+    "remoteWorkflowRuns": {
+      "Collaboration": 39705514902,
+      "Android integration delivery tools": 39705506065,
+      "Report moderation": 39705506027,
+      "Feed backend": 39705505982,
+      "Feed UI": 39705505981,
+      "Post images": 39705505960,
+      "Android prerelease": 39705505979
+    }
+  },
+  "device": {
+    "model": "vivo V2323A",
+    "android": 15,
+    "versionCode": 2026102143,
+    "ordinaryBackendRestart": "PASS",
+    "simulatedExpiredEvidenceSeconds": 2,
+    "sessionRecordsAndGateGenerationUnchanged": true,
+    "coldStartNativeRestoreAuthenticated": "PASS",
+    "welcomeOrLoginOrSessionExpiredVisible": false,
+    "recoveryInvoked": false,
+    "apkOrApiBinariesChanged": false
+  },
+  "notRun": [
+    "full_host_shutdown_long_outage",
+    "ios",
+    "production"
+  ],
+  "historicalFailures": [
+    "legacyDockerRuntimePrivilegeInventoryBeforeScenario",
+    "initialNegativePreparationBlockedByMonotonicDBTrigger"
+  ],
+  "historicalModuleVerdictsUnchanged": true,
+  "mergeCommit": "d450cdeb2375a0f3bcb885c45e2cc04f338c713a",
+  "reviewedHead": "6716ce85752f4e167bd2d58085c6ca5bad186b1e"
+}

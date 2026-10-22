@@ -98,7 +98,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root',type=Path,required=True)
     p.add_argument('--source',type=Path,required=True)
-    p.add_argument('command',choices=['init','start','health','stop','recover'])
+    p.add_argument('command',choices=['init','start','resume','health','stop','recover'])
     a=p.parse_args()
     if not a.root.is_absolute() or a.root!=a.root.resolve() or a.root.is_symlink():
         p.error('absolute canonical private task root required')
@@ -110,6 +110,7 @@ def main():
             raise
     elif not lab.state or lab.state.get('integrationScope')!='android-integration-20261019':
         p.error('initialized integration-owned lab required')
+    elif a.command=='resume':lab.start()
     elif a.command=='start':lab.start(watches=False)
     elif a.command=='recover':
         lab.halt(['watch-c','watch-v'])

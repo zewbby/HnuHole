@@ -46,14 +46,14 @@ type operatorConfig struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "usage: authdev init|issue|recover|freeze -dir/-operator")
+		fmt.Fprintln(os.Stderr, "usage: authdev init|resume|issue|watch|recover|freeze -dir/-operator")
 		os.Exit(1)
 	}
 	var err error
 	switch os.Args[1] {
 	case "init":
 		err = initialize(os.Args[2:])
-	case "issue", "recover", "freeze":
+	case "resume", "issue", "recover", "freeze":
 		err = operate(os.Args[1], os.Args[2:])
 	case "watch":
 		err = watch(os.Args[2:])
@@ -456,6 +456,14 @@ func operate(command string, args []string) error {
 			return err
 		}
 	}
+	if command == "resume" {
+		// Ordinary restart renews time evidence in the existing generation.
+		// Snapshot checks the independent anchor and persistent OPEN state;
+		// frozen/rollback/mismatch never falls back to recovery.
+		if _, err = gate.Snapshot(ctx); err != nil {
+			return errors.New("ordinary resume rejected; inspect Gate before explicit recovery (which invalidates sessions)")
+		}
+	}
 	fmt.Println("development signed evidence updated")
 	return nil
 }
@@ -477,6 +485,11 @@ func readPrivate(path string) (ed25519.PrivateKey, error) {
 }
 
 func watch(args []string) error {
+	// Renew before accepting API traffic after downtime, rather than waiting
+	// a minute for the first tick and freezing on old expired evidence.
+	if err := operate("resume", args); err != nil {
+		return err
+	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	ticker := time.NewTicker(time.Minute)
