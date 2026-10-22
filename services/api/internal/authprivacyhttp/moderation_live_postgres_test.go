@@ -121,7 +121,7 @@ func TestRealHTTPSModerationDartAndBrowserChainPostgres(t *testing.T) {
 	post := create(73)
 	certificates := s.cPublic.TLS.Certificates[0].Certificate
 	rootPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certificates[len(certificates)-1]})
-	fixture := map[string]any{"url": s.cPublic.URL, "certificatePem": string(rootPEM), "ownerToken": owner, "reporterToken": reporter, "reporterIdentityId": reportIdentity, "postId": post, "ownerUsername": "mod_live_owner", "ownerPassword": "separate community privacy audit password"}
+	fixture := map[string]any{"url": s.cPublic.URL, "certificatePem": string(rootPEM), "ownerToken": owner, "reporterToken": reporter, "reporterIdentityId": reportIdentity, "postId": post, "ownerUsername": "mod_live_owner", "ownerPassword": "separate-community-privacy-audit-password"}
 	report := runLiveGovernanceProbe(t, probe, fixture, "report")
 	caseID := report["caseId"].(string)
 	if node := os.Getenv("MODERATION_NODE"); node != "" {
@@ -139,7 +139,7 @@ func TestRealHTTPSModerationDartAndBrowserChainPostgres(t *testing.T) {
 			t.Fatal(e)
 		}
 		s.cPublic.Config.Handler = endpoints.Public
-		browserFixture := map[string]any{"url": s.cPublic.URL, "reviewerUsername": "mod_live_reviewer", "reviewerPassword": "separate community privacy audit password", "caseId": caseID, "playwrightModule": os.Getenv("MODERATION_PLAYWRIGHT_MODULE"), "browserExecutable": os.Getenv("MODERATION_BROWSER"), "outputDirectory": os.Getenv("MODERATION_BROWSER_OUTPUT")}
+		browserFixture := map[string]any{"url": s.cPublic.URL, "reviewerUsername": "mod_live_reviewer", "reviewerPassword": "separate-community-privacy-audit-password", "caseId": caseID, "playwrightModule": os.Getenv("MODERATION_PLAYWRIGHT_MODULE"), "browserExecutable": os.Getenv("MODERATION_BROWSER"), "outputDirectory": os.Getenv("MODERATION_BROWSER_OUTPUT")}
 		script := filepath.Join(sourceRoot, "apps", "admin", "test", "live-api-smoke.mjs")
 		runLiveGovernanceProbe(t, node, browserFixture, "browser", liveProbePath(t, node, script))
 	} else {
@@ -162,7 +162,7 @@ func TestRealHTTPSModerationDartAndBrowserChainPostgres(t *testing.T) {
 	secondCase := r["report"].(map[string]any)["caseId"].(string)
 	result := postHTTPSJSON(t, s, "POST", "/api/v1/moderation/cases/"+secondCase+"/decision", admin, "", map[string]any{"commandId": uuid.NewString(), "expectedVersion": 1, "action": "BAN", "days": 1, "reason": "合成限时封禁"}, 200)
 	ban := result["sanctions"].([]any)[0].(map[string]any)["id"].(string)
-	limited := e2eJSON(t, s.client, "POST", s.cPublic.URL+"/api/v1/moderation-access/sessions", map[string]any{"username": "mod_live_owner", "password": "separate community privacy audit password"}, nil, 201)
+	limited := e2eJSON(t, s.client, "POST", s.cPublic.URL+"/api/v1/moderation-access/sessions", map[string]any{"username": "mod_live_owner", "password": "separate-community-privacy-audit-password"}, nil, 201)
 	newAppeal := postHTTPSJSON(t, s, "PUT", "/api/v1/sanctions/"+ban+"/appeals/"+uuid.NewString(), limited["sessionToken"].(string), "", map[string]any{"description": "封禁账号仍可申诉", "images": []any{}}, 200)
 	fixture["sanctionId"] = ban
 	fixture["appealId"] = newAppeal["id"]

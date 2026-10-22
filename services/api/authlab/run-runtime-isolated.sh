@@ -108,7 +108,7 @@ PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migra
 # startup negative actually exercises version 10, rather than absent grants.
 python3 - "$runtime_repo_dir/infra/postgres/grant-community.sql" "$runtime_dir/grant-pre-identity.sql" <<'PY'
 import pathlib,sys
-source=pathlib.Path(sys.argv[1]).read_text()
+source=pathlib.Path(sys.argv[1]).read_text().replace('v_auth.email_login_confirmations,','')
 source=source.split('-- 文字发布与认证共享最终事务',1)[0]
 pathlib.Path(sys.argv[2]).write_text('\n'.join(line for line in source.splitlines()
  if not any(table in line for table in ('public.identity_account_state','public.community_identities','public.identity_change_receipts')))+'\n')
@@ -131,7 +131,7 @@ PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migra
 PGPASSWORD=$V_MIGRATOR_PASSWORD goose -dir verifier-migrations postgres "$runtime_v_migrator" up-to 3 >/dev/null
 python3 - "$runtime_repo_dir/infra/postgres/grant-verifier.sql" "$runtime_dir/grant-pre-v-gate.sql" <<'PY'
 import pathlib,sys
-source=pathlib.Path(sys.argv[1]).read_text()
+source=pathlib.Path(sys.argv[1]).read_text().replace('v_auth.email_login_confirmations,','')
 pathlib.Path(sys.argv[2]).write_text(';\n'.join(statement for statement in source.split(';')
  if not any(term in statement for term in ('authorization_gate','hnuhole_v_recovery')))+';\n')
 PY

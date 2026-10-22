@@ -11,6 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol"
 )
 
 var (
@@ -141,12 +142,16 @@ func (c *Community) proveUsernamePassword(ctx context.Context, username, passwor
 // callback atomically replaces the one mobile session and persists a result
 // that deliberately contains no token or revocation secret.
 func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequest, verifier PasswordVerifier) (SessionCreateResult, error) {
+	return c.createSession(ctx, request, verifier, nil)
+}
+
+func (c *Community) createSession(ctx context.Context, request SessionCreateRequest, verifier PasswordVerifier, emailProof *protocol.EmailLoginProof) (SessionCreateResult, error) {
 	var zero SessionCreateResult
 	decision, err := c.gate.Snapshot(ctx)
 	if err != nil {
 		return zero, err
 	}
-	if verifier == nil || !usernamePattern.MatchString(request.Username) || request.Password == "" ||
+	if (verifier == nil && emailProof == nil) || !usernamePattern.MatchString(request.Username) || request.Password == "" ||
 		!utf8.ValidString(request.Password) || len(request.Password) > 2048 || utf8.RuneCountInString(request.Password) > 512 ||
 		request.InstallationID == ([16]byte{}) || request.IdempotencyKey == ([32]byte{}) {
 		return zero, ErrAuthenticationFailed
@@ -158,7 +163,15 @@ func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequ
 		return zero, e
 	}
 
-	proof, err := c.proveUsernamePassword(ctx, request.Username, request.Password, verifier)
+	var proof usernamePasswordProof
+	if emailProof == nil {
+		proof, err = c.proveUsernamePassword(ctx, request.Username, request.Password, verifier)
+	} else {
+		err = c.pool.QueryRow(ctx, `SELECT a.account_id,a.password_hash,a.password_salt,a.password_params_version,a.credential_version FROM c_auth.accounts a JOIN c_auth.slot_ledger l ON l.account_id=a.account_id WHERE l.slot_id=$1 AND l.state='ACTIVE' AND a.username=$2`, emailProof.Slot[:], request.Username).Scan(&proof.account, &proof.hash, &proof.salt, &proof.params, &proof.version)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return zero, ErrEmailUnregistered
+		}
+	}
 	if err != nil {
 		return zero, err
 	}
@@ -181,6 +194,12 @@ func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequ
 	if username != request.Username || lockedParams != params || lockedVersion != version ||
 		!hmac.Equal(lockedHash, hash) || !hmac.Equal(lockedSalt, salt) {
 		return zero, ErrCredentialStateChanged
+	}
+	if emailProof != nil {
+		var bound bool
+		if err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM c_auth.slot_ledger WHERE slot_id=$1 AND account_id=$2 AND state='ACTIVE')`, emailProof.Slot[:], account).Scan(&bound); err != nil || !bound {
+			return zero, ErrAccountUnavailable
+		}
 	}
 	ban, err := lockRestriction(ctx, tx, account)
 	if err != nil {
@@ -246,6 +265,9 @@ func (c *Community) CreateSession(ctx context.Context, request SessionCreateRequ
 	revokeHash := digest("HNUHOLE/REVOKE-STORAGE/V1", revoke[:])
 	var expires time.Time
 	_, err = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
+		if emailProof != nil && (final.TrustedAt.Unix() < 0 || uint64(final.TrustedAt.Unix()) >= emailProof.Expires) {
+			return ErrEmailProofInvalid
+		}
 		if bannedAt(ban, final.TrustedAt) {
 			return ErrAccountUnavailable
 		}

@@ -338,7 +338,7 @@ void main() {
         find.byKey(const ValueKey('registration-email')),
         'mistyped',
       );
-      await _tap(tester, '获取验证码');
+      await _tap(tester, '发送验证码');
       expect(h.flows.status, AuthFlowStatus.otpRequested);
       await tester.enterText(
         find.byKey(const ValueKey('registration-email')),
@@ -353,7 +353,7 @@ void main() {
             .onPressed,
         isNull,
       );
-      await _tap(tester, '获取验证码');
+      await _tap(tester, '发送验证码');
       expect(h.api.otpRequests, 2);
       expect(h.api.submittedEmail, 'corrected@hainanu.edu.cn');
       expect(
@@ -448,7 +448,7 @@ void main() {
         );
         await tester.enterText(
           find.byKey(const ValueKey('registration-password')),
-          'an independent password',
+          'IndependentPassword123',
         );
         tester.testTextInput.hide();
         await _snapshot(tester, 'registration-account-${width.toInt()}');
@@ -548,7 +548,7 @@ void main() {
       );
       await tester.enterText(
         find.byKey(const ValueKey('registration-password')),
-        'an independent password',
+        'IndependentPassword123',
       );
       await _tap(tester, '生成并保存恢复码');
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -713,7 +713,7 @@ void main() {
         find.byKey(const ValueKey('registration-email')),
         'Exact@other.example',
       );
-      await _tap(tester, '获取验证码');
+      await _tap(tester, '发送验证码');
       expect(h.api.otpRequests, 0);
       await tester.enterText(
         find.byKey(const ValueKey('registration-email')),
@@ -728,7 +728,7 @@ void main() {
             .text,
         'Exact',
       );
-      await _tap(tester, '获取验证码');
+      await _tap(tester, '发送验证码');
       expect(h.api.otpRequests, 1);
       expect(h.api.submittedEmail, 'Exact@hainanu.edu.cn');
       await h.finish(tester);
@@ -777,7 +777,7 @@ void main() {
     expect(find.text('Username'), findsOneWidget);
     await _tap(tester, 'Create an account');
     expect(find.text('Your campus email'), findsOneWidget);
-    expect(find.text('Get code'), findsOneWidget);
+    expect(find.text('Send code'), findsOneWidget);
     expect(find.byTooltip('Back to sign in'), findsOneWidget);
     await h.finish(tester);
     presentation.dispose();
@@ -898,7 +898,7 @@ void main() {
         find.byKey(const ValueKey('registration-email')),
         'exact@hainanu.edu.cn',
       );
-      await _tap(tester, '获取验证码');
+      await _tap(tester, '发送验证码');
       expect(h.api.otpRequests, 1);
       expect(h.api.logins, 0);
       expect(h.flows.status, AuthFlowStatus.otpRequested);
@@ -919,7 +919,7 @@ void main() {
       );
       await tester.enterText(
         find.byKey(const ValueKey('registration-password')),
-        'an independent password',
+        'IndependentPassword123',
       );
       await _tap(tester, '生成并保存恢复码');
       expect(
@@ -963,7 +963,7 @@ void main() {
       expect(find.text(_newCode), findsNothing);
       await tester.enterText(
         find.byKey(const ValueKey('reset-new-password')),
-        'a new independent password',
+        'NewIndependentPassword123',
       );
       await tester.enterText(
         find.byKey(const ValueKey('recovery-confirmation')),
@@ -1108,7 +1108,7 @@ void main() {
       await h.mount(tester, scale: 1.6);
       await _tap(tester, '创建账号');
       expect(tester.takeException(), isNull);
-      await tester.ensureVisible(find.text('获取验证码'));
+      await tester.ensureVisible(find.text('发送验证码'));
       expect(tester.takeException(), isNull);
       await tester.drag(
         find.byType(SingleChildScrollView),

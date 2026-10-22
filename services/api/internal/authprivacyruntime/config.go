@@ -93,6 +93,9 @@ type Config struct {
 	LimitKeyFile            string                      `json:"limitKeyFile,omitempty"`
 	SMTPAddress             string                      `json:"smtpAddress,omitempty"`
 	SMTPFrom                string                      `json:"smtpFrom,omitempty"`
+	SMTPMode                string                      `json:"smtpMode,omitempty"`
+	SMTPUsername            string                      `json:"smtpUsername,omitempty"`
+	SMTPPasswordFile        string                      `json:"smtpPasswordFile,omitempty"`
 	RequestTimeoutSeconds   int                         `json:"requestTimeoutSeconds"`
 	SQLTimeoutSeconds       int                         `json:"sqlTimeoutSeconds"`
 	ShutdownTimeoutSeconds  int                         `json:"shutdownTimeoutSeconds"`
@@ -149,6 +152,9 @@ func (c Config) Path(path string) string {
 }
 
 func (c Config) Validate(service authprivacyhttp.Service) error {
+	if service == authprivacyhttp.CommunityService && (c.SMTPMode != "" || c.SMTPUsername != "" || c.SMTPPasswordFile != "") {
+		return errors.New("SMTP delivery credentials belong only to V")
+	}
 	if c.Moderation && (service != authprivacyhttp.CommunityService || c.Posts == nil) {
 		return errors.New("moderation requires C posts")
 	}
@@ -288,7 +294,7 @@ func (c Config) Validate(service authprivacyhttp.Service) error {
 		}
 	} else {
 		paths = append(paths, c.AddressLockKeyFile, c.OTPKeyFile, c.MailEncryptionKeyFile, c.RequestHMACKeyFile, c.LimitKeyFile)
-		if _, err = authprivacy.NewSMTPProvider(authprivacy.SMTPConfig{Address: c.SMTPAddress, From: c.SMTPFrom, Timeout: 5 * time.Second, AllowInsecureLoopback: true}); err != nil {
+		if _, err = c.smtpProvider(5 * time.Second); err != nil {
 			return err
 		}
 	}

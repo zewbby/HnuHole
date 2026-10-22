@@ -8,6 +8,7 @@ on:
       - 'packages/auth_vault/**'
       - 'packages/auth_passkey/**'
       - 'services/api/**'
+      - 'tools/smtp/**'
       - 'infra/postgres/**'
       - 'tools/tests/test_android_b3_b4_signature_contrast.py'
       - '.github/workflows/post-images.yml'
@@ -74,6 +75,9 @@ jobs:
         with:
           go-version: '1.22.2'
           cache-dependency-path: services/api/go.sum
+      - name: SMTP setup secret boundaries
+        working-directory: .
+        run: python3 -B -m unittest discover -s tools/smtp/tests -v
       - name: Host tests, compilation and vet
         # SQL suites that require an isolated DSN remain covered by the recorded
         # real-lab evidence; this host job does not claim native or SQL acceptance.
@@ -117,6 +121,7 @@ jobs:
           export POST_MEDIA_PYTHON="$RUNNER_TEMP/post-image-python/bin/python"
           export POST_MEDIA_FIXTURES="$RUNNER_TEMP/post-image-fixtures"
           sh authlab/run-post-schema-isolated.sh
+          sh authlab/run-email-login-isolated.sh
           sh authlab/run-post-images-isolated.sh
       - name: Signing builder boundary regression
         run: python -B -m unittest discover -s tools/tests -p test_android_b3_b4_signature_contrast.py -v

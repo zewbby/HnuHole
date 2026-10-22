@@ -632,7 +632,7 @@ func TestHTTPSPostgresEligibilityAndSignup(t *testing.T) {
 		t.Fatal("confirmation result leaked ticket or identity")
 	}
 	installation := e2eInstallation(t)
-	intent := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/registration-intents", map[string]string{"registrationTicket": encoded, "username": "synthetic_user", "password": "a separate long community password", "installationId": protocol.EncodeCanonicalBase64url(installation[:])}, nil, http.StatusCreated)
+	intent := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/registration-intents", map[string]string{"registrationTicket": encoded, "username": "synthetic_user", "password": "a-separate-long-community-password", "installationId": protocol.EncodeCanonicalBase64url(installation[:])}, nil, http.StatusCreated)
 	ticket, err := protocol.ParseRegistrationTicket(encoded)
 	if err != nil {
 		t.Fatal(err)
@@ -675,7 +675,7 @@ func TestHTTPSPostgresEligibilityAndSignup(t *testing.T) {
 	loginKey := e2eKey(t)
 	loginHeaders := map[string]string{"Idempotency-Key": protocol.EncodeCanonicalBase64url(loginKey[:])}
 	loginInstall := e2eInstallation(t)
-	loginBody := map[string]string{"username": "synthetic_user", "password": "a separate long community password", "installationId": protocol.EncodeCanonicalBase64url(loginInstall[:])}
+	loginBody := map[string]string{"username": "synthetic_user", "password": "a-separate-long-community-password", "installationId": protocol.EncodeCanonicalBase64url(loginInstall[:])}
 	wrong := map[string]string{"username": "synthetic_user", "password": "wrong login password phrase", "installationId": loginBody["installationId"]}
 	failed := e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/sessions", wrong, loginHeaders, http.StatusUnauthorized)
 	if failed["error"].(map[string]any)["code"] != "AUTHENTICATION_FAILED" {
@@ -741,7 +741,7 @@ func TestHTTPSPostgresEligibilityAndSignup(t *testing.T) {
 		t.Fatal("early result query claimed that a later reset could not commit")
 	}
 	resetBody := map[string]string{"resetIntentId": reset["resetIntentId"].(string),
-		"newPassword": "another independent recovery password phrase", "newRecoveryCodeConfirmation": reset["newRecoveryCode"].(string)}
+		"newPassword": "another-independent-recovery-password-phrase", "newRecoveryCodeConfirmation": reset["newRecoveryCode"].(string)}
 	e2eNoContentJSON(t, s.client, s.cPublic.URL+"/api/v1/auth/password-resets", resetBody, resetHeaders)
 	e2eNoContentJSON(t, s.client, s.cPublic.URL+"/api/v1/auth/password-resets", resetBody, resetHeaders)
 	afterReset := e2eJSON(t, s.client, http.MethodGet, s.cPublic.URL+"/api/v1/auth/password-reset-result", nil, queryReset, http.StatusOK)
@@ -941,7 +941,7 @@ func TestHTTPSPostgresCommunityFreezeDoesNotFreezeVerifier(t *testing.T) {
 		t.Fatal("independent V did not return a ticket")
 	}
 	installation := e2eInstallation(t)
-	e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/registration-intents", map[string]string{"registrationTicket": ticket, "username": "independent_gate", "password": "independent long community password phrase", "installationId": protocol.EncodeCanonicalBase64url(installation[:])}, nil, http.StatusServiceUnavailable)
+	e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/registration-intents", map[string]string{"registrationTicket": ticket, "username": "independent_gate", "password": "independent-long-community-password-phrase", "installationId": protocol.EncodeCanonicalBase64url(installation[:])}, nil, http.StatusServiceUnavailable)
 	if decision, err := s.vGate.Snapshot(context.Background()); err != nil || decision.Generation != 1 {
 		t.Fatalf("C freeze affected independent V Gate: %v", err)
 	}

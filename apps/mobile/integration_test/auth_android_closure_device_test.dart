@@ -472,7 +472,7 @@ Future<String> _register(
     String? previousMessage;
     if (!originalConfirmation && flows.status != AuthFlowStatus.otpRequested) {
       previousMessage = await _smtpFingerprint(mail);
-      await _tap(tester, find.text('获取验证码'));
+      await _tap(tester, find.text('发送验证码'));
     }
     final otp = await _smtpOtp(mail, email, excludingMessage: previousMessage);
     await _input(tester, 'registration-otp', otp);

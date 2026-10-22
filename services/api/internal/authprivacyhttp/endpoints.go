@@ -388,14 +388,14 @@ func publicMethodAllowed(service Service, path, method string) bool {
 func publicMethod(service Service, path string) string {
 	if service == VerifierService {
 		switch path {
-		case "/api/v1/eligibility/otp-requests", "/api/v1/eligibility/otp-confirmations":
+		case "/api/v1/eligibility/otp-requests", "/api/v1/eligibility/otp-confirmations", "/api/v1/email-login/otp-requests", "/api/v1/email-login/otp-confirmations":
 			return http.MethodPost
 		case "/api/v1/eligibility/otp-request-result", "/api/v1/eligibility/otp-confirmation-result":
 			return http.MethodGet
 		}
 	} else {
 		switch path {
-		case "/api/v1/auth/registration-intents", "/api/v1/auth/registrations",
+		case "/api/v1/auth/registration-intents", "/api/v1/auth/registrations", "/api/v1/auth/email-sessions",
 			"/api/v1/moderation-access/sessions", "/api/v1/moderation-access/session-revocations",
 			"/api/v1/auth/sessions", "/api/v1/auth/session-renewals",
 			"/api/v1/auth/session-revocations", "/api/v1/auth/recovery-code-reset-intents",
@@ -532,7 +532,11 @@ func (b *boundary) verifierPublic(w http.ResponseWriter, r *http.Request, backen
 	}
 	var key [32]byte
 	copy(key[:], keyRaw)
-	if r.URL.Path == "/api/v1/eligibility/otp-requests" {
+	if r.URL.Path == "/api/v1/email-login/otp-confirmations" {
+		b.emailLoginConfirmation(w, r, backend, key, installation)
+		return
+	}
+	if r.URL.Path == "/api/v1/eligibility/otp-requests" || r.URL.Path == "/api/v1/email-login/otp-requests" {
 		object, err := readRequestObject(r, 1024, []string{"email"}, nil)
 		if err != nil {
 			b.bad(w, err)
@@ -543,7 +547,12 @@ func (b *boundary) verifierPublic(w http.ResponseWriter, r *http.Request, backen
 			b.bad(w, err)
 			return
 		}
-		result, err := backend.RequestOTP(r.Context(), authprivacy.OTPRequest{Key: key, InstallationID: installation, Email: email})
+		result, err := backend.RequestOTP(r.Context(), authprivacy.OTPRequest{Key: key, InstallationID: installation, Email: email, Purpose: func() string {
+			if r.URL.Path == "/api/v1/email-login/otp-requests" {
+				return "LOGIN"
+			}
+			return "REGISTER"
+		}()})
 		if err != nil {
 			b.eligibilityFailure(w, err)
 			return

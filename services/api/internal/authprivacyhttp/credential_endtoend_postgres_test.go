@@ -26,7 +26,7 @@ func e2eCredentialSignup(t *testing.T, s *e2eServices) (string, string) {
 	ticketText := confirmed["registrationTicket"].(string)
 	installation := e2eInstallation(t)
 	intent := e2eJSON(t, s.client, "POST", s.cPublic.URL+"/api/v1/auth/registration-intents", map[string]string{
-		"registrationTicket": ticketText, "username": "credential_user", "password": "independent credential management password", "installationId": protocol.EncodeCanonicalBase64url(installation[:]),
+		"registrationTicket": ticketText, "username": "credential_user", "password": "independent-credential-management-password", "installationId": protocol.EncodeCanonicalBase64url(installation[:]),
 	}, nil, 201)
 	ticket, err := protocol.ParseRegistrationTicket(ticketText)
 	if err != nil {
@@ -163,7 +163,7 @@ func TestHTTPSPostgresRecoveryCredentialManagement(t *testing.T) {
 	s := e2eNewServices(t)
 	token, oldCode := e2eCredentialSignup(t, s)
 	bearer := map[string]string{"Authorization": "Bearer " + token}
-	password := map[string]string{"password": "independent credential management password"}
+	password := map[string]string{"password": "independent-credential-management-password"}
 	list := e2eJSON(t, s.client, "GET", s.cPublic.URL+"/api/v1/auth/recovery-credentials", nil, bearer, 200)
 	if list["recoveryCodeAvailable"] != true || len(list["passkeys"].([]any)) != 0 {
 		t.Fatal("new account lacks mandatory recovery code or has unexpected Passkeys")
@@ -217,7 +217,7 @@ func TestHTTPSPostgresRecoveryCredentialManagement(t *testing.T) {
 	removalHeaders["Idempotency-Key"] = protocol.EncodeCanonicalBase64url(newKey[:])
 	e2eJSON(t, s.client, "DELETE", s.cPublic.URL+removalPath, nil, removalHeaders, 404)
 	resetKey := e2eKey(t)
-	e2eJSON(t, s.client, "POST", s.cPublic.URL+"/api/v1/auth/password-resets", map[string]string{"resetIntentId": reset["resetIntentId"].(string), "newPassword": "independent reset after removal phrase", "newRecoveryCodeConfirmation": reset["newRecoveryCode"].(string)}, map[string]string{"Idempotency-Key": protocol.EncodeCanonicalBase64url(resetKey[:])}, 409)
+	e2eJSON(t, s.client, "POST", s.cPublic.URL+"/api/v1/auth/password-resets", map[string]string{"resetIntentId": reset["resetIntentId"].(string), "newPassword": "independent-reset-after-removal-phrase", "newRecoveryCodeConfirmation": reset["newRecoveryCode"].(string)}, map[string]string{"Idempotency-Key": protocol.EncodeCanonicalBase64url(resetKey[:])}, 409)
 	list = e2eJSON(t, s.client, "GET", s.cPublic.URL+"/api/v1/auth/recovery-credentials", nil, bearer, 200)
 	if list["recoveryCodeAvailable"] != true || len(list["passkeys"].([]any)) != 0 {
 		t.Fatal("Passkey removal deleted mandatory recovery code or retained key")

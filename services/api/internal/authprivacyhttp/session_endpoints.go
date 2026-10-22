@@ -28,6 +28,10 @@ func (b *boundary) communitySessionPublic(w http.ResponseWriter, r *http.Request
 		b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)
 		return
 	}
+	if r.URL.Path == "/api/v1/auth/email-sessions" {
+		b.emailSession(w, r, sessions)
+		return
+	}
 	if r.URL.Path == "/api/v1/auth/sessions" {
 		if hasHeader(r.Header, "Authorization") {
 			b.bad(w, errMalformed)
@@ -157,6 +161,10 @@ func (b *boundary) sessionFailure(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, authprivacy.ErrAuthorizationUnavailable):
 		b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)
+	case errors.Is(err, authprivacy.ErrEmailUnregistered):
+		b.fail(w, 422, "EMAIL_UNREGISTERED", 0)
+	case errors.Is(err, authprivacy.ErrEmailProofInvalid):
+		b.fail(w, 422, "EMAIL_PROOF_INVALID", 0)
 	case errors.Is(err, authprivacy.ErrAuthenticationFailed):
 		b.fail(w, 401, "AUTHENTICATION_FAILED", 0)
 	case errors.Is(err, authprivacy.ErrSessionInvalid):

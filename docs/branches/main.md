@@ -2,12 +2,16 @@
 
 汇集已经合并的项目实现与文档。
 
-核对日期：2026-10-21。
+核对日期：2026-10-22。
 
 PR #38 的登录注册设计定稿及 PR #39 的真实 App 接入已合入 main（`c23620f`）；欢迎、语言／明暗外观及原位登录切换已实现，邮箱登录明确待接入。五项 CI 与独立 agent 审查通过，主线同签测试 APK 交付中，未正式发布。见[任务与证据](feat-auth-entry-flow.md)。
 
 
 [PR #42](https://github.com/zewbby/HnuHole/pull/42)已合入main `09498b2`：三步注册、恢复码点击复制、完整确认和可选Passkey管理入口。最终head五项CI成功、宿主668项及分析0；同签主体APK单独交付，真实设备／邮件和生产未验，不提升历史模块结论。见[任务与合并回执](feat-registration-wizard-ui.md)。
+
+## 本轮认证交付
+
+**2026-10-22 AUTH-EMAIL-LOGIN-01／[PR #45](https://github.com/zewbby/HnuHole/pull/45) 已合入main `6bb59fa`：**真实QQ校邮注册与已有账号验证码登录接通，vivo原账号／唯一会话／冷启动恢复限定PASS；最终head全部9类远端workflow成功，独立agent审查无阻断（非GitHub成员批准）。677项Flutter、分析0，正式SQL／HTTPS／恢复回滚通过；同签主体2143已生成，与合并main应用运行输入相同，USB断开待覆盖安装。开发包仍需电脑／WSL／USB在线，未正式发布。详见[交付记录](feat-email-auth-flow.md)。下方未合并／邮箱待接入均为旧时点记录。
 
 ## 进度
 

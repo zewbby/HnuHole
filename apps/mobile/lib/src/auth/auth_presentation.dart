@@ -472,14 +472,16 @@ const authEnglish = <String, String>{
   '结束已取消的注销操作': 'Finish the cancelled closure operation',
   '重设密码，继续保留注销': 'Reset password and keep closure pending',
   '创建全新账号': 'Create a new account',
-  '至少 15 个字符，支持空格和粘贴；不要使用校邮密码。': 'At least 15 characters. Spaces and paste are supported. Do not use your campus email password.',
+  '至少 10 位，支持字母、数字和英文标点':
+      'At least 10 characters; letters, digits and English punctuation.',
   '6–24 个小写字母、数字或下划线，以字母开头。':
       '6–24 lowercase letters, digits or underscores, starting with a letter.',
   '请输入精确的 @hainanu.edu.cn 校园邮箱，不能有空格':
       'Enter an exact @hainanu.edu.cn address without spaces',
   '用户名须为 6–24 个字母、数字或下划线，以字母开头':
       'Use 6–24 letters, digits or underscores, starting with a letter',
-  '新密码至少需要 15 个字符': 'Your new password needs at least 15 characters',
+  '密码需为 10–128 位字母、数字或英文标点，不能有空格':
+      'Use 10–128 letters, digits or English punctuation, without spaces',
   '请输入六位最新验证码': 'Enter the latest six-digit code',
   '用户名或密码不正确。': 'Incorrect username or password.',
   '登录暂时不可用，请重试。': 'Sign-in is temporarily unavailable. Try again.',
@@ -525,6 +527,9 @@ const authEnglish = <String, String>{
   '邮箱': 'Email',
   '验证码': 'Verification code',
   '获取验证码': 'Get code',
+  '发送验证码': 'Send code',
+  '切换邮箱登录': 'Use email',
+  '该邮箱尚未注册，请创建账号。': 'This email is not registered. Create an account.',
   '找回账号': 'Recover account',
   '创建账号': 'Create an account',
   '第一次来？': 'New here?',

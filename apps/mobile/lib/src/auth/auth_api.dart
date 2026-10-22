@@ -69,3 +69,24 @@ abstract interface class AuthApi {
     required String statusSecret,
   });
 }
+
+/// Email authentication has its own OTP purpose and C-only session capability.
+abstract interface class EmailLoginApi {
+  Future<OtpRequestAccepted> requestEmailLoginOtp({
+    required String email,
+    required String installationId,
+    required String idempotencyKey,
+  });
+  Future<String?> confirmEmailLoginOtp({
+    required String flowId,
+    required String otp,
+    required String binding,
+    required String installationId,
+    required String idempotencyKey,
+  });
+  Future<AuthSession> createEmailSession({
+    required String proof,
+    required String installationId,
+    required String idempotencyKey,
+  });
+}

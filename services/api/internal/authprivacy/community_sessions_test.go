@@ -211,7 +211,7 @@ func TestSessionProofVersionAndGateFreezeDuringPasswordWork(t *testing.T) {
 					t.Fatal(err)
 				}
 			} else {
-				newMaterial, err := passwords.PreparePassword(context.Background(), "another independent credential phrase", request.Username)
+				newMaterial, err := passwords.PreparePassword(context.Background(), "AnotherIndependentCredential987", request.Username)
 				if err != nil {
 					t.Fatal(err)
 				}
