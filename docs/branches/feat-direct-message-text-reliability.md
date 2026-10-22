@@ -1,6 +1,6 @@
 # DM-P1：可靠文字收发
 
-- 分支：`feat/direct-message-text-reliability`；2026-10-22，本地实现及限定宿主/SQL检查通过，Android实发实收 BLOCKED。未提交PR、未合并、未发布。
+- 分支：`feat/direct-message-text-reliability`；2026-10-22，本地实现、限定宿主/SQL及Android原生文字收发通过。准备依赖#44的Draft PR，独立review与远端CI待完成；未合并、未发布。
 - 基线：最新 `origin/main` `76af92b`；依赖未合并 PR #44 的界面提交 `60629f3`，已快进集成。后续 PR 须明确先合入 #44，不将该界面算作 P1 新实现。
 - 范围：受保护文字接口、唯一身份对/同帖绑定/首发额度、持久 outbox/inbox、入库后 ACK、基础未读/草稿、账号和会话代次围栏、隔离开发装配。生产开放留到 P3。
 - 验收：新增真实 PostgreSQL/API 并发和授权、客户端实盘故障恢复、Android 新增接线短流程。未改动的 #44 字体、配色、菜单、图标和布局验收直接引用原证据。
@@ -39,12 +39,26 @@ P1开发契约暂定4000 grapheme/16384 UTF-8字节；发送账号跨面具和�
 | API | `python tools/check-direct-message-contract.py`完整OpenAPI PASS，6路径；不是仅YAML检查 |
 | 真实Dart客户端联调 | `DM_HOST_FIXTURE=<私密fixture路径> flutter test --no-pub test/dm_http_fixture_test.dart` 1 PASS；实际HttpPostApi对隔离TLS/SQL完成丢响应后查SENT、拉取、ACK与未读分离、阅读归零；不使用网络替身 |
 | Android构建 | 独立`.dmtext`主入口、`DM_TEXT_INTEGRATION=true`、versionCode2026102202 PASS |
-| Android真实原生存储/文字链路 | **BLOCKED**：RMX3366 Android14锁屏；integration_test已准备，未获得设备测试执行结果 |
+| Android真实原生存储/文字链路 | **PASS（本次补验）**：RMX3366 Android14、源码7e137d7、独立dmtext2203；原锁屏阻塞保留在下方历史记录 |
 | 独立review、远端CI | NOT_RUN；本地自查不代证独立批准 |
 
 只使用本任务私有socket数据库及合成账号。`TestDMDevicePostgres`的Go PASS仅表示设备fixture服务成功启动并退出，**不代表Android验收**。未改动的字体/图标/布局/IME复用[原证据](../design/telegram-direct-messages-verification-20261021.json)，不重复全量测试。CI已增加本次SQL、契约、Flutter和独立Android构建检查。
 
-## 设备阻塞和下一入口
+## 本次Android补验与后续审查
+
+用户已恢复`.dmpreview`2026102156，ADB核验包名/版本正确，安全锁屏解除。重新建立本任务专用PG16合成库，显式构建并核验`.dmtext`2026102203，`adb install -r`成功，使用预构建制品执行：
+
+```
+HNUHOLE_DM_TEXT=1 flutter drive --no-pub -d <owned RMX3366> --use-application-binary=build/app/outputs/flutter-apk/app-debug.apk --driver=test_driver/auth_live_device_driver.dart --target=integration_test/dm_text_device_test.dart
+```
+
+应用1条完整文字链路测试及teardown通过，driver退出0。真实Android Keystore/noBackup SQLite及严格TLS请求完成：受理后丢响应保留unknown→重开核对同一SENT；B持久收件再ACK、待投清空但未读1；显式阅读、A断开时B回复、A重开收唯一回复；草稿和两条历史重开保留。只读SQL核对1会话/2消息/2成功回执、2ACK、0服务端正文、1已读，序号2。APK摘要及准确覆盖见[机器记录](../design/direct-message-text-verification-20261022.json)。
+
+该入口直接装配真实控制器、原生存储、API与合成账号，不是完整正式登录/根页面旅程；数据库关闭重开不声称整机强杀/断电通过。既有外观/IME验收复用，未重复。此次未发现需要诊断修复的新产品问题；若后续出现，按用户要求切换GPT-6 Astra High后定位。
+
+PR将先以仍开放的`feat/telegram-direct-messages`为base，保持P1差异可独立审查；合入顺序#44→P1，#44落地主线后再调整base。已观察新main `90ba0c4`增加邮箱认证，当前P1未整合该变化、不冒充测试过新主线；整合如产生新问题需按上述模型要求处理，只补受影响验收。独立同事review尚未完成，Draft期间由维护者审查，不伪造批准。
+
+## 早期设备阻塞历史（已解除）
 
 第一次`flutter test`自动构建回到pubspec版本号1，降级失败后Flutter自动卸载了旧`.dmpreview` 2026102156；流程已停止。原包是内存界面演示，日常`org.hnuhole.hnuhole_mobile`未被覆盖。已找到旧制品并尝试恢复安装，因安全锁屏未完成；已中止等待、停止fixture并释放lease，解锁后须恢复。P1现用独立`.dmtext`；以后先核对包名/版本，再显式安装，禁止依靠自动卸载处理版本冲突。
 

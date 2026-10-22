@@ -1,4 +1,21 @@
 {
+  "dmTextP1Native20261022": {
+    "task": "DM-P1-TEXT",
+    "source": "7e137d7",
+    "modules": [
+      "B08",
+      "B09"
+    ],
+    "result": "SCOPED_NATIVE_TEXT_PASS_PENDING_REVIEW_CI",
+    "evidence": "docs/design/direct-message-text-verification-20261022.json",
+    "device": "RMX3366 Android14 dmtext2203 PASS_SCOPED_NATIVE_STORAGE_TLS_TEXT",
+    "previewRestored": true,
+    "historicalModuleVerdictsUnchanged": true,
+    "independentReview": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "merged": false,
+    "released": false
+  },
   "dmTextP120261022": {
     "task": "DM-P1-TEXT",
     "branch": "feat/direct-message-text-reliability",

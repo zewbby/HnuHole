@@ -1,5 +1,8 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-22 DM-P1-TEXT 真机补验：**用户恢复的`.dmpreview`2156已核验；源码7e137d7、独立`.dmtext`2203在RMX3366 Android14实际原生存储/真实TLS文字收发限定PASS，含丢响应恢复唯一受理、ACK与阅读分离、离线回复、草稿/数据库重开。SQL为1会话/2消息/2成功回执、2ACK、0待投正文、1已读。此前锁屏和错误卸载记录保留，当前阻塞解除；未重复旧UI/IME。P1仍开发开关，准备依赖#44的Draft PR，独立review/远端CI待完成；新main90ba0c4邮箱认证尚未整合，不代证最终主线或生产。见[任务](../branches/feat-direct-message-text-reliability.md)与[机器记录](direct-message-text-verification-20261022.json)。
+
+
 > **2026-10-22 DM-P1-TEXT：**`feat/direct-message-text-reliability`依赖#44，可靠文字API/持久队列/ACK与阅读分离/基础未读草稿及窗口围栏已在隔离开发装配实现；新增13及真实Dart HTTPS联调1、入口影响42及本轮早期复用41项宿主检查PASS，SQL/race/HTTPS与新建/升级迁移PASS，分析0、独立`.dmtext`2202构建PASS。安全锁屏导致原生文字链路BLOCKED；旧`.dmpreview`被Flutter降级安装回退卸载，原制品恢复同样受阻，须先恢复。fixture/安装等待已停、lease已释放。生产默认关闭，PR待设备补验，未合并/发布；不提升B08/B09完整结论。见[任务](../branches/feat-direct-message-text-reliability.md)与[机器记录](direct-message-text-verification-20261022.json)。
 
 

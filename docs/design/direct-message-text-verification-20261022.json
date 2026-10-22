@@ -48,7 +48,7 @@
     "services/api/migrations/0022_direct_message_text.sql": "91acbae18f68831136f0b3abbd50e15978520ecee5023b5e3e5721f8eb2bd122",
     "tools/check-direct-message-contract.py": "fea6ea0688454cb8d417d6da15f6380941968790690cab41ec572578979ecc85"
   },
-  "status": "LOCAL_SCOPED_PASS_DEVICE_BLOCKED",
+  "status": "SCOPED_NATIVE_TEXT_PASS_PENDING_REVIEW_CI",
   "host": {
     "newDm": "13 PASS",
     "realDartHttpsSql": "1 PASS",
@@ -83,10 +83,12 @@
     "sha256": "52f620ff55225f21db61c490825746e6b6d76150c3fa9a2286bef7150e8d063e",
     "bytes": 187832547,
     "device": "realme RMX3366 Android 14",
-    "execution": "BLOCKED_SECURE_KEYGUARD",
+    "execution": "PASS_SCOPED_NATIVE_STORAGE_TLS_TEXT",
     "fixtureGoPassIsNotDevicePass": true,
     "installationIncident": "Flutter test defaulted to versionCode 1, downgrade failed and tool removed old memory-only .dmpreview 2026102156. Stopped. Original artifact found, explicit reinstall blocked by locked device; not yet restored. Daily package was not targeted.",
-    "cleanup": "installation wait stopped; TLS fixture stopped; adb reverse removed; device lease released"
+    "cleanup": "installation wait stopped; TLS fixture stopped; adb reverse removed; device lease released",
+    "historicalExecution": "BLOCKED_SECURE_KEYGUARD",
+    "installationIncidentResolution": "User restored .dmpreview 2026102156; adb package metadata verified on 2026-10-22. Daily package remained installed."
   },
   "reused": {
     "evidence": "docs/design/telegram-direct-messages-verification-20261021.json",
@@ -94,12 +96,58 @@
   },
   "independentReview": "NOT_RUN",
   "remoteCI": "NOT_RUN",
-  "pullRequest": "NOT_CREATED_PENDING_DEVICE_ACCEPTANCE",
+  "pullRequest": "DRAFT_PREPARING_PENDING_INDEPENDENT_REVIEW",
   "merged": false,
   "released": false,
   "next": [
-    "Restore old UI preview after unlocking phone",
-    "Native DM text integration fixture on .dmtext with explicit checked version",
-    "Independent review and PR after scoped device acceptance"
-  ]
+    "Independent review",
+    "Scoped CI on draft PR",
+    "After UI dependency and new main integration, verify only affected differences before merge"
+  ],
+  "nativeAcceptance": {
+    "sourceCommit": "7e137d7",
+    "date": "2026-10-22",
+    "package": "org.hnuhole.hnuhole_mobile.dmtext",
+    "versionCode": 2026102203,
+    "apkSha256": "eeb675926a9a50c477db3d88703ee324025dc8cab7638cbb7e2bc89dea7ae8ae",
+    "bytes": 187613767,
+    "entry": "integration_test/dm_text_device_test.dart",
+    "driver": "test_driver/auth_live_device_driver.dart",
+    "device": "realme RMX3366 Android 14 / 1080x2400",
+    "install": "explicit adb install -r: Success; no downgrade or uninstall",
+    "build": "HNUHOLE_DM_TEXT=1 flutter build apk --debug --no-pub -t integration_test/dm_text_device_test.dart --dart-define-from-file=<private fixture> --build-number=2026102203",
+    "command": "HNUHOLE_DM_TEXT=1 flutter drive --no-pub -d <owned RMX3366> --use-application-binary=build/app/outputs/flutter-apk/app-debug.apk --driver=test_driver/auth_live_device_driver.dart --target=integration_test/dm_text_device_test.dart",
+    "result": "PASS; application 1 business test plus teardown, driver exit 0",
+    "covers": [
+      "native Keystore/noBackup SQLite and HTTPS using real synthetic SQL accounts",
+      "accepted first PUT response dropped: unknown then same receipt recovered after DB/controller reopen",
+      "durable receive then ACK, no pending replay, unread remains 1",
+      "explicit reading, receiver reply while sender disconnected, sender later receives exactly one reply",
+      "separate account stores and durable drafts/history after reopen"
+    ],
+    "sqlAfter": {
+      "conversations": 1,
+      "messages": 2,
+      "commands": 2,
+      "sent": 2,
+      "acknowledged": 2,
+      "bodiesRemaining": 0,
+      "read": 1,
+      "maxSequence": 2
+    },
+    "exclusions": [
+      "full production login/root and contact UI journey",
+      "OS process kill or power loss",
+      "iOS/multi-device/performance",
+      "existing unchanged visual/IME coverage reused"
+    ],
+    "artifactNote": "Test APK includes only temporary synthetic fixture capabilities; never committed or published.",
+    "previewRestored": {
+      "package": "org.hnuhole.hnuhole_mobile.dmpreview",
+      "versionCode": 2026102156
+    },
+    "logs": "local-only E:/Hnuhole-env/tmp-dm/dm-p1-native-drive-resume.txt; no raw log committed"
+  },
+  "latestMainObserved": "90ba0c42da193c67da00f660cf99839129bbe3f4",
+  "integration": "Stacked on still-open UI PR44; new main email-auth changes not incorporated or claimed tested. Reconcile when dependency lands; test only affected changes."
 }
