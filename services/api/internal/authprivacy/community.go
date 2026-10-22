@@ -33,6 +33,7 @@ type Community struct {
 	postImages        *postImageServices
 	moderationEnabled bool
 	comments          *commentServices
+	directMessages    bool
 }
 
 func NewCommunity(pool *pgxpool.Pool, verifier *protocol.Verifier, signingEpoch uint32, requestKey [32]byte, gate AuthorizationGate) (*Community, error) {

@@ -193,6 +193,11 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 				b.communityModeration(w, r, backend)
 				return
 			}
+			if isDMPath(r.URL.Path) {
+				backend, _ := options.Backend.(DirectMessageBackend)
+				b.communityDM(w, r, backend)
+				return
+			}
 			if isPostPath(r.URL.Path) {
 				b.communityPostsPublic(w, r, options.Posts)
 				return
@@ -292,7 +297,7 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				w.Header().Set("Vary", "Origin")
 			}
 		}
-		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsCommentListQuery(r) || allowsModerationQuery(r)))) {
+		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsCommentListQuery(r) || allowsModerationQuery(r) || (r.Method == "GET" && (r.URL.Path == "/api/v1/dm/conversations" || r.URL.Path == "/api/v1/dm/contact"))))) {
 			b.bad(w, errMalformed)
 			return
 		}
@@ -357,6 +362,9 @@ func publicMethodAllowed(service Service, path, method string) bool {
 	if service == CommunityService && isPostImagePath(path) {
 		route, e := parseImageRoute(path)
 		return e == nil && route.method == method
+	}
+	if service == CommunityService && isDMPath(path) {
+		return dmRoute(path, method)
 	}
 	if service == CommunityService && isPostPath(path) {
 		route, err := parsePostRoute(path)

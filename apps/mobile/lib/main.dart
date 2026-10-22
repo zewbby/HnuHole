@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
@@ -12,6 +13,9 @@ import 'src/development/app_transport.dart';
 import 'src/navigation/community_material_labels.dart';
 import 'src/navigation/app_navigation.dart';
 import 'src/messaging/direct_messages_unavailable.dart';
+import 'src/messaging/dm_runtime.dart';
+import 'src/messaging/dm_controller.dart';
+import 'src/messaging/dm_store.dart';
 import 'src/design_system/telegram_theme.dart';
 
 void main() {
@@ -181,6 +185,32 @@ void main() {
     },
   );
 
+  final dm = kDebugMode && const bool.fromEnvironment('DM_TEXT_INTEGRATION')
+      ? DmRuntime(
+          controller: DmController(
+            api: postApi,
+            openStore: (account) => DmStore.openNative(storageScope, account),
+            onUnauthorized: sessions.sessionUnauthorized,
+            onUnavailable: sessions.sessionUnavailable,
+            onMetadata: (token, expires, current) async {
+              await sessions.persistSessionMetadata(token, expires, current);
+            },
+          ),
+          sessions: sessions,
+          authStore: store,
+          identityApi: api,
+          identityChanges: identities,
+          openPost: (context, id) => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => PostDetailScreen(
+                controller: posts,
+                postId: id,
+                loadImages: postMedia.load,
+              ),
+            ),
+          ),
+        )
+      : null;
   runApp(
     HnuholeApp(
       directory: directory,
@@ -198,6 +228,7 @@ void main() {
       comments: comments,
       governance: governance,
       governanceApi: governanceApi,
+      dm: dm,
     ),
   );
 }
@@ -223,6 +254,7 @@ class HnuholeApp extends StatefulWidget {
     this.governance,
     this.governanceApi,
     this.comments,
+    this.dm,
   });
 
   final ChannelDirectoryController directory;
@@ -240,6 +272,7 @@ class HnuholeApp extends StatefulWidget {
   final GovernanceController? governance;
   final CommentRuntime? comments;
   final HttpGovernanceApi? governanceApi;
+  final DmRuntime? dm;
 
   @override
   State<HnuholeApp> createState() => _HnuholeAppState();
@@ -294,9 +327,14 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     try {
       await navigator.push(
         MaterialPageRoute<void>(
-          builder: (_) => DirectMessagesUnavailableScreen(
-            navigation: _primaryNavigation(AppDestination.directMessages),
-          ),
+          builder: (_) => widget.dm != null
+              ? DmInboxRoute(
+                  runtime: widget.dm!,
+                  navigation: _primaryNavigation(AppDestination.directMessages),
+                )
+              : DirectMessagesUnavailableScreen(
+                  navigation: _primaryNavigation(AppDestination.directMessages),
+                ),
         ),
       );
     } finally {
@@ -625,6 +663,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    widget.dm?.dispose();
     _authPresentation.dispose();
     WidgetsBinding.instance.removeObserver(this);
     widget.comments?.removeListener(_commentChanged);
@@ -659,24 +698,27 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         scaffoldMessengerKey: _scaffoldMessengerKey,
         navigatorKey: _navigatorKey,
         themeMode: _authPresentation.themeMode,
-        builder: (context, child) => AuthPresentationScope(
-          controller: _authPresentation,
-          child: CommentScopeHost(
-            runtime: widget.comments,
-            child: Listener(
-              behavior: HitTestBehavior.translucent,
-              onPointerUp: (_) {
-                // Let the requested action (including logout) start first. Activity
-                // is a user gesture, never a background timer or a build side effect.
-                scheduleMicrotask(widget.sessions.onActivity);
-              },
-              child: CommunitySpokenLocale(
-                child: widget.governance == null
-                    ? child ?? const SizedBox.shrink()
-                    : GovernanceScope(
-                        controller: widget.governance!,
-                        child: child ?? const SizedBox.shrink(),
-                      ),
+        builder: (context, child) => DmScope(
+          runtime: widget.dm,
+          child: AuthPresentationScope(
+            controller: _authPresentation,
+            child: CommentScopeHost(
+              runtime: widget.comments,
+              child: Listener(
+                behavior: HitTestBehavior.translucent,
+                onPointerUp: (_) {
+                  // Let the requested action (including logout) start first. Activity
+                  // is a user gesture, never a background timer or a build side effect.
+                  scheduleMicrotask(widget.sessions.onActivity);
+                },
+                child: CommunitySpokenLocale(
+                  child: widget.governance == null
+                      ? child ?? const SizedBox.shrink()
+                      : GovernanceScope(
+                          controller: widget.governance!,
+                          child: child ?? const SizedBox.shrink(),
+                        ),
+                ),
               ),
             ),
           ),

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import '../messaging/dm_protocol.dart';
+
 import '../auth/auth_crypto.dart';
 import 'post_api.dart';
 import 'feed_api.dart';
@@ -21,7 +23,7 @@ part 'post_interactions_http.dart';
 
 /// 仅访问构造时固定的 C HTTPS origin，不跟随重定向或自动重送命令。
 class HttpPostApi
-    implements PostApi, PostMediaApi, FeedApi, PostInteractionsApi {
+    implements PostApi, PostMediaApi, FeedApi, PostInteractionsApi, DmApi {
   HttpPostApi({
     required this.communityBaseUri,
     HttpClient? client,
@@ -44,6 +46,38 @@ class HttpPostApi
   final Duration timeout;
   final HttpClient _client;
   void close() => _client.close(force: true);
+
+  @override
+  Future<PostResponse<Map<String, dynamic>>> dmRequest(
+    String token,
+    String method,
+    String resource, {
+    Map<String, Object>? body,
+    Map<String, String>? query,
+  }) => _input(() {
+    if (!{
+      'pending',
+      'conversations',
+      'ack',
+      'read',
+      'contact',
+    }.contains(resource)) {
+      if (!resource.startsWith('commands/')) {
+        throw const FormatException('Invalid DM route');
+      }
+      PostProtocol.resourceId(resource.substring('commands/'.length));
+    }
+    return _send(
+      token,
+      method,
+      '/api/v1/dm/$resource',
+      body: body,
+      query: query,
+      maxRequestBytes: 100000,
+      maxResponseBytes: 8 * 1024 * 1024,
+      decode: (raw) => decodeDm(raw, resource),
+    );
+  });
 
   @override
   Future<PostResponse<List<PostInteractions>>> interactions({

@@ -1,5 +1,16 @@
 # 分模块验收与测试交接
 
+> **2026-10-22 DM-P1-TEXT送审更新：**网络恢复后原命令推送成功，未更改Git/LFS配置。[Draft PR #47](https://github.com/zewbby/HnuHole/pull/47)已提交，base为#44外观分支；远端CI已触发，最终结果以PR Checks为准。独立审查尚未完成，未合并、未发布。运行源码仍7e137d7，新增原生文字链路PASS及既有证据继续有效，本轮未重验。下方推送阻塞为历史记录。
+
+> **DM-P1-TEXT送审阻塞补记（2026-10-22）：**真机新增链路已PASS；本地5384811推送时LFS远端校验HTTPS连接超时，分支未推送、PR未创建、远端CI未运行。用户要求新问题由GPT-6 Astra High定位，故未继续诊断/绕过；待界面切换模型后只处理推送/送审，不重跑已通过验收。
+
+
+> **2026-10-22 DM-P1-TEXT 真机补验：**用户恢复的`.dmpreview`2156已核验；源码7e137d7、独立`.dmtext`2203在RMX3366 Android14实际原生存储/真实TLS文字收发限定PASS，含丢响应恢复唯一受理、ACK与阅读分离、离线回复、草稿/数据库重开。SQL为1会话/2消息/2成功回执、2ACK、0待投正文、1已读。此前锁屏和错误卸载记录保留，当前阻塞解除；未重复旧UI/IME。P1仍开发开关，准备依赖#44的Draft PR，独立review/远端CI待完成；新main90ba0c4邮箱认证尚未整合，不代证最终主线或生产。见[任务](../branches/feat-direct-message-text-reliability.md)与[机器记录](direct-message-text-verification-20261022.json)。
+
+
+> **2026-10-22 DM-P1-TEXT：**`feat/direct-message-text-reliability`依赖#44，可靠文字API/持久队列/ACK与阅读分离/基础未读草稿及窗口围栏已在隔离开发装配实现；新增13及真实Dart HTTPS联调1、入口影响42及本轮早期复用41项宿主检查PASS，SQL/race/HTTPS与新建/升级迁移PASS，分析0、独立`.dmtext`2202构建PASS。安全锁屏导致原生文字链路BLOCKED；旧`.dmpreview`被Flutter降级安装回退卸载，原制品恢复同样受阻，须先恢复。fixture/安装等待已停、lease已释放。生产默认关闭，PR待设备补验，未合并/发布；不提升B08/B09完整结论。见[任务](../branches/feat-direct-message-text-reliability.md)与[机器记录](direct-message-text-verification-20261022.json)。
+
+
 > **2026-10-21 DM-TELEGRAM-01：**`feat/telegram-direct-messages` 基于 main `76af92b`，已完成 Telegram 私信展示组件及首页/消息/私信/我的四入口；消息铃铛与私信单气泡采用未选中线框、选中蓝色实心，沿用固定底栏。完整702/聚焦含渲染36 PASS、分析0、生产APK2155/隔离预览2156构建PASS；真我 RMX3366 Android14 实际 UI/IME 范围 PASS，早期锁屏安装阻塞已解除且保留历史失败。正式私信仅显示暂未开放，内存预览独立，真实私信API/持久队列/本地聊天仓库仍未实现，不升级B08/B09整模块验收。[Draft PR #44](https://github.com/zewbby/HnuHole/pull/44)已提交，独立review/远端CI待完成，未合并/发布。见[任务](../branches/feat-telegram-direct-messages.md)、[报告](telegram-direct-messages.md)和[机器记录](telegram-direct-messages-verification-20261021.json)。
 > **2026-10-22 AUTH-EMAIL-LOGIN-01／[PR #45](https://github.com/zewbby/HnuHole/pull/45) 已合入main `6bb59fa`：**真实QQ校邮注册与已有账号验证码登录接通，vivo原账号／唯一会话／冷启动恢复限定PASS；最终head全部9类远端workflow成功，独立agent审查无阻断（非GitHub成员批准）。677项Flutter、分析0，正式SQL／HTTPS／恢复回滚通过；同签主体2143已生成，与合并main应用运行输入相同，USB断开待覆盖安装。开发包仍需电脑／WSL／USB在线，未正式发布。详见[交付记录](../branches/feat-email-auth-flow.md)。下方未合并／邮箱待接入均为旧时点记录。
 

@@ -26,6 +26,8 @@ class HhDirectMessageScreen extends StatefulWidget {
     required this.onBack,
     this.onSaveRetry,
     this.onLoadOlder,
+    this.onVisible,
+    this.textOnly = false,
   });
 
   final DmConversationView view;
@@ -44,6 +46,8 @@ class HhDirectMessageScreen extends StatefulWidget {
   final VoidCallback onSource, onBack;
   final VoidCallback? onSaveRetry;
   final Future<void> Function(DmHistoryRequest)? onLoadOlder;
+  final ValueChanged<List<String>>? onVisible;
+  final bool textOnly;
 
   @override
   State<HhDirectMessageScreen> createState() => _HhDirectMessageScreenState();
@@ -354,12 +358,12 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
     final actions = <(DmMessageAction, String, IconData)>[
       if (imageId == null && message.text.isNotEmpty)
         (DmMessageAction.copy, '复制', Icons.copy_outlined),
-      (DmMessageAction.delete, '删除', Icons.delete_outline_rounded),
+      if (!widget.textOnly) (DmMessageAction.delete, '删除', Icons.delete_outline_rounded),
       if (message.outgoing &&
           message.canRecall &&
           message.state == DmSendState.sent)
         (DmMessageAction.recall, '撤回', Icons.undo_rounded),
-      if (!message.outgoing)
+      if (!widget.textOnly && !message.outgoing)
         (DmMessageAction.report, '举报', Icons.flag_outlined),
     ];
     final action = await showMenu<DmMessageAction>(
@@ -507,6 +511,7 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
                 ),
               Expanded(
                 child: HhDmTimeline(
+                  onVisible: widget.onVisible,
                   view: view,
                   imageBuilder: widget.imageBuilder,
                   onLoadOlder: widget.onLoadOlder,
@@ -529,6 +534,7 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
                   queueing: _queueing,
                   onIdentity: _identity,
                   onPickImages: _pickImages,
+                  textOnly: widget.textOnly,
                   onSend: _send,
                   onRemoveImage: (image) => setState(() {
                     _generation++;
