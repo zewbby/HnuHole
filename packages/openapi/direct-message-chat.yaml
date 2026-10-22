@@ -1,0 +1,763 @@
+openapi: 3.1.0
+info:
+  title: HnuHole isolated P2 private images and chat
+  version: 2.0.0
+  description: Extends P1 without cloud history. All requests use current account
+    session and final C Safety Gate. P1 command GET reconciles image receipts; P1
+    ACK/read handles per-message durable receipt. Governance and production opening
+    remain P3.
+x-contract-status: P2_ISOLATED_IMPLEMENTATION
+servers:
+- url: https://community.hnuhole.invalid
+security:
+- sessionBearer: []
+paths:
+  /api/v1/dm/chat/images/{id}:
+    put:
+      operationId: sendDmImage
+      description: Send or replay one image intent. GET /api/v1/dm/commands/{id} reconciles
+        its receipt. INVALID_IMAGE is an additional FAILED errorCode.
+      responses:
+        '200':
+          description: Authorized result; inspect state for business success.
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageIntent'
+      parameters: &id001
+      - name: id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+  /api/v1/dm/chat/media/{id}:
+    get:
+      operationId: readDmPrivateMedia
+      description: id is messageId. Only current active recipient can read pending
+        bytes. Sender/stranger or ACKed/retracted/deleted content gets 409. No public
+        URLs, range access, or post-media grants.
+      responses:
+        '200':
+          description: Authorized result; inspect state for business success.
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateMedia'
+        default:
+          $ref: '#/components/responses/Error'
+      parameters: *id001
+  /api/v1/dm/chat/conversations:
+    get:
+      operationId: listDmChatConversations
+      description: UUID paging, 100 per page; includes hidden/deleted. No cloud history
+        or body-derived preview. A new accepted message restores a hidden entry without
+        clearing old unread.
+      responses:
+        '200':
+          description: Authorized result; inspect state for business success.
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - items
+                properties:
+                  items:
+                    type: array
+                    maxItems: 100
+                    items:
+                      $ref: '#/components/schemas/Conversation'
+        default:
+          $ref: '#/components/responses/Error'
+      parameters:
+      - name: identityId
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      - name: after
+        in: query
+        schema:
+          $ref: '#/components/schemas/Id'
+  /api/v1/dm/chat/pending:
+    get:
+      operationId: pullDmChatPending
+      description: Non-destructive oldest 100 envelopes. Receiver must persist each
+        text/image and its metadata before existing /api/v1/dm/ack. ACK atomically
+        clears image bytes and text while retaining minimum receipt/unread/retract
+        metadata.
+      responses:
+        '200':
+          description: Authorized result; inspect state for business success.
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - items
+                properties:
+                  items:
+                    type: array
+                    maxItems: 100
+                    items:
+                      $ref: '#/components/schemas/Delivery'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/dm/chat/operations/{id}:
+    put:
+      operationId: executeDmChatOperation
+      description: Stable immutable operation UUID; durable APPLIED/REJECTED result
+        never changes. Query same id after unknown; never create replacement intent
+        for timeout. CAS conflict requires a fresh reviewed intent against refreshed
+        settingsVersion. Caller without identity/conversation ownership gets HTTP409.
+      responses:
+        '200':
+          description: Authorized result; inspect state for business success.
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Operation'
+      parameters: *id001
+    get:
+      operationId: getDmChatOperation
+      description: Owner-scoped durable result. Other account or unknown id observes
+        ABSENT. ABSENT is not proof that an in-flight PUT cannot still commit.
+      responses:
+        '200':
+          description: Authorized result; inspect state for business success.
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        default:
+          $ref: '#/components/responses/Error'
+      parameters: *id001
+  /api/v1/dm/chat/controls:
+    get:
+      operationId: pullDmChatControls
+      description: 'Persist applied tombstones and next cursor in one local transaction.
+        No ACK endpoint: minimum retraction metadata remains replayable from zero
+        on another installation or older device. 100 items; continue from next until
+        empty. Global transaction serialization prevents sequence/commit inversion.
+        Events for all current active own identities.'
+      responses:
+        '200':
+          description: Authorized result; inspect state for business success.
+          headers:
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Controls'
+        default:
+          $ref: '#/components/responses/Error'
+      parameters:
+      - name: after
+        in: query
+        schema:
+          type: integer
+          minimum: 0
+components:
+  securitySchemes:
+    sessionBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical base64url 32-byte session capability
+  responses:
+    Error:
+      description: 400 malformed; 401 expired/replaced session; 403 account unavailable;
+        409 immutable intent/version/ownership conflict; 413 size; 429 rate limit;
+        503 final Gate or service unavailable. Transport/5xx leave send outcome unknown,
+        never FAILED.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - error
+            - requestId
+            additionalProperties: false
+            properties:
+              error:
+                type: object
+                additionalProperties: false
+                required:
+                - code
+                - message
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              requestId:
+                type: string
+  schemas:
+    Id:
+      type: string
+      format: uuid
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+    OptionalId:
+      oneOf:
+      - type: string
+        const: ''
+      - $ref: '#/components/schemas/Id'
+    Receipt:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - attempt
+      properties:
+        state:
+          enum:
+          - ABSENT
+          - FAILED
+          - SENT
+        attempt:
+          type: integer
+          minimum: 0
+          maximum: 1000
+        errorCode:
+          enum:
+          - POSTING_RESTRICTED
+          - IDENTITY_UNAVAILABLE
+          - CONTACT_UNAVAILABLE
+          - POST_IDENTITY_BOUND
+          - WAITING_FOR_REPLY
+          - PENDING_LIMIT
+        messageId:
+          $ref: '#/components/schemas/Id'
+        conversationId:
+          $ref: '#/components/schemas/Id'
+        sequence:
+          type: integer
+          minimum: 1
+        acceptedAt:
+          type: string
+          format: date-time
+    Conversation:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - identityId
+      - peerId
+      - peerName
+      - sourcePostId
+      - sequence
+      - unread
+      - waiting
+      - canSend
+      - sourceTitle
+      - version
+      - settingsVersion
+      - pinned
+      - muted
+      - hidden
+      - deleted
+      - deletedThrough
+      - note
+      - unavailableUnread
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        identityId:
+          $ref: '#/components/schemas/Id'
+        peerId:
+          $ref: '#/components/schemas/Id'
+        peerName:
+          type: string
+        sourcePostId:
+          $ref: '#/components/schemas/Id'
+        sequence:
+          type: integer
+          minimum: 0
+        unread:
+          type: integer
+          minimum: 0
+        waiting:
+          type: boolean
+        canSend:
+          type: boolean
+        sourceTitle:
+          type: string
+        version:
+          type: integer
+          minimum: 0
+        settingsVersion:
+          type: integer
+          minimum: 0
+        pinned: &id002
+          type: boolean
+        muted: *id002
+        hidden: *id002
+        deleted: *id002
+        deletedThrough:
+          type: integer
+          minimum: 0
+        note:
+          type: string
+          maxLength: 400
+        unavailableUnread:
+          type: integer
+          minimum: 0
+      description: Includes hidden/deleted tombstones. Apply rows only if version
+        >= local version and deletedThrough never decreases. sourceTitle is blank
+        when original post unavailable. unavailableUnread counts ACKed/unread incoming
+        metadata whose bytes cannot be downloaded on another installation. No implicit
+        mark-read. settingsVersion is separate CAS for own settings, while version
+        tracks all message/settings changes.
+    Delivery:
+      type: object
+      additionalProperties: false
+      required:
+      - messageId
+      - conversationId
+      - identityId
+      - senderId
+      - sequence
+      - text
+      - acceptedAt
+      - kind
+      - groupId
+      - position
+      - groupSize
+      - media
+      properties:
+        messageId:
+          $ref: '#/components/schemas/Id'
+        conversationId:
+          $ref: '#/components/schemas/Id'
+        identityId:
+          $ref: '#/components/schemas/Id'
+        senderId:
+          $ref: '#/components/schemas/Id'
+        sequence:
+          type: integer
+          minimum: 1
+        text:
+          type: string
+        acceptedAt:
+          type: string
+          format: date-time
+        kind:
+          type: string
+          enum:
+          - TEXT
+          - IMAGE
+        groupId:
+          $ref: '#/components/schemas/OptionalId'
+        position:
+          type: integer
+          minimum: 0
+          maximum: 8
+        groupSize:
+          type: integer
+          minimum: 0
+          maximum: 9
+        media:
+          oneOf:
+          - $ref: '#/components/schemas/Selection'
+          - type: 'null'
+      description: Image envelope has empty text and a Selection; private data must
+        be fetched and durably stored before ACK. Text has empty groupId, groupSize/position
+        zero, media null. Sequence reflects individual acceptance order, group position
+        reflects selection order. Local deletion and retraction tombstones dominate
+        delayed envelopes/media callbacks.
+    Selection:
+      type: object
+      additionalProperties: false
+      required:
+      - mediaId
+      - sha256
+      - byteLength
+      - mimeType
+      - width
+      - height
+      properties:
+        mediaId: &id003
+          $ref: '#/components/schemas/Id'
+        sha256: &id004
+          type: string
+          pattern: ^[0-9a-f]{64}$
+        byteLength: &id005
+          type: integer
+          minimum: 1
+          maximum: 10485760
+        mimeType: &id006
+          type: string
+          enum:
+          - image/jpeg
+          - image/png
+          - image/gif
+          - image/webp
+        width: &id007
+          type: integer
+          minimum: 1
+          maximum: 16384
+        height: &id008
+          type: integer
+          minimum: 1
+          maximum: 16384
+    ImageIntent:
+      type: object
+      additionalProperties: false
+      required:
+      - identityId
+      - peerId
+      - conversationId
+      - groupId
+      - position
+      - groupSize
+      - mediaId
+      - sha256
+      - byteLength
+      - mimeType
+      - width
+      - height
+      - data
+      - attempt
+      properties:
+        identityId:
+          $ref: '#/components/schemas/Id'
+        peerId:
+          $ref: '#/components/schemas/Id'
+        conversationId:
+          $ref: '#/components/schemas/Id'
+        groupId:
+          $ref: '#/components/schemas/Id'
+        position:
+          type: integer
+          minimum: 0
+          maximum: 8
+        groupSize:
+          type: integer
+          minimum: 1
+          maximum: 9
+        mediaId: *id003
+        sha256: *id004
+        byteLength: *id005
+        mimeType: *id006
+        width: *id007
+        height: *id008
+        data: &id009
+          type: string
+          contentEncoding: base64
+          maxLength: 13981016
+        attempt:
+          type: integer
+          minimum: 1
+          maximum: 1000
+      description: One immutable image intent per command UUID. position < groupSize,
+        groupId/size/conversation fixed per sender. IDs survive failures. All metadata
+        and original bytes immutable; failed retries increase attempt by one. Standard
+        padded canonical base64. Full JPEG/PNG/GIF/WebP decode, SHA-256 and dimensions
+        checked with pinned validator. Max 12 Mi pixels, 120 frames and existing bounded
+        animation work. Sender pending bytes max 128 MiB; global 1 GiB. FAILED PENDING_LIMIT
+        preserves existing backlog. Initial contact cannot send images until both
+        parties have accepted text.
+    PrivateMedia:
+      type: object
+      additionalProperties: false
+      required:
+      - messageId
+      - mediaId
+      - sha256
+      - byteLength
+      - mimeType
+      - width
+      - height
+      - data
+      properties:
+        messageId:
+          $ref: '#/components/schemas/Id'
+        mediaId: *id003
+        sha256: *id004
+        byteLength: *id005
+        mimeType: *id006
+        width: *id007
+        height: *id008
+        data: *id009
+    Operation:
+      type: object
+      additionalProperties: false
+      required:
+      - identityId
+      - conversationId
+      - operation
+      - expectedVersion
+      properties:
+        identityId:
+          $ref: '#/components/schemas/Id'
+        conversationId:
+          $ref: '#/components/schemas/Id'
+        operation:
+          type: string
+          enum:
+          - SETTINGS
+          - HIDE
+          - RESTORE
+          - DELETE
+          - RETRACT
+        expectedVersion:
+          type: integer
+          minimum: 0
+        pinned: *id002
+        muted: *id002
+        note:
+          type: string
+          maxLength: 400
+        throughSequence:
+          type: integer
+          minimum: 0
+        messageId:
+          $ref: '#/components/schemas/OptionalId'
+      description: SETTINGS requires pinned,muted,note; note max 100 graphemes and
+        400 UTF-8 bytes. SETTINGS/HIDE/RESTORE compare expectedVersion with settingsVersion.
+        DELETE requires displayed throughSequence <= current conversation sequence
+        and monotonically advances own cutoff, retaining note and peer history. RETRACT
+        requires own messageId, accepted less than 120 trusted-clock seconds ago;
+        already retracted is idempotently APPLIED. Identity/contact first-message
+        quotas never reset.
+    OperationResult:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - errorCode
+      - conversationId
+      - version
+      - settingsVersion
+      - deletedThrough
+      - messageId
+      properties:
+        state:
+          type: string
+          enum:
+          - ABSENT
+          - APPLIED
+          - REJECTED
+        errorCode:
+          type: string
+          enum:
+          - ''
+          - VERSION_CONFLICT
+          - COMMAND_CONFLICT
+          - RETRACT_EXPIRED
+        conversationId:
+          $ref: '#/components/schemas/OptionalId'
+        version:
+          type: integer
+          minimum: 0
+        settingsVersion:
+          type: integer
+          minimum: 0
+        deletedThrough:
+          type: integer
+          minimum: 0
+        messageId:
+          $ref: '#/components/schemas/OptionalId'
+    Control:
+      type: object
+      additionalProperties: false
+      required:
+      - eventId
+      - sequence
+      - identityId
+      - conversationId
+      - messageId
+      - messageSequence
+      - type
+      - createdAt
+      properties:
+        eventId:
+          $ref: '#/components/schemas/Id'
+        sequence:
+          type: integer
+          minimum: 1
+        identityId:
+          $ref: '#/components/schemas/Id'
+        conversationId:
+          $ref: '#/components/schemas/Id'
+        messageId:
+          $ref: '#/components/schemas/Id'
+        messageSequence:
+          type: integer
+          minimum: 1
+        type:
+          type: string
+          const: RETRACTED
+        createdAt:
+          type: string
+          format: date-time
+    Controls:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - next
+      properties:
+        items:
+          type: array
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/Control'
+        next:
+          type: integer
+          minimum: 0

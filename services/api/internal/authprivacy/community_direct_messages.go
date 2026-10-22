@@ -357,7 +357,7 @@ func (c *Community) ReadDMDirectory(ctx context.Context, b [32]byte, identity, a
 func (c *Community) PullDM(ctx context.Context, b [32]byte) (PostResponse, error) {
 	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
 		items := make([]DMDelivery, 0)
-		rows, e := tx.Query(ctx, `SELECT m.message_id::text,m.conversation_id::text,m.recipient::text,m.sender::text,m.sequence,m.body,m.accepted_at FROM c_dm.messages m JOIN public.community_identities i ON i.identity_id=m.recipient WHERE i.account_id=$1 AND i.deleted_at IS NULL AND NOT m.acknowledged ORDER BY m.accepted_at,m.conversation_id,m.sequence LIMIT 100`, a)
+		rows, e := tx.Query(ctx, `SELECT m.message_id::text,m.conversation_id::text,m.recipient::text,m.sender::text,m.sequence,m.body,m.accepted_at FROM c_dm.messages m JOIN public.community_identities i ON i.identity_id=m.recipient WHERE i.account_id=$1 AND i.deleted_at IS NULL AND NOT m.acknowledged AND m.kind='TEXT' AND NOT m.retracted ORDER BY m.accepted_at,m.conversation_id,m.sequence LIMIT 100`, a)
 		if e != nil {
 			return nil, e
 		}
@@ -385,8 +385,26 @@ func (c *Community) AcknowledgeDM(ctx context.Context, b [32]byte, ids []string,
 		}
 	}
 	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
+		// Serialize ACK/read with deletion/retraction and the directory revision
+		// trigger. Always acquire conversation locks before message row locks.
+		rows, e := tx.Query(ctx, `SELECT conversation_id FROM c_dm.conversations WHERE conversation_id IN(SELECT conversation_id FROM c_dm.messages WHERE message_id=ANY($1::uuid[])) ORDER BY conversation_id FOR UPDATE`, ids)
+		if e != nil {
+			return nil, e
+		}
+		for rows.Next() {
+			var ignored uuid.UUID
+			if e = rows.Scan(&ignored); e != nil {
+				rows.Close()
+				return nil, e
+			}
+		}
+		e = rows.Err()
+		rows.Close()
+		if e != nil {
+			return nil, e
+		}
 		var count int
-		e := tx.QueryRow(ctx, `SELECT count(DISTINCT m.message_id) FROM c_dm.messages m JOIN public.community_identities i ON i.identity_id=m.recipient WHERE m.message_id=ANY($1::uuid[]) AND i.account_id=$2 AND i.deleted_at IS NULL AND (NOT $3 OR m.acknowledged)`, ids, a, read).Scan(&count)
+		e = tx.QueryRow(ctx, `SELECT count(DISTINCT m.message_id) FROM c_dm.messages m JOIN public.community_identities i ON i.identity_id=m.recipient WHERE m.message_id=ANY($1::uuid[]) AND i.account_id=$2 AND i.deleted_at IS NULL AND (NOT $3 OR m.acknowledged)`, ids, a, read).Scan(&count)
 		if e != nil {
 			return nil, e
 		}
@@ -401,6 +419,9 @@ func (c *Community) AcknowledgeDM(ctx context.Context, b [32]byte, ids []string,
 			_, e = tx.Exec(ctx, `UPDATE c_dm.messages SET read=true WHERE message_id=ANY($1::uuid[])`, ids)
 		} else {
 			_, e = tx.Exec(ctx, `UPDATE c_dm.messages SET acknowledged=true,body=NULL WHERE message_id=ANY($1::uuid[])`, ids)
+			if e == nil {
+				_, e = tx.Exec(ctx, `UPDATE c_dm.media SET bytes=NULL WHERE message_id=ANY($1::uuid[])`, ids)
+			}
 		}
 		return DMApplied{State: "APPLIED"}, e
 	})
