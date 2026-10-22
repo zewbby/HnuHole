@@ -358,6 +358,9 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
   final _photoProviders = <String, MemoryImage>{};
   ViewerController? _viewer;
   int _loadEpoch = 0;
+  int _draftEditGeneration = 0, _draftRevision = 0;
+  int _textSaveGeneration = 0;
+  bool _draftDirty = false;
   @override
   void initState() {
     super.initState();
@@ -382,6 +385,7 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
       return;
     }
     final epoch = ++_loadEpoch;
+    final draftGeneration = _draftEditGeneration;
     setState(() {
       loading = true;
       historyFailed = false;
@@ -392,12 +396,13 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
         widget.peer.id,
         before: older && rows.isNotEmpty ? rows.first['_sort'] as int : null,
       );
-      final text = restored
-          ? draft
-          : await c.draft(widget.own.id, widget.peer.id);
-      final photos = restored
-          ? null
-          : await c.photoDraft(widget.own.id, widget.peer.id);
+      final savedDraft = c.chatEnabled
+          ? await c.draftState(widget.own.id, widget.peer.id)
+          : null;
+      final text =
+          savedDraft?['text'] as String? ??
+          (restored ? draft : await c.draft(widget.own.id, widget.peer.id));
+      final photos = savedDraft?['photos'] as List? ?? const [];
       // Receipt reconciliation may move an outgoing row outside the newest
       // page. Refresh already displayed work by its stable local id as well.
       final updated = <Map<String, dynamic>>[];
@@ -417,8 +422,9 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
             !updated.any(
               (v) => v['_id'] == old['_id'] && v['recalled'] != true,
             ),
-      ))
+      )) {
         _releasePhotos();
+      }
       setState(() {
         final byId = <String, Map<String, dynamic>>{
           for (final r in retained) r['_id']: r,
@@ -428,11 +434,21 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
         rows = byId.values.toList()
           ..sort((a, b) => (a['_sort'] as int).compareTo(b['_sort'] as int));
         if (older || !restored) more = next.length == 40;
-        if (!restored) {
-          draft = text;
-          _draftImages = (photos ?? [])
+        if (!restored ||
+            (!_draftDirty && draftGeneration == _draftEditGeneration)) {
+          final images = photos
               .map((p) => DmImage(id: p['mediaId'], description: '待发送图片'))
               .toList();
+          final changed =
+              !restored ||
+              draft != text ||
+              images.length != _draftImages.length ||
+              images.indexed.any((p) => p.$2.id != _draftImages[p.$1].id);
+          if (changed) {
+            draft = text;
+            _draftImages = images;
+            _draftRevision++;
+          }
           restored = true;
         }
       });
@@ -528,7 +544,7 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
         privateNote: (directory?['note'] as String?)?.isNotEmpty == true
             ? directory!['note']
             : null,
-        draftRevision: restored ? 1 : 0,
+        draftRevision: _draftRevision,
         firstContact: conv.isEmpty || awaiting,
         firstTextAccepted: awaiting,
         canSend: restored && directory?['canSend'] != false,
@@ -569,12 +585,31 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
         return saved;
       },
       onDraftChanged: (text) {
+        _draftEditGeneration++;
+        final edit = ++_textSaveGeneration;
+        _draftDirty = true;
         draft = text;
-        unawaited(c.saveDraft(widget.own.id, widget.peer.id, text));
+        unawaited(() async {
+          final saved = await c.saveDraft(widget.own.id, widget.peer.id, text);
+          if (mounted &&
+              scope == c.scope &&
+              edit == _textSaveGeneration &&
+              saved) {
+            _draftDirty = false;
+          }
+        }());
       },
       onIdentitySelected: (_) {},
-      onPickImages: c.chatEnabled ? _pickChatImages : () async => [],
+      onPickImages: c.chatEnabled
+          ? () async {
+              _draftEditGeneration++;
+              final selected = await _pickChatImages();
+              _draftEditGeneration++;
+              return selected;
+            }
+          : () async => [],
       onRemoveDraftImage: (image) async {
+        _draftEditGeneration++;
         try {
           await c.removePhoto(widget.own.id, widget.peer.id, image.id);
           _draftImages.removeWhere((i) => i.id == image.id);

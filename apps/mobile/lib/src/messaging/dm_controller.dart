@@ -460,16 +460,18 @@ class DmController extends ChangeNotifier {
     );
   }
 
-  Future<void> saveDraft(String own, String peer, String text) async {
-    if (!available || !_identities.contains(own)) return;
+  Future<bool> saveDraft(String own, String peer, String text) async {
+    if (!available || !_identities.contains(own)) return false;
     final epoch = _epoch;
     try {
       await _store!.saveDraft(own, peer, text);
+      return _current(epoch);
     } catch (_) {
       if (_current(epoch)) {
         error = '草稿保存失败，请保留当前页面';
         _notify();
       }
+      return false;
     }
   }
 
