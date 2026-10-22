@@ -94,14 +94,13 @@
     "evidence": "docs/design/telegram-direct-messages-verification-20261021.json",
     "scope": "unchanged fonts, palette, icons, layout and IME only; not network/native storage acceptance"
   },
-  "independentReview": "NOT_RUN",
-  "remoteCI": "TRIGGERED_PENDING_FINAL_RESULT_SEE_PR_CHECKS",
+  "independentReview": "Independent read-only agent: no blocking findings, exact heads 83f09d1 / 6360dc0 and full-tree equivalent 068df614; not GitHub member approval",
+  "remoteCI": "PASS_FINAL_HEAD_SEE_MAIN_MERGE_RECEIPT",
   "pullRequest": "https://github.com/zewbby/HnuHole/pull/47",
-  "merged": false,
+  "merged": true,
   "released": false,
   "next": [
-    "Independent review and final scoped remote CI result in PR47 Checks",
-    "Land dependency PR44 before retargeting PR47; reconcile new main and validate affected changes only"
+    "P2/P3 remain separate; production not released; do not repeat unchanged validated P1 scope"
   ],
   "nativeAcceptance": {
     "sourceCommit": "7e137d7",
@@ -148,7 +147,7 @@
     "logs": "local-only E:/Hnuhole-env/tmp-dm/dm-p1-native-drive-resume.txt; no raw log committed"
   },
   "latestMainObserved": "90ba0c42da193c67da00f660cf99839129bbe3f4",
-  "integration": "Stacked on still-open UI PR44; new main email-auth changes not incorporated or claimed tested. Reconcile when dependency lands; test only affected changes.",
+  "integration": "Main90ba0c4 and UI83f09d1 integrated at6360dc0;068df614 records squash ancestry with identical full tree. Merged via PR47; production default disabled.",
   "deliveryBlocker": {
     "attemptedHead": "5384811d18ea477ac2ed753750123e97d672d6e5",
     "action": "git push -u origin feat/direct-message-text-reliability",
@@ -160,11 +159,14 @@
   },
   "delivery": {
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/47",
-    "draft": true,
-    "base": "feat/telegram-direct-messages",
+    "draft": false,
+    "base": "main",
+    "initialDraft": true,
+    "initialBase": "feat/telegram-direct-messages",
     "dependency": "https://github.com/zewbby/HnuHole/pull/44",
     "firstPushedHead": "bba867359d6a28990123ae4e0cc14e194b0b9450",
     "runtimeSourceUnchanged": "7e137d7",
     "localAcceptanceRepeated": false
-  }
+  },
+  "mainMergeReceipt": "docs/design/direct-message-p1-main-merge-20261022.json"
 }
