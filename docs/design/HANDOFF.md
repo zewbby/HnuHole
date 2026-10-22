@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-22 DM-P2-CHAT（分支实现／限定验收通过，未合并）：**从 main `154a761` 新建 `feat/direct-message-chat-completion`，新增九图私有收发、加密落地 ACK、会话设置／私人备注、本机搜索与草稿、两分钟撤回和离线墓碑。Astra High 定位复杂竞态，独立只读审查无剩余阻断；真实 SQL/race/TLS、受影响迁移、客户端定点检查、分析 0 及 RMX3366 独立 `.dmchat`2211 原生新增链路通过。仅补新增／受影响部分，未改 P1 字体／布局／IME 沿用旧证据。P3、生产开关和 B08/B09 整体验收结论不提升；远端 CI／PR 回执见[任务详情](../branches/feat-direct-message-chat-completion.md)与[机器记录](direct-message-chat-verification-20261022.json)，不可把此分支成果当已合入 main。
+
 > **2026-10-22 DM-P1-TEXT已合入main：**依赖[PR #44](https://github.com/zewbby/HnuHole/pull/44)已合入`8fb28d7`，可靠文字[PR #47](https://github.com/zewbby/HnuHole/pull/47)已合入`002b789`。独立agent精确提交审查无阻断，最终适用CI成功；增量主线整合13项DM/50项登录导航、分析0、完整OpenAPI、真实SQL/race/HTTPS和Go build/vet通过。旧UI/IME及dmtext2203原生文字链路沿原证据范围复用，未重复。默认生产开关仍关闭、未部署或发布，不提升完整B08/B09结论。下方未合并/待审查等为历史记录；见[合并回执](direct-message-p1-main-merge-20261022.json)。
 
 > **2026-10-22 DM-P1-TEXT送审更新：**网络恢复后原命令推送成功，未更改Git/LFS配置。[Draft PR #47](https://github.com/zewbby/HnuHole/pull/47)已提交，base为#44外观分支；远端CI已触发，最终结果以PR Checks为准。独立审查尚未完成，未合并、未发布。运行源码仍7e137d7，新增原生文字链路PASS及既有证据继续有效，本轮未重验。下方推送阻塞为历史记录。

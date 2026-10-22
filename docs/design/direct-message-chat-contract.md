@@ -1,6 +1,6 @@
 # P2 图片与完整聊天契约（隔离实现）
 
-适用：`feat/direct-message-chat-backend`，基线 main `154a761`，迁移 0023。正式开放、治理、推送仍属于 P3；本文件不提升 B08/B09 整模块或生产验收结论。P1 路径与 DTO 保持兼容，完整机器契约见 `packages/openapi/direct-message-chat.yaml`。
+适用：集成分支 `feat/direct-message-chat-completion`，基线 main `154a761`，迁移 0023；后端子任务原分支 `feat/direct-message-chat-backend` 已整合。正式开放、治理、推送仍属于 P3；本文件不提升 B08/B09 整模块或生产验收结论。P1 路径与 DTO 保持兼容，完整机器契约见 `packages/openapi/direct-message-chat.yaml`。
 
 ## 请求与结果
 
@@ -50,7 +50,9 @@ ACK、删除、撤回均先按序锁 conversation，再写 message/settings/medi
 - PASS：真实 HTTPS/SQL 新增六路径、媒体受理/读取/清除、来源标题、严格请求、操作结果隐私、控制取数、最终 Gate freeze。
 - PASS：完整 P1/P2 OpenAPI；Go build `./cmd/...` 与相关 authprivacy/authprivacyhttp vet；受影响 P1 并发首发/受限运行及可靠文字 HTTPS。
 - PASS：迁移新建、22→23 及已有 P1 待收文字/回执/额度保留、失败 Down 前向恢复。主功能日志 /tmp/hnuhole-dm-p2.lRuZ61/tests.log；携带 P1 正文升级补验 /tmp/hnuhole-dm-p2.zrjiL1/tests.log。前者 runner 输出末尾曾因编辑期间 CRLF 失败，Go 测试两包均 PASS；runner 已修 LF 并由后者正常退出确认。
-- 原生 Android、真实 Dart 客户端、换机加密存储/搜索性能由主代理集成验收；本分支不代报通过。生产默认开关保持关闭。
+- 集成补验：真实 Dart TLS/SQL 与 RMX3366 Android14 原生加密存储／九图收发／备注隐藏删除／离线撤回／图片查看器通过；源码8892172，限定证明范围见 [机器证据](direct-message-chat-verification-20261022.json)。新建本地存储模拟恢复，不代证物理换机；搜索规模性能未执行。生产默认开关保持关闭。
+- 独立额度补验：发送账号和当前会话分别计算 4096 待投上限；并集达到4096而两者均未满仍可发，任一满额拒绝。真实 SQL/race 旧代码 RED／修复 GREEN，独立审查已关闭该问题。
+- 客户端删除未知任务只保留核对原 ID 所需最小意图字段，不把 ABSENT 当作取消；不再 PUT 已被用户删除的内容。核对工作轮转，普通待发优先，避免持续 ABSENT 阻塞新消息。图片键按 senderId/mediaId 隔离。
 
 独占 runner：`services/api/authlab/run-dm-chat-isolated.sh`。环境须显式给已有 `POST_MEDIA_PYTHON` 和 `COMMENT_TEXT_GOOSE`；runner 自建 /tmp 私有 socket 数据库和合成 PNG，不读写已有服务。`DM_CHAT_TEST_PATTERN` 只选择新增/受影响检查。保留本次临时目录与日志，退出自动停库。
 

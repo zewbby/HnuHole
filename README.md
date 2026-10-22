@@ -35,6 +35,7 @@
 
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
+| `feat/direct-message-chat-completion` | 第二阶段九图私有收发、会话管理和撤回已实现并完成限定原生增量验收；待 PR／CI，未合并或发布。 | [任务详情](docs/branches/feat-direct-message-chat-completion.md) |
 | `feat/direct-message-text-reliability` | 隔离环境可靠文字收发及限定Android原生验收通过；[PR #47](https://github.com/zewbby/HnuHole/pull/47)已合入main，生产默认关闭、未发布。 | [任务详情](docs/branches/feat-direct-message-text-reliability.md) |
 | `feat/telegram-direct-messages` | Telegram私信展示/四导航及UI/IME限定验收通过；[PR #44](https://github.com/zewbby/HnuHole/pull/44)已合入main，未发布。 | [任务详情](docs/branches/feat-telegram-direct-messages.md) |
 | `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
