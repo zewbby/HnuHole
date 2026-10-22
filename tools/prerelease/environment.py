@@ -519,7 +519,7 @@ class Lab:
             # Test raw checkpoint mismatch before any API probe can turn it
             # into an already-frozen row. This is this lab's disposable V only.
             self.quiesce()
-            self.sql('v', 'UPDATE v_auth.authorization_gate SET evidence_version=evidence_version-1', role='migrator')
+            self.sql('v', 'UPDATE v_auth.authorization_gate SET evidence_version=evidence_version+1', role='migrator')
             opath = self.root / 'material/operator/v-operator.json'
             if self.run([self.root / 'bin/authdev', 'resume', '-operator', opath], 'resume-mismatch-negative-v', check=False) == 0:
                 raise RuntimeError('ordinary resume accepted mismatched independent checkpoint')
