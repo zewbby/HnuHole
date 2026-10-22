@@ -106,9 +106,9 @@ func (c *Community) SendDMImage(ctx context.Context, b [32]byte, id string, in D
 		if !open {
 			return reject("WAITING_FOR_REPLY")
 		}
-		var count int
+		var senderPending, conversationPending int
 		var senderBytes, totalBytes int64
-		e = tx.QueryRow(ctx, `SELECT count(*) FROM c_dm.messages m JOIN public.community_identities i ON i.identity_id=m.sender WHERE NOT m.acknowledged AND (i.account_id=$1 OR m.conversation_id=$2)`, a, in.ConversationID).Scan(&count)
+		e = tx.QueryRow(ctx, `SELECT count(*) FILTER (WHERE i.account_id=$1),count(*) FILTER (WHERE m.conversation_id=$2) FROM c_dm.messages m JOIN public.community_identities i ON i.identity_id=m.sender WHERE NOT m.acknowledged AND (i.account_id=$1 OR m.conversation_id=$2)`, a, in.ConversationID).Scan(&senderPending, &conversationPending)
 		if e != nil {
 			return nil, e
 		}
@@ -116,7 +116,7 @@ func (c *Community) SendDMImage(ctx context.Context, b [32]byte, id string, in D
 		if e != nil {
 			return nil, e
 		}
-		if count >= 4096 || senderBytes+int64(len(data)) > 128*1024*1024 || totalBytes+int64(len(data)) > 1024*1024*1024 {
+		if senderPending >= 4096 || conversationPending >= 4096 || senderBytes+int64(len(data)) > 128*1024*1024 || totalBytes+int64(len(data)) > 1024*1024*1024 {
 			return reject("PENDING_LIMIT")
 		}
 		if c.postImages == nil || c.postImages.validator == nil {
