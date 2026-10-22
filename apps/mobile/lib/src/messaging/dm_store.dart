@@ -13,6 +13,8 @@ import '../storage/post_store.dart'
     show BusinessKeyVault, PostStorageFailure, PostStorageLostKey;
 import 'dm_protocol.dart';
 
+part 'dm_chat_store.dart';
+
 class _DmVault implements BusinessKeyVault {
   _DmVault(this.native);
   final DurableBusinessVault native;
@@ -269,6 +271,7 @@ class DmStore {
     '_ordinal': r['ordinal'],
     '_sort': r['sort_key'],
     '_pair': r['pair'],
+    '_kind': r['kind'],
   };
   Future<void> _put(
     String id,
@@ -311,7 +314,7 @@ class DmStore {
     () async => Future.wait(
       _db
           .select(
-            "SELECT * FROM dm_records WHERE kind='message' AND state IN ('queued','unknown','received','read_pending') ORDER BY ordinal,id LIMIT 100",
+            "SELECT * FROM dm_records WHERE kind IN ('message','hidden_message') AND state IN ('queued','unknown','received','read_pending') ORDER BY ordinal,id LIMIT 100",
           )
           .map(_decode),
     ),
@@ -412,7 +415,14 @@ class DmStore {
         throw const PostStorageFailure();
       }
       if (receipt != null) row['receipt'] = receipt;
-      await _put(id, 'message', row['_pair'], row['_ordinal'], state, row);
+      await _put(
+        id,
+        row['_kind'] ?? 'message',
+        row['_pair'],
+        row['_ordinal'],
+        state,
+        row,
+      );
       if (state == 'sent' && receipt != null) {
         final directoryId = 'conversation:${row['_pair']}';
         final directory = await _get(directoryId);
@@ -451,6 +461,10 @@ class DmStore {
         final id = item['messageId'] as String;
         final previous = await _get(id);
         if (previous != null) {
+          if (previous['_state'] == 'deleted' ||
+              previous['_state'] == 'retracted') {
+            continue;
+          }
           for (final key in [
             'messageId',
             'conversationId',

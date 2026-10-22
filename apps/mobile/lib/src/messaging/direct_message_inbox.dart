@@ -62,6 +62,7 @@ class HhDmInboxScreen extends StatefulWidget {
     this.onSystemNotifications,
     this.systemUnread = 0,
     this.navigation,
+    this.onManage,
   });
 
   /// Must include account/session generation AND the selected inbox identity.
@@ -72,6 +73,7 @@ class HhDmInboxScreen extends StatefulWidget {
   /// Canonical order is supplied by the owner, including the pinned partition.
   final List<DmInboxEntry> entries;
   final ValueChanged<DmInboxTarget> onOpen;
+  final ValueChanged<DmInboxTarget>? onManage;
   final ValueChanged<DmIdentity> onIdentitySelected;
   final bool loading;
   final String? error;
@@ -394,6 +396,15 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                               conversationId: entry.id,
                             ),
                           ),
+                          onLongPress: widget.onManage == null
+                              ? null
+                              : () => widget.onManage!(
+                                  DmInboxTarget(
+                                    scopeKey: widget.scopeKey,
+                                    identityId: widget.identity.id,
+                                    conversationId: entry.id,
+                                  ),
+                                ),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
                             child: Row(
