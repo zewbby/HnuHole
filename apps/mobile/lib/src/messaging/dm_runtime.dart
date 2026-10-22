@@ -175,6 +175,44 @@ class DmInboxRoute extends StatefulWidget {
 
 class _DmInboxRouteState extends State<DmInboxRoute> {
   String? _selected;
+  String _query = '';
+  Set<String> _searchMatches = {};
+  int _searchGeneration = 0;
+  bool _searching = false;
+  String? _searchError;
+  Future<void> _search(String query, String identity) async {
+    final generation = ++_searchGeneration,
+        controller = widget.runtime.controller;
+    final scope = controller.scope;
+    setState(() {
+      _query = query;
+      _searching = query.trim().isNotEmpty;
+      _searchError = null;
+      _searchMatches = {};
+    });
+    if (query.trim().isEmpty) return;
+    try {
+      final result = await controller.search(identity, query);
+      if (mounted &&
+          generation == _searchGeneration &&
+          scope == controller.scope) {
+        setState(() {
+          _searchMatches = result;
+          _searching = false;
+        });
+      }
+    } catch (_) {
+      if (mounted &&
+          generation == _searchGeneration &&
+          scope == controller.scope) {
+        setState(() {
+          _searchError = '本机搜索暂未完成，请重试';
+          _searching = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: widget.runtime.controller,
@@ -228,13 +266,16 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
                     : null,
                 pinned: v['pinned'] == true,
                 hidden: v['hidden'] == true,
-                localSearchText:
-                    '${v['localSearchText'] ?? ''}\n${v['sourceTitle'] ?? ''}',
+                localSearchText: _searchMatches.contains(v['id']) ? _query : '',
                 unread: v['unread'],
               ),
             )
             .toList(),
-        error: c.error,
+        error: _searchError ?? c.error,
+        loading: _searching,
+        onSearchChanged: !c.chatEnabled
+            ? null
+            : (query) => unawaited(_search(query, own.id)),
         onRetry: () => unawaited(c.sync()),
         navigation: widget.navigation,
         onManage: !c.chatEnabled
@@ -249,7 +290,14 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
                     .firstOrNull;
                 if (dir != null) unawaited(showDmManagement(context, c, dir));
               },
-        onIdentitySelected: (i) => setState(() => _selected = i.id),
+        onIdentitySelected: (i) => setState(() {
+          _selected = i.id;
+          _query = '';
+          _searchMatches = {};
+          _searchGeneration++;
+          _searching = false;
+          _searchError = null;
+        }),
         onOpen: (target) {
           final v = c.conversations
               .where(

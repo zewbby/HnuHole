@@ -63,6 +63,7 @@ class HhDmInboxScreen extends StatefulWidget {
     this.systemUnread = 0,
     this.navigation,
     this.onManage,
+    this.onSearchChanged,
   });
 
   /// Must include account/session generation AND the selected inbox identity.
@@ -74,6 +75,7 @@ class HhDmInboxScreen extends StatefulWidget {
   final List<DmInboxEntry> entries;
   final ValueChanged<DmInboxTarget> onOpen;
   final ValueChanged<DmInboxTarget>? onManage;
+  final ValueChanged<String>? onSearchChanged;
   final ValueChanged<DmIdentity> onIdentitySelected;
   final bool loading;
   final String? error;
@@ -329,7 +331,10 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
               child: TextField(
                 key: const ValueKey('dm-search'),
                 controller: _search,
-                onChanged: (_) => setState(() {}),
+                onChanged: (value) {
+                  setState(() {});
+                  widget.onSearchChanged?.call(value);
+                },
                 style: TextStyle(fontSize: 16, color: p.ink),
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
@@ -341,7 +346,10 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                       ? null
                       : IconButton(
                           tooltip: '清除搜索',
-                          onPressed: () => setState(() => _search.clear()),
+                          onPressed: () {
+                            setState(() => _search.clear());
+                            widget.onSearchChanged?.call('');
+                          },
                           icon: const Icon(Icons.close, size: 20),
                         ),
                   contentPadding: const EdgeInsets.symmetric(

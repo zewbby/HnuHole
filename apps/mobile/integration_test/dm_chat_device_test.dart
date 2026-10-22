@@ -114,12 +114,20 @@ void main() {
       expect(find.byType(HhDirectMessageScreen), findsOneWidget);
       await tester.pumpAndSettle();
       expect(find.text('删除边界之后的新消息'), findsOneWidget);
-      expect(find.bySemanticsLabel('第1张图片'), findsOneWidget);
-      await tester.tap(find.bySemanticsLabel('第1张图片'));
+      final image = find.byWidgetPredicate(
+        (w) => w is Semantics && w.properties.label == '第1张图片',
+      );
+      expect(image, findsOneWidget);
+      await tester.tap(image);
       await tester.pumpAndSettle();
       expect(find.byType(HnuImageViewer), findsOneWidget);
+      final binding = IntegrationTestWidgetsFlutterBinding.instance;
+      await binding.convertFlutterSurfaceToImage();
+      await tester.pumpAndSettle();
+      await binding.takeScreenshot('dm-p2-photo-viewer');
       Navigator.of(tester.element(find.byType(HnuImageViewer))).pop();
       await tester.pumpAndSettle();
+      await binding.takeScreenshot('dm-p2-chat');
       await tester.pumpWidget(const SizedBox());
       await tester.runAsync(() async {
         await c.detach();
