@@ -1,6 +1,6 @@
 # DM-P1：可靠文字收发
 
-- 分支：`feat/direct-message-text-reliability`；2026-10-22，本地实现、限定宿主/SQL及Android原生文字收发通过。准备依赖#44的Draft PR，独立review与远端CI待完成；未合并、未发布。
+- 分支：`feat/direct-message-text-reliability`；2026-10-22，本地实现、限定宿主/SQL及Android原生文字收发通过。[Draft PR #47](https://github.com/zewbby/HnuHole/pull/47)已创建，依赖#44；独立review与远端CI待完成，未合并、未发布。
 - 基线：最新 `origin/main` `76af92b`；依赖未合并 PR #44 的界面提交 `60629f3`，已快进集成。后续 PR 须明确先合入 #44，不将该界面算作 P1 新实现。
 - 范围：受保护文字接口、唯一身份对/同帖绑定/首发额度、持久 outbox/inbox、入库后 ACK、基础未读/草稿、账号和会话代次围栏、隔离开发装配。生产开放留到 P3。
 - 验收：新增真实 PostgreSQL/API 并发和授权、客户端实盘故障恢复、Android 新增接线短流程。未改动的 #44 字体、配色、菜单、图标和布局验收直接引用原证据。
@@ -40,7 +40,7 @@ P1开发契约暂定4000 grapheme/16384 UTF-8字节；发送账号跨面具和�
 | 真实Dart客户端联调 | `DM_HOST_FIXTURE=<私密fixture路径> flutter test --no-pub test/dm_http_fixture_test.dart` 1 PASS；实际HttpPostApi对隔离TLS/SQL完成丢响应后查SENT、拉取、ACK与未读分离、阅读归零；不使用网络替身 |
 | Android构建 | 独立`.dmtext`主入口、`DM_TEXT_INTEGRATION=true`、versionCode2026102202 PASS |
 | Android真实原生存储/文字链路 | **PASS（本次补验）**：RMX3366 Android14、源码7e137d7、独立dmtext2203；原锁屏阻塞保留在下方历史记录 |
-| 独立review、远端CI | NOT_RUN；本地自查不代证独立批准 |
+| 独立review、远端CI | 独立review NOT_RUN；远端CI已触发，结果以PR #47 Checks为准，本地自查不代证独立批准 |
 
 只使用本任务私有socket数据库及合成账号。`TestDMDevicePostgres`的Go PASS仅表示设备fixture服务成功启动并退出，**不代表Android验收**。未改动的字体/图标/布局/IME复用[原证据](../design/telegram-direct-messages-verification-20261021.json)，不重复全量测试。CI已增加本次SQL、契约、Flutter和独立Android构建检查。
 
@@ -56,7 +56,9 @@ HNUHOLE_DM_TEXT=1 flutter drive --no-pub -d <owned RMX3366> --use-application-bi
 
 该入口直接装配真实控制器、原生存储、API与合成账号，不是完整正式登录/根页面旅程；数据库关闭重开不声称整机强杀/断电通过。既有外观/IME验收复用，未重复。此次未发现需要诊断修复的新产品问题；若后续出现，按用户要求切换GPT-6 Astra High后定位。
 
-PR将先以仍开放的`feat/telegram-direct-messages`为base，保持P1差异可独立审查；合入顺序#44→P1，#44落地主线后再调整base。已观察新main `90ba0c4`增加邮箱认证，当前P1未整合该变化、不冒充测试过新主线；整合如产生新问题需按上述模型要求处理，只补受影响验收。独立同事review尚未完成，Draft期间由维护者审查，不伪造批准。
+PR #47以仍开放的`feat/telegram-direct-messages`为base，保持P1差异可独立审查；合入顺序#44→#47，#44落地主线后再调整base。已观察新main `90ba0c4`增加邮箱认证，当前P1未整合该变化、不冒充测试过新主线；整合如产生新问题需按上述模型要求处理，只补受影响验收。独立同事review尚未完成，Draft期间由维护者审查，不伪造批准。
+
+2026-10-22送审：此前5384811推送遇LFS连接超时；用户要求继续后，HTTPS连通检查正常，原命令直接重试推送bba8673成功。未修改Git/LFS配置或绕过hook；只能确认连接现已恢复，未确定先前超时的具体原因。已创建并附加Draft PR #47，远端专项及受影响workflow已自动触发。本轮只有交付记录变动，运行源码仍7e137d7，未重复本地/真机验收。远端最终结果在PR Checks记录。
 
 ## 早期设备阻塞历史（已解除）
 

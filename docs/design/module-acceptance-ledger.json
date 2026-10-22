@@ -12,9 +12,10 @@
     "previewRestored": true,
     "historicalModuleVerdictsUnchanged": true,
     "independentReview": "NOT_RUN",
-    "remoteCI": "NOT_RUN",
+    "remoteCI": "TRIGGERED_PENDING_FINAL_RESULT_SEE_PR_CHECKS",
     "merged": false,
-    "released": false
+    "released": false,
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/47"
   },
   "dmTextP120261022": {
     "task": "DM-P1-TEXT",

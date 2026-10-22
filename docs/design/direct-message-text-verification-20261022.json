@@ -95,14 +95,13 @@
     "scope": "unchanged fonts, palette, icons, layout and IME only; not network/native storage acceptance"
   },
   "independentReview": "NOT_RUN",
-  "remoteCI": "NOT_RUN_BRANCH_NOT_PUSHED",
-  "pullRequest": "NOT_CREATED_PUSH_BLOCKED_LFS_NETWORK_TIMEOUT",
+  "remoteCI": "TRIGGERED_PENDING_FINAL_RESULT_SEE_PR_CHECKS",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/47",
   "merged": false,
   "released": false,
   "next": [
-    "Switch current chat to GPT-6 Astra High, diagnose push connectivity",
-    "Push existing branch and create stacked draft PR against feat/telegram-direct-messages",
-    "Independent review and scoped remote CI; no repeat of unchanged native/host acceptance"
+    "Independent review and final scoped remote CI result in PR47 Checks",
+    "Land dependency PR44 before retargeting PR47; reconcile new main and validate affected changes only"
   ],
   "nativeAcceptance": {
     "sourceCommit": "7e137d7",
@@ -155,6 +154,17 @@
     "action": "git push -u origin feat/direct-message-text-reliability",
     "result": "FAIL: LFS locks verify HTTPS connection timeout; push exit 1",
     "modelInstruction": "User requires GPT-6 Astra High for new diagnosis/fix. Stopped without diagnosing or applying workarounds; current chat model must be switched in UI.",
-    "deviceAcceptanceRemains": "PASS_SCOPED_NATIVE_STORAGE_TLS_TEXT"
+    "deviceAcceptanceRemains": "PASS_SCOPED_NATIVE_STORAGE_TLS_TEXT",
+    "status": "RESOLVED_BY_ORIGINAL_PUSH_RETRY",
+    "resolution": "2026-10-22 HTTPS connectivity succeeded and original git push accepted bba8673. No Git/LFS configuration or hook bypass. Original timeout cause not established."
+  },
+  "delivery": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/47",
+    "draft": true,
+    "base": "feat/telegram-direct-messages",
+    "dependency": "https://github.com/zewbby/HnuHole/pull/44",
+    "firstPushedHead": "bba867359d6a28990123ae4e0cc14e194b0b9450",
+    "runtimeSourceUnchanged": "7e137d7",
+    "localAcceptanceRepeated": false
   }
 }
