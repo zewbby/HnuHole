@@ -1,5 +1,8 @@
 # 设计进度与剩余工作
 
+> **DM-P1-TEXT送审阻塞补记（2026-10-22）：**真机新增链路已PASS；本地5384811推送时LFS远端校验HTTPS连接超时，分支未推送、PR未创建、远端CI未运行。用户要求新问题由GPT-6 Astra High定位，故未继续诊断/绕过；待界面切换模型后只处理推送/送审，不重跑已通过验收。
+
+
 > **2026-10-22 DM-P1-TEXT 真机补验：**用户恢复的`.dmpreview`2156已核验；源码7e137d7、独立`.dmtext`2203在RMX3366 Android14实际原生存储/真实TLS文字收发限定PASS，含丢响应恢复唯一受理、ACK与阅读分离、离线回复、草稿/数据库重开。SQL为1会话/2消息/2成功回执、2ACK、0待投正文、1已读。此前锁屏和错误卸载记录保留，当前阻塞解除；未重复旧UI/IME。P1仍开发开关，准备依赖#44的Draft PR，独立review/远端CI待完成；新main90ba0c4邮箱认证尚未整合，不代证最终主线或生产。见[任务](../branches/feat-direct-message-text-reliability.md)与[机器记录](direct-message-text-verification-20261022.json)。
 
 

@@ -95,14 +95,14 @@
     "scope": "unchanged fonts, palette, icons, layout and IME only; not network/native storage acceptance"
   },
   "independentReview": "NOT_RUN",
-  "remoteCI": "NOT_RUN",
-  "pullRequest": "DRAFT_PREPARING_PENDING_INDEPENDENT_REVIEW",
+  "remoteCI": "NOT_RUN_BRANCH_NOT_PUSHED",
+  "pullRequest": "NOT_CREATED_PUSH_BLOCKED_LFS_NETWORK_TIMEOUT",
   "merged": false,
   "released": false,
   "next": [
-    "Independent review",
-    "Scoped CI on draft PR",
-    "After UI dependency and new main integration, verify only affected differences before merge"
+    "Switch current chat to GPT-6 Astra High, diagnose push connectivity",
+    "Push existing branch and create stacked draft PR against feat/telegram-direct-messages",
+    "Independent review and scoped remote CI; no repeat of unchanged native/host acceptance"
   ],
   "nativeAcceptance": {
     "sourceCommit": "7e137d7",
@@ -149,5 +149,12 @@
     "logs": "local-only E:/Hnuhole-env/tmp-dm/dm-p1-native-drive-resume.txt; no raw log committed"
   },
   "latestMainObserved": "90ba0c42da193c67da00f660cf99839129bbe3f4",
-  "integration": "Stacked on still-open UI PR44; new main email-auth changes not incorporated or claimed tested. Reconcile when dependency lands; test only affected changes."
+  "integration": "Stacked on still-open UI PR44; new main email-auth changes not incorporated or claimed tested. Reconcile when dependency lands; test only affected changes.",
+  "deliveryBlocker": {
+    "attemptedHead": "5384811d18ea477ac2ed753750123e97d672d6e5",
+    "action": "git push -u origin feat/direct-message-text-reliability",
+    "result": "FAIL: LFS locks verify HTTPS connection timeout; push exit 1",
+    "modelInstruction": "User requires GPT-6 Astra High for new diagnosis/fix. Stopped without diagnosing or applying workarounds; current chat model must be switched in UI.",
+    "deviceAcceptanceRemains": "PASS_SCOPED_NATIVE_STORAGE_TLS_TEXT"
+  }
 }
