@@ -1,5 +1,7 @@
 # DM-P1：可靠文字收发
 
+2026-10-22合并回执：可靠文字已合入002b789，依赖#44已先合入8fb28d7。用户已授权合并，独立agent审查无阻断且最终head适用CI成功，非GitHub成员批准。未部署/发布；当前状态见[机器回执](../design/direct-message-p1-main-merge-20261022.json)，下方为历史阶段记录。
+
 2026-10-22合并准备：用户授权独立审查后合并，已启动只读独立审查。整合#44的`83f09d1`及main `90ba0c4`，产品代码自动合并，仅验收台账按键合并并保留原结论。因共享认证/HTTP/runtime发生变化，增量补验P1客户端13项PASS、分析0问题、完整OpenAPI 6路径PASS；真实隔离PostgreSQL/race/HTTPS四顶层及两个迁移子项PASS、0 skip，包含新V5/6迁移基线。#44已补登录/根导航50项PASS。原生存储/文字链路、字体及UI/IME沿原证据范围复用，未重验。精确整合head的独立审查和CI以PR回执为准，尚未合并或发布。
 
 - 分支：`feat/direct-message-text-reliability`；2026-10-22，本地实现、限定宿主/SQL及Android原生文字收发通过。[Draft PR #47](https://github.com/zewbby/HnuHole/pull/47)已创建，依赖#44；独立review与远端CI待完成，未合并、未发布。

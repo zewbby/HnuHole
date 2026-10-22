@@ -1,5 +1,7 @@
 # 私信 Telegram Android 改造：现状与实施边界
 
+2026-10-22合并回执：展示/四导航已合入8fb28d7，#47随后接通隔离开发环境可靠文字收发。用户已授权合并，独立agent审查无阻断且最终head适用CI成功，非GitHub成员批准。未部署/发布；当前状态见[机器回执](../design/direct-message-p1-main-merge-20261022.json)，下方为历史阶段记录。
+
 工作项 DM-TELEGRAM-01，模块 B08/B09，更新于 2026-10-21（Asia/Shanghai）。
 
 2026-10-22合并准备：用户授权合并#47及其#44依赖；#44整合main `90ba0c4`，仅三份交接文档新增记录冲突，保留双方内容，产品代码自动合并。受影响的登录/根导航整合执行 `flutter test --no-pub test/login_home_navigation_test.dart test/direct_message_navigation_test.dart test/email_login_test.dart test/auth_screen_test.dart --reporter expanded`，50 PASS。未重复已验证的字体、UI/IME真机验收；未修改邮箱认证实现。独立审查及精确整合head CI仍待完成，不提前记录已合并。

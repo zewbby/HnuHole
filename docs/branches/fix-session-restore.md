@@ -13,3 +13,11 @@
 当前实现待独立最终复核及真实隔离环境验收，尚未合并、未正式发布。Go authdev配置/签名用途测试与受影响宿主包PASS（不代证SQL）。初次尝试旧Docker runtime runner在旧权限清单拒绝现有schema，未进入本轮用例；原runner已不改动，改由维护中的预发布Lab做真实迁移/HTTPS/过期证据/原令牌保留及冻结负例回归。
 
 入口：`services/api/cmd/authdev/`、`tools/prerelease/environment.py`、`tools/android_integration/lab.py`、[重启说明](../../tools/smtp/README.md)。涉及A02/A03/A06/A12，重启限定验收不能提升整个模块/生产结论。后续补最终命令、版本、结果及本机vivo重启记录。
+
+## 本轮验收结果
+
+产品工具源码 fbf10ac（后继仅文档/主线文档整合），Go受影响包PASS、Python9项PASS。维护中的 `tools/prerelease/environment.py --root <本任务全新Linux私有目录> init --rollback-sha 002b78933e3ddc888eab02514ba3e94b3e62036a` 后执行rehearse，真实C/V HTTPS、正式C22/V6迁移、受限角色、离线证据过期后原Bearer恢复且代次/RECOVER审计不变、直接独立锚不匹配拒绝、冻结拒绝、双新实例备份恢复、旧会话安全失效与回滚/再部署全部PASS，创建的五个PG实例和进程均已停止。初次负例尝试回退证据版本被DB单调约束提前拒绝；改为前进版本制造与独立锚差异后完整重跑PASS，旧失败保留。
+
+vivo V2323A Android15，主体2143：App强停、原C/V与watch在Gate行锁内平稳停机、用1秒短证据模拟离线过期、同代次resume后启动原API/新watch；SQL核对授权代次及全部会话摘要/撤销/截止记录逐项未变，未调用recover。手机重新启动后直接进入已登录界面，无欢迎/登录或会话失效提示，原生本机会话恢复PASS；未获取密码/OTP/恢复码，不重建账号或更改令牌。真实整机电脑/WSL关机数小时尚未做，不把2秒受控过期模拟写成整机长时间停机。
+
+本机已加载新版开发authdev及其watch，C/V仍原邮箱测试二进制，TLS ready200，2143无需重打。临时重连脚本已改普通resume，不再固定recover。安全冻结仍需检查后显式恢复，旧安全失效会话不复活。远端检查/最终独立审查以PR #48最终head为准，尚未合并；验收记录见[机器摘要](../design/validation/session-resume-20261022.json)。

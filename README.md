@@ -35,8 +35,8 @@
 
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
-| `feat/direct-message-text-reliability` | P1隔离环境可靠文字收发已实现，新增宿主/SQL及Android原生文字收发限定验收通过；[Draft PR #47](https://github.com/zewbby/HnuHole/pull/47)依赖#44，待审查及CI，未合并。 | [任务详情](docs/branches/feat-direct-message-text-reliability.md) |
-| `feat/telegram-direct-messages` | 按用户截图改造私信展示层，消息/私信独立导航并完成隔离预览真机验收；真实私信未接通、未合并。 | [任务详情](docs/branches/feat-telegram-direct-messages.md) |
+| `feat/direct-message-text-reliability` | 隔离环境可靠文字收发及限定Android原生验收通过；[PR #47](https://github.com/zewbby/HnuHole/pull/47)已合入main，生产默认关闭、未发布。 | [任务详情](docs/branches/feat-direct-message-text-reliability.md) |
+| `feat/telegram-direct-messages` | Telegram私信展示/四导航及UI/IME限定验收通过；[PR #44](https://github.com/zewbby/HnuHole/pull/44)已合入main，未发布。 | [任务详情](docs/branches/feat-telegram-direct-messages.md) |
 | `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
 | `fix/session-restore` | 修复普通开发重启误用安全恢复而使会话失效；实现与验证状态见详情。 | [详情](docs/branches/fix-session-restore.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
@@ -81,8 +81,8 @@
 
 ## 最近变动
 
-- [PR #45](https://github.com/zewbby/HnuHole/pull/45)：接通真实校邮注册发信与已有账号验证码登录，精简注册界面并更新密码规则。
+- [PR #47](https://github.com/zewbby/HnuHole/pull/47)：接通隔离环境可靠文字收发、持久队列、ACK与阅读分离及基础未读草稿。
+- [PR #44](https://github.com/zewbby/HnuHole/pull/44)：改造Telegram私信展示与四入口导航。
+- [PR #45](https://github.com/zewbby/HnuHole/pull/45)：接通真实校邮注册发信与已有账号验证码登录。
 - [PR #43](https://github.com/zewbby/HnuHole/pull/43)：同步三步注册的实际合并与验收回执。
 - [PR #42](https://github.com/zewbby/HnuHole/pull/42)：接入三步注册、恢复码框内复制及可选通行密钥入口。
-- [PR #37](https://github.com/zewbby/HnuHole/pull/37)：统一安卓外观，接入快捷评论、即时互动与X详情布局。
-- [PR #40](https://github.com/zewbby/HnuHole/pull/40)：登录直达推荐首页并保留运行期间通道选择。
