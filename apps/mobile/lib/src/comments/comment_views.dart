@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import '../messaging/dm_runtime.dart';
+
 import 'package:flutter/material.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
 
@@ -773,7 +775,11 @@ class _CommentPostPaneState extends State<CommentPostPane> {
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DetailAvatar(name: r.nickname),
+        GestureDetector(
+          onTap: () =>
+              unawaited(DmScope.contact(context, r.post, comment: r.id)),
+          child: DetailAvatar(name: r.nickname),
+        ),
         const SizedBox(width: 10),
         Expanded(
           child: Column(
@@ -782,35 +788,40 @@ class _CommentPostPaneState extends State<CommentPostPane> {
               Row(
                 children: [
                   Expanded(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: r.nickname,
-                            style: detailType(
-                              context,
-                              16,
-                              weight: FontWeight.w500,
-                            ),
-                          ),
-                          if (r.data['isPostAuthor'] == true)
+                    child: GestureDetector(
+                      onTap: () => unawaited(
+                        DmScope.contact(context, r.post, comment: r.id),
+                      ),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
                             TextSpan(
-                              text: '  楼主',
+                              text: r.nickname,
                               style: detailType(
                                 context,
-                                11.5,
-                                color: Theme.of(context).colorScheme.primary,
+                                16,
+                                weight: FontWeight.w500,
                               ),
                             ),
-                          TextSpan(
-                            text: ' · ${_commentTime(r)}',
-                            style: detailType(
-                              context,
-                              12.5,
-                              color: Theme.of(context).hintColor,
+                            if (r.data['isPostAuthor'] == true)
+                              TextSpan(
+                                text: '  楼主',
+                                style: detailType(
+                                  context,
+                                  11.5,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            TextSpan(
+                              text: ' · ${_commentTime(r)}',
+                              style: detailType(
+                                context,
+                                12.5,
+                                color: Theme.of(context).hintColor,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

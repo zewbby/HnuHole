@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import '../messaging/dm_runtime.dart';
+
 import 'package:flutter/material.dart';
 
 import '../channels/channel.dart';
@@ -433,7 +435,8 @@ class _FeedScreenState extends State<FeedScreen> {
                             : null,
                         onPost: () =>
                             _open(context, post.postId, post.channelId),
-                        onAuthor: () {},
+                        onAuthor: () =>
+                            unawaited(DmScope.contact(context, post.postId)),
                         onMenu: () =>
                             _open(context, post.postId, post.channelId),
                         onAction: (action) {

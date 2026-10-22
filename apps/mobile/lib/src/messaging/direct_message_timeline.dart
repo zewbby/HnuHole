@@ -16,6 +16,7 @@ class HhDmTimeline extends StatefulWidget {
     required this.onRetry,
     required this.onReedit,
     this.onLoadOlder,
+    this.onVisible,
     this.selectedMessage,
     this.selectedImage,
   });
@@ -25,6 +26,7 @@ class HhDmTimeline extends StatefulWidget {
   final ValueChanged<DmImage> onImage;
   final ValueChanged<DmMessage> onRetry, onReedit;
   final Future<void> Function(DmHistoryRequest)? onLoadOlder;
+  final ValueChanged<List<String>>? onVisible;
   final String? selectedMessage, selectedImage;
 
   @override
@@ -115,6 +117,25 @@ class _HhDmTimelineState extends State<HhDmTimeline> {
     }
   }
 
+  void _reportVisible() {
+    if (widget.onVisible == null) return;
+    final epoch = _epoch;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || epoch != _epoch) return;
+      final viewport = _viewport.currentContext?.findRenderObject() as RenderBox?;
+      if (viewport == null || !viewport.hasSize) return;
+      final top = viewport.localToGlobal(Offset.zero).dy;
+      final ids = <String>[];
+      for (final message in widget.view.messages.where((m) => !m.outgoing)) {
+        final box = _anchors[message.id]?.currentContext?.findRenderObject() as RenderBox?;
+        if (box == null || !box.attached || !box.hasSize) continue;
+        final y = box.localToGlobal(Offset.zero).dy;
+        if (y < top + viewport.size.height && y + box.size.height > top) ids.add(message.id);
+      }
+      if (ids.isNotEmpty) widget.onVisible?.call(ids);
+    });
+  }
+
   void _latest({bool animate = true}) {
     final epoch = _epoch;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -132,6 +153,7 @@ class _HhDmTimelineState extends State<HhDmTimeline> {
   }
 
   void _onScroll() {
+    _reportVisible();
     final away = _scroll.offset > 80;
     if (away != _away || (!away && _newMessages > 0)) {
       setState(() {
@@ -175,6 +197,7 @@ class _HhDmTimelineState extends State<HhDmTimeline> {
 
   @override
   Widget build(BuildContext context) {
+    _reportVisible();
     final view = widget.view, p = HhTelegramPalette.of(context);
     if (view.messages.isEmpty && view.historyState == DmHistoryState.complete) {
       return Center(

@@ -35,6 +35,7 @@
 
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
+| `feat/direct-message-text-reliability` | P1隔离环境可靠文字收发已实现，新增宿主/SQL及Android原生文字收发限定验收通过；[Draft PR #47](https://github.com/zewbby/HnuHole/pull/47)依赖#44，待审查及CI，未合并。 | [任务详情](docs/branches/feat-direct-message-text-reliability.md) |
 | `feat/telegram-direct-messages` | 按用户截图改造私信展示层，消息/私信独立导航并完成隔离预览真机验收；真实私信未接通、未合并。 | [任务详情](docs/branches/feat-telegram-direct-messages.md) |
 | `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
 | `fix/session-restore` | 修复普通开发重启误用安全恢复而使会话失效；实现与验证状态见详情。 | [详情](docs/branches/fix-session-restore.md) |

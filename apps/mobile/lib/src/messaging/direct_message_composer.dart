@@ -40,6 +40,7 @@ class HhDirectMessageComposer extends StatelessWidget {
     required this.onSend,
     required this.onTextChanged,
     this.queueing = false,
+    this.textOnly = false,
   });
   final DmConversationView view;
   final TextEditingController text;
@@ -50,6 +51,7 @@ class HhDirectMessageComposer extends StatelessWidget {
   final ValueChanged<DmImage> onRemoveImage;
   final ValueChanged<String> onTextChanged;
   final bool queueing;
+  final bool textOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +186,7 @@ class HhDirectMessageComposer extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
+                if (!textOnly) IconButton(
                   key: const ValueKey('dm-attach'),
                   tooltip: '添加图片',
                   onPressed: view.canSend ? onPickImages : null,

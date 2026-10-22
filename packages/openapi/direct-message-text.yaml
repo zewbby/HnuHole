@@ -1,0 +1,193 @@
+openapi: 3.1.0
+info:
+  title: HnuHole isolated P1 reliable text messaging
+  version: 1.0.0
+  description: >-
+    Final C Gate and current session authorize every request. Enabled only in
+    isolated development until governance integration. No presence, read receipts,
+    images or cloud history. Text acceptance atomically persists the identity
+    binding, first-contact quota, message and immutable intent receipt.
+x-contract-status: P1_ISOLATED_IMPLEMENTATION
+servers:
+  - url: https://community.hnuhole.invalid
+security:
+  - sessionBearer: []
+paths:
+  /api/v1/dm/contact:
+    get:
+      operationId: resolveDmContact
+      description: Resolve a visible post/comment author without creating a conversation or binding an identity. Own-account contact is a no-op in the client.
+      parameters:
+        - {name: postId, in: query, required: true, schema: {$ref: '#/components/schemas/Id'}}
+        - {name: commentId, in: query, schema: {$ref: '#/components/schemas/Id'}}
+      responses:
+        '200':
+          description: Contact within this source only; no account identifier.
+          headers: &headers
+            Cache-Control: {required: true, schema: {type: string, const: no-store}}
+            X-Request-ID: {required: true, schema: {type: string}}
+            Session-Expires-At: {required: true, schema: {type: string, format: date-time}}
+            Server-Time: {required: true, schema: {type: string, format: date-time}}
+          content: {application/json: {schema: {$ref: '#/components/schemas/Contact'}}}
+        default: {$ref: '#/components/responses/Error'}
+  /api/v1/dm/commands/{id}:
+    parameters:
+      - {name: id, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    put:
+      operationId: sendDmText
+      description: >-
+        Stable per-account intent UUID. Fields other than attempt are immutable.
+        First attempt is 1; only a recorded FAILED permits attempt+1 with original
+        content and identities. Replays return the durable result. SENT means
+        platform durable acceptance, not recipient read. First contact permits
+        one text per direction until the peer has sent a valid text. A server
+        transaction rollback neither binds identity nor consumes quota.
+        Sender pending budget is 4096 messages; rejection never erases old pending content.
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/TextIntent'}}}
+      responses:
+        '200':
+          description: Durable SENT or FAILED receipt; client must not treat HTTP 200 alone as sent.
+          headers: *headers
+          content: {application/json: {schema: {$ref: '#/components/schemas/Receipt'}}}
+        default: {$ref: '#/components/responses/Error'}
+    get:
+      operationId: getDmIntentResult
+      description: >-
+        Reconcile the original intent after timeout or restart. ABSENT is an
+        observation, not proof of failure; a delayed original request can still
+        arrive. Replay only the same UUID and payload, never create a second intent.
+        Receipt survives recipient ACK and body deletion.
+      responses:
+        '200':
+          description: Owner-scoped result; another account observes ABSENT.
+          headers: *headers
+          content: {application/json: {schema: {$ref: '#/components/schemas/Receipt'}}}
+        default: {$ref: '#/components/responses/Error'}
+  /api/v1/dm/conversations:
+    get:
+      operationId: listDmConversations
+      description: Own active identity directory, UUID order, up to 100 rows. Continue after last id until a short page. No message bodies; unread includes ACKed but unread messages unavailable on a new device.
+      parameters:
+        - {name: identityId, in: query, required: true, schema: {$ref: '#/components/schemas/Id'}}
+        - {name: after, in: query, schema: {$ref: '#/components/schemas/Id'}}
+      responses:
+        '200':
+          description: Identity pair directory.
+          headers: *headers
+          content: {application/json: {schema: {type: object, additionalProperties: false, required: [items], properties: {items: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/Conversation'}}}}}}
+        default: {$ref: '#/components/responses/Error'}
+  /api/v1/dm/pending:
+    get:
+      operationId: pullDmPending
+      description: Oldest 100 unACKed items for all own active identities. Pull is non-destructive. Repeat until empty; no expiry removes pending text. The client must transactionally persist before ACK.
+      responses:
+        '200':
+          description: Stable item ids, sequence within identity pair, exact original body.
+          headers: *headers
+          content: {application/json: {schema: {type: object, additionalProperties: false, required: [items], properties: {items: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/Delivery'}}}}}}
+        default: {$ref: '#/components/responses/Error'}
+  /api/v1/dm/ack:
+    post:
+      operationId: acknowledgeDmDurableReceive
+      description: ACK only durably persisted item ids. Idempotently erase pending bodies; retain delivery/read/dedup metadata. Never marks read. Entire batch rejects on an unowned or invalid id.
+      requestBody: &batchBody
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/MessageIds'}}}
+      responses: &appliedResponses
+        '200':
+          description: Batch applied atomically.
+          headers: *headers
+          content: {application/json: {schema: {type: object, additionalProperties: false, required: [state], properties: {state: {const: APPLIED}}}}}
+        default: {$ref: '#/components/responses/Error'}
+  /api/v1/dm/read:
+    post:
+      operationId: markDmVisibleItemsRead
+      description: Own already-ACKed item ids actually displayed in the foreground viewport. Never read through a cursor or clear arrivals after the displayed batch. No peer-visible read receipt.
+      requestBody: *batchBody
+      responses: *appliedResponses
+components:
+  securitySchemes:
+    sessionBearer: {type: http, scheme: bearer, bearerFormat: canonical base64url 32-byte session capability}
+  responses:
+    Error:
+      description: 400 malformed; 401 expired/replaced session; 403 account unavailable; 409 immutable intent/version/ownership conflict; 413 size; 429 rate limit; 503 final Gate or service unavailable. Transport/5xx leave send outcome unknown, never FAILED.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error, requestId]
+            additionalProperties: false
+            properties:
+              error: {type: object, additionalProperties: false, required: [code, message], properties: {code: {type: string}, message: {type: string}}}
+              requestId: {type: string}
+  schemas:
+    Id: {type: string, format: uuid, pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'}
+    OptionalId: {oneOf: [{type: string, const: ''}, {$ref: '#/components/schemas/Id'}]}
+    TextIntent:
+      type: object
+      additionalProperties: false
+      required: [identityId, peerId, conversationId, sourcePostId, sourceCommentId, text, attempt]
+      description: New contact requires sourcePostId and optional comment, with empty conversationId. Existing conversation requires conversationId and empty source fields. Source author must equal peerId. Text must contain non-whitespace, at most 4000 Unicode 16 graphemes and 16384 UTF-8 bytes.
+      properties:
+        identityId: {$ref: '#/components/schemas/Id'}
+        peerId: {$ref: '#/components/schemas/Id'}
+        conversationId: {$ref: '#/components/schemas/OptionalId'}
+        sourcePostId: {$ref: '#/components/schemas/OptionalId'}
+        sourceCommentId: {$ref: '#/components/schemas/OptionalId'}
+        text: {type: string, minLength: 1, maxLength: 16384}
+        attempt: {type: integer, minimum: 1, maximum: 1000}
+    Receipt:
+      type: object
+      additionalProperties: false
+      required: [state, attempt]
+      properties:
+        state: {enum: [ABSENT, FAILED, SENT]}
+        attempt: {type: integer, minimum: 0, maximum: 1000}
+        errorCode: {enum: [POSTING_RESTRICTED, IDENTITY_UNAVAILABLE, CONTACT_UNAVAILABLE, POST_IDENTITY_BOUND, WAITING_FOR_REPLY, PENDING_LIMIT]}
+        messageId: {$ref: '#/components/schemas/Id'}
+        conversationId: {$ref: '#/components/schemas/Id'}
+        sequence: {type: integer, minimum: 1}
+        acceptedAt: {type: string, format: date-time}
+    Contact:
+      type: object
+      additionalProperties: false
+      required: [peerId, peerName, boundIdentityId, self]
+      properties:
+        peerId: {$ref: '#/components/schemas/Id'}
+        peerName: {type: string}
+        boundIdentityId: {$ref: '#/components/schemas/OptionalId'}
+        self: {type: boolean}
+    Conversation:
+      type: object
+      additionalProperties: false
+      required: [id, identityId, peerId, peerName, sourcePostId, sequence, unread, waiting, canSend]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        identityId: {$ref: '#/components/schemas/Id'}
+        peerId: {$ref: '#/components/schemas/Id'}
+        peerName: {type: string}
+        sourcePostId: {$ref: '#/components/schemas/Id'}
+        sequence: {type: integer, minimum: 0}
+        unread: {type: integer, minimum: 0}
+        waiting: {type: boolean}
+        canSend: {type: boolean}
+    Delivery:
+      type: object
+      additionalProperties: false
+      required: [messageId, conversationId, identityId, senderId, sequence, text, acceptedAt]
+      properties:
+        messageId: {$ref: '#/components/schemas/Id'}
+        conversationId: {$ref: '#/components/schemas/Id'}
+        identityId: {$ref: '#/components/schemas/Id'}
+        senderId: {$ref: '#/components/schemas/Id'}
+        sequence: {type: integer, minimum: 1}
+        text: {type: string}
+        acceptedAt: {type: string, format: date-time}
+    MessageIds:
+      type: object
+      additionalProperties: false
+      required: [messageIds]
+      properties:
+        messageIds: {type: array, minItems: 1, maxItems: 100, items: {$ref: '#/components/schemas/Id'}}

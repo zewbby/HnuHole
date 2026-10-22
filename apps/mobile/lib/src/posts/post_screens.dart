@@ -5,6 +5,9 @@ import '../comments/comment_views.dart';
 import '../comments/comment_models.dart';
 
 import 'dart:async';
+
+import '../messaging/dm_runtime.dart';
+
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -2270,7 +2273,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         children: [
           Row(
             children: [
-              DetailAvatar(name: post.author.displayName),
+              GestureDetector(
+                onTap: () => unawaited(DmScope.contact(context, widget.postId)),
+                child: DetailAvatar(name: post.author.displayName),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -2278,7 +2284,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   children: [
                     InkWell(
                       onTap: post.author.inactiveMessage == null
-                          ? null
+                          ? () => unawaited(
+                              DmScope.contact(context, widget.postId),
+                            )
                           : () {
                               if (!_authority.current) return;
                               ScaffoldMessenger.of(context).showSnackBar(
