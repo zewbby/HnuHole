@@ -141,13 +141,13 @@ func TestWrongOperatorSignerPreservesExistingEvidence(t *testing.T) {
 	if err = save(evidencePath, marker); err != nil {
 		t.Fatal(err)
 	}
-	for _, command := range []string{"issue", "recover"} {
+	for _, command := range []string{"issue", "resume", "recover"} {
 		t.Run(command, func(t *testing.T) {
 			var op operatorConfig
 			if err = json.Unmarshal(original, &op); err != nil {
 				t.Fatal(err)
 			}
-			if command == "issue" {
+			if command != "recover" {
 				op.EvidenceKeyFile = "recovery.key"
 			} else {
 				op.RecoveryKeyFile = "evidence.key"
@@ -244,13 +244,13 @@ func TestIndependentVerifierGateConfiguration(t *testing.T) {
 	if err = save(cEvidence, marker); err != nil {
 		t.Fatal(err)
 	}
-	for _, command := range []string{"issue", "recover"} {
+	for _, command := range []string{"issue", "resume", "recover"} {
 		t.Run(command+"-C-signer", func(t *testing.T) {
 			var candidate operatorConfig
 			if err = json.Unmarshal(opRaw, &candidate); err != nil {
 				t.Fatal(err)
 			}
-			if command == "issue" {
+			if command != "recover" {
 				candidate.EvidenceKeyFile = "evidence.key"
 			} else {
 				candidate.RecoveryKeyFile = "recovery.key"

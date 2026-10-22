@@ -334,6 +334,11 @@ class Lab:
         if 'mailpit' not in self.state['processes']:
             self.spawn('mailpit', ['mailpit', '--listen', '127.0.0.1:' + str(self.state['ports']['mail']),
                                   '--smtp', '127.0.0.1:' + str(self.state['ports']['smtp']), '--database', self.root / 'mailpit.db'])
+        # Refresh and verify both OPEN checkpoints before either API accepts
+        # traffic. No automatic recovery: a frozen/restored Gate needs review.
+        if watches:
+            for party in 'cv':
+                self.operator('resume', party)
         for party, binary in [('c', 'community'), ('v', 'verifier')]:
             self.spawn(party, [self.root / 'bin' / (prefix + binary), '-config', self.root / 'material' / (party + '.json')])
             if watches:
@@ -494,13 +499,44 @@ class Lab:
             passed('actual-https-registration-login-catalog-text-image-and-denials')
             self.probe('moderation')
             passed('existing-main-report-and-read-notification-facts-created-over-https')
+            self.quiesce()
+            before_restart = {party: self.sql(party, 'SELECT authorization_generation FROM ' + party + '_auth.authorization_gate') for party in 'cv'}
+            before_recoveries = {party: self.sql(party, "SELECT count(*) FROM " + party + "_auth.authorization_gate_audit WHERE event_kind='RECOVER'") for party in 'cv'}
+            for party in 'cv':
+                opath = self.root / 'material/operator' / ('operator.json' if party == 'c' else 'v-operator.json')
+                self.run([self.root / 'bin/authdev', 'issue', '-operator', opath, '-valid-for', '1s'], 'short-evidence-' + party)
+            time.sleep(2)
+            # start() must resume before listeners, while watch also renews
+            # immediately. The saved bearer and account facts stay unchanged.
+            self.start()
+            self.health()
+            self.probe('restart')
+            self.probe('images-restart')
+            for party in 'cv':
+                if self.sql(party, 'SELECT authorization_generation FROM ' + party + '_auth.authorization_gate') != before_restart[party] or self.sql(party, "SELECT count(*) FROM " + party + "_auth.authorization_gate_audit WHERE event_kind='RECOVER'") != before_recoveries[party]:
+                    raise RuntimeError('ordinary restart rotated authority or invoked recovery')
+            passed('offline-expired-evidence-resume-preserves-original-https-session-and-generation')
+            # Test raw checkpoint mismatch before any API probe can turn it
+            # into an already-frozen row. This is this lab's disposable V only.
+            self.quiesce()
+            self.sql('v', 'UPDATE v_auth.authorization_gate SET evidence_version=evidence_version-1', role='migrator')
+            opath = self.root / 'material/operator/v-operator.json'
+            if self.run([self.root / 'bin/authdev', 'resume', '-operator', opath], 'resume-mismatch-negative-v', check=False) == 0:
+                raise RuntimeError('ordinary resume accepted mismatched independent checkpoint')
+            passed('ordinary-resume-refuses-direct-independent-checkpoint-mismatch')
             # Explicit freeze before stopping writers avoids inventing a clean
             # gate after an interrupted anchor/SQL authorization commit.
             for party in 'cv':
                 self.operator('freeze', party)
+            self.start(watches=False)
             self.health(503)
             self.probe('frozen')
             passed('gate-closed-denies-protected-reads')
+            for party in 'cv':
+                opath = self.root / 'material/operator' / ('operator.json' if party == 'c' else 'v-operator.json')
+                if self.run([self.root / 'bin/authdev', 'resume', '-operator', opath], 'resume-frozen-negative-' + party, check=False) == 0:
+                    raise RuntimeError('ordinary resume reopened frozen Gate')
+            passed('ordinary-resume-refuses-frozen-checkpoint-without-recovery')
             self.halt(['c', 'v'])
             before = self.fingerprint()
             evidence['backupSha256'] = {}
@@ -579,7 +615,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root', type=Path, required=True)
     p.add_argument('--source', type=Path, default=Path(__file__).resolve().parents[2])
-    p.add_argument('command', choices=['init', 'start', 'health', 'stop', 'recover', 'rehearse'])
+    p.add_argument('command', choices=['init', 'start', 'resume', 'health', 'stop', 'recover', 'rehearse'])
     p.add_argument('--rollback-sha')
     a = p.parse_args()
     if not a.root.is_absolute() or a.root != a.root.resolve() or not re.fullmatch(r'[A-Za-z0-9_/.-]+', str(a.root)):
@@ -599,6 +635,8 @@ def main():
         for party in 'cv':
             lab.operator('recover', party)
             lab.spawn('watch-' + party, [lab.root / 'bin/authdev', 'watch', '-operator', lab.root / 'material/operator' / ('operator.json' if party == 'c' else 'v-operator.json')])
+    elif a.command == 'resume':
+        lab.start()
     elif a.command == 'start':
         lab.start(watches=False)
     else:

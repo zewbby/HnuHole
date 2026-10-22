@@ -1,4 +1,21 @@
 {
+  "sessionResume20261022": {
+    "task": "AUTH-SESSION-RESUME-01",
+    "branch": "fix/session-restore",
+    "modules": [
+      "A02",
+      "A03",
+      "A06",
+      "A12"
+    ],
+    "implementation": "IMPLEMENTED_UNMERGED",
+    "rootCause": "DEVELOPMENT_RECOVER_ROTATED_GENERATION_AND_REVOKED_OLD_SESSIONS",
+    "host": "PASS",
+    "isolatedRuntime": "NOT_RUN_CURRENT_TOOLING",
+    "vivo": "NOT_RUN",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true
+  },
   "emailLogin20261021": {
     "task": "AUTH-EMAIL-LOGIN-01",
     "branch": "feat/email-auth-flow",
