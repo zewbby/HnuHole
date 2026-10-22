@@ -11,11 +11,12 @@
     "device": "RMX3366 Android14 dmtext2203 PASS_SCOPED_NATIVE_STORAGE_TLS_TEXT",
     "previewRestored": true,
     "historicalModuleVerdictsUnchanged": true,
-    "independentReview": "NOT_RUN",
-    "remoteCI": "TRIGGERED_PENDING_FINAL_RESULT_SEE_PR_CHECKS",
-    "merged": false,
+    "independentReview": "Independent read-only agent: no blocking findings, exact heads 83f09d1 / 6360dc0 and full-tree equivalent 068df614; not GitHub member approval",
+    "remoteCI": "PASS_FINAL_HEAD",
+    "merged": true,
     "released": false,
-    "pullRequest": "https://github.com/zewbby/HnuHole/pull/47"
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/47",
+    "mergeCommit": "002b78933e3ddc888eab02514ba3e94b3e62036a"
   },
   "dmTextP120261022": {
     "task": "DM-P1-TEXT",
@@ -40650,5 +40651,14 @@
     "evidence": "docs/branches/feat-smtp-real-delivery.md",
     "runtimeReady": "PASS",
     "otpConfirmation": "NOT_RUN"
+  },
+  "dmP1MainMerge20261022": {
+    "task": "DM-P1-TEXT",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/47",
+    "mergeCommit": "002b78933e3ddc888eab02514ba3e94b3e62036a",
+    "uiDependencyMerge": "8fb28d7c4d403f3eb6e9cefd588d51ba10bfd48e",
+    "evidence": "docs/design/direct-message-p1-main-merge-20261022.json",
+    "fullModuleAcceptancePassed": false,
+    "released": false
   }
 }
