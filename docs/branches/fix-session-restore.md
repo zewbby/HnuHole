@@ -10,7 +10,7 @@
 
 ## 验证与进度
 
-隔离环境及vivo限定验收已通过，独立agent代码复核无阻断（非GitHub成员批准）；最终远端检查以PR精确head为准，尚未合并、未正式发布。Go authdev配置/签名用途测试与受影响宿主包PASS（不代证SQL）。初次尝试旧Docker runtime runner在旧权限清单拒绝现有schema，未进入本轮用例；原runner已不改动，改由维护中的预发布Lab做真实迁移/HTTPS/过期证据/原令牌保留及冻结负例回归。
+隔离环境及vivo限定验收已通过，独立agent代码复核无阻断（非GitHub成员批准）；最终head七类远端workflow已通过，PR #48已合入main `d450cde`，未正式发布。Go authdev配置/签名用途测试与受影响宿主包PASS（不代证SQL）。初次尝试旧Docker runtime runner在旧权限清单拒绝现有schema，未进入本轮用例；原runner已不改动，改由维护中的预发布Lab做真实迁移/HTTPS/过期证据/原令牌保留及冻结负例回归。
 
 入口：`services/api/cmd/authdev/`、`tools/prerelease/environment.py`、`tools/android_integration/lab.py`、[重启说明](../../tools/smtp/README.md)。涉及A02/A03/A06/A12，重启限定验收不能提升整个模块/生产结论。后续补最终命令、版本、结果及本机vivo重启记录。
 
@@ -20,4 +20,8 @@
 
 vivo V2323A Android15，主体2143：App强停、原C/V与watch在Gate行锁内平稳停机、用1秒短证据模拟离线过期、同代次resume后启动原API/新watch；SQL核对授权代次及全部会话摘要/撤销/截止记录逐项未变，未调用recover。手机重新启动后直接进入已登录界面，无欢迎/登录或会话失效提示，原生本机会话恢复PASS；未获取密码/OTP/恢复码，不重建账号或更改令牌。真实整机电脑/WSL关机数小时尚未做，不把2秒受控过期模拟写成整机长时间停机。
 
-本机已加载新版开发authdev及其watch，C/V仍原邮箱测试二进制，TLS ready200，2143无需重打。临时重连脚本已改普通resume，不再固定recover。安全冻结仍需检查后显式恢复，旧安全失效会话不复活。远端检查/最终独立审查以PR #48最终head为准，尚未合并；验收记录见[机器摘要](../design/validation/session-resume-20261022.json)。
+本机已加载新版开发authdev及其watch，C/V仍原邮箱测试二进制，TLS ready200，2143无需重打。临时重连脚本已改普通resume，不再固定recover。安全冻结仍需检查后显式恢复，旧安全失效会话不复活。PR #48最终head已通过远端检查和独立审查，已合并；验收记录见[机器摘要](../design/validation/session-resume-20261022.json)。
+
+## 主线合并回执
+
+2026-10-22：PR #48 Squash合并 `d450cdeb2375a0f3bcb885c45e2cc04f338c713a`，与最终受审head `6716ce85752f4e167bd2d58085c6ca5bad186b1e` 文件树相同。七类适用远端workflow成功（同head旧协作run被后继协作run替代），独立agent只读审查无阻断，非GitHub成员批准。本机工具已加载并通过原生会话恢复，2143无需更新；未测试整机长时间关机，未正式发布。本次合并事实由docs/session-resume-delivery补入，不递归记录其自身PR。

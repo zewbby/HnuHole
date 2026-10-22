@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-22 AUTH-SESSION-RESUME-01／[PR #48](https://github.com/zewbby/HnuHole/pull/48)已合入main `d450cde`：**修复开发重启误用recover而废止会话；同代次resume前置校验，冻结/独立锚不一致仍拒绝。真实隔离16项、vivo2143原会话跨后端重启/冷启、独立复核及最终七类CI通过，本机维护工具已加载，APK无需重装。未做整机长关机或生产验收；详见[任务](../branches/fix-session-restore.md)。下方未合并均为历史状态。
+
 > **2026-10-22 AUTH-SESSION-RESUME-01（fix/session-restore，未合并）：**本次失效已定位为开发环境误用recover推进授权代次、主动废止旧会话；新增普通resume和watch立即续证据，安全冻结仍拒绝，不复活失效令牌。工具实现/隔离与vivo验证状态见[任务](../branches/fix-session-restore.md)，App2143运行代码未改，未正式发布。
 
 > **2026-10-22 DM-P1-TEXT已合入main：**依赖[PR #44](https://github.com/zewbby/HnuHole/pull/44)已合入`8fb28d7`，可靠文字[PR #47](https://github.com/zewbby/HnuHole/pull/47)已合入`002b789`。独立agent精确提交审查无阻断，最终适用CI成功；增量主线整合13项DM/50项登录导航、分析0、完整OpenAPI、真实SQL/race/HTTPS和Go build/vet通过。旧UI/IME及dmtext2203原生文字链路沿原证据范围复用，未重复。默认生产开关仍关闭、未部署或发布，不提升完整B08/B09结论。下方未合并/待审查等为历史记录；见[合并回执](direct-message-p1-main-merge-20261022.json)。
