@@ -33,40 +33,37 @@
 
 ## 分支一览
 
+当前远端长期分支为 `main`；功能与文档任务分支在合并后退役，历史说明和 PR 记录继续保留。
+
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
-| `feat/direct-message-text-reliability` | 隔离环境可靠文字收发及限定Android原生验收通过；[PR #47](https://github.com/zewbby/HnuHole/pull/47)已合入main，生产默认关闭、未发布。 | [任务详情](docs/branches/feat-direct-message-text-reliability.md) |
-| `feat/telegram-direct-messages` | Telegram私信展示/四导航及UI/IME限定验收通过；[PR #44](https://github.com/zewbby/HnuHole/pull/44)已合入main，未发布。 | [任务详情](docs/branches/feat-telegram-direct-messages.md) |
-| `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
-| `docs/session-resume-delivery` | 同步会话重启修复PR #48合并与交付回执，仅文档。 | [详情](docs/branches/docs-session-resume-delivery.md) |
-| `fix/session-restore` | 修复普通开发重启误用安全恢复而使会话失效；PR #48已合入main，本机工具与vivo限定验证通过。 | [详情](docs/branches/fix-session-restore.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
-| `docs/email-auth-delivery` | 同步邮箱认证PR #45合并、验收与同签包交付状态，仅文档。 | [详情](docs/branches/docs-email-auth-delivery.md) |
-| `feat/email-auth-flow` | 接通真实校邮注册发信与已有账号验证码登录，vivo限定验收通过；PR #45已合入main，未正式发布。 | [详情](docs/branches/feat-email-auth-flow.md) |
-| `docs/registration-delivery` | 同步三步注册PR #42的实际合并与验收回执，仅文档。 | [详情](docs/branches/docs-registration-delivery.md) |
-| `feat/registration-wizard-ui` | 三步注册接入现有校邮开户流程，恢复码框内复制与可选Passkey；已合入main，验收范围见 [PR #42](https://github.com/zewbby/HnuHole/pull/42)。 | [详情](docs/branches/feat-registration-wizard-ui.md) |
-| `feat/login-home-recommended` | 登录直达首页，启动默认推荐、返回保留所选通道；2122测试包与单机指定验收通过，交付及合并状态见 [PR #40](https://github.com/zewbby/HnuHole/pull/40)。 | [任务详情](docs/branches/feat-login-home-recommended.md) |
-| `docs/auth-entry-delivery` | 同步 PR #39 的合并事实与主线交付回执；仅文档，不改产品代码。 | [任务详情](docs/branches/docs-auth-entry-delivery.md) |
-| `feat/auth-entry-flow` | 将登录注册定稿接入真实 App，邮箱登录明确待接入；PR #39已合入main，原生主体包交付，未正式发布。 | [任务详情](docs/branches/feat-auth-entry-flow.md) |
-| `docs/auth-flow-final` | 归档用户确认的登录注册流程 UI 定稿与原位切换交互稿；PR #38已合入main，App 接入见 feat/auth-entry-flow。 | [任务详情](docs/branches/docs-auth-flow-final.md) |
-| `codex/fix/comment-failure-reconcile` | 修复原失败评论重试同步并完成2011／profile2012限定补验；PR #36按授权整合送合，主线日常包见详情，未发布。 | [任务详情](docs/branches/fix-comment-failure-reconcile.md) |
-| `codex/test/feed-supplement-support` | PR #35已合入main，交付可信HTTPS与原评论worker失败重试隔离补验支持；未正式发布。 | [任务详情](docs/branches/test-feed-supplement-support.md) |
-| `codex/fix/feed-read-errors` | PR #34已合入main，隔离列表与偏好局部错误并完成D07定点；未正式发布。 | [任务详情](docs/branches/fix-feed-read-errors.md) |
-| `feat/feed-interactions-ui` | PR #31已合入main，接通真实互动与评论数、修复竞态恢复；D07已由#34修复，后续补验见独立任务；未正式发布。 | [任务详情](docs/branches/feat-feed-interactions-ui.md) |
-| `codex/chore/feed-staging` | PR #32已合入main，交付隔离故障入口与0021部署恢复记录；未正式发布。 | [任务详情](docs/branches/chore-feed-staging.md) |
-| `feat/feed-interactions` | PR #29已合入main，补齐帖子账号级赞／藏与复用评论数的批量摘要后端；未正式发布。 | [任务详情](docs/branches/feat-feed-interactions.md) |
-| `codex/fix/feed-fault-error-contract` | PR #33已合入main，补齐隔离GET错误注入的严格关联ID契约与TLS回归；非正式发布。 | [任务详情](docs/branches/fix-feed-fault-error-contract.md) |
-| `codex/fix/feed-interaction-order` | PR #30已合入main，以持久条件写版本阻止赞藏条件请求迟到覆盖；已部署隔离测试环境。 | [任务详情](docs/branches/fix-feed-interaction-order.md) |
-| `codex/feat/feed-ui` | PR #28已合入main：新版列表接推荐／通道／屏蔽／浏览与自适应图片；未部署。 | [任务详情](docs/branches/feat-feed-ui.md) |
-| `codex/feat/feed-backend` | PR #27已合入main：真实浏览、跨通道时间游标和账号屏蔽后端；未部署。 | [任务详情](docs/branches/feat-feed-backend.md) |
-| `codex/fix/gate-cancellation-freeze` | PR #25已合入main，修复C/V Gate取消误冻结，真实SQL/TLS回归与证据已交付；未部署。 | [任务详情](docs/branches/fix-gate-cancellation-freeze.md) |
-| `codex/ci/android-integration-candidate` | PR #23已合入main，交付固定Android集成候选及新增恢复/真机治理连接限定证据；未正式发布。 | [任务详情](docs/branches/ci-android-integration-candidate.md) |
-| `codex/ci/android-prerelease` | PR #16已合入main，交付测试签名候选、同机恢复/回滚与vivo S18最小文字图片限定实测；未正式发布。 | [任务详情](docs/branches/ci-android-prerelease.md) |
-| `codex/chore/feed-staging` | 维护新版列表共享隔离后端、备份迁移与联调记录，提供正式发布及恢复方案；未正式部署。 | [任务详情](docs/branches/chore-feed-staging.md) |
 
-| `codex/feat/comment-report-moderation` | 真实主评论/单图回复举报、网页处置、系统通知和申诉已接通，合并状态见任务PR。 | [任务详情](docs/branches/feat-comment-report-moderation.md) |
-| `codex/feat/report-moderation` | PR #18 已合入main：帖子举报、网页审核和最小系统通知阶段1；评论接入留第二阶段。 | [任务详情](docs/branches/feat-report-moderation.md) |
-| `codex/community-flutter-pages` | PR #13 已合入 main，含社区无障碍及联合回归；跨设备 Passkey 延期。 | [详情](docs/branches/community-flutter-pages.md) |
+### 本轮退役（2026-10-22）
+
+以下 19 个分支对应的 PR 均已合并，且当前没有打开的 PR；现已从远端退役。历史工作详情仍可从原文档和 PR 查看。
+
+| 已退役分支 | 合并 PR |
+| --- | --- |
+| `codex/community-flutter-pages` | [PR #13](https://github.com/zewbby/HnuHole/pull/13) |
+| `codex/docs/community-pr13-merge-record` | [PR #15](https://github.com/zewbby/HnuHole/pull/15) |
+| `codex/feat/feed-backend` | [PR #27](https://github.com/zewbby/HnuHole/pull/27) |
+| `codex/feat/feed-ui` | [PR #28](https://github.com/zewbby/HnuHole/pull/28) |
+| `codex/feat/telegram-android-appearance` | [PR #37](https://github.com/zewbby/HnuHole/pull/37) |
+| `docs/auth-entry-delivery` | [PR #41](https://github.com/zewbby/HnuHole/pull/41) |
+| `docs/auth-flow-final` | [PR #38](https://github.com/zewbby/HnuHole/pull/38) |
+| `docs/direct-message-p1-delivery` | [PR #49](https://github.com/zewbby/HnuHole/pull/49) |
+| `docs/email-auth-delivery` | [PR #46](https://github.com/zewbby/HnuHole/pull/46) |
+| `docs/registration-delivery` | [PR #43](https://github.com/zewbby/HnuHole/pull/43) |
+| `docs/session-resume-delivery` | [PR #50](https://github.com/zewbby/HnuHole/pull/50) |
+| `feat/auth-entry-flow` | [PR #39](https://github.com/zewbby/HnuHole/pull/39) |
+| `feat/direct-message-text-reliability` | [PR #47](https://github.com/zewbby/HnuHole/pull/47) |
+| `feat/email-auth-flow` | [PR #45](https://github.com/zewbby/HnuHole/pull/45) |
+| `feat/feed-interactions` | [PR #29](https://github.com/zewbby/HnuHole/pull/29) |
+| `feat/login-home-recommended` | [PR #40](https://github.com/zewbby/HnuHole/pull/40) |
+| `feat/registration-wizard-ui` | [PR #42](https://github.com/zewbby/HnuHole/pull/42) |
+| `feat/telegram-direct-messages` | [PR #44](https://github.com/zewbby/HnuHole/pull/44) |
+| `fix/session-restore` | [PR #48](https://github.com/zewbby/HnuHole/pull/48) |
 
 ### 已合并或退役的历史工作
 
