@@ -48,7 +48,7 @@ jobs:
           chmod -R go-w services/api/media
       - name: New private images, controls, settings and affected P1 transactions
         env:
-          DM_CHAT_TEST_PATTERN: '^(TestDMChatMediaLifecyclePostgres|TestDMChatHTTPSPostgres|TestDMFirstContactConcurrencyAndRuntimePostgres|TestDMGooseFreshAndUpgradePostgres|TestDMReliableTextPostgres|TestCommentTextTransactionsPostgres)$'
+          DM_CHAT_TEST_PATTERN: '^(TestDMChatIndependentPendingLimitsPostgres|TestDMChatMediaLifecyclePostgres|TestDMChatHTTPSPostgres|TestDMFirstContactConcurrencyAndRuntimePostgres|TestDMGooseFreshAndUpgradePostgres|TestDMReliableTextPostgres|TestCommentTextTransactionsPostgres)$'
         run: |
           export PATH="$(pg_config --bindir):$PATH"
           export POST_MEDIA_PYTHON="$RUNNER_TEMP/dm-image-python/bin/python"
