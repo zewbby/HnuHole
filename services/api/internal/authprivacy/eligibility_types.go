@@ -52,6 +52,7 @@ func NewEligibility(store *VerifierStore, config EligibilityConfig, signer Signe
 }
 
 type OTPRequest struct {
+	Purpose        string
 	Key            [32]byte
 	InstallationID [16]byte
 	Email          string
@@ -65,6 +66,7 @@ type OTPRequestResult struct {
 }
 
 type ConfirmOTPRequest struct {
+	Purpose            string
 	Key                [32]byte
 	FlowID             [32]byte
 	InstallationID     [16]byte

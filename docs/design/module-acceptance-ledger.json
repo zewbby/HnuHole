@@ -1,4 +1,45 @@
 {
+  "emailLogin20261021": {
+    "task": "AUTH-EMAIL-LOGIN-01",
+    "branch": "feat/email-auth-flow",
+    "base": "76af92b",
+    "modules": [
+      "A02",
+      "A03",
+      "A06",
+      "A12",
+      "B01"
+    ],
+    "implementation": "MERGED_MAIN_LOCAL_DEV_CV_DEPLOYED",
+    "postgres": "ISOLATED_FORMAL_MIGRATIONS_RACE_PASS",
+    "vivo": "EXISTING_ACCOUNT_EMAIL_LOGIN_COLD_START_PASS",
+    "registration": "USER_COMPLETED_REAL_EMAIL_AND_RECOVERY_FLOW",
+    "review": "THREE_FINDINGS_FIXED_AND_RECHECKED_NO_CODE_BLOCKERS",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true,
+    "evidence": "docs/design/validation/email-auth-20261021/verification.json",
+    "pullRequest": 45,
+    "mergeCommit": "6bb59faaca2075d8ec1f05da284de7f10678b976",
+    "reviewedHead": "bd5943122958a056edd463f9223ec6e86a558f41",
+    "remoteWorkflows": "ALL_9_APPLICABLE_SUCCESS",
+    "finalApk": "2143_SAME_RUNTIME_INPUTS_PENDING_USB_INSTALL"
+  },
+  "smtpDelivery20261021": {
+    "task": "AUTH-SMTP-01",
+    "branch": "feat/smtp-real-delivery",
+    "modules": [
+      "A02"
+    ],
+    "implementation": "MERGED_MAIN_VIA_PR45_LOCAL_DEV_V_DEPLOYED",
+    "localChecks": "Python 4 PASS; Go host/build/vet and SMTP race PASS",
+    "realDelivery": "QQ_TLS_AUTH_PASS_HTTP202_DURABLE_SENT_INBOX_USER_CONFIRMED",
+    "sql": "SKIP_NO_DSN",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true,
+    "evidence": "docs/branches/feat-smtp-real-delivery.md",
+    "runtimeReady": "PASS",
+    "otpConfirmation": "NOT_RUN"
+  },
   "authEntryUi20261021": {
     "task": "AUTH-UI-IMPLEMENT-01",
     "branch": "feat/auth-entry-flow",

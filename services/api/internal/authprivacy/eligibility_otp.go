@@ -168,6 +168,12 @@ func (e *Eligibility) RequestOTP(ctx context.Context, req OTPRequest) (OTPReques
 	if req.Key == ([32]byte{}) || req.InstallationID == ([16]byte{}) {
 		return OTPRequestResult{}, ErrBadRequest
 	}
+	if req.Purpose == "" {
+		req.Purpose = "REGISTER"
+	}
+	if req.Purpose != "REGISTER" && req.Purpose != "LOGIN" {
+		return OTPRequestResult{}, ErrBadRequest
+	}
 	result, err := e.queueOTP(ctx, req)
 	if err != nil {
 		return result, err
@@ -191,11 +197,24 @@ func (e *Eligibility) RequestOTP(ctx context.Context, req OTPRequest) (OTPReques
 }
 
 func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestResult, error) {
+	if req.Purpose == "" {
+		req.Purpose = "REGISTER"
+	}
+	if req.Purpose != "REGISTER" && req.Purpose != "LOGIN" {
+		return OTPRequestResult{}, ErrBadRequest
+	}
 	if err := validateCampusEmail(req.Email); err != nil {
 		return OTPRequestResult{}, err
 	}
 	key := digest("HNUHOLE/V-REQUEST-TOMBSTONE/V1", req.Key[:])
+	operationName := otpRequestOperation
+	if req.Purpose == "LOGIN" {
+		operationName = "LOGIN_OTP_REQUEST"
+	}
 	mac := requestMAC(e.config.RequestHMACKey, []byte("HNUHOLE/V-OTP-REQUEST/V1"), []byte(req.Email), req.InstallationID[:])
+	if req.Purpose == "LOGIN" {
+		mac = requestMAC(e.config.RequestHMACKey, []byte(operationName), []byte(req.Email), req.InstallationID[:])
+	}
 	tx, err := e.store.beginAuthorized(ctx)
 	if err != nil {
 		return OTPRequestResult{}, err
@@ -216,7 +235,7 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 		if state == "EXPIRED" {
 			return OTPRequestResult{}, ErrExpired
 		}
-		if operation != otpRequestOperation || !bytes.Equal(installation, req.InstallationID[:]) {
+		if operation != operationName || !bytes.Equal(installation, req.InstallationID[:]) {
 			return OTPRequestResult{}, ErrConflict
 		}
 		if hmacVersion == nil || *hmacVersion != e.config.HMACKeyVersion {
@@ -332,7 +351,7 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 	if _, err = tx.Exec(ctx, `UPDATE v_auth.otp_code_versions SET state='REPLACED' WHERE email_exact=$1 AND state='ACTIVE'`, []byte(req.Email)); err != nil {
 		return OTPRequestResult{}, err
 	}
-	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.otp_flows(flow_id,email_exact,installation_id,code_generation,state,created_at,expires_at,authorization_generation) VALUES($1,$2,$3,$4,'ACTIVE',$5,$6,$7)`, flow[:], []byte(req.Email), req.InstallationID[:], generation, at, expiresAt, int64(verifierGeneration(tx))); err != nil {
+	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.otp_flows(flow_id,email_exact,installation_id,code_generation,state,created_at,expires_at,authorization_generation,purpose) VALUES($1,$2,$3,$4,'ACTIVE',$5,$6,$7,$8)`, flow[:], []byte(req.Email), req.InstallationID[:], generation, at, expiresAt, int64(verifierGeneration(tx)), req.Purpose); err != nil {
 		return OTPRequestResult{}, err
 	}
 	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.otp_code_versions(email_exact,code_generation,flow_id,code_hmac,otp_key_version,state,expires_at,retain_until) VALUES($1,$2,$3,$4,$5,'ACTIVE',$6::timestamptz,$6::timestamptz+interval '5 minutes')`, []byte(req.Email), generation, flow[:], codeMAC[:], e.config.OTPKeyVersion, expiresAt); err != nil {
@@ -341,7 +360,7 @@ func (e *Eligibility) queueOTP(ctx context.Context, req OTPRequest) (OTPRequestR
 	if _, err = tx.Exec(ctx, `UPDATE v_auth.otp_email_state SET code_generation=$1,latest_flow_id=$2,send_wait_until=$3,last_activity_at={trusted_at} WHERE email_exact=$4`, generation, flow[:], wait, []byte(req.Email)); err != nil {
 		return OTPRequestResult{}, err
 	}
-	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.request_results(operation,key_digest,state,request_hmac,hmac_key_version,installation_id,flow_id,result_code,expires_at) VALUES($1,$2,'LIVE',$3,$4,$5,$6,'ACCEPTED',$7::timestamptz+interval '10 minutes')`, otpRequestOperation, key[:], mac[:], e.config.HMACKeyVersion, req.InstallationID[:], flow[:], at); err != nil {
+	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.request_results(operation,key_digest,state,request_hmac,hmac_key_version,installation_id,flow_id,result_code,expires_at) VALUES($1,$2,'LIVE',$3,$4,$5,$6,'ACCEPTED',$7::timestamptz+interval '10 minutes')`, operationName, key[:], mac[:], e.config.HMACKeyVersion, req.InstallationID[:], flow[:], at); err != nil {
 		return OTPRequestResult{}, err
 	}
 	if _, err = tx.Exec(ctx, `INSERT INTO v_auth.mail_outbox(operation_id,key_digest,flow_id,state,email_exact,ciphertext,nonce,encryption_key_version,expires_at,send_wait_until,previous_send_wait_until,authorization_generation) VALUES($1,$2,$3,'QUEUED',$4,$5,$6,$7,$8,$9,$10,$11)`, job[:], key[:], flow[:], []byte(req.Email), encrypted, nonce, e.config.MailEncryptionKeyVersion, expiresAt, wait, previousWait, int64(verifierGeneration(tx))); err != nil {
@@ -453,7 +472,7 @@ func (e *Eligibility) GetOTPRequestResult(ctx context.Context, keyBytes [32]byte
 	if state == "EXPIRED" {
 		return OTPRequestResult{}, ErrExpired
 	}
-	if op != otpRequestOperation || !hmac.Equal(storedInstallation, installation[:]) {
+	if (op != otpRequestOperation && op != "LOGIN_OTP_REQUEST") || !hmac.Equal(storedInstallation, installation[:]) {
 		return OTPRequestResult{}, ErrResultAuthentication
 	}
 	row, err := readOTPMail(ctx, tx, key, true)
@@ -495,6 +514,20 @@ func (e *Eligibility) verifyOTPInTx(ctx context.Context, tx pgx.Tx, req ConfirmO
 	var email, originalInstall []byte
 	var originalGeneration int64
 	var authorizationGeneration uint64
+	var purpose string
+	if err := tx.QueryRow(ctx, `SELECT purpose FROM v_auth.otp_flows WHERE flow_id=$1`, req.FlowID[:]).Scan(&purpose); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return result, ErrOTPFlowInvalid
+		}
+		return result, err
+	}
+	expected := req.Purpose
+	if expected == "" {
+		expected = "REGISTER"
+	}
+	if purpose != expected {
+		return result, ErrOTPFlowInvalid
+	}
 	err := tx.QueryRow(ctx, `SELECT email_exact,installation_id,code_generation,authorization_generation FROM v_auth.otp_flows WHERE flow_id=$1 FOR UPDATE`, req.FlowID[:]).Scan(&email, &originalInstall, &originalGeneration, &authorizationGeneration)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return result, ErrOTPFlowInvalid
@@ -938,11 +971,15 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 	if err != nil {
 		return err
 	}
+	_, err = e.store.execAuthorized(ctx, `UPDATE v_auth.email_login_confirmations SET proof=NULL,request_hmac=NULL,flow_id=NULL,installation_id=NULL,binding=NULL,result_code='EXPIRED' WHERE key_digest IN (SELECT key_digest FROM v_auth.email_login_confirmations WHERE expires_at<={trusted_at} AND result_code<>'EXPIRED' ORDER BY expires_at LIMIT $1)`, limit)
+	if err != nil {
+		return err
+	}
 	_, err = e.store.execAuthorized(ctx, `DELETE FROM v_auth.otp_budget_events WHERE event_id IN (SELECT event_id FROM v_auth.otp_budget_events WHERE (kind='SEND' AND occurred_at<={trusted_at}-interval '1 hour') OR (kind='VERIFY' AND occurred_at<={trusted_at}-interval '10 minutes') ORDER BY event_id LIMIT $1)`, limit)
 	if err != nil {
 		return err
 	}
-	rows, err = e.store.queryCandidates(ctx, `SELECT r.key_digest FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.operation=$1 AND r.state='LIVE' AND r.expires_at<={trusted_at} AND m.state IN ('SENT','NOT_SENT','UNKNOWN') ORDER BY r.expires_at,r.key_digest LIMIT $2`, otpRequestOperation, limit)
+	rows, err = e.store.queryCandidates(ctx, `SELECT r.key_digest FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.operation IN ($1,'LOGIN_OTP_REQUEST') AND r.state='LIVE' AND r.expires_at<={trusted_at} AND m.state IN ('SENT','NOT_SENT','UNKNOWN') ORDER BY r.expires_at,r.key_digest LIMIT $2`, otpRequestOperation, limit)
 	if err != nil {
 		return err
 	}
@@ -968,7 +1005,7 @@ func (e *Eligibility) CleanupOTP(ctx context.Context, limit int) error {
 		}
 		if err = lockVRequest(ctx, tx, key); err == nil {
 			var allowed bool
-			err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.key_digest=$1 AND r.operation=$2 AND r.state='LIVE' AND r.expires_at<={trusted_at} AND m.state IN ('SENT','NOT_SENT','UNKNOWN'))`, key[:], otpRequestOperation).Scan(&allowed)
+			err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM v_auth.request_results r JOIN v_auth.mail_outbox m USING(key_digest) WHERE r.key_digest=$1 AND r.operation IN ($2,'LOGIN_OTP_REQUEST') AND r.state='LIVE' AND r.expires_at<={trusted_at} AND m.state IN ('SENT','NOT_SENT','UNKNOWN'))`, key[:], otpRequestOperation).Scan(&allowed)
 			if err == nil && allowed {
 				err = expireOTPRequestResult(ctx, tx, key)
 			}

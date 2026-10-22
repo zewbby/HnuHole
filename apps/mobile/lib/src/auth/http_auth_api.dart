@@ -13,6 +13,7 @@ import '../identity/identity_api.dart';
 class HttpAuthApi
     implements
         AuthApi,
+        EmailLoginApi,
         CredentialManagementApi,
         PasskeyRecoveryApi,
         IdentityApi {
@@ -287,6 +288,98 @@ class HttpAuthApi
     'IDENTITY_LAST_REQUIRED',
     'IDENTITY_NOT_FOUND',
   };
+
+  @override
+  Future<OtpRequestAccepted> requestEmailLoginOtp({
+    required String email,
+    required String installationId,
+    required String idempotencyKey,
+  }) async {
+    if (!RegExp(r'^[^\s@]+@hainanu\.edu\.cn$').hasMatch(email)) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'EMAIL_INVALID',
+      );
+    }
+    final r = await _send(
+      true,
+      'POST',
+      '/api/v1/email-login/otp-requests',
+      body: {'email': email},
+      headers: {
+        ..._keyHeader(idempotencyKey),
+        'V-Installation-ID': _bytes(installationId, 16),
+      },
+      expected: {202},
+    );
+    return _model(() {
+      final m = _record(r.body, {'flowId', 'retryAfterSeconds'});
+      return OtpRequestAccepted(
+        flowId: _encoded(m, 'flowId', 32),
+        retryAfterSeconds: _integer(m, 'retryAfterSeconds', 0, 60),
+      );
+    });
+  }
+
+  @override
+  Future<String?> confirmEmailLoginOtp({
+    required String flowId,
+    required String otp,
+    required String binding,
+    required String installationId,
+    required String idempotencyKey,
+  }) async {
+    if (!RegExp(r'^\d{6}$').hasMatch(otp)) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'OTP_INVALID',
+      );
+    }
+    final r = await _send(
+      true,
+      'POST',
+      '/api/v1/email-login/otp-confirmations',
+      body: {
+        'flowId': _bytes(flowId, 32),
+        'otp': otp,
+        'binding': _bytes(binding, 32),
+      },
+      headers: {
+        ..._keyHeader(idempotencyKey),
+        'V-Installation-ID': _bytes(installationId, 16),
+      },
+      expected: {200},
+    );
+    return _model(() {
+      final m = _record(r.body, {'state'}, optional: {'proof'});
+      final state = _text(m, 'state');
+      if (state == 'UNREGISTERED' && !m.containsKey('proof')) return null;
+      if (state != 'PROOF_AVAILABLE') {
+        throw const FormatException('Invalid email login result');
+      }
+      return _encoded(m, 'proof', 227);
+    });
+  }
+
+  @override
+  Future<AuthSession> createEmailSession({
+    required String proof,
+    required String installationId,
+    required String idempotencyKey,
+  }) async {
+    final r = await _send(
+      false,
+      'POST',
+      '/api/v1/auth/email-sessions',
+      body: {
+        'proof': _bytes(proof, 227),
+        'installationId': _bytes(installationId, 16),
+      },
+      headers: _keyHeader(idempotencyKey),
+      expected: {201},
+    );
+    return _model(() => _session(r));
+  }
 
   @override
   Future<AuthSession> login({
@@ -1255,6 +1348,8 @@ class HttpAuthApi
   static const _errorCodes = {
     'REQUEST_INVALID',
     'EMAIL_INVALID',
+    'EMAIL_UNREGISTERED',
+    'EMAIL_PROOF_INVALID',
     'AUTHENTICATION_FAILED',
     'IDEMPOTENCY_KEY_REUSED',
     'IDEMPOTENCY_CONFLICT',

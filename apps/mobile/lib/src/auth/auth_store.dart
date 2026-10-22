@@ -125,6 +125,7 @@ class AuthState {
     this.session,
     this.logouts = const [],
     this.registration,
+    this.emailLogin,
     this.pendingReset,
     this.pendingClosure,
     this.pendingCredentialChange,
@@ -136,7 +137,9 @@ class AuthState {
   final SessionRecord? session;
   final List<LogoutTask> logouts;
   final Map<String, dynamic>? registration, pendingReset, pendingClosure;
+  final Map<String, dynamic>? emailLogin;
   final Map<String, dynamic>? pendingCredentialChange;
+
   /// Origin-scoped, per-account immutable operation anchors survive logout.
   final Map<String, dynamic> identityChanges;
   final Map<String, dynamic> identityDrafts;
@@ -147,6 +150,8 @@ class AuthState {
     List<LogoutTask>? logouts,
     Map<String, dynamic>? registration,
     bool clearRegistration = false,
+    Map<String, dynamic>? emailLogin,
+    bool clearEmailLogin = false,
     Map<String, dynamic>? pendingReset,
     bool clearPendingReset = false,
     Map<String, dynamic>? pendingClosure,
@@ -161,6 +166,7 @@ class AuthState {
     session: clearSession ? null : session ?? this.session,
     logouts: logouts ?? this.logouts,
     registration: clearRegistration ? null : registration ?? this.registration,
+    emailLogin: clearEmailLogin ? null : emailLogin ?? this.emailLogin,
     pendingReset: clearPendingReset ? null : pendingReset ?? this.pendingReset,
     pendingClosure: clearPendingClosure
         ? null
@@ -179,6 +185,7 @@ class AuthState {
     'session': session?.toJson(),
     'logouts': logouts.map((e) => e.toJson()).toList(),
     'registration': registration,
+    'emailLogin': emailLogin,
     'pendingReset': pendingReset,
     'pendingClosure': pendingClosure,
     'pendingCredentialChange': pendingCredentialChange,
@@ -187,6 +194,44 @@ class AuthState {
     'cInstallationId': cInstallationId,
     'vInstallationId': vInstallationId,
   };
+  static void _validateEmailLogin(Map<String, dynamic>? m) {
+    if (m == null) return;
+    _fields(m, {
+      'email',
+      'sendKey',
+      'cKey',
+      'confirmKey',
+      'flowId',
+      'otp',
+      'proof',
+      'waitUntil',
+      'sendState',
+      'unregistered',
+    });
+    for (final key in ['sendKey', 'cKey']) {
+      AuthCrypto.decode(_string(m, key), bytes: 32);
+    }
+    for (final key in ['confirmKey', 'flowId']) {
+      if (m[key] != null) AuthCrypto.decode(_string(m, key), bytes: 32);
+    }
+    if (!RegExp(r'^[^\s@]+@hainanu\.edu\.cn$').hasMatch(_string(m, 'email')) ||
+        !{'UNKNOWN', 'ACCEPTED'}.contains(m['sendState'])) {
+      throw const FormatException('Invalid email operation');
+    }
+    DateTime.parse(_string(m, 'waitUntil'));
+    if (m['otp'] != null && !RegExp(r'^\d{6}$').hasMatch(_string(m, 'otp'))) {
+      throw const FormatException('Invalid email code');
+    }
+    if (m['proof'] != null) AuthCrypto.decode(_string(m, 'proof'), bytes: 227);
+    if (m['unregistered'] != null && m['unregistered'] is! bool) {
+      throw const FormatException('Invalid email state');
+    }
+    if (m['confirmKey'] != null && (m['flowId'] == null || m['otp'] == null) ||
+        m['proof'] != null && m['confirmKey'] == null) {
+      throw const FormatException('Incomplete email operation');
+    }
+  }
+
   static AuthState parse(Map<String, dynamic> m, String scope) {
     _fields(m, {
       'schema',
@@ -194,6 +239,7 @@ class AuthState {
       'session',
       'logouts',
       'registration',
+      'emailLogin',
       'pendingReset',
       'pendingClosure',
       'pendingCredentialChange',
@@ -231,11 +277,17 @@ class AuthState {
       throw const FormatException('Service installations must be independent');
     }
     final registration = _optionalObject(m['registration']);
+    final emailLogin = _optionalObject(m['emailLogin']);
+    _validateEmailLogin(emailLogin);
     final pendingReset = _optionalObject(m['pendingReset']);
     final pendingClosure = _optionalObject(m['pendingClosure']);
-    final pendingCredentialChange = _optionalObject(m['pendingCredentialChange']);
-    final identityChanges = _optionalObject(m['identityChanges']) ?? <String, dynamic>{};
-    final identityDrafts = _optionalObject(m['identityDrafts']) ?? <String, dynamic>{};
+    final pendingCredentialChange = _optionalObject(
+      m['pendingCredentialChange'],
+    );
+    final identityChanges =
+        _optionalObject(m['identityChanges']) ?? <String, dynamic>{};
+    final identityDrafts =
+        _optionalObject(m['identityDrafts']) ?? <String, dynamic>{};
     AuthWorkflowCodec.validate(
       registration: registration,
       pendingReset: pendingReset,
@@ -252,6 +304,7 @@ class AuthState {
           : SessionRecord.parse(_object(m['session'])),
       logouts: List.unmodifiable(tasks),
       registration: _frozenMap(registration),
+      emailLogin: _frozenMap(emailLogin),
       pendingReset: _frozenMap(pendingReset),
       pendingClosure: _frozenMap(pendingClosure),
       pendingCredentialChange: _frozenMap(pendingCredentialChange),

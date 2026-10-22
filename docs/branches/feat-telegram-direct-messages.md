@@ -2,6 +2,8 @@
 
 工作项 DM-TELEGRAM-01，模块 B08/B09，更新于 2026-10-21（Asia/Shanghai）。
 
+2026-10-22合并准备：用户授权合并#47及其#44依赖；#44整合main `90ba0c4`，仅三份交接文档新增记录冲突，保留双方内容，产品代码自动合并。受影响的登录/根导航整合执行 `flutter test --no-pub test/login_home_navigation_test.dart test/direct_message_navigation_test.dart test/email_login_test.dart test/auth_screen_test.dart --reporter expanded`，50 PASS。未重复已验证的字体、UI/IME真机验收；未修改邮箱认证实现。独立审查及精确整合head CI仍待完成，不提前记录已合并。
+
 分支 `feat/telegram-direct-messages` 从本轮 fetch 后的 `origin/main` 建立，基线 `76af92b25eeba8bd5e93339be737314b3c35ea0b`。用户最新要求分支不含 codex 字样，优先于仓库默认前缀。独立工作区位于 E 盘；C 盘创建因空间不足失败，Git 已回滚工作区注册，没有清理其他任务资源。
 
 当前已完成列表/聊天展示层与四入口导航，已提交 [Draft PR #44](https://github.com/zewbby/HnuHole/pull/44)；未合并/发布。真实私信 API 与本地业务持久化仍缺失。以下“现状/规则/接口缺口”为实施前分析快照。

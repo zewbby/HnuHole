@@ -1,6 +1,11 @@
 # 分模块验收与测试交接
 
 > **2026-10-21 DM-TELEGRAM-01：**`feat/telegram-direct-messages` 基于 main `76af92b`，已完成 Telegram 私信展示组件及首页/消息/私信/我的四入口；消息铃铛与私信单气泡采用未选中线框、选中蓝色实心，沿用固定底栏。完整702/聚焦含渲染36 PASS、分析0、生产APK2155/隔离预览2156构建PASS；真我 RMX3366 Android14 实际 UI/IME 范围 PASS，早期锁屏安装阻塞已解除且保留历史失败。正式私信仅显示暂未开放，内存预览独立，真实私信API/持久队列/本地聊天仓库仍未实现，不升级B08/B09整模块验收。[Draft PR #44](https://github.com/zewbby/HnuHole/pull/44)已提交，独立review/远端CI待完成，未合并/发布。见[任务](../branches/feat-telegram-direct-messages.md)、[报告](telegram-direct-messages.md)和[机器记录](telegram-direct-messages-verification-20261021.json)。
+> **2026-10-22 AUTH-EMAIL-LOGIN-01／[PR #45](https://github.com/zewbby/HnuHole/pull/45) 已合入main `6bb59fa`：**真实QQ校邮注册与已有账号验证码登录接通，vivo原账号／唯一会话／冷启动恢复限定PASS；最终head全部9类远端workflow成功，独立agent审查无阻断（非GitHub成员批准）。677项Flutter、分析0，正式SQL／HTTPS／恢复回滚通过；同签主体2143已生成，与合并main应用运行输入相同，USB断开待覆盖安装。开发包仍需电脑／WSL／USB在线，未正式发布。详见[交付记录](../branches/feat-email-auth-flow.md)。下方未合并／邮箱待接入均为旧时点记录。
+
+> **2026-10-21 AUTH-EMAIL-LOGIN-01（未合并，本机开发C/V已加载）：**真实校邮注册由用户完成，vivo已有账号邮箱OTP登录、原账号/唯一会话/冷启动恢复通过；新增用途隔离、227字节限时绑定证明、原操作待办及V迁移5/6，密码10位起支持英文标点且不接受空格。独立复核已修3项，完整验收/未验项见[分支交接](../branches/feat-email-auth-flow.md)，未正式发布。
+
+> **2026-10-21 AUTH-SMTP-01（未合并／本机开发V已加载）：**分支新增 QQ 465 TLS 与私有授权码配置向导，本地 Python／Go／SMTP race／build／vet PASS；本机开发V已备份切换QQ，TLS认证与就绪PASS，一次真实OTP接口202／SMTP持久SENT；校园实际收件用户确认PASS，验证码确认 NOT_RUN，既有账号邮箱登录 API 待实现。见[任务与验收记录](../branches/feat-smtp-real-delivery.md)。
 
 > **2026-10-21 PR37 主题整合补验：**综合2139切换主题红屏，真实根回归在原代码FAIL；e82844d保留base主题样式修复，同例1 PASS／全量664 PASS／分析0／源提交15远端检查成功，独立审查绑定e82844d无阻断。旧663与2126专项不代证新修复；综合真我主题与登录复测由总整合会话维护，最终设备结果及后继head CI须在PR37合并前核对，实际状态以PR回执为准。见[本轮记录](telegram-android-appearance.md)与机器证据themeIntegrationFix。下方a23/663“最终”等为被此覆盖的历史阶段，生产未发布。
 

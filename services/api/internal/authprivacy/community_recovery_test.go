@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const labResetPassword = "fresh unrelated restoration phrase"
+const labResetPassword = "NewIndependentCredential123!"
 
 func recoveryTestAccount(t *testing.T, l *lab, username string) (SignupResult, string) {
 	t.Helper()

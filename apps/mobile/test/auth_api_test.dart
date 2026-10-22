@@ -191,6 +191,71 @@ void main() {
     'errorCode': errorCode,
   };
 
+  test(
+    'email login uses 227-byte proof and keeps each party capability separate',
+    () async {
+      final proof = AuthCrypto.encode(List<int>.filled(227, 4));
+      verifier.respond = (r) async {
+        if (r.uri.path.endsWith('otp-requests')) {
+          await _json(r, 202, {'flowId': _flow, 'retryAfterSeconds': 60});
+        } else {
+          await _json(r, 200, {'state': 'PROOF_AVAILABLE', 'proof': proof});
+        }
+      };
+      community.respond = (r) => _json(r, 201, _session(), session: true);
+      await api.requestEmailLoginOtp(
+        email: 'owned@hainanu.edu.cn',
+        installationId: _vInstallation,
+        idempotencyKey: _key,
+      );
+      final result = await api.confirmEmailLoginOtp(
+        flowId: _flow,
+        otp: '123456',
+        binding: _key,
+        installationId: _vInstallation,
+        idempotencyKey: _flow,
+      );
+      expect(result, proof);
+      await api.createEmailSession(
+        proof: result!,
+        installationId: _cInstallation,
+        idempotencyKey: _token,
+      );
+      expect(verifier.requests.map((e) => e.path), [
+        '/api/v1/email-login/otp-requests',
+        '/api/v1/email-login/otp-confirmations',
+      ]);
+      expect(community.requests.single.path, '/api/v1/auth/email-sessions');
+      expect(
+        community.requests.single.headers.containsKey('v-installation-id'),
+        isFalse,
+      );
+      expect(community.requests.single.body, isNot(contains('owned@')));
+      expect(community.requests.single.body, isNot(contains('123456')));
+      expect(verifier.requests.last.body, isNot(contains(_cInstallation)));
+    },
+  );
+  test(
+    'email login rejects old 225-byte response before C submission',
+    () async {
+      verifier.respond = (r) => _json(r, 200, {
+        'state': 'PROOF_AVAILABLE',
+        'proof': AuthCrypto.encode(List<int>.filled(225, 4)),
+      });
+      await expectLater(
+        api.confirmEmailLoginOtp(
+          flowId: _flow,
+          otp: '123456',
+          binding: _key,
+          installationId: _vInstallation,
+          idempotencyKey: _key,
+        ),
+        throwsA(isA<AuthFailure>()),
+      );
+      expect(community.requests, isEmpty);
+    },
+  );
+
   test('identity directory allows explicit lifecycle nulls and authoritative expiry', () async {
     community.respond = (request) =>
         _json(request, 200, identityDirectory(), session: true);

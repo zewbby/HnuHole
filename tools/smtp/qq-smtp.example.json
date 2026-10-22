@@ -1,0 +1,7 @@
+{
+  "smtpMode": "tls",
+  "smtpAddress": "smtp.qq.com:465",
+  "smtpFrom": "YOUR_TEST_MAILBOX@qq.com",
+  "smtpUsername": "YOUR_TEST_MAILBOX@qq.com",
+  "smtpPasswordFile": "/home/YOUR_WSL_USER/.config/hnuhole/smtp-test/qq.secret"
+}

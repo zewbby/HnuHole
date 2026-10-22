@@ -853,7 +853,7 @@ Future<String> _register(
   await _tap(tester, find.text('创建账号'));
   final email = 'batch-${DateTime.now().microsecondsSinceEpoch}@hainanu.edu.cn';
   await _input(tester, 'registration-email', email);
-  await _tap(tester, find.text('获取验证码'));
+  await _tap(tester, find.text('发送验证码'));
   await _wait(
     tester,
     () => find.byTooltip('确认验证码').evaluate().isNotEmpty,

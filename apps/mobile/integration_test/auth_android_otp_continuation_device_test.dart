@@ -93,7 +93,7 @@ void main() {
           final email =
               'continuation-${DateTime.now().microsecondsSinceEpoch}@hainanu.edu.cn';
           await _input(tester, 'registration-email', email);
-          await _tap(tester, find.text('获取验证码'));
+          await _tap(tester, find.text('发送验证码'));
           await _wait(
             tester,
             () => !flows.busy && flows.status == AuthFlowStatus.otpRequested,
@@ -204,7 +204,7 @@ void main() {
             'registration-email',
             fixture['email'] as String,
           );
-          await _tap(tester, find.text('获取验证码'));
+          await _tap(tester, find.text('发送验证码'));
           await _wait(
             tester,
             () => !flows.busy && flows.status == AuthFlowStatus.otpRequested,
