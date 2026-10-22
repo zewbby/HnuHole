@@ -33,15 +33,17 @@
 
 ## 分支一览
 
-当前远端长期分支为 `main`；功能与文档任务分支在合并后退役，历史说明和 PR 记录继续保留。
+`main` 是项目基线。当前保留两条会话工作分支，其他已合并分支已退役；历史实现、验收文档和 PR 记录继续保留。
 
-| 分支 | 一句话说明 | 进度详情 |
+| 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
-| `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
+| `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `feat/direct-message-chat-completion` | 私信第二阶段进行中：图片、会话管理与撤回能力；代码仍在开发。 | [GitHub 分支](https://github.com/zewbby/HnuHole/tree/feat/direct-message-chat-completion) |
+| `feat/email-auth-flow` | 邮箱接入交付分支；长时间关机后重启仍未验证，保留待继续核验。 | [交接](docs/branches/feat-email-auth-flow.md) |
 
 ### 本轮退役（2026-10-22）
 
-以下 19 个分支对应的 PR 均已合并，且当前没有打开的 PR；现已从远端退役。历史工作详情仍可从原文档和 PR 查看。
+以下 18 个已合并分支已从远端退役；对应 PR 和历史详情仍可查阅。
 
 | 已退役分支 | 合并 PR |
 | --- | --- |
@@ -58,7 +60,6 @@
 | `docs/session-resume-delivery` | [PR #50](https://github.com/zewbby/HnuHole/pull/50) |
 | `feat/auth-entry-flow` | [PR #39](https://github.com/zewbby/HnuHole/pull/39) |
 | `feat/direct-message-text-reliability` | [PR #47](https://github.com/zewbby/HnuHole/pull/47) |
-| `feat/email-auth-flow` | [PR #45](https://github.com/zewbby/HnuHole/pull/45) |
 | `feat/feed-interactions` | [PR #29](https://github.com/zewbby/HnuHole/pull/29) |
 | `feat/login-home-recommended` | [PR #40](https://github.com/zewbby/HnuHole/pull/40) |
 | `feat/registration-wizard-ui` | [PR #42](https://github.com/zewbby/HnuHole/pull/42) |
