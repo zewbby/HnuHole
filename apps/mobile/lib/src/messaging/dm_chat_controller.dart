@@ -180,10 +180,17 @@ extension DmChatController on DmController {
     return _current(epoch) ? rows : [];
   }
 
-  Future<Uint8List> photo(String id) async {
+  Future<Map<String, dynamic>?> draftState(String own, String peer) async {
+    if (!available || !chatEnabled || !_identities.contains(own)) return null;
+    final epoch = _epoch, store = _store!;
+    final value = await store.draftState(own, peer);
+    return _current(epoch) ? value : null;
+  }
+
+  Future<Uint8List> photo(String id, {required String senderId}) async {
     if (!available || !chatEnabled) throw StateError('DM unavailable');
     final epoch = _epoch;
-    final bytes = await _store!.photo(id);
+    final bytes = await _store!.photo(id, senderId: senderId);
     if (!_current(epoch)) throw StateError('DM window expired');
     return bytes;
   }
@@ -201,5 +208,33 @@ extension DmChatController on DmController {
       await _refreshDirectory(epoch, _store!);
       _notify();
     }
+  }
+
+  /// Full text is decrypted only for an explicit query in the selected identity.
+  Future<Set<String>> search(String identityId, String query) async {
+    final needle = query.trim().toLowerCase();
+    if (!available ||
+        !chatEnabled ||
+        !_identities.contains(identityId) ||
+        needle.isEmpty) {
+      return {};
+    }
+    final epoch = _epoch, store = _store!;
+    final matches = <String>{};
+    for (final dir in await store.conversations()) {
+      if (!_current(epoch)) return {};
+      if (dir['identityId'] != identityId || dir['deleted'] == true) continue;
+      final metadata =
+          '${dir['peerName'] ?? ''}\n${dir['note'] ?? ''}\n${dir['sourceTitle'] ?? ''}'
+              .toLowerCase();
+      if (metadata.contains(needle) ||
+          (await store.searchText(
+            identityId,
+            dir['peerId'],
+          )).toLowerCase().contains(needle)) {
+        matches.add(dir['id'] as String);
+      }
+    }
+    return _current(epoch) ? matches : {};
   }
 }

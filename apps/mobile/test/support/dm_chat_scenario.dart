@@ -115,7 +115,10 @@ Future<DmController> exerciseDmChat(
     for (final row in incoming) {
       expect(row['_state'], 'inbox');
       expect(
-        await receiver.photo((row['media'] as Map)['mediaId']),
+        await receiver.photo(
+          (row['media'] as Map)['mediaId'],
+          senderId: row['senderId'],
+        ),
         orderedEquals(bytes),
       );
     }

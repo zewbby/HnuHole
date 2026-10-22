@@ -160,8 +160,14 @@ class DmController extends ChangeNotifier {
           }
           if (!_current(epoch)) return;
           var receipt = await _request(epoch, token, 'GET', 'commands/$id');
-          if (row['_kind'] == 'hidden_message' && receipt['state'] != 'SENT') {
-            await store.transition(id, 'unknown', 'deleted');
+          final latest = await store.get(id);
+          final hidden = latest?['_kind'] == 'hidden_message';
+          if (hidden &&
+              receipt['state'] != 'SENT' &&
+              !(receipt['state'] == 'FAILED' &&
+                  receipt['attempt'] == intent['attempt'])) {
+            // ABSENT or an older failed attempt cannot rule out a delayed PUT.
+            // Deleted content is never replayed; retain only receipt lookup work.
             continue;
           }
           if (receipt['state'] == 'ABSENT' ||
@@ -170,9 +176,14 @@ class DmController extends ChangeNotifier {
             final image = row['messageType'] == 'IMAGE';
             if (image) {
               intent['data'] = base64Encode(
-                await store.photo(intent['mediaId'] as String),
+                await store.photo(
+                  intent['mediaId'] as String,
+                  senderId: intent['identityId'] as String,
+                ),
               );
             }
+            // The user may delete while original bytes are being read.
+            if ((await store.get(id))?['_kind'] == 'hidden_message') continue;
             receipt = await _request(
               epoch,
               token,
@@ -182,7 +193,7 @@ class DmController extends ChangeNotifier {
             );
           }
           if (!_current(epoch)) return;
-          if (receipt['attempt'] != intent['attempt'] ||
+          if ((!hidden && receipt['attempt'] != intent['attempt']) ||
               !{'SENT', 'FAILED'}.contains(receipt['state'])) {
             throw const FormatException('DM attempt mismatch');
           }
@@ -378,12 +389,6 @@ class DmController extends ChangeNotifier {
             : last['text'];
         v['localOrdinal'] = last['_ordinal'];
         v['localState'] = last['outgoing'] == true ? last['_state'] : null;
-      }
-      if (chatEnabled) {
-        v['localSearchText'] = await store.searchText(
-          v['identityId'],
-          v['peerId'],
-        );
       }
     }
     directory.sort(

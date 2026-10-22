@@ -275,7 +275,7 @@ void main() {
     await store.savePhotoDraft(p1.own, p1.peer, d, big);
     await store.close();
     store = await open();
-    expect(await store.photo(id), orderedEquals(big));
+    expect(await store.photo(id, senderId: p1.own), orderedEquals(big));
     expect((await store.photoDraft(p1.own, p1.peer)).single['mediaId'], id);
     expect(await store.photoDraft(p1.peer, p1.own), isEmpty);
     final disk = await File('${root.path}/chat.sqlite').readAsBytes();
@@ -440,7 +440,9 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('dm-manage-pin')));
       await tester.pumpAndSettle();
-      await tester.runAsync(()=>Future<void>.delayed(const Duration(milliseconds:100)));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)),
+      );
       await tester.runAsync(() async {
         await c.sync();
       });
@@ -456,7 +458,9 @@ void main() {
       );
       await tester.tap(find.text('保存'));
       await tester.pumpAndSettle();
-      await tester.runAsync(()=>Future<void>.delayed(const Duration(milliseconds:100)));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)),
+      );
       await tester.runAsync(() async {
         await c.sync();
       });

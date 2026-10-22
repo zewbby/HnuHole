@@ -5,16 +5,87 @@ part of 'dm_store.dart';
 extension DmChatStorage on DmStore {
   static const _chunkSize = 256 * 1024;
 
+  Future<String> _mediaKey(String sender, String id) =>
+      pairTag('private-media:$sender', id);
+
+  Future<void> _deletePhoto(String sender, String id) async {
+    _db.execute(
+      "DELETE FROM dm_records WHERE kind IN ('media','media_meta') AND pair=?",
+      [await _mediaKey(sender, id)],
+    );
+  }
+
+  // P1 has no media. Old isolated P2 builds used account-wide media IDs;
+  // migrate only bytes proven to match a reference, never a colliding image.
+  Future<void> _migrateChatMedia() async {
+    if (await _get('chat-media-layout') != null) return;
+    final legacy = _db
+        .select("SELECT pair FROM dm_records WHERE kind='media_meta'")
+        .map((r) => r['pair'] as String)
+        .toSet();
+    if (legacy.isNotEmpty) {
+      Future<void> copy(String sender, Map descriptor) async {
+        final id = descriptor['mediaId'];
+        if (id is! String || !legacy.contains(id)) return;
+        try {
+          final bytes = await _readPhoto(id);
+          if (bytes.length == descriptor['byteLength'] &&
+              hashes.sha256.convert(bytes).toString() == descriptor['sha256']) {
+            await _writePhoto(await _mediaKey(sender, id), bytes);
+          }
+        } on PostStorageFailure {
+          // A damaged or overwritten old image remains unavailable.
+        }
+      }
+
+      for (final raw
+          in _db
+              .select(
+                "SELECT * FROM dm_records WHERE kind IN ('message','hidden_message','photo_draft')",
+              )
+              .toList()) {
+        final row = await _decode(raw);
+        if (row['_kind'] == 'photo_draft') {
+          final dir = await _get('conversation:${row['_pair']}');
+          final sender = row['senderId'] ?? dir?['identityId'];
+          if (sender is String) {
+            for (final descriptor in row['photos'] as List? ?? []) {
+              await copy(sender, descriptor as Map);
+            }
+          }
+        } else {
+          final intent = row['intent'] as Map?;
+          final descriptor = row['outgoing'] == true
+              ? intent
+              : row['media'] as Map?;
+          final sender = row['outgoing'] == true
+              ? (intent?['identityId'])
+              : row['senderId'];
+          if (sender is String && descriptor != null) {
+            await copy(sender, descriptor);
+          }
+        }
+      }
+      for (final key in legacy) {
+        _db.execute(
+          "DELETE FROM dm_records WHERE kind IN ('media','media_meta') AND pair=?",
+          [key],
+        );
+      }
+    }
+    await _put('chat-media-layout', 'metadata', '', 0, 'saved', {'version': 2});
+  }
+
   Future<void> _eraseMedia(Map<String, dynamic> row) async {
     final mediaId =
         ((row['intent'] as Map?)?['mediaId'] ??
                 (row['media'] as Map?)?['mediaId'])
             as String?;
     if (mediaId != null) {
-      _db.execute(
-        "DELETE FROM dm_records WHERE kind IN ('media','media_meta') AND pair=?",
-        [mediaId],
-      );
+      final sender = row['outgoing'] == true
+          ? ((row['intent'] as Map?)?['identityId'])
+          : row['senderId'];
+      if (sender is String) await _deletePhoto(sender, mediaId);
     }
   }
 
@@ -74,8 +145,31 @@ extension DmChatStorage on DmStore {
   Future<void> enqueueOperation(Map<String, Object> operation) => _run(
     () => _transaction(() async {
       final id = dmId();
+      Map<String, dynamic> snapshot = {};
+      if (operation['operation'] == 'DELETE') {
+        for (final raw in _db.select(
+          "SELECT * FROM dm_records WHERE kind='conversation'",
+        )) {
+          final dir = await _decode(raw);
+          if (dir['id'] != operation['conversationId'] ||
+              dir['identityId'] != operation['identityId']) {
+            continue;
+          }
+          final draft = await _get('draft:${raw['pair']}');
+          final photos = await _get('photo-draft:${raw['pair']}');
+          snapshot = {
+            'draftRevision': draft?['revision'] ?? 0,
+            'draftPresent': draft != null,
+            'draftPhotoIds': [
+              for (final p in photos?['photos'] as List? ?? []) p['mediaId'],
+            ],
+          };
+          break;
+        }
+      }
       await _put(id, 'operation', '', _nextOrdinal(), 'unknown', {
         'intent': operation,
+        ...snapshot,
       });
     }),
   );
@@ -114,27 +208,54 @@ extension DmChatStorage on DmStore {
               (dir['deletedThrough'] as int?) ?? 0,
               receipt['deletedThrough'] as int,
             );
-            dir['deleted'] = true;
+            dir['deleted'] =
+                (dir['sequence'] as int) <= (dir['deletedThrough'] as int);
+            dir['version'] = max(
+              (dir['version'] as int?) ?? 0,
+              receipt['version'] as int,
+            );
             await _put(r['id'], 'conversation', r['pair'], 0, 'directory', dir);
             await _pruneDeleted(r['pair'], dir['deletedThrough']);
             for (final queued in _db.select(
-              "SELECT * FROM dm_records WHERE pair=? AND kind='message' AND state='queued' AND ordinal<?",
+              "SELECT * FROM dm_records WHERE pair=? AND kind='message' AND state IN ('queued','unknown') AND ordinal<?",
               [r['pair'], row['_ordinal']],
             ).toList()) {
-              await _eraseMedia(await _decode(queued));
-              _db.execute('DELETE FROM dm_records WHERE id=?', [queued['id']]);
+              final data = await _decode(queued);
+              if (queued['state'] == 'unknown') {
+                await _hidePending(data);
+              } else {
+                await _eraseResolved(data);
+              }
             }
             final draftPhotos = await _get('photo-draft:${r['pair']}');
+            final removed = (row['draftPhotoIds'] as List? ?? []).toSet();
+            final retained = <dynamic>[];
             for (final photo in draftPhotos?['photos'] as List? ?? []) {
-              _db.execute(
-                "DELETE FROM dm_records WHERE kind IN ('media','media_meta') AND pair=?",
-                [photo['mediaId']],
+              if (removed.contains(photo['mediaId'])) {
+                await _deletePhoto(intent['identityId'], photo['mediaId']);
+              } else {
+                retained.add(photo);
+              }
+            }
+            if (draftPhotos != null) {
+              await _put(
+                'photo-draft:${r['pair']}',
+                'photo_draft',
+                r['pair'],
+                0,
+                'draft',
+                {...draftPhotos, 'photos': retained},
               );
             }
-            _db.execute(
-              "DELETE FROM dm_records WHERE pair=? AND kind IN ('draft','photo_draft')",
-              [r['pair']],
-            );
+            final draft = await _get('draft:${r['pair']}');
+            if (row['draftPresent'] == true &&
+                draft != null &&
+                (draft['revision'] ?? 0) == row['draftRevision']) {
+              await _put('draft:${r['pair']}', 'draft', r['pair'], 0, 'draft', {
+                'text': '',
+                'revision': (draft['revision'] as int? ?? 0) + 1,
+              });
+            }
           }
         }
       }
@@ -147,20 +268,12 @@ extension DmChatStorage on DmStore {
       "SELECT * FROM dm_records WHERE pair=? AND kind IN ('message','hidden_message')",
       [pair],
     ).toList()) {
-      final data = await _decode(r), intent = data['intent'] as Map?;
+      final data = await _decode(r);
       final seq = data['outgoing'] == true
           ? ((data['receipt'] as Map?)?['sequence'])
           : data['sequence'];
       if (seq is int && seq <= through) {
-        final media =
-            (intent?['mediaId'] ?? (data['media'] as Map?)?['mediaId'])
-                as String?;
-        if (media != null) {
-          _db.execute(
-            "DELETE FROM dm_records WHERE pair=? AND kind IN ('media','media_meta')",
-            [media],
-          );
-        }
+        await _eraseMedia(data);
         // Persist a minimum dedup tombstone so a late delivery is never revived.
         await _put(r['id'], 'hidden_message', pair, r['ordinal'], 'deleted', {
           'sequence': seq,
@@ -181,15 +294,24 @@ extension DmChatStorage on DmStore {
         if (((old?['version'] as int?) ?? -1) > (item['version'] as int)) {
           continue;
         }
+        final merged = {
+          ...item,
+          'deletedThrough': max(
+            (old?['deletedThrough'] as int?) ?? 0,
+            item['deletedThrough'] as int,
+          ),
+        };
+        merged['deleted'] =
+            (item['sequence'] as int) <= (merged['deletedThrough'] as int);
         await _put(
           'conversation:$pair',
           'conversation',
           pair,
           0,
           'directory',
-          item,
+          merged,
         );
-        await _pruneDeleted(pair, item['deletedThrough']);
+        await _pruneDeleted(pair, merged['deletedThrough']);
       }
     }),
   );
@@ -247,15 +369,7 @@ extension DmChatStorage on DmStore {
               final text =
                   (row['outgoing'] == true ? (intent?['text']) : row['text'])
                       as String?;
-              final bytesId =
-                  (intent?['mediaId'] ?? (row['media'] as Map?)?['mediaId'])
-                      as String?;
-              if (bytesId != null) {
-                _db.execute(
-                  "DELETE FROM dm_records WHERE pair=? AND kind IN ('media','media_meta')",
-                  [bytesId],
-                );
-              }
+              await _eraseMedia(row);
               if (row['outgoing'] == true &&
                   text != null &&
                   row['reeditExpired'] != true &&
@@ -327,7 +441,8 @@ extension DmChatStorage on DmStore {
     return value;
   }
 
-  Future<Uint8List> photo(String id) => _run(() => _readPhoto(id));
+  Future<Uint8List> photo(String id, {required String senderId}) =>
+      _run(() async => _readPhoto(await _mediaKey(senderId, id)));
 
   Future<void> savePhotoDraft(
     String own,
@@ -348,10 +463,11 @@ extension DmChatStorage on DmStore {
           descriptor['byteLength'] != bytes.length) {
         throw const PostStorageFailure();
       }
-      await _writePhoto(id, bytes);
+      await _writePhoto(await _mediaKey(own, id), bytes);
       photos.add(descriptor);
       await _put('photo-draft:$pair', 'photo_draft', pair, 0, 'draft', {
         'photos': photos,
+        'senderId': own,
       });
     }),
   );
@@ -364,6 +480,18 @@ extension DmChatStorage on DmStore {
             .toList();
       });
 
+  Future<Map<String, dynamic>> draftState(String own, String peer) =>
+      _run(() async {
+        final pair = await pairTag(own, peer);
+        final text = await _get('draft:$pair');
+        final photos = await _get('photo-draft:$pair');
+        return {
+          'text': text?['text'] ?? '',
+          'revision': text?['revision'] ?? 0,
+          'photos': photos?['photos'] ?? <dynamic>[],
+        };
+      });
+
   Future<void> removePhotoDraft(String own, String peer, String id) => _run(
     () => _transaction(() async {
       final pair = await pairTag(own, peer), key = 'photo-draft:$pair';
@@ -373,10 +501,7 @@ extension DmChatStorage on DmStore {
           .where((p) => p['mediaId'] != id)
           .toList();
       await _put(key, 'photo_draft', pair, 0, 'draft', {'photos': photos});
-      _db.execute(
-        "DELETE FROM dm_records WHERE kind IN ('media','media_meta') AND pair=?",
-        [id],
-      );
+      await _deletePhoto(own, id);
     }),
   );
 
@@ -388,18 +513,43 @@ extension DmChatStorage on DmStore {
         await _eraseResolved(row);
         return;
       }
-      // Preserve unknown receipt work; deleting a UI row must not create a new
-      // intent or skip the acknowledgement required to clean a pending delivery.
-      await _put(
-        id,
-        'hidden_message',
-        row['_pair'],
-        row['_ordinal'],
-        row['_state'],
-        row,
-      );
+      await _hidePending(row);
     }),
   );
+
+  Future<void> _hidePending(Map<String, dynamic> row) async {
+    await _eraseMedia(row);
+    final intent = row['intent'] as Map?;
+    await _put(
+      row['_id'],
+      'hidden_message',
+      row['_pair'],
+      row['_ordinal'],
+      row['_state'],
+      {
+        'outgoing': row['outgoing'],
+        if (intent != null)
+          'intent': {
+            for (final key in [
+              'identityId',
+              'peerId',
+              'conversationId',
+              'attempt',
+            ])
+              if (intent.containsKey(key)) key: intent[key],
+          },
+        for (final key in [
+          'messageId',
+          'sequence',
+          'conversationId',
+          'identityId',
+          'senderId',
+          'receipt',
+        ])
+          if (row.containsKey(key)) key: row[key],
+      },
+    );
+  }
 
   Future<void> enqueueChat(
     Map<String, Object> textIntent,
@@ -423,7 +573,9 @@ extension DmChatStorage on DmStore {
       for (final id in mediaIds) {
         final p = photos.where((p) => p['mediaId'] == id).firstOrNull;
         if (p == null) throw const PostStorageFailure();
-        await _readPhoto(id); // Validate durable originals before clearing UI.
+        await _readPhoto(
+          await _mediaKey(own, id),
+        ); // Validate durable originals before clearing UI.
         selected.add(p);
       }
       final text = textIntent['text'] as String;
@@ -455,10 +607,14 @@ extension DmChatStorage on DmStore {
         'photos': photos
             .where((p) => !mediaIds.contains(p['mediaId']))
             .toList(),
+        'senderId': own,
       });
       final textDraft = await _get('draft:$pair');
       if (textDraft?['text'] == text) {
-        await _put('draft:$pair', 'draft', pair, 0, 'draft', {'text': ''});
+        await _put('draft:$pair', 'draft', pair, 0, 'draft', {
+          'text': '',
+          'revision': (textDraft?['revision'] as int? ?? 0) + 1,
+        });
       }
     }),
   );
@@ -487,7 +643,17 @@ extension DmChatStorage on DmStore {
         return;
       }
       final pair = await pairTag(item['identityId'], item['senderId']);
-      await _writePhoto(descriptor['mediaId'], bytes);
+      // Suppression and durable bytes/reference commit share this transaction.
+      if (await _get('retracted:$id') != null) return;
+      final directory = await _get('conversation:$pair');
+      if ((item['sequence'] as int) <=
+          ((directory?['deletedThrough'] as int?) ?? 0)) {
+        return;
+      }
+      await _writePhoto(
+        await _mediaKey(item['senderId'], descriptor['mediaId']),
+        bytes,
+      );
       await _put(id, 'message', pair, _nextOrdinal(), 'received', {
         ...item,
         'outgoing': false,

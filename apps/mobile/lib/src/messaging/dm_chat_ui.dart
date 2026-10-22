@@ -10,45 +10,47 @@ Future<void> showDmManagement(
     context: context,
     barrierColor: Colors.transparent,
     useSafeArea: true,
-    isScrollControlled:true,
-    builder: (context) => SingleChildScrollView(child:Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          title: Text(
-            directory['note']?.toString().isNotEmpty == true
-                ? directory['note']
-                : directory['peerName'],
-          ),
-          subtitle: const Text('仅管理本人这段会话'),
-        ),
-        for (final option in [
-          (
-            'pin',
-            directory['pinned'] == true ? '取消置顶' : '置顶',
-            Icons.push_pin_outlined,
-          ),
-          (
-            'mute',
-            directory['muted'] == true ? '取消免打扰' : '免打扰',
-            Icons.notifications_off_outlined,
-          ),
-          ('note', '私人备注', Icons.edit_note),
-          ('hide', '不显示', Icons.visibility_off_outlined),
-          ('delete', '删除聊天', Icons.delete_outline),
-        ])
+    isScrollControlled: true,
+    builder: (context) => SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           ListTile(
-            key: ValueKey('dm-manage-${option.$1}'),
-            leading: Icon(option.$3),
-            title: Text(option.$2),
-            onTap: () => Navigator.pop(context, option.$1),
+            title: Text(
+              directory['note']?.toString().isNotEmpty == true
+                  ? directory['note']
+                  : directory['peerName'],
+            ),
+            subtitle: const Text('仅管理本人这段会话'),
           ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('取消'),
-        ),
-      ],
-    )),
+          for (final option in [
+            (
+              'pin',
+              directory['pinned'] == true ? '取消置顶' : '置顶',
+              Icons.push_pin_outlined,
+            ),
+            (
+              'mute',
+              directory['muted'] == true ? '取消免打扰' : '免打扰',
+              Icons.notifications_off_outlined,
+            ),
+            ('note', '私人备注', Icons.edit_note),
+            ('hide', '不显示', Icons.visibility_off_outlined),
+            ('delete', '删除聊天', Icons.delete_outline),
+          ])
+            ListTile(
+              key: ValueKey('dm-manage-${option.$1}'),
+              leading: Icon(option.$3),
+              title: Text(option.$2),
+              onTap: () => Navigator.pop(context, option.$1),
+            ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('取消'),
+          ),
+        ],
+      ),
+    ),
   );
   if (!context.mounted || !c.available || scope != c.scope || action == null) {
     return;
@@ -187,7 +189,11 @@ extension _ChatPhotoUi on _DmChatRouteState {
   Future<Uint8List> _photoBytes(String id) =>
       _photoRequests.putIfAbsent(id, () async {
         final mediaId = _imageData(id)?['mediaId'] as String? ?? id;
-        final bytes = await c.photo(mediaId);
+        final row = rows.where((r) => r['_id'] == id).firstOrNull;
+        final sender = row?['outgoing'] == false
+            ? row!['senderId'] as String
+            : widget.own.id;
+        final bytes = await c.photo(mediaId, senderId: sender);
         if (!mounted || scope != c.scope || !c.available) {
           throw StateError('Photo window expired');
         }
