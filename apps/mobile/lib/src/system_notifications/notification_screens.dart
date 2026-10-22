@@ -19,10 +19,12 @@ class SystemNotificationsScreen extends StatefulWidget {
     required this.controller,
     this.onOpenPost,
     this.onOpenComment,
+    this.navigation,
   });
   final GovernanceController controller;
   final Future<void> Function(String)? onOpenPost;
   final Future<void> Function(String postId, String commentId)? onOpenComment;
+  final Widget? navigation;
   @override
   State<SystemNotificationsScreen> createState() =>
       _SystemNotificationsScreenState();
@@ -49,6 +51,7 @@ class _SystemNotificationsScreenState extends State<SystemNotificationsScreen> {
     builder: (context, _) {
       final c = widget.controller;
       return Scaffold(
+        bottomNavigationBar: widget.navigation,
         appBar: AppBar(
           title: const Text('系统通知'),
           actions: [

@@ -1193,6 +1193,7 @@ class _PostConfirmScreenState extends State<_PostConfirmScreen> {
 class PersonalPostsScreen extends StatefulWidget {
   const PersonalPostsScreen({
     super.key,
+    this.navigation,
     required this.controller,
     required this.channelNames,
     required this.onManageIdentities,
@@ -1202,6 +1203,7 @@ class PersonalPostsScreen extends StatefulWidget {
     this.onChooseChannel,
     this.loadImages,
   });
+  final Widget? navigation;
   final PostController controller;
   final Map<String, String> channelNames;
   final Future<void> Function() onManageIdentities;
@@ -1392,46 +1394,51 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
         body: !_authority.current
             ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
             : _content(),
-        bottomNavigationBar: SafeArea(
-          top: false,
-          child: Container(
-            decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: PostTheme.line)),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: _chooseChannel,
-                    child: const Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Icon(Icons.home_outlined), Text('首页')],
+        bottomNavigationBar:
+            widget.navigation ??
+            SafeArea(
+              top: false,
+              child: Container(
+                decoration: const BoxDecoration(
+                  border: Border(top: BorderSide(color: PostTheme.line)),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 8,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: _chooseChannel,
+                        child: const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [Icon(Icons.home_outlined), Text('首页')],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                FilledButton(
-                  onPressed: _authority.current ? _chooseChannel : null,
-                  child: const Icon(
-                    Icons.add,
-                    size: 30,
-                    semanticLabel: '选择通道写帖子',
-                  ),
-                ),
-                Expanded(
-                  child: Semantics(
-                    selected: true,
-                    child: const Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Icon(Icons.person), Text('我的')],
+                    FilledButton(
+                      onPressed: _authority.current ? _chooseChannel : null,
+                      child: const Icon(
+                        Icons.add,
+                        size: 30,
+                        semanticLabel: '选择通道写帖子',
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      child: Semantics(
+                        selected: true,
+                        child: const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [Icon(Icons.person), Text('我的')],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
       ),
     ),
   );

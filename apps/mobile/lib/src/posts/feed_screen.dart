@@ -27,6 +27,7 @@ class FeedScreen extends StatefulWidget {
     required this.onAuthenticationRequired,
     this.onOpenPersonal,
     this.onOpenMessages,
+    this.onOpenDirectMessages,
     this.initialChannelId,
     this.loadImages,
   });
@@ -36,7 +37,7 @@ class FeedScreen extends StatefulWidget {
   final Channel composeChannel;
   final Future<void> Function() onManageIdentities;
   final VoidCallback onAuthenticationRequired;
-  final VoidCallback? onOpenPersonal, onOpenMessages;
+  final VoidCallback? onOpenPersonal, onOpenMessages, onOpenDirectMessages;
   final PostImagesLoader? loadImages;
   @override
   State<FeedScreen> createState() => _FeedScreenState();
@@ -325,6 +326,8 @@ class _FeedScreenState extends State<FeedScreen> {
                 widget.onOpenPersonal?.call();
               case FeedDestination.messages:
                 widget.onOpenMessages?.call();
+              case FeedDestination.directMessages:
+                widget.onOpenDirectMessages?.call();
             }
           },
           content: Stack(

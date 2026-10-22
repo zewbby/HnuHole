@@ -35,6 +35,7 @@
 
 | 分支 | 一句话说明 | 进度详情 |
 | --- | --- | --- |
+| `feat/telegram-direct-messages` | 按用户截图改造私信展示层，消息/私信独立导航并完成隔离预览真机验收；真实私信未接通、未合并。 | [任务详情](docs/branches/feat-telegram-direct-messages.md) |
 | `codex/feat/telegram-android-appearance` | 统一安卓字体配色、快捷评论、即时互动及已确认X详情布局；实现与专项验收已交付，合并状态见 [PR #37](https://github.com/zewbby/HnuHole/pull/37)。 | [任务详情](docs/branches/feat-telegram-android-appearance.md) |
 | `main` | 汇集已经合并的项目实现与文档。 | [详情](docs/branches/main.md) |
 | `docs/email-auth-delivery` | 同步邮箱认证PR #45合并、验收与同签包交付状态，仅文档。 | [详情](docs/branches/docs-email-auth-delivery.md) |

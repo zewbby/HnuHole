@@ -176,7 +176,7 @@ void main() {
         } else {
           await tester.tap(find.byKey(const ValueKey('feed-account')));
           await tester.pumpAndSettle();
-          await tester.tap(find.text('首页'));
+          await tester.tap(find.byTooltip('首页'));
         }
         await tester.pumpAndSettle();
         expectHome(tester, f, channelId: channel.id, title: channel.name);
