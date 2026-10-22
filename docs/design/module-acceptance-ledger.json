@@ -6,7 +6,7 @@
       "B08",
       "B09"
     ],
-    "result": "SCOPED_NATIVE_TEXT_PASS_PENDING_REVIEW_CI",
+    "result": "SCOPED_NATIVE_TEXT_PASS_MERGED_REVIEW_CI_PASS",
     "evidence": "docs/design/direct-message-text-verification-20261022.json",
     "device": "RMX3366 Android14 dmtext2203 PASS_SCOPED_NATIVE_STORAGE_TLS_TEXT",
     "previewRestored": true,
