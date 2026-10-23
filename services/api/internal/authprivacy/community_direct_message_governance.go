@@ -70,6 +70,7 @@ func (c *Community) DMBlocks(ctx context.Context, b [32]byte) (PostResponse, err
 			if e = rows.Scan(&v.ID, &v.IdentityID, &v.ConversationID, &v.PeerID, &v.PeerName, &v.PeerAvatar, &v.CreatedAt); e != nil {
 				return nil, e
 			}
+			v.CreatedAt = v.CreatedAt.UTC()
 			out.Items = append(out.Items, v)
 		}
 		return out, rows.Err()

@@ -33,6 +33,8 @@ PASS：5 份受影响完整 OpenAPI（direct-message-governance/chat/text、repo
 
 ## 未验及运营边界
 
+2026-10-23 真实 TLS 联调增量：合成账号初次 PUT commands 返回 SENT、PUT block 返回 APPLIED；第三步 GET blocks 的 createdAt 实际返回 +08:00，触发 Flutter 严格 UTC 解码失败。DMBlocks 现将数据库时间显式转为 UTC；TestDMGovernanceHTTPSPostgres 强制 time.Local=UTC+08 并断言 JSON 时间以 Z 结束。使用同一自有隔离 runner、DM_CHAT_TEST_PATTERN='^TestDMGovernanceHTTPSPostgres$' 实际 SQL／HTTPS／race PASS（4.33s）。未重跑未改变的全套检查。完整 Flutter 联调仍由整合方执行。
+
 - Flutter 真实 TLS 合同联调交整合方；TestDMChatDevicePostgres 已加 WithModeration，可用 DM_CHAT_DEVICE_FIXTURE 生成自有合成账号 fixture。此后端任务不连接手机。
 - 远端 CI、完整最终整合、生产渠道推送、Android／iOS 真机与正式发布未执行。
 - 证据／审计保留期限、备份及密钥轮换需运营定案；没有擅自设置自动过期删除。举报材料真实性不能证明用户未谎报本地缺口，审核始终可见缺口声明。

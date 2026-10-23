@@ -5,10 +5,16 @@ import (
 	"github.com/google/uuid"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/moderation"
+	"strings"
 	"testing"
+	"time"
 )
 
 func TestDMGovernanceHTTPSPostgres(t *testing.T) {
+	// pgx decodes timestamptz using time.Local; wire dates must still be UTC.
+	previousLocal := time.Local
+	time.Local = time.FixedZone("test+08", 8*60*60)
+	t.Cleanup(func() { time.Local = previousLocal })
 	ctx := context.Background()
 	s := e2eNewServices(t, func(c *authprivacy.Community) *authprivacy.Community {
 		v, e := c.WithDirectMessages(ctx)
@@ -41,6 +47,10 @@ func TestDMGovernanceHTTPSPostgres(t *testing.T) {
 	blocks := postHTTPSJSON(t, s, "GET", "/api/v1/dm/governance/blocks", a, "", nil, 200)["items"].([]any)
 	if len(blocks) != 1 || blocks[0].(map[string]any)["conversationId"] != conv {
 		t.Fatal(blocks)
+	}
+	createdAt := blocks[0].(map[string]any)["createdAt"].(string)
+	if _, err := time.Parse(time.RFC3339Nano, createdAt); err != nil || !strings.HasSuffix(createdAt, "Z") {
+		t.Fatalf("block timestamp must use UTC Z: %q", createdAt)
 	}
 	if postHTTPSJSON(t, s, "GET", "/api/v1/dm/governance/blocks/"+op, b, "", nil, 200)["state"] != "ABSENT" {
 		t.Fatal("other block receipt")
