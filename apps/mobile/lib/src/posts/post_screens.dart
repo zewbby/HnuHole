@@ -1371,18 +1371,15 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen>
   }
 
   @override
-  Widget build(BuildContext context) => Theme(
-    data: PostTheme.of(context).copyWith(scaffoldBackgroundColor: Colors.white),
-    child: Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        bottom: false,
-        child: !_authority.current
-            ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
-            : _profileContent(),
-      ),
-      bottomNavigationBar: widget.showNavigation ? widget.navigation : null,
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: HhTelegramPalette.of(context).surface,
+    body: SafeArea(
+      bottom: false,
+      child: !_authority.current
+          ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
+          : _profileContent(),
     ),
+    bottomNavigationBar: widget.showNavigation ? widget.navigation : null,
   );
 }
 
@@ -1416,7 +1413,9 @@ class _PersonalCard extends StatelessWidget {
         ? '发布未成功'
         : _localPostState(item.state);
     return Material(
-      color: pending || failed ? PostTheme.cardTint : PostTheme.surface,
+      color: pending || failed
+          ? HhTelegramPalette.of(context).raised
+          : HhTelegramPalette.of(context).surface,
       borderRadius: BorderRadius.circular(8),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -2360,7 +2359,11 @@ class _PageState extends StatelessWidget {
               IconButton(
                 tooltip: action,
                 onPressed: onAction,
-                icon: Icon(actionIcon, size: 32, color: Colors.black),
+                icon: Icon(
+                  actionIcon,
+                  size: 32,
+                  color: HhTelegramPalette.of(context).ink,
+                ),
               )
             else
               FilledButton(onPressed: onAction, child: Text(action!)),

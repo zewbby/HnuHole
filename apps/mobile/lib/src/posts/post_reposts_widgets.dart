@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../design_system/telegram_theme.dart';
 import 'post_controller.dart';
 import 'post_reposts_api.dart';
 import 'post_images.dart';
@@ -140,7 +141,9 @@ class _PostRepostButtonState extends State<PostRepostButton> {
                                 final confirmed = await showDialog<bool>(
                                   context: dialogContext,
                                   builder: (context) => AlertDialog(
-                                    backgroundColor: Colors.white,
+                                    backgroundColor: HhTelegramPalette.of(
+                                      context,
+                                    ).surface,
                                     surfaceTintColor: Colors.transparent,
                                     title: const Text('确认移除？'),
                                     content: Text(
@@ -374,7 +377,8 @@ class _PersonalRepostsListState extends State<PersonalRepostsList> {
                               final confirmed = await showDialog<bool>(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: HhTelegramPalette.of(context)
+                                      .surface,
                                   surfaceTintColor: Colors.transparent,
                                   title: const Text('确认移除？'),
                                   content: Text(

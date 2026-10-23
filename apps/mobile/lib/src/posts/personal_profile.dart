@@ -55,9 +55,12 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
       builder: (dialogContext) => ListenableBuilder(
         listenable: c,
         builder: (_, __) => AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: HhTelegramPalette.of(context).surface,
           surfaceTintColor: Colors.transparent,
-          title: const Text('确认移除？', style: TextStyle(color: Colors.black)),
+          title: Text(
+            '确认移除？',
+            style: TextStyle(color: HhTelegramPalette.of(context).ink),
+          ),
           content: Text(
             '仅移除“${_repostIdentityNames[identityId] ?? '此身份'}”保存的这条记录。',
           ),
@@ -98,7 +101,7 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
     final governance = GovernanceScope.maybeOf(context);
     final action = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: HhTelegramPalette.of(context).surface,
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
@@ -122,39 +125,39 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
               children: [
                 ListTile(
                   key: ValueKey('view-repost:$identityId/$postId'),
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.article_outlined,
-                    color: Color(0xFF536971),
+                    color: HhTelegramPalette.of(context).secondary,
                   ),
-                  title: const Text(
+                  title: Text(
                     '查看帖子',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: HhTelegramPalette.of(context).ink),
                   ),
                   enabled: available,
                   onTap: () => choose('view'),
                 ),
                 ListTile(
                   key: ValueKey('report-repost:$identityId/$postId'),
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.flag_outlined,
-                    color: Color(0xFF536971),
+                    color: HhTelegramPalette.of(context).secondary,
                   ),
-                  title: const Text(
+                  title: Text(
                     '举报帖子',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: HhTelegramPalette.of(context).ink),
                   ),
                   enabled: available && governance?.available == true,
                   onTap: () => choose('report'),
                 ),
                 ListTile(
                   key: ValueKey('cancel-repost:$identityId/$postId'),
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.remove_circle_outline,
-                    color: Color(0xFF536971),
+                    color: HhTelegramPalette.of(context).secondary,
                   ),
-                  title: const Text(
+                  title: Text(
                     '移除',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: HhTelegramPalette.of(context).ink),
                   ),
                   enabled:
                       _authority.current && !c.repostState(postId).unresolved,
@@ -877,13 +880,13 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                 children: [
                   Row(
                     children: [
-                      const Text(
+                      Text(
                         ':)',
-                        key: ValueKey('profile-smile'),
+                        key: const ValueKey('profile-smile'),
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w500,
-                          color: Colors.black,
+                          color: HhTelegramPalette.of(context).ink,
                         ),
                       ),
                       const Spacer(),
@@ -901,10 +904,10 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                     children: [
                       IconButton(
                         tooltip: '搜索我的帖子',
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.search,
                           size: 28,
-                          color: Colors.black,
+                          color: HhTelegramPalette.of(context).ink,
                         ),
                         onPressed: c.personalLoading
                             ? null
@@ -937,10 +940,10 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                       ),
                       IconButton(
                         tooltip: '设置',
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.settings_outlined,
                           size: 28,
-                          color: Colors.black,
+                          color: HhTelegramPalette.of(context).ink,
                         ),
                         onPressed: widget.onOpenSettings,
                       ),
@@ -948,13 +951,17 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                       SizedBox(
                         width: 104,
                         child: Material(
-                          color: Colors.white,
+                          color: HhTelegramPalette.of(context).surface,
                           elevation: 2,
                           shadowColor: Colors.black12,
-                          shape: const _MoodBubbleBorder(),
+                          shape: _MoodBubbleBorder(
+                            HhTelegramPalette.of(context).line,
+                          ),
                           child: InkWell(
                             key: const ValueKey('personal-mood'),
-                            customBorder: const _MoodBubbleBorder(),
+                            customBorder: _MoodBubbleBorder(
+                              HhTelegramPalette.of(context).line,
+                            ),
                             onTap: _editMood,
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(
@@ -966,12 +973,16 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                               child: _profileError != null
                                   ? const Icon(Icons.refresh)
                                   : _mood.isEmpty
-                                  ? const Icon(Icons.add, color: Colors.black)
+                                  ? Icon(
+                                      Icons.add,
+                                      color: HhTelegramPalette.of(context).ink,
+                                    )
                                   : Text(
                                       _mood,
                                       textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Colors.black,
+                                      style: TextStyle(
+                                        color: HhTelegramPalette.of(context)
+                                            .ink,
                                         fontSize: 14,
                                         height: 1.3,
                                       ),
@@ -1253,7 +1264,7 @@ class _ProfileTabs extends SliverPersistentHeaderDelegate {
       Icons.bookmark_border,
     ];
     return Material(
-      color: Colors.white,
+      color: HhTelegramPalette.of(context).surface,
       child: Stack(
         children: [
           Row(
@@ -1271,8 +1282,8 @@ class _ProfileTabs extends SliverPersistentHeaderDelegate {
                       curve: Curves.easeOutCubic,
                       builder: (context, progress, _) {
                         final color = Color.lerp(
-                          const Color(0xFF929292),
-                          Colors.black,
+                          HhTelegramPalette.of(context).secondary,
+                          HhTelegramPalette.of(context).ink,
                           progress,
                         )!;
                         final label = SizedBox(
@@ -1360,7 +1371,10 @@ class _ProfileTabs extends SliverPersistentHeaderDelegate {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(height: .5, color: const Color(0xFFEAEAEA)),
+            child: Container(
+              height: .5,
+              color: HhTelegramPalette.of(context).line,
+            ),
           ),
           Positioned(
             left: 0,
@@ -1370,13 +1384,13 @@ class _ProfileTabs extends SliverPersistentHeaderDelegate {
               alignment: Alignment(-1 + selected / 2, 0),
               duration: const Duration(milliseconds: 240),
               curve: Curves.easeOutCubic,
-              child: const FractionallySizedBox(
+              child: FractionallySizedBox(
                 widthFactor: .2,
                 child: Center(
                   child: SizedBox(
                     width: 28,
                     height: 2,
-                    child: ColoredBox(color: Colors.black),
+                    child: ColoredBox(color: HhTelegramPalette.of(context).ink),
                   ),
                 ),
               ),
@@ -1445,7 +1459,7 @@ class _MoodEditorState extends State<_MoodEditor> {
 
   @override
   Widget build(BuildContext context) => Dialog(
-    backgroundColor: Colors.white,
+    backgroundColor: HhTelegramPalette.of(context).surface,
     surfaceTintColor: Colors.transparent,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     child: Padding(
@@ -1454,12 +1468,12 @@ class _MoodEditorState extends State<_MoodEditor> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             '此刻的心情',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: Colors.black,
+              color: HhTelegramPalette.of(context).ink,
             ),
           ),
           const SizedBox(height: 16),
@@ -1470,7 +1484,10 @@ class _MoodEditorState extends State<_MoodEditor> {
             autofocus: true,
             maxLength: 12,
             maxLines: 2,
-            style: const TextStyle(color: Colors.black, fontSize: 18),
+            style: TextStyle(
+              color: HhTelegramPalette.of(context).ink,
+              fontSize: 18,
+            ),
             decoration: InputDecoration(
               hintText: '用一句话，记录现在',
               errorText: _error,
@@ -1622,9 +1639,10 @@ class _ProfilePostState extends State<_ProfilePost> {
   }
 }
 
-/// White speech bubble whose tail points upward toward the adjacent avatar.
+/// Theme-aware speech bubble whose tail points upward toward the adjacent avatar.
 class _MoodBubbleBorder extends ShapeBorder {
-  const _MoodBubbleBorder();
+  const _MoodBubbleBorder(this.color);
+  final Color color;
   @override
   EdgeInsetsGeometry get dimensions => const EdgeInsets.only(top: 8);
   @override
@@ -1654,7 +1672,7 @@ class _MoodBubbleBorder extends ShapeBorder {
     canvas.drawPath(
       getOuterPath(rect, textDirection: textDirection),
       Paint()
-        ..color = const Color(0xFFE4E4E4)
+        ..color = color
         ..style = PaintingStyle.stroke
         ..strokeWidth = .8,
     );

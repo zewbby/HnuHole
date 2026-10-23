@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
+
 import 'identity_test_support.dart';
 
 import 'dart:io';
@@ -19,6 +21,86 @@ import 'feed_ui_test.dart' as feed;
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 
 void main() {
+  for (final brightness in Brightness.values) {
+    testWidgets(
+      'personal uses same global palette as home and inbox: $brightness',
+      (tester) async {
+        tester.platformDispatcher.platformBrightnessTestValue = brightness;
+        addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+        final f = HomeTestFixture();
+        final root = await f.create();
+        final post = feed.post(title: '主题一致的帖子');
+        f.postApi.identityItems[identityTestId] = [
+          OwnPostCard(post: post, serverSortAt: post.publishedAt),
+        ];
+        await tester.pumpWidget(root);
+        await tester.pumpAndSettle();
+        final palette = HhTelegramPalette.of(
+          tester.element(find.byType(HhXPostFeed)),
+        );
+        await tester.tap(find.byKey(const ValueKey('feed-account')));
+        await tester.pumpAndSettle();
+        final profile = find.byType(PersonalPostsScreen);
+        final scaffold = find
+            .descendant(of: profile, matching: find.byType(Scaffold))
+            .first;
+        expect(
+          tester.widget<Scaffold>(scaffold).backgroundColor,
+          palette.surface,
+        );
+        expect(tester.widget<Text>(find.text(':)')).style!.color, palette.ink);
+        final body = find.text('主题一致的帖子');
+        expect(Theme.of(tester.element(body)).brightness, brightness);
+        expect(
+          HhTelegramPalette.of(tester.element(body)).surface,
+          palette.surface,
+        );
+        final mood = find.byKey(const ValueKey('personal-mood'));
+        final moodSurface = find
+            .ancestor(of: mood, matching: find.byType(Material))
+            .first;
+        expect(tester.widget<Material>(moodSurface).color, palette.surface);
+        await tester.tap(find.byTooltip('切换身份'));
+        await tester.pumpAndSettle();
+        expect(
+          HhTelegramPalette.of(tester.element(find.text('切换身份'))).surface,
+          palette.surface,
+        );
+        await tester.tap(
+          find.byKey(const ValueKey('profile-identity-$identityTestId')),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(mood);
+        await tester.pumpAndSettle();
+        expect(
+          tester.widget<Dialog>(find.byType(Dialog)).backgroundColor,
+          palette.surface,
+        );
+        expect(
+          tester
+              .widget<TextField>(find.byKey(const ValueKey('mood-input')))
+              .style!
+              .color,
+          palette.ink,
+        );
+        await tester.tap(find.text('取消'));
+        await tester.pumpAndSettle();
+        f.postApi.identityItems[identityTestId] = [];
+        await f.posts.loadPersonal();
+        await tester.pumpAndSettle();
+        final emptyAction = tester.widget<IconButton>(
+          find.byWidgetPredicate(
+            (widget) => widget is IconButton && widget.tooltip == '选择通道发帖',
+          ),
+        );
+        expect((emptyAction.icon as Icon).color, palette.ink);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+      },
+    );
+  }
+
   testWidgets(
     'five labels animate on narrow screen; identities isolate posts and mood but share collections',
     (tester) async {
