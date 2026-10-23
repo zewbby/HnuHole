@@ -39,3 +39,7 @@ README 仅增加分支索引；HANDOFF、progress、模块交接、台账和导�
 ## 送审授权
 
 原环境恢复后用户确认“可以了，直接合并吧”，明确授权本需求commit/push/PR/Squash合并。登录恢复PASS（用户确认）；设备手势未逐项另录，不扩写为完整设备矩阵通过。聚焦17项、相关74项与最终分析／bundle及2402构建证据沿原范围有效。主会话检查最终差异无阻断；没有新增独立agent／GitHub成员批准，合并采用用户维护者明确指令与产品CI。下方原“未提交”状态及独立审查NOT_RUN保留历史事实。
+
+## 合并回执
+
+[PR #69](https://github.com/zewbby/HnuHole/pull/69) 已Squash进入main `4933bff8ab598117ebdfd55989b5705ed4209690`。最终送审head `217bd4e0812ff31620eef3db315ce63df3a3af79` 的15项CI全部success，远端main引用与GitHub merged结果均核对，main的刷新源码及测试与已测head差异为空。用户明确授权合并；无独立GitHub成员批准。手机2402继续对应本次产品源码，无需因合并重装。回执只更正文档状态，不扩展设备或生产结论。
