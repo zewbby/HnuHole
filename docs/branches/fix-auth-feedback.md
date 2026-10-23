@@ -1,7 +1,7 @@
 # AUTH-FEEDBACK-01 登录注册反馈调整
 
 - 更新时间：2026-10-23（Asia/Shanghai）。
-- 分支：`codex/fix/auth-feedback`，基线 `origin/main` 的 `e8ff488`。用户已确认最终弹窗动效，并授权合并；PR、CI 与主线合并状态待本次送审更新。
+- 分支：`codex/fix/auth-feedback`，基线 `origin/main` 的 `e8ff488`。用户已确认最终弹窗动效并授权合并；[PR #53](https://github.com/zewbby/HnuHole/pull/53)已提交，产品CI进行中，主线合并待检查通过。
 - 范围：移除认证请求期间顶部不定进度蓝条；保留忙碌禁用与注册步骤进度；邮箱登录发送请求受理后，在验证码输入框与切换登录方式之间显示普通颜色文案“若邮箱存在，将会收到验证码。”；用户名或密码错误显示居中缩放的圆角模态弹窗，仅有确定按钮，关闭后保留输入。
 - 源码：`apps/mobile/lib/src/auth/auth_screen.dart`；回归：`apps/mobile/test/auth_screen_test.dart`。服务端、存储、授权与验证码发送协议未变。
 - 历史候选版本的测试、构建与设备结果按各节保留。最终候选2306：`flutter test --no-pub --reporter expanded test/auth_screen_test.dart test/email_login_test.dart test/auth_session_controller_test.dart`，64项；`flutter analyze --no-pub`，0问题；Android arm64 debug APK构建与签名校验；realme RMX3366保数据覆盖安装及启动成功。用户已确认视觉改动。
@@ -44,4 +44,4 @@
 ## 2026-10-23 弹窗缩放动效与用户确认
 
 - 按用户要求将错误弹窗上下滑入改为居中缩放淡入：0.88倍至1倍，180ms easeOutCubic，无位移动画；保留主题、遮罩、单确定按钮及输入。系统减少动态效果时直接呈现。
-- 64项限定回归PASS，既有错误弹窗测试新增中间帧0.88<scale<1／结束scale=1及无SlideTransition断言；分析0、同签arm64构建与真我RMX3366 2306保数据覆盖安装／启动PASS。用户已验收动效并要求合并；PR/CI/合并结果以后续实际回执为准。真机帧性能未测，未发布。
+- 64项限定回归PASS，既有错误弹窗测试新增中间帧0.88<scale<1／结束scale=1及无SlideTransition断言；分析0、同签arm64构建与真我RMX3366 2306保数据覆盖安装／启动PASS。用户已验收动效；[PR #53](https://github.com/zewbby/HnuHole/pull/53)已提交，等待Flutter与Android产品CI。真机帧性能未测，未发布。

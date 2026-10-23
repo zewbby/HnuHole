@@ -1,6 +1,6 @@
 # 分模块验收与测试交接
 
-> **2026-10-23 AUTH-FEEDBACK-01 送审：**用户确认弹窗缩放效果并授权合并。2306候选限定64项回归、分析0、同签真我覆盖安装／启动PASS；等待PR产品CI及合并回执。真机帧性能／生产验收未执行。见[任务记录](../branches/fix-auth-feedback.md)。
+> **2026-10-23 AUTH-FEEDBACK-01 送审：**用户确认弹窗缩放效果并授权合并。2306候选限定64项回归、分析0、同签真我覆盖安装／启动PASS；[PR #53](https://github.com/zewbby/HnuHole/pull/53)等待产品CI及合并回执。真机帧性能／生产验收未执行。见[任务记录](../branches/fix-auth-feedback.md)。
 
 > **2026-10-23 AUTH-FEEDBACK-01 弹窗动效：**错误弹窗改为居中缩放淡入（0.88→1，180ms），单确定不变；64项限定回归／分析0／同签2306真我覆盖安装与启动PASS，动效视觉待用户确认。见[任务记录](../branches/fix-auth-feedback.md)。
 

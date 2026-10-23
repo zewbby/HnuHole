@@ -13,7 +13,7 @@
     "candidate2305": "PASS_64_TESTS_ANALYZE_ZERO_REALME_INSTALL_LAUNCH_CLIENT_INPUT_CLASSIFICATION",
     "candidate2306": "PASS_64_TESTS_SCALE_TRANSITION_ANALYZE_ZERO_REALME_INSTALL_LAUNCH",
     "userAcceptance": "PASS_USER_CONFIRMED_AUTH_FEEDBACK_AND_CENTER_SCALE_DIALOG",
-    "pullRequest": "PENDING_CREATION",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/53",
     "remoteCi": "PENDING",
     "merged": false,
     "framePerformance": "NOT_RUN",
