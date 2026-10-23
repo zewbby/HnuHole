@@ -44,3 +44,7 @@
 - PASS：同签 ARM64 debug 2026102319 构建、保数据覆盖 vivo V2323A、已登录 COLD 启动录屏：系统 logo 后直接进首页骨架再进帖子，未见第二段 logo／启动居中转圈。系统 splash 退出仍有系统默认过渡；debug 系统 logo 约3秒，am start 总耗时3576ms，不作为正式包性能基准。
 - 证据：E:/Hnuhole-env/video-analysis-20261023/retest/vivo-cold-start-2026102319.mp4；定点日志 retest-focused.log、retest-analysis.log。图片区域等待与启动等待分别计；本次未更改图片等待表现。
 - 本轮未重跑全量830项，旧结果只保留原版本范围。未提交／推送／合并／发布，用户最终体验确认待回执。
+
+## PR #66 送审回执
+
+用户已授权合并。基于main c5475aa，已提交推送并创建[PR #66](https://github.com/zewbby/HnuHole/pull/66)。整合后源码84d21d4：Flutter全量842 PASS／3 SKIP（沿既有外部fixture缺失），分析0；独立agent审查无产品阻断，修复遗留startup测试key；不冒充GitHub成员批准。2319手机证据保留整合前范围，上游头像主线证据独立保留；产品CI结果与实际合并以PR回执为准。下方最新状态覆盖前述本地未提交快照；未发布。

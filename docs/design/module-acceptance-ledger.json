@@ -40963,7 +40963,7 @@
       "PM01",
       "IV01"
     ],
-    "implementation": "LOCAL_UNCOMMITTED",
+    "implementation": "PR66_PENDING_MERGE",
     "hostTests": {
       "status": "PASS",
       "passed": 830,
@@ -40971,8 +40971,8 @@
     },
     "deviceVideoAndColdStartTiming": "NOT_RUN",
     "historicalImageNetworkFailureRootCause": "NOT_CONFIRMED_VIDEO_ICON_IS_LOADING_PLACEHOLDER",
-    "independentReview": "NOT_RUN",
-    "remoteCI": "NOT_RUN",
+    "independentReview": "PASS_AGENT_84d21d4_NOT_MEMBER_APPROVAL",
+    "remoteCI": "IN_PROGRESS_PR66",
     "merged": false,
     "released": false,
     "historicalModuleVerdictsUnchanged": true,
@@ -40987,6 +40987,8 @@
       "vivo": "PASS_SCOPED_COLD_START_LOGO_STATIC_SHELL_CONTENT",
       "userAcceptance": "PENDING",
       "startupLatency": "DEBUG_SPLASH_APPROX_3_SECONDS_NOT_OPTIMIZED"
-    }
+    },
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/66",
+    "integratedHostTests": "842_PASS_3_SKIP"
   }
 }

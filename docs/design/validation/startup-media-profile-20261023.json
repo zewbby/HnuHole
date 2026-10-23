@@ -5,27 +5,27 @@
   "branch": "codex/fix/startup-media-profile",
   "base": "8dca780ab11b9aef9974ab7aab7f096c1beea9d1",
   "sourceFilesSha256": {
-    "apps/mobile/android/app/src/main/res/values/startup_colors.xml": "a475d55edc5344eab17a5265cc0f73320b4df39a432067c11b790733bbd3efb8",
-    "apps/mobile/lib/src/posts/post_media_repository.dart": "2f4f8464ca1e30e4bdaab979aecdd3e24e7a09d68a827718b05a7f01b4719e32",
-    "apps/mobile/test/post_controller_test.dart": "966fd0c06dde0e34663293a6d098fec077f011046ab90f99cf8db2b93e78ed18",
+    "apps/mobile/android/app/src/main/res/values/startup_colors.xml": "3c76e03ea0ef945ff1c74cb0435e9362f76b1109a0fe720c176c34b18d8df7e2",
+    "apps/mobile/lib/src/posts/post_media_repository.dart": "6c8682f061e6d6ee18c5f6dfa516e04cf528ecd891d008f85d7e4455eac66a2d",
+    "apps/mobile/test/post_controller_test.dart": "951f89611d88627ffa8848b19598ebc2e2d52b493383c5a8d614f809d3a694e3",
     "apps/mobile/test/login_home_navigation_test.dart": "2a96a237772af2c3539a3079e920b7c2d959c7cc8cfb8685edc0f85b33077714",
-    "apps/mobile/test/personal_route_account_test.dart": "d39afe4bc68c51b40f566423af4255abfa2eb634b647b62f296271271b045b9c",
-    "apps/mobile/android/app/src/main/res/values-night-v31/styles.xml": "b4752d053bb0c2dffb726ba2d59c3a6266826c8b097f4aed7d78803d8dcfbe8d",
-    "apps/mobile/android/app/src/main/res/drawable/startup_logo_system.xml": "c359a064ce5fbad5735da5f9673316137ffd2b9eb6c3bb84a46fb5e2a06b4b04",
-    "apps/mobile/android/app/src/main/res/values-night/startup_colors.xml": "15ef9e53722360fc1953781490e9791a6433c684bdc965b310783f7fcf62d5b2",
+    "apps/mobile/test/personal_route_account_test.dart": "a22abc68df22312d8d65c1d0f91cdaa3dea5a7084bff57628d7dee1e3dcc0e7a",
+    "apps/mobile/android/app/src/main/res/values-night-v31/styles.xml": "aa02261ae0027ff2e8847e8ddaaae89aaf98a6509cec3541ff04e86772f79a12",
+    "apps/mobile/android/app/src/main/res/drawable/startup_logo_system.xml": "d42322c7e467e9c60e7facd9b7cf50b8b6dba612d9eed2ab07d9937e8ebf123e",
+    "apps/mobile/android/app/src/main/res/values-night/startup_colors.xml": "3ad0c8a891846d92a0947b7a009bc269797148afdd564fce7a23e66aa776a866",
     "apps/mobile/lib/src/posts/post_images.dart": "907136b93aa3abfcd95c511bb0f30adc74ad7adbed4445b478908d440084558c",
-    "apps/mobile/test/post_media_repository_test.dart": "f9ed4a1bce7ea7bc0f8a2a4309401f31b5dce881fbef6086aac1c639bd29ad9d",
-    "apps/mobile/lib/src/posts/post_controller.dart": "fae075265f833dbd136f843cdd908932bbb7c322316cc9a1552cd993993cb91c",
-    "apps/mobile/test/startup_entry_test.dart": "e77d73bf8d36cfea9e3354d444869c93dd9687aab9d1d105a5c0b57c7a3cdb8b",
-    "apps/mobile/android/app/src/main/res/drawable/startup_logo.xml": "30ccc1bdb6e679e7906609d4117c48c7a01aaa73b57c6afd7db2ca9417bdf2e4",
-    "apps/mobile/lib/src/navigation/entry_screen.dart": "399b9fbab9822587504705a88aa8588660892a63597cab0a2678f5c61c6037b1",
-    "apps/mobile/android/app/src/main/res/values-v31/styles.xml": "f3a47b18dcff437399f8e76b06b947601bf855468fbce130497c7a45e8ca1547",
-    "apps/mobile/android/app/src/main/res/drawable-v21/launch_background.xml": "98f3443b3c28d51f28f49e45e66e6dc2f9fc892591ed1eb5133d77f09db0f778",
+    "apps/mobile/test/post_media_repository_test.dart": "c31e8d1b9c06767fd5d8e89272b5cddc424ea26f23358fee9613965f1122f495",
+    "apps/mobile/lib/src/posts/post_controller.dart": "2bd16c60f30078975b74e12e7ab367105f0eb177fefbe51353847298ffb33365",
+    "apps/mobile/test/startup_entry_test.dart": "519ed992bc195908f5817b9e1f364fbed3b63cfd4a0824adc9b6791f472f0f57",
+    "apps/mobile/android/app/src/main/res/drawable/startup_logo.xml": "a430de013be114250aba7004df9068cc2485bac3bb43737d06a079a25383391f",
+    "apps/mobile/lib/src/navigation/entry_screen.dart": "86e7f27c132dd8bcd5381a262b7cb17c5695d29f23d7807d0ee5c5b352d19c30",
+    "apps/mobile/android/app/src/main/res/values-v31/styles.xml": "c0c4bdd969a0b6bd4014bbc7fe82f0cc285f97cd6d426340a2b1f65d675f9550",
+    "apps/mobile/android/app/src/main/res/drawable-v21/launch_background.xml": "4c5ceb220c020f29a2f7955e44c66addb74c11b688898f3df276cfaa9b83b173",
     "apps/mobile/test/post_screens_test.dart": "a75af1edf8c528f82251ed7bffdf972a34cf29baa788ff10b8b54821feb0a995",
-    "apps/mobile/lib/src/posts/feed_screen.dart": "730e176a59c990c0afacee922af226aaef56598fa81d9c3294cf0ac358eed074",
-    "apps/mobile/android/app/src/main/res/drawable/launch_background.xml": "98f3443b3c28d51f28f49e45e66e6dc2f9fc892591ed1eb5133d77f09db0f778",
-    "apps/mobile/lib/src/posts/post_screens.dart": "c7955cc6ab3311633ee87c736a1627084a109fe0dd8e97e55703907a3edd3571",
-    "apps/mobile/test/feed_media_test.dart": "5d91cd5e550bb73cb733e076fc1f35a4e18346799dd43d0294edca6934758454"
+    "apps/mobile/lib/src/posts/feed_screen.dart": "30dc9d0ce5ff4486d0018f393f5acb88299c1e636bb5b75aad37eb7e3ea37a95",
+    "apps/mobile/android/app/src/main/res/drawable/launch_background.xml": "4c5ceb220c020f29a2f7955e44c66addb74c11b688898f3df276cfaa9b83b173",
+    "apps/mobile/lib/src/posts/post_screens.dart": "13e81b7fd7610038aae2b895a81eaad94fffd422a414d0be2c953d5f6c4d8f6f",
+    "apps/mobile/test/feed_media_test.dart": "19f49118768b68eca8b1915f07d13d0e3f696afb288124a4c4546f495d22ce33"
   },
   "validation": {
     "mobileAnalysis": "PASS_ZERO_ISSUES",
@@ -67,6 +67,12 @@
         "no post request before authority",
         "header/navigation geometry unchanged after directory completes"
       ]
+    },
+    "integratedHostTests": {
+      "status": "PASS",
+      "passed": 842,
+      "skipped": 3,
+      "applicationHead": "84d21d4e291a802caa512ab44ec3d0493b19c69e"
     }
   },
   "apk": {
@@ -74,7 +80,8 @@
     "sha256": "1c72504b9860b42030350ca15e801c570e21b0dd8f4a397a3e6009e46f87b489",
     "installed": true,
     "signing": "PRERELEASE_DEVICE_TEST_KEY_MATCHED_EXISTING_INSTALL",
-    "versionCode": 2026102319
+    "versionCode": 2026102319,
+    "scope": "2026102319_BEFORE_MAIN_AVATAR_INTEGRATION_DEVICE_EVIDENCE_NOT_RELABELED"
   },
   "localEvidence": "E:\\Hnuhole-env\\video-analysis-20261023",
   "screenshots": [
@@ -96,11 +103,14 @@
     "nativeColdStartTiming": "DEBUG_AM_START_TOTAL_3576_MS_NOT_A_RELEASE_BENCHMARK",
     "liveImageRequestTracing": "NOT_RUN",
     "ios": "NOT_RUN",
-    "independentReview": "NOT_RUN",
-    "remoteCI": "NOT_RUN"
+    "independentReview": "PASS_AGENT_MERGE_REVIEW_84d21d4_NOT_GITHUB_MEMBER_APPROVAL",
+    "remoteCI": "IN_PROGRESS_PR66_EXACT_HEAD"
   },
-  "committed": false,
-  "pushed": false,
+  "committed": true,
+  "pushed": true,
   "merged": false,
-  "released": false
+  "released": false,
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/66",
+  "integratedMain": "c5475aad1741905973552f6edfceee1d827041b7",
+  "reviewedApplicationHead": "84d21d4e291a802caa512ab44ec3d0493b19c69e"
 }

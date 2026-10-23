@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **MOBILE-STARTUP-MEDIA-PROFILE-01 PR66送审：**已整合main c5475aa并提交推送；全量842 PASS／3 SKIP，分析0，独立agent审查无产品阻断（非成员批准）。用户已授权合并，CI与合并以[PR #66](https://github.com/zewbby/HnuHole/pull/66)回执为准；下方未提交条目为历史快照。
+
 > **2026-10-23 MOBILE-STARTUP-MEDIA-PROFILE-01 复测2319：**用户确认一次系统logo→首页静态骨架→内容；移除Flutter二次logo和启动转圈。相关32测试与分析0 PASS，同签保数据覆盖vivo已登录冷启动录屏限定PASS；debug启动画面约3秒仍待性能优化，不提升其他模块结论。详见[任务复测记录](../branches/fix-startup-media-profile.md)。
 
 > **2026-10-23 MOBILE-STARTUP-MEDIA-PROFILE-01（本地未提交／合并）：**`codex/fix/startup-media-profile` 基于 main `8dca780`，统一 Android／Flutter 启动等待、首页骨架、个人资料并行与稳定布局、图片状态及显式重试。Flutter全量830 PASS／3 SKIP；设备录屏／耗时和真实图片故障尚未验证，不提升原模块结论。范围与最终回执见[任务](../branches/fix-startup-media-profile.md)。
