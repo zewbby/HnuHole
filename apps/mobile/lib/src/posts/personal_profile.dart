@@ -352,7 +352,6 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
     _replyError = null;
     _offsets.remove(0);
     _offsets.remove(1);
-    _scheduleExpiry();
     if (_tab == 1 && id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && _authority.current) unawaited(_loadReplies());
@@ -533,11 +532,7 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
 
   bool _hot = false, _sorting = false, _searching = false;
   String _query = '';
-  Map<String, dynamic> _profile = {};
-  Timer? _expiry;
-  bool _started = false, _profileReady = false;
   final _offsets = <int, double>{};
-  String? _profileError;
   final _replies = <CommentRow>[];
   bool _replyLoading = false, _replyLoaded = false;
   String? _replyError;
@@ -589,125 +584,7 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
     return value == null || (tab == 4 ? value.favoritedByMe : value.likedByMe);
   }).toList();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_started) {
-      _started = true;
-      unawaited(_readProfile());
-    }
-  }
-
-  void disposeProfile() {
-    _expiry?.cancel();
-    _dismissProfileIdentityMenu();
-  }
-
-  Map<String, dynamic> get _identityMood {
-    final id = widget.controller.personalIdentity?.id;
-    final moods = _profile['identityMoods'];
-    if (moods is Map && moods[id] is Map) {
-      return Map<String, dynamic>.from(moods[id]);
-    }
-    return widget.controller.personalIdentity?.isOriginal == true
-        ? _profile
-        : {};
-  }
-
-  String get _mood {
-    final expiry = DateTime.tryParse(
-      _identityMood['moodExpiresAt'] as String? ?? '',
-    );
-    return expiry != null && expiry.isAfter(DateTime.now())
-        ? _identityMood['mood'] as String? ?? ''
-        : '';
-  }
-
-  void _scheduleExpiry() {
-    _expiry?.cancel();
-    final expiry = DateTime.tryParse(
-      _identityMood['moodExpiresAt'] as String? ?? '',
-    );
-    if (expiry != null && expiry.isAfter(DateTime.now())) {
-      _expiry = Timer(expiry.difference(DateTime.now()), () {
-        if (mounted) setState(() {});
-      });
-    }
-  }
-
-  Future<void> _readProfile() async {
-    try {
-      final value = await widget.controller.readPersonalProfileState();
-      if (!mounted || !_authority.current) return;
-      setState(() {
-        _profile = value;
-        _profileReady = true;
-        _profileError = null;
-      });
-      _scheduleExpiry();
-    } catch (_) {
-      if (mounted && _authority.current) {
-        setState(() => _profileError = '心情读取失败，点击重试');
-      }
-    }
-  }
-
-  Future<void> _editMood() async {
-    if (!_profileReady && _profileError == null) return;
-    if (_profileError != null) {
-      await _readProfile();
-      return;
-    }
-    final moodIdentity = widget.controller.personalIdentity?.id;
-    final moodEpoch = _identityEpoch;
-    if (moodIdentity == null) return;
-    await showGeneralDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: '取消编辑心情',
-      barrierColor: Colors.black26,
-      transitionDuration: const Duration(milliseconds: 260),
-      transitionBuilder: (_, animation, secondary, child) => FadeTransition(
-        opacity: animation,
-        child: ScaleTransition(
-          scale: Tween<double>(begin: .25, end: 1).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-          ),
-          alignment: Alignment.topRight,
-          child: child,
-        ),
-      ),
-      pageBuilder: (_, animation, secondary) => _MoodEditor(
-        initial: _mood,
-        authority: widget.controller,
-        isCurrent: () => _authority.current && moodEpoch == _identityEpoch,
-        onSave: (text) async {
-          if (!_authority.current || moodEpoch != _identityEpoch) {
-            throw StateError('身份已变化');
-          }
-          final value = {
-            ..._profile,
-            'identityMoods': {
-              ...?_profile['identityMoods'] as Map?,
-              moodIdentity: {
-                'mood': text,
-                'moodExpiresAt': DateTime.now()
-                    .toUtc()
-                    .add(const Duration(hours: 24))
-                    .toIso8601String(),
-              },
-            },
-          };
-          await widget.controller.savePersonalProfileState(value);
-          if (!mounted || !_authority.current || moodEpoch != _identityEpoch) {
-            throw StateError('身份已变化');
-          }
-          setState(() => _profile = value);
-          _scheduleExpiry();
-        },
-      ),
-    );
-  }
+  void disposeProfile() => _dismissProfileIdentityMenu();
 
   Future<void> _sort(bool hot) async {
     if (hot && !widget.controller.supportsInteractions) {
@@ -857,7 +734,6 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
     }
     return RefreshIndicator(
       onRefresh: () async {
-        await _readProfile();
         if (_tab == 2) {
           await _refreshReposts();
         } else if (_tab == 1) {
@@ -946,50 +822,6 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                           color: HhTelegramPalette.of(context).ink,
                         ),
                         onPressed: widget.onOpenSettings,
-                      ),
-                      const Spacer(),
-                      SizedBox(
-                        width: 104,
-                        child: Material(
-                          color: HhTelegramPalette.of(context).surface,
-                          elevation: 2,
-                          shadowColor: Colors.black12,
-                          shape: _MoodBubbleBorder(
-                            HhTelegramPalette.of(context).line,
-                          ),
-                          child: InkWell(
-                            key: const ValueKey('personal-mood'),
-                            customBorder: _MoodBubbleBorder(
-                              HhTelegramPalette.of(context).line,
-                            ),
-                            onTap: _editMood,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                10,
-                                18,
-                                10,
-                                10,
-                              ),
-                              child: _profileError != null
-                                  ? const Icon(Icons.refresh)
-                                  : _mood.isEmpty
-                                  ? Icon(
-                                      Icons.add,
-                                      color: HhTelegramPalette.of(context).ink,
-                                    )
-                                  : Text(
-                                      _mood,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: HhTelegramPalette.of(context)
-                                            .ink,
-                                        fontSize: 14,
-                                        height: 1.3,
-                                      ),
-                                    ),
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -1402,125 +1234,6 @@ class _ProfileTabs extends SliverPersistentHeaderDelegate {
   }
 }
 
-class _MoodEditor extends StatefulWidget {
-  const _MoodEditor({
-    required this.initial,
-    required this.onSave,
-    required this.authority,
-    required this.isCurrent,
-  });
-  final String initial;
-  final Future<void> Function(String) onSave;
-  final Listenable authority;
-  final bool Function() isCurrent;
-  @override
-  State<_MoodEditor> createState() => _MoodEditorState();
-}
-
-class _MoodEditorState extends State<_MoodEditor> {
-  late final _text = TextEditingController(text: widget.initial);
-  bool _saving = false;
-  String? _error;
-  @override
-  void initState() {
-    super.initState();
-    widget.authority.addListener(_changed);
-  }
-
-  void _changed() {
-    if (mounted && !widget.isCurrent()) Navigator.of(context).pop();
-  }
-
-  @override
-  void dispose() {
-    widget.authority.removeListener(_changed);
-    _text.dispose();
-    super.dispose();
-  }
-
-  Future<void> _save() async {
-    if (_saving || !widget.isCurrent()) return;
-    setState(() {
-      _saving = true;
-      _error = null;
-    });
-    try {
-      await widget.onSave(_text.text.trim());
-      if (mounted) Navigator.pop(context);
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _saving = false;
-          _error = '保存失败，请重试';
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) => Dialog(
-    backgroundColor: HhTelegramPalette.of(context).surface,
-    surfaceTintColor: Colors.transparent,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-    child: Padding(
-      padding: const EdgeInsets.all(22),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '此刻的心情',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: HhTelegramPalette.of(context).ink,
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            key: const ValueKey('mood-input'),
-            controller: _text,
-            enabled: !_saving,
-            autofocus: true,
-            maxLength: 12,
-            maxLines: 2,
-            style: TextStyle(
-              color: HhTelegramPalette.of(context).ink,
-              fontSize: 18,
-            ),
-            decoration: InputDecoration(
-              hintText: '用一句话，记录现在',
-              errorText: _error,
-              border: InputBorder.none,
-            ),
-          ),
-          Text(
-            '24 小时后自动消失',
-            style: TextStyle(
-              fontSize: 13,
-              color: HhTelegramPalette.of(context).secondary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: _saving ? null : () => Navigator.pop(context),
-                child: const Text('取消'),
-              ),
-              TextButton(
-                onPressed: _saving ? null : _save,
-                child: Text(_saving ? '保存中…' : '完成'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
 class _ProfilePost extends StatefulWidget {
   const _ProfilePost({
     super.key,
@@ -1638,46 +1351,6 @@ class _ProfilePostState extends State<_ProfilePost> {
           );
         }
       },
-    );
-  }
-}
-
-/// Theme-aware speech bubble whose tail points upward toward the adjacent avatar.
-class _MoodBubbleBorder extends ShapeBorder {
-  const _MoodBubbleBorder(this.color);
-  final Color color;
-  @override
-  EdgeInsetsGeometry get dimensions => const EdgeInsets.only(top: 8);
-  @override
-  ShapeBorder scale(double t) => this;
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    final body = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTRB(rect.left, rect.top + 8, rect.right, rect.bottom),
-          const Radius.circular(18),
-        ),
-      );
-    final tail = Path()
-      ..moveTo(rect.right - 38, rect.top + 10)
-      ..lineTo(rect.right - 22, rect.top)
-      ..lineTo(rect.right - 23, rect.top + 12)
-      ..close();
-    return Path.combine(PathOperation.union, body, tail);
-  }
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
-      getOuterPath(rect, textDirection: textDirection);
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
-    canvas.drawPath(
-      getOuterPath(rect, textDirection: textDirection),
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = .8,
     );
   }
 }
