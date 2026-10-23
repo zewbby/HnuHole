@@ -111,6 +111,24 @@ BEGIN
                   AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
             END IF;
           END IF;
+          -- 0024 lifecycle cleanup applies even with the DM API disabled.
+          -- Sending, operation receipts and immutable evidence remain outside
+          -- this baseline; do not admit the optional full DM grant here.
+          IF party='c' AND relation.nspname='c_dm' THEN
+            allowed := (privilege='SELECT' AND relation.relname IN ('conversations','messages','media','settings','blocks'))
+              OR (privilege='DELETE' AND relation.relname='blocks');
+            IF privilege='UPDATE' AND relation.relname IN ('conversations','messages','media','settings') THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid
+                  AND a.attnum>0 AND NOT a.attisdropped
+                  AND NOT (a.attname=ANY(CASE relation.relname
+                    WHEN 'conversations' THEN ARRAY['revision']
+                    WHEN 'messages' THEN ARRAY['body','acknowledged','read']
+                    WHEN 'media' THEN ARRAY['bytes']
+                    ELSE ARRAY['version','note','pinned','muted','hidden_through','deleted_through'] END))
+                  AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
+          END IF;
         END IF;
         IF granted AND NOT allowed THEN RAISE EXCEPTION 'operational role acquired noncontract table privilege'; END IF;
       END LOOP;

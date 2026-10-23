@@ -33,6 +33,8 @@ PASS：5 份受影响完整 OpenAPI（direct-message-governance/chat/text、repo
 
 ## 未验及运营边界
 
+2026-10-23 预发布审计增量（PR #52 head fc4f986）：rehearsal 在 environment.py:398 的共享权限审计失败。0024 的 grant-community 增加了即使 DM API 关闭也必需的清理权限，旧审计没有 c_dm 矩阵。修正只为 C runtime 放行既定五表读取、四表明确清理列 UPDATE 与 blocks DELETE；未增加运行角色授权。新增 test_role_audit_postgres.py 使用两个新建自有 C/V PostgreSQL 集群、实际 Goose 最新迁移、正式 grants 和原 Lab.audit：修前复现 FAIL，修后 PASS；8 个发送/不可变列/整表更新/越权角色负例全部因 noncontract table privilege 被拒绝。CI 使用 PRERELEASE_AUDIT_SQL_TEST=1 启用该回归。仅验证受影响审计，完整远端 rehearsal 待新提交 CI，不将本地增量等同整套预发布通过。
+
 2026-10-23 真实 TLS 联调增量：合成账号初次 PUT commands 返回 SENT、PUT block 返回 APPLIED；第三步 GET blocks 的 createdAt 实际返回 +08:00，触发 Flutter 严格 UTC 解码失败。DMBlocks 现将数据库时间显式转为 UTC；TestDMGovernanceHTTPSPostgres 强制 time.Local=UTC+08 并断言 JSON 时间以 Z 结束。使用同一自有隔离 runner、DM_CHAT_TEST_PATTERN='^TestDMGovernanceHTTPSPostgres$' 实际 SQL／HTTPS／race PASS（4.33s）。未重跑未改变的全套检查。完整 Flutter 联调仍由整合方执行。
 
 - Flutter 真实 TLS 合同联调交整合方；TestDMChatDevicePostgres 已加 WithModeration，可用 DM_CHAT_DEVICE_FIXTURE 生成自有合成账号 fixture。此后端任务不连接手机。
