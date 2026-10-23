@@ -1,6 +1,6 @@
 # DM-IDENTITY-LOADING-01 私信身份状态与快捷切换
 
-更新时间：2026-10-23。分支 `fix/direct-message-identity-loading`；基线 main `93d3ed6`。本页保留逐版实现与验收记录，最新结果见“最终2311候选与送审回执”；合并状态以[PR #60](https://github.com/zewbby/HnuHole/pull/60)为准，未生产发布。
+更新时间：2026-10-23。分支 `fix/direct-message-identity-loading`；基线 main `93d3ed6`。本页保留逐版实现与验收记录，最新结果见“最终2313管理往返候选与送审回执”；合并状态以[PR #60](https://github.com/zewbby/HnuHole/pull/60)为准，未生产发布。
 
 ## 问题与范围
 
@@ -10,8 +10,8 @@
 
 ## 实现
 
-- `dm_runtime.dart` 区分加载、空目录、失败、会话不可用、就绪，页面监听 runtime 与 controller。空目录为“您目前还没有身份”及相邻“添加身份”；失败提供重新核对。暂时传输失败保留登录，明确 unauthorized/unavailable 沿现有认证围栏收回访问，身份读取元数据先持久化再绑定。
-- 身份管理 init/dispose 可同步通知：立即增加 runtime epoch 使旧窗口失效，再微任务合并刷新，避免在 widget build 中通知背后私信页。异步旧目录不绑定新会话。
+- `dm_runtime.dart` 区分加载、空目录、失败、会话不可用、就绪，页面监听 runtime 与 controller。入口加载只显示22dp小进度指示（读屏“正在加载”），不显示核对文案；失败为“加载失败，请重试”，会话不可用为“暂时无法加载私信”，按钮“重试”。空目录为“您目前还没有身份”及相邻“添加身份”；失败提供重试。暂时传输失败保留登录，明确 unauthorized/unavailable 沿现有认证围栏收回访问，身份读取元数据先持久化再绑定。
+- 身份管理通知按真实身份ID／昵称投影过滤：纯加载／取消以及已确认的相同投影保留绑定；真实变更或durable pending mutation立即增加epoch使旧窗口失效，再微任务合并刷新，避免widget build同步通知。账号／会话围栏和强制重试独立保留，迟到目录不绑定新会话。
 - 右上紧凑入口按左箭头、中姓名、右头像排列，保持文字正常方向和至少 48dp 点击区。右下锚定菜单保留未读提示／当前选中，复用 Telegram palette、内置字体和轻动效；展开、首帧前后账号替换均关闭旧菜单，关闭搜索键盘后重算锚点。
 - 身份总上限沿现有客户端 `canCreate` 与后端契约的 3 提取为 `IdentityDirectory.maximumIdentities`；当前最终菜单在未满额时仅提供一个紧接已有身份的蓝色加号入口，满额隐藏；冷却不伪装成满额。原补齐空槽方案按用户最新指令取消。加号进入现有 `_openIdentity(initialCreate:true)`，当前权限、目录就绪且 `canCreate` 才打开原编辑器；冷却／满额显示原说明。不会自动创建身份。
 - 首次发送身份选择面板增加底部 SafeArea。发起联系选择原先已有 SafeArea，无需重复改动。
@@ -73,7 +73,7 @@
 
 只复测 `direct_message_navigation_test.dart` 中 `compact dropdown mirrors content and places one add row after identities` 与 `full identity menu has no add slot and stale scope dismisses it`：2 PASS；验证只存在一个+、紧邻最后身份、点击区48–56dp和满额不显示。实际组件渲染1 PASS，另存 `r4/` 两图与 `single-add-test.log`、`render-test.log`，不覆盖前版。未重复37项／整合7项／全量分析；旧结论保留原源码范围。
 
-## 最终2311候选与送审回执（2026-10-23）
+## 2311菜单候选与送审记录（2026-10-23，历史版本）
 
 最终应用源码 `07193735513c69ad1a7ec4d6ecd0043e4f60a1fe`，`apps/mobile/lib` tree为 `bc77a63e9501f0bf7ccc6b1471f69ee0316693c6`，已整合 main `7a2a76a`。主会话独立只读review原需求全部产品差异、main三处必要入口整合与单加号最终微改，无剩余可操作阻断；该审查非GitHub成员批准。最终文档提交不修改源码，不重复原37项／整合7项／分析；各项证明范围绑定其原版本，r4补最终单加号2项及渲染1项。
 
@@ -96,3 +96,15 @@
 用户继续反馈已有身份时从添加入口返回仍看到身份提示页。已只读核实vivo前台为正式包 `org.hnuhole.hnuhole_mobile`、versionCode `2026102312`，无独立DM预览包；实际进入私信、展开、添加、取消编辑、返回管理再返回私信，首个约3秒后的UI快照为正常收件页，旧核对文案／加载／空身份均未出现。此轮未复现持续卡死，也不能用UI dump排除亚秒瞬态；未创建或删除身份、未读取私信正文／token、未改后端。
 
 真实runtime/controller/SQLite宿主回归确认：原代码仅管理页load/cancel就使绑定scope从3变为8，触发清空及重绑。修复将管理通知按实际身份ID／昵称投影过滤，已确认的相同目录及纯加载／取消不重载；真实目录变更和durable pending mutation仍立即失效刷新，账号／会话围栏不变。自动和手动重试独立走强制刷新，失败状态不会被相同投影去重。新增3项覆盖三次管理往返／在途取消、真实目录变化及改名删除、未知提交取消后失权与晚回包；`flutter test --no-pub test/dm_runtime_test.dart --reporter expanded`受影响文件11 PASS，受影响两文件analyze 0 issues。日志为 `r6/runtime-return-tests.log`、`r6/analyze-return.log`。UI样式未改，未重复旧37项、其他UI矩阵或真实收发；修复版设备回执仍待主会话。
+
+## 最终2313管理往返候选与送审回执（2026-10-23）
+
+最终运行源码 `490c2a33175c517bc8db7af42d6ef41f4ee94ce9`，`apps/mobile` tree为 `96663ba78293d810680ed29b4cfd956ff956f911`，lib tree为 `9136c5925af077c5cebd6639398c7ddb0d33ee7d`。包含r5入口文案呈现修复与r6真实绑定修复；main与CI输入沿已整合7a2a76a，最终文档提交不改产品源码。主会话独立只读审查r6全部30行运行时差异、新回归和原授权／强制retry路径，无剩余阻断；agent审查不是GitHub成员批准。
+
+2312同签覆盖及版本核对成功。Astra实际添加→取消→返回后约3秒快照正常，未复现持续卡死，不能排除亚秒瞬态；r6宿主旧逻辑scope从3变8才证实无变更detach/rebind。2312不记作已修无变更重载；2313只补修后返回路径，不重复未变UI／真实收发。
+
+2313正常主入口候选构建PASS，APK188039160字节，SHA256 `de6b4fb1815daa32ac9e4aa718b60947bc0c9b27b862b99c86bd1c5767d6ea50`。原签名保数据覆盖vivo V2323A成功，versionCode核对2026102313。实际路径：已有身份→单加号→既有创建编辑器→取消→管理页back→DM正常；再次首页→DM也正常，最终快照有原身份、无旧核对文案／假空态／加载语义。未输入或提交身份、未读取用户私信，lease已释放。
+
+返回早期截图在正常路由pop淡出过渡中，不宣称测得亚秒零闪帧；绑定不再重建由r6确定性runtime回归证明。2311的单行／右对齐／唯一加号／编辑器及安全位置证明沿原源码范围复用，相关UI组件字节未改；后续产品改动只在dm_runtime.dart。本提交阶段不重复旧37项、整合7项、菜单2项、图片／SQL／整机旧矩阵或已通过的2313构建安装。
+
+最终原始回执在私有 `E:/Hnuhole-env/deliveries/HnuHole-dm-identity-2026102313-device.json`，脱敏结果进入[版本证据](../design/direct-message-identity-verification-20261023.json)，不提交昵称、设备序列号或截图。PR #60以最新文档head全部适用CI通过后Ready并按既有授权合并，实际合并SHA与检查回执写PR正文并核对main产品输入树；若与被测输入相同复用2313，不为文档或merge SHA重复构建／设备测试，也不递归建记录自身的PR。不删除分支或worktree。设备空身份／首次发送面板、真实掉电、P3人工项、厂商推送、iOS／规模／生产边界维持原样，未正式发布。

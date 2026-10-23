@@ -1,53 +1,56 @@
 {
   "task": "DM-IDENTITY-LOADING-01",
   "pullRequest": "https://github.com/zewbby/HnuHole/pull/60",
-  "applicationSource": "07193735513c69ad1a7ec4d6ecd0043e4f60a1fe",
-  "mobileLibTree": "bc77a63e9501f0bf7ccc6b1471f69ee0316693c6",
+  "applicationSource": "490c2a33175c517bc8db7af42d6ef41f4ee94ce9",
+  "mobileLibTree": "9136c5925af077c5cebd6639398c7ddb0d33ee7d",
   "integratedMain": "7a2a76a0a82d85b54f49a02c22ce924425cba4dc",
   "host": {
     "e6dd325": "PASS_37_FOCUSED_ANALYZE_ZERO_RENDER_ONE",
     "5de60e3": "PASS_ALIGNMENT_ONE_RENDER_ONE",
     "711632c": "PASS_INTEGRATION_SEVEN_ANALYZE_ZERO_RENDER_ONE",
     "0719373": "PASS_SINGLE_ADD_TWO_RENDER_ONE",
-    "scope": "Actual runtime/auth/identity controllers and host encrypted SQLite; HTTP and system vault are test substitutes. Renderings are fixture component views without app primary bottom navigation."
+    "scope": "Actual runtime/auth/identity controllers and host encrypted SQLite; HTTP and system vault are test substitutes. Renderings are fixture component views without app primary bottom navigation.",
+    "5ec9f40": "PASS_ENTRY_PRESENTATION_TWO_AFFECTED_ANALYZE_ZERO_PENDING_COMPLETER_PROVES_NO_CHECKING_COPY",
+    "490c2a3": "PASS_ENTIRE_AFFECTED_RUNTIME_FILE_ELEVEN_AFFECTED_ANALYZE_ZERO_BINDING_STABLE_ON_LOAD_CANCEL_REAL_CHANGES_AND_AUTH_RETRY_FENCES_RETAINED"
   },
-  "independentReview": "Root independent read-only exact final product diff and main integration; no remaining blockers; not GitHub member approval",
+  "independentReview": "Root independent read-only final 490c2a3 runtime diff and regressions plus prior product/main integration; no blockers; not GitHub member approval",
   "candidate": {
     "package": "org.hnuhole.hnuhole_mobile",
-    "versionCode": 2026102311,
+    "versionCode": 2026102313,
     "buildType": "debug owned prerelease device signing",
     "entrypoint": "lib/main.dart",
     "environment": "Existing USB-forwarded private-CA C/V development environment; not production",
     "privateFixtureEmbedded": false,
     "installed": true,
     "deployedBackend": false,
-    "bytes": 188038636,
-    "sha256": "58dce99b27ae5a7eb76172d06b9f814459eeb463dab67604803ea5e2ea708a2b",
+    "bytes": 188039160,
+    "sha256": "de6b4fb1815daa32ac9e4aa718b60947bc0c9b27b862b99c86bd1c5767d6ea50",
     "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea"
   },
   "device": {
     "model": "vivo V2323A",
-    "versionCodeVerified": 2026102311
+    "versionCodeVerified": 2026102313
   },
   "verification": {
     "coverInstallPreservingData": "PASS",
-    "latestMainPrimaryTabsDmEntry": "PASS",
-    "nativeSingleLineRightAlignedSelector": "PASS",
-    "nativeSubtitleAndOldSectionRemoved": "PASS",
-    "nativeDropdownAddEntries": 1,
-    "nativeAddRowBottomPx": 804,
-    "systemNavigationTopPx": 2274,
-    "nativeAddOpensExistingEditor": "PASS",
-    "nativeCancelReturnsDmInbox": "PASS",
-    "identityCreationSubmitted": false,
-    "userMessagesRead": false,
-    "nativeEmptyAccount": "NOT_RUN: current account has identity; host real-runtime regression covers empty state without altering user data",
-    "nativeFirstSendSheet": "NOT_RUN: SafeArea host geometry test only, no unchanged send acceptance repeated"
+    "nativeExistingIdentityAddCancelManagerBack": "PASS",
+    "nativeHomeThenDmTabReturn": "PASS",
+    "nativeFinalIdentityVisible": true,
+    "nativeFinalLoadingAbsent": true,
+    "nativeFinalFalseEmptyAbsent": true,
+    "nativeOldIdentityCheckingCopyAbsent": true,
+    "noIdentityCreationSubmitted": true,
+    "privateMessagesNotRead": true,
+    "nativeSubsecondNoResetTiming": "NOT_MEASURED: early screenshot is during route pop transition; deterministic binding stability is proven by runtime host regression",
+    "uiMenuUnchanged": "Prior 2311 unique-add/menu/editor/safety evidence reused; UI component source unchanged",
+    "nativeEmptyAccount": "NOT_RUN_HOST_REAL_RUNTIME_COVERED_WITHOUT_CHANGING_USER_DATA",
+    "nativeFirstSendSheet": "NOT_RUN_HOST_GEOMETRY_ONLY"
   },
   "historicalCandidates": {
     "2308": "BUILD_ONLY_NOT_INSTALLED",
     "2309": "SCOPED_PRE_INTEGRATION_DOUBLE_ADD_MENU_EDITOR_CANCEL_PASS",
-    "2310": "BUILD_COVERINSTALL_COLLAPSED_SINGLE_LINE_ONLY_SUPERSEDED_NOT_COMPLETE_NATIVE_PASS"
+    "2310": "BUILD_COVERINSTALL_COLLAPSED_SINGLE_LINE_ONLY_SUPERSEDED_NOT_COMPLETE_NATIVE_PASS",
+    "2312": "BUILD_COVERINSTALL_VERSION_VERIFIED_ONE_RETURN_OBSERVATION_NORMAL_NO_PERSISTENT_STALL_REPRODUCED_NOT_BINDING_STABILITY_FIX_PROOF"
   },
   "screenshots": "Private delivery only; contain user nickname and are not committed",
   "remaining": {
@@ -58,5 +61,43 @@
     "scaleAndProduction": "NOT_RUN",
     "released": false
   },
-  "mergeStatus": "See PR #60 for final exact-head CI and merge status; this file records candidate evidence, not a release claim"
+  "mergeStatus": "See PR #60 for final exact-head CI and merge status; this file records candidate evidence, not a release claim",
+  "priorUiCandidate2311": {
+    "applicationSource": "07193735513c69ad1a7ec4d6ecd0043e4f60a1fe",
+    "mobileLibTree": "bc77a63e9501f0bf7ccc6b1471f69ee0316693c6",
+    "candidate": {
+      "package": "org.hnuhole.hnuhole_mobile",
+      "versionCode": 2026102311,
+      "buildType": "debug owned prerelease device signing",
+      "entrypoint": "lib/main.dart",
+      "environment": "Existing USB-forwarded private-CA C/V development environment; not production",
+      "privateFixtureEmbedded": false,
+      "installed": true,
+      "deployedBackend": false,
+      "bytes": 188038636,
+      "sha256": "58dce99b27ae5a7eb76172d06b9f814459eeb463dab67604803ea5e2ea708a2b",
+      "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea"
+    },
+    "device": {
+      "model": "vivo V2323A",
+      "versionCodeVerified": 2026102311
+    },
+    "verification": {
+      "coverInstallPreservingData": "PASS",
+      "latestMainPrimaryTabsDmEntry": "PASS",
+      "nativeSingleLineRightAlignedSelector": "PASS",
+      "nativeSubtitleAndOldSectionRemoved": "PASS",
+      "nativeDropdownAddEntries": 1,
+      "nativeAddRowBottomPx": 804,
+      "systemNavigationTopPx": 2274,
+      "nativeAddOpensExistingEditor": "PASS",
+      "nativeCancelReturnsDmInbox": "PASS",
+      "identityCreationSubmitted": false,
+      "userMessagesRead": false,
+      "nativeEmptyAccount": "NOT_RUN: current account has identity; host real-runtime regression covers empty state without altering user data",
+      "nativeFirstSendSheet": "NOT_RUN: SafeArea host geometry test only, no unchanged send acceptance repeated"
+    }
+  },
+  "mobileTree": "96663ba78293d810680ed29b4cfd956ff956f911",
+  "githubTree": "34eaf88c4934fc9ed88aa716213c7dc79abf42af"
 }
