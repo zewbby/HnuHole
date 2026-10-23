@@ -88,8 +88,8 @@
 
 ## 最近变动
 
+- [PR #56](https://github.com/zewbby/HnuHole/pull/56)：消除应用启动期间旧会话错误页闪现。
 - [PR #52](https://github.com/zewbby/HnuHole/pull/52)：接通私信治理、生命周期清理和隐私本地通知；保留原生与生产未验项。
 - [PR #51](https://github.com/zewbby/HnuHole/pull/51)：接通九图私有收发、会话管理和两分钟撤回。
 - [PR #53](https://github.com/zewbby/HnuHole/pull/53)：优化登录注册错误反馈、邮箱验证码说明和认证弹窗交互。
 - [PR #48](https://github.com/zewbby/HnuHole/pull/48)：普通开发重启保留原会话，安全冻结仍要求明确恢复。
-- [PR #47](https://github.com/zewbby/HnuHole/pull/47)：接通隔离环境可靠文字收发、持久队列、ACK与阅读分离及基础未读草稿。

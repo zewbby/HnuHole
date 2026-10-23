@@ -2,10 +2,10 @@
   "authStartupFlash20261023": {
     "task": "AUTH-STARTUP-FLASH-01",
     "branch": "codex/fix/auth-login-startup",
-    "implementation": "LOCAL_UNCOMMITTED_NOT_MERGED",
+    "implementation": "MERGED_MAIN_PR56_4197DD3_ALL_CI_PASS",
     "host": "PASS_21_STARTUP_HOME_NAVIGATION_TESTS_ANALYZE_ZERO",
-    "androidBuild": "NOT_RUN",
-    "device": "NOT_RUN_PENDING_INTEGRATED_PACKAGE",
+    "androidBuild": "PASS_SAME_SIGNER_2308_PRODUCT_TREE_EQUALS_MERGED_MAIN",
+    "device": "NOT_RUN_APK_DELIVERED",
     "scope": "STARTUP_TRANSIENT_ERROR_PAGE_ONLY",
     "evidence": "docs/branches/fix-auth-startup-flash.md",
     "historicalModuleVerdictsUnchanged": true
