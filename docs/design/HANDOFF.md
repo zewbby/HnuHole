@@ -1,5 +1,12 @@
 # Hnuhole 新会话接续说明
 
+> **PR66最终整合：**已保留PR65/67主线沉浸阅读、颜文字刷新与头像，启动五栏骨架安全区域回归通过；全量852 PASS／3外部fixture SKIP，分析0，独立整合复审无阻断。等待最终head CI与Squash合并，先前16项CI PASS属于2592ea0历史版本，未发布。
+
+> **MOBILE-STARTUP-MEDIA-PROFILE-01 PR66送审：**已整合main c5475aa并提交推送；全量842 PASS／3 SKIP，分析0，独立agent审查无产品阻断（非成员批准）。用户已授权合并，CI与合并以[PR #66](https://github.com/zewbby/HnuHole/pull/66)回执为准；下方未提交条目为历史快照。
+
+> **2026-10-23 MOBILE-STARTUP-MEDIA-PROFILE-01 复测2319：**用户确认一次系统logo→首页静态骨架→内容；移除Flutter二次logo和启动转圈。相关32测试与分析0 PASS，同签保数据覆盖vivo已登录冷启动录屏限定PASS；debug启动画面约3秒仍待性能优化，不提升其他模块结论。详见[任务复测记录](../branches/fix-startup-media-profile.md)。
+
+> **2026-10-23 MOBILE-STARTUP-MEDIA-PROFILE-01（本地未提交／合并）：**`codex/fix/startup-media-profile` 基于 main `8dca780`，统一 Android／Flutter 启动等待、首页骨架、个人资料并行与稳定布局、图片状态及显式重试。Flutter全量830 PASS／3 SKIP；设备录屏／耗时和真实图片故障尚未验证，不提升原模块结论。范围与最终回执见[任务](../branches/fix-startup-media-profile.md)。
 > **2026-10-23 FEED-SCROLL-SMILE-01 已合并：**[PR #65](https://github.com/zewbby/HnuHole/pull/65) Squash进入main `df484b1`；最终head `fad2a5c` 的8组工作流15项检查全PASS，Sol xhigh独立只读复核无剩余重要问题。首页上下导航随阅读收起／反向恢复、发帖双位置交接与小字距 `:)` 刷新已接入。宿主844 PASS／3 SKIP、分析0和Android构建通过；主线产品输入与被测SHA-256一致。未安装、设备视觉／原生TalkBack／帧性能及iOS未验、未发布，不提升历史完整模块结论。见[任务](../branches/feat-feed-scroll-smile-refresh.md)。
 
 > **2026-10-23 IDENTITY-AVATAR-01 已合并并完成开发交付：**[PR #63](https://github.com/zewbby/HnuHole/pull/63) Squash 合入 main `45e3948`；精确送审 head `7a3b402` 的 22 项适用 CI 全部 PASS，R01–R07 主会话独立审查无阻断（非 GitHub 成员批准）。main 产品与送审版本差异为空；此前真我独立包 7 项原生限定验收沿原版本范围保留。开发后端已升级 C25／V6，严格 TLS readiness 通过，84 张业务／会话表及 6 个序列、授权代次与恢复计数不变，未调用 recover／reset／Down／restore。真我日常2315同签保数据覆盖及既有会话私信入口 smoke PASS，无重新登录／核对页；未清数据、卸载或发消息。旧缩略图不可用仅为未定因观察，validator pin／payload 只读复核及 Windows 独立 HTTPS／watch 续期检查因中断 NOT_RUN。未生产发布，旧整机重启／掉电／iOS等边界保留。详见[任务](../branches/identity-avatar-onboarding.md)与[交付回执](identity-avatar-onboarding-verification-20261023.json)；下方旧状态为当时快照。

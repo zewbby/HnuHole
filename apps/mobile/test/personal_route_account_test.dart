@@ -11,6 +11,60 @@ import 'login_home_test_support.dart';
 const _channel = '00000000-0000-0000-0000-000000000001';
 
 void main() {
+  testWidgets(
+    'first feed read has structured loading and no global progress bar',
+    (tester) async {
+      final f = HomeTestFixture();
+      f.postApi.pageWait = Completer();
+      await tester.pumpWidget(await f.create());
+      await tester.pumpAndSettle();
+      expect(find.byType(FeedScreen), findsOneWidget);
+      expect(find.bySemanticsLabel('正在加载帖子'), findsOneWidget);
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+      expect(find.text('暂无可显示的帖子'), findsNothing);
+      f.postApi.pageWait!.complete(
+        feed.reply(
+          PostsPage(items: [feed.post(channel: _channel)], nextCursor: null),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('今天的校园'), findsOneWidget);
+      expect(find.bySemanticsLabel('正在加载帖子'), findsNothing);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    },
+  );
+
+  for (final fail in [false, true]) {
+    testWidgets(
+      'late personal profile keeps heading and empty state stationary: fail=$fail',
+      (tester) async {
+        final f = HomeTestFixture();
+        await tester.pumpWidget(await f.create());
+        await tester.pumpAndSettle();
+        f.identitiesApi.readWait = Completer();
+        await tester.tap(find.byKey(const ValueKey('feed-account')));
+        await tester.pumpAndSettle();
+        expect(find.text('还没有自己的帖子'), findsOneWidget);
+        final heading = tester.getTopLeft(find.text('自己的帖子'));
+        final empty = tester.getTopLeft(find.text('还没有自己的帖子'));
+        if (fail) {
+          f.identitiesApi.readWait!.completeError(
+            const AuthFailure(kind: AuthFailureKind.timeout),
+          );
+        } else {
+          f.identitiesApi.readWait!.complete(f.identitiesApi.directory());
+        }
+        await tester.pumpAndSettle();
+        expect(tester.getTopLeft(find.text('自己的帖子')), heading);
+        expect(tester.getTopLeft(find.text('还没有自己的帖子')), empty);
+        expect(find.text(fail ? '个人资料暂不可用' : '账号A的身份'), findsOneWidget);
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+      },
+    );
+  }
+
   for (final fromFeed in [false, true]) {
     testWidgets(
       'root My route switches A to B and fences old publication; feed=$fromFeed',
@@ -151,7 +205,8 @@ void main() {
     f.channels.wait = Completer();
     await f.loginB(tester, directoryPending: true);
     expect(find.byType(FeedScreen), findsNothing);
-    expect(find.text('正在准备首页…'), findsOneWidget);
+    expect(find.byKey(const ValueKey('startup-feed')), findsOneWidget);
+    expect(find.byKey(const ValueKey('auth-start')), findsNothing);
     f.channels.wait!.complete(
       await IdentityTestChannels().loadChannels(
         sessionToken: identityTestOtherToken,

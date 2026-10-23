@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../auth/auth_presentation.dart';
+import '../posts/feed_screen.dart';
 import 'channel_directory_controller.dart';
 
 /// Login and authoritative directory loading only. The app root presents the
@@ -25,8 +26,12 @@ class EntryScreen extends StatelessWidget {
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: directory,
     builder: (context, _) =>
-        restoringSession || directory.status == ChannelDirectoryStatus.signedOut
+        restoringSession || directory.status == ChannelDirectoryStatus.loading
+        ? const FeedStartupScreen()
+        : directory.status == ChannelDirectoryStatus.signedOut
         ? AuthWelcomeScreen(onStarted: onLoginRequested)
+        : directory.status == ChannelDirectoryStatus.ready
+        ? const FeedStartupScreen()
         : Scaffold(
             appBar: AppBar(
               title: const Text('HnuHole'),
@@ -69,14 +74,7 @@ class EntryScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                _ => const Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 12),
-                    Text('正在准备首页…'),
-                  ],
-                ),
+                _ => const FeedStartupScreen(),
               },
             ),
           ),

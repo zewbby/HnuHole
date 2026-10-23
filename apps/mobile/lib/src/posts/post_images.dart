@@ -13,16 +13,21 @@ class PostImage {
     this.pixelSize,
     this.animated = false,
     this.registerDecodeProvider,
-  }) : loadThumbnail = null;
+  }) : loadThumbnail = null,
+       retryThumbnail = null;
   const PostImage.deferred({
     required Future<ImageProvider> Function() this.loadThumbnail,
     required this.item,
     this.pixelSize,
     this.animated = false,
     this.registerDecodeProvider,
+    this.retryThumbnail,
   }) : thumbnail = null;
   final ImageProvider? thumbnail;
   final Future<ImageProvider> Function()? loadThumbnail;
+
+  /// Explicit retry also discards failed decode bytes in the host media cache.
+  final Future<ImageProvider> Function()? retryThumbnail;
   final ViewerItem item;
   final Size? pixelSize;
   final bool animated;
@@ -442,8 +447,44 @@ class _PostThumbnail extends StatefulWidget {
 }
 
 class _PostThumbnailState extends State<_PostThumbnail> {
-  late final Future<ImageProvider>? _pending = widget.image.loadThumbnail
-      ?.call();
+  Future<ImageProvider>? _pending;
+  ImageProvider? _decoded;
+  int _attempt = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final load = widget.image.loadThumbnail;
+    if (load != null) _pending = Future<ImageProvider>.sync(load);
+  }
+
+  void _retry() {
+    final load = widget.image.retryThumbnail ?? widget.image.loadThumbnail;
+    if (load == null) return;
+    final decoded = _decoded;
+    if (decoded != null) unawaited(decoded.evict());
+    setState(() {
+      _attempt++;
+      _pending = Future<ImageProvider>.sync(load);
+    });
+  }
+
+  Widget _loading() => const Center(child: Text('图片加载中'));
+
+  Widget _failure() => Center(
+    child: SingleChildScrollView(
+      primary: false,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('图片加载失败'),
+          if (widget.image.loadThumbnail != null)
+            TextButton(onPressed: _retry, child: const Text('点击重试')),
+        ],
+      ),
+    ),
+  );
+
   Widget _image(ImageProvider provider) => LayoutBuilder(
     builder: (context, constraints) {
       final dpr = MediaQuery.devicePixelRatioOf(context);
@@ -461,15 +502,15 @@ class _PostThumbnailState extends State<_PostThumbnail> {
         height: height,
         policy: ResizeImagePolicy.fit,
       );
+      _decoded = decoded;
       widget.image.registerDecodeProvider?.call(decoded);
       final image = Image(
+        key: ValueKey(_attempt),
         image: decoded,
         fit: widget.fit,
-        frameBuilder: (_, child, frame, sync) => sync || frame != null
-            ? child
-            : const Center(child: Icon(Icons.image_outlined)),
-        errorBuilder: (_, _, _) =>
-            const Center(child: Icon(Icons.broken_image_outlined)),
+        frameBuilder: (_, child, frame, sync) =>
+            sync || frame != null ? child : _loading(),
+        errorBuilder: (_, _, _) => _failure(),
       );
       if (!widget.image.animated) return image;
       return Stack(
@@ -502,15 +543,11 @@ class _PostThumbnailState extends State<_PostThumbnail> {
     if (widget.image.thumbnail case final provider?) return _image(provider);
     return FutureBuilder<ImageProvider>(
       future: _pending,
-      builder: (_, snapshot) => snapshot.hasData
+      builder: (_, snapshot) => snapshot.connectionState != ConnectionState.done
+          ? _loading()
+          : snapshot.hasData
           ? _image(snapshot.data!)
-          : Center(
-              child: Icon(
-                snapshot.hasError
-                    ? Icons.broken_image_outlined
-                    : Icons.image_outlined,
-              ),
-            ),
+          : _failure(),
     );
   }
 }

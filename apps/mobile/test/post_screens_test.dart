@@ -86,6 +86,8 @@ class _WidgetPosts extends ChangeNotifier implements PostController {
   @override
   String? get personalProfileError => null;
   @override
+  bool get personalProfileLoading => false;
+  @override
   ManagedIdentity? get personalIdentity => identities.firstOrNull;
   @override
   Future<void> loadPersonal({bool more = false}) async {

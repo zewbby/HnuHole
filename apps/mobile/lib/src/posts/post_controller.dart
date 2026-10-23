@@ -202,6 +202,7 @@ class PostController extends ChangeNotifier {
   List<PersonalPostItem> personalItems = [];
   ManagedIdentity? personalIdentity;
   String? personalProfileError;
+  bool personalProfileLoading = false;
 
   bool get supportsFeed => _api is FeedApi;
   bool get supportsInteractions => _api is PostInteractionsApi;
@@ -256,6 +257,7 @@ class PostController extends ChangeNotifier {
     personalItems = [];
     personalIdentity = null;
     personalProfileError = null;
+    personalProfileLoading = false;
     feedItems = [];
     currentChannelId = feedCursor = feedError = personalError = errorMessage =
         null;
@@ -555,9 +557,11 @@ class PostController extends ChangeNotifier {
     }
   }
 
+  int _personalProfileRequest = 0;
+
   Future<void> loadPersonal({bool more = false}) async {
     if (more && personalLoading) return;
-    var contentLoaded = false;
+    Future<void>? profile;
     final request = ++_personalRequest;
     _PostAuthority? a;
     try {
@@ -565,9 +569,13 @@ class PostController extends ChangeNotifier {
       if (!_current(a) || request != _personalRequest) return;
       personalLoading = true;
       personalError = null;
-      personalProfileError = null;
+      if (!more) {
+        personalProfileError = null;
+        personalProfileLoading = true;
+      }
       _notify();
       final scoped = a;
+      if (!more) profile = _loadPersonalProfile(a, ++_personalProfileRequest);
       if (!_current(a) || request != _personalRequest) return;
       // Independent reads start together. Future.wait keeps the original typed
       // failure so 401/503 still pass through the authority gate below.
@@ -636,70 +644,72 @@ class PostController extends ChangeNotifier {
       )) {
         unawaited(_insertPublished(a, task.postId));
       }
-      contentLoaded = true;
       personalLoading = false;
       _notify();
-      // Profile decoration must not hold the post list or known empty state.
-      if (!more) {
-        if (!_current(a) || request != _personalRequest) return;
-        final directory = await _identities.identities(a.token);
-        if (!_current(a) || request != _personalRequest) return;
-        if (!await _sessions.persistSessionMetadata(
-          a.token,
-          directory.sessionExpiresAt,
-          () => _current(scoped),
-        )) {
-          return;
-        }
-        if (!_current(a) || request != _personalRequest) return;
-        final originals = directory.identities.where((i) => i.isOriginal);
-        final context = originals.isNotEmpty
-            ? null
-            : await _accept(
-                a,
-                await _api.composerContext(sessionToken: a.token),
-              );
-        if (!_current(a) || request != _personalRequest) return;
-        personalIdentity = originals.isNotEmpty
-            ? originals.first
-            : directory.identities
-                  .where((i) => i.id == context?.defaultIdentityId)
-                  .firstOrNull;
-        personalIdentity ??=
-            (List<ManagedIdentity>.of(directory.identities)..sort((x, y) {
-                  final byTime = x.createdAt.compareTo(y.createdAt);
-                  return byTime != 0 ? byTime : x.id.compareTo(y.id);
-                }))
-                .firstOrNull;
-        _notify();
-      }
     } catch (error) {
       if (a != null && (!_current(a) || request != _personalRequest)) return;
-      if (!contentLoaded) {
-        _failure(error, a);
-        if (a != null && _current(a)) personalError = '暂时无法核对本人内容，请重试。';
-      } else {
-        // Access/storage failures still follow the existing failure policy; a temporary
-        // profile failure leaves successfully loaded posts and empty states.
-        if (error is AuthStorageFailure ||
-            error is PostStorageFailure ||
-            error is AuthFailure &&
-                (error.unauthorized ||
-                    error.kind == AuthFailureKind.unavailable) ||
-            error is PostFailure &&
-                {
-                  PostFailureKind.unauthorized,
-                  PostFailureKind.unavailable,
-                }.contains(error.kind)) {
-          _failure(error, a);
-        }
-        if (a != null && _current(a)) {
-          personalProfileError = '身份资料暂时无法读取，请下拉重试。';
-        }
-      }
+      _failure(error, a);
+      if (a != null && _current(a)) personalError = '暂时无法核对本人内容，请重试。';
     } finally {
       if (a != null && _current(a) && request == _personalRequest) {
         personalLoading = false;
+        _notify();
+      }
+      // Profile failure is handled independently; it never delays list state.
+      await profile;
+    }
+  }
+
+  Future<void> _loadPersonalProfile(_PostAuthority a, int request) async {
+    try {
+      final directory = await _identities.identities(a.token);
+      if (!_current(a) || request != _personalProfileRequest) return;
+      if (!await _sessions.persistSessionMetadata(
+        a.token,
+        directory.sessionExpiresAt,
+        () => _current(a) && request == _personalProfileRequest,
+      )) {
+        return;
+      }
+      if (!_current(a) || request != _personalProfileRequest) return;
+      final originals = directory.identities.where((i) => i.isOriginal);
+      final context = originals.isNotEmpty
+          ? null
+          : await _accept(a, await _api.composerContext(sessionToken: a.token));
+      if (!_current(a) || request != _personalProfileRequest) return;
+      personalIdentity = originals.isNotEmpty
+          ? originals.first
+          : directory.identities
+                .where((i) => i.id == context?.defaultIdentityId)
+                .firstOrNull;
+      personalIdentity ??=
+          (List<ManagedIdentity>.of(directory.identities)..sort((x, y) {
+                final byTime = x.createdAt.compareTo(y.createdAt);
+                return byTime != 0 ? byTime : x.id.compareTo(y.id);
+              }))
+              .firstOrNull;
+    } catch (error) {
+      if (!_current(a) || request != _personalProfileRequest) return;
+      // Access/storage failures still follow the existing failure policy; a temporary
+      // profile failure leaves successfully loaded posts and empty states.
+      if (error is AuthStorageFailure ||
+          error is PostStorageFailure ||
+          error is AuthFailure &&
+              (error.unauthorized ||
+                  error.kind == AuthFailureKind.unavailable) ||
+          error is PostFailure &&
+              {
+                PostFailureKind.unauthorized,
+                PostFailureKind.unavailable,
+              }.contains(error.kind)) {
+        _failure(error, a);
+      }
+      if (_current(a)) {
+        personalProfileError = '身份资料暂时无法读取，请下拉重试。';
+      }
+    } finally {
+      if (_current(a) && request == _personalProfileRequest) {
+        personalProfileLoading = false;
         _notify();
       }
     }

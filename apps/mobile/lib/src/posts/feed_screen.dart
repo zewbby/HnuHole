@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import '../channels/channel.dart';
 import '../design_system/telegram_theme.dart';
+import '../navigation/app_navigation.dart';
 import '../comments/comment_editor.dart';
 import '../comments/comment_models.dart';
 import '../comments/comment_runtime.dart';
@@ -316,7 +317,8 @@ class _FeedScreenState extends State<FeedScreen> {
             .firstOrNull;
         return HhXPostFeed(
           showNavigation: widget.showNavigation,
-          loading: _starting || c.timelineLoading || c.preferencesSaving,
+          loading:
+              posts.isNotEmpty && (c.timelineLoading || c.preferencesSaving),
           refreshEnabled:
               !_starting && !c.timelineLoading && !c.preferencesSaving,
           onRefresh: () async {
@@ -368,6 +370,8 @@ class _FeedScreenState extends State<FeedScreen> {
                   bottom: 96 + MediaQuery.paddingOf(context).bottom,
                 ),
                 children: [
+                  if ((_starting || c.timelineLoading) && posts.isEmpty)
+                    const FeedLoadingPlaceholder(),
                   if (!_starting && c.timelineError != null)
                     Padding(
                       padding: const EdgeInsets.all(24),
@@ -572,6 +576,113 @@ class _FeedScreenState extends State<FeedScreen> {
           ),
         );
       },
+    ),
+  );
+}
+
+/// Presentation only: it never mounts controllers or reads protected data.
+/// Match the live home layout while session/directory authority is restored.
+class FeedStartupScreen extends StatelessWidget {
+  const FeedStartupScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: '正在准备首页',
+    child: ExcludeSemantics(
+      child: ExcludeFocus(
+        child: IgnorePointer(
+          child: Scaffold(
+            key: const ValueKey('startup-feed'),
+            bottomNavigationBar: HhAppNavigation(
+              composeSlot: true,
+              onCompose: () {},
+              selected: AppDestination.home,
+              onSelected: (_) {},
+            ),
+            body: Theme(
+              data: HhTelegramTheme.create(
+                Theme.of(context).brightness,
+                fontFamily: 'Roboto',
+              ),
+              child: HhXPostFeed(
+                showNavigation: false,
+                channelTitle: '',
+                feedTitle: '推荐',
+                composeTooltip: '选择通道写帖子',
+                posts: const [],
+                mediaBuilder: (_, _) => const SizedBox.shrink(),
+                onPost: (_) {},
+                onAuthor: (_) {},
+                onAction: (_, _) {},
+                onMedia: (_, _) {},
+                onMenu: (_) {},
+                onBack: () {},
+                onSearch: () {},
+                onFilter: () {},
+                onCompose: () {},
+                onDestination: (_) {},
+                content: ListView(
+                  padding: const EdgeInsets.only(bottom: 96),
+                  children: const [FeedLoadingPlaceholder()],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+class FeedLoadingPlaceholder extends StatelessWidget {
+  const FeedLoadingPlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: '正在加载帖子',
+    child: ExcludeSemantics(
+      child: Column(
+        children: [
+          for (var i = 0; i < 2; i++)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _bar(context, 120, 16),
+                        const SizedBox(height: 12),
+                        _bar(context, double.infinity, 14),
+                        const SizedBox(height: 8),
+                        _bar(context, 160, 14),
+                        const SizedBox(height: 12),
+                        _bar(context, double.infinity, 150),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
+
+  Widget _bar(BuildContext context, double width, double height) => Container(
+    width: width,
+    height: height,
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(8),
     ),
   );
 }
