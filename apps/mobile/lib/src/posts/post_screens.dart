@@ -1471,41 +1471,45 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (c.personalIdentity != null) ...[
-                    Row(
-                      children: [
-                        const _IdentityAvatar(radius: 30),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                c.personalIdentity!.nickname,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                  Row(
+                    key: const ValueKey('personal-profile'),
+                    children: [
+                      const _IdentityAvatar(radius: 30),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              c.personalIdentity?.nickname ??
+                                  (c.personalProfileError != null
+                                      ? '个人资料暂不可用'
+                                      : c.personalProfileLoading
+                                      ? '正在加载个人资料…'
+                                      : '我的身份'),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
                               ),
-                              const SizedBox(height: 6),
-                              const Text(
-                                '仅自己可见',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: PostTheme.muted,
-                                ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              c.personalProfileError ?? '仅自己可见',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: PostTheme.muted,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                  ],
-                  if (c.personalProfileError != null) ...[
-                    Text(c.personalProfileError!),
-                    const SizedBox(height: 12),
-                  ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
                   const Text(
                     '自己的帖子',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),

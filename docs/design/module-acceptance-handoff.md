@@ -1,5 +1,9 @@
 # 分模块验收与测试交接
 
+> **2026-10-23 MOBILE-STARTUP-MEDIA-PROFILE-01 复测2319：**用户确认一次系统logo→首页静态骨架→内容；移除Flutter二次logo和启动转圈。相关32测试与分析0 PASS，同签保数据覆盖vivo已登录冷启动录屏限定PASS；debug启动画面约3秒仍待性能优化，不提升其他模块结论。详见[任务复测记录](../branches/fix-startup-media-profile.md)。
+
+> **2026-10-23 MOBILE-STARTUP-MEDIA-PROFILE-01（本地未提交／合并）：**`codex/fix/startup-media-profile` 基于 main `8dca780`，统一 Android／Flutter 启动等待、首页骨架、个人资料并行与稳定布局、图片状态及显式重试。Flutter全量830 PASS／3 SKIP；设备录屏／耗时和真实图片故障尚未验证，不提升原模块结论。范围与最终回执见[任务](../branches/fix-startup-media-profile.md)。
+
 > **2026-10-23 IDENTITY-AVATAR-01 已合并并完成开发交付：**[PR #63](https://github.com/zewbby/HnuHole/pull/63) Squash 合入 main `45e3948`；精确送审 head `7a3b402` 的 22 项适用 CI 全部 PASS，R01–R07 主会话独立审查无阻断（非 GitHub 成员批准）。main 产品与送审版本差异为空；此前真我独立包 7 项原生限定验收沿原版本范围保留。开发后端已升级 C25／V6，严格 TLS readiness 通过，84 张业务／会话表及 6 个序列、授权代次与恢复计数不变，未调用 recover／reset／Down／restore。真我日常2315同签保数据覆盖及既有会话私信入口 smoke PASS，无重新登录／核对页；未清数据、卸载或发消息。旧缩略图不可用仅为未定因观察，validator pin／payload 只读复核及 Windows 独立 HTTPS／watch 续期检查因中断 NOT_RUN。未生产发布，旧整机重启／掉电／iOS等边界保留。详见[任务](../branches/identity-avatar-onboarding.md)与[交付回执](identity-avatar-onboarding-verification-20261023.json)；下方旧状态为当时快照。
 
 > **2026-10-23 IDENTITY-AVATAR-01（分支实现／未合并／未发布）：**`feat/identity-avatar-onboarding` 已实现真实头像上传／规范化 WebP／受保护读取／原子资料保存与清理、注册收尾后的强制初始身份入口（默认头像可用，已有身份直接进入）及帖子／评论／私信头像投影。已无冲突整合 main `8dca780`；宿主／一次性真实 SQL／TLS／迁移 24→25／受限权限和完整契约按[机器证据](identity-avatar-onboarding-verification-20261023.json)取得限定 PASS，主会话独立审查 R01–R06 无剩余阻断（非 GitHub 成员批准）。提交阶段仅补 7 目标分析 0 issues、入口／头像缓存 5 项 PASS；上游 #61／#62 证据保留各自来源。精确 `fca05299` 真我 `.identityavatar`2314 已完成注册收尾强制弹窗、系统图库创建、原始身份／最后一个禁删展示、真实 IME、原生 vault 跨进程读回、仅换头像和已有身份取消往返共 7 项限定通过；最终仅更正不可达管理空态文案与规则文档，不重复该矩阵。整机重启／掉电／真实 TCP 丢响应仍 NOT_RUN，远端 CI 待 PR；只交付隔离 C25 配套新客户端，不宣称旧 2313 兼容，不动共享 C24／日常包或生产，不提升历史整模块结论。下一步提交送审并核对精确 head 产品 CI；尚无合并授权。见[任务](../branches/identity-avatar-onboarding.md)。

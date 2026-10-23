@@ -76,6 +76,47 @@ void main() {
     }
   }
 
+  for (final decodeFailure in [false, true]) {
+    testWidgets(
+      'thumbnail transfer/decode failure can explicitly retry: decode=$decodeFailure',
+      (tester) async {
+        final authority = ValueNotifier(true), access = ValueNotifier(true);
+        var calls = 0;
+        Future<ImageProvider> load() async {
+          if (++calls > 1) return image;
+          if (!decodeFailure) throw StateError('temporary transfer failure');
+          return MemoryImage(Uint8List.fromList([1, 2, 3]));
+        }
+
+        final value = group([
+          PostImage.deferred(
+            pixelSize: const Size(640, 480),
+            loadThumbnail: load,
+            item: ViewerItem.provider(
+              id: 'retry',
+              provider: image,
+              pixelSize: const Size(640, 480),
+              saveAllowed: false,
+            ),
+          ),
+        ], access);
+        await tester.pumpWidget(section(authority, value));
+        await frames(tester);
+        expect(find.text('图片加载失败'), findsOneWidget);
+        await tester.tap(find.text('点击重试'));
+        await frames(tester);
+        expect(calls, 2);
+        expect(find.text('图片加载失败'), findsNothing);
+        expect(find.byType(Image), findsOneWidget);
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        authority.dispose();
+        access.dispose();
+      },
+    );
+  }
+
   testWidgets(
     'feed geometry is reserved before manifest and bytes; decoding stays bounded',
     (tester) async {
@@ -421,7 +462,8 @@ void main() {
       tester.getSize(find.byKey(const ValueKey(('feed-image', 'pending')))),
       before,
     );
-    expect(find.byIcon(Icons.broken_image_outlined), findsOneWidget);
+    expect(find.text('图片加载失败'), findsOneWidget);
+    expect(find.text('点击重试'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     authority.dispose();
     access.dispose();

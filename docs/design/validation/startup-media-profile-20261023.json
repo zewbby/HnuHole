@@ -1,0 +1,106 @@
+{
+  "task": "MOBILE-STARTUP-MEDIA-PROFILE-01",
+  "date": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/fix/startup-media-profile",
+  "base": "8dca780ab11b9aef9974ab7aab7f096c1beea9d1",
+  "sourceFilesSha256": {
+    "apps/mobile/android/app/src/main/res/values/startup_colors.xml": "a475d55edc5344eab17a5265cc0f73320b4df39a432067c11b790733bbd3efb8",
+    "apps/mobile/lib/src/posts/post_media_repository.dart": "2f4f8464ca1e30e4bdaab979aecdd3e24e7a09d68a827718b05a7f01b4719e32",
+    "apps/mobile/test/post_controller_test.dart": "966fd0c06dde0e34663293a6d098fec077f011046ab90f99cf8db2b93e78ed18",
+    "apps/mobile/test/login_home_navigation_test.dart": "2a96a237772af2c3539a3079e920b7c2d959c7cc8cfb8685edc0f85b33077714",
+    "apps/mobile/test/personal_route_account_test.dart": "d39afe4bc68c51b40f566423af4255abfa2eb634b647b62f296271271b045b9c",
+    "apps/mobile/android/app/src/main/res/values-night-v31/styles.xml": "b4752d053bb0c2dffb726ba2d59c3a6266826c8b097f4aed7d78803d8dcfbe8d",
+    "apps/mobile/android/app/src/main/res/drawable/startup_logo_system.xml": "c359a064ce5fbad5735da5f9673316137ffd2b9eb6c3bb84a46fb5e2a06b4b04",
+    "apps/mobile/android/app/src/main/res/values-night/startup_colors.xml": "15ef9e53722360fc1953781490e9791a6433c684bdc965b310783f7fcf62d5b2",
+    "apps/mobile/lib/src/posts/post_images.dart": "907136b93aa3abfcd95c511bb0f30adc74ad7adbed4445b478908d440084558c",
+    "apps/mobile/test/post_media_repository_test.dart": "f9ed4a1bce7ea7bc0f8a2a4309401f31b5dce881fbef6086aac1c639bd29ad9d",
+    "apps/mobile/lib/src/posts/post_controller.dart": "fae075265f833dbd136f843cdd908932bbb7c322316cc9a1552cd993993cb91c",
+    "apps/mobile/test/startup_entry_test.dart": "e77d73bf8d36cfea9e3354d444869c93dd9687aab9d1d105a5c0b57c7a3cdb8b",
+    "apps/mobile/android/app/src/main/res/drawable/startup_logo.xml": "30ccc1bdb6e679e7906609d4117c48c7a01aaa73b57c6afd7db2ca9417bdf2e4",
+    "apps/mobile/lib/src/navigation/entry_screen.dart": "399b9fbab9822587504705a88aa8588660892a63597cab0a2678f5c61c6037b1",
+    "apps/mobile/android/app/src/main/res/values-v31/styles.xml": "f3a47b18dcff437399f8e76b06b947601bf855468fbce130497c7a45e8ca1547",
+    "apps/mobile/android/app/src/main/res/drawable-v21/launch_background.xml": "98f3443b3c28d51f28f49e45e66e6dc2f9fc892591ed1eb5133d77f09db0f778",
+    "apps/mobile/test/post_screens_test.dart": "a75af1edf8c528f82251ed7bffdf972a34cf29baa788ff10b8b54821feb0a995",
+    "apps/mobile/lib/src/posts/feed_screen.dart": "730e176a59c990c0afacee922af226aaef56598fa81d9c3294cf0ac358eed074",
+    "apps/mobile/android/app/src/main/res/drawable/launch_background.xml": "98f3443b3c28d51f28f49e45e66e6dc2f9fc892591ed1eb5133d77f09db0f778",
+    "apps/mobile/lib/src/posts/post_screens.dart": "c7955cc6ab3311633ee87c736a1627084a109fe0dd8e97e55703907a3edd3571",
+    "apps/mobile/test/feed_media_test.dart": "5d91cd5e550bb73cb733e076fc1f35a4e18346799dd43d0294edca6934758454"
+  },
+  "validation": {
+    "mobileAnalysis": "PASS_ZERO_ISSUES",
+    "fullHostTests": {
+      "status": "PASS",
+      "passed": 830,
+      "skipped": 3,
+      "skipReasons": [
+        "Owned real TLS/PostgreSQL P2 fixture not configured",
+        "Owned real TLS/PostgreSQL P3 fixture not configured",
+        "Exclusive DM_HOST_FIXTURE not configured"
+      ],
+      "scope": "Historical 2026102317 source; not rerun after startup retest"
+    },
+    "hostVisuals": "Historical logo captures superseded by 2026102319 device video; personal/feed captures retained within prior scope",
+    "androidArm64DebugBuild": "PASS_MAIN_ENTRY_2026102317",
+    "localWorkingTreePolicyAndXml": "PASS",
+    "diffCheck": "PASS",
+    "vivoDeviceInstall": {
+      "serial": "10CEAG17RY003M7",
+      "model": "V2323A",
+      "versionCode": 2026102319,
+      "signatureUpgrade": "PASS",
+      "userDataPreserved": true,
+      "launch": "PASS",
+      "date": "2026-10-23",
+      "coldStart": "PASS_SCOPED_LOGO_TO_STATIC_HOME_TO_POSTS",
+      "amStartTotalTimeMs": 3576,
+      "video": "E:/Hnuhole-env/video-analysis-20261023/retest/vivo-cold-start-2026102319.mp4"
+    },
+    "startupRetest": {
+      "focusedTests": 32,
+      "analysis": "PASS_ZERO_ISSUES",
+      "build": "PASS_ARM64_SAME_SIGNER_2026102319",
+      "scope": "startup_entry, login_home_navigation, app_navigation, feed_ui",
+      "assertions": [
+        "no app logo or startup spinner",
+        "static waiting for ten seconds",
+        "no post request before authority",
+        "header/navigation geometry unchanged after directory completes"
+      ]
+    }
+  },
+  "apk": {
+    "path": "E:\\Hnuhole-env\\source\\HnuHole-startup-media-profile\\apps\\mobile\\build\\app\\outputs\\flutter-apk\\app-debug.apk",
+    "sha256": "1c72504b9860b42030350ca15e801c570e21b0dd8f4a397a3e6009e46f87b489",
+    "installed": true,
+    "signing": "PRERELEASE_DEVICE_TEST_KEY_MATCHED_EXISTING_INSTALL",
+    "versionCode": 2026102319
+  },
+  "localEvidence": "E:\\Hnuhole-env\\video-analysis-20261023",
+  "screenshots": [
+    "startup-light.png",
+    "startup-dark.png",
+    "feed-loading.png",
+    "personal-pending.png",
+    "personal-loaded.png"
+  ],
+  "commands": [
+    "flutter pub get --enforce-lockfile --offline",
+    "flutter analyze --no-pub",
+    "flutter test --no-pub test",
+    "flutter build apk --debug --no-pub --target-platform android-arm64 --build-number 2026102317"
+  ],
+  "limitations": {
+    "historicalImageFailureRootCause": "NOT_CONFIRMED_VIDEO_ICON_IS_LOADING_PLACEHOLDER",
+    "deviceVideoComparison": "PASS_SCOPED_STARTUP_TRANSITION_2026102319",
+    "nativeColdStartTiming": "DEBUG_AM_START_TOTAL_3576_MS_NOT_A_RELEASE_BENCHMARK",
+    "liveImageRequestTracing": "NOT_RUN",
+    "ios": "NOT_RUN",
+    "independentReview": "NOT_RUN",
+    "remoteCI": "NOT_RUN"
+  },
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "released": false
+}

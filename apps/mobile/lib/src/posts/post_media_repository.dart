@@ -256,6 +256,38 @@ class _MediaLease {
     return future;
   }
 
+  Future<MemoryImage> retryProvider(PostMediaImage item) async {
+    check();
+    final previous = _pending.remove(item.path);
+    if (previous != null) {
+      MemoryImage? image;
+      try {
+        image = await previous;
+      } catch (_) {
+        // Failed transfers already remove themselves from the pending map.
+      }
+      check();
+      if (image != null) {
+        final removed = _providers
+            .where(
+              (p) => p == image || p is ResizeImage && p.imageProvider == image,
+            )
+            .toList();
+        for (final p in removed) {
+          _providers.remove(p);
+          weight -= p is ResizeImage
+              ? (p.width ?? 640) * (p.height ?? 640) * item.frames * 4
+              : image.bytes.length +
+                    item.pixelWidth * item.pixelHeight * item.frames * 4;
+        }
+        _decodeKeys.removeWhere((k) => k.$1 == image);
+        await Future.wait([for (final p in removed) p.evict()]);
+      }
+    }
+    check();
+    return provider(item);
+  }
+
   PostImages acquire() {
     check();
     final access = ValueNotifier(true);
@@ -310,6 +342,12 @@ class _MediaLease {
     loadThumbnail: () async {
       held();
       final image = await provider(item.preview);
+      held();
+      return image;
+    },
+    retryThumbnail: () async {
+      held();
+      final image = await retryProvider(item.preview);
       held();
       return image;
     },

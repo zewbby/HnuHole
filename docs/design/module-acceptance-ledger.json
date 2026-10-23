@@ -73,7 +73,10 @@
   },
   "dmIdentityLoading20261023": {
     "task": "DM-IDENTITY-LOADING-01",
-    "modules": ["B08", "B09"],
+    "modules": [
+      "B08",
+      "B09"
+    ],
     "branch": "fix/direct-message-identity-loading",
     "base": "93d3ed6bc4084f440c9797f5b7ffa0696bb3d42d",
     "applicationSource": "490c2a33175c517bc8db7af42d6ef41f4ee94ce9",
@@ -40947,5 +40950,43 @@
     "evidence": "docs/design/direct-message-p1-main-merge-20261022.json",
     "fullModuleAcceptancePassed": false,
     "released": false
+  },
+  "mobileStartupMediaProfile20261023": {
+    "task": "MOBILE-STARTUP-MEDIA-PROFILE-01",
+    "branch": "codex/fix/startup-media-profile",
+    "base": "8dca780ab11b9aef9974ab7aab7f096c1beea9d1",
+    "modules": [
+      "A12",
+      "B03",
+      "B06",
+      "B10",
+      "PM01",
+      "IV01"
+    ],
+    "implementation": "LOCAL_UNCOMMITTED",
+    "hostTests": {
+      "status": "PASS",
+      "passed": 830,
+      "skipped": 3
+    },
+    "deviceVideoAndColdStartTiming": "NOT_RUN",
+    "historicalImageNetworkFailureRootCause": "NOT_CONFIRMED_VIDEO_ICON_IS_LOADING_PLACEHOLDER",
+    "independentReview": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true,
+    "evidence": "docs/branches/fix-startup-media-profile.md",
+    "analysisIssues": 0,
+    "androidArm64DebugBuild": "PASS_2026102317_NOT_INSTALLED",
+    "hostVisualRender": "PASS_1_TEST_5_CAPTURES",
+    "validationRecord": "docs/design/validation/startup-media-profile-20261023.json",
+    "startupRetest2026102319": {
+      "hostTests": 32,
+      "analysis": "PASS_ZERO",
+      "vivo": "PASS_SCOPED_COLD_START_LOGO_STATIC_SHELL_CONTENT",
+      "userAcceptance": "PENDING",
+      "startupLatency": "DEBUG_SPLASH_APPROX_3_SECONDS_NOT_OPTIMIZED"
+    }
   }
 }

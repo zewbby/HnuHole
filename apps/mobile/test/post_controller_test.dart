@@ -570,6 +570,7 @@ void main() {
     final load = f.controller.loadPersonal();
     await _until(() => api.ownCursors.isNotEmpty);
     expect(api.personalTaskReads, 1);
+    expect(f.auth.api.readStarted.isCompleted, isTrue);
     expect(f.controller.personalLoading, isTrue);
     api.ownWait!.complete(api.reply(PostsPage(items: [], nextCursor: null)));
     await _until(() => !f.controller.personalLoading);
@@ -586,7 +587,9 @@ void main() {
     f = await _Fixture.create(api: api);
     f.auth.api.readWait = Completer();
     final load = f.controller.loadPersonal();
-    await _until(() => f.auth.api.readStarted.isCompleted);
+    await _until(
+      () => f.auth.api.readStarted.isCompleted && !f.controller.personalLoading,
+    );
     expect(f.controller.personalLoading, isFalse);
     expect(f.controller.personalItems, isEmpty);
     f.auth.api.readWait!.completeError(
@@ -608,7 +611,11 @@ void main() {
         f = await _Fixture.create();
         f.auth.api.readWait = Completer();
         final load = f.controller.loadPersonal();
-        await _until(() => f.auth.api.readStarted.isCompleted);
+        await _until(
+          () =>
+              f.auth.api.readStarted.isCompleted &&
+              !f.controller.personalLoading,
+        );
         expect(f.controller.personalItems, isNotEmpty);
         f.auth.api.readWait!.completeError(AuthFailure(kind: kind));
         await load;
@@ -619,34 +626,48 @@ void main() {
     );
   }
 
-  test(
-    'non-original profile context is deferred; paging never rereads profile',
-    () async {
-      final api = _Api()..ownCursor = 'next';
-      f = await _Fixture.create(api: api);
-      f.auth.api.items = [identityTestItem(original: false)];
-      api.composerWait = Completer();
-      final load = f.controller.loadPersonal();
-      await _until(() => api.composerReads == 1);
-      expect(f.controller.personalLoading, isFalse);
-      expect(f.controller.personalItems, isNotEmpty);
-      api.composerWait!.complete(
-        api.reply(
-          const ComposerContext(
-            selectionState: ComposerSelectionState.defaultAvailable,
-            defaultIdentityId: identityTestId,
-          ),
+  test('non-original profile context does not block content; paging never rereads profile', () async {
+    final api = _Api()..ownCursor = 'next';
+    f = await _Fixture.create(api: api);
+    f.auth.api.items = [identityTestItem(original: false)];
+    api.composerWait = Completer();
+    final load = f.controller.loadPersonal();
+    await _until(() => api.composerReads == 1 && !f.controller.personalLoading);
+    expect(f.controller.personalLoading, isFalse);
+    expect(f.controller.personalItems, isNotEmpty);
+    api.composerWait!.complete(
+      api.reply(
+        const ComposerContext(
+          selectionState: ComposerSelectionState.defaultAvailable,
+          defaultIdentityId: identityTestId,
         ),
-      );
-      await load;
-      expect(f.controller.personalIdentity?.id, identityTestId);
-      final reads = f.auth.api.reads;
-      await f.controller.loadPersonal(more: true);
-      expect(f.auth.api.reads, reads);
-      expect(api.composerReads, 1);
-      expect(api.ownCursors.last, 'next');
-    },
-  );
+      ),
+    );
+    await load;
+    expect(f.controller.personalIdentity?.id, identityTestId);
+    final reads = f.auth.api.reads;
+    await f.controller.loadPersonal(more: true);
+    expect(f.auth.api.reads, reads);
+    expect(api.composerReads, 1);
+    expect(api.ownCursors.last, 'next');
+  });
+
+  test('pagination does not cancel a pending profile decoration', () async {
+    final api = _Api()..ownCursor = 'next';
+    f = await _Fixture.create(api: api);
+    f.auth.api.readWait = Completer();
+    final first = f.controller.loadPersonal();
+    await _until(
+      () => f.auth.api.readStarted.isCompleted && !f.controller.personalLoading,
+    );
+    await f.controller.loadPersonal(more: true);
+    expect(f.controller.personalProfileLoading, isTrue);
+    f.auth.api.readWait!.complete(f.auth.api.directory());
+    await first;
+    expect(f.controller.personalIdentity, isNotNull);
+    expect(f.controller.personalProfileLoading, isFalse);
+    expect(f.auth.api.reads, 1);
+  });
 
   test('SQLite draft edits use durable CAS revision, reopen restores multiple drafts and ignores blank new draft', () async {
     f = await _Fixture.create();

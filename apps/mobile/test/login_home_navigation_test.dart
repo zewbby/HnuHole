@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
@@ -56,6 +58,39 @@ Future<void> disposeApp(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets(
+    'restoration shell keeps home geometry while directory is pending',
+    (tester) async {
+      final f = HomeTestFixture();
+      f.channels.wait = Completer<ChannelDirectoryResult>();
+      await tester.pumpWidget(await f.create());
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('startup-feed')), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(FeedScreen), findsNothing);
+      expect(f.postApi.calls, isEmpty);
+      final header = tester.getTopLeft(find.text('HnuHole'));
+      final navigation = tester.getTopLeft(
+        find.byKey(const ValueKey('destination:home')),
+      );
+      await tester.pump(const Duration(seconds: 10));
+      expect(tester.binding.transientCallbackCount, 0);
+      f.channels.wait!.complete(
+        await IdentityTestChannels().loadChannels(
+          sessionToken: identityTestToken,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expectHome(tester, f);
+      expect(tester.getTopLeft(find.text('HnuHole')), header);
+      expect(
+        tester.getTopLeft(find.byKey(const ValueKey('destination:home'))),
+        navigation,
+      );
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      await disposeApp(tester);
+    },
+  );
   testWidgets('cold start never presents the suspended-session error page', (
     tester,
   ) async {

@@ -120,6 +120,21 @@ void main() {
     auth.dispose();
   });
 
+  test('explicit thumbnail retry refetches cached bytes and preserves the lease deadline', () async {
+    final group = await repository.load(mediaPostId);
+    final first = await group.images.single.loadThumbnail!();
+    group.images.single.registerDecodeProvider!(
+      ResizeImage(first, width: 64, height: 64, policy: ResizeImagePolicy.fit),
+    );
+    final second = await group.images.single.retryThumbnail!();
+    expect(identical(first, second), isFalse);
+    expect(api.byteReads, 2);
+    expect(api.manifestReads, 1);
+    expect(group.accessGranted.value, isTrue);
+    group.onRelease!();
+    expect(repository.idleBytes, greaterThanOrEqualTo(0));
+  });
+
   test(
     'missing local originals do not silently retry an image task as text',
     () async {
