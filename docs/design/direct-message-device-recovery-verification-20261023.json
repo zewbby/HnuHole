@@ -2,6 +2,17 @@
   "task": "DM-P2-DEVICE-RECOVERY",
   "date": "2026-10-23",
   "branch": "test/direct-message-device-recovery",
+  "submission": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/55",
+    "draftAtCreation": true,
+    "base": "feat/direct-message-governance",
+    "acceptanceCommit": "85429383dec780b92990dc48736d0fc02f168019",
+    "mergeOrder": ["PR #51", "PR #52", "PR #55"],
+    "ciAtCreation": "11 product and collaboration checks running; final result must match the current PR head in Checks",
+    "merged": false,
+    "deployed": false,
+    "followUp": "User authorized the main integration session to verify dependent PRs, merge into main and build; submission agent does not merge or deploy. No recursive evidence commit for the final CI receipt."
+  },
   "applicationSource": "07923b047dcc1bf8b431e7b6d94da31d28ec223e",
   "status": "SCOPED_PHYSICAL_TAKEOVER_FORCE_STOP_REBOOT_PASS",
   "productionCodeChanged": false,

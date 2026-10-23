@@ -3,6 +3,8 @@
     "task": "DM-P2-DEVICE-RECOVERY",
     "modules": ["B08", "B09"],
     "branch": "test/direct-message-device-recovery",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/55",
+    "acceptanceCommit": "85429383dec780b92990dc48736d0fc02f168019",
     "applicationSource": "07923b047dcc1bf8b431e7b6d94da31d28ec223e",
     "result": "SCOPED_PHYSICAL_TAKEOVER_FORCE_STOP_REBOOT_PASS",
     "evidence": "docs/design/direct-message-device-recovery-verification-20261023.json",
