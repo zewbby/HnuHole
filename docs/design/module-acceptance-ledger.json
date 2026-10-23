@@ -1,4 +1,27 @@
 {
+  "authFeedback20261023": {
+    "task": "AUTH-FEEDBACK-01",
+    "branch": "codex/fix/auth-feedback",
+    "modules": [
+      "A12"
+    ],
+    "implementation": "MERGED_MAIN_SCOPED_PASS",
+    "host": "PASS_64_FOCUSED_TESTS_ANALYZE_ZERO",
+    "androidBuild": "PASS_ARM64_DEBUG_SAME_SIGNER",
+    "vivo": "PASS_INSTALL_REPLACE_2026102303",
+    "candidate2304": "BUILD_TEST_PASS_REALME_RMX3366_INSTALL_LAUNCH_PASS_VIVO_NOT_UPDATED",
+    "candidate2305": "PASS_64_TESTS_ANALYZE_ZERO_REALME_INSTALL_LAUNCH_CLIENT_INPUT_CLASSIFICATION",
+    "candidate2306": "PASS_64_TESTS_SCALE_TRANSITION_ANALYZE_ZERO_REALME_INSTALL_LAUNCH",
+    "userAcceptance": "PASS_USER_CONFIRMED_AUTH_FEEDBACK_AND_CENTER_SCALE_DIALOG",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/53",
+    "remoteCi": "PASS_AUTH_FLUTTER_ANDROID_PRERELEASE_REHEARSAL_COLLABORATION_AND_AFFECTED_PRODUCT_WORKFLOWS",
+    "merged": true,
+    "mergeCommit": "9427dc6e4cdc1b777c1127787a8fd17d5e2e4036",
+    "framePerformance": "NOT_RUN",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true,
+    "evidence": "docs/branches/fix-auth-feedback.md"
+  },
   "dmChatP220261022": {
     "task": "DM-P2-CHAT",
     "modules": [
