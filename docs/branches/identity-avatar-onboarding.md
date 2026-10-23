@@ -30,6 +30,10 @@
 
 真我原生回执：主会话以精确 `fca05299ba4a0c73ec6aa9a4877faea1a1c6dd8d` 构建 `.identityavatar`2314，APK SHA256 `c1a00b6aa7ce9e5b373729d8bf1bbf2dfeb04a2eb588dc615600a1b3ac2ea7fd`。实际 SMTP OTP、恢复码确认及可选 Passkey 收尾后弹窗；返回／外部点击不能跳过。原生图库 Browse 选择自有蓝色 JPEG，填写昵称并 CREATE；SQL 确认一个原始身份、累计创建 1 次，最后一个删除按钮禁用（后端拒绝由另列 SQL 证明）。真实 IME 展开时完成／退出可达，实际完成成功。进程强杀冷启保持登录、身份与蓝头像；绿色 JPEG 仅改头像并跨新进程保留，身份／昵称／计数不变、改名日期 NULL，旧 payload NULL、新 WebP 无 EXIF，DM 头像更新；添加→取消→返回 DM 无初始／核对页。7 个限定项、9 份私人证据的绝对路径／hash 均见机器记录，未提交图片、APK、日志或秘密。日常2313、共享C24、vivo均未动；整机重启、突然掉电、真实 TCP 丢响应、iOS、规模及生产未验。
 
-验收后的唯一产品差异是管理页零身份防御空态旧文案改为“还没有发言身份，请先完成初始身份设置。”及对应断言；正式首次 gate 下该旧空态不可达，未改变头像流程、协议或存储。同步修正 accounts／post-composer／comments 当前规则及 ADR 覆盖说明；`flutter test --no-pub test/identity_management_screen_test.dart --plain-name 'zero-identity account can create default-avatar identity and preserves legal input' --reporter expanded`：1 PASS；仅回归该既有管理空态单例，未重复未变原生矩阵。
+验收后的唯一移动端产品文案差异是管理页零身份防御空态旧文案改为“还没有发言身份，请先完成初始身份设置。”及对应断言；正式首次 gate 下该旧空态不可达，未改变头像流程、协议或存储。同步修正 accounts／post-composer／comments 当前规则及 ADR 覆盖说明；`flutter test --no-pub test/identity_management_screen_test.dart --plain-name 'zero-identity account can create default-avatar identity and preserves legal input' --reporter expanded`：1 PASS；仅回归该既有管理空态单例，未重复未变原生矩阵。
 
-下一步：按授权提交／推送并创建 PR，核对精确 head 适用产品 CI。独立 agent 审查不等于 GitHub 成员批准；本功能尚无合并授权，不更新共享后端、日常包或生产。
+PR #63 首轮精确 `a6936ec` 的 21 项 CI 为 17 PASS／4 FAIL：feed-postgres 与 flutter-and-real-feed 同因旧 Goose 行数断言未计 0025；Flutter 唯一旧 wire 夹具枚举 AVATAR 后仍只给 nickname；预发布恢复后 readiness 因 `--no-privileges` 恢复使三个头像触发器函数重获默认 PUBLIC EXECUTE，被原 CheckDatabase 正确拒绝。定点修复将迁移断言改为 count26／max25、旧请求体保留并显式覆盖 AVATAR PATCH，并在 grant-community 重新撤销精确三个函数的 PUBLIC 权限（存在性保护兼容旧 schema）；新增真实无 ACL 恢复回归。真实 feed/race 四子例、wire 单例与分析0、恢复失败复现及修后真实 CheckDatabase、pre10/11/12 grant 投影均 PASS；四个作者输入 LF hash 与主会话 R07 独立审查已核对。未修改运行时检查或放宽 readiness，不声明本地完整 rehearsal PASS，新 head 远端 CI 待执行。
+
+旧设备矩阵边界：现有 `registerOwned` 只保证注册可返回首次 gate，调用方显式提供 `initialIdentityNickname` 才创建身份。旧 B3/B4 六处调用均未迁移新 gate；C01 经旧 accountRoute 进入零身份昵称草稿的路径已不适用，K01 本来专测零身份草稿，不能统一自动创建。旧 runner 的 APK／源码 hash 和历史证据保持原版本，当前完整 B3/B4 矩阵不声称适配或通过；本任务真实 main 的新增 7 项原生验收单列，未重写或重跑历史矩阵。
+
+下一步：提交／推送上述定点修复至 [PR #63](https://github.com/zewbby/HnuHole/pull/63)，核对新 head 适用产品 CI。独立 agent 审查不等于 GitHub 成员批准；本功能尚无合并授权，不更新共享后端、日常包或生产。

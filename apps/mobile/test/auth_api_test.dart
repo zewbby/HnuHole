@@ -280,7 +280,7 @@ void main() {
     expect((await api.identities(_token)).identities, isEmpty);
   });
 
-  test('identity mutation wire uses UUID targets key16 and immutable nickname only', () async {
+  test('identity mutation wire preserves legacy nickname bodies and avatar-only PATCH', () async {
     final key = AuthCrypto.encode(List<int>.filled(16, 8));
     for (final operation in IdentityOperation.values) {
       community.respond = (request) => _json(
@@ -294,16 +294,27 @@ void main() {
         idempotencyKey: key,
         operation: operation,
         identityId: operation == IdentityOperation.create ? null : _account,
-        nickname: operation == IdentityOperation.delete ? null : '春风',
+        nickname:
+            {
+              IdentityOperation.delete,
+              IdentityOperation.avatar,
+            }.contains(operation)
+            ? null
+            : '春风',
+        avatar: operation == IdentityOperation.avatar
+            ? 'avatar-v1:$_account'
+            : null,
       );
     }
     expect(community.requests.map((r) => r.method), [
       'POST',
       'PATCH',
       'DELETE',
+      'PATCH',
     ]);
     expect(community.requests.map((r) => r.path), [
       '/api/v1/identities',
+      '/api/v1/identities/$_account',
       '/api/v1/identities/$_account',
       '/api/v1/identities/$_account',
     ]);
@@ -311,6 +322,7 @@ void main() {
       '{"nickname":"春风"}',
       '{"nickname":"春风"}',
       '',
+      '{"avatar":"avatar-v1:$_account"}',
     ]);
     expect(
       community.requests.every((r) => r.headers['idempotency-key'] == key),
@@ -325,7 +337,7 @@ void main() {
       ),
       throwsA(_failure(AuthFailureKind.rejected, code: 'CLIENT_INPUT_INVALID')),
     );
-    expect(community.requests, hasLength(3));
+    expect(community.requests, hasLength(4));
   });
 
   test('identity result is bodyless key16 query and rejects missing terminal field', () async {

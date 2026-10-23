@@ -1,4 +1,76 @@
 {
+  "ciFollowup": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/63",
+    "originalHead": "a6936ecebf121956906b0e109e6dd82649a8be2d",
+    "originalResult": "21_COMPLETED_17_SUCCESS_4_FAILURE",
+    "failedJobs": [
+      {
+        "id": 120282890609,
+        "name": "feed-postgres",
+        "cause": "Goose count must include version0 plus migrations1-25"
+      },
+      {
+        "id": 120282889319,
+        "name": "flutter-and-real-feed",
+        "cause": "same feed migration count assertion"
+      },
+      {
+        "id": 120282890125,
+        "name": "flutter",
+        "cause": "old request fixture enumerated AVATAR without avatar; legacy nickname bodies retained"
+      },
+      {
+        "id": 120282983574,
+        "name": "rehearsal",
+        "cause": "no-privileges restore regained default PUBLIC EXECUTE on three avatar trigger functions; actual CheckDatabase correctly rejected"
+      }
+    ],
+    "authorReceipt": "E:/Hnuhole-env/avatar-onboarding-20261023/ci-followup-author-receipt.json",
+    "fourFileCanonicalLFHashes": {
+      "apps/mobile/test/auth_api_test.dart": "f851f125cb9951fab990fc5ddcbd5a0357261d19796e6c576ec499f68a40b9fd",
+      "infra/postgres/grant-community.sql": "7849119d199a8814266b96200b6e711260cf48d20c55538acc1bebbdab793345",
+      "services/api/internal/authprivacy/community_feed_migration_test.go": "73aa6a15d089fec5c83310fd4d0532a6ecd615f4c9e5cd9a4303606d039116fc",
+      "tools/prerelease/tests/test_role_audit_postgres.py": "35b222c205a97196153b0daeb772f9bcfdcce88ef5a7ac6dd65f5948fc29a5da"
+    },
+    "focusedChecks": {
+      "feedMigrationFourSubcasesRace": {
+        "result": "PASS",
+        "snapshot": "/home/hnuhole/identity-avatar-feed-followup.4hcN0a"
+      },
+      "wireSingleRegression": {
+        "result": "PASS",
+        "log": "E:/Hnuhole-env/avatar-onboarding-20261023/feed-followup-auth-wire.log"
+      },
+      "wireAnalyze": {
+        "result": "PASS_0_ISSUES",
+        "log": "E:/Hnuhole-env/avatar-onboarding-20261023/feed-followup-wire-analyze.log"
+      },
+      "restoredAvatarAclBeforeFix": {
+        "result": "FAIL_REPRODUCED",
+        "snapshot": "/home/hnuhole/identity-avatar-restore-followup-dcm1gzeu",
+        "actualRuntimeCheckDatabase": "identity avatar schema or privilege boundary rejected"
+      },
+      "restoredAvatarAclAfterFix": {
+        "result": "PASS",
+        "snapshot": "/home/hnuhole/identity-avatar-restore-followup-g7dwwznq",
+        "actualRuntimeCheckDatabase": "PASS"
+      },
+      "pre10_11_12GrantProjection": {
+        "result": "PASS",
+        "artifact": "/home/hnuhole/identity-avatar-pre25-grants-bq4juuc9/result.json"
+      }
+    },
+    "independentReview": "PASS_ROOT_R07_FOUR_FILE_DIFF_AND_REAL_INPUT_RECEIPTS_NOT_GITHUB_MEMBER_APPROVAL",
+    "preservedBoundaries": "No relaxed runtime checks/readiness thresholds; no business or device changes. Real native main flow evidence remains exact fca05299. Restore grant repair and test maintenance are separate from native acceptance.",
+    "localFullRehearsal": "NOT_RUN_FOCUSED_REAL_RESTORE_AND_RUNTIME_CHECK_ONLY",
+    "newHeadRemoteCI": "PENDING_AFTER_FOLLOWUP_PUSH"
+  },
+  "legacyB3B4MatrixBoundary": {
+    "registerOwned": "Registration may return initial gate; only explicit initialIdentityNickname creates an identity.",
+    "oldCallers": "Six old B3/B4 registerOwned callers have not migrated to the new gate. C01 old accountRoute zero-identity draft path is not applicable; K01 must preserve its zero-identity draft purpose.",
+    "historicalEvidence": "Old APK/source hash runner and prior acceptance stay on original tested versions; current whole B3/B4 matrix is not claimed compatible or passed.",
+    "currentFeatureEvidence": "Seven real-main native cases are separately recorded; old matrix was not rewritten or rerun."
+  },
   "postNativeCopyVerification": {
     "command": "flutter test --no-pub test/identity_management_screen_test.dart --plain-name 'zero-identity account can create default-avatar identity and preserves legal input' --reporter expanded",
     "cwd": "apps/mobile",
@@ -127,7 +199,7 @@
     },
     "privateReceipt": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-acceptance.json",
     "evidenceFilesCommitted": false,
-    "finalSourceDelta": "After tested fca05299, only unreachable management empty-state copy and its assertion changed; documentation corrections and receipt recording do not change the tested native flow. No repeated full native matrix."
+    "finalSourceDelta": "After tested fca05299, mobile product differs only in unreachable management empty-state copy and its assertion. CI followup separately repairs no-ACL restored function grants and maintains wire/migration/restore fixtures. App runtime and tested native flow are unchanged; no repeated full native matrix."
   },
   "integratedMain": "8dca780ab11b9aef9974ab7aab7f096c1beea9d1",
   "submissionReview": {
