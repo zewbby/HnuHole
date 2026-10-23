@@ -13,6 +13,8 @@ import '../storage/post_store.dart'
     show BusinessKeyVault, PostStorageFailure, PostStorageLostKey;
 import 'dm_protocol.dart';
 
+part 'dm_chat_store.dart';
+
 class _DmVault implements BusinessKeyVault {
   _DmVault(this.native);
   final DurableBusinessVault native;
@@ -34,6 +36,7 @@ class DmStore {
   final _cipher = AesGcm.with256bits();
   Future<void> _tail = Future.value();
   bool _closed = false, _closing = false;
+  int _hiddenLookupAfter = 0;
   static String scopeFor(String environment, String account) => hashes.sha256
       .convert(utf8.encode(jsonEncode(['hnuhole.dm.v1', environment, account])))
       .toString();
@@ -163,6 +166,7 @@ class DmStore {
           }
         }
       });
+      await store._transaction(store._migrateChatMedia);
       return store;
     } catch (_) {
       db?.close();
@@ -269,6 +273,7 @@ class DmStore {
     '_ordinal': r['ordinal'],
     '_sort': r['sort_key'],
     '_pair': r['pair'],
+    '_kind': r['kind'],
   };
   Future<void> _put(
     String id,
@@ -307,15 +312,24 @@ class DmStore {
   }
 
   Future<Map<String, dynamic>?> get(String id) => _run(() => _get(id));
-  Future<List<Map<String, dynamic>>> work() => _run(
-    () async => Future.wait(
-      _db
-          .select(
-            "SELECT * FROM dm_records WHERE kind='message' AND state IN ('queued','unknown','received','read_pending') ORDER BY ordinal,id LIMIT 100",
-          )
-          .map(_decode),
-    ),
-  );
+  Future<List<Map<String, dynamic>>> work() => _run(() async {
+    final rows = _db
+        .select(
+          "SELECT * FROM dm_records WHERE kind IN ('message','hidden_message') AND state IN ('queued','unknown','received','read_pending') AND NOT(kind='hidden_message' AND state='unknown') ORDER BY ordinal,id LIMIT 100",
+        )
+        .toList();
+    if (rows.length < 100) {
+      // Permanently absent hidden commands must not starve new sends or each
+      // other. Rotate their receipt lookups, preserving original enqueue order.
+      final hidden = _db.select(
+        "SELECT * FROM dm_records WHERE kind='hidden_message' AND state='unknown' ORDER BY CASE WHEN ordinal>? THEN 0 ELSE 1 END,ordinal,id LIMIT ?",
+        [_hiddenLookupAfter, 100 - rows.length],
+      );
+      if (hidden.isNotEmpty) _hiddenLookupAfter = hidden.last['ordinal'] as int;
+      rows.addAll(hidden);
+    }
+    return Future.wait(rows.map(_decode));
+  });
   Future<List<Map<String, dynamic>>> history(
     String own,
     String peer, {
@@ -336,9 +350,13 @@ class DmStore {
   Future<void> saveDraft(String own, String peer, String text) =>
       _run(() async {
         final pair = await pairTag(own, peer);
-        await _transaction(
-          () => _put('draft:$pair', 'draft', pair, 0, 'draft', {'text': text}),
-        );
+        await _transaction(() async {
+          final previous = await _get('draft:$pair');
+          await _put('draft:$pair', 'draft', pair, 0, 'draft', {
+            'text': text,
+            'revision': (previous?['revision'] as int? ?? 0) + 1,
+          });
+        });
       });
   Future<String> draft(String own, String peer) => _run(
     () async =>
@@ -390,7 +408,10 @@ class DmStore {
           // Preserve a draft changed after this exact send was initiated.
           final draft = await _get('draft:$pair');
           if (draft == null || draft['text'] == intent['text']) {
-            await _put('draft:$pair', 'draft', pair, 0, 'draft', {'text': ''});
+            await _put('draft:$pair', 'draft', pair, 0, 'draft', {
+              'text': '',
+              'revision': (draft?['revision'] as int? ?? 0) + 1,
+            });
           }
         });
         return id;
@@ -412,7 +433,14 @@ class DmStore {
         throw const PostStorageFailure();
       }
       if (receipt != null) row['receipt'] = receipt;
-      await _put(id, 'message', row['_pair'], row['_ordinal'], state, row);
+      await _put(
+        id,
+        row['_kind'] ?? 'message',
+        row['_pair'],
+        row['_ordinal'],
+        state,
+        row,
+      );
       if (state == 'sent' && receipt != null) {
         final directoryId = 'conversation:${row['_pair']}';
         final directory = await _get(directoryId);
@@ -451,6 +479,10 @@ class DmStore {
         final id = item['messageId'] as String;
         final previous = await _get(id);
         if (previous != null) {
+          if (previous['_state'] == 'deleted' ||
+              previous['_state'] == 'retracted') {
+            continue;
+          }
           for (final key in [
             'messageId',
             'conversationId',
@@ -465,6 +497,12 @@ class DmStore {
           continue;
         }
         final pair = await pairTag(item['identityId'], item['senderId']);
+        if (await _get('retracted:$id') != null) continue;
+        final savedDirectory = await _get('conversation:$pair');
+        if ((item['sequence'] as int) <=
+            ((savedDirectory?['deletedThrough'] as int?) ?? 0)) {
+          continue;
+        }
         await _put(id, 'message', pair, _nextOrdinal(), 'received', {
           ...item,
           'outgoing': false,

@@ -38,7 +38,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
-| `feat/direct-message-chat-completion` | 私信第二阶段进行中：图片、会话管理与撤回能力；代码仍在开发。 | [GitHub 分支](https://github.com/zewbby/HnuHole/tree/feat/direct-message-chat-completion) |
+| `feat/direct-message-chat-completion` | 第二阶段私有图片、会话管理和撤回已实现并通过限定原生验收；[PR #51](https://github.com/zewbby/HnuHole/pull/51) 待 CI，未合并或发布。 | [任务详情](docs/branches/feat-direct-message-chat-completion.md) |
 | `feat/email-auth-flow` | 邮箱接入交付分支；长时间关机后重启仍未验证，保留待继续核验。 | [交接](docs/branches/feat-email-auth-flow.md) |
 
 ### 本轮退役（2026-10-23）

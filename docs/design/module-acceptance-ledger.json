@@ -22,6 +22,23 @@
     "historicalModuleVerdictsUnchanged": true,
     "evidence": "docs/branches/fix-auth-feedback.md"
   },
+  "dmChatP220261022": {
+    "task": "DM-P2-CHAT",
+    "modules": [
+      "B08",
+      "B09"
+    ],
+    "result": "SCOPED_NATIVE_CHAT_PASS_NOT_MERGED",
+    "source": "889217251c54759d46f9b0f9d3613d8baacf7b30",
+    "evidence": "docs/design/direct-message-chat-verification-20261022.json",
+    "branch": "feat/direct-message-chat-completion",
+    "independentReview": "Astra High read-only fc88b9a: no remaining actionable blockers; not GitHub member approval",
+    "remoteCI": "PENDING_PR_CHECKS",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true,
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/51"
+  },
   "sessionResume20261022": {
     "task": "AUTH-SESSION-RESUME-01",
     "branch": "fix/session-restore",

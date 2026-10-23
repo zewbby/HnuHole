@@ -122,15 +122,24 @@ class _HhDmTimelineState extends State<HhDmTimeline> {
     final epoch = _epoch;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || epoch != _epoch) return;
-      final viewport = _viewport.currentContext?.findRenderObject() as RenderBox?;
+      final viewport =
+          _viewport.currentContext?.findRenderObject() as RenderBox?;
       if (viewport == null || !viewport.hasSize) return;
       final top = viewport.localToGlobal(Offset.zero).dy;
       final ids = <String>[];
       for (final message in widget.view.messages.where((m) => !m.outgoing)) {
-        final box = _anchors[message.id]?.currentContext?.findRenderObject() as RenderBox?;
+        final box =
+            _anchors[message.id]?.currentContext?.findRenderObject()
+                as RenderBox?;
         if (box == null || !box.attached || !box.hasSize) continue;
         final y = box.localToGlobal(Offset.zero).dy;
-        if (y < top + viewport.size.height && y + box.size.height > top) ids.add(message.id);
+        if (y < top + viewport.size.height && y + box.size.height > top) {
+          ids.addAll(
+            message.visibleMessageIds.isEmpty
+                ? [message.id]
+                : message.visibleMessageIds,
+          );
+        }
       }
       if (ids.isNotEmpty) widget.onVisible?.call(ids);
     });

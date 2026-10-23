@@ -185,9 +185,13 @@ void main() {
     },
   );
 
-  final dm = kDebugMode && const bool.fromEnvironment('DM_TEXT_INTEGRATION')
+  final dm =
+      kDebugMode &&
+          (const bool.fromEnvironment('DM_TEXT_INTEGRATION') ||
+              const bool.fromEnvironment('DM_CHAT_INTEGRATION'))
       ? DmRuntime(
           controller: DmController(
+            chatEnabled: const bool.fromEnvironment('DM_CHAT_INTEGRATION'),
             api: postApi,
             openStore: (account) => DmStore.openNative(storageScope, account),
             onUnauthorized: sessions.sessionUnauthorized,

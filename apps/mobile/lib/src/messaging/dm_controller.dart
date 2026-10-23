@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart' as hashes;
 
 import 'package:flutter/foundation.dart';
 
 import '../posts/post_api.dart';
 import 'dm_protocol.dart';
 import 'dm_store.dart';
+
+part 'dm_chat_controller.dart';
 
 typedef DmStoreFactory = Future<DmStore> Function(String account);
 
@@ -17,8 +22,10 @@ class DmController extends ChangeNotifier {
     this.onUnauthorized,
     this.onUnavailable,
     this.onMetadata,
+    this.chatEnabled = false,
   });
   final DmApi api;
+  final bool chatEnabled;
   final DmStoreFactory openStore;
   final void Function(String, String?)? onUnauthorized;
   final void Function(String)? onUnavailable;
@@ -34,6 +41,7 @@ class DmController extends ChangeNotifier {
   Timer? _timer;
   List<Map<String, dynamic>> conversations = [];
   String? error;
+  String? _operationError;
   bool get available =>
       _store != null && _authorized?.call() == true && !_disposed;
   String get scope => '${_account ?? ''}:$_epoch';
@@ -97,6 +105,7 @@ class DmController extends ChangeNotifier {
     _token = null;
     conversations = [];
     error = null;
+    _operationError = null;
     _notify();
     // Drain the old window before opening a new store and starting another loop.
     await _syncing;
@@ -139,6 +148,7 @@ class DmController extends ChangeNotifier {
 
   Future<void> _synchronize(int epoch, DmStore store, String token) async {
     try {
+      if (chatEnabled) await _chatBeforeSync(epoch, store, token);
       for (final row in await store.work()) {
         if (!_current(epoch)) return;
         final id = row['_id'] as String;
@@ -150,19 +160,40 @@ class DmController extends ChangeNotifier {
           }
           if (!_current(epoch)) return;
           var receipt = await _request(epoch, token, 'GET', 'commands/$id');
+          final latest = await store.get(id);
+          final hidden = latest?['_kind'] == 'hidden_message';
+          if (hidden &&
+              receipt['state'] != 'SENT' &&
+              !(receipt['state'] == 'FAILED' &&
+                  receipt['attempt'] == intent['attempt'])) {
+            // ABSENT or an older failed attempt cannot rule out a delayed PUT.
+            // Deleted content is never replayed; retain only receipt lookup work.
+            continue;
+          }
           if (receipt['state'] == 'ABSENT' ||
               receipt['state'] == 'FAILED' &&
                   (receipt['attempt'] as int) < (intent['attempt'] as int)) {
+            final image = row['messageType'] == 'IMAGE';
+            if (image) {
+              intent['data'] = base64Encode(
+                await store.photo(
+                  intent['mediaId'] as String,
+                  senderId: intent['identityId'] as String,
+                ),
+              );
+            }
+            // The user may delete while original bytes are being read.
+            if ((await store.get(id))?['_kind'] == 'hidden_message') continue;
             receipt = await _request(
               epoch,
               token,
               'PUT',
-              'commands/$id',
+              image ? 'chat/images/$id' : 'commands/$id',
               body: intent,
             );
           }
           if (!_current(epoch)) return;
-          if (receipt['attempt'] != intent['attempt'] ||
+          if ((!hidden && receipt['attempt'] != intent['attempt']) ||
               !{'SENT', 'FAILED'}.contains(receipt['state'])) {
             throw const FormatException('DM attempt mismatch');
           }
@@ -172,6 +203,16 @@ class DmController extends ChangeNotifier {
             receipt['state'] == 'SENT' ? 'sent' : 'failed',
             receipt: receipt,
           );
+          if (chatEnabled && receipt['state'] == 'SENT') {
+            await store.enforceDeleteFor(id);
+            final control = await store.get(
+              'retracted:${receipt['messageId']}',
+            );
+            if (control != null) {
+              await store.applyControls([control], await store.controlCursor());
+            }
+          }
+          if (chatEnabled) await store.eraseHiddenResolved(id);
         } else {
           final read = state == 'read_pending';
           await _request(
@@ -185,29 +226,88 @@ class DmController extends ChangeNotifier {
           );
           if (!_current(epoch)) return;
           await store.transition(id, state, read ? 'read' : 'inbox');
+          if (chatEnabled) await store.eraseHiddenResolved(id);
         }
       }
-      final pending = await _request(epoch, token, 'GET', 'pending');
+      final pending = await _request(
+        epoch,
+        token,
+        'GET',
+        chatEnabled ? 'chat/pending' : 'pending',
+      );
       final items = (pending['items'] as List)
           .map((e) => Map<String, dynamic>.from(e as Map))
           .toList();
       if (items.isNotEmpty) {
         if (!_current(epoch)) return;
-        await store.receive(items);
+        final durableIds = <String>[];
+        if (chatEnabled) {
+          for (final item in items) {
+            try {
+              if (await store.deliverySuppressed(item)) {
+                durableIds.add(item['messageId']);
+                continue;
+              }
+              final previous = await store.get(item['messageId']);
+              if (previous != null) {
+                durableIds.add(item['messageId']);
+                continue;
+              }
+              if (item['kind'] == 'IMAGE') {
+                final media = await _request(
+                  epoch,
+                  token,
+                  'GET',
+                  'chat/media/${item['messageId']}',
+                );
+                if (media['messageId'] != item['messageId'] ||
+                    media['mediaId'] != (item['media'] as Map)['mediaId'] ||
+                    media['sha256'] != (item['media'] as Map)['sha256']) {
+                  throw const FormatException('Mismatched private image');
+                }
+                final bytes = base64Decode(media['data'] as String);
+                if (bytes.length != media['byteLength'] ||
+                    hashes.sha256.convert(bytes).toString() !=
+                        media['sha256']) {
+                  throw const FormatException('Damaged private image');
+                }
+                if (!_current(epoch)) return;
+                await store.receivePhoto(item, bytes);
+              } else {
+                await store.receive([item]);
+              }
+              durableIds.add(item['messageId']);
+            } on PostFailure catch (e) {
+              if (e.kind == PostFailureKind.unauthorized ||
+                  e.kind == PostFailureKind.unavailable) {
+                rethrow;
+              }
+              _operationError = '部分聊天记录未保存，请清理空间或恢复连接后重试';
+            } catch (_) {
+              _operationError = '部分聊天记录未保存，请清理空间或恢复连接后重试';
+            }
+          }
+        } else {
+          await store.receive(items);
+          durableIds.addAll(items.map((e) => e['messageId'] as String));
+        }
         if (!_current(epoch)) return;
-        await _request(
-          epoch,
-          token,
-          'POST',
-          'ack',
-          body: {'messageIds': items.map((e) => e['messageId']).toList()},
-        );
-        if (!_current(epoch)) return;
-        for (final item in items) {
-          final row = await store.get(item['messageId']);
+        if (durableIds.isNotEmpty) {
+          await _request(
+            epoch,
+            token,
+            'POST',
+            'ack',
+            body: {'messageIds': durableIds},
+          );
           if (!_current(epoch)) return;
-          if (row?['_state'] == 'received') {
-            await store.transition(item['messageId'], 'received', 'inbox');
+          for (final item in items) {
+            if (!durableIds.contains(item['messageId'])) continue;
+            final row = await store.get(item['messageId']);
+            if (!_current(epoch)) return;
+            if (row?['_state'] == 'received') {
+              await store.transition(item['messageId'], 'received', 'inbox');
+            }
           }
         }
       }
@@ -218,7 +318,7 @@ class DmController extends ChangeNotifier {
             epoch,
             token,
             'GET',
-            'conversations',
+            chatEnabled ? 'chat/conversations' : 'conversations',
             query: {
               'identityId': identity,
               if (after.isNotEmpty) 'after': after,
@@ -231,7 +331,11 @@ class DmController extends ChangeNotifier {
             throw const FormatException('DM identity mismatch');
           }
           if (!_current(epoch)) return;
-          await store.saveConversations(rows);
+          if (chatEnabled) {
+            await store.saveChatConversations(rows);
+          } else {
+            await store.saveConversations(rows);
+          }
           if (rows.length < 100) break;
           final next = rows.last['id'] as String;
           if (next.compareTo(after) <= 0) {
@@ -240,8 +344,10 @@ class DmController extends ChangeNotifier {
           after = next;
         } while (_current(epoch));
       }
+      if (chatEnabled) await _chatControls(epoch, store, token);
       if (!_current(epoch)) return;
-      error = null;
+      error = _operationError;
+      _operationError = null;
     } on PostFailure catch (e) {
       if (!_current(epoch)) return;
       if (e.kind == PostFailureKind.unauthorized) {
@@ -274,7 +380,11 @@ class DmController extends ChangeNotifier {
       if (!_current(epoch)) return;
       if (local.isNotEmpty) {
         final last = local.single;
-        v['localPreview'] = last['outgoing'] == true
+        v['localPreview'] = last['recalled'] == true
+            ? '消息已撤回'
+            : last['messageType'] == 'IMAGE'
+            ? '[图片]'
+            : last['outgoing'] == true
             ? (last['intent'] as Map)['text']
             : last['text'];
         v['localOrdinal'] = last['_ordinal'];
@@ -282,9 +392,15 @@ class DmController extends ChangeNotifier {
       }
     }
     directory.sort(
-      (a, b) => ((b['localOrdinal'] as int?) ?? 0).compareTo(
-        (a['localOrdinal'] as int?) ?? 0,
-      ),
+      (a, b) =>
+          (b['pinned'] == true ? 1 : 0).compareTo(
+                a['pinned'] == true ? 1 : 0,
+              ) !=
+              0
+          ? (b['pinned'] == true ? 1 : 0).compareTo(a['pinned'] == true ? 1 : 0)
+          : ((b['localOrdinal'] as int?) ?? 0).compareTo(
+              (a['localOrdinal'] as int?) ?? 0,
+            ),
     );
     if (!_current(epoch)) return;
     conversations = directory;
@@ -344,16 +460,18 @@ class DmController extends ChangeNotifier {
     );
   }
 
-  Future<void> saveDraft(String own, String peer, String text) async {
-    if (!available || !_identities.contains(own)) return;
+  Future<bool> saveDraft(String own, String peer, String text) async {
+    if (!available || !_identities.contains(own)) return false;
     final epoch = _epoch;
     try {
       await _store!.saveDraft(own, peer, text);
+      return _current(epoch);
     } catch (_) {
       if (_current(epoch)) {
         error = '草稿保存失败，请保留当前页面';
         _notify();
       }
+      return false;
     }
   }
 

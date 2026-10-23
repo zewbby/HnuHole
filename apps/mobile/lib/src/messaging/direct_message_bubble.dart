@@ -272,6 +272,28 @@ class HhDirectMessageBubble extends StatelessWidget {
                         fit: StackFit.expand,
                         children: [
                           imageBuilder(context, image),
+                          if (image.state == DmSendState.failed)
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: IconButton(
+                                key: ValueKey('retry-image:${image.id}'),
+                                tooltip: '此图片发送失败，查看操作',
+                                onPressed: () => onMenu(image.id, anchor),
+                                icon: Icon(Icons.error, color: palette.error),
+                              ),
+                            ),
+                          if (image.state == DmSendState.sending ||
+                              image.state == DmSendState.unknown)
+                            const Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Icon(
+                                  Icons.schedule,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           if (selectedImageId == image.id)
                             DecoratedBox(
                               decoration: BoxDecoration(
