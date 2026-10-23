@@ -3,14 +3,14 @@
   "updated": "2026-10-23 Asia/Shanghai",
   "branch": "codex/feat/feed-scroll-smile-refresh",
   "base": "45e3948eb47db16f90968a1082c4ae32360a8465",
-  "sourceState": "REVIEW_CANDIDATE_INPUT_SHA256_BELOW",
+  "sourceState": "MERGED_SOURCE_INPUTS_IDENTICAL_TO_TESTED_SHA256",
   "modules": [
     "B03",
     "B06",
     "B10"
   ],
-  "implementation": "IMPLEMENTED_MERGE_AUTHORIZED_PENDING_CI",
-  "merged": false,
+  "implementation": "MERGED_MAIN_PR65",
+  "merged": true,
   "installed": false,
   "released": false,
   "requirements": [
@@ -124,7 +124,135 @@
   "nativeDeviceAcceptance": "NOT_RUN",
   "nativeTalkBack": "NOT_RUN",
   "deviceFramePerformance": "NOT_RUN",
-  "remoteCI": "NOT_RUN_LOCAL_DIFF_NOT_PUSHED",
+  "remoteCI": {
+    "head": "fad2a5cf73ea6b908c89ab134ca21d6ad285b40d",
+    "pr": 65,
+    "status": "PASS",
+    "workflowCount": 8,
+    "jobCount": 15,
+    "jobs": [
+      {
+        "runId": 39944026766,
+        "workflow": "Identity avatars and initial entry",
+        "jobId": 120382147543,
+        "name": "avatar-postgres-https",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026766/job/120382147543"
+      },
+      {
+        "runId": 39944026766,
+        "workflow": "Identity avatars and initial entry",
+        "jobId": 120382147750,
+        "name": "avatar-flutter",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026766/job/120382147750"
+      },
+      {
+        "runId": 39944026771,
+        "workflow": "Post images",
+        "jobId": 120382147273,
+        "name": "go-postgres",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026771/job/120382147273"
+      },
+      {
+        "runId": 39944026771,
+        "workflow": "Post images",
+        "jobId": 120382147582,
+        "name": "go-host",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026771/job/120382147582"
+      },
+      {
+        "runId": 39944026771,
+        "workflow": "Post images",
+        "jobId": 120382148611,
+        "name": "flutter",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026771/job/120382148611"
+      },
+      {
+        "runId": 39944026768,
+        "workflow": "Android prerelease",
+        "jobId": 120382147447,
+        "name": "scope",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026768/job/120382147447"
+      },
+      {
+        "runId": 39944026768,
+        "workflow": "Android prerelease",
+        "jobId": 120382235586,
+        "name": "rehearsal",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026768/job/120382235586"
+      },
+      {
+        "runId": 39944026768,
+        "workflow": "Android prerelease",
+        "jobId": 120382235650,
+        "name": "candidate",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026768/job/120382235650"
+      },
+      {
+        "runId": 39944026775,
+        "workflow": "Direct message chat",
+        "jobId": 120382147444,
+        "name": "flutter-and-android",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026775/job/120382147444"
+      },
+      {
+        "runId": 39944026775,
+        "workflow": "Direct message chat",
+        "jobId": 120382147631,
+        "name": "reliable-chat-sql",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026775/job/120382147631"
+      },
+      {
+        "runId": 39944026519,
+        "workflow": "Auth feedback",
+        "jobId": 120382146924,
+        "name": "flutter-auth-regression",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026519/job/120382146924"
+      },
+      {
+        "runId": 39944026575,
+        "workflow": "Collaboration",
+        "jobId": 120382146982,
+        "name": "policy",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026575/job/120382146982"
+      },
+      {
+        "runId": 39944026572,
+        "workflow": "Feed UI",
+        "jobId": 120382147047,
+        "name": "flutter-and-real-feed",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026572/job/120382147047"
+      },
+      {
+        "runId": 39944026573,
+        "workflow": "Report moderation",
+        "jobId": 120382146935,
+        "name": "moderation-postgres",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026573/job/120382146935"
+      },
+      {
+        "runId": 39944026573,
+        "workflow": "Report moderation",
+        "jobId": 120382147136,
+        "name": "admin",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026573/job/120382147136"
+      }
+    ]
+  },
   "backendSQL": "NOT_RUN_NO_BACKEND_OR_CONTRACT_CHANGE",
   "iOS": "NOT_RUN",
   "production": "NOT_RELEASED",
@@ -134,5 +262,10 @@
     "Verify scroll reversal, top/bottom chrome handoff, pure reading, overscroll and :) loading on device",
     "Verify short/long pull, offline failure/retry, media playback, IME and system gesture insets; sample frames if required"
   ],
-  "userAuthorization": "User explicitly requested commit and merge on 2026-10-23"
+  "userAuthorization": "User explicitly requested commit and merge on 2026-10-23",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/65",
+  "mergeCommit": "df484b12a3b16783ea4588cbacf51a52476fdf0c",
+  "testedHead": "fad2a5cf73ea6b908c89ab134ca21d6ad285b40d",
+  "integratedMain": "c5475aad1741905973552f6edfceee1d827041b7",
+  "mergeReceipt": "2026-10-23 user-authorized squash merge; installed/released remain false"
 }

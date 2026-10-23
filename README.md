@@ -38,7 +38,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
-| `codex/feat/feed-scroll-smile-refresh` | 本地实现首页上下导航随阅读收起、中央与悬浮发帖交接及 `:)` 下拉刷新；已授权提交合并，送审中；未安装。 | [任务详情](docs/branches/feat-feed-scroll-smile-refresh.md) |
+| `codex/feat/feed-scroll-smile-refresh` | 已合并 main [PR #65](https://github.com/zewbby/HnuHole/pull/65)：沉浸阅读、发帖入口交接与 `:)` 刷新；未安装／发布。 | [任务详情](docs/branches/feat-feed-scroll-smile-refresh.md) |
 | `feat/identity-avatar-onboarding` | 头像上传与首次身份设置已合入 main [PR #63](https://github.com/zewbby/HnuHole/pull/63)，开发后端与真我日常2315已配套更新，未生产发布。 | [任务详情](docs/branches/identity-avatar-onboarding.md) |
 | `fix/direct-message-header-density` | 送审快照：私信顶部布局与语义点击已交付[PR #62](https://github.com/zewbby/HnuHole/pull/62)，2315已覆盖安装；最终CI／合并状态以PR回执为准，未发布。 | [任务详情](docs/branches/fix-direct-message-header-density.md) |
 | `fix/direct-message-identity-loading` | 空身份修复、右上快捷切换与身份管理往返保持绑定已送审[PR #60](https://github.com/zewbby/HnuHole/pull/60)，2313限定通过；合并与CI回执见PR，未发布。 | [任务详情](docs/branches/fix-direct-message-identity-loading.md) |
@@ -93,8 +93,8 @@
 
 ## 最近变动
 
+- [PR #65](https://github.com/zewbby/HnuHole/pull/65)：新增上下导航随阅读收起、中央与悬浮发帖交接及颜文字下拉刷新。
 - [PR #63](https://github.com/zewbby/HnuHole/pull/63)：接入受保护头像上传保存与注册收尾首次身份设置。
 - [PR #62](https://github.com/zewbby/HnuHole/pull/62)：收紧私信顶部布局并保留无障碍身份切换。
 - [PR #61](https://github.com/zewbby/HnuHole/pull/61)：记录真我大图长列表的限定内存续验。
 - [PR #60](https://github.com/zewbby/HnuHole/pull/60)：修复私信空身份加载，完善快捷切换和身份管理往返。
-- [PR #59](https://github.com/zewbby/HnuHole/pull/59)：同步导航优化合并与限定验收回执。
