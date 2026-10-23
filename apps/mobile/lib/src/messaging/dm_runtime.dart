@@ -9,6 +9,7 @@ import '../auth/auth_session_controller.dart';
 import '../auth/auth_models.dart';
 import '../auth/auth_store.dart';
 import '../identity/identity_api.dart';
+import '../identity/identity_management_controller.dart';
 import '../posts/post_photo_picker.dart';
 import 'dm_protocol.dart';
 import 'dm_controller.dart';
@@ -40,7 +41,7 @@ class DmRuntime extends ChangeNotifier {
   final AuthSessionController sessions;
   final AuthStore authStore;
   final IdentityApi identityApi;
-  final Listenable? identityChanges;
+  final IdentityManagementController? identityChanges;
   final void Function(BuildContext, String)? openPost;
   List<DmIdentity> identities = [];
   DmIdentityStatus identityStatus = DmIdentityStatus.unavailable;
@@ -51,6 +52,29 @@ class DmRuntime extends ChangeNotifier {
   Timer? _retry;
   bool _identityRefreshQueued = false;
   void _identityChanged() {
+    final management = identityChanges;
+    if (_disposed || management == null) return;
+    final directory = management.directory;
+    // Loading/discarding a management view does not revoke a confirmed DM
+    // identity. A durable mutation intent still invalidates immediately, even
+    // when its result is unknown or the management view has been cancelled.
+    if (!management.hasPending &&
+        (directory == null ||
+            (identityStatus == DmIdentityStatus.ready ||
+                    identityStatus == DmIdentityStatus.empty) &&
+                directory.identities.length == identities.length &&
+                directory.identities.every(
+                  (item) => identities.any(
+                    (current) =>
+                        current.id == item.id && current.name == item.nickname,
+                  ),
+                ))) {
+      return;
+    }
+    _refreshIdentities();
+  }
+
+  void _refreshIdentities() {
     // Management screens notify from init/dispose. Invalidate access now, but
     // coalesce their UI refresh after the current widget build has finished.
     if (_disposed) return;
@@ -128,7 +152,7 @@ class DmRuntime extends ChangeNotifier {
           identities = [];
           identityStatus = DmIdentityStatus.failed;
           notifyListeners();
-          _retry = Timer(const Duration(seconds: 4), _identityChanged);
+          _retry = Timer(const Duration(seconds: 4), _refreshIdentities);
         }
       }
     }());
@@ -143,7 +167,7 @@ class DmRuntime extends ChangeNotifier {
     if (!sessions.isAuthenticated) {
       unawaited(sessions.retry());
     } else {
-      _identityChanged();
+      _refreshIdentities();
     }
   }
 

@@ -90,3 +90,9 @@
 用户在2311实际进入私信时仍看到瞬时“正在核对私信身份”，要求移除。本次仅调整 `DmInboxRoute` 展示：加载为22dp无可见文案的小进度指示（读屏“正在加载”），默认失败为“加载失败，请重试”，会话不可用为“暂时无法加载私信”，按钮统一“重试”；空身份及添加入口不变。不修改 runtime 状态机、权限判断、会话恢复、消息处理或后端。2311及其截图继续保留原范围，后继2312待主会话构建／覆盖安装回执，PR暂不合并。
 
 仅运行 `dm_runtime_test.dart` 的空目录与加载失败重试2项，均PASS，覆盖小进度尺寸／读屏语义、失败／不可用无核对文案、失败重试成功且暂时失败不退出登录。`flutter analyze --no-pub lib/src/messaging/dm_runtime.dart test/dm_runtime_test.dart` 为0 issues。日志在原本地证据目录 `r5/entry-presentation-test.log` 与 `r5/analyze-entry.log`；未重复旧37项／整合7项／单加号／真实收发。
+
+## 添加后取消返回导致无变更重载（2026-10-23）
+
+用户继续反馈已有身份时从添加入口返回仍看到身份提示页。已只读核实vivo前台为正式包 `org.hnuhole.hnuhole_mobile`、versionCode `2026102312`，无独立DM预览包；实际进入私信、展开、添加、取消编辑、返回管理再返回私信，首个约3秒后的UI快照为正常收件页，旧核对文案／加载／空身份均未出现。此轮未复现持续卡死，也不能用UI dump排除亚秒瞬态；未创建或删除身份、未读取私信正文／token、未改后端。
+
+真实runtime/controller/SQLite宿主回归确认：原代码仅管理页load/cancel就使绑定scope从3变为8，触发清空及重绑。修复将管理通知按实际身份ID／昵称投影过滤，已确认的相同目录及纯加载／取消不重载；真实目录变更和durable pending mutation仍立即失效刷新，账号／会话围栏不变。自动和手动重试独立走强制刷新，失败状态不会被相同投影去重。新增3项覆盖三次管理往返／在途取消、真实目录变化及改名删除、未知提交取消后失权与晚回包；`flutter test --no-pub test/dm_runtime_test.dart --reporter expanded`受影响文件11 PASS，受影响两文件analyze 0 issues。日志为 `r6/runtime-return-tests.log`、`r6/analyze-return.log`。UI样式未改，未重复旧37项、其他UI矩阵或真实收发；修复版设备回执仍待主会话。

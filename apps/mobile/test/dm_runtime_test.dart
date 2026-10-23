@@ -176,6 +176,107 @@ void main() {
     expect(r.controller.accountId, identityTestAccount);
   });
 
+  test(
+    'opening and cancelling unchanged identity management preserves DM binding',
+    () async {
+      final f = await IdentityTestFixture.create(
+        api: IdentityTestApi()..items = [identityTestItem()],
+      );
+      final r = await runtimeFor(f);
+      await until(() => r.identityStatus == DmIdentityStatus.ready);
+      final scope = r.controller.scope;
+      final statuses = <DmIdentityStatus>[];
+      r.addListener(() => statuses.add(r.identityStatus));
+      for (var visit = 0; visit < 3; visit++) {
+        await f.controller.load();
+        f.controller.cancelView();
+        await Future<void>.delayed(Duration.zero);
+        expect(r.controller.scope, scope);
+        expect(r.controller.available, isTrue);
+        expect(r.identityStatus, DmIdentityStatus.ready);
+      }
+      // Cancelling a still-running directory read is also only a view change.
+      final pending = Completer<IdentityDirectory>();
+      f.api.readWait = pending;
+      final load = f.controller.load();
+      await until(() => f.api.reads == 5);
+      f.controller.cancelView();
+      pending.complete(f.api.directory());
+      await load;
+      expect(r.controller.scope, scope);
+      expect(statuses, isEmpty);
+      expect(f.api.reads, 5); // Initial DM read plus four management reads.
+      expect(f.api.submissions, isEmpty);
+    },
+  );
+
+  test('confirmed directory changes and identity mutations still replace DM binding', () async {
+    final f = await IdentityTestFixture.create(
+      api: IdentityTestApi()..items = [identityTestItem()],
+    );
+    final r = await runtimeFor(f);
+    await until(() => r.identityStatus == DmIdentityStatus.ready);
+    var scope = r.controller.scope;
+    // A fresh management read can discover changes from another client.
+    f.api.items = [
+      identityTestItem(name: '更新身份'),
+      identityTestItem(id: identityTestSecondId, name: '第二身份'),
+    ];
+    await f.controller.load();
+    await until(
+      () =>
+          r.identityStatus == DmIdentityStatus.ready &&
+          r.controller.available &&
+          r.identities.length == 2,
+    );
+    expect(r.identities.map((i) => i.name), ['更新身份', '第二身份']);
+    expect(r.controller.scope, isNot(scope));
+    f.api.beforeSubmit = () => expect(r.controller.available, isFalse);
+    scope = r.controller.scope;
+    await f.controller.rename(identityTestId, '改名身份');
+    await until(
+      () =>
+          r.identityStatus == DmIdentityStatus.ready &&
+          r.controller.available &&
+          r.identities.firstOrNull?.name == '改名身份',
+    );
+    expect(r.identities.first.name, '改名身份');
+    expect(r.controller.scope, isNot(scope));
+    scope = r.controller.scope;
+    await f.controller.delete(identityTestSecondId);
+    await until(
+      () =>
+          r.identityStatus == DmIdentityStatus.ready &&
+          r.controller.available &&
+          r.identities.length == 1,
+    );
+    expect(r.identities.single.id, identityTestId);
+    expect(r.controller.scope, isNot(scope));
+  });
+
+  test('unknown mutation still invalidates immediately when management is cancelled', () async {
+    final f = await IdentityTestFixture.create(
+      api: IdentityTestApi()..items = [identityTestItem()],
+    );
+    final r = await runtimeFor(f);
+    await until(() => r.identityStatus == DmIdentityStatus.ready);
+    final pendingRead = Completer<IdentityDirectory>();
+    f.api.readWait = pendingRead;
+    f.api.submitFailure = const AuthFailure(kind: AuthFailureKind.timeout);
+    f.api.beforeSubmit = () => expect(r.controller.available, isFalse);
+    await f.controller.rename(identityTestId, '未确认改名');
+    expect(f.controller.hasPending, isTrue);
+    expect(r.controller.available, isFalse);
+    f.controller.cancelView();
+    expect(r.controller.available, isFalse);
+    f.sessions.sessionUnavailable(identityTestToken);
+    pendingRead.complete(f.api.directory());
+    await Future<void>.delayed(Duration.zero);
+    expect(r.identityStatus, DmIdentityStatus.unavailable);
+    expect(r.identities, isEmpty);
+    expect(r.controller.available, isFalse);
+  });
+
   for (final kind in [
     AuthFailureKind.unauthorized,
     AuthFailureKind.unavailable,
