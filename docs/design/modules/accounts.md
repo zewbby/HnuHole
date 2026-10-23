@@ -1,6 +1,6 @@
 # 账号与访问
 
-> 2026-10-23 IDENTITY-AVATAR-01：注册收尾后、首次进入社区前，零身份账号须先完成昵称与头像弹窗（允许默认头像），已有身份直接进入。此规则已在 `feat/identity-avatar-onboarding` 实现，未合并、未发布；宿主／隔离 SQL 与真我原生限定验证范围见[任务](../../branches/identity-avatar-onboarding.md)。
+> 2026-10-23 IDENTITY-AVATAR-01：注册收尾后、首次进入社区前，零身份账号须先完成昵称与头像弹窗（允许默认头像），已有身份直接进入。此规则已随 [PR #63](https://github.com/zewbby/HnuHole/pull/63) 合入 main，开发后端及真我日常2315已配套更新，未生产发布；宿主／隔离 SQL 与真我原生限定验证范围见[任务](../../branches/identity-avatar-onboarding.md)。
 
 > 2026-10-21 用户更新：新增／重设密码为10–128位可见ASCII字符（英文字母、数字及英文标点），禁止空格与其他Unicode字符；保留弱密码及用户名相关检查。旧密码仍按原哈希配置验证，避免锁号。已有账号允许校园邮箱验证码独立登录；敏感凭据管理仍按现有复验规则。实现与实测见AUTH-EMAIL-LOGIN-01，分支未合并。
 
