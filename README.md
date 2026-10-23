@@ -38,6 +38,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `codex/fix/feed-refresh-cancel` | 待合并：刷新回滑取消、隔离纯享手势，加载高亮限制在颜文字内；vivo试用后用户授权合并。 | [任务详情](docs/branches/fix-feed-refresh-cancel.md) |
 | `codex/feat/feed-scroll-smile-refresh` | 已合并 main [PR #65](https://github.com/zewbby/HnuHole/pull/65)：沉浸阅读、发帖入口交接与 `:)` 刷新；未安装／发布。 | [任务详情](docs/branches/feat-feed-scroll-smile-refresh.md) |
 | `feat/identity-avatar-onboarding` | 头像上传与首次身份设置已合入 main [PR #63](https://github.com/zewbby/HnuHole/pull/63)，开发后端与真我日常2315已配套更新，未生产发布。 | [任务详情](docs/branches/identity-avatar-onboarding.md) |
 | `fix/direct-message-header-density` | 送审快照：私信顶部布局与语义点击已交付[PR #62](https://github.com/zewbby/HnuHole/pull/62)，2315已覆盖安装；最终CI／合并状态以PR回执为准，未发布。 | [任务详情](docs/branches/fix-direct-message-header-density.md) |

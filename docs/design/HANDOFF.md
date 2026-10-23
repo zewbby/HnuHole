@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-24 FEED-REFRESH-CANCEL-01（准备送审，用户授权合并）：**按参考视频改为 `:)` 字形内部深色高亮循环，移除外部圆弧；刷新按松手时剩余拉伸判断，同次回滑不进入纯享模式，长拉不积累不可见取消距离。最终聚焦17项、此前相关信息流／导航74项、分析0及Flutter bundle通过，vivo2402已安装，原环境恢复后用户确认可以并授权合并（未逐项记录设备手势矩阵）；B03／B06／B10原整模块结论不变。见[修复记录](../branches/fix-feed-refresh-cancel.md)。
+
 > **PR66最终整合：**已保留PR65/67主线沉浸阅读、颜文字刷新与头像，启动五栏骨架安全区域回归通过；全量852 PASS／3外部fixture SKIP，分析0，独立整合复审无阻断。等待最终head CI与Squash合并，先前16项CI PASS属于2592ea0历史版本，未发布。
 
 > **MOBILE-STARTUP-MEDIA-PROFILE-01 PR66送审：**已整合main c5475aa并提交推送；全量842 PASS／3 SKIP，分析0，独立agent审查无产品阻断（非成员批准）。用户已授权合并，CI与合并以[PR #66](https://github.com/zewbby/HnuHole/pull/66)回执为准；下方未提交条目为历史快照。

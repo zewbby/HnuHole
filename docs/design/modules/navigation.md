@@ -1,5 +1,7 @@
 # 入口、导航与内容发现
 
+> **2026-10-24 FEED-REFRESH-CANCEL-01（准备送审，用户授权合并）：**按参考视频改为 `:)` 字形内部深色高亮循环，移除外部圆弧；刷新按松手时剩余拉伸判断，同次回滑不进入纯享模式，长拉不积累不可见取消距离。最终聚焦17项、此前相关信息流／导航74项、分析0及Flutter bundle通过，vivo2402已安装，原环境恢复后用户确认可以并授权合并（未逐项记录设备手势矩阵）；B03／B06／B10原整模块结论不变。见[修复记录](../../branches/fix-feed-refresh-cancel.md)。
+
 > **2026-10-23 FEED-SCROLL-SMILE-01 已合并：**[PR #65](https://github.com/zewbby/HnuHole/pull/65) Squash进入main `df484b1`；最终head `fad2a5c` 的8组工作流15项检查全PASS，Sol xhigh独立只读复核无剩余重要问题。首页上下导航随阅读收起／反向恢复、发帖双位置交接与小字距 `:)` 刷新已接入。宿主844 PASS／3 SKIP、分析0和Android构建通过；主线产品输入与被测SHA-256一致。未安装、设备视觉／原生TalkBack／帧性能及iOS未验、未发布，不提升历史完整模块结论。见[任务](../../branches/feat-feed-scroll-smile-refresh.md)。
 
 > **2026-10-23主线回执：**[PR #57](https://github.com/zewbby/HnuHole/pull/57)已合并main `1686a06`；四栏共用底栏，用户已在真我2303确认切换无重影。下方“未合并／视觉待确认”为历史快照，限定证据见[任务](../../branches/fix-mobile-navigation-refresh.md)。
