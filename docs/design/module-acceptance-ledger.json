@@ -8,7 +8,7 @@
     ],
     "branch": "codex/feat/feed-scroll-smile-refresh",
     "base": "45e3948eb47db16f90968a1082c4ae32360a8465",
-    "implementation": "LOCAL_IMPLEMENTED_NOT_MERGED",
+    "implementation": "MERGED_MAIN_PR65",
     "hostTests": {
       "status": "PASS",
       "passed": 844,
@@ -19,10 +19,13 @@
     "independentReview": "PASS_SOL_XHIGH_READ_ONLY_NOT_GITHUB_APPROVAL",
     "evidence": "docs/design/feed-scroll-smile-verification-20261023.json",
     "nativeDeviceAcceptance": "NOT_RUN",
-    "remoteCI": "NOT_RUN",
-    "merged": false,
+    "remoteCI": "PASS_8_WORKFLOWS_15_JOBS_EXACT_HEAD",
+    "merged": true,
     "released": false,
-    "historicalModuleVerdictsUnchanged": true
+    "historicalModuleVerdictsUnchanged": true,
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/65",
+    "mergeCommit": "df484b12a3b16783ea4588cbacf51a52476fdf0c",
+    "testedHead": "fad2a5cf73ea6b908c89ab134ca21d6ad285b40d"
   },
   "identityAvatarOnboarding20261023": {
     "task": "IDENTITY-AVATAR-01",

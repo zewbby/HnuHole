@@ -1,6 +1,6 @@
 # 分模块验收与测试交接
 
-> **2026-10-23 FEED-SCROLL-SMILE-01（已授权提交合并／送审中／未安装）：**分支 `codex/feat/feed-scroll-smile-refresh`，基于 main `45e3948`，按两段用户视频实现首页标题／推荐通道／筛选与唯一底栏随向下阅读收起、反向恢复，中央发帖与右下圆角悬浮入口交接；顶部 `:)` 沿原 Roboto 粗体和主题色，轻微字距，承载下拉放大变浅、回弹及加载弧段。沿用现有授权与同作用域刷新保留旧内容逻辑；其他栏目不自动收起。当前宿主结果、Android 构建及未验边界见[任务](../branches/feat-feed-scroll-smile-refresh.md)。不提升历史模块、真机或生产结论。
+> **2026-10-23 FEED-SCROLL-SMILE-01 已合并：**[PR #65](https://github.com/zewbby/HnuHole/pull/65) Squash进入main `df484b1`；最终head `fad2a5c` 的8组工作流15项检查全PASS，Sol xhigh独立只读复核无剩余重要问题。首页上下导航随阅读收起／反向恢复、发帖双位置交接与小字距 `:)` 刷新已接入。宿主844 PASS／3 SKIP、分析0和Android构建通过；主线产品输入与被测SHA-256一致。未安装、设备视觉／原生TalkBack／帧性能及iOS未验、未发布，不提升历史完整模块结论。见[任务](../branches/feat-feed-scroll-smile-refresh.md)。
 
 > **2026-10-23 IDENTITY-AVATAR-01 已合并并完成开发交付：**[PR #63](https://github.com/zewbby/HnuHole/pull/63) Squash 合入 main `45e3948`；精确送审 head `7a3b402` 的 22 项适用 CI 全部 PASS，R01–R07 主会话独立审查无阻断（非 GitHub 成员批准）。main 产品与送审版本差异为空；此前真我独立包 7 项原生限定验收沿原版本范围保留。开发后端已升级 C25／V6，严格 TLS readiness 通过，84 张业务／会话表及 6 个序列、授权代次与恢复计数不变，未调用 recover／reset／Down／restore。真我日常2315同签保数据覆盖及既有会话私信入口 smoke PASS，无重新登录／核对页；未清数据、卸载或发消息。旧缩略图不可用仅为未定因观察，validator pin／payload 只读复核及 Windows 独立 HTTPS／watch 续期检查因中断 NOT_RUN。未生产发布，旧整机重启／掉电／iOS等边界保留。详见[任务](../branches/identity-avatar-onboarding.md)与[交付回执](identity-avatar-onboarding-verification-20261023.json)；下方旧状态为当时快照。
 
