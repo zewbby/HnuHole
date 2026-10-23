@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-23 MOBILE-NAV-REFRESH-01大图内存续验：**真我Profile2304在开发C上使用30条3000×4000照片源JPEG帖子，32轮分页／回顶、30分钟77个样本，同PID、顶部PSS首末254.6／254.9MB，未见OOM或持续总PSS增长。样本为放大摄影图，不代替原生相机多样本或生产；30条测试帖已删，日常2303与原测试账号已恢复。见[证据](validation/mobile-large-photo-memory-realme-20261023.json)。
+
 > **2026-10-23 DM-IDENTITY-LOADING-01 最终2313候选：**[PR #60](https://github.com/zewbby/HnuHole/pull/60) 源码 `490c2a3` 已整合 main `7a2a76a`，完成空身份／添加入口、右上单行唯一加号菜单、无核对文案的轻量加载及管理取消往返保持绑定。纯load/cancel或已确认相同投影不再清空重绑，真实变更／待处理变更、账号会话围栏与强制重试保留。r5入口呈现2项、r6受影响runtime整文件11项及各自受影响分析0；早前37项／整合7项／菜单2项和渲染沿原版本范围复用。主会话精确源码独立审查无阻断，非GitHub成员批准。2313同签保数据覆盖vivo，已有身份添加→取消→返回私信及首页往返限定PASS，无旧文案／假空态／最终加载；亚秒零闪帧未测，绑定稳定由宿主回归证明。2311未变菜单／唯一加号／安全位置证据继续有效。精确送审head CI和合并以PR回执为准，未发布；设备空身份、首次发送面板仍NOT_RUN，旧真实掉电／P3人工SKIP／远程推送未实现／iOS及生产边界不变。下方为历史版本。见[任务](../branches/fix-direct-message-identity-loading.md)和[版本证据](direct-message-identity-verification-20261023.json)。
 
 > **2026-10-23 DM-IDENTITY-LOADING-01（分支实现，待设备验收／合并）：**`fix/direct-message-identity-loading` 基于 main `93d3ed6`，修复合法空身份目录被误作持续核对，增加“添加身份”及失败重试；私信列表改右上紧凑身份入口、右锚定菜单与按三身份上限补空槽蓝色加号，复用现有编辑器／冷却限制，并补首次身份选择底部安全区。`e6dd325` 定点37项、分析0、真实字体组件渲染1项通过；用户追加整体右对齐后 `5de60e3` 几何断言1项及渲染1项通过，未重跑未变检查。主会话独立只读审查无剩余阻断（非 GitHub 成员批准）；2308仅构建未装，最终2309构建／vivo新增UI和安全区待回执，PR保持Draft。详见[任务记录](../branches/fix-direct-message-identity-loading.md)。旧原生人工SKIP、真实掉电／iOS／生产未验与远程推送未实现均保留，不提升B08/B09整模块结论。
