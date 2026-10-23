@@ -1,5 +1,21 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-23 私信 P2／P3 已合入 main：**[PR #51](https://github.com/zewbby/HnuHole/pull/51) merge `988bb42045f4140c46cf9e890d985a774d033e16`，[PR #52](https://github.com/zewbby/HnuHole/pull/52) merge `665291cdf312dec94fb11a75527524a821c5f008`，精确 head 全部适用 CI 及主整合会话独立审查通过。认证反馈完整保留；[设备恢复补验 #55](../branches/test-direct-message-device-recovery.md) 补真实换机／强杀／重启证据，真实突然掉电保持 NOT_RUN。P3 原生人工项仍 SKIP、远程推送未实现，iOS／规模／生产未验；未部署／发布，不提升整模块结论。下方未合并／Draft／无合并授权文字为对应时点历史。
+
+> **2026-10-23 AUTH-FEEDBACK-01 已合并：**[PR #53](https://github.com/zewbby/HnuHole/pull/53) Squash合并提交`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`；认证Flutter CI、Android候选构建与受影响产品CI通过。2306限定64项回归、分析0、同签真我覆盖安装／启动PASS，用户确认弹窗效果；真机帧性能及生产发布未验。详见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 弹窗动效：**错误弹窗改为居中缩放淡入（0.88→1，180ms），单确定不变；64项限定回归／分析0／同签2306真我覆盖安装与启动PASS，动效视觉待用户确认。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 登录分类修正：**客户端账号格式无效曾误报登录结果未知，现按用户名或密码不正确提示；真正未知结果保留。64项限定回归／分析0／同签2305真我覆盖安装与启动PASS，用户验收待反馈。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 最新调整：**错误弹窗仅保留右侧确定，移除取消；64项限定回归、分析0和同签2304构建PASS。用户改授权安装真我RMX3366，2304保数据覆盖安装并启动PASS，VIVO本轮未装。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 邮箱编辑修正：**恢复邮箱可直接编辑，切换方式保留输入，修改邮箱隔离旧验证码；冷却后允许新邮箱发码，已提交会话待办保留。64项限定回归／分析0／同签2303安装PASS；用户回复“可以了”，邮箱编辑项确认通过。代码未提交、未合并。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 补充修正：**用户验收指出顶部结果未知／旧会话撤销提示仍在。现移除认证页全局错误条及旧会话撤销信息框，错误改为单次友好弹窗，后台持久撤销与原发码请求重试保留。57项限定回归及分析0 PASS，2302已同签覆盖安装，真机登录页无两个顶部框；用户验收状态见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01（本地实现／未合并）：**移除认证请求顶部动态蓝条，邮箱发码受理提示移至验证码下方，账号密码错误改为取消／确定弹窗并保留输入。A12限定UI回归56项、分析0、APK构建与同签VIVO覆盖安装PASS；真实交互与流畅度待用户验收，未正式发布。见[任务记录](../branches/fix-auth-feedback.md)。
+
 > **2026-10-23 DM-P2-DEVICE-RECOVERY 补验：**两台物理 Android 的同账号正式密码登录接替／互踢、旧机本地历史与图片／草稿保留、两处关键中断点的进程强杀恢复、整机重启恢复通过。只补原缺口，未重复九图/UI/IME；基于 P3 整合07923b0的未改业务实现。真实突然掉电缺条件，用户明确暂列未验，不以重启替代。自有fixture与独立包已清理、租约已释放。详见[任务](../branches/test-direct-message-device-recovery.md)和[证据](direct-message-device-recovery-verification-20261023.json)；未合并、未发布。
 
 > **2026-10-23 DM-P3-GOVERNANCE（分支实现，未合并／发布）：**在 P2 #51 上接入账号级拉黑的显式面具投影、固定区间举报与真实性校验、身份删除／注销清理、Android 隐私本地通知及正式 Flutter 装配。新增及受影响检查按[第三阶段任务](../branches/feat-direct-message-governance.md)与[机器记录](direct-message-governance-verification-20261023.json)交接；用户不在，必须人工配合的原生项 SKIP，维持 Draft。厂商远程唤醒未实现，生产开关仍默认关闭，不提升 B08/B09 整体结论。P2→P3 顺序整合，未获得本轮合并／发布授权。

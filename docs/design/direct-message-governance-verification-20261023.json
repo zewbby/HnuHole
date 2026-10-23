@@ -13,7 +13,7 @@
   "latestMainAtDelivery": "e8ff4880cb9f091b816c8841e746bd664a54164f",
   "dependency": "https://github.com/zewbby/HnuHole/pull/51",
   "pullRequest": "https://github.com/zewbby/HnuHole/pull/52",
-  "merged": false,
+  "merged": true,
   "released": false,
   "scope": [
     "B08",
@@ -202,7 +202,7 @@
       "detail": "Only TestPrivacySchemaPartyBoundaryPostgres/verifier failed at privacy_boundary_postgres_test.go:77: party schema relation inventory changed. Complete rehearsal, candidate, client and Android succeeded. Preserved before exact V inventory test repair."
     }
   ],
-  "remoteCI": "PENDING_PR_CHECKS_AFTER_AUDIT_AND_V_INVENTORY_FIXES",
+  "remoteCI": "PASS_20_APPLICABLE_CHECKS_ON_483fe9a237c38f03768f859935b9020b9520267a",
   "sourceFilesSha256": {
     "services/api/internal/authprivacy/privacy_boundary_postgres_test.go": "11022819309bc6af094c08897c74fb8978feca05d805574c862877ec00823deb",
     ".github/workflows/android-prerelease.yml": "81974b133448dd7652d2b53f869357ba804200631d35e516fd0f22476290457e",
@@ -268,5 +268,30 @@
     "services/api/internal/moderation/model.go": "a08561712cb380abdfb6cc4b6c60d870d65d140f5d376280a0442f5e0bdb965e",
     "services/api/migrations/0024_direct_message_governance.sql": "6dcf5ce74818ce3ac8c6a28fe1e8ada34f90e17b1b7d05e86d41ed44fa343ca8",
     "tools/check-direct-message-contract.py": "2c6e89356d9c1bbaaa39afa21019ebb5f5cb39990fa11fc1addbf4db3f118d77"
+  },
+  "mainIntegration20261023": {
+    "main": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "p3Baseline": "07923b047dcc1bf8b431e7b6d94da31d28ec223e",
+    "p2Merge": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "conflicts": "Only four concurrent documentation insertions; both tasks retained. No code conflict.",
+    "dmP3ProductAndTestsUnchanged": true,
+    "authRuntimeAndTestsEquivalentToMain": true,
+    "affectedRootNotificationAndLoginNavigation": "Covered by exact-head Direct message chat CI: dm_notification_navigation_test.dart, app_navigation_test.dart and login_home_navigation_test.dart. No repeated local 75-test run.",
+    "oldNativeEvidenceNotRepeated": true,
+    "userAuthorizedMergeAndBuild": true,
+    "priorDraftConstraintSupersededByUser": true,
+    "nativeSkippedItemsUnchanged": true,
+    "productionNotReleased": true,
+    "finalCI": "Verify latest PR #52 head before merge; no recursive receipt commit."
+  },
+  "mainMergeReceipt20261023": {
+    "mergeCommit": "665291cdf312dec94fb11a75527524a821c5f008",
+    "head": "483fe9a237c38f03768f859935b9020b9520267a",
+    "method": "merge",
+    "applicableCI": "PASS_20_CHECKS",
+    "independentIntegrationReview": "PASS; main agent read-only; not GitHub member approval",
+    "productionReleased": false,
+    "previousAcceptanceAndUnverifiedLimitsUnchanged": true,
+    "historicalCancelledPolicy": "One policy cancelled after body edit; successor policy120220031601 succeeded."
   }
 }

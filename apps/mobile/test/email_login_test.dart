@@ -208,6 +208,86 @@ void main() {
     expect(h.api.sends, isEmpty);
     expect(h.adopted, 0);
   });
+  for (final uncertain in [false, true]) {
+    test(
+      'changing email replaces only the mail flow after cooldown: $uncertain',
+      () async {
+        final h = EmailHarness();
+        final a = h.make();
+        h.api.sendTimeout = uncertain;
+        await a.requestEmailLogin('wrong@hainanu.edu.cn');
+        final original = Map<String, dynamic>.from(a.emailLogin!);
+        await a.requestEmailLogin('correct@hainanu.edu.cn');
+        expect(a.error!.code, 'OTP_WAIT');
+        expect(h.api.sends.length, 1);
+        await h.store.update(
+          (state) => state.copyWith(
+            emailLogin: {
+              ...original,
+              'waitUntil': f.now
+                  .subtract(const Duration(seconds: 1))
+                  .toIso8601String(),
+            },
+          ),
+        );
+        h.api.sendTimeout = false;
+        await a.requestEmailLogin('correct@hainanu.edu.cn');
+        expect(a.error, isNull);
+        expect(a.emailLogin!['email'], 'correct@hainanu.edu.cn');
+        expect(h.api.sends.last['key'], isNot(h.api.sends.first['key']));
+        expect(h.api.sends.last['id'], h.api.sends.first['id']);
+        expect(h.api.sessions, isEmpty);
+        expect(h.adopted, 0);
+      },
+    );
+  }
+  test(
+    'editing email cannot discard an unresolved community session submission',
+    () async {
+      final h = EmailHarness();
+      final a = h.make();
+      await a.requestEmailLogin('owned@hainanu.edu.cn');
+      h.api.sessionTimeout = true;
+      await a.completeEmailLogin('123456');
+      final original = Map<String, dynamic>.from(a.emailLogin!);
+      await a.requestEmailLogin('other@hainanu.edu.cn');
+      expect(a.error!.code, 'PENDING_CHECK_REQUIRED');
+      expect(a.emailLogin, original);
+      expect(h.api.sends.length, 1);
+      h.api.sessionTimeout = false;
+      await a.completeEmailLogin('');
+      expect(h.adopted, 1);
+      expect(h.api.sessions.last, h.api.sessions.first);
+    },
+  );
+  test(
+    'changing email can replace confirmation before any community submission',
+    () async {
+      final h = EmailHarness();
+      final a = h.make();
+      await a.requestEmailLogin('wrong@hainanu.edu.cn');
+      h.api.confirmTimeout = true;
+      await a.completeEmailLogin('123456');
+      expect(a.emailLogin!['confirmKey'], isNotNull);
+      await h.store.update(
+        (state) => state.copyWith(
+          emailLogin: {
+            ...state.emailLogin!,
+            'waitUntil': f.now
+                .subtract(const Duration(seconds: 1))
+                .toIso8601String(),
+          },
+        ),
+      );
+      await a.requestEmailLogin('correct@hainanu.edu.cn');
+      expect(a.error, isNull);
+      expect(a.emailLogin!['email'], 'correct@hainanu.edu.cn');
+      expect(a.emailLogin!['confirmKey'], isNull);
+      expect(a.emailLogin!['proof'], isNull);
+      expect(h.api.sessions, isEmpty);
+      expect(h.adopted, 0);
+    },
+  );
   test('created-session replay requires explicit fresh verification', () async {
     final h = EmailHarness();
     h.api.sessionError = 'SESSION_CREATED_RETRY_LOGIN';

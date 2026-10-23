@@ -1,5 +1,7 @@
 # DM-P2-DEVICE-RECOVERY：真实换机与异常恢复补验
 
+2026-10-23 最终整合：P2 #51 已 merge 为 `988bb42045f4140c46cf9e890d985a774d033e16`，P3 #52 已 merge 为 `665291cdf312dec94fb11a75527524a821c5f008`；各精确 head 全部适用 CI 和独立整合审查通过。#55 改以 main 为 base 并整合 P3 merge，只解决五份文档并发插入，保留认证反馈、P2、P3 及补验记录。README／台账及任务记录已同步真实上游合并状态；用户已授权本 PR 检查通过后正常合并并构建。正式运行实现未变化，原生 SKIP、真实掉电／iOS／规模／生产未验不变；本 PR 自身最终回执在 PR 正文记录，不递归提交。
+
 2026-10-23，分支 `test/direct-message-device-recovery`，基线 P3 整合提交 `07923b047dcc1bf8b431e7b6d94da31d28ec223e`。仅补二阶段原先未覆盖的真实双设备接替与异常中断恢复，不重复九图、UI/IME、管理功能及已通过服务端测试。未合并、未部署。
 
 [Draft PR #55](https://github.com/zewbby/HnuHole/pull/55) 已提交，验收入口提交 `85429383dec780b92990dc48736d0fc02f168019`；base 为 `feat/direct-message-governance`，依赖 P2 #51 → P3 #52 → 本补验 PR。产品与协作 CI 已触发，最终结果以 PR Checks 对应最新 head 为准，不为补写最后回执递归提交。用户已授权主整合会话按顺序核对后合并 main 并构建，提交 agent 未执行合并或部署。

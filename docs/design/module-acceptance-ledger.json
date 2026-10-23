@@ -1,7 +1,10 @@
 {
   "dmDeviceRecovery20261023": {
     "task": "DM-P2-DEVICE-RECOVERY",
-    "modules": ["B08", "B09"],
+    "modules": [
+      "B08",
+      "B09"
+    ],
     "branch": "test/direct-message-device-recovery",
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/55",
     "acceptanceCommit": "85429383dec780b92990dc48736d0fc02f168019",
@@ -13,23 +16,53 @@
     "released": false,
     "historicalModuleVerdictsUnchanged": true
   },
+  "authFeedback20261023": {
+    "task": "AUTH-FEEDBACK-01",
+    "branch": "codex/fix/auth-feedback",
+    "modules": [
+      "A12"
+    ],
+    "implementation": "MERGED_MAIN_SCOPED_PASS",
+    "host": "PASS_64_FOCUSED_TESTS_ANALYZE_ZERO",
+    "androidBuild": "PASS_ARM64_DEBUG_SAME_SIGNER",
+    "vivo": "PASS_INSTALL_REPLACE_2026102303",
+    "candidate2304": "BUILD_TEST_PASS_REALME_RMX3366_INSTALL_LAUNCH_PASS_VIVO_NOT_UPDATED",
+    "candidate2305": "PASS_64_TESTS_ANALYZE_ZERO_REALME_INSTALL_LAUNCH_CLIENT_INPUT_CLASSIFICATION",
+    "candidate2306": "PASS_64_TESTS_SCALE_TRANSITION_ANALYZE_ZERO_REALME_INSTALL_LAUNCH",
+    "userAcceptance": "PASS_USER_CONFIRMED_AUTH_FEEDBACK_AND_CENTER_SCALE_DIALOG",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/53",
+    "remoteCi": "PASS_AUTH_FLUTTER_ANDROID_PRERELEASE_REHEARSAL_COLLABORATION_AND_AFFECTED_PRODUCT_WORKFLOWS",
+    "merged": true,
+    "mergeCommit": "9427dc6e4cdc1b777c1127787a8fd17d5e2e4036",
+    "framePerformance": "NOT_RUN",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true,
+    "evidence": "docs/branches/fix-auth-feedback.md"
+  },
   "dmGovernanceP320261023": {
     "task": "DM-P3-GOVERNANCE",
-    "modules": ["B08", "B09"],
+    "modules": [
+      "B08",
+      "B09"
+    ],
     "branch": "feat/direct-message-governance",
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/52",
     "source": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
     "independentReview": "PASS exact product SHA; independent read-only Astra High, not GitHub member approval",
     "dependsOn": "https://github.com/zewbby/HnuHole/pull/51",
-    "result": "SCOPED_HOST_IMPLEMENTATION_NATIVE_SKIP_DRAFT",
+    "result": "SCOPED_HOST_IMPLEMENTATION_NATIVE_SKIP_MERGED_MAIN",
     "evidence": "docs/design/direct-message-governance-verification-20261023.json",
     "native": "SKIP_USER_ABSENT_MANUAL_UNLOCK_PERMISSION_REQUIRED",
     "remotePush": "NOT_IMPLEMENTED_NO_VENDOR_CHANNEL",
     "ios": "NOT_RUN",
     "production": "NOT_RELEASED_FEATURE_DEFAULT_FALSE",
-    "merged": false,
+    "merged": true,
     "released": false,
-    "historicalModuleVerdictsUnchanged": true
+    "historicalModuleVerdictsUnchanged": true,
+    "mergeCommit": "665291cdf312dec94fb11a75527524a821c5f008",
+    "mergedHead": "483fe9a237c38f03768f859935b9020b9520267a",
+    "remoteCI": "PASS_20_APPLICABLE_CHECKS",
+    "integrationReview": "PASS independent read-only main agent; not GitHub member approval"
   },
   "dmChatP220261022": {
     "task": "DM-P2-CHAT",
@@ -37,16 +70,19 @@
       "B08",
       "B09"
     ],
-    "result": "SCOPED_NATIVE_CHAT_PASS_NOT_MERGED",
+    "result": "SCOPED_NATIVE_CHAT_PASS_MERGED_MAIN",
     "source": "889217251c54759d46f9b0f9d3613d8baacf7b30",
     "evidence": "docs/design/direct-message-chat-verification-20261022.json",
     "branch": "feat/direct-message-chat-completion",
     "independentReview": "Astra High read-only fc88b9a: no remaining actionable blockers; not GitHub member approval",
-    "remoteCI": "PENDING_PR_CHECKS",
-    "merged": false,
+    "remoteCI": "PASS_20_APPLICABLE_CHECKS",
+    "merged": true,
     "released": false,
     "historicalModuleVerdictsUnchanged": true,
-    "pullRequest": "https://github.com/zewbby/HnuHole/pull/51"
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/51",
+    "mergeCommit": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "mergedHead": "796c54f49403404d8a4c9561966c868cc9ac0a51",
+    "integrationReview": "PASS independent read-only main agent; not GitHub member approval"
   },
   "sessionResume20261022": {
     "task": "AUTH-SESSION-RESUME-01",
