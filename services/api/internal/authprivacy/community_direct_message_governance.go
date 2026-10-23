@@ -59,7 +59,7 @@ func dmSendingBlocked(ctx context.Context, tx pgx.Tx, a, b uuid.UUID) (bool, err
 }
 func (c *Community) DMBlocks(ctx context.Context, b [32]byte) (PostResponse, error) {
 	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
-		rows, e := tx.Query(ctx, `SELECT b.block_id,b.identity_id,b.conversation_id,b.peer_id,CASE WHEN p.deleted_at IS NULL THEN b.peer_name ELSE '注销身份 · '||(SELECT short_code FROM c_posts.identity_public_labels WHERE identity_id=p.identity_id) END,CASE WHEN p.deleted_at IS NULL THEN b.peer_avatar ELSE 'inactive-v1' END,b.created_at FROM c_dm.blocks b JOIN public.community_identities p ON p.identity_id=b.peer_id WHERE b.owner_account=$1 ORDER BY b.created_at,b.block_id`, a)
+		rows, e := tx.Query(ctx, `SELECT b.block_id,b.identity_id,b.conversation_id,b.peer_id,CASE WHEN p.deleted_at IS NULL THEN p.nickname ELSE '注销身份 · '||(SELECT short_code FROM c_posts.identity_public_labels WHERE identity_id=p.identity_id) END,CASE WHEN p.deleted_at IS NULL THEN p.avatar ELSE 'inactive-v1' END,b.created_at FROM c_dm.blocks b JOIN public.community_identities p ON p.identity_id=b.peer_id WHERE b.owner_account=$1 ORDER BY b.created_at,b.block_id`, a)
 		if e != nil {
 			return nil, e
 		}

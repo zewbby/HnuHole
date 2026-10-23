@@ -202,6 +202,11 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 				b.communityPostsPublic(w, r, options.Posts)
 				return
 			}
+			if isIdentityAvatarPath(r.URL.Path) {
+				backend, _ := options.Backend.(IdentityAvatarBackend)
+				b.communityIdentityAvatar(w, r, backend)
+				return
+			}
 			if isIdentityPath(r.URL.Path) {
 				b.communityIdentitiesPublic(w, r, options.Identities)
 				return
@@ -372,6 +377,10 @@ func publicMethodAllowed(service Service, path, method string) bool {
 	if service == CommunityService && isPostPath(path) {
 		route, err := parsePostRoute(path)
 		return err == nil && route.allows(method)
+	}
+	if service == CommunityService && isIdentityAvatarPath(path) {
+		_, e := identityAvatarPathID(path)
+		return e == nil && (method == "GET" || method == "PUT" || method == "DELETE")
 	}
 	if service == CommunityService && isIdentityPath(path) {
 		if path == "/api/v1/identities" {

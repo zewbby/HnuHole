@@ -1,0 +1,88 @@
+{
+  "integratedMain": "8dca780ab11b9aef9974ab7aab7f096c1beea9d1",
+  "submissionReview": {
+    "reviewer": "root independent read-only review",
+    "result": "PASS_R01_R02_R03_R04_R05_R06_NO_REMAINING_BLOCKER_NOT_GITHUB_MEMBER_APPROVAL",
+    "authorInputsCompared": 478,
+    "authorDifferencesAfterLF": 0,
+    "sqlInputDifferences": "4 files equal after gofmt; no semantic drift from NQ6tDJ SQL snapshot"
+  },
+  "mainIntegration": {
+    "upstreamEvidence": [
+      "docs/branches/fix-mobile-navigation-refresh.md",
+      "docs/branches/fix-direct-message-header-density.md"
+    ],
+    "note": "Upstream #61 documentation and #62 inbox density/semantics changes are unmodified; retain their original evidence scope. No repeated upstream native/visual verdict.",
+    "analyze": {
+      "command": "dart analyze lib/src/messaging/direct_message_inbox.dart lib/src/messaging/direct_message_composer.dart lib/src/identity/identity_initial_gate.dart lib/src/identity/identity_avatar.dart test/direct_message_navigation_test.dart test/identity_initial_gate_test.dart test/identity_avatar_scope_test.dart",
+      "cwd": "apps/mobile",
+      "result": "PASS_ZERO_ISSUES_7_TARGETS"
+    },
+    "tests": {
+      "command": "flutter test --no-pub test/identity_initial_gate_test.dart test/identity_avatar_scope_test.dart --reporter expanded",
+      "cwd": "apps/mobile",
+      "result": "PASS_5"
+    },
+    "privateLogs": [
+      "E:/Hnuhole-env/avatar-onboarding-20261023/submission-integration-analyze.log",
+      "E:/Hnuhole-env/avatar-onboarding-20261023/submission-integration-tests.log"
+    ]
+  },
+  "task": "IDENTITY-AVATAR-01",
+  "date": "2026-10-23",
+  "branch": "feat/identity-avatar-onboarding",
+  "base": "6e09baf30b07656f555e2fdc15ebb73a790c4e2c",
+  "testedVersion": "UNCOMMITTED_WORKING_INPUTS_SEE_MANIFEST_NOT_BASE_COMMIT",
+  "authorInputs": {
+    "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/author-inputs-final.json",
+    "fileCount": 478,
+    "canonicalSha256LF": "28d194fce49a9a03944f6b60c15e2fe90c90a64611c13e63c876d3ca3c4ba9c6",
+    "normalization": "CRLF converted to LF for Git archive comparison; raw and LF hash stored per file",
+    "note": "Successful SQL snapshots are retained below; subsequent gofmt-only changes do not change behavior. Final Go build/vet and Flutter analyze use working inputs. Docs and remote CI/native receipts are separate."
+  },
+  "checks": [
+    {"check": "gofmt on modified Go files; final gofmt -l empty", "result": "PASS"},
+    {"check": "go build ./...", "cwd": "services/api", "result": "PASS"},
+    {"check": "go vet ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime ./internal/posts ./internal/postmedia", "cwd": "services/api", "result": "PASS"},
+    {"check": "go test affected authprivacy/authprivacyhttp/authprivacyruntime/posts/comments/postmedia without DSN", "result": "PASS_HOST_ONLY_NOT_SQL"},
+    {"check": "real PostgreSQL race: TestIdentityAvatarCommonStartupFencesPostgres; common C lifecycle startup; real postmedia decoder", "snapshot": "/home/hnuhole/identity-avatar-sql.9WC7NF", "result": "PASS_CASES", "note": "This initial combined run also failed two unrelated post-vector unit cases because packages/ was absent from its private mirror; those vector units had already passed on the repository inputs. Runtime/decoder cases passed."},
+    {"check": "real PostgreSQL race: TestIdentityAvatarFinalAuthorityAfterValidationPostgres (freeze and replacement); TestIdentityAvatarGooseFreshAndUpgradePostgres (fresh and 24-to-25, repeat Up and forbidden Down); existing identity regression", "snapshot": "/home/hnuhole/identity-avatar-sql.TMLQKx", "result": "PASS_CASES", "note": "Original lifecycle audit and duplicate-nickname fixture failures retained in this combined run; only failed cases were repaired and rerun."},
+    {"check": "real PostgreSQL race: TestIdentityAvatarAbandonFenceInvalidAndLegacyPostgres; TestIdentityAvatarExistingPostCommentAndDMProjectionPostgres", "snapshot": "/home/hnuhole/identity-avatar-sql.4JppYi", "result": "PASS_CASES"},
+    {"check": "real TLS and PostgreSQL race: TestRealHTTPSIdentityAvatarUploadCombinationAndDraftRecoveryPostgres", "snapshot": "/home/hnuhole/identity-avatar-sql.4JppYi", "result": "PASS_CASE", "scope": "PUT/GET/DELETE authorization, four preview replacements, same-ID recovery, atomic nickname+avatar RENAME, cooldown, avatar-only save and same-key changed-avatar conflict"},
+    {"check": "real restricted runtime PostgreSQL race: TestIdentityAvatarRestrictedLifecyclePostgres", "snapshot": "/home/hnuhole/identity-avatar-sql.NQ6tDJ", "result": "PASS_CASE", "scope": "privacy-role audit, minimal grants, canonical WebP and EXIF orientation/canary removal, cross-owner binding rejection, counters/cooldown, same-key conflict, moderator reset, formal closure erasing bound and unbound bytes"},
+    {"check": "Flutter identity controller/screen/recovery initial affected batch", "result": "PASS_30", "note": "Later avatar-failure directory preservation was covered by the complete recovery/controller/UI cases below; original non-avatar paths unchanged."},
+    {"check": "Flutter affected DM runtime/notification navigation, post models, comments, feed and DM presentation", "result": "PASS_83_PLUS_REPAIRED_ONE", "note": "One historical root-zero-identity test expected navigation into empty DM; updated for mandatory initial gate and focused rerun passed. Other 83 passed and were not repeated."},
+    {"check": "flutter test --no-pub test/identity_avatar_recovery_test.dart test/identity_initial_gate_test.dart test/identity_avatar_scope_test.dart", "result": "PASS_10", "scope": "three timeout recoveries, four previews, repeated bound replacements, legacy intents, authority fence, compulsory entry, complete timeout-to-recover-to-nickname-to-create, 360dp keyboard and stale avatar bytes"},
+    {"check": "final avatar scope test after diagnostic counter rename", "result": "PASS_1"},
+    {"check": "flutter analyze --no-pub", "result": "PASS_ZERO_ISSUES"},
+    {"check": "flutter build bundle --debug --no-pub", "result": "PASS_NOT_ANDROID_APK"},
+    {"check": "11 complete *-api OpenAPI specs; 3 DM specs; tools/check-direct-message-contract.py", "result": "PASS_FULL_VALIDATOR"},
+    {"check": "git diff --check", "result": "PASS"}
+  ],
+  "nativeHandoff": {
+    "target": "apps/mobile/tool/identity_avatar_owned.dart",
+    "gradleEnvironment": "HNUHOLE_IDENTITY_AVATAR=1",
+    "applicationId": "org.hnuhole.hnuhole_mobile.identityavatar",
+    "defines": ["IDENTITY_AVATAR_OWNED=true", "AUTH_COMMUNITY_BASE_URL", "AUTH_VERIFIER_BASE_URL", "AUTH_DEV_CA_BASE64"],
+    "entry": "Real main and real registration recovery-code/optional Passkey completion, then compulsory initial identity editor",
+    "hostRenders": "E:/Hnuhole-env/avatar-onboarding-20261023/host-render/identity-initial-360*.png",
+    "device": "Realme RMX3366; root owns device and isolated backend acceptance",
+    "result": "NOT_RUN_BY_AUTHOR"
+  },
+  "boundaries": {
+    "sql": "New owned private-socket temporary PG16 clusters only; no shared or production DSN",
+    "faultEvidence": "Real TLS PUT results intentionally ignored plus client timeout substitute recovery; not a real TCP drop/device-fault verdict",
+    "vault": "No image bytes/base64 persisted in AuthState; small owner-scoped UUID/digest/MIME/target anchor only",
+    "deployment": "C25 and compatible mobile must be upgraded together. Old 2313 strict default-v1/DM DTO client is not claimed compatible. Only isolated C25 + .identityavatar acceptance authorized here.",
+    "remoteCI": "NOT_RUN_NEW_PRODUCT_WORKFLOW_DEFINED",
+    "nativeGalleryVaultRestart": "NOT_RUN_ROOT_HANDOFF",
+    "ios": "NOT_RUN_ANDROID_PICKER_ADAPTER_ONLY",
+    "realPowerLoss": "NOT_RUN",
+    "remotePush": "NOT_IMPLEMENTED_HISTORICAL_GAP_UNCHANGED",
+    "historicalP3ManualSkip": "UNCHANGED",
+    "production": "NOT_RUN_NOT_DEPLOYED",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true
+  }
+}

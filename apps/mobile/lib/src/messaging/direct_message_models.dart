@@ -16,8 +16,12 @@ class DmHistoryRequest {
 
 @immutable
 class DmIdentity {
-  const DmIdentity({required this.id, required this.name});
-  final String id, name;
+  const DmIdentity({
+    required this.id,
+    required this.name,
+    this.avatar = 'default-v1',
+  });
+  final String id, name, avatar;
 }
 
 @immutable

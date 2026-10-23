@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'auth_crypto.dart';
+import '../identity/identity_api.dart';
 
 /// Validated during every vault read/write, before startup can interpret a
 /// pending operation as a permission to use a stored session.
@@ -29,11 +30,39 @@ class AuthWorkflowCodec {
         }
         _fields(
           draft,
-          {'v', 'username', 'nickname'},
+          {'v', 'username', 'nickname', 'avatar', 'upload'},
           {'v', 'username', 'nickname'},
         );
         _version(draft);
         final nickname = draft['nickname'];
+        if (draft.containsKey('avatar') &&
+            !validIdentityAvatar(draft['avatar'])) {
+          throw const FormatException('Invalid draft avatar');
+        }
+        if (draft.containsKey('upload')) {
+          final upload = _optionalMap(draft['upload']);
+          if (upload == null) {
+            throw const FormatException('Invalid avatar upload');
+          }
+          _fields(
+            upload,
+            {'assetId', 'digest', 'mime', 'target'},
+            {'assetId', 'digest', 'mime', 'target'},
+          );
+          if (!validIdentityAvatar('avatar-v1:${upload['assetId']}') ||
+              !{
+                'image/jpeg',
+                'image/png',
+                'image/webp',
+                'image/gif',
+              }.contains(upload['mime']) ||
+              upload['target'] != 'CREATE' &&
+                  (upload['target'] is! String ||
+                      !_uuid(upload['target'] as String))) {
+            throw const FormatException('Invalid avatar upload anchor');
+          }
+          _encoded(upload, 'digest', 32);
+        }
         if (!RegExp(r'^[a-z][a-z0-9_]{5,23}$')
                 .hasMatch(_string(draft, 'username')) ||
             nickname is! String ||
@@ -63,6 +92,7 @@ class AuthWorkflowCodec {
             'operation',
             'identityId',
             'nickname',
+            'avatar',
             'state',
           },
           {'v', 'key', 'username', 'operation', 'state'},
@@ -72,14 +102,26 @@ class AuthWorkflowCodec {
         _state(change, {'UNKNOWN', 'COMMITTED'});
         if (!RegExp(r'^[a-z][a-z0-9_]{5,23}$')
                 .hasMatch(_string(change, 'username')) ||
-            !{'CREATE', 'RENAME', 'DELETE'}.contains(change['operation'])) {
+            !{
+              'CREATE',
+              'RENAME',
+              'DELETE',
+              'AVATAR',
+            }.contains(change['operation'])) {
           throw const FormatException('Invalid identity intent');
         }
         if ((change['operation'] == 'CREATE') !=
                 !change.containsKey('identityId') ||
-            (change['operation'] == 'DELETE') !=
+            ({'DELETE', 'AVATAR'}.contains(change['operation'])) !=
                 !change.containsKey('nickname')) {
           throw const FormatException('Invalid identity intent shape');
+        }
+        if ((change['operation'] == 'AVATAR' &&
+                !change.containsKey('avatar')) ||
+            (change['operation'] == 'DELETE' && change.containsKey('avatar')) ||
+            (change.containsKey('avatar') &&
+                !validIdentityAvatar(change['avatar']))) {
+          throw const FormatException('Invalid identity avatar intent');
         }
         if (change.containsKey('identityId') &&
             !_uuid(_string(change, 'identityId'))) {

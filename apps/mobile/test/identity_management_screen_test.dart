@@ -6,6 +6,8 @@ import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 
 import 'identity_test_support.dart';
 
+import 'package:hnuhole_mobile/src/identity/identity_avatar.dart';
+
 Future<void> _show(WidgetTester tester, IdentityTestFixture fixture) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -83,7 +85,7 @@ void main() {
       await _show(tester, f);
       expect(find.textContaining('仍可浏览社区'), findsOneWidget);
       await _tap(tester, find.byKey(const ValueKey('identity-add')));
-      expect(find.text('默认头像'), findsOneWidget);
+      expect(find.byType(IdentityAvatar), findsWidgets);
       await tester.enterText(
         find.byKey(const ValueKey('identity-nickname')),
         '春😀风',
@@ -203,7 +205,7 @@ void main() {
       f.api.nextCreateAt = DateTime.utc(2027, 3, 12, 16);
       await _show(tester, f);
       await _tap(tester, find.text('删除此身份').first);
-      expect(find.byType(DefaultIdentityAvatar), findsWidgets);
+      expect(find.byType(IdentityAvatar), findsWidgets);
       expect(find.textContaining('旧帖子和评论仍保留'), findsOneWidget);
       expect(find.textContaining('私人备注'), findsOneWidget);
       expect(find.textContaining('发布失败'), findsOneWidget);
@@ -296,7 +298,7 @@ void main() {
         tester
             .widget<FilledButton>(find.byKey(const ValueKey('identity-save')))
             .onPressed,
-        isNull,
+        isNotNull,
       );
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox.shrink());

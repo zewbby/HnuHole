@@ -51,7 +51,7 @@ func moderationStartupLab(t *testing.T) (*pgxpool.Pool, *pgxpool.Pool) {
 	}
 	defer tx.Rollback(ctx)
 	if _, err = tx.Exec(ctx, `DROP SCHEMA IF EXISTS c_dm,c_comments,c_moderation,c_posts,c_auth CASCADE;
-DROP TABLE IF EXISTS public.identity_change_receipts,public.community_identities,public.identity_account_state,public.sessions,public.channels,public.goose_db_version CASCADE;
+DROP TABLE IF EXISTS public.identity_avatar_assets, public.identity_change_receipts,public.community_identities,public.identity_account_state,public.sessions,public.channels,public.goose_db_version CASCADE;
 DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_community_identity(),public.guard_identity_receipt(),public.check_identity_account_shape() CASCADE`); err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +69,7 @@ DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_commu
 		}
 	}
 	if _, err = tx.Exec(ctx, `CREATE TABLE public.goose_db_version(version_id bigint,is_applied boolean);
-INSERT INTO public.goose_db_version VALUES(15,true);
+INSERT INTO public.goose_db_version VALUES(25,true);
 REVOKE CREATE,TEMP ON DATABASE hnuhole_c FROM PUBLIC,hnuhole_c_runtime`); err != nil {
 		t.Fatal(err)
 	}
@@ -155,7 +155,7 @@ func TestModerationLifecycleCommonCStartupWithoutFeaturesPostgres(t *testing.T) 
 ALTER TABLE c_posts.posts DROP COLUMN moderation_hidden;
 ALTER TABLE public.community_identities DROP COLUMN moderation_rename_required;
 UPDATE public.goose_db_version SET version_id=14`)
-	if err := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); err != nil {
-		t.Fatalf("0014 C startup acquired a moderation dependency: %v", err)
+	if err := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); err == nil {
+		t.Fatal("pre-avatar schema version accepted")
 	}
 }

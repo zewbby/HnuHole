@@ -1,0 +1,71 @@
+name: Identity avatars and initial entry
+on:
+  pull_request:
+    paths:
+      - 'apps/mobile/**'
+      - 'services/api/**'
+      - 'infra/postgres/**'
+      - 'packages/openapi/**'
+      - '.github/workflows/identity-avatars.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: identity-avatars-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  avatar-postgres-https:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Full contracts and isolated image dependencies
+        run: |
+          python -m pip install -r packages/openapi/requirements-check.txt
+          python packages/openapi/check-specs.py
+          python tools/check-direct-message-contract.py
+          sudo apt-get update && sudo apt-get install -y postgresql-16 python3-venv
+          go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/avatar-python"
+          "$RUNNER_TEMP/avatar-python/bin/python" -m pip install -r services/api/media/requirements.txt
+          chmod -R go-w services/api/media
+          "$RUNNER_TEMP/avatar-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/avatar-fixtures"
+      - name: Fresh and upgrade migration, runtime grants, final Gate and real TLS
+        working-directory: services/api
+        run: |
+          export PATH="/usr/lib/postgresql/16/bin:$PATH"
+          export POST_MEDIA_PYTHON="$RUNNER_TEMP/avatar-python/bin/python"
+          export POST_MEDIA_FIXTURES="$RUNNER_TEMP/avatar-fixtures"
+          sh authlab/run-identity-avatars-isolated.sh
+          go build -mod=readonly ./...
+          go vet -mod=readonly ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime ./internal/posts ./internal/postmedia
+  avatar-flutter:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          lfs: true
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      - name: Analyze, durable recovery, entry gate and affected projections
+        working-directory: apps/mobile
+        run: |
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+          flutter test --no-pub test/identity_avatar_recovery_test.dart test/identity_avatar_scope_test.dart test/identity_initial_gate_test.dart test/identity_management_controller_test.dart test/identity_management_screen_test.dart test/dm_runtime_test.dart test/dm_notification_navigation_test.dart test/post_models_test.dart test/comment_views_test.dart test/feed_ui_test.dart test/direct_message_screen_test.dart
+          flutter build bundle --debug --no-pub
+          git diff --exit-code -- pubspec.lock

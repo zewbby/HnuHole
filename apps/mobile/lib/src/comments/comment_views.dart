@@ -44,7 +44,17 @@ class CommentRow {
     PostJson.utc(data['publishedAt']);
     PostJson.integer(data, 'likeCount', 0, 9007199254740991);
     PostJson.integer(data, 'replyCount', 0, 10000);
-    PostJson.record(data['author'], {'ref', 'nickname', 'avatar', 'state'});
+    final author = PostJson.record(data['author'], {
+      'ref',
+      'nickname',
+      'avatar',
+      'state',
+    });
+    if (author['state'] == 'ACTIVE'
+        ? !validIdentityAvatar(author['avatar'])
+        : author['avatar'] != 'inactive-v1') {
+      throw const FormatException('Invalid comment avatar');
+    }
   }
   final Map<String, dynamic> data;
   String get id => data['id'] as String;
@@ -52,6 +62,7 @@ class CommentRow {
   String? get root => data['rootCommentId'] as String?;
   String get body => data['body'] as String;
   String get nickname => (data['author'] as Map)['nickname'] as String;
+  String get avatar => (data['author'] as Map)['avatar'] as String;
   int get likes => data['likeCount'] as int;
   bool get liked => data['likedByMe'] as bool;
   int get replyCount => data['replyCount'] as int;
@@ -698,10 +709,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 14,
-                    child: Icon(Icons.person_outline, size: 18),
-                  ),
+                  DetailAvatar(name: r.nickname, avatar: r.avatar, radius: 14),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -778,7 +786,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         GestureDetector(
           onTap: () =>
               unawaited(DmScope.contact(context, r.post, comment: r.id)),
-          child: DetailAvatar(name: r.nickname),
+          child: DetailAvatar(name: r.nickname, avatar: r.avatar),
         ),
         const SizedBox(width: 10),
         Expanded(

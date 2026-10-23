@@ -62,6 +62,11 @@ BEGIN
               allowed := allowed OR (relation.relname='channels' AND privilege='SELECT')
                 OR (relation.relname IN ('community_identities','identity_account_state') AND privilege IN ('SELECT','INSERT','UPDATE'))
                 OR (relation.relname='identity_change_receipts' AND privilege IN ('SELECT','INSERT'));
+              allowed := allowed OR (relation.relname='identity_avatar_assets' AND privilege IN ('SELECT','INSERT'));
+              IF relation.relname='identity_avatar_assets' AND privilege='UPDATE' THEN
+                allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                  AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid AND a.attnum>0 AND NOT a.attisdropped AND a.attname NOT IN ('identity_id','payload') AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+              END IF;
             END IF;
           END IF;
           IF relation.nspname=own_schema AND relation.relname='authorization_gate' AND privilege IN ('INSERT','DELETE') THEN allowed := false; END IF;
@@ -109,6 +114,25 @@ BEGIN
                   AND a.attnum>0 AND NOT a.attisdropped
                   AND NOT (a.attname=ANY(CASE relation.relname WHEN 'tasks' THEN ARRAY['owner_visible','abandoned_at','deleted_at','moderation_hidden'] WHEN 'images' THEN ARRAY['payload','metadata','erased_at'] ELSE ARRAY['state','terminal_at','failure_code','body'] END))
                   AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
+          END IF;
+          -- Common C lifecycle grants from 0015/0018, without optional
+          -- moderator access, decisions, report/evidence insertion or appeals.
+          IF party='c' AND relation.nspname='c_moderation' THEN
+            allowed := (privilege='SELECT' AND relation.relname IN ('cases','reports','notifications','legacy_restrictions','access_sessions','roles','sanctions'))
+              OR (privilege='INSERT' AND relation.relname='notifications')
+              OR (privilege='DELETE' AND relation.relname IN ('notifications','access_sessions','roles'));
+            IF privilege='SELECT' AND relation.relname IN ('access_sessions','roles','sanctions') THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'SELECT')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid AND a.attnum>0 AND NOT a.attisdropped
+                  AND NOT (a.attname=ANY(CASE relation.relname WHEN 'sanctions' THEN ARRAY['account_id','action','revoked_at','ends_at'] ELSE ARRAY['account_id'] END))
+                  AND has_column_privilege(audit_role,relation.oid,a.attname,'SELECT'));
+            END IF;
+            IF (privilege='UPDATE' AND relation.relname IN ('cases','reports','legacy_restrictions')) OR (privilege='INSERT' AND relation.relname='legacy_restrictions') THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,privilege)
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid AND a.attnum>0 AND NOT a.attisdropped
+                  AND NOT (a.attname=ANY(CASE relation.relname WHEN 'cases' THEN ARRAY['state','outcome','explanation','version'] WHEN 'reports' THEN ARRAY['reporter_account_id','identity_id'] ELSE ARRAY['account_id','ban_state','ban_ends_at','mute_state','mute_ends_at'] END))
+                  AND has_column_privilege(audit_role,relation.oid,a.attname,privilege));
             END IF;
           END IF;
           -- 0024 lifecycle cleanup applies even with the DM API disabled.

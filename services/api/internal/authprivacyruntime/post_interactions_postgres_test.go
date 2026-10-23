@@ -16,8 +16,8 @@ func TestFeedInteractionLedgerAndPreMigrationCommonCPostgres(t *testing.T) {
  UPDATE public.goose_db_version SET version_id=19`); err != nil {
 		t.Fatal(err)
 	}
-	if err := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); err != nil {
-		t.Fatal("pre-0020 auth-only C lost compatibility", err)
+	if err := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); err == nil {
+		t.Fatal("pre-avatar schema version accepted")
 	}
 	if _, err := owner.Exec(ctx, `UPDATE public.goose_db_version SET version_id=20`); err != nil {
 		t.Fatal(err)
@@ -51,11 +51,11 @@ func TestFeedInteractionVersionLedgerPrivilegesAndCleanupPostgres(t *testing.T) 
 	if CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService) == nil {
 		t.Fatal("0021 ledger accepted lost fences")
 	}
-	// A pre-0021 auth-only C database remains compatible. Posts require0021.
+	// Identity avatars now require the formal 0025 baseline on common C startup.
 	if _, e := owner.Exec(ctx, `UPDATE public.goose_db_version SET version_id=20`); e != nil {
 		t.Fatal(e)
 	}
-	if e := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); e != nil {
-		t.Fatal("pre0021 auth-only compatibility", e)
+	if e := CheckDatabase(ctx, runtime, authprivacyhttp.CommunityService); e == nil {
+		t.Fatal("pre-avatar schema version accepted")
 	}
 }

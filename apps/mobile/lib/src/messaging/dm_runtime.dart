@@ -66,7 +66,9 @@ class DmRuntime extends ChangeNotifier {
                 directory.identities.every(
                   (item) => identities.any(
                     (current) =>
-                        current.id == item.id && current.name == item.nickname,
+                        current.id == item.id &&
+                        current.name == item.nickname &&
+                        current.avatar == item.avatar,
                   ),
                 ))) {
       return;
@@ -122,7 +124,9 @@ class DmRuntime extends ChangeNotifier {
           return;
         }
         identities = directory.identities
-            .map((i) => DmIdentity(id: i.id, name: i.nickname))
+            .map(
+              (i) => DmIdentity(id: i.id, name: i.nickname, avatar: i.avatar),
+            )
             .toList();
         await controller.bind(
           account: record.accountId,
@@ -253,7 +257,11 @@ class DmScope extends InheritedWidget {
           builder: (_) => DmChatRoute(
             runtime: r,
             own: own!,
-            peer: DmIdentity(id: target['peerId'], name: target['peerName']),
+            peer: DmIdentity(
+              id: target['peerId'],
+              name: target['peerName'],
+              avatar: target['peerAvatar'] as String? ?? 'default-v1',
+            ),
             sourcePost: post,
             sourceComment: comment,
           ),
@@ -398,7 +406,11 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
               (v) => DmInboxEntry(
                 id: v['id'],
                 selfIdentityId: v['identityId'],
-                recipient: DmIdentity(id: v['peerId'], name: v['peerName']),
+                recipient: DmIdentity(
+                  id: v['peerId'],
+                  name: v['peerName'],
+                  avatar: v['peerAvatar'] as String? ?? 'default-v1',
+                ),
                 preview:
                     v['localPreview'] as String? ??
                     (v['waiting'] == true ? '等待对方回复' : ''),
@@ -466,7 +478,11 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
               builder: (_) => DmChatRoute(
                 runtime: r,
                 own: own,
-                peer: DmIdentity(id: v['peerId'], name: v['peerName']),
+                peer: DmIdentity(
+                  id: v['peerId'],
+                  name: v['peerName'],
+                  avatar: v['peerAvatar'] as String? ?? 'default-v1',
+                ),
                 conversation: v['localOnly'] == true ? '' : v['id'],
                 sourcePost: v['sourcePostId'],
                 sourceComment: v['sourceCommentId'] as String? ?? '',
@@ -683,6 +699,7 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
         recipient: DmIdentity(
           id: widget.peer.id,
           name: directory?['peerName'] as String? ?? widget.peer.name,
+          avatar: directory?['peerAvatar'] as String? ?? widget.peer.avatar,
         ),
         selfIdentity: widget.own,
         sourceTitle:

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'auth_api.dart';
 import 'auth_crypto.dart';
@@ -16,7 +17,8 @@ class HttpAuthApi
         EmailLoginApi,
         CredentialManagementApi,
         PasskeyRecoveryApi,
-        IdentityApi {
+        IdentityApi,
+        IdentityAvatarApi {
   HttpAuthApi({
     required this.communityBaseUri,
     required this.verifierBaseUri,
@@ -71,6 +73,91 @@ class HttpAuthApi
   void close() => _client.close(force: true);
 
   @override
+  Future<IdentityAvatarResult> uploadIdentityAvatar({
+    required String sessionToken,
+    required String assetId,
+    required Uint8List bytes,
+    required String mime,
+  }) async {
+    _identityId(assetId);
+    if (bytes.isEmpty ||
+        bytes.length > 5 * 1024 * 1024 ||
+        !{
+          'image/jpeg',
+          'image/png',
+          'image/gif',
+          'image/webp',
+        }.contains(mime)) {
+      throw const AuthFailure(
+        kind: AuthFailureKind.rejected,
+        code: 'IDENTITY_AVATAR_INVALID',
+      );
+    }
+    final r = await _send(
+      false,
+      'PUT',
+      '/api/v1/identity-avatars/$assetId',
+      headers: _capability('Bearer', sessionToken),
+      rawBody: bytes,
+      rawMime: mime,
+      expected: {200},
+    );
+    return _model(() {
+      final m = _record(r.body, {'avatar'});
+      if (m['avatar'] != 'avatar-v1:$assetId') {
+        throw const FormatException('Invalid avatar receipt');
+      }
+      return IdentityAvatarResult(
+        avatar: m['avatar'] as String,
+        sessionExpiresAt: _managementExpiry(r),
+      );
+    });
+  }
+
+  @override
+  Future<IdentityAvatarResult> readIdentityAvatar({
+    required String sessionToken,
+    required String avatar,
+  }) async {
+    if (!validIdentityAvatar(avatar) || avatar == 'default-v1') {
+      throw const FormatException('Invalid avatar');
+    }
+    final r = await _send(
+      false,
+      'GET',
+      '/api/v1/identity-avatars/${avatar.substring(10)}',
+      headers: _capability('Bearer', sessionToken),
+      binaryResponse: true,
+      expected: {200},
+    );
+    return _model(
+      () => IdentityAvatarResult(
+        avatar: avatar,
+        bytes: r.body as Uint8List,
+        sessionExpiresAt: _managementExpiry(r),
+      ),
+    );
+  }
+
+  @override
+  Future<DateTime> abandonIdentityAvatar({
+    required String sessionToken,
+    required String avatar,
+  }) async {
+    if (!validIdentityAvatar(avatar) || avatar == 'default-v1') {
+      throw const FormatException('Invalid avatar');
+    }
+    final r = await _send(
+      false,
+      'DELETE',
+      '/api/v1/identity-avatars/${avatar.substring(10)}',
+      headers: _capability('Bearer', sessionToken),
+      expected: {204},
+    );
+    return _model(() => _managementExpiry(r));
+  }
+
+  @override
   Future<IdentityDirectory> identities(String sessionToken) async {
     final r = await _send(
       false,
@@ -115,7 +202,7 @@ class HttpAuthApi
             final original = item['isOriginal'];
             final created = _date(item, 'createdAt');
             if (original is! bool ||
-                item['avatar'] != 'default-v1' ||
+                !validIdentityAvatar(item['avatar']) ||
                 !ids.add(id) ||
                 !names.add(nickname) ||
                 created.isAfter(serverTime)) {
@@ -125,7 +212,7 @@ class HttpAuthApi
             return ManagedIdentity(
               id: id,
               nickname: nickname,
-              avatar: 'default-v1',
+              avatar: item['avatar'] as String,
               isOriginal: original,
               createdAt: created,
               renameAvailableAt: item['renameAvailableAt'] == null
@@ -159,9 +246,17 @@ class HttpAuthApi
     required IdentityOperation operation,
     String? identityId,
     String? nickname,
+    String? avatar,
   }) async {
     if ((operation == IdentityOperation.create) != (identityId == null) ||
-        (operation == IdentityOperation.delete) != (nickname == null) ||
+        ({
+              IdentityOperation.delete,
+              IdentityOperation.avatar,
+            }.contains(operation)) !=
+            (nickname == null) ||
+        (avatar != null && !validIdentityAvatar(avatar)) ||
+        (operation == IdentityOperation.avatar && avatar == null) ||
+        (operation == IdentityOperation.delete && avatar != null) ||
         nickname != null &&
             (nickname.isEmpty || utf8.encode(nickname).length > 512)) {
       throw const AuthFailure(
@@ -183,7 +278,7 @@ class HttpAuthApi
       false,
       switch (operation) {
         IdentityOperation.create => 'POST',
-        IdentityOperation.rename => 'PATCH',
+        IdentityOperation.rename || IdentityOperation.avatar => 'PATCH',
         IdentityOperation.delete => 'DELETE',
       },
       identityId == null
@@ -193,7 +288,12 @@ class HttpAuthApi
         ..._capability('Bearer', sessionToken),
         'Idempotency-Key': _bytes(idempotencyKey, 16),
       },
-      body: nickname == null ? null : {'nickname': nickname},
+      body: operation == IdentityOperation.delete
+          ? null
+          : {
+              if (nickname != null) 'nickname': nickname,
+              if (avatar != null) 'avatar': avatar,
+            },
       expected: {200},
       allowNull: true,
     );
@@ -256,6 +356,7 @@ class HttpAuthApi
       'CREATE' => IdentityOperation.create,
       'RENAME' => IdentityOperation.rename,
       'DELETE' => IdentityOperation.delete,
+      'AVATAR' => IdentityOperation.avatar,
       _ => throw const FormatException('Invalid identity operation'),
     };
     if (m['state'] == 'REJECTED' &&
@@ -287,6 +388,10 @@ class HttpAuthApi
     'IDENTITY_RENAME_COOLDOWN',
     'IDENTITY_LAST_REQUIRED',
     'IDENTITY_NOT_FOUND',
+    'IDENTITY_AVATAR_INVALID',
+    'IDENTITY_AVATAR_NOT_FOUND',
+    'IDENTITY_AVATAR_LIMIT',
+    'MEDIA_VALIDATOR_UNAVAILABLE',
   };
 
   @override
@@ -1177,6 +1282,9 @@ class HttpAuthApi
     Map<String, Object>? body,
     Map<String, String> headers = const {},
     int maxRequestBytes = 8192,
+    Uint8List? rawBody,
+    String? rawMime,
+    bool binaryResponse = false,
     bool allowNull = false,
     required Set<int> expected,
   }) async {
@@ -1199,6 +1307,11 @@ class HttpAuthApi
         for (final entry in headers.entries) {
           request.headers.set(entry.key, entry.value);
         }
+        if (rawBody != null) {
+          request.headers.set(HttpHeaders.contentTypeHeader, rawMime!);
+          request.contentLength = rawBody.length;
+          request.add(rawBody);
+        }
         if (body != null) {
           final bytes = utf8.encode(jsonEncode(body));
           if (bytes.length > maxRequestBytes) {
@@ -1216,12 +1329,15 @@ class HttpAuthApi
         }
         final response = await request.close();
         responseStatus = response.statusCode;
+        final responseLimit = binaryResponse && response.statusCode == 200
+            ? 512 * 1024
+            : maxResponseBytes;
         final bytes = <int>[];
-        if (response.contentLength > maxResponseBytes) {
+        if (response.contentLength > responseLimit) {
           throw const FormatException('Oversized response');
         }
         await for (final chunk in response) {
-          if (bytes.length + chunk.length > maxResponseBytes) {
+          if (bytes.length + chunk.length > responseLimit) {
             throw const FormatException('Oversized response');
           }
           bytes.addAll(chunk);
@@ -1240,7 +1356,16 @@ class HttpAuthApi
           throw const FormatException('Missing authentication cache policy');
         }
         Object? payload;
-        if (status == 204) {
+        if (binaryResponse && status == 200) {
+          if (response.headers.contentType?.mimeType != 'image/webp' ||
+              response.headers.value('X-Content-Type-Options') != 'nosniff' ||
+              bytes.length < 12 ||
+              String.fromCharCodes(bytes.take(4)) != 'RIFF' ||
+              String.fromCharCodes(bytes.skip(8).take(4)) != 'WEBP') {
+            throw const FormatException('Invalid avatar bytes');
+          }
+          payload = Uint8List.fromList(bytes);
+        } else if (status == 204) {
           if (bytes.isNotEmpty) {
             throw const FormatException('Unexpected response body');
           }
@@ -1402,6 +1527,10 @@ class HttpAuthApi
     'IDENTITY_RENAME_COOLDOWN',
     'IDENTITY_LAST_REQUIRED',
     'IDENTITY_NOT_FOUND',
+    'IDENTITY_AVATAR_INVALID',
+    'IDENTITY_AVATAR_NOT_FOUND',
+    'IDENTITY_AVATAR_LIMIT',
+    'MEDIA_VALIDATOR_UNAVAILABLE',
     'IDENTITY_CHANGE_CONFLICT',
   };
 

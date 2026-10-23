@@ -4,8 +4,12 @@ import 'dart:math';
 import 'package:characters/characters.dart';
 
 import '../posts/post_api.dart';
+import '../identity/identity_api.dart';
+
 import '../posts/post_models.dart';
 import '../posts/post_protocol.dart';
+
+bool dmValidAvatar(Object? v) => validIdentityAvatar(v) || v == 'inactive-v1';
 
 String dmId() {
   final r = Random.secure();
@@ -61,6 +65,9 @@ Map<String, dynamic> decodeDm(Object? raw, String resource) {
         PostJson.id(v, k);
       }
       PostJson.date(v, 'createdAt');
+      if (!dmValidAvatar(v['peerAvatar'])) {
+        throw const FormatException('Invalid block peer avatar');
+      }
       for (final k in ['peerName', 'peerAvatar']) {
         PostJson.text(v, k, allowEmpty: true);
       }
@@ -69,12 +76,14 @@ Map<String, dynamic> decodeDm(Object? raw, String resource) {
   }
   if (resource.startsWith('chat/')) return decodeDmChat(raw, resource);
   if (resource == 'contact') {
-    final m = PostJson.record(raw, {
-      'peerId',
-      'peerName',
-      'boundIdentityId',
-      'self',
-    });
+    final m = PostJson.record(
+      raw,
+      {'peerId', 'peerName', 'boundIdentityId', 'self'},
+      optional: {'peerAvatar'},
+    );
+    if (m.containsKey('peerAvatar') && !dmValidAvatar(m['peerAvatar'])) {
+      throw const FormatException('Invalid peer avatar');
+    }
     PostProtocol.resourceId(m['peerId'] as String);
     if (m['boundIdentityId'] != '') {
       PostProtocol.resourceId(m['boundIdentityId'] as String);
@@ -176,8 +185,13 @@ Map<String, dynamic> decodeDm(Object? raw, String resource) {
               'waiting',
               'canSend',
             },
-      optional: pending ? {'evidenceVersion'} : {'ownBlockId'},
+      optional: pending ? {'evidenceVersion'} : {'ownBlockId', 'peerAvatar'},
     );
+    if (!pending &&
+        item.containsKey('peerAvatar') &&
+        !dmValidAvatar(item['peerAvatar'])) {
+      throw const FormatException('Invalid peer avatar');
+    }
     if (!pending && item['ownBlockId'] != null && item['ownBlockId'] != '') {
       PostJson.id(item, 'ownBlockId');
     }
@@ -270,7 +284,7 @@ Map<String, dynamic> decodeDmChat(Object? raw, String resource) {
           'unavailableUnread',
           'sourceTitle',
         },
-        optional: {'ownBlockId'},
+        optional: {'ownBlockId', 'peerAvatar'},
       );
       if (item['ownBlockId'] != null && item['ownBlockId'] != '') {
         PostProtocol.resourceId(item['ownBlockId'] as String);

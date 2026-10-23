@@ -158,6 +158,7 @@ components:
       properties:
         peerId: {$ref: '#/components/schemas/Id'}
         peerName: {type: string}
+        peerAvatar: {type: string, pattern: '^(default-v1|inactive-v1|avatar-v1:(?!00000000-0000-0000-0000-000000000000$)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$'}
         boundIdentityId: {$ref: '#/components/schemas/OptionalId'}
         self: {type: boolean}
     Conversation:
@@ -170,6 +171,7 @@ components:
         identityId: {$ref: '#/components/schemas/Id'}
         peerId: {$ref: '#/components/schemas/Id'}
         peerName: {type: string}
+        peerAvatar: {type: string, pattern: '^(default-v1|inactive-v1|avatar-v1:(?!00000000-0000-0000-0000-000000000000$)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$'}
         sourcePostId: {$ref: '#/components/schemas/Id'}
         sequence: {type: integer, minimum: 0}
         unread: {type: integer, minimum: 0}

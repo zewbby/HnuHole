@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-23 IDENTITY-AVATAR-01（分支实现／未合并／未发布）：**`feat/identity-avatar-onboarding` 已实现真实头像上传／规范化 WebP／受保护读取／原子资料保存与清理、注册收尾后的强制初始身份入口（默认头像可用，已有身份直接进入）及帖子／评论／私信头像投影。已无冲突整合 main `8dca780`；宿主／一次性真实 SQL／TLS／迁移 24→25／受限权限和完整契约按[机器证据](identity-avatar-onboarding-verification-20261023.json)取得限定 PASS，主会话独立审查 R01–R06 无剩余阻断（非 GitHub 成员批准）。提交阶段仅补 7 目标分析 0 issues、入口／头像缓存 5 项 PASS；上游 #61／#62 证据保留各自来源。真我 `.identityavatar` 独立包真实图库／原生 vault／强杀重启仍 NOT_RUN，远端 CI 待 PR；只交付隔离 C25 配套新客户端，不宣称旧 2313 兼容，不动共享 C24／日常包或生产，不提升历史整模块结论。下一步冻结 SHA 后由主会话执行原生增量验收。见[任务](../branches/identity-avatar-onboarding.md)。
+
 > **2026-10-23 DM-HEADER-DENSITY-01 送审快照：**[PR #62](https://github.com/zewbby/HnuHole/pull/62)源码`a5e7415`基于main `eb1eeb9`，缩小私信标题、右上入口保留原长度及昵称，仅减至36dp视觉高度（至少48dp触控）、搜索框改40dp灰底。r2既有受影响2项及真实字体渲染1项PASS，2314普通主入口同签覆盖vivo，收起／展开视觉获用户确认；r3仅补语义点击回调，新增宿主语义动作测试1项PASS、定点分析0，视觉沿2314复用。Sol XHigh接续收尾，2315同签覆盖与版本核对PASS，安装后ADB不可用，自动启动NOT_RUN；独立Sol XHigh精确源码复审无阻断，非GitHub成员批准。原生TalkBack NOT_RUN；送审时未合并／发布，最终CI／合并状态以PR #62回执为准，不提升B08/B09整模块结论。见[任务](../branches/fix-direct-message-header-density.md)。
 
 > **2026-10-23 MOBILE-NAV-REFRESH-01大图内存续验：**真我Profile2304、30条3000×4000照片源JPEG帖子、32轮分页／回顶、30分钟77个内存样本：同PID，顶部PSS首末254.6／254.9MB，未见OOM或持续总PSS增长。原生相机多样本、隔夜、iOS和生产不在本次范围，历史完整模块结论不升级；测试帖已删，日常2303已恢复。见[证据](validation/mobile-large-photo-memory-realme-20261023.json)。

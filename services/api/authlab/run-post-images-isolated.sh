@@ -51,5 +51,15 @@ AUTHLAB_ALLOW_SCHEMA_RESET=1
 export AUTHLAB_RUNTIME_TAG AUTHLAB_C_DSN AUTHLAB_V_DSN AUTHLAB_POSTS_RUNTIME_DSN AUTHLAB_ALLOW_SCHEMA_RESET
 post_schema_script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$post_schema_script_dir/.."
+if [ "${POST_MEDIA_PREPARE_AVATAR_UPGRADE:-0}" = 1 ]; then
+    psql -X -v ON_ERROR_STOP=1 -h "$post_schema_dir/socket" -U post_schema_admin -d postgres >/dev/null <<'SQL'
+CREATE DATABASE hnuhole_comments_fresh OWNER hnuhole_c;
+CREATE DATABASE hnuhole_comments_upgrade OWNER hnuhole_c;
+SQL
+    COMMENT_TEXT_GOOSE=$(command -v goose)
+    COMMENT_TEXT_FRESH_DSN="postgresql://hnuhole_c@/hnuhole_comments_fresh?host=$post_schema_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+    COMMENT_TEXT_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_comments_upgrade?host=$post_schema_dir/socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+    export COMMENT_TEXT_GOOSE COMMENT_TEXT_FRESH_DSN COMMENT_TEXT_UPGRADE_DSN
+fi
 go test -race -count=1 ./internal/postmedia ./internal/posts ./internal/authprivacyruntime -json
 go test -race -count=1 -p 1 ./internal/authprivacy ./internal/authprivacyhttp -run "${POST_MEDIA_TEST_PATTERN:-^(TestPost|TestRealHTTPSPost)}" -json

@@ -33,6 +33,7 @@ type IdentityChangeRequest struct {
 	Operation  string
 	IdentityID uuid.UUID
 	Nickname   string
+	Avatar     string
 }
 
 type IdentityChangeResult struct {
@@ -237,6 +238,13 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 	var result IdentityChangeResult
 	var shapeErr, nameErr error
 	name := request.Nickname
+	avatar := request.Avatar
+	if request.Operation == "CREATE" && avatar == "" {
+		avatar = IdentityDefaultAvatar
+	}
+	if request.Operation == "DELETE" && avatar != "" {
+		shapeErr = ErrIdentityChangeConflict
+	}
 	switch request.Operation {
 	case "CREATE":
 		if request.IdentityID != uuid.Nil {
@@ -248,6 +256,10 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 			shapeErr = ErrIdentityNotFound
 		}
 		name, nameErr = identityValidateRequestedName(name)
+	case "AVATAR":
+		if request.IdentityID == uuid.Nil || name != "" || avatar == "" {
+			shapeErr = ErrIdentityChangeConflict
+		}
 	case "DELETE":
 		if request.IdentityID == uuid.Nil {
 			shapeErr = ErrIdentityNotFound
@@ -262,6 +274,9 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 	}
 	key := identityChangeKey(request.ChangeID)
 	fingerprint := requestMAC(c.requestKey, []byte("HNUHOLE/IDENTITY-INTENT/V1"), []byte(request.Operation), request.IdentityID[:], []byte(name))
+	if request.Avatar != "" || request.Operation == "AVATAR" {
+		fingerprint = requestMAC(c.requestKey, []byte("HNUHOLE/IDENTITY-INTENT/V2"), []byte(request.Operation), request.IdentityID[:], []byte(name), []byte(avatar))
+	}
 	expires, err := c.withIdentitySession(ctx, request.Bearer, func(tx pgx.Tx, account uuid.UUID, final AuthorizationDecision) error {
 		if shapeErr != nil {
 			return shapeErr
@@ -310,11 +325,20 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 		if request.Operation != "CREATE" && target == nil {
 			return reject("IDENTITY_NOT_FOUND")
 		}
-		if request.Operation != "DELETE" {
+		if request.Operation == "CREATE" || request.Operation == "RENAME" {
 			for _, item := range items {
 				if item.ID != request.IdentityID && item.Nickname == name {
 					return reject("IDENTITY_DUPLICATE_NAME")
 				}
+			}
+		}
+		if request.Operation == "CREATE" || request.Operation == "AVATAR" || request.Avatar != "" {
+			valid, e := identityAvatarAvailable(ctx, tx, account, request.IdentityID, avatar, final.TrustedAt)
+			if e != nil {
+				return e
+			}
+			if !valid {
+				return reject("IDENTITY_AVATAR_INVALID")
 			}
 		}
 		result = IdentityChangeResult{State: "COMMITTED", Operation: request.Operation, IdentityID: request.IdentityID}
@@ -337,7 +361,11 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 			if _, e = tx.Exec(ctx, `INSERT INTO public.identity_account_state(account_id,created_count,last_created_at) VALUES($1,1,$2) ON CONFLICT(account_id) DO UPDATE SET created_count=identity_account_state.created_count+1,last_created_at=EXCLUDED.last_created_at`, account, final.TrustedAt); e != nil {
 				return ErrAuthorizationUnavailable
 			}
-			if _, e = tx.Exec(ctx, `INSERT INTO public.community_identities(identity_id,account_id,nickname,avatar,is_original,created_at) VALUES($1,$2,$3,$4,$5,$6)`, id, account, name, IdentityDefaultAvatar, createdCount == 0, final.TrustedAt); e != nil {
+			if _, e = tx.Exec(ctx, `INSERT INTO public.community_identities(identity_id,account_id,nickname,avatar,is_original,created_at) VALUES($1,$2,$3,$4,$5,$6)`, id, account, name, avatar, createdCount == 0, final.TrustedAt); e != nil {
+				return ErrAuthorizationUnavailable
+			}
+		case "AVATAR":
+			if _, e = tx.Exec(ctx, `UPDATE public.community_identities SET avatar=$3 WHERE account_id=$1 AND identity_id=$2 AND deleted_at IS NULL`, account, target.ID, avatar); e != nil {
 				return ErrAuthorizationUnavailable
 			}
 		case "RENAME":
@@ -356,6 +384,11 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 					renameSQL = `UPDATE public.community_identities SET nickname=$3,last_renamed_at=$4,moderation_rename_required=false WHERE account_id=$1 AND identity_id=$2 AND deleted_at IS NULL`
 				}
 				if _, e = tx.Exec(ctx, renameSQL, account, target.ID, name, final.TrustedAt); e != nil {
+					return ErrAuthorizationUnavailable
+				}
+			}
+			if avatar != "" {
+				if _, e = tx.Exec(ctx, `UPDATE public.community_identities SET avatar=$3 WHERE account_id=$1 AND identity_id=$2 AND deleted_at IS NULL`, account, target.ID, avatar); e != nil {
 					return ErrAuthorizationUnavailable
 				}
 			}

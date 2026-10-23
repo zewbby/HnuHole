@@ -58,6 +58,7 @@ type DMConversation struct {
 	IdentityID   string `json:"identityId"`
 	PeerID       string `json:"peerId"`
 	PeerName     string `json:"peerName"`
+	PeerAvatar   string `json:"peerAvatar"`
 	SourcePostID string `json:"sourcePostId"`
 	Sequence     int64  `json:"sequence"`
 	Unread       int64  `json:"unread"`
@@ -87,6 +88,7 @@ type DMApplied struct {
 type DMContact struct {
 	PeerID          string `json:"peerId"`
 	PeerName        string `json:"peerName"`
+	PeerAvatar      string `json:"peerAvatar"`
 	BoundIdentityID string `json:"boundIdentityId"`
 	Self            bool   `json:"self"`
 }
@@ -114,7 +116,7 @@ func (c *Community) DMContact(ctx context.Context, b [32]byte, post, comment str
 			}
 		}
 		r := DMContact{PeerID: peer}
-		e = tx.QueryRow(ctx, `SELECT nickname,account_id=$2 FROM public.community_identities WHERE identity_id=$1 AND deleted_at IS NULL`, peer, a).Scan(&r.PeerName, &r.Self)
+		e = tx.QueryRow(ctx, `SELECT nickname,avatar,account_id=$2 FROM public.community_identities WHERE identity_id=$1 AND deleted_at IS NULL`, peer, a).Scan(&r.PeerName, &r.PeerAvatar, &r.Self)
 		if errors.Is(e, pgx.ErrNoRows) {
 			return nil, postError("COMMAND_CONFLICT", 409)
 		}
@@ -349,14 +351,14 @@ func (c *Community) ReadDMDirectory(ctx context.Context, b [32]byte, identity, a
 	}
 	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, m restriction) (any, error) {
 		items := make([]DMConversation, 0)
-		rows, e := tx.Query(ctx, `SELECT c.conversation_id::text,i.identity_id::text,p.identity_id::text,CASE WHEN p.deleted_at IS NULL THEN p.nickname ELSE '注销身份 · '||(SELECT short_code FROM c_posts.identity_public_labels WHERE identity_id=p.identity_id) END,c.source_post::text,c.sequence,(SELECT count(*) FROM c_dm.messages x WHERE x.conversation_id=c.conversation_id AND x.recipient=i.identity_id AND NOT x.read),CASE WHEN c.low_identity=i.identity_id THEN c.low_sent AND NOT c.high_sent ELSE c.high_sent AND NOT c.low_sent END,p.deleted_at IS NULL AND NOT EXISTS(SELECT 1 FROM c_dm.blocks b WHERE (b.owner_account=i.account_id AND b.peer_account=p.account_id) OR (b.owner_account=p.account_id AND b.peer_account=i.account_id)),COALESCE((SELECT block_id::text FROM c_dm.blocks b WHERE b.owner_account=i.account_id AND b.identity_id=i.identity_id AND b.peer_id=p.identity_id),'') FROM c_dm.conversations c JOIN public.community_identities i ON i.identity_id IN(c.low_identity,c.high_identity) JOIN public.community_identities p ON p.identity_id=CASE WHEN i.identity_id=c.low_identity THEN c.high_identity ELSE c.low_identity END WHERE i.account_id=$1 AND i.identity_id=$2 AND i.deleted_at IS NULL AND ($3='' OR c.conversation_id>NULLIF($3,'')::uuid) ORDER BY c.conversation_id LIMIT 100`, a, identity, after)
+		rows, e := tx.Query(ctx, `SELECT c.conversation_id::text,i.identity_id::text,p.identity_id::text,CASE WHEN p.deleted_at IS NULL THEN p.nickname ELSE '注销身份 · '||(SELECT short_code FROM c_posts.identity_public_labels WHERE identity_id=p.identity_id) END,CASE WHEN p.deleted_at IS NULL THEN p.avatar ELSE 'inactive-v1' END,c.source_post::text,c.sequence,(SELECT count(*) FROM c_dm.messages x WHERE x.conversation_id=c.conversation_id AND x.recipient=i.identity_id AND NOT x.read),CASE WHEN c.low_identity=i.identity_id THEN c.low_sent AND NOT c.high_sent ELSE c.high_sent AND NOT c.low_sent END,p.deleted_at IS NULL AND NOT EXISTS(SELECT 1 FROM c_dm.blocks b WHERE (b.owner_account=i.account_id AND b.peer_account=p.account_id) OR (b.owner_account=p.account_id AND b.peer_account=i.account_id)),COALESCE((SELECT block_id::text FROM c_dm.blocks b WHERE b.owner_account=i.account_id AND b.identity_id=i.identity_id AND b.peer_id=p.identity_id),'') FROM c_dm.conversations c JOIN public.community_identities i ON i.identity_id IN(c.low_identity,c.high_identity) JOIN public.community_identities p ON p.identity_id=CASE WHEN i.identity_id=c.low_identity THEN c.high_identity ELSE c.low_identity END WHERE i.account_id=$1 AND i.identity_id=$2 AND i.deleted_at IS NULL AND ($3='' OR c.conversation_id>NULLIF($3,'')::uuid) ORDER BY c.conversation_id LIMIT 100`, a, identity, after)
 		if e != nil {
 			return nil, e
 		}
 		defer rows.Close()
 		for rows.Next() {
 			var v DMConversation
-			if e = rows.Scan(&v.ID, &v.IdentityID, &v.PeerID, &v.PeerName, &v.SourcePostID, &v.Sequence, &v.Unread, &v.Waiting, &v.CanSend, &v.OwnBlockID); e != nil {
+			if e = rows.Scan(&v.ID, &v.IdentityID, &v.PeerID, &v.PeerName, &v.PeerAvatar, &v.SourcePostID, &v.Sequence, &v.Unread, &v.Waiting, &v.CanSend, &v.OwnBlockID); e != nil {
 				return nil, e
 			}
 			items = append(items, v)

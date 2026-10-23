@@ -1,4 +1,7 @@
 import 'dart:async';
+
+import '../design_system/detail_components.dart';
+
 import 'dart:typed_data';
 
 import '../messaging/dm_runtime.dart';
@@ -421,6 +424,11 @@ class _FeedScreenState extends State<FeedScreen> {
                                   ? FeedAction.like
                                   : FeedAction.bookmark,
                           },
+                        ),
+                        avatarBuilder: (_, _) => DetailAvatar(
+                          name: post.author.displayName,
+                          avatar: post.author.avatar,
+                          radius: 20,
                         ),
                         mediaBuilder: (_, _) => const SizedBox.shrink(),
                         mediaSection:
