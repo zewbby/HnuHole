@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-23 MOBILE-NAV-REFRESH-01大图内存续验：**真我Profile2304、30条3000×4000照片源JPEG帖子、32轮分页／回顶、30分钟77个内存样本：同PID，顶部PSS首末254.6／254.9MB，未见OOM或持续总PSS增长。原生相机多样本、隔夜、iOS和生产不在本次范围，历史完整模块结论不升级；测试帖已删，日常2303已恢复。见[证据](validation/mobile-large-photo-memory-realme-20261023.json)。
+
 > **2026-10-23 MOBILE-NAV-REFRESH-01已合并：**[PR #57](https://github.com/zewbby/HnuHole/pull/57)合入main `1686a06`，最终head 20项适用CI全PASS、独立只读审查无阻断。真我2303五项限定回归、用户导航视觉确认、GIF/WebP原生保存与短时Profile帧采样已有证据；真实大图长列表／长期内存、iOS、生产未验，不提升历史完整模块结论。下方“待合并／未提交／CI未跑”为历史快照，见[任务](../branches/fix-mobile-navigation-refresh.md)。
 
 > **2026-10-23 MOBILE-NAV-REFRESH-01（分支实现／待合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；用户已在真我确认切换无重影／闪首页，导航视觉验收PASS；短时Profile帧性能已测，其余项目保留限定基础回归结论。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。

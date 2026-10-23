@@ -1,0 +1,45 @@
+{
+  "task": "MOBILE-NAV-REFRESH-01 long-feed memory follow-up",
+  "date": "2026-10-23",
+  "device": "realme RMX3366",
+  "serial": "7e0660f1",
+  "profileVersionCode": 2026102304,
+  "dailyVersionRestored": 2026102303,
+  "backend": "development C/V over pinned loopback HTTPS",
+  "account": "existing synthetic front_b",
+  "fixture": {
+    "source": "Flutter SDK coast photographic sample, enlarged with varied color/noise; not native camera originals",
+    "jpegVariants": 4,
+    "dimensions": "3000x4000",
+    "bytesPerImage": "2689381-2712076",
+    "seededPosts": 30,
+    "feedPageRowsObserved": 50,
+    "feedNextCursorObserved": true,
+    "cleanup": "all 30 owned test posts deleted; original synthetic account content retained"
+  },
+  "run": {
+    "elapsedSeconds": 1807.9,
+    "paginationAndReturnCycles": 32,
+    "loadMorePressedCycles": 32,
+    "topVerifiedCycles": 32,
+    "memorySamples": 77,
+    "distinctProcessIds": 1,
+    "initialTopPssMiB": 254.6,
+    "finalTopPssMiB": 254.9,
+    "firstEightTopPssMedianMiB": 255.6,
+    "lastEightTopPssMedianMiB": 256.1,
+    "allSamplePssRangeMiB": [252.6, 268.2],
+    "idleTwoMinutesPssMiB": 252.6,
+    "nativeHeapTopFirstLastMiB": [49.1, 55.0],
+    "outOfMemoryOrFatalLogMatches": 0
+  },
+  "verdict": "PASS_30_MINUTE_BOUNDED_PSS_NO_OBSERVED_OOM_OR_PROCESS_RESTART",
+  "limitations": [
+    "The test used four upscaled photographic JPEG variants, not a diverse set of native camera originals.",
+    "The 30-minute single-device development-backend sample does not prove overnight or production memory behavior.",
+    "Native heap grew by about 6 MiB first-to-last while total PSS returned to baseline; longer profiling would be needed to attribute that change."
+  ],
+  "rawEvidence": "E:/Hnuhole-env/media-cache-preview-20261023/device-realme/large-feed-memory-2304.json",
+  "seedRecord": "E:/Hnuhole-env/media-cache-preview-20261023/device-realme/large-feed-seed.json",
+  "production": false
+}

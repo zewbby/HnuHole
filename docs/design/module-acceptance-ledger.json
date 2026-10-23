@@ -53,9 +53,11 @@
     "databaseMigration": "NONE",
     "deviceEvidence": "docs/design/validation/mobile-nav-refresh-realme-20261023.json",
     "animationAndFrameEvidence": "docs/design/validation/mobile-animation-frame-realme-20261023.json",
+    "largePhotoMemoryEvidence": "docs/design/validation/mobile-large-photo-memory-realme-20261023.json",
     "nativeAnimationSave": "PASS_REALME_GIF_WEBP_EXACT_BYTES_FOUR_FRAMES",
     "profileFrameSample": "PASS_SHORT_SYNTHETIC_60HZ_NO_SUSTAINED_FRAME_BUDGET_FAILURE",
-    "remainingDeviceScope": "REAL_PHOTO_HEAVY_LONG_FEED_AND_LONG_SESSION_MEMORY_NOT_RUN",
+    "longFeedMemory": "PASS_REALME_30_MIN_32_PAGED_CYCLES_BOUNDED_PSS_PHOTO_DERIVED_JPEGS",
+    "remainingDeviceScope": "DIVERSE_NATIVE_CAMERA_ORIGINALS_OVERNIGHT_MEMORY_IOS_PRODUCTION_NOT_RUN",
     "integratedMainHead": "6cd686fc7633c399dd07c3e5e6f445e844c4553a",
     "postIntegrationFlutter": "805_PASS_3_SKIP_ANALYZE_ZERO_PROBES_COMPILE_PASS_PREVIOUS_DEBUG_BUNDLE_PASS",
     "postIntegrationGo": "FULL_HOST_TEST_BUILD_VET_PASS"
