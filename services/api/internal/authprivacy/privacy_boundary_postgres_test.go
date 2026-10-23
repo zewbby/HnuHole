@@ -65,6 +65,8 @@ func TestPrivacySchemaPartyBoundaryPostgres(t *testing.T) {
 		{"verifier", l.vp, []string{
 			"v_auth.authorization_gate", "v_auth.authorization_gate_audit", "v_auth.confirmation_rejections",
 			"v_auth.confirmation_sign_jobs", "v_auth.device_email_limits", "v_auth.email_quota",
+			// V-only 0005/0006 proof/replay state; no C account or profile identifiers.
+			"v_auth.email_login_confirmations",
 			"v_auth.mail_outbox", "v_auth.otp_budget_events", "v_auth.otp_code_versions",
 			"v_auth.otp_confirmations", "v_auth.otp_email_state", "v_auth.otp_flows",
 			"v_auth.processed_receipts", "v_auth.request_results", "v_auth.retire_pending", "v_auth.used_slots",

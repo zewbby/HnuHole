@@ -33,6 +33,8 @@ PASS：5 份受影响完整 OpenAPI（direct-message-governance/chat/text、repo
 
 ## 未验及运营边界
 
+2026-10-23 最终整合 Gate CI 增量（head 73892f3，job 120190551179）：唯一失败是 verifier 关系清单漏列既有 0005/0006 的 v_auth.email_login_confirmations。该表仅保存 V 的确认／proof／重放状态；不含 C 账号、面具或会话字段。privacyRelations 仅枚举 public/c_auth/v_auth，因此不是 0024 的 c_dm.blocks 导致。补丁只增列该准确表名，保留完整关系精确匹配、禁止列及特权函数／跨库桥接检查。使用前述自有隔离 runner、DM_CHAT_TEST_PATTERN='^TestPrivacySchemaPartyBoundaryPostgres$'，真实 SQL／race 的 community 和 verifier 两子测试 PASS（3.93s）；未重跑已通过主体及完整预发布。此项是最终整合暴露的历史测试清单遗漏，不扩展邮箱登录产品功能。
+
 2026-10-23 预发布审计增量（PR #52 head fc4f986）：rehearsal 在 environment.py:398 的共享权限审计失败。0024 的 grant-community 增加了即使 DM API 关闭也必需的清理权限，旧审计没有 c_dm 矩阵。修正只为 C runtime 放行既定五表读取、四表明确清理列 UPDATE 与 blocks DELETE；未增加运行角色授权。新增 test_role_audit_postgres.py 使用两个新建自有 C/V PostgreSQL 集群、实际 Goose 最新迁移、正式 grants 和原 Lab.audit：修前复现 FAIL，修后 PASS；8 个发送/不可变列/整表更新/越权角色负例全部因 noncontract table privilege 被拒绝。CI 使用 PRERELEASE_AUDIT_SQL_TEST=1 启用该回归。仅验证受影响审计，完整远端 rehearsal 待新提交 CI，不将本地增量等同整套预发布通过。
 
 2026-10-23 真实 TLS 联调增量：合成账号初次 PUT commands 返回 SENT、PUT block 返回 APPLIED；第三步 GET blocks 的 createdAt 实际返回 +08:00，触发 Flutter 严格 UTC 解码失败。DMBlocks 现将数据库时间显式转为 UTC；TestDMGovernanceHTTPSPostgres 强制 time.Local=UTC+08 并断言 JSON 时间以 Z 结束。使用同一自有隔离 runner、DM_CHAT_TEST_PATTERN='^TestDMGovernanceHTTPSPostgres$' 实际 SQL／HTTPS／race PASS（4.33s）。未重跑未改变的全套检查。完整 Flutter 联调仍由整合方执行。
