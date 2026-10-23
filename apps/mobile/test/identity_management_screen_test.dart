@@ -83,7 +83,7 @@ void main() {
     (tester) async {
       final f = await IdentityTestFixture.create();
       await _show(tester, f);
-      expect(find.textContaining('仍可浏览社区'), findsOneWidget);
+      expect(find.text('还没有发言身份，请先完成初始身份设置。'), findsOneWidget);
       await _tap(tester, find.byKey(const ValueKey('identity-add')));
       expect(find.byType(IdentityAvatar), findsWidgets);
       await tester.enterText(

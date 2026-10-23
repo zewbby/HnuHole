@@ -261,7 +261,7 @@ class _IdentityManagementScreenState extends State<IdentityManagementScreen> {
           Text('你的发言身份', style: Theme.of(context).textTheme.titleLarge),
           _notice('身份列表仅本人可见。最多保留 3 个身份，创建后至少保留 1 个。'),
           if (directory.identities.isEmpty)
-            _notice('还没有发言身份，你仍可浏览社区。创建一个身份后再参与发言。'),
+            _notice('还没有发言身份，请先完成初始身份设置。'),
           for (final identity in directory.identities) ...[
             const Divider(height: 1),
             ListTile(

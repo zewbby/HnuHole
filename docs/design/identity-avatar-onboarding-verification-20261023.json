@@ -1,4 +1,134 @@
 {
+  "postNativeCopyVerification": {
+    "command": "flutter test --no-pub test/identity_management_screen_test.dart --plain-name 'zero-identity account can create default-avatar identity and preserves legal input' --reporter expanded",
+    "cwd": "apps/mobile",
+    "result": "PASS_1",
+    "scope": "Existing zero-identity management empty-state regression only; product change is copy, no repeated unchanged native matrix.",
+    "privateLog": "E:/Hnuhole-env/avatar-onboarding-20261023/submission-copy-test.log"
+  },
+  "rootNativeAcceptance": {
+    "task": "IDENTITY-AVATAR-01",
+    "recordedAtUtc": "2026-10-23T06:45:48.174616+00:00",
+    "result": "PASS_LIMITED_NATIVE_SCOPE",
+    "testedSource": "fca05299ba4a0c73ec6aa9a4877faea1a1c6dd8d",
+    "device": {
+      "model": "RMX3366",
+      "android": "14",
+      "package": "org.hnuhole.hnuhole_mobile.identityavatar",
+      "versionCode": 2026102314,
+      "signerSHA256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea"
+    },
+    "artifact": {
+      "sha256": "c1a00b6aa7ce9e5b373729d8bf1bbf2dfeb04a2eb588dc615600a1b3ac2ea7fd",
+      "bytes": 188079736
+    },
+    "backend": {
+      "ownedOnly": true,
+      "schemaC": 25,
+      "schemaV": 6,
+      "realTLSAndNativeTransport": true,
+      "existingSharedC24Changed": false
+    },
+    "checks": [
+      {
+        "name": "register-then-initial-popup",
+        "result": "PASS",
+        "detail": "Actual SMTP OTP, recovery code generation/confirmation and optional Passkey finish completed before mandatory popup; Back and outside tap did not dismiss."
+      },
+      {
+        "name": "system-gallery-create",
+        "result": "PASS",
+        "detail": "Android system photo picker Browse selected owned blue JPEG; real upload and atomic nickname/avatar CREATE reached Feed and DM."
+      },
+      {
+        "name": "original-and-last-required",
+        "result": "PASS_LIMITED",
+        "detail": "Real SQL one active original identity/created_count1; native management displayed disabled last-identity delete. Backend rejection covered separately by existing targeted SQL evidence."
+      },
+      {
+        "name": "native-vault-process-reopen",
+        "result": "PASS",
+        "detail": "Force-stop and cold reopen retained authenticated account, initial identity and custom blue avatar without setup popup; later avatar replacement also survived fresh process. This is process restart, not whole-phone reboot or power loss."
+      },
+      {
+        "name": "avatar-only-replacement",
+        "result": "PASS",
+        "detail": "Green JPEG saved under unchanged name; same identity ID/original/create count, rename time stayed NULL; AVATAR committed; old payload NULL/new WebP bound, EXIF absent; DM header refreshed."
+      },
+      {
+        "name": "existing-add-cancel-return",
+        "result": "PASS",
+        "detail": "DM add identity, cancel editor, Back to DM retained same current identity without first-setup/identity-checking page."
+      },
+      {
+        "name": "initial-popup-real-ime",
+        "result": "PASS_LIMITED",
+        "detail": "Actual Realme IME expanded; nickname field and Complete/Logout controls remained above keyboard and completion succeeded. No general chat IME matrix rerun."
+      }
+    ],
+    "evidence": {
+      "realme-registration-finish.png": {
+        "sha256": "3ae9f7e9478fd0cae4414ea1c26db978c4201d677eaab8e849c1e446fd112923",
+        "bytes": 98017,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-registration-finish.png"
+      },
+      "realme-initial-identity.png": {
+        "sha256": "d46975bf729e832467f1ed78c00bd478fcf181818fc678729164da57c5152960",
+        "bytes": 89222,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-initial-identity.png"
+      },
+      "realme-initial-avatar-keyboard.png": {
+        "sha256": "d71bc3b479a2098a3a86f83e15e96413378b2d5c9ba609622c5caf505c566b7b",
+        "bytes": 1472226,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-initial-avatar-keyboard.png"
+      },
+      "realme-avatar-reopened-menu.png": {
+        "sha256": "4fc5b5c4aa6c06cbcacab4dac6617038b4a032a76d2a92123d3834dcaec82245",
+        "bytes": 70641,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-avatar-reopened-menu.png"
+      },
+      "realme-existing-cancel-dm.png": {
+        "sha256": "eb4b94d1573adbf558ec6471746200dd9cd7c737ed97a0aeb6d0dbdface9425e",
+        "bytes": 56507,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-existing-cancel-dm.png"
+      },
+      "realme-avatar-green-dm-stable.png": {
+        "sha256": "39061ff05acd79e53a54c97ca2618971b80a6e37161502bdd3aa1d85d626499c",
+        "bytes": 56640,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-avatar-green-dm-stable.png"
+      },
+      "realme-green-native-reopen.png": {
+        "sha256": "4e5330beef5f88da10c0afda4906a093287ce5fd3145197dd11de5ebdaa2acf8",
+        "bytes": 55590,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-green-native-reopen.png"
+      },
+      "native-sql-after-create.json": {
+        "sha256": "ebec8ac8a32fa027ec9ef99b630b867241044a0ed7d94766b55bf62ee0813fdf",
+        "bytes": 903,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/native-sql-after-create.json"
+      },
+      "native-sql-after-avatar-change.json": {
+        "sha256": "4640b939ad6a8b2093f68387d9a092c3f7d425c304e3e1143701a752db39fbca",
+        "bytes": 1105,
+        "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/native-sql-after-avatar-change.json"
+      }
+    },
+    "boundaries": {
+      "dailyPackageVersionUnchanged": 2026102313,
+      "dailyAppDataClearedOrUninstalled": false,
+      "vivoUsed": false,
+      "realUserPhotosUsed": false,
+      "wholePhoneReboot": "NOT_RUN_THIS_FEATURE",
+      "suddenPowerLoss": "NOT_RUN",
+      "ios": "NOT_RUN",
+      "production": "NOT_RUN",
+      "realTCPDroppedResponse": "NOT_RUN",
+      "unchangedDMOrNavigationMatrixRepeated": false
+    },
+    "privateReceipt": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-acceptance.json",
+    "evidenceFilesCommitted": false,
+    "finalSourceDelta": "After tested fca05299, only unreachable management empty-state copy and its assertion changed; documentation corrections and receipt recording do not change the tested native flow. No repeated full native matrix."
+  },
   "integratedMain": "8dca780ab11b9aef9974ab7aab7f096c1beea9d1",
   "submissionReview": {
     "reviewer": "root independent read-only review",
@@ -32,7 +162,7 @@
   "date": "2026-10-23",
   "branch": "feat/identity-avatar-onboarding",
   "base": "6e09baf30b07656f555e2fdc15ebb73a790c4e2c",
-  "testedVersion": "UNCOMMITTED_WORKING_INPUTS_SEE_MANIFEST_NOT_BASE_COMMIT",
+  "testedVersion": "AUTHOR_WORKING_INPUTS_MANIFEST_PLUS_INTEGRATION_fca05299; ROOT_NATIVE_EXACT_fca05299",
   "authorInputs": {
     "privatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/author-inputs-final.json",
     "fileCount": 478,
@@ -75,7 +205,7 @@
     "vault": "No image bytes/base64 persisted in AuthState; small owner-scoped UUID/digest/MIME/target anchor only",
     "deployment": "C25 and compatible mobile must be upgraded together. Old 2313 strict default-v1/DM DTO client is not claimed compatible. Only isolated C25 + .identityavatar acceptance authorized here.",
     "remoteCI": "NOT_RUN_NEW_PRODUCT_WORKFLOW_DEFINED",
-    "nativeGalleryVaultRestart": "NOT_RUN_ROOT_HANDOFF",
+    "nativeGalleryVaultRestart": "PASS_LIMITED_ROOT_fca05299_PROCESS_REOPEN_NOT_PHONE_REBOOT",
     "ios": "NOT_RUN_ANDROID_PICKER_ADAPTER_ONLY",
     "realPowerLoss": "NOT_RUN",
     "remotePush": "NOT_IMPLEMENTED_HISTORICAL_GAP_UNCHANGED",

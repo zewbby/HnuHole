@@ -23,14 +23,14 @@
     "integrationAfterMain": "PASS_5_INITIAL_GATE_AVATAR_SCOPE_AND_7_TARGET_ANALYZE_ZERO",
     "independentReview": "PASS_ROOT_R01_TO_R06_NO_BLOCKERS_NOT_GITHUB_MEMBER_APPROVAL",
     "inputComparison": "478_AUTHOR_INPUTS_EQUAL_AFTER_LF_SQL_FOUR_DIFFERENCES_ONLY_LF_OR_GOFMT",
-    "nativeGalleryVaultRestart": "NOT_RUN_ROOT_OWNED_REALME_IDENTITYAVATAR_HANDOFF",
+    "nativeGalleryVaultRestart": "PASS_LIMITED_ROOT_fca05299_7_CASES_9_EVIDENCE_PROCESS_REOPEN_NOT_PHONE_REBOOT",
     "remoteCI": "NOT_RUN_PENDING_PR",
     "deployment": "ONLY_ISOLATED_C25_AND_MATCHING_NEW_CLIENT_OLD_2313_COMPATIBILITY_NOT_CLAIMED",
     "merged": false,
     "released": false,
     "historicalModuleVerdictsUnchanged": true,
     "historicalGaps": "REAL_POWER_LOSS_IOS_SCALE_PRODUCTION_NOT_RUN_P3_MANUAL_SKIP_AND_REMOTE_PUSH_NOT_IMPLEMENTED_UNCHANGED",
-    "nextStep": "Freeze clean source SHA; root accepts isolated real native gallery/vault/restart then update evidence and submit PR."
+    "nextStep": "Submit PR and inspect exact-head product CI; no merge authorization. Native tested fca05299; final product delta is unreachable management copy only."
   },
   "dmHeaderDensity20261023": {
     "task": "DM-HEADER-DENSITY-01",
