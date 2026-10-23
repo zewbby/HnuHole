@@ -35,6 +35,8 @@ export 'src/posts/post_upload_models.dart';
 export 'src/posts/post_photo_picker.dart';
 export 'src/posts/post_protocol.dart';
 export 'src/posts/post_controller.dart';
+export 'src/posts/post_reposts_api.dart';
+export 'src/posts/post_reposts_widgets.dart';
 export 'src/posts/post_screens.dart';
 export 'src/storage/post_store.dart';
 export 'src/config/mobile_environment.dart';

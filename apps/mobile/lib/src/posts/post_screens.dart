@@ -19,6 +19,7 @@ import '../identity/identity_api.dart';
 import '../reports/report_screens.dart';
 import '../storage/post_store.dart';
 import 'post_controller.dart';
+import 'post_reposts_widgets.dart';
 import 'post_models.dart';
 import 'post_images.dart';
 import 'post_protocol.dart';
@@ -28,6 +29,7 @@ import 'post_upload_models.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
 
 part 'post_composer_photos.dart';
+part 'personal_profile.dart';
 
 class ChannelPostsScreen extends StatefulWidget {
   const ChannelPostsScreen({
@@ -1221,8 +1223,11 @@ class PersonalPostsScreen extends StatefulWidget {
   State<PersonalPostsScreen> createState() => _PersonalPostsScreenState();
 }
 
-class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
+class _PersonalPostsScreenState extends State<PersonalPostsScreen>
+    with _PersonalProfile {
+  @override
   late final _PostAuthority _authority;
+  @override
   final _scroll = ScrollController();
   @override
   void initState() {
@@ -1233,16 +1238,21 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
   }
 
   void _changed() {
-    if (mounted) setState(() {});
+    if (mounted) {
+      profileIdentityChanged();
+      setState(() {});
+    }
   }
 
   @override
   void dispose() {
     widget.controller.removeListener(_changed);
+    disposeProfile();
     _scroll.dispose();
     super.dispose();
   }
 
+  @override
   Future<void> _open(PersonalPostItem item) async {
     if (!_authority.current) return;
     if (item.post != null) {
@@ -1312,6 +1322,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
     }
   }
 
+  @override
   Future<void> _deleteDraft(PersonalPostItem item) async {
     if (!item.isDraft || !_authority.current) return;
     final confirmed = await _confirmScoped(
@@ -1327,6 +1338,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
     await widget.controller.discardDraft(editor);
   }
 
+  @override
   Future<void> _deleteFailedTask(PersonalPostItem item) async {
     final task = item.task;
     if (!_authority.current ||
@@ -1346,6 +1358,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
     await widget.controller.hideTask(task!.taskId);
   }
 
+  @override
   void _chooseChannel() {
     if (widget.onChooseChannel != null) {
       widget.onChooseChannel!();
@@ -1356,313 +1369,18 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
 
   @override
   Widget build(BuildContext context) => Theme(
-    data: PostTheme.of(context),
-    child: Builder(
-      builder: (context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('我的'),
-          actions: [
-            if (CommentScope.maybeOf(context) case final comments?)
-              IconButton(
-                tooltip: '我发出的评论',
-                icon: const Icon(Icons.forum_outlined),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (_) => CommentHistoryScreen(
-                      runtime: comments,
-                      onOpen: (row) => Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (_) => PostDetailScreen(
-                            controller: widget.controller,
-                            postId: row.post,
-                            initialCommentId: row.id,
-                            loadImages: widget.loadImages,
-                            onAuthenticationRequired:
-                                widget.onAuthenticationRequired,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            if (widget.onOpenSettings != null)
-              IconButton(
-                tooltip: '设置',
-                onPressed: widget.onOpenSettings,
-                icon: const Icon(Icons.settings_outlined),
-              ),
-          ],
-        ),
-        body: !_authority.current
+    data: PostTheme.of(context).copyWith(scaffoldBackgroundColor: Colors.white),
+    child: Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        bottom: false,
+        child: !_authority.current
             ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
-            : _content(),
-        bottomNavigationBar: !widget.showNavigation
-            ? null
-            : widget.navigation ??
-                  SafeArea(
-                    top: false,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        border: Border(top: BorderSide(color: PostTheme.line)),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 8,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: TextButton(
-                              onPressed: _chooseChannel,
-                              child: const Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.home_outlined),
-                                  Text('首页'),
-                                ],
-                              ),
-                            ),
-                          ),
-                          FilledButton(
-                            onPressed: _authority.current
-                                ? _chooseChannel
-                                : null,
-                            child: const Icon(
-                              Icons.add,
-                              size: 30,
-                              semanticLabel: '选择通道写帖子',
-                            ),
-                          ),
-                          Expanded(
-                            child: Semantics(
-                              selected: true,
-                              child: const Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [Icon(Icons.person), Text('我的')],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+            : _profileContent(),
       ),
+      bottomNavigationBar: widget.showNavigation ? widget.navigation : null,
     ),
   );
-
-  Widget _content() {
-    final c = widget.controller;
-    return RefreshIndicator(
-      onRefresh: c.loadPersonal,
-      child: CustomScrollView(
-        controller: _scroll,
-        key: PageStorageKey(
-          'personal-posts:${_authority.account}:${_authority.version}',
-        ),
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    key: const ValueKey('personal-profile'),
-                    children: [
-                      const _IdentityAvatar(radius: 30),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              c.personalIdentity?.nickname ??
-                                  (c.personalProfileError != null
-                                      ? '个人资料暂不可用'
-                                      : c.personalProfileLoading
-                                      ? '正在加载个人资料…'
-                                      : '我的身份'),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              c.personalProfileError ?? '仅自己可见',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: PostTheme.muted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    '自己的帖子',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: 36,
-                    height: 3,
-                    decoration: BoxDecoration(
-                      color: PostTheme.accent,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (c.personalLoading && c.personalItems.isEmpty)
-            const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(semanticsLabel: '正在加载自己的帖子'),
-              ),
-            )
-          else if (c.personalItems.isEmpty && c.personalError != null)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: _PageState(
-                title: '暂时无法加载自己的帖子',
-                message: c.personalError,
-                action: '重新加载',
-                onAction: c.loadPersonal,
-              ),
-            )
-          else if (c.personalItems.isEmpty)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: _PageState(
-                title: '还没有自己的帖子',
-                message: '从通道开始，写下第一篇帖子。',
-                action: '去选择通道',
-                onAction: _chooseChannel,
-              ),
-            )
-          else
-            SliverToBoxAdapter(
-              child: ColoredBox(
-                color: PostTheme.background,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final cards = [
-                        for (final item in c.personalItems)
-                          item.post != null
-                              ? _PostCardWidget(
-                                  key: ValueKey(item.id),
-                                  post: item.post!,
-                                  onOpen: () => _open(item),
-                                )
-                              : _PersonalCard(
-                                  key: ValueKey(item.id),
-                                  item: item,
-                                  channelName:
-                                      widget.channelNames[item.channelId] ??
-                                      '原通道',
-                                  onOpen: () => _open(item),
-                                  onDeleteDraft: item.isDraft
-                                      ? () => _deleteDraft(item)
-                                      : null,
-                                  onDeleteTask:
-                                      item.task?.canHide == true &&
-                                          !{
-                                            'SUBMITTED',
-                                            'UNKNOWN',
-                                            'RESULT_EXPIRED',
-                                          }.contains(item.state)
-                                      ? () => _deleteFailedTask(item)
-                                      : null,
-                                ),
-                      ];
-                      return _PostWaterfall(
-                        cards: cards,
-                        single:
-                            constraints.maxWidth < 360 ||
-                            MediaQuery.textScalerOf(context).scale(16) > 22,
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          if (c.personalItems.isNotEmpty)
-            SliverToBoxAdapter(
-              child: ColoredBox(
-                color: PostTheme.background,
-                child: Column(
-                  children: [
-                    if (c.personalError != null)
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          c.personalError!,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    _LoadMore(
-                      loading: c.personalLoading,
-                      hasMore: c.personalHasMore,
-                      onPressed: () => c.loadPersonal(more: true),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// 内容自然撑高；错落双列与正式 My 图保持一致，不强制等高。
-class _PostWaterfall extends StatelessWidget {
-  const _PostWaterfall({required this.cards, required this.single});
-  final List<Widget> cards;
-  final bool single;
-  @override
-  Widget build(BuildContext context) => single
-      ? Column(
-          children: [
-            for (final card in cards)
-              Padding(padding: const EdgeInsets.only(bottom: 8), child: card),
-          ],
-        )
-      : Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (var column = 0; column < 2; column++) ...[
-              if (column == 1) const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  children: [
-                    for (var i = column; i < cards.length; i += 2)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: cards[i],
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        );
 }
 
 class _PersonalCard extends StatelessWidget {
@@ -2447,6 +2165,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     ? () => _changeInteraction(PostInteractionAction.favorite)
                     : null,
               ),
+              PostRepostButton(controller: c, postId: widget.postId),
               const DetailAction(action: FeedAction.share, label: '分享（暂未开放）'),
             ];
             if (MediaQuery.textScalerOf(context).scale(14) > 21 ||
@@ -2598,11 +2317,13 @@ class _PageState extends StatelessWidget {
     this.message,
     this.action,
     this.onAction,
+    this.actionIcon,
   });
   final String title;
   final bool announceTitle;
   final String? message, action;
   final VoidCallback? onAction;
+  final IconData? actionIcon;
   @override
   Widget build(BuildContext context) => Center(
     child: SingleChildScrollView(
@@ -2632,7 +2353,14 @@ class _PageState extends StatelessWidget {
           ],
           if (action != null) ...[
             const SizedBox(height: 20),
-            FilledButton(onPressed: onAction, child: Text(action!)),
+            if (actionIcon != null)
+              IconButton(
+                tooltip: action,
+                onPressed: onAction,
+                icon: Icon(actionIcon, size: 32, color: Colors.black),
+              )
+            else
+              FilledButton(onPressed: onAction, child: Text(action!)),
           ],
         ],
       ),

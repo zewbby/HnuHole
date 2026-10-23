@@ -374,7 +374,42 @@ paths:
       description: Authoritative own list, separate from public feed and own task list. Identity deletion
         removes its old posts from this list, but does not delete publicly visible content or the original
         account's minimal delete capability. No draft upload/cloud synchronization. Same snapshot/order
-        scheme with account-bound cursor; cannot reuse a feed or another account's cursor.
+        scheme with account-and-identity-bound cursor; cannot reuse a feed or another account/identity cursor.
+        Optional identityId restricts to one currently owned active identity; unavailable identities return
+        POST_IDENTITY_UNAVAILABLE (409). Without it the existing account-wide behavior remains.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/PageLimit'
+      - name: identityId
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ResourceID'
+      responses:
+        '200':
+          $ref: '#/components/responses/OwnPublishedPosts'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/liked-posts:
+    get:
+      operationId: listLikedPosts
+      summary: List this account's liked public posts, shared across its identities
+      description: Only currently visible published content is returned. Removed interactions disappear.
+        Sorted by original publication time descending, then publication ordinal; this does not sort by
+        interaction time. Cursor is bound to the current account, collection scope and page limit.
+        identityId is not accepted. Final Gate/session validation occurs on every page.
       security:
       - bearerAuth: []
       parameters:
@@ -382,7 +417,33 @@ paths:
       - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
-          $ref: '#/components/responses/OwnPublishedPosts'
+          $ref: '#/components/responses/FeedRead'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/me/favorite-posts:
+    get:
+      operationId: listFavoritePosts
+      summary: List this account's favorited public posts, shared across its identities
+      description: Only currently visible published content is returned. Removed interactions disappear.
+        Sorted by original publication time descending, then publication ordinal; this does not sort by
+        interaction time. Cursor is bound to the current account, collection scope and page limit.
+        identityId is not accepted. Final Gate/session validation occurs on every page.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/PageLimit'
+      responses:
+        '200':
+          $ref: '#/components/responses/FeedRead'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':

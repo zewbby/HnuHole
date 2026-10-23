@@ -69,6 +69,35 @@ void main() {
     '${directory.path}/${PostStore.scopeFor(environment, account)}.sqlite3',
   );
 
+  test(
+    'profile metadata survives reopening, isolates accounts and is purged',
+    () async {
+      final a = await open();
+      await a.writeProfile({
+        'mood': '今天开心😀',
+        'moodExpiresAt': '2026-10-24T00:00:00Z',
+      });
+      expect((await a.readProfile())['mood'], '今天开心😀');
+      await a.close();
+      final reopened = await open();
+      expect((await reopened.readProfile())['mood'], '今天开心😀');
+      final other = await open(
+        owner: otherAccount,
+        keyVault: TestBusinessVault(),
+      );
+      expect(await other.readProfile(), isEmpty);
+      expect(
+        utf8.decode(file().readAsBytesSync(), allowMalformed: true),
+        isNot(contains('今天开心')),
+      );
+      await reopened.purgeClosedAccount();
+      await expectLater(
+        reopened.readProfile(),
+        throwsA(isA<PostStorageClosed>()),
+      );
+    },
+  );
+
   setUp(() async {
     directory = await Directory.systemTemp.createTemp('hnuhole-post-storage-');
     vault = TestBusinessVault();

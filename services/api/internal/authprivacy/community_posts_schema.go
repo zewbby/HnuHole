@@ -27,6 +27,9 @@ func CheckModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool) err
 	if pool == nil {
 		return errPostSchema
 	}
+	if err := checkPostRepostSchema(ctx, pool, false); err != nil {
+		return err
+	}
 	if err := checkFeedSchema(ctx, pool, false); err != nil {
 		return err
 	}
@@ -41,6 +44,9 @@ func CheckModerationLifecycleSchema(ctx context.Context, pool *pgxpool.Pool) err
 }
 
 func checkPostSchema(ctx context.Context, pool *pgxpool.Pool) error {
+	if err := checkPostRepostSchema(ctx, pool, true); err != nil {
+		return err
+	}
 	if err := checkPostInteractionSchema(ctx, pool, true); err != nil {
 		return err
 	}

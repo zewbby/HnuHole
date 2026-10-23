@@ -12,14 +12,18 @@ import (
 )
 
 const (
-	CursorChannel = "channel"
-	CursorOwn     = "own"
-	CursorTask    = "task"
-	CursorFeed    = "feed"
-	CursorTTL     = 30 * time.Minute
+	CursorReposts   = "reposts"
+	CursorChannel   = "channel"
+	CursorOwn       = "own"
+	CursorLiked     = "liked"
+	CursorFavorites = "favorites"
+	CursorTask      = "task"
+	CursorFeed      = "feed"
+	CursorTTL       = 30 * time.Minute
 )
 
 type CursorPosition struct {
+	IdentityID     string    `json:"identityId,omitempty"`
 	Scope          string    `json:"scope"`
 	AccountID      string    `json:"accountId"`
 	ChannelID      string    `json:"channelId"`
@@ -95,7 +99,7 @@ func (c *CursorCodec) Decode(token string, expected CursorPosition, trustedAt ti
 		return CursorPosition{}, ErrCursorInvalid
 	}
 	var position CursorPosition
-	if json.Unmarshal(plaintext, &position) != nil || !validPosition(position) || position.Scope != expected.Scope || position.AccountID != expected.AccountID || position.ChannelID != expected.ChannelID || position.Limit != expected.Limit || position.FilterRevision != expected.FilterRevision || !trustedAt.Before(position.ExpiresAt) || position.ExpiresAt.After(trustedAt.Add(CursorTTL)) {
+	if json.Unmarshal(plaintext, &position) != nil || !validPosition(position) || position.Scope != expected.Scope || position.IdentityID != expected.IdentityID || position.AccountID != expected.AccountID || position.ChannelID != expected.ChannelID || position.Limit != expected.Limit || position.FilterRevision != expected.FilterRevision || !trustedAt.Before(position.ExpiresAt) || position.ExpiresAt.After(trustedAt.Add(CursorTTL)) {
 		return CursorPosition{}, ErrCursorInvalid
 	}
 	return position, nil
@@ -105,12 +109,15 @@ func validPosition(position CursorPosition) bool {
 	if !validID(position.AccountID) || position.Limit < 1 || position.Limit > 50 || position.Ceiling < 0 || position.LastAt.IsZero() || position.ExpiresAt.IsZero() {
 		return false
 	}
+	if position.IdentityID != "" && (position.Scope != CursorOwn || !validID(position.IdentityID)) {
+		return false
+	}
 	switch position.Scope {
 	case CursorFeed:
 		return (position.ChannelID == "" || validID(position.ChannelID)) && position.FilterRevision >= 0 && position.LastOrdinal > 0 && position.LastOrdinal <= position.Ceiling && position.LastID == ""
 	case CursorChannel:
 		return validID(position.ChannelID) && position.LastOrdinal > 0 && position.LastOrdinal <= position.Ceiling && position.LastID == ""
-	case CursorOwn:
+	case CursorOwn, CursorLiked, CursorFavorites, CursorReposts:
 		return position.ChannelID == "" && position.LastOrdinal > 0 && position.LastOrdinal <= position.Ceiling && position.LastID == ""
 	case CursorTask:
 		return position.ChannelID == "" && position.LastOrdinal == 0 && validID(position.LastID)

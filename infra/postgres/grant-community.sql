@@ -160,6 +160,14 @@ END $$;
 
 -- 0024 cleanup must remain possible with DM HTTP disabled. No send/report insert.
 DO $$ BEGIN
+ IF to_regclass('c_posts.post_reposts') IS NOT NULL THEN
+  GRANT SELECT,INSERT,DELETE ON c_posts.post_reposts,c_posts.post_repost_versions TO hnuhole_c_runtime;
+  GRANT UPDATE(version) ON c_posts.post_repost_versions TO hnuhole_c_runtime;
+  GRANT USAGE ON SEQUENCE c_posts.post_reposts_ordinal_seq TO hnuhole_c_runtime;
+ END IF;
+END $$;
+
+DO $$ BEGIN
  IF to_regclass('c_dm.blocks') IS NOT NULL THEN
   GRANT USAGE ON SCHEMA c_dm TO hnuhole_c_runtime;
   GRANT SELECT ON c_dm.conversations,c_dm.messages,c_dm.media,c_dm.settings,c_dm.blocks TO hnuhole_c_runtime;

@@ -1,5 +1,11 @@
 # 设计进度与剩余工作
 
+> **2026-10-23 PERSONAL-REPOST-INTEGRATION-01：**`feat/personal-profile-mood` 已逐文件／逐块接入 POST-REPOST-01，转帖复用个人页单一滚动容器和同一 PostController，汇总保留身份并按行取消；原有布局、心情、吸顶和喜欢／收藏保留。限定 Flutter 71项 PASS、分析0；真实HTTP／SQL、构建、设备、独立审查和远端CI本轮 NOT_RUN，来源分支证据不替代本次结果。未提交／推送／合并／安装／部署。见[整合交接](../branches/personal-reposts-integration.md)。
+
+
+> **2026-10-23 PERSONAL-PROFILE-MOOD-01 初版历史：**`feat/personal-profile-mood` 已实现个人页与五栏缩放动画、头像旁身份切换、按身份的帖子／回复／心情、账号共享的喜欢／收藏列表。155项Flutter测试、分析0、3项真实SQL、9项契约测试及Android ARM64调试包构建PASS；转帖真实能力按用户要求延期到另会话。未提交／合并／发布，设备验收NOT_RUN。见[任务记录](../branches/feat-personal-profile-mood.md)。
+
+
 > **PR66最终整合：**已保留PR65/67主线沉浸阅读、颜文字刷新与头像，启动五栏骨架安全区域回归通过；全量852 PASS／3外部fixture SKIP，分析0，独立整合复审无阻断。等待最终head CI与Squash合并，先前16项CI PASS属于2592ea0历史版本，未发布。
 
 > **MOBILE-STARTUP-MEDIA-PROFILE-01 PR66送审：**已整合main c5475aa并提交推送；全量842 PASS／3 SKIP，分析0，独立agent审查无产品阻断（非成员批准）。用户已授权合并，CI与合并以[PR #66](https://github.com/zewbby/HnuHole/pull/66)回执为准；下方未提交条目为历史快照。

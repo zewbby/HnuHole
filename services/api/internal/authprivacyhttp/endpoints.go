@@ -336,7 +336,7 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 		if method == http.MethodGet && (r.URL.Path == "/api/v1/feed" || isPostImagePath(r.URL.Path)) {
 			allowed["x-post-preview"] = true
 		}
-		if route, e := parsePostRoute(r.URL.Path); e == nil && method == http.MethodPut && (route.kind == authprivacy.PostLikeSet || route.kind == authprivacy.PostFavoriteSet) {
+		if route, e := parsePostRoute(r.URL.Path); e == nil && method == http.MethodPut && (route.kind == authprivacy.PostLikeSet || route.kind == authprivacy.PostFavoriteSet || route.kind == authprivacy.PostRepostState) {
 			allowed["if-interaction-version"] = true
 		}
 		allowed["reset-intent-id"] = true

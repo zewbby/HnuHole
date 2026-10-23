@@ -17,6 +17,7 @@ import '../comments/comment_runtime.dart';
 import '../comments/comment_views.dart';
 import 'feed_api.dart';
 import 'post_controller.dart';
+import 'post_reposts_widgets.dart';
 import 'post_images.dart';
 import 'post_screens.dart';
 import 'x_feed.dart';
@@ -506,6 +507,13 @@ class _FeedScreenState extends State<FeedScreen> {
                         }
                       },
                       onMedia: (_) {},
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: PostRepostButton(
+                        controller: c,
+                        postId: post.postId,
+                      ),
                     ),
                     for (final notice in [
                       (c.interaction(post.postId).writeError, true),

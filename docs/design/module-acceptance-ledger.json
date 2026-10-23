@@ -1,4 +1,53 @@
 {
+  "personalRepostIntegration20261023": {
+    "task": "PERSONAL-REPOST-INTEGRATION-01",
+    "branch": "feat/personal-profile-mood",
+    "base": "cda337c43cf5d0e5793351577f7054ec552fb6d5",
+    "implementation": "IMPLEMENTED_UNCOMMITTED",
+    "sourceTask": "POST-REPOST-01",
+    "sourceReadOnlyManifestFiles": 46,
+    "hostTests": {
+      "status": "PASS",
+      "passed": 71,
+      "scope": "70 existing targeted tests plus 1 shipped-root repost walkthrough"
+    },
+    "analysisIssues": 0,
+    "realHttpSqlIntegration": "NOT_RUN",
+    "builds": "NOT_RUN",
+    "nativeDeviceAcceptance": "NOT_RUN",
+    "independentReview": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "merged": false,
+    "released": false,
+    "evidence": "docs/branches/personal-reposts-integration.md",
+    "verification": "docs/design/personal-reposts-integration-verification.json",
+    "historicalModuleVerdictsUnchanged": true
+  },
+  "personalProfileMood20261023": {
+    "task": "PERSONAL-PROFILE-MOOD-01",
+    "branch": "feat/personal-profile-mood",
+    "implementation": "IMPLEMENTED_CURRENT_SCOPE_REPOST_DEFERRED",
+    "hostTests": {
+      "status": "PASS",
+      "passed": 155
+    },
+    "realPostgresTests": {
+      "status": "PASS",
+      "passed": 3,
+      "scope": "isolated personal identity and shared collection tests"
+    },
+    "contractTests": {
+      "status": "PASS",
+      "passed": 9
+    },
+    "analysisIssues": 0,
+    "androidArm64DebugBuild": "PASS",
+    "nativeDeviceAcceptance": "NOT_RUN",
+    "merged": false,
+    "released": false,
+    "evidence": "docs/branches/feat-personal-profile-mood.md",
+    "historicalModuleVerdictsUnchanged": true
+  },
   "feedScrollSmile20261023": {
     "task": "FEED-SCROLL-SMILE-01",
     "modules": [

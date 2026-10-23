@@ -1,5 +1,13 @@
 # 个人内容与设置
 
+> **2026-10-23 PERSONAL-REPOST-INTEGRATION-01：**`feat/personal-profile-mood` 已逐文件／逐块接入 POST-REPOST-01，转帖复用个人页单一滚动容器和同一 PostController，汇总保留身份并按行取消；原有布局、心情、吸顶和喜欢／收藏保留。限定 Flutter 71项 PASS、分析0；真实HTTP／SQL、构建、设备、独立审查和远端CI本轮 NOT_RUN，来源分支证据不替代本次结果。未提交／推送／合并／安装／部署。见[整合交接](../../branches/personal-reposts-integration.md)。
+
+
+> **2026-10-23 PERSONAL-PROFILE-MOOD-01 初版历史：**`feat/personal-profile-mood` 已实现个人页与五栏缩放动画、头像旁身份切换、按身份的帖子／回复／心情、账号共享的喜欢／收藏列表。155项Flutter测试、分析0、3项真实SQL、9项契约测试及Android ARM64调试包构建PASS；转帖真实能力按用户要求延期到另会话。未提交／合并／发布，设备验收NOT_RUN。见[任务记录](../../branches/feat-personal-profile-mood.md)。
+
+> 本轮用户确认的新个人页规则覆盖下方历史双列／双页签布局，历史验收结果保留原证明范围。
+
+
 > **2026-10-23主线回执：**[PR #57](https://github.com/zewbby/HnuHole/pull/57)已合并main `1686a06`；“我的”渐进加载与栏目往返保留状态完成真我2303限定验收。下方“未合并”为历史快照，完整模块结论不提升，见[任务](../../branches/fix-mobile-navigation-refresh.md)。
 
 > **2026-10-23 MOBILE-NAV-REFRESH-01（本地实现／未合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；系统录屏失败，切换瞬间重影及帧性能尚未确认，用户验收PENDING。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。

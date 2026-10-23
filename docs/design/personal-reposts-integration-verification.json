@@ -1,0 +1,273 @@
+{
+  "task": "PERSONAL-REPOST-INTEGRATION-01",
+  "branch": "feat/personal-profile-mood",
+  "base": "cda337c43cf5d0e5793351577f7054ec552fb6d5",
+  "implementation": "IMPLEMENTED_UNCOMMITTED",
+  "sourceTask": "POST-REPOST-01",
+  "sourceReadOnlyManifestFiles": 46,
+  "hostTests": {
+    "status": "PASS",
+    "passed": 71,
+    "scope": "70 existing targeted tests plus 1 shipped-root repost walkthrough"
+  },
+  "analysisIssues": 0,
+  "realHttpSqlIntegration": "NOT_RUN",
+  "builds": "NOT_RUN",
+  "nativeDeviceAcceptance": "NOT_RUN",
+  "independentReview": "NOT_RUN",
+  "remoteCI": "NOT_RUN",
+  "merged": false,
+  "released": false,
+  "evidence": "docs/branches/personal-reposts-integration.md",
+  "verification": "docs/design/personal-reposts-integration-verification.json",
+  "historicalModuleVerdictsUnchanged": true,
+  "date": "2026-10-23",
+  "worktree": "E:\\Hnuhole-env\\source\\HnuHole-personal-profile",
+  "sourceWorktree": "E:\\codexDoucuments\\2026-10-23\\post-repost-01-hnuhole-origin-main\\work\\HnuHole-post-reposts",
+  "sourceVerification": "docs/design/post-reposts-verification.json",
+  "sourceHashesUnchanged": true,
+  "commands": [
+    {
+      "command": "flutter analyze --no-pub",
+      "result": "PASS, 0 issues",
+      "log": "E:\\Hnuhole-env\\personal-profile-tools\\repost-integration\\analyze-fixed.log",
+      "previousAttempt": "FAIL: integration test import and prefix collision plus unused page import; fixed"
+    },
+    {
+      "command": "flutter test --no-pub --reporter expanded test/post_reposts_test.dart test/personal_profile_test.dart test/personal_reposts_integration_test.dart test/personal_route_account_test.dart test/post_screens_test.dart test/feed_ui_test.dart",
+      "result": "70 PASS, 1 FAIL (test used generic pageBack instead of shipped Chinese return tooltip)",
+      "log": "E:\\Hnuhole-env\\personal-profile-tools\\repost-integration\\tests.log"
+    },
+    {
+      "command": "flutter test --no-pub --reporter expanded test/personal_reposts_integration_test.dart",
+      "result": "1 PASS; only failed walkthrough rerun after test selector correction",
+      "log": "E:\\Hnuhole-env\\personal-profile-tools\\repost-integration\\walkthrough-retry1.log"
+    }
+  ],
+  "inputFiles": {
+    ".github/workflows/feed-backend.yml": {
+      "sha256": "4ca7c9914710c0976c67936a937cc808c57360974ab52d1b4e76c05c0a8b4647",
+      "bytes": 2887
+    },
+    ".github/workflows/feed-ui.yml": {
+      "sha256": "2b08ea70096bda4377a3476f41805ce8859f7123127da653bc52da9dd7eb6836",
+      "bytes": 3369
+    },
+    "apps/mobile/integration/feed_live_probe.dart": {
+      "sha256": "0c92566bca045eb6f760dd3c4e86847925d9386b117b223fda9ccac12b7ed1a9",
+      "bytes": 9196
+    },
+    "apps/mobile/lib/hnuhole_mobile.dart": {
+      "sha256": "636b898c703bd2861e9ba9fa3bb8da6cec6975296585aaf2dd08c6255c784482",
+      "bytes": 2147
+    },
+    "apps/mobile/lib/src/posts/feed_screen.dart": {
+      "sha256": "4bc0dbd261515ab9187a16952748ae930628853d48b11118c5324a591c1816f8",
+      "bytes": 25848
+    },
+    "apps/mobile/lib/src/posts/http_post_api.dart": {
+      "sha256": "a339af6fd2e0d174b0445e29eaa19111772a19fb657f7e2a549ea7ce01589a52",
+      "bytes": 32501
+    },
+    "apps/mobile/lib/src/posts/personal_collections_api.dart": {
+      "sha256": "86fce1030b0e47cc7f5066723317e85d6059df844fe3430583221f17d5d3b196",
+      "bytes": 354
+    },
+    "apps/mobile/lib/src/posts/personal_profile.dart": {
+      "sha256": "bcba881e89a433a943732d0644b30be82e179d9b54c51f53ee1c99903b8982a3",
+      "bytes": 51779
+    },
+    "apps/mobile/lib/src/posts/post_api.dart": {
+      "sha256": "1710f2760c31c4296d0d3c78eb476996ecb30de3335dc07102dadbf8cd9f5e86",
+      "bytes": 3401
+    },
+    "apps/mobile/lib/src/posts/post_controller.dart": {
+      "sha256": "10c69c3b03d984684bebae6e724ef10aa35eede7f567c3b3c051ebde815132a3",
+      "bytes": 70694
+    },
+    "apps/mobile/lib/src/posts/post_reposts_api.dart": {
+      "sha256": "c7086924922243b9265870597557e73264b0cb0483100cd79f6f17e4125fe6a5",
+      "bytes": 2587
+    },
+    "apps/mobile/lib/src/posts/post_reposts_controller.dart": {
+      "sha256": "d9240f20d959dab2de0527add1275bfe84678debb5a3704fec068a49842c5dd5",
+      "bytes": 9234
+    },
+    "apps/mobile/lib/src/posts/post_reposts_http.dart": {
+      "sha256": "9cfcd7b0f7d86c6bd86066f0762b4f4f47165f82c4da715d611e198eb6141b19",
+      "bytes": 1126
+    },
+    "apps/mobile/lib/src/posts/post_reposts_widgets.dart": {
+      "sha256": "70cc04b84f6c7710ed29dc8193725913f00a23d36458eb956c4af2691f77719c",
+      "bytes": 12496
+    },
+    "apps/mobile/lib/src/posts/post_screens.dart": {
+      "sha256": "c0c307f473e5f7ed293d977d1ae2cf8b8eede7de786dd09359d4b747bd14e510",
+      "bytes": 95860
+    },
+    "apps/mobile/lib/src/storage/post_store.dart": {
+      "sha256": "31e5c7a26acf4dcebc0669695a5007f6a0958e6cd894c514979ddf3758741b50",
+      "bytes": 31489
+    },
+    "apps/mobile/test/feed_ui_test.dart": {
+      "sha256": "f4c9a6f96cf759647a508d3b3218faa1c7b78aff0e2128cd800b08ba3904da06",
+      "bytes": 23281
+    },
+    "apps/mobile/test/login_home_test_support.dart": {
+      "sha256": "9bcf7107ab01b68049e6bee284f361c1bdae82b17c40c5f60a2438cfcb597a94",
+      "bytes": 8150
+    },
+    "apps/mobile/test/personal_profile_test.dart": {
+      "sha256": "08d4e7e766c5f6c4a7bc13d3be9041171e3e429688e7f83babd899aa8a03dd65",
+      "bytes": 10084
+    },
+    "apps/mobile/test/personal_reposts_integration_test.dart": {
+      "sha256": "99d030636d43762dbde09e6c73d005a47d629e5145533cb07ce1078c7f215f57",
+      "bytes": 12183
+    },
+    "apps/mobile/test/personal_route_account_test.dart": {
+      "sha256": "3ab6eeecda1360e55c64999f2486b1c799d9338fe37ac9f31c94332ec079e431",
+      "bytes": 11328
+    },
+    "apps/mobile/test/post_api_test.dart": {
+      "sha256": "b8926fa8f665afca0a45a8145954453e417d6569b5b181f8360ef481907df164",
+      "bytes": 52787
+    },
+    "apps/mobile/test/post_controller_test.dart": {
+      "sha256": "eef3b774d55ba8d0adbed95ec1a25be7c6a474d3fe7a3f1d199d7101eacb5a23",
+      "bytes": 73004
+    },
+    "apps/mobile/test/post_reposts_test.dart": {
+      "sha256": "a7c7774b4b0c138c9ca1f221b354f134f61f490cd3fb75ed1e159de7ee83d90c",
+      "bytes": 13255
+    },
+    "apps/mobile/test/post_screens_test.dart": {
+      "sha256": "edfdcc288e926fc8051f26f4f4d0a8726614278fe6c133a4961ebcb7e7a93074",
+      "bytes": 55946
+    },
+    "apps/mobile/test/post_storage_test.dart": {
+      "sha256": "672c9cb7c357ec914dd509423c51073e55700f29f332b4eee88afbfe9cff10b4",
+      "bytes": 32792
+    },
+    "infra/postgres/grant-community.sql": {
+      "sha256": "f47738cf39ac6f827a4c71bed049c60c1b90f7c153e4f0b7a6fdff859ec38460",
+      "bytes": 11532
+    },
+    "packages/openapi/post-api.yaml": {
+      "sha256": "fe0962a0536448c59d864ad084a2acc09538812a338b3c605a399e192ad30be1",
+      "bytes": 61571
+    },
+    "packages/openapi/repost-api.yaml": {
+      "sha256": "d4f328e4b8f313dc3ffaf6476baf04f4aff5be3ea01bc34f641cf326605df9f6",
+      "bytes": 14816
+    },
+    "services/api/authlab/run-feed-isolated.sh": {
+      "sha256": "78be09886e201a293edcd29e6e16719c69a6bfe1c6702acaa3c5bf09016ea991",
+      "bytes": 5274
+    },
+    "services/api/internal/authprivacy/community_direct_messages_migration_test.go": {
+      "sha256": "c7e56f94705c6e10bd9367c917934e46786d646e31249f9b8407331a2fb1bbdd",
+      "bytes": 7016
+    },
+    "services/api/internal/authprivacy/community_feed_migration_test.go": {
+      "sha256": "7ce07c5feebe1e98f88e9eaece3b42fcaff18466e7547626a5cf1d780a92710c",
+      "bytes": 7528
+    },
+    "services/api/internal/authprivacy/community_personal_collections_test.go": {
+      "sha256": "e63317579735ad910720a023b35abb833fa311fd270b705308d9c9ab60c53e9f",
+      "bytes": 3671
+    },
+    "services/api/internal/authprivacy/community_post_reposts.go": {
+      "sha256": "09e58011781cf1ad910417f750eaecc9cbf8077d053bf13e1299e7e6ee010761",
+      "bytes": 8093
+    },
+    "services/api/internal/authprivacy/community_post_reposts_lifecycle_test.go": {
+      "sha256": "2b3192fbea20e8262236492fd6cf5cec985cc1e14d5b6f2cd54a9dcb550e0f20",
+      "bytes": 3487
+    },
+    "services/api/internal/authprivacy/community_post_reposts_schema.go": {
+      "sha256": "88920840f11993559b3ce4557e1d9777b9aa0142cf2dcec24d73b72094e3df40",
+      "bytes": 3360
+    },
+    "services/api/internal/authprivacy/community_post_reposts_test.go": {
+      "sha256": "20cd7e894849722c2d2d41d02e9b95cbbd945f177905f244e0f24113712d0e6e",
+      "bytes": 7456
+    },
+    "services/api/internal/authprivacy/community_posts_read.go": {
+      "sha256": "5703e5915a39c5da723e43f75aa1018e2a01debdd700955e615d2994f89c94ab",
+      "bytes": 17424
+    },
+    "services/api/internal/authprivacy/community_posts_schema.go": {
+      "sha256": "558617ab3582454d0b52ffcb7d7c34af2036cb1051a7bbd6a2db39bddce84cc6",
+      "bytes": 13832
+    },
+    "services/api/internal/authprivacy/identity_avatar_migration_test.go": {
+      "sha256": "723c49e54836ea7a5c2be021da545b33d463610b98ee3949dbbd031eaf64b165",
+      "bytes": 3541
+    },
+    "services/api/internal/authprivacyhttp/endpoints.go": {
+      "sha256": "46fc6408ce8c3a60717bb658f6801b4fba6908b302daeb2ec41b827fa5d39ed2",
+      "bytes": 36759
+    },
+    "services/api/internal/authprivacyhttp/feed_live_postgres_test.go": {
+      "sha256": "28da24f75b3519cd5d6807f3a6de7ce96f9615a10592da84f27172f77474268c",
+      "bytes": 2874
+    },
+    "services/api/internal/authprivacyhttp/post_reposts_endpoints.go": {
+      "sha256": "1b6655d82e3a2c3a07221573ddbf6be594b14a6dfe8da4e451ebffdbf1e8db11",
+      "bytes": 3817
+    },
+    "services/api/internal/authprivacyhttp/post_reposts_endpoints_test.go": {
+      "sha256": "479e24111dfd37ae05f06166875f470698e7f51a7ad61e115c17e8186d8a5fcc",
+      "bytes": 3207
+    },
+    "services/api/internal/authprivacyhttp/post_reposts_postgres_test.go": {
+      "sha256": "390b6d5b642b16c91228804c780e0973d1f4b57541550c4599d351cd1faae333",
+      "bytes": 2518
+    },
+    "services/api/internal/authprivacyhttp/posts_endpoints.go": {
+      "sha256": "aee5ca32ea92109a03bd551d46b7d3818cf5724438370fb0fc24588547f26dc7",
+      "bytes": 32900
+    },
+    "services/api/internal/authprivacyhttp/posts_endpoints_test.go": {
+      "sha256": "9de7c637f3b1354f54733f307ca94b225c04cf687cf7bad122abdb6aa1b17e62",
+      "bytes": 31244
+    },
+    "services/api/internal/authprivacyruntime/moderation_lifecycle_postgres_test.go": {
+      "sha256": "05152b96bf6cbc39ed5a5e066c06978f304e4afc924570ed48fcd8d959bb6a98",
+      "bytes": 7996
+    },
+    "services/api/internal/authprivacyruntime/post_reposts_postgres_test.go": {
+      "sha256": "f6ed16003667d43099e9539f48ce05bb34c942d1da3c89f3f0e7eab1d82ddcc2",
+      "bytes": 1896
+    },
+    "services/api/internal/authprivacyruntime/server.go": {
+      "sha256": "452c1e638e5e9a84396d1f9385326c353859adf42b986a0fdaefc003f858e3c4",
+      "bytes": 22117
+    },
+    "services/api/internal/posts/cursor.go": {
+      "sha256": "e7b56c8de16cff768d95b34f200e71d30c67d782afa01244339c75aa5d45f477",
+      "bytes": 4842
+    },
+    "services/api/internal/posts/cursor_test.go": {
+      "sha256": "596f3066d8a28e8ac880ed5b8cd2bc64bdf097b7de3e4f0e1a3b6b5fd9dc6468",
+      "bytes": 3250
+    },
+    "services/api/internal/posts/reposts.go": {
+      "sha256": "0b858353637c825c1eb695779e48137bf86cd4d70553074c189aaf42014bb292",
+      "bytes": 648
+    },
+    "services/api/migrations/0026_post_reposts.sql": {
+      "sha256": "01fd88bc21a3d74c77974e56a81470e5d5b1409f8a3afae3a652b6e5fb0a7801",
+      "bytes": 2547
+    },
+    "tools/check-community-text-contract.py": {
+      "sha256": "f17e6d2ab3023d6b44108ab0381d14dc3cebe9338dd86b6e6ab0dbabe18253c3",
+      "bytes": 11126
+    },
+    "tools/tests/test_community_text_contract.py": {
+      "sha256": "126925c141d38ed344010268e221f617e34955eb779c06ffd312e9032cb8b3df",
+      "bytes": 6081
+    }
+  }
+}

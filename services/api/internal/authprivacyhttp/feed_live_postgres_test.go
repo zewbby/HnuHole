@@ -42,6 +42,7 @@ func TestRealHTTPSFeedDartPostgres(t *testing.T) {
 	channel := items[0].(map[string]any)["id"].(string)
 	otherChannel := items[1].(map[string]any)["id"].(string)
 	id := postHTTPSIdentity(t, s, owner, "FeedAuthor", 85)
+	readerIdentity := postHTTPSIdentity(t, s, reader, "RepostReader", 89)
 	var post string
 	for _, key := range []byte{86, 87, 88} {
 		currentChannel := channel
@@ -58,7 +59,8 @@ func TestRealHTTPSFeedDartPostgres(t *testing.T) {
 	certs := s.cPublic.TLS.Certificates[0].Certificate
 	rootPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certs[len(certs)-1]})
 	fixture := map[string]any{"url": s.cPublic.URL, "certificatePem": string(rootPEM),
-		"ownerToken": owner, "readerToken": reader, "channelId": channel, "postId": post}
+		"readerIdentityId": readerIdentity,
+		"ownerToken":       owner, "readerToken": reader, "channelId": channel, "postId": post}
 	runLiveGovernanceProbe(t, probe, fixture, "feed")
 	feed := postHTTPSJSON(t, s, "GET", "/api/v1/feed", reader, "", nil, 200)
 	var total float64

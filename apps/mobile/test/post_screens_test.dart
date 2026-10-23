@@ -53,6 +53,8 @@ class _WidgetPosts extends ChangeNotifier implements PostController {
   int personalReads = 0, recoveries = 0, abandonments = 0;
   bool saveSucceeds = true;
   List<ManagedIdentity> identities = [];
+  @override
+  List<ManagedIdentity> get personalIdentities => identities;
   List<PersonalPostItem> personal = [];
   PostDraftEditor? restored;
   @override
@@ -88,7 +90,15 @@ class _WidgetPosts extends ChangeNotifier implements PostController {
   @override
   bool get personalProfileLoading => false;
   @override
-  ManagedIdentity? get personalIdentity => identities.firstOrNull;
+  ManagedIdentity? get personalIdentity =>
+      identities.firstOrNull ??
+      ManagedIdentity(
+        id: _accountId,
+        nickname: '北岸',
+        avatar: 'default-v1',
+        isOriginal: true,
+        createdAt: _time,
+      );
   @override
   Future<void> loadPersonal({bool more = false}) async {
     personalReads++;
@@ -260,7 +270,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.text('带图详情'));
         await tester.pumpAndSettle();
-        expect(requested, [_postId]);
+        expect(requested, fromPersonal ? [_postId, _postId] : [_postId]);
         final tile = find.byKey(
           const ValueKey(('post-image', 'post-image-v1')),
         );
@@ -915,7 +925,7 @@ void main() {
     expect(publishedChannel, _channelId);
     expect(c.publications, 1);
     expect(c.personalReads, 1);
-    expect(find.text('自己的帖子'), findsOneWidget);
+    expect(find.text('帖子'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     c.dispose();
   });
@@ -1014,7 +1024,7 @@ void main() {
     c.dispose();
   });
 
-  testWidgets('我的文字草稿混排为自然高度双列，UNKNOWN没有失败草稿标志', (tester) async {
+  testWidgets('我的文字草稿为自然高度单列，UNKNOWN没有失败草稿标志', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -1044,7 +1054,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       tester.getTopLeft(find.byKey(const ValueKey('draft-one'))).dx,
-      lessThan(tester.getTopLeft(find.byKey(const ValueKey('unknown-one'))).dx),
+      equals(tester.getTopLeft(find.byKey(const ValueKey('unknown-one'))).dx),
     );
     expect(
       tester.getSize(find.byKey(const ValueKey('long'))).height,
