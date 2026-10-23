@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../design_system/telegram_theme.dart';
 import '../navigation/app_navigation.dart';
+import '../navigation/feed_chrome.dart';
+import 'feed_refresh.dart';
 export '../navigation/app_navigation.dart' show AppDestination;
 
 enum FeedAction { comment, like, bookmark, share }
@@ -98,6 +100,9 @@ class HhXPostFeed extends StatelessWidget {
     required this.mediaBuilder,
     this.content,
     this.showNavigation = true,
+    this.onRefresh,
+    this.refreshEnabled = true,
+    this.loading = false,
     this.avatarBuilder,
     this.accountAvatar,
     this.feedTitle,
@@ -116,6 +121,8 @@ class HhXPostFeed extends StatelessWidget {
   });
   final Widget? content;
   final bool showNavigation;
+  final Future<void> Function()? onRefresh;
+  final bool refreshEnabled, loading;
   final String channelTitle;
   final List<FeedPostView> posts;
   final FeedMediaBuilder mediaBuilder;
@@ -132,268 +139,356 @@ class HhXPostFeed extends StatelessWidget {
   final ValueChanged<FeedDestination> onDestination;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => _FeedChromeHost(feed: this);
+
+  Widget _build(BuildContext context, FeedChromeController chrome) {
     final p = HhTelegramPalette.of(context);
-    return Scaffold(
-      backgroundColor: p.surface,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              height: 72,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Text(
-                    'HnuHole',
-                    style: _text(
-                      context,
-                      22,
-                      color: p.accent,
-                      weight: FontWeight.w700,
-                    ).copyWith(letterSpacing: -.65),
+    Widget page(double pull, bool refreshing) => Column(
+      children: [
+        AnimatedBuilder(
+          animation: chrome,
+          builder: (context, _) => FeedChromeMotion(
+            visible: chrome.visible,
+            builder: (context, progress, child) => ClipRect(
+              child: Align(
+                key: const ValueKey('feed-header-visibility'),
+                alignment: Alignment.bottomCenter,
+                heightFactor: progress,
+                child: IgnorePointer(
+                  ignoring: !chrome.visible,
+                  child: ExcludeSemantics(
+                    excluding: !chrome.visible,
+                    child: child,
                   ),
-                  Positioned(
-                    left: 12,
-                    child: IconButton(
-                      key: const ValueKey('feed-account'),
-                      tooltip: '我的',
-                      onPressed: () => onDestination(FeedDestination.personal),
-                      icon: SizedBox(
-                        width: 36,
-                        height: 36,
-                        child: ClipOval(
-                          child:
-                              accountAvatar ??
-                              ColoredBox(
-                                color: p.action,
-                                child: const Icon(
-                                  Icons.person_outline_rounded,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 12,
-                    child: IconButton(
-                      key: const ValueKey('feed-search'),
-                      tooltip: '搜索当前通道',
-                      onPressed: onSearch,
-                      icon: Icon(Icons.search_rounded, size: 28, color: p.ink),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final large = MediaQuery.textScalerOf(context).scale(17) > 22;
-                final channel = DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: p.accent, width: 3),
-                    ),
-                  ),
-                  child: TextButton(
-                    key: const ValueKey('feed-channel-picker'),
-                    onPressed: onBack,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            feedTitle ?? channelTitle,
-                            style: _text(context, 17, weight: FontWeight.w700),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: p.secondary,
-                          size: 21,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-                final filter = TextButton(
-                  key: const ValueKey('feed-block-filter'),
-                  onPressed: onFilter,
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(48, 48),
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+            child: Column(
+              key: const ValueKey('feed-header'),
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: 72 + pull,
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      Text(
-                        '筛选',
-                        style: _text(
-                          context,
-                          16,
-                          color: blockedCount == 0 ? p.secondary : p.accent,
+                      FeedSmileMark(pull: pull, loading: loading || refreshing),
+                      Positioned(
+                        left: 12,
+                        child: IconButton(
+                          key: const ValueKey('feed-account'),
+                          tooltip: '我的',
+                          onPressed: () =>
+                              onDestination(FeedDestination.personal),
+                          icon: SizedBox(
+                            width: 36,
+                            height: 36,
+                            child: ClipOval(
+                              child:
+                                  accountAvatar ??
+                                  ColoredBox(
+                                    color: p.action,
+                                    child: const Icon(
+                                      Icons.person_outline_rounded,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                  ),
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      if (blockedCount > 0)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 2,
+                      Positioned(
+                        right: 12,
+                        child: IconButton(
+                          key: const ValueKey('feed-search'),
+                          tooltip: '搜索当前通道',
+                          onPressed: onSearch,
+                          icon: Icon(
+                            Icons.search_rounded,
+                            size: 28,
+                            color: p.ink,
                           ),
-                          decoration: BoxDecoration(
-                            color: p.accent,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            '$blockedCount',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final large =
+                        MediaQuery.textScalerOf(context).scale(17) > 22;
+                    final channel = DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: p.accent, width: 3),
+                        ),
+                      ),
+                      child: TextButton(
+                        key: const ValueKey('feed-channel-picker'),
+                        onPressed: onBack,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                feedTitle ?? channelTitle,
+                                style: _text(
+                                  context,
+                                  17,
+                                  weight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: p.secondary,
+                              size: 21,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                    final filter = TextButton(
+                      key: const ValueKey('feed-block-filter'),
+                      onPressed: onFilter,
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(48, 48),
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '筛选',
                             style: _text(
                               context,
-                              10,
-                              color: p.onAccent,
-                              weight: FontWeight.w600,
+                              16,
+                              color: blockedCount == 0 ? p.secondary : p.accent,
                             ),
                           ),
-                        )
-                      else
-                        Icon(Icons.add_rounded, size: 21, color: p.secondary),
-                    ],
-                  ),
-                );
-                final latest = Text(
-                  '最新发布',
-                  style: _text(
-                    context,
-                    17,
-                    color: p.secondary,
-                    weight: FontWeight.w600,
-                  ),
-                );
-                if (large) {
-                  return Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(child: channel),
-                          filter,
+                          const SizedBox(width: 4),
+                          if (blockedCount > 0)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: p.accent,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '$blockedCount',
+                                style: _text(
+                                  context,
+                                  10,
+                                  color: p.onAccent,
+                                  weight: FontWeight.w600,
+                                ),
+                              ),
+                            )
+                          else
+                            Icon(
+                              Icons.add_rounded,
+                              size: 21,
+                              color: p.secondary,
+                            ),
                         ],
                       ),
-                      Padding(padding: const EdgeInsets.all(6), child: latest),
-                    ],
-                  );
-                }
-                return Row(
-                  children: [
-                    Expanded(flex: 4, child: channel),
-                    Expanded(flex: 4, child: Center(child: latest)),
-                    Expanded(flex: 2, child: filter),
-                  ],
-                );
-              },
-            ),
-            Divider(height: 1, thickness: .5, color: p.line),
-            Expanded(
-              child:
-                  content ??
-                  (posts.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  '暂无可显示的帖子',
-                                  style: _text(
-                                    context,
-                                    17,
-                                    weight: FontWeight.w600,
-                                  ),
-                                ),
-                                if (blockedCount > 0)
-                                  TextButton(
-                                    onPressed: onFilter,
-                                    child: const Text('调整屏蔽设置'),
-                                  ),
-                              ],
-                            ),
+                    );
+                    final latest = Text(
+                      '最新发布',
+                      style: _text(
+                        context,
+                        17,
+                        color: p.secondary,
+                        weight: FontWeight.w600,
+                      ),
+                    );
+                    if (large) {
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(child: channel),
+                              filter,
+                            ],
                           ),
-                        )
-                      : ListView.separated(
-                          key: const ValueKey('x-feed'),
-                          padding: const EdgeInsets.only(bottom: 90),
-                          itemCount: posts.length,
-                          separatorBuilder: (_, _) =>
-                              Divider(height: 1, thickness: .5, color: p.line),
-                          itemBuilder: (context, index) => HhXPostItem(
-                            key: ValueKey('post:${posts[index].id}'),
-                            post: posts[index],
-                            mediaBuilder: mediaBuilder,
-                            avatarBuilder: avatarBuilder,
-                            onPost: () => onPost(posts[index]),
-                            onAuthor: () => onAuthor(posts[index].authorId),
-                            onMenu: () => onMenu(posts[index]),
-                            onAction: (action) =>
-                                onAction(posts[index], action),
-                            onMedia: (media) => onMedia(posts[index], media),
+                          Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: latest,
                           ),
-                        )),
+                        ],
+                      );
+                    }
+                    return Row(
+                      children: [
+                        Expanded(flex: 4, child: channel),
+                        Expanded(flex: 4, child: Center(child: latest)),
+                        Expanded(flex: 2, child: filter),
+                      ],
+                    );
+                  },
+                ),
+                Divider(height: 1, thickness: .5, color: p.line),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
-      floatingActionButton: SizedBox(
-        width: 64,
-        height: 64,
-        child: FloatingActionButton(
-          key: const ValueKey('feed-compose'),
-          tooltip: composeTooltip ?? '发布到$channelTitle',
-          onPressed: onCompose,
-          elevation: 2,
-          backgroundColor: p.action,
-          foregroundColor: Colors.white,
-          shape: const CircleBorder(),
-          child: const CustomPaint(size: Size(28, 28), painter: _ComposePlus()),
+        Expanded(
+          child:
+              content ??
+              (posts.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '暂无可显示的帖子',
+                              style: _text(
+                                context,
+                                17,
+                                weight: FontWeight.w600,
+                              ),
+                            ),
+                            if (blockedCount > 0)
+                              TextButton(
+                                onPressed: onFilter,
+                                child: const Text('调整屏蔽设置'),
+                              ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      key: const ValueKey('x-feed'),
+                      padding: const EdgeInsets.only(bottom: 90),
+                      itemCount: posts.length,
+                      separatorBuilder: (_, _) =>
+                          Divider(height: 1, thickness: .5, color: p.line),
+                      itemBuilder: (context, index) => HhXPostItem(
+                        key: ValueKey('post:${posts[index].id}'),
+                        post: posts[index],
+                        mediaBuilder: mediaBuilder,
+                        avatarBuilder: avatarBuilder,
+                        onPost: () => onPost(posts[index]),
+                        onAuthor: () => onAuthor(posts[index].authorId),
+                        onMenu: () => onMenu(posts[index]),
+                        onAction: (action) => onAction(posts[index], action),
+                        onMedia: (media) => onMedia(posts[index], media),
+                      ),
+                    )),
+        ),
+      ],
+    );
+    return Scaffold(
+      backgroundColor: p.surface,
+      extendBody: true,
+      body: Builder(
+        builder: (bodyContext) => MediaQuery(
+          data: MediaQuery.of(bodyContext).copyWith(
+            padding: MediaQuery.paddingOf(bodyContext)
+                .copyWith(bottom: MediaQuery.paddingOf(context).bottom),
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              SafeArea(
+                bottom: false,
+                child: onRefresh == null
+                    ? page(0, false)
+                    : FeedRefresh(
+                        chrome: chrome,
+                        enabled: refreshEnabled,
+                        onRefresh: onRefresh!,
+                        builder: (context, pull, refreshing) =>
+                            page(pull, refreshing),
+                      ),
+              ),
+              Positioned(
+                right: 16,
+                bottom: 16 + MediaQuery.paddingOf(context).bottom,
+                child: AnimatedBuilder(
+                  animation: chrome,
+                  builder: (context, _) => FeedChromeMotion(
+                    visible: chrome.visible,
+                    builder: (context, progress, _) => IgnorePointer(
+                      ignoring: chrome.visible,
+                      child: Opacity(
+                        opacity: 1 - progress,
+                        child: Transform.translate(
+                          offset: Offset(0, progress * 64),
+                          child: chrome.visible
+                              ? const SizedBox(width: 60, height: 56)
+                              : FeedComposeButton(
+                                  onPressed: onCompose,
+                                  tooltip: composeTooltip ?? '发布到$channelTitle',
+                                  floating: true,
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: showNavigation
-          ? HhAppNavigation(
+          ? FeedNavigation(
+              controller: chrome,
               selected: AppDestination.home,
               onSelected: onDestination,
+              collapseSpace: true,
             )
           : null,
     );
   }
 }
 
-class _ComposePlus extends CustomPainter {
-  const _ComposePlus();
+class _FeedChromeHost extends StatefulWidget {
+  const _FeedChromeHost({required this.feed});
+  final HhXPostFeed feed;
+
   @override
-  void paint(Canvas canvas, Size size) {
-    final pen = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 2.6
-      ..strokeCap = StrokeCap.round;
-    canvas.drawLine(
-      Offset(size.width / 2, 3),
-      Offset(size.width / 2, size.height - 3),
-      pen,
-    );
-    canvas.drawLine(
-      Offset(3, size.height / 2),
-      Offset(size.width - 3, size.height / 2),
-      pen,
-    );
+  State<_FeedChromeHost> createState() => _FeedChromeHostState();
+}
+
+class _FeedChromeHostState extends State<_FeedChromeHost> {
+  final _local = FeedChromeController();
+  late FeedChromeController _chrome;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _chrome = FeedChromeScope.maybeOf(context) ?? _local;
   }
 
   @override
-  bool shouldRepaint(covariant _ComposePlus oldDelegate) => false;
+  Widget build(BuildContext context) {
+    final chrome = _chrome;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || chrome != _chrome) return;
+      chrome.bind(
+        this,
+        widget.feed.onCompose,
+        widget.feed.composeTooltip ?? '发布到${widget.feed.channelTitle}',
+      );
+    });
+    return widget.feed._build(context, chrome);
+  }
+
+  @override
+  void dispose() {
+    _chrome.unbind(this);
+    _local.dispose();
+    super.dispose();
+  }
 }
 
 class HhXPostItem extends StatelessWidget {
