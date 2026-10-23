@@ -2287,7 +2287,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             children: [
               GestureDetector(
                 onTap: () => unawaited(DmScope.contact(context, widget.postId)),
-                child: DetailAvatar(name: post.author.displayName),
+                child: DetailAvatar(
+                  name: post.author.displayName,
+                  avatar: post.author.avatar,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(

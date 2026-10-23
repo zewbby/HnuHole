@@ -148,15 +148,19 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 		t.Fatal(err)
 	}
 	if schema == "c_auth" {
-		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_dm CASCADE`); err != nil { t.Fatal(err) }
-		if _,err=tx.Exec(context.Background(),`DROP SCHEMA IF EXISTS c_comments CASCADE`);err!=nil{t.Fatal(err)}
+		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_dm CASCADE`); err != nil {
+			t.Fatal(err)
+		}
+		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_comments CASCADE`); err != nil {
+			t.Fatal(err)
+		}
 		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_moderation CASCADE`); err != nil {
 			t.Fatal(err)
 		}
 		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_posts CASCADE`); err != nil {
 			t.Fatal(err)
 		}
-		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.identity_account_state, public.community_identities, public.sessions, public.channels, public.goose_db_version CASCADE`); err != nil {
+		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_avatar_assets, public.identity_change_receipts, public.identity_account_state, public.community_identities, public.sessions, public.channels, public.goose_db_version CASCADE`); err != nil {
 			t.Fatal(err)
 		}
 		if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_community_identity(),public.guard_identity_receipt(),public.check_identity_account_shape() CASCADE`); err != nil {

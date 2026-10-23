@@ -24,7 +24,7 @@ import (
 // CheckDatabase rejects a wrong database, missing formal schema, privileged
 // connection, owner membership, and legacy-auth/DDL access before listening.
 func CheckDatabase(ctx context.Context, pool *pgxpool.Pool, service authprivacyhttp.Service) error {
-	party, schema, version := "c", "c_auth", int64(12)
+	party, schema, version := "c", "c_auth", int64(25)
 	if service == authprivacyhttp.VerifierService {
 		party, schema, version = "v", "v_auth", 6
 	}
@@ -62,6 +62,9 @@ func CheckDatabase(ctx context.Context, pool *pgxpool.Pool, service authprivacyh
 		return errors.New("runtime required auth DML privileges absent")
 	}
 	if party == "c" {
+		if err = checkIdentityAvatarSchema(ctx, pool); err != nil {
+			return err
+		}
 		if err = pool.QueryRow(ctx, `SELECT to_regclass('public.community_identities') IS NOT NULL AND to_regclass('public.identity_account_state') IS NOT NULL AND to_regclass('public.identity_change_receipts') IS NOT NULL
    AND EXISTS(SELECT 1 FROM pg_trigger WHERE tgrelid='c_auth.accounts'::regclass AND tgname='identity_account_shape_from_account' AND tgenabled='O' AND NOT tgisinternal)`).Scan(&schemaOK); err != nil || !schemaOK {
 			return errors.New("identity management schema absent")

@@ -111,14 +111,15 @@ import pathlib,sys
 source=pathlib.Path(sys.argv[1]).read_text().replace('v_auth.email_login_confirmations,','')
 source=source.split('-- 文字发布与认证共享最终事务',1)[0]
 pathlib.Path(sys.argv[2]).write_text('\n'.join(line for line in source.splitlines()
- if not any(table in line for table in ('public.identity_account_state','public.community_identities','public.identity_change_receipts')))+'\n')
+ if not any(table in line for table in ('public.identity_account_state','public.community_identities','public.identity_change_receipts','public.identity_avatar_assets')))+'\n')
 PY
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_dir/grant-pre-identity.sql" >/dev/null
 if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/identity-version-negative.log" 2>&1; then echo 'Pre-identity schema startup unexpectedly accepted' >&2; exit 1; fi
 PGPASSWORD=$C_MIGRATOR_PASSWORD goose -dir migrations postgres "$runtime_c_migrator" up-to 11 >/dev/null
 python3 - "$runtime_repo_dir/infra/postgres/grant-community.sql" "$runtime_dir/grant-pre-posts.sql" <<'PY'
 import pathlib,sys
-pathlib.Path(sys.argv[2]).write_text(pathlib.Path(sys.argv[1]).read_text().split('-- 文字发布与认证共享最终事务',1)[0])
+source=pathlib.Path(sys.argv[1]).read_text().split('-- 文字发布与认证共享最终事务',1)[0]
+pathlib.Path(sys.argv[2]).write_text('\n'.join(line for line in source.splitlines() if 'public.identity_avatar_assets' not in line)+'\n')
 PY
 PGPASSWORD=$C_MIGRATOR_PASSWORD psql -X -v ON_ERROR_STOP=1 "$runtime_c_migrator" -f "$runtime_dir/grant-pre-posts.sql" >/dev/null
 if "$runtime_dir/community" -config "$runtime_material/c.json" >"$runtime_dir/identity-close-version-negative.log" 2>&1; then echo 'Pre-account-closure schema startup unexpectedly accepted' >&2; exit 1; fi

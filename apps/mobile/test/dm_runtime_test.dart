@@ -72,6 +72,25 @@ Future<DmRuntime> runtimeFor(
 }
 
 void main() {
+  test(
+    'avatar-only management projection refreshes existing DM identities',
+    () async {
+      final f = await IdentityTestFixture.create(
+        api: IdentityTestApi()..items = [identityTestItem()],
+      );
+      final r = await runtimeFor(f);
+      await until(() => r.identityStatus == DmIdentityStatus.ready);
+      const ref = 'avatar-v1:10000000-0000-4000-8000-000000000001';
+      f.api.items = [identityTestItem(avatar: ref)];
+      await f.controller.load();
+      await until(
+        () =>
+            r.identityStatus == DmIdentityStatus.ready &&
+            r.identities.single.avatar == ref,
+      );
+      expect(r.identities.single.name, '面具一');
+    },
+  );
   testWidgets(
     'empty identity directory exits loading and exposes setup action',
     (tester) async {
@@ -339,79 +358,77 @@ void main() {
     expect(r.controller.error, '私信本地保存不可用，输入不会被清除');
   });
 
-  testWidgets('production root opens real identity setup from empty DM inbox', (
-    tester,
-  ) async {
-    final f = HomeTestFixture();
-    final base = await f.create();
-    f.identitiesApi.items = [];
-    final dir = Directory.systemTemp.createTempSync('hnuhole-dm-root-');
-    final vault = dm.Vault();
-    final r = DmRuntime(
-      controller: DmController(
-        api: dm.FakeDmApi()..offline = true,
-        openStore: (account) => DmStore.open(
-          File('${dir.path}/dm.sqlite'),
-          'root-test',
-          account,
-          vault,
+  testWidgets(
+    'production root requires first identity before any DM inbox entry',
+    (tester) async {
+      final f = HomeTestFixture();
+      final base = await f.create();
+      f.identitiesApi.items = [];
+      final dir = Directory.systemTemp.createTempSync('hnuhole-dm-root-');
+      final vault = dm.Vault();
+      final r = DmRuntime(
+        controller: DmController(
+          api: dm.FakeDmApi()..offline = true,
+          openStore: (account) => DmStore.open(
+            File('${dir.path}/dm.sqlite'),
+            'root-test',
+            account,
+            vault,
+          ),
         ),
-      ),
-      sessions: f.sessions,
-      authStore: f.store,
-      identityApi: f.identitiesApi,
-      identityChanges: base.identities,
-    );
-    await tester.pumpWidget(
-      app.HnuholeApp(
-        directory: base.directory,
-        repository: base.repository,
-        api: base.api,
-        sessions: base.sessions,
-        flows: base.flows,
-        management: base.management,
-        identities: base.identities,
-        store: base.store,
-        posts: base.posts,
-        postApi: base.postApi,
-        dm: r,
-      ),
-    );
-    await tester.pumpAndSettle();
-    await pumpUntil(tester, () => r.identityStatus == DmIdentityStatus.empty);
-    await tester.tap(find.byKey(const ValueKey('destination:directMessages')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('添加身份'));
-    await tester.pumpAndSettle();
-    expect(find.byType(IdentityManagementScreen), findsOneWidget);
-    expect(find.byType(TextFormField), findsOneWidget);
-    expect(f.identitiesApi.submissions, isEmpty);
-    Navigator.of(tester.element(find.byType(TextFormField))).pop();
-    await tester.pumpAndSettle();
-    Navigator.of(tester.element(find.byType(IdentityManagementScreen))).pop();
-    await tester.pumpAndSettle();
-    await pumpUntil(tester, () => r.identityStatus == DmIdentityStatus.empty);
-    await tester.tap(find.byKey(const ValueKey('destination:home')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('destination:directMessages')));
-    await tester.pumpAndSettle();
-    expect(find.text('添加身份'), findsOneWidget);
-    expect(
-      find.byKey(
-        const ValueKey('destination:directMessages'),
-        skipOffstage: false,
-      ),
-      findsOneWidget,
-    );
-    expect(f.identitiesApi.submissions, isEmpty);
-    var detached = false;
-    final detach = r.controller.detach().then((_) => detached = true);
-    await pumpUntil(tester, () => detached);
-    await detach;
-    await tester.pumpWidget(const SizedBox.shrink());
-    await tester.runAsync(() async {
-      await r.controller.detach();
-      await dir.delete(recursive: true);
-    });
-  });
+        sessions: f.sessions,
+        authStore: f.store,
+        identityApi: f.identitiesApi,
+        identityChanges: base.identities,
+      );
+      await tester.pumpWidget(
+        app.HnuholeApp(
+          directory: base.directory,
+          repository: base.repository,
+          api: base.api,
+          sessions: base.sessions,
+          flows: base.flows,
+          management: base.management,
+          identities: base.identities,
+          store: base.store,
+          posts: base.posts,
+          postApi: base.postApi,
+          dm: r,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await pumpUntil(tester, () => r.identityStatus == DmIdentityStatus.empty);
+      expect(find.text('设置你的初始身份'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('destination:directMessages')),
+        findsNothing,
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('identity-nickname')),
+        '初始面具',
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const ValueKey('identity-save')));
+      await tester.tap(find.byKey(const ValueKey('identity-save')));
+      await tester.pumpAndSettle();
+      await pumpUntil(tester, () => r.identityStatus == DmIdentityStatus.ready);
+      expect(
+        f.identitiesApi.submissions.single['operation'],
+        IdentityOperation.create,
+      );
+      expect(
+        find.byKey(const ValueKey('destination:directMessages')),
+        findsOneWidget,
+      );
+      var detached = false;
+      final detach = r.controller.detach().then((_) => detached = true);
+      await pumpUntil(tester, () => detached);
+      await detach;
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.runAsync(() async {
+        await r.controller.detach();
+        await dir.delete(recursive: true);
+      });
+    },
+  );
 }

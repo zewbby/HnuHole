@@ -425,6 +425,9 @@ components:
           $ref: '#/components/schemas/Id'
         peerName:
           type: string
+        peerAvatar:
+          type: string
+          pattern: '^(default-v1|inactive-v1|avatar-v1:(?!00000000-0000-0000-0000-000000000000$)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$'
         sourcePostId:
           $ref: '#/components/schemas/Id'
         sequence:

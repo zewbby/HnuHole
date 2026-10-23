@@ -387,7 +387,7 @@ components:
           properties:
             state: { type: string, enum: [ACTIVE] }
             nickname: { type: string, minLength: 1, maxLength: 512 }
-            avatar: { type: string, enum: [default-v1] }
+            avatar: { type: string, pattern: '^(default-v1|avatar-v1:(?!00000000-0000-0000-0000-000000000000$)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$' }
         - type: object
           additionalProperties: false
           required: [state, shortCode, avatar]

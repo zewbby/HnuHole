@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'dart:math';
+
+import '../posts/post_photo_picker.dart';
+import 'identity_avatar.dart';
 
 import 'package:flutter/material.dart';
 
@@ -11,20 +15,66 @@ class DefaultIdentityAvatar extends StatelessWidget {
   const DefaultIdentityAvatar({super.key, this.radius = 24});
   final double radius;
   @override
-  Widget build(BuildContext context) => ExcludeSemantics(
-    child: CircleAvatar(
-      radius: radius,
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
-      child: Icon(Icons.person_outline_rounded, size: radius * 1.25),
-    ),
-  );
+  Widget build(BuildContext context) => IdentityAvatar(radius: radius);
 }
 
 String identityDate(DateTime date) {
   // Creation calendar boundaries are defined by the server in Asia/Shanghai.
   final local = date.toUtc().add(const Duration(hours: 8));
   return '${local.year}年${local.month}月${local.day}日';
+}
+
+class IdentityPendingPanel extends StatelessWidget {
+  const IdentityPendingPanel({
+    super.key,
+    required this.controller,
+    required this.sessions,
+    this.requiredInitial = false,
+  });
+  final IdentityManagementController controller;
+  final AuthSessionController sessions;
+  final bool requiredInitial;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(24),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          requiredInitial ? '完成身份设置' : '核对保存结果',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 16),
+        if (controller.busy)
+          const Center(child: CircularProgressIndicator())
+        else ...[
+          Text(
+            controller.errorMessage ??
+                (controller.hasPending ? '保存结果尚未确认，请核对后继续。' : '暂时无法读取身份，请重试。'),
+          ),
+          const SizedBox(height: 16),
+          FilledButton(
+            onPressed: () => unawaited(
+              controller.hasPending
+                  ? controller.reconcilePending()
+                  : controller.load(),
+            ),
+            child: const Text('重新核对'),
+          ),
+          if (controller.status == IdentityManagementStatus.retryRequired)
+            TextButton(
+              onPressed: () => unawaited(controller.retryPending()),
+              child: const Text('重试原操作'),
+            ),
+        ],
+        TextButton(
+          onPressed: sessions.busy ? null : () => unawaited(sessions.logout()),
+          child: const Text('退出登录'),
+        ),
+      ],
+    ),
+  );
 }
 
 class IdentityManagementScreen extends StatefulWidget {
@@ -86,7 +136,7 @@ class _IdentityManagementScreenState extends State<IdentityManagementScreen> {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => _IdentityEditor(
+      builder: (context) => IdentityEditor(
         controller: widget.controller,
         sessions: widget.sessions,
         identity: identity,
@@ -132,7 +182,7 @@ class _IdentityManagementScreenState extends State<IdentityManagementScreen> {
                 const SizedBox(height: 16),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const DefaultIdentityAvatar(),
+                  leading: IdentityAvatar(avatar: identity.avatar),
                   title: Text(identity.nickname),
                 ),
                 const SizedBox(height: 16),
@@ -211,12 +261,12 @@ class _IdentityManagementScreenState extends State<IdentityManagementScreen> {
           Text('你的发言身份', style: Theme.of(context).textTheme.titleLarge),
           _notice('身份列表仅本人可见。最多保留 3 个身份，创建后至少保留 1 个。'),
           if (directory.identities.isEmpty)
-            _notice('还没有发言身份，你仍可浏览社区。创建一个身份后再参与发言。'),
+            _notice('还没有发言身份，请先完成初始身份设置。'),
           for (final identity in directory.identities) ...[
             const Divider(height: 1),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const DefaultIdentityAvatar(),
+              leading: IdentityAvatar(avatar: identity.avatar),
               title: Text(identity.nickname),
               subtitle: Text(identity.isOriginal ? '原始身份' : '预设身份'),
               trailing: const Icon(Icons.chevron_right),
@@ -318,20 +368,25 @@ class _IdentityManagementScreenState extends State<IdentityManagementScreen> {
   );
 }
 
-class _IdentityEditor extends StatefulWidget {
-  const _IdentityEditor({
+class IdentityEditor extends StatefulWidget {
+  const IdentityEditor({
+    super.key,
     required this.controller,
     required this.sessions,
     this.identity,
+    this.requiredInitial = false,
+    this.photoPicker,
   });
+  final bool requiredInitial;
+  final PostPhotoPicker? photoPicker;
   final IdentityManagementController controller;
   final AuthSessionController sessions;
   final ManagedIdentity? identity;
   @override
-  State<_IdentityEditor> createState() => _IdentityEditorState();
+  State<IdentityEditor> createState() => _IdentityEditorState();
 }
 
-class _IdentityEditorState extends State<_IdentityEditor> {
+class _IdentityEditorState extends State<IdentityEditor> {
   late final TextEditingController _name;
   late final IdentityNameFormatter _formatter;
   final _form = GlobalKey<FormState>();
@@ -343,6 +398,8 @@ class _IdentityEditorState extends State<_IdentityEditor> {
   Future<bool>? _draftWrite;
   int? _authority;
   String? _localError;
+  late String _avatar;
+  bool _picking = false;
   @override
   void initState() {
     super.initState();
@@ -353,6 +410,9 @@ class _IdentityEditorState extends State<_IdentityEditor> {
     _initialSetup =
         widget.identity == null &&
         widget.controller.directory?.identities.isEmpty == true;
+    _avatar =
+        widget.identity?.avatar ??
+        (_initialSetup ? widget.controller.initialAvatar : 'default-v1');
     _name = TextEditingController(
       text:
           widget.identity?.nickname ??
@@ -366,6 +426,12 @@ class _IdentityEditorState extends State<_IdentityEditor> {
     );
     widget.controller.addListener(_changed);
     widget.sessions.addListener(_changed);
+    if (widget.controller.pendingAvatar?['target'] ==
+        (widget.identity?.id ?? 'CREATE')) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(_recoverAvatar());
+      });
+    }
   }
 
   void _changed() {
@@ -374,7 +440,7 @@ class _IdentityEditorState extends State<_IdentityEditor> {
         _authority != widget.sessions.authorityVersion) {
       _closing = true;
       _name.clear();
-      Navigator.pop(context);
+      if (!widget.requiredInitial) Navigator.pop(context);
       return;
     }
     setState(() {});
@@ -386,7 +452,10 @@ class _IdentityEditorState extends State<_IdentityEditor> {
         _initialSetup &&
         _name.value.composing.isCollapsed &&
         !widget.controller.hasPending) {
-      _draftWrite = widget.controller.saveInitialDraft(_name.text);
+      _draftWrite = widget.controller.saveInitialDraft(
+        _name.text,
+        avatar: _avatar,
+      );
     }
     _changed();
   }
@@ -402,6 +471,9 @@ class _IdentityEditorState extends State<_IdentityEditor> {
 
   Future<void> _save() async {
     if (_submitting ||
+        widget.controller.pendingAvatar != null &&
+            _avatar !=
+                'avatar-v1:${widget.controller.pendingAvatar!['assetId']}' ||
         widget.controller.busy ||
         !_name.value.composing.isCollapsed ||
         _feedback == IdentityNameFeedback.illegalCharacter ||
@@ -409,8 +481,9 @@ class _IdentityEditorState extends State<_IdentityEditor> {
       return;
     }
     final submitted = _name.text;
-    if (submitted == widget.identity?.nickname) {
-      setState(() => _localError = '请输入新的昵称');
+    if (submitted == widget.identity?.nickname &&
+        _avatar == widget.identity?.avatar) {
+      setState(() => _localError = '请修改昵称或头像');
       return;
     }
     setState(() {
@@ -433,19 +506,128 @@ class _IdentityEditorState extends State<_IdentityEditor> {
       return;
     }
     if (widget.identity == null) {
-      await widget.controller.create(submitted);
+      await widget.controller.create(submitted, avatar: _avatar);
     } else {
-      await widget.controller.rename(widget.identity!.id, submitted);
+      if (submitted == widget.identity!.nickname) {
+        await widget.controller.changeAvatar(widget.identity!.id, _avatar);
+      } else {
+        await widget.controller.rename(
+          widget.identity!.id,
+          submitted,
+          avatar: _avatar != widget.identity!.avatar ? _avatar : null,
+        );
+      }
     }
     if (!mounted) return;
     _submitting = false;
     if (widget.controller.hasPending ||
         widget.controller.status == IdentityManagementStatus.ready ||
         !widget.sessions.isAuthenticated) {
-      Navigator.pop(context);
+      if (!widget.requiredInitial) {
+        Navigator.pop(context);
+      } else {
+        setState(() {});
+      }
     } else {
       setState(() => _localError = widget.controller.errorMessage);
     }
+  }
+
+  Future<void> _pickAvatar() async {
+    if (_picking || _submitting || widget.controller.busy) return;
+    setState(() {
+      _picking = true;
+      _localError = null;
+    });
+    try {
+      final files = await (widget.photoPicker ?? NativePostPhotoPicker()).pick(
+        1,
+      );
+      if (!mounted ||
+          _closing ||
+          _authority != widget.sessions.authorityVersion ||
+          !widget.sessions.isAuthenticated ||
+          files.isEmpty) {
+        return;
+      }
+      // New selection owns a new UUID. Unknown uploads are never attached or
+      // reused by a replacement account; only confirmed references enter vault.
+      final random = Random.secure();
+      final raw = List.generate(16, (_) => random.nextInt(256));
+      raw[6] = (raw[6] & 15) | 64;
+      raw[8] = (raw[8] & 63) | 128;
+      final hex = raw.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+      final id =
+          '${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20)}';
+      if (await files.single.length() > 5 * 1024 * 1024) {
+        throw const FormatException('avatar too large');
+      }
+      final selected = await inspectPostPhoto(files.single, id);
+      if (!mounted ||
+          _closing ||
+          _authority != widget.sessions.authorityVersion ||
+          !widget.sessions.isAuthenticated) {
+        return;
+      }
+      final avatar = await widget.controller.uploadAvatar(
+        id,
+        selected.bytes,
+        selected.selection.mimeType,
+        target: widget.identity?.id ?? 'CREATE',
+      );
+      if (!mounted ||
+          _closing ||
+          _authority != widget.sessions.authorityVersion) {
+        return;
+      }
+      if (avatar == null) {
+        setState(
+          () => _localError =
+              widget.controller.errorMessage ?? '头像上传结果尚未确认，请核对原图片或明确放弃后更换。',
+        );
+        return;
+      }
+      setState(() => _avatar = avatar);
+      _draftChanged();
+    } on Object {
+      if (mounted && !_closing) {
+        setState(() => _localError = '请选择不超过 5 MB 的静态 JPEG、PNG、WebP 或 GIF 图片。');
+      }
+    } finally {
+      if (mounted && !_closing) setState(() => _picking = false);
+    }
+  }
+
+  Future<void> _recoverAvatar() async {
+    if (_picking || _submitting || widget.controller.busy) return;
+    setState(() => _picking = true);
+    final avatar = await widget.controller.recoverAvatar(
+      target: widget.identity?.id ?? 'CREATE',
+      retry: true,
+    );
+    if (mounted && !_closing) {
+      setState(() {
+        _picking = false;
+        if (avatar != null) {
+          _avatar = avatar;
+          _localError = null;
+        } else {
+          _localError = '尚未找到原图片。可继续核对，或放弃后重新选择。';
+        }
+      });
+      if (avatar != null) _draftChanged();
+    }
+  }
+
+  Future<void> _defaultAvatar() async {
+    if (!await widget.controller.abandonAvatar() || !mounted || _closing) {
+      return;
+    }
+    setState(() {
+      _avatar = 'default-v1';
+      _localError = null;
+    });
+    _draftChanged();
   }
 
   Future<void> _discard() async {
@@ -468,12 +650,23 @@ class _IdentityEditorState extends State<_IdentityEditor> {
   Widget build(BuildContext context) {
     final identity = widget.identity;
     final canRename = _canRename;
-    final busy = _submitting || widget.controller.busy || widget.sessions.busy;
+    final busy =
+        _submitting ||
+        _picking ||
+        widget.controller.busy ||
+        widget.sessions.busy;
     final feedback = switch (_feedback) {
       IdentityNameFeedback.illegalCharacter => '已移除非法字符；请继续编辑或删除后再保存',
       IdentityNameFeedback.maximumLength => '已达 12 字上限，后续字符未加入',
       IdentityNameFeedback.none => null,
     };
+    if (widget.controller.hasPending) {
+      return IdentityPendingPanel(
+        controller: widget.controller,
+        sessions: widget.sessions,
+        requiredInitial: widget.requiredInitial,
+      );
+    }
     return SafeArea(
       top: false,
       child: SingleChildScrollView(
@@ -481,7 +674,10 @@ class _IdentityEditorState extends State<_IdentityEditor> {
           24,
           24,
           24,
-          24 + MediaQuery.viewInsetsOf(context).bottom,
+          24 +
+              (widget.requiredInitial
+                  ? 0
+                  : MediaQuery.viewInsetsOf(context).bottom),
         ),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 520),
@@ -492,13 +688,40 @@ class _IdentityEditorState extends State<_IdentityEditor> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  identity == null ? '创建发言身份' : '编辑身份',
+                  identity == null
+                      ? (widget.requiredInitial ? '设置你的初始身份' : '创建发言身份')
+                      : '编辑身份',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 24),
-                const Center(child: DefaultIdentityAvatar(radius: 32)),
+                Center(child: IdentityAvatar(avatar: _avatar, radius: 36)),
                 const SizedBox(height: 8),
-                const Text('默认头像', textAlign: TextAlign.center),
+                TextButton.icon(
+                  key: const ValueKey('identity-avatar-pick'),
+                  onPressed: busy ? null : _pickAvatar,
+                  icon: const Icon(Icons.photo_library_outlined, size: 18),
+                  label: Text(_picking ? '正在保存头像…' : '从图库选择头像'),
+                ),
+                if (widget.controller.pendingAvatar != null &&
+                    _avatar !=
+                        'avatar-v1:${widget.controller.pendingAvatar!['assetId']}')
+                  TextButton(
+                    onPressed: busy ? null : _recoverAvatar,
+                    child: const Text('核对原头像'),
+                  ),
+                if (_avatar != 'default-v1' ||
+                    widget.controller.pendingAvatar != null)
+                  TextButton(
+                    onPressed: busy ? null : _defaultAvatar,
+                    child: const Text('使用默认头像'),
+                  ),
+                if (_localError != null)
+                  Text(
+                    _localError!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
                 const SizedBox(height: 24),
                 TextFormField(
                   key: const ValueKey('identity-nickname'),
@@ -510,8 +733,7 @@ class _IdentityEditorState extends State<_IdentityEditor> {
                     helperText: '2–12 个字，支持中英日韩、数字及标点；不含空格或表情',
                     helperMaxLines: 3,
                     counterText: '${_name.text.characters.length}/12',
-                    errorText:
-                        _localError ?? (feedback),
+                    errorText: _localError ?? (feedback),
                   ),
                   validator: (value) =>
                       IdentityNameFormatter.validate(value ?? ''),
@@ -523,8 +745,8 @@ class _IdentityEditorState extends State<_IdentityEditor> {
                   Text('可于${identityDate(identity!.renameAvailableAt!)}再次改名'),
                 ],
                 const SizedBox(height: 12),
-                const Text('成功改名后需满 30 天才能再次改名。'),
-                if (_initialSetup) ...[
+                if (identity != null) const Text('成功改名后需满 30 天才能再次改名。'),
+                if (_initialSetup && !widget.requiredInitial) ...[
                   const SizedBox(height: 8),
                   const Text('已填昵称会在这台设备保留，使用同一账号可继续设置。'),
                 ],
@@ -533,19 +755,29 @@ class _IdentityEditorState extends State<_IdentityEditor> {
                   key: const ValueKey('identity-save'),
                   onPressed:
                       busy ||
-                          !canRename ||
+                          widget.controller.pendingAvatar != null &&
+                              _avatar !=
+                                  'avatar-v1:${widget.controller.pendingAvatar!['assetId']}' ||
                           _feedback == IdentityNameFeedback.illegalCharacter ||
                           !_name.value.composing.isCollapsed
                       ? null
                       : () => unawaited(_save()),
-                  child: Text(identity == null ? '创建身份' : '保存昵称'),
+                  child: Text(
+                    identity == null
+                        ? (widget.requiredInitial ? '完成设置' : '创建身份')
+                        : '保存资料',
+                  ),
                 ),
                 const SizedBox(height: 8),
                 OutlinedButton(
-                  onPressed: busy ? null : () => Navigator.pop(context),
-                  child: const Text('取消'),
+                  onPressed: busy
+                      ? null
+                      : () => widget.requiredInitial
+                            ? unawaited(widget.sessions.logout())
+                            : Navigator.pop(context),
+                  child: Text(widget.requiredInitial ? '退出登录' : '取消'),
                 ),
-                if (_initialSetup)
+                if (_initialSetup && !widget.requiredInitial)
                   TextButton(
                     onPressed: busy ? null : () => unawaited(_discard()),
                     child: const Text('放弃已填昵称'),

@@ -64,11 +64,13 @@ android {
             val dmText = System.getenv("HNUHOLE_DM_TEXT") == "1"
             val dmChat = System.getenv("HNUHOLE_DM_CHAT") == "1"
             val dmRecovery = System.getenv("HNUHOLE_DM_RECOVERY") == "1"
-            require(listOf(dmText,dmChat,dmRecovery,System.getenv("HNUHOLE_DM_PREVIEW") == "1").count { it } <= 1) {
+            val identityAvatar = System.getenv("HNUHOLE_IDENTITY_AVATAR") == "1"
+            require(listOf(dmText,dmChat,dmRecovery,identityAvatar,System.getenv("HNUHOLE_DM_PREVIEW") == "1",providers.gradleProperty("hnuholeCommentsValidation").orNull == "true").count { it } <= 1) {
                 "Choose one isolated DM package"
             }
             if (dmChat) applicationIdSuffix = ".dmchat"
             if (dmRecovery) applicationIdSuffix = ".dmrecovery"
+            if (identityAvatar) applicationIdSuffix = ".identityavatar"
             require(!dmText || System.getenv("HNUHOLE_DM_PREVIEW") != "1") {
                 "Choose either DM text integration or the UI preview"
             }

@@ -97,7 +97,7 @@ def main():
 
 def check_identity(spec):
     paths = spec["paths"]
-    assert set(paths) == {"/api/v1/identities", "/api/v1/identities/{identityId}", "/api/v1/identity-change-result"}
+    assert set(paths) == {"/api/v1/identities", "/api/v1/identities/{identityId}", "/api/v1/identity-change-result", "/api/v1/identity-avatars/{assetId}"}
     assert set(paths["/api/v1/identities"]) == {"get", "post"}
     assert set(paths["/api/v1/identities/{identityId}"]) == {"parameters", "patch", "delete"}
     for path in paths.values():
@@ -105,12 +105,15 @@ def check_identity(spec):
             if method == "parameters":
                 continue
             assert operation["security"] == [{"bearerAuth": []}]
-            success = operation["responses"]["200"]
+            success = operation["responses"]["204" if method == "delete" and path is paths["/api/v1/identity-avatars/{assetId}"] else "200"]
             for header in ("Session-Expires-At", "X-Request-ID", "Cache-Control"):
                 assert resolve(spec, success["headers"][header])["required"] is True
     schemas = spec["components"]["schemas"]
     assert set(schemas["OwnIdentity"]["properties"]) == {"id", "nickname", "avatar", "isOriginal", "createdAt", "renameAvailableAt"}
-    assert schemas["OwnIdentity"]["properties"]["avatar"]["enum"] == ["default-v1"]
+    assert schemas["OwnIdentity"]["properties"]["avatar"] == {"$ref": "#/components/schemas/AvatarRef"}
+    assert "avatar-v1:" in schemas["AvatarRef"]["pattern"]
+    assert set(paths["/api/v1/identity-avatars/{assetId}"]) == {"parameters", "get", "put", "delete"}
+    assert "AVATAR" in schemas["IdentityChange"]["properties"]["operation"]["enum"]
     assert schemas["IdentityDirectory"]["properties"]["identities"]["maxItems"] == 3
     assert set(schemas["IdentityChange"]["properties"]) == {"state", "operation", "identityId", "errorCode"}
     assert spec["components"]["parameters"]["ChangeKey"]["schema"]["maxLength"] == 22

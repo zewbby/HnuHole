@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../design_system/telegram_theme.dart';
+import '../identity/identity_avatar.dart';
 import 'direct_message_bubble.dart';
 import 'direct_message_models.dart';
 
@@ -12,14 +13,18 @@ class HhDmAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = HhTelegramPalette.of(context);
     return ExcludeSemantics(
-      child: CircleAvatar(
+      child: IdentityAvatar(
+        avatar: identity.avatar,
         radius: size / 2,
-        backgroundColor: p.action,
-        foregroundColor: Colors.white,
-        child: Text(
-          identity.name.isEmpty ? '?' : identity.name.characters.first,
-          textScaler: TextScaler.noScaling,
-          style: TextStyle(fontSize: size * .42, fontWeight: FontWeight.w500),
+        fallback: CircleAvatar(
+          radius: size / 2,
+          backgroundColor: p.action,
+          foregroundColor: Colors.white,
+          child: Text(
+            identity.name.isEmpty ? '?' : identity.name.characters.first,
+            textScaler: TextScaler.noScaling,
+            style: TextStyle(fontSize: size * .42, fontWeight: FontWeight.w500),
+          ),
         ),
       ),
     );
@@ -186,15 +191,16 @@ class HhDirectMessageComposer extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (!textOnly) IconButton(
-                  key: const ValueKey('dm-attach'),
-                  tooltip: '添加图片',
-                  onPressed: view.canSend ? onPickImages : null,
-                  icon: Transform.rotate(
-                    angle: -.35,
-                    child: const Icon(Icons.attach_file_rounded, size: 26),
+                if (!textOnly)
+                  IconButton(
+                    key: const ValueKey('dm-attach'),
+                    tooltip: '添加图片',
+                    onPressed: view.canSend ? onPickImages : null,
+                    icon: Transform.rotate(
+                      angle: -.35,
+                      child: const Icon(Icons.attach_file_rounded, size: 26),
+                    ),
                   ),
-                ),
                 SizedBox(
                   width: 48,
                   height: 48,

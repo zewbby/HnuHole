@@ -178,7 +178,7 @@ type PublicAuthor struct {
 func (a PublicAuthor) MarshalJSON() ([]byte, error) {
 	switch a.State {
 	case "ACTIVE":
-		if a.Nickname == "" || a.Avatar != "default-v1" {
+		if a.Nickname == "" || !postmedia.ValidAvatarReference(a.Avatar) {
 			return nil, ErrInvalidIntent
 		}
 		return json.Marshal(struct {

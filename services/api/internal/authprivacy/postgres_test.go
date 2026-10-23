@@ -90,15 +90,19 @@ func newLab(t *testing.T) *lab {
 			t.Fatal(err)
 		}
 		if spec.schema == "c_auth" {
-			if _,err=tx.Exec(context.Background(),`DROP SCHEMA IF EXISTS c_dm CASCADE`);err!=nil{t.Fatal(err)}
-			if _,err=tx.Exec(context.Background(),`DROP SCHEMA IF EXISTS c_comments CASCADE`);err!=nil{t.Fatal(err)}
+			if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_dm CASCADE`); err != nil {
+				t.Fatal(err)
+			}
+			if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_comments CASCADE`); err != nil {
+				t.Fatal(err)
+			}
 			if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_moderation CASCADE`); err != nil {
 				t.Fatal(err)
 			}
 			if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS c_posts CASCADE`); err != nil {
 				t.Fatal(err)
 			}
-			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_change_receipts, public.community_identities, public.identity_account_state, public.sessions, public.channels, public.goose_db_version CASCADE`); err != nil {
+			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.identity_avatar_assets, public.identity_change_receipts, public.community_identities, public.identity_account_state, public.sessions, public.channels, public.goose_db_version CASCADE`); err != nil {
 				t.Fatal(err)
 			}
 			if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(), public.guard_community_identity(), public.guard_identity_receipt(), public.check_identity_account_shape() CASCADE`); err != nil {
@@ -135,7 +139,7 @@ func newLab(t *testing.T) *lab {
 		copy(key[:], public)
 		keys = append(keys, protocol.TrustedKey{Environment: "lab", Purpose: spec.purpose, Epoch: spec.epoch, PublicKey: key})
 		if spec.purpose == protocol.PurposeRegister {
-            keys=append(keys,protocol.TrustedKey{Environment:"lab",Purpose:protocol.PurposeEmailLogin,Epoch:1,PublicKey:key})
+			keys = append(keys, protocol.TrustedKey{Environment: "lab", Purpose: protocol.PurposeEmailLogin, Epoch: 1, PublicKey: key})
 			keys = append(keys, protocol.TrustedKey{Environment: "lab", Purpose: protocol.PurposeRetireAuth, Epoch: 1, PublicKey: key})
 		}
 		if spec.purpose == protocol.PurposeRetired {

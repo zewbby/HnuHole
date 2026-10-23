@@ -34,6 +34,10 @@ type Selection struct {
 	Height     int    `json:"height"`
 }
 
+func ValidAvatarReference(ref string) bool {
+	return ref == "default-v1" || strings.HasPrefix(ref, "avatar-v1:") && ValidID(strings.TrimPrefix(ref, "avatar-v1:"))
+}
+
 func ValidID(s string) bool {
 	id, e := uuid.Parse(s)
 	return e == nil && id != uuid.Nil && id.String() == s

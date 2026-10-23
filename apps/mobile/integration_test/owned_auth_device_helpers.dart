@@ -14,6 +14,7 @@ Future<String> registerOwned(
   String password, {
   Map<String, Object>? evidence,
   Future<void> Function(String)? onRecoveryPrepared,
+  String? initialIdentityNickname,
 }) async {
   expect(
     RegExp(r'^[a-z][a-z0-9_]{5,23}$').hasMatch(username),
@@ -127,7 +128,11 @@ Future<String> registerOwned(
       tester,
       () =>
           auth.sessions.isAuthenticated &&
-          find.byType(FeedScreen).evaluate().isNotEmpty &&
+          (find.byType(FeedScreen).evaluate().isNotEmpty ||
+              find
+                  .byKey(const ValueKey('identity-nickname'))
+                  .evaluate()
+                  .isNotEmpty) &&
           find.byType(AuthScreen).evaluate().isEmpty,
       'actual fresh account',
     );
@@ -140,6 +145,16 @@ Future<String> registerOwned(
       'authRoutes=${find.byType(AuthScreen).evaluate().length}, '
       'visibleFeeds=${find.byType(FeedScreen).evaluate().length}',
     );
+  }
+  if (initialIdentityNickname != null) {
+    await inputOwned(tester, 'identity-nickname', initialIdentityNickname);
+    await tapOwned(tester, find.byKey(const ValueKey('identity-save')));
+    await waitOwned(
+      tester,
+      () => find.byType(FeedScreen).evaluate().isNotEmpty,
+      'explicit initial identity created',
+    );
+    evidence?['explicitInitialIdentityCreated'] = true;
   }
   return recovery;
 }

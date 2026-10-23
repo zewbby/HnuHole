@@ -10,6 +10,20 @@ REVOKE ALL ON ALL SEQUENCES IN SCHEMA c_auth FROM hnuhole_c_runtime;
 REVOKE ALL ON SCHEMA c_auth FROM hnuhole_c_runtime;
 REVOKE ALL ON public.channels FROM hnuhole_c_runtime;
 REVOKE ALL ON public.identity_account_state,public.community_identities,public.identity_change_receipts FROM hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+REVOKE ALL ON public.identity_avatar_assets FROM hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+-- A --no-privileges restore regains default PUBLIC function EXECUTE.
+-- Earlier-version startup fixtures also use this file before 0025 exists.
+DO $$ BEGIN
+ IF to_regprocedure('public.guard_identity_avatar()') IS NOT NULL THEN
+  REVOKE ALL ON FUNCTION public.guard_identity_avatar() FROM PUBLIC;
+ END IF;
+ IF to_regprocedure('public.bind_identity_avatar()') IS NOT NULL THEN
+  REVOKE ALL ON FUNCTION public.bind_identity_avatar() FROM PUBLIC;
+ END IF;
+ IF to_regprocedure('public.close_identity_avatars()') IS NOT NULL THEN
+  REVOKE ALL ON FUNCTION public.close_identity_avatars() FROM PUBLIC;
+ END IF;
+END $$;
 REVOKE ALL ON ALL TABLES IN SCHEMA c_auth FROM hnuhole_c_recovery,hnuhole_business;
 REVOKE ALL ON ALL SEQUENCES IN SCHEMA c_auth FROM hnuhole_c_recovery,hnuhole_business;
 REVOKE ALL ON SCHEMA c_auth FROM hnuhole_c_recovery,hnuhole_business;
@@ -23,6 +37,8 @@ GRANT USAGE ON ALL SEQUENCES IN SCHEMA c_auth TO hnuhole_c_runtime;
 GRANT SELECT ON public.channels TO hnuhole_c_runtime;
 GRANT SELECT,INSERT,UPDATE ON public.identity_account_state,public.community_identities TO hnuhole_c_runtime;
 GRANT SELECT,INSERT ON public.identity_change_receipts TO hnuhole_c_runtime;
+GRANT SELECT,INSERT ON public.identity_avatar_assets TO hnuhole_c_runtime;
+GRANT UPDATE(identity_id,payload) ON public.identity_avatar_assets TO hnuhole_c_runtime;
 GRANT USAGE ON SCHEMA c_auth TO hnuhole_c_recovery;
 GRANT SELECT,UPDATE ON c_auth.authorization_gate TO hnuhole_c_recovery;
 GRANT SELECT,INSERT ON c_auth.authorization_gate_audit TO hnuhole_c_recovery;

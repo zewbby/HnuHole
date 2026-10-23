@@ -70,6 +70,29 @@ class PrereleaseRoleAuditPostgresTest(unittest.TestCase):
                     self.lab.grants('c')
                 self.lab.audit()
 
+    def test_restore_rebuilds_private_identity_avatar_function_acls(self):
+        public_execute = """SELECT count(*) FROM pg_proc p
+            JOIN pg_namespace n ON n.oid=p.pronamespace,
+            LATERAL aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) a
+            WHERE n.nspname='public'
+            AND p.proname IN ('guard_identity_avatar','bind_identity_avatar','close_identity_avatars')
+            AND a.grantee=0 AND a.privilege_type='EXECUTE'"""
+        self.assertEqual(self.lab.sql('c', public_execute), '0')
+        backup = self.lab.root / 'c.dump'
+        self.lab.run(['pg_dump', '--format=custom', '--no-owner', '--no-privileges',
+                      '--file', backup, self.lab.dsn('c', 'migrator')],
+                     'avatar-acl-backup', env=self.lab.password_env('c', 'migrator'))
+        self.lab.state['pgPorts']['restore'] = {'c': environment.free_ports(1)[0]}
+        self.lab.save()
+        self.lab.init_cluster('restore', 'c')
+        self.lab.run(['pg_restore', '--exit-on-error', '--no-owner', '--no-privileges',
+                      '--dbname', self.lab.dsn('c', 'migrator', 'restore'), backup],
+                     'avatar-acl-restore', env=self.lab.password_env('c', 'migrator'))
+        # Restored functions regain PostgreSQL's default PUBLIC EXECUTE.
+        self.assertEqual(self.lab.sql('c', public_execute, target='restore'), '3')
+        self.lab.grants('c', target='restore')
+        self.assertEqual(self.lab.sql('c', public_execute, target='restore'), '0')
+
 
 if __name__ == '__main__':
     unittest.main()

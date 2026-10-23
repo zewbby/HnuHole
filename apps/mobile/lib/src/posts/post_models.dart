@@ -1,3 +1,4 @@
+import '../identity/identity_api.dart';
 import 'post_protocol.dart';
 
 enum PostAuthorState { active, deleted, accountClosed }
@@ -45,12 +46,12 @@ class PostAuthor {
     final state = PostJson.text(m, 'state');
     if (state == 'ACTIVE') {
       PostJson.record(raw, {'state', 'nickname', 'avatar'});
-      if (m['avatar'] != 'default-v1') {
+      if (!validIdentityAvatar(m['avatar'])) {
         throw const FormatException('Invalid active author avatar');
       }
       return PostAuthor(
         state: PostAuthorState.active,
-        avatar: 'default-v1',
+        avatar: m['avatar'] as String,
         nickname: PostJson.text(m, 'nickname', maxLength: 512),
       );
     }

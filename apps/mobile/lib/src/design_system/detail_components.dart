@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../posts/x_feed.dart';
+import '../identity/identity_avatar.dart';
 
 /// Vector contours shared by the accepted preview and real detail screen.
 const detailIconInk = Color(0xFF59666D);
@@ -21,37 +22,46 @@ TextStyle detailType(
 );
 
 class DetailAvatar extends StatelessWidget {
-  const DetailAvatar({super.key, required this.name, this.radius = 24});
-  final String name;
+  const DetailAvatar({
+    super.key,
+    required this.name,
+    this.radius = 24,
+    this.avatar = 'default-v1',
+  });
+  final String name, avatar;
   final double radius;
   @override
   Widget build(BuildContext context) {
     const colors = [Color(0xFF18ADBA), Color(0xFF83A95B), Color(0xFF639CC2)];
     final hash = name.runes.fold<int>(0, (a, b) => a + b);
     final color = colors[hash % colors.length];
-    return ExcludeSemantics(
-      child: Container(
-        width: radius * 2,
-        height: radius * 2,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.lerp(color, Colors.white, .13)!,
-              Color.lerp(color, Colors.black, .07)!,
-            ],
+    return IdentityAvatar(
+      avatar: avatar,
+      radius: radius,
+      fallback: ExcludeSemantics(
+        child: Container(
+          width: radius * 2,
+          height: radius * 2,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.lerp(color, Colors.white, .13)!,
+                Color.lerp(color, Colors.black, .07)!,
+              ],
+            ),
           ),
-        ),
-        child: Text(
-          name.characters.firstOrNull ?? '海',
-          style: detailType(
-            context,
-            radius * .85,
-            weight: FontWeight.w500,
-            color: Colors.white,
+          child: Text(
+            name.characters.firstOrNull ?? '海',
+            style: detailType(
+              context,
+              radius * .85,
+              weight: FontWeight.w500,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

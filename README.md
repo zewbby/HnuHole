@@ -38,6 +38,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `feat/identity-avatar-onboarding` | 头像上传与注册收尾首次身份入口已在分支实现；宿主／隔离 SQL 聚焦验证通过，真我独立包新增链路限定通过，未合并／发布。 | [任务详情](docs/branches/identity-avatar-onboarding.md) |
 | `fix/direct-message-header-density` | 送审快照：私信顶部布局与语义点击已交付[PR #62](https://github.com/zewbby/HnuHole/pull/62)，2315已覆盖安装；最终CI／合并状态以PR回执为准，未发布。 | [任务详情](docs/branches/fix-direct-message-header-density.md) |
 | `fix/direct-message-identity-loading` | 空身份修复、右上快捷切换与身份管理往返保持绑定已送审[PR #60](https://github.com/zewbby/HnuHole/pull/60)，2313限定通过；合并与CI回执见PR，未发布。 | [任务详情](docs/branches/fix-direct-message-identity-loading.md) |
 | `fix/mobile-navigation-refresh` | 已合并 main [PR #57](https://github.com/zewbby/HnuHole/pull/57)；五项限定验收、动图原生保存与短时帧性能已测，未发布。 | [交接](docs/branches/fix-mobile-navigation-refresh.md) |

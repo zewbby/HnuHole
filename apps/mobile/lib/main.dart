@@ -20,6 +20,8 @@ import 'src/messaging/dm_notifications.dart';
 import 'src/messaging/dm_governance_ui.dart';
 import 'src/messaging/direct_message_models.dart';
 import 'src/design_system/telegram_theme.dart';
+import 'src/identity/identity_initial_gate.dart';
+import 'src/identity/identity_avatar.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -310,6 +312,11 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   bool _settingsRouteOpen = false;
   bool _identityRouteOpen = false;
   final _primaryTabs = GlobalKey<PrimaryTabsState>();
+  late final _avatars = IdentityAvatarRepository(
+    widget.api,
+    widget.sessions,
+    widget.store,
+  );
   final _postWindow = ValueNotifier<(String?, int)>((null, -1));
   // Navigation preference is local to this app run and to its owning account.
   final _homeChannels = <String, String?>{};
@@ -334,7 +341,9 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
       _openAuth();
       return;
     }
-    if (!c.available || c.accountId == null) return;
+    if (!widget.identities.entryReady || !c.available || c.accountId == null) {
+      return;
+    }
     if (target.scope != n.scopeFor(c.accountId!)) {
       n.pending = null;
       return;
@@ -371,7 +380,11 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             builder: (_) => DmChatRoute(
               runtime: widget.dm!,
               own: own,
-              peer: DmIdentity(id: row['peerId'], name: row['peerName']),
+              peer: DmIdentity(
+                id: row['peerId'],
+                name: row['peerName'],
+                avatar: row['peerAvatar'] as String? ?? 'default-v1',
+              ),
               sourcePost: row['sourcePostId'],
               conversation: row['id'],
             ),
@@ -783,6 +796,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     widget.sessions.dispose();
     widget.api.close();
     widget.directory.dispose();
+    _avatars.dispose();
     widget.repository.close();
     widget.store.dispose();
     super.dispose();
@@ -799,26 +813,29 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         scaffoldMessengerKey: _scaffoldMessengerKey,
         navigatorKey: _navigatorKey,
         themeMode: _authPresentation.themeMode,
-        builder: (context, child) => DmScope(
-          runtime: widget.dm,
-          child: AuthPresentationScope(
-            controller: _authPresentation,
-            child: CommentScopeHost(
-              runtime: widget.comments,
-              child: Listener(
-                behavior: HitTestBehavior.translucent,
-                onPointerUp: (_) {
-                  // Let the requested action (including logout) start first. Activity
-                  // is a user gesture, never a background timer or a build side effect.
-                  scheduleMicrotask(widget.sessions.onActivity);
-                },
-                child: CommunitySpokenLocale(
-                  child: widget.governance == null
-                      ? child ?? const SizedBox.shrink()
-                      : GovernanceScope(
-                          controller: widget.governance!,
-                          child: child ?? const SizedBox.shrink(),
-                        ),
+        builder: (context, child) => IdentityAvatarScope(
+          repository: _avatars,
+          child: DmScope(
+            runtime: widget.dm,
+            child: AuthPresentationScope(
+              controller: _authPresentation,
+              child: CommentScopeHost(
+                runtime: widget.comments,
+                child: Listener(
+                  behavior: HitTestBehavior.translucent,
+                  onPointerUp: (_) {
+                    // Let the requested action (including logout) start first. Activity
+                    // is a user gesture, never a background timer or a build side effect.
+                    scheduleMicrotask(widget.sessions.onActivity);
+                  },
+                  child: CommunitySpokenLocale(
+                    child: widget.governance == null
+                        ? child ?? const SizedBox.shrink()
+                        : GovernanceScope(
+                            controller: widget.governance!,
+                            child: child ?? const SizedBox.shrink(),
+                          ),
+                  ),
                 ),
               ),
             ),
@@ -838,43 +855,50 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             if (widget.sessions.isAuthenticated &&
                 widget.posts.available &&
                 widget.directory.status == ChannelDirectoryStatus.ready) {
-              return PrimaryTabs(
-                key: _primaryTabs,
-                window: _postWindow.value,
-                onSelected: _selectPrimary,
-                builders: {
-                  AppDestination.home: (_) => FeedScreen(
-                    // New authorization owns fresh protected data. Its channel
-                    // preference survives within this app run for the same account.
-                    key: ValueKey(_postWindow.value),
-                    showNavigation: false,
-                    controller: widget.posts,
-                    channels: widget.directory.channels,
-                    composeChannel: widget.directory.channels.first,
-                    initialChannelId: _homeChannels[widget.posts.accountId],
-                    loadImages: widget.loadPostImages,
-                    onOpenMessages: widget.governance == null
-                        ? null
-                        : _openMessages,
-                    onOpenPersonal: _openPersonal,
-                    onOpenDirectMessages: _openDirectMessages,
-                    onManageIdentities: _openIdentity,
-                    onAuthenticationRequired: _openAuth,
-                  ),
-                  AppDestination.messages: (_) => widget.governance == null
-                      ? const Center(child: Text('系统通知暂时不可用'))
-                      : _notificationsScreen(),
-                  AppDestination.directMessages: (_) => widget.dm != null
-                      ? DmInboxRoute(
-                          key: ValueKey((_postWindow.value, _dmInboxRevision)),
-                          runtime: widget.dm!,
-                          initialIdentity: _dmInitialIdentity,
-                          onManageIdentities: () =>
-                              _openIdentity(initialCreate: true),
-                        )
-                      : const DirectMessagesUnavailableScreen(),
-                  AppDestination.personal: (_) => _personalScreen(),
-                },
+              return IdentityInitialGate(
+                controller: widget.identities,
+                sessions: widget.sessions,
+                child: PrimaryTabs(
+                  key: _primaryTabs,
+                  window: _postWindow.value,
+                  onSelected: _selectPrimary,
+                  builders: {
+                    AppDestination.home: (_) => FeedScreen(
+                      // New authorization owns fresh protected data. Its channel
+                      // preference survives within this app run for the same account.
+                      key: ValueKey(_postWindow.value),
+                      showNavigation: false,
+                      controller: widget.posts,
+                      channels: widget.directory.channels,
+                      composeChannel: widget.directory.channels.first,
+                      initialChannelId: _homeChannels[widget.posts.accountId],
+                      loadImages: widget.loadPostImages,
+                      onOpenMessages: widget.governance == null
+                          ? null
+                          : _openMessages,
+                      onOpenPersonal: _openPersonal,
+                      onOpenDirectMessages: _openDirectMessages,
+                      onManageIdentities: _openIdentity,
+                      onAuthenticationRequired: _openAuth,
+                    ),
+                    AppDestination.messages: (_) => widget.governance == null
+                        ? const Center(child: Text('系统通知暂时不可用'))
+                        : _notificationsScreen(),
+                    AppDestination.directMessages: (_) => widget.dm != null
+                        ? DmInboxRoute(
+                            key: ValueKey((
+                              _postWindow.value,
+                              _dmInboxRevision,
+                            )),
+                            runtime: widget.dm!,
+                            initialIdentity: _dmInitialIdentity,
+                            onManageIdentities: () =>
+                                _openIdentity(initialCreate: true),
+                          )
+                        : const DirectMessagesUnavailableScreen(),
+                    AppDestination.personal: (_) => _personalScreen(),
+                  },
+                ),
               );
             }
             return EntryScreen(
