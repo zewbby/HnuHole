@@ -38,6 +38,61 @@ Future<void> main(List<String> args) async {
         owner = fixture['ownerToken'] as String;
     final postId = fixture['postId'] as String,
         channelId = fixture['channelId'] as String;
+    step = 'identity_repost';
+    final identity = fixture['readerIdentityId'] as String;
+    final initialRepost = await api.postReposts(
+      sessionToken: reader,
+      postId: postId,
+    );
+    final reposted = await api.setPostRepost(
+      sessionToken: reader,
+      postId: postId,
+      identityId: identity,
+      reposted: true,
+      version: initialRepost.interactionVersion!,
+    );
+    check(reposted.value.contains(identity), step);
+    final archive = (await api.ownReposts(
+      sessionToken: reader,
+      limit: 1,
+    )).value;
+    check(
+      archive.items.length == 1 &&
+          archive.items.single.identityId == identity &&
+          archive.items.single.postId == postId &&
+          archive.items.single.post!.body.isNotEmpty,
+      step,
+    );
+    check(
+      (await api.ownReposts(sessionToken: owner)).value.items.isEmpty,
+      'repost_account_isolation',
+    );
+    await api.setPostRepost(
+      sessionToken: reader,
+      postId: postId,
+      identityId: identity,
+      reposted: false,
+      version: reposted.interactionVersion!,
+    );
+    try {
+      await api.setPostRepost(
+        sessionToken: reader,
+        postId: postId,
+        identityId: identity,
+        reposted: true,
+        version: initialRepost.interactionVersion!,
+      );
+      throw StateError('late_repost_accepted');
+    } on PostFailure catch (error) {
+      check(
+        error.code == 'INTERACTION_VERSION_CONFLICT',
+        'late_repost_rejected',
+      );
+    }
+    check(
+      (await api.ownReposts(sessionToken: reader)).value.items.isEmpty,
+      'repost_cancelled',
+    );
     step = 'preferences';
     check(
       (await api.feedPreferences(sessionToken: reader))

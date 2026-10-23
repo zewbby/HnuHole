@@ -960,6 +960,34 @@ void main() {
     await endpoint.close();
   });
 
+  test('personal collections share account scope and own posts carry identity selector', () async {
+    endpoint.respond = (r) => _json(r, 200, {
+      'items': r.uri.path == '/api/v1/me/posts'
+          ? [
+              {'post': _card(), 'serverSortAt': _time},
+            ]
+          : [_card()],
+      'nextCursor': null,
+    });
+    await api.ownPosts(sessionToken: _token, identityId: _other);
+    expect(endpoint.requests.last.uri.queryParameters['identityId'], _other);
+    for (final favorites in [false, true]) {
+      final result = await api.personalCollection(
+        sessionToken: _token,
+        favorites: favorites,
+      );
+      expect(result.value.items.single.postId, _id);
+      expect(
+        endpoint.requests.last.uri.path,
+        favorites ? '/api/v1/me/favorite-posts' : '/api/v1/me/liked-posts',
+      );
+      expect(
+        endpoint.requests.last.uri.queryParameters.containsKey('identityId'),
+        isFalse,
+      );
+    }
+  });
+
   test('all14 operations use fixed C origin, exact methods/DTOs and successful authority metadata', () async {
     endpoint.respond = (r) {
       final path = r.uri.path;

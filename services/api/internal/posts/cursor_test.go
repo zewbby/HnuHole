@@ -19,6 +19,8 @@ func TestScopedCursorEncryption(t *testing.T) {
 	positions := []CursorPosition{
 		{Scope: CursorFeed, AccountID: testID, Ceiling: 42, LastAt: now.Add(-time.Hour), LastOrdinal: 21, Limit: 20, ExpiresAt: now.Add(CursorTTL), FilterRevision: 3},
 		{Scope: CursorChannel, AccountID: testID, ChannelID: otherID, Ceiling: 42, LastAt: now.Add(-time.Hour), LastOrdinal: 21, Limit: 20, ExpiresAt: now.Add(CursorTTL)},
+		{Scope: CursorLiked, AccountID: testID, Ceiling: 42, LastAt: now.Add(-time.Hour), LastOrdinal: 21, Limit: 20, ExpiresAt: now.Add(CursorTTL)},
+		{Scope: CursorFavorites, AccountID: testID, Ceiling: 42, LastAt: now.Add(-time.Hour), LastOrdinal: 21, Limit: 20, ExpiresAt: now.Add(CursorTTL)},
 		{Scope: CursorOwn, AccountID: testID, Ceiling: 42, LastAt: now.Add(-time.Hour), LastOrdinal: 21, Limit: 20, ExpiresAt: now.Add(CursorTTL)},
 		{Scope: CursorTask, AccountID: testID, Ceiling: 42, LastAt: now.Add(-time.Hour), LastID: otherID, Limit: 20, ExpiresAt: now.Add(CursorTTL)},
 	}
@@ -42,6 +44,7 @@ func TestScopedCursorEncryption(t *testing.T) {
 			}
 			for _, mutate := range []func(*CursorPosition){
 				func(p *CursorPosition) { p.FilterRevision++ },
+				func(p *CursorPosition) { p.IdentityID = otherID },
 				func(p *CursorPosition) { p.AccountID = otherID }, func(p *CursorPosition) { p.Scope = "foreign" }, func(p *CursorPosition) { p.ChannelID = testID }, func(p *CursorPosition) { p.Limit = 50 },
 			} {
 				wrong := p

@@ -1,3 +1,5 @@
+import 'personal_collections_api.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -9,6 +11,7 @@ import '../auth/auth_crypto.dart';
 import 'post_api.dart';
 import 'feed_api.dart';
 import 'post_interactions_api.dart';
+import 'post_reposts_api.dart';
 import 'post_models.dart';
 import 'post_media_api.dart';
 import 'post_protocol.dart';
@@ -20,10 +23,18 @@ import 'package:crypto/crypto.dart' as hashes;
 part 'post_upload_http.dart';
 part 'feed_http.dart';
 part 'post_interactions_http.dart';
+part 'post_reposts_http.dart';
 
 /// 仅访问构造时固定的 C HTTPS origin，不跟随重定向或自动重送命令。
 class HttpPostApi
-    implements PostApi, PostMediaApi, FeedApi, PostInteractionsApi, DmApi {
+    implements
+        PersonalCollectionsApi,
+        PostApi,
+        PostMediaApi,
+        FeedApi,
+        PostInteractionsApi,
+        PostRepostsApi,
+        DmApi {
   HttpPostApi({
     required this.communityBaseUri,
     HttpClient? client,
@@ -46,6 +57,48 @@ class HttpPostApi
   final Duration timeout;
   final HttpClient _client;
   void close() => _client.close(force: true);
+
+  @override
+  Future<PostResponse<PostRepostSnapshot>> postReposts({
+    required String sessionToken,
+    required String postId,
+  }) => _repostRequest(sessionToken, postId);
+  @override
+  Future<PostResponse<PostRepostSnapshot>> setPostRepost({
+    required String sessionToken,
+    required String postId,
+    required String identityId,
+    required bool reposted,
+    required String version,
+  }) => _repostRequest(
+    sessionToken,
+    postId,
+    identity: identityId,
+    enabled: reposted,
+    version: version,
+  );
+  @override
+  Future<PostResponse<PostsPage<RepostedPost>>> ownReposts({
+    required String sessionToken,
+    String? cursor,
+    int limit = 20,
+  }) => _input(
+    () => _send(
+      sessionToken,
+      'GET',
+      '/api/v1/me/reposts',
+      query: _pageQuery(cursor, limit),
+      maxResponseBytes: 24 * 1024 * 1024,
+      decode: (raw) {
+        final page = PostsPage.fromJson(raw, RepostedPost.fromJson);
+        if (page.items.length > limit ||
+            page.items.map((i) => i.key).toSet().length != page.items.length) {
+          throw const FormatException('Invalid repost page');
+        }
+        return page;
+      },
+    ),
+  );
 
   @override
   Future<PostResponse<Map<String, dynamic>>> dmRequest(
@@ -489,16 +542,44 @@ class HttpPostApi
     ),
   );
   @override
-  Future<PostResponse<PostsPage<OwnPostCard>>> ownPosts({
+  Future<PostResponse<PostsPage<PostCard>>> personalCollection({
     required String sessionToken,
+    required bool favorites,
     String? cursor,
     int limit = 20,
   }) => _input(
     () => _send(
       sessionToken,
       'GET',
-      '/api/v1/me/posts',
+      favorites ? '/api/v1/me/favorite-posts' : '/api/v1/me/liked-posts',
       query: _pageQuery(cursor, limit),
+      maxResponseBytes: 2 * 1024 * 1024,
+      decode: (raw) {
+        final page = PostsPage.fromJson(raw, PostCard.fromJson);
+        if (page.items.length > limit) {
+          throw const FormatException('Invalid collection page size');
+        }
+        return page;
+      },
+    ),
+  );
+
+  @override
+  Future<PostResponse<PostsPage<OwnPostCard>>> ownPosts({
+    required String sessionToken,
+    String? cursor,
+    String? identityId,
+    int limit = 20,
+  }) => _input(
+    () => _send(
+      sessionToken,
+      'GET',
+      '/api/v1/me/posts',
+      query: {
+        ..._pageQuery(cursor, limit),
+        if (identityId != null)
+          'identityId': PostProtocol.resourceId(identityId),
+      },
       maxResponseBytes: 2 * 1024 * 1024,
       decode: (raw) {
         final page = PostsPage.fromJson(raw, OwnPostCard.fromJson);

@@ -17,6 +17,7 @@ import '../comments/comment_runtime.dart';
 import '../comments/comment_views.dart';
 import 'feed_api.dart';
 import 'post_controller.dart';
+import 'post_reposts_widgets.dart';
 import 'post_images.dart';
 import 'post_screens.dart';
 import 'x_feed.dart';
@@ -410,6 +411,9 @@ class _FeedScreenState extends State<FeedScreen> {
                   for (final post in posts) ...[
                     HhXPostItem(
                       key: ValueKey('post:${post.postId}'),
+                      repostAction: c.supportsReposts
+                          ? PostRepostButton(controller: c, postId: post.postId)
+                          : null,
                       post: FeedPostView(
                         id: post.postId,
                         authorId: '',

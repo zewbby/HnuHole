@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
+import 'package:hnuhole_mobile/src/posts/post_api.dart';
 import 'package:hnuhole_mobile/src/posts/post_images.dart';
 
 class _Authority extends ChangeNotifier {
@@ -83,6 +84,155 @@ void main() {
   Future<void> mount(WidgetTester tester, Widget child) async {
     await tester.pumpWidget(MaterialApp(home: Scaffold(body: child)));
     await frames(tester);
+  }
+
+  testWidgets('layout-time expiry safely reloads once without stuck loading', (
+    tester,
+  ) async {
+    final authority = _Authority();
+    final first = ValueNotifier(true), second = ValueNotifier(true);
+    final width = ValueNotifier(300.0);
+    var expireOnDecode = false, expired = false, reads = 0;
+    final oldImage = PostImage(
+      thumbnail: ordinary,
+      item: ViewerItem.provider(
+        id: 'layout-old',
+        provider: ordinary,
+        pixelSize: const Size(640, 480),
+      ),
+      registerDecodeProvider: (_) {
+        if (!expireOnDecode) return;
+        expired = true;
+        first.value = false;
+        first.notifyListeners(); // Duplicate notifications still share one reload.
+        // The real repository's held() check also rejects this stale decode.
+        throw const PostFailure(kind: PostFailureKind.unauthorized);
+      },
+    );
+    final fresh = group(
+      second,
+      images: [
+        PostImage(
+          thumbnail: ordinary,
+          item: ViewerItem.provider(
+            id: 'layout-fresh',
+            provider: ordinary,
+            pixelSize: const Size(640, 480),
+          ),
+        ),
+      ],
+    );
+    Future<PostImages> load(String _) async => ++reads == 1
+        ? PostImages(
+            postId: 'post-a',
+            images: [oldImage],
+            accessGranted: first,
+            isExpired: () => expired,
+          )
+        : fresh;
+    await mount(
+      tester,
+      ValueListenableBuilder<double>(
+        valueListenable: width,
+        builder: (_, value, _) => Center(
+          child: SizedBox(width: value, child: section(authority, load)),
+        ),
+      ),
+    );
+    expect(reads, 1);
+    expireOnDecode = true;
+    width.value = 280;
+    await tester.pump();
+    await frames(tester);
+    expect(tester.takeException(), isNull);
+    expect(reads, 2);
+    expect(first.value, isFalse);
+    expect(second.value, isTrue);
+    expect(
+      find.byKey(const ValueKey(('post-image', 'layout-fresh'))),
+      findsOneWidget,
+    );
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    authority.dispose();
+    first.dispose();
+    second.dispose();
+    width.dispose();
+  });
+
+  for (final cancelledBy in ['dispose', 'authority change']) {
+    testWidgets('queued expiry reload is cancelled by $cancelledBy', (
+      tester,
+    ) async {
+      final authority = _Authority(), access = ValueNotifier(true);
+      var expired = false, reads = 0;
+      final media = group(access);
+      Future<PostImages> load(String _) async {
+        reads++;
+        return PostImages(
+          postId: media.postId,
+          images: media.images,
+          accessGranted: access,
+          isExpired: () => expired,
+        );
+      }
+
+      await mount(tester, section(authority, load));
+      expired = true;
+      access.value = false;
+      if (cancelledBy == 'authority change') authority.revoke();
+      await tester.pumpWidget(const SizedBox());
+      await frames(tester);
+      expect(reads, 1);
+      expect(tester.takeException(), isNull);
+      authority.dispose();
+      access.dispose();
+    });
+  }
+
+  for (final status in [403, 404]) {
+    testWidgets(
+      'natural expiry closes its viewer and a fresh denial $status never loops',
+      (tester) async {
+        final authority = _Authority(), access = ValueNotifier(true);
+        var expired = false, reads = 0;
+        final media = group(access);
+        Future<PostImages> load(String _) async {
+          if (++reads > 1) {
+            throw PostFailure(
+              kind: PostFailureKind.rejected,
+              statusCode: status,
+            );
+          }
+          return PostImages(
+            postId: media.postId,
+            images: media.images,
+            accessGranted: access,
+            isExpired: () => expired,
+          );
+        }
+
+        await mount(tester, section(authority, load));
+        await tester.tap(
+          find.byKey(const ValueKey(('post-image', 'ordinary-v1'))),
+        );
+        await frames(tester);
+        expect(find.byType(HnuImageViewer), findsOneWidget);
+        expired = true;
+        access.value = false;
+        await frames(tester);
+        expect(reads, 2);
+        expect(find.byType(HnuImageViewer), findsNothing);
+        expect(find.text('图片暂时无法读取'), findsOneWidget);
+        await tester.pump(const Duration(minutes: 2));
+        await frames(tester);
+        expect(reads, 2);
+        expect(access.value, isFalse);
+        await tester.pumpWidget(const SizedBox());
+        authority.dispose();
+        access.dispose();
+      },
+    );
   }
 
   testWidgets('detail count mismatch releases the rejected host lease', (

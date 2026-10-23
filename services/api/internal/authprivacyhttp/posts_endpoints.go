@@ -31,17 +31,18 @@ type FeedPreferenceBackend interface {
 }
 
 type postRoute struct {
-	kind      authprivacy.PostReadKind
-	id        string
-	operation posts.Operation
-	command   bool
-	seal      bool
-	methods   string
-	preview   bool
-	limit     int
-	version   int32
-	ids       []string
-	enabled   *bool
+	repostIdentity string
+	kind           authprivacy.PostReadKind
+	id             string
+	operation      posts.Operation
+	command        bool
+	seal           bool
+	methods        string
+	preview        bool
+	limit          int
+	version        int32
+	ids            []string
+	enabled        *bool
 }
 
 func (route postRoute) allows(method string) bool {
@@ -54,7 +55,10 @@ func (route postRoute) allows(method string) bool {
 }
 
 func isPostPath(path string) bool {
-	for _, prefix := range []string{"/api/v1/post-commands", "/api/v1/me/post-tasks", "/api/v1/me/posts", "/api/v1/me/post-composer-context", "/api/v1/posts", "/api/v1/feed", "/api/v1/me/feed-preferences"} {
+	if path == "/api/v1/me/reposts" {
+		return true
+	}
+	for _, prefix := range []string{"/api/v1/post-commands", "/api/v1/me/post-tasks", "/api/v1/me/posts", "/api/v1/me/post-composer-context", "/api/v1/posts", "/api/v1/feed", "/api/v1/me/feed-preferences", "/api/v1/me/liked-posts", "/api/v1/me/favorite-posts"} {
 		if path == prefix || strings.HasPrefix(path, prefix+"/") {
 			return true
 		}
@@ -63,10 +67,19 @@ func isPostPath(path string) bool {
 }
 
 func parsePostRoute(path string) (postRoute, error) {
+	if path == "/api/v1/me/reposts" {
+		return postRoute{kind: authprivacy.PostRepostList, methods: "GET"}, nil
+	}
 	if !strings.HasPrefix(path, "/api/v1/") {
 		return postRoute{}, errMalformed
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
+	if len(parts) == 3 && parts[0] == "posts" && parts[2] == "repost" {
+		if _, err := posts.ParseResourceID(parts[1]); err != nil {
+			return postRoute{}, errMalformed
+		}
+		return postRoute{kind: authprivacy.PostRepostState, id: parts[1], methods: "GET, PUT"}, nil
+	}
 	if len(parts) == 2 && parts[0] == "feed" && parts[1] == "interactions" {
 		return postRoute{kind: authprivacy.PostInteractionBatch, methods: "POST"}, nil
 	}
@@ -93,6 +106,10 @@ func parsePostRoute(path string) (postRoute, error) {
 			return postRoute{kind: authprivacy.PostComposerContext, methods: "GET"}, nil
 		case "post-tasks":
 			return postRoute{kind: authprivacy.PostTaskList, methods: "GET"}, nil
+		case "liked-posts":
+			return postRoute{kind: authprivacy.PostLikedList, methods: "GET"}, nil
+		case "favorite-posts":
+			return postRoute{kind: authprivacy.PostFavoriteList, methods: "GET"}, nil
 		case "posts":
 			return postRoute{kind: authprivacy.PostOwnList, methods: "GET"}, nil
 		}
@@ -159,7 +176,10 @@ func parsePostRoute(path string) (postRoute, error) {
 }
 
 func postListKind(kind authprivacy.PostReadKind) bool {
-	return kind == authprivacy.PostTaskList || kind == authprivacy.PostChannelFeed || kind == authprivacy.PostOwnList || kind == authprivacy.PostFeed
+	if kind == authprivacy.PostRepostList {
+		return true
+	}
+	return kind == authprivacy.PostTaskList || kind == authprivacy.PostChannelFeed || kind == authprivacy.PostOwnList || kind == authprivacy.PostLikedList || kind == authprivacy.PostFavoriteList || kind == authprivacy.PostFeed
 }
 
 func allowsPostListQuery(r *http.Request) bool {
@@ -205,7 +225,7 @@ func (b *boundary) communityPostsPublic(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 	command := ""
-	if route.command || route.seal || r.Method == http.MethodGet || route.kind == authprivacy.PostViewRecord || route.kind == authprivacy.PostFeedPreferences || isPostInteractionKind(route.kind) {
+	if route.command || route.seal || r.Method == http.MethodGet || route.kind == authprivacy.PostViewRecord || route.kind == authprivacy.PostFeedPreferences || isPostInteractionKind(route.kind) || isRepostKind(route.kind) {
 		if hasHeader(r.Header, "Idempotency-Key") {
 			b.postBad(w, errMalformed)
 			return
@@ -223,6 +243,13 @@ func (b *boundary) communityPostsPublic(w http.ResponseWriter, r *http.Request, 
 	}
 	if backend == nil {
 		b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+		return
+	}
+	if isRepostKind(route.kind) {
+		if r.Method == http.MethodPut {
+			route.kind = authprivacy.PostRepostSet
+		}
+		b.communityPostReposts(w, r, backend, bearer, route)
 		return
 	}
 	if isPostInteractionKind(route.kind) {
@@ -370,6 +397,11 @@ func postReadQuery(r *http.Request, route postRoute) (authprivacy.PostQuery, err
 			return query, errMalformed
 		}
 		switch name {
+		case "identityId":
+			if route.kind != authprivacy.PostOwnList || !postValidID(items[0]) {
+				return query, errMalformed
+			}
+			query.IdentityID = items[0]
 		case "channelId":
 			if route.kind != authprivacy.PostFeed || !postValidID(items[0]) {
 				return query, errMalformed
@@ -672,7 +704,7 @@ func (b *boundary) writePostResponse(w http.ResponseWriter, response authprivacy
 		return
 	}
 	if response.InteractionVersion != "" && route.kind != authprivacy.PostInteractionBatch {
-		if !posts.ValidInteractionVersion(response.InteractionVersion) || !isPostInteractionKind(route.kind) {
+		if !posts.ValidInteractionVersion(response.InteractionVersion) || !(isPostInteractionKind(route.kind) || isRepostKind(route.kind) && route.kind != authprivacy.PostRepostList) {
 			b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
 			return
 		}
@@ -686,6 +718,9 @@ func (b *boundary) writePostResponse(w http.ResponseWriter, response authprivacy
 
 // 先限定实际 DTO 类型再校验内容，不能把 backend 的任意 row/map 直接序列化。
 func strictPostValue(value any, route postRoute) (any, error) {
+	if isRepostKind(route.kind) {
+		return strictRepostValue(value, route)
+	}
 	if route.command || route.seal || route.operation.Valid() {
 		result, ok := value.(posts.CommandResult)
 		if p, yes := value.(*posts.CommandResult); yes && p != nil {
@@ -798,7 +833,7 @@ func strictPostValue(value any, route postRoute) (any, error) {
 			}
 		}
 		return result, nil
-	case authprivacy.PostChannelFeed:
+	case authprivacy.PostChannelFeed, authprivacy.PostLikedList, authprivacy.PostFavoriteList:
 		result, ok := value.(posts.FeedPage)
 		if p, yes := value.(*posts.FeedPage); yes && p != nil {
 			result, ok = *p, true
@@ -807,7 +842,7 @@ func strictPostValue(value any, route postRoute) (any, error) {
 			return nil, errMalformed
 		}
 		for _, post := range result.Items {
-			if post.ChannelID != route.id || !validPublicPostCard(post) {
+			if route.kind == authprivacy.PostChannelFeed && post.ChannelID != route.id || !validPublicPostCard(post) {
 				return nil, errMalformed
 			}
 		}

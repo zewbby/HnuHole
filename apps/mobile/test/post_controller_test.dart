@@ -338,6 +338,7 @@ class _Api implements PostApi {
   Future<PostResponse<PostsPage<OwnPostCard>>> ownPosts({
     required String sessionToken,
     String? cursor,
+    String? identityId,
     int limit = 20,
   }) async {
     ownCursors.add(cursor);
@@ -563,40 +564,34 @@ void main() {
   late _Fixture f;
   tearDown(() async => f.close());
 
-  test('personal reads start together and content appears before identity finishes', () async {
+  test('personal own query waits for selected identity', () async {
     final api = _Api()..ownWait = Completer();
     f = await _Fixture.create(api: api);
     f.auth.api.readWait = Completer();
     final load = f.controller.loadPersonal();
-    await _until(() => api.ownCursors.isNotEmpty);
-    expect(api.personalTaskReads, 1);
-    expect(f.auth.api.readStarted.isCompleted, isTrue);
+    await _until(() => f.auth.api.readStarted.isCompleted);
+    expect(api.ownCursors, isEmpty);
     expect(f.controller.personalLoading, isTrue);
-    api.ownWait!.complete(api.reply(PostsPage(items: [], nextCursor: null)));
-    await _until(() => !f.controller.personalLoading);
-    expect(f.controller.personalItems, isNotEmpty);
-    expect(f.controller.personalIdentity, isNull);
     f.auth.api.readWait!.complete(f.auth.api.directory());
+    await _until(() => api.ownCursors.isNotEmpty);
+    api.ownWait!.complete(api.reply(PostsPage(items: [], nextCursor: null)));
     await load;
     expect(f.controller.personalIdentity, isNotNull);
     expect(api.composerReads, 0);
   });
 
-  test('empty personal content does not wait for profile; profile failure stays separate', () async {
+  test('profile failure does not request unscoped own posts', () async {
     final api = _Api()..currentTask = _task(state: PostTaskState.cancelled);
     f = await _Fixture.create(api: api);
     f.auth.api.readWait = Completer();
     final load = f.controller.loadPersonal();
-    await _until(
-      () => f.auth.api.readStarted.isCompleted && !f.controller.personalLoading,
-    );
-    expect(f.controller.personalLoading, isFalse);
-    expect(f.controller.personalItems, isEmpty);
+    await _until(() => f.auth.api.readStarted.isCompleted);
     f.auth.api.readWait!.completeError(
       const AuthFailure(kind: AuthFailureKind.timeout),
     );
     await load;
-    expect(f.controller.personalError, isNull);
+    expect(api.ownCursors, isEmpty);
+    expect(f.controller.personalItems, isEmpty);
     expect(f.controller.personalProfileError, isNotNull);
     expect(f.controller.available, isTrue);
   });
@@ -611,12 +606,8 @@ void main() {
         f = await _Fixture.create();
         f.auth.api.readWait = Completer();
         final load = f.controller.loadPersonal();
-        await _until(
-          () =>
-              f.auth.api.readStarted.isCompleted &&
-              !f.controller.personalLoading,
-        );
-        expect(f.controller.personalItems, isNotEmpty);
+        await _until(() => f.auth.api.readStarted.isCompleted);
+        expect(f.controller.personalLoading, isTrue);
         f.auth.api.readWait!.completeError(AuthFailure(kind: kind));
         await load;
         expect(f.controller.available, isFalse);
@@ -626,15 +617,15 @@ void main() {
     );
   }
 
-  test('non-original profile context does not block content; paging never rereads profile', () async {
+  test('non-original identity resolves before content; paging never rereads profile', () async {
     final api = _Api()..ownCursor = 'next';
     f = await _Fixture.create(api: api);
     f.auth.api.items = [identityTestItem(original: false)];
     api.composerWait = Completer();
     final load = f.controller.loadPersonal();
-    await _until(() => api.composerReads == 1 && !f.controller.personalLoading);
-    expect(f.controller.personalLoading, isFalse);
-    expect(f.controller.personalItems, isNotEmpty);
+    await _until(() => api.composerReads == 1);
+    expect(f.controller.personalLoading, isTrue);
+    expect(api.ownCursors, isEmpty);
     api.composerWait!.complete(
       api.reply(
         const ComposerContext(
@@ -652,14 +643,12 @@ void main() {
     expect(api.ownCursors.last, 'next');
   });
 
-  test('pagination does not cancel a pending profile decoration', () async {
+  test('pagination waits for a pending identity selection', () async {
     final api = _Api()..ownCursor = 'next';
     f = await _Fixture.create(api: api);
     f.auth.api.readWait = Completer();
     final first = f.controller.loadPersonal();
-    await _until(
-      () => f.auth.api.readStarted.isCompleted && !f.controller.personalLoading,
-    );
+    await _until(() => f.auth.api.readStarted.isCompleted);
     await f.controller.loadPersonal(more: true);
     expect(f.controller.personalProfileLoading, isTrue);
     f.auth.api.readWait!.complete(f.auth.api.directory());

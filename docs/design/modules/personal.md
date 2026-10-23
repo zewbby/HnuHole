@@ -1,5 +1,13 @@
 # 个人内容与设置
 
+> **2026-10-24 PERSONAL-REPOST-INTEGRATION-01（PR68，最终UI）：**已提交推送至[PR #68](https://github.com/zewbby/HnuHole/pull/68)，未合并／发布。个人页左上 `:)`、私信同款身份按钮、五栏目及私人转帖完成；按用户最新定稿移除心情气泡与编辑入口。全页及弹层跟随全局深浅主题。Astra High最终2326深浅真机图审查PASS（非GitHub成员批准）；真实C/V HTTPS＋一次性SQL的归档、精确移除、分页、不可用原帖与账号切换限定验收PASS。最新5项个人页/转帖测试、分析0通过；验收产品版本e404f85远端12工作流／21作业全部PASS，Flutter全量879 PASS／3既有fixture SKIP；文档补录未改变产品文件。见[最终交接](../../branches/personal-reposts-integration.md)。
+
+
+> **2026-10-23 PERSONAL-PROFILE-MOOD-01 初版历史：**`feat/personal-profile-mood` 已实现个人页与五栏缩放动画、头像旁身份切换、按身份的帖子／回复／心情、账号共享的喜欢／收藏列表。155项Flutter测试、分析0、3项真实SQL、9项契约测试及Android ARM64调试包构建PASS；转帖真实能力按用户要求延期到另会话。未提交／合并／发布，设备验收NOT_RUN。见[任务记录](../../branches/feat-personal-profile-mood.md)。
+
+> 本轮用户确认的新个人页规则覆盖下方历史双列／双页签布局，历史验收结果保留原证明范围。
+
+
 > **2026-10-23主线回执：**[PR #57](https://github.com/zewbby/HnuHole/pull/57)已合并main `1686a06`；“我的”渐进加载与栏目往返保留状态完成真我2303限定验收。下方“未合并”为历史快照，完整模块结论不提升，见[任务](../../branches/fix-mobile-navigation-refresh.md)。
 
 > **2026-10-23 MOBILE-NAV-REFRESH-01（本地实现／未合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；系统录屏失败，切换瞬间重影及帧性能尚未确认，用户验收PENDING。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。

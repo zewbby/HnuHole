@@ -69,7 +69,7 @@ DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_commu
 		}
 	}
 	if _, err = tx.Exec(ctx, `CREATE TABLE public.goose_db_version(version_id bigint,is_applied boolean);
-INSERT INTO public.goose_db_version VALUES(25,true);
+INSERT INTO public.goose_db_version VALUES(26,true);
 REVOKE CREATE,TEMP ON DATABASE hnuhole_c FROM PUBLIC,hnuhole_c_runtime`); err != nil {
 		t.Fatal(err)
 	}

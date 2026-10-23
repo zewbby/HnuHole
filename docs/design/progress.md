@@ -1,5 +1,10 @@
 # 设计进度与剩余工作
 
+> **2026-10-24 PERSONAL-REPOST-INTEGRATION-01（PR68，最终UI）：**已提交推送至[PR #68](https://github.com/zewbby/HnuHole/pull/68)，未合并／发布。个人页左上 `:)`、私信同款身份按钮、五栏目及私人转帖完成；按用户最新定稿移除心情气泡与编辑入口。全页及弹层跟随全局深浅主题。Astra High最终2326深浅真机图审查PASS（非GitHub成员批准）；真实C/V HTTPS＋一次性SQL的归档、精确移除、分页、不可用原帖与账号切换限定验收PASS。最新5项个人页/转帖测试、分析0通过；验收产品版本e404f85远端12工作流／21作业全部PASS，Flutter全量879 PASS／3既有fixture SKIP；文档补录未改变产品文件。见[最终交接](../branches/personal-reposts-integration.md)。
+
+
+> **2026-10-23 PERSONAL-PROFILE-MOOD-01 初版历史：**`feat/personal-profile-mood` 已实现个人页与五栏缩放动画、头像旁身份切换、按身份的帖子／回复／心情、账号共享的喜欢／收藏列表。155项Flutter测试、分析0、3项真实SQL、9项契约测试及Android ARM64调试包构建PASS；转帖真实能力按用户要求延期到另会话。未提交／合并／发布，设备验收NOT_RUN。见[任务记录](../branches/feat-personal-profile-mood.md)。
+
 > **2026-10-24 FEED-REFRESH-CANCEL-01（已合并PR #69）：**[PR #69](https://github.com/zewbby/HnuHole/pull/69) Squash进入main `4933bff`，最终head `217bd4e` 的15项CI全部成功，main产品差异与已测版本为空。按参考视频改为 `:)` 字形内部深色高亮循环，移除外部圆弧；刷新按松手时剩余拉伸判断，同次回滑不进入纯享模式，长拉不积累不可见取消距离。最终聚焦17项、此前相关信息流／导航74项、分析0及Flutter bundle通过，vivo2402已安装，原环境恢复后用户确认可以并授权合并（未逐项记录设备手势矩阵）；B03／B06／B10原整模块结论不变。见[修复记录](../branches/fix-feed-refresh-cancel.md)。
 
 > **PR66最终整合：**已保留PR65/67主线沉浸阅读、颜文字刷新与头像，启动五栏骨架安全区域回归通过；全量852 PASS／3外部fixture SKIP，分析0，独立整合复审无阻断。等待最终head CI与Squash合并，先前16项CI PASS属于2592ea0历史版本，未发布。

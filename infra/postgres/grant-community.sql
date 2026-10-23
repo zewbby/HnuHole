@@ -158,6 +158,15 @@ DO $$ BEGIN
  END IF;
 END $$;
 
+-- 0026 private repost writes and account/identity lifecycle cleanup.
+DO $$ BEGIN
+ IF to_regclass('c_posts.post_reposts') IS NOT NULL THEN
+  GRANT SELECT,INSERT,DELETE ON c_posts.post_reposts,c_posts.post_repost_versions TO hnuhole_c_runtime;
+  GRANT UPDATE(version) ON c_posts.post_repost_versions TO hnuhole_c_runtime;
+  GRANT USAGE ON SEQUENCE c_posts.post_reposts_ordinal_seq TO hnuhole_c_runtime;
+ END IF;
+END $$;
+
 -- 0024 cleanup must remain possible with DM HTTP disabled. No send/report insert.
 DO $$ BEGIN
  IF to_regclass('c_dm.blocks') IS NOT NULL THEN

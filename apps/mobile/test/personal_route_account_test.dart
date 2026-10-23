@@ -44,10 +44,11 @@ void main() {
         await tester.pumpAndSettle();
         f.identitiesApi.readWait = Completer();
         await tester.tap(find.byKey(const ValueKey('feed-account')));
-        await tester.pumpAndSettle();
-        expect(find.text('还没有自己的帖子'), findsOneWidget);
-        final heading = tester.getTopLeft(find.text('自己的帖子'));
-        final empty = tester.getTopLeft(find.text('还没有自己的帖子'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 350));
+        expect(find.bySemanticsLabel('正在加载自己的帖子'), findsOneWidget);
+        final heading = tester.getTopLeft(find.text('帖子'));
+        final empty = tester.getTopLeft(find.byType(CustomScrollView).last);
         if (fail) {
           f.identitiesApi.readWait!.completeError(
             const AuthFailure(kind: AuthFailureKind.timeout),
@@ -56,8 +57,9 @@ void main() {
           f.identitiesApi.readWait!.complete(f.identitiesApi.directory());
         }
         await tester.pumpAndSettle();
-        expect(tester.getTopLeft(find.text('自己的帖子')), heading);
-        expect(tester.getTopLeft(find.text('还没有自己的帖子')), empty);
+        expect(tester.getTopLeft(find.text('帖子')), heading);
+        expect(tester.getTopLeft(find.byType(CustomScrollView).last), empty);
+        expect(find.text('还没有自己的帖子'), findsOneWidget);
         expect(find.text(fail ? '个人资料暂不可用' : '账号A的身份'), findsOneWidget);
         await tester.pumpWidget(const SizedBox.shrink());
         await tester.pump();

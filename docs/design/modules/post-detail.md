@@ -1,5 +1,11 @@
 # 帖子详情
 
+## POST-REPOST-01 最新规则（2026-10-23）
+
+首页与详情提供独立“转帖”入口，明确选择本人发言身份，已转帖身份可以取消。转帖仅加入本人私人归档，不进入他人信息流，不改变原帖作者／正文／图片，不创建新帖或绑定评论身份；复制链接、系统分享与收藏均不调用转帖写入接口。本次不实现引用评论式转帖或公开个人主页。
+
+保存成功以服务器真实响应为准；未确认结果显示待核对，重复点击和重试沿用条件版本，旧创建不得覆盖已取消结果。首页、详情和私人归档共用同一 controller；退出、会话失效与账号切换清空状态并拒绝旧页面操作。详见[接线契约](../post-reposts-contract.md)、[分支与验证范围](../../branches/feat-post-reposts.md)。个人页整合分支已提交推送至[PR #68](https://github.com/zewbby/HnuHole/pull/68)，限定Android真实HTTPS/SQL及双主题验收PASS，未合并／生产部署；最新范围见[整合交接](../../branches/personal-reposts-integration.md)。
+
 > **2026-10-23主线回执：**[PR #57](https://github.com/zewbby/HnuHole/pull/57)已合并main `1686a06`；开发C缩略图与真我2303预览／原图、GIF/WebP原字节保存完成限定验证。下方“未合并／未部署”为历史快照；生产未部署，见[任务](../../branches/fix-mobile-navigation-refresh.md)。
 
 > **2026-10-23 MOBILE-NAV-REFRESH-01（本地实现／未合并）：**列表与详情预览共用受保护媒体仓库；新增有界闲置缓存和按需缩略图，列表先按feed尺寸预留布局。动图预览标注“动图”，点击及保存继续使用完整原格式；到期／退出／删帖按原租约撤销。此扩展尚未部署或真机验收，见[任务与证据](../../branches/fix-mobile-navigation-refresh.md)。
