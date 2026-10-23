@@ -249,14 +249,10 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
               ],
             ),
           ),
-        for (
-          var slot = widget.identities.length;
-          slot < IdentityDirectory.maximumIdentities;
-          slot++
-        )
+        if (widget.identities.length < IdentityDirectory.maximumIdentities)
           PopupMenuItem<String>(
-            key: ValueKey('inbox-add-identity:$slot'),
-            value: '@add:$slot',
+            key: const ValueKey('inbox-add-identity'),
+            value: '@add',
             enabled: widget.onAddIdentity != null,
             height: 56,
             child: Semantics(
@@ -272,7 +268,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
     if (!mounted) return;
     setState(() => _identityMenuOpen = false);
     if (epoch != _epoch || chosen == null) return;
-    if (chosen.startsWith('@add:')) {
+    if (chosen == '@add') {
       widget.onAddIdentity?.call();
     } else {
       final identity = widget.identities

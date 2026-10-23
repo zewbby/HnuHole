@@ -84,7 +84,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('切换身份'), findsNothing);
-    expect(find.byKey(const ValueKey('inbox-add-identity:2')), findsNothing);
+    expect(find.byKey(const ValueKey('inbox-add-identity')), findsNothing);
     expect(additions, 0);
     expect(tester.takeException(), isNull);
   });
@@ -154,7 +154,7 @@ void main() {
   }
 
   testWidgets(
-    'compact dropdown mirrors content, fills slots and opens add flow',
+    'compact dropdown mirrors content and places one add row after identities',
     (tester) async {
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1;
@@ -190,14 +190,19 @@ void main() {
       await tester.tap(trigger);
       await tester.pumpAndSettle();
       expect(tester.testTextInput.isVisible, isFalse);
+      expect(find.byKey(const ValueKey('inbox-add-identity')), findsOneWidget);
+      expect(find.byIcon(Icons.add_rounded), findsOneWidget);
+      final addRow = find.byKey(const ValueKey('inbox-add-identity'));
       expect(
-        find.byKey(const ValueKey('inbox-add-identity:1')),
-        findsOneWidget,
+        tester.getRect(addRow).top,
+        closeTo(
+          tester
+              .getRect(find.byKey(const ValueKey('inbox-identity:self')))
+              .bottom,
+          1,
+        ),
       );
-      expect(
-        find.byKey(const ValueKey('inbox-add-identity:2')),
-        findsOneWidget,
-      );
+      expect(tester.getSize(addRow).height, inInclusiveRange(48, 56));
       expect(
         tester.getTopLeft(find.byKey(const ValueKey('inbox-identity:self'))).dy,
         greaterThan(tester.getBottomLeft(trigger).dy),
@@ -206,7 +211,7 @@ void main() {
         tester.getRect(find.byKey(const ValueKey('inbox-identity:self'))).right,
         closeTo(tester.getRect(trigger).right, 1),
       );
-      await tester.tap(find.byKey(const ValueKey('inbox-add-identity:1')));
+      await tester.tap(addRow);
       await tester.pumpAndSettle();
       expect(additions, 1);
     },

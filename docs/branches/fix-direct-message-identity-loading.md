@@ -66,3 +66,9 @@
 - `flutter analyze --no-pub`：0 issues；同既有渲染命令输出 `r3/` 收起与展开图：1 PASS，不覆盖r2。
 
 本轮日志在原证据目录 `r3/` 下：`root-integration-test.log`、`navigation-integration-tests.log`、`single-line-alignment-test.log`、`analyze.log`、`render-test.log`。最终2310构建、独立review及新增布局／入口设备回执由主会话继续；PR精确head CI与合并回执由提交代理更新，当前未合并／发布。
+
+## 最新菜单简化：只保留一个添加入口
+
+用户看图后明确取消补齐三个名额空槽的旧要求。现仅在身份数小于现有上限时展示一条56dp“蓝色+”添加行，紧接最后一个身份项；满额不显示。名称、单行布局、右对齐和原创建权限／冷却约束不变。2310已经主会话构建并安装vivo，但该包仍为旧双加号，最新单加号候选由主会话构建2311。
+
+只复测 `direct_message_navigation_test.dart` 中 `compact dropdown mirrors content and places one add row after identities` 与 `full identity menu has no add slot and stale scope dismisses it`：2 PASS；验证只存在一个+、紧邻最后身份、点击区48–56dp和满额不显示。实际组件渲染1 PASS，另存 `r4/` 两图与 `single-add-test.log`、`render-test.log`，不覆盖前版。未重复37项／整合7项／全量分析；旧结论保留原源码范围。
