@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-23 AUTH-STARTUP-FLASH-01：**仅修视频中的启动错误页闪现，starting/restoring期间保持欢迎页；21项入口／导航回归PASS、分析0。本地未提交／合并／安装，其他任务整合版不改。见[任务](../branches/fix-auth-startup-flash.md)。
+
 > **2026-10-23 主线状态：**P2 [#51](https://github.com/zewbby/HnuHole/pull/51) 已合并 `988bb42045f4140c46cf9e890d985a774d033e16`，P3 [#52](https://github.com/zewbby/HnuHole/pull/52) 已合并 `665291cdf312dec94fb11a75527524a821c5f008`；精确 head CI 和独立整合审查通过，main 保留认证反馈 #53。限定验收不扩大，设备补验 [#55](../branches/test-direct-message-device-recovery.md) 的真实掉电仍 NOT_RUN，P3 原生 SKIP／远程推送未实现、iOS／规模／生产未验，未部署／发布。下方为历史阶段记录。
 
 > **2026-10-23 AUTH-FEEDBACK-01 已合并：**用户确认弹窗缩放效果；[PR #53](https://github.com/zewbby/HnuHole/pull/53)经认证Flutter CI、Android候选/rehearsal及受影响移动端产品CI通过后Squash合入main，提交`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`。2306限定64项回归、分析0、同签真我覆盖安装／启动PASS。真机帧性能未测、未发布；下方认证送审／待验文字为历史阶段快照。见[任务记录](../branches/fix-auth-feedback.md)。

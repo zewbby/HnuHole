@@ -888,6 +888,9 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             }
             return EntryScreen(
               directory: widget.directory,
+              restoringSession:
+                  widget.sessions.status == AuthStatus.starting ||
+                  widget.sessions.status == AuthStatus.restoring,
               onLoginRequested: _openAuth,
               onMessagesPressed: widget.governance == null
                   ? null
