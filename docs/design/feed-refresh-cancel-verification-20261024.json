@@ -1,0 +1,229 @@
+{
+  "task": "FEED-REFRESH-CANCEL-01",
+  "date": "2026-10-24",
+  "branch": "codex/fix/feed-refresh-cancel",
+  "base": "cda337c43cf5d0e5793351577f7054ec552fb6d5",
+  "implementation": "MERGED_MAIN_PR69",
+  "modules": [
+    "B03",
+    "B06",
+    "B10"
+  ],
+  "moduleVerdictsUnchanged": true,
+  "baselineReproduction": {
+    "status": "FAIL_EXPECTED",
+    "detail": "Long-feed armed pull reversal hid header (heightFactor 0 rather than 1). Empty-list companion passed.",
+    "log": "E:/Hnuhole-env/feed-refresh-cancel-20261024/baseline-tests.log"
+  },
+  "checks": [
+    {
+      "command": "flutter test --no-pub test/feed_scroll_refresh_test.dart test/app_navigation_test.dart --reporter expanded",
+      "status": "PASS",
+      "passed": 17,
+      "log": "final-focused.log"
+    },
+    {
+      "command": "flutter test --no-pub test/feed_ui_test.dart test/feed_interactions_test.dart test/feed_media_test.dart test/login_home_navigation_test.dart test/talkback_semantics_test.dart --concurrency 2 --reporter expanded",
+      "status": "PASS",
+      "passed": 74,
+      "scope": "Before final glyph alpha / maximum pull clamp refinement; final affected tests rerun in focused suite.",
+      "log": "regressions.log"
+    },
+    {
+      "command": "flutter analyze --no-pub",
+      "status": "PASS",
+      "issues": 0,
+      "log": "analyze-final.log"
+    },
+    {
+      "command": "flutter build bundle --debug --no-pub",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "bundle-final.log"
+    }
+  ],
+  "logDirectory": "E:/Hnuhole-env/feed-refresh-cancel-20261024",
+  "device": "NOT_RUN",
+  "remoteCI": {
+    "status": "PASS",
+    "testedHead": "217bd4e0812ff31620eef3db315ce63df3a3af79",
+    "checks": [
+      {
+        "name": "rehearsal",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893002/job/120535304259"
+      },
+      {
+        "name": "candidate",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893002/job/120535304233"
+      },
+      {
+        "name": "moderation-postgres",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893165/job/120535201074"
+      },
+      {
+        "name": "go-postgres",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988892928/job/120535199545"
+      },
+      {
+        "name": "avatar-postgres-https",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893109/job/120535199514"
+      },
+      {
+        "name": "flutter",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988892928/job/120535199495"
+      },
+      {
+        "name": "policy",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893146/job/120535199418"
+      },
+      {
+        "name": "flutter-and-real-feed",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893180/job/120535199302"
+      },
+      {
+        "name": "reliable-chat-sql",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988892913/job/120535199270"
+      },
+      {
+        "name": "flutter-auth-regression",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893064/job/120535199254"
+      },
+      {
+        "name": "avatar-flutter",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893109/job/120535199217"
+      },
+      {
+        "name": "admin",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893165/job/120535199064"
+      },
+      {
+        "name": "go-host",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988892928/job/120535198947"
+      },
+      {
+        "name": "flutter-and-android",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988892913/job/120535198856"
+      },
+      {
+        "name": "scope",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39988893002/job/120535198597"
+      }
+    ]
+  },
+  "independentReview": "NOT_RUN",
+  "published": false,
+  "hashes": {
+    "apps/mobile/lib/src/posts/feed_refresh.dart": "8458e90340bbd42d8590fdbdf816160a8c6fabf0c05cc6acce6c2dddcc3f3385",
+    "apps/mobile/test/feed_scroll_refresh_test.dart": "bcaec10a739f38caa5fbe3cdd1adc829a60fc719656261440d8f75cc0623a733"
+  },
+  "deviceInstallation": {
+    "serial": "10CEAG17RY003M7",
+    "model": "vivo V2323A",
+    "versionCode": 2026102401,
+    "versionName": "0.1.0-feed-refresh-cancel",
+    "apkSha256": "80c5bd7bc04498382092913eedb830b0e4f21ea4a5d5688518f3705c342c0bcb",
+    "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+    "install": "PASS_ADB_INSTALL_R_SUCCESS",
+    "previousMainPackage": "NOT_PRESENT",
+    "dataCleared": false,
+    "launch": "AM_START_SUCCESS",
+    "backendReadiness": "C_AND_V_STRICT_TLS_200",
+    "developmentEnvironment": "existing personal-reposts-device-20261023",
+    "usbReversePorts": [
+      28463,
+      28464
+    ],
+    "userGestureAcceptance": "PENDING"
+  },
+  "loginEnvironmentCorrection": {
+    "reason": "2401 connected to independent personal-reposts test environment; not the original account environment",
+    "versionCode": 2026102402,
+    "apkSha256": "f23e63a4970936d49f417e6fcc86723a982a64d1b8dacd2c3ff9785136799113",
+    "originalDatabaseStartup": "PASS_EXISTING_DATA",
+    "originalAccountCount": 14,
+    "originalC": "FROZEN generation 9 after ordinary resume rejection",
+    "originalV": "OPEN generation 8",
+    "passwordChanged": false,
+    "recoverInvoked": false,
+    "next": "Explicit user permission required for original development Gate recovery that invalidates old sessions"
+  },
+  "authorizedOriginalEnvironmentRecovery": {
+    "ready": {
+      "c": true,
+      "v": true
+    },
+    "recovered": [
+      "c"
+    ],
+    "userBusinessTableCount": 85,
+    "userBusinessTableHashesUnchanged": true,
+    "schemaUnchanged": true,
+    "sequencesUnchanged": true,
+    "accountsPasswordsPostsPreserved": true,
+    "beforeAuthority": {
+      "c": {
+        "state": "FROZEN",
+        "generation": 9,
+        "recoverEvents": 9
+      },
+      "v": {
+        "state": "OPEN",
+        "generation": 8,
+        "recoverEvents": 8
+      }
+    },
+    "afterAuthority": {
+      "c": {
+        "state": "OPEN",
+        "generation": 10,
+        "recoverEvents": 10
+      },
+      "v": {
+        "state": "OPEN",
+        "generation": 8,
+        "recoverEvents": 8
+      }
+    },
+    "startedPids": [
+      22284,
+      22285,
+      22286,
+      22288
+    ],
+    "authorization": "User explicitly requested recovery preserving accounts, passwords and posts",
+    "windowsCommunityStrictTLS": 200,
+    "windowsVerifierRelayStrictTLS": 200,
+    "vivoReverse": {
+      "51245": 51245,
+      "49747": 54948
+    },
+    "appRestarted": true,
+    "userLoginAcceptance": "PENDING"
+  },
+  "userAcceptance": {
+    "result": "USER_CONFIRMED_OK_AND_AUTHORIZED_MERGE",
+    "loginAfterRecovery": "PASS_USER_CONFIRMED",
+    "deviceGestureMatrix": "NOT_SEPARATELY_RECORDED",
+    "versionCode": 2026102402
+  },
+  "merge": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/69",
+    "sha": "4933bff8ab598117ebdfd55989b5705ed4209690",
+    "mainProductDiffAgainstTestedHead": "EMPTY_VERIFIED"
+  }
+}
