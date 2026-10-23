@@ -1,6 +1,6 @@
 # DM-HEADER-DENSITY-01 私信列表紧凑布局
 
-更新时间：2026-10-23。分支 `fix/direct-message-header-density`，基线 main `eb1eeb93f55a643718f0bff48aa0386a9db62c5e`（包含 #60）。2314收起／展开视觉已获用户确认；r3补齐语义点击动作并通过独立Sol XHigh精确源码复审，2315构建、同签覆盖与版本核对PASS，自动启动NOT_RUN。准备提交／PR，尚未合并或发布。
+更新时间：2026-10-23。分支 `fix/direct-message-header-density`，基线 main `eb1eeb93f55a643718f0bff48aa0386a9db62c5e`（包含 #60）。源码提交`a5e7415309450d381fda457dd280138f82f26b05`已送审[Draft PR #62](https://github.com/zewbby/HnuHole/pull/62)。2314收起／展开视觉已获用户确认；r3补齐语义点击动作并通过独立Sol XHigh精确源码及文档复审，2315构建、同签覆盖与版本核对PASS，自动启动NOT_RUN。精确head CI与合并状态以PR回执为准，尚未合并或发布。
 
 ## 用户要求与实现
 
@@ -45,6 +45,6 @@
 
 ## 交付与剩余边界
 
-独立Sol XHigh按上述最终源码散列复核产品diff与before FAIL／after PASS／分析0日志，无新增阻断；该agent审查不等于GitHub成员批准。文档复审、精确head产品CI及协作检查待补；按已有授权提交、推送、建PR，通过必要检查及最终复审后合入main，禁止直接推main。当前未合并、未发布。README分支入口、HANDOFF、progress及模块交接／台账同步本页状态；后续PR与合并事实在本任务更新，不提前计为主线已有能力。
+独立Sol XHigh按上述最终源码散列复核产品diff与before FAIL／after PASS／分析0日志，并核对README、任务页、交接与台账，无新增阻断；该agent审查不等于GitHub成员批准。本地暂存协作检查、`git diff --cached --check`、变更Markdown本地链接及台账JSON解析PASS。精确head远端产品CI及协作检查待PR #62回执；通过必要检查及最终主会话快照后按已有授权合入main，禁止直接推main。当前未合并、未发布。README分支入口、HANDOFF、progress及模块交接／台账同步本页状态；最终CI和合并回执在PR及交付回执记录，不递归创建记录自身合并的文档PR。
 
 旧真实突然掉电NOT_RUN、P3人工SKIP、远程推送未实现、iOS与生产未验保持原版本和范围；本轮UI定稿不提升完整B08/B09验收结论。原生TalkBack如需新增验收，须单列设备操作及证据。

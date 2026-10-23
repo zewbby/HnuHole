@@ -7,7 +7,9 @@
     ],
     "branch": "fix/direct-message-header-density",
     "base": "eb1eeb93f55a643718f0bff48aa0386a9db62c5e",
-    "implementation": "USER_ACCEPTED_R2_VISUAL_R3_SEMANTICS_FIXED_DELIVERY_AWAITING_PR_AND_CI",
+    "implementation": "BRANCH_IMPLEMENTED_USER_ACCEPTED_DRAFT_PR62_AWAITING_CI_AND_MERGE",
+    "applicationSource": "a5e7415309450d381fda457dd280138f82f26b05",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/62",
     "sourceFilesSha256": {
       "apps/mobile/lib/src/messaging/direct_message_inbox.dart": "89f5e91decf27f8c8ba3340092c0b689df8baa883404a61c2579fa8b0f0f7e76",
       "apps/mobile/test/direct_message_navigation_test.dart": "f7485ba2926ae984349af47af2f79776dd29932eeaf6124e2685c8ac4cd93ea3"
@@ -25,7 +27,7 @@
     "visualAcceptance": "PASS_USER_CONFIRMED_2314_REUSED_EXACT_VISUAL_SOURCE_EQUIVALENCE_ON_R3",
     "nativeTalkBack": "NOT_RUN_HOST_SEMANTICS_ACTION_ONLY",
     "independentReview": "PASS_FINAL_SOL_XHIGH_SOURCE89F5_TESTF748_NO_BLOCKERS_NOT_GITHUB_MEMBER_APPROVAL",
-    "remoteCI": "NOT_RUN_NO_PR_YET",
+    "remoteCI": "PENDING_PR62_LATEST_HEAD",
     "merged": false,
     "released": false,
     "historicalModuleVerdictsUnchanged": true,
