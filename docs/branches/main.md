@@ -1,5 +1,7 @@
 # main
 
+2026-10-24：[刷新取消与颜文字动效 PR #69](https://github.com/zewbby/HnuHole/pull/69) 已Squash合入 `4933bff`，精确head `217bd4e` 的15项CI全PASS；main源码与已测版本无差异，vivo2402登录恢复后用户确认可以并授权合并。详见[任务与证据](fix-feed-refresh-cancel.md)，不提升未逐项记录的设备／iOS／生产结论。
+
 2026-10-23：[沉浸阅读与颜文字刷新 PR #65](https://github.com/zewbby/HnuHole/pull/65) 已Squash合入 `df484b1`；精确head `fad2a5c` 的8组工作流15项检查全PASS，宿主844 PASS／3 SKIP、分析0、Android构建及Sol xhigh复核通过。未安装或发布，设备视觉／原生TalkBack／帧性能和iOS未验。见[任务与证据](feat-feed-scroll-smile-refresh.md)。
 
 2026-10-23：[身份头像 PR #63](https://github.com/zewbby/HnuHole/pull/63) 已合入 `45e3948`；精确送审 head 22 项 CI 全 PASS，开发 C25／V6 ready，真我日常2315同签保数据覆盖与既有会话私信入口限定通过，未生产发布。原生7项及未验边界按原版本保留，见[任务与交付回执](identity-avatar-onboarding.md)。
