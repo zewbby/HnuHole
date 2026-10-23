@@ -11,6 +11,8 @@ import '../identity/identity_api.dart';
 import '../posts/post_photo_picker.dart';
 import 'dm_protocol.dart';
 import 'dm_controller.dart';
+import 'dm_governance_ui.dart';
+import '../reports/report_screens.dart';
 import 'direct_message_models.dart';
 import 'direct_message_inbox.dart';
 import 'direct_message_screen.dart';
@@ -185,7 +187,13 @@ class DmScope extends InheritedWidget {
 }
 
 class DmInboxRoute extends StatefulWidget {
-  const DmInboxRoute({super.key, required this.runtime, this.navigation});
+  const DmInboxRoute({
+    super.key,
+    required this.runtime,
+    this.navigation,
+    this.initialIdentity,
+  });
+  final String? initialIdentity;
   final DmRuntime runtime;
   final Widget? navigation;
   @override
@@ -193,7 +201,7 @@ class DmInboxRoute extends StatefulWidget {
 }
 
 class _DmInboxRouteState extends State<DmInboxRoute> {
-  String? _selected;
+  late String? _selected = widget.initialIdentity;
   String _query = '';
   Set<String> _searchMatches = {};
   int _searchGeneration = 0;
@@ -673,7 +681,7 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
         }
       },
       textOnly: !c.chatEnabled,
-      reportEnabled: false,
+      reportEnabled: GovernanceScope.maybeOf(context) != null,
     );
   }
 }

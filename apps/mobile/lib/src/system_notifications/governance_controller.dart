@@ -30,11 +30,11 @@ class GovernancePendingStore {
   Future<Map<String, dynamic>> _read() async {
     final raw = await vault.read();
     if (raw == null) return {};
-    if (raw.length > 18 * 1024 * 1024) throw const AuthStorageFailure();
-    final root = PostJson.record(GovernanceStrictJson(raw).decode(), {
-      'v',
-      'owners',
-    });
+    if (raw.length > 50 * 1024 * 1024) throw const AuthStorageFailure();
+    final root = PostJson.record(
+      GovernanceStrictJson(raw, maxList: 200).decode(),
+      {'v', 'owners'},
+    );
     if (root['v'] != 1 || root['owners'] is! Map<String, dynamic>) {
       throw const AuthStorageFailure();
     }
@@ -54,7 +54,7 @@ class GovernancePendingStore {
       PostJson.id(p, 'id');
       if (p['retryToken'] != null) PostJson.id(p, 'retryToken');
       if (p['body'] is! Map<String, dynamic> ||
-          !{'REPORT', 'APPEAL', 'MATERIAL'}.contains(p['kind']) ||
+          !{'REPORT', 'DM_REPORT', 'APPEAL', 'MATERIAL'}.contains(p['kind']) ||
           p['path'] is! String ||
           p['queryPath'] is! String) {
         throw const AuthStorageFailure();
@@ -81,7 +81,7 @@ class GovernancePendingStore {
       owners[account] = value;
     }
     final encoded = jsonEncode({'v': 1, 'owners': owners});
-    if (encoded.length > 18 * 1024 * 1024) throw const AuthStorageFailure();
+    if (encoded.length > 50 * 1024 * 1024) throw const AuthStorageFailure();
     await vault.write(encoded);
     if (await vault.read() != encoded) throw const AuthStorageFailure();
   });
@@ -189,7 +189,9 @@ class GovernanceController extends ChangeNotifier {
     Map<String, String>? query,
   }) async {
     if (restricted &&
-        (path.startsWith('/api/v1/reports') || query?['identityId'] != null)) {
+        (path.startsWith('/api/v1/reports') ||
+            path.startsWith('/api/v1/dm/') ||
+            query?['identityId'] != null)) {
       throw const GovernanceFailure(403, 'MODERATION_SELF_SCOPE_REQUIRED');
     }
     final response = await api.request(
@@ -466,6 +468,39 @@ class GovernanceController extends ChangeNotifier {
     });
   }
 
+  Future<bool> submitDmReport(
+    Map<String, dynamic> snapshot,
+    String reason,
+    String description,
+    List<EvidenceImage> images,
+  ) {
+    if (restricted || snapshot['authorized'] != true) {
+      return Future.value(false);
+    }
+    validateMaterials(description, images, textLimit: 200, imageLimit: 6);
+    var materialBytes =
+        images.fold<int>(0, (n, image) => n + image.bytes.length) +
+        utf8.encode(description).length;
+    for (final entry in snapshot['entries'] as List) {
+      materialBytes +=
+          utf8.encode(entry['text'] as String).length +
+          base64Decode(entry['data'] as String).length;
+    }
+    if (materialBytes > 32 * 1024 * 1024) {
+      throw const FormatException('Evidence budget exceeded');
+    }
+    if (!reportReasons.containsKey(reason)) {
+      throw const FormatException('Invalid reason');
+    }
+    final id = governanceId(), path = '/api/v1/dm/governance/reports/';
+    return _submit(id, 'DM_REPORT', '$path$id', '$path$id', {
+      ...snapshot,
+      'reason': reason,
+      'description': description,
+      'images': images.map((i) => i.toJson()).toList(),
+    });
+  }
+
   Future<AppealMaterialPage?> readAppealMaterials(
     String appealId,
     String cursor,
@@ -601,7 +636,7 @@ class GovernanceController extends ChangeNotifier {
     required bool isQuery,
   }) async {
     final state = result['state'];
-    final submitted = p['kind'] == 'REPORT' || isQuery
+    final submitted = {'REPORT', 'DM_REPORT'}.contains(p['kind']) || isQuery
         ? state == 'SUBMITTED'
         : result['id'] is String;
     if (!submitted) {
@@ -612,11 +647,13 @@ class GovernanceController extends ChangeNotifier {
       error = '已确认原任务未提交。可保留原材料、原任务重试，或放弃。';
       return false;
     }
-    if (p['kind'] == 'REPORT') {
+    if ({'REPORT', 'DM_REPORT'}.contains(p['kind'])) {
       final report = _reportReceipt(result), original = p['body'] as Map;
       if (report == null ||
           report['id'] != p['id'] ||
-          report['postId'] != original['postId'] ||
+          (p['kind'] == 'DM_REPORT'
+              ? report['conversationId'] != original['conversationId']
+              : report['postId'] != original['postId']) ||
           report['commentId'] != original['commentId'] ||
           report['reason'] != original['reason'] ||
           report['description'] != original['description']) {
@@ -656,10 +693,18 @@ class GovernanceController extends ChangeNotifier {
     final r = PostJson.record(
       wrapper['report'],
       {'id', 'caseId', 'state', 'postId', 'reason', 'description', 'createdAt'},
-      optional: {'outcome', 'explanation', 'commentId'},
+      optional: {'outcome', 'explanation', 'commentId', 'conversationId'},
     );
-    for (final key in ['id', 'caseId', 'postId']) {
+    for (final key in ['id', 'caseId']) {
       PostJson.id(r, key);
+    }
+    if (r['conversationId'] != null) {
+      PostJson.id(r, 'conversationId');
+      if (r['postId'] != '' || r['commentId'] != null) {
+        throw const FormatException('Invalid DM report target');
+      }
+    } else {
+      PostJson.id(r, 'postId');
     }
     if (r['commentId'] != null) PostJson.id(r, 'commentId');
     if (!{'PENDING', 'PROCESSING', 'ENDED'}.contains(r['state']) ||
@@ -701,10 +746,24 @@ class GovernanceController extends ChangeNotifier {
           'postId',
           'appealCount',
         },
-        optional: {'endsAt', 'revokedAt', 'activeAppealId', 'commentId'},
+        optional: {
+          'endsAt',
+          'revokedAt',
+          'activeAppealId',
+          'commentId',
+          'conversationId',
+        },
       );
-      for (final key in ['id', 'caseId', 'postId']) {
+      for (final key in ['id', 'caseId']) {
         PostJson.id(r, key);
+      }
+      if (r['conversationId'] != null) {
+        PostJson.id(r, 'conversationId');
+        if (r['postId'] != '' || r['commentId'] != null) {
+          throw const FormatException('Invalid DM sanction target');
+        }
+      } else {
+        PostJson.id(r, 'postId');
       }
       if (r['commentId'] != null) PostJson.id(r, 'commentId');
       PostJson.text(r, 'reason', maxLength: 2048);

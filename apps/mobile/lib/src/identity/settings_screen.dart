@@ -7,9 +7,12 @@ class SettingsScreen extends StatelessWidget {
     required this.onManageIdentity,
     required this.onManageSecurity,
     this.onManageAccount,
+    this.onBlacklist,
+    this.onDmNotifications,
   });
   final VoidCallback onManageIdentity, onManageSecurity;
   final VoidCallback? onManageAccount;
+  final VoidCallback? onBlacklist, onDmNotifications;
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('设置')),
@@ -22,6 +25,18 @@ class SettingsScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             children: [
+              if (onBlacklist != null)
+                ListTile(
+                  leading: const Icon(Icons.block_outlined),
+                  title: const Text('黑名单'),
+                  onTap: onBlacklist,
+                ),
+              if (onDmNotifications != null)
+                ListTile(
+                  leading: const Icon(Icons.notifications_outlined),
+                  title: const Text('私信通知'),
+                  onTap: onDmNotifications,
+                ),
               if (onManageAccount != null) ...[
                 ListTile(
                   contentPadding: EdgeInsets.zero,

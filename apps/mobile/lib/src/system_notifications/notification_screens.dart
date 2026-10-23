@@ -377,7 +377,9 @@ class GovernanceResourceView extends StatelessWidget {
               ),
               child: const Text('查看来源评论'),
             )
-          else if (r['postId'] is String && onOpenPost != null)
+          else if (r['postId'] is String &&
+              (r['postId'] as String).isNotEmpty &&
+              onOpenPost != null)
             TextButton(
               onPressed: () =>
                   onOpenPost!(PostProtocol.resourceId(r['postId'] as String)),

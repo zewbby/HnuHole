@@ -10,6 +10,7 @@ import 'dm_protocol.dart';
 import 'dm_store.dart';
 
 part 'dm_chat_controller.dart';
+part 'dm_governance_controller.dart';
 
 typedef DmStoreFactory = Future<DmStore> Function(String account);
 

@@ -55,7 +55,15 @@ class HttpPostApi
     Map<String, Object>? body,
     Map<String, String>? query,
   }) => _input(() {
-    if (resource.startsWith('chat/')) {
+    if (resource.startsWith('governance/blocks')) {
+      if (resource != 'governance/blocks') {
+        final parts = resource.split('/');
+        if (parts.length != 3 || parts[1] != 'blocks') {
+          throw const FormatException('Invalid DM governance route');
+        }
+        PostProtocol.resourceId(parts[2]);
+      }
+    } else if (resource.startsWith('chat/')) {
       final parts = resource.split('/');
       if (!{
             'pending',

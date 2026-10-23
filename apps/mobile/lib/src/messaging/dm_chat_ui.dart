@@ -37,6 +37,14 @@ Future<void> showDmManagement(
             ('note', '私人备注', Icons.edit_note),
             ('hide', '不显示', Icons.visibility_off_outlined),
             ('delete', '删除聊天', Icons.delete_outline),
+            (
+              'block',
+              (directory['ownBlockId'] as String?)?.isNotEmpty == true
+                  ? '解除拉黑'
+                  : '拉黑',
+              Icons.block_outlined,
+            ),
+            ('report', '举报', Icons.flag_outlined),
           ])
             ListTile(
               key: ValueKey('dm-manage-${option.$1}'),
@@ -86,6 +94,14 @@ Future<void> showDmManagement(
     if (value != null && context.mounted && c.scope == scope && c.available) {
       await c.manage(directory, 'SETTINGS', note: value);
     }
+    return;
+  }
+  if (action == 'block') {
+    await showDmBlock(context, c, directory);
+    return;
+  }
+  if (action == 'report') {
+    await openDmReport(context, c, directory);
     return;
   }
   if (action == 'hide' || action == 'delete') {
@@ -428,6 +444,10 @@ extension _ChatPhotoUi on _DmChatRouteState {
   ) async {
     final id = target.imageId ?? target.messageId;
     if (scope != c.scope || !c.available) return;
+    if (action == DmMessageAction.report && directory != null) {
+      await openDmReport(context, c, directory);
+      return;
+    }
     if (action == DmMessageAction.delete) {
       await c.deleteLocal(id);
       _releasePhotos();

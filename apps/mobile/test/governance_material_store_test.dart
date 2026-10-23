@@ -48,7 +48,8 @@ void main() {
     final first = open();
     final value = jsonEncode({
       'private-marker': 'pending-report-material',
-      'image': 'x' * (9 * 1024 * 1024),
+      // P3 snapshot exceeds the former 18 MiB cap and spans four chunks.
+      'image': 'x' * (25 * 1024 * 1024),
     });
     await first.write(value);
     expect(await first.read(), value);
