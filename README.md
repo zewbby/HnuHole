@@ -33,11 +33,12 @@
 
 ## 分支一览
 
-`main` 是项目基线。当前保留两条会话工作分支，其他已合并分支已退役；历史实现、验收文档和 PR 记录继续保留。
+`main` 是项目基线。当前工作分支如下；历史实现、验收文档和 PR 记录继续保留。
 
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `feat/direct-message-governance` | 第三阶段接入拉黑、举报证据、生命周期清理和隐私本地通知；[Draft PR #52](https://github.com/zewbby/HnuHole/pull/52) 依赖 P2，人工原生项跳过，未合并。 | [任务详情](docs/branches/feat-direct-message-governance.md) |
 | `feat/direct-message-chat-completion` | 第二阶段私有图片、会话管理和撤回已实现并通过限定原生验收；[PR #51](https://github.com/zewbby/HnuHole/pull/51) 待 CI，未合并或发布。 | [任务详情](docs/branches/feat-direct-message-chat-completion.md) |
 | `feat/email-auth-flow` | 邮箱接入交付分支；长时间关机后重启仍未验证，保留待继续核验。 | [交接](docs/branches/feat-email-auth-flow.md) |
 
