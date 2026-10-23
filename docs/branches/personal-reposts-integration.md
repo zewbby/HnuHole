@@ -88,3 +88,7 @@ flutter test --no-pub --reporter expanded test/personal_reposts_integration_test
 验收产品版本 `e404f85b98343cdaef9d71f49e6dbcfa852d32c8` 的12个远端工作流／21个最新作业全部PASS；Android首次第三方NDK下载失败经失败作业重试后PASS。包括Feed UI真实转帖HTTPS/SQL、Post images全量Flutter879 PASS/3既有外部fixture SKIP、身份、私信、评论、举报、Android候选构建与预演、协作及契约。完整run/job ID与链接见最终JSON。未把首次失败隐藏为通过。
 
 后续仅补README、交接及验收证据；64个受影响产品/测试/CI文件哈希与上述验收SHA全部一致。为遵守通过后不重复矩阵的要求，文档补录提交使用skip-ci；不将文档提交谎称新的产品CI验收版本。PR保持draft，未合并／发布。
+
+## PR68 merge receipt (2026-10-24)
+
+Merged into main via squash: ce140d57e0bf6feb27165352394c9946a1b72aef. Integrated head 22498e811b28190263e0a8fe30f3e9637a0101a0 passed all 12 workflows. XHigh confirmed both handoff histories and main refresh code preserved; local integration 20 tests PASS, analyze 0. Fetched main commit has an identical tree to the tested integrated head. Earlier unmerged statements are historical. No deployment or additional device installation performed.
