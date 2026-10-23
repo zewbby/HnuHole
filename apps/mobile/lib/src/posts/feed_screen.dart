@@ -412,11 +412,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     HhXPostItem(
                       key: ValueKey('post:${post.postId}'),
                       repostAction: c.supportsReposts
-                          ? PostRepostButton(
-                              controller: c,
-                              postId: post.postId,
-                              iconOnly: true,
-                            )
+                          ? PostRepostButton(controller: c, postId: post.postId)
                           : null,
                       post: FeedPostView(
                         id: post.postId,

@@ -57,7 +57,10 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
         builder: (_, __) => AlertDialog(
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.transparent,
-          title: const Text('撤销转帖？', style: TextStyle(color: Colors.black)),
+          title: const Text('确认移除？', style: TextStyle(color: Colors.black)),
+          content: Text(
+            '仅移除“${_repostIdentityNames[identityId] ?? '此身份'}”保存的这条记录。',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -145,9 +148,12 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                 ),
                 ListTile(
                   key: ValueKey('cancel-repost:$identityId/$postId'),
-                  leading: const Icon(Icons.repeat, color: Color(0xFF536971)),
+                  leading: const Icon(
+                    Icons.remove_circle_outline,
+                    color: Color(0xFF536971),
+                  ),
                   title: const Text(
-                    '取消转载',
+                    '移除',
                     style: TextStyle(color: Colors.black),
                   ),
                   enabled:
@@ -243,19 +249,11 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
         itemBuilder: (context, index) {
           final item = items[index];
           final state = c.repostState(item.postId);
-          final name = _repostIdentityNames[item.identityId];
           final post = item.post;
           return Column(
             key: ValueKey('personal-repost:${item.key}'),
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 2),
-                child: Text(
-                  name == null ? '正在核对转帖身份' : '以“$name”转帖',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ),
               if (post == null)
                 ListTile(
                   title: const Text('原帖已不可用'),
@@ -273,13 +271,13 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                   onMenu: () => _showRepostMenu(item.postId, item.identityId),
                   repostAction: IconButton(
                     key: ValueKey('repost-undo:${item.key}'),
-                    tooltip: '撤销转帖',
+                    tooltip: '移除',
                     color: const Color(0xFF229ED9),
                     onPressed: state.unresolved
                         ? null
                         : () =>
                               _confirmUndoRepost(item.postId, item.identityId),
-                    icon: const Icon(Icons.repeat, size: 20),
+                    icon: const PostRepostIcon(),
                   ),
                   post: post,
                   initialDetail: post,
@@ -326,12 +324,25 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
 
   String? _profileIdentityId;
   int _identityEpoch = 0;
+  final _profileIdentityAnchor = GlobalKey();
+  bool _identityMenuOpen = false;
+  Route<dynamic>? _identityMenuRoute;
+
+  void _dismissProfileIdentityMenu() {
+    final route = _identityMenuRoute;
+    _identityMenuRoute = null;
+    if (route == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (route.isActive) route.navigator?.removeRoute(route);
+    });
+  }
 
   void profileIdentityChanged() {
     final id = widget.controller.personalIdentity?.id;
     if (id == _profileIdentityId) return;
     _profileIdentityId = id;
     ++_identityEpoch;
+    _dismissProfileIdentityMenu();
     _hot = _sorting = false;
     _replies.clear();
     _replyLoaded = _replyLoading = false;
@@ -347,50 +358,174 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
   }
 
   Future<void> _chooseIdentity() async {
+    if (_identityMenuOpen || !_authority.current) return;
     final controller = widget.controller;
-    final id = await showModalBottomSheet<String>(
+    final epoch = _identityEpoch;
+    final anchor =
+        _profileIdentityAnchor.currentContext!.findRenderObject()! as RenderBox;
+    final overlay =
+        Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    final rect =
+        anchor.localToGlobal(Offset.zero, ancestor: overlay) & anchor.size;
+    final p = HhTelegramPalette.of(context);
+    setState(() => _identityMenuOpen = true);
+    final id = await showMenu<String>(
       context: context,
-      backgroundColor: Colors.white,
-      showDragHandle: true,
-      builder: (_) => ListenableBuilder(
-        listenable: controller,
-        builder: (context, _) => !_authority.current
-            ? const SizedBox.shrink()
-            : SafeArea(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text(
-                        '切换身份',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+      positionBuilder: (context, constraints) {
+        final current = anchor.attached && overlay.attached
+            ? anchor.localToGlobal(Offset.zero, ancestor: overlay) & anchor.size
+            : rect;
+        return RelativeRect.fromRect(
+          Rect.fromLTWH(current.right, current.bottom + 6, 0, 0),
+          Offset.zero & constraints.biggest,
+        );
+      },
+      constraints: const BoxConstraints(minWidth: 208, maxWidth: 260),
+      color: p.surface,
+      surfaceTintColor: Colors.transparent,
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: p.line),
+      ),
+      popUpAnimationStyle: const AnimationStyle(
+        duration: Duration(milliseconds: 180),
+        reverseDuration: Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+      ),
+      items: [
+        PopupMenuItem<String>(
+          enabled: false,
+          height: 40,
+          child: Builder(
+            builder: (context) {
+              _identityMenuRoute = ModalRoute.of(context);
+              if (!mounted || !_authority.current || epoch != _identityEpoch) {
+                _dismissProfileIdentityMenu();
+                return const SizedBox.shrink();
+              }
+              return Text(
+                '切换身份',
+                style: TextStyle(fontSize: 13, color: p.secondary),
+              );
+            },
+          ),
+        ),
+        for (final identity in controller.personalIdentities)
+          PopupMenuItem<String>(
+            key: ValueKey('profile-identity-${identity.id}'),
+            value: identity.id,
+            height: 56,
+            child: Row(
+              children: [
+                HhDmAvatar(
+                  identity: DmIdentity(
+                    id: identity.id,
+                    name: identity.nickname,
+                    avatar: identity.avatar,
+                  ),
+                  size: 30,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    identity.nickname,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 15, color: p.ink),
+                  ),
+                ),
+                if (identity.id == controller.personalIdentity?.id)
+                  Icon(Icons.check_rounded, color: p.accent, size: 20),
+              ],
+            ),
+          ),
+      ],
+    );
+    _identityMenuRoute = null;
+    if (!mounted) return;
+    setState(() => _identityMenuOpen = false);
+    if (id == null || !_authority.current || epoch != _identityEpoch) return;
+    await controller.selectPersonalIdentity(id);
+  }
+
+  Widget _profileIdentityChip(String name) {
+    final c = widget.controller;
+    final p = HhTelegramPalette.of(context);
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 224, minHeight: 48),
+      child: Tooltip(
+        message: '切换身份',
+        child: Semantics(
+          label: '切换身份，当前$name',
+          button: true,
+          excludeSemantics: true,
+          onTap: _chooseIdentity,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              key: const ValueKey('personal-profile'),
+              onTap: c.personalIdentities.isEmpty ? null : _chooseIdentity,
+              borderRadius: BorderRadius.circular(24),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Material(
+                  key: _profileIdentityAnchor,
+                  color: p.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(color: p.line),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
                     ),
-                    for (final identity in controller.personalIdentities)
-                      ListTile(
-                        key: ValueKey('profile-identity-${identity.id}'),
-                        leading: DetailAvatar(
-                          name: identity.nickname,
-                          avatar: identity.avatar,
-                          radius: 20,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedRotation(
+                          turns: _identityMenuOpen ? .25 : 0,
+                          duration: const Duration(milliseconds: 180),
+                          child: Icon(
+                            Icons.chevron_right_rounded,
+                            size: 20,
+                            color: p.secondary,
+                          ),
                         ),
-                        title: Text(identity.nickname),
-                        trailing: identity.id == controller.personalIdentity?.id
-                            ? const Icon(Icons.check, color: Colors.black)
-                            : null,
-                        onTap: () => Navigator.pop(context, identity.id),
-                      ),
-                  ],
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: p.ink,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        HhDmAvatar(
+                          identity: DmIdentity(
+                            id: c.personalIdentity?.id ?? '',
+                            name: name,
+                            avatar: c.personalIdentity?.avatar ?? 'default-v1',
+                          ),
+                          size: 28,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
+            ),
+          ),
+        ),
       ),
     );
-    if (id == null || !mounted || !_authority.current) return;
-    await controller.selectPersonalIdentity(id);
   }
 
   bool _hot = false, _sorting = false, _searching = false;
@@ -460,7 +595,11 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
     }
   }
 
-  void disposeProfile() => _expiry?.cancel();
+  void disposeProfile() {
+    _expiry?.cancel();
+    _dismissProfileIdentityMenu();
+  }
+
   Map<String, dynamic> get _identityMood {
     final id = widget.controller.personalIdentity?.id;
     final moods = _profile['identityMoods'];
@@ -733,11 +872,32 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+              padding: const EdgeInsets.fromLTRB(24, 8, 14, 24),
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Text(
+                        ':)',
+                        key: ValueKey('profile-smile'),
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const Spacer(),
+                      Flexible(
+                        flex: 3,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: _profileIdentityChip(name),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       IconButton(
                         tooltip: '搜索我的帖子',
@@ -784,104 +944,43 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                         ),
                         onPressed: widget.onOpenSettings,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 96,
-                    child: Row(
-                      key: const ValueKey('personal-profile'),
-                      children: [
-                        Expanded(
-                          child: Text(
-                            name,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black,
+                      const Spacer(),
+                      SizedBox(
+                        width: 104,
+                        child: Material(
+                          color: Colors.white,
+                          elevation: 2,
+                          shadowColor: Colors.black12,
+                          shape: const _MoodBubbleBorder(),
+                          child: InkWell(
+                            key: const ValueKey('personal-mood'),
+                            customBorder: const _MoodBubbleBorder(),
+                            onTap: _editMood,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                10,
+                                18,
+                                10,
+                                10,
+                              ),
+                              child: _profileError != null
+                                  ? const Icon(Icons.refresh)
+                                  : _mood.isEmpty
+                                  ? const Icon(Icons.add, color: Colors.black)
+                                  : Text(
+                                      _mood,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                        height: 1.3,
+                                      ),
+                                    ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        SizedBox(
-                          width: 104,
-                          height: 96,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              Positioned(
-                                top: 4,
-                                left: -8,
-                                child: IconButton(
-                                  tooltip: '切换身份',
-                                  onPressed: c.personalIdentities.isEmpty
-                                      ? null
-                                      : _chooseIdentity,
-                                  icon: const Icon(
-                                    Icons.swap_horiz,
-                                    size: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: DetailAvatar(
-                                  name: name,
-                                  avatar:
-                                      c.personalIdentity?.avatar ??
-                                      'default-v1',
-                                  radius: 30,
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: Material(
-                                  color: Colors.white,
-                                  elevation: 2,
-                                  shadowColor: Colors.black12,
-                                  shape: const _MoodBubbleBorder(),
-                                  child: InkWell(
-                                    key: const ValueKey('personal-mood'),
-                                    customBorder: const _MoodBubbleBorder(),
-                                    onTap: _editMood,
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                        10,
-                                        18,
-                                        10,
-                                        10,
-                                      ),
-                                      child: _profileError != null
-                                          ? const Icon(Icons.refresh)
-                                          : _mood.isEmpty
-                                          ? const Icon(
-                                              Icons.add,
-                                              color: Colors.black,
-                                            )
-                                          : Text(
-                                              _mood,
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14,
-                                                height: 1.3,
-                                              ),
-                                            ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   if (_searching)
                     Padding(
@@ -1188,11 +1287,19 @@ class _ProfileTabs extends SliverPersistentHeaderDelegate {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(
-                                      icons[i],
-                                      size: 16 + 5 * progress,
-                                      color: color,
-                                    ),
+                                    if (i == 2)
+                                      IconTheme(
+                                        data: IconThemeData(color: color),
+                                        child: PostRepostIcon(
+                                          size: 16 + 5 * progress,
+                                        ),
+                                      )
+                                    else
+                                      Icon(
+                                        icons[i],
+                                        size: 16 + 5 * progress,
+                                        color: color,
+                                      ),
                                     const SizedBox(height: 2),
                                     Row(
                                       mainAxisSize: MainAxisSize.min,

@@ -104,6 +104,57 @@ Future<feed.FeedFixture> fixture() async =>
     feed.FeedFixture(await IdentityTestFixture.create(), RepostApi());
 void main() {
   testWidgets(
+    'selected mark confirms removal and stale confirmation cannot write',
+    (tester) async {
+      final f = await fixture();
+      addTearDown(f.dispose);
+      final api = f.api as RepostApi;
+      f.auth.api.items = [identityTestItem(id: identity, name: '转帖身份')];
+      api.marks[identity] = PostRepostMark(identity, feed.at);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: PostRepostButton(
+              controller: f.controller,
+              postId: feed.postId,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('repost:${feed.postId}')));
+      await tester.pumpAndSettle();
+      expect(find.text('已转帖'), findsNothing);
+      await tester.tap(find.text('转帖身份'));
+      await tester.pumpAndSettle();
+      expect(find.text('确认移除？'), findsOneWidget);
+      expect(api.repostWrites, 0);
+      await tester.tap(find.text('取消'));
+      await tester.pumpAndSettle();
+      expect(api.marks.containsKey(identity), isTrue);
+      await tester.tap(find.text('转帖身份'));
+      await tester.pumpAndSettle();
+      final oldConfirm = tester
+          .widget<TextButton>(find.widgetWithText(TextButton, '确认'))
+          .onPressed!;
+      await f.auth.store.update(
+        (s) => s.copyWith(
+          session: SessionRecord(
+            token: AuthCrypto.encode(List.filled(32, 22)),
+            accountId: second,
+            expiresAt: identityTestExpiry,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      oldConfirm();
+      await tester.pumpAndSettle();
+      expect(api.repostWrites, 0);
+      expect(api.marks.containsKey(identity), isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
     'reused entry reloads its new post and hides stale account state',
     (tester) async {
       final f = await fixture();
@@ -165,7 +216,15 @@ void main() {
       await tester.tap(find.text('今天的校园'));
       await tester.pumpAndSettle();
       expect(find.byType(PostDetailScreen), findsOneWidget);
-      expect(find.text('已转帖'), findsOneWidget);
+      expect(find.text('已转帖'), findsNothing);
+      expect(
+        tester
+            .widget<IconButton>(
+              find.byKey(const ValueKey('repost:${feed.postId}')),
+            )
+            .color,
+        const Color(0xFF229ED9),
+      );
       expect(tester.takeException(), isNull);
     },
   );
@@ -353,6 +412,10 @@ void main() {
       find.byKey(const ValueKey('cancel-repost:$identity/${feed.postId}')),
     );
     await tester.pumpAndSettle();
+    expect(find.text('确认移除？'), findsOneWidget);
+    await tester.tap(find.text('确认'));
+    await tester.pumpAndSettle();
     expect(find.text('暂无转帖'), findsOneWidget);
   });
 }
+

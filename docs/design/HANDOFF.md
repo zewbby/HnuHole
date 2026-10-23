@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> **2026-10-23 PERSONAL-REPOST-INTEGRATION-01：**`feat/personal-profile-mood` 已逐文件／逐块接入 POST-REPOST-01，转帖复用个人页单一滚动容器和同一 PostController，汇总保留身份并按行取消；原有布局、心情、吸顶和喜欢／收藏保留。限定 Flutter 71项 PASS、分析0；真实HTTP／SQL、构建、设备、独立审查和远端CI本轮 NOT_RUN，来源分支证据不替代本次结果。未提交／推送／合并／安装／部署。见[整合交接](../branches/personal-reposts-integration.md)。
+> **2026-10-24 PERSONAL-REPOST-INTEGRATION-01（PR68）：**个人页／转帖已整合并提交推送至 [PR #68](https://github.com/zewbby/HnuHole/pull/68)，未合并／发布。左上角 `:)`，身份名字／小头像和锚定菜单按私信页统一；转帖仅保留蓝色双箭头，操作栏等宽。独立agent审查无阻断（非GitHub成员批准）；Realme独立测试包已走通真实C HTTPS／SQL链路、多身份精确移除、分页和图片过期返回，剩余不可用原帖及账号切换收尾。远端2e27252版本10工作流PASS／2媒体时序回归FAIL，正在定点修复，不能计最终CI通过。最终范围及回执见[整合交接](../branches/personal-reposts-integration.md)。
 
 
 > **2026-10-23 PERSONAL-PROFILE-MOOD-01 初版历史：**`feat/personal-profile-mood` 已实现个人页与五栏缩放动画、头像旁身份切换、按身份的帖子／回复／心情、账号共享的喜欢／收藏列表。155项Flutter测试、分析0、3项真实SQL、9项契约测试及Android ARM64调试包构建PASS；转帖真实能力按用户要求延期到另会话。未提交／合并／发布，设备验收NOT_RUN。见[任务记录](../branches/feat-personal-profile-mood.md)。

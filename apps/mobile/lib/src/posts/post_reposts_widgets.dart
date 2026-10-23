@@ -6,17 +6,66 @@ import 'post_controller.dart';
 import 'post_reposts_api.dart';
 import 'post_images.dart';
 
+/// Rounded two-arrow mark, shared by every post surface.
+class PostRepostIcon extends StatelessWidget {
+  const PostRepostIcon({super.key, this.size = 20});
+  final double size;
+  @override
+  Widget build(BuildContext context) => CustomPaint(
+    size: Size.square(size),
+    painter: _RepostPainter(IconTheme.of(context).color ?? Colors.black),
+  );
+}
+
+class _RepostPainter extends CustomPainter {
+  const _RepostPainter(this.color);
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 24, size.height / 24);
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.7
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(
+      Path()
+        ..moveTo(4, 15)
+        ..lineTo(4, 8)
+        ..quadraticBezierTo(4, 5, 7, 5)
+        ..lineTo(18, 5)
+        ..moveTo(15, 2)
+        ..lineTo(18, 5)
+        ..lineTo(15, 8),
+      paint,
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(20, 9)
+        ..lineTo(20, 16)
+        ..quadraticBezierTo(20, 19, 17, 19)
+        ..lineTo(6, 19)
+        ..moveTo(9, 16)
+        ..lineTo(6, 19)
+        ..lineTo(9, 22),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_RepostPainter oldDelegate) => color != oldDelegate.color;
+}
+
 /// Shares PostController with feed/detail/personal. Captures the route's authority.
 class PostRepostButton extends StatefulWidget {
   const PostRepostButton({
     super.key,
     required this.controller,
     required this.postId,
-    this.iconOnly = false,
   });
   final PostController controller;
   final String postId;
-  final bool iconOnly;
   @override
   State<PostRepostButton> createState() => _PostRepostButtonState();
 }
@@ -67,7 +116,7 @@ class _PostRepostButtonState extends State<PostRepostButton> {
             if (!current) return const AlertDialog(content: Text('请重新登录'));
             final state = c.repostState(widget.postId);
             return AlertDialog(
-              title: const Text('选择转帖身份'),
+              title: const Text('选择身份'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -75,22 +124,52 @@ class _PostRepostButtonState extends State<PostRepostButton> {
                   for (final identity in identities)
                     ListTile(
                       title: Text(identity.nickname),
-                      subtitle: Text(
-                        state.value?.contains(identity.id) == true
-                            ? '已转帖，点击取消'
-                            : '以此身份转帖',
-                      ),
                       trailing: state.value?.contains(identity.id) == true
-                          ? const Icon(Icons.check)
+                          ? const IconTheme(
+                              data: IconThemeData(color: Color(0xFF229ED9)),
+                              child: PostRepostIcon(),
+                            )
                           : null,
                       onTap: state.unresolved
                           ? null
                           : () async {
                               if (!current) return;
+                              final removing =
+                                  state.value?.contains(identity.id) ?? false;
+                              if (removing) {
+                                final confirmed = await showDialog<bool>(
+                                  context: dialogContext,
+                                  builder: (context) => AlertDialog(
+                                    backgroundColor: Colors.white,
+                                    surfaceTintColor: Colors.transparent,
+                                    title: const Text('确认移除？'),
+                                    content: Text(
+                                      '仅移除“${identity.nickname}”保存的这条记录。',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, false),
+                                        child: const Text('取消'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, true),
+                                        child: const Text('确认'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                                if (confirmed != true ||
+                                    !current ||
+                                    c.repostState(widget.postId).unresolved) {
+                                  return;
+                                }
+                              }
                               await c.setRepost(
                                 widget.postId,
                                 identity.id,
-                                !(state.value?.contains(identity.id) ?? false),
+                                !removing,
                                 authorityVersion: epoch,
                               );
                             },
@@ -139,29 +218,12 @@ class _PostRepostButtonState extends State<PostRepostButton> {
     builder: (_, _) {
       if (!current || !c.supportsReposts) return const SizedBox.shrink();
       final state = c.repostState(widget.postId);
-      final label = state.unresolved
-          ? '转帖待确认'
-          : state.reposted
-          ? '已转帖'
-          : '转帖';
-      if (widget.iconOnly) {
-        return IconButton(
-          key: ValueKey('repost:${widget.postId}'),
-          tooltip: label,
-          onPressed: current && !opening ? open : null,
-          color: state.reposted ? const Color(0xFF229ED9) : null,
-          icon: const Icon(Icons.repeat, size: 20),
-        );
-      }
-      return TextButton.icon(
+      return IconButton(
         key: ValueKey('repost:${widget.postId}'),
+        tooltip: state.unresolved ? '重试核对' : '转帖',
         onPressed: current && !opening ? open : null,
-        icon: Icon(
-          Icons.repeat,
-          size: 18,
-          color: state.reposted ? Theme.of(context).colorScheme.primary : null,
-        ),
-        label: Text(label),
+        color: state.reposted ? const Color(0xFF229ED9) : null,
+        icon: const PostRepostIcon(),
       );
     },
   );
@@ -267,14 +329,6 @@ class _PersonalRepostsListState extends State<PersonalRepostsList> {
                 key: ValueKey(item.key),
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      identityNames.containsKey(item.identityId)
-                          ? '以“${identityNames[item.identityId]}”转帖'
-                          : '正在核对转帖身份',
-                    ),
-                  ),
                   ListTile(
                     title: Text(item.post?.title ?? '原帖已不可用'),
                     subtitle: Text(
@@ -307,23 +361,50 @@ class _PersonalRepostsListState extends State<PersonalRepostsList> {
                       authority: c,
                       isCurrent: () => current && !c.isPostDeleted(item.postId),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('转帖于 ${item.repostedAt.toLocal()}'),
-                  ),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(
+                    child: IconButton(
                       key: ValueKey('cancel-repost:${item.key}'),
+                      tooltip: '移除',
+                      color: const Color(0xFF229ED9),
+                      icon: const PostRepostIcon(),
                       onPressed: c.repostState(item.postId).unresolved
                           ? null
-                          : () => c.setRepost(
-                              item.postId,
-                              item.identityId,
-                              false,
-                              authorityVersion: epoch,
-                            ),
-                      child: const Text('取消此转帖'),
+                          : () async {
+                              final confirmed = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  surfaceTintColor: Colors.transparent,
+                                  title: const Text('确认移除？'),
+                                  content: Text(
+                                    '仅移除“${identityNames[item.identityId] ?? '此身份'}”保存的这条记录。',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: const Text('取消'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: const Text('确认'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirmed == true &&
+                                  current &&
+                                  !c.repostState(item.postId).unresolved) {
+                                await c.setRepost(
+                                  item.postId,
+                                  item.identityId,
+                                  false,
+                                  authorityVersion: epoch,
+                                );
+                              }
+                            },
                     ),
                   ),
                   if (c.repostState(item.postId).error case final error?)

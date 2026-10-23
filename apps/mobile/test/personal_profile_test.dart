@@ -54,6 +54,16 @@ void main() {
       for (final label in ['帖子', '回复', '转帖', '喜欢', '收藏']) {
         expect(find.text(label), findsOneWidget);
       }
+      expect(find.text(':)'), findsOneWidget);
+      expect(find.byIcon(Icons.swap_horiz), findsNothing);
+      final chip = find.byKey(const ValueKey('personal-profile'));
+      expect(
+        find.descendant(
+          of: chip,
+          matching: find.byIcon(Icons.chevron_right_rounded),
+        ),
+        findsOneWidget,
+      );
       expect(find.text('第一身份的帖子'), findsOneWidget);
       final small = tester.widget<Text>(find.text('喜欢')).style!.fontSize!;
       await tester.tap(find.text('喜欢'));

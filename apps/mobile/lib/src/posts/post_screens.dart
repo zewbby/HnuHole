@@ -7,6 +7,9 @@ import '../comments/comment_models.dart';
 import 'dart:async';
 
 import '../messaging/dm_runtime.dart';
+import '../messaging/direct_message_composer.dart';
+import '../messaging/direct_message_models.dart';
+import '../design_system/telegram_theme.dart';
 
 import 'dart:typed_data';
 import 'dart:ui' as ui;

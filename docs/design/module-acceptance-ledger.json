@@ -3,7 +3,7 @@
     "task": "PERSONAL-REPOST-INTEGRATION-01",
     "branch": "feat/personal-profile-mood",
     "base": "cda337c43cf5d0e5793351577f7054ec552fb6d5",
-    "implementation": "IMPLEMENTED_UNCOMMITTED",
+    "implementation": "IMPLEMENTED_PUSHED_DRAFT_PR68",
     "sourceTask": "POST-REPOST-01",
     "sourceReadOnlyManifestFiles": 46,
     "hostTests": {
@@ -12,17 +12,19 @@
       "scope": "70 existing targeted tests plus 1 shipped-root repost walkthrough"
     },
     "analysisIssues": 0,
-    "realHttpSqlIntegration": "NOT_RUN",
-    "builds": "NOT_RUN",
-    "nativeDeviceAcceptance": "NOT_RUN",
-    "independentReview": "NOT_RUN",
-    "remoteCI": "NOT_RUN",
+    "realHttpSqlIntegration": "PASS_OWNED_C_V_HTTPS_SCHEMA26",
+    "builds": "PASS_ANDROID_ARM64_DEBUG_ISOLATED_APP",
+    "nativeDeviceAcceptance": "PARTIAL_PASS_FINAL_UI_AND_UNAVAILABLE_ACCOUNT_SWITCH_PENDING",
+    "independentReview": "PASS_AGENT_NO_BLOCKERS_NOT_GITHUB_MEMBER_APPROVAL",
+    "remoteCI": "2e27252_10_WORKFLOWS_PASS_2_MEDIA_TIMING_FAIL_FIX_TARGETED_11_PASS_FINAL_CI_PENDING",
     "merged": false,
     "released": false,
     "evidence": "docs/branches/personal-reposts-integration.md",
     "verification": "docs/design/personal-reposts-integration-verification.json",
-    "historicalModuleVerdictsUnchanged": true
+    "historicalModuleVerdictsUnchanged": true,
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/68"
   },
+
   "personalProfileMood20261023": {
     "task": "PERSONAL-PROFILE-MOOD-01",
     "branch": "feat/personal-profile-mood",

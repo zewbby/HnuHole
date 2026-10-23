@@ -205,7 +205,7 @@ void main() {
         tester,
         find.byKey(const ValueKey('repost:${feed.postId}')),
       );
-      expect(find.text('已转帖，点击取消'), findsOneWidget);
+      expect(find.text('已转帖，点击取消'), findsNothing);
       await tester.tap(find.text('第二身份'));
       await tester.pumpAndSettle();
       await tapVisible(tester, find.text('关闭'));
@@ -222,7 +222,7 @@ void main() {
       expect(find.byType(PersonalRepostsList), findsNothing);
       expect(find.byType(CustomScrollView), findsOneWidget);
       expect(row(secondIdentity), findsOneWidget);
-      expect(find.text('以“第二身份”转帖'), findsOneWidget);
+      expect(find.text('以“第二身份”转帖'), findsNothing);
       expect(find.text(feed.author.nickname!), findsOneWidget);
       expect(f.posts.repostItems.single.post!.body, feed.post().body);
       await tapVisible(tester, find.byKey(const ValueKey('reposts-load-more')));
@@ -237,7 +237,7 @@ void main() {
       final iconFinders = [
         for (final action in ['comment'])
           find.byKey(ValueKey('action-glyph:$action:${feed.postId}')),
-        find.byIcon(Icons.repeat),
+        find.byType(PostRepostIcon),
         find.byKey(const ValueKey('action-glyph:like:${feed.postId}')),
         find.byKey(const ValueKey('views-glyph:${feed.postId}')),
         find.byKey(const ValueKey('action-glyph:bookmark:${feed.postId}')),
@@ -262,7 +262,7 @@ void main() {
       );
       expect(tester.widget<IconButton>(undo).color, const Color(0xFF229ED9));
       await tapVisible(tester, undo);
-      expect(find.text('撤销转帖？'), findsOneWidget);
+      expect(find.text('确认移除？'), findsOneWidget);
       await tapVisible(tester, find.text('取消'));
       expect(f.posts.repostItems, hasLength(2));
 
@@ -270,7 +270,7 @@ void main() {
       await tapVisible(tester, menu(identityTestId));
       expect(find.text('查看帖子'), findsOneWidget);
       expect(find.text('举报帖子'), findsOneWidget);
-      expect(find.text('取消转载'), findsOneWidget);
+      expect(find.text('移除'), findsOneWidget);
       await tapVisible(tester, find.text('举报帖子'));
       expect(
         tester.widget<ReportScreen>(find.byType(ReportScreen)).postId,
@@ -304,7 +304,7 @@ void main() {
         find.byKey(const ValueKey('profile-identity-$secondIdentity')),
       );
       expect(f.posts.repostItems, hasLength(2));
-      expect(find.text('以“账号A的身份”转帖'), findsOneWidget);
+      expect(find.text('以“账号A的身份”转帖'), findsNothing);
 
       // Pull-to-refresh resets pagination, and uses updated original projection.
       final old = api.rows['$secondIdentity/${feed.postId}']!;
@@ -333,7 +333,7 @@ void main() {
       await tapVisible(tester, menu(identityTestId));
       expect(find.byType(PostDetailScreen), findsNothing);
       await tapVisible(tester, cancel(identityTestId));
-      expect(find.text('撤销转帖？'), findsOneWidget);
+      expect(find.text('确认移除？'), findsOneWidget);
       expect(api.rows, hasLength(2));
       await tapVisible(tester, find.text('确认'));
       expect(api.rows.containsKey('$identityTestId/${feed.postId}'), isFalse);
