@@ -96,6 +96,7 @@ class _PostImagesSectionState extends State<PostImagesSection> {
   PostImages? _group;
   ViewerController? _viewer;
   int _revision = 0;
+  int? _scheduledGroupRevision;
   bool _loading = true, _failed = false, _revoked = false;
   List<Size?>? _feedSizes;
 
@@ -124,13 +125,24 @@ class _PostImagesSectionState extends State<PostImagesSection> {
     if (group != null && !group.accessGranted.value) {
       _revoked = true;
       _viewer?.invalidateAccess();
-      if (_current && group.isExpired?.call() == true) {
-        // The old group/viewer stays revoked. Rendering resumes only after the
-        // host completes another protected manifest and byte read.
-        unawaited(_load());
-      } else if (mounted) {
-        setState(() {});
-      }
+      final revision = _revision;
+      if (_scheduledGroupRevision == revision) return;
+      _scheduledGroupRevision = revision;
+      // A decoder can discover expiry during LayoutBuilder. Revoke immediately,
+      // but defer widget changes and new reads until this frame has finished.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scheduledGroupRevision != revision) return;
+        _scheduledGroupRevision = null;
+        if (!mounted || revision != _revision || !identical(_group, group)) {
+          return;
+        }
+        if (_current && group.isExpired?.call() == true) {
+          unawaited(_load());
+        } else {
+          setState(() {});
+        }
+      });
+      WidgetsBinding.instance.ensureVisualUpdate();
     }
   }
 
@@ -515,7 +527,13 @@ class _PostThumbnailState extends State<_PostThumbnail> {
         policy: ResizeImagePolicy.fit,
       );
       _decoded = decoded;
-      widget.image.registerDecodeProvider?.call(decoded);
+      try {
+        widget.image.registerDecodeProvider?.call(decoded);
+      } catch (_) {
+        // A synchronous authorization check can revoke this group during layout.
+        // Never paint the stale provider or leak that rejection into the frame.
+        return _failure();
+      }
       final image = Image(
         key: ValueKey(_attempt),
         image: decoded,

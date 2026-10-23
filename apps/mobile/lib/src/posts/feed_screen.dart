@@ -411,6 +411,13 @@ class _FeedScreenState extends State<FeedScreen> {
                   for (final post in posts) ...[
                     HhXPostItem(
                       key: ValueKey('post:${post.postId}'),
+                      repostAction: c.supportsReposts
+                          ? PostRepostButton(
+                              controller: c,
+                              postId: post.postId,
+                              iconOnly: true,
+                            )
+                          : null,
                       post: FeedPostView(
                         id: post.postId,
                         authorId: '',
@@ -507,13 +514,6 @@ class _FeedScreenState extends State<FeedScreen> {
                         }
                       },
                       onMedia: (_) {},
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: PostRepostButton(
-                        controller: c,
-                        postId: post.postId,
-                      ),
                     ),
                     for (final notice in [
                       (c.interaction(post.postId).writeError, true),

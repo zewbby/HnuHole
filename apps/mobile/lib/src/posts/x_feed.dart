@@ -691,13 +691,15 @@ class HhXPostItem extends StatelessWidget {
                             }
                             return Row(
                               children: [
-                                Expanded(child: actions[0]),
-                                if (repostAction != null)
-                                  Expanded(child: repostAction!),
-                                Expanded(child: actions[1]),
-                                Expanded(child: _views(context)),
-                                SizedBox(width: 48, child: actions[2]),
-                                SizedBox(width: 48, child: actions[3]),
+                                for (final action in [
+                                  actions[0],
+                                  if (repostAction != null) repostAction!,
+                                  actions[1],
+                                  _views(context),
+                                  actions[2],
+                                  actions[3],
+                                ])
+                                  Expanded(child: action),
                               ],
                             );
                           },
@@ -811,26 +813,51 @@ class HhXPostItem extends StatelessWidget {
             style: TextButton.styleFrom(
               minimumSize: const Size(48, 48),
               padding: EdgeInsets.zero,
-              alignment: count == null
-                  ? Alignment.center
-                  : Alignment.centerLeft,
+              alignment: Alignment.center,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: Flex(
-              direction: stacked ? Axis.vertical : Axis.horizontal,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomPaint(
+            child: LayoutBuilder(
+              builder: (context, box) {
+                final glyph = CustomPaint(
+                  key: ValueKey('action-glyph:${action.name}:${post.id}'),
                   size: const Size(20, 20),
                   painter: _FeedActionGlyph(action, color, selected),
-                ),
-                if (count != null) ...[
-                  SizedBox(width: stacked ? 0 : 5, height: stacked ? 4 : 0),
-                  Text(count, style: _text(context, 14, color: color)),
-                ],
-              ],
+                );
+                if (stacked) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      glyph,
+                      if (count != null)
+                        Text(count, style: _text(context, 12, color: color)),
+                    ],
+                  );
+                }
+                return SizedBox(
+                  width: box.maxWidth,
+                  height: 48,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      glyph,
+                      if (count != null)
+                        Positioned(
+                          left: box.maxWidth / 2 + 13,
+                          top: 16,
+                          child: _actionCount(
+                            context,
+                            count,
+                            color,
+                            box.maxWidth,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -847,19 +874,41 @@ class HhXPostItem extends StatelessWidget {
       excludeSemantics: true,
       child: SizedBox(
         height: 48,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CustomPaint(size: const Size(18, 18), painter: _ViewsGlyph(color)),
-            const SizedBox(width: 4),
-            Flexible(
-              child: Text(count, style: _text(context, 12, color: color)),
-            ),
-          ],
+        child: LayoutBuilder(
+          builder: (context, box) => Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              CustomPaint(
+                key: ValueKey('views-glyph:${post.id}'),
+                size: const Size(20, 20),
+                painter: _ViewsGlyph(color),
+              ),
+              Positioned(
+                left: box.maxWidth / 2 + 13,
+                top: 16,
+                child: _actionCount(context, count, color, box.maxWidth),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _actionCount(
+    BuildContext context,
+    String value,
+    Color color,
+    double cellWidth,
+  ) => SizedBox(
+    width: cellWidth > 24 ? cellWidth - 24 : 0,
+    child: FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Text(value, style: _text(context, 12, color: color)),
+    ),
+  );
 
   String _count(int value) => value < 1000
       ? '$value'

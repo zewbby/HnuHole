@@ -12,9 +12,11 @@ class PostRepostButton extends StatefulWidget {
     super.key,
     required this.controller,
     required this.postId,
+    this.iconOnly = false,
   });
   final PostController controller;
   final String postId;
+  final bool iconOnly;
   @override
   State<PostRepostButton> createState() => _PostRepostButtonState();
 }
@@ -142,6 +144,15 @@ class _PostRepostButtonState extends State<PostRepostButton> {
           : state.reposted
           ? '已转帖'
           : '转帖';
+      if (widget.iconOnly) {
+        return IconButton(
+          key: ValueKey('repost:${widget.postId}'),
+          tooltip: label,
+          onPressed: current && !opening ? open : null,
+          color: state.reposted ? const Color(0xFF229ED9) : null,
+          icon: const Icon(Icons.repeat, size: 20),
+        );
+      }
       return TextButton.icon(
         key: ValueKey('repost:${widget.postId}'),
         onPressed: current && !opening ? open : null,
