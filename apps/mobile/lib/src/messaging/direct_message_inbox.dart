@@ -189,7 +189,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
             ? anchor.localToGlobal(Offset.zero, ancestor: overlay) & anchor.size
             : rect;
         return RelativeRect.fromRect(
-          Rect.fromLTWH(current.left, current.bottom + 6, current.width, 0),
+          Rect.fromLTWH(current.right, current.bottom + 6, 0, 0),
           Offset.zero & constraints.biggest,
         );
       },
@@ -359,7 +359,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 16, 16, 16),
+              padding: const EdgeInsets.fromLTRB(24, 16, 14, 16),
               child: Row(
                 children: [
                   Expanded(
@@ -373,81 +373,87 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                     ),
                   ),
                   Flexible(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 224,
-                        minHeight: 48,
-                      ),
-                      child: Material(
-                        key: _identityAnchor,
-                        color: p.surface,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          side: BorderSide(color: p.line),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: 224,
+                          minHeight: 48,
                         ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Tooltip(
-                          message: '切换身份',
-                          child: InkWell(
-                            key: const ValueKey('dm-inbox-identity'),
-                            onTap: _selectIdentity,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  AnimatedRotation(
-                                    turns: _identityMenuOpen ? .25 : 0,
-                                    duration: const Duration(milliseconds: 180),
-                                    child: Icon(
-                                      Icons.chevron_right_rounded,
-                                      size: 20,
-                                      color: p.secondary,
+                        child: Material(
+                          key: _identityAnchor,
+                          color: p.surface,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            side: BorderSide(color: p.line),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: Tooltip(
+                            message: '切换身份',
+                            child: InkWell(
+                              key: const ValueKey('dm-inbox-identity'),
+                              onTap: _selectIdentity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    AnimatedRotation(
+                                      turns: _identityMenuOpen ? .25 : 0,
+                                      duration: const Duration(
+                                        milliseconds: 180,
+                                      ),
+                                      child: Icon(
+                                        Icons.chevron_right_rounded,
+                                        size: 20,
+                                        color: p.secondary,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Flexible(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          widget.identity.name,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: p.ink,
+                                    const SizedBox(width: 4),
+                                    Flexible(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            widget.identity.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: p.ink,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          '当前身份',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            color: p.secondary,
+                                          Text(
+                                            '当前身份',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: p.secondary,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Badge(
-                                    isLabelVisible: widget.identities.any(
-                                      (i) =>
-                                          i.identity.id != widget.identity.id &&
-                                          i.unread > 0,
+                                    const SizedBox(width: 8),
+                                    Badge(
+                                      isLabelVisible: widget.identities.any(
+                                        (i) =>
+                                            i.identity.id !=
+                                                widget.identity.id &&
+                                            i.unread > 0,
+                                      ),
+                                      child: HhDmAvatar(
+                                        identity: widget.identity,
+                                        size: 28,
+                                      ),
                                     ),
-                                    child: HhDmAvatar(
-                                      identity: widget.identity,
-                                      size: 28,
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),

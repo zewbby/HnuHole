@@ -156,6 +156,9 @@ void main() {
   testWidgets(
     'compact dropdown mirrors content, fills slots and opens add flow',
     (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
       var additions = 0;
       await tester.pumpWidget(
         inbox(
@@ -167,6 +170,13 @@ void main() {
       expect(find.text('搜索'), findsOneWidget);
       final trigger = find.byKey(const ValueKey('dm-inbox-identity'));
       expect(tester.getSize(trigger).height, greaterThanOrEqualTo(48));
+      expect(
+        tester.getRect(trigger).right,
+        closeTo(
+          tester.getRect(find.byKey(const ValueKey('dm-search'))).right,
+          1,
+        ),
+      );
       final arrow = find.descendant(
         of: trigger,
         matching: find.byIcon(Icons.chevron_right_rounded),
@@ -189,6 +199,10 @@ void main() {
       expect(
         tester.getTopLeft(find.byKey(const ValueKey('inbox-identity:self'))).dy,
         greaterThan(tester.getBottomLeft(trigger).dy),
+      );
+      expect(
+        tester.getRect(find.byKey(const ValueKey('inbox-identity:self'))).right,
+        closeTo(tester.getRect(trigger).right, 1),
       );
       await tester.tap(find.byKey(const ValueKey('inbox-add-identity:1')));
       await tester.pumpAndSettle();
