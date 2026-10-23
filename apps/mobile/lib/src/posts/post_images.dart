@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show SchedulerPhase;
 import 'package:hnuhole_image_viewer/image_viewer.dart';
 
 /// The host authorizes both providers and the complete original resolver.
@@ -125,12 +126,18 @@ class _PostImagesSectionState extends State<PostImagesSection> {
     if (group != null && !group.accessGranted.value) {
       _revoked = true;
       _viewer?.invalidateAccess();
+      final binding = WidgetsBinding.instance;
+      final duringBuild =
+          binding.schedulerPhase == SchedulerPhase.persistentCallbacks;
+      // Event-time revocation must remove protected pixels on the next frame.
+      // Only a build/layout-time notification needs to defer this state update.
+      if (!duringBuild) setState(() {});
       final revision = _revision;
       if (_scheduledGroupRevision == revision) return;
       _scheduledGroupRevision = revision;
-      // A decoder can discover expiry during LayoutBuilder. Revoke immediately,
-      // but defer widget changes and new reads until this frame has finished.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      // A decoder can discover expiry during LayoutBuilder. New reads and any
+      // build-time state update wait until this frame has finished.
+      binding.addPostFrameCallback((_) {
         if (_scheduledGroupRevision != revision) return;
         _scheduledGroupRevision = null;
         if (!mounted || revision != _revision || !identical(_group, group)) {
@@ -138,11 +145,11 @@ class _PostImagesSectionState extends State<PostImagesSection> {
         }
         if (_current && group.isExpired?.call() == true) {
           unawaited(_load());
-        } else {
+        } else if (duringBuild) {
           setState(() {});
         }
       });
-      WidgetsBinding.instance.ensureVisualUpdate();
+      binding.ensureVisualUpdate();
     }
   }
 
