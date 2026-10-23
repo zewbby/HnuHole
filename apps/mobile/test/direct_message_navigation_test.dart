@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_inbox.dart';
@@ -28,8 +32,11 @@ Widget inbox({
   List<DmInboxEntry> entries = const [],
   ValueChanged<DmInboxTarget>? open,
   ValueChanged<DmIdentity>? select,
+  VoidCallback? addIdentity,
+  List<DmInboxIdentity>? identities,
   double scale = 1,
 }) => MaterialApp(
+  debugShowCheckedModeBanner: false,
   theme: HhTelegramTheme.create(Brightness.light),
   builder: (context, child) => MediaQuery(
     data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
@@ -38,13 +45,16 @@ Widget inbox({
   home: HhDmInboxScreen(
     scopeKey: scope,
     identity: identity,
-    identities: const [
-      DmInboxIdentity(self, unread: 3),
-      DmInboxIdentity(other, unread: 8),
-    ],
+    identities:
+        identities ??
+        const [
+          DmInboxIdentity(self, unread: 3),
+          DmInboxIdentity(other, unread: 8),
+        ],
     entries: entries,
     onOpen: open ?? (_) {},
     onIdentitySelected: select ?? (_) {},
+    onAddIdentity: addIdentity,
   ),
 );
 
@@ -58,6 +68,224 @@ const entry = DmInboxEntry(
 );
 
 void main() {
+  testWidgets('scope replacement before menu first frame removes stale popup', (
+    tester,
+  ) async {
+    var additions = 0;
+    await tester.pumpWidget(inbox(addIdentity: () => additions++));
+    await tester.tap(find.byKey(const ValueKey('dm-inbox-identity')));
+    // Replace the authority before the popup header has ever built.
+    await tester.pumpWidget(
+      inbox(
+        scope: 'replacement',
+        identity: other,
+        addIdentity: () => additions++,
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('切换身份'), findsNothing);
+    expect(find.byKey(const ValueKey('inbox-add-identity')), findsNothing);
+    expect(additions, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  final renderDirectory =
+      Platform.environment['HNUHOLE_DM_IDENTITY_RENDER_DIR'];
+  if (renderDirectory != null) {
+    testWidgets(
+      'render actual inbox identity selector collapsed and expanded',
+      (tester) async {
+        final oldShadows = debugDisableShadows;
+        debugDisableShadows = false;
+        addTearDown(() => debugDisableShadows = oldShadows);
+        await tester.runAsync(() async {
+          for (final entry in {
+            'Roboto': 'assets/fonts/Roboto-Regular.ttf',
+            'HhNotoSansSC': 'assets/fonts/NotoSansSC-Variable.ttf',
+            'MaterialIcons':
+                Platform.environment['HNUHOLE_UI_RENDER_ICON_FONT'],
+          }.entries) {
+            if (entry.value == null) continue;
+            await (FontLoader(entry.key)..addFont(
+                  File(entry.value!).readAsBytes().then(ByteData.sublistView),
+                ))
+                .load();
+          }
+        });
+        tester.view.physicalSize = const Size(390, 844);
+        tester.view.devicePixelRatio = 1;
+        tester.view.padding = const FakeViewPadding(top: 24, bottom: 48);
+        tester.view.viewPadding = const FakeViewPadding(top: 24, bottom: 48);
+        addTearDown(tester.view.reset);
+        final key = GlobalKey();
+        await tester.pumpWidget(
+          RepaintBoundary(
+            key: key,
+            child: inbox(
+              identities: const [DmInboxIdentity(self)],
+              addIdentity: () {},
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        Future<void> capture(String name) async {
+          final boundary =
+              key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+          await tester.runAsync(() async {
+            final picture = await boundary.toImage(pixelRatio: 2);
+            final bytes = await picture.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            await Directory(renderDirectory).create(recursive: true);
+            await File('$renderDirectory/dm-identity-$name.png')
+                .writeAsBytes(bytes!.buffer.asUint8List());
+            picture.dispose();
+          });
+        }
+
+        await capture('collapsed');
+        await tester.tap(find.byKey(const ValueKey('dm-inbox-identity')));
+        await tester.pumpAndSettle();
+        await capture('expanded');
+        expect(tester.takeException(), isNull);
+        debugDisableShadows = oldShadows;
+      },
+    );
+  }
+
+  testWidgets(
+    'compact dropdown mirrors content and places one add row after identities',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      var additions = 0;
+      await tester.pumpWidget(
+        inbox(
+          identities: const [DmInboxIdentity(self)],
+          addIdentity: () => additions++,
+        ),
+      );
+      expect(find.text('最近聊天'), findsNothing);
+      expect(find.text('搜索'), findsOneWidget);
+      final trigger = find.byKey(const ValueKey('dm-inbox-identity'));
+      expect(tester.getSize(trigger).height, greaterThanOrEqualTo(48));
+      expect(
+        tester.getRect(trigger).right,
+        closeTo(
+          tester.getRect(find.byKey(const ValueKey('dm-search'))).right,
+          1,
+        ),
+      );
+      final arrow = find.descendant(
+        of: trigger,
+        matching: find.byIcon(Icons.chevron_right_rounded),
+      );
+      final name = find.descendant(of: trigger, matching: find.text(self.name));
+      expect(tester.getCenter(arrow).dx, lessThan(tester.getCenter(name).dx));
+      expect(find.text('当前身份'), findsNothing);
+      expect(tester.getCenter(arrow).dy, closeTo(tester.getCenter(name).dy, 1));
+      await tester.tap(find.byKey(const ValueKey('dm-search')));
+      await tester.enterText(find.byKey(const ValueKey('dm-search')), '查找');
+      await tester.tap(trigger);
+      await tester.pumpAndSettle();
+      expect(tester.testTextInput.isVisible, isFalse);
+      expect(find.byKey(const ValueKey('inbox-add-identity')), findsOneWidget);
+      expect(find.byIcon(Icons.add_rounded), findsOneWidget);
+      final addRow = find.byKey(const ValueKey('inbox-add-identity'));
+      expect(
+        tester.getRect(addRow).top,
+        closeTo(
+          tester
+              .getRect(find.byKey(const ValueKey('inbox-identity:self')))
+              .bottom,
+          1,
+        ),
+      );
+      expect(tester.getSize(addRow).height, inInclusiveRange(48, 56));
+      expect(
+        tester.getTopLeft(find.byKey(const ValueKey('inbox-identity:self'))).dy,
+        greaterThan(tester.getBottomLeft(trigger).dy),
+      );
+      expect(
+        tester.getRect(find.byKey(const ValueKey('inbox-identity:self'))).right,
+        closeTo(tester.getRect(trigger).right, 1),
+      );
+      await tester.tap(addRow);
+      await tester.pumpAndSettle();
+      expect(additions, 1);
+    },
+  );
+
+  testWidgets(
+    'full identity menu has no add slot and stale scope dismisses it',
+    (tester) async {
+      var additions = 0;
+      const third = DmIdentity(id: 'third', name: '第三个身份');
+      await tester.pumpWidget(
+        inbox(
+          identities: const [
+            DmInboxIdentity(self),
+            DmInboxIdentity(other),
+            DmInboxIdentity(third),
+          ],
+          addIdentity: () => additions++,
+        ),
+      );
+      await tester.tap(find.byKey(const ValueKey('dm-inbox-identity')));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.add_rounded), findsNothing);
+      await tester.pumpWidget(
+        inbox(
+          scope: 'replacement',
+          identity: other,
+          addIdentity: () => additions++,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('切换身份'), findsNothing);
+      expect(find.text('第三个身份'), findsNothing);
+      expect(additions, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('identity dropdown keeps last row above system navigation', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.padding = const FakeViewPadding(bottom: 48);
+    tester.view.viewPadding = const FakeViewPadding(bottom: 48);
+    addTearDown(tester.view.reset);
+    DmIdentity? chosen;
+    await tester.pumpWidget(inbox(select: (identity) => chosen = identity));
+    await tester.tap(find.byTooltip('切换身份'));
+    await tester.pumpAndSettle();
+    expect(find.text('切换身份'), findsOneWidget);
+    final last = find.byKey(const ValueKey('inbox-identity:other'));
+    expect(tester.getRect(last).bottom, lessThanOrEqualTo(844 - 48));
+    await tester.tap(last);
+    await tester.pumpAndSettle();
+    expect(chosen, other);
+  });
+
+  testWidgets(
+    'first-send identity confirmation stays above system navigation',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.padding = const FakeViewPadding(bottom: 48);
+      tester.view.viewPadding = const FakeViewPadding(bottom: 48);
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(chat.app(chat.view(locked: false, first: true)));
+      await tester.tap(find.byKey(const ValueKey('dm-select-identity')));
+      await tester.pumpAndSettle();
+      final confirm = find.byKey(const ValueKey('dm-use-identity'));
+      expect(tester.getRect(confirm).bottom, lessThanOrEqualTo(844 - 48));
+    },
+  );
+
   testWidgets(
     'a decreasing unread count does not announce a new message while browsing',
     (tester) async {

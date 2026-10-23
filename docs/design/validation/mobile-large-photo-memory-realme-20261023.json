@@ -29,11 +29,10 @@
     "firstEightTopPssMedianMiB": 255.6,
     "lastEightTopPssMedianMiB": 256.1,
     "allSamplePssRangeMiB": [252.6, 268.2],
-    "idleTwoMinutesPssMiB": 252.6,
-    "nativeHeapTopFirstLastMiB": [49.1, 55.0],
-    "outOfMemoryOrFatalLogMatches": 0
+    "nativeHeapTopFirstLastMiB": [49.1, 55.0]
   },
-  "verdict": "PASS_30_MINUTE_BOUNDED_PSS_NO_OBSERVED_OOM_OR_PROCESS_RESTART",
+  "verdict": "PASS_30_MINUTE_BOUNDED_PSS_NO_PROCESS_RESTART",
+  "postRunManualObservations": "After the recorded run, a separate idle meminfo spot check was about 252.6 MiB and a logcat keyword check found no OOM or fatal-exception matches; neither check is part of the per-cycle raw JSON.",
   "limitations": [
     "The test used four upscaled photographic JPEG variants, not a diverse set of native camera originals.",
     "The 30-minute single-device development-backend sample does not prove overnight or production memory behavior.",

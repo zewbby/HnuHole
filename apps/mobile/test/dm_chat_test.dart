@@ -58,10 +58,14 @@ Map<String, Object> textIntent(String text) => {
   'sourceCommentId': '',
 };
 
-class ChatRuntime implements DmRuntime {
+class ChatRuntime extends ChangeNotifier implements DmRuntime {
   ChatRuntime(this.controller);
   @override
   final DmController controller;
+  @override
+  DmIdentityStatus get identityStatus => controller.available
+      ? DmIdentityStatus.ready
+      : DmIdentityStatus.unavailable;
   @override
   List<DmIdentity> identities = [const DmIdentity(id: p1.own, name: '本人面具')];
   @override

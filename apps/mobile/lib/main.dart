@@ -674,7 +674,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         .whenComplete(() => _settingsRouteOpen = false);
   }
 
-  Future<void> _openIdentity() async {
+  Future<void> _openIdentity({bool initialCreate = false}) async {
     final navigator = _navigatorKey.currentState;
     if (navigator == null || _identityRouteOpen) return;
     if (!widget.sessions.isAuthenticated) {
@@ -699,6 +699,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             builder: (context) => IdentityManagementScreen(
               controller: widget.identities,
               sessions: widget.sessions,
+              initialCreate: initialCreate,
               onAuthenticationRequired: () {
                 Navigator.of(context).pop();
                 _openAuth();
@@ -868,6 +869,8 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
                           key: ValueKey((_postWindow.value, _dmInboxRevision)),
                           runtime: widget.dm!,
                           initialIdentity: _dmInitialIdentity,
+                          onManageIdentities: () =>
+                              _openIdentity(initialCreate: true),
                         )
                       : const DirectMessagesUnavailableScreen(),
                   AppDestination.personal: (_) => _personalScreen(),
