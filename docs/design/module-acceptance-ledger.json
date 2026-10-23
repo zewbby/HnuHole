@@ -22,6 +22,27 @@
     "historicalModuleVerdictsUnchanged": true,
     "evidence": "docs/branches/fix-auth-feedback.md"
   },
+  "dmGovernanceP320261023": {
+    "task": "DM-P3-GOVERNANCE",
+    "modules": [
+      "B08",
+      "B09"
+    ],
+    "branch": "feat/direct-message-governance",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/52",
+    "source": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
+    "independentReview": "PASS exact product SHA; independent read-only Astra High, not GitHub member approval",
+    "dependsOn": "https://github.com/zewbby/HnuHole/pull/51",
+    "result": "SCOPED_HOST_IMPLEMENTATION_NATIVE_SKIP_DRAFT",
+    "evidence": "docs/design/direct-message-governance-verification-20261023.json",
+    "native": "SKIP_USER_ABSENT_MANUAL_UNLOCK_PERMISSION_REQUIRED",
+    "remotePush": "NOT_IMPLEMENTED_NO_VENDOR_CHANNEL",
+    "ios": "NOT_RUN",
+    "production": "NOT_RELEASED_FEATURE_DEFAULT_FALSE",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true
+  },
   "dmChatP220261022": {
     "task": "DM-P2-CHAT",
     "modules": [

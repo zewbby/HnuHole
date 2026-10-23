@@ -43,15 +43,17 @@ type DMTextIntent struct {
 	Attempt         int    `json:"attempt"`
 }
 type DMReceipt struct {
-	State          string     `json:"state"`
-	Attempt        int        `json:"attempt"`
-	ErrorCode      string     `json:"errorCode,omitempty"`
-	MessageID      string     `json:"messageId,omitempty"`
-	ConversationID string     `json:"conversationId,omitempty"`
-	Sequence       int64      `json:"sequence,omitempty"`
-	AcceptedAt     *time.Time `json:"acceptedAt,omitempty"`
+	EvidenceVersion int        `json:"evidenceVersion"`
+	State           string     `json:"state"`
+	Attempt         int        `json:"attempt"`
+	ErrorCode       string     `json:"errorCode,omitempty"`
+	MessageID       string     `json:"messageId,omitempty"`
+	ConversationID  string     `json:"conversationId,omitempty"`
+	Sequence        int64      `json:"sequence,omitempty"`
+	AcceptedAt      *time.Time `json:"acceptedAt,omitempty"`
 }
 type DMConversation struct {
+	OwnBlockID   string `json:"ownBlockId"`
 	ID           string `json:"id"`
 	IdentityID   string `json:"identityId"`
 	PeerID       string `json:"peerId"`
@@ -63,13 +65,14 @@ type DMConversation struct {
 	CanSend      bool   `json:"canSend"`
 }
 type DMDelivery struct {
-	MessageID      string    `json:"messageId"`
-	ConversationID string    `json:"conversationId"`
-	IdentityID     string    `json:"identityId"`
-	SenderID       string    `json:"senderId"`
-	Sequence       int64     `json:"sequence"`
-	Text           string    `json:"text"`
-	AcceptedAt     time.Time `json:"acceptedAt"`
+	EvidenceVersion int       `json:"evidenceVersion"`
+	MessageID       string    `json:"messageId"`
+	ConversationID  string    `json:"conversationId"`
+	IdentityID      string    `json:"identityId"`
+	SenderID        string    `json:"senderId"`
+	Sequence        int64     `json:"sequence"`
+	Text            string    `json:"text"`
+	AcceptedAt      time.Time `json:"acceptedAt"`
 }
 type DMDirectory struct {
 	Items []DMConversation `json:"items"`
@@ -153,7 +156,7 @@ func (c *Community) withDMSession(ctx context.Context, b [32]byte, f func(pgx.Tx
 func dmReceipt(ctx context.Context, tx pgx.Tx, a uuid.UUID, id string) (DMReceipt, []byte, error) {
 	var r DMReceipt
 	var fp []byte
-	e := tx.QueryRow(ctx, `SELECT state,attempt,error_code,COALESCE(message_id::text,''),COALESCE(conversation_id::text,''),COALESCE(sequence,0),accepted_at,fingerprint FROM c_dm.commands WHERE owner_account=$1 AND command_id=$2`, a, id).Scan(&r.State, &r.Attempt, &r.ErrorCode, &r.MessageID, &r.ConversationID, &r.Sequence, &r.AcceptedAt, &fp)
+	e := tx.QueryRow(ctx, `SELECT state,attempt,error_code,COALESCE(message_id::text,''),COALESCE(conversation_id::text,''),COALESCE(sequence,0),accepted_at,fingerprint,CASE WHEN EXISTS(SELECT 1 FROM c_dm.messages m WHERE m.message_id=c_dm.commands.message_id AND (m.evidence_digest IS NOT NULL OR m.kind='IMAGE')) THEN 1 ELSE 0 END FROM c_dm.commands WHERE owner_account=$1 AND command_id=$2`, a, id).Scan(&r.State, &r.Attempt, &r.ErrorCode, &r.MessageID, &r.ConversationID, &r.Sequence, &r.AcceptedAt, &fp, &r.EvidenceVersion)
 	return r, fp, e
 }
 func (c *Community) GetDMCommand(ctx context.Context, b [32]byte, id string) (PostResponse, error) {
@@ -229,6 +232,13 @@ func (c *Community) SendDMText(ctx context.Context, b [32]byte, id string, in DM
 			return nil, e
 		}
 		if !peerActive {
+			return reject("CONTACT_UNAVAILABLE")
+		}
+		blocked, e := dmSendingBlocked(ctx, tx, a, peerAccount)
+		if e != nil {
+			return nil, e
+		}
+		if blocked {
 			return reject("CONTACT_UNAVAILABLE")
 		}
 		var outstanding int
@@ -324,12 +334,12 @@ func (c *Community) SendDMText(ctx context.Context, b [32]byte, id string, in DM
 		if e != nil {
 			return nil, e
 		}
-		_, e = tx.Exec(ctx, `INSERT INTO c_dm.messages(message_id,conversation_id,sequence,sender,recipient,body,accepted_at) VALUES($1,$2,$3,$4,$5,$6,$7)`, msg, conv, seq, in.IdentityID, in.PeerID, in.Text, at)
+		_, e = tx.Exec(ctx, `INSERT INTO c_dm.messages(message_id,conversation_id,sequence,sender,recipient,body,accepted_at,evidence_digest) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`, msg, conv, seq, in.IdentityID, in.PeerID, in.Text, at, c.dmEvidenceDigest(msg, in.Text))
 		if e != nil {
 			return nil, e
 		}
 		_, e = tx.Exec(ctx, `INSERT INTO c_dm.commands(owner_account,command_id,fingerprint,attempt,state,message_id,conversation_id,sequence,accepted_at) VALUES($1,$2,$3,$4,'SENT',$5,$6,$7,$8) ON CONFLICT(owner_account,command_id) DO UPDATE SET attempt=EXCLUDED.attempt,state='SENT',error_code='',message_id=EXCLUDED.message_id,conversation_id=EXCLUDED.conversation_id,sequence=EXCLUDED.sequence,accepted_at=EXCLUDED.accepted_at`, a, id, fp, in.Attempt, msg, conv, seq, at)
-		return DMReceipt{State: "SENT", Attempt: in.Attempt, MessageID: msg, ConversationID: conv, Sequence: seq, AcceptedAt: &at}, e
+		return DMReceipt{EvidenceVersion: 1, State: "SENT", Attempt: in.Attempt, MessageID: msg, ConversationID: conv, Sequence: seq, AcceptedAt: &at}, e
 	})
 }
 
@@ -339,14 +349,14 @@ func (c *Community) ReadDMDirectory(ctx context.Context, b [32]byte, identity, a
 	}
 	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, m restriction) (any, error) {
 		items := make([]DMConversation, 0)
-		rows, e := tx.Query(ctx, `SELECT c.conversation_id::text,i.identity_id::text,p.identity_id::text,CASE WHEN p.deleted_at IS NULL THEN p.nickname ELSE '已删除身份' END,c.source_post::text,c.sequence,(SELECT count(*) FROM c_dm.messages x WHERE x.conversation_id=c.conversation_id AND x.recipient=i.identity_id AND NOT x.read),CASE WHEN c.low_identity=i.identity_id THEN c.low_sent AND NOT c.high_sent ELSE c.high_sent AND NOT c.low_sent END,p.deleted_at IS NULL FROM c_dm.conversations c JOIN public.community_identities i ON i.identity_id IN(c.low_identity,c.high_identity) JOIN public.community_identities p ON p.identity_id=CASE WHEN i.identity_id=c.low_identity THEN c.high_identity ELSE c.low_identity END WHERE i.account_id=$1 AND i.identity_id=$2 AND i.deleted_at IS NULL AND ($3='' OR c.conversation_id>NULLIF($3,'')::uuid) ORDER BY c.conversation_id LIMIT 100`, a, identity, after)
+		rows, e := tx.Query(ctx, `SELECT c.conversation_id::text,i.identity_id::text,p.identity_id::text,CASE WHEN p.deleted_at IS NULL THEN p.nickname ELSE '注销身份 · '||(SELECT short_code FROM c_posts.identity_public_labels WHERE identity_id=p.identity_id) END,c.source_post::text,c.sequence,(SELECT count(*) FROM c_dm.messages x WHERE x.conversation_id=c.conversation_id AND x.recipient=i.identity_id AND NOT x.read),CASE WHEN c.low_identity=i.identity_id THEN c.low_sent AND NOT c.high_sent ELSE c.high_sent AND NOT c.low_sent END,p.deleted_at IS NULL AND NOT EXISTS(SELECT 1 FROM c_dm.blocks b WHERE (b.owner_account=i.account_id AND b.peer_account=p.account_id) OR (b.owner_account=p.account_id AND b.peer_account=i.account_id)),COALESCE((SELECT block_id::text FROM c_dm.blocks b WHERE b.owner_account=i.account_id AND b.identity_id=i.identity_id AND b.peer_id=p.identity_id),'') FROM c_dm.conversations c JOIN public.community_identities i ON i.identity_id IN(c.low_identity,c.high_identity) JOIN public.community_identities p ON p.identity_id=CASE WHEN i.identity_id=c.low_identity THEN c.high_identity ELSE c.low_identity END WHERE i.account_id=$1 AND i.identity_id=$2 AND i.deleted_at IS NULL AND ($3='' OR c.conversation_id>NULLIF($3,'')::uuid) ORDER BY c.conversation_id LIMIT 100`, a, identity, after)
 		if e != nil {
 			return nil, e
 		}
 		defer rows.Close()
 		for rows.Next() {
 			var v DMConversation
-			if e = rows.Scan(&v.ID, &v.IdentityID, &v.PeerID, &v.PeerName, &v.SourcePostID, &v.Sequence, &v.Unread, &v.Waiting, &v.CanSend); e != nil {
+			if e = rows.Scan(&v.ID, &v.IdentityID, &v.PeerID, &v.PeerName, &v.SourcePostID, &v.Sequence, &v.Unread, &v.Waiting, &v.CanSend, &v.OwnBlockID); e != nil {
 				return nil, e
 			}
 			items = append(items, v)
@@ -357,14 +367,14 @@ func (c *Community) ReadDMDirectory(ctx context.Context, b [32]byte, identity, a
 func (c *Community) PullDM(ctx context.Context, b [32]byte) (PostResponse, error) {
 	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
 		items := make([]DMDelivery, 0)
-		rows, e := tx.Query(ctx, `SELECT m.message_id::text,m.conversation_id::text,m.recipient::text,m.sender::text,m.sequence,m.body,m.accepted_at FROM c_dm.messages m JOIN public.community_identities i ON i.identity_id=m.recipient WHERE i.account_id=$1 AND i.deleted_at IS NULL AND NOT m.acknowledged AND m.kind='TEXT' AND NOT m.retracted ORDER BY m.accepted_at,m.conversation_id,m.sequence LIMIT 100`, a)
+		rows, e := tx.Query(ctx, `SELECT m.message_id::text,m.conversation_id::text,m.recipient::text,m.sender::text,m.sequence,m.body,m.accepted_at,CASE WHEN m.evidence_digest IS NOT NULL THEN 1 ELSE 0 END FROM c_dm.messages m JOIN public.community_identities i ON i.identity_id=m.recipient WHERE i.account_id=$1 AND i.deleted_at IS NULL AND NOT m.acknowledged AND m.kind='TEXT' AND NOT m.retracted ORDER BY m.accepted_at,m.conversation_id,m.sequence LIMIT 100`, a)
 		if e != nil {
 			return nil, e
 		}
 		defer rows.Close()
 		for rows.Next() {
 			var v DMDelivery
-			if e = rows.Scan(&v.MessageID, &v.ConversationID, &v.IdentityID, &v.SenderID, &v.Sequence, &v.Text, &v.AcceptedAt); e != nil {
+			if e = rows.Scan(&v.MessageID, &v.ConversationID, &v.IdentityID, &v.SenderID, &v.Sequence, &v.Text, &v.AcceptedAt, &v.EvidenceVersion); e != nil {
 				return nil, e
 			}
 			items = append(items, v)

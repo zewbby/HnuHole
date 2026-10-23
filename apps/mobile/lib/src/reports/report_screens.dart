@@ -134,12 +134,13 @@ class MaterialEvidenceForm extends StatefulWidget {
     this.descriptionLabel = '说明',
     this.submitLabel = '提交',
     this.enabled = true,
+    this.hasExtraInput = false,
   });
   final GovernanceController controller;
   final String title, descriptionLabel, submitLabel;
   final int textLimit, imageLimit;
   final Widget summary;
-  final bool enabled;
+  final bool enabled, hasExtraInput;
   final Future<bool> Function(String, List<EvidenceImage>) onSubmit;
   @override
   State<MaterialEvidenceForm> createState() => _MaterialEvidenceFormState();
@@ -156,7 +157,8 @@ class _MaterialEvidenceFormState extends State<MaterialEvidenceForm> {
       widget.controller.available &&
       _account == widget.controller.accountId &&
       _epoch == widget.controller.authorityVersion;
-  bool get _hasInput => _text.text.isNotEmpty || _images.isNotEmpty;
+  bool get _hasInput =>
+      _text.text.isNotEmpty || _images.isNotEmpty || widget.hasExtraInput;
   @override
   void dispose() {
     _text.dispose();

@@ -1,4 +1,4 @@
-import { canRevoke, canReviewAppeal, createClient, dateText, imageSource, label, platformNumber, recoveryEstimate, requireUUID } from './core.mjs';
+import { caseActions, canRevoke, canReviewAppeal, createClient, dateText, imageSource, label, platformNumber, recoveryEstimate, requireUUID } from './core.mjs';
 
 const content = document.getElementById('content');
 const sessionBox = document.getElementById('session');
@@ -182,9 +182,17 @@ function renderCase(parent, record, reload, current, isCurrent = () => current =
   parent.replaceChildren();
   const header = add(el('div', null, 'heading'), add(el('div'), el('h2', `工单 ${record.number ?? '待核对'}`), el('p', `目标账号 ${platformNumber(record.platformNumber)} · ${dateText(record.createdAt)}`, 'meta')), status(record.state));
   parent.append(header);
-  const evidence = section(record.commentId ? '举报时的评论／回复' : '举报时的内容');
-  const snapshot = add(el('div', null, 'evidence'), el('h3', record.evidence?.title ?? '帖子'), el('p', record.evidence?.body ?? '暂无可展示的文字材料。', 'body'));
-  materialImages(snapshot, record.evidence?.images, '内容证据'); evidence.append(snapshot); parent.append(evidence);
+  const evidence = section(record.conversationId ? '私信授权证据' : record.commentId ? '举报时的评论／回复' : '举报时的内容');
+  const snapshot = add(el('div', null, 'evidence'), el('h3', record.evidence?.title ?? '帖子'));
+  if (record.conversationId && Array.isArray(record.evidence?.dmRecords)) {
+    for (const item of record.evidence.dmRecords) {
+      const row = add(el('div', null, 'report'), el('h3', `第 ${item.sequence} 条 · ${item.direction}${item.retracted ? ' · 已撤回' : ''}`));
+      row.append(el('p', item.gap ? `已声明缺口：${item.gap}` : item.text || '图片记录', 'body'));
+      if (item.imageIndex > 0) materialImages(row, [record.evidence.images?.[item.imageIndex - 1]], '授权聊天图片');
+      snapshot.append(row);
+    }
+  } else { snapshot.append(el('p', record.evidence?.body ?? '暂无可展示的文字材料。', 'body')); materialImages(snapshot, record.evidence?.images, '内容证据'); }
+   evidence.append(snapshot); parent.append(evidence);
   const reports = section('举报材料');
   materialFeed(reports, { initial: record.reports, nextCursor: record.nextReportsCursor, path: `/api/v1/moderation/cases/${requireUUID(record.id)}/reports`, noun: '举报材料', isCurrent, renderMaterial: report => {
     const group = add(el('div', null, 'report'), el('h3', label(report.reason ?? record.reason)), el('p', report.description || '未补充说明。'), el('p', dateText(report.createdAt), 'meta'));
@@ -201,7 +209,7 @@ function renderCase(parent, record, reload, current, isCurrent = () => current =
     }, 'primary'));
     else controls.append(el('p', '核查材料后选择处理措施，并说明依据。', 'muted'));
     const form = el('form', null, 'inline-form');
-    const action = select([['DISMISS', '未发现违规，结束案件'], ['TAKEDOWN', '下架本案帖子'], ['RESET_NICKNAME', '重置本案身份的违规昵称'], ['RESET_AVATAR', '重置本案身份的违规头像'], ['MUTE', '下架并限时禁言'], ...(me.role === 'ADMIN' ? [['BAN', '下架并封禁账号']] : [])]);
+    const action = select(caseActions(record, me.role));
     const days = select([['1', '1 天'], ['3', '3 天'], ['7', '7 天'], ['30', '30 天']]); days.value = '3';
     const period = field('本次期限', days); const why = reasonInput();
     const estimate = el('p', null, 'helper'); const effect = el('p', null, 'warning');
@@ -214,7 +222,7 @@ function renderCase(parent, record, reload, current, isCurrent = () => current =
       if (action.value !== 'BAN') { if (days.value === '0') days.value = '3'; [...days.options].find(o => o.value === '0')?.remove(); }
       const profile = ['RESET_NICKNAME', 'RESET_AVATAR'].includes(action.value);
       effect.hidden = !timed && !profile;
-      effect.textContent = profile ? '只重置本案身份的对应违规资料并通知本人，不删除身份、不变更内容归属。本人可立即修正为合规资料。' : action.value === 'BAN' ? '封禁后保留处罚通知与申诉入口，其余社区功能暂停；本案帖子同时下架。' : '禁言对账号全部身份生效，暂停发帖、评论、编辑、私信和点赞；本案帖子同时下架。';
+      effect.textContent = record.conversationId ? (action.value === 'BAN' ? '封禁后保留处罚通知与申诉入口，其余社区功能暂停。已授权证据独立保存，对方本地记录不会被远程删除。' : '禁言对账号全部身份生效。已授权证据独立保存，对方本地记录不会被远程删除。') : profile ? '只重置本案身份的对应违规资料并通知本人，不删除身份、不变更内容归属。本人可立即修正为合规资料。' : action.value === 'BAN' ? '封禁后保留处罚通知与申诉入口，其余社区功能暂停；本案帖子同时下架。' : '禁言对账号全部身份生效，暂停发帖、评论、编辑、私信和点赞；本案帖子同时下架。';
       estimate.hidden = !timed;
       const result = recoveryEstimate(sanctions, action.value, Number(days.value));
       estimate.textContent = estimateReady ? `考虑现有处罚：社区访问预计恢复 ${result.community}；发言权限预计恢复 ${result.speaking}。以服务端实际提交时刻为准，各项处罚独立计时。` : '正在核对现有处罚，核对完成前不能提交账号处罚。';

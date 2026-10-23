@@ -14,6 +14,8 @@
 
 > **2026-10-23 AUTH-FEEDBACK-01（本地实现／未合并）：**移除认证请求顶部动态蓝条，邮箱发码受理提示移至验证码下方，账号密码错误改为取消／确定弹窗并保留输入。A12限定UI回归56项、分析0、APK构建与同签VIVO覆盖安装PASS；真实交互与流畅度待用户验收，未正式发布。见[任务记录](../branches/fix-auth-feedback.md)。
 
+> **2026-10-23 DM-P3-GOVERNANCE：**`feat/direct-message-governance` 依赖 P2 #51，第三阶段治理、清理和本地通知已接入；增量验证、独立审查和送审回执见[任务详情](../branches/feat-direct-message-governance.md)。原生人工项按用户要求 SKIP，远程推送渠道未实现，iOS／生产未验收，未合并或发布。已验证且未改变的 P1/P2 外观、IME 和原生图片链路保留原版本证据，不重复、不扩大证明范围。
+
 > **2026-10-22 DM-P2-CHAT（分支实现／限定验收通过，未合并）：**从 main `154a761` 新建 `feat/direct-message-chat-completion`，新增九图私有收发、加密落地 ACK、会话设置／私人备注、本机搜索与草稿、两分钟撤回和离线墓碑。Astra High 定位复杂竞态，独立只读审查无剩余阻断；真实 SQL/race/TLS、受影响迁移、客户端定点检查、分析 0 及 RMX3366 独立 `.dmchat`2211 原生新增链路通过。仅补新增／受影响部分，未改 P1 字体／布局／IME 沿用旧证据。P3、生产开关和 B08/B09 整体验收结论不提升；远端 CI／PR 回执见[任务详情](../branches/feat-direct-message-chat-completion.md)与[机器记录](direct-message-chat-verification-20261022.json)，不可把此分支成果当已合入 main。
 
 > **2026-10-22 AUTH-SESSION-RESUME-01／[PR #48](https://github.com/zewbby/HnuHole/pull/48)已合入main `d450cde`：**修复开发重启误用recover而废止会话；同代次resume前置校验，冻结/独立锚不一致仍拒绝。真实隔离16项、vivo2143原会话跨后端重启/冷启、独立复核及最终七类CI通过，本机维护工具已加载，APK无需重装。未做整机长关机或生产验收；详见[任务](../branches/fix-session-restore.md)。下方未合并均为历史状态。

@@ -325,6 +325,70 @@ void _paginationTests() {
 }
 
 void main() {
+  test('DM report keeps original request through unknown and uses fenced retry; sanction stays readable', () async {
+    final f = await _Fixture.create();
+    addTearDown(f.dispose);
+    var puts = 0;
+    String? original;
+    f.api.respond = (call) async {
+      if (call.path.startsWith('/api/v1/dm/governance/reports/')) {
+        original ??= call.path;
+        expect(call.path, original);
+        if (call.method == 'GET') {
+          return {'state': 'NOT_SUBMITTED', 'retryToken': _case};
+        }
+        puts++;
+        if (puts == 1) {
+          throw const GovernanceFailure(null, 'TIMEOUT', uncertain: true);
+        }
+        expect(call.body!['retryToken'], _case);
+        final receipt = _report(
+          call.path.split('/').last,
+          reason: 'HARASSMENT',
+          description: '固定举报',
+        );
+        (receipt['report'] as Map)
+          ..['postId'] = ''
+          ..['conversationId'] = _post;
+        return receipt;
+      }
+      return {
+        'id': _sanction,
+        'caseId': _case,
+        'action': 'MUTE',
+        'reason': '违规私信',
+        'startsAt': '2026-10-22T00:00:00Z',
+        'postId': '',
+        'conversationId': _post,
+        'appealCount': 0,
+      };
+    };
+    expect(
+      await f.controller.submitDmReport(
+        {
+          'authorized': true,
+          'identityId': identityTestId,
+          'conversationId': _post,
+          'firstSequence': 1,
+          'lastSequence': 1,
+          'entries': <Object>[],
+        },
+        'HARASSMENT',
+        '固定举报',
+        [],
+      ),
+      false,
+    );
+    expect(f.controller.pending?['kind'], 'DM_REPORT');
+    expect(await f.controller.reconcilePending(retry: true), true);
+    expect(puts, 2);
+    expect(f.controller.pending, isNull);
+    final sanction = await f.controller.readResource(
+      const NotificationRoute('SANCTION', _sanction),
+    );
+    expect(sanction?['conversationId'], _post);
+    expect(f.controller.error, isNull);
+  });
   _paginationTests();
   test(
     'comment report original result cannot resolve a different target',

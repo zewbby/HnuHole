@@ -1,0 +1,431 @@
+openapi: 3.1.0
+info:
+  title: HnuHole direct-message governance
+  version: 3.0.0
+  description: Explicit server feature flag, migration 0024, final session and C Gate; deploy only with moderation
+    and private media validation enabled. No arbitrary conversation history or evidence-read endpoint.
+x-contract-status: P3_IMPLEMENTATION_NOT_RELEASED
+servers:
+- url: https://community.hnuhole.invalid
+security:
+- sessionBearer: []
+paths:
+  /api/v1/dm/governance/blocks:
+    get:
+      operationId: listExplicitDmBlocks
+      responses:
+        '200':
+          description: Final-authorized result.
+          headers: &id001
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+            X-Request-ID:
+              required: true
+              schema:
+                type: string
+            Session-Expires-At:
+              required: true
+              schema:
+                type: string
+                format: date-time
+            Server-Time:
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blocks'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/dm/governance/blocks/{id}:
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+    get:
+      operationId: getDmBlockCommand
+      responses:
+        '200':
+          description: Final-authorized result.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockResult'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      operationId: changeDmBlock
+      responses:
+        '200':
+          description: Final-authorized result.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockResult'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockInput'
+      description: Every explicit identity-pair selection creates its own display entry. Any active entry blocks
+        both accounts in every mask. Only explicit entries are listed; no account identifiers or inferred masks.
+        Unblock removes only that selection. Already accepted deliveries are retained. Same operation ID and input
+        returns the immutable receipt.
+  /api/v1/dm/governance/reports/{id}:
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+    get:
+      operationId: getDmReportAndSealEarlierAttempts
+      responses:
+        '200':
+          description: Final-authorized result.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResult'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      operationId: submitAuthorizedDmReport
+      responses:
+        '200':
+          description: Final-authorized result.
+          headers: *id001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResult'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DMReportInput'
+      description: 'The client freezes the preview before authorization. Include each sequence in the same conversation,
+        max 200 rows, both directions, no omitted available middle messages. Unknown locally missing rows may use
+        empty messageId and UNKNOWN kind with an explicit gap. TEXT content must match the server HMAC commitment;
+        IMAGE original bytes must match the retained authenticated manifest. Old ACKed text without a commitment
+        returns EVIDENCE_UNVERIFIABLE and must be previewed as a declared gap. No silent content rewriting. At least
+        one authenticated record is required. Server adds retracted status without changing authorized original
+        bytes. Raw evidence plus supplements max 32 MiB; JSON max 48 MiB. RetryToken follows existing REPORT attempt
+        sealing: a NOT_SUBMITTED lookup invalidates every earlier request and supplies the next explicit retry token.
+        Same task and fixed material is idempotent. Existing REPORT notifications/GetReport and sanctions/appeals
+        are reused. Evidence retention and production authorization remain operational decisions; no automatic evidence
+        expiry.'
+components:
+  securitySchemes:
+    sessionBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical base64url 32-byte session capability
+  responses:
+    Error:
+      description: 400 malformed; 401 expired/replaced session; 403 account unavailable; 409 immutable intent/version/ownership
+        conflict; 413 size; 429 rate limit; 503 final Gate or service unavailable. Transport/5xx leave send outcome
+        unknown, never FAILED.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - error
+            - requestId
+            additionalProperties: false
+            properties:
+              error:
+                type: object
+                additionalProperties: false
+                required:
+                - code
+                - message
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              requestId:
+                type: string
+  schemas:
+    Id: &id002
+      type: string
+      format: uuid
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+    UUID: *id002
+    DateTime:
+      type: string
+      format: date-time
+    Image:
+      type: object
+      additionalProperties: false
+      required:
+      - mime
+      - base64
+      properties:
+        mime:
+          type: string
+          enum:
+          - image/png
+          - image/jpeg
+          - image/gif
+          - image/webp
+        base64:
+          type: string
+          maxLength: 2796204
+          minLength: 4
+          format: byte
+          description: Canonical padded standard Base64 of validated original image bytes. Decoded bytes must be
+            1..2097152; original MIME must match inspection.
+          x-max-decoded-bytes: 2097152
+    Report:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - caseId
+      - state
+      - postId
+      - reason
+      - description
+      - createdAt
+      - outcome
+      - explanation
+      properties:
+        conversationId:
+          $ref: '#/components/schemas/UUID'
+          description: Present only for a private-message case; postId is then empty.
+        id:
+          $ref: '#/components/schemas/UUID'
+        caseId:
+          $ref: '#/components/schemas/UUID'
+        state:
+          type: string
+          enum:
+          - PENDING
+          - PROCESSING
+          - ENDED
+        postId:
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            enum:
+            - ''
+        commentId:
+          $ref: '#/components/schemas/UUID'
+          description: Optional concrete comment or reply within postId; omitted for a post target.
+        reason:
+          type: string
+          enum:
+          - ADVERTISING
+          - HARASSMENT
+          - PRIVACY
+          - FRAUD
+          - ILLEGAL
+          - OTHER
+        description:
+          type: string
+          maxLength: 200
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+        outcome:
+          type: string
+          enum:
+          - ''
+          - UPHELD
+          - DISMISSED
+          - TARGET_DELETED
+        explanation:
+          type: string
+    ReportResult:
+      oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+        - state
+        - retryToken
+        properties:
+          state:
+            type: string
+            enum:
+            - NOT_SUBMITTED
+          retryToken:
+            $ref: '#/components/schemas/UUID'
+      - type: object
+        additionalProperties: false
+        required:
+        - state
+        - report
+        properties:
+          state:
+            type: string
+            enum:
+            - SUBMITTED
+          report:
+            $ref: '#/components/schemas/Report'
+    BlockInput:
+      type: object
+      additionalProperties: false
+      required:
+      - identityId
+      - conversationId
+      - blocked
+      properties:
+        identityId:
+          $ref: '#/components/schemas/Id'
+        conversationId:
+          $ref: '#/components/schemas/Id'
+        blocked:
+          type: boolean
+    BlockResult:
+      type: object
+      additionalProperties: false
+      required:
+      - state
+      - blockId
+      properties:
+        state:
+          enum:
+          - ABSENT
+          - APPLIED
+        blockId:
+          type: string
+          description: Opaque command receipt ID. Does not reveal whether another explicitly selected mask was already
+            blocked.
+    Blocks:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - id
+            - identityId
+            - conversationId
+            - peerId
+            - peerName
+            - peerAvatar
+            - createdAt
+            properties:
+              id:
+                $ref: '#/components/schemas/Id'
+              identityId:
+                $ref: '#/components/schemas/Id'
+              conversationId:
+                $ref: '#/components/schemas/Id'
+              peerId:
+                $ref: '#/components/schemas/Id'
+              peerName: &id003
+                type: string
+              peerAvatar: *id003
+              createdAt:
+                $ref: '#/components/schemas/DateTime'
+    Entry:
+      type: object
+      additionalProperties: false
+      required:
+      - messageId
+      - sequence
+      - kind
+      - text
+      - data
+      - gap
+      properties:
+        messageId:
+          oneOf:
+          - $ref: '#/components/schemas/Id'
+          - type: string
+            const: ''
+        sequence:
+          type: integer
+          minimum: 1
+        kind:
+          enum:
+          - TEXT
+          - IMAGE
+          - UNKNOWN
+        text:
+          type: string
+          maxLength: 16384
+        data:
+          type: string
+          maxLength: 13981016
+        gap:
+          enum:
+          - ''
+          - LOCAL_UNAVAILABLE
+          - RETRACTED
+          - UNVERIFIABLE
+    DMReportInput:
+      type: object
+      additionalProperties: false
+      required:
+      - identityId
+      - conversationId
+      - firstSequence
+      - lastSequence
+      - reason
+      - description
+      - images
+      - authorized
+      - entries
+      properties:
+        identityId:
+          $ref: '#/components/schemas/Id'
+        conversationId:
+          $ref: '#/components/schemas/Id'
+        firstSequence:
+          type: integer
+          minimum: 1
+        lastSequence:
+          type: integer
+          minimum: 1
+        reason:
+          enum:
+          - ADVERTISING
+          - HARASSMENT
+          - PRIVACY
+          - FRAUD
+          - ILLEGAL
+          - OTHER
+        description:
+          type: string
+          maxLength: 200
+        images:
+          type: array
+          maxItems: 6
+          items:
+            $ref: '#/components/schemas/Image'
+        authorized:
+          type: boolean
+          const: true
+        entries:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/Entry'
+        retryToken:
+          $ref: '#/components/schemas/Id'

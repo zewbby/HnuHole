@@ -380,6 +380,9 @@ components:
       - outcome
       - explanation
       properties:
+        conversationId:
+          $ref: '#/components/schemas/UUID'
+          description: Present only for a private-message case; postId is then empty.
         id:
           $ref: '#/components/schemas/UUID'
         caseId:
@@ -391,7 +394,10 @@ components:
           - PROCESSING
           - ENDED
         postId:
-          $ref: '#/components/schemas/UUID'
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            enum: ['']
         commentId:
           $ref: '#/components/schemas/UUID'
           description: Optional concrete comment or reply within postId; omitted for a post target.

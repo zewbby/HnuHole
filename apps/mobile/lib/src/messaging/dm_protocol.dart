@@ -34,6 +34,39 @@ abstract interface class DmApi {
 /// Allowlist at the transport boundary; private account keys cannot become UI
 /// fields through an untyped server response.
 Map<String, dynamic> decodeDm(Object? raw, String resource) {
+  if (resource.startsWith('governance/blocks/')) {
+    final m = PostJson.record(raw, {'state', 'blockId'});
+    if (!{'ABSENT', 'APPLIED'}.contains(m['state'])) {
+      throw const FormatException('Invalid block receipt');
+    }
+    if (m['blockId'] != '') PostProtocol.resourceId(m['blockId'] as String);
+    return m;
+  }
+  if (resource == 'governance/blocks') {
+    final m = PostJson.record(raw, {'items'});
+    if (m['items'] is! List || (m['items'] as List).length > 1000) {
+      throw const FormatException('Invalid block list');
+    }
+    for (final raw in m['items'] as List) {
+      final v = PostJson.record(raw, {
+        'id',
+        'identityId',
+        'conversationId',
+        'peerId',
+        'peerName',
+        'peerAvatar',
+        'createdAt',
+      });
+      for (final k in ['id', 'identityId', 'conversationId', 'peerId']) {
+        PostJson.id(v, k);
+      }
+      PostJson.date(v, 'createdAt');
+      for (final k in ['peerName', 'peerAvatar']) {
+        PostJson.text(v, k, allowEmpty: true);
+      }
+    }
+    return m;
+  }
   if (resource.startsWith('chat/')) return decodeDmChat(raw, resource);
   if (resource == 'contact') {
     final m = PostJson.record(raw, {
@@ -61,6 +94,7 @@ Map<String, dynamic> decodeDm(Object? raw, String resource) {
         'conversationId',
         'sequence',
         'acceptedAt',
+        'evidenceVersion',
       },
     );
     final state = m['state'];
@@ -68,13 +102,21 @@ Map<String, dynamic> decodeDm(Object? raw, String resource) {
       throw const FormatException('Invalid DM receipt');
     }
     if (state == 'ABSENT') {
-      if (m['attempt'] != 0 || m.length != 2) {
+      if (m['attempt'] != 0 ||
+          m.keys.any(
+            (key) => !{'state', 'attempt', 'evidenceVersion'}.contains(key),
+          ) ||
+          (m.containsKey('evidenceVersion') && m['evidenceVersion'] != 0)) {
         throw const FormatException('Invalid absent receipt');
       }
     } else if ((m['attempt'] as int) < 1) {
       throw const FormatException('Invalid DM attempt');
     }
     if (state == 'SENT') {
+      if (m['evidenceVersion'] != null &&
+          !{0, 1}.contains(m['evidenceVersion'])) {
+        throw const FormatException('Invalid evidence version');
+      }
       for (final k in ['messageId', 'conversationId']) {
         PostProtocol.resourceId(m[k] as String);
       }
@@ -134,7 +176,16 @@ Map<String, dynamic> decodeDm(Object? raw, String resource) {
               'waiting',
               'canSend',
             },
+      optional: pending ? {'evidenceVersion'} : {'ownBlockId'},
     );
+    if (!pending && item['ownBlockId'] != null && item['ownBlockId'] != '') {
+      PostJson.id(item, 'ownBlockId');
+    }
+    if (pending &&
+        item['evidenceVersion'] != null &&
+        !{0, 1}.contains(item['evidenceVersion'])) {
+      throw const FormatException('Invalid evidence version');
+    }
     for (final k
         in pending
             ? ['messageId', 'conversationId', 'identityId', 'senderId']
@@ -196,27 +247,34 @@ Map<String, dynamic> decodeDmChat(Object? raw, String resource) {
     }
     final originals = <Map<String, dynamic>>[];
     for (final rawItem in m['items'] as List) {
-      final item = PostJson.record(rawItem, {
-        'id',
-        'identityId',
-        'peerId',
-        'peerName',
-        'sourcePostId',
-        'sequence',
-        'unread',
-        'waiting',
-        'canSend',
-        'version',
-        'settingsVersion',
-        'pinned',
-        'muted',
-        'hidden',
-        'deleted',
-        'deletedThrough',
-        'note',
-        'unavailableUnread',
-        'sourceTitle',
-      });
+      final item = PostJson.record(
+        rawItem,
+        {
+          'id',
+          'identityId',
+          'peerId',
+          'peerName',
+          'sourcePostId',
+          'sequence',
+          'unread',
+          'waiting',
+          'canSend',
+          'version',
+          'settingsVersion',
+          'pinned',
+          'muted',
+          'hidden',
+          'deleted',
+          'deletedThrough',
+          'note',
+          'unavailableUnread',
+          'sourceTitle',
+        },
+        optional: {'ownBlockId'},
+      );
+      if (item['ownBlockId'] != null && item['ownBlockId'] != '') {
+        PostProtocol.resourceId(item['ownBlockId'] as String);
+      }
       for (final k in [
         'version',
         'settingsVersion',
@@ -250,6 +308,7 @@ Map<String, dynamic> decodeDmChat(Object? raw, String resource) {
             'note',
             'unavailableUnread',
             'sourceTitle',
+            'ownBlockId',
           }.contains(k),
         ),
       );
@@ -328,20 +387,28 @@ Map<String, dynamic> decodeDmChat(Object? raw, String resource) {
     }
     final seen = <String>{};
     for (final raw in m['items'] as List) {
-      final item = PostJson.record(raw, {
-        'messageId',
-        'conversationId',
-        'identityId',
-        'senderId',
-        'sequence',
-        'text',
-        'acceptedAt',
-        'kind',
-        'groupId',
-        'position',
-        'groupSize',
-        'media',
-      });
+      final item = PostJson.record(
+        raw,
+        {
+          'messageId',
+          'conversationId',
+          'identityId',
+          'senderId',
+          'sequence',
+          'text',
+          'acceptedAt',
+          'kind',
+          'groupId',
+          'position',
+          'groupSize',
+          'media',
+        },
+        optional: {'evidenceVersion'},
+      );
+      if (item['evidenceVersion'] != null &&
+          !{0, 1}.contains(item['evidenceVersion'])) {
+        throw const FormatException('Invalid evidence version');
+      }
       for (final k in [
         'messageId',
         'conversationId',

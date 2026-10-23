@@ -1418,6 +1418,9 @@ components:
       - appealCount
       - activeAppealId
       properties:
+        conversationId:
+          $ref: '#/components/schemas/UUID'
+          description: Present only for a private-message case; postId is then empty.
         id:
           $ref: '#/components/schemas/UUID'
         caseId:
@@ -1444,7 +1447,10 @@ components:
           format: date-time
           nullable: true
         postId:
-          $ref: '#/components/schemas/UUID'
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            enum: ['']
         commentId:
           $ref: '#/components/schemas/UUID'
           description: Optional concrete comment or reply within postId; omitted for a post target.
@@ -1670,6 +1676,21 @@ components:
       - body
       - images
       properties:
+        dmRecords:
+          type: array
+          maxItems: 200
+          items:
+            type: object
+            additionalProperties: false
+            required: [sequence, direction, kind, text, gap, imageIndex, retracted]
+            properties:
+              sequence: {type: integer, minimum: 1}
+              direction: {type: string, enum: ['举报方', '被举报方']}
+              kind: {type: string, enum: [TEXT, IMAGE]}
+              text: {type: string}
+              gap: {type: string}
+              imageIndex: {type: integer, minimum: 0, description: One-based index into images; zero for text or gaps.}
+              retracted: {type: boolean}
         title:
           type: string
         body:
@@ -1678,8 +1699,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EvidenceImage'
-          maxItems: 9
-      description: Immutable snapshot of publicly visible post content accepted with the report. Public post images
+          maxItems: 200
+      description: Immutable authorized evidence; DM uses structured dmRecords for attribution, at most 200 rows and 32 MiB total raw material. Public reports remain snapshots of visible post content. Public post images
         retain their post-image limits, independently from supplementary report-image limits.
     Case:
       type: object
@@ -1696,13 +1717,19 @@ components:
       - outcome
       - explanation
       properties:
+        conversationId:
+          $ref: '#/components/schemas/UUID'
+          description: Present only for a private-message case; postId is then empty.
         id:
           $ref: '#/components/schemas/UUID'
         number:
           type: string
           pattern: ^[0-9]+$
         postId:
-          $ref: '#/components/schemas/UUID'
+          oneOf:
+          - $ref: '#/components/schemas/UUID'
+          - type: string
+            enum: ['']
         commentId:
           $ref: '#/components/schemas/UUID'
           description: Optional concrete comment or reply within postId; omitted for a post target.

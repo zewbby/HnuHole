@@ -14,6 +14,7 @@ import '../storage/post_store.dart'
 import 'dm_protocol.dart';
 
 part 'dm_chat_store.dart';
+part 'dm_lifecycle_store.dart';
 
 class _DmVault implements BusinessKeyVault {
   _DmVault(this.native);
@@ -48,6 +49,25 @@ class DmStore {
       account,
       _DmVault(vault),
     );
+  }
+
+  /// Only the authenticated, durable CLOSED result authorizes this operation.
+  /// Native deletion also works when the original database/key is unreadable.
+  static Future<void> purgeNativeClosedAccount({
+    required String environment,
+    required String accountId,
+  }) async {
+    if (environment.isEmpty ||
+        accountId.isEmpty ||
+        (!Platform.isAndroid && !Platform.isIOS)) {
+      throw const PostStorageFailure();
+    }
+    try {
+      await DurableBusinessVault(scopeFor(environment, accountId))
+          .purgeClosedAccount();
+    } catch (_) {
+      throw const PostStorageFailure();
+    }
   }
 
   static Future<DmStore> open(
@@ -166,7 +186,9 @@ class DmStore {
           }
         }
       });
-      await store._transaction(store._migrateChatMedia);
+      if (await store._get('account-closed') == null) {
+        await store._transaction(store._migrateChatMedia);
+      }
       return store;
     } catch (_) {
       db?.close();
@@ -187,6 +209,9 @@ class DmStore {
     await before;
     try {
       if (_closed || await _vault.read() != _keyRecord) {
+        throw const PostStorageFailure();
+      }
+      if (await _get('account-closed') != null) {
         throw const PostStorageFailure();
       }
       return await action();
@@ -283,6 +308,8 @@ class DmStore {
     String state,
     Map<String, dynamic> value,
   ) async {
+    final owner = _recordOwner(kind, value);
+    if (owner != null) await _requireIdentity(owner);
     final data = Map<String, dynamic>.from(value)
       ..removeWhere((k, _) => k.startsWith('_'));
     // Confirmed messages follow the server's per-conversation sequence even
@@ -353,6 +380,7 @@ class DmStore {
         await _transaction(() async {
           final previous = await _get('draft:$pair');
           await _put('draft:$pair', 'draft', pair, 0, 'draft', {
+            'identityId': own,
             'text': text,
             'revision': (previous?['revision'] as int? ?? 0) + 1,
           });
@@ -409,6 +437,7 @@ class DmStore {
           final draft = await _get('draft:$pair');
           if (draft == null || draft['text'] == intent['text']) {
             await _put('draft:$pair', 'draft', pair, 0, 'draft', {
+              'identityId': intent['identityId'],
               'text': '',
               'revision': (draft?['revision'] as int? ?? 0) + 1,
             });

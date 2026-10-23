@@ -11,6 +11,8 @@ import '../identity/identity_api.dart';
 import '../posts/post_photo_picker.dart';
 import 'dm_protocol.dart';
 import 'dm_controller.dart';
+import 'dm_governance_ui.dart';
+import '../reports/report_screens.dart';
 import 'direct_message_models.dart';
 import 'direct_message_inbox.dart';
 import 'direct_message_screen.dart';
@@ -41,6 +43,7 @@ class DmRuntime {
   String? _token;
   int _authority = -1, _epoch = 0;
   bool _disposed = false;
+  final _closedAccounts = <String>{};
   Timer? _retry;
   void _identityChanged() {
     _authority = -1;
@@ -49,7 +52,10 @@ class DmRuntime {
 
   void _changed() {
     final record = authStore.current?.session;
-    final token = record != null && sessions.isCurrentToken(record.token)
+    final token =
+        record != null &&
+            !_closedAccounts.contains(record.accountId) &&
+            sessions.isCurrentToken(record.token)
         ? record.token
         : null;
     if (token == _token && sessions.authorityVersion == _authority) return;
@@ -85,6 +91,21 @@ class DmRuntime {
         }
       }
     }());
+  }
+
+  /// The auth flow owns the CLOSED decision; ordinary logout/replacement only
+  /// detaches and leaves encrypted local history intact.
+  Future<void> purgeClosedAccount(String accountId) async {
+    _closedAccounts.add(accountId);
+    if (authStore.current?.session?.accountId == accountId ||
+        controller.accountId == accountId) {
+      _epoch++;
+      _token = null;
+      _authority = -1;
+      _retry?.cancel();
+      identities = [];
+    }
+    await controller.purgeClosedAccount(accountId);
   }
 
   void dispose() {
@@ -166,7 +187,13 @@ class DmScope extends InheritedWidget {
 }
 
 class DmInboxRoute extends StatefulWidget {
-  const DmInboxRoute({super.key, required this.runtime, this.navigation});
+  const DmInboxRoute({
+    super.key,
+    required this.runtime,
+    this.navigation,
+    this.initialIdentity,
+  });
+  final String? initialIdentity;
   final DmRuntime runtime;
   final Widget? navigation;
   @override
@@ -174,7 +201,7 @@ class DmInboxRoute extends StatefulWidget {
 }
 
 class _DmInboxRouteState extends State<DmInboxRoute> {
-  String? _selected;
+  late String? _selected = widget.initialIdentity;
   String _query = '';
   Set<String> _searchMatches = {};
   int _searchGeneration = 0;
@@ -654,7 +681,7 @@ class _DmChatRouteState extends State<DmChatRoute> with WidgetsBindingObserver {
         }
       },
       textOnly: !c.chatEnabled,
-      reportEnabled: false,
+      reportEnabled: GovernanceScope.maybeOf(context) != null,
     );
   }
 }

@@ -37,7 +37,7 @@ class GovernanceMaterialVault implements AuthVault {
       if (record.data.length != 1 ||
           refs is! List ||
           refs.isEmpty ||
-          refs.length > 3) {
+          refs.length > 7) {
         throw const AuthStorageFailure();
       }
       final builder = BytesBuilder(copy: false);
@@ -56,7 +56,7 @@ class GovernanceMaterialVault implements AuthVault {
             raw['sha256'] as String,
           ),
         );
-        if (builder.length > 18 * 1024 * 1024) throw const AuthStorageFailure();
+        if (builder.length > 50 * 1024 * 1024) throw const AuthStorageFailure();
       }
       return utf8.decode(builder.takeBytes(), allowMalformed: false);
     } on Object {
@@ -68,7 +68,7 @@ class GovernanceMaterialVault implements AuthVault {
   Future<void> write(String value) async {
     try {
       final bytes = utf8.encode(value);
-      if (bytes.isEmpty || bytes.length > 18 * 1024 * 1024) {
+      if (bytes.isEmpty || bytes.length > 50 * 1024 * 1024) {
         throw const AuthStorageFailure();
       }
       final store = await _store(), previous = await store.get(_recordId);

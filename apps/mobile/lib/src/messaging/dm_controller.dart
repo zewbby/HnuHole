@@ -10,6 +10,7 @@ import 'dm_protocol.dart';
 import 'dm_store.dart';
 
 part 'dm_chat_controller.dart';
+part 'dm_governance_controller.dart';
 
 typedef DmStoreFactory = Future<DmStore> Function(String account);
 
@@ -22,11 +23,16 @@ class DmController extends ChangeNotifier {
     this.onUnauthorized,
     this.onUnavailable,
     this.onMetadata,
+    this.onIncoming,
+    this.purgeStore,
     this.chatEnabled = false,
   });
   final DmApi api;
   final bool chatEnabled;
   final DmStoreFactory openStore;
+  final Future<void> Function(String account)? purgeStore;
+  final Future<void> Function(List<Map<String, dynamic>>, String account)?
+  onIncoming;
   final void Function(String, String?)? onUnauthorized;
   final void Function(String)? onUnavailable;
   final Future<void> Function(String, DateTime, bool Function())? onMetadata;
@@ -34,6 +40,12 @@ class DmController extends ChangeNotifier {
   String? _account, _token;
   int _epoch = 0;
   int _bindingGeneration = 0;
+  String? _bindingAccount;
+  final _pendingBinds = <String, Set<Future<void>>>{};
+  final _retirements = <String, Set<Future<void>>>{};
+  final _closedAccounts = <String>{};
+  final _purgedAccounts = <String>{};
+  final _purging = <String, Future<void>>{};
   bool _disposed = false;
   bool Function()? _authorized;
   List<String> _identities = [];
@@ -45,8 +57,32 @@ class DmController extends ChangeNotifier {
   bool get available =>
       _store != null && _authorized?.call() == true && !_disposed;
   String get scope => '${_account ?? ''}:$_epoch';
+  String? get accountId => _account;
 
   Future<void> bind({
+    required String account,
+    required String token,
+    required List<String> identities,
+    required bool Function() isCurrent,
+  }) {
+    if (_closedAccounts.contains(account)) return Future.value();
+    _bindingAccount = account;
+    final task = _bind(
+      account: account,
+      token: token,
+      identities: identities,
+      isCurrent: isCurrent,
+    );
+    (_pendingBinds[account] ??= {}).add(task);
+    return task.whenComplete(() {
+      _pendingBinds[account]?.remove(task);
+      if (_pendingBinds[account]?.isEmpty == true) {
+        _pendingBinds.remove(account);
+      }
+    });
+  }
+
+  Future<void> _bind({
     required String account,
     required String token,
     required List<String> identities,
@@ -54,14 +90,26 @@ class DmController extends ChangeNotifier {
   }) async {
     final binding = ++_bindingGeneration;
     await _disconnect();
-    if (_disposed || binding != _bindingGeneration || !isCurrent()) return;
+    if (_disposed ||
+        binding != _bindingGeneration ||
+        !isCurrent() ||
+        _closedAccounts.contains(account)) {
+      return;
+    }
     final epoch = ++_epoch;
     _account = account;
     _token = token;
     _identities = List.of(identities);
     _authorized = isCurrent;
+    DmStore? opened;
     try {
       final store = await openStore(account);
+      opened = store;
+      if (!_current(epoch)) {
+        await store.close();
+        return;
+      }
+      await store.reconcileIdentities(identities);
       if (!_current(epoch)) {
         await store.close();
         return;
@@ -76,6 +124,7 @@ class DmController extends ChangeNotifier {
       );
       await sync();
     } catch (_) {
+      if (opened != null && !identical(opened, _store)) await opened.close();
       if (_current(epoch)) {
         error = '私信本地保存不可用，输入不会被清除';
         _notify();
@@ -91,10 +140,22 @@ class DmController extends ChangeNotifier {
 
   Future<void> detach() async {
     _bindingGeneration++;
+    _bindingAccount = null;
     await _disconnect();
   }
 
-  Future<void> _disconnect() async {
+  Future<void> _disconnect() {
+    final account = _account;
+    final task = _disconnectWindow();
+    if (account == null) return task;
+    (_retirements[account] ??= {}).add(task);
+    return task.whenComplete(() {
+      _retirements[account]?.remove(task);
+      if (_retirements[account]?.isEmpty == true) _retirements.remove(account);
+    });
+  }
+
+  Future<void> _disconnectWindow() async {
     _epoch++;
     _timer?.cancel();
     _timer = null;
@@ -103,6 +164,7 @@ class DmController extends ChangeNotifier {
     _store = null;
     _account = null;
     _token = null;
+    _identities = [];
     conversations = [];
     error = null;
     _operationError = null;
@@ -110,6 +172,37 @@ class DmController extends ChangeNotifier {
     // Drain the old window before opening a new store and starting another loop.
     await _syncing;
     await store?.close();
+  }
+
+  /// AuthFlows calls this only after a durable authoritative CLOSED result.
+  /// Mark closed before the first await so pending opens and late callbacks
+  /// cannot publish the old account, even if another account is already bound.
+  Future<void> purgeClosedAccount(String account) {
+    if (account.isEmpty) throw ArgumentError.value(account, 'account');
+    if (_purgedAccounts.contains(account)) return Future.value();
+    final running = _purging[account];
+    if (running != null) return running;
+    _closedAccounts.add(account);
+    final task = _purgeClosedAccount(account);
+    _purging[account] = task;
+    return task.whenComplete(() => _purging.remove(account));
+  }
+
+  Future<void> _purgeClosedAccount(String account) async {
+    if (_account == account || _bindingAccount == account) await detach();
+    await Future.wait(List.of(_pendingBinds[account] ?? <Future<void>>{}));
+    await Future.wait(List.of(_retirements[account] ?? <Future<void>>{}));
+    if (purgeStore != null) {
+      await purgeStore!(account);
+    } else {
+      final store = await openStore(account);
+      try {
+        await store.purgeClosedAccount();
+      } finally {
+        await store.close();
+      }
+    }
+    _purgedAccounts.add(account);
   }
 
   Future<void> sync() {
@@ -129,13 +222,21 @@ class DmController extends ChangeNotifier {
     Map<String, String>? query,
   }) async {
     if (!_current(epoch)) throw StateError('DM window expired');
-    final response = await api.dmRequest(
-      token,
-      method,
-      path,
-      body: body,
-      query: query,
-    );
+    late PostResponse<Map<String, dynamic>> response;
+    try {
+      response = await api.dmRequest(
+        token,
+        method,
+        path,
+        body: body,
+        query: query,
+      );
+    } on PostFailure catch (e) {
+      // Contact/foreground requests share the same fail-closed boundary as
+      // background sync; do not leave history visible until the next poll.
+      if (_current(epoch)) _stopForFailure(e, token);
+      rethrow;
+    }
     if (!_current(epoch)) throw StateError('DM window expired');
     await onMetadata?.call(
       token,
@@ -147,6 +248,8 @@ class DmController extends ChangeNotifier {
   }
 
   Future<void> _synchronize(int epoch, DmStore store, String token) async {
+    final incoming = <Map<String, dynamic>>[];
+    final account = _account!;
     try {
       if (chatEnabled) await _chatBeforeSync(epoch, store, token);
       for (final row in await store.work()) {
@@ -155,6 +258,7 @@ class DmController extends ChangeNotifier {
         final state = row['_state'] as String;
         if (state == 'queued' || state == 'unknown') {
           final intent = Map<String, Object>.from(row['intent'] as Map);
+          if (!_identities.contains(intent['identityId'])) continue;
           if (state == 'queued') {
             await store.transition(id, 'queued', 'unknown');
           }
@@ -238,11 +342,15 @@ class DmController extends ChangeNotifier {
       final items = (pending['items'] as List)
           .map((e) => Map<String, dynamic>.from(e as Map))
           .toList();
+      if (items.any((item) => !_identities.contains(item['identityId']))) {
+        throw const FormatException('Wrong pending identity');
+      }
       if (items.isNotEmpty) {
         if (!_current(epoch)) return;
         final durableIds = <String>[];
         if (chatEnabled) {
           for (final item in items) {
+            if (!_current(epoch)) return;
             try {
               if (await store.deliverySuppressed(item)) {
                 durableIds.add(item['messageId']);
@@ -274,7 +382,12 @@ class DmController extends ChangeNotifier {
                 if (!_current(epoch)) return;
                 await store.receivePhoto(item, bytes);
               } else {
+                if (!_current(epoch)) return;
                 await store.receive([item]);
+              }
+              if (!_current(epoch)) return;
+              if (await store.get(item['messageId']) != null) {
+                incoming.add(item);
               }
               durableIds.add(item['messageId']);
             } on PostFailure catch (e) {
@@ -288,7 +401,16 @@ class DmController extends ChangeNotifier {
             }
           }
         } else {
+          final unseen = <Map<String, dynamic>>[];
+          for (final item in items) {
+            if (await store.get(item['messageId']) == null) unseen.add(item);
+          }
+          if (!_current(epoch)) return;
           await store.receive(items);
+          if (!_current(epoch)) return;
+          for (final item in unseen) {
+            if (await store.get(item['messageId']) != null) incoming.add(item);
+          }
           durableIds.addAll(items.map((e) => e['messageId'] as String));
         }
         if (!_current(epoch)) return;
@@ -350,11 +472,7 @@ class DmController extends ChangeNotifier {
       _operationError = null;
     } on PostFailure catch (e) {
       if (!_current(epoch)) return;
-      if (e.kind == PostFailureKind.unauthorized) {
-        onUnauthorized?.call(token, e.code);
-      } else if (e.kind == PostFailureKind.unavailable) {
-        onUnavailable?.call(token);
-      }
+      _stopForFailure(e, token);
       if (!_current(epoch)) return;
       error = '连接暂不可用，已保存内容将在恢复后继续核对';
     } catch (_) {
@@ -365,10 +483,33 @@ class DmController extends ChangeNotifier {
       if (_current(epoch)) {
         try {
           await _refreshDirectory(epoch, store);
+          if (_current(epoch) && incoming.isNotEmpty) {
+            await onIncoming?.call(incoming, account);
+          }
         } catch (_) {}
         if (_current(epoch)) _notify();
       }
     }
+  }
+
+  void _stopForFailure(PostFailure failure, String token) {
+    if (failure.kind == PostFailureKind.unauthorized) {
+      _suspendWindow();
+      onUnauthorized?.call(token, failure.code);
+    } else if (failure.kind == PostFailureKind.unavailable) {
+      _suspendWindow();
+      onUnavailable?.call(token);
+    }
+  }
+
+  void _suspendWindow() {
+    _epoch++;
+    _authorized = null;
+    _timer?.cancel();
+    _timer = null;
+    conversations = [];
+    error = '当前会话暂不可用，请恢复授权后查看私信';
+    _notify();
   }
 
   Future<void> _refreshDirectory(int epoch, DmStore store) async {
@@ -475,8 +616,13 @@ class DmController extends ChangeNotifier {
     }
   }
 
-  Future<String> draft(String own, String peer) async =>
-      available ? _store!.draft(own, peer) : '';
+  Future<String> draft(String own, String peer) async {
+    if (!available || !_identities.contains(own)) return '';
+    final epoch = _epoch;
+    final value = await _store!.draft(own, peer);
+    return _current(epoch) ? value : '';
+  }
+
   Future<Map<String, dynamic>?> message(String id) async {
     if (!available) return null;
     final epoch = _epoch;

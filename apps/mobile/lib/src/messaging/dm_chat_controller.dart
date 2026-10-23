@@ -4,7 +4,11 @@ extension DmChatController on DmController {
   Future<void> _chatBeforeSync(int epoch, DmStore store, String token) async {
     await store.expireReedit();
     for (final row in await store.operations()) {
-      final path = 'chat/operations/${row['_id']}';
+      final intent = Map<String, Object>.from(row['intent'] as Map);
+      final block = intent['operation'] == 'BLOCK';
+      final path = block
+          ? 'governance/blocks/${row['_id']}'
+          : 'chat/operations/${row['_id']}';
       Map<String, dynamic> receipt;
       try {
         receipt = await _request(epoch, token, 'GET', path);
@@ -14,7 +18,9 @@ extension DmChatController on DmController {
             token,
             'PUT',
             path,
-            body: Map<String, Object>.from(row['intent'] as Map),
+            body: block
+                ? (Map<String, Object>.of(intent)..remove('operation'))
+                : intent,
           );
         }
       } on PostFailure catch (e) {

@@ -48,6 +48,10 @@ func TestDMChatDevicePostgres(t *testing.T) {
 		if e != nil {
 			t.Fatal(e)
 		}
+		v, e = v.WithModeration(context.Background())
+		if e != nil {
+			t.Fatal(e)
+		}
 		return v
 	})
 	cert := mobileLabCertificate(t)

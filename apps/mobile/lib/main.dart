@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
@@ -16,6 +15,9 @@ import 'src/messaging/direct_messages_unavailable.dart';
 import 'src/messaging/dm_runtime.dart';
 import 'src/messaging/dm_controller.dart';
 import 'src/messaging/dm_store.dart';
+import 'src/messaging/dm_notifications.dart';
+import 'src/messaging/dm_governance_ui.dart';
+import 'src/messaging/direct_message_models.dart';
 import 'src/design_system/telegram_theme.dart';
 
 void main() {
@@ -169,6 +171,13 @@ void main() {
           ),
         ),
       );
+  late final DmRuntime dm;
+  final dmNotifications = DmNotifications(
+    environment: storageScope,
+    preferences: FlutterAuthVault(
+      namespace: 'hnuhole.dm.notification.$storageNamespace',
+    ),
+  );
   final flows = AuthFlows(
     api: api,
     store: store,
@@ -179,42 +188,45 @@ void main() {
     sessionAuthorityVersion: () => sessions.authorityVersion,
     sessionAuthority: sessions,
     onAccountClosed: (accountId) async {
+      await dm.purgeClosedAccount(accountId);
+      await dmNotifications.purge(accountId);
       await posts.purgeClosedAccount(accountId);
       await comments.purgeClosedAccount(accountId);
       await governance.purgeClosedAccount(accountId);
     },
   );
 
-  final dm =
-      kDebugMode &&
-          (const bool.fromEnvironment('DM_TEXT_INTEGRATION') ||
-              const bool.fromEnvironment('DM_CHAT_INTEGRATION'))
-      ? DmRuntime(
-          controller: DmController(
-            chatEnabled: const bool.fromEnvironment('DM_CHAT_INTEGRATION'),
-            api: postApi,
-            openStore: (account) => DmStore.openNative(storageScope, account),
-            onUnauthorized: sessions.sessionUnauthorized,
-            onUnavailable: sessions.sessionUnavailable,
-            onMetadata: (token, expires, current) async {
-              await sessions.persistSessionMetadata(token, expires, current);
-            },
-          ),
-          sessions: sessions,
-          authStore: store,
-          identityApi: api,
-          identityChanges: identities,
-          openPost: (context, id) => Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => PostDetailScreen(
-                controller: posts,
-                postId: id,
-                loadImages: postMedia.load,
-              ),
-            ),
-          ),
-        )
-      : null;
+  dm = DmRuntime(
+    controller: DmController(
+      chatEnabled: true,
+      api: postApi,
+      openStore: (account) => DmStore.openNative(storageScope, account),
+      purgeStore: (account) => DmStore.purgeNativeClosedAccount(
+        environment: storageScope,
+        accountId: account,
+      ),
+      onIncoming: (items, account) =>
+          dmNotifications.incoming(items, account, dm.controller),
+      onUnauthorized: sessions.sessionUnauthorized,
+      onUnavailable: sessions.sessionUnavailable,
+      onMetadata: (token, expires, current) async {
+        await sessions.persistSessionMetadata(token, expires, current);
+      },
+    ),
+    sessions: sessions,
+    authStore: store,
+    identityApi: api,
+    identityChanges: identities,
+    openPost: (context, id) => Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PostDetailScreen(
+          controller: posts,
+          postId: id,
+          loadImages: postMedia.load,
+        ),
+      ),
+    ),
+  );
   runApp(
     HnuholeApp(
       directory: directory,
@@ -233,6 +245,7 @@ void main() {
       governance: governance,
       governanceApi: governanceApi,
       dm: dm,
+      dmNotifications: dmNotifications,
     ),
   );
 }
@@ -259,6 +272,7 @@ class HnuholeApp extends StatefulWidget {
     this.governanceApi,
     this.comments,
     this.dm,
+    this.dmNotifications,
   });
 
   final ChannelDirectoryController directory;
@@ -277,6 +291,7 @@ class HnuholeApp extends StatefulWidget {
   final CommentRuntime? comments;
   final HttpGovernanceApi? governanceApi;
   final DmRuntime? dm;
+  final DmNotifications? dmNotifications;
 
   @override
   State<HnuholeApp> createState() => _HnuholeAppState();
@@ -300,6 +315,84 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   late final Listenable _postRouteChanges;
   bool _messagesRouteOpen = false;
   bool _directMessagesRouteOpen = false;
+  bool _handlingDmTap = false;
+  Future<void> _dmNotificationChanged() async {
+    final n = widget.dmNotifications, c = widget.dm?.controller;
+    if (n == null || c == null || !mounted) return;
+    await n.bind(c.available ? c.accountId : null);
+    await n.reconcile(c);
+    if (!mounted || _handlingDmTap || n.pending == null) return;
+    final target = n.pending!;
+    final account = widget.store.current?.session?.accountId;
+    if (account != null && target.scope != n.scopeFor(account)) {
+      n.pending = null;
+      return;
+    }
+    if (!widget.sessions.isAuthenticated) {
+      _openAuth();
+      return;
+    }
+    if (!c.available || c.accountId == null) return;
+    if (target.scope != n.scopeFor(c.accountId!)) {
+      n.pending = null;
+      return;
+    }
+    final row = c.conversations
+        .where(
+          (r) =>
+              r['id'] == target.conversation &&
+              r['identityId'] == target.identity,
+        )
+        .firstOrNull;
+    final own = widget.dm!.identities
+        .where((i) => i.id == target.identity)
+        .firstOrNull;
+    // A cold local directory may still be waiting for its first server sync.
+    if (row == null || own == null) return;
+    if (row['deleted'] == true) {
+      n.pending = null;
+      return;
+    }
+    _handlingDmTap = true;
+    n.pending = null;
+    final navigator = _navigatorKey.currentState;
+    if (navigator != null) {
+      navigator.popUntil((r) => r.isFirst);
+      unawaited(
+        navigator.push(
+          MaterialPageRoute<void>(
+            builder: (_) => DmInboxRoute(
+              runtime: widget.dm!,
+              initialIdentity: own.id,
+              navigation: _primaryNavigation(AppDestination.directMessages),
+            ),
+          ),
+        ),
+      );
+      unawaited(
+        navigator.push(
+          MaterialPageRoute<void>(
+            builder: (_) => DmChatRoute(
+              runtime: widget.dm!,
+              own: own,
+              peer: DmIdentity(id: row['peerId'], name: row['peerName']),
+              sourcePost: row['sourcePostId'],
+              conversation: row['id'],
+            ),
+          ),
+        ),
+      );
+    }
+    _handlingDmTap = false;
+    if (mounted && n.pending != null) _scheduleDmNotification();
+  }
+
+  void _scheduleDmNotification() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(_dmNotificationChanged());
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
 
   Widget _primaryNavigation(AppDestination selected) => HhAppNavigation(
     selected: selected,
@@ -469,6 +562,11 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     widget.posts.addListener(_postWindowChanged);
     _postWindowChanged();
     _startAuthentication();
+    widget.dm?.controller.addListener(_scheduleDmNotification);
+    widget.dmNotifications?.onTap = _scheduleDmNotification;
+    unawaited(
+      widget.dmNotifications?.start().then((_) => _scheduleDmNotification()),
+    );
   }
 
   void _postWindowChanged() {
@@ -563,6 +661,33 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
               onManageIdentity: _openIdentity,
               onManageSecurity: _openSecurity,
               onManageAccount: _openAuth,
+              onBlacklist: widget.dm == null
+                  ? null
+                  : () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => DmBlacklistScreen(
+                          controller: widget.dm!.controller,
+                        ),
+                      ),
+                    ),
+              onDmNotifications:
+                  widget.dmNotifications == null ||
+                      widget.dm?.controller.accountId == null
+                  ? null
+                  : () {
+                      final account = widget.dm!.controller.accountId!;
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => DmNotificationSettings(
+                            notifications: widget.dmNotifications!,
+                            account: account,
+                            current: () =>
+                                widget.dm!.controller.available &&
+                                widget.dm!.controller.accountId == account,
+                          ),
+                        ),
+                      );
+                    },
             ),
           ),
         )
@@ -667,6 +792,8 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    widget.dm?.controller.removeListener(_scheduleDmNotification);
+    widget.dmNotifications?.dispose();
     widget.dm?.dispose();
     _authPresentation.dispose();
     WidgetsBinding.instance.removeObserver(this);

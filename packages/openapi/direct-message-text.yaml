@@ -143,6 +143,7 @@ components:
       additionalProperties: false
       required: [state, attempt]
       properties:
+        evidenceVersion: {type: integer, enum: [0, 1], description: 1 supports authenticated local evidence after ACK; 0 must be an explicit UNVERIFIABLE gap.}
         state: {enum: [ABSENT, FAILED, SENT]}
         attempt: {type: integer, minimum: 0, maximum: 1000}
         errorCode: {enum: [POSTING_RESTRICTED, IDENTITY_UNAVAILABLE, CONTACT_UNAVAILABLE, POST_IDENTITY_BOUND, WAITING_FOR_REPLY, PENDING_LIMIT]}
@@ -164,6 +165,7 @@ components:
       additionalProperties: false
       required: [id, identityId, peerId, peerName, sourcePostId, sequence, unread, waiting, canSend]
       properties:
+        ownBlockId: {type: string, description: Only the block explicitly selected in this exact identity conversation; empty otherwise.}
         id: {$ref: '#/components/schemas/Id'}
         identityId: {$ref: '#/components/schemas/Id'}
         peerId: {$ref: '#/components/schemas/Id'}
@@ -178,6 +180,7 @@ components:
       additionalProperties: false
       required: [messageId, conversationId, identityId, senderId, sequence, text, acceptedAt]
       properties:
+        evidenceVersion: {type: integer, enum: [0, 1]}
         messageId: {$ref: '#/components/schemas/Id'}
         conversationId: {$ref: '#/components/schemas/Id'}
         identityId: {$ref: '#/components/schemas/Id'}

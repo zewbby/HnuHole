@@ -105,3 +105,8 @@ export function createClient({ fetcher = globalThis.fetch, cryptoAPI = globalThi
     },
   };
 }
+
+export function caseActions(record, role) {
+  const dm = Boolean(record.conversationId);
+  return [['DISMISS', '未发现违规，结束案件'], ...(dm ? [] : [['TAKEDOWN', '下架本案内容'], ['RESET_NICKNAME', '重置本案身份的违规昵称'], ['RESET_AVATAR', '重置本案身份的违规头像']]), ['MUTE', dm ? '限时禁言' : '下架并限时禁言'], ...(role === 'ADMIN' ? [['BAN', dm ? '封禁账号' : '下架并封禁账号']] : [])];
+}
