@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_inbox.dart';
+import 'package:hnuhole_mobile/src/messaging/direct_message_composer.dart';
+import 'package:hnuhole_mobile/src/navigation/app_navigation.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_models.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_timeline.dart';
 
@@ -35,6 +37,7 @@ Widget inbox({
   VoidCallback? addIdentity,
   List<DmInboxIdentity>? identities,
   double scale = 1,
+  Widget? navigation,
 }) => MaterialApp(
   debugShowCheckedModeBanner: false,
   theme: HhTelegramTheme.create(Brightness.light),
@@ -44,6 +47,7 @@ Widget inbox({
   ),
   home: HhDmInboxScreen(
     scopeKey: scope,
+    navigation: navigation,
     identity: identity,
     identities:
         identities ??
@@ -124,6 +128,10 @@ void main() {
             child: inbox(
               identities: const [DmInboxIdentity(self)],
               addIdentity: () {},
+              navigation: HhAppNavigation(
+                selected: AppDestination.directMessages,
+                onSelected: (_) {},
+              ),
             ),
           ),
         );
@@ -181,10 +189,16 @@ void main() {
         of: trigger,
         matching: find.byIcon(Icons.chevron_right_rounded),
       );
-      final name = find.descendant(of: trigger, matching: find.text(self.name));
-      expect(tester.getCenter(arrow).dx, lessThan(tester.getCenter(name).dx));
+      final avatar = find.descendant(
+        of: trigger,
+        matching: find.byType(HhDmAvatar),
+      );
+      expect(tester.getCenter(arrow).dx, lessThan(tester.getCenter(avatar).dx));
       expect(find.text('当前身份'), findsNothing);
-      expect(tester.getCenter(arrow).dy, closeTo(tester.getCenter(name).dy, 1));
+      expect(
+        tester.getCenter(arrow).dy,
+        closeTo(tester.getCenter(avatar).dy, 1),
+      );
       await tester.tap(find.byKey(const ValueKey('dm-search')));
       await tester.enterText(find.byKey(const ValueKey('dm-search')), '查找');
       await tester.tap(trigger);
@@ -216,6 +230,38 @@ void main() {
       expect(additions, 1);
     },
   );
+
+  testWidgets('identity selector semantics tap opens identity menu', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(inbox());
+      final trigger = tester.getSemantics(
+        find.bySemanticsLabel('切换身份，当前${self.name}'),
+      );
+      expect(
+        trigger.getSemanticsData().hasAction(ui.SemanticsAction.tap),
+        isTrue,
+      );
+      expect(find.byKey(const ValueKey('inbox-identity:self')), findsNothing);
+
+      tester.binding.renderViews.single.owner!.semanticsOwner!.performAction(
+        trigger.id,
+        ui.SemanticsAction.tap,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('inbox-identity:self')), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('inbox-identity:other')),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    } finally {
+      semantics.dispose();
+    }
+  });
 
   testWidgets(
     'full identity menu has no add slot and stale scope dismisses it',
