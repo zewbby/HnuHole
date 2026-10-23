@@ -38,6 +38,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `fix/direct-message-header-density` | 私信标题、身份入口高度与搜索框已按用户确认收紧，语义点击已补齐；2315已覆盖安装，尚未合并／发布。 | [任务详情](docs/branches/fix-direct-message-header-density.md) |
 | `fix/direct-message-identity-loading` | 空身份修复、右上快捷切换与身份管理往返保持绑定已送审[PR #60](https://github.com/zewbby/HnuHole/pull/60)，2313限定通过；合并与CI回执见PR，未发布。 | [任务详情](docs/branches/fix-direct-message-identity-loading.md) |
 | `fix/mobile-navigation-refresh` | 已合并 main [PR #57](https://github.com/zewbby/HnuHole/pull/57)；五项限定验收、动图原生保存与短时帧性能已测，未发布。 | [交接](docs/branches/fix-mobile-navigation-refresh.md) |
 | `test/direct-message-device-recovery` | 私信真实双设备接替、强杀及整机重启增量补验通过；真实掉电按用户要求暂列未验。 | [任务详情](docs/branches/test-direct-message-device-recovery.md) |
@@ -90,8 +91,8 @@
 
 ## 最近变动
 
+- [PR #60](https://github.com/zewbby/HnuHole/pull/60)：修复私信空身份加载，完善快捷切换和身份管理往返。
 - [PR #57](https://github.com/zewbby/HnuHole/pull/57)：修复底栏重影，优化刷新、图片缓存与缩略图及个人页加载。
 - [PR #56](https://github.com/zewbby/HnuHole/pull/56)：消除应用启动期间旧会话错误页闪现。
 - [PR #55](https://github.com/zewbby/HnuHole/pull/55)：补齐私信真实换机、强杀和整机重启的限定设备回归。
 - [PR #52](https://github.com/zewbby/HnuHole/pull/52)：接通私信治理、生命周期清理和隐私本地通知；保留原生与生产未验项。
-- [PR #51](https://github.com/zewbby/HnuHole/pull/51)：接通九图私有收发、会话管理和两分钟撤回。

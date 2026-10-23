@@ -1,4 +1,36 @@
 {
+  "dmHeaderDensity20261023": {
+    "task": "DM-HEADER-DENSITY-01",
+    "modules": [
+      "B08",
+      "B09"
+    ],
+    "branch": "fix/direct-message-header-density",
+    "base": "eb1eeb93f55a643718f0bff48aa0386a9db62c5e",
+    "implementation": "USER_ACCEPTED_R2_VISUAL_R3_SEMANTICS_FIXED_DELIVERY_AWAITING_PR_AND_CI",
+    "sourceFilesSha256": {
+      "apps/mobile/lib/src/messaging/direct_message_inbox.dart": "89f5e91decf27f8c8ba3340092c0b689df8baa883404a61c2579fa8b0f0f7e76",
+      "apps/mobile/test/direct_message_navigation_test.dart": "f7485ba2926ae984349af47af2f79776dd29932eeaf6124e2685c8ac4cd93ea3"
+    },
+    "scopedExistingTests": "PASS_2_ON_R2_UNCHANGED_VISUAL_SCOPE_REUSED",
+    "realFontComponentRender": "PASS_1_COLLAPSED_AND_EXPANDED_ON_R2_REUSED",
+    "semanticActionRegression": "PASS_1_ON_R3_TAP_ACTION_OPENS_REAL_IDENTITY_MENU",
+    "affectedAnalysis": "PASS_ZERO_ISSUES_ON_R3",
+    "android2314": "PASS_MAIN_ENTRY_BUILD_SAME_SIGNER_VIVO_COVERINSTALL_COLLAPSED_AND_EXPANDED_USER_VISUAL_ACCEPTANCE",
+    "android2314ApkSha256": "b3e393a9204a9cc5b579a11ed693ce049d30e79a72b81e95c1a5bacd66767a40",
+    "android2315": "PASS_MAIN_ENTRY_BUILD_SAME_SIGNER_COVERINSTALL_AND_VERSION_VERIFIED_LAUNCH_NOT_RUN_ADB_UNAVAILABLE",
+    "android2315ApkSha256": "92603da3c0795c6c80fb81d256656fd105d43f402ae176b5f94df23cc31f4efc",
+    "android2315Launch": "NOT_RUN_ADB_SERVER_BECAME_UNAVAILABLE_AFTER_VERSION_VERIFICATION",
+    "android2315UserAcceptance": "PASS_USER_CONFIRMED_可以了_AFTER_FINAL_INSTALL_NOTICE",
+    "visualAcceptance": "PASS_USER_CONFIRMED_2314_REUSED_EXACT_VISUAL_SOURCE_EQUIVALENCE_ON_R3",
+    "nativeTalkBack": "NOT_RUN_HOST_SEMANTICS_ACTION_ONLY",
+    "independentReview": "PASS_FINAL_SOL_XHIGH_SOURCE89F5_TESTF748_NO_BLOCKERS_NOT_GITHUB_MEMBER_APPROVAL",
+    "remoteCI": "NOT_RUN_NO_PR_YET",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true,
+    "evidence": "docs/branches/fix-direct-message-header-density.md"
+  },
   "dmIdentityLoading20261023": {
     "task": "DM-IDENTITY-LOADING-01",
     "modules": ["B08", "B09"],

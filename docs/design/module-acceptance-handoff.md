@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-23 DM-HEADER-DENSITY-01 定稿待送审：**`fix/direct-message-header-density`基于main `eb1eeb9`，缩小私信标题、右上入口保留原长度及昵称，仅减至36dp视觉高度（至少48dp触控）、搜索框改40dp灰底。r2既有受影响2项及真实字体渲染1项PASS，2314普通主入口同签覆盖vivo，收起／展开视觉获用户确认；r3仅补语义点击回调，新增宿主语义动作测试1项PASS、定点分析0，视觉沿2314复用。Sol XHigh接续收尾，2315同签覆盖与版本核对PASS，安装后ADB不可用，自动启动NOT_RUN；独立Sol XHigh精确源码复审无阻断，非GitHub成员批准。原生TalkBack NOT_RUN，尚未合并／发布，不提升B08/B09整模块结论。见[任务](../branches/fix-direct-message-header-density.md)。
+
 > **2026-10-23 MOBILE-NAV-REFRESH-01大图内存续验：**真我Profile2304、30条3000×4000照片源JPEG帖子、32轮分页／回顶、30分钟77个内存样本：同PID，顶部PSS首末254.6／254.9MB，未见OOM或持续总PSS增长。原生相机多样本、隔夜、iOS和生产不在本次范围，历史完整模块结论不升级；测试帖已删，日常2303已恢复。见[证据](validation/mobile-large-photo-memory-realme-20261023.json)。
 
 > **2026-10-23 DM-IDENTITY-LOADING-01 最终2313候选：**[PR #60](https://github.com/zewbby/HnuHole/pull/60) 源码 `490c2a3` 已整合 main `7a2a76a`，完成空身份／添加入口、右上单行唯一加号菜单、无核对文案的轻量加载及管理取消往返保持绑定。纯load/cancel或已确认相同投影不再清空重绑，真实变更／待处理变更、账号会话围栏与强制重试保留。r5入口呈现2项、r6受影响runtime整文件11项及各自受影响分析0；早前37项／整合7项／菜单2项和渲染沿原版本范围复用。主会话精确源码独立审查无阻断，非GitHub成员批准。2313同签保数据覆盖vivo，已有身份添加→取消→返回私信及首页往返限定PASS，无旧文案／假空态／最终加载；亚秒零闪帧未测，绑定稳定由宿主回归证明。2311未变菜单／唯一加号／安全位置证据继续有效。精确送审head CI和合并以PR回执为准，未发布；设备空身份、首次发送面板仍NOT_RUN，旧真实掉电／P3人工SKIP／远程推送未实现／iOS及生产边界不变。下方为历史版本。见[任务](../branches/fix-direct-message-identity-loading.md)和[版本证据](direct-message-identity-verification-20261023.json)。

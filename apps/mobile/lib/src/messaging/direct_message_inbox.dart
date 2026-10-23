@@ -355,15 +355,15 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 16, 14, 16),
+              padding: const EdgeInsets.fromLTRB(24, 8, 14, 8),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
                       '私信',
                       style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
                         color: p.ink,
                       ),
                     ),
@@ -376,65 +376,81 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                           maxWidth: 224,
                           minHeight: 48,
                         ),
-                        child: Material(
-                          key: _identityAnchor,
-                          color: p.surface,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            side: BorderSide(color: p.line),
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: Tooltip(
-                            message: '切换身份',
-                            child: InkWell(
-                              key: const ValueKey('dm-inbox-identity'),
-                              onTap: _selectIdentity,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    AnimatedRotation(
-                                      turns: _identityMenuOpen ? .25 : 0,
-                                      duration: const Duration(
-                                        milliseconds: 180,
+                        child: Tooltip(
+                          message: '切换身份',
+                          child: Semantics(
+                            label: '切换身份，当前${widget.identity.name}',
+                            button: true,
+                            excludeSemantics: true,
+                            onTap: _selectIdentity,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                key: const ValueKey('dm-inbox-identity'),
+                                onTap: _selectIdentity,
+                                borderRadius: BorderRadius.circular(24),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 6,
+                                  ),
+                                  child: Material(
+                                    key: _identityAnchor,
+                                    color: p.surface,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      side: BorderSide(color: p.line),
+                                    ),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 4,
                                       ),
-                                      child: Icon(
-                                        Icons.chevron_right_rounded,
-                                        size: 20,
-                                        color: p.secondary,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          AnimatedRotation(
+                                            turns: _identityMenuOpen ? .25 : 0,
+                                            duration: const Duration(
+                                              milliseconds: 180,
+                                            ),
+                                            child: Icon(
+                                              Icons.chevron_right_rounded,
+                                              size: 20,
+                                              color: p.secondary,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Flexible(
+                                            child: Text(
+                                              widget.identity.name,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color: p.ink,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Badge(
+                                            isLabelVisible: widget.identities
+                                                .any(
+                                                  (i) =>
+                                                      i.identity.id !=
+                                                          widget.identity.id &&
+                                                      i.unread > 0,
+                                                ),
+                                            child: HhDmAvatar(
+                                              identity: widget.identity,
+                                              size: 28,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    const SizedBox(width: 4),
-                                    Flexible(
-                                      child: Text(
-                                        widget.identity.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: p.ink,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Badge(
-                                      isLabelVisible: widget.identities.any(
-                                        (i) =>
-                                            i.identity.id !=
-                                                widget.identity.id &&
-                                            i.unread > 0,
-                                      ),
-                                      child: HhDmAvatar(
-                                        identity: widget.identity,
-                                        size: 28,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -455,13 +471,28 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                   setState(() {});
                   widget.onSearchChanged?.call(value);
                 },
-                style: TextStyle(fontSize: 16, color: p.ink),
+                style: TextStyle(fontSize: 14, color: p.ink),
+                textAlignVertical: TextAlignVertical.center,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: p.surface,
+                  fillColor: Color.alphaBlend(
+                    p.secondary.withValues(alpha: .10),
+                    p.background,
+                  ),
+                  isDense: true,
+                  constraints: const BoxConstraints(minHeight: 40),
                   hintText: '搜索',
-                  prefixIcon: const Icon(Icons.search, size: 24),
+                  hintStyle: TextStyle(fontSize: 14, color: p.secondary),
+                  prefixIcon: Icon(Icons.search, size: 20, color: p.secondary),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 40,
+                    minHeight: 40,
+                  ),
+                  suffixIconConstraints: const BoxConstraints(
+                    minWidth: 40,
+                    minHeight: 40,
+                  ),
                   suffixIcon: query.isEmpty
                       ? null
                       : IconButton(
@@ -473,25 +504,25 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                           icon: const Icon(Icons.close, size: 20),
                         ),
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 14,
+                    horizontal: 14,
+                    vertical: 8,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide(color: p.accent),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Expanded(
               child: Stack(
                 children: [
