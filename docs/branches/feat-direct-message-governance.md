@@ -2,7 +2,7 @@
 
 2026-10-23，分支实现及宿主增量验收通过，人工原生项跳过，Draft 送审，未合并／未发布。分支 `feat/direct-message-governance`。
 
-送审：[Draft PR #52](https://github.com/zewbby/HnuHole/pull/52)。应用验证源码 `cd6049e`，预发布审计修复集成源码 `96611a5`；最终精确 head 的远端 CI 以 PR Checks 为准。
+送审：[Draft PR #52](https://github.com/zewbby/HnuHole/pull/52)。应用验证源码 `cd6049e`，预发布审计修复 `96611a5`、V边界测试清单修复 `f2e9c8a`；最终精确 head 的远端 CI 以 PR Checks 为准。
 
 依赖 [P2 PR #51](https://github.com/zewbby/HnuHole/pull/51) `d864d03`；开始时最新 main 为 `e8ff488`，P2 尚未合并，因此本 PR 以 P2 分支为 base，须按 P2→P3 顺序整合，不代替用户合并授权。
 
@@ -23,6 +23,8 @@
 审查及联调修复：旧图片没有新版证据字段仍可通过原图摘要举证；ABSENT与文字目录兼容新增字段；通知空闲帧调度、未登录冷启清旧通知、聊天未退出时第二次通知跳转；黑名单时间统一UTC。此前失败及修复回归保留在机器记录，不改写为一次通过。
 
 首轮远端 head `fc4f986546085e4706255f430055ab8fea18a060` 的19项检查为18项成功、rehearsal失败：0024清理授权已生效，旧共享审计没有对应c_dm矩阵。Astra High补齐精确表／列权限审计，未扩大正式授权；两个新建自有C/V PostgreSQL、真实Goose迁移和原Lab.audit正例及8项越权反例通过，CI显式启用该回归。补丁 `3e6009b` 集成为 `96611a5f7ce8b06eed57d12eef17b65d9c95e7cf`，主agent独立只读审查无剩余可操作问题。与`cd6049e`比较，Flutter／Android、后台、服务运行源码、迁移、OpenAPI和正式授权文件树均相同，原应用／APK证据沿原版本保留；本地未重复构建。完整远端rehearsal仍待新head CI，不将增量SQL回归等同整套预发布通过。
+
+第二轮 head `73892f3e1c0f5d1b2a1dc1b8f3b4ea17e7b5ae9a` 的20项检查为19项成功、gate-postgres失败；新增权限正反例、完整rehearsal、候选包及Android均成功。唯一失败是既有0005／0006邮箱登录表`v_auth.email_login_confirmations`漏列于精确V关系清单。Astra High核对该表不含C账号／身份／会话字段后只补准确表名，保留精确匹配、禁止列及跨库桥接检查；自有SQL／race的community和verifier两子例PASS3.93s，fixture已停止。补丁`fa9c4a4`集成为`f2e9c8a5e75ef6423bf949b674408e9b447891a4`，主agent独立只读审查无阻断；只改测试及交接，应用运行输入仍与`cd6049e`相同。最终head的完整CI待远端结果。
 
 ## 未验与接续
 

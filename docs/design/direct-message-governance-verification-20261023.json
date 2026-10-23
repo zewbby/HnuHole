@@ -2,12 +2,12 @@
   "task": "DM-P3-GOVERNANCE",
   "updatedAt": "2026-10-23",
   "branch": "feat/direct-message-governance",
-  "source": "96611a5f7ce8b06eed57d12eef17b65d9c95e7cf",
+  "source": "f2e9c8a5e75ef6423bf949b674408e9b447891a4",
   "applicationVerificationSource": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
   "applicationSourceContinuity": {
     "status": "PASS_IDENTICAL",
-    "command": "git diff --exit-code cd6049e931f99f32004abd83f48b1518fd1b03e5 96611a5f7ce8b06eed57d12eef17b65d9c95e7cf -- apps/mobile apps/admin services/api/internal services/api/cmd services/api/migrations packages/openapi infra/postgres",
-    "detail": "Existing application checks and APK remain bound to cd6049e; later audit-only fix does not alter those runtime inputs. Flutter tests and APK build were not repeated."
+    "command": "git diff --exit-code cd6049e931f99f32004abd83f48b1518fd1b03e5 f2e9c8a5e75ef6423bf949b674408e9b447891a4 -- apps/mobile apps/admin services/api/internal services/api/cmd services/api/migrations packages/openapi infra/postgres ':!services/api/internal/authprivacy/privacy_boundary_postgres_test.go'",
+    "detail": "Existing application checks and APK remain bound to cd6049e; later audit and test-only fixes do not alter runtime inputs. The sole excluded internal file is the exact V relation inventory test. Flutter tests and APK build were not repeated."
   },
   "base": "d864d03062ddbbd4af72e1b83d63dac73dbcf15c",
   "latestMainAtDelivery": "e8ff4880cb9f091b816c8841e746bd664a54164f",
@@ -155,12 +155,31 @@
     "authoredCommit": "3e6009bda79926f7902dfdaf3932991344bde615",
     "reason": "0024 common lifecycle cleanup grants were missing from the shared privacy-role audit c_dm matrix; no runtime grant was expanded.",
     "reproductionCommand": "PRERELEASE_AUDIT_SQL_TEST=1 python -m unittest discover -s tools/prerelease/tests -p test_role_audit_postgres.py -v",
+    "actualCommand": "wsl -- bash -lc 'runuser -u hnuhole -- env PATH=/usr/lib/postgresql/16/bin:/mnt/e/Hnuhole-env/linux/bin:/usr/local/bin:/usr/bin:/bin PRERELEASE_AUDIT_SQL_TEST=1 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s /mnt/e/Hnuhole-env/source/HnuHole-dm-p3-backend/tools/prerelease/tests -p test_role_audit_postgres.py -v'",
     "status": "PASS",
-    "detail": "Astra High reported an actual 15.851s PASS using newly owned C/V PostgreSQL clusters, latest Goose migrations, formal grants and original Lab.audit. Baseline passes and all 8 extra-permission cases are rejected. The reproduction entrypoint is not a verbatim record of the author's shell invocation; no duplicate local run was performed. Full remote rehearsal remains pending new head.",
+    "detail": "Astra High reported an actual 15.851s PASS using newly owned C/V PostgreSQL clusters, latest Goose migrations, formal grants and original Lab.audit. Baseline passes and all 8 extra-permission cases are rejected. Author supplied actualCommand after the earlier reproduction entrypoint was recorded; no duplicate local run was performed.",
+    "remoteRehearsal": {
+      "source": "73892f3e1c0f5d1b2a1dc1b8f3b4ea17e7b5ae9a",
+      "status": "PASS",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39884864164/job/120190609369"
+    },
     "independentReview": {
       "status": "PASS_NO_REMAINING_ACTIONABLE_BLOCKERS",
       "reviewer": "Main agent independent read-only review of all 97 changed lines; did not author the audit patch; not GitHub member approval",
       "source": "3e6009bda79926f7902dfdaf3932991344bde615"
+    }
+  },
+  "verifierBoundaryInventoryFix": {
+    "source": "f2e9c8a5e75ef6423bf949b674408e9b447891a4",
+    "authoredCommit": "fa9c4a4ef7ed928b175fa36e58a80d4d8f963072",
+    "reason": "The precise V inventory omitted the existing 0005/0006 email_login_confirmations proof/replay table; unrelated to c_dm migrations. Only the exact table name and ownership comment were added; prohibited-column and bridge checks remain.",
+    "command": "wsl -- bash -lc 'export PATH=/usr/lib/go-1.22/bin:/usr/lib/postgresql/16/bin:/usr/local/bin:/usr/sbin:/usr/bin:/bin; export POST_MEDIA_PYTHON=/home/hnuhole/community-pr13-main-20261018-tools/python/bin/python; export COMMENT_TEXT_GOOSE=/mnt/e/Hnuhole-env/linux/bin/goose; export DM_CHAT_TEST_PATTERN=\"^TestPrivacySchemaPartyBoundaryPostgres$\"; cd /mnt/e/Hnuhole-env/source/HnuHole-dm-p3-backend; sh services/api/authlab/run-dm-chat-isolated.sh'",
+    "status": "PASS",
+    "detail": "Astra High reported real SQL/race community and verifier subtests PASS, top-level 3.93s and package 4.946s. HTTP package matched no tests and is not counted. Fixture /tmp/hnuhole-dm-p2.W5EpUh exited0 and stopped.",
+    "independentReview": {
+      "status": "PASS_NO_REMAINING_ACTIONABLE_BLOCKERS",
+      "reviewer": "Main agent independent read-only review against migration0005 and existing boundary checks; did not author the fix; not GitHub member approval",
+      "source": "fa9c4a4ef7ed928b175fa36e58a80d4d8f963072"
     }
   },
   "remoteCIFailures": [
@@ -172,10 +191,20 @@
       "job": "rehearsal",
       "url": "https://github.com/zewbby/HnuHole/actions/runs/39883525656/job/120186710006",
       "detail": "environment.py init -> audit -> sql raised owned SQL operation failed; missing c_dm lifecycle cleanup audit matrix. Preserved as first remote result, not overwritten by the subsequent fix."
+    },
+    {
+      "source": "73892f3e1c0f5d1b2a1dc1b8f3b4ea17e7b5ae9a",
+      "totalChecks": 20,
+      "success": 19,
+      "failure": 1,
+      "job": "gate-postgres",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39884864121/job/120190551179",
+      "detail": "Only TestPrivacySchemaPartyBoundaryPostgres/verifier failed at privacy_boundary_postgres_test.go:77: party schema relation inventory changed. Complete rehearsal, candidate, client and Android succeeded. Preserved before exact V inventory test repair."
     }
   ],
-  "remoteCI": "PENDING_PR_CHECKS_AFTER_AUDIT_FIX",
+  "remoteCI": "PENDING_PR_CHECKS_AFTER_AUDIT_AND_V_INVENTORY_FIXES",
   "sourceFilesSha256": {
+    "services/api/internal/authprivacy/privacy_boundary_postgres_test.go": "11022819309bc6af094c08897c74fb8978feca05d805574c862877ec00823deb",
     ".github/workflows/android-prerelease.yml": "81974b133448dd7652d2b53f869357ba804200631d35e516fd0f22476290457e",
     "services/api/authlab/privacy-role-audit.sql": "40cfcfcdf9fe0a69012aa50494b71371a390bd661ec250ada6d454cfb016434b",
     "tools/prerelease/tests/test_role_audit_postgres.py": "25d572dc3d24e62649f843304abb9f4cbadce6021f794e9f3c3b67416c06b0f3",
