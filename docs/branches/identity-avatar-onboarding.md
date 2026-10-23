@@ -1,5 +1,17 @@
 # IDENTITY-AVATAR-01：身份头像与首次设置
 
+更新：2026-10-23。[PR #63](https://github.com/zewbby/HnuHole/pull/63) 已 Squash 合入 main `45e3948eb47db16f90968a1082c4ae32360a8465`。精确送审 head `7a3b40286cc309b9ca2295dcac7d0bc0c5488108` 的 22 项适用 CI 全部成功，R01–R07 独立审查无阻断，非 GitHub 成员批准；原首轮失败及定点修复证据保留。main 与送审版本的 `apps/mobile`、`services/api`、`infra/postgres`、`packages/openapi` 差异为空。
+
+开发后端已按用户授权配套升级到 C25／V6，严格 TLS 的 C/V readiness 通过。84 张原业务／会话表与 6 个序列、授权代次／RECOVER 计数／会话记录／配置保持；应用正式迁移与六组 canonical grants，未调用 recover／reset／Down／restore。原库与材料／旧二进制备份、新二进制及回退入口保留在私人部署回执，不提交配置、日志或备份。
+
+日常 Android 包 `org.hnuhole.hnuhole_mobile`2315 基于上述 main 构建，188078004 bytes，APK SHA256 `0c0b30acb6757d0dd2bca05bedab78bf51394bd8caa1b1947c2184edc8677059`，签名与原包一致。真我 RMX3366 通过 `adb install -r -t` 保数据覆盖，实际版本2026102315；启动保留既有账号，私信身份正常显示，无重新登录或核对页，未 clear／uninstall／发送消息。首次 SQLite 下载超时后复用相同版本下载缓存，经官方 SHA 校验构建成功；产品源码未修改。此次仅部署／安装 smoke，原独立 `.identityavatar`2314 的 7 项新增原生验收及最终22项CI沿各自精确版本范围保留，未重复产品矩阵或重构建纯文档版本。
+
+主线交付不等于生产发布：整机重启、掉电、真实 TCP 丢响应、iOS、规模／生产、旧 P3 人工 SKIP 及远程推送未实现边界不变。安装 smoke 观察到旧 feed 缩略图 unavailable，原因未确定；validator pin／payload 只读复核、Windows 独立 HTTPS 与 watch 续期检查因中断 NOT_RUN，不把观察推断成已诊断或已修复。旧 B3/B4 矩阵当前不适配范围继续保留。开发环境仍依赖本地电脑／WSL／转发，未生产发布。
+
+本次事实及私人回执路径／hash 见[机器记录 mainDeliveryReceipt](../design/identity-avatar-onboarding-verification-20261023.json)。下一步如需处理旧媒体或迁移历史设备矩阵，单列范围；本次文档仅归档已授权交付，不重复功能验收。下方为原分支送审与实现历史快照，“未合并／无部署授权／待CI”等文字不代表当前状态。
+
+## 原分支记录
+
 更新：2026-10-23。分支 `feat/identity-avatar-onboarding`；原基线 main `6e09baf`，提交前已无冲突整合最新 main `8dca780`（含 #61 文档与 #62 私信顶部布局）。分支实现与宿主／隔离服务端聚焦验证完成，主会话独立审查无剩余阻断；未合并、未发布，真我隔离包新增链路限定验收通过。
 
 用户最新要求：注册完成后、首次进入社区前设置昵称与头像（可保留默认头像）；已有身份不重复设置，旧零身份账号补设。初始身份沿用原始身份及公开发言默认规则，至少保留一个身份。

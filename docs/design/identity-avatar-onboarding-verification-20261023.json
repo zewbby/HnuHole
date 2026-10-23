@@ -1,4 +1,83 @@
 {
+  "mainDeliveryReceipt": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/63",
+    "mergeCommit": "45e3948eb47db16f90968a1082c4ae32360a8465",
+    "reviewedHead": "7a3b40286cc309b9ca2295dcac7d0bc0c5488108",
+    "merged": true,
+    "productionReleased": false,
+    "finalCI": {
+      "total": 22,
+      "success": 22,
+      "failed": 0,
+      "running": 0,
+      "evidencePrivatePath": "E:/Hnuhole-env/avatar-onboarding-20261023/submission-final-ci.json"
+    },
+    "productTreeComparison": "git diff 7a3b402 45e3948 -- apps/mobile services/api infra/postgres packages/openapi: empty",
+    "backend": {
+      "result": "PASS",
+      "source": "45e3948eb47db16f90968a1082c4ae32360a8465",
+      "schema": {
+        "c": 25,
+        "v": 6
+      },
+      "ready": {
+        "c": true,
+        "v": true
+      },
+      "strictTLS": true,
+      "businessAndSessionTablesCompared": 84,
+      "sequencesCompared": 6,
+      "existingTableSequenceSessionFactsUnchanged": true,
+      "authorizationGenerationUnchanged": true,
+      "recoverAuditCountUnchanged": true,
+      "configurationUnchanged": true,
+      "recoverResetDownOrRestoreInvoked": false,
+      "canonicalGrantSets": [
+        "community",
+        "post-images",
+        "moderation",
+        "comments",
+        "direct-messages",
+        "verifier"
+      ],
+      "privateReceipt": "E:/Hnuhole-env/main-identity-avatar-deployment-20261023/backend-deployment-receipt.json",
+      "privateReceiptSha256": "f80742e4eb0ca2b87c06ba33c89812a02ecfa67075913c24f131af2742c2afd2",
+      "privateLinuxReceipt": "/home/hnuhole/.config/hnuhole/identity-avatar-main-20261023-45e3948/receipt.json",
+      "windowsIndependentHTTPSWatchContinuation": "NOT_RUN_AFTER_INTERRUPTION"
+    },
+    "dailyAndroid": {
+      "result": "PASS_INSTALL_AND_EXISTING_SESSION_DM_SMOKE",
+      "source": "45e3948eb47db16f90968a1082c4ae32360a8465",
+      "package": "org.hnuhole.hnuhole_mobile",
+      "versionCode": 2026102315,
+      "device": "RMX3366",
+      "apk": "E:/Hnuhole-env/deliveries/HnuHole-main-2026102315.apk",
+      "sha256": "0c0b30acb6757d0dd2bca05bedab78bf51394bd8caa1b1947c2184edc8677059",
+      "installation": "adb install -r -t Success",
+      "session": "Existing account retained; DM identity rendered without login or identity-checking page",
+      "dataCleared": false,
+      "uninstalled": false,
+      "newMessagesSent": false,
+      "screenshot": "E:/Hnuhole-env/avatar-onboarding-20261023/realme-main-2315-dm.png",
+      "boundaries": "Only deployment/install smoke; previous exact-product native7 and PR22CI preserved; no repeat full matrix",
+      "observedLegacyMedia": "Existing feed thumbnails displayed unavailable; root requested read-only backend validator configuration check, no data mutation",
+      "timeUTC": "2026-10-23T07:48:00.4695300Z",
+      "screenshotSHA256": "5270d3035f04c2988ee0261365d837f6852fd8e9a4a4b3c0f86de68f1d881c5d"
+    },
+    "build": {
+      "bytes": 188078004,
+      "signerSHA256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "result": "PASS_BUILD_SIGNATURE_HASH",
+      "cacheNote": "Initial SQLite download timeout resolved with existing same-version shared cache and official hash validation; no product source change."
+    },
+    "observedLegacyMedia": {
+      "observation": "Existing feed thumbnails appeared unavailable during install smoke",
+      "cause": "UNDETERMINED",
+      "validatorPinAndPayloadReadOnlyCheck": "NOT_RUN_AFTER_INTERRUPTION",
+      "noMediaDataModified": true
+    },
+    "scope": "Deployment/install smoke only; previous exact-source seven native cases and twenty-two CI results retained. No repeated product matrix, device reboot, power loss, iOS or production test."
+  },
   "ciFollowup": {
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/63",
     "originalHead": "a6936ecebf121956906b0e109e6dd82649a8be2d",
