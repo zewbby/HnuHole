@@ -4,8 +4,8 @@
   "branch": "feat/direct-message-chat-completion",
   "baseMain": "154a76189f7fa0202963bf2deb7bf4341ba8eea8",
   "source": "889217251c54759d46f9b0f9d3613d8baacf7b30",
-  "status": "SCOPED_IMPLEMENTATION_AND_NATIVE_ACCEPTANCE_PASS_PR_OPEN",
-  "merged": false,
+  "status": "SCOPED_IMPLEMENTATION_AND_NATIVE_ACCEPTANCE_PASS_MERGED_MAIN",
+  "merged": true,
   "released": false,
   "productionDefaultEnabled": false,
   "scope": [
@@ -210,7 +210,8 @@
     "Base64 media transport and encrypted chunks are bounded by declared 10MiB image/9-image group limits"
   ],
   "remoteCI": {
-    "result": "PENDING_FINAL_INTEGRATION_HEAD",
+    "result": "PASS_20_APPLICABLE_CHECKS",
+    "head": "796c54f49403404d8a4c9561966c868cc9ac0a51",
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/51"
   },
   "regressionsReused": [
@@ -251,5 +252,14 @@
     "mergeAuthorized": true,
     "productionNotReleased": true,
     "finalCI": "Verify latest PR #51 head before merge; no recursive receipt commit."
+  },
+  "mainMergeReceipt20261023": {
+    "mergeCommit": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "head": "796c54f49403404d8a4c9561966c868cc9ac0a51",
+    "method": "merge",
+    "applicableCI": "PASS_20_CHECKS",
+    "independentIntegrationReview": "PASS; main agent read-only; not GitHub member approval",
+    "productionReleased": false,
+    "previousAcceptanceAndUnverifiedLimitsUnchanged": true
   }
 }

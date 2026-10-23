@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-23 主线状态：**P2 [#51](https://github.com/zewbby/HnuHole/pull/51) 已合并 `988bb42045f4140c46cf9e890d985a774d033e16`，P3 [#52](https://github.com/zewbby/HnuHole/pull/52) 已合并 `665291cdf312dec94fb11a75527524a821c5f008`；精确 head CI 和独立整合审查通过，main 保留认证反馈 #53。限定验收不扩大，设备补验 [#55](../branches/test-direct-message-device-recovery.md) 的真实掉电仍 NOT_RUN，P3 原生 SKIP／远程推送未实现、iOS／规模／生产未验，未部署／发布。下方为历史阶段记录。
+
 > **2026-10-23 AUTH-FEEDBACK-01 已合并：**用户确认弹窗缩放效果；[PR #53](https://github.com/zewbby/HnuHole/pull/53)经认证Flutter CI、Android候选/rehearsal及受影响移动端产品CI通过后Squash合入main，提交`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`。2306限定64项回归、分析0、同签真我覆盖安装／启动PASS。真机帧性能未测、未发布；下方认证送审／待验文字为历史阶段快照。见[任务记录](../branches/fix-auth-feedback.md)。
 
 > **2026-10-23 AUTH-FEEDBACK-01 弹窗动效：**错误弹窗改为居中缩放淡入（0.88→1，180ms），单确定不变；64项限定回归／分析0／同签2306真我覆盖安装与启动PASS，动效视觉待用户确认。见[任务记录](../branches/fix-auth-feedback.md)。
@@ -13,6 +15,8 @@
 > **2026-10-23 AUTH-FEEDBACK-01 补充修正：**用户验收指出顶部结果未知／旧会话撤销提示仍在。现移除认证页全局错误条及旧会话撤销信息框，错误改为单次友好弹窗，后台持久撤销与原发码请求重试保留。57项限定回归及分析0 PASS，2302已同签覆盖安装，真机登录页无两个顶部框；用户验收状态见[任务记录](../branches/fix-auth-feedback.md)。
 
 > **2026-10-23 AUTH-FEEDBACK-01（本地实现／未合并）：**移除认证请求顶部动态蓝条，邮箱发码受理提示移至验证码下方，账号密码错误改为取消／确定弹窗并保留输入。A12限定UI回归56项、分析0、APK构建与同签VIVO覆盖安装PASS；真实交互与流畅度待用户验收，未正式发布。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 DM-P2-DEVICE-RECOVERY：**P2新增补验：真实双设备接替、两处进程强杀恢复、整机重启恢复 PASS；真实突然掉电由用户明确延期 NOT_RUN。仅新增测试入口和证据，不改私信业务实现，不重复原验收。见[补验任务](../branches/test-direct-message-device-recovery.md)，保持 B08/B09 整体及生产结论不变。
 
 > **2026-10-23 DM-P3-GOVERNANCE：**`feat/direct-message-governance` 依赖 P2 #51，第三阶段治理、清理和本地通知已接入；增量验证、独立审查和送审回执见[任务详情](../branches/feat-direct-message-governance.md)。原生人工项按用户要求 SKIP，远程推送渠道未实现，iOS／生产未验收，未合并或发布。已验证且未改变的 P1/P2 外观、IME 和原生图片链路保留原版本证据，不重复、不扩大证明范围。
 

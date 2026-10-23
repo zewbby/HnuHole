@@ -1,4 +1,21 @@
 {
+  "dmDeviceRecovery20261023": {
+    "task": "DM-P2-DEVICE-RECOVERY",
+    "modules": [
+      "B08",
+      "B09"
+    ],
+    "branch": "test/direct-message-device-recovery",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/55",
+    "acceptanceCommit": "85429383dec780b92990dc48736d0fc02f168019",
+    "applicationSource": "07923b047dcc1bf8b431e7b6d94da31d28ec223e",
+    "result": "SCOPED_PHYSICAL_TAKEOVER_FORCE_STOP_REBOOT_PASS",
+    "evidence": "docs/design/direct-message-device-recovery-verification-20261023.json",
+    "suddenPowerLoss": "NOT_RUN_USER_EXPLICITLY_DEFERRED_NO_TEST_CONDITIONS",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true
+  },
   "authFeedback20261023": {
     "task": "AUTH-FEEDBACK-01",
     "branch": "codex/fix/auth-feedback",
@@ -33,15 +50,19 @@
     "source": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
     "independentReview": "PASS exact product SHA; independent read-only Astra High, not GitHub member approval",
     "dependsOn": "https://github.com/zewbby/HnuHole/pull/51",
-    "result": "SCOPED_HOST_IMPLEMENTATION_NATIVE_SKIP_DRAFT",
+    "result": "SCOPED_HOST_IMPLEMENTATION_NATIVE_SKIP_MERGED_MAIN",
     "evidence": "docs/design/direct-message-governance-verification-20261023.json",
     "native": "SKIP_USER_ABSENT_MANUAL_UNLOCK_PERMISSION_REQUIRED",
     "remotePush": "NOT_IMPLEMENTED_NO_VENDOR_CHANNEL",
     "ios": "NOT_RUN",
     "production": "NOT_RELEASED_FEATURE_DEFAULT_FALSE",
-    "merged": false,
+    "merged": true,
     "released": false,
-    "historicalModuleVerdictsUnchanged": true
+    "historicalModuleVerdictsUnchanged": true,
+    "mergeCommit": "665291cdf312dec94fb11a75527524a821c5f008",
+    "mergedHead": "483fe9a237c38f03768f859935b9020b9520267a",
+    "remoteCI": "PASS_20_APPLICABLE_CHECKS",
+    "integrationReview": "PASS independent read-only main agent; not GitHub member approval"
   },
   "dmChatP220261022": {
     "task": "DM-P2-CHAT",
@@ -49,16 +70,19 @@
       "B08",
       "B09"
     ],
-    "result": "SCOPED_NATIVE_CHAT_PASS_NOT_MERGED",
+    "result": "SCOPED_NATIVE_CHAT_PASS_MERGED_MAIN",
     "source": "889217251c54759d46f9b0f9d3613d8baacf7b30",
     "evidence": "docs/design/direct-message-chat-verification-20261022.json",
     "branch": "feat/direct-message-chat-completion",
     "independentReview": "Astra High read-only fc88b9a: no remaining actionable blockers; not GitHub member approval",
-    "remoteCI": "PENDING_PR_CHECKS",
-    "merged": false,
+    "remoteCI": "PASS_20_APPLICABLE_CHECKS",
+    "merged": true,
     "released": false,
     "historicalModuleVerdictsUnchanged": true,
-    "pullRequest": "https://github.com/zewbby/HnuHole/pull/51"
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/51",
+    "mergeCommit": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "mergedHead": "796c54f49403404d8a4c9561966c868cc9ac0a51",
+    "integrationReview": "PASS independent read-only main agent; not GitHub member approval"
   },
   "sessionResume20261022": {
     "task": "AUTH-SESSION-RESUME-01",

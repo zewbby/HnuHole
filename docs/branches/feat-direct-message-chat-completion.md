@@ -1,6 +1,10 @@
 # DM-P2：完整聊天能力
 
+2026-10-23 合并回执：[PR #51](https://github.com/zewbby/HnuHole/pull/51) 已正常 merge 到 main `988bb42045f4140c46cf9e890d985a774d033e16`，被核对 head `796c54f49403404d8a4c9561966c868cc9ac0a51` 的 20 项检查全部成功，主整合会话独立只读审查 PASS。已合并与限定验收分别成立，未部署／发布，真实掉电、iOS、规模及整模块未验结论不变。下方未合并状态为历史快照。
+
 2026-10-23 主线整合：用户已授权按 P2 #51 → P3 #52 → 设备补验 PR #55 顺序合并 main 并构建。P2 合并 main `a52e6ec47072d2d5550853c4c7f4ab9811608b34` 的认证反馈修复，只出现四份文档顶部并发插入冲突，保留双方记录；DM 产品／测试树与 `d864d03` 相同，认证运行代码与 main 相同。受影响 auth／session／root 定点回归 75 PASS，定点分析 0 issues；未重复旧真机验收。最新 head 的产品与协作 CI 必须通过后才合并；未发布，原未验项不升级。命令与边界见[机器记录](../design/direct-message-chat-verification-20261022.json)。下方为原阶段记录。
+
+2026-10-23补充：原未覆盖的真实双设备接替、关键中断点进程强杀及整机重启已在当前P3整合代码上补验通过，原二阶段证据保留原版本，不改写为当时已验。真实突然掉电缺硬件条件，用户确认暂列未验；详见[补验任务](test-direct-message-device-recovery.md)。
 
 2026-10-22，用户授权实施第二阶段。分支 `feat/direct-message-chat-completion` 从开始时 main `154a761` 建立，P1 已合入；本阶段实现及限定增量验收已完成，[Draft PR #51](https://github.com/zewbby/HnuHole/pull/51) 已提交，CI 待完成，未合并或发布。源码 `8892172`，独立 Astra High 只读审查绑定 `fc88b9a` 无剩余阻断，后继仅增加 CI 定向测试名。
 

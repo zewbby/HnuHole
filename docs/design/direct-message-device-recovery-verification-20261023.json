@@ -1,0 +1,168 @@
+{
+  "task": "DM-P2-DEVICE-RECOVERY",
+  "date": "2026-10-23",
+  "branch": "test/direct-message-device-recovery",
+  "submission": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/55",
+    "draftAtCreation": true,
+    "base": "main",
+    "acceptanceCommit": "85429383dec780b92990dc48736d0fc02f168019",
+    "mergeOrder": [
+      "PR #51",
+      "PR #52",
+      "PR #55"
+    ],
+    "ciAtCreation": "Historical first-head 11 checks started; final integration head Checks are authoritative.",
+    "merged": false,
+    "deployed": false,
+    "followUp": "After exact-head product CI and independent review, merge #55 normally; final self merge receipt belongs in PR body rather than recursive documentation PR.",
+    "integratedMain": "665291cdf312dec94fb11a75527524a821c5f008",
+    "upstreamMerges": {
+      "PR #51": "988bb42045f4140c46cf9e890d985a774d033e16",
+      "PR #52": "665291cdf312dec94fb11a75527524a821c5f008"
+    },
+    "mergeAuthorized": true
+  },
+  "applicationSource": "07923b047dcc1bf8b431e7b6d94da31d28ec223e",
+  "status": "SCOPED_PHYSICAL_TAKEOVER_FORCE_STOP_REBOOT_PASS",
+  "productionCodeChanged": false,
+  "devices": [
+    "realme RMX3366 / 7e0660f1",
+    "vivo V2323A / 10CEAG17RY003M7"
+  ],
+  "phases": {
+    "10CEAG17RY003M7-new-replaced": {
+      "pid": 27229,
+      "stage": "pass-new-replaced"
+    },
+    "10CEAG17RY003M7-new-takeover": {
+      "pid": 24386,
+      "stage": "pass-new-takeover"
+    },
+    "7e0660f1-old-prime": {
+      "pid": 25616,
+      "stage": "pass-old-prime"
+    },
+    "7e0660f1-old-replaced": {
+      "pid": 25798,
+      "stage": "pass-old-replaced"
+    },
+    "7e0660f1-old-retake": {
+      "pid": 25916,
+      "stage": "pass-old-retake"
+    },
+    "7e0660f1-reboot-prime": {
+      "pid": 26614,
+      "stage": "pass-reboot-prime"
+    },
+    "7e0660f1-reboot-recover": {
+      "pid": 13657,
+      "stage": "pass-reboot-recover"
+    },
+    "7e0660f1-receive-recover": {
+      "pid": 26505,
+      "stage": "pass-receive-recover"
+    },
+    "7e0660f1-receive-stop": {
+      "pid": 26373,
+      "stage": "committed-before-ack"
+    },
+    "7e0660f1-send-recover": {
+      "pid": 26207,
+      "stage": "pass-send-recover"
+    },
+    "7e0660f1-send-stop": {
+      "pid": 26055,
+      "stage": "accepted-before-response"
+    }
+  },
+  "apk": {
+    "package": "org.hnuhole.hnuhole_mobile.dmrecovery",
+    "versionCode": 2026102304,
+    "sha256": "e96bf240cf21801db07d977be07639b08565ffab8707230d49ea37f9a0caf06f",
+    "bytes": 186279180,
+    "embeddedSyntheticTestPassword": true,
+    "runtimeInjectedSessionTokensAndFixture": true,
+    "noRealUserCredentials": true
+  },
+  "bootIdBefore": "0ff0e981-5745-4f3f-8957-222d956eaaf3",
+  "bootIdAfter": "795c49bd-a322-4247-ae4b-0ec8c446f1f1",
+  "physicalSuddenPowerLoss": {
+    "status": "NOT_RUN",
+    "reason": "User explicitly deferred: no physical power-cut test conditions"
+  },
+  "failureHistory": [
+    "2302/2303 old-prime PostFailure: extra sourcePostId/sourceCommentId in acceptance image body; Astra diagnosed, only harness fixed; 2304 final pass"
+  ],
+  "cleanup": {
+    "fixture": "/tmp/hnuhole-dm-p2.Apjdaj",
+    "sqlFixtureExit": 0,
+    "privateCredentialsRemoved": true,
+    "isolatedPackagesUninstalled": true,
+    "deviceLeasesReleased": true,
+    "dailyPackagesPreserved": true
+  },
+  "notRepeated": [
+    "P2 nine-image batch and failure retry",
+    "Unchanged fonts/layout/icons/IME",
+    "Previously accepted management and native image viewer",
+    "Unchanged service unit/SQL suites"
+  ],
+  "limitations": [
+    "Synthetic account password takeover using actual auth endpoints, not biometric or daily-account login UI",
+    "Crash injection holds responses/ACK at deterministic transport seam; actual Android process is force-stopped",
+    "Reboot is not physical sudden power loss",
+    "No iOS, scale performance or production acceptance"
+  ],
+  "sourceFilesSha256": {
+    "apps/mobile/integration_test/dm_recovery_device.dart": "c4773a7b7bf96e1d5794d2743c5fb87707fc6242f6b63dd6f96339d6631707bb",
+    "apps/mobile/android/app/build.gradle.kts": "34757dda66071150fa438cdc8b8de087c7294ebc3e0d746661dc5ade98725b54",
+    "services/api/internal/authprivacyhttp/direct_message_chat_device_postgres_test.go": "f1a3073924ecb84c86818219df2974cf7c40d95e3f1934b721a4ec9bb1e9e29b",
+    "tools/dm-recovery-device.py": "41f3c2dd016c53ec8503b4ffbc7493f2e33bd96172035293914addf8b95a1900"
+  },
+  "processTerminationEvidence": [
+    {
+      "phase": "send-stop",
+      "pidBefore": 26055,
+      "command": "adb -s 7e0660f1 shell am force-stop org.hnuhole.hnuhole_mobile.dmrecovery",
+      "verificationCommand": "adb -s 7e0660f1 shell pidof org.hnuhole.hnuhole_mobile.dmrecovery",
+      "observed": "empty output; PowerShell explicit throws if PID remains; next phase completed with different PID",
+      "pidAfter": 26207
+    },
+    {
+      "phase": "receive-stop",
+      "pidBefore": 26373,
+      "command": "adb -s 7e0660f1 shell am force-stop org.hnuhole.hnuhole_mobile.dmrecovery",
+      "verificationCommand": "adb -s 7e0660f1 shell pidof org.hnuhole.hnuhole_mobile.dmrecovery",
+      "observed": "empty output; PowerShell explicit throws if PID remains; next phase completed with different PID",
+      "pidAfter": 26505
+    }
+  ],
+  "rebootEvidence": {
+    "command": "adb -s 7e0660f1 reboot",
+    "bootIdCommand": "adb -s 7e0660f1 shell cat /proc/sys/kernel/random/boot_id",
+    "bootCompletedCommand": "adb -s 7e0660f1 shell getprop sys.boot_completed",
+    "bootCompletedObserved": "1",
+    "userConfirmedUnlock": true
+  },
+  "sourceContinuity": "After physical execution only Dart formatter, credential-description comments and driver EOF whitespace changed; no runtime behavior changed or repeated.",
+  "independentReview": {
+    "status": "PASS",
+    "reviewer": "device_recovery_diagnosis / Astra High",
+    "mode": "independent read-only agent review; not a GitHub member approval",
+    "scope": "Transport interruption seams, all 11 phases, source hashes, actual process termination and reboot evidence, credential descriptions and acceptance limits",
+    "closedFinding": "Correctly distinguish the embedded synthetic test password from runtime-injected session tokens and private fixture capabilities",
+    "remainingScopedBlockers": 0
+  },
+  "localValidation": {
+    "analyze": {
+      "command": "flutter analyze --no-pub integration_test/dm_recovery_device.dart",
+      "result": "PASS; no issues found"
+    },
+    "isolatedApkBuild": {
+      "command": "HNUHOLE_DM_RECOVERY=1 flutter build apk --debug --no-pub -t integration_test/dm_recovery_device.dart --build-number=2026102304",
+      "result": "PASS"
+    },
+    "unchangedScenarios": "Previously accepted scenarios were not repeated."
+  }
+}
