@@ -38,7 +38,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
-| `fix/mobile-navigation-refresh` | 导航、刷新、图片缓存／缩略图与个人页加载五项优化已在真我验收；动图保存和短时帧性能已测，待合并。 | [交接](docs/branches/fix-mobile-navigation-refresh.md) |
+| `fix/mobile-navigation-refresh` | 已合并 main [PR #57](https://github.com/zewbby/HnuHole/pull/57)；五项限定验收、动图原生保存与短时帧性能已测，未发布。 | [交接](docs/branches/fix-mobile-navigation-refresh.md) |
 | `test/direct-message-device-recovery` | 私信真实双设备接替、强杀及整机重启增量补验通过；真实掉电按用户要求暂列未验。 | [任务详情](docs/branches/test-direct-message-device-recovery.md) |
 | `feat/direct-message-governance` | 已合并 main [PR #52](https://github.com/zewbby/HnuHole/pull/52)；限定验收、SKIP／NOT_RUN 保留，未发布。 | [任务详情](docs/branches/feat-direct-message-governance.md) |
 | `feat/direct-message-chat-completion` | 已合并 main [PR #51](https://github.com/zewbby/HnuHole/pull/51)；第二阶段限定原生验收通过，未发布。 | [任务详情](docs/branches/feat-direct-message-chat-completion.md) |
@@ -89,8 +89,8 @@
 
 ## 最近变动
 
+- [PR #57](https://github.com/zewbby/HnuHole/pull/57)：修复底栏重影，优化刷新、图片缓存与缩略图及个人页加载。
 - [PR #56](https://github.com/zewbby/HnuHole/pull/56)：消除应用启动期间旧会话错误页闪现。
+- [PR #55](https://github.com/zewbby/HnuHole/pull/55)：补齐私信真实换机、强杀和整机重启的限定设备回归。
 - [PR #52](https://github.com/zewbby/HnuHole/pull/52)：接通私信治理、生命周期清理和隐私本地通知；保留原生与生产未验项。
 - [PR #51](https://github.com/zewbby/HnuHole/pull/51)：接通九图私有收发、会话管理和两分钟撤回。
-- [PR #53](https://github.com/zewbby/HnuHole/pull/53)：优化登录注册错误反馈、邮箱验证码说明和认证弹窗交互。
-- [PR #48](https://github.com/zewbby/HnuHole/pull/48)：普通开发重启保留原会话，安全冻结仍要求明确恢复。

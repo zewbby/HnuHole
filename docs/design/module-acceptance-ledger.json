@@ -10,7 +10,10 @@
       "PM01",
       "IV01"
     ],
-    "implementation": "BRANCH_COMMITTED_MAIN_INTEGRATED_PR_PENDING",
+    "implementation": "MERGED_MAIN_PR57_1686A06",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/57",
+    "mergeCommit": "1686a063328bb919ee8a38b51e0ae70f4d6536e2",
+    "testedHead": "f1e85fc2b51050170eb7e7955638be6b8d80a585",
     "hostTests": {
       "status": "PASS",
       "passed": 742,
@@ -23,7 +26,7 @@
     "integratedHostTests": 744,
     "nativeAcceptance": "BASIC_CHECKS_PASS_NAVIGATION_VISUAL_USER_CONFIRMED",
     "independentReview": "PASS_READ_ONLY_REVIEW_NO_BLOCKER",
-    "remoteCI": "PR57_RERUN_PENDING",
+    "remoteCI": "PR57_FINAL_HEAD_20_APPLICABLE_CHECKS_PASS",
     "production": "NOT_RELEASED",
     "historicalModuleVerdictsUnchanged": true,
     "evidence": "docs/branches/fix-mobile-navigation-refresh.md",

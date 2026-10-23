@@ -1,5 +1,7 @@
 # main
 
+2026-10-23：[移动端 PR #57](https://github.com/zewbby/HnuHole/pull/57) Squash合入 `1686a063328bb919ee8a38b51e0ae70f4d6536e2`；最终head `f1e85fc` 的20项适用CI全PASS、独立只读审查无阻断。五项修正及动图原生保存／短时帧性能在真我限定验收，开发C已更新、真我保数据恢复日常2303；真实大图长列表／长时内存、iOS、生产发布未验。见[任务与证据](fix-mobile-navigation-refresh.md)。下方旧时点状态保留历史。
+
 2026-10-23：[P2 PR #51](https://github.com/zewbby/HnuHole/pull/51) 正常 merge 为 `988bb42045f4140c46cf9e890d985a774d033e16`，[P3 PR #52](https://github.com/zewbby/HnuHole/pull/52) 正常 merge 为 `665291cdf312dec94fb11a75527524a821c5f008`；精确 head 的全部适用产品／协作 CI 与独立整合审查通过，认证反馈 #53 完整保留。限定验收与剩余 SKIP／NOT_RUN 见[聊天任务](feat-direct-message-chat-completion.md)、[治理任务](feat-direct-message-governance.md)和[设备补验 #55](test-direct-message-device-recovery.md)。未部署、未正式发布，生产开关仍关闭，不提升整模块验收结论；下方为历史快照。
 
 **2026-10-22 AUTH-SESSION-RESUME-01／[PR #48](https://github.com/zewbby/HnuHole/pull/48)已合入main `d450cde`：**修复开发重启误用recover而废止会话；同代次resume前置校验，冻结/独立锚不一致仍拒绝。真实隔离16项、vivo2143原会话跨后端重启/冷启、独立复核及最终七类CI通过，本机维护工具已加载，APK无需重装。未做整机长关机或生产验收；详见[任务](fix-session-restore.md)。下方未合并均为历史状态。

@@ -3,7 +3,7 @@
 - 更新时间：2026-10-23（Asia/Shanghai）。
 - 分支：`fix/mobile-navigation-refresh`；基线 `e8ff488`。用户要求分支名不含codex。
 - 范围：用户视频问题1／2／5先完成，随后明确加入3／4，现覆盖全部五项。用户随后授权前后端更新、真我安装2303并开始统一验收。
-- 状态：分支实现已提交并整合 `origin/main`（`6cd686f`），[PR #57](https://github.com/zewbby/HnuHole/pull/57)待CI复跑及合并；开发后端和真我限定验收已完成。用户导航视觉确认、动图保存与短时Profile帧采样通过；真实大图长列表与长期内存压力仍待验。
+- 状态：[PR #57](https://github.com/zewbby/HnuHole/pull/57)已Squash合入main `1686a063328bb919ee8a38b51e0ae70f4d6536e2`；最终head `f1e85fc` 的20项适用CI全PASS、独立只读审查无阻断（非GitHub成员批准）。开发后端和真我限定验收已完成，用户导航视觉确认、动图保存与短时Profile帧采样通过；真实大图长列表与长期内存压力仍待验，未生产发布。
 
 ## 实现
 
@@ -70,3 +70,8 @@
 - [PR #57](https://github.com/zewbby/HnuHole/pull/57) 首次CI发现feed命令行联调探针不能编译引入Flutter `Size`的传输层；`f7c3968`已改为纯Dart宽高记录，只在界面映射`Size`。两份探针本机编译、相关Flutter测试及分析PASS。独立只读审查对完整改动和此修正均无阻断；GitHub成员review未提交。
 - 送审期间main新合入启动欢迎页修正 [PR #56](https://github.com/zewbby/HnuHole/pull/56)，本分支已整合`6cd686f`，保留恢复会话期间欢迎页行为。新基线的远端CI和测试以最新提交回执为准。
 - 最终主线整合后本机Flutter全量805 PASS／3 SKIP、分析0；两份feed命令行探针编译PASS。新增启动页修正与五项功能一起进入PR #57的最终CI。
+
+### 合并回执
+
+- [PR #57](https://github.com/zewbby/HnuHole/pull/57)于2026-10-23 Squash合并，主线提交`1686a063328bb919ee8a38b51e0ae70f4d6536e2`，最终待合并head`f1e85fc2b51050170eb7e7955638be6b8d80a585`；20项适用CI全部成功，包含曾失败后修复的真实feed联调、Flutter、Go／PostgreSQL、Android候选及预演。独立只读审查无阻断；GitHub成员review为空，未伪造批准。
+- 真我当前保数据安装日常2303、开发C维持本轮后端；代码进入main不代表生产发布或把设备限定验收提升为全模块通过。真实大图长列表／长期内存、iOS及生产环境仍未验。
