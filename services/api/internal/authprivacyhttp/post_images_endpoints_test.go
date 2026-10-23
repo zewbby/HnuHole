@@ -2,6 +2,7 @@ package authprivacyhttp
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strings"
 	"testing"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/posts"
 )
 
 // Host substitutes here prove strict HTTP plumbing only. Original bytes, SQL
@@ -108,5 +110,75 @@ func TestPostImageHTTPManifestStrictnessAndResponseIsolation(t *testing.T) {
 	response = postHTTPRequest(h, "GET", "/api/v1/posts/"+postHTTPPost+"/images", "", postHTTPHeaders(false))
 	if response.Code != 503 || strings.Contains(response.Body.String(), "forbidden") {
 		t.Fatal("arbitrary backend data leaked")
+	}
+}
+
+func (f *imageHTTPBackend) PostImageThumbnailsEnabled() bool { return true }
+func (f *imageHTTPBackend) ReadPostThumbnail(_ context.Context, _ [32]byte, _, _ string) (authprivacy.PostResponse, error) {
+	f.calls++
+	return f.response(authprivacy.ImageBytes{Bytes: []byte("RIFFxxxxWEBPpreview"), MIME: "image/webp"})
+}
+
+func TestPostImagePreviewNegotiationAndProtectedRoute(t *testing.T) {
+	f, h := newImageHTTP(t)
+	source := postmedia.Source{Path: "/api/v1/posts/" + postHTTPPost + "/images/" + postHTTPIdentity + "/original", MIME: "image/png", ByteLength: 8}
+	group := postmedia.Group{PostID: postHTTPPost, Images: []postmedia.Image{{MediaID: postHTTPTask, ContentVersionID: postHTTPIdentity, Position: 0,
+		Width: 3, Height: 2, PixelWidth: 3, PixelHeight: 2, Frames: 1, SaveAllowed: true,
+		Thumbnail: source, Full: source, Original: source}}, AccessValidUntil: postHTTPTime.Add(time.Minute).Format(time.RFC3339Nano)}
+	f.value = group
+	path := "/api/v1/posts/" + postHTTPPost + "/images"
+	legacy := postHTTPRequest(h, "GET", path, "", postHTTPHeaders(false))
+	if legacy.Code != 200 || strings.Contains(legacy.Body.String(), "maxByteLength") {
+		t.Fatal("legacy changed")
+	}
+	headers := postHTTPHeaders(false)
+	headers.Set("X-Post-Preview", "thumbnail-v1")
+	response := postHTTPRequest(h, "GET", path, "", headers)
+	var decoded postmedia.Group
+	if response.Code != 200 || json.Unmarshal(response.Body.Bytes(), &decoded) != nil {
+		t.Fatal("preview manifest")
+	}
+	item := decoded.Images[0]
+	if !strings.HasSuffix(item.Thumbnail.Path, "/thumbnail") || item.Thumbnail.ByteLength != 0 || item.Thumbnail.MaxByteLength != postmedia.MaxThumbnailBytes || item.Full != source || item.Original != source {
+		t.Fatal("derivative/source confused")
+	}
+	if group.Images[0].Thumbnail != source {
+		t.Fatal("backend slice mutated")
+	}
+	f.value = nil
+	preview := postHTTPRequest(h, "GET", item.Thumbnail.Path, "", postHTTPHeaders(false))
+	if preview.Code != 200 || preview.Header().Get("Content-Type") != "image/webp" || preview.Header().Get("Cache-Control") != "no-store" || preview.Header().Get("X-Content-Type-Options") != "nosniff" {
+		t.Fatal("preview envelope")
+	}
+	before := f.calls
+	denied := postHTTPRequest(h, "GET", item.Thumbnail.Path, "", http.Header{})
+	if denied.Code != 401 || f.calls != before {
+		t.Fatal("preview bypassed bearer")
+	}
+	headers.Set("X-Post-Preview", "unknown")
+	denied = postHTTPRequest(h, "GET", path, "", headers)
+	if denied.Code != 400 || f.calls != before {
+		t.Fatal("unknown negotiation reached backend")
+	}
+}
+
+func TestFeedPreviewGeometryIsOptInAndImmutable(t *testing.T) {
+	f, h := newPostHTTP(t, httpTestLimits())
+	post := posts.FeedPost{PublicPost: posts.PublicPost{PostID: postHTTPPost, ChannelID: postHTTPChannel, Title: "image", Body: "", ImageCount: 1,
+		Author: posts.PublicAuthor{State: "ACTIVE", Avatar: "default-v1", Nickname: "name"}, PublishedAt: postHTTPTime}, ViewCount: 0,
+		ImageSizes: []posts.ImageSize{{Width: 640, Height: 360}}}
+	f.value = posts.CrossChannelFeedPage{Items: []posts.FeedPost{post}}
+	legacy := postHTTPRequest(h, "GET", "/api/v1/feed", "", postHTTPHeaders(false))
+	if legacy.Code != 200 || strings.Contains(legacy.Body.String(), "imageSizes") {
+		t.Fatal("legacy geometry leak")
+	}
+	headers := postHTTPHeaders(false)
+	headers.Set("X-Post-Preview", "thumbnail-v1")
+	response := postHTTPRequest(h, "GET", "/api/v1/feed", "", headers)
+	if response.Code != 200 || !strings.Contains(response.Body.String(), `"imageSizes":[{"width":640,"height":360}]`) {
+		t.Fatal("negotiated geometry absent")
+	}
+	if f.value.(posts.CrossChannelFeedPage).Items[0].ImageSizes == nil {
+		t.Fatal("backend feed mutated")
 	}
 }

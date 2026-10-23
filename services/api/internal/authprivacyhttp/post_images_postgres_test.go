@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/google/uuid"
@@ -35,8 +36,9 @@ func TestRealHTTPSPostImagesUploadReadRevocationPostgres(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
+	probe := &postThumbnailGateProbe{Validator: validator, preview: validator}
 	s := e2eNewServices(t, func(c *authprivacy.Community) *authprivacy.Community {
-		enabled, e := c.WithPostImages(context.Background(), validator)
+		enabled, e := c.WithPostImages(context.Background(), probe)
 		if e != nil {
 			t.Fatal(e)
 		}
@@ -102,13 +104,65 @@ func TestRealHTTPSPostImagesUploadReadRevocationPostgres(t *testing.T) {
 		wrongPost := "/api/v1/posts/" + uuid.NewString() + "/images/" + img["contentVersionId"].(string) + "/original"
 		mediaHTTPSBytes(t, s, "GET", wrongPost, "Bearer "+reader, "", nil, 404)
 	}
+	previewPath := "/api/v1/posts/" + post + "/images/" + items[0].(map[string]any)["contentVersionId"].(string) + "/thumbnail"
+	preview := mediaHTTPSBytes(t, s, "GET", previewPath, "Bearer "+reader, "", nil, 200)
+	if len(preview) > postmedia.MaxThumbnailBytes || len(preview) < 12 || string(preview[:4]) != "RIFF" || string(preview[8:12]) != "WEBP" || bytes.Equal(preview, originals[0]) {
+		t.Fatal("invalid real derived preview")
+	}
+	mediaHTTPSBytes(t, s, "GET", previewPath, "Upload "+grants[0], "", nil, 401)
+	req, err := http.NewRequest("GET", s.cPublic.URL+"/api/v1/feed", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Authorization", "Bearer "+reader)
+	req.Header.Set("X-Post-Preview", "thumbnail-v1")
+	feedResponse, err := s.client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	feedBytes, err := io.ReadAll(io.LimitReader(feedResponse.Body, 2*1024*1024))
+	feedResponse.Body.Close()
+	if err != nil || feedResponse.StatusCode != 200 || !bytes.Contains(feedBytes, []byte(`"imageSizes":[{"width":3,"height":2},{"width":3,"height":2}]`)) {
+		t.Fatal("real feed geometry absent")
+	}
 	original := items[0].(map[string]any)["original"].(map[string]any)["path"].(string)
-	postHTTPSJSON(t, s, "POST", "/api/v1/posts/"+post+"/delete", token, httpTestEncoding(16, 75), nil, 200)
+	// Delete after the original read and transform, while this preview request
+	// is still in flight. The final resource/Gate transaction must reject it.
+	probe.setAfter(func() {
+		postHTTPSJSON(t, s, "POST", "/api/v1/posts/"+post+"/delete", token, httpTestEncoding(16, 75), nil, 200)
+	})
+	mediaHTTPSBytes(t, s, "GET", previewPath, "Bearer "+reader, "", nil, 404)
 	mediaHTTPSBytes(t, s, "GET", original, "Bearer "+reader, "", nil, 404)
+	mediaHTTPSBytes(t, s, "GET", previewPath, "Bearer "+reader, "", nil, 404)
 	if e = s.gate.Freeze(context.Background(), "synthetic media HTTP freeze"); e != nil {
 		t.Fatal(e)
 	}
 	postHTTPSJSON(t, s, "GET", "/api/v1/posts/"+post+"/images", reader, "", nil, 503)
+}
+
+type postThumbnailGateProbe struct {
+	postmedia.Validator
+	preview postmedia.Thumbnailer
+	mu      sync.Mutex
+	after   func()
+}
+
+func (p *postThumbnailGateProbe) setAfter(fn func()) {
+	p.mu.Lock()
+	p.after = fn
+	p.mu.Unlock()
+}
+
+func (p *postThumbnailGateProbe) Thumbnail(ctx context.Context, original []byte) ([]byte, error) {
+	data, err := p.preview.Thumbnail(ctx, original)
+	p.mu.Lock()
+	after := p.after
+	p.after = nil
+	p.mu.Unlock()
+	if err == nil && after != nil {
+		after()
+	}
+	return data, err
 }
 
 // Actual HTTPS transport + original bytes, never prints credentials or payloads.

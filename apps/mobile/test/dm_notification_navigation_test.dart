@@ -7,6 +7,7 @@ import 'package:hnuhole_mobile/src/messaging/dm_notifications.dart';
 import 'package:hnuhole_mobile/src/messaging/dm_runtime.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_models.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_message_screen.dart';
+import 'package:hnuhole_mobile/src/navigation/app_navigation.dart';
 
 import 'identity_test_support.dart';
 import 'login_home_test_support.dart';
@@ -142,6 +143,14 @@ void main() {
           Navigator.of(tester.element(find.byType(DmChatRoute))).pop();
           await tester.pumpAndSettle();
           expect(find.byType(DmInboxRoute), findsOneWidget);
+          expect(
+            find.byType(HhAppNavigation, skipOffstage: false),
+            findsOneWidget,
+          );
+          expect(
+            tester.widget<HhAppNavigation>(find.byType(HhAppNavigation)).selected,
+            AppDestination.directMessages,
+          );
           expect(
             tester
                 .widget<DmInboxRoute>(find.byType(DmInboxRoute))

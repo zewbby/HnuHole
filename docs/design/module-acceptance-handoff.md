@@ -1,6 +1,16 @@
 # 分模块验收与测试交接
 
+> **2026-10-23 DM-IDENTITY-LOADING-01 主线整合：**[Draft PR #60](https://github.com/zewbby/HnuHole/pull/60) 整合 main `7a2a76a` 的统一底栏与启动恢复，保留私信快捷添加；用户追加移除“当前身份”，入口改同一行。整合受影响7项及渲染1项PASS、分析0。2309在vivo同签覆盖后的收起／展开／两个加号／直达编辑器并取消返回已限定PASS，未创建身份；该包先于本次主线整合及单行微调，最终2310构建／新增入口确认待主会话回执，未合并／发布。下方为对应源码历史记录。见[任务](../branches/fix-direct-message-identity-loading.md)。
+
 > **2026-10-23 DM-IDENTITY-LOADING-01（分支实现，待设备验收／合并）：**`fix/direct-message-identity-loading` 基于 main `93d3ed6`，修复合法空身份目录被误作持续核对，增加“添加身份”及失败重试；私信列表改右上紧凑身份入口、右锚定菜单与按三身份上限补空槽蓝色加号，复用现有编辑器／冷却限制，并补首次身份选择底部安全区。`e6dd325` 定点37项、分析0、真实字体组件渲染1项通过；用户追加整体右对齐后 `5de60e3` 几何断言1项及渲染1项通过，未重跑未变检查。主会话独立只读审查无剩余阻断（非 GitHub 成员批准）；2308仅构建未装，最终2309构建／vivo新增UI和安全区待回执，PR保持Draft。详见[任务记录](../branches/fix-direct-message-identity-loading.md)。旧原生人工SKIP、真实掉电／iOS／生产未验与远程推送未实现均保留，不提升B08/B09整模块结论。
+
+> **2026-10-23 MOBILE-NAV-REFRESH-01已合并：**[PR #57](https://github.com/zewbby/HnuHole/pull/57)合入main `1686a06`，最终head 20项适用CI全PASS、独立只读审查无阻断。真我2303五项限定回归、用户导航视觉确认、GIF/WebP原生保存与短时Profile帧采样已有证据；真实大图长列表／长期内存、iOS、生产未验，不提升历史完整模块结论。下方“待合并／未提交／CI未跑”为历史快照，见[任务](../branches/fix-mobile-navigation-refresh.md)。
+
+> **2026-10-23 MOBILE-NAV-REFRESH-01（分支实现／待合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；用户已在真我确认切换无重影／闪首页，导航视觉验收PASS；短时Profile帧性能已测，其余项目保留限定基础回归结论。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。
+
+> **2026-10-23 AUTH-STARTUP-FLASH-01已合并：**[PR #56](https://github.com/zewbby/HnuHole/pull/56)合入main `4197dd3`；七类CI全PASS，同签2308整合包构建及主线产品源码一致性核对PASS。21项入口／导航回归、分析0；未安装／未发布，VIVO视觉待验。下方本地状态为历史快照，见[任务](../branches/fix-auth-startup-flash.md)。
+
+> **2026-10-23 AUTH-STARTUP-FLASH-01：**A12启动展示限定修正；`flutter test --no-pub test/startup_entry_test.dart test/login_home_navigation_test.dart test/personal_route_account_test.dart`共21项PASS、分析0。未打包／安装，待整合后VIVO视觉验证；不提升完整认证或生产验收。见[任务](../branches/fix-auth-startup-flash.md)。
 
 > **2026-10-23 B08/B09 主线整合回执：**P2 [#51](https://github.com/zewbby/HnuHole/pull/51) 已 merge `988bb42045f4140c46cf9e890d985a774d033e16`，P3 [#52](https://github.com/zewbby/HnuHole/pull/52) 已 merge `665291cdf312dec94fb11a75527524a821c5f008`，各精确 head 全部适用 CI 和独立整合审查通过。设备补验 [#55](../branches/test-direct-message-device-recovery.md) 仅补真实接替／强杀／重启限定通过；真实掉电未验，原 P3 人工项 SKIP、远程推送未实现、iOS／性能／生产未验均保留，不提升模块历史验收结论，未发布。下方未合并文字保留历史时点。
 
@@ -909,3 +919,7 @@ AUTH-UI-IMPLEMENT-01 合并回执：`c23620f` 与已检查 head 文件树相同�
 分析0、全量668、真实字体20项、375浅色／320深色1.6倍字与独立只读审查无阻断；涉及A06/A12/B01的UI增量，不升级整模块历史结果。真实邮件／设备／Passkey／iOS／生产 NOT_RUN。见[任务](../branches/feat-registration-wizard-ui.md)及[证据](validation/registration-wizard-20261021/verification.json)。最终远端head与合并状态以PR为准；合并后主体APK单独记录，不把设计图或宿主替身当作真实认证验收。
 
 AUTH-REGISTER-IMPLEMENT-03 合并回执：PR #42已合入main `09498b2`，与已检查head `e1d2b0a` 完整树一致；五项CI成功，668宿主、20真实字体页面测试、分析0及独立只读审查无阻断。见[回执](validation/registration-wizard-20261021/main-merge.json)。原实现段“以PR为准”现由本条确认；主线主体包沿用原签名交付，设备／真实邮件／Passkey／生产 NOT_RUN。
+
+## MOBILE-NAV-REFRESH-01 真我动图／性能增量（2026-10-23）
+
+B03／B06／B10／PM01／IV01只增加本任务限定证据，不提升历史整模块结论。[真我续验证据](validation/mobile-animation-frame-realme-20261023.json)：开发C/V、合成front_b、实发GIF和WebP后进入原图页保存；系统相册中的两份文件与上传源逐字节相同，各4帧，应用原图播放正常，原生保存PASS。ColorOS相册的预览页面只显示首帧，属外部播放器观察限制。Profile2304于60Hz真我短时测12次切栏／8次滑动／3次刷新及动图查看；前3类build/raster P95均低于7ms，单个超16.67ms帧已记，未见持续预算失败。Flutter `gfxinfo` 对SurfaceView报0帧，不作为依据；使用FrameTiming与SurfaceFlinger。Profile开发CA修复后的宿主回归4项PASS；原生产Release开发信任边界保留。真实大图长列表／长时内存、iOS、远端CI、生产NOT_RUN。

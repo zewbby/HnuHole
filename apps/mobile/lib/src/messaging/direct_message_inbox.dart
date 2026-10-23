@@ -414,29 +414,15 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                                     ),
                                     const SizedBox(width: 4),
                                     Flexible(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            widget.identity.name,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: p.ink,
-                                            ),
-                                          ),
-                                          Text(
-                                            '当前身份',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              color: p.secondary,
-                                            ),
-                                          ),
-                                        ],
+                                      child: Text(
+                                        widget.identity.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: p.ink,
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(width: 8),

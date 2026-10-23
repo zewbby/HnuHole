@@ -240,6 +240,7 @@ class HttpPostApi
       sessionToken,
       'GET',
       '/api/v1/posts/$postId/images',
+      headers: const {'X-Post-Preview': 'thumbnail-v1'},
       decode: (raw) => PostMediaManifest.fromJson(raw, postId),
     );
     final until = response.value.accessValidUntil;
@@ -695,7 +696,9 @@ class HttpPostApi
         if (status == expected && binaryImage != null) {
           if (type.mimeType != binaryImage.mimeType ||
               type.parameters.isNotEmpty ||
-              responseBytes.length != binaryImage.byteLength ||
+              responseBytes.isEmpty ||
+              binaryImage.exactLength &&
+                  responseBytes.length != binaryImage.byteLength ||
               _single(h, 'x-content-type-options') != 'nosniff' ||
               _single(h, 'content-disposition') != 'attachment') {
             throw const FormatException('Invalid protected image bytes');

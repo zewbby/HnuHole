@@ -265,6 +265,24 @@ void main() {
     expect(find.byType(IdentityManagementScreen), findsOneWidget);
     expect(find.byType(TextFormField), findsOneWidget);
     expect(f.identitiesApi.submissions, isEmpty);
+    Navigator.of(tester.element(find.byType(TextFormField))).pop();
+    await tester.pumpAndSettle();
+    Navigator.of(tester.element(find.byType(IdentityManagementScreen))).pop();
+    await tester.pumpAndSettle();
+    await pumpUntil(tester, () => r.identityStatus == DmIdentityStatus.empty);
+    await tester.tap(find.byKey(const ValueKey('destination:home')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('destination:directMessages')));
+    await tester.pumpAndSettle();
+    expect(find.text('添加身份'), findsOneWidget);
+    expect(
+      find.byKey(
+        const ValueKey('destination:directMessages'),
+        skipOffstage: false,
+      ),
+      findsOneWidget,
+    );
+    expect(f.identitiesApi.submissions, isEmpty);
     var detached = false;
     final detach = r.controller.detach().then((_) => detached = true);
     await pumpUntil(tester, () => detached);

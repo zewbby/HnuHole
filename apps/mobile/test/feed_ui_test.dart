@@ -219,6 +219,64 @@ Widget screen(
 
 void main() {
   testWidgets(
+    'same-scope refresh retains posts, widget state and cursor through failure',
+    (tester) async {
+      final f = await FeedFixture.create();
+      addTearDown(f.dispose);
+      f.api.cursor = 'retained-page';
+      await tester.pumpWidget(screen(f));
+      await tester.pumpAndSettle();
+      final item = find.byKey(const ValueKey('post:$postId'));
+      final element = tester.element(item);
+      f.api.pageWait = Completer();
+      final refresh = f.controller.loadTimeline();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 160));
+      expect(item, findsOneWidget);
+      expect(identical(tester.element(item), element), isTrue);
+      expect(f.controller.timelineCursor, 'retained-page');
+      f.api.pageWait!.completeError(
+        const PostFailure(kind: PostFailureKind.transport),
+      );
+      await refresh;
+      await tester.pumpAndSettle();
+      expect(item, findsOneWidget);
+      expect(f.controller.timelineCursor, 'retained-page');
+      f.api.pageWait = null;
+      await f.controller.loadTimeline();
+      await tester.pumpAndSettle();
+      expect(f.controller.timelineError, isNull);
+      expect(identical(tester.element(item), element), isTrue);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  test(
+    'new block rules remove retained rows; channel switch hides prior rows',
+    () async {
+      final f = await FeedFixture.create();
+      addTearDown(f.dispose);
+      await f.controller.loadTimeline();
+      f.api.blocked = {channelId};
+      f.api.pageWait = Completer();
+      final refresh = f.controller.loadTimeline();
+      await Future<void>.delayed(Duration.zero);
+      expect(f.controller.timelineItems, isEmpty);
+      f.api.pageWait!.complete(reply(PostsPage(items: [], nextCursor: null)));
+      await refresh;
+      f.api.pageWait = null;
+      f.api.blocked = {};
+      await f.controller.loadTimeline();
+      expect(f.controller.timelineItems, isNotEmpty);
+      f.api.pageWait = Completer();
+      final change = f.controller.loadTimeline(channelId: otherChannelId);
+      expect(f.controller.timelineItems, isEmpty);
+      f.api.pageWait!.complete(reply(PostsPage(items: [], nextCursor: null)));
+      await change;
+    },
+  );
+
+  testWidgets(
     'compose semantics follow selected channel and recommended picker',
     (tester) async {
       final f = await FeedFixture.create();

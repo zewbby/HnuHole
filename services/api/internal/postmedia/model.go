@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
+const MaxThumbnailBytes = 512 * 1024
 const MaxImages = 9
 const MaxBytes = 10 * 1024 * 1024
 const MaxDimension = 16384
@@ -84,9 +85,10 @@ func (m Metadata) Matches(s Selection, data []byte) bool {
 }
 
 type Source struct {
-	Path       string `json:"path"`
-	MIME       string `json:"mimeType"`
-	ByteLength int    `json:"byteLength"`
+	Path          string `json:"path"`
+	MIME          string `json:"mimeType"`
+	ByteLength    int    `json:"byteLength,omitempty"`
+	MaxByteLength int    `json:"maxByteLength,omitempty"`
 }
 
 type Image struct {

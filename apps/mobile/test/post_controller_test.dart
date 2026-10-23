@@ -87,6 +87,9 @@ class _Api implements PostApi {
   Completer<PostResponse<PostCommandResult>>? deleteWait;
   Completer<PostResponse<PostDetail>>? detailWait;
   int taskReads = 0, capabilitiesReads = 0, publishOnRead = 0;
+  int composerReads = 0, personalTaskReads = 0;
+  Completer<PostResponse<PostsPage<OwnPostCard>>>? ownWait;
+  Completer<PostResponse<ComposerContext>>? composerWait;
   List<PostCard> feedCards = [];
   bool autoPublishedFeed = true;
   String? feedCursor;
@@ -180,12 +183,16 @@ class _Api implements PostApi {
     required String sessionToken,
     String? cursor,
     int limit = 20,
-  }) async => reply(
-    PostsPage(
-      items: currentTask.visible ? [currentTask] : [],
-      nextCursor: null,
-    ),
-  );
+  }) async {
+    personalTaskReads++;
+    return reply(
+      PostsPage(
+        items: currentTask.visible ? [currentTask] : [],
+        nextCursor: null,
+      ),
+    );
+  }
+
   @override
   Future<PostResponse<PostTask>> task({
     required String sessionToken,
@@ -334,6 +341,7 @@ class _Api implements PostApi {
     int limit = 20,
   }) async {
     ownCursors.add(cursor);
+    if (ownWait != null) return ownWait!.future;
     return reply(
       PostsPage(
         items: currentTask.state == PostTaskState.published && !deleted
@@ -389,12 +397,16 @@ class _Api implements PostApi {
   @override
   Future<PostResponse<ComposerContext>> composerContext({
     required String sessionToken,
-  }) async => reply(
-    const ComposerContext(
-      selectionState: ComposerSelectionState.defaultAvailable,
-      defaultIdentityId: identityTestId,
-    ),
-  );
+  }) async {
+    composerReads++;
+    return composerWait?.future ??
+        reply(
+          const ComposerContext(
+            selectionState: ComposerSelectionState.defaultAvailable,
+            defaultIdentityId: identityTestId,
+          ),
+        );
+  }
 }
 
 class _Fixture {
@@ -551,6 +563,91 @@ void main() {
   late _Fixture f;
   tearDown(() async => f.close());
 
+  test('personal reads start together and content appears before identity finishes', () async {
+    final api = _Api()..ownWait = Completer();
+    f = await _Fixture.create(api: api);
+    f.auth.api.readWait = Completer();
+    final load = f.controller.loadPersonal();
+    await _until(() => api.ownCursors.isNotEmpty);
+    expect(api.personalTaskReads, 1);
+    expect(f.controller.personalLoading, isTrue);
+    api.ownWait!.complete(api.reply(PostsPage(items: [], nextCursor: null)));
+    await _until(() => !f.controller.personalLoading);
+    expect(f.controller.personalItems, isNotEmpty);
+    expect(f.controller.personalIdentity, isNull);
+    f.auth.api.readWait!.complete(f.auth.api.directory());
+    await load;
+    expect(f.controller.personalIdentity, isNotNull);
+    expect(api.composerReads, 0);
+  });
+
+  test('empty personal content does not wait for profile; profile failure stays separate', () async {
+    final api = _Api()..currentTask = _task(state: PostTaskState.cancelled);
+    f = await _Fixture.create(api: api);
+    f.auth.api.readWait = Completer();
+    final load = f.controller.loadPersonal();
+    await _until(() => f.auth.api.readStarted.isCompleted);
+    expect(f.controller.personalLoading, isFalse);
+    expect(f.controller.personalItems, isEmpty);
+    f.auth.api.readWait!.completeError(
+      const AuthFailure(kind: AuthFailureKind.timeout),
+    );
+    await load;
+    expect(f.controller.personalError, isNull);
+    expect(f.controller.personalProfileError, isNotNull);
+    expect(f.controller.available, isTrue);
+  });
+
+  for (final kind in [
+    AuthFailureKind.unauthorized,
+    AuthFailureKind.unavailable,
+  ]) {
+    test(
+      'profile authority failure clears already displayed personal content: $kind',
+      () async {
+        f = await _Fixture.create();
+        f.auth.api.readWait = Completer();
+        final load = f.controller.loadPersonal();
+        await _until(() => f.auth.api.readStarted.isCompleted);
+        expect(f.controller.personalItems, isNotEmpty);
+        f.auth.api.readWait!.completeError(AuthFailure(kind: kind));
+        await load;
+        expect(f.controller.available, isFalse);
+        expect(f.controller.personalItems, isEmpty);
+        expect(f.controller.personalProfileError, isNull);
+      },
+    );
+  }
+
+  test(
+    'non-original profile context is deferred; paging never rereads profile',
+    () async {
+      final api = _Api()..ownCursor = 'next';
+      f = await _Fixture.create(api: api);
+      f.auth.api.items = [identityTestItem(original: false)];
+      api.composerWait = Completer();
+      final load = f.controller.loadPersonal();
+      await _until(() => api.composerReads == 1);
+      expect(f.controller.personalLoading, isFalse);
+      expect(f.controller.personalItems, isNotEmpty);
+      api.composerWait!.complete(
+        api.reply(
+          const ComposerContext(
+            selectionState: ComposerSelectionState.defaultAvailable,
+            defaultIdentityId: identityTestId,
+          ),
+        ),
+      );
+      await load;
+      expect(f.controller.personalIdentity?.id, identityTestId);
+      final reads = f.auth.api.reads;
+      await f.controller.loadPersonal(more: true);
+      expect(f.auth.api.reads, reads);
+      expect(api.composerReads, 1);
+      expect(api.ownCursors.last, 'next');
+    },
+  );
+
   test('SQLite draft edits use durable CAS revision, reopen restores multiple drafts and ignores blank new draft', () async {
     f = await _Fixture.create();
     final first = f.editor();
@@ -651,46 +748,52 @@ void main() {
     expect(api.creates, hasLength(1));
   });
 
-  test('a still unknown original result retains its transport banner', () async {
-    final api = _Api()
-      ..createLost = true
-      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
-    f = await _Fixture.create(api: api);
-    final editor = f.editor();
-    expect(await f.controller.publish(editor), isTrue);
-    await _until(() => api.queries.isNotEmpty && !f.controller.busy);
-    final message = f.controller.errorMessage;
-    expect(message, isNotNull);
-    api.queryFailure = null;
-    api.receipts.clear();
-    await f.controller.reconcile(editor.id);
-    expect((await _entry(f, editor.id)).state, 'UNKNOWN');
-    expect(f.controller.errorMessage, message);
-  });
+  test(
+    'a still unknown original result retains its transport banner',
+    () async {
+      final api = _Api()
+        ..createLost = true
+        ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+      f = await _Fixture.create(api: api);
+      final editor = f.editor();
+      expect(await f.controller.publish(editor), isTrue);
+      await _until(() => api.queries.isNotEmpty && !f.controller.busy);
+      final message = f.controller.errorMessage;
+      expect(message, isNotNull);
+      api.queryFailure = null;
+      api.receipts.clear();
+      await f.controller.reconcile(editor.id);
+      expect((await _entry(f, editor.id)).state, 'UNKNOWN');
+      expect(f.controller.errorMessage, message);
+    },
+  );
 
-  test('confirming an original command does not clear a later feed failure', () async {
-    final api = _Api()
-      ..createLost = true
-      ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
-    f = await _Fixture.create(api: api);
-    final editor = f.editor();
-    expect(await f.controller.publish(editor), isTrue);
-    await _until(() => api.queries.isNotEmpty && !f.controller.busy);
-    api.feedWait = Completer<PostResponse<PostsPage<PostCard>>>();
-    final feed = f.controller.loadFeed(_channel);
-    await Future<void>.delayed(Duration.zero);
-    api.feedWait!.completeError(
-      const PostFailure(kind: PostFailureKind.transport),
-    );
-    await feed;
-    final message = f.controller.errorMessage;
-    expect(message, isNotNull);
-    expect(f.controller.feedError, isNotNull);
-    api.queryFailure = null;
-    await f.controller.reconcile(editor.id);
-    expect((await _entry(f, editor.id)).state, 'ACCEPTED');
-    expect(f.controller.errorMessage, message);
-  });
+  test(
+    'confirming an original command does not clear a later feed failure',
+    () async {
+      final api = _Api()
+        ..createLost = true
+        ..queryFailure = const PostFailure(kind: PostFailureKind.transport);
+      f = await _Fixture.create(api: api);
+      final editor = f.editor();
+      expect(await f.controller.publish(editor), isTrue);
+      await _until(() => api.queries.isNotEmpty && !f.controller.busy);
+      api.feedWait = Completer<PostResponse<PostsPage<PostCard>>>();
+      final feed = f.controller.loadFeed(_channel);
+      await Future<void>.delayed(Duration.zero);
+      api.feedWait!.completeError(
+        const PostFailure(kind: PostFailureKind.transport),
+      );
+      await feed;
+      final message = f.controller.errorMessage;
+      expect(message, isNotNull);
+      expect(f.controller.feedError, isNotNull);
+      api.queryFailure = null;
+      await f.controller.reconcile(editor.id);
+      expect((await _entry(f, editor.id)).state, 'ACCEPTED');
+      expect(f.controller.errorMessage, message);
+    },
+  );
 
   test('CREATE 409 checks the original command before accepting its existing task and never submits a second key', () async {
     final api = _Api()

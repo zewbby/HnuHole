@@ -357,6 +357,9 @@ void main() {
       expect(page.value.items.single.body, '真实正文');
       expect(page.value.items.single.viewCount, 1234);
       expect(endpoint.requests.last.uri.path, '/api/v1/feed');
+      expect(endpoint.requests.last.headers['x-post-preview'], [
+        'thumbnail-v1',
+      ]);
       expect(endpoint.requests.last.uri.queryParameters, {'limit': '7'});
       await api.timeline(
         sessionToken: _token,
@@ -459,6 +462,40 @@ void main() {
       }),
       throwsFormatException,
     );
+  });
+
+  test('feed geometry is optional for old servers and strictly bounded when present', () {
+    final row = {..._card(), 'body': '', 'viewCount': 0, 'imageCount': 1};
+    expect(FeedPost.fromJson(row).imageSizes, isNull);
+    final sized = FeedPost.fromJson({
+      ...row,
+      'imageSizes': [
+        {'width': 1600, 'height': 900},
+      ],
+    });
+    expect(sized.imageSizes!.single.width, 1600);
+    expect(sized.imageSizes!.single.height, 900);
+    for (final malformed in <Object?>[
+      null,
+      [],
+      [
+        {'width': 0, 'height': 900},
+      ],
+      [
+        {'width': 1600.5, 'height': 900},
+      ],
+      [
+        {'width': 16384, 'height': 16384},
+      ],
+      [
+        {'width': 1600, 'height': 900, 'accountId': _id},
+      ],
+    ]) {
+      expect(
+        () => FeedPost.fromJson({...row, 'imageSizes': malformed}),
+        throwsFormatException,
+      );
+    }
   });
 
   test('media CREATE and RETRY preserve manifest and bind the existing intent routes', () async {
@@ -719,6 +756,60 @@ void main() {
       throwsA(isA<PostFailure>()),
     );
     expect(endpoint.requests.length, 2);
+  });
+
+  test('preview negotiation accepts bounded derivatives and keeps full original exact', () async {
+    final raw = mediaManifest();
+    final row = (raw['images'] as List).single as Map;
+    row['thumbnail'] = {
+      'path': (row['original'] as Map)['path'].toString().replaceFirst(
+        '/original',
+        '/thumbnail',
+      ),
+      'mimeType': 'image/webp',
+      'maxByteLength': 512 * 1024,
+    };
+    endpoint.respond = (r) => _json(r, 200, raw);
+    final item = (await api.imageManifest(
+      sessionToken: _token,
+      postId: _id,
+    )).value.images.single;
+    expect(endpoint.requests.last.headers['x-post-preview'], ['thumbnail-v1']);
+    expect(item.exactLength, isTrue);
+    expect(item.preview.exactLength, isFalse);
+    endpoint.respond = (r) async {
+      r.response.headers.set('Content-Type', 'image/webp');
+      r.response.headers.set('Content-Disposition', 'attachment');
+      r.response.headers.set('X-Content-Type-Options', 'nosniff');
+      r.response.headers.set('Session-Expires-At', _expiry);
+      r.response.headers.set('Server-Time', _time);
+      r.response.add([1, 2, 3]);
+      await r.response.close();
+    };
+    expect(
+      (await api.imageBytes(
+        sessionToken: _token,
+        postId: _id,
+        image: item.preview,
+      )).value,
+      [1, 2, 3],
+    );
+    expect(endpoint.requests.last.uri.path, endsWith('/thumbnail'));
+    for (final change in [
+      {'maxByteLength': 512 * 1024 + 1},
+      {'byteLength': 3},
+      {'mimeType': 'image/png'},
+      {'path': 'https://evil.invalid/thumbnail'},
+    ]) {
+      final bad = mediaManifest();
+      final badRow = (bad['images'] as List).single as Map;
+      badRow['thumbnail'] = {...(row['thumbnail'] as Map), ...change};
+      endpoint.respond = (r) => _json(r, 200, bad);
+      await expectLater(
+        api.imageManifest(sessionToken: _token, postId: _id),
+        throwsA(isA<PostFailure>()),
+      );
+    }
   });
 
   test('media manifest rejects wrong ownership, URL tricks, duplicates, budgets and lease extension', () async {

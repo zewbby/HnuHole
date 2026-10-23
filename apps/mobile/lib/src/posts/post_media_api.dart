@@ -58,7 +58,12 @@ class PostMediaImage {
     required this.path,
     required this.mimeType,
     required this.byteLength,
+    this.exactLength = true,
+    this._preview,
   });
+  final PostMediaImage? _preview;
+  PostMediaImage get preview => _preview ?? this;
+  final bool exactLength;
   final String mediaId, contentVersionId, path, mimeType;
   final int pixelWidth, pixelHeight, frames, byteLength;
   final bool saveAllowed;
@@ -109,13 +114,46 @@ class PostMediaImage {
         }.contains(mime)) {
       throw const FormatException('Invalid post image metadata');
     }
-    for (final key in ['thumbnail', 'full', 'original']) {
+    for (final key in ['full', 'original']) {
       final s = PostJson.record(m[key], {'path', 'mimeType', 'byteLength'});
       if (s['path'] != expectedPath ||
           s['mimeType'] != mime ||
           s['byteLength'] != size) {
         throw const FormatException('Invalid protected post image source');
       }
+    }
+    final thumb = PostJson.record(
+      m['thumbnail'],
+      {'path', 'mimeType'},
+      optional: {'byteLength', 'maxByteLength'},
+    );
+    final thumbnailPath = '/api/v1/posts/$post/images/$id/thumbnail';
+    PostMediaImage? preview;
+    if (thumb['path'] == thumbnailPath) {
+      final limit = PostJson.integer(thumb, 'maxByteLength', 1, 512 * 1024);
+      if (thumb['mimeType'] != 'image/webp' ||
+          thumb.containsKey('byteLength')) {
+        throw const FormatException('Invalid protected preview source');
+      }
+      // Server poster fits inside 640x640. Its transfer limit is explicit,
+      // rather than pretending the not-yet-encoded derivative has an exact size.
+      preview = PostMediaImage._(
+        mediaId: PostJson.id(m, 'mediaId'),
+        contentVersionId: id,
+        pixelWidth: pw.clamp(1, 640),
+        pixelHeight: ph.clamp(1, 640),
+        frames: 1,
+        saveAllowed: false,
+        path: thumbnailPath,
+        mimeType: 'image/webp',
+        byteLength: limit,
+        exactLength: false,
+      );
+    } else if (thumb['path'] != expectedPath ||
+        thumb['mimeType'] != mime ||
+        thumb['byteLength'] != size ||
+        thumb.containsKey('maxByteLength')) {
+      throw const FormatException('Invalid protected legacy preview source');
     }
     return PostMediaImage._(
       mediaId: PostJson.id(m, 'mediaId'),
@@ -127,12 +165,14 @@ class PostMediaImage {
       path: expectedPath,
       mimeType: mime,
       byteLength: size,
+      preview: preview,
     );
   }
 
   void validatePost(String postId) {
     PostProtocol.resourceId(postId);
-    if (path != '/api/v1/posts/$postId/images/$contentVersionId/original') {
+    final suffix = exactLength ? 'original' : 'thumbnail';
+    if (path != '/api/v1/posts/$postId/images/$contentVersionId/$suffix') {
       throw const FormatException('Mismatched protected image resource');
     }
   }

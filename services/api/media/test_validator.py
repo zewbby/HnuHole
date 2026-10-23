@@ -7,7 +7,7 @@ import sys
 import unittest
 
 from PIL import Image
-from validate_image import inspect
+from validate_image import inspect, thumbnail
 
 
 def sample(fmt, animated=False, **kwargs):
@@ -36,6 +36,32 @@ class ValidatorTests(unittest.TestCase):
                 self.assertEqual(metadata["frames"], 2)
                 self.assertTrue(metadata["animated"])
                 self.assertEqual(metadata["byteLength"], len(data))
+
+    def test_previews_are_small_oriented_static_and_do_not_change_originals(self):
+        exif = Image.Exif()
+        exif[274] = 6
+        data = sample("JPEG", exif=exif)
+        digest = hashlib.sha256(data).digest()
+        with Image.open(io.BytesIO(thumbnail(data))) as preview:
+            self.assertEqual(preview.size, (2, 3))
+            self.assertFalse(preview.getexif())
+        self.assertEqual(hashlib.sha256(data).digest(), digest)
+        animated = sample("WEBP", True)
+        with Image.open(io.BytesIO(thumbnail(animated))) as preview:
+            self.assertEqual(getattr(preview, "n_frames", 1), 1)
+        self.assertEqual(inspect(animated)["frames"], 2)
+        noisy = Image.effect_noise((1400, 1000), 100)
+        out = io.BytesIO()
+        noisy.save(out, format="PNG")
+        raw = out.getvalue()
+        result = thumbnail(raw)
+        self.assertLess(len(result), len(raw))
+        self.assertLessEqual(len(result), 512 * 1024)
+        with Image.open(io.BytesIO(result)) as preview:
+            self.assertLessEqual(max(preview.size), 640)
+        for bad in (b"", b"<svg></svg>", sample("PNG")[:-5]):
+            with self.assertRaises(Exception):
+                thumbnail(bad)
 
     def test_truncated_and_fake_images(self):
         for data in (b"", b"https://example.invalid/a.jpg", b"<svg></svg>",

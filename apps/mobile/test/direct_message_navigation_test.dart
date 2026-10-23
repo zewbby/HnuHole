@@ -183,6 +183,8 @@ void main() {
       );
       final name = find.descendant(of: trigger, matching: find.text(self.name));
       expect(tester.getCenter(arrow).dx, lessThan(tester.getCenter(name).dx));
+      expect(find.text('当前身份'), findsNothing);
+      expect(tester.getCenter(arrow).dy, closeTo(tester.getCenter(name).dy, 1));
       await tester.tap(find.byKey(const ValueKey('dm-search')));
       await tester.enterText(find.byKey(const ValueKey('dm-search')), '查找');
       await tester.tap(trigger);

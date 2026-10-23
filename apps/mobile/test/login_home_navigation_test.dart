@@ -56,6 +56,18 @@ Future<void> disposeApp(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('cold start never presents the suspended-session error page', (
+    tester,
+  ) async {
+    final f = HomeTestFixture();
+    await tester.pumpWidget(await f.create());
+    expect(find.text('会话暂时无法确认，请重试。'), findsNothing);
+    expect(find.text('重新核对会话'), findsNothing);
+    await tester.pumpAndSettle();
+    expectHome(tester, f);
+    await disposeApp(tester);
+  });
+
   testWidgets('password login goes directly to recommended root home', (
     tester,
   ) async {

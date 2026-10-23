@@ -51,3 +51,18 @@
 2308绑定e6dd325，仅构建PASS，用户追加对齐后未安装；2309绑定5de60e3，正常主入口同签构建及vivo保数据覆盖安装由主会话执行，本提交时待回执。合法空态与创建入口通过宿主装配验证；用户已自行创建身份，不删除其身份或切换账号来制造设备空态。组件图为宿主夹具、没有App底部导航，不能代替原生UI／安全区验收；含真实用户身份的旧设备截图不提交。
 
 本次同步 README 分支入口与最近已合并#55、HANDOFF、progress和模块交接／台账。保持Draft等待2309新增UI／安全区设备结果、精确head远端产品CI及协作检查；仅这些通过后按既有授权合并main。未改后端、不重复未受影响旧DM矩阵，真实突然掉电NOT_RUN、P3人工SKIP、厂商推送未实现、iOS／生产未验保留。实现、合并、验收及发布分别登记，未正式发布。
+
+## 新主线整合与单行入口（2026-10-23）
+
+[Draft PR #60](https://github.com/zewbby/HnuHole/pull/60) 送审后 main 已更新到 `7a2a76a0a82d85b54f49a02c22ce924425cba4dc`，本分支合并保留 #56 启动恢复与 #57 底栏／刷新／图片功能。`main.dart` 相对该主线只保留 `_openIdentity(initialCreate)` 的参数及传递，将回调移到新的 `PrimaryTabs.builders.directMessages`；通知入口保留主线的身份／revision设置和选中底栏。文档冲突保留双方历史和边界，README最近变动采用新主线最新五项。
+
+用户随后要求移除“当前身份”：入口变为箭头、姓名、头像单行垂直居中，右对齐、菜单和至少48dp点击区保留。只有 `direct_message_inbox.dart` 这一既有DM组件按此授权发生变化；其余已验DM运行时／身份管理／聊天组件源码保持原样。2309已由主会话同签保数据安装vivo，收起／展开／两个加号／直达创建并取消返回限定PASS，未创建身份；该旧包不代表此次主线整合与单行微调已原生验证。
+
+仅新增受影响验证，未重复37项旧矩阵／图片后端／旧真机：
+
+- `flutter test --no-pub test/dm_runtime_test.dart --plain-name 'production root opens real identity setup from empty DM inbox' --reporter expanded`：1 PASS，增加取消编辑、返回身份管理后跨底栏往返仍有添加入口且只有一条底栏。
+- `flutter test --no-pub test/dm_notification_navigation_test.dart test/app_navigation_test.dart test/startup_entry_test.dart --reporter expanded`：5 PASS，包含统一底栏、通知精确身份及启动恢复。
+- `flutter test --no-pub test/direct_message_navigation_test.dart --plain-name 'compact dropdown mirrors content, fills slots and opens add flow' --reporter expanded`：1 PASS，增加无副标题与箭头／姓名中心Y一致断言。
+- `flutter analyze --no-pub`：0 issues；同既有渲染命令输出 `r3/` 收起与展开图：1 PASS，不覆盖r2。
+
+本轮日志在原证据目录 `r3/` 下：`root-integration-test.log`、`navigation-integration-tests.log`、`single-line-alignment-test.log`、`analyze.log`、`render-test.log`。最终2310构建、独立review及新增布局／入口设备回执由主会话继续；PR精确head CI与合并回执由提交代理更新，当前未合并／发布。
