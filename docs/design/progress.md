@@ -2,6 +2,10 @@
 
 > **2026-10-23 MOBILE-NAV-REFRESH-01（分支实现／待合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；用户已在真我确认切换无重影／闪首页，导航视觉验收PASS；短时Profile帧性能已测，其余项目保留限定基础回归结论。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。
 
+> **2026-10-23 AUTH-STARTUP-FLASH-01已合并：**[PR #56](https://github.com/zewbby/HnuHole/pull/56)合入main `4197dd3`；七类CI全PASS，同签2308整合包构建及主线产品源码一致性核对PASS。21项入口／导航回归、分析0；未安装／未发布，VIVO视觉待验。下方本地状态为历史快照，见[任务](../branches/fix-auth-startup-flash.md)。
+
+> **2026-10-23 AUTH-STARTUP-FLASH-01：**仅修视频中的启动错误页闪现，starting/restoring期间保持欢迎页；21项入口／导航回归PASS、分析0。本地未提交／合并／安装，其他任务整合版不改。见[任务](../branches/fix-auth-startup-flash.md)。
+
 > **2026-10-23 主线状态：**P2 [#51](https://github.com/zewbby/HnuHole/pull/51) 已合并 `988bb42045f4140c46cf9e890d985a774d033e16`，P3 [#52](https://github.com/zewbby/HnuHole/pull/52) 已合并 `665291cdf312dec94fb11a75527524a821c5f008`；精确 head CI 和独立整合审查通过，main 保留认证反馈 #53。限定验收不扩大，设备补验 [#55](../branches/test-direct-message-device-recovery.md) 的真实掉电仍 NOT_RUN，P3 原生 SKIP／远程推送未实现、iOS／规模／生产未验，未部署／发布。下方为历史阶段记录。
 
 > **2026-10-23 AUTH-FEEDBACK-01 已合并：**用户确认弹窗缩放效果；[PR #53](https://github.com/zewbby/HnuHole/pull/53)经认证Flutter CI、Android候选/rehearsal及受影响移动端产品CI通过后Squash合入main，提交`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`。2306限定64项回归、分析0、同签真我覆盖安装／启动PASS。真机帧性能未测、未发布；下方认证送审／待验文字为历史阶段快照。见[任务记录](../branches/fix-auth-feedback.md)。

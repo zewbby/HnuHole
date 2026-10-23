@@ -3,7 +3,7 @@
 - 更新时间：2026-10-23（Asia/Shanghai）。
 - 分支：`fix/mobile-navigation-refresh`；基线 `e8ff488`。用户要求分支名不含codex。
 - 范围：用户视频问题1／2／5先完成，随后明确加入3／4，现覆盖全部五项。用户随后授权前后端更新、真我安装2303并开始统一验收。
-- 状态：分支实现已提交并整合最新 `origin/main`（`93d3ed6`），待PR合并；开发后端和真我限定验收已完成。用户导航视觉确认、动图保存与短时Profile帧采样通过；真实大图长列表与长期内存压力仍待验。
+- 状态：分支实现已提交并整合 `origin/main`（`6cd686f`），[PR #57](https://github.com/zewbby/HnuHole/pull/57)待CI复跑及合并；开发后端和真我限定验收已完成。用户导航视觉确认、动图保存与短时Profile帧采样通过；真实大图长列表与长期内存压力仍待验。
 
 ## 实现
 
@@ -67,3 +67,6 @@
 
 - 本分支提交 `eb1f38f` 保存五项改动和真我续验证据；整合 `origin/main` 的 `93d3ed6`。处理的运行时代码冲突是主线私信通知点击与新单底栏结构：通知先选中保留的私信栏目，再打开目标会话，返回只有一个底栏且身份正确。
 - 整合后Flutter分析0、全量`flutter test --no-pub test`为803 PASS／3 SKIP；新增私信通知与底栏定点4 PASS，debug bundle构建PASS。Linux隔离源码镜像Go全包test/build/vet PASS。远端CI及独立审查待PR回执。
+- [PR #57](https://github.com/zewbby/HnuHole/pull/57) 首次CI发现feed命令行联调探针不能编译引入Flutter `Size`的传输层；`f7c3968`已改为纯Dart宽高记录，只在界面映射`Size`。两份探针本机编译、相关Flutter测试及分析PASS。独立只读审查对完整改动和此修正均无阻断；GitHub成员review未提交。
+- 送审期间main新合入启动欢迎页修正 [PR #56](https://github.com/zewbby/HnuHole/pull/56)，本分支已整合`6cd686f`，保留恢复会话期间欢迎页行为。新基线的远端CI和测试以最新提交回执为准。
+- 最终主线整合后本机Flutter全量805 PASS／3 SKIP、分析0；两份feed命令行探针编译PASS。新增启动页修正与五项功能一起进入PR #57的最终CI。

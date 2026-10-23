@@ -22,8 +22,8 @@
     "nativeCandidate": "2026102303_INSTALLED_REALME",
     "integratedHostTests": 744,
     "nativeAcceptance": "BASIC_CHECKS_PASS_NAVIGATION_VISUAL_USER_CONFIRMED",
-    "independentReview": "NOT_RUN",
-    "remoteCI": "NOT_RUN",
+    "independentReview": "PASS_READ_ONLY_REVIEW_NO_BLOCKER",
+    "remoteCI": "PR57_RERUN_PENDING",
     "production": "NOT_RELEASED",
     "historicalModuleVerdictsUnchanged": true,
     "evidence": "docs/branches/fix-mobile-navigation-refresh.md",
@@ -53,9 +53,20 @@
     "nativeAnimationSave": "PASS_REALME_GIF_WEBP_EXACT_BYTES_FOUR_FRAMES",
     "profileFrameSample": "PASS_SHORT_SYNTHETIC_60HZ_NO_SUSTAINED_FRAME_BUDGET_FAILURE",
     "remainingDeviceScope": "REAL_PHOTO_HEAVY_LONG_FEED_AND_LONG_SESSION_MEMORY_NOT_RUN",
-    "integratedMainHead": "93d3ed6bc4084f440c9797f5b7ffa0696bb3d42d",
-    "postIntegrationFlutter": "803_PASS_3_SKIP_ANALYZE_ZERO_DEBUG_BUNDLE_PASS",
+    "integratedMainHead": "6cd686fc7633c399dd07c3e5e6f445e844c4553a",
+    "postIntegrationFlutter": "805_PASS_3_SKIP_ANALYZE_ZERO_PROBES_COMPILE_PASS_PREVIOUS_DEBUG_BUNDLE_PASS",
     "postIntegrationGo": "FULL_HOST_TEST_BUILD_VET_PASS"
+  },
+  "authStartupFlash20261023": {
+    "task": "AUTH-STARTUP-FLASH-01",
+    "branch": "codex/fix/auth-login-startup",
+    "implementation": "MERGED_MAIN_PR56_4197DD3_ALL_CI_PASS",
+    "host": "PASS_21_STARTUP_HOME_NAVIGATION_TESTS_ANALYZE_ZERO",
+    "androidBuild": "PASS_SAME_SIGNER_2308_PRODUCT_TREE_EQUALS_MERGED_MAIN",
+    "device": "NOT_RUN_APK_DELIVERED",
+    "scope": "STARTUP_TRANSIENT_ERROR_PAGE_ONLY",
+    "evidence": "docs/branches/fix-auth-startup-flash.md",
+    "historicalModuleVerdictsUnchanged": true
   },
   "dmDeviceRecovery20261023": {
     "task": "DM-P2-DEVICE-RECOVERY",
