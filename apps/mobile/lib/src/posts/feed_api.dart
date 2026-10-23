@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart' show Size;
-
 import 'post_api.dart';
 import 'post_models.dart';
 import 'post_protocol.dart';
@@ -19,7 +17,7 @@ class FeedPost extends PostCard {
   });
   final String body;
   final int viewCount, imageCount;
-  final List<Size>? imageSizes;
+  final List<({int width, int height})>? imageSizes;
   static FeedPost fromJson(Object? raw) {
     final m = PostJson.record(
       raw,
@@ -36,7 +34,7 @@ class FeedPost extends PostCard {
     );
     final title = PostJson.text(m, 'title', maxLength: 4096);
     final imageCount = PostJson.imageCount(m);
-    List<Size>? sizes;
+    List<({int width, int height})>? sizes;
     if (m.containsKey('imageSizes')) {
       final rawSizes = m['imageSizes'];
       if (rawSizes is! List || rawSizes.length != imageCount) {
@@ -50,7 +48,7 @@ class FeedPost extends PostCard {
           if (width * height > 12 * 1024 * 1024) {
             throw const FormatException('Invalid feed image geometry');
           }
-          return Size(width.toDouble(), height.toDouble());
+          return (width: width, height: height);
         }),
       );
     }

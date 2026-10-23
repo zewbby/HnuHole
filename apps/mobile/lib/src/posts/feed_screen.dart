@@ -430,7 +430,14 @@ class _FeedScreenState extends State<FeedScreen> {
                                 postId: post.postId,
                                 feedPreview: true,
                                 initialSizes:
-                                    post.imageSizes ??
+                                    post.imageSizes
+                                        ?.map(
+                                          (size) => Size(
+                                            size.width.toDouble(),
+                                            size.height.toDouble(),
+                                          ),
+                                        )
+                                        .toList() ??
                                     List.filled(
                                       post.imageCount,
                                       const Size(1, 1),
