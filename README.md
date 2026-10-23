@@ -41,6 +41,12 @@
 | `feat/direct-message-chat-completion` | 私信第二阶段进行中：图片、会话管理与撤回能力；代码仍在开发。 | [GitHub 分支](https://github.com/zewbby/HnuHole/tree/feat/direct-message-chat-completion) |
 | `feat/email-auth-flow` | 邮箱接入交付分支；长时间关机后重启仍未验证，保留待继续核验。 | [交接](docs/branches/feat-email-auth-flow.md) |
 
+### 本轮退役（2026-10-23）
+
+| 已合并分支 | 合并 PR |
+| --- | --- |
+| `codex/fix/auth-feedback` | [PR #53](https://github.com/zewbby/HnuHole/pull/53) |
+
 ### 本轮退役（2026-10-22）
 
 以下 18 个已合并分支已从远端退役；对应 PR 和历史详情仍可查阅。
@@ -80,6 +86,7 @@
 
 ## 最近变动
 
+- [PR #53](https://github.com/zewbby/HnuHole/pull/53)：优化登录注册错误反馈、邮箱验证码说明和认证弹窗交互。
 - [PR #48](https://github.com/zewbby/HnuHole/pull/48)：普通开发重启保留原会话，安全冻结仍要求明确恢复。
 - [PR #47](https://github.com/zewbby/HnuHole/pull/47)：接通隔离环境可靠文字收发、持久队列、ACK与阅读分离及基础未读草稿。
 - [PR #44](https://github.com/zewbby/HnuHole/pull/44)：改造Telegram私信展示与四入口导航。
