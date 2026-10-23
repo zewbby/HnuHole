@@ -1,6 +1,6 @@
 # 分模块验收与测试交接
 
-> **2026-10-23 DM-IDENTITY-LOADING-01 主线整合：**[Draft PR #60](https://github.com/zewbby/HnuHole/pull/60) 整合 main `7a2a76a` 的统一底栏与启动恢复，保留私信快捷添加；用户追加移除“当前身份”，入口改同一行。整合受影响7项及渲染1项PASS、分析0。2309在vivo同签覆盖后的收起／展开／两个加号／直达编辑器并取消返回已限定PASS，未创建身份；该包先于本次主线整合及单行微调，最终2310构建／新增入口确认待主会话回执，未合并／发布。下方为对应源码历史记录。见[任务](../branches/fix-direct-message-identity-loading.md)。
+> **2026-10-23 DM-IDENTITY-LOADING-01 最终候选：**[PR #60](https://github.com/zewbby/HnuHole/pull/60) 已整合 main `7a2a76a`；源码 `0719373` 修复空身份持续核对，提供既有添加入口，私信身份选择改右上单行／右锚定下拉，已有身份后只留一个蓝色加号，保留原权限与冷却规则。原37项、整合7项、最终单加号2项及各版实际组件渲染按各自版本限定通过，整合分析0；主会话精确源码独立只读审查无阻断，非GitHub成员批准。2311同签保数据覆盖vivo，新主线入口、单行右对齐／搜索／删旧标题、唯一加号安全位置、直达创建并取消返回限定PASS，未创建身份或读取私信。设备空身份和首次发送面板仍NOT_RUN、分别保留宿主装配／安全区几何证据。精确送审head CI及最终合并以PR回执为准；未生产发布，旧P3人工SKIP、真实掉电／iOS／规模／生产未验及远程推送未实现不变。下方为历史版本。详见[任务](../branches/fix-direct-message-identity-loading.md)与[版本证据](direct-message-identity-verification-20261023.json)。
 
 > **2026-10-23 DM-IDENTITY-LOADING-01（分支实现，待设备验收／合并）：**`fix/direct-message-identity-loading` 基于 main `93d3ed6`，修复合法空身份目录被误作持续核对，增加“添加身份”及失败重试；私信列表改右上紧凑身份入口、右锚定菜单与按三身份上限补空槽蓝色加号，复用现有编辑器／冷却限制，并补首次身份选择底部安全区。`e6dd325` 定点37项、分析0、真实字体组件渲染1项通过；用户追加整体右对齐后 `5de60e3` 几何断言1项及渲染1项通过，未重跑未变检查。主会话独立只读审查无剩余阻断（非 GitHub 成员批准）；2308仅构建未装，最终2309构建／vivo新增UI和安全区待回执，PR保持Draft。详见[任务记录](../branches/fix-direct-message-identity-loading.md)。旧原生人工SKIP、真实掉电／iOS／生产未验与远程推送未实现均保留，不提升B08/B09整模块结论。
 

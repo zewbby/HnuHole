@@ -1,0 +1,62 @@
+{
+  "task": "DM-IDENTITY-LOADING-01",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/60",
+  "applicationSource": "07193735513c69ad1a7ec4d6ecd0043e4f60a1fe",
+  "mobileLibTree": "bc77a63e9501f0bf7ccc6b1471f69ee0316693c6",
+  "integratedMain": "7a2a76a0a82d85b54f49a02c22ce924425cba4dc",
+  "host": {
+    "e6dd325": "PASS_37_FOCUSED_ANALYZE_ZERO_RENDER_ONE",
+    "5de60e3": "PASS_ALIGNMENT_ONE_RENDER_ONE",
+    "711632c": "PASS_INTEGRATION_SEVEN_ANALYZE_ZERO_RENDER_ONE",
+    "0719373": "PASS_SINGLE_ADD_TWO_RENDER_ONE",
+    "scope": "Actual runtime/auth/identity controllers and host encrypted SQLite; HTTP and system vault are test substitutes. Renderings are fixture component views without app primary bottom navigation."
+  },
+  "independentReview": "Root independent read-only exact final product diff and main integration; no remaining blockers; not GitHub member approval",
+  "candidate": {
+    "package": "org.hnuhole.hnuhole_mobile",
+    "versionCode": 2026102311,
+    "buildType": "debug owned prerelease device signing",
+    "entrypoint": "lib/main.dart",
+    "environment": "Existing USB-forwarded private-CA C/V development environment; not production",
+    "privateFixtureEmbedded": false,
+    "installed": true,
+    "deployedBackend": false,
+    "bytes": 188038636,
+    "sha256": "58dce99b27ae5a7eb76172d06b9f814459eeb463dab67604803ea5e2ea708a2b",
+    "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea"
+  },
+  "device": {
+    "model": "vivo V2323A",
+    "versionCodeVerified": 2026102311
+  },
+  "verification": {
+    "coverInstallPreservingData": "PASS",
+    "latestMainPrimaryTabsDmEntry": "PASS",
+    "nativeSingleLineRightAlignedSelector": "PASS",
+    "nativeSubtitleAndOldSectionRemoved": "PASS",
+    "nativeDropdownAddEntries": 1,
+    "nativeAddRowBottomPx": 804,
+    "systemNavigationTopPx": 2274,
+    "nativeAddOpensExistingEditor": "PASS",
+    "nativeCancelReturnsDmInbox": "PASS",
+    "identityCreationSubmitted": false,
+    "userMessagesRead": false,
+    "nativeEmptyAccount": "NOT_RUN: current account has identity; host real-runtime regression covers empty state without altering user data",
+    "nativeFirstSendSheet": "NOT_RUN: SafeArea host geometry test only, no unchanged send acceptance repeated"
+  },
+  "historicalCandidates": {
+    "2308": "BUILD_ONLY_NOT_INSTALLED",
+    "2309": "SCOPED_PRE_INTEGRATION_DOUBLE_ADD_MENU_EDITOR_CANCEL_PASS",
+    "2310": "BUILD_COVERINSTALL_COLLAPSED_SINGLE_LINE_ONLY_SUPERSEDED_NOT_COMPLETE_NATIVE_PASS"
+  },
+  "screenshots": "Private delivery only; contain user nickname and are not committed",
+  "remaining": {
+    "suddenPowerLoss": "NOT_RUN",
+    "p3ManualNative": "SKIP_UNCHANGED",
+    "vendorRemotePush": "NOT_IMPLEMENTED",
+    "ios": "NOT_RUN",
+    "scaleAndProduction": "NOT_RUN",
+    "released": false
+  },
+  "mergeStatus": "See PR #60 for final exact-head CI and merge status; this file records candidate evidence, not a release claim"
+}
