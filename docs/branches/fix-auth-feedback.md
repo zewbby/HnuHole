@@ -1,16 +1,22 @@
 # AUTH-FEEDBACK-01 登录注册反馈调整
 
 - 更新时间：2026-10-23（Asia/Shanghai）。
-- 分支：`codex/fix/auth-feedback`，基线 `origin/main` 的 `e8ff488`。用户已确认最终弹窗动效并授权合并；[PR #53](https://github.com/zewbby/HnuHole/pull/53)已提交，产品CI进行中，主线合并待检查通过。
+- 分支：`codex/fix/auth-feedback`，基线 `origin/main` 的 `e8ff488`。用户确认最终弹窗动效；[PR #53](https://github.com/zewbby/HnuHole/pull/53)已于2026-10-23 Squash合并入main，合并提交`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`。
 - 范围：移除认证请求期间顶部不定进度蓝条；保留忙碌禁用与注册步骤进度；邮箱登录发送请求受理后，在验证码输入框与切换登录方式之间显示普通颜色文案“若邮箱存在，将会收到验证码。”；用户名或密码错误显示居中缩放的圆角模态弹窗，仅有确定按钮，关闭后保留输入。
 - 源码：`apps/mobile/lib/src/auth/auth_screen.dart`；回归：`apps/mobile/test/auth_screen_test.dart`。服务端、存储、授权与验证码发送协议未变。
-- 历史候选版本的测试、构建与设备结果按各节保留。最终候选2306：`flutter test --no-pub --reporter expanded test/auth_screen_test.dart test/email_login_test.dart test/auth_session_controller_test.dart`，64项；`flutter analyze --no-pub`，0问题；Android arm64 debug APK构建与签名校验；realme RMX3366保数据覆盖安装及启动成功。用户已确认视觉改动。
+- 历史候选版本的测试、构建与设备结果按各节保留。最终候选2306：`flutter test --no-pub --reporter expanded test/auth_screen_test.dart test/email_login_test.dart test/auth_session_controller_test.dart`，64项；`flutter analyze --no-pub`，0问题；Android arm64 debug APK构建与签名校验；realme RMX3366保数据覆盖安装及启动成功。PR #53 的认证 Flutter CI、Android候选构建、协作检查及所有受影响移动端产品CI均通过；用户已确认视觉改动。
 - 宿主测试因GitHub下载超时，临时使用现成本机SQLite DLL，仅测试时设置Windows source为system，结束恢复pubspec原文；Android制品沿用原始配置。测试使用AUTH_UI_QA字体与截图参数，完整命令在本机交付目录test.py。依赖锁文件已恢复，无依赖升级。
 - 安装版本：`2026102301`／`0.1.0-auth-feedback`，与原包同签，`adb install -r`，未卸载或清数据。沿用现有USB开发服务配置。
 - APK SHA-256：`d6d2330710c128e0adafa5b5e51d32b407d7149bd558fe9092a0f5f60155e289`。
 - 设备安装、制品、测试日志和界面截图：`E:/Hnuhole-env/deliveries/auth-feedback-20261023/`（本机交付，不纳入Git）。
 - A12限定UI回归PASS；不提升完整模块验收。保留账号错误后的确定按钮与输入已按用户要求验收；未测量真机帧性能。真机验证码／登录、长时间性能及生产验收范围不因本次视觉确认扩大。
 - README不变：本次为既有认证反馈修正，没有项目入口或整体能力变化。
+
+## PR #53 合并回执
+
+- 2026-10-23 按用户授权将PR #53 Squash合并到main，合并提交：`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`。
+- 认证专用Flutter analyze与64项限定回归PASS；Android prerelease候选及rehearsal、Collaboration、Feed UI、Post images、Report moderation、Direct message text and presentation等受影响workflow全部PASS。
+- 实现及用户确认范围不变；未测量真机帧性能、未发布生产。
 
 ## 2026-10-23 用户验收后补充
 

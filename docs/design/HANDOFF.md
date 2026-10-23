@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> **2026-10-23 AUTH-FEEDBACK-01 送审：**用户已确认居中缩放弹窗并授权合并；最终候选2306限定64项回归、分析0、同签真我覆盖安装与启动PASS。[PR #53](https://github.com/zewbby/HnuHole/pull/53)已提交，Flutter与Android产品CI进行中；真机帧性能与生产发布未验。详见[任务记录](../branches/fix-auth-feedback.md)。
+> **2026-10-23 AUTH-FEEDBACK-01 已合并：**[PR #53](https://github.com/zewbby/HnuHole/pull/53) Squash合并提交`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`；认证Flutter CI、Android候选构建与受影响产品CI通过。2306限定64项回归、分析0、同签真我覆盖安装／启动PASS，用户确认弹窗效果；真机帧性能及生产发布未验。详见[任务记录](../branches/fix-auth-feedback.md)。
 
 > **2026-10-23 AUTH-FEEDBACK-01 弹窗动效：**错误弹窗改为居中缩放淡入（0.88→1，180ms），单确定不变；64项限定回归／分析0／同签2306真我覆盖安装与启动PASS，动效视觉待用户确认。见[任务记录](../branches/fix-auth-feedback.md)。
 
