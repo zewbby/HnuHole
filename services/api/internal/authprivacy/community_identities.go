@@ -363,6 +363,9 @@ func (c *Community) ChangeOwnIdentity(ctx context.Context, request IdentityChang
 			if len(items) <= 1 {
 				return reject("IDENTITY_LAST_REQUIRED")
 			}
+			if e = c.cleanupDMIdentity(ctx, tx, account, target.ID); e != nil {
+				return e
+			}
 			if e = c.deleteIdentityPostTasks(ctx, tx, account, target.ID, final.TrustedAt); e != nil {
 				return e
 			}

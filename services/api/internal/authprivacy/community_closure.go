@@ -532,6 +532,9 @@ func (c *Community) finalizeAccountClosure(ctx context.Context, account uuid.UUI
 			WHERE account_id=$1 AND revoked_at IS NULL`, account, at); e != nil {
 			return e
 		}
+		if e := c.cleanupDMIdentity(ctx, tx, account, uuid.Nil); e != nil {
+			return e
+		}
 		if _, e := tx.Exec(ctx, `UPDATE c_auth.accounts SET state='CLOSED',username=NULL,password_hash=NULL,password_salt=NULL,
 			password_params_version=NULL,user_handle=NULL,active_rotation_intent_id=NULL,active_reset_intent_id=NULL,credential_version=credential_version+1,
 			reset_generation=reset_generation+1,session_generation=session_generation+1,closure_generation=closure_generation+1

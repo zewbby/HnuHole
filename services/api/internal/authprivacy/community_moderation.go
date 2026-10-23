@@ -26,11 +26,11 @@ func moderationNumber(ctx context.Context, tx pgx.Tx, account uuid.UUID) (string
 	return number, e
 }
 
-const caseFields = `c.case_id,c.number::text,c.post_id,c.reason,c.state,c.version,c.created_at,n.number,c.outcome,c.explanation,to_jsonb(c)->>'comment_id'`
+const caseFields = `c.case_id,c.number::text,COALESCE(c.post_id::text,''),c.reason,c.state,c.version,c.created_at,n.number,c.outcome,c.explanation,to_jsonb(c)->>'comment_id',to_jsonb(c)->>'conversation_id'`
 
 func scanCase(row pgx.Row) (moderation.Case, error) {
 	var c moderation.Case
-	e := row.Scan(&c.ID, &c.Number, &c.PostID, &c.Reason, &c.State, &c.Version, &c.CreatedAt, &c.PlatformNumber, &c.Outcome, &c.Explanation, &c.CommentID)
+	e := row.Scan(&c.ID, &c.Number, &c.PostID, &c.Reason, &c.State, &c.Version, &c.CreatedAt, &c.PlatformNumber, &c.Outcome, &c.Explanation, &c.CommentID, &c.ConversationID)
 	c.CreatedAt = c.CreatedAt.UTC()
 	return c, e
 }
@@ -87,7 +87,7 @@ func readCase(ctx context.Context, tx pgx.Tx, id string, detail bool) (moderatio
 }
 func readSanction(ctx context.Context, tx pgx.Tx, id string, account uuid.UUID) (moderation.Sanction, error) {
 	var s moderation.Sanction
-	e := tx.QueryRow(ctx, `SELECT s.sanction_id,s.case_id,s.action,s.reason,s.starts_at,s.ends_at,s.revoked_at,c.post_id,(SELECT count(*) FROM c_moderation.appeals a WHERE a.sanction_id=s.sanction_id),(SELECT a.appeal_id FROM c_moderation.appeals a WHERE a.sanction_id=s.sanction_id AND a.state='PENDING'),to_jsonb(c)->>'comment_id' FROM c_moderation.sanctions s JOIN c_moderation.cases c USING(case_id) WHERE s.sanction_id=$1 AND ($2::uuid IS NULL OR s.account_id=$2)`, id, nullableUUID(account)).Scan(&s.ID, &s.CaseID, &s.Action, &s.Reason, &s.StartsAt, &s.EndsAt, &s.RevokedAt, &s.PostID, &s.AppealCount, &s.ActiveAppealID, &s.CommentID)
+	e := tx.QueryRow(ctx, `SELECT s.sanction_id,s.case_id,s.action,s.reason,s.starts_at,s.ends_at,s.revoked_at,COALESCE(c.post_id::text,''),(SELECT count(*) FROM c_moderation.appeals a WHERE a.sanction_id=s.sanction_id),(SELECT a.appeal_id FROM c_moderation.appeals a WHERE a.sanction_id=s.sanction_id AND a.state='PENDING'),to_jsonb(c)->>'comment_id',to_jsonb(c)->>'conversation_id' FROM c_moderation.sanctions s JOIN c_moderation.cases c USING(case_id) WHERE s.sanction_id=$1 AND ($2::uuid IS NULL OR s.account_id=$2)`, id, nullableUUID(account)).Scan(&s.ID, &s.CaseID, &s.Action, &s.Reason, &s.StartsAt, &s.EndsAt, &s.RevokedAt, &s.PostID, &s.AppealCount, &s.ActiveAppealID, &s.CommentID, &s.ConversationID)
 	s.StartsAt = s.StartsAt.UTC()
 	s.EndsAt = moderationTimeUTC(s.EndsAt)
 	s.RevokedAt = moderationTimeUTC(s.RevokedAt)
@@ -220,6 +220,13 @@ func (c *Community) ReadModeration(ctx context.Context, bearer [32]byte, kind, i
 			v, e := readCase(ctx, tx, id, true)
 			if errors.Is(e, pgx.ErrNoRows) {
 				return nil, postError("CASE_NOT_FOUND", 404)
+			}
+			if e == nil && v.ConversationID != nil {
+				var target uuid.UUID
+				e = tx.QueryRow(ctx, `SELECT target_account_id FROM c_moderation.cases WHERE case_id=$1`, id).Scan(&target)
+				if e == nil {
+					e = auditModeration(ctx, tx, actor, target, id, "READ_DM_EVIDENCE", "查看已明确授权的私信证据", time.Now().UTC())
+				}
 			}
 			return v, e
 		case "cases":
@@ -438,22 +445,27 @@ func (c *Community) ExecuteModeration(ctx context.Context, bearer [32]byte, oper
 			result = map[string]any{"platformNumber": n, "role": d.Role}
 		case "claim", "decision":
 			var state, post string
-			var comment *string
+			var comment, conversation *string
 			var version int64
 			var actual uuid.UUID
-			e = tx.QueryRow(ctx, `SELECT state,version,post_id,target_account_id,to_jsonb(c)->>'comment_id' FROM c_moderation.cases c WHERE case_id=$1 FOR UPDATE`, id).Scan(&state, &version, &post, &actual, &comment)
+			e = tx.QueryRow(ctx, `SELECT state,version,COALESCE(post_id::text,''),target_account_id,to_jsonb(c)->>'comment_id',to_jsonb(c)->>'conversation_id' FROM c_moderation.cases c WHERE case_id=$1 FOR UPDATE`, id).Scan(&state, &version, &post, &actual, &comment, &conversation)
 			if e != nil {
 				return nil, e
 			}
 			if actual != target || state == "ENDED" || operation == "claim" && state != "PENDING" || version != d.ExpectedVersion {
 				return nil, postError("CASE_ALREADY_HANDLED", 409)
 			}
-			var visibility string
-			if e = tx.QueryRow(ctx, `SELECT visibility FROM c_posts.posts WHERE post_id=$1 FOR UPDATE`, post).Scan(&visibility); e != nil {
-				return nil, e
+			if conversation != nil && operation == "decision" && d.Action != "MUTE" && d.Action != "BAN" && d.Action != "DISMISS" {
+				return nil, moderation.ErrInvalid
 			}
-			if visibility != "PUBLISHED" {
-				return nil, postError("CASE_ALREADY_HANDLED", 409)
+			if conversation == nil {
+				var visibility string
+				if e = tx.QueryRow(ctx, `SELECT visibility FROM c_posts.posts WHERE post_id=$1 FOR UPDATE`, post).Scan(&visibility); e != nil {
+					return nil, e
+				}
+				if visibility != "PUBLISHED" {
+					return nil, postError("CASE_ALREADY_HANDLED", 409)
+				}
 			}
 			if comment != nil {
 				var deleted *time.Time
@@ -493,8 +505,10 @@ func (c *Community) ExecuteModeration(ctx context.Context, bearer [32]byte, oper
 					}
 					switch d.Action {
 					case "TAKEDOWN", "MUTE", "BAN":
-						if e = hideModerationTarget(ctx, tx, post, comment); e != nil {
-							return nil, e
+						if conversation == nil {
+							if e = hideModerationTarget(ctx, tx, post, comment); e != nil {
+								return nil, e
+							}
 						}
 						if d.Action != "TAKEDOWN" {
 							effective, e := effectiveModerationEnd(ctx, tx, target, d.Action, final.TrustedAt)

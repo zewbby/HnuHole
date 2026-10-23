@@ -89,6 +89,13 @@ func (c *Community) SendDMImage(ctx context.Context, b [32]byte, id string, in D
 		if !active {
 			return reject("CONTACT_UNAVAILABLE")
 		}
+		blocked, e := dmSendingBlocked(ctx, tx, a, peerAccount)
+		if e != nil {
+			return nil, e
+		}
+		if blocked {
+			return reject("CONTACT_UNAVAILABLE")
+		}
 		// One global byte-budget lock precedes every image acceptance's conversation
 		// lock. Cleanup only decreases the budget and needs no global lock.
 		if _, e = tx.Exec(ctx, `SELECT pg_advisory_xact_lock(7223001)`); e != nil {
@@ -165,7 +172,7 @@ func (c *Community) SendDMImage(ctx context.Context, b [32]byte, id string, in D
 			return nil, e
 		}
 		_, e = tx.Exec(ctx, `INSERT INTO c_dm.commands(owner_account,command_id,fingerprint,attempt,state,message_id,conversation_id,sequence,accepted_at) VALUES($1,$2,$3,$4,'SENT',$5,$6,$7,$8) ON CONFLICT(owner_account,command_id) DO UPDATE SET attempt=EXCLUDED.attempt,state='SENT',error_code='',message_id=EXCLUDED.message_id,conversation_id=EXCLUDED.conversation_id,sequence=EXCLUDED.sequence,accepted_at=EXCLUDED.accepted_at`, a, id, fp, in.Attempt, msg, in.ConversationID, seq, at)
-		return DMReceipt{State: "SENT", Attempt: in.Attempt, MessageID: msg, ConversationID: in.ConversationID, Sequence: seq, AcceptedAt: &at}, e
+		return DMReceipt{EvidenceVersion: 1, State: "SENT", Attempt: in.Attempt, MessageID: msg, ConversationID: in.ConversationID, Sequence: seq, AcceptedAt: &at}, e
 	})
 }
 func (c *Community) ReadDMPrivateMedia(ctx context.Context, b [32]byte, id string) (PostResponse, error) {

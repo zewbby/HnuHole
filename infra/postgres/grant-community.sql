@@ -141,3 +141,16 @@ DO $$ BEGIN
   GRANT UPDATE(payload,metadata,erased_at) ON c_comments.images TO hnuhole_c_runtime;
  END IF;
 END $$;
+
+-- 0024 cleanup must remain possible with DM HTTP disabled. No send/report insert.
+DO $$ BEGIN
+ IF to_regclass('c_dm.blocks') IS NOT NULL THEN
+  GRANT USAGE ON SCHEMA c_dm TO hnuhole_c_runtime;
+  GRANT SELECT ON c_dm.conversations,c_dm.messages,c_dm.media,c_dm.settings,c_dm.blocks TO hnuhole_c_runtime;
+  GRANT UPDATE(revision) ON c_dm.conversations TO hnuhole_c_runtime;
+  GRANT UPDATE(body,acknowledged,read) ON c_dm.messages TO hnuhole_c_runtime;
+  GRANT UPDATE(bytes) ON c_dm.media TO hnuhole_c_runtime;
+  GRANT UPDATE(version,note,pinned,muted,hidden_through,deleted_through) ON c_dm.settings TO hnuhole_c_runtime;
+  GRANT DELETE ON c_dm.blocks TO hnuhole_c_runtime;
+ END IF;
+END $$;

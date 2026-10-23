@@ -305,9 +305,6 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 			}
 		}
 		if c.DirectMessages {
-			if !c.AllowDevelopmentNetwork {
-				return errors.New("DM P1 requires isolated development network")
-			}
 			community, err = community.WithDirectMessages(ctx)
 			if err != nil {
 				return err
@@ -328,6 +325,9 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 			if err != nil {
 				return err
 			}
+		}
+		if c.DirectMessages && (!community.ModerationEnabled() || !community.PostImagesEnabled()) {
+			return errors.New("direct messages require moderation and private media validation")
 		}
 		if c.WebAuthn != nil {
 			community, err = community.WithWebAuthn(*c.WebAuthn)
