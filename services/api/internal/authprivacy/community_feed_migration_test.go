@@ -80,7 +80,7 @@ func TestFeedGooseFreshAndUpgradePostgres(t *testing.T) {
 			if e = run("up"); e != nil {
 				t.Fatal("latest migration failed", e)
 			}
-			if count(t, pool, `SELECT count(*) FROM public.goose_db_version WHERE is_applied`) != 23 {
+			if count(t, pool, `SELECT count(*) FROM public.goose_db_version WHERE is_applied`) != 25 {
 				t.Fatal("incomplete migration chain")
 			}
 			if e = checkFeedSchema(ctx, pool, true); e != nil {
@@ -117,7 +117,7 @@ func TestFeedGooseFreshAndUpgradePostgres(t *testing.T) {
 			if e = run("down"); e == nil {
 				t.Fatal("cumulative facts rolled back")
 			}
-			if count(t, pool, `SELECT max(version_id) FROM public.goose_db_version WHERE is_applied`) != 22 {
+			if count(t, pool, `SELECT max(version_id) FROM public.goose_db_version WHERE is_applied`) != 24 {
 				t.Fatal("failed Down changed ledger")
 			}
 		})

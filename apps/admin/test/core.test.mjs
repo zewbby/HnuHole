@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash, webcrypto } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { APIError, canRevoke, canReviewAppeal, createClient, decodeToken, encodeBytes, imageSource, platformNumber, recoveryEstimate, revokeSecret } from '../core.mjs';
+import { caseActions, APIError, canRevoke, canReviewAppeal, createClient, decodeToken, encodeBytes, imageSource, platformNumber, recoveryEstimate, revokeSecret } from '../core.mjs';
 
 const token = encodeBytes(new Uint8Array(32).fill(13));
 const me = { role: 'REVIEWER', platformNumber: '000123' };
@@ -149,4 +149,11 @@ test('transport cannot target another origin', async () => {
   await assert.rejects(client.request('https://external.invalid/api/v1/me'), /请求地址无效/);
   await assert.rejects(client.request('/api/v1/../private'), /请求地址无效/);
   assert.ok(new APIError(403, 'DENIED').message.includes('权限'));
+});
+
+test('private message cases expose only actions supported by independent authorized evidence', () => {
+  assert.deepEqual(caseActions({ conversationId: 'private' }, 'REVIEWER').map(x => x[0]), ['DISMISS', 'MUTE']);
+  assert.deepEqual(caseActions({ conversationId: 'private' }, 'ADMIN').map(x => x[0]), ['DISMISS', 'MUTE', 'BAN']);
+  assert(caseActions({}, 'REVIEWER').some(x => x[0] === 'TAKEDOWN'));
+  assert(!caseActions({ conversationId: 'private' }, 'ADMIN').some(x => /下架/.test(x[1])));
 });

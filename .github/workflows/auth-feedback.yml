@@ -1,0 +1,41 @@
+name: Auth feedback
+
+on:
+  pull_request:
+    paths:
+      - 'apps/mobile/**'
+      - '.github/workflows/auth-feedback.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: auth-feedback-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter-auth-regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: false
+      - name: Install locked Flutter dependencies
+        working-directory: apps/mobile
+        run: flutter pub get --enforce-lockfile
+      - name: Analyze mobile app
+        working-directory: apps/mobile
+        run: flutter analyze --no-pub
+      - name: Run auth UI, email login, and session regressions
+        working-directory: apps/mobile
+        run: >-
+          flutter test --no-pub --reporter expanded
+          test/auth_screen_test.dart
+          test/email_login_test.dart
+          test/auth_session_controller_test.dart

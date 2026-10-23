@@ -55,7 +55,30 @@ class HttpPostApi
     Map<String, Object>? body,
     Map<String, String>? query,
   }) => _input(() {
-    if (!{
+    if (resource.startsWith('governance/blocks')) {
+      if (resource != 'governance/blocks') {
+        final parts = resource.split('/');
+        if (parts.length != 3 || parts[1] != 'blocks') {
+          throw const FormatException('Invalid DM governance route');
+        }
+        PostProtocol.resourceId(parts[2]);
+      }
+    } else if (resource.startsWith('chat/')) {
+      final parts = resource.split('/');
+      if (!{
+            'pending',
+            'conversations',
+            'controls',
+            'control-ack',
+            'operations',
+            'images',
+            'media',
+          }.contains(parts[1]) ||
+          parts.length > 3) {
+        throw const FormatException('Invalid DM chat route');
+      }
+      if (parts.length == 3) PostProtocol.resourceId(parts[2]);
+    } else if (!{
       'pending',
       'conversations',
       'ack',
@@ -73,8 +96,12 @@ class HttpPostApi
       '/api/v1/dm/$resource',
       body: body,
       query: query,
-      maxRequestBytes: 100000,
-      maxResponseBytes: 8 * 1024 * 1024,
+      maxRequestBytes: resource.startsWith('chat/images/')
+          ? 15 * 1024 * 1024
+          : 100000,
+      maxResponseBytes: resource.startsWith('chat/media/')
+          ? 15 * 1024 * 1024
+          : 8 * 1024 * 1024,
       decode: (raw) => decodeDm(raw, resource),
     );
   });

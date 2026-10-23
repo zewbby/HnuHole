@@ -40,7 +40,7 @@ func notification(ctx context.Context, tx pgx.Tx, account uuid.UUID, identity *s
 func readReport(ctx context.Context, tx pgx.Tx, account uuid.UUID, request string) (moderation.ReportResult, error) {
 	out := moderation.ReportResult{State: "NOT_SUBMITTED"}
 	var r moderation.Report
-	e := tx.QueryRow(ctx, `SELECT r.request_id,c.case_id,c.state,c.post_id,r.reason,r.description,r.created_at,c.outcome,c.explanation,to_jsonb(c)->>'comment_id' FROM c_moderation.reports r JOIN c_moderation.cases c USING(case_id) WHERE r.reporter_account_id=$1 AND r.request_id=$2`, account, request).Scan(&r.ID, &r.CaseID, &r.State, &r.PostID, &r.Reason, &r.Description, &r.CreatedAt, &r.Outcome, &r.Explanation, &r.CommentID)
+	e := tx.QueryRow(ctx, `SELECT r.request_id,c.case_id,c.state,COALESCE(c.post_id::text,''),r.reason,r.description,r.created_at,c.outcome,c.explanation,to_jsonb(c)->>'comment_id',to_jsonb(c)->>'conversation_id' FROM c_moderation.reports r JOIN c_moderation.cases c USING(case_id) WHERE r.reporter_account_id=$1 AND r.request_id=$2`, account, request).Scan(&r.ID, &r.CaseID, &r.State, &r.PostID, &r.Reason, &r.Description, &r.CreatedAt, &r.Outcome, &r.Explanation, &r.CommentID, &r.ConversationID)
 	r.CreatedAt = r.CreatedAt.UTC()
 	if errors.Is(e, pgx.ErrNoRows) {
 		return out, nil

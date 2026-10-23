@@ -68,13 +68,15 @@ class HttpGovernanceApi implements GovernanceApi {
   }) async {
     if (token != null) AuthCrypto.decode(token, bytes: 32);
     if (!RegExp(
-          r'^/api/v1/(reports|system-notifications|sanctions|appeals|moderation-access)(/[a-zA-Z0-9-]+)*$',
+          r'^/api/v1/((reports|system-notifications|sanctions|appeals|moderation-access)(/[a-zA-Z0-9-]+)*|dm/governance/reports/[a-f0-9-]{36})$',
         ).hasMatch(path) ||
         !{'GET', 'PUT', 'POST'}.contains(method)) {
       throw const FormatException('Invalid governance path');
     }
     final bytes = body == null ? null : utf8.encode(jsonEncode(body));
-    if (bytes != null && bytes.length > 12 * 1024 * 1024) {
+    if (bytes != null &&
+        bytes.length >
+            (path.startsWith('/api/v1/dm/') ? 48 : 12) * 1024 * 1024) {
       throw const FormatException('Material budget exceeded');
     }
     HttpClientRequest? active;
@@ -194,7 +196,8 @@ class HttpGovernanceApi implements GovernanceApi {
 }
 
 class GovernanceStrictJson {
-  GovernanceStrictJson(this.input);
+  GovernanceStrictJson(this.input, {this.maxList = 50});
+  final int maxList;
   final String input;
   int at = 0;
   Object? decode() {
@@ -239,7 +242,7 @@ class GovernanceStrictJson {
       final result = <Object?>[];
       if (_consume(']')) return result;
       while (true) {
-        if (result.length >= 50) {
+        if (result.length >= maxList) {
           throw const FormatException('JSON list too large');
         }
         result.add(_value(depth + 1));

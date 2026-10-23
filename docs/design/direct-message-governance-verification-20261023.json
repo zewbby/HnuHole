@@ -1,0 +1,297 @@
+{
+  "task": "DM-P3-GOVERNANCE",
+  "updatedAt": "2026-10-23",
+  "branch": "feat/direct-message-governance",
+  "source": "f2e9c8a5e75ef6423bf949b674408e9b447891a4",
+  "applicationVerificationSource": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
+  "applicationSourceContinuity": {
+    "status": "PASS_IDENTICAL",
+    "command": "git diff --exit-code cd6049e931f99f32004abd83f48b1518fd1b03e5 f2e9c8a5e75ef6423bf949b674408e9b447891a4 -- apps/mobile apps/admin services/api/internal services/api/cmd services/api/migrations packages/openapi infra/postgres ':!services/api/internal/authprivacy/privacy_boundary_postgres_test.go'",
+    "detail": "Existing application checks and APK remain bound to cd6049e; later audit and test-only fixes do not alter runtime inputs. The sole excluded internal file is the exact V relation inventory test. Flutter tests and APK build were not repeated."
+  },
+  "base": "d864d03062ddbbd4af72e1b83d63dac73dbcf15c",
+  "latestMainAtDelivery": "e8ff4880cb9f091b816c8841e746bd664a54164f",
+  "dependency": "https://github.com/zewbby/HnuHole/pull/51",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/52",
+  "merged": true,
+  "released": false,
+  "scope": [
+    "B08",
+    "B09"
+  ],
+  "wholeModuleAcceptance": "NOT_CLAIMED",
+  "environment": "Windows Flutter 3.47.5 / Dart 3.13.4 / Java17; WSL Go1.22 PostgreSQL16 private-socket owned fixtures; no shared service deployment",
+  "checks": [
+    {
+      "name": "Lifecycle and affected reliable store/controller",
+      "command": "flutter test --no-pub test/dm_lifecycle_test.dart test/dm_chat_races_test.dart test/dm_reliability_test.dart test/dm_chat_test.dart test/dm_chat_draft_ui_test.dart test/dm_route_test.dart",
+      "status": "PASS",
+      "count": 46,
+      "source": "78ad10d",
+      "detail": "13 new lifecycle cases plus 33 affected; host SQLite and vault doubles, not native key purge",
+      "evidence": "docs/branches/fix-direct-message-lifecycle.md"
+    },
+    {
+      "name": "Final governance and notification navigation",
+      "command": "flutter test --no-pub test/dm_governance_test.dart test/dm_notification_navigation_test.dart",
+      "status": "PASS",
+      "count": 16,
+      "detail": "Fixed snapshot, explicit gaps/budget, old incoming/outgoing images, evidence scope expiry, original encrypted pending report, strict ABSENT/directory compatibility, private notifications, delayed directory and second notification while first chat remains open"
+    },
+    {
+      "name": "Affected existing governance receipt and pending retries",
+      "command": "flutter test --no-pub test/dm_governance_test.dart test/governance_test.dart",
+      "status": "PASS",
+      "count": 44,
+      "detail": "Earlier run before added image budget/legacy/protocol tests; unchanged governance tests reused, not additive unique count"
+    },
+    {
+      "name": "Encrypted larger pending material storage",
+      "command": "flutter test --no-pub test/governance_material_store_test.dart",
+      "status": "PASS",
+      "count": 2,
+      "detail": "25 MiB multi-chunk encrypted reopen and missing-key preservation; host storage only"
+    },
+    {
+      "name": "Real Dart TLS/SQL integration",
+      "command": "DM_CHAT_TEST_PATTERN=^TestDMChatDevicePostgres$ DM_CHAT_DEVICE_FIXTURE=<private owned path> sh services/api/authlab/run-dm-chat-isolated.sh; DM_CHAT_FIXTURE=<same private Windows path> flutter test --no-pub test/dm_governance_http_test.dart",
+      "status": "PASS",
+      "count": 1,
+      "detail": "Real strict transport GET-before-PUT, block/list/directory, blocked send, prior accepted delivery, ACK, immutable report after recall, same task read/retry, notification receipt, foreign account uniform NOT_SUBMITTED, sealed retry token, unblock; no native storage claim",
+      "fixture": "/tmp/hnuhole-dm-p2.11Oogo",
+      "cleanup": "PASS: owned done marker, fixture exit0 and PostgreSQL stopped; private credentials automatically removed"
+    },
+    {
+      "name": "Backend real SQL/race and HTTPS",
+      "command": "DM_CHAT_TEST_PATTERN='^(TestDMGovernance|TestDMGoose|TestDMFirstContact|TestDMChatMediaLifecycle|TestModerationAppealIndependentReversal|TestModerationConcurrentDecision)' sh services/api/authlab/run-dm-chat-isolated.sh",
+      "status": "PASS",
+      "source": "8b15d99",
+      "detail": "9 authprivacy top-level plus 1 HTTPS; fresh and 22→23→24, runtime grants, block races/projections, HMAC after ACK, image/gaps/recall/fences, moderation, identities and closure; own DB stopped",
+      "evidence": "services/api/authlab/dm-governance-handoff.md"
+    },
+    {
+      "name": "UTC black-list regression",
+      "command": "DM_CHAT_TEST_PATTERN=^TestDMGovernanceHTTPSPostgres$ sh services/api/authlab/run-dm-chat-isolated.sh",
+      "status": "PASS",
+      "source": "c65b6e7",
+      "detail": "Real SQL/HTTPS/-race with time.Local forced +08, wire timestamp must end Z; owned DB stopped"
+    },
+    {
+      "name": "Service build/vet, admin and complete contracts",
+      "command": "go build -mod=readonly ./cmd/authdev; go vet -mod=readonly ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime; node --test apps/admin/test/core.test.mjs; python tools/check-direct-message-contract.py; python packages/openapi/check-specs.py packages/openapi/direct-message-governance.yaml packages/openapi/report-api.yaml packages/openapi/moderation-api.yaml",
+      "status": "PASS",
+      "detail": "13 admin tests; five affected complete OpenAPI documents. Backend handoff retains original command cwd/environment; main reran updated P1/P2/P3 contract checker"
+    },
+    {
+      "name": "Final Flutter analysis",
+      "command": "flutter analyze --no-pub",
+      "status": "PASS",
+      "issues": 0
+    },
+    {
+      "name": "Final isolated Android build",
+      "command": "HNUHOLE_DM_CHAT=1 flutter build apk --debug --no-pub --build-number=2026102301 --dart-define=DM_CHAT_INTEGRATION=true",
+      "status": "PASS"
+    },
+    {
+      "name": "Diff and staged collaboration policy",
+      "command": "git diff --check; python tools/check-collaboration.py --staged",
+      "status": "PASS",
+      "detail": "Policy checks do not represent product acceptance"
+    }
+  ],
+  "apk": {
+    "source": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
+    "package": "org.hnuhole.hnuhole_mobile.dmchat",
+    "versionCode": 2026102301,
+    "bytes": 188010468,
+    "sha256": "66a8b1fb19a81986254bf225456301c7076be7fe965e2ef4b14565eb060732c4",
+    "installed": false,
+    "artifactCommitted": false
+  },
+  "failuresAndCorrections": [
+    "Cold navigation initially failed: addPostFrameCallback had no scheduled idle frame; ensureVisualUpdate fixed and exact root test passed.",
+    "Review found old P2 images incorrectly marked UNVERIFIABLE; images use existing authenticated SHA256, new incoming/outgoing cases pass.",
+    "Review found ABSENT evidenceVersion and text directory ownBlockId strict compatibility; allow only validated fields, GET-before-PUT verified on real transport.",
+    "Review found native first bind(null) failed to clear old expanded notifications; bound sentinel fixed; native manual acceptance remains SKIP.",
+    "Review found second notification waiting for first route to pop; unawaited route push plus actual root second-target assertion passed.",
+    "First Dart TLS integration failed invalidResponse200 on GET block list; actual +08 timestamp reproduced, backend UTC normalization and timezone HTTPS regression passed before final TLS PASS.",
+    "Final analyze reported one braces lint after formatting; braces added, final analyze0.",
+    "First owned fixture launch lacked /usr/sbin for runuser; corrected environment and restarted only owned fixture. Other early backend fixture failures preserved in backend handoff."
+  ],
+  "manualAndRemaining": [
+    {
+      "name": "RMX3366 Android14 system notification and native cleanup acceptance",
+      "status": "SKIP",
+      "reason": "User absent explicitly requested skip manual cooperation; observed device Dozing/keyguard restricted. No unlock/install/permission interaction or device lease acquired."
+    },
+    {
+      "name": "Vendor remote push / killed-process wakeup",
+      "status": "NOT_IMPLEMENTED",
+      "reason": "No provider channel configured; delivered-message local notification only."
+    },
+    {
+      "name": "iOS",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "Production deployment, evidence retention operations and release",
+      "status": "NOT_RUN",
+      "reason": "Feature default false; no deployment or release authorization."
+    }
+  ],
+  "reusedUnchangedEvidence": [
+    "docs/design/direct-message-text-verification-20261022.json: original P1 UI/IME and reliable-text native scope only",
+    "docs/design/direct-message-chat-verification-20261022.json: original P2 image/manage native scope only; not proof of new native notification or closure behavior"
+  ],
+  "independentReview": {
+    "status": "PASS_NO_REMAINING_ACTIONABLE_BLOCKERS",
+    "reviewer": "Independent Astra High read-only agent; not GitHub member approval",
+    "source": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
+    "detail": "Exact final product SHA read-only reviewed; previous findings verified fixed; reviewer did not rerun tests or author product."
+  },
+  "prereleaseAuditFix": {
+    "source": "96611a5f7ce8b06eed57d12eef17b65d9c95e7cf",
+    "authoredCommit": "3e6009bda79926f7902dfdaf3932991344bde615",
+    "reason": "0024 common lifecycle cleanup grants were missing from the shared privacy-role audit c_dm matrix; no runtime grant was expanded.",
+    "reproductionCommand": "PRERELEASE_AUDIT_SQL_TEST=1 python -m unittest discover -s tools/prerelease/tests -p test_role_audit_postgres.py -v",
+    "actualCommand": "wsl -- bash -lc 'runuser -u hnuhole -- env PATH=/usr/lib/postgresql/16/bin:/mnt/e/Hnuhole-env/linux/bin:/usr/local/bin:/usr/bin:/bin PRERELEASE_AUDIT_SQL_TEST=1 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s /mnt/e/Hnuhole-env/source/HnuHole-dm-p3-backend/tools/prerelease/tests -p test_role_audit_postgres.py -v'",
+    "status": "PASS",
+    "detail": "Astra High reported an actual 15.851s PASS using newly owned C/V PostgreSQL clusters, latest Goose migrations, formal grants and original Lab.audit. Baseline passes and all 8 extra-permission cases are rejected. Author supplied actualCommand after the earlier reproduction entrypoint was recorded; no duplicate local run was performed.",
+    "remoteRehearsal": {
+      "source": "73892f3e1c0f5d1b2a1dc1b8f3b4ea17e7b5ae9a",
+      "status": "PASS",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39884864164/job/120190609369"
+    },
+    "independentReview": {
+      "status": "PASS_NO_REMAINING_ACTIONABLE_BLOCKERS",
+      "reviewer": "Main agent independent read-only review of all 97 changed lines; did not author the audit patch; not GitHub member approval",
+      "source": "3e6009bda79926f7902dfdaf3932991344bde615"
+    }
+  },
+  "verifierBoundaryInventoryFix": {
+    "source": "f2e9c8a5e75ef6423bf949b674408e9b447891a4",
+    "authoredCommit": "fa9c4a4ef7ed928b175fa36e58a80d4d8f963072",
+    "reason": "The precise V inventory omitted the existing 0005/0006 email_login_confirmations proof/replay table; unrelated to c_dm migrations. Only the exact table name and ownership comment were added; prohibited-column and bridge checks remain.",
+    "command": "wsl -- bash -lc 'export PATH=/usr/lib/go-1.22/bin:/usr/lib/postgresql/16/bin:/usr/local/bin:/usr/sbin:/usr/bin:/bin; export POST_MEDIA_PYTHON=/home/hnuhole/community-pr13-main-20261018-tools/python/bin/python; export COMMENT_TEXT_GOOSE=/mnt/e/Hnuhole-env/linux/bin/goose; export DM_CHAT_TEST_PATTERN=\"^TestPrivacySchemaPartyBoundaryPostgres$\"; cd /mnt/e/Hnuhole-env/source/HnuHole-dm-p3-backend; sh services/api/authlab/run-dm-chat-isolated.sh'",
+    "status": "PASS",
+    "detail": "Astra High reported real SQL/race community and verifier subtests PASS, top-level 3.93s and package 4.946s. HTTP package matched no tests and is not counted. Fixture /tmp/hnuhole-dm-p2.W5EpUh exited0 and stopped.",
+    "independentReview": {
+      "status": "PASS_NO_REMAINING_ACTIONABLE_BLOCKERS",
+      "reviewer": "Main agent independent read-only review against migration0005 and existing boundary checks; did not author the fix; not GitHub member approval",
+      "source": "fa9c4a4ef7ed928b175fa36e58a80d4d8f963072"
+    }
+  },
+  "remoteCIFailures": [
+    {
+      "source": "fc4f986546085e4706255f430055ab8fea18a060",
+      "totalChecks": 19,
+      "success": 18,
+      "failure": 1,
+      "job": "rehearsal",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39883525656/job/120186710006",
+      "detail": "environment.py init -> audit -> sql raised owned SQL operation failed; missing c_dm lifecycle cleanup audit matrix. Preserved as first remote result, not overwritten by the subsequent fix."
+    },
+    {
+      "source": "73892f3e1c0f5d1b2a1dc1b8f3b4ea17e7b5ae9a",
+      "totalChecks": 20,
+      "success": 19,
+      "failure": 1,
+      "job": "gate-postgres",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39884864121/job/120190551179",
+      "detail": "Only TestPrivacySchemaPartyBoundaryPostgres/verifier failed at privacy_boundary_postgres_test.go:77: party schema relation inventory changed. Complete rehearsal, candidate, client and Android succeeded. Preserved before exact V inventory test repair."
+    }
+  ],
+  "remoteCI": "PASS_20_APPLICABLE_CHECKS_ON_483fe9a237c38f03768f859935b9020b9520267a",
+  "sourceFilesSha256": {
+    "services/api/internal/authprivacy/privacy_boundary_postgres_test.go": "11022819309bc6af094c08897c74fb8978feca05d805574c862877ec00823deb",
+    ".github/workflows/android-prerelease.yml": "81974b133448dd7652d2b53f869357ba804200631d35e516fd0f22476290457e",
+    "services/api/authlab/privacy-role-audit.sql": "40cfcfcdf9fe0a69012aa50494b71371a390bd661ec250ada6d454cfb016434b",
+    "tools/prerelease/tests/test_role_audit_postgres.py": "25d572dc3d24e62649f843304abb9f4cbadce6021f794e9f3c3b67416c06b0f3",
+    ".github/workflows/direct-messages.yml": "1ebde510f0e5096430c70a016cc0c06f259d9715df9f18bda2630bf2af57197e",
+    "apps/admin/app.mjs": "45215dc9d811fb8062f2c46302949b199d4801db087c30cd97c5d30fa702697a",
+    "apps/admin/core.mjs": "d053582290a0f939c3f40cd3db3176c9cdbb04d61d7f2f2714de89258694d816",
+    "apps/admin/test/core.test.mjs": "aac8e6fefb274d1b37ac2cb8d02f2d50fae9517db258adde30fdc049697d4b95",
+    "apps/mobile/android/app/src/main/AndroidManifest.xml": "ef85a852a2b63a532996e596f4fa440da0cf709078e0c98145734863ea90bb0b",
+    "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/DmNotifications.kt": "74cb4fd18cc2a2fa01c3b8dba076ef0887926f572d0dea7cd5b841dca7a55958",
+    "apps/mobile/android/app/src/main/kotlin/org/hnuhole/hnuhole_mobile/MainActivity.kt": "889fe01f53422c220b06fcbef0da5524215d3bdbc88c12eb43da124f2f1fa51a",
+    "apps/mobile/android/app/src/main/res/drawable/ic_dm_notification.xml": "040c8932829b10e1c03da864914aab4cb9a5c4600cb9fe44bb7aec0fe31af8e3",
+    "apps/mobile/lib/main.dart": "42b3ec312a90e7a4a48a8921429e32a457db11f98483c1ed1da4d054f9b5d1df",
+    "apps/mobile/lib/src/identity/settings_screen.dart": "84916c78815daaa3c23b190566b820fbc894b83122d98c33136f8caa81110db7",
+    "apps/mobile/lib/src/messaging/dm_chat_controller.dart": "e2d8ff819011d8b3ae55ca9f0162d236eacc2d18d9a0516fd762e0b7da303e9f",
+    "apps/mobile/lib/src/messaging/dm_chat_store.dart": "1cf6abbba88658073a43fe13e1d00f0961a32c74000840167853d33d0fc251f0",
+    "apps/mobile/lib/src/messaging/dm_chat_ui.dart": "230a2ef2447807204f225c079c81b1a6170d26ce78e7d48b69a5c0cb44ca94bd",
+    "apps/mobile/lib/src/messaging/dm_controller.dart": "3dea13a1ea1d342f8ec37d4599cc5077e6456bf8db9253fd1c828b11d0d3adf1",
+    "apps/mobile/lib/src/messaging/dm_governance_controller.dart": "563c2c6cc68fc44fea0ee3c7cd592fff0d7e77d73329845610e190bc74e72450",
+    "apps/mobile/lib/src/messaging/dm_governance_ui.dart": "40d2cce9a3108b6042ae552b3c8d4c2ef27de1a0288c13a5959ac1389888b216",
+    "apps/mobile/lib/src/messaging/dm_lifecycle_store.dart": "5cd8c40ddbd467b025b1bef431af41d12ae52ea0891906223a67c0b218096797",
+    "apps/mobile/lib/src/messaging/dm_notifications.dart": "662d8503302587d14ffda2bda81cb6c0a81aa3053754e056294dfe8498616418",
+    "apps/mobile/lib/src/messaging/dm_protocol.dart": "cc71e3c651a8b79ff63faabcfad5016cb5b5ebd62414f75628db76538672d9fa",
+    "apps/mobile/lib/src/messaging/dm_runtime.dart": "7b6f364b39771a9693bdb97340331f662c14ec74eb2297603c267f31ed187f8f",
+    "apps/mobile/lib/src/messaging/dm_store.dart": "92387dda263867ec9df1758b3dd3ed124dbeae6fbeea1a5b00cd65ac18d667b7",
+    "apps/mobile/lib/src/posts/http_post_api.dart": "c56fdd08b48c6b7eb013b2f9e4117f2067e7565b0bb76bf183a607c14b16095f",
+    "apps/mobile/lib/src/reports/report_screens.dart": "888e8a002461984215a2d1de9f5523d96c890af371bc77139184dd773cf9b5d5",
+    "apps/mobile/lib/src/system_notifications/governance_api.dart": "ca9e57ee903a3a2cde3fddfa46871ff88233650e0136c0d3a11011901889f3b6",
+    "apps/mobile/lib/src/system_notifications/governance_controller.dart": "d9a2f16b16274c1d4d10f1afd1682b0f71de2254ba7ff3db90bd0d5c43f4fb2d",
+    "apps/mobile/lib/src/system_notifications/governance_material_vault.dart": "23e7aed070b81d9d4758de4165894f2d37b7c0717ffca983dfa2f3b966f16a8e",
+    "apps/mobile/lib/src/system_notifications/notification_screens.dart": "5ead1c04d75a343858711a01986c3d54b83d407323ae05ebf0e9ca917057ab45",
+    "apps/mobile/test/dm_governance_http_test.dart": "982b71805ae877726786ab4a957836726bbb4b0a76a351f90c7b8f82262fd17f",
+    "apps/mobile/test/dm_governance_test.dart": "770f6c0cf6a329c9fa3018cc4f5f150e36de7642ab40e8c3589bab7d8cc0cdca",
+    "apps/mobile/test/dm_lifecycle_test.dart": "da9b042b6edcd7067e708cb8703ffd6be470341aebb9f45783dd711bc6009029",
+    "apps/mobile/test/dm_notification_navigation_test.dart": "aa4f6a77d87214b8cf354b3c10313878dede60fa7189def836fbcfe39219ba83",
+    "apps/mobile/test/governance_material_store_test.dart": "a53a74df71375f0e9e8daf21eb667b14eb85ee80b16e67dd6f4e431eabca3595",
+    "apps/mobile/test/governance_test.dart": "a51a2d6f639c8e092fc656828ce1bd514921b526d35404ed09785afcbc8c7cad",
+    "infra/postgres/grant-community.sql": "666016f590c9cd6537d45f17efabe0c9ae0ece0499696f05410ade5ffbb49791",
+    "infra/postgres/grant-direct-messages.sql": "a75294c5602e019ebbbfe82aa80fc951edd78d074d81ec1a9838f38c3544b18c",
+    "packages/openapi/direct-message-chat.yaml": "ee218ad0f5d3fd79cc5591cd6b32dfb1cdcec559f63461184790ea8c35b82adc",
+    "packages/openapi/direct-message-governance.yaml": "21d5466d09fa6ffe10cdc4748ca59ff03a6cdc486ed3140eff056af4dd88cdca",
+    "packages/openapi/direct-message-text.yaml": "5a85ec1cdd868192f3b014b2ac79bb91ea2c46ee7df623320e831628d0a40b0a",
+    "packages/openapi/moderation-api.yaml": "1986760285c237d694812c3760abff3b2f33560d08aa57923da618a56aee7174",
+    "packages/openapi/report-api.yaml": "f7f909c4e1c2dd47688cedfbf4473ce9c5f6301b8b32b5b0c598bfa354d6e191",
+    "services/api/internal/authprivacy/community_closure.go": "5ec14b9b1ebcfe07e50f74f43495a3d131b72b0bb63b626bcdc0d6409f5b2f29",
+    "services/api/internal/authprivacy/community_direct_message_chat.go": "104c8a794152465ca86c1d538383d1394c1f5a21ed793e4e930e59dba6f0cda1",
+    "services/api/internal/authprivacy/community_direct_message_governance.go": "ece98e2081107a8741b65c61e1757ae04fcf998b765f79ac3c3496fa5686640d",
+    "services/api/internal/authprivacy/community_direct_message_governance_test.go": "65ced2c06e9fe05679794a0f7d11acb43c29b1eec257d88fafae0249a2b128b9",
+    "services/api/internal/authprivacy/community_direct_message_images.go": "4649353f7d7a45637e9f780473ed97795dcac36575cfb17bb167927ef962bce2",
+    "services/api/internal/authprivacy/community_direct_messages.go": "2d1632f49a2b0fb16d939fd61a5da56c8e5e7e5822b493519feaeec00b8643b5",
+    "services/api/internal/authprivacy/community_direct_messages_migration_test.go": "e657060a3cdbe5f3fa73b53518cfabae2788387c6719f2523b7862836c69d641",
+    "services/api/internal/authprivacy/community_direct_messages_schema.go": "28d46400b4f609ebb51ea9bc3cb740e3c5fc1741ce29104b0432bf1a82ff0be3",
+    "services/api/internal/authprivacy/community_feed_migration_test.go": "67ba1c1ec2fd0091ec4b132a4d65b279894c54243eb42b008d2b02e53560e113",
+    "services/api/internal/authprivacy/community_identities.go": "c2506340710bcffe1ce365c89fc8facc2d75778178125376fcae385dac7ae36a",
+    "services/api/internal/authprivacy/community_moderation.go": "4b6207648d31219265a1b5007f3b016dac8f6b6e187aabe9f0f4a60640b828ca",
+    "services/api/internal/authprivacy/community_reports.go": "e730585daa793b52aefc99d5f37527eddb3fc8041fd6c7148a761f6e8019383f",
+    "services/api/internal/authprivacyhttp/direct_message_chat_device_postgres_test.go": "5c420d03b2544aa2874de1c065a6627111ed6f7d192b1857a96b2204043d3ffb",
+    "services/api/internal/authprivacyhttp/direct_message_endpoints.go": "e87106882d0dafc5f504d8977df1370881b5cda43b554ad4827ba702d33f17c4",
+    "services/api/internal/authprivacyhttp/direct_message_governance_endpoints.go": "1e0148c51dc97c27cb6fd30e9cd6bc873d6e1c5601d1ced8494e00a058a47705",
+    "services/api/internal/authprivacyhttp/direct_message_governance_postgres_test.go": "6bd6f347d50b9d128e95fde55d05ee6e55a95de8b60df01341d9d2b2972546b5",
+    "services/api/internal/authprivacyruntime/server.go": "d7f4c8e8ed1e6e0e7cb38d1564655fe3706c2fe9728c8e5578268545a857f30b",
+    "services/api/internal/moderation/model.go": "a08561712cb380abdfb6cc4b6c60d870d65d140f5d376280a0442f5e0bdb965e",
+    "services/api/migrations/0024_direct_message_governance.sql": "6dcf5ce74818ce3ac8c6a28fe1e8ada34f90e17b1b7d05e86d41ed44fa343ca8",
+    "tools/check-direct-message-contract.py": "2c6e89356d9c1bbaaa39afa21019ebb5f5cb39990fa11fc1addbf4db3f118d77"
+  },
+  "mainIntegration20261023": {
+    "main": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "p3Baseline": "07923b047dcc1bf8b431e7b6d94da31d28ec223e",
+    "p2Merge": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "conflicts": "Only four concurrent documentation insertions; both tasks retained. No code conflict.",
+    "dmP3ProductAndTestsUnchanged": true,
+    "authRuntimeAndTestsEquivalentToMain": true,
+    "affectedRootNotificationAndLoginNavigation": "Covered by exact-head Direct message chat CI: dm_notification_navigation_test.dart, app_navigation_test.dart and login_home_navigation_test.dart. No repeated local 75-test run.",
+    "oldNativeEvidenceNotRepeated": true,
+    "userAuthorizedMergeAndBuild": true,
+    "priorDraftConstraintSupersededByUser": true,
+    "nativeSkippedItemsUnchanged": true,
+    "productionNotReleased": true,
+    "finalCI": "Verify latest PR #52 head before merge; no recursive receipt commit."
+  },
+  "mainMergeReceipt20261023": {
+    "mergeCommit": "665291cdf312dec94fb11a75527524a821c5f008",
+    "head": "483fe9a237c38f03768f859935b9020b9520267a",
+    "method": "merge",
+    "applicableCI": "PASS_20_CHECKS",
+    "independentIntegrationReview": "PASS; main agent read-only; not GitHub member approval",
+    "productionReleased": false,
+    "previousAcceptanceAndUnverifiedLimitsUnchanged": true,
+    "historicalCancelledPolicy": "One policy cancelled after body edit; successor policy120220031601 succeeded."
+  }
+}

@@ -13,9 +13,11 @@ class HhDmHeader extends StatelessWidget {
     required this.view,
     required this.onBack,
     required this.onSource,
+    this.onManage,
   });
   final DmConversationView view;
   final VoidCallback onBack, onSource;
+  final VoidCallback? onManage;
 
   @override
   Widget build(BuildContext context) {
@@ -106,11 +108,23 @@ class HhDmHeader extends StatelessWidget {
               style: IconButton.styleFrom(fixedSize: const Size(52, 52)),
               onSelected: (value) {
                 if (value == 0) onSource();
+                if (value == 2) onManage?.call();
                 if (value == 1) {
                   Clipboard.setData(ClipboardData(text: view.recipient.name));
                 }
               },
               itemBuilder: (_) => [
+                if (onManage != null)
+                  const PopupMenuItem(
+                    value: 2,
+                    child: Row(
+                      children: [
+                        Icon(Icons.tune, size: 22),
+                        SizedBox(width: 18),
+                        Text('会话管理'),
+                      ],
+                    ),
+                  ),
                 PopupMenuItem(
                   value: 0,
                   enabled: !view.sourceDeleted,

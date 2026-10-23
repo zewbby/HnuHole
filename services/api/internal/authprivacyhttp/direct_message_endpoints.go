@@ -25,6 +25,12 @@ func isDMPath(path string) bool {
 	return path == "/api/v1/dm" || strings.HasPrefix(path, "/api/v1/dm/")
 }
 func dmRoute(path, method string) bool {
+	if strings.HasPrefix(path, "/api/v1/dm/governance/") {
+		return dmGovernanceRoute(path, method)
+	}
+	if strings.HasPrefix(path, "/api/v1/dm/chat/") {
+		return dmChatRoute(path, method)
+	}
 	switch path {
 	case "/api/v1/dm/conversations", "/api/v1/dm/pending", "/api/v1/dm/contact":
 		return method == "GET"
@@ -56,6 +62,16 @@ func (b *boundary) communityDM(w http.ResponseWriter, r *http.Request, backend D
 	}
 	if backend == nil || !backend.DirectMessagesEnabled() {
 		b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/api/v1/dm/chat/") {
+		chat, _ := backend.(DirectMessageChatBackend)
+		b.communityDMChat(w, r, chat, bearer)
+		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/api/v1/dm/governance/") {
+		governance, _ := backend.(DirectMessageGovernanceBackend)
+		b.communityDMGovernance(w, r, governance, bearer)
 		return
 	}
 	var result authprivacy.PostResponse

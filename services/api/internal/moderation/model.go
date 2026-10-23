@@ -129,16 +129,17 @@ func Fingerprint(v any) string {
 }
 
 type Report struct {
-	CommentID   *string   `json:"commentId,omitempty"`
-	ID          string    `json:"id"`
-	CaseID      string    `json:"caseId"`
-	State       string    `json:"state"`
-	PostID      string    `json:"postId"`
-	Reason      string    `json:"reason"`
-	Description string    `json:"description"`
-	CreatedAt   time.Time `json:"createdAt"`
-	Outcome     string    `json:"outcome"`
-	Explanation string    `json:"explanation"`
+	ConversationID *string   `json:"conversationId,omitempty"`
+	CommentID      *string   `json:"commentId,omitempty"`
+	ID             string    `json:"id"`
+	CaseID         string    `json:"caseId"`
+	State          string    `json:"state"`
+	PostID         string    `json:"postId"`
+	Reason         string    `json:"reason"`
+	Description    string    `json:"description"`
+	CreatedAt      time.Time `json:"createdAt"`
+	Outcome        string    `json:"outcome"`
+	Explanation    string    `json:"explanation"`
 }
 type ReportResult struct {
 	RetryToken string  `json:"retryToken,omitempty"`
@@ -167,12 +168,23 @@ type NotificationPage struct {
 	Items      []Notification `json:"items"`
 	NextBefore *string        `json:"nextBefore"`
 }
+type DMEvidenceRecord struct {
+	Sequence   int64  `json:"sequence"`
+	Direction  string `json:"direction"`
+	Kind       string `json:"kind"`
+	Text       string `json:"text"`
+	Gap        string `json:"gap"`
+	ImageIndex int    `json:"imageIndex"`
+	Retracted  bool   `json:"retracted"`
+}
 type Evidence struct {
-	Title  string  `json:"title"`
-	Body   string  `json:"body"`
-	Images []Image `json:"images"`
+	DMRecords []DMEvidenceRecord `json:"dmRecords,omitempty"`
+	Title     string             `json:"title"`
+	Body      string             `json:"body"`
+	Images    []Image            `json:"images"`
 }
 type Case struct {
+	ConversationID    *string    `json:"conversationId,omitempty"`
 	CommentID         *string    `json:"commentId,omitempty"`
 	NextReportsCursor *string    `json:"nextReportsCursor,omitempty"`
 	ID                string     `json:"id"`
@@ -190,6 +202,7 @@ type Case struct {
 	Sanctions         []Sanction `json:"sanctions,omitempty"`
 }
 type Sanction struct {
+	ConversationID *string    `json:"conversationId,omitempty"`
 	CommentID      *string    `json:"commentId,omitempty"`
 	ID             string     `json:"id"`
 	CaseID         string     `json:"caseId"`

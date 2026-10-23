@@ -33,14 +33,22 @@
 
 ## 分支一览
 
-`main` 是项目基线。当前工作分支见下表，其他已合并分支已退役；历史实现、验收文档和 PR 记录继续保留。
+`main` 是项目基线。当前工作分支如下；历史实现、验收文档和 PR 记录继续保留。
 
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
 | `fix/mobile-navigation-refresh` | 导航、刷新、图片缓存／缩略图与个人页加载五项优化已在真我验收；动图保存和短时帧性能已测，待合并。 | [交接](docs/branches/fix-mobile-navigation-refresh.md) |
-| `feat/direct-message-chat-completion` | 私信第二阶段进行中：图片、会话管理与撤回能力；代码仍在开发。 | [GitHub 分支](https://github.com/zewbby/HnuHole/tree/feat/direct-message-chat-completion) |
+| `test/direct-message-device-recovery` | 私信真实双设备接替、强杀及整机重启增量补验通过；真实掉电按用户要求暂列未验。 | [任务详情](docs/branches/test-direct-message-device-recovery.md) |
+| `feat/direct-message-governance` | 已合并 main [PR #52](https://github.com/zewbby/HnuHole/pull/52)；限定验收、SKIP／NOT_RUN 保留，未发布。 | [任务详情](docs/branches/feat-direct-message-governance.md) |
+| `feat/direct-message-chat-completion` | 已合并 main [PR #51](https://github.com/zewbby/HnuHole/pull/51)；第二阶段限定原生验收通过，未发布。 | [任务详情](docs/branches/feat-direct-message-chat-completion.md) |
 | `feat/email-auth-flow` | 邮箱接入交付分支；长时间关机后重启仍未验证，保留待继续核验。 | [交接](docs/branches/feat-email-auth-flow.md) |
+
+### 本轮退役（2026-10-23）
+
+| 已合并分支 | 合并 PR |
+| --- | --- |
+| `codex/fix/auth-feedback` | [PR #53](https://github.com/zewbby/HnuHole/pull/53) |
 
 ### 本轮退役（2026-10-22）
 
@@ -81,8 +89,8 @@
 
 ## 最近变动
 
+- [PR #52](https://github.com/zewbby/HnuHole/pull/52)：接通私信治理、生命周期清理和隐私本地通知；保留原生与生产未验项。
+- [PR #51](https://github.com/zewbby/HnuHole/pull/51)：接通九图私有收发、会话管理和两分钟撤回。
+- [PR #53](https://github.com/zewbby/HnuHole/pull/53)：优化登录注册错误反馈、邮箱验证码说明和认证弹窗交互。
 - [PR #48](https://github.com/zewbby/HnuHole/pull/48)：普通开发重启保留原会话，安全冻结仍要求明确恢复。
 - [PR #47](https://github.com/zewbby/HnuHole/pull/47)：接通隔离环境可靠文字收发、持久队列、ACK与阅读分离及基础未读草稿。
-- [PR #44](https://github.com/zewbby/HnuHole/pull/44)：改造Telegram私信展示与四入口导航。
-- [PR #45](https://github.com/zewbby/HnuHole/pull/45)：接通真实校邮注册发信与已有账号验证码登录。
-- [PR #43](https://github.com/zewbby/HnuHole/pull/43)：同步三步注册的实际合并与验收回执。

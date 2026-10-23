@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 enum DmSendState { sent, sending, unknown, failed }
 
-enum DmMessageAction { copy, delete, recall, report }
+enum DmMessageAction { copy, delete, recall, report, retry }
 
 /// Local history only. This is not an API for downloading cloud chat archives.
 enum DmHistoryState { complete, available, loading, failed }
@@ -22,8 +22,15 @@ class DmIdentity {
 
 @immutable
 class DmImage {
-  const DmImage({required this.id, required this.description});
+  const DmImage({
+    required this.id,
+    required this.description,
+    this.state,
+    this.canRecall,
+  });
   final String id, description;
+  final DmSendState? state;
+  final bool? canRecall;
 }
 
 @immutable
@@ -39,6 +46,7 @@ class DmMessage {
     this.recalled = false,
     this.reeditableText,
     this.dayLabel,
+    this.visibleMessageIds = const [],
   });
   final String id, time, text;
   final bool outgoing, canRecall, recalled;
@@ -48,6 +56,7 @@ class DmMessage {
 
   /// Calendar label supplied by the local repository in the user's timezone.
   final String? dayLabel;
+  final List<String> visibleMessageIds;
 
   DmMessage copyWith({DmSendState? state, bool? recalled}) => DmMessage(
     id: id,
@@ -86,12 +95,14 @@ class DmConversationView {
     this.historyState = DmHistoryState.complete,
     this.historyCursor,
     this.firstUnreadMessageId,
+    this.draftImages = const [],
   });
   final String scopeKey, sourceTitle, draftText, dayLabel;
   final DmIdentity recipient;
   final DmIdentity? selfIdentity;
   final String? privateNote;
   final List<DmMessage> messages;
+  final List<DmImage> draftImages;
   final bool identityLocked, firstContact, firstTextAccepted, canSend;
   final bool sourceDeleted, localSaveFailed;
 

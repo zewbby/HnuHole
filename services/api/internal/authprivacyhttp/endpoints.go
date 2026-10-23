@@ -297,7 +297,7 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				w.Header().Set("Vary", "Origin")
 			}
 		}
-		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsCommentListQuery(r) || allowsModerationQuery(r) || (r.Method == "GET" && (r.URL.Path == "/api/v1/dm/conversations" || r.URL.Path == "/api/v1/dm/contact"))))) {
+		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsCommentListQuery(r) || allowsModerationQuery(r) || (r.Method == "GET" && (r.URL.Path == "/api/v1/dm/conversations" || r.URL.Path == "/api/v1/dm/contact" || r.URL.Path == "/api/v1/dm/chat/conversations" || r.URL.Path == "/api/v1/dm/chat/controls"))))) {
 			b.bad(w, errMalformed)
 			return
 		}

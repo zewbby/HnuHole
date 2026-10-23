@@ -28,6 +28,10 @@ class HhDirectMessageScreen extends StatefulWidget {
     this.onLoadOlder,
     this.onVisible,
     this.textOnly = false,
+    this.reportEnabled = true,
+    this.onRemoveDraftImage,
+    this.onManage,
+    this.syncError,
   });
 
   final DmConversationView view;
@@ -48,6 +52,10 @@ class HhDirectMessageScreen extends StatefulWidget {
   final Future<void> Function(DmHistoryRequest)? onLoadOlder;
   final ValueChanged<List<String>>? onVisible;
   final bool textOnly;
+  final bool reportEnabled;
+  final Future<bool> Function(DmImage)? onRemoveDraftImage;
+  final VoidCallback? onManage;
+  final String? syncError;
 
   @override
   State<HhDirectMessageScreen> createState() => _HhDirectMessageScreenState();
@@ -66,6 +74,7 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
   void initState() {
     super.initState();
     _text = TextEditingController(text: widget.view.draftText);
+    _images.addAll(widget.view.draftImages);
   }
 
   @override
@@ -88,10 +97,15 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
           offset: widget.view.draftText.length,
         ),
       );
+      _images
+        ..clear()
+        ..addAll(widget.view.draftImages);
     }
     if (scopeChanged) {
       _scopeEpoch++;
-      _images.clear();
+      _images
+        ..clear()
+        ..addAll(widget.view.draftImages);
       _queueing = false;
       _selectedMessage = _selectedImage = null;
       _focus.unfocus();
@@ -356,14 +370,23 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
       _selectedImage = imageId;
     });
     final actions = <(DmMessageAction, String, IconData)>[
+      if (imageId != null &&
+          message.images.any(
+            (i) => i.id == imageId && i.state == DmSendState.failed,
+          ))
+        (DmMessageAction.retry, '重发此图片', Icons.refresh),
       if (imageId == null && message.text.isNotEmpty)
         (DmMessageAction.copy, '复制', Icons.copy_outlined),
-      if (!widget.textOnly) (DmMessageAction.delete, '删除', Icons.delete_outline_rounded),
+      if (!widget.textOnly)
+        (DmMessageAction.delete, '删除', Icons.delete_outline_rounded),
       if (message.outgoing &&
-          message.canRecall &&
+          (imageId == null
+              ? message.canRecall
+              : message.images.firstWhere((i) => i.id == imageId).canRecall ??
+                    message.canRecall) &&
           message.state == DmSendState.sent)
         (DmMessageAction.recall, '撤回', Icons.undo_rounded),
-      if (!widget.textOnly && !message.outgoing)
+      if (!widget.textOnly && widget.reportEnabled && !message.outgoing)
         (DmMessageAction.report, '举报', Icons.flag_outlined),
     ];
     final action = await showMenu<DmMessageAction>(
@@ -436,6 +459,7 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
             children: [
               HhDmHeader(
                 view: view,
+                onManage: widget.onManage,
                 onSource: source,
                 onBack: () {
                   if (_focus.hasFocus) {
@@ -445,6 +469,17 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
                   }
                 },
               ),
+              if (widget.syncError != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 4,
+                  ),
+                  child: Text(
+                    widget.syncError!,
+                    style: TextStyle(fontSize: 12, color: p.secondary),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
                 child: Material(
@@ -536,10 +571,17 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
                   onPickImages: _pickImages,
                   textOnly: widget.textOnly,
                   onSend: _send,
-                  onRemoveImage: (image) => setState(() {
-                    _generation++;
-                    _images.remove(image);
-                  }),
+                  onRemoveImage: (image) async {
+                    final epoch = _scopeEpoch;
+                    final removed =
+                        await widget.onRemoveDraftImage?.call(image) ?? true;
+                    if (mounted && epoch == _scopeEpoch && removed) {
+                      setState(() {
+                        _generation++;
+                        _images.remove(image);
+                      });
+                    }
+                  },
                   onTextChanged: (text) {
                     setState(() => _generation++);
                     widget.onDraftChanged(text);

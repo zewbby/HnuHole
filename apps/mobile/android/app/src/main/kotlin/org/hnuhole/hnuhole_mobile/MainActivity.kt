@@ -3,6 +3,7 @@ package org.hnuhole.hnuhole_mobile
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterJNI
 import android.content.pm.ApplicationInfo
+import android.content.Intent
 import android.app.KeyguardManager
 import android.content.res.Configuration
 import android.os.Bundle
@@ -18,6 +19,7 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private val driverHandler = Handler(Looper.getMainLooper())
     private var driverChannel: MethodChannel? = null
+    private var dmNotifications: DmNotifications? = null
 
     private fun driverEnabled(): Boolean =
         applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0 &&
@@ -41,6 +43,7 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        dmNotifications = DmNotifications(this, flutterEngine.dartExecutor.binaryMessenger)
         if (!driverEnabled()) return
         if (acceptanceEnabled()) lifecycleRecord("engineAttached")
         driverChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger,
@@ -133,11 +136,18 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        dmNotifications?.dispose()
         if (acceptanceEnabled()) lifecycleRecord("activityDestroyed")
         driverHandler.removeCallbacksAndMessages(null)
         driverChannel?.setMethodCallHandler(null)
         driverChannel = null
         super.onDestroy()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        dmNotifications?.onIntent(intent)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

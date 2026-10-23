@@ -3,7 +3,7 @@
 - 更新时间：2026-10-23（Asia/Shanghai）。
 - 分支：`fix/mobile-navigation-refresh`；基线 `e8ff488`。用户要求分支名不含codex。
 - 范围：用户视频问题1／2／5先完成，随后明确加入3／4，现覆盖全部五项。用户随后授权前后端更新、真我安装2303并开始统一验收。
-- 状态：本地实现、自动回归与统一候选APK完成；未提交／推送／合并；已更新开发后端并在真我安装。基础回归、用户导航视觉确认、动图保存与短时Profile帧采样完成；长期性能仍待验。
+- 状态：分支实现已提交并整合最新 `origin/main`（`93d3ed6`），待PR合并；开发后端和真我限定验收已完成。用户导航视觉确认、动图保存与短时Profile帧采样通过；真实大图长列表与长期内存压力仍待验。
 
 ## 实现
 
@@ -61,4 +61,9 @@
 - 性能专用Profile包2304已同签安装真我，在60Hz下用Flutter FrameTiming和SurfaceFlinger呈现时间测了12次底栏切换、8次列表滑动、3次下拉刷新、GIF/WebP原图页。切栏357帧、build/raster P95为5.400/5.190ms；列表332帧，3.039/6.791ms；刷新204帧，6.412/6.794ms。三者各有至多1帧单独超16.67ms，末127个呈现帧样本均无超过20ms的连续活跃间隔；未见持续超预算。动图页134帧，4.730/5.666ms，呈现间隔受动图节奏影响，不用来评价滑动掉帧。
 - 初版Profile包因开发CA仅允许Debug而在启动时报错；已将开发信任限定为Debug或显式`AUTH_DEV_PROFILE=true`的Profile，仍要求两个不同的固定loopback HTTPS源，Release保持拒绝。修正后Profile真机启动、账号与帖子保留；`app_transport_test.dart` 4项PASS。性能包加帧回调仅作测试，不进入2303日常包。
 - 采样后已在真我保数据恢复2303并启动至首页；2304性能包留在本机交付目录。
-- [结构化证据](../design/validation/mobile-animation-frame-realme-20261023.json)；原始帧样本在本机 `E:/Hnuhole-env/media-cache-preview-20261023/device-realme/frame-profile-2304.json`。只覆盖短时合成内容，真实大图长列表和长时间内存压力仍NOT_RUN；本地未提交／推送／合并，远端CI和独立review仍NOT_RUN。
+- [结构化证据](../design/validation/mobile-animation-frame-realme-20261023.json)；原始帧样本在本机 `E:/Hnuhole-env/media-cache-preview-20261023/device-realme/frame-profile-2304.json`。只覆盖短时合成内容，真实大图长列表和长时间内存压力仍NOT_RUN；远端CI和独立review以PR最终回执为准。
+
+### 主线整合与送审
+
+- 本分支提交 `eb1f38f` 保存五项改动和真我续验证据；整合 `origin/main` 的 `93d3ed6`。处理的运行时代码冲突是主线私信通知点击与新单底栏结构：通知先选中保留的私信栏目，再打开目标会话，返回只有一个底栏且身份正确。
+- 整合后Flutter分析0、全量`flutter test --no-pub test`为803 PASS／3 SKIP；新增私信通知与底栏定点4 PASS，debug bundle构建PASS。Linux隔离源码镜像Go全包test/build/vet PASS。远端CI及独立审查待PR回执。

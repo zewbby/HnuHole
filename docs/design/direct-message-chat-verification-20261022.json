@@ -1,0 +1,265 @@
+{
+  "task": "DM-P2-CHAT",
+  "date": "2026-10-22",
+  "branch": "feat/direct-message-chat-completion",
+  "baseMain": "154a76189f7fa0202963bf2deb7bf4341ba8eea8",
+  "source": "889217251c54759d46f9b0f9d3613d8baacf7b30",
+  "status": "SCOPED_IMPLEMENTATION_AND_NATIVE_ACCEPTANCE_PASS_MERGED_MAIN",
+  "merged": true,
+  "released": false,
+  "productionDefaultEnabled": false,
+  "scope": [
+    "Private grouped images (up to nine), per-command retry and complete encrypted local commit before ACK",
+    "Local history, identity-scoped lazy search, drafts and private notes",
+    "Pinned/muted/hidden/deleted settings with durable operation receipts and monotonic deletion boundary",
+    "Authoritative two-minute recall and replayable offline control tombstones",
+    "Fresh-local-store directory and pending recovery without ACKed cloud history"
+  ],
+  "sourceSha256": {
+    ".github/workflows/direct-messages.yml": "95ed9ec27def0fe190f2a72df516b34463bfc2e9a24784da6894422d0446e4a1",
+    "apps/mobile/android/app/build.gradle.kts": "694ef5520c7eaed2401cb9624795e1ae803f9242d96bb25b5a276caf192eaec1",
+    "apps/mobile/integration_test/dm_chat_device_test.dart": "53c0acbd3b9f547c7b844ffd443fd59e5e1b050f281a15e1c2be3f5c8a82d8a2",
+    "apps/mobile/lib/main.dart": "af05dafe1d18fa6fc17302f2a5a9c9d4715d2911d25dbcb89d40b88a7ab5e428",
+    "apps/mobile/lib/src/messaging/direct_message_bubble.dart": "848ffa31f06e326c81f95d985a19c7b61dfbc9d68a117e7568398b2c401ac9d4",
+    "apps/mobile/lib/src/messaging/direct_message_chrome.dart": "db88a1eff52f074787c984ae69901d1c6232e52514eec22f779b87ed79106ac7",
+    "apps/mobile/lib/src/messaging/direct_message_inbox.dart": "d604c5d46f41375cf0a492948565ad04cfd3188216227053930faead55872f7a",
+    "apps/mobile/lib/src/messaging/direct_message_models.dart": "c063e8a7480562234d576540a6131613a45ee1153a8c7a03b011205b11381415",
+    "apps/mobile/lib/src/messaging/direct_message_screen.dart": "174d928060e488a2a75ddfb28b6a5854cb282d4259b659b33921aef46a00f96c",
+    "apps/mobile/lib/src/messaging/direct_message_timeline.dart": "11d6843de82779854722ba9d2e6ba53f3382798056248f829d2f5913430fac43",
+    "apps/mobile/lib/src/messaging/dm_chat_controller.dart": "1c1acc82df5523cba286b00a191d1eba8c2eefe6ca67210d7b23d17f5f8b60d6",
+    "apps/mobile/lib/src/messaging/dm_chat_store.dart": "5af1ab9a5824a881c1e66d1092aeaf91fda16a7a92e9bb9e4fbd2d48da4df366",
+    "apps/mobile/lib/src/messaging/dm_chat_ui.dart": "0c887c637c9b6b9665eec2f7615cde2408468e672657242533a0de5f5dc5f760",
+    "apps/mobile/lib/src/messaging/dm_controller.dart": "5248ef9bb14c56eb9922e9a49df6320962482c43caa25b913cb691e01abce67f",
+    "apps/mobile/lib/src/messaging/dm_protocol.dart": "fe1ab06532c0dd69c05f131372a5231959b2aae186bbf5bd21732fdb1abf147c",
+    "apps/mobile/lib/src/messaging/dm_runtime.dart": "d4ef1c0f9fa6bb3634de0dc769f28d1381fe20722a3f33b3c9745e2693d64308",
+    "apps/mobile/lib/src/messaging/dm_store.dart": "f1a1d6eea8f5e9eba5816913f7e806392783e558827fcafda8b365c27fb2db7d",
+    "apps/mobile/lib/src/posts/http_post_api.dart": "874a2fea6e752de537fd7194e444a50605f5d4deaa4c8bee85b5647e4ae8d90d",
+    "apps/mobile/test/dm_chat_draft_ui_test.dart": "b6f9cdc25f8b9763fb2f3a9d028c07a9367503f7216226a5a0b20d4cbb21de77",
+    "apps/mobile/test/dm_chat_http_test.dart": "49020088170fabbc13d7a088c3a21711e4f9dcfaab70b623674ced0e4e8aaaba",
+    "apps/mobile/test/dm_chat_races_test.dart": "4a960f7e83114113d51c11564267f28f0e0a1d5946e75f803bcffec4d0a4cc88",
+    "apps/mobile/test/dm_chat_test.dart": "6b184984d8b60183443670ac99632c0187c18fee0b5f7bf70fc0b08508149dde",
+    "apps/mobile/test/support/dm_chat_scenario.dart": "aa92fcda71edea9e2fab1d8572e240de1b0ea2f31ed485a65b3f23d9344ee436",
+    "apps/mobile/test_driver/dm_chat_driver.dart": "155146598bcf4288bcec0600c01fe7e59f2818a1b7498aac86f657b5b33bd7b7",
+    "infra/postgres/grant-direct-messages.sql": "dd59ade78fc4f561c994022b4f6e00c093fc0dcde0f33bc75f87667b42d23285",
+    "packages/openapi/direct-message-chat.yaml": "29f59f559ce66952499d0b4d1c85ae526bfd81443cc01d372b03c1bafe11a531",
+    "services/api/authlab/run-dm-chat-isolated.sh": "4e4555b174b4164adf083bec06d3a4b6d978519dc415896316ff5de64994ac7b",
+    "services/api/internal/authprivacy/community_direct_message_chat.go": "1a06fb14b954479d816cfe38a8d848dadffe2123953ac3edc60df83eac4275d5",
+    "services/api/internal/authprivacy/community_direct_message_chat_test.go": "12ed65729332b64032b51e92163b03dab89e20c54da41feaa2a099344a88d63f",
+    "services/api/internal/authprivacy/community_direct_message_image_limits_test.go": "4f82d38aa5a27e11880ccf01f41503adc11b731d61463b6ba0b8aec290eae6db",
+    "services/api/internal/authprivacy/community_direct_message_images.go": "fe623281f3963e531e8a62b56d662e101f45b7185fd96c71256172b7ade57a97",
+    "services/api/internal/authprivacy/community_direct_messages.go": "c91e6c27cd8fd8088dbd95d53c57beee2b12e081733a580b26be5d95e9c0290f",
+    "services/api/internal/authprivacy/community_direct_messages_migration_test.go": "60bdb0fe9a3db5270a1dd73347fe2fe2e9bd549bb53d6558bd12225c697a0602",
+    "services/api/internal/authprivacy/community_direct_messages_schema.go": "a27fd00e151490078052f6cbc790a459a85cae2dca34bdd4430d82ccead0eaff",
+    "services/api/internal/authprivacy/community_feed_migration_test.go": "2dcc06658be5b29f7891037c8a7adf6b28c6e007571ac5fabde9e4d860ed3ae2",
+    "services/api/internal/authprivacyhttp/direct_message_chat_device_postgres_test.go": "fc2c72ad3967f4cedada13f6738c43034a853d3411b2d9367be8665ba0bead69",
+    "services/api/internal/authprivacyhttp/direct_message_chat_endpoints.go": "e269ec0a3f64705a369ef9a5eb654d209b6c9a5a5d8aa2c9451c3a8d298f5061",
+    "services/api/internal/authprivacyhttp/direct_message_chat_postgres_test.go": "204dd3bae787b0b43df2ed7cad5dce58c2011e6489c28da792b274d517bdb84d",
+    "services/api/internal/authprivacyhttp/direct_message_endpoints.go": "9cfed00ebaa88f923b35ece7cc2b7d6f13dfd65e89e57b49a1bb3697ea7476fb",
+    "services/api/internal/authprivacyhttp/endpoints.go": "6566e5f103db13f955595a5ee2697ccc985bfd8cbc160c69f01261ab79a48fba",
+    "services/api/migrations/0023_direct_message_chat.sql": "d991b0b4fd960c24c6a8099ba60fd476698301a2745fe1180f68f6aad3bd4370",
+    "tools/check-direct-message-contract.py": "8bd6f643cadc4510c4d71e33aa1034d6cf31df2f2a27a3845228cb06dddcd6c0"
+  },
+  "acceptanceGroups": [
+    {
+      "name": "九图与安全落地",
+      "result": "PASS",
+      "evidence": [
+        "Native real TLS/PostgreSQL: seven image commands accepted, two invalid originals durably failed; only failed IDs retried with attempt+1",
+        "Complete original bytes verified after local reopen before per-item ACK; acknowledged server media unavailable; third account denied",
+        "Private originals encrypted/chunked in native noBackup SQLite with Keystore-backed key; no public media URL or plaintext search index"
+      ]
+    },
+    {
+      "name": "历史与管理连续流程",
+      "result": "PASS_SCOPED",
+      "evidence": [
+        "Widget: actual inbox pin/note and cancel deletion; local row deletion reflected without stale content",
+        "Widget: applied conversation deletion clears the open text/photo composer; failed draft persistence survives subsequent sync refresh",
+        "Native: note private to receiver, hidden retains unread and new message restores; fresh local store recovers directory/note/unread without ACKed historical body; deletion clears only selected boundary and later message appears"
+      ]
+    },
+    {
+      "name": "撤回及竞态",
+      "result": "PASS_SCOPED",
+      "evidence": [
+        "Real SQL/race and HTTPS: recall expiry, ACK/recall concurrency, offline control replay, freeze and runtime privileges",
+        "Ten targeted client races cover hidden unknown response lookup, stale attempt failure, fair work queue, sender/media namespace collision, old-P2 media migration, late media suppression, deletion snapshots and lazy identity search",
+        "Real SQL limit RED/GREEN: account and conversation each below 4096 accepts image; either exact limit rejects"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "Flutter new client and affected storage/read tests",
+      "result": "PASS",
+      "command": "flutter test --no-pub test/dm_chat_races_test.dart test/dm_chat_test.dart test/dm_reliability_test.dart test/dm_visible_read_test.dart",
+      "count": 31,
+      "source": "f90513f43102fee87e9bfdf4de656d602e4f7a74",
+      "executedBy": "Astra race-fix agent in separate worktree"
+    },
+    {
+      "name": "Final composer mutation checks",
+      "result": "PASS",
+      "command": "flutter test --no-pub test/dm_chat_draft_ui_test.dart --reporter expanded",
+      "count": 2,
+      "source": "889217251c54759d46f9b0f9d3613d8baacf7b30"
+    },
+    {
+      "name": "Flutter analysis",
+      "result": "PASS",
+      "command": "flutter analyze --no-pub",
+      "issues": 0
+    },
+    {
+      "name": "Private-image SQL/HTTPS/upgrade and affected P1",
+      "result": "PASS",
+      "runner": "services/api/authlab/run-dm-chat-isolated.sh",
+      "tests": [
+        "TestDMChatMediaLifecyclePostgres",
+        "TestDMChatHTTPSPostgres",
+        "TestDMGooseFreshAndUpgradePostgres",
+        "TestDMFirstContactConcurrencyAndRuntimePostgres",
+        "TestDMReliableTextPostgres"
+      ],
+      "logs": [
+        "/tmp/hnuhole-dm-p2.lRuZ61/tests.log",
+        "/tmp/hnuhole-dm-p2.zrjiL1/tests.log",
+        "/tmp/hnuhole-dm-p2.d63FDU/tests.log"
+      ]
+    },
+    {
+      "name": "Independent image pending limits",
+      "result": "PASS_RED_GREEN",
+      "test": "TestDMChatIndependentPendingLimitsPostgres",
+      "oldFailLog": "/tmp/hnuhole-dm-p2.fq1PeC/tests.log",
+      "fixedLog": "/tmp/hnuhole-dm-p2.qqtefR/tests.log",
+      "fixedSource": "1056270583b5e93dd1c69f143f4152f3d6a9c458"
+    },
+    {
+      "name": "Affected existing cumulative feed migration",
+      "result": "PASS",
+      "tests": "TestFeedGooseFreshAndUpgradePostgres/{fresh,upgrade,interactions,versions}",
+      "reason": "Migration 0023 changes cumulative applied-row count to 24 and maximum to 23; old hardcoded assertions updated",
+      "command": "FEED_GOOSE=<owned goose> FEED_TEST_PATTERN=^TestFeedGooseFreshAndUpgradePostgres$ sh authlab/run-feed-isolated.sh"
+    },
+    {
+      "name": "Full P1/P2 OpenAPI and service build/vet",
+      "result": "PASS",
+      "commands": [
+        "python tools/check-direct-message-contract.py",
+        "go build -mod=readonly ./cmd/...",
+        "go vet -mod=readonly ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime"
+      ]
+    },
+    {
+      "name": "Real Dart host TLS/SQL scenario",
+      "result": "PASS",
+      "command": "DM_CHAT_FIXTURE=<private owned file> flutter test --no-pub test/dm_chat_http_test.dart --reporter expanded",
+      "count": 1,
+      "note": "Before final race fixes; final affected controller/scenario also executed on native device"
+    },
+    {
+      "name": "Final Android build",
+      "result": "PASS",
+      "command": "HNUHOLE_DM_CHAT=1 flutter build apk --debug --no-pub -t integration_test/dm_chat_device_test.dart --dart-define-from-file=<private owned fixture> --build-number=2026102211"
+    }
+  ],
+  "android": {
+    "result": "PASS_SCOPED_NATIVE_IMAGES_TLS_CONTROLS_UI",
+    "model": "realme RMX3366",
+    "android": "14",
+    "serial": "7e0660f1",
+    "package": "org.hnuhole.hnuhole_mobile.dmchat",
+    "versionCode": 2026102211,
+    "apkSha256": "53433a665178abb0c8f9f4ca123bb86a2a3f91151d080babde1785852e81ee9d",
+    "apkBytes": 188480987,
+    "source": "889217251c54759d46f9b0f9d3613d8baacf7b30",
+    "syntheticAccountsOnly": true,
+    "command": "flutter drive --no-pub -d 7e0660f1 --use-application-binary=build/app/outputs/flutter-apk/app-debug.apk --driver=test_driver/dm_chat_driver.dart --target=integration_test/dm_chat_device_test.dart",
+    "test": "P2 native encrypted images/ACK, controls and chat management over real TLS",
+    "testDurationSeconds": 35,
+    "fixture": "services/api/internal/authprivacyhttp/direct_message_chat_device_postgres_test.go",
+    "serverRun": "/tmp/hnuhole-dm-p2.2wZGFL",
+    "serverResult": "PASS; owned PostgreSQL stopped and private capability JSON removed after drive",
+    "screenshots": [
+      {
+        "path": "docs/design/evidence/dm-p2-20261022/dm-p2-chat.png",
+        "sha256": "6a09183c3e89a4cc5e4094296571672ac4af8506ab22bda65de84cdec587a9c1"
+      },
+      {
+        "path": "docs/design/evidence/dm-p2-20261022/dm-p2-photo-viewer.png",
+        "sha256": "39083c5c641b4affeb15072fb5d2dbe5b0b6312068a25ed0e2970612dbad3eff"
+      }
+    ],
+    "visualInspection": "PASS: native chat bubble/private note and in-memory private photo viewer; synthetic 7x5 green PNG. Fixture does not pass source-post context to route, so its deleted-source label is not proof of production post deletion.",
+    "cleanup": "Drive removed its isolated integration app; existing daily and .dmpreview packages still present. Only own tcp:58443 reverse removed and device lease released."
+  },
+  "independentReview": {
+    "reviewer": "p2_final_review / GPT-6 Astra High",
+    "source": "fc88b9a2d6b2243562718d203df0385ffc1f9592",
+    "result": "NO_REMAINING_ACTIONABLE_BLOCKERS",
+    "laterSource": "8892172 only adds new SQL test name to CI filter; product tree unchanged",
+    "notGitHubMemberApproval": true,
+    "mode": "read-only; no repeated tests claimed"
+  },
+  "limitations": [
+    "Development-only integration flag; no production rollout, P3 governance/block/report/notifications or whole B08/B09 acceptance",
+    "Fresh-local-store simulation and native close/reopen are not physical replacement-device takeover, OS process kill or power-loss testing",
+    "Photo picker and underlying viewer component unchanged; no repeated gallery-picker/IME/font/layout acceptance",
+    "No iOS or history-scale performance benchmark; no cloud history or missing-history banner per DM-I-06",
+    "Base64 media transport and encrypted chunks are bounded by declared 10MiB image/9-image group limits"
+  ],
+  "remoteCI": {
+    "result": "PASS_20_APPLICABLE_CHECKS",
+    "head": "796c54f49403404d8a4c9561966c868cc9ac0a51",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/51"
+  },
+  "regressionsReused": [
+    "P1 text original device evidence",
+    "P1 unchanged font/icon/layout/IME evidence"
+  ],
+  "historicalModuleVerdictsUnchanged": true,
+  "privateLocalLogSha256": {
+    "dm-p2-draft-ui.log": "5c99d02aaa9a9c09756b0f0547f39bc1d25b23568d9cf4d78e5aa77b1fe98e69",
+    "dm-p2-analyze.log": "d8b715c2433241b06e5c1b54a4121e8fde9f106f94afec8a852d45ed4da62dd1",
+    "dm-p2-feed-migration.log": "401cafaacbf7e3dae9b4d8194ea0f6b93b95fb55079ac83ed49dd3b3256318f2",
+    "dm-p2-final-build.log": "ea00ec825160b969aee9159a8942da754acf8fbd884e48fd390c7868187031f5",
+    "dm-p2-native-final.log": "e64032a341194bfd866ac865fbfff0e3d2094b4dae528fde9f29b256c4c6e53b",
+    "dm-p2-final-fixture.log": "be778b48dc897095df495278c9d3406030939742369289bd88e75efb0195da30"
+  },
+  "mainIntegration": {
+    "base": "e8ff4880cb9f091b816c8841e746bd664a54164f",
+    "reason": "PR base advanced; old origin/main tracking ref stale due narrow fetch refspec",
+    "conflicts": "README, HANDOFF, progress and ledger insertions combined preserving both tasks",
+    "dmProductAndTestsEquivalentTo": "889217251c54759d46f9b0f9d3613d8baacf7b30",
+    "nativeNotRepeated": true
+  },
+  "authFeedbackMainIntegration20261023": {
+    "main": "a52e6ec47072d2d5550853c4c7f4ab9811608b34",
+    "p2Baseline": "d864d03062ddbbd4af72e1b83d63dac73dbcf15c",
+    "conflicts": "Only concurrent documentation insertions in HANDOFF, module handoff, ledger and progress; both tasks retained. No code conflict.",
+    "dmProductAndTestsUnchanged": true,
+    "authRuntimeAndTestsEquivalentToMain": true,
+    "localRegression": {
+      "command": "flutter test --no-pub --reporter expanded test/auth_screen_test.dart test/email_login_test.dart test/auth_session_controller_test.dart test/login_home_navigation_test.dart test/app_navigation_test.dart",
+      "result": "PASS_75"
+    },
+    "analyze": {
+      "command": "flutter analyze --no-pub lib/src/auth lib/src/navigation lib/main.dart test/auth_screen_test.dart test/email_login_test.dart test/auth_session_controller_test.dart test/login_home_navigation_test.dart test/app_navigation_test.dart",
+      "result": "PASS_ZERO_ISSUES"
+    },
+    "nativeNotRepeated": true,
+    "mergeAuthorized": true,
+    "productionNotReleased": true,
+    "finalCI": "Verify latest PR #51 head before merge; no recursive receipt commit."
+  },
+  "mainMergeReceipt20261023": {
+    "mergeCommit": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "head": "796c54f49403404d8a4c9561966c868cc9ac0a51",
+    "method": "merge",
+    "applicableCI": "PASS_20_CHECKS",
+    "independentIntegrationReview": "PASS; main agent read-only; not GitHub member approval",
+    "productionReleased": false,
+    "previousAcceptanceAndUnverifiedLimitsUnchanged": true
+  }
+}
