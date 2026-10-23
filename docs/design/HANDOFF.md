@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-23 AUTH-STARTUP-FLASH-01已合并：**[PR #56](https://github.com/zewbby/HnuHole/pull/56)合入main `4197dd3`；七类CI全PASS，同签2308整合包构建及主线产品源码一致性核对PASS。21项入口／导航回归、分析0；未安装／未发布，VIVO视觉待验。下方本地状态为历史快照，见[任务](../branches/fix-auth-startup-flash.md)。
+
 > **2026-10-23 AUTH-STARTUP-FLASH-01（本地未合并）：**按用户最新范围仅修复启动时旧会话错误页闪现，恢复期间保持欢迎页；21项入口／导航回归PASS、分析0。登录错误修改已撤回，未覆盖其他任务整合包；待整合后VIVO视觉验证。见[任务](../branches/fix-auth-startup-flash.md)。
 
 > **2026-10-23 私信 P2／P3 已合入 main：**[PR #51](https://github.com/zewbby/HnuHole/pull/51) merge `988bb42045f4140c46cf9e890d985a774d033e16`，[PR #52](https://github.com/zewbby/HnuHole/pull/52) merge `665291cdf312dec94fb11a75527524a821c5f008`，精确 head 全部适用 CI 及主整合会话独立审查通过。认证反馈完整保留；[设备恢复补验 #55](../branches/test-direct-message-device-recovery.md) 补真实换机／强杀／重启证据，真实突然掉电保持 NOT_RUN。P3 原生人工项仍 SKIP、远程推送未实现，iOS／规模／生产未验；未部署／发布，不提升整模块结论。下方未合并／Draft／无合并授权文字为对应时点历史。

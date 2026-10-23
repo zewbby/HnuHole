@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-23 AUTH-STARTUP-FLASH-01已合并：**[PR #56](https://github.com/zewbby/HnuHole/pull/56)合入main `4197dd3`；七类CI全PASS，同签2308整合包构建及主线产品源码一致性核对PASS。21项入口／导航回归、分析0；未安装／未发布，VIVO视觉待验。下方本地状态为历史快照，见[任务](../branches/fix-auth-startup-flash.md)。
+
 > **2026-10-23 AUTH-STARTUP-FLASH-01：**仅修视频中的启动错误页闪现，starting/restoring期间保持欢迎页；21项入口／导航回归PASS、分析0。本地未提交／合并／安装，其他任务整合版不改。见[任务](../branches/fix-auth-startup-flash.md)。
 
 > **2026-10-23 主线状态：**P2 [#51](https://github.com/zewbby/HnuHole/pull/51) 已合并 `988bb42045f4140c46cf9e890d985a774d033e16`，P3 [#52](https://github.com/zewbby/HnuHole/pull/52) 已合并 `665291cdf312dec94fb11a75527524a821c5f008`；精确 head CI 和独立整合审查通过，main 保留认证反馈 #53。限定验收不扩大，设备补验 [#55](../branches/test-direct-message-device-recovery.md) 的真实掉电仍 NOT_RUN，P3 原生 SKIP／远程推送未实现、iOS／规模／生产未验，未部署／发布。下方为历史阶段记录。
