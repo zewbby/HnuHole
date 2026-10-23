@@ -7,7 +7,8 @@
     ],
     "branch": "fix/direct-message-header-density",
     "base": "eb1eeb93f55a643718f0bff48aa0386a9db62c5e",
-    "implementation": "BRANCH_IMPLEMENTED_USER_ACCEPTED_DRAFT_PR62_AWAITING_CI_AND_MERGE",
+    "implementation": "BRANCH_IMPLEMENTED_USER_ACCEPTED_PR62_SUBMISSION_SNAPSHOT",
+    "recordScope": "SUBMISSION_SNAPSHOT_FINAL_CI_AND_MERGE_STATUS_IN_PR62_RECEIPT",
     "applicationSource": "a5e7415309450d381fda457dd280138f82f26b05",
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/62",
     "sourceFilesSha256": {
