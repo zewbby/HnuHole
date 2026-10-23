@@ -56,6 +56,9 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _explicitRegistrationLogin = false;
   bool _explicitClosureRecovery = false;
   bool _explicitResetLogin = false;
+  String? _lastFlowError;
+  String? _lastSessionError;
+  bool _errorDialogOpen = false;
 
   bool get _busy => widget.sessions.busy || widget.flows.busy;
 
@@ -63,6 +66,8 @@ class _AuthScreenState extends State<AuthScreen> {
   void initState() {
     super.initState();
     _authenticated = widget.sessions.status == AuthStatus.authenticated;
+    _lastFlowError = widget.flows.errorMessage;
+    _lastSessionError = widget.sessions.errorMessage;
     if (widget.flows.emailLogin != null) {
       _emailLogin = true;
       final saved = widget.flows.emailLogin!['email'] as String;
@@ -108,6 +113,20 @@ class _AuthScreenState extends State<AuthScreen> {
 
   void _changed() {
     if (!mounted) return;
+    final flowError = widget.flows.errorMessage;
+    final sessionError = widget.sessions.errorMessage;
+    if (flowError != null && flowError != _lastFlowError) {
+      // Registration already has a dedicated continuation screen for this state.
+      if (_mode != _AuthMode.register || flowError != '结果未知，请保留原请求并核对。') {
+        _queueErrorDialog(flowError);
+      }
+    } else if (sessionError != null &&
+        sessionError != _lastSessionError &&
+        sessionError != '本地已退出，服务器撤销待确认。') {
+      _queueErrorDialog(sessionError);
+    }
+    _lastFlowError = flowError;
+    _lastSessionError = sessionError;
     final authenticated = widget.sessions.status == AuthStatus.authenticated;
     final registrationEmail = widget.flows.registrationEmail;
     if (_mode == _AuthMode.register &&
@@ -166,6 +185,82 @@ class _AuthScreenState extends State<AuthScreen> {
     await action();
   }
 
+  void _queueErrorDialog(String message) {
+    if (_errorDialogOpen) return;
+    _errorDialogOpen = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? false)) {
+        _errorDialogOpen = false;
+        return;
+      }
+      try {
+        await _showErrorDialog(message);
+      } finally {
+        _errorDialogOpen = false;
+      }
+    });
+  }
+
+  Future<void> _showErrorDialog(String message) {
+    final friendlyMessage = switch (message) {
+      '结果未知，请保留原请求并核对。' =>
+        _emailLogin ? '验证码发送或验证结果暂时无法确认，请检查网络后重试。' : '暂时无法确认操作结果，请检查网络后重试。',
+      '安全存储或响应验证失败，操作已停止；请重试核对。' => '暂时无法完成操作，请稍后重试。',
+      '请先核对原操作，不能创建新的请求。' => '请先完成当前操作，再重试。',
+      _ => message,
+    };
+    final source = _presentationContext ?? context;
+    final themes = InheritedTheme.capture(
+      from: source,
+      to: Navigator.of(source, rootNavigator: true).context,
+    );
+    return showGeneralDialog<void>(
+      context: source,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(source).modalBarrierDismissLabel,
+      transitionDuration: MediaQuery.disableAnimationsOf(source)
+          ? Duration.zero
+          : const Duration(milliseconds: 180),
+      transitionBuilder: (_, animation, secondaryAnimation, child) =>
+          FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              key: const ValueKey('auth-error-dialog-scale'),
+              alignment: Alignment.center,
+              scale: animation
+                  .drive(CurveTween(curve: Curves.easeOutCubic))
+                  .drive(Tween<double>(begin: 0.88, end: 1)),
+              child: child,
+            ),
+          ),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) =>
+          themes.wrap(
+            AlertDialog(
+              key: const ValueKey('login-error-dialog'),
+              backgroundColor: _theme.colorScheme.surface,
+              surfaceTintColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              title: Text(
+                _text(
+                  message == '用户名或密码不正确。' ? '登录失败' : '提示',
+                  message == '用户名或密码不正确。' ? 'Sign-in failed' : 'Notice',
+                ),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              content: Text(_text(friendlyMessage)),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(_text('确定', 'OK')),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) =>
       AuthPresentationHost(child: Builder(builder: _buildPage));
@@ -182,11 +277,6 @@ class _AuthScreenState extends State<AuthScreen> {
     _presentationContext = context;
     final sessionStatus = widget.sessions.status;
     final flowStatus = widget.flows.status;
-    final flowError = widget.flows.errorMessage;
-    // A previous session's failure is unrelated to this signed-out registration.
-    final error = _mode == _AuthMode.register
-        ? (flowError == '结果未知，请保留原请求并核对。' ? null : flowError)
-        : flowError ?? widget.sessions.errorMessage;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 64,
@@ -244,23 +334,6 @@ class _AuthScreenState extends State<AuthScreen> {
                         if (_mode == _AuthMode.register) ...[
                           _registrationProgress(flowStatus),
                           const SizedBox(height: 42),
-                        ],
-                        if (_busy) ...[
-                          Semantics(
-                            label: _text('正在核对账号状态'),
-                            child: const LinearProgressIndicator(),
-                          ),
-                          const SizedBox(height: 16),
-                        ],
-                        if (error != null) ...[
-                          _Notice(error, error: true),
-                          const SizedBox(height: 16),
-                        ],
-                        if (widget.sessions.hasPendingLogout) ...[
-                          const _Notice(
-                            '本机已退出，服务端撤销仍待完成。联网后会继续定向撤销旧会话，不恢复旧登录。',
-                          ),
-                          const SizedBox(height: 16),
                         ],
                         ...content,
                       ],
@@ -401,6 +474,9 @@ class _AuthScreenState extends State<AuthScreen> {
           .clamp(0, 3600) ??
       0;
 
+  bool get _emailMatchesRequest =>
+      widget.flows.emailLogin?['email'] == _campusEmail(_loginEmail.text);
+
   List<Widget> _login() {
     final normal =
         !_explicitClosureLogin &&
@@ -418,11 +494,10 @@ class _AuthScreenState extends State<AuthScreen> {
           key: 'email-login-address',
           email: true,
           pending: !widget.flows.supportsEmailLogin,
-          locked:
-              widget.flows.emailLogin != null &&
-              (widget.flows.emailLogin!['sendState'] == 'UNKNOWN' ||
-                  widget.flows.emailLogin!['confirmKey'] != null ||
-                  _emailWaitSeconds > 0),
+          onChanged: (_) {
+            _loginOtp.clear();
+            _validateOtp = false;
+          },
           placeholder: '输入邮箱',
         ),
         _field(
@@ -440,13 +515,18 @@ class _AuthScreenState extends State<AuthScreen> {
                   !widget.flows.supportsEmailLogin ||
                       _busy ||
                       _emailWaitSeconds > 0 ||
-                      widget.flows.emailLogin?['confirmKey'] != null
+                      widget.flows.emailLogin?['proof'] != null ||
+                      (_emailMatchesRequest &&
+                          widget.flows.emailLogin?['confirmKey'] != null)
                   ? null
-                  : () => _submit(
-                      () => widget.flows.requestEmailLogin(
-                        _campusEmail(_loginEmail.text),
-                      ),
-                    ),
+                  : () {
+                      _validateOtp = false;
+                      _submit(
+                        () => widget.flows.requestEmailLogin(
+                          _campusEmail(_loginEmail.text),
+                        ),
+                      );
+                    },
               child: Text(
                 widget.flows.supportsEmailLogin
                     ? _text(
@@ -461,7 +541,39 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
           ),
         ),
-        if (widget.flows.emailUnregistered) const _Notice('该邮箱尚未注册，请创建账号。'),
+        if (_emailMatchesRequest &&
+            widget.flows.emailLogin?['sendState'] == 'ACCEPTED')
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Semantics(
+              liveRegion: true,
+              child: Text(
+                _text(
+                  '若邮箱存在，将会收到验证码。',
+                  'If the email exists, it will receive a verification code.',
+                ),
+                key: const ValueKey('email-login-sent-notice'),
+                style: TextStyle(color: _theme.colorScheme.onSurfaceVariant),
+              ),
+            ),
+          ),
+        if (_emailMatchesRequest && widget.flows.emailUnregistered)
+          const _Notice('该邮箱尚未注册，请创建账号。'),
+        if (!_emailMatchesRequest && widget.flows.emailLogin?['proof'] != null)
+          TextButton(
+            onPressed: _busy
+                ? null
+                : () => setState(() {
+                    final saved = widget.flows.emailLogin!['email'] as String;
+                    _loginEmail.text = saved.substring(
+                      0,
+                      saved.length - '@hainanu.edu.cn'.length,
+                    );
+                    _loginOtp.clear();
+                    _validateOtp = false;
+                  }),
+            child: Text(_text('继续上次登录', 'Continue previous sign-in')),
+          ),
       ] else ...[
         _field(
           '用户名',
@@ -492,7 +604,9 @@ class _AuthScreenState extends State<AuthScreen> {
                         _loginOtp.clear();
                         _visiblePasswords.clear();
                         _emailLogin = !_emailLogin;
-                        if (_emailLogin && widget.flows.emailLogin != null) {
+                        if (_emailLogin &&
+                            _loginEmail.text.isEmpty &&
+                            widget.flows.emailLogin != null) {
                           final saved =
                               widget.flows.emailLogin!['email'] as String;
                           _loginEmail.text = saved.substring(
@@ -535,12 +649,14 @@ class _AuthScreenState extends State<AuthScreen> {
                   _busy ||
                       (email &&
                           (!widget.flows.supportsEmailLogin ||
+                              !_emailMatchesRequest ||
                               widget.flows.emailLogin?['flowId'] == null ||
                               widget.flows.emailUnregistered))
                   ? null
                   : email
                   ? () async {
-                      _validateOtp = true;
+                      _validateOtp =
+                          widget.flows.emailLogin?['confirmKey'] == null;
                       await _submit(
                         () => widget.flows.completeEmailLogin(_loginOtp.text),
                       );
@@ -1334,6 +1450,7 @@ class _AuthScreenState extends State<AuthScreen> {
     bool otp = false,
     bool pending = false,
     bool locked = false,
+    ValueChanged<String>? onChanged,
     String? placeholder,
     Widget? suffix,
   }) => Padding(
@@ -1341,7 +1458,12 @@ class _AuthScreenState extends State<AuthScreen> {
     child: TextFormField(
       key: ValueKey(key),
       controller: controller,
-      onChanged: email ? (_) => setState(() {}) : null,
+      onChanged: email || onChanged != null
+          ? (value) {
+              onChanged?.call(value);
+              setState(() {});
+            }
+          : null,
       inputFormatters: email ? [_CampusEmailPrefixFormatter()] : null,
       enabled: !_busy && !pending && !locked,
       obscureText: password && !_visiblePasswords.contains(key),
@@ -1529,18 +1651,17 @@ class _Title extends StatelessWidget {
 }
 
 class _Notice extends StatelessWidget {
-  const _Notice(this.message, {this.error = false});
+  const _Notice(this.message);
   final String message;
-  final bool error;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Semantics(
-      liveRegion: error,
+      liveRegion: false,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: error ? colors.errorContainer : colors.secondaryContainer,
+          color: colors.secondaryContainer,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(
@@ -1548,9 +1669,7 @@ class _Notice extends StatelessWidget {
           child: Text(
             AuthPresentationScope.text(context, message),
             style: TextStyle(
-              color: error
-                  ? colors.onErrorContainer
-                  : colors.onSecondaryContainer,
+              color: colors.onSecondaryContainer,
               fontSize: 16,
               height: 1.5,
             ),

@@ -1,0 +1,53 @@
+# AUTH-FEEDBACK-01 登录注册反馈调整
+
+- 更新时间：2026-10-23（Asia/Shanghai）。
+- 分支：`codex/fix/auth-feedback`，基线 `origin/main` 的 `e8ff488`。用户确认最终弹窗动效；[PR #53](https://github.com/zewbby/HnuHole/pull/53)已于2026-10-23 Squash合并入main，合并提交`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`。
+- 范围：移除认证请求期间顶部不定进度蓝条；保留忙碌禁用与注册步骤进度；邮箱登录发送请求受理后，在验证码输入框与切换登录方式之间显示普通颜色文案“若邮箱存在，将会收到验证码。”；用户名或密码错误显示居中缩放的圆角模态弹窗，仅有确定按钮，关闭后保留输入。
+- 源码：`apps/mobile/lib/src/auth/auth_screen.dart`；回归：`apps/mobile/test/auth_screen_test.dart`。服务端、存储、授权与验证码发送协议未变。
+- 历史候选版本的测试、构建与设备结果按各节保留。最终候选2306：`flutter test --no-pub --reporter expanded test/auth_screen_test.dart test/email_login_test.dart test/auth_session_controller_test.dart`，64项；`flutter analyze --no-pub`，0问题；Android arm64 debug APK构建与签名校验；realme RMX3366保数据覆盖安装及启动成功。PR #53 的认证 Flutter CI、Android候选构建、协作检查及所有受影响移动端产品CI均通过；用户已确认视觉改动。
+- 宿主测试因GitHub下载超时，临时使用现成本机SQLite DLL，仅测试时设置Windows source为system，结束恢复pubspec原文；Android制品沿用原始配置。测试使用AUTH_UI_QA字体与截图参数，完整命令在本机交付目录test.py。依赖锁文件已恢复，无依赖升级。
+- 安装版本：`2026102301`／`0.1.0-auth-feedback`，与原包同签，`adb install -r`，未卸载或清数据。沿用现有USB开发服务配置。
+- APK SHA-256：`d6d2330710c128e0adafa5b5e51d32b407d7149bd558fe9092a0f5f60155e289`。
+- 设备安装、制品、测试日志和界面截图：`E:/Hnuhole-env/deliveries/auth-feedback-20261023/`（本机交付，不纳入Git）。
+- A12限定UI回归PASS；不提升完整模块验收。保留账号错误后的确定按钮与输入已按用户要求验收；未测量真机帧性能。真机验证码／登录、长时间性能及生产验收范围不因本次视觉确认扩大。
+- README不变：本次为既有认证反馈修正，没有项目入口或整体能力变化。
+
+## PR #53 合并回执
+
+- 2026-10-23 按用户授权将PR #53 Squash合并到main，合并提交：`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`。
+- 认证专用Flutter analyze与64项限定回归PASS；Android prerelease候选及rehearsal、Collaboration、Feed UI、Post images、Report moderation、Direct message text and presentation等受影响workflow全部PASS。
+- 实现及用户确认范围不变；未测量真机帧性能、未发布生产。
+
+## 2026-10-23 用户验收后补充
+
+- 用户指出结果未知红框及旧会话撤销蓝框仍占据登录页。本次移除全局顶部错误条与旧会话撤销信息框；新增错误在当前认证页只弹出一次取消／确定对话框，旧错误、计时刷新与后台撤销重试不重复打扰。
+- 邮箱操作未知、存储／响应错误、待办冲突改用可读提示，注册已有的结果续办页面仍保留。后台撤销待办、原发码请求键、倒计时及状态持久化不变；没有将结果未知当作发送成功。
+- 新增超时重试同请求键、无虚假成功提示、表单位置不变／不重复弹窗回归，并将退出测试调整为后台任务持久化及实际重试清理验证。57项限定回归、分析0、构建与同签覆盖安装PASS。
+- 最终安装版本：2026102302；APK SHA-256：`6724e119feaea4dece5e2577efd9d75fad9bdaf7896158e0326c48c0b7941922`。真机启动截图`installed-2302.png`确认登录页无两个顶部框；未代用户操作发码或登录。
+- 此次USB重连后ADB反向端口映射已丢失，已恢复原C 51245→51245、V 49747→54948映射；沿用原服务及数据，未重建会话或数据库。真实收码、用户视觉验收与帧性能仍待用户验证。
+
+## 2026-10-23 邮箱编辑补充与用户确认
+
+- 用户反馈登录邮箱灰色不可编辑，原因为恢复的UNKNOWN发码／冷却／确认状态锁住输入，并在切换登录方式时覆盖编辑内容；原值来自上次输入，并非写死账号。
+- 登录邮箱可编辑；修改时清空本地旧验证码，隐藏不匹配邮箱的发送／未注册提示，禁止用旧验证流程登录新邮箱；切换方式保留输入。冷却后换邮箱使用新请求键，原邮箱超时重试沿用原键。已进入C会话提交的待办保留，并提供继续上次登录入口。
+- PASS：64项限定测试，分析0，Android arm64同签构建／保数据覆盖安装2026102303。新增覆盖恢复后编辑、冷却、切换方式、验证码隔离、未知发码／确认换邮箱及C提交待办保留。
+- 用户明确回复“可以了”：邮箱编辑问题记为PASS_USER_CONFIRMED。未将本次确认扩大到全部认证、真机帧性能或生产验收。代码仍未提交、推送或合并。
+
+## 2026-10-23 错误弹窗仅保留确认
+
+- 按用户最新要求，认证错误提示弹窗移除取消，仅保留右侧确定，关闭后保留输入；此要求覆盖前述左右取消／确定记录。
+- PASS：64项限定回归（明确断言弹窗仅一个按钮且无取消）、分析0、同签arm64 APK2026102304构建／签名核验。
+- VIVO未在ADB设备清单，安装NOT_RUN_WAITING_DEVICE；尚未覆盖2303。已通知用户接回USB，不安装到其他手机。
+
+- 2304安装补记：用户授权改装真我，realme RMX3366（7e0660f1）`adb install -r`成功，核验versionCode=2026102304／versionName=0.1.0-auth-feedback并启动；保留应用数据，未卸载。恢复此开发包所需C/V USB映射，用户单确认弹窗验收待反馈。VIVO本轮未安装。
+
+## 2026-10-23 登录错误分类修正
+
+- 真我截图显示4位用户名，HttpAuthApi用户名规则在请求发送前抛CLIENT_INPUT_INVALID，AuthSessionController将此明确输入拒绝误归为登录结果未知。C/V TLS存活和就绪探针均200，USB映射存在；未把本次原因归咎网络。
+- CLIENT_INPUT_INVALID与unauthorized在密码登录路径统一显示用户名或密码不正确；真正未知结果仍保留原提示。既有弹窗回归覆盖两种失败，输入保留且仅一个确定。64项限定测试、分析0、arm64构建与签名校验PASS。
+- 已保数据覆盖安装真我RMX3366 2026102305并启动；用户验收待反馈，未推送或合并。
+
+## 2026-10-23 弹窗缩放动效与用户确认
+
+- 按用户要求将错误弹窗上下滑入改为居中缩放淡入：0.88倍至1倍，180ms easeOutCubic，无位移动画；保留主题、遮罩、单确定按钮及输入。系统减少动态效果时直接呈现。
+- 64项限定回归PASS，既有错误弹窗测试新增中间帧0.88<scale<1／结束scale=1及无SlideTransition断言；分析0、同签arm64构建与真我RMX3366 2306保数据覆盖安装／启动PASS。用户已验收动效；[PR #53](https://github.com/zewbby/HnuHole/pull/53)已提交，等待Flutter与Android产品CI。真机帧性能未测，未发布。

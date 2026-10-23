@@ -1,5 +1,19 @@
 # 设计进度与剩余工作
 
+> **2026-10-23 AUTH-FEEDBACK-01 已合并：**用户确认弹窗缩放效果；[PR #53](https://github.com/zewbby/HnuHole/pull/53)经认证Flutter CI、Android候选/rehearsal及受影响移动端产品CI通过后Squash合入main，提交`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`。2306限定64项回归、分析0、同签真我覆盖安装／启动PASS。真机帧性能未测、未发布；下方认证送审／待验文字为历史阶段快照。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 弹窗动效：**错误弹窗改为居中缩放淡入（0.88→1，180ms），单确定不变；64项限定回归／分析0／同签2306真我覆盖安装与启动PASS，动效视觉待用户确认。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 登录分类修正：**客户端账号格式无效曾误报登录结果未知，现按用户名或密码不正确提示；真正未知结果保留。64项限定回归／分析0／同签2305真我覆盖安装与启动PASS，用户验收待反馈。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 最新调整：**错误弹窗仅保留右侧确定，移除取消；64项限定回归、分析0和同签2304构建PASS。用户改授权安装真我RMX3366，2304保数据覆盖安装并启动PASS，VIVO本轮未装。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 邮箱编辑修正：**恢复邮箱可直接编辑，切换方式保留输入，修改邮箱隔离旧验证码；冷却后允许新邮箱发码，已提交会话待办保留。64项限定回归／分析0／同签2303安装PASS；用户回复“可以了”，邮箱编辑项确认通过。代码未提交、未合并。见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01 补充修正：**用户验收指出顶部结果未知／旧会话撤销提示仍在。现移除认证页全局错误条及旧会话撤销信息框，错误改为单次友好弹窗，后台持久撤销与原发码请求重试保留。57项限定回归及分析0 PASS，2302已同签覆盖安装，真机登录页无两个顶部框；用户验收状态见[任务记录](../branches/fix-auth-feedback.md)。
+
+> **2026-10-23 AUTH-FEEDBACK-01（本地实现／未合并）：**移除认证请求顶部动态蓝条，邮箱发码受理提示移至验证码下方，账号密码错误改为取消／确定弹窗并保留输入。A12限定UI回归56项、分析0、APK构建与同签VIVO覆盖安装PASS；真实交互与流畅度待用户验收，未正式发布。见[任务记录](../branches/fix-auth-feedback.md)。
+
 > **2026-10-23 DM-P3-GOVERNANCE：**`feat/direct-message-governance` 依赖 P2 #51，第三阶段治理、清理和本地通知已接入；增量验证、独立审查和送审回执见[任务详情](../branches/feat-direct-message-governance.md)。原生人工项按用户要求 SKIP，远程推送渠道未实现，iOS／生产未验收，未合并或发布。已验证且未改变的 P1/P2 外观、IME 和原生图片链路保留原版本证据，不重复、不扩大证明范围。
 
 > **2026-10-22 DM-P2-CHAT（分支实现／限定验收通过，未合并）：**从 main `154a761` 新建 `feat/direct-message-chat-completion`，新增九图私有收发、加密落地 ACK、会话设置／私人备注、本机搜索与草稿、两分钟撤回和离线墓碑。Astra High 定位复杂竞态，独立只读审查无剩余阻断；真实 SQL/race/TLS、受影响迁移、客户端定点检查、分析 0 及 RMX3366 独立 `.dmchat`2211 原生新增链路通过。仅补新增／受影响部分，未改 P1 字体／布局／IME 沿用旧证据。P3、生产开关和 B08/B09 整体验收结论不提升；远端 CI／PR 回执见[任务详情](../branches/feat-direct-message-chat-completion.md)与[机器记录](direct-message-chat-verification-20261022.json)，不可把此分支成果当已合入 main。

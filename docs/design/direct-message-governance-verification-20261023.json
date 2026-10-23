@@ -268,5 +268,20 @@
     "services/api/internal/moderation/model.go": "a08561712cb380abdfb6cc4b6c60d870d65d140f5d376280a0442f5e0bdb965e",
     "services/api/migrations/0024_direct_message_governance.sql": "6dcf5ce74818ce3ac8c6a28fe1e8ada34f90e17b1b7d05e86d41ed44fa343ca8",
     "tools/check-direct-message-contract.py": "2c6e89356d9c1bbaaa39afa21019ebb5f5cb39990fa11fc1addbf4db3f118d77"
+  },
+  "mainIntegration20261023": {
+    "main": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "p3Baseline": "07923b047dcc1bf8b431e7b6d94da31d28ec223e",
+    "p2Merge": "988bb42045f4140c46cf9e890d985a774d033e16",
+    "conflicts": "Only four concurrent documentation insertions; both tasks retained. No code conflict.",
+    "dmP3ProductAndTestsUnchanged": true,
+    "authRuntimeAndTestsEquivalentToMain": true,
+    "affectedRootNotificationAndLoginNavigation": "Covered by exact-head Direct message chat CI: dm_notification_navigation_test.dart, app_navigation_test.dart and login_home_navigation_test.dart. No repeated local 75-test run.",
+    "oldNativeEvidenceNotRepeated": true,
+    "userAuthorizedMergeAndBuild": true,
+    "priorDraftConstraintSupersededByUser": true,
+    "nativeSkippedItemsUnchanged": true,
+    "productionNotReleased": true,
+    "finalCI": "Verify latest PR #52 head before merge; no recursive receipt commit."
   }
 }

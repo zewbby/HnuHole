@@ -232,5 +232,24 @@
     "conflicts": "README, HANDOFF, progress and ledger insertions combined preserving both tasks",
     "dmProductAndTestsEquivalentTo": "889217251c54759d46f9b0f9d3613d8baacf7b30",
     "nativeNotRepeated": true
+  },
+  "authFeedbackMainIntegration20261023": {
+    "main": "a52e6ec47072d2d5550853c4c7f4ab9811608b34",
+    "p2Baseline": "d864d03062ddbbd4af72e1b83d63dac73dbcf15c",
+    "conflicts": "Only concurrent documentation insertions in HANDOFF, module handoff, ledger and progress; both tasks retained. No code conflict.",
+    "dmProductAndTestsUnchanged": true,
+    "authRuntimeAndTestsEquivalentToMain": true,
+    "localRegression": {
+      "command": "flutter test --no-pub --reporter expanded test/auth_screen_test.dart test/email_login_test.dart test/auth_session_controller_test.dart test/login_home_navigation_test.dart test/app_navigation_test.dart",
+      "result": "PASS_75"
+    },
+    "analyze": {
+      "command": "flutter analyze --no-pub lib/src/auth lib/src/navigation lib/main.dart test/auth_screen_test.dart test/email_login_test.dart test/auth_session_controller_test.dart test/login_home_navigation_test.dart test/app_navigation_test.dart",
+      "result": "PASS_ZERO_ISSUES"
+    },
+    "nativeNotRepeated": true,
+    "mergeAuthorized": true,
+    "productionNotReleased": true,
+    "finalCI": "Verify latest PR #51 head before merge; no recursive receipt commit."
   }
 }
