@@ -2,7 +2,13 @@
   "task": "DM-P3-GOVERNANCE",
   "updatedAt": "2026-10-23",
   "branch": "feat/direct-message-governance",
-  "source": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
+  "source": "96611a5f7ce8b06eed57d12eef17b65d9c95e7cf",
+  "applicationVerificationSource": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
+  "applicationSourceContinuity": {
+    "status": "PASS_IDENTICAL",
+    "command": "git diff --exit-code cd6049e931f99f32004abd83f48b1518fd1b03e5 96611a5f7ce8b06eed57d12eef17b65d9c95e7cf -- apps/mobile apps/admin services/api/internal services/api/cmd services/api/migrations packages/openapi infra/postgres",
+    "detail": "Existing application checks and APK remain bound to cd6049e; later audit-only fix does not alter those runtime inputs. Flutter tests and APK build were not repeated."
+  },
   "base": "d864d03062ddbbd4af72e1b83d63dac73dbcf15c",
   "latestMainAtDelivery": "e8ff4880cb9f091b816c8841e746bd664a54164f",
   "dependency": "https://github.com/zewbby/HnuHole/pull/51",
@@ -95,6 +101,7 @@
     }
   ],
   "apk": {
+    "source": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
     "package": "org.hnuhole.hnuhole_mobile.dmchat",
     "versionCode": 2026102301,
     "bytes": 188010468,
@@ -143,8 +150,35 @@
     "source": "cd6049e931f99f32004abd83f48b1518fd1b03e5",
     "detail": "Exact final product SHA read-only reviewed; previous findings verified fixed; reviewer did not rerun tests or author product."
   },
-  "remoteCI": "PENDING_PR_CHECKS",
+  "prereleaseAuditFix": {
+    "source": "96611a5f7ce8b06eed57d12eef17b65d9c95e7cf",
+    "authoredCommit": "3e6009bda79926f7902dfdaf3932991344bde615",
+    "reason": "0024 common lifecycle cleanup grants were missing from the shared privacy-role audit c_dm matrix; no runtime grant was expanded.",
+    "reproductionCommand": "PRERELEASE_AUDIT_SQL_TEST=1 python -m unittest discover -s tools/prerelease/tests -p test_role_audit_postgres.py -v",
+    "status": "PASS",
+    "detail": "Astra High reported an actual 15.851s PASS using newly owned C/V PostgreSQL clusters, latest Goose migrations, formal grants and original Lab.audit. Baseline passes and all 8 extra-permission cases are rejected. The reproduction entrypoint is not a verbatim record of the author's shell invocation; no duplicate local run was performed. Full remote rehearsal remains pending new head.",
+    "independentReview": {
+      "status": "PASS_NO_REMAINING_ACTIONABLE_BLOCKERS",
+      "reviewer": "Main agent independent read-only review of all 97 changed lines; did not author the audit patch; not GitHub member approval",
+      "source": "3e6009bda79926f7902dfdaf3932991344bde615"
+    }
+  },
+  "remoteCIFailures": [
+    {
+      "source": "fc4f986546085e4706255f430055ab8fea18a060",
+      "totalChecks": 19,
+      "success": 18,
+      "failure": 1,
+      "job": "rehearsal",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/39883525656/job/120186710006",
+      "detail": "environment.py init -> audit -> sql raised owned SQL operation failed; missing c_dm lifecycle cleanup audit matrix. Preserved as first remote result, not overwritten by the subsequent fix."
+    }
+  ],
+  "remoteCI": "PENDING_PR_CHECKS_AFTER_AUDIT_FIX",
   "sourceFilesSha256": {
+    ".github/workflows/android-prerelease.yml": "81974b133448dd7652d2b53f869357ba804200631d35e516fd0f22476290457e",
+    "services/api/authlab/privacy-role-audit.sql": "40cfcfcdf9fe0a69012aa50494b71371a390bd661ec250ada6d454cfb016434b",
+    "tools/prerelease/tests/test_role_audit_postgres.py": "25d572dc3d24e62649f843304abb9f4cbadce6021f794e9f3c3b67416c06b0f3",
     ".github/workflows/direct-messages.yml": "1ebde510f0e5096430c70a016cc0c06f259d9715df9f18bda2630bf2af57197e",
     "apps/admin/app.mjs": "45215dc9d811fb8062f2c46302949b199d4801db087c30cd97c5d30fa702697a",
     "apps/admin/core.mjs": "d053582290a0f939c3f40cd3db3176c9cdbb04d61d7f2f2714de89258694d816",
