@@ -50,6 +50,9 @@ class _Api implements AuthApi {
   int revocations = 0;
   ClosureState closureState = ClosureState.pending;
   bool rejectRevocation = false;
+  bool rejectLogin = false;
+  AuthFailure? loginFailure;
+  Completer<void>? loginPending;
   String? submittedUsername;
   String? submittedEmail;
   String? submittedConfirmation;
@@ -64,6 +67,11 @@ class _Api implements AuthApi {
   }) async {
     logins++;
     submittedUsername = username;
+    await loginPending?.future;
+    if (loginFailure != null) throw loginFailure!;
+    if (rejectLogin) {
+      throw const AuthFailure(kind: AuthFailureKind.unauthorized);
+    }
     return AuthSession(
       accountId: _account,
       sessionToken: token,
@@ -169,21 +177,45 @@ class _Api implements AuthApi {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _EmailApi extends _Api implements EmailLoginApi {
+  Completer<void>? sendPending;
+  AuthFailure? sendFailure;
+  final sendKeys = <String>[];
+  final sentEmails = <String>[];
+
+  @override
+  Future<OtpRequestAccepted> requestEmailLoginOtp({
+    required String email,
+    required String installationId,
+    required String idempotencyKey,
+  }) async {
+    otpRequests++;
+    sendKeys.add(idempotencyKey);
+    sentEmails.add(email);
+    await sendPending?.future;
+    if (sendFailure != null) throw sendFailure!;
+    return OtpRequestAccepted(
+      flowId: AuthCrypto.randomEncoded(32),
+      retryAfterSeconds: 60,
+    );
+  }
+}
+
 class _Harness {
-  _Harness() {
+  _Harness({_Api? api}) : api = api ?? _Api() {
     sessions = AuthSessionController(
-      api: api,
+      api: this.api,
       store: store,
       directory: directory,
     );
     flows = AuthFlows(
-      api: api,
+      api: this.api,
       store: store,
       acceptRegistrationSession: sessions.acceptSession,
       clearCommunityAccess: sessions.clearCommunityAccess,
     );
   }
-  final api = _Api();
+  final _Api api;
   final vault = _Vault();
   late final store = AuthStore(vault);
   final directory = ChannelDirectoryController(repository: _Channels());
@@ -887,6 +919,305 @@ void main() {
     await h.finish(tester);
   });
 
+  testWidgets('password errors use a dismissible dialog and retain inputs', (
+    tester,
+  ) async {
+    final h = _Harness();
+    h.api.rejectLogin = true;
+    await h.mount(tester);
+    await tester.enterText(
+      find.byKey(const ValueKey('login-username')),
+      'private_name',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('login-password')),
+      'incorrect password',
+    );
+    for (var attempt = 0; attempt < 2; attempt++) {
+      if (attempt == 1) {
+        h.api.loginFailure = const AuthFailure(
+          kind: AuthFailureKind.rejected,
+          code: 'CLIENT_INPUT_INVALID',
+        );
+      }
+      h.api.loginPending = Completer<void>();
+      await tester.tap(find.byKey(const ValueKey('login-submit')));
+      await tester.pump();
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('login-submit')))
+            .onPressed,
+        isNull,
+      );
+      h.api.loginPending!.complete();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 60));
+      final scaling = find.byKey(const ValueKey('auth-error-dialog-scale'));
+      final scale = tester.widget<ScaleTransition>(scaling).scale.value;
+      expect(scale, greaterThan(0.88));
+      expect(scale, lessThan(1));
+      expect(
+        find.ancestor(
+          of: find.byType(AlertDialog),
+          matching: find.byType(SlideTransition),
+        ),
+        findsNothing,
+      );
+      await tester.pumpAndSettle();
+      expect(tester.widget<ScaleTransition>(scaling).scale.value, 1);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(TextButton),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('取消'), findsNothing);
+      expect(find.text('用户名或密码不正确。'), findsOneWidget);
+      await _snapshot(tester, 'auth-password-error-dialog');
+      await tester.tap(find.text('确定'));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.text('用户名或密码不正确。'), findsNothing);
+      expect(
+        tester
+            .widget<TextFormField>(find.byKey(const ValueKey('login-username')))
+            .controller!
+            .text,
+        'private_name',
+      );
+      expect(
+        tester
+            .widget<TextFormField>(find.byKey(const ValueKey('login-password')))
+            .controller!
+            .text,
+        'incorrect password',
+      );
+    }
+    expect(h.api.logins, 2);
+    await h.finish(tester);
+  });
+
+  testWidgets(
+    'accepted email code has neutral notice between code and toggle',
+    (tester) async {
+      final api = _EmailApi()..sendPending = Completer<void>();
+      final h = _Harness(api: api);
+      await h.mount(tester);
+      await tester.tap(find.byKey(const ValueKey('login-method-toggle')));
+      await tester.pumpAndSettle();
+      final notice = find.byKey(const ValueKey('email-login-sent-notice'));
+      expect(notice, findsNothing);
+      await tester.enterText(
+        find.byKey(const ValueKey('email-login-address')),
+        'owned',
+      );
+      await tester.tap(find.byKey(const ValueKey('email-login-request')));
+      await tester.pump();
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+      expect(notice, findsNothing);
+      api.sendPending!.complete();
+      await tester.pumpAndSettle();
+      expect(find.text('若邮箱存在，将会收到验证码。'), findsOneWidget);
+      expect(
+        tester.getTopLeft(notice).dy,
+        greaterThan(
+          tester
+              .getBottomLeft(find.byKey(const ValueKey('email-login-code')))
+              .dy,
+        ),
+      );
+      expect(
+        tester.getBottomLeft(notice).dy,
+        lessThan(
+          tester
+              .getTopLeft(find.byKey(const ValueKey('login-method-toggle')))
+              .dy,
+        ),
+      );
+      final text = tester.widget<Text>(notice);
+      final colors = Theme.of(tester.element(notice)).colorScheme;
+      expect(text.style!.color, colors.onSurfaceVariant);
+      await _snapshot(tester, 'auth-email-sent-notice');
+      await h.finish(tester);
+    },
+  );
+
+  testWidgets(
+    'uncertain email request uses one friendly dialog and reuses request',
+    (tester) async {
+      final api = _EmailApi()
+        ..sendFailure = const AuthFailure(kind: AuthFailureKind.timeout);
+      final h = _Harness(api: api);
+      await h.mount(tester);
+      await tester.tap(find.byKey(const ValueKey('login-method-toggle')));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('email-login-address')),
+        'owned',
+      );
+      final fieldTop = tester
+          .getTopLeft(find.byKey(const ValueKey('email-login-address')))
+          .dy;
+      await tester.tap(find.byKey(const ValueKey('email-login-request')));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('结果未知，请保留原请求并核对。'), findsNothing);
+      expect(find.text('验证码发送或验证结果暂时无法确认，请检查网络后重试。'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('email-login-sent-notice')),
+        findsNothing,
+      );
+      final original = Map<String, dynamic>.from(h.flows.emailLogin!);
+      expect(original['sendState'], 'UNKNOWN');
+      await tester.tap(find.text('确定'));
+      await tester.pumpAndSettle();
+      await h.sessions.retryPendingLogout();
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(
+        tester.getTopLeft(find.byKey(const ValueKey('email-login-address'))).dy,
+        fieldTop,
+      );
+      await h.store.update(
+        (state) => state.copyWith(
+          emailLogin: {
+            ...original,
+            'waitUntil': DateTime.now()
+                .subtract(const Duration(seconds: 1))
+                .toUtc()
+                .toIso8601String(),
+          },
+        ),
+      );
+      api.sendFailure = null;
+      await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.byKey(const ValueKey('email-login-request')));
+      await tester.pumpAndSettle();
+      expect(api.sendKeys, [original['sendKey'], original['sendKey']]);
+      expect(
+        find.byKey(const ValueKey('email-login-sent-notice')),
+        findsOneWidget,
+      );
+      await h.finish(tester);
+    },
+  );
+
+  for (final uncertain in [false, true]) {
+    testWidgets(
+      'saved email remains editable during cooldown, uncertain=$uncertain',
+      (tester) async {
+        final api = _EmailApi();
+        if (uncertain) {
+          api.sendFailure = const AuthFailure(kind: AuthFailureKind.timeout);
+        }
+        final h = _Harness(api: api);
+        await h.flows.requestEmailLogin('old@hainanu.edu.cn');
+        await h.mount(tester);
+        final address = find.byKey(const ValueKey('email-login-address'));
+        final code = find.byKey(const ValueKey('email-login-code'));
+        expect(tester.widget<TextFormField>(address).enabled, isTrue);
+        expect(tester.widget<TextFormField>(address).controller!.text, 'old');
+        await tester.enterText(code, '123456');
+        await tester.enterText(address, 'correct');
+        await tester.pump();
+        expect(tester.widget<TextFormField>(code).controller!.text, isEmpty);
+        expect(
+          find.byKey(const ValueKey('email-login-sent-notice')),
+          findsNothing,
+        );
+        expect(
+          tester
+              .widget<FilledButton>(find.byKey(const ValueKey('login-submit')))
+              .onPressed,
+          isNull,
+        );
+        await tester.tap(find.byKey(const ValueKey('login-method-toggle')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('login-method-toggle')));
+        await tester.pumpAndSettle();
+        expect(
+          tester.widget<TextFormField>(address).controller!.text,
+          'correct',
+        );
+        final original = Map<String, dynamic>.from(h.flows.emailLogin!);
+        await h.store.update(
+          (state) => state.copyWith(
+            emailLogin: {
+              ...original,
+              'waitUntil': DateTime.now()
+                  .subtract(const Duration(seconds: 1))
+                  .toUtc()
+                  .toIso8601String(),
+            },
+          ),
+        );
+        api.sendFailure = null;
+        await tester.pump(const Duration(seconds: 1));
+        await tester.tap(find.byKey(const ValueKey('email-login-request')));
+        await tester.pumpAndSettle();
+        expect(api.sentEmails, [
+          'old@hainanu.edu.cn',
+          'correct@hainanu.edu.cn',
+        ]);
+        expect(api.sendKeys.last, isNot(api.sendKeys.first));
+        expect(h.flows.emailLogin!['email'], 'correct@hainanu.edu.cn');
+        expect(
+          find.byKey(const ValueKey('email-login-sent-notice')),
+          findsOneWidget,
+        );
+        expect(tester.widget<TextFormField>(address).enabled, isTrue);
+        await h.finish(tester);
+      },
+    );
+  }
+
+  testWidgets(
+    'editing an unresolved sign-in offers continuation of its original email',
+    (tester) async {
+      final h = _Harness(api: _EmailApi());
+      await h.flows.requestEmailLogin('original@hainanu.edu.cn');
+      await h.store.update(
+        (state) => state.copyWith(
+          emailLogin: {
+            ...state.emailLogin!,
+            'confirmKey': AuthCrypto.randomEncoded(32),
+            'otp': '123456',
+            'proof': AuthCrypto.encode(List<int>.filled(227, 5)),
+          },
+        ),
+      );
+      await h.mount(tester);
+      final address = find.byKey(const ValueKey('email-login-address'));
+      await tester.enterText(address, 'correct');
+      await tester.pump();
+      expect(find.text('继续上次登录'), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('login-submit')))
+            .onPressed,
+        isNull,
+      );
+      await tester.tap(find.text('继续上次登录'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextFormField>(address).controller!.text,
+        'original',
+      );
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const ValueKey('login-submit')))
+            .onPressed,
+        isNotNull,
+      );
+      expect(h.flows.emailLogin!['proof'], isNotNull);
+      await h.finish(tester);
+    },
+  );
+
   testWidgets(
     'new registration has OTP field before sending and does not require it to request',
     (tester) async {
@@ -1074,28 +1405,37 @@ void main() {
     },
   );
 
-  testWidgets('failed server revocation shows durable local logout pending', (
-    tester,
-  ) async {
-    final h = _Harness();
-    await h.store.update(
-      (state) => state.copyWith(
-        session: SessionRecord(
-          token: h.api.token,
-          accountId: _account,
-          expiresAt: _expiry,
+  testWidgets(
+    'failed server revocation retries without exposing internal status',
+    (tester) async {
+      final h = _Harness();
+      await h.store.update(
+        (state) => state.copyWith(
+          session: SessionRecord(
+            token: h.api.token,
+            accountId: _account,
+            expiresAt: _expiry,
+          ),
         ),
-      ),
-    );
-    await h.mount(tester);
-    h.api.rejectRevocation = true;
-    await _tap(tester, '退出本机');
-    expect(h.sessions.isAuthenticated, isFalse);
-    expect((await h.store.read()).session, isNull);
-    expect(find.textContaining('本机已退出，服务端撤销仍待完成'), findsOneWidget);
-    expect((await h.store.read()).logouts.single.revocationSecret, isNotNull);
-    await h.finish(tester);
-  });
+      );
+      await h.mount(tester);
+      h.api.rejectRevocation = true;
+      await _tap(tester, '退出本机');
+      expect(h.sessions.isAuthenticated, isFalse);
+      expect((await h.store.read()).session, isNull);
+      expect(find.textContaining('本机已退出，服务端撤销仍待完成'), findsNothing);
+      expect(find.text('本地已退出，服务器撤销待确认。'), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
+      expect((await h.store.read()).logouts.single.revocationSecret, isNotNull);
+      h.api.rejectRevocation = false;
+      await h.sessions.retryPendingLogout();
+      await tester.pumpAndSettle();
+      expect((await h.store.read()).logouts, isEmpty);
+      expect(h.sessions.isAuthenticated, isFalse);
+      expect(find.byType(AlertDialog), findsNothing);
+      await h.finish(tester);
+    },
+  );
 
   testWidgets(
     'small viewport and larger text retain labeled controls without overflow',

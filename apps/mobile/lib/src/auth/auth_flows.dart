@@ -129,24 +129,21 @@ class AuthFlows extends ChangeNotifier {
     var state = await _store.read();
     _requireNoOtherPending(state);
     var m = state.emailLogin;
-    if (m?['proof'] != null || m?['confirmKey'] != null) {
+    final changingEmail = m != null && m['email'] != email;
+    // An unconfirmed mail request cannot create a community session. It can be
+    // replaced after its cooldown, but an unresolved C submission must survive.
+    if (m?['proof'] != null || (!changingEmail && m?['confirmKey'] != null)) {
       throw const AuthFailure(
         kind: AuthFailureKind.rejected,
         code: 'PENDING_CHECK_REQUIRED',
       );
     }
     if (m != null &&
-        m['sendState'] == 'ACCEPTED' &&
+        (m['sendState'] == 'ACCEPTED' || changingEmail) &&
         _clock().isBefore(DateTime.parse(m['waitUntil'] as String))) {
       throw const AuthFailure(kind: AuthFailureKind.rejected, code: 'OTP_WAIT');
     }
-    if (m != null && m['sendState'] == 'UNKNOWN' && m['email'] != email) {
-      throw const AuthFailure(
-        kind: AuthFailureKind.rejected,
-        code: 'PENDING_CHECK_REQUIRED',
-      );
-    }
-    if (m == null || m['sendState'] == 'ACCEPTED') {
+    if (m == null || m['sendState'] == 'ACCEPTED' || changingEmail) {
       m = {
         'email': email,
         'sendKey': AuthCrypto.randomEncoded(32),
