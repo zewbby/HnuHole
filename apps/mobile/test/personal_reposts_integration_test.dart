@@ -141,6 +141,10 @@ Finder row(String identity, [String post = feed.postId]) =>
     find.byKey(ValueKey('personal-repost:$identity/$post'));
 Finder cancel(String identity, [String post = feed.postId]) =>
     find.byKey(ValueKey('cancel-repost:$identity/$post'));
+Finder menu(String identity, [String post = feed.postId]) => find.descendant(
+  of: row(identity, post),
+  matching: find.byTooltip('帖子更多操作'),
+);
 Future<void> tapVisible(WidgetTester tester, Finder finder) async {
   await tester.ensureVisible(finder);
   await tester.tap(finder);
@@ -157,7 +161,22 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       final api = PersonalRepostsApi();
       final f = HomeTestFixture(api: api);
-      await tester.pumpWidget(await f.create());
+      final app = await f.create();
+      final reportApi = HttpGovernanceApi(
+        baseUri: Uri.parse('https://unused.invalid'),
+      );
+      final governance = GovernanceController(
+        api: reportApi,
+        sessions: f.sessions,
+        authStore: f.store,
+        identitiesApi: f.identitiesApi,
+        pendingStore: GovernancePendingStore(IdentityTestVault()),
+      );
+      addTearDown(governance.dispose);
+      addTearDown(reportApi.close);
+      await tester.pumpWidget(
+        GovernanceScope(controller: governance, child: app),
+      );
       await tester.pumpAndSettle();
       f.identitiesApi.items.add(
         identityTestItem(id: secondIdentity, name: '第二身份', original: false),
@@ -214,11 +233,31 @@ void main() {
       });
       expect(row(identityTestId), findsOneWidget);
 
-      // Opening a row uses original postId, never the composite archive key.
-      await tapVisible(
-        tester,
-        find.descendant(of: row(identityTestId), matching: find.text('今天的校园')),
+      // Blue inline action requires confirmation; cancelling preserves records.
+      final undo = find.byKey(
+        const ValueKey('repost-undo:$secondIdentity/${feed.postId}'),
       );
+      expect(tester.widget<IconButton>(undo).color, const Color(0xFF229ED9));
+      await tapVisible(tester, undo);
+      expect(find.text('撤销转帖？'), findsOneWidget);
+      await tapVisible(tester, find.text('取消'));
+      expect(f.posts.repostItems, hasLength(2));
+
+      // Three actions open the real original/report routes, not an archive key.
+      await tapVisible(tester, menu(identityTestId));
+      expect(find.text('查看帖子'), findsOneWidget);
+      expect(find.text('举报帖子'), findsOneWidget);
+      expect(find.text('取消转载'), findsOneWidget);
+      await tapVisible(tester, find.text('举报帖子'));
+      expect(
+        tester.widget<ReportScreen>(find.byType(ReportScreen)).postId,
+        feed.postId,
+      );
+      expect(find.text('举报原因'), findsOneWidget);
+      await tester.tap(find.byTooltip('返回'));
+      await tester.pumpAndSettle();
+      await tapVisible(tester, menu(identityTestId));
+      await tapVisible(tester, find.text('查看帖子'));
       expect(
         tester.widget<PostDetailScreen>(find.byType(PostDetailScreen)).postId,
         feed.postId,
@@ -267,7 +306,13 @@ void main() {
       expect(f.posts.repostItems, hasLength(1));
       expect(find.text('刷新后的原帖正文'), findsOneWidget);
       await tapVisible(tester, find.byKey(const ValueKey('reposts-load-more')));
+      expect(find.text('取消此转帖'), findsNothing);
+      await tapVisible(tester, menu(identityTestId));
+      expect(find.byType(PostDetailScreen), findsNothing);
       await tapVisible(tester, cancel(identityTestId));
+      expect(find.text('撤销转帖？'), findsOneWidget);
+      expect(api.rows, hasLength(2));
+      await tapVisible(tester, find.text('确认'));
       expect(api.rows.containsKey('$identityTestId/${feed.postId}'), isFalse);
       expect(api.rows.containsKey('$secondIdentity/${feed.postId}'), isTrue);
       expect(f.posts.repostItems.single.identityId, secondIdentity);
@@ -290,10 +335,41 @@ void main() {
       expect(find.text('今天的校园'), findsNothing);
       await tapVisible(tester, find.text('原帖已不可用'));
       expect(find.byType(PostDetailScreen), findsNothing);
+      await tapVisible(tester, menu(secondIdentity, unavailableId));
       final oldCancel = tester
-          .widget<TextButton>(cancel(secondIdentity, unavailableId))
-          .onPressed!;
+          .widget<ListTile>(cancel(secondIdentity, unavailableId))
+          .onTap!;
+      expect(
+        tester
+            .widget<ListTile>(
+              find.byKey(
+                const ValueKey('view-repost:$secondIdentity/$unavailableId'),
+              ),
+            )
+            .enabled,
+        isFalse,
+      );
+      expect(
+        tester
+            .widget<ListTile>(
+              find.byKey(
+                const ValueKey('report-repost:$secondIdentity/$unavailableId'),
+              ),
+            )
+            .enabled,
+        isFalse,
+      );
       await tapVisible(tester, cancel(secondIdentity, unavailableId));
+      final oldConfirm = tester
+          .widget<TextButton>(
+            find.byKey(
+              const ValueKey(
+                'confirm-undo-repost:$secondIdentity/$unavailableId',
+              ),
+            ),
+          )
+          .onPressed!;
+      await tapVisible(tester, find.text('确认'));
       expect(api.mutations.last, '$secondIdentity/$unavailableId:false');
       expect(find.text('暂无转帖'), findsOneWidget);
 
@@ -315,6 +391,7 @@ void main() {
       expect(f.posts.repostItems, isEmpty);
       final writes = api.mutations.length;
       oldCancel();
+      oldConfirm();
       await tester.pumpAndSettle();
       expect(api.mutations, hasLength(writes));
       await tapVisible(tester, find.text('转帖'));

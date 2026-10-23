@@ -497,6 +497,7 @@ class HhXPostItem extends StatelessWidget {
     required this.post,
     required this.mediaBuilder,
     this.mediaSection,
+    this.repostAction,
     this.avatarBuilder,
     required this.onPost,
     required this.onAuthor,
@@ -505,6 +506,7 @@ class HhXPostItem extends StatelessWidget {
     required this.onMedia,
   });
   final Widget? mediaSection;
+  final Widget? repostAction;
   final FeedPostView post;
   final FeedMediaBuilder mediaBuilder;
   final FeedAvatarBuilder? avatarBuilder;
@@ -671,7 +673,11 @@ class HhXPostItem extends StatelessWidget {
                             if (wideText) {
                               return Wrap(
                                 children: [
-                                  for (final action in actions)
+                                  for (final action in [
+                                    actions.first,
+                                    if (repostAction != null) repostAction!,
+                                    ...actions.skip(1),
+                                  ])
                                     SizedBox(
                                       width: constraints.maxWidth / 2,
                                       child: action,
@@ -686,6 +692,8 @@ class HhXPostItem extends StatelessWidget {
                             return Row(
                               children: [
                                 Expanded(child: actions[0]),
+                                if (repostAction != null)
+                                  Expanded(child: repostAction!),
                                 Expanded(child: actions[1]),
                                 Expanded(child: _views(context)),
                                 SizedBox(width: 48, child: actions[2]),

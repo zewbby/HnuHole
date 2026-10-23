@@ -43,6 +43,7 @@ class PostImages {
     required List<PostImage> images,
     required this.accessGranted,
     this.onRelease,
+    this.isExpired,
   }) : images = List.unmodifiable(images) {
     if (postId.isEmpty ||
         postId.trim() != postId ||
@@ -57,6 +58,10 @@ class PostImages {
 
   /// Releases this host-owned lease when the detail no longer uses it.
   final VoidCallback? onRelease;
+
+  /// Only a natural authorization deadline permits an automatic fresh read.
+  /// A denial, release or account change must keep the old group terminal.
+  final bool Function()? isExpired;
 }
 
 /// Host media integration seam; production uses the fixed protected C contract.
@@ -115,10 +120,17 @@ class _PostImagesSectionState extends State<PostImagesSection> {
   }
 
   void _groupChanged() {
-    if (_group?.accessGranted.value == false) {
+    final group = _group;
+    if (group != null && !group.accessGranted.value) {
       _revoked = true;
       _viewer?.invalidateAccess();
-      if (mounted) setState(() {});
+      if (_current && group.isExpired?.call() == true) {
+        // The old group/viewer stays revoked. Rendering resumes only after the
+        // host completes another protected manifest and byte read.
+        unawaited(_load());
+      } else if (mounted) {
+        setState(() {});
+      }
     }
   }
 

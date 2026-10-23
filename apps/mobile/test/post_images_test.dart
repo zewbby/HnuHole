@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
+import 'package:hnuhole_mobile/src/posts/post_api.dart';
 import 'package:hnuhole_mobile/src/posts/post_images.dart';
 
 class _Authority extends ChangeNotifier {
@@ -83,6 +84,51 @@ void main() {
   Future<void> mount(WidgetTester tester, Widget child) async {
     await tester.pumpWidget(MaterialApp(home: Scaffold(body: child)));
     await frames(tester);
+  }
+
+  for (final status in [403, 404]) {
+    testWidgets(
+      'natural expiry closes its viewer and a fresh denial $status never loops',
+      (tester) async {
+        final authority = _Authority(), access = ValueNotifier(true);
+        var expired = false, reads = 0;
+        final media = group(access);
+        Future<PostImages> load(String _) async {
+          if (++reads > 1) {
+            throw PostFailure(
+              kind: PostFailureKind.rejected,
+              statusCode: status,
+            );
+          }
+          return PostImages(
+            postId: media.postId,
+            images: media.images,
+            accessGranted: access,
+            isExpired: () => expired,
+          );
+        }
+
+        await mount(tester, section(authority, load));
+        await tester.tap(
+          find.byKey(const ValueKey(('post-image', 'ordinary-v1'))),
+        );
+        await frames(tester);
+        expect(find.byType(HnuImageViewer), findsOneWidget);
+        expired = true;
+        access.value = false;
+        await frames(tester);
+        expect(reads, 2);
+        expect(find.byType(HnuImageViewer), findsNothing);
+        expect(find.text('图片暂时无法读取'), findsOneWidget);
+        await tester.pump(const Duration(minutes: 2));
+        await frames(tester);
+        expect(reads, 2);
+        expect(access.value, isFalse);
+        await tester.pumpWidget(const SizedBox());
+        authority.dispose();
+        access.dispose();
+      },
+    );
   }
 
   testWidgets('detail count mismatch releases the rejected host lease', (

@@ -40,6 +40,155 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
     ]);
   }
 
+  PostDetail? _repostOriginal(String postId, String identityId) => widget
+      .controller
+      .repostItems
+      .where((item) => item.postId == postId && item.identityId == identityId)
+      .firstOrNull
+      ?.post;
+
+  Future<void> _confirmUndoRepost(String postId, String identityId) async {
+    final c = widget.controller;
+    if (!_authority.current || c.repostState(postId).unresolved) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => ListenableBuilder(
+        listenable: c,
+        builder: (_, __) => AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          title: const Text('撤销转帖？', style: TextStyle(color: Colors.black)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              key: ValueKey('confirm-undo-repost:$identityId/$postId'),
+              onPressed: !_authority.current || c.repostState(postId).unresolved
+                  ? null
+                  : () {
+                      if (!_authority.current ||
+                          c.repostState(postId).unresolved) {
+                        return;
+                      }
+                      Navigator.of(dialogContext).pop(true);
+                    },
+              child: const Text('确认'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (confirmed != true || !mounted || !_authority.current) return;
+    await c.setRepost(
+      postId,
+      identityId,
+      false,
+      authorityVersion: _authority.version,
+    );
+  }
+
+  Future<void> _showRepostMenu(String postId, String identityId) async {
+    if (!_authority.current) return;
+    final c = widget.controller;
+    final governance = GovernanceScope.maybeOf(context);
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.white,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: ListenableBuilder(
+          listenable: c,
+          builder: (_, __) {
+            final available =
+                _authority.current &&
+                _repostOriginal(postId, identityId) != null;
+            void choose(String value) {
+              if (!_authority.current) return;
+              if (value == 'undo' && c.repostState(postId).unresolved) return;
+              if (value != 'undo' && !available) return;
+              Navigator.of(sheetContext).pop(value);
+            }
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  key: ValueKey('view-repost:$identityId/$postId'),
+                  leading: const Icon(
+                    Icons.article_outlined,
+                    color: Color(0xFF536971),
+                  ),
+                  title: const Text(
+                    '查看帖子',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  enabled: available,
+                  onTap: () => choose('view'),
+                ),
+                ListTile(
+                  key: ValueKey('report-repost:$identityId/$postId'),
+                  leading: const Icon(
+                    Icons.flag_outlined,
+                    color: Color(0xFF536971),
+                  ),
+                  title: const Text(
+                    '举报帖子',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  enabled: available && governance?.available == true,
+                  onTap: () => choose('report'),
+                ),
+                ListTile(
+                  key: ValueKey('cancel-repost:$identityId/$postId'),
+                  leading: const Icon(Icons.repeat, color: Color(0xFF536971)),
+                  title: const Text(
+                    '取消转载',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  enabled:
+                      _authority.current && !c.repostState(postId).unresolved,
+                  onTap: () => choose('undo'),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+    if (action == null || !mounted || !_authority.current) return;
+    if (action == 'undo') {
+      await _confirmUndoRepost(postId, identityId);
+      return;
+    }
+    final post = _repostOriginal(postId, identityId);
+    if (post == null) return;
+    if (action == 'view') {
+      await _open(
+        PersonalPostItem(
+          id: '$identityId/$postId',
+          title: post.title,
+          sortAt: post.publishedAt,
+          post: post,
+        ),
+      );
+    } else if (action == 'report' && governance?.available == true) {
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          builder: (_) => ReportScreen(
+            controller: governance!,
+            postId: postId,
+            title: post.title,
+          ),
+        ),
+      );
+    }
+  }
+
   List<Widget> _repostSlivers() {
     final c = widget.controller;
     if (!c.supportsReposts) {
@@ -108,13 +257,30 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                 ),
               ),
               if (post == null)
-                const ListTile(
-                  title: Text('原帖已不可用'),
-                  subtitle: Text('无法查看原帖内容'),
+                ListTile(
+                  title: const Text('原帖已不可用'),
+                  subtitle: const Text('无法查看原帖内容'),
+                  trailing: IconButton(
+                    tooltip: '帖子更多操作',
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () =>
+                        _showRepostMenu(item.postId, item.identityId),
+                  ),
                 )
               else
                 _ProfilePost(
                   key: ValueKey('repost-original:${item.key}'),
+                  onMenu: () => _showRepostMenu(item.postId, item.identityId),
+                  repostAction: IconButton(
+                    key: ValueKey('repost-undo:${item.key}'),
+                    tooltip: '撤销转帖',
+                    color: const Color(0xFF229ED9),
+                    onPressed: state.unresolved
+                        ? null
+                        : () =>
+                              _confirmUndoRepost(item.postId, item.identityId),
+                    icon: const Icon(Icons.repeat, size: 20),
+                  ),
                   post: post,
                   initialDetail: post,
                   own: false,
@@ -132,34 +298,6 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                     );
                   },
                 ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '转帖于 ${_postDate(item.repostedAt)}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      key: ValueKey('cancel-repost:${item.key}'),
-                      onPressed: state.unresolved
-                          ? null
-                          : () => c.setRepost(
-                              item.postId,
-                              item.identityId,
-                              false,
-                              authorityVersion: _authority.version,
-                            ),
-                      child: const Text('取消此转帖'),
-                    ),
-                  ],
-                ),
-              ),
               if (state.error != null && !state.unresolved)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1265,12 +1403,16 @@ class _ProfilePost extends StatefulWidget {
     this.loadImages,
     this.own = true,
     this.initialDetail,
+    this.onMenu,
+    this.repostAction,
   });
   final PostDetail? initialDetail;
   final bool own;
   final PostCard post;
   final PostController controller;
   final VoidCallback onOpen;
+  final VoidCallback? onMenu;
+  final Widget? repostAction;
   final PostImagesLoader? loadImages;
   @override
   State<_ProfilePost> createState() => _ProfilePostState();
@@ -1310,6 +1452,7 @@ class _ProfilePostState extends State<_ProfilePost> {
         ? widget.controller.interaction(p.postId)
         : PostInteractionState();
     return HhXPostItem(
+      repostAction: widget.repostAction,
       post: FeedPostView(
         id: p.postId,
         authorId: '',
@@ -1350,7 +1493,7 @@ class _ProfilePostState extends State<_ProfilePost> {
           : null,
       onPost: widget.onOpen,
       onAuthor: () {},
-      onMenu: widget.onOpen,
+      onMenu: widget.onMenu ?? widget.onOpen,
       onMedia: (_) => widget.onOpen(),
       onAction: (action) {
         if (action == FeedAction.comment) {
