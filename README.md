@@ -33,11 +33,12 @@
 
 ## 分支一览
 
-`main` 是项目基线。当前保留两条会话工作分支，其他已合并分支已退役；历史实现、验收文档和 PR 记录继续保留。
+`main` 是项目基线。当前工作分支见下表，其他已合并分支已退役；历史实现、验收文档和 PR 记录继续保留。
 
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `fix/mobile-navigation-refresh` | 导航、刷新、图片缓存／缩略图与个人页加载五项优化已在真我验收；动图保存和短时帧性能已测，待合并。 | [交接](docs/branches/fix-mobile-navigation-refresh.md) |
 | `feat/direct-message-chat-completion` | 私信第二阶段进行中：图片、会话管理与撤回能力；代码仍在开发。 | [GitHub 分支](https://github.com/zewbby/HnuHole/tree/feat/direct-message-chat-completion) |
 | `feat/email-auth-flow` | 邮箱接入交付分支；长时间关机后重启仍未验证，保留待继续核验。 | [交接](docs/branches/feat-email-auth-flow.md) |
 

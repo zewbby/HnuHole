@@ -1,4 +1,59 @@
 {
+  "mobileNavigationRefresh20261023": {
+    "task": "MOBILE-NAV-REFRESH-01",
+    "branch": "fix/mobile-navigation-refresh",
+    "base": "e8ff488",
+    "modules": [
+      "B03",
+      "B06",
+      "B10",
+      "PM01",
+      "IV01"
+    ],
+    "implementation": "LOCAL_UNCOMMITTED",
+    "hostTests": {
+      "status": "PASS",
+      "passed": 742,
+      "skipped": 1,
+      "skipReason": "DM_HOST_FIXTURE not configured"
+    },
+    "analysisIssues": 0,
+    "flutterDebugBundle": "PASS",
+    "nativeCandidate": "2026102303_INSTALLED_REALME",
+    "integratedHostTests": 744,
+    "nativeAcceptance": "BASIC_CHECKS_PASS_NAVIGATION_VISUAL_USER_CONFIRMED",
+    "independentReview": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "production": "NOT_RELEASED",
+    "historicalModuleVerdictsUnchanged": true,
+    "evidence": "docs/branches/fix-mobile-navigation-refresh.md",
+    "scope": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "integratedHostSkipped": 1,
+    "goHost": "TEST_BUILD_VET_PASS_SQL_NOT_PROVEN_BY_HOST",
+    "isolatedSQLHTTPS": {
+      "status": "PASS",
+      "topLevelPassed": 104,
+      "includingSubtestsPassed": 334,
+      "skipped": 1,
+      "skipReason": "owned Goose fixture absent; no migration added"
+    },
+    "deletionDuringEncoding": "REAL_HTTPS_POSTGRES_RACE_PASS",
+    "pythonSyntheticTests": 5,
+    "openAPISpecsPassed": 11,
+    "backendDeployment": "DEV_C_READY_GENERATION_UNCHANGED",
+    "databaseMigration": "NONE",
+    "deviceEvidence": "docs/design/validation/mobile-nav-refresh-realme-20261023.json",
+    "animationAndFrameEvidence": "docs/design/validation/mobile-animation-frame-realme-20261023.json",
+    "nativeAnimationSave": "PASS_REALME_GIF_WEBP_EXACT_BYTES_FOUR_FRAMES",
+    "profileFrameSample": "PASS_SHORT_SYNTHETIC_60HZ_NO_SUSTAINED_FRAME_BUDGET_FAILURE",
+    "remainingDeviceScope": "REAL_PHOTO_HEAVY_LONG_FEED_AND_LONG_SESSION_MEMORY_NOT_RUN"
+  },
   "sessionResume20261022": {
     "task": "AUTH-SESSION-RESUME-01",
     "branch": "fix/session-restore",

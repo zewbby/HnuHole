@@ -37,6 +37,7 @@ type postRoute struct {
 	command   bool
 	seal      bool
 	methods   string
+	preview   bool
 	limit     int
 	version   int32
 	ids       []string
@@ -236,6 +237,13 @@ func (b *boundary) communityPostsPublic(w http.ResponseWriter, r *http.Request, 
 		}
 		route.limit = query.Limit
 		if route.kind == authprivacy.PostFeed {
+			var previewErr error
+			route.preview, previewErr = postPreviewRequested(r)
+			if previewErr != nil {
+				b.postBad(w, previewErr)
+				return
+			}
+			query.ImageSizes = route.preview
 			route.id = query.ID
 		}
 		var response authprivacy.PostResponse
@@ -770,9 +778,23 @@ func strictPostValue(value any, route postRoute) (any, error) {
 		if !ok || result.Items == nil || !validPostPageSize(len(result.Items), route.limit) || !validNullablePostCursor(result.NextCursor) {
 			return nil, errMalformed
 		}
-		for _, post := range result.Items {
+		result.Items = append([]posts.FeedPost{}, result.Items...)
+		for i, post := range result.Items {
 			if route.id != "" && post.ChannelID != route.id || post.ViewCount < 0 || !validPublicPostCard(posts.PublicPostCard{PostID: post.PostID, ChannelID: post.ChannelID, Title: post.Title, Author: post.Author, PublishedAt: post.PublishedAt}) || posts.ValidateContentWithImages(post.Title, post.Body, post.ImageCount) != nil {
 				return nil, errMalformed
+			}
+			if post.ImageSizes != nil {
+				if len(post.ImageSizes) != post.ImageCount {
+					return nil, errMalformed
+				}
+				for _, size := range post.ImageSizes {
+					if size.Width < 1 || size.Height < 1 || size.Width > 16384 || size.Height > 16384 || int64(size.Width)*int64(size.Height) > 12*1024*1024 {
+						return nil, errMalformed
+					}
+				}
+			}
+			if !route.preview {
+				result.Items[i].ImageSizes = nil
 			}
 		}
 		return result, nil

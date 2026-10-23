@@ -352,3 +352,39 @@ func (c *Community) postImagesReady(ctx context.Context, tx pgx.Tx, task uuid.UU
 	}
 	return ready, e
 }
+
+// No additional storage or public URL: the original read repeats the same
+// resource/session/Gate transaction before the bounded, stateless transform.
+func (c *Community) PostImageThumbnailsEnabled() bool {
+	if !c.PostImagesEnabled() {
+		return false
+	}
+	_, ok := c.postImages.validator.(postmedia.Thumbnailer)
+	return ok
+}
+
+func (c *Community) ReadPostThumbnail(ctx context.Context, bearer [32]byte, post, content string) (PostResponse, error) {
+	if !c.PostImageThumbnailsEnabled() {
+		return PostResponse{}, postmedia.ErrUnavailable
+	}
+	response, e := c.ReadPostImages(ctx, bearer, post, content)
+	if e != nil {
+		return PostResponse{}, e
+	}
+	original, ok := response.Value.(ImageBytes)
+	if !ok {
+		return PostResponse{}, postmedia.ErrUnavailable
+	}
+	data, e := c.postImages.validator.(postmedia.Thumbnailer).Thumbnail(ctx, original.Bytes)
+	if e != nil {
+		return PostResponse{}, e
+	}
+	// Transformation happens outside SQL. Recheck the resource and final Gate
+	// after CPU work, so deletion, logout or a freeze during encoding wins.
+	final, e := c.ReadPostImages(ctx, bearer, post, "")
+	if e != nil {
+		return PostResponse{}, e
+	}
+	final.Value = ImageBytes{Bytes: data, MIME: "image/webp"}
+	return final, nil
+}

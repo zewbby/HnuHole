@@ -201,6 +201,7 @@ class PostController extends ChangeNotifier {
   List<PostCard> feedItems = [];
   List<PersonalPostItem> personalItems = [];
   ManagedIdentity? personalIdentity;
+  String? personalProfileError;
 
   bool get supportsFeed => _api is FeedApi;
   bool get supportsInteractions => _api is PostInteractionsApi;
@@ -254,6 +255,7 @@ class PostController extends ChangeNotifier {
     _imageProgress.clear();
     personalItems = [];
     personalIdentity = null;
+    personalProfileError = null;
     feedItems = [];
     currentChannelId = feedCursor = feedError = personalError = errorMessage =
         null;
@@ -554,32 +556,40 @@ class PostController extends ChangeNotifier {
   }
 
   Future<void> loadPersonal({bool more = false}) async {
+    if (more && personalLoading) return;
+    var contentLoaded = false;
     final request = ++_personalRequest;
     _PostAuthority? a;
     try {
       a = await _authority(storage: true);
+      if (!_current(a) || request != _personalRequest) return;
       personalLoading = true;
       personalError = null;
+      personalProfileError = null;
       _notify();
-      final posts = !more || _ownCursor != null
-          ? await _accept(
-              a,
-              await _api.ownPosts(
-                sessionToken: a.token,
-                cursor: more ? _ownCursor : null,
-              ),
-            )
-          : null;
-      final tasks = !more || _taskCursor != null
-          ? await _accept(
-              a,
-              await _api.tasks(
-                sessionToken: a.token,
-                cursor: more ? _taskCursor : null,
-              ),
-            )
-          : null;
-      var local = await a.store!.list();
+      final scoped = a;
+      if (!_current(a) || request != _personalRequest) return;
+      // Independent reads start together. Future.wait keeps the original typed
+      // failure so 401/503 still pass through the authority gate below.
+      final reads = await Future.wait<Object?>([
+        if (!more || _ownCursor != null)
+          _api
+              .ownPosts(sessionToken: a.token, cursor: more ? _ownCursor : null)
+              .then((response) => _accept(scoped, response))
+        else
+          Future<Object?>.value(),
+        if (!more || _taskCursor != null)
+          _api
+              .tasks(sessionToken: a.token, cursor: more ? _taskCursor : null)
+              .then((response) => _accept(scoped, response))
+        else
+          Future<Object?>.value(),
+        a.store!.list(),
+      ], eagerError: true);
+      if (!_current(a) || request != _personalRequest) return;
+      final posts = reads[0] as PostsPage<OwnPostCard>?;
+      final tasks = reads[1] as PostsPage<PostTask>?;
+      var local = reads[2] as List<StoredPostEntry>;
       final queriedTasks = <String, PostTask>{};
       // 已隐藏失败项不在分页中；点查已知任务，避免本机旧正文重新出现。
       for (final entry in local.where((e) => e.state == 'FAILED')) {
@@ -593,32 +603,7 @@ class PostController extends ChangeNotifier {
         queriedTasks[task.taskId] = task;
       }
       local = await a.store!.list();
-      final directory = await _identities.identities(a.token);
-      final scoped = a;
-      if (!await _sessions.persistSessionMetadata(
-        a.token,
-        directory.sessionExpiresAt,
-        () => _current(scoped),
-      )) {
-        return;
-      }
-      final context = await _accept(
-        a,
-        await _api.composerContext(sessionToken: a.token),
-      );
       if (!_current(a) || request != _personalRequest) return;
-      final originals = directory.identities.where((i) => i.isOriginal);
-      personalIdentity = originals.isNotEmpty
-          ? originals.first
-          : directory.identities
-                .where((i) => i.id == context.defaultIdentityId)
-                .firstOrNull;
-      personalIdentity ??=
-          (List<ManagedIdentity>.of(directory.identities)..sort((x, y) {
-                final byTime = x.createdAt.compareTo(y.createdAt);
-                return byTime != 0 ? byTime : x.id.compareTo(y.id);
-              }))
-              .firstOrNull;
       if (!more) {
         _own = [];
         _remoteTasks.clear();
@@ -651,9 +636,67 @@ class PostController extends ChangeNotifier {
       )) {
         unawaited(_insertPublished(a, task.postId));
       }
+      contentLoaded = true;
+      personalLoading = false;
+      _notify();
+      // Profile decoration must not hold the post list or known empty state.
+      if (!more) {
+        if (!_current(a) || request != _personalRequest) return;
+        final directory = await _identities.identities(a.token);
+        if (!_current(a) || request != _personalRequest) return;
+        if (!await _sessions.persistSessionMetadata(
+          a.token,
+          directory.sessionExpiresAt,
+          () => _current(scoped),
+        )) {
+          return;
+        }
+        if (!_current(a) || request != _personalRequest) return;
+        final originals = directory.identities.where((i) => i.isOriginal);
+        final context = originals.isNotEmpty
+            ? null
+            : await _accept(
+                a,
+                await _api.composerContext(sessionToken: a.token),
+              );
+        if (!_current(a) || request != _personalRequest) return;
+        personalIdentity = originals.isNotEmpty
+            ? originals.first
+            : directory.identities
+                  .where((i) => i.id == context?.defaultIdentityId)
+                  .firstOrNull;
+        personalIdentity ??=
+            (List<ManagedIdentity>.of(directory.identities)..sort((x, y) {
+                  final byTime = x.createdAt.compareTo(y.createdAt);
+                  return byTime != 0 ? byTime : x.id.compareTo(y.id);
+                }))
+                .firstOrNull;
+        _notify();
+      }
     } catch (error) {
-      _failure(error, a);
-      if (a != null && _current(a)) personalError = '暂时无法核对本人内容，请重试。';
+      if (a != null && (!_current(a) || request != _personalRequest)) return;
+      if (!contentLoaded) {
+        _failure(error, a);
+        if (a != null && _current(a)) personalError = '暂时无法核对本人内容，请重试。';
+      } else {
+        // Access/storage failures still follow the existing failure policy; a temporary
+        // profile failure leaves successfully loaded posts and empty states.
+        if (error is AuthStorageFailure ||
+            error is PostStorageFailure ||
+            error is AuthFailure &&
+                (error.unauthorized ||
+                    error.kind == AuthFailureKind.unavailable) ||
+            error is PostFailure &&
+                {
+                  PostFailureKind.unauthorized,
+                  PostFailureKind.unavailable,
+                }.contains(error.kind)) {
+          _failure(error, a);
+        }
+        if (a != null && _current(a)) {
+          personalProfileError = '身份资料暂时无法读取，请下拉重试。';
+        }
+      }
     } finally {
       if (a != null && _current(a) && request == _personalRequest) {
         personalLoading = false;

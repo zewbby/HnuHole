@@ -227,9 +227,14 @@ type FeedPreferences struct {
 	BlockedChannelIDs []string `json:"blockedChannelIds"`
 }
 
+type ImageSize struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
+}
 type FeedPost struct {
 	PublicPost
-	ViewCount int64 `json:"viewCount"`
+	ViewCount  int64       `json:"viewCount"`
+	ImageSizes []ImageSize `json:"imageSizes,omitempty"`
 }
 
 type CrossChannelFeedPage struct {

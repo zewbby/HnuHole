@@ -10,17 +10,35 @@ import 'post_controller.dart';
 import 'post_images.dart';
 import 'post_media_api.dart';
 
-/// A bounded, in-memory authorization window. No disk cache or credential-bearing
-/// provider is created. Each saved original repeats the protected HTTP read.
+typedef _MediaKey = (String?, int, String);
+
+/// Shares protected bytes within their original authorization deadline. Idle
+/// resources use a bounded LRU; displayed resources remain owned by consumers.
+/// Nothing is written to disk, and saving always reauthorizes original bytes.
 class PostMediaRepository {
-  PostMediaRepository(this.posts) {
+  PostMediaRepository(
+    this.posts, {
+    this.maxIdleEntries = 12,
+    this.maxIdleBytes = 48 * 1024 * 1024,
+  }) : assert(maxIdleEntries >= 0),
+       assert(maxIdleBytes >= 0) {
     posts.addListener(_authorityChanged);
   }
   final PostController posts;
-  final _leases = <_MediaLease>{};
+  final int maxIdleEntries, maxIdleBytes;
+  final _entries = <_MediaKey, _MediaLease>{};
+  final _manifests = <_MediaKey, Future<_MediaLease>>{};
   final _waiting = Queue<Completer<void>>();
   int _active = 0;
   bool _disposed = false;
+
+  @visibleForTesting
+  int get idleGroupCount =>
+      _entries.values.where((l) => l.references == 0).length;
+  @visibleForTesting
+  int get idleBytes => _entries.values
+      .where((l) => l.references == 0)
+      .fold(0, (sum, l) => sum + l.weight);
 
   Future<T> _read<T>(Future<T> Function() action) async {
     if (_disposed) throw const PostFailure(kind: PostFailureKind.unauthorized);
@@ -43,51 +61,92 @@ class PostMediaRepository {
   }
 
   void _authorityChanged() {
-    for (final lease in _leases.toList()) {
+    for (final lease in _entries.values.toList()) {
       if (!lease.current) lease.revoke();
     }
   }
 
   Future<PostImages> load(String postId) async {
-    final epoch = posts.authorityVersion;
+    final key = (posts.accountId, posts.authorityVersion, postId);
     bool current() =>
         !_disposed &&
         posts.available &&
-        posts.authorityVersion == epoch &&
+        posts.accountId == key.$1 &&
+        posts.authorityVersion == key.$2 &&
         !posts.isPostDeleted(postId);
     if (!current()) throw const PostFailure(kind: PostFailureKind.unauthorized);
-    final elapsed = Stopwatch()..start();
-    final response = await posts.loadImageManifest(postId);
-    final manifest = response.value;
-    final lifetime = manifest.accessValidUntil.difference(response.serverTime);
-    if (!current() ||
-        manifest.postId != postId ||
-        lifetime <= elapsed.elapsed ||
-        lifetime > const Duration(seconds: 60) ||
-        manifest.accessValidUntil.isAfter(response.sessionExpiresAt)) {
-      throw const PostFailure(kind: PostFailureKind.invalidResponse);
+    final cached = _entries[key];
+    if (cached != null && cached.current) {
+      _touch(cached);
+      return cached.acquire();
     }
-    final lease = _MediaLease(this, postId, current, elapsed, lifetime);
-    _leases.add(lease);
-    lease.start();
-    return PostImages(
-      postId: postId,
-      accessGranted: lease.access,
-      onRelease: lease.revoke,
-      images: [
-        for (var i = 0; i < manifest.images.length; i++)
-          lease.image(manifest.images[i], i, manifest.images.length),
-      ],
-    );
+    cached?.revoke();
+    final future = _manifests.putIfAbsent(key, () async {
+      final elapsed = Stopwatch()..start();
+      final response = await posts.loadImageManifest(postId);
+      final manifest = response.value;
+      final lifetime = manifest.accessValidUntil.difference(
+        response.serverTime,
+      );
+      if (!current() ||
+          manifest.postId != postId ||
+          lifetime <= elapsed.elapsed ||
+          lifetime > const Duration(seconds: 60) ||
+          manifest.accessValidUntil.isAfter(response.sessionExpiresAt)) {
+        throw const PostFailure(kind: PostFailureKind.invalidResponse);
+      }
+      final lease = _MediaLease(
+        this,
+        key,
+        manifest,
+        current,
+        elapsed,
+        lifetime,
+      );
+      _entries[key] = lease;
+      lease.start();
+      return lease;
+    });
+    try {
+      final lease = await future;
+      if (!current()) {
+        lease.revoke();
+        throw const PostFailure(kind: PostFailureKind.unauthorized);
+      }
+      return lease.acquire();
+    } finally {
+      if (identical(_manifests[key], future)) _manifests.remove(key);
+    }
+  }
+
+  void _touch(_MediaLease lease) {
+    if (identical(_entries[lease.key], lease)) {
+      _entries.remove(lease.key);
+      _entries[lease.key] = lease;
+    }
+  }
+
+  void _idle(_MediaLease lease) {
+    if (lease.references != 0) return;
+    // An abandoned request must not occupy a byte slot or publish late bytes.
+    if (lease.inFlight != 0) {
+      lease.revoke();
+      return;
+    }
+    _touch(lease);
+    while (idleGroupCount > maxIdleEntries || idleBytes > maxIdleBytes) {
+      _entries.values.firstWhere((l) => l.references == 0).revoke();
+    }
   }
 
   void dispose() {
     if (_disposed) return;
     _disposed = true;
     posts.removeListener(_authorityChanged);
-    for (final lease in _leases.toList()) {
+    for (final lease in _entries.values.toList()) {
       lease.revoke();
     }
+    _manifests.clear();
     while (_waiting.isNotEmpty) {
       _waiting.removeFirst().completeError(
         const PostFailure(kind: PostFailureKind.unauthorized),
@@ -99,22 +158,28 @@ class PostMediaRepository {
 class _MediaLease {
   _MediaLease(
     this.owner,
-    this.postId,
+    this.key,
+    this.manifest,
     this.authorized,
     this.elapsed,
     this.lifetime,
   );
   final PostMediaRepository owner;
-  final String postId;
+  final _MediaKey key;
+  final PostMediaManifest manifest;
   final bool Function() authorized;
   final Stopwatch elapsed;
   final Duration lifetime;
-  final access = ValueNotifier(true);
-  final _providers = <MemoryImage>{};
+  final _consumers = <ValueNotifier<bool>>{};
+  final _providers = <ImageProvider>{};
   final _pending = <String, Future<MemoryImage>>{};
+  final _decodeKeys = <(ImageProvider, int?, int?, ResizeImagePolicy)>{};
   Timer? _timer;
-  bool get current =>
-      access.value && authorized() && elapsed.elapsed < lifetime;
+  bool _revoked = false;
+  int inFlight = 0, weight = 0;
+  String get postId => key.$3;
+  int get references => _consumers.length;
+  bool get current => !_revoked && authorized() && elapsed.elapsed < lifetime;
   void start() => _timer = Timer(lifetime - elapsed.elapsed, revoke);
   void check() {
     if (!current) {
@@ -124,15 +189,21 @@ class _MediaLease {
   }
 
   void revoke() {
-    if (!access.value) return;
+    if (_revoked) return;
+    _revoked = true;
     _timer?.cancel();
     _pending.clear();
     for (final provider in _providers) {
       unawaited(provider.evict());
     }
     _providers.clear();
-    owner._leases.remove(this);
-    access.value = false;
+    _decodeKeys.clear();
+    if (identical(owner._entries[key], this)) owner._entries.remove(key);
+    for (final access in _consumers.toList()) {
+      access.value = false;
+    }
+    _consumers.clear();
+    weight = 0;
   }
 
   Future<PostResponse<T>> read<T>(
@@ -151,13 +222,7 @@ class _MediaLease {
           ({401, 403, 404, 503}.contains(error.statusCode) ||
               error.kind == PostFailureKind.unauthorized ||
               error.kind == PostFailureKind.unavailable)) {
-        // Only this still-current lease may propagate a post denial. An old
-        // account/released lease cannot revoke a newer group's authorization.
-        // Current-token 401/503 still close access in PostController first.
-        for (final lease
-            in owner._leases.where((l) => l.postId == postId).toList()) {
-          lease.revoke();
-        }
+        revoke();
       }
       rethrow;
     }
@@ -165,8 +230,9 @@ class _MediaLease {
 
   Future<MemoryImage> provider(PostMediaImage item) {
     check();
-    final existing = _pending[item.contentVersionId];
+    final existing = _pending[item.path];
     if (existing != null) return existing;
+    inFlight++;
     final future = (() async {
       try {
         final response = await read(
@@ -174,57 +240,116 @@ class _MediaLease {
         );
         final image = MemoryImage(response.value);
         _providers.add(image);
+        // Conservative decoded-size estimate; resized variants are tracked too.
+        weight +=
+            response.value.length +
+            item.pixelWidth * item.pixelHeight * item.frames * 4;
         return image;
       } catch (_) {
-        _pending.remove(item.contentVersionId);
+        _pending.remove(item.path);
         rethrow;
+      } finally {
+        inFlight--;
       }
     })();
-    _pending[item.contentVersionId] = future;
+    _pending[item.path] = future;
     return future;
   }
 
-  PostImage image(PostMediaImage item, int index, int count) =>
-      PostImage.deferred(
-        pixelSize: Size(
-          item.pixelWidth.toDouble(),
-          item.pixelHeight.toDouble(),
-        ),
-        loadThumbnail: () => provider(item),
-        item: ViewerItem(
-          id: item.contentVersionId,
-          semanticLabel: '第${index + 1}张图片，共$count张',
-          saveAllowed: item.saveAllowed,
-          loadSource: () async {
-            final image = await provider(item);
-            check();
-            return ViewerSource(
-              provider: image,
-              pixelSize: Size(
-                item.pixelWidth.toDouble(),
-                item.pixelHeight.toDouble(),
-              ),
-            );
-          },
-          resolveOriginal: item.saveAllowed
-              ? () async {
-                  final response = await read(
-                    () => owner.posts.loadImageBytes(postId, item),
-                  );
-                  return ViewerOriginal.bytes(
-                    response.value,
-                    switch (item.mimeType) {
-                      'image/jpeg' => ViewerOriginalFormat.jpeg,
-                      'image/png' => ViewerOriginalFormat.png,
-                      'image/gif' => ViewerOriginalFormat.gif,
-                      'image/webp' => ViewerOriginalFormat.webp,
-                      _ => throw const PostFailure(
-                        kind: PostFailureKind.invalidResponse,
-                      ),
-                    },
-                  );
-                }
-              : null,
-        ),
-      );
+  PostImages acquire() {
+    check();
+    final access = ValueNotifier(true);
+    _consumers.add(access);
+    void held() {
+      check();
+      if (!access.value) {
+        throw const PostFailure(kind: PostFailureKind.unauthorized);
+      }
+    }
+
+    return PostImages(
+      postId: postId,
+      accessGranted: access,
+      onRelease: () {
+        if (!_consumers.remove(access)) return;
+        access.value = false;
+        owner._idle(this);
+      },
+      images: [
+        for (var i = 0; i < manifest.images.length; i++)
+          _image(manifest.images[i], i, manifest.images.length, held),
+      ],
+    );
+  }
+
+  PostImage _image(
+    PostMediaImage item,
+    int index,
+    int count,
+    VoidCallback held,
+  ) => PostImage.deferred(
+    pixelSize: Size(item.pixelWidth.toDouble(), item.pixelHeight.toDouble()),
+    animated: item.frames > 1,
+    registerDecodeProvider: (provider) {
+      held();
+      if (provider is ResizeImage &&
+          _decodeKeys.add((
+            provider.imageProvider,
+            provider.width,
+            provider.height,
+            provider.policy,
+          ))) {
+        _providers.add(provider);
+        weight +=
+            (provider.width ?? 640) *
+            (provider.height ?? 640) *
+            item.preview.frames *
+            4;
+      }
+    },
+    loadThumbnail: () async {
+      held();
+      final image = await provider(item.preview);
+      held();
+      return image;
+    },
+    item: ViewerItem(
+      id: item.contentVersionId,
+      semanticLabel: '第${index + 1}张图片，共$count张',
+      saveAllowed: item.saveAllowed,
+      loadSource: () async {
+        held();
+        final image = await provider(item);
+        held();
+        return ViewerSource(
+          provider: image,
+          pixelSize: Size(
+            item.pixelWidth.toDouble(),
+            item.pixelHeight.toDouble(),
+          ),
+        );
+      },
+      resolveOriginal: item.saveAllowed
+          ? () async {
+              held();
+              final response = await read(
+                () => owner.posts.loadImageBytes(postId, item),
+              );
+              held();
+              return ViewerOriginal.bytes(
+                response.value,
+                switch (item.mimeType) {
+                  'image/jpeg' => ViewerOriginalFormat.jpeg,
+                  'image/png' => ViewerOriginalFormat.png,
+                  'image/gif' => ViewerOriginalFormat.gif,
+                  'image/webp' => ViewerOriginalFormat.webp,
+                  _ => throw const PostFailure(
+                    kind: PostFailureKind.invalidResponse,
+                  ),
+                },
+              );
+            }
+          : null,
+    ),
+  );
 }

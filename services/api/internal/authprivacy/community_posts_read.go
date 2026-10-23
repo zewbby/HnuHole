@@ -33,6 +33,7 @@ type PostQuery struct {
 	Kind       PostReadKind
 	ID, Cursor string
 	Limit      int
+	ImageSizes bool
 }
 
 func readOwnPostTask(ctx context.Context, tx pgx.Tx, account uuid.UUID, id string, at time.Time, mute restriction) (posts.OwnTaskDetail, error) {
@@ -320,7 +321,33 @@ func (c *Community) listPublicPosts(ctx context.Context, tx pgx.Tx, account uuid
 			if e != nil {
 				return nil, e
 			}
-			feed.Items = append(feed.Items, posts.FeedPost{PublicPost: item, ViewCount: views})
+			projection := posts.FeedPost{PublicPost: item, ViewCount: views}
+			if query.ImageSizes && item.ImageCount > 0 {
+				images, err := tx.Query(ctx, `SELECT m.display_width,m.display_height FROM c_posts.images m
+                  JOIN c_posts.publication_tasks t USING(task_id) JOIN c_posts.posts p USING(post_id)
+                  WHERE p.post_id=$1 AND m.version=p.published_attempt_version AND m.erased_at IS NULL
+                    AND m.verified_at IS NOT NULL AND m.payload IS NOT NULL ORDER BY m.position`, id)
+				if err != nil {
+					return nil, err
+				}
+				for images.Next() {
+					var size posts.ImageSize
+					if err = images.Scan(&size.Width, &size.Height); err != nil {
+						images.Close()
+						return nil, err
+					}
+					projection.ImageSizes = append(projection.ImageSizes, size)
+				}
+				err = images.Err()
+				images.Close()
+				if err != nil {
+					return nil, err
+				}
+				if len(projection.ImageSizes) != item.ImageCount {
+					return nil, ErrAuthorizationUnavailable
+				}
+			}
+			feed.Items = append(feed.Items, projection)
 		}
 		page.Items = append(page.Items, card)
 		own.Items = append(own.Items, posts.OwnPostCard{Post: card, ServerSortAt: item.PublishedAt})

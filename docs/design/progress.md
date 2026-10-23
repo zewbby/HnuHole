@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-23 MOBILE-NAV-REFRESH-01（本地实现／未合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；用户已在真我确认切换无重影／闪首页，导航视觉验收PASS；帧性能未测，其余项目保留限定基础回归结论。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。
+
 > **2026-10-22 AUTH-SESSION-RESUME-01／[PR #48](https://github.com/zewbby/HnuHole/pull/48)已合入main `d450cde`：**修复开发重启误用recover而废止会话；同代次resume前置校验，冻结/独立锚不一致仍拒绝。真实隔离16项、vivo2143原会话跨后端重启/冷启、独立复核及最终七类CI通过，本机维护工具已加载，APK无需重装。未做整机长关机或生产验收；详见[任务](../branches/fix-session-restore.md)。下方未合并均为历史状态。
 
 > **2026-10-22 AUTH-SESSION-RESUME-01（fix/session-restore，未合并）：**本次失效已定位为开发环境误用recover推进授权代次、主动废止旧会话；新增普通resume和watch立即续证据，安全冻结仍拒绝，不复活失效令牌。工具实现/隔离与vivo验证状态见[任务](../branches/fix-session-restore.md)，App2143运行代码未改，未正式发布。
@@ -482,3 +484,7 @@ AUTH-UI-IMPLEMENT-01 合并回执：`c23620f` 与已检查 head 文件树相同�
 分析0、全量668、真实字体20项、375浅色／320深色1.6倍字与独立只读审查无阻断；涉及A06/A12/B01的UI增量，不升级整模块历史结果。真实邮件／设备／Passkey／iOS／生产 NOT_RUN。见[任务](../branches/feat-registration-wizard-ui.md)及[证据](validation/registration-wizard-20261021/verification.json)。最终远端head与合并状态以PR为准；合并后主体APK单独记录，不把设计图或宿主替身当作真实认证验收。
 
 AUTH-REGISTER-IMPLEMENT-03 合并回执：PR #42已合入main `09498b2`，与已检查head `e1d2b0a` 完整树一致；五项CI成功，668宿主、20真实字体页面测试、分析0及独立只读审查无阻断。见[回执](validation/registration-wizard-20261021/main-merge.json)。原实现段“以PR为准”现由本条确认；主线主体包沿用原签名交付，设备／真实邮件／Passkey／生产 NOT_RUN。
+
+## 2026-10-23 MOBILE-NAV-REFRESH-01 续验进度
+
+分支 `fix/mobile-navigation-refresh` 保持本地未提交／未合并。用户已确认2303真我切栏无重影；本轮真我实发GIF/WebP、原图页原生保存、相册文件字节同源且各4帧PASS。短时Profile2304帧样本中，切栏／列表／刷新build和raster P95均低于7ms，未见持续超16.67ms；少量单帧超预算已记录。Profile开发CA启动限制已修正为显式Profile测试开关，正式Release拒绝开发信任。ColorOS相册只显示首帧，原文件仍为完整动画；真实大图长列表和长期内存压力、远端CI、独立review及生产仍未验。见[任务详情](../branches/fix-mobile-navigation-refresh.md)与[结构化证据](validation/mobile-animation-frame-realme-20261023.json)。

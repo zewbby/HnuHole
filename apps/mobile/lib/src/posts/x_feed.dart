@@ -97,6 +97,7 @@ class HhXPostFeed extends StatelessWidget {
     required this.posts,
     required this.mediaBuilder,
     this.content,
+    this.showNavigation = true,
     this.avatarBuilder,
     this.accountAvatar,
     this.feedTitle,
@@ -114,6 +115,7 @@ class HhXPostFeed extends StatelessWidget {
     required this.onDestination,
   });
   final Widget? content;
+  final bool showNavigation;
   final String channelTitle;
   final List<FeedPostView> posts;
   final FeedMediaBuilder mediaBuilder;
@@ -360,10 +362,12 @@ class HhXPostFeed extends StatelessWidget {
           child: const CustomPaint(size: Size(28, 28), painter: _ComposePlus()),
         ),
       ),
-      bottomNavigationBar: HhAppNavigation(
-        selected: AppDestination.home,
-        onSelected: onDestination,
-      ),
+      bottomNavigationBar: showNavigation
+          ? HhAppNavigation(
+              selected: AppDestination.home,
+              onSelected: onDestination,
+            )
+          : null,
     );
   }
 }

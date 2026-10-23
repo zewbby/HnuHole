@@ -1,6 +1,7 @@
 const mediaPostId = '11111111-1111-4111-8111-111111111111';
 const mediaOtherId = '22222222-2222-4222-8222-222222222222';
 Map<String, Object?> mediaManifest({
+  String postId = mediaPostId,
   int count = 1,
   int bytes = 8,
   String mime = 'image/png',
@@ -10,7 +11,7 @@ Map<String, Object?> mediaManifest({
   DateTime? at,
   Duration lifetime = const Duration(seconds: 60),
 }) => {
-  'postId': mediaPostId,
+  'postId': postId,
   'accessValidUntil': (at ?? DateTime.utc(2026, 10, 8))
       .add(lifetime)
       .toIso8601String(),
@@ -32,7 +33,7 @@ Map<String, Object?> mediaManifest({
         for (final source in ['thumbnail', 'full', 'original'])
           source: {
             'path':
-                '/api/v1/posts/$mediaPostId/images/44444444-4444-4444-8444-${(i + 1).toString().padLeft(12, '0')}/original',
+                '/api/v1/posts/$postId/images/44444444-4444-4444-8444-${(i + 1).toString().padLeft(12, '0')}/original',
             'mimeType': mime,
             'byteLength': bytes,
           },

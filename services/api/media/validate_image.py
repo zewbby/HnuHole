@@ -1,4 +1,4 @@
-"""Bounded server-side inspection. Writes metadata only; never rewrites bytes.
+"""Bounded inspection and opt-in preview generation; originals stay unchanged.
 
 Run with a task-owned Python environment and Pillow from requirements.txt.
 Input is stdin, never a URL or user-supplied filesystem path. No temp image,
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     resource.setrlimit(resource.RLIMIT_FSIZE, (0, 0))
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
 
-from PIL import Image, ImageFile, features, __version__  # noqa: E402
+from PIL import Image, ImageFile, ImageOps, features, __version__  # noqa: E402
 
 MAX_BYTES = 10 * 1024 * 1024
 MAX_PIXELS = 12 * 1024 * 1024
@@ -98,11 +98,33 @@ def inspect(data):
             "maxFrameDurationMs": int(max_frame_duration) if frames > 1 else 0}
 
 
+def thumbnail(data):
+    """Bounded static preview; EXIF is applied and stripped. Originals stay exact."""
+    inspect(data)
+    with Image.open(io.BytesIO(data)) as original:
+        original.seek(0)
+        image = ImageOps.exif_transpose(original).convert("RGBA")
+        image.thumbnail((640, 640), Image.Resampling.LANCZOS)
+        out = io.BytesIO()
+        image.save(out, format="WEBP", quality=78, method=4)
+        result = out.getvalue()
+        if not 0 < len(result) <= 512 * 1024:
+            raise ValueError("preview budget")
+        return result
+
+
 def main():
     if __version__ != "12.3.0" or not features.check("webp"):
         return 3
     if sys.argv[1:] == ["--probe"]:
         print("postmedia-validator/v1")
+        return 0
+    if sys.argv[1:] == ["--thumbnail"]:
+        try:
+            result = thumbnail(sys.stdin.buffer.read(MAX_BYTES + 1))
+        except Exception:
+            return 2
+        sys.stdout.buffer.write(result)
         return 0
     if sys.argv[1:]:
         return 3

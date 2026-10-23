@@ -106,3 +106,49 @@ func (b *limitedOutput) Write(p []byte) (int, error) {
 	}
 	return b.Buffer.Write(p)
 }
+
+// Thumbnailer is optional so legacy validators can keep their original-only
+// contract. The HTTP manifest advertises previews only after explicit opt-in.
+type Thumbnailer interface {
+	Thumbnail(context.Context, []byte) ([]byte, error)
+}
+
+func (v *ProcessValidator) Thumbnail(ctx context.Context, data []byte) ([]byte, error) {
+	if len(data) < 1 || len(data) > MaxBytes {
+		return nil, ErrInvalid
+	}
+	select {
+	case v.slots <- struct{}{}:
+		defer func() { <-v.slots }()
+	case <-ctx.Done():
+		return nil, ErrUnavailable
+	}
+	source, e := os.ReadFile(v.script)
+	if e != nil || sha256.Sum256(source) != v.scriptHash {
+		return nil, ErrUnavailable
+	}
+	child, cancel := context.WithTimeout(ctx, 8*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(child, v.python, "-I", "-B", v.script, "--thumbnail")
+	cmd.Env = []string{"PATH=/usr/bin:/bin", "LANG=C.UTF-8"}
+	cmd.Stdin = bytes.NewReader(data)
+	var out thumbnailOutput
+	cmd.Stdout, cmd.Stderr = &out, io.Discard
+	if cmd.Run() != nil {
+		return nil, ErrUnavailable
+	}
+	b := out.Bytes()
+	if len(b) < 12 || string(b[:4]) != "RIFF" || string(b[8:12]) != "WEBP" {
+		return nil, ErrUnavailable
+	}
+	return b, nil
+}
+
+type thumbnailOutput struct{ bytes.Buffer }
+
+func (b *thumbnailOutput) Write(p []byte) (int, error) {
+	if b.Len()+len(p) > MaxThumbnailBytes {
+		return 0, ErrUnavailable
+	}
+	return b.Buffer.Write(p)
+}
