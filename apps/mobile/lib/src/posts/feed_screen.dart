@@ -62,6 +62,7 @@ class _FeedScreenState extends State<FeedScreen> {
   final _seenReplies = <String>{};
   CommentRuntime? _comments;
   bool _replyOpen = false;
+  bool _composeOpen = false;
   PostController get c => widget.controller;
   bool get current => mounted && c.available && c.authorityVersion == _epoch;
   List<FeedChannelView> get channels => [
@@ -228,6 +229,16 @@ class _FeedScreenState extends State<FeedScreen> {
     },
   );
   Future<void> _compose(BuildContext context) async {
+    if (!current || _composeOpen) return;
+    _composeOpen = true;
+    try {
+      await _openComposer(context);
+    } finally {
+      _composeOpen = false;
+    }
+  }
+
+  Future<void> _openComposer(BuildContext context) async {
     if (!current) return;
     var channel = widget.channels
         .where((p) => p.id == c.timelineChannelId)
@@ -306,6 +317,14 @@ class _FeedScreenState extends State<FeedScreen> {
             .firstOrNull;
         return HhXPostFeed(
           showNavigation: widget.showNavigation,
+          loading:
+              posts.isNotEmpty && (c.timelineLoading || c.preferencesSaving),
+          refreshEnabled:
+              !_starting && !c.timelineLoading && !c.preferencesSaving,
+          onRefresh: () async {
+            if (!current || c.timelineLoading || c.preferencesSaving) return;
+            await c.loadTimeline(channelId: c.timelineChannelId);
+          },
           channelTitle: widget.composeChannel.name,
           feedTitle: selectedChannel?.name ?? '推荐',
           composeTooltip: selectedChannel == null
@@ -341,201 +360,199 @@ class _FeedScreenState extends State<FeedScreen> {
           },
           content: Stack(
             children: [
-              RefreshIndicator(
-                onRefresh: () => c.loadTimeline(channelId: c.timelineChannelId),
-                child: ListView(
-                  controller: _scroll,
-                  key: const ValueKey('production-feed'),
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.only(bottom: 96),
-                  children: [
-                    if ((_starting || c.timelineLoading) && posts.isEmpty)
-                      const FeedLoadingPlaceholder(),
-                    if (!_starting && c.timelineError != null)
-                      Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          children: [
-                            Text(c.timelineError!),
-                            TextButton(
-                              onPressed: () => c.loadTimeline(
-                                channelId: c.timelineChannelId,
-                              ),
-                              child: const Text('重新加载'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (!_starting &&
-                        !c.timelineLoading &&
-                        !c.preferencesSaving &&
-                        c.timelineError == null &&
-                        posts.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 80,
-                          horizontal: 24,
-                        ),
-                        child: Column(
-                          children: [
-                            const Text('暂无可显示的帖子'),
-                            if (c.blockedChannelIds.isNotEmpty)
-                              TextButton(
-                                onPressed: () => _filter(context),
-                                child: const Text('调整屏蔽设置'),
-                              ),
-                          ],
-                        ),
-                      ),
-                    for (final post in posts) ...[
-                      HhXPostItem(
-                        key: ValueKey('post:${post.postId}'),
-                        post: FeedPostView(
-                          id: post.postId,
-                          authorId: '',
-                          authorName: post.author.displayName,
-                          elapsed:
-                              '${post.publishedAt.toLocal().month}月${post.publishedAt.toLocal().day}日',
-                          title: post.title,
-                          body: post.body,
-                          views: c.postViewCount(post.postId),
-                          comments: c
-                              .interaction(post.postId)
-                              .value
-                              ?.commentCount,
-                          likes: c.interaction(post.postId).likes,
-                          favorites: c
-                              .interaction(post.postId)
-                              .value
-                              ?.favoriteCount,
-                          liked: c.interaction(post.postId).liked,
-                          bookmarked: c.interaction(post.postId).favorited,
-                          availableActions: {
-                            FeedAction.comment,
-                            if (c.interaction(post.postId).canChange) ...{
-                              FeedAction.like,
-                              FeedAction.bookmark,
-                            },
-                          },
-                          busyActions: {
-                            if (c.interaction(post.postId).unresolved &&
-                                !c.interaction(post.postId).canChange)
-                              c.interaction(post.postId).pendingAction ==
-                                      PostInteractionAction.like
-                                  ? FeedAction.like
-                                  : FeedAction.bookmark,
-                          },
-                        ),
-                        avatarBuilder: (_, _) => DetailAvatar(
-                          name: post.author.displayName,
-                          avatar: post.author.avatar,
-                          radius: 20,
-                        ),
-                        mediaBuilder: (_, _) => const SizedBox.shrink(),
-                        mediaSection:
-                            post.imageCount > 0 && widget.loadImages != null
-                            ? PostImagesSection(
-                                key: ValueKey('feed-images:${post.postId}'),
-                                postId: post.postId,
-                                feedPreview: true,
-                                initialSizes:
-                                    post.imageSizes
-                                        ?.map(
-                                          (size) => Size(
-                                            size.width.toDouble(),
-                                            size.height.toDouble(),
-                                          ),
-                                        )
-                                        .toList() ??
-                                    List.filled(
-                                      post.imageCount,
-                                      const Size(1, 1),
-                                    ),
-                                expectedCount: post.imageCount,
-                                loadImages: widget.loadImages!,
-                                authority: c,
-                                isCurrent: () =>
-                                    current && !c.isPostDeleted(post.postId),
-                              )
-                            : null,
-                        onPost: () =>
-                            _open(context, post.postId, post.channelId),
-                        onAuthor: () =>
-                            unawaited(DmScope.contact(context, post.postId)),
-                        onMenu: () =>
-                            _open(context, post.postId, post.channelId),
-                        onAction: (action) {
-                          if (!current) return;
-                          switch (action) {
-                            case FeedAction.comment:
-                              unawaited(_reply(context, post));
-                            case FeedAction.like:
-                              unawaited(
-                                c.changeInteraction(
-                                  post.postId,
-                                  PostInteractionAction.like,
-                                ),
-                              );
-                            case FeedAction.bookmark:
-                              unawaited(
-                                c.changeInteraction(
-                                  post.postId,
-                                  PostInteractionAction.favorite,
-                                ),
-                              );
-                            case FeedAction.share:
-                              break;
-                          }
-                        },
-                        onMedia: (_) {},
-                      ),
-                      for (final notice in [
-                        (c.interaction(post.postId).writeError, true),
-                        (c.interaction(post.postId).readError, false),
-                      ])
-                        if (notice.$1 case final error?)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 64, right: 16),
-                            child: Row(
-                              children: [
-                                Expanded(child: Text(error)),
-                                TextButton(
-                                  key: ValueKey(
-                                    'interaction-${notice.$2 ? '' : 'read-'}retry:${post.postId}',
-                                  ),
-                                  onPressed: c.interaction(post.postId).sending
-                                      ? null
-                                      : () {
-                                          if (!current) return;
-                                          if (notice.$2) {
-                                            unawaited(
-                                              c.retryInteraction(post.postId),
-                                            );
-                                          } else {
-                                            unawaited(
-                                              c.loadInteractions([
-                                                post.postId,
-                                              ], single: true),
-                                            );
-                                          }
-                                        },
-                                  child: Text(notice.$2 ? '重试' : '重新读取'),
-                                ),
-                              ],
-                            ),
-                          ),
-                      const Divider(height: 1, thickness: .5),
-                    ],
-                    if (c.timelineCursor != null && !c.timelineLoading)
-                      TextButton(
-                        onPressed: () => c.loadTimeline(
-                          channelId: c.timelineChannelId,
-                          more: true,
-                        ),
-                        child: const Text('加载更多'),
-                      ),
-                  ],
+              ListView(
+                controller: _scroll,
+                key: const ValueKey('production-feed'),
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: ClampingScrollPhysics(),
                 ),
+                padding: EdgeInsets.only(
+                  bottom: 96 + MediaQuery.paddingOf(context).bottom,
+                ),
+                children: [
+                  if ((_starting || c.timelineLoading) && posts.isEmpty)
+                    const FeedLoadingPlaceholder(),
+                  if (!_starting && c.timelineError != null)
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        children: [
+                          Text(c.timelineError!),
+                          TextButton(
+                            onPressed: () =>
+                                c.loadTimeline(channelId: c.timelineChannelId),
+                            child: const Text('重新加载'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (!_starting &&
+                      !c.timelineLoading &&
+                      !c.preferencesSaving &&
+                      c.timelineError == null &&
+                      posts.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 80,
+                        horizontal: 24,
+                      ),
+                      child: Column(
+                        children: [
+                          const Text('暂无可显示的帖子'),
+                          if (c.blockedChannelIds.isNotEmpty)
+                            TextButton(
+                              onPressed: () => _filter(context),
+                              child: const Text('调整屏蔽设置'),
+                            ),
+                        ],
+                      ),
+                    ),
+                  for (final post in posts) ...[
+                    HhXPostItem(
+                      key: ValueKey('post:${post.postId}'),
+                      post: FeedPostView(
+                        id: post.postId,
+                        authorId: '',
+                        authorName: post.author.displayName,
+                        elapsed:
+                            '${post.publishedAt.toLocal().month}月${post.publishedAt.toLocal().day}日',
+                        title: post.title,
+                        body: post.body,
+                        views: c.postViewCount(post.postId),
+                        comments: c
+                            .interaction(post.postId)
+                            .value
+                            ?.commentCount,
+                        likes: c.interaction(post.postId).likes,
+                        favorites: c
+                            .interaction(post.postId)
+                            .value
+                            ?.favoriteCount,
+                        liked: c.interaction(post.postId).liked,
+                        bookmarked: c.interaction(post.postId).favorited,
+                        availableActions: {
+                          FeedAction.comment,
+                          if (c.interaction(post.postId).canChange) ...{
+                            FeedAction.like,
+                            FeedAction.bookmark,
+                          },
+                        },
+                        busyActions: {
+                          if (c.interaction(post.postId).unresolved &&
+                              !c.interaction(post.postId).canChange)
+                            c.interaction(post.postId).pendingAction ==
+                                    PostInteractionAction.like
+                                ? FeedAction.like
+                                : FeedAction.bookmark,
+                        },
+                      ),
+                      avatarBuilder: (_, _) => DetailAvatar(
+                        name: post.author.displayName,
+                        avatar: post.author.avatar,
+                        radius: 20,
+                      ),
+                      mediaBuilder: (_, _) => const SizedBox.shrink(),
+                      mediaSection:
+                          post.imageCount > 0 && widget.loadImages != null
+                          ? PostImagesSection(
+                              key: ValueKey('feed-images:${post.postId}'),
+                              postId: post.postId,
+                              feedPreview: true,
+                              initialSizes:
+                                  post.imageSizes
+                                      ?.map(
+                                        (size) => Size(
+                                          size.width.toDouble(),
+                                          size.height.toDouble(),
+                                        ),
+                                      )
+                                      .toList() ??
+                                  List.filled(
+                                    post.imageCount,
+                                    const Size(1, 1),
+                                  ),
+                              expectedCount: post.imageCount,
+                              loadImages: widget.loadImages!,
+                              authority: c,
+                              isCurrent: () =>
+                                  current && !c.isPostDeleted(post.postId),
+                            )
+                          : null,
+                      onPost: () => _open(context, post.postId, post.channelId),
+                      onAuthor: () =>
+                          unawaited(DmScope.contact(context, post.postId)),
+                      onMenu: () => _open(context, post.postId, post.channelId),
+                      onAction: (action) {
+                        if (!current) return;
+                        switch (action) {
+                          case FeedAction.comment:
+                            unawaited(_reply(context, post));
+                          case FeedAction.like:
+                            unawaited(
+                              c.changeInteraction(
+                                post.postId,
+                                PostInteractionAction.like,
+                              ),
+                            );
+                          case FeedAction.bookmark:
+                            unawaited(
+                              c.changeInteraction(
+                                post.postId,
+                                PostInteractionAction.favorite,
+                              ),
+                            );
+                          case FeedAction.share:
+                            break;
+                        }
+                      },
+                      onMedia: (_) {},
+                    ),
+                    for (final notice in [
+                      (c.interaction(post.postId).writeError, true),
+                      (c.interaction(post.postId).readError, false),
+                    ])
+                      if (notice.$1 case final error?)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 64, right: 16),
+                          child: Row(
+                            children: [
+                              Expanded(child: Text(error)),
+                              TextButton(
+                                key: ValueKey(
+                                  'interaction-${notice.$2 ? '' : 'read-'}retry:${post.postId}',
+                                ),
+                                onPressed: c.interaction(post.postId).sending
+                                    ? null
+                                    : () {
+                                        if (!current) return;
+                                        if (notice.$2) {
+                                          unawaited(
+                                            c.retryInteraction(post.postId),
+                                          );
+                                        } else {
+                                          unawaited(
+                                            c.loadInteractions([
+                                              post.postId,
+                                            ], single: true),
+                                          );
+                                        }
+                                      },
+                                child: Text(notice.$2 ? '重试' : '重新读取'),
+                              ),
+                            ],
+                          ),
+                        ),
+                    const Divider(height: 1, thickness: .5),
+                  ],
+                  if (c.timelineCursor != null && !c.timelineLoading)
+                    TextButton(
+                      onPressed: () => c.loadTimeline(
+                        channelId: c.timelineChannelId,
+                        more: true,
+                      ),
+                      child: const Text('加载更多'),
+                    ),
+                ],
               ),
               if (_published)
                 Positioned(
@@ -577,6 +594,8 @@ class FeedStartupScreen extends StatelessWidget {
           child: Scaffold(
             key: const ValueKey('startup-feed'),
             bottomNavigationBar: HhAppNavigation(
+              composeSlot: true,
+              onCompose: () {},
               selected: AppDestination.home,
               onSelected: (_) {},
             ),

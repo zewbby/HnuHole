@@ -61,6 +61,8 @@ void main() {
   testWidgets(
     'restoration shell keeps home geometry while directory is pending',
     (tester) async {
+      tester.view.padding = const FakeViewPadding(top: 24, bottom: 34);
+      addTearDown(tester.view.resetPadding);
       final f = HomeTestFixture();
       f.channels.wait = Completer<ChannelDirectoryResult>();
       await tester.pumpWidget(await f.create());
@@ -69,7 +71,9 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byType(FeedScreen), findsNothing);
       expect(f.postApi.calls, isEmpty);
-      final header = tester.getTopLeft(find.text('HnuHole'));
+      final header = tester.getTopLeft(
+        find.byKey(const ValueKey('feed-account')),
+      );
       final navigation = tester.getTopLeft(
         find.byKey(const ValueKey('destination:home')),
       );
@@ -82,7 +86,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       expectHome(tester, f);
-      expect(tester.getTopLeft(find.text('HnuHole')), header);
+      expect(
+        tester.getTopLeft(find.byKey(const ValueKey('feed-account'))),
+        header,
+      );
       expect(
         tester.getTopLeft(find.byKey(const ValueKey('destination:home'))),
         navigation,

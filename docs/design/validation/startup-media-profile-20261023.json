@@ -8,7 +8,7 @@
     "apps/mobile/android/app/src/main/res/values/startup_colors.xml": "3c76e03ea0ef945ff1c74cb0435e9362f76b1109a0fe720c176c34b18d8df7e2",
     "apps/mobile/lib/src/posts/post_media_repository.dart": "6c8682f061e6d6ee18c5f6dfa516e04cf528ecd891d008f85d7e4455eac66a2d",
     "apps/mobile/test/post_controller_test.dart": "951f89611d88627ffa8848b19598ebc2e2d52b493383c5a8d614f809d3a694e3",
-    "apps/mobile/test/login_home_navigation_test.dart": "2a96a237772af2c3539a3079e920b7c2d959c7cc8cfb8685edc0f85b33077714",
+    "apps/mobile/test/login_home_navigation_test.dart": "4544ad9cd7d4f525bcd7e35b363d0326e92b13068b7140099d9b6283a86e43ed",
     "apps/mobile/test/personal_route_account_test.dart": "a22abc68df22312d8d65c1d0f91cdaa3dea5a7084bff57628d7dee1e3dcc0e7a",
     "apps/mobile/android/app/src/main/res/values-night-v31/styles.xml": "aa02261ae0027ff2e8847e8ddaaae89aaf98a6509cec3541ff04e86772f79a12",
     "apps/mobile/android/app/src/main/res/drawable/startup_logo_system.xml": "d42322c7e467e9c60e7facd9b7cf50b8b6dba612d9eed2ab07d9937e8ebf123e",
@@ -16,13 +16,13 @@
     "apps/mobile/lib/src/posts/post_images.dart": "907136b93aa3abfcd95c511bb0f30adc74ad7adbed4445b478908d440084558c",
     "apps/mobile/test/post_media_repository_test.dart": "c31e8d1b9c06767fd5d8e89272b5cddc424ea26f23358fee9613965f1122f495",
     "apps/mobile/lib/src/posts/post_controller.dart": "2bd16c60f30078975b74e12e7ab367105f0eb177fefbe51353847298ffb33365",
-    "apps/mobile/test/startup_entry_test.dart": "519ed992bc195908f5817b9e1f364fbed3b63cfd4a0824adc9b6791f472f0f57",
+    "apps/mobile/test/startup_entry_test.dart": "73fe04c7d1eeee9606901c82e3cb54f33582b83005efb0fe0f9818507c08ecc7",
     "apps/mobile/android/app/src/main/res/drawable/startup_logo.xml": "a430de013be114250aba7004df9068cc2485bac3bb43737d06a079a25383391f",
     "apps/mobile/lib/src/navigation/entry_screen.dart": "86e7f27c132dd8bcd5381a262b7cb17c5695d29f23d7807d0ee5c5b352d19c30",
     "apps/mobile/android/app/src/main/res/values-v31/styles.xml": "c0c4bdd969a0b6bd4014bbc7fe82f0cc285f97cd6d426340a2b1f65d675f9550",
     "apps/mobile/android/app/src/main/res/drawable-v21/launch_background.xml": "4c5ceb220c020f29a2f7955e44c66addb74c11b688898f3df276cfaa9b83b173",
     "apps/mobile/test/post_screens_test.dart": "a75af1edf8c528f82251ed7bffdf972a34cf29baa788ff10b8b54821feb0a995",
-    "apps/mobile/lib/src/posts/feed_screen.dart": "30dc9d0ce5ff4486d0018f393f5acb88299c1e636bb5b75aad37eb7e3ea37a95",
+    "apps/mobile/lib/src/posts/feed_screen.dart": "3f76b4a2bcd81ed3f690d001de82e7e095464308686186f9292c30fbfca76709",
     "apps/mobile/android/app/src/main/res/drawable/launch_background.xml": "4c5ceb220c020f29a2f7955e44c66addb74c11b688898f3df276cfaa9b83b173",
     "apps/mobile/lib/src/posts/post_screens.dart": "13e81b7fd7610038aae2b895a81eaad94fffd422a414d0be2c953d5f6c4d8f6f",
     "apps/mobile/test/feed_media_test.dart": "19f49118768b68eca8b1915f07d13d0e3f696afb288124a4c4546f495d22ce33"
@@ -103,7 +103,7 @@
     "nativeColdStartTiming": "DEBUG_AM_START_TOTAL_3576_MS_NOT_A_RELEASE_BENCHMARK",
     "liveImageRequestTracing": "NOT_RUN",
     "ios": "NOT_RUN",
-    "independentReview": "PASS_AGENT_MERGE_REVIEW_84d21d4_NOT_GITHUB_MEMBER_APPROVAL",
+    "independentReview": "PASS_TWO_AGENT_REVIEWS_INCLUDING_FINAL_FEED_INTEGRATION_NOT_MEMBER_APPROVAL",
     "remoteCI": "IN_PROGRESS_PR66_EXACT_HEAD"
   },
   "committed": true,
@@ -112,5 +112,19 @@
   "released": false,
   "pullRequest": "https://github.com/zewbby/HnuHole/pull/66",
   "integratedMain": "c5475aad1741905973552f6edfceee1d827041b7",
-  "reviewedApplicationHead": "84d21d4e291a802caa512ab44ec3d0493b19c69e"
+  "reviewedApplicationHead": "84d21d4e291a802caa512ab44ec3d0493b19c69e",
+  "secondIntegration": {
+    "main": "c3bfef6b4adb65efbed8a0d0aacf15cd0863eb3b",
+    "hostTests": {
+      "passed": 852,
+      "skipped": 3,
+      "concurrency": 2,
+      "status": "PASS"
+    },
+    "analysis": "PASS_ZERO",
+    "focused": 23,
+    "review": "PASS_INTEGRATION_FINAL_REVIEW_NO_PRODUCT_BLOCKERS_NOT_MEMBER_APPROVAL",
+    "scope": "preserve immersive reading and smile refresh; static initial skeleton; five-slot startup navigation; nonzero safe inset geometry",
+    "remoteCI": "PENDING_FINAL_INTEGRATION_HEAD"
+  }
 }

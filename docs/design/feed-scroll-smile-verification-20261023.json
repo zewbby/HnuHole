@@ -1,0 +1,271 @@
+{
+  "task": "FEED-SCROLL-SMILE-01",
+  "updated": "2026-10-23 Asia/Shanghai",
+  "branch": "codex/feat/feed-scroll-smile-refresh",
+  "base": "45e3948eb47db16f90968a1082c4ae32360a8465",
+  "sourceState": "MERGED_SOURCE_INPUTS_IDENTICAL_TO_TESTED_SHA256",
+  "modules": [
+    "B03",
+    "B06",
+    "B10"
+  ],
+  "implementation": "MERGED_MAIN_PR65",
+  "merged": true,
+  "installed": false,
+  "released": false,
+  "requirements": [
+    "direction-linked bottom navigation and compose handoff",
+    "header and recommendation/channel/filter collapse for immersive reading",
+    "compact :) in original Roboto bold/theme style",
+    "pull/stretch/rebound and logo loading with retained timeline"
+  ],
+  "sourceSha256": {
+    "apps/mobile/lib/src/navigation/app_navigation.dart": "ceeed10999a5aa7da01d43786668efa9422a948016aed2681e17bbb8ef2a1c82",
+    "apps/mobile/lib/src/navigation/primary_tabs.dart": "b7db7f50a97960a1c6522df211de4660b8c3d135a1ce2c076d6db28b3b45dc99",
+    "apps/mobile/lib/src/navigation/feed_chrome.dart": "aff5aa649261ce6e61a0fa19454646db9b456f8cdf5290f6d8930db00a3d2e8a",
+    "apps/mobile/lib/src/posts/feed_refresh.dart": "6175d5783758fba6f5b3e20b5dcb1fb5b7453222135ce480ace0673c0199288e",
+    "apps/mobile/lib/src/posts/feed_screen.dart": "911dea83799b19602128337a8f3ca1573b90971af7af1c72ed2ec0d6395763ad",
+    "apps/mobile/lib/src/posts/x_feed.dart": "430e8d80a7ed9cb660b94bd5c6a4fc2bd8de1096e92299cd5591e303d503ff24",
+    "apps/mobile/test/feed_scroll_refresh_test.dart": "bc2bb407a7ce79336ea54c6509a53a0bbc7195423aa7adbb1735ee99548f0e1c",
+    ".github/workflows/feed-ui.yml": "03184e2dfacf35c97a9ec3afb51ea3679c169251d0db240fc5a943af5e70001f"
+  },
+  "checks": [
+    {
+      "command": "flutter pub get --offline --enforce-lockfile",
+      "environment": {
+        "PUB_HOSTED_URL": "https://pub.dev"
+      },
+      "status": "PASS",
+      "lockfileChanged": false
+    },
+    {
+      "command": "flutter analyze --no-pub",
+      "status": "PASS",
+      "issues": 0,
+      "log": "E:\\Hnuhole-env\\post-button-review-20261023\\analysis-final.log"
+    },
+    {
+      "command": "flutter test --no-pub test/feed_scroll_refresh_test.dart test/app_navigation_test.dart --reporter expanded",
+      "status": "PASS",
+      "passed": 12,
+      "log": "E:\\Hnuhole-env\\post-button-review-20261023\\review-regressions.log"
+    },
+    {
+      "command": "flutter test --no-pub test --concurrency 2 --reporter expanded",
+      "status": "PASS",
+      "passed": 844,
+      "skipped": 3,
+      "skipReasons": [
+        "owned real TLS/PostgreSQL P2 fixture not configured",
+        "owned real TLS/PostgreSQL P3 fixture not configured",
+        "DM_HOST_FIXTURE not configured"
+      ],
+      "log": "E:\\Hnuhole-env\\post-button-review-20261023\\all-tests-final.log"
+    },
+    {
+      "command": "flutter build apk --debug --no-pub --target-platform android-arm64 --build-name 0.1.0-feed-scroll-smile --build-number 2026102316",
+      "status": "PASS",
+      "log": "E:\\Hnuhole-env\\post-button-review-20261023\\android-build-final.log"
+    },
+    {
+      "command": "apksigner verify --print-certs <apk> / aapt2 dump badging <apk> / zip required entries",
+      "status": "PASS",
+      "requiredEntries": [
+        "lib/arm64-v8a/libflutter.so",
+        "assets/flutter_assets/kernel_blob.bin"
+      ]
+    }
+  ],
+  "initialFailure": {
+    "status": "FAIL_REPROCESSED",
+    "log": "E:\\Hnuhole-env\\post-button-review-20261023\\all-tests.log",
+    "detail": "Default-concurrency full suite: 839 PASS / 3 SKIP / 1 FAIL. Existing post_composer_photos_test.dart:75 exceeded fixed 150 x 10ms media import wait under concurrent load. Unchanged file passed isolated rerun; final concurrency-2 full suite passes all 844 runnable cases. No composer/photo business changes.",
+    "isolatedLog": "E:\\Hnuhole-env\\post-button-review-20261023\\composer-retry.log"
+  },
+  "review": {
+    "status": "PASS_NO_REMAINING_IMPORTANT_FINDINGS",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "xhigh",
+    "scope": "Read-only review of UI integration and subsequent fixes; not GitHub member approval",
+    "fixedFindings": [
+      "peer-tab safe inset double consumption",
+      "root snackbar navigation overlap",
+      "nested Scaffold keyboard inset double consumption"
+    ],
+    "newGeometryAssertions": "PASS"
+  },
+  "visualQA": {
+    "status": "PASS_HOST_RENDER_ONLY",
+    "realFonts": [
+      "Roboto",
+      "HhNotoSansSC",
+      "MaterialIcons"
+    ],
+    "states": [
+      "light-expanded",
+      "light-immersive",
+      "light-pull",
+      "light-loading",
+      "dark-large-text"
+    ],
+    "directory": "apps/mobile/build/feed-scroll-refresh-render",
+    "preview": "E:\\Hnuhole-env\\post-button-review-20261023\\implemented-preview.jpg"
+  },
+  "artifact": {
+    "path": "E:\\Hnuhole-env\\deliveries\\feed-scroll-smile-20261023\\hnuhole-feed-scroll-smile-2026102316-debug.apk",
+    "sha256": "2ad762e508cd8492f89ab87fafaedf64adac07d38c827c9dfee3b3b403c79e08",
+    "package": "org.hnuhole.hnuhole_mobile",
+    "versionCode": 2026102316,
+    "versionName": "0.1.0-feed-scroll-smile",
+    "signing": "LOCAL_ANDROID_DEBUG_NOT_DAILY_PRERELEASE_KEY",
+    "signerCertificateSha256": "1538fb309499d651d7d12d7711a646c4a80fde4b1397857a9e39ce672b3dc9ae",
+    "installed": false
+  },
+  "nativeDeviceAcceptance": "NOT_RUN",
+  "nativeTalkBack": "NOT_RUN",
+  "deviceFramePerformance": "NOT_RUN",
+  "remoteCI": {
+    "head": "fad2a5cf73ea6b908c89ab134ca21d6ad285b40d",
+    "pr": 65,
+    "status": "PASS",
+    "workflowCount": 8,
+    "jobCount": 15,
+    "jobs": [
+      {
+        "runId": 39944026766,
+        "workflow": "Identity avatars and initial entry",
+        "jobId": 120382147543,
+        "name": "avatar-postgres-https",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026766/job/120382147543"
+      },
+      {
+        "runId": 39944026766,
+        "workflow": "Identity avatars and initial entry",
+        "jobId": 120382147750,
+        "name": "avatar-flutter",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026766/job/120382147750"
+      },
+      {
+        "runId": 39944026771,
+        "workflow": "Post images",
+        "jobId": 120382147273,
+        "name": "go-postgres",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026771/job/120382147273"
+      },
+      {
+        "runId": 39944026771,
+        "workflow": "Post images",
+        "jobId": 120382147582,
+        "name": "go-host",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026771/job/120382147582"
+      },
+      {
+        "runId": 39944026771,
+        "workflow": "Post images",
+        "jobId": 120382148611,
+        "name": "flutter",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026771/job/120382148611"
+      },
+      {
+        "runId": 39944026768,
+        "workflow": "Android prerelease",
+        "jobId": 120382147447,
+        "name": "scope",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026768/job/120382147447"
+      },
+      {
+        "runId": 39944026768,
+        "workflow": "Android prerelease",
+        "jobId": 120382235586,
+        "name": "rehearsal",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026768/job/120382235586"
+      },
+      {
+        "runId": 39944026768,
+        "workflow": "Android prerelease",
+        "jobId": 120382235650,
+        "name": "candidate",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026768/job/120382235650"
+      },
+      {
+        "runId": 39944026775,
+        "workflow": "Direct message chat",
+        "jobId": 120382147444,
+        "name": "flutter-and-android",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026775/job/120382147444"
+      },
+      {
+        "runId": 39944026775,
+        "workflow": "Direct message chat",
+        "jobId": 120382147631,
+        "name": "reliable-chat-sql",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026775/job/120382147631"
+      },
+      {
+        "runId": 39944026519,
+        "workflow": "Auth feedback",
+        "jobId": 120382146924,
+        "name": "flutter-auth-regression",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026519/job/120382146924"
+      },
+      {
+        "runId": 39944026575,
+        "workflow": "Collaboration",
+        "jobId": 120382146982,
+        "name": "policy",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026575/job/120382146982"
+      },
+      {
+        "runId": 39944026572,
+        "workflow": "Feed UI",
+        "jobId": 120382147047,
+        "name": "flutter-and-real-feed",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026572/job/120382147047"
+      },
+      {
+        "runId": 39944026573,
+        "workflow": "Report moderation",
+        "jobId": 120382146935,
+        "name": "moderation-postgres",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026573/job/120382146935"
+      },
+      {
+        "runId": 39944026573,
+        "workflow": "Report moderation",
+        "jobId": 120382147136,
+        "name": "admin",
+        "conclusion": "success",
+        "url": "https://github.com/zewbby/HnuHole/actions/runs/39944026573/job/120382147136"
+      }
+    ]
+  },
+  "backendSQL": "NOT_RUN_NO_BACKEND_OR_CONTRACT_CHANGE",
+  "iOS": "NOT_RUN",
+  "production": "NOT_RELEASED",
+  "historicalModuleVerdictsUnchanged": true,
+  "nextAcceptance": [
+    "On owned matching development environment install a correctly signed candidate after explicit device authorization",
+    "Verify scroll reversal, top/bottom chrome handoff, pure reading, overscroll and :) loading on device",
+    "Verify short/long pull, offline failure/retry, media playback, IME and system gesture insets; sample frames if required"
+  ],
+  "userAuthorization": "User explicitly requested commit and merge on 2026-10-23",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/65",
+  "mergeCommit": "df484b12a3b16783ea4588cbacf51a52476fdf0c",
+  "testedHead": "fad2a5cf73ea6b908c89ab134ca21d6ad285b40d",
+  "integratedMain": "c5475aad1741905973552f6edfceee1d827041b7",
+  "mergeReceipt": "2026-10-23 user-authorized squash merge; installed/released remain false"
+}

@@ -1,5 +1,7 @@
 # main
 
+2026-10-23：[沉浸阅读与颜文字刷新 PR #65](https://github.com/zewbby/HnuHole/pull/65) 已Squash合入 `df484b1`；精确head `fad2a5c` 的8组工作流15项检查全PASS，宿主844 PASS／3 SKIP、分析0、Android构建及Sol xhigh复核通过。未安装或发布，设备视觉／原生TalkBack／帧性能和iOS未验。见[任务与证据](feat-feed-scroll-smile-refresh.md)。
+
 2026-10-23：[身份头像 PR #63](https://github.com/zewbby/HnuHole/pull/63) 已合入 `45e3948`；精确送审 head 22 项 CI 全 PASS，开发 C25／V6 ready，真我日常2315同签保数据覆盖与既有会话私信入口限定通过，未生产发布。原生7项及未验边界按原版本保留，见[任务与交付回执](identity-avatar-onboarding.md)。
 
 2026-10-23：[移动端 PR #57](https://github.com/zewbby/HnuHole/pull/57) Squash合入 `1686a063328bb919ee8a38b51e0ae70f4d6536e2`；最终head `f1e85fc` 的20项适用CI全PASS、独立只读审查无阻断。五项修正及动图原生保存／短时帧性能在真我限定验收，开发C已更新、真我保数据恢复日常2303；真实大图长列表／长时内存、iOS、生产发布未验。见[任务与证据](fix-mobile-navigation-refresh.md)。下方旧时点状态保留历史。

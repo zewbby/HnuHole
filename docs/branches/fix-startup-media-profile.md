@@ -48,3 +48,7 @@
 ## PR #66 送审回执
 
 用户已授权合并。基于main c5475aa，已提交推送并创建[PR #66](https://github.com/zewbby/HnuHole/pull/66)。整合后源码84d21d4：Flutter全量842 PASS／3 SKIP（沿既有外部fixture缺失），分析0；独立agent审查无产品阻断，修复遗留startup测试key；不冒充GitHub成员批准。2319手机证据保留整合前范围，上游头像主线证据独立保留；产品CI结果与实际合并以PR回执为准。下方最新状态覆盖前述本地未提交快照；未发布。
+
+## PR65主线整合与最终送审
+
+首轮PR66最终head2592ea0的16项CI全部PASS（Android SQLite下载连接重置后单项重跑通过），合并时因新主线PR65/67冲突而重新整合main c3bfef6。保留沉浸阅读、颜文字下拉刷新和头像；首次空列表为静态骨架，已加载列表刷新沿主线颜文字反馈。启动壳采用五等分底栏与发布占位，非零安全区域下标题入口／底栏坐标保持。定点23 PASS，最终全量852 PASS／3外部fixture SKIP（concurrency2），分析0；初次Windows临时SQL文件占用两项失败已定点2 PASS后重跑全量通过。独立integration_final_review对最终整合源码只读复审无产品阻断，非GitHub成员批准。最新CI按整合后head重新核对，待Squash合并，未发布；手机2319仍为整合前证据。

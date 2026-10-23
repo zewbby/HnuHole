@@ -25,13 +25,18 @@ void main() {
       await tester.pump();
       expect(find.byKey(const ValueKey('startup-feed')), findsOneWidget);
       expect(find.byKey(const ValueKey('auth-start')), findsNothing);
-      expect(find.text('HnuHole'), findsOneWidget);
+      expect(find.byKey(const ValueKey('feed-account')), findsOneWidget);
       expect(find.text('推荐'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byType(LinearProgressIndicator), findsNothing);
-      final header = tester.getTopLeft(find.text('HnuHole'));
+      final header = tester.getTopLeft(
+        find.byKey(const ValueKey('feed-account')),
+      );
       await tester.pump(const Duration(seconds: 10));
-      expect(tester.getTopLeft(find.text('HnuHole')), header);
+      expect(
+        tester.getTopLeft(find.byKey(const ValueKey('feed-account'))),
+        header,
+      );
       expect(tester.binding.transientCallbackCount, 0);
       await tester.tap(
         find.byKey(const ValueKey('destination:personal')),
