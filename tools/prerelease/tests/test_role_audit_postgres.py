@@ -70,6 +70,50 @@ class PrereleaseRoleAuditPostgresTest(unittest.TestCase):
                     self.lab.grants('c')
                 self.lab.audit()
 
+    def test_repost_grants_pass_and_extra_permissions_fail(self):
+        self.lab.audit()
+        for table in ('post_reposts', 'post_repost_versions'):
+            for privilege in ('SELECT', 'INSERT', 'DELETE'):
+                self.assertEqual(self.lab.sql('c', "SELECT has_table_privilege('hnuhole_c_runtime',"
+                                              "'c_posts." + table + "','" + privilege + "')"), 't')
+        self.assertEqual(self.lab.sql('c', "SELECT has_column_privilege('hnuhole_c_runtime',"
+                                      "'c_posts.post_repost_versions','version','UPDATE')"), 't')
+        self.assertEqual(self.lab.sql('c', "SELECT has_sequence_privilege('hnuhole_c_runtime',"
+                                      "'c_posts.post_reposts_ordinal_seq','USAGE')"), 't')
+        for role, privilege, relation, error in [
+            ('hnuhole_c_runtime', 'UPDATE', 'post_repost_versions', 'table'),
+            ('hnuhole_c_runtime', 'UPDATE(account_id)', 'post_repost_versions', 'table'),
+            ('hnuhole_c_runtime', 'UPDATE(post_id)', 'post_repost_versions', 'table'),
+            ('hnuhole_c_runtime', 'UPDATE', 'post_reposts', 'table'),
+            ('hnuhole_c_runtime', 'UPDATE(identity_id)', 'post_reposts', 'table'),
+            ('hnuhole_c_runtime', 'TRUNCATE', 'post_reposts', 'table'),
+            ('hnuhole_c_runtime', 'TRUNCATE', 'post_repost_versions', 'table'),
+            ('hnuhole_c_runtime', 'REFERENCES(post_id)', 'post_reposts', 'table'),
+            ('hnuhole_c_runtime', 'TRIGGER', 'post_reposts', 'table'),
+            ('hnuhole_c_recovery', 'SELECT', 'post_reposts', 'table'),
+            ('hnuhole_c_recovery', 'SELECT', 'post_repost_versions', 'table'),
+            ('hnuhole_business', 'SELECT', 'post_reposts', 'table'),
+            ('hnuhole_business', 'SELECT', 'post_repost_versions', 'table'),
+            ('hnuhole_c_runtime', 'SELECT', 'SEQUENCE post_reposts_ordinal_seq', 'sequence'),
+            ('hnuhole_c_runtime', 'UPDATE', 'SEQUENCE post_reposts_ordinal_seq', 'sequence'),
+            ('hnuhole_c_recovery', 'USAGE', 'SEQUENCE post_reposts_ordinal_seq', 'sequence'),
+            ('hnuhole_business', 'USAGE', 'SEQUENCE post_reposts_ordinal_seq', 'sequence'),
+        ]:
+            with self.subTest(role=role, privilege=privilege, relation=relation):
+                target = ('SEQUENCE c_posts.' + relation.removeprefix('SEQUENCE ')
+                          if relation.startswith('SEQUENCE ') else 'c_posts.' + relation)
+                self.lab.sql('c', 'GRANT ' + privilege + ' ON ' + target + ' TO ' + role)
+                try:
+                    with self.assertRaisesRegex(RuntimeError, 'owned SQL operation failed'):
+                        self.lab.audit()
+                    self.assertIn('operational role acquired noncontract ' + error + ' privilege',
+                                  (self.lab.root / 'sql-error.private.log').read_text())
+                finally:
+                    self.lab.sql('c', 'REVOKE ' + privilege + ' ON ' + target + ' FROM ' + role)
+                    # REVOKE UPDATE also removes the legitimate version grant.
+                    self.lab.grants('c')
+                self.lab.audit()
+
     def test_restore_rebuilds_private_identity_avatar_function_acls(self):
         public_execute = """SELECT count(*) FROM pg_proc p
             JOIN pg_namespace n ON n.oid=p.pronamespace,

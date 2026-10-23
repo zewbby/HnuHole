@@ -85,8 +85,10 @@ BEGIN
               'publication_attempts','attempt_contents','command_receipts','payload_cleanup'));
             allowed := allowed OR (relation.relname IN ('post_view_totals','post_daily_views','feed_preferences') AND privilege IN ('SELECT','INSERT'))
               OR (relation.relname IN ('post_daily_views','feed_preferences') AND privilege='DELETE')
-              OR (relation.relname IN ('post_likes','post_favorites','post_interaction_versions') AND privilege IN ('SELECT','INSERT','DELETE'));
-            IF relation.relname='post_interaction_versions' AND privilege='UPDATE' THEN
+              OR (relation.relname IN ('post_likes','post_favorites','post_interaction_versions','post_reposts','post_repost_versions') AND privilege IN ('SELECT','INSERT','DELETE'));
+            -- 0026 private repost archives retain only their account/post
+            -- fence's version update; archive rows remain immutable.
+            IF relation.relname IN ('post_interaction_versions','post_repost_versions') AND privilege='UPDATE' THEN
               allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
                 AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid AND a.attnum>0 AND NOT a.attisdropped AND a.attname<>'version' AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
             END IF;
@@ -165,7 +167,7 @@ BEGIN
         allowed := privilege='USAGE' AND relation.nspname=own_schema AND
           (audit_role=runtime_role OR (audit_role=recovery_role AND relation.relname='authorization_gate_audit_event_id_seq'));
         allowed := allowed OR (party='c' AND audit_role=runtime_role AND privilege='USAGE'
-          AND relation.nspname='c_posts' AND relation.relname IN ('publication_ordinal_seq','acceptance_ordinal_seq'));
+          AND relation.nspname='c_posts' AND relation.relname IN ('publication_ordinal_seq','acceptance_ordinal_seq','post_reposts_ordinal_seq'));
         IF has_sequence_privilege(audit_role,relation.oid,privilege) AND NOT allowed THEN RAISE EXCEPTION 'operational role acquired noncontract sequence privilege'; END IF;
       END LOOP;
     END LOOP;
