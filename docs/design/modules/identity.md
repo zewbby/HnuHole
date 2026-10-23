@@ -1,6 +1,6 @@
 # 预设身份与匿名边界
 
-> IDENTITY-AVATAR-01：本次头像上传与首次入口已在 `feat/identity-avatar-onboarding` 实现，未合并／发布；[任务与版本证据](../../branches/identity-avatar-onboarding.md)区分宿主／隔离 SQL 与真我原生限定通过的版本及范围，不提升历史整模块结论。
+> IDENTITY-AVATAR-01：本次头像上传与首次入口已随 [PR #63](https://github.com/zewbby/HnuHole/pull/63) 合入 main，开发后端及真我日常2315已配套更新，未生产发布；[任务与版本证据](../../branches/identity-avatar-onboarding.md)区分宿主／隔离 SQL 与真我原生限定通过的版本及范围，不提升历史整模块结论。
 
 更新：2026-10-23。当前模型为进入社区前至少完成一个身份、最多三个预设身份、同一账号在每帖固定使用一个身份；私信仍按身份对隔离并可跨帖延续。首次入口按本次用户要求更新；旧讨论与旧图仅用于追溯。
 
