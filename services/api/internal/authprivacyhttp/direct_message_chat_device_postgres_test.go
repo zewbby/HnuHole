@@ -131,6 +131,12 @@ func TestDMChatDevicePostgres(t *testing.T) {
 		case <-timeout.C:
 			t.Fatal("device fixture deadline")
 		case <-ticker.C:
+			// Refresh signed evidence without changing session generation while
+			// an explicitly requested physical recovery acceptance is active.
+			if os.Getenv("DM_DEVICE_RECOVERY") == "1" {
+				s.advanceC(0)
+				s.advanceV(0)
+			}
 			if _, e = os.Stat(file + ".done"); e == nil {
 				return
 			}

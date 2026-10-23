@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-23 DM-P2-DEVICE-RECOVERY：**P2新增补验：真实双设备接替、两处进程强杀恢复、整机重启恢复 PASS；真实突然掉电由用户明确延期 NOT_RUN。仅新增测试入口和证据，不改私信业务实现，不重复原验收。见[补验任务](../branches/test-direct-message-device-recovery.md)，保持 B08/B09 整体及生产结论不变。
+
 > **2026-10-23 DM-P3-GOVERNANCE：**`feat/direct-message-governance` 依赖 P2 #51，第三阶段治理、清理和本地通知已接入；增量验证、独立审查和送审回执见[任务详情](../branches/feat-direct-message-governance.md)。原生人工项按用户要求 SKIP，远程推送渠道未实现，iOS／生产未验收，未合并或发布。已验证且未改变的 P1/P2 外观、IME 和原生图片链路保留原版本证据，不重复、不扩大证明范围。
 
 > **2026-10-22 DM-P2-CHAT（分支实现／限定验收通过，未合并）：**从 main `154a761` 新建 `feat/direct-message-chat-completion`，新增九图私有收发、加密落地 ACK、会话设置／私人备注、本机搜索与草稿、两分钟撤回和离线墓碑。Astra High 定位复杂竞态，独立只读审查无剩余阻断；真实 SQL/race/TLS、受影响迁移、客户端定点检查、分析 0 及 RMX3366 独立 `.dmchat`2211 原生新增链路通过。仅补新增／受影响部分，未改 P1 字体／布局／IME 沿用旧证据。P3、生产开关和 B08/B09 整体验收结论不提升；远端 CI／PR 回执见[任务详情](../branches/feat-direct-message-chat-completion.md)与[机器记录](direct-message-chat-verification-20261022.json)，不可把此分支成果当已合入 main。

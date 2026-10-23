@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-23 DM-P2-DEVICE-RECOVERY 补验：**两台物理 Android 的同账号正式密码登录接替／互踢、旧机本地历史与图片／草稿保留、两处关键中断点的进程强杀恢复、整机重启恢复通过。只补原缺口，未重复九图/UI/IME；基于 P3 整合07923b0的未改业务实现。真实突然掉电缺条件，用户明确暂列未验，不以重启替代。自有fixture与独立包已清理、租约已释放。详见[任务](../branches/test-direct-message-device-recovery.md)和[证据](direct-message-device-recovery-verification-20261023.json)；未合并、未发布。
+
 > **2026-10-23 DM-P3-GOVERNANCE（分支实现，未合并／发布）：**在 P2 #51 上接入账号级拉黑的显式面具投影、固定区间举报与真实性校验、身份删除／注销清理、Android 隐私本地通知及正式 Flutter 装配。新增及受影响检查按[第三阶段任务](../branches/feat-direct-message-governance.md)与[机器记录](direct-message-governance-verification-20261023.json)交接；用户不在，必须人工配合的原生项 SKIP，维持 Draft。厂商远程唤醒未实现，生产开关仍默认关闭，不提升 B08/B09 整体结论。P2→P3 顺序整合，未获得本轮合并／发布授权。
 
 > **2026-10-22 DM-P2-CHAT（分支实现／限定验收通过，未合并）：**从 main `154a761` 新建 `feat/direct-message-chat-completion`，新增九图私有收发、加密落地 ACK、会话设置／私人备注、本机搜索与草稿、两分钟撤回和离线墓碑。Astra High 定位复杂竞态，独立只读审查无剩余阻断；真实 SQL/race/TLS、受影响迁移、客户端定点检查、分析 0 及 RMX3366 独立 `.dmchat`2211 原生新增链路通过。仅补新增／受影响部分，未改 P1 字体／布局／IME 沿用旧证据。P3、生产开关和 B08/B09 整体验收结论不提升；远端 CI／PR 回执见[任务详情](../branches/feat-direct-message-chat-completion.md)与[机器记录](direct-message-chat-verification-20261022.json)，不可把此分支成果当已合入 main。
