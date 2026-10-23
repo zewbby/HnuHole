@@ -484,6 +484,11 @@ const authEnglish = <String, String>{
       'Use 10–128 letters, digits or English punctuation, without spaces',
   '请输入六位最新验证码': 'Enter the latest six-digit code',
   '用户名或密码不正确。': 'Incorrect username or password.',
+  '验证码发送或验证结果暂时无法确认，请检查网络后重试。': 'Unable to confirm the verification result. Check your connection and try again.',
+  '暂时无法确认操作结果，请检查网络后重试。':
+      'Unable to confirm the result. Check your connection and try again.',
+  '暂时无法完成操作，请稍后重试。': 'Unable to continue right now. Please try again later.',
+  '请先完成当前操作，再重试。': 'Finish the current step before trying again.',
   '登录暂时不可用，请重试。': 'Sign-in is temporarily unavailable. Try again.',
   '登录结果暂时无法确认，请主动重试。':
       'The sign-in result is uncertain. Please retry explicitly.',

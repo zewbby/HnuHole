@@ -59,14 +59,18 @@ class AuthSessionController extends ChangeNotifier {
   int get authorityVersion => _operation;
 
   bool isCurrentToken(String token) =>
-      !_disposed && isAuthenticated && _authorizedToken == token &&
+      !_disposed &&
+      isAuthenticated &&
+      _authorizedToken == token &&
       _usable(_store.current ?? const AuthState())?.token == token;
 
   void sessionUnauthorized(String token, String? code) =>
       _directoryUnauthorized(token, code);
 
   Future<bool> persistSessionMetadata(
-    String token, DateTime expiresAt, bool Function() isCurrent,
+    String token,
+    DateTime expiresAt,
+    bool Function() isCurrent,
   ) => _persistDirectoryExpiry(token, expiresAt, isCurrent);
 
   /// A protected management read cannot leave prior community data exposed
@@ -330,7 +334,7 @@ class AuthSessionController extends ChangeNotifier {
       _status = AuthStatus.storageFailure;
       _error = '安全存储写入失败，不能确认本机登录。';
     } on AuthFailure catch (e) {
-      _error = e.unauthorized
+      _error = e.unauthorized || e.code == 'CLIENT_INPUT_INVALID'
           ? '用户名或密码不正确。'
           : e.code == 'SESSION_CREATED_RETRY_LOGIN'
           ? '上次登录已建立会话，请主动重新登录。'
