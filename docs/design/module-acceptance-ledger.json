@@ -1,4 +1,29 @@
 {
+  "feedScrollSmile20261023": {
+    "task": "FEED-SCROLL-SMILE-01",
+    "modules": [
+      "B03",
+      "B06",
+      "B10"
+    ],
+    "branch": "codex/feat/feed-scroll-smile-refresh",
+    "base": "45e3948eb47db16f90968a1082c4ae32360a8465",
+    "implementation": "LOCAL_IMPLEMENTED_NOT_MERGED",
+    "hostTests": {
+      "status": "PASS",
+      "passed": 844,
+      "skipped": 3
+    },
+    "analysisIssues": 0,
+    "androidDebugBuild": "PASS",
+    "independentReview": "PASS_SOL_XHIGH_READ_ONLY_NOT_GITHUB_APPROVAL",
+    "evidence": "docs/design/feed-scroll-smile-verification-20261023.json",
+    "nativeDeviceAcceptance": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true
+  },
   "identityAvatarOnboarding20261023": {
     "task": "IDENTITY-AVATAR-01",
     "modules": [

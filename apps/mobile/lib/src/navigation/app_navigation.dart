@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../design_system/telegram_theme.dart';
+import 'feed_chrome.dart';
 
 enum AppDestination { home, messages, directMessages, personal }
 
@@ -11,9 +12,15 @@ class HhAppNavigation extends StatelessWidget {
     super.key,
     required this.selected,
     required this.onSelected,
+    this.composeSlot = false,
+    this.onCompose,
+    this.composeTooltip = '写帖子',
   });
   final AppDestination selected;
   final ValueChanged<AppDestination> onSelected;
+  final bool composeSlot;
+  final VoidCallback? onCompose;
+  final String composeTooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +36,18 @@ class HhAppNavigation extends StatelessWidget {
           height: 64,
           child: Row(
             children: [
-              for (final destination in AppDestination.values)
+              for (final destination in AppDestination.values) ...[
+                if (composeSlot && destination == AppDestination.directMessages)
+                  Expanded(
+                    child: Center(
+                      child: onCompose == null
+                          ? const SizedBox(width: 52, height: 48)
+                          : FeedComposeButton(
+                              onPressed: onCompose!,
+                              tooltip: composeTooltip,
+                            ),
+                    ),
+                  ),
                 Expanded(
                   child: Semantics(
                     selected: selected == destination,
@@ -55,6 +73,7 @@ class HhAppNavigation extends StatelessWidget {
                     ),
                   ),
                 ),
+              ],
             ],
           ),
         ),
