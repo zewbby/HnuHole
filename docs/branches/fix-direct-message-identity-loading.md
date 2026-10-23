@@ -84,3 +84,9 @@
 合法空态仍用真实runtime/auth/identity宿主装配覆盖，不修改用户当前已有身份来制造设备空态；首次发送身份面板SafeArea只具有宿主几何测试，native NOT_RUN。旧2309只保留其双加号／编辑取消／安全位置范围；2310仅构建覆盖及折叠单行通过，未成功捕获展开，后被最终单加号替代，不计完整通过或最终UI确认。
 
 [脱敏版本证据](../design/direct-message-identity-verification-20261023.json)记录最终包和验证边界。本地原回执 `E:/Hnuhole-env/deliveries/HnuHole-dm-identity-2026102311-device.json`、APK及含用户昵称的截图留私有delivery，不提交Git。PR #60精确最新head的远端CI通过后按用户既有授权Ready并正常合并；最终合并SHA／CI回执写PR正文并核对main，不为记录自身递归创建PR，不删除分支或worktree。当前未正式发布；历史整模块、突然掉电、P3人工项、厂商推送、iOS及生产结论不扩大。
+
+## 入口瞬时加载提示精简
+
+用户在2311实际进入私信时仍看到瞬时“正在核对私信身份”，要求移除。本次仅调整 `DmInboxRoute` 展示：加载为22dp无可见文案的小进度指示（读屏“正在加载”），默认失败为“加载失败，请重试”，会话不可用为“暂时无法加载私信”，按钮统一“重试”；空身份及添加入口不变。不修改 runtime 状态机、权限判断、会话恢复、消息处理或后端。2311及其截图继续保留原范围，后继2312待主会话构建／覆盖安装回执，PR暂不合并。
+
+仅运行 `dm_runtime_test.dart` 的空目录与加载失败重试2项，均PASS，覆盖小进度尺寸／读屏语义、失败／不可用无核对文案、失败重试成功且暂时失败不退出登录。`flutter analyze --no-pub lib/src/messaging/dm_runtime.dart test/dm_runtime_test.dart` 为0 issues。日志在原本地证据目录 `r5/entry-presentation-test.log` 与 `r5/analyze-entry.log`；未重复旧37项／整合7项／单加号／真实收发。

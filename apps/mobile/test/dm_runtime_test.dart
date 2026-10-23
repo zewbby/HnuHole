@@ -91,7 +91,8 @@ void main() {
           ),
         ),
       );
-      expect(find.text('正在核对私信身份'), findsNothing);
+      expect(find.textContaining('核对'), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.text('您目前还没有身份'), findsOneWidget);
       await tester.tap(find.text('添加身份'));
       expect(opened, isTrue);
@@ -116,21 +117,40 @@ void main() {
         await f.api.readStarted.future;
       });
       await tester.pumpWidget(MaterialApp(home: DmInboxRoute(runtime: r)));
-      expect(find.text('正在核对私信身份'), findsOneWidget);
+      expect(find.textContaining('核对'), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(
+        tester
+            .widget<CircularProgressIndicator>(
+              find.byType(CircularProgressIndicator),
+            )
+            .semanticsLabel,
+        '正在加载',
+      );
+      expect(
+        tester.getSize(find.byType(CircularProgressIndicator)),
+        const Size(22, 22),
+      );
       pending.completeError(const AuthFailure(kind: AuthFailureKind.timeout));
       await tester.pump();
-      expect(find.text('暂时无法核对私信身份，请重试'), findsOneWidget);
+      expect(find.text('加载失败，请重试'), findsOneWidget);
+      expect(find.textContaining('核对'), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(f.sessions.isAuthenticated, isTrue);
       f.api.readWait = null;
       f.api.items = [identityTestItem()];
       f.api.createdCount = 1;
-      await tester.tap(find.text('重新核对'));
+      await tester.tap(find.text('重试'));
       await pumpUntil(tester, () => r.identityStatus == DmIdentityStatus.ready);
       await tester.pump();
-      expect(find.text('正在核对私信身份'), findsNothing);
-      expect(find.text('暂时无法核对私信身份，请重试'), findsNothing);
+      expect(find.text('加载失败，请重试'), findsNothing);
       expect(f.api.reads, 2);
       expect(r.controller.available, isTrue);
+      f.sessions.sessionUnavailable(identityTestToken);
+      await tester.pump();
+      expect(find.text('暂时无法加载私信'), findsOneWidget);
+      expect(find.textContaining('核对'), findsNothing);
+      expect(find.text('重试'), findsOneWidget);
       var detached = false;
       final detach = r.controller.detach().then((_) => detached = true);
       await pumpUntil(tester, () => detached);

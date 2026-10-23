@@ -329,17 +329,24 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
                         ),
                     ],
                   )
+                else if (r.identityStatus == DmIdentityStatus.loading)
+                  const SizedBox.square(
+                    dimension: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      semanticsLabel: '正在加载',
+                    ),
+                  )
                 else
                   Text(switch (r.identityStatus) {
-                    DmIdentityStatus.loading => '正在核对私信身份',
-                    DmIdentityStatus.unavailable => '请恢复当前账号后查看私信',
-                    _ => c.error ?? '暂时无法核对私信身份，请重试',
+                    DmIdentityStatus.unavailable => '暂时无法加载私信',
+                    _ => c.error ?? '加载失败，请重试',
                   }),
                 if (r.identityStatus == DmIdentityStatus.failed ||
                     r.identityStatus == DmIdentityStatus.unavailable)
                   TextButton(
                     onPressed: r.retryIdentities,
-                    child: const Text('重新核对'),
+                    child: const Text('重试'),
                   ),
               ],
             ),
