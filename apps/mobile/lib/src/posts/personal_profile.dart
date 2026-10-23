@@ -1494,9 +1494,12 @@ class _MoodEditorState extends State<_MoodEditor> {
               border: InputBorder.none,
             ),
           ),
-          const Text(
+          Text(
             '24 小时后自动消失',
-            style: TextStyle(fontSize: 13, color: Colors.grey),
+            style: TextStyle(
+              fontSize: 13,
+              color: HhTelegramPalette.of(context).secondary,
+            ),
           ),
           const SizedBox(height: 12),
           Row(

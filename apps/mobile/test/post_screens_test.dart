@@ -1,4 +1,7 @@
 import 'dart:async';
+
+import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
+
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -358,6 +361,52 @@ void main() {
     onAuthenticationRequired: () {},
     onPublishedToChannel: onPublished,
   );
+
+  for (final brightness in Brightness.values) {
+    testWidgets(
+      'personal draft and delete confirmation follow $brightness palette',
+      (tester) async {
+        final c = _WidgetPosts()
+          ..personal = [localItem('draft', id: 'theme-draft')];
+        final theme = HhTelegramTheme.applyAppearance(
+          ThemeData(brightness: brightness),
+        );
+        await tester.pumpWidget(
+          MaterialApp(theme: theme, home: personalPage(c)),
+        );
+        await tester.pumpAndSettle();
+        final palette = HhTelegramPalette.of(
+          tester.element(find.text('原操作标题')),
+        );
+        expect(
+          palette.surface,
+          brightness == Brightness.dark
+              ? HhTelegramPalette.dark.surface
+              : HhTelegramPalette.light.surface,
+        );
+        expect(
+          tester.widget<Text>(find.text('草稿')).style!.color,
+          palette.onAccent,
+        );
+        await tester.tap(find.byTooltip('删除草稿'));
+        await tester.pumpAndSettle();
+        expect(
+          tester.widget<Dialog>(find.byType(Dialog)).backgroundColor,
+          palette.surface,
+        );
+        expect(
+          tester.widget<Text>(find.text('确认删除这篇草稿？')).style!.color,
+          palette.ink,
+        );
+        await tester.tap(find.text('取消'));
+        await tester.pumpAndSettle();
+        expect(find.text('原操作标题'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        c.dispose();
+      },
+    );
+  }
 
   testWidgets('正文可先填写，确认返回保留原文字，编辑只自动保存不发送', (tester) async {
     final c = _WidgetPosts(), e = editor();

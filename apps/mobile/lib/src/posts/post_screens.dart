@@ -1332,6 +1332,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen>
       context,
       widget.controller,
       title: '确认删除这篇草稿？',
+      theme: Theme.of(context),
       message: '',
       action: '删除草稿',
     );
@@ -1354,6 +1355,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen>
       context,
       widget.controller,
       title: '删除这篇失败草稿？',
+      theme: Theme.of(context),
       message: '',
       action: '删除失败入口',
     );
@@ -1444,33 +1446,35 @@ class _PersonalCard extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: PostTheme.accent,
+                        color: HhTelegramPalette.of(context).accent,
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: const Text(
+                      child: Text(
                         '草稿',
                         style: TextStyle(
-                          color: PostTheme.surface,
+                          color: HhTelegramPalette.of(context).onAccent,
                           fontSize: 12,
                         ),
                       ),
                     ),
                     if (failed) ...[
                       const SizedBox(width: 8),
-                      const Icon(
+                      Icon(
                         Icons.error,
-                        color: PostTheme.failure,
+                        color: HhTelegramPalette.of(context).error,
                         semanticLabel: '发布未成功',
                       ),
                     ],
                   ],
                 ),
                 if (failed)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       '发布未成功',
-                      style: TextStyle(color: PostTheme.accent),
+                      style: TextStyle(
+                        color: HhTelegramPalette.of(context).accent,
+                      ),
                     ),
                   ),
               ] else if (pending)
@@ -1488,18 +1492,25 @@ class _PersonalCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         label,
-                        style: const TextStyle(color: PostTheme.accent),
+                        style: TextStyle(
+                          color: HhTelegramPalette.of(context).accent,
+                        ),
                       ),
                     ),
                   ],
                 )
               else
-                Text(label, style: const TextStyle(color: PostTheme.muted)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: HhTelegramPalette.of(context).secondary,
+                  ),
+                ),
               const SizedBox(height: 12),
               Text(
                 '$channelName · ${_postDate(item.sortAt)}',
-                style: const TextStyle(
-                  color: PostTheme.muted,
+                style: TextStyle(
+                  color: HhTelegramPalette.of(context).secondary,
                   fontSize: 12,
                   height: 1.5,
                 ),
@@ -2428,17 +2439,19 @@ Future<bool?> _confirmScoped(
   required String title,
   required String message,
   required String action,
+  ThemeData? theme,
 }) {
   final authority = _PostAuthority(controller);
+  final dialogTheme = theme ?? PostTheme.of(context);
   return showDialog<bool>(
     context: context,
     barrierColor: Colors.black54,
     builder: (context) => Theme(
-      data: PostTheme.of(context),
+      data: dialogTheme,
       child: AnimatedBuilder(
         animation: controller,
         builder: (context, _) => Dialog(
-          backgroundColor: PostTheme.surface,
+          backgroundColor: dialogTheme.colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -2461,7 +2474,9 @@ Future<bool?> _confirmScoped(
                             child: Text(
                               title,
                               textAlign: TextAlign.center,
-                              style: PostTheme.dialogQuestion,
+                              style: PostTheme.dialogQuestion.copyWith(
+                                color: dialogTheme.colorScheme.onSurface,
+                              ),
                             ),
                           ),
                           if (message.isNotEmpty)
@@ -2470,7 +2485,13 @@ Future<bool?> _confirmScoped(
                               child: Text(
                                 message,
                                 textAlign: TextAlign.center,
-                                style: PostTheme.dialogBody,
+                                style: theme == null
+                                    ? PostTheme.dialogBody
+                                    : PostTheme.dialogBody.copyWith(
+                                        color: dialogTheme
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
                               ),
                             ),
                           const SizedBox(height: 8),
@@ -2492,7 +2513,11 @@ Future<bool?> _confirmScoped(
                                       'scoped-confirm-action',
                                     ),
                                     style: FilledButton.styleFrom(
-                                      backgroundColor: PostTheme.destructive,
+                                      backgroundColor: theme == null
+                                          ? PostTheme.destructive
+                                          : dialogTheme.colorScheme.error,
+                                      foregroundColor:
+                                          dialogTheme.colorScheme.onError,
                                     ),
                                     onPressed: () =>
                                         Navigator.of(context).pop(true),
