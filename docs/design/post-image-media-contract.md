@@ -1,5 +1,7 @@
 # 帖子图片媒体契约与实现交接（2026-10-15）
 
+> **2026-10-23 thumbnail-v1扩展（`fix/mobile-navigation-refresh`，未合并／未部署）：**下方v1三份原图来源继续作为无协商头时的兼容契约。新客户端在清单和feed GET发送 `X-Post-Preview: thumbnail-v1`；启用新校验器的后端将thumbnail改为受保护 `/thumbnail`、`image/webp`、`maxByteLength<=524288`，不再声称衍生图有预先确定的byteLength。full／original保持原字节。缩略图为EXIF归正、最长边640px的静态首帧，客户端标注动图；feed可同时返回有序imageSizes预留布局。两个读取入口均需当前Bearer／C最终Gate，编码完成后再次检查帖子与会话。无新SQL迁移或磁盘缓存；部署需同步可信helper、其SHA-256和runtime重启。新客户端兼容旧清单及缺少尺寸的旧feed。详细资源上限、测试、候选包和未验范围见[本轮任务](../branches/fix-mobile-navigation-refresh.md)。
+
 本任务只实现帖子图片服务端；评论与私信只登记复用边界。独立分支 `codex/post-image-media`，目录 `E:/Hnuhole-post-image-media-20261015/repo`，实际起点 `e0c128033682923d519ea99546d72503b085a99e`。没有合并前端、社区或 main。只读核对的前端提交是 `a696742f943c1cfe6a5005024dccaf40be752d8f`，其组件来源 `bd7458ad94b7f9aea377ef060acf1316a6cfc6de`；前端后续交付仍由该分支提供固定提交。本文件不是完整 App 或生产验收声明。
 
 ## 基础设施盘点与选择

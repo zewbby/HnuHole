@@ -23,6 +23,12 @@ paths:
         pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
     get:
       operationId: readPostImages
+      parameters:
+      - name: X-Post-Preview
+        in: header
+        required: false
+        schema: {type: string, enum: [thumbnail-v1]}
+        description: Opt in to bounded WebP posters. Omission retains legacy original sources.
       security:
       - bearerAuth: []
       responses:
@@ -246,6 +252,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /api/v1/posts/{postId}/images/{contentVersionId}/thumbnail:
+    parameters:
+    - name: postId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    - name: contentVersionId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    get:
+      operationId: readPostThumbnail
+      security:
+      - bearerAuth: []
+      description: >-
+        Protected static first-frame WebP poster, maximum 640 pixels per edge and
+        524288 bytes. Applies EXIF orientation and strips metadata. The same
+        resource/session/final C Gate is checked before and after transformation.
+        No disk cache, public URL, Range or conditional caching. Original viewing
+        and saving continue to use unchanged original bytes, including animation.
+      responses:
+        '200':
+          description: Authorized bounded poster
+          headers:
+            Cache-Control:
+              schema: {type: string, enum: [no-store]}
+            Session-Expires-At:
+              schema: {type: string, format: date-time}
+            Server-Time:
+              schema: {type: string, format: date-time}
+            X-Content-Type-Options:
+              schema: {type: string, enum: [nosniff]}
+            Content-Disposition:
+              schema: {type: string, enum: [attachment]}
+          content:
+            image/webp:
+              schema: {type: string, format: binary, maxLength: 524288}
+        default:
+          description: Existing private media error envelope; 401, 403, 404 or 503.
   /api/v1/posts/{postId}/images/{contentVersionId}/original:
     parameters:
     - name: postId
@@ -1216,6 +1261,16 @@ components:
           type: integer
           minimum: 1
           maximum: 10485760
+    ThumbnailSource:
+      type: object
+      additionalProperties: false
+      required: [path, mimeType, maxByteLength]
+      properties:
+        path:
+          type: string
+          pattern: ^/api/v1/posts/[0-9a-f-]{36}/images/[0-9a-f-]{36}/thumbnail$
+        mimeType: {type: string, enum: [image/webp]}
+        maxByteLength: {type: integer, minimum: 1, maximum: 524288}
     Image:
       type: object
       additionalProperties: false
@@ -1265,14 +1320,16 @@ components:
         saveAllowed:
           type: boolean
         thumbnail:
-          $ref: '#/components/schemas/Source'
+          oneOf:
+          - $ref: '#/components/schemas/Source'
+          - $ref: '#/components/schemas/ThumbnailSource'
         full:
           $ref: '#/components/schemas/Source'
         original:
           $ref: '#/components/schemas/Source'
-      description: v1 thumbnail/full/original all reference the same unchanged original.
-        No transcoding or bandwidth-saving thumbnail claim. Pixel dimensions respect
-        EXIF.
+      description: Full and original remain byte-exact. Explicit thumbnail-v1 clients
+        receive a bounded static WebP preview when available; legacy sources remain valid.
+        Pixel dimensions describe the EXIF-oriented original.
     UploadItem:
       type: object
       additionalProperties: false

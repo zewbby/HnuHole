@@ -11,16 +11,22 @@ class PostImage {
     required ImageProvider this.thumbnail,
     required this.item,
     this.pixelSize,
+    this.animated = false,
+    this.registerDecodeProvider,
   }) : loadThumbnail = null;
   const PostImage.deferred({
     required Future<ImageProvider> Function() this.loadThumbnail,
     required this.item,
     this.pixelSize,
+    this.animated = false,
+    this.registerDecodeProvider,
   }) : thumbnail = null;
   final ImageProvider? thumbnail;
   final Future<ImageProvider> Function()? loadThumbnail;
   final ViewerItem item;
   final Size? pixelSize;
+  final bool animated;
+  final ValueChanged<ImageProvider>? registerDecodeProvider;
 }
 
 /// One immutable, ordered post image group, owned by the calling media layer.
@@ -62,6 +68,7 @@ class PostImagesSection extends StatefulWidget {
     required this.isCurrent,
     this.expectedCount,
     this.feedPreview = false,
+    this.initialSizes,
     super.key,
   });
   final String postId;
@@ -70,6 +77,7 @@ class PostImagesSection extends StatefulWidget {
   final bool Function() isCurrent;
   final int? expectedCount;
   final bool feedPreview;
+  final List<Size>? initialSizes;
   @override
   State<PostImagesSection> createState() => _PostImagesSectionState();
 }
@@ -85,6 +93,7 @@ class _PostImagesSectionState extends State<PostImagesSection> {
   void initState() {
     super.initState();
     widget.authority.addListener(_authorityChanged);
+    _feedSizes = widget.initialSizes;
     unawaited(_load());
   }
 
@@ -135,7 +144,9 @@ class _PostImagesSectionState extends State<PostImagesSection> {
       }
       _detachGroup();
       _group = group;
-      _feedSizes = [for (final image in group.images) image.pixelSize];
+      _feedSizes =
+          widget.initialSizes ??
+          [for (final image in group.images) image.pixelSize];
       _revoked = !group.accessGranted.value;
       group.accessGranted.addListener(_groupChanged);
     } catch (_) {
@@ -151,7 +162,7 @@ class _PostImagesSectionState extends State<PostImagesSection> {
     if (oldWidget.postId != widget.postId ||
         oldWidget.expectedCount != widget.expectedCount ||
         oldWidget.authority != widget.authority) {
-      _feedSizes = null;
+      _feedSizes = widget.initialSizes;
     }
     if (oldWidget.postId != widget.postId ||
         oldWidget.expectedCount != widget.expectedCount ||
@@ -433,14 +444,58 @@ class _PostThumbnail extends StatefulWidget {
 class _PostThumbnailState extends State<_PostThumbnail> {
   late final Future<ImageProvider>? _pending = widget.image.loadThumbnail
       ?.call();
-  Widget _image(ImageProvider provider) => Image(
-    image: provider,
-    fit: widget.fit,
-    frameBuilder: (_, child, frame, sync) => sync || frame != null
-        ? child
-        : const Center(child: Icon(Icons.image_outlined)),
-    errorBuilder: (_, _, _) =>
-        const Center(child: Icon(Icons.broken_image_outlined)),
+  Widget _image(ImageProvider provider) => LayoutBuilder(
+    builder: (context, constraints) {
+      final dpr = MediaQuery.devicePixelRatioOf(context);
+      final width =
+          ((constraints.maxWidth.isFinite ? constraints.maxWidth : 640) * dpr)
+              .ceil()
+              .clamp(1, 1280);
+      final height =
+          ((constraints.maxHeight.isFinite ? constraints.maxHeight : 640) * dpr)
+              .ceil()
+              .clamp(1, 1280);
+      final decoded = ResizeImage(
+        provider,
+        width: width,
+        height: height,
+        policy: ResizeImagePolicy.fit,
+      );
+      widget.image.registerDecodeProvider?.call(decoded);
+      final image = Image(
+        image: decoded,
+        fit: widget.fit,
+        frameBuilder: (_, child, frame, sync) => sync || frame != null
+            ? child
+            : const Center(child: Icon(Icons.image_outlined)),
+        errorBuilder: (_, _, _) =>
+            const Center(child: Icon(Icons.broken_image_outlined)),
+      );
+      if (!widget.image.animated) return image;
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          image,
+          const Positioned(
+            right: 6,
+            bottom: 6,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                child: Text(
+                  '动图',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
   );
   @override
   Widget build(BuildContext context) {

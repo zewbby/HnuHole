@@ -54,9 +54,11 @@ extension FeedController on PostController {
     final cursor = more ? timelineCursor : null;
     if (!more) {
       _invalidateInteractionReads();
+      if (timelineChannelId != channelId || !_preferencesReady) {
+        _timeline = [];
+        timelineCursor = null;
+      }
       timelineChannelId = channelId;
-      timelineCursor = null;
-      _timeline = [];
     }
     timelineLoading = true;
     timelineError = null;
@@ -73,7 +75,11 @@ extension FeedController on PostController {
         );
         if (request != _timelineRequest) return;
         _blockedChannels = preferences.blockedChannelIds;
+        _timeline = _timeline
+            .where((post) => !_blockedChannels.contains(post.channelId))
+            .toList();
         _preferencesReady = true;
+        _notify();
         if (reconciling) preferencesError = null;
       }
       final page = await _accept(

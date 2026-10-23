@@ -1,0 +1,48 @@
+{
+  "task": "MOBILE-NAV-REFRESH-01",
+  "date": "2026-10-23",
+  "device": "realme RMX3366 / 7e0660f1",
+  "environment": "isolated development C/V over USB loopback; synthetic front_b account",
+  "nativeAnimationSave": {
+    "status": "PASS_ORIGINAL_BYTES_AND_ANIMATION_RETAINED",
+    "procedure": "Realme system photo picker selected two synthetic images; app published a real two-image post, opened each original, and tapped 保存图片. Both returned 已保存到相册. MediaStore reported image/gif and image/webp in Pictures/original.*. Files pulled from the device match the uploaded files byte for byte.",
+    "postTitle": "GIFWebPSaveTest",
+    "gif": {
+      "bytes": 16906,
+      "frames": 4,
+      "durationMsPerFrame": 400,
+      "sha256UploadedAndSaved": "a39527795d4b5635849a7e850218ec24ddb92d807fb646061c532d9f79447115"
+    },
+    "webp": {
+      "bytes": 33022,
+      "frames": 4,
+      "sha256UploadedAndSaved": "e96a23a1c1a372a8aaee12faf295b1b9796ecd341d9bef21a496406b8e9e7a7b"
+    },
+    "appPlayback": "PASS: repeated screenshots of the HnuHole original viewer changed for both GIF and WebP",
+    "systemGalleryPlayback": "LIMITATION: ColorOS Gallery displayed a static first frame for both saved files in its ACTION_VIEW screen; the saved files retain all frames. Playback in this external app is outside HnuHole control."
+  },
+  "profile": {
+    "status": "PASS_DEVICE_FRAME_SAMPLE",
+    "apk": "E:/Hnuhole-env/deliveries/media-profile-20261023/hnuhole-media-profile-2026102304.apk",
+    "versionCode": 2026102304,
+    "sha256": "4c098fa2b7266102f763314810625cecb22b362f397cb7c950aa8f4e777a94e1",
+    "testSignerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+    "displayHz": 60,
+    "method": "Profile-mode SchedulerBinding.addTimingsCallback, plus SurfaceFlinger latency for the Flutter SurfaceView. The latter retains only the latest 127 presented frames per scenario. The profile-only callback prints frame durations and adds small instrumentation overhead.",
+    "sampleFile": "E:/Hnuhole-env/media-cache-preview-20261023/device-realme/frame-profile-2304.json",
+    "scenarios": {
+      "bottomTabs12Switches": {"flutterFrames": 357, "buildP95Ms": 5.4, "rasterP95Ms": 5.19, "buildOver16_67": 1, "rasterOver16_67": 0, "surfaceActiveGapsOver20MsLast127": 0},
+      "feedScroll8Swipes": {"flutterFrames": 332, "buildP95Ms": 3.039, "rasterP95Ms": 6.791, "buildOver16_67": 0, "rasterOver16_67": 1, "surfaceActiveGapsOver20MsLast127": 0},
+      "pullRefresh3Times": {"flutterFrames": 204, "buildP95Ms": 6.412, "rasterP95Ms": 6.794, "buildOver16_67": 0, "rasterOver16_67": 0, "surfaceActiveGapsOver20MsLast127": 0},
+      "animatedViewerGifWebp": {"flutterFrames": 134, "buildP95Ms": 4.73, "rasterP95Ms": 5.666, "buildOver16_67": 0, "rasterOver16_67": 1, "note": "Presented-frame gaps include intended 400ms animation cadence and idle time, so do not represent scrolling jank."}
+    },
+    "finding": "No sustained frame-budget failure in this short synthetic-device sample; one isolated over-budget build/raster frame appeared in each of three scenarios. Long-session memory pressure and real-photo-heavy feed remain unmeasured."
+  },
+  "fix": {
+    "problem": "Profile APK aborted at startup because development CA and passkey RP were Debug-only.",
+    "resolution": "Permit development loopback CA/RP only in Debug or explicit AUTH_DEV_PROFILE=true Profile builds; production Release still rejects it and requires two distinct fixed loopback HTTPS origins.",
+    "hostRegression": "flutter test --no-pub test/development/app_transport_test.dart: 4 PASS"
+  },
+  "deviceAfterTest": "Restored signed daily acceptance APK 2026102303 with install -r -d; app launched to home with account data and synthetic post retained. Profile APK 2026102304 remains in local delivery directory.",
+  "scope": "Development test environment and Realme only; not iOS, production, full module acceptance, or remote CI."
+}

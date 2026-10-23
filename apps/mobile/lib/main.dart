@@ -9,6 +9,7 @@ import 'src/comments/comment_runtime.dart';
 import 'src/comments/comment_http.dart';
 import 'src/comments/comment_journal.dart';
 import 'src/development/app_transport.dart';
+import 'src/navigation/primary_tabs.dart';
 import 'src/navigation/community_material_labels.dart';
 import 'src/navigation/app_navigation.dart';
 import 'src/messaging/direct_messages_unavailable.dart';
@@ -308,13 +309,14 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   bool _securityRouteOpen = false;
   bool _settingsRouteOpen = false;
   bool _identityRouteOpen = false;
-  bool _personalRouteOpen = false;
+  final _primaryTabs = GlobalKey<PrimaryTabsState>();
   final _postWindow = ValueNotifier<(String?, int)>((null, -1));
   // Navigation preference is local to this app run and to its owning account.
   final _homeChannels = <String, String?>{};
   late final Listenable _postRouteChanges;
   bool _messagesRouteOpen = false;
-  bool _directMessagesRouteOpen = false;
+  String? _dmInitialIdentity;
+  int _dmInboxRevision = 0;
   bool _handlingDmTap = false;
   Future<void> _dmNotificationChanged() async {
     final n = widget.dmNotifications, c = widget.dm?.controller;
@@ -358,17 +360,11 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     final navigator = _navigatorKey.currentState;
     if (navigator != null) {
       navigator.popUntil((r) => r.isFirst);
-      unawaited(
-        navigator.push(
-          MaterialPageRoute<void>(
-            builder: (_) => DmInboxRoute(
-              runtime: widget.dm!,
-              initialIdentity: own.id,
-              navigation: _primaryNavigation(AppDestination.directMessages),
-            ),
-          ),
-        ),
-      );
+      setState(() {
+        _dmInitialIdentity = own.id;
+        _dmInboxRevision++;
+      });
+      _primaryTabs.currentState?.select(AppDestination.directMessages);
       unawaited(
         navigator.push(
           MaterialPageRoute<void>(
@@ -394,49 +390,25 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.ensureVisualUpdate();
   }
 
-  Widget _primaryNavigation(AppDestination selected) => HhAppNavigation(
-    selected: selected,
-    onSelected: (destination) {
-      final navigator = _navigatorKey.currentState;
-      if (navigator == null || !mounted) return;
-      navigator.popUntil((route) => route.isFirst);
-      switch (destination) {
-        case AppDestination.home:
-          break;
-        case AppDestination.messages:
-          unawaited(_openMessages());
-        case AppDestination.directMessages:
-          unawaited(_openDirectMessages());
-        case AppDestination.personal:
-          _openPersonal();
-      }
-    },
-  );
+  void _selectPrimary(AppDestination destination) {
+    switch (destination) {
+      case AppDestination.home:
+        _primaryTabs.currentState?.select(destination);
+      case AppDestination.messages:
+        unawaited(_openMessages());
+      case AppDestination.directMessages:
+        unawaited(_openDirectMessages());
+      case AppDestination.personal:
+        _openPersonal();
+    }
+  }
 
   Future<void> _openDirectMessages() async {
-    final navigator = _navigatorKey.currentState;
-    if (navigator == null || _directMessagesRouteOpen) return;
     if (!widget.sessions.isAuthenticated) {
       _openAuth();
       return;
     }
-    _directMessagesRouteOpen = true;
-    try {
-      await navigator.push(
-        MaterialPageRoute<void>(
-          builder: (_) => widget.dm != null
-              ? DmInboxRoute(
-                  runtime: widget.dm!,
-                  navigation: _primaryNavigation(AppDestination.directMessages),
-                )
-              : DirectMessagesUnavailableScreen(
-                  navigation: _primaryNavigation(AppDestination.directMessages),
-                ),
-        ),
-      );
-    } finally {
-      _directMessagesRouteOpen = false;
-    }
+    _primaryTabs.currentState?.select(AppDestination.directMessages);
   }
 
   final _notifiedFailures = <String>{};
@@ -501,55 +473,63 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         );
         if (result != true || !mounted || !governance.available) return;
       }
-      final owner = governance.accountId,
-          authority = governance.authorityVersion;
-      await navigator.push(
-        MaterialPageRoute<void>(
-          builder: (_) => SystemNotificationsScreen(
-            controller: governance,
-            navigation: _primaryNavigation(AppDestination.messages),
-            onOpenComment: (postId, commentId) async {
-              if (!widget.posts.available ||
-                  governance.restricted ||
-                  governance.accountId != owner ||
-                  governance.authorityVersion != authority) {
-                return;
-              }
-              await navigator.push(
-                MaterialPageRoute<void>(
-                  builder: (_) => PostDetailScreen(
-                    controller: widget.posts,
-                    postId: postId,
-                    initialCommentId: commentId,
-                    loadImages: widget.loadPostImages,
-                    onAuthenticationRequired: _openAuth,
-                  ),
-                ),
-              );
-            },
-            onOpenPost: (postId) async {
-              if (!widget.posts.available ||
-                  governance.accountId != owner ||
-                  governance.authorityVersion != authority) {
-                return;
-              }
-              await navigator.push(
-                MaterialPageRoute<void>(
-                  builder: (_) => PostDetailScreen(
-                    controller: widget.posts,
-                    postId: postId,
-                    loadImages: widget.loadPostImages,
-                    onAuthenticationRequired: _openAuth,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      );
+      final tabs = _primaryTabs.currentState;
+      if (tabs != null) {
+        tabs.select(AppDestination.messages);
+        navigator.popUntil((route) => route.isFirst);
+      } else {
+        await navigator.push(
+          MaterialPageRoute<void>(builder: (_) => _notificationsScreen()),
+        );
+      }
     } finally {
       _messagesRouteOpen = false;
     }
+  }
+
+  Widget _notificationsScreen() {
+    final governance = widget.governance!;
+    final navigator = _navigatorKey.currentState!;
+    final owner = governance.accountId, authority = governance.authorityVersion;
+    return SystemNotificationsScreen(
+      controller: governance,
+      onOpenComment: (postId, commentId) async {
+        if (!widget.posts.available ||
+            governance.restricted ||
+            governance.accountId != owner ||
+            governance.authorityVersion != authority) {
+          return;
+        }
+        await navigator.push(
+          MaterialPageRoute<void>(
+            builder: (_) => PostDetailScreen(
+              controller: widget.posts,
+              postId: postId,
+              initialCommentId: commentId,
+              loadImages: widget.loadPostImages,
+              onAuthenticationRequired: _openAuth,
+            ),
+          ),
+        );
+      },
+      onOpenPost: (postId) async {
+        if (!widget.posts.available ||
+            governance.accountId != owner ||
+            governance.authorityVersion != authority) {
+          return;
+        }
+        await navigator.push(
+          MaterialPageRoute<void>(
+            builder: (_) => PostDetailScreen(
+              controller: widget.posts,
+              postId: postId,
+              loadImages: widget.loadPostImages,
+              onAuthenticationRequired: _openAuth,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -737,57 +717,46 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   }
 
   void _openPersonal() {
-    final navigator = _navigatorKey.currentState;
-    if (navigator == null || _personalRouteOpen) return;
     if (!widget.sessions.isAuthenticated) {
       _openAuth();
       return;
     }
-    _personalRouteOpen = true;
-    navigator
-        .push(
-          MaterialPageRoute<void>(
-            builder: (_) => AnimatedBuilder(
-              animation: _postRouteChanges,
-              builder: (context, _) {
-                final window = _postWindow.value;
-                final account = window.$1;
-                final authority = window.$2;
-                // Recreate only this account hub. Old editors/details retain
-                // their original fences and old callbacks keep their window.
-                return PersonalPostsScreen(
-                  navigation: _primaryNavigation(AppDestination.personal),
-                  key: ValueKey((account, authority)),
-                  controller: widget.posts,
-                  loadImages: widget.loadPostImages,
-                  channelNames: {
-                    for (final channel in widget.directory.channels)
-                      channel.id: channel.displayName,
-                  },
-                  onManageIdentities: _openIdentity,
-                  onAuthenticationRequired: _openAuth,
-                  onOpenSettings: _openSettings,
-                  onChooseChannel: () =>
-                      navigator.popUntil((route) => route.isFirst),
-                  onPublishedToChannel: (channelId) {
-                    if (!widget.posts.available ||
-                        widget.posts.accountId != account ||
-                        widget.posts.authorityVersion != authority) {
-                      return;
-                    }
-                    final channel = widget.directory.channels
-                        .where((item) => item.id == channelId)
-                        .firstOrNull;
-                    if (channel == null) return;
-                    unawaited(widget.posts.loadTimeline(channelId: channelId));
-                    navigator.popUntil((route) => route.isFirst);
-                  },
-                );
-              },
-            ),
-          ),
-        )
-        .whenComplete(() => _personalRouteOpen = false);
+    _primaryTabs.currentState?.select(AppDestination.personal);
+  }
+
+  Widget _personalScreen() {
+    final window = _postWindow.value;
+    final account = window.$1, authority = window.$2;
+    return PersonalPostsScreen(
+      showNavigation: false,
+      key: ValueKey(window),
+      controller: widget.posts,
+      loadImages: widget.loadPostImages,
+      channelNames: {
+        for (final channel in widget.directory.channels)
+          channel.id: channel.displayName,
+      },
+      onManageIdentities: _openIdentity,
+      onAuthenticationRequired: _openAuth,
+      onOpenSettings: _openSettings,
+      onChooseChannel: () =>
+          _primaryTabs.currentState?.select(AppDestination.home),
+      onPublishedToChannel: (channelId) {
+        if (!widget.posts.available ||
+            widget.posts.accountId != account ||
+            widget.posts.authorityVersion != authority) {
+          return;
+        }
+        if (!widget.directory.channels.any(
+          (channel) => channel.id == channelId,
+        )) {
+          return;
+        }
+        unawaited(widget.posts.loadTimeline(channelId: channelId));
+        _navigatorKey.currentState?.popUntil((route) => route.isFirst);
+        _primaryTabs.currentState?.select(AppDestination.home);
+      },
+    );
   }
 
   @override
@@ -868,22 +837,41 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             if (widget.sessions.isAuthenticated &&
                 widget.posts.available &&
                 widget.directory.status == ChannelDirectoryStatus.ready) {
-              return FeedScreen(
-                // New authorization owns fresh protected data. Its channel
-                // preference survives within this app run for the same account.
-                key: ValueKey(_postWindow.value),
-                controller: widget.posts,
-                channels: widget.directory.channels,
-                composeChannel: widget.directory.channels.first,
-                initialChannelId: _homeChannels[widget.posts.accountId],
-                loadImages: widget.loadPostImages,
-                onOpenMessages: widget.governance == null
-                    ? null
-                    : _openMessages,
-                onOpenPersonal: _openPersonal,
-                onOpenDirectMessages: _openDirectMessages,
-                onManageIdentities: _openIdentity,
-                onAuthenticationRequired: _openAuth,
+              return PrimaryTabs(
+                key: _primaryTabs,
+                window: _postWindow.value,
+                onSelected: _selectPrimary,
+                builders: {
+                  AppDestination.home: (_) => FeedScreen(
+                    // New authorization owns fresh protected data. Its channel
+                    // preference survives within this app run for the same account.
+                    key: ValueKey(_postWindow.value),
+                    showNavigation: false,
+                    controller: widget.posts,
+                    channels: widget.directory.channels,
+                    composeChannel: widget.directory.channels.first,
+                    initialChannelId: _homeChannels[widget.posts.accountId],
+                    loadImages: widget.loadPostImages,
+                    onOpenMessages: widget.governance == null
+                        ? null
+                        : _openMessages,
+                    onOpenPersonal: _openPersonal,
+                    onOpenDirectMessages: _openDirectMessages,
+                    onManageIdentities: _openIdentity,
+                    onAuthenticationRequired: _openAuth,
+                  ),
+                  AppDestination.messages: (_) => widget.governance == null
+                      ? const Center(child: Text('系统通知暂时不可用'))
+                      : _notificationsScreen(),
+                  AppDestination.directMessages: (_) => widget.dm != null
+                      ? DmInboxRoute(
+                          key: ValueKey((_postWindow.value, _dmInboxRevision)),
+                          runtime: widget.dm!,
+                          initialIdentity: _dmInitialIdentity,
+                        )
+                      : const DirectMessagesUnavailableScreen(),
+                  AppDestination.personal: (_) => _personalScreen(),
+                },
               );
             }
             return EntryScreen(

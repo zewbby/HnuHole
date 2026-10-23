@@ -28,6 +28,32 @@ class _Notices implements GovernanceApi {
 
 void main() {
   testWidgets(
+    'system back retains home and personal empty state is loaded once',
+    (tester) async {
+      final fixture = HomeTestFixture();
+      await tester.pumpWidget(await fixture.create());
+      await tester.pumpAndSettle();
+      expect(fixture.postApi.personalTokens, isEmpty);
+      final home = tester.state(find.byType(FeedScreen));
+      await tester.tap(find.byKey(const ValueKey('destination:personal')));
+      await tester.pumpAndSettle();
+      final personal = tester.state(find.byType(PersonalPostsScreen));
+      expect(find.text('还没有自己的帖子'), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(identical(tester.state(find.byType(FeedScreen)), home), isTrue);
+      await tester.tap(find.byKey(const ValueKey('destination:personal')));
+      await tester.pumpAndSettle();
+      expect(
+        identical(tester.state(find.byType(PersonalPostsScreen)), personal),
+        isTrue,
+      );
+      expect(fixture.postApi.personalTokens, hasLength(1));
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    },
+  );
+  testWidgets(
     'root switches separate notification and DM tabs, retaining the feed channel',
     (tester) async {
       final fixture = HomeTestFixture();
@@ -72,13 +98,32 @@ void main() {
         await tester.tap(
           find.byKey(const ValueKey('destination:directMessages')),
         );
+        for (final millis in [0, 16, 80, 160, 320]) {
+          await tester.pump(Duration(milliseconds: millis));
+          expect(
+            find.byType(HhAppNavigation, skipOffstage: false),
+            findsOneWidget,
+          );
+          expect(find.byType(FeedScreen), findsNothing);
+          expect(find.byType(DirectMessagesUnavailableScreen), findsOneWidget);
+        }
         await tester.pumpAndSettle();
         expect(find.byType(DirectMessagesUnavailableScreen), findsOneWidget);
         expect(find.text('私信暂未开放'), findsOneWidget);
         expect(find.byType(SystemNotificationsScreen), findsNothing);
         expect(notices.calls, calls);
         await tester.tap(find.byKey(const ValueKey('destination:personal')));
+        for (final millis in [0, 16, 80, 160, 320]) {
+          await tester.pump(Duration(milliseconds: millis));
+          expect(
+            find.byType(HhAppNavigation, skipOffstage: false),
+            findsOneWidget,
+          );
+          expect(find.byType(FeedScreen), findsNothing);
+          expect(find.byType(PersonalPostsScreen), findsOneWidget);
+        }
         await tester.pumpAndSettle();
+        expect(fixture.postApi.personalTokens, hasLength(1));
         expect(find.byType(PersonalPostsScreen), findsOneWidget);
         expect(
           tester.widget<HhAppNavigation>(find.byType(HhAppNavigation)).selected,

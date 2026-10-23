@@ -22,6 +22,23 @@ type PostImageBackend interface {
 	ReadPostImages(context.Context, [32]byte, string, string) (authprivacy.PostResponse, error)
 }
 
+type PostImageThumbnailBackend interface {
+	PostImageThumbnailsEnabled() bool
+	ReadPostThumbnail(context.Context, [32]byte, string, string) (authprivacy.PostResponse, error)
+}
+
+// Explicit negotiation keeps old strict clients and original-only deployments usable.
+func postPreviewRequested(r *http.Request) (bool, error) {
+	if !hasHeader(r.Header, "X-Post-Preview") {
+		return false, nil
+	}
+	value, err := singleHeader(r.Header, "X-Post-Preview")
+	if err != nil || value != "thumbnail-v1" {
+		return false, errMalformed
+	}
+	return true, nil
+}
+
 func isPostImagePath(path string) bool {
 	p := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
 	return len(p) >= 3 && p[0] == "posts" && p[2] == "images" || len(p) >= 4 && p[0] == "me" && p[1] == "post-tasks" && p[3] == "attempts"
@@ -45,8 +62,8 @@ func parseImageRoute(path string) (imageRoute, error) {
 			r.kind = "group"
 			return r, nil
 		}
-		if len(p) == 5 && postmedia.ValidID(p[3]) && p[4] == "original" {
-			r.kind = "original"
+		if len(p) == 5 && postmedia.ValidID(p[3]) && (p[4] == "original" || p[4] == "thumbnail") {
+			r.kind = p[4]
 			r.media = p[3]
 			return r, nil
 		}
@@ -103,6 +120,11 @@ func (b *boundary) communityPostImages(w http.ResponseWriter, r *http.Request, b
 	route, e := parseImageRoute(r.URL.Path)
 	if e != nil || r.URL.RawPath != "" || r.URL.RawQuery != "" || r.URL.ForceQuery {
 		b.postBad(w, errMalformed)
+		return
+	}
+	preview, previewErr := postPreviewRequested(r)
+	if previewErr != nil {
+		b.postBad(w, previewErr)
 		return
 	}
 	if r.Method != route.method {
@@ -180,6 +202,13 @@ func (b *boundary) communityPostImages(w http.ResponseWriter, r *http.Request, b
 	switch route.kind {
 	case "grant":
 		response, e = backend.IssuePostImageGrant(r.Context(), token, route.id, route.media, route.version)
+	case "thumbnail":
+		thumbnailer, ok := backend.(PostImageThumbnailBackend)
+		if !ok || !thumbnailer.PostImageThumbnailsEnabled() {
+			b.imageFailure(w, postmedia.ErrUnavailable)
+			return
+		}
+		response, e = thumbnailer.ReadPostThumbnail(r.Context(), token, route.id, route.media)
 	case "uploads":
 		response, e = backend.ReadPostImageUploads(r.Context(), token, route.id, route.version)
 	default:
@@ -196,7 +225,7 @@ func (b *boundary) communityPostImages(w http.ResponseWriter, r *http.Request, b
 	var encoded []byte
 	var mime string
 	switch route.kind {
-	case "original":
+	case "original", "thumbnail":
 		v, ok := response.Value.(authprivacy.ImageBytes)
 		if !ok || len(v.Bytes) < 1 || len(v.Bytes) > postmedia.MaxBytes {
 			b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
@@ -208,6 +237,10 @@ func (b *boundary) communityPostImages(w http.ResponseWriter, r *http.Request, b
 			b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
 			return
 		}
+		if route.kind == "thumbnail" && (v.MIME != "image/webp" || len(v.Bytes) > postmedia.MaxThumbnailBytes) {
+			b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+			return
+		}
 		encoded = v.Bytes
 		mime = v.MIME
 	case "group":
@@ -215,6 +248,16 @@ func (b *boundary) communityPostImages(w http.ResponseWriter, r *http.Request, b
 		if !ok || !validImageGroup(v, route.id, response.ServerTime, response.ExpiresAt) {
 			b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
 			return
+		}
+		if thumbnailer, ok := backend.(PostImageThumbnailBackend); preview && ok && thumbnailer.PostImageThumbnailsEnabled() {
+			// Copy the slice: response validation must not mutate backend state.
+			v.Images = append([]postmedia.Image{}, v.Images...)
+			for i := range v.Images {
+				v.Images[i].Thumbnail = postmedia.Source{
+					Path: "/api/v1/posts/" + route.id + "/images/" + v.Images[i].ContentVersionID + "/thumbnail",
+					MIME: "image/webp", MaxByteLength: postmedia.MaxThumbnailBytes,
+				}
+			}
 		}
 		encoded, e = json.Marshal(v)
 	case "uploads":
@@ -281,7 +324,7 @@ func validImageGroup(v postmedia.Group, post string, at, expires time.Time) bool
 		ids[s.ContentVersionID] = true
 		media[s.MediaID] = true
 		expected := "/api/v1/posts/" + post + "/images/" + s.ContentVersionID + "/original"
-		if s.Full != s.Thumbnail || s.Full != s.Original || s.Full.Path != expected || s.Full.ByteLength < 1 || s.Full.ByteLength > postmedia.MaxBytes {
+		if s.Full != s.Thumbnail || s.Full != s.Original || s.Full.Path != expected || s.Full.ByteLength < 1 || s.Full.ByteLength > postmedia.MaxBytes || s.Full.MaxByteLength != 0 {
 			return false
 		}
 		switch s.Full.MIME {

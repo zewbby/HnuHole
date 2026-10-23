@@ -158,6 +158,118 @@ void main() {
     },
   );
 
+  test('concurrent consumers share manifest and bytes; release does not revoke another consumer', () async {
+    api.manifestWait = Completer();
+    final one = repository.load(mediaPostId),
+        two = repository.load(mediaPostId);
+    await Future<void>.delayed(Duration.zero);
+    expect(api.manifestReads, 1);
+    api.manifestWait!.complete(
+      _response(PostMediaManifest.fromJson(api.manifest, mediaPostId)),
+    );
+    final first = await one, second = await two;
+    final firstImage = await first.images.single.loadThumbnail!();
+    first.onRelease!();
+    expect(first.accessGranted.value, isFalse);
+    expect(second.accessGranted.value, isTrue);
+    expect(
+      identical(await second.images.single.loadThumbnail!(), firstImage),
+      isTrue,
+    );
+    second.onRelease!();
+    expect(repository.idleGroupCount, 1);
+    final third = await repository.load(mediaPostId);
+    expect(
+      identical(await third.images.single.loadThumbnail!(), firstImage),
+      isTrue,
+    );
+    expect(api.manifestReads, 1);
+    expect(api.byteReads, 1);
+    third.onRelease!();
+    third.onRelease!();
+    expect(repository.idleGroupCount, 1);
+  });
+
+  test('a released consumer cannot receive late shared bytes held by another consumer', () async {
+    final first = await repository.load(mediaPostId);
+    final second = await repository.load(mediaPostId);
+    api.bytesWait = Completer();
+    final rejected = expectLater(
+      first.images.single.loadThumbnail!(),
+      throwsA(isA<PostFailure>()),
+    );
+    final active = second.images.single.loadThumbnail!();
+    await Future<void>.delayed(Duration.zero);
+    first.onRelease!();
+    api.bytesWait!.complete(_response(api.bytes));
+    await rejected;
+    expect(await active, isA<MemoryImage>());
+    expect(api.byteReads, 1);
+    expect(second.accessGranted.value, isTrue);
+  });
+
+  test('LRU evicts idle posts and byte budget prevents retaining oversized entries', () async {
+    repository.dispose();
+    repository = PostMediaRepository(posts, maxIdleEntries: 1);
+    final first = await repository.load(mediaPostId);
+    await first.images.single.loadThumbnail!();
+    first.onRelease!();
+    api.manifest = mediaManifest(postId: mediaOtherId);
+    final second = await repository.load(mediaOtherId);
+    await second.images.single.loadThumbnail!();
+    second.onRelease!();
+    expect(repository.idleGroupCount, 1);
+    api.manifest = mediaManifest();
+    final third = await repository.load(mediaPostId);
+    expect(api.manifestReads, 3);
+    third.onRelease!();
+    repository.dispose();
+    repository = PostMediaRepository(posts, maxIdleBytes: 1);
+    final large = await repository.load(mediaPostId);
+    await large.images.single.loadThumbnail!();
+    large.onRelease!();
+    expect(repository.idleBytes, 0);
+    expect(repository.idleGroupCount, 0);
+  });
+
+  test(
+    'idle cache is cleared immediately when the account loses authority',
+    () async {
+      final group = await repository.load(mediaPostId);
+      await group.images.single.loadThumbnail!();
+      group.onRelease!();
+      expect(repository.idleGroupCount, 1);
+      await auth.sessions.logout();
+      expect(repository.idleGroupCount, 0);
+      await expectLater(
+        repository.load(mediaPostId),
+        throwsA(isA<PostFailure>()),
+      );
+    },
+  );
+
+  test(
+    'negotiated preview is separate from full image and original save',
+    () async {
+      final row = (api.manifest['images'] as List).single as Map;
+      row['thumbnail'] = {
+        'path': (row['original'] as Map)['path'].toString().replaceFirst(
+          '/original',
+          '/thumbnail',
+        ),
+        'mimeType': 'image/webp',
+        'maxByteLength': 512 * 1024,
+      };
+      final group = await repository.load(mediaPostId);
+      final preview = await group.images.single.loadThumbnail!();
+      final full = await group.images.single.item.loadSource();
+      expect(identical(preview, full.provider), isFalse);
+      expect(api.byteReads, 2);
+      await group.images.single.item.resolveOriginal!();
+      expect(api.byteReads, 3);
+    },
+  );
+
   test('manifest is lazy; preview/full coalesce; saving reauthorizes original bytes', () async {
     final group = await repository.load(mediaPostId);
     expect(api.byteReads, 0);
@@ -181,11 +293,14 @@ void main() {
       ]) {
         api.manifest = mediaManifest(mime: 'image/${format.name}', frames: 3);
         final group = await repository.load(mediaPostId);
+        expect(group.images.single.animated, isTrue);
         expect(
           (await group.images.single.item.resolveOriginal!()).format,
           format,
         );
         group.onRelease!();
+        repository.dispose();
+        repository = PostMediaRepository(posts);
       }
       api.manifest = mediaManifest();
       ((api.manifest['images'] as List).single as Map)['saveAllowed'] = false;
@@ -208,6 +323,24 @@ void main() {
     expect(second.accessGranted.value, isTrue);
     expect(first.accessGranted.value, isFalse);
   });
+
+  test(
+    'reusing an idle group never extends its original authorization deadline',
+    () async {
+      api.manifest = mediaManifest(lifetime: const Duration(milliseconds: 150));
+      final first = await repository.load(mediaPostId);
+      await first.images.single.loadThumbnail!();
+      first.onRelease!();
+      await Future<void>.delayed(const Duration(milliseconds: 90));
+      final second = await repository.load(mediaPostId);
+      expect(api.manifestReads, 1);
+      await Future<void>.delayed(const Duration(milliseconds: 90));
+      expect(second.accessGranted.value, isFalse);
+      final third = await repository.load(mediaPostId);
+      expect(api.manifestReads, 2);
+      expect(third.accessGranted.value, isTrue);
+    },
+  );
 
   test(
     'account replacement rejects a late manifest and never restores old media',
@@ -352,58 +485,71 @@ void main() {
     },
   );
 
-  test(
-    'revocation evicts only this lease MemoryImage and clears reuse',
-    () async {
-      api.bytes = await File(
-        '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
-      ).readAsBytes();
-      api.manifest = mediaManifest(
-        bytes: api.bytes.length,
-        width: 640,
-        height: 480,
+  test('repository revocation evicts only its protected MemoryImage and resized keys', () async {
+    api.bytes = await File(
+      '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
+    ).readAsBytes();
+    api.manifest = mediaManifest(
+      bytes: api.bytes.length,
+      width: 640,
+      height: 480,
+    );
+    final group = await repository.load(mediaPostId);
+    final provider = await group.images.single.loadThumbnail!();
+    final resized = ResizeImage(
+      provider,
+      width: 160,
+      height: 120,
+      policy: ResizeImagePolicy.fit,
+    );
+    group.images.single.registerDecodeProvider!(resized);
+    final unrelated = MemoryImage(Uint8List.fromList(api.bytes));
+    Future<void> decode(ImageProvider provider) async {
+      final done = Completer<void>();
+      final stream = provider.resolve(ImageConfiguration.empty);
+      late ImageStreamListener listener;
+      listener = ImageStreamListener(
+        (image, sync) {
+          image.dispose();
+          done.complete();
+        },
+        onError: (Object error, StackTrace? stack) => done.completeError(error),
       );
-      final group = await repository.load(mediaPostId);
-      final provider = await group.images.single.loadThumbnail!();
-      final unrelated = MemoryImage(Uint8List.fromList(api.bytes));
-      Future<void> decode(ImageProvider provider) async {
-        final done = Completer<void>();
-        final stream = provider.resolve(ImageConfiguration.empty);
-        late ImageStreamListener listener;
-        listener = ImageStreamListener(
-          (image, sync) {
-            image.dispose();
-            done.complete();
-          },
-          onError: (Object error, StackTrace? stack) =>
-              done.completeError(error),
-        );
-        stream.addListener(listener);
-        await done.future;
-        stream.removeListener(listener);
-      }
+      stream.addListener(listener);
+      await done.future;
+      stream.removeListener(listener);
+    }
 
-      await decode(provider);
-      await decode(unrelated);
-      expect(
-        PaintingBinding.instance.imageCache.containsKey(
-          await provider.obtainKey(ImageConfiguration.empty),
-        ),
-        isTrue,
-      );
-      group.onRelease!();
-      await Future<void>.delayed(Duration.zero);
-      expect(
-        PaintingBinding.instance.imageCache.containsKey(
-          await provider.obtainKey(ImageConfiguration.empty),
-        ),
-        isFalse,
-      );
-      expect(
-        PaintingBinding.instance.imageCache.containsKey(unrelated),
-        isTrue,
-      );
-      await unrelated.evict();
-    },
-  );
+    await decode(provider);
+    await decode(resized);
+    await decode(unrelated);
+    expect(
+      PaintingBinding.instance.imageCache.containsKey(
+        await provider.obtainKey(ImageConfiguration.empty),
+      ),
+      isTrue,
+    );
+    expect(
+      PaintingBinding.instance.imageCache.containsKey(
+        await resized.obtainKey(ImageConfiguration.empty),
+      ),
+      isTrue,
+    );
+    repository.dispose();
+    await Future<void>.delayed(Duration.zero);
+    expect(
+      PaintingBinding.instance.imageCache.containsKey(
+        await provider.obtainKey(ImageConfiguration.empty),
+      ),
+      isFalse,
+    );
+    expect(
+      PaintingBinding.instance.imageCache.containsKey(
+        await resized.obtainKey(ImageConfiguration.empty),
+      ),
+      isFalse,
+    );
+    expect(PaintingBinding.instance.imageCache.containsKey(unrelated), isTrue);
+    await unrelated.evict();
+  });
 }

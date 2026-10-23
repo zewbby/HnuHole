@@ -50,7 +50,7 @@ jobs:
         working-directory: apps/mobile
         run: |
           flutter analyze --no-pub
-          flutter test --no-pub test/feed_interactions_test.dart test/feed_ui_test.dart test/feed_media_test.dart test/post_api_test.dart test/post_screens_test.dart test/post_images_test.dart test/post_media_repository_test.dart test/comment_views_test.dart test/comment_runtime_test.dart test/personal_route_account_test.dart test/feed_read_error_scope_test.dart test/telegram_appearance_test.dart test/mobile_flow_theme_integration_test.dart test/login_home_navigation_test.dart test/talkback_semantics_test.dart
+          flutter test --no-pub test/app_navigation_test.dart test/post_controller_test.dart test/feed_interactions_test.dart test/feed_ui_test.dart test/feed_media_test.dart test/post_api_test.dart test/post_screens_test.dart test/post_images_test.dart test/post_media_repository_test.dart test/comment_views_test.dart test/comment_runtime_test.dart test/personal_route_account_test.dart test/feed_read_error_scope_test.dart test/telegram_appearance_test.dart test/mobile_flow_theme_integration_test.dart test/login_home_navigation_test.dart test/talkback_semantics_test.dart
           flutter build bundle --debug --no-pub
           dart compile exe integration/feed_live_probe.dart -o build/feed-live-probe
           dart compile exe integration/feed_staging_probe.dart -o build/feed-staging-probe

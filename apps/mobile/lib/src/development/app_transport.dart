@@ -5,6 +5,10 @@ import 'package:flutter/foundation.dart';
 
 /// A public development RP can be pinned while the actual C/V APIs stay behind
 /// verified private-CA loopback HTTPS. Release builds reject this test setting.
+bool get _developmentTrustAllowed =>
+    kDebugMode ||
+    (kProfileMode && const bool.fromEnvironment('AUTH_DEV_PROFILE'));
+
 String? developmentPasskeyRp({
   required Uri community,
   required Uri verifier,
@@ -12,9 +16,9 @@ String? developmentPasskeyRp({
   String developmentCa = const String.fromEnvironment('AUTH_DEV_CA_BASE64'),
 }) {
   if (rp.isEmpty) return null;
-  if (!kDebugMode || developmentCa.isEmpty) {
+  if (!_developmentTrustAllowed || developmentCa.isEmpty) {
     throw StateError(
-      'Development RP requires explicit debug development trust',
+      'Development RP requires explicit development trust',
     );
   }
   validateDevelopmentOrigins(community, verifier);
@@ -29,8 +33,8 @@ HttpClient createAppHttpClient({
   String developmentCa = const String.fromEnvironment('AUTH_DEV_CA_BASE64'),
 }) {
   if (developmentCa.isEmpty) return HttpClient();
-  if (!kDebugMode) {
-    throw StateError('Development CA requires a debug build');
+  if (!_developmentTrustAllowed) {
+    throw StateError('Development CA requires an authorized development build');
   }
   validateDevelopmentOrigins(community, verifier);
   final bytes = base64Decode(developmentCa);

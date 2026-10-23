@@ -13,9 +13,11 @@ class FeedPost extends PostCard {
     required this.body,
     required this.viewCount,
     this.imageCount = 0,
+    this.imageSizes,
   });
   final String body;
   final int viewCount, imageCount;
+  final List<({int width, int height})>? imageSizes;
   static FeedPost fromJson(Object? raw) {
     final m = PostJson.record(
       raw,
@@ -28,10 +30,28 @@ class FeedPost extends PostCard {
         'publishedAt',
         'viewCount',
       },
-      optional: {'imageCount'},
+      optional: {'imageCount', 'imageSizes'},
     );
     final title = PostJson.text(m, 'title', maxLength: 4096);
     final imageCount = PostJson.imageCount(m);
+    List<({int width, int height})>? sizes;
+    if (m.containsKey('imageSizes')) {
+      final rawSizes = m['imageSizes'];
+      if (rawSizes is! List || rawSizes.length != imageCount) {
+        throw const FormatException('Mismatched feed image geometry');
+      }
+      sizes = List.unmodifiable(
+        rawSizes.map((raw) {
+          final size = PostJson.record(raw, {'width', 'height'});
+          final width = PostJson.integer(size, 'width', 1, 16384);
+          final height = PostJson.integer(size, 'height', 1, 16384);
+          if (width * height > 12 * 1024 * 1024) {
+            throw const FormatException('Invalid feed image geometry');
+          }
+          return (width: width, height: height);
+        }),
+      );
+    }
     final body = PostJson.text(
       m,
       'body',
@@ -50,7 +70,8 @@ class FeedPost extends PostCard {
       author: PostAuthor.fromJson(m['author']),
       publishedAt: PostJson.date(m, 'publishedAt'),
       viewCount: PostJson.integer(m, 'viewCount', 0, 9223372036854775807),
-      imageCount: PostJson.imageCount(m),
+      imageCount: imageCount,
+      imageSizes: sizes,
     );
   }
 }

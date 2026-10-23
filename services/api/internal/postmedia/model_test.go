@@ -57,6 +57,10 @@ func TestRealProcessValidatorOriginalFormats(t *testing.T) {
 			if e != nil {
 				t.Fatal(e)
 			}
+			preview, err := validator.Thumbnail(context.Background(), data)
+			if err != nil || len(preview) < 12 || len(preview) > MaxThumbnailBytes || string(preview[8:12]) != "WEBP" {
+				t.Fatal("bounded preview failed", err)
+			}
 			var expected Metadata
 			if json.Unmarshal(raw, &expected) != nil {
 				t.Fatal("metadata fixture")

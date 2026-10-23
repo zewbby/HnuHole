@@ -112,6 +112,7 @@ jobs:
           "$RUNNER_TEMP/post-image-python/bin/python" -m pip install -r services/api/media/requirements.txt
           chmod -R go-w services/api/media
           "$RUNNER_TEMP/post-image-python/bin/python" -I -B services/api/media/validate_image.py --probe
+          "$RUNNER_TEMP/post-image-python/bin/python" services/api/media/test_validator.py
           "$RUNNER_TEMP/post-image-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/post-image-fixtures"
       - name: Restricted-role schema and image lifecycle regression
         working-directory: services/api

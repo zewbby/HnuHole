@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-23 MOBILE-NAV-REFRESH-01（分支实现／待合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；用户已在真我确认切换无重影／闪首页，导航视觉验收PASS；短时Profile帧性能已测，其余项目保留限定基础回归结论。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。
+
 > **2026-10-23 AUTH-STARTUP-FLASH-01已合并：**[PR #56](https://github.com/zewbby/HnuHole/pull/56)合入main `4197dd3`；七类CI全PASS，同签2308整合包构建及主线产品源码一致性核对PASS。21项入口／导航回归、分析0；未安装／未发布，VIVO视觉待验。下方本地状态为历史快照，见[任务](../branches/fix-auth-startup-flash.md)。
 
 > **2026-10-23 AUTH-STARTUP-FLASH-01：**A12启动展示限定修正；`flutter test --no-pub test/startup_entry_test.dart test/login_home_navigation_test.dart test/personal_route_account_test.dart`共21项PASS、分析0。未打包／安装，待整合后VIVO视觉验证；不提升完整认证或生产验收。见[任务](../branches/fix-auth-startup-flash.md)。
@@ -911,3 +913,7 @@ AUTH-UI-IMPLEMENT-01 合并回执：`c23620f` 与已检查 head 文件树相同�
 分析0、全量668、真实字体20项、375浅色／320深色1.6倍字与独立只读审查无阻断；涉及A06/A12/B01的UI增量，不升级整模块历史结果。真实邮件／设备／Passkey／iOS／生产 NOT_RUN。见[任务](../branches/feat-registration-wizard-ui.md)及[证据](validation/registration-wizard-20261021/verification.json)。最终远端head与合并状态以PR为准；合并后主体APK单独记录，不把设计图或宿主替身当作真实认证验收。
 
 AUTH-REGISTER-IMPLEMENT-03 合并回执：PR #42已合入main `09498b2`，与已检查head `e1d2b0a` 完整树一致；五项CI成功，668宿主、20真实字体页面测试、分析0及独立只读审查无阻断。见[回执](validation/registration-wizard-20261021/main-merge.json)。原实现段“以PR为准”现由本条确认；主线主体包沿用原签名交付，设备／真实邮件／Passkey／生产 NOT_RUN。
+
+## MOBILE-NAV-REFRESH-01 真我动图／性能增量（2026-10-23）
+
+B03／B06／B10／PM01／IV01只增加本任务限定证据，不提升历史整模块结论。[真我续验证据](validation/mobile-animation-frame-realme-20261023.json)：开发C/V、合成front_b、实发GIF和WebP后进入原图页保存；系统相册中的两份文件与上传源逐字节相同，各4帧，应用原图播放正常，原生保存PASS。ColorOS相册的预览页面只显示首帧，属外部播放器观察限制。Profile2304于60Hz真我短时测12次切栏／8次滑动／3次刷新及动图查看；前3类build/raster P95均低于7ms，单个超16.67ms帧已记，未见持续预算失败。Flutter `gfxinfo` 对SurfaceView报0帧，不作为依据；使用FrameTiming与SurfaceFlinger。Profile开发CA修复后的宿主回归4项PASS；原生产Release开发信任边界保留。真实大图长列表／长时内存、iOS、远端CI、生产NOT_RUN。

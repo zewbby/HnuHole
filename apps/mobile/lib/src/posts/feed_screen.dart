@@ -32,6 +32,7 @@ class FeedScreen extends StatefulWidget {
     this.onOpenDirectMessages,
     this.initialChannelId,
     this.loadImages,
+    this.showNavigation = true,
   });
   final String? initialChannelId;
   final PostController controller;
@@ -41,6 +42,7 @@ class FeedScreen extends StatefulWidget {
   final VoidCallback onAuthenticationRequired;
   final VoidCallback? onOpenPersonal, onOpenMessages, onOpenDirectMessages;
   final PostImagesLoader? loadImages;
+  final bool showNavigation;
   @override
   State<FeedScreen> createState() => _FeedScreenState();
 }
@@ -299,6 +301,7 @@ class _FeedScreenState extends State<FeedScreen> {
             .where((channel) => channel.id == c.timelineChannelId)
             .firstOrNull;
         return HhXPostFeed(
+          showNavigation: widget.showNavigation,
           channelTitle: widget.composeChannel.name,
           feedTitle: selectedChannel?.name ?? '推荐',
           composeTooltip: selectedChannel == null
@@ -426,6 +429,19 @@ class _FeedScreenState extends State<FeedScreen> {
                                 key: ValueKey('feed-images:${post.postId}'),
                                 postId: post.postId,
                                 feedPreview: true,
+                                initialSizes:
+                                    post.imageSizes
+                                        ?.map(
+                                          (size) => Size(
+                                            size.width.toDouble(),
+                                            size.height.toDouble(),
+                                          ),
+                                        )
+                                        .toList() ??
+                                    List.filled(
+                                      post.imageCount,
+                                      const Size(1, 1),
+                                    ),
                                 expectedCount: post.imageCount,
                                 loadImages: widget.loadImages!,
                                 authority: c,

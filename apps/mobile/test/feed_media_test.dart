@@ -22,17 +22,22 @@ void main() {
       ).readAsBytes(),
     );
   });
-  PostImage media(String id, Size size, {Future<ImageProvider>? pending}) =>
-      PostImage.deferred(
-        pixelSize: size,
-        loadThumbnail: () => pending ?? Future.value(image),
-        item: ViewerItem.provider(
-          id: id,
-          provider: image,
-          pixelSize: size,
-          saveAllowed: false,
-        ),
-      );
+  PostImage media(
+    String id,
+    Size size, {
+    Future<ImageProvider>? pending,
+    bool animated = false,
+  }) => PostImage.deferred(
+    pixelSize: size,
+    animated: animated,
+    loadThumbnail: () => pending ?? Future.value(image),
+    item: ViewerItem.provider(
+      id: id,
+      provider: image,
+      pixelSize: size,
+      saveAllowed: false,
+    ),
+  );
   PostImages group(
     List<PostImage> images,
     ValueNotifier<bool> access, {
@@ -70,6 +75,66 @@ void main() {
       await tester.pump(const Duration(milliseconds: 40));
     }
   }
+
+  testWidgets(
+    'feed geometry is reserved before manifest and bytes; decoding stays bounded',
+    (tester) async {
+      final authority = ValueNotifier(true), access = ValueNotifier(true);
+      final pending = Completer<PostImages>();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: SizedBox(
+                width: 317,
+                child: PostImagesSection(
+                  postId: fixture.postId,
+                  expectedCount: 1,
+                  feedPreview: true,
+                  initialSizes: const [Size(1600, 900)],
+                  loadImages: (_) => pending.future,
+                  authority: authority,
+                  isCurrent: () => authority.value,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final before = tester.getSize(find.byType(PostImagesSection));
+      expect(before.height, closeTo(317 * 900 / 1600 + 8, .1));
+      pending.complete(group([media('sized', const Size(1600, 900))], access));
+      await frames(tester);
+      expect(tester.getSize(find.byType(PostImagesSection)), before);
+      final decoded =
+          tester.widget<Image>(find.byType(Image).first).image as ResizeImage;
+      expect(decoded.policy, ResizeImagePolicy.fit);
+      expect(decoded.width, lessThanOrEqualTo(1280));
+      expect(decoded.height, lessThanOrEqualTo(1280));
+      await tester.pumpWidget(const SizedBox());
+      authority.dispose();
+      access.dispose();
+    },
+  );
+
+  testWidgets('animated originals have a visible label on static previews', (
+    tester,
+  ) async {
+    final authority = ValueNotifier(true), access = ValueNotifier(true);
+    await tester.pumpWidget(
+      section(
+        authority,
+        group([
+          media('animated', const Size(640, 480), animated: true),
+        ], access),
+      ),
+    );
+    await frames(tester);
+    expect(find.text('动图'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+    authority.dispose();
+    access.dispose();
+  });
 
   testWidgets(
     'single landscape and portrait preserve metadata ratio; extreme preview is bounded',

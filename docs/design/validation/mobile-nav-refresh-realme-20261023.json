@@ -1,0 +1,34 @@
+{
+  "task": "MOBILE-NAV-REFRESH-01",
+  "date": "2026-10-23",
+  "branch": "fix/mobile-navigation-refresh",
+  "versionCode": 2026102303,
+  "device": "realme RMX3366",
+  "serial": "7e0660f1",
+  "installation": "PASS_REPLACE_WITH_DATA_RETAINED",
+  "previousVersion": 2026102306,
+  "rollbackAPK": "E:\\Hnuhole-env\\media-cache-preview-20261023\\device-realme\\previous-2306.apk",
+  "backend": "DEPLOYED_DEV_COMMUNITY_MEDIA_2303_READY",
+  "generationAndSessionCountsUnchanged": true,
+  "recoveryInvoked": false,
+  "migrationRun": false,
+  "testAccount": "existing synthetic front_b; no credentials recorded",
+  "checks": {
+    "navigation": "PASS_SINGLE_BOTTOM_BAR_AND_BACK; USER_CONFIRMED_NO_TRANSIENT_GHOSTING_OR_HOME_FLASH",
+    "refresh": "PASS_OFFLINE_EXISTING_POSTS_RETAINED_AND_RECONNECT_RECOVERED",
+    "cache": "PASS_24_48_SECONDS_SCROLL_AND_TAB_ROUNDTRIP_EACH_PREVIEW_READ_ONCE",
+    "thumbnail": "PASS_NEGOTIATED_ENDPOINT_1834_TO_2196_BYTES_GEOMETRY_PRESENT_AND_ORIGINAL_VIEWER_OPENED",
+    "personal": "PASS_EMPTY_STATE_RETAINED_NO_REPEAT_LIST_READS_ON_TAB_RETURN"
+  },
+  "limits": [
+    "Synthetic fixtures only; no real-photo bandwidth or frame-performance conclusion",
+    "Original authorization expires after 60 seconds and requires rereading; expiry state observed",
+    "Native animation/save and long-running memory pressure not rerun",
+    "System recording unavailable; navigation visual acceptance comes from explicit user confirmation. Frame performance unmeasured."
+  ],
+  "observationProxy": "STOPPED; phone restored to direct backend forwarding",
+  "userAcceptance": "NAVIGATION_VISUAL_PASS_USER_CONFIRMED",
+  "followupEvidence": "docs/design/validation/mobile-animation-frame-realme-20261023.json",
+  "production": false,
+  "localEvidence": "E:\\Hnuhole-env\\media-cache-preview-20261023\\device-realme"
+}

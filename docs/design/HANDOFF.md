@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-23 MOBILE-NAV-REFRESH-01（分支实现／待合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；用户已在真我确认切换无重影／闪首页，导航视觉验收PASS；短时Profile帧性能已测，其余项目保留限定基础回归结论。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。
+
 > **2026-10-23 AUTH-STARTUP-FLASH-01已合并：**[PR #56](https://github.com/zewbby/HnuHole/pull/56)合入main `4197dd3`；七类CI全PASS，同签2308整合包构建及主线产品源码一致性核对PASS。21项入口／导航回归、分析0；未安装／未发布，VIVO视觉待验。下方本地状态为历史快照，见[任务](../branches/fix-auth-startup-flash.md)。
 
 > **2026-10-23 AUTH-STARTUP-FLASH-01（本地未合并）：**按用户最新范围仅修复启动时旧会话错误页闪现，恢复期间保持欢迎页；21项入口／导航回归PASS、分析0。登录错误修改已撤回，未覆盖其他任务整合包；待整合后VIVO视觉验证。见[任务](../branches/fix-auth-startup-flash.md)。
@@ -521,3 +523,7 @@ AUTH-UI-IMPLEMENT-01 合并回执：`c23620f` 与已检查 head 文件树相同�
 分析0、全量668、真实字体20项、375浅色／320深色1.6倍字与独立只读审查无阻断；涉及A06/A12/B01的UI增量，不升级整模块历史结果。真实邮件／设备／Passkey／iOS／生产 NOT_RUN。见[任务](../branches/feat-registration-wizard-ui.md)及[证据](validation/registration-wizard-20261021/verification.json)。最终远端head与合并状态以PR为准；合并后主体APK单独记录，不把设计图或宿主替身当作真实认证验收。
 
 AUTH-REGISTER-IMPLEMENT-03 合并回执：PR #42已合入main `09498b2`，与已检查head `e1d2b0a` 完整树一致；五项CI成功，668宿主、20真实字体页面测试、分析0及独立只读审查无阻断。见[回执](validation/registration-wizard-20261021/main-merge.json)。原实现段“以PR为准”现由本条确认；主线主体包沿用原签名交付，设备／真实邮件／Passkey／生产 NOT_RUN。
+
+## 2026-10-23 MOBILE-NAV-REFRESH-01 真我续验
+
+`fix/mobile-navigation-refresh`的五项基础联调与用户确认的导航视觉通过后，本轮又在真我测了原生动图保存和Profile帧性能。[动图与帧证据](validation/mobile-animation-frame-realme-20261023.json)记录：GIF/WebP实发帖、原图页保存、相册MediaStore格式、拉回文件逐字节同源且各4帧；应用原图页播放可见。ColorOS相册预览仅显示首帧，文件本身仍保留动画。Profile2304在60Hz短时合成场景测得切栏／滑动／刷新build和raster P95均小于7ms、各至多1帧单独超16.67ms，未见持续超预算。为使Profile连接专用开发C/V，代码增加仅Profile显式开关的开发CA信任，Release继续拒绝；对应宿主4项PASS。真实大图长列表／长时内存、远端CI、独立review、生产与iOS未验。本地分支未提交／推送／合并，开发C保持本轮服务。

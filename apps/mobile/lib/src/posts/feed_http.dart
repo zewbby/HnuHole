@@ -11,6 +11,7 @@ extension _FeedHttp on HttpPostApi {
       sessionToken,
       'GET',
       '/api/v1/feed',
+      headers: const {'X-Post-Preview': 'thumbnail-v1'},
       query: {
         ...HttpPostApi._pageQuery(cursor, limit),
         if (channelId != null) 'channelId': PostProtocol.resourceId(channelId),
