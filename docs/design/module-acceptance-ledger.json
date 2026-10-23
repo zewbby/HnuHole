@@ -1,4 +1,22 @@
 {
+  "feedRefreshCancel20261024": {
+    "task": "FEED-REFRESH-CANCEL-01",
+    "modules": [
+      "B03",
+      "B06",
+      "B10"
+    ],
+    "branch": "codex/fix/feed-refresh-cancel",
+    "implementation": "READY_FOR_PR",
+    "finalFocusedTests": 17,
+    "relatedRegressionTests": 74,
+    "analysisIssues": 0,
+    "flutterBundle": "PASS",
+    "device": "VIVO_2402_INSTALLED_USER_CONFIRMED_OK",
+    "remoteCI": "NOT_RUN",
+    "moduleVerdictsUnchanged": true,
+    "evidence": "docs/design/feed-refresh-cancel-verification-20261024.json"
+  },
   "feedScrollSmile20261023": {
     "task": "FEED-SCROLL-SMILE-01",
     "modules": [

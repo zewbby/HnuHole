@@ -11,6 +11,7 @@ import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 import 'package:hnuhole_mobile/src/navigation/app_navigation.dart';
 import 'package:hnuhole_mobile/src/navigation/feed_chrome.dart';
 import 'package:hnuhole_mobile/src/navigation/primary_tabs.dart';
+import 'package:hnuhole_mobile/src/posts/feed_refresh.dart';
 
 import 'feed_ui_test.dart' as feed;
 
@@ -231,10 +232,108 @@ void main() {
         f.api.calls.where((call) => call.startsWith('feed:')),
         hasLength(1),
       );
-      expect(find.byKey(const ValueKey('feed-refresh-orbit')), findsNothing);
+      expect(
+        find.byKey(const ValueKey('feed-refresh-glyph-highlight')),
+        findsNothing,
+      );
       await tester.pumpWidget(const SizedBox());
     },
   );
+
+  for (final empty in [false, true]) {
+    testWidgets(
+      'armed pull reverses and cancels without hiding chrome (empty=$empty)',
+      (tester) async {
+        await _phone(tester);
+        final f = await feed.FeedFixture.create();
+        addTearDown(f.dispose);
+        if (empty) {
+          f.api.items = [];
+        } else {
+          _longFeed(f);
+        }
+        await tester.pumpWidget(_screen(f));
+        await tester.pumpAndSettle();
+        final baseline = tester.getSize(find.byKey(_headerKey)).height;
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.byKey(_listKey)),
+        );
+        await gesture.moveBy(const Offset(0, 40));
+        await tester.pump();
+        await gesture.moveBy(Offset(0, empty ? 440 : 220));
+        await tester.pump();
+        expect(
+          tester.getSize(find.byKey(_headerKey)).height,
+          greaterThan(baseline + 60),
+        );
+        await gesture.moveBy(const Offset(0, -100));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.widget<Align>(find.byKey(_headerKey)).heightFactor, 1);
+        await gesture.moveBy(const Offset(0, -130));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.widget<Align>(find.byKey(_headerKey)).heightFactor, 1);
+        await gesture.up();
+        await tester.pumpAndSettle();
+        expect(
+          f.api.calls.where((call) => call.startsWith('feed:')),
+          hasLength(1),
+        );
+        expect(tester.getSize(find.byKey(_headerKey)).height, baseline);
+        if (!empty) {
+          await tester.drag(find.byKey(_listKey), const Offset(0, -150));
+          await tester.pumpAndSettle();
+          expect(tester.widget<Align>(find.byKey(_headerKey)).heightFactor, 0);
+        }
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
+  }
+
+  for (final cancelPointer in [false, true]) {
+    testWidgets(
+      'reversed pull can rearm; pointer cancellation never refreshes ($cancelPointer)',
+      (tester) async {
+        await _phone(tester);
+        final f = await feed.FeedFixture.create();
+        addTearDown(f.dispose);
+        f.api.items = [];
+        await tester.pumpWidget(_screen(f));
+        await tester.pumpAndSettle();
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.byKey(_listKey)),
+        );
+        await gesture.moveBy(const Offset(0, 40));
+        await tester.pump();
+        await gesture.moveBy(const Offset(0, 220));
+        await tester.pump();
+        await gesture.moveBy(const Offset(0, -210));
+        await tester.pump();
+        expect(
+          f.api.calls.where((call) => call.startsWith('feed:')),
+          hasLength(1),
+        );
+        await gesture.moveBy(const Offset(0, 180));
+        await tester.pump();
+        expect(
+          f.api.calls.where((call) => call.startsWith('feed:')),
+          hasLength(1),
+        );
+        if (cancelPointer) {
+          await gesture.cancel();
+        } else {
+          await gesture.up();
+        }
+        await tester.pumpAndSettle();
+        expect(
+          f.api.calls.where((call) => call.startsWith('feed:')),
+          hasLength(cancelPointer ? 1 : 2),
+        );
+        expect(tester.widget<Align>(find.byKey(_headerKey)).heightFactor, 1);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
+  }
 
   testWidgets('empty feed can refresh, rapid compose taps open one picker', (
     tester,
@@ -249,7 +348,10 @@ void main() {
     await tester.drag(find.byKey(_listKey), const Offset(0, 280));
     await tester.pumpAndSettle();
     expect(f.api.calls.where((call) => call.startsWith('feed:')), hasLength(2));
-    expect(find.byKey(const ValueKey('feed-refresh-orbit')), findsNothing);
+    expect(
+      find.byKey(const ValueKey('feed-refresh-glyph-highlight')),
+      findsNothing,
+    );
     final compose = tester.widget<IconButton>(
       find.byKey(const ValueKey('feed-compose')),
     );
@@ -299,7 +401,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
       await tester.pump(const Duration(milliseconds: 400));
       expect(tester.getSize(find.byKey(_headerKey)).height, baseline);
-      expect(find.byKey(const ValueKey('feed-refresh-orbit')), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('feed-refresh-glyph-highlight')),
+        findsOneWidget,
+      );
       expect(identical(tester.element(item), original), isTrue);
       expect(f.controller.timelineCursor, 'saved-next-page');
       await tester.drag(find.byKey(_listKey), const Offset(0, 250));
@@ -314,13 +419,19 @@ void main() {
       await tester.pumpAndSettle();
       expect(identical(tester.element(item), original), isTrue);
       expect(f.controller.timelineCursor, 'saved-next-page');
-      expect(find.byKey(const ValueKey('feed-refresh-orbit')), findsNothing);
+      expect(
+        find.byKey(const ValueKey('feed-refresh-glyph-highlight')),
+        findsNothing,
+      );
       expect(find.text('暂时无法加载帖子，请重试。'), findsOneWidget);
       f.api.pageWait = null;
       await tester.drag(find.byKey(_listKey), const Offset(0, 280));
       await tester.pumpAndSettle();
       expect(f.controller.timelineError, isNull);
-      expect(find.byKey(const ValueKey('feed-refresh-orbit')), findsNothing);
+      expect(
+        find.byKey(const ValueKey('feed-refresh-glyph-highlight')),
+        findsNothing,
+      );
       expect(
         f.api.calls.where((call) => call.startsWith('feed:')),
         hasLength(3),
@@ -444,6 +555,71 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'loading highlight stays inside the stationary glyph and respects reduced motion',
+    (tester) async {
+      final loader = FontLoader('Roboto')
+        ..addFont(rootBundle.load('assets/fonts/Roboto-Bold.ttf'));
+      await loader.load();
+      final key = GlobalKey();
+      Widget mark({required bool loading, bool reduceMotion = false}) =>
+          MaterialApp(
+            theme: HhTelegramTheme.create(Brightness.light),
+            home: MediaQuery(
+              data: MediaQueryData(disableAnimations: reduceMotion),
+              child: Center(
+                child: RepaintBoundary(
+                  key: key,
+                  child: FeedSmileMark(pull: 0, loading: loading),
+                ),
+              ),
+            ),
+          );
+      Future<List<int>> pixels() async {
+        final boundary =
+            key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+        return tester
+            .runAsync(() async {
+              final image = await boundary.toImage(pixelRatio: 2);
+              final data = await image.toByteData(
+                format: ui.ImageByteFormat.rawRgba,
+              );
+              final bytes = data!.buffer.asUint8List().toList();
+              image.dispose();
+              return bytes;
+            })
+            .then((value) => value!);
+      }
+
+      await tester.pumpWidget(mark(loading: false));
+      final idle = await pixels();
+      await tester.pumpWidget(mark(loading: true));
+      final first = await pixels();
+      await tester.pump(const Duration(milliseconds: 275));
+      final second = await pixels();
+      expect(second, isNot(equals(first)));
+      for (var i = 3; i < idle.length; i += 4) {
+        if (idle[i] == 0) {
+          expect(
+            first[i],
+            0,
+            reason: 'loading must not draw outside the glyph',
+          );
+          expect(
+            second[i],
+            0,
+            reason: 'the glyph must not rotate or grow while loading',
+          );
+        }
+      }
+      await tester.pumpWidget(mark(loading: true, reduceMotion: true));
+      final reduced = await pixels();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(await pixels(), equals(reduced));
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
   testWidgets('real-font light/dark, immersive, pull and loading renders', (
     tester,
   ) async {
@@ -482,8 +658,13 @@ void main() {
     await gesture.up();
     await tester.pump(const Duration(milliseconds: 600));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byKey(const ValueKey('feed-refresh-orbit')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('feed-refresh-glyph-highlight')),
+      findsOneWidget,
+    );
     await _capture(tester, 'light-loading');
+    await tester.pump(const Duration(milliseconds: 275));
+    await _capture(tester, 'light-loading-next');
     f.api.pageWait!.complete(
       feed.reply(PostsPage(items: f.api.items, nextCursor: null)),
     );
