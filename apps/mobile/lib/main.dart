@@ -364,6 +364,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             builder: (_) => DmInboxRoute(
               runtime: widget.dm!,
               initialIdentity: own.id,
+              onManageIdentities: () => _openIdentity(initialCreate: true),
               navigation: _primaryNavigation(AppDestination.directMessages),
             ),
           ),
@@ -427,6 +428,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
           builder: (_) => widget.dm != null
               ? DmInboxRoute(
                   runtime: widget.dm!,
+                  onManageIdentities: () => _openIdentity(initialCreate: true),
                   navigation: _primaryNavigation(AppDestination.directMessages),
                 )
               : DirectMessagesUnavailableScreen(
@@ -694,7 +696,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         .whenComplete(() => _settingsRouteOpen = false);
   }
 
-  Future<void> _openIdentity() async {
+  Future<void> _openIdentity({bool initialCreate = false}) async {
     final navigator = _navigatorKey.currentState;
     if (navigator == null || _identityRouteOpen) return;
     if (!widget.sessions.isAuthenticated) {
@@ -719,6 +721,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
             builder: (context) => IdentityManagementScreen(
               controller: widget.identities,
               sessions: widget.sessions,
+              initialCreate: initialCreate,
               onAuthenticationRequired: () {
                 Navigator.of(context).pop();
                 _openAuth();

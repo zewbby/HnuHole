@@ -133,96 +133,99 @@ class _HhDirectMessageScreenState extends State<HhDirectMessageScreen> {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => StatefulBuilder(
-        builder: (context, update) {
-          final p = HhTelegramPalette.of(context);
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 32,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: p.secondary.withValues(alpha: .4),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '选择发送身份',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: p.ink,
+      builder: (context) => SafeArea(
+        top: false,
+        child: StatefulBuilder(
+          builder: (context, update) {
+            final p = HhTelegramPalette.of(context);
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 32,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: p.secondary.withValues(alpha: .4),
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '首次发送后，这段对话将固定使用该身份',
-                    style: TextStyle(
-                      fontSize: 13,
-                      height: 1.5,
-                      color: p.secondary,
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '选择发送身份',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: p.ink,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        for (final identity in widget.identities)
-                          ListTile(
-                            key: ValueKey('identity:${identity.id}'),
-                            contentPadding: EdgeInsets.zero,
-                            minVerticalPadding: 12,
-                            leading: HhDmAvatar(identity: identity),
-                            title: Text(identity.name),
-                            trailing: Icon(
-                              selected == identity.id
-                                  ? Icons.radio_button_checked
-                                  : Icons.radio_button_off,
-                              color: selected == identity.id
-                                  ? p.accent
-                                  : p.secondary,
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '首次发送后，这段对话将固定使用该身份',
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.5,
+                        color: p.secondary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          for (final identity in widget.identities)
+                            ListTile(
+                              key: ValueKey('identity:${identity.id}'),
+                              contentPadding: EdgeInsets.zero,
+                              minVerticalPadding: 12,
+                              leading: HhDmAvatar(identity: identity),
+                              title: Text(identity.name),
+                              trailing: Icon(
+                                selected == identity.id
+                                    ? Icons.radio_button_checked
+                                    : Icons.radio_button_off,
+                                color: selected == identity.id
+                                    ? p.accent
+                                    : p.secondary,
+                              ),
+                              selected: selected == identity.id,
+                              onTap: () => update(() => selected = identity.id),
                             ),
-                            selected: selected == identity.id,
-                            onTap: () => update(() => selected = identity.id),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    key: const ValueKey('dm-use-identity'),
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(48, 50),
-                    ),
-                    onPressed: selected == null
-                        ? null
-                        : () => Navigator.pop(
-                            context,
-                            widget.identities.firstWhere(
-                              (identity) => identity.id == selected,
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      key: const ValueKey('dm-use-identity'),
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(48, 50),
+                      ),
+                      onPressed: selected == null
+                          ? null
+                          : () => Navigator.pop(
+                              context,
+                              widget.identities.firstWhere(
+                                (identity) => identity.id == selected,
+                              ),
                             ),
-                          ),
-                    child: const Text('使用此身份'),
+                      child: const Text('使用此身份'),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
     if (mounted &&

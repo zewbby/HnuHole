@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../design_system/telegram_theme.dart';
+import '../identity/identity_api.dart';
 import 'direct_message_composer.dart';
 import 'direct_message_models.dart';
 
@@ -64,6 +65,7 @@ class HhDmInboxScreen extends StatefulWidget {
     this.navigation,
     this.onManage,
     this.onSearchChanged,
+    this.onAddIdentity,
   });
 
   /// Must include account/session generation AND the selected inbox identity.
@@ -76,6 +78,7 @@ class HhDmInboxScreen extends StatefulWidget {
   final ValueChanged<DmInboxTarget> onOpen;
   final ValueChanged<DmInboxTarget>? onManage;
   final ValueChanged<String>? onSearchChanged;
+  final VoidCallback? onAddIdentity;
   final ValueChanged<DmIdentity> onIdentitySelected;
   final bool loading;
   final String? error;
@@ -94,6 +97,18 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
   late List<String> _order;
   bool _pending = false;
   int _epoch = 0;
+  final _identityAnchor = GlobalKey();
+  bool _identityMenuOpen = false;
+  Route<dynamic>? _identityMenuRoute;
+
+  void _dismissIdentityMenu() {
+    final route = _identityMenuRoute;
+    if (route == null) return;
+    _identityMenuRoute = null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (route.isActive) route.navigator?.removeRoute(route);
+    });
+  }
 
   List<DmInboxEntry> get _owned => widget.entries
       .where((e) => e.selfIdentityId == widget.identity.id)
@@ -106,6 +121,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
 
   @override
   void dispose() {
+    _dismissIdentityMenu();
     _search.dispose();
     _scroll.dispose();
     super.dispose();
@@ -117,6 +133,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
     if (oldWidget.scopeKey != widget.scopeKey ||
         oldWidget.identity.id != widget.identity.id) {
       _epoch++;
+      _dismissIdentityMenu();
       _offsets[oldWidget.scopeKey] = _scroll.hasClients ? _scroll.offset : 0;
       _search.clear();
       FocusScope.of(context).unfocus();
@@ -154,48 +171,114 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
   }
 
   Future<void> _selectIdentity() async {
+    if (_identityMenuOpen) return;
+    FocusScope.of(context).unfocus();
     final epoch = _epoch;
-    final chosen = await showModalBottomSheet<DmIdentity>(
+    final anchor =
+        _identityAnchor.currentContext!.findRenderObject()! as RenderBox;
+    final overlay =
+        Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    final rect =
+        anchor.localToGlobal(Offset.zero, ancestor: overlay) & anchor.size;
+    final p = HhTelegramPalette.of(context);
+    setState(() => _identityMenuOpen = true);
+    final chosen = await showMenu<String>(
       context: context,
-      useSafeArea: true,
-      isScrollControlled: true,
-      builder: (context) => SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(12),
-                child: Text(
-                  '切换收件身份',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-              ),
-              for (final item in widget.identities)
-                ListTile(
-                  key: ValueKey('inbox-identity:${item.identity.id}'),
-                  leading: Badge(
-                    isLabelVisible: item.unread > 0,
-                    child: HhDmAvatar(identity: item.identity),
-                  ),
-                  title: Text(item.identity.name),
-                  selected: item.identity.id == widget.identity.id,
-                  trailing: item.identity.id == widget.identity.id
-                      ? const Icon(Icons.check)
-                      : null,
-                  onTap: () => Navigator.pop(context, item.identity),
-                ),
-            ],
+      positionBuilder: (context, constraints) {
+        final current = anchor.attached && overlay.attached
+            ? anchor.localToGlobal(Offset.zero, ancestor: overlay) & anchor.size
+            : rect;
+        return RelativeRect.fromRect(
+          Rect.fromLTWH(current.left, current.bottom + 6, current.width, 0),
+          Offset.zero & constraints.biggest,
+        );
+      },
+      constraints: const BoxConstraints(minWidth: 208, maxWidth: 260),
+      color: p.surface,
+      surfaceTintColor: Colors.transparent,
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: p.line),
+      ),
+      popUpAnimationStyle: const AnimationStyle(
+        duration: Duration(milliseconds: 180),
+        reverseDuration: Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+      ),
+      items: [
+        PopupMenuItem<String>(
+          enabled: false,
+          height: 40,
+          child: Builder(
+            builder: (context) {
+              _identityMenuRoute = ModalRoute.of(context);
+              if (!mounted || epoch != _epoch) {
+                _dismissIdentityMenu();
+                return const SizedBox.shrink();
+              }
+              return Text(
+                '切换身份',
+                style: TextStyle(fontSize: 13, color: p.secondary),
+              );
+            },
           ),
         ),
-      ),
+        for (final item in widget.identities)
+          PopupMenuItem<String>(
+            key: ValueKey('inbox-identity:${item.identity.id}'),
+            value: item.identity.id,
+            height: 56,
+            child: Row(
+              children: [
+                Badge(
+                  isLabelVisible: item.unread > 0,
+                  child: HhDmAvatar(identity: item.identity, size: 30),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    item.identity.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 15, color: p.ink),
+                  ),
+                ),
+                if (item.identity.id == widget.identity.id)
+                  Icon(Icons.check_rounded, color: p.accent, size: 20),
+              ],
+            ),
+          ),
+        for (
+          var slot = widget.identities.length;
+          slot < IdentityDirectory.maximumIdentities;
+          slot++
+        )
+          PopupMenuItem<String>(
+            key: ValueKey('inbox-add-identity:$slot'),
+            value: '@add:$slot',
+            enabled: widget.onAddIdentity != null,
+            height: 56,
+            child: Semantics(
+              label: '添加身份',
+              child: Center(
+                child: Icon(Icons.add_rounded, color: p.accent, size: 26),
+              ),
+            ),
+          ),
+      ],
     );
-    if (mounted &&
-        epoch == _epoch &&
-        chosen != null &&
-        widget.identities.any((i) => i.identity.id == chosen.id)) {
-      widget.onIdentitySelected(chosen);
+    _identityMenuRoute = null;
+    if (!mounted) return;
+    setState(() => _identityMenuOpen = false);
+    if (epoch != _epoch || chosen == null) return;
+    if (chosen.startsWith('@add:')) {
+      widget.onAddIdentity?.call();
+    } else {
+      final identity = widget.identities
+          .where((i) => i.identity.id == chosen)
+          .firstOrNull;
+      if (identity != null) widget.onIdentitySelected(identity.identity);
     }
   }
 
@@ -218,33 +301,21 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
               )
               .toList();
     final headers = <Widget>[
-      Material(
-        color: p.surface,
-        borderRadius: BorderRadius.circular(24),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: [
-            ListTile(
-              leading: HhDmAvatar(identity: widget.identity, size: 34),
-              title: Text(
-                widget.identity.name,
-                style: const TextStyle(fontSize: 16),
-              ),
-              subtitle: const Text('当前收件身份', style: TextStyle(fontSize: 12)),
-              trailing: const Icon(Icons.expand_more),
-              onTap: _selectIdentity,
-            ),
-            if (widget.onSystemNotifications != null)
-              ListTile(
-                leading: Icon(Icons.notifications_none, color: p.accent),
-                title: const Text('系统通知', style: TextStyle(fontSize: 16)),
-                trailing: _Unread(count: widget.systemUnread),
-                onTap: widget.onSystemNotifications,
-              ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 16),
+      if (widget.onSystemNotifications != null)
+        Material(
+          color: p.surface,
+          borderRadius: BorderRadius.circular(24),
+          clipBehavior: Clip.antiAlias,
+          child: ListTile(
+            leading: Icon(Icons.notifications_none, color: p.accent),
+            title: const Text('系统通知', style: TextStyle(fontSize: 16)),
+            trailing: _Unread(count: widget.systemUnread),
+            onTap: widget.onSystemNotifications,
+          ),
+        )
+      else
+        const SizedBox.shrink(),
+      SizedBox(height: widget.onSystemNotifications == null ? 0 : 16),
       Material(
         color: p.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -252,17 +323,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-              child: Text(
-                query.isEmpty ? '最近聊天' : '搜索结果',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: p.accent,
-                ),
-              ),
-            ),
+            const SizedBox(height: 8),
             if (widget.loading) const LinearProgressIndicator(minHeight: 2),
             if (widget.error != null)
               Padding(
@@ -311,16 +372,87 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                       ),
                     ),
                   ),
-                  Badge(
-                    isLabelVisible: widget.identities.any(
-                      (i) =>
-                          i.identity.id != widget.identity.id && i.unread > 0,
-                    ),
-                    child: IconButton(
-                      key: const ValueKey('dm-inbox-identity'),
-                      tooltip: '切换收件身份',
-                      onPressed: _selectIdentity,
-                      icon: Icon(Icons.switch_account_outlined, color: p.ink),
+                  Flexible(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: 224,
+                        minHeight: 48,
+                      ),
+                      child: Material(
+                        key: _identityAnchor,
+                        color: p.surface,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(color: p.line),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Tooltip(
+                          message: '切换身份',
+                          child: InkWell(
+                            key: const ValueKey('dm-inbox-identity'),
+                            onTap: _selectIdentity,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  AnimatedRotation(
+                                    turns: _identityMenuOpen ? .25 : 0,
+                                    duration: const Duration(milliseconds: 180),
+                                    child: Icon(
+                                      Icons.chevron_right_rounded,
+                                      size: 20,
+                                      color: p.secondary,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          widget.identity.name,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: p.ink,
+                                          ),
+                                        ),
+                                        Text(
+                                          '当前身份',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: p.secondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Badge(
+                                    isLabelVisible: widget.identities.any(
+                                      (i) =>
+                                          i.identity.id != widget.identity.id &&
+                                          i.unread > 0,
+                                    ),
+                                    child: HhDmAvatar(
+                                      identity: widget.identity,
+                                      size: 28,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -340,7 +472,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: p.surface,
-                  hintText: '搜索当前身份的会话',
+                  hintText: '搜索',
                   prefixIcon: const Icon(Icons.search, size: 24),
                   suffixIcon: query.isEmpty
                       ? null

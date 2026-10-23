@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
 
 import '../auth/auth_session_controller.dart';
+import '../auth/auth_models.dart';
 import '../auth/auth_store.dart';
 import '../identity/identity_api.dart';
 import '../posts/post_photo_picker.dart';
@@ -19,7 +20,9 @@ import 'direct_message_screen.dart';
 
 part 'dm_chat_ui.dart';
 
-class DmRuntime {
+enum DmIdentityStatus { loading, ready, empty, failed, unavailable }
+
+class DmRuntime extends ChangeNotifier {
   DmRuntime({
     required this.controller,
     required this.sessions,
@@ -40,17 +43,29 @@ class DmRuntime {
   final Listenable? identityChanges;
   final void Function(BuildContext, String)? openPost;
   List<DmIdentity> identities = [];
+  DmIdentityStatus identityStatus = DmIdentityStatus.unavailable;
   String? _token;
   int _authority = -1, _epoch = 0;
   bool _disposed = false;
   final _closedAccounts = <String>{};
   Timer? _retry;
+  bool _identityRefreshQueued = false;
   void _identityChanged() {
+    // Management screens notify from init/dispose. Invalidate access now, but
+    // coalesce their UI refresh after the current widget build has finished.
+    if (_disposed) return;
+    _epoch++;
     _authority = -1;
-    _changed();
+    if (_identityRefreshQueued) return;
+    _identityRefreshQueued = true;
+    scheduleMicrotask(() {
+      _identityRefreshQueued = false;
+      _changed();
+    });
   }
 
   void _changed() {
+    if (_disposed) return;
     final record = authStore.current?.session;
     final token =
         record != null &&
@@ -64,14 +79,22 @@ class DmRuntime {
     final epoch = ++_epoch;
     _retry?.cancel();
     identities = [];
+    identityStatus = token == null
+        ? DmIdentityStatus.unavailable
+        : DmIdentityStatus.loading;
+    notifyListeners();
     unawaited(() async {
-      await controller.detach();
-      if (token == null || record == null || _disposed || epoch != _epoch) {
-        return;
-      }
       try {
+        await controller.detach();
+        if (token == null || record == null || !_current(epoch, token)) return;
         final directory = await identityApi.identities(token);
-        if (_disposed || epoch != _epoch || !sessions.isCurrentToken(token)) {
+        if (!_current(epoch, token) ||
+            !await sessions.persistSessionMetadata(
+              token,
+              directory.sessionExpiresAt,
+              () => _current(epoch, token),
+            ) ||
+            !_current(epoch, token)) {
           return;
         }
         identities = directory.identities
@@ -84,13 +107,44 @@ class DmRuntime {
           isCurrent: () =>
               !_disposed && epoch == _epoch && sessions.isCurrentToken(token),
         );
-      } catch (_) {
-        // A transient identity fetch must not strand this session forever.
-        if (!_disposed && epoch == _epoch && sessions.isCurrentToken(token)) {
+        if (!_current(epoch, token)) return;
+        identityStatus = !controller.available
+            ? DmIdentityStatus.failed
+            : identities.isEmpty
+            ? DmIdentityStatus.empty
+            : DmIdentityStatus.ready;
+        notifyListeners();
+      } catch (failure) {
+        if (token != null && _current(epoch, token)) {
+          if (failure is AuthFailure && failure.unauthorized) {
+            sessions.sessionUnauthorized(token, failure.code);
+            return;
+          }
+          if (failure is AuthFailure &&
+              failure.kind == AuthFailureKind.unavailable) {
+            sessions.sessionUnavailable(token);
+            return;
+          }
+          identities = [];
+          identityStatus = DmIdentityStatus.failed;
+          notifyListeners();
           _retry = Timer(const Duration(seconds: 4), _identityChanged);
         }
       }
     }());
+  }
+
+  bool _current(int epoch, String token) =>
+      !_disposed && epoch == _epoch && sessions.isCurrentToken(token);
+
+  /// Recheck the directory in a fresh window; never reuse another session's data.
+  void retryIdentities() {
+    if (_disposed || identityStatus == DmIdentityStatus.loading) return;
+    if (!sessions.isAuthenticated) {
+      unawaited(sessions.retry());
+    } else {
+      _identityChanged();
+    }
   }
 
   /// The auth flow owns the CLOSED decision; ordinary logout/replacement only
@@ -104,10 +158,13 @@ class DmRuntime {
       _authority = -1;
       _retry?.cancel();
       identities = [];
+      identityStatus = DmIdentityStatus.unavailable;
+      if (!_disposed) notifyListeners();
     }
     await controller.purgeClosedAccount(accountId);
   }
 
+  @override
   void dispose() {
     _disposed = true;
     _epoch++;
@@ -116,6 +173,7 @@ class DmRuntime {
     authStore.removeListener(_changed);
     identityChanges?.removeListener(_identityChanged);
     controller.dispose();
+    super.dispose();
   }
 }
 
@@ -192,10 +250,12 @@ class DmInboxRoute extends StatefulWidget {
     required this.runtime,
     this.navigation,
     this.initialIdentity,
+    this.onManageIdentities,
   });
   final String? initialIdentity;
   final DmRuntime runtime;
   final Widget? navigation;
+  final VoidCallback? onManageIdentities;
   @override
   State<DmInboxRoute> createState() => _DmInboxRouteState();
 }
@@ -242,7 +302,7 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-    animation: widget.runtime.controller,
+    animation: Listenable.merge([widget.runtime, widget.runtime.controller]),
     builder: (context, _) {
       final r = widget.runtime, c = r.controller;
       final own =
@@ -251,7 +311,39 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
       if (!c.available || own == null) {
         return Scaffold(
           appBar: AppBar(title: const Text('私信')),
-          body: Center(child: Text(c.error ?? '正在核对私信身份')),
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (r.identityStatus == DmIdentityStatus.empty)
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    children: [
+                      const Text('您目前还没有身份'),
+                      if (widget.onManageIdentities != null)
+                        TextButton(
+                          onPressed: widget.onManageIdentities,
+                          child: const Text('添加身份'),
+                        ),
+                    ],
+                  )
+                else
+                  Text(switch (r.identityStatus) {
+                    DmIdentityStatus.loading => '正在核对私信身份',
+                    DmIdentityStatus.unavailable => '请恢复当前账号后查看私信',
+                    _ => c.error ?? '暂时无法核对私信身份，请重试',
+                  }),
+                if (r.identityStatus == DmIdentityStatus.failed ||
+                    r.identityStatus == DmIdentityStatus.unavailable)
+                  TextButton(
+                    onPressed: r.retryIdentities,
+                    child: const Text('重新核对'),
+                  ),
+              ],
+            ),
+          ),
           bottomNavigationBar: widget.navigation,
         );
       }
@@ -305,6 +397,7 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
             : (query) => unawaited(_search(query, own.id)),
         onRetry: () => unawaited(c.sync()),
         navigation: widget.navigation,
+        onAddIdentity: widget.onManageIdentities,
         onManage: !c.chatEnabled
             ? null
             : (target) {

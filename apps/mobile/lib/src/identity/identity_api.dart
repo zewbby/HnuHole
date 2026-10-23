@@ -12,6 +12,8 @@ class ManagedIdentity {
 
 /// Dates and counts are server authority, never recomputed with the phone clock.
 class IdentityDirectory {
+  /// The identity contract and C enforce this maximum; cooling down is separate.
+  static const maximumIdentities = 3;
   const IdentityDirectory({required this.identities, required this.createdCount,
     required this.serverTime, required this.sessionExpiresAt, this.nextCreateAt});
   final List<ManagedIdentity> identities;
@@ -20,7 +22,7 @@ class IdentityDirectory {
   final DateTime? nextCreateAt;
   bool get creationCoolingDown =>
       nextCreateAt != null && nextCreateAt!.isAfter(serverTime);
-  bool get canCreate => identities.length < 3 && !creationCoolingDown;
+  bool get canCreate => identities.length < maximumIdentities && !creationCoolingDown;
   bool canRename(ManagedIdentity identity) => identity.renameAvailableAt == null ||
       !identity.renameAvailableAt!.isAfter(serverTime);
 }

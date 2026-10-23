@@ -10,10 +10,14 @@ import 'package:hnuhole_mobile/src/messaging/direct_message_screen.dart';
 
 import 'dm_reliability_test.dart' as f;
 
-class _RouteRuntime implements DmRuntime {
+class _RouteRuntime extends ChangeNotifier implements DmRuntime {
   _RouteRuntime(this.controller);
   @override
   final DmController controller;
+  @override
+  DmIdentityStatus get identityStatus => controller.available
+      ? DmIdentityStatus.ready
+      : DmIdentityStatus.unavailable;
   @override
   List<DmIdentity> identities = [const DmIdentity(id: f.own, name: '我的面具')];
   @override
