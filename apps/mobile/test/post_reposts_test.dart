@@ -418,4 +418,3 @@ void main() {
     expect(find.text('暂无转帖'), findsOneWidget);
   });
 }
-
