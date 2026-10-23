@@ -1,0 +1,7 @@
+Threads symbol from Simple Icons (CC0-1.0):
+https://github.com/simple-icons/simple-icons/blob/develop/icons/threads.svg
+Retrieved 2026-10-23. Original geometry is retained, uniformly scaled and
+positioned alongside the @SpeechFUL lettering. See LICENSE-Simple-Icons.md.
+
+Lettering is derived from Roboto Black Italic. See ../fonts/NOTICE-Roboto.txt
+and ../fonts/LICENSE-Roboto.txt for the original font's Apache-2.0 license.

@@ -789,10 +789,12 @@ void main() {
       home: AuthWelcomeScreen(onStarted: () => started = true),
     );
     expect(find.text('开始使用'), findsOneWidget);
+    expect(find.bySemanticsLabel('@SpeechFUL'), findsOneWidget);
     await _snapshot(tester, 'auth-welcome-final-375px');
     await tester.tap(find.byKey(const ValueKey('auth-theme-toggle')));
     await tester.pumpAndSettle();
     expect(presentation.themeMode, ThemeMode.dark);
+    await _snapshot(tester, 'auth-welcome-wordmark-dark-375px');
     await tester.tap(find.byKey(const ValueKey('auth-language-toggle')));
     await tester.pumpAndSettle();
     expect(find.text('Get started'), findsOneWidget);
