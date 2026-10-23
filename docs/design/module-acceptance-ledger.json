@@ -1,4 +1,22 @@
 {
+  "dmIdentityLoading20261023": {
+    "task": "DM-IDENTITY-LOADING-01",
+    "modules": ["B08", "B09"],
+    "branch": "fix/direct-message-identity-loading",
+    "base": "93d3ed6bc4084f440c9797f5b7ffa0696bb3d42d",
+    "applicationSource": "5de60e3917b2ed74891a848d016e09426141063e",
+    "focusedTests": "PASS_37_ON_e6dd325",
+    "analysis": "PASS_ZERO_ISSUES_ON_e6dd325",
+    "rightAlignmentIncrement": "PASS_ONE_GEOMETRY_CASE_AND_ONE_REAL_FONT_COMPONENT_RENDER_ON_5de60e3",
+    "independentReview": "PASS_ROOT_READ_ONLY_BOTH_PRODUCT_COMMITS_NO_REMAINING_BLOCKERS_NOT_GITHUB_MEMBER_APPROVAL",
+    "android2308": "BUILD_PASS_NOT_INSTALLED_SUPERSEDED_BY_RIGHT_ALIGNMENT",
+    "android2309": "BUILD_AND_VIVO_NEW_UI_SAFE_AREA_PENDING_ROOT_RECEIPT",
+    "remoteCI": "PENDING_DRAFT_PR",
+    "evidence": "docs/branches/fix-direct-message-identity-loading.md",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true
+  },
   "dmDeviceRecovery20261023": {
     "task": "DM-P2-DEVICE-RECOVERY",
     "modules": [
@@ -9,10 +27,11 @@
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/55",
     "acceptanceCommit": "85429383dec780b92990dc48736d0fc02f168019",
     "applicationSource": "07923b047dcc1bf8b431e7b6d94da31d28ec223e",
-    "result": "SCOPED_PHYSICAL_TAKEOVER_FORCE_STOP_REBOOT_PASS",
+    "result": "SCOPED_PHYSICAL_TAKEOVER_FORCE_STOP_REBOOT_PASS_MERGED_MAIN",
     "evidence": "docs/design/direct-message-device-recovery-verification-20261023.json",
     "suddenPowerLoss": "NOT_RUN_USER_EXPLICITLY_DEFERRED_NO_TEST_CONDITIONS",
-    "merged": false,
+    "mergeCommit": "93d3ed6bc4084f440c9797f5b7ffa0696bb3d42d",
+    "merged": true,
     "released": false,
     "historicalModuleVerdictsUnchanged": true
   },

@@ -38,6 +38,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `fix/direct-message-identity-loading` | 分支已修复空身份核对并改右上快捷切换与添加身份；新增UI／安全区设备验收及PR待完成，未合并。 | [任务详情](docs/branches/fix-direct-message-identity-loading.md) |
 | `test/direct-message-device-recovery` | 私信真实双设备接替、强杀及整机重启增量补验通过；真实掉电按用户要求暂列未验。 | [任务详情](docs/branches/test-direct-message-device-recovery.md) |
 | `feat/direct-message-governance` | 已合并 main [PR #52](https://github.com/zewbby/HnuHole/pull/52)；限定验收、SKIP／NOT_RUN 保留，未发布。 | [任务详情](docs/branches/feat-direct-message-governance.md) |
 | `feat/direct-message-chat-completion` | 已合并 main [PR #51](https://github.com/zewbby/HnuHole/pull/51)；第二阶段限定原生验收通过，未发布。 | [任务详情](docs/branches/feat-direct-message-chat-completion.md) |
@@ -88,8 +89,8 @@
 
 ## 最近变动
 
+- [PR #55](https://github.com/zewbby/HnuHole/pull/55)：补真实双设备接替、强杀与整机重启恢复验收；真实突然掉电仍未验。
 - [PR #52](https://github.com/zewbby/HnuHole/pull/52)：接通私信治理、生命周期清理和隐私本地通知；保留原生与生产未验项。
 - [PR #51](https://github.com/zewbby/HnuHole/pull/51)：接通九图私有收发、会话管理和两分钟撤回。
 - [PR #53](https://github.com/zewbby/HnuHole/pull/53)：优化登录注册错误反馈、邮箱验证码说明和认证弹窗交互。
 - [PR #48](https://github.com/zewbby/HnuHole/pull/48)：普通开发重启保留原会话，安全冻结仍要求明确恢复。
-- [PR #47](https://github.com/zewbby/HnuHole/pull/47)：接通隔离环境可靠文字收发、持久队列、ACK与阅读分离及基础未读草稿。

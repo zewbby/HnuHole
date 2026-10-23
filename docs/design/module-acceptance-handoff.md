@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-23 DM-IDENTITY-LOADING-01（分支实现，待设备验收／合并）：**`fix/direct-message-identity-loading` 基于 main `93d3ed6`，修复合法空身份目录被误作持续核对，增加“添加身份”及失败重试；私信列表改右上紧凑身份入口、右锚定菜单与按三身份上限补空槽蓝色加号，复用现有编辑器／冷却限制，并补首次身份选择底部安全区。`e6dd325` 定点37项、分析0、真实字体组件渲染1项通过；用户追加整体右对齐后 `5de60e3` 几何断言1项及渲染1项通过，未重跑未变检查。主会话独立只读审查无剩余阻断（非 GitHub 成员批准）；2308仅构建未装，最终2309构建／vivo新增UI和安全区待回执，PR保持Draft。详见[任务记录](../branches/fix-direct-message-identity-loading.md)。旧原生人工SKIP、真实掉电／iOS／生产未验与远程推送未实现均保留，不提升B08/B09整模块结论。
+
 > **2026-10-23 B08/B09 主线整合回执：**P2 [#51](https://github.com/zewbby/HnuHole/pull/51) 已 merge `988bb42045f4140c46cf9e890d985a774d033e16`，P3 [#52](https://github.com/zewbby/HnuHole/pull/52) 已 merge `665291cdf312dec94fb11a75527524a821c5f008`，各精确 head 全部适用 CI 和独立整合审查通过。设备补验 [#55](../branches/test-direct-message-device-recovery.md) 仅补真实接替／强杀／重启限定通过；真实掉电未验，原 P3 人工项 SKIP、远程推送未实现、iOS／性能／生产未验均保留，不提升模块历史验收结论，未发布。下方未合并文字保留历史时点。
 
 > **2026-10-23 AUTH-FEEDBACK-01 已合并：**[PR #53](https://github.com/zewbby/HnuHole/pull/53) Squash合并为`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`；认证Flutter CI、Android候选构建及受影响产品CI通过。2306限定64项回归、分析0、同签真我覆盖安装／启动PASS，用户确认缩放弹窗；真机帧性能／生产验收未执行。见[任务记录](../branches/fix-auth-feedback.md)。
