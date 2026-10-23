@@ -27,6 +27,33 @@ Future<void> _tap(WidgetTester tester, Finder finder) async {
 
 void main() {
   testWidgets(
+    'direct add respects cooldown and never opens a forbidden editor',
+    (tester) async {
+      final f = await IdentityTestFixture.create(
+        api: IdentityTestApi()
+          ..items = [identityTestItem()]
+          ..createdCount = 3
+          ..nextCreateAt = DateTime.utc(2026, 11, 1),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: IdentityManagementScreen(
+            controller: f.controller,
+            sessions: f.sessions,
+            initialCreate: true,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('identity-nickname')), findsNothing);
+      expect(find.textContaining('删除身份不会缩短等待时间'), findsOneWidget);
+      expect(f.api.submissions, isEmpty);
+      await tester.pumpWidget(const SizedBox.shrink());
+      f.dispose();
+    },
+  );
+
+  testWidgets(
     'settings exposes implemented identity, security and account closure routes',
     (tester) async {
       var identity = 0, security = 0, account = 0;

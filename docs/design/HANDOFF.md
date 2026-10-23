@@ -1,5 +1,9 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-23 DM-IDENTITY-LOADING-01 最终2313候选：**[PR #60](https://github.com/zewbby/HnuHole/pull/60) 源码 `490c2a3` 已整合 main `7a2a76a`，完成空身份／添加入口、右上单行唯一加号菜单、无核对文案的轻量加载及管理取消往返保持绑定。纯load/cancel或已确认相同投影不再清空重绑，真实变更／待处理变更、账号会话围栏与强制重试保留。r5入口呈现2项、r6受影响runtime整文件11项及各自受影响分析0；早前37项／整合7项／菜单2项和渲染沿原版本范围复用。主会话精确源码独立审查无阻断，非GitHub成员批准。2313同签保数据覆盖vivo，已有身份添加→取消→返回私信及首页往返限定PASS，无旧文案／假空态／最终加载；亚秒零闪帧未测，绑定稳定由宿主回归证明。2311未变菜单／唯一加号／安全位置证据继续有效。精确送审head CI和合并以PR回执为准，未发布；设备空身份、首次发送面板仍NOT_RUN，旧真实掉电／P3人工SKIP／远程推送未实现／iOS及生产边界不变。下方为历史版本。见[任务](../branches/fix-direct-message-identity-loading.md)和[版本证据](direct-message-identity-verification-20261023.json)。
+
+> **2026-10-23 DM-IDENTITY-LOADING-01（分支实现，待设备验收／合并）：**`fix/direct-message-identity-loading` 基于 main `93d3ed6`，修复合法空身份目录被误作持续核对，增加“添加身份”及失败重试；私信列表改右上紧凑身份入口、右锚定菜单与按三身份上限补空槽蓝色加号，复用现有编辑器／冷却限制，并补首次身份选择底部安全区。`e6dd325` 定点37项、分析0、真实字体组件渲染1项通过；用户追加整体右对齐后 `5de60e3` 几何断言1项及渲染1项通过，未重跑未变检查。主会话独立只读审查无剩余阻断（非 GitHub 成员批准）；2308仅构建未装，最终2309构建／vivo新增UI和安全区待回执，PR保持Draft。详见[任务记录](../branches/fix-direct-message-identity-loading.md)。旧原生人工SKIP、真实掉电／iOS／生产未验与远程推送未实现均保留，不提升B08/B09整模块结论。
+
 > **2026-10-23 MOBILE-NAV-REFRESH-01已合并：**[PR #57](https://github.com/zewbby/HnuHole/pull/57)合入main `1686a06`，最终head 20项适用CI全PASS、独立只读审查无阻断。真我2303的五项限定验收、用户导航视觉确认、GIF/WebP原生保存与短时Profile帧采样已有证据；开发C已更新，未生产发布。真实大图长列表／长期内存、iOS与生产仍未验。下方“待合并／未提交／CI未跑”为历史快照，见[任务](../branches/fix-mobile-navigation-refresh.md)。
 
 > **2026-10-23 MOBILE-NAV-REFRESH-01（分支实现／待合并，续）：**用户已授权前后端更新、真我安装2303并统一验收五项。开发C后端已更新、ready且原授权代次／会话数量未变；真我同签保数据覆盖2303，2306回退包保留。五项基础结构／断网刷新／有界缓存往返／真缩略图与原图查看／个人空态回归通过；用户已在真我确认切换无重影／闪首页，导航视觉验收PASS；短时Profile帧性能已测，其余项目保留限定基础回归结论。完整宿主742 PASS／1 SKIP，构建镜像744 PASS／1 SKIP；历史模块结论不变。见[任务](../branches/fix-mobile-navigation-refresh.md)及任务内真机证据。

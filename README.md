@@ -38,6 +38,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `fix/direct-message-identity-loading` | 空身份修复、右上快捷切换与身份管理往返保持绑定已送审[PR #60](https://github.com/zewbby/HnuHole/pull/60)，2313限定通过；合并与CI回执见PR，未发布。 | [任务详情](docs/branches/fix-direct-message-identity-loading.md) |
 | `fix/mobile-navigation-refresh` | 已合并 main [PR #57](https://github.com/zewbby/HnuHole/pull/57)；五项限定验收、动图原生保存与短时帧性能已测，未发布。 | [交接](docs/branches/fix-mobile-navigation-refresh.md) |
 | `test/direct-message-device-recovery` | 私信真实双设备接替、强杀及整机重启增量补验通过；真实掉电按用户要求暂列未验。 | [任务详情](docs/branches/test-direct-message-device-recovery.md) |
 | `feat/direct-message-governance` | 已合并 main [PR #52](https://github.com/zewbby/HnuHole/pull/52)；限定验收、SKIP／NOT_RUN 保留，未发布。 | [任务详情](docs/branches/feat-direct-message-governance.md) |

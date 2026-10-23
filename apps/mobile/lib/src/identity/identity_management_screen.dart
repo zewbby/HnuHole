@@ -33,10 +33,12 @@ class IdentityManagementScreen extends StatefulWidget {
     required this.controller,
     required this.sessions,
     this.onAuthenticationRequired,
+    this.initialCreate = false,
   });
   final IdentityManagementController controller;
   final AuthSessionController sessions;
   final VoidCallback? onAuthenticationRequired;
+  final bool initialCreate;
   @override
   State<IdentityManagementScreen> createState() =>
       _IdentityManagementScreenState();
@@ -49,7 +51,21 @@ class _IdentityManagementScreenState extends State<IdentityManagementScreen> {
     super.initState();
     widget.controller.addListener(_changed);
     widget.sessions.addListener(_changed);
-    unawaited(widget.controller.load());
+    unawaited(_loadInitial());
+  }
+
+  Future<void> _loadInitial() async {
+    final authority = widget.sessions.authorityVersion;
+    await widget.controller.load();
+    if (!mounted ||
+        !widget.initialCreate ||
+        authority != widget.sessions.authorityVersion ||
+        !widget.sessions.isAuthenticated ||
+        widget.controller.status != IdentityManagementStatus.ready ||
+        widget.controller.directory?.canCreate != true) {
+      return;
+    }
+    await _edit();
   }
 
   void _changed() {

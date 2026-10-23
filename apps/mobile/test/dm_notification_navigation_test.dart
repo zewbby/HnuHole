@@ -53,7 +53,10 @@ class _NavigationDm extends ChangeNotifier implements DmController {
 class _Runtime extends p2.ChatRuntime {
   _Runtime(super.controller);
   @override
-  void dispose() => controller.dispose();
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 }
 
 void main() {
