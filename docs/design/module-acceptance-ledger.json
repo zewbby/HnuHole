@@ -1,4 +1,15 @@
 {
+  "authStartupFlash20261023": {
+    "task": "AUTH-STARTUP-FLASH-01",
+    "branch": "codex/fix/auth-login-startup",
+    "implementation": "LOCAL_UNCOMMITTED_NOT_MERGED",
+    "host": "PASS_21_STARTUP_HOME_NAVIGATION_TESTS_ANALYZE_ZERO",
+    "androidBuild": "NOT_RUN",
+    "device": "NOT_RUN_PENDING_INTEGRATED_PACKAGE",
+    "scope": "STARTUP_TRANSIENT_ERROR_PAGE_ONLY",
+    "evidence": "docs/branches/fix-auth-startup-flash.md",
+    "historicalModuleVerdictsUnchanged": true
+  },
   "dmDeviceRecovery20261023": {
     "task": "DM-P2-DEVICE-RECOVERY",
     "modules": [

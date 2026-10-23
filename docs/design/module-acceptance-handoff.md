@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-23 AUTH-STARTUP-FLASH-01：**A12启动展示限定修正；`flutter test --no-pub test/startup_entry_test.dart test/login_home_navigation_test.dart test/personal_route_account_test.dart`共21项PASS、分析0。未打包／安装，待整合后VIVO视觉验证；不提升完整认证或生产验收。见[任务](../branches/fix-auth-startup-flash.md)。
+
 > **2026-10-23 B08/B09 主线整合回执：**P2 [#51](https://github.com/zewbby/HnuHole/pull/51) 已 merge `988bb42045f4140c46cf9e890d985a774d033e16`，P3 [#52](https://github.com/zewbby/HnuHole/pull/52) 已 merge `665291cdf312dec94fb11a75527524a821c5f008`，各精确 head 全部适用 CI 和独立整合审查通过。设备补验 [#55](../branches/test-direct-message-device-recovery.md) 仅补真实接替／强杀／重启限定通过；真实掉电未验，原 P3 人工项 SKIP、远程推送未实现、iOS／性能／生产未验均保留，不提升模块历史验收结论，未发布。下方未合并文字保留历史时点。
 
 > **2026-10-23 AUTH-FEEDBACK-01 已合并：**[PR #53](https://github.com/zewbby/HnuHole/pull/53) Squash合并为`9427dc6e4cdc1b777c1127787a8fd17d5e2e4036`；认证Flutter CI、Android候选构建及受影响产品CI通过。2306限定64项回归、分析0、同签真我覆盖安装／启动PASS，用户确认缩放弹窗；真机帧性能／生产验收未执行。见[任务记录](../branches/fix-auth-feedback.md)。

@@ -10,12 +10,14 @@ class EntryScreen extends StatelessWidget {
     super.key,
     required this.directory,
     required this.onLoginRequested,
+    this.restoringSession = false,
     this.onMessagesPressed,
     this.messagesUnread = false,
   });
 
   final ChannelDirectoryController directory;
   final VoidCallback onLoginRequested;
+  final bool restoringSession;
   final VoidCallback? onMessagesPressed;
   final bool messagesUnread;
 
@@ -23,7 +25,7 @@ class EntryScreen extends StatelessWidget {
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: directory,
     builder: (context, _) =>
-        directory.status == ChannelDirectoryStatus.signedOut
+        restoringSession || directory.status == ChannelDirectoryStatus.signedOut
         ? AuthWelcomeScreen(onStarted: onLoginRequested)
         : Scaffold(
             appBar: AppBar(

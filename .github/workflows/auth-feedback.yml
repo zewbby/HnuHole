@@ -39,3 +39,6 @@ jobs:
           test/auth_screen_test.dart
           test/email_login_test.dart
           test/auth_session_controller_test.dart
+          test/startup_entry_test.dart
+          test/login_home_navigation_test.dart
+          test/personal_route_account_test.dart
