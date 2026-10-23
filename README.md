@@ -34,7 +34,7 @@
 ## 分支一览
 
 - [身份转帖](docs/branches/feat-post-reposts.md)：`feat/post-reposts` 提供持久化私人归档、条件写入与接线契约，已整合到个人页分支；未合并。
-- [个人页与心情框](docs/branches/feat-personal-profile-mood.md)：`feat/personal-profile-mood` 实现五栏缩放、身份切换和共享喜欢／收藏，已接入私人转帖归档；未合并。
+- [个人页与私人转帖](docs/branches/feat-personal-profile-mood.md)：`feat/personal-profile-mood` 实现五栏缩放、身份切换和共享喜欢／收藏，已接入私人转帖归档；未合并。
 
 `main` 是项目基线。当前工作分支如下；历史实现、验收文档和 PR 记录继续保留。
 

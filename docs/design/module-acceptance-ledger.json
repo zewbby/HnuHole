@@ -14,15 +14,26 @@
     "analysisIssues": 0,
     "realHttpSqlIntegration": "PASS_OWNED_C_V_HTTPS_SCHEMA26",
     "builds": "PASS_ANDROID_ARM64_DEBUG_ISOLATED_APP",
-    "nativeDeviceAcceptance": "PARTIAL_PASS_FINAL_UI_AND_UNAVAILABLE_ACCOUNT_SWITCH_PENDING",
-    "independentReview": "PASS_AGENT_NO_BLOCKERS_NOT_GITHUB_MEMBER_APPROVAL",
-    "remoteCI": "2e27252_10_WORKFLOWS_PASS_2_MEDIA_TIMING_FAIL_FIX_TARGETED_11_PASS_FINAL_CI_PENDING",
+    "nativeDeviceAcceptance": "PASS_SCOPED_REALME_ANDROID14_VERSION2326",
+    "independentReview": "PASS_ASTRA_HIGH_FINAL_CODE_AND_VISUAL_NO_BLOCKERS_NOT_MEMBER_APPROVAL",
+    "remoteCI": "PASS_e404f85_12_WORKFLOWS_21_JOBS",
     "merged": false,
     "released": false,
     "evidence": "docs/branches/personal-reposts-integration.md",
     "verification": "docs/design/personal-reposts-integration-verification.json",
     "historicalModuleVerdictsUnchanged": true,
-    "pullRequest": "https://github.com/zewbby/HnuHole/pull/68"
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/68",
+    "finalProductCommit": "e404f85b98343cdaef9d71f49e6dbcfa852d32c8",
+    "finalHostChecks": {
+      "passed": 5,
+      "analysisIssues": 0,
+      "scope": "no bubble, both themes, personal and shipped-root repost integration"
+    },
+    "latestDecision": "MOOD_BUBBLE_REMOVED_GLOBAL_LIGHT_DARK_THEMES",
+    "finalVerification": "docs/design/personal-reposts-final-verification.json",
+    "remoteCIWorkflowCount": 12,
+    "remoteCIJobCount": 21,
+    "cleanup": "PASS_OWN_RUNTIME_STOPPED_DEVICE_LEASE_RELEASED"
   },
 
   "personalProfileMood20261023": {

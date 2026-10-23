@@ -1,6 +1,6 @@
 # PERSONAL-REPOST-INTEGRATION-01：个人页转帖接线交接
 
-更新：2026-10-24。目标工作树 `E:/Hnuhole-env/source/HnuHole-personal-profile`，分支 `feat/personal-profile-mood`，基线 `cda337c43cf5d0e5793351577f7054ec552fb6d5`。状态：已提交推送至[PR #68](https://github.com/zewbby/HnuHole/pull/68)，独立agent审查与Android限定验收推进中；未合并／部署。下方初次限定宿主验收保留原版本范围，后续回执覆盖当前状态。
+更新：2026-10-24。目标工作树 `E:/Hnuhole-env/source/HnuHole-personal-profile`，分支 `feat/personal-profile-mood`，基线 `cda337c43cf5d0e5793351577f7054ec552fb6d5`。状态：已提交推送至[PR #68](https://github.com/zewbby/HnuHole/pull/68)，独立agent/Astra High审查与Android限定验收PASS，验收产品版本e404f85远端12工作流／21作业全部PASS；未合并／部署。下方初次限定宿主验收保留原版本范围，后续回执覆盖当前状态。
 
 ## 整合范围
 
@@ -71,3 +71,20 @@ flutter test --no-pub --reporter expanded test/personal_reposts_integration_test
 ### 最新定稿：移除心情气泡
 
 2026-10-24 用户取消心情气泡。已移除气泡、编辑框、定时到期和个人页心情读写入口，保留 `:)`、私信同款身份切换、搜索/设置及五栏目。旧心情验证与2325截图只作历史证明；最终新包应无气泡，深浅主题继续跟随全局。
+
+## 最终交付版本与范围
+
+产品版本 `e404f85b98343cdaef9d71f49e6dbcfa852d32c8`；独立Android包2326，SHA-256 `e4793cc311674c9ca1cb50b4f49b7ce65d8b45f4cb362844c298a0756ea8ea11`。最终按用户要求无心情气泡/编辑入口；深浅主题跟随全局，Astra High已经目视最终2326的两张完整截图并判定无阻断。详情/首页/归档状态共用controller，原身份精确移除、原帖不可用和账号隔离边界不变。
+
+- 本地最新个人页/转帖5项PASS、分析0；未再改的草稿删除双主题2项、旧账号移除确认1项、媒体原失败2项及直接相关11项分别保持自己的版本范围。
+- 原生真实C/V TLS、Bearer、Safety Gate和专属SQL链路已完成；分页20+1、原作者/原图、精确移除乙保留甲、返回详情、刷新/吸顶、不可用原帖移除及账号切换有宿主/原生限定证据。真实终态SQL6项核对PASS。举报只打开真实路由，未提交举报；并发/丢响应矩阵沿用来源证据及远端对应测试，不重复本地矩阵。
+- 最终远端Post images Flutter项目全量879 PASS/3既有外部fixture SKIP，分析0；图片组件116 PASS。Feed UI含真实Dart→HTTPS→SQL转帖链路PASS。Android预发布首次在sdkmanager下载NDK时遇到损坏zip，尚未进入产品构建；仅重试失败candidate作业，后续结果记录在最终JSON回执。
+- 机器证据见 `E:/Hnuhole-env/personal-profile-tools/repost-device/`；最终截图 `final-2326-light.png` / `final-2326-dark.png`，2325菜单/确认图只覆盖本次未改部分；旧心情图全部为历史。完整哈希、命令、CI与清理见[最终验证回执](../design/personal-reposts-final-verification.json)。
+- 设备lease已释放、两个本任务ADB reverse已移除；专属C/V、watch、mailpit及两个PostgreSQL已停止，8端口无监听，证据保留，共享服务未变。
+- 未合并／未生产部署；iOS与GitHub成员批准NOT_RUN。独立agent审查不伪装成员批准。来源工作树始终只读。
+
+### 远端最终回执
+
+验收产品版本 `e404f85b98343cdaef9d71f49e6dbcfa852d32c8` 的12个远端工作流／21个最新作业全部PASS；Android首次第三方NDK下载失败经失败作业重试后PASS。包括Feed UI真实转帖HTTPS/SQL、Post images全量Flutter879 PASS/3既有外部fixture SKIP、身份、私信、评论、举报、Android候选构建与预演、协作及契约。完整run/job ID与链接见最终JSON。未把首次失败隐藏为通过。
+
+后续仅补README、交接及验收证据；64个受影响产品/测试/CI文件哈希与上述验收SHA全部一致。为遵守通过后不重复矩阵的要求，文档补录提交使用skip-ci；不将文档提交谎称新的产品CI验收版本。PR保持draft，未合并／发布。

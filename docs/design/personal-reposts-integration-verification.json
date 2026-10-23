@@ -1,4 +1,6 @@
 {
+  "evidenceScope": "INITIAL_INTEGRATION_HISTORICAL_NOT_FINAL_HEAD",
+  "supersededBy": "docs/design/personal-reposts-final-verification.json",
   "task": "PERSONAL-REPOST-INTEGRATION-01",
   "branch": "feat/personal-profile-mood",
   "base": "cda337c43cf5d0e5793351577f7054ec552fb6d5",
