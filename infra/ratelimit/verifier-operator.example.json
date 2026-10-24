@@ -1,0 +1,63 @@
+{
+  "service": "verifier",
+  "databaseUrl": "postgresql://hnuhole_v@/hnuhole_v?host=/run/hnuhole-postgres&sslmode=disable",
+  "databasePasswordFile": "secrets/database-password.txt",
+  "redisPasswordFile": "secrets/shared-rate-operator-password.txt",
+  "subjectKeyFile": "secrets/shared-rate-key.bin",
+  "policy": {
+    "address": "127.0.0.1:6381",
+    "username": "verifier_ratelimit_operator",
+    "namespace": "verifier_dev",
+    "deadlineMilliseconds": 100,
+    "poolSize": 8,
+    "maxSubjects": 32768,
+    "maxEvents": 16384,
+    "maxDedup": 256,
+    "maxReserves": 32,
+    "maxStateBytes": 1048576,
+    "dedupSeconds": 86400,
+    "readSeconds": 30,
+    "rules": [
+      {
+        "action": "entry.query",
+        "mode": "observe",
+        "failure": "local-read",
+        "bucket": {
+          "capacity": 10000,
+          "perSecond": 166
+        }
+      },
+      {
+        "action": "entry.mutation",
+        "mode": "observe",
+        "failure": "reject",
+        "bucket": {
+          "capacity": 6000,
+          "perSecond": 100
+        }
+      },
+      {
+        "action": "otp.request",
+        "mode": "observe",
+        "failure": "verified-db",
+        "windows": [
+          {
+            "ms": 60000,
+            "limit": 120
+          }
+        ]
+      },
+      {
+        "action": "otp.verify",
+        "mode": "observe",
+        "failure": "verified-db",
+        "windows": [
+          {
+            "ms": 60000,
+            "limit": 300
+          }
+        ]
+      }
+    ]
+  }
+}

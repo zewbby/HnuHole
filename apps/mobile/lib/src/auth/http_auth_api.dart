@@ -1,3 +1,5 @@
+import '../rate_limit.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -1382,7 +1384,17 @@ class HttpAuthApi
           ).decode();
         }
         if (!expected.contains(status)) {
-          throw _httpFailure(status, payload);
+          final failure = _httpFailure(status, payload);
+          if (status == 429) {
+            final values = response.headers[HttpHeaders.retryAfterHeader];
+            if (values == null ||
+                values.length != 1 ||
+                parseRetryAfterSeconds(values.single) !=
+                    failure.retryAfterSeconds) {
+              throw const FormatException('Invalid authentication retry delay');
+            }
+          }
+          throw failure;
         }
         return _Reply(
           status,
@@ -1443,7 +1455,7 @@ class HttpAuthApi
           optional: {'retryAfterSeconds'},
         );
         if (details.containsKey('retryAfterSeconds')) {
-          retry = _integer(details, 'retryAfterSeconds', 1, 999999);
+          retry = _integer(details, 'retryAfterSeconds', 1, 86400);
         }
       }
       valid = true;
@@ -1459,8 +1471,10 @@ class HttpAuthApi
     return AuthFailure(
       kind: status == 401
           ? AuthFailureKind.unauthorized
-          : status == 503
+          : status == 503 && code != 'SHARED_RATE_UNAVAILABLE'
           ? AuthFailureKind.unavailable
+          : status == 503 && code == 'SHARED_RATE_UNAVAILABLE'
+          ? AuthFailureKind.rejected
           : status >= 500 || status >= 300 && status < 400
           ? AuthFailureKind.unknownOutcome
           : AuthFailureKind.rejected,
@@ -1493,6 +1507,7 @@ class HttpAuthApi
     'RATE_LIMITED',
     'RESULT_EXPIRED',
     'SERVICE_UNAVAILABLE',
+    'SHARED_RATE_UNAVAILABLE',
     'MALFORMED_REQUEST',
     'SESSION_INVALID',
     'session_replaced',

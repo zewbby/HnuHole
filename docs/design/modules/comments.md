@@ -1,5 +1,9 @@
 # 评论与回复
 
+> **2026-10-24 SHARED-RATE-LIMIT-01 Android增量：** 真实429保原文字/身份/帖子/root/target/图片，跨force-stop恢复、到期不自动发、手动原键一次受理与SQL匹配已限定PASS。 测试包2433，final-r11四阶段，见[脱敏证据](../shared-rate-limit-device-verification.json)/[任务](../../branches/feat-shared-rate-limit-abuse-control.md)。用户已授权后续PR/远端CI，当前尚未提交PR、remoteCI NOT_RUN；历史模块总裁决不提升，旧未真机描述保留原时点。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01（仅feat/shared-rate-limit-abuse-control，本地未提交/未合并/未部署）：** 429保留原帖子/回复目标/身份/文字/图片任务并持久等待，到期用户手动同键重试，不自动发表；未知先核原回执。原SQL120新回执/60秒保留，comment.publish独立SW；body实际字节与逻辑发表分别计。B06/B07仅本任务限定证据。 [当前任务](../../branches/feat-shared-rate-limit-abuse-control.md) / [配置](../shared-rate-limit-plan.md) / [证据](../shared-rate-limit-verification.json)。旧原文及整模块验收结论保留，未做真机/iOS/生产验收。
+
 > **2026-10-24 合并回执：** 本需求已通过 PR [#71](https://github.com/zewbby/HnuHole/pull/71) Squash 合入 main，合并 SHA `a715dc7e8b6a3b1395bc968274bce3865f63f21b`。最终产品源码 `ed1b5e3`，送审 HEAD `aef7618`（仅追加交接文档）；21 项远端检查全部 PASS，包含 Android 构建、完整契约、评论真实隔离 PostgreSQL/TLS 及受影响模块。最终本地 Flutter 924 PASS / 3 SKIP、分析 0；独立审查两处 P2 均已修复且复核无阻断。已构建同签名 2428 Profile 包，尚未安装；真我仍为实测 2427，其 20.3 分钟/28 轮和弱网证据保留原版本，不视作最终 HEAD 真机验收。iOS、完整模块、生产未发布等边界不提升。下文“本地未提交/未合并”属于历史快照。
 
 > **2026-10-24 最新真我2427（本地未合并）：** 20.3分钟/28轮连续操作、限速/断连后图片恢复、实际发表去重清理及35秒读取超时恢复限定PASS；补修旧上下文覆盖新计数/权限、恢复后错误残留及图片传输失败关闭查看器，包含首条立即展示。统一回归232 PASS，分析0；[新报告](../post-detail-comments-weak-soak-20261024.md)按设备/版本保留证据，完整模块与生产结论不提升。

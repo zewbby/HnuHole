@@ -179,3 +179,17 @@ DO $$ BEGIN
   GRANT DELETE ON c_dm.blocks TO hnuhole_c_runtime;
  END IF;
 END $$;
+
+-- 0027: transient admission facts only. Runtime cannot create/reinitialize the
+-- durable namespace, alter its singleton identity, or grant cross-domain access.
+DO $$ BEGIN
+ IF to_regclass('c_rate_limit.admissions') IS NOT NULL THEN
+  REVOKE ALL ON SCHEMA c_rate_limit FROM PUBLIC;
+  REVOKE ALL ON ALL TABLES IN SCHEMA c_rate_limit FROM PUBLIC,hnuhole_c_runtime;
+  GRANT USAGE ON SCHEMA c_rate_limit TO hnuhole_c_runtime;
+  GRANT SELECT ON c_rate_limit.namespace TO hnuhole_c_runtime;
+  GRANT UPDATE(generation,run_id,state,barrier_until,dirty_until) ON c_rate_limit.namespace TO hnuhole_c_runtime;
+  GRANT SELECT,INSERT,DELETE ON c_rate_limit.admissions TO hnuhole_c_runtime;
+  GRANT UPDATE(state,generation,incarnation,confirmed_at,deadline) ON c_rate_limit.admissions TO hnuhole_c_runtime;
+ END IF;
+END $$;

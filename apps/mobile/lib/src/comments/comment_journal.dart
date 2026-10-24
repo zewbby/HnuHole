@@ -1,3 +1,5 @@
+import '../rate_limit.dart';
+
 import 'dart:typed_data';
 
 import '../storage/post_store.dart';
@@ -154,6 +156,7 @@ class NativeCommentJournal implements CommentJournal {
     'used': e.usedCommandIds,
     'deleted': e.identityDeleted,
     'rejection': e.rejectionCode,
+    'rateLimitWait': e.rateLimitWait?.toJson(),
     'images': [
       if (e.content?.image case final i?)
         {'blobId': i.blobId, 'selection': i.selection.toJson()},
@@ -180,6 +183,9 @@ class NativeCommentJournal implements CommentJournal {
       usedCommandIds: (m['used'] as List).cast<String>(),
       identityDeleted: m['deleted'] as bool,
       rejectionCode: m['rejection'] as String?,
+      rateLimitWait: m['rateLimitWait'] is Map
+          ? RateLimitWait.fromJson(m['rateLimitWait'] as Map)
+          : null,
     );
   }
 }

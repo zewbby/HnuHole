@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -85,6 +86,13 @@ func newLab(t *testing.T) *lab {
 		if err != nil {
 			t.Fatal(err)
 		}
+		rateSchema := "c_rate_limit"
+		if spec.schema == "v_auth" {
+			rateSchema = "v_rate_limit"
+		}
+		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS `+rateSchema+` CASCADE`); err != nil {
+			t.Fatal(err)
+		}
 		if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS `+spec.schema+` CASCADE`); err != nil {
 			_ = tx.Rollback(context.Background())
 			t.Fatal(err)
@@ -108,6 +116,16 @@ func newLab(t *testing.T) *lab {
 			if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(), public.guard_community_identity(), public.guard_identity_receipt(), public.check_identity_account_shape() CASCADE`); err != nil {
 				t.Fatal(err)
 			}
+		}
+		if os.Getenv("HNULIMIT_FORMAL_GOOSE") == "1" {
+			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.goose_db_version`); err != nil {
+				t.Fatal(err)
+			}
+			if err = tx.Commit(context.Background()); err != nil {
+				t.Fatal(err)
+			}
+			sharedRunGoose(t, filepath.Join("..", "..", spec.dir), spec.pool.Config().ConnString())
+			continue
 		}
 		for _, file := range files {
 			sql, readErr := os.ReadFile(file)
@@ -817,4 +835,22 @@ func TestPostgresIsolatedSlice(t *testing.T) {
 			t.Fatal("missing derived session digest")
 		}
 	})
+}
+
+// Uses the real pinned migrator only after the owned fixture identity checks
+// and schema reset above. DSNs stay in the child environment, never diagnostics.
+func sharedRunGoose(t *testing.T, dir, dsn string) {
+	t.Helper()
+	binary := os.Getenv("HNULIMIT_GOOSE")
+	if binary == "" {
+		binary = "goose"
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	command := exec.CommandContext(ctx, binary, "-dir", dir, "up")
+	command.Env = append(os.Environ(), "GOOSE_DRIVER=postgres", "GOOSE_DBSTRING="+dsn)
+	if output, err := command.CombinedOutput(); err != nil {
+		_ = output
+		t.Fatal("owned actual Goose migration failed")
+	}
 }

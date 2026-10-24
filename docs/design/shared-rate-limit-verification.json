@@ -1,0 +1,780 @@
+{
+  "task": "SHARED-RATE-LIMIT-01",
+  "date": "2026-10-24",
+  "status": "LOCAL_AND_SPECIFIED_ANDROID_ACCEPTANCE_COMPLETE_PR_CI_PENDING",
+  "baseline": "8ed8f28",
+  "branch": "feat/shared-rate-limit-abuse-control",
+  "workspace": "E:/Hnuhole-env/source/HnuHole-shared-rate-limit",
+  "linuxTaskRoot": "/home/hnuhole/shared-rate-limit-20261024-8ed8f28",
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false,
+  "environment": {
+    "distribution": "HnuHole-Ubuntu-24.04",
+    "runAs": "hnuhole",
+    "go": "1.22.2",
+    "postgresTools": "16.15",
+    "redis": "7.0.15, private extracted binaries, no system service",
+    "flutter": "3.47.5",
+    "dart": "3.13.4",
+    "pillow": "12.3.0",
+    "sqlite": "existing system libsqlite3.so.0 via task-owned libsqlite3.so link"
+  },
+  "modelStages": [
+    {
+      "stage": 1,
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "status": "COMPLETE"
+    },
+    {
+      "stage": 2,
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "status": "COMPLETE"
+    },
+    {
+      "stage": 3,
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "status": "COMPLETE"
+    },
+    {
+      "stage": 4,
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "status": "COMPLETE"
+    },
+    {
+      "stage": 5,
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "status": "COMPLETE"
+    },
+    {
+      "stage": 6,
+      "model": "gpt-6.1-sol",
+      "effort": "medium",
+      "status": "COMPLETE"
+    }
+  ],
+  "checks": [
+    {
+      "name": "native-android-final-r11",
+      "status": "PASS",
+      "phaseReports": 4,
+      "evidence": "docs/design/shared-rate-limit-device-verification.json",
+      "scope": "Four specified real Android phases only; not full module, iOS or production acceptance"
+    },
+    {
+      "name": "backend-all-vet-final",
+      "status": "PASS",
+      "log": "logs/backend-all-vet-final.log",
+      "exitCode": 0,
+      "scope": "All Go ./...; empty stdout; build/vet is not functional or SQL acceptance."
+    },
+    {
+      "name": "backend-all-build-final",
+      "status": "PASS",
+      "log": "logs/backend-all-build-final.log",
+      "exitCode": 0,
+      "scope": "All Go ./...; empty stdout; build/vet is not functional or SQL acceptance."
+    },
+    {
+      "name": "shared-isolated-r11",
+      "status": "PASS",
+      "log": "logs/shared-isolated-r11.log",
+      "scope": "Final source. ratelimit5 config/metrics unit+16 real Redis; HTTP2 actual TLS/SQL+4 source/local unit; authprivacy10 real SQL/Gate; CLI1 unit+1 owned C/V init. Two actual handler instances in one Go process, not two cmd processes. Owned-DSN upload fixture still required and passed.",
+      "passed": 39,
+      "failed": 0,
+      "skipped": 0,
+      "topLevelCounts": {
+        "ratelimit": 21,
+        "http": 6,
+        "authprivacy": 10,
+        "cli": 2
+      }
+    },
+    {
+      "name": "runtime-http-final-host-r5",
+      "status": "PASS",
+      "log": "logs/runtime-http-final-host-r5.log",
+      "scope": "Two packages passed ordinary no-DSN HTTP/runtime host checks. DB fixture cases explicitly SKIP by existing guard, not SQL evidence. Four-upload no-DSN guard correct; owned-DSN positive path covered in r11."
+    },
+    {
+      "name": "shared-isolated-r10",
+      "status": "PASS",
+      "log": "logs/shared-isolated-r10.log",
+      "scope": "ratelimit21=5 config/metrics unit+16 real Redis; HTTP6=2 actual TLS/SQL+4 source/local unit; SQL10 real Gate; CLI2=1unit+1owned C/V init. Two handlers in one Go process, not two cmd processes.",
+      "passed": 39,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "runtime-http-final-host-r4",
+      "status": "FAIL",
+      "log": "logs/runtime-http-final-host-r4.log",
+      "scope": "No-DSN four-upload test Fatal before owned-DSN Skip guard; setup moved inside guarded callback, no product change."
+    },
+    {
+      "name": "client-final-r5",
+      "status": "PASS",
+      "passed": 940,
+      "failed": 0,
+      "skipped": 3,
+      "analysisIssues": 0,
+      "bundle": "PASS",
+      "logs": [
+        "logs/client-final-r5-analyze.log",
+        "logs/client-final-r5-full.log",
+        "logs/client-final-r5-bundle.log"
+      ],
+      "scope": "Latest host suite; three existing real HTTP/SQL fixture skips; bundle kernel, no device install."
+    },
+    {
+      "name": "client-final-r4-full",
+      "status": "FAIL",
+      "log": "logs/client-final-r4-full.log",
+      "scope": "Two historical race expectations predated permanent close semantics; stronger assertions updated, r5 passed.",
+      "passed": 936,
+      "failed": 2,
+      "skipped": 3
+    },
+    {
+      "name": "shared-isolated-r8",
+      "status": "FAIL",
+      "log": "logs/shared-isolated-r8.log",
+      "scope": "Legacy HTTP unit lacked TLS HandshakeComplete; real TLS four uploads/core passed."
+    },
+    {
+      "name": "shared-isolated-r9",
+      "status": "FAIL",
+      "log": "logs/shared-isolated-r9.log",
+      "scope": "Legacy unit expected wrong error envelope: actual outer error/requestId, inner code/message; fixture-only correction."
+    },
+    {
+      "name": "shared-sql-diagnostic-r8",
+      "status": "PASS",
+      "log": "logs/shared-sql-diagnostic-r8.log",
+      "scope": "Close/late text-image ten groups and120 SQL close budget; running off/observe to enforce/final hash fence; FAILED attempt no double charge; image format before charge; CLI diagnostic. Does not substitute final full runner."
+    },
+    {
+      "name": "shared-isolated-r7",
+      "status": "PASS",
+      "log": "logs/shared-isolated-r7.log",
+      "scope": "Core/real SQL/TLS/V audit/CLI/build/vet before last three SQL regressions."
+    },
+    {
+      "name": "shared-isolated-r6",
+      "status": "FAIL",
+      "log": "logs/shared-isolated-r6.log",
+      "scope": "Fixture new-login token not adopted and fakeNamespace missing hash; separate SQL/CLI diagnostic passed."
+    },
+    {
+      "name": "existing-dm-gate-otp-r1",
+      "status": "FAIL",
+      "log": "logs/existing-dm-gate-otp-r1.log",
+      "scope": "Thirty top-level PASS, old Goose max version assertion FAIL, one device fixture SKIP.",
+      "passed": 30,
+      "failed": 1,
+      "skipped": 1
+    },
+    {
+      "name": "existing-dm-migrations-r2",
+      "status": "PASS",
+      "log": "logs/existing-dm-migrations-r2.log",
+      "scope": "Fresh/upgrade preserve old DM data; Down refusal."
+    },
+    {
+      "name": "existing-post-avatar-r1",
+      "status": "FAIL",
+      "log": "logs/existing-post-avatar-r1.log",
+      "scope": "Historical Linux mirror validator mode0777 security rejection."
+    },
+    {
+      "name": "existing-post-avatar-r2",
+      "status": "FAIL",
+      "log": "logs/existing-post-avatar-r2.log",
+      "scope": "Avatar old Goose max26 and privacy audit missing new least privileges.",
+      "passed": 90,
+      "failed": 2
+    },
+    {
+      "name": "existing-avatar-audit-migrations-r3",
+      "status": "PASS",
+      "log": "logs/existing-avatar-audit-migrations-r3.log",
+      "scope": "Both fixture/audit updates plus runtime regression; unauthorized-role audit not relaxed."
+    },
+    {
+      "name": "openapi-all-final-r3",
+      "status": "PASS",
+      "log": "logs/openapi-all-final-r3.log",
+      "scope": "Complete twelve specs"
+    },
+    {
+      "name": "community-contract-final-r3",
+      "status": "PASS",
+      "log": "logs/community-contract-final-r3.log",
+      "scope": "Sixteen protected ops"
+    },
+    {
+      "name": "dm-contract-final-r2",
+      "status": "PASS",
+      "log": "logs/dm-contract-final-r2.log",
+      "scope": "P1 seven paths incl close; P2 six; P3 three"
+    },
+    {
+      "name": "comment-contract-final-r2",
+      "status": "PASS",
+      "log": "logs/comment-contract-final-r2.log",
+      "scope": "Complete comments"
+    },
+    {
+      "name": "contract-checker-final",
+      "status": "PASS",
+      "log": "logs/contract-checker-final.log",
+      "scope": "Nine unit tests"
+    },
+    {
+      "name": "dm-contract-final-r1",
+      "status": "FAIL",
+      "log": "logs/dm-contract-final-r1.log",
+      "scope": "Old checker expected six P1 paths; added close security assertions."
+    },
+    {
+      "name": "shared-isolated-r5",
+      "status": "PASS",
+      "log": "logs/shared-isolated-r5.log",
+      "race": true,
+      "scope": "Real Redis11 top-level tests; real TLS runtime-role same-key/fault/slow-body test plus3 trusted-source tests;5 real PostgreSQL/Gate admission tests including formal Goose, old epochs and same-run-id dirty recovery; authdev build and affected-package vet. Not complete A1-A6 or device/production evidence."
+    },
+    {
+      "name": "existing-comments-sql-r1",
+      "status": "FAIL",
+      "log": "logs/existing-comments-sql-r1.log",
+      "scope": "Existing text/comment SQL migrations, guards, Gate and cleanup passed. Two media tests failed from Windows mirror script mode0777; two device/Dart fixture cases skipped."
+    },
+    {
+      "name": "existing-comments-media-r2",
+      "status": "PASS",
+      "log": "logs/existing-comments-media-r2.log",
+      "scope": "Only both previously environment-failed comment media business SQL and HTTPS tests rerun with a task-owned0600 validator and synthetic image fixtures; product validator security checks unchanged."
+    },
+    {
+      "name": "client-final-r3",
+      "status": "PASS",
+      "passed": 937,
+      "failed": 0,
+      "skipped": 3,
+      "analysisIssues": 0,
+      "bundle": "PASS",
+      "logs": [
+        "logs/client-final-r3-analyze.log",
+        "logs/client-final-r3-full.log",
+        "logs/client-final-r3-bundle.log"
+      ],
+      "scope": "Frozen formatted client including countdown widget and verified-component503/Gate503 independent-lane regression. Three existing real HTTP/SQL fixture skips remain; no device test."
+    },
+    {
+      "name": "client-verified-full",
+      "status": "FAIL",
+      "passed": 936,
+      "failed": 1,
+      "skipped": 3,
+      "log": "logs/client-verified-full.log",
+      "note": "Outgoing verified503 hint arrived after receive lane read; fixed by publishing after outgoing completes inside epoch fence. Subsequent client-final-r3 passed."
+    },
+    {
+      "name": "backend-all-compile-r1",
+      "status": "PASS",
+      "log": "logs/backend-all-compile-r1.log",
+      "scope": "All Go packages compiled with -run=^$; no SQL or runtime acceptance implied."
+    },
+    {
+      "name": "shared-isolated-r3",
+      "status": "FAIL",
+      "log": "logs/shared-isolated-r3.log",
+      "scope": "Real Redis/core and trusted-source tests passed; SQL20/5, prepared expiry, exclusive-lock barrier passed. Runtime-role same-key fixture failed because formal Goose ledger absent; fixture changed to actual pinned Goose rather than bypassing guard."
+    },
+    {
+      "name": "shared-isolated-r4",
+      "status": "FAIL",
+      "log": "logs/shared-isolated-r4.log",
+      "scope": "Redis timeout/flush recovery, late actual n accounting, stale proof and corrupt state passed. Actual OOM incorrectly allowed old-style Lua; SQL/TLS stages not entered.",
+      "note": "Independent owned Redis diagnostic reproduced legacy EVAL starting with ZREMRANGEBYSCORE bypassing OOM while ordinary SET failed. Redis7 shebang/no-cluster added; r5 pending."
+    },
+    {
+      "name": "baseline-network",
+      "status": "PASS",
+      "scope": "Original network limiter host tests only",
+      "log": "logs/baseline-network.log"
+    },
+    {
+      "name": "baseline-dm",
+      "status": "PASS",
+      "passed": 11,
+      "log": "logs/baseline-dm-reliability-sqlite.log",
+      "note": "First environment attempt failed from missing libsqlite3.so lookup name; own link fixed environment only."
+    },
+    {
+      "name": "client-focused-r2",
+      "status": "PASS",
+      "passed": 195,
+      "log": "logs/client-rate-limit-focused-r2.log",
+      "scope": "rate_limit, post_api, post_controller, comment_core, comment_http, comment_journal, dm_reliability, auth_api"
+    },
+    {
+      "name": "client-races-r2",
+      "status": "PASS",
+      "passed": 26,
+      "log": "logs/client-dm-races-r2.log"
+    },
+    {
+      "name": "client-full-r1",
+      "status": "FAIL",
+      "passed": 933,
+      "failed": 2,
+      "skipped": 3,
+      "log": "logs/client-full-r1.log",
+      "note": "Two DM race expectations revised with strengthened unsent cancellation, same-pair barrier and cross-pair fairness assertions; failures retained."
+    },
+    {
+      "name": "client-full-r2",
+      "status": "PASS",
+      "passed": 935,
+      "failed": 0,
+      "skipped": 3,
+      "log": "logs/client-full-r2.log",
+      "scope": "Full host suite before final countdown widget addition; skips require owned real HTTP/SQL fixtures."
+    },
+    {
+      "name": "client-countdown-analyze",
+      "status": "PASS",
+      "issues": 0,
+      "log": "logs/client-countdown-analyze.log"
+    },
+    {
+      "name": "client-countdown-widget",
+      "status": "PASS",
+      "passed": 1,
+      "log": "logs/client-countdown-widget.log",
+      "scope": "Local countdown, user-only retry, timer disposal"
+    },
+    {
+      "name": "client-bundle-r2",
+      "status": "PASS",
+      "log": "logs/client-bundle-r2.log",
+      "kernelBytes": 62309056,
+      "assetManifestBytes": 541,
+      "note": "Explicit existing Android SDK/JDK required; first attempt missing SDK env retained in client-bundle.log. No device install."
+    },
+    {
+      "name": "backend-core-first",
+      "status": "PASS",
+      "log": "logs/backend-core-first-test.log",
+      "scope": "Core package compilation plus legacy network host tests; no Redis functional tests existed at this checkpoint."
+    },
+    {
+      "name": "backend-core-first-vet",
+      "status": "PASS",
+      "log": "logs/backend-core-first-vet.log"
+    },
+    {
+      "name": "backend-second-host",
+      "status": "FAIL",
+      "log": "logs/backend-second-host.log",
+      "scope": "Historical no-DSN host snapshot: authprivacy and runtime passed; HTTP legacy 300-second truncation expectation failed, subsequently aligned with 86400-second protocol."
+    },
+    {
+      "name": "backend-redis-core-r1",
+      "status": "PASS",
+      "passed": 5,
+      "race": true,
+      "log": "logs/backend-redis-core-r1.log",
+      "scope": "Real private Redis, two independent limiter clients, 20/5 concurrency, replay/conflict, Confirm capacity, joint denial, tiny byte reservations/retransmission, missing subject barrier. Namespace adapter is an in-memory unit adapter: not real PostgreSQL/Gate/API acceptance."
+    },
+    {
+      "name": "backend-third-host",
+      "status": "PASS",
+      "log": "logs/backend-third-host.log",
+      "scope": "No-DSN host tests for authprivacy, authprivacyhttp and authprivacyruntime; not SQL acceptance."
+    }
+  ],
+  "designConsistencyReview": {
+    "status": "CLOSED_SEE_FINAL_SOURCE_REVIEW",
+    "historicalFindings": "historicalCheckpoint.designConsistencyReview"
+  },
+  "acceptance": {
+    "A1": {
+      "status": "PASS",
+      "scope": "Final-source r11 actual TLS handlers, independent clients/business/metadata pools runtime roles, SQL20unique limit5, shared identities/client instance restart",
+      "notRun": [
+        "Two separate cmd API processes",
+        "Real server/process restart beyond fixture"
+      ]
+    },
+    "A2": {
+      "status": "PASS",
+      "scope": "Same campus-egress different accounts; forged headers/trusted chain units",
+      "notRun": [
+        "Production/campus traffic false positive observation"
+      ]
+    },
+    "A3": {
+      "status": "PASS",
+      "scope": "Final-source r11 same-key/conflict/receipts/SQL confirmation failure/fixed lease/epochs/policy/close late-send race",
+      "notRun": [
+        "Physical process kill at every possible instruction"
+      ]
+    },
+    "A4": {
+      "status": "PASS",
+      "scope": "Original host scope plus final-r11 real Android four-phase Keystore/encryptedSQLite/force-stop restore to actual task TLS+SQL+Redis, manual original-key drafts, ordered DM and ACK, close/late PUT and real component fault",
+      "skipped": 3,
+      "notRun": [
+        "Historical three external HTTP/SQL fixtures remain SKIP",
+        "iOS/full physical reboot or power loss",
+        "Production topology"
+      ]
+    },
+    "A5": {
+      "status": "PASS",
+      "scope": "Final-source r11 actual timeout/OOM/FLUSH/corrupt state/same-run client fallback dirty/barrier",
+      "notRun": [
+        "True Redis server restart",
+        "Two cmd API process restart",
+        "Unsupported auto failover"
+      ],
+      "nativeFollowup": {
+        "status": "PASS",
+        "scope": "Real CLIENT PAUSE5000ALL same-run fault, actual503 counter1, original-command recovery and independent receiving/ACK",
+        "evidence": "docs/design/shared-rate-limit-device-verification.json"
+      }
+    },
+    "A6": {
+      "status": "PASS",
+      "scope": "Final-source r11 modes/independent capacity/policy/key/finalSQL fence/CLI/TTL/private metrics/C-V separate clusters least roles",
+      "notRun": [
+        "Full scale capacity/MEMORY USAGE sizing",
+        "Production thresholds/traffic",
+        "External privacy/security audit"
+      ]
+    }
+  },
+  "openImplementationItems": [],
+  "boundaries": [
+    "No existing database accessed/reset; own task TLS/C-V clusters/Redis only",
+    "Only explicitly authorized isolated Android package operated; daily package and data unchanged",
+    "No production/merge/deployment",
+    "Commit/push/PR authorized but not yet executed",
+    "Historical host940/three SKIP and backend39 scope unchanged",
+    "No RocketMQ; historical module verdicts unchanged"
+  ],
+  "historicalCheckpoint": {
+    "status": "IN_PROGRESS",
+    "modelStages": [
+      {
+        "stage": 1,
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "status": "COMPLETE"
+      },
+      {
+        "stage": 2,
+        "model": "gpt-6-astra",
+        "effort": "xhigh",
+        "status": "COMPLETE"
+      },
+      {
+        "stage": 3,
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "status": "IN_PROGRESS"
+      },
+      {
+        "stage": 4,
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "status": "IN_PROGRESS"
+      },
+      {
+        "stage": 5,
+        "model": "gpt-6-astra",
+        "effort": "xhigh",
+        "status": "IN_PROGRESS"
+      },
+      {
+        "stage": 6,
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "status": "NOT_RUN"
+      }
+    ],
+    "acceptance": {
+      "A1": "NOT_RUN",
+      "A2": "NOT_RUN",
+      "A3": "NOT_RUN",
+      "A4": "PARTIAL_HOST_ONLY",
+      "A5": "NOT_RUN",
+      "A6": "NOT_RUN"
+    },
+    "openImplementationItems": [
+      "Complete runtime/HTTP/shared action integration, grants and explicit namespace initialization.",
+      "Add and run real Redis, two API and private PostgreSQL fault/acceptance fixtures and CI.",
+      "Confirm cleanup corrected and real Redis MaxDedup=1 regression passed; still verify the whole persistent business receipt path with SQL/Gate.",
+      "Verify mixed upload.attempt enforce / upload.bytes off releases or avoids reservations, and observer failure cannot introduce new rejection.",
+      "Format changed Dart/Go files, finalize client/contract checks and final regression on exact source.",
+      "Independent Astra xhigh review, then Sol medium final docs/configuration/rollback and module evidence synchronization."
+    ],
+    "designConsistencyReview": {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "scope": "Interim stage2 design consistency review of in-progress backend; not final stage5 approval",
+      "findings": [
+        {
+          "id": "R1",
+          "priority": "P2",
+          "status": "OPEN",
+          "issue": "Separate hot state/dedup retention from effective quota recovery barrier; default dedup24h must not force24h outage."
+        },
+        {
+          "id": "R2",
+          "priority": "P2",
+          "status": "OPEN",
+          "issue": "Old-generation ADMITTED must terminate only its old key, not Probe and globally Recover the healthy new namespace."
+        },
+        {
+          "id": "R3",
+          "priority": "P2",
+          "status": "OPEN",
+          "issue": "PREPARED must persist expected generation; hot dedup must cover its fixed lease, avoiding same-generation expiry or cross-generation double charge."
+        },
+        {
+          "id": "R4",
+          "priority": "P2",
+          "status": "OPEN",
+          "issue": "Successful verified-db fallback must persist dirty_until in its final transaction and fence same-run-id recovery; no unaccounted immediate shared reset."
+        },
+        {
+          "id": "R5",
+          "priority": "P2",
+          "status": "OPEN",
+          "issue": "Enforce actual HTTP read deadline and conservative late settlement so slow received bytes cannot disappear when reserved events age out."
+        }
+      ],
+      "alreadyChecked": [
+        "Recover acquires FOR UPDATE before computing barrier time",
+        "Final business namespace FOR SHARE",
+        "PUT not read.control and POST ACK entry read protection corrected"
+      ]
+    }
+  },
+  "implementation": "LOCAL_UNCOMMITTED_COMPLETE",
+  "remoteCI": "NOT_RUN",
+  "pr": null,
+  "windowsEvidenceRoot": "E:/Hnuhole-env/shared-rate-limit-evidence-20261024-8ed8f28",
+  "sourceManifest": {
+    "path": "final-source-manifest.json",
+    "linuxPath": "logs/final-source-manifest.json",
+    "changedProductFiles": 107,
+    "aggregateSHA256": "d712eb2d4e6a5a1e010d364f19b71ea6b1bd284cfadb13dd0ac4068a9a10f514",
+    "windowsVsTestedLinux": "PASS",
+    "isCommitSHA": false,
+    "excludes": "Documentation; includes implementation/tests/infra/CI/contracts",
+    "headRemains": "8ed8f28"
+  },
+  "coordination": "Root coordinated tools; actual agents executed stated model stages. No claim root switched own model.",
+  "finalSourceReview": {
+    "status": "PASS",
+    "model": "gpt-6-astra",
+    "effort": "xhigh",
+    "sourceOnly": true,
+    "date": "2026-10-24",
+    "evidence": "This chat; independent final read-only review, no standalone file",
+    "closedIDs": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "remainingP1P2": [],
+    "reviewerRanTests": false,
+    "githubMemberApproval": false
+  },
+  "commands": [
+    {
+      "command": "sh services/api/authlab/run-shared-rate-limit-isolated.sh",
+      "cwd": "source/",
+      "scope": "Owned C/V clusters, Redis, private sockets; exact env/output in versioned logs"
+    },
+    {
+      "command": "flutter analyze --no-pub",
+      "cwd": "source/apps/mobile",
+      "log": "logs/client-final-r5-analyze.log"
+    },
+    {
+      "command": "flutter test --no-pub",
+      "cwd": "source/apps/mobile",
+      "log": "logs/client-final-r5-full.log"
+    },
+    {
+      "command": "flutter build bundle --debug --no-pub",
+      "cwd": "source/apps/mobile",
+      "log": "logs/client-final-r5-bundle.log"
+    },
+    {
+      "command": "go build ./...",
+      "cwd": "source/services/api",
+      "log": "logs/backend-all-build-final.log"
+    },
+    {
+      "command": "go vet ./...",
+      "cwd": "source/services/api",
+      "log": "logs/backend-all-vet-final.log"
+    }
+  ],
+  "remainingVerification": [
+    "Create authorized PR, execute and verify remote CI",
+    "iOS/full physical reboot or power loss beyond scope",
+    "Capacity/production traffic/external security evidence"
+  ],
+  "documentationChecks": {
+    "status": "PASS",
+    "reviewer": "Root independent final static audit",
+    "changedFiles": 124,
+    "markdownFiles": 15,
+    "utf8NoReplacementCharacters": "PASS",
+    "json": "PASS",
+    "relativeLinksMissing": 0,
+    "blobArtifactSecretPolicyErrors": 0,
+    "historicalLedgerEntriesEqualHEAD": "PASS",
+    "product107ManifestUnchanged": "PASS",
+    "diffWhitespace": "PASS",
+    "evidence": "E:/Hnuhole-env/shared-rate-limit-evidence-20261024-8ed8f28/final-docs-static-check.json",
+    "scope": "Historical pre-native root static audit; native followup writer checks separately recorded"
+  },
+  "preNativeCheckpoint": {
+    "status": "LOCAL_IMPLEMENTATION_AND_SCOPED_VERIFICATION_COMPLETE",
+    "boundaries": [
+      "No existing DB accessed/reset",
+      "Only task-owned WSL C/V PostgreSQL clusters/Redis",
+      "No phone/production operation",
+      "No commit/push/PR/merge/deploy",
+      "No RocketMQ",
+      "No blanket A1-A6 or module-wide acceptance",
+      "Historical module verdicts unchanged",
+      "Logs and manifests outside repository"
+    ],
+    "remainingVerification": [
+      "Three real Dart HTTP/SQL fixtures skipped; new client-to-API integration and native device/iOS",
+      "Remote CI not run, no PR",
+      "Full capacity and production traffic/privacy/security evidence"
+    ],
+    "acceptance": {
+      "A1": {
+        "status": "PASS",
+        "scope": "Final-source r11 actual TLS handlers, independent clients/business/metadata pools runtime roles, SQL20unique limit5, shared identities/client instance restart",
+        "notRun": [
+          "Two separate cmd API processes",
+          "Real server/process restart beyond fixture"
+        ]
+      },
+      "A2": {
+        "status": "PASS",
+        "scope": "Same campus-egress different accounts; forged headers/trusted chain units",
+        "notRun": [
+          "Production/campus traffic false positive observation"
+        ]
+      },
+      "A3": {
+        "status": "PASS",
+        "scope": "Final-source r11 same-key/conflict/receipts/SQL confirmation failure/fixed lease/epochs/policy/close late-send race",
+        "notRun": [
+          "Physical process kill at every possible instruction"
+        ]
+      },
+      "A4": {
+        "status": "PASS",
+        "scope": "Original host scope plus final-r11 real Android four-phase Keystore/encryptedSQLite/force-stop restore to actual task TLS+SQL+Redis, manual original-key drafts, ordered DM and ACK, close/late PUT and real component fault",
+        "skipped": 3,
+        "notRun": [
+          "Historical three external HTTP/SQL fixtures remain SKIP",
+          "iOS/full physical reboot or power loss",
+          "Production topology"
+        ]
+      },
+      "A5": {
+        "status": "PASS",
+        "scope": "Final-source r11 actual timeout/OOM/FLUSH/corrupt state/same-run client fallback dirty/barrier",
+        "notRun": [
+          "True Redis server restart",
+          "Two cmd API process restart",
+          "Unsupported auto failover"
+        ],
+        "nativeFollowup": {
+          "status": "PASS",
+          "scope": "Real CLIENT PAUSE5000ALL same-run fault, actual503 counter1, original-command recovery and independent receiving/ACK",
+          "evidence": "docs/design/shared-rate-limit-device-verification.json"
+        }
+      },
+      "A6": {
+        "status": "PASS",
+        "scope": "Final-source r11 modes/independent capacity/policy/key/finalSQL fence/CLI/TTL/private metrics/C-V separate clusters least roles",
+        "notRun": [
+          "Full scale capacity/MEMORY USAGE sizing",
+          "Production thresholds/traffic",
+          "External privacy/security audit"
+        ]
+      }
+    }
+  },
+  "deviceVerification": "docs/design/shared-rate-limit-device-verification.json",
+  "latestSourceManifest": {
+    "path": "native-source-manifest.json",
+    "changedProductFiles": 110,
+    "aggregateSHA256": "7ab164efd7e8b14df1cf50461af19d1243db1772bb6c58acf4274b308a87e456",
+    "windowsVsTestedLinux": "PASS",
+    "isCommitSHA": false,
+    "baselineHEAD": "8ed8f28",
+    "scope": "Includes opt-in Android/Go native fixture and build configuration, excludes docs; previous107-file manifest remains historical."
+  },
+  "authorization": {
+    "userRequest": "Do real-device acceptance, then create PR for remote CI acceptance",
+    "commitPushPR": "AUTHORIZED_PENDING_ROOT_EXECUTION",
+    "mergeDeploy": "NOT_AUTHORIZED"
+  },
+  "nativeAndroid": {
+    "status": "PASS",
+    "phaseReports": 4,
+    "versionCode": 2026102433,
+    "evidence": "docs/design/shared-rate-limit-device-verification.json",
+    "scope": "Four specified real Android phases only; not full module, iOS or production acceptance",
+    "fixtureCleanup": "PASS",
+    "lease": "released"
+  },
+  "nativeSourceEquivalence": {
+    "status": "PASS",
+    "previousManifestFiles": 107,
+    "nativeManifestFiles": 110,
+    "existingBusinessFilesUnchanged": 106,
+    "oneExistingChanged": "services/api/authlab/run-shared-rate-limit-isolated.sh adds opt-in device mode",
+    "scope": "No historical host/SQL rerun implied; preserve original940/3SKIP and backend39 scope/counts",
+    "addedToChangedFileManifest": [
+      "apps/mobile/android/app/build.gradle.kts",
+      "apps/mobile/integration_test/shared_rate_limit_device.dart",
+      "services/api/internal/authprivacyhttp/shared_rate_device_postgres_test.go"
+    ]
+  },
+  "nativeDocumentationChecks": {
+    "status": "PASS",
+    "scope": "Writer UTF8/JSON/local links/diff check; root final audit to follow"
+  }
+}

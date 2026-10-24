@@ -155,6 +155,19 @@ BEGIN
                   AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
             END IF;
           END IF;
+          -- Shared quota metadata is service-local and contains no credentials,
+          -- email, community identity or body. Policy and singleton authority
+          -- remain owner-only; runtime can only persist loss/dirty recovery.
+          IF relation.nspname=party||'_rate_limit' THEN
+            allowed := (relation.relname='namespace' AND privilege='SELECT')
+              OR (party='c' AND relation.relname='admissions' AND privilege IN ('SELECT','INSERT','DELETE'));
+            IF privilege='UPDATE' AND (relation.relname='namespace' OR (party='c' AND relation.relname='admissions')) THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid AND a.attnum>0 AND NOT a.attisdropped
+                  AND NOT (a.attname=ANY(CASE relation.relname WHEN 'namespace' THEN ARRAY['generation','run_id','state','barrier_until','dirty_until'] ELSE ARRAY['state','generation','incarnation','confirmed_at','deadline'] END))
+                  AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
+          END IF;
         END IF;
         IF granted AND NOT allowed THEN RAISE EXCEPTION 'operational role acquired noncontract table privilege'; END IF;
       END LOOP;

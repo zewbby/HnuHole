@@ -1,0 +1,73 @@
+name: Shared rate limit
+on:
+  pull_request:
+    paths:
+      - 'services/api/**'
+      - 'apps/mobile/**'
+      - 'packages/openapi/**'
+      - 'infra/postgres/**'
+      - '.github/workflows/shared-rate-limit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: shared-rate-limit-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  isolated-admission:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - name: Install isolated test tools
+        run: sudo apt-get update && sudo apt-get install -y postgresql-16 redis-server
+      - name: Install pinned Goose
+        run: GOBIN=/usr/local/bin go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned image test runtime
+        run: |
+          python -m venv "$RUNNER_TEMP/shared-rate-image"
+          "$RUNNER_TEMP/shared-rate-image/bin/python" -m pip install -r services/api/media/requirements.txt
+          echo "POST_MEDIA_PYTHON=$RUNNER_TEMP/shared-rate-image/bin/python" >> "$GITHUB_ENV"
+      - name: Real Redis and PostgreSQL admission regressions
+        env:
+          PATH: /usr/lib/postgresql/16/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin
+        run: sh services/api/authlab/run-shared-rate-limit-isolated.sh
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Complete API validation
+        run: |
+          python -m pip install -r packages/openapi/requirements-check.txt
+          python packages/openapi/check-specs.py
+          python tools/check-community-text-contract.py
+          python tools/check-direct-message-contract.py
+          python tools/check-comment-text-contract.py
+  mobile-recovery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      - name: Install SQLite test link library
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
+      - name: Analyze and test durable waits and queues
+        working-directory: apps/mobile
+        run: |
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+          flutter test --no-pub test/rate_limit_test.dart test/rate_limit_notice_test.dart test/post_controller_test.dart test/comment_core_test.dart test/comment_journal_test.dart test/dm_reliability_test.dart test/dm_chat_races_test.dart

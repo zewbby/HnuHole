@@ -146,7 +146,7 @@ components:
       schema:
         type: integer
         minimum: 1
-        maximum: 300
+        maximum: 86400
   responses:
     Error400:
       description: Malformed input, invalid original image, noncanonical identifier, unknown or duplicate JSON fields,
@@ -293,7 +293,7 @@ components:
                 retryAfterSeconds:
                   type: integer
                   minimum: 1
-                  maximum: 300
+                  maximum: 86400
         requestId:
           type: string
           minLength: 22

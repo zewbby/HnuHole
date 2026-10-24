@@ -184,7 +184,9 @@ void main() {
     expect((await s.get(id))!['intent'], isNot(contains('mediaId')));
     await expectLater(s.photo(mid, senderId: p1.own), throwsException);
     await s.close();
-    final api = chat.ChatApi(), c = await bind(api);
+    final api = chat.ChatApi()
+      ..closeUnavailableCode = 'SHARED_RATE_UNAVAILABLE';
+    final c = await bind(api);
     expect((await c.message(id))!['_state'], 'unknown');
     expect(api.imagePuts, 0);
     api.receipts[id] = sent(1);
@@ -204,7 +206,8 @@ void main() {
       await s.hideMessage(id);
       expect((await s.get(id))!['intent'], isNot(contains('text')));
       await s.close();
-      final api = chat.ChatApi();
+      final api = chat.ChatApi()
+        ..closeUnavailableCode = 'SHARED_RATE_UNAVAILABLE';
       api.receipts[id] = {
         'state': 'FAILED',
         'attempt': 1,
@@ -219,6 +222,35 @@ void main() {
       await close(c);
     },
   );
+
+  test('hidden photo obtains permanent close without retransmission and a late PUT cannot revive it', () async {
+    final s = await open(), mid = dmId();
+    await s.saveChatConversations([chat.directory()]);
+    await s.savePhotoDraft(p1.own, p1.peer, chat.descriptor(mid), chat.photo);
+    await s.enqueueChat(chat.textIntent(''), [mid]);
+    final id = (await s.work()).single['_id'] as String;
+    await s.transition(id, 'queued', 'unknown');
+    await s.hideMessage(id);
+    await expectLater(s.photo(mid, senderId: p1.own), throwsException);
+    await s.close();
+    final api = chat.ChatApi(), c = await bind(api);
+    expect(api.closes, 1);
+    expect(api.receipts[id]?['errorCode'], 'COMMAND_CLOSED');
+    expect((await c.message(id))?['_state'], 'deleted');
+    expect(api.imagePuts, 0);
+    final late = await api.dmRequest(
+      'token',
+      'PUT',
+      'commands/$id',
+      body: {...chat.textIntent('late body'), 'attempt': 1000},
+    );
+    expect(late.value['errorCode'], 'COMMAND_CLOSED');
+    expect(api.accepted, 0);
+    await c.sync();
+    expect(await c.history(p1.own, p1.peer), isEmpty);
+    expect(api.imagePuts, 0);
+    await close(c);
+  });
 
   test('same media ID from two senders remains isolated through retract and delete', () async {
     var s = await open();
@@ -347,7 +379,8 @@ void main() {
     api.resume.complete();
     await active.sync();
     expect(api.sends, 0);
-    expect((await active.message(id))!['_state'], 'unknown');
+    // Cancellation won before PUT began; a minimal deleted tombstone remains.
+    expect((await active.message(id))!['_state'], 'deleted');
     expect((await active.message(id))!['intent'], isNot(contains('text')));
     await close(active);
   });
@@ -384,9 +417,15 @@ void main() {
       await s.hideMessage(id);
       hidden.add(id);
     }
-    final fresh = await s.enqueue(chat.textIntent('new visible work'));
+    final blocked = await s.enqueue(chat.textIntent('same-pair must wait'));
+    final fresh = await s.enqueue({
+      ...chat.textIntent('independent visible work'),
+      'peerId': other,
+    });
     final first = await s.work();
     expect(first.first['_id'], fresh);
+    expect(first.any((r) => r['_id'] == blocked), isFalse);
+    expect(await s.hasPredecessor(blocked), isTrue);
     final second = await s.work();
     expect({
       ...first.map((r) => r['_id']),

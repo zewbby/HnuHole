@@ -29,3 +29,13 @@ GRANT USAGE ON SEQUENCE v_auth.authorization_gate_audit_event_id_seq TO hnuhole_
 
 GRANT USAGE ON SCHEMA public TO hnuhole_v_runtime;
 GRANT SELECT ON public.goose_db_version TO hnuhole_v_runtime;
+
+DO $$ BEGIN
+ IF to_regclass('v_rate_limit.namespace') IS NOT NULL THEN
+  REVOKE ALL ON SCHEMA v_rate_limit FROM PUBLIC;
+  REVOKE ALL ON v_rate_limit.namespace FROM PUBLIC,hnuhole_v_runtime;
+  GRANT USAGE ON SCHEMA v_rate_limit TO hnuhole_v_runtime;
+  GRANT SELECT ON v_rate_limit.namespace TO hnuhole_v_runtime;
+  GRANT UPDATE(generation,run_id,state,barrier_until,dirty_until) ON v_rate_limit.namespace TO hnuhole_v_runtime;
+ END IF;
+END $$;

@@ -26,7 +26,9 @@ class DmController extends ChangeNotifier {
     this.onIncoming,
     this.purgeStore,
     this.chatEnabled = false,
-  });
+    DateTime Function()? clock,
+  }) : _clock = clock ?? DateTime.now;
+  final DateTime Function() _clock;
   final DmApi api;
   final bool chatEnabled;
   final DmStoreFactory openStore;
@@ -51,6 +53,8 @@ class DmController extends ChangeNotifier {
   List<String> _identities = [];
   Future<void>? _syncing;
   Timer? _timer;
+  Timer? _retryTimer;
+  final _waitClocks = <String, (String, Stopwatch)>{};
   List<Map<String, dynamic>> conversations = [];
   String? error;
   String? _operationError;
@@ -159,6 +163,9 @@ class DmController extends ChangeNotifier {
     _epoch++;
     _timer?.cancel();
     _timer = null;
+    _retryTimer?.cancel();
+    _retryTimer = null;
+    _waitClocks.clear();
     _authorized = null;
     final store = _store;
     _store = null;
@@ -213,6 +220,58 @@ class DmController extends ChangeNotifier {
     return task.whenComplete(() => _syncing = null);
   }
 
+  String _requestClass(String method, String path) {
+    if (method == 'POST' &&
+        path.startsWith('commands/') &&
+        path.endsWith('/close')) {
+      return 'close';
+    }
+    if (method == 'PUT' &&
+        (path.startsWith('commands/') || path.startsWith('chat/images/'))) {
+      return 'send';
+    }
+    if (path == 'ack' ||
+        path == 'read' ||
+        path.startsWith('commands/') ||
+        path.startsWith('chat/operations/') ||
+        path.startsWith('governance/blocks/')) {
+      return 'control';
+    }
+    return 'read';
+  }
+
+  Future<int> _remaining(String kind, DmStore store) async {
+    final wait = await store.cooldown(kind);
+    if (wait == null) return 0;
+    final key = '${wait.recordedAt.toIso8601String()}:${wait.seconds}';
+    var measured = _waitClocks[kind];
+    if (measured == null || measured.$1 != key) {
+      measured = (key, Stopwatch()..start());
+      _waitClocks[kind] = measured;
+    }
+    final wall = wait.remaining(_clock());
+    final monotonic = (wait.seconds - measured.$2.elapsed.inSeconds).clamp(
+      0,
+      wait.seconds,
+    );
+    return wall < monotonic ? wall : monotonic;
+  }
+
+  Future<void> _wakeAfterCooldown(int epoch, DmStore store) async {
+    int? next;
+    for (final kind in ['send', 'read', 'control', 'close']) {
+      final delay = await _remaining(kind, store);
+      if (delay > 0 && (next == null || delay < next)) next = delay;
+    }
+    if (!_current(epoch)) return;
+    _retryTimer?.cancel();
+    _retryTimer = next == null
+        ? null
+        : Timer(Duration(seconds: next), () {
+            if (_current(epoch)) unawaited(sync());
+          });
+  }
+
   Future<Map<String, dynamic>> _request(
     int epoch,
     String token,
@@ -222,6 +281,18 @@ class DmController extends ChangeNotifier {
     Map<String, String>? query,
   }) async {
     if (!_current(epoch)) throw StateError('DM window expired');
+    final store = _store!;
+    final kind = _requestClass(method, path);
+    final wait = await _remaining(kind, store);
+    if (!_current(epoch)) throw StateError('DM window expired');
+    if (wait > 0) {
+      throw PostFailure(
+        kind: PostFailureKind.rejected,
+        statusCode: 429,
+        code: 'RATE_LIMITED',
+        retryAfterSeconds: wait,
+      );
+    }
     late PostResponse<Map<String, dynamic>> response;
     try {
       response = await api.dmRequest(
@@ -232,6 +303,14 @@ class DmController extends ChangeNotifier {
         query: query,
       );
     } on PostFailure catch (e) {
+      if (_current(epoch) &&
+          (e.statusCode == 429 || e.code == 'SHARED_RATE_UNAVAILABLE')) {
+        await store.defer(
+          kind,
+          _clock(),
+          e.statusCode == 429 ? e.retryAfterSeconds ?? 1 : 5,
+        );
+      }
       // Contact/foreground requests share the same fail-closed boundary as
       // background sync; do not leave history visible until the next poll.
       if (_current(epoch)) _stopForFailure(e, token);
@@ -247,92 +326,181 @@ class DmController extends ChangeNotifier {
     return response.value;
   }
 
-  Future<void> _synchronize(int epoch, DmStore store, String token) async {
-    final incoming = <Map<String, dynamic>>[];
-    final account = _account!;
+  Future<void> _syncWork(
+    int epoch,
+    DmStore store,
+    String token,
+    Map<String, dynamic> row,
+  ) async {
     try {
-      if (chatEnabled) await _chatBeforeSync(epoch, store, token);
-      for (final row in await store.work()) {
+      final id = row['_id'] as String;
+      final state = row['_state'] as String;
+      if (state == 'queued' || state == 'unknown') {
+        final intent = Map<String, Object>.from(row['intent'] as Map);
+        if (!_identities.contains(intent['identityId'])) return;
         if (!_current(epoch)) return;
-        final id = row['_id'] as String;
-        final state = row['_state'] as String;
-        if (state == 'queued' || state == 'unknown') {
-          final intent = Map<String, Object>.from(row['intent'] as Map);
-          if (!_identities.contains(intent['identityId'])) continue;
-          if (state == 'queued') {
-            await store.transition(id, 'queued', 'unknown');
-          }
-          if (!_current(epoch)) return;
-          var receipt = await _request(epoch, token, 'GET', 'commands/$id');
-          final latest = await store.get(id);
-          final hidden = latest?['_kind'] == 'hidden_message';
-          if (hidden &&
-              receipt['state'] != 'SENT' &&
-              !(receipt['state'] == 'FAILED' &&
-                  receipt['attempt'] == intent['attempt'])) {
-            // ABSENT or an older failed attempt cannot rule out a delayed PUT.
-            // Deleted content is never replayed; retain only receipt lookup work.
-            continue;
-          }
-          if (receipt['state'] == 'ABSENT' ||
-              receipt['state'] == 'FAILED' &&
-                  (receipt['attempt'] as int) < (intent['attempt'] as int)) {
-            final image = row['messageType'] == 'IMAGE';
-            if (image) {
-              intent['data'] = base64Encode(
-                await store.photo(
-                  intent['mediaId'] as String,
-                  senderId: intent['identityId'] as String,
-                ),
-              );
-            }
-            // The user may delete while original bytes are being read.
-            if ((await store.get(id))?['_kind'] == 'hidden_message') continue;
-            receipt = await _request(
-              epoch,
-              token,
-              'PUT',
-              image ? 'chat/images/$id' : 'commands/$id',
-              body: intent,
-            );
-          }
-          if (!_current(epoch)) return;
-          if ((!hidden && receipt['attempt'] != intent['attempt']) ||
-              !{'SENT', 'FAILED'}.contains(receipt['state'])) {
-            throw const FormatException('DM attempt mismatch');
-          }
-          await store.transition(
-            id,
-            'unknown',
-            receipt['state'] == 'SENT' ? 'sent' : 'failed',
-            receipt: receipt,
-          );
-          if (chatEnabled && receipt['state'] == 'SENT') {
-            await store.enforceDeleteFor(id);
-            final control = await store.get(
-              'retracted:${receipt['messageId']}',
-            );
-            if (control != null) {
-              await store.applyControls([control], await store.controlCursor());
-            }
-          }
-          if (chatEnabled) await store.eraseHiddenResolved(id);
-        } else {
-          final read = state == 'read_pending';
-          await _request(
+        var receipt = await _request(epoch, token, 'GET', 'commands/$id');
+        final latest = await store.get(id);
+        final hidden = latest?['_kind'] == 'hidden_message';
+        if (hidden && latest?['_state'] != 'unknown') return;
+        if (hidden &&
+            (receipt['state'] == 'ABSENT' ||
+                receipt['state'] == 'FAILED' &&
+                    receipt['errorCode'] != 'COMMAND_CLOSED' &&
+                    (receipt['attempt'] as int) < (intent['attempt'] as int))) {
+          // An account-locked server anchor orders with every delayed original
+          // PUT. It can confirm SENT or permanently close an unsent original;
+          // it never replays the erased body or claims to retract a sent one.
+          receipt = await _request(
             epoch,
             token,
             'POST',
-            read ? 'read' : 'ack',
-            body: {
-              'messageIds': [id],
-            },
+            'commands/$id/close',
+            body: {'attempt': intent['attempt'] as int},
           );
+        }
+        if (hidden &&
+            receipt['state'] != 'SENT' &&
+            !(receipt['state'] == 'FAILED' &&
+                (receipt['errorCode'] == 'COMMAND_CLOSED' ||
+                    (receipt['attempt'] as int) >=
+                        (intent['attempt'] as int)))) {
+          return;
+        }
+        if (!hidden &&
+            (receipt['state'] == 'ABSENT' ||
+                receipt['state'] == 'FAILED' &&
+                    receipt['errorCode'] != 'COMMAND_CLOSED' &&
+                    (receipt['attempt'] as int) < (intent['attempt'] as int))) {
+          if (await store.hasPredecessor(id)) return;
+          final image = row['messageType'] == 'IMAGE';
+          if (image) {
+            intent['data'] = base64Encode(
+              await store.photo(
+                intent['mediaId'] as String,
+                senderId: intent['identityId'] as String,
+              ),
+            );
+          }
+          // The user may delete while original bytes are being read.
+          final beforeSend = await store.get(id);
+          if (beforeSend == null || beforeSend['_kind'] == 'hidden_message') {
+            return;
+          }
+          if (await _remaining('send', store) > 0 || !_current(epoch)) return;
+          if (beforeSend['_state'] == 'queued') {
+            await store.transition(id, 'queued', 'unknown');
+          }
           if (!_current(epoch)) return;
-          await store.transition(id, state, read ? 'read' : 'inbox');
-          if (chatEnabled) await store.eraseHiddenResolved(id);
+          receipt = await _request(
+            epoch,
+            token,
+            'PUT',
+            image ? 'chat/images/$id' : 'commands/$id',
+            body: intent,
+          );
+        }
+        if (!_current(epoch)) return;
+        if ((!hidden &&
+                receipt['attempt'] != intent['attempt'] &&
+                receipt['errorCode'] != 'COMMAND_CLOSED') ||
+            !{'SENT', 'FAILED'}.contains(receipt['state'])) {
+          throw const FormatException('DM attempt mismatch');
+        }
+        final current = await store.get(id);
+        if (current == null) return;
+        await store.transition(
+          id,
+          current['_state'] as String,
+          receipt['state'] == 'SENT' ? 'sent' : 'failed',
+          receipt: receipt,
+        );
+        if (chatEnabled && receipt['state'] == 'SENT') {
+          await store.enforceDeleteFor(id);
+          final control = await store.get('retracted:${receipt['messageId']}');
+          if (control != null) {
+            await store.applyControls([control], await store.controlCursor());
+          }
+        }
+        if (chatEnabled) await store.eraseHiddenResolved(id);
+      } else {
+        final read = state == 'read_pending';
+        await _request(
+          epoch,
+          token,
+          'POST',
+          read ? 'read' : 'ack',
+          body: {
+            'messageIds': [id],
+          },
+        );
+        if (!_current(epoch)) return;
+        await store.transition(id, state, read ? 'read' : 'inbox');
+        if (chatEnabled) await store.eraseHiddenResolved(id);
+      }
+    } on PostFailure catch (e) {
+      if (_current(epoch)) {
+        _stopForFailure(e, token);
+        if (e.code == 'SHARED_RATE_UNAVAILABLE') {
+          _operationError = '服务暂不可用，已保存消息稍后重试';
+        } else if (e.statusCode != 429) {
+          _operationError = '部分消息仍在核对，原内容已保存';
         }
       }
+    } catch (_) {
+      if (_current(epoch)) _operationError = '部分消息仍在核对，原内容已保存';
+    }
+  }
+
+  Future<void> _drainSends(int epoch, DmStore store, String token) async {
+    try {
+      final attempted = <String>{};
+      // Re-read after a settled predecessor so normal bursts drain immediately.
+      // Unknown predecessors are attempted only once per round and keep their
+      // pair blocked; they never prevent another pair or incoming ACK work.
+      for (var batch = 0; batch < store.maxPendingSends; batch++) {
+        final rows = (await store.work())
+            .where(
+              (r) =>
+                  {'queued', 'unknown'}.contains(r['_state']) &&
+                  !attempted.contains(r['_id']),
+            )
+            .toList();
+        if (rows.isEmpty) break;
+        for (final row in rows) {
+          if (!_current(epoch)) return;
+          attempted.add(row['_id'] as String);
+          await _syncWork(epoch, store, token, row);
+        }
+      }
+    } catch (_) {
+      if (_current(epoch)) _operationError = '部分消息仍在核对，原内容已保存';
+    }
+  }
+
+  Future<void> _synchronize(int epoch, DmStore store, String token) async {
+    final incoming = <Map<String, dynamic>>[];
+    final account = _account!;
+    // Independent lanes: a slow/unknown PUT cannot stop durable receive + ACK.
+    final outgoing = _drainSends(epoch, store, token);
+    try {
+      if (chatEnabled) {
+        try {
+          await _chatBeforeSync(epoch, store, token);
+        } on PostFailure catch (e) {
+          if (e.kind == PostFailureKind.unauthorized ||
+              e.kind == PostFailureKind.unavailable) {
+            rethrow;
+          }
+        } catch (_) {}
+      }
+      for (final row in await store.work()) {
+        if (!_current(epoch)) return;
+        if (!{'queued', 'unknown'}.contains(row['_state'])) {
+          await _syncWork(epoch, store, token, row);
+        }
+      }
+      if (!_current(epoch)) return;
       final pending = await _request(
         epoch,
         token,
@@ -487,12 +655,33 @@ class DmController extends ChangeNotifier {
             await onIncoming?.call(incoming, account);
           }
         } catch (_) {}
-        if (_current(epoch)) _notify();
+        if (_current(epoch)) {
+          await _wakeAfterCooldown(epoch, store);
+          _notify();
+        }
+      }
+      await outgoing;
+      if (_current(epoch)) {
+        // The outgoing lane can finish after the receive lane published its
+        // status. Publish its late operation notice only inside the same epoch;
+        // an authorization failure may already have suspended this window.
+        if (_operationError != null) {
+          error = _operationError;
+          _operationError = null;
+        }
+        await _wakeAfterCooldown(epoch, store);
+        await _refreshDirectory(epoch, store);
+        _notify();
       }
     }
   }
 
   void _stopForFailure(PostFailure failure, String token) {
+    if (failure.kind == PostFailureKind.unavailable &&
+        failure.statusCode == 503 &&
+        failure.code == 'SHARED_RATE_UNAVAILABLE') {
+      return;
+    }
     if (failure.kind == PostFailureKind.unauthorized) {
       _suspendWindow();
       onUnauthorized?.call(token, failure.code);
@@ -507,6 +696,8 @@ class DmController extends ChangeNotifier {
     _authorized = null;
     _timer?.cancel();
     _timer = null;
+    _retryTimer?.cancel();
+    _retryTimer = null;
     conversations = [];
     error = '当前会话暂不可用，请恢复授权后查看私信';
     _notify();
@@ -563,6 +754,12 @@ class DmController extends ChangeNotifier {
       _notify();
       unawaited(sync());
       return true;
+    } on DmQueueFull {
+      if (_current(epoch)) {
+        error = '发送队列已满，请等待或取消未发送消息，输入已保留';
+        _notify();
+      }
+      return false;
     } catch (_) {
       if (_current(epoch)) {
         error = '保存失败，请保留输入并重试';

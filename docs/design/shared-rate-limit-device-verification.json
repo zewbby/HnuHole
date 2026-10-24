@@ -1,0 +1,272 @@
+{
+  "task": "SHARED-RATE-LIMIT-01",
+  "date": "2026-10-24",
+  "status": "PASS",
+  "scope": "Four specified real Android phases only; not full module, iOS or production acceptance",
+  "authorization": {
+    "userRequest": "Do real-device acceptance, then create PR for remote CI acceptance",
+    "commitPushPR": "AUTHORIZED_PENDING_ROOT_EXECUTION",
+    "mergeDeploy": "NOT_AUTHORIZED"
+  },
+  "branch": "feat/shared-rate-limit-abuse-control",
+  "committed": false,
+  "pushed": false,
+  "pr": null,
+  "remoteCI": "NOT_RUN",
+  "merged": false,
+  "deployed": false,
+  "device": {
+    "model": "Realme RMX3366",
+    "androidAPI": 34,
+    "package": "org.hnuhole.hnuhole_mobile.ratelimit",
+    "apkVersionCode": 2026102433,
+    "apkSHA256": "ca29017930eed7bdc71b9589c9541d4298674069a1e5c6b91a60d84cddf736dc",
+    "storage": "Real Android Keystore plus encrypted SQLite",
+    "restart": "Force-stop and launch, different application PIDs; not full device reboot"
+  },
+  "sourceManifest": {
+    "path": "native-source-manifest.json",
+    "changedProductFiles": 110,
+    "aggregateSHA256": "7ab164efd7e8b14df1cf50461af19d1243db1772bb6c58acf4274b308a87e456",
+    "windowsVsTestedLinux": "PASS",
+    "isCommitSHA": false,
+    "baselineHEAD": "8ed8f28",
+    "scope": "Includes opt-in Android/Go native fixture and build configuration, excludes docs; previous107-file manifest remains historical."
+  },
+  "environment": {
+    "backend": "Task-owned temporary actual TLS plus separate C/V PostgreSQL clusters and Redis; not full production cmd topology",
+    "flutter": "Existing complete ext4 Flutter3.47.5 and Android SDK; task-owned JNI build cache; no full toolchain download",
+    "redisFault": "Actual CLIENT PAUSE 5000 ALL, same Redis run_id recovery",
+    "secrets": "Fixture tokens, private CA, control capability, personal serial, APK and raw logs excluded"
+  },
+  "reports": [
+    {
+      "initializationStage": "ready",
+      "status": "PASS",
+      "phase": "rate-write",
+      "pid": 15872,
+      "writePid": 15872,
+      "checks": {
+        "post429CompleteDraft": true,
+        "comment429CompleteDraft": true,
+        "dm429KeepsOrderAndAck": true,
+        "queuedCancel": true,
+        "nativeAccountIsolation": true
+      },
+      "diagnostics": {
+        "dmNativeEnqueueCancelMillis": 122,
+        "dmPrimeToBindSyncMillis": 3491,
+        "dmPrimeAgeMillis": 3727,
+        "dmCallsAtFirstCheck": 1,
+        "dmSentAtFirstCheck": 3,
+        "dmQuotaWindowSeconds": 12,
+        "dm429ResponsesAtFirstCheck": 1
+      },
+      "assertion": "原生写入阶段完成：原稿与原键已保存，私信等待中；现在重启测试包。"
+    },
+    {
+      "initializationStage": "ready",
+      "status": "PASS",
+      "phase": "rate-read",
+      "pid": 16481,
+      "writePid": 15872,
+      "checks": {
+        "differentPidNativeRestore": true,
+        "noAutomaticPostComment": true,
+        "manualRetrySameOriginalKeys": true,
+        "dmPersistentAutomaticSameIdsAndOrder": true
+      },
+      "diagnostics": {},
+      "assertion": "不同进程原生恢复通过：发帖评论手动原键重试，私信到期原键自动保序。"
+    },
+    {
+      "initializationStage": "ready",
+      "status": "PASS",
+      "phase": "rate-unknown",
+      "pid": 17099,
+      "writePid": 15872,
+      "checks": {
+        "unknownCloseAndLatePut": true,
+        "independentPairAndAck": true
+      },
+      "diagnostics": {},
+      "assertion": "原结果未知已可靠关闭；迟到原请求未复活，独立会话与ACK继续。"
+    },
+    {
+      "initializationStage": "ready",
+      "status": "PASS",
+      "phase": "rate-fault",
+      "pid": 17746,
+      "writePid": 15872,
+      "checks": {
+        "realRedisFaultAndRecovery": true
+      },
+      "diagnostics": {
+        "dm503ResponsesAtFault": 1
+      },
+      "assertion": "真实 Redis 故障恢复通过：保留窗口、继续收件ACK、原命令恢复发送。"
+    }
+  ],
+  "serverStats": {
+    "rate-write": {
+      "closed": 0,
+      "commentCalls": 1,
+      "commentTasks": 1,
+      "dm429Responses": 1,
+      "dm503Responses": 0,
+      "dmCalls": 1,
+      "dmSent": 3,
+      "lateCode": "",
+      "pendingIncoming": 0,
+      "postCalls": 1,
+      "postTasks": 1
+    },
+    "rate-read": {
+      "closed": 0,
+      "commentCalls": 2,
+      "commentTasks": 2,
+      "dm429Responses": 3,
+      "dm503Responses": 0,
+      "dmCalls": 6,
+      "dmSent": 6,
+      "lateCode": "",
+      "pendingIncoming": 0,
+      "postCalls": 2,
+      "postTasks": 2
+    },
+    "rate-unknown": {
+      "closed": 1,
+      "commentCalls": 2,
+      "commentTasks": 2,
+      "dm429Responses": 4,
+      "dm503Responses": 0,
+      "dmCalls": 11,
+      "dmSent": 8,
+      "lateCode": "COMMAND_CLOSED",
+      "pendingIncoming": 0,
+      "postCalls": 2,
+      "postTasks": 2
+    },
+    "rate-fault": {
+      "closed": 1,
+      "commentCalls": 2,
+      "commentTasks": 2,
+      "dm429Responses": 4,
+      "dm503Responses": 1,
+      "dmCalls": 13,
+      "dmSent": 9,
+      "lateCode": "COMMAND_CLOSED",
+      "pendingIncoming": 0,
+      "postCalls": 2,
+      "postTasks": 2
+    }
+  },
+  "verifiedAssertions": {
+    "postCommentOriginalContentIdentityChannelRootTargetImageHashes": "PASS_BY_REAL_SQL",
+    "postTasksCommentTasksFinalEach": 2,
+    "taskCountMeaning": "Each equals one priming plus one original user manual retry; not two user retries",
+    "noAutomaticPostCommentAfterExpiry": "PASS_AFTER_EXPIRY_PLUS_3_SECONDS_NO_COUNT_INCREASE",
+    "canceledCommandGET": "ABSENT",
+    "sameConversationOrder": "PASS_TWO_MESSAGES",
+    "independentConversationAndACK": "PASS",
+    "unknownLatePUT": "COMMAND_CLOSED",
+    "visual": "Spinner observed in root view_image, no pending-send text; final-r11 dots are an animation frame",
+    "r10Screenshot": "Auxiliary unchanged-widget visual only, never r11 response-count evidence"
+  },
+  "checks": [
+    {
+      "name": "device-analyze-r5",
+      "status": "PASS",
+      "analysisIssues": 0,
+      "log": "logs/device-analyze-r5.log"
+    },
+    {
+      "name": "device-apk-build-r11",
+      "status": "PASS",
+      "log": "logs/device-apk-build-r11.log"
+    },
+    {
+      "name": "device-services-r5",
+      "status": "PASS",
+      "log": "logs/device-services-r5.log",
+      "scope": "Final fixture .stop and owned service shutdown completed; real four-phase reports passed.",
+      "exitCode": 0,
+      "testSeconds": 270.7,
+      "racePackageSeconds": 271.718
+    }
+  ],
+  "history": [
+    {
+      "run": "native-r8",
+      "status": "FAIL",
+      "scope": "Invalid namespace/locator and operator-directory setup, corrected before later runs"
+    },
+    {
+      "run": "native-r9",
+      "status": "FAIL",
+      "scope": "DM timer/priming sequence; retained rate-write-r9-failure-report and stats"
+    },
+    {
+      "run": "native-r10",
+      "status": "PASS",
+      "scope": "Write phase only; Astra identified response evidence did not distinguish429 and503. Not final four-phase acceptance"
+    },
+    {
+      "run": "native-r11",
+      "status": "PASS",
+      "scope": "Actual response counters added and all four phases rerun strictly"
+    },
+    {
+      "run": "native-build-environment-earlier",
+      "status": "FAIL",
+      "scope": "Old NTFS SDK/clang empty file and JNI stale .cxx; switched existing complete ext4 toolchains plus task JNI cache"
+    }
+  ],
+  "cleanup": {
+    "isolatedPackage": "Stopped only own .ratelimit package",
+    "adbReverse": "Three task-owned reverse mappings removed",
+    "screenSetting": 0,
+    "dailyPackage": {
+      "versionCode": 2026102427,
+      "versionName": "0.1.0-comment-detail",
+      "unchanged": true,
+      "userDataCleared": false
+    },
+    "lease": "released",
+    "ownedServices": "Task C/V PostgreSQL and Redis stopped; private device directory empty"
+  },
+  "review": {
+    "model": "gpt-6-astra",
+    "effort": "xhigh",
+    "status": "PASS",
+    "scope": "Narrow source review including native fixture/counter proof; remaining P1/P2 none",
+    "githubMemberApproval": false
+  },
+  "externalEvidenceRoot": "E:/Hnuhole-env/shared-rate-limit-evidence-20261024-8ed8f28/device/final-r11",
+  "notRun": [
+    "iOS",
+    "Full physical device reboot or sudden power loss",
+    "Production topology/deployment",
+    "Remote CI until PR is created and checks finish",
+    "Full scale capacity/production traffic observation"
+  ],
+  "historicalEvidenceBoundaries": [
+    "Original host940 and three fixture SKIP unchanged; not rerun or upgraded by native results",
+    "Original backend39 mixed-scope result not added to device counts",
+    "Opt-in device Go fixture expected SKIP in ordinary CI without exclusive request",
+    "Other historical module verdicts unchanged"
+  ],
+  "sourceEquivalence": {
+    "status": "PASS",
+    "previousManifestFiles": 107,
+    "nativeManifestFiles": 110,
+    "existingBusinessFilesUnchanged": 106,
+    "oneExistingChanged": "services/api/authlab/run-shared-rate-limit-isolated.sh adds opt-in device mode",
+    "scope": "No historical host/SQL rerun implied; preserve original940/3SKIP and backend39 scope/counts",
+    "addedToChangedFileManifest": [
+      "apps/mobile/android/app/build.gradle.kts",
+      "apps/mobile/integration_test/shared_rate_limit_device.dart",
+      "services/api/internal/authprivacyhttp/shared_rate_device_postgres_test.go"
+    ]
+  }
+}

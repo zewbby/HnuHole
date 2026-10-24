@@ -7,12 +7,22 @@ from openapi_spec_validator import validate_spec
 root = Path(__file__).resolve().parents[1]
 spec = yaml.safe_load((root / 'packages/openapi/direct-message-text.yaml').read_text(encoding='utf-8'))
 validate_spec(spec)
-assert len(spec['paths']) == 6
+assert len(spec['paths']) == 7
 assert spec['x-contract-status'] == 'P1_ISOLATED_IMPLEMENTATION'
 assert spec['components']['schemas']['TextIntent']['additionalProperties'] is False
 assert set(spec['components']['schemas']['Receipt']['properties']['state']['enum']) == {'ABSENT', 'FAILED', 'SENT'}
 assert all('/history' not in path for path in spec['paths'])
-print('DM P1 full OpenAPI: PASS (6 paths, owner-only receipts, no cloud history)')
+close = spec['paths']['/api/v1/dm/commands/{id}/close']['post']
+close_body = close['requestBody']['content']['application/json']['schema']
+assert close_body['additionalProperties'] is False
+assert close_body['required'] == ['attempt']
+assert set(close_body['properties']) == {'attempt'}
+assert close_body['properties']['attempt'] == {'type': 'integer', 'minimum': 1, 'maximum': 1000}
+assert 'COMMAND_CLOSED' in spec['components']['schemas']['Receipt']['properties']['errorCode']['enum']
+assert 'ADMISSION_EXPIRED' in spec['components']['schemas']['Receipt']['properties']['errorCode']['enum']
+assert close['responses']['200']['content']['application/json']['schema']['$ref'] == '#/components/schemas/Receipt'
+assert 'permanent' in close['description'] and 'delayed' in close['description'] and 'does not retract' in close['description']
+print('DM P1 full OpenAPI: PASS (7 paths, owner-only close anchors, no cloud history)')
 
 chat = yaml.safe_load((root / 'packages/openapi/direct-message-chat.yaml').read_text(encoding='utf-8'))
 validate_spec(chat)

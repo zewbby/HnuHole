@@ -18,6 +18,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -144,6 +145,13 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 		t.Fatal(err)
 	}
 	defer tx.Rollback(context.Background())
+	rateSchema := "c_rate_limit"
+	if schema == "v_auth" {
+		rateSchema = "v_rate_limit"
+	}
+	if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS `+rateSchema+` CASCADE`); err != nil {
+		t.Fatal(err)
+	}
 	if _, err = tx.Exec(context.Background(), `DROP SCHEMA IF EXISTS `+schema+` CASCADE`); err != nil {
 		t.Fatal(err)
 	}
@@ -166,6 +174,16 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 		if _, err = tx.Exec(context.Background(), `DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_community_identity(),public.guard_identity_receipt(),public.check_identity_account_shape() CASCADE`); err != nil {
 			t.Fatal(err)
 		}
+	}
+	if os.Getenv("HNULIMIT_FORMAL_GOOSE") == "1" {
+		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.goose_db_version`); err != nil {
+			t.Fatal(err)
+		}
+		if err = tx.Commit(context.Background()); err != nil {
+			t.Fatal(err)
+		}
+		sharedRunGoose(t, filepath.Join("..", "..", dir), dsn)
+		return pool
 	}
 	for _, file := range files {
 		sql, err := os.ReadFile(file)
@@ -292,6 +310,9 @@ func e2eNoContentJSON(t *testing.T, client *http.Client, endpoint string, body a
 // are synthetic. No real mailbox, credential service or deployed API is used.
 
 type e2eServices struct {
+	cRequestKey      [32]byte
+	verifierRaw      *protocol.Verifier
+	postConfig       authprivacy.PostConfig
 	c                *authprivacy.Community
 	v                *authprivacy.VerifierStore
 	eligibility      *authprivacy.Eligibility
@@ -346,7 +367,9 @@ func e2eNewServices(t *testing.T, configure ...func(*authprivacy.Community) *aut
 	cGate, advanceC, recoverC := e2eAuthorizationGateControl(t, s.cp)
 	s.advanceC = advanceC
 	s.gate, s.recoverC = cGate, recoverC
-	s.c, err = authprivacy.NewCommunityWithReceiptSigner(s.cp, verifier, 1, e2eKey(t), func(ctx context.Context, epoch uint32, message []byte) ([]byte, error) {
+	s.cRequestKey = e2eKey(t)
+	s.verifierRaw = verifier
+	s.c, err = authprivacy.NewCommunityWithReceiptSigner(s.cp, verifier, 1, s.cRequestKey, func(ctx context.Context, epoch uint32, message []byte) ([]byte, error) {
 		if !cSigningEnabled.Load() {
 			return nil, fmt.Errorf("synthetic signer temporarily unavailable")
 		}
@@ -359,7 +382,8 @@ func e2eNewServices(t *testing.T, configure ...func(*authprivacy.Community) *aut
 	if err != nil {
 		t.Fatal(err)
 	}
-	s.c, err = s.c.WithPosts(context.Background(), authprivacy.PostConfig{Environment: "lab", KeyKey: e2eKey(t), FingerprintKey: e2eKey(t), CursorKey: e2eKey(t)})
+	s.postConfig = authprivacy.PostConfig{Environment: "lab", KeyKey: e2eKey(t), FingerprintKey: e2eKey(t), CursorKey: e2eKey(t)}
+	s.c, err = s.c.WithPosts(context.Background(), s.postConfig)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -948,5 +972,23 @@ func TestHTTPSPostgresCommunityFreezeDoesNotFreezeVerifier(t *testing.T) {
 	e2eJSON(t, s.client, http.MethodPost, s.cPublic.URL+"/api/v1/auth/registration-intents", map[string]string{"registrationTicket": ticket, "username": "independent_gate", "password": "independent-long-community-password-phrase", "installationId": protocol.EncodeCanonicalBase64url(installation[:])}, nil, http.StatusServiceUnavailable)
 	if decision, err := s.vGate.Snapshot(context.Background()); err != nil || decision.Generation != 1 {
 		t.Fatalf("C freeze affected independent V Gate: %v", err)
+	}
+}
+
+// Uses the real pinned migrator only after the owned fixture identity checks
+// and schema reset above. DSNs stay in the child environment, never diagnostics.
+func sharedRunGoose(t *testing.T, dir, dsn string) {
+	t.Helper()
+	binary := os.Getenv("HNULIMIT_GOOSE")
+	if binary == "" {
+		binary = "goose"
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	command := exec.CommandContext(ctx, binary, "-dir", dir, "up")
+	command.Env = append(os.Environ(), "GOOSE_DRIVER=postgres", "GOOSE_DBSTRING="+dsn)
+	if output, err := command.CombinedOutput(); err != nil {
+		_ = output
+		t.Fatal("owned actual Goose migration failed")
 	}
 }

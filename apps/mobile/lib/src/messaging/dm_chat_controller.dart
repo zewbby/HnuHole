@@ -156,6 +156,12 @@ extension DmChatController on DmController {
       _notify();
       unawaited(sync());
       return true;
+    } on DmQueueFull {
+      if (_current(epoch)) {
+        error = '发送队列已满，请等待或取消未发送消息，文字和图片已保留';
+        _notify();
+      }
+      return false;
     } catch (_) {
       if (_current(epoch)) {
         error = '图片尚未可靠保存，请保留选择后重试';

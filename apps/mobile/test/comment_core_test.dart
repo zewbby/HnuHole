@@ -1,3 +1,6 @@
+import 'package:hnuhole_mobile/src/comments/comment_http.dart';
+import 'package:hnuhole_mobile/src/comments/comment_journal.dart';
+
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -117,6 +120,83 @@ class _Api implements CommentApi {
 }
 
 void main() {
+  test('429 journals comment/reply/image draft, restart never publishes, manual retry keeps key', () async {
+    var now = DateTime.utc(2026, 10, 24);
+    final journal = MemoryCommentJournalTestAdapter();
+    final api = _Api()
+      ..onExecute = (_) async => throw const CommentHttpFailure(
+        429,
+        'RATE_LIMITED',
+        retryAfterSeconds: 3600,
+      );
+    var core = CommentController(api: api, journal: journal, clock: () => now);
+    await core.activate(_account);
+    await core.submit(
+      taskId: _task,
+      commandId: _command,
+      binding: _binding(),
+      content: CommentContent(body: '限流回复', image: _image()),
+    );
+    var entry = core.entries.single;
+    expect(entry.rateLimitWait, isNotNull);
+    final encoded = NativeCommentJournal.encode(entry);
+    entry = NativeCommentJournal.decode(encoded);
+    expect(entry.intent.binding.targetCommentId, _id(6));
+    expect(entry.content!.image!.blobId, _id(30));
+    expect(entry.rejectionCode, isNull);
+    core.dispose();
+    core = CommentController(api: api, journal: journal, clock: () => now);
+    await core.activate(_account);
+    await core.retryRateLimited(_task);
+    expect(api.sent, hasLength(1));
+    now = now.add(const Duration(hours: 1));
+    await core.reconcile(_task);
+    expect(api.sent, hasLength(1));
+    api.onExecute = null;
+    await core.retryRateLimited(_task);
+    expect(api.sent, hasLength(2));
+    expect(api.sent.last.commandId, _command);
+    expect(api.sent.last.binding.targetCommentId, _id(6));
+    expect(core.entries.single.rateLimitWait, isNull);
+    core.dispose();
+  });
+
+  test(
+    'rate-limited comment draft is isolated on account or identity change',
+    () async {
+      final api = _Api()
+        ..onExecute = (_) async => throw const CommentHttpFailure(
+          429,
+          'RATE_LIMITED',
+          retryAfterSeconds: 1,
+        );
+      final journal = MemoryCommentJournalTestAdapter();
+      var now = DateTime.utc(2026, 10, 24);
+      final core = CommentController(
+        api: api,
+        journal: journal,
+        clock: () => now,
+      );
+      await core.activate(_account);
+      await core.submit(
+        taskId: _task,
+        commandId: _command,
+        binding: _binding(),
+        content: _content(),
+      );
+      await core.activate(_id(99));
+      now = now.add(const Duration(seconds: 2));
+      await core.retryRateLimited(_task);
+      expect(api.sent, hasLength(1));
+      await core.activate(_account);
+      await core.identityDeleted(_identity);
+      await core.retryRateLimited(_task);
+      expect(api.sent, hasLength(1));
+      expect(core.entries.every((e) => e.content == null), isTrue);
+      core.dispose();
+    },
+  );
+
   group('temporary input and single image', () {
     test('collapse preserves, leaving clears and closes input', () {
       final editor = CommentEditor(CommentTarget(postId: _post))

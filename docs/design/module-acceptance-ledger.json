@@ -1,4 +1,216 @@
 {
+  "sharedRateLimit20261024": {
+    "task": "SHARED-RATE-LIMIT-01",
+    "date": "2026-10-24",
+    "branch": "feat/shared-rate-limit-abuse-control",
+    "baseline": "8ed8f28",
+    "modules": [
+      "A01",
+      "A02",
+      "A03",
+      "A04",
+      "A06",
+      "A10",
+      "A12",
+      "A13",
+      "B02",
+      "B05",
+      "B06",
+      "B07",
+      "B08",
+      "B09"
+    ],
+    "implementation": "LOCAL_UNCOMMITTED_COMPLETE",
+    "finalBackend": "PASS",
+    "flutter": {
+      "status": "PASS",
+      "passed": 940,
+      "failed": 0,
+      "skipped": 3,
+      "analysisIssues": 0,
+      "bundle": "PASS"
+    },
+    "sourceManifest": {
+      "path": "final-source-manifest.json",
+      "linuxPath": "logs/final-source-manifest.json",
+      "changedProductFiles": 107,
+      "aggregateSHA256": "d712eb2d4e6a5a1e010d364f19b71ea6b1bd284cfadb13dd0ac4068a9a10f514",
+      "windowsVsTestedLinux": "PASS",
+      "isCommitSHA": false,
+      "excludes": "Documentation; includes implementation/tests/infra/CI/contracts",
+      "headRemains": "8ed8f28"
+    },
+    "review": {
+      "status": "PASS",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "sourceOnly": true,
+      "date": "2026-10-24",
+      "evidence": "This chat; independent final read-only review, no standalone file",
+      "closedIDs": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6"
+      ],
+      "remainingP1P2": [],
+      "reviewerRanTests": false,
+      "githubMemberApproval": false
+    },
+    "evidence": "docs/design/shared-rate-limit-verification.json",
+    "handoff": "docs/branches/feat-shared-rate-limit-abuse-control.md",
+    "runbook": "docs/design/shared-rate-limit-runbook.md",
+    "remoteCI": "NOT_RUN",
+    "device": "PASS",
+    "iOS": "NOT_RUN",
+    "production": "NOT_RUN",
+    "committed": false,
+    "pushed": false,
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true,
+    "finalBackendLog": "logs/shared-isolated-r11.log",
+    "finalBackendTopLevel": {
+      "passed": 39,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "21 ratelimit/6HTTP/10SQL/2CLI, mixed unit and owned real fixtures"
+    },
+    "hostBuildVet": "PASS",
+    "acceptance": {
+      "A1": {
+        "status": "PASS",
+        "scope": "Final-source r11 actual TLS handlers, independent clients/business/metadata pools runtime roles, SQL20unique limit5, shared identities/client instance restart",
+        "notRun": [
+          "Two separate cmd API processes",
+          "Real server/process restart beyond fixture"
+        ]
+      },
+      "A2": {
+        "status": "PASS",
+        "scope": "Same campus-egress different accounts; forged headers/trusted chain units",
+        "notRun": [
+          "Production/campus traffic false positive observation"
+        ]
+      },
+      "A3": {
+        "status": "PASS",
+        "scope": "Final-source r11 same-key/conflict/receipts/SQL confirmation failure/fixed lease/epochs/policy/close late-send race",
+        "notRun": [
+          "Physical process kill at every possible instruction"
+        ]
+      },
+      "A4": {
+        "status": "PASS",
+        "scope": "Original host scope plus final-r11 real Android four-phase Keystore/encryptedSQLite/force-stop restore to actual task TLS+SQL+Redis, manual original-key drafts, ordered DM and ACK, close/late PUT and real component fault",
+        "skipped": 3,
+        "notRun": [
+          "Historical three external HTTP/SQL fixtures remain SKIP",
+          "iOS/full physical reboot or power loss",
+          "Production topology"
+        ]
+      },
+      "A5": {
+        "status": "PASS",
+        "scope": "Final-source r11 actual timeout/OOM/FLUSH/corrupt state/same-run client fallback dirty/barrier",
+        "notRun": [
+          "True Redis server restart",
+          "Two cmd API process restart",
+          "Unsupported auto failover"
+        ],
+        "nativeFollowup": {
+          "status": "PASS",
+          "scope": "Real CLIENT PAUSE5000ALL same-run fault, actual503 counter1, original-command recovery and independent receiving/ACK",
+          "evidence": "docs/design/shared-rate-limit-device-verification.json"
+        }
+      },
+      "A6": {
+        "status": "PASS",
+        "scope": "Final-source r11 modes/independent capacity/policy/key/finalSQL fence/CLI/TTL/private metrics/C-V separate clusters least roles",
+        "notRun": [
+          "Full scale capacity/MEMORY USAGE sizing",
+          "Production thresholds/traffic",
+          "External privacy/security audit"
+        ]
+      }
+    },
+    "stage6": "COMPLETE",
+    "status": "LOCAL_AND_SPECIFIED_ANDROID_ACCEPTANCE_COMPLETE_PR_CI_PENDING",
+    "documentationChecks": {
+      "status": "PASS",
+      "reviewer": "Root independent final static audit",
+      "changedFiles": 124,
+      "markdownFiles": 15,
+      "utf8NoReplacementCharacters": "PASS",
+      "json": "PASS",
+      "relativeLinksMissing": 0,
+      "blobArtifactSecretPolicyErrors": 0,
+      "historicalLedgerEntriesEqualHEAD": "PASS",
+      "product107ManifestUnchanged": "PASS",
+      "diffWhitespace": "PASS",
+      "evidence": "E:/Hnuhole-env/shared-rate-limit-evidence-20261024-8ed8f28/final-docs-static-check.json",
+      "scope": "Historical pre-native root static audit; native followup writer checks separate"
+    },
+    "preNativeCheckpoint": {
+      "status": "LOCAL_IMPLEMENTATION_AND_SCOPED_VERIFICATION_COMPLETE",
+      "device": "NOT_RUN",
+      "sourceManifest": {
+        "path": "final-source-manifest.json",
+        "linuxPath": "logs/final-source-manifest.json",
+        "changedProductFiles": 107,
+        "aggregateSHA256": "d712eb2d4e6a5a1e010d364f19b71ea6b1bd284cfadb13dd0ac4068a9a10f514",
+        "windowsVsTestedLinux": "PASS",
+        "isCommitSHA": false,
+        "excludes": "Documentation; includes implementation/tests/infra/CI/contracts",
+        "headRemains": "8ed8f28"
+      }
+    },
+    "nativeAndroid": {
+      "status": "PASS",
+      "phaseReports": 4,
+      "versionCode": 2026102433,
+      "evidence": "docs/design/shared-rate-limit-device-verification.json",
+      "scope": "Four specified real Android phases only; not full module, iOS or production acceptance",
+      "fixtureCleanup": "PASS",
+      "lease": "released"
+    },
+    "latestSourceManifest": {
+      "path": "native-source-manifest.json",
+      "changedProductFiles": 110,
+      "aggregateSHA256": "7ab164efd7e8b14df1cf50461af19d1243db1772bb6c58acf4274b308a87e456",
+      "windowsVsTestedLinux": "PASS",
+      "isCommitSHA": false,
+      "baselineHEAD": "8ed8f28",
+      "scope": "Includes opt-in Android/Go native fixture and build configuration, excludes docs; previous107-file manifest remains historical."
+    },
+    "authorization": {
+      "userRequest": "Do real-device acceptance, then create PR for remote CI acceptance",
+      "commitPushPR": "AUTHORIZED_PENDING_ROOT_EXECUTION",
+      "mergeDeploy": "NOT_AUTHORIZED"
+    },
+    "pr": null,
+    "deviceScope": "Specified four Android phases, not full module/device/production acceptance",
+    "nativeSourceEquivalence": {
+      "status": "PASS",
+      "previousManifestFiles": 107,
+      "nativeManifestFiles": 110,
+      "existingBusinessFilesUnchanged": 106,
+      "oneExistingChanged": "services/api/authlab/run-shared-rate-limit-isolated.sh adds opt-in device mode",
+      "scope": "No historical host/SQL rerun implied; preserve original940/3SKIP and backend39 scope/counts",
+      "addedToChangedFileManifest": [
+        "apps/mobile/android/app/build.gradle.kts",
+        "apps/mobile/integration_test/shared_rate_limit_device.dart",
+        "services/api/internal/authprivacyhttp/shared_rate_device_postgres_test.go"
+      ]
+    }
+  },
   "postDetailComments20261024": {
     "task": "POST-DETAIL-COMMENTS-01",
     "modules": [

@@ -64,10 +64,14 @@ android {
             val dmText = System.getenv("HNUHOLE_DM_TEXT") == "1"
             val dmChat = System.getenv("HNUHOLE_DM_CHAT") == "1"
             val dmRecovery = System.getenv("HNUHOLE_DM_RECOVERY") == "1"
+            val sharedRateValue = System.getenv("HNUHOLE_SHARED_RATE_DEVICE")
+            require(sharedRateValue == null || sharedRateValue == "1") { "HNUHOLE_SHARED_RATE_DEVICE must be unset or 1" }
+            val sharedRateDevice = sharedRateValue == "1"
             val identityAvatar = System.getenv("HNUHOLE_IDENTITY_AVATAR") == "1"
-            require(listOf(dmText,dmChat,dmRecovery,identityAvatar,System.getenv("HNUHOLE_DM_PREVIEW") == "1",providers.gradleProperty("hnuholeCommentsValidation").orNull == "true").count { it } <= 1) {
+            require(listOf(dmText,dmChat,dmRecovery,sharedRateDevice,identityAvatar,System.getenv("HNUHOLE_DM_PREVIEW") == "1",providers.gradleProperty("hnuholeCommentsValidation").orNull == "true").count { it } <= 1) {
                 "Choose one isolated DM package"
             }
+            if (sharedRateDevice) applicationIdSuffix = ".ratelimit"
             if (dmChat) applicationIdSuffix = ".dmchat"
             if (dmRecovery) applicationIdSuffix = ".dmrecovery"
             if (identityAvatar) applicationIdSuffix = ".identityavatar"

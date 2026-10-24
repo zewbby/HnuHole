@@ -584,6 +584,7 @@ extension DmChatStorage on DmStore {
         selected.add(p);
       }
       final text = textIntent['text'] as String;
+      _checkQueueCapacity(selected.length + (text.trim().isEmpty ? 0 : 1));
       if (text.trim().isNotEmpty) {
         if (!dmValidText(text)) throw const PostStorageFailure();
         await _put(dmId(), 'message', pair, _nextOrdinal(), 'queued', {

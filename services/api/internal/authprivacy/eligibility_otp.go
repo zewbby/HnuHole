@@ -19,6 +19,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/ratelimit"
 )
 
 const otpRequestOperation = "OTP_REQUEST"
@@ -101,6 +102,12 @@ func (e *Eligibility) lockOTPDevice(ctx context.Context, tx pgx.Tx, installation
 }
 
 func (e *Eligibility) consumeOTPBudget(ctx context.Context, tx pgx.Tx, email []byte, kind string, at time.Time) error {
+	if err := ratelimit.MarkDBFallback(ctx, tx, "verifier"); err != nil {
+		return ErrAuthorizationUnavailable
+	}
+	if err := ratelimit.RequirePolicyFence(ctx, tx, "verifier"); err != nil {
+		return ErrAuthorizationUnavailable
+	}
 	window, limit := time.Hour, e.config.SendBudget
 	if kind == "VERIFY" {
 		window, limit = 10*time.Minute, e.config.VerifyBudget

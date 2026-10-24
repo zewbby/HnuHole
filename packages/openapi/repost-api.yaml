@@ -358,6 +358,7 @@ components:
               - SESSION_INVALID
               - session_replaced
               - AUTHORIZATION_UNAVAILABLE
+              - SHARED_RATE_UNAVAILABLE
               - SERVICE_UNAVAILABLE
               - RATE_LIMITED
               - PAYLOAD_TOO_LARGE
@@ -426,7 +427,7 @@ components:
       schema:
         type: integer
         minimum: 1
-        maximum: 300
+        maximum: 86400
   responses:
     Error:
       description: Safe error; never includes session authority or private visitor/identity

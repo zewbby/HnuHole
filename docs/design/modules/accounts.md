@@ -1,5 +1,9 @@
 # 账号与访问
 
+> **2026-10-24 SHARED-RATE-LIMIT-01 Android增量：** 真实Android Keystore/加密SQLite跨force-stop、账号隔离已在独立包限定PASS；不外推整机重启/iOS或完整认证模块。 测试包2433，final-r11四阶段，见[脱敏证据](../shared-rate-limit-device-verification.json)/[任务](../../branches/feat-shared-rate-limit-abuse-control.md)。用户已授权后续PR/远端CI，当前尚未提交PR、remoteCI NOT_RUN；历史模块总裁决不提升，旧未真机描述保留原时点。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01（仅feat/shared-rate-limit-abuse-control，本地未提交/未合并/未部署）：** 登录合法标识×来源共享准入在昂贵计算前，dummy路径保留；V OTP原SQL/Gate额度/冷却/一次性继续，C/V独立namespace/密钥/ACL/角色。新增规则样例observe，普通Redis故障不新增429/503，policy不匹配最终SQL仍围栏。A01/A02/A03/A04/A06/A12/A13仅本任务限定证据。 [当前任务](../../branches/feat-shared-rate-limit-abuse-control.md) / [配置](../shared-rate-limit-plan.md) / [证据](../shared-rate-limit-verification.json)。旧原文及整模块验收结论保留，未做真机/iOS/生产验收。
+
 > 2026-10-23 IDENTITY-AVATAR-01：注册收尾后、首次进入社区前，零身份账号须先完成昵称与头像弹窗（允许默认头像），已有身份直接进入。此规则已随 [PR #63](https://github.com/zewbby/HnuHole/pull/63) 合入 main，开发后端及真我日常2315已配套更新，未生产发布；宿主／隔离 SQL 与真我原生限定验证范围见[任务](../../branches/identity-avatar-onboarding.md)。
 
 > 2026-10-21 用户更新：新增／重设密码为10–128位可见ASCII字符（英文字母、数字及英文标点），禁止空格与其他Unicode字符；保留弱密码及用户名相关检查。旧密码仍按原哈希配置验证，避免锁号。已有账号允许校园邮箱验证码独立登录；敏感凭据管理仍按现有复验规则。实现与实测见AUTH-EMAIL-LOGIN-01，分支未合并。

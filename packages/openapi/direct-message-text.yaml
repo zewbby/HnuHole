@@ -65,6 +65,35 @@ paths:
           headers: *headers
           content: {application/json: {schema: {$ref: '#/components/schemas/Receipt'}}}
         default: {$ref: '#/components/responses/Error'}
+  /api/v1/dm/commands/{id}/close:
+    parameters:
+      - {name: id, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    post:
+      operationId: closeUnknownDmIntent
+      description: >-
+        Reconcile an erased hidden unknown original without replaying content.
+        Orders with every send under the original account lock. SENT is returned
+        unchanged; otherwise a permanent COMMAND_CLOSED receipt blocks all future
+        attempts for this id, including delayed text and image requests. Closing
+        does not retract a sent message. Existing SENT/CLOSED reads do not consume
+        the SQL close budget; new closures are limited to 120 per account per 60s.
+        Uses the independent control budget, never send/new-conversation quota.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [attempt]
+              properties:
+                attempt: {type: integer, minimum: 1, maximum: 1000}
+      responses:
+        '200':
+          description: Authoritative original SENT or permanent COMMAND_CLOSED receipt.
+          headers: *headers
+          content: {application/json: {schema: {$ref: '#/components/schemas/Receipt'}}}
+        default: {$ref: '#/components/responses/Error'}
   /api/v1/dm/conversations:
     get:
       operationId: listDmConversations
@@ -146,7 +175,7 @@ components:
         evidenceVersion: {type: integer, enum: [0, 1], description: 1 supports authenticated local evidence after ACK; 0 must be an explicit UNVERIFIABLE gap.}
         state: {enum: [ABSENT, FAILED, SENT]}
         attempt: {type: integer, minimum: 0, maximum: 1000}
-        errorCode: {enum: [POSTING_RESTRICTED, IDENTITY_UNAVAILABLE, CONTACT_UNAVAILABLE, POST_IDENTITY_BOUND, WAITING_FOR_REPLY, PENDING_LIMIT]}
+        errorCode: {enum: [POSTING_RESTRICTED, IDENTITY_UNAVAILABLE, CONTACT_UNAVAILABLE, POST_IDENTITY_BOUND, WAITING_FOR_REPLY, ADMISSION_EXPIRED, COMMAND_CLOSED, PENDING_LIMIT, INVALID_IMAGE, COMMAND_CONFLICT]}
         messageId: {$ref: '#/components/schemas/Id'}
         conversationId: {$ref: '#/components/schemas/Id'}
         sequence: {type: integer, minimum: 1}

@@ -1,0 +1,172 @@
+{
+  "service": "community",
+  "databaseUrl": "postgresql://hnuhole_c@/hnuhole_c?host=/run/hnuhole-postgres&sslmode=disable",
+  "databasePasswordFile": "secrets/database-password.txt",
+  "redisPasswordFile": "secrets/shared-rate-operator-password.txt",
+  "subjectKeyFile": "secrets/shared-rate-key.bin",
+  "policy": {
+    "address": "127.0.0.1:6380",
+    "username": "community_ratelimit_operator",
+    "namespace": "community_dev",
+    "deadlineMilliseconds": 100,
+    "poolSize": 8,
+    "maxSubjects": 32768,
+    "maxEvents": 16384,
+    "maxDedup": 256,
+    "maxReserves": 32,
+    "maxStateBytes": 1048576,
+    "dedupSeconds": 86400,
+    "readSeconds": 30,
+    "rules": [
+      {
+        "action": "entry.query",
+        "mode": "observe",
+        "failure": "local-read",
+        "bucket": {
+          "capacity": 10000,
+          "perSecond": 166
+        }
+      },
+      {
+        "action": "entry.mutation",
+        "mode": "observe",
+        "failure": "reject",
+        "bucket": {
+          "capacity": 6000,
+          "perSecond": 100
+        }
+      },
+      {
+        "action": "login.ip",
+        "mode": "observe",
+        "failure": "reject",
+        "windows": [
+          {
+            "ms": 60000,
+            "limit": 300
+          }
+        ]
+      },
+      {
+        "action": "login.source",
+        "mode": "observe",
+        "failure": "reject",
+        "windows": [
+          {
+            "ms": 60000,
+            "limit": 10
+          }
+        ]
+      },
+      {
+        "action": "login.failure",
+        "mode": "observe",
+        "failure": "reject",
+        "windows": [
+          {
+            "ms": 300000,
+            "limit": 5
+          }
+        ]
+      },
+      {
+        "action": "post.create",
+        "mode": "observe",
+        "failure": "verified-db",
+        "windows": [
+          {
+            "ms": 60000,
+            "limit": 5
+          },
+          {
+            "ms": 3600000,
+            "limit": 30
+          }
+        ]
+      },
+      {
+        "action": "comment.publish",
+        "mode": "observe",
+        "failure": "verified-db",
+        "windows": [
+          {
+            "ms": 60000,
+            "limit": 12
+          },
+          {
+            "ms": 3600000,
+            "limit": 120
+          }
+        ]
+      },
+      {
+        "action": "dm.send",
+        "mode": "observe",
+        "failure": "reject",
+        "bucket": {
+          "capacity": 30,
+          "perSecond": 2
+        }
+      },
+      {
+        "action": "dm.conversation.create",
+        "mode": "observe",
+        "failure": "reject",
+        "windows": [
+          {
+            "ms": 600000,
+            "limit": 10
+          },
+          {
+            "ms": 3600000,
+            "limit": 40
+          }
+        ]
+      },
+      {
+        "action": "upload.attempt",
+        "mode": "observe",
+        "failure": "reject",
+        "windows": [
+          {
+            "ms": 600000,
+            "limit": 60
+          }
+        ]
+      },
+      {
+        "action": "upload.bytes",
+        "mode": "observe",
+        "failure": "reject",
+        "windows": [
+          {
+            "ms": 600000,
+            "limit": 125829120
+          },
+          {
+            "ms": 3600000,
+            "limit": 536870912
+          }
+        ]
+      },
+      {
+        "action": "read.account",
+        "mode": "observe",
+        "failure": "local-read",
+        "bucket": {
+          "capacity": 180,
+          "perSecond": 6
+        }
+      },
+      {
+        "action": "read.control",
+        "mode": "observe",
+        "failure": "local-read",
+        "bucket": {
+          "capacity": 300,
+          "perSecond": 10
+        }
+      }
+    ]
+  }
+}

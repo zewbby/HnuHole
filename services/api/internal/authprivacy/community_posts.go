@@ -253,6 +253,9 @@ func writePostReceipt(ctx context.Context, tx pgx.Tx, account uuid.UUID, key, fi
 		errorCode = r.Reason
 	}
 	_, err := tx.Exec(ctx, `INSERT INTO c_posts.command_receipts(key_digest,owner_account_id,operation,intent_fingerprint,outcome,task_id,post_id,attempt_version,task_state,error_code,committed_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`, key[:], account, string(r.Operation), fingerprint[:], r.State, nullablePostID(r.TaskID), nullablePostID(r.PostID), version, taskState, errorCode, at)
+	if err == nil {
+		err = completeRateAdmission(ctx, tx)
+	}
 	return err
 }
 func postReceiptReplay(r posts.CommandResult, fingerprint []byte, expected [32]byte) error {
@@ -292,9 +295,12 @@ func (c *Community) GetPostCommand(ctx context.Context, bearer [32]byte, command
 	if _, err := posts.ParseCommandKey(command); err != nil {
 		return PostResponse{}, err
 	}
-	return c.withPostSession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
+	return c.withPostSession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, d AuthorizationDecision, _ restriction) (any, error) {
 		key, e := c.posts.commands.KeyDigest(account.String(), command)
 		if e != nil {
+			return nil, e
+		}
+		if e = c.resolveExpiredAdmission(ctx, tx, account, "post", key, d.TrustedAt); e != nil {
 			return nil, e
 		}
 		r, _, found, e := readPostReceipt(ctx, tx, key)
@@ -341,7 +347,7 @@ func (c *Community) SealPostCommand(ctx context.Context, bearer [32]byte, comman
 		return r, writePostReceipt(ctx, tx, account, key, fp, r, final.TrustedAt)
 	})
 }
-func (c *Community) ExecutePostCommand(ctx context.Context, bearer [32]byte, command string, intent posts.Intent) (PostResponse, error) {
+func (c *Community) executePostCommandOnce(ctx context.Context, bearer [32]byte, command string, intent posts.Intent) (PostResponse, error) {
 	if len(intent.Images) > 0 && !c.PostImagesEnabled() {
 		return PostResponse{}, ErrAuthorizationUnavailable
 	}
@@ -370,6 +376,9 @@ func (c *Community) ExecutePostCommand(ctx context.Context, bearer [32]byte, com
 				return r, errPostRejectionRecorded
 			}
 			return r, nil
+		}
+		if e = requireRateAdmission(ctx, tx, account, final.TrustedAt); e != nil {
+			return nil, e
 		}
 		if e = postCommandBudget(ctx, tx, account, final.TrustedAt); e != nil {
 			return nil, e

@@ -1,5 +1,11 @@
 # 设计进度与剩余工作
 
+> **2026-10-24 SHARED-RATE-LIMIT-01 Android追加（当前）：** 用户已授权真机后提PR验远端CI；真我RMX3366/API34独立.ratelimit包2433，final-r11 write/read/unknown/fault四阶段实际Keystore/加密SQLite+force-stop恢复、真实TLS/双PG/Redis全部限定PASS。真实429/503已分计，unknown close阻迟到发送，独立会话/ACK通过；自有服务/包/adb reverse已收尾、lease released，日常2427包及数据未变。当前未commit/push/PR，remoteCI NOT_RUN，未合并/部署；下方未真机/无提交授权属于旧时点。见[追加详情](../branches/feat-shared-rate-limit-abuse-control.md)和[脱敏原生证据](shared-rate-limit-device-verification.json)。旧940/3SKIP、39后端计数与模块总裁决不变，iOS/整机重启/生产未验。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01 当前回执（仅本地分支）：** `feat/shared-rate-limit-abuse-control` / 基线8ed8f28，Redis共享准入、SQL代次/policy/恢复围栏、四上传实际body字节和客户端草稿/256队列已实现。阶段5 Astra xhigh最终只读审查R1–R5/F1–F6闭环，无未修P1/P2（非GitHub成员批准，非其运行测试）。客户端940 PASS/0FAIL/3既有fixture SKIP、分析0、bundle PASS；最终r11隔离runner39顶层PASS/0FAIL/0SKIP（混合unit/真实Redis/SQL/TLS/CLI）、常规无DSN host与全Go build/vet PASS。未提交/推送/PR/合并/部署，真机/iOS/远端CI/生产NOT_RUN；历史模块裁决不提升。阶段6 Sol medium交付文档完成，根独立UTF8/JSON/链接/blob/源码hash及diff静态核对PASS。见[任务页](../branches/feat-shared-rate-limit-abuse-control.md)、[实际配置](shared-rate-limit-plan.md)、[runbook](shared-rate-limit-runbook.md)、[机器证据](shared-rate-limit-verification.json)。下方原阶段1状态为历史快照。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01（本地阶段1）：** 分支 `feat/shared-rate-limit-abuse-control`，基线 `8ed8f28`。已完成需求与源码静态盘点、既有规则/新增observe配置草案、HTTP幂等与客户端恢复接口地图；仅文档，新增业务未实现、A1–A6 NOT_RUN，未提交/合并/发布。下一步 Astra xhigh 锁定Redis原子准入、崩溃恢复与容量边界。见[任务记录](../branches/feat-shared-rate-limit-abuse-control.md)和[计划](shared-rate-limit-plan.md)；不提升下面历史模块验收结论。
+
 > **2026-10-24 合并回执：** 本需求已通过 PR [#71](https://github.com/zewbby/HnuHole/pull/71) Squash 合入 main，合并 SHA `a715dc7e8b6a3b1395bc968274bce3865f63f21b`。最终产品源码 `ed1b5e3`，送审 HEAD `aef7618`（仅追加交接文档）；21 项远端检查全部 PASS，包含 Android 构建、完整契约、评论真实隔离 PostgreSQL/TLS 及受影响模块。最终本地 Flutter 924 PASS / 3 SKIP、分析 0；独立审查两处 P2 均已修复且复核无阻断。已构建同签名 2428 Profile 包，尚未安装；真我仍为实测 2427，其 20.3 分钟/28 轮和弱网证据保留原版本，不视作最终 HEAD 真机验收。iOS、完整模块、生产未发布等边界不提升。下文“本地未提交/未合并”属于历史快照。
 
 > **2026-10-24 最新真我2427（本地未合并）：** 20.3分钟/28轮连续操作、限速/断连后图片恢复、实际发表去重清理及35秒读取超时恢复限定PASS；补修旧上下文覆盖新计数/权限、恢复后错误残留及图片传输失败关闭查看器，包含首条立即展示。统一回归232 PASS，分析0；[新报告](post-detail-comments-weak-soak-20261024.md)按设备/版本保留证据，完整模块与生产结论不提升。

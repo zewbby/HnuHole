@@ -1,3 +1,5 @@
+import '../rate_limit.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -16,6 +18,10 @@ import 'dm_protocol.dart';
 part 'dm_chat_store.dart';
 part 'dm_lifecycle_store.dart';
 
+class DmQueueFull implements Exception {
+  const DmQueueFull();
+}
+
 class _DmVault implements BusinessKeyVault {
   _DmVault(this.native);
   final DurableBusinessVault native;
@@ -29,7 +35,15 @@ class _DmVault implements BusinessKeyVault {
 /// SQLite FULL transactions finish before enqueue/receive resolves to callers.
 class DmStore {
   static final _opening = <String, Future<void>>{};
-  DmStore._(this._db, this.scope, this._key, this._vault, this._keyRecord);
+  DmStore._(
+    this._db,
+    this.scope,
+    this._key,
+    this._vault,
+    this._keyRecord,
+    this.maxPendingSends,
+  );
+  final int maxPendingSends;
   final Database _db;
   final String scope, _keyRecord;
   final SecretKey _key;
@@ -74,15 +88,16 @@ class DmStore {
     File file,
     String environment,
     String account,
-    BusinessKeyVault vault,
-  ) async {
+    BusinessKeyVault vault, {
+    int maxPendingSends = 256,
+  }) async {
     final path = file.absolute.path;
     final previous = _opening[path];
     final done = Completer<void>();
     _opening[path] = done.future;
     try {
       await previous;
-      return await _open(file, environment, account, vault);
+      return await _open(file, environment, account, vault, maxPendingSends);
     } finally {
       done.complete();
       if (identical(_opening[path], done.future)) _opening.remove(path);
@@ -94,10 +109,14 @@ class DmStore {
     String environment,
     String account,
     BusinessKeyVault vault,
+    int maxPendingSends,
   ) async {
     Database? db;
     try {
-      if (environment.isEmpty || account.isEmpty) {
+      if (environment.isEmpty ||
+          account.isEmpty ||
+          maxPendingSends < 1 ||
+          maxPendingSends > 4096) {
         throw const PostStorageFailure();
       }
       final exists = await file.exists();
@@ -148,6 +167,7 @@ class DmStore {
         SecretKey(bytes),
         vault,
         record,
+        maxPendingSends,
       );
       await store._transaction(() async {
         if (version == 0) {
@@ -215,6 +235,8 @@ class DmStore {
         throw const PostStorageFailure();
       }
       return await action();
+    } on DmQueueFull {
+      rethrow;
     } catch (_) {
       throw const PostStorageFailure();
     } finally {
@@ -342,7 +364,7 @@ class DmStore {
   Future<List<Map<String, dynamic>>> work() => _run(() async {
     final rows = _db
         .select(
-          "SELECT * FROM dm_records WHERE kind IN ('message','hidden_message') AND state IN ('queued','unknown','received','read_pending') AND NOT(kind='hidden_message' AND state='unknown') ORDER BY ordinal,id LIMIT 100",
+          "SELECT * FROM dm_records AS r WHERE kind IN ('message','hidden_message') AND state IN ('queued','unknown','received','read_pending') AND NOT(kind='hidden_message' AND state='unknown') AND (state!='queued' OR NOT EXISTS(SELECT 1 FROM dm_records AS p WHERE p.kind IN ('message','hidden_message') AND p.state IN ('queued','unknown') AND p.pair=r.pair AND p.ordinal<r.ordinal)) ORDER BY ordinal,id LIMIT 100",
         )
         .toList();
     if (rows.length < 100) {
@@ -404,6 +426,7 @@ class DmStore {
         // Stable enqueue order for unconfirmed work; confirmed history uses sequence.
         final ordinal = _nextOrdinal();
         await _transaction(() async {
+          _checkQueueCapacity(1);
           await _put(id, 'message', pair, ordinal, 'queued', {
             'intent': intent,
             'outgoing': true,
@@ -450,6 +473,45 @@ class DmStore {
               .select('SELECT COALESCE(MAX(ordinal),0)+1 AS n FROM dm_records')
               .single['n']
           as int);
+  void _checkQueueCapacity(int additional) {
+    final count =
+        _db
+                .select(
+                  "SELECT count(*) AS n FROM dm_records WHERE kind IN ('message','hidden_message') AND state IN ('queued','unknown')",
+                )
+                .single['n']
+            as int;
+    if (count + additional > maxPendingSends) throw const DmQueueFull();
+  }
+
+  Future<RateLimitWait?> cooldown(String kind) => _run(() async {
+    final row = await _get('cooldown:$kind');
+    return row == null ? null : RateLimitWait.fromJson(row);
+  });
+
+  Future<void> defer(String kind, DateTime now, int seconds) => _run(
+    () => _transaction(() async {
+      final old = await _get('cooldown:$kind');
+      final wait = RateLimitWait(now, seconds);
+      if (old != null && RateLimitWait.fromJson(old).remaining(now) > seconds) {
+        return;
+      }
+      await _put('cooldown:$kind', 'cooldown', '', 0, 'waiting', wait.toJson());
+    }),
+  );
+
+  /// Include hidden unknown predecessors even when the work batch rotates them.
+  Future<bool> hasPredecessor(String id) => _run(() async {
+    final row = await _get(id);
+    if (row == null) return true;
+    return (_db.select(
+              "SELECT count(*) AS n FROM dm_records WHERE kind IN ('message','hidden_message') AND pair=? AND state IN ('queued','unknown') AND ordinal<?",
+              [row['_pair'], row['_ordinal']],
+            ).single['n']
+            as int) >
+        0;
+  });
+
   Future<void> transition(
     String id,
     String expected,
@@ -495,10 +557,28 @@ class DmStore {
       if (row == null || row['_state'] != 'failed') {
         throw const PostStorageFailure();
       }
+      _checkQueueCapacity(1);
       final intent = Map<String, dynamic>.from(row['intent'] as Map);
-      intent['attempt'] = (intent['attempt'] as int) + 1;
+      final expired = {
+        'ADMISSION_EXPIRED',
+        'COMMAND_CLOSED',
+      }.contains((row['receipt'] as Map?)?['errorCode']);
+      intent['attempt'] = expired ? 1 : (intent['attempt'] as int) + 1;
       row['intent'] = intent;
-      await _put(id, 'message', row['_pair'], row['_ordinal'], 'queued', row);
+      if (expired) {
+        row.remove('receipt');
+        await _put(
+          dmId(),
+          'message',
+          row['_pair'],
+          _nextOrdinal(),
+          'queued',
+          row,
+        );
+        _db.execute('DELETE FROM dm_records WHERE id=?', [id]);
+      } else {
+        await _put(id, 'message', row['_pair'], row['_ordinal'], 'queued', row);
+      }
     });
   });
   Future<void> receive(List<Map<String, dynamic>> items) => _run(
