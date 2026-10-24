@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-24 SHARED-RATE-LIMIT-01 PR/CI最新：** CI记录时已提交推送 [Draft PR #73](https://github.com/zewbby/HnuHole/pull/73)；指定Android四阶段PASS，6e50244的13workflow/23job全部SUCCESS，见[逐run/job证据](shared-rate-limit-remote-ci-verification.json)。原生产品33bdcc0之后只有CI和旧host工具修复，runtime未变；两轮CI失败及修复历史保留。待独立成员review，未合并/发布。本次回执编写时后续纯文档提交尚无CI结果；CI记录时为Draft，后续检查/送审状态以live PR为准。下方未提交/CI未跑为历史时点，旧模块总裁决不提升。
+
 > **2026-10-24 SHARED-RATE-LIMIT-01 Android追加（当前）：** 用户已授权真机后提PR验远端CI；真我RMX3366/API34独立.ratelimit包2433，final-r11 write/read/unknown/fault四阶段实际Keystore/加密SQLite+force-stop恢复、真实TLS/双PG/Redis全部限定PASS。真实429/503已分计，unknown close阻迟到发送，独立会话/ACK通过；自有服务/包/adb reverse已收尾、lease released，日常2427包及数据未变。当前未commit/push/PR，remoteCI NOT_RUN，未合并/部署；下方未真机/无提交授权属于旧时点。见[追加详情](../branches/feat-shared-rate-limit-abuse-control.md)和[脱敏原生证据](shared-rate-limit-device-verification.json)。旧940/3SKIP、39后端计数与模块总裁决不变，iOS/整机重启/生产未验。
 
 > **2026-10-24 SHARED-RATE-LIMIT-01 当前回执（仅本地分支）：** `feat/shared-rate-limit-abuse-control` / 基线8ed8f28，Redis共享准入、SQL代次/policy/恢复围栏、四上传实际body字节和客户端草稿/256队列已实现。阶段5 Astra xhigh最终只读审查R1–R5/F1–F6闭环，无未修P1/P2（非GitHub成员批准，非其运行测试）。客户端940 PASS/0FAIL/3既有fixture SKIP、分析0、bundle PASS；最终r11隔离runner39顶层PASS/0FAIL/0SKIP（混合unit/真实Redis/SQL/TLS/CLI）、常规无DSN host与全Go build/vet PASS。未提交/推送/PR/合并/部署，真机/iOS/远端CI/生产NOT_RUN；历史模块裁决不提升。阶段6 Sol medium交付文档完成，根独立UTF8/JSON/链接/blob/源码hash及diff静态核对PASS。见[任务页](../branches/feat-shared-rate-limit-abuse-control.md)、[实际配置](shared-rate-limit-plan.md)、[runbook](shared-rate-limit-runbook.md)、[机器证据](shared-rate-limit-verification.json)。下方原阶段1状态为历史快照。

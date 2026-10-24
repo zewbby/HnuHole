@@ -1,5 +1,17 @@
 # SHARED-RATE-LIMIT-01 共享限流与动作级防刷
 
+## PR73远端CI回执（2026-10-24，最新）
+
+CI记录时已提交/推送并创建 [Draft PR #73](https://github.com/zewbby/HnuHole/pull/73)，未合并/发布，待独立成员review。指定Android四阶段PASS；远端 `6e502442326fd04073c2ad9b5d434970bc0c5f21` 的13个workflow/23个实际job全部SUCCESS，逐run/job URL见[脱敏CI记录](../design/shared-rate-limit-remote-ci-verification.json)。此记录只针对6e50244；本次回执编写时，后续纯文档更新尚未形成新提交/CI；CI记录时为Draft，后续检查及送审状态以live PR为准。
+
+原生已测产品提交 `33bdcc0894af230a722ee21455aa344ae456c9cf` 与测试镜像Git规范化等价；后续 `fded38e62e6f9b4aef3aaed1d38bfddeb240cace` 只修CI系统Python环境，`6e50244` 只修旧Android host overlay工具及测试，运行时代码未改，不重跑或拼加旧940/3SKIP/后端39及真机计数。
+
+- 首轮33bd的Shared isolated-admission [run40099265585](https://github.com/zewbby/HnuHole/actions/runs/40099265585)/job120887853682 FAIL：setup-python动态loader依赖LD_LIBRARY_PATH，图片validator刻意env-i移除此环境；不是业务失败。外部remote-ci-initial-failure.json保留。
+- fded38e改/usr/bin/python3系统venv+最小probe并保留setup-go PATH后Shared runner39 PASS、1 opt-in设备SKIP，四上传真实SQL通过；13workflow中12通过。唯一Post images [run40099624476](https://github.com/zewbby/HnuHole/actions/runs/40099624476)/job120888963687 FAIL是旧overlay精确锚点不接受workers gofmt空格，实际图片SQL/生命周期也PASS；外部remote-ci-post-images-failure.json保留。
+- 6e50244仅修改 `tools/community-android-stage1/lab.py` 及对应测试，允许两种已知精确锚点且总数恰1；未知/重复仍ValueError。local tools210 PASS、Go overlay build PASS、Astra xhigh窄审无剩余P1/P2，最终远端13/23全绿。agent审查非GitHub成员批准。
+
+root原生最终静态审计128文件/15Markdown、历史ledger其他entry深相等、四原report逐项匹配、policy PASS；旧暂存协作19测试及后工具全210包含同检查。当前文档仅补回执，不代表设备或旧host测试再次执行。下方“尚未提交/未PR/CI NOT_RUN”等均保留原时点，当前以本节为准。
+
 ## Android限定验收与送审授权追加（2026-10-24，最新）
 
 用户新授权“做真机验收，做完后提pr进行远端CI验收”。指定四阶段真实Android已PASS，根接下来提交/推送并创建PR运行远端CI；当前仍未commit/push/PR，remoteCI NOT_RUN，未合并/部署。下方“未操作手机/无提交授权”等是此前时点，不覆盖本次新授权；原历史与其他模块裁决保留。

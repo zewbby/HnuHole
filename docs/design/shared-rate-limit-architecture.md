@@ -1,5 +1,7 @@
 # 共享限流实际架构与安全边界
 
+> **2026-10-24送审追加：** [Draft PR73](https://github.com/zewbby/HnuHole/pull/73)，原生产品33bdcc0之后仅CI和旧overlay host工具修复；6e50244远端13workflow/23job SUCCESS，见[CI记录](shared-rate-limit-remote-ci-verification.json)。本次回执编写时纯文档后续head CI尚未执行；CI记录时为Draft，后续检查/送审状态以live PR为准，未合并部署。
+
 > **2026-10-24 Android追加：** 实际Keystore/加密SQLite+force-stop原键恢复、close和独立ACK、真实Redis CLIENT PAUSE故障恢复已在独立包四阶段限定PASS，见[原生证据](shared-rate-limit-device-verification.json)。不是整机重启或生产cmd拓扑，iOS/生产/全规模容量仍未验；原host结论保留。
 
 SHARED-RATE-LIMIT-01，2026-10-24，分支feat/shared-rate-limit-abuse-control，基线8ed8f28。按冻结源码更新，[阶段2原文](shared-rate-limit-stage2-history.md)保留历史。[配置](shared-rate-limit-plan.md)、[runbook](shared-rate-limit-runbook.md)、[证据](shared-rate-limit-verification.json)分别维护参数/操作/验收。仅本地实现，最终r11隔离runner、无DSN host及全Go build/vet PASS（限定范围见机器记录），未合并部署。

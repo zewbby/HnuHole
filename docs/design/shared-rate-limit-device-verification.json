@@ -2,17 +2,26 @@
   "task": "SHARED-RATE-LIMIT-01",
   "date": "2026-10-24",
   "status": "PASS",
-  "scope": "Four specified real Android phases only; not full module, iOS or production acceptance",
+  "scope": "Four specified real Android phases PASS; remote CI PASS at6e50244 separately versioned; not full module/iOS/production acceptance",
   "authorization": {
     "userRequest": "Do real-device acceptance, then create PR for remote CI acceptance",
-    "commitPushPR": "AUTHORIZED_PENDING_ROOT_EXECUTION",
+    "commitPushPR": "AUTHORIZED_AND_EXECUTED",
     "mergeDeploy": "NOT_AUTHORIZED"
   },
   "branch": "feat/shared-rate-limit-abuse-control",
-  "committed": false,
-  "pushed": false,
-  "pr": null,
-  "remoteCI": "NOT_RUN",
+  "committed": true,
+  "pushed": true,
+  "pr": {
+    "number": 73,
+    "url": "https://github.com/zewbby/HnuHole/pull/73",
+    "draft": true,
+    "merged": false,
+    "independentMemberReview": "PENDING",
+    "snapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+    "snapshotMeaning": "Draft at6e50244 CI receipt collection; current submission status/checks follow live PR",
+    "currentStatusURL": "https://github.com/zewbby/HnuHole/pull/73"
+  },
+  "remoteCI": "PASS",
   "merged": false,
   "deployed": false,
   "device": {
@@ -247,14 +256,14 @@
     "iOS",
     "Full physical device reboot or sudden power loss",
     "Production topology/deployment",
-    "Remote CI until PR is created and checks finish",
     "Full scale capacity/production traffic observation"
   ],
   "historicalEvidenceBoundaries": [
     "Original host940 and three fixture SKIP unchanged; not rerun or upgraded by native results",
     "Original backend39 mixed-scope result not added to device counts",
     "Opt-in device Go fixture expected SKIP in ordinary CI without exclusive request",
-    "Other historical module verdicts unchanged"
+    "Other historical module verdicts unchanged",
+    "Remote opt-in device fixture SKIP is expected without exclusive request; physical Android reports remain separate evidence"
   ],
   "sourceEquivalence": {
     "status": "PASS",
@@ -268,5 +277,48 @@
       "apps/mobile/integration_test/shared_rate_limit_device.dart",
       "services/api/internal/authprivacyhttp/shared_rate_device_postgres_test.go"
     ]
-  }
+  },
+  "preRemoteCICheckpoint": {
+    "status": "PASS",
+    "committed": false,
+    "pushed": false,
+    "pr": null,
+    "remoteCI": "NOT_RUN"
+  },
+  "remoteCIVerification": {
+    "status": "PASS",
+    "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+    "workflows": 13,
+    "jobs": 23,
+    "evidence": "docs/design/shared-rate-limit-remote-ci-verification.json",
+    "scope": "Actual run/job URLs at6e50244 only; at receipt-writing time subsequent documentation commit CI had not run. Current submission/check status follows live PR"
+  },
+  "remoteCIHistory": [
+    {
+      "head": "33bdcc0894af230a722ee21455aa344ae456c9cf",
+      "status": "FAIL",
+      "runId": 40099265585,
+      "jobId": 120887853682,
+      "scope": "Shared isolated-admission setup-python dynamic loader needed LD_LIBRARY_PATH while image validator deliberately env-i. No product failure.",
+      "evidence": "External remote-ci-initial-failure.json"
+    },
+    {
+      "head": "fded38e62e6f9b4aef3aaed1d38bfddeb240cace",
+      "status": "FAIL",
+      "runId": 40099624476,
+      "jobId": 120888963687,
+      "scope": "CI-only system Python venv/probe fix made Shared39PASS+1opt-in deviceSKIP,12of13 workflows passed. Sole Post images guarded tooling failed old exact overlay anchor vs workers gofmt whitespace; actual image SQL/lifecycle passed.",
+      "evidence": "External remote-ci-post-images-failure.json"
+    },
+    {
+      "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+      "status": "PASS",
+      "scope": "Only tools/community-android-stage1/lab.py and its tests changed: allow two known exact anchors, require total exactly1; unknown/duplicate still ValueError. Runtime unchanged. Local tools210PASS/Go overlay buildPASS, Astra xhigh narrow review no P1/P2; final13workflows/23jobs success."
+    }
+  ],
+  "nativeProductCommit": "33bdcc0894af230a722ee21455aa344ae456c9cf",
+  "runtimeUnchangedAfterNativeCommit": true,
+  "currentSourceHeadBeforeDocumentationUpdate": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+  "pendingDocumentationCommitCIAtReceipt": "NOT_RUN",
+  "statusSnapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21"
 }

@@ -67,12 +67,12 @@
     "evidence": "docs/design/shared-rate-limit-verification.json",
     "handoff": "docs/branches/feat-shared-rate-limit-abuse-control.md",
     "runbook": "docs/design/shared-rate-limit-runbook.md",
-    "remoteCI": "NOT_RUN",
+    "remoteCI": "PASS",
     "device": "PASS",
     "iOS": "NOT_RUN",
     "production": "NOT_RUN",
-    "committed": false,
-    "pushed": false,
+    "committed": true,
+    "pushed": true,
     "merged": false,
     "released": false,
     "historicalModuleVerdictsUnchanged": true,
@@ -142,7 +142,7 @@
       }
     },
     "stage6": "COMPLETE",
-    "status": "LOCAL_AND_SPECIFIED_ANDROID_ACCEPTANCE_COMPLETE_PR_CI_PENDING",
+    "status": "SPECIFIED_ANDROID_AND_REMOTE_CI_PASS_DRAFT_PR_REVIEW_PENDING",
     "documentationChecks": {
       "status": "PASS",
       "reviewer": "Root independent final static audit",
@@ -192,10 +192,19 @@
     },
     "authorization": {
       "userRequest": "Do real-device acceptance, then create PR for remote CI acceptance",
-      "commitPushPR": "AUTHORIZED_PENDING_ROOT_EXECUTION",
+      "commitPushPR": "AUTHORIZED_AND_EXECUTED",
       "mergeDeploy": "NOT_AUTHORIZED"
     },
-    "pr": null,
+    "pr": {
+      "number": 73,
+      "url": "https://github.com/zewbby/HnuHole/pull/73",
+      "draft": true,
+      "merged": false,
+      "independentMemberReview": "PENDING",
+      "snapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+      "snapshotMeaning": "Draft at6e50244 CI receipt collection; current submission status/checks follow live PR",
+      "currentStatusURL": "https://github.com/zewbby/HnuHole/pull/73"
+    },
     "deviceScope": "Specified four Android phases, not full module/device/production acceptance",
     "nativeSourceEquivalence": {
       "status": "PASS",
@@ -209,7 +218,48 @@
         "apps/mobile/integration_test/shared_rate_limit_device.dart",
         "services/api/internal/authprivacyhttp/shared_rate_device_postgres_test.go"
       ]
-    }
+    },
+    "preRemoteCICheckpoint": {
+      "status": "LOCAL_AND_SPECIFIED_ANDROID_ACCEPTANCE_COMPLETE_PR_CI_PENDING",
+      "committed": false,
+      "pushed": false,
+      "pr": null,
+      "remoteCI": "NOT_RUN"
+    },
+    "remoteCIVerification": {
+      "status": "PASS",
+      "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+      "workflows": 13,
+      "jobs": 23,
+      "evidence": "docs/design/shared-rate-limit-remote-ci-verification.json",
+      "scope": "Actual run/job URLs at6e50244 only; at receipt-writing time subsequent documentation commit CI had not run. Current submission/check status follows live PR"
+    },
+    "nativeProductCommit": "33bdcc0894af230a722ee21455aa344ae456c9cf",
+    "remoteCIHistory": [
+      {
+        "head": "33bdcc0894af230a722ee21455aa344ae456c9cf",
+        "status": "FAIL",
+        "runId": 40099265585,
+        "jobId": 120887853682,
+        "scope": "Shared isolated-admission setup-python dynamic loader needed LD_LIBRARY_PATH while image validator deliberately env-i. No product failure.",
+        "evidence": "External remote-ci-initial-failure.json"
+      },
+      {
+        "head": "fded38e62e6f9b4aef3aaed1d38bfddeb240cace",
+        "status": "FAIL",
+        "runId": 40099624476,
+        "jobId": 120888963687,
+        "scope": "CI-only system Python venv/probe fix made Shared39PASS+1opt-in deviceSKIP,12of13 workflows passed. Sole Post images guarded tooling failed old exact overlay anchor vs workers gofmt whitespace; actual image SQL/lifecycle passed.",
+        "evidence": "External remote-ci-post-images-failure.json"
+      },
+      {
+        "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+        "status": "PASS",
+        "scope": "Only tools/community-android-stage1/lab.py and its tests changed: allow two known exact anchors, require total exactly1; unknown/duplicate still ValueError. Runtime unchanged. Local tools210PASS/Go overlay buildPASS, Astra xhigh narrow review no P1/P2; final13workflows/23jobs success."
+      }
+    ],
+    "pendingDocumentationCommitCIAtReceipt": "NOT_RUN",
+    "statusSnapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21"
   },
   "postDetailComments20261024": {
     "task": "POST-DETAIL-COMMENTS-01",

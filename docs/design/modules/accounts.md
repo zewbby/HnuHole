@@ -1,5 +1,7 @@
 # 账号与访问
 
+> **2026-10-24 SHARED-RATE-LIMIT-01送审追加：** CI记录时[Draft PR73](https://github.com/zewbby/HnuHole/pull/73)已提交推送，指定Android场景PASS；6e50244远端13workflow/23job全SUCCESS，见[版本化CI证据](../shared-rate-limit-remote-ci-verification.json)。runtime沿原生已测33bdcc0，后续只CI/旧host工具修复；待独立成员review、未合并发布。本次回执编写时纯文档更新CI待新head；CI记录时为Draft，后续检查/送审状态以live PR为准，历史模块总裁决及旧计数不变。
+
 > **2026-10-24 SHARED-RATE-LIMIT-01 Android增量：** 真实Android Keystore/加密SQLite跨force-stop、账号隔离已在独立包限定PASS；不外推整机重启/iOS或完整认证模块。 测试包2433，final-r11四阶段，见[脱敏证据](../shared-rate-limit-device-verification.json)/[任务](../../branches/feat-shared-rate-limit-abuse-control.md)。用户已授权后续PR/远端CI，当前尚未提交PR、remoteCI NOT_RUN；历史模块总裁决不提升，旧未真机描述保留原时点。
 
 > **2026-10-24 SHARED-RATE-LIMIT-01（仅feat/shared-rate-limit-abuse-control，本地未提交/未合并/未部署）：** 登录合法标识×来源共享准入在昂贵计算前，dummy路径保留；V OTP原SQL/Gate额度/冷却/一次性继续，C/V独立namespace/密钥/ACL/角色。新增规则样例observe，普通Redis故障不新增429/503，policy不匹配最终SQL仍围栏。A01/A02/A03/A04/A06/A12/A13仅本任务限定证据。 [当前任务](../../branches/feat-shared-rate-limit-abuse-control.md) / [配置](../shared-rate-limit-plan.md) / [证据](../shared-rate-limit-verification.json)。旧原文及整模块验收结论保留，未做真机/iOS/生产验收。

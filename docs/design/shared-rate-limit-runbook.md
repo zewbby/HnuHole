@@ -49,4 +49,4 @@ ratelimitctl --config /private/verifier-operator.json --begin-recovery
 
 ## 隔离复验入口
 
-仅在明确归属一次性环境运行 `sh services/api/authlab/run-shared-rate-limit-isolated.sh`，要求Go1.22.2、PG16工具、Redis7、Goosev3.22.1及锁定Pillow运行环境。runner创建自己的C/V两个cluster、Redis和private socket，退出只清自己资源。常规无DSN测试应SKIP真实SQL fixture，有ownedDSN但缺工具/图片fixture则FAIL，不默默降级为替身。远端workflow已编写但本任务remoteCI NOT_RUN。
+仅在明确归属一次性环境运行 `sh services/api/authlab/run-shared-rate-limit-isolated.sh`，要求Go1.22.2、PG16工具、Redis7、Goosev3.22.1及锁定Pillow运行环境。runner创建自己的C/V两个cluster、Redis和private socket，退出只清自己资源。常规无DSN测试应SKIP真实SQL fixture，有ownedDSN但缺工具/图片fixture则FAIL，不默默降级为替身。远端workflow在6e50244已通过13workflow/23job；见[版本化CI证据](shared-rate-limit-remote-ci-verification.json)，后续文档head以PR检查为准。

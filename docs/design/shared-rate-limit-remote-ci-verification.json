@@ -1,0 +1,291 @@
+{
+  "task": "SHARED-RATE-LIMIT-01",
+  "pr": 73,
+  "url": "https://github.com/zewbby/HnuHole/pull/73",
+  "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+  "nativeProductHead": "33bdcc0894af230a722ee21455aa344ae456c9cf",
+  "status": "PASS",
+  "workflowCount": 13,
+  "jobCount": 23,
+  "runs": [
+    {
+      "name": "Collaboration",
+      "runId": 40100421991,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100421991",
+      "jobs": [
+        {
+          "id": 120891261834,
+          "name": "policy",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100421991/job/120891261834"
+        }
+      ]
+    },
+    {
+      "name": "Community text contract",
+      "runId": 40100422155,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422155",
+      "jobs": [
+        {
+          "id": 120891262467,
+          "name": "contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422155/job/120891262467"
+        }
+      ]
+    },
+    {
+      "name": "Auth feedback",
+      "runId": 40100422050,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422050",
+      "jobs": [
+        {
+          "id": 120891261892,
+          "name": "flutter-auth-regression",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422050/job/120891261892"
+        }
+      ]
+    },
+    {
+      "name": "Identity avatars and initial entry",
+      "runId": 40100422036,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422036",
+      "jobs": [
+        {
+          "id": 120891262028,
+          "name": "avatar-flutter",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422036/job/120891262028"
+        },
+        {
+          "id": 120891262204,
+          "name": "avatar-postgres-https",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422036/job/120891262204"
+        }
+      ]
+    },
+    {
+      "name": "Shared rate limit",
+      "runId": 40100421937,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100421937",
+      "jobs": [
+        {
+          "id": 120891272409,
+          "name": "isolated-admission",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100421937/job/120891272409"
+        },
+        {
+          "id": 120891272727,
+          "name": "mobile-recovery",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100421937/job/120891272727"
+        }
+      ]
+    },
+    {
+      "name": "Comments backend text",
+      "runId": 40100422104,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422104",
+      "jobs": [
+        {
+          "id": 120891264085,
+          "name": "text-component",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422104/job/120891264085"
+        }
+      ]
+    },
+    {
+      "name": "Feed backend",
+      "runId": 40100421984,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100421984",
+      "jobs": [
+        {
+          "id": 120891261874,
+          "name": "feed-postgres",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100421984/job/120891261874"
+        }
+      ]
+    },
+    {
+      "name": "Post images",
+      "runId": 40100422001,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422001",
+      "jobs": [
+        {
+          "id": 120891261924,
+          "name": "go-host",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422001/job/120891261924"
+        },
+        {
+          "id": 120891262132,
+          "name": "flutter",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422001/job/120891262132"
+        },
+        {
+          "id": 120891262166,
+          "name": "go-postgres",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422001/job/120891262166"
+        }
+      ]
+    },
+    {
+      "name": "Report moderation",
+      "runId": 40100422031,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422031",
+      "jobs": [
+        {
+          "id": 120891261896,
+          "name": "admin",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422031/job/120891261896"
+        },
+        {
+          "id": 120891261995,
+          "name": "moderation-postgres",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422031/job/120891261995"
+        }
+      ]
+    },
+    {
+      "name": "Android prerelease",
+      "runId": 40100422116,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422116",
+      "jobs": [
+        {
+          "id": 120891262216,
+          "name": "scope",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422116/job/120891262216"
+        },
+        {
+          "id": 120891304345,
+          "name": "rehearsal",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422116/job/120891304345"
+        },
+        {
+          "id": 120891304353,
+          "name": "candidate",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422116/job/120891304353"
+        }
+      ]
+    },
+    {
+      "name": "Feed UI",
+      "runId": 40100422029,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422029",
+      "jobs": [
+        {
+          "id": 120891261718,
+          "name": "flutter-and-real-feed",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422029/job/120891261718"
+        }
+      ]
+    },
+    {
+      "name": "Direct message chat",
+      "runId": 40100422035,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422035",
+      "jobs": [
+        {
+          "id": 120891262124,
+          "name": "reliable-chat-sql",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422035/job/120891262124"
+        },
+        {
+          "id": 120891262351,
+          "name": "flutter-and-android",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422035/job/120891262351"
+        }
+      ]
+    },
+    {
+      "name": "Comments core",
+      "runId": 40100422208,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422208",
+      "jobs": [
+        {
+          "id": 120891262574,
+          "name": "contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422208/job/120891262574"
+        },
+        {
+          "id": 120891262632,
+          "name": "domain",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422208/job/120891262632"
+        },
+        {
+          "id": 120891262662,
+          "name": "client",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40100422208/job/120891262662"
+        }
+      ]
+    }
+  ],
+  "scope": "All PR-triggered workflows and their actual jobs at this head; not merge approval or production deployment"
+}

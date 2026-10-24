@@ -1,5 +1,7 @@
 # 共享限流：实际配置与接口地图
 
+> **2026-10-24送审追加：** CI记录时[Draft PR73](https://github.com/zewbby/HnuHole/pull/73)已提交推送，指定Android PASS、6e50244远端13workflow/23job SUCCESS，见[CI记录](shared-rate-limit-remote-ci-verification.json)。runtime沿原生已测33bdcc0；CI记录时为Draft，本次回执编写时后续纯文档head CI待查PR；后续检查/送审状态以live PR为准，未合并部署。下方未提交/CI NOT_RUN保留原时点。
+
 > **2026-10-24 Android追加：** 此前下文未真机是原host交付时点。现final-r11独立Android包四阶段实际TLS/双PG/Redis限定PASS，见[原生证据](shared-rate-limit-device-verification.json)；原940/3SKIP保持。最新native源码manifest110文件，旧107文件为历史；用户授权提PR/远端CI，当前PR未建、CI NOT_RUN，未合并部署。
 
 任务 `SHARED-RATE-LIMIT-01`，2026-10-24；分支 `feat/shared-rate-limit-abuse-control`，基线 `origin/main@8ed8f28`。新增能力仅在本地，未提交/推送/PR/合并/部署。[阶段1历史原文](shared-rate-limit-stage1-history.md)中的候选TTL、旧键长度和待实现描述不作为当前事实。机制见[架构](shared-rate-limit-architecture.md)，操作见[runbook](shared-rate-limit-runbook.md)，结果和失败历史见[机器记录](shared-rate-limit-verification.json)。

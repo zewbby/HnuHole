@@ -1,13 +1,13 @@
 {
   "task": "SHARED-RATE-LIMIT-01",
   "date": "2026-10-24",
-  "status": "LOCAL_AND_SPECIFIED_ANDROID_ACCEPTANCE_COMPLETE_PR_CI_PENDING",
+  "status": "SPECIFIED_ANDROID_AND_REMOTE_CI_PASS_DRAFT_PR_REVIEW_PENDING",
   "baseline": "8ed8f28",
   "branch": "feat/shared-rate-limit-abuse-control",
   "workspace": "E:/Hnuhole-env/source/HnuHole-shared-rate-limit",
   "linuxTaskRoot": "/home/hnuhole/shared-rate-limit-20261024-8ed8f28",
-  "committed": false,
-  "pushed": false,
+  "committed": true,
+  "pushed": true,
   "merged": false,
   "deployed": false,
   "environment": {
@@ -467,9 +467,9 @@
     "No existing database accessed/reset; own task TLS/C-V clusters/Redis only",
     "Only explicitly authorized isolated Android package operated; daily package and data unchanged",
     "No production/merge/deployment",
-    "Commit/push/PR authorized but not yet executed",
     "Historical host940/three SKIP and backend39 scope unchanged",
-    "No RocketMQ; historical module verdicts unchanged"
+    "No RocketMQ; historical module verdicts unchanged",
+    "PR73 draft submitted/pushed; no independent member approval, merge or deploy"
   ],
   "historicalCheckpoint": {
     "status": "IN_PROGRESS",
@@ -571,8 +571,17 @@
     }
   },
   "implementation": "LOCAL_UNCOMMITTED_COMPLETE",
-  "remoteCI": "NOT_RUN",
-  "pr": null,
+  "remoteCI": "PASS",
+  "pr": {
+    "number": 73,
+    "url": "https://github.com/zewbby/HnuHole/pull/73",
+    "draft": true,
+    "merged": false,
+    "independentMemberReview": "PENDING",
+    "snapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+    "snapshotMeaning": "Draft at6e50244 CI receipt collection; current submission status/checks follow live PR",
+    "currentStatusURL": "https://github.com/zewbby/HnuHole/pull/73"
+  },
   "windowsEvidenceRoot": "E:/Hnuhole-env/shared-rate-limit-evidence-20261024-8ed8f28",
   "sourceManifest": {
     "path": "final-source-manifest.json",
@@ -642,8 +651,8 @@
     }
   ],
   "remainingVerification": [
-    "Create authorized PR, execute and verify remote CI",
-    "iOS/full physical reboot or power loss beyond scope",
+    "Independent member review and current documentation-head CI; PR73 remains draft",
+    "iOS/full physical reboot or sudden power loss beyond specified scope",
     "Capacity/production traffic/external security evidence"
   ],
   "documentationChecks": {
@@ -748,7 +757,7 @@
   },
   "authorization": {
     "userRequest": "Do real-device acceptance, then create PR for remote CI acceptance",
-    "commitPushPR": "AUTHORIZED_PENDING_ROOT_EXECUTION",
+    "commitPushPR": "AUTHORIZED_AND_EXECUTED",
     "mergeDeploy": "NOT_AUTHORIZED"
   },
   "nativeAndroid": {
@@ -775,6 +784,54 @@
   },
   "nativeDocumentationChecks": {
     "status": "PASS",
-    "scope": "Writer UTF8/JSON/local links/diff check; root final audit to follow"
-  }
+    "scope": "Historical native-followup writer checks; root native-final-static-check128files/15md, reports exact-match/policy/ledger passed. Current remote-CI documentation update audit separate."
+  },
+  "preRemoteCICheckpoint": {
+    "status": "LOCAL_AND_SPECIFIED_ANDROID_ACCEPTANCE_COMPLETE_PR_CI_PENDING",
+    "committed": false,
+    "pushed": false,
+    "pr": null,
+    "remoteCI": "NOT_RUN"
+  },
+  "remoteCIVerification": {
+    "status": "PASS",
+    "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+    "workflows": 13,
+    "jobs": 23,
+    "evidence": "docs/design/shared-rate-limit-remote-ci-verification.json",
+    "scope": "Actual run/job URLs at6e50244 only; at receipt-writing time subsequent documentation commit CI had not run. Current submission/check status follows live PR"
+  },
+  "remoteCIHistory": [
+    {
+      "head": "33bdcc0894af230a722ee21455aa344ae456c9cf",
+      "status": "FAIL",
+      "runId": 40099265585,
+      "jobId": 120887853682,
+      "scope": "Shared isolated-admission setup-python dynamic loader needed LD_LIBRARY_PATH while image validator deliberately env-i. No product failure.",
+      "evidence": "External remote-ci-initial-failure.json"
+    },
+    {
+      "head": "fded38e62e6f9b4aef3aaed1d38bfddeb240cace",
+      "status": "FAIL",
+      "runId": 40099624476,
+      "jobId": 120888963687,
+      "scope": "CI-only system Python venv/probe fix made Shared39PASS+1opt-in deviceSKIP,12of13 workflows passed. Sole Post images guarded tooling failed old exact overlay anchor vs workers gofmt whitespace; actual image SQL/lifecycle passed.",
+      "evidence": "External remote-ci-post-images-failure.json"
+    },
+    {
+      "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+      "status": "PASS",
+      "scope": "Only tools/community-android-stage1/lab.py and its tests changed: allow two known exact anchors, require total exactly1; unknown/duplicate still ValueError. Runtime unchanged. Local tools210PASS/Go overlay buildPASS, Astra xhigh narrow review no P1/P2; final13workflows/23jobs success."
+    }
+  ],
+  "nativeProductCommit": "33bdcc0894af230a722ee21455aa344ae456c9cf",
+  "runtimeUnchangedAfterNativeCommit": true,
+  "currentSourceHeadBeforeDocumentationUpdate": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+  "postNativeCIOnlyChanges": {
+    "fded38e": "CI system Python venv/probe only",
+    "6e50244": "Old Android overlay host tool and tests only",
+    "runtime": "Unchanged from native-tested33bd, Git-normalized equivalence"
+  },
+  "pendingDocumentationCommitCIAtReceipt": "NOT_RUN",
+  "statusSnapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21"
 }
