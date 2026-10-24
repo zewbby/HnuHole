@@ -266,6 +266,11 @@ func (b *boundary) communityCommentsPublic(w http.ResponseWriter, r *http.Reques
 						q.Limit = n
 					case "cursor":
 						q.Cursor = items[0]
+					case "sort":
+						q.Sort = comments.SortMode(items[0])
+						if !q.Sort.Valid() || q.Replies {
+							e = errMalformed
+						}
 					case "expanded":
 						if !q.Replies || (items[0] != "true" && items[0] != "false") {
 							e = errMalformed
@@ -281,6 +286,10 @@ func (b *boundary) communityCommentsPublic(w http.ResponseWriter, r *http.Reques
 			}
 			if e != nil {
 				b.postBad(w, e)
+				return
+			}
+			if q.Sort != "" && q.Cursor != "" {
+				b.postBad(w, errMalformed)
 				return
 			}
 			response, e = backend.ReadComments(r.Context(), bearer, q)

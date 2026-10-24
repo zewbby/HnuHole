@@ -1,0 +1,445 @@
+{
+  "task": "POST-DETAIL-COMMENTS-01",
+  "date": "2026-10-24",
+  "branch": "codex/feat/post-detail-comments",
+  "implementation": "LOCAL_UNCOMMITTED",
+  "scope": [
+    "B06",
+    "B07",
+    "existing-account startup identity gate",
+    "protected media expiry presentation"
+  ],
+  "build": {
+    "versionCode": 2026102427,
+    "mode": "PROFILE_AUTHORIZED_DEVELOPMENT",
+    "sha256": "e3f8d7684392478ef20df5f910ccc2ac8f1740b1a154a0e4f5e3747a142b158c",
+    "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+    "sourceHashReceipt": "2427-profile-device.json",
+    "sourceHashesVerified": true
+  },
+  "testCountsOverlap": true,
+  "device": {
+    "model": "vivo V2323A",
+    "installation": "PASS_SAME_SIGNER_DATA_PRESERVED",
+    "testedVersions": [
+      2026102417,
+      2026102418,
+      2026102419,
+      2026102422,
+      2026102423,
+      2026102424
+    ],
+    "coldStartup": "PASS_LIMITED_EXISTING_ACCOUNT_NO_IDENTITY_SETUP_PANEL_2417_RECORDING",
+    "speakingAvatar": "PASS_SAME_IDENTITY_BEFORE_DURING_AFTER_COMPOSITION",
+    "nativePickerCancel": "PASS_EMPTY_AND_NONEMPTY_DRAFT_COLLAPSES_WITHOUT_EXTRA_BACK",
+    "commentImage": "PASS_THUMBNAIL_ORIGINAL_RETURN_2417; AUTOMATIC_EXPIRY_REREAD_2418",
+    "publication": "PASS_2418_NEW_COMMENT_VISIBLE_WITHOUT_ROUTE_REENTRY_COUNT_1_TO_2",
+    "testCleanup": "PASS_DELETED_ONLY_APPROVED_COMMENT_COUNT_2_TO_1_ORIGINAL_666_RETAINED",
+    "falseDeletedHint": "NOT_OBSERVED_DURING_RECORDED_INTERACTIONS",
+    "finalStableMediaLayout": "PASS_2419_70_SECOND_VISIBLE_EXPIRY_SAME_COMMENT_BOUNDS; FINAL_SETTLED_ALL_IMAGES_RECOVERED",
+    "finalRouteReentry": "PASS_2419_COMMENT_1_ORIGINAL_666_PRESENT_NO_FALSE_DELETED_HINT",
+    "samplingNote": "The 70s semantics snapshot caught post-image renewal; a subsequent settled read confirmed all 3 media buttons and unchanged original-comment bounds.",
+    "latestVersionCode": 2026102424,
+    "latestEvidence": {
+      "installation": "PASS_2424_SAME_SIGNER_ADB_INSTALL_R_VERSION_VERIFIED_DATA_PRESERVED",
+      "nativePickerCancel": "PASS_2424_EMPTY_DRAFT_COLLAPSES_WITHOUT_EXTRA_BACK; 2423_NONEMPTY_UNSENT_DRAFT_PRESERVED",
+      "commentImage": "PASS_2424_THUMBNAIL_VIEWER_RETURN_ALL_THREE_MEDIA_VISIBLE",
+      "speakingAvatar": "PASS_2423_KEYBOARD_AND_PICKER_SAME_S; 2424_COLLAPSED_S",
+      "systemFailureNotification": "PASS_2422_EXISTING_FAILURE_VISIBLE_UNDER_ORIGINAL_IDENTITY; NOT_RETRIED_OR_DELETED",
+      "finalState": "PASS_2424_ORIGINAL_666_COUNT_1_NO_UNSENT_TEST_DRAFT_NO_GLOBAL_FAILURE_BANNER",
+      "newPublication": "NOT_REPEATED_THIS_FOLLOWUP_USE_EXPLICITLY_VERSIONED_2418_EVIDENCE",
+      "nativeHttpFaultInjection": "NOT_RUN_HOST_ERROR_PATH_REGRESSIONS_ONLY"
+    }
+  },
+  "profile2418": {
+    "Frame": {
+      "samples": 222,
+      "p50Ms": 1.319,
+      "p95Ms": 9.5,
+      "maxMs": 28.205,
+      "over8.33ms": 17,
+      "over16.67ms": 2
+    },
+    "GPURasterizer::Draw": {
+      "samples": 221,
+      "p50Ms": 2.911,
+      "p95Ms": 5.294,
+      "maxMs": 15.37,
+      "over8.33ms": 1,
+      "over16.67ms": 0
+    },
+    "Animator::BeginFrame": {
+      "samples": 222,
+      "p50Ms": 1.421,
+      "p95Ms": 9.56,
+      "maxMs": 28.331,
+      "over8.33ms": 17,
+      "over16.67ms": 3
+    },
+    "scope": "2418 Profile; 3 keyboard open/back and 2 up/down scroll cycles; no screen recording; short sample only, no debug baseline"
+  },
+  "boundaries": [
+    "Specified flow acceptance only; native network fault matrix and detail-entry end-to-end timing NOT_RUN",
+    "New backend sorting code not deployed; real SQL sort matrix NOT_RUN",
+    "Full test suite and remote CI NOT_RUN this followup",
+    "iOS, production, long-run and low-end performance NOT_RUN",
+    "No commit, push, merge or production release"
+  ],
+  "localEvidenceRoot": "E:\\Hnuhole-env\\comment-reference-20261024",
+  "evidenceFiles": [
+    "vivo-2417-cold.mp4",
+    "vivo-2417-comment.mp4",
+    "vivo-2418-send.mp4",
+    "vivo-2418-published.png",
+    "vivo-2418-test-cleaned.png",
+    "vivo-profile-summary.json",
+    "vivo-2419-final.png",
+    "vivo-2419-stable-layout.json",
+    "vivo-2419-stable-layout-settled.json",
+    "2424-profile-device.json",
+    "vivo-2419-baseline-summary.json",
+    "vivo-2424-final-summary.json",
+    "vivo-2422-system-failure.png",
+    "vivo-2423-draft-preserved.png",
+    "vivo-2424-picker-cancel.png",
+    "vivo-2424-viewer.png",
+    "vivo-2424-final.png"
+  ],
+  "eightIssueAudit": {
+    "date": "2026-10-24",
+    "versionCode": 2026102427,
+    "allEightHaveFixes": true,
+    "status": "PASS_LIMITED_SPECIFIED_FLOWS",
+    "limitedPassItems": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "partiallyResolvedItems": [],
+    "scope": "Versioned host and native evidence listed in report. Publication/count evidence is native 2418 plus current regressions; error faults are host-injected; performance is short single-vivo comparison, not universal acceptance. Further realme 2427 weak-network and 20-minute specified native flow acceptance recorded under weakSoakFollowup.",
+    "remainingValidation": [
+      "Full native network/image-failure combinations",
+      "Detail-entry end-to-end latency, long-running and low-end-device performance",
+      "iOS"
+    ],
+    "report": "docs/design/post-detail-comments-status-report-20261024.md"
+  },
+  "history2419": {
+    "build": {
+      "versionCode": 2026102419,
+      "mode": "PROFILE_AUTHORIZED_DEVELOPMENT",
+      "sha256": "c543a9e53cca2fa173de68e67d518252eacd4db7de1b87ada7f2645e45bcebf3",
+      "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea"
+    },
+    "hostChecks": [
+      {
+        "command": "flutter test --no-pub test/comment_views_test.dart test/identity_initial_gate_test.dart test/feed_interactions_test.dart",
+        "passed": 72,
+        "status": "PASS",
+        "log": "final-repair-tests.log"
+      },
+      {
+        "command": "flutter test --no-pub test/post_images_test.dart test/post_media_repository_test.dart test/comment_views_test.dart",
+        "passed": 81,
+        "status": "PASS",
+        "log": "expiry-repair-tests.log"
+      },
+      {
+        "command": "flutter test --no-pub test/post_images_test.dart test/feed_media_test.dart",
+        "passed": 28,
+        "status": "PASS",
+        "log": "stable-media-layout-tests.log"
+      },
+      {
+        "command": "flutter analyze --no-pub",
+        "issues": 0,
+        "status": "PASS",
+        "log": "final-repair-analyze.log"
+      }
+    ],
+    "device": {
+      "model": "vivo V2323A",
+      "installation": "PASS_SAME_SIGNER_DATA_PRESERVED",
+      "testedVersions": [
+        2026102417,
+        2026102418,
+        2026102419
+      ],
+      "coldStartup": "PASS_LIMITED_EXISTING_ACCOUNT_NO_IDENTITY_SETUP_PANEL_2417_RECORDING",
+      "speakingAvatar": "PASS_SAME_IDENTITY_BEFORE_DURING_AFTER_COMPOSITION",
+      "nativePickerCancel": "PASS_EMPTY_AND_NONEMPTY_DRAFT_COLLAPSES_WITHOUT_EXTRA_BACK",
+      "commentImage": "PASS_THUMBNAIL_ORIGINAL_RETURN_2417; AUTOMATIC_EXPIRY_REREAD_2418",
+      "publication": "PASS_2418_NEW_COMMENT_VISIBLE_WITHOUT_ROUTE_REENTRY_COUNT_1_TO_2",
+      "testCleanup": "PASS_DELETED_ONLY_APPROVED_COMMENT_COUNT_2_TO_1_ORIGINAL_666_RETAINED",
+      "falseDeletedHint": "NOT_OBSERVED_DURING_RECORDED_INTERACTIONS",
+      "finalStableMediaLayout": "PASS_2419_70_SECOND_VISIBLE_EXPIRY_SAME_COMMENT_BOUNDS; FINAL_SETTLED_ALL_IMAGES_RECOVERED",
+      "finalRouteReentry": "PASS_2419_COMMENT_1_ORIGINAL_666_PRESENT_NO_FALSE_DELETED_HINT",
+      "samplingNote": "The 70s semantics snapshot caught post-image renewal; a subsequent settled read confirmed all 3 media buttons and unchanged original-comment bounds."
+    },
+    "boundaries": [
+      "Short profile sample has slow frames; no complete performance acceptance",
+      "New backend sorting code not deployed; no new SQL sort matrix",
+      "iOS and production NOT_RUN",
+      "No commit, push, merge or production release"
+    ],
+    "eightIssueAudit": {
+      "date": "2026-10-24",
+      "allEightResolved": false,
+      "limitedPassItems": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "partiallyResolvedItems": [
+        3,
+        8
+      ],
+      "openWork": {
+        "3": "Other error snackbars still use the default presentation; button avoidance and failure-path device verification remain incomplete.",
+        "8": "Some layout shifts fixed, but slow frames and detail-entry waits remain; final performance acceptance incomplete."
+      },
+      "report": "docs/design/post-detail-comments-status-report-20261024.md"
+    }
+  },
+  "hostChecksThrough2419": [
+    {
+      "command": "flutter test --no-pub test/comment_views_test.dart test/identity_initial_gate_test.dart test/feed_interactions_test.dart",
+      "passed": 72,
+      "status": "PASS",
+      "log": "final-repair-tests.log"
+    },
+    {
+      "command": "flutter test --no-pub test/post_images_test.dart test/post_media_repository_test.dart test/comment_views_test.dart",
+      "passed": 81,
+      "status": "PASS",
+      "log": "expiry-repair-tests.log"
+    },
+    {
+      "command": "flutter test --no-pub test/post_images_test.dart test/feed_media_test.dart",
+      "passed": 28,
+      "status": "PASS",
+      "log": "stable-media-layout-tests.log"
+    },
+    {
+      "command": "flutter analyze --no-pub",
+      "issues": 0,
+      "status": "PASS",
+      "log": "final-repair-analyze.log"
+    }
+  ],
+  "hostChecks": [
+    {
+      "versionCode": 2026102420,
+      "command": "flutter test --no-pub test/comment_views_test.dart test/feed_interactions_test.dart test/post_images_test.dart test/feed_media_test.dart",
+      "passed": 100,
+      "status": "PASS",
+      "log": "2420-final-tests.log"
+    },
+    {
+      "versionCode": 2026102421,
+      "command": "flutter test --no-pub test/comment_failure_view_test.dart test/app_navigation_test.dart test/governance_test.dart",
+      "passed": 46,
+      "status": "PASS",
+      "log": "2421-notification-tests.log"
+    },
+    {
+      "versionCode": 2026102422,
+      "command": "flutter test --no-pub test/comment_views_test.dart test/feed_interactions_test.dart test/post_images_test.dart test/feed_media_test.dart",
+      "passed": 101,
+      "status": "PASS",
+      "log": "2422-tests.log"
+    },
+    {
+      "versionCode": 2026102423,
+      "command": "flutter test --no-pub test/app_navigation_test.dart test/login_home_navigation_test.dart test/direct_message_navigation_test.dart test/comment_views_test.dart",
+      "passed": 79,
+      "status": "PASS",
+      "log": "2423-tests.log"
+    },
+    {
+      "versionCode": 2026102424,
+      "command": "flutter test --no-pub test/app_navigation_test.dart test/login_home_navigation_test.dart test/direct_message_navigation_test.dart test/startup_entry_test.dart test/identity_initial_gate_test.dart",
+      "passed": 42,
+      "status": "PASS",
+      "log": "2424-route-tests.log"
+    },
+    {
+      "versionCode": 2026102424,
+      "command": "flutter analyze --no-pub",
+      "issues": 0,
+      "status": "PASS",
+      "log": "2424-analyze.log"
+    }
+  ],
+  "performanceComparison": {
+    "status": "PASS_LIMITED_SPECIFIED_INTERACTION_TRACE",
+    "protocol": "Same vivo, same development post, Profile, no recording, 3 keyboard open/back and 2 up/down scroll cycles; final 2424 after cold launch, first keyboard use in process.",
+    "baseline2419": {
+      "Frame": {
+        "n": 208,
+        "medianMs": 1.174,
+        "p95Ms": 9.06,
+        "maxMs": 35.319,
+        "over8_33": 14,
+        "over16_67": 1
+      },
+      "GPURasterizer::Draw": {
+        "n": 208,
+        "medianMs": 3.282,
+        "p95Ms": 5.384,
+        "maxMs": 7.921,
+        "over8_33": 0,
+        "over16_67": 0
+      },
+      "LAYOUT": {
+        "n": 208,
+        "medianMs": 0.13,
+        "p95Ms": 6.871,
+        "maxMs": 29.661,
+        "over8_33": 4,
+        "over16_67": 1
+      }
+    },
+    "final2424": {
+      "Frame": {
+        "n": 212,
+        "medianMs": 0.976,
+        "p95Ms": 3.213,
+        "maxMs": 8.006,
+        "over8_33": 0,
+        "over16_67": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 212,
+        "medianMs": 3.227,
+        "p95Ms": 5.437,
+        "maxMs": 9.02,
+        "over8_33": 1,
+        "over16_67": 0
+      },
+      "LAYOUT": {
+        "n": 212,
+        "medianMs": 0.128,
+        "p95Ms": 0.958,
+        "maxMs": 4.405,
+        "over8_33": 0,
+        "over16_67": 0
+      }
+    },
+    "limitations": "UI/layout/raster work spans only, not FPS or end-to-end latency; short single-device sample; no long-run or low-end performance acceptance. Intermediate versions retained and not substituted for final."
+  },
+  "history2424": {
+    "build": {
+      "versionCode": 2026102424,
+      "mode": "PROFILE_AUTHORIZED_DEVELOPMENT",
+      "sha256": "caac520dfd921e5dd44a7b14dada79698d9efe6f399c89eb660bec745a6ac7ee",
+      "signerSha256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "sourceHashReceipt": "2424-profile-device.json",
+      "sourceHashesVerified": true
+    },
+    "device": {
+      "model": "vivo V2323A",
+      "installation": "PASS_SAME_SIGNER_DATA_PRESERVED",
+      "testedVersions": [
+        2026102417,
+        2026102418,
+        2026102419,
+        2026102422,
+        2026102423,
+        2026102424
+      ],
+      "coldStartup": "PASS_LIMITED_EXISTING_ACCOUNT_NO_IDENTITY_SETUP_PANEL_2417_RECORDING",
+      "speakingAvatar": "PASS_SAME_IDENTITY_BEFORE_DURING_AFTER_COMPOSITION",
+      "nativePickerCancel": "PASS_EMPTY_AND_NONEMPTY_DRAFT_COLLAPSES_WITHOUT_EXTRA_BACK",
+      "commentImage": "PASS_THUMBNAIL_ORIGINAL_RETURN_2417; AUTOMATIC_EXPIRY_REREAD_2418",
+      "publication": "PASS_2418_NEW_COMMENT_VISIBLE_WITHOUT_ROUTE_REENTRY_COUNT_1_TO_2",
+      "testCleanup": "PASS_DELETED_ONLY_APPROVED_COMMENT_COUNT_2_TO_1_ORIGINAL_666_RETAINED",
+      "falseDeletedHint": "NOT_OBSERVED_DURING_RECORDED_INTERACTIONS",
+      "finalStableMediaLayout": "PASS_2419_70_SECOND_VISIBLE_EXPIRY_SAME_COMMENT_BOUNDS; FINAL_SETTLED_ALL_IMAGES_RECOVERED",
+      "finalRouteReentry": "PASS_2419_COMMENT_1_ORIGINAL_666_PRESENT_NO_FALSE_DELETED_HINT",
+      "samplingNote": "The 70s semantics snapshot caught post-image renewal; a subsequent settled read confirmed all 3 media buttons and unchanged original-comment bounds.",
+      "latestVersionCode": 2026102424,
+      "latestEvidence": {
+        "installation": "PASS_2424_SAME_SIGNER_ADB_INSTALL_R_VERSION_VERIFIED_DATA_PRESERVED",
+        "nativePickerCancel": "PASS_2424_EMPTY_DRAFT_COLLAPSES_WITHOUT_EXTRA_BACK; 2423_NONEMPTY_UNSENT_DRAFT_PRESERVED",
+        "commentImage": "PASS_2424_THUMBNAIL_VIEWER_RETURN_ALL_THREE_MEDIA_VISIBLE",
+        "speakingAvatar": "PASS_2423_KEYBOARD_AND_PICKER_SAME_S; 2424_COLLAPSED_S",
+        "systemFailureNotification": "PASS_2422_EXISTING_FAILURE_VISIBLE_UNDER_ORIGINAL_IDENTITY; NOT_RETRIED_OR_DELETED",
+        "finalState": "PASS_2424_ORIGINAL_666_COUNT_1_NO_UNSENT_TEST_DRAFT_NO_GLOBAL_FAILURE_BANNER",
+        "newPublication": "NOT_REPEATED_THIS_FOLLOWUP_USE_EXPLICITLY_VERSIONED_2418_EVIDENCE",
+        "nativeHttpFaultInjection": "NOT_RUN_HOST_ERROR_PATH_REGRESSIONS_ONLY"
+      }
+    },
+    "eightIssueAudit": {
+      "date": "2026-10-24",
+      "versionCode": 2026102424,
+      "allEightHaveFixes": true,
+      "status": "PASS_LIMITED_SPECIFIED_FLOWS",
+      "limitedPassItems": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "partiallyResolvedItems": [],
+      "scope": "Versioned host and native evidence listed in report. Publication/count evidence is native 2418 plus current regressions; error faults are host-injected; performance is short single-vivo comparison, not universal acceptance.",
+      "remainingValidation": [
+        "Full native network/image-failure combinations",
+        "Detail-entry end-to-end latency, long-running and low-end-device performance",
+        "iOS"
+      ],
+      "report": "docs/design/post-detail-comments-status-report-20261024.md"
+    }
+  },
+  "currentDevice": {
+    "model": "realme RMX3366",
+    "versionCode": 2026102427,
+    "evidence": "docs/design/post-detail-comments-weak-soak-20261024.md"
+  },
+  "weakSoakFollowup": {
+    "status": "PASS_LIMITED_WEAK_NETWORK_AND_ACTIVE_NATIVE_SOAK",
+    "versionCode": 2026102427,
+    "device": "realme RMX3366",
+    "durationSeconds": 1218.8,
+    "cycles": 28,
+    "counts": {
+      "pickerCancel": 28,
+      "imageViewerReturn": 28,
+      "detailReentry": 9,
+      "backgroundResume": 7,
+      "transientDisconnect": 5
+    },
+    "evidence": "E:\\Hnuhole-env\\comment-reference-20261024\\realme-weak-20261024\\realme-2427-weak-soak-verification.json",
+    "report": "docs/design/post-detail-comments-weak-soak-20261024.md",
+    "nativeMutations": "PASS_SINGLE_TEST_COMMENT_PUBLISHED_CONFIRMED_AND_DELETED_ORIGINALS_RETAINED"
+  },
+  "commentDelivery20261024": {
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/71",
+    "implementation": "COMMITTED_PUSHED_PENDING_MERGE",
+    "productSourceCommit": "ed1b5e3a2be322b7f78b8c6a2f94b3da9009def7",
+    "integratedMain": "ce140d5",
+    "flutterFrozen": {
+      "status": "PASS",
+      "passed": 924,
+      "skipped": 3,
+      "analysisIssues": 0
+    },
+    "independentAgentReview": "PASS_NO_BLOCKERS_AFTER_TWO_P2_FIXES",
+    "githubMemberApproval": "NOT_FABRICATED",
+    "ci": "PENDING",
+    "deviceEvidence": "HISTORICAL_2427_PRE_FINAL_INTEGRATION",
+    "production": "NOT_RELEASED"
+  }
+}

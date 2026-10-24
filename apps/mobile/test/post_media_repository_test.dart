@@ -121,7 +121,7 @@ void main() {
   });
 
   testWidgets(
-    'two repost rows and their detail reauthorize once at the shared deadline',
+    'visible detail reauthorizes once while covered repost rows wait for return',
     (tester) async {
       Future<void> frames() async {
         for (var i = 0; i < 12; i++) {
@@ -208,7 +208,9 @@ void main() {
       await frames();
       await tester.pumpAndSettle();
       expect(api.manifestReads, 2);
-      expect(groups.length, 6);
+      // Only the visible detail renews. Covered repost rows keep terminal old
+      // leases until their route returns, then share the same fresh manifest.
+      expect(groups.length, 4);
       expect(old.every((group) => !group.accessGranted.value), isTrue);
       expect(
         groups.skip(3).every((group) => group.accessGranted.value),
@@ -219,6 +221,7 @@ void main() {
       await tester.pageBack();
       await frames();
       await tester.pumpAndSettle();
+      expect(groups.length, 6);
       expect(find.text('图片已不可访问'), findsNothing);
       expect(find.byType(Image), findsNWidgets(2));
       expect(api.manifestReads, 2);

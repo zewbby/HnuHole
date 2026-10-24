@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -24,6 +25,32 @@ Widget gate(IdentityTestFixture f, {Key? boundary}) => RepaintBoundary(
   ),
 );
 void main() {
+  testWidgets(
+    'existing account cold start never flashes initial identity panel while directory loads',
+    (tester) async {
+      final api = IdentityTestApi()..readWait = Completer<IdentityDirectory>();
+      final f = await IdentityTestFixture.create(api: api);
+      await tester.pumpWidget(gate(f));
+      await tester.pump();
+      expect(find.byType(IdentityPendingPanel), findsNothing);
+      expect(find.text('完成身份设置'), findsNothing);
+      expect(find.text('社区目录'), findsNothing);
+      api.readWait!.complete(
+        IdentityDirectory(
+          identities: [identityTestItem()],
+          createdCount: 1,
+          serverTime: DateTime.utc(2026, 10, 24),
+          sessionExpiresAt: identityTestExpiry,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('社区目录'), findsOneWidget);
+      expect(find.byType(Dialog), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+      f.dispose();
+    },
+  );
+
   testWidgets(
     'timed out initial avatar recovers then legal nickname completes gate once',
     (tester) async {

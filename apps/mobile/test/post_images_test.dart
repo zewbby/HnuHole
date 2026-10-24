@@ -86,6 +86,63 @@ void main() {
     await frames(tester);
   }
 
+  testWidgets(
+    'comment single image fills its 160dp frame and retry stays horizontal',
+    (tester) async {
+      final authority = _Authority();
+      final access = ValueNotifier(true);
+      var fail = true;
+      Future<PostImages> load(String id) async => group(
+        access,
+        images: [
+          PostImage.deferred(
+            loadThumbnail: () async {
+              if (fail) throw StateError('temporary load failure');
+              return ordinary;
+            },
+            item: ViewerItem.provider(
+              id: 'comment-image',
+              provider: ordinary,
+              pixelSize: const Size(640, 480),
+              saveAllowed: false,
+            ),
+          ),
+        ],
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 160,
+                height: 160,
+                child: PostImagesSection(
+                  postId: 'post-a',
+                  expectedCount: 1,
+                  compactSingle: true,
+                  loadImages: load,
+                  authority: authority,
+                  isCurrent: () => authority.current,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await frames(tester);
+      final tile = find.byKey(const ValueKey(('post-image', 'comment-image')));
+      expect(tester.getSize(tile), const Size(160, 160));
+      expect(tester.getSize(find.text('点击重试')).height, lessThan(30));
+      fail = false;
+      await tester.tap(find.text('点击重试'));
+      await frames(tester);
+      expect(find.text('图片加载失败'), findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      authority.dispose();
+      access.dispose();
+    },
+  );
   testWidgets('layout-time expiry safely reloads once without stuck loading', (
     tester,
   ) async {
@@ -265,6 +322,54 @@ void main() {
   });
 
   testWidgets(
+    'detail loading and revoked placeholders retain the image grid height',
+    (tester) async {
+      final authority = _Authority(), access = ValueNotifier(true);
+      final pending = Completer<PostImages>();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: MediaQuery(
+              data: const MediaQueryData(
+                padding: EdgeInsets.only(top: 24, bottom: 20),
+              ),
+              child: Column(
+                children: [
+                  PostImagesSection(
+                    postId: 'post-a',
+                    expectedCount: 2,
+                    loadImages: (_) => pending.future,
+                    authority: authority,
+                    isCurrent: () => authority.current,
+                  ),
+                  const Text('after-images'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      final initial = tester.getTopLeft(find.text('after-images')).dy;
+      pending.complete(group(access));
+      await frames(tester);
+      expect(
+        tester.getTopLeft(find.text('after-images')).dy,
+        closeTo(initial, 0.01),
+      );
+      access.value = false;
+      await frames(tester);
+      expect(
+        tester.getTopLeft(find.text('after-images')).dy,
+        closeTo(initial, 0.01),
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      authority.dispose();
+      access.dispose();
+    },
+  );
+
+  testWidgets(
     'expired group closes the viewer and explicit reload uses a fresh lease',
     (tester) async {
       final authority = _Authority();
@@ -299,6 +404,81 @@ void main() {
       authority.dispose();
       first.dispose();
       second.dispose();
+    },
+  );
+
+  testWidgets(
+    'natural expiry reauthorizes visible media without reopening the old viewer',
+    (tester) async {
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      final authority = _Authority();
+      final first = ValueNotifier(true), second = ValueNotifier(true);
+      var calls = 0;
+      Future<PostImages> load(String _) async {
+        final initial = ++calls == 1;
+        final value = group(initial ? first : second);
+        return PostImages(
+          postId: value.postId,
+          images: value.images,
+          accessGranted: value.accessGranted,
+          isExpired: () => initial && !first.value,
+        );
+      }
+
+      await mount(tester, section(authority, load));
+      await tester.tap(
+        find.byKey(const ValueKey(('post-image', 'ordinary-v1'))),
+      );
+      await frames(tester);
+      first.value = false;
+      await frames(tester);
+      expect(calls, 2);
+      expect(first.value, isFalse);
+      expect(find.byType(HnuImageViewer), findsNothing);
+      expect(find.text('图片已不可访问'), findsNothing);
+      expect(find.byKey(const ValueKey('post-image-grid')), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      authority.dispose();
+      first.dispose();
+      second.dispose();
+    },
+  );
+
+  testWidgets(
+    'expired media waits for resume and a failed renewal stops retrying',
+    (tester) async {
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      final authority = _Authority(), access = ValueNotifier(true);
+      var calls = 0;
+      Future<PostImages> load(String _) async {
+        if (++calls > 1) throw StateError('protected read unavailable');
+        final value = group(access);
+        return PostImages(
+          postId: value.postId,
+          images: value.images,
+          accessGranted: access,
+          isExpired: () => !access.value,
+        );
+      }
+
+      await mount(tester, section(authority, load));
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      access.value = false;
+      await frames(tester);
+      expect(calls, 1);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await frames(tester);
+      expect(calls, 2);
+      expect(find.text('图片暂时无法读取'), findsOneWidget);
+      await frames(tester);
+      expect(calls, 2);
+      authority.revoke();
+      await frames(tester);
+      expect(find.byKey(const ValueKey('post-image-grid')), findsNothing);
+      expect(calls, 2);
+      await tester.pumpWidget(const SizedBox());
+      authority.dispose();
+      access.dispose();
     },
   );
 

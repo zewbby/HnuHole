@@ -54,9 +54,6 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
     authStore.addListener(_changed);
     identityManagement.addListener(_identitiesChanged);
     _changed();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (_foreground && _automaticPolls++ < 40) unawaited(reconcile());
-    });
   }
   final CommentHttp http;
   final AuthSessionController sessions;
@@ -79,6 +76,10 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _foreground = state == AppLifecycleState.resumed;
+    if (!_foreground) {
+      _timer?.cancel();
+      _timer = null;
+    }
     if (_foreground) {
       _automaticPolls = 0;
       unawaited(reconcile());
@@ -97,7 +98,46 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
     for (final e in core.entries) {
       if (_seenCommands.add(e.intent.commandId)) _automaticPolls = 0;
     }
+    _scheduleReconcile();
     if (!_disposed) notifyListeners();
+  }
+
+  bool get _hasOutstandingWork =>
+      mutations.isNotEmpty ||
+      core.entries.any(
+        (entry) =>
+            entry.rejectionCode == null &&
+            (entry.transport != CommentTransportState.settled ||
+                entry.task?.state == CommentTaskState.accepted),
+      );
+
+  void _scheduleReconcile() {
+    if (_disposed ||
+        !_foreground ||
+        !available ||
+        !core.ready ||
+        !_hasOutstandingWork ||
+        _automaticPolls >= 40 ||
+        _timer != null) {
+      return;
+    }
+    final delay = _automaticPolls < 8
+        ? const Duration(milliseconds: 500)
+        : _automaticPolls < 16
+        ? const Duration(seconds: 1)
+        : const Duration(seconds: 3);
+    _timer = Timer(delay, () async {
+      _timer = null;
+      if (_disposed || !_foreground || !available || !_hasOutstandingWork) {
+        return;
+      }
+      _automaticPolls++;
+      try {
+        await reconcile();
+      } finally {
+        _scheduleReconcile();
+      }
+    });
   }
 
   void _changed() {
@@ -119,6 +159,8 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
       return;
     }
     _automaticPolls = 0;
+    _timer?.cancel();
+    _timer = null;
     _version = sessions.authorityVersion;
     _token = token;
     _account = account;
@@ -245,6 +287,7 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
       }
     } finally {
       _polling = false;
+      _scheduleReconcile();
     }
   }
 

@@ -52,6 +52,8 @@ class _Api implements AuthApi {
   bool rejectRevocation = false;
   bool rejectLogin = false;
   AuthFailure? loginFailure;
+  AuthFailure? currentFailure;
+  int currentReads = 0;
   Completer<void>? loginPending;
   String? submittedUsername;
   String? submittedEmail;
@@ -80,11 +82,15 @@ class _Api implements AuthApi {
   }
 
   @override
-  Future<CurrentSession> currentSession(String token) async => CurrentSession(
-    accountId: _account,
-    username: 'private_name',
-    expiresAt: _expiry,
-  );
+  Future<CurrentSession> currentSession(String token) async {
+    currentReads++;
+    if (currentFailure case final failure?) throw failure;
+    return CurrentSession(
+      accountId: _account,
+      username: 'private_name',
+      expiresAt: _expiry,
+    );
+  }
 
   @override
   Future<void> revokeSession(String secret) async {
@@ -896,6 +902,37 @@ void main() {
       expect(h.sessions.isAuthenticated, isTrue);
       expect(find.text('management remains open'), findsOneWidget);
       expect(callbacks, 0);
+      await h.finish(tester);
+    },
+  );
+  testWidgets(
+    'unavailable auth retry can fail repeatedly without losing its dialog',
+    (tester) async {
+      final h = _Harness();
+      await h.store.update(
+        (s) => s.copyWith(
+          session: SessionRecord(
+            accountId: _account,
+            token: h.api.token,
+            expiresAt: _expiry,
+          ),
+        ),
+      );
+      h.api.currentFailure = const AuthFailure(kind: AuthFailureKind.timeout);
+      await h.mount(tester);
+      for (var i = 0; i < 2; i++) {
+        expect(find.text('暂时无法进入'), findsOneWidget);
+        expect(
+          tester.widget<AlertDialog>(find.byType(AlertDialog)).content,
+          isNull,
+        );
+        await _tap(tester, '重试');
+        expect(find.text('暂时无法进入'), findsOneWidget);
+      }
+      expect(h.api.currentReads, 3);
+      await _tap(tester, '取消');
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(h.store.current!.session!.token, h.api.token);
       await h.finish(tester);
     },
   );

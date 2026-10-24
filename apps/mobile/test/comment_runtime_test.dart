@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnuhole_image_viewer/image_viewer.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/comments/comment_http.dart';
 import 'package:hnuhole_mobile/src/comments/comment_journal.dart';
+import 'package:hnuhole_mobile/src/comments/comment_models.dart';
 import 'package:hnuhole_mobile/src/comments/comment_runtime.dart';
 import 'package:hnuhole_mobile/src/comments/comment_views.dart';
 
@@ -39,9 +42,41 @@ class _RenewingSessionApi extends IdentityTestSessionApi {
   }
 }
 
+class _Journal extends NativeCommentJournal {
+  _Journal() : super((account) async => _Store(account));
+  final entries = <String, CommentJournalEntry>{};
+  @override
+  Future<List<CommentJournalEntry>> read(String account) async =>
+      entries.values.toList();
+  @override
+  Future<void> put(String account, CommentJournalEntry entry) async {
+    entries[entry.localId] = entry;
+  }
+
+  @override
+  Future<void> remove(String account, String id) async {
+    entries.remove(id);
+  }
+}
+
 class _Http extends CommentHttp {
   _Http() : super(Uri.parse('https://unused.invalid'));
   Completer<_Reply>? pending;
+  int commands = 0, taskReads = 0;
+  Map<String, dynamic>? command;
+  bool published = false;
+  Uint8List? imageBytes;
+  CommentHttpFailure? imageFailure;
+  @override
+  Future<({Uint8List bytes, Duration lease})> image(
+    String token,
+    String path,
+    String mime,
+  ) async {
+    if (imageFailure case final failure?) throw failure;
+    return (bytes: imageBytes!, lease: const Duration(seconds: 60));
+  }
+
   @override
   Future<_Reply> send(
     String token,
@@ -53,6 +88,41 @@ class _Http extends CommentHttp {
     String? mime,
   }) async {
     if (path == '/late') return pending!.future;
+    if (path.contains('/comment-commands/')) {
+      if (method == 'PUT') {
+        commands++;
+        command = body;
+      }
+      return (
+        expires: identityTestRenewed,
+        value: {
+          'state': 'ACCEPTED',
+          'operation': 'CREATE',
+          'taskId': command!['taskId'],
+          'attemptVersion': 1,
+        },
+      );
+    }
+    if (path.contains('/me/comment-tasks/')) {
+      taskReads++;
+      return (
+        expires: identityTestRenewed,
+        value: {
+          'taskId': command!['taskId'],
+          'ownerIdentityId': identityTestId,
+          'postId': _post,
+          'rootCommentId': null,
+          'targetCommentId': null,
+          'attemptVersion': 1,
+          'state': published ? 'PUBLISHED' : 'ACCEPTED',
+          'failureCode': null,
+          'materialsAvailable': !published,
+          'content': null,
+          'allowedActions': <String>[],
+          'publishedCommentId': published ? _root : null,
+        },
+      );
+    }
     return (
       expires: identityTestRenewed,
       value: path.endsWith('/comment-context')
@@ -139,7 +209,7 @@ _fixture() async {
     management,
   );
   final http = _Http();
-  final journal = NativeCommentJournal((account) async => _Store(account));
+  final journal = _Journal();
   final runtime = CommentRuntime(
     http: http,
     sessions: sessions,
@@ -183,6 +253,176 @@ Future<void> _open(WidgetTester tester, CommentRuntime runtime) async {
 }
 
 void main() {
+  for (final denied in [false, true]) {
+    testWidgets(
+      'comment viewer ${denied ? "closes on denied access" : "keeps retry after transport failure"}',
+      (tester) async {
+        final f = await _fixture();
+        try {
+          f.http.imageBytes = await tester.runAsync(
+            () => File(
+              '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
+            ).readAsBytes(),
+          );
+          final page = await f.runtime.request(
+            'GET',
+            '/api/v1/posts/$_post/comments',
+          );
+          final data = Map<String, dynamic>.from(
+            (page['comments'] as List).first as Map,
+          );
+          data['image'] = {
+            'contentVersionId': _root,
+            'mimeType': 'image/png',
+            'pixelWidth': 640,
+            'pixelHeight': 480,
+          };
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: SizedBox(
+                    width: 160,
+                    child: CommentImageView(
+                      runtime: f.runtime,
+                      row: CommentRow(data),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          Future<void> settleImage() async {
+            for (var i = 0; i < 20; i++) {
+              await tester.runAsync(
+                () => Future<void>.delayed(const Duration(milliseconds: 5)),
+              );
+              await tester.pump(const Duration(milliseconds: 40));
+            }
+          }
+
+          await settleImage();
+          f.http.imageFailure = CommentHttpFailure(
+            denied ? 403 : null,
+            denied ? 'FORBIDDEN' : 'TRANSPORT',
+          );
+          await tester.tap(find.byKey(const ValueKey(('post-image', _root))));
+          await settleImage();
+          if (denied) {
+            expect(find.byType(HnuImageViewer), findsNothing);
+            expect(find.text('重新读取图片'), findsOneWidget);
+          } else {
+            expect(find.byType(HnuImageViewer), findsOneWidget);
+            expect(find.byKey(const ValueKey('viewer-retry')), findsOneWidget);
+            f.http.imageFailure = null;
+            await tester.tap(find.byKey(const ValueKey('viewer-retry')));
+            await settleImage();
+            final viewer = tester.widget<HnuImageViewer>(
+              find.byType(HnuImageViewer),
+            );
+            expect(viewer.controller.status, ViewerLoadStatus.ready);
+          }
+          expect(tester.takeException(), isNull);
+        } finally {
+          await tester.pumpWidget(const SizedBox());
+          f.runtime.dispose();
+          f.auth.dispose();
+        }
+      },
+    );
+  }
+
+  Future<void> submit(WidgetTester tester, CommentRuntime runtime) async {
+    await tester.pumpAndSettle();
+    await runtime.core.submit(
+      taskId: _root,
+      commandId: commentKey(),
+      binding: CommentBinding(postId: _post, identityId: identityTestId),
+      content: CommentContent(body: '后台自动确认'),
+    );
+  }
+
+  testWidgets(
+    'recent publication is reconciled within 500ms and settled work stops polling',
+    (tester) async {
+      final f = await _fixture();
+      try {
+        await submit(tester, f.runtime);
+        final reads = f.http.taskReads;
+        f.http.published = true;
+        await tester.pump(const Duration(milliseconds: 500));
+        await tester.pumpAndSettle();
+        expect(f.http.taskReads, greaterThan(reads));
+        expect(f.http.commands, 1);
+        expect(
+          f.runtime.core.resolvedTasks.single.state,
+          CommentTaskState.published,
+        );
+        final settledReads = f.http.taskReads;
+        await tester.pump(const Duration(seconds: 30));
+        expect(f.http.taskReads, settledReads);
+      } finally {
+        f.runtime.dispose();
+        f.auth.dispose();
+      }
+    },
+  );
+
+  testWidgets(
+    'background pauses task reads and resume queries without replaying create',
+    (tester) async {
+      final f = await _fixture();
+      try {
+        await submit(tester, f.runtime);
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+        final reads = f.http.taskReads;
+        await tester.pump(const Duration(seconds: 5));
+        expect(f.http.taskReads, reads);
+        f.http.published = true;
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        await tester.pumpAndSettle();
+        expect(
+          f.runtime.core.resolvedTasks.single.state,
+          CommentTaskState.published,
+        );
+        expect(f.http.commands, 1);
+      } finally {
+        f.runtime.dispose();
+        f.auth.dispose();
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+      }
+    },
+  );
+
+  testWidgets(
+    'unresolved work backs off and polling is bounded without duplicate commands',
+    (tester) async {
+      final f = await _fixture();
+      try {
+        await submit(tester, f.runtime);
+        for (var i = 0; i < 45; i++) {
+          await tester.pump(const Duration(seconds: 4));
+          await tester.pump();
+        }
+        final reads = f.http.taskReads;
+        await tester.pump(const Duration(seconds: 30));
+        expect(f.http.taskReads, reads);
+        expect(f.http.commands, 1);
+        expect(
+          f.runtime.core.entries.single.task!.state,
+          CommentTaskState.accepted,
+        );
+      } finally {
+        f.runtime.dispose();
+        f.auth.dispose();
+      }
+    },
+  );
+
   testWidgets(
     'same-token activity renewal preserves real comment pane, draft and pending read',
     (tester) async {

@@ -1,0 +1,57 @@
+{
+  "task": "POST-DETAIL-COMMENTS-01",
+  "date": "2026-10-24",
+  "branch": "codex/feat/post-detail-comments",
+  "implementation": "LOCAL_UNCOMMITTED_SOURCE_FROZEN",
+  "requestedBehavior": "Own submitted comment first immediately after durable local admission; no sending status; automatic success; failure reminder and recovery.",
+  "hostChecks": {
+    "command": "flutter test --no-pub test/comment_views_test.dart test/comment_runtime_test.dart test/comment_core_test.dart test/comment_failure_view_test.dart test/post_photo_picker_test.dart",
+    "status": "PASS",
+    "passed": 117,
+    "testLog": "frozen-comment-tests.log",
+    "analysisCommand": "flutter analyze --no-pub",
+    "analysisIssues": 0,
+    "analysisLog": "frozen-analyze.log"
+  },
+  "sourceFilesSha256": {
+    "apps/mobile/lib/src/comments/comment_views.dart": "0de52745c37b1ea21afad0083aad0f49d04830d205065122084d5db48dc42627",
+    "apps/mobile/lib/src/comments/comment_runtime.dart": "70c073cffd0156357277b2140d3a8a6a137ac19b5808e0de47666f456a29b59b",
+    "apps/mobile/test/comment_views_test.dart": "5ebba80d72f359c6065b6b9710712c2d5eef6648e0715e7c5e5d162c8ad55beb",
+    "apps/mobile/test/comment_runtime_test.dart": "4692575e7ee00cc6820ff5586ca9e529068e352125dc686760bb984415fd6f5c"
+  },
+  "preservedCompanionFix": "_contextReadVersion and late context from before publication regression",
+  "polling": {
+    "first8RoundsMs": 500,
+    "next8RoundsMs": 1000,
+    "remainingRoundsMs": 3000,
+    "maxRounds": 40,
+    "noCreateReplay": true,
+    "foregroundOnly": true
+  },
+  "nativeDeviceAcceptance": "NOT_RUN_THIS_FROZEN_SNAPSHOT_UNIFIED_OWNER_TO_PACKAGE_AND_TEST",
+  "apkBuiltThisFollowup": false,
+  "apkInstalledThisFollowup": false,
+  "phoneOperatedThisFollowup": false,
+  "backendModifiedThisFollowup": false,
+  "redisIntroduced": false,
+  "localEvidenceRoot": "C:\\Users\\24237\\Documents\\ChatGPT\\Hnuhole\\comment-send-latency-20261024",
+  "report": "docs/design/post-detail-comment-optimistic-submit-20261024.md",
+  "boundaries": [
+    "117 host tests are not native network-fault or real SQL acceptance",
+    "Original thread owns vivo, USB mapping and unified package validation",
+    "No commit/push/merge/production release"
+  ],
+  "unifiedNative2427": {
+    "status": "PASS_LIMITED",
+    "device": "realme RMX3366",
+    "versionCode": 2026102427,
+    "testPublication": "PASS_VISIBLE_WHILE_BLOCKED_NO_SENDING_LABEL_EXACTLY_ONE_SERVER_ROW_REENTRY_COUNT_2_TO_3",
+    "cleanup": "PASS_OWN_TEST_ROW_ONLY_COUNT_3_TO_2_ORIGINAL_666_AND_HAHAHA_RETAINED",
+    "soakSeconds": 1218.8,
+    "soakCycles": 28,
+    "hostUnifiedTestCount": 232,
+    "analysisIssues": 0,
+    "evidence": "docs/design/post-detail-comments-weak-soak-20261024.md",
+    "sourceBoundary": "2427 includes frozen optimistic implementation plus separately documented weak-network media retry fix; original frozen SHA remains historical"
+  }
+}

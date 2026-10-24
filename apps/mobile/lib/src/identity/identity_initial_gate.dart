@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../auth/auth_session_controller.dart';
+import '../posts/feed_screen.dart';
 import '../design_system/telegram_theme.dart';
 import 'identity_management_controller.dart';
 import 'identity_management_screen.dart';
@@ -80,6 +81,14 @@ class _IdentityInitialGateState extends State<IdentityInitialGate> {
   @override
   Widget build(BuildContext context) {
     if (_confirmed || widget.controller.entryReady) return widget.child;
+    // Unknown/loading is not proof that the account needs an initial identity.
+    if (!_empty &&
+        !widget.controller.hasPending &&
+        (widget.controller.busy ||
+            (widget.controller.status == IdentityManagementStatus.idle &&
+                widget.controller.errorMessage == null))) {
+      return const FeedStartupScreen();
+    }
     final p = HhTelegramPalette.of(context);
     return PopScope(
       canPop: false,

@@ -69,7 +69,7 @@ class ChannelDirectoryController extends ChangeNotifier {
     _requestVersion++;
     _status = ChannelDirectoryStatus.failure;
     _channels = const <Channel>[];
-    _error = const ChannelRepositoryException(message: '会话暂时无法确认，请重试。');
+    _error = const ChannelRepositoryException(message: '暂时无法加载，请稍后重试。');
     _notifyIfAlive();
   }
 

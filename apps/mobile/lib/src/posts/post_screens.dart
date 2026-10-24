@@ -1823,6 +1823,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   PostDetail? _post;
+  int? _commentCount;
+  String? _deleteError;
   bool _loading = true, _canDelete = false, _deleting = false, _deleted = false;
   bool _returnScheduled = false;
   @override
@@ -1896,12 +1898,16 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       action: '删除帖子',
     );
     if (!mounted || !_authority.current || confirmed != true) return;
-    setState(() => _deleting = true);
+    setState(() {
+      _deleting = true;
+      _deleteError = null;
+    });
     final deleted = await widget.controller.deletePost(widget.postId);
     if (!mounted || !_authority.current) return;
     setState(() {
       _deleting = false;
       if (deleted) _post = null;
+      _deleteError = deleted ? null : widget.controller.errorMessage;
     });
     if (deleted) _returnAfterDeletion();
   }
@@ -1917,6 +1923,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     data: PostTheme.of(context),
     child: Builder(
       builder: (context) => Scaffold(
+        resizeToAvoidBottomInset: CommentScope.maybeOf(context) == null,
         appBar: AppBar(
           centerTitle: false,
           title: Text(
@@ -1929,30 +1936,37 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
             : _deleted
             ? const SizedBox.shrink()
-            : _loading
-            ? const Center(child: CircularProgressIndicator())
-            : _post == null
+            : !_loading && _post == null
             ? _PageState(
                 title: '帖子不存在或暂时无法读取',
-                message: widget.controller.errorMessage,
+                message: '暂时无法读取，请重试。',
                 action: '重新核对',
                 onAction: _load,
               )
             : CommentScope.maybeOf(context) == null
-            ? _detail(context, _post!)
+            ? (_loading ? _loadingBody() : _detail(context, _post!))
             : CommentPostPane(
                 key: ValueKey(
                   'comments:${widget.postId}:${_authority.version}',
                 ),
                 runtime: CommentScope.maybeOf(context)!,
                 postId: widget.postId,
-                postBody: _post!.body,
+                postBody: _post?.body ?? '',
+                bodyReady: !_loading && _post != null,
                 initialCommentId: widget.initialCommentId,
                 initialInput: widget.initialCommentInput,
                 initialOriginal: widget.initialCommentOriginal,
                 continuous: true,
+                overlayComposer: true,
                 onBodyScroll: _scheduleView,
-                body: _detail(context, _post!, embedded: true),
+                body: _loading
+                    ? _loadingBody()
+                    : _detail(context, _post!, embedded: true),
+                onTotalChanged: (count) {
+                  if (mounted && _authority.current && _commentCount != count) {
+                    setState(() => _commentCount = count);
+                  }
+                },
                 onCountChanged: () {
                   if (_authority.current) {
                     unawaited(
@@ -1965,6 +1979,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
       ),
     ),
+  );
+  Widget _loadingBody() => const SizedBox(
+    height: 240,
+    child: Center(child: CircularProgressIndicator(semanticsLabel: '正在加载帖子')),
   );
   Widget _postMenu() =>
       !_authority.current ||
@@ -2107,8 +2125,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
             ),
           ),
-          if (widget.controller.errorMessage != null)
-            Text(widget.controller.errorMessage!),
+          if (_deleteError != null) Text(_deleteError!),
           if (widget.controller.supportsInteractions) _interactionBar(),
         ],
       ),
@@ -2152,7 +2169,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 builder: (context) => DetailAction(
                   action: FeedAction.comment,
                   label: '评论',
-                  count: '${state.value?.commentCount ?? '—'}',
+                  count: '${_commentCount ?? state.value?.commentCount ?? '—'}',
                   onPressed: CommentScope.maybeOf(context) == null
                       ? null
                       : () => CommentPostPane.composeFrom(context),
