@@ -1,5 +1,7 @@
 # 帖子详情评论区视频复现
 
+> **2026-10-24 提交送审更新：** 本需求已提交并推送，PR [#71](https://github.com/zewbby/HnuHole/pull/71) 待 CI 后合并；产品源码冻结点 `ed1b5e3`，已集成 main `ce140d5`。最终本地 Flutter 全套 **924 PASS / 3 SKIP**、分析 0 issues，Go 受影响包 test/vet 与全量 build PASS。独立只读审查发现的重复失败弹窗与删除主评论残留本地回复两处 P2 已修复，复核未发现阻断项；agent 审查不冒充 GitHub 成员批准。CI/构建/隔离 SQL 结果以 PR 最终检查为准。真我 2427 的 20.3 分钟/28 轮与弱网证据属于集成前 APK，不能作为最终 HEAD 的真机验收；完整模块、iOS、生产状态不提升。下文“未提交/未合并”保留为各历史版本快照。
+
 任务：POST-DETAIL-COMMENTS-01；模块：B06（帖子详情）、B07（评论与回复）。更新：2026-10-24。
 分支：`codex/feat/post-detail-comments`；基线：`cda337c`。已完成本地实现与用户追加授权的 vivo 开发包交付；未提交、未推送、未合并或生产发布。GitHub fetch 本轮连接失败，基线是本地 origin/main，未声称已核对远端最新状态。
 
@@ -98,3 +100,13 @@ vivo最终同签保数据安装2026102424 Profile，APK SHA-256 `caac520dfd921e5
 ## 2026-10-24 真我2427弱网与连续操作追加
 
 **2026-10-24 最新真我2427（本地未合并）：** 20.3分钟/28轮连续操作、限速/断连后图片恢复、实际发表去重清理及35秒读取超时恢复限定PASS；补修旧上下文覆盖新计数/权限、恢复后错误残留及图片传输失败关闭查看器，包含首条立即展示。统一回归232 PASS，分析0；[新报告](../design/post-detail-comments-weak-soak-20261024.md)按设备/版本保留证据，完整模块与生产结论不提升。
+
+## 2026-10-24 最终提交与集成回执
+
+- 用户明确授权提交、合并和更新；功能提交 `4b75df7`，集成 main 及审查修复 `ed1b5e3`。PR #71 合并前保持待合并，实际结果另补。
+- `flutter test --no-pub --reporter expanded`：最终冻结源码 924 PASS / 3 SKIP；跳过项为需要独占真实 TLS/PostgreSQL P2、P3 和 DM_HOST_FIXTURE 的既有外部夹具。`flutter analyze --no-pub`：0 issues。
+- WSL 隔离源码镜像：`go test -mod=readonly ./internal/comments ./internal/authprivacy ./internal/authprivacyhttp ./internal/authprivacyruntime ./internal/posts`、`go build -mod=readonly ./...`、对应五包 `go vet` PASS；无 DSN 的条件用例仍保留 SKIP 边界，真实隔离 SQL/TLS 由产品 CI 另验。
+- 复核修正：AuthScreen 先释放弹窗状态再重试，连续失败可继续弹窗；删除主评论同时清除对应本地置顶回复。两项专用回归 PASS，最终整套也通过。图片集成保留布局阶段延后更新，以及前台/当前路由/视口可见条件。
+- 独立审查：Astra 初审提出上述两处 P2，额度中断后由获授权 GPT-6.1 Sol High 只读复核最终 `ed1b5e3`，未发现指定范围阻断项，未执行作者自批或伪造 GitHub 成员批准。
+- 本机原始日志：`E:/Hnuhole-env/comment-reference-20261024/pr-delivery/frozen-flutter-tests.log`、`frozen-analyze.log`、`go-integration.json`、`review-regressions-after.log`。原始日志不入 Git。
+- 真我仍为已保数据安装的 2427；其源码哈希回执继续归属该包，主线整合和两处审查修正不借用旧包的设备结论。此提交不等于生产发布，也不迁移用户开发库。
