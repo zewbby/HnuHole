@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:flutter/painting.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
@@ -119,6 +119,117 @@ void main() {
     posts.dispose();
     auth.dispose();
   });
+
+  testWidgets(
+    'visible detail reauthorizes once while covered repost rows wait for return',
+    (tester) async {
+      Future<void> frames() async {
+        for (var i = 0; i < 12; i++) {
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 5)),
+          );
+          await tester.pump(const Duration(milliseconds: 40));
+        }
+      }
+
+      api.bytes = (await tester.runAsync(
+        () => File(
+          '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
+        ).readAsBytes(),
+      ))!;
+      api.manifest = mediaManifest(
+        bytes: api.bytes.length,
+        width: 640,
+        height: 480,
+      );
+      final groups = <PostImages>[];
+      Future<PostImages> load(String id) async {
+        final group = await repository.load(id);
+        groups.add(group);
+        return group;
+      }
+
+      Widget section(String key, {bool preview = true}) => PostImagesSection(
+        key: ValueKey(key),
+        postId: mediaPostId,
+        expectedCount: 1,
+        loadImages: load,
+        authority: posts,
+        isCurrent: () => posts.available,
+        feedPreview: preview,
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => Column(
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).push<void>(
+                      MaterialPageRoute<void>(
+                        builder: (_) => Scaffold(
+                          appBar: AppBar(title: const Text('原帖详情')),
+                          body: section('detail', preview: false),
+                        ),
+                      ),
+                    ),
+                    child: const Text('打开原帖详情'),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      width: 280,
+                      child: section('repost-identity-a'),
+                    ),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      width: 280,
+                      child: section('repost-identity-b'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await frames();
+      await tester.pumpAndSettle();
+      expect(api.manifestReads, 1);
+      expect(groups.length, 2);
+      await tester.pump(const Duration(seconds: 58));
+      await tester.tap(find.text('打开原帖详情'));
+      await frames();
+      await tester.pumpAndSettle();
+      expect(api.manifestReads, 1);
+      expect(groups.length, 3);
+      final old = groups.toList();
+      await tester.pump(const Duration(seconds: 3));
+      await frames();
+      await tester.pumpAndSettle();
+      expect(api.manifestReads, 2);
+      // Only the visible detail renews. Covered repost rows keep terminal old
+      // leases until their route returns, then share the same fresh manifest.
+      expect(groups.length, 4);
+      expect(old.every((group) => !group.accessGranted.value), isTrue);
+      expect(
+        groups.skip(3).every((group) => group.accessGranted.value),
+        isTrue,
+      );
+      expect(find.text('图片已不可访问'), findsNothing);
+      expect(find.byKey(const ValueKey('post-image-grid')), findsOneWidget);
+      await tester.pageBack();
+      await frames();
+      await tester.pumpAndSettle();
+      expect(groups.length, 6);
+      expect(find.text('图片已不可访问'), findsNothing);
+      expect(find.byType(Image), findsNWidgets(2));
+      expect(api.manifestReads, 2);
+      expect(api.byteReads, 2);
+      await tester.pumpWidget(const SizedBox());
+      repository.dispose();
+    },
+  );
 
   test('explicit thumbnail retry refetches cached bytes and preserves the lease deadline', () async {
     final group = await repository.load(mediaPostId);
@@ -485,6 +596,8 @@ void main() {
         );
         expect(first.accessGranted.value, isFalse);
         expect(second.accessGranted.value, isFalse);
+        expect(first.isExpired!(), isFalse);
+        expect(second.isExpired!(), isFalse);
         if (status == 401 || status == 503) expect(posts.available, isFalse);
       },
     );

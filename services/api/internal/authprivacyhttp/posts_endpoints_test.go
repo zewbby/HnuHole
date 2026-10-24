@@ -109,7 +109,7 @@ func (f *postHTTPBackend) ReadPosts(_ context.Context, bearer [32]byte, query au
 		value = postHTTPTaskDetail()
 	case authprivacy.PostTaskList:
 		value = posts.OwnTaskList{Items: []posts.OwnTaskDetail{postHTTPTaskDetail()}}
-	case authprivacy.PostChannelFeed:
+	case authprivacy.PostChannelFeed, authprivacy.PostLikedList, authprivacy.PostFavoriteList:
 		value = posts.FeedPage{Items: []posts.PublicPostCard{postHTTPCard()}}
 	case authprivacy.PostDetail:
 		card := postHTTPCard()
@@ -210,6 +210,8 @@ func TestPostHTTPAllFourteenOperations(t *testing.T) {
 		{"hide", "POST", "/api/v1/me/post-tasks/" + postHTTPTask + "/hide", `{"expectedAttemptVersion":1}`, "execute", posts.HideTask, "", 200, true},
 		{"channel", "GET", "/api/v1/channels/" + postHTTPChannel + "/posts?cursor=AQ&limit=1", "", "read", "", authprivacy.PostChannelFeed, 200, false},
 		{"detail", "GET", "/api/v1/posts/" + postHTTPPost, "", "read", "", authprivacy.PostDetail, 200, false},
+		{"liked", "GET", "/api/v1/me/liked-posts?limit=1", "", "read", "", authprivacy.PostLikedList, 200, false},
+		{"favorites", "GET", "/api/v1/me/favorite-posts?limit=1", "", "read", "", authprivacy.PostFavoriteList, 200, false},
 		{"own", "GET", "/api/v1/me/posts?limit=1", "", "read", "", authprivacy.PostOwnList, 200, false},
 		{"capabilities", "GET", "/api/v1/me/posts/" + postHTTPPost + "/capabilities", "", "read", "", authprivacy.PostCapabilities, 200, false},
 		{"delete", "POST", "/api/v1/posts/" + postHTTPPost + "/delete", "", "execute", posts.DeletePost, "", 200, true},
@@ -530,5 +532,20 @@ func TestPostHTTPNetworkOverloadAndCORS(t *testing.T) {
 	w = postHTTPRequest(handler, "OPTIONS", "/api/v1/post-commands/"+httpTestEncoding(16, 8), "", h)
 	if w.Code != 204 || f.calls != 1 {
 		t.Fatalf("preflight entered backend: %d %s", w.Code, w.Body.String())
+	}
+}
+
+func TestPersonalPostIdentityQueryBoundary(t *testing.T) {
+	f, handler := newPostHTTP(t, httpTestLimits())
+	w := postHTTPRequest(handler, "GET", "/api/v1/me/posts?identityId="+postHTTPIdentity, "", postHTTPHeaders(false))
+	if w.Code != 200 || f.query.IdentityID != postHTTPIdentity {
+		t.Fatal("identity filter not forwarded", w.Code)
+	}
+	for _, path := range []string{"/api/v1/me/posts?identityId=bad", "/api/v1/me/posts?identityId=" + postHTTPIdentity + "&identityId=" + postHTTPIdentity, "/api/v1/me/liked-posts?identityId=" + postHTTPIdentity, "/api/v1/me/favorite-posts?identityId=" + postHTTPIdentity} {
+		before := f.calls
+		w = postHTTPRequest(handler, "GET", path, "", postHTTPHeaders(false))
+		if w.Code != 400 || f.calls != before {
+			t.Fatal("invalid or shared-collection identity selector accepted", path, w.Code)
+		}
 	}
 }

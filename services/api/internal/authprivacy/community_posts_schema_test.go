@@ -307,6 +307,7 @@ func TestPostSchemaPartyInventoryAndPrivateColumnsPostgres(t *testing.T) {
 	ctx := context.Background()
 	expected := []string{"account_publication_control", "attempt_contents", "command_receipts", "identity_public_labels", "images", "payload_cleanup", "post_identity_bindings", "posts", "protocol_keys", "publication_attempts", "publication_stop_events", "publication_tasks", "schema_meta"}
 	expected = append(expected, "feed_preferences", "post_daily_views", "post_view_totals", "post_likes", "post_favorites", "post_interaction_versions")
+	expected = append(expected, "post_reposts", "post_repost_versions")
 	rows, err := l.cp.Query(ctx, `SELECT c.relname,c.relkind::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='c_posts' AND c.relkind IN ('r','p','v','m','f') ORDER BY c.relname`)
 	if err != nil {
 		t.Fatal(err)

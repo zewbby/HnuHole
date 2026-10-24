@@ -62,7 +62,7 @@ class PostMediaRepository {
 
   void _authorityChanged() {
     for (final lease in _entries.values.toList()) {
-      if (!lease.current) lease.revoke();
+      lease.revokeIfStale();
     }
   }
 
@@ -80,7 +80,7 @@ class PostMediaRepository {
       _touch(cached);
       return cached.acquire();
     }
-    cached?.revoke();
+    cached?.revokeIfStale();
     final future = _manifests.putIfAbsent(key, () async {
       final elapsed = Stopwatch()..start();
       final response = await posts.loadImageManifest(postId);
@@ -175,22 +175,30 @@ class _MediaLease {
   final _pending = <String, Future<MemoryImage>>{};
   final _decodeKeys = <(ImageProvider, int?, int?, ResizeImagePolicy)>{};
   Timer? _timer;
-  bool _revoked = false;
+  bool _revoked = false, _expired = false;
   int inFlight = 0, weight = 0;
   String get postId => key.$3;
   int get references => _consumers.length;
   bool get current => !_revoked && authorized() && elapsed.elapsed < lifetime;
-  void start() => _timer = Timer(lifetime - elapsed.elapsed, revoke);
+  void start() =>
+      _timer = Timer(lifetime - elapsed.elapsed, () => revoke(expired: true));
+  void revokeIfStale() {
+    if (!current) {
+      revoke(expired: authorized() && elapsed.elapsed >= lifetime);
+    }
+  }
+
   void check() {
     if (!current) {
-      revoke();
+      revokeIfStale();
       throw const PostFailure(kind: PostFailureKind.unauthorized);
     }
   }
 
-  void revoke() {
+  void revoke({bool expired = false}) {
     if (_revoked) return;
     _revoked = true;
+    _expired = expired;
     _timer?.cancel();
     _pending.clear();
     for (final provider in _providers) {
@@ -302,7 +310,7 @@ class _MediaLease {
     return PostImages(
       postId: postId,
       accessGranted: access,
-      isExpired: () => elapsed.elapsed >= lifetime,
+      isExpired: () => _expired,
       onRelease: () {
         if (!_consumers.remove(access)) return;
         access.value = false;

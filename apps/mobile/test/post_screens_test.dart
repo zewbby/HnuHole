@@ -1,4 +1,7 @@
 import 'dart:async';
+
+import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
+
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -53,6 +56,8 @@ class _WidgetPosts extends ChangeNotifier implements PostController {
   int personalReads = 0, recoveries = 0, abandonments = 0;
   bool saveSucceeds = true;
   List<ManagedIdentity> identities = [];
+  @override
+  List<ManagedIdentity> get personalIdentities => identities;
   List<PersonalPostItem> personal = [];
   PostDraftEditor? restored;
   @override
@@ -88,7 +93,15 @@ class _WidgetPosts extends ChangeNotifier implements PostController {
   @override
   bool get personalProfileLoading => false;
   @override
-  ManagedIdentity? get personalIdentity => identities.firstOrNull;
+  ManagedIdentity? get personalIdentity =>
+      identities.firstOrNull ??
+      ManagedIdentity(
+        id: _accountId,
+        nickname: '北岸',
+        avatar: 'default-v1',
+        isOriginal: true,
+        createdAt: _time,
+      );
   @override
   Future<void> loadPersonal({bool more = false}) async {
     personalReads++;
@@ -260,7 +273,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.text('带图详情'));
         await tester.pumpAndSettle();
-        expect(requested, [_postId]);
+        expect(requested, fromPersonal ? [_postId, _postId] : [_postId]);
         final tile = find.byKey(
           const ValueKey(('post-image', 'post-image-v1')),
         );
@@ -348,6 +361,52 @@ void main() {
     onAuthenticationRequired: () {},
     onPublishedToChannel: onPublished,
   );
+
+  for (final brightness in Brightness.values) {
+    testWidgets(
+      'personal draft and delete confirmation follow $brightness palette',
+      (tester) async {
+        final c = _WidgetPosts()
+          ..personal = [localItem('draft', id: 'theme-draft')];
+        final theme = HhTelegramTheme.applyAppearance(
+          ThemeData(brightness: brightness),
+        );
+        await tester.pumpWidget(
+          MaterialApp(theme: theme, home: personalPage(c)),
+        );
+        await tester.pumpAndSettle();
+        final palette = HhTelegramPalette.of(
+          tester.element(find.text('原操作标题')),
+        );
+        expect(
+          palette.surface,
+          brightness == Brightness.dark
+              ? HhTelegramPalette.dark.surface
+              : HhTelegramPalette.light.surface,
+        );
+        expect(
+          tester.widget<Text>(find.text('草稿')).style!.color,
+          palette.onAccent,
+        );
+        await tester.tap(find.byTooltip('删除草稿'));
+        await tester.pumpAndSettle();
+        expect(
+          tester.widget<Dialog>(find.byType(Dialog)).backgroundColor,
+          palette.surface,
+        );
+        expect(
+          tester.widget<Text>(find.text('确认删除这篇草稿？')).style!.color,
+          palette.ink,
+        );
+        await tester.tap(find.text('取消'));
+        await tester.pumpAndSettle();
+        expect(find.text('原操作标题'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        c.dispose();
+      },
+    );
+  }
 
   testWidgets('正文可先填写，确认返回保留原文字，编辑只自动保存不发送', (tester) async {
     final c = _WidgetPosts(), e = editor();
@@ -917,7 +976,7 @@ void main() {
     expect(publishedChannel, _channelId);
     expect(c.publications, 1);
     expect(c.personalReads, 1);
-    expect(find.text('自己的帖子'), findsOneWidget);
+    expect(find.text('帖子'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     c.dispose();
   });
@@ -1016,7 +1075,7 @@ void main() {
     c.dispose();
   });
 
-  testWidgets('我的文字草稿混排为自然高度双列，UNKNOWN没有失败草稿标志', (tester) async {
+  testWidgets('我的文字草稿为自然高度单列，UNKNOWN没有失败草稿标志', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -1046,7 +1105,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       tester.getTopLeft(find.byKey(const ValueKey('draft-one'))).dx,
-      lessThan(tester.getTopLeft(find.byKey(const ValueKey('unknown-one'))).dx),
+      equals(tester.getTopLeft(find.byKey(const ValueKey('unknown-one'))).dx),
     );
     expect(
       tester.getSize(find.byKey(const ValueKey('long'))).height,

@@ -26,12 +26,15 @@ const (
 	PostFavoriteSet      PostReadKind = "favoriteSet"
 	PostDetail           PostReadKind = "post"
 	PostOwnList          PostReadKind = "own"
+	PostLikedList        PostReadKind = "liked"
+	PostFavoriteList     PostReadKind = "favorites"
 	PostCapabilities     PostReadKind = "capabilities"
 )
 
 type PostQuery struct {
 	Kind       PostReadKind
 	ID, Cursor string
+	IdentityID string
 	Limit      int
 	ImageSizes bool
 }
@@ -73,6 +76,14 @@ func readOwnPostTask(ctx context.Context, tx pgx.Tx, account uuid.UUID, id strin
 }
 
 func (c *Community) ReadPosts(ctx context.Context, bearer [32]byte, query PostQuery) (PostResponse, error) {
+	if query.IdentityID != "" {
+		if query.Kind != PostOwnList {
+			return PostResponse{}, posts.ErrInvalidIntent
+		}
+		if _, err := posts.ParseResourceID(query.IdentityID); err != nil {
+			return PostResponse{}, err
+		}
+	}
 	switch query.Kind {
 	case PostTaskDetail, PostChannelFeed, PostDetail, PostCapabilities, PostViewRecord:
 		if _, err := posts.ParseResourceID(query.ID); err != nil {
@@ -84,7 +95,7 @@ func (c *Community) ReadPosts(ctx context.Context, bearer [32]byte, query PostQu
 				return PostResponse{}, err
 			}
 		}
-	case PostComposerContext, PostTaskList, PostOwnList, PostFeedPreferences:
+	case PostComposerContext, PostTaskList, PostOwnList, PostLikedList, PostFavoriteList, PostFeedPreferences:
 		if query.ID != "" {
 			return PostResponse{}, posts.ErrInvalidID
 		}
@@ -98,6 +109,15 @@ func (c *Community) ReadPosts(ctx context.Context, bearer [32]byte, query PostQu
 		return PostResponse{}, posts.ErrInvalidIntent
 	}
 	return c.withPostSession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, final AuthorizationDecision, mute restriction) (any, error) {
+		if query.IdentityID != "" {
+			var owned bool
+			if err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM public.community_identities WHERE identity_id=$1 AND account_id=$2 AND deleted_at IS NULL)`, query.IdentityID, account).Scan(&owned); err != nil {
+				return nil, err
+			}
+			if !owned {
+				return nil, postError("POST_IDENTITY_UNAVAILABLE", 409)
+			}
+		}
 		switch query.Kind {
 		case PostFeedPreferences:
 			preferences, _, err := readFeedPreferences(ctx, tx, account)
@@ -136,7 +156,7 @@ func (c *Community) ReadPosts(ctx context.Context, bearer [32]byte, query PostQu
 				return nil, postError("POST_NOT_FOUND", 404)
 			}
 			return posts.PublicPostResponse{Post: r}, err
-		case PostChannelFeed, PostOwnList, PostFeed:
+		case PostChannelFeed, PostOwnList, PostFeed, PostLikedList, PostFavoriteList:
 			return c.listPublicPosts(ctx, tx, account, query, final.TrustedAt)
 		}
 		return nil, posts.ErrInvalidIntent
@@ -223,12 +243,20 @@ func (c *Community) postCursor(ctx context.Context, tx pgx.Tx, account uuid.UUID
 		scope = posts.CursorOwn
 		channel = ""
 	}
+	if query.Kind == PostLikedList {
+		scope = posts.CursorLiked
+		channel = ""
+	}
+	if query.Kind == PostFavoriteList {
+		scope = posts.CursorFavorites
+		channel = ""
+	}
 	if query.Kind == PostTaskList {
 		scope = posts.CursorTask
 		channel = ""
 		sequence = "acceptance_ordinal"
 	}
-	p := posts.CursorPosition{Scope: scope, AccountID: account.String(), ChannelID: channel, Limit: query.Limit, ExpiresAt: at.Add(30 * time.Minute)}
+	p := posts.CursorPosition{IdentityID: query.IdentityID, Scope: scope, AccountID: account.String(), ChannelID: channel, Limit: query.Limit, ExpiresAt: at.Add(30 * time.Minute)}
 	if query.Kind == PostFeed {
 		p.Scope = posts.CursorFeed
 		_, revision, err := readFeedPreferences(ctx, tx, account)
@@ -283,8 +311,12 @@ func (c *Community) listPublicPosts(ctx context.Context, tx pgx.Tx, account uuid
 	}
 	rows, err := tx.Query(ctx, `SELECT p.post_id FROM c_posts.posts p JOIN c_posts.publication_tasks t ON t.post_id=p.post_id JOIN public.community_identities i ON i.identity_id=t.identity_id
  WHERE p.visibility='PUBLISHED' AND NOT p.moderation_hidden AND p.publication_ordinal<=$1 AND ($2::uuid IS NULL OR p.channel_id=$2) AND ($3::uuid IS NULL OR (p.owner_account_id=$3 AND i.deleted_at IS NULL))
+ AND ($10::text = '' OR t.identity_id::text=$10)
  AND NOT (p.channel_id=ANY($7::uuid[]))
- AND ($4::timestamptz IS NULL OR (p.published_at,p.publication_ordinal)<($4,$5::bigint)) ORDER BY p.published_at DESC,p.publication_ordinal DESC LIMIT $6`, position.Ceiling, channel, owner, lastAt, lastOrdinal, query.Limit+1, blocked)
+ AND ($8::text <> 'liked' OR EXISTS(SELECT 1 FROM c_posts.post_likes l WHERE l.post_id=p.post_id AND l.account_id=$9))
+ AND ($8::text <> 'favorites' OR EXISTS(SELECT 1 FROM c_posts.post_favorites f WHERE f.post_id=p.post_id AND f.account_id=$9))
+ AND ($8::text NOT IN ('liked','favorites') OR EXISTS(SELECT 1 FROM c_posts.attempt_contents x WHERE x.task_id=t.task_id AND x.version=p.published_attempt_version AND x.erased_at IS NULL))
+ AND ($4::timestamptz IS NULL OR (p.published_at,p.publication_ordinal)<($4,$5::bigint)) ORDER BY p.published_at DESC,p.publication_ordinal DESC LIMIT $6`, position.Ceiling, channel, owner, lastAt, lastOrdinal, query.Limit+1, blocked, string(query.Kind), account, query.IdentityID)
 	if err != nil {
 		return nil, err
 	}

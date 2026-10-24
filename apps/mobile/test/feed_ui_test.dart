@@ -22,10 +22,11 @@ FeedPost post({
   String channel = channelId,
   int images = 0,
   int views = 1260,
+  String title = '今天的校园',
 }) => FeedPost(
   postId: id,
   channelId: channel,
-  title: '今天的校园',
+  title: title,
   body: '傍晚的风刚刚好，分享一段平常的校园时光。',
   author: author,
   publishedAt: at,

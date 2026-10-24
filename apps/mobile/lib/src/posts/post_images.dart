@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show SchedulerPhase;
 import 'package:hnuhole_image_viewer/image_viewer.dart';
 
 /// The host authorizes both providers and the complete original resolver.
@@ -56,11 +57,12 @@ class PostImages {
   final List<PostImage> images;
   final ValueListenable<bool> accessGranted;
 
-  /// Expiry permits a fresh protected read. Other revocations remain terminal.
-  final bool Function()? isExpired;
-
   /// Releases this host-owned lease when the detail no longer uses it.
   final VoidCallback? onRelease;
+
+  /// Only a natural authorization deadline permits an automatic fresh read.
+  /// A denial, release or account change must keep the old group terminal.
+  final bool Function()? isExpired;
 }
 
 /// Host media integration seam; production uses the fixed protected C contract.
@@ -98,6 +100,7 @@ class _PostImagesSectionState extends State<PostImagesSection>
   PostImages? _group;
   ViewerController? _viewer;
   int _revision = 0;
+  int? _scheduledGroupRevision;
   bool _loading = true, _failed = false, _revoked = false;
   List<Size?>? _feedSizes;
   bool _refreshScheduled = false;
@@ -124,11 +127,33 @@ class _PostImagesSectionState extends State<PostImagesSection>
   }
 
   void _groupChanged() {
-    if (_group?.accessGranted.value == false) {
+    final group = _group;
+    if (group != null && !group.accessGranted.value) {
       _revoked = true;
       _viewer?.invalidateAccess();
-      if (mounted) setState(() {});
-      _scheduleExpiryRefresh();
+      final binding = WidgetsBinding.instance;
+      final duringBuild =
+          binding.schedulerPhase == SchedulerPhase.persistentCallbacks;
+      if (!duringBuild) {
+        if (mounted) setState(() {});
+        _scheduleExpiryRefresh();
+        return;
+      }
+      final revision = _revision;
+      if (_scheduledGroupRevision == revision) return;
+      _scheduledGroupRevision = revision;
+      // Layout-time revocation must defer setState. The shared refresh guard
+      // still checks foreground, route visibility, expiry and active viewer.
+      binding.addPostFrameCallback((_) {
+        if (_scheduledGroupRevision != revision) return;
+        _scheduledGroupRevision = null;
+        if (!mounted || revision != _revision || !identical(_group, group)) {
+          return;
+        }
+        setState(() {});
+        _scheduleExpiryRefresh();
+      });
+      binding.ensureVisualUpdate();
     }
   }
 
@@ -153,7 +178,9 @@ class _PostImagesSectionState extends State<PostImagesSection>
           _failed ||
           _viewer != null ||
           _group?.isExpired?.call() != true ||
-          WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed ||
+          (WidgetsBinding.instance.lifecycleState != null &&
+              WidgetsBinding.instance.lifecycleState !=
+                  AppLifecycleState.resumed) ||
           ModalRoute.of(context)?.isCurrent == false) {
         return;
       }
@@ -581,7 +608,13 @@ class _PostThumbnailState extends State<_PostThumbnail> {
         policy: ResizeImagePolicy.fit,
       );
       _decoded = decoded;
-      widget.image.registerDecodeProvider?.call(decoded);
+      try {
+        widget.image.registerDecodeProvider?.call(decoded);
+      } catch (_) {
+        // A synchronous authorization check can revoke this group during layout.
+        // Never paint the stale provider or leak that rejection into the frame.
+        return _failure();
+      }
       final image = Image(
         key: ValueKey(_attempt),
         image: decoded,

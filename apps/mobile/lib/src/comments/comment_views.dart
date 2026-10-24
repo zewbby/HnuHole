@@ -326,6 +326,9 @@ class _CommentPostPaneState extends State<CommentPostPane> {
     _localComments.removeWhere(
       (id, local) =>
           !active.contains(id) && local.publishedId == null ||
+          widget.runtime.deleted.contains(
+            local.entry.intent.binding.rootCommentId,
+          ) ||
           widget.runtime.deleted.contains(local.publishedId),
     );
     return added;

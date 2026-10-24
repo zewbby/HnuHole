@@ -609,6 +609,40 @@ class PostStore {
     await _db.customStatement('VACUUM');
   });
 
+  /// Account-private profile state shares the existing encrypted metadata.
+  Future<Map<String, dynamic>> readProfile() => _run(() async {
+    await _checkActive();
+    final row =
+        (await _db.customSelect('SELECT payload FROM post_meta').get()).single;
+    final meta = await _decrypt(
+      'meta',
+      1,
+      'meta',
+      row.read<Uint8List>('payload'),
+    );
+    return Map<String, dynamic>.from(meta['profile'] as Map? ?? {});
+  });
+
+  Future<void> writeProfile(Map<String, dynamic> profile) => _run(() async {
+    await _db.transaction(() async {
+      await _checkActive();
+      final row =
+          (await _db.customSelect('SELECT payload FROM post_meta').get())
+              .single;
+      final meta = await _decrypt(
+        'meta',
+        1,
+        'meta',
+        row.read<Uint8List>('payload'),
+      );
+      meta['profile'] = profile;
+      await _db.customStatement(
+        'UPDATE post_meta SET payload=? WHERE scope=?',
+        [await _encrypt('meta', 1, 'meta', meta), scope],
+      );
+    });
+  });
+
   Future<void> close() => _closing ??= _close();
   Future<void> _close() async {
     await _tail;

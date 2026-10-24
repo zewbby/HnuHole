@@ -102,6 +102,7 @@ abstract interface class PostApi {
   Future<PostResponse<PostsPage<OwnPostCard>>> ownPosts({
     required String sessionToken,
     String? cursor,
+    String? identityId,
     int limit = 20,
   });
   Future<PostResponse<PostCapabilities>> capabilities({

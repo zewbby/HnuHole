@@ -2106,6 +2106,48 @@ void detailReferenceTests() {
     },
   );
 
+  testWidgets('deleting a root removes its newly published pinned reply', (
+    tester,
+  ) async {
+    final r = await runtime(tester);
+    r.rootRows = [row(root, '待删除的主评论')];
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CommentPostPane(
+            runtime: r,
+            postId: post,
+            postBody: '正文',
+            continuous: true,
+            body: const Text('正文'),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    r.transportFake.publishedId = reply;
+    await r.core.submit(
+      taskId: reply,
+      commandId: commentKey(),
+      binding: CommentBinding(
+        postId: post,
+        identityId: identity,
+        rootCommentId: root,
+        targetCommentId: root,
+      ),
+      content: CommentContent(body: '本机刚发出的回复'),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('乙回复甲的具体内容'), findsOneWidget);
+    r.deleted.add(root);
+    r.notifyListeners();
+    await tester.pumpAndSettle();
+    expect(find.text('乙回复甲的具体内容'), findsNothing);
+    expect(find.text('待删除的主评论'), findsNothing);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets(
     'reference composer and sort fit a small screen with large text and keyboard',
     (tester) async {

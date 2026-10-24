@@ -7,6 +7,9 @@ import '../comments/comment_models.dart';
 import 'dart:async';
 
 import '../messaging/dm_runtime.dart';
+import '../messaging/direct_message_composer.dart';
+import '../messaging/direct_message_models.dart';
+import '../design_system/telegram_theme.dart';
 
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -19,6 +22,7 @@ import '../identity/identity_api.dart';
 import '../reports/report_screens.dart';
 import '../storage/post_store.dart';
 import 'post_controller.dart';
+import 'post_reposts_widgets.dart';
 import 'post_models.dart';
 import 'post_images.dart';
 import 'post_protocol.dart';
@@ -28,6 +32,7 @@ import 'post_upload_models.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
 
 part 'post_composer_photos.dart';
+part 'personal_profile.dart';
 
 class ChannelPostsScreen extends StatefulWidget {
   const ChannelPostsScreen({
@@ -1221,8 +1226,11 @@ class PersonalPostsScreen extends StatefulWidget {
   State<PersonalPostsScreen> createState() => _PersonalPostsScreenState();
 }
 
-class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
+class _PersonalPostsScreenState extends State<PersonalPostsScreen>
+    with _PersonalProfile {
+  @override
   late final _PostAuthority _authority;
+  @override
   final _scroll = ScrollController();
   @override
   void initState() {
@@ -1233,16 +1241,21 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
   }
 
   void _changed() {
-    if (mounted) setState(() {});
+    if (mounted) {
+      profileIdentityChanged();
+      setState(() {});
+    }
   }
 
   @override
   void dispose() {
     widget.controller.removeListener(_changed);
+    disposeProfile();
     _scroll.dispose();
     super.dispose();
   }
 
+  @override
   Future<void> _open(PersonalPostItem item) async {
     if (!_authority.current) return;
     if (item.post != null) {
@@ -1312,12 +1325,14 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
     }
   }
 
+  @override
   Future<void> _deleteDraft(PersonalPostItem item) async {
     if (!item.isDraft || !_authority.current) return;
     final confirmed = await _confirmScoped(
       context,
       widget.controller,
       title: '确认删除这篇草稿？',
+      theme: Theme.of(context),
       message: '',
       action: '删除草稿',
     );
@@ -1327,6 +1342,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
     await widget.controller.discardDraft(editor);
   }
 
+  @override
   Future<void> _deleteFailedTask(PersonalPostItem item) async {
     final task = item.task;
     if (!_authority.current ||
@@ -1339,6 +1355,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
       context,
       widget.controller,
       title: '删除这篇失败草稿？',
+      theme: Theme.of(context),
       message: '',
       action: '删除失败入口',
     );
@@ -1346,6 +1363,7 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
     await widget.controller.hideTask(task!.taskId);
   }
 
+  @override
   void _chooseChannel() {
     if (widget.onChooseChannel != null) {
       widget.onChooseChannel!();
@@ -1355,314 +1373,16 @@ class _PersonalPostsScreenState extends State<PersonalPostsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Theme(
-    data: PostTheme.of(context),
-    child: Builder(
-      builder: (context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('我的'),
-          actions: [
-            if (CommentScope.maybeOf(context) case final comments?)
-              IconButton(
-                tooltip: '我发出的评论',
-                icon: const Icon(Icons.forum_outlined),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (_) => CommentHistoryScreen(
-                      runtime: comments,
-                      onOpen: (row) => Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (_) => PostDetailScreen(
-                            controller: widget.controller,
-                            postId: row.post,
-                            initialCommentId: row.id,
-                            loadImages: widget.loadImages,
-                            onAuthenticationRequired:
-                                widget.onAuthenticationRequired,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            if (widget.onOpenSettings != null)
-              IconButton(
-                tooltip: '设置',
-                onPressed: widget.onOpenSettings,
-                icon: const Icon(Icons.settings_outlined),
-              ),
-          ],
-        ),
-        body: !_authority.current
-            ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
-            : _content(),
-        bottomNavigationBar: !widget.showNavigation
-            ? null
-            : widget.navigation ??
-                  SafeArea(
-                    top: false,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        border: Border(top: BorderSide(color: PostTheme.line)),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 8,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: TextButton(
-                              onPressed: _chooseChannel,
-                              child: const Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.home_outlined),
-                                  Text('首页'),
-                                ],
-                              ),
-                            ),
-                          ),
-                          FilledButton(
-                            onPressed: _authority.current
-                                ? _chooseChannel
-                                : null,
-                            child: const Icon(
-                              Icons.add,
-                              size: 30,
-                              semanticLabel: '选择通道写帖子',
-                            ),
-                          ),
-                          Expanded(
-                            child: Semantics(
-                              selected: true,
-                              child: const Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [Icon(Icons.person), Text('我的')],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-      ),
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: HhTelegramPalette.of(context).surface,
+    body: SafeArea(
+      bottom: false,
+      child: !_authority.current
+          ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
+          : _profileContent(),
     ),
+    bottomNavigationBar: widget.showNavigation ? widget.navigation : null,
   );
-
-  Widget _content() {
-    final c = widget.controller;
-    return RefreshIndicator(
-      onRefresh: c.loadPersonal,
-      child: CustomScrollView(
-        controller: _scroll,
-        key: PageStorageKey(
-          'personal-posts:${_authority.account}:${_authority.version}',
-        ),
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    key: const ValueKey('personal-profile'),
-                    children: [
-                      const _IdentityAvatar(radius: 30),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              c.personalIdentity?.nickname ??
-                                  (c.personalProfileError != null
-                                      ? '个人资料暂不可用'
-                                      : c.personalProfileLoading
-                                      ? '正在加载个人资料…'
-                                      : '我的身份'),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              c.personalProfileError ?? '仅自己可见',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: PostTheme.muted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    '自己的帖子',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: 36,
-                    height: 3,
-                    decoration: BoxDecoration(
-                      color: PostTheme.accent,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (c.personalLoading && c.personalItems.isEmpty)
-            const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(semanticsLabel: '正在加载自己的帖子'),
-              ),
-            )
-          else if (c.personalItems.isEmpty && c.personalError != null)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: _PageState(
-                title: '暂时无法加载自己的帖子',
-                message: c.personalError,
-                action: '重新加载',
-                onAction: c.loadPersonal,
-              ),
-            )
-          else if (c.personalItems.isEmpty)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: _PageState(
-                title: '还没有自己的帖子',
-                message: '从通道开始，写下第一篇帖子。',
-                action: '去选择通道',
-                onAction: _chooseChannel,
-              ),
-            )
-          else
-            SliverToBoxAdapter(
-              child: ColoredBox(
-                color: PostTheme.background,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final cards = [
-                        for (final item in c.personalItems)
-                          item.post != null
-                              ? _PostCardWidget(
-                                  key: ValueKey(item.id),
-                                  post: item.post!,
-                                  onOpen: () => _open(item),
-                                )
-                              : _PersonalCard(
-                                  key: ValueKey(item.id),
-                                  item: item,
-                                  channelName:
-                                      widget.channelNames[item.channelId] ??
-                                      '原通道',
-                                  onOpen: () => _open(item),
-                                  onDeleteDraft: item.isDraft
-                                      ? () => _deleteDraft(item)
-                                      : null,
-                                  onDeleteTask:
-                                      item.task?.canHide == true &&
-                                          !{
-                                            'SUBMITTED',
-                                            'UNKNOWN',
-                                            'RESULT_EXPIRED',
-                                          }.contains(item.state)
-                                      ? () => _deleteFailedTask(item)
-                                      : null,
-                                ),
-                      ];
-                      return _PostWaterfall(
-                        cards: cards,
-                        single:
-                            constraints.maxWidth < 360 ||
-                            MediaQuery.textScalerOf(context).scale(16) > 22,
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          if (c.personalItems.isNotEmpty)
-            SliverToBoxAdapter(
-              child: ColoredBox(
-                color: PostTheme.background,
-                child: Column(
-                  children: [
-                    if (c.personalError != null)
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          c.personalError!,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    _LoadMore(
-                      loading: c.personalLoading,
-                      hasMore: c.personalHasMore,
-                      onPressed: () => c.loadPersonal(more: true),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// 内容自然撑高；错落双列与正式 My 图保持一致，不强制等高。
-class _PostWaterfall extends StatelessWidget {
-  const _PostWaterfall({required this.cards, required this.single});
-  final List<Widget> cards;
-  final bool single;
-  @override
-  Widget build(BuildContext context) => single
-      ? Column(
-          children: [
-            for (final card in cards)
-              Padding(padding: const EdgeInsets.only(bottom: 8), child: card),
-          ],
-        )
-      : Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (var column = 0; column < 2; column++) ...[
-              if (column == 1) const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  children: [
-                    for (var i = column; i < cards.length; i += 2)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: cards[i],
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        );
 }
 
 class _PersonalCard extends StatelessWidget {
@@ -1695,7 +1415,9 @@ class _PersonalCard extends StatelessWidget {
         ? '发布未成功'
         : _localPostState(item.state);
     return Material(
-      color: pending || failed ? PostTheme.cardTint : PostTheme.surface,
+      color: pending || failed
+          ? HhTelegramPalette.of(context).raised
+          : HhTelegramPalette.of(context).surface,
       borderRadius: BorderRadius.circular(8),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -1724,33 +1446,35 @@ class _PersonalCard extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: PostTheme.accent,
+                        color: HhTelegramPalette.of(context).accent,
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: const Text(
+                      child: Text(
                         '草稿',
                         style: TextStyle(
-                          color: PostTheme.surface,
+                          color: HhTelegramPalette.of(context).onAccent,
                           fontSize: 12,
                         ),
                       ),
                     ),
                     if (failed) ...[
                       const SizedBox(width: 8),
-                      const Icon(
+                      Icon(
                         Icons.error,
-                        color: PostTheme.failure,
+                        color: HhTelegramPalette.of(context).error,
                         semanticLabel: '发布未成功',
                       ),
                     ],
                   ],
                 ),
                 if (failed)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       '发布未成功',
-                      style: TextStyle(color: PostTheme.accent),
+                      style: TextStyle(
+                        color: HhTelegramPalette.of(context).accent,
+                      ),
                     ),
                   ),
               ] else if (pending)
@@ -1768,18 +1492,25 @@ class _PersonalCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         label,
-                        style: const TextStyle(color: PostTheme.accent),
+                        style: TextStyle(
+                          color: HhTelegramPalette.of(context).accent,
+                        ),
                       ),
                     ),
                   ],
                 )
               else
-                Text(label, style: const TextStyle(color: PostTheme.muted)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: HhTelegramPalette.of(context).secondary,
+                  ),
+                ),
               const SizedBox(height: 12),
               Text(
                 '$channelName · ${_postDate(item.sortAt)}',
-                style: const TextStyle(
-                  color: PostTheme.muted,
+                style: TextStyle(
+                  color: HhTelegramPalette.of(context).secondary,
                   fontSize: 12,
                   height: 1.5,
                 ),
@@ -2464,6 +2195,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     ? () => _changeInteraction(PostInteractionAction.favorite)
                     : null,
               ),
+              PostRepostButton(controller: c, postId: widget.postId),
               const DetailAction(action: FeedAction.share, label: '分享（暂未开放）'),
             ];
             if (MediaQuery.textScalerOf(context).scale(14) > 21 ||
@@ -2615,11 +2347,13 @@ class _PageState extends StatelessWidget {
     this.message,
     this.action,
     this.onAction,
+    this.actionIcon,
   });
   final String title;
   final bool announceTitle;
   final String? message, action;
   final VoidCallback? onAction;
+  final IconData? actionIcon;
   @override
   Widget build(BuildContext context) => Center(
     child: SingleChildScrollView(
@@ -2649,7 +2383,18 @@ class _PageState extends StatelessWidget {
           ],
           if (action != null) ...[
             const SizedBox(height: 20),
-            FilledButton(onPressed: onAction, child: Text(action!)),
+            if (actionIcon != null)
+              IconButton(
+                tooltip: action,
+                onPressed: onAction,
+                icon: Icon(
+                  actionIcon,
+                  size: 32,
+                  color: HhTelegramPalette.of(context).ink,
+                ),
+              )
+            else
+              FilledButton(onPressed: onAction, child: Text(action!)),
           ],
         ],
       ),
@@ -2711,17 +2456,19 @@ Future<bool?> _confirmScoped(
   required String title,
   required String message,
   required String action,
+  ThemeData? theme,
 }) {
   final authority = _PostAuthority(controller);
+  final dialogTheme = theme ?? PostTheme.of(context);
   return showDialog<bool>(
     context: context,
     barrierColor: Colors.black54,
     builder: (context) => Theme(
-      data: PostTheme.of(context),
+      data: dialogTheme,
       child: AnimatedBuilder(
         animation: controller,
         builder: (context, _) => Dialog(
-          backgroundColor: PostTheme.surface,
+          backgroundColor: dialogTheme.colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -2744,7 +2491,9 @@ Future<bool?> _confirmScoped(
                             child: Text(
                               title,
                               textAlign: TextAlign.center,
-                              style: PostTheme.dialogQuestion,
+                              style: PostTheme.dialogQuestion.copyWith(
+                                color: dialogTheme.colorScheme.onSurface,
+                              ),
                             ),
                           ),
                           if (message.isNotEmpty)
@@ -2753,7 +2502,13 @@ Future<bool?> _confirmScoped(
                               child: Text(
                                 message,
                                 textAlign: TextAlign.center,
-                                style: PostTheme.dialogBody,
+                                style: theme == null
+                                    ? PostTheme.dialogBody
+                                    : PostTheme.dialogBody.copyWith(
+                                        color: dialogTheme
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
                               ),
                             ),
                           const SizedBox(height: 8),
@@ -2775,7 +2530,11 @@ Future<bool?> _confirmScoped(
                                       'scoped-confirm-action',
                                     ),
                                     style: FilledButton.styleFrom(
-                                      backgroundColor: PostTheme.destructive,
+                                      backgroundColor: theme == null
+                                          ? PostTheme.destructive
+                                          : dialogTheme.colorScheme.error,
+                                      foregroundColor:
+                                          dialogTheme.colorScheme.onError,
                                     ),
                                     onPressed: () =>
                                         Navigator.of(context).pop(true),

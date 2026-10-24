@@ -1,0 +1,455 @@
+openapi: 3.0.3
+info:
+  title: HnuHole private identity reposts
+  version: 1.0.0
+  description: POST-REPOST-01. Only the current account archive; no public feed insertion,
+    contributor lists or account selectors. Reposts are owned by the explicitly selected
+    active identity. Sharing and copying never create a repost. Mandatory private
+    write fences reject delayed intents. Original post access uses the existing read
+    projection and media authorization.
+servers:
+- url: /
+security:
+- bearerAuth: []
+x-design-document: ../../docs/design/post-reposts-contract.md
+paths:
+  /api/v1/posts/{postId}/repost:
+    parameters:
+    - $ref: '#/components/parameters/PostID'
+    get:
+      operationId: readOwnPostReposts
+      summary: Read current account identity marks and private write fence
+      description: No body/query/Idempotency-Key. An inaccessible source returns 404
+        unless this account has a retained repost fence; retained fences permit cancellation
+        and unknown-result reconciliation without exposing source content.
+      responses:
+        '200':
+          description: Committed current private state
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestID'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+            Interaction-Version:
+              $ref: '#/components/headers/InteractionVersion'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepostState'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/Error'
+    put:
+      operationId: setIdentityPostRepost
+      summary: Create or cancel one selected identity reference
+      description: No query/Idempotency-Key. Reposted true requires accessible original.
+        False can remove unavailable originals. Same-value true preserves repostedAt;
+        every accepted write rotates the fence. Identity must be active and owned
+        by authenticated account. No comment binding or public post is created.
+      parameters:
+      - $ref: '#/components/parameters/InteractionVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepostSet'
+      responses:
+        '200':
+          description: Committed current private state
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestID'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+            Interaction-Version:
+              $ref: '#/components/headers/InteractionVersion'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepostState'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '412':
+          $ref: '#/components/responses/Error'
+        '413':
+          $ref: '#/components/responses/Error'
+        '415':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/Error'
+  /api/v1/me/reposts:
+    get:
+      operationId: listOwnIdentityReposts
+      summary: List current account retained identity reposts
+      description: Descending (repostedAt, private ordinal), immutable pagination
+        ceiling. New/re-created records appear on refresh. Cursor encrypted, account/scope/limit
+        bound, expires in 30 minutes. Deleted identity archives are removed; account
+        closure clears all marks and fences. Different own identities may each reference
+        the same original.
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 20
+      - name: cursor
+        in: query
+        schema:
+          type: string
+          maxLength: 1024
+      responses:
+        '200':
+          description: Committed current private state
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestID'
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Session-Expires-At:
+              $ref: '#/components/headers/SessionExpiresAt'
+            Server-Time:
+              $ref: '#/components/headers/ServerTime'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepostPage'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    RepostMark:
+      type: object
+      additionalProperties: false
+      required:
+      - identityId
+      - repostedAt
+      properties:
+        identityId:
+          $ref: '#/components/schemas/ResourceID'
+        repostedAt:
+          $ref: '#/components/schemas/UTCDateTime'
+    RepostState:
+      type: object
+      additionalProperties: false
+      required:
+      - postId
+      - items
+      properties:
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+        items:
+          type: array
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/RepostMark'
+    RepostedPost:
+      type: object
+      additionalProperties: false
+      required:
+      - postId
+      - identityId
+      - repostedAt
+      - post
+      properties:
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+        identityId:
+          $ref: '#/components/schemas/ResourceID'
+        repostedAt:
+          $ref: '#/components/schemas/UTCDateTime'
+        post:
+          $ref: '#/components/schemas/NullablePublicPost'
+    RepostPage:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextCursor
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/RepostedPost'
+        nextCursor:
+          $ref: '#/components/schemas/NullableCursor'
+    RepostSet:
+      type: object
+      additionalProperties: false
+      required:
+      - identityId
+      - reposted
+      properties:
+        identityId:
+          $ref: '#/components/schemas/ResourceID'
+        reposted:
+          type: boolean
+    NullablePublicPost:
+      type: object
+      additionalProperties: false
+      required:
+      - postId
+      - channelId
+      - title
+      - body
+      - author
+      - publishedAt
+      properties:
+        postId:
+          $ref: '#/components/schemas/ResourceID'
+        channelId:
+          $ref: '#/components/schemas/ResourceID'
+        title:
+          $ref: '#/components/schemas/Title'
+        body:
+          $ref: '#/components/schemas/Body'
+        author:
+          $ref: '#/components/schemas/PublicAuthor'
+        publishedAt:
+          $ref: '#/components/schemas/UTCDateTime'
+        imageCount:
+          type: integer
+          minimum: 1
+          maximum: 9
+          description: Omitted for zero images; positive count permits an empty body.
+      nullable: true
+    ResourceID:
+      type: string
+      format: uuid
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      description: Canonical nonzero UUID; possession does not authorize access.
+    UTCDateTime:
+      type: string
+      format: date-time
+      pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?Z$
+    NullableCursor:
+      type: string
+      nullable: true
+      minLength: 1
+      maxLength: 1024
+      pattern: ^[A-Za-z0-9_-]+$
+    Title:
+      type: string
+      minLength: 1
+      description: Original Unicode scalar text counted as Unicode 16.0 extended grapheme
+        clusters. Spaces, punctuation, TAB/CR/LF count; CRLF is one cluster. No trim,
+        NFC or nickname character ban. At least one scalar outside White_Space and
+        Default_Ignorable is required. Invalid UTF-8/surrogates/NUL and C0/C1 except
+        TAB/CR/LF are rejected. Runtime grapheme and byte validation required; JSON
+        Schema length is not grapheme count.
+      x-max-grapheme-clusters: 15
+      x-max-utf8-bytes: 4096
+      x-unicode-version: 16.0.0
+    Body:
+      type: string
+      minLength: 0
+      description: Empty only with at least one image (or positive response imageCount).
+        Otherwise original Unicode scalar text counted as Unicode 16.0 extended grapheme
+        clusters. Spaces, punctuation, TAB/CR/LF count; CRLF is one cluster. No trim,
+        NFC or nickname character ban. At least one scalar outside White_Space and
+        Default_Ignorable is required. Invalid UTF-8/surrogates/NUL and C0/C1 except
+        TAB/CR/LF are rejected. Runtime grapheme and byte validation required; JSON
+        Schema length is not grapheme count.
+      x-max-grapheme-clusters: 3000
+      x-max-utf8-bytes: 65536
+      x-unicode-version: 16.0.0
+    PublicAuthor:
+      oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+        - state
+        - nickname
+        - avatar
+        properties:
+          state:
+            type: string
+            enum:
+            - ACTIVE
+          nickname:
+            type: string
+            minLength: 1
+            maxLength: 512
+          avatar:
+            type: string
+            pattern: ^(default-v1|avatar-v1:(?!00000000-0000-0000-0000-000000000000$)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$
+      - type: object
+        additionalProperties: false
+        required:
+        - state
+        - shortCode
+        - avatar
+        properties:
+          state:
+            type: string
+            enum:
+            - DELETED
+            - ACCOUNT_CLOSED
+          shortCode:
+            type: string
+            pattern: ^[A-Z2-7]{12}$
+          avatar:
+            type: string
+            enum:
+            - inactive-v1
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      - requestId
+      properties:
+        requestId:
+          type: string
+          minLength: 22
+          maxLength: 22
+        error:
+          type: object
+          additionalProperties: false
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+              enum:
+              - MALFORMED_REQUEST
+              - AUTHENTICATION_FAILED
+              - SESSION_INVALID
+              - session_replaced
+              - AUTHORIZATION_UNAVAILABLE
+              - SERVICE_UNAVAILABLE
+              - RATE_LIMITED
+              - PAYLOAD_TOO_LARGE
+              - UNSUPPORTED_MEDIA_TYPE
+              - CURSOR_INVALID
+              - POST_CHANNEL_UNAVAILABLE
+              - POST_NOT_FOUND
+              - INTERACTION_VERSION_CONFLICT
+            message:
+              type: string
+              minLength: 1
+              maxLength: 256
+  parameters:
+    InteractionVersion:
+      name: If-Interaction-Version
+      in: header
+      required: true
+      description: Mandatory account/post repost fence from GET /posts/{postId}/repost.
+        Independent of like/favorite fences. Retain the exact condition on transport
+        retries. Every successful write rotates it, even no-op cancellation; 412 does
+        not mutate. Never automatically rebase a stale create onto a new fence.
+      schema:
+        type: string
+        pattern: ^"[0-9a-f]{64}"$
+    PostID:
+      name: postId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceID'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: canonical-unpadded-base64url-32-bytes
+  headers:
+    RequestID:
+      required: true
+      schema:
+        type: string
+        minLength: 22
+        maxLength: 22
+    NoStore:
+      required: true
+      schema:
+        type: string
+        enum:
+        - no-store
+    SessionExpiresAt:
+      required: true
+      schema:
+        $ref: '#/components/schemas/UTCDateTime'
+    ServerTime:
+      required: true
+      schema:
+        $ref: '#/components/schemas/UTCDateTime'
+    InteractionVersion:
+      required: true
+      description: Opaque account/post write fence, not an HTTP ETag or a count cache
+        validator.
+      schema:
+        type: string
+        pattern: ^"[0-9a-f]{64}"$
+    RetryAfter:
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 300
+  responses:
+    Error:
+      description: Safe error; never includes session authority or private visitor/identity
+        data
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestID'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    RateLimited:
+      description: Network budget exceeded
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/RequestID'
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'

@@ -33,12 +33,16 @@
 
 ## 分支一览
 
+- [身份转帖](docs/branches/feat-post-reposts.md)：`feat/post-reposts` 提供持久化私人归档、条件写入与接线契约，已整合到个人页分支；未合并。
+- [个人页与私人转帖](docs/branches/feat-personal-profile-mood.md)：`feat/personal-profile-mood` 实现五栏缩放、身份切换和共享喜欢／收藏，已接入私人转帖归档；未合并。
+
 `main` 是项目基线。当前工作分支如下；历史实现、验收文档和 PR 记录继续保留。
 
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
 | `codex/feat/post-detail-comments` | 待合并：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |
+| `codex/fix/feed-refresh-cancel` | 已合并 main [PR #69](https://github.com/zewbby/HnuHole/pull/69)：刷新回滑可取消，纯享手势隔离，加载高亮留在颜文字内。 | [任务详情](docs/branches/fix-feed-refresh-cancel.md) |
 | `codex/feat/feed-scroll-smile-refresh` | 已合并 main [PR #65](https://github.com/zewbby/HnuHole/pull/65)：沉浸阅读、发帖入口交接与 `:)` 刷新；未安装／发布。 | [任务详情](docs/branches/feat-feed-scroll-smile-refresh.md) |
 | `feat/identity-avatar-onboarding` | 头像上传与首次身份设置已合入 main [PR #63](https://github.com/zewbby/HnuHole/pull/63)，开发后端与真我日常2315已配套更新，未生产发布。 | [任务详情](docs/branches/identity-avatar-onboarding.md) |
 | `fix/direct-message-header-density` | 送审快照：私信顶部布局与语义点击已交付[PR #62](https://github.com/zewbby/HnuHole/pull/62)，2315已覆盖安装；最终CI／合并状态以PR回执为准，未发布。 | [任务详情](docs/branches/fix-direct-message-header-density.md) |
@@ -94,8 +98,8 @@
 
 ## 最近变动
 
+- [PR #69](https://github.com/zewbby/HnuHole/pull/69)：修复推荐页回滑取消刷新与纯享模式冲突，颜文字改为字形内高亮。
 - [PR #65](https://github.com/zewbby/HnuHole/pull/65)：新增上下导航随阅读收起、中央与悬浮发帖交接及颜文字下拉刷新。
 - [PR #63](https://github.com/zewbby/HnuHole/pull/63)：接入受保护头像上传保存与注册收尾首次身份设置。
 - [PR #62](https://github.com/zewbby/HnuHole/pull/62)：收紧私信顶部布局并保留无障碍身份切换。
 - [PR #61](https://github.com/zewbby/HnuHole/pull/61)：记录真我大图长列表的限定内存续验。
-- [PR #60](https://github.com/zewbby/HnuHole/pull/60)：修复私信空身份加载，完善快捷切换和身份管理往返。

@@ -196,15 +196,19 @@ class _AuthScreenState extends State<AuthScreen> {
         _errorDialogOpen = false;
         return;
       }
+      var retry = false;
       try {
-        await _showErrorDialog(message);
+        retry = await _showErrorDialog(message);
       } finally {
         _errorDialogOpen = false;
       }
+      // A failed retry notifies synchronously before its Future completes.
+      // Release the dismissed dialog first so that failure can show again.
+      if (mounted && retry) await widget.sessions.retry();
     });
   }
 
-  Future<void> _showErrorDialog(String message) {
+  Future<bool> _showErrorDialog(String message) {
     if (widget.sessions.status == AuthStatus.unavailable) {
       return showDialog<bool>(
         context: context,
@@ -222,9 +226,7 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
           ],
         ),
-      ).then((retry) async {
-        if (mounted && retry == true) await widget.sessions.retry();
-      });
+      ).then((retry) => retry == true);
     }
     final friendlyMessage = switch (message) {
       '结果未知，请保留原请求并核对。' =>
@@ -282,7 +284,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ],
             ),
           ),
-    );
+    ).then((_) => false);
   }
 
   @override

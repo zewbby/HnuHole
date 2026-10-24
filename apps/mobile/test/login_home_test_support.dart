@@ -1,3 +1,5 @@
+import 'package:hnuhole_mobile/src/posts/personal_collections_api.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -46,27 +48,56 @@ class _Store implements PostStore {
   Future<List<StoredPostEntry>> list() async => [];
   @override
   Future<void> close() async {}
+  Map<String, dynamic> profile = {};
+  @override
+  Future<Map<String, dynamic>> readProfile() async => Map.of(profile);
+  @override
+  Future<void> writeProfile(Map<String, dynamic> value) async {
+    profile = Map.of(value);
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class _Posts extends feed.FeedTestApi {
-  _Posts() {
+class HomeTestPostsApi extends feed.FeedTestApi
+    implements PersonalCollectionsApi {
+  final identityItems = <String, List<OwnPostCard>>{};
+  final identityWaits =
+      <String, Completer<PostResponse<PostsPage<OwnPostCard>>>>{};
+  final identityReads = <String?>[];
+  List<PostCard> likedItems = [], favoriteItems = [];
+  @override
+  Future<PostResponse<PostsPage<PostCard>>> personalCollection({
+    required String sessionToken,
+    required bool favorites,
+    String? cursor,
+    int limit = 20,
+  }) async => feed.reply(
+    PostsPage(items: favorites ? favoriteItems : likedItems, nextCursor: null),
+  );
+  HomeTestPostsApi() {
     items = [feed.post(channel: _channel)];
   }
   final personalTokens = <String>[];
+  List<OwnPostCard> ownItems = [];
   Completer<PostResponse<PostsPage<OwnPostCard>>>? oldPersonal;
   @override
   Future<PostResponse<PostsPage<OwnPostCard>>> ownPosts({
     required String sessionToken,
     String? cursor,
+    String? identityId,
     int limit = 20,
   }) async {
     personalTokens.add(sessionToken);
+    identityReads.add(identityId);
+    if (identityWaits[identityId] case final pending?) return pending.future;
     if (sessionToken == identityTestToken && oldPersonal != null) {
       return oldPersonal!.future;
     }
-    return feed.reply(PostsPage(items: [], nextCursor: null));
+    return feed.reply(
+      PostsPage(items: identityItems[identityId] ?? ownItems, nextCursor: null),
+    );
   }
 
   @override
@@ -90,12 +121,14 @@ class _Posts extends feed.FeedTestApi {
 // routes are real. HTTP, secure storage and post storage are host substitutes;
 // invoking the publication callback below verifies navigation, not publishing.
 class HomeTestFixture {
+  HomeTestFixture({HomeTestPostsApi? api})
+    : postApi = api ?? HomeTestPostsApi();
   final store = AuthStore(IdentityTestVault());
   final sessionApi = _Sessions();
   final channels = _Channels();
   late final directory = ChannelDirectoryController(repository: channels);
   final identitiesApi = IdentityTestApi();
-  final postApi = _Posts();
+  final HomeTestPostsApi postApi;
   late AuthSessionController sessions;
   late PostController posts;
 

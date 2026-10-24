@@ -1,3 +1,5 @@
+import 'personal_collections_api.dart';
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -12,6 +14,7 @@ import '../storage/post_store.dart';
 import 'post_api.dart';
 import 'feed_api.dart';
 import 'post_interactions_api.dart';
+import 'post_reposts_api.dart';
 import 'post_models.dart';
 import 'post_media_api.dart';
 
@@ -23,6 +26,7 @@ import 'post_photo_picker.dart';
 part 'post_composer_media.dart';
 part 'feed_controller.dart';
 part 'post_interactions_controller.dart';
+part 'post_reposts_controller.dart';
 
 typedef PostStoreFactory = Future<PostStore> Function(String accountId);
 
@@ -152,6 +156,11 @@ class PostController extends ChangeNotifier {
 
   List<FeedPost> _timeline = [];
   final _interactions = <String, PostInteractionState>{};
+  final _reposts = <String, PostRepostState>{};
+  List<RepostedPost> _repostItems = [];
+  String? _repostCursor, _repostListError;
+  bool _repostListLoading = false, _repostListOpened = false;
+  int _repostListRevision = 0;
   Set<String> _blockedChannels = {};
   final _postViews = <String, int>{};
   bool _preferencesReady = false;
@@ -201,6 +210,21 @@ class PostController extends ChangeNotifier {
   List<PostCard> feedItems = [];
   List<PersonalPostItem> personalItems = [];
   ManagedIdentity? personalIdentity;
+  List<ManagedIdentity> personalIdentities = [];
+
+  Future<void> selectPersonalIdentity(String id) async {
+    final identity = personalIdentities.where((i) => i.id == id).firstOrNull;
+    if (!available || identity == null || personalIdentity?.id == id) return;
+    ++_personalRequest;
+    ++_personalProfileRequest;
+    personalIdentity = identity;
+    _own = [];
+    _ownCursor = _taskCursor = null;
+    _mergePersonal();
+    _notify();
+    await loadPersonal();
+  }
+
   String? personalProfileError;
   bool personalProfileLoading = false;
 
@@ -241,6 +265,7 @@ class PostController extends ChangeNotifier {
     _token = token;
     _accountId = account;
     final epoch = ++_epoch;
+    _clearReposts();
     _clearTimeline();
     final old = _store;
     _store = null;
@@ -256,6 +281,7 @@ class PostController extends ChangeNotifier {
     _imageProgress.clear();
     personalItems = [];
     personalIdentity = null;
+    personalIdentities = [];
     personalProfileError = null;
     personalProfileLoading = false;
     feedItems = [];
@@ -449,6 +475,43 @@ class PostController extends ChangeNotifier {
     }
   }
 
+  Future<PostsPage<PostCard>> loadPersonalCollection({
+    required bool favorites,
+    String? cursor,
+  }) async {
+    final a = await _authority();
+    try {
+      final api = _api;
+      if (api is! PersonalCollectionsApi) {
+        throw StateError('Collections unavailable');
+      }
+      return await _accept(
+        a,
+        await (api as PersonalCollectionsApi).personalCollection(
+          sessionToken: a.token,
+          favorites: favorites,
+          cursor: cursor,
+        ),
+      );
+    } catch (error) {
+      _failure(error, a);
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> readPersonalProfileState() async {
+    final a = await _authority(storage: true);
+    final value = await a.store!.readProfile();
+    if (!_current(a)) throw _StalePostAuthority();
+    return value;
+  }
+
+  Future<void> savePersonalProfileState(Map<String, dynamic> value) async {
+    final a = await _authority(storage: true);
+    await a.store!.writeProfile(value);
+    if (!_current(a)) throw _StalePostAuthority();
+  }
+
   Future<PostDetail?> loadDetail(String postId) async {
     _PostAuthority? a;
     try {
@@ -575,14 +638,21 @@ class PostController extends ChangeNotifier {
       }
       _notify();
       final scoped = a;
-      if (!more) profile = _loadPersonalProfile(a, ++_personalProfileRequest);
+      if (!more) {
+        profile = _loadPersonalProfile(a, ++_personalProfileRequest);
+        await profile;
+      }
       if (!_current(a) || request != _personalRequest) return;
       // Independent reads start together. Future.wait keeps the original typed
       // failure so 401/503 still pass through the authority gate below.
       final reads = await Future.wait<Object?>([
-        if (!more || _ownCursor != null)
+        if (personalIdentity != null && (!more || _ownCursor != null))
           _api
-              .ownPosts(sessionToken: a.token, cursor: more ? _ownCursor : null)
+              .ownPosts(
+                sessionToken: a.token,
+                cursor: more ? _ownCursor : null,
+                identityId: personalIdentity?.id,
+              )
               .then((response) => _accept(scoped, response))
         else
           Future<Object?>.value(),
@@ -655,7 +725,7 @@ class PostController extends ChangeNotifier {
         personalLoading = false;
         _notify();
       }
-      // Profile failure is handled independently; it never delays list state.
+      // Profile selection is resolved before requesting identity-scoped posts.
       await profile;
     }
   }
@@ -677,7 +747,12 @@ class PostController extends ChangeNotifier {
           ? null
           : await _accept(a, await _api.composerContext(sessionToken: a.token));
       if (!_current(a) || request != _personalProfileRequest) return;
-      personalIdentity = originals.isNotEmpty
+      final previousIdentity = personalIdentity?.id;
+      personalIdentities = List.unmodifiable(directory.identities);
+      personalIdentity = directory.identities
+          .where((i) => i.id == personalIdentity?.id)
+          .firstOrNull;
+      personalIdentity ??= originals.isNotEmpty
           ? originals.first
           : directory.identities
                 .where((i) => i.id == context?.defaultIdentityId)
@@ -688,6 +763,11 @@ class PostController extends ChangeNotifier {
                 return byTime != 0 ? byTime : x.id.compareTo(y.id);
               }))
               .firstOrNull;
+      if (previousIdentity != personalIdentity?.id) {
+        _own = [];
+        _ownCursor = null;
+        _mergePersonal();
+      }
     } catch (error) {
       if (!_current(a) || request != _personalProfileRequest) return;
       // Access/storage failures still follow the existing failure policy; a temporary
@@ -728,6 +808,10 @@ class PostController extends ChangeNotifier {
     final items = <PersonalPostItem>[];
     final knownTasks = <String>{};
     for (final entry in _local) {
+      if (personalIdentity != null &&
+          entry.data['identityId'] != personalIdentity!.id) {
+        continue;
+      }
       if (entry.data['isRetryBuffer'] == true ||
           _deletedPostIds.contains(entry.data['postId']) ||
           entry.data['abandoned'] == true ||
@@ -758,7 +842,9 @@ class PostController extends ChangeNotifier {
       );
     }
     for (final task in _remoteTasks.values) {
-      if (task.visible &&
+      if ((personalIdentity == null ||
+              task.identityId == personalIdentity!.id) &&
+          task.visible &&
           !_deletedPostIds.contains(task.postId) &&
           !knownTasks.contains(task.taskId)) {
         items.add(
@@ -1573,7 +1659,10 @@ class PostController extends ChangeNotifier {
       // 本人task证明归属，当前公共作者证明身份仍有效；第一页缺席不等于失去资格。
       final ownedTask = _remoteTasks.values.where(
         (task) =>
-            task.postId == postId && task.state == PostTaskState.published,
+            task.postId == postId &&
+            task.state == PostTaskState.published &&
+            (personalIdentity == null ||
+                task.identityId == personalIdentity!.id),
       );
       _own = [
         if (ownedTask.isNotEmpty && post.author.state == PostAuthorState.active)
@@ -1647,14 +1736,28 @@ class PostController extends ChangeNotifier {
           final byTime = x.createdAt.compareTo(y.createdAt);
           return byTime != 0 ? byTime : x.id.compareTo(y.id);
         });
+      final previousIdentity = personalIdentity?.id;
+      personalIdentities = List.unmodifiable(directory.identities);
       personalIdentity =
+          directory.identities
+              .where((i) => i.id == personalIdentity?.id)
+              .firstOrNull ??
           originals.firstOrNull ??
           directory.identities
               .where((i) => i.id == context.defaultIdentityId)
               .firstOrNull ??
           ordered.firstOrNull;
+      if (previousIdentity != personalIdentity?.id) {
+        _own = [];
+        _ownCursor = null;
+        ++_personalRequest;
+      }
       _mergePersonal();
       _notify();
+      if (previousIdentity != personalIdentity?.id &&
+          personalIdentity != null) {
+        await loadPersonal();
+      }
     } catch (error) {
       _failure(error, a);
     }
