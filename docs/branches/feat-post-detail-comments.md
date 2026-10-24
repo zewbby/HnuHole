@@ -1,6 +1,6 @@
 # 帖子详情评论区视频复现
 
-> **2026-10-24 提交送审更新：** 本需求已提交并推送，PR [#71](https://github.com/zewbby/HnuHole/pull/71) 待 CI 后合并；产品源码冻结点 `ed1b5e3`，已集成 main `ce140d5`。最终本地 Flutter 全套 **924 PASS / 3 SKIP**、分析 0 issues，Go 受影响包 test/vet 与全量 build PASS。独立只读审查发现的重复失败弹窗与删除主评论残留本地回复两处 P2 已修复，复核未发现阻断项；agent 审查不冒充 GitHub 成员批准。CI/构建/隔离 SQL 结果以 PR 最终检查为准。真我 2427 的 20.3 分钟/28 轮与弱网证据属于集成前 APK，不能作为最终 HEAD 的真机验收；完整模块、iOS、生产状态不提升。下文“未提交/未合并”保留为各历史版本快照。
+> **2026-10-24 合并回执：** 本需求已通过 PR [#71](https://github.com/zewbby/HnuHole/pull/71) Squash 合入 main，合并 SHA `a715dc7e8b6a3b1395bc968274bce3865f63f21b`。最终产品源码 `ed1b5e3`，送审 HEAD `aef7618`（仅追加交接文档）；21 项远端检查全部 PASS，包含 Android 构建、完整契约、评论真实隔离 PostgreSQL/TLS 及受影响模块。最终本地 Flutter 924 PASS / 3 SKIP、分析 0；独立审查两处 P2 均已修复且复核无阻断。已构建同签名 2428 Profile 包，尚未安装；真我仍为实测 2427，其 20.3 分钟/28 轮和弱网证据保留原版本，不视作最终 HEAD 真机验收。iOS、完整模块、生产未发布等边界不提升。下文“本地未提交/未合并”属于历史快照。
 
 任务：POST-DETAIL-COMMENTS-01；模块：B06（帖子详情）、B07（评论与回复）。更新：2026-10-24。
 分支：`codex/feat/post-detail-comments`；基线：`cda337c`。已完成本地实现与用户追加授权的 vivo 开发包交付；未提交、未推送、未合并或生产发布。GitHub fetch 本轮连接失败，基线是本地 origin/main，未声称已核对远端最新状态。
@@ -110,3 +110,11 @@ vivo最终同签保数据安装2026102424 Profile，APK SHA-256 `caac520dfd921e5
 - 独立审查：Astra 初审提出上述两处 P2，额度中断后由获授权 GPT-6.1 Sol High 只读复核最终 `ed1b5e3`，未发现指定范围阻断项，未执行作者自批或伪造 GitHub 成员批准。
 - 本机原始日志：`E:/Hnuhole-env/comment-reference-20261024/pr-delivery/frozen-flutter-tests.log`、`frozen-analyze.log`、`go-integration.json`、`review-regressions-after.log`。原始日志不入 Git。
 - 真我仍为已保数据安装的 2427；其源码哈希回执继续归属该包，主线整合和两处审查修正不借用旧包的设备结论。此提交不等于生产发布，也不迁移用户开发库。
+
+## main 合并确认
+
+PR #71 实际合并 SHA `a715dc7e8b6a3b1395bc968274bce3865f63f21b`；远端 main 已 fetch 并核对。21 项最终检查全部成功，审查与运行证据对应 `aef7618` 的产品树；本地无 DSN 条件跳过不再冒充 SQL 通过，真实 SQL/TLS 结果来自该 PR 的隔离 CI。
+
+Android 2428 Profile 构建及同签名校验 PASS，SHA-256 `201e897a1d6d1c95564e947f82e2a45846ea40c8c938f7d84c93dcd2c173191f`，本机文件 `E:/Hnuhole-env/comment-reference-20261024/hnuhole-comments-2428-profile.apk`。仅构建并留存，没有以此替换手机上已验证的 2427；开发服务器排序功能部署与完整设备矩阵仍需配套验证，不表示生产发布。
+
+本次文档补充通过单独文档 PR 送审，不直接推送 main；该文档 PR 自身合并事实可由后续常规更新记录，不递归创建回执 PR。

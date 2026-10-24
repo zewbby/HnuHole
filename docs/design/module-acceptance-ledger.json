@@ -41248,7 +41248,7 @@
   },
   "commentDelivery20261024": {
     "pullRequest": "https://github.com/zewbby/HnuHole/pull/71",
-    "implementation": "COMMITTED_PUSHED_PENDING_MERGE",
+    "implementation": "MERGED_MAIN",
     "productSourceCommit": "ed1b5e3a2be322b7f78b8c6a2f94b3da9009def7",
     "integratedMain": "ce140d5",
     "flutterFrozen": {
@@ -41259,8 +41259,104 @@
     },
     "independentAgentReview": "PASS_NO_BLOCKERS_AFTER_TWO_P2_FIXES",
     "githubMemberApproval": "NOT_FABRICATED",
-    "ci": "PENDING",
+    "ci": {
+      "status": "PASS",
+      "checkCount": 21,
+      "checks": [
+        {
+          "name": "rehearsal",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217184/job/120820252415"
+        },
+        {
+          "name": "candidate",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217184/job/120820252366"
+        },
+        {
+          "name": "scope",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217184/job/120820211584"
+        },
+        {
+          "name": "flutter-and-real-feed",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217082/job/120820171006"
+        },
+        {
+          "name": "text-component",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217088/job/120820169576"
+        },
+        {
+          "name": "reliable-chat-sql",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217157/job/120820167799"
+        },
+        {
+          "name": "flutter-and-android",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217157/job/120820167578"
+        },
+        {
+          "name": "go-postgres",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217089/job/120820165873"
+        },
+        {
+          "name": "go-host",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217089/job/120820165789"
+        },
+        {
+          "name": "flutter",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217089/job/120820165576"
+        },
+        {
+          "name": "client",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217110/job/120820164748"
+        },
+        {
+          "name": "domain",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217110/job/120820164643"
+        },
+        {
+          "name": "contract",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217110/job/120820164575"
+        },
+        {
+          "name": "avatar-flutter",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217222/job/120820164362"
+        },
+        {
+          "name": "avatar-postgres-https",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217222/job/120820164238"
+        },
+        {
+          "name": "admin",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217081/job/120820155096"
+        },
+        {
+          "name": "moderation-postgres",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217081/job/120820154947"
+        },
+        {
+          "name": "feed-postgres",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217085/job/120820132488"
+        },
+        {
+          "name": "flutter-auth-regression",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217142/job/120820041964"
+        },
+        {
+          "name": "contract",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217178/job/120820010783"
+        },
+        {
+          "name": "policy",
+          "url": "https://github.com/zewbby/HnuHole/actions/runs/40076217126/job/120820010595"
+        }
+      ]
+    },
     "deviceEvidence": "HISTORICAL_2427_PRE_FINAL_INTEGRATION",
-    "production": "NOT_RELEASED"
+    "production": "NOT_RELEASED",
+    "mergeCommit": "a715dc7e8b6a3b1395bc968274bce3865f63f21b",
+    "reviewHead": "aef761806d110f98f4c21ab95dba4369f076267d",
+    "android2428": {
+      "status": "BUILD_AND_SAME_SIGNER_PASS_NOT_INSTALLED",
+      "versionCode": 2026102428,
+      "sha256": "201e897a1d6d1c95564e947f82e2a45846ea40c8c938f7d84c93dcd2c173191f"
+    }
   }
 }

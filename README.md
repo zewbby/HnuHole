@@ -41,7 +41,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
-| `codex/feat/post-detail-comments` | 待合并：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |
+| `codex/feat/post-detail-comments` | 已合并 #71：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |
 | `codex/fix/feed-refresh-cancel` | 已合并 main [PR #69](https://github.com/zewbby/HnuHole/pull/69)：刷新回滑可取消，纯享手势隔离，加载高亮留在颜文字内。 | [任务详情](docs/branches/fix-feed-refresh-cancel.md) |
 | `codex/feat/feed-scroll-smile-refresh` | 已合并 main [PR #65](https://github.com/zewbby/HnuHole/pull/65)：沉浸阅读、发帖入口交接与 `:)` 刷新；未安装／发布。 | [任务详情](docs/branches/feat-feed-scroll-smile-refresh.md) |
 | `feat/identity-avatar-onboarding` | 头像上传与首次身份设置已合入 main [PR #63](https://github.com/zewbby/HnuHole/pull/63)，开发后端与真我日常2315已配套更新，未生产发布。 | [任务详情](docs/branches/identity-avatar-onboarding.md) |
@@ -98,8 +98,8 @@
 
 ## 最近变动
 
+- [PR #71](https://github.com/zewbby/HnuHole/pull/71)：复现详情评论交互，修复身份、图片往返及弱网提交，支持本人评论即时展示。
+- [PR #68](https://github.com/zewbby/HnuHole/pull/68)：完成五栏目个人页与私人转帖归档。
+- [PR #70](https://github.com/zewbby/HnuHole/pull/70)：同步刷新修复合并与 vivo 试用回执。
 - [PR #69](https://github.com/zewbby/HnuHole/pull/69)：修复推荐页回滑取消刷新与纯享模式冲突，颜文字改为字形内高亮。
-- [PR #65](https://github.com/zewbby/HnuHole/pull/65)：新增上下导航随阅读收起、中央与悬浮发帖交接及颜文字下拉刷新。
-- [PR #63](https://github.com/zewbby/HnuHole/pull/63)：接入受保护头像上传保存与注册收尾首次身份设置。
-- [PR #62](https://github.com/zewbby/HnuHole/pull/62)：收紧私信顶部布局并保留无障碍身份切换。
-- [PR #61](https://github.com/zewbby/HnuHole/pull/61)：记录真我大图长列表的限定内存续验。
+- [PR #66](https://github.com/zewbby/HnuHole/pull/66)：稳定已登录启动和个人页加载并支持图片重试。
