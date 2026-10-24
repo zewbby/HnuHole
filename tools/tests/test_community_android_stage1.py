@@ -3,6 +3,31 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('community_stage1_lab',ROOT/'tools/community-android-stage1/lab.py')
 lab=importlib.util.module_from_spec(spec);spec.loader.exec_module(lab)
+class WorkerOverlayAnchorTests(unittest.TestCase):
+    anchors=('{"posts",countTask(c.PublishAcceptedPosts)}',
+             '{"posts", countTask(c.PublishAcceptedPosts)}')
+    def test_known_spellings_patch_only_post_scheduler(self):
+        comments='{"comments", countTask(c.PublishAcceptedComments)}'
+        for anchor in self.anchors:
+            with self.subTest(anchor=anchor):
+                source=anchor+'\n'+comments
+                patched=lab.paused_post_worker_overlay(source)
+                self.assertEqual(patched.count('if stage1Paused(){return 0,nil}'),1)
+                self.assertIn('return c.PublishAcceptedPosts(ctx,n)',patched)
+                self.assertTrue(patched.endswith('\n'+comments))
+                self.assertEqual(source,anchor+'\n'+comments)
+    def test_duplicate_or_mixed_anchors_rejected(self):
+        for source in (self.anchors[0]*2,self.anchors[1]*2,'\n'.join(self.anchors)):
+            with self.subTest(source=source):
+                with self.assertRaisesRegex(ValueError,'exactly one'):
+                    lab.paused_post_worker_overlay(source)
+    def test_unknown_or_missing_anchor_rejected(self):
+        for source in ('', '{"posts",  countTask(c.PublishAcceptedPosts)}',
+                       '{"posts", countTask(c.OtherWorker)}'):
+            with self.subTest(source=source):
+                with self.assertRaisesRegex(ValueError,'exactly one'):
+                    lab.paused_post_worker_overlay(source)
+
 class FaultTests(unittest.TestCase):
     def test_committed_reply_drops_exactly_once_not_failed_reply(self):
         state=lab.FaultState();state.armed.add('creates')
