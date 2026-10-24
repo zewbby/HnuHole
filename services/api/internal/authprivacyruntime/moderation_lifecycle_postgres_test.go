@@ -50,7 +50,7 @@ func moderationStartupLab(t *testing.T) (*pgxpool.Pool, *pgxpool.Pool) {
 		t.Fatal(err)
 	}
 	defer tx.Rollback(ctx)
-	if _, err = tx.Exec(ctx, `DROP SCHEMA IF EXISTS c_dm,c_comments,c_moderation,c_posts,c_auth CASCADE;
+	if _, err = tx.Exec(ctx, `DROP SCHEMA IF EXISTS c_rate_limit,c_dm,c_comments,c_moderation,c_posts,c_auth CASCADE;
 DROP TABLE IF EXISTS public.identity_avatar_assets, public.identity_change_receipts,public.community_identities,public.identity_account_state,public.sessions,public.channels,public.goose_db_version CASCADE;
 DROP FUNCTION IF EXISTS public.guard_identity_account_state(),public.guard_community_identity(),public.guard_identity_receipt(),public.check_identity_account_shape() CASCADE`); err != nil {
 		t.Fatal(err)

@@ -188,9 +188,20 @@ extension PostComposerMedia on PostController {
           entry.intents.isEmpty ||
           !{'CREATE', 'RETRY'}.contains(entry.intents.last.operation) ||
           automatic &&
-              (entry.data['mediaUploadPaused'] == true ||
+              (entry.data['rateLimitWait'] is Map ||
+                  entry.data['mediaUploadPaused'] == true ||
                   _imageProgress[id]?.message != null)) {
         return;
+      }
+      if (entry.data['rateLimitWait'] is Map) {
+        final wait = _rateWait(
+          id,
+          entry.data['rateLimitWait'] as Map,
+        ).remaining(_clock());
+        if (automatic || wait > 0) {
+          errorMessage = rateLimitDraftMessage(wait);
+          return;
+        }
       }
       final images = DraftPostImage.list(entry.data['images']);
       if (images.isEmpty) return;
@@ -271,6 +282,13 @@ extension PostComposerMedia on PostController {
           progress.completed++;
         } catch (error) {
           if (!_current(a)) return;
+          if (error is PostFailure && error.statusCode == 429) {
+            await _saveRateLimitedDraft(a, id, error.retryAfterSeconds ?? 1);
+            progress.message = rateLimitDraftMessage(
+              error.retryAfterSeconds ?? 1,
+            );
+            return;
+          }
           if (protectedRequest &&
               error is PostFailure &&
               {
@@ -302,6 +320,10 @@ extension PostComposerMedia on PostController {
       if (_current(a)) unawaited(reconcile(id));
     } catch (error) {
       if (a != null && _current(a)) {
+        if (error is PostFailure && error.statusCode == 429) {
+          await _saveRateLimitedDraft(a, id, error.retryAfterSeconds ?? 1);
+          return;
+        }
         if (protectedRequest &&
             error is PostFailure &&
             {

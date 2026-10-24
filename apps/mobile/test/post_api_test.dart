@@ -1250,7 +1250,21 @@ void main() {
         );
       }
       endpoint.respond = (r) {
-        r.response.headers.set('Retry-After', '301');
+        r.response.headers.set('Retry-After', '86400');
+        return _json(r, 429, _error('RATE_LIMITED'), success: false);
+      };
+      await expectLater(
+        api.feed(sessionToken: _token, channelId: _id),
+        throwsA(
+          isA<PostFailure>().having(
+            (e) => e.retryAfterSeconds,
+            'retry seconds',
+            86400,
+          ),
+        ),
+      );
+      endpoint.respond = (r) {
+        r.response.headers.set('Retry-After', '86401');
         return _json(r, 429, _error('RATE_LIMITED'), success: false);
       };
       await expectLater(

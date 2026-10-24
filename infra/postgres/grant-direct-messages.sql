@@ -11,3 +11,6 @@ GRANT UPDATE(bytes) ON c_dm.media TO hnuhole_c_runtime;
 GRANT USAGE ON SEQUENCE c_dm.controls_sequence_seq TO hnuhole_c_runtime;
 
 GRANT SELECT,INSERT,DELETE ON c_dm.blocks TO hnuhole_c_runtime;
+
+-- Permanent close anchors; fingerprint and closed_at remain immutable to other commands.
+GRANT UPDATE(closed_at) ON c_dm.commands TO hnuhole_c_runtime;

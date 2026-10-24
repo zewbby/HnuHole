@@ -1,3 +1,4 @@
+import '../rate_limit.dart';
 import '../posts/post_protocol.dart';
 import '../posts/post_upload_models.dart';
 
@@ -135,6 +136,7 @@ class CommentJournalEntry {
     List<String>? usedCommandIds,
     this.identityDeleted = false,
     this.rejectionCode,
+    this.rateLimitWait,
   }) : usedCommandIds = List.unmodifiable(usedCommandIds ?? [intent.commandId]);
   final String localId;
   final CommentIntent intent;
@@ -144,6 +146,7 @@ class CommentJournalEntry {
   final List<String> usedCommandIds;
   final bool identityDeleted;
   final String? rejectionCode;
+  final RateLimitWait? rateLimitWait;
   CommentContent? get content =>
       identityDeleted ? null : retainedContent ?? intent.content;
   CommentJournalEntry withState(
@@ -158,6 +161,7 @@ class CommentJournalEntry {
     usedCommandIds: usedCommandIds,
     identityDeleted: identityDeleted,
     rejectionCode: rejectionCode,
+    rateLimitWait: rateLimitWait,
   );
   CommentJournalEntry redactDeletedIdentity() => CommentJournalEntry(
     localId: localId,
@@ -167,6 +171,18 @@ class CommentJournalEntry {
     usedCommandIds: usedCommandIds,
     identityDeleted: true,
     rejectionCode: rejectionCode,
+    rateLimitWait: rateLimitWait,
+  );
+  CommentJournalEntry limited(RateLimitWait? wait) => CommentJournalEntry(
+    localId: localId,
+    intent: intent,
+    transport: CommentTransportState.unknown,
+    task: task,
+    retainedContent: content,
+    usedCommandIds: usedCommandIds,
+    identityDeleted: identityDeleted,
+    rejectionCode: rejectionCode,
+    rateLimitWait: wait,
   );
   CommentJournalEntry rejected(String code) => CommentJournalEntry(
     localId: localId,

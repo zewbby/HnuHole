@@ -1,9 +1,11 @@
 package authprivacyhttp
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"github.com/google/uuid"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -107,6 +109,27 @@ func (b *boundary) communityDMChat(w http.ResponseWriter, r *http.Request, backe
 			if r.URL.RawQuery != "" {
 				b.postBad(w, errMalformed)
 				return
+			}
+			if strings.Contains(path, "/images/") && b.shared != nil {
+				resolver, ok := backend.(SharedSubjectResolver)
+				if !ok {
+					b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+					return
+				}
+				subject, err := resolver.ResolveSharedSubject(r.Context(), bearer)
+				if err != nil {
+					b.postFailure(w, err)
+					return
+				}
+				data, ok := b.readSharedBody(w, r, subject, 14*1024*1024+8192)
+				if !ok {
+					return
+				}
+				if len(data) > 14*1024*1024+8192 {
+					b.postBad(w, errTooLarge)
+					return
+				}
+				r.Body = io.NopCloser(bytes.NewReader(data))
 			}
 			if strings.Contains(path, "/images/") {
 				fields := []string{"identityId", "peerId", "conversationId", "groupId", "position", "groupSize", "mediaId", "sha256", "byteLength", "mimeType", "width", "height", "data", "attempt"}

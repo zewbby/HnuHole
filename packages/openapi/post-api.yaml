@@ -622,7 +622,7 @@ components:
       schema:
         type: integer
         minimum: 1
-        maximum: 300
+        maximum: 86400
     ServerTime:
       required: true
       description: Final C Gate trusted UTC time for this committed response; not an access capability.
@@ -1261,6 +1261,7 @@ components:
               - SESSION_INVALID
               - session_replaced
               - AUTHORIZATION_UNAVAILABLE
+              - SHARED_RATE_UNAVAILABLE
               - SERVICE_UNAVAILABLE
               - RATE_LIMITED
               - PAYLOAD_TOO_LARGE

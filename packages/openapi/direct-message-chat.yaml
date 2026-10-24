@@ -381,6 +381,8 @@ components:
           - CONTACT_UNAVAILABLE
           - POST_IDENTITY_BOUND
           - WAITING_FOR_REPLY
+          - ADMISSION_EXPIRED
+          - COMMAND_CLOSED
           - PENDING_LIMIT
         messageId:
           $ref: '#/components/schemas/Id'

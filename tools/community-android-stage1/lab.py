@@ -151,6 +151,17 @@ def proxy(work):
     server.daemon_threads=True;server.socket=tls.wrap_socket(server.socket,server_side=True)
     server.serve_forever()
 
+def paused_post_worker_overlay(text):
+    # Accept only the two known source spellings; mixed/duplicate or changed
+    # worker expressions must stop the test overlay rather than patch broadly.
+    anchors=('{"posts",countTask(c.PublishAcceptedPosts)}',
+             '{"posts", countTask(c.PublishAcceptedPosts)}')
+    if sum(text.count(anchor) for anchor in anchors)!=1:
+        raise ValueError('expected exactly one recognized post-worker overlay anchor')
+    old=next(anchor for anchor in anchors if anchor in text)
+    new='{"posts",countTask(func(ctx context.Context,n int)(int64,error){if stage1Paused(){return 0,nil};return c.PublishAcceptedPosts(ctx,n)})}'
+    return text.replace(old,new,1)
+
 def overlay(work,source):
     dest=work/'overlay';dest.mkdir()
     helper='''
@@ -172,9 +183,7 @@ func stage1Clock() time.Time {
             old='at := time.Now().UTC().Truncate(time.Microsecond)';assert text.count(old)==1
             text=text.replace(old,'at := stage1Clock().UTC().Truncate(time.Microsecond)').replace('"strings"','"strings"\n "strconv"')+helper
         else:
-            old='{"posts",countTask(c.PublishAcceptedPosts)}';assert text.count(old)==1
-            new='{"posts",countTask(func(ctx context.Context,n int)(int64,error){if stage1Paused(){return 0,nil};return c.PublishAcceptedPosts(ctx,n)})}'
-            text=text.replace(old,new).replace('"context"','"context"\n "os"\n "strings"')+'''
+            text=paused_post_worker_overlay(text).replace('"context"','"context"\n "os"\n "strings"')+'''
 // TEST BUILD ONLY: scheduler pause; resumed work calls the unchanged worker.
 func stage1Paused() bool {
  marker,err:=os.ReadFile("ROOT/OWNER");if err!=nil || strings.TrimSpace(string(marker))!="HNUHOLE_COMMUNITY_ANDROID_STAGE1_V1" {panic("invalid stage1 scheduler owner")}

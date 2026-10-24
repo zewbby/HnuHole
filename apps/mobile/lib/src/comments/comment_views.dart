@@ -1,3 +1,5 @@
+import '../rate_limit_notice.dart';
+
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -289,6 +291,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
       final eligible =
           entry.content != null &&
           !entry.identityDeleted &&
+          entry.rateLimitWait == null &&
           entry.rejectionCode == null &&
           (entry.transport != CommentTransportState.settled ||
               entry.task?.state == CommentTaskState.accepted);
@@ -312,8 +315,11 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         }
       } else if (_localComments.remove(entry.localId) != null &&
           (entry.task?.state == CommentTaskState.failed ||
-              entry.rejectionCode != null)) {
-        _notice = entry.rejectionCode == null
+              entry.rejectionCode != null ||
+              entry.rateLimitWait != null)) {
+        _notice = entry.rateLimitWait != null
+            ? widget.runtime.core.rateLimitMessage
+            : entry.rejectionCode == null
             ? '评论发送失败，可在系统消息中重试。'
             : '评论未能发出，原内容已保留。';
       }
@@ -1789,6 +1795,33 @@ class _CommentPostPaneState extends State<CommentPostPane> {
     return Column(
       children: [
         if (_notice != null) _noticeView(),
+        for (final entry in widget.runtime.core.entries.where(
+          (e) =>
+              e.rateLimitWait != null &&
+              e.intent.binding.postId == widget.postId &&
+              !e.identityDeleted,
+        ))
+          Material(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RateLimitDraftNotice(
+                    remaining: () =>
+                        widget.runtime.core.rateLimitedSeconds(entry),
+                    onRetry: () =>
+                        widget.runtime.core.retryRateLimited(entry.localId),
+                  ),
+                  Text(
+                    entry.content?.body ?? '',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ),
         Expanded(child: content),
       ],
     );

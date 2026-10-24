@@ -3,7 +3,6 @@ package authprivacyhttp
 import (
 	"context"
 	"errors"
-	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -100,9 +99,23 @@ func (b *boundary) communityIdentityAvatar(w http.ResponseWriter, r *http.Reques
 			b.bad(w, errTooLarge)
 			return
 		}
-		data, e := io.ReadAll(io.LimitReader(r.Body, authprivacy.IdentityAvatarMaxBytes+1))
-		if e != nil {
-			b.bad(w, errMalformed)
+		subject := ""
+		if b.shared != nil {
+			resolver, ok := backend.(interface {
+				ResolveIdentityAvatarUploadSubject(context.Context, [32]byte, uuid.UUID) (string, error)
+			})
+			if !ok {
+				b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)
+				return
+			}
+			subject, e = resolver.ResolveIdentityAvatarUploadSubject(r.Context(), token, id)
+			if e != nil {
+				b.identityAvatarFailure(w, e)
+				return
+			}
+		}
+		data, ok := b.readSharedBody(w, r, subject, authprivacy.IdentityAvatarMaxBytes)
+		if !ok {
 			return
 		}
 		if len(data) > authprivacy.IdentityAvatarMaxBytes {

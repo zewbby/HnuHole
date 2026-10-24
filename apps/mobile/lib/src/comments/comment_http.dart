@@ -1,3 +1,5 @@
+import '../rate_limit.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -11,7 +13,8 @@ import 'comment_models.dart';
 import 'comment_protocol.dart';
 
 class CommentHttpFailure implements Exception {
-  const CommentHttpFailure(this.status, this.code);
+  const CommentHttpFailure(this.status, this.code, {this.retryAfterSeconds});
+  final int? retryAfterSeconds;
   final int? status;
   final String code;
 }
@@ -182,6 +185,9 @@ class CommentHttp {
           throw CommentHttpFailure(
             response.statusCode,
             PostJson.text(e, 'code'),
+            retryAfterSeconds: response.statusCode == 429
+                ? parseRetryAfterSeconds(h('retry-after'))
+                : null,
           );
         }
         final at = PostJson.utc(h('server-time')),

@@ -1132,7 +1132,7 @@ components:
       schema:
         type: integer
         minimum: 1
-        maximum: 300
+        maximum: 86400
     SessionExpiresAt:
       required: true
       description: 此次成功裁决后的当前会话到期UTC时间；不包含token或隐私身份。
@@ -1955,7 +1955,7 @@ components:
         retryAfterSeconds:
           type: integer
           minimum: 1
-          maximum: 300
+          maximum: 86400
       required:
       - state
       - retryAfterSeconds
@@ -1967,7 +1967,7 @@ components:
         retryAfterSeconds:
           type: integer
           minimum: 1
-          maximum: 300
+          maximum: 86400
       description: 只含安全的重试时间；不能包含邮箱、槽位、账号归属、密码政策字典或任何密钥材料。
     ErrorBody:
       type: object
@@ -2028,7 +2028,7 @@ components:
                 retryAfterSeconds:
                   type: integer
                   minimum: 1
-                  maximum: 300
+                  maximum: 86400
               description: 只含安全的重试时间；不能包含邮箱、槽位、账号归属、密码政策字典或任何密钥材料。
           required:
           - code

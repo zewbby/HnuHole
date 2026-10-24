@@ -53,6 +53,9 @@ func (b *boundary) emailLoginConfirmation(w http.ResponseWriter, r *http.Request
 	writeJSON(w, 200, map[string]string{"state": result.State, "proof": result.Proof})
 }
 func (b *boundary) emailSession(w http.ResponseWriter, r *http.Request, backend SessionBackend) {
+	if !b.sharedLogin(w, r, "") {
+		return
+	}
 	service, ok := backend.(emailSessionBackend)
 	if !ok {
 		b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)

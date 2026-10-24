@@ -63,7 +63,11 @@ func (b *boundary) communitySessionPublic(w http.ResponseWriter, r *http.Request
 		request := authprivacy.SessionCreateRequest{Username: username, Password: password}
 		copy(request.InstallationID[:], installationRaw)
 		copy(request.IdempotencyKey[:], keyRaw)
+		if !b.sharedLogin(w, r, username) {
+			return
+		}
 		created, err := sessions.CreateSession(r.Context(), request, passwords)
+		b.sharedLoginResult(r, username, err)
 		if err != nil {
 			b.sessionFailure(w, err)
 			return

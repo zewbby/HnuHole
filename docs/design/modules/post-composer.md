@@ -1,5 +1,11 @@
 # 新建帖子
 
+> **2026-10-24 SHARED-RATE-LIMIT-01送审追加：** CI记录时[Draft PR73](https://github.com/zewbby/HnuHole/pull/73)已提交推送，指定Android场景PASS；6e50244远端13workflow/23job全SUCCESS，见[版本化CI证据](../shared-rate-limit-remote-ci-verification.json)。runtime沿原生已测33bdcc0，后续只CI/旧host工具修复；待独立成员review、未合并发布。本次回执编写时纯文档更新CI待新head；CI记录时为Draft，后续检查/送审状态以live PR为准，历史模块总裁决及旧计数不变。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01 Android增量：** 真实429完整草稿及图片/身份/通道恢复、过等待后3秒不自动发表、手动同原键一次受理与SQL原材料匹配已限定PASS。 测试包2433，final-r11四阶段，见[脱敏证据](../shared-rate-limit-device-verification.json)/[任务](../../branches/feat-shared-rate-limit-abuse-control.md)。用户已授权后续PR/远端CI，当前尚未提交PR、remoteCI NOT_RUN；历史模块总裁决不提升，旧未真机描述保留原时点。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01（仅feat/shared-rate-limit-abuse-control，本地未提交/未合并/未部署）：** 429完整持久草稿/原身份/图片任务及等待，用户到期手动同键重试，不自动发表；22字符canonical base64url键解码16字节，不能与内部32字节摘要混淆。post.create独立SW，原SQL120新回执/60秒及128存活任务继续。上传按实际body字节。B05仅本任务限定证据。 [当前任务](../../branches/feat-shared-rate-limit-abuse-control.md) / [配置](../shared-rate-limit-plan.md) / [证据](../shared-rate-limit-verification.json)。旧原文及整模块验收结论保留，未做真机/iOS/生产验收。
+
 更新：2026-10-09。当前规则只在本模块维护。
 
 ## 范围

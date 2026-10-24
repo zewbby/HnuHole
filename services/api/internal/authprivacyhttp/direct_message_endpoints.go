@@ -39,6 +39,11 @@ func dmRoute(path, method string) bool {
 	}
 	if strings.HasPrefix(path, "/api/v1/dm/commands/") {
 		id := strings.TrimPrefix(path, "/api/v1/dm/commands/")
+		if strings.HasSuffix(id, "/close") {
+			id = strings.TrimSuffix(id, "/close")
+			u, e := uuid.Parse(id)
+			return method == "POST" && e == nil && u != uuid.Nil && u.String() == id
+		}
 		u, e := uuid.Parse(id)
 		return e == nil && u != uuid.Nil && u.String() == id && (method == "PUT" || method == "GET")
 	}
@@ -138,7 +143,30 @@ func (b *boundary) communityDM(w http.ResponseWriter, r *http.Request, backend D
 		result, e = backend.AcknowledgeDM(r.Context(), bearer, ids, r.URL.Path == "/api/v1/dm/read")
 	default:
 		id := strings.TrimPrefix(r.URL.Path, "/api/v1/dm/commands/")
-		if r.Method == "GET" {
+		if strings.HasSuffix(id, "/close") {
+			closer, ok := backend.(interface {
+				CloseDMCommand(context.Context, [32]byte, string, int) (authprivacy.PostResponse, error)
+			})
+			if !ok {
+				b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+				return
+			}
+			if r.URL.RawQuery != "" {
+				b.postBad(w, errMalformed)
+				return
+			}
+			object, err := readRequestObject(r, 1024, []string{"attempt"}, nil)
+			if err != nil {
+				b.postBad(w, err)
+				return
+			}
+			attempt, err := integerField(object, "attempt", 1, 1000)
+			if err != nil {
+				b.postBad(w, err)
+				return
+			}
+			result, e = closer.CloseDMCommand(r.Context(), bearer, strings.TrimSuffix(id, "/close"), attempt)
+		} else if r.Method == "GET" {
 			if noBodyOrQuery(r) != nil {
 				b.postBad(w, errMalformed)
 				return

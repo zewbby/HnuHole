@@ -21,6 +21,7 @@ import (
 )
 
 type Community struct {
+	sharedRate        *communityRate
 	pool              *pgxpool.Pool
 	verifier          *protocol.Verifier
 	gate              AuthorizationGate

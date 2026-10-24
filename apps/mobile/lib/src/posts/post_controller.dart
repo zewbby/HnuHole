@@ -1,3 +1,4 @@
+import '../rate_limit.dart';
 import 'personal_collections_api.dart';
 
 import 'dart:async';
@@ -93,6 +94,7 @@ class PersonalPostItem {
   final PostTask? task;
   final PostCard? post;
   bool get isDraft => local?.isDraft ?? false;
+  bool get rateLimitedDraft => local?.data['rateLimitWait'] is Map;
   String get body => task != null
       ? task!.content?.body ?? ''
       : local?.data['body'] as String? ?? '';
@@ -103,6 +105,8 @@ class PersonalPostItem {
       '';
   String get state => post != null
       ? 'PUBLISHED'
+      : rateLimitedDraft
+      ? 'RATE_LIMITED'
       : {
           'submitted',
           'UNKNOWN',
@@ -333,6 +337,7 @@ class PostController extends ChangeNotifier {
   static bool _needsQuery(StoredPostEntry e) =>
       !e.isDraft && {'submitted', 'UNKNOWN', 'ACCEPTED'}.contains(e.state);
   static bool _unresolved(StoredPostEntry e) =>
+      e.data['rateLimitWait'] is Map ||
       {'submitted', 'UNKNOWN', 'RESULT_EXPIRED'}.contains(e.state);
 
   Future<void> retryStorage() async {
@@ -404,7 +409,12 @@ class PostController extends ChangeNotifier {
         return;
       }
       if (error.kind == PostFailureKind.unavailable) {
-        if (authority != null) _sessions.sessionUnavailable(authority.token);
+        if (error.code == 'SHARED_RATE_UNAVAILABLE') {
+          errorMessage = '服务暂不可用，原内容已保存，请稍后重试。';
+          _notify();
+        } else if (authority != null) {
+          _sessions.sessionUnavailable(authority.token);
+        }
         return;
       }
       errorMessage = error.kind == PostFailureKind.rejected
@@ -1319,6 +1329,10 @@ class PostController extends ChangeNotifier {
       };
       await _applyResult(a, entry.id, intent, await _accept(a, response));
     } catch (error) {
+      if (error is PostFailure && error.statusCode == 429 && _current(a)) {
+        await _saveRateLimitedDraft(a, entry.id, error.retryAfterSeconds ?? 1);
+        return;
+      }
       // mutation 的409也先核对原回执；超时、503或写盘失败都不能变成新草稿。
       _failure(error, a, intent.commandId);
       if (_current(a)) unawaited(reconcile(entry.id));
@@ -1326,6 +1340,109 @@ class PostController extends ChangeNotifier {
       _sending.remove(intent.commandId);
       _pending--;
       _notify();
+    }
+  }
+
+  final _retryingRateLimited = <String>{};
+  final _rateLimitWaits = <String, RateLimitWait>{};
+  RateLimitWait _rateWait(String id, Map raw) {
+    final key = '$accountId:$id';
+    final old = _rateLimitWaits[key];
+    if (old != null &&
+        old.recordedAt.toIso8601String() == raw['recordedAt'] &&
+        old.seconds == raw['seconds']) {
+      return old;
+    }
+    if (_rateLimitWaits.length >= 512) {
+      _rateLimitWaits.remove(_rateLimitWaits.keys.first);
+    }
+    return _rateLimitWaits[key] = RateLimitWait.fromJson(raw);
+  }
+
+  int rateLimitedSeconds(String id) {
+    final entry = _local.where((e) => e.id == id).firstOrNull;
+    final raw = entry?.data['rateLimitWait'];
+    return raw is Map ? _rateWait(id, raw).remaining(_clock()) : 0;
+  }
+
+  Future<void> _saveRateLimitedDraft(
+    _PostAuthority a,
+    String id,
+    int seconds,
+  ) async {
+    final latest = await a.store!.get(id);
+    if (!_current(a) || latest == null) return;
+    final data = Map<String, dynamic>.of(latest.data)
+      ..['rateLimitWait'] = RateLimitWait(_clock(), seconds).toJson()
+      ..['mediaUploadPaused'] = true;
+    await a.store!.recordResult(id, latest.revision, latest.state, data);
+    if (!_current(a)) return;
+    errorMessage = rateLimitDraftMessage(seconds);
+    await _refreshLocal(a);
+  }
+
+  /// A user action resumes the original immutable key. An unknown old request
+  /// never turns into a fresh CREATE, even if this attempt received a 429.
+  Future<void> retryRateLimited(String id) async {
+    if (!_retryingRateLimited.add(id)) return;
+    _PostAuthority? a;
+    try {
+      a = await _authority(storage: true);
+      var entry = await a.store!.get(id);
+      if (!_current(a) ||
+          entry == null ||
+          entry.data['rateLimitWait'] is! Map) {
+        return;
+      }
+      final wait = _rateWait(
+        id,
+        entry.data['rateLimitWait'] as Map,
+      ).remaining(_clock());
+      if (wait > 0) {
+        errorMessage = rateLimitDraftMessage(wait);
+        _notify();
+        return;
+      }
+      final intent = entry.intents.last;
+      final result = await _accept(
+        a,
+        await _api.commandResult(
+          sessionToken: a.token,
+          commandId: intent.commandId,
+        ),
+      );
+      if (!_current(a)) return;
+      final data = Map<String, dynamic>.of(entry.data)
+        ..remove('rateLimitWait')
+        ..remove('mediaUploadPaused');
+      entry = await a.store!.recordResult(
+        id,
+        entry.revision,
+        entry.state,
+        data,
+      );
+      if (!_current(a)) return;
+      if (result.state == PostCommandState.unknownNotObserved) {
+        await _send(a, entry);
+      } else {
+        await _applyResult(a, id, intent, result);
+        final latest = await a.store!.get(id);
+        if (_current(a) && latest?.state == 'ACCEPTED') {
+          await resumeImageUpload(id);
+        }
+      }
+      if (_current(a)) await _refreshLocal(a);
+    } catch (error) {
+      if (a != null &&
+          _current(a) &&
+          error is PostFailure &&
+          error.statusCode == 429) {
+        await _saveRateLimitedDraft(a, id, error.retryAfterSeconds ?? 1);
+      } else {
+        _failure(error, a);
+      }
+    } finally {
+      _retryingRateLimited.remove(id);
     }
   }
 
@@ -1350,6 +1467,7 @@ class PostController extends ChangeNotifier {
       if (!_current(a) ||
           entry == null ||
           entry.isDraft ||
+          entry.data['rateLimitWait'] is Map ||
           entry.intents.isEmpty) {
         return;
       }

@@ -239,6 +239,10 @@ func (c *Community) UploadCommentImage(ctx context.Context, b [32]byte, task str
 		return PostResponse{}, e
 	}
 	return c.withCommentSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, d AuthorizationDecision, m restriction) (any, error) {
+		if err := requireSharedPolicyFence(ctx, tx); err != nil {
+			return nil, err
+		}
+
 		t, e := loadCommentTask(ctx, tx, a, task)
 		if e != nil {
 			return nil, e

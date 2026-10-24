@@ -1,3 +1,4 @@
+import '../rate_limit_notice.dart';
 import '../design_system/detail_components.dart';
 import 'x_feed.dart';
 import '../comments/comment_runtime.dart';
@@ -1437,7 +1438,7 @@ class _PersonalCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              if (item.isDraft || failed) ...[
+              if (item.isDraft || item.rateLimitedDraft || failed) ...[
                 Row(
                   children: [
                     Container(
@@ -1701,6 +1702,16 @@ class _PostTaskScreenState extends State<_PostTaskScreen> {
                             : () => widget.controller.reconcile(item.id),
                         child: const Text('核对原操作'),
                       ),
+                      if (item.rateLimitedDraft) ...[
+                        RateLimitDraftNotice(
+                          remaining: () =>
+                              widget.controller.rateLimitedSeconds(item.id),
+                          onRetry: widget.controller.busy
+                              ? null
+                              : () =>
+                                    widget.controller.retryRateLimited(item.id),
+                        ),
+                      ],
                       if ({'SUBMITTED', 'UNKNOWN'}.contains(item.state))
                         TextButton(
                           onPressed: widget.controller.busy
@@ -2569,5 +2580,6 @@ String _localPostState(String state) => switch (state) {
   'CANCELLED' => '已取消',
   'PUBLISHED' => '已发布',
   'DRAFT' => '草稿',
+  'RATE_LIMITED' => '草稿 · 等待后手动重试',
   _ => '结果未知',
 };
