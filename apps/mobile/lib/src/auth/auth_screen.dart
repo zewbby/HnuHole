@@ -78,6 +78,9 @@ class _AuthScreenState extends State<AuthScreen> {
     }
     widget.sessions.addListener(_changed);
     widget.flows.addListener(_changed);
+    if (widget.sessions.status == AuthStatus.unavailable) {
+      _queueErrorDialog('暂时无法进入');
+    }
     _countdown = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted &&
           (widget.flows.otpWaitUntil != null ||
@@ -202,6 +205,27 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _showErrorDialog(String message) {
+    if (widget.sessions.status == AuthStatus.unavailable) {
+      return showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (c) => AlertDialog(
+          title: const Text('暂时无法进入'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(c, false),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(c, true),
+              child: const Text('重试'),
+            ),
+          ],
+        ),
+      ).then((retry) async {
+        if (mounted && retry == true) await widget.sessions.retry();
+      });
+    }
     final friendlyMessage = switch (message) {
       '结果未知，请保留原请求并核对。' =>
         _emailLogin ? '验证码发送或验证结果暂时无法确认，请检查网络后重试。' : '暂时无法确认操作结果，请检查网络后重试。',
@@ -350,19 +374,12 @@ class _AuthScreenState extends State<AuthScreen> {
 
   List<Widget> _content(AuthStatus session, AuthFlowStatus flow) {
     if (session == AuthStatus.starting || session == AuthStatus.restoring) {
-      return const [_Title('正在核对登录状态', '恢复现有会话，不会主动登录或撤销注销申请。')];
+      return const [_Title('正在加载', '请稍候。')];
     }
     if (session == AuthStatus.storageFailure) {
       return [
-        const _Title('安全存储暂不可用', '恢复安全存储后再继续。账号凭据不会写入普通文件。'),
-        _button('重试安全存储', widget.sessions.retry),
-      ];
-    }
-    if (session == AuthStatus.unavailable) {
-      return [
-        const _Title('暂时无法核对会话', '已保留安全存储中的会话。服务恢复后重试，不需要重新注册。'),
-        _button('重新核对会话', widget.sessions.retry),
-        _secondary('退出本机', widget.sessions.logout),
+        const _Title('暂时无法加载', '请稍后重试。'),
+        _button('重试', widget.sessions.retry),
       ];
     }
     if (session == AuthStatus.authenticated) {

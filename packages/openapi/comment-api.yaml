@@ -326,6 +326,13 @@ paths:
         '404':
           $ref: '#/components/responses/Error'
       parameters:
+      - name: sort
+        in: query
+        description: Initial main-comment request only; omit with cursor. Relevant keeps the existing top-ten likes then chronological order; recent is newest first; likes sorts all roots by likes. Cursor preserves the captured order.
+        schema:
+          type: string
+          enum: [relevant, recent, likes]
+          default: relevant
       - $ref: '#/components/parameters/Cursor'
   /api/v1/posts/{postId}/comments/{rootCommentId}/replies:
     parameters:

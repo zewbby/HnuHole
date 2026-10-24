@@ -1,4 +1,151 @@
 {
+  "postDetailComments20261024": {
+    "task": "POST-DETAIL-COMMENTS-01",
+    "modules": [
+      "B06",
+      "B07"
+    ],
+    "branch": "codex/feat/post-detail-comments",
+    "base": "cda337c43cf5d0e5793351577f7054ec552fb6d5",
+    "implementation": "LOCAL_UNCOMMITTED",
+    "analysisIssues": 0,
+    "focusedFlutterTests": {
+      "status": "PASS",
+      "passed": 84
+    },
+    "componentVisuals": "PASS_SYNTHETIC_DATA_SIMULATED_KEYBOARD",
+    "goDomainAndHostTests": "PASS_DATABASE_CASES_SKIPPED_WITHOUT_DSN",
+    "goBuildVet": "PASS",
+    "openApiContracts": "PASS",
+    "nativeDeviceAcceptance": "PASS_LIMITED_SEE_VERSIONED_VIDEO_FOLLOWUP",
+    "realSQL": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "merged": false,
+    "released": false,
+    "historicalModuleVerdictsUnchanged": true,
+    "evidence": "docs/branches/feat-post-detail-comments.md",
+    "galleryAvatarFollowup": {
+      "implementation": "LOCAL_UNCOMMITTED",
+      "focusedTests": {
+        "status": "PASS",
+        "passed": 42
+      },
+      "analysisIssues": 0,
+      "deviceVisualAcceptance": "PENDING_USER_REVIEW",
+      "scope": "Unified image/GIF picker; stable speaking identity; cancel gallery collapses dock with draft preserved; safe-area layout",
+      "androidBuild": "PASS",
+      "vivoInstallation": "PASS_VERSION_2026102415"
+    },
+    "videoFollowup": {
+      "implementation": "LOCAL_UNCOMMITTED",
+      "analysisIssues": 0,
+      "hostTestRuns": [
+        100,
+        46,
+        101,
+        79,
+        42
+      ],
+      "testCountsOverlap": true,
+      "nativeDeviceAcceptance": "PASS_LIMITED_SEE_VERSIONED_EVIDENCE",
+      "finalVersionCode": 2026102424,
+      "performance": "PASS_LIMITED_2419_VS_2424_SAME_DEVICE_PROTOCOL_SEE_EVIDENCE",
+      "evidence": "docs/design/post-detail-comments-video-verification-20261024.json",
+      "backendSortDeployment": "NOT_RUN",
+      "historicalModuleVerdictsUnchanged": true,
+      "sourceHashesVerified": true,
+      "failureNotification": "SYSTEM_MESSAGES_ONLY_GLOBAL_BANNER_REMOVED"
+    },
+    "eightIssueAudit": {
+      "date": "2026-10-24",
+      "versionCode": 2026102427,
+      "allEightHaveFixes": true,
+      "status": "PASS_LIMITED_SPECIFIED_FLOWS",
+      "limitedPassItems": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "partiallyResolvedItems": [],
+      "scope": "Versioned host and native evidence listed in report. Publication/count evidence is native 2418 plus current regressions; error faults are host-injected; performance is short single-vivo comparison, not universal acceptance. Further realme 2427 weak-network and 20-minute specified native flow acceptance recorded under weakSoakFollowup.",
+      "remainingValidation": [
+        "Full native network/image-failure combinations",
+        "Detail-entry end-to-end latency, long-running and low-end-device performance",
+        "iOS"
+      ],
+      "report": "docs/design/post-detail-comments-status-report-20261024.md"
+    },
+    "history2419": {
+      "videoFollowup": {
+        "implementation": "LOCAL_UNCOMMITTED",
+        "analysisIssues": 0,
+        "hostTestRuns": [
+          72,
+          81,
+          28
+        ],
+        "testCountsOverlap": true,
+        "nativeDeviceAcceptance": "PASS_LIMITED_SEE_VERSIONED_EVIDENCE",
+        "finalVersionCode": 2026102419,
+        "performance": "PARTIAL_SHORT_SAMPLE_HAS_SLOW_FRAMES",
+        "evidence": "docs/design/post-detail-comments-video-verification-20261024.json",
+        "backendSortDeployment": "NOT_RUN",
+        "historicalModuleVerdictsUnchanged": true
+      },
+      "eightIssueAudit": {
+        "date": "2026-10-24",
+        "allEightResolved": false,
+        "limitedPassItems": [
+          1,
+          2,
+          4,
+          5,
+          6,
+          7
+        ],
+        "partiallyResolvedItems": [
+          3,
+          8
+        ],
+        "openWork": {
+          "3": "Other error snackbars still use the default presentation; button avoidance and failure-path device verification remain incomplete.",
+          "8": "Some layout shifts fixed, but slow frames and detail-entry waits remain; final performance acceptance incomplete."
+        },
+        "report": "docs/design/post-detail-comments-status-report-20261024.md"
+      }
+    },
+    "optimisticSubmissionFollowup": {
+      "implementation": "LOCAL_UNCOMMITTED_SOURCE_FROZEN",
+      "hostTests": 117,
+      "analysisIssues": 0,
+      "nativeDeviceAcceptance": "NOT_RUN_THIS_SNAPSHOT_UNIFIED_PACKAGE_PENDING",
+      "built": false,
+      "installed": false,
+      "evidence": "docs/design/post-detail-comment-optimistic-submit-20261024.json"
+    },
+    "weakSoakFollowup": {
+      "status": "PASS_LIMITED_WEAK_NETWORK_AND_ACTIVE_NATIVE_SOAK",
+      "versionCode": 2026102427,
+      "device": "realme RMX3366",
+      "durationSeconds": 1218.8,
+      "cycles": 28,
+      "counts": {
+        "pickerCancel": 28,
+        "imageViewerReturn": 28,
+        "detailReentry": 9,
+        "backgroundResume": 7,
+        "transientDisconnect": 5
+      },
+      "evidence": "E:\\Hnuhole-env\\comment-reference-20261024\\realme-weak-20261024\\realme-2427-weak-soak-verification.json",
+      "report": "docs/design/post-detail-comments-weak-soak-20261024.md",
+      "nativeMutations": "PASS_SINGLE_TEST_COMMENT_PUBLISHED_CONFIRMED_AND_DELETED_ORIGINALS_RETAINED"
+    }
+  },
   "feedScrollSmile20261023": {
     "task": "FEED-SCROLL-SMILE-01",
     "modules": [

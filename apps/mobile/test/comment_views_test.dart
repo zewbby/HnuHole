@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -155,9 +158,18 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
   final ownIds = <String>[];
   bool bound = true;
   bool hideIdentity = false;
+  Completer<void>? identityGate;
+  final contextReads = <Completer<Map<String, dynamic>>>[];
+  List<ManagedIdentity> extraIdentities = [];
   String? removed;
   Object? loadFailure;
   Object? replyFailure;
+  Object? locationFailure;
+  Completer<void>? locationGate;
+  final replyRequests = <String>[];
+  Object? singleFailure;
+  int locationRequests = 0;
+  final commentQueries = <Map<String, String>?>[];
   bool moreReplies = false;
   Completer<void>? pageGate;
   List<Map<String, dynamic>> rootRows = [row(root, '甲的主评论')];
@@ -171,27 +183,36 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
   }
 
   @override
-  Future<Map<String, dynamic>> contextFor(String _) async => {
-    'boundIdentityId': bound ? identity : null,
-    'ownCommentIds': ownIds,
-    'totalCount': 2,
-  };
+  Future<Map<String, dynamic>> contextFor(String _) async {
+    if (contextReads.isNotEmpty) return contextReads.removeAt(0).future;
+    return {
+      'boundIdentityId': bound ? identity : null,
+      'ownCommentIds': ownIds,
+      'totalCount': 2,
+    };
+  }
+
   @override
-  Future<IdentityDirectory> directory() async => IdentityDirectory(
-    identities: [
-      if (!hideIdentity)
-        ManagedIdentity(
-          id: identity,
-          nickname: '固定身份',
-          avatar: 'default-v1',
-          isOriginal: false,
-          createdAt: DateTime.utc(2026),
-        ),
-    ],
-    createdCount: 1,
-    serverTime: DateTime.utc(2026),
-    sessionExpiresAt: DateTime.utc(2027),
-  );
+  Future<IdentityDirectory> directory() async {
+    await identityGate?.future;
+    return IdentityDirectory(
+      identities: [
+        ...extraIdentities,
+        if (!hideIdentity)
+          ManagedIdentity(
+            id: identity,
+            nickname: '固定身份',
+            avatar: 'default-v1',
+            isOriginal: false,
+            createdAt: DateTime.utc(2026),
+          ),
+      ],
+      createdCount: 1,
+      serverTime: DateTime.utc(2026),
+      sessionExpiresAt: DateTime.utc(2027),
+    );
+  }
+
   @override
   Future<Map<String, dynamic>> request(
     String method,
@@ -201,14 +222,24 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
     dynamic bytes,
     String? mime,
   }) async {
+    if (path.endsWith('/comments')) commentQueries.add(query);
     if (path.endsWith('/comments') && pageGate != null) await pageGate!.future;
     if (loadFailure != null) throw loadFailure!;
+    if (path.endsWith('/replies')) replyRequests.add(path);
     if (path.endsWith('/replies') && replyFailure != null) throw replyFailure!;
-    if (path.endsWith('/location')) return {'cursor': 'location'};
+    if (path.endsWith('/location')) {
+      locationRequests++;
+      await locationGate?.future;
+      if (locationFailure != null) throw locationFailure!;
+      return {'cursor': 'location'};
+    }
     final single = rootRows
         .where((r) => path.endsWith('/${r['id']}'))
         .firstOrNull;
-    if (single != null) return single;
+    if (single != null) {
+      if (singleFailure != null) throw singleFailure!;
+      return single;
+    }
     return path.endsWith('/replies')
         ? {
             'snapshotId': 'snapshot',
@@ -230,6 +261,7 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
 }
 
 void main() {
+  detailReferenceTests();
   quickReplyTests();
   testWidgets(
     'real root and reply rows open report forms for their concrete comment',
@@ -905,7 +937,9 @@ void quickReplyTests() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('real continuous detail registers a visible body once', (tester) async {
+  testWidgets('real continuous detail registers a visible body once', (
+    tester,
+  ) async {
     final f = await interactions.fixture();
     addTearDown(f.dispose);
     final r = await runtime(tester);
@@ -916,7 +950,15 @@ void quickReplyTests() {
     await tester.pumpAndSettle();
     expect(find.byType(PostDetailScreen), findsOneWidget);
     expect(f.api.calls.where((c) => c == 'view:${feed.postId}'), hasLength(1));
-    await tester.drag(find.byType(SingleChildScrollView).first, const Offset(0, -300));
+    await tester.drag(
+      find
+          .descendant(
+            of: find.byType(CommentPostPane),
+            matching: find.byType(ListView),
+          )
+          .first,
+      const Offset(0, -300),
+    );
     await tester.pumpAndSettle();
     expect(f.api.calls.where((c) => c == 'view:${feed.postId}'), hasLength(1));
     await tester.pumpWidget(const SizedBox());
@@ -988,15 +1030,21 @@ void quickReplyTests() {
       await tester.pumpAndSettle();
       expect(find.text('发布你的回复'), findsOneWidget);
       expect(find.text('收起评论'), findsNothing);
-      expect(find.text('甲的主评论'), findsOneWidget);
+      expect(r.commentQueries, isNotEmpty);
       final entryY = tester.getTopLeft(find.text('发布你的回复')).dy;
       await tester.drag(
-        find.byType(SingleChildScrollView).first,
+        find
+            .descendant(
+              of: find.byType(CommentPostPane),
+              matching: find.byType(ListView),
+            )
+            .first,
         const Offset(0, -600),
       );
       await tester.pumpAndSettle();
       expect(tester.getTopLeft(find.text('发布你的回复')).dy, entryY);
       expect(bodyScrolls, greaterThan(0));
+      expect(find.text('甲的主评论'), findsOneWidget);
       await tester.tap(find.text('发布你的回复'));
       await tester.pumpAndSettle();
       expect(find.byType(CommentComposer), findsOneWidget);
@@ -1226,4 +1274,1040 @@ class _ReportApi implements GovernanceApi {
     'items': <Object>[],
     'nextBefore': null,
   }, identityTestRenewed);
+}
+
+class _GifPicker implements PostPhotoPicker {
+  _GifPicker(this.bytes);
+  final Uint8List bytes;
+  int calls = 0;
+  @override
+  Future<List<PostPickedFile>> pick(int limit) async {
+    calls++;
+    return [
+      PostPickedFile(
+        length: () async => bytes.length,
+        openRead: () => Stream.value(bytes),
+      ),
+    ];
+  }
+
+  @override
+  Future<void> discardUnboundLostSelection() async {}
+}
+
+class _CancelPicker implements PostPhotoPicker {
+  final result = Completer<List<PostPickedFile>>();
+  @override
+  Future<List<PostPickedFile>> pick(int limit) => result.future;
+  @override
+  Future<void> discardUnboundLostSelection() async {}
+}
+
+void detailReferenceTests() {
+  Future<_Runtime> runtime(WidgetTester tester) async {
+    final r = _Runtime(_MemoryJournal());
+    await r.core.activate(account);
+    addTearDown(() {
+      r.core.dispose();
+      r.dispose();
+    });
+    return r;
+  }
+
+  Future<void> openOptimistic(
+    WidgetTester tester,
+    _Runtime r, {
+    ValueChanged<int>? onTotal,
+  }) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CommentPostPane(
+            runtime: r,
+            postId: post,
+            postBody: '正文',
+            continuous: true,
+            body: const Text('正文'),
+            onTotalChanged: onTotal,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets(
+    'submission is first before any network result with no sending label',
+    (tester) async {
+      final r = await runtime(tester);
+      final counts = <int>[];
+      await openOptimistic(tester, r, onTotal: counts.add);
+      r.transportFake.pending = Completer<CommentTask>();
+      final send = r.core.submit(
+        taskId: reply,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '立即出现在第一条'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('立即出现在第一条'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('立即出现在第一条')).dy,
+        lessThan(tester.getTopLeft(find.text('甲的主评论')).dy),
+      );
+      expect(find.textContaining('发送中'), findsNothing);
+      expect(find.text('正在发送评论…'), findsNothing);
+      expect(counts.last, 3);
+      r.transportFake.pending!.complete(
+        CommentTask(
+          taskId: reply,
+          binding: r.transportFake.sent!.binding,
+          attemptVersion: 1,
+          state: CommentTaskState.accepted,
+          contentAvailable: true,
+          canRetry: false,
+          canAbandon: false,
+        ),
+      );
+      await send;
+      await tester.pumpAndSettle();
+      expect(find.text('立即出现在第一条'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'published result replaces first row once without success action',
+    (tester) async {
+      final r = await runtime(tester);
+      final counts = <int>[];
+      await openOptimistic(tester, r, onTotal: counts.add);
+      r.transportFake.pending = Completer<CommentTask>();
+      final send = r.core.submit(
+        taskId: reply,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '保持第一条'),
+      );
+      await tester.pumpAndSettle();
+      final before = tester.getTopLeft(find.text('保持第一条')).dy;
+      r.rootRows.add(row(reply, '保持第一条')..['replyCount'] = 0);
+      r.ownIds.add(reply);
+      r.transportFake.pending!.complete(
+        CommentTask(
+          taskId: reply,
+          binding: r.transportFake.sent!.binding,
+          attemptVersion: 1,
+          state: CommentTaskState.published,
+          commentId: reply,
+          contentAvailable: false,
+          canRetry: false,
+          canAbandon: false,
+        ),
+      );
+      await send;
+      await tester.pumpAndSettle();
+      expect(find.text('保持第一条'), findsOneWidget);
+      expect(tester.getTopLeft(find.text('保持第一条')).dy, closeTo(before, 2));
+      expect(
+        tester.getTopLeft(find.text('保持第一条')).dy,
+        lessThan(tester.getTopLeft(find.text('甲的主评论')).dy),
+      );
+      expect(find.text('评论已发送，点击刷新查看'), findsNothing);
+      expect(find.text('正在发送评论…'), findsNothing);
+      expect(counts.last, 2);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'confirmed failure removes local row and reminds with original material retained',
+    (tester) async {
+      final r = await runtime(tester);
+      await openOptimistic(tester, r);
+      r.transportFake.pending = Completer<CommentTask>();
+      final send = r.core.submit(
+        taskId: reply,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '失败保留的原文'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('失败保留的原文'), findsOneWidget);
+      r.transportFake.pending!.complete(
+        CommentTask(
+          taskId: reply,
+          binding: r.transportFake.sent!.binding,
+          attemptVersion: 1,
+          state: CommentTaskState.failed,
+          failureCode: 'PUBLICATION_FAILED',
+          contentAvailable: true,
+          canRetry: true,
+          canAbandon: true,
+        ),
+      );
+      await send;
+      await tester.pumpAndSettle();
+      expect(find.text('失败保留的原文'), findsNothing);
+      expect(find.text('评论发送失败，可在系统消息中重试。'), findsOneWidget);
+      expect(r.core.failures.single.content!.body, '失败保留的原文');
+      expect(find.byType(SnackBar), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'unknown transport keeps one local row without inventing failure',
+    (tester) async {
+      final r = await runtime(tester);
+      await openOptimistic(tester, r);
+      r.transportFake.executeFailure = const CommentHttpFailure(
+        null,
+        'TIMEOUT',
+      );
+      await r.core.submit(
+        taskId: reply,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '等待原任务核对'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('等待原任务核对'), findsOneWidget);
+      expect(find.byKey(const ValueKey('comment-notice')), findsNothing);
+      expect(find.textContaining('发送中'), findsNothing);
+      expect(r.core.entries.single.transport, CommentTransportState.unknown);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'failed local persistence neither inserts a row nor calls network',
+    (tester) async {
+      final r = await runtime(tester);
+      await openOptimistic(tester, r);
+      (r.journal as _MemoryJournal).failWrite = true;
+      await expectLater(
+        r.core.submit(
+          taskId: reply,
+          commandId: commentKey(),
+          binding: CommentBinding(postId: post, identityId: identity),
+          content: CommentContent(body: '存储失败不冒充已提交'),
+        ),
+        throwsStateError,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('存储失败不冒充已提交'), findsNothing);
+      expect(r.transportFake.sent, isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'inline identity stays visible while revalidating and survives collapse',
+    (tester) async {
+      final r = await runtime(tester);
+      r.bound = false;
+      r.extraIdentities = [
+        ManagedIdentity(
+          id: reply,
+          nickname: '原始身份',
+          avatar: 'default-v1',
+          isOriginal: true,
+          createdAt: DateTime.utc(2026),
+        ),
+      ];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      r.identityGate = Completer<void>();
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pump();
+      DetailAvatar avatar() => tester.widget<DetailAvatar>(
+        find.descendant(
+          of: find.byTooltip('发言身份'),
+          matching: find.byType(DetailAvatar),
+        ),
+      );
+      expect(avatar().name, '原始身份');
+      expect(
+        tester
+            .widget<FilledButton>(find.widgetWithText(FilledButton, '回复'))
+            .onPressed,
+        isNull,
+      );
+      r.identityGate!.complete();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('发言身份'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('固定身份'));
+      await tester.pumpAndSettle();
+      expect(avatar().name, '固定身份');
+      await tester.tap(find.byTooltip('展开回复输入'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('收起回复'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      expect(avatar().name, '固定身份');
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  for (final withDraft in [false, true]) {
+    testWidgets('cancel gallery restores collapsed dock withDraft=$withDraft', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      tester.view.padding = const FakeViewPadding(bottom: 24);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPadding);
+      addTearDown(tester.view.resetViewInsets);
+      final r = await runtime(tester);
+      final picker = _CancelPicker();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              photoPicker: picker,
+              body: const Text('正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      if (withDraft) {
+        await tester.tap(find.text('发布你的回复'));
+        await tester.pumpAndSettle();
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const ValueKey('inline-comment-input')),
+          '保留草稿',
+        );
+        await tester.pumpAndSettle();
+        final avatar = tester.getRect(find.byTooltip('发言身份'));
+        final toolbar = tester.getRect(find.byTooltip('选择一张图片'));
+        expect(avatar.bottom, lessThanOrEqualTo(toolbar.top));
+      }
+      await tester.tap(find.byTooltip('选择一张图片'));
+      await tester.pump();
+      tester.view.resetViewInsets();
+      await tester.pump();
+      picker.result.complete([]);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('inline-comment-input')), findsNothing);
+      expect(find.text(withDraft ? '继续输入' : '发布你的回复'), findsOneWidget);
+      expect(find.byTooltip('选择 GIF'), findsNothing);
+      if (withDraft) {
+        await tester.tap(find.text('继续输入'));
+        await tester.pumpAndSettle();
+        expect(find.text('保留草稿'), findsOneWidget);
+      }
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+
+  testWidgets(
+    'reopening a post does not replay historical publication or toast over input',
+    (tester) async {
+      final r = await runtime(tester);
+      r.transportFake.publishedId = root;
+      await r.core.submit(
+        taskId: root,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '历史评论'),
+      );
+      r.locationFailure = const CommentHttpFailure(404, 'NOT_FOUND');
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      r.notifyListeners();
+      await tester.pumpAndSettle();
+      expect(r.locationRequests, 0);
+      expect(find.byType(SnackBar), findsNothing);
+      expect(
+        find.byKey(const ValueKey('inline-comment-input')),
+        findsOneWidget,
+      );
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  for (final status in [403, 404]) {
+    testWidgets(
+      'explicit unavailable location $status does not claim deletion',
+      (tester) async {
+        final r = await runtime(tester);
+        r.locationFailure = CommentHttpFailure(status, 'NOT_FOUND');
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: CommentPostPane(
+                runtime: r,
+                postId: post,
+                postBody: '正文',
+                continuous: true,
+                initialCommentId: root,
+                body: const Text('正文'),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('评论已经删除'), findsNothing);
+        expect(find.text('这条评论暂时无法查看。'), findsOneWidget);
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
+  }
+
+  for (final scale in [1.0, 2.0]) {
+    testWidgets('failed location never covers composer at text scale $scale', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewInsets);
+      final r = await runtime(tester);
+      r.locationGate = Completer<void>();
+      r.locationFailure = const CommentHttpFailure(500, 'TEMPORARY_FAILURE');
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: HhTelegramTheme.create(Brightness.light),
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: TextScaler.linear(scale)),
+            child: child!,
+          ),
+          home: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              initialCommentId: root,
+              overlayComposer: true,
+              body: const Text('正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('inline-comment-input')),
+        '保留草稿',
+      );
+      r.locationGate!.complete();
+      await tester.pumpAndSettle();
+      for (final keyboard in [0.0, 280.0]) {
+        tester.view.viewInsets = FakeViewPadding(bottom: keyboard);
+        await tester.pumpAndSettle();
+        expect(find.text('暂时无法定位，请重试。'), findsOneWidget);
+        expect(find.byType(SnackBar), findsNothing);
+        final notice = tester.getRect(
+          find.byKey(const ValueKey('comment-notice')),
+        );
+        for (final action in [
+          find.byTooltip('选择一张图片'),
+          find.widgetWithText(FilledButton, '回复'),
+        ]) {
+          expect(action.hitTestable(), findsOneWidget);
+          expect(notice.overlaps(tester.getRect(action)), isFalse);
+          expect(
+            tester.getRect(action).bottom,
+            lessThanOrEqualTo(800 - keyboard),
+          );
+        }
+        expect(find.text('保留草稿'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      }
+      await tester.tap(find.byTooltip('展开回复输入'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('选择一张图片').hitTestable(), findsOneWidget);
+      expect(
+        find.widgetWithText(FilledButton, '回复').hitTestable(),
+        findsOneWidget,
+      );
+      await tester.tap(find.byTooltip('关闭提示'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('comment-notice')), findsNothing);
+      expect(find.text('保留草稿'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+
+  testWidgets(
+    'keyboard moves the composer without resizing or scrolling the reading viewport',
+    (tester) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewInsets);
+      final r = await runtime(tester);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              overlayComposer: true,
+              body: const SizedBox(
+                key: ValueKey('measured-body'),
+                height: 900,
+                child: Text('正文'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final viewport = tester.getSize(find.byType(ListView));
+      final bodyY = tester
+          .getTopLeft(find.byKey(const ValueKey('measured-body')))
+          .dy;
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      for (final inset in [120.0, 200.0, 280.0]) {
+        tester.view.viewInsets = FakeViewPadding(bottom: inset);
+        await tester.pump();
+        expect(tester.getSize(find.byType(ListView)), viewport);
+        expect(
+          tester.getTopLeft(find.byKey(const ValueKey('measured-body'))).dy,
+          bodyY,
+        );
+        expect(
+          tester.getBottomLeft(find.byType(CommentComposer)).dy,
+          closeTo(800 - inset, .1),
+        );
+      }
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('选择一张图片').hitTestable(), findsOneWidget);
+      expect(
+        find.widgetWithText(FilledButton, '回复').hitTestable(),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'offscreen reply previews do not block the page or issue one request per row',
+    (tester) async {
+      final r = await runtime(tester);
+      r.replyFailure = const CommentHttpFailure(500, 'TEMPORARY_FAILURE');
+      r.rootRows = [
+        for (var i = 1; i <= 40; i++)
+          row(
+            '77777777-7777-4777-8777-${i.toString().padLeft(12, '0')}',
+            '评论$i',
+          ),
+      ];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const SizedBox(height: 1600, child: Text('正文')),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(r.replyRequests, isEmpty);
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+      await tester.drag(find.byType(ListView), const Offset(0, -1500));
+      await tester.pumpAndSettle();
+      expect(r.replyRequests.length, inInclusiveRange(1, 15));
+      expect(find.text('回复暂时无法读取，请重试。'), findsOneWidget);
+      expect(find.byTooltip('选择一张图片').hitTestable(), findsOneWidget);
+      expect(find.text('重试回复'), findsWidgets);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'long continuous thread lays out only nearby rows and locates a distant row',
+    (tester) async {
+      final r = await runtime(tester);
+      r.rootRows = [
+        for (var i = 1; i <= 100; i++)
+          row(
+            '77777777-7777-4777-8777-${i.toString().padLeft(12, '0')}',
+            '评论$i',
+          )..['replyCount'] = 0,
+      ];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(CommentBody).evaluate().length, lessThan(20));
+      expect(find.text('评论100'), findsNothing);
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CommentBody).evaluate().length, lessThan(20));
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              initialCommentId: r.rootRows[79]['id'] as String,
+              body: const SizedBox(height: 900, child: Text('正文')),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('评论80').hitTestable(), findsOneWidget);
+      expect(find.byType(CommentBody).evaluate().length, lessThan(25));
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'comment reads start while detail is pending without enabling premature input',
+    (tester) async {
+      final f = await interactions.fixture();
+      addTearDown(f.dispose);
+      final r = await runtime(tester);
+      await tester.pumpWidget(CommentScope(runtime: r, child: feed.screen(f)));
+      await tester.pumpAndSettle();
+      f.api.detailWait = Completer<PostResponse<PostDetail>>();
+      await tester.tap(find.text(feed.post().title).first);
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pump();
+      expect(r.commentQueries, hasLength(1));
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pump();
+      expect(find.byType(CommentComposer), findsNothing);
+      final p = feed.post();
+      f.api.detailWait!.complete(
+        feed.reply(
+          PostDetail(
+            postId: p.postId,
+            channelId: p.channelId,
+            title: p.title,
+            body: p.body,
+            author: p.author,
+            publishedAt: p.publishedAt,
+            imageCount: p.imageCount,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(r.commentQueries, hasLength(1));
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CommentComposer), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'background publication location failure never interrupts input',
+    (tester) async {
+      final r = await runtime(tester);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('inline-comment-input')),
+        '继续输入',
+      );
+      r.singleFailure = const CommentHttpFailure(404, 'NOT_FOUND');
+      r.transportFake.publishedId = root;
+      await r.core.submit(
+        taskId: root,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '此前提交'),
+      );
+      await tester.pumpAndSettle();
+      expect(r.locationRequests, 0);
+      expect(find.byType(SnackBar), findsNothing);
+      expect(find.text('继续输入'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'published comment appears in the open list without location lookup',
+    (tester) async {
+      final r = await runtime(tester);
+      r.rootRows = [];
+      final counts = <int>[];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('正文'),
+              onTotalChanged: counts.add,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      r.transportFake.pending = Completer<CommentTask>();
+      final sent = r.core.submit(
+        taskId: root,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '新发评论'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('正在发送评论…'), findsNothing);
+      expect(find.text('新发评论'), findsOneWidget);
+      expect(find.text('暂无评论'), findsNothing);
+      r.rootRows = [row(root, '新发评论')..['replyCount'] = 0];
+      r.locationFailure = const CommentHttpFailure(404, 'NOT_FOUND');
+      r.transportFake.pending!.complete(
+        CommentTask(
+          taskId: root,
+          binding: CommentBinding(postId: post, identityId: identity),
+          attemptVersion: 1,
+          state: CommentTaskState.published,
+          commentId: root,
+          contentAvailable: false,
+          canRetry: false,
+          canAbandon: false,
+        ),
+      );
+      await sent;
+      await tester.pumpAndSettle();
+      expect(find.text('新发评论'), findsOneWidget);
+      expect(counts.last, 2);
+      expect(find.text('正在发送评论…'), findsNothing);
+      expect(r.locationRequests, 0);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'late context from before publication cannot regress count or ownership',
+    (tester) async {
+      final r = await runtime(tester);
+      final oldContext = Completer<Map<String, dynamic>>();
+      r.contextReads.add(oldContext);
+      r.rootRows = [row(root, '新发评论')..['replyCount'] = 0];
+      final counts = <int>[];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('正文'),
+              onTotalChanged: counts.add,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      r.ownIds.add(root);
+      r.transportFake.publishedId = root;
+      await r.core.submit(
+        taskId: root,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '新发评论'),
+      );
+      await tester.pumpAndSettle();
+      expect(counts.last, 2);
+      oldContext.complete({
+        'boundIdentityId': null,
+        'ownCommentIds': <String>[],
+        'totalCount': 0,
+      });
+      await tester.pumpAndSettle();
+      expect(counts.last, 2);
+      await tester.tap(find.byTooltip('评论操作'));
+      await tester.pumpAndSettle();
+      expect(find.text('删除'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'reference composer and sort fit a small screen with large text and keyboard',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewInsets);
+      final r = await runtime(tester);
+      await tester.pumpWidget(
+        MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(2)),
+            child: child!,
+          ),
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('正文'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('相关'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.text('最近'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      tester.view.viewInsets = const FakeViewPadding(bottom: 250);
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('inline-comment-input')),
+        '大字号输入不会溢出',
+      );
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+      expect(find.byTooltip('展开回复输入').hitTestable(), findsOneWidget);
+      await tester.tap(find.byTooltip('展开回复输入'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('缩小回复输入'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'reference sort sheet requests fresh server ordering and keeps input draft',
+    (tester) async {
+      final r = await runtime(tester);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('正文与操作栏'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('相关'), findsOneWidget);
+      expect(find.byTooltip('选择 GIF'), findsNothing);
+      await tester.tap(find.text('相关'));
+      await tester.pumpAndSettle();
+      expect(find.text('对回复排序'), findsOneWidget);
+      for (final label in ['最近', '最相关', '最多点赞']) {
+        expect(find.text(label), findsOneWidget);
+      }
+      await tester.tap(find.text('最近'));
+      await tester.pumpAndSettle();
+      expect(r.commentQueries.last, {'sort': 'recent'});
+      await tester.tap(find.text('最近'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('最多点赞'));
+      await tester.pumpAndSettle();
+      expect(r.commentQueries.last, {'sort': 'likes'});
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      final input = find.byKey(const ValueKey('inline-comment-input'));
+      await tester.enterText(input, '保留这条草稿');
+      await tester.tap(find.byTooltip('展开回复输入'));
+      await tester.pumpAndSettle();
+      expect(find.text('保留这条草稿'), findsOneWidget);
+      await tester.tap(find.byTooltip('收起回复'));
+      await tester.pumpAndSettle();
+      expect(find.text('继续输入'), findsOneWidget);
+      await tester.tap(find.text('继续输入'));
+      await tester.pumpAndSettle();
+      expect(find.text('保留这条草稿'), findsOneWidget);
+      tester.view.viewInsets = const FakeViewPadding(bottom: 200);
+      await tester.pumpAndSettle();
+      tester.view.resetViewInsets();
+      await tester.pumpAndSettle();
+      expect(find.text('继续输入'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'inline reply keeps concrete target and journals without popping the post',
+    (tester) async {
+      final r = await runtime(tester);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CommentPostPane(
+              runtime: r,
+              postId: post,
+              postBody: '正文',
+              continuous: true,
+              body: const Text('原帖仍在'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('乙回复甲的具体内容'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('inline-comment-input')),
+        '对具体回复继续回复',
+      );
+      await tester.pump();
+      await tester.tap(find.widgetWithText(FilledButton, '回复'));
+      await tester.pumpAndSettle();
+      expect(r.transportFake.sent!.binding.targetCommentId, reply);
+      expect(r.transportFake.sent!.binding.rootCommentId, root);
+      expect(find.text('原帖仍在'), findsOneWidget);
+      expect(find.byKey(const ValueKey('inline-comment-input')), findsNothing);
+      expect(find.text('发布你的回复'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'image button selects previews removes and submits original GIF',
+    (tester) async {
+      final r = await runtime(tester);
+      final data = jsonDecode(
+        File('test/fixtures/post-media-v1.json').readAsStringSync(),
+      ) as Map;
+      final bytes = base64Decode(data['originalBase64']);
+      final picker = _GifPicker(bytes);
+      final originals = <String, Uint8List>{};
+      final editor = CommentEditor(CommentTarget(postId: post));
+      var submitted = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              height: 260,
+              child: CommentComposer(
+                runtime: r,
+                editor: editor,
+                originals: originals,
+                contextText: '正文',
+                docked: true,
+                photoPicker: picker,
+                onSubmitted: () => submitted = true,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.runAsync(() async {
+        await tester.tap(find.byTooltip('选择一张图片'));
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+      });
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(picker.calls, 1);
+      expect(editor.image!.selection.mimeType, 'image/gif');
+      expect(find.byTooltip('移除图片'), findsOneWidget);
+      await tester.tap(find.byTooltip('移除图片'));
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(editor.image, isNull);
+      await tester.runAsync(() async {
+        await tester.tap(find.byTooltip('选择一张图片'));
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+      });
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump();
+      await tester.tap(find.widgetWithText(FilledButton, '回复'));
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(submitted, isTrue);
+      expect(
+        r.transportFake.sent!.content!.image!.selection.mimeType,
+        'image/gif',
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 }

@@ -43,6 +43,7 @@ class PostImages {
     required List<PostImage> images,
     required this.accessGranted,
     this.onRelease,
+    this.isExpired,
   }) : images = List.unmodifiable(images) {
     if (postId.isEmpty ||
         postId.trim() != postId ||
@@ -54,6 +55,9 @@ class PostImages {
   final String postId;
   final List<PostImage> images;
   final ValueListenable<bool> accessGranted;
+
+  /// Expiry permits a fresh protected read. Other revocations remain terminal.
+  final bool Function()? isExpired;
 
   /// Releases this host-owned lease when the detail no longer uses it.
   final VoidCallback? onRelease;
@@ -73,6 +77,7 @@ class PostImagesSection extends StatefulWidget {
     required this.isCurrent,
     this.expectedCount,
     this.feedPreview = false,
+    this.compactSingle = false,
     this.initialSizes,
     super.key,
   });
@@ -82,21 +87,25 @@ class PostImagesSection extends StatefulWidget {
   final bool Function() isCurrent;
   final int? expectedCount;
   final bool feedPreview;
+  final bool compactSingle;
   final List<Size>? initialSizes;
   @override
   State<PostImagesSection> createState() => _PostImagesSectionState();
 }
 
-class _PostImagesSectionState extends State<PostImagesSection> {
+class _PostImagesSectionState extends State<PostImagesSection>
+    with WidgetsBindingObserver {
   PostImages? _group;
   ViewerController? _viewer;
   int _revision = 0;
   bool _loading = true, _failed = false, _revoked = false;
   List<Size?>? _feedSizes;
+  bool _refreshScheduled = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     widget.authority.addListener(_authorityChanged);
     _feedSizes = widget.initialSizes;
     unawaited(_load());
@@ -119,7 +128,48 @@ class _PostImagesSectionState extends State<PostImagesSection> {
       _revoked = true;
       _viewer?.invalidateAccess();
       if (mounted) setState(() {});
+      _scheduleExpiryRefresh();
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _scheduleExpiryRefresh();
+  }
+
+  void _scheduleExpiryRefresh() {
+    if (_refreshScheduled ||
+        !_current ||
+        _loading ||
+        _failed ||
+        _group?.isExpired?.call() != true) {
+      return;
+    }
+    _refreshScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshScheduled = false;
+      if (!_current ||
+          _loading ||
+          _failed ||
+          _viewer != null ||
+          _group?.isExpired?.call() != true ||
+          WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed ||
+          ModalRoute.of(context)?.isCurrent == false) {
+        return;
+      }
+      final box = context.findRenderObject();
+      if (box is! RenderBox || !box.hasSize) return;
+      final rect = box.localToGlobal(Offset.zero) & box.size;
+      if (!rect.overlaps(Offset.zero & MediaQuery.sizeOf(context))) return;
+      final viewport = Scrollable.maybeOf(context)?.context.findRenderObject();
+      if (viewport is RenderBox &&
+          viewport.hasSize &&
+          !rect.overlaps(viewport.localToGlobal(Offset.zero) & viewport.size)) {
+        return;
+      }
+      unawaited(_load());
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
   }
 
   void _detachGroup() {
@@ -218,14 +268,17 @@ class _PostImagesSectionState extends State<PostImagesSection> {
     try {
       await navigator.push<void>(route);
     } finally {
+      await route.completed;
       if (identical(_viewer, viewer)) _viewer = null;
       viewer.dispose();
+      _scheduleExpiryRefresh();
     }
   }
 
   @override
   void dispose() {
     _revision++;
+    WidgetsBinding.instance.removeObserver(this);
     widget.authority.removeListener(_authorityChanged);
     _detachGroup();
     final viewer = _viewer;
@@ -252,11 +305,8 @@ class _PostImagesSectionState extends State<PostImagesSection> {
           ),
         );
       }
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 16),
-        child: Center(
-          child: CircularProgressIndicator(semanticsLabel: '正在读取图片'),
-        ),
+      return _detailPlaceholder(
+        const CircularProgressIndicator(semanticsLabel: '正在读取图片'),
       );
     }
     if (_failed) {
@@ -267,9 +317,9 @@ class _PostImagesSectionState extends State<PostImagesSection> {
           placeholder: _feedStatus('图片暂时无法读取', '重新加载图片'),
         );
       }
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
+      return _detailPlaceholder(
+        Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const Text('图片暂时无法读取'),
             TextButton(onPressed: _load, child: const Text('重新加载图片')),
@@ -280,6 +330,7 @@ class _PostImagesSectionState extends State<PostImagesSection> {
     final group = _group;
     if (group == null || group.images.isEmpty) return const SizedBox.shrink();
     if (_revoked || !group.accessGranted.value) {
+      _scheduleExpiryRefresh();
       if (widget.feedPreview) {
         return _feedMedia(
           context,
@@ -287,9 +338,9 @@ class _PostImagesSectionState extends State<PostImagesSection> {
           placeholder: _feedStatus('图片已不可访问', '重新读取图片'),
         );
       }
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
+      return _detailPlaceholder(
+        Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const Text('图片已不可访问'),
             TextButton(onPressed: _load, child: const Text('重新读取图片')),
@@ -299,14 +350,15 @@ class _PostImagesSectionState extends State<PostImagesSection> {
     }
     if (widget.feedPreview) return _feedMedia(context, group);
     return Padding(
-      padding: const EdgeInsets.only(top: 24),
+      padding: EdgeInsets.only(top: widget.compactSingle ? 0 : 24),
       child: GridView.builder(
         key: const ValueKey('post-image-grid'),
+        padding: EdgeInsets.zero,
         shrinkWrap: true,
         primary: false,
         physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: widget.compactSingle ? 1 : 3,
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
         ),
@@ -331,6 +383,32 @@ class _PostImagesSectionState extends State<PostImagesSection> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _detailPlaceholder(Widget child) {
+    final count = widget.expectedCount ?? _group?.images.length;
+    if (count == null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Center(child: child),
+      );
+    }
+    if (count == 0) return const SizedBox.shrink();
+    final columns = widget.compactSingle ? 1 : 3;
+    final rows = (count / columns).ceil();
+    final top = widget.compactSingle ? 0.0 : 24.0;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final tile = (constraints.maxWidth - (columns - 1) * 8) / columns;
+        return SizedBox(
+          height: top + rows * tile + (rows - 1) * 8,
+          child: Padding(
+            padding: EdgeInsets.only(top: top),
+            child: Center(child: child),
+          ),
+        );
+      },
     );
   }
 

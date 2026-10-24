@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/main.dart' as app;
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/navigation/app_navigation.dart';
+import 'package:hnuhole_mobile/src/navigation/primary_tabs.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_messages_unavailable.dart';
 
 import 'identity_test_support.dart';
@@ -27,6 +28,89 @@ class _Notices implements GovernanceApi {
 }
 
 void main() {
+  testWidgets(
+    'same-session expiry renewal preserves tab widgets and revocation still closes them',
+    (tester) async {
+      final fixture = HomeTestFixture();
+      await tester.pumpWidget(await fixture.create());
+      await tester.pumpAndSettle();
+      final tabs = tester.widget<PrimaryTabs>(find.byType(PrimaryTabs));
+      final token = fixture.store.current!.session!.token;
+      final nextExpiry = fixture.store.current!.session!.expiresAt.add(
+        const Duration(minutes: 5),
+      );
+      expect(
+        await fixture.sessions.persistSessionMetadata(
+          token,
+          nextExpiry,
+          () => true,
+        ),
+        isTrue,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        identical(tester.widget<PrimaryTabs>(find.byType(PrimaryTabs)), tabs),
+        isTrue,
+      );
+      expect(fixture.store.current!.session!.expiresAt, nextExpiry);
+      fixture.sessions.sessionUnavailable(token);
+      await tester.pumpAndSettle();
+      expect(find.byType(PrimaryTabs), findsNothing);
+      expect(find.byType(FeedScreen), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets('detail keyboard does not relayout the covered home tabs', (
+    tester,
+  ) async {
+    final navigator = GlobalKey<NavigatorState>();
+    var homeLayouts = 0;
+    var homeInset = -1.0;
+    await tester.pumpWidget(
+      MaterialApp(
+        navigatorKey: navigator,
+        home: PrimaryTabs(
+          window: ('test-account', 1),
+          onSelected: (_) {},
+          builders: {
+            for (final destination in AppDestination.values)
+              destination: (context) => Scaffold(
+                body: LayoutBuilder(
+                  builder: (context, constraints) {
+                    if (destination == AppDestination.home) {
+                      homeLayouts++;
+                      homeInset = MediaQuery.viewInsetsOf(context).bottom;
+                    }
+                    return const Text('保留的首页');
+                  },
+                ),
+              ),
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    navigator.currentState!.push(
+      MaterialPageRoute<void>(
+        builder: (_) => const Scaffold(body: TextField()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final before = homeLayouts;
+    addTearDown(tester.view.resetViewInsets);
+    for (final bottom in [120.0, 240.0, 280.0, 0.0]) {
+      tester.view.viewInsets = FakeViewPadding(bottom: bottom);
+      await tester.pumpAndSettle();
+      expect(homeLayouts, before);
+      expect(homeInset, 0);
+    }
+    navigator.currentState!.pop();
+    await tester.pumpAndSettle();
+    expect(find.text('保留的首页'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets(
     'system back retains home and personal empty state is loaded once',
     (tester) async {

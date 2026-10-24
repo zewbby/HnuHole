@@ -302,6 +302,7 @@ class _MediaLease {
     return PostImages(
       postId: postId,
       accessGranted: access,
+      isExpired: () => elapsed.elapsed >= lifetime,
       onRelease: () {
         if (!_consumers.remove(access)) return;
         access.value = false;

@@ -36,7 +36,25 @@ type Snapshot struct {
 	items  []OrderItem
 }
 
+type SortMode string
+
+const (
+	Relevant  SortMode = "relevant"
+	Recent    SortMode = "recent"
+	MostLiked SortMode = "likes"
+)
+
+func (m SortMode) Valid() bool { return m == "" || m == Relevant || m == Recent || m == MostLiked }
+
 func NewSnapshot(kind OrderKind, items []OrderItem) (Snapshot, error) {
+	return NewSortedSnapshot(kind, items, Relevant)
+}
+
+// Sorting is captured before pagination; subsequent likes never move rows.
+func NewSortedSnapshot(kind OrderKind, items []OrderItem, mode SortMode) (Snapshot, error) {
+	if !mode.Valid() {
+		return Snapshot{}, ErrInvalid
+	}
 	pinned := MainPinnedCount
 	if kind == Replies {
 		pinned = ReplyPinnedCount
@@ -69,9 +87,18 @@ func NewSnapshot(kind OrderKind, items []OrderItem) (Snapshot, error) {
 	if pinned > len(copyItems) {
 		pinned = len(copyItems)
 	}
-	sort.Slice(copyItems[pinned:], func(i, j int) bool {
-		return chronological(copyItems[pinned+i], copyItems[pinned+j])
-	})
+	if mode == Recent {
+		sort.Slice(copyItems, func(i, j int) bool {
+			if !copyItems[i].PublishedAt.Equal(copyItems[j].PublishedAt) {
+				return copyItems[i].PublishedAt.After(copyItems[j].PublishedAt)
+			}
+			return copyItems[i].CommentID < copyItems[j].CommentID
+		})
+	} else if mode != MostLiked {
+		sort.Slice(copyItems[pinned:], func(i, j int) bool {
+			return chronological(copyItems[pinned+i], copyItems[pinned+j])
+		})
+	}
 	return Snapshot{kind: kind, pinned: pinned, items: copyItems}, nil
 }
 

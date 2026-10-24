@@ -186,6 +186,7 @@ void main() {
     final firstImage = await first.images.single.loadThumbnail!();
     first.onRelease!();
     expect(first.accessGranted.value, isFalse);
+    expect(first.isExpired!(), isFalse);
     expect(second.accessGranted.value, isTrue);
     expect(
       identical(await second.images.single.loadThumbnail!(), firstImage),
@@ -330,6 +331,7 @@ void main() {
     final first = await repository.load(mediaPostId);
     await Future<void>.delayed(const Duration(milliseconds: 130));
     expect(first.accessGranted.value, isFalse);
+    expect(first.isExpired!(), isTrue);
     await expectLater(
       first.images.single.item.loadSource(),
       throwsA(isA<PostFailure>()),

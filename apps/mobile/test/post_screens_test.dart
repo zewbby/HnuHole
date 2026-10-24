@@ -812,6 +812,7 @@ void main() {
   testWidgets('删除回包丢失，后续权威核对成功立即清正文并返回来源', (tester) async {
     final c = _WidgetPosts()
       ..deleteAllowed = true
+      ..failure = '删除结果暂未确认，请重试。'
       ..detail = PostDetail(
         postId: _postId,
         channelId: _channelId,
@@ -831,6 +832,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(c.deletions, 1);
     expect(find.text('原正文'), findsOneWidget);
+    expect(find.text('删除结果暂未确认，请重试。'), findsOneWidget);
     c.tombstoned = true;
     c.notifyListeners();
     await tester.pumpAndSettle();

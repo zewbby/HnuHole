@@ -304,8 +304,6 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   final _authPresentation = AuthPresentationController(
     preferences: FlutterAuthVault(namespace: 'hnuhole.presentation.v1'),
   );
-  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
   final _navigatorKey = GlobalKey<NavigatorState>();
   bool _authRouteOpen = false;
   bool _securityRouteOpen = false;
@@ -424,49 +422,6 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     _primaryTabs.currentState?.select(AppDestination.directMessages);
   }
 
-  final _notifiedFailures = <String>{};
-  void _commentChanged() {
-    final comments = widget.comments;
-    if (comments == null || !comments.available) return;
-    for (final failure in comments.core.failures) {
-      if (!_notifiedFailures.add(
-        '${comments.accountId}:${failure.taskId}:${failure.task.attemptVersion}',
-      )) {
-        continue;
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || !comments.available) return;
-        _scaffoldMessengerKey.currentState?.showMaterialBanner(
-          MaterialBanner(
-            content: const Text('评论发送失败，原内容已保留。'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  _scaffoldMessengerKey.currentState
-                      ?.hideCurrentMaterialBanner();
-                  unawaited(() async {
-                    final g = widget.governance;
-                    if (g != null) {
-                      await g.loadIdentities();
-                      await g.selectIdentity(failure.ownerIdentityId);
-                    }
-                    await _openMessages();
-                  }());
-                },
-                child: const Text('进入系统通知'),
-              ),
-              TextButton(
-                onPressed: () => _scaffoldMessengerKey.currentState
-                    ?.hideCurrentMaterialBanner(),
-                child: const Text('稍后'),
-              ),
-            ],
-          ),
-        );
-      });
-    }
-  }
-
   Future<void> _openMessages() async {
     final navigator = _navigatorKey.currentState,
         governance = widget.governance;
@@ -550,10 +505,11 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     super.initState();
     unawaited(_authPresentation.load());
     WidgetsBinding.instance.addObserver(this);
-    widget.comments?.addListener(_commentChanged);
     _postRouteChanges = Listenable.merge([_postWindow, widget.directory]);
     widget.posts.addListener(_postWindowChanged);
     _postWindowChanged();
+    widget.sessions.addListener(_sessionRouteChanged);
+    _sessionRouteChanged();
     _startAuthentication();
     widget.dm?.controller.addListener(_scheduleDmNotification);
     widget.dmNotifications?.onTap = _scheduleDmNotification;
@@ -571,6 +527,18 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     // Data/loading notifications can arrive while a different route builds.
     // Only a changed authority window invalidates the route's local state.
     _postWindow.value = (widget.posts.accountId, widget.posts.authorityVersion);
+  }
+
+  final _sessionRouteWindow = ValueNotifier((AuthStatus.starting, 0, false));
+  void _sessionRouteChanged() {
+    final sessions = widget.sessions;
+    // Expiry persistence still notifies its consumers, but renewing the same
+    // session must not rebuild every retained tab behind the active detail.
+    _sessionRouteWindow.value = (
+      sessions.status,
+      sessions.authorityVersion,
+      sessions.isAuthenticated,
+    );
   }
 
   @override
@@ -780,7 +748,6 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     widget.dm?.dispose();
     _authPresentation.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    widget.comments?.removeListener(_commentChanged);
     widget.comments?.dispose();
     widget.posts.removeListener(_postWindowChanged);
     _postWindow.dispose();
@@ -793,6 +760,8 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     widget.governanceApi?.close();
     widget.posts.dispose();
     widget.postApi.close();
+    widget.sessions.removeListener(_sessionRouteChanged);
+    _sessionRouteWindow.dispose();
     widget.sessions.dispose();
     widget.api.close();
     widget.directory.dispose();
@@ -810,7 +779,6 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         title: 'Hnuhole',
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [CommunityMaterialLabels.delegate],
-        scaffoldMessengerKey: _scaffoldMessengerKey,
         navigatorKey: _navigatorKey,
         themeMode: _authPresentation.themeMode,
         builder: (context, child) => IdentityAvatarScope(
@@ -847,7 +815,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
         ),
         home: AnimatedBuilder(
           animation: Listenable.merge([
-            widget.sessions,
+            _sessionRouteWindow,
             _postRouteChanges,
             if (widget.governance != null) widget.governance!,
           ]),

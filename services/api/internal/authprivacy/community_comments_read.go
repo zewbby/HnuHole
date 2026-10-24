@@ -18,6 +18,7 @@ import (
 
 type CommentQuery struct {
 	ID, PostID, Cursor string
+	Sort               comments.SortMode
 	Replies, Expanded  bool
 	Limit              int
 }
@@ -104,6 +105,9 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 	if _, e := posts.ParseResourceID(q.ID); e != nil {
 		return PostResponse{}, e
 	}
+	if !q.Sort.Valid() || (q.Sort != "" && (q.Cursor != "" || q.Replies)) {
+		return PostResponse{}, comments.ErrInvalid
+	}
 	if q.Limit == 0 {
 		q.Limit = 50
 	}
@@ -179,7 +183,7 @@ func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery
 			if q.Replies {
 				kind = comments.Replies
 			}
-			snapshot, e := comments.NewSnapshot(kind, order)
+			snapshot, e := comments.NewSortedSnapshot(kind, order, q.Sort)
 			if e != nil {
 				return nil, e
 			}

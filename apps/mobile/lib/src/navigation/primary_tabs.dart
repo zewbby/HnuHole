@@ -55,7 +55,10 @@ class PrimaryTabsState extends State<PrimaryTabs> {
   }
 
   @override
-  Widget build(BuildContext context) => PopScope(
+  Widget build(BuildContext context) =>
+      _CoveredRouteInsets(child: Builder(builder: _buildTabs));
+
+  Widget _buildTabs(BuildContext context) => PopScope(
     canPop: _selected == AppDestination.home,
     onPopInvokedWithResult: (didPop, result) {
       if (!didPop) select(AppDestination.home);
@@ -100,4 +103,26 @@ class PrimaryTabsState extends State<PrimaryTabs> {
       ),
     ),
   );
+}
+
+/// A detail/editor route owns its keyboard. Keep the covered tab tree at its
+/// normal viewport instead of rebuilding and laying it out behind that route
+/// for every IME inset change. Rotation and authority changes still propagate.
+class _CoveredRouteInsets extends StatelessWidget {
+  const _CoveredRouteInsets({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    return MediaQuery(
+      data: ModalRoute.isCurrentOf(context) == false
+          ? media.copyWith(
+              viewInsets: EdgeInsets.zero,
+              padding: media.viewPadding,
+            )
+          : media,
+      child: child,
+    );
+  }
 }

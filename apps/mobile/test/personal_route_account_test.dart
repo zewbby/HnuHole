@@ -251,7 +251,7 @@ void main() {
       expect(f.sessions.isAuthenticated, isFalse);
       expect(f.store.current!.session?.token, status == 503 ? oldToken : null);
       if (status == 503) {
-        await tester.tap(find.text('重新核对会话'));
+        await tester.tap(find.text('重试'));
       } else {
         await tester.tap(find.byKey(const ValueKey('auth-start')));
         await tester.pumpAndSettle();

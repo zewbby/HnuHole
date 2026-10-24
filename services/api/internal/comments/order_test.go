@@ -144,3 +144,49 @@ func TestSnapshotRejectsInvalidOrDuplicateResources(t *testing.T) {
 		t.Fatal("empty discussion is not a valid empty page")
 	}
 }
+
+func TestSelectedSortCoversAllPagesAndKeepsSnapshot(t *testing.T) {
+	items := make([]OrderItem, 103)
+	for i := range items {
+		items[i] = OrderItem{resourceID(i + 1), int64((i * 17) % 103), testAt.Add(time.Duration(i) * time.Second)}
+	}
+	for _, mode := range []SortMode{Recent, MostLiked, Relevant} {
+		snapshot, err := NewSortedSnapshot(MainComments, items, mode)
+		if err != nil {
+			t.Fatal(err)
+		}
+		all := []OrderItem{}
+		for offset := 0; offset < snapshot.Len(); offset += 50 {
+			page, err := snapshot.Page(offset, 50)
+			if err != nil {
+				t.Fatal(err)
+			}
+			all = append(all, page.Items...)
+		}
+		if len(all) != 103 {
+			t.Fatal("lost pagination rows")
+		}
+		if mode == Recent && all[0].CommentID != resourceID(103) {
+			t.Fatal("recent did not select newest across pages")
+		}
+		for i := 1; i < len(all); i++ {
+			if mode == Recent && all[i].PublishedAt.After(all[i-1].PublishedAt) {
+				t.Fatal("recent order")
+			}
+			if mode == MostLiked && all[i].LikeCount > all[i-1].LikeCount {
+				t.Fatal("likes order")
+			}
+		}
+		updated, err := snapshot.WithLikeCount(all[102].CommentID, 9999)
+		if err != nil {
+			t.Fatal(err)
+		}
+		page, _ := updated.Page(100, 3)
+		if page.Items[2].CommentID != all[102].CommentID {
+			t.Fatal("like changed captured order")
+		}
+	}
+	if _, err := NewSortedSnapshot(MainComments, items, "unknown"); err == nil {
+		t.Fatal("invalid sort accepted")
+	}
+}

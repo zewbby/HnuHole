@@ -592,6 +592,29 @@ void main() {
   });
 
   testWidgets(
+    'detail read retry removes stale transport error after content recovers',
+    (tester) async {
+      final f = await FeedFixture.create();
+      addTearDown(f.dispose);
+      await tester.pumpWidget(screen(f));
+      await tester.pumpAndSettle();
+      f.api.detailWait = Completer<PostResponse<PostDetail>>();
+      await tester.tap(find.text('今天的校园'));
+      await tester.pump();
+      f.api.detailWait!.completeError(
+        const PostFailure(kind: PostFailureKind.transport),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('重新核对'), findsOneWidget);
+      f.api.detailWait = null;
+      await tester.tap(find.text('重新核对'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SelectableText), findsOneWidget);
+      expect(find.textContaining('原操作已保留'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
     'only rendered detail body counts once; rebuild and exposure do not',
     (tester) async {
       final f = await FeedFixture.create();
