@@ -26,7 +26,7 @@ jobs:
           go-version: '1.22.2'
           cache-dependency-path: services/api/go.sum
       - name: Install isolated test tools
-        run: sudo apt-get update && sudo apt-get install -y postgresql-16 redis-server
+        run: sudo apt-get update && sudo apt-get install -y postgresql-16 redis-server python3-venv
       - name: Install pinned Goose
         run: GOBIN=/usr/local/bin go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
       - uses: actions/setup-python@v5
@@ -34,13 +34,16 @@ jobs:
           python-version: '3.12'
       - name: Install pinned image test runtime
         run: |
-          python -m venv "$RUNNER_TEMP/shared-rate-image"
+          # ProcessValidator deliberately omits loader variables from child env.
+          # The system interpreter needs no setup-python toolcache loader path.
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/shared-rate-image"
           "$RUNNER_TEMP/shared-rate-image/bin/python" -m pip install -r services/api/media/requirements.txt
+          env -i PATH=/usr/bin:/bin LANG=C.UTF-8 "$RUNNER_TEMP/shared-rate-image/bin/python" -I -B services/api/media/validate_image.py --probe
           echo "POST_MEDIA_PYTHON=$RUNNER_TEMP/shared-rate-image/bin/python" >> "$GITHUB_ENV"
       - name: Real Redis and PostgreSQL admission regressions
-        env:
-          PATH: /usr/lib/postgresql/16/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin
-        run: sh services/api/authlab/run-shared-rate-limit-isolated.sh
+        run: |
+          export PATH="/usr/lib/postgresql/16/bin:$PATH"
+          sh services/api/authlab/run-shared-rate-limit-isolated.sh
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
