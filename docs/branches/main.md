@@ -1,5 +1,7 @@
 # main
 
+2026-10-25：[共享限流与动作防刷 PR #73](https://github.com/zewbby/HnuHole/pull/73) 已于北京时间10:12:38 Squash合入 `c05198155543b8d1a259dc41fdeb860126dee7d0`，最终head `5ef371d` 与合并提交完整树一致，13唯一workflow/23实际job全SUCCESS；指定Android2433四阶段限定PASS。origin/main和本地 `E:/Hnuhole-env/source/HnuHole-main` clean同步。见[任务](feat-shared-rate-limit-abuse-control.md)和[合并机器回执](../design/shared-rate-limit-merge-verification.json)。未部署/生产发布，iOS/整机重启/容量及历史模块总裁决不提升；本次后续文档PR在回执编写时尚未创建。
+
 2026-10-24：[刷新取消与颜文字动效 PR #69](https://github.com/zewbby/HnuHole/pull/69) 已Squash合入 `4933bff`，精确head `217bd4e` 的15项CI全PASS；main源码与已测版本无差异，vivo2402登录恢复后用户确认可以并授权合并。详见[任务与证据](fix-feed-refresh-cancel.md)，不提升未逐项记录的设备／iOS／生产结论。
 
 2026-10-23：[沉浸阅读与颜文字刷新 PR #65](https://github.com/zewbby/HnuHole/pull/65) 已Squash合入 `df484b1`；精确head `fad2a5c` 的8组工作流15项检查全PASS，宿主844 PASS／3 SKIP、分析0、Android构建及Sol xhigh复核通过。未安装或发布，设备视觉／原生TalkBack／帧性能和iOS未验。见[任务与证据](feat-feed-scroll-smile-refresh.md)。

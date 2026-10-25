@@ -1,5 +1,15 @@
 # SHARED-RATE-LIMIT-01 共享限流与动作级防刷
 
+## PR73已合入main（2026-10-25，最新）
+
+用户授权“合并PR73，然后同步主线和交接文档”。[PR #73](https://github.com/zewbby/HnuHole/pull/73) 已于北京时间2026-10-25 10:12:38（UTC02:12:38）Squash合入main，merge SHA `c05198155543b8d1a259dc41fdeb860126dee7d0`；最终head `5ef371db493869bf0ab7679c6b874e4fcb144d30` 与合并提交完整Git树无差异。原生已测产品33bdcc0之后仅CI、旧host工具和交接文档变化，未重跑或叠加旧测试计数。
+
+最终5ef的13个唯一workflow/23个实际job全部SUCCESS；合并前当前API检查还包含metadata policy重跑，重复checkrun不计为额外唯一产品job。见[合并与最终CI机器回执](../design/shared-rate-limit-merge-verification.json)。原6e50244的[CI记录](../design/shared-rate-limit-remote-ci-verification.json)、各失败历史和[Android指定四阶段证据](../design/shared-rate-limit-device-verification.json)原范围保留。用户授权合并，未伪造GitHub独立成员批准。
+
+origin/main已同步c051，本地 `E:/Hnuhole-env/source/HnuHole-main` clean同步；其他旧worktree保留。当前纯文档回执分支 `docs/shared-rate-limit-merge-receipt` 从c051开始，本次回执编写时尚未提交/推送/创建文档PR；root按用户授权后续完成文档PR、CI、合并及main快进，此处不猜编号或预记完成，也不在README递归记录本回执PR。
+
+实现已进入main；指定Android四阶段及最终远端CI限定通过，未部署/生产发布。iOS、整机重启/突然掉电、全规模容量/生产流量和独立生产安全运营仍NOT_RUN，不提升历史整模块总裁决。下方Draft、未合并和待review等为原时点快照，当前合并事实以本节及机器回执为准。
+
 ## PR73远端CI回执（2026-10-24，最新）
 
 CI记录时已提交/推送并创建 [Draft PR #73](https://github.com/zewbby/HnuHole/pull/73)，未合并/发布，待独立成员review。指定Android四阶段PASS；远端 `6e502442326fd04073c2ad9b5d434970bc0c5f21` 的13个workflow/23个实际job全部SUCCESS，逐run/job URL见[脱敏CI记录](../design/shared-rate-limit-remote-ci-verification.json)。此记录只针对6e50244；本次回执编写时，后续纯文档更新尚未形成新提交/CI；CI记录时为Draft，后续检查及送审状态以live PR为准。

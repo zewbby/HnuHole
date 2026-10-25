@@ -1,7 +1,7 @@
 {
   "sharedRateLimit20261024": {
     "task": "SHARED-RATE-LIMIT-01",
-    "date": "2026-10-24",
+    "date": "2026-10-25",
     "branch": "feat/shared-rate-limit-abuse-control",
     "baseline": "8ed8f28",
     "modules": [
@@ -20,7 +20,7 @@
       "B08",
       "B09"
     ],
-    "implementation": "LOCAL_UNCOMMITTED_COMPLETE",
+    "implementation": "MERGED_MAIN",
     "finalBackend": "PASS",
     "flutter": {
       "status": "PASS",
@@ -73,7 +73,7 @@
     "production": "NOT_RUN",
     "committed": true,
     "pushed": true,
-    "merged": false,
+    "merged": true,
     "released": false,
     "historicalModuleVerdictsUnchanged": true,
     "finalBackendLog": "logs/shared-isolated-r11.log",
@@ -142,7 +142,7 @@
       }
     },
     "stage6": "COMPLETE",
-    "status": "SPECIFIED_ANDROID_AND_REMOTE_CI_PASS_DRAFT_PR_REVIEW_PENDING",
+    "status": "MERGED_MAIN_SCOPED_VALIDATION_PASS_NOT_DEPLOYED",
     "documentationChecks": {
       "status": "PASS",
       "reviewer": "Root independent final static audit",
@@ -191,19 +191,22 @@
       "scope": "Includes opt-in Android/Go native fixture and build configuration, excludes docs; previous107-file manifest remains historical."
     },
     "authorization": {
-      "userRequest": "Do real-device acceptance, then create PR for remote CI acceptance",
-      "commitPushPR": "AUTHORIZED_AND_EXECUTED",
-      "mergeDeploy": "NOT_AUTHORIZED"
+      "userRequestDate": "2026-10-25",
+      "userRequest": "Merge PR73, then synchronize main and handoff documents",
+      "merge": "AUTHORIZED_AND_EXECUTED",
+      "handoffDocsPR": "AUTHORIZED_PENDING_ROOT_EXECUTION",
+      "deploy": "NOT_AUTHORIZED"
     },
     "pr": {
       "number": 73,
       "url": "https://github.com/zewbby/HnuHole/pull/73",
-      "draft": true,
-      "merged": false,
-      "independentMemberReview": "PENDING",
-      "snapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
-      "snapshotMeaning": "Draft at6e50244 CI receipt collection; current submission status/checks follow live PR",
-      "currentStatusURL": "https://github.com/zewbby/HnuHole/pull/73"
+      "state": "MERGED",
+      "draft": false,
+      "mergeMethod": "SQUASH",
+      "mergedAtUTC": "2026-10-25T02:12:38Z",
+      "mergedAtAsiaShanghai": "2026-10-25T10:12:38+08:00",
+      "mergeSHA": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+      "finalHead": "5ef371db493869bf0ab7679c6b874e4fcb144d30"
     },
     "deviceScope": "Specified four Android phases, not full module/device/production acceptance",
     "nativeSourceEquivalence": {
@@ -228,11 +231,13 @@
     },
     "remoteCIVerification": {
       "status": "PASS",
-      "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+      "head": "5ef371db493869bf0ab7679c6b874e4fcb144d30",
       "workflows": 13,
       "jobs": 23,
-      "evidence": "docs/design/shared-rate-limit-remote-ci-verification.json",
-      "scope": "Actual run/job URLs at6e50244 only; at receipt-writing time subsequent documentation commit CI had not run. Current submission/check status follows live PR"
+      "currentCheckRuns": 25,
+      "additionalMetadataPolicyReruns": 2,
+      "evidence": "docs/design/shared-rate-limit-merge-verification.json",
+      "scope": "Final5ef premerge CI, mergec051 full tree equal; docs followup PR not yet created at receipt writing"
     },
     "nativeProductCommit": "33bdcc0894af230a722ee21455aa344ae456c9cf",
     "remoteCIHistory": [
@@ -259,7 +264,56 @@
       }
     ],
     "pendingDocumentationCommitCIAtReceipt": "NOT_RUN",
-    "statusSnapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21"
+    "statusSnapshotAtHead": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+    "preMergeCheckpoint": {
+      "status": "SPECIFIED_ANDROID_AND_REMOTE_CI_PASS_DRAFT_PR_REVIEW_PENDING",
+      "implementation": "LOCAL_UNCOMMITTED_COMPLETE",
+      "merged": false,
+      "pr": {
+        "number": 73,
+        "url": "https://github.com/zewbby/HnuHole/pull/73",
+        "draft": true,
+        "merged": false,
+        "independentMemberReview": "PENDING",
+        "snapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+        "snapshotMeaning": "Draft at6e50244 CI receipt collection; current submission status/checks follow live PR",
+        "currentStatusURL": "https://github.com/zewbby/HnuHole/pull/73"
+      },
+      "remoteCIVerification": {
+        "status": "PASS",
+        "head": "6e502442326fd04073c2ad9b5d434970bc0c5f21",
+        "workflows": 13,
+        "jobs": 23,
+        "evidence": "docs/design/shared-rate-limit-remote-ci-verification.json",
+        "scope": "Actual run/job URLs at6e50244 only; at receipt-writing time subsequent documentation commit CI had not run. Current submission/check status follows live PR"
+      },
+      "authorization": {
+        "userRequest": "Do real-device acceptance, then create PR for remote CI acceptance",
+        "commitPushPR": "AUTHORIZED_AND_EXECUTED",
+        "mergeDeploy": "NOT_AUTHORIZED"
+      },
+      "statusSnapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21"
+    },
+    "deployed": false,
+    "mergeVerification": "docs/design/shared-rate-limit-merge-verification.json",
+    "mainSync": {
+      "originMain": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+      "checkout": "E:/Hnuhole-env/source/HnuHole-main",
+      "status": "PASS",
+      "workingTree": "CLEAN_AT_SYNC",
+      "upstream": "origin/main",
+      "otherCheckouts": "Preserved"
+    },
+    "documentationFollowup": {
+      "branch": "docs/shared-rate-limit-merge-receipt",
+      "baseline": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+      "pr": null,
+      "committed": false,
+      "pushed": false,
+      "merged": false,
+      "ci": "NOT_RUN",
+      "scope": "Receipt-writing snapshot. Root will execute authorized docs PR/CI/merge/main FF; no invented PR number or recursive README self-record."
+    }
   },
   "postDetailComments20261024": {
     "task": "POST-DETAIL-COMMENTS-01",

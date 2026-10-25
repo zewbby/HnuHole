@@ -1,5 +1,7 @@
 # 共享限流：实际配置与接口地图
 
+> **2026-10-25合并回执：** [PR73](https://github.com/zewbby/HnuHole/pull/73) 已Squash合入main c051981；最终5ef371d与合并完整树一致，13workflow/23job全SUCCESS，指定Android四阶段限定PASS，见[机器回执](shared-rate-limit-merge-verification.json)。下方未提交/Draft/未合并属于原时点；未部署/生产发布，runbook步骤未在生产执行。
+
 > **2026-10-24送审追加：** CI记录时[Draft PR73](https://github.com/zewbby/HnuHole/pull/73)已提交推送，指定Android PASS、6e50244远端13workflow/23job SUCCESS，见[CI记录](shared-rate-limit-remote-ci-verification.json)。runtime沿原生已测33bdcc0；CI记录时为Draft，本次回执编写时后续纯文档head CI待查PR；后续检查/送审状态以live PR为准，未合并部署。下方未提交/CI NOT_RUN保留原时点。
 
 > **2026-10-24 Android追加：** 此前下文未真机是原host交付时点。现final-r11独立Android包四阶段实际TLS/双PG/Redis限定PASS，见[原生证据](shared-rate-limit-device-verification.json)；原940/3SKIP保持。最新native源码manifest110文件，旧107文件为历史；用户授权提PR/远端CI，当前PR未建、CI NOT_RUN，未合并部署。

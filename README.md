@@ -41,7 +41,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
-| `feat/shared-rate-limit-abuse-control` | 共享准入与草稿/队列已送[PR #73](https://github.com/zewbby/HnuHole/pull/73)，指定Android及6e50244远端CI通过；CI记录时为Draft，最新送审状态见PR，未合并发布。 | [任务详情](docs/branches/feat-shared-rate-limit-abuse-control.md) |
+| `feat/shared-rate-limit-abuse-control` | [PR #73](https://github.com/zewbby/HnuHole/pull/73) 已合入main：共享准入、上传字节与草稿/队列完成，指定Android及最终CI限定通过，未生产发布。 | [任务详情](docs/branches/feat-shared-rate-limit-abuse-control.md) |
 | `codex/feat/post-detail-comments` | 已合并 #71：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |
 | `codex/fix/feed-refresh-cancel` | 已合并 main [PR #69](https://github.com/zewbby/HnuHole/pull/69)：刷新回滑可取消，纯享手势隔离，加载高亮留在颜文字内。 | [任务详情](docs/branches/fix-feed-refresh-cancel.md) |
 | `codex/feat/feed-scroll-smile-refresh` | 已合并 main [PR #65](https://github.com/zewbby/HnuHole/pull/65)：沉浸阅读、发帖入口交接与 `:)` 刷新；未安装／发布。 | [任务详情](docs/branches/feat-feed-scroll-smile-refresh.md) |
@@ -99,8 +99,8 @@
 
 ## 最近变动
 
+- [PR #73](https://github.com/zewbby/HnuHole/pull/73)：接入共享动作限流、上传实际字节及可靠草稿/私信队列，指定Android与最终CI限定通过，未生产发布。
+- [PR #72](https://github.com/zewbby/HnuHole/pull/72)：同步评论修复合并与最终验收回执。
 - [PR #71](https://github.com/zewbby/HnuHole/pull/71)：复现详情评论交互，修复身份、图片往返及弱网提交，支持本人评论即时展示。
 - [PR #68](https://github.com/zewbby/HnuHole/pull/68)：完成五栏目个人页与私人转帖归档。
 - [PR #70](https://github.com/zewbby/HnuHole/pull/70)：同步刷新修复合并与 vivo 试用回执。
-- [PR #69](https://github.com/zewbby/HnuHole/pull/69)：修复推荐页回滑取消刷新与纯享模式冲突，颜文字改为字形内高亮。
-- [PR #66](https://github.com/zewbby/HnuHole/pull/66)：稳定已登录启动和个人页加载并支持图片重试。
