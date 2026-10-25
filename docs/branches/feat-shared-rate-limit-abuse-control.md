@@ -1,5 +1,7 @@
 # SHARED-RATE-LIMIT-01 共享限流与动作级防刷
 
+> **2026-10-25部署追加：** main856313c已由root部署至同机WSL日常开发后端，备份/迁移/旧数据与Gate保持核验PASS；日常同签2501包已保数据覆盖安装，安装后只读验收限定PASS。生产/云未部署，旧隔离测试计数不变，见[阶段任务](docs-shared-rate-limit-deployment.md)/[部署证据](../design/shared-rate-limit-deployment-verification.json)。
+
 ## PR73已合入main（2026-10-25，最新）
 
 用户授权“合并PR73，然后同步主线和交接文档”。[PR #73](https://github.com/zewbby/HnuHole/pull/73) 已于北京时间2026-10-25 10:12:38（UTC02:12:38）Squash合入main，merge SHA `c05198155543b8d1a259dc41fdeb860126dee7d0`；最终head `5ef371db493869bf0ab7679c6b874e4fcb144d30` 与合并提交完整Git树无差异。原生已测产品33bdcc0之后仅CI、旧host工具和交接文档变化，未重跑或叠加旧测试计数。

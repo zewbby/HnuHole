@@ -1,5 +1,7 @@
 # main
 
+> **2026-10-25日常环境更新：** main856313c已部署到既有同机WSL日常开发C/V（非生产/云），C25→27/V6→7，备份、85旧表投影/序列及GateC10/V8保持；Redis独立且四个发表/私信动作enforce。日常同签2501包保数据覆盖安装成功，安装后只读验收限定PASS，见[部署交接](docs-shared-rate-limit-deployment.md)。
+
 2026-10-25：[共享限流与动作防刷 PR #73](https://github.com/zewbby/HnuHole/pull/73) 已于北京时间10:12:38 Squash合入 `c05198155543b8d1a259dc41fdeb860126dee7d0`，最终head `5ef371d` 与合并提交完整树一致，13唯一workflow/23实际job全SUCCESS；指定Android2433四阶段限定PASS。origin/main和本地 `E:/Hnuhole-env/source/HnuHole-main` clean同步。见[任务](feat-shared-rate-limit-abuse-control.md)和[合并机器回执](../design/shared-rate-limit-merge-verification.json)。未部署/生产发布，iOS/整机重启/容量及历史模块总裁决不提升；本次后续文档PR在回执编写时尚未创建。
 
 2026-10-24：[刷新取消与颜文字动效 PR #69](https://github.com/zewbby/HnuHole/pull/69) 已Squash合入 `4933bff`，精确head `217bd4e` 的15项CI全PASS；main源码与已测版本无差异，vivo2402登录恢复后用户确认可以并授权合并。详见[任务与证据](fix-feed-refresh-cancel.md)，不提升未逐项记录的设备／iOS／生产结论。

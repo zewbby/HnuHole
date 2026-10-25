@@ -1,0 +1,240 @@
+{
+  "task": "SHARED-RATE-LIMIT-01-DEV-DEPLOYMENT",
+  "date": "2026-10-25",
+  "status": "PASS",
+  "source": "856313ccb800f6786502d4ddfb13678b0bfe9b2e",
+  "documentationBranch": "docs/shared-rate-limit-deployment",
+  "environment": "Existing same-machine WSL daily development backend; not production/cloud",
+  "evidenceSource": "Root observations plus external backend-deployment-receipt.json verified by docs writer",
+  "externalReceipt": "E:/Hnuhole-env/shared-rate-limit-deployment-20261025/backend-deployment-receipt.json",
+  "backend": {
+    "status": "PASS",
+    "backup": "COMPLETED_BY_ROOT",
+    "migrations": {
+      "community": {
+        "from": 25,
+        "to": 27
+      },
+      "verifier": {
+        "from": 6,
+        "to": 7
+      }
+    },
+    "legacyData": {
+      "status": "PASS",
+      "tableFieldProjections": 85,
+      "sequences": "Unchanged after migration and startup"
+    },
+    "gates": {
+      "community": 10,
+      "verifier": 8,
+      "recoverEventsCommunity": 10,
+      "recoverEventsVerifier": 8,
+      "startup": "resume, no recover generation change"
+    },
+    "redis": {
+      "communityPort": 56380,
+      "verifierPort": 56381,
+      "isolation": "Independent instances/namespaces/keys/ACL",
+      "policy": "noeviction",
+      "appendonly": true,
+      "appendfsync": "everysec",
+      "maxmemoryMiBEach": 256,
+      "namespaceGeneration": 1,
+      "namespaceState": "READY"
+    },
+    "enforceActions": [
+      "post.create",
+      "comment.publish",
+      "dm.send",
+      "dm.conversation.create"
+    ],
+    "otherRules": "observe; original SQL limits remain enforced"
+  },
+  "operatorACLRepair": {
+    "status": "PASS",
+    "cause": "go-redis SetNX expiration0 emits SETNX, operator template listed SET but missed SETNX",
+    "deployedFix": "Only operator +setnx for independent C/V namespaces",
+    "isolatedUnixRedisVerification": "SETNX first1 then0",
+    "runtime": "Still denies SETNX, CONFIG and cross-namespace",
+    "repoChange": "Minimal operator-only permission clarification in infra/ratelimit/redis-community.example.conf and runbook"
+  },
+  "dailyAndroid": {
+    "installStatus": "PASS",
+    "postInstallAcceptance": "PASS",
+    "package": "org.hnuhole.hnuhole_mobile",
+    "versionCode": 2026102501,
+    "versionName": "0.1.0-main-shared-rate",
+    "source": "856313c",
+    "apkSHA256": "80ab61929f6462d01d6f0ef5ea1da336887ee7aa330277d0a49ba6b7a6d6e277",
+    "signingCertificateSHA256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+    "install": "ADB install -r Success",
+    "firstInstallDateRetained": "2026-10-20",
+    "uninstalled": false,
+    "clearedUserData": false,
+    "actualInstalledBaseAPKHashMatchesBuild": true,
+    "originalSessionAutomaticHome": "PASS",
+    "readOnlyChecks": {
+      "homeImagesGIF": "PASS",
+      "profileFiveTabsAndUserData": "PASS",
+      "repostsEmptyList": "PASS",
+      "postDetailExistingTwoCommentsAndCommentImage": "PASS"
+    },
+    "currentProcessId": 23324,
+    "logMarkers": {
+      "fatal": 0,
+      "unhandled": 0,
+      "HandshakeException": 0
+    },
+    "explicitPostCommentDMEmailSent": false,
+    "noWritesScope": "No post/comment/DM/email sent for this acceptance; no logout/uninstall/data clear",
+    "screenshotsExternalOnly": {
+      "root": "E:/Hnuhole-env/shared-rate-mobile-deployment-20261025",
+      "files": [
+        "daily-after-feed-loaded.png",
+        "daily-after-profile.png",
+        "daily-after-reposts.png",
+        "daily-after-detail.png"
+      ],
+      "reason": "Screenshots contain existing content and are not committed"
+    }
+  },
+  "includedChanges": {
+    "oldBackendSource": "45e3948",
+    "productPRs": [
+      65,
+      69,
+      68,
+      71,
+      73
+    ],
+    "documentationPRs": [
+      67,
+      70,
+      72,
+      74
+    ],
+    "clientFix": "cda337c",
+    "excluded": "Unmerged comment-snapshot Redis branch"
+  },
+  "productionDeployed": false,
+  "cloudDeployed": false,
+  "historicalEvidence": "Original isolated native2433/host940/3SKIP/backend39 results retain their exact versions/counts; not rerun for this deployment receipt",
+  "historicalModuleVerdictsUnchanged": true,
+  "notRun": [
+    "iOS",
+    "Production/cloud deployment",
+    "Full physical reboot/power loss and full capacity beyond prior scope"
+  ],
+  "backendReceipt": {
+    "result": "PASS",
+    "sourceSha": "856313ccb800f6786502d4ddfb13678b0bfe9b2e",
+    "timestampUTC": "2026-10-25T03:21:52.592825+00:00",
+    "environment": "same-machine WSL development, not production",
+    "schema": {
+      "c": 27,
+      "v": 7
+    },
+    "ready": {
+      "c": true,
+      "v": true
+    },
+    "enforce": [
+      "comment.publish",
+      "dm.conversation.create",
+      "dm.send",
+      "post.create"
+    ],
+    "otherRules": "observe; original SQL budgets active",
+    "authorizationGenerationUnchanged": true,
+    "recoverAuditCountUnchanged": true,
+    "existingRowColumnProjectionsUnchangedThroughMigration": true,
+    "existingSequenceFactsUnchangedThroughMigration": true,
+    "postStartExact": true,
+    "postStartTableDifferenceCount": 0,
+    "postStartSequenceDifferenceCount": 0,
+    "comparedTableCount": 85,
+    "newNamespaceGeneration": {
+      "c": 1,
+      "v": 1
+    },
+    "namespacePolicyHash": {
+      "c": "f137631da375200546062df72586b9ee9f5d2fcd61ff77f5c5994b679c5adb9a",
+      "v": "f0b0280d827613e01ce681d1ffa28e01e2d3e9b17b38fb46a1d61b259959463d"
+    },
+    "redisPorts": {
+      "c": 56380,
+      "v": 56381
+    },
+    "binarySHA256": {
+      "community": "ec51ea5709400572748f878b9e458c82c0187d5f5407ba4ebdee7a726e4126c9",
+      "verifier": "d5519ac5f440b5e231ed48042c7a25134c9106f6cb8efbcd98adc826137957d0",
+      "authdev": "0306561cd7bde2d783c7804389b119a801e1cc183daeadb2249bc74c6780d3f1",
+      "ratelimitctl": "2975158a3ba7159f7e384bae5bea4e0e2ebc42079b59a9ba7a56fa308974c10f"
+    },
+    "recoverInvoked": false,
+    "databaseDownResetRestoreInvoked": false,
+    "oldBinaryFallbackPermitted": false
+  },
+  "resumeVerification": {
+    "status": "PASS",
+    "repeatSafeResume": "No extra process IDs",
+    "oldCommentReferenceLauncher": "Root backed up and forwarded comment-reference-20261024/resume-development.py to new version, preserving known-DB startup",
+    "readMetrics": "Actual runtime entry.query/read.account allowed, redis_errors=0",
+    "dailyConnectivityResume": "E:/Hnuhole-env/shared-rate-mobile-deployment-20261025/resume-daily.ps1; tested current backend resume, strict original-CA HTTPS and original-port USB mappings",
+    "phoneLease": "Released after verification; daily USB mappings retained"
+  },
+  "syntheticRedisSmoke": {
+    "status": "PASS",
+    "externalReceipt": "E:/Hnuhole-env/shared-rate-limit-deployment-20261025/live-rate-smoke-receipt.json",
+    "receipt": {
+      "businessAPICalls": 0,
+      "checks": [
+        {
+          "action": "post.create",
+          "allowed": 5,
+          "denied": 1,
+          "replayVerified": true,
+          "retryAfter": 60,
+          "boundedTTL": true
+        },
+        {
+          "action": "comment.publish",
+          "allowed": 12,
+          "denied": 1,
+          "replayVerified": true,
+          "retryAfter": 60,
+          "boundedTTL": true
+        },
+        {
+          "action": "dm.conversation.create",
+          "allowed": 10,
+          "denied": 1,
+          "replayVerified": true,
+          "retryAfter": 600,
+          "boundedTTL": true
+        },
+        {
+          "action": "dm.send",
+          "allowed": 30,
+          "denied": 1,
+          "replayVerified": true,
+          "retryAfter": 1,
+          "boundedTTL": true
+        }
+      ],
+      "namespaceMutationCalls": 0,
+      "result": "PASS",
+      "sqlReadOnly": true,
+      "syntheticSubjects": 4
+    },
+    "scope": "Direct actual deployed Redis engine, four random synthetic subjects with read-only SQL; no business API or namespace mutation. Not daily client API429/weak-network test."
+  },
+  "scope": "Existing same-machine daily WSL dev backend deployment, real installed Android read-only acceptance, direct deployed Redis engine synthetic-subject smoke. Not production or full daily API429/weak-network acceptance.",
+  "documentationPreparationCheckpoint": {
+    "documentationCommitted": false,
+    "documentationPushed": false,
+    "pr": null,
+    "scope": "Evidence-writing checkpoint before documentation commit/PR; delivery state is recorded in the remote docs/shared-rate-limit-deployment branch and external delivery receipt."
+  }
+}
