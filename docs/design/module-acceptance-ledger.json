@@ -142,7 +142,7 @@
       }
     },
     "stage6": "COMPLETE",
-    "status": "MERGED_MAIN_SCOPED_VALIDATION_PASS_NOT_DEPLOYED",
+    "status": "MERGED_MAIN_DAILY_DEV_DEPLOYMENT_SCOPED_ACCEPTANCE_PASS",
     "documentationChecks": {
       "status": "PASS",
       "reviewer": "Root independent final static audit",
@@ -294,7 +294,7 @@
       },
       "statusSnapshotAtHead": "6e502442326fd04073c2ad9b5d434970bc0c5f21"
     },
-    "deployed": false,
+    "deployed": true,
     "mergeVerification": "docs/design/shared-rate-limit-merge-verification.json",
     "mainSync": {
       "originMain": "c05198155543b8d1a259dc41fdeb860126dee7d0",
@@ -313,6 +313,22 @@
       "merged": false,
       "ci": "NOT_RUN",
       "scope": "Receipt-writing snapshot. Root will execute authorized docs PR/CI/merge/main FF; no invented PR number or recursive README self-record."
+    },
+    "preDailyDevelopmentDeploymentCheckpoint": {
+      "status": "MERGED_MAIN_SCOPED_VALIDATION_PASS_NOT_DEPLOYED",
+      "deployed": false,
+      "released": false
+    },
+    "deploymentEnvironment": "Existing same-machine WSL daily development backend; not production/cloud",
+    "productionDeployed": false,
+    "dailyDevelopmentDeployment": {
+      "backend": "PASS",
+      "phoneInstall": "PASS",
+      "phonePostInstallAcceptance": "PASS",
+      "source": "856313ccb800f6786502d4ddfb13678b0bfe9b2e",
+      "evidence": "docs/design/shared-rate-limit-deployment-verification.json",
+      "syntheticRedisEngineSmoke": "PASS",
+      "scope": "Existing same-machine daily WSL dev backend deployment, real installed Android read-only acceptance, direct deployed Redis engine synthetic-subject smoke. Not production or full daily API429/weak-network acceptance."
     }
   },
   "postDetailComments20261024": {

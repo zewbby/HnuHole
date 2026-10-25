@@ -1,5 +1,7 @@
 # 共享限流部署、恢复与回退runbook
 
+> **2026-10-25日常开发实证追加：** root已按授权将main856313c部署到既有同机WSL开发C/V，备份/迁移/数据与Gate保持核验PASS，非生产/云；日常2501包安装成功，安装后只读验收限定PASS，见[部署回执](shared-rate-limit-deployment-verification.json)。初始化需operator专属+setnx，runtime不加权限；下方旧未部署/未授权指原写作时点，不代表本次新授权。
+
 > **2026-10-25合并回执：** [PR73](https://github.com/zewbby/HnuHole/pull/73) 已Squash合入main c051981；最终5ef371d与合并完整树一致，13workflow/23job全SUCCESS，指定Android四阶段限定PASS，见[机器回执](shared-rate-limit-merge-verification.json)。下方未提交/Draft/未合并属于原时点；未部署/生产发布，runbook步骤未在生产执行。
 
 仅为feat/shared-rate-limit-abuse-control的操作交接，不是本次部署授权。当前未部署/发布，样例新增规则全observe；先读[实际配置](shared-rate-limit-plan.md)、[架构](shared-rate-limit-architecture.md)及[验证范围](shared-rate-limit-verification.json)。不连接未知/既有库做隔离runner，不在生产运行authlab。
@@ -8,7 +10,7 @@
 
 1. 由环境owner明确C/V独立数据库、角色、Redis7单primary和namespace；分别准备32字节主体HMAC密钥、runtime/operator Redis密码、DB密码。私有普通文件权限不允许group/other，配置与秘密不入Git。operator JSON及其秘密路径相对该JSON解析。
 2. 配套Goose v3.22.1分别前向迁移C至27、V至7，应用当前infra/postgres的C/V/runtime grants。C/V保持原最小权限审计；API不持namespace INSERT/DELETE或Redis CONFIG权限。不要以owner运行API。
-3. 按redis-community.example.conf建立单primary/noeviction；V另进程/端口/ACL文件。runtime仅本namespace及样例注释所列命令；operator另加CONFIG GET用于初始化检查。Redis7.0不授权不存在的CLIENT SETINFO，7.2按样例说明处理。禁用默认用户，真实密码外部管理。
+3. 按redis-community.example.conf建立单primary/noeviction；V另进程/端口/ACL文件。runtime仅本namespace及样例注释所列命令；operator另加CONFIG GET和SETNX（ACL为+config|get +setnx）用于初始化；go-redis SetNX expiration=0实际发送SETNX，仅有SET不够。只给operator加SETNX，C/V各自配置；runtime仍禁SETNX/CONFIG及跨namespace。Redis7.0不授权不存在的CLIENT SETINFO，7.2按样例说明处理。禁用默认用户，真实密码外部管理。
 4. 复制对应observe/operator样例到私有目录，嵌入真实runtime配置的sharedRateLimit字段；核对runtime/operator政策完全相同，C/V namespace/密钥分离，可信代理CIDR仅显式配置实际链。不要把开发socket/端口当生产事实。
 5. 构建services/api/cmd/ratelimitctl。只对确实全新、已迁移、空namespace元数据环境执行初始化（以下路径均为占位）：
 

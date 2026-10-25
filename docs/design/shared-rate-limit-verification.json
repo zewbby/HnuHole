@@ -1,7 +1,7 @@
 {
   "task": "SHARED-RATE-LIMIT-01",
   "date": "2026-10-25",
-  "status": "MERGED_MAIN_SCOPED_VALIDATION_PASS_NOT_DEPLOYED",
+  "status": "MERGED_MAIN_DAILY_DEV_DEPLOYMENT_SCOPED_ACCEPTANCE_PASS",
   "baseline": "8ed8f28",
   "branch": "feat/shared-rate-limit-abuse-control",
   "workspace": "E:/Hnuhole-env/source/HnuHole-shared-rate-limit",
@@ -9,7 +9,7 @@
   "committed": true,
   "pushed": true,
   "merged": true,
-  "deployed": false,
+  "deployed": true,
   "environment": {
     "distribution": "HnuHole-Ubuntu-24.04",
     "runAs": "hnuhole",
@@ -464,12 +464,11 @@
   },
   "openImplementationItems": [],
   "boundaries": [
-    "No existing database accessed/reset; own task TLS/C-V clusters/Redis only",
-    "Only explicitly authorized isolated Android package operated; daily package and data unchanged",
-    "No production/merge/deployment",
     "Historical host940/three SKIP and backend39 scope unchanged",
     "No RocketMQ; historical module verdicts unchanged",
-    "PR73 squash-merged under explicit user authorization; no production or invented member approval"
+    "PR73 squash-merged under explicit user authorization; no production or invented member approval",
+    "Prior no-existing-DB scope was isolated testing; current authorized daily dev deployment used backed-up existing C/V DB without resetting data. Production/cloud not deployed.",
+    "Daily package updated in place under new deployment authorization, original session/firstInstallTime and data retained; read-only phone acceptance only."
   ],
   "historicalCheckpoint": {
     "status": "IN_PROGRESS",
@@ -652,9 +651,9 @@
     }
   ],
   "remainingVerification": [
-    "Authorized docs receipt PR/CI/merge/main FF, not yet created at writing snapshot",
-    "iOS/full device reboot or power loss beyond specified scope",
-    "Capacity/production traffic/external security evidence"
+    "Deployment docs/operator template review and authorized delivery",
+    "Full daily package API429/weak-network acceptance not rerun; prior isolated2433 evidence retains own scope",
+    "iOS/production/cloud/full capacity beyond prior scope"
   ],
   "documentationChecks": {
     "status": "PASS",
@@ -901,5 +900,34 @@
     "merged": false,
     "ci": "NOT_RUN",
     "scope": "Receipt-writing snapshot. Root will execute authorized docs PR/CI/merge/main FF; no invented PR number or recursive README self-record."
+  },
+  "preDailyDevelopmentDeploymentCheckpoint": {
+    "status": "MERGED_MAIN_SCOPED_VALIDATION_PASS_NOT_DEPLOYED",
+    "deployed": false,
+    "released": false,
+    "boundaries": [
+      "No existing database accessed/reset; own task TLS/C-V clusters/Redis only",
+      "Only explicitly authorized isolated Android package operated; daily package and data unchanged",
+      "No production/merge/deployment",
+      "Historical host940/three SKIP and backend39 scope unchanged",
+      "No RocketMQ; historical module verdicts unchanged",
+      "PR73 squash-merged under explicit user authorization; no production or invented member approval"
+    ],
+    "remainingVerification": [
+      "Authorized docs receipt PR/CI/merge/main FF, not yet created at writing snapshot",
+      "iOS/full device reboot or power loss beyond specified scope",
+      "Capacity/production traffic/external security evidence"
+    ]
+  },
+  "deploymentEnvironment": "Existing same-machine WSL daily development backend; not production/cloud",
+  "productionDeployed": false,
+  "dailyDevelopmentDeployment": {
+    "backend": "PASS",
+    "phoneInstall": "PASS",
+    "phonePostInstallAcceptance": "PASS",
+    "source": "856313ccb800f6786502d4ddfb13678b0bfe9b2e",
+    "evidence": "docs/design/shared-rate-limit-deployment-verification.json",
+    "syntheticRedisEngineSmoke": "PASS",
+    "scope": "Existing same-machine daily WSL dev backend deployment, real installed Android read-only acceptance, direct deployed Redis engine synthetic-subject smoke. Not production or full daily API429/weak-network acceptance."
   }
 }
