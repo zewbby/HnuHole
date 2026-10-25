@@ -1,5 +1,7 @@
 # 共享限流部署、恢复与回退runbook
 
+> **2026-10-25合并回执：** [PR73](https://github.com/zewbby/HnuHole/pull/73) 已Squash合入main c051981；最终5ef371d与合并完整树一致，13workflow/23job全SUCCESS，指定Android四阶段限定PASS，见[机器回执](shared-rate-limit-merge-verification.json)。下方未提交/Draft/未合并属于原时点；未部署/生产发布，runbook步骤未在生产执行。
+
 仅为feat/shared-rate-limit-abuse-control的操作交接，不是本次部署授权。当前未部署/发布，样例新增规则全observe；先读[实际配置](shared-rate-limit-plan.md)、[架构](shared-rate-limit-architecture.md)及[验证范围](shared-rate-limit-verification.json)。不连接未知/既有库做隔离runner，不在生产运行authlab。
 
 ## 部署准备

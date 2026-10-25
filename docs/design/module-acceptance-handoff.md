@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-25 SHARED-RATE-LIMIT-01已合并：** 用户授权后 [PR73](https://github.com/zewbby/HnuHole/pull/73) 于北京时间10:12:38 Squash进入main `c051981`；最终5ef371d完整树与合并提交一致，13唯一workflow/23实际job全SUCCESS，指定Android2433四阶段限定PASS。origin/main与本地HnuHole-main clean同步，其他worktree保留。未部署/生产发布，不提升iOS/整机重启/容量及旧模块总裁决。见[任务](../branches/feat-shared-rate-limit-abuse-control.md)/[合并机器回执](shared-rate-limit-merge-verification.json)。下方Draft/未合并/待review为历史快照；当前纯文档同步PR在本回执编写时尚未创建，不预记其CI/合并。
+
 > **2026-10-24 SHARED-RATE-LIMIT-01 PR/CI最新：** CI记录时已提交推送 [Draft PR #73](https://github.com/zewbby/HnuHole/pull/73)；指定Android四阶段PASS，6e50244的13workflow/23job全部SUCCESS，见[逐run/job证据](shared-rate-limit-remote-ci-verification.json)。原生产品33bdcc0之后只有CI和旧host工具修复，runtime未变；两轮CI失败及修复历史保留。待独立成员review，未合并/发布。本次回执编写时后续纯文档提交尚无CI结果；CI记录时为Draft，后续检查/送审状态以live PR为准。下方未提交/CI未跑为历史时点，旧模块总裁决不提升。
 
 > **2026-10-24 SHARED-RATE-LIMIT-01 Android追加（当前）：** 用户已授权真机后提PR验远端CI；真我RMX3366/API34独立.ratelimit包2433，final-r11 write/read/unknown/fault四阶段实际Keystore/加密SQLite+force-stop恢复、真实TLS/双PG/Redis全部限定PASS。真实429/503已分计，unknown close阻迟到发送，独立会话/ACK通过；自有服务/包/adb reverse已收尾、lease released，日常2427包及数据未变。当前未commit/push/PR，remoteCI NOT_RUN，未合并/部署；下方未真机/无提交授权属于旧时点。见[追加详情](../branches/feat-shared-rate-limit-abuse-control.md)和[脱敏原生证据](shared-rate-limit-device-verification.json)。旧940/3SKIP、39后端计数与模块总裁决不变，iOS/整机重启/生产未验。
