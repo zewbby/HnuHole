@@ -160,14 +160,20 @@ func writeCommentReceipt(ctx context.Context, tx pgx.Tx, account uuid.UUID, key,
 		version = r.AttemptVersion
 	}
 	_, e := tx.Exec(ctx, `INSERT INTO c_comments.receipts(key_digest,owner_account_id,intent_fingerprint,operation,outcome,task_id,version,error_code,committed_at,comment_id,deleted_count,liked,like_count) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`, key[:], account, fp[:], r.Operation, r.State, nullablePostID(r.TaskID), version, nullablePostID(r.ErrorCode), at, nullablePostID(r.CommentID), r.DeletedCount, r.Liked, r.LikeCount)
+	if e == nil {
+		e = completeRateAdmission(ctx, tx)
+	}
 	return e
 }
 func (c *Community) GetCommentCommand(ctx context.Context, b [32]byte, key string) (PostResponse, error) {
 	if _, e := comments.ParseCommandKey(key); e != nil {
 		return PostResponse{}, e
 	}
-	return c.withCommentSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
+	return c.withCommentSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, d AuthorizationDecision, _ restriction) (any, error) {
 		digest, _ := c.comments.codec.KeyDigest(a.String(), key)
+		if e := c.resolveExpiredAdmission(ctx, tx, a, "comment", digest, d.TrustedAt); e != nil {
+			return nil, e
+		}
 		r, _, ok, e := readCommentReceipt(ctx, tx, digest)
 		if !ok && e == nil {
 			r.State = "UNKNOWN_NOT_OBSERVED"
@@ -212,7 +218,7 @@ func commentBudget(ctx context.Context, tx pgx.Tx, a uuid.UUID, at time.Time) er
 	}
 	return nil
 }
-func (c *Community) ExecuteCommentCommand(ctx context.Context, b [32]byte, key string, in comments.Intent) (PostResponse, error) {
+func (c *Community) executeCommentCommandOnce(ctx context.Context, b [32]byte, key string, in comments.Intent) (PostResponse, error) {
 	if _, e := comments.ParseCommandKey(key); e != nil || !textCommentOperation(in.Operation) {
 		return PostResponse{}, comments.ErrInvalid
 	}
@@ -232,6 +238,9 @@ func (c *Community) ExecuteCommentCommand(ctx context.Context, b [32]byte, key s
 				return nil, postError("COMMAND_CONFLICT", 409)
 			}
 			return r, nil
+		}
+		if e = requireRateAdmission(ctx, tx, a, d.TrustedAt); e != nil {
+			return nil, e
 		}
 		if e = commentBudget(ctx, tx, a, d.TrustedAt); e != nil {
 			return nil, e

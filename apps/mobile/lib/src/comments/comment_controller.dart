@@ -1,3 +1,6 @@
+import '../rate_limit.dart';
+import 'comment_http.dart' show CommentHttpFailure;
+
 import 'package:flutter/foundation.dart';
 
 import '../posts/post_protocol.dart';
@@ -8,7 +11,12 @@ import 'comment_models.dart';
 /// journal, authenticated API and the unified notification rendering adapter.
 /// Both dependencies must be bound to the same fixed C environment per instance.
 class CommentController extends ChangeNotifier {
-  CommentController({required this.api, required this.journal});
+  CommentController({
+    required this.api,
+    required this.journal,
+    DateTime Function()? clock,
+  }) : _clock = clock ?? DateTime.now;
+  final DateTime Function() _clock;
   final CommentApi api;
   final CommentJournal journal;
   String? _accountId;
@@ -25,6 +33,7 @@ class CommentController extends ChangeNotifier {
   Future<void> _writes = Future.value();
   String? get accountId => _accountId;
   bool get ready => _ready;
+  String? rateLimitMessage;
   List<CommentJournalEntry> get entries => List.unmodifiable(_entries.values);
   List<CommentTask> get resolvedTasks => List.unmodifiable(_resolved);
 
@@ -66,6 +75,7 @@ class CommentController extends ChangeNotifier {
     final epoch = ++_epoch;
     _accountId = account;
     _ready = false;
+    rateLimitMessage = null;
     _entries.clear();
     _retiredIdentities.clear();
     _resolved.clear();
@@ -102,7 +112,7 @@ class CommentController extends ChangeNotifier {
     _changed();
     for (final id in _entries.keys.toList()) {
       if (!_current(account, epoch)) return;
-      await reconcile(id);
+      if (_entries[id]?.rateLimitWait == null) await reconcile(id);
     }
   }
 
@@ -123,6 +133,14 @@ class CommentController extends ChangeNotifier {
     }
     if (_retiredIdentities.contains(binding.identityId)) {
       throw const CommentIdentityDeleted();
+    }
+    if (_entries.values.any(
+      (e) =>
+          e.rateLimitWait != null && e.intent.binding.postId == binding.postId,
+    )) {
+      throw StateError(
+        'A saved rate-limited draft must be retried by its original key',
+      );
     }
     if (_entries.values.any(
       (entry) =>
@@ -344,6 +362,23 @@ class CommentController extends ChangeNotifier {
         final task = await api.execute(entry.intent);
         if (!_current(account, epoch)) return;
         await _apply(account, epoch, entry, task, commandResult: true);
+      } on CommentHttpFailure catch (failure) {
+        if (_current(account, epoch)) {
+          if (failure.status == 429 &&
+              !_retiredIdentities.contains(entry.intent.binding.identityId)) {
+            final seconds = failure.retryAfterSeconds ?? 1;
+            final saved = entry.limited(RateLimitWait(_clock(), seconds));
+            await _put(account, saved);
+            if (_current(account, epoch) &&
+                !_retiredIdentities.contains(entry.intent.binding.identityId)) {
+              _entries[entry.localId] = saved;
+              rateLimitMessage = rateLimitDraftMessage(seconds);
+              _changed();
+            }
+          } else {
+            await _unknown(account, epoch, entry);
+          }
+        }
       } on CommentCommandRejected catch (rejection) {
         if (_current(account, epoch)) {
           await _recordRejection(account, epoch, entry, rejection.code);
@@ -367,9 +402,82 @@ class CommentController extends ChangeNotifier {
     }
   }
 
+  int rateLimitedSeconds(CommentJournalEntry entry) =>
+      entry.rateLimitWait?.remaining(_clock()) ?? 0;
+
+  /// User-triggered only. Query first, then replay the exact immutable command;
+  /// neither a 429 nor an absent receipt authorizes a different CREATE key.
+  Future<void> retryRateLimited(String localId) async {
+    final account = _accountId, epoch = _epoch, entry = _entries[localId];
+    if (!_ready ||
+        account == null ||
+        entry == null ||
+        entry.rateLimitWait == null ||
+        entry.identityDeleted ||
+        _retiredIdentities.contains(entry.intent.binding.identityId)) {
+      return;
+    }
+    final remaining = rateLimitedSeconds(entry);
+    if (remaining > 0) {
+      rateLimitMessage = rateLimitDraftMessage(remaining);
+      _changed();
+      return;
+    }
+    final key = '$account:$epoch:$localId';
+    if (_busy.contains(key)) return;
+    _busy.add(key);
+    try {
+      final task = await api.query(entry.intent.withoutContent());
+      if (!_current(account, epoch) ||
+          _retiredIdentities.contains(entry.intent.binding.identityId)) {
+        return;
+      }
+      if (task != null && task.state != CommentTaskState.accepted) {
+        await _apply(
+          account,
+          epoch,
+          entry.limited(null),
+          task,
+          commandResult: false,
+        );
+        rateLimitMessage = null;
+        return;
+      }
+    } on CommentHttpFailure catch (failure) {
+      if (_current(account, epoch) &&
+          failure.status == 429 &&
+          !_retiredIdentities.contains(entry.intent.binding.identityId)) {
+        final seconds = failure.retryAfterSeconds ?? 1;
+        final saved = entry.limited(RateLimitWait(_clock(), seconds));
+        await _put(account, saved);
+        if (_current(account, epoch)) {
+          _entries[localId] = saved;
+          rateLimitMessage = rateLimitDraftMessage(seconds);
+          _changed();
+        }
+      }
+      return;
+    } catch (_) {
+      return;
+    } finally {
+      _busy.remove(key);
+    }
+    if (!_current(account, epoch) ||
+        _retiredIdentities.contains(entry.intent.binding.identityId)) {
+      return;
+    }
+    rateLimitMessage = null;
+    await _execute(entry.limited(null), account, epoch);
+  }
+
   Future<void> reconcile(String localId) async {
     final account = _accountId, entry = _entries[localId], epoch = _epoch;
-    if (account == null || entry == null || _disposed) return;
+    if (account == null ||
+        entry == null ||
+        _disposed ||
+        entry.rateLimitWait != null) {
+      return;
+    }
     final key = '$account:$epoch:$localId';
     if (!_busy.add(key)) return;
     try {

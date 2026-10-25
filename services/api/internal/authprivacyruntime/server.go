@@ -19,6 +19,8 @@ import (
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/ratelimit"
+	"net/netip"
 )
 
 // CheckDatabase rejects a wrong database, missing formal schema, privileged
@@ -232,6 +234,44 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 		return err
 	}
 	limits := authprivacyhttp.NetworkLimits{Key: network, MutationCapacity: c.NetworkMutationCapacity, QueryCapacity: c.NetworkQueryCapacity, MaxEntries: c.NetworkMaxEntries, Window: time.Minute}
+	var shared *authprivacyhttp.SharedLimits
+	if c.SharedRateLimit != nil {
+		metaConfig, e := c.PoolConfig()
+		if e != nil {
+			return e
+		}
+		metaConfig.MaxConns = 4
+		metadataPool, e := pgxpool.NewWithConfig(ctx, metaConfig)
+		if e != nil {
+			return errors.New("shared admission metadata pool unavailable")
+		}
+		defer metadataPool.Close()
+		store, e := ratelimit.NewPostgresNamespaceStore(metadataPool, string(service))
+		if e != nil {
+			return e
+		}
+		password, e := c.Read(c.SharedRateLimit.PasswordFile, true, 1024)
+		if e != nil {
+			return errors.New("shared admission credentials unavailable")
+		}
+		key, e := c.Key32(c.SharedRateLimit.KeyFile)
+		if e != nil {
+			return e
+		}
+		engine, e := ratelimit.New(c.SharedRateLimit.Policy, strings.TrimSuffix(strings.TrimSuffix(string(password), "\n"), "\r"), store, key)
+		if e != nil {
+			return e
+		}
+		defer engine.Close()
+		if e = engine.ValidatePolicy(ctx); e != nil {
+			return errors.New("shared admission policy does not match initialized namespace")
+		}
+		shared = &authprivacyhttp.SharedLimits{Engine: engine, Key: key}
+		for _, raw := range c.SharedRateLimit.TrustedProxies {
+			prefix, _ := netip.ParsePrefix(raw)
+			shared.TrustedProxies = append(shared.TrustedProxies, prefix)
+		}
+	}
 	var endpoints *authprivacyhttp.Endpoints
 	var gate *authprivacy.PostgresAuthorizationGate
 	var worker runner
@@ -346,13 +386,20 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 		if err != nil {
 			return err
 		}
+		if shared != nil {
+			community, err = community.WithSharedRateLimit(ctx, shared.Engine, shared.Key)
+			if err != nil {
+				return err
+			}
+			shared.Resolver = community
+		}
 		origins := c.AllowedOrigins
 		adminDirectory := ""
 		if c.AdminDirectory != "" {
 			adminDirectory = c.Path(c.AdminDirectory)
 			origins = append(append([]string{}, origins...), c.PublicOrigin)
 		}
-		endpoints, err = authprivacyhttp.NewCommunityEndpoints(authprivacyhttp.CommunityOptions{Backend: community, Passwords: passwords, InternalPeer: identity, AllowedOrigins: origins, Limits: limits, AdminDirectory: adminDirectory})
+		endpoints, err = authprivacyhttp.NewCommunityEndpoints(authprivacyhttp.CommunityOptions{Shared: shared, Backend: community, Passwords: passwords, InternalPeer: identity, AllowedOrigins: origins, Limits: limits, AdminDirectory: adminDirectory})
 		if err != nil {
 			return err
 		}
@@ -393,7 +440,7 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 		if err != nil {
 			return err
 		}
-		endpoints, err = authprivacyhttp.NewVerifierEndpoints(authprivacyhttp.VerifierOptions{Eligibility: eligibility, Receipts: store, InternalPeer: identity, AllowedOrigins: c.AllowedOrigins, Limits: limits})
+		endpoints, err = authprivacyhttp.NewVerifierEndpoints(authprivacyhttp.VerifierOptions{Shared: shared, Eligibility: eligibility, Receipts: store, InternalPeer: identity, AllowedOrigins: c.AllowedOrigins, Limits: limits})
 		if err != nil {
 			return err
 		}
@@ -480,6 +527,9 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 	}
 	runCtx, stop := context.WithCancel(ctx)
 	defer stop()
+	if shared != nil {
+		go shared.Engine.LogMetrics(runCtx, slog.Default(), 30*time.Second)
+	}
 	fail := make(chan error, 3)
 	var wg sync.WaitGroup
 	for _, server := range servers {

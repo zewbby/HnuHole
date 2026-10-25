@@ -30,13 +30,16 @@ type DMPrivateMedia struct {
 	Data string `json:"data"`
 }
 
-func (c *Community) SendDMImage(ctx context.Context, b [32]byte, id string, in DMImageIntent) (PostResponse, error) {
-	if !dmUUID(id) || !dmUUID(in.IdentityID) || !dmUUID(in.PeerID) || in.IdentityID == in.PeerID || !dmUUID(in.ConversationID) || !dmUUID(in.GroupID) || in.GroupSize < 1 || in.GroupSize > 9 || in.Position < 0 || in.Position >= in.GroupSize || in.Attempt < 1 || in.Attempt > 1000 || postmedia.ValidateManifest([]postmedia.Selection{in.Selection}) != nil || len(in.Data) > base64.StdEncoding.EncodedLen(postmedia.MaxBytes) {
-		return PostResponse{}, postError("MALFORMED_REQUEST", 400)
-	}
-	data, e := base64.StdEncoding.Strict().DecodeString(in.Data)
-	if e != nil || len(data) != in.ByteLength || base64.StdEncoding.EncodeToString(data) != in.Data {
-		return PostResponse{}, postError("MALFORMED_REQUEST", 400)
+func (c *Community) sendDMImageOnce(ctx context.Context, b [32]byte, id string, in DMImageIntent) (PostResponse, error) {
+	var data []byte
+	var e error
+	if cached, ok := ctx.Value(dmImageBytesKey{}).([]byte); ok {
+		data = cached
+	} else {
+		data, e = validatedDMImage(id, in)
+		if e != nil {
+			return PostResponse{}, e
+		}
 	}
 	material := in
 	material.Attempt = 0
@@ -45,10 +48,13 @@ func (c *Community) SendDMImage(ctx context.Context, b [32]byte, id string, in D
 	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, d AuthorizationDecision, m restriction) (any, error) {
 		old, prior, e := dmReceipt(ctx, tx, a, id)
 		if e == nil {
+			if old.ErrorCode == "COMMAND_CLOSED" {
+				return old, nil
+			}
 			if !hmac.Equal(fp, prior) {
 				return nil, postError("COMMAND_CONFLICT", 409)
 			}
-			if old.State == "SENT" || in.Attempt <= old.Attempt {
+			if old.State == "SENT" || old.ErrorCode == "ADMISSION_EXPIRED" || in.Attempt <= old.Attempt {
 				return old, nil
 			}
 			if in.Attempt != old.Attempt+1 {
@@ -59,8 +65,14 @@ func (c *Community) SendDMImage(ctx context.Context, b [32]byte, id string, in D
 		} else if in.Attempt != 1 {
 			return nil, postError("COMMAND_CONFLICT", 409)
 		}
+		if e = requireRateAdmission(ctx, tx, a, d.TrustedAt); e != nil {
+			return nil, e
+		}
 		reject := func(code string) (any, error) {
 			_, e := tx.Exec(ctx, `INSERT INTO c_dm.commands(owner_account,command_id,fingerprint,attempt,state,error_code) VALUES($1,$2,$3,$4,'FAILED',$5) ON CONFLICT(owner_account,command_id) DO UPDATE SET attempt=EXCLUDED.attempt,state='FAILED',error_code=EXCLUDED.error_code`, a, id, fp, in.Attempt, code)
+			if e == nil {
+				e = completeRateAdmission(ctx, tx)
+			}
 			return DMReceipt{State: "FAILED", Attempt: in.Attempt, ErrorCode: code}, e
 		}
 		if mutedAt(m, d.TrustedAt) {
@@ -172,6 +184,9 @@ func (c *Community) SendDMImage(ctx context.Context, b [32]byte, id string, in D
 			return nil, e
 		}
 		_, e = tx.Exec(ctx, `INSERT INTO c_dm.commands(owner_account,command_id,fingerprint,attempt,state,message_id,conversation_id,sequence,accepted_at) VALUES($1,$2,$3,$4,'SENT',$5,$6,$7,$8) ON CONFLICT(owner_account,command_id) DO UPDATE SET attempt=EXCLUDED.attempt,state='SENT',error_code='',message_id=EXCLUDED.message_id,conversation_id=EXCLUDED.conversation_id,sequence=EXCLUDED.sequence,accepted_at=EXCLUDED.accepted_at`, a, id, fp, in.Attempt, msg, in.ConversationID, seq, at)
+		if e == nil {
+			e = completeRateAdmission(ctx, tx)
+		}
 		return DMReceipt{EvidenceVersion: 1, State: "SENT", Attempt: in.Attempt, MessageID: msg, ConversationID: in.ConversationID, Sequence: seq, AcceptedAt: &at}, e
 	})
 }
@@ -192,4 +207,17 @@ func (c *Community) ReadDMPrivateMedia(ctx context.Context, b [32]byte, id strin
 		e = json.Unmarshal(raw, &r.Selection)
 		return r, e
 	})
+}
+
+type dmImageBytesKey struct{}
+
+func validatedDMImage(id string, in DMImageIntent) ([]byte, error) {
+	if !dmUUID(id) || !dmUUID(in.IdentityID) || !dmUUID(in.PeerID) || in.IdentityID == in.PeerID || !dmUUID(in.ConversationID) || !dmUUID(in.GroupID) || in.GroupSize < 1 || in.GroupSize > 9 || in.Position < 0 || in.Position >= in.GroupSize || in.Attempt < 1 || in.Attempt > 1000 || postmedia.ValidateManifest([]postmedia.Selection{in.Selection}) != nil || len(in.Data) > base64.StdEncoding.EncodedLen(postmedia.MaxBytes) {
+		return nil, postError("MALFORMED_REQUEST", 400)
+	}
+	data, e := base64.StdEncoding.Strict().DecodeString(in.Data)
+	if e != nil || len(data) != in.ByteLength || base64.StdEncoding.EncodeToString(data) != in.Data {
+		return nil, postError("MALFORMED_REQUEST", 400)
+	}
+	return data, nil
 }

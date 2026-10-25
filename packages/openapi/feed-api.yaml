@@ -330,7 +330,7 @@ components:
       schema: { $ref: '#/components/schemas/UTCDateTime' }
     RetryAfter:
       required: true
-      schema: { type: integer, minimum: 1, maximum: 300 }
+      schema: { type: integer, minimum: 1, maximum: 86400 }
   schemas:
     PostInteractions:
       type: object

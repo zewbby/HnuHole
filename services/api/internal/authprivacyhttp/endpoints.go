@@ -69,6 +69,7 @@ type Endpoints struct {
 }
 
 type VerifierOptions struct {
+	Shared         *SharedLimits
 	Eligibility    EligibilityBackend
 	Receipts       ReceiptProcessor
 	InternalPeer   PeerIdentity
@@ -81,6 +82,7 @@ type ChannelBackend interface {
 }
 
 type CommunityOptions struct {
+	Shared           *SharedLimits
 	AdminDirectory   string
 	ModerationAccess ModerationAccessBackend
 	Posts            PostBackend
@@ -111,6 +113,7 @@ type errorDetails struct {
 	RetryAfterSeconds int `json:"retryAfterSeconds"`
 }
 type boundary struct {
+	shared  *SharedLimits
 	service Service
 	peer    PeerIdentity
 	origins map[string]bool
@@ -125,6 +128,7 @@ func NewVerifierEndpoints(options VerifierOptions) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	b.shared = options.Shared
 	return &Endpoints{
 		Public:   b.wrap(false, func(w http.ResponseWriter, r *http.Request) { b.verifierPublic(w, r, options.Eligibility) }),
 		Internal: b.wrap(true, func(w http.ResponseWriter, r *http.Request) { b.verifierInternal(w, r, options.Receipts) }),
@@ -139,6 +143,7 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	b.shared = options.Shared
 	if options.Channels == nil {
 		options.Channels, _ = options.Backend.(ChannelBackend)
 	}
@@ -275,17 +280,28 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				b.fail(w, 503, "SERVICE_UNAVAILABLE", 0)
 				return
 			}
+			if b.shared != nil {
+				source, e := TrustedSource(r, b.shared.TrustedProxies)
+				if e != nil {
+					b.bad(w, e)
+					return
+				}
+				r.RemoteAddr = source
+			}
 			retry, err := b.limits.allow(r.RemoteAddr, r.Method == http.MethodGet)
 			if err != nil {
 				b.bad(w, err)
 				return
 			}
 			if retry > 0 {
-				if b.service == CommunityService && isPostPath(r.URL.Path) {
+				if b.service == CommunityService && b.strictLimitPath(r.URL.Path) {
 					b.postFail(w, 429, "RATE_LIMITED", retry)
 				} else {
 					b.fail(w, 429, "RATE_LIMITED", retry)
 				}
+				return
+			}
+			if !b.sharedEntry(w, r) {
 				return
 			}
 			if hasHeader(r.Header, "Origin") {

@@ -590,12 +590,16 @@ func (b *boundary) postBad(w http.ResponseWriter, err error) {
 func (b *boundary) postFail(w http.ResponseWriter, status int, code string, retry int) {
 	w.Header().Del("Session-Expires-At")
 	w.Header().Del("Server-Time")
+	if status == 429 && retry > 86400 {
+		status = 503
+		code = "SERVICE_UNAVAILABLE"
+	}
 	if status == 429 {
 		if retry < 1 {
 			retry = 1
 		}
-		if retry > 300 {
-			retry = 300
+		if retry > 86400 {
+			retry = 86400
 		}
 		w.Header().Set("Retry-After", strconv.Itoa(retry))
 	}
@@ -631,7 +635,7 @@ func (b *boundary) postFailure(w http.ResponseWriter, err error) {
 				status = 400
 			case "RATE_LIMITED":
 				status = 429
-			case "SERVICE_UNAVAILABLE", "AUTHORIZATION_UNAVAILABLE":
+			case "SERVICE_UNAVAILABLE", "AUTHORIZATION_UNAVAILABLE", "SHARED_RATE_UNAVAILABLE":
 				status = 503
 			case "POSTING_RESTRICTED":
 				status = 409

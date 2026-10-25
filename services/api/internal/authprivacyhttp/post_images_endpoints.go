@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -171,9 +170,23 @@ func (b *boundary) communityPostImages(w http.ResponseWriter, r *http.Request, b
 			b.postBad(w, errTooLarge)
 			return
 		}
-		data, e := io.ReadAll(io.LimitReader(r.Body, postmedia.MaxBytes+1))
-		if e != nil {
-			b.postBad(w, errMalformed)
+		subject := ""
+		if b.shared != nil {
+			resolver, ok := backend.(interface {
+				ResolvePostUploadSubject(context.Context, [32]byte, string, string, int32) (string, error)
+			})
+			if !ok {
+				b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+				return
+			}
+			subject, e = resolver.ResolvePostUploadSubject(r.Context(), token, route.id, route.media, route.version)
+			if e != nil {
+				b.imageFailure(w, e)
+				return
+			}
+		}
+		data, ok := b.readSharedBody(w, r, subject, postmedia.MaxBytes)
+		if !ok {
 			return
 		}
 		if len(data) > postmedia.MaxBytes {

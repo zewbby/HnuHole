@@ -222,6 +222,10 @@ func (c *Community) UploadPostImage(ctx context.Context, token [32]byte, task, m
 	}
 	var at time.Time
 	_, e = c.gate.CommitAuthorized(ctx, tx, decision.Generation, func(final AuthorizationDecision) error {
+		if err := requireSharedPolicyFence(ctx, tx); err != nil {
+			return err
+		}
+
 		if e := c.checkPostProtocolKeys(ctx, tx); e != nil {
 			return e
 		}

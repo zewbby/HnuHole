@@ -1,5 +1,11 @@
 # 预设身份与匿名边界
 
+> **2026-10-24 SHARED-RATE-LIMIT-01送审追加：** CI记录时[Draft PR73](https://github.com/zewbby/HnuHole/pull/73)已提交推送，指定Android场景PASS；6e50244远端13workflow/23job全SUCCESS，见[版本化CI证据](../shared-rate-limit-remote-ci-verification.json)。runtime沿原生已测33bdcc0，后续只CI/旧host工具修复；待独立成员review、未合并发布。本次回执编写时纯文档更新CI待新head；CI记录时为Draft，后续检查/送审状态以live PR为准，历史模块总裁决及旧计数不变。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01 Android增量：** 真实Android账号隔离及帖评原身份/目标/图片SQL匹配已限定PASS；四阶段未改日常包或用户数据，不外推所有身份生命周期场景。 测试包2433，final-r11四阶段，见[脱敏证据](../shared-rate-limit-device-verification.json)/[任务](../../branches/feat-shared-rate-limit-abuse-control.md)。用户已授权后续PR/远端CI，当前尚未提交PR、remoteCI NOT_RUN；历史模块总裁决不提升，旧未真机描述保留原时点。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01（仅feat/shared-rate-limit-abuse-control，本地未提交/未合并/未部署）：** 账号经真实会话/Gate解析后所有身份共用动作额度，不由客户端自报身份决定主体。帖子grant与头像/评论/DM上传在读body前验证主体，四用途共享attempt/实际wire bytes预算；最终SQL继续资源归属和policy围栏，不新增账号全身份表。B02及上传只增加本任务限定证据。 [当前任务](../../branches/feat-shared-rate-limit-abuse-control.md) / [配置](../shared-rate-limit-plan.md) / [证据](../shared-rate-limit-verification.json)。旧原文及整模块验收结论保留，未做真机/iOS/生产验收。
+
 > IDENTITY-AVATAR-01：本次头像上传与首次入口已随 [PR #63](https://github.com/zewbby/HnuHole/pull/63) 合入 main，开发后端及真我日常2315已配套更新，未生产发布；[任务与版本证据](../../branches/identity-avatar-onboarding.md)区分宿主／隔离 SQL 与真我原生限定通过的版本及范围，不提升历史整模块结论。
 
 更新：2026-10-23。当前模型为进入社区前至少完成一个身份、最多三个预设身份、同一账号在每帖固定使用一个身份；私信仍按身份对隔离并可跨帖延续。首次入口按本次用户要求更新；旧讨论与旧图仅用于追溯。

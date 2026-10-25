@@ -165,7 +165,13 @@ func (c *Community) GetDMCommand(ctx context.Context, b [32]byte, id string) (Po
 	if !dmUUID(id) {
 		return PostResponse{}, postError("MALFORMED_REQUEST", 400)
 	}
-	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, _ AuthorizationDecision, _ restriction) (any, error) {
+	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, d AuthorizationDecision, _ restriction) (any, error) {
+		key := sha256.Sum256([]byte("HNUHOLE/DM-ADMISSION/V1\x00" + a.String() + "\x00" + id))
+		for _, kind := range []string{"dm-text", "dm-image"} {
+			if e := c.resolveExpiredAdmission(ctx, tx, a, kind, key, d.TrustedAt); e != nil {
+				return nil, e
+			}
+		}
 		r, _, e := dmReceipt(ctx, tx, a, id)
 		if errors.Is(e, pgx.ErrNoRows) {
 			return DMReceipt{State: "ABSENT"}, nil
@@ -173,7 +179,7 @@ func (c *Community) GetDMCommand(ctx context.Context, b [32]byte, id string) (Po
 		return r, e
 	})
 }
-func (c *Community) SendDMText(ctx context.Context, b [32]byte, id string, in DMTextIntent) (PostResponse, error) {
+func (c *Community) sendDMTextOnce(ctx context.Context, b [32]byte, id string, in DMTextIntent) (PostResponse, error) {
 	if !dmUUID(id) {
 		return PostResponse{}, postError("MALFORMED_REQUEST", 400)
 	}
@@ -190,10 +196,13 @@ func (c *Community) SendDMText(ctx context.Context, b [32]byte, id string, in DM
 	return c.withDMSession(ctx, b, func(tx pgx.Tx, a uuid.UUID, d AuthorizationDecision, m restriction) (any, error) {
 		old, prior, e := dmReceipt(ctx, tx, a, id)
 		if e == nil {
+			if old.ErrorCode == "COMMAND_CLOSED" {
+				return old, nil
+			}
 			if !hmac.Equal(fp, prior) {
 				return nil, postError("COMMAND_CONFLICT", 409)
 			}
-			if old.State == "SENT" || in.Attempt <= old.Attempt {
+			if old.State == "SENT" || old.ErrorCode == "ADMISSION_EXPIRED" || in.Attempt <= old.Attempt {
 				return old, nil
 			}
 			if in.Attempt != old.Attempt+1 {
@@ -204,8 +213,14 @@ func (c *Community) SendDMText(ctx context.Context, b [32]byte, id string, in DM
 		} else if in.Attempt != 1 {
 			return nil, postError("COMMAND_CONFLICT", 409)
 		}
+		if e = requireRateAdmission(ctx, tx, a, d.TrustedAt); e != nil {
+			return nil, e
+		}
 		reject := func(code string) (any, error) {
 			_, e := tx.Exec(ctx, `INSERT INTO c_dm.commands(owner_account,command_id,fingerprint,attempt,state,error_code) VALUES($1,$2,$3,$4,'FAILED',$5) ON CONFLICT(owner_account,command_id) DO UPDATE SET attempt=EXCLUDED.attempt,state='FAILED',error_code=EXCLUDED.error_code`, a, id, fp, in.Attempt, code)
+			if e == nil {
+				e = completeRateAdmission(ctx, tx)
+			}
 			return DMReceipt{State: "FAILED", Attempt: in.Attempt, ErrorCode: code}, e
 		}
 		if mutedAt(m, d.TrustedAt) {
@@ -341,6 +356,9 @@ func (c *Community) SendDMText(ctx context.Context, b [32]byte, id string, in DM
 			return nil, e
 		}
 		_, e = tx.Exec(ctx, `INSERT INTO c_dm.commands(owner_account,command_id,fingerprint,attempt,state,message_id,conversation_id,sequence,accepted_at) VALUES($1,$2,$3,$4,'SENT',$5,$6,$7,$8) ON CONFLICT(owner_account,command_id) DO UPDATE SET attempt=EXCLUDED.attempt,state='SENT',error_code='',message_id=EXCLUDED.message_id,conversation_id=EXCLUDED.conversation_id,sequence=EXCLUDED.sequence,accepted_at=EXCLUDED.accepted_at`, a, id, fp, in.Attempt, msg, conv, seq, at)
+		if e == nil {
+			e = completeRateAdmission(ctx, tx)
+		}
 		return DMReceipt{EvidenceVersion: 1, State: "SENT", Attempt: in.Attempt, MessageID: msg, ConversationID: conv, Sequence: seq, AcceptedAt: &at}, e
 	})
 }

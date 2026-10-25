@@ -1,3 +1,4 @@
+import '../rate_limit.dart';
 import 'personal_collections_api.dart';
 
 import 'dart:async';
@@ -141,7 +142,12 @@ class HttpPostApi
       if (!resource.startsWith('commands/')) {
         throw const FormatException('Invalid DM route');
       }
-      PostProtocol.resourceId(resource.substring('commands/'.length));
+      final parts = resource.split('/');
+      if (parts.length != 2 &&
+          !(parts.length == 3 && parts[2] == 'close' && method == 'POST')) {
+        throw const FormatException('Invalid DM command route');
+      }
+      PostProtocol.resourceId(parts[1]);
     }
     return _send(
       token,
@@ -894,6 +900,7 @@ class HttpPostApi
       429 => {'RATE_LIMITED'},
       422 => {'MEDIA_INVALID'},
       503 => {
+        'SHARED_RATE_UNAVAILABLE',
         'SERVICE_UNAVAILABLE',
         'AUTHORIZATION_UNAVAILABLE',
         'MEDIA_VALIDATOR_UNAVAILABLE',
@@ -906,11 +913,7 @@ class HttpPostApi
     int? retry;
     if (status == 429) {
       final value = _single(headers, 'retry-after');
-      if (!RegExp(r'^[1-9][0-9]{0,2}$').hasMatch(value)) {
-        throw const FormatException('Invalid post retry delay');
-      }
-      retry = int.parse(value);
-      if (retry > 300) throw const FormatException('Invalid post retry delay');
+      retry = parseRetryAfterSeconds(value);
     } else if (headers['retry-after'] != null) {
       throw const FormatException('Unexpected post retry delay');
     }

@@ -106,6 +106,7 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
       mutations.isNotEmpty ||
       core.entries.any(
         (entry) =>
+            entry.rateLimitWait == null &&
             entry.rejectionCode == null &&
             (entry.transport != CommentTransportState.settled ||
                 entry.task?.state == CommentTaskState.accepted),
@@ -245,7 +246,7 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
       if (current(epoch)) {
         if (e.status == 401) {
           sessions.sessionUnauthorized(token, e.code);
-        } else if (e.status == 503) {
+        } else if (e.status == 503 && e.code != 'SHARED_RATE_UNAVAILABLE') {
           sessions.sessionUnavailable(token);
         }
       }

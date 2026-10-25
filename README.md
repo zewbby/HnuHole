@@ -41,6 +41,7 @@
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `feat/shared-rate-limit-abuse-control` | 共享准入与草稿/队列已送[PR #73](https://github.com/zewbby/HnuHole/pull/73)，指定Android及6e50244远端CI通过；CI记录时为Draft，最新送审状态见PR，未合并发布。 | [任务详情](docs/branches/feat-shared-rate-limit-abuse-control.md) |
 | `codex/feat/post-detail-comments` | 已合并 #71：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |
 | `codex/fix/feed-refresh-cancel` | 已合并 main [PR #69](https://github.com/zewbby/HnuHole/pull/69)：刷新回滑可取消，纯享手势隔离，加载高亮留在颜文字内。 | [任务详情](docs/branches/fix-feed-refresh-cancel.md) |
 | `codex/feat/feed-scroll-smile-refresh` | 已合并 main [PR #65](https://github.com/zewbby/HnuHole/pull/65)：沉浸阅读、发帖入口交接与 `:)` 刷新；未安装／发布。 | [任务详情](docs/branches/feat-feed-scroll-smile-refresh.md) |

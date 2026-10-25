@@ -421,6 +421,7 @@ class _Fixture {
   final latest = <String, PostStore>{};
   late PostController controller;
   int sequence = 1;
+  DateTime now = _at;
   final idQueue = <String>[];
   File file(String owner) => File(
     '${directory.path}/${PostStore.scopeFor('https://community.test.invalid', owner)}.sqlite3',
@@ -453,7 +454,7 @@ class _Fixture {
       authStore: auth.store,
       identities: auth.api,
       openStore: open,
-      clock: () => _at,
+      clock: () => now,
       pollInterval: poll,
       newId: () => idQueue.isNotEmpty
           ? idQueue.removeAt(0)
@@ -563,6 +564,65 @@ void main() {
   });
   late _Fixture f;
   tearDown(() async => f.close());
+
+  test('429 persists full original post draft and only manual retry reuses its key', () async {
+    final api = _Api()
+      ..createFailure = const PostFailure(
+        kind: PostFailureKind.rejected,
+        statusCode: 429,
+        code: 'RATE_LIMITED',
+        retryAfterSeconds: 3600,
+      );
+    f = await _Fixture.create(api: api);
+    final editor = f.editor(title: '限流原稿', body: '保留正文');
+    expect(await f.controller.publish(editor), isTrue);
+    await _until(() => f.controller.errorMessage?.contains('3600') == true);
+    var entry = await _entry(f, editor.id);
+    final original = entry.intents.single.commandId;
+    expect(entry.data['identityId'], identityTestId);
+    expect(entry.data['channelId'], _channel);
+    expect(entry.data['body'], '保留正文');
+    expect(entry.data['rateLimitWait'], isA<Map>());
+    expect(api.seals, isEmpty);
+    api.receipts.clear(); // This 429 happened before acceptance.
+    await f.restart();
+    await f.controller.loadPersonal();
+    await f.controller.retryRateLimited(editor.id);
+    expect(api.creates, hasLength(1));
+    f.now = _at.add(const Duration(hours: 1));
+    await f.controller.reconcile(editor.id);
+    expect(api.creates, hasLength(1));
+    api.createFailure = null;
+    await f.controller.retryRateLimited(editor.id);
+    expect(api.creates, hasLength(2));
+    expect(api.creates.last['commandId'], original);
+    entry = await _entry(f, editor.id);
+    expect(entry.intents, hasLength(1));
+    expect(entry.data['rateLimitWait'], isNull);
+  });
+
+  test(
+    '429 cannot replace an already accepted unknown post with a new command',
+    () async {
+      final api = _Api()
+        ..createFailure = const PostFailure(
+          kind: PostFailureKind.rejected,
+          statusCode: 429,
+          code: 'RATE_LIMITED',
+          retryAfterSeconds: 1,
+        );
+      f = await _Fixture.create(api: api);
+      final editor = f.editor();
+      await f.controller.publish(editor);
+      await _until(() => f.controller.errorMessage?.contains('草稿') == true);
+      f.now = _at.add(const Duration(seconds: 2));
+      api.createFailure = null;
+      await f.controller.retryRateLimited(editor.id);
+      expect(api.creates, hasLength(1));
+      expect(api.seals, isEmpty);
+      expect((await _entry(f, editor.id)).data['taskId'], _taskId);
+    },
+  );
 
   test('personal own query waits for selected identity', () async {
     final api = _Api()..ownWait = Completer();

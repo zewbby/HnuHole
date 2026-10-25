@@ -30,6 +30,9 @@ func (c *Community) checkDMSchema(ctx context.Context) error {
  AND has_table_privilege(current_user,'c_dm.messages','SELECT,INSERT')
  AND has_column_privilege(current_user,'c_dm.messages','body','UPDATE')
  AND has_table_privilege(current_user,'c_dm.commands','SELECT,INSERT')
+ AND EXISTS(SELECT 1 FROM pg_attribute WHERE attrelid='c_dm.commands'::regclass AND attname='closed_at' AND atttypid='timestamptz'::regtype AND NOT attisdropped)
+ AND to_regclass('c_dm.dm_command_close_budget') IS NOT NULL
+ AND has_column_privilege(current_user,'c_dm.commands','closed_at','UPDATE')
  AND has_table_privilege(current_user,'c_dm.conversations','SELECT,INSERT')
  AND has_table_privilege(current_user,'c_dm.binding_acceptances','SELECT,INSERT')`).Scan(&valid)
 	if e != nil || !valid {

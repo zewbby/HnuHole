@@ -142,6 +142,8 @@ Map<String, dynamic> decodeDm(Object? raw, String resource) {
           'CONTACT_UNAVAILABLE',
           'POST_IDENTITY_BOUND',
           'WAITING_FOR_REPLY',
+          'ADMISSION_EXPIRED',
+          'COMMAND_CLOSED',
           'PENDING_LIMIT',
           'INVALID_IMAGE',
           'COMMAND_CONFLICT',

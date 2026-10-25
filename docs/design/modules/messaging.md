@@ -1,5 +1,11 @@
 # 私信与会话
 
+> **2026-10-24 SHARED-RATE-LIMIT-01送审追加：** CI记录时[Draft PR73](https://github.com/zewbby/HnuHole/pull/73)已提交推送，指定Android场景PASS；6e50244远端13workflow/23job全SUCCESS，见[版本化CI证据](../shared-rate-limit-remote-ci-verification.json)。runtime沿原生已测33bdcc0，后续只CI/旧host工具修复；待独立成员review、未合并发布。本次回执编写时纯文档更新CI待新head；CI记录时为Draft，后续检查/送审状态以live PR为准，历史模块总裁决及旧计数不变。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01 Android增量：** 实际429计数、原生持久队列保序、queued取消、unknown close/迟到PUT永久COMMAND_CLOSED、独立会话/ACK及真实Redis暂停503后恢复全部限定PASS。未确认只转圈，无待发送文本；非已发撤回。 测试包2433，final-r11四阶段，见[脱敏证据](../shared-rate-limit-device-verification.json)/[任务](../../branches/feat-shared-rate-limit-abuse-control.md)。用户已授权后续PR/远端CI，当前尚未提交PR、remoteCI NOT_RUN；历史模块总裁决不提升，旧未真机描述保留原时点。
+
+> **2026-10-24 SHARED-RATE-LIMIT-01（仅feat/shared-rate-limit-abuse-control，本地未提交/未合并/未部署）：** 本地持久队列默认256（100只是批次），同会话保序、独立接收ACK、notBefore跨重启；未确认只转圈，无待发送文本。首次回复前一条文字无图，WAITING_FOR_REPLY不自动重发。queued可取消；unknown只隐藏，再POST /api/v1/dm/commands/{id}/close（仅attempt）核SENT或永久FAILED/COMMAND_CLOSED；原账号锁/命令表跨attempt锚，120新锚/60秒，close独立cooldown不停ACK，不扣send/create/upload，不撤回已发。B08/B09仅本任务限定证据。 [当前任务](../../branches/feat-shared-rate-limit-abuse-control.md) / [配置](../shared-rate-limit-plan.md) / [证据](../shared-rate-limit-verification.json)。旧原文及整模块验收结论保留，未做真机/iOS/生产验收。
+
 更新：2026-09-16。当前会话边界按双方所选身份确定，不再按来源帖强制拆分。
 
 ## 范围

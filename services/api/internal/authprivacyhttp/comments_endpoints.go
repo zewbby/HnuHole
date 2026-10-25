@@ -173,8 +173,26 @@ func (b *boundary) communityCommentsPublic(w http.ResponseWriter, r *http.Reques
 			b.postBad(w, er)
 			return
 		}
-		data, er := io.ReadAll(io.LimitReader(r.Body, postmedia.MaxBytes+1))
-		if er != nil || len(data) > postmedia.MaxBytes {
+		subject := ""
+		if b.shared != nil {
+			resolver, ok := backend.(interface {
+				ResolveCommentUploadSubject(context.Context, [32]byte, string, int32) (string, error)
+			})
+			if !ok {
+				b.postFail(w, 503, "SERVICE_UNAVAILABLE", 0)
+				return
+			}
+			subject, e = resolver.ResolveCommentUploadSubject(r.Context(), bearer, route.id, route.version)
+			if e != nil {
+				b.postFailure(w, e)
+				return
+			}
+		}
+		data, ok := b.readSharedBody(w, r, subject, postmedia.MaxBytes)
+		if !ok {
+			return
+		}
+		if len(data) > postmedia.MaxBytes {
 			b.postBad(w, errTooLarge)
 			return
 		}

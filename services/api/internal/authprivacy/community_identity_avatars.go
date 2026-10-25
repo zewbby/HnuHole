@@ -84,6 +84,10 @@ func (c *Community) UploadIdentityAvatar(ctx context.Context, bearer [32]byte, i
 		return time.Time{}, postmedia.ErrUnavailable
 	}
 	return c.withIdentitySession(ctx, bearer, func(tx pgx.Tx, account uuid.UUID, final AuthorizationDecision) error {
+		if err := requireSharedPolicyFence(ctx, tx); err != nil {
+			return err
+		}
+
 		if e := admission(tx, account, final); e != nil {
 			return e
 		}

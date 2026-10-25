@@ -21,6 +21,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/ratelimit"
+	"net/netip"
 )
 
 type GateConfig struct {
@@ -53,33 +55,41 @@ type PostImagesConfig struct {
 	ValidatorSHA256 string `json:"validatorSHA256"`
 }
 
+type SharedRateConfig struct {
+	Policy         ratelimit.Config `json:"policy"`
+	KeyFile        string           `json:"keyFile"`
+	PasswordFile   string           `json:"passwordFile"`
+	TrustedProxies []string         `json:"trustedProxies"`
+}
+
 type Config struct {
-	Environment             string          `json:"environment"`
-	DatabaseURL             string          `json:"databaseUrl"`
-	DatabasePasswordFile    string          `json:"databasePasswordFile"`
-	PublicListen            string          `json:"publicListen"`
-	InternalListen          string          `json:"internalListen"`
-	PublicOrigin            string          `json:"publicOrigin"`
-	PeerOrigin              string          `json:"peerOrigin"`
-	AllowedOrigins          []string        `json:"allowedOrigins"`
-	AllowDevelopmentNetwork bool            `json:"allowDevelopmentNetwork"`
-	CAFile                  string          `json:"caFile"`
-	PublicCertificateFile   string          `json:"publicCertificateFile"`
-	PublicKeyFile           string          `json:"publicKeyFile"`
-	InternalCertificateFile string          `json:"internalCertificateFile"`
-	InternalKeyFile         string          `json:"internalKeyFile"`
-	NetworkKeyFile          string          `json:"networkKeyFile"`
-	SigningKeyFile          string          `json:"signingKeyFile"`
-	TrustedCommunityKeyFile string          `json:"trustedCommunityKeyFile"`
-	TrustedVerifierKeyFile  string          `json:"trustedVerifierKeyFile"`
-	RequestKeyFile          string          `json:"requestKeyFile,omitempty"`
-	PasswordBlocklistFile   string          `json:"passwordBlocklistFile,omitempty"`
-	Gate                    *GateConfig     `json:"gate,omitempty"`
-	Posts                   *PostsConfig    `json:"posts,omitempty"`
-	Comments                *CommentsConfig `json:"comments,omitempty"`
-	DirectMessages          bool            `json:"directMessages,omitempty"`
-	Moderation              bool            `json:"moderation,omitempty"`
-	AdminDirectory          string          `json:"adminDirectory,omitempty"`
+	SharedRateLimit         *SharedRateConfig `json:"sharedRateLimit,omitempty"`
+	Environment             string            `json:"environment"`
+	DatabaseURL             string            `json:"databaseUrl"`
+	DatabasePasswordFile    string            `json:"databasePasswordFile"`
+	PublicListen            string            `json:"publicListen"`
+	InternalListen          string            `json:"internalListen"`
+	PublicOrigin            string            `json:"publicOrigin"`
+	PeerOrigin              string            `json:"peerOrigin"`
+	AllowedOrigins          []string          `json:"allowedOrigins"`
+	AllowDevelopmentNetwork bool              `json:"allowDevelopmentNetwork"`
+	CAFile                  string            `json:"caFile"`
+	PublicCertificateFile   string            `json:"publicCertificateFile"`
+	PublicKeyFile           string            `json:"publicKeyFile"`
+	InternalCertificateFile string            `json:"internalCertificateFile"`
+	InternalKeyFile         string            `json:"internalKeyFile"`
+	NetworkKeyFile          string            `json:"networkKeyFile"`
+	SigningKeyFile          string            `json:"signingKeyFile"`
+	TrustedCommunityKeyFile string            `json:"trustedCommunityKeyFile"`
+	TrustedVerifierKeyFile  string            `json:"trustedVerifierKeyFile"`
+	RequestKeyFile          string            `json:"requestKeyFile,omitempty"`
+	PasswordBlocklistFile   string            `json:"passwordBlocklistFile,omitempty"`
+	Gate                    *GateConfig       `json:"gate,omitempty"`
+	Posts                   *PostsConfig      `json:"posts,omitempty"`
+	Comments                *CommentsConfig   `json:"comments,omitempty"`
+	DirectMessages          bool              `json:"directMessages,omitempty"`
+	Moderation              bool              `json:"moderation,omitempty"`
+	AdminDirectory          string            `json:"adminDirectory,omitempty"`
 
 	PostImages *PostImagesConfig `json:"postImages,omitempty"`
 	// Exactly four public Gate purpose keys from the other party, in evidence,
@@ -152,6 +162,21 @@ func (c Config) Path(path string) string {
 }
 
 func (c Config) Validate(service authprivacyhttp.Service) error {
+	if c.SharedRateLimit != nil {
+		shared := c.SharedRateLimit
+		if shared.Policy.ValidateFor(string(service)) != nil || shared.Policy.Namespace != string(service)+"_"+c.Environment || shared.Policy.Username != string(service)+"_ratelimit" || shared.KeyFile == "" || shared.PasswordFile == "" || len(shared.TrustedProxies) > 64 {
+			return errors.New("invalid isolated shared admission configuration")
+		}
+		for _, raw := range shared.TrustedProxies {
+			prefix, e := netip.ParsePrefix(raw)
+			if e != nil || prefix.Bits() == 0 {
+				return errors.New("invalid trusted proxy prefix")
+			}
+		}
+		if _, e := c.Read(shared.PasswordFile, true, 1024); e != nil {
+			return errors.New("invalid shared admission credentials file")
+		}
+	}
 	if service == authprivacyhttp.CommunityService && (c.SMTPMode != "" || c.SMTPUsername != "" || c.SMTPPasswordFile != "") {
 		return errors.New("SMTP delivery credentials belong only to V")
 	}
@@ -274,6 +299,9 @@ func (c Config) Validate(service authprivacyhttp.Service) error {
 	validationPeer.CloseIdleConnections()
 	seen := map[string]bool{}
 	paths := []string{c.NetworkKeyFile, c.SigningKeyFile}
+	if c.SharedRateLimit != nil {
+		paths = append(paths, c.SharedRateLimit.KeyFile)
+	}
 	if c.Gate == nil || c.Gate.Domain != "hnuhole-"+party+"-"+c.Environment || c.Gate.EvidenceFile == "" || c.Gate.AnchorFile == "" || c.Path(c.Gate.EvidenceFile) == c.Path(c.Gate.AnchorFile) || len(c.PeerGatePublicKeyFiles) != 4 {
 		return errors.New("independent service-bound Gate evidence/anchor and four counterpart public trust keys required")
 	}
