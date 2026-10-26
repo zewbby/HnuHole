@@ -201,6 +201,25 @@ Widget _app(Widget child, {double scale = 1, String? fontFamily}) =>
     );
 
 void main() {
+  Future<void> waitForViewerImage(WidgetTester tester) async {
+    final controller = tester
+        .widget<HnuImageViewer>(find.byType(HnuImageViewer))
+        .controller;
+    // pumpAndSettle only drains fake-clock frames, not the engine's decoder.
+    for (var i = 0; i < 100; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 5)),
+      );
+      await tester.pump();
+      if (controller.status == ViewerLoadStatus.ready &&
+          (controller.resourceUsage?.decodedFrames ?? 0) > 0) {
+        return;
+      }
+    }
+    expect(controller.status, ViewerLoadStatus.ready);
+    expect(controller.resourceUsage?.decodedFrames ?? 0, greaterThan(0));
+  }
+
   for (final fromPersonal in [false, true]) {
     testWidgets(
       'existing ${fromPersonal ? "personal" : "channel"} detail passes images and removes deleted covered route',
@@ -286,11 +305,13 @@ void main() {
         await tester.tap(tile);
         await tester.pumpAndSettle();
         expect(find.byType(HnuImageViewer), findsOneWidget);
+        await waitForViewerImage(tester);
         await tester.tap(find.byKey(const ValueKey('viewer-close')));
         await tester.pumpAndSettle();
         expect(scroll.position.pixels, offset);
         await tester.tap(tile);
         await tester.pumpAndSettle();
+        await waitForViewerImage(tester);
         c.tombstoned = true;
         c.notifyListeners();
         for (var i = 0; i < 8; i++) {
