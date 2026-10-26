@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> **2026-10-26 IMAGE-VIEWER-GESTURES-01（PR77待合并）：** `fix/image-viewer-gestures` 从 `origin/main@856313c` 建立，按用户要求不带 codex 前缀。图片上下拖动跟手缩小、背景渐隐露出原页面，短拖回弹、完成动画后退出；取消结束提示闪屏，加入有界会话缓存与横滑目标页准备，修正状态栏。帖子、编辑器、私信共用透明路由；长图、双指、缩放、撤销及原文件保存护栏保留。实现与最终验证见[任务记录](../branches/fix-image-viewer-gestures.md)和[机器证据](image-viewer-gestures-verification.json)。已提交推送[PR77](https://github.com/zewbby/HnuHole/pull/77)，整合主线PR76后相关118项回归、分析及Android构建PASS；等待最终提交远端CI，未合并/部署，真机手感及 iOS 本轮 NOT_RUN；旧模块总裁决不提升。
+> **2026-10-26 IMAGE-VIEWER-GESTURES-01已合并：** [PR #77](https://github.com/zewbby/HnuHole/pull/77) 已Squash进入main `84c278e`；最终测试head `7abfe16` 的18条远端检查记录全部SUCCESS，合并后的产品文件与被测源码一致。已保留PR76图片权限提前续验；图片上下拖动跟手缩小、背景渐隐露底页，短拖回弹、消除切图空白与退出闪字。本地图片包129项、整合宿主118项回归、分析及ARM64 Debug构建PASS。未安装/部署，真机手感、设备帧时序/内存及iOS本轮未验；维护者明确授权合并，未取得独立GitHub成员批准，不提升旧模块总裁决。见[任务](../branches/fix-image-viewer-gestures.md)与[合并回执](image-viewer-gestures-merge-verification.json)。
 
 > **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01已合并：** [PR #76](https://github.com/zewbby/HnuHole/pull/76) 已Squash进入main `048a3e5`；测试head `06448b3` 的9个远端workflow／17项检查全部SUCCESS，合并后的产品文件与被测版本一致。本地相关回归228 PASS／0 FAIL／0 SKIP、分析0问题、Android ARM64 debug构建PASS。帖子图片在前台可见时提前续验，权限与图片元数据未变就保留画面、缓存和查看器；截止及撤权围栏保留。用户取消vivo覆盖安装，未装机／部署；独立成员review、iOS及真机长时间浏览未验，B03／B06历史整模块裁决不提升。见[任务](../branches/fix-media-seamless-renewal.md)与[合并及CI回执](media-seamless-renewal-merge-verification-20261026.json)。
 

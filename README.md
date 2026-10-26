@@ -42,7 +42,7 @@
 
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
-| `fix/image-viewer-gestures` | 本地实现上下拖动平滑退出、透明背景与切图缓存修复；未合并。 | [任务详情](docs/branches/fix-image-viewer-gestures.md) |
+| `fix/image-viewer-gestures` | 已合并 main [PR #77](https://github.com/zewbby/HnuHole/pull/77)：图片上下拖动平滑退出、背景透出及切图缓存修复，未装机/部署。 | [任务详情](docs/branches/fix-image-viewer-gestures.md) |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
 | `feat/shared-rate-limit-abuse-control` | [PR #73](https://github.com/zewbby/HnuHole/pull/73) 已合入main：共享准入、上传字节与草稿/队列完成，指定Android及最终CI限定通过，未生产发布。 | [任务详情](docs/branches/feat-shared-rate-limit-abuse-control.md) |
 | `codex/feat/post-detail-comments` | 已合并 #71：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |
@@ -102,8 +102,8 @@
 
 ## 最近变动
 
+- [PR #77](https://github.com/zewbby/HnuHole/pull/77)：图片上下拖动跟手缩小并渐隐露出原页面，修复切图空白及退出闪字，最终CI通过，未装机/部署。
+- [PR #78](https://github.com/zewbby/HnuHole/pull/78)：同步图片权限提前续验PR76的真实合并及检查回执。
 - [PR #76](https://github.com/zewbby/HnuHole/pull/76)：图片提前续验并复用缓存，避免正常浏览周期性闪烁，17项CI通过，未装机／部署。
 - [PR #74](https://github.com/zewbby/HnuHole/pull/74)：同步共享动作限流PR73的主线合并与交接回执。
 - [PR #73](https://github.com/zewbby/HnuHole/pull/73)：接入共享动作限流、上传实际字节及可靠草稿/私信队列，指定Android与最终CI限定通过，未生产发布。
-- [PR #72](https://github.com/zewbby/HnuHole/pull/72)：同步评论修复合并与最终验收回执。
-- [PR #71](https://github.com/zewbby/HnuHole/pull/71)：复现详情评论交互，修复身份、图片往返及弱网提交，支持本人评论即时展示。

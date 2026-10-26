@@ -4,7 +4,7 @@
   "timezone": "Asia/Shanghai",
   "branch": "fix/image-viewer-gestures",
   "baseline": "856313c",
-  "state": "LOCAL_IMPLEMENTED_HOST_AND_ANDROID_BUILD_PASS_DEVICE_NOT_RUN",
+  "state": "MERGED_MAIN_HOST_AND_ANDROID_BUILD_PASS_DEVICE_NOT_RUN",
   "modules": [
     "IV01",
     "PM01",
@@ -89,22 +89,24 @@
     "ios": "NOT_RUN",
     "releaseBuild": "NOT_RUN",
     "deviceMemoryAndFrameTiming": "NOT_RUN",
-    "remoteCI": "NOT_RUN",
+    "remoteCI": "PASS",
     "independentReview": "NOT_RUN"
   },
   "delivery": {
     "committed": true,
     "pushed": true,
-    "merged": false,
-    "deployed": false
+    "merged": true,
+    "deployed": false,
+    "mergeSha": "84c278ee0c688a96b8d6de1757018196b188dc64",
+    "pr": "https://github.com/zewbby/HnuHole/pull/77"
   },
   "logs": "External workspace video-bug-review-20261026; logs, rendered frames and build artifacts are not repository sources.",
   "sourceHashEncoding": "UTF-8 source bytes with CRLF normalized to LF, matching Git blobs",
   "integration": {
     "authorization": "User explicitly requested commit and merge on 2026-10-26",
-    "state": "PR_OPEN_MAIN_INTEGRATED_LOCAL_PASS_REMOTE_PENDING",
+    "state": "MERGED_MAIN",
     "reviewArrangement": "Maintainer requested merge after receiving the implementation and local validation. Local author self-review and CI; no independent GitHub member approval claimed.",
-    "remoteCI": "PENDING_FINAL_HEAD",
+    "remoteCI": "PASS",
     "pr": "https://github.com/zewbby/HnuHole/pull/77",
     "integratedMain": "048a3e5468ba6effa5084437a79de0d261ff6d1b",
     "integratedUpstreamPR": 76,
@@ -132,7 +134,10 @@
     ],
     "latestMain": "84ac09eb8bbc953d3bd0be5d088b2f30b7c2c3cb",
     "mainReceiptPR": 78,
-    "receiptMergeScope": "Docs only; product source unchanged from the 118-test and Android-build integration"
+    "receiptMergeScope": "Docs only; product source unchanged from the 118-test and Android-build integration",
+    "testedHead": "7abfe169d9f671e7717b133022754feaef710453",
+    "successfulCheckRecords": 18,
+    "mergeEvidence": "docs/design/image-viewer-gestures-merge-verification.json"
   },
   "originalProductCommit": "e3256d0f0f8d283de01f902b08d8f05467446748"
 }

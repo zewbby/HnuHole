@@ -1,0 +1,162 @@
+{
+  "pr": "https://github.com/zewbby/HnuHole/pull/77",
+  "number": 77,
+  "merged": true,
+  "mergeSha": "84c278ee0c688a96b8d6de1757018196b188dc64",
+  "mergedAt": "2026-10-26T11:52:19Z",
+  "testedHead": "7abfe169d9f671e7717b133022754feaef710453",
+  "baseMain": "84ac09eb8bbc953d3bd0be5d088b2f30b7c2c3cb",
+  "checkedAt": "2026-10-26 11:53:17 UTC",
+  "checks": [
+    {
+      "id": 121553050501,
+      "name": "policy",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317312817/job/121553050501"
+    },
+    {
+      "id": 121553037373,
+      "name": "rehearsal",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272125/job/121553037373"
+    },
+    {
+      "id": 121553036375,
+      "name": "candidate",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272125/job/121553036375"
+    },
+    {
+      "id": 121552911503,
+      "name": "flutter-and-android",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272109/job/121552911503"
+    },
+    {
+      "id": 121552911338,
+      "name": "reliable-chat-sql",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272109/job/121552911338"
+    },
+    {
+      "id": 121552911331,
+      "name": "scope",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272125/job/121552911331"
+    },
+    {
+      "id": 121552911118,
+      "name": "flutter",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272082/job/121552911118"
+    },
+    {
+      "id": 121552911089,
+      "name": "go-host",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272082/job/121552911089"
+    },
+    {
+      "id": 121552910814,
+      "name": "flutter-auth-regression",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272077/job/121552910814"
+    },
+    {
+      "id": 121552910780,
+      "name": "moderation-postgres",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272015/job/121552910780"
+    },
+    {
+      "id": 121552910755,
+      "name": "go-postgres",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272082/job/121552910755"
+    },
+    {
+      "id": 121552910742,
+      "name": "policy",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272156/job/121552910742"
+    },
+    {
+      "id": 121552910656,
+      "name": "avatar-flutter",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272010/job/121552910656"
+    },
+    {
+      "id": 121552910573,
+      "name": "admin",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272015/job/121552910573"
+    },
+    {
+      "id": 121552910551,
+      "name": "mobile-recovery",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272016/job/121552910551"
+    },
+    {
+      "id": 121552910353,
+      "name": "isolated-admission",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272016/job/121552910353"
+    },
+    {
+      "id": 121552910234,
+      "name": "avatar-postgres-https",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272010/job/121552910234"
+    },
+    {
+      "id": 121552910119,
+      "name": "flutter-and-real-feed",
+      "head": "7abfe169d9f671e7717b133022754feaef710453",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40317272020/job/121552910119"
+    }
+  ],
+  "notes": [
+    "18 successful check records include two policy runs after the PR description was updated.",
+    "No independent GitHub member approval; maintainer explicitly authorized commit and merge.",
+    "Local viewer129/integrated-mobile118, analysis and Android build pass; no installation or deployment."
+  ],
+  "mergedProductHashesMatchTestedSource": true
+}

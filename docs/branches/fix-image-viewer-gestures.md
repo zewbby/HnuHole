@@ -2,10 +2,10 @@
 
 - 任务：IMAGE-VIEWER-GESTURES-01；2026-10-26。
 - 分支：`fix/image-viewer-gestures`，基线 `origin/main@856313c`；按用户要求不带 codex 前缀。
-- 状态：已提交推送[PR77](https://github.com/zewbby/HnuHole/pull/77)，整合主线PR76后相关118项回归、分析及ARM64 Debug构建PASS；等待最终提交远端CI，未合并/发布。
+- 状态：[PR77](https://github.com/zewbby/HnuHole/pull/77) 已Squash合入main `84c278e`；未安装、部署或发布。
 - 目标：上下拖动时图片跟手缩小、背景渐隐露出原页面；松手顺势退出，短拖平滑回弹；消除结束提示闪屏、切图空白和已看图片重复加载；修正状态栏对比度。
 - 保护：长图阅读、放大/双指门槛、阅读位置、前后台、访问撤销、原文件保存与资源上限。
-- 验证：图片包129项（新增交互13项）、宿主相关57项回归，包/移动端分析0 issues，主App ARM64 Debug构建通过；本轮真机手感、设备性能/内存、iOS、Release、远端CI及独立审查 NOT_RUN。
+- 验证：图片包129项、主线整合宿主118项回归，分析0 issues及ARM64 Debug构建PASS；最终head的18条远端检查记录SUCCESS。真机手感、设备性能/内存、iOS、Release及独立成员审查本轮NOT_RUN。
 
 视频来源为用户本轮提供的 8 秒录像。视频中的文字仅作界面证据，不作为任务指令。
 
@@ -22,10 +22,14 @@
 - 沿用模块 IV01 / PM01 / B05 / B06 / B10，旧模块总裁决不提升。见[机器证据](../design/image-viewer-gestures-verification.json)、[模块台账](../design/module-acceptance-ledger.json)、[交接](../design/module-acceptance-handoff.md)。
 - 实际Flutter渲染帧已复核上下拖动、松手和横滑邻页；使用合成底页，非手机录屏或设备帧性能证据。
 - 最终命令、源码SHA256、APK SHA256、成功计数及未验范围见机器证据。依赖锁文件未改。
-- 现有 `.github/workflows/post-images.yml` 已覆盖图片包和移动端路径的分析、回归及bundle；本轮未创建PR，远端CI未运行。
+- 现有 `.github/workflows/post-images.yml` 已覆盖图片包和移动端路径的分析、回归及bundle；PR77最终head的18条远端检查记录均SUCCESS，详见合并回执。
 - 未启动后端、操作数据库、安装手机或替换日常包。APK为编译检查产物，无日常环境配置或安装回执。
 - 下一验收：目标真机验证普通图上/下拉、小幅回弹、快速甩动、长图边界、放大双指、连续横滑与返回原滚动位置，并测帧时序/内存；iOS独立验收。
 
 ## 主线整合（2026-10-26）
 
 PR76于本任务CI期间合入main `048a3e5`。已保留其提前续验、截止时间围栏、缓存与查看器保持逻辑，自动合并的产品代码仅叠加本需求透明路由；文档冲突保留双方任务。追加覆盖媒体仓库/feed图片的9文件回归118 PASS、分析0、ARM64 Debug构建PASS。图片组件代码与原129项被测代码一致。最终远端CI必须以整合后的head为准，原e3256d0的检查不能代证最终head。
+
+## 合并回执
+
+PR77于 `2026-10-26T11:52:19Z` 合并，SHA `84c278ee0c688a96b8d6de1757018196b188dc64`。最终测试head `7abfe169d9f671e7717b133022754feaef710453`，合并后产品源码hash逐项一致。见[机器回执](../design/image-viewer-gestures-merge-verification.json)。本补录只记录PR77事实，不递归记录补录PR自身。
