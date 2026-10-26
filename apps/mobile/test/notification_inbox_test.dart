@@ -122,6 +122,71 @@ Future<(IdentityTestFixture, GovernanceController, Api)> fixture() async {
 }
 
 void main() {
+  for (final expires in [true, false]) {
+    testWidgets(
+      'cover returns from hidden tab: expired=$expires, denial stays terminal',
+      (tester) async {
+        final grants = <ValueNotifier<bool>>[];
+        var loads = 0, releases = 0, expired = false, shown = true;
+        late StateSetter update;
+        const placeholder = AssetImage('unused.png');
+        Future<PostImages> load(String id) async {
+          loads++;
+          final grant = ValueNotifier(true);
+          grants.add(grant);
+          final first = loads == 1;
+          return PostImages(
+            postId: id,
+            accessGranted: grant,
+            isExpired: () => first && expired,
+            onRelease: () => releases++,
+            images: [
+              PostImage(
+                thumbnail: placeholder,
+                item: ViewerItem.provider(
+                  id: 'cover-$loads',
+                  provider: placeholder,
+                  pixelSize: const Size(1, 1),
+                ),
+              ),
+            ],
+          );
+        }
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: StatefulBuilder(
+              builder: (context, set) {
+                update = set;
+                return TickerMode(
+                  enabled: shown,
+                  child: NotificationThumbnail(postId: post, load: load),
+                );
+              },
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(loads, 1);
+        update(() => shown = false);
+        await tester.pump();
+        expired = expires;
+        grants.first.value = false;
+        await tester.pumpAndSettle();
+        expect(loads, 1);
+        update(() => shown = true);
+        await tester.pumpAndSettle();
+        expect(loads, expires ? 2 : 1);
+        expect(releases, expires ? 1 : 0);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        expect(releases, loads);
+        for (final grant in grants) {
+          grant.dispose();
+        }
+      },
+    );
+  }
   testWidgets(
     '320dp dark theme and large type retain equal tabs and source cover',
     (tester) async {

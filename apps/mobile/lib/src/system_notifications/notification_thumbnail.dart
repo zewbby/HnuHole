@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show SchedulerPhase;
 
 import '../design_system/telegram_theme.dart';
 import '../posts/post_images.dart';
@@ -18,44 +19,118 @@ class NotificationThumbnail extends StatefulWidget {
   State<NotificationThumbnail> createState() => _NotificationThumbnailState();
 }
 
-class _NotificationThumbnailState extends State<NotificationThumbnail> {
+class _NotificationThumbnailState extends State<NotificationThumbnail>
+    with WidgetsBindingObserver {
   PostImages? group;
   ImageProvider? provider;
+  int revision = 0;
+  bool loading = false, failed = false, refreshScheduled = false;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     unawaited(load());
   }
 
+  bool get visible {
+    if (!mounted ||
+        !TickerMode.valuesOf(context).enabled ||
+        ModalRoute.of(context)?.isCurrent == false ||
+        (WidgetsBinding.instance.lifecycleState != null &&
+            WidgetsBinding.instance.lifecycleState !=
+                AppLifecycleState.resumed)) {
+      return false;
+    }
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.attached || !box.hasSize) return false;
+    final rect = box.localToGlobal(Offset.zero) & box.size;
+    if (!rect.overlaps(Offset.zero & MediaQuery.sizeOf(context))) return false;
+    final viewport = Scrollable.maybeOf(context)?.context.findRenderObject();
+    return viewport is! RenderBox ||
+        !viewport.hasSize ||
+        rect.overlaps(viewport.localToGlobal(Offset.zero) & viewport.size);
+  }
+
+  void detach() {
+    group?.accessGranted.removeListener(changed);
+    group?.onRelease?.call();
+    group = null;
+    provider = null;
+  }
+
+  void refreshExpired() {
+    if (!mounted ||
+        loading ||
+        failed ||
+        refreshScheduled ||
+        group?.isExpired?.call() != true) {
+      return;
+    }
+    refreshScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      refreshScheduled = false;
+      // An expired lease may obtain fresh authority. A denied/released lease
+      // remains terminal and must never be revived automatically.
+      if (!mounted ||
+          loading ||
+          failed ||
+          group?.isExpired?.call() != true ||
+          !visible) {
+        return;
+      }
+      unawaited(load());
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    refreshExpired();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) refreshExpired();
+  }
+
+  @override
+  void didUpdateWidget(NotificationThumbnail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.postId != widget.postId) {
+      revision++;
+      detach();
+      unawaited(load());
+    }
+  }
+
   Future<void> load() async {
+    final generation = ++revision;
+    loading = true;
+    failed = false;
+    detach();
     try {
       final images = await widget.load(widget.postId);
       if (!mounted ||
+          generation != revision ||
           images.postId != widget.postId ||
           !images.accessGranted.value ||
           images.images.isEmpty) {
         images.onRelease?.call();
+        if (mounted && generation == revision) failed = true;
         return;
       }
       group = images;
       images.accessGranted.addListener(changed);
-      images.maintainAccessWhile?.call(() {
-        if (!mounted ||
-            !TickerMode.valuesOf(context).enabled ||
-            ModalRoute.of(context)?.isCurrent == false) {
-          return false;
-        }
-        final box = context.findRenderObject();
-        return box is RenderBox &&
-            box.attached &&
-            box.hasSize &&
-            (box.localToGlobal(Offset.zero) & box.size).overlaps(
-              Offset.zero & MediaQuery.sizeOf(context),
-            );
-      });
+      images.maintainAccessWhile?.call(() => visible);
       final first = images.images.first;
       final image = first.thumbnail ?? await first.loadThumbnail!();
-      if (!mounted || group != images || !images.accessGranted.value) return;
+      if (!mounted ||
+          generation != revision ||
+          group != images ||
+          !images.accessGranted.value) {
+        return;
+      }
       final decoded = ResizeImage(
         image,
         width: 168,
@@ -65,23 +140,46 @@ class _NotificationThumbnailState extends State<NotificationThumbnail> {
       first.registerDecodeProvider?.call(decoded);
       setState(() => provider = decoded);
     } on Object {
-      if (mounted) setState(() => provider = null);
+      if (mounted && generation == revision) {
+        failed = true;
+        setState(() => provider = null);
+      }
+    } finally {
+      if (mounted && generation == revision) {
+        loading = false;
+        refreshExpired();
+      }
     }
   }
 
   void changed() {
-    if (mounted && !group!.accessGranted.value) setState(() => provider = null);
+    if (!mounted || group?.accessGranted.value != false) return;
+    void update() {
+      if (!mounted || group?.accessGranted.value != false) return;
+      setState(() => provider = null);
+      refreshExpired();
+    }
+
+    if (WidgetsBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => update());
+      WidgetsBinding.instance.ensureVisualUpdate();
+    } else {
+      update();
+    }
   }
 
   @override
   void dispose() {
-    group?.accessGranted.removeListener(changed);
-    group?.onRelease?.call();
+    revision++;
+    WidgetsBinding.instance.removeObserver(this);
+    detach();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    refreshExpired();
     final p = HhTelegramPalette.of(context);
     return ClipRRect(
       borderRadius: BorderRadius.circular(6),
