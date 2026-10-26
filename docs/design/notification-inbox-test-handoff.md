@@ -37,3 +37,7 @@ python -X utf8 packages/openapi/check-specs.py
 CI已扩展 `comments-core.yml`（客户端、原生构建、契约）和 `comments-backend-text.yml`（真实SQL／HTTPS／最小角色）。完整私信HTTP包的旧测试会改全局`time.Local`，曾与TLS清理发生race；本任务未修改该旧测试，不宣称其完整race稳定通过，受影响的通知／评论限定race单独检查。历史设备探针与编译Dart探针缺失时明确SKIP，不作为接口通过证据。
 
 完整本机日志位于 `E:/Hnuhole-env/notification-inbox-20261026/`，不入库。用户已授权PR推送合并和最新主线构建；仍需核对实际CI和合并SHA，不预记成功、不冒充独立成员批准；现有正式签名／公开生产环境的配置不由测试凭据替代。
+
+## 2026-10-27 PR 检查兼容修正
+
+[PR #81](https://github.com/zewbby/HnuHole/pull/81) 已推送，尚未合并。首轮 CI 发现旧一次性测试库未清理 `c_inbox`、旧私信 Goose 断言停在27，以及权限审计未纳入28的精确列权限；现补齐并增加真实 SQL 越权反例、无 ACL 备份恢复后触发器禁用 PUBLIC EXECUTE 的检查。旧图片阅读测试首次远端失败，本地原测试复跑 PASS，保留首轮失败事实并等待新提交完整 CI；未修改图片组件。构建／安装和发布仍以最终主线交付回执为准。

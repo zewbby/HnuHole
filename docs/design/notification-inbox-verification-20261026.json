@@ -3,7 +3,7 @@
   "date": "2026-10-27",
   "branch": "feat/notification-inbox",
   "baseline": "c17a66734f935f15da5e0c9407d5b9ebdccff287",
-  "state": "FINAL_FOUR_TAB_IMPLEMENTATION_LOCAL_VERIFIED_PR_PENDING",
+  "state": "PR_81_CI_COMPATIBILITY_REPAIR_AWAITING_FINAL_REMOTE_CHECKS",
   "modules": [
     "B02",
     "B07",
@@ -11,7 +11,7 @@
     "B09",
     "B10"
   ],
-  "sourceManifestSha256": "6924b5efbf67c8368fb536dfe9b58e8bcff2dc9c294ac4534aefa1a4dc200e46",
+  "sourceManifestSha256": "ade4606de1707a8b40c69d15c072ffaf3551afded14eeeafef885d61434c4cbe",
   "sourceFiles": {
     ".github/workflows/comments-backend-text.yml": "4650c3411cda81e033a7b17c0d8231fe3f0b9e1bb5bed48a93f51a69d261825c",
     ".github/workflows/comments-core.yml": "8356cea2840d7f96648bfe120ec28e5ba887a35cc17af4b1c78c949f87effdef",
@@ -32,10 +32,13 @@
     "apps/mobile/test/app_navigation_test.dart": "5b2bf694574bc0ad945b4460639ee8e30d7e4623f45c3baa5d91902c6b52a5cf",
     "apps/mobile/test/notification_inbox_test.dart": "f779238a6c39aee7a157b1c7529862eb25a5b3e56cf8406b3ab6935308077f9e",
     "infra/postgres/grant-comments.sql": "a471a85218b4fd6a4ace568978279b554dddf10f0a3b238ab4c34efeb1014aee",
+    "infra/postgres/grant-community.sql": "7652b4e000a531e0ea1bc598f2eae29afc05cc8f4c26ee4ec725c19117f9e999",
     "packages/openapi/notification-inbox-component.yaml": "6312b8d25f06773d54aa870824f6d8c2955d520fb8e276341fd399e0b93ea269",
     "packages/openapi/system-notification-api.yaml": "235c09f602b0e904ce5b703590d99c56a41090c256d5c938ff3fded608551e3b",
+    "services/api/authlab/privacy-role-audit.sql": "79d9bf8737ec27b847ae590472b792ca76b2a23a1538be2fa52f15d0d6ee152d",
     "services/api/authlab/run-comment-text-isolated.sh": "2cbedf37e1df86266f124b912dadc5f76ccf8257faedf9a8c7de71dda1ce3e81",
     "services/api/internal/authprivacy/community_comments_schema.go": "7e698f26d77c561842051f2f2983da4d7d8b96a524c2731c7df23adc075d28b3",
+    "services/api/internal/authprivacy/community_direct_messages_migration_test.go": "0d32d60a32e95815afbd1b023daf18e6da597e14430a5d14ce3b4f82f2e6a927",
     "services/api/internal/authprivacy/community_inbox.go": "4feb8401caa0741c8de71bdb3fc5bf26e7098f9f5ae752244146f939321c5cc2",
     "services/api/internal/authprivacy/community_inbox_migration_test.go": "15f32f56332aa1b60cfda4b326f2d087a96f54541874c890f85d91b7d56e6ae1",
     "services/api/internal/authprivacy/community_inbox_schema.go": "c19629845343d3dcfc4d91bac0262182af3ce9aaeaca42e10aeab289f2131053",
@@ -47,8 +50,10 @@
     "services/api/internal/authprivacyhttp/inbox_endpoints_test.go": "1d93916d894084f1f72023e329a26454487ff5e0aa87bb45c6e9de0550e0d0a2",
     "services/api/internal/authprivacyhttp/inbox_postgres_test.go": "c057f08e6bb836f2fc9297bb546ddf6739849ff37eb0fc6c9e36897b3c598eab",
     "services/api/internal/authprivacyhttp/shared_limits.go": "8f0d87b9ed9535b6f89a2a11356fa70479711c5e1df4079ef48686a23a91a169",
+    "services/api/internal/authprivacyruntime/moderation_lifecycle_postgres_test.go": "9285980b592e2ed70b327bdc245f004769b7770059d2d7dec673c12c870acbf5",
     "services/api/migrations/0028_notification_inbox.sql": "1db56a23659f812baaf3b64ae0178b4fcc9df61b1621d97f0ee810697b389caa",
-    "tools/check-notification-contract.py": "7c313b4c6cb71e438738e6ca22a678676d243244e965615e50c0239decd9dd9f"
+    "tools/check-notification-contract.py": "7c313b4c6cb71e438738e6ca22a678676d243244e965615e50c0239decd9dd9f",
+    "tools/prerelease/tests/test_role_audit_postgres.py": "b31586e22dd05b5b5e62184052ba6370401456764a642e1ed12d21bc4d2cea48"
   },
   "scope": {
     "categories": [
@@ -117,7 +122,10 @@
       "log": "go-build-final.log"
     },
     "remoteCI": {
-      "status": "NOT_RUN"
+      "status": "AWAITING_REPAIRED_HEAD",
+      "initialHead": "6937c002b0576e3980937009fc2544d744749853",
+      "initialResult": "FAILED_SHARED_FIXTURE_RESET_MIGRATION_LEDGER_AND_ROLE_AUDIT; SINGLE_EXISTING_IMAGE_DISPOSAL_TEST_FAILURE",
+      "repaired": "Reset owned fixture c_inbox; expect migration 28; exact minimal inbox privileges and restored trigger ACLs; existing image screen suite passed local rerun."
     },
     "merged": false,
     "finalMainAPK": {
@@ -131,6 +139,20 @@
     },
     "independentMemberApproval": {
       "status": "NOT_OBTAINED_MAINTAINER_EXPLICIT_MERGE_AUTHORIZATION"
+    },
+    "ciRepairLocal": {
+      "roleAudit": "PASS_4_REAL_SQL_TESTS",
+      "dmFreshUpgrade": "PASS_REAL_GOOSE",
+      "imageScreenRerun": "PASS",
+      "restoredInboxACL": "PASS_REAL_PGDUMP_PGRESTORE_AND_MINIMUM_GRANTS",
+      "extendedRuntimeImages": "RUNNING",
+      "logs": [
+        "ci-role-audit-fix.log",
+        "ci-dm-migration-fix.log",
+        "ci-image-repro.log",
+        "ci-inbox-acl-restore.log",
+        "ci-runtime-fix.log"
+      ]
     }
   },
   "historicalTrial": {
@@ -140,5 +162,6 @@
     "receipt": "E:/Hnuhole-env/notification-inbox-20261026/vivo-apk-build-receipt.json"
   },
   "localEvidenceDirectory": "E:\\Hnuhole-env\\notification-inbox-20261026",
-  "authorization": "User explicitly requested commit, push, PR, merge and building the latest main product. No public production environment or release signing identity has been substituted by test credentials."
+  "authorization": "User explicitly requested commit, push, PR, merge and building the latest main product. No public production environment or release signing identity has been substituted by test credentials.",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/81"
 }

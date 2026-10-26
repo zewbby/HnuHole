@@ -38,6 +38,14 @@ BEGIN
       IF has_schema_privilege(audit_role,relation.oid,'CREATE') THEN
         RAISE EXCEPTION 'operational role can create schema objects';
       END IF;
+      IF relation.nspname='c_inbox' AND has_schema_privilege(audit_role,relation.oid,'USAGE')<>(audit_role=runtime_role AND party='c') THEN
+        RAISE EXCEPTION 'inbox schema privilege mismatch';
+      END IF;
+    END LOOP;
+    FOR relation IN SELECT p.oid FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='c_inbox' LOOP
+      IF has_function_privilege(audit_role,relation.oid,'EXECUTE') THEN
+        RAISE EXCEPTION 'inbox trigger function acquired operational execute';
+      END IF;
     END LOOP;
     FOR relation IN
       SELECT c.oid,n.nspname,c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
@@ -118,12 +126,29 @@ BEGIN
                   AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
             END IF;
           END IF;
+          -- 0028 inbox event facts are written only by owner triggers. Runtime
+          -- may read its recipient facts and acknowledge exactly two columns.
+          IF party='c' AND relation.nspname='c_inbox' THEN
+            allowed := privilege='SELECT' AND relation.relname IN ('records','like_events');
+            IF privilege='UPDATE' AND relation.relname='records' THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid
+                  AND a.attnum>0 AND NOT a.attisdropped AND a.attname NOT IN ('read_version','seen_like_count')
+                  AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
+          END IF;
           -- Common C lifecycle grants from 0015/0018, without optional
           -- moderator access, decisions, report/evidence insertion or appeals.
           IF party='c' AND relation.nspname='c_moderation' THEN
             allowed := (privilege='SELECT' AND relation.relname IN ('cases','reports','notifications','legacy_restrictions','access_sessions','roles','sanctions'))
               OR (privilege='INSERT' AND relation.relname='notifications')
               OR (privilege='DELETE' AND relation.relname IN ('notifications','access_sessions','roles'));
+            IF privilege='UPDATE' AND relation.relname='notifications' THEN
+              allowed := NOT has_table_privilege(audit_role,relation.oid,'UPDATE')
+                AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid
+                  AND a.attnum>0 AND NOT a.attisdropped AND a.attname<>'read_at'
+                  AND has_column_privilege(audit_role,relation.oid,a.attname,'UPDATE'));
+            END IF;
             IF privilege='SELECT' AND relation.relname IN ('access_sessions','roles','sanctions') THEN
               allowed := NOT has_table_privilege(audit_role,relation.oid,'SELECT')
                 AND NOT EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=relation.oid AND a.attnum>0 AND NOT a.attisdropped
