@@ -11,7 +11,7 @@
       "B06",
       "B10"
     ],
-    "state": "PR_OPEN_MAIN_INTEGRATED_LOCAL_PASS_REMOTE_PENDING",
+    "state": "MERGED_MAIN_HOST_AND_ANDROID_BUILD_PASS_DEVICE_NOT_RUN",
     "evidence": "docs/design/image-viewer-gestures-verification.json",
     "report": "docs/branches/fix-image-viewer-gestures.md",
     "hostTests": {
@@ -21,11 +21,13 @@
     "androidBuild": "PASS",
     "physicalDevice": "NOT_RUN",
     "ios": "NOT_RUN",
-    "remoteCI": "PENDING_FINAL_HEAD",
-    "merged": false,
+    "remoteCI": "PASS",
+    "merged": true,
     "published": false,
     "pr": "https://github.com/zewbby/HnuHole/pull/77",
-    "integratedMain": "048a3e5468ba6effa5084437a79de0d261ff6d1b"
+    "integratedMain": "048a3e5468ba6effa5084437a79de0d261ff6d1b",
+    "mergeSha": "84c278ee0c688a96b8d6de1757018196b188dc64",
+    "mergeEvidence": "docs/design/image-viewer-gestures-merge-verification.json"
   },
   "mediaSeamlessRenewal20261026": {
     "task": "MEDIA-SEAMLESS-RENEWAL-01",
