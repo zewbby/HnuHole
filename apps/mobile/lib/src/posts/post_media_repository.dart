@@ -12,7 +12,7 @@ import 'post_media_api.dart';
 
 typedef _MediaKey = (String?, int, String);
 
-/// Shares protected bytes within their original authorization deadline. Idle
+/// Shares protected bytes within their verified authorization deadline. Idle
 /// resources use a bounded LRU; displayed resources remain owned by consumers.
 /// Nothing is written to disk, and saving always reauthorizes original bytes.
 class PostMediaRepository {
@@ -20,12 +20,15 @@ class PostMediaRepository {
     this.posts, {
     this.maxIdleEntries = 12,
     this.maxIdleBytes = 48 * 1024 * 1024,
+    Stopwatch Function()? stopwatch,
   }) : assert(maxIdleEntries >= 0),
-       assert(maxIdleBytes >= 0) {
+       assert(maxIdleBytes >= 0),
+       _stopwatch = stopwatch ?? Stopwatch.new {
     posts.addListener(_authorityChanged);
   }
   final PostController posts;
   final int maxIdleEntries, maxIdleBytes;
+  final Stopwatch Function() _stopwatch;
   final _entries = <_MediaKey, _MediaLease>{};
   final _manifests = <_MediaKey, Future<_MediaLease>>{};
   final _waiting = Queue<Completer<void>>();
@@ -82,7 +85,7 @@ class PostMediaRepository {
     }
     cached?.revokeIfStale();
     final future = _manifests.putIfAbsent(key, () async {
-      final elapsed = Stopwatch()..start();
+      final elapsed = _stopwatch()..start();
       final response = await posts.loadImageManifest(postId);
       final manifest = response.value;
       final lifetime = manifest.accessValidUntil.difference(
@@ -168,20 +171,136 @@ class _MediaLease {
   final _MediaKey key;
   final PostMediaManifest manifest;
   final bool Function() authorized;
-  final Stopwatch elapsed;
-  final Duration lifetime;
+  Stopwatch elapsed;
+  Duration lifetime;
   final _consumers = <ValueNotifier<bool>>{};
+  final _visibility = <ValueNotifier<bool>, bool Function()>{};
   final _providers = <ImageProvider>{};
   final _pending = <String, Future<MemoryImage>>{};
   final _decodeKeys = <(ImageProvider, int?, int?, ResizeImagePolicy)>{};
   Timer? _timer;
+  Timer? _renewalTimer;
+  bool _renewing = false, _renewalFailed = false;
   bool _revoked = false, _expired = false;
   int inFlight = 0, weight = 0;
   String get postId => key.$3;
   int get references => _consumers.length;
   bool get current => !_revoked && authorized() && elapsed.elapsed < lifetime;
-  void start() =>
-      _timer = Timer(lifetime - elapsed.elapsed, () => revoke(expired: true));
+  void start() {
+    _timer?.cancel();
+    _timer = Timer(lifetime - elapsed.elapsed, () => revoke(expired: true));
+    _scheduleRenewal();
+  }
+
+  void _scheduleRenewal() {
+    _renewalTimer?.cancel();
+    if (!current || _visibility.isEmpty || _renewing || _renewalFailed) return;
+    // Keep the existing deadline armed throughout the request. Short grants
+    // use a proportional lead; a normal 60s grant is checked about 10s early.
+    final lead = Duration(
+      microseconds: (lifetime.inMicroseconds ~/ 4).clamp(1, 10000000),
+    );
+    final delay = lifetime - elapsed.elapsed - lead;
+    _renewalTimer = Timer(delay > Duration.zero ? delay : Duration.zero, () {
+      if (!current) return;
+      if (_visibility.values.any((visible) => visible())) {
+        unawaited(_renew());
+      } else {
+        // A route/scroll can become visible without rebuilding this section.
+        // Only poll local visibility during the final seconds; no HTTP while
+        // hidden, covered, released or in the background.
+        final remaining = lifetime - elapsed.elapsed;
+        _renewalTimer = Timer(
+          remaining < const Duration(seconds: 1)
+              ? remaining
+              : const Duration(seconds: 1),
+          _scheduleRenewal,
+        );
+      }
+    });
+  }
+
+  Future<void> _renew() async {
+    if (!current || _renewing) return;
+    _renewing = true;
+    final nextElapsed = owner._stopwatch()..start();
+    try {
+      final response = await owner._read(() async {
+        check();
+        // The shared I/O slot may have been busy when renewal was queued.
+        if (!_visibility.values.any((visible) => visible())) return null;
+        return owner.posts.loadImageManifest(postId);
+      });
+      if (response == null) return;
+      // Never resurrect an expired/released/replaced authority window, even
+      // when its old request eventually succeeds.
+      check();
+      if (_visibility.isEmpty) return;
+      final next = response.value;
+      final nextLifetime = next.accessValidUntil.difference(
+        response.serverTime,
+      );
+      if (next.postId != postId ||
+          nextLifetime <= nextElapsed.elapsed ||
+          nextLifetime > const Duration(seconds: 60) ||
+          next.accessValidUntil.isAfter(response.sessionExpiresAt)) {
+        throw const PostFailure(kind: PostFailureKind.invalidResponse);
+      }
+      if (!_sameContent(next)) {
+        // A new version needs a new group. Seed the verified manifest so the
+        // visible host can switch without requesting that manifest twice.
+        final replacement = _MediaLease(
+          owner,
+          key,
+          next,
+          authorized,
+          nextElapsed,
+          nextLifetime,
+        );
+        owner._entries[key] = replacement;
+        replacement.start();
+        revoke(expired: true);
+        return;
+      }
+      // Check both authorities before publishing a new deadline. Existing
+      // providers, decode keys, consumers and viewer state remain untouched.
+      elapsed = nextElapsed;
+      lifetime = nextLifetime;
+      start();
+    } on PostFailure catch (error) {
+      _renewalFailed = true;
+      // A transient connection failure keeps only the still-valid old grant.
+      // Denials/invalid manifests stop display immediately. No retry loop.
+      if (error.kind != PostFailureKind.transport) revoke();
+    } catch (_) {
+      _renewalFailed = true;
+      revoke();
+    } finally {
+      _renewing = false;
+      _scheduleRenewal();
+    }
+  }
+
+  bool _sameContent(PostMediaManifest next) {
+    if (manifest.images.length != next.images.length) return false;
+    bool same(PostMediaImage a, PostMediaImage b) =>
+        a.mediaId == b.mediaId &&
+        a.contentVersionId == b.contentVersionId &&
+        a.path == b.path &&
+        a.mimeType == b.mimeType &&
+        a.byteLength == b.byteLength &&
+        a.exactLength == b.exactLength &&
+        a.pixelWidth == b.pixelWidth &&
+        a.pixelHeight == b.pixelHeight &&
+        a.frames == b.frames &&
+        a.saveAllowed == b.saveAllowed;
+    for (var i = 0; i < manifest.images.length; i++) {
+      final old = manifest.images[i], fresh = next.images[i];
+      if (!same(old, fresh) || !same(old.preview, fresh.preview)) return false;
+    }
+    return true;
+  }
+
   void revokeIfStale() {
     if (!current) {
       revoke(expired: authorized() && elapsed.elapsed >= lifetime);
@@ -200,6 +319,8 @@ class _MediaLease {
     _revoked = true;
     _expired = expired;
     _timer?.cancel();
+    _renewalTimer?.cancel();
+    _visibility.clear();
     _pending.clear();
     for (final provider in _providers) {
       unawaited(provider.evict());
@@ -311,8 +432,15 @@ class _MediaLease {
       postId: postId,
       accessGranted: access,
       isExpired: () => _expired,
+      maintainAccessWhile: (visible) {
+        held();
+        _visibility[access] = visible;
+        _scheduleRenewal();
+      },
       onRelease: () {
         if (!_consumers.remove(access)) return;
+        _visibility.remove(access);
+        _scheduleRenewal();
         access.value = false;
         owner._idle(this);
       },

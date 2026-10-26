@@ -1,5 +1,7 @@
 # 真实帖子图片读取接线
 
+> **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01（本地分支／未合并／未部署）：** `codex/fix/media-seamless-renewal` 基于 `origin/main@856313c`，帖子图片前台可见时提前约10秒重新验证清单；元数据相同时保留当前图片、解码缓存和查看器，只更新已验证截止时间。共享请求、后台／不可见不续验，原到期计时与撤权／账号代次围栏保留。最终相关回归228项PASS、分析0问题、Android ARM64 debug构建PASS；命令与源码摘要见[任务与验证](../branches/fix-media-seamless-renewal.md)。B03／B06媒体授权回归重开，设备／iOS／远端CI及完整模块结论不提升。
+
 2026-10-15。前端读取接线已实现；本报告不表示发帖图片上传、完整前后端联调或平台验收完成。原钩子阶段保留在[阶段1报告](image-viewer-business-stage1-report.md)。
 
 ## 固定版本与范围
