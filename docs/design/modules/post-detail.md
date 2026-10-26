@@ -1,6 +1,6 @@
 # 帖子详情
 
-> **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01（本地分支／未合并／未部署）：** `codex/fix/media-seamless-renewal` 基于 `origin/main@856313c`，帖子图片前台可见时提前约10秒重新验证清单；元数据相同时保留当前图片、解码缓存和查看器，只更新已验证截止时间。共享请求、后台／不可见不续验，原到期计时与撤权／账号代次围栏保留。最终相关回归228项PASS、分析0问题、Android ARM64 debug构建PASS；命令与源码摘要见[任务与验证](../../branches/fix-media-seamless-renewal.md)。B03／B06媒体授权回归重开，设备／iOS／远端CI及完整模块结论不提升。
+> **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01已合并：** [PR #76](https://github.com/zewbby/HnuHole/pull/76) 已Squash进入main `048a3e5`；测试head `06448b3` 的9个远端workflow／17项检查全部SUCCESS，合并后的产品文件与被测版本一致。本地相关回归228 PASS／0 FAIL／0 SKIP、分析0问题、Android ARM64 debug构建PASS。帖子图片在前台可见时提前续验，权限与图片元数据未变就保留画面、缓存和查看器；截止及撤权围栏保留。用户取消vivo覆盖安装，未装机／部署；独立成员review、iOS及真机长时间浏览未验，B03／B06历史整模块裁决不提升。见[任务](../../branches/fix-media-seamless-renewal.md)与[合并及CI回执](../media-seamless-renewal-merge-verification-20261026.json)。
 
 > **2026-10-24 合并回执：** 本需求已通过 PR [#71](https://github.com/zewbby/HnuHole/pull/71) Squash 合入 main，合并 SHA `a715dc7e8b6a3b1395bc968274bce3865f63f21b`。最终产品源码 `ed1b5e3`，送审 HEAD `aef7618`（仅追加交接文档）；21 项远端检查全部 PASS，包含 Android 构建、完整契约、评论真实隔离 PostgreSQL/TLS 及受影响模块。最终本地 Flutter 924 PASS / 3 SKIP、分析 0；独立审查两处 P2 均已修复且复核无阻断。已构建同签名 2428 Profile 包，尚未安装；真我仍为实测 2427，其 20.3 分钟/28 轮和弱网证据保留原版本，不视作最终 HEAD 真机验收。iOS、完整模块、生产未发布等边界不提升。下文“本地未提交/未合并”属于历史快照。
 

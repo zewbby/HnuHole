@@ -129,7 +129,10 @@
         "artifactSha256": "075c0ce92cc5a4f051961755384c89bcddeadc99c74134762310177239e53181",
         "scope": "Integrated PR76 main; not installed."
       }
-    ]
+    ],
+    "latestMain": "84ac09eb8bbc953d3bd0be5d088b2f30b7c2c3cb",
+    "mainReceiptPR": 78,
+    "receiptMergeScope": "Docs only; product source unchanged from the 118-test and Android-build integration"
   },
   "originalProductCommit": "e3256d0f0f8d283de01f902b08d8f05467446748"
 }

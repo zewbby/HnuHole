@@ -33,7 +33,7 @@
 
 ## 分支一览
 
-- [帖子图片平滑续验](docs/branches/fix-media-seamless-renewal.md)：`codex/fix/media-seamless-renewal` 在权限续验成功且图片未变时保留画面与缓存，避免周期性重载；本地实现，未合并。
+- [帖子图片平滑续验](docs/branches/fix-media-seamless-renewal.md)：`codex/fix/media-seamless-renewal` 在权限续验成功且图片未变时保留画面与缓存，避免周期性重载；已由[PR #76](https://github.com/zewbby/HnuHole/pull/76)合入main，17项CI通过，未安装／部署。
 
 - [身份转帖](docs/branches/feat-post-reposts.md)：`feat/post-reposts` 提供持久化私人归档、条件写入与接线契约，已整合到个人页分支；未合并。
 - [个人页与私人转帖](docs/branches/feat-personal-profile-mood.md)：`feat/personal-profile-mood` 实现五栏缩放、身份切换和共享喜欢／收藏，已接入私人转帖归档；未合并。
@@ -102,8 +102,8 @@
 
 ## 最近变动
 
+- [PR #76](https://github.com/zewbby/HnuHole/pull/76)：图片提前续验并复用缓存，避免正常浏览周期性闪烁，17项CI通过，未装机／部署。
+- [PR #74](https://github.com/zewbby/HnuHole/pull/74)：同步共享动作限流PR73的主线合并与交接回执。
 - [PR #73](https://github.com/zewbby/HnuHole/pull/73)：接入共享动作限流、上传实际字节及可靠草稿/私信队列，指定Android与最终CI限定通过，未生产发布。
 - [PR #72](https://github.com/zewbby/HnuHole/pull/72)：同步评论修复合并与最终验收回执。
 - [PR #71](https://github.com/zewbby/HnuHole/pull/71)：复现详情评论交互，修复身份、图片往返及弱网提交，支持本人评论即时展示。
-- [PR #68](https://github.com/zewbby/HnuHole/pull/68)：完成五栏目个人页与私人转帖归档。
-- [PR #70](https://github.com/zewbby/HnuHole/pull/70)：同步刷新修复合并与 vivo 试用回执。
