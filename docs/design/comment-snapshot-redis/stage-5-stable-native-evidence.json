@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+  "device": "RMX3366 / Android 14 API34 / 7e0660f1",
+  "package": "org.hnuhole.hnuhole_mobile.commentsnapshot",
+  "liveRequests": 5,
+  "downRequests": 2,
+  "fixtureWidgetsPerPhase": 9,
+  "backend": "Go test binary exercising production handler with real disposable SQL/Redis and pinned TLS, not the separate formal cmd/api executable",
+  "nativeVault": "NOT_RUN",
+  "wholeProductionUIEndToEnd": "NOT_RUN",
+  "dailyPackage": "UNCHANGED",
+  "lease": "RELEASED",
+  "overlap": "Only sparse real-time R/PG checks, after formal performance sampling; user explicitly requested retry after unlock",
+  "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/native-live-stable-r1.log"
+}

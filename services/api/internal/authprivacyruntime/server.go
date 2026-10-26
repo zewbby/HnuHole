@@ -5,8 +5,10 @@ import (
 	"context"
 	"crypto/ed25519"
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/readtiming"
 	"log/slog"
 	"net"
 	"net/http"
@@ -18,6 +20,8 @@ import (
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy/protocol"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/comments"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/commentsnapshot"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/ratelimit"
 	"net/netip"
@@ -342,7 +346,40 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 			if e != nil {
 				return e
 			}
-			community, err = community.WithComments(ctx, authprivacy.CommentConfig{KeyKey: commandKey, FingerprintKey: fingerprintKey})
+			var snapshotStore *commentsnapshot.Store
+			if settings := c.Comments.Snapshots; settings != nil && settings.ReadRedis {
+				codec, e := comments.NewCommandCodec(commandKey[:], fingerprintKey[:])
+				if e != nil {
+					return e
+				}
+				password, e := c.Read(settings.Redis.PasswordFile, true, 1024)
+				if e != nil {
+					return errors.New("comment snapshot credentials unavailable")
+				}
+				snapshotStore, e = commentsnapshot.New(*settings, strings.TrimSuffix(strings.TrimSuffix(string(password), "\n"), "\r"), codec.IntentFingerprint)
+				if e != nil {
+					return e
+				}
+				defer snapshotStore.Close()
+				if e = snapshotStore.Check(ctx); e != nil {
+					return errors.New("comment snapshot namespace unavailable or not initialized")
+				}
+				cleanupCtx, stopCleanup := context.WithCancel(ctx)
+				defer stopCleanup()
+				go snapshotStore.RunCleanup(cleanupCtx, func(m commentsnapshot.Metrics) {
+					slog.Info("comment_snapshot_metrics", "created", m.Created, "loaded", m.Loaded, "invalid", m.Invalid, "rejected", m.Rejected, "redis_errors", m.Errors, "duration_ns_total", m.DurationNanoseconds, "reserved_bytes", m.ReservedBytes, "redis_used_memory_bytes", m.RedisUsedMemoryBytes)
+				})
+			}
+			var readObserver func(authprivacy.CommentReadTiming)
+			if c.Comments.ObserveReadTimings {
+				readObserver = func(t authprivacy.CommentReadTiming) {
+					slog.Info("comment_snapshot_read_timing", "path", t.Path, "backend", t.Backend,
+						"transaction_ns", t.Transaction.Nanoseconds(), "redis_client_in_transaction_ns", t.StoreInTransaction.Nanoseconds(),
+						"sql_gate_projection_ns", t.SQLGateProjection.Nanoseconds(), "publish_ns", t.Publish.Nanoseconds(),
+						"total_ns", t.Total.Nanoseconds(), "succeeded", t.Succeeded)
+				}
+			}
+			community, err = community.WithComments(ctx, authprivacy.CommentConfig{KeyKey: commandKey, FingerprintKey: fingerprintKey, Snapshots: c.Comments.Snapshots, SnapshotStore: snapshotStore, ObserveRead: readObserver})
 			if err != nil {
 				return err
 			}
@@ -490,6 +527,15 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 		_, _ = w.Write([]byte("ready\n"))
 	}
 	public := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if c.Comments != nil && c.Comments.ObserveReadTimings && r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/api/v1/posts/") && strings.Contains(r.URL.Path, "/comments") {
+			observed, trace := readtiming.Start(r.Context())
+			r = r.WithContext(observed)
+			defer func() {
+				value := trace.Snapshot()
+				stages, _ := json.Marshal(value.Stages)
+				slog.Info("comment_snapshot_request_timing", "request_id", w.Header().Get("X-Request-ID"), "started_unix_ns", value.StartedUnixNanoseconds, "elapsed_ns", value.ElapsedNanoseconds, "stages_json", string(stages), "truncated", value.Truncated, "clock", value.Clock, "clock_valid", value.ClockValid)
+			}()
+		}
 		switch r.URL.Path {
 		case "/health/live":
 			live(w, r)

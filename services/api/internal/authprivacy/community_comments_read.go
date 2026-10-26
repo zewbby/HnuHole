@@ -8,6 +8,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"errors"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/readtiming"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,6 +22,7 @@ type CommentQuery struct {
 	Sort               comments.SortMode
 	Replies, Expanded  bool
 	Limit              int
+	SnapshotRequest    string
 }
 type CommentAuthor struct {
 	Ref      string `json:"ref"`
@@ -102,6 +104,12 @@ func (c *Community) parseCommentCursor(s string) (uuid.UUID, int, error) {
 	return id, int(offset), nil
 }
 func (c *Community) ReadComments(ctx context.Context, b [32]byte, q CommentQuery) (PostResponse, error) {
+	if c.CommentsEnabled() && c.comments.snapshotConfig != nil {
+		return c.readCommentsWithSnapshots(ctx, b, q, "")
+	}
+	return c.readCommentsLegacy(ctx, b, q)
+}
+func (c *Community) readCommentsLegacy(ctx context.Context, b [32]byte, q CommentQuery) (PostResponse, error) {
 	if _, e := posts.ParseResourceID(q.ID); e != nil {
 		return PostResponse{}, e
 	}
@@ -279,6 +287,7 @@ func readCommentAuthor(ctx context.Context, tx pgx.Tx, identity string) (Comment
 	return r, nil
 }
 func readTextComment(ctx context.Context, tx pgx.Tx, id string, account uuid.UUID) (TextComment, error) {
+	defer readtiming.Span(ctx, "comment_projection")()
 	var r TextComment
 	var identity string
 	e := tx.QueryRow(ctx, `SELECT t.comment_id::text,t.post_id::text,t.root_comment_id::text,t.target_comment_id::text,x.body,x.terminal_at,t.identity_id::text,(t.identity_id=p.identity_id),CASE WHEN t.root_comment_id IS NULL THEN (SELECT count(*) FROM c_comments.tasks z JOIN c_comments.attempts a ON a.task_id=z.task_id AND a.state='PUBLISHED' WHERE z.root_comment_id=t.comment_id AND z.deleted_at IS NULL AND NOT COALESCE((to_jsonb(z)->>'moderation_hidden')::boolean,false)) ELSE 0 END FROM c_comments.tasks t JOIN c_comments.attempts x ON x.task_id=t.task_id AND x.state='PUBLISHED' JOIN c_posts.posts pp ON pp.post_id=t.post_id AND pp.visibility='PUBLISHED' AND NOT pp.moderation_hidden JOIN c_posts.publication_tasks p ON p.post_id=t.post_id WHERE t.comment_id=$1 AND t.deleted_at IS NULL AND NOT COALESCE((to_jsonb(t)->>'moderation_hidden')::boolean,false) AND NOT EXISTS(SELECT 1 FROM c_comments.tasks root_row WHERE root_row.comment_id=t.root_comment_id AND (root_row.deleted_at IS NOT NULL OR COALESCE((to_jsonb(root_row)->>'moderation_hidden')::boolean,false)))`, id).Scan(&r.ID, &r.PostID, &r.RootCommentID, &r.TargetCommentID, &r.Body, &r.PublishedAt, &identity, &r.IsPostAuthor, &r.ReplyCount)
@@ -346,6 +355,9 @@ type CommentLocation struct {
 }
 
 func (c *Community) LocateComment(ctx context.Context, b [32]byte, post, id string) (PostResponse, error) {
+	if c.CommentsEnabled() && c.comments.snapshotConfig != nil {
+		return c.readCommentsWithSnapshots(ctx, b, CommentQuery{ID: post, Limit: 50}, id)
+	}
 	page, e := c.ReadComments(ctx, b, CommentQuery{ID: post, Limit: 50})
 	if e != nil {
 		return page, e

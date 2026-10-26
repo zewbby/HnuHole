@@ -1,0 +1,145 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "status": "FORMAL_R1_FAIL_PERFORMANCE_AND_CLOCK_ENVIRONMENT",
+  "updatedAtUTC": "2026-10-25T08:46:54.097268+00:00",
+  "productionFormat": 2,
+  "sourceDigest": "b359ad45b58388d05e9d674f976cd991078d95e47cbb9945e8cc9019eda1a158",
+  "apiBinarySHA256": "8d27efb65e4080243d462483c3b1b32b4a9ccb7af01a73f7a9ef53ec92be497d",
+  "checks": {
+    "build": {
+      "result": "PASS",
+      "topLevelTestsPassed": 0,
+      "topLevelTestsFailed": 0,
+      "topLevelTestsSkipped": 0,
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/logs/build-packed-r3.log",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "vet": {
+      "result": "PASS",
+      "topLevelTestsPassed": 0,
+      "topLevelTestsFailed": 0,
+      "topLevelTestsSkipped": 0,
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/logs/vet-packed-r3.log",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "host": {
+      "result": "PASS",
+      "topLevelTestsPassed": 0,
+      "topLevelTestsFailed": 0,
+      "topLevelTestsSkipped": 0,
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/logs/host-packed-r3.log",
+      "logSHA256": "47ac1a86f464152ca1235ecbe83695ab33e1723d042e53e36cfb06bdc237ef2c",
+      "scope": "Host run without SQL DSNs or native probe; no real SQL/native claim"
+    },
+    "snapshot-real-server": {
+      "result": "PASS",
+      "topLevelTestsPassed": 31,
+      "topLevelTestsFailed": 0,
+      "topLevelTestsSkipped": 2,
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/logs/snapshot-final-native-packed-r3.log",
+      "logSHA256": "8c794a2fb7f0268a1548e75bf04ec49fdc305cb8d172b0d7ca6b84d4b3e62d4f",
+      "scope": "Owned Redis and disposable real SQL; native probe explicitly unset",
+      "realRedisTopLevelTests": 13
+    },
+    "shared-rate-real": {
+      "result": "PASS",
+      "topLevelTestsPassed": 39,
+      "topLevelTestsFailed": 0,
+      "topLevelTestsSkipped": 1,
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/logs/shared-rate-packed-r3.log",
+      "logSHA256": "06eabc42b4882ccab11587c253d6e61f271a6cc58cbbbb7912c2c92bc9e0483a"
+    },
+    "production-dart-transport": {
+      "result": "PASS",
+      "topLevelTestsPassed": 1,
+      "topLevelTestsFailed": 0,
+      "topLevelTestsSkipped": 0,
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/logs/dart-live-r1.log",
+      "logSHA256": "19e41e0d779956cf9b6e1a9705077987f58d9d92939063f54252a9c452fe6fed",
+      "liveRequests": 5,
+      "downRequests": 2,
+      "sourceComparisonFiles": 125,
+      "sourceDifferences": 0,
+      "nativeVaultClaim": false
+    },
+    "native": {
+      "result": "BLOCKED",
+      "reason": "User unlock required after retry; keyguard showing, no native output; leased package cleanup completed and lease released",
+      "dailyPackage": "UNCHANGED"
+    },
+    "bulk-delayed-cleanup": {
+      "result": "PASS",
+      "entries": 6000,
+      "injectedDelayPerBatchMilliseconds": 88,
+      "maximumBatchKeys": 64,
+      "workers": 7,
+      "recoveryMilliseconds": 1315,
+      "deadlineMilliseconds": 5000,
+      "scope": "synthetic ABORTING recovery, not successful creation capacity"
+    }
+  },
+  "historicalFailuresPreserved": {
+    "sql-bridge-fixture-r1": {
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/logs/snapshot-final-native-packed-r1.log",
+      "logSHA256": "f4153c945e43cde4c42a63ed85d05e3bc4be5f005f1c396855cb5f8c6c9cec29",
+      "scope": "New test erroneously required nextCursor on final page; test fixed, product unchanged",
+      "result": "FAIL"
+    },
+    "native-r2": {
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/logs/snapshot-final-native-packed-r2.log",
+      "logSHA256": "b73eab5d3bf5335cc04a02861f82a772eb1d586a83c0253e62ef346a4e621caa",
+      "scope": "Keyguard remained showing and native output absent; no native PASS claim; waiting for unlock",
+      "result": "FAIL"
+    }
+  },
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false,
+  "phase6": "NOT_STARTED",
+  "formalModeResults": {
+    "compatibility": {
+      "result": "PASS",
+      "rawResults": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/formal-campaign-r1/performance-compatibility/process-20261025T080939-82fee9/normalized-performance.json",
+      "paths": {
+        "initial": {
+          "result": "PASS",
+          "p95RegressionPercent": 4.920744082520057,
+          "postgresP95Milliseconds": 602.444417,
+          "redisP95Milliseconds": 632.089165
+        },
+        "continuation": {
+          "result": "PASS",
+          "p95RegressionPercent": 1.6328095465296233,
+          "postgresP95Milliseconds": 477.100285,
+          "redisP95Milliseconds": 484.890424
+        },
+        "replyPreview": {
+          "result": "PASS",
+          "p95RegressionPercent": 3.8676109298374284,
+          "postgresP95Milliseconds": 477.381886,
+          "redisP95Milliseconds": 495.84516
+        },
+        "replyExpanded": {
+          "result": "PASS",
+          "p95RegressionPercent": -1.3317017026802214,
+          "postgresP95Milliseconds": 460.531513,
+          "redisP95Milliseconds": 454.398607
+        }
+      }
+    },
+    "steady": {
+      "result": "RUNNING",
+      "rawResults": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-v2/formal-campaign-r1/performance-steady/process-20261025T083241-2a0747/normalized-performance.json",
+      "paths": {
+        "initial": {
+          "result": "PASS",
+          "p95RegressionPercent": -4.623212090490281,
+          "postgresP95Milliseconds": 537.737995,
+          "redisP95Milliseconds": 512.877227
+        }
+      }
+    }
+  },
+  "finalEvidence": "stage-5-packed-r1-final-evidence.json"
+}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"errors"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/readtiming"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -12,6 +13,8 @@ import (
 )
 
 func (c *Community) ResolveSharedSubject(ctx context.Context, bearer [32]byte) (string, error) {
+	ctx = readtiming.Phase(ctx, "subject")
+	defer readtiming.Span(ctx, "total")()
 	if c.sharedRate == nil {
 		return "", nil
 	}

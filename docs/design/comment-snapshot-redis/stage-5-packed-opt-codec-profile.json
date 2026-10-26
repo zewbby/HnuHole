@@ -1,0 +1,93 @@
+{
+  "result": "PASS",
+  "scope": "NO_WRITES Lua validation and local byte construction only; synthetic records, no SQL/data publication; client CLOCK_MONOTONIC_RAW includes TCP/auth transport",
+  "samplesPerVariant": 100,
+  "warmupPerVariant": 10,
+  "measurements": {
+    "1024-append": {
+      "before": {
+        "meanMilliseconds": 2.98008137,
+        "p95Milliseconds": 3.508348
+      },
+      "after": {
+        "meanMilliseconds": 2.23554926,
+        "p95Milliseconds": 2.680381
+      },
+      "outputBytes": 211218,
+      "byteSHA1": "b66786a22ca648c026a9a018ef8f997e755f92f6",
+      "oldNewBytesIdentical": true,
+      "meanReductionPercent": 24.983616806409557
+    },
+    "1024-publish": {
+      "before": {
+        "meanMilliseconds": 3.21263643,
+        "p95Milliseconds": 3.696031
+      },
+      "after": {
+        "meanMilliseconds": 2.20042614,
+        "p95Milliseconds": 2.591853
+      },
+      "outputBytes": 211012,
+      "byteSHA1": "94bfad0d56bf0b31a7761b4c07b40e50222ab538",
+      "oldNewBytesIdentical": true,
+      "meanReductionPercent": 31.507153456514846
+    },
+    "1900-append": {
+      "before": {
+        "meanMilliseconds": 5.17454211,
+        "p95Milliseconds": 5.818689
+      },
+      "after": {
+        "meanMilliseconds": 3.82780252,
+        "p95Milliseconds": 4.483892
+      },
+      "outputBytes": 391674,
+      "byteSHA1": "ed3ec31f2b96b970f0f137cd582fa15e03a3b598",
+      "oldNewBytesIdentical": true,
+      "meanReductionPercent": 26.026256263281233
+    },
+    "1900-publish": {
+      "before": {
+        "meanMilliseconds": 5.64625788,
+        "p95Milliseconds": 6.364645
+      },
+      "after": {
+        "meanMilliseconds": 3.77245687,
+        "p95Milliseconds": 4.260053
+      },
+      "outputBytes": 391468,
+      "byteSHA1": "04f86da36903ad557dfff073c924b1ca597ad34b",
+      "oldNewBytesIdentical": true,
+      "meanReductionPercent": 33.18659986532532
+    },
+    "6000-append": {
+      "before": {
+        "meanMilliseconds": 15.11698523,
+        "p95Milliseconds": 16.230452
+      },
+      "after": {
+        "meanMilliseconds": 10.87180138,
+        "p95Milliseconds": 11.785247
+      },
+      "outputBytes": 1236274,
+      "byteSHA1": "ac0cd9bc9abb239669fc1af08b87474290ee90ee",
+      "oldNewBytesIdentical": true,
+      "meanReductionPercent": 28.082212064184166
+    },
+    "6000-publish": {
+      "before": {
+        "meanMilliseconds": 16.19621589,
+        "p95Milliseconds": 17.248403
+      },
+      "after": {
+        "meanMilliseconds": 10.80375405,
+        "p95Milliseconds": 11.733168
+      },
+      "outputBytes": 1236068,
+      "byteSHA1": "75cb90bbdbf9e086bc0dd0f2232d64131424ee22",
+      "oldNewBytesIdentical": true,
+      "meanReductionPercent": 33.29457866346088
+    }
+  },
+  "ownedRedisStopped": true
+}

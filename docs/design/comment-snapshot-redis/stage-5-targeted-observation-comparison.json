@@ -1,0 +1,45 @@
+{
+  "scope": "Text identity after removing only observation imports/spans/phase context and reversing transparent wrappers; no authority/SQL/TTL code differences",
+  "checks": {
+    "authprivacy/authorization_gate.go": {
+      "result": "PASS",
+      "originalSHA256": "160ec6857caff0d2da51335ab2909147a77dbc335a1f46cfac2be9e075bab2c2",
+      "observedSHA256": "a68ac851efb8fe1b40de20b4997b270b96030189cbc5f5ee2fefb675dc44f605"
+    },
+    "authprivacy/community_posts.go": {
+      "result": "PASS",
+      "originalSHA256": "675e77a39d89e4cb4cf4e3c513a461c9ebecefc934bfc0f9797d918632759733",
+      "observedSHA256": "30fab933352e9dc28dcbef05f28327ac805e06adf4fc60b83bbc16c62dd7ef89"
+    },
+    "authprivacy/community_identities.go": {
+      "result": "PASS",
+      "originalSHA256": "844a7b599a5b552bbfd6f1516e553996cf7108bfac621113fe516f1846d016f9",
+      "observedSHA256": "4c8f5d91d21df2dd88d9b2f8096853375a347d2e00bc689168b5f40b0dd42ff1"
+    },
+    "authprivacy/community_rate_subject.go": {
+      "result": "PASS",
+      "originalSHA256": "6f98b398fc6a99fc40370a2f3c4ce657ba6d1835fa3d7cb705a5037c76844fdf",
+      "observedSHA256": "55567f2357344c4ee4196dd1609efce8c140b6bbe29ba18594abb7955390e0a9"
+    },
+    "authprivacy/community_comment_snapshots.go": {
+      "result": "PASS",
+      "originalSHA256": "a4d2b1acf66cbd15524893cef83eefc1ccdd7413d3e9fa5b8a796625b874f39f",
+      "observedSHA256": "58bb106cbbade6874e126d79d0e2ef265db0a22573e1041ef8f2d4afa4fbd59a"
+    },
+    "authprivacy/community_comments_read.go": {
+      "result": "PASS",
+      "originalSHA256": "1d41b6c87f7099699d4c656c0c3bad16e512a69b6cfc26ad52997de1309be8b4",
+      "observedSHA256": "beb3c2d0897b73badf8d866686994322f953c95649d865ba20365729e3258f6c"
+    },
+    "authprivacyruntime/server.go": {
+      "result": "PASS",
+      "originalSHA256": "5c16aac240346dbae8fb7dadf70ea1952854e8427d24e1a0470086dbcf54a7ea",
+      "observedSHA256": "4949779685d45c34a66ad63f27b1f6f494157aaf777d13d0ce08d33ffeb36e61"
+    },
+    "commentsnapshot/redis.go": {
+      "result": "PASS",
+      "originalSHA256": "774e8a25f4c8f06c5e0454f055f383590061121da0100258fecef1c607921848",
+      "observedSHA256": "283f90a9610ece592b99075a6359a8a333e0ec4e8f95b26cedc12bcb19a02d40"
+    }
+  }
+}

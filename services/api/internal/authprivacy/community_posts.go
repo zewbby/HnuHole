@@ -139,7 +139,7 @@ func (c *Community) withPostSession(ctx context.Context, bearer [32]byte, action
 	if err != nil {
 		return result, ErrAuthorizationUnavailable
 	}
-	defer c.gate.Abort(ctx, tx)
+	defer observedAuthorizationAbort(ctx, c.gate, tx)
 	a := credentialAccount{account: account}
 	var session credentialSession
 	var mute restriction

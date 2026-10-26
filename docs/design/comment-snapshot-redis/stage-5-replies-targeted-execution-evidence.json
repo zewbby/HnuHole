@@ -1,0 +1,141 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "status": "HTTP_NOT_RUN_READ_ONLY_CLOCK_PREFLIGHT_UNSTABLE",
+  "date": "2026-10-26",
+  "updatedAtUTC": "2026-10-26T02:59:14.589005+00:00",
+  "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+  "paths": {
+    "replyPreview": {
+      "status": "NOT_RUN_CLOCK_PREFLIGHT_FAILED",
+      "postgresSamples": 0,
+      "redisSamples": 0,
+      "p95RegressionPercent": null
+    },
+    "replyExpanded": {
+      "status": "NOT_RUN_CLOCK_PREFLIGHT_FAILED",
+      "postgresSamples": 0,
+      "redisSamples": 0,
+      "p95RegressionPercent": null
+    }
+  },
+  "preflight": {
+    "result": "ENVIRONMENT_UNSTABLE",
+    "durationRawSeconds": 300,
+    "maximumAllowedDriftSeconds": 0.2,
+    "systemChanges": false,
+    "rows": [
+      {
+        "rawElapsed": 6.066000000082283e-06,
+        "monoElapsed": 6.0729999997732875e-06,
+        "utcElapsed": 5.4836273193359375e-06,
+        "utcRawDriftSeconds": -5.823726807463458e-07,
+        "monoRawDriftSeconds": 6.999999691004177e-09
+      },
+      {
+        "rawElapsed": 30.000280059,
+        "monoElapsed": 30.000302153,
+        "utcElapsed": 30.00030279159546,
+        "utcRawDriftSeconds": 2.2732595457597427e-05,
+        "monoRawDriftSeconds": 2.2093999998418212e-05
+      },
+      {
+        "rawElapsed": 60.00024088399999,
+        "monoElapsed": 60.000213079000005,
+        "utcElapsed": 60.00021290779114,
+        "utcRawDriftSeconds": -2.797620885530705e-05,
+        "monoRawDriftSeconds": -2.780499998777941e-05
+      },
+      {
+        "rawElapsed": 90.000235521,
+        "monoElapsed": 90.000198989,
+        "utcElapsed": 90.00019884109497,
+        "utcRawDriftSeconds": -3.667990502265184e-05,
+        "monoRawDriftSeconds": -3.653199999575918e-05
+      },
+      {
+        "rawElapsed": 120.00014240099999,
+        "monoElapsed": 120.00010111099999,
+        "utcElapsed": 120.00010108947754,
+        "utcRawDriftSeconds": -4.131152245179237e-05,
+        "monoRawDriftSeconds": -4.128999999863936e-05
+      },
+      {
+        "rawElapsed": 150.000300399,
+        "monoElapsed": 150.00028807200002,
+        "utcElapsed": 150.00028824806213,
+        "utcRawDriftSeconds": -1.2150937862998035e-05,
+        "monoRawDriftSeconds": -1.2326999978995445e-05
+      },
+      {
+        "rawElapsed": 180.000177187,
+        "monoElapsed": 180.00011706200002,
+        "utcElapsed": 181.29329109191895,
+        "utcRawDriftSeconds": 1.293113904918954,
+        "monoRawDriftSeconds": -6.012499997609666e-05
+      }
+    ],
+    "maximumObservedDriftSeconds": 1.293113904918954,
+    "hostClockInitial": {
+      "utcMs": 1792982659062,
+      "ticks": 26477837700,
+      "frequency": 10000000,
+      "rawBefore": 6.388210539,
+      "rawAfter": 7.904856378
+    },
+    "hostClockFinal": {
+      "utcMs": 1792982839372,
+      "ticks": 28280915206,
+      "frequency": 10000000,
+      "rawBefore": 187.907815794,
+      "rawAfter": 188.141053508
+    },
+    "hostClockSummary": {
+      "elapsedSeconds": 180.3077506,
+      "rawElapsedLowerBound": 180.00295941599998,
+      "rawElapsedUpperBound": 181.752842969,
+      "utcCounterDriftSeconds": 0.002249400000010837,
+      "stable": true
+    }
+  },
+  "preflightScriptSHA256": "259fb5f98b92ebf692ec03f1be37ccf94df913e7f2ebd304493622d29f6f3afb",
+  "sourceFrozenRoot": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-replies-only-r1/source",
+  "fixtureToolsPrepared": true,
+  "actualPostgresRedisOrAPIFixturesStarted": false,
+  "realLiveLoginActuallyCreated": false,
+  "systemSettingsChanged": false,
+  "retryCount": 0,
+  "expandedSampling": false,
+  "otherRegressionsTTLDevice": "NOT_RUN",
+  "productChangesSinceWorkerFix": false,
+  "newHarness": "tools/comment-snapshot-process/replies_targeted.py",
+  "newHarnessStatus": "PREPARED_STATIC_COMPILE_ONLY_NOT_EXECUTED",
+  "newHarnessSHA256": "b8fdf4b6d5e540283ac6cf89c80fdb77e3e01552cbc58399ce5b1183f316c64b",
+  "storage": {
+    "status": "CANCELLED_NO_MIGRATION_PER_LATEST_USER_REQUEST",
+    "originalCachesMoved": false,
+    "originalCachesDeleted": false,
+    "originalBytesReleased": 0,
+    "partialCopyRemovedBytes": 83157461.0,
+    "newOutputRoot": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024",
+    "futurePolicy": "New caches, build temporary files and large outputs go directly to D; existing source, Git and caches remain in place."
+  },
+  "phase5Complete": false,
+  "phase6Started": false,
+  "historicalP95Failures": "PRESERVED_ORIGINAL_VERSIONS_NOT_RECLASSIFIED",
+  "bottleneck": "WSL UTC advanced 1.293113904918954 seconds relative to RAW at 180.000177187 seconds; monotonic/RAW differed only -60.125 microseconds and Windows QPC witness remained stable; this does not establish an HTTP/product bottleneck",
+  "staticVerification": {
+    "status": "PASS_STATIC_ONLY",
+    "newDriverPythonCompile": "PASS_SYNTAX_ONLY_NOT_EXECUTED",
+    "reportSHA256": "d49df74e8c8f8f2be0a745c268af569ac3c7d6c1d4f5dfefa2311c91551bbbac",
+    "otherLedgerEntriesPreserved": 146,
+    "originalCacheDirectoriesStillPresentNotSymlinks": true,
+    "httpFixtureCount": 0,
+    "harnessManifestSHA256": "1b3822c4a650918ce3fd455354e06f0b6c43317c459a7a4780be1b74fdda3a78",
+    "gitDiffCheck": "PASS"
+  },
+  "completionNotification": {
+    "status": "SENT",
+    "targetThreadId": "01a16de6-b90c-7461-ba71-c815cb182a2b"
+  }
+}

@@ -134,6 +134,7 @@ class _Http extends CommentHttp {
     Map<String, String>? query,
     Uint8List? bytes,
     String? mime,
+    String? snapshotRequest,
   }) async {
     Map<String, dynamic> result;
     if (path.startsWith('/api/v1/comment-commands/')) {

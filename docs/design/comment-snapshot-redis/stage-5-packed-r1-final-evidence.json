@@ -1,0 +1,80 @@
+{
+  "sourceDigest": "b359ad45b58388d05e9d674f976cd991078d95e47cbb9945e8cc9019eda1a158",
+  "apiBinarySHA256": "8d27efb65e4080243d462483c3b1b32b4a9ccb7af01a73f7a9ef53ec92be497d",
+  "result": "FAIL",
+  "checks": {
+    "performance-compatibility": "PASS",
+    "performance-steady": "FAIL",
+    "cross-process-and-restart": "PASS",
+    "exercise": "PASS",
+    "faults": "PASS",
+    "admission": "PASS",
+    "growth": "PASS",
+    "rollback": "PASS",
+    "compatibility-real-time": "FAIL"
+  },
+  "error": "ENVIRONMENT_UNSTABLE: UTC/monotonic drift exceeded 2 seconds",
+  "performance": {
+    "compatibility": {
+      "initial": {
+        "result": "PASS",
+        "p95RegressionPercent": 4.920744082520057,
+        "pgP95Ms": 602.444417,
+        "redisP95Ms": 632.089165
+      },
+      "continuation": {
+        "result": "PASS",
+        "p95RegressionPercent": 1.6328095465296233,
+        "pgP95Ms": 477.100285,
+        "redisP95Ms": 484.890424
+      },
+      "replyPreview": {
+        "result": "PASS",
+        "p95RegressionPercent": 3.8676109298374284,
+        "pgP95Ms": 477.381886,
+        "redisP95Ms": 495.84516
+      },
+      "replyExpanded": {
+        "result": "PASS",
+        "p95RegressionPercent": -1.3317017026802214,
+        "pgP95Ms": 460.531513,
+        "redisP95Ms": 454.398607
+      }
+    },
+    "steady": {
+      "initial": {
+        "result": "PASS",
+        "p95RegressionPercent": -4.623212090490281,
+        "pgP95Ms": 537.737995,
+        "redisP95Ms": 512.877227
+      },
+      "continuation": {
+        "result": "PASS",
+        "p95RegressionPercent": -4.561163236309729,
+        "pgP95Ms": 448.306845,
+        "redisP95Ms": 427.858838
+      },
+      "replyPreview": {
+        "result": "PASS",
+        "p95RegressionPercent": -1.0875906248971057,
+        "pgP95Ms": 517.637967,
+        "redisP95Ms": 512.008185
+      },
+      "replyExpanded": {
+        "result": "FAIL",
+        "p95RegressionPercent": 5.79969552807289,
+        "pgP95Ms": 590.559536,
+        "redisP95Ms": 624.810191
+      }
+    }
+  },
+  "redisRealTime": {
+    "result": "ENVIRONMENT_UNSTABLE",
+    "monotonicSeconds": 1805.4002844310016,
+    "maximumUTCMonotonicDriftSeconds": 60.988518619924434,
+    "successfulReads": 58,
+    "explicitRefreshSucceeded": true,
+    "expiredCode": "CURSOR_INVALID",
+    "acceptance": false
+  }
+}

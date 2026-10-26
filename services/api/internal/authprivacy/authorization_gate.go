@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/readtiming"
 	"math"
 	"time"
 
@@ -88,6 +89,7 @@ type gateRow struct {
 }
 
 func (g *PostgresAuthorizationGate) readGateRow(ctx context.Context, tx pgx.Tx) (gateRow, error) {
+	defer readtiming.Span(ctx, "gate_row_lock")()
 	var r gateRow
 	err := tx.QueryRow(ctx, `SELECT gate_state,authorization_generation,trusted_high_watermark,evidence_version
 		FROM `+g.schema+`.authorization_gate WHERE singleton_id=1 FOR UPDATE`).Scan(&r.state, &r.generation, &r.highwater, &r.version)
@@ -165,6 +167,7 @@ func (g *PostgresAuthorizationGate) inspect(ctx context.Context, row gateRow, an
 }
 
 func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (AuthorizationDecision, error) {
+	defer readtiming.Span(ctx, "gate_snapshot")()
 	tx, err := begin(ctx, g.pool)
 	if err != nil {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
@@ -183,7 +186,7 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 			finishCancel()
 		}
 	}()
-	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+	err = g.observedAnchorLock(ctx, func(a *authorizationAnchor, exists bool) error {
 		if err := ctx.Err(); err != nil {
 			return err
 		}
@@ -212,7 +215,7 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 		if !offline {
 			updated.OfflineEvidence = nil
 		}
-		if err := g.anchor.writeLocked(updated); err != nil {
+		if err := g.observedAnchorWrite(ctx, updated); err != nil {
 			reason = "ANCHOR_WRITE_FAILURE"
 			return err
 		}
@@ -234,12 +237,12 @@ func (g *PostgresAuthorizationGate) Snapshot(ctx context.Context) (Authorization
 				return AuthorizationDecision{}, ErrAuthorizationUnavailable
 			}
 		}
-		if err = tx.Commit(finish); err != nil {
+		if err = observedAuthorizationCommit(finish, tx); err != nil {
 			return AuthorizationDecision{}, ErrAuthorizationUnavailable
 		}
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
-	if err = tx.Commit(finish); err != nil {
+	if err = observedAuthorizationCommit(finish, tx); err != nil {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
 	return decision, nil
@@ -270,7 +273,7 @@ func (g *PostgresAuthorizationGate) RecheckForCommit(ctx context.Context, tx pgx
 	}
 	var decision AuthorizationDecision
 	var reason string
-	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+	err = g.observedAnchorLock(ctx, func(a *authorizationAnchor, exists bool) error {
 		if err := ctx.Err(); err != nil {
 			return err
 		}
@@ -296,6 +299,7 @@ func (g *PostgresAuthorizationGate) RecheckForCommit(ctx context.Context, tx pgx
 // context completes it independently of caller cancellation. If SQL fails, the
 // next request detects the ahead checkpoint and requires explicit recovery.
 func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx.Tx, expected uint64, validate ...func(AuthorizationDecision) error) (AuthorizationDecision, error) {
+	defer readtiming.Span(ctx, "gate_commit_authorized")()
 	row, err := g.readGateRow(ctx, tx)
 	if err != nil || expected == 0 || row.generation < 0 || uint64(row.generation) != expected {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
@@ -309,7 +313,7 @@ func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx
 			finishCancel()
 		}
 	}()
-	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+	err = g.observedAnchorLock(ctx, func(a *authorizationAnchor, exists bool) error {
 		if err := ctx.Err(); err != nil {
 			return err
 		}
@@ -344,7 +348,7 @@ func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx
 		if !offline {
 			updated.OfflineEvidence = nil
 		}
-		if err := g.anchor.writeLocked(updated); err != nil {
+		if err := g.observedAnchorWrite(ctx, updated); err != nil {
 			reason = "ANCHOR_WRITE_FAILURE"
 			return err
 		}
@@ -359,7 +363,7 @@ func (g *PostgresAuthorizationGate) CommitAuthorized(ctx context.Context, tx pgx
 	if reason != "" {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
-	if err = tx.Commit(finish); err != nil {
+	if err = observedAuthorizationCommit(finish, tx); err != nil {
 		return AuthorizationDecision{}, ErrAuthorizationUnavailable
 	}
 	return decision, nil
@@ -388,7 +392,7 @@ func (g *PostgresAuthorizationGate) persistExternalFreeze(ctx context.Context) e
 		return ErrAuthorizationUnavailable
 	}
 	var frozen bool
-	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+	err = g.observedAnchorLock(ctx, func(a *authorizationAnchor, exists bool) error {
 		frozen = !exists || a.Frozen || a.Domain != g.domain ||
 			a.Generation != uint64(row.generation) || a.Version != uint64(row.version) ||
 			!a.Highwater.Equal(row.highwater)
@@ -420,7 +424,7 @@ func (g *PostgresAuthorizationGate) Freeze(ctx context.Context, reason string) e
 	if err != nil {
 		return ErrAuthorizationUnavailable
 	}
-	if err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+	if err = g.observedAnchorLock(ctx, func(a *authorizationAnchor, exists bool) error {
 		if exists && !a.Frozen {
 			a.Frozen = true
 			return g.anchor.writeLocked(*a)
@@ -507,7 +511,7 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 	if err != nil {
 		return ErrAuthorizationUnavailable
 	}
-	err = g.anchor.withLocked(func(a *authorizationAnchor, exists bool) error {
+	err = g.observedAnchorLock(ctx, func(a *authorizationAnchor, exists bool) error {
 		// Recovery may have waited for the shared row or the independent lock.
 		// A pre-lock sample cannot authorize reopening after its evidence expires.
 		if request.Mode == AuthorizationRecoveryNormal {
@@ -569,7 +573,7 @@ func (g *PostgresAuthorizationGate) Recover(ctx context.Context, request Authori
 			proof := request.Evidence
 			updated.OfflineEvidence = &proof
 		}
-		if err := g.anchor.writeLocked(updated); err != nil {
+		if err := g.observedAnchorWrite(ctx, updated); err != nil {
 			return err
 		}
 		_, err := tx.Exec(ctx, `UPDATE `+g.schema+`.authorization_gate SET gate_state='OPEN',authorization_generation=$1,

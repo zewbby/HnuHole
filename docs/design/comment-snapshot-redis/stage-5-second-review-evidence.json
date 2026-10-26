@@ -1,0 +1,3937 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 5,
+  "review": "SECOND_LIMITED_REVIEW_NOT_PHASE6",
+  "model": "gpt-6-astra",
+  "reasoningEffort": "xhigh",
+  "status": "COMPLETE_SECOND_LIMITED_REVIEW_STAGE5_INCOMPLETE",
+  "updatedAtUTC": "2026-10-25T07:00:28.211296+00:00",
+  "sourceDigest": "88d944307b5dc05a8cdc9ce3af859f6256acb906a28be0e7968a40042c933618",
+  "apiBinarySHA256": "3d426de3d6fbb0c15a80c200ba79019412d13c056075dd1d821219fc04a027bc",
+  "record": "comment-snapshot-redis/stage-5-second-limited-review.md",
+  "evidence": "comment-snapshot-redis/stage-5-second-review-evidence.json",
+  "productionFormatImplementation": "NOT_CHANGED_DURING_REVIEW",
+  "subagents": "NOT_STARTED",
+  "currentFormalResult": "FAIL_COMPAT_PREVIEW_AND_EXPANDED_STEADY_ALL_PASS",
+  "growthRetry": "PASS_SAME_FROZEN_BINARY_ORIGINAL_HARNESS_FAILURE_PRESERVED",
+  "realTime": {
+    "pgCompatibility": "PASS_1805_143_SECONDS_SAME_FROZEN_BINARY",
+    "redisReading": "ORIGINAL_HARNESS_FAIL_58_READS_CLOCK_DOMAIN_UNRESOLVED_NOT_PASS",
+    "details": {
+      "result": "FAIL_ORIGINAL_HARNESS_EXPECTED_200_RECEIVED_CURSOR_INVALID",
+      "scope": "SAME_FROZEN_API_REDIS_REAL_TIME_ORIGINAL_FAILURE_NOT_CONVERTED_TO_PASS",
+      "apiBinarySHA256": "3d426de3d6fbb0c15a80c200ba79019412d13c056075dd1d821219fc04a027bc",
+      "successfulContinuationReads": 58,
+      "lastSuccessfulMonotonicElapsedSeconds": 1733.4076402440114,
+      "lastProgressBirthUTC": "2026-10-25T06:05:20.328012+00:00",
+      "lastProgressModificationUTC": "2026-10-25T06:34:58.186872+00:00",
+      "filesystemWallSpanSeconds": 1777.8588604927063,
+      "monotonicSpanIncludingLastHTTPSeconds": 1733.8010197600115,
+      "observedClockDomainDifferenceSeconds": 44.057840732694785,
+      "initialSignedExpiry": "NOT_CAPTURED",
+      "initialRedisTTL": "NOT_CAPTURED",
+      "perReadUTCAndRedisTime": "NOT_CAPTURED",
+      "error": "HTTP expected 200 got 400 body={'error': {'code': 'CURSOR_INVALID', 'message': '请求未能完成，请按原操作核对或重试。'}, 'requestId': 'fBLlG1D7nOuzDQBawhXSpA'}",
+      "interpretation": "Clock-domain discrepancy is verified, but cannot distinguish NTP/VM effects or reconstruct exact initial expiry after fixture cleanup; no product early-expiry verdict and no PASS. Repeat final candidate with signed expiry, Redis TIME/PTTL and UTC+monotonic per-read records.",
+      "reads": [
+        {
+          "elapsedSeconds": 0.00037331100611481816,
+          "status": 200,
+          "latencyMs": 297.01694
+        },
+        {
+          "elapsedSeconds": 30.299331283007632,
+          "status": 200,
+          "latencyMs": 216.385371
+        },
+        {
+          "elapsedSeconds": 60.51964548800606,
+          "status": 200,
+          "latencyMs": 868.809076
+        },
+        {
+          "elapsedSeconds": 91.39044270801242,
+          "status": 200,
+          "latencyMs": 244.810066
+        },
+        {
+          "elapsedSeconds": 121.63701853400562,
+          "status": 200,
+          "latencyMs": 529.203192
+        },
+        {
+          "elapsedSeconds": 152.17030213600083,
+          "status": 200,
+          "latencyMs": 653.053554
+        },
+        {
+          "elapsedSeconds": 182.8255222650041,
+          "status": 200,
+          "latencyMs": 278.374039
+        },
+        {
+          "elapsedSeconds": 213.10585081001045,
+          "status": 200,
+          "latencyMs": 233.529803
+        },
+        {
+          "elapsedSeconds": 243.34136542701162,
+          "status": 200,
+          "latencyMs": 589.427711
+        },
+        {
+          "elapsedSeconds": 273.9331230470125,
+          "status": 200,
+          "latencyMs": 354.978071
+        },
+        {
+          "elapsedSeconds": 304.2903993890068,
+          "status": 200,
+          "latencyMs": 706.054492
+        },
+        {
+          "elapsedSeconds": 334.99823255500814,
+          "status": 200,
+          "latencyMs": 230.778644
+        },
+        {
+          "elapsedSeconds": 365.2317520760116,
+          "status": 200,
+          "latencyMs": 309.742177
+        },
+        {
+          "elapsedSeconds": 395.5434356780024,
+          "status": 200,
+          "latencyMs": 313.314256
+        },
+        {
+          "elapsedSeconds": 425.85867827400216,
+          "status": 200,
+          "latencyMs": 338.211622
+        },
+        {
+          "elapsedSeconds": 456.1985328830051,
+          "status": 200,
+          "latencyMs": 313.202192
+        },
+        {
+          "elapsedSeconds": 486.51349840800685,
+          "status": 200,
+          "latencyMs": 622.188561
+        },
+        {
+          "elapsedSeconds": 517.1373734490044,
+          "status": 200,
+          "latencyMs": 320.606541
+        },
+        {
+          "elapsedSeconds": 547.460413711,
+          "status": 200,
+          "latencyMs": 464.417584
+        },
+        {
+          "elapsedSeconds": 577.9273654800054,
+          "status": 200,
+          "latencyMs": 400.481449
+        },
+        {
+          "elapsedSeconds": 608.3298486160056,
+          "status": 200,
+          "latencyMs": 306.570254
+        },
+        {
+          "elapsedSeconds": 638.6383864220115,
+          "status": 200,
+          "latencyMs": 448.590378
+        },
+        {
+          "elapsedSeconds": 669.08929673901,
+          "status": 200,
+          "latencyMs": 570.87306
+        },
+        {
+          "elapsedSeconds": 699.6618470250105,
+          "status": 200,
+          "latencyMs": 228.612191
+        },
+        {
+          "elapsedSeconds": 729.892889322,
+          "status": 200,
+          "latencyMs": 633.862676
+        },
+        {
+          "elapsedSeconds": 760.5286286180053,
+          "status": 200,
+          "latencyMs": 286.324103
+        },
+        {
+          "elapsedSeconds": 790.8170835630008,
+          "status": 200,
+          "latencyMs": 732.334227
+        },
+        {
+          "elapsedSeconds": 821.5513065630075,
+          "status": 200,
+          "latencyMs": 269.163043
+        },
+        {
+          "elapsedSeconds": 851.8223902620084,
+          "status": 200,
+          "latencyMs": 214.966516
+        },
+        {
+          "elapsedSeconds": 882.0394924830034,
+          "status": 200,
+          "latencyMs": 211.875376
+        },
+        {
+          "elapsedSeconds": 912.2533422550041,
+          "status": 200,
+          "latencyMs": 263.766853
+        },
+        {
+          "elapsedSeconds": 942.51899004601,
+          "status": 200,
+          "latencyMs": 292.01488
+        },
+        {
+          "elapsedSeconds": 972.8131895100087,
+          "status": 200,
+          "latencyMs": 242.873225
+        },
+        {
+          "elapsedSeconds": 1003.0580297800043,
+          "status": 200,
+          "latencyMs": 213.058793
+        },
+        {
+          "elapsedSeconds": 1033.2732528160122,
+          "status": 200,
+          "latencyMs": 232.075015
+        },
+        {
+          "elapsedSeconds": 1063.5072003490059,
+          "status": 200,
+          "latencyMs": 622.558037
+        },
+        {
+          "elapsedSeconds": 1094.1319125430018,
+          "status": 200,
+          "latencyMs": 379.755022
+        },
+        {
+          "elapsedSeconds": 1124.5138184060052,
+          "status": 200,
+          "latencyMs": 544.138623
+        },
+        {
+          "elapsedSeconds": 1155.0596637130075,
+          "status": 200,
+          "latencyMs": 616.816616
+        },
+        {
+          "elapsedSeconds": 1185.678408871012,
+          "status": 200,
+          "latencyMs": 610.859427
+        },
+        {
+          "elapsedSeconds": 1216.2912071940082,
+          "status": 200,
+          "latencyMs": 504.996929
+        },
+        {
+          "elapsedSeconds": 1246.7982359750022,
+          "status": 200,
+          "latencyMs": 619.76862
+        },
+        {
+          "elapsedSeconds": 1277.4200444920134,
+          "status": 200,
+          "latencyMs": 202.051881
+        },
+        {
+          "elapsedSeconds": 1307.6241648680007,
+          "status": 200,
+          "latencyMs": 680.738648
+        },
+        {
+          "elapsedSeconds": 1338.3115385960118,
+          "status": 200,
+          "latencyMs": 304.779983
+        },
+        {
+          "elapsedSeconds": 1368.618939662003,
+          "status": 200,
+          "latencyMs": 402.38498
+        },
+        {
+          "elapsedSeconds": 1399.023812149011,
+          "status": 200,
+          "latencyMs": 378.969168
+        },
+        {
+          "elapsedSeconds": 1429.4048379560118,
+          "status": 200,
+          "latencyMs": 271.170374
+        },
+        {
+          "elapsedSeconds": 1459.6780706190038,
+          "status": 200,
+          "latencyMs": 211.237065
+        },
+        {
+          "elapsedSeconds": 1489.8911183480086,
+          "status": 200,
+          "latencyMs": 654.660131
+        },
+        {
+          "elapsedSeconds": 1520.5481425040052,
+          "status": 200,
+          "latencyMs": 278.448306
+        },
+        {
+          "elapsedSeconds": 1550.8284982700134,
+          "status": 200,
+          "latencyMs": 330.575463
+        },
+        {
+          "elapsedSeconds": 1581.1621363290033,
+          "status": 200,
+          "latencyMs": 333.107335
+        },
+        {
+          "elapsedSeconds": 1611.497611291008,
+          "status": 200,
+          "latencyMs": 709.053591
+        },
+        {
+          "elapsedSeconds": 1642.2095099610015,
+          "status": 200,
+          "latencyMs": 312.754912
+        },
+        {
+          "elapsedSeconds": 1672.524103861011,
+          "status": 200,
+          "latencyMs": 661.838321
+        },
+        {
+          "elapsedSeconds": 1703.1906949469994,
+          "status": 200,
+          "latencyMs": 214.751078
+        },
+        {
+          "elapsedSeconds": 1733.4076402440114,
+          "status": 200,
+          "latencyMs": 393.379516
+        }
+      ]
+    }
+  },
+  "preferredDesign": "68-byte header + 206-byte fixed records in one STRING; full scan; unchanged atomic SET PXAT and state authority; fresh v2 prefix/epoch",
+  "structuralImplementationAuthorization": "DESIGN_ACCEPTED_FOR_ORCHESTRATOR_HANDOFF_TO_SOL_HIGH_MINIMAL_VALIDATION_IMPLEMENTATION_NOT_RELEASE_APPROVAL",
+  "findings": [
+    "P2: serial DEL all-then-release does not prove 5-second cycle under near-deadline per-call latency",
+    "P2: V1-only reader rejects newly emitted V2 PG cursor during mixed fleet; explicit PG emission bridge required"
+  ],
+  "moduleVerdicts": "UNCHANGED",
+  "remoteCI": "NOT_RUN",
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false,
+  "formalPerformance": {
+    "compatibility": {
+      "result": "FAIL",
+      "metadata": {
+        "sourceDigest": "88d944307b5dc05a8cdc9ce3af859f6256acb906a28be0e7968a40042c933618",
+        "apiBinarySHA256": "3d426de3d6fbb0c15a80c200ba79019412d13c056075dd1d821219fc04a027bc",
+        "runtime": {
+          "go": "go version go1.22.2 linux/amd64",
+          "postgres": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit",
+          "redis": "7.0.15",
+          "cpus": 12,
+          "kernel": "6.18.54.1-microsoft-standard-WSL2",
+          "config": {
+            "createBackend": "redis",
+            "readPostgres": true,
+            "readRedis": true,
+            "ttlSeconds": 1800,
+            "maxIDs": 10000,
+            "maxPerAccount": 1024,
+            "maxSnapshotBytes": 196608,
+            "maxModuleBytes": 67108864,
+            "maxLedgerEntries": 8192,
+            "maxLedgerBytes": 4194304,
+            "ledgerFixedReserveBytes": 12582912,
+            "operationBudgetMilliseconds": 500,
+            "prepareLeaseSeconds": 30,
+            "cleanupIntervalSeconds": 10,
+            "cleanupBatchSize": 64,
+            "clockSkewMilliseconds": 2000,
+            "redis": {
+              "address": "127.0.0.1:48915",
+              "username": "community_comment_snapshot",
+              "passwordFile": "snapshot.password",
+              "namespace": "hnuhole:comment-snapshot:v1:dev:",
+              "epoch": "155ad198-9f30-4bac-afaf-326a12fc6982",
+              "deadlineMilliseconds": 100,
+              "poolSize": 8
+            }
+          }
+        },
+        "runtimeNumericAndBooleanConfig": {
+          "allowDevelopmentNetwork": false,
+          "requestTimeoutSeconds": 30,
+          "sqlTimeoutSeconds": 10,
+          "shutdownTimeoutSeconds": 20,
+          "workerBatch": 16,
+          "workerTimeoutSeconds": 15,
+          "workerIntervalSeconds": 2,
+          "passwordWorkers": 2,
+          "networkMutationCapacity": 120,
+          "networkQueryCapacity": 240,
+          "networkMaxEntries": 4096
+        },
+        "sharedAdmissionProfileSHA256": "2189b6c324fd861d9efd83bce88595d0c08ca69ebc8943b7700f5d2b29cf475b",
+        "mode": "compatibility",
+        "sharedAdmission": {
+          "address": "127.0.0.1:50579",
+          "username": "community_ratelimit",
+          "namespace": "community_dev",
+          "deadlineMilliseconds": 100,
+          "poolSize": 8,
+          "maxSubjects": 32768,
+          "maxEvents": 16384,
+          "maxDedup": 256,
+          "maxReserves": 32,
+          "maxStateBytes": 1048576,
+          "dedupSeconds": 86400,
+          "readSeconds": 30,
+          "rules": [
+            {
+              "action": "entry.query",
+              "mode": "observe",
+              "failure": "local-read",
+              "bucket": {
+                "capacity": 10000,
+                "perSecond": 166
+              }
+            },
+            {
+              "action": "entry.mutation",
+              "mode": "observe",
+              "failure": "reject",
+              "bucket": {
+                "capacity": 6000,
+                "perSecond": 100
+              }
+            },
+            {
+              "action": "login.ip",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 60000,
+                  "limit": 300
+                }
+              ]
+            },
+            {
+              "action": "login.source",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 60000,
+                  "limit": 10
+                }
+              ]
+            },
+            {
+              "action": "login.failure",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 300000,
+                  "limit": 5
+                }
+              ]
+            },
+            {
+              "action": "post.create",
+              "mode": "observe",
+              "failure": "verified-db",
+              "windows": [
+                {
+                  "ms": 60000,
+                  "limit": 5
+                },
+                {
+                  "ms": 3600000,
+                  "limit": 30
+                }
+              ]
+            },
+            {
+              "action": "comment.publish",
+              "mode": "observe",
+              "failure": "verified-db",
+              "windows": [
+                {
+                  "ms": 60000,
+                  "limit": 12
+                },
+                {
+                  "ms": 3600000,
+                  "limit": 120
+                }
+              ]
+            },
+            {
+              "action": "dm.send",
+              "mode": "observe",
+              "failure": "reject",
+              "bucket": {
+                "capacity": 30,
+                "perSecond": 2
+              }
+            },
+            {
+              "action": "dm.conversation.create",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 600000,
+                  "limit": 10
+                },
+                {
+                  "ms": 3600000,
+                  "limit": 40
+                }
+              ]
+            },
+            {
+              "action": "upload.attempt",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 600000,
+                  "limit": 60
+                }
+              ]
+            },
+            {
+              "action": "upload.bytes",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 600000,
+                  "limit": 125829120
+                },
+                {
+                  "ms": 3600000,
+                  "limit": 536870912
+                }
+              ]
+            },
+            {
+              "action": "read.account",
+              "mode": "observe",
+              "failure": "local-read",
+              "bucket": {
+                "capacity": 180,
+                "perSecond": 6
+              }
+            },
+            {
+              "action": "read.control",
+              "mode": "observe",
+              "failure": "local-read",
+              "bucket": {
+                "capacity": 300,
+                "perSecond": 10
+              }
+            }
+          ]
+        },
+        "localQueryCapacity": 240,
+        "workerIntervalSeconds": 2,
+        "cleanupIntervalSeconds": 10,
+        "totalCommentRows": 11563,
+        "mainRoots": 500,
+        "mainReplies": 1000,
+        "replyPerformanceRows": 60,
+        "concurrency": 1,
+        "requestPaceSeconds": 0.27,
+        "seed": 20261025,
+        "order": "balanced shuffled blocks of20 pairs; crossover for steady",
+        "measurementStartUnixSeconds": 1792905091.1083276,
+        "sameProcessContinuation": true,
+        "observeReadTimings": false,
+        "configs": {
+          "postgres": {
+            "createBackend": "postgres",
+            "readPostgres": true,
+            "readRedis": true
+          },
+          "redis": {
+            "createBackend": "redis",
+            "readPostgres": true,
+            "readRedis": true
+          }
+        },
+        "diagnosticResidual": "SQL/Gate/projection includes all transaction work outside snapshot Redis client calls; not pure SQL",
+        "redisTiming": "client wall includes queue/transport; INFO commandstats reports server Lua aggregate, their difference is not pure queue time"
+      },
+      "stats": {
+        "initial": {
+          "postgres": {
+            "samples": 200,
+            "p50Ms": 282.797197,
+            "p95Ms": 618.182188,
+            "p99Ms": 698.036422,
+            "meanMs": 342.202926725
+          },
+          "redis": {
+            "samples": 200,
+            "p50Ms": 296.107487,
+            "p95Ms": 618.685553,
+            "p99Ms": 673.959452,
+            "meanMs": 346.08541042
+          },
+          "p95RegressionPercent": 0.08142664246417741,
+          "result": "PASS",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 524.0,
+                "usec_per_call": 262.0,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 2063.0,
+                "usec": 6442069.0,
+                "usec_per_call": 3122.67,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            },
+            "after": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 524.0,
+                "usec_per_call": 262.0,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 2785.0,
+                "usec": 10873880.0,
+                "usec_per_call": 3904.45,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1256,
+            "postgresSnapshots": 231
+          }
+        },
+        "continuation": {
+          "postgres": {
+            "samples": 1000,
+            "p50Ms": 279.944553,
+            "p95Ms": 593.253967,
+            "p99Ms": 725.949506,
+            "meanMs": 332.878684725
+          },
+          "redis": {
+            "samples": 1000,
+            "p50Ms": 279.081229,
+            "p95Ms": 603.945685,
+            "p99Ms": 694.411687,
+            "meanMs": 332.359592201
+          },
+          "p95RegressionPercent": 1.802216014511715,
+          "result": "PASS",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 524.0,
+                "usec_per_call": 262.0,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 2785.0,
+                "usec": 10873880.0,
+                "usec_per_call": 3904.45,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            },
+            "after": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 524.0,
+                "usec_per_call": 262.0,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 3963.0,
+                "usec": 11782047.0,
+                "usec_per_call": 2973.01,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1256,
+            "postgresSnapshots": 231
+          }
+        },
+        "replyPreview": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 240.921714,
+            "p95Ms": 532.107975,
+            "p99Ms": 587.10906,
+            "meanMs": 278.42568905
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 251.418434,
+            "p95Ms": 571.01466,
+            "p99Ms": 636.720966,
+            "meanMs": 299.06837409
+          },
+          "p95RegressionPercent": 7.31180264682183,
+          "result": "FAIL",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 524.0,
+                "usec_per_call": 262.0,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 3963.0,
+                "usec": 11782047.0,
+                "usec_per_call": 2973.01,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            },
+            "after": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 524.0,
+                "usec_per_call": 262.0,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 4995.0,
+                "usec": 19716831.0,
+                "usec_per_call": 3947.31,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1586,
+            "postgresSnapshots": 561
+          }
+        },
+        "replyExpanded": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 267.648482,
+            "p95Ms": 445.648916,
+            "p99Ms": 583.798791,
+            "meanMs": 277.8531412066667
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 281.201031,
+            "p95Ms": 482.054224,
+            "p99Ms": 627.941851,
+            "meanMs": 298.0857229466667
+          },
+          "p95RegressionPercent": 8.169055660846713,
+          "result": "FAIL",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 524.0,
+                "usec_per_call": 262.0,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 4995.0,
+                "usec": 19716831.0,
+                "usec_per_call": 3947.31,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            },
+            "after": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 524.0,
+                "usec_per_call": 262.0,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 6027.0,
+                "usec": 31272154.0,
+                "usec_per_call": 5188.68,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1916,
+            "postgresSnapshots": 891
+          }
+        }
+      },
+      "artifact": "stats-v2-formal-compatibility-complete.json",
+      "artifactSHA256": "d165ca62ef08d926e1cc28d7419323ad3365c108ab68c145944f6ad7cc359cab"
+    },
+    "steady": {
+      "result": "PASS",
+      "metadata": {
+        "sourceDigest": "88d944307b5dc05a8cdc9ce3af859f6256acb906a28be0e7968a40042c933618",
+        "apiBinarySHA256": "3d426de3d6fbb0c15a80c200ba79019412d13c056075dd1d821219fc04a027bc",
+        "runtime": {
+          "go": "go version go1.22.2 linux/amd64",
+          "postgres": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit",
+          "redis": "7.0.15",
+          "cpus": 12,
+          "kernel": "6.18.54.1-microsoft-standard-WSL2",
+          "config": {
+            "createBackend": "redis",
+            "readPostgres": false,
+            "readRedis": true,
+            "ttlSeconds": 1800,
+            "maxIDs": 10000,
+            "maxPerAccount": 1024,
+            "maxSnapshotBytes": 196608,
+            "maxModuleBytes": 67108864,
+            "maxLedgerEntries": 8192,
+            "maxLedgerBytes": 4194304,
+            "ledgerFixedReserveBytes": 12582912,
+            "operationBudgetMilliseconds": 500,
+            "prepareLeaseSeconds": 30,
+            "cleanupIntervalSeconds": 10,
+            "cleanupBatchSize": 64,
+            "clockSkewMilliseconds": 2000,
+            "redis": {
+              "address": "127.0.0.1:39567",
+              "username": "community_comment_snapshot",
+              "passwordFile": "snapshot.password",
+              "namespace": "hnuhole:comment-snapshot:v1:dev:",
+              "epoch": "5d88caad-ee24-4308-bbdb-2eeeb82c2fdf",
+              "deadlineMilliseconds": 100,
+              "poolSize": 8
+            }
+          }
+        },
+        "runtimeNumericAndBooleanConfig": {
+          "allowDevelopmentNetwork": false,
+          "requestTimeoutSeconds": 30,
+          "sqlTimeoutSeconds": 10,
+          "shutdownTimeoutSeconds": 20,
+          "workerBatch": 16,
+          "workerTimeoutSeconds": 15,
+          "workerIntervalSeconds": 2,
+          "passwordWorkers": 2,
+          "networkMutationCapacity": 120,
+          "networkQueryCapacity": 240,
+          "networkMaxEntries": 4096
+        },
+        "sharedAdmissionProfileSHA256": "2189b6c324fd861d9efd83bce88595d0c08ca69ebc8943b7700f5d2b29cf475b",
+        "mode": "steady",
+        "sharedAdmission": {
+          "address": "127.0.0.1:59327",
+          "username": "community_ratelimit",
+          "namespace": "community_dev",
+          "deadlineMilliseconds": 100,
+          "poolSize": 8,
+          "maxSubjects": 32768,
+          "maxEvents": 16384,
+          "maxDedup": 256,
+          "maxReserves": 32,
+          "maxStateBytes": 1048576,
+          "dedupSeconds": 86400,
+          "readSeconds": 30,
+          "rules": [
+            {
+              "action": "entry.query",
+              "mode": "observe",
+              "failure": "local-read",
+              "bucket": {
+                "capacity": 10000,
+                "perSecond": 166
+              }
+            },
+            {
+              "action": "entry.mutation",
+              "mode": "observe",
+              "failure": "reject",
+              "bucket": {
+                "capacity": 6000,
+                "perSecond": 100
+              }
+            },
+            {
+              "action": "login.ip",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 60000,
+                  "limit": 300
+                }
+              ]
+            },
+            {
+              "action": "login.source",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 60000,
+                  "limit": 10
+                }
+              ]
+            },
+            {
+              "action": "login.failure",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 300000,
+                  "limit": 5
+                }
+              ]
+            },
+            {
+              "action": "post.create",
+              "mode": "observe",
+              "failure": "verified-db",
+              "windows": [
+                {
+                  "ms": 60000,
+                  "limit": 5
+                },
+                {
+                  "ms": 3600000,
+                  "limit": 30
+                }
+              ]
+            },
+            {
+              "action": "comment.publish",
+              "mode": "observe",
+              "failure": "verified-db",
+              "windows": [
+                {
+                  "ms": 60000,
+                  "limit": 12
+                },
+                {
+                  "ms": 3600000,
+                  "limit": 120
+                }
+              ]
+            },
+            {
+              "action": "dm.send",
+              "mode": "observe",
+              "failure": "reject",
+              "bucket": {
+                "capacity": 30,
+                "perSecond": 2
+              }
+            },
+            {
+              "action": "dm.conversation.create",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 600000,
+                  "limit": 10
+                },
+                {
+                  "ms": 3600000,
+                  "limit": 40
+                }
+              ]
+            },
+            {
+              "action": "upload.attempt",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 600000,
+                  "limit": 60
+                }
+              ]
+            },
+            {
+              "action": "upload.bytes",
+              "mode": "observe",
+              "failure": "reject",
+              "windows": [
+                {
+                  "ms": 600000,
+                  "limit": 125829120
+                },
+                {
+                  "ms": 3600000,
+                  "limit": 536870912
+                }
+              ]
+            },
+            {
+              "action": "read.account",
+              "mode": "observe",
+              "failure": "local-read",
+              "bucket": {
+                "capacity": 180,
+                "perSecond": 6
+              }
+            },
+            {
+              "action": "read.control",
+              "mode": "observe",
+              "failure": "local-read",
+              "bucket": {
+                "capacity": 300,
+                "perSecond": 10
+              }
+            }
+          ]
+        },
+        "localQueryCapacity": 240,
+        "workerIntervalSeconds": 2,
+        "cleanupIntervalSeconds": 10,
+        "totalCommentRows": 11563,
+        "mainRoots": 500,
+        "mainReplies": 1000,
+        "replyPerformanceRows": 60,
+        "concurrency": 1,
+        "requestPaceSeconds": 0.27,
+        "seed": 20261025,
+        "order": "balanced shuffled blocks of20 pairs; crossover for steady",
+        "measurementStartUnixSeconds": 1792906468.4096892,
+        "sameProcessContinuation": false,
+        "observeReadTimings": false,
+        "configs": {
+          "postgres": {
+            "createBackend": "postgres",
+            "readPostgres": true,
+            "readRedis": false
+          },
+          "redis": {
+            "createBackend": "redis",
+            "readPostgres": false,
+            "readRedis": true
+          }
+        },
+        "diagnosticResidual": "SQL/Gate/projection includes all transaction work outside snapshot Redis client calls; not pure SQL",
+        "redisTiming": "client wall includes queue/transport; INFO commandstats reports server Lua aggregate, their difference is not pure queue time"
+      },
+      "stats": {
+        "initial": {
+          "postgres": {
+            "samples": 200,
+            "p50Ms": 289.646449,
+            "p95Ms": 517.055944,
+            "p99Ms": 636.222756,
+            "meanMs": 307.79651317
+          },
+          "redis": {
+            "samples": 200,
+            "p50Ms": 303.591568,
+            "p95Ms": 527.155281,
+            "p99Ms": 643.380051,
+            "meanMs": 319.828438195
+          },
+          "p95RegressionPercent": 1.9532387389013417,
+          "result": "PASS",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_evalsha": {
+                "calls": 2061.0,
+                "usec": 5874342.0,
+                "usec_per_call": 2850.24,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 421.0,
+                "usec_per_call": 210.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            },
+            "after": {
+              "cmdstat_evalsha": {
+                "calls": 2598.0,
+                "usec": 9698409.0,
+                "usec_per_call": 3733.03,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 421.0,
+                "usec_per_call": 210.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 1286
+          }
+        },
+        "continuation": {
+          "postgres": {
+            "samples": 1000,
+            "p50Ms": 282.250241,
+            "p95Ms": 567.473181,
+            "p99Ms": 676.947855,
+            "meanMs": 322.385402785
+          },
+          "redis": {
+            "samples": 1000,
+            "p50Ms": 279.431068,
+            "p95Ms": 595.393066,
+            "p99Ms": 772.80572,
+            "meanMs": 322.713114345
+          },
+          "p95RegressionPercent": 4.920036036028996,
+          "result": "PASS",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_evalsha": {
+                "calls": 2598.0,
+                "usec": 9698409.0,
+                "usec_per_call": 3733.03,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 421.0,
+                "usec_per_call": 210.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            },
+            "after": {
+              "cmdstat_evalsha": {
+                "calls": 3731.0,
+                "usec": 10215055.0,
+                "usec_per_call": 2737.89,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 421.0,
+                "usec_per_call": 210.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 1286
+          }
+        },
+        "replyPreview": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 227.35807,
+            "p95Ms": 520.872059,
+            "p99Ms": 653.478986,
+            "meanMs": 274.39330727
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 236.829469,
+            "p95Ms": 531.562981,
+            "p99Ms": 603.069959,
+            "meanMs": 286.49099815
+          },
+          "p95RegressionPercent": 2.0525044135646375,
+          "result": "PASS",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_evalsha": {
+                "calls": 3731.0,
+                "usec": 10215055.0,
+                "usec_per_call": 2737.89,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 421.0,
+                "usec_per_call": 210.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            },
+            "after": {
+              "cmdstat_evalsha": {
+                "calls": 4476.0,
+                "usec": 16780458.0,
+                "usec_per_call": 3748.99,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 421.0,
+                "usec_per_call": 210.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1646,
+            "postgresSnapshots": 1646
+          }
+        },
+        "replyExpanded": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 251.216044,
+            "p95Ms": 607.717973,
+            "p99Ms": 722.528683,
+            "meanMs": 319.38824424666666
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 274.953479,
+            "p95Ms": 603.14397,
+            "p99Ms": 689.66196,
+            "meanMs": 331.97698082666665
+          },
+          "p95RegressionPercent": -0.7526522504214372,
+          "result": "PASS",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_evalsha": {
+                "calls": 4476.0,
+                "usec": 16780458.0,
+                "usec_per_call": 3748.99,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 421.0,
+                "usec_per_call": 210.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            },
+            "after": {
+              "cmdstat_evalsha": {
+                "calls": 5221.0,
+                "usec": 25348687.0,
+                "usec_per_call": 4855.14,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 421.0,
+                "usec_per_call": 210.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 2006,
+            "postgresSnapshots": 2006
+          }
+        }
+      },
+      "artifact": "stats-v2-formal-steady-complete.json",
+      "artifactSHA256": "64d6f8166c5addd43e32bb48ccbf2e53555dc877ddd9b828ae11135a816d3dae"
+    }
+  },
+  "readonlySlowlog": {
+    "artifact": "stats-v2-second-review-readonly-slowlog.json",
+    "sha256": "4af678ffabb2c487b61f3559c530d68205a9f9b8093eea2ce31a93ad4906eb05",
+    "summary": {
+      "recordedUnixSeconds": 1792906931.9347167,
+      "fixture": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-stats-v2/formal-campaign-r1/performance-steady/process-20261025T053411-7d66af",
+      "ledgerBytesAtObservation": 571286,
+      "slowlogThresholdMicroseconds": 10000,
+      "samples": [
+        {
+          "kind": "write",
+          "unixSeconds": 1792906640,
+          "microseconds": 10699
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906640,
+          "microseconds": 12760
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906639,
+          "microseconds": 10460
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906625,
+          "microseconds": 13098
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906624,
+          "microseconds": 10794
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906611,
+          "microseconds": 10176
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906608,
+          "microseconds": 12447
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906606,
+          "microseconds": 11099
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906604,
+          "microseconds": 10750
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906601,
+          "microseconds": 11273
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906594,
+          "microseconds": 10112
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906588,
+          "microseconds": 10501
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906585,
+          "microseconds": 10496
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906585,
+          "microseconds": 11957
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906585,
+          "microseconds": 10524
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906576,
+          "microseconds": 10085
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906572,
+          "microseconds": 10207
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906539,
+          "microseconds": 13934
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906512,
+          "microseconds": 13117
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906509,
+          "microseconds": 10282
+        },
+        {
+          "kind": "write",
+          "unixSeconds": 1792906465,
+          "microseconds": 10493
+        }
+      ],
+      "scope": "READ_ONLY_THRESHOLD_TRUNCATED_SERVER_EXECUTION_NOT_FULL_DISTRIBUTION_OR_PURE_QUEUE"
+    }
+  },
+  "harnessRepair": {
+    "change": "Verify/reuse byte-identical existing frozen executable; reject mismatch; no in-place executable overwrite",
+    "file": "tools/comment-snapshot-process/run.py",
+    "sha256": "52885a8bb6120376c50c72cd761cccc0694e981f380837d760e800af87da6b6c"
+  },
+  "artifactsSHA256": {
+    "stats-v2-growth-r1-text-file-busy.json": "6bb6039e0c4765ff2d43e7c44057185adc7ef6072b75156dff3fa53b3ebc1288",
+    "stats-v2-growth-r2-same-binary.json": "80300c47cea8fea800b8fa09551032ce85d21ca283cdacd35915b399dd629691",
+    "stats-v2-growth-same-binary-retry-r2.log": "8914e45bbb3925af804e2e4532e6766f3e1da07a340beca119c17c87cc384228",
+    "stats-v2-run-before-cache-reuse-fix.py": "33f42f893697e4e388d8e8facfdedf169045d6aed6dac119db2f02c598b79a05",
+    "stats-v2-formal-campaign-original-fail.json": "849f7e03e2ef49a20fc46f082a649fd6ae3d9aa183b3cda4fd8f16cfa2022fcb",
+    "stats-v2-final-capacity-performance.json": "008becdc548221e4fb854f3143aedd7cbf13a00e5974b4ca637c97c421751bb1",
+    "stats-v2-final-api-faults.json": "af7f26ddce05d182343657508105a676714f13bf4696866b3960f33688199efb",
+    "stats-v2-final-api-admission-isolation.json": "97db24e421f4865370e78631ba8ff3bfef1cb4a0ac4a947c31683353766c895c",
+    "stats-v2-final-api-rollback.json": "a5763ce2507edbccef10ac827c695aaed612918a0beed06c9b1d28079bc821f7",
+    "stats-v2-final-nonce-growth.json": "80300c47cea8fea800b8fa09551032ce85d21ca283cdacd35915b399dd629691",
+    "stats-v2-final-nonce-growth-r1-text-file-busy.json": "6bb6039e0c4765ff2d43e7c44057185adc7ef6072b75156dff3fa53b3ebc1288",
+    "stats-v2-final-long-read-progress.json": "4f701f68429dfb56ca8feec6dcbb9c847a1f178460e51636e831c03f78ba805a",
+    "stats-v2-final-compatibility-1805-seconds.json": "dffc7d2f5de1131b8f4f3e098a64df06355a188bfbdac5c98a9ef0c1b84f85fd",
+    "stats-v2-campaign-exercise-console.log": "768590b5b8dd8853176e7c532173d332d3b8d9a3f156ddb5f10d239bb3f7c220",
+    "stats-v2-campaign-faults-console.log": "2ad2624bd66922c79c8fc0d8ff3d419dcf9ad2cc6432b23aa645596d8d93e223",
+    "stats-v2-campaign-admission-console.log": "cb4824d577b4056445be6eb301f981dced3d81bdc4ff9867befbadda5f9254b4",
+    "stats-v2-campaign-growth-console.log": "a4e622305090b3ebce42f24b39127ffce7ee4f68bdfa75390ce0d6345240d599",
+    "stats-v2-campaign-rollback-console.log": "e1b13cd72c600c37e6d569527d14a34b4034c6696fa34e065107d44292a1819b",
+    "stats-v2-campaign-compatibility-real-time-console.log": "d833f426e9edaf360761ffe78aff9f21a1f98931e8305c5203209008db20ed94",
+    "second-review-json-primitive-profile.json": "cf1df0ff4d66207e57a3bf9929e4a3a8f64762dbac4bd8788a4d696e9ae2162f",
+    "second-review-current-json-get.lua": "240a2df86d3238c0f77e33affd1deb33dd48c6931bf29e5ac986fc3d8e690ed8",
+    "second-review-current-json-decode.lua": "edbba4c447be42685d74fbba11f7dcbfaac6d0c329f4914db167be2f74fab50a",
+    "second-review-current-json-validate.lua": "7842fbd9abdffb9d72b52e8abf1ab95db8978ca45fa6629365ac4a069098b00d",
+    "second-review-current-json-validate_encode.lua": "1d0b6f4222868fa45ddda83b3d26363831fee5afc4c1197c792ea60a6801cd32",
+    "second-review-crossover-harness-delta.json": "bf4e7840c8cd4419107a2cc69a38c90f23094e6f5950acdd6f564f6aea745c1d",
+    "second-review-crossover-diagnostic.py": "9e865599df4508eb753115f751bb69e2c278cbf8c0f5e38caa896a5e91102a43",
+    "second-review-json-cost-console.log": "4d0a5ec526a4c76fa0684fe9cf2b178e77147ed5d6ffb635d81c6e21a35264a2",
+    "second-review-crossover-console.log": "91ae3cbd4d9b7a39a9b2c285f479d390c6bbf7065561b9c9c329332f1080739f",
+    "stats-v2-real-time-original-failure-clock-forensics.json": "164bc8621e069d6c516a750e4a6aee09d45aad7dc6c679443f88847488393a9b",
+    "second-review-redis7-struct-readonly.json": "076cbe3f636cc397952f8a113daed3da3f31c56da726ebd95e76c32c117214e7",
+    "second-review-gc-network-bound-model.json": "208dbf2deb420bab894517a52c3eaeede790c4cee639c9dd65a0e52c881023cd",
+    "second-review-crossover-timing-analysis.json": "376fe714e388eb42828443cc2c7c177a25130ca38b09f3ac1cddad815c3cf6a6",
+    "second-review-crossover-raw.json": "9686bc5b1c56994556c2605d6ec22e0129c20a4361a2f515099a1f7ce6f515fe",
+    "stats-v2-second-review-readonly-slowlog.json": "4af678ffabb2c487b61f3559c530d68205a9f9b8093eea2ce31a93ad4906eb05"
+  },
+  "jsonCostProfile": {
+    "result": "PASS_PROFILE_COLLECTION_ONLY",
+    "scope": "CURRENT_JSON_READONLY_PRIMITIVES_NO_SQL_NO_CANDIDATE_IMPLEMENTATION",
+    "commonSourceSHA256": "db9e20aeea085f11123684dfe673a99b0343e566a045447057935fc655ff7d16",
+    "scriptSHA256": {
+      "get": "240a2df86d3238c0f77e33affd1deb33dd48c6931bf29e5ac986fc3d8e690ed8",
+      "decode": "edbba4c447be42685d74fbba11f7dcbfaac6d0c329f4914db167be2f74fab50a",
+      "validate": "7842fbd9abdffb9d72b52e8abf1ab95db8978ca45fa6629365ac4a069098b00d",
+      "validate_encode": "1d0b6f4222868fa45ddda83b3d26363831fee5afc4c1197c792ea60a6801cd32"
+    },
+    "samplesPerMode": 100,
+    "warmupsPerMode": 10,
+    "seed": 20261025,
+    "groups": {
+      "1024": {
+        "ledgerBytes": 454695,
+        "ledgerMemoryUsageBytes": 458808,
+        "serverExecution": {
+          "get": {
+            "samples": 100,
+            "meanMicroseconds": 721.9,
+            "p50Microseconds": 687,
+            "p95Microseconds": 999,
+            "minMicroseconds": 563,
+            "maxMicroseconds": 1409,
+            "rawMicroseconds": [
+              662,
+              727,
+              669,
+              663,
+              690,
+              1409,
+              918,
+              617,
+              692,
+              594,
+              797,
+              620,
+              659,
+              653,
+              640,
+              717,
+              680,
+              719,
+              721,
+              671,
+              858,
+              626,
+              643,
+              742,
+              696,
+              843,
+              966,
+              971,
+              832,
+              609,
+              631,
+              667,
+              607,
+              690,
+              641,
+              842,
+              563,
+              593,
+              744,
+              642,
+              752,
+              725,
+              652,
+              759,
+              645,
+              743,
+              659,
+              689,
+              577,
+              600,
+              681,
+              636,
+              833,
+              602,
+              1127,
+              818,
+              675,
+              656,
+              734,
+              608,
+              707,
+              870,
+              754,
+              772,
+              1033,
+              999,
+              760,
+              721,
+              763,
+              1007,
+              841,
+              724,
+              643,
+              681,
+              687,
+              625,
+              704,
+              697,
+              679,
+              609,
+              692,
+              661,
+              762,
+              691,
+              596,
+              628,
+              608,
+              626,
+              622,
+              689,
+              608,
+              1056,
+              609,
+              645,
+              636,
+              623,
+              936,
+              778,
+              607,
+              746
+            ]
+          },
+          "decode": {
+            "samples": 100,
+            "meanMicroseconds": 3018.88,
+            "p50Microseconds": 2813,
+            "p95Microseconds": 4162,
+            "minMicroseconds": 2163,
+            "maxMicroseconds": 4643,
+            "rawMicroseconds": [
+              3654,
+              2679,
+              2532,
+              4022,
+              2979,
+              4643,
+              2556,
+              2794,
+              2751,
+              3051,
+              2580,
+              3196,
+              3833,
+              3398,
+              2524,
+              2585,
+              2977,
+              4434,
+              2914,
+              2730,
+              3135,
+              2537,
+              3190,
+              2933,
+              3533,
+              2779,
+              2914,
+              3922,
+              3966,
+              4110,
+              3585,
+              2241,
+              3123,
+              3076,
+              2360,
+              3851,
+              3150,
+              2720,
+              2334,
+              2596,
+              3247,
+              4250,
+              2631,
+              2684,
+              2225,
+              2163,
+              2385,
+              2181,
+              2280,
+              2289,
+              2926,
+              2777,
+              3683,
+              3898,
+              2550,
+              3382,
+              2804,
+              2771,
+              2290,
+              2784,
+              2656,
+              3170,
+              2583,
+              4220,
+              2968,
+              3614,
+              2808,
+              4162,
+              4082,
+              4005,
+              4598,
+              3037,
+              2510,
+              2722,
+              2548,
+              2977,
+              3053,
+              3710,
+              2975,
+              2679,
+              2631,
+              3296,
+              3026,
+              2749,
+              2533,
+              3576,
+              2523,
+              2518,
+              2420,
+              3879,
+              2833,
+              2446,
+              2412,
+              3249,
+              2813,
+              2581,
+              2255,
+              2575,
+              2591,
+              2818
+            ]
+          },
+          "validate": {
+            "samples": 100,
+            "meanMicroseconds": 4225.96,
+            "p50Microseconds": 3958,
+            "p95Microseconds": 5741,
+            "minMicroseconds": 3175,
+            "maxMicroseconds": 7700,
+            "rawMicroseconds": [
+              4449,
+              3513,
+              4583,
+              4087,
+              4967,
+              5324,
+              3608,
+              3960,
+              3755,
+              3710,
+              4159,
+              3446,
+              5146,
+              5011,
+              3702,
+              4393,
+              3990,
+              5149,
+              4006,
+              6575,
+              4282,
+              3962,
+              4651,
+              4314,
+              3806,
+              3902,
+              3438,
+              7700,
+              5095,
+              3979,
+              3175,
+              3403,
+              3184,
+              3449,
+              3958,
+              3935,
+              3667,
+              3517,
+              4438,
+              3231,
+              4207,
+              5529,
+              3698,
+              3329,
+              3884,
+              3586,
+              3795,
+              4620,
+              3463,
+              4201,
+              3564,
+              3628,
+              4397,
+              4737,
+              3544,
+              3661,
+              3417,
+              5341,
+              4115,
+              3552,
+              4688,
+              5640,
+              3458,
+              4249,
+              5741,
+              4490,
+              7010,
+              3848,
+              5447,
+              5312,
+              7574,
+              3960,
+              4103,
+              3762,
+              3656,
+              3922,
+              5543,
+              3704,
+              3609,
+              3481,
+              3846,
+              5017,
+              4662,
+              3382,
+              3316,
+              3454,
+              4213,
+              3563,
+              3693,
+              6042,
+              3594,
+              5239,
+              3704,
+              3868,
+              3622,
+              3668,
+              4125,
+              4074,
+              3972,
+              3458
+            ]
+          },
+          "validate_encode": {
+            "samples": 100,
+            "meanMicroseconds": 6684.14,
+            "p50Microseconds": 6271,
+            "p95Microseconds": 8775,
+            "minMicroseconds": 5196,
+            "maxMicroseconds": 11883,
+            "rawMicroseconds": [
+              6811,
+              5858,
+              5785,
+              8420,
+              8383,
+              5861,
+              5948,
+              6280,
+              6421,
+              6169,
+              6611,
+              8775,
+              6107,
+              6208,
+              5958,
+              5948,
+              6314,
+              6167,
+              6093,
+              6228,
+              7599,
+              7260,
+              5587,
+              7175,
+              6630,
+              6587,
+              6087,
+              8094,
+              7257,
+              7046,
+              5752,
+              6271,
+              5482,
+              7367,
+              6078,
+              5674,
+              5328,
+              5498,
+              5616,
+              6330,
+              6360,
+              8256,
+              7050,
+              6002,
+              6355,
+              6201,
+              6150,
+              5902,
+              5550,
+              5196,
+              6019,
+              7276,
+              8109,
+              7522,
+              8039,
+              6967,
+              8046,
+              8323,
+              5472,
+              5683,
+              6812,
+              7644,
+              6015,
+              6781,
+              8943,
+              11340,
+              11883,
+              5953,
+              8911,
+              9203,
+              8681,
+              5894,
+              8296,
+              8167,
+              6287,
+              7848,
+              5601,
+              7598,
+              5946,
+              5944,
+              6821,
+              6562,
+              7999,
+              5511,
+              6373,
+              5290,
+              5349,
+              6374,
+              7606,
+              7173,
+              5757,
+              5219,
+              5592,
+              5250,
+              5839,
+              6064,
+              5643,
+              5344,
+              6106,
+              5254
+            ]
+          }
+        },
+        "meanCostDifferencesMicroseconds": {
+          "decodeMinusGet": 2296.98,
+          "validationBeyondDecode": 1207.08,
+          "encodeBeyondValidate": 2458.1800000000003
+        },
+        "limitations": "Difference of means is cost attribution, not per-request queue time or formal API P95. Includes control/common setup; no SET write/data/SQL/publication protocol measured."
+      },
+      "1900": {
+        "ledgerBytes": 843639,
+        "ledgerMemoryUsageBytes": 917560,
+        "serverExecution": {
+          "get": {
+            "samples": 100,
+            "meanMicroseconds": 1305.69,
+            "p50Microseconds": 1252,
+            "p95Microseconds": 1681,
+            "minMicroseconds": 1011,
+            "maxMicroseconds": 2263,
+            "rawMicroseconds": [
+              1037,
+              1077,
+              1566,
+              1102,
+              1292,
+              1011,
+              1095,
+              1204,
+              1737,
+              1336,
+              1545,
+              1277,
+              1165,
+              1320,
+              1493,
+              1220,
+              1265,
+              1433,
+              1283,
+              1210,
+              1239,
+              1334,
+              1216,
+              1455,
+              1109,
+              1225,
+              1681,
+              1439,
+              1218,
+              1341,
+              1541,
+              1277,
+              1246,
+              1439,
+              1402,
+              1463,
+              1213,
+              1143,
+              1194,
+              1238,
+              1163,
+              1271,
+              1687,
+              1285,
+              1187,
+              1366,
+              1182,
+              1147,
+              1061,
+              1193,
+              1209,
+              1209,
+              1325,
+              1222,
+              1250,
+              1304,
+              1542,
+              1531,
+              1232,
+              1304,
+              1795,
+              1158,
+              1185,
+              1422,
+              1183,
+              1218,
+              1270,
+              1844,
+              1378,
+              1179,
+              1347,
+              1217,
+              1216,
+              1210,
+              1265,
+              1374,
+              1128,
+              1164,
+              1200,
+              1101,
+              1216,
+              1461,
+              1326,
+              1371,
+              1521,
+              1200,
+              1275,
+              1252,
+              1172,
+              1325,
+              1484,
+              1211,
+              1365,
+              1282,
+              1230,
+              2263,
+              1377,
+              1139,
+              1293,
+              1201
+            ]
+          },
+          "decode": {
+            "samples": 100,
+            "meanMicroseconds": 5781.35,
+            "p50Microseconds": 5737,
+            "p95Microseconds": 7461,
+            "minMicroseconds": 4108,
+            "maxMicroseconds": 8098,
+            "rawMicroseconds": [
+              4546,
+              4724,
+              5161,
+              4810,
+              5700,
+              4165,
+              4385,
+              4323,
+              4989,
+              4852,
+              6397,
+              6704,
+              5788,
+              4891,
+              6088,
+              4607,
+              4817,
+              6887,
+              6794,
+              6276,
+              4806,
+              5735,
+              6957,
+              4948,
+              5150,
+              7073,
+              6321,
+              6323,
+              6476,
+              5384,
+              6855,
+              5094,
+              5734,
+              5936,
+              5845,
+              5142,
+              7592,
+              6972,
+              4712,
+              5468,
+              7512,
+              5892,
+              4992,
+              5692,
+              7461,
+              5738,
+              5121,
+              5553,
+              5727,
+              4861,
+              5808,
+              6531,
+              6315,
+              4741,
+              5185,
+              5223,
+              5987,
+              5903,
+              6115,
+              6062,
+              6576,
+              6272,
+              5190,
+              5344,
+              5262,
+              5263,
+              5349,
+              5913,
+              5157,
+              5495,
+              5928,
+              5202,
+              5438,
+              6412,
+              6606,
+              5000,
+              4108,
+              7032,
+              7468,
+              5771,
+              6352,
+              6723,
+              6065,
+              5806,
+              5218,
+              5376,
+              6432,
+              5205,
+              5737,
+              6210,
+              5858,
+              5034,
+              5992,
+              8098,
+              7792,
+              6427,
+              6050,
+              5359,
+              6174,
+              5595
+            ]
+          },
+          "validate": {
+            "samples": 100,
+            "meanMicroseconds": 8253.17,
+            "p50Microseconds": 8014,
+            "p95Microseconds": 11332,
+            "minMicroseconds": 6029,
+            "maxMicroseconds": 13675,
+            "rawMicroseconds": [
+              6649,
+              6763,
+              6029,
+              6894,
+              7032,
+              7137,
+              7456,
+              7418,
+              7093,
+              6926,
+              8074,
+              9427,
+              7091,
+              7153,
+              8445,
+              7930,
+              7360,
+              10630,
+              10414,
+              8973,
+              8738,
+              7227,
+              8014,
+              9400,
+              7663,
+              7049,
+              6413,
+              7203,
+              9527,
+              9211,
+              10678,
+              8613,
+              7002,
+              9573,
+              8264,
+              8563,
+              9385,
+              9305,
+              7768,
+              9124,
+              8490,
+              8431,
+              8021,
+              8187,
+              6649,
+              7180,
+              6711,
+              9551,
+              8105,
+              8697,
+              7938,
+              6987,
+              7846,
+              7658,
+              7268,
+              7513,
+              11423,
+              9102,
+              8726,
+              8100,
+              11332,
+              8258,
+              8399,
+              6769,
+              8896,
+              7599,
+              11339,
+              13675,
+              7504,
+              9853,
+              6926,
+              11846,
+              8113,
+              7006,
+              7241,
+              8281,
+              6796,
+              6965,
+              7015,
+              6535,
+              6763,
+              11695,
+              8434,
+              7164,
+              7008,
+              8925,
+              8228,
+              10362,
+              8933,
+              7504,
+              10417,
+              10534,
+              8822,
+              9306,
+              7204,
+              7753,
+              9167,
+              6466,
+              6930,
+              7157
+            ]
+          },
+          "validate_encode": {
+            "samples": 100,
+            "meanMicroseconds": 12435.31,
+            "p50Microseconds": 12034,
+            "p95Microseconds": 16169,
+            "minMicroseconds": 10066,
+            "maxMicroseconds": 19407,
+            "rawMicroseconds": [
+              10299,
+              10084,
+              11956,
+              10237,
+              10760,
+              10309,
+              10619,
+              10142,
+              10447,
+              11137,
+              11007,
+              12080,
+              11776,
+              11431,
+              13083,
+              12034,
+              16169,
+              11385,
+              11453,
+              14986,
+              10066,
+              10301,
+              11199,
+              10278,
+              12388,
+              12647,
+              10994,
+              17580,
+              12466,
+              10067,
+              14323,
+              14424,
+              13828,
+              14238,
+              14157,
+              12215,
+              14209,
+              10977,
+              13741,
+              12394,
+              12605,
+              12197,
+              16036,
+              11392,
+              11987,
+              13677,
+              14071,
+              13629,
+              10812,
+              11354,
+              11070,
+              11625,
+              11062,
+              14040,
+              12161,
+              11885,
+              12123,
+              11780,
+              11819,
+              12102,
+              17051,
+              11396,
+              12550,
+              11446,
+              11342,
+              12791,
+              11234,
+              13056,
+              11155,
+              14175,
+              14041,
+              12414,
+              11717,
+              11212,
+              11581,
+              12004,
+              10596,
+              11552,
+              13266,
+              12460,
+              12978,
+              16693,
+              16382,
+              12419,
+              13761,
+              11496,
+              12800,
+              14347,
+              10917,
+              11265,
+              13774,
+              10775,
+              12142,
+              12052,
+              11266,
+              19407,
+              14601,
+              10339,
+              13652,
+              14113
+            ]
+          }
+        },
+        "meanCostDifferencesMicroseconds": {
+          "decodeMinusGet": 4475.66,
+          "validationBeyondDecode": 2471.8199999999997,
+          "encodeBeyondValidate": 4182.139999999999
+        },
+        "limitations": "Difference of means is cost attribution, not per-request queue time or formal API P95. Includes control/common setup; no SET write/data/SQL/publication protocol measured."
+      },
+      "6000": {
+        "ledgerBytes": 2664039,
+        "ledgerMemoryUsageBytes": 3145784,
+        "serverExecution": {
+          "get": {
+            "samples": 100,
+            "meanMicroseconds": 3916.25,
+            "p50Microseconds": 3803,
+            "p95Microseconds": 4452,
+            "minMicroseconds": 3474,
+            "maxMicroseconds": 5629,
+            "rawMicroseconds": [
+              4184,
+              3755,
+              3708,
+              3632,
+              3762,
+              3578,
+              3803,
+              5629,
+              4106,
+              3850,
+              3826,
+              4166,
+              3709,
+              3596,
+              4588,
+              4452,
+              3748,
+              3970,
+              3600,
+              3572,
+              3713,
+              3581,
+              3558,
+              3733,
+              4187,
+              3839,
+              4026,
+              3751,
+              3698,
+              3800,
+              4305,
+              3612,
+              3562,
+              3534,
+              3707,
+              4183,
+              3931,
+              4143,
+              3885,
+              3939,
+              4331,
+              3770,
+              4171,
+              3638,
+              3697,
+              3829,
+              3670,
+              3639,
+              3719,
+              3866,
+              3811,
+              3790,
+              3540,
+              3803,
+              3662,
+              3962,
+              3785,
+              4206,
+              3972,
+              3785,
+              3905,
+              3714,
+              3765,
+              4090,
+              3491,
+              3747,
+              3992,
+              5582,
+              3698,
+              4027,
+              3708,
+              5153,
+              4238,
+              3874,
+              3925,
+              3834,
+              3915,
+              3872,
+              3617,
+              3632,
+              4203,
+              3621,
+              4256,
+              4068,
+              3965,
+              3733,
+              4217,
+              4150,
+              3474,
+              3633,
+              4285,
+              3987,
+              3733,
+              3770,
+              4018,
+              4953,
+              3687,
+              3678,
+              4303,
+              3545
+            ]
+          },
+          "decode": {
+            "samples": 100,
+            "meanMicroseconds": 18184.75,
+            "p50Microseconds": 17660,
+            "p95Microseconds": 22515,
+            "minMicroseconds": 14746,
+            "maxMicroseconds": 25541,
+            "rawMicroseconds": [
+              16948,
+              20233,
+              22550,
+              15397,
+              19130,
+              16786,
+              21230,
+              24699,
+              18165,
+              18391,
+              20328,
+              25541,
+              15930,
+              16842,
+              15208,
+              17354,
+              17236,
+              16727,
+              21337,
+              19282,
+              23620,
+              15756,
+              17499,
+              16213,
+              18442,
+              16254,
+              18188,
+              18831,
+              15382,
+              16463,
+              16097,
+              17660,
+              15986,
+              17837,
+              16240,
+              16526,
+              18961,
+              17287,
+              20178,
+              20404,
+              17278,
+              16266,
+              17723,
+              17805,
+              16239,
+              15829,
+              18704,
+              16328,
+              15474,
+              18372,
+              20672,
+              18599,
+              16654,
+              17335,
+              20738,
+              16958,
+              16696,
+              19754,
+              21694,
+              22515,
+              18937,
+              16686,
+              17099,
+              21843,
+              16364,
+              15790,
+              18362,
+              19215,
+              17479,
+              20308,
+              14746,
+              16233,
+              16455,
+              17200,
+              21229,
+              19121,
+              19071,
+              19003,
+              18453,
+              18356,
+              16102,
+              17410,
+              18414,
+              18472,
+              16864,
+              19172,
+              18552,
+              18469,
+              16295,
+              17317,
+              16908,
+              21204,
+              19736,
+              16657,
+              16034,
+              22954,
+              18638,
+              14859,
+              21211,
+              16486
+            ]
+          },
+          "validate": {
+            "samples": 100,
+            "meanMicroseconds": 26784.09,
+            "p50Microseconds": 25598,
+            "p95Microseconds": 33810,
+            "minMicroseconds": 21628,
+            "maxMicroseconds": 51851,
+            "rawMicroseconds": [
+              25907,
+              27436,
+              27520,
+              24804,
+              23591,
+              33810,
+              28559,
+              51851,
+              35420,
+              28236,
+              30683,
+              29093,
+              21628,
+              26421,
+              23482,
+              26970,
+              28111,
+              24255,
+              25274,
+              27944,
+              21882,
+              25460,
+              25598,
+              27351,
+              28015,
+              23946,
+              23757,
+              21843,
+              24100,
+              23409,
+              21796,
+              30011,
+              24604,
+              25187,
+              22142,
+              28948,
+              24331,
+              34550,
+              27960,
+              27448,
+              33783,
+              40225,
+              29348,
+              24345,
+              28512,
+              25489,
+              25082,
+              26643,
+              26324,
+              24149,
+              23721,
+              23147,
+              24370,
+              24864,
+              24613,
+              29044,
+              26007,
+              41274,
+              31098,
+              23492,
+              25629,
+              27571,
+              24709,
+              29489,
+              25128,
+              25457,
+              24271,
+              23335,
+              27824,
+              30292,
+              27437,
+              24438,
+              28623,
+              23379,
+              24775,
+              25782,
+              28046,
+              22328,
+              22618,
+              24369,
+              24967,
+              24000,
+              24608,
+              29296,
+              24347,
+              25407,
+              27533,
+              23485,
+              26051,
+              25139,
+              30709,
+              22111,
+              24604,
+              26026,
+              33590,
+              30601,
+              26540,
+              23272,
+              25853,
+              25907
+            ]
+          },
+          "validate_encode": {
+            "samples": 100,
+            "meanMicroseconds": 39725.96,
+            "p50Microseconds": 38808,
+            "p95Microseconds": 46083,
+            "minMicroseconds": 33417,
+            "maxMicroseconds": 58749,
+            "rawMicroseconds": [
+              40307,
+              41100,
+              45791,
+              37378,
+              39223,
+              41678,
+              38571,
+              45422,
+              48612,
+              50165,
+              43132,
+              50986,
+              39662,
+              41682,
+              40411,
+              36266,
+              41440,
+              40672,
+              42047,
+              40535,
+              36077,
+              37887,
+              39267,
+              37430,
+              39331,
+              34974,
+              33417,
+              37592,
+              36561,
+              39627,
+              44353,
+              34319,
+              34322,
+              36206,
+              36648,
+              39660,
+              40367,
+              42943,
+              46544,
+              45080,
+              43715,
+              38382,
+              39665,
+              39006,
+              36198,
+              39773,
+              45238,
+              37282,
+              41289,
+              39647,
+              34443,
+              37881,
+              38272,
+              36826,
+              39371,
+              36364,
+              40933,
+              58749,
+              37878,
+              38177,
+              42913,
+              42332,
+              35956,
+              35216,
+              46083,
+              45310,
+              36747,
+              42782,
+              42959,
+              42868,
+              35841,
+              41556,
+              37313,
+              37958,
+              39429,
+              36619,
+              36879,
+              38014,
+              34974,
+              37451,
+              38339,
+              38552,
+              38244,
+              37988,
+              39925,
+              37140,
+              39172,
+              36882,
+              41705,
+              39764,
+              37909,
+              38294,
+              36153,
+              37796,
+              38366,
+              37155,
+              37157,
+              40817,
+              36456,
+              38808
+            ]
+          }
+        },
+        "meanCostDifferencesMicroseconds": {
+          "decodeMinusGet": 14268.5,
+          "validationBeyondDecode": 8599.34,
+          "encodeBeyondValidate": 12941.869999999999
+        },
+        "limitations": "Difference of means is cost attribution, not per-request queue time or formal API P95. Includes control/common setup; no SET write/data/SQL/publication protocol measured."
+      },
+      "6656": {
+        "ledgerBytes": 2955303,
+        "ledgerMemoryUsageBytes": 3145784,
+        "serverExecution": {
+          "get": {
+            "samples": 100,
+            "meanMicroseconds": 4419.06,
+            "p50Microseconds": 4267,
+            "p95Microseconds": 5276,
+            "minMicroseconds": 3768,
+            "maxMicroseconds": 8306,
+            "rawMicroseconds": [
+              4149,
+              4083,
+              4309,
+              4611,
+              4484,
+              4849,
+              3858,
+              4184,
+              4134,
+              4004,
+              4023,
+              4483,
+              4266,
+              3928,
+              5404,
+              7462,
+              4294,
+              4269,
+              4147,
+              4686,
+              4876,
+              4168,
+              4479,
+              4051,
+              4101,
+              4530,
+              4418,
+              4184,
+              4567,
+              4242,
+              5276,
+              4296,
+              4281,
+              4423,
+              4357,
+              4025,
+              4451,
+              4267,
+              4180,
+              4254,
+              4291,
+              4010,
+              4268,
+              8306,
+              4245,
+              4276,
+              3841,
+              4309,
+              3768,
+              4317,
+              3945,
+              4007,
+              3805,
+              4123,
+              5503,
+              4444,
+              5265,
+              4149,
+              4031,
+              3923,
+              4343,
+              3844,
+              4202,
+              3931,
+              4223,
+              3939,
+              4189,
+              4161,
+              4298,
+              7594,
+              4821,
+              4285,
+              4824,
+              4353,
+              4928,
+              4396,
+              4178,
+              4591,
+              4639,
+              4124,
+              4398,
+              4450,
+              4090,
+              4191,
+              4907,
+              5010,
+              4037,
+              3902,
+              4196,
+              4162,
+              3964,
+              4909,
+              4393,
+              4015,
+              4300,
+              3980,
+              4140,
+              4100,
+              4382,
+              4638
+            ]
+          },
+          "decode": {
+            "samples": 100,
+            "meanMicroseconds": 20449.8,
+            "p50Microseconds": 20118,
+            "p95Microseconds": 24836,
+            "minMicroseconds": 15763,
+            "maxMicroseconds": 35641,
+            "rawMicroseconds": [
+              21931,
+              18242,
+              20509,
+              20074,
+              21020,
+              23192,
+              19740,
+              21855,
+              18900,
+              17568,
+              18621,
+              18111,
+              21787,
+              19956,
+              19417,
+              20118,
+              22396,
+              18722,
+              21367,
+              21618,
+              22095,
+              17639,
+              20342,
+              22261,
+              22898,
+              24473,
+              20922,
+              18912,
+              20417,
+              21789,
+              18034,
+              20873,
+              19103,
+              23357,
+              18635,
+              28159,
+              19322,
+              16796,
+              19927,
+              20374,
+              17181,
+              17825,
+              24836,
+              21128,
+              24111,
+              18685,
+              15763,
+              16992,
+              25621,
+              17766,
+              16070,
+              21131,
+              18581,
+              20833,
+              18607,
+              19171,
+              16968,
+              20222,
+              18336,
+              20952,
+              17518,
+              20176,
+              20032,
+              19171,
+              18930,
+              16397,
+              17848,
+              22973,
+              24013,
+              21046,
+              20167,
+              17628,
+              20253,
+              18829,
+              18200,
+              24411,
+              35641,
+              26178,
+              23106,
+              17561,
+              19619,
+              23140,
+              20548,
+              17281,
+              22434,
+              20589,
+              26464,
+              18842,
+              22596,
+              19784,
+              19284,
+              23416,
+              20525,
+              19653,
+              19555,
+              20810,
+              20663,
+              17159,
+              20944,
+              19345
+            ]
+          },
+          "validate": {
+            "samples": 100,
+            "meanMicroseconds": 29759.72,
+            "p50Microseconds": 28881,
+            "p95Microseconds": 38238,
+            "minMicroseconds": 23604,
+            "maxMicroseconds": 55014,
+            "rawMicroseconds": [
+              25342,
+              31789,
+              31591,
+              30664,
+              28428,
+              28801,
+              33261,
+              28598,
+              28308,
+              37152,
+              25110,
+              30128,
+              26799,
+              25478,
+              27218,
+              26624,
+              29132,
+              29703,
+              28177,
+              30562,
+              29072,
+              33956,
+              25196,
+              31825,
+              28244,
+              38238,
+              36923,
+              35749,
+              27107,
+              25236,
+              29281,
+              30151,
+              25341,
+              26718,
+              39067,
+              32760,
+              36364,
+              29241,
+              27407,
+              28302,
+              27710,
+              30635,
+              55014,
+              34099,
+              32990,
+              32007,
+              32007,
+              25427,
+              29009,
+              23635,
+              23892,
+              25725,
+              24120,
+              24952,
+              31604,
+              32751,
+              29501,
+              24839,
+              24844,
+              26640,
+              23844,
+              31036,
+              25464,
+              32291,
+              34540,
+              30425,
+              31000,
+              32538,
+              28516,
+              26857,
+              28531,
+              42333,
+              30593,
+              25849,
+              27953,
+              32665,
+              32785,
+              29311,
+              24396,
+              26977,
+              39186,
+              27035,
+              28680,
+              27973,
+              39807,
+              26299,
+              30728,
+              26209,
+              23604,
+              25900,
+              25330,
+              25211,
+              29023,
+              28805,
+              34297,
+              30773,
+              26389,
+              30143,
+              28881,
+              33351
+            ]
+          },
+          "validate_encode": {
+            "samples": 100,
+            "meanMicroseconds": 43976.52,
+            "p50Microseconds": 42584,
+            "p95Microseconds": 53284,
+            "minMicroseconds": 36487,
+            "maxMicroseconds": 58134,
+            "rawMicroseconds": [
+              56130,
+              51492,
+              48522,
+              45001,
+              44312,
+              43207,
+              43743,
+              42563,
+              45562,
+              43625,
+              42584,
+              41963,
+              39328,
+              40504,
+              38106,
+              39223,
+              43600,
+              49089,
+              42918,
+              42017,
+              40646,
+              40944,
+              45871,
+              42334,
+              53284,
+              50479,
+              48377,
+              41485,
+              42886,
+              40896,
+              40061,
+              43907,
+              45414,
+              45576,
+              48235,
+              43293,
+              44582,
+              49772,
+              41241,
+              39373,
+              40249,
+              42398,
+              40547,
+              55904,
+              51541,
+              50748,
+              39940,
+              40104,
+              37576,
+              42326,
+              36487,
+              39293,
+              42608,
+              42782,
+              39656,
+              39573,
+              40518,
+              44039,
+              42968,
+              39412,
+              40419,
+              42127,
+              37408,
+              41643,
+              45696,
+              48364,
+              41316,
+              52319,
+              44183,
+              43182,
+              41108,
+              49342,
+              47904,
+              47454,
+              45396,
+              58134,
+              41784,
+              47804,
+              42926,
+              56309,
+              41624,
+              41453,
+              40504,
+              53965,
+              47454,
+              41903,
+              39865,
+              50170,
+              37864,
+              41117,
+              38799,
+              41231,
+              40638,
+              41350,
+              46577,
+              41572,
+              42019,
+              40491,
+              44108,
+              49316
+            ]
+          }
+        },
+        "meanCostDifferencesMicroseconds": {
+          "decodeMinusGet": 16030.739999999998,
+          "validationBeyondDecode": 9309.920000000002,
+          "encodeBeyondValidate": 14216.799999999996
+        },
+        "limitations": "Difference of means is cost attribution, not per-request queue time or formal API P95. Includes control/common setup; no SET write/data/SQL/publication protocol measured."
+      }
+    },
+    "hostPressurePolicy": "After all foreground performance and functional pressure; separate Redis while sparse real-time fixtures continue"
+  },
+  "remainingMeasurementLimitations": [
+    "Compatibility creation paths did not cross IP/process roles; steady did",
+    "Steady crossover rewarm creates 30/60/90 more snapshots by the three creation-path endpoints; no cross-mode causal claim from absolute HTTP times",
+    "SLOWLOG is threshold-truncated; diagnostic client and SQL residual are not pure server or queue attribution"
+  ],
+  "safetyProofStatus": "DESIGN_REVIEW_COMPLETE_PRODUCT_FORMAT_NOT_IMPLEMENTED_OR_VERIFIED",
+  "crossoverTimingAnalysis": {
+    "scope": "DIAGNOSTIC_CROSSOVER_NOT_ACCEPTANCE",
+    "apiBinarySHA256": "3d426de3d6fbb0c15a80c200ba79019412d13c056075dd1d821219fc04a027bc",
+    "sourceDigest": "88d944307b5dc05a8cdc9ce3af859f6256acb906a28be0e7968a40042c933618",
+    "stats": {
+      "initial": {
+        "postgres": {
+          "samples": 100,
+          "p50Ms": 275.515635,
+          "p95Ms": 601.758508,
+          "p99Ms": 665.893192,
+          "meanMs": 337.79614283
+        },
+        "redis": {
+          "samples": 100,
+          "p50Ms": 311.240716,
+          "p95Ms": 633.372388,
+          "p99Ms": 695.74952,
+          "meanMs": 361.52746836
+        },
+        "p95RegressionPercent": 5.253582555080394,
+        "result": "FAIL",
+        "snapshotRedisCommandStats": {
+          "before": {
+            "cmdstat_eval": {
+              "calls": 2.0,
+              "usec": 529.0,
+              "usec_per_call": 264.5,
+              "rejected_calls": 0.0,
+              "failed_calls": 0.0
+            },
+            "cmdstat_evalsha": {
+              "calls": 2063.0,
+              "usec": 6601846.0,
+              "usec_per_call": 3200.12,
+              "rejected_calls": 0.0,
+              "failed_calls": 2.0
+            }
+          },
+          "after": {
+            "cmdstat_eval": {
+              "calls": 2.0,
+              "usec": 529.0,
+              "usec_per_call": 264.5,
+              "rejected_calls": 0.0,
+              "failed_calls": 0.0
+            },
+            "cmdstat_evalsha": {
+              "calls": 2441.0,
+              "usec": 8858972.0,
+              "usec_per_call": 3629.24,
+              "rejected_calls": 0.0,
+              "failed_calls": 2.0
+            }
+          }
+        },
+        "occupancyAfter": {
+          "redisEntries": 1146,
+          "postgresSnapshots": 121
+        }
+      },
+      "continuation": {
+        "postgres": {
+          "samples": 100,
+          "p50Ms": 289.549833,
+          "p95Ms": 651.473492,
+          "p99Ms": 802.552837,
+          "meanMs": 355.85662366
+        },
+        "redis": {
+          "samples": 100,
+          "p50Ms": 282.768427,
+          "p95Ms": 627.275123,
+          "p99Ms": 685.616618,
+          "meanMs": 343.28999592
+        },
+        "p95RegressionPercent": -3.714405773550644,
+        "result": "PASS",
+        "snapshotRedisCommandStats": {
+          "before": {
+            "cmdstat_eval": {
+              "calls": 2.0,
+              "usec": 529.0,
+              "usec_per_call": 264.5,
+              "rejected_calls": 0.0,
+              "failed_calls": 0.0
+            },
+            "cmdstat_evalsha": {
+              "calls": 2441.0,
+              "usec": 8858972.0,
+              "usec_per_call": 3629.24,
+              "rejected_calls": 0.0,
+              "failed_calls": 2.0
+            }
+          },
+          "after": {
+            "cmdstat_eval": {
+              "calls": 2.0,
+              "usec": 529.0,
+              "usec_per_call": 264.5,
+              "rejected_calls": 0.0,
+              "failed_calls": 0.0
+            },
+            "cmdstat_evalsha": {
+              "calls": 2581.0,
+              "usec": 8968206.0,
+              "usec_per_call": 3474.7,
+              "rejected_calls": 0.0,
+              "failed_calls": 2.0
+            }
+          }
+        },
+        "occupancyAfter": {
+          "redisEntries": 1146,
+          "postgresSnapshots": 121
+        }
+      },
+      "replyPreview": {
+        "postgres": {
+          "samples": 100,
+          "p50Ms": 224.70651,
+          "p95Ms": 597.138038,
+          "p99Ms": 627.992297,
+          "meanMs": 283.62357578
+        },
+        "redis": {
+          "samples": 100,
+          "p50Ms": 263.034668,
+          "p95Ms": 587.511341,
+          "p99Ms": 629.727566,
+          "meanMs": 313.85310651
+        },
+        "p95RegressionPercent": -1.6121393023701525,
+        "result": "PASS",
+        "snapshotRedisCommandStats": {
+          "before": {
+            "cmdstat_eval": {
+              "calls": 2.0,
+              "usec": 529.0,
+              "usec_per_call": 264.5,
+              "rejected_calls": 0.0,
+              "failed_calls": 0.0
+            },
+            "cmdstat_evalsha": {
+              "calls": 2581.0,
+              "usec": 8968206.0,
+              "usec_per_call": 3474.7,
+              "rejected_calls": 0.0,
+              "failed_calls": 2.0
+            }
+          },
+          "after": {
+            "cmdstat_eval": {
+              "calls": 2.0,
+              "usec": 529.0,
+              "usec_per_call": 264.5,
+              "rejected_calls": 0.0,
+              "failed_calls": 0.0
+            },
+            "cmdstat_evalsha": {
+              "calls": 2959.0,
+              "usec": 11479688.0,
+              "usec_per_call": 3879.58,
+              "rejected_calls": 0.0,
+              "failed_calls": 2.0
+            }
+          }
+        },
+        "occupancyAfter": {
+          "redisEntries": 1266,
+          "postgresSnapshots": 241
+        }
+      },
+      "replyExpanded": {
+        "postgres": {
+          "samples": 100,
+          "p50Ms": 295.218252,
+          "p95Ms": 578.691666,
+          "p99Ms": 973.62579,
+          "meanMs": 342.56347879
+        },
+        "redis": {
+          "samples": 100,
+          "p50Ms": 300.040837,
+          "p95Ms": 541.675296,
+          "p99Ms": 653.169791,
+          "meanMs": 337.50295899
+        },
+        "p95RegressionPercent": -6.396561791854117,
+        "result": "PASS",
+        "snapshotRedisCommandStats": {
+          "before": {
+            "cmdstat_eval": {
+              "calls": 2.0,
+              "usec": 529.0,
+              "usec_per_call": 264.5,
+              "rejected_calls": 0.0,
+              "failed_calls": 0.0
+            },
+            "cmdstat_evalsha": {
+              "calls": 2959.0,
+              "usec": 11479688.0,
+              "usec_per_call": 3879.58,
+              "rejected_calls": 0.0,
+              "failed_calls": 2.0
+            }
+          },
+          "after": {
+            "cmdstat_eval": {
+              "calls": 2.0,
+              "usec": 529.0,
+              "usec_per_call": 264.5,
+              "rejected_calls": 0.0,
+              "failed_calls": 0.0
+            },
+            "cmdstat_evalsha": {
+              "calls": 3337.0,
+              "usec": 14208723.0,
+              "usec_per_call": 4257.93,
+              "rejected_calls": 0.0,
+              "failed_calls": 2.0
+            }
+          }
+        },
+        "occupancyAfter": {
+          "redisEntries": 1386,
+          "postgresSnapshots": 361
+        }
+      }
+    },
+    "cases": {
+      "initial": {
+        "halves": {
+          "postgres/generation1": {
+            "samples": 50,
+            "ip": "127.0.0.8",
+            "meanMilliseconds": {
+              "http": 338.04057834,
+              "outsideObservedCommunity": 157.76060908,
+              "transaction": 180.2659905,
+              "redisInTransaction": 4.41849882,
+              "sqlGateProjection": 175.84749168,
+              "publish": 0.0,
+              "communityTotal": 180.27996926
+            }
+          },
+          "postgres/generation2": {
+            "samples": 50,
+            "ip": "127.0.0.9",
+            "meanMilliseconds": {
+              "http": 337.55170732,
+              "outsideObservedCommunity": 161.86423462,
+              "transaction": 175.6721051,
+              "redisInTransaction": 4.80891772,
+              "sqlGateProjection": 170.86318738,
+              "publish": 0.0,
+              "communityTotal": 175.6874727
+            }
+          },
+          "redis/generation1": {
+            "samples": 50,
+            "ip": "127.0.0.9",
+            "meanMilliseconds": {
+              "http": 345.09704014,
+              "outsideObservedCommunity": 161.9193089,
+              "transaction": 176.16406994,
+              "redisInTransaction": 6.84919452,
+              "sqlGateProjection": 169.31487542,
+              "publish": 7.00138772,
+              "communityTotal": 183.17773124
+            }
+          },
+          "redis/generation2": {
+            "samples": 50,
+            "ip": "127.0.0.8",
+            "meanMilliseconds": {
+              "http": 377.95789658,
+              "outsideObservedCommunity": 172.2370723,
+              "transaction": 198.34464992,
+              "redisInTransaction": 7.27689044,
+              "sqlGateProjection": 191.06775948,
+              "publish": 7.3633431,
+              "communityTotal": 205.72082428
+            }
+          }
+        },
+        "meanByBackendMilliseconds": {
+          "postgres": {
+            "http": 337.79614283,
+            "outsideObservedCommunity": 159.81242185,
+            "transaction": 177.9690478,
+            "redisInTransaction": 4.61370827,
+            "sqlGateProjection": 173.35533953,
+            "publish": 0.0,
+            "communityTotal": 177.98372098
+          },
+          "redis": {
+            "http": 361.52746836,
+            "outsideObservedCommunity": 167.0781906,
+            "transaction": 187.25435993,
+            "redisInTransaction": 7.06304248,
+            "sqlGateProjection": 180.19131745,
+            "publish": 7.18236541,
+            "communityTotal": 194.44927776
+          }
+        },
+        "redisMinusPostgresMeanMilliseconds": {
+          "http": 23.731325529999992,
+          "outsideObservedCommunity": 7.2657687500000065,
+          "transaction": 9.285312129999994,
+          "redisInTransaction": 2.44933421,
+          "sqlGateProjection": 6.835977920000005,
+          "publish": 7.18236541,
+          "communityTotal": 16.465556780000014
+        },
+        "matchedTimingSamples": 200
+      },
+      "continuation": {
+        "halves": {
+          "postgres/generation2": {
+            "samples": 50,
+            "ip": "127.0.0.8",
+            "meanMilliseconds": {
+              "http": 346.67509766,
+              "outsideObservedCommunity": 168.67182334,
+              "transaction": 177.98993998,
+              "redisInTransaction": 0.0,
+              "sqlGateProjection": 177.98993998,
+              "publish": 0.0,
+              "communityTotal": 178.00327432
+            }
+          },
+          "postgres/generation3": {
+            "samples": 50,
+            "ip": "127.0.0.9",
+            "meanMilliseconds": {
+              "http": 365.03814966,
+              "outsideObservedCommunity": 174.27128353999998,
+              "transaction": 190.75360706,
+              "redisInTransaction": 0.0,
+              "sqlGateProjection": 190.75360706,
+              "publish": 0.0,
+              "communityTotal": 190.76686612
+            }
+          },
+          "redis/generation2": {
+            "samples": 50,
+            "ip": "127.0.0.8",
+            "meanMilliseconds": {
+              "http": 345.93659302,
+              "outsideObservedCommunity": 162.06886681999998,
+              "transaction": 183.85005292,
+              "redisInTransaction": 0.259639,
+              "sqlGateProjection": 183.59041392,
+              "publish": 0.0,
+              "communityTotal": 183.8677262
+            }
+          },
+          "redis/generation3": {
+            "samples": 50,
+            "ip": "127.0.0.9",
+            "meanMilliseconds": {
+              "http": 340.64339882,
+              "outsideObservedCommunity": 167.39611814,
+              "transaction": 173.23344582,
+              "redisInTransaction": 0.26431276,
+              "sqlGateProjection": 172.96913306,
+              "publish": 0.0,
+              "communityTotal": 173.24728068
+            }
+          }
+        },
+        "meanByBackendMilliseconds": {
+          "postgres": {
+            "http": 355.85662366,
+            "outsideObservedCommunity": 171.47155344,
+            "transaction": 184.37177352,
+            "redisInTransaction": 0.0,
+            "sqlGateProjection": 184.37177352,
+            "publish": 0.0,
+            "communityTotal": 184.38507022
+          },
+          "redis": {
+            "http": 343.28999592,
+            "outsideObservedCommunity": 164.73249248,
+            "transaction": 178.54174937,
+            "redisInTransaction": 0.26197588,
+            "sqlGateProjection": 178.27977349,
+            "publish": 0.0,
+            "communityTotal": 178.55750344
+          }
+        },
+        "redisMinusPostgresMeanMilliseconds": {
+          "http": -12.566627740000001,
+          "outsideObservedCommunity": -6.7390609600000175,
+          "transaction": -5.830024150000014,
+          "redisInTransaction": 0.26197588,
+          "sqlGateProjection": -6.092000030000008,
+          "publish": 0.0,
+          "communityTotal": -5.827566779999984
+        },
+        "matchedTimingSamples": 200
+      },
+      "replyPreview": {
+        "halves": {
+          "postgres/generation3": {
+            "samples": 50,
+            "ip": "127.0.0.8",
+            "meanMilliseconds": {
+              "http": 269.28416556,
+              "outsideObservedCommunity": 152.2616978,
+              "transaction": 117.00840062,
+              "redisInTransaction": 5.00327026,
+              "sqlGateProjection": 112.00513036,
+              "publish": 0.0,
+              "communityTotal": 117.02246776
+            }
+          },
+          "postgres/generation4": {
+            "samples": 50,
+            "ip": "127.0.0.9",
+            "meanMilliseconds": {
+              "http": 297.962986,
+              "outsideObservedCommunity": 172.92730988,
+              "transaction": 125.02247968,
+              "redisInTransaction": 5.32874516,
+              "sqlGateProjection": 119.69373452,
+              "publish": 0.0,
+              "communityTotal": 125.03567612
+            }
+          },
+          "redis/generation3": {
+            "samples": 50,
+            "ip": "127.0.0.9",
+            "meanMilliseconds": {
+              "http": 307.91207556,
+              "outsideObservedCommunity": 162.13484712,
+              "transaction": 138.06619750000002,
+              "redisInTransaction": 7.58731788,
+              "sqlGateProjection": 130.47887962,
+              "publish": 7.69872906,
+              "communityTotal": 145.77722844
+            }
+          },
+          "redis/generation4": {
+            "samples": 50,
+            "ip": "127.0.0.8",
+            "meanMilliseconds": {
+              "http": 319.79413746,
+              "outsideObservedCommunity": 173.37414068,
+              "transaction": 138.25686576,
+              "redisInTransaction": 8.30071324,
+              "sqlGateProjection": 129.95615252,
+              "publish": 8.15018084,
+              "communityTotal": 146.41999678
+            }
+          }
+        },
+        "meanByBackendMilliseconds": {
+          "postgres": {
+            "http": 283.62357578,
+            "outsideObservedCommunity": 162.59450384,
+            "transaction": 121.01544015,
+            "redisInTransaction": 5.16600771,
+            "sqlGateProjection": 115.84943244,
+            "publish": 0.0,
+            "communityTotal": 121.02907194
+          },
+          "redis": {
+            "http": 313.85310651,
+            "outsideObservedCommunity": 167.7544939,
+            "transaction": 138.16153163,
+            "redisInTransaction": 7.94401556,
+            "sqlGateProjection": 130.21751607,
+            "publish": 7.92445495,
+            "communityTotal": 146.09861261
+          }
+        },
+        "redisMinusPostgresMeanMilliseconds": {
+          "http": 30.229530729999965,
+          "outsideObservedCommunity": 5.159990060000013,
+          "transaction": 17.14609148000001,
+          "redisInTransaction": 2.7780078500000007,
+          "sqlGateProjection": 14.368083629999987,
+          "publish": 7.92445495,
+          "communityTotal": 25.06954067000001
+        },
+        "matchedTimingSamples": 200
+      },
+      "replyExpanded": {
+        "halves": {
+          "postgres/generation4": {
+            "samples": 50,
+            "ip": "127.0.0.9",
+            "meanMilliseconds": {
+              "http": 349.96358558000003,
+              "outsideObservedCommunity": 182.98577494,
+              "transaction": 166.96276154,
+              "redisInTransaction": 5.50698584,
+              "sqlGateProjection": 161.4557757,
+              "publish": 0.0,
+              "communityTotal": 166.97781064
+            }
+          },
+          "postgres/generation5": {
+            "samples": 50,
+            "ip": "127.0.0.8",
+            "meanMilliseconds": {
+              "http": 335.163372,
+              "outsideObservedCommunity": 151.18804448,
+              "transaction": 183.96152974,
+              "redisInTransaction": 5.74135368,
+              "sqlGateProjection": 178.22017606,
+              "publish": 0.0,
+              "communityTotal": 183.97532752
+            }
+          },
+          "redis/generation4": {
+            "samples": 50,
+            "ip": "127.0.0.8",
+            "meanMilliseconds": {
+              "http": 337.53571036,
+              "outsideObservedCommunity": 169.30432987999998,
+              "transaction": 159.93254824,
+              "redisInTransaction": 8.51095018,
+              "sqlGateProjection": 151.42159806,
+              "publish": 8.28659984,
+              "communityTotal": 168.23138048
+            }
+          },
+          "redis/generation5": {
+            "samples": 50,
+            "ip": "127.0.0.9",
+            "meanMilliseconds": {
+              "http": 337.47020762,
+              "outsideObservedCommunity": 159.50940512,
+              "transaction": 169.18487978,
+              "redisInTransaction": 8.63816502,
+              "sqlGateProjection": 160.54671476,
+              "publish": 8.7635586,
+              "communityTotal": 177.9608025
+            }
+          }
+        },
+        "meanByBackendMilliseconds": {
+          "postgres": {
+            "http": 342.56347879,
+            "outsideObservedCommunity": 167.08690971000001,
+            "transaction": 175.46214564,
+            "redisInTransaction": 5.62416976,
+            "sqlGateProjection": 169.83797588,
+            "publish": 0.0,
+            "communityTotal": 175.47656908
+          },
+          "redis": {
+            "http": 337.50295899,
+            "outsideObservedCommunity": 164.4068675,
+            "transaction": 164.55871401,
+            "redisInTransaction": 8.5745576,
+            "sqlGateProjection": 155.98415641,
+            "publish": 8.52507922,
+            "communityTotal": 173.09609149
+          }
+        },
+        "redisMinusPostgresMeanMilliseconds": {
+          "http": -5.060519799999952,
+          "outsideObservedCommunity": -2.6800422100000105,
+          "transaction": -10.90343163,
+          "redisInTransaction": 2.9503878400000003,
+          "sqlGateProjection": -13.85381946999999,
+          "publish": 8.52507922,
+          "communityTotal": -2.380477589999998
+        },
+        "matchedTimingSamples": 200
+      }
+    },
+    "limits": "100 pairs/path, 50 per role half; lower and growing occupancy, extra timing logs and restart/rewarm. Not a formal retest or proof all tail variance is caused by role. Differences of means are not pure queue time."
+  },
+  "redis7StructCapability": {
+    "scope": "READ_ONLY_LIBRARY_CAPABILITY_NO_KEYS_OR_PRODUCT_FORMAT_WRITTEN",
+    "structType": "table",
+    "unpackType": "function",
+    "maxSafeUInt64BEHex": "001fffffffffffff",
+    "exactRoundTrip": "true",
+    "nextPosition": "9",
+    "recordedUnixSeconds": 1792909547.4117136,
+    "explicitAlignment1": true,
+    "headerSize": 68,
+    "recordSize": 206,
+    "offsetUnpackValue": 67108864,
+    "offsetUnpackNext": 6
+  },
+  "cleanupBoundModel": {
+    "scope": "ARITHMETIC_MODEL_FROM_SOURCE_NOT_INJECTED_NETWORK_OR_PRODUCT_FIX",
+    "cases": [
+      {
+        "entries": 6000,
+        "delBatches": 94,
+        "healthyDELResponseMilliseconds": 95,
+        "serialDELMilliseconds": 8930,
+        "serialBatchesBefore5Seconds": 52,
+        "releaseReached": false,
+        "nextRoundRestartsAtSameSortedPrefix": true,
+        "proposedDefault7WorkersConservativeMillisecondsIncludingDueReleaseAnd500msSlack": 2100
+      },
+      {
+        "entries": 6656,
+        "delBatches": 104,
+        "healthyDELResponseMilliseconds": 95,
+        "serialDELMilliseconds": 9880,
+        "serialBatchesBefore5Seconds": 52,
+        "releaseReached": false,
+        "nextRoundRestartsAtSameSortedPrefix": true,
+        "proposedDefault7WorkersConservativeMillisecondsIncludingDueReleaseAnd500msSlack": 2200
+      },
+      {
+        "entries": 8192,
+        "delBatches": 128,
+        "healthyDELResponseMilliseconds": 95,
+        "serialDELMilliseconds": 12160,
+        "serialBatchesBefore5Seconds": 52,
+        "releaseReached": false,
+        "nextRoundRestartsAtSameSortedPrefix": true,
+        "proposedDefault7WorkersConservativeMillisecondsIncludingDueReleaseAnd500msSlack": 2600
+      }
+    ]
+  },
+  "originalCampaignResultPreserved": "FAIL_COMPAT_PERFORMANCE_AND_GROWTH_HARNESS_AND_REDIS_TIME_HARNESS",
+  "sameBinaryGrowthRetry": "PASS_RETAINED_SEPARATELY",
+  "next": "Sol/high: fixed STRING codec, bounded DEL/config envelope, PG V1 emission bridge, time instrumentation; freeze and fully revalidate",
+  "productionSourceUnchangedDuringReview": true,
+  "stage5Complete": false,
+  "phase6Started": false,
+  "fixtureChangesOnly": [
+    "Reuse an existing exact-hash frozen executable; reject differing bytes",
+    "Correct future growth console wording; preserve prior printed history"
+  ],
+  "orchestratorNotification": {
+    "status": "FAILED_THREAD_NOT_FOUND_UI_RUNTIME_KERNEL_ASSETS_MISSING",
+    "target": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "title": "评论分页 Redis 迁移指挥",
+    "attempts": 3,
+    "explicitLocalHostTried": true,
+    "readThreadSucceeded": true,
+    "reopenedOriginalThread": true,
+    "sendError": "thread not found",
+    "uiFallback": "failed to write kernel assets: The system cannot find the path specified. (os error 3)",
+    "uiResetRetried": true
+  }
+}

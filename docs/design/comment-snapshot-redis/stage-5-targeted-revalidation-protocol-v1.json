@@ -1,0 +1,39 @@
+{
+  "task":"COMMENT-SNAPSHOT-REDIS-01",
+  "date":"2026-10-26",
+  "scope":"Stage5 targeted fixture and observation correction; not phase6",
+  "transportExperiment":{
+    "blocks":[false,true,true,false],
+    "variable":"client TCP_NODELAY only; workers remain ON",
+    "paths":["replyPreview","replyExpanded"],
+    "warmupsPerBackendPath":1,
+    "pairsPerPathPerBlock":1,
+    "maximumRequestsIncludingWarmups":20,
+    "stop":"first HTTP/observation error or90seconds after setup; no retry",
+    "criterion":"For each path, mean HTTP minus complete server-handler duration is >=30ms with NODELAY OFF and <=8ms with NODELAY ON. Otherwise retain transport hypothesis as unproven.",
+    "clock":"HTTP CLOCK_MONOTONIC_RAW, server Go monotonic, independent Windows QPC witness"
+  },
+  "formalAttempt":{
+    "attempts":1,
+    "modes":["compatibility","steady"],
+    "samplesPerBackend":{"initial":200,"continuation":1000,"replyPreview":300,"replyExpanded":300},
+    "warmupPerBackendPathBeforeAndAfterMidpoint":30,
+    "order":"balanced shuffled20-pair blocks, seed20261025, same midpoint process/IP crossover as prior",
+    "concurrency":1,
+    "paceSeconds":0.27,
+    "tcpNoDelay":true,
+    "observePhases":true,
+    "dataRows":11563,
+    "initialLedgerOccupancy":1024,
+    "gateAndSharedAdmission":"real SQL finalGate, official admission profile and existing quotas/timeouts; no authority shortcut",
+    "workerIntervalSeconds":2,
+    "snapshotCleanupIntervalSeconds":10,
+    "acceptance":"All eight complete HTTP nearest-rank P95 regression point estimates <=5percent, all request/cardinality/clock/resource checks PASS",
+    "invalidConditions":"Existing resource policy: CPU>=65percent, IOwait>=25percent, external build>=300percent or pressure tool; clock preflight max drift<=0.2seconds over300seconds and Windows witness stable; per-path clock guard<=2seconds",
+    "failurePolicy":"Preserve every sample, join exact requestID phases, report failing path decomposition. No extra round, pooling, selective omission, threshold/sample change or automatic30minute rerun."
+  },
+  "priorProof":"Two actual30minute tests and scoped Realme results remain attributed to old6fb source; observation-only semantic comparison and new affected Go/SQL checks recorded separately.",
+  "systemState":"Currently original tsc and timesyncd active. Do not change unless preflight proves necessary; any already-authorized temporary trial must save original state and restore in finally.",
+  "device":"Realme RMX3366/7e0660f1; acquire lease before actual operation",
+  "forbidden":"No commit/push/merge/deploy; no shared authorization or worker semantic changes without coordinator Astra/xhigh review."
+}

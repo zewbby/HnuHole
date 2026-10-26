@@ -17,6 +17,7 @@ import 'comment_http.dart';
 import 'comment_journal.dart';
 import 'comment_models.dart';
 import 'comment_protocol.dart';
+import 'comment_snapshot.dart';
 
 String commentUUID() {
   final r = Random.secure();
@@ -217,6 +218,7 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
     Map<String, String>? query,
     Uint8List? bytes,
     String? mime,
+    String? snapshotRequest,
   }) async {
     if (!available) throw const CommentHttpFailure(401, 'SESSION_INVALID');
     final epoch = _epoch, token = _token!;
@@ -229,6 +231,7 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
         query: query,
         bytes: bytes,
         mime: mime,
+        snapshotRequest: snapshotRequest,
       );
       if (!current(epoch)) {
         throw const CommentHttpFailure(401, 'SESSION_CHANGED');
@@ -246,7 +249,9 @@ class CommentRuntime extends ChangeNotifier with WidgetsBindingObserver {
       if (current(epoch)) {
         if (e.status == 401) {
           sessions.sessionUnauthorized(token, e.code);
-        } else if (e.status == 503 && e.code != 'SHARED_RATE_UNAVAILABLE') {
+        } else if (e.status == 503 &&
+            e.code != 'SHARED_RATE_UNAVAILABLE' &&
+            !commentSnapshotUnavailableCodes.contains(e.code)) {
           sessions.sessionUnavailable(token);
         }
       }

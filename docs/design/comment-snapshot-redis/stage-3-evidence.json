@@ -1,0 +1,258 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 3,
+  "date": "2026-10-25",
+  "timezone": "Asia/Shanghai",
+  "status": "COMPLETE_BACKEND_AND_SCOPED_REAL_REGRESSIONS",
+  "assignment": {
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "sourceThread": "01a16de6-b90c-7461-ba71-c815cb182a2b"
+  },
+  "branch": "codex/feat/comment-snapshot-redis",
+  "workspace": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis",
+  "originalBaseline": "8ed8f2870b1724de2837ea40a6e3764c008780f7",
+  "integrationBase": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+  "dependencyPR": "https://github.com/zewbby/HnuHole/pull/73",
+  "integration": "fast-forward after own dirty-file backup; three-way reapply and conflict resolution; no new commit",
+  "backupPatchSHA256": "99ff8018a4d233bb003eb48db679fc78eeef025805119daa100ed48a8e78dcd4",
+  "committed": false,
+  "pushed": false,
+  "pr": null,
+  "merged": false,
+  "deployed": false,
+  "environment": {
+    "distro": "HnuHole-Ubuntu-24.04",
+    "user": "hnuhole",
+    "go": "1.22.2",
+    "redis": "7.0.15 owned child per fixture",
+    "postgres": "16 disposable private-socket cluster",
+    "goose": "v3.22.1",
+    "pillow": "12.3.0",
+    "linuxTaskRoot": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28",
+    "windowsLogRoot": "C:/Users/24237/Documents/ChatGPT/Hnuhole/comment-snapshot-redis-20261024/stage-3-evidence"
+  },
+  "commands": [
+    "sh services/api/authlab/run-comment-snapshot-isolated.sh",
+    "sh services/api/authlab/run-shared-rate-limit-isolated.sh",
+    "go test -mod=readonly ./...",
+    "go build -mod=readonly ./...",
+    "go vet -mod=readonly ./...",
+    "python packages/openapi/check-specs.py",
+    "python tools/check-comment-text-contract.py",
+    "python tools/check-community-text-contract.py",
+    "python tools/check-direct-message-contract.py"
+  ],
+  "checks": [
+    {
+      "name": "snapshot-comments",
+      "status": "PASS_SCOPED_WITH_EXPLICIT_SKIPS",
+      "log": "snapshot-final-r2.log",
+      "exitCode": 0,
+      "passed": 23,
+      "failed": 0,
+      "skipped": 2,
+      "skipNames": [
+        "--- SKIP: TestCommentBusinessDevicePostgres (0.00s)",
+        "--- SKIP: TestCommentBusinessDartLivePostgres (0.00s)"
+      ],
+      "sha256": "98e27317d56164f3d27933fbb916f4a9625b5248aa59cb2bd56cc99d656e1791"
+    },
+    {
+      "name": "shared-admission",
+      "status": "PASS_SCOPED_WITH_EXPLICIT_SKIPS",
+      "log": "shared-integration-r1.log",
+      "exitCode": 0,
+      "passed": 39,
+      "failed": 0,
+      "skipped": 1,
+      "skipNames": [
+        "--- SKIP: TestSharedRateDevicePostgres (0.00s)"
+      ],
+      "sha256": "3d9075100cd7be0cf9d6e6b43e368a892c67e428af24542f66d65770871e96eb"
+    },
+    {
+      "name": "backend-host-final.log",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "backend-host-final.log",
+      "sha256": "0a605aefe08ef5b81f90d5f89265fc02362e42afd1c4661d6f5a63bf54e98edc"
+    },
+    {
+      "name": "backend-build-final.log",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "backend-build-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "backend-vet-final.log",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "backend-vet-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "contracts-final.log",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "contracts-final.log",
+      "sha256": "ea8efeab05b2ec10a6a7c2cbf9d8e792f543014d2852ce08adadb7ba32d8c366"
+    }
+  ],
+  "productManifestAlgorithm": "SHA256 of sorted path NUL lowercase-sha256 LF",
+  "productManifestSHA256": "a39e81a42dc44694d5149e79d1a4552cdd71e1f4826a372798d1b5bc6aa482cb",
+  "productFiles": [
+    {
+      "path": ".github/workflows/comment-snapshot.yml",
+      "sha256": "6270ee778c18af908656c84d4572576ac8eaa6620bd583997bea7d787d256906",
+      "testedMirrorSHA256": null
+    },
+    {
+      "path": "infra/commentsnapshot/redis.example.conf",
+      "sha256": "17536d46ad64d9dbb46a36174894eae01a879d9a3f73da64235a2f0947358352",
+      "testedMirrorSHA256": "17536d46ad64d9dbb46a36174894eae01a879d9a3f73da64235a2f0947358352"
+    },
+    {
+      "path": "infra/commentsnapshot/snapshots.example.json",
+      "sha256": "bd182d4b58a9c4a943a9ef786deca38b05ec46375afb23848b6d9d9615bb4ee4",
+      "testedMirrorSHA256": "bd182d4b58a9c4a943a9ef786deca38b05ec46375afb23848b6d9d9615bb4ee4"
+    },
+    {
+      "path": "packages/openapi/comment-api.yaml",
+      "sha256": "cd95fc4a12e9d30f6648631d012010cde86e1049b12d9be2fc94a8953b0e25c3",
+      "testedMirrorSHA256": "cd95fc4a12e9d30f6648631d012010cde86e1049b12d9be2fc94a8953b0e25c3"
+    },
+    {
+      "path": "services/api/authlab/run-comment-snapshot-isolated.sh",
+      "sha256": "7efd1bef9c8ac869e36d33ce0f476d6615b95978a2fa70f09a8e66e1b6a3d331",
+      "testedMirrorSHA256": "7efd1bef9c8ac869e36d33ce0f476d6615b95978a2fa70f09a8e66e1b6a3d331"
+    },
+    {
+      "path": "services/api/cmd/commentsnapshotctl/main_test.go",
+      "sha256": "b0f62b09f73a74ecd622577100a710317d48a95cd53bd31bf65be63e8c9c580f",
+      "testedMirrorSHA256": "b0f62b09f73a74ecd622577100a710317d48a95cd53bd31bf65be63e8c9c580f"
+    },
+    {
+      "path": "services/api/cmd/commentsnapshotctl/main.go",
+      "sha256": "38857ed2b1a6782557981cfeb304eb16ee0428cfcb1924bcaab0090880011d3d",
+      "testedMirrorSHA256": "38857ed2b1a6782557981cfeb304eb16ee0428cfcb1924bcaab0090880011d3d"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comment_snapshots_test.go",
+      "sha256": "b2409ee974a675256a52c97214fab1639251c10628da2df7343d2aa9761f2d98",
+      "testedMirrorSHA256": "b2409ee974a675256a52c97214fab1639251c10628da2df7343d2aa9761f2d98"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comment_snapshots.go",
+      "sha256": "317a16d6d4156b287b034f128a4eb13af38814056199f021b73f5fd24227e7a8",
+      "testedMirrorSHA256": "317a16d6d4156b287b034f128a4eb13af38814056199f021b73f5fd24227e7a8"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_read.go",
+      "sha256": "1d41b6c87f7099699d4c656c0c3bad16e512a69b6cfc26ad52997de1309be8b4",
+      "testedMirrorSHA256": "1d41b6c87f7099699d4c656c0c3bad16e512a69b6cfc26ad52997de1309be8b4"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments.go",
+      "sha256": "4020bb7501273f166e1496b3d1d25ddeedbbf87ad1e7febd6f002dfcbda27c26",
+      "testedMirrorSHA256": "4020bb7501273f166e1496b3d1d25ddeedbbf87ad1e7febd6f002dfcbda27c26"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/comment_snapshot_postgres_test.go",
+      "sha256": "7b665b32b9974b1e46ecd5a231af0e2c607b4e272bddd4ef8f3aa46fbeb4db29",
+      "testedMirrorSHA256": "7b665b32b9974b1e46ecd5a231af0e2c607b4e272bddd4ef8f3aa46fbeb4db29"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/comment_snapshot_test.go",
+      "sha256": "ae8c0d95271591d6a5ebcd5022a2e7d11fc1552076d4d4b68d15630064e3c5bf",
+      "testedMirrorSHA256": "ae8c0d95271591d6a5ebcd5022a2e7d11fc1552076d4d4b68d15630064e3c5bf"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/comments_endpoints.go",
+      "sha256": "c5d2a0dcabe58abbb1f7e626c72a7379be60db06c36ea48ad4e4b900455697ca",
+      "testedMirrorSHA256": "c5d2a0dcabe58abbb1f7e626c72a7379be60db06c36ea48ad4e4b900455697ca"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "sha256": "16aea8f5ce3db754e8e8cbb69c6ff78c9abfad09a8cdd2d10b81b451d37882f7",
+      "testedMirrorSHA256": "16aea8f5ce3db754e8e8cbb69c6ff78c9abfad09a8cdd2d10b81b451d37882f7"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/posts_endpoints.go",
+      "sha256": "6bf9444938bedd6d032b32682ce57654ee51cdbc62dd64fb5088d880c7b277e2",
+      "testedMirrorSHA256": "6bf9444938bedd6d032b32682ce57654ee51cdbc62dd64fb5088d880c7b277e2"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/comment_snapshot_config_test.go",
+      "sha256": "5441d4367ab6f80949312ac6a8a07a7bf40afdf9b8644f5de8261edc3d6e21d0",
+      "testedMirrorSHA256": "5441d4367ab6f80949312ac6a8a07a7bf40afdf9b8644f5de8261edc3d6e21d0"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/config.go",
+      "sha256": "61d079ddcaf022a044bf7ebfd7d198087d102f0602d3a94c8ee7bc120b873055",
+      "testedMirrorSHA256": "61d079ddcaf022a044bf7ebfd7d198087d102f0602d3a94c8ee7bc120b873055"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/server.go",
+      "sha256": "b93f1295bde0742adfe0102ee1c7c42242d9e22f52506df6fa44ef1c018cbb89",
+      "testedMirrorSHA256": "b93f1295bde0742adfe0102ee1c7c42242d9e22f52506df6fa44ef1c018cbb89"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/codec.go",
+      "sha256": "9f5e582d7788f11eaef861024372c15ff4222916ca5da822a8fc79e532b1ab40",
+      "testedMirrorSHA256": "9f5e582d7788f11eaef861024372c15ff4222916ca5da822a8fc79e532b1ab40"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/common.lua",
+      "sha256": "81314d453d337c93d5747eb760ec70348d5a4b767297ddc1eabded85d221309b",
+      "testedMirrorSHA256": "81314d453d337c93d5747eb760ec70348d5a4b767297ddc1eabded85d221309b"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/read.lua",
+      "sha256": "bc0b889eacda51a032296f89d8c13d32d70233b8e86c2138f7ddb29ab50b8f5e",
+      "testedMirrorSHA256": "bc0b889eacda51a032296f89d8c13d32d70233b8e86c2138f7ddb29ab50b8f5e"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/redis_test.go",
+      "sha256": "5c90172b86fdec2d7fdd42b9ce473e1bdd43fb58adc275472d7264ade73d9b37",
+      "testedMirrorSHA256": "5c90172b86fdec2d7fdd42b9ce473e1bdd43fb58adc275472d7264ade73d9b37"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/redis.go",
+      "sha256": "e368f1d9c83118ce7dade7d870680372c81e29076b9215836a8383e2ed425514",
+      "testedMirrorSHA256": "e368f1d9c83118ce7dade7d870680372c81e29076b9215836a8383e2ed425514"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/types.go",
+      "sha256": "4253187e965808a3ec13172f5fe88a6620604fe3a44453db7abed9d9f74b91e2",
+      "testedMirrorSHA256": "4253187e965808a3ec13172f5fe88a6620604fe3a44453db7abed9d9f74b91e2"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/write.lua",
+      "sha256": "ae240e1594d21f675d1d9de369ed161d5be2d42a41b9ca72b313432497f8e856",
+      "testedMirrorSHA256": "ae240e1594d21f675d1d9de369ed161d5be2d42a41b9ca72b313432497f8e856"
+    }
+  ],
+  "preservedFailures": [
+    {
+      "log": "snapshot-sql-r1.log",
+      "reason": "Deferred SQL COMMIT failure correctly freezes Safety Gate; test wrongly continued afterwards. Injection moved last; final test asserts freeze."
+    },
+    {
+      "log": "snapshot-final-r1.log",
+      "reason": "Existing image ProcessValidator rejected insecure source parent directory; private same-source script and fixed fixtures added to runner. r2 passes."
+    }
+  ],
+  "boundaries": [
+    "No stage4 client changes; existing PR73 client retained",
+    "Two independent Store instances / service objects, not two independent API command processes",
+    "No full 30-minute native reading acceptance or P95/capacity results",
+    "Runtime/CLI compile and config tests plus real Store initialization/ACL; no full production runtime bootstrap",
+    "Remote CI workflow added, not executed",
+    "No device operations this stage; 真机验收待用户于 2026-10-25 验收",
+    "Production/whole-module acceptance unchanged"
+  ],
+  "nextPhase": 4,
+  "nextPhaseStatus": "AWAITING_DISPATCH"
+}

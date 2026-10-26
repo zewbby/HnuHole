@@ -65,7 +65,7 @@ func (c *Community) withIdentitySession(ctx context.Context, bearer [32]byte, ac
 	if err != nil {
 		return time.Time{}, ErrAuthorizationUnavailable
 	}
-	defer c.gate.Abort(ctx, tx)
+	defer observedAuthorizationAbort(ctx, c.gate, tx)
 	a := credentialAccount{account: account}
 	var session credentialSession
 	if account != uuid.Nil {

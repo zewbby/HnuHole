@@ -1,0 +1,82 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "status": "FROZEN_BEFORE_FIRST_PREFLIGHT_AND_HTTP",
+  "frozenAtUTC": "2026-10-26T03:57:38.647414+00:00",
+  "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+  "cases": [
+    {
+      "target": "compat-continuation",
+      "mode": "compatibility",
+      "path": "continuation",
+      "pairs": 1000,
+      "expectedComments": 50,
+      "PGAndRedisCursorTarget": "same Redis-created API IP for all warmup and measured requests, including midpoint"
+    },
+    {
+      "target": "steady-expanded",
+      "mode": "steady",
+      "path": "replyExpanded",
+      "pairs": 300,
+      "expectedComments": 50,
+      "occupancy": "1024 mirrored logical PG snapshots and 1024 Redis snapshots initially"
+    }
+  ],
+  "order": "compat-continuation then steady-expanded; each exactly one attempt; retain valid P95 failure and run the other already-planned case; stop on request/environment/observation failure",
+  "concurrency": 1,
+  "requestPaceBeforeTimerSeconds": 0.27,
+  "warmupPerBackendPerHalf": 30,
+  "pairOrder": "fixed seed20261025; balanced shuffled blocks20; one midpoint process/IP exchange",
+  "percentile": "nearest rank sorted[ceil(n*.95)-1]",
+  "criterion": "(Redis P95 / PostgreSQL P95 -1)*100 <=5 percent, each case separately",
+  "noPooling": true,
+  "noExpansion": true,
+  "noRepeat": true,
+  "strictTLSAndSNI": true,
+  "tcpNoDelay": true,
+  "HTTPAndServerClock": "CLOCK_MONOTONIC_RAW",
+  "initialClockPreflight": {
+    "rawSeconds": 300,
+    "intervalSeconds": 30,
+    "maximumUTCOrMonoDriftSeconds": 0.2,
+    "WindowsQPCRequired": true,
+    "singleAttempt": true
+  },
+  "conditionalClockRepair": {
+    "authorization": "Human: 允许临时修复，验收后恢复; coordinator explicitly renewed for these two fixed cases",
+    "onlyIfInitialPreflightFails": true,
+    "singleRepairAttempt": true,
+    "clockSource": "hyperv_clocksource_tsc_page",
+    "stopTimesyncdTemporarily": true,
+    "noTimeValueEdits": true,
+    "settlingRawSeconds": 60,
+    "repairedPreflightRawSeconds": 300,
+    "maximumDriftSeconds": 0.2,
+    "restoreAndIndependentlyVerify": true
+  },
+  "duringHTTPMaximumClockOffsetVariationSeconds": 2,
+  "worker": {
+    "intervalSeconds": 2,
+    "taskTimeoutSeconds": 15,
+    "batch": 16,
+    "concurrency": 1,
+    "disabled": false
+  },
+  "snapshots": {
+    "ttlSeconds": 1800,
+    "cleanupIntervalSeconds": 10,
+    "maxPerAccount": 1024,
+    "initialOccupiedRedisSnapshots": 1024,
+    "moduleByteBudget": 67108864,
+    "poolSize": 8
+  },
+  "fixtureCommentRows": 11563,
+  "sharedAdmission": "existing official profile unchanged",
+  "liveOccupancy": "one real POST /auth/sessions creates SESSION_CREATE/LIVE; require live=1, unexpired=1, mac32=1, SESSION_CREATED=1 before/midpoint/after each case",
+  "driver": "tools/comment-snapshot-process/gaps_targeted.py",
+  "driverSHA256": "237ccec67b244ed5326e7b6535dcaa71297e272f5597ec237826b3688065f295",
+  "productChanges": false,
+  "otherTestsOrPaths": "NOT_RUN",
+  "newOutputRoot": "D:/HnuHole-task-storage/comment-snapshot-redis-20261024",
+  "existingDirectoriesMigrated": false
+}

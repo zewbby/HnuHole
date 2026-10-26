@@ -67,11 +67,15 @@ android {
             val sharedRateValue = System.getenv("HNUHOLE_SHARED_RATE_DEVICE")
             require(sharedRateValue == null || sharedRateValue == "1") { "HNUHOLE_SHARED_RATE_DEVICE must be unset or 1" }
             val sharedRateDevice = sharedRateValue == "1"
+            val snapshotValue = System.getenv("HNUHOLE_COMMENT_SNAPSHOT_DEVICE")
+            require(snapshotValue == null || snapshotValue == "1") { "HNUHOLE_COMMENT_SNAPSHOT_DEVICE must be unset or 1" }
+            val snapshotDevice = snapshotValue == "1"
             val identityAvatar = System.getenv("HNUHOLE_IDENTITY_AVATAR") == "1"
-            require(listOf(dmText,dmChat,dmRecovery,sharedRateDevice,identityAvatar,System.getenv("HNUHOLE_DM_PREVIEW") == "1",providers.gradleProperty("hnuholeCommentsValidation").orNull == "true").count { it } <= 1) {
+            require(listOf(dmText,dmChat,dmRecovery,sharedRateDevice,snapshotDevice,identityAvatar,System.getenv("HNUHOLE_DM_PREVIEW") == "1",providers.gradleProperty("hnuholeCommentsValidation").orNull == "true").count { it } <= 1) {
                 "Choose one isolated DM package"
             }
             if (sharedRateDevice) applicationIdSuffix = ".ratelimit"
+            if (snapshotDevice) applicationIdSuffix = ".commentsnapshot"
             if (dmChat) applicationIdSuffix = ".dmchat"
             if (dmRecovery) applicationIdSuffix = ".dmrecovery"
             if (identityAvatar) applicationIdSuffix = ".identityavatar"

@@ -67,6 +67,7 @@ class _Http extends CommentHttp {
   bool published = false;
   Uint8List? imageBytes;
   CommentHttpFailure? imageFailure;
+  CommentHttpFailure? snapshotFailure;
   @override
   Future<({Uint8List bytes, Duration lease})> image(
     String token,
@@ -86,7 +87,11 @@ class _Http extends CommentHttp {
     Map<String, String>? query,
     Uint8List? bytes,
     String? mime,
+    String? snapshotRequest,
   }) async {
+    if (path.endsWith('/comments') && snapshotFailure != null) {
+      throw snapshotFailure!;
+    }
     if (path == '/late') return pending!.future;
     if (path.contains('/comment-commands/')) {
       if (method == 'PUT') {
@@ -253,6 +258,35 @@ Future<void> _open(WidgetTester tester, CommentRuntime runtime) async {
 }
 
 void main() {
+  for (final code in [
+    'COMMENT_SNAPSHOT_UNAVAILABLE',
+    'COMMENT_SNAPSHOT_CAPACITY',
+    'COMMENT_SNAPSHOT_INTEGRITY',
+  ]) {
+    testWidgets('$code keeps session authority and open draft', (tester) async {
+      final f = await _fixture();
+      try {
+        await _open(tester, f.runtime);
+        final epoch = f.runtime.authorityVersion;
+        final failure = CommentHttpFailure(503, code);
+        f.http.snapshotFailure = failure;
+        await expectLater(
+          f.runtime.request('GET', '/api/v1/posts/$_post/comments'),
+          throwsA(same(failure)),
+        );
+        expect(f.runtime.authorityVersion, epoch);
+        expect(f.runtime.available, isTrue);
+        expect(find.text('续期前已加载评论'), findsOneWidget);
+        await tester.tap(find.text('继续输入'));
+        await tester.pumpAndSettle();
+        expect(find.text('尚未提交的评论草稿'), findsOneWidget);
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        f.runtime.dispose();
+        f.auth.dispose();
+      }
+    });
+  }
   for (final denied in [false, true]) {
     testWidgets(
       'comment viewer ${denied ? "closes on denied access" : "keeps retry after transport failure"}',

@@ -1,0 +1,498 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "date": "2026-10-26",
+  "updatedAtUTC": "2026-10-26T03:50:36.218065+00:00",
+  "requestedReviewModel": "gpt-6-astra",
+  "requestedReasoningEffort": "xhigh",
+  "scope": "OFFLINE_EVIDENCE_ADJUDICATION_AND_SOURCE_REUSE_REVIEW_NOT_PHASE6",
+  "status": "REVIEW_COMPLETE_STAGE5_NOT_ACCEPTED_TWO_PERFORMANCE_GAPS",
+  "phase5Complete": false,
+  "phase6Started": false,
+  "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+  "blockers": [
+    {
+      "id": "P5-E1",
+      "path": "compatibility/continuation",
+      "kind": "VALID_PASS_EVIDENCE_MISSING_AFTER_WARMUP_FIX",
+      "historicalSingleRegressionPercent": 5.483315090582908,
+      "reason": "Midpoint warmup targeted PG process whereas measured PG cursor ran on Redis process. Static correction exists but no full corrected continuation result. Old FAIL retained, not proof final product necessarily regresses."
+    },
+    {
+      "id": "P5-E2",
+      "path": "steady/replyExpanded",
+      "kind": "HISTORICAL_FAIL_NOT_CLOSED_BY_APPLICABLE_EVIDENCE",
+      "historicalSingleRegressionPercent": 9.977433411090475,
+      "reason": "Stable single cohort FAIL unaffected by continuation warmup defect. Later cohorts/pooled summary not approved replacement rule. New compatibility PASS not a steady upper bound; baseline performs different cross-store usage work."
+    }
+  ],
+  "inputs": {
+    "docs/design/comment-snapshot-redis/stage-5-replies-repaired-execution.md": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-replies-repaired-execution.md",
+      "sha256": "9534075e4332495952df0e20f1c54ebded11fe618a208c9f7db9c01fa5a55f35",
+      "matches": true
+    },
+    "docs/design/comment-snapshot-redis/stage-5-replies-repaired-evidence.json": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-replies-repaired-evidence.json",
+      "sha256": "15a8080d213340d9ba64908b1aab548fb392c1c98f0e0c2be0b63e3f8c3e418d",
+      "matches": true
+    },
+    "docs/design/comment-snapshot-redis/stage-5-targeted-execution.md": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-targeted-execution.md",
+      "sha256": "dadd054695300623e3b1971819faba4e1e87d7bf353ccac6ee5b7c8abad521a4",
+      "matches": true
+    },
+    "docs/design/comment-snapshot-redis/stage-5-targeted-evidence.json": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-targeted-evidence.json",
+      "sha256": "ddc018d205079c3341fbc15932e08b9cb3fdc43b1169f3228ae0b604c96641ec",
+      "matches": true
+    },
+    "docs/design/comment-snapshot-redis/stage-5-targeted-observation-comparison.json": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-targeted-observation-comparison.json",
+      "sha256": "cb7ddf7d260ee8f71eb6b5080a109fa7e5cc3eb4df211235815e99facf06fdeb",
+      "matches": true
+    },
+    "docs/design/comment-snapshot-redis/stage-5-stable-sampling-proposal.md": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-stable-sampling-proposal.md",
+      "sha256": "3353c8c958e77184735e8e2512d6d56112abda7c263d3dad4c8ed048b5b52786",
+      "matches": true
+    },
+    "docs/design/comment-snapshot-redis/stage-5-root-cause-diagnosis.md": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-root-cause-diagnosis.md",
+      "sha256": "09b62abb10f14c35d3601ed63d2498effd132da8c827e939924d7c2c9946e10c",
+      "matches": true
+    },
+    "docs/design/comment-snapshot-redis/stage-5-worker-precheck-execution.md": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-worker-precheck-execution.md",
+      "sha256": "27508748673c97f5bc255c6ee49fe760af6e88a050e154171315622bae07d05e",
+      "matches": true
+    },
+    "docs/design/comment-snapshot-redis/stage-5-worker-precheck-execution-evidence.json": {
+      "path": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis/docs/design/comment-snapshot-redis/stage-5-worker-precheck-execution-evidence.json",
+      "sha256": "a13291354b04b0505d952f6c6743c6e8e99552437721b36455884ec900b793ad",
+      "matches": true
+    }
+  },
+  "repairedArtifactChecks": {
+    "replies-repaired-raw.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-raw.json",
+      "sha256": "2310f91882a0009cc089696ce718f936c6a94ab015bb23ac63d3ea93e6804594",
+      "matches": true
+    },
+    "replies-repaired-run.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-run.json",
+      "sha256": "f39ec28725c8b46c2cfee4fe7042996c1c8bbb18386ddf2ccdee77e43e3b37d3",
+      "matches": true
+    },
+    "replies-repaired-repaired-clock-preflight.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-repaired-clock-preflight.json",
+      "sha256": "f68574f0d147519b02e268f20aecb373db4dbb86990d7fd1beb365b7c10d7c27",
+      "matches": true
+    },
+    "replies-repaired-protocol.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-protocol.json",
+      "sha256": "11be35ab57dde1e83efadcc256b3c0cc26fcdd15a77f22caaf7b8d0c0279f493",
+      "matches": true
+    },
+    "replies-repaired-harness-manifest.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-harness-manifest.json",
+      "sha256": "c29889a2385e249b02b62c0980014d13d1b8ae459b79d1800a126836b83586cf",
+      "matches": true
+    },
+    "replies-repaired-phase-decomposition.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-phase-decomposition.json",
+      "sha256": "ea85e2b4f751c32a5fcb365447b7d07966b1ef719a1e849b4b1ab20bf9b9361d",
+      "matches": true
+    },
+    "replies-repaired-independent-restoration.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-independent-restoration.json",
+      "sha256": "47b8b9307e07eb97ca8cd1476d1f2db5be301a3b8e2ccc14776f6afab79cdef5",
+      "matches": true
+    },
+    "replies-repaired-clock-switch-inventory.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-clock-switch-inventory.json",
+      "sha256": "340e6688a94feccff528153f5338042bf36e9fe55ac9d21fbe484b1666b4d935",
+      "matches": true
+    },
+    "replies-repaired-effective-protocol.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\replies-repaired-effective-protocol.json",
+      "sha256": "61eb1e536624358020701dbf44f2818d3f686a66b7222625ebf03a471ecd1a16",
+      "matches": true
+    }
+  },
+  "harnessFileCount": 19,
+  "allHarnessHashesMatch": true,
+  "recalculatedCurrentP95": {
+    "replyPreview": {
+      "postgres": {
+        "samples": 300,
+        "p95Ms": 112.6425,
+        "uniquePairs": 300,
+        "uniqueRequestIds": 300,
+        "AB": 150,
+        "BA": 150,
+        "IPCounts": [
+          150,
+          150
+        ]
+      },
+      "redis": {
+        "samples": 300,
+        "p95Ms": 111.2161,
+        "uniquePairs": 300,
+        "uniqueRequestIds": 300,
+        "AB": 150,
+        "BA": 150,
+        "IPCounts": [
+          150,
+          150
+        ]
+      },
+      "regressionPercent": -1.2663071220897937,
+      "result": "PASS"
+    },
+    "replyExpanded": {
+      "postgres": {
+        "samples": 300,
+        "p95Ms": 155.5845,
+        "uniquePairs": 300,
+        "uniqueRequestIds": 300,
+        "AB": 150,
+        "BA": 150,
+        "IPCounts": [
+          150,
+          150
+        ]
+      },
+      "redis": {
+        "samples": 300,
+        "p95Ms": 158.2591,
+        "uniquePairs": 300,
+        "uniqueRequestIds": 300,
+        "AB": 150,
+        "BA": 150,
+        "IPCounts": [
+          150,
+          150
+        ]
+      },
+      "regressionPercent": 1.71906584524808,
+      "result": "PASS"
+    }
+  },
+  "measuredRequestsAudited": 1200,
+  "uniqueMeasuredRequestIds": 1200,
+  "newMeasuredRequests": 0,
+  "currentErrors": [],
+  "historicalOfflineAudit": {
+    "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\stage-5-final-evidence-review-wsl-audit.json",
+    "sha256": "ca6f7f477a93e9a9fb4c5575d3e959aebb97a049aa67f1a6c80c61a84c277ad9",
+    "data": {
+      "scope": "OFFLINE_READ_ONLY_NO_TEST_OR_HTTP_EXECUTION",
+      "sourceDigests": {
+        "6fb": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+        "0481": "0481b785fdc3e06583feaec2fd8707a96e10648465b5deada8a5256cea0ee9ab",
+        "4b": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+        "current": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807"
+      },
+      "sourceChanges": {
+        "6fb->0481": [
+          "internal/authprivacy/authorization_gate.go",
+          "internal/authprivacy/community_comment_snapshots.go",
+          "internal/authprivacy/community_comments_read.go",
+          "internal/authprivacy/community_identities.go",
+          "internal/authprivacy/community_posts.go",
+          "internal/authprivacy/community_rate_subject.go",
+          "internal/authprivacy/read_timing.go",
+          "internal/authprivacyruntime/server.go",
+          "internal/commentsnapshot/redis.go",
+          "internal/readtiming/clock_linux.go",
+          "internal/readtiming/clock_other.go",
+          "internal/readtiming/readtiming.go"
+        ],
+        "0481->4b": [
+          "internal/authprivacy/community_sessions.go"
+        ],
+        "4b->current": []
+      },
+      "historicalCohorts": {
+        "compatibility-1": {
+          "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1/performance-compatibility/process-20261025T130236-572eb3/normalized-performance.json",
+          "sha256": "6b1e278342ede97fd13a772605fe4bf72464c29634be8f25f0acdc07185fe9d3",
+          "hashMatch": true,
+          "paths": {
+            "initial": {
+              "nPerBackend": 200,
+              "pgP95Ms": 585.595,
+              "redisP95Ms": 582.7448,
+              "regressionPercent": -0.4867186366003806,
+              "criterion": "PASS"
+            },
+            "continuation": {
+              "nPerBackend": 1000,
+              "pgP95Ms": 537.6565,
+              "redisP95Ms": 567.1379,
+              "regressionPercent": 5.483315090582908,
+              "criterion": "FAIL"
+            },
+            "replyPreview": {
+              "nPerBackend": 300,
+              "pgP95Ms": 504.032,
+              "redisP95Ms": 463.5828,
+              "regressionPercent": -8.025125388864197,
+              "criterion": "PASS"
+            },
+            "replyExpanded": {
+              "nPerBackend": 300,
+              "pgP95Ms": 504.6981,
+              "redisP95Ms": 509.3179,
+              "regressionPercent": 0.9153591027982966,
+              "criterion": "PASS"
+            }
+          },
+          "resources": "PASS"
+        },
+        "steady-1": {
+          "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1/performance-steady/process-20261025T132546-71195c/normalized-performance.json",
+          "sha256": "9ee63b05c420500dc7b25fdfeeadadb33c3e6a82a1b6398186c0e680eb85ee6f",
+          "hashMatch": true,
+          "paths": {
+            "initial": {
+              "nPerBackend": 200,
+              "pgP95Ms": 561.8818,
+              "redisP95Ms": 584.0837,
+              "regressionPercent": 3.9513470626740377,
+              "criterion": "PASS"
+            },
+            "continuation": {
+              "nPerBackend": 1000,
+              "pgP95Ms": 579.1722,
+              "redisP95Ms": 576.9631,
+              "regressionPercent": -0.3814236940239746,
+              "criterion": "PASS"
+            },
+            "replyPreview": {
+              "nPerBackend": 300,
+              "pgP95Ms": 537.562,
+              "redisP95Ms": 550.3599,
+              "regressionPercent": 2.3807300367213458,
+              "criterion": "PASS"
+            },
+            "replyExpanded": {
+              "nPerBackend": 300,
+              "pgP95Ms": 583.7834,
+              "redisP95Ms": 642.03,
+              "regressionPercent": 9.977433411090475,
+              "criterion": "FAIL"
+            }
+          },
+          "resources": "PASS"
+        },
+        "compatibility-2": {
+          "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/compatibility-2/process-20261025T143257-61ea1b/normalized-performance.json",
+          "sha256": "42a7bbd57ef8fae46f7764951df6e6c1d3ac77928c2b9dfd1c9cbfc327641940",
+          "hashMatch": true,
+          "paths": {
+            "initial": {
+              "nPerBackend": 200,
+              "pgP95Ms": 755.6481,
+              "redisP95Ms": 694.9037,
+              "regressionPercent": -8.038715375582894,
+              "criterion": "PASS"
+            },
+            "continuation": {
+              "nPerBackend": 1000,
+              "pgP95Ms": 658.0606,
+              "redisP95Ms": 689.5858,
+              "regressionPercent": 4.790622626548369,
+              "criterion": "PASS"
+            },
+            "replyPreview": {
+              "nPerBackend": 300,
+              "pgP95Ms": 513.9534,
+              "redisP95Ms": 517.0478,
+              "regressionPercent": 0.6020779315790259,
+              "criterion": "PASS"
+            },
+            "replyExpanded": {
+              "nPerBackend": 300,
+              "pgP95Ms": 566.4432,
+              "redisP95Ms": 639.3651,
+              "regressionPercent": 12.873647348930994,
+              "criterion": "FAIL"
+            }
+          },
+          "resources": "PASS"
+        },
+        "steady-2": {
+          "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/steady-2/process-20261025T145859-767a2f/normalized-performance.json",
+          "sha256": "036569b12b8d5a50612d68c23750327fa2bcc7af899aa282d090bcd1527c9002",
+          "hashMatch": true,
+          "paths": {
+            "initial": {
+              "nPerBackend": 200,
+              "pgP95Ms": 622.6896,
+              "redisP95Ms": 602.0472,
+              "regressionPercent": -3.315038503935197,
+              "criterion": "PASS"
+            },
+            "continuation": {
+              "nPerBackend": 1000,
+              "pgP95Ms": 674.2175,
+              "redisP95Ms": 687.6314,
+              "regressionPercent": 1.989550849688726,
+              "criterion": "PASS"
+            },
+            "replyPreview": {
+              "nPerBackend": 300,
+              "pgP95Ms": 623.4742,
+              "redisP95Ms": 612.1416,
+              "regressionPercent": -1.8176534008945255,
+              "criterion": "PASS"
+            },
+            "replyExpanded": {
+              "nPerBackend": 300,
+              "pgP95Ms": 630.3877,
+              "redisP95Ms": 645.2474,
+              "regressionPercent": 2.35723190665047,
+              "criterion": "PASS"
+            }
+          },
+          "resources": "PASS"
+        },
+        "compatibility-3": {
+          "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/compatibility-3/process-20261025T152501-4b56b8/normalized-performance.json",
+          "sha256": "ec6a855f387ff6cc9fcd50034febe000fffe81e80bc30ab3a68c4ece168aa798",
+          "hashMatch": true,
+          "paths": {
+            "initial": {
+              "nPerBackend": 200,
+              "pgP95Ms": 788.6579,
+              "redisP95Ms": 791.8749,
+              "regressionPercent": 0.40790816905529326,
+              "criterion": "PASS"
+            },
+            "continuation": {
+              "nPerBackend": 1000,
+              "pgP95Ms": 716.023,
+              "redisP95Ms": 730.5114,
+              "regressionPercent": 2.0234545538341475,
+              "criterion": "PASS"
+            },
+            "replyPreview": {
+              "nPerBackend": 300,
+              "pgP95Ms": 576.115,
+              "redisP95Ms": 635.972,
+              "regressionPercent": 10.389765932148954,
+              "criterion": "FAIL"
+            },
+            "replyExpanded": {
+              "nPerBackend": 300,
+              "pgP95Ms": 634.1351,
+              "redisP95Ms": 656.2248,
+              "regressionPercent": 3.4834375198597334,
+              "criterion": "PASS"
+            }
+          },
+          "resources": "PASS"
+        },
+        "steady-3": {
+          "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/steady-3/process-20261025T155218-4c5ae4/normalized-performance.json",
+          "sha256": "899cd69feba58ddfb285d4fd3914db92f2678e7678dfcc852d249145fb9bde9b",
+          "hashMatch": true,
+          "paths": {
+            "initial": {
+              "nPerBackend": 200,
+              "pgP95Ms": 699.0624,
+              "redisP95Ms": 681.7705,
+              "regressionPercent": -2.473584618483282,
+              "criterion": "PASS"
+            },
+            "continuation": {
+              "nPerBackend": 1000,
+              "pgP95Ms": 610.2909,
+              "redisP95Ms": 612.8922,
+              "regressionPercent": 0.4262393556908828,
+              "criterion": "PASS"
+            },
+            "replyPreview": {
+              "nPerBackend": 300,
+              "pgP95Ms": 528.1283,
+              "redisP95Ms": 495.4743,
+              "regressionPercent": -6.182967282760632,
+              "criterion": "PASS"
+            },
+            "replyExpanded": {
+              "nPerBackend": 300,
+              "pgP95Ms": 443.5877,
+              "redisP95Ms": 436.922,
+              "regressionPercent": -1.5026791770826775,
+              "criterion": "PASS"
+            }
+          },
+          "resources": "PASS"
+        }
+      },
+      "stableComponentHashes": {
+        "build": true,
+        "vet": true,
+        "host": true,
+        "snapshot-real-server": true,
+        "shared-rate-real": true,
+        "production-dart-transport": true
+      },
+      "workerLogs": {
+        "targeted-sql-race.log": true,
+        "build.log": true,
+        "vet.log": true
+      },
+      "originalCleanupTailUnchanged": true,
+      "mobileSourceDifferences": []
+    }
+  },
+  "reuse": {
+    "6fbFunctionFaultCapacityIsolationRollbackDrain": "ACCEPT_VERSION_SCOPED_UNCHANGED_INVARIANTS",
+    "6fbActual30MinuteRedisAndPG": "ACCEPT_VERSION_SCOPED_NO_RERUN_REQUIRED_BY_THIS_REVIEW",
+    "6fbRealme": "ACCEPT_LIVE5_DOWN2_AND_FIXTURE_WIDGETS_NOT_FULL_NATIVE_PRODUCTION_UI",
+    "0481ObservationRegressions": "ACCEPT_EXACT_VERSION_SCOPED",
+    "4bWorkerPrecheck": "ACCEPT_15_TOP_LEVEL_REAL_SQL_RACE_WITH_BUILD_AND_AFFECTED_VET",
+    "4bReplyPaths": "ACCEPT_COMPATIBILITY_ONLY",
+    "full4bEightPathPerformance": "NOT_ESTABLISHED_NOT_CLAIMED"
+  },
+  "pooledAcceptanceRule": "NOT_ADOPTED_RETROACTIVELY",
+  "metadataCaveats": [
+    "Frozen repaired protocol retains first-preflight noSystemChanges/old-driver fields; effective clarification and pre-HTTP authorization preserved.",
+    "Effective method.liveOccupancy actuallyCreated=false/reason inherited first zero-sample preflight; actual raw login and before/midpoint/after counts prove LIVE=1. No raw artifact changed."
+  ],
+  "nextAction": "Coordinator to resolve these two performance acceptance conditions. No further sampling, whole campaigns, 30-minute runs, device checks or product fixes authorized by this review. Acceptance exception requires explicit scope change rather than relabeling FAIL.",
+  "productCodeChanged": false,
+  "testsExecuted": false,
+  "systemSettingsChanged": false,
+  "storageMigrated": false,
+  "commitPushMergeDeploy": false,
+  "report": "stage-5-final-evidence-review.md",
+  "reportSHA256": "fa0762fd6f5efb733b93fe6edb77030073f45b62153dbc97e4bd9393053ce3c4",
+  "otherLedgerEntriesExpectedUnchanged": 146,
+  "staticVerification": {
+    "atUTC": "2026-10-26T03:51:08.202910+00:00",
+    "sourceDigestUnchanged": true,
+    "otherLedgerEntriesDeepEqual": 146,
+    "allReviewLinksExist": true,
+    "allHistoricalAndCurrentInputsUnchanged": true,
+    "noNewTestOrRequest": true
+  },
+  "completionNotification": {
+    "status": "SENT_WITH_EXPLICIT_CURRENT_USER_APPROVAL",
+    "atUTC": "2026-10-26T03:53:44.173163+00:00",
+    "targetThreadId": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "authorization": "User answered: 允许发送本次结论和路径",
+    "previousRejectedAttempt": {
+      "status": "AUTO_REVIEW_REJECTED_AWAITING_DIRECT_CURRENT_USER_AUTHORIZATION",
+      "atUTC": "2026-10-26T03:52:06.942061+00:00",
+      "targetThreadId": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+      "reason": "Automatic approval reviewer rejected cross-thread user-visible notification because current trusted user messages do not explicitly authorize this send; tool-retrieved historical authorization was not accepted. No retry or workaround attempted.",
+      "reviewWorkComplete": true
+    },
+    "reviewWorkComplete": true
+  }
+}

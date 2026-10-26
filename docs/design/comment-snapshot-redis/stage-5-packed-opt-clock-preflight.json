@@ -1,0 +1,105 @@
+{
+  "result": "ENVIRONMENT_UNSTABLE",
+  "scope": "read-only clock preflight; no system state changed",
+  "rows": [
+    {
+      "rawElapsed": 2.1184008801355958e-05,
+      "monoElapsed": 2.048899477813393e-05,
+      "utcElapsed": 2.0265579223632812e-05,
+      "utcRawDriftSeconds": -9.184295777231455e-07,
+      "monoRawDriftSeconds": -6.950140232220292e-07
+    },
+    {
+      "rawElapsed": 30.567770120003843,
+      "monoElapsed": 30.000050984002883,
+      "utcElapsed": 34.658539056777954,
+      "utcRawDriftSeconds": 4.090768936774111,
+      "monoRawDriftSeconds": -0.5677191360009601
+    },
+    {
+      "rawElapsed": 62.67553559600492,
+      "monoElapsed": 59.43215821500053,
+      "utcElapsed": 65.37787365913391,
+      "utcRawDriftSeconds": 2.702338063128991,
+      "monoRawDriftSeconds": -3.243377381004393
+    },
+    {
+      "rawElapsed": 92.48396081800456,
+      "monoElapsed": 86.75654326099902,
+      "utcElapsed": 92.70225930213928,
+      "utcRawDriftSeconds": 0.21829848413472064,
+      "monoRawDriftSeconds": -5.727417557005538
+    },
+    {
+      "rawElapsed": 120.21815640501154,
+      "monoElapsed": 114.2724146929977,
+      "utcElapsed": 120.21813106536865,
+      "utcRawDriftSeconds": -2.5339642888866365e-05,
+      "monoRawDriftSeconds": -5.945741712013842
+    },
+    {
+      "rawElapsed": 150.00029937800718,
+      "monoElapsed": 144.054350669001,
+      "utcElapsed": 150.000066280365,
+      "utcRawDriftSeconds": -0.0002330976421944797,
+      "monoRawDriftSeconds": -5.945948709006188
+    },
+    {
+      "rawElapsed": 179.99994331700145,
+      "monoElapsed": 174.05421332300466,
+      "utcElapsed": 179.9999294281006,
+      "utcRawDriftSeconds": -1.3888900866732001e-05,
+      "monoRawDriftSeconds": -5.9457299939967925
+    },
+    {
+      "rawElapsed": 210.00018958600413,
+      "monoElapsed": 204.05442693199439,
+      "utcElapsed": 210.0001425743103,
+      "utcRawDriftSeconds": -4.701169382315129e-05,
+      "monoRawDriftSeconds": -5.945762654009741
+    },
+    {
+      "rawElapsed": 240.00014939300308,
+      "monoElapsed": 234.05438237500493,
+      "utcElapsed": 240.000097990036,
+      "utcRawDriftSeconds": -5.140296707395464e-05,
+      "monoRawDriftSeconds": -5.9457670179981505
+    },
+    {
+      "rawElapsed": 270.0002345420071,
+      "monoElapsed": 264.0544576539978,
+      "utcElapsed": 274.6805508136749,
+      "utcRawDriftSeconds": 4.680316271667834,
+      "monoRawDriftSeconds": -5.945776888009277
+    },
+    {
+      "rawElapsed": 300.49749933500425,
+      "monoElapsed": 294.05432242900133,
+      "utcElapsed": 304.68041586875916,
+      "utcRawDriftSeconds": 4.182916533754906,
+      "monoRawDriftSeconds": -6.443176906002918
+    }
+  ],
+  "maximumDriftSeconds": 6.443176906002918,
+  "hostClockInitial": {
+    "utcMs": 1792920344262,
+    "ticks": 1049298070155,
+    "frequency": 10000000,
+    "rawBefore": 96349.196841656,
+    "rawAfter": 96350.216494714
+  },
+  "hostClockFinal": {
+    "utcMs": 1792920644986,
+    "ticks": 1052305309730,
+    "frequency": 10000000,
+    "rawBefore": 96650.716948982,
+    "rawAfter": 96650.937330038
+  },
+  "hostClockSummary": {
+    "elapsedSeconds": 300.7239575,
+    "rawElapsedLowerBound": 300.50045426799625,
+    "rawElapsedUpperBound": 301.74048838199815,
+    "utcCounterDriftSeconds": 4.250000000638465e-05,
+    "stable": true
+  }
+}

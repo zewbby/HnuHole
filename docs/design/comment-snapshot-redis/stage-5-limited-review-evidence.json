@@ -1,0 +1,1109 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 5,
+  "kind": "LIMITED_CONSISTENCY_PERFORMANCE_REVIEW",
+  "status": "COMPLETE_LIMITED_REVIEW_STAGE5_NOT_COMPLETE",
+  "verifiedAtUTC": "2026-10-25T04:26:20.433419+00:00",
+  "assignment": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "sourceThread": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "nextExecutor": "gpt-6.1-sol",
+    "nextReasoningEffort": "high"
+  },
+  "branch": "codex/feat/comment-snapshot-redis",
+  "integrationBase": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false,
+  "reviewDecision": {
+    "saveOnceSafety": "NO_WEAKENED_LISTED_INVARIANT_IDENTIFIED",
+    "candidateSufficient": false,
+    "performanceDecision": "FAIL_CANDIDATE_CONTINUATION_P95_6_174_PERCENT",
+    "phase5Complete": false,
+    "phase6Started": false,
+    "noNewProductEditsAfterReviewDispatch": true,
+    "subagentsStarted": false
+  },
+  "sourceComparison": {
+    "productionFilesCompared": 152,
+    "productionDelta": [
+      {
+        "file": "internal/commentsnapshot/common.lua",
+        "frozenSHA256": "81314d453d337c93d5747eb760ec70348d5a4b767297ddc1eabded85d221309b",
+        "candidateSHA256": "9983e01d7ca22a452b5eb60ccb288abb036c87b48726c27c7b74b9cc461a3bfc"
+      }
+    ],
+    "candidateCommonSHA256": "9983e01d7ca22a452b5eb60ccb288abb036c87b48726c27c7b74b9cc461a3bfc",
+    "frozenCommonSHA256": "81314d453d337c93d5747eb760ec70348d5a4b767297ddc1eabded85d221309b"
+  },
+  "cohorts": {
+    "initialPilot": {
+      "stats": {
+        "initial": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 238.474977,
+            "p95Ms": 446.737704,
+            "p99Ms": 572.50904,
+            "meanMs": 259.0960781
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 239.204243,
+            "p95Ms": 447.232708,
+            "p99Ms": 555.53461,
+            "meanMs": 262.42022353333334
+          },
+          "p95RegressionPercent": 0.11080416888205047,
+          "result": "PASS"
+        },
+        "continuation": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 166.824812,
+            "p95Ms": 392.361306,
+            "p99Ms": 534.455916,
+            "meanMs": 215.85342663666665
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 171.351806,
+            "p95Ms": 417.113474,
+            "p99Ms": 526.924365,
+            "meanMs": 218.75059115333332
+          },
+          "p95RegressionPercent": 6.308514020493128,
+          "result": "FAIL"
+        }
+      },
+      "scope": "preliminary two-process continuation; failed retained"
+    },
+    "preliminaryFourPaths": {
+      "stats": {
+        "initial": {
+          "postgres": {
+            "samples": 200,
+            "p50Ms": 225.63259,
+            "p95Ms": 416.705378,
+            "p99Ms": 514.138148,
+            "meanMs": 254.580819575
+          },
+          "redis": {
+            "samples": 200,
+            "p50Ms": 234.27902,
+            "p95Ms": 417.122048,
+            "p99Ms": 515.929136,
+            "meanMs": 271.630897225
+          },
+          "p95RegressionPercent": 0.09999151006878648,
+          "result": "PASS"
+        },
+        "continuation": {
+          "postgres": {
+            "samples": 1000,
+            "p50Ms": 268.66059,
+            "p95Ms": 465.043212,
+            "p99Ms": 592.725817,
+            "meanMs": 285.64175204000003
+          },
+          "redis": {
+            "samples": 1000,
+            "p50Ms": 268.791484,
+            "p95Ms": 471.898543,
+            "p99Ms": 614.302425,
+            "meanMs": 287.98244233
+          },
+          "p95RegressionPercent": 1.4741277419183296,
+          "result": "PASS"
+        },
+        "replyPreview": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 173.481473,
+            "p95Ms": 410.330015,
+            "p99Ms": 548.238113,
+            "meanMs": 231.27696840333334
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 196.477546,
+            "p95Ms": 478.872384,
+            "p99Ms": 540.603052,
+            "meanMs": 255.08080401333333
+          },
+          "p95RegressionPercent": 16.704205516138025,
+          "result": "FAIL"
+        },
+        "replyExpanded": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 251.789577,
+            "p95Ms": 552.971632,
+            "p99Ms": 778.691434,
+            "meanMs": 286.24806075333333
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 276.825013,
+            "p95Ms": 555.444668,
+            "p99Ms": 702.5522,
+            "meanMs": 306.48601577333335
+          },
+          "p95RegressionPercent": 0.4472265586311197,
+          "result": "PASS"
+        }
+      },
+      "metadata": {
+        "apiBinarySHA256": "5e0b9fbf8a20c329af82368d19e3d84a6e8e424abf38ea5c8243ef7cd668ed42",
+        "apiPids": {
+          "postgres": 98601,
+          "redis": 98590
+        },
+        "concurrency": 1,
+        "warmupPerBackendPerCase": 30,
+        "mainDataset": {
+          "roots": 500,
+          "replies": 1000,
+          "limit": 50
+        },
+        "replyDataset": {
+          "roots": 1,
+          "replies": 60,
+          "preview": 5,
+          "expanded": 50
+        },
+        "totalCommentsIncludingNegativeFixtures": 21565,
+        "sampling": "per-request AB/BA alternating pairs, all samples retained",
+        "continuationComparedOnSameAPIProcess": true,
+        "httpTiming": "from request send to complete JSON body, TLS connection established before timer",
+        "workerIntervalSeconds": 60,
+        "backgroundOriginalReadingProcesses": 2,
+        "sameSQLClusterAndAuthorizationAndKeys": true,
+        "snapshotsConfig": {
+          "createBackend": "redis",
+          "readPostgres": true,
+          "readRedis": true,
+          "ttlSeconds": 1800,
+          "maxIDs": 10000,
+          "maxPerAccount": 1024,
+          "maxSnapshotBytes": 196608,
+          "maxModuleBytes": 67108864,
+          "maxLedgerEntries": 8192,
+          "maxLedgerBytes": 4194304,
+          "ledgerFixedReserveBytes": 12582912,
+          "operationBudgetMilliseconds": 500,
+          "prepareLeaseSeconds": 30,
+          "cleanupIntervalSeconds": 10,
+          "cleanupBatchSize": 64,
+          "clockSkewMilliseconds": 2000,
+          "redis": {
+            "address": "127.0.0.1:54477",
+            "username": "community_comment_snapshot",
+            "passwordFile": "snapshot.password",
+            "namespace": "hnuhole:comment-snapshot:v1:dev:",
+            "epoch": "d43596a6-113e-4971-92a1-4f598d641e07",
+            "deadlineMilliseconds": 100,
+            "poolSize": 8
+          }
+        },
+        "sqlPool": "runtime defaults, same on both",
+        "activeNamespacesAreDedicatedRedisInstances": true
+      },
+      "result": "FAIL"
+    },
+    "formalFrozen": {
+      "stats": {
+        "initial": {
+          "postgres": {
+            "samples": 200,
+            "p50Ms": 264.021086,
+            "p95Ms": 481.685824,
+            "p99Ms": 560.288711,
+            "meanMs": 295.779929955
+          },
+          "redis": {
+            "samples": 200,
+            "p50Ms": 290.994218,
+            "p95Ms": 498.355618,
+            "p99Ms": 610.529786,
+            "meanMs": 312.921647825
+          },
+          "p95RegressionPercent": 3.460719242590793,
+          "result": "PASS"
+        },
+        "continuation": {
+          "postgres": {
+            "samples": 1000,
+            "p50Ms": 228.728505,
+            "p95Ms": 477.321912,
+            "p99Ms": 606.672013,
+            "meanMs": 275.100473623
+          },
+          "redis": {
+            "samples": 1000,
+            "p50Ms": 221.900297,
+            "p95Ms": 491.42469,
+            "p99Ms": 629.415594,
+            "meanMs": 273.732051666
+          },
+          "p95RegressionPercent": 2.9545632927071575,
+          "result": "PASS"
+        },
+        "replyPreview": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 152.526981,
+            "p95Ms": 386.742822,
+            "p99Ms": 501.097852,
+            "meanMs": 200.19393208
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 167.966438,
+            "p95Ms": 407.304357,
+            "p99Ms": 494.166989,
+            "meanMs": 213.12996199666668
+          },
+          "p95RegressionPercent": 5.316591241090962,
+          "result": "FAIL"
+        },
+        "replyExpanded": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 197.852899,
+            "p95Ms": 415.302999,
+            "p99Ms": 623.360417,
+            "meanMs": 232.71077168333332
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 217.250008,
+            "p95Ms": 413.457629,
+            "p99Ms": 539.15142,
+            "meanMs": 247.13068796333334
+          },
+          "p95RegressionPercent": -0.444343046990614,
+          "result": "PASS"
+        }
+      },
+      "metadata": {
+        "apiBinarySHA256": "e6050c21fb763fe7825b9727960d0c92e5d629511ee12d61fb7040a4d2f81a87",
+        "apiPids": {
+          "postgres": 100468,
+          "redis": 100457
+        },
+        "concurrency": 1,
+        "warmupPerBackendPerCase": 30,
+        "mainDataset": {
+          "roots": 500,
+          "replies": 1000,
+          "limit": 50
+        },
+        "replyDataset": {
+          "roots": 1,
+          "replies": 60,
+          "preview": 5,
+          "expanded": 50
+        },
+        "totalCommentsIncludingNegativeFixtures": 11563,
+        "sampling": "per-request AB/BA alternating pairs, all samples retained",
+        "continuationComparedOnSameAPIProcess": true,
+        "httpTiming": "from request send to complete JSON body, TLS connection established before timer",
+        "workerIntervalSeconds": 60,
+        "backgroundOriginalReadingProcesses": 2,
+        "sameSQLClusterAndAuthorizationAndKeys": true,
+        "snapshotsConfig": {
+          "createBackend": "redis",
+          "readPostgres": true,
+          "readRedis": true,
+          "ttlSeconds": 1800,
+          "maxIDs": 10000,
+          "maxPerAccount": 1024,
+          "maxSnapshotBytes": 196608,
+          "maxModuleBytes": 67108864,
+          "maxLedgerEntries": 8192,
+          "maxLedgerBytes": 4194304,
+          "ledgerFixedReserveBytes": 12582912,
+          "operationBudgetMilliseconds": 500,
+          "prepareLeaseSeconds": 30,
+          "cleanupIntervalSeconds": 10,
+          "cleanupBatchSize": 64,
+          "clockSkewMilliseconds": 2000,
+          "redis": {
+            "address": "127.0.0.1:36391",
+            "username": "community_comment_snapshot",
+            "passwordFile": "snapshot.password",
+            "namespace": "hnuhole:comment-snapshot:v1:dev:",
+            "epoch": "e1a738cc-143d-4f74-ac94-3d5f1f824fc8",
+            "deadlineMilliseconds": 100,
+            "poolSize": 8
+          }
+        },
+        "sqlPool": "runtime defaults, same on both",
+        "activeNamespacesAreDedicatedRedisInstances": true
+      },
+      "result": "FAIL",
+      "binarySHA256": "e6050c21fb763fe7825b9727960d0c92e5d629511ee12d61fb7040a4d2f81a87"
+    },
+    "saveOnceCandidate": {
+      "stats": {
+        "initial": {
+          "postgres": {
+            "samples": 200,
+            "p50Ms": 185.767357,
+            "p95Ms": 421.062797,
+            "p99Ms": 511.111944,
+            "meanMs": 230.378121865
+          },
+          "redis": {
+            "samples": 200,
+            "p50Ms": 188.306769,
+            "p95Ms": 409.565653,
+            "p99Ms": 461.79119,
+            "meanMs": 238.703657815
+          },
+          "p95RegressionPercent": -2.730505777740322,
+          "result": "PASS"
+        },
+        "continuation": {
+          "postgres": {
+            "samples": 1000,
+            "p50Ms": 170.262921,
+            "p95Ms": 359.02273,
+            "p99Ms": 485.928418,
+            "meanMs": 203.309799773
+          },
+          "redis": {
+            "samples": 1000,
+            "p50Ms": 169.448079,
+            "p95Ms": 381.189845,
+            "p99Ms": 497.428022,
+            "meanMs": 205.98928714
+          },
+          "p95RegressionPercent": 6.174292920116775,
+          "result": "FAIL"
+        },
+        "replyPreview": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 136.34184,
+            "p95Ms": 312.605281,
+            "p99Ms": 393.975567,
+            "meanMs": 160.65971103
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 146.526155,
+            "p95Ms": 325.91679,
+            "p99Ms": 440.399817,
+            "meanMs": 174.49033322666668
+          },
+          "p95RegressionPercent": 4.258248279561205,
+          "result": "PASS"
+        },
+        "replyExpanded": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 155.742757,
+            "p95Ms": 325.619555,
+            "p99Ms": 431.58715,
+            "meanMs": 187.01801355999999
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 163.453524,
+            "p95Ms": 303.451557,
+            "p99Ms": 367.997786,
+            "meanMs": 187.56836875333335
+          },
+          "p95RegressionPercent": -6.807944320174508,
+          "result": "PASS"
+        }
+      },
+      "metadata": {
+        "apiBinarySHA256": "f389beff5c0117be2d4106c916cd77a6c1b7e08770ae20c28c4dad95bcc149e2",
+        "apiPids": {
+          "postgres": 104808,
+          "redis": 104797
+        },
+        "concurrency": 1,
+        "warmupPerBackendPerCase": 30,
+        "mainDataset": {
+          "roots": 500,
+          "replies": 1000,
+          "limit": 50
+        },
+        "replyDataset": {
+          "roots": 1,
+          "replies": 60,
+          "preview": 5,
+          "expanded": 50
+        },
+        "totalCommentsIncludingNegativeFixtures": 1561,
+        "sampling": "per-request AB/BA alternating pairs, all samples retained",
+        "continuationComparedOnSameAPIProcess": true,
+        "httpTiming": "from request send to complete JSON body, TLS connection established before timer",
+        "workerIntervalSeconds": 60,
+        "backgroundOriginalReadingProcesses": 2,
+        "sameSQLClusterAndAuthorizationAndKeys": true,
+        "snapshotsConfig": {
+          "createBackend": "redis",
+          "readPostgres": true,
+          "readRedis": true,
+          "ttlSeconds": 1800,
+          "maxIDs": 10000,
+          "maxPerAccount": 1024,
+          "maxSnapshotBytes": 196608,
+          "maxModuleBytes": 67108864,
+          "maxLedgerEntries": 8192,
+          "maxLedgerBytes": 4194304,
+          "ledgerFixedReserveBytes": 12582912,
+          "operationBudgetMilliseconds": 500,
+          "prepareLeaseSeconds": 30,
+          "cleanupIntervalSeconds": 10,
+          "cleanupBatchSize": 64,
+          "clockSkewMilliseconds": 2000,
+          "redis": {
+            "address": "127.0.0.1:34581",
+            "username": "community_comment_snapshot",
+            "passwordFile": "snapshot.password",
+            "namespace": "hnuhole:comment-snapshot:v1:dev:",
+            "epoch": "a53a994f-4109-441f-9523-2179b636b8b3",
+            "deadlineMilliseconds": 100,
+            "poolSize": 8
+          }
+        },
+        "sqlPool": "runtime defaults, same on both",
+        "activeNamespacesAreDedicatedRedisInstances": true
+      },
+      "result": "FAIL",
+      "binarySHA256": "f389beff5c0117be2d4106c916cd77a6c1b7e08770ae20c28c4dad95bcc149e2",
+      "focusedRealRedisRace": {
+        "status": "PASS",
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "tests": [
+          "TestRealRedisPressureEnvelopeAndSeparateAdmission",
+          "TestRealRedisFailedCompensationAndBoundedBulkRecovery",
+          "TestRealRedisDeadlineStateLossAndControlledExpiry",
+          "TestRealRedisSnapshotOperationMeasurements",
+          "TestCodecBindsValueAndCursor",
+          "TestRealRedisPublishedNonceQuotaAndFixedExpiry",
+          "TestRealRedisTwoInstancesConcurrentQuota",
+          "TestRealRedisRuntimeACLAndInitializationFence",
+          "TestRealRedisPartialWriteRemainsChargedUntilCompensation",
+          "TestRealRedisMissingDataLedgerAndOOMRemainDistinct",
+          "TestRealRedisAbortingFenceAndExpiredPendingRecovery"
+        ]
+      },
+      "capacity": "PASS",
+      "actualThirtyMinuteCandidateReading": "NOT_RUN",
+      "actualThirtyMinuteCandidateCompatibility": "NOT_RUN",
+      "candidateRealSQLCommitFailureFullRegression": "NOT_RUN",
+      "candidateSharedAdmissionSQLFullRegression": "NOT_RUN"
+    }
+  },
+  "realTimeFrozenOnly": {
+    "commonSHA256": "81314d453d337c93d5747eb760ec70348d5a4b767297ddc1eabded85d221309b",
+    "redisReading": {
+      "status": "PASS",
+      "wallSeconds": 1805.2967275239935,
+      "reads": 59,
+      "expiredCode": "CURSOR_INVALID",
+      "explicitRefreshSucceeded": true
+    },
+    "postgresV1V2Compatibility": {
+      "status": "PASS",
+      "wallSeconds": 1803.5803243859991,
+      "reads": 116,
+      "apiBinarySHA256": "f62c86d9eb6dc23da1668518065ff5aac44bd439e40a187fad1302fab8feda78",
+      "oldTableWithdrawal": true,
+      "explicitSwitchback": true
+    }
+  },
+  "frozenCapacity": {
+    "result": "PASS",
+    "reading501": {
+      "result": "PASS",
+      "pages": 10,
+      "rootCount": 500,
+      "replySnapshots": 500,
+      "requiredSnapshotCount": 501,
+      "actualLedgerCount": 503,
+      "replyP95Ms": 324.867284,
+      "redisBefore": {
+        "used_memory": "1335968",
+        "used_memory_human": "1.27M",
+        "used_memory_rss": "14151680",
+        "used_memory_rss_human": "13.50M",
+        "used_memory_peak": "1335968",
+        "used_memory_peak_human": "1.27M",
+        "used_memory_peak_perc": "100.00%",
+        "used_memory_overhead": "932048",
+        "used_memory_startup": "876560",
+        "used_memory_dataset": "403920",
+        "used_memory_dataset_perc": "87.92%",
+        "allocator_allocated": "2214720",
+        "allocator_active": "2478080",
+        "allocator_resident": "6664192",
+        "total_system_memory": "16551550976",
+        "total_system_memory_human": "15.41G",
+        "used_memory_lua": "115712",
+        "used_memory_vm_eval": "115712",
+        "used_memory_lua_human": "113.00K",
+        "used_memory_scripts_eval": "10448",
+        "number_of_cached_scripts": "2",
+        "number_of_functions": "0",
+        "number_of_libraries": "0",
+        "used_memory_vm_functions": "32768",
+        "used_memory_vm_total": "148480",
+        "used_memory_vm_total_human": "145.00K",
+        "used_memory_functions": "200",
+        "used_memory_scripts": "10648",
+        "used_memory_scripts_human": "10.40K",
+        "maxmemory": "134217728",
+        "maxmemory_human": "128.00M",
+        "maxmemory_policy": "noeviction",
+        "allocator_frag_ratio": "1.12",
+        "allocator_frag_bytes": "263360",
+        "allocator_rss_ratio": "2.69",
+        "allocator_rss_bytes": "4186112",
+        "rss_overhead_ratio": "2.12",
+        "rss_overhead_bytes": "7487488",
+        "mem_fragmentation_ratio": "11.12",
+        "mem_fragmentation_bytes": "12878704",
+        "mem_not_counted_for_evict": "0",
+        "mem_replication_backlog": "0",
+        "mem_total_replication_buffers": "0",
+        "mem_clients_slaves": "0",
+        "mem_clients_normal": "44544",
+        "mem_cluster_links": "0",
+        "mem_aof_buffer": "0",
+        "mem_allocator": "jemalloc-5.3.0",
+        "active_defrag_running": "0",
+        "lazyfree_pending_objects": "0",
+        "lazyfreed_objects": "0"
+      },
+      "redisAfter": {
+        "used_memory": "1785328",
+        "used_memory_human": "1.70M",
+        "used_memory_rss": "17907712",
+        "used_memory_rss_human": "17.08M",
+        "used_memory_peak": "2014688",
+        "used_memory_peak_human": "1.92M",
+        "used_memory_peak_perc": "88.62%",
+        "used_memory_overhead": "975840",
+        "used_memory_startup": "876560",
+        "used_memory_dataset": "809488",
+        "used_memory_dataset_perc": "89.08%",
+        "allocator_allocated": "3653416",
+        "allocator_active": "4149248",
+        "allocator_resident": "10850304",
+        "total_system_memory": "16551550976",
+        "total_system_memory_human": "15.41G",
+        "used_memory_lua": "1694720",
+        "used_memory_vm_eval": "1694720",
+        "used_memory_lua_human": "1.62M",
+        "used_memory_scripts_eval": "10448",
+        "number_of_cached_scripts": "2",
+        "number_of_functions": "0",
+        "number_of_libraries": "0",
+        "used_memory_vm_functions": "32768",
+        "used_memory_vm_total": "1727488",
+        "used_memory_vm_total_human": "1.65M",
+        "used_memory_functions": "200",
+        "used_memory_scripts": "10648",
+        "used_memory_scripts_human": "10.40K",
+        "maxmemory": "134217728",
+        "maxmemory_human": "128.00M",
+        "maxmemory_policy": "noeviction",
+        "allocator_frag_ratio": "1.14",
+        "allocator_frag_bytes": "495832",
+        "allocator_rss_ratio": "2.62",
+        "allocator_rss_bytes": "6701056",
+        "rss_overhead_ratio": "1.65",
+        "rss_overhead_bytes": "7057408",
+        "mem_fragmentation_ratio": "10.25",
+        "mem_fragmentation_bytes": "16160704",
+        "mem_not_counted_for_evict": "0",
+        "mem_replication_backlog": "0",
+        "mem_total_replication_buffers": "0",
+        "mem_clients_slaves": "0",
+        "mem_clients_normal": "48144",
+        "mem_cluster_links": "0",
+        "mem_aof_buffer": "0",
+        "mem_allocator": "jemalloc-5.3.0",
+        "active_defrag_running": "0",
+        "lazyfree_pending_objects": "0",
+        "lazyfreed_objects": "0"
+      },
+      "ledgerMemoryBytes": 229496,
+      "dataMemoryTotalBytes": 205080,
+      "dataMemoryMaxBytes": 8360,
+      "reservedBytes": 16752640
+    },
+    "crossProcessQuota": {
+      "result": "PASS",
+      "accountQuota": 1024,
+      "concurrentRejected": 32,
+      "minRetryAfter": 1570
+    }
+  },
+  "frozenFaults": {
+    "result": "PASS",
+    "actualAPICommandProcess": true,
+    "separateFaultRedis": true,
+    "checks": {
+      "crossAccount": true,
+      "cursorMAC": true,
+      "cursorKind": true,
+      "sessionGenerationRechecked": true,
+      "payloadIntegrityNoFallback": true,
+      "actualOOMOldReadAndNewCapacity": true,
+      "dataLossIsInvalid": true,
+      "ledgerLossBlocksNewButKeepsImmutableOldRead": true,
+      "transportFailureBoundedNoFallback": true,
+      "actualRedisRestartDoesNotAutoInitialize": true,
+      "oldPostgresSnapshotCountUnchangedAcrossFailures": true
+    },
+    "faultTransportMilliseconds": 104.192146
+  },
+  "frozenAdmissionIsolation": {
+    "result": "PASS",
+    "actualAPICommandProcesses": 2,
+    "realPostgresAdmissionMetadata": true,
+    "separateRedisProcesses": true,
+    "snapshotRedisPid": 100252,
+    "admissionRedisPid": 100257,
+    "apiPids": [
+      100275,
+      100288
+    ],
+    "persistentAccountChargeSurvivesSnapshotOOM": true,
+    "crossProcessRateEnforcement": true,
+    "snapshotCapacityResponsesDoNotResetAdmission": true,
+    "namespaceGenerationUnchanged": true,
+    "admissionMemoryBefore": {
+      "used_memory": "1338632",
+      "used_memory_human": "1.28M",
+      "used_memory_rss": "14159872",
+      "used_memory_rss_human": "13.50M",
+      "used_memory_peak": "1376152",
+      "used_memory_peak_human": "1.31M",
+      "used_memory_peak_perc": "97.27%",
+      "used_memory_overhead": "902456",
+      "used_memory_startup": "876496",
+      "used_memory_dataset": "436176",
+      "used_memory_dataset_perc": "94.38%",
+      "allocator_allocated": "2460128",
+      "allocator_active": "2691072",
+      "allocator_resident": "6942720",
+      "total_system_memory": "16551550976",
+      "total_system_memory_human": "15.41G",
+      "used_memory_lua": "71680",
+      "used_memory_vm_eval": "71680",
+      "used_memory_lua_human": "70.00K",
+      "used_memory_scripts_eval": "10360",
+      "number_of_cached_scripts": "1",
+      "number_of_functions": "0",
+      "number_of_libraries": "0",
+      "used_memory_vm_functions": "32768",
+      "used_memory_vm_total": "104448",
+      "used_memory_vm_total_human": "102.00K",
+      "used_memory_functions": "200",
+      "used_memory_scripts": "10560",
+      "used_memory_scripts_human": "10.31K",
+      "maxmemory": "134217728",
+      "maxmemory_human": "128.00M",
+      "maxmemory_policy": "noeviction",
+      "allocator_frag_ratio": "1.09",
+      "allocator_frag_bytes": "230944",
+      "allocator_rss_ratio": "2.58",
+      "allocator_rss_bytes": "4251648",
+      "rss_overhead_ratio": "2.04",
+      "rss_overhead_bytes": "7217152",
+      "mem_fragmentation_ratio": "10.89",
+      "mem_fragmentation_bytes": "12859576",
+      "mem_not_counted_for_evict": "0",
+      "mem_replication_backlog": "0",
+      "mem_total_replication_buffers": "0",
+      "mem_clients_slaves": "0",
+      "mem_clients_normal": "15104",
+      "mem_cluster_links": "0",
+      "mem_aof_buffer": "0",
+      "mem_allocator": "jemalloc-5.3.0",
+      "active_defrag_running": "0",
+      "lazyfree_pending_objects": "0",
+      "lazyfreed_objects": "0"
+    },
+    "admissionMemoryAfter": {
+      "used_memory": "1428776",
+      "used_memory_human": "1.36M",
+      "used_memory_rss": "14159872",
+      "used_memory_rss_human": "13.50M",
+      "used_memory_peak": "1431784",
+      "used_memory_peak_human": "1.37M",
+      "used_memory_peak_perc": "99.79%",
+      "used_memory_overhead": "929976",
+      "used_memory_startup": "876496",
+      "used_memory_dataset": "498800",
+      "used_memory_dataset_perc": "90.32%",
+      "allocator_allocated": "2388992",
+      "allocator_active": "2682880",
+      "allocator_resident": "7036928",
+      "total_system_memory": "16551550976",
+      "total_system_memory_human": "15.41G",
+      "used_memory_lua": "78848",
+      "used_memory_vm_eval": "78848",
+      "used_memory_lua_human": "77.00K",
+      "used_memory_scripts_eval": "10360",
+      "number_of_cached_scripts": "1",
+      "number_of_functions": "0",
+      "number_of_libraries": "0",
+      "used_memory_vm_functions": "32768",
+      "used_memory_vm_total": "111616",
+      "used_memory_vm_total_human": "109.00K",
+      "used_memory_functions": "200",
+      "used_memory_scripts": "10560",
+      "used_memory_scripts_human": "10.31K",
+      "maxmemory": "134217728",
+      "maxmemory_human": "128.00M",
+      "maxmemory_policy": "noeviction",
+      "allocator_frag_ratio": "1.12",
+      "allocator_frag_bytes": "293888",
+      "allocator_rss_ratio": "2.62",
+      "allocator_rss_bytes": "4354048",
+      "rss_overhead_ratio": "2.01",
+      "rss_overhead_bytes": "7122944",
+      "mem_fragmentation_ratio": "10.46",
+      "mem_fragmentation_bytes": "12806392",
+      "mem_not_counted_for_evict": "0",
+      "mem_replication_backlog": "0",
+      "mem_total_replication_buffers": "0",
+      "mem_clients_slaves": "0",
+      "mem_clients_normal": "42496",
+      "mem_cluster_links": "0",
+      "mem_aof_buffer": "0",
+      "mem_allocator": "jemalloc-5.3.0",
+      "active_defrag_running": "0",
+      "lazyfree_pending_objects": "0",
+      "lazyfreed_objects": "0"
+    }
+  },
+  "frozenRollback": {
+    "result": "PASS",
+    "checks": {
+      "redisCreationFleetReadsPGV1AndV2": true,
+      "explicitDisableRejectsPGSource": true,
+      "renamedOldTableNotUsedByNewReadQuotaContinuationReplyOrLocate": true,
+      "explicitPGCreationSwitchbackKeepsRedisCursorsReadable": true
+    },
+    "apiPids": [
+      102518,
+      102533
+    ],
+    "fixedPGCursorWindowSeconds": 1800,
+    "apiBinarySHA256": "e6050c21fb763fe7825b9727960d0c92e5d629511ee12d61fb7040a4d2f81a87",
+    "scope": "actual process switch paths, not a deployed fleet or a timed production rollout"
+  },
+  "frozenNonceGrowth": {
+    "result": "PASS",
+    "replayAfterGrowthPreservesMembershipAndCursor": true,
+    "liveTotalCount": 10002,
+    "newNonceStillTooLarge": true,
+    "originalCursorStillReads": true,
+    "finalAPIProcessPid": 100427,
+    "apiBinarySHA256": "e6050c21fb763fe7825b9727960d0c92e5d629511ee12d61fb7040a4d2f81a87"
+  },
+  "measurementLimitations": [
+    "Within each cohort PG and Redis share data; global row count differs across frozen and candidate cohorts (11563 vs1561), so cross-version changes are not pure causal estimates.",
+    "PG baseline has ReadRedis enabled for combined quota; steady PG-only vs Redis-only is not measured.",
+    "SharedRateLimit is disabled in performance fixture; separate real SQL/admission isolation is not a performance run.",
+    "Concurrency one for P95; 32 concurrent quota rejects are not concurrency32 performance proof.",
+    "Descriptive paired block resampling does not change hard P95 failure.",
+    "Global ledger remains O(N), background Collect plus Usage repeats full decoding per API every10seconds."
+  ],
+  "samplingDiagnostics": {
+    "frozen": {
+      "stats": {
+        "initial": {
+          "samplesPerBackend": 200,
+          "meanPairedRedisMinusPgMs": 17.14171787,
+          "medianPairedRedisMinusPgMs": 14.8183985,
+          "meanRegressionPercent": 5.79542968740574,
+          "p95PointRegressionPercent": 3.460719242590793,
+          "diagnosticPairedBlockResampling": {
+            "replications": 2000,
+            "blockPairs": 20,
+            "seed": 20261025,
+            "p2_5RegressionPercent": -5.559577144012174,
+            "p97_5RegressionPercent": 11.599537336602218,
+            "acceptanceEffect": "NONE; descriptive sensitivity only, point result is not changed"
+          }
+        },
+        "continuation": {
+          "samplesPerBackend": 1000,
+          "meanPairedRedisMinusPgMs": -1.368421956999999,
+          "medianPairedRedisMinusPgMs": -0.1695060000000126,
+          "meanRegressionPercent": -0.49742624539255154,
+          "p95PointRegressionPercent": 2.9545632927071575,
+          "diagnosticPairedBlockResampling": {
+            "replications": 2000,
+            "blockPairs": 20,
+            "seed": 20261025,
+            "p2_5RegressionPercent": -8.674132613024877,
+            "p97_5RegressionPercent": 11.618266766410134,
+            "acceptanceEffect": "NONE; descriptive sensitivity only, point result is not changed"
+          }
+        },
+        "replyPreview": {
+          "samplesPerBackend": 300,
+          "meanPairedRedisMinusPgMs": 12.936029916666666,
+          "medianPairedRedisMinusPgMs": 16.253041500000002,
+          "meanRegressionPercent": 6.461749255965099,
+          "p95PointRegressionPercent": 5.316591241090962,
+          "diagnosticPairedBlockResampling": {
+            "replications": 2000,
+            "blockPairs": 20,
+            "seed": 20261025,
+            "p2_5RegressionPercent": -11.49587562286295,
+            "p97_5RegressionPercent": 16.8302231238717,
+            "acceptanceEffect": "NONE; descriptive sensitivity only, point result is not changed"
+          }
+        },
+        "replyExpanded": {
+          "samplesPerBackend": 300,
+          "meanPairedRedisMinusPgMs": 14.419916279999999,
+          "medianPairedRedisMinusPgMs": 17.38349100000002,
+          "meanRegressionPercent": 6.19649712632222,
+          "p95PointRegressionPercent": -0.444343046990614,
+          "diagnosticPairedBlockResampling": {
+            "replications": 2000,
+            "blockPairs": 20,
+            "seed": 20261025,
+            "p2_5RegressionPercent": -12.801319413780876,
+            "p97_5RegressionPercent": 18.385633369435595,
+            "acceptanceEffect": "NONE; descriptive sensitivity only, point result is not changed"
+          }
+        }
+      },
+      "globalCommentRows": 11563,
+      "result": "FAIL"
+    },
+    "candidate": {
+      "stats": {
+        "initial": {
+          "samplesPerBackend": 200,
+          "meanPairedRedisMinusPgMs": 8.32553595,
+          "medianPairedRedisMinusPgMs": 5.766814500000002,
+          "meanRegressionPercent": 3.6138570288713145,
+          "p95PointRegressionPercent": -2.730505777740322,
+          "diagnosticPairedBlockResampling": {
+            "replications": 2000,
+            "blockPairs": 20,
+            "seed": 20261025,
+            "p2_5RegressionPercent": -13.194691694402017,
+            "p97_5RegressionPercent": 10.373000877395032,
+            "acceptanceEffect": "NONE; descriptive sensitivity only, point result is not changed"
+          }
+        },
+        "continuation": {
+          "samplesPerBackend": 1000,
+          "meanPairedRedisMinusPgMs": 2.6794873670000006,
+          "medianPairedRedisMinusPgMs": 0.4187544999999986,
+          "meanRegressionPercent": 1.317933208331179,
+          "p95PointRegressionPercent": 6.174292920116775,
+          "diagnosticPairedBlockResampling": {
+            "replications": 2000,
+            "blockPairs": 20,
+            "seed": 20261025,
+            "p2_5RegressionPercent": -0.6497702923212612,
+            "p97_5RegressionPercent": 14.832023386616978,
+            "acceptanceEffect": "NONE; descriptive sensitivity only, point result is not changed"
+          }
+        },
+        "replyPreview": {
+          "samplesPerBackend": 300,
+          "meanPairedRedisMinusPgMs": 13.830622196666667,
+          "medianPairedRedisMinusPgMs": 10.20055450000001,
+          "meanRegressionPercent": 8.608643765134172,
+          "p95PointRegressionPercent": 4.258248279561205,
+          "diagnosticPairedBlockResampling": {
+            "replications": 2000,
+            "blockPairs": 20,
+            "seed": 20261025,
+            "p2_5RegressionPercent": -4.330501548858501,
+            "p97_5RegressionPercent": 14.24499597883977,
+            "acceptanceEffect": "NONE; descriptive sensitivity only, point result is not changed"
+          }
+        },
+        "replyExpanded": {
+          "samplesPerBackend": 300,
+          "meanPairedRedisMinusPgMs": 0.5503551933333342,
+          "medianPairedRedisMinusPgMs": 11.380351499999989,
+          "meanRegressionPercent": 0.294279242334472,
+          "p95PointRegressionPercent": -6.807944320174508,
+          "diagnosticPairedBlockResampling": {
+            "replications": 2000,
+            "blockPairs": 20,
+            "seed": 20261025,
+            "p2_5RegressionPercent": -26.730359440806563,
+            "p97_5RegressionPercent": -0.08247002300513229,
+            "acceptanceEffect": "NONE; descriptive sensitivity only, point result is not changed"
+          }
+        }
+      },
+      "globalCommentRows": 1561,
+      "result": "FAIL"
+    }
+  },
+  "readonlyRedisProfile": {
+    "capturedAtUnix": 1792900617.8092124,
+    "scope": "read-only Redis SLOWLOG durations; slowlog is sampled/truncated, not HTTP P95 or complete op attribution",
+    "groups": {
+      "write": {
+        "count": 126,
+        "minimumMs": 12.814,
+        "maximumMs": 19.467,
+        "meanMs": 14.86820634920635
+      },
+      "read": {
+        "count": 2,
+        "minimumMs": 10.098,
+        "maximumMs": 12.535,
+        "meanMs": 11.316500000000001
+      }
+    },
+    "commandstats": "# Commandstats\r\ncmdstat_setnx:calls=1,usec=5,usec_per_call=5.00,rejected_calls=0,failed_calls=0\r\ncmdstat_memory|usage:calls=504,usec=541,usec_per_call=1.07,rejected_calls=0,failed_calls=0\r\ncmdstat_slowlog|get:calls=1,usec=136,usec_per_call=136.00,rejected_calls=0,failed_calls=0\r\ncmdstat_set:calls=7284,usec=38398,usec_per_call=5.27,rejected_calls=0,failed_calls=0\r\ncmdstat_info:calls=439,usec=16700,usec_per_call=38.04,rejected_calls=0,failed_calls=0\r\ncmdstat_hello:calls=11,usec=67,usec_per_call=6.09,rejected_calls=0,failed_calls=0\r\ncmdstat_auth:calls=520,usec=750,usec_per_call=1.44,rejected_calls=0,failed_calls=0\r\ncmdstat_pttl:calls=1085,usec=675,usec_per_call=0.62,rejected_calls=0,failed_calls=0\r\ncmdstat_config|get:calls=7,usec=59,usec_per_call=8.43,rejected_calls=0,failed_calls=0\r\ncmdstat_scan:calls=1,usec=27,usec_per_call=27.00,rejected_calls=0,failed_calls=0\r\ncmdstat_eval:calls=2,usec=451,usec_per_call=225.50,rejected_calls=0,failed_calls=0\r\ncmdstat_evalsha:calls=6452,usec=36928863,usec_per_call=5723.63,rejected_calls=0,failed_calls=34\r\ncmdstat_time:calls=6452,usec=13751,usec_per_call=2.13,rejected_calls=0,failed_calls=0\r\ncmdstat_acl|setuser:calls=1,usec=27,usec_per_call=27.00,rejected_calls=0,failed_calls=0\r\ncmdstat_exists:calls=1853,usec=3390,usec_per_call=1.83,rejected_calls=0,failed_calls=0\r\ncmdstat_get:calls=14727,usec=317915,usec_per_call=21.59,rejected_calls=0,failed_calls=0\r\n",
+    "ledgerBytes": 809318
+  },
+  "device": {
+    "phase4": "NINE_PRODUCTION_WIDGET_FIXTURE_SCENARIOS_PASS_HISTORICAL",
+    "phase5EndToEnd": "NOT_RUN",
+    "leaseStateAtReview": "released",
+    "leaseReleasedAtUTC": "2026-10-25T03:27:51.027713+00:00",
+    "deviceTouchedDuringReview": false,
+    "nextAction": "Sol recheck and acquire lease before end-to-end acceptance"
+  },
+  "rawArtifactDirectory": "C:/Users/24237/Documents/ChatGPT/Hnuhole/comment-snapshot-redis-20261024/stage-5-evidence",
+  "artifacts": {
+    "preliminary-capacity-performance.json": {
+      "sha256": "49eb3463271647eda9fd74edc75a756dc0c9a42399fa615dd8ab5b0497ad2800",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/process-20261025T031814-c89454/capacity-performance.json",
+      "bytes": 32434
+    },
+    "preliminary-performance-final.json": {
+      "sha256": "d3ada4087de94286d79bcd586972cd0d7afc0d8f6d104c09ddb32d78adc92db6",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/process-20261025T031814-c89454/performance-final.json",
+      "bytes": 75615
+    },
+    "preliminary-long-read-verified.json": {
+      "sha256": "442086ca2bb10ba2eb6194bfdee614c8587fc10393243d086a1dc3e4ead9d588",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/process-20261025T031814-c89454/long-read-verified.json",
+      "bytes": 15143
+    },
+    "preliminary-preliminary-lifecycle.json": {
+      "sha256": "c6cac091b65c1efcc73a98720c35e9fb5c12c5051b003173d21eb7e4fb0a9614",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/process-20261025T031814-c89454/preliminary-lifecycle.json",
+      "bytes": 294
+    },
+    "preliminary-summary.json": {
+      "sha256": "b717ff69a0117faa28963c81fd2eba8d4ee227c5a60c3f333ee1a276b2dd5414",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/process-20261025T031814-c89454/summary.json",
+      "bytes": 1662
+    },
+    "frozen-capacity-performance.json": {
+      "sha256": "c561f793b665fd83d52991b22b0bcc16ac919361c84ffcf1ad9f8bbfc230133b",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/process-20261025T033627-707dbb/capacity-performance.json",
+      "bytes": 4497
+    },
+    "frozen-api-faults.json": {
+      "sha256": "de0feb5b64dc0f3cdd9a994f2850cd31dfaaf3ad51ac26dbf74744bab8f8486e",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/process-20261025T033627-707dbb/api-faults.json",
+      "bytes": 596
+    },
+    "frozen-api-admission-isolation.json": {
+      "sha256": "a326b207159b16e021e74d3f84944bae2b6c797431cac6e885bc2304071ca5f2",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/process-20261025T033627-707dbb/api-admission-isolation.json",
+      "bytes": 4230
+    },
+    "frozen-nonce-growth.json": {
+      "sha256": "f8d68492ae1be42fba92ac086642b755c80617c4064e1fe40fb58fd5b7a87608",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/process-20261025T033627-707dbb/nonce-growth.json",
+      "bytes": 297
+    },
+    "frozen-performance-final.json": {
+      "sha256": "effd1c3c54304da8f9b908b84c23823032769a64baa9d366c78594558b9700f8",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/process-20261025T033627-707dbb/performance-final.json",
+      "bytes": 75604
+    },
+    "frozen-api-rollback.json": {
+      "sha256": "5a7ec7cc7fb9746caf3bc177fb0be731bd2825dcb881a1376cdeaa341fa64793",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/process-20261025T033627-707dbb/api-rollback.json",
+      "bytes": 537
+    },
+    "frozen-long-read-result.json": {
+      "sha256": "1f3f76894e6974e0c752f06a6c70a12254698eb76d5d68a256e432966509c508",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/process-20261025T033627-707dbb/long-read-result.json",
+      "bytes": 6512
+    },
+    "frozen-summary.json": {
+      "sha256": "a84a37341ffc188f3934affd53e9644837d7acbd48ba54e7d2235026c18baa9a",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/process-20261025T033627-707dbb/summary.json",
+      "bytes": 1706
+    },
+    "candidate-capacity-performance.json": {
+      "sha256": "367119037e7c7b61fbec5a9289b22d02044a29d4d7c8482e725a8e0478635282",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/review-save-once-20261025/process-20261025T035807-69e44b/capacity-performance.json",
+      "bytes": 4494
+    },
+    "candidate-performance-final.json": {
+      "sha256": "491872e46d5e10fe684274d728c975424c68f3d86f8ae12269cbc6680f163c13",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/review-save-once-20261025/process-20261025T035807-69e44b/performance-final.json",
+      "bytes": 75569
+    },
+    "compatibility-summary.json": {
+      "sha256": "6bf32f3116b0fa79672a15581177aa237a74571bf992048241c2dbb7908bd69b",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/final-stage5/compatibility-summary.json",
+      "bytes": 18719
+    },
+    "candidate-review-summary.json": {
+      "sha256": "5dfba42d4c18256fe02a73b11e3ac0860a93684eb65216b44cc6799be5cbdfac",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/review-save-once-20261025/review-candidate-summary.json",
+      "bytes": 84399
+    },
+    "review-readonly-profile.json": {
+      "sha256": "b590c2aa08be197df4c012908d54d1cea83f23dbf25cf1add422622eff9a6584",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-review-readonly-profile.json",
+      "bytes": 1926
+    },
+    "review-source-delta.json": {
+      "sha256": "7608c73f157dc921f6293ab1b4ce43c4e9a1eb7d38760da8bd630fb79fb65e0a",
+      "source": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-review-source-delta.json",
+      "bytes": 498
+    },
+    "candidate-focused-redacted.log": {
+      "sha256": "706163e47210c466be4e2b186cf7b04ca208aa8530161b21bc06c2bf716ef9a2",
+      "sourcePrivateLogSHA256": "65904831d82a27b99158a18f22d4cb2b861b7c70d38d7e9f68c93d44cf02f728",
+      "bytes": 2097
+    },
+    "review-sampling-diagnostics.json": {
+      "sha256": "e796a8026f192ac02309a90b56bdb2cf707efcdedbf28cc321a4b4410c461556",
+      "bytes": 5281
+    }
+  },
+  "nextPlan": [
+    "Retain save-once only as a safe minimal candidate, not sufficient performance completion.",
+    "Normalize full fixture, namespace occupancy, runtime/limiter modes and balanced ordering; record request times and segmented store/SQL/queue diagnostics.",
+    "Evaluate returning fully validated ledger statistics and reusing Collect statistics to avoid duplicate Usage scans, preserving all quota/byte and state checks.",
+    "If maintenance phase correlation is demonstrated, evaluate bounded phase spreading without violating healthy60second recovery.",
+    "Run final-source SQL failure, compensation, quota/OOM/state loss, two API plus real SQL admission isolation, migration/rollback and all four P95 cases; retain failures and version-specific30minute evidence."
+  ],
+  "notification": {
+    "targetThread": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "status": "SENT_LIMITED_REVIEW_RECEIPT_NOT_PHASE5_COMPLETION"
+  }
+}
