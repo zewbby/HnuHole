@@ -1051,6 +1051,13 @@ class _PostConfirmScreenState extends State<_PostConfirmScreen> {
         _identities.any((identity) => identity.id == selection)) {
       setState(() {
         widget.editor.identityId = selection;
+        if (!widget.editor.isRetry) {
+          widget.controller.activeIdentity?.selectConfirmed(
+            selection,
+            _identities.map((i) => i.id),
+            account: widget.controller.accountId,
+          );
+        }
         widget.editor.saved = false;
       });
     }

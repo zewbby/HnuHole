@@ -7,6 +7,7 @@ import '../auth/auth_session_controller.dart';
 import '../auth/auth_store.dart';
 import '../auth/auth_crypto.dart';
 import '../identity/identity_api.dart';
+import '../identity/active_identity_controller.dart';
 import '../posts/post_protocol.dart';
 import '../posts/post_models.dart';
 import 'governance_api.dart';
@@ -121,7 +122,29 @@ class GovernanceController extends ChangeNotifier {
   bool get restricted => _token != null && _token == restrictedAccess?.token;
   List<ManagedIdentity> identities = [];
   List<SystemNotice> items = [];
-  String? selectedIdentityId, nextBefore, error;
+  String? _selectedIdentityId, nextBefore, error;
+  ActiveIdentityController? activeIdentity;
+  String? get selectedIdentityId => restricted
+      ? _selectedIdentityId
+      : activeIdentity?.accountId == _account
+      ? activeIdentity?.selectedId ?? _selectedIdentityId
+      : _selectedIdentityId;
+  set selectedIdentityId(String? id) => _selectedIdentityId = id;
+  void bindActiveIdentity(ActiveIdentityController? value) {
+    activeIdentity?.removeListener(_activeIdentityChanged);
+    activeIdentity = value;
+    value?.addListener(_activeIdentityChanged);
+    _activeIdentityChanged();
+  }
+
+  void _activeIdentityChanged() {
+    if (restricted) return;
+    _listRequest++;
+    items = [];
+    nextBefore = null;
+    _notify();
+  }
+
   Map<String, dynamic>? pending;
   bool loading = false, busy = false;
   bool _disposed = false;
@@ -134,7 +157,47 @@ class GovernanceController extends ChangeNotifier {
       !_disposed &&
       _token != null &&
       (sessions.isCurrentToken(_token!) || _token == restrictedAccess?.token);
-  bool get hasUnread => items.any((i) => i.unread);
+  bool _inboxUnread = false;
+  bool get hasUnread => _inboxUnread || items.any((i) => i.unread);
+
+  void updateInboxUnread(bool unread) {
+    if (_inboxUnread == unread) return;
+    _inboxUnread = unread;
+    _notify();
+  }
+
+  Future<Map<String, dynamic>?> requestInbox(
+    String method,
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String>? query,
+  }) async {
+    if (!path.startsWith('/api/v1/notifications')) {
+      throw ArgumentError('Invalid inbox path');
+    }
+    final authority = _capture();
+    try {
+      return await _request(authority, method, path, body: body, query: query);
+    } on Object catch (e) {
+      _fail(e, authority);
+      rethrow;
+    }
+  }
+
+  void selectInboxIdentity(String id) {
+    if (!identities.any((i) => i.id == id)) return;
+    activeIdentity?.selectConfirmed(
+      id,
+      identities.map((i) => i.id),
+      account: accountId,
+    );
+    selectedIdentityId = id;
+    _listRequest++;
+    items = [];
+    nextBefore = null;
+    _notify();
+  }
+
   void _notify() {
     if (!_disposed) notifyListeners();
   }
@@ -164,6 +227,7 @@ class GovernanceController extends ChangeNotifier {
     _listRequest++;
     identities = [];
     items = [];
+    _inboxUnread = false;
     selectedIdentityId = nextBefore = error = null;
     pending = null;
     busy = loading = false;
@@ -293,6 +357,13 @@ class GovernanceController extends ChangeNotifier {
 
   Future<void> selectIdentity(String? id) async {
     if (id != null && !identities.any((i) => i.id == id)) return;
+    if (id != null && !restricted) {
+      activeIdentity?.selectConfirmed(
+        id,
+        identities.map((i) => i.id),
+        account: accountId,
+      );
+    }
     selectedIdentityId = id;
     items = [];
     nextBefore = null;
@@ -884,6 +955,7 @@ class GovernanceController extends ChangeNotifier {
 
   @override
   void dispose() {
+    activeIdentity?.removeListener(_activeIdentityChanged);
     _disposed = true;
     _epoch++;
     sessions.removeListener(_changed);

@@ -10,6 +10,7 @@ import '../auth/auth_models.dart';
 import '../auth/auth_store.dart';
 import '../identity/identity_api.dart';
 import '../identity/identity_management_controller.dart';
+import '../identity/active_identity_controller.dart';
 import '../posts/post_photo_picker.dart';
 import 'dm_protocol.dart';
 import 'dm_controller.dart';
@@ -283,17 +284,50 @@ class DmInboxRoute extends StatefulWidget {
     this.navigation,
     this.initialIdentity,
     this.onManageIdentities,
+    this.activeIdentity,
   });
   final String? initialIdentity;
   final DmRuntime runtime;
   final Widget? navigation;
   final VoidCallback? onManageIdentities;
+  final ActiveIdentityController? activeIdentity;
   @override
   State<DmInboxRoute> createState() => _DmInboxRouteState();
 }
 
 class _DmInboxRouteState extends State<DmInboxRoute> {
-  late String? _selected = widget.initialIdentity;
+  late String? _selected =
+      widget.initialIdentity ?? widget.activeIdentity?.selectedId;
+  @override
+  void initState() {
+    super.initState();
+    widget.activeIdentity?.addListener(_activeChanged);
+    if (widget.initialIdentity case final id?) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) widget.activeIdentity?.select(id);
+      });
+    }
+  }
+
+  void _activeChanged() {
+    final id = widget.activeIdentity?.selectedId;
+    if (!mounted || id == _selected) return;
+    setState(() {
+      _selected = id;
+      _query = '';
+      _searchMatches = {};
+      _searchGeneration++;
+      _searching = false;
+      _searchError = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.activeIdentity?.removeListener(_activeChanged);
+    super.dispose();
+  }
+
   String _query = '';
   Set<String> _searchMatches = {};
   int _searchGeneration = 0;
@@ -453,14 +487,21 @@ class _DmInboxRouteState extends State<DmInboxRoute> {
                     .firstOrNull;
                 if (dir != null) unawaited(showDmManagement(context, c, dir));
               },
-        onIdentitySelected: (i) => setState(() {
-          _selected = i.id;
-          _query = '';
-          _searchMatches = {};
-          _searchGeneration++;
-          _searching = false;
-          _searchError = null;
-        }),
+        onIdentitySelected: (i) {
+          widget.activeIdentity?.selectConfirmed(
+            i.id,
+            widget.runtime.identities.map((i) => i.id),
+            account: widget.runtime.authStore.current?.session?.accountId,
+          );
+          setState(() {
+            _selected = i.id;
+            _query = '';
+            _searchMatches = {};
+            _searchGeneration++;
+            _searching = false;
+            _searchError = null;
+          });
+        },
         onOpen: (target) {
           final v = c.conversations
               .where(

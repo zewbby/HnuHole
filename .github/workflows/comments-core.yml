@@ -5,11 +5,24 @@ on:
     paths:
       - 'services/api/internal/comments/**'
       - 'apps/mobile/lib/src/comments/**'
+      - 'apps/mobile/lib/src/system_notifications/**'
+      - 'apps/mobile/lib/src/identity/identity_switcher.dart'
+      - 'apps/mobile/lib/src/identity/active_identity_controller.dart'
+      - 'apps/mobile/lib/src/navigation/**'
+      - 'apps/mobile/lib/src/posts/post_controller.dart'
+      - 'apps/mobile/lib/src/posts/personal_profile.dart'
+      - 'apps/mobile/lib/src/messaging/dm_runtime.dart'
+      - 'apps/mobile/test/active_identity_test.dart'
+      - 'apps/mobile/lib/src/messaging/direct_message_inbox.dart'
+      - 'apps/mobile/lib/main.dart'
+      - 'apps/mobile/test/notification_inbox_test.dart'
+      - 'apps/mobile/test/app_navigation_test.dart'
       - 'apps/mobile/test/comment_*'
       - 'packages/openapi/**'
       - 'packages/comment-protocol-vectors/**'
       - 'tools/check-comment-contract.py'
       - 'tools/check-comment-business-contract.py'
+      - 'tools/check-notification-contract.py'
       - 'tools/tests/test_comment_contract.py'
       - '.github/workflows/comments-core.yml'
   workflow_dispatch:
@@ -68,6 +81,8 @@ jobs:
         run: |
           flutter analyze --no-pub
           flutter test --no-pub test/comment_core_test.dart test/comment_protocol_test.dart test/comment_journal_test.dart test/comment_views_test.dart test/comment_http_test.dart test/comment_failure_view_test.dart test/comment_runtime_test.dart test/post_images_test.dart test/post_media_repository_test.dart
+          flutter test --no-pub test/notification_inbox_test.dart test/app_navigation_test.dart test/direct_message_screen_test.dart test/governance_test.dart test/governance_http_test.dart
+          flutter test --no-pub test/active_identity_test.dart test/personal_profile_test.dart test/feed_scroll_refresh_test.dart
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -95,4 +110,5 @@ jobs:
           python packages/openapi/check-specs.py
           python tools/check-comment-contract.py
           python tools/check-comment-business-contract.py
+          python tools/check-notification-contract.py
           python -m unittest discover -s tools/tests -p test_comment_contract.py -v

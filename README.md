@@ -33,6 +33,8 @@
 
 ## 分支一览
 
+- [通知与互动收件箱](docs/branches/feat-notification-inbox.md)：`feat/notification-inbox` 接入四分类通知、全局身份同步和统一五项底栏；真实 `@` 暂不交付，当前正在验证并按授权推进 PR。
+
 - [帖子图片平滑续验](docs/branches/fix-media-seamless-renewal.md)：`codex/fix/media-seamless-renewal` 在权限续验成功且图片未变时保留画面与缓存，避免周期性重载；已由[PR #76](https://github.com/zewbby/HnuHole/pull/76)合入main，17项CI通过，未安装／部署。
 
 - [身份转帖](docs/branches/feat-post-reposts.md)：`feat/post-reposts` 提供持久化私人归档、条件写入与接线契约，已整合到个人页分支；未合并。

@@ -1,0 +1,325 @@
+openapi: 3.0.3
+info:
+  title: HnuHole notification inbox
+  version: 1.0.0
+  description: Ordinary C session. Replies and anonymous likes are selected-identity private. System events are
+    shared across this account own identities. Notifications are produced only on committed publication. Structured
+    mentions and OS push are not available.
+servers:
+- url: /
+security:
+- bearerAuth: []
+paths:
+  /api/v1/notifications:
+    get:
+      operationId: listNotificationInbox
+      parameters:
+      - &id001
+        name: identityId
+        in: query
+        schema:
+          type: string
+          format: uuid
+        description: Own active identity for replies, mentions and likes. System notifications ignore this selection
+          and remain account-private/shared. Omitted selection yields system records only.
+      - name: category
+        in: query
+        schema:
+          type: string
+          enum:
+          - all
+          - reply
+          - like
+          - system
+          default: all
+      - name: unreadOnly
+        in: query
+        schema:
+          type: boolean
+          default: false
+      - name: cursor
+        in: query
+        schema:
+          type: string
+          maxLength: 2048
+        description: Server-returned opaque cursor, bound to identity/category/unread filter.
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 30
+      responses:
+        '200':
+          description: Final C Gate committed result.
+          headers: &id002
+            X-Request-ID:
+              schema:
+                type: string
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+            Server-Time:
+              schema:
+                type: string
+                format: date-time
+            Session-Expires-At:
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+        '400':
+          $ref: comment-api.yaml#/components/responses/Error
+        '401':
+          $ref: comment-api.yaml#/components/responses/Error
+        '403':
+          $ref: comment-api.yaml#/components/responses/Error
+        '404':
+          $ref: comment-api.yaml#/components/responses/Error
+        '405':
+          $ref: comment-api.yaml#/components/responses/Error
+        '429':
+          $ref: comment-api.yaml#/components/responses/Error
+        '503':
+          $ref: comment-api.yaml#/components/responses/Error
+  /api/v1/notifications/unread-counts:
+    get:
+      operationId: getNotificationUnreadCounts
+      parameters:
+      - *id001
+      responses:
+        '200':
+          description: Final C Gate committed result.
+          headers: *id002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Counts'
+        '400':
+          $ref: comment-api.yaml#/components/responses/Error
+        '401':
+          $ref: comment-api.yaml#/components/responses/Error
+        '403':
+          $ref: comment-api.yaml#/components/responses/Error
+        '404':
+          $ref: comment-api.yaml#/components/responses/Error
+        '405':
+          $ref: comment-api.yaml#/components/responses/Error
+        '429':
+          $ref: comment-api.yaml#/components/responses/Error
+        '503':
+          $ref: comment-api.yaml#/components/responses/Error
+  /api/v1/notifications/{notificationId}/read:
+    post:
+      operationId: markNotificationSeenVersion
+      parameters:
+      - *id001
+      - name: notificationId
+        in: path
+        required: true
+        schema: &id003
+          type: string
+          pattern: ^[is]_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$
+      responses:
+        '200':
+          description: Final C Gate committed result.
+          headers: *id002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Read'
+        '400':
+          $ref: comment-api.yaml#/components/responses/Error
+        '401':
+          $ref: comment-api.yaml#/components/responses/Error
+        '403':
+          $ref: comment-api.yaml#/components/responses/Error
+        '404':
+          $ref: comment-api.yaml#/components/responses/Error
+        '405':
+          $ref: comment-api.yaml#/components/responses/Error
+        '429':
+          $ref: comment-api.yaml#/components/responses/Error
+        '503':
+          $ref: comment-api.yaml#/components/responses/Error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - seenVersion
+              properties:
+                seenVersion:
+                  type: integer
+                  format: int64
+                  minimum: 1
+                  maximum: 9007199254740991
+      description: Idempotently acknowledge only the returned observed version. Newer likes remain unread; cancellation
+        recomputes unread. No bulk read endpoint.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Actor:
+      type: object
+      additionalProperties: false
+      required:
+      - ref
+      - nickname
+      - avatar
+      - state
+      properties:
+        ref:
+          type: string
+          pattern: ^[A-Z2-7]{12}$
+        nickname:
+          type: string
+        avatar:
+          type: string
+        state:
+          type: string
+          enum:
+          - ACTIVE
+          - IDENTITY_DELETED
+          - ACCOUNT_CLOSED
+    Notice:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - kind
+      - identityId
+      - isReply
+      - unread
+      - version
+      - createdAt
+      - title
+      - body
+      - sourceTitle
+      - actor
+      - postId
+      - commentId
+      - targetAvailable
+      - hasPostImage
+      - newLikeCount
+      - system
+      properties:
+        id: *id003
+        kind:
+          type: string
+          enum:
+          - comment
+          - like
+          - system
+        identityId:
+          type: string
+          format: uuid
+          nullable: true
+        isReply:
+          type: boolean
+        unread:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 9007199254740991
+        createdAt:
+          type: string
+          format: date-time
+        title:
+          type: string
+        body:
+          type: string
+        sourceTitle:
+          type: string
+        actor:
+          oneOf:
+          - $ref: '#/components/schemas/Actor'
+          - type: object
+            nullable: true
+            enum:
+            - null
+        postId:
+          type: string
+          format: uuid
+          nullable: true
+        commentId:
+          type: string
+          format: uuid
+          nullable: true
+        targetAvailable:
+          type: boolean
+        hasPostImage:
+          type: boolean
+          description: Visible source post has images; thumbnails use the existing protected post media API.
+        newLikeCount: &id004
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        system:
+          oneOf:
+          - $ref: system-notification-api.yaml#/components/schemas/Notification
+          - type: object
+            nullable: true
+            enum:
+            - null
+    Counts:
+      type: object
+      additionalProperties: false
+      required:
+      - all
+      - reply
+      - like
+      - system
+      - identityUnread
+      properties:
+        all: *id004
+        reply: *id004
+        like: *id004
+        system: *id004
+        identityUnread:
+          type: object
+          additionalProperties: *id004
+          maxProperties: 3
+          description: Keys are this account own active identity UUIDs; values exclude shared system notifications.
+    Page:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - nextCursor
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notice'
+          maxItems: 50
+        nextCursor:
+          type: string
+          nullable: true
+    Read:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - readVersion
+      properties:
+        id: *id003
+        readVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 9007199254740991

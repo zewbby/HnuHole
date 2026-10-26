@@ -41,12 +41,16 @@ CREATE DATABASE hnuhole_v OWNER hnuhole_v;
 CREATE DATABASE hnuhole_comments_upgrade OWNER hnuhole_c;
 CREATE DATABASE hnuhole_comments_fresh OWNER hnuhole_c;
 CREATE DATABASE hnuhole_moderation_upgrade OWNER hnuhole_c;
+CREATE DATABASE hnuhole_notifications_upgrade OWNER hnuhole_c;
+CREATE DATABASE hnuhole_notifications_fresh OWNER hnuhole_c;
 REVOKE CONNECT ON DATABASE hnuhole_c FROM PUBLIC;
 REVOKE CONNECT ON DATABASE hnuhole_v FROM PUBLIC;
 REVOKE CONNECT ON DATABASE hnuhole_comments_upgrade,hnuhole_comments_fresh FROM PUBLIC;
 REVOKE CONNECT ON DATABASE hnuhole_moderation_upgrade FROM PUBLIC;
 GRANT CONNECT ON DATABASE hnuhole_moderation_upgrade TO hnuhole_c;
 GRANT CONNECT ON DATABASE hnuhole_comments_upgrade,hnuhole_comments_fresh TO hnuhole_c;
+REVOKE CONNECT ON DATABASE hnuhole_notifications_upgrade,hnuhole_notifications_fresh FROM PUBLIC;
+GRANT CONNECT ON DATABASE hnuhole_notifications_upgrade,hnuhole_notifications_fresh TO hnuhole_c;
 GRANT CONNECT ON DATABASE hnuhole_c TO hnuhole_c,hnuhole_c_runtime;
 GRANT CONNECT ON DATABASE hnuhole_v TO hnuhole_v;
 SQL
@@ -60,6 +64,9 @@ COMMENT_TEXT_GOOSE=$(command -v goose)
 COMMENT_TEXT_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_comments_upgrade?host=$comment_text_socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 COMMENT_TEXT_FRESH_DSN="postgresql://hnuhole_c@/hnuhole_comments_fresh?host=$comment_text_socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 export COMMENT_TEXT_GOOSE COMMENT_TEXT_UPGRADE_DSN COMMENT_TEXT_FRESH_DSN
+NOTIFICATION_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_notifications_upgrade?host=$comment_text_socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+NOTIFICATION_FRESH_DSN="postgresql://hnuhole_c@/hnuhole_notifications_fresh?host=$comment_text_socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
+export NOTIFICATION_UPGRADE_DSN NOTIFICATION_FRESH_DSN
 MODERATION_GOOSE=$COMMENT_TEXT_GOOSE
 MODERATION_UPGRADE_DSN="postgresql://hnuhole_c@/hnuhole_moderation_upgrade?host=$comment_text_socket&application_name=$AUTHLAB_RUNTIME_TAG&sslmode=disable"
 export MODERATION_GOOSE MODERATION_UPGRADE_DSN

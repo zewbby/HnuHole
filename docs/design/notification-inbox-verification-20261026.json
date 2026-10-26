@@ -1,0 +1,144 @@
+{
+  "task": "NOTIFICATION-INBOX-01",
+  "date": "2026-10-27",
+  "branch": "feat/notification-inbox",
+  "baseline": "c17a66734f935f15da5e0c9407d5b9ebdccff287",
+  "state": "FINAL_FOUR_TAB_IMPLEMENTATION_LOCAL_VERIFIED_PR_PENDING",
+  "modules": [
+    "B02",
+    "B07",
+    "B08",
+    "B09",
+    "B10"
+  ],
+  "sourceManifestSha256": "6924b5efbf67c8368fb536dfe9b58e8bcff2dc9c294ac4534aefa1a4dc200e46",
+  "sourceFiles": {
+    ".github/workflows/comments-backend-text.yml": "4650c3411cda81e033a7b17c0d8231fe3f0b9e1bb5bed48a93f51a69d261825c",
+    ".github/workflows/comments-core.yml": "8356cea2840d7f96648bfe120ec28e5ba887a35cc17af4b1c78c949f87effdef",
+    "apps/mobile/lib/main.dart": "219c6a3cf31f813fa92e7323361d01d55c9aef28657e5e4843a668c9b85c607c",
+    "apps/mobile/lib/src/identity/active_identity_controller.dart": "c9ed001402a2aabc8c7949b559259d408da242392c49dba9ec0599b12ae53606",
+    "apps/mobile/lib/src/identity/identity_switcher.dart": "605f00baeec8d1cfdbc548ee81f6ec50a5b8c2039870d9326b02f95ff81f0158",
+    "apps/mobile/lib/src/messaging/direct_message_inbox.dart": "631fad9f9192d4ab5595c044a36ef7e5fc5c3fd097c45d3ed52bd255a3948934",
+    "apps/mobile/lib/src/messaging/dm_runtime.dart": "b85ae92a08ef171ec4765e6ee09be4089c5a5c118e15c0ea32dcb840bd8fcfea",
+    "apps/mobile/lib/src/navigation/feed_chrome.dart": "0c4de9c9142cadc880cb4af7e4abaf9a6c31ef55e02f06179035b779931696c3",
+    "apps/mobile/lib/src/posts/post_controller.dart": "45fd44d91ec9b37f8bf55988c035958e301d584dcd29d732e52925607d1f150f",
+    "apps/mobile/lib/src/posts/post_screens.dart": "db2f0145ec86dffb0fbca198edfb0a2e5a2cdec964d31685d4ba064d31954287",
+    "apps/mobile/lib/src/system_notifications/governance_api.dart": "de496506eaa028988e06642fd41a57ce05c549583db91e55c5e444e07f1f6d03",
+    "apps/mobile/lib/src/system_notifications/governance_controller.dart": "046aa3bbafb3876031f43dfa083cf86d1f978e11571811d34fb4e8e287970e4a",
+    "apps/mobile/lib/src/system_notifications/inbox_models.dart": "a3ed4fc1e240af2b54a2f4ed6743aea704d2e60d158414c4c73238d6ee6628cc",
+    "apps/mobile/lib/src/system_notifications/inbox_screen.dart": "08bfbdbeabc7be36345807b8e0390444f959325d1760d2708935e640f28ec7ad",
+    "apps/mobile/lib/src/system_notifications/notification_thumbnail.dart": "5365d4bd0781f11f6ffec15a2b46b52603341aeb94bf582d68bdc040bda05026",
+    "apps/mobile/test/active_identity_test.dart": "115caeb0dd6d5b0d4bc0d07379f9b6ee93836889f44f8c38d0207f8fc8f392fd",
+    "apps/mobile/test/app_navigation_test.dart": "5b2bf694574bc0ad945b4460639ee8e30d7e4623f45c3baa5d91902c6b52a5cf",
+    "apps/mobile/test/notification_inbox_test.dart": "f779238a6c39aee7a157b1c7529862eb25a5b3e56cf8406b3ab6935308077f9e",
+    "infra/postgres/grant-comments.sql": "a471a85218b4fd6a4ace568978279b554dddf10f0a3b238ab4c34efeb1014aee",
+    "packages/openapi/notification-inbox-component.yaml": "6312b8d25f06773d54aa870824f6d8c2955d520fb8e276341fd399e0b93ea269",
+    "packages/openapi/system-notification-api.yaml": "235c09f602b0e904ce5b703590d99c56a41090c256d5c938ff3fded608551e3b",
+    "services/api/authlab/run-comment-text-isolated.sh": "2cbedf37e1df86266f124b912dadc5f76ccf8257faedf9a8c7de71dda1ce3e81",
+    "services/api/internal/authprivacy/community_comments_schema.go": "7e698f26d77c561842051f2f2983da4d7d8b96a524c2731c7df23adc075d28b3",
+    "services/api/internal/authprivacy/community_inbox.go": "4feb8401caa0741c8de71bdb3fc5bf26e7098f9f5ae752244146f939321c5cc2",
+    "services/api/internal/authprivacy/community_inbox_migration_test.go": "15f32f56332aa1b60cfda4b326f2d087a96f54541874c890f85d91b7d56e6ae1",
+    "services/api/internal/authprivacy/community_inbox_schema.go": "c19629845343d3dcfc4d91bac0262182af3ce9aaeaca42e10aeab289f2131053",
+    "services/api/internal/authprivacy/community_inbox_test.go": "e0cb98b4e5a539c905348b62e99c4af022d15cf96f9766cd1e14c677d8b6d5e1",
+    "services/api/internal/authprivacy/postgres_test.go": "9cfbb750d662580691d0d1bbbc9d148d22acd36cff1ce995c4c72ee73d900bc7",
+    "services/api/internal/authprivacyhttp/endpoints.go": "b404244a745a21d5595eb16e40d2740979180b1ff4d31f9802cb3e501a2abb4c",
+    "services/api/internal/authprivacyhttp/endtoend_postgres_test.go": "78b1dafdbc8b4ae51c97096bd401a104c8dbb027111ebe01f5bd1741f82d3eeb",
+    "services/api/internal/authprivacyhttp/inbox_endpoints.go": "6e8a9482d6a6cf086dacbab8fc9f8e33940928ed1ce709c7a0145bf467f0bfce",
+    "services/api/internal/authprivacyhttp/inbox_endpoints_test.go": "1d93916d894084f1f72023e329a26454487ff5e0aa87bb45c6e9de0550e0d0a2",
+    "services/api/internal/authprivacyhttp/inbox_postgres_test.go": "c057f08e6bb836f2fc9297bb546ddf6739849ff37eb0fc6c9e36897b3c598eab",
+    "services/api/internal/authprivacyhttp/shared_limits.go": "8f0d87b9ed9535b6f89a2a11356fa70479711c5e1df4079ef48686a23a91a169",
+    "services/api/migrations/0028_notification_inbox.sql": "1db56a23659f812baaf3b64ae0178b4fcc9df61b1621d97f0ee810697b389caa",
+    "tools/check-notification-contract.py": "7c313b4c6cb71e438738e6ca22a678676d243244e965615e50c0239decd9dd9f"
+  },
+  "scope": {
+    "categories": [
+      "all",
+      "reply",
+      "like",
+      "system"
+    ],
+    "tabShare": 0.25,
+    "fontSize": 14,
+    "mentions": "REMOVED_FROM_PRODUCT_AND_API",
+    "commentProtocol": "UNCHANGED_MAIN_V1",
+    "identitySelection": "ACCOUNT_SCOPED_SHARED_ACROSS_MODULES",
+    "bottomNavigation": "FIVE_ITEMS_ALL_MAIN_TABS_PLUS_COMPOSE_HIDE_ONLY_HOME_IMMERSIVE"
+  },
+  "checks": {
+    "flutterFull": {
+      "status": "PASS",
+      "pass": 966,
+      "skip": 3,
+      "log": "final-four-mobile.log"
+    },
+    "flutterAnalyze": {
+      "status": "PASS",
+      "issues": 0,
+      "log": "final-four-analyze.log"
+    },
+    "newAndLegacyPostgresHTTPS": {
+      "status": "PASS",
+      "tests": [
+        "TestCommentTextGooseMigrationChainPostgres",
+        "TestCommentTextTransactionsPostgres",
+        "TestCommentTextFailureRetryAbandonPostgres",
+        "TestCommentTextFrozenGatePostgres",
+        "TestCommentTextRuntimeAndSQLGuardsPostgres",
+        "TestCommentTextUnavailablePostPostgres",
+        "TestCommentTextClosureCleanupWithFeatureDisabledPostgres",
+        "TestNotificationInboxGooseMigrationPostgres",
+        "TestNotificationInboxPostgres",
+        "TestNotificationInboxIdentityPaginationPostgres",
+        "TestCommentTextNullableBoundary",
+        "TestCommentTextHTTPSPostgres",
+        "TestInboxRoutesAndDisabledMentionsBoundary",
+        "TestNotificationInboxHTTPSPostgres"
+      ],
+      "privateSQL": true,
+      "minimumRuntimeRole": true,
+      "goRace": true,
+      "log": "four-postgres.log"
+    },
+    "goRulesBuildVet": {
+      "status": "PASS",
+      "log": "final-four-go.log"
+    },
+    "contracts": {
+      "status": "PASS",
+      "log": "final-four-contracts.log"
+    },
+    "globalIdentityAndCompose": {
+      "status": "PASS",
+      "log": "active-identity-final.log"
+    },
+    "expandedLegacyHTTPRace": {
+      "status": "FAIL_HISTORICAL_UNMODIFIED_DM_TEST",
+      "reason": "global time.Local mutated while TLS goroutine cleans up; affected exact notification/comment race passed",
+      "log": "go-build-final.log"
+    },
+    "remoteCI": {
+      "status": "NOT_RUN"
+    },
+    "merged": false,
+    "finalMainAPK": {
+      "status": "NOT_RUN"
+    },
+    "finalDeviceTrial": {
+      "status": "NOT_RUN"
+    },
+    "productionRelease": {
+      "status": "NOT_RELEASED"
+    },
+    "independentMemberApproval": {
+      "status": "NOT_OBTAINED_MAINTAINER_EXPLICIT_MERGE_AUTHORIZATION"
+    }
+  },
+  "historicalTrial": {
+    "versionCode": 2026102602,
+    "state": "INSTALLED_VIVO_EARLIER_FIVE_TAB_DRAFT_NOT_FINAL_CANDIDATE",
+    "backendAtThatTime": "NEW_ENDPOINT_404",
+    "receipt": "E:/Hnuhole-env/notification-inbox-20261026/vivo-apk-build-receipt.json"
+  },
+  "localEvidenceDirectory": "E:\\Hnuhole-env\\notification-inbox-20261026",
+  "authorization": "User explicitly requested commit, push, PR, merge and building the latest main product. No public production environment or release signing identity has been substituted by test credentials."
+}

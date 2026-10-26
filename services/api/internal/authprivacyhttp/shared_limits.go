@@ -27,7 +27,7 @@ type SharedLimits struct {
 }
 
 func (b *boundary) strictLimitPath(path string) bool {
-	return isPostPath(path) || isCommentPath(path) || isDMPath(path)
+	return isPostPath(path) || isCommentPath(path) || isDMPath(path) || isInboxPath(path)
 }
 func (b *boundary) sharedFailure(w http.ResponseWriter, r *http.Request, err error) {
 	var limited *ratelimit.Limited
