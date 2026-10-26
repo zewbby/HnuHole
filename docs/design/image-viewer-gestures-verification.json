@@ -1,0 +1,109 @@
+{
+  "task": "IMAGE-VIEWER-GESTURES-01",
+  "date": "2026-10-26",
+  "timezone": "Asia/Shanghai",
+  "branch": "fix/image-viewer-gestures",
+  "baseline": "856313c",
+  "state": "LOCAL_IMPLEMENTED_HOST_AND_ANDROID_BUILD_PASS_DEVICE_NOT_RUN",
+  "modules": [
+    "IV01",
+    "PM01",
+    "B05",
+    "B06",
+    "B10"
+  ],
+  "sourceSha256": {
+    "packages/image_viewer/lib/src/viewer.dart": "7dc4b632589202e54f22c4c02356d2c1b7efc9bec64229b3806d7f09b4161647",
+    "packages/image_viewer/lib/src/viewer_controller.dart": "4db27986f07c75bc330749fe0b531f7e61648a2e8b8a05f5b910df09b88cb35b",
+    "packages/image_viewer/lib/src/viewer_surface.dart": "338f30718e19ebb97aaf3ce9e5f0458a7f24c7832583e10a513243cbfce470dd",
+    "packages/image_viewer/lib/src/viewer_preview.dart": "f831a41a3d1f990b2bc4fbd99cbe904027064f3c6dec02780663a3e24aed6c5f",
+    "apps/mobile/lib/src/posts/post_images.dart": "574004d5477b947c1b8ad357e07d2a227d9d1325a512c7c5f02237ed1aa96001",
+    "apps/mobile/lib/src/posts/post_composer_photos.dart": "04af11552fd5eedcf626ebc8c93711703e2dddf36007295be854c8bbafb85b07",
+    "apps/mobile/lib/src/messaging/dm_chat_ui.dart": "20a7133252ca829f3ce3b2be861e9a30a07e55f190e3467551f81442aafa6dfa"
+  },
+  "checks": [
+    {
+      "cwd": "packages/image_viewer",
+      "command": "flutter pub get --offline --enforce-lockfile",
+      "status": "PASS"
+    },
+    {
+      "cwd": "apps/mobile",
+      "command": "PUB_HOSTED_URL=https://pub.dev flutter pub get --enforce-lockfile",
+      "status": "PASS",
+      "note": "Initial offline/cn attempt rejected. Resolved with the existing lockfile host; lockfiles unchanged."
+    },
+    {
+      "cwd": "packages/image_viewer",
+      "command": "flutter analyze --no-pub",
+      "status": "PASS",
+      "issues": 0
+    },
+    {
+      "cwd": "packages/image_viewer",
+      "command": "flutter test --no-pub --concurrency=1 --reporter expanded",
+      "status": "PASS",
+      "passed": 129,
+      "failed": 0,
+      "skipped": 0,
+      "newInteractionTests": 13
+    },
+    {
+      "cwd": "apps/mobile",
+      "command": "flutter analyze --no-pub",
+      "status": "PASS",
+      "issues": 0
+    },
+    {
+      "cwd": "apps/mobile",
+      "command": "flutter test --no-pub test/post_images_test.dart test/post_composer_photos_test.dart test/dm_chat_test.dart test/dm_chat_races_test.dart test/dm_lifecycle_test.dart test/dm_chat_draft_ui_test.dart test/dm_route_test.dart --reporter expanded",
+      "status": "PASS",
+      "passed": 57,
+      "failed": 0
+    },
+    {
+      "cwd": "apps/mobile",
+      "command": "flutter build apk --debug --no-pub --target-platform android-arm64",
+      "status": "PASS",
+      "artifact": "apps/mobile/build/app/outputs/flutter-apk/app-debug.apk",
+      "artifactSha256": "27f80c6499e7246798b63f69307c807c4c79c6cd0c618918d51949afcfc998c4",
+      "scope": "Compilation only; no device install or daily configuration."
+    },
+    {
+      "cwd": "packages/image_viewer",
+      "command": "VIEWER_CAPTURE_DIR=<external-output> flutter test --no-pub test/viewer_gestures_test.dart --reporter expanded",
+      "status": "PASS",
+      "scope": "First nine tests rendered actual Flutter frames. Inspected pull-down, release-down and partial paging over a synthetic caller backdrop; not device footage."
+    }
+  ],
+  "cache": {
+    "maxPages": 3,
+    "maxAggregateDeclaredPixels": "2 * resourceLimits.maxPixels",
+    "trigger": "Selection or neighbor exposed by horizontal drag",
+    "hiddenPages": "Still frame only; stream listener detached after first frame",
+    "clear": "Replacement, revoke, close/dispose; background discards neighbors and pending reads",
+    "originalSaving": "Unchanged; never called by viewing/preview"
+  },
+  "remaining": {
+    "androidPhysicalFeel": "NOT_RUN",
+    "ios": "NOT_RUN",
+    "releaseBuild": "NOT_RUN",
+    "deviceMemoryAndFrameTiming": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "independentReview": "NOT_RUN"
+  },
+  "delivery": {
+    "committed": false,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "logs": "External workspace video-bug-review-20261026; logs, rendered frames and build artifacts are not repository sources.",
+  "sourceHashEncoding": "UTF-8 source bytes with CRLF normalized to LF, matching Git blobs",
+  "integration": {
+    "authorization": "User explicitly requested commit and merge on 2026-10-26",
+    "state": "PREPARING_PULL_REQUEST",
+    "reviewArrangement": "Maintainer requested merge after receiving the implementation and local validation. Local author self-review and CI; no independent GitHub member approval claimed.",
+    "remoteCI": "NOT_RUN"
+  }
+}

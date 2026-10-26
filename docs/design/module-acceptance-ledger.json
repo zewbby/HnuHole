@@ -1,4 +1,30 @@
 {
+  "imageViewerGestures20261026": {
+    "task": "IMAGE-VIEWER-GESTURES-01",
+    "date": "2026-10-26",
+    "branch": "fix/image-viewer-gestures",
+    "baseline": "856313c",
+    "modules": [
+      "IV01",
+      "PM01",
+      "B05",
+      "B06",
+      "B10"
+    ],
+    "state": "LOCAL_IMPLEMENTED_HOST_AND_ANDROID_BUILD_PASS_DEVICE_NOT_RUN",
+    "evidence": "docs/design/image-viewer-gestures-verification.json",
+    "report": "docs/branches/fix-image-viewer-gestures.md",
+    "hostTests": {
+      "viewer": 129,
+      "affectedMobile": 57
+    },
+    "androidBuild": "PASS",
+    "physicalDevice": "NOT_RUN",
+    "ios": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "merged": false,
+    "published": false
+  },
   "sharedRateLimit20261024": {
     "task": "SHARED-RATE-LIMIT-01",
     "date": "2026-10-25",

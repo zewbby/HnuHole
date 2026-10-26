@@ -274,22 +274,19 @@ class _PostImagesSectionState extends State<PostImagesSection>
     );
     _viewer = viewer;
     final navigator = Navigator.of(context);
-    late final MaterialPageRoute<void> route;
-    route = MaterialPageRoute<void>(
-      builder: (_) => Scaffold(
-        backgroundColor: Colors.black,
-        body: HnuImageViewer(
-          controller: viewer,
-          onClosed: (_) {
-            if (!route.isActive) return;
-            // Never pop a different route/dialog which happens to be above it.
-            if (route.isCurrent) {
-              navigator.pop();
-            } else {
-              navigator.removeRoute(route);
-            }
-          },
-        ),
+    late final HnuImageViewerRoute route;
+    route = HnuImageViewerRoute(
+      builder: (_) => HnuImageViewer(
+        controller: viewer,
+        onClosed: (_) {
+          if (!route.isActive) return;
+          // Never pop a different route/dialog which happens to be above it.
+          if (route.isCurrent) {
+            navigator.pop();
+          } else {
+            navigator.removeRoute(route);
+          }
+        },
       ),
     );
     try {

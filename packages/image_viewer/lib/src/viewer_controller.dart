@@ -117,7 +117,8 @@ class ViewerSnapshot {
 
 /// One viewing session, attached to at most one [HnuImageViewer].
 ///
-/// Only the selected item loads. Source work is logically cancelled, never
+/// The selected item and the neighbor exposed by a horizontal drag can load.
+/// Source work is logically cancelled, never
 /// claimed physically cancelled: late results are ignored. Replacement clears
 /// reading positions; retry keeps the same-content position. Close, access
 /// invalidation and widget removal are terminal. The caller must dispose this.
@@ -152,6 +153,100 @@ class ViewerController extends ChangeNotifier {
   Object? _surfaceOwner;
   VoidCallback? _captureReading;
   final Map<String, ViewerReadingPosition> _reading = {};
+  final Map<String, _ViewerCachedSource> _cache = {};
+  final Map<String, Future<_ViewerCachedSource?>> _pendingSources = {};
+  int _cacheEpoch = 0;
+
+  Future<_ViewerCachedSource?> _prepare(int index) {
+    if (!active ||
+        !foreground ||
+        _owner == null ||
+        index < 0 ||
+        index >= _items.length) {
+      return Future.value();
+    }
+    final item = _items[index];
+    final cached = _cache.remove(item.id);
+    if (cached != null) {
+      _cache[item.id] = cached;
+      return Future.value(cached);
+    }
+    return _pendingSources[item.id] ??= _readSource(item, _cacheEpoch);
+  }
+
+  Future<_ViewerCachedSource?> _readSource(ViewerItem item, int epoch) async {
+    try {
+      final source = await item.loadSource();
+      if (!active || !foreground || _owner == null || epoch != _cacheEpoch) {
+        return null;
+      }
+      resourceLimits._checkPixels(
+        source.pixelSize.width.toInt(),
+        source.pixelSize.height.toInt(),
+      );
+      late final _ViewerCachedSource entry;
+      final provider = _LimitedImageProvider(source.provider, resourceLimits, (
+        usage,
+      ) {
+        entry.usage = usage;
+        if (active &&
+            _owner != null &&
+            identical(_source, source) &&
+            identical(_cache[item.id], entry)) {
+          _resourceUsage = usage;
+        }
+      });
+      entry = _ViewerCachedSource(source, provider);
+      _cache[item.id] = entry;
+      _trimCache();
+      return entry;
+    } finally {
+      if (epoch == _cacheEpoch) _pendingSources.remove(item.id);
+    }
+  }
+
+  void _trimCache() {
+    // At most three visited/exposed pages, with two full static-image budgets.
+    // Offscreen pages retain a still frame, never an animation listener.
+    int pixels() => _cache.values.fold(
+      0,
+      (sum, entry) =>
+          sum +
+          entry.source.pixelSize.width.toInt() *
+              entry.source.pixelSize.height.toInt(),
+    );
+    while (_cache.length > 3 || pixels() > resourceLimits.maxPixels * 2) {
+      final id = _cache.keys.firstWhere((id) => id != currentItem.id);
+      _cache.remove(id)!.dispose();
+    }
+  }
+
+  void _clearCache() {
+    _cacheEpoch++;
+    _pendingSources.clear();
+    for (final entry in _cache.values) {
+      entry.dispose();
+    }
+    _cache.clear();
+  }
+
+  Future<void> _exposeNeighbor(int index) async {
+    try {
+      final entry = await _prepare(index);
+      if (entry != null &&
+          active &&
+          foreground &&
+          _owner != null &&
+          index >= 0 &&
+          index < _items.length &&
+          identical(_cache[_items[index].id], entry)) {
+        notifyListeners();
+      }
+    } catch (_) {
+      // The selected page owns retry/error feedback. A failed preview never
+      // changes the active page's status or starts an automatic retry loop.
+    }
+  }
 
   List<ViewerItem> get items => _items;
   int get index => _index;
@@ -221,34 +316,16 @@ class ViewerController extends ChangeNotifier {
     final generation = _generation;
     final selection = _selectionRevision;
     final attempt = ++_attempt;
-    final item = currentItem;
     _status = ViewerLoadStatus.loading;
     _failure = null;
     notifyListeners();
     try {
-      final source = await item.loadSource();
+      final cached = await _prepare(_index);
       if (!_current(generation, selection, attempt)) return;
-      resourceLimits._checkPixels(
-        source.pixelSize.width.toInt(),
-        source.pixelSize.height.toInt(),
-      );
-      _limitedProvider = _LimitedImageProvider(
-        source.provider,
-        resourceLimits,
-        (usage) {
-          // Diagnostics must not hide decoder work while in the background.
-          // Lifecycle revisions change, but this still belongs to the same
-          // current source. It emits no notification or scheduled UI frame.
-          if (active &&
-              _owner != null &&
-              generation == _generation &&
-              identical(_source, source) &&
-              currentItem.id == item.id) {
-            _resourceUsage = usage;
-          }
-        },
-      );
-      _source = source;
+      if (cached == null) return;
+      _limitedProvider = cached.provider;
+      _resourceUsage = cached.usage;
+      _source = cached.source;
       // The provider still has to decode. Ready is reported by the surface only
       // after a real frame matches the declared pixel dimensions.
     } catch (error) {
@@ -288,6 +365,7 @@ class ViewerController extends ChangeNotifier {
     if (!active) throw StateError('A finished session cannot be replaced.');
     _captureReading?.call();
     _items = validated;
+    _clearCache();
     _index = initialIndex;
     _generation++;
     _selectionRevision++;
@@ -305,6 +383,7 @@ class ViewerController extends ChangeNotifier {
   void retry() {
     if (!active || !foreground || _status != ViewerLoadStatus.failed) return;
     _attempt++;
+    _cache.remove(currentItem.id)?.dispose();
     _source = null;
     _limitedProvider = null;
     _resourceUsage = null;
@@ -320,6 +399,7 @@ class ViewerController extends ChangeNotifier {
     int attempt,
   ) {
     if (!_current(generation, selection, attempt)) return;
+    _cache.remove(currentItem.id)?.dispose();
     _source = null;
     _limitedProvider = null;
     _resourceUsage = null;
@@ -348,6 +428,15 @@ class ViewerController extends ChangeNotifier {
     _captureReading?.call();
     _foreground = value;
     _selectionRevision++;
+    if (!value) {
+      _cacheEpoch++;
+      _pendingSources.clear();
+      for (final id in _cache.keys.toList()) {
+        if (id != currentItem.id || _status == ViewerLoadStatus.loading) {
+          _cache.remove(id)!.dispose();
+        }
+      }
+    }
     if (_status == ViewerLoadStatus.loading) {
       _attempt++;
       _source = null;
@@ -374,6 +463,7 @@ class ViewerController extends ChangeNotifier {
     if (_closeReason != null) return;
     _captureReading?.call();
     _closeReason = reason;
+    _clearCache();
     _generation++;
     _selectionRevision++;
     _attempt++;

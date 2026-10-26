@@ -1,5 +1,7 @@
 # 图片查看组件换机交接
 
+> **2026-10-26 IMAGE-VIEWER-GESTURES-01（仅本地分支）：** `fix/image-viewer-gestures` 从 `origin/main@856313c` 建立，按用户要求不带 codex 前缀。图片上下拖动跟手缩小、背景渐隐露出原页面，短拖回弹、完成动画后退出；取消结束提示闪屏，加入有界会话缓存与横滑目标页准备，修正状态栏。帖子、编辑器、私信共用透明路由；长图、双指、缩放、撤销及原文件保存护栏保留。实现与最终验证见[任务记录](../branches/fix-image-viewer-gestures.md)和[机器证据](image-viewer-gestures-verification.json)。未提交/推送/合并/部署，真机手感及 iOS 本轮 NOT_RUN；旧模块总裁决不提升。
+
 > **2026-10-15 主App帖子图片S18真机联调已完成约定范围：**修复实现 `fd2e4c04f48b29ddda0142660188988c4a655f5f`，分支 `codex/post-image-integration`。实际原生Picker/原图跨进程恢复、九图C/V/SQL上传及缺项补传、失败编辑同任务RETRY、受保护查看、Gal原格式保存与Gallery动画回放、删帖/退出/切账号/迟到隔离取得本轮证据；修复成功核对后残留旧错误提示。最后修改后分析0、相关宿主69、Python守卫15、bundle、Android Debug20263116构建/验签及上机复验PASS。手机窗口结束，系统设置已恢复、自己的App/后端已停、映射已撤；Linux专用私钥/库已清理。Windows清理被自动审批拦截，材料仍保留且私有目录ACL受限，不能写成已清理。iOS原始选图仍未实现，最大资源预算/库存升级/生产与评论私信另列；不重测旧TalkBack、不宣称全模块/双端通过。见[本轮报告](post-image-android-device-report.md)与[机器记录](post-image-android-device-verification.json)。下方旧记录保留各自版本与范围。
 
 > **2026-10-15 主App帖子图片真机验收的非手机准备已完成：**实现 `2eeb19ce87542aed9e0c57874e8d6b3478df946d`，本任务独立kit `E:/Hnuhole-post-media-android-20261015`。新主App/probe两个API29+包构建与验签、分析0、原图宿主10项、离线守卫15项/设备命令守卫4项、专用真实C/V/Goose/受限空PG重启及Windows HTTPS均PASS；自己的后端已停。没有调用ADB或操作手机，PMA01–14全部NOT_RUN，等待另一会话释放；旧组件TalkBack不重测。按用户要求暂留独立APK/签名/空库/工具供直接配合，过期先核就绪清单。见[准备报告](post-image-android-preparation-report.md)、[机器记录](post-image-android-preparation-verification.json)、[集中SOP](../../tools/post-media-android/README.md)。下方旧结果保留原源码和范围。

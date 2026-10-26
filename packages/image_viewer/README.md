@@ -1,5 +1,7 @@
 # HnuHole 独立图片查看组件
 
+> **2026-10-26 当前本地修复：** `fix/image-viewer-gestures` 使用 `HnuImageViewerRoute` 保留底层页面绘制；普通图上拉/下拉跟手缩小并渐隐黑底，短拖回弹，220ms 动画完成后通知宿主退出。长图仅在手势开始时已到对应边界且为基准缩放才可退出；阅读回顶同一手势不会退出。切图准备即将露出的相邻页，本会话最多保留3页，尺寸总和不超过 `2 * maxPixels`；邻页只保留首帧并卸下监听。源码与验证见[本轮任务](../../docs/branches/fix-image-viewer-gestures.md)。未合并，真机手感/iOS本轮未验。
+
 > **2026-10-15 当前交付：**Android 10/API29 起默认启用原文件保存，iOS 默认关闭，两个平台独立决策。包112＋示例7、分析、bundle、ARM64 debug/release构建和验签通过；S18/API35实际Release 20263021完成47项真实解码/资源检查，补齐有限/无限WebP保存字节与结算清理。TalkBack保留此前人工通过，不重复测试。见[本轮报告](../../docs/design/image-viewer-android-saving-report.md)。下方有日期的段落保留历史状态。
 
 > **本轮Android证据：**包108＋示例5、分析/bundle/两份原生构建通过；S18/API35实际20263019，修复缩放旋转并固定资源边界。原格式保存及选定Fossify回放通过；默认保存关闭、iOS与未取证子项单列，见[收尾报告](../../docs/design/image-viewer-android-completion-report.md)。下方旧日期记录保留原证明范围。
@@ -10,9 +12,9 @@
 
 `ViewerController.resourceLimits` 默认使用 `ViewerResourceLimits`：查看输入不超过16MiB；静态图不超过12×1024×1024像素、任一边16384；动画每帧不超过1024×1024像素、最多120帧，尺寸×帧数不超过16×1024×1024像素；单帧时长不超过15秒、单轮不超过60秒。保存协调器 `maxOriginalBytes` 默认16MiB。超限明确反馈 `ViewerFailure.resourceLimit` / `ViewerSaveStatus.resourceLimit`，可关闭或切图；没有缩图、删帧、改循环或转格式。
 
-原始 provider 仍由调用方授权。标准 Flutter ImageProvider 必须使用 supplied decoder callback，才能在首次帧解码前核对真实字节、尺寸和帧数；自定义 provider 若直接发布已解码图片，其分配预算由调用方负责，不能把本封装的检查当作拦截了外部分配。下载/来源读取在回调进入前由调用方限制，不承诺读取前的网络或插件内存上限。帧时长在第一轮逐帧核对，后续某帧超限时可能已经显示前面的帧，然后明确失败；不会静默停在首帧。只解码当前选择，不预解码整组，不清理其他调用方的全局缓存；本次 stream 使用独立的 cache key。
+原始 provider 仍由调用方授权。标准 Flutter ImageProvider 必须使用 supplied decoder callback，才能在首次帧解码前核对真实字节、尺寸和帧数；自定义 provider 若直接发布已解码图片，其分配预算由调用方负责，不能把本封装的检查当作拦截了外部分配。下载/来源读取在回调进入前由调用方限制，不承诺读取前的网络或插件内存上限。帧时长在第一轮逐帧核对，后续某帧超限时可能已经显示前面的帧，然后明确失败；不会静默停在首帧。只播放当前选择；开始横滑时允许即将露出的邻页解码首帧，不预解码整组，不清理其他调用方的全局缓存；本次 stream 使用独立的 cache key。
 
-`resourceUsage` 提供当前真实 Flutter 解码器的字节/尺寸/帧数/已解码帧计数。它不是进程内存估算，不发额外通知或调度UI帧；调用方可采样。切图/重试/关闭清除本选择统计，背景状态保留真实计数供检测，不能以“忽略后台计数”证明停播。提高上限须自行取得相应设备证据。Android 实际资源量测与本轮状态将在收尾报告登记，未测上限不视为通过。
+`resourceUsage` 提供当前真实 Flutter 解码器的字节/尺寸/帧数/已解码帧计数。它不是进程内存估算，不发额外通知或调度UI帧；调用方可采样。切图后统计跟随目标页的实际解码器（命中缓存时计数延续），重试/关闭清除本选择统计，背景状态保留真实计数供检测，不能以“忽略后台计数”证明停播。提高上限须自行取得相应设备证据。Android 实际资源量测与本轮状态将在收尾报告登记，未测上限不视为通过。
 
 2026-10-13 接续进入宿主成果保存与 Android 构建/单台平台验证准备。宿主实现已保存至 `3287607cb30887f9df02d2b8dd1cd3fbf3a390cc` 并普通推送；Android 构建及待验状态以 [Android 交接](../../docs/design/image-viewer-android-report.md) 和 [单台清单](../../docs/design/image-viewer-android-checklist.md) 为准。示例使用独立 `component`/`nativecheck` Android flavor；正常查看版保持保存关闭，限定保存实验需两个开关同时满足。核心公共 API 不变，未接入主 App。
 
@@ -43,9 +45,9 @@ final controller = ViewerController(
   initialIndex: 0,
 );
 
-// 放在调用方拥有的独立 route 内。
-Scaffold(
-  body: HnuImageViewer(
+// 调用方 push 此非不透明 route，原页面可在拖动时透出。
+HnuImageViewerRoute(
+  builder: (context) => HnuImageViewer(
     controller: controller,
     onClosed: (reason) => Navigator.of(context).pop(reason),
     onChanged: (snapshot) { /* 只处理当前会话状态 */ },
@@ -53,13 +55,13 @@ Scaffold(
 );
 ```
 
-`ViewerItem.provider(...)` 是已经拥有 ImageProvider 和解码尺寸时的便捷工厂。`ViewerSource` 复用 Flutter ImageProvider；缩放、平移、动画解码和退出渲染复用 extended_image/Flutter。组件需要宽高有界的视口。`ViewerController` 提供当前组、切图、手动重试、替换图片组、访问失效和关闭能力。调用方应使用不含 URL、私有路径或身份信息的媒体 ID。调用方拥有 controller 的创建和 dispose，并保留父页面滚动位置。Widget 不自行操作宿主 Navigator；关闭按钮、系统返回和合格下拉都通过一次关闭回调通知调用方。
+`ViewerItem.provider(...)` 是已经拥有 ImageProvider 和解码尺寸时的便捷工厂。`ViewerSource` 复用 Flutter ImageProvider；缩放、平移、动画解码和退出渲染复用 extended_image/Flutter。组件需要宽高有界的视口。`ViewerController` 提供当前组、切图、手动重试、替换图片组、访问失效和关闭能力。调用方应使用不含 URL、私有路径或身份信息的媒体 ID。调用方拥有 controller 的创建和 dispose，并保留父页面滚动位置。Widget 不自行操作宿主 Navigator；关闭按钮、系统返回和合格上下拖动都通过一次关闭回调通知调用方。透明退出要求使用 `HnuImageViewerRoute` 并直接返回查看器，或宿主提供等价的透明 route/容器；不透明 Scaffold 会遮住底页。
 
 ## 输入与来源契约
 
 - 组非空；初始索引有效；稳定 ID 非空、没有周围空白、组内唯一。生产模式也校验，不依赖 assert。同一 ID 必须代表同一内容版本；内容改变需新 ID。
 - `pixelSize` 必须为有限正整数，并匹配 Flutter 解码输出。损坏图片、加载器异常和尺寸不一致反馈为脱敏错误类别，可关闭或手动重试。组件不把底层异常、URL、完整私有路径或原始图片放入回调/反馈。
-- 只调用当前页的来源加载器，不提前读取/解码整组。加载器可能在切页、关闭、替换或失效后完成，组件按会话/选择/尝试代次丢弃旧结果。任意 Future 或底层读取能否真正取消由调用方来源实现负责。
+- 首次只调用当前页来源加载器；横滑开始时准备目标相邻页，最多缓存3页且像素总和不超过 `2 * maxPixels`。缓存仅本会话内存持有；替换组/关闭/撤销清空，后台丢弃邻页和未完成读取。邻页取得首帧即移除监听，动图不在隐藏页继续播放，不提前读取/解码整组。加载器可能在切页、关闭、替换或失效后完成，组件按会话/选择/尝试代次丢弃旧结果。任意 Future 或底层读取能否真正取消由调用方来源实现负责。
 - 受保护来源必须由调用方先授权，再提供加载器/provider。组件没有账号、Bearer、密码、恢复材料或认证 header 参数，不调用业务后端。调用方负责 provider 的授权、缓存 key 和缓存策略；不得把带长期私有磁盘缓存的 provider 当作组件自动安全缓存。组件不创建长期私有图片缓存，也不清空其他组件的全局缓存。
 - 原始保存 resolver 必须返回完整原格式，查看 provider 可以是另一个符合尺寸契约的来源。禁止把缩略图或截图当作完整原图。路径来源由调用方保持可读、稳定且具有正确扩展名；组件不删除调用方文件。字节来源被复制为当前保存操作的快照。
 - JPEG/PNG/WebP、GIF/动态 WebP 为目标格式；其他格式、EXIF完整矩阵、无限大媒体和手机资源上限尚未承诺。没有默认 GIF 转换、首帧降级、帧删减或质量降低。

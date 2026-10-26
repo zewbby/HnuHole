@@ -6,19 +6,29 @@ class _ViewerSurface extends StatefulWidget {
   const _ViewerSurface({
     required this.controller,
     required this.backgroundColor,
+    required this.onDismissProgress,
     super.key,
   });
   final ViewerController controller;
   final Color backgroundColor;
+  final ValueChanged<double> onDismissProgress;
   @override
   State<_ViewerSurface> createState() => _ViewerSurfaceState();
 }
 
-class _ViewerSurfaceState extends State<_ViewerSurface> {
+class _ViewerSurfaceState extends State<_ViewerSurface>
+    with SingleTickerProviderStateMixin {
   late final PageController _pages;
   Drag? _pageDrag;
   VelocityTracker? _velocity;
-  final _slide = GlobalKey<ExtendedImageSlidePageState>();
+  late final AnimationController _dismissAnimation;
+  Offset _dismissOffset = Offset.zero;
+  Offset _animationStart = Offset.zero, _animationEnd = Offset.zero;
+  bool _dismissing = false;
+  bool _canPullDown = false, _canPullUp = false;
+  double get _dismissProgress => _lastSize == null
+      ? 0
+      : (_dismissOffset.dy.abs() / (_lastSize!.height * .7)).clamp(0, 1);
   GlobalKey<ExtendedImageGestureState> _gesture = GlobalKey();
   final Set<int> _pointers = {};
   bool _pageEligible = false;
@@ -46,10 +56,25 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
     return details!.destinationRect!.top >= details.layoutRect!.top - 0.5;
   }
 
+  bool get _atBottom {
+    final details = _gesture.currentState?.gestureDetails;
+    return details?.destinationRect != null &&
+        details?.layoutRect != null &&
+        details!.destinationRect!.bottom <= details.layoutRect!.bottom + .5;
+  }
+
   @override
   void initState() {
     super.initState();
     _pages = PageController(initialPage: _c.index);
+    _dismissAnimation =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 220),
+        )..addListener(() {
+          final t = Curves.easeOutCubic.transform(_dismissAnimation.value);
+          _setDismissOffset(Offset.lerp(_animationStart, _animationEnd, t)!);
+        });
     _c._surfaceOwner = this;
     _c._captureReading = _captureReading;
   }
@@ -58,9 +83,14 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
   void didUpdateWidget(_ViewerSurface oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!_c.foreground || !_c.active) _cancel();
+    if (_dismissOffset != Offset.zero &&
+        _pointerRevision != _c.selectionRevision) {
+      _cancel();
+    }
     if (_pages.hasClients &&
         (_pages.page! - _c.index).abs() > 0.001 &&
-        _pageDrag == null) {
+        _pageDrag == null &&
+        !_pages.position.isScrollingNotifier.value) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && _pages.hasClients && _pageDrag == null) {
           _pages.jumpToPage(_c.index);
@@ -76,6 +106,7 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
       _c._captureReading = null;
       _c._surfaceOwner = null;
     }
+    _dismissAnimation.dispose();
     _pages.dispose();
     super.dispose();
   }
@@ -155,6 +186,10 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
 
   void _down(PointerDownEvent event) {
     _pointers.add(event.pointer);
+    if (_dismissAnimation.isAnimating || _dismissing) {
+      _rejected = true;
+      return;
+    }
     if (_pointers.length == 1) {
       _pointerRevision = _c.selectionRevision;
       _start = event.position;
@@ -165,8 +200,10 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
       _velocity = VelocityTracker.withKind(event.kind)
         ..addPosition(event.timeStamp, event.position);
       _rejected = false;
+      _canPullDown = _atTop;
+      _canPullUp = _atBottom;
       _eligible =
-          _atTop &&
+          (_canPullDown || _canPullUp) &&
           (_scale - _baseline).abs() < 0.001 &&
           _c.active &&
           _c.foreground &&
@@ -180,7 +217,7 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
 
   void _move(PointerMoveEvent event) {
     if (_pointers.length != 1 || _start == null) return;
-    if (_pointerRevision != _c.selectionRevision) {
+    if (_pointerRevision != _c.selectionRevision && _pageDrag == null) {
       _cancel();
       _rejected = true;
       return;
@@ -192,6 +229,9 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
         delta.distance >= kTouchSlop) {
       _eligible = false;
       _rejected = true;
+      if (_pageDrag == null) {
+        unawaited(_c._exposeNeighbor(_c.index + (delta.dx < 0 ? 1 : -1)));
+      }
       _pageDrag ??= _pages.position.drag(
         DragStartDetails(globalPosition: event.position),
         () => _pageDrag = null,
@@ -211,14 +251,15 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
     }
     if (!_eligible || _rejected) return;
     if (delta.distance < kTouchSlop) return;
-    if (delta.dy <= 0 || delta.dy.abs() <= delta.dx.abs()) {
+    if ((delta.dy > 0 ? !_canPullDown : !_canPullUp) ||
+        delta.dy.abs() <= delta.dx.abs()) {
       _rejected = true;
       _eligible = false;
       _pageEligible = false;
       return;
     }
     _pageEligible = false;
-    _slide.currentState?.slide(Offset(0, event.delta.dy));
+    _setDismissOffset(Offset(delta.dx * .35, delta.dy));
   }
 
   void _up(PointerEvent event) {
@@ -233,8 +274,19 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
       );
       _pageDrag = null;
     }
-    final slide = _slide.currentState;
-    if (slide?.isSliding ?? false) slide!.endSlide(ScaleEndDetails());
+    if (_dismissOffset != Offset.zero && !_dismissAnimation.isAnimating) {
+      final velocity = _velocity?.getVelocity().pixelsPerSecond.dy ?? 0;
+      final threshold = ((_lastSize?.height ?? 600) * .18).clamp(100, 180);
+      final commit =
+          _eligible &&
+          !_rejected &&
+          _pointerRevision == _c.selectionRevision &&
+          (_dismissOffset.dy.abs() >= threshold ||
+              _dismissOffset.dy.abs() >= 36 &&
+                  velocity.abs() >= 700 &&
+                  velocity.sign == _dismissOffset.dy.sign);
+      unawaited(_settleDismiss(commit));
+    }
     _pointers.remove(event.pointer);
     if (_pointers.isEmpty) {
       _eligible = false;
@@ -248,8 +300,48 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
     _pageEligible = false;
     _pageDrag?.cancel();
     _pageDrag = null;
-    final slide = _slide.currentState;
-    if (slide?.isSliding ?? false) slide!.endSlide(ScaleEndDetails());
+    _dismissAnimation.stop();
+    _dismissing = false;
+    if (_dismissOffset != Offset.zero) {
+      _dismissOffset = Offset.zero;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          widget.onDismissProgress(0);
+          setState(() {});
+        }
+      });
+      WidgetsBinding.instance.ensureVisualUpdate();
+    }
+  }
+
+  void _setDismissOffset(Offset offset) {
+    if (!mounted) return;
+    setState(() => _dismissOffset = offset);
+    widget.onDismissProgress(_dismissProgress);
+  }
+
+  Future<void> _settleDismiss(bool close) async {
+    _dismissing = close;
+    final revision = _c.selectionRevision;
+    _animationStart = _dismissOffset;
+    _animationEnd = close
+        ? Offset(
+            _dismissOffset.dx,
+            _dismissOffset.dy.sign * (_lastSize!.height * .85),
+          )
+        : Offset.zero;
+    try {
+      await _dismissAnimation.forward(from: 0).orCancel;
+      if (mounted &&
+          close &&
+          _c.active &&
+          _c.foreground &&
+          revision == _c.selectionRevision) {
+        _c.close(ViewerCloseReason.gesture);
+      }
+    } on TickerCanceled {
+      // Rotation, backgrounding and revocation must cancel an unfinished exit.
+    }
   }
 
   void _report(ViewerFailure failure, (int, int, int) token) {
@@ -301,137 +393,140 @@ class _ViewerSurfaceState extends State<_ViewerSurface> {
             );
           }
           final baseline = _baseline;
-          return ExtendedImageSlidePage(
-            key: _slide,
-            slideAxis: SlideAxis.vertical,
-            slideType: SlideType.wholePage,
-            resetPageDuration: const Duration(milliseconds: 120),
-            slideOffsetHandler: (
-              offset, {
-              ExtendedImageSlidePageState? state,
-            }) => _eligible ? Offset(0, math.max(0, offset.dy)) : Offset.zero,
-            slideScaleHandler: (offset, {ExtendedImageSlidePageState? state}) =>
-                _eligible
-                ? (1 - offset.dy.abs() / size.height * 0.3).clamp(0.7, 1)
-                : 1,
-            slidePageBackgroundHandler: (offset, pageSize) =>
-                widget.backgroundColor,
-            slideEndHandler:
-                (
-                  offset, {
-                  ExtendedImageSlidePageState? state,
-                  ScaleEndDetails? details,
-                }) {
-                  if (_eligible &&
-                      !_rejected &&
-                      offset.dy >= 100 &&
-                      _pointerRevision == _c.selectionRevision) {
-                    _c.close(ViewerCloseReason.gesture);
-                  }
-                  // Returning true makes upstream Navigator.pop its nearest route.
-                  // Navigation belongs exclusively to the caller's onClosed callback.
-                  return false;
-                },
-            child: Listener(
-              behavior: HitTestBehavior.opaque,
-              onPointerDown: _down,
-              onPointerMove: _move,
-              onPointerUp: _up,
-              onPointerCancel: (event) {
-                _cancel();
-                _up(event);
-              },
-              child: PageView.builder(
-                key: const ValueKey('viewer-pages'),
-                controller: _pages,
-                itemCount: _c.items.length,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: _c.select,
-                itemBuilder: (context, index) {
-                  if (index != selectedIndex ||
-                      source == null ||
-                      !_c.active ||
-                      token.$1 != _c.generation ||
-                      token.$2 != _c.selectionRevision ||
-                      token.$3 != _c._attempt ||
-                      !identical(_c._source, source)) {
-                    return const SizedBox.expand();
-                  }
-                  // Capture at construction: an old stream callback must never
-                  // borrow the controller's newer selection/attempt identity.
-                  return ExtendedImage(
-                    key: ValueKey((item.id, token.$3, source)),
-                    image: _c._limitedProvider ?? source.provider,
-                    semanticLabel: item.semanticLabel ?? '第${index + 1}张图片',
-                    fit: BoxFit.contain,
-                    mode: ExtendedImageMode.gesture,
-                    extendedImageGestureKey: gestureKey,
-                    enableSlideOutPage: false,
-                    clearMemoryCacheWhenDispose: true,
-                    afterPaintImage: (_, _, _, _) {
-                      if (!_restorePending &&
-                          _c._current(token.$1, token.$2, token.$3)) {
-                        _captureReading();
-                      }
-                    },
-                    onDoubleTap: (gesture) {
-                      final base = gesture.imageGestureConfig!.initialScale;
-                      gesture.handleDoubleTap(
-                        scale:
-                            gesture.gestureDetails!.totalScale! > base + 0.001
-                            ? base
-                            : base * 2,
-                      );
-                    },
-                    initGestureConfigHandler: (_) => GestureConfig(
-                      initialScale: baseline,
-                      minScale: baseline,
-                      maxScale: baseline * 4,
-                      animationMinScale: baseline,
-                      animationMaxScale: baseline * 4,
-                      initialAlignment: baseline > 1
-                          ? InitialAlignment.topCenter
-                          : InitialAlignment.center,
-                      inPageView: false,
-                      cacheGesture: false,
-                      inertialSpeed: 100,
-                    ),
-                    loadStateChanged: (state) {
-                      if (state.extendedImageLoadState == LoadState.failed) {
-                        _report(
-                          state.lastException is _ResourceLimitExceeded
-                              ? ViewerFailure.resourceLimit
-                              : ViewerFailure.decodeFailed,
-                          token,
-                        );
+          return Transform.translate(
+            key: const ValueKey('viewer-dismiss-transform'),
+            offset: _dismissOffset,
+            child: Transform.scale(
+              scale: 1 - _dismissProgress * .28,
+              child: Opacity(
+                opacity: _dismissing ? 1 - _dismissProgress : 1,
+                child: Listener(
+                  behavior: HitTestBehavior.opaque,
+                  onPointerDown: _down,
+                  onPointerMove: _move,
+                  onPointerUp: _up,
+                  onPointerCancel: (event) {
+                    _cancel();
+                    _up(event);
+                  },
+                  child: PageView.builder(
+                    key: const ValueKey('viewer-pages'),
+                    controller: _pages,
+                    itemCount: _c.items.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: _c.select,
+                    itemBuilder: (context, index) {
+                      final entry = _c._cache[_c.items[index].id];
+                      if (!_c.active ||
+                          token.$1 != _c.generation ||
+                          token.$2 != _c.selectionRevision ||
+                          token.$3 != _c._attempt ||
+                          !identical(_c._source, source)) {
                         return const SizedBox.expand();
                       }
-                      final image = state.extendedImageInfo?.image;
-                      if (image != null) {
-                        if (image.width != source.pixelSize.width ||
-                            image.height != source.pixelSize.height) {
-                          _report(ViewerFailure.invalidSource, token);
-                          return const SizedBox.expand();
+                      if (index != selectedIndex || source == null) {
+                        if (!_c.foreground || entry == null) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
-                        if (_reportedReady != token) {
-                          _reportedReady = token;
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (mounted) {
-                              _c._reportReady(
-                                source,
-                                token.$1,
-                                token.$2,
-                                token.$3,
-                              );
-                            }
-                          });
-                        }
-                        _scheduleRestore(token, item.id, source);
+                        return _ViewerPreview(
+                          key: ValueKey(entry),
+                          entry: entry,
+                          reading: _c._reading[_c.items[index].id],
+                        );
                       }
-                      return null;
+                      // Capture at construction: an old stream callback must never
+                      // borrow the controller's newer selection/attempt identity.
+                      return ExtendedImage(
+                        key: ValueKey((item.id, token.$3, source)),
+                        image: _c._limitedProvider ?? source.provider,
+                        semanticLabel: item.semanticLabel ?? '第${index + 1}张图片',
+                        fit: BoxFit.contain,
+                        mode: ExtendedImageMode.gesture,
+                        extendedImageGestureKey: gestureKey,
+                        enableSlideOutPage: false,
+                        clearMemoryCacheWhenDispose: false,
+                        afterPaintImage: (_, _, image, _) {
+                          if (_c._current(token.$1, token.$2, token.$3)) {
+                            entry?.remember(image);
+                          }
+                          if (!_restorePending &&
+                              _c._current(token.$1, token.$2, token.$3)) {
+                            _captureReading();
+                          }
+                        },
+                        onDoubleTap: (gesture) {
+                          final base = gesture.imageGestureConfig!.initialScale;
+                          gesture.handleDoubleTap(
+                            scale:
+                                gesture.gestureDetails!.totalScale! >
+                                    base + 0.001
+                                ? base
+                                : base * 2,
+                          );
+                        },
+                        initGestureConfigHandler: (_) => GestureConfig(
+                          initialScale: baseline,
+                          minScale: baseline,
+                          maxScale: baseline * 4,
+                          animationMinScale: baseline,
+                          animationMaxScale: baseline * 4,
+                          initialAlignment: baseline > 1
+                              ? InitialAlignment.topCenter
+                              : InitialAlignment.center,
+                          inPageView: false,
+                          cacheGesture: false,
+                          inertialSpeed: 100,
+                        ),
+                        loadStateChanged: (state) {
+                          if (state.extendedImageLoadState ==
+                                  LoadState.loading &&
+                              entry?.frame != null) {
+                            return _ViewerPreview(
+                              key: ValueKey(entry),
+                              entry: entry!,
+                              reading: _c._reading[item.id],
+                            );
+                          }
+                          if (state.extendedImageLoadState ==
+                              LoadState.failed) {
+                            _report(
+                              state.lastException is _ResourceLimitExceeded
+                                  ? ViewerFailure.resourceLimit
+                                  : ViewerFailure.decodeFailed,
+                              token,
+                            );
+                            return const SizedBox.expand();
+                          }
+                          final image = state.extendedImageInfo?.image;
+                          if (image != null) {
+                            if (image.width != source.pixelSize.width ||
+                                image.height != source.pixelSize.height) {
+                              _report(ViewerFailure.invalidSource, token);
+                              return const SizedBox.expand();
+                            }
+                            if (_reportedReady != token) {
+                              _reportedReady = token;
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (mounted) {
+                                  _c._reportReady(
+                                    source,
+                                    token.$1,
+                                    token.$2,
+                                    token.$3,
+                                  );
+                                }
+                              });
+                            }
+                            _scheduleRestore(token, item.id, source);
+                          }
+                          return null;
+                        },
+                      );
                     },
-                  );
-                },
+                  ),
+                ),
               ),
             ),
           );

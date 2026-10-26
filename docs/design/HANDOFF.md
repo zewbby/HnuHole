@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-26 IMAGE-VIEWER-GESTURES-01（仅本地分支）：** `fix/image-viewer-gestures` 从 `origin/main@856313c` 建立，按用户要求不带 codex 前缀。图片上下拖动跟手缩小、背景渐隐露出原页面，短拖回弹、完成动画后退出；取消结束提示闪屏，加入有界会话缓存与横滑目标页准备，修正状态栏。帖子、编辑器、私信共用透明路由；长图、双指、缩放、撤销及原文件保存护栏保留。实现与最终验证见[任务记录](../branches/fix-image-viewer-gestures.md)和[机器证据](image-viewer-gestures-verification.json)。未提交/推送/合并/部署，真机手感及 iOS 本轮 NOT_RUN；旧模块总裁决不提升。
+
 > **2026-10-25 SHARED-RATE-LIMIT-01已合并：** 用户授权后 [PR73](https://github.com/zewbby/HnuHole/pull/73) 于北京时间10:12:38 Squash进入main `c051981`；最终5ef371d完整树与合并提交一致，13唯一workflow/23实际job全SUCCESS，指定Android2433四阶段限定PASS。origin/main与本地HnuHole-main clean同步，其他worktree保留。未部署/生产发布，不提升iOS/整机重启/容量及旧模块总裁决。见[任务](../branches/feat-shared-rate-limit-abuse-control.md)/[合并机器回执](shared-rate-limit-merge-verification.json)。下方Draft/未合并/待review为历史快照；当前纯文档同步PR在本回执编写时尚未创建，不预记其CI/合并。
 
 > **2026-10-24 SHARED-RATE-LIMIT-01 PR/CI最新：** CI记录时已提交推送 [Draft PR #73](https://github.com/zewbby/HnuHole/pull/73)；指定Android四阶段PASS，6e50244的13workflow/23job全部SUCCESS，见[逐run/job证据](shared-rate-limit-remote-ci-verification.json)。原生产品33bdcc0之后只有CI和旧host工具修复，runtime未变；两轮CI失败及修复历史保留。待独立成员review，未合并/发布。本次回执编写时后续纯文档提交尚无CI结果；CI记录时为Draft，后续检查/送审状态以live PR为准。下方未提交/CI未跑为历史时点，旧模块总裁决不提升。
