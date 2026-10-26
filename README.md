@@ -33,6 +33,8 @@
 
 ## 分支一览
 
+- [帖子图片平滑续验](docs/branches/fix-media-seamless-renewal.md)：`codex/fix/media-seamless-renewal` 在权限续验成功且图片未变时保留画面与缓存，避免周期性重载；本地实现，未合并。
+
 - [身份转帖](docs/branches/feat-post-reposts.md)：`feat/post-reposts` 提供持久化私人归档、条件写入与接线契约，已整合到个人页分支；未合并。
 - [个人页与私人转帖](docs/branches/feat-personal-profile-mood.md)：`feat/personal-profile-mood` 实现五栏缩放、身份切换和共享喜欢／收藏，已接入私人转帖归档；未合并。
 

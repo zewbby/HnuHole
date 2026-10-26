@@ -11,19 +11,51 @@
       "B06",
       "B10"
     ],
-    "state": "LOCAL_IMPLEMENTED_HOST_AND_ANDROID_BUILD_PASS_DEVICE_NOT_RUN",
+    "state": "PR_OPEN_MAIN_INTEGRATED_LOCAL_PASS_REMOTE_PENDING",
     "evidence": "docs/design/image-viewer-gestures-verification.json",
     "report": "docs/branches/fix-image-viewer-gestures.md",
     "hostTests": {
       "viewer": 129,
-      "affectedMobile": 57
+      "affectedMobile": 118
     },
     "androidBuild": "PASS",
     "physicalDevice": "NOT_RUN",
     "ios": "NOT_RUN",
-    "remoteCI": "NOT_RUN",
+    "remoteCI": "PENDING_FINAL_HEAD",
     "merged": false,
-    "published": false
+    "published": false,
+    "pr": "https://github.com/zewbby/HnuHole/pull/77",
+    "integratedMain": "048a3e5468ba6effa5084437a79de0d261ff6d1b"
+  },
+  "mediaSeamlessRenewal20261026": {
+    "task": "MEDIA-SEAMLESS-RENEWAL-01",
+    "date": "2026-10-26",
+    "branch": "codex/fix/media-seamless-renewal",
+    "baseline": "856313c",
+    "modules": [
+      "B03",
+      "B06"
+    ],
+    "implementation": "LOCAL_IMPLEMENTED_UNCOMMITTED",
+    "reopenedRegression": "Post media authority deadline / visibility / durable renewal / late responses; full module verdicts unchanged",
+    "regression": {
+      "status": "PASS",
+      "passed": 228,
+      "failed": 0,
+      "skipped": 0
+    },
+    "analysis": {
+      "status": "PASS",
+      "issues": 0
+    },
+    "androidBuild": "PASS_ARM64_DEBUG_NOT_INSTALLED",
+    "device": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "independentReview": "NOT_RUN",
+    "ios": "NOT_RUN",
+    "deployed": false,
+    "report": "docs/branches/fix-media-seamless-renewal.md",
+    "evidence": "docs/design/media-seamless-renewal-verification-20261026.json"
   },
   "sharedRateLimit20261024": {
     "task": "SHARED-RATE-LIMIT-01",

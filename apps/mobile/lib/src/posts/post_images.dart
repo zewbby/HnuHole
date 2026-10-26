@@ -45,6 +45,7 @@ class PostImages {
     required this.accessGranted,
     this.onRelease,
     this.isExpired,
+    this.maintainAccessWhile,
   }) : images = List.unmodifiable(images) {
     if (postId.isEmpty ||
         postId.trim() != postId ||
@@ -60,9 +61,13 @@ class PostImages {
   /// Releases this host-owned lease when the detail no longer uses it.
   final VoidCallback? onRelease;
 
-  /// Only a natural authorization deadline permits an automatic fresh read.
+  /// Only expiry or a verified content change permits an automatic fresh read.
   /// A denial, release or account change must keep the old group terminal.
   final bool Function()? isExpired;
+
+  /// Registers a live visibility probe. The host may renew an unexpired grant
+  /// while a consumer is visible, without replacing its images or providers.
+  final void Function(bool Function() isVisible)? maintainAccessWhile;
 }
 
 /// Host media integration seam; production uses the fixed protected C contract.
@@ -99,6 +104,7 @@ class _PostImagesSectionState extends State<PostImagesSection>
     with WidgetsBindingObserver {
   PostImages? _group;
   ViewerController? _viewer;
+  ModalRoute<void>? _viewerRoute;
   int _revision = 0;
   int? _scheduledGroupRevision;
   bool _loading = true, _failed = false, _revoked = false;
@@ -115,6 +121,27 @@ class _PostImagesSectionState extends State<PostImagesSection>
   }
 
   bool get _current => mounted && widget.isCurrent();
+
+  bool _renewalVisible() {
+    if (!_current ||
+        _loading ||
+        _failed ||
+        (WidgetsBinding.instance.lifecycleState != null &&
+            WidgetsBinding.instance.lifecycleState !=
+                AppLifecycleState.resumed)) {
+      return false;
+    }
+    if (_viewer != null) return _viewerRoute?.isCurrent == true;
+    if (ModalRoute.of(context)?.isCurrent == false) return false;
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.hasSize || !box.attached) return false;
+    final rect = box.localToGlobal(Offset.zero) & box.size;
+    if (!rect.overlaps(Offset.zero & MediaQuery.sizeOf(context))) return false;
+    final viewport = Scrollable.maybeOf(context)?.context.findRenderObject();
+    return viewport is! RenderBox ||
+        !viewport.hasSize ||
+        rect.overlaps(viewport.localToGlobal(Offset.zero) & viewport.size);
+  }
 
   void _authorityChanged() {
     if (!_current) {
@@ -231,6 +258,7 @@ class _PostImagesSectionState extends State<PostImagesSection>
           [for (final image in group.images) image.pixelSize];
       _revoked = !group.accessGranted.value;
       group.accessGranted.addListener(_groupChanged);
+      group.maintainAccessWhile?.call(_renewalVisible);
     } catch (_) {
       if (!_current || revision != _revision) return;
       _failed = true;
@@ -289,11 +317,13 @@ class _PostImagesSectionState extends State<PostImagesSection>
         },
       ),
     );
+    _viewerRoute = route;
     try {
       await navigator.push<void>(route);
     } finally {
       await route.completed;
       if (identical(_viewer, viewer)) _viewer = null;
+      if (identical(_viewerRoute, route)) _viewerRoute = null;
       viewer.dispose();
       _scheduleExpiryRefresh();
     }

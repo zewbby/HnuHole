@@ -26,6 +26,7 @@ class _Api implements PostApi, PostMediaApi {
   Map<String, Object?> manifest = mediaManifest();
   Uint8List bytes = Uint8List.fromList(List.filled(8, 1));
   PostFailure? failure;
+  PostFailure? manifestFailure;
   Completer<PostResponse<PostMediaManifest>>? manifestWait;
   Completer<PostResponse<Uint8List>>? bytesWait;
   final tokens = <String>[];
@@ -42,6 +43,7 @@ class _Api implements PostApi, PostMediaApi {
   }) async {
     manifestReads++;
     tokens.add(sessionToken);
+    if (manifestFailure != null) throw manifestFailure!;
     return manifestWait?.future ??
         _response(PostMediaManifest.fromJson(manifest, postId));
   }
@@ -120,9 +122,403 @@ void main() {
     auth.dispose();
   });
 
-  testWidgets(
-    'visible detail reauthorizes once while covered repost rows wait for return',
+  void virtualRepository(WidgetTester tester) {
+    repository.dispose();
+    repository = PostMediaRepository(
+      posts,
+      stopwatch: tester.binding.clock.stopwatch,
+    );
+  }
+
+  Future<void> flushMedia(WidgetTester tester) async {
+    for (var i = 0; i < 8; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 5)),
+      );
+      await tester.pump(const Duration(milliseconds: 10));
+    }
+  }
+
+  Future<T> resolveMedia<T>(
+    WidgetTester tester,
+    Future<T> Function() action,
+  ) async {
+    final pending = action();
+    await flushMedia(tester);
+    return await pending;
+  }
+
+  Future<PostImages> activeGroup(WidgetTester tester) async {
+    final pending = repository.load(mediaPostId);
+    await flushMedia(tester);
+    final group = await pending;
+    group.maintainAccessWhile!(() => true);
+    return group;
+  }
+
+  void mediaTestWidgets(String name, Future<void> Function(WidgetTester) body) {
+    testWidgets(name, (tester) async {
+      try {
+        await body(tester);
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        repository.dispose();
+      }
+    });
+  }
+
+  mediaTestWidgets(
+    'three renewals reuse bytes and providers with no access flicker',
     (tester) async {
+      virtualRepository(tester);
+      final first = await activeGroup(tester);
+      final second = await activeGroup(tester);
+      final provider = (await resolveMedia(
+        tester,
+        first.images.single.loadThumbnail!,
+      ));
+      var transitions = 0;
+      first.accessGranted.addListener(() => transitions++);
+      for (var i = 0; i < 3; i++) {
+        await tester.pump(const Duration(seconds: 51));
+        await flushMedia(tester);
+        expect(first.accessGranted.value, isTrue);
+        expect(second.accessGranted.value, isTrue);
+        expect(
+          identical(
+            await resolveMedia(tester, second.images.single.loadThumbnail!),
+            provider,
+          ),
+          isTrue,
+        );
+        expect(api.manifestReads, i + 2);
+        expect(api.byteReads, 1);
+      }
+      expect(transitions, 0);
+    },
+  );
+
+  mediaTestWidgets('inactive and idle consumers do not renew their grant', (
+    tester,
+  ) async {
+    virtualRepository(tester);
+    final group = await activeGroup(tester);
+    group.maintainAccessWhile!(() => false);
+    await tester.pump(const Duration(seconds: 51));
+    await flushMedia(tester);
+    expect(api.manifestReads, 1);
+    group.onRelease!();
+    await tester.pump(const Duration(seconds: 70));
+    expect(api.manifestReads, 1);
+    expect(group.accessGranted.value, isFalse);
+    expect(repository.idleGroupCount, 0);
+  });
+
+  mediaTestWidgets(
+    'becoming visible near expiry renews without waiting for a rebuild',
+    (tester) async {
+      virtualRepository(tester);
+      final group = await activeGroup(tester);
+      var visible = false;
+      group.maintainAccessWhile!(() => visible);
+      await tester.pump(const Duration(seconds: 54));
+      await flushMedia(tester);
+      expect(api.manifestReads, 1);
+      visible = true;
+      await tester.pump(const Duration(seconds: 1));
+      await flushMedia(tester);
+      expect(api.manifestReads, 2);
+      await tester.pump(const Duration(seconds: 6));
+      expect(group.accessGranted.value, isTrue);
+    },
+  );
+
+  for (final hiddenBy in ['background', 'covered route', 'offscreen']) {
+    mediaTestWidgets('$hiddenBy images do not send renewal requests', (
+      tester,
+    ) async {
+      virtualRepository(tester);
+      api.bytes = (await tester.runAsync(
+        () => File(
+          '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
+        ).readAsBytes(),
+      ))!;
+      api.manifest = mediaManifest(
+        bytes: api.bytes.length,
+        width: 640,
+        height: 480,
+      );
+      final scroll = ScrollController();
+      final navigator = GlobalKey<NavigatorState>();
+      await tester.pumpWidget(
+        MaterialApp(
+          navigatorKey: navigator,
+          home: Scaffold(
+            body: SingleChildScrollView(
+              controller: scroll,
+              child: Column(
+                children: [
+                  PostImagesSection(
+                    postId: mediaPostId,
+                    expectedCount: 1,
+                    loadImages: repository.load,
+                    authority: posts,
+                    isCurrent: () => posts.available,
+                    feedPreview: true,
+                  ),
+                  const SizedBox(height: 1600),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await flushMedia(tester);
+      await tester.pumpAndSettle();
+      expect(find.byType(Image), findsOneWidget);
+      if (hiddenBy == 'background') {
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      } else if (hiddenBy == 'covered route') {
+        unawaited(
+          navigator.currentState!.push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => const Scaffold(body: Text('覆盖页面')),
+            ),
+          ),
+        );
+      } else {
+        scroll.jumpTo(800);
+      }
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 61));
+      await flushMedia(tester);
+      expect(api.manifestReads, 1);
+      expect(api.byteReads, 1);
+      await tester.pumpWidget(const SizedBox());
+      scroll.dispose();
+      if (hiddenBy == 'background') {
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+      }
+    });
+  }
+
+  mediaTestWidgets(
+    'open viewer remains open with the same controller across renewal',
+    (tester) async {
+      virtualRepository(tester);
+      api.bytes = (await tester.runAsync(
+        () => File(
+          '../../packages/image_viewer/example/assets/fixtures/ordinary.png',
+        ).readAsBytes(),
+      ))!;
+      api.manifest = mediaManifest(
+        bytes: api.bytes.length,
+        width: 640,
+        height: 480,
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: PostImagesSection(
+              postId: mediaPostId,
+              expectedCount: 1,
+              loadImages: repository.load,
+              authority: posts,
+              isCurrent: () => posts.available,
+            ),
+          ),
+        ),
+      );
+      await flushMedia(tester);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(Image));
+      await flushMedia(tester);
+      await tester.pumpAndSettle();
+      final controller = tester
+          .widget<HnuImageViewer>(find.byType(HnuImageViewer))
+          .controller;
+      await tester.pump(const Duration(seconds: 51));
+      await flushMedia(tester);
+      await tester.pump(const Duration(seconds: 11));
+      expect(api.manifestReads, 2);
+      expect(api.byteReads, 1);
+      expect(controller.active, isTrue);
+      expect(
+        identical(
+          tester.widget<HnuImageViewer>(find.byType(HnuImageViewer)).controller,
+          controller,
+        ),
+        isTrue,
+      );
+      controller.close();
+      await flushMedia(tester);
+      await tester.pumpAndSettle();
+      expect(find.text('图片已不可访问'), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  mediaTestWidgets(
+    'connection failure retains only the original deadline with no retry loop',
+    (tester) async {
+      virtualRepository(tester);
+      final group = await activeGroup(tester);
+      api.manifestFailure = const PostFailure(kind: PostFailureKind.transport);
+      await tester.pump(const Duration(seconds: 51));
+      await flushMedia(tester);
+      expect(group.accessGranted.value, isTrue);
+      await tester.pump(const Duration(seconds: 8));
+      expect(api.manifestReads, 2);
+      expect(group.accessGranted.value, isTrue);
+      await tester.pump(const Duration(seconds: 2));
+      expect(group.accessGranted.value, isFalse);
+      expect(group.isExpired!(), isTrue);
+      expect(api.manifestReads, 2);
+    },
+  );
+
+  for (final status in [401, 403, 404, 503]) {
+    mediaTestWidgets(
+      'renewal denial $status hides all consumers before the old deadline',
+      (tester) async {
+        virtualRepository(tester);
+        final one = await activeGroup(tester), two = await activeGroup(tester);
+        api.manifestFailure = PostFailure(
+          statusCode: status,
+          kind: status == 401
+              ? PostFailureKind.unauthorized
+              : status == 503
+              ? PostFailureKind.unavailable
+              : PostFailureKind.rejected,
+        );
+        await tester.pump(const Duration(seconds: 51));
+        await flushMedia(tester);
+        expect(one.accessGranted.value, isFalse);
+        expect(two.accessGranted.value, isFalse);
+        expect(one.isExpired!(), isFalse);
+        expect(api.manifestReads, 2);
+      },
+    );
+  }
+
+  for (final endedBy in ['expiry', 'release', 'account change']) {
+    mediaTestWidgets('late renewal after $endedBy never restores old images', (
+      tester,
+    ) async {
+      virtualRepository(tester);
+      final old = await activeGroup(tester);
+      api.manifestWait = Completer();
+      await tester.pump(const Duration(seconds: 51));
+      await flushMedia(tester);
+      expect(api.manifestReads, 2);
+      if (endedBy == 'expiry') {
+        await tester.pump(const Duration(seconds: 10));
+      } else if (endedBy == 'release') {
+        old.onRelease!();
+      } else {
+        await resolveMedia(tester, auth.sessions.logout);
+      }
+      api.manifestWait!.complete(
+        _response(PostMediaManifest.fromJson(api.manifest, mediaPostId)),
+      );
+      api.manifestWait = null;
+      await flushMedia(tester);
+      expect(old.accessGranted.value, isFalse);
+      await expectLater(
+        old.images.single.loadThumbnail!(),
+        throwsA(isA<PostFailure>()),
+      );
+      expect(api.byteReads, 0);
+    });
+  }
+
+  mediaTestWidgets(
+    'verified metadata changes require new items and a fresh group',
+    (tester) async {
+      virtualRepository(tester);
+      final old = await activeGroup(tester);
+      final first = (await resolveMedia(
+        tester,
+        old.images.single.loadThumbnail!,
+      ));
+      ((api.manifest['images'] as List).single as Map)['saveAllowed'] = false;
+      await tester.pump(const Duration(seconds: 51));
+      await flushMedia(tester);
+      expect(old.accessGranted.value, isFalse);
+      final fresh = (await resolveMedia(
+        tester,
+        () => repository.load(mediaPostId),
+      ));
+      expect(fresh.accessGranted.value, isTrue);
+      expect(fresh.images.single.item.saveAllowed, isFalse);
+      expect(api.manifestReads, 2);
+      expect(
+        identical(
+          await resolveMedia(tester, fresh.images.single.loadThumbnail!),
+          first,
+        ),
+        isFalse,
+      );
+    },
+  );
+
+  mediaTestWidgets('invalid renewal deadline cannot extend a live grant', (
+    tester,
+  ) async {
+    virtualRepository(tester);
+    final old = await activeGroup(tester);
+    api.manifest = mediaManifest(lifetime: const Duration(seconds: 61));
+    await tester.pump(const Duration(seconds: 51));
+    await flushMedia(tester);
+    expect(old.accessGranted.value, isFalse);
+    expect(old.isExpired!(), isFalse);
+  });
+
+  for (final endedBy in ['release', 'hidden']) {
+    mediaTestWidgets('queued renewal stops before HTTP after $endedBy', (
+      tester,
+    ) async {
+      virtualRepository(tester);
+      final group = await activeGroup(tester);
+      var visible = true;
+      group.maintainAccessWhile!(() => visible);
+      api.manifest = mediaManifest(postId: mediaOtherId, count: 2);
+      final blocker = await resolveMedia(
+        tester,
+        () => repository.load(mediaOtherId),
+      );
+      api.manifest = mediaManifest();
+      api.bytesWait = Completer();
+      final reads = [
+        for (final image in blocker.images) image.item.loadSource(),
+      ];
+      await flushMedia(tester);
+      expect(api.byteReads, 2);
+      await tester.pump(const Duration(seconds: 51));
+      await flushMedia(tester);
+      expect(api.manifestReads, 2); // Renewal is waiting for a byte slot.
+      if (endedBy == 'release') {
+        group.onRelease!();
+      } else {
+        visible = false;
+      }
+      api.bytesWait!.complete(_response(api.bytes));
+      await flushMedia(tester);
+      await Future.wait(reads);
+      expect(api.manifestReads, 2);
+    });
+  }
+
+  testWidgets(
+    'visible reposts and detail renew without blank frames or repeated bytes',
+    (tester) async {
+      repository.dispose();
+      repository = PostMediaRepository(
+        posts,
+        stopwatch: tester.binding.clock.stopwatch,
+      );
       Future<void> frames() async {
         for (var i = 0; i < 12; i++) {
           await tester.runAsync(
@@ -197,35 +593,40 @@ void main() {
       await tester.pumpAndSettle();
       expect(api.manifestReads, 1);
       expect(groups.length, 2);
-      await tester.pump(const Duration(seconds: 58));
+      api.manifestWait = Completer();
+      await tester.pump(const Duration(seconds: 51));
+      await frames();
+      expect(api.manifestReads, 2);
+      expect(find.byType(Image), findsNWidgets(2));
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.text('图片已不可访问'), findsNothing);
+      api.manifestWait!.complete(
+        _response(PostMediaManifest.fromJson(api.manifest, mediaPostId)),
+      );
+      api.manifestWait = null;
+      await frames();
       await tester.tap(find.text('打开原帖详情'));
       await frames();
       await tester.pumpAndSettle();
-      expect(api.manifestReads, 1);
+      expect(api.manifestReads, 2);
       expect(groups.length, 3);
       final old = groups.toList();
-      await tester.pump(const Duration(seconds: 3));
+      await tester.pump(const Duration(seconds: 51));
       await frames();
       await tester.pumpAndSettle();
-      expect(api.manifestReads, 2);
-      // Only the visible detail renews. Covered repost rows keep terminal old
-      // leases until their route returns, then share the same fresh manifest.
-      expect(groups.length, 4);
-      expect(old.every((group) => !group.accessGranted.value), isTrue);
-      expect(
-        groups.skip(3).every((group) => group.accessGranted.value),
-        isTrue,
-      );
+      expect(api.manifestReads, 3);
+      expect(groups.length, 3);
+      expect(old.every((group) => group.accessGranted.value), isTrue);
       expect(find.text('图片已不可访问'), findsNothing);
       expect(find.byKey(const ValueKey('post-image-grid')), findsOneWidget);
       await tester.pageBack();
       await frames();
       await tester.pumpAndSettle();
-      expect(groups.length, 6);
+      expect(groups.length, 3);
       expect(find.text('图片已不可访问'), findsNothing);
       expect(find.byType(Image), findsNWidgets(2));
-      expect(api.manifestReads, 2);
-      expect(api.byteReads, 2);
+      expect(api.manifestReads, 3);
+      expect(api.byteReads, 1);
       await tester.pumpWidget(const SizedBox());
       repository.dispose();
     },
