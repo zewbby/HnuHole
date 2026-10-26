@@ -1,6 +1,6 @@
 # 分模块验收与测试交接
 
-> **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01（本地分支／未合并／未部署）：** `codex/fix/media-seamless-renewal` 基于 `origin/main@856313c`，帖子图片前台可见时提前约10秒重新验证清单；元数据相同时保留当前图片、解码缓存和查看器，只更新已验证截止时间。共享请求、后台／不可见不续验，原到期计时与撤权／账号代次围栏保留。最终相关回归228项PASS、分析0问题、Android ARM64 debug构建PASS；命令与源码摘要见[任务与验证](../branches/fix-media-seamless-renewal.md)。B03／B06媒体授权回归重开，设备／iOS／远端CI及完整模块结论不提升。
+> **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01已合并：** [PR #76](https://github.com/zewbby/HnuHole/pull/76) 已Squash进入main `048a3e5`；测试head `06448b3` 的9个远端workflow／17项检查全部SUCCESS，合并后的产品文件与被测版本一致。本地相关回归228 PASS／0 FAIL／0 SKIP、分析0问题、Android ARM64 debug构建PASS。帖子图片在前台可见时提前续验，权限与图片元数据未变就保留画面、缓存和查看器；截止及撤权围栏保留。用户取消vivo覆盖安装，未装机／部署；独立成员review、iOS及真机长时间浏览未验，B03／B06历史整模块裁决不提升。见[任务](../branches/fix-media-seamless-renewal.md)与[合并及CI回执](media-seamless-renewal-merge-verification-20261026.json)。
 
 > **2026-10-25 SHARED-RATE-LIMIT-01已合并：** 用户授权后 [PR73](https://github.com/zewbby/HnuHole/pull/73) 于北京时间10:12:38 Squash进入main `c051981`；最终5ef371d完整树与合并提交一致，13唯一workflow/23实际job全SUCCESS，指定Android2433四阶段限定PASS。origin/main与本地HnuHole-main clean同步，其他worktree保留。未部署/生产发布，不提升iOS/整机重启/容量及旧模块总裁决。见[任务](../branches/feat-shared-rate-limit-abuse-control.md)/[合并机器回执](shared-rate-limit-merge-verification.json)。下方Draft/未合并/待review为历史快照；当前纯文档同步PR在本回执编写时尚未创建，不预记其CI/合并。
 
