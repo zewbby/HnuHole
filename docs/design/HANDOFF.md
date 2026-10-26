@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-26 IMAGE-VIEWER-GESTURES-01（PR77待合并）：** `fix/image-viewer-gestures` 从 `origin/main@856313c` 建立，按用户要求不带 codex 前缀。图片上下拖动跟手缩小、背景渐隐露出原页面，短拖回弹、完成动画后退出；取消结束提示闪屏，加入有界会话缓存与横滑目标页准备，修正状态栏。帖子、编辑器、私信共用透明路由；长图、双指、缩放、撤销及原文件保存护栏保留。实现与最终验证见[任务记录](../branches/fix-image-viewer-gestures.md)和[机器证据](image-viewer-gestures-verification.json)。已提交推送[PR77](https://github.com/zewbby/HnuHole/pull/77)，整合主线PR76后相关118项回归、分析及Android构建PASS；等待最终提交远端CI，未合并/部署，真机手感及 iOS 本轮 NOT_RUN；旧模块总裁决不提升。
+
 > **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01已合并：** [PR #76](https://github.com/zewbby/HnuHole/pull/76) 已Squash进入main `048a3e5`；测试head `06448b3` 的9个远端workflow／17项检查全部SUCCESS，合并后的产品文件与被测版本一致。本地相关回归228 PASS／0 FAIL／0 SKIP、分析0问题、Android ARM64 debug构建PASS。帖子图片在前台可见时提前续验，权限与图片元数据未变就保留画面、缓存和查看器；截止及撤权围栏保留。用户取消vivo覆盖安装，未装机／部署；独立成员review、iOS及真机长时间浏览未验，B03／B06历史整模块裁决不提升。见[任务](../branches/fix-media-seamless-renewal.md)与[合并及CI回执](media-seamless-renewal-merge-verification-20261026.json)。
 
 > **2026-10-25 SHARED-RATE-LIMIT-01已合并：** 用户授权后 [PR73](https://github.com/zewbby/HnuHole/pull/73) 于北京时间10:12:38 Squash进入main `c051981`；最终5ef371d完整树与合并提交一致，13唯一workflow/23实际job全SUCCESS，指定Android2433四阶段限定PASS。origin/main与本地HnuHole-main clean同步，其他worktree保留。未部署/生产发布，不提升iOS/整机重启/容量及旧模块总裁决。见[任务](../branches/feat-shared-rate-limit-abuse-control.md)/[合并机器回执](shared-rate-limit-merge-verification.json)。下方Draft/未合并/待review为历史快照；当前纯文档同步PR在本回执编写时尚未创建，不预记其CI/合并。

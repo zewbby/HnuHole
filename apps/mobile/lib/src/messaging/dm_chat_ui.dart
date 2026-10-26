@@ -322,20 +322,17 @@ extension _ChatPhotoUi on _DmChatRouteState {
     );
     _viewer = viewer;
     final nav = Navigator.of(context);
-    late MaterialPageRoute<void> route;
-    route = MaterialPageRoute(
-      builder: (_) => Scaffold(
-        backgroundColor: Colors.black,
-        body: HnuImageViewer(
-          controller: viewer,
-          onClosed: (_) {
-            if (route.isCurrent) {
-              nav.pop();
-            } else if (route.isActive) {
-              nav.removeRoute(route);
-            }
-          },
-        ),
+    late HnuImageViewerRoute route;
+    route = HnuImageViewerRoute(
+      builder: (_) => HnuImageViewer(
+        controller: viewer,
+        onClosed: (_) {
+          if (route.isCurrent) {
+            nav.pop();
+          } else if (route.isActive) {
+            nav.removeRoute(route);
+          }
+        },
       ),
     );
     try {

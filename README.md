@@ -42,6 +42,7 @@
 
 | 分支 | 状态 | 进度详情 |
 | --- | --- | --- |
+| `fix/image-viewer-gestures` | 本地实现上下拖动平滑退出、透明背景与切图缓存修复；未合并。 | [任务详情](docs/branches/fix-image-viewer-gestures.md) |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
 | `feat/shared-rate-limit-abuse-control` | [PR #73](https://github.com/zewbby/HnuHole/pull/73) 已合入main：共享准入、上传字节与草稿/队列完成，指定Android及最终CI限定通过，未生产发布。 | [任务详情](docs/branches/feat-shared-rate-limit-abuse-control.md) |
 | `codex/feat/post-detail-comments` | 已合并 #71：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |

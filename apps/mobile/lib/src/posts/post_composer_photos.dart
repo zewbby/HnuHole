@@ -55,21 +55,18 @@ class _ComposerPhotos extends StatelessWidget {
       ],
     );
     final navigator = Navigator.of(context);
-    late final MaterialPageRoute<void> route;
-    route = MaterialPageRoute(
-      builder: (_) => Scaffold(
-        backgroundColor: Colors.black,
-        body: HnuImageViewer(
-          controller: viewer,
-          onClosed: (_) {
-            if (!route.isActive) return;
-            if (route.isCurrent) {
-              navigator.pop();
-            } else {
-              navigator.removeRoute(route);
-            }
-          },
-        ),
+    late final HnuImageViewerRoute route;
+    route = HnuImageViewerRoute(
+      builder: (_) => HnuImageViewer(
+        controller: viewer,
+        onClosed: (_) {
+          if (!route.isActive) return;
+          if (route.isCurrent) {
+            navigator.pop();
+          } else {
+            navigator.removeRoute(route);
+          }
+        },
       ),
     );
     void changed() {

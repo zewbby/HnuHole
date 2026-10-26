@@ -289,7 +289,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 16));
     }
     await pointer.up();
-    await frames(tester, 5);
+    await frames(tester, 8);
   }
 
   test('stable IDs reject empty and outer whitespace in release code', () {
@@ -746,10 +746,10 @@ void main() {
     for (var i = 0; i < 12; i++) {
       await pointer.moveBy(const Offset(0, 50));
       await tester.pump(const Duration(milliseconds: 16));
-      final slide = tester.state<ExtendedImageSlidePageState>(
-        find.byType(ExtendedImageSlidePage),
+      final transform = tester.widget<Transform>(
+        find.byKey(const ValueKey('viewer-dismiss-transform')),
       );
-      expect(slide.offset, Offset.zero);
+      expect(transform.transform.getTranslation().y, 0);
       expect(reasons, isEmpty);
     }
     await pointer.up();
