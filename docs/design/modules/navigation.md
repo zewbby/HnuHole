@@ -1,6 +1,6 @@
 # 入口、导航与内容发现
 
-> **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01（本地分支／未合并／未部署）：** `codex/fix/media-seamless-renewal` 基于 `origin/main@856313c`，帖子图片前台可见时提前约10秒重新验证清单；元数据相同时保留当前图片、解码缓存和查看器，只更新已验证截止时间。共享请求、后台／不可见不续验，原到期计时与撤权／账号代次围栏保留。最终相关回归228项PASS、分析0问题、Android ARM64 debug构建PASS；命令与源码摘要见[任务与验证](../../branches/fix-media-seamless-renewal.md)。B03／B06媒体授权回归重开，设备／iOS／远端CI及完整模块结论不提升。
+> **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01已合并：** [PR #76](https://github.com/zewbby/HnuHole/pull/76) 已Squash进入main `048a3e5`；测试head `06448b3` 的9个远端workflow／17项检查全部SUCCESS，合并后的产品文件与被测版本一致。本地相关回归228 PASS／0 FAIL／0 SKIP、分析0问题、Android ARM64 debug构建PASS。帖子图片在前台可见时提前续验，权限与图片元数据未变就保留画面、缓存和查看器；截止及撤权围栏保留。用户取消vivo覆盖安装，未装机／部署；独立成员review、iOS及真机长时间浏览未验，B03／B06历史整模块裁决不提升。见[任务](../../branches/fix-media-seamless-renewal.md)与[合并及CI回执](../media-seamless-renewal-merge-verification-20261026.json)。
 
 > **2026-10-24 FEED-REFRESH-CANCEL-01（已合并PR #69）：**[PR #69](https://github.com/zewbby/HnuHole/pull/69) Squash进入main `4933bff`，最终head `217bd4e` 的15项CI全部成功，main产品差异与已测版本为空。按参考视频改为 `:)` 字形内部深色高亮循环，移除外部圆弧；刷新按松手时剩余拉伸判断，同次回滑不进入纯享模式，长拉不积累不可见取消距离。最终聚焦17项、此前相关信息流／导航74项、分析0及Flutter bundle通过，vivo2402已安装，原环境恢复后用户确认可以并授权合并（未逐项记录设备手势矩阵）；B03／B06／B10原整模块结论不变。见[修复记录](../../branches/fix-feed-refresh-cancel.md)。
 

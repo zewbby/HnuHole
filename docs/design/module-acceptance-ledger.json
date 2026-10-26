@@ -8,7 +8,7 @@
       "B03",
       "B06"
     ],
-    "implementation": "LOCAL_IMPLEMENTED_UNCOMMITTED",
+    "implementation": "MERGED_MAIN",
     "reopenedRegression": "Post media authority deadline / visibility / durable renewal / late responses; full module verdicts unchanged",
     "regression": {
       "status": "PASS",
@@ -22,12 +22,19 @@
     },
     "androidBuild": "PASS_ARM64_DEBUG_NOT_INSTALLED",
     "device": "NOT_RUN",
-    "remoteCI": "NOT_RUN",
+    "remoteCI": {
+      "status": "PASS",
+      "workflows": 9,
+      "checks": 17
+    },
     "independentReview": "NOT_RUN",
     "ios": "NOT_RUN",
     "deployed": false,
     "report": "docs/branches/fix-media-seamless-renewal.md",
-    "evidence": "docs/design/media-seamless-renewal-verification-20261026.json"
+    "evidence": "docs/design/media-seamless-renewal-verification-20261026.json",
+    "pullRequest": "https://github.com/zewbby/HnuHole/pull/76",
+    "mergeCommit": "048a3e5468ba6effa5084437a79de0d261ff6d1b",
+    "mergeReceipt": "docs/design/media-seamless-renewal-merge-verification-20261026.json"
   },
   "sharedRateLimit20261024": {
     "task": "SHARED-RATE-LIMIT-01",
