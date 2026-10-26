@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01（本地分支／未合并／未部署）：** `codex/fix/media-seamless-renewal` 基于 `origin/main@856313c`，帖子图片前台可见时提前约10秒重新验证清单；元数据相同时保留当前图片、解码缓存和查看器，只更新已验证截止时间。共享请求、后台／不可见不续验，原到期计时与撤权／账号代次围栏保留。最终相关回归228项PASS、分析0问题、Android ARM64 debug构建PASS；命令与源码摘要见[任务与验证](../branches/fix-media-seamless-renewal.md)。B03／B06媒体授权回归重开，设备／iOS／远端CI及完整模块结论不提升。
+
 > **2026-10-25 SHARED-RATE-LIMIT-01已合并：** 用户授权后 [PR73](https://github.com/zewbby/HnuHole/pull/73) 于北京时间10:12:38 Squash进入main `c051981`；最终5ef371d完整树与合并提交一致，13唯一workflow/23实际job全SUCCESS，指定Android2433四阶段限定PASS。origin/main与本地HnuHole-main clean同步，其他worktree保留。未部署/生产发布，不提升iOS/整机重启/容量及旧模块总裁决。见[任务](../branches/feat-shared-rate-limit-abuse-control.md)/[合并机器回执](shared-rate-limit-merge-verification.json)。下方Draft/未合并/待review为历史快照；当前纯文档同步PR在本回执编写时尚未创建，不预记其CI/合并。
 
 > **2026-10-24 SHARED-RATE-LIMIT-01 PR/CI最新：** CI记录时已提交推送 [Draft PR #73](https://github.com/zewbby/HnuHole/pull/73)；指定Android四阶段PASS，6e50244的13workflow/23job全部SUCCESS，见[逐run/job证据](shared-rate-limit-remote-ci-verification.json)。原生产品33bdcc0之后只有CI和旧host工具修复，runtime未变；两轮CI失败及修复历史保留。待独立成员review，未合并/发布。本次回执编写时后续纯文档提交尚无CI结果；CI记录时为Draft，后续检查/送审状态以live PR为准。下方未提交/CI未跑为历史时点，旧模块总裁决不提升。
