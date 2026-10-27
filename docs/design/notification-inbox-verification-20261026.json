@@ -3,7 +3,7 @@
   "date": "2026-10-27",
   "branch": "feat/notification-inbox",
   "baseline": "c17a66734f935f15da5e0c9407d5b9ebdccff287",
-  "state": "PR_81_FINAL_REPAIR_AWAITING_REMOTE_CHECKS",
+  "state": "MERGED_MAIN_BUILT_AND_EXISTING_DAILY_BACKEND_UPDATED_VIVO_DISCONNECTED",
   "modules": [
     "B02",
     "B07",
@@ -127,22 +127,319 @@
       "log": "go-build-final.log"
     },
     "remoteCI": {
-      "status": "AWAITING_REPAIRED_HEAD",
+      "status": "PASS",
       "initialHead": "6937c002b0576e3980937009fc2544d744749853",
       "initialResult": "FAILED_SHARED_FIXTURE_RESET_MIGRATION_LEDGER_AND_ROLE_AUDIT; SINGLE_EXISTING_IMAGE_DISPOSAL_TEST_FAILURE",
       "repaired": "Reset owned fixture c_inbox; expect migration 28; exact minimal inbox privileges and restored trigger ACLs; existing image screen suite passed local rerun.",
       "secondHead": "e80f3c18892ba823211eaf1123c1b35be9849e7c",
-      "secondResult": "FAILED_OTHER_OLD_FEED_AVATAR_VERSION_ASSERTIONS_PREMODERATION_FIXTURE_AND_REPEATED_IMAGE_DISPOSAL_RACE; ALL_REPAIRED"
+      "secondResult": "FAILED_OTHER_OLD_FEED_AVATAR_VERSION_ASSERTIONS_PREMODERATION_FIXTURE_AND_REPEATED_IMAGE_DISPOSAL_RACE; ALL_REPAIRED",
+      "finalHead": "560818e89fc89e1cdd260507c97c8e0d90dd0e30",
+      "workflows": [
+        {
+          "id": 40434980407,
+          "name": "Collaboration",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449904,
+          "name": "Collaboration",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449932,
+          "name": "Community text contract",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449887,
+          "name": "Comments backend text",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449894,
+          "name": "Identity avatars and initial entry",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449931,
+          "name": "Feed backend",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449897,
+          "name": "Auth feedback",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449946,
+          "name": "Shared rate limit",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434450023,
+          "name": "Post images",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449883,
+          "name": "Feed UI",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449892,
+          "name": "Report moderation",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449910,
+          "name": "Android prerelease",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434450120,
+          "name": "Comments core",
+          "conclusion": "success"
+        },
+        {
+          "id": 40434449999,
+          "name": "Direct message chat",
+          "conclusion": "success"
+        }
+      ],
+      "jobs": [
+        {
+          "id": 121961386156,
+          "name": "policy",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Collaboration",
+          "run": 40434980407
+        },
+        {
+          "id": 121959655042,
+          "name": "policy",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Collaboration",
+          "run": 40434449904
+        },
+        {
+          "id": 121959654875,
+          "name": "contract",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Community text contract",
+          "run": 40434449932
+        },
+        {
+          "id": 121959655112,
+          "name": "text-component",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Comments backend text",
+          "run": 40434449887
+        },
+        {
+          "id": 121959654981,
+          "name": "avatar-flutter",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Identity avatars and initial entry",
+          "run": 40434449894
+        },
+        {
+          "id": 121959655319,
+          "name": "avatar-postgres-https",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Identity avatars and initial entry",
+          "run": 40434449894
+        },
+        {
+          "id": 121959654880,
+          "name": "feed-postgres",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Feed backend",
+          "run": 40434449931
+        },
+        {
+          "id": 121959655119,
+          "name": "flutter-auth-regression",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Auth feedback",
+          "run": 40434449897
+        },
+        {
+          "id": 121959655236,
+          "name": "isolated-admission",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Shared rate limit",
+          "run": 40434449946
+        },
+        {
+          "id": 121959655621,
+          "name": "mobile-recovery",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Shared rate limit",
+          "run": 40434449946
+        },
+        {
+          "id": 121959655519,
+          "name": "flutter",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Post images",
+          "run": 40434450023
+        },
+        {
+          "id": 121959655800,
+          "name": "go-postgres",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Post images",
+          "run": 40434450023
+        },
+        {
+          "id": 121959655847,
+          "name": "go-host",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Post images",
+          "run": 40434450023
+        },
+        {
+          "id": 121959654998,
+          "name": "flutter-and-real-feed",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Feed UI",
+          "run": 40434449883
+        },
+        {
+          "id": 121959654722,
+          "name": "admin",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Report moderation",
+          "run": 40434449892
+        },
+        {
+          "id": 121959655189,
+          "name": "moderation-postgres",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Report moderation",
+          "run": 40434449892
+        },
+        {
+          "id": 121959655237,
+          "name": "scope",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Android prerelease",
+          "run": 40434449910
+        },
+        {
+          "id": 121959711286,
+          "name": "rehearsal",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Android prerelease",
+          "run": 40434449910
+        },
+        {
+          "id": 121959711314,
+          "name": "candidate",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Android prerelease",
+          "run": 40434449910
+        },
+        {
+          "id": 121959655502,
+          "name": "domain",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Comments core",
+          "run": 40434450120
+        },
+        {
+          "id": 121959655756,
+          "name": "contract",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Comments core",
+          "run": 40434450120
+        },
+        {
+          "id": 121959655787,
+          "name": "client",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Comments core",
+          "run": 40434450120
+        },
+        {
+          "id": 121959654919,
+          "name": "reliable-chat-sql",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Direct message chat",
+          "run": 40434449999
+        },
+        {
+          "id": 121959655216,
+          "name": "flutter-and-android",
+          "status": "completed",
+          "conclusion": "success",
+          "workflow": "Direct message chat",
+          "run": 40434449999
+        }
+      ]
     },
-    "merged": false,
+    "merged": true,
     "finalMainAPK": {
-      "status": "NOT_RUN"
+      "status": "PASS",
+      "source": "61c429531880bb51092a87de7e5b9b38c43c4da8",
+      "pullRequest": "https://github.com/zewbby/HnuHole/pull/81",
+      "package": "org.hnuhole.hnuhole_mobile",
+      "versionCode": 2026102701,
+      "versionName": "0.1.0-main-notifications",
+      "mode": "profile",
+      "flutterABIs": [
+        "arm64-v8a"
+      ],
+      "apk": "E:/Hnuhole-env/deliveries/HnuHole-main-2026102701-profile.apk",
+      "sha256": "f59fb3dfa87e6767b422e308270f2882aa1383a8f28f3af6b10d2591157dd02e",
+      "bytes": 57699224,
+      "signingCertificateSHA256": "adebd158e30b0d7dfbd38bd95664aa2d1afd9c88bd824a6ca3e61abf109290ea",
+      "signatureVerified": true,
+      "sameCertificateAsPreviousDaily": true,
+      "sourceManifestSHA256": "32241ba7472bcdf1ac5fa59cac2a4ba58ac9bf4308e83345bd5f421422fa0283",
+      "configSHA256": "36d73338e269272ecd8f3d29958e3fa402de2e5a0c7a36ab82982f9078100e09",
+      "apiConfigUnchanged": true,
+      "deviceInstalled": false,
+      "backendChanged": true,
+      "builtAtUTC": "2026-10-27T01:56:14.604516+00:00",
+      "productionRelease": false,
+      "note": "Merged main functionality; existing private-CA daily development endpoint requires Profile AUTH_DEV_PROFILE. No production signing/domain substituted.",
+      "installStatus": "NOT_RUN_VIVO_DISCONNECTED",
+      "backendReceipt": "E:\\Hnuhole-env\\notification-inbox-20261026\\main-backend-receipt.json",
+      "checkedDeviceAtUTC": "2026-10-27T01:57:03.982776+00:00"
     },
     "finalDeviceTrial": {
-      "status": "NOT_RUN"
+      "status": "NOT_RUN_VIVO_DISCONNECTED",
+      "device": "vivo S18 V2323A",
+      "versionCode": 2026102701,
+      "source": "61c429531880bb51092a87de7e5b9b38c43c4da8"
     },
     "productionRelease": {
-      "status": "NOT_RELEASED"
+      "status": "NOT_RELEASED",
+      "reason": "Existing same-machine private-CA development services and original daily certificate; no public production signing or domain."
     },
     "independentMemberApproval": {
       "status": "NOT_OBTAINED_MAINTAINER_EXPLICIT_MERGE_AUTHORIZATION"
@@ -171,13 +468,47 @@
     "independentCodeReview": {
       "kind": "READ_ONLY_AGENT_REVIEW_NOT_GITHUB_MEMBER_APPROVAL",
       "source": "e80f3c18892ba823211eaf1123c1b35be9849e7c",
-      "findings": "P2 thumbnail expiry recovery; repaired with expiry/denial tests; follow-up review pending"
+      "findings": "P2 thumbnail expiry recovery; repaired with expiry/denial tests; follow-up review pending",
+      "finalReview": "P2_CLOSED_NO_NEW_BLOCKERS; READ_ONLY_AGENT_NOT_MEMBER_APPROVAL",
+      "finalReviewedSource": "516cd4451834a352ed086e6a43f53c34fbfa3d81"
     },
     "finalMobileRerun": {
       "status": "PASS",
       "log": "final-main-candidate-mobile.log",
       "passed": 968,
       "skipped": 3
+    },
+    "existingDailyBackend": {
+      "result": "PASS",
+      "source": "61c429531880bb51092a87de7e5b9b38c43c4da8",
+      "environment": "same-machine WSL daily development backend; not production/cloud",
+      "schema": {
+        "c": 28,
+        "v": 7
+      },
+      "ready": {
+        "c": true,
+        "v": true
+      },
+      "routeProbe": {
+        "status": 401,
+        "code": "SESSION_INVALID"
+      },
+      "existingRowsUnchangedThroughMigration": true,
+      "existingSequenceFactsUnchangedThroughMigration": true,
+      "authorizationGenerationUnchanged": true,
+      "recoverInvoked": false,
+      "resetDownRestoreInvoked": false,
+      "namespacePreservedThroughMigration": true,
+      "comparedTables": 90,
+      "postStartTableDifferenceCount": 0,
+      "binarySHA256": {
+        "community": "49ae812e177eb466b512b69baabf17d8d5bc08b26e53aaece8b3b1e0ddbff55a",
+        "verifier": "da2f09b0464bb9ca5adef7db484541ce9ed23ee5f1aa50fca8f2ff1a33bf10b0",
+        "authdev": "76a584e8d6c1d231df23cf4c4969b4163f001dbe7ed9ff18653183994dca2c37",
+        "ratelimitctl": "5abf632d9c64f8ffe4e81e87e904c80f7d86864b9ad75d020382f493b437a235"
+      },
+      "updatedUTC": "2026-10-27T01:55:00.009165+00:00"
     }
   },
   "historicalTrial": {
@@ -188,5 +519,11 @@
   },
   "localEvidenceDirectory": "E:\\Hnuhole-env\\notification-inbox-20261026",
   "authorization": "User explicitly requested commit, push, PR, merge and building the latest main product. No public production environment or release signing identity has been substituted by test credentials.",
-  "pullRequest": "https://github.com/zewbby/HnuHole/pull/81"
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/81",
+  "merge": {
+    "pullRequest": 81,
+    "sha": "61c429531880bb51092a87de7e5b9b38c43c4da8",
+    "head": "560818e89fc89e1cdd260507c97c8e0d90dd0e30",
+    "productReviewedHead": "516cd4451834a352ed086e6a43f53c34fbfa3d81"
+  }
 }
