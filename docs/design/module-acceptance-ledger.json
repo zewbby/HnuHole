@@ -42127,7 +42127,7 @@
       "date": "2026-10-27",
       "branch": "codex/fix/comment-snapshot-redis-default",
       "baseline": "b1c00bb11115958f60d04a5e70ec46e0bb6701d9",
-      "state": "IMPLEMENTED_PENDING_PR_CI_AND_MERGE",
+      "state": "MERGED_MAIN_DEFAULT_REDIS_CI_PASS_DEVELOPMENT_ALIGNED_NO_REDEPLOYMENT",
       "createBackend": "redis",
       "readRedis": true,
       "readPostgres": true,
@@ -42138,7 +42138,14 @@
       "existingDevelopmentAlignment": "PASS_READ_ONLY_NO_REDEPLOYMENT",
       "newPerformanceDeviceThirtyMinuteAcceptance": "NOT_RUN_PER_SCOPE",
       "productionDeployed": false,
-      "evidence": "docs/design/comment-snapshot-redis/main-default-20261027.md"
+      "evidence": "docs/design/comment-snapshot-redis/main-default-20261027.md",
+      "pr": "https://github.com/zewbby/HnuHole/pull/84",
+      "source": "557f54a21d214f9fc2470d28fae1bff2ec71a7e5",
+      "mergeSha": "ad0c47ce98cc13093be9b00b48e5d8ea37443cdb",
+      "automaticWorkflowCount": 12,
+      "automaticCI": "PASS",
+      "independentReadOnlyReview": "PASS_NO_BLOCKER",
+      "githubMemberApproval": false
     }
   },
   "commentSnapshotRedis20261025Stage5SecondLimitedReview": {
