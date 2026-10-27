@@ -1,6 +1,6 @@
 # 主线默认启用评论快照 Redis
 
-2026-10-27，COMMENT-SNAPSHOT-REDIS-01 的追加要求。分支 `codex/fix/comment-snapshot-redis-default`，基线 main `b1c00bb11115958f60d04a5e70ec46e0bb6701d9`。用户已授权本次提交、PR 和合并；本记录初次提交时为待合并，最终 PR、head、CI 和合并 SHA 见 PR Checks 与 D 盘交付回执。
+2026-10-27，COMMENT-SNAPSHOT-REDIS-01 的追加要求。分支 `codex/fix/comment-snapshot-redis-default`，基线 main `b1c00bb11115958f60d04a5e70ec46e0bb6701d9`。用户已授权本次提交、PR 和合并；[PR #84](https://github.com/zewbby/HnuHole/pull/84)已Squash合并 main `ad0c47ce98cc13093be9b00b48e5d8ea37443cdb`；被测head `557f54a21d214f9fc2470d28fae1bff2ec71a7e5` 与合并tree一致。12个适用自动workflow全部成功；固定TTL/性能整轮job按设计SKIP，未计为验收通过。指挥聊天独立只读审查PASS、无阻断，不冒充GitHub成员批准。完整job和合并证据见D盘回执。
 
 ## 行为与配置
 
