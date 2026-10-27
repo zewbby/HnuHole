@@ -1,0 +1,192 @@
+{
+  "task": "NOTIFICATION-INBOX-01",
+  "date": "2026-10-27",
+  "branch": "feat/notification-inbox",
+  "baseline": "c17a66734f935f15da5e0c9407d5b9ebdccff287",
+  "state": "PR_81_FINAL_REPAIR_AWAITING_REMOTE_CHECKS",
+  "modules": [
+    "B02",
+    "B07",
+    "B08",
+    "B09",
+    "B10"
+  ],
+  "sourceManifestSha256": "32241ba7472bcdf1ac5fa59cac2a4ba58ac9bf4308e83345bd5f421422fa0283",
+  "sourceFiles": {
+    ".github/workflows/comments-backend-text.yml": "aeaccb870a1e34809db3cd227ed5ea0e0cb57d7f09c1bd547a2c356789304bc1",
+    ".github/workflows/comments-core.yml": "26aeed042431ffa248e1bd1ca40de355ca8f2b46db5cbd647727dd32a14272ee",
+    "apps/mobile/lib/main.dart": "219c6a3cf31f813fa92e7323361d01d55c9aef28657e5e4843a668c9b85c607c",
+    "apps/mobile/lib/src/identity/active_identity_controller.dart": "c9ed001402a2aabc8c7949b559259d408da242392c49dba9ec0599b12ae53606",
+    "apps/mobile/lib/src/identity/identity_switcher.dart": "605f00baeec8d1cfdbc548ee81f6ec50a5b8c2039870d9326b02f95ff81f0158",
+    "apps/mobile/lib/src/messaging/direct_message_inbox.dart": "9bfbbcb79849eb8fd522dadf679aa10213a904b2f895f0d01e89548e0f8da14c",
+    "apps/mobile/lib/src/messaging/dm_runtime.dart": "b85ae92a08ef171ec4765e6ee09be4089c5a5c118e15c0ea32dcb840bd8fcfea",
+    "apps/mobile/lib/src/navigation/feed_chrome.dart": "403ad3052f799de74dc3029740b802d08773f1559204b5e4f918452cf7aeee59",
+    "apps/mobile/lib/src/posts/post_controller.dart": "45fd44d91ec9b37f8bf55988c035958e301d584dcd29d732e52925607d1f150f",
+    "apps/mobile/lib/src/posts/post_screens.dart": "db2f0145ec86dffb0fbca198edfb0a2e5a2cdec964d31685d4ba064d31954287",
+    "apps/mobile/lib/src/system_notifications/governance_api.dart": "de496506eaa028988e06642fd41a57ce05c549583db91e55c5e444e07f1f6d03",
+    "apps/mobile/lib/src/system_notifications/governance_controller.dart": "046aa3bbafb3876031f43dfa083cf86d1f978e11571811d34fb4e8e287970e4a",
+    "apps/mobile/lib/src/system_notifications/inbox_models.dart": "0ad600ae770dfdc360900c132600e73fe7218a080dc1196629bec51b0bd32b49",
+    "apps/mobile/lib/src/system_notifications/inbox_screen.dart": "7717c4252b0dd5cb46ccc2114c75f8b66924d8ca356a0f2b89506f853a5dd2c6",
+    "apps/mobile/lib/src/system_notifications/notification_thumbnail.dart": "dc9670249cbc58b5a02407565a6b3ed521684c2017f7ddbd6aaf695c2bef2b1b",
+    "apps/mobile/test/active_identity_test.dart": "115caeb0dd6d5b0d4bc0d07379f9b6ee93836889f44f8c38d0207f8fc8f392fd",
+    "apps/mobile/test/app_navigation_test.dart": "959171128167bf427c08ea7e091b64137a9ab06fdf8408105053ed431ebbc2aa",
+    "apps/mobile/test/notification_inbox_test.dart": "5d36007b5073e112284421bce902d87edb505252a8ddc6c3e30cecd3521427ba",
+    "infra/postgres/grant-comments.sql": "a471a85218b4fd6a4ace568978279b554dddf10f0a3b238ab4c34efeb1014aee",
+    "infra/postgres/grant-community.sql": "7652b4e000a531e0ea1bc598f2eae29afc05cc8f4c26ee4ec725c19117f9e999",
+    "packages/image_viewer/lib/src/viewer_resources.dart": "112bd52c4f1ae16ceb72cd8a699cb9313251dc703541c18bd2755f760c3956b2",
+    "packages/image_viewer/test/viewer_resources_test.dart": "fb1b09970ba7e487bb1b25e65408e244dbb40c5de06f840794266ed25e20be32",
+    "packages/openapi/notification-inbox-component.yaml": "ee8ef68b12d4050fd95e6fd27c6cd62c769e15b2f37ad8d2956ffbc09ce34975",
+    "packages/openapi/system-notification-api.yaml": "235c09f602b0e904ce5b703590d99c56a41090c256d5c938ff3fded608551e3b",
+    "services/api/authlab/privacy-role-audit.sql": "79d9bf8737ec27b847ae590472b792ca76b2a23a1538be2fa52f15d0d6ee152d",
+    "services/api/authlab/run-comment-text-isolated.sh": "2cbedf37e1df86266f124b912dadc5f76ccf8257faedf9a8c7de71dda1ce3e81",
+    "services/api/internal/authprivacy/community_comments_schema.go": "7e698f26d77c561842051f2f2983da4d7d8b96a524c2731c7df23adc075d28b3",
+    "services/api/internal/authprivacy/community_direct_messages_migration_test.go": "0d32d60a32e95815afbd1b023daf18e6da597e14430a5d14ce3b4f82f2e6a927",
+    "services/api/internal/authprivacy/community_feed_migration_test.go": "ede1f5b17bde7e85da0a88e8c3901781ee8e69578eb4a364ebf84d878bf7f352",
+    "services/api/internal/authprivacy/community_inbox.go": "4feb8401caa0741c8de71bdb3fc5bf26e7098f9f5ae752244146f939321c5cc2",
+    "services/api/internal/authprivacy/community_inbox_migration_test.go": "15f32f56332aa1b60cfda4b326f2d087a96f54541874c890f85d91b7d56e6ae1",
+    "services/api/internal/authprivacy/community_inbox_schema.go": "c19629845343d3dcfc4d91bac0262182af3ce9aaeaca42e10aeab289f2131053",
+    "services/api/internal/authprivacy/community_inbox_test.go": "e0cb98b4e5a539c905348b62e99c4af022d15cf96f9766cd1e14c677d8b6d5e1",
+    "services/api/internal/authprivacy/community_moderation_lifecycle_compat_test.go": "ef6313a13afc4db7bf6cd8501d381d8fe7280549e516ebf53feef07339ea6a79",
+    "services/api/internal/authprivacy/identity_avatar_migration_test.go": "a4599fb21fbba8e939459eedbc696807f8488136e4c7685fe63f926f42e21762",
+    "services/api/internal/authprivacy/postgres_test.go": "9cfbb750d662580691d0d1bbbc9d148d22acd36cff1ce995c4c72ee73d900bc7",
+    "services/api/internal/authprivacyhttp/endpoints.go": "b404244a745a21d5595eb16e40d2740979180b1ff4d31f9802cb3e501a2abb4c",
+    "services/api/internal/authprivacyhttp/endtoend_postgres_test.go": "78b1dafdbc8b4ae51c97096bd401a104c8dbb027111ebe01f5bd1741f82d3eeb",
+    "services/api/internal/authprivacyhttp/inbox_endpoints.go": "6e8a9482d6a6cf086dacbab8fc9f8e33940928ed1ce709c7a0145bf467f0bfce",
+    "services/api/internal/authprivacyhttp/inbox_endpoints_test.go": "1d93916d894084f1f72023e329a26454487ff5e0aa87bb45c6e9de0550e0d0a2",
+    "services/api/internal/authprivacyhttp/inbox_postgres_test.go": "c057f08e6bb836f2fc9297bb546ddf6739849ff37eb0fc6c9e36897b3c598eab",
+    "services/api/internal/authprivacyhttp/shared_limits.go": "8f0d87b9ed9535b6f89a2a11356fa70479711c5e1df4079ef48686a23a91a169",
+    "services/api/internal/authprivacyruntime/moderation_lifecycle_postgres_test.go": "9285980b592e2ed70b327bdc245f004769b7770059d2d7dec673c12c870acbf5",
+    "services/api/migrations/0028_notification_inbox.sql": "b33ab7aae30359dd29a4d2ec211baf4745b0317b0e58ac8231026f2b4b4e3dab",
+    "tools/check-notification-contract.py": "267d1e5e42ddf56636bf80e78b6a3fa02f2677fbfc71ce2081673674516a7501",
+    "tools/prerelease/tests/test_role_audit_postgres.py": "b31586e22dd05b5b5e62184052ba6370401456764a642e1ed12d21bc4d2cea48"
+  },
+  "scope": {
+    "categories": [
+      "all",
+      "reply",
+      "like",
+      "system"
+    ],
+    "tabShare": 0.25,
+    "fontSize": 14,
+    "mentions": "REMOVED_FROM_PRODUCT_AND_API",
+    "commentProtocol": "UNCHANGED_MAIN_V1",
+    "identitySelection": "ACCOUNT_SCOPED_SHARED_ACROSS_MODULES",
+    "bottomNavigation": "FIVE_ITEMS_ALL_MAIN_TABS_PLUS_COMPOSE_HIDE_ONLY_HOME_IMMERSIVE"
+  },
+  "checks": {
+    "flutterFull": {
+      "status": "PASS",
+      "pass": 966,
+      "skip": 3,
+      "log": "final-four-mobile.log"
+    },
+    "flutterAnalyze": {
+      "status": "PASS",
+      "issues": 0,
+      "log": "final-four-analyze.log"
+    },
+    "newAndLegacyPostgresHTTPS": {
+      "status": "PASS",
+      "tests": [
+        "TestCommentTextGooseMigrationChainPostgres",
+        "TestCommentTextTransactionsPostgres",
+        "TestCommentTextFailureRetryAbandonPostgres",
+        "TestCommentTextFrozenGatePostgres",
+        "TestCommentTextRuntimeAndSQLGuardsPostgres",
+        "TestCommentTextUnavailablePostPostgres",
+        "TestCommentTextClosureCleanupWithFeatureDisabledPostgres",
+        "TestNotificationInboxGooseMigrationPostgres",
+        "TestNotificationInboxPostgres",
+        "TestNotificationInboxIdentityPaginationPostgres",
+        "TestCommentTextNullableBoundary",
+        "TestCommentTextHTTPSPostgres",
+        "TestInboxRoutesAndDisabledMentionsBoundary",
+        "TestNotificationInboxHTTPSPostgres"
+      ],
+      "privateSQL": true,
+      "minimumRuntimeRole": true,
+      "goRace": true,
+      "log": "four-postgres.log"
+    },
+    "goRulesBuildVet": {
+      "status": "PASS",
+      "log": "final-four-go.log"
+    },
+    "contracts": {
+      "status": "PASS",
+      "log": "final-four-contracts.log"
+    },
+    "globalIdentityAndCompose": {
+      "status": "PASS",
+      "log": "active-identity-final.log"
+    },
+    "expandedLegacyHTTPRace": {
+      "status": "FAIL_HISTORICAL_UNMODIFIED_DM_TEST",
+      "reason": "global time.Local mutated while TLS goroutine cleans up; affected exact notification/comment race passed",
+      "log": "go-build-final.log"
+    },
+    "remoteCI": {
+      "status": "AWAITING_REPAIRED_HEAD",
+      "initialHead": "6937c002b0576e3980937009fc2544d744749853",
+      "initialResult": "FAILED_SHARED_FIXTURE_RESET_MIGRATION_LEDGER_AND_ROLE_AUDIT; SINGLE_EXISTING_IMAGE_DISPOSAL_TEST_FAILURE",
+      "repaired": "Reset owned fixture c_inbox; expect migration 28; exact minimal inbox privileges and restored trigger ACLs; existing image screen suite passed local rerun.",
+      "secondHead": "e80f3c18892ba823211eaf1123c1b35be9849e7c",
+      "secondResult": "FAILED_OTHER_OLD_FEED_AVATAR_VERSION_ASSERTIONS_PREMODERATION_FIXTURE_AND_REPEATED_IMAGE_DISPOSAL_RACE; ALL_REPAIRED"
+    },
+    "merged": false,
+    "finalMainAPK": {
+      "status": "NOT_RUN"
+    },
+    "finalDeviceTrial": {
+      "status": "NOT_RUN"
+    },
+    "productionRelease": {
+      "status": "NOT_RELEASED"
+    },
+    "independentMemberApproval": {
+      "status": "NOT_OBTAINED_MAINTAINER_EXPLICIT_MERGE_AUTHORIZATION"
+    },
+    "ciRepairLocal": {
+      "roleAudit": "PASS_4_REAL_SQL_TESTS",
+      "dmFreshUpgrade": "PASS_REAL_GOOSE",
+      "imageScreenRerun": "PASS",
+      "restoredInboxACL": "PASS",
+      "extendedRuntimeImages": "HISTORICAL_FAIL_OLD_PREMODERATION_FIXTURE_NOW_TARGETED_PASS",
+      "logs": [
+        "ci-role-audit-fix.log",
+        "ci-dm-migration-fix.log",
+        "ci-image-repro.log",
+        "ci-inbox-acl-restore.log",
+        "ci-runtime-fix.log"
+      ],
+      "feedFreshAndUpgrade": "PASS_5_PATHS",
+      "avatarFreshAndUpgrade": "PASS",
+      "preModerationCompatibility": "PASS",
+      "thumbnailExpiryAndDenial": "PASS_7_INBOX_TESTS",
+      "codecLateFrame": "PASS_19_RESOURCE_TESTS_AND_OLD_THROW_FAILS_DETERMINISTIC_REGRESSION",
+      "analyze": "PASS_0_ISSUES",
+      "imageViewerAnalyze": "PASS_0_ISSUES"
+    },
+    "independentCodeReview": {
+      "kind": "READ_ONLY_AGENT_REVIEW_NOT_GITHUB_MEMBER_APPROVAL",
+      "source": "e80f3c18892ba823211eaf1123c1b35be9849e7c",
+      "findings": "P2 thumbnail expiry recovery; repaired with expiry/denial tests; follow-up review pending"
+    },
+    "finalMobileRerun": {
+      "status": "PASS",
+      "log": "final-main-candidate-mobile.log",
+      "passed": 968,
+      "skipped": 3
+    }
+  },
+  "historicalTrial": {
+    "versionCode": 2026102602,
+    "state": "INSTALLED_VIVO_EARLIER_FIVE_TAB_DRAFT_NOT_FINAL_CANDIDATE",
+    "backendAtThatTime": "NEW_ENDPOINT_404",
+    "receipt": "E:/Hnuhole-env/notification-inbox-20261026/vivo-apk-build-receipt.json"
+  },
+  "localEvidenceDirectory": "E:\\Hnuhole-env\\notification-inbox-20261026",
+  "authorization": "User explicitly requested commit, push, PR, merge and building the latest main product. No public production environment or release signing identity has been substituted by test credentials.",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/81"
+}

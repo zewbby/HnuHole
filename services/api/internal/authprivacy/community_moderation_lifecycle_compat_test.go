@@ -138,7 +138,8 @@ func TestPostSchemaPreModerationNeedsNoCleanupGrantPostgres(t *testing.T) {
 	// Remove this fixture's moderation additions, including the optional 0018
 	// comment projection. A half-removed 0018 must still fail startup; this case
 	// models the pre-moderation installation, not a broken forward migration.
-	mustExec(t, l.cp, `DROP SCHEMA c_moderation CASCADE`)
+	// The later 0028 inbox also depends on moderation notification read state.
+	mustExec(t, l.cp, `DROP SCHEMA c_inbox,c_moderation CASCADE`)
 	if err := CheckModerationLifecycleSchema(context.Background(), l.cp); err == nil {
 		t.Fatal("partially removed 0018 passed startup")
 	}

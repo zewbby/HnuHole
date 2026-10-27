@@ -11,6 +11,7 @@ import '../auth/auth_models.dart';
 import '../auth/auth_session_controller.dart';
 import '../auth/auth_store.dart';
 import '../identity/identity_api.dart';
+import '../identity/active_identity_controller.dart';
 import '../storage/post_store.dart';
 import 'post_api.dart';
 import 'feed_api.dart';
@@ -215,10 +216,41 @@ class PostController extends ChangeNotifier {
   List<PersonalPostItem> personalItems = [];
   ManagedIdentity? personalIdentity;
   List<ManagedIdentity> personalIdentities = [];
+  ActiveIdentityController? activeIdentity;
+  void bindActiveIdentity(ActiveIdentityController? value) {
+    activeIdentity?.removeListener(_activeIdentityChanged);
+    activeIdentity = value;
+    value?.addListener(_activeIdentityChanged);
+    _activeIdentityChanged();
+  }
 
-  Future<void> selectPersonalIdentity(String id) async {
+  void _activeIdentityChanged() {
+    final id = activeIdentity?.selectedId;
+    if (!available ||
+        activeIdentity?.accountId != accountId ||
+        id == null ||
+        personalIdentity?.id == id) {
+      return;
+    }
+    if (personalIdentities.any((i) => i.id == id)) {
+      unawaited(selectPersonalIdentity(id, broadcast: false));
+    }
+  }
+
+  Future<void> selectPersonalIdentity(
+    String id, {
+    bool broadcast = true,
+  }) async {
     final identity = personalIdentities.where((i) => i.id == id).firstOrNull;
-    if (!available || identity == null || personalIdentity?.id == id) return;
+    if (!available || identity == null) return;
+    if (broadcast) {
+      activeIdentity?.selectConfirmed(
+        id,
+        personalIdentities.map((i) => i.id),
+        account: accountId,
+      );
+    }
+    if (personalIdentity?.id == id) return;
     ++_personalRequest;
     ++_personalProfileRequest;
     personalIdentity = identity;
@@ -760,7 +792,9 @@ class PostController extends ChangeNotifier {
       final previousIdentity = personalIdentity?.id;
       personalIdentities = List.unmodifiable(directory.identities);
       personalIdentity = directory.identities
-          .where((i) => i.id == personalIdentity?.id)
+          .where(
+            (i) => i.id == (activeIdentity?.selectedId ?? personalIdentity?.id),
+          )
           .firstOrNull;
       personalIdentity ??= originals.isNotEmpty
           ? originals.first
@@ -892,6 +926,9 @@ class PostController extends ChangeNotifier {
       channelId: channelId,
       accountId: _accountId!,
       authorityVersion: _epoch,
+      identityId: activeIdentity?.accountId == _accountId
+          ? activeIdentity?.selectedId
+          : null,
     );
   }
 
@@ -1858,7 +1895,11 @@ class PostController extends ChangeNotifier {
       personalIdentities = List.unmodifiable(directory.identities);
       personalIdentity =
           directory.identities
-              .where((i) => i.id == personalIdentity?.id)
+              .where(
+                (i) =>
+                    i.id ==
+                    (activeIdentity?.selectedId ?? personalIdentity?.id),
+              )
               .firstOrNull ??
           originals.firstOrNull ??
           directory.identities
@@ -2217,6 +2258,7 @@ class PostController extends ChangeNotifier {
 
   @override
   void dispose() {
+    activeIdentity?.removeListener(_activeIdentityChanged);
     _disposed = true;
     _poller?.cancel();
     _epoch++;

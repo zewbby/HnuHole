@@ -184,8 +184,8 @@ class FeedNavigation extends StatelessWidget {
             child: HhAppNavigation(
               selected: selected,
               onSelected: onSelected,
-              composeSlot: home,
-              onCompose: home && visible ? controller.compose : null,
+              composeSlot: true,
+              onCompose: visible ? controller.compose : null,
               composeTooltip: controller.tooltip,
             ),
           ),

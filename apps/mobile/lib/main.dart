@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
+import 'src/system_notifications/inbox_screen.dart';
 import 'src/comments/comment_runtime.dart';
 import 'src/comments/comment_http.dart';
 import 'src/comments/comment_journal.dart';
@@ -22,6 +23,7 @@ import 'src/messaging/direct_message_models.dart';
 import 'src/design_system/telegram_theme.dart';
 import 'src/identity/identity_initial_gate.dart';
 import 'src/identity/identity_avatar.dart';
+import 'src/identity/active_identity_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -301,6 +303,7 @@ class HnuholeApp extends StatefulWidget {
 }
 
 class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
+  late final ActiveIdentityController _activeIdentity;
   final _authPresentation = AuthPresentationController(
     preferences: FlutterAuthVault(namespace: 'hnuhole.presentation.v1'),
   );
@@ -457,10 +460,15 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
 
   Widget _notificationsScreen() {
     final governance = widget.governance!;
+    if (governance.restricted) {
+      return SystemNotificationsScreen(controller: governance);
+    }
     final navigator = _navigatorKey.currentState!;
     final owner = governance.accountId, authority = governance.authorityVersion;
-    return SystemNotificationsScreen(
+    return NotificationInboxScreen(
       controller: governance,
+      loadImages: widget.loadPostImages,
+      onManageIdentities: () => _openIdentity(initialCreate: true),
       onOpenComment: (postId, commentId) async {
         if (!widget.posts.available ||
             governance.restricted ||
@@ -503,6 +511,9 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _activeIdentity = ActiveIdentityController(widget.identities);
+    widget.posts.bindActiveIdentity(_activeIdentity);
+    widget.governance?.bindActiveIdentity(_activeIdentity);
     unawaited(_authPresentation.load());
     WidgetsBinding.instance.addObserver(this);
     _postRouteChanges = Listenable.merge([_postWindow, widget.directory]);
@@ -743,6 +754,9 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    widget.posts.bindActiveIdentity(null);
+    widget.governance?.bindActiveIdentity(null);
+    _activeIdentity.dispose();
     widget.dm?.controller.removeListener(_scheduleDmNotification);
     widget.dmNotifications?.dispose();
     widget.dm?.dispose();
@@ -859,6 +873,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
                               _dmInboxRevision,
                             )),
                             runtime: widget.dm!,
+                            activeIdentity: _activeIdentity,
                             initialIdentity: _dmInitialIdentity,
                             onManageIdentities: () =>
                                 _openIdentity(initialCreate: true),

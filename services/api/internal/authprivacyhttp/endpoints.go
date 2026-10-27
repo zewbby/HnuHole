@@ -173,6 +173,11 @@ func NewCommunityEndpoints(options CommunityOptions) (*Endpoints, error) {
 	}
 	return &Endpoints{
 		Public: b.wrap(false, func(w http.ResponseWriter, r *http.Request) {
+			if isInboxPath(r.URL.Path) {
+				backend, _ := options.Backend.(InboxBackend)
+				b.communityInbox(w, r, backend)
+				return
+			}
 			if isCommentPath(r.URL.Path) {
 				b.communityCommentsPublic(w, r, options.Comments)
 				return
@@ -318,7 +323,7 @@ func (b *boundary) wrap(internal bool, next http.HandlerFunc) http.Handler {
 				w.Header().Set("Vary", "Origin")
 			}
 		}
-		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsPostListQuery(r) || allowsCommentListQuery(r) || allowsModerationQuery(r) || (r.Method == "GET" && (r.URL.Path == "/api/v1/dm/conversations" || r.URL.Path == "/api/v1/dm/contact" || r.URL.Path == "/api/v1/dm/chat/conversations" || r.URL.Path == "/api/v1/dm/chat/controls"))))) {
+		if r.URL.ForceQuery || (r.URL.RawQuery != "" && (internal || b.service != CommunityService || !(allowsInboxQuery(r) || allowsPostListQuery(r) || allowsCommentListQuery(r) || allowsModerationQuery(r) || (r.Method == "GET" && (r.URL.Path == "/api/v1/dm/conversations" || r.URL.Path == "/api/v1/dm/contact" || r.URL.Path == "/api/v1/dm/chat/conversations" || r.URL.Path == "/api/v1/dm/chat/controls"))))) {
 			b.bad(w, errMalformed)
 			return
 		}
@@ -372,6 +377,10 @@ func (b *boundary) preflight(w http.ResponseWriter, r *http.Request) {
 }
 
 func publicMethodAllowed(service Service, path, method string) bool {
+	if service == CommunityService && isInboxPath(path) {
+		kind, _, allowed := inboxRoute(path)
+		return kind != "" && method == allowed
+	}
 	if service == CommunityService && isCommentPath(path) {
 		route, e := parseCommentRoute(path)
 		return e == nil && strings.Contains(", "+route.methods+", ", ", "+method+", ")

@@ -5,6 +5,7 @@ import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/navigation/app_navigation.dart';
 import 'package:hnuhole_mobile/src/navigation/primary_tabs.dart';
 import 'package:hnuhole_mobile/src/messaging/direct_messages_unavailable.dart';
+import 'package:hnuhole_mobile/src/system_notifications/inbox_screen.dart';
 
 import 'identity_test_support.dart';
 import 'login_home_test_support.dart';
@@ -20,9 +21,18 @@ class _Notices implements GovernanceApi {
     Map<String, String>? query,
   }) async {
     calls.add('$method $path');
+    if (path == '/api/v1/notifications/unread-counts') {
+      return GovernanceResponse({
+        'all': 0,
+        'reply': 0,
+        'like': 0,
+        'system': 0,
+        'identityUnread': <String, int>{},
+      }, identityTestRenewed);
+    }
     return GovernanceResponse({
       'items': <Object>[],
-      'nextBefore': null,
+      'nextCursor': null,
     }, identityTestRenewed);
   }
 }
@@ -173,7 +183,7 @@ void main() {
       for (var round = 0; round < 2; round++) {
         await tester.tap(find.byKey(const ValueKey('destination:messages')));
         await tester.pumpAndSettle();
-        expect(find.byType(SystemNotificationsScreen), findsOneWidget);
+        expect(find.byType(NotificationInboxScreen), findsOneWidget);
         expect(
           tester.widget<HhAppNavigation>(find.byType(HhAppNavigation)).selected,
           AppDestination.messages,
@@ -194,7 +204,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(DirectMessagesUnavailableScreen), findsOneWidget);
         expect(find.text('私信暂未开放'), findsOneWidget);
-        expect(find.byType(SystemNotificationsScreen), findsNothing);
+        expect(find.byType(NotificationInboxScreen), findsNothing);
         expect(notices.calls, calls);
         await tester.tap(find.byKey(const ValueKey('destination:personal')));
         for (final millis in [0, 16, 80, 160, 320]) {
@@ -227,7 +237,10 @@ void main() {
       }
       expect(
         notices.calls.every(
-          (call) => call == 'GET /api/v1/system-notifications',
+          (call) => {
+            'GET /api/v1/notifications',
+            'GET /api/v1/notifications/unread-counts',
+          }.contains(call),
         ),
         isTrue,
       );

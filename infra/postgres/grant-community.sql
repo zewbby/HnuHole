@@ -193,3 +193,17 @@ DO $$ BEGIN
   GRANT UPDATE(state,generation,incarnation,confirmed_at,deadline) ON c_rate_limit.admissions TO hnuhole_c_runtime;
  END IF;
 END $$;
+
+-- 0028 recipient inbox: restores with --no-privileges must also remove default
+-- PUBLIC EXECUTE from trigger-only SECURITY DEFINER functions.
+DO $$ BEGIN
+ IF to_regclass('c_inbox.records') IS NOT NULL THEN
+  REVOKE ALL ON SCHEMA c_inbox FROM PUBLIC,hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+  REVOKE ALL ON ALL TABLES IN SCHEMA c_inbox FROM PUBLIC,hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+  REVOKE ALL ON ALL FUNCTIONS IN SCHEMA c_inbox FROM PUBLIC,hnuhole_c_runtime,hnuhole_c_recovery,hnuhole_business;
+  GRANT USAGE ON SCHEMA c_inbox TO hnuhole_c_runtime;
+  GRANT SELECT ON c_inbox.records,c_inbox.like_events TO hnuhole_c_runtime;
+  GRANT UPDATE(read_version,seen_like_count) ON c_inbox.records TO hnuhole_c_runtime;
+  GRANT UPDATE(read_at) ON c_moderation.notifications TO hnuhole_c_runtime;
+ END IF;
+END $$;

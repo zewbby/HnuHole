@@ -1,5 +1,11 @@
 # 分模块验收与测试交接
 
+> **2026-10-27 B02/B07/B08/B09/B10当前范围：** 按最新要求撤回真实@，改四等宽大字分类；全App身份同步，全部主模块保留含＋的五项底栏，仅首页沉浸阅读收起。用户已授权commit／push／PR／merge及主线产品构建，当前先验证后推进；旧五分类和2602试包只留历史，不算最终产品验收。[任务](../branches/feat-notification-inbox.md)／[最新测试](notification-inbox-test-handoff.md)。
+
+> **2026-10-26 NOTIFICATION-INBOX-01 试包追加：** 用户授权构建安装后，vivo Profile2602 同签覆盖及启动 PASS，原数据未清、首次安装时间未变；用户视觉试用待回执，完整设备联调未验。开发服务尚未部署新通知接口（404），此次不提升模块验收结论。[详情](../branches/feat-notification-inbox.md)。
+
+> **2026-10-26 NOTIFICATION-INBOX-01／B02、B07、B08、B09：** `feat/notification-inbox` 本地完成通知收件箱、真实 `@` 与私信身份部件复用；真实 SQL／最小角色／Gate／HTTPS及迁移通过。Flutter全量965 PASS／3既有SKIP，最后增量88 PASS、分析0、bundle及Go构建／vet／race／契约通过；外部设备和编译Dart探针2项SKIP。未提交／合并／装机／部署，远端CI未跑，不提升历史整模块结论。[命令与边界](notification-inbox-test-handoff.md)、[机器记录](notification-inbox-verification-20261026.json)。
+
 > **2026-10-26 IMAGE-VIEWER-GESTURES-01已合并：** [PR #77](https://github.com/zewbby/HnuHole/pull/77) 已Squash进入main `84c278e`；最终测试head `7abfe16` 的18条远端检查记录全部SUCCESS，合并后的产品文件与被测源码一致。已保留PR76图片权限提前续验；图片上下拖动跟手缩小、背景渐隐露底页，短拖回弹、消除切图空白与退出闪字。本地图片包129项、整合宿主118项回归、分析及ARM64 Debug构建PASS。未安装/部署，真机手感、设备帧时序/内存及iOS本轮未验；维护者明确授权合并，未取得独立GitHub成员批准，不提升旧模块总裁决。见[任务](../branches/fix-image-viewer-gestures.md)与[合并回执](image-viewer-gestures-merge-verification.json)。
 
 > **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01已合并：** [PR #76](https://github.com/zewbby/HnuHole/pull/76) 已Squash进入main `048a3e5`；测试head `06448b3` 的9个远端workflow／17项检查全部SUCCESS，合并后的产品文件与被测版本一致。本地相关回归228 PASS／0 FAIL／0 SKIP、分析0问题、Android ARM64 debug构建PASS。帖子图片在前台可见时提前续验，权限与图片元数据未变就保留画面、缓存和查看器；截止及撤权围栏保留。用户取消vivo覆盖安装，未装机／部署；独立成员review、iOS及真机长时间浏览未验，B03／B06历史整模块裁决不提升。见[任务](../branches/fix-media-seamless-renewal.md)与[合并及CI回执](media-seamless-renewal-merge-verification-20261026.json)。

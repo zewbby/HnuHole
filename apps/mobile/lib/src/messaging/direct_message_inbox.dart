@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../design_system/telegram_theme.dart';
-import '../identity/identity_api.dart';
+import '../identity/identity_switcher.dart';
 import 'direct_message_composer.dart';
 import 'direct_message_models.dart';
 
@@ -174,95 +174,20 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
     if (_identityMenuOpen) return;
     FocusScope.of(context).unfocus();
     final epoch = _epoch;
-    final anchor =
-        _identityAnchor.currentContext!.findRenderObject()! as RenderBox;
-    final overlay =
-        Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
-    final rect =
-        anchor.localToGlobal(Offset.zero, ancestor: overlay) & anchor.size;
-    final p = HhTelegramPalette.of(context);
     setState(() => _identityMenuOpen = true);
-    final chosen = await showMenu<String>(
+    final chosen = await showHhIdentityMenu(
       context: context,
-      positionBuilder: (context, constraints) {
-        final current = anchor.attached && overlay.attached
-            ? anchor.localToGlobal(Offset.zero, ancestor: overlay) & anchor.size
-            : rect;
-        return RelativeRect.fromRect(
-          Rect.fromLTWH(current.right, current.bottom + 6, 0, 0),
-          Offset.zero & constraints.biggest,
-        );
-      },
-      constraints: const BoxConstraints(minWidth: 208, maxWidth: 260),
-      color: p.surface,
-      surfaceTintColor: Colors.transparent,
-      elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: p.line),
-      ),
-      popUpAnimationStyle: const AnimationStyle(
-        duration: Duration(milliseconds: 180),
-        reverseDuration: Duration(milliseconds: 120),
-        curve: Curves.easeOutCubic,
-      ),
-      items: [
-        PopupMenuItem<String>(
-          enabled: false,
-          height: 40,
-          child: Builder(
-            builder: (context) {
-              _identityMenuRoute = ModalRoute.of(context);
-              if (!mounted || epoch != _epoch) {
-                _dismissIdentityMenu();
-                return const SizedBox.shrink();
-              }
-              return Text(
-                '切换身份',
-                style: TextStyle(fontSize: 13, color: p.secondary),
-              );
-            },
-          ),
-        ),
-        for (final item in widget.identities)
-          PopupMenuItem<String>(
-            key: ValueKey('inbox-identity:${item.identity.id}'),
-            value: item.identity.id,
-            height: 56,
-            child: Row(
-              children: [
-                Badge(
-                  isLabelVisible: item.unread > 0,
-                  child: HhDmAvatar(identity: item.identity, size: 30),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    item.identity.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 15, color: p.ink),
-                  ),
-                ),
-                if (item.identity.id == widget.identity.id)
-                  Icon(Icons.check_rounded, color: p.accent, size: 20),
-              ],
-            ),
-          ),
-        if (widget.identities.length < IdentityDirectory.maximumIdentities)
-          PopupMenuItem<String>(
-            key: const ValueKey('inbox-add-identity'),
-            value: '@add',
-            enabled: widget.onAddIdentity != null,
-            height: 56,
-            child: Semantics(
-              label: '添加身份',
-              child: Center(
-                child: Icon(Icons.add_rounded, color: p.accent, size: 26),
-              ),
-            ),
-          ),
+      anchorKey: _identityAnchor,
+      identities: [
+        for (final i in widget.identities)
+          IdentitySwitchItem(i.identity, unread: i.unread),
       ],
+      selectedId: widget.identity.id,
+      canAdd: widget.onAddIdentity != null,
+      onRoute: (route) {
+        _identityMenuRoute = route;
+        if (!mounted || epoch != _epoch) _dismissIdentityMenu();
+      },
     );
     _identityMenuRoute = null;
     if (!mounted) return;
@@ -371,90 +296,15 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                   Flexible(
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxWidth: 224,
-                          minHeight: 48,
-                        ),
-                        child: Tooltip(
-                          message: '切换身份',
-                          child: Semantics(
-                            label: '切换身份，当前${widget.identity.name}',
-                            button: true,
-                            excludeSemantics: true,
-                            onTap: _selectIdentity,
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                key: const ValueKey('dm-inbox-identity'),
-                                onTap: _selectIdentity,
-                                borderRadius: BorderRadius.circular(24),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 6,
-                                  ),
-                                  child: Material(
-                                    key: _identityAnchor,
-                                    color: p.surface,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      side: BorderSide(color: p.line),
-                                    ),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 4,
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          AnimatedRotation(
-                                            turns: _identityMenuOpen ? .25 : 0,
-                                            duration: const Duration(
-                                              milliseconds: 180,
-                                            ),
-                                            child: Icon(
-                                              Icons.chevron_right_rounded,
-                                              size: 20,
-                                              color: p.secondary,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Flexible(
-                                            child: Text(
-                                              widget.identity.name,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                                color: p.ink,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Badge(
-                                            isLabelVisible: widget.identities
-                                                .any(
-                                                  (i) =>
-                                                      i.identity.id !=
-                                                          widget.identity.id &&
-                                                      i.unread > 0,
-                                                ),
-                                            child: HhDmAvatar(
-                                              identity: widget.identity,
-                                              size: 28,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                      child: HhIdentitySwitcher(
+                        identity: widget.identity,
+                        anchor: _identityAnchor,
+                        onTap: _selectIdentity,
+                        menuOpen: _identityMenuOpen,
+                        otherUnread: widget.identities.any(
+                          (i) =>
+                              i.identity.id != widget.identity.id &&
+                              i.unread > 0,
                         ),
                       ),
                     ),

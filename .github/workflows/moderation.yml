@@ -67,11 +67,26 @@ jobs:
           cache: false
       - name: Private PostgreSQL and media validator dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-16 python3-venv libsqlite3-dev openssl
+          # These settings also apply to Playwright's later sudo apt invocation.
+          # The runner mirrorlist's Azure HTTP endpoint has stalled this gate;
+          # keep the same signed Ubuntu repositories over their HTTPS mirror.
+          printf '%s\n' 'Acquire::Retries "2";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";' | sudo tee /etc/apt/apt.conf.d/80-hnuhole-ci-network > /dev/null
+          if test -f /etc/apt/apt-mirrors.txt; then
+            sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' /etc/apt/apt-mirrors.txt
+          fi
+          moderation_missing_package=0
+          for moderation_package in postgresql-16 python3-venv libsqlite3-dev openssl; do
+            if ! dpkg-query -W -f='${Status}' "$moderation_package" 2>/dev/null | grep -qx 'install ok installed'; then
+              moderation_missing_package=1
+            fi
+          done
+          if test "$moderation_missing_package" = 1; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-16 python3-venv libsqlite3-dev openssl
+          fi
           echo '/usr/lib/postgresql/16/bin' >> "$GITHUB_PATH"
           /usr/bin/python3 -m venv "$RUNNER_TEMP/moderation-python"
-          "$RUNNER_TEMP/moderation-python/bin/python" -m pip install --no-cache-dir -r services/api/media/requirements.txt -r packages/openapi/requirements-check.txt
+          "$RUNNER_TEMP/moderation-python/bin/python" -m pip install --no-cache-dir --timeout 30 --retries 2 -r services/api/media/requirements.txt -r packages/openapi/requirements-check.txt
           chmod -R go-w services/api/media
           "$RUNNER_TEMP/moderation-python/bin/python" -I -B services/api/media/validate_image.py --probe
           "$RUNNER_TEMP/moderation-python/bin/python" services/api/media/test_validator.py --fixtures "$RUNNER_TEMP/moderation-fixtures"
@@ -93,7 +108,7 @@ jobs:
         run: git diff --exit-code -- '**/pubspec.lock' services/api/go.mod services/api/go.sum
       - name: Private browser for the real C HTTPS workbench
         run: |
-          npm install --prefix "$RUNNER_TEMP/moderation-browser-tools" --cache "$RUNNER_TEMP/moderation-npm-cache" --no-audit --no-fund playwright@1.62.1
+          npm install --prefix "$RUNNER_TEMP/moderation-browser-tools" --cache "$RUNNER_TEMP/moderation-npm-cache" --no-audit --no-fund --fetch-timeout=30000 --fetch-retries=2 playwright@1.62.1
           node "$RUNNER_TEMP/moderation-browser-tools/node_modules/playwright/cli.js" install --with-deps chromium
       - name: Isolated SQL, permissions and real HTTPS moderation regression
         working-directory: services/api

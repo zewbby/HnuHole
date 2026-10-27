@@ -158,7 +158,10 @@ class _LimitedCodec implements ui.Codec {
     final frame = await inner.getNextFrame();
     if (_disposed) {
       frame.image.dispose();
-      throw StateError('Image stream disposed');
+      // Flutter disposes and clears its codec, then checks that field
+      // after this await. Release our late frame and let that cancellation path
+      // finish; throwing here reports a spurious image error after route close.
+      return frame;
     }
     _frames++;
     if (_frames <= frameCount) _cycle += frame.duration;

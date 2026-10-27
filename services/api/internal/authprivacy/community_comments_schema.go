@@ -41,6 +41,9 @@ func (c *Community) CheckCommentSchema(ctx context.Context) error {
 	if c == nil || c.pool == nil {
 		return errCommentSchema
 	}
+	if e := checkInboxLifecycleSchema(ctx, c.pool); e != nil {
+		return e
+	}
 	for _, table := range []string{"protocol_keys", "tasks", "attempts", "receipts", "snapshots", "images", "likes"} {
 		var ok bool
 		if e := c.pool.QueryRow(ctx, `SELECT to_regclass('c_comments.'||$1) IS NOT NULL`, table).Scan(&ok); e != nil || !ok {
