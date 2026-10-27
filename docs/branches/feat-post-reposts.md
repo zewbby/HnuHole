@@ -1,8 +1,8 @@
 # POST-REPOST-01：身份转帖
 
-> 本文保留 POST-REPOST-01 来源工作树的交付事实与测试范围。个人页分支的接线现已完成，独立结果见 [个人转帖整合交接](personal-reposts-integration.md)，不能将下方来源全量结果视为整合版本验收。
+> 本文保留 POST-REPOST-01 来源工作树的交付事实与测试范围。转帖已在个人页分支整合，并由[PR #68](https://github.com/zewbby/HnuHole/pull/68)合入 main。来源分支旧“未提交/未合并”状态为历史快照；下方来源全量结果不代表整合版本验收。独立结果见 [个人转帖整合交接](personal-reposts-integration.md)。
 
-更新：2026-10-23。分支 `feat/post-reposts`，建立时已 fetch 最新 `origin/main cda337c43cf5d0e5793351577f7054ec552fb6d5`。功能实现及限定验证完成，未提交／推送／合并／部署；无 PR。用户指定分支名优先于默认 codex 前缀。
+原始交付快照：2026-10-23，分支 `feat/post-reposts`，建立时已 fetch 最新 `origin/main cda337c43cf5d0e5793351577f7054ec552fb6d5`。当时功能实现及限定验证已完成，尚未提交／推送、无独立 PR；后续转帖能力经个人页整合并由 PR #68 合入 main（状态回核见本文开头）。用户指定分支名优先于默认 codex 前缀。
 
 工作树：`E:/codexDoucuments/2026-10-23/post-repost-01-hnuhole-origin-main/work/HnuHole-post-reposts`。
 

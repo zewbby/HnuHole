@@ -33,12 +33,14 @@
 
 ## 分支一览
 
+- [欢迎页 SpeechFUL 字标](docs/branches/feat-startup-wordmark.md)：[PR #86](https://github.com/zewbby/HnuHole/pull/86)已合入 main，欢迎页显示 `@SpeechFUL` 与“在这里，／想说就说”文案；未生产发布。
+
 - [通知与互动收件箱](docs/branches/feat-notification-inbox.md)：[PR #81](https://github.com/zewbby/HnuHole/pull/81) 已合并四分类通知、全App身份同步和统一五项发帖导航，主线包已构建、同机开发服务已更新，待用户试用。
 
 - [帖子图片平滑续验](docs/branches/fix-media-seamless-renewal.md)：`codex/fix/media-seamless-renewal` 在权限续验成功且图片未变时保留画面与缓存，避免周期性重载；已由[PR #76](https://github.com/zewbby/HnuHole/pull/76)合入main，17项CI通过，未安装／部署。
 
-- [身份转帖](docs/branches/feat-post-reposts.md)：`feat/post-reposts` 提供持久化私人归档、条件写入与接线契约，已整合到个人页分支；未合并。
-- [个人页与私人转帖](docs/branches/feat-personal-profile-mood.md)：`feat/personal-profile-mood` 实现五栏缩放、身份切换和共享喜欢／收藏，已接入私人转帖归档；未合并。
+- [身份转帖](docs/branches/feat-post-reposts.md)：`feat/post-reposts` 提供持久化私人归档、条件写入与接线契约，已整合并由[PR #68](https://github.com/zewbby/HnuHole/pull/68)合入 main。
+- [个人页与私人转帖](docs/branches/feat-personal-profile-mood.md)：`feat/personal-profile-mood` 实现五栏缩放、身份切换和共享喜欢／收藏，已由[PR #68](https://github.com/zewbby/HnuHole/pull/68)合入 main；非生产发布。
 
 `main` 是项目基线。当前工作分支如下；历史实现、验收文档和 PR 记录继续保留。
 

@@ -1,6 +1,6 @@
 # PERSONAL-REPOST-INTEGRATION-01：个人页转帖接线交接
 
-更新：2026-10-24。目标工作树 `E:/Hnuhole-env/source/HnuHole-personal-profile`，分支 `feat/personal-profile-mood`，基线 `cda337c43cf5d0e5793351577f7054ec552fb6d5`。状态：已提交推送至[PR #68](https://github.com/zewbby/HnuHole/pull/68)，独立agent/Astra High审查与Android限定验收PASS，验收产品版本e404f85远端12工作流／21作业全部PASS；未合并／部署。下方初次限定宿主验收保留原版本范围，后续回执覆盖当前状态。
+更新：2026-10-27。目标工作树 `E:/Hnuhole-env/source/HnuHole-personal-profile`，分支 `feat/personal-profile-mood`，原基线 `cda337c43cf5d0e5793351577f7054ec552fb6d5`。状态：[PR #68](https://github.com/zewbby/HnuHole/pull/68)已合入 main `ce140d57e0bf6feb27165352394c9946a1b72aef`；独立agent/Astra High审查与Android限定验收PASS，验收产品版本e404f85远端12工作流／21作业全部PASS，未生产部署。下方送审状态为历史快照。
 
 ## 整合范围
 

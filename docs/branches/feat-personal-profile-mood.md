@@ -1,7 +1,7 @@
 # PERSONAL-PROFILE-MOOD-01
 
-2026-10-23 · 分支 `feat/personal-profile-mood` · 基线 `cda337c43cf5d0e5793351577f7054ec552fb6d5`。
-状态：页面、共享列表及 POST-REPOST-01 转帖接线已实现并提交推送至[PR #68](https://github.com/zewbby/HnuHole/pull/68)；未合并／发布。主线能力不据此提升。最新整合结果见 [个人转帖整合交接](personal-reposts-integration.md)。
+2026-10-27 状态回核 · 分支 `feat/personal-profile-mood` · 原基线 `cda337c43cf5d0e5793351577f7054ec552fb6d5`。
+状态：页面、共享列表及 POST-REPOST-01 转帖接线已由[PR #68](https://github.com/zewbby/HnuHole/pull/68)合入 main `ce140d57e0bf6feb27165352394c9946a1b72aef`；未生产发布。更早的“未合并”文字保留为送审历史，不代表当前状态。整合结果见 [个人转帖整合交接](personal-reposts-integration.md)。
 
 ## 当前实现与身份规则
 

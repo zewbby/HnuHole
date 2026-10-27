@@ -1,10 +1,10 @@
 # 启动欢迎页字标
 
-> **2026-10-27 本轮：**按用户要求将字标改为 `@SpeechFUL`；分支基于最新 main 重放并推送，PR [#86](https://github.com/zewbby/HnuHole/pull/86) 已打开。欢迎页相关 Flutter 回归31项、静态分析0问题、字形生成器与台账 JSON 校验 PASS；PR CI 进行中，独立审查待完成。旧 r4 APK 不含新字标，不能代表新版本。新版本设备验收和发布不在本 PR 内。
+> **2026-10-27 已合并：**PR [#86](https://github.com/zewbby/HnuHole/pull/86) squash 合入 main `1986988b70fe378600b7e74505d1f3e3f78f460e`。相关 Flutter 回归31项、分析0问题、字形生成器与台账 JSON 校验 PASS；独立只读审查无阻断；最终head全部适用CI成功，实际进程验收按流程SKIP。未生产发布，旧 r4 APK 不含新字标。
 
 - 工作项：AUTH-WORDMARK-01；模块 A12（启动欢迎展示）。
 - 分支：`feat/startup-wordmark`，已改基于最新 `origin/main`（`b48e199`）。
-- 更新：2026-10-27；字标修改已提交并推送，PR #86 待CI及独立审查后合并，未发布。
+- 更新：2026-10-27；PR #86 已合并 main，未生产发布。
 - 范围：将蓝色大 Logo 下方文字替换为带 Threads 风格 @ 的 `SpeechFUL` 矢量字标，显示为 `@SpeechFUL`，粗斜体并保留紧凑字距；两行文案改为“在这里，”“想说就说”，第二行右移 48dp，整体右倾约 5.7°。蓝色 Logo 与认证行为沿用原实现。
 
 字标以 Apache-2.0 Roboto Black Italic 轮廓生成，字距 -0.025em，@ 使用 CC0-1.0 Simple Icons 的 Threads 矢量轮廓。文字为 `SpeechFUL`，显示为 `@SpeechFUL`；文字高度 26dp，@ 高 30dp，与文字间距 6dp；画布宽度由生成器按字形计算，高度 30dp。浅色模式黑色，深色模式浅色。辅助功能标签为 `@SpeechFUL`。SVG 为可独立使用的透明背景矢量，Flutter 直接绘制同源路径，无新增运行时依赖。
