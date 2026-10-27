@@ -50,6 +50,8 @@ type CommentsConfig struct {
 	ObserveReadTimings bool                    `json:"observeReadTimings,omitempty"`
 }
 
+var errCommentSnapshotConfiguration = errors.New("invalid comment snapshot configuration")
+
 // PostImages enables private PostgreSQL storage, not a public file server.
 // Python must be a dedicated, dependency-pinned Linux validator environment.
 type PostImagesConfig struct {
@@ -415,21 +417,23 @@ func (c Config) commentKeyFiles(service authprivacyhttp.Service) ([]string, erro
 	if service != authprivacyhttp.CommunityService || c.Posts == nil || c.Comments.CommandKeyFile == "" || c.Comments.FingerprintKeyFile == "" {
 		return nil, errors.New("comment text requires explicit C posts and two independent purpose keys")
 	}
-	if cfg := c.Comments.Snapshots; cfg != nil {
-		if e := cfg.ValidateRuntime(); e != nil {
-			return nil, e
+	if c.Comments.Snapshots == nil {
+		return nil, fmt.Errorf("%w: comments require explicit snapshots configuration with dedicated Redis; PostgreSQL rollback must be explicit", errCommentSnapshotConfiguration)
+	}
+	cfg := c.Comments.Snapshots
+	if e := cfg.ValidateRuntime(); e != nil {
+		return nil, fmt.Errorf("%w: %v", errCommentSnapshotConfiguration, e)
+	}
+	if cfg.ReadRedis {
+		if cfg.Redis.Namespace != "hnuhole:comment-snapshot:v2:"+c.Environment+":" || cfg.Redis.Username != "community_comment_snapshot_v2" || cfg.Redis.PasswordFile == "" {
+			return nil, fmt.Errorf("%w: invalid environment-bound snapshot namespace or credentials", errCommentSnapshotConfiguration)
 		}
-		if cfg.ReadRedis {
-			if cfg.Redis.Namespace != "hnuhole:comment-snapshot:v2:"+c.Environment+":" || cfg.Redis.Username != "community_comment_snapshot_v2" || cfg.Redis.PasswordFile == "" {
-				return nil, errors.New("invalid environment-bound snapshot namespace or credentials")
-			}
-			if c.SharedRateLimit != nil && cfg.Redis.Address == c.SharedRateLimit.Policy.Address {
-				return nil, errors.New("comment snapshots require a separate Redis instance from shared admission")
-			}
-			password, e := c.Read(cfg.Redis.PasswordFile, true, 1024)
-			if e != nil || len(password) == 0 {
-				return nil, errors.New("comment snapshot credentials unavailable")
-			}
+		if c.SharedRateLimit != nil && cfg.Redis.Address == c.SharedRateLimit.Policy.Address {
+			return nil, fmt.Errorf("%w: comment snapshots require a separate Redis instance from shared admission", errCommentSnapshotConfiguration)
+		}
+		password, e := c.Read(cfg.Redis.PasswordFile, true, 1024)
+		if e != nil || len(password) == 0 {
+			return nil, fmt.Errorf("%w: comment snapshot credentials unavailable", errCommentSnapshotConfiguration)
 		}
 	}
 	return []string{c.Comments.CommandKeyFile, c.Comments.FingerprintKeyFile}, nil

@@ -338,6 +338,9 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 			}
 		}
 		if c.Comments != nil {
+			// Run validates the required snapshot configuration before opening
+			// any database or listener. Omission must never select legacy PG.
+			settings := c.Comments.Snapshots
 			commandKey, e := c.Key32(c.Comments.CommandKeyFile)
 			if e != nil {
 				return e
@@ -347,7 +350,7 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 				return e
 			}
 			var snapshotStore *commentsnapshot.Store
-			if settings := c.Comments.Snapshots; settings != nil && settings.ReadRedis {
+			if settings.ReadRedis {
 				codec, e := comments.NewCommandCodec(commandKey[:], fingerprintKey[:])
 				if e != nil {
 					return e
@@ -379,7 +382,7 @@ func Run(ctx context.Context, c Config, service authprivacyhttp.Service) error {
 						"total_ns", t.Total.Nanoseconds(), "succeeded", t.Succeeded)
 				}
 			}
-			community, err = community.WithComments(ctx, authprivacy.CommentConfig{KeyKey: commandKey, FingerprintKey: fingerprintKey, Snapshots: c.Comments.Snapshots, SnapshotStore: snapshotStore, ObserveRead: readObserver})
+			community, err = community.WithComments(ctx, authprivacy.CommentConfig{KeyKey: commandKey, FingerprintKey: fingerprintKey, Snapshots: settings, SnapshotStore: snapshotStore, ObserveRead: readObserver})
 			if err != nil {
 				return err
 			}

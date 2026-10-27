@@ -35,7 +35,7 @@ Linux／WSL 使用本任务专属缓存、日志及私有数据库 socket，执�
 
 `GET /api/v1/auth/credential-change-result` 使用当前Bearer、原 `Credential-Change-ID`／`Idempotency-Key` 核对轮换、绑定、移除，三态均200。缺记录不推断失败，已知意图的不可逆终止和所有成功结论均经最终Gate；过期结果410。返回权威 `Session-Expires-At`，不重放新码或证明，结构复用既有迁移。本轮SQL／HTTP／origin／配置测试缺Go未执行。
 
-`cmd/api` 是社区 C：新注册、密码／恢复／会话、目录与后台注销／收据。`cmd/verifier` 是 V：校邮 OTP、资格、退役续办与收据处理。两方各有独立数据库、运行角色、公开 HTTPS 和内部 mTLS 监听。C 的全部认证与目录授权使用 Safety Gate；新库从 FROZEN 建立，API 启动不解冻。开发配置样例为 `community.config.example.json`、`verifier.config.example.json`；样例中仅有路径与无密码 DSN。
+`cmd/api` 是社区 C：新注册、密码／恢复／会话、目录与后台注销／收据。`cmd/verifier` 是 V：校邮 OTP、资格、退役续办与收据处理。两方各有独立数据库、运行角色、公开 HTTPS 和内部 mTLS 监听。C 的全部认证与目录授权使用 Safety Gate；新库从 FROZEN 建立，API 启动不解冻。开发配置样例为 `community.config.example.json`、`verifier.config.example.json`；样例中仅有路径与无密码 DSN。 C 标准模板已包含评论及专用 Redis 快照：默认 Redis 新建，保留 PG 旧游标读取；必须提供独立 Redis、密码文件和已初始化的 epoch。启用评论但缺快照配置会启动失败，日志原因为 `comment_snapshot_configuration`，不自动退 PG。显式回退见[运行配置](../../docs/design/comment-snapshot-redis/runtime-and-rollback.md)。
 
 本轮只供开发。本机 Go／PostgreSQL／Docker／Flutter 已清理，新增进程、Go 测试、正式迁移及 PG16/Go1.22 兼容尚未执行。历史 Go1.27.1／PG18.6 回归仅对应历史代码。实际证据与未执行项见 [本轮报告](../../docs/design/auth-privacy-runtime-business-integration-validation-report.md)。
 

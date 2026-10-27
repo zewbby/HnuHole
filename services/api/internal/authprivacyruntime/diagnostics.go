@@ -40,6 +40,8 @@ func LogFailure(logger *slog.Logger, service authprivacyhttp.Service, stage Fail
 		reason = "deadline_exceeded"
 	} else if errors.Is(err, context.Canceled) {
 		reason = "cancelled"
+	} else if errors.Is(err, errCommentSnapshotConfiguration) {
+		reason = "comment_snapshot_configuration"
 	}
 	logger.Error("authentication process failure", "service", diagnosticService(service), "stage", string(stage), "reason", reason)
 }

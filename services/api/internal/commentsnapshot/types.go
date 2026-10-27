@@ -61,7 +61,7 @@ type Config struct {
 }
 
 func DefaultConfig() Config {
-	return Config{CreateBackend: "postgres", ReadPostgres: true, TTLSeconds: 1800, MaxIDs: 10000,
+	return Config{CreateBackend: "redis", ReadPostgres: true, ReadRedis: true, TTLSeconds: 1800, MaxIDs: 10000,
 		MaxPerAccount: 1024, MaxSnapshotBytes: 196608, MaxModuleBytes: 67108864,
 		MaxLedgerEntries: 8192, MaxLedgerBytes: 4194304, LedgerFixedReserveBytes: 12582912,
 		OperationBudgetMilliseconds: 500, PrepareLeaseSeconds: 30, CleanupIntervalSeconds: 10,
