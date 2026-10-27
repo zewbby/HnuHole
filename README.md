@@ -33,7 +33,7 @@
 
 ## 分支一览
 
-- [通知与互动收件箱](docs/branches/feat-notification-inbox.md)：`feat/notification-inbox` 接入四分类通知、全局身份同步和统一五项底栏；真实 `@` 暂不交付，当前正在验证并按授权推进 PR。
+- [通知与互动收件箱](docs/branches/feat-notification-inbox.md)：[PR #81](https://github.com/zewbby/HnuHole/pull/81) 已合并四分类通知、全App身份同步和统一五项发帖导航，主线包已构建、同机开发服务已更新，待用户试用。
 
 - [帖子图片平滑续验](docs/branches/fix-media-seamless-renewal.md)：`codex/fix/media-seamless-renewal` 在权限续验成功且图片未变时保留画面与缓存，避免周期性重载；已由[PR #76](https://github.com/zewbby/HnuHole/pull/76)合入main，17项CI通过，未安装／部署。
 
@@ -104,8 +104,8 @@
 
 ## 最近变动
 
+- [PR #81](https://github.com/zewbby/HnuHole/pull/81)：四分类通知、跨模块身份同步与统一发帖导航已合入主线，检查通过，主线包已构建、同机开发服务已更新，待用户试用。
 - [PR #77](https://github.com/zewbby/HnuHole/pull/77)：图片上下拖动跟手缩小并渐隐露出原页面，修复切图空白及退出闪字，最终CI通过，未装机/部署。
 - [PR #78](https://github.com/zewbby/HnuHole/pull/78)：同步图片权限提前续验PR76的真实合并及检查回执。
 - [PR #76](https://github.com/zewbby/HnuHole/pull/76)：图片提前续验并复用缓存，避免正常浏览周期性闪烁，17项CI通过，未装机／部署。
 - [PR #74](https://github.com/zewbby/HnuHole/pull/74)：同步共享动作限流PR73的主线合并与交接回执。
-- [PR #73](https://github.com/zewbby/HnuHole/pull/73)：接入共享动作限流、上传实际字节及可靠草稿/私信队列，指定Android与最终CI限定通过，未生产发布。
