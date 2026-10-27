@@ -283,14 +283,14 @@ paths:
     - $ref: '#/components/parameters/PostId'
     get:
       operationId: listPostComments
-      summary: Planned listPostComments
+      summary: List frozen main comments
       description: Authorized public content; first request establishes frozen account/post snapshot. Opaque cursor
-        continues it. Re-enter/collapse-reopen creates new snapshot; no live insert/reorder.
+        continues it. The fixed lifetime is 1800 seconds without renewal. IDs are capped at 10000. CURSOR_INVALID (400) requires a fresh local list; storage and capacity failures are distinct 503 codes. Scan at most three fully invisible segments per request, advancing by original positions; an empty response can still have a next cursor. Re-enter/collapse-reopen creates a new snapshot.
       security:
       - bearerAuth: []
       responses:
         '200':
-          description: Planned response; no route is implemented in this stage.
+          description: Authorized frozen snapshot response; content visibility is checked on every read.
           headers:
             X-Request-ID:
               required: true
@@ -319,6 +319,8 @@ paths:
           $ref: '#/components/responses/Error'
         '409':
           $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
         '429':
           $ref: '#/components/responses/Error'
         '503':
@@ -326,6 +328,8 @@ paths:
         '404':
           $ref: '#/components/responses/Error'
       parameters:
+      - $ref: '#/components/parameters/SnapshotRequest'
+      - $ref: '#/components/parameters/Limit'
       - name: sort
         in: query
         description: Initial main-comment request only; omit with cursor. Relevant keeps the existing top-ten likes then chronological order; recent is newest first; likes sorts all roots by likes. Cursor preserves the captured order.
@@ -340,14 +344,14 @@ paths:
     - $ref: '#/components/parameters/RootCommentId'
     get:
       operationId: listCommentReplies
-      summary: Planned listCommentReplies
+      summary: List frozen replies
       description: Same reading snapshot. Top five plus explicitly expanded chronological remainder, default pages
         of 50. Target/floor visibility checked in final C transaction.
       security:
       - bearerAuth: []
       responses:
         '200':
-          description: Planned response; no route is implemented in this stage.
+          description: Authorized frozen snapshot response; content visibility is checked on every read.
           headers:
             X-Request-ID:
               required: true
@@ -376,6 +380,8 @@ paths:
           $ref: '#/components/responses/Error'
         '409':
           $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
         '429':
           $ref: '#/components/responses/Error'
         '503':
@@ -383,7 +389,8 @@ paths:
         '404':
           $ref: '#/components/responses/Error'
       parameters:
-      - $ref: '#/components/parameters/Snapshot'
+      - $ref: '#/components/parameters/SnapshotRequest'
+      - $ref: '#/components/parameters/Limit'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Expanded'
   /api/v1/posts/{postId}/comments/{commentId}/location:
@@ -392,14 +399,14 @@ paths:
     - $ref: '#/components/parameters/CommentId'
     get:
       operationId: locateComment
-      summary: Planned locateComment
+      summary: Locate a comment in a frozen main list
       description: Resolve exact comment ID, including folded replies. Deleted/inaccessible target returns 404 COMMENT_NOT_FOUND
         without original text; never opens a private contact.
       security:
       - bearerAuth: []
       responses:
         '200':
-          description: Planned response; no route is implemented in this stage.
+          description: Authorized frozen snapshot response; content visibility is checked on every read.
           headers:
             X-Request-ID:
               required: true
@@ -428,14 +435,14 @@ paths:
           $ref: '#/components/responses/Error'
         '409':
           $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
         '429':
           $ref: '#/components/responses/Error'
         '503':
           $ref: '#/components/responses/Error'
         '404':
           $ref: '#/components/responses/Error'
-      parameters:
-      - $ref: '#/components/parameters/Snapshot'
   /api/v1/comments/{commentId}/delete-commands/{commandId}:
     parameters:
     - $ref: '#/components/parameters/CommentId'
@@ -592,6 +599,26 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/UUID'
+    SnapshotRequest:
+      name: X-Comment-Snapshot-Request
+      in: header
+      required: false
+      description: Optional initial-read nonce, 16 nonzero random bytes encoded as canonical unpadded base64url. Reuse for a retry of that initial read; use a new nonce for explicit refresh. Omit with cursor. Reusing it for another post, floor or sort is MALFORMED_REQUEST. PostgreSQL compatibility creates a snapshot per committed request.
+      schema:
+        type: string
+        minLength: 22
+        maxLength: 22
+        pattern: '^[A-Za-z0-9_-]{21}[AQgw]$'
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 50
+      description: Main and expanded-reply page size. Collapsed reply previews contain at most five entries.
     Cursor:
       name: cursor
       in: query
@@ -2162,6 +2189,14 @@ components:
               - TARGET_UNAVAILABLE
               - RATE_LIMITED
               - SERVICE_UNAVAILABLE
+              - CURSOR_INVALID
+              - MALFORMED_REQUEST
+              - AUTHORIZATION_UNAVAILABLE
+              - SHARED_RATE_UNAVAILABLE
+              - COMMENT_SNAPSHOT_TOO_LARGE
+              - COMMENT_SNAPSHOT_CAPACITY
+              - COMMENT_SNAPSHOT_UNAVAILABLE
+              - COMMENT_SNAPSHOT_INTEGRITY
             message:
               type: string
               maxLength: 200

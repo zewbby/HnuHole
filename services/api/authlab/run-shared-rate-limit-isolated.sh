@@ -122,6 +122,18 @@ case "${SHARED_RATE_DEVICE:-0}" in
   *) echo "SHARED_RATE_DEVICE must be unset or 1" >&2; exit 2 ;;
 esac
 
+# The Gate workflow needs the complete backend suite with the same owned C/V,
+# Redis, pinned migrator and image fixtures, rather than a partial lab.
+case "${AUTHLAB_FULL_SUITE:-0}" in
+  0) ;;
+  1) COMMENT_SNAPSHOT_REDIS_SERVER=$HNULIMIT_REDIS_SERVER
+     export COMMENT_SNAPSHOT_REDIS_SERVER
+     go test -mod=readonly -race -count=1 -timeout="$authlab_test_timeout" -p 1 ./... -v
+     go vet -mod=readonly ./...
+     exit 0 ;;
+  *) echo "AUTHLAB_FULL_SUITE must be unset or 1" >&2; exit 2 ;;
+esac
+
 go test -mod=readonly -race -count=1 -timeout="$authlab_test_timeout" ./internal/ratelimit -v
 go test -mod=readonly -race -count=1 -timeout="$authlab_test_timeout" ./internal/authprivacyhttp -run '^TestShared(Source|Rate)' -v
 go test -mod=readonly -race -count=1 -timeout="$authlab_test_timeout" -p 1 ./internal/authprivacy -run '^TestSharedRate' -v

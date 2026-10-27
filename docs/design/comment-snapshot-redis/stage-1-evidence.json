@@ -1,0 +1,317 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 1,
+  "capturedAtUTC": "2026-10-24T12:37:16.058305+00:00",
+  "timezone": "Asia/Shanghai",
+  "assignment": {
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "sourceThread": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "stage2Authorized": false
+  },
+  "workspace": "E:\\Hnuhole-env\\source\\HnuHole-comment-snapshot-redis",
+  "baseline": "8ed8f2870b1724de2837ea40a6e3764c008780f7",
+  "branch": "codex/feat/comment-snapshot-redis",
+  "gitPreflight": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "exitCode": 0,
+      "output": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis"
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--short",
+        "--branch"
+      ],
+      "exitCode": 0,
+      "output": "## codex/feat/comment-snapshot-redis"
+    },
+    {
+      "command": [
+        "git",
+        "branch",
+        "-vv"
+      ],
+      "exitCode": 0,
+      "output": "+ codex/docs/android-ui-design-system           af272dc (C:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-ui-system) docs: refresh README branch index (#11)\n+ codex/docs/feed-delivery-status-20261021      ddf506a (C:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-feed-status) fix(comments): 核对失败任务后恢复原重试 (#36)\n+ codex/docs/feed-refresh-merge-receipt         5e6e07e (E:/Hnuhole-env/source/HnuHole-feed-refresh-cancel) docs(feed): 同步刷新修复合并与vivo试用回执\n+ codex/docs/feed-scroll-merge-receipt          06bd55c (E:/Hnuhole-env/source/HnuHole-feed-scroll-smile-refresh) docs(feed): 同步沉浸阅读与刷新合并回执\n+ codex/docs/post-detail-comments-merge-receipt ad8fae5 (E:/Hnuhole-env/source/HnuHole-post-detail-comments) docs(comments): 同步评论修复合并与最终验收回执\n+ codex/docs/startup-flash-delivery             7831bed (E:/Hnuhole-env/source/HnuHole-auth-login-startup) docs(auth): 记录启动修正合并与整合包交付\n* codex/feat/comment-snapshot-redis             8ed8f28 docs(comments): 同步评论修复合并与最终验收回执 (#72)\n+ codex/feat/feed-backend                       d017923 (E:/Hnuhole-env/source/HnuHole-feed-backend) fix(feed): 在去重约束缺失时拒绝重复计数\n  codex/feat/feed-scroll-smile-refresh          fad2a5c chore(sync): 整合主线头像交付记录\n+ codex/feat/feed-ui                            86fbe99 (E:/Hnuhole-env/source/HnuHole-feed-ui) docs(feed): 补记PR与最终源码验证入口\n  codex/feat/post-detail-comments               aef7618 docs(comments): 记录最终复验与独立审查回执\n+ codex/feat/telegram-android-appearance        333201d (C:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-telegram-appearance) docs(mobile): 封存主线整合与主题修复验证\n  codex/fix/auth-login-startup                  635a2ff fix(auth): 消除启动期间会话错误页闪现\n  codex/fix/feed-refresh-cancel                 217bd4e fix(feed): 修复回滑取消刷新与颜文字加载动效\n+ codex/fix/startup-media-profile               97a2f9d (E:/Hnuhole-env/source/HnuHole-startup-media-profile) Merge origin/main into codex/fix/startup-media-profile\n  codex/test/feed-android-acceptance            444d258 feat(feed): 补齐点赞收藏与评论数接口 (#29)\n  codex/test/mobile-flow-integration            b8ae7be chore(sync): 保留主线认证交付记录\n  docs/auth-entry-delivery                      6df80c3 docs(auth): 同步登录定稿主线合并与交付记录\n  docs/auth-flow-final                          b80452c docs(auth): 固化登录注册流程界面定稿\n+ docs/direct-message-integration-spec          76af92b (E:/Hnuhole-env/source/HnuHole-dm-integration-spec) docs(auth): 同步三步注册合并与验收回执 (#43)\n  docs/direct-message-p1-delivery               78b2afe docs(dm): 对齐限定验收条目的审查状态\n  docs/email-auth-delivery                      93f9d72 docs(auth): 同步邮箱认证合并与主体包交付\n+ docs/email-login-requirements                 4d76f2c (C:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-auth-entry-flow) docs(auth): 同步登录定稿主线合并与交付记录 (#41)\n+ docs/identity-avatar-delivery                 f7a41f9 (E:/Hnuhole-env/source/HnuHole-identity-avatar-delivery) docs(identity): 记录头像合并与开发环境交付\n  docs/mobile-navigation-merge-receipt          a3cb6db docs(mobile): 记录导航优化合并与验收回执\n  docs/registration-delivery                    3c6477c docs(auth): 同步三步注册合并与验收回执\n  docs/session-resume-delivery                  b270772 docs(auth): 归档会话重启修复合并回执\n  feat/auth-entry-flow                          7813393 docs(auth): 记录独立复核与最终主题截图\n+ feat/direct-message-chat-backend              1056270 (E:/Hnuhole-env/source/HnuHole-dm-p2-backend) fix(dm): 分别检查图片发送账号与会话待投额度\n+ feat/direct-message-chat-completion           796c54f (E:/Hnuhole-env/source/HnuHole-dm-text) chore(dm): 整合主线认证反馈并保留私信验收\n+ feat/direct-message-governance                483fe9a (E:/Hnuhole-env/source/HnuHole-dm-governance) chore(dm): 整合已合并聊天主线与认证反馈\n+ feat/direct-message-governance-backend        fa9c4a4 (E:/Hnuhole-env/source/HnuHole-dm-p3-backend) test(auth): 补齐验证方邮箱登录确认表的隐私边界清单\n  feat/direct-message-text-reliability          068df61 chore(dm): 衔接已合并外观PR的压缩提交历史\n  feat/email-auth-flow                          bd59431 test(auth): 同步真实 SQL 链路的模拟密码规则\n+ feat/feed-interactions                        a32eb3f (E:/Hnuhole-env/source/HnuHole-feed-interactions) ci(feed): 使用隔离图片验证器运行回归\n+ feat/identity-avatar-onboarding               7a3b402 (E:/Hnuhole-env/source/HnuHole-identity-avatar) fix(identity): 修复恢复后头像权限并同步回归夹具\n+ feat/login-home-recommended                   b8ae7be (C:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-login-home-recommended) chore(sync): 保留主线认证交付记录\n+ feat/personal-profile-mood                    ca0580b (E:/Hnuhole-env/source/HnuHole-personal-profile) docs(personal): 记录PR68主线合并回执 [skip ci]\n+ feat/post-reposts                             cda337c (E:/codexDoucuments/2026-10-23/post-repost-01-hnuhole-origin-main/work/HnuHole-post-reposts) fix(mobile): 稳定已登录启动和个人页加载并支持图片重试\n  feat/registration-wizard-ui                   e1d2b0a feat(auth): 接入三步注册与恢复码快捷复制\n+ feat/shared-rate-limit-abuse-control          8ed8f28 (E:/Hnuhole-env/source/HnuHole-shared-rate-limit) docs(comments): 同步评论修复合并与最终验收回执 (#72)\n+ feat/startup-wordmark                         08408c2 (E:/Hnuhole-env/source/HnuHole-startup-wordmark) feat(auth): redesign startup wordmark\n+ feat/telegram-direct-messages                 83f09d1 (E:/Hnuhole-env/source/HnuHole-direct-messages) chore(dm): 整合邮箱认证主线并保留双方验收记录\n+ fix/direct-message-chat-races                 f90513f (E:/Hnuhole-env/source/HnuHole-dm-p2-races) fix(dm): 隔离私有图片并保留删除后的未知回执核对\n+ fix/direct-message-header-density             a0bc27b (E:/Hnuhole-env/source/HnuHole-dm-header-density) docs(dm): 明确私信布局送审快照范围\n+ fix/direct-message-identity-loading           8da6048 (E:/Hnuhole-env/source/HnuHole-dm-identity-fix) docs(dm): 同步身份管理往返修复与2313限定验收\n+ fix/direct-message-lifecycle                  ba633ee (E:/Hnuhole-env/source/HnuHole-dm-p3-lifecycle) fix(dm): 清理删除身份与正式注销并隔离迟到任务\n  fix/mobile-navigation-refresh                 f1e85fc chore(sync): 整合主线启动页修正\n  fix/session-restore                           6716ce8 docs(auth): 同步重启修复最终审查与验收状态\n+ test/direct-message-device-recovery           488d8d6 (E:/Hnuhole-env/source/HnuHole-dm-device-recovery) chore(dm): 整合主线并同步私信合并回执\n+ test/realme-large-photo-memory                77ed6f4 (E:/Hnuhole-env/source/HnuHole-navigation-refresh) chore(sync): 整合主线私信修正"
+    },
+    {
+      "command": [
+        "git",
+        "remote",
+        "-v"
+      ],
+      "exitCode": 0,
+      "output": "origin\thttps://github.com/zewbby/HnuHole.git (fetch)\norigin\thttps://github.com/zewbby/HnuHole.git (push)"
+    },
+    {
+      "command": [
+        "git",
+        "worktree",
+        "list"
+      ],
+      "exitCode": 0,
+      "output": "E:/Hnuhole-env/source/HnuHole                                                              af272dc (detached HEAD)\nC:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-auth-entry-flow                           4d76f2c [docs/email-login-requirements]\nC:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-auth-flow-final                           76af92b (detached HEAD)\nC:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-feed-status                               ddf506a [codex/docs/feed-delivery-status-20261021]\nC:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-login-home-recommended                    b8ae7be [feat/login-home-recommended]\nC:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-telegram-appearance                       333201d [codex/feat/telegram-android-appearance]\nC:/Users/24237/Documents/ChatGPT/Hnuhole/HnuHole-ui-system                                 af272dc [codex/docs/android-ui-design-system]\nE:/codexDoucuments/2026-10-23/post-repost-01-hnuhole-origin-main/work/HnuHole-post-reposts cda337c [feat/post-reposts]\nE:/Hnuhole-env/source/HnuHole-auth-login-startup                                           7831bed [codex/docs/startup-flash-delivery]\nE:/Hnuhole-env/source/HnuHole-b5-main-integration                                          af272dc (detached HEAD)\nE:/Hnuhole-env/source/HnuHole-collaboration                                                af272dc (detached HEAD)\nE:/Hnuhole-env/source/HnuHole-comment-snapshot-redis                                       8ed8f28 [codex/feat/comment-snapshot-redis]\nE:/Hnuhole-env/source/HnuHole-direct-messages                                              83f09d1 [feat/telegram-direct-messages]\nE:/Hnuhole-env/source/HnuHole-dm-device-recovery                                           488d8d6 [test/direct-message-device-recovery]\nE:/Hnuhole-env/source/HnuHole-dm-governance                                                483fe9a [feat/direct-message-governance]\nE:/Hnuhole-env/source/HnuHole-dm-header-density                                            a0bc27b [fix/direct-message-header-density]\nE:/Hnuhole-env/source/HnuHole-dm-identity-fix                                              8da6048 [fix/direct-message-identity-loading]\nE:/Hnuhole-env/source/HnuHole-dm-integration-spec                                          76af92b [docs/direct-message-integration-spec]\nE:/Hnuhole-env/source/HnuHole-dm-p2-backend                                                1056270 [feat/direct-message-chat-backend]\nE:/Hnuhole-env/source/HnuHole-dm-p2-races                                                  f90513f [fix/direct-message-chat-races]\nE:/Hnuhole-env/source/HnuHole-dm-p3-backend                                                fa9c4a4 [feat/direct-message-governance-backend]\nE:/Hnuhole-env/source/HnuHole-dm-p3-lifecycle                                              ba633ee [fix/direct-message-lifecycle]\nE:/Hnuhole-env/source/HnuHole-dm-text                                                      796c54f [feat/direct-message-chat-completion]\nE:/Hnuhole-env/source/HnuHole-feed-backend                                                 d017923 [codex/feat/feed-backend]\nE:/Hnuhole-env/source/HnuHole-feed-interactions                                            a32eb3f [feat/feed-interactions]\nE:/Hnuhole-env/source/HnuHole-feed-refresh-cancel                                          5e6e07e [codex/docs/feed-refresh-merge-receipt]\nE:/Hnuhole-env/source/HnuHole-feed-scroll-smile-refresh                                    06bd55c [codex/docs/feed-scroll-merge-receipt]\nE:/Hnuhole-env/source/HnuHole-feed-ui                                                      86fbe99 [codex/feat/feed-ui]\nE:/Hnuhole-env/source/HnuHole-identity-avatar                                              7a3b402 [feat/identity-avatar-onboarding]\nE:/Hnuhole-env/source/HnuHole-identity-avatar-delivery                                     f7a41f9 [docs/identity-avatar-delivery]\nE:/Hnuhole-env/source/HnuHole-main-avatar-build-20261023                                   45e3948 (detached HEAD)\nE:/Hnuhole-env/source/HnuHole-main-dm-build-20261023                                       93d3ed6 (detached HEAD)\nE:/Hnuhole-env/source/HnuHole-mobile-flow-integration                                      a746fa8 (detached HEAD)\nE:/Hnuhole-env/source/HnuHole-navigation-refresh                                           77ed6f4 [test/realme-large-photo-memory]\nE:/Hnuhole-env/source/HnuHole-personal-profile                                             ca0580b [feat/personal-profile-mood]\nE:/Hnuhole-env/source/HnuHole-post-detail-comments                                         ad8fae5 [codex/docs/post-detail-comments-merge-receipt]\nE:/Hnuhole-env/source/HnuHole-shared-rate-limit                                            8ed8f28 [feat/shared-rate-limit-abuse-control]\nE:/Hnuhole-env/source/HnuHole-smtp-real-delivery                                           4638724 (detached HEAD)\nE:/Hnuhole-env/source/HnuHole-startup-media-profile                                        97a2f9d [codex/fix/startup-media-profile]\nE:/Hnuhole-env/source/HnuHole-startup-wordmark                                             08408c2 [feat/startup-wordmark]"
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "-s",
+        "--format=%H %s",
+        "origin/main"
+      ],
+      "exitCode": 0,
+      "output": "8ed8f2870b1724de2837ea40a6e3764c008780f7 docs(comments): 同步评论修复合并与最终验收回执 (#72)"
+    }
+  ],
+  "dependency": {
+    "workspace": "E:\\Hnuhole-env\\source\\HnuHole-shared-rate-limit",
+    "head": "8ed8f2870b1724de2837ea40a6e3764c008780f7",
+    "branch": "feat/shared-rate-limit-abuse-control",
+    "status": "M README.md\n M apps/mobile/android/app/build.gradle.kts\n M apps/mobile/lib/src/auth/http_auth_api.dart\n M apps/mobile/lib/src/comments/comment_controller.dart\n M apps/mobile/lib/src/comments/comment_http.dart\n M apps/mobile/lib/src/comments/comment_journal.dart\n M apps/mobile/lib/src/comments/comment_models.dart\n M apps/mobile/lib/src/comments/comment_runtime.dart\n M apps/mobile/lib/src/comments/comment_views.dart\n M apps/mobile/lib/src/messaging/dm_chat_controller.dart\n M apps/mobile/lib/src/messaging/dm_chat_store.dart\n M apps/mobile/lib/src/messaging/dm_controller.dart\n M apps/mobile/lib/src/messaging/dm_protocol.dart\n M apps/mobile/lib/src/messaging/dm_store.dart\n M apps/mobile/lib/src/posts/http_post_api.dart\n M apps/mobile/lib/src/posts/post_composer_media.dart\n M apps/mobile/lib/src/posts/post_controller.dart\n M apps/mobile/lib/src/posts/post_screens.dart\n M apps/mobile/test/comment_core_test.dart\n M apps/mobile/test/dm_chat_races_test.dart\n M apps/mobile/test/dm_reliability_test.dart\n M apps/mobile/test/post_api_test.dart\n M apps/mobile/test/post_controller_test.dart\n M docs/design/HANDOFF.md\n M docs/design/module-acceptance-handoff.md\n M docs/design/module-acceptance-ledger.json\n M docs/design/modules/accounts.md\n M docs/design/modules/comments.md\n M docs/design/modules/identity.md\n M docs/design/modules/messaging.md\n M docs/design/modules/post-composer.md\n M docs/design/progress.md\n M infra/postgres/grant-community.sql\n M infra/postgres/grant-direct-messages.sql\n M infra/postgres/grant-verifier.sql\n M packages/openapi/channel-api.yaml\n M packages/openapi/community-auth-api.yaml\n M packages/openapi/direct-message-chat.yaml\n M packages/openapi/direct-message-text.yaml\n M packages/openapi/feed-api.yaml\n M packages/openapi/identity-api.yaml\n M packages/openapi/moderation-api.yaml\n M packages/openapi/post-api.yaml\n M packages/openapi/post-image-api.yaml\n M packages/openapi/report-api.yaml\n M packages/openapi/repost-api.yaml\n M packages/openapi/system-notification-api.yaml\n M services/api/authlab/privacy-role-audit.sql\n M services/api/go.mod\n M services/api/go.sum\n M services/api/internal/authprivacy/community.go\n M services/api/internal/authprivacy/community_comments.go\n M services/api/internal/authprivacy/community_comments_business.go\n M services/api/internal/authprivacy/community_direct_message_images.go\n M services/api/internal/authprivacy/community_direct_messages.go\n M services/api/internal/authprivacy/community_direct_messages_migration_test.go\n M services/api/internal/authprivacy/community_direct_messages_schema.go\n M services/api/internal/authprivacy/community_feed_migration_test.go\n M services/api/internal/authprivacy/community_identity_avatars.go\n M services/api/internal/authprivacy/community_post_images.go\n M services/api/internal/authprivacy/community_posts.go\n M services/api/internal/authprivacy/eligibility_otp.go\n M services/api/internal/authprivacy/identity_avatar_migration_test.go\n M services/api/internal/authprivacy/postgres_test.go\n M services/api/internal/authprivacy/workers.go\n M services/api/internal/authprivacyhttp/comments_endpoints.go\n M services/api/internal/authprivacyhttp/direct_message_chat_endpoints.go\n M services/api/internal/authprivacyhttp/direct_message_endpoints.go\n M services/api/internal/authprivacyhttp/email_login_endpoints.go\n M services/api/internal/authprivacyhttp/endpoints.go\n M services/api/internal/authprivacyhttp/endtoend_postgres_test.go\n M services/api/internal/authprivacyhttp/identity_avatar_endpoints.go\n M services/api/internal/authprivacyhttp/post_images_endpoints.go\n M services/api/internal/authprivacyhttp/posts_endpoints.go\n M services/api/internal/authprivacyhttp/posts_endpoints_test.go\n M services/api/internal/authprivacyhttp/session_endpoints.go\n M services/api/internal/authprivacyruntime/config.go\n M services/api/internal/authprivacyruntime/moderation_lifecycle_postgres_test.go\n M services/api/internal/authprivacyruntime/server.go\n M tools/check-direct-message-contract.py\n?? .github/workflows/shared-rate-limit.yml\n?? apps/mobile/lib/src/rate_limit.dart\n?? apps/mobile/lib/src/rate_limit_notice.dart\n?? apps/mobile/test/rate_limit_notice_test.dart\n?? apps/mobile/test/rate_limit_test.dart\n?? docs/branches/feat-shared-rate-limit-abuse-control.md\n?? docs/design/shared-rate-limit-architecture.md\n?? docs/design/shared-rate-limit-plan.md\n?? docs/design/shared-rate-limit-runbook.md\n?? docs/design/shared-rate-limit-stage1-history.md\n?? docs/design/shared-rate-limit-stage2-history.md\n?? docs/design/shared-rate-limit-verification.json\n?? infra/ratelimit/\n?? services/api/authlab/run-shared-rate-limit-isolated.sh\n?? services/api/cmd/ratelimitctl/\n?? services/api/internal/authprivacy/community_direct_message_close.go\n?? services/api/internal/authprivacy/community_rate_admission.go\n?? services/api/internal/authprivacy/community_rate_admission_test.go\n?? services/api/internal/authprivacy/community_rate_cleanup.go\n?? services/api/internal/authprivacy/community_rate_close_test.go\n?? services/api/internal/authprivacy/community_rate_policy_test.go\n?? services/api/internal/authprivacy/community_rate_subject.go\n?? services/api/internal/authprivacyhttp/shared_limits.go\n?? services/api/internal/authprivacyhttp/shared_limits_postgres_test.go\n?? services/api/internal/authprivacyhttp/shared_limits_test.go\n?? services/api/internal/authprivacyhttp/shared_rate_device_postgres_test.go\n?? services/api/internal/authprivacyhttp/shared_uploads_postgres_test.go\n?? services/api/internal/authprivacyhttp/source.go\n?? services/api/internal/authprivacyhttp/source_test.go\n?? services/api/internal/ratelimit/\n?? services/api/migrations/0027_shared_rate_limit.sql\n?? services/api/verifier-migrations/0007_shared_rate_namespace.sql",
+    "prSearchAtCapture": {
+      "repository": "zewbby/HnuHole",
+      "head": "feat/shared-rate-limit-abuse-control",
+      "state": "all",
+      "results": []
+    },
+    "mergedIntoBaseline": false,
+    "files": [
+      {
+        "path": "services/api/go.mod",
+        "sha256": "95829dacf1312e50ecd1d460f5968dfcbc8ece9613c5e877d61514cd624dc269",
+        "size": 876
+      },
+      {
+        "path": "services/api/go.sum",
+        "sha256": "2247dfb49454fda4c431183363a7f151f78e22a38a7c6b1bca3930e0934a3107",
+        "size": 4735
+      },
+      {
+        "path": "services/api/internal/ratelimit/redis.go",
+        "sha256": "0bfe133da08103f100115a1a1e5d1996a00cae7c5606af36323917be4861113a",
+        "size": 22203
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/config.go",
+        "sha256": "983614833460d97c65f7a8e34c74bad8ab66df40c9609dd640a305ebab341b62",
+        "size": 22279
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/server.go",
+        "sha256": "9292353440a00a5468d4d821de6981dcd6cb052b6010e1baf16436769dbf4073",
+        "size": 23760
+      },
+      {
+        "path": "services/api/internal/authprivacyhttp/shared_limits.go",
+        "sha256": "e9be570d9ca91adc7a0711d2f7b54fe46faa1b874ef6d92f51cc6f5cbd7c674f",
+        "size": 9478
+      },
+      {
+        "path": "apps/mobile/lib/src/comments/comment_http.dart",
+        "sha256": "4d479995cf44a3a0e3f361e997633681eeab6538ce391974da0d5605196b3fda",
+        "size": 13639
+      },
+      {
+        "path": "infra/ratelimit/redis-community.example.conf",
+        "sha256": "10a1fa20347cb02625f23356d3d60e2b9168ad260195a3daee703bff7ae8cd00",
+        "size": 857
+      },
+      {
+        "path": "infra/docker-compose.yml",
+        "sha256": "276c296a69db0a60c91a6bd45feabeded3ae0a0e6eca8bf0820d8038a255c5dd",
+        "size": 3179
+      },
+      {
+        "path": "docs/design/shared-rate-limit-verification.json",
+        "sha256": "ffefb5c294cb7c0ca7797d6495fa846d502c24249da9e0689036af6a0310cc70",
+        "size": 23996
+      },
+      {
+        "path": "docs/branches/feat-shared-rate-limit-abuse-control.md",
+        "sha256": "a9ed881d5c4a267025a62a21308cd4151ae34f371f6dbfbbff11e9cc2266d785",
+        "size": 9636
+      }
+    ]
+  },
+  "commentUI": {
+    "pr": 71,
+    "merged": true,
+    "mergeCommit": "a715dc7e8b6a3b1395bc968274bce3865f63f21b",
+    "source": "GitHub get_pr_info and baseline HANDOFF"
+  },
+  "directSnapshotReferences": [
+    {
+      "path": "infra/postgres/grant-comments.sql",
+      "line": 4,
+      "text": "GRANT SELECT,INSERT ON c_comments.protocol_keys,c_comments.tasks,c_comments.attempts,c_comments.receipts,c_comments.snapshots TO hnuhole_c_runtime;"
+    },
+    {
+      "path": "infra/postgres/grant-comments.sql",
+      "line": 7,
+      "text": "GRANT DELETE ON c_comments.snapshots TO hnuhole_c_runtime;"
+    },
+    {
+      "path": "services/api/migrations/0016_comments.sql",
+      "line": 74,
+      "text": "CREATE TABLE c_comments.snapshots ("
+    },
+    {
+      "path": "services/api/migrations/0016_comments.sql",
+      "line": 82,
+      "text": "CREATE INDEX comment_snapshot_expiry ON c_comments.snapshots(expires_at);"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_read.go",
+      "line": 149,
+      "text": "e = tx.QueryRow(ctx, `SELECT comment_ids FROM c_comments.snapshots WHERE snapshot_id=$1 AND owner_account_id=$2 AND post_id=$3 AND root_comment_id IS NOT DISTINCT FROM $4::uuid AND expires_at>$5`, snapshotID, account, postID, root, d.TrustedAt).Scan(&ids)"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_read.go",
+      "line": 199,
+      "text": "if _, e = tx.Exec(ctx, `DELETE FROM c_comments.snapshots WHERE expires_at<=$1`, d.TrustedAt); e != nil {"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_read.go",
+      "line": 203,
+      "text": "if e = tx.QueryRow(ctx, `SELECT count(*) FROM c_comments.snapshots WHERE owner_account_id=$1`, account).Scan(&count); e != nil {"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_read.go",
+      "line": 209,
+      "text": "if _, e = tx.Exec(ctx, `INSERT INTO c_comments.snapshots VALUES($1,$2,$3,$4,$5,$6)`, snapshotID, account, postID, root, ids, d.TrustedAt.Add(5*time.Minute)); e != nil {"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_read.go",
+      "line": 371,
+      "text": "if e = tx.QueryRow(ctx, `SELECT comment_ids FROM c_comments.snapshots WHERE snapshot_id=$1 AND owner_account_id=$2`, sid, a).Scan(&ids); e != nil {"
+    }
+  ],
+  "schemaReferences": [
+    {
+      "path": "services/api/internal/authprivacy/community_comments_schema.go",
+      "line": 44,
+      "text": "for _, table := range []string{\"protocol_keys\", \"tasks\", \"attempts\", \"receipts\", \"snapshots\", \"images\", \"likes\"} {"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_schema.go",
+      "line": 67,
+      "text": "for table, columns := range map[string][]string{\"tasks\": {\"owner_visible\", \"abandoned_at\", \"deleted_at\", \"moderation_hidden\"}, \"attempts\": {\"state\", \"terminal_at\", \"failure_code\", \"body\"}, \"snapshots\": {}, \"images\": {\"payload\", \"metadata\", \"erased_at\"}, \"likes\": {}} {"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_schema.go",
+      "line": 73,
+      "text": "AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['protocol_keys','tasks','attempts','receipts','snapshots']) t(name) WHERE NOT has_table_privilege(current_user,'c_comments.'||name,'SELECT') OR NOT has_table_privilege(current_user,'c_comments.'||name,'INSERT') OR has_table_privilege(current_user,'c_comments.'||name,'TRUNCATE,TRIGGER'))"
+    },
+    {
+      "path": "services/api/authlab/privacy-role-audit.sql",
+      "line": 111,
+      "text": "allowed := (privilege IN ('SELECT','INSERT') AND relation.relname IN ('protocol_keys','tasks','attempts','receipts','snapshots','images','likes'))"
+    },
+    {
+      "path": "services/api/authlab/privacy-role-audit.sql",
+      "line": 112,
+      "text": "OR (privilege='DELETE' AND relation.relname IN ('snapshots','likes'));"
+    }
+  ],
+  "baselineFiles": [
+    {
+      "path": "services/api/internal/authprivacy/community_comments_read.go",
+      "sha256": "3c9e8a591d0a6704143333abde84cbaaec5469c9cc05f8677af3dc63c703579c",
+      "size": 15310
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments.go",
+      "sha256": "fef1f4f4130687d38523dd4be59b7a85016c96c32d7dd62e0cbc80a3bcc6e016",
+      "size": 21018
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_schema.go",
+      "sha256": "629dab81fe822e68511af69765e9ca01d226764f351f4f63442cc14b8f5bb1e3",
+      "size": 6851
+    },
+    {
+      "path": "services/api/internal/comments/order.go",
+      "sha256": "5985414a4b8504b9e8f1398d6d01f4371ca0d9277947e46c873202d31dc7f6c1",
+      "size": 4789
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/comments_endpoints.go",
+      "sha256": "aa1703a78464a5db3a5f6d549b5a5e5dde98052e2441923f69a9c83392167a12",
+      "size": 15315
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/config.go",
+      "sha256": "ce2bb2744b3a1eb3e0c7ed2b58af7284e6a0e35ee5ca02360aa7f21719b20910",
+      "size": 20999
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/server.go",
+      "sha256": "452c1e638e5e9a84396d1f9385326c353859adf42b986a0fdaefc003f858e3c4",
+      "size": 22117
+    },
+    {
+      "path": "apps/mobile/lib/src/comments/comment_views.dart",
+      "sha256": "ce74f792dd152bdc460642c0623443a4f79cfa394963e65bcb14e8e75a493561",
+      "size": 107283
+    },
+    {
+      "path": "apps/mobile/lib/src/comments/comment_http.dart",
+      "sha256": "371095aa9ed86305bcbce3820fb4b85f4bc6d7b54e38715daf6d68b4bd4eda2c",
+      "size": 13024
+    },
+    {
+      "path": "apps/mobile/lib/src/comments/comment_runtime.dart",
+      "sha256": "5bb1cdb92d9160f75bc3c49b9c4d04185c1c79cd9f29a874f3aaa923b8d95818",
+      "size": 14926
+    },
+    {
+      "path": "packages/openapi/comment-api.yaml",
+      "sha256": "4c09ac4196a0553cd8fb250308c6efb0bcf30904f9990f91ec0a8b52ffe81e7b",
+      "size": 66093
+    },
+    {
+      "path": "services/api/migrations/0016_comments.sql",
+      "sha256": "650224c4c9191375f6c497cde1de7bfa6f715525f3838ef6e1c5ca2241812578",
+      "size": 13143
+    },
+    {
+      "path": "infra/postgres/grant-comments.sql",
+      "sha256": "5140a4b18fdb0b642d0a3417f6db5e33901e8948aeaac13c1d3f222ca91194d6",
+      "size": 906
+    },
+    {
+      "path": "services/api/authlab/privacy-role-audit.sql",
+      "sha256": "d77468e58635fb76d317b1dc1b5c2ff0d5a5ba9b5be7dd4443a2851f7a2cbdd2",
+      "size": 13741
+    }
+  ],
+  "inputs": [
+    {
+      "path": "execution-plan.md",
+      "sha256": "2694b77761b5532c2e5f34b8e9ad6e38f6f91473e44c7ff243798daabfd07936",
+      "size": 11028
+    },
+    {
+      "path": "requirements-v1.1.md",
+      "sha256": "00c011698a58a4feec9bed0c2bf8bb657d24f9cb3ac6d51b750361566ae6fec8",
+      "size": 11100
+    }
+  ],
+  "devicePolicy": {
+    "date": "2026-10-25",
+    "rule": "Use existing independently controllable device if available in later acceptance; otherwise record 真机验收待用户于 2026-10-25 验收 and continue non-device work.",
+    "phase1": "NOT_RUN; phase1 is documentation and static inventory only"
+  },
+  "tests": {
+    "productTests": "NOT_RUN",
+    "reason": "No product code changed; phase1 static evidence only"
+  }
+}

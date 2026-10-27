@@ -1,0 +1,189 @@
+{
+  "result": "FAIL",
+  "protocol": "FIXED_THREE_COHORT_ALL_RAW_SAMPLES",
+  "firstCampaign": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1",
+  "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+  "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+  "cohortCount": 3,
+  "individualResults": {
+    "compatibility-1": {
+      "result": "FAIL",
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1/performance-compatibility/process-20261025T130236-572eb3/normalized-performance.json"
+    },
+    "steady-1": {
+      "result": "FAIL",
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1/performance-steady/process-20261025T132546-71195c/normalized-performance.json"
+    },
+    "compatibility-2": {
+      "result": "FAIL",
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/compatibility-2/process-20261025T143257-61ea1b/normalized-performance.json",
+      "returncode": 1
+    },
+    "steady-2": {
+      "result": "PASS",
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/steady-2/process-20261025T145859-767a2f/normalized-performance.json",
+      "returncode": 0
+    },
+    "compatibility-3": {
+      "result": "FAIL",
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/compatibility-3/process-20261025T152501-4b56b8/normalized-performance.json",
+      "returncode": 1
+    },
+    "steady-3": {
+      "result": "PASS",
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/steady-3/process-20261025T155218-4c5ae4/normalized-performance.json",
+      "returncode": 0
+    }
+  },
+  "pooled": {
+    "compatibility": {
+      "initial": {
+        "postgres": {
+          "samples": 600,
+          "p50Ms": 351.1228,
+          "p95Ms": 695.3383,
+          "p99Ms": 1062.022,
+          "meanMs": 397.15864766666664
+        },
+        "redis": {
+          "samples": 600,
+          "p50Ms": 343.6249,
+          "p95Ms": 694.9037,
+          "p99Ms": 1021.2825,
+          "meanMs": 398.035092
+        },
+        "p95RegressionPercent": -0.0625019504894353,
+        "result": "PASS"
+      },
+      "continuation": {
+        "postgres": {
+          "samples": 3000,
+          "p50Ms": 300.1618,
+          "p95Ms": 648.6236,
+          "p99Ms": 941.8123,
+          "meanMs": 352.74813496666667
+        },
+        "redis": {
+          "samples": 3000,
+          "p50Ms": 302.4266,
+          "p95Ms": 668.8047,
+          "p99Ms": 950.4542,
+          "meanMs": 358.4541609
+        },
+        "p95RegressionPercent": 3.111373067523293,
+        "result": "PASS"
+      },
+      "replyPreview": {
+        "postgres": {
+          "samples": 900,
+          "p50Ms": 246.6059,
+          "p95Ms": 543.9829,
+          "p99Ms": 661.8334,
+          "meanMs": 285.95651977777777
+        },
+        "redis": {
+          "samples": 900,
+          "p50Ms": 245.4758,
+          "p95Ms": 575.7054,
+          "p99Ms": 775.5806,
+          "meanMs": 287.6083751111111
+        },
+        "p95RegressionPercent": 5.831525218899358,
+        "result": "FAIL"
+      },
+      "replyExpanded": {
+        "postgres": {
+          "samples": 900,
+          "p50Ms": 267.9855,
+          "p95Ms": 580.1132,
+          "p99Ms": 893.4489,
+          "meanMs": 315.5336863333333
+        },
+        "redis": {
+          "samples": 900,
+          "p50Ms": 275.3205,
+          "p95Ms": 609.6425,
+          "p99Ms": 871.1118,
+          "meanMs": 321.8001521111111
+        },
+        "p95RegressionPercent": 5.090265141355177,
+        "result": "FAIL"
+      }
+    },
+    "steady": {
+      "initial": {
+        "postgres": {
+          "samples": 600,
+          "p50Ms": 291.4578,
+          "p95Ms": 622.6896,
+          "p99Ms": 934.2348,
+          "meanMs": 348.55732083333334
+        },
+        "redis": {
+          "samples": 600,
+          "p50Ms": 294.5046,
+          "p95Ms": 613.8535,
+          "p99Ms": 751.9005,
+          "meanMs": 342.7154541666667
+        },
+        "p95RegressionPercent": -1.4190216120519739,
+        "result": "PASS"
+      },
+      "continuation": {
+        "postgres": {
+          "samples": 3000,
+          "p50Ms": 296.988,
+          "p95Ms": 630.8262,
+          "p99Ms": 819.2975,
+          "meanMs": 348.0679826333333
+        },
+        "redis": {
+          "samples": 3000,
+          "p50Ms": 297.0645,
+          "p95Ms": 640.089,
+          "p99Ms": 826.7071,
+          "meanMs": 348.07372046666666
+        },
+        "p95RegressionPercent": 1.4683600649434192,
+        "result": "PASS"
+      },
+      "replyPreview": {
+        "postgres": {
+          "samples": 900,
+          "p50Ms": 237.2742,
+          "p95Ms": 552.7368,
+          "p99Ms": 737.5729,
+          "meanMs": 278.6145736666667
+        },
+        "redis": {
+          "samples": 900,
+          "p50Ms": 241.9117,
+          "p95Ms": 565.5754,
+          "p99Ms": 695.1426,
+          "meanMs": 284.4924105555556
+        },
+        "p95RegressionPercent": 2.3227329897339777,
+        "result": "PASS"
+      },
+      "replyExpanded": {
+        "postgres": {
+          "samples": 900,
+          "p50Ms": 264.1112,
+          "p95Ms": 579.4916,
+          "p99Ms": 684.1024,
+          "meanMs": 303.74320133333333
+        },
+        "redis": {
+          "samples": 900,
+          "p50Ms": 268.9311,
+          "p95Ms": 604.5271,
+          "p99Ms": 788.7236,
+          "meanMs": 320.21388822222224
+        },
+        "p95RegressionPercent": 4.32025244196812,
+        "result": "PASS"
+      }
+    }
+  },
+  "noProductParameterChanges": true
+}

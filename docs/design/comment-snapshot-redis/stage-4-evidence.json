@@ -1,0 +1,334 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 4,
+  "date": "2026-10-25",
+  "timezone": "Asia/Shanghai",
+  "status": "COMPLETE_CLIENT_RECOVERY_AND_SCOPED_ACCEPTANCE",
+  "assignment": {
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "sourceThread": "01a16de6-b90c-7461-ba71-c815cb182a2b"
+  },
+  "branch": "codex/feat/comment-snapshot-redis",
+  "integrationBase": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+  "committed": false,
+  "pushed": false,
+  "pr": null,
+  "merged": false,
+  "deployed": false,
+  "checks": {
+    "task": "COMMENT-SNAPSHOT-REDIS-01",
+    "phase": 4,
+    "date": "2026-10-25",
+    "branch": "codex/feat/comment-snapshot-redis",
+    "modules": [
+      "B06",
+      "B07"
+    ],
+    "status": "COMPLETE_CLIENT_RECOVERY_AND_SCOPED_ACCEPTANCE",
+    "record": "comment-snapshot-redis/stage-4-client-recovery-and-pins.md",
+    "evidence": "comment-snapshot-redis/stage-4-evidence.json",
+    "client": {
+      "passed": 964,
+      "failed": 0,
+      "skipped": 3,
+      "analyzeIssues": 0,
+      "bundle": "PASS_ANDROID_ARM64"
+    },
+    "dartRedisSQL": "PASS_LIVE5_DOWN2",
+    "device": {
+      "status": "PASS_SCOPED_PRODUCTION_WIDGETS_WITH_FIXTURE_DATA",
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "model": "RMX3366",
+      "api": 34,
+      "package": "org.hnuhole.hnuhole_mobile.commentsnapshot",
+      "versionCode": 2026102501
+    },
+    "endToEndPhoneAndNativeVault": "NOT_CLAIMED",
+    "moduleVerdicts": "UNCHANGED",
+    "capacityP95And30MinuteSoak": "STAGE5_NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "committed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "productManifestAlgorithm": "SHA256 of sorted path NUL lowercase-sha256 LF",
+  "productManifestSHA256": "f219a3f93aa3605d7f40b1e6018150cbadbf6629e54e8d79475e6105b1a542bd",
+  "productFiles": [
+    {
+      "path": ".github/workflows/comment-snapshot.yml",
+      "sha256": "48c90377e558b3fcc86a537dfa98489e20f2e309ad91477b7a3351ea6dc8350e",
+      "testedMirrorSHA256": null
+    },
+    {
+      "path": "apps/mobile/android/app/build.gradle.kts",
+      "sha256": "3ca979765506d1c1224bafbdcb38327bdcc39f0cb4e750a2d5961867e951f472",
+      "testedMirrorSHA256": "3ca979765506d1c1224bafbdcb38327bdcc39f0cb4e750a2d5961867e951f472"
+    },
+    {
+      "path": "apps/mobile/integration/comment_live_probe.dart",
+      "sha256": "558af18464de13edec0cb78342876ec99270e8162e85a86f07fd8c72e1459f5d",
+      "testedMirrorSHA256": "558af18464de13edec0cb78342876ec99270e8162e85a86f07fd8c72e1459f5d"
+    },
+    {
+      "path": "apps/mobile/integration/comment_snapshot_live_probe.dart",
+      "sha256": "5b2e90f06b5095a52722ca207343a00cd05192d278071409800cdb4c03a509ae",
+      "testedMirrorSHA256": "5b2e90f06b5095a52722ca207343a00cd05192d278071409800cdb4c03a509ae"
+    },
+    {
+      "path": "apps/mobile/integration_test/comment_snapshot_device_test.dart",
+      "sha256": "9f98e9409a132ca1f6faa2e64354f0595689a39f78645d5a105e15e39d410bdc",
+      "testedMirrorSHA256": "9f98e9409a132ca1f6faa2e64354f0595689a39f78645d5a105e15e39d410bdc"
+    },
+    {
+      "path": "apps/mobile/lib/src/comments/comment_http.dart",
+      "sha256": "d778154aaa6745e13949ba7baae08637dd6424b8c71f3356274d9a1e7fee63ba",
+      "testedMirrorSHA256": "d778154aaa6745e13949ba7baae08637dd6424b8c71f3356274d9a1e7fee63ba"
+    },
+    {
+      "path": "apps/mobile/lib/src/comments/comment_runtime.dart",
+      "sha256": "8fd526b18e4a6a143500ab61eaa1b9c76d14de0f637b99029ca17dadf3ce464d",
+      "testedMirrorSHA256": "8fd526b18e4a6a143500ab61eaa1b9c76d14de0f637b99029ca17dadf3ce464d"
+    },
+    {
+      "path": "apps/mobile/lib/src/comments/comment_snapshot.dart",
+      "sha256": "7737ce655b7b63e2855d185b15fa3681d795649a6661b71ff761103a43d4a2b1",
+      "testedMirrorSHA256": "7737ce655b7b63e2855d185b15fa3681d795649a6661b71ff761103a43d4a2b1"
+    },
+    {
+      "path": "apps/mobile/lib/src/comments/comment_views.dart",
+      "sha256": "2efc9f4ac6751df05695bdf70d57630e84eb6092838dd7a15abcaf85c849fd60",
+      "testedMirrorSHA256": "2efc9f4ac6751df05695bdf70d57630e84eb6092838dd7a15abcaf85c849fd60"
+    },
+    {
+      "path": "apps/mobile/test/comment_failure_view_test.dart",
+      "sha256": "5fd0c44ab0e21fc35699e22bba4fa543ba5f36d5d667faa0bac452217cad8e3a",
+      "testedMirrorSHA256": "5fd0c44ab0e21fc35699e22bba4fa543ba5f36d5d667faa0bac452217cad8e3a"
+    },
+    {
+      "path": "apps/mobile/test/comment_http_test.dart",
+      "sha256": "62b4152298316f38dc87611739cf1c493c7a426959bcf995be5454c14839aaab",
+      "testedMirrorSHA256": "62b4152298316f38dc87611739cf1c493c7a426959bcf995be5454c14839aaab"
+    },
+    {
+      "path": "apps/mobile/test/comment_runtime_test.dart",
+      "sha256": "f8ae2f49f5d784f900d01fb0c0204b3eb31c696741a51b6d6d00dfbb1e134d96",
+      "testedMirrorSHA256": "f8ae2f49f5d784f900d01fb0c0204b3eb31c696741a51b6d6d00dfbb1e134d96"
+    },
+    {
+      "path": "apps/mobile/test/comment_snapshot_test.dart",
+      "sha256": "29df850ca04df1118ed87fc4bb27bfaa5e9277ff9bf0c02d043454e19d7e3c4d",
+      "testedMirrorSHA256": "29df850ca04df1118ed87fc4bb27bfaa5e9277ff9bf0c02d043454e19d7e3c4d"
+    },
+    {
+      "path": "apps/mobile/test/comment_views_test.dart",
+      "sha256": "5f4713377394f694d994c06a685a73de0c22d00fddd5995fa478aec1818c9a91",
+      "testedMirrorSHA256": "5f4713377394f694d994c06a685a73de0c22d00fddd5995fa478aec1818c9a91"
+    },
+    {
+      "path": "infra/commentsnapshot/redis.example.conf",
+      "sha256": "17536d46ad64d9dbb46a36174894eae01a879d9a3f73da64235a2f0947358352",
+      "testedMirrorSHA256": "17536d46ad64d9dbb46a36174894eae01a879d9a3f73da64235a2f0947358352"
+    },
+    {
+      "path": "infra/commentsnapshot/snapshots.example.json",
+      "sha256": "bd182d4b58a9c4a943a9ef786deca38b05ec46375afb23848b6d9d9615bb4ee4",
+      "testedMirrorSHA256": "bd182d4b58a9c4a943a9ef786deca38b05ec46375afb23848b6d9d9615bb4ee4"
+    },
+    {
+      "path": "packages/openapi/comment-api.yaml",
+      "sha256": "cd95fc4a12e9d30f6648631d012010cde86e1049b12d9be2fc94a8953b0e25c3",
+      "testedMirrorSHA256": "cd95fc4a12e9d30f6648631d012010cde86e1049b12d9be2fc94a8953b0e25c3"
+    },
+    {
+      "path": "services/api/authlab/run-comment-snapshot-isolated.sh",
+      "sha256": "7efd1bef9c8ac869e36d33ce0f476d6615b95978a2fa70f09a8e66e1b6a3d331",
+      "testedMirrorSHA256": "7efd1bef9c8ac869e36d33ce0f476d6615b95978a2fa70f09a8e66e1b6a3d331"
+    },
+    {
+      "path": "services/api/cmd/commentsnapshotctl/main.go",
+      "sha256": "38857ed2b1a6782557981cfeb304eb16ee0428cfcb1924bcaab0090880011d3d",
+      "testedMirrorSHA256": "38857ed2b1a6782557981cfeb304eb16ee0428cfcb1924bcaab0090880011d3d"
+    },
+    {
+      "path": "services/api/cmd/commentsnapshotctl/main_test.go",
+      "sha256": "b0f62b09f73a74ecd622577100a710317d48a95cd53bd31bf65be63e8c9c580f",
+      "testedMirrorSHA256": "b0f62b09f73a74ecd622577100a710317d48a95cd53bd31bf65be63e8c9c580f"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comment_snapshots.go",
+      "sha256": "317a16d6d4156b287b034f128a4eb13af38814056199f021b73f5fd24227e7a8",
+      "testedMirrorSHA256": "317a16d6d4156b287b034f128a4eb13af38814056199f021b73f5fd24227e7a8"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comment_snapshots_test.go",
+      "sha256": "b2409ee974a675256a52c97214fab1639251c10628da2df7343d2aa9761f2d98",
+      "testedMirrorSHA256": "b2409ee974a675256a52c97214fab1639251c10628da2df7343d2aa9761f2d98"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments.go",
+      "sha256": "4020bb7501273f166e1496b3d1d25ddeedbbf87ad1e7febd6f002dfcbda27c26",
+      "testedMirrorSHA256": "4020bb7501273f166e1496b3d1d25ddeedbbf87ad1e7febd6f002dfcbda27c26"
+    },
+    {
+      "path": "services/api/internal/authprivacy/community_comments_read.go",
+      "sha256": "1d41b6c87f7099699d4c656c0c3bad16e512a69b6cfc26ad52997de1309be8b4",
+      "testedMirrorSHA256": "1d41b6c87f7099699d4c656c0c3bad16e512a69b6cfc26ad52997de1309be8b4"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/comment_snapshot_postgres_test.go",
+      "sha256": "f47321e4cbcf140ece234f63521084e901687289d1806338cc16f032ab2fddc5",
+      "testedMirrorSHA256": "f47321e4cbcf140ece234f63521084e901687289d1806338cc16f032ab2fddc5"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/comment_snapshot_test.go",
+      "sha256": "ae8c0d95271591d6a5ebcd5022a2e7d11fc1552076d4d4b68d15630064e3c5bf",
+      "testedMirrorSHA256": "ae8c0d95271591d6a5ebcd5022a2e7d11fc1552076d4d4b68d15630064e3c5bf"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/comments_endpoints.go",
+      "sha256": "c5d2a0dcabe58abbb1f7e626c72a7379be60db06c36ea48ad4e4b900455697ca",
+      "testedMirrorSHA256": "c5d2a0dcabe58abbb1f7e626c72a7379be60db06c36ea48ad4e4b900455697ca"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/endpoints.go",
+      "sha256": "16aea8f5ce3db754e8e8cbb69c6ff78c9abfad09a8cdd2d10b81b451d37882f7",
+      "testedMirrorSHA256": "16aea8f5ce3db754e8e8cbb69c6ff78c9abfad09a8cdd2d10b81b451d37882f7"
+    },
+    {
+      "path": "services/api/internal/authprivacyhttp/posts_endpoints.go",
+      "sha256": "6bf9444938bedd6d032b32682ce57654ee51cdbc62dd64fb5088d880c7b277e2",
+      "testedMirrorSHA256": "6bf9444938bedd6d032b32682ce57654ee51cdbc62dd64fb5088d880c7b277e2"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/comment_snapshot_config_test.go",
+      "sha256": "5441d4367ab6f80949312ac6a8a07a7bf40afdf9b8644f5de8261edc3d6e21d0",
+      "testedMirrorSHA256": "5441d4367ab6f80949312ac6a8a07a7bf40afdf9b8644f5de8261edc3d6e21d0"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/config.go",
+      "sha256": "61d079ddcaf022a044bf7ebfd7d198087d102f0602d3a94c8ee7bc120b873055",
+      "testedMirrorSHA256": "61d079ddcaf022a044bf7ebfd7d198087d102f0602d3a94c8ee7bc120b873055"
+    },
+    {
+      "path": "services/api/internal/authprivacyruntime/server.go",
+      "sha256": "b93f1295bde0742adfe0102ee1c7c42242d9e22f52506df6fa44ef1c018cbb89",
+      "testedMirrorSHA256": "b93f1295bde0742adfe0102ee1c7c42242d9e22f52506df6fa44ef1c018cbb89"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/codec.go",
+      "sha256": "9f5e582d7788f11eaef861024372c15ff4222916ca5da822a8fc79e532b1ab40",
+      "testedMirrorSHA256": "9f5e582d7788f11eaef861024372c15ff4222916ca5da822a8fc79e532b1ab40"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/common.lua",
+      "sha256": "81314d453d337c93d5747eb760ec70348d5a4b767297ddc1eabded85d221309b",
+      "testedMirrorSHA256": "81314d453d337c93d5747eb760ec70348d5a4b767297ddc1eabded85d221309b"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/read.lua",
+      "sha256": "bc0b889eacda51a032296f89d8c13d32d70233b8e86c2138f7ddb29ab50b8f5e",
+      "testedMirrorSHA256": "bc0b889eacda51a032296f89d8c13d32d70233b8e86c2138f7ddb29ab50b8f5e"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/redis.go",
+      "sha256": "e368f1d9c83118ce7dade7d870680372c81e29076b9215836a8383e2ed425514",
+      "testedMirrorSHA256": "e368f1d9c83118ce7dade7d870680372c81e29076b9215836a8383e2ed425514"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/redis_test.go",
+      "sha256": "5c90172b86fdec2d7fdd42b9ce473e1bdd43fb58adc275472d7264ade73d9b37",
+      "testedMirrorSHA256": "5c90172b86fdec2d7fdd42b9ce473e1bdd43fb58adc275472d7264ade73d9b37"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/types.go",
+      "sha256": "4253187e965808a3ec13172f5fe88a6620604fe3a44453db7abed9d9f74b91e2",
+      "testedMirrorSHA256": "4253187e965808a3ec13172f5fe88a6620604fe3a44453db7abed9d9f74b91e2"
+    },
+    {
+      "path": "services/api/internal/commentsnapshot/write.lua",
+      "sha256": "ae240e1594d21f675d1d9de369ed161d5be2d42a41b9ca72b313432497f8e856",
+      "testedMirrorSHA256": "ae240e1594d21f675d1d9de369ed161d5be2d42a41b9ca72b313432497f8e856"
+    }
+  ],
+  "logHashes": {
+    "device-r2.log": "fdd4c267b9cd811d0b2061112efdcd470960b1a9bbb4c95f70284751c24d60d3",
+    "stage4-analyze-r1.log": "5d54d61dc2e67221fa2d2303e5deb7c9b5bdda6df2e226bd4b822cfcc9b074f2",
+    "stage4-analyze-r2.log": "1926912edcc9098303840c89ceefc094da7b1818f2251627a1e0ae20f44f56c3",
+    "stage4-android-build-r1.log": "280959f87a4602b50db7f8b9de3d0ffcd7d0a074d0337698692d6387b16eb5ce",
+    "stage4-android-build-r2.log": "3b64d39c43effff9ca48c1de1238dc622465de686e2b067a89fb495c971f4443",
+    "stage4-android-build-r3.log": "f6bf84e48ad9bb626ed282afab0aed899eef3b782782018d575173aabb91a795",
+    "stage4-backend-build-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stage4-backend-host-final.log": "1ba66bf7fa3030a91e504277270b388720ed369d2ce28b1593b3b2586cb5547d",
+    "stage4-backend-vet-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stage4-contracts-final.log": "ea8efeab05b2ec10a6a7c2cbf9d8e792f543014d2852ce08adadb7ba32d8c366",
+    "stage4-dart-redis-sql-r1.log": "d57a7a076918c33999a4844b1f9855b560ced5151f01f7d2ef569af13c716dd4",
+    "stage4-dart-redis-sql-r2.log": "3649040f0ff17f8d28217f1177eb6551415eeb62c74f2e4d61ea4a2507e7bb4d",
+    "stage4-final-analyze.log": "db99db87b191664c3b5f172b360090cb480f4d6a8f16af386f63ee907d85c704",
+    "stage4-final-bundle-r2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stage4-final-bundle.log": "7b9a35e884c026153a131a3dd5240115aab875b2ca158834be94b884654fb182",
+    "stage4-final-dart-live.log": "870c708623384ae8ce17e717a2f4ea7831a26ec23f4b9363e73c6f7745e09e61",
+    "stage4-final-full.log": "514267fe60ecbbf76ac1662b15644c11455c1e54391043008e0edc333a3fd4fb",
+    "stage4-final-probe-build.log": "6255a4d9eeea356fa092509fb53d6bd7c6b2b471dada2462c810615d6776ce66",
+    "stage4-focused-r3.log": "e26b0963cefccda7fe34cbe11e4d9bb6615fb3e744732f4806c500af49544236",
+    "stage4-focused-r4.log": "02edee27845aa911e06e0e4d9d46b0c87a204127f02677ef4eea20c2b07ccc18",
+    "stage4-focused-r5.log": "653bf6cc1f164ff69f7b9caa370688c027c70b79813e541b8817b61cc625435e",
+    "stage4-focused-r6.log": "ba2af3d5447f2bddf2bc8557b84d596ec3b2d32fa0b0cd1b0bb2abe047d71976",
+    "stage4-focused-r7.log": "800c28acaa175d250065316ec8848e4ad407175d322cc5ab1ed91ae77597b184",
+    "stage4-focused-r8.log": "be068ded4761b4065ac36ef9e65c4b6179efee02069e363e563aedda9bac5a23",
+    "stage4-focused-r9.log": "fd0ad5c775fbcc18aa2131fe8da85d534ca8fa6bce66c766971572f86c2ec751"
+  },
+  "windowsEvidenceRoot": "C:\\Users\\24237\\Documents\\ChatGPT\\Hnuhole\\comment-snapshot-redis-20261024\\stage-4-evidence",
+  "clientFinalMirror": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/client-final-source",
+  "linuxLogs": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/logs",
+  "deviceEvidence": {
+    "status": "PASS_SCOPED_NATIVE_WIDGETS",
+    "date": "2026-10-25",
+    "device": "RMX3366",
+    "serial": "7e0660f1",
+    "apiLevel": "34",
+    "package": "org.hnuhole.hnuhole_mobile.commentsnapshot",
+    "packageVersion": [
+      "versionCode=2026102501 minSdk=29 targetSdk=36",
+      "versionName=0.1.0-comment-snapshot"
+    ],
+    "apkSHA256": "237abb46c43781fbef777eead0e8b09b06614a5415393d5ca53144f4d0bef069",
+    "install": "PASS_RETRY_AFTER_USER_REQUEST_AND_NORMAL_CONTINUE_INSTALL_UI",
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "results": "device-results-r2.json",
+    "log": "device-r2.log",
+    "earlierFailure": "device-attempt.json",
+    "resultLocation": "Owned app code_cache/comment-snapshot-device-result.json",
+    "dailyPackageAfter": [
+      "versionCode=2026102427 minSdk=29 targetSdk=36",
+      "versionName=0.1.0-comment-detail"
+    ],
+    "cleanup": "Owned package stopped and owned temporary UI XML removed; installed isolated package retained; no daily data or system settings cleared",
+    "scope": "Production CommentPostPane UI, fixture-backed authority and page data; separate compiled Dart TLS/Redis/SQL proves actual transport/backend; no native vault, entire production module or 30-minute soak acceptance claimed"
+  },
+  "boundary": [
+    "3 historical DM live fixture skips not passed",
+    "Phone widgets use fixture pages/authority; actual TLS/Redis/SQL is a separate compiled Dart probe",
+    "No native encrypted-storage or whole-module device acceptance claimed",
+    "No stage5 two independent API command processes, capacity, P95, real30minute soak or production release",
+    "No remote CI this stage; workflow exists"
+  ],
+  "stage3Changes": [
+    "HTTP real SQL fixture extended with opt-in compiled Dart acceptance",
+    "snapshot CI adds actual Dart probe and client checks; client-only changes trigger it"
+  ],
+  "nextPhase": 5,
+  "nextPhaseStatus": "AWAITING_DISPATCH",
+  "additionalChecks": {
+    "backendHostBuildVet": "PASS_FINAL_STAGE4",
+    "completeAPIContracts": "PASS",
+    "previousStage3ProductFilesUnchangedExcept": [
+      ".github/workflows/comment-snapshot.yml",
+      "services/api/internal/authprivacyhttp/comment_snapshot_postgres_test.go"
+    ]
+  }
+}

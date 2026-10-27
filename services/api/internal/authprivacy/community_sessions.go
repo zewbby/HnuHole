@@ -411,12 +411,43 @@ func (c *Community) RevokeSession(ctx context.Context, secret [32]byte) error {
 	return err
 }
 
+// sessionResultsKnownEmpty is only a short, read-only scheduling hint. It must
+// include unexpired LIVE rows: only the final Gate may decide trusted expiry.
+// Failure means unknown and falls back to the original authorized operation.
+func (c *Community) sessionResultsKnownEmpty(ctx context.Context) bool {
+	budget := 50 * time.Millisecond
+	if deadline, ok := ctx.Deadline(); ok {
+		budget = min(budget, time.Until(deadline)/10)
+	}
+	if budget < time.Millisecond || ctx.Err() != nil {
+		return false
+	}
+	probe, cancel := context.WithTimeout(ctx, budget)
+	defer cancel()
+	var exists bool
+	err := c.pool.QueryRow(probe, `SELECT EXISTS (
+		SELECT 1 FROM c_auth.request_results
+		WHERE operation='SESSION_CREATE' AND state='LIVE'
+	)`).Scan(&exists)
+	return err == nil && probe.Err() == nil && !exists
+}
+
 // CleanupSessionResults removes the request HMAC and all other LIVE metadata
 // after the retry window, retaining the permanent operation/key tombstone.
 // It is a bounded worker operation and cannot issue or renew a session.
 func (c *Community) CleanupSessionResults(ctx context.Context, limit int) (int64, error) {
 	if limit < 1 || limit > 1000 {
 		return 0, ErrIntentInvalid
+	}
+	if ctx.Err() != nil {
+		return 0, ErrAuthorizationUnavailable
+	}
+	empty := c.sessionResultsKnownEmpty(ctx)
+	if ctx.Err() != nil {
+		return 0, ErrAuthorizationUnavailable
+	}
+	if empty {
+		return 0, nil
 	}
 	decision, err := c.gate.Snapshot(ctx)
 	if err != nil {

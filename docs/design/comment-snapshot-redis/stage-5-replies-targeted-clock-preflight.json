@@ -1,0 +1,79 @@
+{
+  "result": "ENVIRONMENT_UNSTABLE",
+  "durationRawSeconds": 300,
+  "maximumAllowedDriftSeconds": 0.2,
+  "systemChanges": false,
+  "rows": [
+    {
+      "rawElapsed": 6.066000000082283e-06,
+      "monoElapsed": 6.0729999997732875e-06,
+      "utcElapsed": 5.4836273193359375e-06,
+      "utcRawDriftSeconds": -5.823726807463458e-07,
+      "monoRawDriftSeconds": 6.999999691004177e-09
+    },
+    {
+      "rawElapsed": 30.000280059,
+      "monoElapsed": 30.000302153,
+      "utcElapsed": 30.00030279159546,
+      "utcRawDriftSeconds": 2.2732595457597427e-05,
+      "monoRawDriftSeconds": 2.2093999998418212e-05
+    },
+    {
+      "rawElapsed": 60.00024088399999,
+      "monoElapsed": 60.000213079000005,
+      "utcElapsed": 60.00021290779114,
+      "utcRawDriftSeconds": -2.797620885530705e-05,
+      "monoRawDriftSeconds": -2.780499998777941e-05
+    },
+    {
+      "rawElapsed": 90.000235521,
+      "monoElapsed": 90.000198989,
+      "utcElapsed": 90.00019884109497,
+      "utcRawDriftSeconds": -3.667990502265184e-05,
+      "monoRawDriftSeconds": -3.653199999575918e-05
+    },
+    {
+      "rawElapsed": 120.00014240099999,
+      "monoElapsed": 120.00010111099999,
+      "utcElapsed": 120.00010108947754,
+      "utcRawDriftSeconds": -4.131152245179237e-05,
+      "monoRawDriftSeconds": -4.128999999863936e-05
+    },
+    {
+      "rawElapsed": 150.000300399,
+      "monoElapsed": 150.00028807200002,
+      "utcElapsed": 150.00028824806213,
+      "utcRawDriftSeconds": -1.2150937862998035e-05,
+      "monoRawDriftSeconds": -1.2326999978995445e-05
+    },
+    {
+      "rawElapsed": 180.000177187,
+      "monoElapsed": 180.00011706200002,
+      "utcElapsed": 181.29329109191895,
+      "utcRawDriftSeconds": 1.293113904918954,
+      "monoRawDriftSeconds": -6.012499997609666e-05
+    }
+  ],
+  "maximumObservedDriftSeconds": 1.293113904918954,
+  "hostClockInitial": {
+    "utcMs": 1792982659062,
+    "ticks": 26477837700,
+    "frequency": 10000000,
+    "rawBefore": 6.388210539,
+    "rawAfter": 7.904856378
+  },
+  "hostClockFinal": {
+    "utcMs": 1792982839372,
+    "ticks": 28280915206,
+    "frequency": 10000000,
+    "rawBefore": 187.907815794,
+    "rawAfter": 188.141053508
+  },
+  "hostClockSummary": {
+    "elapsedSeconds": 180.3077506,
+    "rawElapsedLowerBound": 180.00295941599998,
+    "rawElapsedUpperBound": 181.752842969,
+    "utcCounterDriftSeconds": 0.002249400000010837,
+    "stable": true
+  }
+}

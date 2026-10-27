@@ -1,0 +1,89 @@
+{
+  "scope": "read-only clocks; no clock/config changes",
+  "rows": [
+    {
+      "linuxMonoBefore": 93925.358426447,
+      "linuxMonoAfter": 93926.491627387,
+      "linuxUtcBefore": 1792919358.6271265,
+      "linuxUtcAfter": 1792919359.7603283,
+      "linuxRaw": 95362.802555543,
+      "host": {
+        "utcMs": 1792919358011,
+        "ticks": 1039435598999,
+        "frequency": 10000000
+      }
+    },
+    {
+      "linuxMonoBefore": 93931.491716004,
+      "linuxMonoAfter": 93931.684478227,
+      "linuxUtcBefore": 1792919364.7604172,
+      "linuxUtcAfter": 1792919364.9531782,
+      "linuxRaw": 95369.493421954,
+      "host": {
+        "utcMs": 1792919363756,
+        "ticks": 1039493001427,
+        "frequency": 10000000
+      }
+    },
+    {
+      "linuxMonoBefore": 93936.68461179,
+      "linuxMonoAfter": 93936.885642894,
+      "linuxUtcBefore": 1792919369.9533124,
+      "linuxUtcAfter": 1792919370.154343,
+      "linuxRaw": 95375.158416853,
+      "host": {
+        "utcMs": 1792919369430,
+        "ticks": 1039549745291,
+        "frequency": 10000000
+      }
+    },
+    {
+      "linuxMonoBefore": 93941.885794372,
+      "linuxMonoAfter": 93942.110281686,
+      "linuxUtcBefore": 1792919375.1544948,
+      "linuxUtcAfter": 1792919375.3789816,
+      "linuxRaw": 95380.832417299,
+      "host": {
+        "utcMs": 1792919375120,
+        "ticks": 1039606651637,
+        "frequency": 10000000
+      }
+    },
+    {
+      "linuxMonoBefore": 93947.110440069,
+      "linuxMonoAfter": 93947.344088984,
+      "linuxUtcBefore": 1792919380.3791413,
+      "linuxUtcAfter": 1792919380.612789,
+      "linuxRaw": 95386.248798496,
+      "host": {
+        "utcMs": 1792919380526,
+        "ticks": 1039660710643,
+        "frequency": 10000000
+      }
+    },
+    {
+      "linuxMonoBefore": 93952.344234943,
+      "linuxMonoAfter": 93952.558199862,
+      "linuxUtcBefore": 1792919385.6129358,
+      "linuxUtcAfter": 1792919385.826901,
+      "linuxRaw": 95391.482595143,
+      "host": {
+        "utcMs": 1792919385749,
+        "ticks": 1039712945884,
+        "frequency": 10000000
+      }
+    },
+    {
+      "linuxMonoBefore": 93957.558353393,
+      "linuxMonoAfter": 93957.771002672,
+      "linuxUtcBefore": 1792919390.827054,
+      "linuxUtcAfter": 1792919391.039703,
+      "linuxRaw": 95396.696713586,
+      "host": {
+        "utcMs": 1792919390960,
+        "ticks": 1039765057894,
+        "frequency": 10000000
+      }
+    }
+  ]
+}

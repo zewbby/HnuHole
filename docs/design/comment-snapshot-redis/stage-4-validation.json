@@ -1,0 +1,36 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 4,
+  "status": "PASS_SCOPED_CLIENT_REAL_TRANSPORT_DEVICE_AND_STATIC",
+  "verifiedAtUTC": "2026-10-25T03:10:20.309237+00:00",
+  "integrationBase": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+  "productManifestSHA256": "f219a3f93aa3605d7f40b1e6018150cbadbf6629e54e8d79475e6105b1a542bd",
+  "checks": {
+    "productFileHashes": 39,
+    "clientMirrorHashes": 13,
+    "backendInfraPackagesMirror": "PASS",
+    "stage3DeltaPreservedExceptAllowedFixtureAndCI": [
+      ".github/workflows/comment-snapshot.yml",
+      "services/api/internal/authprivacyhttp/comment_snapshot_postgres_test.go"
+    ],
+    "previousLedgerEntriesDeepEqual": true,
+    "fullClient": "964_PASS_0_FAIL_3_EXPLICIT_SKIP",
+    "analyze": "0_ISSUES",
+    "realDartTLSRedisSQL": "LIVE5_DOWN2_PASS",
+    "nativeNineScenarioResults": "ALL_SUCCESS",
+    "deviceLogMatchesResults": true,
+    "apkHash": "PASS",
+    "deviceLeaseReleased": true,
+    "workflow": "PARSED_AND_REQUIRED_PROBE_TEST_COMMANDS_PRESENT_NOT_REMOTE_CI",
+    "taskJSON": 8,
+    "markdownMissingLinks": 0,
+    "diffCheck": "PASS"
+  },
+  "boundary": [
+    "3 historical DM live fixture skips not passed",
+    "Phone widgets use fixture pages/authority; actual TLS/Redis/SQL is a separate compiled Dart probe",
+    "No native encrypted-storage or whole-module device acceptance claimed",
+    "No stage5 two independent API command processes, capacity, P95, real30minute soak or production release",
+    "No remote CI this stage; workflow exists"
+  ]
+}

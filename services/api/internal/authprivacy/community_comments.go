@@ -10,14 +10,31 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/comments"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/commentsnapshot"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/postmedia"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/posts"
 )
 
-type CommentConfig struct{ KeyKey, FingerprintKey [32]byte }
+type CommentConfig struct {
+	KeyKey, FingerprintKey [32]byte
+	Snapshots              *commentsnapshot.Config
+	SnapshotStore          *commentsnapshot.Store
+	ObserveRead            func(CommentReadTiming)
+}
+
+// CommentReadTiming contains no account, resource, bearer or content fields.
+// Observation is optional and is used separately from performance acceptance.
+type CommentReadTiming struct {
+	Path, Backend                                                      string
+	Transaction, StoreInTransaction, SQLGateProjection, Publish, Total time.Duration
+	Succeeded                                                          bool
+}
 type commentServices struct {
 	codec                      *comments.CommandCodec
 	commandTag, fingerprintTag [32]byte
+	snapshotConfig             *commentsnapshot.Config
+	snapshotStore              *commentsnapshot.Store
+	observeRead                func(CommentReadTiming)
 }
 
 type CommentReceipt struct {
@@ -70,6 +87,20 @@ func (c *Community) WithComments(ctx context.Context, cfg CommentConfig) (*Commu
 	}
 	clone := *c
 	clone.comments = &commentServices{codec: codec, commandTag: postKeyCommitment("HNUHOLE/COMMENT-KEY-COMMITMENT/V1", cfg.KeyKey), fingerprintTag: postKeyCommitment("HNUHOLE/COMMENT-FINGERPRINT-COMMITMENT/V1", cfg.FingerprintKey)}
+	clone.comments.observeRead = cfg.ObserveRead
+	if cfg.Snapshots != nil {
+		settings := *cfg.Snapshots
+		if e = settings.Validate(); e != nil {
+			return nil, e
+		}
+		if settings.ReadRedis && (cfg.SnapshotStore == nil || cfg.SnapshotStore.Config() != settings || !cfg.SnapshotStore.MatchesMAC(codec.IntentFingerprint)) {
+			return nil, commentsnapshot.ErrIntegrity
+		}
+		clone.comments.snapshotConfig = &settings
+		clone.comments.snapshotStore = cfg.SnapshotStore
+	} else if cfg.SnapshotStore != nil {
+		return nil, commentsnapshot.ErrIntegrity
+	}
 	if e = clone.CheckCommentSchema(ctx); e != nil {
 		return nil, e
 	}

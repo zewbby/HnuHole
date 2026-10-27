@@ -1,0 +1,184 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "date": "2026-10-26",
+  "updatedAtUTC": "2026-10-26T09:23:00.894502+00:00",
+  "status": "REVIEW_COMPLETE_NO_PRODUCT_FIX_SELECTED_ONE_FALSIFIABLE_DIAGNOSTIC_DEFINED",
+  "phase5Complete": false,
+  "phase6Started": false,
+  "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "sourceFileCount": 158,
+  "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+  "inputs": {
+    "steadyRaw": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-steady-expanded-raw.json",
+      "sha256": "66cc5180c827a0535e7c54a4fd50dbc7e4e9995913638410cf0fbfc8b0554793"
+    },
+    "executionReport": {
+      "path": "stage-5-performance-gaps-execution.md",
+      "sha256": "952d60e2e658b5d506b2ca5ae2c1b8880e2a17cd139fd52c22ae538cf3d988f8"
+    }
+  },
+  "offline": {
+    "postgres": {
+      "count": 300,
+      "calls": {
+        "comments.comment_projection": {
+          "50": 300
+        },
+        "subject.gate_abort": {
+          "1": 300
+        },
+        "comments.gate_abort": {
+          "1": 300
+        },
+        "comments.redis_prepare": {
+          "0": 300
+        },
+        "comments.redis_publish": {
+          "0": 300
+        },
+        "subject.gate_row_lock": {
+          "2": 300
+        },
+        "comments.gate_row_lock": {
+          "2": 300
+        }
+      },
+      "meansMs": {
+        "comments.comment_projection": 30.715931666666666,
+        "subject.gate_abort": 3.3802316666666665,
+        "comments.gate_abort": 4.631699333333334,
+        "comments.redis_prepare": 0.0,
+        "comments.redis_publish": 0.0,
+        "subject.gate_row_lock": 2.224633,
+        "comments.gate_row_lock": 2.3112866666666667
+      },
+      "arithmeticOnlyP95Ms": {
+        "original": 140.6527,
+        "subtractBothAbort": 108.314,
+        "subtractRedisCreate": 140.6527
+      }
+    },
+    "redis": {
+      "count": 300,
+      "calls": {
+        "comments.comment_projection": {
+          "50": 300
+        },
+        "subject.gate_abort": {
+          "1": 300
+        },
+        "comments.gate_abort": {
+          "1": 300
+        },
+        "comments.redis_prepare": {
+          "1": 300
+        },
+        "comments.redis_publish": {
+          "1": 300
+        },
+        "subject.gate_row_lock": {
+          "2": 300
+        },
+        "comments.gate_row_lock": {
+          "2": 300
+        }
+      },
+      "meansMs": {
+        "comments.comment_projection": 30.73668,
+        "subject.gate_abort": 3.900924333333333,
+        "comments.gate_abort": 5.190185,
+        "comments.redis_prepare": 2.475174,
+        "comments.redis_publish": 2.4085723333333333,
+        "subject.gate_row_lock": 2.959827333333333,
+        "comments.gate_row_lock": 3.4266466666666666
+      },
+      "arithmeticOnlyP95Ms": {
+        "original": 151.3024,
+        "subtractBothAbort": 125.395,
+        "subtractRedisCreate": 145.95589999999999
+      }
+    }
+  },
+  "pairedStageDifferences": {
+    "comments.comment_projection": {
+      "meanMs": 0.020748333333333438,
+      "medianMs": 0.21015000000000228
+    },
+    "subject.gate_abort": {
+      "meanMs": 0.5206926666666667,
+      "medianMs": 0.0003500000000000725
+    },
+    "comments.gate_abort": {
+      "meanMs": 0.5584856666666667,
+      "medianMs": 0.012750000000000039
+    },
+    "comments.redis_prepare": {
+      "meanMs": 2.475174,
+      "medianMs": 2.41995
+    },
+    "comments.redis_publish": {
+      "meanMs": 2.4085723333333333,
+      "medianMs": 2.3709499999999997
+    },
+    "subject.gate_row_lock": {
+      "meanMs": 0.7351943333333333,
+      "medianMs": 0.004200000000000009
+    },
+    "comments.gate_row_lock": {
+      "meanMs": 1.1153600000000001,
+      "medianMs": -0.005799999999999986
+    }
+  },
+  "commandWindow": {
+    "calls": 739.0,
+    "usec": 1591247.0,
+    "usecPerCall": 2153.2435723951285,
+    "limitation": "Mixed measured/warmup/cleanup; not operation-specific."
+  },
+  "arithmeticLimitation": "Subtracted spans are NOT causal predictions, new performance results, or acceptance evidence. Queueing/tail membership would change.",
+  "decision": {
+    "productFixSelected": false,
+    "reason": "No evidence establishes sufficient safe savings for sole steady expanded P95 blocker.",
+    "publicAuthorizationChangeNecessary": false,
+    "nextModel": "gpt-6.1-sol",
+    "nextEffort": "high",
+    "nextAction": "Implement observational diagnostic P5-D1 in disposable D-drive source copy, then execute exactly one fixed 60-pair steady expanded diagnostic; no acceptance rerun.",
+    "hypothesis": "Full ledger validation dominates prepare/publish script execution: at least 80% of measured requests have combined scan/combined script time >= 70%.",
+    "hypothesisIsAcceptanceThreshold": false,
+    "productP95CriterionPercent": 5,
+    "diagnosticPairs": 60,
+    "diagnosticMeasuredRequests": 120,
+    "diagnosticWarmupRequests": 120,
+    "diagnosticStatus": "NOT_RUN",
+    "allOtherPerformancePaths": "NOT_RUN_NO_NEW_REASON_TO_REOPEN"
+  },
+  "newHTTPRequests": 0,
+  "runtimeTests": "NOT_RUN_STATIC_REVIEW_ONLY",
+  "productCodeChanged": false,
+  "systemChanged": false,
+  "storageMountedThisReview": false,
+  "previousRestoration": "Retained verified prior restoration; not rerun this review.",
+  "commitPushMergeDeploy": false,
+  "otherLedgerEntries": {
+    "count": 146,
+    "beforeSHA256": "e88aa95eb9543c25b320882b84b7d1059327b271e05f3f6dcfb9bc7689991026",
+    "requiredAfterSHA256": "e88aa95eb9543c25b320882b84b7d1059327b271e05f3f6dcfb9bc7689991026",
+    "afterSHA256": "e88aa95eb9543c25b320882b84b7d1059327b271e05f3f6dcfb9bc7689991026",
+    "deepEqual": true
+  },
+  "report": "E:\\Hnuhole-env\\source\\HnuHole-comment-snapshot-redis\\docs\\design\\comment-snapshot-redis\\stage-5-steady-expanded-fix-review.md",
+  "reportSHA256": "6d025488747c1f96546869b99533b8e48ab1eea7d98824527271066baf25fd73",
+  "completionNotification": {
+    "status": "SENT_WITH_EXPLICIT_CURRENT_USER_APPROVAL",
+    "threadId": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "sentAtUTC": "2026-10-26T09:33:11.783978+00:00"
+  },
+  "staticVerification": {
+    "gitDiffCheck": "PASS",
+    "localLinks": "PASS_7",
+    "sourceDigestUnchanged": "PASS",
+    "reportAndDCopyHashEqual": "PASS",
+    "productRuntimeTests": "NOT_RUN"
+  }
+}

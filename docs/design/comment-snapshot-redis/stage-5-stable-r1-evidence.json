@@ -1,0 +1,238 @@
+{
+  "result": "FAIL_SINGLE_COHORT_P95",
+  "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+  "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+  "root": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1",
+  "checks": {
+    "performance-compatibility": "FAIL",
+    "performance-steady": "FAIL",
+    "cross-process-and-restart": "PASS",
+    "exercise": "PASS",
+    "faults": "PASS",
+    "admission": "PASS",
+    "growth": "PASS",
+    "rollback": "PASS",
+    "compatibility-real-time": "PASS",
+    "redis-real-time": "PASS",
+    "drain": "PASS"
+  },
+  "performance": {
+    "compatibility": {
+      "initial": {
+        "result": "PASS",
+        "regressionPercent": -0.4867186366003806,
+        "pgP95Ms": 585.595,
+        "redisP95Ms": 582.7448,
+        "samplesPerBackend": 200,
+        "clockVariationSeconds": {
+          "utcRawSeconds": 5.9604644775390625e-06,
+          "monoRawSeconds": 2.3800093913450837e-06
+        },
+        "occupancyAfter": {
+          "redisEntries": 1286,
+          "postgresSnapshots": 261
+        }
+      },
+      "continuation": {
+        "result": "FAIL",
+        "regressionPercent": 5.483315090582908,
+        "pgP95Ms": 537.6565,
+        "redisP95Ms": 567.1379,
+        "samplesPerBackend": 1000,
+        "clockVariationSeconds": {
+          "utcRawSeconds": 1.3113021850585938e-05,
+          "monoRawSeconds": 1.2617994798347354e-05
+        },
+        "occupancyAfter": {
+          "redisEntries": 1286,
+          "postgresSnapshots": 261
+        }
+      },
+      "replyPreview": {
+        "result": "PASS",
+        "regressionPercent": -8.025125388864197,
+        "pgP95Ms": 504.032,
+        "redisP95Ms": 463.5828,
+        "samplesPerBackend": 300,
+        "clockVariationSeconds": {
+          "utcRawSeconds": 4.76837158203125e-06,
+          "monoRawSeconds": 4.462010110728443e-06
+        },
+        "occupancyAfter": {
+          "redisEntries": 1646,
+          "postgresSnapshots": 621
+        }
+      },
+      "replyExpanded": {
+        "result": "PASS",
+        "regressionPercent": 0.9153591027982966,
+        "pgP95Ms": 504.6981,
+        "redisP95Ms": 509.3179,
+        "samplesPerBackend": 300,
+        "clockVariationSeconds": {
+          "utcRawSeconds": 0.00011324882507324219,
+          "monoRawSeconds": 2.696993760764599e-06
+        },
+        "occupancyAfter": {
+          "redisEntries": 2006,
+          "postgresSnapshots": 981
+        }
+      }
+    },
+    "steady": {
+      "initial": {
+        "result": "PASS",
+        "regressionPercent": 3.9513470626740377,
+        "pgP95Ms": 561.8818,
+        "redisP95Ms": 584.0837,
+        "samplesPerBackend": 200,
+        "clockVariationSeconds": {
+          "utcRawSeconds": 5.4836273193359375e-06,
+          "monoRawSeconds": 4.1000021155923605e-06
+        },
+        "occupancyAfter": {
+          "redisEntries": 1286,
+          "postgresSnapshots": 1286
+        }
+      },
+      "continuation": {
+        "result": "PASS",
+        "regressionPercent": -0.3814236940239746,
+        "pgP95Ms": 579.1722,
+        "redisP95Ms": 576.9631,
+        "samplesPerBackend": 1000,
+        "clockVariationSeconds": {
+          "utcRawSeconds": 2.2411346435546875e-05,
+          "monoRawSeconds": 1.9834013073705137e-05
+        },
+        "occupancyAfter": {
+          "redisEntries": 1286,
+          "postgresSnapshots": 1286
+        }
+      },
+      "replyPreview": {
+        "result": "PASS",
+        "regressionPercent": 2.3807300367213458,
+        "pgP95Ms": 537.562,
+        "redisP95Ms": 550.3599,
+        "samplesPerBackend": 300,
+        "clockVariationSeconds": {
+          "utcRawSeconds": 2.4557113647460938e-05,
+          "monoRawSeconds": 2.3786997189745307e-05
+        },
+        "occupancyAfter": {
+          "redisEntries": 1646,
+          "postgresSnapshots": 1646
+        }
+      },
+      "replyExpanded": {
+        "result": "FAIL",
+        "regressionPercent": 9.977433411090475,
+        "pgP95Ms": 583.7834,
+        "redisP95Ms": 642.03,
+        "samplesPerBackend": 300,
+        "clockVariationSeconds": {
+          "utcRawSeconds": 1.3589859008789062e-05,
+          "monoRawSeconds": 8.72999953571707e-06
+        },
+        "occupancyAfter": {
+          "redisEntries": 2006,
+          "postgresSnapshots": 2006
+        }
+      }
+    }
+  },
+  "components": {
+    "build": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/build-stable-r1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "vet": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/vet-stable-r1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "host": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/host-stable-r1.log",
+      "sha256": "8c5c13ded13b5160becba19c0fdf1aaa27b6fdbff070a015301474e239c0fb51",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "snapshot-real-server": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/snapshot-final-native-stable-r1.log",
+      "sha256": "811e09be318b7cbbf025b7d964f40a69aaae6e98c774523faa374eb8d5ce6675",
+      "topLevelPass": 31,
+      "topLevelSkip": 2,
+      "realRedisTests": 13,
+      "corruptPeerSubcases": 16
+    },
+    "shared-rate-real": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/shared-rate-stable-r1.log",
+      "sha256": "719750fd1ee947e6683e90c52cc54ca5fcfccfccf8ca5e769b3d20781f6a404c",
+      "topLevelPass": 39,
+      "topLevelSkip": 1
+    },
+    "production-dart-transport": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/dart-live-stable-r1.log",
+      "sha256": "e0e6888fe96f81373bc62de2b04ac069bcb79b762746f1c3148f65b589a88079",
+      "topLevelPass": 1,
+      "topLevelSkip": 0
+    }
+  },
+  "rawCampaignSHA256": "db34a03618e6468fc1cdd8b42964de5f2b1dc473532ebbb45d78c28eae4c0d19",
+  "stage5Complete": false,
+  "phase6": "NOT_STARTED",
+  "bulkDelayedCleanup": {
+    "result": "PASS",
+    "syntheticAbortingEntries": 6000,
+    "injectedDeleteDelayMilliseconds": 88,
+    "recoveryMilliseconds": 1316,
+    "scope": "Synthetic ABORTING ledger fixture, not 6000 published snapshots; real stable clock elapsed; full publication and SQL properties covered separately"
+  },
+  "redisRealTime": {
+    "result": "PASS",
+    "wallSeconds": 1805.736957400004,
+    "maximumClockDriftSeconds": 6.95300695952028e-06,
+    "expiredCode": "CURSOR_INVALID",
+    "explicitRefreshSucceeded": true,
+    "hostClockSummary": {
+      "elapsedSeconds": 1806.4059098,
+      "rawElapsedLowerBound": 1806.137958899999,
+      "rawElapsedUpperBound": 1808.678027300004,
+      "utcCounterDriftSeconds": 9.019999993142847e-05,
+      "stable": true
+    },
+    "fixedTTLSeconds": 1800,
+    "successfulReads": 59
+  },
+  "postgresRealTime": {
+    "result": "PASS",
+    "elapsedClock": "CLOCK_MONOTONIC_RAW",
+    "maximumClockDriftSeconds": 9.409995982423425e-06,
+    "elapsedAfterLastPGCreatorStoppedSeconds": 1807.9604417999944,
+    "hostClockSummary": {
+      "elapsedSeconds": 1801.79953,
+      "rawElapsedLowerBound": 1801.575897799994,
+      "rawElapsedUpperBound": 1802.0291332000052,
+      "utcCounterDriftSeconds": 0.00046999999995023245,
+      "stable": true
+    },
+    "pgCursorExpiresWithoutRenewal": true,
+    "pgV1AndV2ReadableThroughoutCompatibilityInterval": true,
+    "noPostgresSnapshotCreationDuringTransition": true,
+    "oldTableWithdrawnAfterActualThirtyMinutes": true,
+    "normalRedisReadsQuotaRepliesAndLocateWithRenamedOldTable": true,
+    "explicitPGSwitchbackKeepsRedisCursors": true,
+    "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+    "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846"
+  }
+}

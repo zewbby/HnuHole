@@ -1,0 +1,41 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 2,
+  "status": "PASS_DESIGN_MODEL_AND_STATIC_ONLY",
+  "verifiedAtUTC": "2026-10-24T13:07:57.103114+00:00",
+  "baseline": "8ed8f2870b1724de2837ea40a6e3764c008780f7",
+  "modelAssignment": "gpt-6-astra / xhigh",
+  "checks": {
+    "crashCutsAndDeleteBeforeRelease": {
+      "status": "PASS",
+      "cases": 7
+    },
+    "twoCreatorsInterleavingsWithHardQuotaAndBytes": {
+      "status": "PASS",
+      "schedules": 924
+    },
+    "sameAttemptNoDoubleReserveAndPublishAfterSQLOnly": "PASS",
+    "abortPublishRaceWithAbortingFence": {
+      "status": "PASS",
+      "orders": 2
+    },
+    "negativeControlUnsafeReleaseDetected": "PASS",
+    "missingLedgerCannotResetLiveBudget": "PASS",
+    "cursorLayoutPayloadAndTenPageArithmetic": {
+      "status": "PASS",
+      "v2Bytes": 78,
+      "v2Base64Length": 104,
+      "tenPageSnapshots": 501,
+      "provisionalAccountLimit": 1024
+    },
+    "noProductChangesOrStaging": "PASS",
+    "utf8WhitespaceAndLinks": "PASS"
+  },
+  "limitations": [
+    "Abstract sequential fault cuts and two-creator interleavings only; not a Redis/SQL implementation proof",
+    "No real Redis/SQL, performance, device or product CI executed",
+    "Resource numbers are provisional and require phase5 measurements",
+    "Shared-rate formal integration must be checked before phase3"
+  ],
+  "nextPhase": "Await stage3 dispatch; do not implement in phase2"
+}

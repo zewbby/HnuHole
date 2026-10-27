@@ -1,0 +1,89 @@
+{
+  "scriptRoot": "/mnt/c/Users/24237/Documents/ChatGPT/Hnuhole/comment-snapshot-redis-20261024",
+  "scripts": {
+    "stage5-root-cause-offline.py": "2334c5e5f7f8c07a1fe07e05d3ca51e0b9252001f82ddbc963d7a577a12057c7",
+    "stage5-prepare-root-diag.py": "7b4d08ff59c40af54b3a7112331347a5139200606dd50d1e31cb083e72f3fe8d",
+    "stage5-root-diag-abort-span.py": "2922252a156344eadeb8be364e00bdb7e652f20a167fd97ebf2ea76cd1a81af5",
+    "stage5-root-diag-driver.py": "faeaeea9649465f4863d6b3a1fd2b9a8e0ece509188a0b82c9111dc02a81751d",
+    "stage5-root-diag-run.sh": "02b71a03e55ba1bd97cbed1eb9ca367b199a1e2d0879e0cf15c5b0090786381d",
+    "stage5-root-diag-analyze.py": "27f5228a88d4b38c32212862c9e1725068ce6f062ddedd361e022776060fef3c",
+    "stage5-prepare-root-diag2.py": "accfe5af268d8a46c9022fc0868f071c06c67138264cc9c95e4ff61f26c4db04",
+    "stage5-root-diag2-driver.py": "8788656fe86465155313bd4fc5fb07ad7102019a441dcee1339c1fb6914250aa",
+    "stage5-root-diag2-run.sh": "5bc923bf88cbaa9a0004b347c27fee8e75d6d0c57b15ebb729fc6bd68a02b071",
+    "stage5-root-diag2-analyze.py": "3850ed9e5c4bcd5d76784402bce5f924382acb99917fc263625fa0cdbb355eba",
+    "stage5-transport-static-inspect.py": "a607c4df452f7fe1c365d1f88792fa73cedf91f852d08fc74e9537bfee9011a1",
+    "stage5-root-cause-final-audit.py": "91083429fe910dc9126cee38c343be1af8bf969adeafc778bca617136bdae792"
+  },
+  "diagnosticSourcePatches": {
+    "result": "PASS",
+    "atUTC": "2026-10-25T16:56:06.326701+00:00",
+    "sourceDigestUnchanged": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+    "clockSource": "tsc",
+    "timesyncdActive": "active",
+    "timesyncdEnabled": "enabled",
+    "ownedProcessesRemaining": [],
+    "diagnosticSystemSettingsChanges": false,
+    "productCodeChangedDuringDiagnosis": false,
+    "diagnostic1ModifiedFiles": [
+      {
+        "path": "services/api/internal/authprivacy/community_comment_snapshots.go",
+        "sha256": "18f79de129994fb8fd6235c88e9d9d068a7e122374577bffe2ac64fdce62cfe2"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_read.go",
+        "sha256": "d4db6db9a726a8297902a01976b90578f269be52d1d221f200494cecd53c1cf6"
+      },
+      {
+        "path": "services/api/internal/authprivacy/root_cause_diagnostic.go",
+        "sha256": "fe916b2baad46611473c8137f547fe2c66fb3dd5787c890dde67c127d57291f4"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts.go",
+        "sha256": "10ad528e162f466e614313d392d4ef0c0a50febbed385e52122972138dc30341"
+      },
+      {
+        "path": "services/api/internal/authprivacy/authorization_gate.go",
+        "sha256": "40ecd843a82776aaad9c2ccc50323a64084f242d3c1af54871e7d6a42fc85740"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/server.go",
+        "sha256": "8d93254e453d443fbcec9548558ed9ee35bc2d49305729df868d8c8915eee5e6"
+      }
+    ],
+    "diagnostic2ModifiedFiles": [
+      {
+        "path": "services/api/internal/authprivacy/community_comment_snapshots.go",
+        "sha256": "18f79de129994fb8fd6235c88e9d9d068a7e122374577bffe2ac64fdce62cfe2"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_read.go",
+        "sha256": "d4db6db9a726a8297902a01976b90578f269be52d1d221f200494cecd53c1cf6"
+      },
+      {
+        "path": "services/api/internal/authprivacy/root_cause_diagnostic.go",
+        "sha256": "fe916b2baad46611473c8137f547fe2c66fb3dd5787c890dde67c127d57291f4"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts.go",
+        "sha256": "10ad528e162f466e614313d392d4ef0c0a50febbed385e52122972138dc30341"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_identities.go",
+        "sha256": "413f8c547b7fd25658c381c3243488f0f60285c6a7a28e311ec6cfc520700dc3"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_rate_subject.go",
+        "sha256": "21a1699055be9434c55c070399e79fbb51136c00b891c52e672b40bb963c9ee1"
+      },
+      {
+        "path": "services/api/internal/authprivacy/authorization_gate.go",
+        "sha256": "40ecd843a82776aaad9c2ccc50323a64084f242d3c1af54871e7d6a42fc85740"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/server.go",
+        "sha256": "8d93254e453d443fbcec9548558ed9ee35bc2d49305729df868d8c8915eee5e6"
+      }
+    ]
+  },
+  "note": "Private fixture keys/data/logs stay outside repository; these scripts remain on disk. No product diagnostic code installed."
+}

@@ -1,0 +1,1742 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "date": "2026-10-26",
+  "updatedAtUTC": "2026-10-26T04:26:22.577131+00:00",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "high",
+  "status": "COMPLETE_TWO_FIXED_CASES_COMPAT_PASS_STEADY_EXPANDED_P95_FAIL",
+  "executionScopeComplete": true,
+  "phase5Complete": false,
+  "phase6Started": false,
+  "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+  "newMeasuredRequests": 2600,
+  "measuredHTTPErrorCount": 0,
+  "uniqueMeasuredRequestIds": 2600,
+  "cases": {
+    "compat-continuation": {
+      "result": "PASS",
+      "returncode": 0,
+      "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/d-output-native/performance-gaps-r1/compat-continuation/process-20261026T040647-3b4670/normalized-performance.json",
+      "rawSHA256": "ffc1e9518f0c38b902e2024e2d466b21d69764e8281f6504d092d2245d62749e",
+      "stats": {
+        "continuation": {
+          "postgres": {
+            "samples": 1000,
+            "p50Ms": 98.8939,
+            "p95Ms": 136.0628,
+            "p99Ms": 168.5313,
+            "meanMs": 105.7973968
+          },
+          "redis": {
+            "samples": 1000,
+            "p50Ms": 99.3569,
+            "p95Ms": 136.1475,
+            "p99Ms": 159.584,
+            "meanMs": 105.3501788
+          },
+          "p95RegressionPercent": 0.06225066660394685,
+          "p95Criterion": "PASS",
+          "clockVariationSeconds": {
+            "utcRawSeconds": 2.6226043701171875e-05,
+            "monoRawSeconds": 1.9782999970630044e-05
+          },
+          "environmentResult": "PASS",
+          "result": "PASS",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_evalsha": {
+                "calls": 2062.0,
+                "usec": 1878895.0,
+                "usec_per_call": 911.2,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 859.0,
+                "usec_per_call": 429.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            },
+            "after": {
+              "cmdstat_evalsha": {
+                "calls": 3236.0,
+                "usec": 2148953.0,
+                "usec_per_call": 664.08,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              },
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 859.0,
+                "usec_per_call": 429.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1025,
+            "postgresSnapshots": 1
+          },
+          "liveOccupancyBefore": {
+            "liveCount": 1,
+            "unexpiredCount": 1,
+            "mac32Count": 1,
+            "sessionCreatedCount": 1
+          },
+          "liveOccupancyAfter": {
+            "liveCount": 1,
+            "unexpiredCount": 1,
+            "mac32Count": 1,
+            "sessionCreatedCount": 1
+          },
+          "hostClockSummary": {
+            "elapsedSeconds": 572.9547688,
+            "rawElapsedLowerBound": 572.7343965999999,
+            "rawElapsedUpperBound": 573.1694379999999,
+            "utcCounterDriftSeconds": -0.0007688000000598549,
+            "stable": true
+          },
+          "sharedResourceEvidence": {
+            "result": "PASS",
+            "policy": {
+              "cpuBusyPercent": 65,
+              "ioWaitPercent": 25,
+              "externalBuildCPUPercent": 300,
+              "quietSeconds": 20,
+              "staleSeconds": 15,
+              "waitLimitSeconds": 600
+            },
+            "observations": 116,
+            "pressureObservations": [],
+            "maxCPUPercent": 4.270109235352532,
+            "maxIOWaitPercent": 3.5566583953680726,
+            "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/d-output-native/performance-gaps-r1/resource-observations.jsonl"
+          }
+        }
+      },
+      "rawExport": "/mnt/d/HnuHole-task-storage/comment-snapshot-redis-20261024/performance-gaps-r1-compat-continuation-raw.json"
+    },
+    "steady-expanded": {
+      "result": "FAIL",
+      "returncode": 1,
+      "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/d-output-native/performance-gaps-r1/steady-expanded/process-20261026T041659-245ea0/normalized-performance.json",
+      "rawSHA256": "66cc5180c827a0535e7c54a4fd50dbc7e4e9995913638410cf0fbfc8b0554793",
+      "stats": {
+        "replyExpanded": {
+          "postgres": {
+            "samples": 300,
+            "p50Ms": 77.1336,
+            "p95Ms": 140.6527,
+            "p99Ms": 152.714,
+            "meanMs": 84.80845366666667
+          },
+          "redis": {
+            "samples": 300,
+            "p50Ms": 80.7489,
+            "p95Ms": 151.3024,
+            "p99Ms": 169.4975,
+            "meanMs": 91.602504
+          },
+          "p95RegressionPercent": 7.571628557432586,
+          "p95Criterion": "FAIL",
+          "clockVariationSeconds": {
+            "utcRawSeconds": 1.621246337890625e-05,
+            "monoRawSeconds": 1.58969996846281e-05
+          },
+          "environmentResult": "PASS",
+          "result": "FAIL",
+          "snapshotRedisCommandStats": {
+            "before": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 1129.0,
+                "usec_per_call": 564.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 2056.0,
+                "usec": 1921838.0,
+                "usec_per_call": 934.75,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            },
+            "after": {
+              "cmdstat_eval": {
+                "calls": 2.0,
+                "usec": 1129.0,
+                "usec_per_call": 564.5,
+                "rejected_calls": 0.0,
+                "failed_calls": 0.0
+              },
+              "cmdstat_evalsha": {
+                "calls": 2795.0,
+                "usec": 3513085.0,
+                "usec_per_call": 1256.92,
+                "rejected_calls": 0.0,
+                "failed_calls": 2.0
+              }
+            }
+          },
+          "occupancyAfter": {
+            "redisEntries": 1384,
+            "postgresSnapshots": 1384
+          },
+          "liveOccupancyBefore": {
+            "liveCount": 1,
+            "unexpiredCount": 1,
+            "mac32Count": 1,
+            "sessionCreatedCount": 1
+          },
+          "liveOccupancyAfter": {
+            "liveCount": 1,
+            "unexpiredCount": 1,
+            "mac32Count": 1,
+            "sessionCreatedCount": 1
+          },
+          "hostClockSummary": {
+            "elapsedSeconds": 195.1024709,
+            "rawElapsedLowerBound": 194.8821393000003,
+            "rawElapsedUpperBound": 195.33040419999998,
+            "utcCounterDriftSeconds": -0.0004708999999820662,
+            "stable": true
+          },
+          "sharedResourceEvidence": {
+            "result": "PASS",
+            "policy": {
+              "cpuBusyPercent": 65,
+              "ioWaitPercent": 25,
+              "externalBuildCPUPercent": 300,
+              "quietSeconds": 20,
+              "staleSeconds": 15,
+              "waitLimitSeconds": 600
+            },
+            "observations": 40,
+            "pressureObservations": [],
+            "maxCPUPercent": 3.493377483443709,
+            "maxIOWaitPercent": 2.411842980705256,
+            "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/d-output-native/performance-gaps-r1/resource-observations.jsonl"
+          }
+        }
+      },
+      "rawExport": "/mnt/d/HnuHole-task-storage/comment-snapshot-redis-20261024/performance-gaps-r1-steady-expanded-raw.json"
+    }
+  },
+  "independentAnalysis": {
+    "scope": "OFFLINE_ANALYSIS_OF_ONLY_TWO_PREDECLARED_CASES",
+    "cases": {
+      "compat-continuation": {
+        "rawSHA256": "ffc1e9518f0c38b902e2024e2d466b21d69764e8281f6504d092d2245d62749e",
+        "result": "PASS",
+        "errors": [],
+        "metadata": {
+          "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+          "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+          "runtime": {
+            "go": "go version go1.22.2 linux/amd64",
+            "postgres": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit",
+            "redis": "7.0.15",
+            "cpus": 12,
+            "kernel": "6.18.54.1-microsoft-standard-WSL2",
+            "config": {
+              "createBackend": "redis",
+              "readPostgres": true,
+              "readRedis": true,
+              "postgresCursorVersion": 2,
+              "ttlSeconds": 1800,
+              "maxIDs": 10000,
+              "maxPerAccount": 1024,
+              "maxSnapshotBytes": 196608,
+              "maxModuleBytes": 67108864,
+              "maxLedgerEntries": 8192,
+              "maxLedgerBytes": 4194304,
+              "ledgerFixedReserveBytes": 12582912,
+              "operationBudgetMilliseconds": 500,
+              "prepareLeaseSeconds": 30,
+              "cleanupIntervalSeconds": 10,
+              "cleanupBatchSize": 64,
+              "clockSkewMilliseconds": 2000,
+              "redis": {
+                "address": "127.0.0.1:39085",
+                "username": "community_comment_snapshot_v2",
+                "passwordFile": "snapshot.password",
+                "namespace": "hnuhole:comment-snapshot:v2:dev:",
+                "epoch": "c04ae510-fcdc-4318-ab9a-8d04c23e1acd",
+                "deadlineMilliseconds": 100,
+                "poolSize": 8
+              }
+            }
+          },
+          "runtimeNumericAndBooleanConfig": {
+            "allowDevelopmentNetwork": false,
+            "requestTimeoutSeconds": 30,
+            "sqlTimeoutSeconds": 10,
+            "shutdownTimeoutSeconds": 20,
+            "workerBatch": 16,
+            "workerTimeoutSeconds": 15,
+            "workerIntervalSeconds": 2,
+            "passwordWorkers": 2,
+            "networkMutationCapacity": 120,
+            "networkQueryCapacity": 240,
+            "networkMaxEntries": 4096
+          },
+          "sharedAdmissionProfileSHA256": "2189b6c324fd861d9efd83bce88595d0c08ca69ebc8943b7700f5d2b29cf475b",
+          "mode": "compatibility",
+          "sharedAdmission": {
+            "address": "127.0.0.1:52841",
+            "username": "community_ratelimit",
+            "namespace": "community_dev",
+            "deadlineMilliseconds": 100,
+            "poolSize": 8,
+            "maxSubjects": 32768,
+            "maxEvents": 16384,
+            "maxDedup": 256,
+            "maxReserves": 32,
+            "maxStateBytes": 1048576,
+            "dedupSeconds": 86400,
+            "readSeconds": 30,
+            "rules": [
+              {
+                "action": "entry.query",
+                "mode": "observe",
+                "failure": "local-read",
+                "bucket": {
+                  "capacity": 10000,
+                  "perSecond": 166
+                }
+              },
+              {
+                "action": "entry.mutation",
+                "mode": "observe",
+                "failure": "reject",
+                "bucket": {
+                  "capacity": 6000,
+                  "perSecond": 100
+                }
+              },
+              {
+                "action": "login.ip",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 60000,
+                    "limit": 300
+                  }
+                ]
+              },
+              {
+                "action": "login.source",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 60000,
+                    "limit": 10
+                  }
+                ]
+              },
+              {
+                "action": "login.failure",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 300000,
+                    "limit": 5
+                  }
+                ]
+              },
+              {
+                "action": "post.create",
+                "mode": "observe",
+                "failure": "verified-db",
+                "windows": [
+                  {
+                    "ms": 60000,
+                    "limit": 5
+                  },
+                  {
+                    "ms": 3600000,
+                    "limit": 30
+                  }
+                ]
+              },
+              {
+                "action": "comment.publish",
+                "mode": "observe",
+                "failure": "verified-db",
+                "windows": [
+                  {
+                    "ms": 60000,
+                    "limit": 12
+                  },
+                  {
+                    "ms": 3600000,
+                    "limit": 120
+                  }
+                ]
+              },
+              {
+                "action": "dm.send",
+                "mode": "observe",
+                "failure": "reject",
+                "bucket": {
+                  "capacity": 30,
+                  "perSecond": 2
+                }
+              },
+              {
+                "action": "dm.conversation.create",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 600000,
+                    "limit": 10
+                  },
+                  {
+                    "ms": 3600000,
+                    "limit": 40
+                  }
+                ]
+              },
+              {
+                "action": "upload.attempt",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 600000,
+                    "limit": 60
+                  }
+                ]
+              },
+              {
+                "action": "upload.bytes",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 600000,
+                    "limit": 125829120
+                  },
+                  {
+                    "ms": 3600000,
+                    "limit": 536870912
+                  }
+                ]
+              },
+              {
+                "action": "read.account",
+                "mode": "observe",
+                "failure": "local-read",
+                "bucket": {
+                  "capacity": 180,
+                  "perSecond": 6
+                }
+              },
+              {
+                "action": "read.control",
+                "mode": "observe",
+                "failure": "local-read",
+                "bucket": {
+                  "capacity": 300,
+                  "perSecond": 10
+                }
+              }
+            ]
+          },
+          "localQueryCapacity": 240,
+          "workerIntervalSeconds": 2,
+          "cleanupIntervalSeconds": 10,
+          "totalCommentRows": 11563,
+          "mainRoots": 500,
+          "mainReplies": 1000,
+          "replyPerformanceRows": 60,
+          "httpElapsedClock": "CLOCK_MONOTONIC_RAW",
+          "concurrency": 1,
+          "requestPaceSeconds": 0.27,
+          "seed": 20261025,
+          "order": "balanced shuffled blocks of20 pairs; one midpoint IP crossover in this fixed case",
+          "measurementStartUnixSeconds": 1792987635.959012,
+          "measurementStartRawSeconds": 2394.559689373,
+          "sameProcessContinuation": true,
+          "observeReadTimings": true,
+          "tcpNoDelay": true,
+          "phaseElapsedClock": "CLOCK_MONOTONIC_RAW",
+          "configs": {
+            "postgres": {
+              "createBackend": "postgres",
+              "readPostgres": true,
+              "readRedis": true
+            },
+            "redis": {
+              "createBackend": "redis",
+              "readPostgres": true,
+              "readRedis": true
+            }
+          },
+          "diagnosticResidual": "SQL/Gate/projection includes all transaction work outside snapshot Redis client calls; not pure SQL",
+          "redisTiming": "client wall includes queue/transport; INFO commandstats reports server Lua aggregate, their difference is not pure queue time"
+        },
+        "liveLoginResult": {
+          "liveCount": 1,
+          "unexpiredCount": 1,
+          "mac32Count": 1,
+          "sessionCreatedCount": 1
+        },
+        "midpointLive": {
+          "continuation": {
+            "liveCount": 1,
+            "unexpiredCount": 1,
+            "mac32Count": 1,
+            "sessionCreatedCount": 1
+          }
+        },
+        "reportedStats": {
+          "continuation": {
+            "postgres": {
+              "samples": 1000,
+              "p50Ms": 98.8939,
+              "p95Ms": 136.0628,
+              "p99Ms": 168.5313,
+              "meanMs": 105.7973968
+            },
+            "redis": {
+              "samples": 1000,
+              "p50Ms": 99.3569,
+              "p95Ms": 136.1475,
+              "p99Ms": 159.584,
+              "meanMs": 105.3501788
+            },
+            "p95RegressionPercent": 0.06225066660394685,
+            "p95Criterion": "PASS",
+            "clockVariationSeconds": {
+              "utcRawSeconds": 2.6226043701171875e-05,
+              "monoRawSeconds": 1.9782999970630044e-05
+            },
+            "environmentResult": "PASS",
+            "result": "PASS",
+            "snapshotRedisCommandStats": {
+              "before": {
+                "cmdstat_evalsha": {
+                  "calls": 2062.0,
+                  "usec": 1878895.0,
+                  "usec_per_call": 911.2,
+                  "rejected_calls": 0.0,
+                  "failed_calls": 2.0
+                },
+                "cmdstat_eval": {
+                  "calls": 2.0,
+                  "usec": 859.0,
+                  "usec_per_call": 429.5,
+                  "rejected_calls": 0.0,
+                  "failed_calls": 0.0
+                }
+              },
+              "after": {
+                "cmdstat_evalsha": {
+                  "calls": 3236.0,
+                  "usec": 2148953.0,
+                  "usec_per_call": 664.08,
+                  "rejected_calls": 0.0,
+                  "failed_calls": 2.0
+                },
+                "cmdstat_eval": {
+                  "calls": 2.0,
+                  "usec": 859.0,
+                  "usec_per_call": 429.5,
+                  "rejected_calls": 0.0,
+                  "failed_calls": 0.0
+                }
+              }
+            },
+            "occupancyAfter": {
+              "redisEntries": 1025,
+              "postgresSnapshots": 1
+            },
+            "liveOccupancyBefore": {
+              "liveCount": 1,
+              "unexpiredCount": 1,
+              "mac32Count": 1,
+              "sessionCreatedCount": 1
+            },
+            "liveOccupancyAfter": {
+              "liveCount": 1,
+              "unexpiredCount": 1,
+              "mac32Count": 1,
+              "sessionCreatedCount": 1
+            },
+            "hostClockSummary": {
+              "elapsedSeconds": 572.9547688,
+              "rawElapsedLowerBound": 572.7343965999999,
+              "rawElapsedUpperBound": 573.1694379999999,
+              "utcCounterDriftSeconds": -0.0007688000000598549,
+              "stable": true
+            },
+            "sharedResourceEvidence": {
+              "result": "PASS",
+              "policy": {
+                "cpuBusyPercent": 65,
+                "ioWaitPercent": 25,
+                "externalBuildCPUPercent": 300,
+                "quietSeconds": 20,
+                "staleSeconds": 15,
+                "waitLimitSeconds": 600
+              },
+              "observations": 116,
+              "pressureObservations": [],
+              "maxCPUPercent": 4.270109235352532,
+              "maxIOWaitPercent": 3.5566583953680726,
+              "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/d-output-native/performance-gaps-r1/resource-observations.jsonl"
+            }
+          }
+        },
+        "backends": {
+          "postgres": {
+            "samples": 1000,
+            "plannedSamples": 1000,
+            "complete": true,
+            "p95Ms": 136.0628,
+            "uniquePairCount": 1000,
+            "uniqueRequestIds": 1000,
+            "ABBA": {
+              "1": 500,
+              "0": 500
+            },
+            "IPCounts": {
+              "127.0.0.9": 500,
+              "127.0.0.8": 500
+            },
+            "phaseObservationComplete": true,
+            "phases": {
+              "all": {
+                "n": 1000,
+                "httpMeanMs": 105.7973968,
+                "serverMeanMs": 105.4011317,
+                "transportResidualMeanMs": 0.39626509999999987,
+                "stageMeanMs": {
+                  "comments.anchor_lock_read_verify": 0.2387,
+                  "comments.anchor_write": 13.0208946,
+                  "comments.business_action": 53.6908877,
+                  "comments.comment_projection": 23.3157709,
+                  "comments.gate_abort": 3.631971,
+                  "comments.gate_commit_authorized": 64.3388075,
+                  "comments.gate_row_lock": 2.4323198,
+                  "comments.gate_snapshot": 10.1608121,
+                  "comments.sql_commit": 3.6255507,
+                  "comments.total": 78.9703138,
+                  "subject.anchor_lock_read_verify": 0.223781,
+                  "subject.anchor_write": 13.2155857,
+                  "subject.gate_abort": 3.4148691,
+                  "subject.gate_commit_authorized": 10.0525223,
+                  "subject.gate_row_lock": 2.2979012,
+                  "subject.gate_snapshot": 10.4540464,
+                  "subject.sql_commit": 3.5351879,
+                  "subject.total": 24.6371641
+                }
+              },
+              "p95Tail": {
+                "n": 51,
+                "httpMeanMs": 156.1390274509804,
+                "serverMeanMs": 155.70724901960784,
+                "transportResidualMeanMs": 0.43177843137254857,
+                "stageMeanMs": {
+                  "comments.anchor_lock_read_verify": 0.2815921568627451,
+                  "comments.anchor_write": 13.773801960784313,
+                  "comments.business_action": 61.61563725490196,
+                  "comments.comment_projection": 27.688978431372547,
+                  "comments.gate_abort": 10.042513725490195,
+                  "comments.gate_commit_authorized": 78.93687254901961,
+                  "comments.gate_row_lock": 12.885656862745098,
+                  "comments.gate_snapshot": 17.245443137254902,
+                  "comments.sql_commit": 5.931013725490196,
+                  "comments.total": 107.19955490196078,
+                  "subject.anchor_lock_read_verify": 0.26197450980392156,
+                  "subject.anchor_write": 17.569396078431375,
+                  "subject.gate_abort": 9.82743725490196,
+                  "subject.gate_commit_authorized": 15.840182352941177,
+                  "subject.gate_row_lock": 12.848117647058823,
+                  "subject.gate_snapshot": 20.091396078431373,
+                  "subject.sql_commit": 3.8263588235294117,
+                  "subject.total": 46.568411764705886
+                }
+              }
+            }
+          },
+          "redis": {
+            "samples": 1000,
+            "plannedSamples": 1000,
+            "complete": true,
+            "p95Ms": 136.1475,
+            "uniquePairCount": 1000,
+            "uniqueRequestIds": 1000,
+            "ABBA": {
+              "1": 500,
+              "0": 500
+            },
+            "IPCounts": {
+              "127.0.0.9": 500,
+              "127.0.0.8": 500
+            },
+            "phaseObservationComplete": true,
+            "phases": {
+              "all": {
+                "n": 1000,
+                "httpMeanMs": 105.3501788,
+                "serverMeanMs": 104.9502854,
+                "transportResidualMeanMs": 0.3998933999999999,
+                "stageMeanMs": {
+                  "comments.anchor_lock_read_verify": 0.2373904,
+                  "comments.anchor_write": 13.0423487,
+                  "comments.business_action": 53.7254785,
+                  "comments.comment_projection": 23.3353544,
+                  "comments.gate_abort": 3.5252888,
+                  "comments.gate_commit_authorized": 64.2169934,
+                  "comments.gate_row_lock": 2.2911931,
+                  "comments.gate_snapshot": 10.1143638,
+                  "comments.redis_load": 0.3554648,
+                  "comments.redis_rpc": 0.2787862,
+                  "comments.sql_commit": 3.5235894,
+                  "comments.total": 78.6996633,
+                  "subject.anchor_lock_read_verify": 0.2248032,
+                  "subject.anchor_write": 13.0360672,
+                  "subject.gate_abort": 3.4012508,
+                  "subject.gate_commit_authorized": 10.0433858,
+                  "subject.gate_row_lock": 2.2918594,
+                  "subject.gate_snapshot": 10.2830875,
+                  "subject.sql_commit": 3.5417644,
+                  "subject.total": 24.4494077
+                }
+              },
+              "p95Tail": {
+                "n": 51,
+                "httpMeanMs": 150.22768235294117,
+                "serverMeanMs": 149.77523529411764,
+                "transportResidualMeanMs": 0.45244705882352904,
+                "stageMeanMs": {
+                  "comments.anchor_lock_read_verify": 0.29615882352941175,
+                  "comments.anchor_write": 14.216794117647058,
+                  "comments.business_action": 60.54571764705882,
+                  "comments.comment_projection": 27.614319607843136,
+                  "comments.gate_abort": 9.203017647058823,
+                  "comments.gate_commit_authorized": 77.52167254901961,
+                  "comments.gate_row_lock": 14.023427450980392,
+                  "comments.gate_snapshot": 17.117043137254903,
+                  "comments.redis_load": 0.4201921568627451,
+                  "comments.redis_rpc": 0.3275411764705882,
+                  "comments.sql_commit": 3.790219607843137,
+                  "comments.total": 104.81779607843137,
+                  "subject.anchor_lock_read_verify": 0.2661647058823529,
+                  "subject.anchor_write": 14.085105882352941,
+                  "subject.gate_abort": 8.830239215686275,
+                  "subject.gate_commit_authorized": 17.632372549019607,
+                  "subject.gate_row_lock": 13.49143137254902,
+                  "subject.gate_snapshot": 15.611770588235295,
+                  "subject.sql_commit": 3.915056862745098,
+                  "subject.total": 42.93578431372549
+                }
+              }
+            }
+          }
+        },
+        "independentP95RegressionPercent": 0.06225066660394685,
+        "independentCriterion": "PASS",
+        "allPairsReadOnSameAPI": true
+      },
+      "steady-expanded": {
+        "rawSHA256": "66cc5180c827a0535e7c54a4fd50dbc7e4e9995913638410cf0fbfc8b0554793",
+        "result": "FAIL",
+        "errors": [],
+        "metadata": {
+          "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+          "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+          "runtime": {
+            "go": "go version go1.22.2 linux/amd64",
+            "postgres": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit",
+            "redis": "7.0.15",
+            "cpus": 12,
+            "kernel": "6.18.54.1-microsoft-standard-WSL2",
+            "config": {
+              "createBackend": "redis",
+              "readPostgres": false,
+              "readRedis": true,
+              "postgresCursorVersion": 2,
+              "ttlSeconds": 1800,
+              "maxIDs": 10000,
+              "maxPerAccount": 1024,
+              "maxSnapshotBytes": 196608,
+              "maxModuleBytes": 67108864,
+              "maxLedgerEntries": 8192,
+              "maxLedgerBytes": 4194304,
+              "ledgerFixedReserveBytes": 12582912,
+              "operationBudgetMilliseconds": 500,
+              "prepareLeaseSeconds": 30,
+              "cleanupIntervalSeconds": 10,
+              "cleanupBatchSize": 64,
+              "clockSkewMilliseconds": 2000,
+              "redis": {
+                "address": "127.0.0.1:40353",
+                "username": "community_comment_snapshot_v2",
+                "passwordFile": "snapshot.password",
+                "namespace": "hnuhole:comment-snapshot:v2:dev:",
+                "epoch": "97afbb12-2d8c-4ff7-8993-2b2d6e97ee05",
+                "deadlineMilliseconds": 100,
+                "poolSize": 8
+              }
+            }
+          },
+          "runtimeNumericAndBooleanConfig": {
+            "allowDevelopmentNetwork": false,
+            "requestTimeoutSeconds": 30,
+            "sqlTimeoutSeconds": 10,
+            "shutdownTimeoutSeconds": 20,
+            "workerBatch": 16,
+            "workerTimeoutSeconds": 15,
+            "workerIntervalSeconds": 2,
+            "passwordWorkers": 2,
+            "networkMutationCapacity": 120,
+            "networkQueryCapacity": 240,
+            "networkMaxEntries": 4096
+          },
+          "sharedAdmissionProfileSHA256": "2189b6c324fd861d9efd83bce88595d0c08ca69ebc8943b7700f5d2b29cf475b",
+          "mode": "steady",
+          "sharedAdmission": {
+            "address": "127.0.0.1:54699",
+            "username": "community_ratelimit",
+            "namespace": "community_dev",
+            "deadlineMilliseconds": 100,
+            "poolSize": 8,
+            "maxSubjects": 32768,
+            "maxEvents": 16384,
+            "maxDedup": 256,
+            "maxReserves": 32,
+            "maxStateBytes": 1048576,
+            "dedupSeconds": 86400,
+            "readSeconds": 30,
+            "rules": [
+              {
+                "action": "entry.query",
+                "mode": "observe",
+                "failure": "local-read",
+                "bucket": {
+                  "capacity": 10000,
+                  "perSecond": 166
+                }
+              },
+              {
+                "action": "entry.mutation",
+                "mode": "observe",
+                "failure": "reject",
+                "bucket": {
+                  "capacity": 6000,
+                  "perSecond": 100
+                }
+              },
+              {
+                "action": "login.ip",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 60000,
+                    "limit": 300
+                  }
+                ]
+              },
+              {
+                "action": "login.source",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 60000,
+                    "limit": 10
+                  }
+                ]
+              },
+              {
+                "action": "login.failure",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 300000,
+                    "limit": 5
+                  }
+                ]
+              },
+              {
+                "action": "post.create",
+                "mode": "observe",
+                "failure": "verified-db",
+                "windows": [
+                  {
+                    "ms": 60000,
+                    "limit": 5
+                  },
+                  {
+                    "ms": 3600000,
+                    "limit": 30
+                  }
+                ]
+              },
+              {
+                "action": "comment.publish",
+                "mode": "observe",
+                "failure": "verified-db",
+                "windows": [
+                  {
+                    "ms": 60000,
+                    "limit": 12
+                  },
+                  {
+                    "ms": 3600000,
+                    "limit": 120
+                  }
+                ]
+              },
+              {
+                "action": "dm.send",
+                "mode": "observe",
+                "failure": "reject",
+                "bucket": {
+                  "capacity": 30,
+                  "perSecond": 2
+                }
+              },
+              {
+                "action": "dm.conversation.create",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 600000,
+                    "limit": 10
+                  },
+                  {
+                    "ms": 3600000,
+                    "limit": 40
+                  }
+                ]
+              },
+              {
+                "action": "upload.attempt",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 600000,
+                    "limit": 60
+                  }
+                ]
+              },
+              {
+                "action": "upload.bytes",
+                "mode": "observe",
+                "failure": "reject",
+                "windows": [
+                  {
+                    "ms": 600000,
+                    "limit": 125829120
+                  },
+                  {
+                    "ms": 3600000,
+                    "limit": 536870912
+                  }
+                ]
+              },
+              {
+                "action": "read.account",
+                "mode": "observe",
+                "failure": "local-read",
+                "bucket": {
+                  "capacity": 180,
+                  "perSecond": 6
+                }
+              },
+              {
+                "action": "read.control",
+                "mode": "observe",
+                "failure": "local-read",
+                "bucket": {
+                  "capacity": 300,
+                  "perSecond": 10
+                }
+              }
+            ]
+          },
+          "localQueryCapacity": 240,
+          "workerIntervalSeconds": 2,
+          "cleanupIntervalSeconds": 10,
+          "totalCommentRows": 11563,
+          "mainRoots": 500,
+          "mainReplies": 1000,
+          "replyPerformanceRows": 60,
+          "httpElapsedClock": "CLOCK_MONOTONIC_RAW",
+          "concurrency": 1,
+          "requestPaceSeconds": 0.27,
+          "seed": 20261025,
+          "order": "balanced shuffled blocks of20 pairs; one midpoint IP crossover in this fixed case",
+          "measurementStartUnixSeconds": 1792988248.4489942,
+          "measurementStartRawSeconds": 3007.049670873,
+          "sameProcessContinuation": false,
+          "observeReadTimings": true,
+          "tcpNoDelay": true,
+          "phaseElapsedClock": "CLOCK_MONOTONIC_RAW",
+          "configs": {
+            "postgres": {
+              "createBackend": "postgres",
+              "readPostgres": true,
+              "readRedis": false
+            },
+            "redis": {
+              "createBackend": "redis",
+              "readPostgres": false,
+              "readRedis": true
+            }
+          },
+          "diagnosticResidual": "SQL/Gate/projection includes all transaction work outside snapshot Redis client calls; not pure SQL",
+          "redisTiming": "client wall includes queue/transport; INFO commandstats reports server Lua aggregate, their difference is not pure queue time"
+        },
+        "liveLoginResult": {
+          "liveCount": 1,
+          "unexpiredCount": 1,
+          "mac32Count": 1,
+          "sessionCreatedCount": 1
+        },
+        "midpointLive": {
+          "replyExpanded": {
+            "liveCount": 1,
+            "unexpiredCount": 1,
+            "mac32Count": 1,
+            "sessionCreatedCount": 1
+          }
+        },
+        "reportedStats": {
+          "replyExpanded": {
+            "postgres": {
+              "samples": 300,
+              "p50Ms": 77.1336,
+              "p95Ms": 140.6527,
+              "p99Ms": 152.714,
+              "meanMs": 84.80845366666667
+            },
+            "redis": {
+              "samples": 300,
+              "p50Ms": 80.7489,
+              "p95Ms": 151.3024,
+              "p99Ms": 169.4975,
+              "meanMs": 91.602504
+            },
+            "p95RegressionPercent": 7.571628557432586,
+            "p95Criterion": "FAIL",
+            "clockVariationSeconds": {
+              "utcRawSeconds": 1.621246337890625e-05,
+              "monoRawSeconds": 1.58969996846281e-05
+            },
+            "environmentResult": "PASS",
+            "result": "FAIL",
+            "snapshotRedisCommandStats": {
+              "before": {
+                "cmdstat_eval": {
+                  "calls": 2.0,
+                  "usec": 1129.0,
+                  "usec_per_call": 564.5,
+                  "rejected_calls": 0.0,
+                  "failed_calls": 0.0
+                },
+                "cmdstat_evalsha": {
+                  "calls": 2056.0,
+                  "usec": 1921838.0,
+                  "usec_per_call": 934.75,
+                  "rejected_calls": 0.0,
+                  "failed_calls": 2.0
+                }
+              },
+              "after": {
+                "cmdstat_eval": {
+                  "calls": 2.0,
+                  "usec": 1129.0,
+                  "usec_per_call": 564.5,
+                  "rejected_calls": 0.0,
+                  "failed_calls": 0.0
+                },
+                "cmdstat_evalsha": {
+                  "calls": 2795.0,
+                  "usec": 3513085.0,
+                  "usec_per_call": 1256.92,
+                  "rejected_calls": 0.0,
+                  "failed_calls": 2.0
+                }
+              }
+            },
+            "occupancyAfter": {
+              "redisEntries": 1384,
+              "postgresSnapshots": 1384
+            },
+            "liveOccupancyBefore": {
+              "liveCount": 1,
+              "unexpiredCount": 1,
+              "mac32Count": 1,
+              "sessionCreatedCount": 1
+            },
+            "liveOccupancyAfter": {
+              "liveCount": 1,
+              "unexpiredCount": 1,
+              "mac32Count": 1,
+              "sessionCreatedCount": 1
+            },
+            "hostClockSummary": {
+              "elapsedSeconds": 195.1024709,
+              "rawElapsedLowerBound": 194.8821393000003,
+              "rawElapsedUpperBound": 195.33040419999998,
+              "utcCounterDriftSeconds": -0.0004708999999820662,
+              "stable": true
+            },
+            "sharedResourceEvidence": {
+              "result": "PASS",
+              "policy": {
+                "cpuBusyPercent": 65,
+                "ioWaitPercent": 25,
+                "externalBuildCPUPercent": 300,
+                "quietSeconds": 20,
+                "staleSeconds": 15,
+                "waitLimitSeconds": 600
+              },
+              "observations": 40,
+              "pressureObservations": [],
+              "maxCPUPercent": 3.493377483443709,
+              "maxIOWaitPercent": 2.411842980705256,
+              "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/d-output-native/performance-gaps-r1/resource-observations.jsonl"
+            }
+          }
+        },
+        "backends": {
+          "postgres": {
+            "samples": 300,
+            "plannedSamples": 300,
+            "complete": true,
+            "p95Ms": 140.6527,
+            "uniquePairCount": 300,
+            "uniqueRequestIds": 300,
+            "ABBA": {
+              "1": 150,
+              "0": 150
+            },
+            "IPCounts": {
+              "127.0.0.8": 150,
+              "127.0.0.9": 150
+            },
+            "phaseObservationComplete": true,
+            "phases": {
+              "all": {
+                "n": 300,
+                "httpMeanMs": 84.80845366666667,
+                "serverMeanMs": 84.40730733333334,
+                "transportResidualMeanMs": 0.4011463333333336,
+                "stageMeanMs": {
+                  "comments.anchor_lock_read_verify": 0.22820966666666667,
+                  "comments.anchor_write": 12.804808333333334,
+                  "comments.business_action": 32.86685633333333,
+                  "comments.comment_projection": 30.715931666666666,
+                  "comments.gate_abort": 4.631699333333334,
+                  "comments.gate_commit_authorized": 43.02793166666667,
+                  "comments.gate_row_lock": 2.3112866666666667,
+                  "comments.gate_snapshot": 10.009303333333333,
+                  "comments.legacy_usage": 0.2780143333333333,
+                  "comments.ordered_ids": 1.0212616666666667,
+                  "comments.sql_commit": 3.482601333333333,
+                  "comments.total": 58.484389666666665,
+                  "subject.anchor_lock_read_verify": 0.213847,
+                  "subject.anchor_write": 12.945510333333333,
+                  "subject.gate_abort": 3.3802316666666665,
+                  "subject.gate_commit_authorized": 9.693465666666667,
+                  "subject.gate_row_lock": 2.224633,
+                  "subject.gate_snapshot": 10.377034,
+                  "subject.sql_commit": 3.486505333333333,
+                  "subject.total": 24.124438333333334
+                }
+              },
+              "p95Tail": {
+                "n": 16,
+                "httpMeanMs": 147.29788125,
+                "serverMeanMs": 146.88214375,
+                "transportResidualMeanMs": 0.41573750000000054,
+                "stageMeanMs": {
+                  "comments.anchor_lock_read_verify": 0.2384625,
+                  "comments.anchor_write": 12.69681875,
+                  "comments.business_action": 33.61940625,
+                  "comments.comment_projection": 31.37875,
+                  "comments.gate_abort": 15.8702,
+                  "comments.gate_commit_authorized": 52.8007625,
+                  "comments.gate_row_lock": 22.73920625,
+                  "comments.gate_snapshot": 21.48163125,
+                  "comments.legacy_usage": 0.28788125,
+                  "comments.ordered_ids": 1.03980625,
+                  "comments.sql_commit": 3.5305625,
+                  "comments.total": 91.04503125,
+                  "subject.anchor_lock_read_verify": 0.2162375,
+                  "subject.anchor_write": 12.254362500000001,
+                  "subject.gate_abort": 15.16728125,
+                  "subject.gate_commit_authorized": 18.436325,
+                  "subject.gate_row_lock": 20.95449375,
+                  "subject.gate_snapshot": 19.692968750000002,
+                  "subject.sql_commit": 3.43060625,
+                  "subject.total": 54.02544375
+                }
+              }
+            }
+          },
+          "redis": {
+            "samples": 300,
+            "plannedSamples": 300,
+            "complete": true,
+            "p95Ms": 151.3024,
+            "uniquePairCount": 300,
+            "uniqueRequestIds": 300,
+            "ABBA": {
+              "1": 150,
+              "0": 150
+            },
+            "IPCounts": {
+              "127.0.0.9": 150,
+              "127.0.0.8": 150
+            },
+            "phaseObservationComplete": true,
+            "phases": {
+              "all": {
+                "n": 300,
+                "httpMeanMs": 91.602504,
+                "serverMeanMs": 91.20687366666667,
+                "transportResidualMeanMs": 0.39563033333333375,
+                "stageMeanMs": {
+                  "comments.anchor_lock_read_verify": 0.22569,
+                  "comments.anchor_write": 12.650756,
+                  "comments.business_action": 34.593885666666665,
+                  "comments.comment_projection": 30.73668,
+                  "comments.gate_abort": 5.190185,
+                  "comments.gate_commit_authorized": 45.321638666666665,
+                  "comments.gate_row_lock": 3.4266466666666666,
+                  "comments.gate_snapshot": 10.351838,
+                  "comments.ordered_ids": 0.999029,
+                  "comments.redis_prepare": 2.475174,
+                  "comments.redis_publish": 2.4085723333333333,
+                  "comments.redis_rpc": 4.853927,
+                  "comments.sql_commit": 3.4593876666666667,
+                  "comments.total": 64.08555633333333,
+                  "subject.anchor_lock_read_verify": 0.21802166666666667,
+                  "subject.anchor_write": 12.870662666666666,
+                  "subject.gate_abort": 3.900924333333333,
+                  "subject.gate_commit_authorized": 10.296733666666666,
+                  "subject.gate_row_lock": 2.959827333333333,
+                  "subject.gate_snapshot": 10.435351,
+                  "subject.sql_commit": 3.483947,
+                  "subject.total": 25.337507333333335
+                }
+              },
+              "p95Tail": {
+                "n": 16,
+                "httpMeanMs": 161.45853125,
+                "serverMeanMs": 160.980875,
+                "transportResidualMeanMs": 0.4776562500000008,
+                "stageMeanMs": {
+                  "comments.anchor_lock_read_verify": 0.255375,
+                  "comments.anchor_write": 12.8427625,
+                  "comments.business_action": 39.406275,
+                  "comments.comment_projection": 35.355906250000004,
+                  "comments.gate_abort": 15.123425,
+                  "comments.gate_commit_authorized": 61.54275,
+                  "comments.gate_row_lock": 25.94455,
+                  "comments.gate_snapshot": 22.06875,
+                  "comments.ordered_ids": 1.08803125,
+                  "comments.redis_prepare": 2.4697625,
+                  "comments.redis_publish": 2.51058125,
+                  "comments.redis_rpc": 4.95135625,
+                  "comments.sql_commit": 3.67813125,
+                  "comments.total": 102.193625,
+                  "subject.anchor_lock_read_verify": 0.24501875,
+                  "subject.anchor_write": 13.09068125,
+                  "subject.gate_abort": 15.51329375,
+                  "subject.gate_commit_authorized": 20.38854375,
+                  "subject.gate_row_lock": 22.2578875,
+                  "subject.gate_snapshot": 20.208975,
+                  "subject.sql_commit": 3.5827625,
+                  "subject.total": 56.850625
+                }
+              }
+            }
+          }
+        },
+        "independentP95RegressionPercent": 7.571628557432586,
+        "independentCriterion": "FAIL"
+      }
+    }
+  },
+  "method": {
+    "task": "COMMENT-SNAPSHOT-REDIS-01",
+    "status": "FROZEN_BEFORE_FIRST_PREFLIGHT_AND_HTTP",
+    "frozenAtUTC": "2026-10-26T03:57:38.647414+00:00",
+    "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+    "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+    "cases": [
+      {
+        "target": "compat-continuation",
+        "mode": "compatibility",
+        "path": "continuation",
+        "pairs": 1000,
+        "expectedComments": 50,
+        "PGAndRedisCursorTarget": "same Redis-created API IP for all warmup and measured requests, including midpoint"
+      },
+      {
+        "target": "steady-expanded",
+        "mode": "steady",
+        "path": "replyExpanded",
+        "pairs": 300,
+        "expectedComments": 50,
+        "occupancy": "1024 mirrored logical PG snapshots and 1024 Redis snapshots initially"
+      }
+    ],
+    "order": "compat-continuation then steady-expanded; each exactly one attempt; retain valid P95 failure and run the other already-planned case; stop on request/environment/observation failure",
+    "concurrency": 1,
+    "requestPaceBeforeTimerSeconds": 0.27,
+    "warmupPerBackendPerHalf": 30,
+    "pairOrder": "fixed seed20261025; balanced shuffled blocks20; one midpoint process/IP exchange",
+    "percentile": "nearest rank sorted[ceil(n*.95)-1]",
+    "criterion": "(Redis P95 / PostgreSQL P95 -1)*100 <=5 percent, each case separately",
+    "noPooling": true,
+    "noExpansion": true,
+    "noRepeat": true,
+    "strictTLSAndSNI": true,
+    "tcpNoDelay": true,
+    "HTTPAndServerClock": "CLOCK_MONOTONIC_RAW",
+    "initialClockPreflight": {
+      "rawSeconds": 300,
+      "intervalSeconds": 30,
+      "maximumUTCOrMonoDriftSeconds": 0.2,
+      "WindowsQPCRequired": true,
+      "singleAttempt": true
+    },
+    "conditionalClockRepair": {
+      "authorization": "Human: 允许临时修复，验收后恢复; coordinator explicitly renewed for these two fixed cases",
+      "onlyIfInitialPreflightFails": true,
+      "singleRepairAttempt": true,
+      "clockSource": "hyperv_clocksource_tsc_page",
+      "stopTimesyncdTemporarily": true,
+      "noTimeValueEdits": true,
+      "settlingRawSeconds": 60,
+      "repairedPreflightRawSeconds": 300,
+      "maximumDriftSeconds": 0.2,
+      "restoreAndIndependentlyVerify": true
+    },
+    "duringHTTPMaximumClockOffsetVariationSeconds": 2,
+    "worker": {
+      "intervalSeconds": 2,
+      "taskTimeoutSeconds": 15,
+      "batch": 16,
+      "concurrency": 1,
+      "disabled": false
+    },
+    "snapshots": {
+      "ttlSeconds": 1800,
+      "cleanupIntervalSeconds": 10,
+      "maxPerAccount": 1024,
+      "initialOccupiedRedisSnapshots": 1024,
+      "moduleByteBudget": 67108864,
+      "poolSize": 8
+    },
+    "fixtureCommentRows": 11563,
+    "sharedAdmission": "existing official profile unchanged",
+    "liveOccupancy": "one real POST /auth/sessions creates SESSION_CREATE/LIVE; require live=1, unexpired=1, mac32=1, SESSION_CREATED=1 before/midpoint/after each case",
+    "driver": "tools/comment-snapshot-process/gaps_targeted.py",
+    "driverSHA256": "237ccec67b244ed5326e7b6535dcaa71297e272f5597ec237826b3688065f295",
+    "productChanges": false,
+    "otherTestsOrPaths": "NOT_RUN",
+    "newOutputRoot": "D:/HnuHole-task-storage/comment-snapshot-redis-20261024",
+    "existingDirectoriesMigrated": false
+  },
+  "artifacts": {
+    "performance-gaps-r1-protocol.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-protocol.json",
+      "sha256": "d9d177b2093de8a59ea6eacf1bcd7dc94eb73c310bf024ef757deef71aa3c5a0"
+    },
+    "performance-gaps-r1-frozen-manifest.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-frozen-manifest.json",
+      "sha256": "7bbef00f657034846ce4e62b9e57a30939a787d37b7b9ee4853c6854eef039d7"
+    },
+    "performance-gaps-r1-run.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-run.json",
+      "sha256": "e30fd7d3c20de8591d91146242cb946e04af8664afae19b61efc257bba621698"
+    },
+    "performance-gaps-r1-initial-clock-preflight.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-initial-clock-preflight.json",
+      "sha256": "ab87f88b055ada85598764a1c3c84f8a82512c49b6fc3d7b28fd0a22e8b57f09"
+    },
+    "performance-gaps-r1-repaired-clock-preflight.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-repaired-clock-preflight.json",
+      "sha256": "7b359652944875fc3ca06c9490ae1f6f19c2facb40bd52100eecf017118df80d"
+    },
+    "performance-gaps-r1-clock-switch-inventory.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-clock-switch-inventory.json",
+      "sha256": "89dc8be43dfc7b942a4e84369638be241c92e1845029f58049e59fc0b9143eb4"
+    },
+    "performance-gaps-r1-compat-continuation-raw.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-compat-continuation-raw.json",
+      "sha256": "ffc1e9518f0c38b902e2024e2d466b21d69764e8281f6504d092d2245d62749e"
+    },
+    "performance-gaps-r1-steady-expanded-raw.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-steady-expanded-raw.json",
+      "sha256": "66cc5180c827a0535e7c54a4fd50dbc7e4e9995913638410cf0fbfc8b0554793"
+    },
+    "performance-gaps-r1-independent-analysis.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-independent-analysis.json",
+      "sha256": "472d148b6b6031ef88ca927b7f437681b2d84d23b50bead2e8ec94e21375a176"
+    },
+    "performance-gaps-r1-independent-restoration.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-independent-restoration.json",
+      "sha256": "67081bc4df47959e3f91cbe9826446a3b9bb503c72232278ad9e7351572eba06"
+    },
+    "performance-gaps-r1-master.py": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-master.py",
+      "sha256": "65d758c9a9df823880655daca0204e0a296e8ddbca107130cd3fd44adcc7def4"
+    },
+    "performance-gaps-r1-preflight.py": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-preflight.py",
+      "sha256": "2d646eb0be97549da2d1dfca70f5aa322964dab5d5a4c8d49c0dc42aa32eeeff"
+    },
+    "performance-gaps-r1-analyze.py": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\performance-gaps-r1-analyze.py",
+      "sha256": "8e3bf0af3127c7fd3d3496230452c871a9cad1454a809a381c9b06c938a9f66c"
+    },
+    "gaps_targeted.py": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\gaps_targeted.py",
+      "sha256": "237ccec67b244ed5326e7b6535dcaa71297e272f5597ec237826b3688065f295"
+    }
+  },
+  "performanceMatrix": [
+    {
+      "mode": "compatibility",
+      "path": "initial",
+      "result": "PASS",
+      "regressionPercent": -0.4867186366003806,
+      "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+      "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+      "scope": "HISTORICAL_STABLE_FIRST_COHORT_SUPPORT_WITH_VERSION_SCOPED_REUSE_NOT_CURRENT_API_RERUN",
+      "evidence": "stage-5-stable-r1-evidence.json"
+    },
+    {
+      "mode": "compatibility",
+      "path": "continuation",
+      "result": "PASS",
+      "regressionPercent": 0.06225066660394685,
+      "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+      "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+      "scope": "CURRENT_SINGLE_TARGETED_CASE",
+      "evidence": "stage-5-performance-gaps-evidence.json"
+    },
+    {
+      "mode": "compatibility",
+      "path": "replyPreview",
+      "result": "PASS",
+      "regressionPercent": -1.2663071220897937,
+      "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+      "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+      "scope": "PRIOR_TWO_REPLY_TARGETED_CASE_NO_RERUN",
+      "evidence": "stage-5-replies-repaired-evidence.json"
+    },
+    {
+      "mode": "compatibility",
+      "path": "replyExpanded",
+      "result": "PASS",
+      "regressionPercent": 1.71906584524808,
+      "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+      "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+      "scope": "PRIOR_TWO_REPLY_TARGETED_CASE_NO_RERUN",
+      "evidence": "stage-5-replies-repaired-evidence.json"
+    },
+    {
+      "mode": "steady",
+      "path": "initial",
+      "result": "PASS",
+      "regressionPercent": 3.9513470626740377,
+      "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+      "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+      "scope": "HISTORICAL_STABLE_FIRST_COHORT_SUPPORT_WITH_VERSION_SCOPED_REUSE_NOT_CURRENT_API_RERUN",
+      "evidence": "stage-5-stable-r1-evidence.json"
+    },
+    {
+      "mode": "steady",
+      "path": "continuation",
+      "result": "PASS",
+      "regressionPercent": -0.3814236940239746,
+      "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+      "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+      "scope": "HISTORICAL_STABLE_FIRST_COHORT_SUPPORT_WITH_VERSION_SCOPED_REUSE_NOT_CURRENT_API_RERUN",
+      "evidence": "stage-5-stable-r1-evidence.json"
+    },
+    {
+      "mode": "steady",
+      "path": "replyPreview",
+      "result": "PASS",
+      "regressionPercent": 2.3807300367213458,
+      "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+      "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+      "scope": "HISTORICAL_STABLE_FIRST_COHORT_SUPPORT_WITH_VERSION_SCOPED_REUSE_NOT_CURRENT_API_RERUN",
+      "evidence": "stage-5-stable-r1-evidence.json"
+    },
+    {
+      "mode": "steady",
+      "path": "replyExpanded",
+      "result": "FAIL",
+      "regressionPercent": 7.571628557432586,
+      "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+      "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+      "scope": "CURRENT_SINGLE_TARGETED_CASE",
+      "evidence": "stage-5-performance-gaps-evidence.json"
+    }
+  ],
+  "closedBlocker": {
+    "id": "P5-E1",
+    "path": "compatibility/continuation",
+    "status": "CLOSED_BY_CURRENT_VALID_1000_PAIR_PASS",
+    "sameAPIAndGenerationAll1000Pairs": true
+  },
+  "remainingBlocker": {
+    "id": "P5-E2",
+    "path": "steady/replyExpanded",
+    "status": "CURRENT_FINAL_SOURCE_VALID_P95_FAIL",
+    "regressionPercent": 7.571628557432586,
+    "limitMs": 147.685335,
+    "observedRedisP95Ms": 151.3024,
+    "overLimitMs": 3.617065,
+    "requestErrorCount": 0,
+    "environmentResult": "PASS"
+  },
+  "bottleneckEvidence": {
+    "transportResidualMeanMs": {
+      "postgres": 0.4011463333333336,
+      "redis": 0.39563033333333375
+    },
+    "tailGateRowLockMeanMs": {
+      "subjectPG": 20.95449375,
+      "subjectRedis": 22.2578875,
+      "commentsPG": 22.73920625,
+      "commentsRedis": 25.94455
+    },
+    "redisPreparePublishMeanMs": 4.883746333333333,
+    "redisPreparePublishTailMeanMs": 4.98034375,
+    "interpretation": "Remaining elapsed time is on server authorization contention and fixed snapshot creation operations; nested spans and different tail sets prohibit adding stages or claiming a unique causal defect. No product fix inferred or performed."
+  },
+  "controllerErrorClarification": {
+    "originalRunStatus": "FAIL",
+    "originalControllerError": "request failure: stop, no retry or next case",
+    "originalSteadyDriverError": "first reply criterion/environment failure; no next path or retry",
+    "classification": "P95_CRITERION_FAIL_NOT_HTTP_REQUEST_FAIL",
+    "reason": "Both case sample counts complete; errors arrays empty; clock/resource guards PASS. Driver raises on P95 criterion failure; controller generic value.error assertion labels it request failure. Original files and hashes retained; no rerun."
+  },
+  "initialPreflight": {
+    "result": "ENVIRONMENT_UNSTABLE",
+    "settlingRawSeconds": 0,
+    "plannedRawSeconds": 300,
+    "maximumAllowedDriftSeconds": 0.2,
+    "rows": [
+      {
+        "rawElapsed": 4.553000053419964e-06,
+        "monoElapsed": 3.8770001538068755e-06,
+        "utcElapsed": 3.5762786865234375e-06,
+        "utcRawDriftSeconds": -9.767213668965269e-07,
+        "monoRawDriftSeconds": -6.759998996130889e-07
+      },
+      {
+        "rawElapsed": 30.000145472999975,
+        "monoElapsed": 30.000145297000017,
+        "utcElapsed": 30.00014591217041,
+        "utcRawDriftSeconds": 4.391704351291992e-07,
+        "monoRawDriftSeconds": -1.7599995771888644e-07
+      },
+      {
+        "rawElapsed": 60.919903047999924,
+        "monoElapsed": 60.00009552100005,
+        "utcElapsed": 61.670016288757324,
+        "utcRawDriftSeconds": 0.7501132407574005,
+        "monoRawDriftSeconds": -0.9198075269998753
+      }
+    ],
+    "maximumObservedDriftSeconds": 0.9198075269998753,
+    "hostClockInitial": {
+      "utcMs": 1792987184877,
+      "ticks": 71735971859,
+      "frequency": 10000000,
+      "rawBefore": 1941.279750642,
+      "rawAfter": 1943.588588999
+    },
+    "hostClockFinal": {
+      "utcMs": 1792987246058,
+      "ticks": 72347772723,
+      "frequency": 10000000,
+      "rawBefore": 2004.508871168,
+      "rawAfter": 2004.749465626
+    },
+    "hostClockSummary": {
+      "elapsedSeconds": 61.1800864,
+      "rawElapsedLowerBound": 60.920282169000075,
+      "rawElapsedUpperBound": 63.46971498400012,
+      "utcCounterDriftSeconds": 0.0009135999999969613,
+      "stable": true
+    }
+  },
+  "repairedPreflight": {
+    "result": "PASS",
+    "settlingRawSeconds": 60,
+    "plannedRawSeconds": 300,
+    "maximumAllowedDriftSeconds": 0.2,
+    "rows": [
+      {
+        "rawElapsed": 3.7999998312443495e-06,
+        "monoElapsed": 3.6999999792897142e-06,
+        "utcElapsed": 3.337860107421875e-06,
+        "utcRawDriftSeconds": -4.621397238224745e-07,
+        "monoRawDriftSeconds": -9.999985195463523e-08
+      },
+      {
+        "rawElapsed": 30.000115499999993,
+        "monoElapsed": 30.000118303999898,
+        "utcElapsed": 30.00011897087097,
+        "utcRawDriftSeconds": 3.4708709790720604e-06,
+        "monoRawDriftSeconds": 2.803999905154342e-06
+      },
+      {
+        "rawElapsed": 60.000116199999866,
+        "monoElapsed": 60.000113862000035,
+        "utcElapsed": 60.00011444091797,
+        "utcRawDriftSeconds": -1.7590818970347755e-06,
+        "monoRawDriftSeconds": -2.337999831070192e-06
+      },
+      {
+        "rawElapsed": 90.00011069999982,
+        "monoElapsed": 90.00011147999976,
+        "utcElapsed": 90.00011157989502,
+        "utcRawDriftSeconds": 8.798951967037283e-07,
+        "monoRawDriftSeconds": 7.799999366397969e-07
+      },
+      {
+        "rawElapsed": 120.0002026000002,
+        "monoElapsed": 120.00020480700005,
+        "utcElapsed": 120.00020551681519,
+        "utcRawDriftSeconds": 2.9168149922043085e-06,
+        "monoRawDriftSeconds": 2.2069998522056267e-06
+      },
+      {
+        "rawElapsed": 150.00012629999992,
+        "monoElapsed": 150.000129647,
+        "utcElapsed": 150.00012969970703,
+        "utcRawDriftSeconds": 3.3997071113844868e-06,
+        "monoRawDriftSeconds": 3.347000074427342e-06
+      },
+      {
+        "rawElapsed": 180.00014479999982,
+        "monoElapsed": 180.00014695399977,
+        "utcElapsed": 180.0001471042633,
+        "utcRawDriftSeconds": 2.304263489349978e-06,
+        "monoRawDriftSeconds": 2.153999957954511e-06
+      },
+      {
+        "rawElapsed": 210.0001871999998,
+        "monoElapsed": 210.00018854200016,
+        "utcElapsed": 210.0001893043518,
+        "utcRawDriftSeconds": 2.1043520064267796e-06,
+        "monoRawDriftSeconds": 1.3420003597275354e-06
+      },
+      {
+        "rawElapsed": 240.00013799999988,
+        "monoElapsed": 240.00013743399995,
+        "utcElapsed": 240.00013756752014,
+        "utcRawDriftSeconds": -4.3247973735560663e-07,
+        "monoRawDriftSeconds": -5.659999260387849e-07
+      },
+      {
+        "rawElapsed": 270.0001962000001,
+        "monoElapsed": 270.0001946550001,
+        "utcElapsed": 270.0001950263977,
+        "utcRawDriftSeconds": -1.173602413473418e-06,
+        "monoRawDriftSeconds": -1.5450000319106039e-06
+      },
+      {
+        "rawElapsed": 300.00013420000005,
+        "monoElapsed": 300.0001355589998,
+        "utcElapsed": 300.0001358985901,
+        "utcRawDriftSeconds": 1.6985900401778053e-06,
+        "monoRawDriftSeconds": 1.3589997251983732e-06
+      }
+    ],
+    "maximumObservedDriftSeconds": 3.4708709790720604e-06,
+    "hostClockInitial": {
+      "utcMs": 1792987306673,
+      "ticks": 72953914121,
+      "frequency": 10000000,
+      "rawBefore": 2065.146705573,
+      "rawAfter": 2065.351476673
+    },
+    "hostClockFinal": {
+      "utcMs": 1792987606900,
+      "ticks": 75956195365,
+      "frequency": 10000000,
+      "rawBefore": 2365.352040173,
+      "rawAfter": 2365.587966373
+    },
+    "hostClockSummary": {
+      "elapsedSeconds": 300.2281244,
+      "rawElapsedLowerBound": 300.0005635000002,
+      "rawElapsedUpperBound": 300.44126080000024,
+      "utcCounterDriftSeconds": -0.00112440000003744,
+      "stable": true
+    }
+  },
+  "independentRestoration": {
+    "checkedAtUTC": "2026-10-26T04:22:03.797111+00:00",
+    "clockSource": "tsc",
+    "timesyncdActive": "active",
+    "timesyncdEnabled": "enabled",
+    "bootID": "31f60f8c-e23d-4998-a544-701acc546a7d",
+    "taskStorageMounted": false,
+    "ownedRuntimeRemaining": [],
+    "result": "PASS"
+  },
+  "controllerRestoredSameBoot": true,
+  "systemRestored": true,
+  "storageUnmounted": true,
+  "ownedRuntimeRemaining": [],
+  "otherTests": "NOT_RUN_AS_INSTRUCTED",
+  "oldEvidenceReuse": "Unchanged function/fault/capacity/isolation/rollback/drain/actual30minute/scopedRealme proof retained at original versions per final-evidence-review; no promotion to same-version full matrix",
+  "historicalSingleFails": "PRESERVED_NOT_RELABELED_OR_REPLACED_BY_POOLED_RULE",
+  "productCodeChanged": false,
+  "extraSampling": false,
+  "existingDirectoriesMigrated": false,
+  "newOutputRoot": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024",
+  "commitPushMergeDeploy": false,
+  "nextAction": "Report the one remaining steady-expanded P95 failure and recorded phase evidence to coordinator, await instructions; phase6 not started. No retry, additional sample or product fix performed.",
+  "report": "stage-5-performance-gaps-execution.md",
+  "reportSHA256": "952d60e2e658b5d506b2ca5ae2c1b8880e2a17cd139fd52c22ae538cf3d988f8",
+  "completionNotification": {
+    "status": "SENT_TO_COORDINATOR",
+    "atUTC": "2026-10-26T04:27:35.641446+00:00",
+    "targetThreadId": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "authorization": "Current user explicitly allowed sending this task conclusion and paths; follow-up reports the two requested fixed cases."
+  },
+  "staticVerification": {
+    "atUTC": "2026-10-26T04:27:03.952162+00:00",
+    "sourceDigestUnchanged": true,
+    "allNewArtifactHashesMatch": true,
+    "allReportLinksExist": true,
+    "historicalReportAndPriorReplyRawUnchanged": true,
+    "otherLedgerEntriesDeepEqual": 146,
+    "performanceMatrix": "8_ROWS_EXPLICIT_VERSIONS_1_CURRENT_FAIL",
+    "gitDiffCheck": "PASS"
+  }
+}

@@ -1,0 +1,130 @@
+name: Comment snapshot Redis
+on:
+  pull_request:
+    paths:
+      - 'services/api/**'
+      - 'apps/mobile/**'
+      - 'infra/**'
+      - 'packages/openapi/**'
+      - 'tools/comment-snapshot-process/**'
+      - '.github/workflows/comment-snapshot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: comment-snapshot-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  actual-process-acceptance:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - name: Install isolated PostgreSQL and Redis tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 redis-server
+          GOBIN=/usr/local/bin go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
+      - name: Actual API processes, capacity, faults, matched performance and fixed TTL
+        run: |
+          mkdir -m 700 "$RUNNER_TEMP/comment-snapshot-process"
+          python3 tools/comment-snapshot-process/campaign.py --root "$RUNNER_TEMP/comment-snapshot-process" --source "$GITHUB_WORKSPACE" --redis /usr/bin/redis-server
+      - name: Upload redacted acceptance summaries
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: comment-snapshot-process-acceptance
+          path: |
+            ${{ runner.temp }}/comment-snapshot-process/campaign-summary.json
+            ${{ runner.temp }}/comment-snapshot-process/bin/binary-manifest.json
+            ${{ runner.temp }}/comment-snapshot-process/performance-*/process-*/normalized-performance.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/compatibility-summary.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/summary.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/capacity-performance.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/api-faults.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/api-admission-isolation.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/api-rollback.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/nonce-growth.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/long-read-result.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/long-read-failure.json
+            ${{ runner.temp }}/comment-snapshot-process/functional/process-*/api-drain.json
+          if-no-files-found: warn
+  isolated-snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+          cache-dependency-path: services/api/go.sum
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      - name: Compile production Dart transport probe
+        working-directory: apps/mobile
+        run: |
+          flutter pub get --enforce-lockfile
+          dart compile exe integration/comment_snapshot_live_probe.dart -o "$RUNNER_TEMP/comment-snapshot-live-probe"
+          echo "COMMENT_SNAPSHOT_LIVE_PROBE=$RUNNER_TEMP/comment-snapshot-live-probe" >> "$GITHUB_ENV"
+      - name: Install isolated runtimes
+        run: sudo apt-get update && sudo apt-get install -y postgresql-16 redis-server python3-venv
+      - name: Install pinned Goose and Python tools
+        run: |
+          GOBIN=/usr/local/bin go install github.com/pressly/goose/v3/cmd/goose@v3.22.1
+          /usr/bin/python3 -m venv "$RUNNER_TEMP/snapshot-python"
+          "$RUNNER_TEMP/snapshot-python/bin/pip" install -r services/api/media/requirements.txt -r packages/openapi/requirements-check.txt
+          echo "POST_MEDIA_PYTHON=$RUNNER_TEMP/snapshot-python/bin/python" >> "$GITHUB_ENV"
+      - name: Build and vet backend
+        working-directory: services/api
+        run: |
+          go build -mod=readonly ./...
+          go vet -mod=readonly ./...
+          go test -mod=readonly -race -count=1 ./internal/readtiming
+      - name: Real Redis and disposable SQL regressions
+        run: |
+          export PATH="/usr/lib/postgresql/16/bin:$PATH"
+          test -x "$COMMENT_SNAPSHOT_LIVE_PROBE"
+          sh services/api/authlab/run-comment-snapshot-isolated.sh
+      - name: Session result empty-pass boundaries in disposable SQL
+        env:
+          COMMENT_TEST_PATTERN: '^(TestSessionResultPrecheck|TestSessionResultCleanupPreservesPermanentTombstone$|TestDurableWorker|TestGateCancellationBeforeCheckpointRollsBackPostgres$|TestGateCancellationAfterCheckpointCompletesPostgres$)'
+        run: |
+          export PATH="/usr/lib/postgresql/16/bin:$PATH"
+          sh services/api/authlab/run-comment-text-isolated.sh
+      - name: Complete API contracts
+        run: |
+          "$POST_MEDIA_PYTHON" packages/openapi/check-specs.py
+          "$POST_MEDIA_PYTHON" tools/check-comment-text-contract.py
+  mobile-snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      - name: Install SQLite test link library
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
+      - name: Analyze, test snapshot recovery and build client
+        working-directory: apps/mobile
+        run: |
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+          flutter test --no-pub test/comment_snapshot_test.dart test/comment_views_test.dart test/comment_runtime_test.dart test/comment_http_test.dart test/comment_core_test.dart test/comment_journal_test.dart test/comment_failure_view_test.dart
+          flutter build bundle --no-pub --target-platform android-arm64

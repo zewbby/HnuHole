@@ -1,0 +1,303 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "id": "P5-D1",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "high",
+  "updatedAtUTC": "2026-10-26T10:33:28.792865+00:00",
+  "status": "UNRESOLVED_CLOCK_PREFLIGHT_FAILED_AFTER_SINGLE_AUTHORIZED_REPAIR",
+  "hypothesisVerdict": "NOT_EVALUATED",
+  "thresholds": {
+    "requiredHits": 48,
+    "plannedRedisRequests": 60,
+    "validationShare": 0.7,
+    "requiredRequestShare": 0.8
+  },
+  "measuredPairs": 0,
+  "warmupRequests": 0,
+  "HTTPRequests": 0,
+  "formalHTTPFixtureStarted": false,
+  "normalWorkerLIVEEvidence": "NOT_RUN_FORMAL_FIXTURE_NOT_STARTED",
+  "luaPhaseDurations": "NOT_MEASURED",
+  "productSourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "diagnosticSourceDigest": "24bad5539ed9870c8be26c9f0c6ca1655bbaff06d465b15835e86d4f9810f82e",
+  "diagnosticAPIBinarySHA256": "dc91218554e279db1baaa49faeaee76fde0aba06f6acf3e76f056faaae4a3c88",
+  "staticEquivalence": {
+    "result": "PASS",
+    "changedGoSemanticRestoration": {
+      "services/api/internal/commentsnapshot/redis.go": "PASS_REVERSED_OBSERVATIONS_NORMALIZED_EXACT",
+      "services/api/internal/readtiming/readtiming.go": "PASS_REVERSED_OBSERVATIONS_NORMALIZED_EXACT",
+      "services/api/internal/authprivacy/community_comment_snapshots.go": "PASS_REVERSED_OBSERVATIONS_NORMALIZED_EXACT"
+    },
+    "otherAPIFilesByteEqual": 405,
+    "authoritativeLua": "BYTE_EQUAL",
+    "publicAuthorization": "BYTE_EQUAL",
+    "observationOnly": true,
+    "focused-real-redis-tests": {
+      "sha256": "6064dc41d72df70c0dfd4e41f43170ab713803b0e9442cf99e682cafa705cadb",
+      "topLevelPassCount": 5
+    },
+    "focused-timing-tests": {
+      "sha256": "34e96e027db7278e694f8e3b8f9d5af3a68959bb511f562bfa81e3b82b8086a5",
+      "topLevelPassCount": 0
+    },
+    "build-vet": {
+      "sha256": "2091e0e2ef6576b095cce4f2dc49b09642bb8404769d20e309891aa67c1f10ae",
+      "topLevelPassCount": 0
+    }
+  },
+  "checks": {
+    "prepare-overlay": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:24:25.782549+00:00"
+    },
+    "gofmt": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:24:27.410750+00:00"
+    },
+    "build-vet": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:24:44.168947+00:00"
+    },
+    "focused-real-redis-tests": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:25:35.953985+00:00"
+    },
+    "focused-timing-tests": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:25:37.281911+00:00"
+    },
+    "build-api": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:25:40.714857+00:00"
+    },
+    "build-authdev": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:25:41.456281+00:00"
+    },
+    "build-commentsnapshotctl": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:25:41.988889+00:00"
+    },
+    "build-ratelimitctl": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:25:42.520450+00:00"
+    },
+    "build-snapshot-seed": {
+      "exitCode": 0,
+      "endedAtUTC": "2026-10-26T10:25:43.048319+00:00"
+    },
+    "initial-clock-preflight": {
+      "exitCode": 1,
+      "endedAtUTC": "2026-10-26T10:28:19.190275+00:00"
+    },
+    "repaired-clock-preflight": {
+      "exitCode": 1,
+      "endedAtUTC": "2026-10-26T10:29:48.035614+00:00"
+    }
+  },
+  "initialClockPreflight": {
+    "result": "ENVIRONMENT_UNSTABLE",
+    "settlingRawSeconds": 0,
+    "plannedRawSeconds": 300,
+    "maximumAllowedDriftSeconds": 0.2,
+    "rows": [
+      {
+        "rawElapsed": 6.690999953207211e-06,
+        "monoElapsed": 5.83500002449e-06,
+        "utcElapsed": 5.245208740234375e-06,
+        "utcRawDriftSeconds": -1.4457912129728356e-06,
+        "monoRawDriftSeconds": -8.559999287172104e-07
+      },
+      {
+        "rawElapsed": 30.000136022999982,
+        "monoElapsed": 30.000128974000006,
+        "utcElapsed": 30.000128984451294,
+        "utcRawDriftSeconds": -7.038548687887669e-06,
+        "monoRawDriftSeconds": -7.048999975722836e-06
+      },
+      {
+        "rawElapsed": 60.00011488399997,
+        "monoElapsed": 60.00010612599999,
+        "utcElapsed": 60.00010585784912,
+        "utcRawDriftSeconds": -9.026150848967518e-06,
+        "monoRawDriftSeconds": -8.757999978570297e-06
+      },
+      {
+        "rawElapsed": 90.00019092500003,
+        "monoElapsed": 90.00016267699999,
+        "utcElapsed": 90.00016260147095,
+        "utcRawDriftSeconds": -2.8323529079443688e-05,
+        "monoRawDriftSeconds": -2.8248000035091536e-05
+      },
+      {
+        "rawElapsed": 120.00012690599993,
+        "monoElapsed": 120.00009385499999,
+        "utcElapsed": 120.00009393692017,
+        "utcRawDriftSeconds": -3.2969079768463416e-05,
+        "monoRawDriftSeconds": -3.3050999945771764e-05
+      },
+      {
+        "rawElapsed": 150.00017258600002,
+        "monoElapsed": 150.00012652000004,
+        "utcElapsed": 153.66200757026672,
+        "utcRawDriftSeconds": 3.6618349842667044,
+        "monoRawDriftSeconds": -4.6065999981692585e-05
+      }
+    ],
+    "maximumObservedDriftSeconds": 3.6618349842667044,
+    "hostClockInitial": {
+      "utcMs": 1793010345090,
+      "ticks": 303338083074,
+      "frequency": 10000000,
+      "rawBefore": 436.090625368,
+      "rawAfter": 438.017628337
+    },
+    "hostClockFinal": {
+      "utcMs": 1793010495384,
+      "ticks": 304841027030,
+      "frequency": 10000000,
+      "rawBefore": 588.018215938,
+      "rawAfter": 588.257737706
+    },
+    "hostClockSummary": {
+      "elapsedSeconds": 150.2943956,
+      "rawElapsedLowerBound": 150.000587601,
+      "rawElapsedUpperBound": 152.16711233799992,
+      "utcCounterDriftSeconds": -0.0003955999999902815,
+      "stable": true
+    }
+  },
+  "repairedClockPreflight": {
+    "result": "ENVIRONMENT_UNSTABLE",
+    "settlingRawSeconds": 60,
+    "plannedRawSeconds": 300,
+    "maximumAllowedDriftSeconds": 0.2,
+    "rows": [
+      {
+        "rawElapsed": 7.2999999929379555e-06,
+        "monoElapsed": 6.690999953207211e-06,
+        "utcElapsed": 5.7220458984375e-06,
+        "utcRawDriftSeconds": -1.5779540945004555e-06,
+        "monoRawDriftSeconds": -6.090000397307449e-07
+      },
+      {
+        "rawElapsed": 31.5284858,
+        "monoElapsed": 30.00011275299994,
+        "utcElapsed": 30.000112771987915,
+        "utcRawDriftSeconds": -1.5283730280120835,
+        "monoRawDriftSeconds": -1.5283730470000592
+      }
+    ],
+    "maximumObservedDriftSeconds": 1.5283730470000592,
+    "hostClockInitial": {
+      "utcMs": 1793010556127,
+      "ticks": 305448457923,
+      "frequency": 10000000,
+      "rawBefore": 648.773070567,
+      "rawAfter": 648.997593367
+    },
+    "hostClockFinal": {
+      "utcMs": 1793010587896,
+      "ticks": 305766150473,
+      "frequency": 10000000,
+      "rawBefore": 680.526572367,
+      "rawAfter": 680.764488367
+    },
+    "hostClockSummary": {
+      "elapsedSeconds": 31.769255,
+      "rawElapsedLowerBound": 31.528978999999936,
+      "rawElapsedUpperBound": 31.991417800000022,
+      "utcCounterDriftSeconds": -0.0002550000000027808,
+      "stable": true
+    }
+  },
+  "clockRepairAttemptCount": 1,
+  "restoration": {
+    "verifiedAtUTC": "2026-10-26T10:30:32.538981+00:00",
+    "clockSource": "tsc",
+    "timesyncdActive": "active",
+    "timesyncdEnabled": "enabled",
+    "bootID": "eb99cf06-30ef-4272-b979-df77f66cc91b",
+    "mountActive": false,
+    "result": "PASS"
+  },
+  "ownedRuntimeRemaining": [],
+  "storageUnmounted": true,
+  "productCodeChanged": false,
+  "otherLedgerEntries": {
+    "count": 146,
+    "beforeSHA256": "e88aa95eb9543c25b320882b84b7d1059327b271e05f3f6dcfb9bc7689991026",
+    "afterSHA256": "e88aa95eb9543c25b320882b84b7d1059327b271e05f3f6dcfb9bc7689991026",
+    "deepEqual": true
+  },
+  "productPerformanceAcceptance": "NOT_RUN_OLD_7.5716285574_PERCENT_FAIL_RETAINED",
+  "phase5Complete": false,
+  "phase6Started": false,
+  "preparationCorrection": {
+    "priorRecord": "/mnt/d/HnuHole-task-storage/comment-snapshot-redis-20261024/p5d1-r1-preparation-failure.json",
+    "retainedPartialDirectory": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/d-output-native/p5d1-r1-incomplete-preparation",
+    "HTTPRequestsBeforeCorrection": 0
+  },
+  "samplingRetry": false,
+  "nextAction": "Resolve clock-domain inconsistency and obtain explicit new dispatch before reopening the unmeasured fixed diagnostic; no product fix selected.",
+  "observationSourceExport": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-observation-source",
+  "artifacts": {
+    "p5d1-r1-run.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-run.json",
+      "sha256": "fa7bcfd7ab89bd812da8d97b9bc19a22b58b1a17138ae512c1413be4ea1d6023"
+    },
+    "p5d1-r1-initial-clock-preflight.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-initial-clock-preflight.json",
+      "sha256": "9eeb5c31f4aa3897e0d7be18f6a20f83298503dbd0189be96969a373fdadab25"
+    },
+    "p5d1-r1-repaired-clock-preflight.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-repaired-clock-preflight.json",
+      "sha256": "12c6565755d9fe0c3a61e642ae09787e47d9c8bb6d3d18df3d19edb6ea963b62"
+    },
+    "p5d1-r1-independent-restoration.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-independent-restoration.json",
+      "sha256": "3df61d0c3849b6dacbffd7fbc67fed1bfae0b1b886ebc868666126843226f469"
+    },
+    "p5d1-r1-static-verification.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-static-verification.json",
+      "sha256": "1c95524c5df147a469331ae2100572ee256539d4988842c00edccbb77cfb8a09"
+    },
+    "p5d1-r1-protocol.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-protocol.json",
+      "sha256": "1fa4cb04ff2b5564493b9fb7f246636ab723ea68755b27089fad3f6ced36abe0"
+    },
+    "p5d1-r1-observation-overlay.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-observation-overlay.json",
+      "sha256": "ddf7f39bac8df031770238377654613af07b7295ff94cae00ef570097e949d8e"
+    },
+    "p5d1-r1-frozen-manifest.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-frozen-manifest.json",
+      "sha256": "3e0993e5349ec8011f749c11a9194fbd24e1b4fc5015c145744e21a359b6ee1b"
+    },
+    "p5d1-r1-clock-switch-inventory.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-clock-switch-inventory.json",
+      "sha256": "2449b197cef7cc0d2b944e3fcbcdcc1cbb56754de4b760dc3480ba7a8e407ead"
+    },
+    "p5d1-r1-preparation-failure.json": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-r1-preparation-failure.json",
+      "sha256": "96a1b46da86470691e1ba2860a80e4b5593e593068a23341ba18898707fe2b5e"
+    },
+    "p5d1_master.py": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1_master.py",
+      "sha256": "cc4972b3c21e677ceaf28349a7439c1e30c45c457ea91e0478459b332d8512a1"
+    },
+    "p5d1_prepare.py": {
+      "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1_prepare.py",
+      "sha256": "387905e80e834934d371b8fa6f98864b9b5396335321740218577abd8f1a781b"
+    }
+  },
+  "report": "E:\\Hnuhole-env\\source\\HnuHole-comment-snapshot-redis\\docs\\design\\comment-snapshot-redis\\stage-5-p5d1-execution.md",
+  "reportSHA256": "7e1cf1ec33813c044bb0ab2a4c7714aef6afd2784dc55821cb76b8f9ec95a5bc",
+  "completionNotification": {
+    "status": "SENT_TO_COORDINATOR_WITH_EXISTING_HUMAN_AUTHORIZATION",
+    "threadId": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "sentAtUTC": "2026-10-26T10:34:44.710117+00:00"
+  },
+  "commitPushMergeDeploy": false,
+  "gitDiffCheck": "PASS"
+}

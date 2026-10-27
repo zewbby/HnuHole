@@ -1,0 +1,348 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 7,
+  "pr": "https://github.com/zewbby/HnuHole/pull/80",
+  "testedHead": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+  "base": "c17a66734f935f15da5e0c9407d5b9ebdccff287",
+  "status": "PASS_15_WORKFLOWS_26_ACTUAL_JOBS_1_INTENTIONAL_MANUAL_PERFORMANCE_SKIP",
+  "workflowCount": 15,
+  "actualJobsPass": 26,
+  "intentionalSkippedJobs": [
+    "actual-process-acceptance"
+  ],
+  "workflows": [
+    {
+      "id": 40342672964,
+      "name": "Collaboration",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672901,
+      "name": "Community text contract",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342673013,
+      "name": "Shared rate limit",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342673219,
+      "name": "Auth feedback",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672779,
+      "name": "Feed backend",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672791,
+      "name": "Feed UI",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672360,
+      "name": "Identity avatars and initial entry",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342673035,
+      "name": "Comments backend text",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342673000,
+      "name": "Comment snapshot Redis",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672990,
+      "name": "Post images",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672399,
+      "name": "Report moderation",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672338,
+      "name": "Direct message chat",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672289,
+      "name": "Comments core",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342672305,
+      "name": "Android prerelease",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40342673110,
+      "name": "Authorization Gate",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "checks": [
+    {
+      "id": 121641361512,
+      "name": "rehearsal",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672305/job/121641361512"
+    },
+    {
+      "id": 121641361386,
+      "name": "candidate",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672305/job/121641361386"
+    },
+    {
+      "id": 121641302464,
+      "name": "policy",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672964/job/121641302464"
+    },
+    {
+      "id": 121641243093,
+      "name": "actual-process-acceptance",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "skipped",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342673000/job/121641243093"
+    },
+    {
+      "id": 121641242540,
+      "name": "flutter",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672990/job/121641242540"
+    },
+    {
+      "id": 121641242434,
+      "name": "go-host",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672990/job/121641242434"
+    },
+    {
+      "id": 121641242197,
+      "name": "isolated-snapshot",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342673000/job/121641242197"
+    },
+    {
+      "id": 121641242114,
+      "name": "flutter-auth-regression",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342673219/job/121641242114"
+    },
+    {
+      "id": 121641241801,
+      "name": "mobile-recovery",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342673013/job/121641241801"
+    },
+    {
+      "id": 121641241756,
+      "name": "go-postgres",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672990/job/121641241756"
+    },
+    {
+      "id": 121641241497,
+      "name": "mobile-snapshot",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342673000/job/121641241497"
+    },
+    {
+      "id": 121641241494,
+      "name": "text-component",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342673035/job/121641241494"
+    },
+    {
+      "id": 121641241441,
+      "name": "flutter-and-real-feed",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672791/job/121641241441"
+    },
+    {
+      "id": 121641241415,
+      "name": "isolated-admission",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342673013/job/121641241415"
+    },
+    {
+      "id": 121641241315,
+      "name": "gate-postgres",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342673110/job/121641241315"
+    },
+    {
+      "id": 121641240259,
+      "name": "feed-postgres",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672779/job/121641240259"
+    },
+    {
+      "id": 121641240145,
+      "name": "contract",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672901/job/121641240145"
+    },
+    {
+      "id": 121641240125,
+      "name": "admin",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672399/job/121641240125"
+    },
+    {
+      "id": 121641239812,
+      "name": "contract",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672289/job/121641239812"
+    },
+    {
+      "id": 121641239563,
+      "name": "moderation-postgres",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672399/job/121641239563"
+    },
+    {
+      "id": 121641239314,
+      "name": "avatar-flutter",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672360/job/121641239314"
+    },
+    {
+      "id": 121641239256,
+      "name": "client",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672289/job/121641239256"
+    },
+    {
+      "id": 121641238902,
+      "name": "avatar-postgres-https",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672360/job/121641238902"
+    },
+    {
+      "id": 121641238893,
+      "name": "domain",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672289/job/121641238893"
+    },
+    {
+      "id": 121641238819,
+      "name": "scope",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672305/job/121641238819"
+    },
+    {
+      "id": 121641238709,
+      "name": "flutter-and-android",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672338/job/121641238709"
+    },
+    {
+      "id": 121641238247,
+      "name": "reliable-chat-sql",
+      "head_sha": "41eaf5e4334ca2fe77503588e18d98c83f51ec27",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/zewbby/HnuHole/actions/runs/40342672338/job/121641238247"
+    }
+  ],
+  "observedAtUTC": "2026-10-26T14:57:24.787994+00:00",
+  "priorFailuresPreserved": [
+    {
+      "head": "21f52f9e70f7b5526f271019e283b178cf8ee8c5",
+      "job": "gate-postgres",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40337851599/job/121624141118",
+      "fix": "7c115ebd8de61fab1d93033c22b690b9f2bc25c4"
+    },
+    {
+      "head": "7c115ebd8de61fab1d93033c22b690b9f2bc25c4",
+      "job": "Post images/flutter",
+      "url": "https://github.com/zewbby/HnuHole/actions/runs/40340519713/job/121633654425",
+      "fix": "41eaf5e4334ca2fe77503588e18d98c83f51ec27"
+    }
+  ],
+  "productLogicChangedDuringCIFixes": false,
+  "localAcceptanceRerun": false,
+  "performanceStatus": "DEFERRED_RELIABLE_ENVIRONMENT_REQUIRED_BEFORE_REDIS_ENABLEMENT_ORIGINAL_FAIL_PRESERVED",
+  "defaultBackend": "postgres",
+  "readRedis": false,
+  "p5d1MeasuredPairs": 0,
+  "mergeAuthorized": false,
+  "deploymentAuthorized": false,
+  "redisEnablementAllowed": false,
+  "finalReceiptCommitChecks": "Use PR80 current-head Checks and D delivery-evidence.json; this report is frozen to testedHead, not a self-referential final SHA."
+}

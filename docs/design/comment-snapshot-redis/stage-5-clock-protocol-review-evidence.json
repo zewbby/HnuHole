@@ -1,0 +1,192 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "model": "gpt-6-astra",
+  "reasoningEffort": "xhigh",
+  "updatedAtUTC": "2026-10-26T10:51:34.520405+00:00",
+  "status": "PROTOCOL_REVIEW_COMPLETE_ENVIRONMENT_BLOCK_CONFIRMED",
+  "verdict": "QPC_WITNESSED_RAW_SUPPORTED_IN_OBSERVED_WINDOW; MONOTONIC_REALTIME_GETTIMEOFDAY_NOT_TRUSTWORTHY_FOR_CURRENT_RUN; P5D1_REMAINS_BLOCKED",
+  "oldQPCIntervalAudit": {
+    "initial": {
+      "qpcElapsedSeconds": 150.2943956,
+      "rawCorrespondingIntervalSeconds": [
+        150.000587601,
+        152.16711233799992
+      ],
+      "guestLoopLast": {
+        "rawElapsed": 150.00017258600002,
+        "monoElapsed": 150.00012652000004,
+        "utcElapsed": 153.66200757026672,
+        "utcRawDriftSeconds": 3.6618349842667044,
+        "monoRawDriftSeconds": -4.6065999981692585e-05
+      },
+      "qpcMonotonicEndpointsAvailable": false
+    },
+    "repaired": {
+      "qpcElapsedSeconds": 31.769255,
+      "rawCorrespondingIntervalSeconds": [
+        31.528978999999936,
+        31.991417800000022
+      ],
+      "guestLoopLast": {
+        "rawElapsed": 31.5284858,
+        "monoElapsed": 30.00011275299994,
+        "utcElapsed": 30.000112771987915,
+        "utcRawDriftSeconds": -1.5283730280120835,
+        "monoRawDriftSeconds": -1.5283730470000592
+      },
+      "qpcMonotonicEndpointsAvailable": false
+    }
+  },
+  "singleObservation": {
+    "path": "D:\\HnuHole-task-storage\\comment-snapshot-redis-20261024\\p5d1-clock-review-observation.json",
+    "sha256": "e1cfbc1d319c6e43d6943c5dae7ecab0fd11f3cb15d891ba3aa6c3d20f8ea317",
+    "samples": 414,
+    "qpcElapsedSeconds": 45.0265374,
+    "hostUTCElapsedSeconds": 45.026,
+    "independentClockSummaries": {
+      "python_raw": {
+        "durationIntervalSeconds": [
+          45.023311199,
+          45.033582484
+        ],
+        "maximumIntervalExclusionSeconds": 0,
+        "maximumBracketSeconds": 0.009860038,
+        "medianBracketSeconds": 0.000381773,
+        "negativeBrackets": 0,
+        "negativeAdjacentIntervals": 0,
+        "adjacentExclusionsOver50ms": 0
+      },
+      "python_monotonic": {
+        "durationIntervalSeconds": [
+          41.489433572,
+          41.499422456
+        ],
+        "maximumIntervalExclusionSeconds": 3.5272047750000013,
+        "maximumBracketSeconds": 0.009584321,
+        "medianBracketSeconds": 0.000348014,
+        "negativeBrackets": 0,
+        "negativeAdjacentIntervals": 0,
+        "adjacentExclusionsOver50ms": 0
+      },
+      "python_realtime": {
+        "durationIntervalSeconds": [
+          41.489435209,
+          41.49942079
+        ],
+        "maximumIntervalExclusionSeconds": 3.5272061360000038,
+        "maximumBracketSeconds": 0.009582718,
+        "medianBracketSeconds": 0.000346784,
+        "negativeBrackets": 0,
+        "negativeAdjacentIntervals": 0,
+        "adjacentExclusionsOver50ms": 0
+      },
+      "syscall_raw": {
+        "durationIntervalSeconds": [
+          45.023339641,
+          45.033495992
+        ],
+        "maximumIntervalExclusionSeconds": 0,
+        "maximumBracketSeconds": 0.009773746,
+        "medianBracketSeconds": 0.0003597085,
+        "negativeBrackets": 0,
+        "negativeAdjacentIntervals": 0,
+        "adjacentExclusionsOver50ms": 0
+      },
+      "syscall_monotonic": {
+        "durationIntervalSeconds": [
+          41.489467667,
+          41.499319899
+        ],
+        "maximumIntervalExclusionSeconds": 3.5273053940000025,
+        "maximumBracketSeconds": 0.009481673,
+        "medianBracketSeconds": 0.0003229245,
+        "negativeBrackets": 0,
+        "negativeAdjacentIntervals": 0,
+        "adjacentExclusionsOver50ms": 0
+      },
+      "syscall_realtime": {
+        "durationIntervalSeconds": [
+          41.489474419,
+          41.499312312
+        ],
+        "maximumIntervalExclusionSeconds": 3.5273110830000007,
+        "maximumBracketSeconds": 0.009473731,
+        "medianBracketSeconds": 0.000318921,
+        "negativeBrackets": 0,
+        "negativeAdjacentIntervals": 0,
+        "adjacentExclusionsOver50ms": 0
+      },
+      "libc_gettimeofday": {
+        "durationIntervalSeconds": [
+          41.489487,
+          41.499295
+        ],
+        "maximumIntervalExclusionSeconds": 3.527324,
+        "maximumBracketSeconds": 0.009456,
+        "medianBracketSeconds": 0.00031,
+        "negativeBrackets": 0,
+        "negativeAdjacentIntervals": 0,
+        "adjacentExclusionsOver50ms": 0
+      }
+    },
+    "allSamplesRetained": true,
+    "systemStateUnchanged": true,
+    "systemState": {
+      "bootID": "eb99cf06-30ef-4272-b979-df77f66cc91b",
+      "clockSource": "tsc",
+      "timesyncdActive": "active",
+      "timesyncdEnabled": "enabled"
+    },
+    "HTTPRequests": 0,
+    "witnessExitCode": 0,
+    "programPath": "E:\\Hnuhole-env\\source\\HnuHole-comment-snapshot-redis\\tools\\comment-snapshot-process\\p5d1_clock_observe.py",
+    "programSHA256": "63847c1cde30f77590dd78437d2e7597119c05dbffc0a3773dea0742e82cafad"
+  },
+  "sourceTrace": {
+    "pythonVersion": "3.12.3",
+    "kernel": "6.18.54.1-microsoft-standard-WSL2",
+    "redisVersion": "7.0.15",
+    "pythonMonotonic": "libc clock_gettime CLOCK_MONOTONIC",
+    "pythonTime": "libc clock_gettime CLOCK_REALTIME",
+    "pythonHTTP": "clock_gettime CLOCK_MONOTONIC_RAW",
+    "goExplicitSpans": "x/sys unix.ClockGettime direct SYS_CLOCK_GETTIME CLOCK_MONOTONIC_RAW",
+    "goRuntimeElapsedAndTimers": "CLOCK_MONOTONIC, verified local Go1.22 runtime source",
+    "redisTIME": "gettimeofday, upstream 7.0.15 source",
+    "redisAbsoluteExpiry": "Unix absolute expiry and realtime-derived comparisons",
+    "redisCommandstats": "conditional hardware monotonic vs ustime; actual runtime type not probed"
+  },
+  "limitations": [
+    "Single restored-tsc window does not calibrate earlier Hyper-V interval or guarantee future stability.",
+    "Specific kernel/host adjustment cause unresolved.",
+    "No monotonic backward step established.",
+    "RAW-only measurement cannot validate Lua realtime segments or monotonic product timeout/worker behavior.",
+    "Do not rescale clocks or retroactively change prior performance verdicts."
+  ],
+  "productSourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "productCodeChanged": false,
+  "systemClockChanges": false,
+  "WSLRestarted": false,
+  "taskStorageMounted": false,
+  "campaignOrRegressionExecuted": false,
+  "observationAttempts": 1,
+  "p5d1MeasuredPairs": 0,
+  "p5d1Hypothesis": "NOT_EVALUATED",
+  "existingP95RegressionPercent": 7.571628557432586,
+  "phase5Complete": false,
+  "phase6Started": false,
+  "otherLedgerEntries": {
+    "count": 146,
+    "beforeSHA256": "e88aa95eb9543c25b320882b84b7d1059327b271e05f3f6dcfb9bc7689991026",
+    "afterSHA256": "e88aa95eb9543c25b320882b84b7d1059327b271e05f3f6dcfb9bc7689991026",
+    "deepEqual": true
+  },
+  "report": "E:\\Hnuhole-env\\source\\HnuHole-comment-snapshot-redis\\docs\\design\\comment-snapshot-redis\\stage-5-clock-protocol-review.md",
+  "reportSHA256": "8884aae3825dda402f91c2ac55b251063723e964e137f40bda88a75170b7e2cf",
+  "completionNotification": {
+    "status": "SENT_WITH_EXISTING_HUMAN_AUTHORIZATION",
+    "threadId": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "sentAtUTC": "2026-10-26T10:53:24.610590+00:00"
+  },
+  "nextAction": "Resolve guest adjusted-clock consistency before any new P5-D1 dispatch; keep RAW plus synchronous QPC witness as duration candidate, no MONOTONIC substitution.",
+  "gitDiffCheck": "PASS"
+}

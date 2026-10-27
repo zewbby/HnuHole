@@ -266,6 +266,13 @@ func (b *boundary) communityCommentsPublic(w http.ResponseWriter, r *http.Reques
 			response, e = backend.GetOwnCommentTask(r.Context(), bearer, route.id)
 		default:
 			q := authprivacy.CommentQuery{ID: route.id, PostID: route.post, Replies: route.kind == "replies", Limit: 50}
+			if hasHeader(r.Header, "X-Comment-Snapshot-Request") {
+				q.SnapshotRequest, e = singleHeader(r.Header, "X-Comment-Snapshot-Request")
+				if e != nil {
+					b.postBad(w, e)
+					return
+				}
+			}
 			var values url.Values
 			values, e = url.ParseQuery(r.URL.RawQuery)
 			if e == nil {

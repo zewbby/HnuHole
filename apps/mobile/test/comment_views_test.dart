@@ -168,8 +168,17 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
   Completer<void>? locationGate;
   final replyRequests = <String>[];
   Object? singleFailure;
+  Completer<void>? singleGate;
   int locationRequests = 0;
   final commentQueries = <Map<String, String>?>[];
+  final snapshotRequests =
+      <({String path, Map<String, String>? query, String? nonce})>[];
+  Future<Map<String, dynamic>> Function(
+    String path,
+    Map<String, String>? query,
+    String? nonce,
+  )?
+  snapshotHandler;
   bool moreReplies = false;
   Completer<void>? pageGate;
   List<Map<String, dynamic>> rootRows = [row(root, '甲的主评论')];
@@ -221,8 +230,15 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
     Map<String, String>? query,
     dynamic bytes,
     String? mime,
+    String? snapshotRequest,
   }) async {
     if (path.endsWith('/comments')) commentQueries.add(query);
+    if (path.endsWith('/comments') || path.endsWith('/replies')) {
+      snapshotRequests.add((path: path, query: query, nonce: snapshotRequest));
+      if (snapshotHandler != null) {
+        return snapshotHandler!(path, query, snapshotRequest);
+      }
+    }
     if (path.endsWith('/comments') && pageGate != null) await pageGate!.future;
     if (loadFailure != null) throw loadFailure!;
     if (path.endsWith('/replies')) replyRequests.add(path);
@@ -237,6 +253,7 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
         .where((r) => path.endsWith('/${r['id']}'))
         .firstOrNull;
     if (single != null) {
+      await singleGate?.future;
       if (singleFailure != null) throw singleFailure!;
       return single;
     }
@@ -261,6 +278,7 @@ class _Runtime extends ChangeNotifier implements CommentRuntime {
 }
 
 void main() {
+  snapshotRecoveryTests();
   detailReferenceTests();
   quickReplyTests();
   testWidgets(
@@ -1863,9 +1881,17 @@ void detailReferenceTests() {
       await tester.drag(find.byType(ListView), const Offset(0, -1500));
       await tester.pumpAndSettle();
       expect(r.replyRequests.length, inInclusiveRange(1, 15));
-      expect(find.text('回复暂时无法读取，请重试。'), findsOneWidget);
+      expect(find.text('回复暂时无法读取，请重试。'), findsWidgets);
       expect(find.byTooltip('选择一张图片').hitTestable(), findsOneWidget);
-      expect(find.text('重试回复'), findsWidgets);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is TextButton &&
+              w.key is ValueKey<String> &&
+              (w.key! as ValueKey<String>).value.startsWith('retry-replies:'),
+        ),
+        findsWidgets,
+      );
       await tester.pumpWidget(const SizedBox());
     },
   );
@@ -2349,6 +2375,528 @@ void detailReferenceTests() {
         'image/gif',
       );
       expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+}
+
+void snapshotRecoveryTests() {
+  const otherRoot = '66666666-6666-4666-8666-666666666666';
+  Future<_Runtime> setup(WidgetTester tester) async {
+    final r = _Runtime(_MemoryJournal());
+    await r.core.activate(account);
+    addTearDown(r.core.dispose);
+    return r;
+  }
+
+  Future<void> open(WidgetTester tester, _Runtime r) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CommentPostPane(
+            runtime: r,
+            postId: post,
+            postBody: '正文',
+            continuous: true,
+            body: const Text('正文'),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  Map<String, dynamic> mainPage(
+    List<Map<String, dynamic>> rows,
+    String? next,
+  ) => {
+    'snapshotId': 'snapshot',
+    'comments': rows,
+    'nextCursor': next,
+    'totalCount': rows.length,
+  };
+  Map<String, dynamic> replyPage(
+    List<Map<String, dynamic>> rows,
+    String? next,
+  ) => {
+    'snapshotId': 'replies',
+    'rootCommentId': root,
+    'comments': rows,
+    'nextCursor': next,
+    'remainingCount': next == null ? 0 : 2,
+  };
+
+  testWidgets(
+    'manual initial retry preserves the selected sort and committed nonce',
+    (tester) async {
+      final r = await setup(tester);
+      final scopes = <String, String>{};
+      var recentReads = 0;
+      r.snapshotHandler = (path, query, nonce) async {
+        final selected = query?['sort'] ?? 'relevant';
+        final previous = scopes.putIfAbsent(nonce!, () => selected);
+        if (previous != selected) {
+          throw const CommentHttpFailure(400, 'MALFORMED_REQUEST');
+        }
+        if (selected == 'recent' && ++recentReads <= 2) {
+          // The fixture committed this nonce before both responses were lost.
+          throw const CommentHttpFailure(null, 'TRANSPORT');
+        }
+        return mainPage([
+          row(root, selected == 'recent' ? '最近排序内容' : '原相关排序内容')
+            ..['replyCount'] = 0,
+        ], null);
+      };
+      await open(tester, r);
+      final initialNonce = r.snapshotRequests.single.nonce;
+      await tester.tap(find.text('相关'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('最近'));
+      await tester.pumpAndSettle();
+      expect(recentReads, 2);
+      expect(scopes.length, 2);
+      expect(find.text('原相关排序内容'), findsOneWidget);
+      final retryNonce = r.snapshotRequests.last.nonce;
+      expect(retryNonce, isNot(initialNonce));
+      await tester.tap(find.text('评论暂时无法读取，请重新核对。'));
+      await tester.pumpAndSettle();
+      expect(recentReads, 3);
+      expect(r.snapshotRequests.last.query, {'sort': 'recent'});
+      expect(r.snapshotRequests.last.nonce, retryNonce);
+      expect(scopes.length, 2);
+      expect(
+        r.snapshotRequests.skip(1).map((r) => r.nonce),
+        everyElement(retryNonce),
+      );
+      expect(find.text('最近'), findsOneWidget);
+      expect(find.text('最近排序内容'), findsOneWidget);
+      expect(find.text('原相关排序内容'), findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'manual initial retry preserves refresh pin reset draft and pending send',
+    (tester) async {
+      final r = await setup(tester);
+      r.rootRows = [row(root, '服务器排序第一条')..['replyCount'] = 0];
+      await open(tester, r);
+      r.transportFake.publishedId = otherRoot;
+      r.transportFake.onExecute = () {
+        r.rootRows.add(row(otherRoot, '已发表置顶评论')..['replyCount'] = 0);
+        r.ownIds.add(otherRoot);
+      };
+      await r.core.submit(
+        taskId: otherRoot,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '已发表置顶评论'),
+      );
+      await tester.pumpAndSettle();
+      r.transportFake.onExecute = null;
+      r.transportFake.pending = Completer<CommentTask>();
+      final binding = CommentBinding(postId: post, identityId: identity);
+      final pending = r.core.submit(
+        taskId: reply,
+        commandId: commentKey(),
+        binding: binding,
+        content: CommentContent(body: '未决发送内容'),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('inline-comment-input')),
+        '刷新前保留的草稿',
+      );
+      await tester.tap(find.byTooltip('展开回复输入'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('收起回复'));
+      await tester.pumpAndSettle();
+      var refreshReads = 0;
+      r.snapshotHandler = (path, query, nonce) async {
+        if (++refreshReads == 1) {
+          throw const CommentHttpFailure(503, 'COMMENT_SNAPSHOT_CAPACITY');
+        }
+        return mainPage(r.rootRows, null);
+      };
+      final initialNonce = r.snapshotRequests.first.nonce;
+      await tester.ensureVisible(find.byKey(const ValueKey('comment-refresh')));
+      await tester.tap(find.byKey(const ValueKey('comment-refresh')));
+      await tester.pumpAndSettle();
+      expect(refreshReads, 1);
+      final refreshNonce = r.snapshotRequests.last.nonce;
+      expect(refreshNonce, isNot(initialNonce));
+      expect(
+        tester.getTopLeft(find.text('已发表置顶评论')).dy,
+        lessThan(tester.getTopLeft(find.text('服务器排序第一条')).dy),
+      );
+      await tester.tap(find.text('评论列表暂时繁忙，请稍后重试。'));
+      await tester.pumpAndSettle();
+      expect(refreshReads, 2);
+      expect(r.snapshotRequests.last.nonce, refreshNonce);
+      expect(find.text('已发表置顶评论'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('服务器排序第一条')).dy,
+        lessThan(tester.getTopLeft(find.text('已发表置顶评论')).dy),
+      );
+      expect(find.text('未决发送内容'), findsOneWidget);
+      expect(r.journal, isA<_MemoryJournal>());
+      expect((r.journal as _MemoryJournal).values.containsKey(reply), isTrue);
+      await tester.tap(find.text('继续输入'));
+      await tester.pumpAndSettle();
+      expect(find.text('刷新前保留的草稿'), findsOneWidget);
+      r.transportFake.pending!.complete(
+        CommentTask(
+          taskId: reply,
+          binding: binding,
+          attemptVersion: 1,
+          state: CommentTaskState.accepted,
+          contentAvailable: true,
+          canRetry: false,
+          canAbandon: false,
+        ),
+      );
+      await pending;
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'invalid main cursor keeps the old page and draft until successful local refresh',
+    (tester) async {
+      final r = await setup(tester);
+      var initial = 0, continuations = 0;
+      r.snapshotHandler = (path, query, nonce) async {
+        if (query?['cursor'] != null) {
+          continuations++;
+          throw const CommentHttpFailure(400, 'CURSOR_INVALID');
+        }
+        initial++;
+        if (initial == 2) {
+          throw const CommentHttpFailure(503, 'COMMENT_SNAPSHOT_CAPACITY');
+        }
+        return mainPage([
+          row(root, initial == 1 ? '旧名单内容' : '新名单首页')..['replyCount'] = 0,
+        ], initial == 1 ? 'old-cursor' : null);
+      };
+      await open(tester, r);
+      await tester.tap(find.text('发布你的回复'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).last, '保留的未发送草稿');
+      await tester.tap(find.byIcon(Icons.open_in_full));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('收起回复'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('更多评论'));
+      await tester.tap(find.text('更多评论'));
+      await tester.pumpAndSettle();
+      expect(continuations, 1);
+      expect(find.text('旧名单内容'), findsOneWidget);
+      expect(find.text('评论列表已更新，请刷新评论。'), findsOneWidget);
+      await tester.tap(find.text('评论列表已更新，请刷新评论。'));
+      await tester.pumpAndSettle();
+      expect(find.text('旧名单内容'), findsOneWidget);
+      expect(initial, 2);
+      await tester.tap(find.text('评论列表暂时繁忙，请稍后重试。'));
+      await tester.pumpAndSettle();
+      expect(
+        r.snapshotRequests
+            .where((x) => x.query?['cursor'] == null)
+            .toList()[1]
+            .nonce,
+        r.snapshotRequests.last.nonce,
+      );
+      expect(find.text('新名单首页'), findsOneWidget);
+      expect(find.text('旧名单内容'), findsNothing);
+      await tester.tap(find.text('继续输入'));
+      await tester.pumpAndSettle();
+      expect(find.text('保留的未发送草稿'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'reply cursor invalidation refreshes only that floor and replaces rather than appends',
+    (tester) async {
+      final r = await setup(tester);
+      var rootReads = 0;
+      r.snapshotHandler = (path, query, nonce) async {
+        if (path.endsWith('/comments')) {
+          return mainPage([
+            row(root, '楼层甲')..['replyCount'] = 7,
+            row(otherRoot, '楼层乙')..['replyCount'] = 0,
+          ], 'main-cursor');
+        }
+        if (query?['cursor'] != null) {
+          throw const CommentHttpFailure(400, 'CURSOR_INVALID');
+        }
+        rootReads++;
+        return replyPage([
+          row(reply, rootReads == 1 ? '旧回复' : '新回复', floor: root, target: root),
+        ], rootReads == 1 ? 'reply-cursor' : null);
+      };
+      await open(tester, r);
+      await tester.ensureVisible(find.text('展开其余 2 条回复'));
+      await tester.tap(find.text('展开其余 2 条回复'));
+      await tester.pumpAndSettle();
+      expect(find.text('旧回复'), findsOneWidget);
+      final mainRequests = r.commentQueries.length;
+      await tester.ensureVisible(find.text('这层回复已更新，请刷新这层回复。'));
+      await tester.tap(find.text('这层回复已更新，请刷新这层回复。'));
+      await tester.pumpAndSettle();
+      expect(r.commentQueries.length, mainRequests);
+      expect(find.text('新回复'), findsOneWidget);
+      expect(find.text('旧回复'), findsNothing);
+      expect(find.text('楼层甲'), findsOneWidget);
+      expect(find.text('楼层乙'), findsOneWidget);
+      expect(
+        r.snapshotRequests.last.nonce,
+        isNot(
+          r.snapshotRequests
+              .firstWhere((x) => x.path.endsWith('/replies'))
+              .nonce,
+        ),
+      );
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'empty scanned segment offers continuation and shows terminal state only on last page',
+    (tester) async {
+      final r = await setup(tester);
+      r.snapshotHandler = (path, query, nonce) async => query?['cursor'] == null
+          ? mainPage([], 'scanned-position')
+          : mainPage([], null);
+      await open(tester, r);
+      expect(find.text('暂无评论'), findsNothing);
+      expect(find.text('没有更多评论'), findsNothing);
+      await tester.tap(find.text('继续加载评论'));
+      await tester.pumpAndSettle();
+      expect(find.text('暂无评论'), findsOneWidget);
+      expect(find.text('继续加载评论'), findsNothing);
+      expect(r.snapshotRequests.last.query, {'cursor': 'scanned-position'});
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets('new replies stay within their root above the original replies', (
+    tester,
+  ) async {
+    final r = await setup(tester);
+    r.rootRows = [
+      row(otherRoot, '前面的楼层')..['replyCount'] = 0,
+      row(root, '被回复的楼层')..['replyCount'] = 1,
+    ];
+    await open(tester, r);
+    r.transportFake.pending = Completer<CommentTask>();
+    final binding = CommentBinding(
+      postId: post,
+      identityId: identity,
+      rootCommentId: root,
+      targetCommentId: root,
+    );
+    final sent = r.core.submit(
+      taskId: otherRoot,
+      commandId: commentKey(),
+      binding: binding,
+      content: CommentContent(body: '楼层内最新回复'),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      tester.getTopLeft(find.text('前面的楼层')).dy,
+      lessThan(tester.getTopLeft(find.text('被回复的楼层')).dy),
+    );
+    expect(
+      tester.getTopLeft(find.text('被回复的楼层')).dy,
+      lessThan(tester.getTopLeft(find.text('楼层内最新回复')).dy),
+    );
+    expect(
+      tester.getTopLeft(find.text('楼层内最新回复')).dy,
+      lessThan(tester.getTopLeft(find.text('乙回复甲的具体内容')).dy),
+    );
+    r.transportFake.pending!.complete(
+      CommentTask(
+        taskId: otherRoot,
+        binding: binding,
+        attemptVersion: 1,
+        state: CommentTaskState.accepted,
+        contentAvailable: true,
+        canRetry: false,
+        canAbandon: false,
+      ),
+    );
+    await sent;
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets(
+    'explicit refresh removes published temporary pin and restores server order once',
+    (tester) async {
+      final r = await setup(tester);
+      r.rootRows = [row(root, '原排序第一条')..['replyCount'] = 0];
+      await open(tester, r);
+      r.transportFake.publishedId = otherRoot;
+      r.transportFake.onExecute = () {
+        r.rootRows.add(row(otherRoot, '本人新评论')..['replyCount'] = 0);
+        r.ownIds.add(otherRoot);
+      };
+      await r.core.submit(
+        taskId: otherRoot,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '本人新评论'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('本人新评论'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('本人新评论')).dy,
+        lessThan(tester.getTopLeft(find.text('原排序第一条')).dy),
+      );
+      final previousNonce = r.snapshotRequests.first.nonce;
+      await tester.ensureVisible(find.byKey(const ValueKey('comment-refresh')));
+      await tester.tap(find.byKey(const ValueKey('comment-refresh')));
+      await tester.pumpAndSettle();
+      expect(find.text('本人新评论'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('原排序第一条')).dy,
+        lessThan(tester.getTopLeft(find.text('本人新评论')).dy),
+      );
+      expect(r.snapshotRequests.last.nonce, isNot(previousNonce));
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'continuation retries once then manual retry uses the same cursor and deduplicates IDs',
+    (tester) async {
+      final r = await setup(tester);
+      var pages = 0;
+      r.snapshotHandler = (path, query, nonce) async {
+        if (query?['cursor'] == null) {
+          return mainPage([
+            row(root, '已显示评论')..['replyCount'] = 0,
+          ], 'frozen-cursor');
+        }
+        pages++;
+        if (pages < 3) throw const CommentHttpFailure(null, 'TRANSPORT');
+        return mainPage([
+          row(root, '已显示评论')..['replyCount'] = 0,
+          row(otherRoot, '后续评论')..['replyCount'] = 0,
+        ], null);
+      };
+      await open(tester, r);
+      await tester.tap(find.text('更多评论'));
+      await tester.pumpAndSettle();
+      expect(pages, 2);
+      expect(find.text('已显示评论'), findsOneWidget);
+      await tester.tap(find.text('评论暂时无法读取，请重新核对。'));
+      await tester.pumpAndSettle();
+      expect(pages, 3);
+      expect(find.text('已显示评论'), findsOneWidget);
+      expect(find.text('后续评论'), findsOneWidget);
+      expect(
+        r.snapshotRequests
+            .skip(1)
+            .every(
+              (r) => r.query?['cursor'] == 'frozen-cursor' && r.nonce == null,
+            ),
+        isTrue,
+      );
+      expect(find.text('没有更多评论'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'empty reply scan can continue even when current visible count is at most five',
+    (tester) async {
+      final r = await setup(tester);
+      r.snapshotHandler = (path, query, nonce) async {
+        if (path.endsWith('/comments')) {
+          return mainPage([row(root, '少量可见回复的楼层')..['replyCount'] = 1], null);
+        }
+        if (query?['cursor'] == null) {
+          return replyPage([], 'hidden-segment-cursor');
+        }
+        return replyPage([
+          row(reply, '后段可见回复', floor: root, target: root),
+        ], null);
+      };
+      await open(tester, r);
+      await tester.tap(find.text('继续加载回复'));
+      await tester.pumpAndSettle();
+      expect(find.text('后段可见回复'), findsOneWidget);
+      expect(r.snapshotRequests.last.query, {
+        'expanded': 'true',
+        'cursor': 'hidden-segment-cursor',
+      });
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'page failure preserves a visible reading anchor at the failed continuation',
+    (tester) async {
+      final r = await setup(tester);
+      final long = [
+        for (var i = 1; i <= 30; i++)
+          row(
+            '77777777-7777-4777-8777-${i.toString().padLeft(12, '0')}',
+            '阅读位置$i',
+          )..['replyCount'] = 0,
+      ];
+      r.snapshotHandler = (path, query, nonce) async {
+        if (query?['cursor'] != null) {
+          throw const CommentHttpFailure(503, 'COMMENT_SNAPSHOT_CAPACITY');
+        }
+        return mainPage(long, 'scroll-cursor');
+      };
+      await open(tester, r);
+      await tester.scrollUntilVisible(
+        find.text('更多评论'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      final before = tester.getTopLeft(find.text('阅读位置30')).dy;
+      await tester.tap(find.text('更多评论'));
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(find.text('阅读位置30')).dy, closeTo(before, 2));
+      expect(r.commentQueries.last, {'cursor': 'scroll-cursor'});
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'late publication read cannot reinsert an item after explicit snapshot refresh',
+    (tester) async {
+      final r = await setup(tester);
+      r.rootRows = [row(root, '刷新后仍可见')..['replyCount'] = 0];
+      await open(tester, r);
+      r.singleGate = Completer<void>();
+      r.transportFake.publishedId = otherRoot;
+      r.transportFake.onExecute = () {
+        r.rootRows.add(row(otherRoot, '旧读取中的新评论')..['replyCount'] = 0);
+      };
+      await r.core.submit(
+        taskId: otherRoot,
+        commandId: commentKey(),
+        binding: CommentBinding(postId: post, identityId: identity),
+        content: CommentContent(body: '旧读取中的新评论'),
+      );
+      await tester.pumpAndSettle();
+      r.rootRows = [row(root, '刷新后仍可见')..['replyCount'] = 0];
+      await tester.ensureVisible(find.byKey(const ValueKey('comment-refresh')));
+      await tester.tap(find.byKey(const ValueKey('comment-refresh')));
+      await tester.pumpAndSettle();
+      r.singleGate!.complete();
+      await tester.pumpAndSettle();
+      expect(find.text('刷新后仍可见'), findsOneWidget);
+      expect(find.text('旧读取中的新评论'), findsNothing);
       await tester.pumpWidget(const SizedBox());
     },
   );

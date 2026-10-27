@@ -18,10 +18,12 @@ void main() {
         ..usePrivateKeyBytes(utf8.encode(tls.privateKey)),
     );
     final received = <String>[];
+    final receivedNonces = <String?>[];
     final key = AuthCrypto.encode(List.filled(16, 255));
     expect(key, contains('_'));
     server.listen((r) async {
       received.add(r.uri.path);
+      receivedNonces.add(r.headers.value('X-Comment-Snapshot-Request'));
       await r.drain<void>();
       r.response.headers.contentType = ContentType.json;
       r.response.headers.set(
@@ -49,6 +51,26 @@ void main() {
       );
       expect(r.value['state'], 'UNKNOWN_NOT_OBSERVED');
       expect(received, ['/api/v1/comment-commands/$key']);
+      const path =
+          '/api/v1/posts/11111111-1111-4111-8111-111111111111/comments';
+      await transport.send(
+        AuthCrypto.encode(List.filled(32, 4)),
+        'GET',
+        path,
+        snapshotRequest: key,
+      );
+      expect(receivedNonces, [null, key]);
+      await expectLater(
+        transport.send(
+          AuthCrypto.encode(List.filled(32, 4)),
+          'GET',
+          path,
+          query: {'cursor': 'old'},
+          snapshotRequest: key,
+        ),
+        throwsFormatException,
+      );
+      expect(received.length, 2);
     } finally {
       transport.close();
       await server.close(force: true);

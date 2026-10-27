@@ -1,0 +1,66 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "status": "FROZEN_PARAMETERS_HTTP_NOT_STARTED_PREFLIGHT_FAILED",
+  "date": "2026-10-26",
+  "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+  "mode": "compatibility",
+  "paths": [
+    {
+      "name": "replyPreview",
+      "pairs": 300,
+      "expectedComments": 5
+    },
+    {
+      "name": "replyExpanded",
+      "pairs": 300,
+      "expectedComments": 50
+    }
+  ],
+  "pathOrder": "preview then expanded; stop after first failed criterion/environment/error",
+  "warmupPerBackendPerHalf": 30,
+  "concurrency": 1,
+  "requestPaceSeconds": 0.27,
+  "pairOrder": "balanced shuffled blocks of20 pairs, seed20261025, one midpoint process/IP crossover per path",
+  "percentile": "nearest rank: sorted[max(0,ceil(n*.95)-1)]",
+  "decision": "(redis P95 / postgres P95 - 1)*100 <=5 percent",
+  "clock": "HTTP/server CLOCK_MONOTONIC_RAW; fresh strict verified TLS and TCP_NODELAY",
+  "stabilityPreflight": {
+    "plannedRawSeconds": 300,
+    "intervalSeconds": 30,
+    "maximumUTCOrMonotonicRawDriftSeconds": 0.2,
+    "WindowsQPCWitness": "required stable",
+    "firstFailure": "stop, no HTTP sample, no second preflight"
+  },
+  "duringMeasurementClockOffsetVariationMaxSeconds": 2,
+  "worker": {
+    "intervalSeconds": 2,
+    "taskTimeoutSeconds": 15,
+    "batch": 16,
+    "concurrency": 1,
+    "disabled": false
+  },
+  "snapshots": {
+    "ttlSeconds": 1800,
+    "cleanupIntervalSeconds": 10,
+    "maxPerAccount": 1024,
+    "occupiedSeedCount": 1024,
+    "moduleByteBudget": 67108864,
+    "poolSize": 8,
+    "backendCompatibility": "both readPostgres/readRedis=true; createBackend per process"
+  },
+  "liveOccupancy": {
+    "planned": "one SESSION_CREATE/LIVE result produced by real HTTPS POST /auth/sessions for the unused fixture account; assert before/midpoint/after each path",
+    "actuallyCreated": false,
+    "reason": "preflight failed before fixture setup"
+  },
+  "fixtureCommentRows": 11563,
+  "sharedAdmission": "official profile; limits unchanged",
+  "noRetry": true,
+  "noExpansion": true,
+  "noSystemChanges": true,
+  "otherPathsTTLDeviceRegressions": "NOT_RUN_OUT_OF_SCOPE",
+  "driverPath": "tools/comment-snapshot-process/replies_targeted.py",
+  "driverSHA256": "b8fdf4b6d5e540283ac6cf89c80fdb77e3e01552cbc58399ce5b1183f316c64b",
+  "parameterFreezeNote": "clock limits fixed in preflight script before its first sample; HTTP settings declared in this driver before any HTTP request; full manifest finalized after preparation without executing HTTP"
+}

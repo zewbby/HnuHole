@@ -1,0 +1,102 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "status": "PASS_SCOPED_WORKER_PRECHECK_NOT_STAGE5_ACCEPTANCE",
+  "updatedAtUTC": "2026-10-26T02:37:54.328860+00:00",
+  "sourceRoot": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-worker-precheck-r1/source",
+  "sourceDigest": "4b0eef09c8ea55598b1f04828835926dcf4c8af91e268008b7ded8a924fc2807",
+  "apiBinarySHA256": "870950838141b4703f6627ee82ba06d39c4def15697bd9af32dbac116818cbca",
+  "repositoryAndBuiltSourceMatch": true,
+  "build": "PASS",
+  "vet": "PASS_AFFECTED_AUTHPRIVACY_AND_AUTHPRIVACYRUNTIME",
+  "realPostgresRace": {
+    "topLevelPassCount": 15,
+    "passedTests": [
+      "TestGateCancellationAfterCheckpointCompletesPostgres",
+      "TestGateCancellationBeforeCheckpointRollsBackPostgres",
+      "TestSessionResultPrecheckEmptyAndCancelledPostgres",
+      "TestSessionResultPrecheckCandidatesBatchAndLocksPostgres",
+      "TestSessionResultPrecheckTimeoutFallsBackPostgres",
+      "TestSessionResultPrecheckQueryFailureAndCancellationPostgres",
+      "TestSessionResultPrecheckParentBudgetPostgres",
+      "TestSessionResultPrecheckConcurrentArrivalAndRebuildPostgres",
+      "TestSessionResultPrecheckFinalGateAndAbortPostgres",
+      "TestSessionResultPrecheckWorkerAndGateContentionPostgres",
+      "TestSessionResultCleanupPreservesPermanentTombstone",
+      "TestDurableWorkerBoundsConcurrencyAndPropagatesCancellation",
+      "TestDurableWorkerConfigRejectsUnboundedOrShortLeases",
+      "TestDurableWorkerStopsBackoffWithoutAnotherAttempt",
+      "TestDurableWorkerTaskDeadlineEndsBlockingWork"
+    ],
+    "failCount": 0,
+    "skipCount": 0,
+    "durationSeconds": 30.263,
+    "httpPackage": "NO_MATCHING_TESTS_NOT_COUNTED"
+  },
+  "logFiles": {
+    "targeted-sql-race.log": {
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-worker-precheck-r1/logs/targeted-sql-race.log",
+      "sha256": "7376caf816d1714e999ba321c421d53a176a755a66d4c99450a7ccee15ff7a3e"
+    },
+    "build.log": {
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-worker-precheck-r1/logs/build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "vet.log": {
+      "path": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-worker-precheck-r1/logs/vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "diagnosticObservations": [
+    "community_session_results_precheck_test.go:103: W1 empty with 10000 tombstones: duration=4.221741ms Gate snapshots=0",
+    "community_session_results_precheck_test.go:253: W3 blocked hint expired; original parent completed one authorized cleanup; no hint retry",
+    "community_session_results_precheck_test.go:497: W6 Gate row held: empty task returned in 3.230658ms with zero Gate calls"
+  ],
+  "cleanup": {
+    "ownedRuntimeProcesses": [],
+    "temporaryCommentFixturePostgresServers": 0,
+    "clocksource": "tsc",
+    "timesyncdActive": "active",
+    "timesyncdEnabled": "enabled",
+    "systemSettingsChanged": false
+  },
+  "phase5Complete": false,
+  "phase6Started": false,
+  "wholePerformanceCampaign": "NOT_RUN_USER_WITHDRAWAL",
+  "thirtyMinuteTests": "NOT_RUN_UNAFFECTED",
+  "deviceTests": "NOT_RUN_UNAFFECTED",
+  "commitPushMergeDeploy": false,
+  "staticVerification": {
+    "status": "PASS",
+    "atUTC": "2026-10-26T02:41:09.774793+00:00",
+    "changedProductAndTestFiles": {
+      ".github/workflows/comment-snapshot.yml": "c1954e9f48053a7580db8e11990f600d2f4db3377dfb6690f872e7117fba008d",
+      "services/api/internal/authprivacy/community_session_results_precheck_test.go": "bb8f557e98cf145299ad70868bb8e642ff9dfcb991c9d3bec2b0087c58096273",
+      "services/api/internal/authprivacy/community_sessions.go": "8b99d2daf5867bbd1ef5efd605e3a2feb2e06c66efe732aa0f2d78008f89386d"
+    },
+    "unchangedOtherLedgerEntries": 146,
+    "originalGateAndFollowingMethods": "BYTE_EQUIVALENT_AFTER_LF_NORMALIZATION",
+    "reportLocalLinks": "ALL_EXIST",
+    "reportSHA256": "27508748673c97f5bc255c6ee49fe760af6e88a050e154171315622bae07d05e",
+    "gitDiffCheck": "PASS"
+  },
+  "focusedMatrix": {
+    "W1": "PASS_SCOPED_AS_DESCRIBED_IN_EXECUTION_RECORD",
+    "W2": "PASS_SCOPED_AS_DESCRIBED_IN_EXECUTION_RECORD",
+    "W3": "PASS_SCOPED_AS_DESCRIBED_IN_EXECUTION_RECORD",
+    "W4": "PASS_SCOPED_AS_DESCRIBED_IN_EXECUTION_RECORD",
+    "W5": "PASS_SCOPED_AS_DESCRIBED_IN_EXECUTION_RECORD",
+    "W6": "PASS_SCOPED_AS_DESCRIBED_IN_EXECUTION_RECORD"
+  },
+  "limits": [
+    "No new HTTP P95 result",
+    "Rebuilt Community object, not OS-process restart",
+    "Unavailable case is a closed connection pool, not a stopped PostgreSQL server",
+    "Single-call duration logs are diagnostic only",
+    "Existing blocking Flock/finalizers do not establish an absolute cleanup deadline"
+  ],
+  "completionNotification": {
+    "status": "SENT",
+    "threadId": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "atUTC": "2026-10-26T02:41:42.577625+00:00"
+  }
+}

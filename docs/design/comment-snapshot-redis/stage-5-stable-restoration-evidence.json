@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "checkedAtUTC": "2026-10-25T16:37:00.821226+00:00",
+  "clockSource": "tsc",
+  "timesyncdActive": "active",
+  "timesyncdEnabled": "enabled",
+  "clockValuesSet": false,
+  "persistentConfigurationChanged": false,
+  "sameBoot": true,
+  "originalStateRestored": true,
+  "ownedProcessesRemaining": [],
+  "repeatResult": "FAIL",
+  "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+  "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+  "masterRestoreExitCode": 0
+}

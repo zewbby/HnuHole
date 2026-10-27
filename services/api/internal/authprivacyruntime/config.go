@@ -21,6 +21,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacy"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/authprivacyhttp"
+	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/commentsnapshot"
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/ratelimit"
 	"net/netip"
 )
@@ -43,8 +44,10 @@ type PostsConfig struct {
 }
 
 type CommentsConfig struct {
-	CommandKeyFile     string `json:"commandKeyFile"`
-	FingerprintKeyFile string `json:"fingerprintKeyFile"`
+	CommandKeyFile     string                  `json:"commandKeyFile"`
+	FingerprintKeyFile string                  `json:"fingerprintKeyFile"`
+	Snapshots          *commentsnapshot.Config `json:"snapshots,omitempty"`
+	ObserveReadTimings bool                    `json:"observeReadTimings,omitempty"`
 }
 
 // PostImages enables private PostgreSQL storage, not a public file server.
@@ -411,6 +414,23 @@ func (c Config) commentKeyFiles(service authprivacyhttp.Service) ([]string, erro
 	}
 	if service != authprivacyhttp.CommunityService || c.Posts == nil || c.Comments.CommandKeyFile == "" || c.Comments.FingerprintKeyFile == "" {
 		return nil, errors.New("comment text requires explicit C posts and two independent purpose keys")
+	}
+	if cfg := c.Comments.Snapshots; cfg != nil {
+		if e := cfg.ValidateRuntime(); e != nil {
+			return nil, e
+		}
+		if cfg.ReadRedis {
+			if cfg.Redis.Namespace != "hnuhole:comment-snapshot:v2:"+c.Environment+":" || cfg.Redis.Username != "community_comment_snapshot_v2" || cfg.Redis.PasswordFile == "" {
+				return nil, errors.New("invalid environment-bound snapshot namespace or credentials")
+			}
+			if c.SharedRateLimit != nil && cfg.Redis.Address == c.SharedRateLimit.Policy.Address {
+				return nil, errors.New("comment snapshots require a separate Redis instance from shared admission")
+			}
+			password, e := c.Read(cfg.Redis.PasswordFile, true, 1024)
+			if e != nil || len(password) == 0 {
+				return nil, errors.New("comment snapshot credentials unavailable")
+			}
+		}
 	}
 	return []string{c.Comments.CommandKeyFile, c.Comments.FingerprintKeyFile}, nil
 }

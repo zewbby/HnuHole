@@ -20,6 +20,7 @@ import 'comment_editor.dart';
 import 'comment_http.dart';
 import 'comment_models.dart';
 import 'comment_runtime.dart';
+import 'comment_snapshot.dart';
 import 'quick_reply_dialog.dart';
 
 class CommentRow {
@@ -258,6 +259,16 @@ class _CommentPostPaneState extends State<CommentPostPane> {
   final _seenDeleted = <String>{};
   String? cursor, highlight, error;
   String sort = 'relevant';
+  late final _snapshots = CommentSnapshotReader(widget.runtime.request);
+  ({String sort, bool resetPins, String nonce})? _mainInitialRequest;
+  bool _mainInvalid = false, _mainFailedMore = false, _hasMainPage = false;
+  final _replyNonces = <String, String>{};
+  final _replyErrors = <String, String>{};
+  final _replyInvalid = <String>{}, _replyFailedMore = <String>{};
+  Iterable<MapEntry<String, _LocalComment>> _localsFor(String? root) =>
+      _localComments.entries.toList().reversed.where(
+        (entry) => entry.value.entry.intent.binding.rootCommentId == root,
+      );
   bool composing = false, composerFull = false, _openingComposer = false;
   CommentRow? composerTarget;
   String? initialAttachment;
@@ -306,6 +317,8 @@ class _CommentPostPaneState extends State<CommentPostPane> {
                 (speakingIdentity?.id == id ? speakingIdentity : null),
           );
           added.add(entry.localId);
+          final root = entry.intent.binding.rootCommentId;
+          if (root != null) expanded.add(root);
         } else {
           if (local.entry.content?.image?.blobId !=
               entry.content?.image?.blobId) {
@@ -360,12 +373,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
           ? Column(
               children: [
                 _row(row, reply: row.root != null),
-                if (row.root == null)
-                  for (final child
-                      in (replies[row.id] ?? <CommentRow>[])
-                          .where((r) => !_localPublishedIds.contains(r.id))
-                          .take(expanded.contains(row.id) ? 10000 : 5))
-                    _row(child, reply: true),
+                if (row.root == null) ..._replyWidgets(row),
               ],
             )
           : Padding(
@@ -552,6 +560,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
       widget.onCountChanged?.call();
     }
     if (!current) {
+      _mainInitialRequest = null;
       _localComments.clear();
       for (final timer in _publicationRetries.values) {
         timer.cancel();
@@ -693,25 +702,77 @@ class _CommentPostPaneState extends State<CommentPostPane> {
     } catch (_) {}
   }
 
-  Future<void> _load({bool more = false}) async {
+  ({String id, double top})? _readingAnchor() {
+    if (!widget.continuous || !_scroll.hasClients) return null;
+    final pane = context.findRenderObject();
+    if (pane is! RenderBox) return null;
+    final top = pane.localToGlobal(Offset.zero).dy;
+    final bottom = top + pane.size.height;
+    final visible = <({String id, double top})>[];
+    for (final entry in keys.entries) {
+      final box = entry.value.currentContext?.findRenderObject();
+      if (box is! RenderBox || !box.attached) continue;
+      final y = box.localToGlobal(Offset.zero).dy;
+      if (y + box.size.height > top && y < bottom) {
+        visible.add((id: entry.key, top: y));
+      }
+    }
+    visible.sort((a, b) => a.top.compareTo(b.top));
+    return visible.firstOrNull;
+  }
+
+  void _restoreAnchor(({String id, double top})? anchor) {
+    if (anchor == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!current || !_scroll.hasClients) return;
+      final box = keys[anchor.id]?.currentContext?.findRenderObject();
+      if (box is! RenderBox || !box.attached) return;
+      final position = _scroll.position;
+      _scroll.jumpTo(
+        (position.pixels + box.localToGlobal(Offset.zero).dy - anchor.top)
+            .clamp(position.minScrollExtent, position.maxScrollExtent),
+      );
+    });
+  }
+
+  Future<void> _retryMain() => _load(
+    more: _mainFailedMore && !_mainInvalid,
+    refresh: _mainInvalid && _mainFailedMore,
+    retry: true,
+  );
+
+  Future<void> _load({
+    bool more = false,
+    bool refresh = false,
+    String? nextSort,
+    bool retry = false,
+  }) async {
     if (!current) return;
     final pending = _reading;
-    if (pending != null) {
-      await pending.future;
-      if (more && current && cursor != null) await _load(more: true);
-      return;
-    }
-    if (more && cursor == null) return;
+    if (pending != null) return pending.future;
+    if (more && (cursor == null || _mainInvalid)) return;
     final reading = Completer<void>();
     _reading = reading;
+    if (!more && (!retry || _mainInitialRequest == null)) {
+      _mainInitialRequest = (
+        sort: nextSort ?? sort,
+        resetPins: refresh || nextSort != null || _mainInvalid,
+        nonce: commentSnapshotNonce(),
+      );
+    }
+    final initial = more ? null : _mainInitialRequest!;
+    final selectedSort = initial?.sort ?? sort;
+    final anchor = _readingAnchor();
+    final readVersion = _listVersion;
     setState(() => loading = true);
     try {
-      final p = await widget.runtime.request(
-        'GET',
+      final p = await _snapshots.load(
         '/api/v1/posts/${widget.postId}/comments',
-        query: more && cursor != null
+        query: more
             ? {'cursor': cursor!}
-            : (sort == 'relevant' ? null : {'sort': sort}),
+            : (selectedSort == 'relevant' ? null : {'sort': selectedSort}),
+        nonce: initial?.nonce,
+        current: () => current && readVersion == _listVersion,
       );
       if (!current) return;
       setState(() {
@@ -724,6 +785,15 @@ class _CommentPostPaneState extends State<CommentPostPane> {
           expanded.clear();
           _queuedReplies.clear();
           _replyFailures.clear();
+          _replyErrors.clear();
+          _replyInvalid.clear();
+          _replyFailedMore.clear();
+          _replyNonces.clear();
+          if (initial!.resetPins) {
+            _localComments.removeWhere((_, local) => local.publishedId != null);
+          }
+          sort = selectedSort;
+          _mainInitialRequest = null;
         }
         for (final raw in p['comments'] as List) {
           final row = CommentRow(raw);
@@ -731,8 +801,12 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         }
         cursor = p['nextCursor'] as String?;
         total = p['totalCount'] as int;
+        _hasMainPage = true;
+        _mainInvalid = false;
+        _mainFailedMore = false;
         error = null;
       });
+      _restoreAnchor(anchor);
       for (final row
           in rows
               .where((r) => !widget.continuous && r.replyCount > 0)
@@ -740,6 +814,9 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         if (!current) return;
         if (!replies.containsKey(row.id)) await _replies(row.id);
       }
+    } on CommentReadCancelled {
+      // A closed pane or authority change must not schedule another attempt.
+      _mainInitialRequest = null;
     } catch (e) {
       if (current) {
         setState(() {
@@ -753,36 +830,69 @@ class _CommentPostPaneState extends State<CommentPostPane> {
             own.clear();
             total = 0;
           }
-          error = '评论暂时无法读取，请重新核对。';
+          _mainFailedMore = more;
+          _mainInvalid = _mainInvalid || commentCursorInvalid(e);
+          error = commentSnapshotMessage(e);
         });
+        _restoreAnchor(anchor);
       }
     } finally {
       if (current) setState(() => loading = false);
-      _reading = null;
+      if (identical(_reading, reading)) _reading = null;
       reading.complete();
     }
   }
 
-  Future<void> _replies(String root, {bool more = false}) async {
+  Future<void> _retryReplies(String root) => _replies(
+    root,
+    more: _replyFailedMore.contains(root) && !_replyInvalid.contains(root),
+    refresh: _replyInvalid.contains(root) && _replyFailedMore.contains(root),
+  );
+
+  Future<void> _replies(
+    String root, {
+    bool more = false,
+    bool refresh = false,
+  }) async {
+    if (!current) return;
     final pending = _replyReads[root];
     if (pending != null) return pending.future;
+    if (more && (replyCursors[root] == null || _replyInvalid.contains(root))) {
+      return;
+    }
     final reading = Completer<void>();
     _replyReads[root] = reading;
     final listVersion = _listVersion;
+    final resetPins = refresh || _replyInvalid.contains(root);
+    if (refresh) _replyNonces.remove(root);
+    final nonce = _replyNonces.putIfAbsent(root, commentSnapshotNonce);
+    final anchor = _readingAnchor();
     try {
-      final p = await widget.runtime.request(
-        'GET',
+      final p = await _snapshots.load(
         '/api/v1/posts/${widget.postId}/comments/$root/replies',
         query: more
-            ? {
-                'expanded': 'true',
-                if (replyCursors[root] != null) 'cursor': replyCursors[root]!,
-              }
+            ? {'expanded': 'true', 'cursor': replyCursors[root]!}
             : null,
+        nonce: more ? null : nonce,
+        current: () =>
+            current &&
+            listVersion == _listVersion &&
+            !widget.runtime.deleted.contains(root),
       );
       if (!current || listVersion != _listVersion) return;
       setState(() {
         _replyFailures.remove(root);
+        _replyErrors.remove(root);
+        _replyInvalid.remove(root);
+        _replyFailedMore.remove(root);
+        if (!more) replies[root] = [];
+        if (resetPins) {
+          _localComments.removeWhere(
+            (_, local) =>
+                local.publishedId != null &&
+                local.entry.intent.binding.rootCommentId == root,
+          );
+        }
         final list = replies.putIfAbsent(root, () => []);
         for (final raw in p['comments'] as List) {
           final row = CommentRow(raw);
@@ -790,31 +900,104 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         }
         replyCursors[root] = p['nextCursor'] as String?;
       });
+      _restoreAnchor(anchor);
+    } on CommentReadCancelled {
+      // Invalidated by a main-list refresh, account switch, deletion or dispose.
     } catch (e) {
       if (!current || listVersion != _listVersion) return;
-      if (current) setState(() => _replyFailures.add(root));
-      if (current && e is CommentHttpFailure && {403, 404}.contains(e.status)) {
-        setState(() {
+      setState(() {
+        _replyFailures.add(root);
+        _replyErrors[root] = commentSnapshotMessage(e, replies: true);
+        if (more) {
+          _replyFailedMore.add(root);
+        } else {
+          _replyFailedMore.remove(root);
+        }
+        if (commentCursorInvalid(e)) _replyInvalid.add(root);
+        if (e is CommentHttpFailure && {403, 404}.contains(e.status)) {
           rows.removeWhere((r) => r.id == root);
+          _localComments.removeWhere(
+            (_, local) =>
+                local.publishedId == root ||
+                local.entry.intent.binding.rootCommentId == root,
+          );
           replies.remove(root);
           replyCursors.remove(root);
           expanded.remove(root);
           own.remove(root);
-        });
-      }
-      _hint('回复暂时无法读取，请重试。');
+        }
+      });
+      _restoreAnchor(anchor);
     } finally {
       if (identical(_replyReads[root], reading)) _replyReads.remove(root);
       reading.complete();
     }
   }
 
+  List<Widget> _replyWidgets(CommentRow root) => [
+    for (final entry in _localsFor(root.id))
+      _localComment(entry.key, entry.value),
+    for (final reply
+        in (replies[root.id] ?? <CommentRow>[])
+            .where((r) => !_localPublishedIds.contains(r.id))
+            .take(expanded.contains(root.id) ? 10000 : 5))
+      Builder(
+        key: ValueKey('reply-row:${reply.id}'),
+        builder: (_) => widget.continuous
+            ? _threadRow(reply, root: root)
+            : _row(reply, reply: true),
+      ),
+    if (_replyFailures.contains(root.id))
+      TextButton(
+        key: ValueKey('retry-replies:${root.id}'),
+        onPressed: () => _retryReplies(root.id),
+        child: Text(_replyErrors[root.id] ?? '重试回复'),
+      ),
+    if (root.replyCount > 5 || replyCursors[root.id] != null)
+      TextButton(
+        onPressed: () async {
+          if (expanded.remove(root.id)) {
+            setState(() {});
+          } else {
+            setState(() => expanded.add(root.id));
+            if (replyCursors[root.id] != null &&
+                !_replyFailures.contains(root.id)) {
+              await _replies(root.id, more: true);
+            }
+          }
+        },
+        child: Text(
+          expanded.contains(root.id)
+              ? '收起回复'
+              : root.replyCount > 5
+              ? '展开其余 ${root.replyCount - 5} 条回复'
+              : '继续加载回复',
+        ),
+      ),
+    if (expanded.contains(root.id) &&
+        replies.containsKey(root.id) &&
+        replyCursors[root.id] == null &&
+        !_replyFailures.contains(root.id))
+      const Padding(padding: EdgeInsets.all(8), child: Text('没有更多回复')),
+    if (expanded.contains(root.id) &&
+        replyCursors[root.id] != null &&
+        !_replyFailures.contains(root.id))
+      TextButton(
+        onPressed: () => _replies(root.id, more: true),
+        child: const Text('更多回复'),
+      ),
+  ];
+
   Future<void> _locate(String id, {bool userInitiated = true}) async {
-    if (!current) return;
+    int? locationVersion;
+    bool locationCurrent() =>
+        current && (locationVersion == null || locationVersion == _listVersion);
+    if (!locationCurrent()) return;
     try {
       final reading = _reading;
       if (reading != null) await reading.future;
-      if (!current) return;
+      if (!locationCurrent()) return;
+      locationVersion = _listVersion;
       final location = userInitiated
           ? await widget.runtime.request(
               'GET',
@@ -829,17 +1012,17 @@ class _CommentPostPaneState extends State<CommentPostPane> {
       final floor = target.root ?? id;
       final laterReading = _reading;
       if (laterReading != null) await laterReading.future;
-      if (!current) return;
+      if (!locationCurrent()) return;
       // A fresh deep link starts at the server's authenticated containing page.
       // An existing reader keeps its captured membership/order and follows only
       // that snapshot's cursors before merging this owner's new publication.
       if (rows.isEmpty && cursor == null && location['cursor'] != null) {
-        final page = await widget.runtime.request(
-          'GET',
+        final page = await _snapshots.load(
           '/api/v1/posts/${widget.postId}/comments',
           query: {'cursor': location['cursor'] as String},
+          current: locationCurrent,
         );
-        if (!current) return;
+        if (!locationCurrent()) return;
         rows.addAll((page['comments'] as List).map(CommentRow.new));
         cursor = page['nextCursor'] as String?;
         total = page['totalCount'] as int;
@@ -849,7 +1032,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
           cursor != null) {
         final previous = cursor;
         await _load(more: true);
-        if (!current) return;
+        if (!locationCurrent()) return;
         if (cursor == previous) throw StateError('Captured page unavailable');
       }
       if (!rows.any((r) => r.id == floor)) {
@@ -861,7 +1044,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
                   '/api/v1/posts/${widget.postId}/comments/$floor',
                 ),
               );
-        if (!current) return;
+        if (!locationCurrent()) return;
         if (userInitiated &&
             !own.contains(root.id) &&
             widget.initialCommentId != id) {
@@ -872,14 +1055,14 @@ class _CommentPostPaneState extends State<CommentPostPane> {
       if (target.root != null) {
         expanded.add(floor);
         if (!replies.containsKey(floor)) await _replies(floor);
-        if (!current) return;
+        if (!locationCurrent()) return;
         final list = replies.putIfAbsent(floor, () => []);
         while (userInitiated &&
             !list.any((r) => r.id == id) &&
             replyCursors[floor] != null) {
           final previous = replyCursors[floor];
           await _replies(floor, more: true);
-          if (!current) return;
+          if (!locationCurrent()) return;
           if (replyCursors[floor] == previous) {
             throw StateError('Captured replies unavailable');
           }
@@ -893,7 +1076,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
           list.insert(_insertAt(list, target, 5), target);
         }
       }
-      if (!current) return;
+      if (!locationCurrent()) return;
       setState(() {
         open = true;
         highlight = id;
@@ -906,6 +1089,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
         if (current && highlight == id) setState(() => highlight = null);
       });
     } catch (e) {
+      if (!locationCurrent()) return;
       if (current && e is CommentHttpFailure && {403, 404}.contains(e.status)) {
         setState(() {
           _localComments.removeWhere((_, local) => local.publishedId == id);
@@ -931,11 +1115,12 @@ class _CommentPostPaneState extends State<CommentPostPane> {
     // A lazy list has no RenderObject for distant rows. Seek using the loaded
     // order and the measured neighbouring rows, then align the concrete target.
     final ordered = [
-      for (final id in _localComments.keys.toList().reversed) 'local:$id',
+      for (final entry in _localsFor(null)) 'local:${entry.key}',
       for (final r in rows.where(
         (r) => !_localPublishedIds.contains(r.id),
       )) ...[
         r.id,
+        for (final entry in _localsFor(r.id)) 'local:${entry.key}',
         for (final reply in (replies[r.id] ?? <CommentRow>[]).take(
           expanded.contains(r.id) ? 10000 : 5,
         ))
@@ -1188,15 +1373,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
     final reading = _reading;
     if (reading != null) await reading.future;
     if (!current) return;
-    setState(() {
-      sort = selected;
-      cursor = null;
-      rows.clear();
-      replies.clear();
-      replyCursors.clear();
-      expanded.clear();
-    });
-    await _load();
+    await _load(refresh: true, nextSort: selected);
   }
 
   void _closeInline() {
@@ -1511,34 +1688,49 @@ class _CommentPostPaneState extends State<CommentPostPane> {
       children: [
         widget.body,
         const Divider(height: 1),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-            key: const ValueKey('comment-sort'),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).hintColor,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              minimumSize: const Size(48, 44),
+        Row(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  key: const ValueKey('comment-sort'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).hintColor,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    minimumSize: const Size(48, 44),
+                  ),
+                  onPressed: _chooseSort,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(switch (sort) {
+                        'recent' => '最近',
+                        'likes' => '最多点赞',
+                        _ => '相关',
+                      }, style: detailType(context, 14)),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.keyboard_arrow_down, size: 16),
+                    ],
+                  ),
+                ),
+              ),
             ),
-            onPressed: _chooseSort,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(switch (sort) {
-                  'recent' => '最近',
-                  'likes' => '最多点赞',
-                  _ => '相关',
-                }, style: detailType(context, 14)),
-                const SizedBox(width: 4),
-                const Icon(Icons.keyboard_arrow_down, size: 16),
-              ],
+            IconButton(
+              key: const ValueKey('comment-refresh'),
+              tooltip: '刷新评论',
+              onPressed: loading ? null : () => _load(refresh: true),
+              icon: const Icon(Icons.refresh, size: 20),
             ),
-          ),
+          ],
         ),
         if (loading) const LinearProgressIndicator(),
-        if (error != null)
-          TextButton(onPressed: () => _load(), child: Text(error!)),
-        for (final entry in _localComments.entries.toList().reversed)
+        if (error != null && !_mainFailedMore)
+          TextButton(
+            onPressed: loading ? null : _retryMain,
+            child: Text(error!),
+          ),
+        for (final entry in _localsFor(null))
           Builder(
             key: ValueKey('local-comment:${entry.key}'),
             builder: (_) => _localComment(entry.key, entry.value),
@@ -1560,42 +1752,7 @@ class _CommentPostPaneState extends State<CommentPostPane> {
               return _threadRow(r, root: r);
             },
           ),
-          for (final reply
-              in (replies[r.id] ?? <CommentRow>[])
-                  .where((r) => !_localPublishedIds.contains(r.id))
-                  .take(expanded.contains(r.id) ? 10000 : 5))
-            Builder(
-              key: ValueKey('reply-row:${reply.id}'),
-              builder: (_) => _threadRow(reply, root: r),
-            ),
-          if (_replyFailures.contains(r.id))
-            TextButton(
-              onPressed: () => _replies(r.id),
-              child: const Text('重试回复'),
-            ),
-          if (r.replyCount > 5)
-            TextButton(
-              onPressed: () async {
-                if (expanded.remove(r.id)) {
-                  setState(() {});
-                } else {
-                  setState(() => expanded.add(r.id));
-                  if (replyCursors[r.id] != null) {
-                    await _replies(r.id, more: true);
-                  }
-                }
-              },
-              child: Text(
-                expanded.contains(r.id)
-                    ? '收起回复'
-                    : '展开其余 ${r.replyCount - 5} 条回复',
-              ),
-            ),
-          if (expanded.contains(r.id) && replyCursors[r.id] != null)
-            TextButton(
-              onPressed: () => _replies(r.id, more: true),
-              child: const Text('更多回复'),
-            ),
+          ..._replyWidgets(r),
           const Divider(height: 1),
         ],
 
@@ -1603,12 +1760,30 @@ class _CommentPostPaneState extends State<CommentPostPane> {
             _localComments.isEmpty &&
             !loading &&
             error == null &&
+            _hasMainPage &&
+            cursor == null &&
             !_sending)
           const Padding(padding: EdgeInsets.all(20), child: Text('暂无评论')),
-        if (cursor != null)
+        if (error != null && _mainFailedMore)
+          TextButton(
+            onPressed: loading ? null : _retryMain,
+            child: Text(error!),
+          ),
+        if (rows.isEmpty && cursor != null && error == null)
+          const Padding(
+            padding: EdgeInsets.all(12),
+            child: Text('暂未找到可见评论，可继续加载。'),
+          ),
+        if (_hasMainPage &&
+            rows.isNotEmpty &&
+            cursor == null &&
+            !loading &&
+            error == null)
+          const Padding(padding: EdgeInsets.all(12), child: Text('没有更多评论')),
+        if (cursor != null && error == null && !_mainInvalid)
           TextButton(
             onPressed: () => _load(more: true),
-            child: const Text('更多评论'),
+            child: Text(rows.isEmpty ? '继续加载评论' : '更多评论'),
           ),
         Builder(
           builder: (context) => SizedBox(
@@ -1887,7 +2062,17 @@ class _CommentPostPaneState extends State<CommentPostPane> {
           flex: ((1 - bodyFraction) * 1000).round(),
           child: Column(
             children: [
-              Row(children: [Expanded(child: Text('评论 $total'))]),
+              Row(
+                children: [
+                  Expanded(child: Text('评论 $total')),
+                  IconButton(
+                    key: const ValueKey('comment-refresh'),
+                    tooltip: '刷新评论',
+                    onPressed: loading ? null : () => _load(refresh: true),
+                    icon: const Icon(Icons.refresh),
+                  ),
+                ],
+              ),
               Expanded(
                 // Eager layout of the loaded page makes concrete targets
                 // addressable even outside the viewport; network pagination
@@ -1899,65 +2084,45 @@ class _CommentPostPaneState extends State<CommentPostPane> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (loading) const LinearProgressIndicator(),
-                      if (error != null)
+                      if (error != null && !_mainFailedMore)
                         TextButton(
-                          onPressed: () => _load(),
+                          onPressed: loading ? null : _retryMain,
                           child: Text(error!),
                         ),
-                      for (final entry
-                          in _localComments.entries.toList().reversed)
+                      for (final entry in _localsFor(null))
                         _localComment(entry.key, entry.value),
                       for (final r in rows.where(
                         (r) => !_localPublishedIds.contains(r.id),
-                      )) ...[
-                        _row(r),
-                        for (final reply
-                            in (replies[r.id] ?? <CommentRow>[])
-                                .where(
-                                  (r) => !_localPublishedIds.contains(r.id),
-                                )
-                                .take(expanded.contains(r.id) ? 10000 : 5))
-                          _row(reply, reply: true),
-                        if (r.replyCount > 5)
-                          TextButton(
-                            onPressed: () async {
-                              if (expanded.remove(r.id)) {
-                                setState(() {});
-                              } else {
-                                setState(() => expanded.add(r.id));
-                                if (replyCursors[r.id] != null) {
-                                  await _replies(r.id, more: true);
-                                }
-                              }
-                            },
-                            child: Text(
-                              expanded.contains(r.id)
-                                  ? '收起回复'
-                                  : '展开其余 ${r.replyCount - 5} 条回复',
-                            ),
-                          ),
-                        if (expanded.contains(r.id) &&
-                            replyCursors[r.id] != null)
-                          TextButton(
-                            onPressed: () => _replies(r.id, more: true),
-                            child: const Text('更多回复'),
-                          ),
-                        const Divider(),
-                      ],
+                      )) ...[_row(r), ..._replyWidgets(r), const Divider()],
 
                       if (rows.isEmpty &&
                           _localComments.isEmpty &&
                           !loading &&
                           error == null &&
+                          _hasMainPage &&
+                          cursor == null &&
                           !_sending)
                         const Padding(
                           padding: EdgeInsets.all(20),
                           child: Text('暂无评论'),
                         ),
-                      if (cursor != null)
+                      if (error != null && _mainFailedMore)
+                        TextButton(
+                          onPressed: loading ? null : _retryMain,
+                          child: Text(error!),
+                        ),
+                      if (rows.isEmpty && cursor != null && error == null)
+                        const Text('暂未找到可见评论，可继续加载。'),
+                      if (_hasMainPage &&
+                          rows.isNotEmpty &&
+                          cursor == null &&
+                          !loading &&
+                          error == null)
+                        const Text('没有更多评论'),
+                      if (cursor != null && error == null && !_mainInvalid)
                         TextButton(
                           onPressed: () => _load(more: true),
-                          child: const Text('更多评论'),
+                          child: Text(rows.isEmpty ? '继续加载评论' : '更多评论'),
                         ),
                     ],
                   ),

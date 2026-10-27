@@ -60,7 +60,8 @@ func TestPrivacySchemaPartyBoundaryPostgres(t *testing.T) {
 			"c_auth.recent_device_replacement", "c_auth.recovery_codes", "c_auth.request_results",
 			"c_auth.reset_intents", "c_auth.security_events", "c_auth.sessions", "c_auth.signup_intents",
 			"c_auth.slot_ledger", "public.channels", "public.community_identities",
-			"public.identity_account_state", "public.identity_change_receipts", "public.sessions",
+			// Migration 0025 adds public avatar metadata, still C-only.
+			"public.identity_account_state", "public.identity_avatar_assets", "public.identity_change_receipts", "public.sessions",
 		}, []string{"email", "otp", "mail"}},
 		{"verifier", l.vp, []string{
 			"v_auth.authorization_gate", "v_auth.authorization_gate_audit", "v_auth.confirmation_rejections",
@@ -75,8 +76,8 @@ func TestPrivacySchemaPartyBoundaryPostgres(t *testing.T) {
 		t.Run(spec.name, func(t *testing.T) {
 			want := append([]string(nil), spec.relations...)
 			sort.Strings(want)
-			if strings.Join(privacyRelations(t, spec.pool), "\n") != strings.Join(want, "\n") {
-				t.Fatal("party schema relation inventory changed; audit the new data boundary")
+			if got := privacyRelations(t, spec.pool); strings.Join(got, "\n") != strings.Join(want, "\n") {
+				t.Fatalf("party schema relation inventory changed; audit the new data boundary: got=%v want=%v", got, want)
 			}
 			rows, err := spec.pool.Query(context.Background(), `SELECT table_schema,table_name,column_name
 FROM information_schema.columns WHERE table_schema IN ('public','c_auth','v_auth')`)

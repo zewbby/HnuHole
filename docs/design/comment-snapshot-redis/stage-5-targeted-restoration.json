@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "atUTC": "2026-10-25T17:56:48.081365+00:00",
+  "clockSource": "tsc",
+  "timesyncdActive": "active",
+  "timesyncdEnabled": "enabled",
+  "originalClockStateRestored": true,
+  "ownedProcessesRemaining": [],
+  "masterRestoreExitCode": 0,
+  "sourceDigest": "0481b785fdc3e06583feaec2fd8707a96e10648465b5deada8a5256cea0ee9ab"
+}

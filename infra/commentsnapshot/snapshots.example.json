@@ -1,0 +1,28 @@
+{
+  "createBackend": "postgres",
+  "readPostgres": true,
+  "readRedis": false,
+  "postgresCursorVersion": 1,
+  "ttlSeconds": 1800,
+  "maxIDs": 10000,
+  "maxPerAccount": 1024,
+  "maxSnapshotBytes": 196608,
+  "maxModuleBytes": 67108864,
+  "maxLedgerEntries": 8192,
+  "maxLedgerBytes": 4194304,
+  "ledgerFixedReserveBytes": 12582912,
+  "operationBudgetMilliseconds": 500,
+  "prepareLeaseSeconds": 30,
+  "cleanupIntervalSeconds": 10,
+  "cleanupBatchSize": 64,
+  "clockSkewMilliseconds": 2000,
+  "redis": {
+    "address": "127.0.0.1:16381",
+    "username": "community_comment_snapshot_v2",
+    "passwordFile": "secrets/comment-snapshot-redis-password",
+    "namespace": "hnuhole:comment-snapshot:v2:development:",
+    "epoch": "00000000-0000-4000-8000-000000000001",
+    "deadlineMilliseconds": 100,
+    "poolSize": 8
+  }
+}

@@ -1,0 +1,354 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 5,
+  "status": "TARGETED_FIX_COMPLETE_STAGE5_PERFORMANCE_NOT_ESTABLISHED",
+  "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+  "updatedAtUTC": "2026-10-25T18:03:57.416935+00:00",
+  "checks": {
+    "build": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/build-stable-r1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "vet": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/vet-stable-r1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "host": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/host-stable-r1.log",
+      "sha256": "8c5c13ded13b5160becba19c0fdf1aaa27b6fdbff070a015301474e239c0fb51",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "snapshot-real-server": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/snapshot-final-native-stable-r1.log",
+      "sha256": "811e09be318b7cbbf025b7d964f40a69aaae6e98c774523faa374eb8d5ce6675",
+      "topLevelPass": 31,
+      "topLevelSkip": 2,
+      "realRedisTests": 13,
+      "corruptPeerSubcases": 16
+    },
+    "shared-rate-real": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/shared-rate-stable-r1.log",
+      "sha256": "719750fd1ee947e6683e90c52cc54ca5fcfccfccf8ca5e769b3d20781f6a404c",
+      "topLevelPass": 39,
+      "topLevelSkip": 1
+    },
+    "production-dart-transport": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/dart-live-stable-r1.log",
+      "sha256": "e0e6888fe96f81373bc62de2b04ac069bcb79b762746f1c3148f65b589a88079",
+      "topLevelPass": 1,
+      "topLevelSkip": 0
+    },
+    "actual-two-api": {
+      "result": "PASS"
+    },
+    "formal-compatibility": {
+      "result": "FAIL",
+      "evidence": "stage-5-stable-r1-evidence.json"
+    },
+    "formal-steady": {
+      "result": "FAIL",
+      "evidence": "stage-5-stable-r1-evidence.json"
+    },
+    "real-time-redis": {
+      "result": "PASS",
+      "wallSeconds": 1805.736957400004,
+      "maximumClockDriftSeconds": 6.95300695952028e-06,
+      "expiredCode": "CURSOR_INVALID",
+      "explicitRefreshSucceeded": true,
+      "hostClockSummary": {
+        "elapsedSeconds": 1806.4059098,
+        "rawElapsedLowerBound": 1806.137958899999,
+        "rawElapsedUpperBound": 1808.678027300004,
+        "utcCounterDriftSeconds": 9.019999993142847e-05,
+        "stable": true
+      },
+      "fixedTTLSeconds": 1800,
+      "successfulReads": 59
+    },
+    "real-time-pg": {
+      "result": "PASS",
+      "elapsedClock": "CLOCK_MONOTONIC_RAW",
+      "maximumClockDriftSeconds": 9.409995982423425e-06,
+      "elapsedAfterLastPGCreatorStoppedSeconds": 1807.9604417999944,
+      "hostClockSummary": {
+        "elapsedSeconds": 1801.79953,
+        "rawElapsedLowerBound": 1801.575897799994,
+        "rawElapsedUpperBound": 1802.0291332000052,
+        "utcCounterDriftSeconds": 0.00046999999995023245,
+        "stable": true
+      },
+      "pgCursorExpiresWithoutRenewal": true,
+      "pgV1AndV2ReadableThroughoutCompatibilityInterval": true,
+      "noPostgresSnapshotCreationDuringTransition": true,
+      "oldTableWithdrawnAfterActualThirtyMinutes": true,
+      "normalRedisReadsQuotaRepliesAndLocateWithRenamedOldTable": true,
+      "explicitPGSwitchbackKeepsRedisCursors": true,
+      "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+      "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846"
+    },
+    "native": {
+      "result": "PASS",
+      "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+      "device": "RMX3366 / Android 14 API34 / 7e0660f1",
+      "package": "org.hnuhole.hnuhole_mobile.commentsnapshot",
+      "liveRequests": 5,
+      "downRequests": 2,
+      "fixtureWidgetsPerPhase": 9,
+      "backend": "Go test binary exercising production handler with real disposable SQL/Redis and pinned TLS, not the separate formal cmd/api executable",
+      "nativeVault": "NOT_RUN",
+      "wholeProductionUIEndToEnd": "NOT_RUN",
+      "dailyPackage": "UNCHANGED",
+      "lease": "RELEASED",
+      "overlap": "Only sparse real-time R/PG checks, after formal performance sampling; user explicitly requested retry after unlock",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/native-live-stable-r1.log"
+    }
+  },
+  "phase6": "NOT_STARTED",
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false,
+  "codecDiagnostic": {
+    "result": "PASS",
+    "acceptance": false,
+    "raw": "stage-5-packed-opt-codec-profile.json",
+    "meanReductionPercent": {
+      "1024-append": 24.983616806409557,
+      "1024-publish": 31.507153456514846,
+      "1900-append": 26.026256263281233,
+      "1900-publish": 33.18659986532532,
+      "6000-append": 28.082212064184166,
+      "6000-publish": 33.29457866346088
+    },
+    "allConstructedBytesEqual": true,
+    "scope": "NO_WRITES Lua validation and local byte construction only; synthetic records, no SQL/data publication; client CLOCK_MONOTONIC_RAW includes TCP/auth transport"
+  },
+  "previousCandidate": {
+    "sourceDigest": "b359ad45b58388d05e9d674f976cd991078d95e47cbb9945e8cc9019eda1a158",
+    "apiBinarySHA256": "8d27efb65e4080243d462483c3b1b32b4a9ccb7af01a73f7a9ef53ec92be497d",
+    "result": "FAIL",
+    "checks": {
+      "performance-compatibility": "PASS",
+      "performance-steady": "FAIL",
+      "cross-process-and-restart": "PASS",
+      "exercise": "PASS",
+      "faults": "PASS",
+      "admission": "PASS",
+      "growth": "PASS",
+      "rollback": "PASS",
+      "compatibility-real-time": "FAIL"
+    },
+    "error": "ENVIRONMENT_UNSTABLE: UTC/monotonic drift exceeded 2 seconds",
+    "performance": {
+      "compatibility": {
+        "initial": {
+          "result": "PASS",
+          "p95RegressionPercent": 4.920744082520057,
+          "pgP95Ms": 602.444417,
+          "redisP95Ms": 632.089165
+        },
+        "continuation": {
+          "result": "PASS",
+          "p95RegressionPercent": 1.6328095465296233,
+          "pgP95Ms": 477.100285,
+          "redisP95Ms": 484.890424
+        },
+        "replyPreview": {
+          "result": "PASS",
+          "p95RegressionPercent": 3.8676109298374284,
+          "pgP95Ms": 477.381886,
+          "redisP95Ms": 495.84516
+        },
+        "replyExpanded": {
+          "result": "PASS",
+          "p95RegressionPercent": -1.3317017026802214,
+          "pgP95Ms": 460.531513,
+          "redisP95Ms": 454.398607
+        }
+      },
+      "steady": {
+        "initial": {
+          "result": "PASS",
+          "p95RegressionPercent": -4.623212090490281,
+          "pgP95Ms": 537.737995,
+          "redisP95Ms": 512.877227
+        },
+        "continuation": {
+          "result": "PASS",
+          "p95RegressionPercent": -4.561163236309729,
+          "pgP95Ms": 448.306845,
+          "redisP95Ms": 427.858838
+        },
+        "replyPreview": {
+          "result": "PASS",
+          "p95RegressionPercent": -1.0875906248971057,
+          "pgP95Ms": 517.637967,
+          "redisP95Ms": 512.008185
+        },
+        "replyExpanded": {
+          "result": "FAIL",
+          "p95RegressionPercent": 5.79969552807289,
+          "pgP95Ms": 590.559536,
+          "redisP95Ms": 624.810191
+        }
+      }
+    },
+    "redisRealTime": {
+      "result": "ENVIRONMENT_UNSTABLE",
+      "monotonicSeconds": 1805.4002844310016,
+      "maximumUTCMonotonicDriftSeconds": 60.988518619924434,
+      "successfulReads": 58,
+      "explicitRefreshSucceeded": true,
+      "expiredCode": "CURSOR_INVALID",
+      "acceptance": false
+    }
+  },
+  "stableRun": {
+    "status": "COMPLETE_FAIL_SINGLE_COHORT_P95",
+    "sourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+    "apiBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+    "root": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1",
+    "preflightResult": "PASS",
+    "preflightMaximumDriftSeconds": 5.382986273616552e-06,
+    "clockTemporaryState": "hyperv_clocksource_tsc_page; timesyncd inactive",
+    "restoration": "FIRST_TRIAL_RESTORED_EXIT_0_SECOND_APPROVED_TRIAL_CURRENTLY_ACTIVE",
+    "humanAuthorization": "01a17314-c258-7121-8277-993fdebc9b53",
+    "evidence": "stage-5-stable-r1-evidence.json"
+  },
+  "environmentBeforeAuthorization": {
+    "result": "ENVIRONMENT_UNSTABLE",
+    "clockSource": "tsc",
+    "timesyncd": "active",
+    "temporaryTrial": "AWAITING_HUMAN_APPROVAL_NOT_EXECUTED",
+    "systemClockValuesEdited": false,
+    "systemConfigChanged": false,
+    "preflight": "stage-5-packed-opt-clock-preflight.json",
+    "maximumDriftSeconds": 6.443176906002918,
+    "proposal": "/mnt/c/Users/24237/Documents/ChatGPT/Hnuhole/comment-snapshot-redis-20261024/stage5-wsl-clock-trial.sh",
+    "futureHTTPClock": "CLOCK_MONOTONIC_RAW",
+    "futureGuards": "per-request UTC/monotonic/raw variations, optional independent Windows QPC witness, fixed signed expiry/PTTL"
+  },
+  "environment": {
+    "result": "ORIGINAL_STATE_RESTORED_VERIFIED_AFTER_TARGETED_FIX",
+    "clockSource": "tsc",
+    "timesyncd": "active",
+    "temporarySystemStateChanged": true,
+    "persistentConfigEdited": false,
+    "clockValuesSet": false,
+    "restoreRequired": false,
+    "restoreOwner": "stage5-approved-repeat-run.ps1 finally",
+    "authorizationSourceMessage": "01a17314-c258-7121-8277-993fdebc9b53",
+    "preflightMaximumDriftSeconds": 5.382986273616552e-06,
+    "firstTrialRestored": true,
+    "timesyncdEnabled": "enabled",
+    "restorationEvidence": "stage-5-stable-restoration-evidence.json"
+  },
+  "checksBeforeStableClock": {
+    "build": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/build-opt-r1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "vet": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/vet-opt-r1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "host": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/host-opt-r1.log",
+      "sha256": "48b64e6f71f22afcc26e4dd1356d9feb9cf19b711d6c629d17c087dde331db01",
+      "topLevelPass": 0,
+      "topLevelSkip": 0,
+      "scope": "No SQL DSNs/native probe; not real SQL/native acceptance"
+    },
+    "snapshot-real-server": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/snapshot-final-native-opt-r1.log",
+      "sha256": "ff40ed7e3ef473c69c6a50d39e21a6903a4205528b4e9f22e218816e4224e1fd",
+      "topLevelPass": 31,
+      "topLevelSkip": 2,
+      "realRedisTests": 13,
+      "corruptPeerSubcases": 16,
+      "scope": "Owned Redis and disposable SQL; native branch explicitly unset"
+    },
+    "shared-rate-real": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/shared-rate-opt-r1.log",
+      "sha256": "d658d4cf45b8f86ebfe6c3e1ce97ae9c0e85bc14ac934837d318993ee2e8facb",
+      "topLevelPass": 39,
+      "topLevelSkip": 1
+    },
+    "production-dart-transport": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/logs/dart-live-r1.log",
+      "sha256": "50d7502f5f231505cd2e520387cc60875c5389fda6eb3f295d09f6d04ecb88a4",
+      "topLevelPass": 1,
+      "topLevelSkip": 0,
+      "liveRequests": 5,
+      "downRequests": 2,
+      "scope": "Production reader + real TLS/SQL/Redis; not native vault or full production UI"
+    },
+    "bulk-delayed-cleanup": {
+      "result": "PASS",
+      "syntheticAbortingEntries": 6000,
+      "perBatchDelayMilliseconds": 88,
+      "recoveryMilliseconds": 1312,
+      "scope": "Go elapsed under current unstable clock; functional recovery only, not a physical deadline certification"
+    },
+    "actual-two-api": {
+      "result": "NOT_RUN",
+      "reason": "Follow-up source requires new formal cohort after stable clock preflight"
+    },
+    "formal-compatibility": {
+      "result": "NOT_RUN",
+      "reason": "Follow-up source requires new formal cohort after stable clock preflight"
+    },
+    "formal-steady": {
+      "result": "NOT_RUN",
+      "reason": "Follow-up source requires new formal cohort after stable clock preflight"
+    },
+    "real-time-redis": {
+      "result": "NOT_RUN",
+      "reason": "Follow-up source requires new formal cohort after stable clock preflight"
+    },
+    "real-time-pg": {
+      "result": "NOT_RUN",
+      "reason": "Follow-up source requires new formal cohort after stable clock preflight"
+    },
+    "native": {
+      "result": "BLOCKED",
+      "reason": "RMX3366 keyguard showing/input restricted; user unlock requested; current lease released",
+      "package": "org.hnuhole.hnuhole_mobile.commentsnapshot"
+    }
+  },
+  "dataExtension": {
+    "status": "COMPLETE_FAIL",
+    "cohortCount": 3,
+    "root": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1",
+    "samplingProposal": "stage-5-stable-sampling-proposal.md",
+    "acceptanceMethodReview": "PENDING_COORDINATOR",
+    "allOriginalFailuresRetained": true,
+    "sourceAndBinaryUnchanged": true,
+    "evidence": "stage-5-stable-repeat-evidence.json"
+  },
+  "rootCauseRecord": "stage-5-root-cause-diagnosis.md",
+  "rootCauseEvidence": "stage-5-root-cause-evidence.json",
+  "targetedRecord": "stage-5-targeted-execution.md",
+  "targetedEvidence": "stage-5-targeted-evidence.json"
+}

@@ -120,10 +120,12 @@ func newLab(t *testing.T) *lab {
 				t.Fatal(err)
 			}
 		}
+		// Both C and V may follow a test that used the actual migrator.
+		// Reset its tracking table before either migration path.
+		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.goose_db_version`); err != nil {
+			t.Fatal(err)
+		}
 		if os.Getenv("HNULIMIT_FORMAL_GOOSE") == "1" {
-			if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.goose_db_version`); err != nil {
-				t.Fatal(err)
-			}
 			if err = tx.Commit(context.Background()); err != nil {
 				t.Fatal(err)
 			}

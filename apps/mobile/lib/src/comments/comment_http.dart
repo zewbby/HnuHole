@@ -26,6 +26,7 @@ typedef CommentRequest = Future<Map<String, dynamic>> Function(
   Map<String, String>? query,
   Uint8List? bytes,
   String? mime,
+  String? snapshotRequest,
 });
 
 /// Fixed HTTPS C origin, bounded strict JSON, no redirects or command replay.
@@ -53,6 +54,7 @@ class CommentHttp {
     Map<String, String>? query,
     Uint8List? bytes,
     String? mime,
+    String? snapshotRequest,
   }) async {
     final r = await _send(
       token,
@@ -62,6 +64,7 @@ class CommentHttp {
       query: query,
       bytes: bytes,
       mime: mime,
+      snapshotRequest: snapshotRequest,
     );
     return (
       value: Map<String, dynamic>.from(r.value as Map),
@@ -87,8 +90,19 @@ class CommentHttp {
     Uint8List? bytes,
     String? mime,
     String? binaryMime,
+    String? snapshotRequest,
   }) async {
     AuthCrypto.decode(token, bytes: 32);
+    if (snapshotRequest != null) {
+      final nonce = AuthCrypto.decode(snapshotRequest, bytes: 16);
+      if (method != 'GET' ||
+          query?.containsKey('cursor') == true ||
+          !RegExp(r'^/api/v1/posts/[0-9a-f-]+/comments(/[0-9a-f-]+/replies)?$')
+              .hasMatch(path) ||
+          nonce.every((b) => b == 0)) {
+        throw const FormatException('Invalid snapshot request nonce');
+      }
+    }
     if (!RegExp(
       r'^/api/v1/(comment-commands|comments|posts|me/(comment-tasks|comments))(/[a-zA-Z0-9_-]+)*$',
     ).hasMatch(path)) {
@@ -116,6 +130,9 @@ class CommentHttp {
         request.persistentConnection = false;
         request.headers.set('Authorization', 'Bearer $token');
         request.headers.set('Accept', binaryMime ?? 'application/json');
+        if (snapshotRequest != null) {
+          request.headers.set('X-Comment-Snapshot-Request', snapshotRequest);
+        }
         if (data != null) {
           request.headers.set(
             'Content-Type',

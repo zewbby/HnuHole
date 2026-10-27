@@ -1,0 +1,28 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 3,
+  "status": "PASS_BACKEND_SCOPED_REAL_AND_STATIC",
+  "verifiedAtUTC": "2026-10-25T02:33:17.373877+00:00",
+  "integrationBase": "c05198155543b8d1a259dc41fdeb860126dee7d0",
+  "productManifestSHA256": "a39e81a42dc44694d5149e79d1a4552cdd71e1f4826a372798d1b5bc6aa482cb",
+  "checks": {
+    "productFileHashes": 26,
+    "testedLinuxMirrorHashes": "PASS_FOR_API_INFRA_PACKAGES",
+    "gofmt": "PASS",
+    "shellSyntax": "PASS",
+    "workflowParsedAndRequiredCommands": "PASS_NOT_REMOTE_CI",
+    "taskJSON": "PASS",
+    "taskMarkdownLinksMissing": 0,
+    "existingModuleLedgerDeepEqual": "PASS",
+    "diffCheck": "PASS"
+  },
+  "limits": [
+    "No stage4 client changes; existing PR73 client retained",
+    "Two independent Store instances / service objects, not two independent API command processes",
+    "No full 30-minute native reading acceptance or P95/capacity results",
+    "Runtime/CLI compile and config tests plus real Store initialization/ACL; no full production runtime bootstrap",
+    "Remote CI workflow added, not executed",
+    "No device operations this stage; 真机验收待用户于 2026-10-25 验收",
+    "Production/whole-module acceptance unchanged"
+  ]
+}

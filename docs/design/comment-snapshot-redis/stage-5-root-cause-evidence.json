@@ -1,0 +1,3567 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 5,
+  "review": "LIMITED_ROOT_CAUSE_DIAGNOSIS_NOT_PHASE6",
+  "model": "gpt-6-astra",
+  "reasoningEffort": "xhigh",
+  "status": "COMPLETE_LIMITED_DIAGNOSIS_STAGE5_INCOMPLETE",
+  "updatedAtUTC": "2026-10-25T16:57:31.804887+00:00",
+  "frozenSourceDigest": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+  "frozenAPIBinarySHA256": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+  "productSourceUnchanged": true,
+  "formalResult": "FAIL",
+  "pooled": {
+    "compatibility": {
+      "initial": {
+        "postgres": {
+          "samples": 600,
+          "p50Ms": 351.1228,
+          "p95Ms": 695.3383,
+          "p99Ms": 1062.022,
+          "meanMs": 397.15864766666664
+        },
+        "redis": {
+          "samples": 600,
+          "p50Ms": 343.6249,
+          "p95Ms": 694.9037,
+          "p99Ms": 1021.2825,
+          "meanMs": 398.035092
+        },
+        "p95RegressionPercent": -0.0625019504894353,
+        "result": "PASS"
+      },
+      "continuation": {
+        "postgres": {
+          "samples": 3000,
+          "p50Ms": 300.1618,
+          "p95Ms": 648.6236,
+          "p99Ms": 941.8123,
+          "meanMs": 352.74813496666667
+        },
+        "redis": {
+          "samples": 3000,
+          "p50Ms": 302.4266,
+          "p95Ms": 668.8047,
+          "p99Ms": 950.4542,
+          "meanMs": 358.4541609
+        },
+        "p95RegressionPercent": 3.111373067523293,
+        "result": "PASS"
+      },
+      "replyPreview": {
+        "postgres": {
+          "samples": 900,
+          "p50Ms": 246.6059,
+          "p95Ms": 543.9829,
+          "p99Ms": 661.8334,
+          "meanMs": 285.95651977777777
+        },
+        "redis": {
+          "samples": 900,
+          "p50Ms": 245.4758,
+          "p95Ms": 575.7054,
+          "p99Ms": 775.5806,
+          "meanMs": 287.6083751111111
+        },
+        "p95RegressionPercent": 5.831525218899358,
+        "result": "FAIL"
+      },
+      "replyExpanded": {
+        "postgres": {
+          "samples": 900,
+          "p50Ms": 267.9855,
+          "p95Ms": 580.1132,
+          "p99Ms": 893.4489,
+          "meanMs": 315.5336863333333
+        },
+        "redis": {
+          "samples": 900,
+          "p50Ms": 275.3205,
+          "p95Ms": 609.6425,
+          "p99Ms": 871.1118,
+          "meanMs": 321.8001521111111
+        },
+        "p95RegressionPercent": 5.090265141355177,
+        "result": "FAIL"
+      }
+    },
+    "steady": {
+      "initial": {
+        "postgres": {
+          "samples": 600,
+          "p50Ms": 291.4578,
+          "p95Ms": 622.6896,
+          "p99Ms": 934.2348,
+          "meanMs": 348.55732083333334
+        },
+        "redis": {
+          "samples": 600,
+          "p50Ms": 294.5046,
+          "p95Ms": 613.8535,
+          "p99Ms": 751.9005,
+          "meanMs": 342.7154541666667
+        },
+        "p95RegressionPercent": -1.4190216120519739,
+        "result": "PASS"
+      },
+      "continuation": {
+        "postgres": {
+          "samples": 3000,
+          "p50Ms": 296.988,
+          "p95Ms": 630.8262,
+          "p99Ms": 819.2975,
+          "meanMs": 348.0679826333333
+        },
+        "redis": {
+          "samples": 3000,
+          "p50Ms": 297.0645,
+          "p95Ms": 640.089,
+          "p99Ms": 826.7071,
+          "meanMs": 348.07372046666666
+        },
+        "p95RegressionPercent": 1.4683600649434192,
+        "result": "PASS"
+      },
+      "replyPreview": {
+        "postgres": {
+          "samples": 900,
+          "p50Ms": 237.2742,
+          "p95Ms": 552.7368,
+          "p99Ms": 737.5729,
+          "meanMs": 278.6145736666667
+        },
+        "redis": {
+          "samples": 900,
+          "p50Ms": 241.9117,
+          "p95Ms": 565.5754,
+          "p99Ms": 695.1426,
+          "meanMs": 284.4924105555556
+        },
+        "p95RegressionPercent": 2.3227329897339777,
+        "result": "PASS"
+      },
+      "replyExpanded": {
+        "postgres": {
+          "samples": 900,
+          "p50Ms": 264.1112,
+          "p95Ms": 579.4916,
+          "p99Ms": 684.1024,
+          "meanMs": 303.74320133333333
+        },
+        "redis": {
+          "samples": 900,
+          "p50Ms": 268.9311,
+          "p95Ms": 604.5271,
+          "p99Ms": 788.7236,
+          "meanMs": 320.21388822222224
+        },
+        "p95RegressionPercent": 4.32025244196812,
+        "result": "PASS"
+      }
+    }
+  },
+  "individual": {
+    "compatibility-1": {
+      "result": "FAIL",
+      "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1/performance-compatibility/process-20261025T130236-572eb3/normalized-performance.json",
+      "rawSHA256": "6b1e278342ede97fd13a772605fe4bf72464c29634be8f25f0acdc07185fe9d3",
+      "resources": {
+        "result": "PASS",
+        "policy": {
+          "cpuBusyPercent": 65,
+          "ioWaitPercent": 25,
+          "externalBuildCPUPercent": 300,
+          "quietSeconds": 20,
+          "staleSeconds": 15,
+          "waitLimitSeconds": 600
+        },
+        "observations": 271,
+        "pressureObservations": [],
+        "maxCPUPercent": 4.322623385226897,
+        "maxIOWaitPercent": 17.73202722895567,
+        "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1/resource-observations.jsonl"
+      },
+      "paths": {
+        "initial": {
+          "regression": -0.4867186366003806,
+          "meanDiff": 0.9967569999999984,
+          "byHalf": {
+            "0": {
+              "n": 100,
+              "meanPG": 318.918728,
+              "meanR": 323.202558,
+              "meanDiff": 4.28383,
+              "medianPairDiff": 1.097999999999999,
+              "p95PG": 538.6462,
+              "p95R": 582.7448,
+              "regression": 8.186932350028652,
+              "pgSD": 126.56296108680858,
+              "redisSD": 131.91317781749606
+            },
+            "1": {
+              "n": 100,
+              "meanPG": 339.820532,
+              "meanR": 337.530216,
+              "meanDiff": -2.2903160000000033,
+              "medianPairDiff": 4.8125499999999874,
+              "p95PG": 635.2981,
+              "p95R": 576.7553,
+              "regression": -9.215012605893191,
+              "pgSD": 152.00598050037766,
+              "redisSD": 152.53851596821835
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 100,
+              "meanPG": 317.178956,
+              "meanR": 311.672998,
+              "meanDiff": -5.505958000000003,
+              "medianPairDiff": 2.182150000000007,
+              "p95PG": 539.7242,
+              "p95R": 548.7287,
+              "regression": 1.6683520953850062,
+              "pgSD": 129.88848759337296,
+              "redisSD": 118.33445830114681
+            },
+            "False": {
+              "n": 100,
+              "meanPG": 341.560304,
+              "meanR": 349.059776,
+              "meanDiff": 7.499472000000001,
+              "medianPairDiff": 4.229600000000005,
+              "p95PG": 593.4987,
+              "p95R": 594.4377,
+              "regression": 0.15821433138774044,
+              "pgSD": 148.90736676307765,
+              "redisSD": 161.44278846662309
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                1,
+                "127.0.0.8"
+              ],
+              [
+                2,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                1,
+                "127.0.0.9"
+              ],
+              [
+                2,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 261
+          },
+          "clockVariation": {
+            "utcRawSeconds": 5.9604644775390625e-06,
+            "monoRawSeconds": 2.3800093913450837e-06
+          },
+          "luaServerTotalDeltaMs": 1479.619,
+          "luaCallsDelta": 817.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 7.398095,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -12.560972500000002,
+              16.0250225
+            ],
+            "p95Regression95": [
+              -9.363245929353903,
+              10.357726463121786
+            ]
+          }
+        },
+        "continuation": {
+          "regression": 5.483315090582908,
+          "meanDiff": 7.8460462,
+          "byHalf": {
+            "0": {
+              "n": 500,
+              "meanPG": 315.1470446,
+              "meanR": 330.8188236,
+              "meanDiff": 15.671778999999999,
+              "medianPairDiff": 6.200999999999993,
+              "p95PG": 574.5873,
+              "p95R": 616.977,
+              "regression": 7.377416799849201,
+              "pgSD": 130.8781200539437,
+              "redisSD": 147.74381712558898
+            },
+            "1": {
+              "n": 500,
+              "meanPG": 319.4938722,
+              "meanR": 319.5141856,
+              "meanDiff": 0.02031340000000142,
+              "medianPairDiff": -2.2271999999999537,
+              "p95PG": 482.4106,
+              "p95R": 495.3756,
+              "regression": 2.687544593754798,
+              "pgSD": 103.6385588073778,
+              "redisSD": 102.02643052722803
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 500,
+              "meanPG": 316.4794726,
+              "meanR": 322.7880204,
+              "meanDiff": 6.308547800000001,
+              "medianPairDiff": 0.13239999999997565,
+              "p95PG": 529.4915,
+              "p95R": 560.5994,
+              "regression": 5.875051818584431,
+              "pgSD": 122.80740975990994,
+              "redisSD": 129.7997591251946
+            },
+            "False": {
+              "n": 500,
+              "meanPG": 318.1614442,
+              "meanR": 327.5449888,
+              "meanDiff": 9.383544599999999,
+              "medianPairDiff": 5.082049999999995,
+              "p95PG": 538.8848,
+              "p95R": 575.7291,
+              "regression": 6.837138475607407,
+              "pgSD": 113.12127265693537,
+              "redisSD": 124.26720797873466
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 261
+          },
+          "clockVariation": {
+            "utcRawSeconds": 1.3113021850585938e-05,
+            "monoRawSeconds": 1.2617994798347354e-05
+          },
+          "luaServerTotalDeltaMs": 360.89800000000014,
+          "luaCallsDelta": 1204.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 0.36089800000000016,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              0.565848100000001,
+              14.3467999
+            ],
+            "p95Regression95": [
+              -1.4192018599847422,
+              11.140030708730798
+            ]
+          }
+        },
+        "replyPreview": {
+          "regression": -8.025125388864197,
+          "meanDiff": 0.675521666666668,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 257.93184733333334,
+              "meanR": 265.9060953333333,
+              "meanDiff": 7.974248,
+              "medianPairDiff": 4.674599999999984,
+              "p95PG": 391.4399,
+              "p95R": 463.3607,
+              "regression": 18.373395251735957,
+              "pgSD": 93.90560205185973,
+              "redisSD": 111.18872201527627
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 267.95696933333335,
+              "meanR": 261.3337646666667,
+              "meanDiff": -6.623204666666664,
+              "medianPairDiff": 5.724299999999985,
+              "p95PG": 549.1517,
+              "p95R": 472.1829,
+              "regression": -14.015944956557536,
+              "pgSD": 117.18091213557506,
+              "redisSD": 114.40894533196652
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 269.284946,
+              "meanR": 274.14209266666666,
+              "meanDiff": 4.857146666666669,
+              "medianPairDiff": 3.7638000000000034,
+              "p95PG": 518.1608,
+              "p95R": 463.3607,
+              "regression": -10.575886867551542,
+              "pgSD": 99.35719748365013,
+              "redisSD": 112.31639428716097
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 256.6038706666667,
+              "meanR": 253.09776733333334,
+              "meanDiff": -3.5061033333333325,
+              "medianPairDiff": 5.896749999999997,
+              "p95PG": 504.032,
+              "p95R": 472.1829,
+              "regression": -6.318864675258706,
+              "pgSD": 112.46074827446489,
+              "redisSD": 112.36089878017765
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                3,
+                "127.0.0.8"
+              ],
+              [
+                4,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                3,
+                "127.0.0.9"
+              ],
+              [
+                4,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1646,
+            "postgresSnapshots": 621
+          },
+          "clockVariation": {
+            "utcRawSeconds": 4.76837158203125e-06,
+            "monoRawSeconds": 4.462010110728443e-06
+          },
+          "luaServerTotalDeltaMs": 2568.5979999999995,
+          "luaCallsDelta": 1126.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 8.561993333333332,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -13.99367533333333,
+              17.312416333333335
+            ],
+            "p95Regression95": [
+              -19.05304462844186,
+              23.04792522571406
+            ]
+          }
+        },
+        "replyExpanded": {
+          "regression": 0.9153591027982966,
+          "meanDiff": 3.5823189999999983,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 276.280968,
+              "meanR": 283.77257066666664,
+              "meanDiff": 7.491602666666665,
+              "medianPairDiff": 6.678999999999988,
+              "p95PG": 443.5392,
+              "p95R": 430.6619,
+              "regression": -2.9033059535662264,
+              "pgSD": 85.16163637674542,
+              "redisSD": 86.45228423164305
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 296.54083533333335,
+              "meanR": 296.21387066666665,
+              "meanDiff": -0.3269646666666684,
+              "medianPairDiff": 1.179949999999991,
+              "p95PG": 542.7824,
+              "p95R": 545.4474,
+              "regression": 0.4909886540167774,
+              "pgSD": 131.4059216470152,
+              "redisSD": 131.11018361503423
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 284.8546753333333,
+              "meanR": 291.071362,
+              "meanDiff": 6.216686666666667,
+              "medianPairDiff": 2.273349999999951,
+              "p95PG": 514.6119,
+              "p95R": 509.3179,
+              "regression": -1.0287364128190535,
+              "pgSD": 106.1721206502735,
+              "redisSD": 112.37476613827816
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 287.967128,
+              "meanR": 288.9150793333333,
+              "meanDiff": 0.9479513333333304,
+              "medianPairDiff": 4.349699999999999,
+              "p95PG": 497.8044,
+              "p95R": 520.6298,
+              "regression": 4.585214594326614,
+              "pgSD": 115.97083109282735,
+              "redisSD": 110.05163170335814
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                4,
+                "127.0.0.9"
+              ],
+              [
+                5,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                4,
+                "127.0.0.8"
+              ],
+              [
+                5,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 2006,
+            "postgresSnapshots": 981
+          },
+          "clockVariation": {
+            "utcRawSeconds": 0.00011324882507324219,
+            "monoRawSeconds": 2.696993760764599e-06
+          },
+          "luaServerTotalDeltaMs": 3003.577000000001,
+          "luaCallsDelta": 1128.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 10.011923333333337,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -11.883447,
+              17.71014033333333
+            ],
+            "p95Regression95": [
+              -11.24942897205452,
+              10.697491438621132
+            ]
+          }
+        }
+      }
+    },
+    "steady-1": {
+      "result": "FAIL",
+      "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1/performance-steady/process-20261025T132546-71195c/normalized-performance.json",
+      "rawSHA256": "9ee63b05c420500dc7b25fdfeeadadb33c3e6a82a1b6398186c0e680eb85ee6f",
+      "resources": {
+        "result": "PASS",
+        "policy": {
+          "cpuBusyPercent": 65,
+          "ioWaitPercent": 25,
+          "externalBuildCPUPercent": 300,
+          "quietSeconds": 20,
+          "staleSeconds": 15,
+          "waitLimitSeconds": 600
+        },
+        "observations": 278,
+        "pressureObservations": [],
+        "maxCPUPercent": 28.754402817803395,
+        "maxIOWaitPercent": 12.11314475873544,
+        "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-campaign-stable-r1/resource-observations.jsonl"
+      },
+      "paths": {
+        "initial": {
+          "regression": 3.9513470626740377,
+          "meanDiff": 0.6721370000000014,
+          "byHalf": {
+            "0": {
+              "n": 100,
+              "meanPG": 318.659483,
+              "meanR": 323.645887,
+              "meanDiff": 4.986404000000003,
+              "medianPairDiff": -5.36454999999998,
+              "p95PG": 462.9981,
+              "p95R": 506.8693,
+              "regression": 9.475460050484008,
+              "pgSD": 86.54187566032226,
+              "redisSD": 97.74445662832339
+            },
+            "1": {
+              "n": 100,
+              "meanPG": 342.129384,
+              "meanR": 338.487254,
+              "meanDiff": -3.64213,
+              "medianPairDiff": 1.945999999999998,
+              "p95PG": 667.8776,
+              "p95R": 596.9617,
+              "regression": -10.618098286272826,
+              "pgSD": 194.78762605052594,
+              "redisSD": 140.4540160422271
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 100,
+              "meanPG": 336.799665,
+              "meanR": 336.578462,
+              "meanDiff": -0.2212030000000013,
+              "medianPairDiff": -2.9658000000000015,
+              "p95PG": 555.5698,
+              "p95R": 570.3601,
+              "regression": 2.662185741557588,
+              "pgSD": 151.59564774804042,
+              "redisSD": 122.1534810362558
+            },
+            "False": {
+              "n": 100,
+              "meanPG": 323.989202,
+              "meanR": 325.554679,
+              "meanDiff": 1.5654770000000042,
+              "medianPairDiff": 2.6632000000000033,
+              "p95PG": 561.8818,
+              "p95R": 584.0837,
+              "regression": 3.9513470626740377,
+              "pgSD": 150.48518999416922,
+              "redisSD": 120.04043645781738
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                1,
+                "127.0.0.8"
+              ],
+              [
+                2,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                1,
+                "127.0.0.9"
+              ],
+              [
+                2,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 1286
+          },
+          "clockVariation": {
+            "utcRawSeconds": 5.4836273193359375e-06,
+            "monoRawSeconds": 4.1000021155923605e-06
+          },
+          "luaServerTotalDeltaMs": 1141.7319999999997,
+          "luaCallsDelta": 538.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 5.708659999999998,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -21.380611499999997,
+              20.8241695
+            ],
+            "p95Regression95": [
+              -32.27279694569288,
+              19.548455432329213
+            ]
+          }
+        },
+        "continuation": {
+          "regression": -0.3814236940239746,
+          "meanDiff": -0.13869520000000077,
+          "byHalf": {
+            "0": {
+              "n": 500,
+              "meanPG": 317.7211212,
+              "meanR": 317.6701744,
+              "meanDiff": -0.05094679999999977,
+              "medianPairDiff": -1.2107000000000028,
+              "p95PG": 508.4369,
+              "p95R": 512.0144,
+              "regression": 0.7036271364253999,
+              "pgSD": 100.0883969311066,
+              "redisSD": 97.28254034427296
+            },
+            "1": {
+              "n": 500,
+              "meanPG": 329.9517494,
+              "meanR": 329.7253058,
+              "meanDiff": -0.22644360000000177,
+              "medianPairDiff": -0.7765999999999877,
+              "p95PG": 613.5427,
+              "p95R": 612.8095,
+              "regression": -0.11950268498019945,
+              "pgSD": 152.7368580861269,
+              "redisSD": 153.75466674583674
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 500,
+              "meanPG": 327.5854348,
+              "meanR": 328.4348262,
+              "meanDiff": 0.8493913999999986,
+              "medianPairDiff": -2.1396000000000157,
+              "p95PG": 581.8641,
+              "p95R": 582.2514,
+              "regression": 0.06656193430734092,
+              "pgSD": 130.97828533286037,
+              "redisSD": 133.12760630635756
+            },
+            "False": {
+              "n": 500,
+              "meanPG": 320.0874358,
+              "meanR": 318.960654,
+              "meanDiff": -1.1267818,
+              "medianPairDiff": 0.657449999999983,
+              "p95PG": 573.2339,
+              "p95R": 562.7908,
+              "regression": -1.821786883155363,
+              "pgSD": 127.4272399587054,
+              "redisSD": 124.13407850306577
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                2,
+                "127.0.0.9"
+              ],
+              [
+                3,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 1286
+          },
+          "clockVariation": {
+            "utcRawSeconds": 2.2411346435546875e-05,
+            "monoRawSeconds": 1.9834013073705137e-05
+          },
+          "luaServerTotalDeltaMs": 239.4090000000001,
+          "luaCallsDelta": 1133.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 0.2394090000000001,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -8.302633300000002,
+              6.9336873
+            ],
+            "p95Regression95": [
+              -5.432201482636534,
+              6.174095567353999
+            ]
+          }
+        },
+        "replyPreview": {
+          "regression": 2.3807300367213458,
+          "meanDiff": 4.561086333333333,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 270.1616026666667,
+              "meanR": 259.54959866666667,
+              "meanDiff": -10.612003999999999,
+              "medianPairDiff": 1.6144499999999908,
+              "p95PG": 531.113,
+              "p95R": 518.7405,
+              "regression": -2.3295419242232884,
+              "pgSD": 114.66964995633171,
+              "redisSD": 109.3844442385435
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 279.461378,
+              "meanR": 299.1955546666667,
+              "meanDiff": 19.734176666666666,
+              "medianPairDiff": 8.534099999999981,
+              "p95PG": 548.7876,
+              "p95R": 580.8821,
+              "regression": 5.848255317722195,
+              "pgSD": 144.94770189871048,
+              "redisSD": 155.38351942855752
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 268.624084,
+              "meanR": 274.82799266666666,
+              "meanDiff": 6.203908666666666,
+              "medianPairDiff": 5.842950000000002,
+              "p95PG": 521.0298,
+              "p95R": 546.5794,
+              "regression": 4.903673455913649,
+              "pgSD": 130.8327345575607,
+              "redisSD": 128.76235094250134
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 280.99889666666667,
+              "meanR": 283.9171606666667,
+              "meanDiff": 2.9182639999999997,
+              "medianPairDiff": 6.244050000000001,
+              "p95PG": 552.2174,
+              "p95R": 563.2856,
+              "regression": 2.004319313371883,
+              "pgSD": 130.41553486105155,
+              "redisSD": 142.40380414609194
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                3,
+                "127.0.0.8"
+              ],
+              [
+                4,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                3,
+                "127.0.0.9"
+              ],
+              [
+                4,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1646,
+            "postgresSnapshots": 1646
+          },
+          "clockVariation": {
+            "utcRawSeconds": 2.4557113647460938e-05,
+            "monoRawSeconds": 2.3786997189745307e-05
+          },
+          "luaServerTotalDeltaMs": 1991.0430000000001,
+          "luaCallsDelta": 744.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 6.6368100000000005,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -9.633969666666669,
+              19.107011
+            ],
+            "p95Regression95": [
+              -3.2456088751896983,
+              12.47750198399804
+            ]
+          }
+        },
+        "replyExpanded": {
+          "regression": 9.977433411090475,
+          "meanDiff": 27.150996,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 292.75347,
+              "meanR": 315.258256,
+              "meanDiff": 22.504786000000003,
+              "medianPairDiff": 7.876099999999994,
+              "p95PG": 599.1804,
+              "p95R": 628.8491,
+              "regression": 4.95154714673578,
+              "pgSD": 137.91728369775564,
+              "redisSD": 151.20717009570149
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 302.35764066666667,
+              "meanR": 334.1548466666667,
+              "meanDiff": 31.797205999999996,
+              "medianPairDiff": 12.226799999999997,
+              "p95PG": 578.1072,
+              "p95R": 694.5349,
+              "regression": 20.139465483218324,
+              "pgSD": 124.61792465272224,
+              "redisSD": 174.94722557720303
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 290.78842733333335,
+              "meanR": 324.22012,
+              "meanDiff": 33.43169266666667,
+              "medianPairDiff": 9.526150000000001,
+              "p95PG": 599.1804,
+              "p95R": 650.2324,
+              "regression": 8.520305403848338,
+              "pgSD": 119.06887889556602,
+              "redisSD": 167.71025992871068
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 304.3226833333333,
+              "meanR": 325.1929826666667,
+              "meanDiff": 20.87029933333333,
+              "medianPairDiff": 8.90039999999999,
+              "p95PG": 578.1072,
+              "p95R": 630.3412,
+              "regression": 9.035348461323412,
+              "pgSD": 142.57500908609165,
+              "redisSD": 159.75816461605976
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                4,
+                "127.0.0.9"
+              ],
+              [
+                5,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                4,
+                "127.0.0.8"
+              ],
+              [
+                5,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 2006,
+            "postgresSnapshots": 2006
+          },
+          "clockVariation": {
+            "utcRawSeconds": 1.3589859008789062e-05,
+            "monoRawSeconds": 8.72999953571707e-06
+          },
+          "luaServerTotalDeltaMs": 2374.8770000000004,
+          "luaCallsDelta": 745.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 7.916256666666668,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              12.496030333333334,
+              42.468617333333334
+            ],
+            "p95Regression95": [
+              -1.6773599689159813,
+              30.53185389159989
+            ]
+          }
+        }
+      }
+    },
+    "compatibility-2": {
+      "result": "FAIL",
+      "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/compatibility-2/process-20261025T143257-61ea1b/normalized-performance.json",
+      "rawSHA256": "42a7bbd57ef8fae46f7764951df6e6c1d3ac77928c2b9dfd1c9cbfc327641940",
+      "resources": {
+        "result": "PASS",
+        "policy": {
+          "cpuBusyPercent": 65,
+          "ioWaitPercent": 25,
+          "externalBuildCPUPercent": 300,
+          "quietSeconds": 20,
+          "staleSeconds": 15,
+          "waitLimitSeconds": 600
+        },
+        "observations": 306,
+        "pressureObservations": [],
+        "maxCPUPercent": 37.23795807329173,
+        "maxIOWaitPercent": 17.145174371451745,
+        "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/resource-observations.jsonl"
+      },
+      "paths": {
+        "initial": {
+          "regression": -8.038715375582894,
+          "meanDiff": -2.3617029999999994,
+          "byHalf": {
+            "0": {
+              "n": 100,
+              "meanPG": 367.499946,
+              "meanR": 388.657617,
+              "meanDiff": 21.157671,
+              "medianPairDiff": 10.783850000000001,
+              "p95PG": 688.0898,
+              "p95R": 744.1227,
+              "regression": 8.143253976443198,
+              "pgSD": 165.6851158393812,
+              "redisSD": 176.7302386520625
+            },
+            "1": {
+              "n": 100,
+              "meanPG": 395.06538,
+              "meanR": 369.184303,
+              "meanDiff": -25.881076999999998,
+              "medianPairDiff": -12.44795000000002,
+              "p95PG": 776.1552,
+              "p95R": 655.4304,
+              "regression": -15.554208745879695,
+              "pgSD": 196.1456294674403,
+              "redisSD": 159.06010052474667
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 100,
+              "meanPG": 370.451323,
+              "meanR": 363.035643,
+              "meanDiff": -7.41568,
+              "medianPairDiff": -4.726200000000006,
+              "p95PG": 640.3862,
+              "p95R": 641.9461,
+              "regression": 0.24358738523722057,
+              "pgSD": 175.4292046335909,
+              "redisSD": 145.08299228240648
+            },
+            "False": {
+              "n": 100,
+              "meanPG": 392.11400299999997,
+              "meanR": 394.806277,
+              "meanDiff": 2.692274000000001,
+              "medianPairDiff": 2.2371499999999997,
+              "p95PG": 783.3512,
+              "p95R": 781.4647,
+              "regression": -0.24082429439055142,
+              "pgSD": 187.8723450590613,
+              "redisSD": 187.52694187095435
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                1,
+                "127.0.0.8"
+              ],
+              [
+                2,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                1,
+                "127.0.0.9"
+              ],
+              [
+                2,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 261
+          },
+          "clockVariation": {
+            "utcRawSeconds": 1.8596649169921875e-05,
+            "monoRawSeconds": 1.1772004654631019e-05
+          },
+          "luaServerTotalDeltaMs": 1740.1740000000002,
+          "luaCallsDelta": 822.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 8.700870000000002,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -32.451628,
+              26.2144905
+            ],
+            "p95Regression95": [
+              -19.517494594597075,
+              19.051596678315263
+            ]
+          }
+        },
+        "continuation": {
+          "regression": 4.790622626548369,
+          "meanDiff": 10.047580700000001,
+          "byHalf": {
+            "0": {
+              "n": 500,
+              "meanPG": 354.722832,
+              "meanR": 358.9204526,
+              "meanDiff": 4.197620599999999,
+              "medianPairDiff": -0.4142999999999972,
+              "p95PG": 635.1303,
+              "p95R": 659.058,
+              "regression": 3.7673686800960393,
+              "pgSD": 148.60861494284603,
+              "redisSD": 173.11221757759154
+            },
+            "1": {
+              "n": 500,
+              "meanPG": 371.8867282,
+              "meanR": 387.784269,
+              "meanDiff": 15.897540800000002,
+              "medianPairDiff": 5.627099999999999,
+              "p95PG": 718.3251,
+              "p95R": 716.1328,
+              "regression": -0.30519607347704314,
+              "pgSD": 173.01851961833017,
+              "redisSD": 175.85226054622115
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 500,
+              "meanPG": 363.2766174,
+              "meanR": 375.6579978,
+              "meanDiff": 12.3813804,
+              "medianPairDiff": -0.4142999999999972,
+              "p95PG": 683.0836,
+              "p95R": 702.0863,
+              "regression": 2.7818996093596837,
+              "pgSD": 160.90945851343847,
+              "redisSD": 178.84000404707143
+            },
+            "False": {
+              "n": 500,
+              "meanPG": 363.3329428,
+              "meanR": 371.0467238,
+              "meanDiff": 7.713781000000002,
+              "medianPairDiff": 4.398450000000011,
+              "p95PG": 645.912,
+              "p95R": 679.1306,
+              "regression": 5.142898723045852,
+              "pgSD": 162.09771125374266,
+              "redisSD": 171.2158049770556
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 261
+          },
+          "clockVariation": {
+            "utcRawSeconds": 3.0040740966796875e-05,
+            "monoRawSeconds": 2.91050091618672e-05
+          },
+          "luaServerTotalDeltaMs": 449.6569999999997,
+          "luaCallsDelta": 1226.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 0.4496569999999997,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -0.7465343999999986,
+              22.1634183
+            ],
+            "p95Regression95": [
+              -3.286304847625765,
+              12.580334452193709
+            ]
+          }
+        },
+        "replyPreview": {
+          "regression": 0.6020779315790259,
+          "meanDiff": 0.9463026666666701,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 301.45551066666667,
+              "meanR": 294.971558,
+              "meanDiff": -6.483952666666663,
+              "medianPairDiff": -0.5805000000000007,
+              "p95PG": 507.724,
+              "p95R": 489.0318,
+              "regression": -3.6815671506566616,
+              "pgSD": 110.95257538253298,
+              "redisSD": 107.74907167227015
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 296.95316533333335,
+              "meanR": 305.32972333333333,
+              "meanDiff": 8.376558000000003,
+              "medianPairDiff": 4.444000000000003,
+              "p95PG": 565.7861,
+              "p95R": 586.8372,
+              "regression": 3.7206817205300835,
+              "pgSD": 128.83191261678604,
+              "redisSD": 143.3742644360296
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 296.0322253333333,
+              "meanR": 291.23875,
+              "meanDiff": -4.793475333333329,
+              "medianPairDiff": -4.37585,
+              "p95PG": 516.5405,
+              "p95R": 523.1747,
+              "regression": 1.284352340232786,
+              "pgSD": 120.55812946598336,
+              "redisSD": 125.0844887505986
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 302.37645066666664,
+              "meanR": 309.0625313333333,
+              "meanDiff": 6.686080666666669,
+              "medianPairDiff": 7.937449999999998,
+              "p95PG": 507.724,
+              "p95R": 517.0478,
+              "regression": 1.8363914252625513,
+              "pgSD": 119.84914280397285,
+              "redisSD": 128.11716903428942
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                3,
+                "127.0.0.8"
+              ],
+              [
+                4,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                3,
+                "127.0.0.9"
+              ],
+              [
+                4,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1646,
+            "postgresSnapshots": 621
+          },
+          "clockVariation": {
+            "utcRawSeconds": 2.193450927734375e-05,
+            "monoRawSeconds": 2.1962987375445664e-05
+          },
+          "luaServerTotalDeltaMs": 2907.1270000000004,
+          "luaCallsDelta": 1128.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 9.690423333333335,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -13.083671666666664,
+              12.947679333333339
+            ],
+            "p95Regression95": [
+              -10.752415327717157,
+              17.60356094540867
+            ]
+          }
+        },
+        "replyExpanded": {
+          "regression": 12.873647348930994,
+          "meanDiff": 14.112839333333334,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 317.671552,
+              "meanR": 337.29421133333335,
+              "meanDiff": 19.62265933333333,
+              "medianPairDiff": 8.438299999999998,
+              "p95PG": 512.6673,
+              "p95R": 652.9769,
+              "regression": 27.368548764471633,
+              "pgSD": 108.80745113229027,
+              "redisSD": 156.22533747190394
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 326.90044466666666,
+              "meanR": 335.503464,
+              "meanDiff": 8.603019333333332,
+              "medianPairDiff": 0.7706500000000034,
+              "p95PG": 610.6273,
+              "p95R": 639.3651,
+              "regression": 4.706275006047056,
+              "pgSD": 162.13957204091255,
+              "redisSD": 164.73725487841463
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 330.4794846666667,
+              "meanR": 346.9292486666667,
+              "meanDiff": 16.449764,
+              "medianPairDiff": 2.148399999999995,
+              "p95PG": 606.5446,
+              "p95R": 639.743,
+              "regression": 5.47336502542437,
+              "pgSD": 135.70820832717047,
+              "redisSD": 166.11185649445233
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 314.092512,
+              "meanR": 325.86842666666666,
+              "meanDiff": 11.775914666666667,
+              "medianPairDiff": 4.899099999999976,
+              "p95PG": 517.5984,
+              "p95R": 622.142,
+              "regression": 20.19782132247705,
+              "pgSD": 140.06887208113827,
+              "redisSD": 154.0451782172363
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                4,
+                "127.0.0.9"
+              ],
+              [
+                5,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                4,
+                "127.0.0.8"
+              ],
+              [
+                5,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 2006,
+            "postgresSnapshots": 981
+          },
+          "clockVariation": {
+            "utcRawSeconds": 1.239776611328125e-05,
+            "monoRawSeconds": 1.166899164672941e-05
+          },
+          "luaServerTotalDeltaMs": 3254.7289999999994,
+          "luaCallsDelta": 1134.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 10.849096666666664,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -2.622925666666667,
+              34.656596666666665
+            ],
+            "p95Regression95": [
+              -1.14798408753094,
+              27.224253427971433
+            ]
+          }
+        }
+      }
+    },
+    "steady-2": {
+      "result": "PASS",
+      "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/steady-2/process-20261025T145859-767a2f/normalized-performance.json",
+      "rawSHA256": "036569b12b8d5a50612d68c23750327fa2bcc7af899aa282d090bcd1527c9002",
+      "resources": {
+        "result": "PASS",
+        "policy": {
+          "cpuBusyPercent": 65,
+          "ioWaitPercent": 25,
+          "externalBuildCPUPercent": 300,
+          "quietSeconds": 20,
+          "staleSeconds": 15,
+          "waitLimitSeconds": 600
+        },
+        "observations": 304,
+        "pressureObservations": [],
+        "maxCPUPercent": 22.359154929577464,
+        "maxIOWaitPercent": 18.564068472660793,
+        "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/resource-observations.jsonl"
+      },
+      "paths": {
+        "initial": {
+          "regression": -3.315038503935197,
+          "meanDiff": -10.8299865,
+          "byHalf": {
+            "0": {
+              "n": 100,
+              "meanPG": 334.766635,
+              "meanR": 326.911437,
+              "meanDiff": -7.855198,
+              "medianPairDiff": 4.5423000000000116,
+              "p95PG": 608.4514,
+              "p95R": 559.6507,
+              "regression": -8.02047624510356,
+              "pgSD": 136.15273519981886,
+              "redisSD": 118.35499921750193
+            },
+            "1": {
+              "n": 100,
+              "meanPG": 349.499285,
+              "meanR": 335.69451,
+              "meanDiff": -13.804775000000003,
+              "medianPairDiff": 2.4767999999999972,
+              "p95PG": 670.4037,
+              "p95R": 606.5146,
+              "regression": -9.529944420056157,
+              "pgSD": 157.15028881818083,
+              "redisSD": 131.90022465360096
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 100,
+              "meanPG": 354.777432,
+              "meanR": 353.274776,
+              "meanDiff": -1.502656000000001,
+              "medianPairDiff": 4.124800000000008,
+              "p95PG": 622.6896,
+              "p95R": 613.7398,
+              "regression": -1.4372811108456118,
+              "pgSD": 147.27764556969774,
+              "redisSD": 140.242515440252
+            },
+            "False": {
+              "n": 100,
+              "meanPG": 329.488488,
+              "meanR": 309.331171,
+              "meanDiff": -20.157317000000003,
+              "medianPairDiff": 1.8474999999999966,
+              "p95PG": 621.292,
+              "p95R": 485.3726,
+              "regression": -21.876895244104233,
+              "pgSD": 146.0469174657498,
+              "redisSD": 103.92930202998409
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                1,
+                "127.0.0.8"
+              ],
+              [
+                2,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                1,
+                "127.0.0.9"
+              ],
+              [
+                2,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 1286
+          },
+          "clockVariation": {
+            "utcRawSeconds": 1.5974044799804688e-05,
+            "monoRawSeconds": 1.592100306879729e-05
+          },
+          "luaServerTotalDeltaMs": 1151.9500000000003,
+          "luaCallsDelta": 539.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 5.759750000000001,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -28.467103499999997,
+              8.075145499999996
+            ],
+            "p95Regression95": [
+              -17.035231682586016,
+              1.71248509566444
+            ]
+          }
+        },
+        "continuation": {
+          "regression": 1.989550849688726,
+          "meanDiff": 1.1679591999999992,
+          "byHalf": {
+            "0": {
+              "n": 500,
+              "meanPG": 340.8407628,
+              "meanR": 334.9685104,
+              "meanDiff": -5.872252400000001,
+              "medianPairDiff": -1.2901999999999987,
+              "p95PG": 601.3548,
+              "p95R": 569.8892,
+              "regression": -5.232451790523662,
+              "pgSD": 127.1073118742823,
+              "redisSD": 124.78498512095405
+            },
+            "1": {
+              "n": 500,
+              "meanPG": 413.9565262,
+              "meanR": 422.164697,
+              "meanDiff": 8.208170799999998,
+              "medianPairDiff": 1.7575000000000216,
+              "p95PG": 719.9556,
+              "p95R": 744.8732,
+              "regression": 3.4609912055687975,
+              "pgSD": 179.07033448585346,
+              "redisSD": 183.21832264237577
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 500,
+              "meanPG": 383.6693614,
+              "meanR": 379.1455624,
+              "meanDiff": -4.523799000000003,
+              "medianPairDiff": -5.03540000000001,
+              "p95PG": 682.8035,
+              "p95R": 683.7147,
+              "regression": 0.1334498138922946,
+              "pgSD": 165.6284158609645,
+              "redisSD": 167.5244969450508
+            },
+            "False": {
+              "n": 500,
+              "meanPG": 371.1279276,
+              "meanR": 377.987645,
+              "meanDiff": 6.859717400000002,
+              "medianPairDiff": 5.038499999999999,
+              "p95PG": 654.0194,
+              "p95R": 688.6117,
+              "regression": 5.289185611313685,
+              "pgSD": 152.93526067397903,
+              "redisSD": 157.74765718574085
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                2,
+                "127.0.0.9"
+              ],
+              [
+                3,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 1286
+          },
+          "clockVariation": {
+            "utcRawSeconds": 3.910064697265625e-05,
+            "monoRawSeconds": 3.882200689986348e-05
+          },
+          "luaServerTotalDeltaMs": 267.2649999999999,
+          "luaCallsDelta": 1144.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 0.26726499999999986,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -7.972880500000002,
+              10.721385599999998
+            ],
+            "p95Regression95": [
+              -2.0479253797677566,
+              6.29486274521216
+            ]
+          }
+        },
+        "replyPreview": {
+          "regression": -1.8176534008945255,
+          "meanDiff": 10.758283333333333,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 309.8725586666667,
+              "meanR": 314.22940666666665,
+              "meanDiff": 4.356848000000001,
+              "medianPairDiff": 4.5804999999999865,
+              "p95PG": 641.3783,
+              "p95R": 610.5244,
+              "regression": -4.810561879003384,
+              "pgSD": 168.34226174352116,
+              "redisSD": 158.6137529418893
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 280.9468093333333,
+              "meanR": 298.106528,
+              "meanDiff": 17.159718666666667,
+              "medianPairDiff": 9.605450000000005,
+              "p95PG": 579.7439,
+              "p95R": 613.7185,
+              "regression": 5.860277270705194,
+              "pgSD": 145.73620762049748,
+              "redisSD": 146.94285011850678
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 303.65229266666665,
+              "meanR": 314.17406666666665,
+              "meanDiff": 10.521774,
+              "medianPairDiff": 3.6525999999999925,
+              "p95PG": 613.5378,
+              "p95R": 610.5244,
+              "regression": -0.49115148243513707,
+              "pgSD": 151.8204632598787,
+              "redisSD": 147.99255404875856
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 287.16707533333334,
+              "meanR": 298.161868,
+              "meanDiff": 10.994792666666667,
+              "medianPairDiff": 9.24154999999999,
+              "p95PG": 633.2024,
+              "p95R": 622.3192,
+              "regression": -1.718755330049282,
+              "pgSD": 163.7469703182854,
+              "redisSD": 157.64047088179865
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                3,
+                "127.0.0.8"
+              ],
+              [
+                4,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                3,
+                "127.0.0.9"
+              ],
+              [
+                4,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1646,
+            "postgresSnapshots": 1646
+          },
+          "clockVariation": {
+            "utcRawSeconds": 1.71661376953125e-05,
+            "monoRawSeconds": 1.632598286960274e-05
+          },
+          "luaServerTotalDeltaMs": 1889.0930000000003,
+          "luaCallsDelta": 744.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 6.2969766666666676,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              1.393599666666665,
+              21.311058
+            ],
+            "p95Regression95": [
+              -11.091106620202652,
+              10.411287916692679
+            ]
+          }
+        },
+        "replyExpanded": {
+          "regression": 2.35723190665047,
+          "meanDiff": 14.270849,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 347.70986066666666,
+              "meanR": 374.98027866666666,
+              "meanDiff": 27.270418,
+              "medianPairDiff": 11.637349999999984,
+              "p95PG": 654.5358,
+              "p95R": 689.8752,
+              "regression": 5.39915463753089,
+              "pgSD": 157.28840973662818,
+              "redisSD": 171.73154733811245
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 313.98265066666664,
+              "meanR": 315.2539306666667,
+              "meanDiff": 1.271279999999999,
+              "medianPairDiff": -3.6171999999999827,
+              "p95PG": 546.1567,
+              "p95R": 634.0808,
+              "regression": 16.098694751890786,
+              "pgSD": 119.78629951027287,
+              "redisSD": 130.9754086209618
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 329.1609193333333,
+              "meanR": 342.438476,
+              "meanDiff": 13.277556666666666,
+              "medianPairDiff": 4.35990000000001,
+              "p95PG": 594.7933,
+              "p95R": 634.0808,
+              "regression": 6.605235802084497,
+              "pgSD": 137.38094000850955,
+              "redisSD": 148.67217095085715
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 332.531592,
+              "meanR": 347.7957333333333,
+              "meanDiff": 15.264141333333335,
+              "medianPairDiff": 10.580449999999985,
+              "p95PG": 642.1416,
+              "p95R": 671.4729,
+              "regression": 4.567730855624363,
+              "pgSD": 144.1587299182484,
+              "redisSD": 162.24675683144932
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                4,
+                "127.0.0.9"
+              ],
+              [
+                5,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                4,
+                "127.0.0.8"
+              ],
+              [
+                5,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 2006,
+            "postgresSnapshots": 2006
+          },
+          "clockVariation": {
+            "utcRawSeconds": 3.814697265625e-05,
+            "monoRawSeconds": 3.0448994948528707e-05
+          },
+          "luaServerTotalDeltaMs": 2330.767,
+          "luaCallsDelta": 747.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 7.769223333333333,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -1.1303696666666652,
+              27.975775666666667
+            ],
+            "p95Regression95": [
+              -3.7580216662288835,
+              12.965208919652603
+            ]
+          }
+        }
+      }
+    },
+    "compatibility-3": {
+      "result": "FAIL",
+      "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/compatibility-3/process-20261025T152501-4b56b8/normalized-performance.json",
+      "rawSHA256": "ec6a855f387ff6cc9fcd50034febe000fffe81e80bc30ab3a68c4ece168aa798",
+      "resources": {
+        "result": "PASS",
+        "policy": {
+          "cpuBusyPercent": 65,
+          "ioWaitPercent": 25,
+          "externalBuildCPUPercent": 300,
+          "quietSeconds": 20,
+          "staleSeconds": 15,
+          "waitLimitSeconds": 600
+        },
+        "observations": 319,
+        "pressureObservations": [],
+        "maxCPUPercent": 36.38977635782748,
+        "maxIOWaitPercent": 22.65586241111295,
+        "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/resource-observations.jsonl"
+      },
+      "paths": {
+        "initial": {
+          "regression": 0.40790816905529326,
+          "meanDiff": 3.9942789999999992,
+          "byHalf": {
+            "0": {
+              "n": 100,
+              "meanPG": 423.373562,
+              "meanR": 435.323527,
+              "meanDiff": 11.949965,
+              "medianPairDiff": 9.541050000000027,
+              "p95PG": 661.0724,
+              "p95R": 647.495,
+              "regression": -2.05384463184366,
+              "pgSD": 131.11626134251983,
+              "redisSD": 173.64227243200162
+            },
+            "1": {
+              "n": 100,
+              "meanPG": 538.273738,
+              "meanR": 534.312331,
+              "meanDiff": -3.9614070000000012,
+              "medianPairDiff": 4.730550000000022,
+              "p95PG": 1012.0645,
+              "p95R": 961.2203,
+              "regression": -5.023810241343318,
+              "pgSD": 215.3922935063875,
+              "redisSD": 204.3773414800636
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 100,
+              "meanPG": 487.455947,
+              "meanR": 497.083535,
+              "meanDiff": 9.627588,
+              "medianPairDiff": 11.772850000000005,
+              "p95PG": 804.3641,
+              "p95R": 920.4573,
+              "regression": 14.432916635638016,
+              "pgSD": 198.17536326656358,
+              "redisSD": 203.47433143083956
+            },
+            "False": {
+              "n": 100,
+              "meanPG": 474.191353,
+              "meanR": 472.552323,
+              "meanDiff": -1.6390300000000004,
+              "medianPairDiff": -2.7334999999999923,
+              "p95PG": 780.7704,
+              "p95R": 721.0261,
+              "regression": -7.65196785124026,
+              "pgSD": 175.7574418589808,
+              "redisSD": 187.52302237868324
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                1,
+                "127.0.0.8"
+              ],
+              [
+                2,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                1,
+                "127.0.0.9"
+              ],
+              [
+                2,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 261
+          },
+          "clockVariation": {
+            "utcRawSeconds": 5.245208740234375e-06,
+            "monoRawSeconds": 4.319008439779282e-06
+          },
+          "luaServerTotalDeltaMs": 1574.629,
+          "luaCallsDelta": 830.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 7.873144999999999,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -9.1869325,
+              17.253301500000003
+            ],
+            "p95Regression95": [
+              -11.583941251393192,
+              19.263512029588583
+            ]
+          }
+        },
+        "continuation": {
+          "regression": 2.0234545538341475,
+          "meanDiff": -0.7755491000000013,
+          "byHalf": {
+            "0": {
+              "n": 500,
+              "meanPG": 389.7209884,
+              "meanR": 386.4408448,
+              "meanDiff": -3.2801436000000037,
+              "medianPairDiff": -5.384899999999988,
+              "p95PG": 766.158,
+              "p95R": 750.7279,
+              "regression": -2.01395795645285,
+              "pgSD": 187.93189294088035,
+              "redisSD": 187.02919022272553
+            },
+            "1": {
+              "n": 500,
+              "meanPG": 365.5173444,
+              "meanR": 367.2463898,
+              "meanDiff": 1.729045400000001,
+              "medianPairDiff": 0.7878499999999917,
+              "p95PG": 661.9869,
+              "p95R": 688.1154,
+              "regression": 3.94698142818235,
+              "pgSD": 168.63512917963985,
+              "redisSD": 178.1062003056772
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 500,
+              "meanPG": 387.5508538,
+              "meanR": 377.6660886,
+              "meanDiff": -9.8847652,
+              "medianPairDiff": -8.879449999999977,
+              "p95PG": 740.4462,
+              "p95R": 737.1923,
+              "regression": -0.439451238996158,
+              "pgSD": 191.13957134224864,
+              "redisSD": 184.81641978541617
+            },
+            "False": {
+              "n": 500,
+              "meanPG": 367.687479,
+              "meanR": 376.021146,
+              "meanDiff": 8.333666999999997,
+              "medianPairDiff": 5.376750000000001,
+              "p95PG": 689.2562,
+              "p95R": 713.2594,
+              "regression": 3.482478648723064,
+              "pgSD": 165.28064149533955,
+              "redisSD": 180.90841508306102
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 261
+          },
+          "clockVariation": {
+            "utcRawSeconds": 4.267692565917969e-05,
+            "monoRawSeconds": 1.7420999938622117e-05
+          },
+          "luaServerTotalDeltaMs": 440.58100000000013,
+          "luaCallsDelta": 1227.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 0.4405810000000001,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -10.954272900000001,
+              8.688510699999998
+            ],
+            "p95Regression95": [
+              -4.858606936488574,
+              9.522401528597534
+            ]
+          }
+        },
+        "replyPreview": {
+          "regression": 10.389765932148954,
+          "meanDiff": 3.333741666666669,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 282.84897133333334,
+              "meanR": 289.06354,
+              "meanDiff": 6.214568666666668,
+              "medianPairDiff": 2.9427500000000038,
+              "p95PG": 524.2732,
+              "p95R": 584.2019,
+              "regression": 11.430815078855838,
+              "pgSD": 115.90982613461563,
+              "redisSD": 130.66266492206398
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 308.59265466666665,
+              "meanR": 309.04556933333333,
+              "meanDiff": 0.45291466666666885,
+              "medianPairDiff": 2.7412000000000063,
+              "p95PG": 611.1654,
+              "p95R": 667.7104,
+              "regression": 9.251996268113349,
+              "pgSD": 159.75368676008893,
+              "redisSD": 178.50334177516754
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 297.58803466666666,
+              "meanR": 311.635432,
+              "meanDiff": 14.047397333333336,
+              "medianPairDiff": 3.711250000000007,
+              "p95PG": 571.7017,
+              "p95R": 643.8021,
+              "regression": 12.611541998213415,
+              "pgSD": 137.81046045597282,
+              "redisSD": 163.10045953324806
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 293.8535913333333,
+              "meanR": 286.47367733333334,
+              "meanDiff": -7.3799139999999985,
+              "medianPairDiff": 1.5458500000000015,
+              "p95PG": 601.8665,
+              "p95R": 631.1936,
+              "regression": 4.87269186771484,
+              "pgSD": 142.44710579982888,
+              "redisSD": 149.05272307535617
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                3,
+                "127.0.0.8"
+              ],
+              [
+                4,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                3,
+                "127.0.0.9"
+              ],
+              [
+                4,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1646,
+            "postgresSnapshots": 621
+          },
+          "clockVariation": {
+            "utcRawSeconds": 3.314018249511719e-05,
+            "monoRawSeconds": 3.284298873040825e-05
+          },
+          "luaServerTotalDeltaMs": 2803.4459999999995,
+          "luaCallsDelta": 1129.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 9.344819999999999,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -8.261514333333333,
+              15.32532966666667
+            ],
+            "p95Regression95": [
+              0.4187532579836395,
+              23.505403521433486
+            ]
+          }
+        },
+        "replyExpanded": {
+          "regression": 3.4834375198597334,
+          "meanDiff": 1.1042389999999975,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 345.89811533333335,
+              "meanR": 341.9900006666667,
+              "meanDiff": -3.908114666666669,
+              "medianPairDiff": 4.3401499999999515,
+              "p95PG": 671.2572,
+              "p95R": 726.1789,
+              "regression": 8.181915963061549,
+              "pgSD": 180.10966505092821,
+              "redisSD": 173.2448191926501
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 329.9102026666667,
+              "meanR": 336.0267953333333,
+              "meanDiff": 6.116592666666664,
+              "medianPairDiff": 15.007049999999992,
+              "p95PG": 613.0092,
+              "p95R": 606.8912,
+              "regression": -0.9980274358035612,
+              "pgSD": 163.71060894419188,
+              "redisSD": 142.01813757148818
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 338.2753906666667,
+              "meanR": 342.385112,
+              "meanDiff": 4.109721333333331,
+              "medianPairDiff": 6.186600000000013,
+              "p95PG": 671.2572,
+              "p95R": 694.7728,
+              "regression": 3.5032175446311653,
+              "pgSD": 175.12442607981163,
+              "redisSD": 167.08086964734073
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 337.53292733333336,
+              "meanR": 335.631684,
+              "meanDiff": -1.9012433333333356,
+              "medianPairDiff": 9.088250000000016,
+              "p95PG": 613.0092,
+              "p95R": 648.641,
+              "regression": 5.81260444378322,
+              "pgSD": 169.412152098827,
+              "redisSD": 149.2040333466975
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                4,
+                "127.0.0.9"
+              ],
+              [
+                5,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                4,
+                "127.0.0.8"
+              ],
+              [
+                5,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 2006,
+            "postgresSnapshots": 981
+          },
+          "clockVariation": {
+            "utcRawSeconds": 3.170967102050781e-05,
+            "monoRawSeconds": 3.0969007639214396e-05
+          },
+          "luaServerTotalDeltaMs": 3267.4490000000005,
+          "luaCallsDelta": 1136.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 10.891496666666669,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -18.706274333333337,
+              16.624050999999998
+            ],
+            "p95Regression95": [
+              -10.862098317218638,
+              15.193168246506117
+            ]
+          }
+        }
+      }
+    },
+    "steady-3": {
+      "result": "PASS",
+      "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/steady-3/process-20261025T155218-4c5ae4/normalized-performance.json",
+      "rawSHA256": "899cd69feba58ddfb285d4fd3914db92f2678e7678dfcc852d249145fb9bde9b",
+      "resources": {
+        "result": "PASS",
+        "policy": {
+          "cpuBusyPercent": 65,
+          "ioWaitPercent": 25,
+          "externalBuildCPUPercent": 300,
+          "quietSeconds": 20,
+          "staleSeconds": 15,
+          "waitLimitSeconds": 600
+        },
+        "observations": 285,
+        "pressureObservations": [],
+        "maxCPUPercent": 32.06155819172812,
+        "maxIOWaitPercent": 12.139883430474605,
+        "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-packed-opt-v2/formal-fixed-three-cohort-r1/resource-observations.jsonl"
+      },
+      "paths": {
+        "initial": {
+          "regression": -2.473584618483282,
+          "meanDiff": -7.367750499999996,
+          "byHalf": {
+            "0": {
+              "n": 100,
+              "meanPG": 362.162799,
+              "meanR": 349.528233,
+              "meanDiff": -12.634566,
+              "medianPairDiff": -6.666150000000002,
+              "p95PG": 654.6981,
+              "p95R": 681.7705,
+              "regression": 4.135096772084723,
+              "pgSD": 150.18617992383332,
+              "redisSD": 154.94850954044463
+            },
+            "1": {
+              "n": 100,
+              "meanPG": 384.126339,
+              "meanR": 382.025404,
+              "meanDiff": -2.1009349999999922,
+              "medianPairDiff": -6.203799999999987,
+              "p95PG": 913.9344,
+              "p95R": 676.5322,
+              "regression": -25.975846844149864,
+              "pgSD": 188.3486357635641,
+              "redisSD": 192.5045355061941
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 100,
+              "meanPG": 374.080812,
+              "meanR": 360.467139,
+              "meanDiff": -13.613672999999995,
+              "medianPairDiff": -8.23115,
+              "p95PG": 654.6981,
+              "p95R": 610.0534,
+              "regression": -6.819127778131618,
+              "pgSD": 174.20976156279625,
+              "redisSD": 178.73746935267255
+            },
+            "False": {
+              "n": 100,
+              "meanPG": 372.208326,
+              "meanR": 371.086498,
+              "meanDiff": -1.1218279999999967,
+              "medianPairDiff": -4.185449999999989,
+              "p95PG": 699.0624,
+              "p95R": 696.16,
+              "regression": -0.415184681653602,
+              "pgSD": 167.10451907095472,
+              "redisSD": 172.0359428585935
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                1,
+                "127.0.0.8"
+              ],
+              [
+                2,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                1,
+                "127.0.0.9"
+              ],
+              [
+                2,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 1286
+          },
+          "clockVariation": {
+            "utcRawSeconds": 2.5033950805664062e-05,
+            "monoRawSeconds": 4.380985046736896e-06
+          },
+          "luaServerTotalDeltaMs": 1247.38,
+          "luaCallsDelta": 541.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 6.2369,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -20.360486999999996,
+              5.844209500000003
+            ],
+            "p95Regression95": [
+              -24.683114688680973,
+              11.893783433722271
+            ]
+          }
+        },
+        "continuation": {
+          "regression": 0.4262393556908828,
+          "meanDiff": -1.0120504999999995,
+          "byHalf": {
+            "0": {
+              "n": 500,
+              "meanPG": 370.4764424,
+              "meanR": 372.9860622,
+              "meanDiff": 2.509619800000001,
+              "medianPairDiff": 4.919299999999993,
+              "p95PG": 687.645,
+              "p95R": 709.5428,
+              "regression": 3.1844629132764757,
+              "pgSD": 174.58167685260872,
+              "redisSD": 172.1540024274083
+            },
+            "1": {
+              "n": 500,
+              "meanPG": 315.4612938,
+              "meanR": 310.927573,
+              "meanDiff": -4.5337208,
+              "medianPairDiff": -2.3264000000000067,
+              "p95PG": 481.2809,
+              "p95R": 466.853,
+              "regression": -2.9978127118695075,
+              "pgSD": 91.90088249678409,
+              "redisSD": 90.15539124984238
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 500,
+              "meanPG": 346.9149354,
+              "meanR": 348.6661334,
+              "meanDiff": 1.7511979999999998,
+              "medianPairDiff": -1.5985000000000014,
+              "p95PG": 610.8212,
+              "p95R": 630.4758,
+              "regression": 3.2177337656257077,
+              "pgSD": 149.60023433868432,
+              "redisSD": 150.46701542005218
+            },
+            "False": {
+              "n": 500,
+              "meanPG": 339.0228008,
+              "meanR": 335.2475018,
+              "meanDiff": -3.7752989999999986,
+              "medianPairDiff": 3.590350000000015,
+              "p95PG": 605.7216,
+              "p95R": 592.6372,
+              "regression": -2.1601342927179634,
+              "pgSD": 134.27384219223313,
+              "redisSD": 130.24572603801568
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                2,
+                "127.0.0.9"
+              ],
+              [
+                3,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                2,
+                "127.0.0.8"
+              ],
+              [
+                3,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1286,
+            "postgresSnapshots": 1286
+          },
+          "clockVariation": {
+            "utcRawSeconds": 2.86102294921875e-05,
+            "monoRawSeconds": 2.792599843814969e-05
+          },
+          "luaServerTotalDeltaMs": 264.59299999999985,
+          "luaCallsDelta": 1136.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 0.26459299999999986,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -9.5034329,
+              7.5118393999999995
+            ],
+            "p95Regression95": [
+              -3.7215343345962437,
+              8.179327023877425
+            ]
+          }
+        },
+        "replyPreview": {
+          "regression": -6.182967282760632,
+          "meanDiff": 2.314141,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 249.92600466666667,
+              "meanR": 257.0172113333333,
+              "meanDiff": 7.091206666666666,
+              "medianPairDiff": 5.348200000000006,
+              "p95PG": 391.5897,
+              "p95R": 408.2616,
+              "regression": 4.25749196161187,
+              "pgSD": 93.2314438524406,
+              "redisSD": 88.16982356020867
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 281.3190886666667,
+              "meanR": 278.856164,
+              "meanDiff": -2.462924666666666,
+              "medianPairDiff": 8.222999999999999,
+              "p95PG": 599.0574,
+              "p95R": 565.5754,
+              "regression": -5.589113831162107,
+              "pgSD": 144.49923720545678,
+              "redisSD": 129.5686753379322
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 261.72563533333334,
+              "meanR": 268.6222706666667,
+              "meanDiff": 6.896635333333334,
+              "medianPairDiff": 6.701800000000006,
+              "p95PG": 539.3072,
+              "p95R": 548.115,
+              "regression": 1.633169369887888,
+              "pgSD": 123.15922161050898,
+              "redisSD": 112.37008839045826
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 269.519458,
+              "meanR": 267.25110466666666,
+              "meanDiff": -2.268353333333334,
+              "medianPairDiff": 7.336549999999988,
+              "p95PG": 518.2555,
+              "p95R": 491.3839,
+              "regression": -5.185010096371389,
+              "pgSD": 121.94028099513736,
+              "redisSD": 110.33606250693259
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                3,
+                "127.0.0.8"
+              ],
+              [
+                4,
+                "127.0.0.9"
+              ]
+            ],
+            "redis": [
+              [
+                3,
+                "127.0.0.9"
+              ],
+              [
+                4,
+                "127.0.0.8"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 1646,
+            "postgresSnapshots": 1646
+          },
+          "clockVariation": {
+            "utcRawSeconds": 3.337860107421875e-06,
+            "monoRawSeconds": 2.4549808586016297e-06
+          },
+          "luaServerTotalDeltaMs": 1856.2530000000002,
+          "luaCallsDelta": 744.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 6.1875100000000005,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -11.034892666666664,
+              14.177274333333333
+            ],
+            "p95Regression95": [
+              -19.40894057615632,
+              13.548390571743285
+            ]
+          }
+        },
+        "replyExpanded": {
+          "regression": -1.5026791770826775,
+          "meanDiff": 7.990215666666668,
+          "byHalf": {
+            "0": {
+              "n": 150,
+              "meanPG": 283.04931,
+              "meanR": 290.681544,
+              "meanDiff": 7.632234000000001,
+              "medianPairDiff": 5.045950000000005,
+              "p95PG": 479.2633,
+              "p95R": 451.2922,
+              "regression": -5.83626995849672,
+              "pgSD": 95.399444325498,
+              "redisSD": 91.77913773416398
+            },
+            "1": {
+              "n": 150,
+              "meanPG": 282.606276,
+              "meanR": 290.95447333333334,
+              "meanDiff": 8.348197333333333,
+              "medianPairDiff": 11.553500000000014,
+              "p95PG": 427.9257,
+              "p95R": 425.1649,
+              "regression": -0.6451587273211268,
+              "pgSD": 81.23015492712537,
+              "redisSD": 81.29188968793582
+            }
+          },
+          "byPGFirst": {
+            "True": {
+              "n": 150,
+              "meanPG": 289.67710066666666,
+              "meanR": 294.57832733333333,
+              "meanDiff": 4.901226666666668,
+              "medianPairDiff": 4.884149999999991,
+              "p95PG": 479.2633,
+              "p95R": 447.242,
+              "regression": -6.68135866026044,
+              "pgSD": 94.33484164601926,
+              "redisSD": 91.16759345999229
+            },
+            "False": {
+              "n": 150,
+              "meanPG": 275.9784853333333,
+              "meanR": 287.05769,
+              "meanDiff": 11.079204666666667,
+              "medianPairDiff": 10.877399999999994,
+              "p95PG": 437.7616,
+              "p95R": 433.2994,
+              "regression": -1.0193219323028746,
+              "pgSD": 81.89000403593154,
+              "redisSD": 81.80353940138487
+            }
+          },
+          "processes": {
+            "postgres": [
+              [
+                4,
+                "127.0.0.9"
+              ],
+              [
+                5,
+                "127.0.0.8"
+              ]
+            ],
+            "redis": [
+              [
+                4,
+                "127.0.0.8"
+              ],
+              [
+                5,
+                "127.0.0.9"
+              ]
+            ]
+          },
+          "occupancyAfter": {
+            "redisEntries": 2006,
+            "postgresSnapshots": 2006
+          },
+          "clockVariation": {
+            "utcRawSeconds": 2.86102294921875e-06,
+            "monoRawSeconds": 2.0770239643752575e-06
+          },
+          "luaServerTotalDeltaMs": 2279.8019999999997,
+          "luaCallsDelta": 743.0,
+          "luaServerMeanPerMeasuredPairUpperMs": 7.599339999999999,
+          "bootstrap": {
+            "method": "paired20-block bootstrap500 seed20261026 diagnostic_only",
+            "meanDiff95": [
+              -2.3788503333333337,
+              21.79984866666667
+            ],
+            "p95Regression95": [
+              -5.204379241434188,
+              24.580518358235825
+            ]
+          }
+        }
+      }
+    }
+  },
+  "diagnostic1": {
+    "scope": "DIAGNOSTIC_ONLY_NOT_ACCEPTANCE",
+    "sourceDigest": "a72b2d6aac4a42fe5078302b1857a0f3598cd35637f06cbc4741f4459571a3e9",
+    "apiBinarySHA256": "9f343a08e38e6c79e8b2250f31bf8251243722e0691d5c8c747b8adb426337e7",
+    "baseFrozenSource": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+    "elapsedSeconds": 70.956175120009,
+    "hostClockSummary": {
+      "elapsedSeconds": 71.0880529,
+      "rawElapsedLowerBound": 70.74844207800925,
+      "rawElapsedUpperBound": 72.49955639400287,
+      "utcCounterDriftSeconds": 0.0019471000000095273,
+      "stable": true
+    },
+    "requestsIncludingWarmups": 192,
+    "measuredRequests": 160,
+    "commentRows": 11563,
+    "ledgerFinalEntries": 1120,
+    "runtimeGOMAXPROCS": 2,
+    "blocks": {
+      "0": {
+        "replyPreview/postgres": {
+          "n": 10,
+          "httpMeanMs": 267.3449263,
+          "traceMeanMs": 111.77873319999999,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.24315989999999998,
+            "anchor_write": 44.565749000000004,
+            "business_action": 7.7931056000000005,
+            "comment_projection": 4.0528813,
+            "deferred_gate_abort": 16.4314191,
+            "gate_commit_authorized": 43.9845654,
+            "gate_row_lock": 28.410876,
+            "gate_snapshot": 50.4904743,
+            "legacy_usage": 0.1884959,
+            "ordered_ids": 0.9862242,
+            "redis_usage": 1.3706012,
+            "sql_commit": 12.026028
+          }
+        },
+        "replyPreview/redis": {
+          "n": 10,
+          "httpMeanMs": 310.5985246,
+          "traceMeanMs": 137.9289326,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2509564,
+            "anchor_write": 52.3588815,
+            "business_action": 8.8635612,
+            "comment_projection": 4.9292897,
+            "deferred_gate_abort": 15.5162782,
+            "gate_commit_authorized": 68.7962099,
+            "gate_row_lock": 41.335400299999996,
+            "gate_snapshot": 50.4273982,
+            "legacy_usage": 0.190628,
+            "ordered_ids": 0.9625495,
+            "redis_prepare": 2.2027678,
+            "redis_publish": 2.3383926,
+            "sql_commit": 14.848738099999998
+          }
+        },
+        "replyExpanded/postgres": {
+          "n": 10,
+          "httpMeanMs": 295.31603970000003,
+          "traceMeanMs": 143.68123889999998,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2667271,
+            "anchor_write": 57.877305400000004,
+            "business_action": 34.6408696,
+            "comment_projection": 31.1138944,
+            "deferred_gate_abort": 18.521959499999998,
+            "gate_commit_authorized": 86.195915,
+            "gate_row_lock": 19.76728,
+            "gate_snapshot": 38.2365005,
+            "legacy_usage": 0.1420019,
+            "ordered_ids": 1.0015729,
+            "redis_usage": 1.5337218,
+            "sql_commit": 10.4553039
+          }
+        },
+        "replyExpanded/redis": {
+          "n": 10,
+          "httpMeanMs": 318.2478969,
+          "traceMeanMs": 156.648639,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2561856,
+            "anchor_write": 47.9194579,
+            "business_action": 35.3765142,
+            "comment_projection": 31.920816700000003,
+            "deferred_gate_abort": 22.4537923,
+            "gate_commit_authorized": 87.2703905,
+            "gate_row_lock": 33.7476924,
+            "gate_snapshot": 43.9918316,
+            "legacy_usage": 0.1264311,
+            "ordered_ids": 0.9373302,
+            "redis_prepare": 2.0293134,
+            "redis_publish": 2.1116139,
+            "sql_commit": 12.4989259
+          }
+        }
+      },
+      "1": {
+        "replyPreview/postgres": {
+          "n": 10,
+          "httpMeanMs": 177.2090294,
+          "traceMeanMs": 66.2001476,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2273092,
+            "anchor_write": 40.624853200000004,
+            "business_action": 6.085241,
+            "comment_projection": 2.8502137999999997,
+            "deferred_gate_abort": 5.5170185,
+            "gate_commit_authorized": 32.8250621,
+            "gate_row_lock": 0.20377119999999999,
+            "gate_snapshot": 27.1444001,
+            "legacy_usage": 0.1302753,
+            "ordered_ids": 0.8928375,
+            "redis_usage": 1.3942036,
+            "sql_commit": 11.5086984
+          }
+        },
+        "replyPreview/redis": {
+          "n": 10,
+          "httpMeanMs": 192.1146173,
+          "traceMeanMs": 77.0260117,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.23261959999999998,
+            "anchor_write": 45.0307018,
+            "business_action": 6.9310883,
+            "comment_projection": 3.1568183000000003,
+            "deferred_gate_abort": 5.6220551,
+            "gate_commit_authorized": 36.8054577,
+            "gate_row_lock": 0.2355162,
+            "gate_snapshot": 31.5530272,
+            "legacy_usage": 0.163838,
+            "ordered_ids": 0.9711655,
+            "redis_prepare": 2.2775517,
+            "redis_publish": 2.1754163,
+            "sql_commit": 14.5796573
+          }
+        },
+        "replyExpanded/postgres": {
+          "n": 10,
+          "httpMeanMs": 208.6625315,
+          "traceMeanMs": 100.3636524,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.21421590000000001,
+            "anchor_write": 49.1519148,
+            "business_action": 32.5895558,
+            "comment_projection": 29.400161400000002,
+            "deferred_gate_abort": 5.6180488,
+            "gate_commit_authorized": 61.2480187,
+            "gate_row_lock": 0.2135951,
+            "gate_snapshot": 32.7494249,
+            "legacy_usage": 0.1296121,
+            "ordered_ids": 0.9298733,
+            "redis_usage": 1.4005353,
+            "sql_commit": 10.530944100000001
+          }
+        },
+        "replyExpanded/redis": {
+          "n": 10,
+          "httpMeanMs": 237.5337251,
+          "traceMeanMs": 122.5660618,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2224957,
+            "anchor_write": 62.6359948,
+            "business_action": 32.8431534,
+            "comment_projection": 29.4061029,
+            "deferred_gate_abort": 10.2098922,
+            "gate_commit_authorized": 79.5427416,
+            "gate_row_lock": 0.1922907,
+            "gate_snapshot": 30.0354715,
+            "legacy_usage": 0.1287844,
+            "ordered_ids": 0.9240457,
+            "redis_prepare": 2.0382384,
+            "redis_publish": 2.05155,
+            "sql_commit": 12.2948235
+          }
+        }
+      },
+      "2": {
+        "replyPreview/postgres": {
+          "n": 10,
+          "httpMeanMs": 175.9352805,
+          "traceMeanMs": 66.9055787,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2326853,
+            "anchor_write": 41.4041001,
+            "business_action": 6.4363282,
+            "comment_projection": 2.9924455,
+            "deferred_gate_abort": 5.7120422,
+            "gate_commit_authorized": 33.2938635,
+            "gate_row_lock": 0.2313933,
+            "gate_snapshot": 27.0826337,
+            "legacy_usage": 0.1435195,
+            "ordered_ids": 0.9781482,
+            "redis_usage": 1.4620667999999999,
+            "sql_commit": 10.736771
+          }
+        },
+        "replyPreview/redis": {
+          "n": 10,
+          "httpMeanMs": 213.2544476,
+          "traceMeanMs": 89.6093029,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2120858,
+            "anchor_write": 47.3363514,
+            "business_action": 6.478041,
+            "comment_projection": 3.11826,
+            "deferred_gate_abort": 16.2930915,
+            "gate_commit_authorized": 42.3293944,
+            "gate_row_lock": 0.2142377,
+            "gate_snapshot": 28.2076998,
+            "legacy_usage": 0.1442851,
+            "ordered_ids": 0.8967328,
+            "redis_prepare": 1.9895469,
+            "redis_publish": 2.0229289,
+            "sql_commit": 14.9333656
+          }
+        },
+        "replyExpanded/postgres": {
+          "n": 10,
+          "httpMeanMs": 225.6488124,
+          "traceMeanMs": 109.6851511,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2304719,
+            "anchor_write": 54.0420706,
+            "business_action": 35.0303619,
+            "comment_projection": 31.414621,
+            "deferred_gate_abort": 6.1832418,
+            "gate_commit_authorized": 70.2700114,
+            "gate_row_lock": 0.2042977,
+            "gate_snapshot": 32.4601022,
+            "legacy_usage": 0.1658751,
+            "ordered_ids": 0.987222,
+            "redis_usage": 1.5705095,
+            "sql_commit": 11.8398506
+          }
+        },
+        "replyExpanded/redis": {
+          "n": 10,
+          "httpMeanMs": 213.3251654,
+          "traceMeanMs": 102.3512213,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.25068029999999997,
+            "anchor_write": 45.887096,
+            "business_action": 34.0293105,
+            "comment_projection": 30.3654672,
+            "deferred_gate_abort": 6.1440937,
+            "gate_commit_authorized": 64.1161944,
+            "gate_row_lock": 0.21180110000000002,
+            "gate_snapshot": 29.1295657,
+            "legacy_usage": 0.1508528,
+            "ordered_ids": 0.9793247,
+            "redis_prepare": 2.1849666,
+            "redis_publish": 2.182159,
+            "sql_commit": 11.3891808
+          }
+        }
+      },
+      "3": {
+        "replyPreview/postgres": {
+          "n": 10,
+          "httpMeanMs": 302.1432531,
+          "traceMeanMs": 127.1198951,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.275256,
+            "anchor_write": 46.3777817,
+            "business_action": 8.5427419,
+            "comment_projection": 4.3043821,
+            "deferred_gate_abort": 16.1317347,
+            "gate_commit_authorized": 50.5834146,
+            "gate_row_lock": 41.495313800000005,
+            "gate_snapshot": 59.4411457,
+            "legacy_usage": 0.2387258,
+            "ordered_ids": 1.0525261000000001,
+            "redis_usage": 1.5954255000000002,
+            "sql_commit": 11.7525259
+          }
+        },
+        "replyPreview/redis": {
+          "n": 10,
+          "httpMeanMs": 272.9753928,
+          "traceMeanMs": 117.740249,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2656827,
+            "anchor_write": 47.2569046,
+            "business_action": 8.0178946,
+            "comment_projection": 4.0134232,
+            "deferred_gate_abort": 15.373943,
+            "gate_commit_authorized": 53.2919255,
+            "gate_row_lock": 30.8704287,
+            "gate_snapshot": 45.9094891,
+            "legacy_usage": 0.21992420000000001,
+            "ordered_ids": 0.9507672,
+            "redis_prepare": 2.2791419,
+            "redis_publish": 2.1927493,
+            "sql_commit": 11.2487812
+          }
+        },
+        "replyExpanded/postgres": {
+          "n": 10,
+          "httpMeanMs": 319.5098047,
+          "traceMeanMs": 145.4819486,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2643716,
+            "anchor_write": 49.1832279,
+            "business_action": 35.9239728,
+            "comment_projection": 32.178375,
+            "deferred_gate_abort": 17.2479306,
+            "gate_commit_authorized": 85.2609652,
+            "gate_row_lock": 26.9728406,
+            "gate_snapshot": 42.0736977,
+            "legacy_usage": 0.1998495,
+            "ordered_ids": 1.1020711,
+            "redis_usage": 1.5308785,
+            "sql_commit": 13.5234118
+          }
+        },
+        "replyExpanded/redis": {
+          "n": 10,
+          "httpMeanMs": 330.80036640000003,
+          "traceMeanMs": 161.3822103,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2419613,
+            "anchor_write": 51.5886205,
+            "business_action": 33.6323127,
+            "comment_projection": 29.948723299999997,
+            "deferred_gate_abort": 26.7641993,
+            "gate_commit_authorized": 84.3181232,
+            "gate_row_lock": 31.0543699,
+            "gate_snapshot": 47.2424156,
+            "legacy_usage": 0.1628191,
+            "ordered_ids": 0.9484559,
+            "redis_prepare": 2.2356613,
+            "redis_publish": 2.2967177,
+            "sql_commit": 13.6773608
+          }
+        }
+      }
+    },
+    "conditions": {
+      "ON": {
+        "replyPreview/postgres": {
+          "n": 20,
+          "httpMeanMs": 284.7440897,
+          "traceMeanMs": 119.44931414999999,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.25920795,
+            "anchor_write": 45.47176535,
+            "business_action": 8.16792375,
+            "comment_projection": 4.1786317,
+            "deferred_gate_abort": 16.2815769,
+            "gate_commit_authorized": 47.28399,
+            "gate_row_lock": 34.9530949,
+            "gate_snapshot": 54.965810000000005,
+            "legacy_usage": 0.21361085,
+            "ordered_ids": 1.01937515,
+            "redis_usage": 1.48301335,
+            "sql_commit": 11.88927695
+          }
+        },
+        "replyPreview/redis": {
+          "n": 20,
+          "httpMeanMs": 291.7869587,
+          "traceMeanMs": 127.8345908,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.25831955,
+            "anchor_write": 49.80789305,
+            "business_action": 8.4407279,
+            "comment_projection": 4.47135645,
+            "deferred_gate_abort": 15.4451106,
+            "gate_commit_authorized": 61.0440677,
+            "gate_row_lock": 36.1029145,
+            "gate_snapshot": 48.16844365,
+            "legacy_usage": 0.2052761,
+            "ordered_ids": 0.95665835,
+            "redis_prepare": 2.24095485,
+            "redis_publish": 2.26557095,
+            "sql_commit": 13.04875965
+          }
+        },
+        "replyExpanded/postgres": {
+          "n": 20,
+          "httpMeanMs": 307.4129222,
+          "traceMeanMs": 144.58159375,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.26554935,
+            "anchor_write": 53.53026665,
+            "business_action": 35.2824212,
+            "comment_projection": 31.6461347,
+            "deferred_gate_abort": 17.88494505,
+            "gate_commit_authorized": 85.7284401,
+            "gate_row_lock": 23.370060300000002,
+            "gate_snapshot": 40.1550991,
+            "legacy_usage": 0.17092569999999999,
+            "ordered_ids": 1.051822,
+            "redis_usage": 1.53230015,
+            "sql_commit": 11.989357850000001
+          }
+        },
+        "replyExpanded/redis": {
+          "n": 20,
+          "httpMeanMs": 324.52413165,
+          "traceMeanMs": 159.01542465,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.24907345,
+            "anchor_write": 49.7540392,
+            "business_action": 34.50441345,
+            "comment_projection": 30.93477,
+            "deferred_gate_abort": 24.6089958,
+            "gate_commit_authorized": 85.79425685,
+            "gate_row_lock": 32.40103115,
+            "gate_snapshot": 45.6171236,
+            "legacy_usage": 0.1446251,
+            "ordered_ids": 0.94289305,
+            "redis_prepare": 2.13248735,
+            "redis_publish": 2.2041658,
+            "sql_commit": 13.088143350000001
+          }
+        }
+      },
+      "OFF": {
+        "replyPreview/postgres": {
+          "n": 20,
+          "httpMeanMs": 176.57215495,
+          "traceMeanMs": 66.55286315000001,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.22999725000000001,
+            "anchor_write": 41.01447665,
+            "business_action": 6.2607846,
+            "comment_projection": 2.92132965,
+            "deferred_gate_abort": 5.61453035,
+            "gate_commit_authorized": 33.0594628,
+            "gate_row_lock": 0.21758225,
+            "gate_snapshot": 27.1135169,
+            "legacy_usage": 0.1368974,
+            "ordered_ids": 0.93549285,
+            "redis_usage": 1.4281352,
+            "sql_commit": 11.1227347
+          }
+        },
+        "replyPreview/redis": {
+          "n": 20,
+          "httpMeanMs": 202.68453245,
+          "traceMeanMs": 83.3176573,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2223527,
+            "anchor_write": 46.1835266,
+            "business_action": 6.70456465,
+            "comment_projection": 3.13753915,
+            "deferred_gate_abort": 10.9575733,
+            "gate_commit_authorized": 39.56742605,
+            "gate_row_lock": 0.22487695,
+            "gate_snapshot": 29.8803635,
+            "legacy_usage": 0.15406155,
+            "ordered_ids": 0.93394915,
+            "redis_prepare": 2.1335493,
+            "redis_publish": 2.0991726,
+            "sql_commit": 14.75651145
+          }
+        },
+        "replyExpanded/postgres": {
+          "n": 20,
+          "httpMeanMs": 217.15567195,
+          "traceMeanMs": 105.02440175,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.2223439,
+            "anchor_write": 51.5969927,
+            "business_action": 33.80995885,
+            "comment_projection": 30.407391200000003,
+            "deferred_gate_abort": 5.9006453,
+            "gate_commit_authorized": 65.75901505,
+            "gate_row_lock": 0.2089464,
+            "gate_snapshot": 32.60476355,
+            "legacy_usage": 0.1477436,
+            "ordered_ids": 0.95854765,
+            "redis_usage": 1.4855224,
+            "sql_commit": 11.18539735
+          }
+        },
+        "replyExpanded/redis": {
+          "n": 20,
+          "httpMeanMs": 225.42944525,
+          "traceMeanMs": 112.45864155000001,
+          "phasesMeanMs": {
+            "anchor_lock_read_verify": 0.236588,
+            "anchor_write": 54.261545399999996,
+            "business_action": 33.43623195,
+            "comment_projection": 29.885785050000003,
+            "deferred_gate_abort": 8.17699295,
+            "gate_commit_authorized": 71.829468,
+            "gate_row_lock": 0.2020459,
+            "gate_snapshot": 29.5825186,
+            "legacy_usage": 0.1398186,
+            "ordered_ids": 0.9516852,
+            "redis_prepare": 2.1116025,
+            "redis_publish": 2.1168545,
+            "sql_commit": 11.842002149999999
+          }
+        }
+      }
+    }
+  },
+  "diagnostic2": {
+    "scope": "DIAGNOSTIC_ONLY_NOT_ACCEPTANCE",
+    "sourceDigest": "0d079b5573ef8140afb253106410fa77300bca1b72d4392ba67ed426fc5529a2",
+    "apiBinarySHA256": "01d4031d1cd04f6abf0dec83ea0a1ceec8520a654795e345768f4824405470fa",
+    "hostClockSummary": {
+      "elapsedSeconds": 9.2613741,
+      "rawElapsedLowerBound": 9.048427954010549,
+      "rawElapsedUpperBound": 10.380856076008058,
+      "utcCounterDriftSeconds": 0.0006259000000010673,
+      "stable": true
+    },
+    "elapsedSeconds": 9.26066227100091,
+    "requests": 20,
+    "means": {
+      "replyPreview/postgres": {
+        "n": 4,
+        "httpMs": 298.55338274999997,
+        "admissionMs": 123.17784225,
+        "admissionPhasesMs": {
+          "gate_row_lock": 35.109329249999995,
+          "anchor_write": 51.752337,
+          "anchor_lock_read_verify": 0.23910175,
+          "sql_commit": 9.9018555,
+          "deferred_gate_abort": 23.61366,
+          "gate_snapshot": 50.2156665,
+          "gate_commit_authorized": 48.14471475
+        },
+        "businessMs": 129.09863675,
+        "businessPhasesMs": {
+          "gate_row_lock": 34.53613275,
+          "anchor_write": 44.37920025,
+          "anchor_lock_read_verify": 0.24361375000000002,
+          "ordered_ids": 1.120367,
+          "sql_commit": 10.00469875,
+          "legacy_usage": 0.23342875000000002,
+          "deferred_gate_abort": 28.20782075,
+          "comment_projection": 4.98747925,
+          "redis_usage": 1.4579945,
+          "business_action": 9.29899825,
+          "gate_snapshot": 42.5909625,
+          "gate_commit_authorized": 57.3774985
+        },
+        "traceCoveragePercent": 84.4996217012383
+      },
+      "replyPreview/redis": {
+        "n": 4,
+        "httpMs": 288.33819725,
+        "admissionMs": 104.5426485,
+        "admissionPhasesMs": {
+          "gate_row_lock": 26.452713250000002,
+          "anchor_write": 43.1825325,
+          "anchor_lock_read_verify": 0.23914625,
+          "sql_commit": 11.017251,
+          "deferred_gate_abort": 21.25588225,
+          "gate_snapshot": 45.12113075,
+          "gate_commit_authorized": 37.10012925
+        },
+        "businessMs": 138.20237425,
+        "businessPhasesMs": {
+          "gate_row_lock": 36.53114875,
+          "anchor_write": 56.464991999999995,
+          "anchor_lock_read_verify": 0.248639,
+          "ordered_ids": 0.99443175,
+          "sql_commit": 11.82139775,
+          "redis_publish": 2.0755115,
+          "legacy_usage": 0.2052545,
+          "redis_prepare": 2.05133775,
+          "deferred_gate_abort": 19.05746875,
+          "comment_projection": 5.59312175,
+          "business_action": 9.50716025,
+          "gate_snapshot": 64.72160075,
+          "gate_commit_authorized": 51.388398
+        },
+        "traceCoveragePercent": 84.1876050641778
+      },
+      "replyExpanded/postgres": {
+        "n": 4,
+        "httpMs": 328.91908025,
+        "admissionMs": 119.3282725,
+        "admissionPhasesMs": {
+          "gate_row_lock": 23.953984000000002,
+          "anchor_write": 48.479184,
+          "anchor_lock_read_verify": 0.2346465,
+          "sql_commit": 16.14164325,
+          "deferred_gate_abort": 28.255751,
+          "gate_snapshot": 55.545693,
+          "gate_commit_authorized": 34.68206225
+        },
+        "businessMs": 163.98832099999998,
+        "businessPhasesMs": {
+          "gate_row_lock": 33.751275,
+          "anchor_write": 47.512119500000004,
+          "anchor_lock_read_verify": 0.23243575,
+          "ordered_ids": 0.94325125,
+          "sql_commit": 10.230334,
+          "legacy_usage": 0.177188,
+          "deferred_gate_abort": 34.9862595,
+          "comment_projection": 31.227112499999997,
+          "redis_usage": 1.48749525,
+          "business_action": 35.05346675,
+          "gate_snapshot": 62.718663750000005,
+          "gate_commit_authorized": 65.43144275
+        },
+        "traceCoveragePercent": 86.13565174895322
+      },
+      "replyExpanded/redis": {
+        "n": 4,
+        "httpMs": 361.0635335,
+        "admissionMs": 141.76957225,
+        "admissionPhasesMs": {
+          "gate_row_lock": 49.15768775,
+          "anchor_write": 46.342065,
+          "anchor_lock_read_verify": 0.23390950000000002,
+          "sql_commit": 12.199566749999999,
+          "deferred_gate_abort": 31.92269025,
+          "gate_snapshot": 53.89499725,
+          "gate_commit_authorized": 55.2251815
+        },
+        "businessMs": 175.563398,
+        "businessPhasesMs": {
+          "gate_row_lock": 59.95139375,
+          "anchor_write": 37.33199075,
+          "anchor_lock_read_verify": 0.2781765,
+          "ordered_ids": 1.0652222500000001,
+          "sql_commit": 9.547854749999999,
+          "redis_publish": 2.03601225,
+          "legacy_usage": 0.21955475000000002,
+          "redis_prepare": 2.045521,
+          "deferred_gate_abort": 29.902233250000002,
+          "comment_projection": 30.481976000000007,
+          "business_action": 34.39765275,
+          "gate_snapshot": 51.54910175,
+          "gate_commit_authorized": 91.3059265
+        },
+        "traceCoveragePercent": 87.88840212521767
+      }
+    }
+  },
+  "pooledPrecisionDiagnostic": {
+    "compatibility": {
+      "replyPreview": {
+        "scope": "DIAGNOSTIC_NOT_ACCEPTANCE_OVERRIDE",
+        "p95RegressionCI95": [
+          -6.828393274419431,
+          13.991032774360846
+        ],
+        "meanDifferenceMs": 1.6518553333333443,
+        "p95MarginOverFivePercentLimitMs": 4.523355000000038,
+        "redisSamplesOverPGFivePercentP95Limit": 47,
+        "samplesPerBackend": 900
+      },
+      "replyExpanded": {
+        "scope": "DIAGNOSTIC_NOT_ACCEPTANCE_OVERRIDE",
+        "p95RegressionCI95": [
+          -0.8213886229016643,
+          13.469703780529851
+        ],
+        "meanDifferenceMs": 6.266465777777796,
+        "p95MarginOverFivePercentLimitMs": 0.5236400000000003,
+        "redisSamplesOverPGFivePercentP95Limit": 46,
+        "samplesPerBackend": 900
+      }
+    },
+    "steady": {
+      "replyPreview": {
+        "scope": "DIAGNOSTIC_NOT_ACCEPTANCE_OVERRIDE",
+        "p95RegressionCI95": [
+          -4.8160328768750755,
+          6.0287645041907645
+        ],
+        "meanDifferenceMs": 5.877836888888908,
+        "p95MarginOverFivePercentLimitMs": -14.798240000000078,
+        "redisSamplesOverPGFivePercentP95Limit": 34,
+        "samplesPerBackend": 900
+      },
+      "replyExpanded": {
+        "scope": "DIAGNOSTIC_NOT_ACCEPTANCE_OVERRIDE",
+        "p95RegressionCI95": [
+          0.6270117376154349,
+          14.35392936871942
+        ],
+        "meanDifferenceMs": 16.470686888888906,
+        "p95MarginOverFivePercentLimitMs": -3.93907999999999,
+        "redisSamplesOverPGFivePercentP95Limit": 44,
+        "samplesPerBackend": 900
+      }
+    }
+  },
+  "audit": {
+    "result": "PASS",
+    "atUTC": "2026-10-25T16:56:06.326701+00:00",
+    "sourceDigestUnchanged": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+    "clockSource": "tsc",
+    "timesyncdActive": "active",
+    "timesyncdEnabled": "enabled",
+    "ownedProcessesRemaining": [],
+    "diagnosticSystemSettingsChanges": false,
+    "productCodeChangedDuringDiagnosis": false,
+    "diagnostic1ModifiedFiles": [
+      {
+        "path": "services/api/internal/authprivacy/community_comment_snapshots.go",
+        "sha256": "18f79de129994fb8fd6235c88e9d9d068a7e122374577bffe2ac64fdce62cfe2"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_read.go",
+        "sha256": "d4db6db9a726a8297902a01976b90578f269be52d1d221f200494cecd53c1cf6"
+      },
+      {
+        "path": "services/api/internal/authprivacy/root_cause_diagnostic.go",
+        "sha256": "fe916b2baad46611473c8137f547fe2c66fb3dd5787c890dde67c127d57291f4"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts.go",
+        "sha256": "10ad528e162f466e614313d392d4ef0c0a50febbed385e52122972138dc30341"
+      },
+      {
+        "path": "services/api/internal/authprivacy/authorization_gate.go",
+        "sha256": "40ecd843a82776aaad9c2ccc50323a64084f242d3c1af54871e7d6a42fc85740"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/server.go",
+        "sha256": "8d93254e453d443fbcec9548558ed9ee35bc2d49305729df868d8c8915eee5e6"
+      }
+    ],
+    "diagnostic2ModifiedFiles": [
+      {
+        "path": "services/api/internal/authprivacy/community_comment_snapshots.go",
+        "sha256": "18f79de129994fb8fd6235c88e9d9d068a7e122374577bffe2ac64fdce62cfe2"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_comments_read.go",
+        "sha256": "d4db6db9a726a8297902a01976b90578f269be52d1d221f200494cecd53c1cf6"
+      },
+      {
+        "path": "services/api/internal/authprivacy/root_cause_diagnostic.go",
+        "sha256": "fe916b2baad46611473c8137f547fe2c66fb3dd5787c890dde67c127d57291f4"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_posts.go",
+        "sha256": "10ad528e162f466e614313d392d4ef0c0a50febbed385e52122972138dc30341"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_identities.go",
+        "sha256": "413f8c547b7fd25658c381c3243488f0f60285c6a7a28e311ec6cfc520700dc3"
+      },
+      {
+        "path": "services/api/internal/authprivacy/community_rate_subject.go",
+        "sha256": "21a1699055be9434c55c070399e79fbb51136c00b891c52e672b40bb963c9ee1"
+      },
+      {
+        "path": "services/api/internal/authprivacy/authorization_gate.go",
+        "sha256": "40ecd843a82776aaad9c2ccc50323a64084f242d3c1af54871e7d6a42fc85740"
+      },
+      {
+        "path": "services/api/internal/authprivacyruntime/server.go",
+        "sha256": "8d93254e453d443fbcec9548558ed9ee35bc2d49305729df868d8c8915eee5e6"
+      }
+    ]
+  },
+  "limits": [
+    "Diagnostic source differs by instrumentation and worker control; not formal acceptance binary",
+    "GOMAXPROCS=2 and ledger about1024 rather than late formal1646-2006; causal result limited to this diagnostic",
+    "First preregistered total latency reduction>=50% condition was NOT met; gate-lock wait reduction is confirmed narrower result",
+    "Second trace coverage>=90% condition was NOT met; residual44-46ms unassigned",
+    "No per-query SQL plans, per-core scheduler or per-command Redis queue trace for original samples",
+    "No further full campaign, TTL rerun, or device retry during diagnosis"
+  ],
+  "phase6": "NOT_STARTED",
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false,
+  "diagnosticProtocols": {
+    "1": {
+      "scope": "DIAGNOSTIC_ONLY_NOT_ACCEPTANCE",
+      "createdAtUTC": "2026-10-25T16:46:36.776075+00:00",
+      "hypothesis": "normal durable workers contend on shared authorization gate; gate wait and durable anchor writes dominate HTTP tails",
+      "fixedBlocks": [
+        "ON",
+        "OFF",
+        "OFF",
+        "ON"
+      ],
+      "paths": [
+        "replyPreview",
+        "replyExpanded"
+      ],
+      "pairsPerPathPerBlock": 10,
+      "warmupsPerBackendPathBlock": 2,
+      "maxRequests": 192,
+      "maxSecondsAfterSetup": 300,
+      "decision": "support worker contention only if worker-OFF reduces gate-row mean and total HTTP mean by >=50% in both paths and Redis operation means differ <max(2ms,30%); otherwise narrow hypothesis, do not infer causal proof from percentile alone",
+      "stop": "first HTTP/fixture error or 300-second deadline; no automatic retry, cleanup always",
+      "clock": "restored tsc retained; CLOCK_MONOTONIC_RAW durations and independent host counter observation; disclose drift",
+      "productChanges": false,
+      "diagnosticOnlyChanges": [
+        "request timing buffers",
+        "gate row/anchor write/commit spans",
+        "business/Redis spans",
+        "temporary env skip durable worker Run only"
+      ],
+      "remainingControls": [
+        "same data, two API processes, shared SQL/Gate, Redis cleanup10s, official shared admission, quotas/TTL/atomicity unchanged"
+      ],
+      "limitation": "new diagnostic binary and smaller occupancy/time window; not exact frozen formal API acceptance",
+      "rawRoot": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-root-cause-diagnostic-r1"
+    },
+    "2": {
+      "scope": "DIAGNOSTIC_ONLY_NOT_ACCEPTANCE",
+      "createdAtUTC": "2026-10-25T16:51:41.969102+00:00",
+      "hypothesis": "unobserved pre-business time is shared-admission ResolveSharedSubject full authorization transaction",
+      "fixedMaximumRequests": 20,
+      "measuredPairsPerPath": 4,
+      "warmupsPerBackendPath": 1,
+      "paths": [
+        "replyPreview",
+        "replyExpanded"
+      ],
+      "workers": "ON only",
+      "stop": "first HTTP error or 90 seconds after setup; no automatic retry",
+      "decision": "sharedSubject plus business trace explains >=90% of HTTP mean in each path; if lower, disclose residual rather than infer network or scheduler cause",
+      "runtimeGOMAXPROCS": 2,
+      "clock": "restored tsc kept, raw elapsed with Windows QPC witness",
+      "productChanges": false,
+      "rawRoot": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-root-cause-diagnostic-r2"
+    }
+  },
+  "conclusions": [
+    {
+      "finding": "Empty durable worker passes contend on shared Gate; business gate-row mean drops23-36ms to0.2ms when disabled",
+      "confidence": "HIGH_WITHIN_DIAGNOSTIC",
+      "caveat": "Does not by itself account for >=50% total HTTP nor identify every formal tail request"
+    },
+    {
+      "finding": "Shared admission identity resolution adds a second full authorization flow before comment read",
+      "confidence": "HIGH_CODE_AND_SHORT_TRACE",
+      "rangeMs": [
+        104.5426485,
+        141.76957225
+      ]
+    },
+    {
+      "finding": "Redis Prepare and Publish each~2.0-2.3ms; PG compatibility Usage~1.4-1.5ms; intrinsic extra new-snapshot cost exists",
+      "confidence": "HIGH_WITHIN_DIAGNOSTIC",
+      "caveat": "Original aggregate Lua metrics cannot isolate Redis queue latency or tail"
+    },
+    {
+      "finding": "900-sample pooled compatibility failures exceed 5% cutoff by4.523ms and0.524ms; paired-block diagnostic intervals cross cutoff",
+      "confidence": "HIGH_COMPUTATION",
+      "caveat": "Uncertainty is not a PASS waiver"
+    },
+    {
+      "finding": "Harness manually sets TLS socket, bypassing Python HTTPConnection.connect TCP_NODELAY setup; residual~44-46ms is consistent with transport delay but causal mechanism unproven",
+      "confidence": "STATIC_OMISSION_CONFIRMED_CAUSE_UNPROVEN"
+    },
+    {
+      "finding": "Compatibility continuation midpoint warms PG cursor on a different process from measured PG continuation",
+      "confidence": "HIGH_STATIC",
+      "caveat": "Does not explain failing reply paths"
+    }
+  ]
+}

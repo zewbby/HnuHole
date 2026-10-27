@@ -30,6 +30,7 @@ Future<void> main(List<String> args) async {
     Map<String, String>? query,
     Uint8List? bytes,
     String? mime,
+    String? snapshotRequest,
   }) async => (await http.send(
     f['token'] as String,
     method,
@@ -38,6 +39,7 @@ Future<void> main(List<String> args) async {
     query: query,
     bytes: bytes,
     mime: mime,
+    snapshotRequest: snapshotRequest,
   )).value;
   final binding = CommentBinding(
     postId: f['postId'] as String,

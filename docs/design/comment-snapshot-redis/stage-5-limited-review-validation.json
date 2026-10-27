@@ -1,0 +1,43 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 5,
+  "kind": "LIMITED_REVIEW_VALIDATION",
+  "status": "PASS_REVIEW_RECORDS_AND_FOCUSED_CHECKS_PERFORMANCE_STILL_FAIL",
+  "verifiedAtUTC": "2026-10-25T04:28:53.882383+00:00",
+  "checks": {
+    "previousLedgerEntriesDeepEqual": true,
+    "onlyReviewEntryAdded": true,
+    "rawArtifactSHA256": 21,
+    "candidateReviewedFilesMatchCompiledCopy": 5,
+    "candidateRealRedisRace": "11_PASS_0_FAIL_0_SKIP",
+    "allFourPathsRecordedPerVersion": true,
+    "P95NearestRankRatiosRecomputed": true,
+    "performanceDecisionNotRelaxed": true,
+    "phase5NotMarkedComplete": true,
+    "real30MinuteFrozenReading": "PASS",
+    "real30MinuteFrozenCompatibility": "PASS",
+    "candidateReal30MinuteReading": "NOT_RUN",
+    "newReviewMarkdownMissingLinks": 0,
+    "pythonInMemoryCompile": [
+      "admission.py",
+      "compatibility.py",
+      "exercise.py",
+      "faults.py",
+      "growth.py",
+      "performance.py",
+      "rollback.py",
+      "run.py",
+      "verify_long.py"
+    ],
+    "ownedRuntimeProcessesRemaining": 0,
+    "noCommitPushMergeDeploy": true
+  },
+  "performance": {
+    "formalFrozen": "FAIL",
+    "saveOnceCandidate": "FAIL"
+  },
+  "moduleVerdicts": "UNCHANGED",
+  "remoteCI": "NOT_RUN",
+  "reviewEvidenceSHA256": "4ec9e32ace171463002c9381b31f0ffe3bd223835df73c309756950623958b46",
+  "requiredNext": "Sol/high normalize fixture and modes, diagnose execution/queue/SQL and fix, then final-source full affected regressions; stage5 incomplete"
+}

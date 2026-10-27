@@ -635,6 +635,10 @@ func (b *boundary) postFailure(w http.ResponseWriter, err error) {
 				status = 400
 			case "RATE_LIMITED":
 				status = 429
+			case "COMMENT_SNAPSHOT_TOO_LARGE":
+				status = 422
+			case "COMMENT_SNAPSHOT_UNAVAILABLE", "COMMENT_SNAPSHOT_CAPACITY", "COMMENT_SNAPSHOT_INTEGRITY":
+				status = 503
 			case "SERVICE_UNAVAILABLE", "AUTHORIZATION_UNAVAILABLE", "SHARED_RATE_UNAVAILABLE":
 				status = 503
 			case "POSTING_RESTRICTED":

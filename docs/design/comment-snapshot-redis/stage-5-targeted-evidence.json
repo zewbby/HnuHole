@@ -1,0 +1,282 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 5,
+  "status": "TARGETED_FIX_COMPLETE_STAGE5_PERFORMANCE_NOT_ESTABLISHED",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "high",
+  "updatedAtUTC": "2026-10-25T18:00:39.998672+00:00",
+  "sourceDigest": "0481b785fdc3e06583feaec2fd8707a96e10648465b5deada8a5256cea0ee9ab",
+  "apiBinarySHA256": "0c419619356c5f916c4fa81ace90ce8a9cf242581944aa94cffc9b13126a7d67",
+  "checks": {
+    "build": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-transport-fixed-v2/logs/build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "vet": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-transport-fixed-v2/logs/vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "readtiming-race": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-transport-fixed-v2/logs/readtiming-race.log",
+      "sha256": "8dd3be45c2ee5823aaf7578838037724d77e2240781b447a147892e0de66e43c",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "host": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-transport-fixed-v2/logs/host.log",
+      "sha256": "a2af16741b8d855eb6b18786af2208ada8856b3ed10bf50f9c48d30ee98118db",
+      "topLevelPass": 0,
+      "topLevelSkip": 0
+    },
+    "snapshot-real": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-transport-fixed-v2/logs/snapshot-real.log",
+      "sha256": "60d3dbad7d2caf93ddfc14cedd1d87f9f3315c130a86f2a7ae4c99d547fc5e89",
+      "topLevelPass": 31,
+      "topLevelSkip": 2
+    },
+    "shared-rate-real": {
+      "result": "PASS",
+      "log": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-transport-fixed-v2/logs/shared-rate-real.log",
+      "sha256": "c7884c046178d516870b31d2fdf9d8173b8f8f647df32353b5c13e14346b24fc",
+      "topLevelPass": 39,
+      "topLevelSkip": 1
+    }
+  },
+  "midpointWarmupStaticEquivalence": {
+    "result": "PASS",
+    "scope": "Before/midpoint warmup and measurement choose byte-identical AST address expressions; no claim interrupted run reached midpoint",
+    "locations": [
+      136,
+      153,
+      148
+    ]
+  },
+  "transportConfirmation": {
+    "scope": "FIXED20_DIAGNOSTIC_ONLY",
+    "sourceDigest": "0481b785fdc3e06583feaec2fd8707a96e10648465b5deada8a5256cea0ee9ab",
+    "apiBinarySHA256": "0c419619356c5f916c4fa81ace90ce8a9cf242581944aa94cffc9b13126a7d67",
+    "hostClockSummary": {
+      "elapsedSeconds": 6.4972876,
+      "rawElapsedLowerBound": 6.276351100008469,
+      "rawElapsedUpperBound": 7.075977000000421,
+      "utcCounterDriftSeconds": 0.0007124000000002795,
+      "stable": true
+    },
+    "elapsedSeconds": 6.656822599994484,
+    "rows": {
+      "replyPreview": {
+        "False": {
+          "samples": 4,
+          "httpMeanMs": 210.80355,
+          "serverMeanMs": 168.3853,
+          "residualMeanMs": 42.41825,
+          "residualMinimumMs": 41.03189999999998,
+          "residualMaximumMs": 43.90010000000001
+        },
+        "True": {
+          "samples": 4,
+          "httpMeanMs": 332.8257,
+          "serverMeanMs": 332.370675,
+          "residualMeanMs": 0.4550249999999849,
+          "residualMinimumMs": 0.40500000000002956,
+          "residualMaximumMs": 0.4853999999999701
+        },
+        "criterion": "PASS"
+      },
+      "replyExpanded": {
+        "False": {
+          "samples": 4,
+          "httpMeanMs": 245.65497499999998,
+          "serverMeanMs": 202.8163,
+          "residualMeanMs": 42.838674999999995,
+          "residualMinimumMs": 40.44290000000001,
+          "residualMaximumMs": 46.81709999999998
+        },
+        "True": {
+          "samples": 4,
+          "httpMeanMs": 280.7407,
+          "serverMeanMs": 280.314325,
+          "residualMeanMs": 0.4263750000000144,
+          "residualMinimumMs": 0.36650000000003047,
+          "residualMaximumMs": 0.5050999999999988
+        },
+        "criterion": "PASS"
+      }
+    },
+    "result": "SUPPORTED_TRANSPORT_SOCKET_OPTION_CAUSAL_EFFECT"
+  },
+  "observationOnlySemanticComparison": {
+    "scope": "Text identity after removing only observation imports/spans/phase context and reversing transparent wrappers; no authority/SQL/TTL code differences",
+    "checks": {
+      "authprivacy/authorization_gate.go": {
+        "result": "PASS",
+        "originalSHA256": "160ec6857caff0d2da51335ab2909147a77dbc335a1f46cfac2be9e075bab2c2",
+        "observedSHA256": "a68ac851efb8fe1b40de20b4997b270b96030189cbc5f5ee2fefb675dc44f605"
+      },
+      "authprivacy/community_posts.go": {
+        "result": "PASS",
+        "originalSHA256": "675e77a39d89e4cb4cf4e3c513a461c9ebecefc934bfc0f9797d918632759733",
+        "observedSHA256": "30fab933352e9dc28dcbef05f28327ac805e06adf4fc60b83bbc16c62dd7ef89"
+      },
+      "authprivacy/community_identities.go": {
+        "result": "PASS",
+        "originalSHA256": "844a7b599a5b552bbfd6f1516e553996cf7108bfac621113fe516f1846d016f9",
+        "observedSHA256": "4c8f5d91d21df2dd88d9b2f8096853375a347d2e00bc689168b5f40b0dd42ff1"
+      },
+      "authprivacy/community_rate_subject.go": {
+        "result": "PASS",
+        "originalSHA256": "6f98b398fc6a99fc40370a2f3c4ce657ba6d1835fa3d7cb705a5037c76844fdf",
+        "observedSHA256": "55567f2357344c4ee4196dd1609efce8c140b6bbe29ba18594abb7955390e0a9"
+      },
+      "authprivacy/community_comment_snapshots.go": {
+        "result": "PASS",
+        "originalSHA256": "a4d2b1acf66cbd15524893cef83eefc1ccdd7413d3e9fa5b8a796625b874f39f",
+        "observedSHA256": "58bb106cbbade6874e126d79d0e2ef265db0a22573e1041ef8f2d4afa4fbd59a"
+      },
+      "authprivacy/community_comments_read.go": {
+        "result": "PASS",
+        "originalSHA256": "1d41b6c87f7099699d4c656c0c3bad16e512a69b6cfc26ad52997de1309be8b4",
+        "observedSHA256": "beb3c2d0897b73badf8d866686994322f953c95649d865ba20365729e3258f6c"
+      },
+      "authprivacyruntime/server.go": {
+        "result": "PASS",
+        "originalSHA256": "5c16aac240346dbae8fb7dadf70ea1952854e8427d24e1a0470086dbcf54a7ea",
+        "observedSHA256": "4949779685d45c34a66ad63f27b1f6f494157aaf777d13d0ce08d33ffeb36e61"
+      },
+      "commentsnapshot/redis.go": {
+        "result": "PASS",
+        "originalSHA256": "774e8a25f4c8f06c5e0454f055f383590061121da0100258fecef1c607921848",
+        "observedSHA256": "283f90a9610ece592b99075a6359a8a333e0ec4e8f95b26cedc12bcb19a02d40"
+      }
+    }
+  },
+  "restorationAudit": {
+    "result": "PASS",
+    "atUTC": "2026-10-25T17:56:48.081365+00:00",
+    "clockSource": "tsc",
+    "timesyncdActive": "active",
+    "timesyncdEnabled": "enabled",
+    "originalClockStateRestored": true,
+    "ownedProcessesRemaining": [],
+    "masterRestoreExitCode": 0,
+    "sourceDigest": "0481b785fdc3e06583feaec2fd8707a96e10648465b5deada8a5256cea0ee9ab"
+  },
+  "interruptedAttempt": {
+    "status": "STOPPED_AT_USER_REQUEST_NOT_A_COMPLETED_ACCEPTANCE_ROUND",
+    "raw": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-transport-fixed-v2/formal-targeted-once-r1/compatibility/process-20261025T175134-9c1699/normalized-performance.json",
+    "rawSHA256": "0b82d351a39caa57fb924d92fba0b2dcae46e6a5beb72e3382c18d19b2e295cc",
+    "rawHarnessResultPreserved": "FAIL",
+    "completedPathStats": {},
+    "counts": {
+      "initial": {
+        "postgres": 129,
+        "redis": 129
+      }
+    },
+    "phaseMeans": {
+      "initial": {
+        "postgres": {
+          "scope": "DESCRIPTIVE_PARTIAL_DATA_NOT_ACCEPTANCE",
+          "httpMeanMs": 338.32081007751935,
+          "serverMeanMs": 337.8843953488372,
+          "residualMeanMs": 0.4364147286821713,
+          "stagesMeanMs": {
+            "subject.anchor_lock_read_verify": 0.2911341085271318,
+            "comments.business_action": 66.62761085271318,
+            "comments.ordered_ids": 3.3187837209302327,
+            "comments.anchor_write": 52.83188449612403,
+            "subject.sql_commit": 12.851934883720931,
+            "comments.gate_snapshot": 59.6274511627907,
+            "comments.legacy_usage": 0.2496031007751938,
+            "subject.gate_row_lock": 39.513831782945736,
+            "comments.sql_commit": 13.854709302325581,
+            "comments.gate_abort": 22.7690503875969,
+            "subject.gate_abort": 23.392738759689923,
+            "comments.redis_rpc": 1.725420930232558,
+            "subject.gate_commit_authorized": 52.27625813953488,
+            "subject.gate_snapshot": 55.34534418604651,
+            "subject.anchor_write": 53.44478682170543,
+            "comments.anchor_lock_read_verify": 0.32477131782945734,
+            "comments.gate_commit_authorized": 120.41598294573643,
+            "comments.redis_usage": 1.7339658914728682,
+            "comments.total": 203.85480852713178,
+            "comments.comment_projection": 27.481369767441862,
+            "subject.total": 131.88561782945737,
+            "comments.gate_row_lock": 44.565172868217054
+          }
+        },
+        "redis": {
+          "scope": "DESCRIPTIVE_PARTIAL_DATA_NOT_ACCEPTANCE",
+          "httpMeanMs": 363.98861007751935,
+          "serverMeanMs": 363.56487209302327,
+          "residualMeanMs": 0.42373798449612415,
+          "stagesMeanMs": {
+            "subject.anchor_lock_read_verify": 0.29700077519379847,
+            "comments.redis_prepare": 2.605080620155039,
+            "comments.business_action": 66.80302403100775,
+            "comments.ordered_ids": 3.3466341085271316,
+            "comments.redis_publish": 2.5585038759689924,
+            "comments.anchor_write": 58.895622480620155,
+            "subject.sql_commit": 13.376606976744187,
+            "comments.gate_snapshot": 62.35115426356589,
+            "comments.legacy_usage": 0.26133100775193796,
+            "subject.gate_row_lock": 41.80940542635659,
+            "comments.sql_commit": 14.354872868217054,
+            "comments.gate_abort": 28.14149534883721,
+            "subject.gate_abort": 28.249072093023255,
+            "comments.redis_rpc": 5.076368992248062,
+            "subject.gate_commit_authorized": 55.97968837209302,
+            "subject.gate_snapshot": 59.01526666666667,
+            "subject.anchor_write": 58.01039069767442,
+            "comments.anchor_lock_read_verify": 0.30784263565891473,
+            "comments.gate_commit_authorized": 123.26913720930233,
+            "comments.total": 217.38282093023255,
+            "comments.comment_projection": 27.669706201550387,
+            "subject.total": 144.10763410852712,
+            "comments.gate_row_lock": 43.42859379844961
+          }
+        }
+      }
+    },
+    "scheduledSteadyMode": "NOT_RUN_USER_WITHDREW_REPEAT_VALIDATION",
+    "stopEvidence": {
+      "result": "OWNED_COHORT_SIGINT_SENT",
+      "atUTC": "2026-10-25T17:54:12.867346+00:00",
+      "reason": "User withdrew repeat validation; preserve partial raw data and execute existing finally cleanup/restoration",
+      "processes": [
+        {
+          "pid": 276539,
+          "target": "/home/hnuhole/comment-snapshot-redis-20261024-8ed8f28/stage5-transport-fixed-v2/formal-targeted-once-r1/compatibility"
+        }
+      ],
+      "otherProcessesSignaled": false
+    }
+  },
+  "historicalPerformance": "Earlier frozen6fb fixed3 pooled compat preview5.832percent and expanded5.090percent FAIL retained, not replaced by partial samples",
+  "priorLongAndNativeProof": {
+    "source": "6fb0289c2eefab59bdd766c0c19239b1959f6843fc813d97a00b9628bed88846",
+    "api": "0139291c021d61f2705f6d6c2393adeab0897f6c6323ac7aad1826b161898dc2",
+    "redisRealTime": "PASS1805.737rawSeconds",
+    "pgCompatibility": "PASS1807.960rawSecondsAfterLastCreatorStopped",
+    "realme": "PASSlive5/down2and9fixtureWidgetsEachPhase",
+    "newBinaryRealTimeOrNative": "NOT_RERUN_OBSERVATION_ONLY_NO_RELEVANT_INVARIANT_CHANGE",
+    "nativeVault": "NOT_RUN",
+    "fullProductionUI": "NOT_RUN"
+  },
+  "next": "Coordinator review of remaining public Gate/empty-worker contention; no new sampling authorized merely to seek PASS",
+  "phase5Complete": false,
+  "phase6Started": false,
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false
+}

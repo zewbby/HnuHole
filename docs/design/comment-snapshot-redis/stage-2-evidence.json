@@ -1,0 +1,58 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "phase": 2,
+  "status": "DESIGN_COMPLETE",
+  "capturedAtUTC": "2026-10-24T13:07:56.167721Z",
+  "modelAssignment": {
+    "reasoningEffort": "xhigh",
+    "model": "gpt-6-astra"
+  },
+  "baseline": "8ed8f2870b1724de2837ea40a6e3764c008780f7",
+  "workspace": "E:/Hnuhole-env/source/HnuHole-comment-snapshot-redis",
+  "design": "stage-2-consistency-and-rollout.md",
+  "validation": "stage-2-validation.json",
+  "decisions": [
+    "isolated-community-snapshot-primary-default",
+    "bounded-single-ledger-conservative-reservation",
+    "SQL-commit-before-publish-and-cursor",
+    "aborting-fence-before-delete-and-release",
+    "immutable-data-with-purpose-MAC",
+    "V1-PG-and-V2-explicit-backend-kind-sort-expiry",
+    "nonce-recovery-without-TTL-renewal",
+    "explicit-30-minute-rollout-and-flag-rollback"
+  ],
+  "sources": {
+    "oldSnapshots": "services/api/internal/authprivacy/community_comments_read.go:149/199/203/209/371",
+    "gate": "services/api/internal/authprivacy/authorization_gate.go:298",
+    "cursorBound": "apps/mobile/lib/src/posts/post_protocol.dart:55",
+    "session": "services/api/internal/authprivacy/community_posts.go:123",
+    "previousPhase": "stage-1-evidence.json",
+    "official": [
+      "https://redis.io/docs/latest/develop/programmability/eval-intro/",
+      "https://redis.io/docs/latest/commands/set/",
+      "https://redis.io/docs/latest/develop/reference/eviction/",
+      "https://redis.io/docs/latest/develop/programmability/lua-api/"
+    ]
+  },
+  "validationModel": "C:/Users/24237/Documents/ChatGPT/Hnuhole/comment-snapshot-redis-20261024/validate-stage-2.py",
+  "implementationStarted": false,
+  "realRedisSQLTests": "NOT_RUN",
+  "device": "NOT_RUN; stage2 design only",
+  "nextPhase": 3,
+  "nextPhaseStatus": "AWAITING_DISPATCH",
+  "artifacts": [
+    {
+      "path": "stage-2-consistency-and-rollout.md",
+      "sha256": "eca3f22111df60304cffb28af67f3f2dacacf0bf7912d2aa9aae9c33b07f079e"
+    },
+    {
+      "path": "stage-2-validation.json",
+      "sha256": "87b73f6ea3ab5ae191805e1cefdeaba985d94dd971ca0a8da59ea7b8e09f3a8b"
+    },
+    {
+      "path": "adr/0001-isolated-instance-and-conservative-reservations.md",
+      "sha256": "2a0c55827f42b2c40b1b803f5afb70f5dfd8b31b1be965f0fc18b39199328447"
+    }
+  ],
+  "validationModelSHA256": "ff4ff273ae4a2949d79ff7d040d2d8403ba3dd946f56b809db172d554d85e02d"
+}

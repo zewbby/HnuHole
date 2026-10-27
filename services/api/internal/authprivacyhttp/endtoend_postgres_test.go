@@ -178,10 +178,11 @@ func e2ePool(t *testing.T, role string) *pgxpool.Pool {
 			t.Fatal(err)
 		}
 	}
+	// C and V fixtures can follow an actual-Goose test in this suite.
+	if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.goose_db_version`); err != nil {
+		t.Fatal(err)
+	}
 	if os.Getenv("HNULIMIT_FORMAL_GOOSE") == "1" {
-		if _, err = tx.Exec(context.Background(), `DROP TABLE IF EXISTS public.goose_db_version`); err != nil {
-			t.Fatal(err)
-		}
 		if err = tx.Commit(context.Background()); err != nil {
 			t.Fatal(err)
 		}

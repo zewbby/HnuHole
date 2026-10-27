@@ -1,0 +1,54 @@
+{
+  "scope": "FIXED20_DIAGNOSTIC_ONLY",
+  "sourceDigest": "0481b785fdc3e06583feaec2fd8707a96e10648465b5deada8a5256cea0ee9ab",
+  "apiBinarySHA256": "0c419619356c5f916c4fa81ace90ce8a9cf242581944aa94cffc9b13126a7d67",
+  "hostClockSummary": {
+    "elapsedSeconds": 6.4972876,
+    "rawElapsedLowerBound": 6.276351100008469,
+    "rawElapsedUpperBound": 7.075977000000421,
+    "utcCounterDriftSeconds": 0.0007124000000002795,
+    "stable": true
+  },
+  "elapsedSeconds": 6.656822599994484,
+  "rows": {
+    "replyPreview": {
+      "False": {
+        "samples": 4,
+        "httpMeanMs": 210.80355,
+        "serverMeanMs": 168.3853,
+        "residualMeanMs": 42.41825,
+        "residualMinimumMs": 41.03189999999998,
+        "residualMaximumMs": 43.90010000000001
+      },
+      "True": {
+        "samples": 4,
+        "httpMeanMs": 332.8257,
+        "serverMeanMs": 332.370675,
+        "residualMeanMs": 0.4550249999999849,
+        "residualMinimumMs": 0.40500000000002956,
+        "residualMaximumMs": 0.4853999999999701
+      },
+      "criterion": "PASS"
+    },
+    "replyExpanded": {
+      "False": {
+        "samples": 4,
+        "httpMeanMs": 245.65497499999998,
+        "serverMeanMs": 202.8163,
+        "residualMeanMs": 42.838674999999995,
+        "residualMinimumMs": 40.44290000000001,
+        "residualMaximumMs": 46.81709999999998
+      },
+      "True": {
+        "samples": 4,
+        "httpMeanMs": 280.7407,
+        "serverMeanMs": 280.314325,
+        "residualMeanMs": 0.4263750000000144,
+        "residualMinimumMs": 0.36650000000003047,
+        "residualMaximumMs": 0.5050999999999988
+      },
+      "criterion": "PASS"
+    }
+  },
+  "result": "SUPPORTED_TRANSPORT_SOCKET_OPTION_CAUSAL_EFFECT"
+}

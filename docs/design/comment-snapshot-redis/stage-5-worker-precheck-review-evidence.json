@@ -1,0 +1,100 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "date": "2026-10-26",
+  "updatedAtUTC": "2026-10-26T02:25:18.494256+00:00",
+  "assignedModel": "gpt-6-astra",
+  "assignedReasoningEffort": "xhigh",
+  "scope": "REVIEW_ONLY_CleanupSessionResults_EMPTY_CANDIDATE_HINT",
+  "status": "REVIEW_COMPLETE_MINIMAL_IMPLEMENTATION_CONDITIONS_DEFINED",
+  "record": "stage-5-worker-precheck-review.md",
+  "phase5Complete": false,
+  "phase6Started": false,
+  "productImplementationChanged": false,
+  "runtimeTests": "NOT_RUN_REVIEW_ONLY",
+  "newPerformanceVerdict": null,
+  "wholeCampaigns": "NOT_RUN_USER_WITHDRAWAL_REMAINS",
+  "device": "NOT_RUN_UNAFFECTED",
+  "clockOrRuntimeChanges": false,
+  "commitPushMergeDeploy": false,
+  "reviewedSourceDigest": "0481b785fdc3e06583feaec2fd8707a96e10648465b5deada8a5256cea0ee9ab",
+  "priorAPIBinarySHA256": "0c419619356c5f916c4fa81ace90ce8a9cf242581944aa94cffc9b13126a7d67",
+  "proposedHint": {
+    "predicate": "operation='SESSION_CREATE' AND state='LIVE'",
+    "skipCondition": "query succeeded AND child context valid AND parent context valid AND exists=false",
+    "budgetMaxMilliseconds": 50,
+    "parentRemainingFraction": 0.1,
+    "belowOneMillisecond": "skip hint, execute original path",
+    "unknownOrChildTimeout": "original path with original parent context",
+    "parentCancelled": "non-nil error; never success",
+    "retries": 0,
+    "cache": false,
+    "newTransactionOrGateBypassForRealWork": false
+  },
+  "timeBoundConclusion": {
+    "preserved": "batch, worker interval/backoff/task deadline, data retention and all existing Gate finalization rules",
+    "arrivalDelay": "remaining current round + original configured wait/backoff + prior next-round tasks; one extra eligibility observation for a newly committed row",
+    "strictWallClockUpperBound": "NOT_ESTABLISHED_BY_EXISTING_CODE",
+    "existingReasons": [
+      "independent Gate finalization contexts",
+      "blocking syscall.Flock without context",
+      "backlog/locked candidates/failure availability"
+    ],
+    "scope": "do not change shared Gate or lock protocol in this patch"
+  },
+  "implementationScope": [
+    "community_sessions.go private hint and prologue",
+    "focused tests",
+    "focused disposable-SQL CI wiring"
+  ],
+  "excluded": [
+    "public authentication/session renewal",
+    "other worker prechecks or intervals",
+    "schema/index migration",
+    "Redis publication/quota/TTL",
+    "full performance campaign",
+    "30-minute acceptance",
+    "native verification"
+  ],
+  "nextAssignedModel": "gpt-6.1-sol",
+  "nextAssignedReasoningEffort": "high",
+  "requiredFocusedChecks": {
+    "W1": "NOT_RUN_REVIEW_ONLY",
+    "W2": "NOT_RUN_REVIEW_ONLY",
+    "W3": "NOT_RUN_REVIEW_ONLY",
+    "W4": "NOT_RUN_REVIEW_ONLY",
+    "W5": "NOT_RUN_REVIEW_ONLY",
+    "W6": "NOT_RUN_REVIEW_ONLY"
+  },
+  "sourceFiles": {
+    "services/api/internal/authprivacy/community_sessions.go": "60f26b23b811f60b92e572431576ff8dc505d03a4dee6c60fd5aebfa15a7b456",
+    "services/api/internal/authprivacy/workers.go": "dabf87ac965dbca6d13799a32b42f57167b91209c874bc7d469b5680bd245eb1",
+    "services/api/internal/authprivacy/common.go": "47272c335e64ee59012d948625fac16af36bbe4795a37ea7228aef7268f8f83f",
+    "services/api/internal/authprivacy/authorization_gate.go": "a68ac851efb8fe1b40de20b4997b270b96030189cbc5f5ee2fefb675dc44f605",
+    "services/api/internal/authprivacy/authorization_evidence.go": "6cdb21169a3d1eb4c83c7c89e1a136a9ef14c8bd0525b6c28d2dfaa68dd6ecdc",
+    "services/api/internal/authprivacy/community_sessions_test.go": "9da5125df21130f04f9631131768c65b234480994897a451b0bf34de8c31130c",
+    "services/api/internal/authprivacy/workers_test.go": "72a5eda3261f63c4367b3cab8275e7ad426cc386b10db39a31495515d7bf7438",
+    "services/api/internal/authprivacy/authorization_gate_cancellation_test.go": "9a400ad6911444c8ba29f448b89abe0a81cf11fc46eccbe42856b851d3d89a22",
+    "services/api/internal/authprivacyruntime/config.go": "b720119c2dbf116645776595932c97a8d9ba5fe6639b00a0502a1130fd401a04",
+    "services/api/internal/authprivacyruntime/server.go": "4949779685d45c34a66ad63f27b1f6f494157aaf777d13d0ce08d33ffeb36e61",
+    "services/api/migrations/0003_authprivacy.sql": "51ba4d7835a1fbb33a264c7693a365a6cc1997f77f0825bc68f8dc2e28184278",
+    "services/api/migrations/0008_recovery_credentials.sql": "c5ff5114fa790a86606cc66fd363e69a292bb2f17a8b611f60fddbced8d31fd0",
+    ".github/workflows/authorization-gate.yml": "74cb70efe2b072d67377a8cbaebf878caa0f05cdc46f7a6b1503d3406d64329e",
+    ".github/workflows/comment-snapshot.yml": "ae99297da6e6230bc58b662686c863558648e99d2fd138859a7e4873908836d1"
+  },
+  "staticVerification": {
+    "status": "PASS_STATIC_REVIEW_ONLY",
+    "atUTC": "2026-10-26T02:25:52.347260+00:00",
+    "unchangedProductFileCount": 1179,
+    "unchangedOtherLedgerEntries": 146,
+    "reportLinks": "ALL_LOCAL_TARGETS_EXIST",
+    "reviewReportSHA256": "e20a2e3a6df4ca2fff1c7a4b4d8c0b39f03f43918b8128e983adb309be0a03d9",
+    "runtimeTestCount": 0,
+    "gitDiffCheck": "PASS"
+  },
+  "completionNotification": {
+    "status": "SENT",
+    "threadId": "01a16de6-b90c-7461-ba71-c815cb182a2b",
+    "atUTC": "2026-10-26T02:26:51.116044+00:00",
+    "authorizationHumanMessage": "01a16dee-a195-77d1-95bf-b4b7d1c442a4"
+  }
+}
