@@ -11,7 +11,7 @@
       "B09",
       "B10"
     ],
-    "state": "MERGED_MAIN_BUILT_AND_EXISTING_DAILY_BACKEND_UPDATED_VIVO_DISCONNECTED",
+    "state": "MERGED_MAIN_BUILT_AND_EXISTING_DAILY_BACKEND_UPDATED_INSTALLED_VIVO",
     "implementation": "LOCAL_COMPLETE_FOUR_TABS_NO_MENTIONS_SHARED_IDENTITY_FIVE_ITEM_NAV",
     "flutterPass": 968,
     "flutterSkip": 3,
@@ -27,8 +27,8 @@
     "pullRequest": 81,
     "mergeSha": "61c429531880bb51092a87de7e5b9b38c43c4da8",
     "apkVersionCode": 2026102701,
-    "installedDevice": null,
-    "deviceInstallation": "NOT_RUN_VIVO_DISCONNECTED",
+    "installedDevice": "vivo S18 V2323A",
+    "deviceInstallation": "PASS",
     "dailyBackend": "PASS_C28_V7_STRICT_CA",
     "manualAcceptance": "PENDING_USER_TRIAL"
   },

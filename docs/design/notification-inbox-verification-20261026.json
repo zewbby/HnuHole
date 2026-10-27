@@ -3,7 +3,7 @@
   "date": "2026-10-27",
   "branch": "feat/notification-inbox",
   "baseline": "c17a66734f935f15da5e0c9407d5b9ebdccff287",
-  "state": "MERGED_MAIN_BUILT_AND_EXISTING_DAILY_BACKEND_UPDATED_VIVO_DISCONNECTED",
+  "state": "MERGED_MAIN_BUILT_AND_EXISTING_DAILY_BACKEND_UPDATED_INSTALLED_VIVO",
   "modules": [
     "B02",
     "B07",
@@ -422,17 +422,22 @@
       "sourceManifestSHA256": "32241ba7472bcdf1ac5fa59cac2a4ba58ac9bf4308e83345bd5f421422fa0283",
       "configSHA256": "36d73338e269272ecd8f3d29958e3fa402de2e5a0c7a36ab82982f9078100e09",
       "apiConfigUnchanged": true,
-      "deviceInstalled": false,
+      "deviceInstalled": true,
       "backendChanged": true,
       "builtAtUTC": "2026-10-27T01:56:14.604516+00:00",
       "productionRelease": false,
       "note": "Merged main functionality; existing private-CA daily development endpoint requires Profile AUTH_DEV_PROFILE. No production signing/domain substituted.",
-      "installStatus": "NOT_RUN_VIVO_DISCONNECTED",
+      "installStatus": "PASS_SAME_SIGNER_UPDATE_AND_LAUNCH",
       "backendReceipt": "E:\\Hnuhole-env\\notification-inbox-20261026\\main-backend-receipt.json",
-      "checkedDeviceAtUTC": "2026-10-27T01:57:03.982776+00:00"
+      "checkedDeviceAtUTC": "2026-10-27T01:57:03.982776+00:00",
+      "installedDevice": "vivo S18 V2323A",
+      "installedAtUTC": "2026-10-27T02:02:26.887063+00:00",
+      "firstInstallTimeUnchanged": true,
+      "applicationDataPreserved": true,
+      "manualGestureAcceptance": "NOT_RUN_USER_TRIAL_READY"
     },
     "finalDeviceTrial": {
-      "status": "NOT_RUN_VIVO_DISCONNECTED",
+      "status": "SAME_SIGNER_INSTALL_AND_LAUNCH_PASS_MANUAL_ACCEPTANCE_PENDING",
       "device": "vivo S18 V2323A",
       "versionCode": 2026102701,
       "source": "61c429531880bb51092a87de7e5b9b38c43c4da8"
@@ -509,6 +514,24 @@
         "ratelimitctl": "5abf632d9c64f8ffe4e81e87e904c80f7d86864b9ad75d020382f493b437a235"
       },
       "updatedUTC": "2026-10-27T01:55:00.009165+00:00"
+    },
+    "notificationNativeSmoke": {
+      "status": "PASS_VISIBLE_NOTIFICATION_SCREEN",
+      "categories": {
+        "全部": true,
+        "回复": true,
+        "收到的赞": true,
+        "系统通知": true
+      },
+      "bottomNavigation": {
+        "首页": true,
+        "消息": true,
+        "选择通道写帖子": true,
+        "私信": true,
+        "我的": true
+      },
+      "loadErrorVisible": false,
+      "manualGestureAcceptance": "PENDING_USER_TRIAL"
     }
   },
   "historicalTrial": {
