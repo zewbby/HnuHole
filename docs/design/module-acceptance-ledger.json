@@ -42020,7 +42020,57 @@
     "stage7RemoteCIIntentionalSkip": "actual-process-acceptance; manual performance campaign not requested",
     "stage7RemoteCIRecord": "comment-snapshot-redis/stage-7-pr-and-ci.md",
     "stage7RemoteCIEvidence": "comment-snapshot-redis/stage-7-remote-ci-evidence.json",
-    "stage7FinalReceiptCIChecks": "https://github.com/zewbby/HnuHole/pull/80/checks"
+    "stage7FinalReceiptCIChecks": "https://github.com/zewbby/HnuHole/pull/80/checks",
+    "postPRPublishOptimization": {
+      "status": "COMPLETE_LOCAL_IMPLEMENTATION_AND_TARGETED_CHECKS_PERFORMANCE_DEFERRED",
+      "date": "2026-10-27",
+      "baselineHead": "23a85991c620d4ddcfc11896e4e94a3d8096902c",
+      "productSourceSHA256": "dfdbdd7b5a226237fb0a1818d6689a9ae15bcb8f4d2f4dc0bc51896686c9df8f",
+      "record": "docs/design/comment-snapshot-redis/publish-state-optimization-20261027.md",
+      "newComponentTestGroups": 7,
+      "resolvedInitialFailure": {
+        "case": "TestRealRedisPublishPatchRetainsValidationAndPendingFences/wrong-token",
+        "initial": "test used 64 hex digits where token requires canonical base64url for32bytes; existing validation returned ErrRequest",
+        "correction": "only test vector changed to canonical base64url with wrong contents; product unchanged",
+        "rerun": "only failed subcase",
+        "result": "PASS",
+        "initialLogPreserved": true
+      },
+      "static": {
+        "backendBuild": "PASS_GO_BUILD_MOD_READONLY_ALL",
+        "affectedVet": "PASS_COMMENTSNAPSHOT_AND_CTL",
+        "gofmt": "PASS",
+        "pythonACLFixtureAST": "PASS_THREE_FILES",
+        "diffCheck": "PASS_INCLUDING_NEW_FILES_TEMPORARY_INDEX",
+        "collaborationPolicy": "PASS_POLICY_ONLY_TEMPORARY_INDEX",
+        "reversePatchCheck": "PASS_READ_ONLY"
+      },
+      "performance": {
+        "newPGRedisComparisonRuns": 0,
+        "oldComponentMeasurementRuns": 1,
+        "oldComponentMeasurementSamples": 500,
+        "oldComponentMeasurementUse": "incidental existing package test only; not accepted API P95 or PG comparison; not repeated",
+        "originalSteadyExpandedRegressionPercent": 7.571628557432586,
+        "originalResult": "FAIL_RETAINED",
+        "candidateResult": "NOT_RUN_RELIABLE_ENVIRONMENT_REQUIRED_BEFORE_REDIS_ENABLEMENT"
+      },
+      "committed": false,
+      "pushed": false,
+      "remoteCI": "NOT_RUN_FOR_LOCAL_CANDIDATE_PRIOR_PR80_CI_NOT_REUSED_AS_CURRENT_PASS",
+      "localImplementationSnapshot": true,
+      "delivery": {
+        "review": "PASS_NO_BLOCKER_WITHIN_APPROVED_SCOPE",
+        "reviewRecord": "D:/HnuHole-task-storage/comment-snapshot-redis-20261024/post-pr-publish-state-review-astra-20261027/review-report.md",
+        "pullRequest": "https://github.com/zewbby/HnuHole/pull/80",
+        "finalHeadAndCI": "https://github.com/zewbby/HnuHole/pull/80/checks",
+        "deliveryRecord": "D:/HnuHole-task-storage/comment-snapshot-redis-20261024/post-pr-publish-state-delivery-sol-20261027/delivery-report.md",
+        "priorHeadCIReused": false,
+        "localAcceptanceOrBenchmarksRepeated": false,
+        "merged": false,
+        "deployed": false,
+        "redisEnabled": false
+      }
+    }
   },
   "commentSnapshotRedis20261025Stage5SecondLimitedReview": {
     "task": "COMMENT-SNAPSHOT-REDIS-01",

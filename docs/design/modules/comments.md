@@ -1,5 +1,7 @@
 # 评论与回复
 
+> **2026-10-27 Publish 局部写优化本地完成：** 按已审定方案增加严格条件下的单字节发布，原全量校验、SQL 后 Publish 及失败补偿保留；真实 Redis/AOF、两项真实 SQL、build/vet 定点检查通过。首次新测试 token 编码夹具失败已修正，仅复跑该子例，原日志保留。限定只读复核无阻断；本轮送审的最终 head 与适用 CI 以 [PR80 Checks](https://github.com/zewbby/HnuHole/pull/80/checks) 和[送审回执](D:/HnuHole-task-storage/comment-snapshot-redis-20261024/post-pr-publish-state-delivery-sol-20261027/delivery-report.md)核对，不复用旧 head 结果；原端到端 +7.571629% FAIL 与启用前性能待验保留，默认 PG/关闭 Redis，未部署。见[实施记录](../comment-snapshot-redis/publish-state-optimization-20261027.md)。下方 PR/CI 为原版本历史。
+
 > **2026-10-26 阶段7功能与PR/CI交付完成：** 已按具体授权提交并推送[PR #80](https://github.com/zewbby/HnuHole/pull/80)，任务分支已整合main c17a667。功能及CI修复版本的15个workflow/26项实际job检查通过；性能整轮job按设计SKIP，未作为性能通过。两次实际失败及修复、被测head、逐job证据见[阶段7回执](../comment-snapshot-redis/stage-7-pr-and-ci.md)及PR Checks；本回执后仅文档变更的最终head以PR实时检查和[D盘交付记录](D:/HnuHole-task-storage/comment-snapshot-redis-20261024/stage-7-pr-delivery-20261026/README.md)核对。阶段5性能仍启用前待验，原P95 FAIL保留，默认PG/关闭Redis；未合并、部署或启用。下方等待授权/未提交/CI进行中为历史时点。
 
 > **2026-10-26 阶段6完成，三项修复复核PASS：** R6-01～03均已闭环；仅复核六文件diff、直接上下文及既有定点证据，未发现新阻断，未重跑验收。六文件及九份日志摘要一致，其他1435个受保护文件和146条台账不变。性能仍为可靠环境／Redis启用前待验，原P95 FAIL保留，阶段5不记全PASS；默认PG/关闭Redis。下一轮GPT-6.1 Sol/high进入阶段7提交PR及适用CI；合并、部署、启用未授权。见[有限复核报告](D:/HnuHole-task-storage/comment-snapshot-redis-20261024/stage-6-fix-review-20261026/review-report.md)。下方待修、待复核等描述保留原时点，不代表当前状态。

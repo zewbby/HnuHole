@@ -43,6 +43,22 @@ if r.op=='publish' or r.op=='abort' then
   if r.op=='publish' then
     if e.state=='active' and e.expires>now then return {'ACTIVE'} end
     if e.state~='pending' or e.lease<=now or e.expires<=now or redis.call('GET',KEYS[3])~=ARGV[2] then error('SNAPSHOT_UNAVAILABLE') end
+    -- Only patch when save would preserve both the header and absolute expiry.
+    -- Missing new ACL permissions retain the original SET path; SET revocation
+    -- must not be bypassed by a separately granted SETRANGE permission.
+    local h=l.until_ms
+    local expiryArg=tostring(h)
+    local offset,stateByte=e.position+204,char(2)
+    local activeReply={'ACTIVE'}
+    if h==c.until_ms and h>now
+       and expiryArg:match('^[0-9]+$') and tonumber(expiryArg)==h
+       and redis.acl_check_cmd('SET',KEYS[2],'','PXAT',expiryArg)
+       and redis.acl_check_cmd('PEXPIRETIME',KEYS[2])
+       and redis.acl_check_cmd('SETRANGE',KEYS[2],offset,stateByte)
+       and redis.call('PEXPIRETIME',KEYS[2])==h then
+      redis.call('SETRANGE',KEYS[2],offset,stateByte)
+      return activeReply
+    end
     e.stateCode=2;l.patch=e;save(l);return {'ACTIVE'}
   end
   if e.state=='active' then return {'ACTIVE'} end

@@ -42,7 +42,7 @@ def main():
                 except OSError:return False
             wait(ready,'owned isolation '+kind)
             prefix='hnuhole:comment-snapshot:v2:dev:*' if kind=='snap' else 'hnuhole:community_dev:*'
-            commands=['+get','+set','+del','+exists','+pttl','+time','+info','+eval','+evalsha','+ping','+hello','+client|setname'] if kind=='snap' else ['+type','+get','+set','+pttl','+time','+zscore','+zcard','+zadd','+zremrangebyscore','+pexpire','+eval','+info','+ping','+hello','+client|setname']
+            commands=['+get','+set','+setrange','+pexpiretime','+del','+exists','+pttl','+time','+info','+eval','+evalsha','+ping','+hello','+client|setname'] if kind=='snap' else ['+type','+get','+set','+pttl','+time','+zscore','+zcard','+zadd','+zremrangebyscore','+pexpire','+eval','+info','+ping','+hello','+client|setname']
             client.call('ACL','SETUSER',username,'on','>'+password,'~'+prefix,*commands)
             client.call('ACL','SETUSER','community_ratelimit_operator','on','>'+password,'~hnuhole:community_dev:*','+@all')
             for suffix in ['runtime','admin']:

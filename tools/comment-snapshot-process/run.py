@@ -268,7 +268,7 @@ class Lab:
         wait(lambda: self.redis_ready(), 'owned Redis')
         dump(self.run/'fixture-owner.json',{'snapshotRedisPid':self.redis_process.pid,'kind':'comment-snapshot-owned-process-fixture'})
         self.redis.call('ACL', 'SETUSER', 'community_comment_snapshot_v2', 'on', '>'+self.snapshot_password, '~hnuhole:comment-snapshot:v2:dev:*',
-                        '+get', '+set', '+del', '+exists', '+pttl', '+time', '+info', '+eval', '+evalsha', '+ping', '+hello', '+client|setname')
+                        '+get', '+set', '+setrange', '+pexpiretime', '+del', '+exists', '+pttl', '+time', '+info', '+eval', '+evalsha', '+ping', '+hello', '+client|setname')
         (self.material/'snapshot.password').write_text(self.snapshot_password); (self.material/'snapshot.password').chmod(0o600)
         (self.material/'snapshot-admin.password').write_text(self.admin_password); (self.material/'snapshot-admin.password').chmod(0o600)
         for key in ['comment-command.key', 'comment-fingerprint.key']:

@@ -33,7 +33,7 @@ def main():
             except OSError:return False
         wait(ready,'owned fault Redis')
         client.call('ACL','SETUSER','community_comment_snapshot_v2','on','>'+password,'~hnuhole:comment-snapshot:v2:dev:*',
-                    '+get','+set','+del','+exists','+pttl','+time','+info','+eval','+evalsha','+ping','+hello','+client|setname')
+                    '+get','+set','+setrange','+pexpiretime','+del','+exists','+pttl','+time','+info','+eval','+evalsha','+ping','+hello','+client|setname')
         for name in ['fault.password','fault-admin.password']:
             (lab.material/name).write_text(password);(lab.material/name).chmod(0o600)
         cfg=lab.cfg['comments']['snapshots'];cfg['redis'].update(address='127.0.0.1:'+str(port),passwordFile='fault.password',epoch=str(uuid.uuid4()))
@@ -85,7 +85,7 @@ def main():
         # Fresh process at the same owned address has lost its control state.
         child=lab.spawn(redisargs,'fault-redis-restart');wait(ready,'restarted owned Redis')
         client.call('ACL','SETUSER','community_comment_snapshot_v2','on','>'+password,'~hnuhole:comment-snapshot:v2:dev:*',
-                    '+get','+set','+del','+exists','+pttl','+time','+info','+eval','+evalsha','+ping','+hello','+client|setname')
+                    '+get','+set','+setrange','+pexpiretime','+del','+exists','+pttl','+time','+info','+eval','+evalsha','+ping','+hello','+client|setname')
         code(secondroute,503,'COMMENT_SNAPSHOT_INTEGRITY');code(lab.path,503,'COMMENT_SNAPSHOT_INTEGRITY')
         assert client.call('GET',prefix+'control') is None
         results['checks']['actualRedisRestartDoesNotAutoInitialize']=True

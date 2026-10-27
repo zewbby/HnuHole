@@ -5,6 +5,8 @@
 适用本需求第 3 阶段服务端，尚未发布。使用前同时保留共享限流 PR #73 的 runtime、SQL 围栏及永久回执，不回滚到此前二进制。本文命令中的路径为占位，不代表生产环境。
 
 1. 准备专用 Redis 7 primary、非零 maxmemory、noeviction，与 C/V 限流 Redis 分进程。参考 `infra/commentsnapshot/redis.example.conf`；128 MiB 仅是开发候选，最终容量和持久化恢复须阶段 5 实测。runtime 账号仅限 `hnuhole:comment-snapshot:v2:<environment>:*`；operator 单独增加 SCAN。禁止 runtime CONFIG/FLUSH，禁止访问限流或 V 的 key。
+
+   Publish 的单字节优化需要在原 runtime ACL 内增加具体命令 `+setrange +pexpiretime`，同时保留 `+set`。脚本先完整校验账本和待发布记录，仅在 header/control 水位与实际绝对到期时间相等时更新状态；水位/期限不等或缺少新增权限仍执行原 `SET PXAT`。撤销 SET 权限不能由 SETRANGE 绕过。该优化不改变 v2 布局、policy hash、epoch、SQL 后发布顺序或期限，不需要重新初始化现有 v2 域；旧 JSON 域仍不兼容。此处仅说明未来部署权限，本次未修改运行环境 ACL。
 2. 将 `infra/commentsnapshot/snapshots.example.json` 作为完整 community runtime 的 `comments.snapshots` 对象。environment 与 namespace 对齐，runtime 用户固定 `community_comment_snapshot_v2`；替换示例 epoch 为此全新域的 UUID，所有 API 实例使用一致配置。runtime 密码、operator 密码和评论密钥分开保存在私有文件，POSIX 文件无 group/other 权限。不要输出内容或加入 Git。
 3. 先构建同版本 `commentsnapshotctl`。仅在确实全新的空域，使用独立 operator 身份显式初始化一次：
 
