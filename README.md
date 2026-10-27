@@ -46,7 +46,7 @@
 | --- | --- | --- |
 | `fix/image-viewer-gestures` | 已合并 main [PR #77](https://github.com/zewbby/HnuHole/pull/77)：图片上下拖动平滑退出、背景透出及切图缓存修复，未装机/部署。 | [任务详情](docs/branches/fix-image-viewer-gestures.md) |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
-| `codex/feat/comment-snapshot-redis` | [PR #80](https://github.com/zewbby/HnuHole/pull/80) Publish优化已实现并定点验证/复核；最终CI见PR Checks，性能启用前待验，Redis关闭；未合并部署。 | [task](docs/branches/feat-comment-snapshot-redis.md) |
+| `codex/feat/comment-snapshot-redis` | [PR #80](https://github.com/zewbby/HnuHole/pull/80) 已合入main；指定性能场景通过、历史FAIL保留；同机开发Redis已启用，生产未发布。 | [任务详情](docs/branches/feat-comment-snapshot-redis.md) |
 | `feat/shared-rate-limit-abuse-control` | [PR #73](https://github.com/zewbby/HnuHole/pull/73) 已合入main：共享准入、上传字节与草稿/队列完成，指定Android及最终CI限定通过，未生产发布。 | [任务详情](docs/branches/feat-shared-rate-limit-abuse-control.md) |
 | `codex/feat/post-detail-comments` | 已合并 #71：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |
 | `codex/fix/feed-refresh-cancel` | 已合并 main [PR #69](https://github.com/zewbby/HnuHole/pull/69)：刷新回滑可取消，纯享手势隔离，加载高亮留在颜文字内。 | [任务详情](docs/branches/fix-feed-refresh-cancel.md) |
@@ -105,8 +105,8 @@
 
 ## 最近变动
 
-- [PR #81](https://github.com/zewbby/HnuHole/pull/81)：四分类通知、跨模块身份同步与统一发帖导航已合入主线，检查通过，主线包已构建、同机开发服务已更新，待用户试用。
-- [PR #77](https://github.com/zewbby/HnuHole/pull/77)：图片上下拖动跟手缩小并渐隐露出原页面，修复切图空白及退出闪字，最终CI通过，未装机/部署。
-- [PR #78](https://github.com/zewbby/HnuHole/pull/78)：同步图片权限提前续验PR76的真实合并及检查回执。
-- [PR #76](https://github.com/zewbby/HnuHole/pull/76)：图片提前续验并复用缓存，避免正常浏览周期性闪烁，17项CI通过，未装机／部署。
-- [PR #74](https://github.com/zewbby/HnuHole/pull/74)：同步共享动作限流PR73的主线合并与交接回执。
+- [PR #80](https://github.com/zewbby/HnuHole/pull/80)：评论Redis分页快照、局部恢复与Publish优化已合入main；同机开发已启用，生产未发布。
+- [PR #82](https://github.com/zewbby/HnuHole/pull/82)：补充通知主线构建、同机开发后端与vivo冒烟交付回执，完整体验待用户试用。
+- [PR #81](https://github.com/zewbby/HnuHole/pull/81)：四分类通知、跨模块身份同步与统一发帖导航已合入主线，主线包和同机开发服务已更新。
+- [PR #79](https://github.com/zewbby/HnuHole/pull/79)：同步图片平滑退出PR77的真实合并、检查与交接回执。
+- [PR #77](https://github.com/zewbby/HnuHole/pull/77)：图片上下拖动平滑退出、背景透出及切图闪屏修复已合入主线。

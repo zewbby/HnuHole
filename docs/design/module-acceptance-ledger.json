@@ -42103,6 +42103,25 @@
         "deployed": false,
         "redisEnabled": false
       }
+    },
+    "postPRMerge20261027": {
+      "status": "MERGED_MAIN_DEVELOPMENT_REDIS_ENABLED_PRODUCTION_NOT_RELEASED",
+      "pullRequest": "https://github.com/zewbby/HnuHole/pull/80",
+      "mergeCommit": "4e7b0fb7d05daa579eb37138d374bb495d4fea30",
+      "testedHead": "a2e98eb6a1b749adf6a4e003ab1aa11c378e8947",
+      "exactMergedAndTestedTree": true,
+      "record": "docs/design/comment-snapshot-redis/merge-receipt-20261027.md",
+      "evidence": "docs/design/comment-snapshot-redis/merge-verification-20261027.json",
+      "newProductTestsInCloseout": 0,
+      "newPerformanceSamplesInCloseout": 0,
+      "extraDeploymentInCloseout": false,
+      "oneFixedSteadyExpandedCase": "PASS_300_PAIRS_MINUS_3.035098_PERCENT",
+      "historicalPlus7_5716PercentFailureRetained": true,
+      "fullStage5PassClaimed": false,
+      "developmentRedisEnabled": true,
+      "readPostgres": true,
+      "productionReleased": false,
+      "independentGitHubMemberApprovalClaimed": false
     }
   },
   "commentSnapshotRedis20261025Stage5SecondLimitedReview": {

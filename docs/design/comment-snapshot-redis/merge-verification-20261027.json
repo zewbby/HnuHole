@@ -1,0 +1,53 @@
+{
+  "task": "COMMENT-SNAPSHOT-REDIS-01",
+  "date": "2026-10-27",
+  "status": "MERGED_MAIN_DEVELOPMENT_REDIS_ENABLED_PRODUCTION_NOT_RELEASED",
+  "pullRequest": "https://github.com/zewbby/HnuHole/pull/80",
+  "testedHead": "a2e98eb6a1b749adf6a4e003ab1aa11c378e8947",
+  "mergeCommit": "4e7b0fb7d05daa579eb37138d374bb495d4fea30",
+  "testedAndMergedTree": "efe3c30773eb6504cb8279fbeab6b69dabe9d382",
+  "exactTreeMatch": true,
+  "ci": {
+    "uniqueWorkflows": 15,
+    "logicalSuccessfulJobs": 26,
+    "additionalMetadataPolicySuccesses": 4,
+    "successfulCheckRecords": 30,
+    "expectedSkippedCheckRecords": 1,
+    "skip": "actual-process-acceptance; workflow_dispatch only",
+    "checks": "https://github.com/zewbby/HnuHole/pull/80/checks"
+  },
+  "performance": {
+    "result": "PASS_ONE_FIXED_STEADY_REPLY_EXPANDED_CASE_ONLY",
+    "samplesPerBackend": 300,
+    "postgresP95Milliseconds": 495.2789,
+    "redisP95Milliseconds": 480.2467,
+    "regressionPercent": -3.035098002357872,
+    "requestErrors": 0,
+    "publishSETRANGECallsIncludingWarmups": 360,
+    "historicalRegressionPercent": 7.571628557432586,
+    "historicalFailureRetained": true,
+    "fullStage5PassClaimed": false,
+    "measuredBeforeWSLRelocation": true,
+    "newSamplesInMergeCloseout": 0
+  },
+  "development": {
+    "redisEnabled": true,
+    "createBackend": "redis",
+    "readPostgres": true,
+    "readRedis": true,
+    "ttlSeconds": 1800,
+    "databaseSchema": {"c": 28, "v": 7},
+    "gateGenerations": {"c": 10, "v": 8},
+    "wslBasePath": "D:/HnuHole-WSL/Ubuntu-24.04",
+    "rowsSequencesAndGatePreservedDuringRelocation": true,
+    "actualClientPackageReplacedInCloseout": false,
+    "extraDeploymentInCloseout": false
+  },
+  "repositoryDefaults": {"createBackend": "postgres", "readPostgres": true, "readRedis": false},
+  "productionReleased": false,
+  "newProductTestsInCloseout": 0,
+  "independentGitHubMemberApprovalClaimed": false,
+  "otherLedgerRecordsPreserved": 149,
+  "report": "merge-receipt-20261027.md",
+  "finalLocalMainAndDocumentationReceipt": "D:/HnuHole-task-storage/comment-snapshot-redis-20261024/merge-closeout-sol-20261027/merge-report.md"
+}

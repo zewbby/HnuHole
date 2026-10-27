@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-27 PR80已合并 main：** 合并 `4e7b0fb7d05daa579eb37138d374bb495d4fea30` 与已测 head `a2e98eb` 完整tree一致，既有适用CI通过。一次指定性能场景PASS，历史FAIL及其他未验项保留；同机开发Redis已授权启用并保留PG旧游标读取，仓库默认仍PG，生产未发布。本次仅合并与文档收尾，无新产品测试、性能采样或部署。见[最终合并交接](comment-snapshot-redis/merge-receipt-20261027.md)。下方待提交／未合并／未启用状态均保留原历史时点。
+
 > **2026-10-27 Publish 局部写优化本地完成：** 按已审定方案增加严格条件下的单字节发布，原全量校验、SQL 后 Publish 及失败补偿保留；真实 Redis/AOF、两项真实 SQL、build/vet 定点检查通过。首次新测试 token 编码夹具失败已修正，仅复跑该子例，原日志保留。限定只读复核无阻断；本轮送审的最终 head 与适用 CI 以 [PR80 Checks](https://github.com/zewbby/HnuHole/pull/80/checks) 和[送审回执](D:/HnuHole-task-storage/comment-snapshot-redis-20261024/post-pr-publish-state-delivery-sol-20261027/delivery-report.md)核对，不复用旧 head 结果；原端到端 +7.571629% FAIL 与启用前性能待验保留，默认 PG/关闭 Redis，未部署。见[实施记录](comment-snapshot-redis/publish-state-optimization-20261027.md)。下方 PR/CI 为原版本历史。
 
 > **2026-10-26 阶段7功能与PR/CI交付完成：** 已按具体授权提交并推送[PR #80](https://github.com/zewbby/HnuHole/pull/80)，任务分支已整合main c17a667。功能及CI修复版本的15个workflow/26项实际job检查通过；性能整轮job按设计SKIP，未作为性能通过。两次实际失败及修复、被测head、逐job证据见[阶段7回执](comment-snapshot-redis/stage-7-pr-and-ci.md)及PR Checks；本回执后仅文档变更的最终head以PR实时检查和[D盘交付记录](D:/HnuHole-task-storage/comment-snapshot-redis-20261024/stage-7-pr-delivery-20261026/README.md)核对。阶段5性能仍启用前待验，原P95 FAIL保留，默认PG/关闭Redis；未合并、部署或启用。下方等待授权/未提交/CI进行中为历史时点。
