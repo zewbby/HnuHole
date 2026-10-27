@@ -1,7 +1,7 @@
 {
-  "createBackend": "postgres",
+  "createBackend": "redis",
   "readPostgres": true,
-  "readRedis": false,
+  "readRedis": true,
   "postgresCursorVersion": 1,
   "ttlSeconds": 1800,
   "maxIDs": 10000,
@@ -20,7 +20,7 @@
     "address": "127.0.0.1:16381",
     "username": "community_comment_snapshot_v2",
     "passwordFile": "secrets/comment-snapshot-redis-password",
-    "namespace": "hnuhole:comment-snapshot:v2:development:",
+    "namespace": "hnuhole:comment-snapshot:v2:dev:",
     "epoch": "00000000-0000-4000-8000-000000000001",
     "deadlineMilliseconds": 100,
     "poolSize": 8

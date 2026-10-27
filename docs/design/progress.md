@@ -1,5 +1,7 @@
 # 设计进度与剩余工作
 
+> **2026-10-27 主线默认Redis追加（本分支待合并）：** `DefaultConfig`和标准C模板改为Redis新建/PG与Redis双读，启用评论却缺快照配置时启动明确失败，显式PG回退保留。配置定点5项、build/vet及现有开发配置对齐检查PASS；环境未改、性能/真机/30分钟未重跑，生产未发布。见[实现与验证](comment-snapshot-redis/main-default-20261027.md)；下方“默认PG”为历史时点。
+
 > **2026-10-27 PR80已合并 main：** 合并 `4e7b0fb7d05daa579eb37138d374bb495d4fea30` 与已测 head `a2e98eb` 完整tree一致，既有适用CI通过。一次指定性能场景PASS，历史FAIL及其他未验项保留；同机开发Redis已授权启用并保留PG旧游标读取，仓库默认仍PG，生产未发布。本次仅合并与文档收尾，无新产品测试、性能采样或部署。见[最终合并交接](comment-snapshot-redis/merge-receipt-20261027.md)。下方待提交／未合并／未启用状态均保留原历史时点。
 
 > **2026-10-27 Publish 局部写优化本地完成：** 按已审定方案增加严格条件下的单字节发布，原全量校验、SQL 后 Publish 及失败补偿保留；真实 Redis/AOF、两项真实 SQL、build/vet 定点检查通过。首次新测试 token 编码夹具失败已修正，仅复跑该子例，原日志保留。限定只读复核无阻断；本轮送审的最终 head 与适用 CI 以 [PR80 Checks](https://github.com/zewbby/HnuHole/pull/80/checks) 和[送审回执](D:/HnuHole-task-storage/comment-snapshot-redis-20261024/post-pr-publish-state-delivery-sol-20261027/delivery-report.md)核对，不复用旧 head 结果；原端到端 +7.571629% FAIL 与启用前性能待验保留，默认 PG/关闭 Redis，未部署。见[实施记录](comment-snapshot-redis/publish-state-optimization-20261027.md)。下方 PR/CI 为原版本历史。

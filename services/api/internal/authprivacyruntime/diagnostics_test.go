@@ -23,6 +23,7 @@ func TestProcessDiagnosticsExcludeUntrustedErrors(t *testing.T) {
 		&pgconn.PgError{Message: secret, Detail: secret, Where: secret},
 		fmt.Errorf("%s: %w", secret, context.DeadlineExceeded),
 		fmt.Errorf("%s: %w", secret, context.Canceled),
+		fmt.Errorf("%s: %w", secret, errCommentSnapshotConfiguration),
 	} {
 		var output bytes.Buffer
 		logger := slog.New(slog.NewJSONHandler(&output, nil))

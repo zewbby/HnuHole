@@ -1,7 +1,11 @@
 package authprivacyruntime
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"testing"
@@ -12,7 +16,7 @@ import (
 	"github.com/zhubaozhenshuai666-lang/HnuHole/services/api/internal/ratelimit"
 )
 
-func TestCommentSnapshotDefaultTemplateKeepsPostgresWithoutRedis(t *testing.T) {
+func TestCommentSnapshotDefaultsAndStandardTemplateRequireRedis(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "..", "infra", "commentsnapshot", "snapshots.example.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -21,24 +25,56 @@ func TestCommentSnapshotDefaultTemplateKeepsPostgresWithoutRedis(t *testing.T) {
 	if err = json.Unmarshal(raw, &example); err != nil {
 		t.Fatal(err)
 	}
+	raw, err = os.ReadFile(filepath.Join("..", "..", "community.config.example.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var standard Config
+	if err = json.Unmarshal(raw, &standard); err != nil {
+		t.Fatal(err)
+	}
+	if standard.Posts == nil || standard.Comments == nil || standard.Comments.Snapshots == nil {
+		t.Fatal("standard API template does not enable comments")
+	}
+	if *standard.Comments.Snapshots != example {
+		t.Fatal("standard and snapshot templates differ")
+	}
 	defaults := commentsnapshot.DefaultConfig()
-	for name, settings := range map[string]*commentsnapshot.Config{"example": &example, "default": &defaults, "omitted": nil} {
+	for name, settings := range map[string]*commentsnapshot.Config{"example": &example, "default": &defaults, "standard": standard.Comments.Snapshots, "omitted": nil} {
 		t.Run(name, func(t *testing.T) {
-			if settings != nil {
-				if settings.CreateBackend != "postgres" || !settings.ReadPostgres || settings.ReadRedis {
-					t.Fatal("default configuration enables Redis")
-				}
-				// Missing credentials and an unusable endpoint must not be read
-				// or connected to when Redis reading is disabled.
-				settings.Redis.PasswordFile = filepath.Join(t.TempDir(), "absent-password")
-				settings.Redis.Address = "invalid-unused-Redis-endpoint"
+			if settings != nil && (settings.CreateBackend != "redis" || !settings.ReadPostgres || !settings.ReadRedis) {
+				t.Fatal("Redis default or legacy cursor reads disabled")
 			}
-			c := Config{Posts: &PostsConfig{}, Comments: &CommentsConfig{CommandKeyFile: "comment-key", FingerprintKeyFile: "comment-fingerprint", Snapshots: settings}}
-			keys, e := c.commentKeyFiles(authprivacyhttp.CommunityService)
-			if e != nil || len(keys) != 2 {
-				t.Fatal("PG mode requires Redis credentials", keys, e)
+			if settings != nil {
+				settings.Redis.PasswordFile = filepath.Join(t.TempDir(), "absent-password")
+			}
+			c := Config{Environment: "dev", Posts: &PostsConfig{CommandKeyFile: "post-key", FingerprintKeyFile: "post-fingerprint", CursorKeyFile: "post-cursor"}, Comments: &CommentsConfig{CommandKeyFile: "comment-key", FingerprintKeyFile: "comment-fingerprint", Snapshots: settings}}
+			_, e := c.commentKeyFiles(authprivacyhttp.CommunityService)
+			if !errors.Is(e, errCommentSnapshotConfiguration) {
+				t.Fatal("missing Redis configuration accepted", e)
+			}
+			// Run is also called directly by tools; validate before database/listeners.
+			c.Environment = "dev"
+			if e = Run(context.Background(), c, authprivacyhttp.CommunityService); !errors.Is(e, errCommentSnapshotConfiguration) {
+				t.Fatal("runtime bypassed required snapshot configuration", e)
+			}
+			var output bytes.Buffer
+			LogFailure(slog.New(slog.NewJSONHandler(&output, nil)), authprivacyhttp.CommunityService, ConfigurationFailure, e)
+			if !bytes.Contains(output.Bytes(), []byte(`"reason":"comment_snapshot_configuration"`)) {
+				t.Fatal("missing safe actionable startup diagnostic")
 			}
 		})
+	}
+}
+
+func TestCommentSnapshotExplicitPostgresRollbackWithoutRedis(t *testing.T) {
+	settings := commentsnapshot.DefaultConfig()
+	settings.CreateBackend, settings.ReadRedis = "postgres", false
+	settings.Redis.PasswordFile = filepath.Join(t.TempDir(), "absent-password")
+	settings.Redis.Address = "invalid-unused-Redis-endpoint"
+	c := Config{Posts: &PostsConfig{}, Comments: &CommentsConfig{CommandKeyFile: "comment-key", FingerprintKeyFile: "comment-fingerprint", Snapshots: &settings}}
+	if keys, e := c.commentKeyFiles(authprivacyhttp.CommunityService); e != nil || len(keys) != 2 {
+		t.Fatal("explicit PG rollback requires Redis credentials", e)
 	}
 }
 

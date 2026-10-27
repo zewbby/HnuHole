@@ -81,7 +81,11 @@ class IntegrationLab(Lab):
         config['adminDirectory']=str(self.source/'apps/admin')
         for name in ('comment-command.key','comment-fingerprint.key'):
             key=self.root/'material'/name;key.write_bytes(secrets.token_bytes(32));key.chmod(0o600)
-        config['comments']=dict(commandKeyFile='comment-command.key',fingerprintKeyFile='comment-fingerprint.key')
+        # This older disposable device fixture intentionally exercises PG.
+        # Runtime omission is no longer an implicit PostgreSQL rollback.
+        snapshots=json.loads((self.source/'infra/commentsnapshot/snapshots.example.json').read_text())
+        snapshots.update(createBackend='postgres',readRedis=False)
+        config['comments']=dict(commandKeyFile='comment-command.key',fingerprintKeyFile='comment-fingerprint.key',snapshots=snapshots)
         write(cpath,config)
         self.state['migrationSha256']={str(p.relative_to(self.api)):sha(p) for directory in ('migrations','verifier-migrations') for p in (self.api/directory).glob('*.sql')}
         self.save()

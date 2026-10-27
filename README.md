@@ -46,6 +46,7 @@
 | --- | --- | --- |
 | `fix/image-viewer-gestures` | 已合并 main [PR #77](https://github.com/zewbby/HnuHole/pull/77)：图片上下拖动平滑退出、背景透出及切图缓存修复，未装机/部署。 | [任务详情](docs/branches/fix-image-viewer-gestures.md) |
 | `main` | 项目基线 | [详情](docs/branches/main.md) |
+| `codex/fix/comment-snapshot-redis-default` | Redis默认新建与双读、标准启动模板及缺配置拒绝启动已实现，本分支待合并，生产未发布。 | [追加交接](docs/design/comment-snapshot-redis/main-default-20261027.md) |
 | `codex/feat/comment-snapshot-redis` | [PR #80](https://github.com/zewbby/HnuHole/pull/80) 已合入main；指定性能场景通过、历史FAIL保留；同机开发Redis已启用，生产未发布。 | [任务详情](docs/branches/feat-comment-snapshot-redis.md) |
 | `feat/shared-rate-limit-abuse-control` | [PR #73](https://github.com/zewbby/HnuHole/pull/73) 已合入main：共享准入、上传字节与草稿/队列完成，指定Android及最终CI限定通过，未生产发布。 | [任务详情](docs/branches/feat-shared-rate-limit-abuse-control.md) |
 | `codex/feat/post-detail-comments` | 已合并 #71：连续评论与排序、页内回复和首条即时展示；真我2427弱网及20分钟操作限定通过，图片入口支持GIF。 | [任务详情](docs/branches/feat-post-detail-comments.md) |
