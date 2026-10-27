@@ -1,4 +1,22 @@
 {
+  "authWordmarkSpeechFUL20261027": {
+    "task": "AUTH-WORDMARK-01",
+    "date": "2026-10-27",
+    "module": "A12",
+    "branch": "feat/startup-wordmark",
+    "base": "b48e199",
+    "implementation": "COMMITTED_PUSHED_PR86_OPEN",
+    "verification": "PASS_31_SCOPED_TESTS_ANALYZE_ZERO_GENERATOR_AND_LEDGER_JSON",
+    "brand": "@SpeechFUL",
+    "tagline": "在这里，/想说就说",
+    "oldDevicePackageIncludesChange": false,
+    "ci": "IN_PROGRESS",
+    "independentReview": "PENDING",
+    "merged": false,
+    "released": false,
+    "historicalEvidenceNotReused": true,
+    "evidence": "docs/branches/feat-startup-wordmark.md"
+  },
   "notificationInbox20261026": {
     "task": "NOTIFICATION-INBOX-01",
     "date": "2026-10-27",

@@ -1,3 +1,9 @@
 Roboto: Copyright 2011 Google Inc. All Rights Reserved.
 Version 2.137; 2017. Licensed under the Apache License, Version 2.0.
 Unmodified Regular, Medium and Bold TTFs. See LICENSE-Roboto.txt.
+
+The SpeechFUL startup wordmark is derived from Roboto Black Italic outlines,
+with -0.025em tracking and uniform scaling, converted to SVG and Dart paths.
+Source font: Copyright 2015 Google Inc. All Rights Reserved. Version 2.001047.
+Source: https://github.com/googlefonts/roboto-2/blob/main/src/hinted/Roboto-BlackItalic.ttf
+The source font is not bundled. The derived wordmark uses the same Apache-2.0 license.

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'auth_store.dart';
+import 'auth_wordmark.dart';
 
 const authBrandColor = Color(0xFF00A7E9);
 
@@ -292,23 +293,41 @@ class AuthWelcomeScreen extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(height: 26),
-                                      const Text(
-                                        'HnuHole',
-                                        style: TextStyle(
-                                          fontSize: 31,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        controller.text(
-                                          '你的校园，你的树洞。\n在这里，说说心里话。',
-                                          'Your campus, your stories.\nA space to speak your mind.',
-                                        ),
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          height: 1.6,
+                                      const AuthWordmark(),
+                                      const SizedBox(height: 18),
+                                      Transform(
+                                        alignment: Alignment.center,
+                                        transform: Matrix4.identity()
+                                          ..setEntry(0, 1, -0.10),
+                                        child: DefaultTextStyle.merge(
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            height: 1.6,
+                                          ),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                controller.text(
+                                                  '在这里，',
+                                                  'Here,',
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  left: 48,
+                                                ),
+                                                child: Text(
+                                                  controller.text(
+                                                    '想说就说',
+                                                    'Speak your mind',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
