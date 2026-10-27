@@ -1,8 +1,28 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_image_viewer/image_viewer.dart';
+
+// Capture the decoder passed through the real viewer resource provider. The
+// test controls the exact dispose-before-frame-completion ordering.
+class _CaptureDecoder extends ImageProvider<_CaptureDecoder> {
+  ImageDecoderCallback? decode;
+  @override
+  Future<_CaptureDecoder> obtainKey(ImageConfiguration configuration) async =>
+      this;
+  @override
+  ImageStreamCompleter loadImage(
+    _CaptureDecoder key,
+    ImageDecoderCallback decoder,
+  ) {
+    decode = decoder;
+    return _PendingImageStream();
+  }
+}
+
+class _PendingImageStream extends ImageStreamCompleter {}
 
 class _NoWriteGallery implements ViewerGalleryWriter {
   int writes = 0;
@@ -17,6 +37,41 @@ class _NoWriteGallery implements ViewerGalleryWriter {
 }
 
 void main() {
+  testWidgets(
+    'disposing before native frame completion frees it without usage or errors',
+    (tester) async {
+      final bytes = await tester.runAsync(
+        () => File('example/assets/fixtures/ordinary.png').readAsBytes(),
+      );
+      final provider = _CaptureDecoder();
+      final controller = ViewerController(
+        items: [
+          ViewerItem.provider(
+            id: 'closing',
+            provider: provider,
+            pixelSize: const Size(640, 480),
+          ),
+        ],
+      );
+      await tester.pumpWidget(
+        MaterialApp(home: HnuImageViewer(controller: controller)),
+      );
+      await tester.pump();
+      expect(provider.decode, isNotNull);
+      final frame = await tester.runAsync(() async {
+        final buffer = await ui.ImmutableBuffer.fromUint8List(bytes!);
+        final codec = await provider.decode!(buffer);
+        final pending = codec.getNextFrame();
+        codec.dispose();
+        return pending;
+      });
+      expect(frame!.image.debugDisposed, isTrue);
+      expect(controller.resourceUsage, isNull);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      controller.dispose();
+    },
+  );
   Future<ViewerController> show(
     WidgetTester tester,
     String name,

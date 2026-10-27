@@ -114,12 +114,35 @@ class PrereleaseRoleAuditPostgresTest(unittest.TestCase):
                     self.lab.grants('c')
                 self.lab.audit()
 
+    def test_notification_grants_reject_recipient_mutation_and_trigger_execute(self):
+        self.lab.audit()
+        for role, privilege, target in [
+            ('hnuhole_c_runtime', 'INSERT', 'c_inbox.records'),
+            ('hnuhole_c_runtime', 'UPDATE(account_id)', 'c_inbox.records'),
+            ('hnuhole_c_runtime', 'UPDATE', 'c_inbox.like_events'),
+            ('hnuhole_c_recovery', 'SELECT', 'c_inbox.records'),
+            ('hnuhole_business', 'SELECT', 'c_inbox.like_events'),
+            ('hnuhole_c_runtime', 'UPDATE(account_id)', 'c_moderation.notifications'),
+            ('hnuhole_c_runtime', 'EXECUTE', 'FUNCTION c_inbox.like_changed()'),
+            ('PUBLIC', 'EXECUTE', 'FUNCTION c_inbox.comment_published()'),
+        ]:
+            with self.subTest(role=role, privilege=privilege, target=target):
+                self.lab.sql('c', 'GRANT ' + privilege + ' ON ' + target + ' TO ' + role)
+                try:
+                    with self.assertRaisesRegex(RuntimeError, 'owned SQL operation failed'):
+                        self.lab.audit()
+                finally:
+                    self.lab.sql('c', 'REVOKE ' + privilege + ' ON ' + target + ' FROM ' + role)
+                    self.lab.grants('c')
+                self.lab.audit()
+
     def test_restore_rebuilds_private_identity_avatar_function_acls(self):
         public_execute = """SELECT count(*) FROM pg_proc p
             JOIN pg_namespace n ON n.oid=p.pronamespace,
             LATERAL aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) a
-            WHERE n.nspname='public'
-            AND p.proname IN ('guard_identity_avatar','bind_identity_avatar','close_identity_avatars')
+            WHERE ((n.nspname='public'
+            AND p.proname IN ('guard_identity_avatar','bind_identity_avatar','close_identity_avatars'))
+            OR n.nspname='c_inbox')
             AND a.grantee=0 AND a.privilege_type='EXECUTE'"""
         self.assertEqual(self.lab.sql('c', public_execute), '0')
         backup = self.lab.root / 'c.dump'
@@ -133,7 +156,7 @@ class PrereleaseRoleAuditPostgresTest(unittest.TestCase):
                       '--dbname', self.lab.dsn('c', 'migrator', 'restore'), backup],
                      'avatar-acl-restore', env=self.lab.password_env('c', 'migrator'))
         # Restored functions regain PostgreSQL's default PUBLIC EXECUTE.
-        self.assertEqual(self.lab.sql('c', public_execute, target='restore'), '3')
+        self.assertEqual(self.lab.sql('c', public_execute, target='restore'), '6')
         self.lab.grants('c', target='restore')
         self.assertEqual(self.lab.sql('c', public_execute, target='restore'), '0')
 

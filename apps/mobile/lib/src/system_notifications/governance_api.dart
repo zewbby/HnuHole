@@ -68,7 +68,7 @@ class HttpGovernanceApi implements GovernanceApi {
   }) async {
     if (token != null) AuthCrypto.decode(token, bytes: 32);
     if (!RegExp(
-          r'^/api/v1/((reports|system-notifications|sanctions|appeals|moderation-access)(/[a-zA-Z0-9-]+)*|dm/governance/reports/[a-f0-9-]{36})$',
+          r'^/api/v1/((reports|system-notifications|notifications|sanctions|appeals|moderation-access)(/[a-zA-Z0-9_-]+)*|dm/governance/reports/[a-f0-9-]{36})$',
         ).hasMatch(path) ||
         !{'GET', 'PUT', 'POST'}.contains(method)) {
       throw const FormatException('Invalid governance path');

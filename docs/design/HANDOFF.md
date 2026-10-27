@@ -53,6 +53,15 @@
 
 > **2026-10-24 COMMENT-SNAPSHOT-REDIS-01：** 独立分支 `codex/feat/comment-snapshot-redis` 从 main `8ed8f28` 建立；第 1 阶段盘点、第 2 阶段一致性与发布设计完成，当前只改文档及抽象模型验证。设计采用独立快照实例、保守预留/发布、V1/V2 明确来源和开关回退；共享限流正式依赖在第 3 阶段前复核。见[分支记录](../branches/feat-comment-snapshot-redis.md)及[设计](comment-snapshot-redis/stage-2-consistency-and-rollout.md)。第 3 阶段等待调度。后续真机可独立操控则验收，否则记“真机验收待用户于 2026-10-25 验收”，不阻断其他工作。未实现、提交、推送、合并或发布。
 
+> **2026-10-27 交付：通知、全局身份与统一五项导航已由 [PR #81](https://github.com/zewbby/HnuHole/pull/81) 合入 main，合并 `61c429531880bb51092a87de7e5b9b38c43c4da8`。产品源码516cd44加CI网络修正后的最终提交560818e全部适用远端检查 PASS；本地完整移动端968 PASS／3既有SKIP，App与图片组件分析0，图片资源19 PASS，真实 SQL／HTTPS／迁移与最小权限检查通过。只读独立 agent 审查的缩略图恢复P2已复核关闭，没有伪造 GitHub 成员批准。已从合并主线构建同签名 ARM64 Profile2026102701并覆盖安装／启动 vivo，保留原数据。现有同机开发后端升级到 C28／V7，严格原CA健康检查通过，新通知路由返回预期401认证错误而非404。Gate代次／恢复审计／既有行和序列在迁移期间保持不变，无reset／down／restore／recover。手感、完整真机功能验收待用户试用；这是最新主线功能的既有开发环境联调包，未宣称公网生产发布。以本回执覆盖下文“未合并／2602试包／接口404”的历史状态；旧模块整体裁决保留。**
+
+
+> **2026-10-27 NOTIFICATION-INBOX-01交接：** 按最新要求撤回真实@，改四等宽大字分类；全App身份同步，全部主模块保留含＋的五项底栏，仅首页沉浸阅读收起。用户已授权commit／push／PR／merge及主线产品构建，当前先验证后推进；旧五分类和2602试包只留历史，不算最终产品验收。[任务](../branches/feat-notification-inbox.md)／[最新测试](notification-inbox-test-handoff.md)。
+
+> **2026-10-26 NOTIFICATION-INBOX-01 安装追加：** 用户请求后，Profile2602 已同签覆盖安装 vivo并启动，未卸载／清数据；原 APK 保留，真我未操作，控制权已释放供用户试用。仅客户端安装，开发后端新通知接口仍404，真实通知功能未在日常环境联调；视觉试用待用户回执。见[任务追加](../branches/feat-notification-inbox.md)。下方原未构建／未装机状态保留历史时点。
+
+> **2026-10-26 NOTIFICATION-INBOX-01（仅本地分支）：** `feat/notification-inbox` 基于 `c17a667` 完成五等宽通知页、加粗斜体 `@`、点击／双处横滑与缩放、私信同款共享身份部件。回复／提及／赞按本人身份，系统通知在本人账号内共享；真实提及、匿名聚合点赞、所见版本已读及 0028 迁移接通。真实 SQL／最小角色／最终 Gate／HTTPS、Flutter 全量 965 PASS／3 SKIP 与最新增量 88 PASS、分析0、bundle、Go build/vet/race、契约通过；外部设备和编译 Dart 探针2项SKIP，原生／远端CI／部署未验。未提交／合并，旧模块结论不提升。见[任务](../branches/feat-notification-inbox.md)与[测试交接](notification-inbox-test-handoff.md)。
+
 > **2026-10-26 IMAGE-VIEWER-GESTURES-01已合并：** [PR #77](https://github.com/zewbby/HnuHole/pull/77) 已Squash进入main `84c278e`；最终测试head `7abfe16` 的18条远端检查记录全部SUCCESS，合并后的产品文件与被测源码一致。已保留PR76图片权限提前续验；图片上下拖动跟手缩小、背景渐隐露底页，短拖回弹、消除切图空白与退出闪字。本地图片包129项、整合宿主118项回归、分析及ARM64 Debug构建PASS。未安装/部署，真机手感、设备帧时序/内存及iOS本轮未验；维护者明确授权合并，未取得独立GitHub成员批准，不提升旧模块总裁决。见[任务](../branches/fix-image-viewer-gestures.md)与[合并回执](image-viewer-gestures-merge-verification.json)。
 
 > **2026-10-26 MEDIA-SEAMLESS-RENEWAL-01已合并：** [PR #76](https://github.com/zewbby/HnuHole/pull/76) 已Squash进入main `048a3e5`；测试head `06448b3` 的9个远端workflow／17项检查全部SUCCESS，合并后的产品文件与被测版本一致。本地相关回归228 PASS／0 FAIL／0 SKIP、分析0问题、Android ARM64 debug构建PASS。帖子图片在前台可见时提前续验，权限与图片元数据未变就保留画面、缓存和查看器；截止及撤权围栏保留。用户取消vivo覆盖安装，未装机／部署；独立成员review、iOS及真机长时间浏览未验，B03／B06历史整模块裁决不提升。见[任务](../branches/fix-media-seamless-renewal.md)与[合并及CI回执](media-seamless-renewal-merge-verification-20261026.json)。

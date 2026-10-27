@@ -50,6 +50,14 @@
 
 > **2026-10-25 COMMENT-SNAPSHOT-REDIS-01 第 3 阶段：** 已 fast-forward 集成正式共享限流 PR #73/main `c051981`，保留原差异备份并解决重放冲突；服务端不可变快照、30 分钟 TTL、原子配额/预算、SQL 后发布及补偿、V1/V2/PG 回退、定位和运行配置/CLI 已实现。最终快照/评论隔离回归23 PASS/0 FAIL/2 SKIP，共享限流39 PASS/0 FAIL/1设备夹具SKIP，全后端host/build/vet和完整契约PASS；不拼接历史轮次。客户端、两个API进程、容量/P95、真机和远端CI仍待后续阶段，本需求未提交/合并/发布。见[阶段记录](comment-snapshot-redis/stage-3-backend-and-integration.md)及[机器证据](comment-snapshot-redis/stage-3-evidence.json)。下方较早的阶段状态保留为历史快照。
 
+> **2026-10-27 交付：通知、全局身份与统一五项导航已由 [PR #81](https://github.com/zewbby/HnuHole/pull/81) 合入 main，合并 `61c429531880bb51092a87de7e5b9b38c43c4da8`。产品源码516cd44加CI网络修正后的最终提交560818e全部适用远端检查 PASS；本地完整移动端968 PASS／3既有SKIP，App与图片组件分析0，图片资源19 PASS，真实 SQL／HTTPS／迁移与最小权限检查通过。只读独立 agent 审查的缩略图恢复P2已复核关闭，没有伪造 GitHub 成员批准。已从合并主线构建同签名 ARM64 Profile2026102701并覆盖安装／启动 vivo，保留原数据。现有同机开发后端升级到 C28／V7，严格原CA健康检查通过，新通知路由返回预期401认证错误而非404。Gate代次／恢复审计／既有行和序列在迁移期间保持不变，无reset／down／restore／recover。手感、完整真机功能验收待用户试用；这是最新主线功能的既有开发环境联调包，未宣称公网生产发布。以本回执覆盖下文“未合并／2602试包／接口404”的历史状态；旧模块整体裁决保留。**
+
+
+> **2026-10-27 B02/B07/B08/B09/B10当前范围：** 按最新要求撤回真实@，改四等宽大字分类；全App身份同步，全部主模块保留含＋的五项底栏，仅首页沉浸阅读收起。用户已授权commit／push／PR／merge及主线产品构建，当前先验证后推进；旧五分类和2602试包只留历史，不算最终产品验收。[任务](../branches/feat-notification-inbox.md)／[最新测试](notification-inbox-test-handoff.md)。
+
+> **2026-10-26 NOTIFICATION-INBOX-01 试包追加：** 用户授权构建安装后，vivo Profile2602 同签覆盖及启动 PASS，原数据未清、首次安装时间未变；用户视觉试用待回执，完整设备联调未验。开发服务尚未部署新通知接口（404），此次不提升模块验收结论。[详情](../branches/feat-notification-inbox.md)。
+
+> **2026-10-26 NOTIFICATION-INBOX-01／B02、B07、B08、B09：** `feat/notification-inbox` 本地完成通知收件箱、真实 `@` 与私信身份部件复用；真实 SQL／最小角色／Gate／HTTPS及迁移通过。Flutter全量965 PASS／3既有SKIP，最后增量88 PASS、分析0、bundle及Go构建／vet／race／契约通过；外部设备和编译Dart探针2项SKIP。未提交／合并／装机／部署，远端CI未跑，不提升历史整模块结论。[命令与边界](notification-inbox-test-handoff.md)、[机器记录](notification-inbox-verification-20261026.json)。
 
 > **2026-10-26 IMAGE-VIEWER-GESTURES-01已合并：** [PR #77](https://github.com/zewbby/HnuHole/pull/77) 已Squash进入main `84c278e`；最终测试head `7abfe16` 的18条远端检查记录全部SUCCESS，合并后的产品文件与被测源码一致。已保留PR76图片权限提前续验；图片上下拖动跟手缩小、背景渐隐露底页，短拖回弹、消除切图空白与退出闪字。本地图片包129项、整合宿主118项回归、分析及ARM64 Debug构建PASS。未安装/部署，真机手感、设备帧时序/内存及iOS本轮未验；维护者明确授权合并，未取得独立GitHub成员批准，不提升旧模块总裁决。见[任务](../branches/fix-image-viewer-gestures.md)与[合并回执](image-viewer-gestures-merge-verification.json)。
 

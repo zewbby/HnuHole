@@ -3,11 +3,11 @@ info:
   title: HnuHole minimal system notification API
   version: 0.1.0
   description: A single descending timeline combines current-identity records with account records. The list is
-    read-only. The server never accepts client-written notifications. COMMENT_FAILURE/LOCAL_TASK is an unintegrated
-    client provider contract, not a server endpoint or server event kind. HTTPS only. No redirects, user-supplied
+    read-only. The server never accepts client-written notifications. COMMENT_FAILURE is a server event since migration
+    0017; LOCAL_TASK remains a separate client recovery provider. HTTPS only. No redirects, user-supplied
     URLs, or extra request fields. Every successful business response is committed inside the existing final C Safety
-    Gate transaction. Only implemented post targets are described; comment, chat, push and full interaction inbox
-    APIs are absent.
+    Gate transaction. The legacy identity-scoped API is retained for restricted moderation access; the ordinary
+    unified inbox is specified separately in notification-inbox-component.yaml. OS push is not included.
 servers:
 - url: /
 paths:
@@ -396,6 +396,7 @@ components:
           - REPORT
           - SANCTION
           - APPEAL
+          - COMMENT_FAILURE
         resourceId:
           $ref: '#/components/schemas/UUID'
       description: Allowlisted resource route only. REPORT uses the original report requestId; SANCTION/ APPEAL
@@ -439,6 +440,7 @@ components:
           - REPORT_RESULT
           - SANCTION
           - APPEAL_RESULT
+          - COMMENT_FAILURE
         state:
           type: string
         title:
@@ -454,7 +456,7 @@ components:
         route:
           $ref: '#/components/schemas/NotificationRoute'
       description: IDENTITY records include identityId; ACCOUNT records omit it. Event identifiers deduplicate delivery
-        per receiving account. Reading never resolves a future comment-failure task.
+        per receiving account. Reading never resolves a comment-failure task.
       oneOf:
       - properties:
           scope:

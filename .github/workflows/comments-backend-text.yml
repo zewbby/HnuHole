@@ -5,6 +5,13 @@ on:
       - 'services/api/comment-schema/**'
       - 'services/api/migrations/0016_comments.sql'
       - 'services/api/migrations/0017_comment_business.sql'
+      - 'services/api/migrations/0028_notification_inbox.sql'
+      - 'services/api/internal/authprivacy/community_inbox*'
+      - 'services/api/internal/authprivacy/postgres_test.go'
+      - 'services/api/internal/authprivacyhttp/inbox*'
+      - 'services/api/internal/authprivacyhttp/endtoend_postgres_test.go'
+      - 'packages/openapi/notification-inbox-component.yaml'
+      - 'tools/check-notification-contract.py'
       - 'apps/mobile/lib/src/comments/**'
       - 'apps/mobile/integration/comment_live_probe.dart'
       - 'packages/openapi/comment-business-component.yaml'
@@ -54,6 +61,7 @@ jobs:
           python -m pip install -r packages/openapi/requirements-check.txt
           python tools/check-comment-text-contract.py
           python tools/check-comment-business-contract.py
+          python tools/check-notification-contract.py
       - name: New persistence and affected strict parser/config checks
         working-directory: services/api
         run: |
@@ -80,6 +88,7 @@ jobs:
         # Includes real empty installation and 0014 -> actual main 0015 -> 0016 -> 0017.
         env:
           PGPORT: '55463'
+          COMMENT_TEST_PATTERN: '^(TestCommentText|TestCommentBusiness|TestNotificationInbox|TestInboxRoutesAndDisabledMentionsBoundary|TestModerationGooseUpgradeAndDownRefusalPostgres$|TestPostSchemaFixedOwnershipAndTerminalStatePostgres$|TestPostSchemaModerationCleanupPrivilegesWithoutFeaturePostgres$|TestPostSchemaModerationAccountClosureWithoutFeaturePostgres$)'
         run: |
           export PATH="$(pg_config --bindir):$PATH"
           export POST_MEDIA_PYTHON="$RUNNER_TEMP/comment-image-python/bin/python"
