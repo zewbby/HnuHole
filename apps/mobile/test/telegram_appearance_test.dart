@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hnuhole_mobile/main.dart' as app;
 import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 import 'package:hnuhole_mobile/src/posts/post_theme.dart';
+
+import 'production_startup_test_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -27,8 +28,7 @@ void main() {
   testWidgets('actual app root uses shared appearance outside the feed route', (
     tester,
   ) async {
-    app.main();
-    await tester.pump();
+    await startProductionApp(tester);
     final material = tester.widget<MaterialApp>(find.byType(MaterialApp));
     final theme = material.theme!;
     expect(theme.extension<HhTelegramPalette>(), isNotNull);
