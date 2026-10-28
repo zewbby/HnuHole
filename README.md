@@ -1,14 +1,18 @@
-# SpeechFUL
-
 ## About
+<div align="center">
 面向海南大学校内人员的社区，让世界多一些爱与真诚。
+<br><br>
+『愿为江水，与君重逢；<br>
+&nbsp;&nbsp;&nbsp;&nbsp;同归沧溟，共载长风』
+</div>
 
-『愿为江水，与君重逢；\
-  同归沧溟，共载长风』
-  
 ## Contributor
-The first version of app includes frontend and backend all made by @zewbby
-Thanks @Tairan from openAI
+<div align="center">
+The first version of app includes frontend and backend all developed and designed by <b><i>@zewbby</i></b>
+<br>
+Thanks for the idea and inspiration from <b><i>@Tairan He</i></b> from OpenAI
+</div>
+
 
 ## Related Work
 
