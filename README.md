@@ -40,6 +40,8 @@
 
 ## Related Work
 
+- [欢迎图案与启动衔接](docs/branches/codex-feat-welcome-mascot-logo.md)：[PR #88](https://github.com/zewbby/SpeechFUL/pull/88) 实现浅黑深白轮廓、黑底白标桌面图标及欢迎控件入场；实现与验证见任务记录，合并状态见 PR。
+
 - [PR #84](https://github.com/zewbby/HnuHole/pull/84)：主线默认Redis新建与双读，标准启动配置接通，缺快照配置明确报错。
 - [PR #83](https://github.com/zewbby/HnuHole/pull/83)：同步Redis快照合并和开发启用回执，保留历史验收边界。
 - [PR #80](https://github.com/zewbby/HnuHole/pull/80)：评论Redis分页快照、局部恢复与Publish优化已合入main；同机开发已启用，生产未发布。

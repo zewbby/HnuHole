@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'auth_store.dart';
 import 'auth_wordmark.dart';
+import 'welcome_at_mark.dart';
 
 const authBrandColor = Color(0xFF00A7E9);
 
@@ -231,8 +232,14 @@ class AuthThemeButton extends StatelessWidget {
 }
 
 class AuthWelcomeScreen extends StatelessWidget {
-  const AuthWelcomeScreen({super.key, required this.onStarted});
+  const AuthWelcomeScreen({
+    super.key,
+    required this.onStarted,
+    this.showControls = true,
+  });
+
   final VoidCallback onStarted;
+  final bool showControls;
 
   @override
   Widget build(BuildContext context) => AuthPresentationHost(
@@ -253,9 +260,16 @@ class AuthWelcomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
                         child: Column(
                           children: [
-                            const Align(
+                            Align(
                               alignment: Alignment.centerRight,
-                              child: AuthThemeButton(),
+                              child: _welcomeEntrance(
+                                visible: showControls,
+                                key: const ValueKey(
+                                  'welcome-theme-controls-animation',
+                                ),
+                                hiddenOffset: -12,
+                                child: const AuthThemeButton(),
+                              ),
                             ),
                             Expanded(
                               child: Align(
@@ -268,66 +282,52 @@ class AuthWelcomeScreen extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Semantics(
-                                        label: 'HnuHole',
+                                        label: controller.text(
+                                          '安静手势标志',
+                                          'Quiet gesture mark',
+                                        ),
                                         image: true,
                                         child: ExcludeSemantics(
-                                          child: Container(
-                                            width: 150,
-                                            height: 150,
-                                            alignment: Alignment.center,
-                                            decoration: const BoxDecoration(
-                                              color: authBrandColor,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Text(
-                                              'h',
-                                              style: TextStyle(
-                                                fontSize: 112,
-                                                height: 1,
-                                                fontFamily: 'serif',
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
+                                          child: WelcomeAtMark(
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.white
+                                                : Colors.black,
                                           ),
                                         ),
                                       ),
                                       const SizedBox(height: 26),
                                       const AuthWordmark(),
-                                      const SizedBox(height: 18),
-                                      Transform(
-                                        alignment: Alignment.center,
-                                        transform: Matrix4.identity()
-                                          ..setEntry(0, 1, -0.10),
-                                        child: DefaultTextStyle.merge(
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            height: 1.6,
-                                          ),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
+                                      const SizedBox(height: 24),
+                                      DefaultTextStyle.merge(
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          height: 1.6,
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              controller.text(
+                                                '『愿为江水，与君重逢；',
+                                                '“May I meet you again as river water;',
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 16,
+                                              ),
+                                              child: Text(
                                                 controller.text(
-                                                  '在这里，',
-                                                  'Here,',
+                                                  '同归沧溟，共载长风』',
+                                                  'return to the vast sea on one wind.”',
                                                 ),
                                               ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  left: 48,
-                                                ),
-                                                child: Text(
-                                                  controller.text(
-                                                    '想说就说',
-                                                    'Speak your mind',
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -335,32 +335,44 @@ class AuthWelcomeScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            TextButton(
-                              key: const ValueKey('auth-language-toggle'),
-                              onPressed: controller.toggleLanguage,
-                              child: Text(
-                                controller.english
-                                    ? '切换为简体中文'
-                                    : 'Continue in English',
+                            _welcomeEntrance(
+                              visible: showControls,
+                              key: const ValueKey(
+                                'welcome-action-controls-animation',
                               ),
-                            ),
-                            const SizedBox(height: 24),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 54,
-                              child: FilledButton(
-                                key: const ValueKey('auth-start'),
-                                onPressed: onStarted,
-                                style: FilledButton.styleFrom(
-                                  shape: const StadiumBorder(),
-                                ),
-                                child: Text(
-                                  controller.text('开始使用', 'Get started'),
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w600,
+                              hiddenOffset: 12,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextButton(
+                                    key: const ValueKey('auth-language-toggle'),
+                                    onPressed: controller.toggleLanguage,
+                                    child: Text(
+                                      controller.english
+                                          ? '切换为简体中文'
+                                          : 'Continue in English',
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(height: 24),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 54,
+                                    child: FilledButton(
+                                      key: const ValueKey('auth-start'),
+                                      onPressed: onStarted,
+                                      style: FilledButton.styleFrom(
+                                        shape: const StadiumBorder(),
+                                      ),
+                                      child: Text(
+                                        controller.text('开始使用', 'Get started'),
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -377,6 +389,32 @@ class AuthWelcomeScreen extends StatelessWidget {
     ),
   );
 }
+
+Widget _welcomeEntrance({
+  required bool visible,
+  required Key key,
+  required double hiddenOffset,
+  required Widget child,
+}) => TweenAnimationBuilder<double>(
+  key: key,
+  tween: Tween<double>(begin: 0, end: visible ? 1 : 0),
+  duration: const Duration(milliseconds: 520),
+  curve: Curves.easeOutCubic,
+  builder: (context, progress, child) => ExcludeSemantics(
+    excluding: !visible,
+    child: IgnorePointer(
+      ignoring: !visible,
+      child: Opacity(
+        opacity: progress,
+        child: Transform.translate(
+          offset: Offset(0, hiddenOffset * (1 - progress)),
+          child: child,
+        ),
+      ),
+    ),
+  ),
+  child: child,
+);
 
 const authEnglish = <String, String>{
   '你的校园邮箱': 'Your campus email',

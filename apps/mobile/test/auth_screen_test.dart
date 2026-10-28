@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
+import 'package:hnuhole_mobile/src/auth/welcome_at_mark.dart';
 
 const _account = '00000000-0000-4000-8000-000000000001';
 const _savedCode = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -782,12 +783,33 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     final h = _Harness();
     final presentation = AuthPresentationController();
+    final controlsVisible = ValueNotifier(false);
+    addTearDown(controlsVisible.dispose);
     var started = false;
     await h.mount(
       tester,
       presentation: presentation,
-      home: AuthWelcomeScreen(onStarted: () => started = true),
+      home: ValueListenableBuilder<bool>(
+        valueListenable: controlsVisible,
+        builder: (context, visible, _) => AuthWelcomeScreen(
+          onStarted: () => started = true,
+          showControls: visible,
+        ),
+      ),
     );
+    await tester.runAsync(() async {
+      await precacheImage(
+        const AssetImage('assets/branding/welcome-shush-mark.png'),
+        tester.element(find.byKey(const ValueKey('auth-welcome'))),
+      );
+    });
+    await tester.pumpAndSettle();
+    expect(find.byType(WelcomeAtMark), findsOneWidget);
+    expect(find.bySemanticsLabel('开始使用'), findsNothing);
+    expect(find.bySemanticsLabel('Continue in English'), findsNothing);
+    await _snapshot(tester, 'auth-welcome-loading-375px');
+    controlsVisible.value = true;
+    await tester.pumpAndSettle();
     expect(find.text('开始使用'), findsOneWidget);
     expect(find.bySemanticsLabel('@SpeechFUL'), findsOneWidget);
     await _snapshot(tester, 'auth-welcome-final-375px');

@@ -4,13 +4,13 @@ import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/main.dart' as app;
 
 import '../integration_test/b5_candidate_root.dart';
+import 'production_startup_test_support.dart';
 
 void main() {
   testWidgets('B5 candidate adapter discovers the actual current app root', (
     tester,
   ) async {
-    app.main();
-    await tester.pump();
+    await startProductionApp(tester);
     final root = b5CandidateRoot(tester);
     expect(find.byType(app.HnuholeApp), findsOneWidget);
     expect(root.store, isA<AuthStore>());

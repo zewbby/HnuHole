@@ -50,6 +50,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
       final node = tester.getSemantics(
         find.byKey(const ValueKey('auth-start')),
       );
