@@ -3,8 +3,8 @@
 ## About
 面向海南大学校内人员的社区，让世界多一些爱与真诚。
 
-『愿为江水，与君重逢；
-                 同归沧溟，共载长风。』
+『愿为江水 与君重逢
+  同归沧溟 共载长风』
   
 ## Contributor
 The first version of app includes frontend and backend all made by @zewbby
