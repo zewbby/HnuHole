@@ -11,7 +11,7 @@
   <big><big><strong><em>@SpeechFUL</em></strong></big></big>
 </p>
 
-  <p>面向 <b><i>@Hainan University</i></b>校内人员的匿名社区，让世界多一些爱与真诚。</p>
+  <p>面向 <b><i>@Hainan University</i></b> 校内人员的匿名社区，让世界多一些爱与真诚。</p>
 
   <br>
 
