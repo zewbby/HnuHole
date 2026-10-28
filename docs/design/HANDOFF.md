@@ -1,6 +1,6 @@
 # Hnuhole 新会话接续说明
 
-> **2026-10-28 AUTH-WELCOME-QUOTE-01（本地实现）：**A12 透明安静手势去蓝底，浅色黑线／深色白线；桌面图标黑底白标并留足空白。Android 启动直接呈现完整欢迎品牌与两行对齐题词，加载完成后三控件平滑出现。分析 0 问题、92 项回归、同签 debug APK 构建通过，vivo V2323A / Android 15 已覆盖安装；启动衔接获用户认可，最终去蓝底版本待用户查看。独立审查通过，PR／产品 CI／合并待完成；iOS 构建未验，模块结论不变。详见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
+> **2026-10-28 AUTH-WELCOME-QUOTE-01（本地实现）：**A12 透明安静手势去蓝底，浅色黑线／深色白线；桌面图标黑底白标并留足空白。Android 启动直接呈现完整欢迎品牌与两行对齐题词，加载完成后三控件平滑出现。分析 0 问题、92 项回归、同签 debug APK 构建通过，vivo V2323A / Android 15 已覆盖安装；启动衔接获用户认可，用户已认可最终去蓝底版本。独立审查通过，[PR #88](https://github.com/zewbby/SpeechFUL/pull/88) 产品 CI 进行中／待合并（此条为送审快照，最终状态见 PR）；iOS 构建未验，模块结论不变。详见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
 
 > **2026-10-27 AUTH-WORDMARK-01 已合并：**PR [#86](https://github.com/zewbby/HnuHole/pull/86) squash 合入 main `1986988b70fe378600b7e74505d1f3e3f78f460e`，显示字标为 `@SpeechFUL`，标语保留“在这里，／想说就说”。31项相关回归、分析0问题、生成器校验、独立审查及最终适用CI通过；未生产发布，旧设备包不含本次字标。
 

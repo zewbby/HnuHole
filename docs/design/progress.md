@@ -1,6 +1,6 @@
 # 设计进度与剩余工作
 
-> **2026-10-28 AUTH-WELCOME-QUOTE-01 本地交付：**透明手势图案浅黑深白、桌面图标黑底白标；完整欢迎品牌首屏保持固定，加载完成后三控件淡入，题词两行对齐。分析／92 项回归／Android 构建 PASS，vivo 同签覆盖安装，用户已认可启动衔接；最终去蓝底版本待用户查看。独立审查通过，PR／远端产品 CI／合并待完成，未生产发布，iOS 构建未验。见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
+> **2026-10-28 AUTH-WELCOME-QUOTE-01 本地交付：**透明手势图案浅黑深白、桌面图标黑底白标；完整欢迎品牌首屏保持固定，加载完成后三控件淡入，题词两行对齐。分析／92 项回归／Android 构建 PASS，vivo 同签覆盖安装，用户已认可启动衔接；用户已认可最终去蓝底版本。独立审查通过，[PR #88](https://github.com/zewbby/SpeechFUL/pull/88) 产品 CI 进行中／待合并（送审快照），未生产发布，iOS 构建未验。见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
 
 > **2026-10-27 AUTH-WORDMARK-01 已合并：**欢迎页字标改为 `@SpeechFUL`，标语保留“在这里，／想说就说”；PR [#86](https://github.com/zewbby/HnuHole/pull/86) 合入 main `1986988`。相关回归31项、分析0问题、路径生成器校验、独立审查及最终适用CI通过；未生产发布，旧版APK不含新字标。见[任务记录](../branches/feat-startup-wordmark.md)。
 

@@ -1,6 +1,6 @@
 # 分模块验收与测试交接
 
-> **2026-10-28 AUTH-WELCOME-QUOTE-01：**A12 欢迎图案去蓝底、浅黑深白，桌面图标黑底白标；完整欢迎页作为首个应用画面，恢复期间隐藏三个控件，就绪后淡入，题词两行对齐。分析 0 问题、认证／启动／导航等 92 项回归、Android 同签 debug 构建、vivo V2323A 安装启动 PASS；用户认可启动衔接，最终去蓝底版本待查看。独立审查通过，远端产品 CI／合并待 PR；iOS 构建 NOT_RUN，全模块结论不变。详见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
+> **2026-10-28 AUTH-WELCOME-QUOTE-01：**A12 欢迎图案去蓝底、浅黑深白，桌面图标黑底白标；完整欢迎页作为首个应用画面，恢复期间隐藏三个控件，就绪后淡入，题词两行对齐。分析 0 问题、认证／启动／导航等 92 项回归、Android 同签 debug 构建、vivo V2323A 安装启动 PASS；用户认可启动衔接，用户已认可最终去蓝底版本。独立审查通过，[PR #88](https://github.com/zewbby/SpeechFUL/pull/88) 产品 CI 进行中／待合并（送审快照）；iOS 构建 NOT_RUN，全模块结论不变。详见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
 
 > **2026-10-27 AUTH-WORDMARK-01 已合并：**A12 欢迎页 `@SpeechFUL` 字标及“在这里，／想说就说”文案已由 PR [#86](https://github.com/zewbby/HnuHole/pull/86) 合入 main `1986988`。相关回归31项、分析0问题、字形生成器校验、独立只读审查无阻断、最终适用CI通过；不提升整模块验收。详见[任务记录](../branches/feat-startup-wordmark.md)。
 
