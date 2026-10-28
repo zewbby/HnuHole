@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-28 AUTH-WELCOME-QUOTE-01（本地实现）：**A12 透明安静手势去蓝底，浅色黑线／深色白线；桌面图标黑底白标并留足空白。Android 启动直接呈现完整欢迎品牌与两行对齐题词，加载完成后三控件平滑出现。分析 0 问题、92 项回归、同签 debug APK 构建通过，vivo V2323A / Android 15 已覆盖安装；启动衔接获用户认可，最终去蓝底版本待用户查看。独立审查通过，PR／产品 CI／合并待完成；iOS 构建未验，模块结论不变。详见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
+
 > **2026-10-27 AUTH-WORDMARK-01 已合并：**PR [#86](https://github.com/zewbby/HnuHole/pull/86) squash 合入 main `1986988b70fe378600b7e74505d1f3e3f78f460e`，显示字标为 `@SpeechFUL`，标语保留“在这里，／想说就说”。31项相关回归、分析0问题、生成器校验、独立审查及最终适用CI通过；未生产发布，旧设备包不含本次字标。
 
 > **2026-10-27 PR84已合并，main默认Redis：** [PR #84](https://github.com/zewbby/HnuHole/pull/84)合并 `ad0c47ce98cc13093be9b00b48e5d8ea37443cdb`。默认Redis新建及PG/Redis双读，标准C模板接通；启用评论却缺快照配置时启动明确失败，显式PG回退保留。配置5项、build/vet、独立只读审查和12个适用自动workflow通过。现有开发Redis接线只读核对一致，运行环境未改；性能/真机/30分钟未追加验收，生产未发布。见[实现与验证](comment-snapshot-redis/main-default-20261027.md)；下方默认PG/待合并状态保留原历史时点。

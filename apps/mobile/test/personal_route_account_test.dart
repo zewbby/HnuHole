@@ -207,8 +207,13 @@ void main() {
     f.channels.wait = Completer();
     await f.loginB(tester, directoryPending: true);
     expect(find.byType(FeedScreen), findsNothing);
-    expect(find.byKey(const ValueKey('startup-feed')), findsOneWidget);
-    expect(find.byKey(const ValueKey('auth-start')), findsNothing);
+    expect(find.byType(AuthWelcomeScreen), findsOneWidget);
+    expect(
+      tester
+          .widget<AuthWelcomeScreen>(find.byType(AuthWelcomeScreen))
+          .showControls,
+      isFalse,
+    );
     f.channels.wait!.complete(
       await IdentityTestChannels().loadChannels(
         sessionToken: identityTestOtherToken,

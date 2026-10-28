@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hnuhole_auth_passkey/hnuhole_auth_passkey.dart';
 
 import 'hnuhole_mobile.dart';
@@ -25,9 +26,83 @@ import 'src/identity/identity_initial_gate.dart';
 import 'src/identity/identity_avatar.dart';
 import 'src/identity/active_identity_controller.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HhTelegramTheme.registerFontLicenses();
+  final presentation = AuthPresentationController(
+    preferences: FlutterAuthVault(namespace: 'hnuhole.presentation.v1'),
+  );
+  try {
+    await Future.wait([_preloadWelcomeMark(), presentation.load()]);
+  } catch (error, stackTrace) {
+    FlutterError.reportError(
+      FlutterErrorDetails(
+        exception: error,
+        stack: stackTrace,
+        library: 'app startup',
+        context: ErrorDescription('while preparing the welcome mark'),
+      ),
+    );
+  }
+  runApp(_StartupWelcomeApp(presentation));
+  await WidgetsBinding.instance.endOfFrame;
+  _runHnuholeApp(presentation);
+}
+
+Future<void> _preloadWelcomeMark() async {
+  final view = WidgetsBinding.instance.platformDispatcher.views.first;
+  final stream = const AssetImage('assets/branding/welcome-shush-mark.png')
+      .resolve(
+        ImageConfiguration(
+          bundle: rootBundle,
+          devicePixelRatio: view.devicePixelRatio,
+        ),
+      );
+  final ready = Completer<void>();
+  late final ImageStreamListener listener;
+  listener = ImageStreamListener(
+    (_, _) {
+      stream.removeListener(listener);
+      if (!ready.isCompleted) ready.complete();
+    },
+    onError: (Object error, StackTrace? stackTrace) {
+      stream.removeListener(listener);
+      if (!ready.isCompleted) ready.completeError(error, stackTrace);
+    },
+  );
+  stream.addListener(listener);
+  await ready.future;
+}
+
+/// Let the welcome page become Flutter's first frame before constructing the
+/// runtime graph, so cold start keeps the same branding while session restore runs.
+class _StartupWelcomeApp extends StatelessWidget {
+  const _StartupWelcomeApp(this.presentation);
+
+  final AuthPresentationController presentation;
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    themeMode: presentation.themeMode,
+    builder: (context, child) => AuthPresentationScope(
+      controller: presentation,
+      child: child ?? const SizedBox.shrink(),
+    ),
+    theme: HhTelegramTheme.applyAppearance(ThemeData(useMaterial3: true)),
+    darkTheme: HhTelegramTheme.applyAppearance(
+      ThemeData(useMaterial3: true, brightness: Brightness.dark),
+    ),
+    home: const AuthWelcomeScreen(
+      onStarted: _ignoreStartupAction,
+      showControls: false,
+    ),
+  );
+}
+
+void _ignoreStartupAction() {}
+
+void _runHnuholeApp(AuthPresentationController presentation) {
   final communityBaseUri = Uri.parse(
     const String.fromEnvironment(
       'AUTH_COMMUNITY_BASE_URL',
@@ -234,6 +309,7 @@ void main() {
   );
   runApp(
     HnuholeApp(
+      presentation: presentation,
       directory: directory,
       repository: repository,
       api: api,
@@ -261,6 +337,7 @@ void main() {
 class HnuholeApp extends StatefulWidget {
   const HnuholeApp({
     super.key,
+    this.presentation,
     required this.directory,
     required this.repository,
     required this.api,
@@ -297,6 +374,7 @@ class HnuholeApp extends StatefulWidget {
   final HttpGovernanceApi? governanceApi;
   final DmRuntime? dm;
   final DmNotifications? dmNotifications;
+  final AuthPresentationController? presentation;
 
   @override
   State<HnuholeApp> createState() => _HnuholeAppState();
@@ -304,9 +382,11 @@ class HnuholeApp extends StatefulWidget {
 
 class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
   late final ActiveIdentityController _activeIdentity;
-  final _authPresentation = AuthPresentationController(
-    preferences: FlutterAuthVault(namespace: 'hnuhole.presentation.v1'),
-  );
+  late final _authPresentation =
+      widget.presentation ??
+      AuthPresentationController(
+        preferences: FlutterAuthVault(namespace: 'hnuhole.presentation.v1'),
+      );
   final _navigatorKey = GlobalKey<NavigatorState>();
   bool _authRouteOpen = false;
   bool _securityRouteOpen = false;
@@ -514,7 +594,7 @@ class _HnuholeAppState extends State<HnuholeApp> with WidgetsBindingObserver {
     _activeIdentity = ActiveIdentityController(widget.identities);
     widget.posts.bindActiveIdentity(_activeIdentity);
     widget.governance?.bindActiveIdentity(_activeIdentity);
-    unawaited(_authPresentation.load());
+    if (widget.presentation == null) unawaited(_authPresentation.load());
     WidgetsBinding.instance.addObserver(this);
     _postRouteChanges = Listenable.merge([_postWindow, widget.directory]);
     widget.posts.addListener(_postWindowChanged);

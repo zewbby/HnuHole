@@ -34,6 +34,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/branding/welcome-shush-mark.png
     - assets/fonts/LICENSE-Roboto.txt
     - assets/fonts/NOTICE-Roboto.txt
     - assets/fonts/OFL-NotoSansSC.txt

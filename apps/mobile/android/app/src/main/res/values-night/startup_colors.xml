@@ -1,1 +1,4 @@
-<resources><color name="startup_background">#1D2733</color></resources>
+<resources>
+    <color name="startup_background">#1D2733</color>
+    <color name="startup_logo_ink">#FFFFFF</color>
+</resources>

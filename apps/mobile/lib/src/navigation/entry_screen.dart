@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../auth/auth_presentation.dart';
-import '../posts/feed_screen.dart';
 import 'channel_directory_controller.dart';
 
 /// Login and authoritative directory loading only. The app root presents the
@@ -129,13 +128,15 @@ class _EntryScreenState extends State<EntryScreen> {
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: widget.directory,
-    builder: (context, _) => _retrying
-        ? AuthWelcomeScreen(onStarted: widget.onLoginRequested)
-        : widget.restoringSession ||
-              widget.directory.status == ChannelDirectoryStatus.loading
-        ? const FeedStartupScreen()
-        : widget.directory.status == ChannelDirectoryStatus.ready
-        ? const FeedStartupScreen()
-        : AuthWelcomeScreen(onStarted: widget.onLoginRequested),
+    builder: (context, _) {
+      final waitingForEntry =
+          widget.restoringSession ||
+          widget.directory.status == ChannelDirectoryStatus.loading ||
+          widget.directory.status == ChannelDirectoryStatus.ready;
+      return AuthWelcomeScreen(
+        onStarted: widget.onLoginRequested,
+        showControls: !_retrying && !waitingForEntry,
+      );
+    },
   );
 }

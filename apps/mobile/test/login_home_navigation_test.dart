@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
+import 'package:hnuhole_mobile/src/auth/auth_wordmark.dart';
 
 import 'identity_test_support.dart';
 import 'login_home_test_support.dart';
@@ -59,7 +60,7 @@ Future<void> disposeApp(WidgetTester tester) async {
 
 void main() {
   testWidgets(
-    'restoration shell keeps home geometry while directory is pending',
+    'restoration keeps the complete welcome branding while directory is pending',
     (tester) async {
       tester.view.padding = const FakeViewPadding(top: 24, bottom: 34);
       addTearDown(tester.view.resetPadding);
@@ -67,18 +68,20 @@ void main() {
       f.channels.wait = Completer<ChannelDirectoryResult>();
       await tester.pumpWidget(await f.create());
       await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('startup-feed')), findsOneWidget);
+      expect(find.byType(AuthWelcomeScreen), findsOneWidget);
+      expect(
+        tester
+            .widget<AuthWelcomeScreen>(find.byType(AuthWelcomeScreen))
+            .showControls,
+        isFalse,
+      );
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byType(FeedScreen), findsNothing);
       expect(f.postApi.calls, isEmpty);
-      final header = tester.getTopLeft(
-        find.byKey(const ValueKey('feed-account')),
-      );
-      final navigation = tester.getTopLeft(
-        find.byKey(const ValueKey('destination:home')),
-      );
+      final brand = tester.getRect(find.byType(AuthWordmark));
       await tester.pump(const Duration(seconds: 10));
       expect(tester.binding.transientCallbackCount, 0);
+      expect(tester.getRect(find.byType(AuthWordmark)), brand);
       f.channels.wait!.complete(
         await IdentityTestChannels().loadChannels(
           sessionToken: identityTestToken,
@@ -86,14 +89,6 @@ void main() {
       );
       await tester.pumpAndSettle();
       expectHome(tester, f);
-      expect(
-        tester.getTopLeft(find.byKey(const ValueKey('feed-account'))),
-        header,
-      );
-      expect(
-        tester.getTopLeft(find.byKey(const ValueKey('destination:home'))),
-        navigation,
-      );
       expect(find.byType(CircularProgressIndicator), findsNothing);
       await disposeApp(tester);
     },
