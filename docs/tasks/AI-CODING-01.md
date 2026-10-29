@@ -34,6 +34,7 @@
 | 项目 | 被测版本／环境 | 结果与证据 |
 | --- | --- | --- |
 | 文档与 Skill | 原始 V1 `30d6659`；反馈修订 `61f185c` | PASS：本地链接检查、UTF-8 下的 Skill quick_validate 和差异空白检查 |
+| 通用规则与派单协议对齐 | `36afff3`；Windows Python 3.9.13 | PASS：执行 Session 的规则和契约版本复核、授权记录及状态维护人职责已写入；Skill quick_validate、差异空白和 staged 协作检查通过 |
 | 协作回归 | 反馈修订 `61f185c`，Windows Python 3.9.13 | PASS：19 项 `test_collaboration.py` 回归 |
 | 规则版本接续 | 临时旧基线 Worktree `31a05d9`；规则与任务契约 `30d6659` | PASS：旧工作区可读指定任务文档；定向引入 `AGENTS.md`、`CONTRIBUTING.md` 后，两份工作树文件的 Git blob 与规则提交一致；临时 Worktree 已清理 |
 | PPTX | 已提交版本 `30d6659` 的 `speechful-ai-coding-workflow-v1.pptx`；SHA-256 `d482fe930078cc5f0d566815eed4f006e0c2b478ec7c77df1548a5ea343b9893` | PASS：2 页已导入并渲染；原生形状与连接线，无图片替代；包与布局检查通过 |
