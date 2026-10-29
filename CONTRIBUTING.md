@@ -24,6 +24,8 @@ git worktree list
 
 并行写入必须使用不同分支和 Worktree，不让多个执行 Session 改同一工作区。独立需求分别送审；同一需求的模块由负责人在集成分支核对接口、测试和差异后整合。依赖尚未合并的功能分支时，在任务记录与 PR 写清基线、依赖和合并顺序。
 
+指挥模式按[派单协议](.agents/skills/orchestrator/references/dispatch.md)固定规则与任务契约版本。执行 Session 开始前核对工作树中实际采用的 `AGENTS.md`、`CONTRIBUTING.md` 和可读的任务文档版本，并向总指挥回报；能从 Git 读取目标提交，不代表工作树已采用其中的规则。旧 Worktree 先检查已有改动，再定向引入规则变更，不必同步全部产品代码。恢复时先核对已有回报及相关分支、Worktree 的提交和未提交改动，再决定接续或重派。
+
 ```sh
 git fetch origin refs/heads/main:refs/remotes/origin/main
 git worktree add -b codex/feat/example ../SpeechFUL-example origin/main
