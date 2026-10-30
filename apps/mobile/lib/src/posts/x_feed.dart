@@ -102,6 +102,7 @@ class HhXPostFeed extends StatelessWidget {
     this.showNavigation = true,
     this.onRefresh,
     this.onLatest,
+    this.onRecommended,
     this.latestSelected = false,
     this.refreshEnabled = true,
     this.loading = false,
@@ -125,6 +126,7 @@ class HhXPostFeed extends StatelessWidget {
   final bool showNavigation;
   final Future<void> Function()? onRefresh;
   final VoidCallback? onLatest;
+  final VoidCallback? onRecommended;
   final bool latestSelected;
   final bool refreshEnabled, loading;
   final String channelTitle;
@@ -233,30 +235,36 @@ class HhXPostFeed extends StatelessWidget {
                           ),
                         ),
                       ),
-                      child: TextButton(
-                        key: const ValueKey('feed-channel-picker'),
-                        onPressed: onBack,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                feedTitle ?? channelTitle,
-                                style: _text(
-                                  context,
-                                  17,
-                                  weight: FontWeight.w700,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Semantics(
+                              selected: !latestSelected,
+                              child: TextButton(
+                                key: const ValueKey('feed-recommended'),
+                                onPressed: onRecommended,
+                                child: Text(
+                                  feedTitle ?? channelTitle,
+                                  style: _text(
+                                    context,
+                                    17,
+                                    weight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 6),
-                            Icon(
+                          ),
+                          IconButton(
+                            key: const ValueKey('feed-channel-picker'),
+                            tooltip: '选择通道',
+                            onPressed: onBack,
+                            icon: Icon(
                               Icons.keyboard_arrow_down_rounded,
                               color: p.secondary,
                               size: 21,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                     final filter = TextButton(

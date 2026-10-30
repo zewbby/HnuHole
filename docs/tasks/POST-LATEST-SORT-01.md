@@ -52,3 +52,13 @@ vivo V2323A（`10CEAG17RY003M7`）安装后读回版本 `2026103005`，启动成
 被测源码为 `29c3471` 加本次 `feed_screen.dart`、`x_feed.dart` 与对应测试差异。`flutter analyze --no-pub` PASS；`feed_ui_test.dart`、`feed_scroll_refresh_test.dart` 共35项 PASS，覆盖点击前后选中状态、实际下划线以及刷新／分页后保留状态。测试使用临时 Windows SQLite 配置，执行后恢复，依赖配置未提交变更。
 
 ARM64 profile 试用包 `2026103006` 构建、验签、vivo `adb install -r` 与版本读回 PASS；APK SHA-256 `d2b450efd232ef3042f5fa7646f9fa88b197341042c1ac947675ace0f25a89d6`。沿用现有签名及联调配置，未清数据。实机后续停在筛选面板，停止继续操作，选中态视觉功能验收留给用户；不把安装或界面层级读取算作该功能实机PASS。日志保留在同一本机验证目录的 `selection-tests.log`、`vivo-selection-build.log`。未推送或合并。
+
+### 推荐文字与下拉箭头交互分离
+
+用户明确澄清：推荐系统设计与实现由「HnuHole｜总指挥｜性能优化与推荐算法」及相关 session 负责，本任务只处理点击交互，不设计推荐规则、不修改后端。此前提出的算法与范围问题不作为本任务需求。
+
+基于 `3055d61`，将原先覆盖整个左侧区域的选择框按钮拆为两个独立按钮。文字按钮使用独立 `onRecommended` 回调切回左侧选中态，蓝条随之移动；仅下拉箭头的 `feed-channel-picker` 回调打开既有选择框。保留原有选项、所选通道及请求接口。未引入新排序算法或协议。
+
+`flutter analyze --no-pub` PASS；`feed_ui_test.dart` 与 `feed_scroll_refresh_test.dart` 共36项 PASS。新增测试从“最新”点击“推荐”文字，验证选中态切回且无弹框，再单独点击箭头验证弹框与原选项选择正常。本机日志为 `split-controls-tests.log`。
+
+ARM64 profile `2026103007` 构建、同签名验证、vivo 覆盖安装与启动 PASS，设备读回版本为 `2026103007`。APK SHA-256 `048d48af862768c781c1de4a166be1ef4b949b07afeda5071aa6de119445691f`，日志为同一本机目录下 `vivo-split-controls-build.log`。保留现有应用数据及联调配置，交由用户试用；未推送或合并。

@@ -223,6 +223,39 @@ Widget screen(
 );
 
 void main() {
+  testWidgets('recommended label switches selection; only arrow opens picker', (
+    tester,
+  ) async {
+    final f = await FeedFixture.create();
+    addTearDown(f.dispose);
+    await tester.pumpWidget(screen(f));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('feed-latest')));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+      isTrue,
+    );
+    await tester.tap(find.text('推荐'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+      isFalse,
+    );
+    expect(find.text('切换通道'), findsNothing);
+    expect(
+      f.api.calls.where((s) => s == 'feed:recommended:first:20'),
+      hasLength(3),
+    );
+    await tester.tap(find.byKey(const ValueKey('feed-channel-picker')));
+    await tester.pumpAndSettle();
+    expect(find.text('切换通道'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('choose-channel:$channelId')));
+    await tester.pumpAndSettle();
+    expect(f.controller.timelineChannelId, channelId);
+    expect(find.text('切换通道'), findsNothing);
+  });
+
   testWidgets(
     'latest reloads server first page; refresh and more keep server order',
     (tester) async {
