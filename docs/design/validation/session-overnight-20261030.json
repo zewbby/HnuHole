@@ -1,0 +1,61 @@
+{
+  "task": "AUTH-SESSION-LONG-SHUTDOWN-20261030",
+  "parentTask": "AUTH-SESSION-RESUME-01",
+  "date": "2026-10-30",
+  "status": "PASS_LIMITED_SAME_MACHINE_DEVELOPMENT",
+  "baselineAtUTC": "2026-10-29T15:44:47.808513+00:00",
+  "postCheckAtUTC": "2026-10-30T01:22:26.375087+00:00",
+  "backendSource": "a2e98eb6a1b749adf6a4e003ab1aa11c378e8947",
+  "schema": {
+    "c": 28,
+    "v": 7
+  },
+  "device": {
+    "model": "vivo V2323A",
+    "android": 15,
+    "versionCode": 2026102702,
+    "versionName": "0.1.0-main-notifications"
+  },
+  "duration": {
+    "hoursSinceLastTrustedBackendActivity": 9.599,
+    "physicalPowerOffDuration": "User reports shutdown; measured interval is backend inactivity, not independent hardware power measurement"
+  },
+  "checks": {
+    "sameAppVersion": 2026102702,
+    "activeSessionFingerprintMatchesBaseline": true,
+    "gateGenerationsMatchBaseline": true,
+    "recoveryAuditCountsMatchBaseline": true,
+    "backendSessionRowsUnchangedAcrossResume": true,
+    "cAndVTLSReady": true,
+    "appColdStartAuthenticated": true,
+    "welcomeOrLoginOrExpiredOrUnavailableVisible": false,
+    "installationLogoutLoginResetMigrationRecoverPerformed": false
+  },
+  "privacy": "Only equality verdicts exported; raw account/session/installation identifiers, tokens, credentials, private configs and UI dumps omitted.",
+  "localArtifactsSHA256": {
+    "pre-shutdown-baseline.json": "bc0f9d9e4325811c3e01ea1620ab05df4cd37d42a01bdbf7908660194d05416e",
+    "post-shutdown-20261030.json": "f4c6926494d350bb40df7a41b1eb078a6d848ac2965ea9e56ea49bd5fe7fd960"
+  },
+  "priorAttempts": [
+    {
+      "date": "2026-10-23",
+      "result": "INCONCLUSIVE_PHONE_BASELINE_NOT_CONFIRMED"
+    },
+    {
+      "date": "2026-10-29",
+      "result": "BACKEND_PASS_48H_INACTIVITY_PHONE_NOT_VERIFIABLE_CURRENT_REALME_USER_MISSING_APP"
+    },
+    {
+      "date": "2026-10-29",
+      "result": "BASELINE_ESTABLISHED_ON_VIVO_AFTER_USER_UNINSTALLED_SIGNATURE_INCOMPATIBLE_OLD_APP_AND_LOGGED_IN"
+    }
+  ],
+  "notRun": [
+    "ios",
+    "production",
+    "other_physical_devices",
+    "arbitrary_duration_or_repeated_shutdown_matrix"
+  ],
+  "recoveryRunbook": "docs/design/session-runtime-recovery.md",
+  "productSourceChangedByCloseout": false
+}
