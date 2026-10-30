@@ -5,7 +5,7 @@
 - 分支／Worktree／PR：`codex/fix/post-latest-sort`；独立 Worktree `E:/Hnuhole-env/source/SpeechFUL-post-latest-sort`；PR 未创建
 - 授权依据与边界：用户要求修复“最新发布”组件并保留本地提交，后续要求优先复用本机工具缓存补齐真实 PostgreSQL 回归和 Android 构建；不推送或合并。基线为 2026-10-30 拉取的 `origin/main` `76501d1a13c13ab0fa4a0919110c3bd00a2eba1c`
 - 更新日期：2026-10-30
-- 状态：实现已完成；验证宿主、真实 PostgreSQL 定点回归、Android ARM64 debug APK／bundle 均 PASS；合并未合并；发布未发布
+- 状态：实现已完成；本地验证及 vivo 用户试用通过，已获用户推送／合并授权；远端 CI 待运行，合并未合并，发布未发布
 
 ## 目标与范围
 
@@ -62,3 +62,7 @@ ARM64 profile 试用包 `2026103006` 构建、验签、vivo `adb install -r` 与
 `flutter analyze --no-pub` PASS；`feed_ui_test.dart` 与 `feed_scroll_refresh_test.dart` 共36项 PASS。新增测试从“最新”点击“推荐”文字，验证选中态切回且无弹框，再单独点击箭头验证弹框与原选项选择正常。本机日志为 `split-controls-tests.log`。
 
 ARM64 profile `2026103007` 构建、同签名验证、vivo 覆盖安装与启动 PASS，设备读回版本为 `2026103007`。APK SHA-256 `048d48af862768c781c1de4a166be1ef4b949b07afeda5071aa6de119445691f`，日志为同一本机目录下 `vivo-split-controls-build.log`。保留现有应用数据及联调配置，交由用户试用；未推送或合并。
+
+## 送审授权
+
+用户试用后明确回复“可以，推送合并吧”，授权本任务分支推送、PR 与合并。2026-10-30 重新 fetch 后 `origin/main` 仍为 `76501d1`，无新增主线差异。产品代码为 `29a332a`；本次仅补授权与交付状态，原产品验证仍适用。等待当前 PR head 产品 CI 后按授权合并；不包含推荐算法或后端部署。README 无项目能力或主要入口变更，不作单任务状态追加。
