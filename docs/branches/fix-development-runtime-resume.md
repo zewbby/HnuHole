@@ -1,5 +1,7 @@
 # DEV-RUNTIME-RESUME-01：旧启动入口统一绑定已核验部署
 
+> 主线协作规则efef91f整合后，唯一当前任务状态见[任务记录](../tasks/DEV-RUNTIME-RESUME-01.md)；下文保留此前实施与验收快照。
+
 2026-10-30，分支 `fix/development-runtime-resume`，基线main6233c8f；用户要求修旧入口、验证后PR直接合并。本轮从此前隔夜验收继续，修改恢复工具及现有机器入口，不变更产品API/App或迁移。
 
 新增[版本绑定恢复器](../../tools/development_runtime/README.md)，以私有清单核对receipt/source、静态依赖闭包、真实schema与进程归属；保留原PG/AOF，双同步resume先于API。三个旧入口已有私有备份并替换薄转发，当前批准C28/V7/a2e98，包含第三个独立快照Redis；未来部署须显式更新批准清单。未创建新的开机任务，旧命令继续可用。
