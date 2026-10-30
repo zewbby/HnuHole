@@ -1,0 +1,36 @@
+{
+  "task": "DEV-RUNTIME-RESUME-01",
+  "date": "2026-10-30",
+  "runtimeCodeSHA256": "0b22952d8554c8d32b86528628f145108137038ec559238435ec46357427628c",
+  "installed": true,
+  "backendSource": "a2e98eb6a1b749adf6a4e003ab1aa11c378e8947",
+  "schema": {
+    "c": 28,
+    "v": 7
+  },
+  "checks": {
+    "unitTests": 10,
+    "optimizedPythonTests": 10,
+    "fullDependencyColdStart": "PASS",
+    "postgresInstancesRestarted": 2,
+    "redisInstancesRestarted": 3,
+    "apiWatchProcesses": 4,
+    "legacyEntrypointsTested": 3,
+    "repeatedInvocationPIDsUnchanged": true,
+    "wrongSourceRejectedBeforeMutation": true,
+    "gateGenerationAndRecoverCountsUnchanged": true,
+    "sessionRecordsUnchanged": true,
+    "strictTLSReadyBoth": true,
+    "recoverResetMigrationRestoreInvoked": false
+  },
+  "installation": {
+    "legacyBackupsTaken": true,
+    "privateManifestMode": "600_IN_700_DIRECTORY",
+    "autoStartTaskCreated": false,
+    "futureDeploymentRequiresExplicitRepin": true
+  },
+  "additionalPhoneSmoke": "NOT_RUN_NO_LAUNCHABLE_DAILY_ACTIVITY_NO_REINSTALL_OR_LOGIN",
+  "priorOvernightEvidence": "docs/design/validation/session-overnight-20261030.json",
+  "privacy": "No private manifest, configs, account/session IDs or process logs exported",
+  "production": false
+}

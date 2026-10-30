@@ -1,0 +1,20 @@
+name: Development runtime resume
+on:
+  pull_request:
+    paths:
+      - 'tools/development_runtime/**'
+      - '.github/workflows/development-runtime-resume.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  boundaries:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pinned manifest and fail-closed startup order
+        run: |
+          python3 -B -m unittest discover -s tools/development_runtime/tests -v
+          python3 -O -B -m unittest discover -s tools/development_runtime/tests -v

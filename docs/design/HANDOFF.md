@@ -1,5 +1,7 @@
 # Hnuhole 新会话接续说明
 
+> **2026-10-30 DEV-RUNTIME-RESUME-01：**三个旧启动入口已备份并统一版本绑定，当前C28/V7及2限流+1快照Redis，静态漂移/旧进程拒绝、双resume前置；10项普通/-O回归、完整依赖冷启与幂等PASS，原会话/代次不变。实际已安装，PR状态见[任务](../branches/fix-development-runtime-resume.md)，未生产发布；旧脚本未修为之前时点。
+
 > **2026-10-30 AUTH-SESSION-RESUME-01隔夜补验：**vivo2702先确认登录/冷启，再由用户关机；约9.6小时后端无活动后，同代次恢复C28/V7及原Redis，原会话指纹/授权代次/RECOVER计数不变，手机冷启直接已登录，限定PASS。生产/iOS/其他设备不提升；旧长关机未验为历史记录。本次仅归档，见[交接](../branches/docs-session-overnight-acceptance.md)／[恢复说明](session-runtime-recovery.md)。
 
 > **2026-10-28 AUTH-WELCOME-QUOTE-01（本地实现）：**A12 透明安静手势去蓝底，浅色黑线／深色白线；桌面图标黑底白标并留足空白。Android 启动直接呈现完整欢迎品牌与两行对齐题词，加载完成后三控件平滑出现。分析 0 问题、92 项回归、同签 debug APK 构建通过，vivo V2323A / Android 15 已覆盖安装；启动衔接获用户认可，用户已认可最终去蓝底版本。独立审查通过，[PR #88](https://github.com/zewbby/SpeechFUL/pull/88) 产品 CI 进行中／待合并（此条为送审快照，最终状态见 PR）；iOS 构建未验，模块结论不变。详见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
