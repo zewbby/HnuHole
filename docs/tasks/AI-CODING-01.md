@@ -45,7 +45,7 @@
 | 通用规则与派单协议对齐 | `36afff3`；Windows Python 3.9.13 | PASS：执行 Session 的规则和契约版本复核、授权记录及状态维护人职责已写入；Skill quick_validate、差异空白和 staged 协作检查通过 |
 | 五项优化 | 基线 `d252d83`＋本次提交的文档差异：AGENTS.md、CONTRIBUTING.md、Orchestrator Skill 与两个参考文件、任务／PR 模板及本记录；Windows Python 3.9.13 | PASS：五项规则一致性复核；20 个本地文件链接、UTF-8 下的 Skill quick_validate、`python tools/check-collaboration.py --staged` 及差异空白检查通过 |
 | 需求确认规则修订 | 基线 `76501d1`＋本次六份文档差异：AGENTS.md、CONTRIBUTING.md、Orchestrator Skill、delivery-gates.md、任务模板及本记录 | PASS：对照原会话复核触发条件及确认依据；22 个本地文件链接、Skill quick_validate、staged 协作与差异空白检查通过。新会话实际行为尚未验证 |
-| 效率反思落实与去重 | 基线 `454653b`＋本轮 AGENTS.md、CONTRIBUTING.md 及本记录差异 | PASS：文档一致性复核、13 个本地文件链接、差异空白及 staged 协作检查通过；未改产品或检查脚本，实际执行效果仍待真实任务检验 |
+| 效率反思落实与去重 | 实际分支基线 `1099fa2`＋本轮 AGENTS.md、CONTRIBUTING.md 及本记录差异 | PASS：文档一致性复核、13 个本地文件链接、差异空白及 staged 协作检查通过；未改产品或检查脚本，实际执行效果仍待真实任务检验 |
 | 协作回归 | 反馈修订 `61f185c`，Windows Python 3.9.13 | PASS：19 项 `test_collaboration.py` 回归 |
 | 规则版本接续 | 临时旧基线 Worktree `31a05d9`；规则与任务契约 `30d6659` | PASS：旧工作区可读指定任务文档；定向引入 `AGENTS.md`、`CONTRIBUTING.md` 后，两份工作树文件的 Git blob 与规则提交一致；临时 Worktree 已清理 |
 | PPTX | 已提交版本 `30d6659` 的 `speechful-ai-coding-workflow-v1.pptx`；SHA-256 `d482fe930078cc5f0d566815eed4f006e0c2b478ec7c77df1548a5ea343b9893` | PASS：2 页已导入并渲染；原生形状与连接线，无图片替代；包与布局检查通过 |
