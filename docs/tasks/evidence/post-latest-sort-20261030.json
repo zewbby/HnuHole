@@ -1,0 +1,72 @@
+{
+  "task": "POST-LATEST-SORT-01",
+  "date": "2026-10-30",
+  "branch": "codex/fix/post-latest-sort",
+  "testedSource": {
+    "runtimeCommit": "cb4b935610c452ba78b0b466019c7f7f5aab1214",
+    "additionalTestFile": "services/api/internal/authprivacy/community_feed_test.go",
+    "testFileSha256AsExecutedCRLF": "ec2522db35695533155d41170a5b9b55ec4122714f6492502825834035992ee0",
+    "testFileSha256CanonicalLF": "68b308d4dfede80c44da10c4707f1e466c6ee8bc45c564970284c805691db9de",
+    "delta": "Advance trusted clock before the new publication; assert fresh first page uses its later publishedAt and remains time descending.",
+    "runtimeChangesAfterTestedCommit": false
+  },
+  "postgres": {
+    "result": "PASS",
+    "environment": "WSL Ubuntu 24.04, non-root hnuhole user, task-owned source snapshot on Linux filesystem",
+    "go": "go1.22.2 linux/amd64",
+    "postgresql": "16.15",
+    "goose": "v3.22.1",
+    "runner": "services/api/authlab/run-feed-isolated.sh",
+    "goTestFlags": "-race -count=1 -p 1",
+    "testPattern": "^(TestFeedFilteringSnapshotAndPreferenceBindingPostgres|TestPostCeilingPaginationAndCursorIsolationPostgres|TestRealHTTPSFeedViewsPreferencesAndCompatibilityPostgres)$",
+    "tests": [
+      { "name": "TestFeedFilteringSnapshotAndPreferenceBindingPostgres", "result": "PASS", "seconds": 7.79 },
+      { "name": "TestPostCeilingPaginationAndCursorIsolationPostgres", "result": "PASS", "seconds": 6.58 },
+      { "name": "TestRealHTTPSFeedViewsPreferencesAndCompatibilityPostgres", "result": "PASS", "seconds": 8.39 }
+    ],
+    "selectedTestsSkipped": 0,
+    "note": "The runner also compiled authprivacyruntime; no test in that package matched the selected pattern, so it is not counted as a regression test.",
+    "fixture": "Runner-created disposable PostgreSQL cluster with private Unix socket and no TCP listener; no external DSN accepted.",
+    "fixtureCleanup": "PASS: cluster stopped and task temporary directory empty",
+    "dependencySource": "Existing local Go module and build caches; GOPROXY=file:///home/hnuhole/.cache/hnuhole/go-modules/pkg/mod/cache/download,off",
+    "logPath": "E:/Hnuhole-env/post-latest-sort-validation-20261030/postgres-regression.log",
+    "logSha256": "69606debe47d39d297efd23e911d815141a49e06941e8d7ce08441d1a7d9cb2d"
+  },
+  "android": {
+    "result": "PASS",
+    "flutter": "3.47.5",
+    "jdk": "17.0.20.1+1",
+    "compileSdk": 36,
+    "ndk": "28.2.13676358",
+    "mode": "debug",
+    "target": "lib/main.dart",
+    "platform": "android-arm64",
+    "commands": [
+      "flutter build apk --debug --target-platform android-arm64 --no-pub",
+      "flutter build bundle --debug --target-platform android-arm64 --no-pub"
+    ],
+    "commandExitCodes": [0, 0],
+    "dependencyConfigurationChanged": false,
+    "cacheReuse": "Existing Flutter, Pub, Gradle, Android SDK/NDK, JDK and SQLite ARM64 library",
+    "sqlite3Version": "3.7.0",
+    "cachedSqliteSha256MatchesPackageOfficialManifest": "0c2d3bfc8c87abceb21ed72a4bb49964121c5fe1a8ef3848d83ba907d01b6161",
+    "packagedSqliteSha256AfterAndroidStrip": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
+    "artifact": {
+      "path": "apps/mobile/build/app/outputs/flutter-apk/app-debug.apk",
+      "bytes": 112058411,
+      "sha256": "455edc217b3b0a5bae95bd9b9d305dda6d60365fb8eddfa6970b18bb78ec693e",
+      "package": "org.hnuhole.hnuhole_mobile",
+      "minSdk": 29,
+      "targetSdk": 36,
+      "signatureVerification": "PASS, APK Signature Scheme v2, Android Debug certificate"
+    },
+    "warnings": ["SDK XML tool-version warning", "Kotlin daemon temporary-directory access denied; fallback compilation completed and assembleDebug succeeded"],
+    "buildLogPath": "E:/Hnuhole-env/post-latest-sort-validation-20261030/android-build.log",
+    "buildLogSha256": "8b27ba4b6433f8344505cf0bfd9b22014980a98526992ff98d96c970c76cf018",
+    "installedOnDevice": false
+  },
+  "notRun": ["Remote CI", "Physical-device execution", "Other Android ABIs", "Release build"],
+  "pushed": false,
+  "merged": false,
+  "deployed": false
+}
