@@ -621,6 +621,10 @@ void main() {
     expect(find.text('一起练英语'), findsOneWidget);
     expect(find.text('北岸'), findsOneWidget);
     expect(find.text('搭子'), findsOneWidget);
+    expect(find.text('最新发布'), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('channel-posts-latest')));
+    await tester.pumpAndSettle();
+    expect(c.reads, 2);
     expect(find.text('搜索'), findsNothing);
     expect(find.text('筛选'), findsNothing);
     expect(find.text('消息'), findsNothing);

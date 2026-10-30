@@ -101,6 +101,7 @@ class HhXPostFeed extends StatelessWidget {
     this.content,
     this.showNavigation = true,
     this.onRefresh,
+    this.onLatest,
     this.refreshEnabled = true,
     this.loading = false,
     this.avatarBuilder,
@@ -122,6 +123,7 @@ class HhXPostFeed extends StatelessWidget {
   final Widget? content;
   final bool showNavigation;
   final Future<void> Function()? onRefresh;
+  final VoidCallback? onLatest;
   final bool refreshEnabled, loading;
   final String channelTitle;
   final List<FeedPostView> posts;
@@ -298,13 +300,21 @@ class HhXPostFeed extends StatelessWidget {
                         ],
                       ),
                     );
-                    final latest = Text(
-                      '最新发布',
-                      style: _text(
-                        context,
-                        17,
-                        color: p.secondary,
-                        weight: FontWeight.w600,
+                    final latest = TextButton(
+                      key: const ValueKey('feed-latest'),
+                      onPressed: onLatest,
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(48, 48),
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                      ),
+                      child: Text(
+                        '最新',
+                        style: _text(
+                          context,
+                          17,
+                          color: p.secondary,
+                          weight: FontWeight.w600,
+                        ),
                       ),
                     );
                     if (large) {

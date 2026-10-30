@@ -172,15 +172,26 @@ class _ChannelPostsScreenState extends State<ChannelPostsScreen> {
             ? _AccessClosed(onAuthenticate: widget.onAuthenticationRequired)
             : Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(16, 12, 16, 14),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        '最新发布',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
+                      child: TextButton(
+                        key: const ValueKey('channel-posts-latest'),
+                        onPressed: widget.controller.feedLoading
+                            ? null
+                            : () {
+                                if (_scroll.hasClients) _scroll.jumpTo(0);
+                                unawaited(
+                                  widget.controller.loadFeed(widget.channel.id),
+                                );
+                              },
+                        child: const Text(
+                          '最新',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
