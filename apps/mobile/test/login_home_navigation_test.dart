@@ -20,7 +20,7 @@ void expectHome(
   expect(fixture.posts.timelineChannelId, channelId);
   expect(
     find.descendant(
-      of: find.byKey(const ValueKey('feed-channel-picker')),
+      of: find.byKey(const ValueKey('feed-recommended')),
       matching: find.text(title),
     ),
     findsOneWidget,
