@@ -2,10 +2,10 @@
 
 - 模式：常规
 - 负责人：当前开发 Session
-- 分支／Worktree／PR：`codex/fix/post-latest-sort`；独立 Worktree `E:/Hnuhole-env/source/SpeechFUL-post-latest-sort`；PR 未创建
+- 分支／Worktree／PR：`codex/fix/post-latest-sort`；独立 Worktree `E:/Hnuhole-env/source/SpeechFUL-post-latest-sort`；[PR #94](https://github.com/zewbby/SpeechFUL/pull/94)，已合并
 - 授权依据与边界：用户要求修复“最新发布”组件并保留本地提交，后续要求优先复用本机工具缓存补齐真实 PostgreSQL 回归和 Android 构建；不推送或合并。基线为 2026-10-30 拉取的 `origin/main` `76501d1a13c13ab0fa4a0919110c3bd00a2eba1c`
 - 更新日期：2026-10-30
-- 状态：实现已完成；本地验证及 vivo 用户试用通过，已获用户推送／合并授权；远端 CI 待运行，合并未合并，发布未发布
+- 状态：实现已完成；本地验证及 vivo 用户试用通过；最终 head 远端11个 workflow全部通过；PR #94已合并；vivo试用包已安装，正式发布未执行
 
 ## 目标与范围
 
@@ -68,3 +68,9 @@ ARM64 profile `2026103007` 构建、同签名验证、vivo 覆盖安装与启动
 用户试用后明确回复“可以，推送合并吧”，授权本任务分支推送、PR 与合并。2026-10-30 重新 fetch 后 `origin/main` 仍为 `76501d1`，无新增主线差异。产品代码为 `29a332a`；本次仅补授权与交付状态，原产品验证仍适用。等待当前 PR head 产品 CI 后按授权合并；不包含推荐算法或后端部署。README 无项目能力或主要入口变更，不作单任务状态追加。
 
 [PR #94](https://github.com/zewbby/SpeechFUL/pull/94) 已创建。创建时主线新增纯协作规范 `454653b`，已读新规则，合并树无冲突。首轮 `8ee29e7` 的 Auth feedback CI 发现首页测试 helper 仍在箭头按钮内寻找标题；拆分控件后标题已属于文字按钮。仅修正 `login_home_navigation_test.dart` 的标题定位 key，原箭头点击与实际产品代码不变。本地首页导航及 feed UI 共33项复跑 PASS；等待修正后 head 的全部适用 CI。
+
+## 合并回执
+
+2026-10-30 已按用户授权将 PR #94 Squash 合入 main `39727373e24abc8b1643992a47640a29e1fdbfb2`。最终被测 head `418ba9a290ffb7302757875a3ec50013162e9ff1` 的11个 workflow全部 SUCCESS；包括 Feed UI、Feed backend、Post images、Android prerelease、Auth feedback、Identity avatars、Shared rate limit、Comment snapshot Redis、Report moderation、Direct message chat 和 Collaboration。记录以[该提交的检查](https://github.com/zewbby/SpeechFUL/commit/418ba9a290ffb7302757875a3ec50013162e9ff1/checks)为准；Feed UI run `40997310169`、Feed backend run `40997310110`、Android prerelease run `40997310238`。首轮失败记录保留，不将其取消或覆盖为成功。
+
+合并后已 fetch 并核对产品源码、Flutter 测试和 Go 回归文件与最终被测 head 一致。vivo当前为用户试用通过的 `2026103007`；后续测试定位和文档提交不改变产品二进制源码。推荐算法未包含在本任务，未做后端部署或正式发布。本段仅补 PR94 合并事实，不递归登记其自身文档PR。
