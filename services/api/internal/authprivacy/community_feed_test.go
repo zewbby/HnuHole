@@ -171,6 +171,7 @@ func TestFeedFilteringSnapshotAndPreferenceBindingPostgres(t *testing.T) {
 		t.Fatal("preference crossed accounts")
 	}
 	intent.ChannelID = channels[0]
+	advanceClosureClock(t, control, control.clock.now().Add(time.Minute))
 	later := postTestCommand(t, l, owner.SessionToken, postTestKey(t), intent)
 	postTestPublish(t, l)
 	second := postTestRead(t, l, reader.SessionToken, q).(posts.CrossChannelFeedPage)
@@ -218,6 +219,14 @@ func TestFeedFilteringSnapshotAndPreferenceBindingPostgres(t *testing.T) {
 	page := postTestRead(t, l, reader.SessionToken, PostQuery{Kind: PostFeed}).(posts.CrossChannelFeedPage)
 	if len(page.Items) != 9 || page.Items[0].PostID != later.PostID {
 		t.Fatal("reset lost feed rows")
+	}
+	if !page.Items[0].PublishedAt.After(items[0].PublishedAt) {
+		t.Fatal("fresh first page did not use the new publication time")
+	}
+	for i := 1; i < len(page.Items); i++ {
+		if page.Items[i-1].PublishedAt.Before(page.Items[i].PublishedAt) {
+			t.Fatal("fresh feed is not descending by publication time")
+		}
 	}
 	for _, ids := range [][]string{nil, {channels[0], channels[0]}, {uuid.NewString()}} {
 		if _, e := l.c.ReplaceFeedPreferences(ctx, reader.SessionToken, posts.FeedPreferences{BlockedChannelIDs: ids}); e == nil {

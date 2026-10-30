@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/posts/feed_api.dart';
+import 'package:hnuhole_mobile/src/posts/x_feed.dart';
 import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 
 import 'identity_test_support.dart';
@@ -23,13 +24,14 @@ FeedPost post({
   int images = 0,
   int views = 1260,
   String title = '今天的校园',
+  DateTime? publishedAt,
 }) => FeedPost(
   postId: id,
   channelId: channel,
   title: title,
   body: '傍晚的风刚刚好，分享一段平常的校园时光。',
   author: author,
-  publishedAt: at,
+  publishedAt: publishedAt ?? at,
   viewCount: views,
   imageCount: images,
 );
@@ -54,6 +56,7 @@ class FeedTestApi implements PostApi, FeedApi {
   Completer<PostResponse<FeedPreferences>>? writeWait;
   Completer<PostResponse<PostViews>>? viewWait;
   Completer<PostResponse<PostDetail>>? detailWait;
+  PostsPage<FeedPost> Function(String?, String?)? pageFor;
   @override
   Future<PostResponse<FeedPreferences>> feedPreferences({
     required String sessionToken,
@@ -88,16 +91,17 @@ class FeedTestApi implements PostApi, FeedApi {
     timelineFailure = null;
     if (failure != null) throw failure;
     return reply(
-      PostsPage(
-        items: items
-            .where(
-              (p) =>
-                  !blocked.contains(p.channelId) &&
-                  (channelId == null || p.channelId == channelId),
-            )
-            .toList(),
-        nextCursor: this.cursor,
-      ),
+      pageFor?.call(channelId, cursor) ??
+          PostsPage(
+            items: items
+                .where(
+                  (p) =>
+                      !blocked.contains(p.channelId) &&
+                      (channelId == null || p.channelId == channelId),
+                )
+                .toList(),
+            nextCursor: this.cursor,
+          ),
     );
   }
 
@@ -219,6 +223,158 @@ Widget screen(
 );
 
 void main() {
+  testWidgets('recommended label switches selection; only arrow opens picker', (
+    tester,
+  ) async {
+    final f = await FeedFixture.create();
+    addTearDown(f.dispose);
+    await tester.pumpWidget(screen(f));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('feed-latest')));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+      isTrue,
+    );
+    await tester.tap(find.text('推荐'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+      isFalse,
+    );
+    expect(find.text('切换通道'), findsNothing);
+    expect(
+      f.api.calls.where((s) => s == 'feed:recommended:first:20'),
+      hasLength(3),
+    );
+    await tester.tap(find.byKey(const ValueKey('feed-channel-picker')));
+    await tester.pumpAndSettle();
+    expect(find.text('切换通道'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('choose-channel:$channelId')));
+    await tester.pumpAndSettle();
+    expect(f.controller.timelineChannelId, channelId);
+    expect(find.text('切换通道'), findsNothing);
+  });
+
+  testWidgets(
+    'latest reloads server first page; refresh and more keep server order',
+    (tester) async {
+      final f = await FeedFixture.create();
+      addTearDown(f.dispose);
+      const olderId = '44444444-4444-4444-8444-444444444444';
+      const oldestId = '55555555-5555-4555-8555-555555555555';
+      const newestId = '66666666-6666-4666-8666-666666666666';
+      final published = [
+        post(title: '原帖', publishedAt: at),
+        post(id: olderId, title: '同时间次序', publishedAt: at),
+        post(
+          id: oldestId,
+          title: '较早',
+          publishedAt: at.subtract(const Duration(days: 1)),
+        ),
+      ];
+      f.api.pageFor = (channel, cursor) {
+        expect(channel, isNull);
+        return cursor == null
+            ? PostsPage(items: published.take(2).toList(), nextCursor: 'older')
+            : PostsPage(items: published.skip(2).toList(), nextCursor: null);
+      };
+      await tester.pumpWidget(screen(f));
+      await tester.pumpAndSettle();
+      expect(find.text('最新发布'), findsNothing);
+      expect(find.byKey(const ValueKey('feed-latest')), findsOneWidget);
+      expect(
+        tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+        isFalse,
+      );
+      await tester.tap(find.byKey(const ValueKey('feed-latest')));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+        isTrue,
+      );
+      final latestDecoration =
+          tester
+                  .widget<DecoratedBox>(
+                    find.byKey(const ValueKey('feed-latest-indicator')),
+                  )
+                  .decoration
+              as BoxDecoration;
+      expect(
+        (latestDecoration.border as Border).bottom.color,
+        isNot(Colors.transparent),
+      );
+      expect(
+        f.api.calls.where((s) => s == 'feed:recommended:first:20'),
+        hasLength(2),
+      );
+      await tester.tap(find.text('加载更多'));
+      await tester.pumpAndSettle();
+      expect(
+        f.api.calls.lastWhere((s) => s.startsWith('feed:')),
+        'feed:recommended:older:20',
+      );
+      expect(f.controller.timelineItems.map((p) => p.postId), [
+        postId,
+        olderId,
+        oldestId,
+      ]);
+
+      published.insert(
+        0,
+        post(
+          id: newestId,
+          title: '新发布',
+          publishedAt: at.add(const Duration(days: 1)),
+        ),
+      );
+      await tester.drag(
+        find.byKey(const ValueKey('production-feed')),
+        const Offset(0, 280),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        f.api.calls.lastWhere((s) => s.startsWith('feed:')),
+        'feed:recommended:first:20',
+      );
+      expect(f.controller.timelineItems.map((p) => p.postId), [
+        newestId,
+        postId,
+      ]);
+      await tester.tap(find.text('加载更多'));
+      await tester.pumpAndSettle();
+      expect(f.controller.timelineItems.map((p) => p.postId), [
+        newestId,
+        postId,
+        olderId,
+        oldestId,
+      ]);
+      expect(
+        tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+        isTrue,
+      );
+    },
+  );
+
+  testWidgets('latest keeps the selected channel in the server request', (
+    tester,
+  ) async {
+    final f = await FeedFixture.create();
+    addTearDown(f.dispose);
+    await tester.pumpWidget(screen(f));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('feed-channel-picker')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('choose-channel:$channelId')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('feed-latest')));
+    await tester.pumpAndSettle();
+    expect(
+      f.api.calls.where((s) => s == 'feed:$channelId:first:20'),
+      hasLength(2),
+    );
+  });
+
   testWidgets(
     'same-scope refresh retains posts, widget state and cursor through failure',
     (tester) async {
