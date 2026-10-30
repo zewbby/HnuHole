@@ -27,3 +27,7 @@ QQ 设置固定为 `smtpMode=tls`、`smtpAddress=smtp.qq.com:465`，发件地址
 resume 只签发同代次的时间证据并通过真实 Gate 校验，不调用 recover；显式冻结、锚/数据库不一致或时间回退仍拒绝。失败时停止普通启动并检查原因，再由负责人明确决定安全恢复；不自动转 recover，不更新旧会话代次，不把安全失效会话复活。已被 recover 废止的会话仍须重新登录一次。
 
 `tools/prerelease/environment.py` 和 `tools/android_integration/lab.py` 的显式 `resume` 入口会先启动原数据库、校验两方，再启动 API/watch。旧的 `start` 保留新实例冻结验证语义，旧脚本中的显式 recover 不会自动变成普通重启。该路径仅适用其各自原有、已核对的开发实例/二进制，不可用历史固定候选覆盖已升级本机服务。私有配置和运行产物不进入 Git。
+
+## 2026-10-30 日常实例恢复入口更新
+
+上述通用原则仍适用，机器当前C28/V7与专用评论快照Redis的启动顺序及旧脚本风险见[日常恢复说明](../../docs/design/session-runtime-recovery.md)。旧C27 safe-resume及邮箱reconnect不能当作当前权威launcher；本次文档PR没有改写私有脚本。隔夜vivo2702原会话恢复限定PASS，见[验收归档](../../docs/branches/docs-session-overnight-acceptance.md)。

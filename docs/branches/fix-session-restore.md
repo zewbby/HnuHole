@@ -12,7 +12,7 @@
 
 隔离环境及vivo限定验收已通过，独立agent代码复核无阻断（非GitHub成员批准）；最终head七类远端workflow已通过，PR #48已合入main `d450cde`，未正式发布。Go authdev配置/签名用途测试与受影响宿主包PASS（不代证SQL）。初次尝试旧Docker runtime runner在旧权限清单拒绝现有schema，未进入本轮用例；原runner已不改动，改由维护中的预发布Lab做真实迁移/HTTPS/过期证据/原令牌保留及冻结负例回归。
 
-入口：`services/api/cmd/authdev/`、`tools/prerelease/environment.py`、`tools/android_integration/lab.py`、[重启说明](../../tools/smtp/README.md)。涉及A02/A03/A06/A12，重启限定验收不能提升整个模块/生产结论。后续补最终命令、版本、结果及本机vivo重启记录。
+入口：`services/api/cmd/authdev/`、`tools/prerelease/environment.py`、`tools/android_integration/lab.py`、[重启说明](../../tools/smtp/README.md)。涉及A02/A03/A06/A12，重启限定验收不能提升整个模块/生产结论。最终原修复回执见下；隔夜追加验收见本页2026-10-30更新。
 
 ## 本轮验收结果
 
@@ -25,3 +25,7 @@ vivo V2323A Android15，主体2143：App强停、原C/V与watch在Gate行锁内�
 ## 主线合并回执
 
 2026-10-22：PR #48 Squash合并 `d450cdeb2375a0f3bcb885c45e2cc04f338c713a`，与最终受审head `6716ce85752f4e167bd2d58085c6ca5bad186b1e` 文件树相同。七类适用远端workflow成功（同head旧协作run被后继协作run替代），独立agent只读审查无阻断，非GitHub成员批准。本机工具已加载并通过原生会话恢复，2143无需更新；未测试整机长时间关机，未正式发布。本次合并事实由docs/session-resume-delivery补入，不递归记录其自身PR。
+
+## 2026-10-30 隔夜追加验收（本项限定PASS）
+
+已补齐先确认登录再关机的vivo2702隔夜恢复；约9.6小时后端无活动后原会话恢复，无重新登录，代次和RECOVER计数不变。早期“整机长关机未验”仅保留为10月22日历史时点，当前追加范围见[本次交接](docs-session-overnight-acceptance.md)／[机器证据](../design/validation/session-overnight-20261030.json)。原2143/2秒模拟结论不重写。恢复现已涉及C28/V7与第三个快照Redis，应使用[当前恢复说明](../design/session-runtime-recovery.md)，不能盲用旧本机脚本；生产/iOS/任意时长仍未验。
