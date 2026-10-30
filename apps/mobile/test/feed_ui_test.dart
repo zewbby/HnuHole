@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 import 'package:hnuhole_mobile/src/posts/feed_api.dart';
+import 'package:hnuhole_mobile/src/posts/x_feed.dart';
 import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
 
 import 'identity_test_support.dart';
@@ -249,8 +250,27 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('最新发布'), findsNothing);
       expect(find.byKey(const ValueKey('feed-latest')), findsOneWidget);
+      expect(
+        tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+        isFalse,
+      );
       await tester.tap(find.byKey(const ValueKey('feed-latest')));
       await tester.pumpAndSettle();
+      expect(
+        tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+        isTrue,
+      );
+      final latestDecoration =
+          tester
+                  .widget<DecoratedBox>(
+                    find.byKey(const ValueKey('feed-latest-indicator')),
+                  )
+                  .decoration
+              as BoxDecoration;
+      expect(
+        (latestDecoration.border as Border).bottom.color,
+        isNot(Colors.transparent),
+      );
       expect(
         f.api.calls.where((s) => s == 'feed:recommended:first:20'),
         hasLength(2),
@@ -296,6 +316,10 @@ void main() {
         olderId,
         oldestId,
       ]);
+      expect(
+        tester.widget<HhXPostFeed>(find.byType(HhXPostFeed)).latestSelected,
+        isTrue,
+      );
     },
   );
 

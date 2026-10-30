@@ -102,6 +102,7 @@ class HhXPostFeed extends StatelessWidget {
     this.showNavigation = true,
     this.onRefresh,
     this.onLatest,
+    this.latestSelected = false,
     this.refreshEnabled = true,
     this.loading = false,
     this.avatarBuilder,
@@ -124,6 +125,7 @@ class HhXPostFeed extends StatelessWidget {
   final bool showNavigation;
   final Future<void> Function()? onRefresh;
   final VoidCallback? onLatest;
+  final bool latestSelected;
   final bool refreshEnabled, loading;
   final String channelTitle;
   final List<FeedPostView> posts;
@@ -223,7 +225,12 @@ class HhXPostFeed extends StatelessWidget {
                     final channel = DecoratedBox(
                       decoration: BoxDecoration(
                         border: Border(
-                          bottom: BorderSide(color: p.accent, width: 3),
+                          bottom: BorderSide(
+                            color: latestSelected
+                                ? Colors.transparent
+                                : p.accent,
+                            width: 3,
+                          ),
                         ),
                       ),
                       child: TextButton(
@@ -300,20 +307,38 @@ class HhXPostFeed extends StatelessWidget {
                         ],
                       ),
                     );
-                    final latest = TextButton(
-                      key: const ValueKey('feed-latest'),
-                      onPressed: onLatest,
-                      style: TextButton.styleFrom(
-                        minimumSize: const Size(48, 48),
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                      ),
-                      child: Text(
-                        '最新',
-                        style: _text(
-                          context,
-                          17,
-                          color: p.secondary,
-                          weight: FontWeight.w600,
+                    final latest = Semantics(
+                      selected: latestSelected,
+                      child: DecoratedBox(
+                        key: const ValueKey('feed-latest-indicator'),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: latestSelected
+                                  ? p.accent
+                                  : Colors.transparent,
+                              width: 3,
+                            ),
+                          ),
+                        ),
+                        child: TextButton(
+                          key: const ValueKey('feed-latest'),
+                          onPressed: onLatest,
+                          style: TextButton.styleFrom(
+                            minimumSize: const Size(48, 48),
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                          ),
+                          child: Text(
+                            '最新',
+                            style: _text(
+                              context,
+                              17,
+                              color: latestSelected ? p.ink : p.secondary,
+                              weight: latestSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     );

@@ -37,4 +37,18 @@ SQL 复现入口：在 Linux 文件系统上的源码副本设置 Go／PostgreSQ
 
 ## 阻碍与下一步
 
-本次要求的本地验证已完成；本轮只追加后端回归断言与验证记录，运行时代码保持 `cb4b935`。远端产品 CI、实体设备运行、其他 ABI／release 构建未执行，未推送、未合并、未部署。
+本次要求的本地验证已完成；本轮只追加后端回归断言与验证记录，运行时代码保持 `cb4b935`。远端产品 CI、实体设备功能验收、其他 ABI／release 构建未执行，未推送、未合并、未正式发布。
+
+## vivo 用户试用安装
+
+2026-10-30 用户要求安装到 vivo。基于 `29c3471`（运行时代码仍为 `cb4b935`）构建 ARM64 profile 试用包 `0.1.0-latest-sort`／`2026103005`，沿用既有 USB 联调配置与转发，APK SHA-256 为 `786aec6cf791067ee87fe7636f8116bcd3a3ac71531817ace85fa931a869b3c4`。签名与 vivo 原安装包一致，经验证后 `adb install -r` 返回 Success；未卸载或清除应用数据。
+
+vivo V2323A（`10CEAG17RY003M7`）安装后读回版本 `2026103005`，启动成功并取得应用 PID。保留原首次安装时间 `2026-10-30 09:57:04`；安装完成时间 `11:02:47`（Asia/Shanghai）。当前等待用户实际测试“最新”、刷新及分页；安装／启动不代替功能验收。APK 位于本 Worktree 的 `apps/mobile/build/app/outputs/flutter-apk/app-profile.apk`，原始构建日志位于本机 `E:/Hnuhole-env/post-latest-sort-validation-20261030/vivo-build.log`。未推送、未合并、未更改后端。
+
+### 用户试用后的选中态修复
+
+用户确认点击已发出刷新请求，但选中标识仍停在“推荐”。原因是左侧下划线固定绘制，前次只接入请求，没有维护选中态。本次在 FeedScreen 保存“最新”选中状态，点击后将下划线移到“最新”，补充加粗与 selected 无障碍语义；下拉刷新、分页及通道切换保留该状态。
+
+被测源码为 `29c3471` 加本次 `feed_screen.dart`、`x_feed.dart` 与对应测试差异。`flutter analyze --no-pub` PASS；`feed_ui_test.dart`、`feed_scroll_refresh_test.dart` 共35项 PASS，覆盖点击前后选中状态、实际下划线以及刷新／分页后保留状态。测试使用临时 Windows SQLite 配置，执行后恢复，依赖配置未提交变更。
+
+ARM64 profile 试用包 `2026103006` 构建、验签、vivo `adb install -r` 与版本读回 PASS；APK SHA-256 `d2b450efd232ef3042f5fa7646f9fa88b197341042c1ac947675ace0f25a89d6`。沿用现有签名及联调配置，未清数据。实机后续停在筛选面板，停止继续操作，选中态视觉功能验收留给用户；不把安装或界面层级读取算作该功能实机PASS。日志保留在同一本机验证目录的 `selection-tests.log`、`vivo-selection-build.log`。未推送或合并。

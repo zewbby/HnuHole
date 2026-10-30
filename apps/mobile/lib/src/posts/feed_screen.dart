@@ -57,6 +57,7 @@ class _FeedScreenState extends State<FeedScreen> {
   int _publication = 0;
   bool _published = false;
   bool _starting = true;
+  bool _latestSelected = false;
   Timer? _notice;
   final _scroll = ScrollController();
   final _replyEditors = <String, CommentEditor>{};
@@ -217,6 +218,7 @@ class _FeedScreenState extends State<FeedScreen> {
   );
   void _latest() {
     if (!current || c.timelineLoading || c.preferencesSaving) return;
+    setState(() => _latestSelected = true);
     if (_scroll.hasClients) _scroll.jumpTo(0);
     unawaited(c.loadTimeline(channelId: c.timelineChannelId));
   }
@@ -335,6 +337,7 @@ class _FeedScreenState extends State<FeedScreen> {
           onLatest: _starting || c.timelineLoading || c.preferencesSaving
               ? null
               : _latest,
+          latestSelected: _latestSelected,
           channelTitle: widget.composeChannel.name,
           feedTitle: selectedChannel?.name ?? '推荐',
           composeTooltip: selectedChannel == null
