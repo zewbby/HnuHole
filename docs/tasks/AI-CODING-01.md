@@ -2,11 +2,11 @@
 
 - 模式：常规
 - 负责人／状态维护人：当前开发 Session
-- 分支／Worktree／PR：需求确认修订分支 `codex/docs/requirements-grilling`；原始工作流已由 [PR #90](https://github.com/zewbby/SpeechFUL/pull/90) 合并，本次修订见 [PR #93](https://github.com/zewbby/SpeechFUL/pull/93)
-- 授权依据与边界：用户反馈“修复最新帖子排序”会话未先确认业务边界导致返工，随后明确要求“直接推送、合并，把这次 grill-with-docs 需求确认规则更新到主线”；本轮按此授权提交 PR 并在适用检查通过后合并，不代替用户确认推荐／最新的产品选择。
+- 分支／Worktree／PR：本轮 `codex/docs/workflow-efficiency`；原工作流与需求确认规则分别已由 [PR #90](https://github.com/zewbby/SpeechFUL/pull/90)、[PR #93](https://github.com/zewbby/SpeechFUL/pull/93) 合并，本轮 CI／合并结果见本分支对应 PR 和最终交付记录
+- 授权依据与边界：用户明确要求将未落实的效率反思补到 AGENTS.md、CONTRIBUTING.md，精简重复规则，检查通过后直接推送、合并；本轮仅修改这两份规范与已有任务记录，不代替用户确认推荐／最新的产品选择。
 - 基线：原始工作流基线 `31a05d9`；本次需求确认修订基线 `origin/main` `76501d1a13c13ab0fa4a0919110c3bd00a2eba1c`
 - 更新日期：2026-10-30
-- 状态：原始工作流已合并；需求确认规则修订已推送，本地文档验证 PASS；本次远端 CI 与合并实时结果见 PR #93；未发布
+- 状态：原工作流与需求确认规则已合并；本轮效率规则补充已实现，本地文档检查 PASS，远端 CI／合并以本分支对应 PR 实时状态为准；未发布
 
 ## 目标与范围
 
@@ -45,6 +45,7 @@
 | 通用规则与派单协议对齐 | `36afff3`；Windows Python 3.9.13 | PASS：执行 Session 的规则和契约版本复核、授权记录及状态维护人职责已写入；Skill quick_validate、差异空白和 staged 协作检查通过 |
 | 五项优化 | 基线 `d252d83`＋本次提交的文档差异：AGENTS.md、CONTRIBUTING.md、Orchestrator Skill 与两个参考文件、任务／PR 模板及本记录；Windows Python 3.9.13 | PASS：五项规则一致性复核；20 个本地文件链接、UTF-8 下的 Skill quick_validate、`python tools/check-collaboration.py --staged` 及差异空白检查通过 |
 | 需求确认规则修订 | 基线 `76501d1`＋本次六份文档差异：AGENTS.md、CONTRIBUTING.md、Orchestrator Skill、delivery-gates.md、任务模板及本记录 | PASS：对照原会话复核触发条件及确认依据；22 个本地文件链接、Skill quick_validate、staged 协作与差异空白检查通过。新会话实际行为尚未验证 |
+| 效率反思落实与去重 | 实际分支基线 `1099fa2`＋本轮 AGENTS.md、CONTRIBUTING.md 及本记录差异 | PASS：文档一致性复核、13 个本地文件链接、差异空白及 staged 协作检查通过；未改产品或检查脚本，实际执行效果仍待真实任务检验 |
 | 协作回归 | 反馈修订 `61f185c`，Windows Python 3.9.13 | PASS：19 项 `test_collaboration.py` 回归 |
 | 规则版本接续 | 临时旧基线 Worktree `31a05d9`；规则与任务契约 `30d6659` | PASS：旧工作区可读指定任务文档；定向引入 `AGENTS.md`、`CONTRIBUTING.md` 后，两份工作树文件的 Git blob 与规则提交一致；临时 Worktree 已清理 |
 | PPTX | 已提交版本 `30d6659` 的 `speechful-ai-coding-workflow-v1.pptx`；SHA-256 `d482fe930078cc5f0d566815eed4f006e0c2b478ec7c77df1548a5ea343b9893` | PASS：2 页已导入并渲染；原生形状与连接线，无图片替代；包与布局检查通过 |
@@ -54,4 +55,4 @@
 
 ## 阻碍与下一步
 
-原工作流已在 PR #90 合并。本次需求确认规则修订按用户授权经 PR #93 交付，CI 与合并结果以该 PR 实时状态为准，需在后续真实任务中检验是否在产品取舍未决时先澄清；“修复最新帖子排序”会话已进入需求提问，推荐机制及交互取舍仍以用户实际确认结果为准。实际多 Session 试运行和正式部署分别另行推进。
+原工作流与需求确认规则已在 PR #90、#93 合并。本轮补齐关联交互的基本自验责任、昂贵验证的安排、简短进度沟通及 Git／PR 交付入口，合并重复条款；检查后按已有授权推送、合并，结果以对应 PR 实时状态及最终交付记录为准。规则对真实任务返工次数的影响尚待观察，实际多 Session 试运行和正式部署分别另行推进。
