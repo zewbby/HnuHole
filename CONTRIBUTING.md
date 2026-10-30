@@ -4,7 +4,7 @@
 
 ## 任务入口
 
-每项任务只维护 `docs/tasks/<ID>.md` 这一份权威需求与进度记录，按[模板](docs/tasks/TEMPLATE.md)写明目标、范围、接口依赖、验收标准和当前状态。简短任务只填相关字段，不建立阶段台账。PR、Issue、提交和验证证据链接到任务记录，避免复制同一结论。
+开发任务只维护 `docs/tasks/<ID>.md` 这一份权威需求与进度记录，按[模板](docs/tasks/TEMPLATE.md)写明相关字段。同一任务内的相关小改复用已有记录，不另建阶段台账；只读咨询、解释和审查无需新建任务文档。PR、Issue、提交和验证证据链接到适用记录，避免复制同一结论。
 
 开始时在实际源码仓库核对位置和已有工作：
 
@@ -20,18 +20,18 @@ git worktree list
 
 ## 分支与 Worktree
 
-一个需求一个分支，从最新 `origin/main` 建立。Codex 分支格式为 `codex/<type>/<slug>`；type 为 `feat|fix|refactor|docs|test|chore|ci|build|perf|revert`，slug 使用小写英文、数字和连字符。人工分支可省略 `codex/`。不在 `main`／`master` 开发，也不直接推送或强推共享分支。
+常规模式使用一个任务分支；指挥模式使用一个集成分支，以及各执行 Session 的独立分支与 Worktree。常规任务分支与集成分支通常从最新 `origin/main` 建立，执行分支从已约定的集成版本或依赖版本建立；依赖未合并功能时记录实际基线。Codex 分支格式为 `codex/<type>/<slug>`；type 为 `feat|fix|refactor|docs|test|chore|ci|build|perf|revert`，slug 使用小写英文、数字和连字符。人工分支可省略 `codex/`。不在 `main`／`master` 开发，也不直接推送或强推共享分支。
 
 并行写入必须使用不同分支和 Worktree，不让多个执行 Session 改同一工作区。独立需求分别送审；同一需求的模块由负责人在集成分支核对接口、测试和差异后整合。依赖尚未合并的功能分支时，在任务记录与 PR 写清基线、依赖和合并顺序。
 
-指挥模式按[派单协议](.agents/skills/orchestrator/references/dispatch.md)固定规则与任务契约版本。执行 Session 开始前核对工作树中实际采用的 `AGENTS.md`、`CONTRIBUTING.md` 和可读的任务文档版本，并向总指挥回报；能从 Git 读取目标提交，不代表工作树已采用其中的规则。旧 Worktree 先检查已有改动，再定向引入规则变更，不必同步全部产品代码。恢复时先核对已有回报及相关分支、Worktree 的提交和未提交改动，再决定接续或重派。
+指挥模式的版本传递、契约变更通知和中断恢复按[派单协议](.agents/skills/orchestrator/references/dispatch.md)执行。首次接单、恢复或规则／契约变化时复核并回报；同一 Session 使用同一版本持续执行时无需重复确认。
 
 ```sh
 git fetch origin refs/heads/main:refs/remotes/origin/main
 git worktree add -b codex/feat/example ../SpeechFUL-example origin/main
 ```
 
-这不会切换原工作区。失败时先确认引用与目标目录，不强制覆盖。Worktree 和分支仅在确认合并、无待保存内容且获得相应授权后清理。
+这不会切换原工作区。失败时先确认引用与目标目录，不强制覆盖。清理前核对归属、提交及未提交／未跟踪内容，保存需保留的成果，确认无后续依赖且已有授权覆盖清理。本任务创建的临时验证 Worktree 满足这些条件即可移除，无需合并；功能分支还需确认已合并，或用户已明确放弃／授权移除。已有授权覆盖正常清理时无需重复申请。
 
 ## 提交与文件
 
@@ -68,7 +68,9 @@ git -c core.hooksPath=.githooks commit -m "docs(workflow): 更新协作规范"
 | API 契约 | 仓库完整规范校验及相关实现回归，不能只用 YAML 语法检查代替 |
 | 跨模块或发布候选 | 实际端到端链路、必要的性能／真机／独立审查及适用 CI |
 
-验证记录绑定实际提交 SHA、环境、命令、覆盖范围与证据。结果使用 `PASS`、`FAIL`、`BLOCKED`、`SKIP`、`NOT_RUN`；旧结果保留原版本和证明范围。无 DSN 的测试、内存替身、编译检查、测试 APK 或文件 marker，不能冒充真实 SQL、原生存储、整机或生产验收。必要验证缺失时保持待验或 draft，不静默跳过后宣称完成。
+验证记录绑定实际被测内容：已提交代码记录提交 SHA；本地提交前可记录基线 SHA＋明确的被测差异，并通过已有差异记录、补丁或随后承载同一内容的提交定位，另记环境、命令、覆盖范围与证据。交付时核对最终代码与证据是否对应；相关实现、测试或环境变化后聚焦复验。仅任务进度／证据文档更新不使原产品测试证据失效，注明其适用范围即可；当前 PR head 的适用 CI 仍须满足。
+
+结果使用 `PASS`、`FAIL`、`BLOCKED`、`SKIP`、`NOT_RUN`；旧结果保留原版本和证明范围。无 DSN 的测试、内存替身、编译检查、测试 APK 或文件 marker，不能冒充真实 SQL、原生存储、整机或生产验收。必要验证缺失时保持待验或 draft，不静默跳过后宣称完成。
 
 功能代码 PR 需要对应产品构建和测试 CI；[协作 workflow](.github/workflows/collaboration.yml)只检查协作规范。修改共享授权、迁移、会话或存储边界时，重新打开受影响模块的回归项。纯文档或协作任务无需运行产品全套验收，也不改写产品验收结论。
 
@@ -82,7 +84,7 @@ git -c core.hooksPath=.githooks commit -m "docs(workflow): 更新协作规范"
 
 按[统一模板](.github/pull_request_template.md)说明目标、差异、依赖、验证、遗留问题及任务记录。适用检查通过后送审；需要的独立审查要记录审查人和范围。AI 审查不能计为 GitHub 成员批准，作者不能自批。只有一个 GitHub 账号时，如实说明维护者的审查安排。
 
-Push 只推任务分支。合并与正式部署需要明确授权；合并前核对当前 PR head 的 CI 与测试证据。正式发布前完成相关安全与运营验收。推荐 Squash Merge，最终标题仍遵循提交格式。代码完成、验证通过、已合并 main、已部署是不同状态，分别写在任务记录中。确认合并后再更新任务记录中的 PR／合并信息，必要时以文档 PR 补记，不直接向 main 写入。
+Push 仅推已授权任务范围内的分支，包括指挥模式的集成或执行分支。合并与正式部署需要明确授权；合并前核对当前 PR head 的 CI 与测试证据。正式发布前完成相关安全与运营验收。推荐 Squash Merge，最终标题仍遵循提交格式。代码完成、验证通过、已合并 main、已部署是不同状态，分别写在任务记录中。确认合并后再更新任务记录中的 PR／合并信息，必要时以文档 PR 补记，不直接向 main 写入。
 
 README 保留项目介绍和主要入口。仅在项目能力、使用方式或重要入口改变时更新；单个任务的状态留在 `docs/tasks/`。原有历史进度文档无需批量迁移。
 
