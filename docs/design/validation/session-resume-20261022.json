@@ -49,5 +49,11 @@
   ],
   "historicalModuleVerdictsUnchanged": true,
   "mergeCommit": "d450cdeb2375a0f3bcb885c45e2cc04f338c713a",
-  "reviewedHead": "6716ce85752f4e167bd2d58085c6ca5bad186b1e"
+  "reviewedHead": "6716ce85752f4e167bd2d58085c6ca5bad186b1e",
+  "historicalNotRunAsOf": "2026-10-22",
+  "followup20261030": {
+    "overnight": "PASS_LIMITED_VIVO2702",
+    "evidence": "docs/design/validation/session-overnight-20261030.json",
+    "oldResultsPreserved": true
+  }
 }

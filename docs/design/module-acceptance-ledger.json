@@ -972,11 +972,22 @@
     "vivo": "PASS_2143_RESTART_ORIGINAL_NATIVE_SESSION",
     "production": "NOT_RELEASED",
     "historicalModuleVerdictsUnchanged": true,
-    "remaining": "FULL_HOST_SHUTDOWN_LONG_OUTAGE_NOT_RUN",
+    "remaining": "IOS_PRODUCTION_OTHER_DEVICES_AND_UNBOUNDED_OUTAGE_NOT_RUN",
     "evidence": "docs/design/validation/session-resume-20261022.json",
     "mergeCommit": "d450cdeb2375a0f3bcb885c45e2cc04f338c713a",
     "reviewedHead": "6716ce85752f4e167bd2d58085c6ca5bad186b1e",
-    "remoteWorkflowClasses": 7
+    "remoteWorkflowClasses": 7,
+    "overnight20261030": {
+      "result": "PASS_LIMITED_VIVO2702_SAME_MACHINE_DEVELOPMENT",
+      "backendInactivityHours": 9.599,
+      "baselineConfirmedBeforeShutdown": true,
+      "originalSessionRestoredWithoutLogin": true,
+      "source": "a2e98eb6a1b749adf6a4e003ab1aa11c378e8947",
+      "schema": "C28_V7",
+      "evidence": "docs/design/validation/session-overnight-20261030.json",
+      "runbook": "docs/design/session-runtime-recovery.md",
+      "historicalModuleVerdictsUnchanged": true
+    }
   },
   "dmTextP1Native20261022": {
     "task": "DM-P1-TEXT",
