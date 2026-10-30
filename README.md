@@ -40,6 +40,8 @@
 
 ## Related Work
 
+- [开发环境旧启动入口修复](docs/branches/fix-development-runtime-resume.md)：三个原入口已统一版本绑定恢复器，C28/V7与三Redis冷启、重复执行验证通过，PR状态见任务。
+
 - [隔夜关机会话恢复](docs/branches/docs-session-overnight-acceptance.md)：单台 vivo 2702 隔夜恢复限定验证通过；C28/V7 与 Redis 恢复说明已整理，文档合并状态见任务PR。
 
 - [欢迎图案与启动衔接](docs/branches/codex-feat-welcome-mascot-logo.md)：[PR #88](https://github.com/zewbby/SpeechFUL/pull/88) 实现浅黑深白轮廓、黑底白标桌面图标及欢迎控件入场；实现与验证见任务记录，合并状态见 PR。

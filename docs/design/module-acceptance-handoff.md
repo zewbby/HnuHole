@@ -1,5 +1,7 @@
 # 分模块验收与测试交接
 
+> **2026-10-30 DEV-RUNTIME-RESUME-01：**三个旧启动入口已备份并统一版本绑定，当前C28/V7及2限流+1快照Redis，静态漂移/旧进程拒绝、双resume前置；10项普通/-O回归、完整依赖冷启与幂等PASS，原会话/代次不变。实际已安装，PR状态见[任务](../branches/fix-development-runtime-resume.md)，未生产发布；旧脚本未修为之前时点。
+
 > **2026-10-30 AUTH-SESSION-RESUME-01隔夜补验：**vivo2702先确认登录/冷启，再由用户关机；约9.6小时后端无活动后，同代次恢复C28/V7及原Redis，原会话指纹/授权代次/RECOVER计数不变，手机冷启直接已登录，限定PASS。生产/iOS/其他设备不提升；旧长关机未验为历史记录。本次仅归档，见[交接](../branches/docs-session-overnight-acceptance.md)／[恢复说明](session-runtime-recovery.md)。
 
 > **2026-10-28 AUTH-WELCOME-QUOTE-01：**A12 欢迎图案去蓝底、浅黑深白，桌面图标黑底白标；完整欢迎页作为首个应用画面，恢复期间隐藏三个控件，就绪后淡入，题词两行对齐。分析 0 问题、认证／启动／导航等 92 项回归、Android 同签 debug 构建、vivo V2323A 安装启动 PASS；用户认可启动衔接，用户已认可最终去蓝底版本。独立审查通过，[PR #88](https://github.com/zewbby/SpeechFUL/pull/88) 产品 CI 进行中／待合并（送审快照）；iOS 构建 NOT_RUN，全模块结论不变。详见[任务记录](../branches/codex-feat-welcome-mascot-logo.md)。
