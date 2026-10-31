@@ -2,7 +2,7 @@
 
 - 模式：常规
 - 负责人／状态维护人：当前 Session
-- 分支／Worktree／PR：`codex/fix/theme-blue-avatar`；`E:/Hnuhole-env/source/HnuHole-theme-blue-avatar`；未创建 PR
+- 分支／Worktree／PR：`codex/fix/theme-blue-avatar`；`E:/Hnuhole-env/source/HnuHole-theme-blue-avatar`；[PR #97](https://github.com/zewbby/SpeechFUL/pull/97)
 - 实际基线：2026-10-31 fetch 的 `origin/main` `a4d7228a0dd4b91e851746ab7f9fb37d1ec806b5`，新 Worktree 初始干净。
 - 授权依据与边界：用户本轮两张截图及四条需求，授权本地界面修改与必要验证；用户随后明确回复“可以了，合并提交吧”，授权本任务推送、创建PR及合并；不包含正式部署。
 - 需求确认：图一个人页空态加号及左上角 `:)` 使用主题蓝色；图二首页左上角显示当前身份头像，底栏中间加号使用蓝色；私信与通知页左上角标题使用相同主题蓝色。无未决取舍。
@@ -39,6 +39,12 @@
 本地实现、操作回归、渲染与 Android debug 构建已完成。没有本地阻碍；后续推送／PR、合并、安装及发布按对应授权执行。README 无项目能力或主要入口变化，不作单任务状态追加。所有本机日志路径均相对于 `E:/Hnuhole-env/theme-blue-avatar-20261031/`。
 
 ## vivo 试用安装（2026-10-31）
+
+### 用户验收与送审
+
+用户试用2026103104后回复“可以了，合并提交吧”，确认本任务行为并授权推送、PR与合并，不包含正式部署。2026-10-31 fetch核对origin/main仍为a4d7228。GitHub推送响应确认旧origin `zewbby/HnuHole` 已迁移至 `zewbby/SpeechFUL`，PR #97位于同一更名仓库。送审不合入另一个设置功能分支，vivo试用包以a578e65叠加同一本任务差异并保留设置功能；合并本身不会重新安装或降级手机。
+
+产品代码 `5702c0a`，后续仅任务记录。送审前 `flutter analyze --no-pub` PASS；13个相关测试文件共103项PASS、1项SKIP（需私有原图环境变量的复现导出测试，此前带实际原图已单独执行PASS）。日志 `pre-pr-analyze.log`、`pre-pr-tests.log`，涵盖Feed／导航／个人页／通知／共享身份／身份管理与头像／原图选择。当前PR head的适用产品CI待验。协作检查PASS不代表产品验收；未获得独立GitHub成员批准，不将自检或用户试用计为成员批准。
 
 ### 保存头像返回推荐页后丢失显示
 
