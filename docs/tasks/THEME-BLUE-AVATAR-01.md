@@ -69,3 +69,5 @@ APK `E:/Hnuhole-env/source/HnuHole-theme-blue-vivo/apps/mobile/build/app/outputs
 2026103102 安装回执：vivo 系统安装确认后 adb 返回 Success，设备读回版本2026103102，启动PID 18087，首次安装时间保持2026-10-30 09:57:04，数据保留。
 
 2026103103 安装回执：adb install -r 返回Success，读回版本2026103103，启动PID 7769，首次安装时间保持2026-10-30 09:57:04，应用数据保留。整合源码差异已保存到本机 vivo-avatar-fix-integrated.patch，实际选图保存等待用户复验。
+
+2026103104 回执：Profile构建PASS（43秒），APK SHA-256 1375af3b08c180f1d49233330d91fbf6aba79918e9bbbc3eaf054fa9eb89826b，同证书验签PASS。vivo覆盖安装返回Success，读回版本2026103104，启动PID12198，首次安装时间保持2026-10-30 09:57:04。完整整合差异为本机 vivo-avatar-return-integrated.patch；保留应用数据，用户无需重新上传已保存的头像。真机头像可见性等待用户确认，不把安装启动视作显示验收。
