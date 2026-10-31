@@ -57,6 +57,10 @@ void main() {
       await root.identities.load();
       await tester.pumpAndSettle();
       expect(avatar().avatar, nextAvatar);
+      root.identities.cancelView();
+      await tester.pumpAndSettle();
+      expect(root.identities.directory, isNull);
+      expect(avatar().avatar, nextAvatar);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();

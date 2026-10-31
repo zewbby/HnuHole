@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'identity_management_controller.dart';
+import 'identity_api.dart';
 
 /// One active browsing identity for the authenticated account. Submitted tasks
 /// and existing post/conversation bindings keep their original identities.
@@ -13,7 +14,10 @@ class ActiveIdentityController extends ChangeNotifier {
   Object? _owner;
   String? _selectedId;
   Set<String> _ids = {};
+  Map<String, ManagedIdentity> _identities = {};
   String? get selectedId => _selectedId;
+  // Confirmed account-scoped data outlives the management page's request epoch.
+  ManagedIdentity? get selectedIdentity => _identities[_selectedId];
   Object? get owner => _owner;
   String? get accountId => switch (_owner) {
     (String id, _, _) => id,
@@ -44,10 +48,12 @@ class ActiveIdentityController extends ChangeNotifier {
 
   void _changed() {
     var changed = false;
+    final previous = selectedIdentity;
     final owner = management.authorityKey;
     if (owner != _owner) {
       _owner = owner;
       _ids = {};
+      _identities = {};
       _selectedId = null;
       changed = true;
     }
@@ -56,6 +62,9 @@ class ActiveIdentityController extends ChangeNotifier {
         directory != null &&
         management.status == IdentityManagementStatus.ready) {
       _ids = {for (final identity in directory.identities) identity.id};
+      _identities = {
+        for (final identity in directory.identities) identity.id: identity,
+      };
       if (!_ids.contains(_selectedId)) {
         final selected =
             directory.identities.where((i) => i.isOriginal).firstOrNull ??
@@ -65,7 +74,12 @@ class ActiveIdentityController extends ChangeNotifier {
         _selectedId = next;
       }
     }
-    if (changed) notifyListeners();
+    final next = selectedIdentity;
+    if (changed ||
+        previous?.avatar != next?.avatar ||
+        previous?.nickname != next?.nickname) {
+      notifyListeners();
+    }
   }
 
   @override

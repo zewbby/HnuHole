@@ -613,11 +613,9 @@ class _FeedAccountAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-    animation: Listenable.merge([controller, controller.management]),
+    animation: controller,
     builder: (context, _) {
-      final identity = controller.management.directory?.identities
-          .where((identity) => identity.id == controller.selectedId)
-          .firstOrNull;
+      final identity = controller.selectedIdentity;
       if (identity == null) return const IdentityAvatar(radius: 18);
       return HhDmAvatar(
         identity: DmIdentity(
