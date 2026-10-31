@@ -5,11 +5,15 @@ import '../design_system/detail_components.dart';
 import 'dart:typed_data';
 
 import '../messaging/dm_runtime.dart';
+import '../messaging/direct_message_composer.dart';
+import '../messaging/direct_message_models.dart';
 
 import 'package:flutter/material.dart';
 
 import '../channels/channel.dart';
 import '../design_system/telegram_theme.dart';
+import '../identity/active_identity_controller.dart';
+import '../identity/identity_avatar.dart';
 import '../navigation/app_navigation.dart';
 import '../comments/comment_editor.dart';
 import '../comments/comment_models.dart';
@@ -326,6 +330,9 @@ class _FeedScreenState extends State<FeedScreen> {
             .firstOrNull;
         return HhXPostFeed(
           showNavigation: widget.showNavigation,
+          accountAvatar: c.activeIdentity == null
+              ? null
+              : _FeedAccountAvatar(controller: c.activeIdentity!),
           loading:
               posts.isNotEmpty && (c.timelineLoading || c.preferencesSaving),
           refreshEnabled:
@@ -596,6 +603,29 @@ class _FeedScreenState extends State<FeedScreen> {
         );
       },
     ),
+  );
+}
+
+class _FeedAccountAvatar extends StatelessWidget {
+  const _FeedAccountAvatar({required this.controller});
+
+  final ActiveIdentityController controller;
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: controller,
+    builder: (context, _) {
+      final identity = controller.selectedIdentity;
+      if (identity == null) return const IdentityAvatar(radius: 18);
+      return HhDmAvatar(
+        identity: DmIdentity(
+          id: identity.id,
+          name: identity.nickname,
+          avatar: identity.avatar,
+        ),
+        size: 36,
+      );
+    },
   );
 }
 

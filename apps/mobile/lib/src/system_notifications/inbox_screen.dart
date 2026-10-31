@@ -778,12 +778,13 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
               padding: const EdgeInsets.fromLTRB(24, 8, 14, 8),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       '通知',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 22,
                         fontWeight: FontWeight.w700,
+                        color: p.action,
                       ),
                     ),
                   ),

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import '../posts/post_photo_picker.dart';
 import 'identity_avatar.dart';
+import 'identity_avatar_photo.dart';
 
 import 'package:flutter/material.dart';
 
@@ -260,8 +261,7 @@ class _IdentityManagementScreenState extends State<IdentityManagementScreen> {
         return [
           Text('你的发言身份', style: Theme.of(context).textTheme.titleLarge),
           _notice('身份列表仅本人可见。最多保留 3 个身份，创建后至少保留 1 个。'),
-          if (directory.identities.isEmpty)
-            _notice('还没有发言身份，请先完成初始身份设置。'),
+          if (directory.identities.isEmpty) _notice('还没有发言身份，请先完成初始身份设置。'),
           for (final identity in directory.identities) ...[
             const Divider(height: 1),
             ListTile(
@@ -562,7 +562,7 @@ class _IdentityEditorState extends State<IdentityEditor> {
       if (await files.single.length() > 5 * 1024 * 1024) {
         throw const FormatException('avatar too large');
       }
-      final selected = await inspectPostPhoto(files.single, id);
+      final selected = await prepareIdentityAvatar(files.single, id);
       if (!mounted ||
           _closing ||
           _authority != widget.sessions.authorityVersion ||
@@ -571,8 +571,8 @@ class _IdentityEditorState extends State<IdentityEditor> {
       }
       final avatar = await widget.controller.uploadAvatar(
         id,
-        selected.bytes,
-        selected.selection.mimeType,
+        selected,
+        'image/png',
         target: widget.identity?.id ?? 'CREATE',
       );
       if (!mounted ||

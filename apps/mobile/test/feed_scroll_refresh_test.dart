@@ -144,6 +144,16 @@ void main() {
       expect(find.byType(HhAppNavigation), findsOneWidget);
       expect(find.byKey(const ValueKey('feed-compose')), findsOneWidget);
       expect(
+        tester
+            .widget<IconButton>(find.byKey(const ValueKey('feed-compose')))
+            .style!
+            .foregroundColor!
+            .resolve({}),
+        HhTelegramPalette.of(
+          tester.element(find.byKey(const ValueKey('feed-compose'))),
+        ).action,
+      );
+      expect(
         tester.getCenter(find.byKey(const ValueKey('feed-compose'))).dx,
         195,
       );

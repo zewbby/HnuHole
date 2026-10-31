@@ -295,6 +295,10 @@ void main() {
       final oldSize = tester.getSize(
         find.byKey(const ValueKey('dm-inbox-identity')),
       );
+      expect(
+        tester.widget<Text>(find.text('私信')).style!.color,
+        HhTelegramPalette.of(tester.element(find.text('私信'))).action,
+      );
       await tester.pumpWidget(
         MaterialApp(
           theme: HhTelegramTheme.create(Brightness.light),
@@ -305,6 +309,10 @@ void main() {
       expect(
         tester.getSize(find.byKey(const ValueKey('notification-identity'))),
         oldSize,
+      );
+      expect(
+        tester.widget<Text>(find.text('通知')).style!.color,
+        HhTelegramPalette.of(tester.element(find.text('通知'))).action,
       );
       for (final category in ['all', 'reply', 'like', 'system']) {
         expect(

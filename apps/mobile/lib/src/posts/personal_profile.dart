@@ -757,12 +757,12 @@ mixin _PersonalProfile on State<PersonalPostsScreen> {
                   Row(
                     children: [
                       Text(
-                        ':)',
-                        key: const ValueKey('profile-smile'),
+                        '我的',
+                        key: const ValueKey('profile-title'),
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                          color: HhTelegramPalette.of(context).ink,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: HhTelegramPalette.of(context).action,
                         ),
                       ),
                       const Spacer(),

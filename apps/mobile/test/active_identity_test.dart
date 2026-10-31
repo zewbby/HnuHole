@@ -57,6 +57,7 @@ void main() {
     expect(active.select(identityTestSecondId), isTrue);
     f.controller.cancelView();
     expect(active.selectedId, identityTestSecondId);
+    expect(active.selectedIdentity?.id, identityTestSecondId);
     expect(
       active.selectConfirmed(identityTestId, [
         identityTestId,
@@ -69,6 +70,7 @@ void main() {
     expect(active.select(identityTestSecondId), isFalse);
     f.sessions.sessionUnavailable(identityTestToken);
     expect(active.selectedId, isNull);
+    expect(active.selectedIdentity, isNull);
     expect(active.accountId, isNull);
   });
   testWidgets(
