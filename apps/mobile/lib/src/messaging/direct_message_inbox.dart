@@ -289,7 +289,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,
-                        color: p.ink,
+                        color: p.action,
                       ),
                     ),
                   ),

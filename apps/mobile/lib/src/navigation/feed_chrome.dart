@@ -131,7 +131,7 @@ class FeedComposeButton extends StatelessWidget {
         onPressed: onPressed,
         style: IconButton.styleFrom(
           backgroundColor: floating ? p.action : p.background,
-          foregroundColor: floating ? p.onAccent : p.ink,
+          foregroundColor: floating ? p.onAccent : p.action,
           elevation: floating ? 2 : 0,
           shadowColor: Colors.black26,
           shape: RoundedRectangleBorder(

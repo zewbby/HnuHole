@@ -2419,7 +2419,7 @@ class _PageState extends StatelessWidget {
                 icon: Icon(
                   actionIcon,
                   size: 32,
-                  color: HhTelegramPalette.of(context).ink,
+                  color: HhTelegramPalette.of(context).action,
                 ),
               )
             else

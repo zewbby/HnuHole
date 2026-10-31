@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:hnuhole_mobile/src/design_system/telegram_theme.dart';
+import 'package:hnuhole_mobile/src/identity/identity_avatar.dart';
 
 import 'identity_test_support.dart';
 
@@ -15,6 +16,53 @@ import 'feed_ui_test.dart' as feed;
 import 'package:hnuhole_mobile/hnuhole_mobile.dart';
 
 void main() {
+  testWidgets(
+    'home avatar follows identity selection and same-identity updates',
+    (tester) async {
+      final f = HomeTestFixture();
+      final root = await f.create();
+      const second = '22222222-2222-4222-8222-222222222222';
+      const firstAvatar = 'avatar-v1:33333333-3333-4333-8333-333333333333';
+      const nextAvatar = 'avatar-v1:44444444-4444-4444-8444-444444444444';
+      f.identitiesApi.items = [
+        identityTestItem(name: '甲', avatar: firstAvatar),
+        identityTestItem(id: second, name: '乙', original: false),
+      ];
+      await tester.pumpWidget(root);
+      await tester.pumpAndSettle();
+      final account = find.byKey(const ValueKey('feed-account'));
+      IdentityAvatar avatar() => tester.widget<IdentityAvatar>(
+        find.descendant(of: account, matching: find.byType(IdentityAvatar)),
+      );
+      expect(avatar().avatar, firstAvatar);
+      await tester.tap(account);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('切换身份'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('profile-identity-$second')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('destination:home')));
+      await tester.pumpAndSettle();
+      expect(avatar().avatar, 'default-v1');
+      expect(
+        find.descendant(of: account, matching: find.text('乙')),
+        findsOneWidget,
+      );
+      f.identitiesApi.items[1] = identityTestItem(
+        id: second,
+        name: '乙',
+        avatar: nextAvatar,
+        original: false,
+      );
+      await root.identities.load();
+      await tester.pumpAndSettle();
+      expect(avatar().avatar, nextAvatar);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    },
+  );
+
   for (final brightness in Brightness.values) {
     testWidgets(
       'personal uses same global palette as home and inbox: $brightness',
@@ -42,7 +90,10 @@ void main() {
           tester.widget<Scaffold>(scaffold).backgroundColor,
           palette.surface,
         );
-        expect(tester.widget<Text>(find.text(':)')).style!.color, palette.ink);
+        expect(
+          tester.widget<Text>(find.text(':)')).style!.color,
+          palette.action,
+        );
         final body = find.text('主题一致的帖子');
         expect(Theme.of(tester.element(body)).brightness, brightness);
         expect(
@@ -68,7 +119,7 @@ void main() {
             (widget) => widget is IconButton && widget.tooltip == '选择通道发帖',
           ),
         );
-        expect((emptyAction.icon as Icon).color, palette.ink);
+        expect((emptyAction.icon as Icon).color, palette.action);
         expect(tester.takeException(), isNull);
         await tester.pumpWidget(const SizedBox.shrink());
         await tester.pump();
