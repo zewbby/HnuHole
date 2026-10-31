@@ -40,6 +40,10 @@
 
 ## vivo 试用安装（2026-10-31）
 
+### 后续标题调整
+
+用户试用后要求将个人页左上角 `:)` 换为“我的”，字号、颜色和字体与通知／私信完全一致。本轮将三处统一为 22号、w700、主题 action 蓝色，沿用页面共同主题字体；整合包使用现有本地化 `hhText`。个人页 key 调整为 `profile-title`，对应既有测试同步定位。任务分支与 vivo 整合源码同步修改；两套个人页／通知测试各12项 PASS，整合版 analyze PASS，离线 Profile 构建 PASS（47秒）。日志 `title-main-tests.log`、`title-tests.log`、`title-analyze.log`、`title-build.log`。试用版本 `2026103102`，APK SHA-256 `0536db55dc8bc659950c981bfe37853341844977f138e26237328e4964c3c9ed`；同证书验签 PASS，沿用上一轮安装授权覆盖安装。
+
 用户明确要求“安装vivo上我看看”。核对 vivo V2323A `10CEAG17RY003M7` 原版本为 `2026103016`／`0.1.0-settings-v3`，对应 `a578e65`，含尚未合入当前主线的设置功能。为保留正在试用的功能，在独立临时构建 Worktree `E:/Hnuhole-env/source/HnuHole-theme-blue-vivo` 以该 SHA 为基线，叠加本任务六个产品文件和三个测试文件差异。没有修改他人的设置 Worktree。整合中保留本地化、22号标题及设置入口逻辑，仅移除通知标题样式的 const 以支持主题色；头像切换测试适配当前底栏个人入口。完整整合差异为本机 `vivo-integrated.patch`。
 
 最终整合代码 analyze PASS；个人页与通知12项测试 PASS（`vivo-tests-final-pass.log`），Feed滚动15项 PASS。首轮编译发现整合版 const 样式问题已修正，测试入口定位差异也已修正并复跑。Profile构建因依赖联网解析失败后使用相同 dart-defines 离线 `assembleProfile` 成功（`vivo-offline.log`）。沿用既有 `usb-defines.json` 和 `AUTH_DEV_PROFILE=true`，后端与 USB 转发不变。

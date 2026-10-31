@@ -91,7 +91,10 @@ void main() {
           palette.surface,
         );
         expect(
-          tester.widget<Text>(find.text(':)')).style!.color,
+          tester
+              .widget<Text>(find.byKey(const ValueKey('profile-title')))
+              .style!
+              .color,
           palette.action,
         );
         final body = find.text('主题一致的帖子');
@@ -162,7 +165,7 @@ void main() {
       for (final label in ['帖子', '回复', '转帖', '喜欢', '收藏']) {
         expect(find.text(label), findsOneWidget);
       }
-      expect(find.text(':)'), findsOneWidget);
+      expect(find.byKey(const ValueKey('profile-title')), findsOneWidget);
       expect(find.byIcon(Icons.swap_horiz), findsNothing);
       final chip = find.byKey(const ValueKey('personal-profile'));
       expect(

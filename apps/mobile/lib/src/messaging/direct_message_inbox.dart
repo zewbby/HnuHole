@@ -288,7 +288,7 @@ class _HhDmInboxScreenState extends State<HhDmInboxScreen> {
                       '私信',
                       style: TextStyle(
                         fontSize: 22,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                         color: p.action,
                       ),
                     ),

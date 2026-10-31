@@ -782,7 +782,7 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
                     child: Text(
                       '通知',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 22,
                         fontWeight: FontWeight.w700,
                         color: p.action,
                       ),
