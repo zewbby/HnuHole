@@ -49,3 +49,5 @@
 最终整合代码 analyze PASS；个人页与通知12项测试 PASS（`vivo-tests-final-pass.log`），Feed滚动15项 PASS。首轮编译发现整合版 const 样式问题已修正，测试入口定位差异也已修正并复跑。Profile构建因依赖联网解析失败后使用相同 dart-defines 离线 `assembleProfile` 成功（`vivo-offline.log`）。沿用既有 `usb-defines.json` 和 `AUTH_DEV_PROFILE=true`，后端与 USB 转发不变。
 
 APK `E:/Hnuhole-env/source/HnuHole-theme-blue-vivo/apps/mobile/build/app/outputs/flutter-apk/app-profile.apk`，版本 `2026103101`／`0.1.0-theme-blue`，SHA-256 `674b6da9edcefa2b6d6e23eaf57a46205d9aa7689f23e2cb7537ad0f186fdc0c`。从设备读取旧包并核对两包证书一致（SHA-256 `1538fb309499d651d7d12d7711a646c4a80fde4b1397857a9e39ce672b3dc9ae`），验签 PASS；`adb install -r` 返回 Success，启动 PASS。设备读回新版本，更新时间 2026-10-31 10:25:39，首次安装时间仍为 2026-10-30 09:57:04；未卸载或清数据。等待用户试用反馈，安装启动不代表本次真机功能验收。未推送、合并或正式发布。
+
+2026103102 安装回执：vivo 系统安装确认后 adb 返回 Success，设备读回版本2026103102，启动PID 18087，首次安装时间保持2026-10-30 09:57:04，数据保留。
