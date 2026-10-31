@@ -37,3 +37,11 @@
 ## 阻碍与下一步
 
 本地实现、操作回归、渲染与 Android debug 构建已完成。没有本地阻碍；后续推送／PR、合并、安装及发布按对应授权执行。README 无项目能力或主要入口变化，不作单任务状态追加。所有本机日志路径均相对于 `E:/Hnuhole-env/theme-blue-avatar-20261031/`。
+
+## vivo 试用安装（2026-10-31）
+
+用户明确要求“安装vivo上我看看”。核对 vivo V2323A `10CEAG17RY003M7` 原版本为 `2026103016`／`0.1.0-settings-v3`，对应 `a578e65`，含尚未合入当前主线的设置功能。为保留正在试用的功能，在独立临时构建 Worktree `E:/Hnuhole-env/source/HnuHole-theme-blue-vivo` 以该 SHA 为基线，叠加本任务六个产品文件和三个测试文件差异。没有修改他人的设置 Worktree。整合中保留本地化、22号标题及设置入口逻辑，仅移除通知标题样式的 const 以支持主题色；头像切换测试适配当前底栏个人入口。完整整合差异为本机 `vivo-integrated.patch`。
+
+最终整合代码 analyze PASS；个人页与通知12项测试 PASS（`vivo-tests-final-pass.log`），Feed滚动15项 PASS。首轮编译发现整合版 const 样式问题已修正，测试入口定位差异也已修正并复跑。Profile构建因依赖联网解析失败后使用相同 dart-defines 离线 `assembleProfile` 成功（`vivo-offline.log`）。沿用既有 `usb-defines.json` 和 `AUTH_DEV_PROFILE=true`，后端与 USB 转发不变。
+
+APK `E:/Hnuhole-env/source/HnuHole-theme-blue-vivo/apps/mobile/build/app/outputs/flutter-apk/app-profile.apk`，版本 `2026103101`／`0.1.0-theme-blue`，SHA-256 `674b6da9edcefa2b6d6e23eaf57a46205d9aa7689f23e2cb7537ad0f186fdc0c`。从设备读取旧包并核对两包证书一致（SHA-256 `1538fb309499d651d7d12d7711a646c4a80fde4b1397857a9e39ce672b3dc9ae`），验签 PASS；`adb install -r` 返回 Success，启动 PASS。设备读回新版本，更新时间 2026-10-31 10:25:39，首次安装时间仍为 2026-10-30 09:57:04；未卸载或清数据。等待用户试用反馈，安装启动不代表本次真机功能验收。未推送、合并或正式发布。
