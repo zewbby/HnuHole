@@ -40,6 +40,16 @@
 
 ## vivo 试用安装（2026-10-31）
 
+### 普通静态照片上传失败修复
+
+用户反馈头像选择后报“头像已失效或图片不符合要求”，确认选择普通静态照片并提供失败原图。实测489354字节、810×1440的JPEG能完整解码，但EOI后有24字节附加数据；正在运行的开发服务校验器在 `JPEG terminator` 处拒绝，原图检查和缩略图进程均退出2。普通合成PNG/JPEG/WebP校验正常，问题已用用户实际图片复现。
+
+修复仅限头像选择入口：复用已有字节／像素预算预检，再要求单帧，按实际解码方向等比例缩到最长640像素并编码标准PNG，移除附加数据及元数据后调用原头像上传API。默认头像、未知上传恢复、权限检查与服务端严格校验不变；帖子原图处理不变，用户本地原图不修改。基线为本任务 `a4ab711`；同步到 `a578e65` 加既有本任务差异的vivo整合包。新增synthetic-only回归保留在 `identity_avatar_photo_test.dart`；实际原图只通过环境变量复现，不提交用户照片。
+
+Windows Flutter 3.47.5：任务分支头像／图片选择与身份管理20项 PASS（`avatar-main-tests.log`）；vivo整合分支聚焦12项 PASS（`avatar-fix-tests.log`），analyze最终PASS（`avatar-final-analyze.log`）。同一用户图片经实际Flutter代码生成360×640标准PNG、299383字节，送入当前开发服务同一校验程序，完整检查及缩略图生成均退出0；缩略图22384字节。此项证明实际输入兼容性，不冒充用户账号上的HTTP上传及保存成功。首次analyze的花括号lint已修正。
+
+vivo Profile离线构建PASS（41秒，`avatar-build.log`），版本2026103103，APK SHA-256 `3bc7acfda52cda5549111643d0dec1247ec8af5ede9befc6e0120537c73799b2`，同签名验签PASS。实际账号选图／上传／保存等待设备安装后的用户复验；未修改后端、数据库、正式数据或服务配置。
+
 ### 后续标题调整
 
 用户试用后要求将个人页左上角 `:)` 换为“我的”，字号、颜色和字体与通知／私信完全一致。本轮将三处统一为 22号、w700、主题 action 蓝色，沿用页面共同主题字体；整合包使用现有本地化 `hhText`。个人页 key 调整为 `profile-title`，对应既有测试同步定位。任务分支与 vivo 整合源码同步修改；两套个人页／通知测试各12项 PASS，整合版 analyze PASS，离线 Profile 构建 PASS（47秒）。日志 `title-main-tests.log`、`title-tests.log`、`title-analyze.log`、`title-build.log`。试用版本 `2026103102`，APK SHA-256 `0536db55dc8bc659950c981bfe37853341844977f138e26237328e4964c3c9ed`；同证书验签 PASS，沿用上一轮安装授权覆盖安装。
